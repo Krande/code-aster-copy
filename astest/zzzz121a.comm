@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -100,8 +100,8 @@ for k in range(1,10):
     M[k]=MODI_MAILLAGE( reuse=M[k],
                           MAILLAGE=M[k],
                           ORIE_PEAU=_F(GROUP_MA_PEAU=('BORD_GAU','BORD_SUP',),)
-                         );
-                         
+                         )
+
 #
 # 4.3. MISE EN PLACE DES MATERIAUX
 #
@@ -148,9 +148,9 @@ for k in range(1,10):
 # 4.8. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD tri_2d_8xtri_d1
 #
   ###IMPR_RESU ( UNITE=40+k, FORMAT='MED',
-              ###RESU=_F(RESULTAT=RESU[k], NOM_CHAM='ERZ1_ELEM', NOM_CMP='ERREST') ) ;
+              ###RESU=_F(RESULTAT=RESU[k], NOM_CHAM='ERZ1_ELEM', NOM_CMP='ERREST') )
   ###IMPR_RESU ( UNITE=40+k, FORMAT='MED',
-              ###RESU=_F(RESULTAT=RESU[k], NOM_CHAM=('DEPL','SIEF_ELGA'), ),) ;
+              ###RESU=_F(RESULTAT=RESU[k], NOM_CHAM=('DEPL','SIEF_ELGA'), ),)
 #
 # 4.9. Extraction du deplacement au noeud "OPPOSE" dans une table
 #
@@ -219,7 +219,7 @@ for k in range(1,10):
   valcpu=TCPU['TEMPS_RESTANT',1]
   print("valcpu=",valcpu)
 
-  IMPR_TABLE(TABLE=TCPU);
+  IMPR_TABLE(TABLE=TCPU)
 
   DETRUIRE(NOM=TCPU)
 
@@ -227,7 +227,7 @@ for k in range(1,10):
   valul=TUL['UNITE_LIBRE',1]
   print("ul=",valul)
 
-  IMPR_TABLE(TABLE=TUL);
+  IMPR_TABLE(TABLE=TUL)
 
   TEST_TABLE(VALE_CALC_I=99,
              NOM_PARA='UNITE_LIBRE',

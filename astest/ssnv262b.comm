@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 import math
 
 
-young = 200.e9 
+young = 200.e9
 nu    = 0.30
 tau   = 10.0
 k     = 0.5*young
@@ -49,11 +49,11 @@ sigtrv = lbd*epsend
 
 wdiss = k*tau**2*rate**2*(tbar+2*math.exp(-tbar)-0.5*math.exp(-2*tbar)-1.5)
 welas = siv**2/(2*k)
- 
 
-MATE = DEFI_MATERIAU( 
+
+MATE = DEFI_MATERIAU(
     ELAS = _F(
-        E  = young, 
+        E  = young,
         NU = nu,
         ),
     ECRO_LINE = _F(
@@ -72,15 +72,15 @@ MATE = DEFI_MATERIAU(
         TAU = tau,
         ),
     )
-    
- 
-TEMPS1 = DEFI_LIST_REEL( 
+
+
+TEMPS1 = DEFI_LIST_REEL(
     DEBUT      = 0.0,
     INTERVALLE = _F(JUSQU_A = tend, NOMBRE  = 100),
     )
 
 
-DEFLIST1 = DEFI_LIST_INST( 
+DEFLIST1 = DEFI_LIST_INST(
     DEFI_LIST = _F( LIST_INST=TEMPS1),
     ECHEC     = _F( ACTION='DECOUPE', SUBD_PAS=4, SUBD_NIVEAU=2),
     )
@@ -97,10 +97,10 @@ ZERO  = DEFI_CONSTANTE( VALE =  0.0 )
 
 for ldc in ('VMIS_ISOT_LINE','ENDO_LOCA_EXP'):
 
-    EVOL_DP = SIMU_POINT_MAT( 
+    EVOL_DP = SIMU_POINT_MAT(
         SUPPORT       = 'ELEMENT',
         MODELISATION  = 'D_PLAN',
-        COMPORTEMENT  = _F( 
+        COMPORTEMENT  = _F(
             RELATION       = ldc,
             REGU_VISC      = 'OUI',
             ),
@@ -109,7 +109,7 @@ for ldc in ('VMIS_ISOT_LINE','ENDO_LOCA_EXP'):
         NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
         CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
         ARCHIVAGE  = _F(LIST_INST = TEMPS1),
-        EPSI_IMPOSE= _F( 
+        EPSI_IMPOSE= _F(
             EPXX = HISTORY,
             EPYY = ZERO,
             EPZZ = ZERO,
@@ -128,7 +128,7 @@ for ldc in ('VMIS_ISOT_LINE','ENDO_LOCA_EXP'):
     nbvi = 0
     while 'V'+repr(nbvi+1) in col:
         nbvi += 1
-    idx_visc = nbvi-8    
+    idx_visc = nbvi-8
 
 
     TEST_TABLE(

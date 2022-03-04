@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT="ASTER",);
+M=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=_F(TOUT='OUI',
@@ -132,7 +132,7 @@ L_INST=DEFI_LIST_REEL(
     DEBUT=0.0,
     INTERVALLE=(
         _F(JUSQU_A=10.0, NOMBRE=1,),
-        _F(JUSQU_A=31536010., NOMBRE=73,),),);
+        _F(JUSQU_A=31536010., NOMBRE=73,),),)
 
 #DELTAT=432000=5J
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 # sslv321b.para=tps_job 30 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
-MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
-MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU=(_F(GROUP_MA_PEAU=('SURF','SUR','ENV',),),),);
-MAILLAG=CREA_MAILLAGE(MAILLAGE=MA,LINE_QUAD=_F(TOUT='OUI'),);
+MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED')
+MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU=(_F(GROUP_MA_PEAU=('SURF','SUR','ENV',),),),)
+MAILLAG=CREA_MAILLAGE(MAILLAGE=MA,LINE_QUAD=_F(TOUT='OUI'),)
 
 ##################################
 # parametre maillage             #
@@ -64,18 +64,18 @@ MAILLAG=DEFI_GROUP(reuse =MAILLAG,INFO=2,
                                   _F(NOM='NI2',OPTION='ENV_SPHERE',POINT=(2.,-2.,-2.),RAYON=1.E-5,PRECISION=1.E-5,),
                                   _F(NOM='NI3',OPTION='ENV_SPHERE',POINT=(-2.,2,-2.),RAYON=1.E-5,PRECISION=1.E-5,),
                                   _F(NOM='NI4',OPTION='ENV_SPHERE',POINT=(2.,2,-2.),RAYON=1.E-5,PRECISION=1.E-5,),
-                                   ),);
+                                   ),)
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG,
                      AFFE=(_F(GROUP_MA=('VOLU','ENV','SURF','SUR'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D',),),)
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG,
                        MODELE=MODELEIN,
-                       AFFE=_F(TOUT='OUI',MATER=ACIER,),);
+                       AFFE=_F(TOUT='OUI',MATER=ACIER,),)
 
 # on se place de manière à éliminer le max de ddl
 # et les ddl éliminés créent l'erreur max en déplacement
@@ -88,27 +88,27 @@ LN = FORMULE(VALE='X+Y+Z+0.01',
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
-                    INFO=1,);
+                    INFO=1,)
 
 MODELX=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                         FISSURE=(FISS,),
-                        INFO=1,);
+                        INFO=1,)
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELX);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELX)
 
 #IMPR_RESU(FORMAT='MED',RESU=(_F(MAILLAGE=MA_XFEM)))
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                      PHENOMENE='MECANIQUE',
-                     MODELISATION='3D',),);
+                     MODELISATION='3D',),)
 
 # pour imposer une pression uniforme
 CH1=AFFE_CHAR_MECA(MODELE=MODELX,
                    #MODELE=MODELEIN,
                    PRES_REP=(_F(FISSURE=FISS,PRES=press),
                              _F(GROUP_MA=('ENV','SURF','SUR'),PRES=press),
-                             ),INFO=1,);
+                             ),INFO=1,)
 
 # pour bloquer les modes rigides
 
@@ -150,7 +150,7 @@ CH10=AFFE_CHAR_MECA_F(#MODELE=MODELX,
                                   DX = depl_x,
                                   DY = depl_y,
                                   DZ = depl_z,),),
-                   INFO=1,);
+                   INFO=1,)
 
 CH20=AFFE_CHAR_MECA_F(MODELE=MODELX,
                       #MODELE=MODELEIN,
@@ -164,7 +164,7 @@ UTOT=MECA_STATIQUE(MODELE=MODELX,
                       EXCIT=(_F(CHARGE=CH1),
                              _F(CHARGE=CH20),),
                       SOLVEUR=_F(METHODE='MUMPS',),
-                      INFO=2,);
+                      INFO=2,)
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
@@ -173,7 +173,7 @@ UTOT=MECA_STATIQUE(MODELE=MODELX,
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                             RESULTAT      = UTOT,)
 
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM),),);
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM),),)
 
 # -------------------------------------------------------------
 # --- CALCUL DE L'ERREUR EN DEPLACEMENT
@@ -184,21 +184,21 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=1,
                              TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION'));
+                             OPERATION='EXTRACTION'))
 
-#IMPR_TABLE(TABLE=DEP1);
+#IMPR_TABLE(TABLE=DEP1)
 
 DEP1M = CALC_TABLE(TABLE = DEP1,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = '^N[M]')));
+                               VALE_K    = '^N[M]')))
 
 DEP1P = CALC_TABLE(TABLE = DEP1,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = '^N[P]')));
+                               VALE_K    = '^N[P]')))
 
 deplm_x = FORMULE(VALE='um(X,Y,Z,1)',
                   um=um,
@@ -226,7 +226,7 @@ DEPM_INI=CALC_TABLE(TABLE = DEP1M,
                                  NOM_PARA  = ['COOR_Y','Y'],),
                               _F(OPERATION = 'RENOMME',
                                  NOM_PARA  = ['COOR_Z','Z'],),
-                                  ));
+                                  ))
 DEPP_INI=CALC_TABLE(TABLE = DEP1P,
                     ACTION = (_F(OPERATION = 'RENOMME',
                                  NOM_PARA  = ['COOR_X','X'],),
@@ -234,7 +234,7 @@ DEPP_INI=CALC_TABLE(TABLE = DEP1P,
                                  NOM_PARA  = ['COOR_Y','Y'],),
                               _F(OPERATION = 'RENOMME',
                                  NOM_PARA  = ['COOR_Z','Z'],),
-                                  ));
+                                  ))
 
 DEPM_FIN=CALC_TABLE(TABLE = DEPM_INI,
                     ACTION = (_F(OPERATION = 'OPER',
@@ -246,7 +246,7 @@ DEPM_FIN=CALC_TABLE(TABLE = DEPM_INI,
                               _F(OPERATION = 'OPER',
                                  FORMULE=deplm_z,
                                  NOM_PARA  = 'DZ_ANA',),
-                                  ));
+                                  ))
 
 DEPP_FIN=CALC_TABLE(TABLE = DEPP_INI,
                     ACTION = (_F(OPERATION = 'OPER',
@@ -258,16 +258,16 @@ DEPP_FIN=CALC_TABLE(TABLE = DEPP_INI,
                               _F(OPERATION = 'OPER',
                                  FORMULE=deplp_z,
                                  NOM_PARA  = 'DZ_ANA',),
-                                  ));
+                                  ))
 
 DEPM=CALC_TABLE(TABLE = DEPM_FIN,
                     ACTION = (_F(OPERATION = 'SUPPRIME',
                                  NOM_PARA  = ('NUME_ORDRE','INST','ABSC_CURV','X','Y','Z',),),
-                                  ));
+                                  ))
 DEPP=CALC_TABLE(TABLE = DEPP_FIN,
                     ACTION = (_F(OPERATION = 'SUPPRIME',
                                  NOM_PARA  = ('NUME_ORDRE','INST','ABSC_CURV','X','Y','Z',),),
-                                  ));
+                                  ))
 
 diff_x = FORMULE(VALE='abs(DX-DX_ANA)',
                  NOM_PARA=['DX', 'DX_ANA'],)
@@ -286,7 +286,7 @@ DIFFM=CALC_TABLE(TABLE = DEPM,
                               _F(OPERATION = 'OPER',
                                  FORMULE=diff_z,
                                  NOM_PARA  = 'DIFF_Z',),
-                                  ));
+                                  ))
 DIFFP=CALC_TABLE(TABLE = DEPP,
                     ACTION = (_F(OPERATION = 'OPER',
                                  FORMULE=diff_x,
@@ -297,7 +297,7 @@ DIFFP=CALC_TABLE(TABLE = DEPP,
                               _F(OPERATION = 'OPER',
                                  FORMULE=diff_z,
                                  NOM_PARA  = 'DIFF_Z',),
-                                  ));
+                                  ))
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -307,7 +307,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='DIFF_X',
            TYPE_TEST='MAX',
            TABLE=DIFFM,
-           );
+           )
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -317,7 +317,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='DIFF_Y',
            TYPE_TEST='MAX',
            TABLE=DIFFM,
-           );
+           )
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -327,7 +327,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='DIFF_Z',
            TYPE_TEST='MAX',
            TABLE=DIFFM,
-           );
+           )
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -337,7 +337,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='DIFF_X',
            TYPE_TEST='MAX',
            TABLE=DIFFP,
-           );
+           )
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -347,7 +347,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='DIFF_Y',
            TYPE_TEST='MAX',
            TABLE=DIFFP,
-           );
+           )
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -357,6 +357,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='DIFF_Z',
            TYPE_TEST='MAX',
            TABLE=DIFFP,
-           );
+           )
 
-FIN();
+FIN()

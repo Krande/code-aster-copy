@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,23 +18,23 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-              
+
 #----------------------------------------------
 #                   MAILLAGE
 #----------------------------------------------
 # precision
-n = 1000.0;
+n = 1000.0
 
 # dimensions de la structure
-lx = 1.0;
-ly = 1.0;
-lz = 5.0;
+lx = 1.0
+ly = 1.0
+lz = 5.0
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE  = MAILLAG1,
                        LINE_QUAD = _F(TOUT='OUI'),
-                      );
+                      )
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -43,7 +43,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                    _F(GROUP_MA='Face_sup'),
                                   ),
                     INFO=2,
-                   );
+                   )
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -53,7 +53,7 @@ MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
                AFFE=(_F(TOUT ='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D_HM',),
-              ));
+              ))
 
 LS_N = FORMULE(VALE='Z-2.5',
                NOM_PARA=['X', 'Y', 'Z'],)
@@ -62,22 +62,22 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LS_N,),
                     INFO=1,
-                   );
+                   )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          INFO=1,
                          DECOUPE_FACETTE='SOUS_ELEMENTS',
-                        );
+                        )
 
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
-UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,);
+UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,)
 
-ZERO = DEFI_CONSTANTE(VALE = 0.0,);
+ZERO = DEFI_CONSTANTE(VALE = 0.0,)
 
-KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,);
+KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,)
 
 SOL  = DEFI_MATERIAU(ELAS      = _F(E           = 5800.0E6,
                                     NU          = 0.,
@@ -96,14 +96,14 @@ SOL  = DEFI_MATERIAU(ELAS      = _F(E           = 5800.0E6,
                                     UN_SUR_K    = 5E-10,
                                     VISC        = UNM3,
                                     D_VISC_TEMP = ZERO,),
-                    );
+                    )
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
                                MATER=SOL,
                               ),
-                      );
+                      )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -114,29 +114,29 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                             _F(GROUP_NO='Face_sup',DX=0.,DY=0.,DZ=0.,),
                            ),
                   INFO=1,
-                 );
+                 )
 
 HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(_F(TOUT='OUI',PRE1=0.0,),),
                     INFO=1,
-                   );
+                   )
 
 HYDR2=AFFE_CHAR_MECA(MODELE=MODELEK,
                      DDL_IMPO=(_F(GROUP_NO=('N10','N11','N14','N15','N18','N19','N22','N23',),H1PRE1=0.0,),),
                      INFO=2,
-                    );
+                    )
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   PRES_REP=_F(FISSURE=FISS,PRES=10E6,),                            
-                   );
+                   PRES_REP=_F(FISSURE=FISS,PRES=10E6,),
+                   )
 
 PESA=AFFE_CHAR_MECA(MODELE=MODELEK,
                     PESANTEUR=_F(GRAVITE=9.81,DIRECTION=(0., 0., -1.))
-                   );
+                   )
 
 FLUH=AFFE_CHAR_MECA(MODELE=MODELEK,
                     FLUX_THM_REP=_F(TOUT='OUI',FLUN_HYDR1=0.,),
-                   );
+                   )
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -151,7 +151,7 @@ MULT=DEFI_FONCTION(NOM_PARA='INST',
 
 L_INS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=1,),
-                    );
+                    )
 
 UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                     CHAM_MATER  = CHAMPMAT,
@@ -170,42 +170,42 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                                         ITER_INTE_MAXI = 100,
                                        ),
                     NEWTON      = _F(MATRICE   = 'TANGENTE',
-                                     REAC_ITER = 1, 
+                                     REAC_ITER = 1,
                                     ),
                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                                     ITER_GLOB_MAXI = 100,    
+                                     ITER_GLOB_MAXI = 100,
                                     ),
                     INCREMENT   = _F(LIST_INST = L_INS,),
                    )
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK) 
+MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D_HM',),),
-                    );
+                    )
 
 #MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 #               AFFE=(_F(TOUT ='OUI',
 #                       PHENOMENE='MECANIQUE',
 #                       MODELISATION='3D_HM',),
-#                    ),);  
+#                    ),)
 
 RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                       RESULTAT    = UTOT1,
-                     );
+                     )
 
-# IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1,));
-#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RES_X1,));
+# IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1,))
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RES_X1,))
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              GROUP_NO=('NFISSU',),
@@ -215,9 +215,9 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
-IMPR_TABLE(TABLE=DEP1,);
+IMPR_TABLE(TABLE=DEP1,)
 
 DEP1P = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
@@ -226,7 +226,7 @@ DEP1P = CALC_TABLE(TABLE = DEP1,
                                 VALE_K    = 'N[^P]',
                                ),
                             ),
-                  );
+                  )
 
 
 DEP1M = CALC_TABLE(TABLE = DEP1,
@@ -236,7 +236,7 @@ DEP1M = CALC_TABLE(TABLE = DEP1,
                                 VALE_K    = 'N[^M]',
                                ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -347,4 +347,4 @@ TEST_TABLE(CRITERE='ABSOLU',
            TABLE=DEP1M,)
 
 
-FIN();
+FIN()

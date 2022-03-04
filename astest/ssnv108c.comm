@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 # ----------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 MA1 = LIRE_MAILLAGE(FORMAT='GMSH',
@@ -42,13 +42,13 @@ MA1=DEFI_GROUP(reuse =MA1,
                                _F(NOM='SURF',GROUP_MA='GM6'),
 
                                ),
-               );
+               )
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MA1,
                      AFFE=_F(GROUP_MA='VOL',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),
-                     );
+                     )
 
 LN = FORMULE(VALE='Y',
              NOM_PARA=['X', 'Y', 'Z'],)
@@ -56,10 +56,10 @@ LT = FORMULE(VALE='X-29.78',
              NOM_PARA=['X', 'Y', 'Z'],)
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MA1,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),);
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,);
+                         FISSURE=FISS,)
 
 FONC1=DEFI_FONCTION(NOM_PARA='EPSI',
                     VALE=
@@ -82,19 +82,19 @@ FONC1=DEFI_FONCTION(NOM_PARA='EPSI',
                      1.0     ,680.0,
                      100.0   ,700.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=205000.0,
                           NU=0.3,
                           RHO=0.0,
                           ALPHA=0.0,),
                   TRACTION=_F(SIGM=FONC1,),
-                  );
+                  )
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA1,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,
-                            ),);
+                            ),)
 
 
 uy = 1.
@@ -104,7 +104,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                             _F(GROUP_NO='B', DX=0.,DY=uy),
                             _F(GROUP_NO='BP',DX=0.,DY=-uy),
                             _F(GROUP_NO='SURF',   DZ=0.),
-                            ),);
+                            ),)
 
 RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
                         VALE=(0.,0.,1.,1.,),
@@ -113,7 +113,7 @@ RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=3,),);
+                                    NOMBRE=3,),)
 
 U=STAT_NON_LINE(MODELE=MODELEK,
                 CHAM_MATER=CHMAT,
@@ -123,7 +123,7 @@ U=STAT_NON_LINE(MODELE=MODELEK,
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
-                );
+                )
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -141,7 +141,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = U,
                         INFO          = 2)
 
-IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM))
 
 # -------------------------------------------------------------
 #                           TESTS
@@ -152,9 +152,9 @@ TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT_FISSURE',
                                    RESULTAT   = U,
                                    NOM_CHAM   = 'DEPL',
                                    NOM_CMP    = ( 'DX','DY','DZ'),
-                                   OPERATION  = 'EXTRACTION',),);
+                                   OPERATION  = 'EXTRACTION',),)
 
-IMPR_TABLE(TABLE=TABDEP,);
+IMPR_TABLE(TABLE=TABDEP,)
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A EN VERSION 9.0.13
 DEPREF=-7.8967073390778E-01
@@ -198,5 +198,5 @@ TEST_TABLE(
                      VALE_I=1,),
            )
 
-FIN();
+FIN()
 #

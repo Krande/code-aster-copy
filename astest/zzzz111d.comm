@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # Le but de ce cas-test est de "couvrir" la routine fortran PROJKM.
 #
-# On teste l'excentrement et l'indice de projection des noeuds de câble. 
+# On teste l'excentrement et l'indice de projection des noeuds de câble.
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
@@ -93,7 +93,7 @@ CABLEP1=DEFI_CABLE_BP(            MODELE=MODELE,
                                 TENSION_INIT=2.0E+5,
                                RECUL_ANCRAGE=5.0E-4,
                                TYPE_RELAX='BPEL',
-                               R_J = 0.7970032677, 
+                               R_J = 0.7970032677,
                               #    RELAXATION=_F(  R_J = 0.7970032677),
                                        TITRE=(
                              'VALIDATION DE L OPERATEUR DEFI_CABLE_BP', )

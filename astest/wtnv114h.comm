@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,16 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 ####################################
 MAIL1=LIRE_MAILLAGE(FORMAT='ASTER',)
-  
+
 MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL1,
                    LINE_QUAD = _F(TOUT='OUI'),
-                   );
-                
+                   )
+
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU=_F(GROUP_MA_PEAU=('HAUT',
                                              'BAS',),),
-                  );
+                  )
 
 MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
                       _F( GROUP_MA = 'BAS'),
@@ -204,8 +204,8 @@ RESU0=STAT_NON_LINE(
 #                            PHENOMENE='MECANIQUE',
 #                            MODELISATION='3D_HM',
 #                           ),
-#                   );
-           
+#                   )
+
 #IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',
 #          UNITE=80,
 #          RESU= (_F(MAILLAGE=MAIL,
@@ -228,7 +228,7 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='P_SUP',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='P_INF',
                              GROUP_NO=('N1','N2','N3','N4',),
@@ -238,12 +238,12 @@ DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='P_INF',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
-IMPR_TABLE(TABLE=DEP1,);
+IMPR_TABLE(TABLE=DEP1,)
 
 
-IMPR_TABLE(TABLE=DEP2,);
+IMPR_TABLE(TABLE=DEP2,)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',

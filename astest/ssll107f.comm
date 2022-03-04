@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -184,21 +184,21 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 rext=2.5E-2
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=21);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=21)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_E',),);
+                       MODELISATION='POU_D_E',),)
 
-E=2.E11;
+E=2.E11
 
 MATR=DEFI_MATERIAU(ELAS=_F(E=E,
-                           NU=0.3,),);
+                           NU=0.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATR,),);
+                            MATER=MATR,),)
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      INFO=2,
@@ -223,7 +223,7 @@ CAREL2=AFFE_CARA_ELEM(MODELE=MO,
                                 NOM_SEC='BIDUL')
                                ,)
 
-FTOT=1000. ;
+FTOT=1000.
 
 CHARG5=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_NO='A',
@@ -234,32 +234,32 @@ CHARG5=AFFE_CHAR_MECA(MODELE=MO,
                                   DRY=0.0,
                                   DRZ=0.0,),
                       FORCE_NODALE=_F(GROUP_NO='B',
-                                      FX=FTOT,),);
+                                      FX=FTOT,),)
 
 MEST5=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,
                     EXCIT=_F(CHARGE=CHARG5,),
-                    );
+                    )
 
 MEST5=CALC_CHAMP(reuse =MEST5,
               RESULTAT=MEST5,
-              FORCE='FORC_NODA',);
+              FORCE='FORC_NODA',)
 
 MEST6=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL2,
                     EXCIT=_F(CHARGE=CHARG5,),
-                    );
+                    )
 
 MEST6=CALC_CHAMP(reuse =MEST6,
               RESULTAT=MEST6,
-              FORCE='FORC_NODA',);
+              FORCE='FORC_NODA',)
 
 
 # VALEUR DE REFERENCE
 
-R = 0.025;
+R = 0.025
 
 UX = FTOT/E/pi/R/R
 

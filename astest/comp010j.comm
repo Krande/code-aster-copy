@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,9 +43,9 @@ TREF = 700.
 T0   = TREF
 Tmax = 1000.
 
-ZERO = DEFI_CONSTANTE(VALE=0.0);
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-UN   = DEFI_CONSTANTE(VALE=1.0);
+UN   = DEFI_CONSTANTE(VALE=1.0)
 
 tmax = 1.
 
@@ -98,34 +98,34 @@ YOUN=DEFI_FONCTION(  NOM_PARA='TEMP',
                      VALE=(T0,   8.E4,
                            Tmax, 4.E4,)  )
 
-NUCST=DEFI_CONSTANTE(VALE=0.35);
-F1_ACST=DEFI_CONSTANTE(VALE=2.39);
-F2_ACST=DEFI_CONSTANTE(VALE=0.22);
-C_ACST=DEFI_CONSTANTE(VALE=9.36);
-F2_MCST=DEFI_CONSTANTE(VALE=0.77E-04);
-C_MCST=DEFI_CONSTANTE(VALE=0.99E-04);
-F1_NCST=DEFI_CONSTANTE(VALE=4.39);
-F2_NCST=DEFI_CONSTANTE(VALE=2.96);
-C_NCST=DEFI_CONSTANTE(VALE=6.11);
-F1_QCST=DEFI_CONSTANTE(VALE=19922.8);
-F2_QCST=DEFI_CONSTANTE(VALE=21023.7);
-C_QCST=DEFI_CONSTANTE(VALE=6219.);
-TQRT=DEFI_CONSTANTE(VALE=0.75);
-TDEQCST=DEFI_CONSTANTE(VALE=809.);
-KCST=DEFI_CONSTANTE(VALE=1.135E-2);
-NEQCST=DEFI_CONSTANTE(VALE=2.187);
-T1CCST=DEFI_CONSTANTE(VALE=831.);
-QSR_KCST=DEFI_CONSTANTE(VALE=14614.);
-ACCST=DEFI_CONSTANTE(VALE=1.58E-4);
-MEQCST=DEFI_CONSTANTE(VALE=4.7);
-T1RCST=DEFI_CONSTANTE(VALE=949.1);
-ARCST=DEFI_CONSTANTE(VALE=-5.725);
-BRCST=DEFI_CONSTANTE(VALE=0.05);
-T_REF =DEFI_CONSTANTE(VALE=700);
+NUCST=DEFI_CONSTANTE(VALE=0.35)
+F1_ACST=DEFI_CONSTANTE(VALE=2.39)
+F2_ACST=DEFI_CONSTANTE(VALE=0.22)
+C_ACST=DEFI_CONSTANTE(VALE=9.36)
+F2_MCST=DEFI_CONSTANTE(VALE=0.77E-04)
+C_MCST=DEFI_CONSTANTE(VALE=0.99E-04)
+F1_NCST=DEFI_CONSTANTE(VALE=4.39)
+F2_NCST=DEFI_CONSTANTE(VALE=2.96)
+C_NCST=DEFI_CONSTANTE(VALE=6.11)
+F1_QCST=DEFI_CONSTANTE(VALE=19922.8)
+F2_QCST=DEFI_CONSTANTE(VALE=21023.7)
+C_QCST=DEFI_CONSTANTE(VALE=6219.)
+TQRT=DEFI_CONSTANTE(VALE=0.75)
+TDEQCST=DEFI_CONSTANTE(VALE=809.)
+KCST=DEFI_CONSTANTE(VALE=1.135E-2)
+NEQCST=DEFI_CONSTANTE(VALE=2.187)
+T1CCST=DEFI_CONSTANTE(VALE=831.)
+QSR_KCST=DEFI_CONSTANTE(VALE=14614.)
+ACCST=DEFI_CONSTANTE(VALE=1.58E-4)
+MEQCST=DEFI_CONSTANTE(VALE=4.7)
+T1RCST=DEFI_CONSTANTE(VALE=949.1)
+ARCST=DEFI_CONSTANTE(VALE=-5.725)
+BRCST=DEFI_CONSTANTE(VALE=0.05)
+T_REF =DEFI_CONSTANTE(VALE=700)
 
 
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.0E-5,
-                                         Tmax, 2.0E-5,),);
+                                         Tmax, 2.0E-5,),)
 
 
 # PARTIE MECANIQUE
@@ -178,7 +178,7 @@ LINST2=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A=tmax,
                                      NOMBRE=NCAL,),
                                      ),
-                      );
+                      )
 
 TIMP=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='TEMP',
                    VALE=(  0. , T0, 1. , Tmax)
@@ -253,7 +253,7 @@ for i in range(NCAL):
 
           # déformation mécanique imposée correspondant à la déformation thermique du premier calcul
 
-          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
+          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF))
 
           tempi=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='TEMP',
                    VALE=(  timem , Ti, time , Ti)
@@ -296,7 +296,7 @@ for i in range(NCAL):
                             ),),
 
           listinst = DEFI_LIST_REEL(DEBUT=timem,
-                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
+                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),)
 
           TIMP2=CREA_CHAMP(OPERATION='AFFE',
                  TYPE_CHAM='NOEU_TEMP_F',
@@ -386,18 +386,18 @@ for i in range(NCAL):
                                         ITER_GLOB_MAXI = 25,
                                        ),
                          )
-            DETRUIRE(NOM =DEPINI);
-            DETRUIRE(NOM =SIGEXT);
-            DETRUIRE(NOM =VARINI);
-            DETRUIRE(NOM =SIGINI);
+            DETRUIRE(NOM =DEPINI)
+            DETRUIRE(NOM =SIGEXT)
+            DETRUIRE(NOM =VARINI)
+            DETRUIRE(NOM =SIGINI)
 
 
-          DETRUIRE(NOM =epsimp);
-          DETRUIRE(NOM =listinst);
-          DETRUIRE(NOM =(tempi));
-          DETRUIRE(NOM =TIMP2);
-          DETRUIRE(NOM =TEMP2);
-          DETRUIRE(NOM =CM2);
+          DETRUIRE(NOM =epsimp)
+          DETRUIRE(NOM =listinst)
+          DETRUIRE(NOM =(tempi))
+          DETRUIRE(NOM =TIMP2)
+          DETRUIRE(NOM =TEMP2)
+          DETRUIRE(NOM =CM2)
 
           if i==19 :
 
@@ -420,17 +420,17 @@ for i in range(NCAL):
                        VALE_CALC=TBU1['SIYY',indice],
                        FILTRE=(_F(NOM_PARA='INST',VALE=time),
                                _F(NOM_PARA='POINT',VALE_I=1)),
-                       REFERENCE='AUTRE_ASTER',);
+                       REFERENCE='AUTRE_ASTER',)
 
             TEST_TABLE(TABLE=TRE2,
                        NOM_PARA='V7',VALE_REFE=TBU2['V7',indice],
                        VALE_CALC=TBU2['V7',indice],
                        FILTRE=(_F(NOM_PARA='INST',VALE=time),
                                _F(NOM_PARA='POINT',VALE_I=1)),
-                       REFERENCE='AUTRE_ASTER',);
+                       REFERENCE='AUTRE_ASTER',)
 
-            DETRUIRE(NOM =TRE1);
-            DETRUIRE(NOM =TRE2);
+            DETRUIRE(NOM =TRE1)
+            DETRUIRE(NOM =TRE2)
 
 
-FIN();
+FIN()

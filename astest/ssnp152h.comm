@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 # p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),IGNORE_ALARM=('CONTACT3_16'));
+      DEBUG=_F(SDVERI='OUI',),IGNORE_ALARM=('CONTACT3_16'))
 # IGNORE_ALARM=('CONTACT3_16') : utilisation d'un schema de Gauss pour le contact
 
 from math import *
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 #| noms des groupes de noeuds et mailles
 
@@ -34,21 +34,21 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_NO=(_F(GROUP_MA='S1R2',
                                 NOM='CONT_N_1',),
                              _F(GROUP_MA='S2R2',
-                                NOM='CONT_N_2',),),);
+                                NOM='CONT_N_2',),),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=(_F(GROUP_MA_PEAU='S1R1',),
                                _F(GROUP_MA_PEAU='S1R2',),
                                _F(GROUP_MA_PEAU='S2R2',),
-                               _F(GROUP_MA_PEAU='S2R3',),),);
-E1 = 1000000000.0;
+                               _F(GROUP_MA_PEAU='S2R3',),),)
+E1 = 1000000000.0
 
-E2 = 1000000000.0;
+E2 = 1000000000.0
 
-nu1 = 0.2;
+nu1 = 0.2
 
-nu2 = 0.2;
+nu2 = 0.2
 
 
 # False plastic material for large strains in elasticity (ticket #26286)
@@ -59,36 +59,36 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='C1',
                              MATER=MAT1,),
                           _F(GROUP_MA='C2',
-                             MATER=MAT2,),),);
+                             MATER=MAT2,),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN_SI',),);
+                       MODELISATION='C_PLAN_SI',),)
 
 #+----------------------------------------+
 #|       conditions aux limites           |
 #+----------------------------------------+
 # pression externe
-p = 1000000.0;
+p = 1000000.0
 
-R1 = 1.0;
+R1 = 1.0
 
-R2 = 0.6;
+R2 = 0.6
 
-R3 = 0.2;
+R3 = 0.2
 
 
 # calcul analytique de la pression de contact
-pres_cont = ((((2 * p) * R1) * R1) / ((((R2 * R2) * (1 - nu1)) + ((R1 * R1) * (1 + nu1))) + (((E1 / E2) * (((R1 * R1) - (R2 * R2)) / ((R2 * R2) - (R3 * R3)))) * (((R2 * R2) * (1 - nu2)) + ((R3 * R3) * (1 + nu2))))));
+pres_cont = ((((2 * p) * R1) * R1) / ((((R2 * R2) * (1 - nu1)) + ((R1 * R1) * (1 + nu1))) + (((E1 / E2) * (((R1 * R1) - (R2 * R2)) / ((R2 * R2) - (R3 * R3)))) * (((R2 * R2) * (1 - nu2)) + ((R3 * R3) * (1 + nu2))))))
 
 
 # couronne externe
-a1 = ((((pres_cont * R2) * R2) - ((p * R1) * R1)) / ((R1 * R1) - (R2 * R2)));
+a1 = ((((pres_cont * R2) * R2) - ((p * R1) * R1)) / ((R1 * R1) - (R2 * R2)))
 
-b1 = (((pres_cont - p) * (((R1 * R1) * R2) * R2)) / ((R1 * R1) - (R2 * R2)));
+b1 = (((pres_cont - p) * (((R1 * R1) * R2) * R2)) / ((R1 * R1) - (R2 * R2)))
 
-eps_r_1 = ((1 / E1) * (((a1 * (1 - nu1)) * R1) + ((b1 * (1 + nu1)) / R1)));
+eps_r_1 = ((1 / E1) * (((a1 * (1 - nu1)) * R1) + ((b1 * (1 + nu1)) / R1)))
 
 
 ux1 = FORMULE(VALE='eps_r_1*cos(atan2(Y,X))',
@@ -102,14 +102,14 @@ uy1 = FORMULE(VALE='eps_r_1*sin(atan2(Y,X))',
 CH1=AFFE_CHAR_MECA_F(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='S1R1',
                                  DX=ux1,
-                                 DY=uy1,),);
+                                 DY=uy1,),)
 
 # couronne interne
-a2 = (((-(pres_cont) * R2) * R2) / ((R2 * R2) - (R3 * R3)));
+a2 = (((-(pres_cont) * R2) * R2) / ((R2 * R2) - (R3 * R3)))
 
-b2 = ((-(pres_cont) * (((R2 * R2) * R3) * R3)) / ((R2 * R2) - (R3 * R3)));
+b2 = ((-(pres_cont) * (((R2 * R2) * R3) * R3)) / ((R2 * R2) - (R3 * R3)))
 
-eps_r_2 = ((1 / E2) * (((a2 * (1 - nu2)) * R3) + ((b2 * (1 + nu2)) / R3)));
+eps_r_2 = ((1 / E2) * (((a2 * (1 - nu2)) * R3) + ((b2 * (1 + nu2)) / R3)))
 
 
 ux2 = FORMULE(VALE='eps_r_2*cos(atan2(Y,X))',
@@ -123,7 +123,7 @@ uy2 = FORMULE(VALE='eps_r_2*sin(atan2(Y,X))',
 CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='S2R3',
                                  DX=ux2,
-                                 DY=uy2,),);
+                                 DY=uy2,),)
 
 #+----------------------------------------+
 #|               contact                  |
@@ -135,7 +135,7 @@ CONT_N=DEFI_CONTACT(MODELE=MO,
                     ALGO_RESO_GEOM='NEWTON',
                     ALGO_RESO_CONT='NEWTON',
                     ZONE=_F(GROUP_MA_MAIT='S1R2',
-                            GROUP_MA_ESCL='S2R2',),);
+                            GROUP_MA_ESCL='S2R2',),)
 
 CONT_G=DEFI_CONTACT(MODELE=MO,
                     FORMULATION='CONTINUE',
@@ -145,7 +145,7 @@ CONT_G=DEFI_CONTACT(MODELE=MO,
                     ZONE=_F(GROUP_MA_MAIT='S1R2',
                             GROUP_MA_ESCL='S2R2',
                             INTEGRATION='GAUSS',
-                            ),);
+                            ),)
 
 #+----------------------------------------+
 #|               calcul                   |
@@ -153,7 +153,7 @@ CONT_G=DEFI_CONTACT(MODELE=MO,
 
 T=DEFI_LIST_REEL(DEBUT=0.1,
                  INTERVALLE=_F(JUSQU_A=2.1,
-                               NOMBRE=20,),);
+                               NOMBRE=20,),)
 
 EXP = FORMULE(VALE='pow(10,INST-1.1)',
               NOM_PARA='INST',)
@@ -161,11 +161,11 @@ EXP = FORMULE(VALE='pow(10,INST-1.1)',
 RP_EXP=CALC_FONC_INTERP(FONCTION=EXP,
                         LIST_PARA=T,
                         PROL_DROITE='EXCLU',
-                        PROL_GAUCHE='EXCLU',);
+                        PROL_GAUCHE='EXCLU',)
 
 INSTS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=2.1,
-                                   NOMBRE=21,),);
+                                   NOMBRE=21,),)
 
 RESU1=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
@@ -182,7 +182,7 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                     SOLVEUR=_F(METHODE='MUMPS',),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+                    INFO=1,)
 
 RESU2=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
@@ -199,7 +199,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                     SOLVEUR=_F(METHODE='MUMPS',),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+                    INFO=1,)
 
 #+----------------------------------------+
 #|          tests de validation           |
@@ -215,7 +215,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   VALE_REFE=92592.5925926,
                   PRECISION=0.0007,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=92533.10955649089,),);
+                  VALE_CALC=92533.10955649089,),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=5,
@@ -226,7 +226,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   VALE_REFE=232582.076992,
                   PRECISION=0.0005,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=232474.93398896485,),);
+                  VALE_CALC=232474.93398896485,),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=10,
@@ -237,7 +237,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   VALE_REFE=735489.106226,
                   PRECISION=0.0002,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=735630.8965233705,),);
+                  VALE_CALC=735630.8965233705,),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=15,
@@ -248,7 +248,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   VALE_REFE=2325820.76992,
                   PRECISION=0.003,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=2331087.7874866864,),);
+                  VALE_CALC=2331087.7874866864,),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=21,
@@ -259,7 +259,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   VALE_REFE=9259259.25926,
                   PRECISION=0.015,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=9364761.541946419,),);
+                  VALE_CALC=9364761.541946419,),)
 
 # gauss
 
@@ -272,7 +272,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   VALE_REFE=92592.5925926,
                   PRECISION=0.002,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=92426.95631551328,),);
+                  VALE_CALC=92426.95631551328,),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   NUME_ORDRE=5,
@@ -283,7 +283,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   VALE_REFE=232582.076992,
                   PRECISION=0.0017,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=232208.25337467212,),);
+                  VALE_CALC=232208.25337467212,),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   NUME_ORDRE=10,
@@ -294,7 +294,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   VALE_REFE=735489.106226,
                   PRECISION=0.001,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=734787.1724351611,),);
+                  VALE_CALC=734787.1724351611,),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   NUME_ORDRE=15,
@@ -305,7 +305,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   VALE_REFE=2325820.76992,
                   PRECISION=0.0015,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=2328415.6413385025,),);
+                  VALE_CALC=2328415.6413385025,),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   NUME_ORDRE=21,
@@ -316,6 +316,6 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   VALE_REFE=9259259.25926,
                   PRECISION=0.015,
                   REFERENCE='ANALYTIQUE',
-                  VALE_CALC=9354053.35832358,),);
+                  VALE_CALC=9354053.35832358,),)
 
-FIN();
+FIN()

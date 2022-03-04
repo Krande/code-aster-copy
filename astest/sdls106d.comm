@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,17 +45,17 @@ MAIL = LIRE_MAILLAGE(FORMAT='IDEAS',
 MODELE1=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F( GROUP_MA = 'F1',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'));
-                             
+                             MODELISATION = 'DKT'))
+
 MODELE2=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F( GROUP_MA = 'F2',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'));
+                             MODELISATION = 'DKT'))
 MODELE3=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F( GROUP_MA = 'F3',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'));
-                             
+                             MODELISATION = 'DKT'))
+
 #
 MATER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E11,  NU = 0.30,  RHO = 7800.0))
 
@@ -65,7 +65,7 @@ CHMAT1=AFFE_MATERIAU(  MAILLAGE=MAIL,
                                     MATER = MATER))
 CHMAT2=AFFE_MATERIAU(  MAILLAGE=MAIL,
                        AFFE=_F( GROUP_MA = 'F2',
-                                    MATER = MATER))                                    
+                                    MATER = MATER))
 CHMAT3=AFFE_MATERIAU(  MAILLAGE=MAIL,
                        AFFE=_F( GROUP_MA = 'F3',
                                     MATER = MATER))
@@ -86,7 +86,7 @@ PARAM3=AFFE_CARA_ELEM(  MODELE=MODELE3,
 ########################################################################
 #
 #        PLAQUE APPUYEE-APPUYEE DECOUPEE EN 3 PARTIES
-#                 SOUS-STRUCTURATION CLASSIQUE 
+#                 SOUS-STRUCTURATION CLASSIQUE
 #          INTERFACES TYPE CRAIG-BAMPTON & MAC NEAL
 #
 ########################################################################
@@ -136,7 +136,7 @@ ASSEMBLAGE(MODELE=MODELE3,
                 MATR_ASSE=(_F(MATRICE = CO("RAID3"),OPTION = 'RIGI_MECA'),
                            _F(MATRICE = CO("MASS3"),OPTION = 'MASS_MECA')),
                )
-               
+
 # CALCULS DES MODES AVEC LES C.L. ASSOCIEES AUX TYPES D'INTERFACE
 
 MODES_1=CALC_MODES(MATR_RIGI=RAID1,
@@ -165,7 +165,7 @@ LINT1_CL=DEFI_INTERF_DYNA(NUME_DDL=NUM1,
                                         TYPE = 'CRAIGB',
                                         GROUP_NO = 'F1CB'),
                                      ))
-                                     
+
 LINT2_CL=DEFI_INTERF_DYNA(NUME_DDL=NUM2,
                           INTERFACE=(_F(NOM = 'F2CB',
                                         TYPE = 'CRAIGB',
@@ -174,7 +174,7 @@ LINT2_CL=DEFI_INTERF_DYNA(NUME_DDL=NUM2,
                                         TYPE = 'MNEAL',
                                         GROUP_NO = 'F2MN'),
                                      ))
-                                     
+
 LINT3_CL=DEFI_INTERF_DYNA(NUME_DDL=NUM3,
                           INTERFACE=(_F( NOM = 'F3MN',
                                         TYPE = 'MNEAL',
@@ -188,12 +188,12 @@ BAMO1_CL=DEFI_BASE_MODALE( CLASSIQUE=_F(MODE_MECA = MODES_1,
                                         INTERF_DYNA=LINT1_CL),
                            )
 BAMO2_CL=DEFI_BASE_MODALE( CLASSIQUE=_F(MODE_MECA = MODES_2,
-                                        INTERF_DYNA=LINT2_CL),             
+                                        INTERF_DYNA=LINT2_CL),
                            )
 BAMO3_CL=DEFI_BASE_MODALE( CLASSIQUE=_F(MODE_MECA = MODES_3,
-                                        INTERF_DYNA=LINT3_CL),             
+                                        INTERF_DYNA=LINT3_CL),
                            )
-                           
+
 #  CALCUL DES MACRO-ELEMENTS
 
 MACEL1=MACR_ELEM_DYNA( BASE_MODALE=BAMO1_CL,
@@ -203,11 +203,11 @@ MACEL1=MACR_ELEM_DYNA( BASE_MODALE=BAMO1_CL,
 MACEL2=MACR_ELEM_DYNA( BASE_MODALE=BAMO2_CL,
                        MATR_MASS=MASS2,
                        MATR_RIGI=RAID2)
-                       
+
 MACEL3=MACR_ELEM_DYNA( BASE_MODALE=BAMO3_CL,
                        MATR_MASS=MASS3,
                        MATR_RIGI=RAID3)
-                       
+
 #   CALCUL SUR MODELE GENERALISE
 
 MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F( NOM = 'FA1',
@@ -232,23 +232,23 @@ MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F( NOM = 'FA1',
                                          SOUS_STRUC_2 = 'FA3',
                                          INTERFACE_1  = 'F2MN',
                                          INTERFACE_2  = 'F3MN',
-                                       ),    
-                                      ), 
+                                       ),
+                                      ),
                                VERIF=_F( STOP_ERREUR = 'OUI',
                                       PRECISION = 1.E-6,
                                       CRITERE = 'RELATIF'))
 
 #  NUMEROTATION DU PROBLEME GENERALISE
 
-NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE);
+NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
 
 #  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
 
 MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
-                                  OPTION='MASS_GENE');
+                                  OPTION='MASS_GENE')
 
 RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
-                                  OPTION='RIGI_GENE');
+                                  OPTION='RIGI_GENE')
 
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 
@@ -271,7 +271,7 @@ RESGEN=CALC_MODES(INFO=1,
                   SOLVEUR_MODAL=_F(METHODE='SORENSEN',
                                    ),
                   )
-                        
+
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(

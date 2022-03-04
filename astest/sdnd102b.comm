@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 #
 # DESCRIPTION DES PAS DE CALCUL ET D ARCHIVAGE
@@ -37,25 +37,25 @@ MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=0.5,
-                                    PAS=0.001,),);
+                                    PAS=0.001,),)
 
 L_INST2=DEFI_LIST_REEL(DEBUT=0.,
                        INTERVALLE=_F(JUSQU_A=0.5,
-                                     PAS=0.002,),);
+                                     PAS=0.002,),)
 
 LISTIMP=DEFI_LIST_REEL(DEBUT=0.002,
                        INTERVALLE=_F(JUSQU_A=0.5,
-                                     NOMBRE=249,),);
+                                     NOMBRE=249,),)
 
 INTLI=DEFI_LIST_ENTI(OPERATION='DEFI',
                      DEBUT=1,
                      INTERVALLE=_F(JUSQU_A=501,
-                                   PAS=2,),);
+                                   PAS=2,),)
 
 #
 # DESCRIPTION DES ACCELEROGRAMMES ET DE LEURS INTEGRALES :
 #---------------------------------------------------------
-OMEGAA = ((2.0 * pi) * 10.0);
+OMEGAA = ((2.0 * pi) * 10.0)
 
 
 ACCE1 = FORMULE(VALE='sin(OMEGAA*INST) ',
@@ -68,7 +68,7 @@ ACCELER1=CALC_FONC_INTERP(FONCTION=ACCE1,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 ACCE2 = FORMULE(VALE='- sin(OMEGAA*INST) ',
                 OMEGAA=OMEGAA,
@@ -80,7 +80,7 @@ ACCELER2=CALC_FONC_INTERP(FONCTION=ACCE2,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 VITE1 = FORMULE(VALE='-cos(OMEGAA*INST)/OMEGAA ',
                 OMEGAA=OMEGAA,
@@ -92,7 +92,7 @@ VITESSE1=CALC_FONC_INTERP(FONCTION=VITE1,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 DEPL1 = FORMULE(VALE='-sin(OMEGAA*INST)/(OMEGAA**2) ',
                 OMEGAA=OMEGAA,
@@ -104,7 +104,7 @@ DEPLACE1=CALC_FONC_INTERP(FONCTION=DEPL1,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 #
 
@@ -118,7 +118,7 @@ VITESSE2=CALC_FONC_INTERP(FONCTION=VITE2,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 DEPL2 = FORMULE(VALE='sin(OMEGAA*INST)/(OMEGAA**2) ',
                 OMEGAA=OMEGAA,
@@ -130,22 +130,22 @@ DEPLACE2=CALC_FONC_INTERP(FONCTION=DEPL2,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 #
 # MATERIAU
 
 MAT_CHO=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=5.76E7,
                                      DIST_1=0.4495,
-                                     JEU=0.45,),);
+                                     JEU=0.45,),)
 
 MATCHO=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=2.88E7,
                                     DIST_1=0.4495,
-                                    DIST_2=0.4495,),);
+                                    DIST_2=0.4495,),)
 
 MATBID=DEFI_MATERIAU(ELAS=_F(E=1.E10,
                              NU=0.3,
-                             RHO=0.,),);
+                             RHO=0.,),)
 
 #
 
@@ -153,7 +153,7 @@ CH_MAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                      AFFE=(_F(GROUP_MA='RESSORT1',
                               MATER=MATBID,),
                            _F(GROUP_MA='MASSES1',
-                              MATER=MAT_CHO,),),);
+                              MATER=MAT_CHO,),),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=(_F(GROUP_MA='RESSORTS',
@@ -161,7 +161,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                           _F(GROUP_MA=('MASSES1','MASSES2',),
                              MATER=MATBID,),
                           _F(GROUP_MA='RESSORT2',
-                             MATER=MATCHO,),),);
+                             MATER=MATCHO,),),)
 
 #
 #=======================================================================
@@ -177,7 +177,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='DIS_T',),
                          _F(GROUP_MA='MASSES1',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=(_F(GROUP_NO='NO1',
@@ -186,7 +186,7 @@ CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                     DZ=0.,),
                                  _F(GROUP_NO='MASSES1',
                                     DY=0.,
-                                    DZ=0.,),),);
+                                    DZ=0.,),),)
 
 #
 
@@ -218,7 +218,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
 
                         ORIENTATION=_F(GROUP_MA='MASSES1',CARA='VECT_X_Y',
                                        VALE=(-1.0,0.0,0.0, 0.0,1.0,0.0),)
-);
+)
 
 ASSEMBLAGE(MODELE=MODELE,
                 CARA_ELEM=CARA_ELE,
@@ -227,7 +227,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 # CALCUL DES MODES STATIQUES AUX POINTS D ANCRAGE ET DES CHARGEMENTS
 # SISMIQUES :
@@ -235,26 +235,26 @@ ASSEMBLAGE(MODELE=MODELE,
 MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        MODE_STAT=_F(TOUT='OUI',
-                                    AVEC_CMP='DX',),);
+                                    AVEC_CMP='DX',),)
 
 #
 
 MONO_X=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                         DIRECTION=(1.,0.,0.,),
-                        MONO_APPUI='OUI',);
+                        MONO_APPUI='OUI',)
 
 CHAR_SEI=AFFE_CHAR_MECA(MODELE=MODELE,
-                        VECT_ASSE=MONO_X,);
+                        VECT_ASSE=MONO_X,)
 
 MODE=CALC_MODES( OPTION='BANDE',
                  MATR_RIGI=RIGIDITE,
                  MATR_MASS=MASSE,
                  SOLVEUR_MODAL=_F( METHODE='JACOBI' ),
-                 CALC_FREQ=_F( FREQ=(1.,30.) ),);
+                 CALC_FREQ=_F( FREQ=(1.,30.) ),)
 
 MODE=NORM_MODE(reuse =MODE,
                MODE=MODE,
-               NORME='MASS_GENE',);
+               NORME='MASS_GENE',)
 
 # CALCUL DIRECT
 # -------------
@@ -334,7 +334,7 @@ TRAN_DY=DYNA_NON_LINE(MODELE=MODELE,INFO=1,
                                     NOM_CHAM='VITE',),
                                 ),
                       ARCHIVAGE=_F(LIST_INST=L_INST2,),
-);
+)
 # On valide la poursuite
 TRAN_DY=DYNA_NON_LINE(reuse=TRAN_DY,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY),
                       MODELE=MODELE,INFO=1,
@@ -412,7 +412,7 @@ TRAN_DY=DYNA_NON_LINE(reuse=TRAN_DY,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY),
                                     NOM_CHAM='VITE',),
                                 ),
                       ARCHIVAGE=_F(LIST_INST=L_INST2,),
-);
+)
 
 TEST_RESU(RESU=_F(INST=1.E-2,
                   RESULTAT=TRAN_DY,
@@ -442,12 +442,12 @@ TEST_RESU(RESU=_F(INST=1.E-2,
           )
 
 TAB_OBS=RECU_TABLE(CO=TRAN_DY,
-                   NOM_TABLE='OBSERVATION',);
+                   NOM_TABLE='OBSERVATION',)
 
 #  Impression de la table permettant de comparer aux valeurs OBSERVATION :
 IMPR_TABLE(TABLE=TAB_OBS,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.1,),);
+                     VALE=0.1,),)
 
 TEST_TABLE(
            VALE_CALC=-1.4888774372446E-4,
@@ -510,7 +510,7 @@ BICHOC=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='DIS_TR',),
                          _F(GROUP_MA=('MASSES1','MASSES2',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 CL_BICHO=AFFE_CHAR_MECA(MODELE=BICHOC,
                         DDL_IMPO=(_F(GROUP_NO='ENCBICHO',
@@ -525,7 +525,7 @@ CL_BICHO=AFFE_CHAR_MECA(MODELE=BICHOC,
                                      DZ=0.,
                                      DRX=0.,
                                      DRY=0.,
-                                     DRZ=0.,),),);
+                                     DRZ=0.,),),)
 
 #
 
@@ -578,7 +578,7 @@ CARA_BIC=AFFE_CARA_ELEM(MODELE=BICHOC,
                                  _F(CARA='A_TR_D_N',
                                     GROUP_MA='MASSES2',
                                     VALE=(0.,0.,0.,0.,0.,0.,),),
-                                    ),);
+                                    ),)
 
 ASSEMBLAGE(MODELE=BICHOC,
                 CARA_ELEM=CARA_BIC,
@@ -587,7 +587,7 @@ ASSEMBLAGE(MODELE=BICHOC,
                 MATR_ASSE=(_F(MATRICE=CO('RIGI_BIC'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASS_BIC'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 # CALCUL DES MODES STATIQUES AUX POINTS D ANCRAGE ET DES CHARGEMENTS
 # SISMIQUES :
@@ -595,25 +595,25 @@ ASSEMBLAGE(MODELE=BICHOC,
 MSTA_BIC=MODE_STATIQUE(MATR_RIGI=RIGI_BIC,
                        MATR_MASS=MASS_BIC,
                        MODE_STAT=_F(TOUT='OUI',
-                                    AVEC_CMP='DX',),);
+                                    AVEC_CMP='DX',),)
 
 #
 
 MULT_X1=CALC_CHAR_SEISME(MATR_MASS=MASS_BIC,
                          DIRECTION=(1.,0.,0.,),
                          MODE_STAT=MSTA_BIC,
-                         GROUP_NO='NO1',);
+                         GROUP_NO='NO1',)
 
 MULT_X2=CALC_CHAR_SEISME(MATR_MASS=MASS_BIC,
                          DIRECTION=(1.,0.,0.,),
                          MODE_STAT=MSTA_BIC,
-                         GROUP_NO='NO11',);
+                         GROUP_NO='NO11',)
 
 CHAR_SE1=AFFE_CHAR_MECA(MODELE=BICHOC,
-                        VECT_ASSE=MULT_X1,);
+                        VECT_ASSE=MULT_X1,)
 
 CHAR_SE2=AFFE_CHAR_MECA(MODELE=BICHOC,
-                        VECT_ASSE=MULT_X2,);
+                        VECT_ASSE=MULT_X2,)
 
 MODE_BIC=CALC_MODES(MATR_RIGI=RIGI_BIC,
                     OPTION='BANDE',
@@ -627,7 +627,7 @@ MODE_BIC=CALC_MODES(MATR_RIGI=RIGI_BIC,
 
 MODE_BIC=NORM_MODE(reuse =MODE_BIC,
                    MODE=MODE_BIC,
-                   NORME='MASS_GENE',);
+                   NORME='MASS_GENE',)
 
 # CALCUL DIRECT
 # -------------
@@ -668,7 +668,7 @@ TRAN_DY2=DYNA_NON_LINE(MODELE=BICHOC,
                                   ),
                        CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                       ITER_GLOB_MAXI=20,),
-                       ARCHIVAGE=_F(LIST_INST=L_INST2,),);
+                       ARCHIVAGE=_F(LIST_INST=L_INST2,),)
 
 TRAN_DY2=DYNA_NON_LINE(reuse = TRAN_DY2,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY2),
                        MODELE=BICHOC,
@@ -707,7 +707,7 @@ TRAN_DY2=DYNA_NON_LINE(reuse = TRAN_DY2,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY2),
                                   ),
                        CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                       ITER_GLOB_MAXI=20,),
-                       ARCHIVAGE=_F(LIST_INST=L_INST2,),);
+                       ARCHIVAGE=_F(LIST_INST=L_INST2,),)
 
 #
 #=======================================================================
@@ -720,7 +720,7 @@ DEPL_ENT=CALC_FONC_INTERP(FONCTION=DEPL1,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 # DEPLACEMENTS RELATIFS CALCULES
 
@@ -730,7 +730,7 @@ NO2_DX_R=RECU_FONCTION(RESULTAT=TRAN_DY2,
                        NOM_CMP='DX',
                        GROUP_NO='NO2',
                        PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='LINEAIRE',);
+                       PROL_GAUCHE='LINEAIRE',)
 
 NO2_DXR=RECU_FONCTION(RESULTAT=TRAN_DY,
                       LIST_INST=LISTIMP,
@@ -738,7 +738,7 @@ NO2_DXR=RECU_FONCTION(RESULTAT=TRAN_DY,
                       NOM_CMP='DX',
                       GROUP_NO='NO2',
                       PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
+                      PROL_GAUCHE='LINEAIRE',)
 
 # DEPLACEMENTS ABSOLUS CALCULES
 
@@ -748,7 +748,7 @@ NO2_DXA=RECU_FONCTION(RESULTAT=TRAN_DY,
                       NOM_CMP='DX',
                       GROUP_NO='NO2',
                       PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
+                      PROL_GAUCHE='LINEAIRE',)
 
 NO2_DX_A=RECU_FONCTION(RESULTAT=TRAN_DY2,
                        LIST_INST=LISTIMP,
@@ -756,7 +756,7 @@ NO2_DX_A=RECU_FONCTION(RESULTAT=TRAN_DY2,
                        NOM_CMP='DX',
                        GROUP_NO='NO2',
                        PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='LINEAIRE',);
+                       PROL_GAUCHE='LINEAIRE',)
 
 #
 # FORCES DE CHOC AU NOEUD NO2
@@ -768,7 +768,7 @@ EFF_CHOC=RECU_FONCTION(RESULTAT=TRAN_DY,
                        GROUP_MA='ELM1',
                        POINT=1,
                        PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='LINEAIRE',);
+                       PROL_GAUCHE='LINEAIRE',)
 
 EFFOCHOC=RECU_FONCTION(RESULTAT=TRAN_DY2,
                        NOM_CHAM='SIEF_ELGA',
@@ -776,7 +776,7 @@ EFFOCHOC=RECU_FONCTION(RESULTAT=TRAN_DY2,
                        GROUP_MA='ELN2',
                        POINT=1,
                        PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='LINEAIRE',);
+                       PROL_GAUCHE='LINEAIRE',)
 
 #
 # TESTS
@@ -785,8 +785,8 @@ EFFOCHOC=RECU_FONCTION(RESULTAT=TRAN_DY2,
 IMPR_FONCTION(FORMAT='TABLEAU',UNITE=6,COURBE=_F(FONCTION=EFF_CHOC))
 IMPR_FONCTION(FORMAT='TABLEAU',UNITE=6,COURBE=_F(FONCTION=EFFOCHOC))
 
-MAXF_CHO=INFO_FONCTION(MAX=_F(FONCTION=EFF_CHOC,),);
-MAXFCHOC=INFO_FONCTION(MAX=_F(FONCTION=EFFOCHOC,),);
+MAXF_CHO=INFO_FONCTION(MAX=_F(FONCTION=EFF_CHOC,),)
+MAXFCHOC=INFO_FONCTION(MAX=_F(FONCTION=EFFOCHOC,),)
 
 TEST_TABLE(PRECISION=1.E-2,
            VALE_CALC=-629.304205396,
@@ -821,7 +821,7 @@ TEST_TABLE(PRECISION=1.E-2,
 DIFF=CALC_FONCTION(COMB=(_F(FONCTION=NO2_DX_A,
                             COEF=1.,),
                          _F(FONCTION=NO2_DXA,
-                            COEF=-1.,),),);
+                            COEF=-1.,),),)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
@@ -861,6 +861,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                       ),
               )
 
-FIN();
+FIN()
 
 #

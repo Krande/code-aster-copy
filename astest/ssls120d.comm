@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,27 +23,27 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',)
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='VIROLE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),);
+                            MODELISATION='DKT',),)
 #Normale vers l'intérieur du cylindre
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='VIROLE',
                                       VECT_NORM=(-1.0,0.0,0.0,),
-                                      GROUP_NO='A1',),);
+                                      GROUP_NO='A1',),)
 # On définit un repère utilisateur sans signification physique
 CARAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
                       COQUE=_F(GROUP_MA='VIROLE',
                                EPAIS=4.E-2,
                                COEF_RIGI_DRZ = -1.E-8,
-                               ANGL_REP=(-90.0,20.0,),),);
+                               ANGL_REP=(-90.0,20.0,),),)
 
 ACIER1=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 ACIER2=DEFI_MATERIAU(     ELAS_ORTH=_F(  E_L = 4.E10,
                                        E_T = 2.1E11,
@@ -62,10 +62,10 @@ MAT2=DEFI_COMPOSITE(COUCHE=(
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='VIROLE',
-                            MATER=ACIER1,),);
+                            MATER=ACIER1,),)
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='VIROLE',
-                            MATER=MAT2,),);
+                            MATER=MAT2,),)
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
                        DDL_IMPO=(_F(GROUP_MA='LIGNEBAS',
@@ -75,16 +75,16 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
                                     DRX=0.0,
                                     DRZ=0.0,),
                                  _F(GROUP_NO='PM',
-                                    DX=0.0,),),);
+                                    DX=0.0,),),)
 
 PHYDR=DEFI_FONCTION(NOM_PARA='Z',
                     NOM_RESU='TOUTRESU',
-                    VALE=(0.0,15000.0,16.0,0.0),);
+                    VALE=(0.0,15000.0,16.0,0.0),)
 
 PH=AFFE_CHAR_MECA_F(MODELE=MODMECA,
                     FORCE_COQUE=_F(GROUP_MA='VIROLE',
                                    PRES=PHYDR,
-                                   PLAN='INF',),);
+                                   PLAN='INF',),)
 
 # CAS ISOTROPE : SOLUTION ANALYTIQUE
 
@@ -94,7 +94,7 @@ ELAS1=MECA_STATIQUE(MODELE=MODMECA,
                     CARA_ELEM=CARAEL,
                     EXCIT=(_F(CHARGE=BLOCAGE,),
                            _F(CHARGE=PH,),),
-                    );
+                    )
 
 CALC_CHAMP(reuse=ELAS1,RESULTAT=ELAS1,CONTRAINTE=('SIGM_ELNO'))
 
@@ -109,18 +109,18 @@ E1CYL=MODI_REPERE(RESULTAT=ELAS1,
                   REPERE='COQUE_UTIL_CYL',
                   AFFE=_F(ORIGINE = (0.0, 0.0, 0.0,),
                           AXE_Z =(0.0, 0.0, 1.0,),
-                              GROUP_MA='VIROLE',),);
+                              GROUP_MA='VIROLE',),)
 
 E1CYLC1M=POST_CHAMP(RESULTAT=E1CYL,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='MOY',),);
-R = 5.7;
-L = 16.0;
-E = 210000000000.0;
-h = 0.04;
-P = 15000.0;
-Nu = 0.3;
+                                  NIVE_COUCHE='MOY',),)
+R = 5.7
+L = 16.0
+E = 210000000000.0
+h = 0.04
+P = 15000.0
+Nu = 0.3
 DZMAX = (-Nu*P*R*L)/E/h/2.
 DXMAX = P*R*R/E/h
 DXMIN = -P*R*R/E/h
@@ -213,19 +213,19 @@ DZMAX2 = (-NuLT*P*R*L)/ET/h/2.
 CARAEL2=AFFE_CARA_ELEM(MODELE=MODMECA,
                       COQUE=_F(GROUP_MA='VIROLE',
                                EPAIS=4.E-2,
-                               ANGL_REP=(0.0,-90.0,),),);
+                               ANGL_REP=(0.0,-90.0,),),)
 ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CARAEL2,
                     EXCIT=(_F(CHARGE=BLOCAGE,),
-                           _F(CHARGE=PH,),),);
+                           _F(CHARGE=PH,),),)
 
-CALC_CHAMP(reuse=ELAS2,RESULTAT=ELAS2,CONTRAINTE=('SIGM_ELNO'));
+CALC_CHAMP(reuse=ELAS2,RESULTAT=ELAS2,CONTRAINTE=('SIGM_ELNO'))
 
 ELAS2C1M=POST_CHAMP(RESULTAT=ELAS2,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='MOY',),);
+                                  NIVE_COUCHE='MOY',),)
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A3',
                   REFERENCE='ANALYTIQUE',
@@ -292,4 +292,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=3.E-03,
                   GROUP_MA='M1',),
           )
-FIN();
+FIN()

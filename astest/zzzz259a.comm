@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #
 # 1. Lecture des maillages
@@ -30,11 +30,11 @@ DEBUT(CODE=_F(
 # 1.1. L'intersection des deux tuyaux
 
 MA_ARCS=LIRE_MAILLAGE(UNITE=19,
-                      FORMAT='MED');
+                      FORMAT='MED')
 #
 # 1.2. Le volume
 
-M_0=LIRE_MAILLAGE(FORMAT='MED');
+M_0=LIRE_MAILLAGE(FORMAT='MED')
 #
 M_0=MODI_MAILLAGE( reuse=M_0,   MAILLAGE=M_0,
                    ORIE_PEAU=_F(
@@ -93,9 +93,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                MAILLAGE_FRONTIERE=MA_ARCS,
                GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),
                NOMBRE='OUI',
-               PROP_CALCUL='OUI',);
+               PROP_CALCUL='OUI',)
 
-#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_1,),);
+#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_1,),)
 
 #
 # 3. Adaptation du maillage de 1 vers 2
@@ -148,9 +148,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_1,
                        RAYON= 50.,
                        GROUP_MA='T2_EXT',),),
                MAILLAGE_FRONTIERE=MA_ARCS,
-               GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),);
+               GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),)
 
-#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_2,),);
+#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_2,),)
 
 #
 # 4. Adaptation du maillage de 2 vers 3
@@ -203,9 +203,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                        RAYON= 50.,
                        GROUP_MA='T2_EXT',),),
                MAILLAGE_FRONTIERE=MA_ARCS,
-               GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),);
+               GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),)
 
-#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_3,),);
+#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_3,),)
 
 #
 # 5. Adaptation du maillage de 3 vers 4
@@ -258,14 +258,14 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_3,
                        RAYON= 50.,
                        GROUP_MA='T2_EXT',),),
                MAILLAGE_FRONTIERE=MA_ARCS,
-               GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),);
+               GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),)
 
-#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_4,),);
+#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_4,),)
 #
 # 6. Un p'tit calcul pour un TEST_RESU
 #
 MAI=CREA_MAILLAGE(MAILLAGE=M_4,
-                  LINE_QUAD=_F(TOUT='OUI',),);
+                  LINE_QUAD=_F(TOUT='OUI',),)
 MATERIO=DEFI_MATERIAU( THER=_F(  LAMBDA = 40., RHO_CP = 1., ), )
 #
 MATPIQ=AFFE_MATERIAU( MAILLAGE=MAI,AFFE=_F( TOUT='OUI', MATER = MATERIO, ),)
@@ -278,13 +278,13 @@ CHTHPIQ=AFFE_CHAR_THER(    MODELE=MOTHPIQ,
     TEMP_IMPO=(_F(  GROUP_MA=('T1_INT_I','T1_INT_O',), TEMP = 600.0,),
                _F(  GROUP_MA = 'T2_INT', TEMP = 400.0,),),
     ECHANGE=_F( GROUP_MA = ('T1_EXT_I','T1_EXT_O','T2_EXT',),  COEF_H = 5.,  TEMP_EXT = 300.,),
-    FLUX_REP=_F( GROUP_MA = ('IN1','IN2','OUT',),  FLUN = 0.,),);
+    FLUX_REP=_F( GROUP_MA = ('IN1','IN2','OUT',),  FLUN = 0.,),)
 #
 THPIQ=THER_LINEAIRE( MODELE=MOTHPIQ,
                         CHAM_MATER=MATPIQ,
                         EXCIT=_F(  CHARGE = CHTHPIQ,   ),
                    )
-#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=THPIQ,),);
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=THPIQ,),)
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=0,
                   GROUP_NO='POINT',
@@ -297,4 +297,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=0,
           )
 
 #
-FIN();
+FIN()

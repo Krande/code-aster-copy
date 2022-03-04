@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,32 +19,32 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
                             RHO=8000.0,
-                            E=2.E11,),);
+                            E=2.E11,),)
 
 PLUME=DEFI_MATERIAU(ELAS=_F(NU=0.3,
                             RHO=0.0,
-                            E=2.E11,),);
+                            E=2.E11,),)
 
 CH_MATER=AFFE_MATERIAU(AFFE=(_F(MATER=ACIER,
                                 GROUP_MA='PESA',),
                              _F(MATER=PLUME,
                                 GROUP_MA='VERT',),),
-                       MAILLAGE=MAILLAGE,);
+                       MAILLAGE=MAILLAGE,)
 
 MODELE=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='BARRE',),
-                   MAILLAGE=MAILLAGE,);
+                   MAILLAGE=MAILLAGE,)
 
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                         BARRE=_F(SECTION='GENERALE',
                                  GROUP_MA=('PESA','VERT'),
                                  CARA='A',
-                                 VALE=1.0,),);
+                                 VALE=1.0,),)
 
 CHARGE_1=AFFE_CHAR_MECA(DDL_IMPO=(_F(TOUT='OUI',
                                      DZ=0.0,
@@ -57,12 +57,12 @@ CHARGE_1=AFFE_CHAR_MECA(DDL_IMPO=(_F(TOUT='OUI',
                                      GROUP_NO='B',),),
                         MODELE=MODELE,
                         PESANTEUR=_F(GRAVITE=20.0,
-                                     DIRECTION=(0.866,-0.5,0.0),),);
+                                     DIRECTION=(0.866,-0.5,0.0),),)
 
 STATIQU1=MECA_STATIQUE(CHAM_MATER=CH_MATER,
                        MODELE=MODELE,
                        CARA_ELEM=CARA_ELE,
-                       EXCIT=_F(CHARGE=CHARGE_1,),);
+                       EXCIT=_F(CHARGE=CHARGE_1,),)
 
 
 STATIQU1=CALC_CHAMP(reuse=STATIQU1,RESULTAT=STATIQU1,CONTRAINTE=('EFGE_ELNO'),DEFORMATION=('EPSI_ELNO'))
@@ -151,4 +151,4 @@ TEST_RESU(CHAM_NO=(_F(GROUP_NO='N3',
                    ),
           )
 
-FIN();
+FIN()

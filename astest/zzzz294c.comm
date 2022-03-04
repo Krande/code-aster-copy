@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # lecture maillage lineique
-MA=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,)
 
 MO=AFFE_MODELE( MAILLAGE=MA,
-                AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='COQUE_3D',),);
+                AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='COQUE_3D',),)
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10, NU=0.0,  RHO=2400.0,),)
 
@@ -32,25 +32,25 @@ PLAQUE=AFFE_CARA_ELEM(  MODELE=MO,
                         COQUE = _F( GROUP_MA=('PLA'),
                                     EPAIS = 0.5,
                                     COQUE_NCOU = 4,),
-                    );
+                    )
 
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI', MATER=BETON,),
-                    );
+                    )
 
 BLOCAGE=AFFE_CHAR_MECA( MODELE=MO,
                         DDL_IMPO=(_F(GROUP_NO='ENC', DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0,),
-                                 ),);
+                                 ),)
 CHARGE=AFFE_CHAR_MECA(  MODELE=MO,
                         FORCE_NODALE=(_F(GROUP_NO='CHA',FX = 0,FY = 0 ,FZ = -5.0)
-                                 ),);
+                                 ),)
 
 FOFO=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,3.5,3.5),
                    PROL_DROITE='EXCLU',
-                   PROL_GAUCHE='EXCLU',);
+                   PROL_GAUCHE='EXCLU',)
 
 
 LINST=DEFI_LIST_REEL(   DEBUT=0.0,
@@ -59,7 +59,7 @@ LINST=DEFI_LIST_REEL(   DEBUT=0.0,
                                     _F(JUSQU_A=2.84 ,  NOMBRE=9,),
                                     _F(JUSQU_A=3. ,  NOMBRE=10,),
                                     ),
-                    );
+                    )
 
 U = STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CHMAT,
@@ -72,7 +72,7 @@ U = STAT_NON_LINE(MODELE=MO,
                  NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA=3.E-5,
                                 ITER_GLOB_MAXI=250,),
-                 );
+                 )
 
 TB=CREA_TABLE(RESU=_F(RESULTAT=U,GROUP_MA='PLA',NOM_CHAM='SIEF_ELGA',TOUT_CMP='OUI',NUME_ORDRE = 1))
 IMPR_TABLE(TABLE=TB)

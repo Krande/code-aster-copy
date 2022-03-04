@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON');
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON')
 
 
 #########################################################
@@ -27,17 +27,17 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON');
 #########################################################
 
 #temperature de travail en degres Celsius
-Tdegc=600;
+Tdegc=600
 
 #ATTENTION : f en h-1 et non en %/h
-feps=5.2e7;
-Qeps=3e5;
-aK = -3.3e-2;
-bK = 38.5;
-fA = 9e4;
-QA = 2e5;
-f0 = 3.5e-2;
-Q0 = -4.85e4;
+feps=5.2e7
+Qeps=3e5
+aK = -3.3e-2
+bK = 38.5
+fA = 9e4
+QA = 2e5
+f0 = 3.5e-2
+Q0 = -4.85e4
 
 #parametres vitesse de sollicitation
 vitesse = 1.e-5
@@ -47,10 +47,10 @@ t_0 = 5.e-2/(8.0*vitesse)
 temps_ar=DEFI_LIST_REEL( VALE =[t_0*i for i in range(9)],)
 
 #quelques calculs intermediaires
-ep0val=feps*exp(-Qeps/(8.314*(Tdegc+273.)));
-Kcoef=aK*(Tdegc+273.)+bK;
-A0 = fA*exp(-QA/(8.314*(Tdegc+273.)));
-sig0val = f0*exp(-Q0/(8.314*(Tdegc+273.)));
+ep0val=feps*exp(-Qeps/(8.314*(Tdegc+273.)))
+Kcoef=aK*(Tdegc+273.)+bK
+A0 = fA*exp(-QA/(8.314*(Tdegc+273.)))
+sig0val = f0*exp(-Q0/(8.314*(Tdegc+273.)))
 
 # def des materiaux
 ACIER = [None]*2
@@ -85,7 +85,7 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                SIG0 = sig0val,
                                ALPHAD=0.5,
                                S_EQUI_D=1.,
-                               ),);
+                               ),)
 
 #unite en MPa
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
@@ -103,7 +103,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                SIG0 = sig0Pa,
                                ALPHAD=0.5,
                                S_EQUI_D=1.,
-                               ),);
+                               ),)
 
 
 compor='HAYHURST'

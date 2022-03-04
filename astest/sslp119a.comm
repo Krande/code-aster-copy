@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,19 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI');
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI')
 
-MA = LIRE_MAILLAGE(FORMAT = 'MED',);
+MA = LIRE_MAILLAGE(FORMAT = 'MED',)
 
-MA_PATCH = LIRE_MAILLAGE(FORMAT = 'MED',UNITE=21);
+MA_PATCH = LIRE_MAILLAGE(FORMAT = 'MED',UNITE=21)
 
-                                
-MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(NOM = 'ENCAST',
-                                                        UNION=('BAS','LEFT','RIGHT'),),);
-                                
-                                                                                
+                                                        UNION=('BAS','LEFT','RIGHT'),),)
+
+
 
 mail_barrage = ('SLOPE')
 Cotes     = ('LEFT', 'RIGHT')
@@ -39,7 +39,7 @@ Paraxiaux = ('BAS',)
 MA = MODI_MAILLAGE(reuse        = MA,
                    MAILLAGE     = MA,
                    ORIE_PEAU = _F(GROUP_MA_PEAU=Paraxiaux+Cotes,
-                                     GROUP_MA_INTERNE=('SLOPE'),),);
+                                     GROUP_MA_INTERNE=('SLOPE'),),)
 
 MODST = AFFE_MODELE(MAILLAGE = MA,
                     AFFE  = (_F(GROUP_MA     = mail_barrage,
@@ -49,10 +49,10 @@ MODST = AFFE_MODELE(MAILLAGE = MA,
                                 PHENOMENE    ='MECANIQUE',
                                 MODELISATION ='D_PLAN',),
                             ),
-                    VERI_JACOBIEN = 'NON',);
+                    VERI_JACOBIEN = 'NON',)
 
 #================================================================================
-#     MATERIAUX 
+#     MATERIAUX
 #================================================================================
 
 SLOPE = DEFI_MATERIAU (ELAS=_F(E=90e6,NU=0.3,RHO =1936.,
@@ -67,13 +67,13 @@ affe_materiau =[
 MATSTAT = AFFE_MATERIAU(INFO=1,MAILLAGE=MA,
                            AFFE = affe_materiau),
 
-                     
+
 
 
 G =9.81
 PES=AFFE_CHAR_MECA(MODELE=MODST,
                    PESANTEUR=_F(GRAVITE=G,
-                                DIRECTION=(0.0,-1.0,0.0),),);
+                                DIRECTION=(0.0,-1.0,0.0),),)
 
 
 ###################################################################
@@ -94,7 +94,7 @@ STATIC = MECA_STATIQUE(MODELE=MODST,
                    EXCIT=(_F(CHARGE=PES,),
                           _F(CHARGE = CL),
                         ),
-                    );
+                    )
 
 STATIC = CALC_CHAMP(reuse = STATIC,
            RESULTAT = STATIC,
@@ -103,7 +103,7 @@ STATIC = CALC_CHAMP(reuse = STATIC,
            EXCIT=(_F(CHARGE=PES,),
                   _F(CHARGE = CL),),
            CONTRAINTE = ('SIEF_ELGA',),
-           );
+           )
 
 import numpy as np
 
@@ -117,7 +117,7 @@ CHAPHI= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('SLOPE',),
                                    NOM_CMP  = 'X1',
-                                   VALE   = phi,),);
+                                   VALE   = phi,),)
 
 #### LE CHAMP COHESION DOIT ETRE STOCKE DANS LA VARIABLE X2
 CHACO= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
@@ -126,7 +126,7 @@ CHACO= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('SLOPE',),
                                    NOM_CMP  = 'X2',
-                                   VALE   = cohesion,),);
+                                   VALE   = cohesion,),)
 
 
 posx=6.08

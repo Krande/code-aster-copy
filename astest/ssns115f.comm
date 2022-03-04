@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,15 +38,15 @@ nbPasPress = 10
 # --------------------------------------------------------------------------- #
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 #
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 #
 # DEFINITION DU MODELE
@@ -54,7 +54,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='MEMBRANE',),);
+                           MODELISATION='MEMBRANE',),)
 
 #
 
@@ -62,27 +62,27 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='membrane',
                                       VECT_NORM=(0.0,0.0,1.0,),
-                                      GROUP_NO='point_O',),);
+                                      GROUP_NO='point_O',),)
 
 #
 # DEFINITION DU MATERIAU
 
 CAOUT=DEFI_MATERIAU(ELAS=_F(E=young,
-                            NU=poisson,),);
+                            NU=poisson,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     INFO=2,
                     MEMBRANE=_F(GROUP_MA='membrane',
                                 ANGL_REP_1=(0.0,0.0,),
                                 EPAIS=1.0,
-                                N_INIT=1.E-6,),);
+                                N_INIT=1.E-6,),)
 
 #
 # ATTRIBUTION DU MATERIAU
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=CAOUT,),);
+                            MATER=CAOUT,),)
 
 
 # --------------------------------------------------------------------------- #
@@ -94,7 +94,7 @@ ENCAST=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=_F(GROUP_NO='bord',
                                   DX=0.0,
                                   DY=0.0,
-                                  DZ=0.0,),);
+                                  DZ=0.0,),)
 
 
 # -----------------------------------------------------------------------------
@@ -105,12 +105,12 @@ ENCAST=AFFE_CHAR_MECA(MODELE=MODELE,
 # pression = 1. N/m^2 = 1.e-6 N/mm^2
 CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                       PRES_REP=_F(GROUP_MA='membrane',
-                                  PRES=-1.e-6,),);
+                                  PRES=-1.e-6,),)
 
 # CALCUL
 LIST1=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=nbPasPress,),);
+                                   NOMBRE=nbPasPress,),)
 
 
 RES1=STAT_NON_LINE(MODELE=MODELE,
@@ -149,7 +149,7 @@ RES1=STAT_NON_LINE(MODELE=MODELE,
                               ELIM_LAGR='NON',
                               STOP_SINGULIER='OUI',),
                    ARCHIVAGE=_F(CRITERE='RELATIF',
-                                PRECISION=1e-06,),);
+                                PRECISION=1e-06,),)
 
 
 
@@ -162,13 +162,13 @@ IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=RES1,
-                  NOM_CHAM=('DEPL','SIEF_ELGA',),),);
+                  NOM_CHAM=('DEPL','SIEF_ELGA',),),)
 
 # Test resultat
 
 ETA_PILO=RECU_FONCTION(RESULTAT=RES1,
                        TOUT_ORDRE='OUI',
-                       NOM_PARA_RESU='ETA_PILOTAGE',);
+                       NOM_PARA_RESU='ETA_PILOTAGE',)
 
 TEST_FONCTION(VALEUR=_F(
                   FONCTION=ETA_PILO,
@@ -222,7 +222,7 @@ TEST_FONCTION(VALEUR=_F(
                   VALE_CALC=1351.614467450,
                   REFERENCE='SOURCE_EXTERNE',
                   VALE_REFE=1344.7,
-                  PRECISION=6E-3,),);
+                  PRECISION=6E-3,),)
 
 TEST_FONCTION(VALEUR=_F(
                   FONCTION=ETA_PILO,
@@ -263,14 +263,14 @@ TEST_FONCTION(VALEUR=_F(
 #DEFI_FICHIER( UNITE = 85, FICHIER = '~/ssns115f.resu')
 #IMPR_FONCTION(FORMAT='TABLEAU',
 #              COURBE=_F(FONCTION=ETA_PILO,),
-#              UNITE=85,);
+#              UNITE=85,)
 #DEFI_FICHIER( UNITE = 85, ACTION = 'LIBERER')
 #
 #TAB = CREA_TABLE(RESU=_F(RESULTAT=RES1,NOM_CHAM='DEPL',NOM_CMP='DZ', GROUP_NO='point_O',)
 #)
 #DEFI_FICHIER( UNITE = 85, FICHIER = '~/ssns115f_depl.resu')
-#IMPR_TABLE(TABLE=TAB,UNITE=85,);
+#IMPR_TABLE(TABLE=TAB,UNITE=85,)
 #DEFI_FICHIER( UNITE = 85, ACTION = 'LIBERER')
 
-FIN();
+FIN()
 #CHECKSUM:6486cbb01d689c5212139f50f89b9437  -:FIN CHECKSUM

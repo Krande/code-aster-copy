@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,23 +63,23 @@ REST=CALC_CHAMP(reuse=REST,
                 FORCE='REAC_NODA',
                 CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),
                 DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),
-                VARI_INTERNE='VARI_ELNO',);
+                VARI_INTERNE='VARI_ELNO',)
 
 RESTPOS=POST_CHAMP(RESULTAT=REST,
                    EXTR_TUYAU=_F(NOM_CHAM=('SIEF_ELGA','VARI_ELNO','SIGM_ELNO','EPSI_ELNO',),
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='SUP',
-                                 ANGLE=90,),);
+                                 ANGLE=90,),)
 
 RESTPOS2=POST_CHAMP(RESULTAT=REST,
                     EXTR_TUYAU=_F(NOM_CHAM=('SIEF_ELGA','EPSI_ELGA',),
                                   NUME_COUCHE=1,
                                   NIVE_COUCHE='SUP',
-                                  ANGLE=0,),);
+                                  ANGLE=0,),)
 
 RESTPOS2=CALC_CHAMP(reuse=RESTPOS2,
                     RESULTAT=RESTPOS2,
-                    CRITERES=('SIEQ_ELGA','EPEQ_ELGA'),);
+                    CRITERES=('SIEQ_ELGA','EPEQ_ELGA'),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESTPOS,

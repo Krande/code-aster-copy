@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ NU=DEFI_FONCTION( NOM_PARA='TEMP',
                   VALE=(0.0,0.2,1.0,0.2,)
                 )
 
-ALPHA=DEFI_CONSTANTE(VALE=0.);
+ALPHA=DEFI_CONSTANTE(VALE=0.)
 
 BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                   NU = NU ,
@@ -107,7 +107,7 @@ CM=AFFE_MATERIAU(  MAILLAGE=M,
                                 _F(TOUT='OUI',
                                 CHAM_GD=TEMP,
                                 NOM_VARC='TEMP',
-                                VALE_REF=20.),),);
+                                VALE_REF=20.),),)
 
 
 

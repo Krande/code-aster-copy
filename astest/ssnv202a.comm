@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,21 +24,21 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 # PROPRIETES MECANIQUES
-E    = 1.2*6.E5 ;
-NU   = 0.3      ;
-mu = 276923.      ;
-RHO  = 1900.    ;
+E    = 1.2*6.E5
+NU   = 0.3
+mu = 276923.
+RHO  = 1900.
 
 
 # PROPRIETES ANELASTIQUES (CAMCLAY)
 E0     = 2.   ;  # INDICE DES VIDES INITIAL (CORRESPONDANT A PCO)
-PATM   = 1.E2 ;
+PATM   = 1.E2
 PCO    = 1.E4 ;  # PRESSION DE PRECONSOLIDATION ISOTROPE
 M      = 1.02 ;  # CORRESPOND A UN ANGLE DE FROTTEMENT DE 25.85 DEGRES
 PCR    = PCO/2. ;       # PRESSION CRITIQUE
 N      = E0 /(1.+E0) ;  # POROSITE
-KAPA   = 0.05 ;
-LAMBD  = 0.2  ;
+KAPA   = 0.05
+LAMBD  = 0.2
 
 
 #    =================
@@ -46,21 +46,21 @@ LAMBD  = 0.2  ;
 #    =================
 
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT = 'OUI',
                            PHENOMENE = 'MECANIQUE',
-                           MODELISATION = '3D'));
+                           MODELISATION = '3D'))
 
 MAILLAGE=MODI_MAILLAGE(reuse=MAILLAGE,
                        MAILLAGE=MAILLAGE,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU = ('HAUT', 'DEVANT', 'DROITE')));
+                       ORIE_PEAU=_F(GROUP_MA_PEAU = ('HAUT', 'DEVANT', 'DROITE')))
 
 MAILLAGE = DEFI_GROUP(reuse= MAILLAGE,
                       MAILLAGE=MAILLAGE,
                       CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI'),
-                      CREA_GROUP_NO=_F(GROUP_MA='ROCHE'));
+                      CREA_GROUP_NO=_F(GROUP_MA='ROCHE'))
 
 SOL=DEFI_MATERIAU(ELAS=_F(E=E,
                           NU=NU,
@@ -73,24 +73,24 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=E,
                               M         = M,
                               PRES_CRIT = PCR,
                               KCAM        = 0.,
-                              PTRAC       =0.));
+                              PTRAC       =0.))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL));
+                    AFFE=_F(TOUT='OUI', MATER=SOL))
 
 DEP_LATE=AFFE_CHAR_MECA(MODELE=MODELE,
                         FACE_IMPO=(_F(GROUP_MA = 'DEVANT', DX = 0.),
-                                   _F(GROUP_MA = 'DROITE', DY = 0.)));
+                                   _F(GROUP_MA = 'DROITE', DY = 0.)))
 
 DEP_SYM=AFFE_CHAR_MECA(MODELE=MODELE,
                        FACE_IMPO=(_F(GROUP_MA = 'BAS'     , DZ=0.),
                                   _F(GROUP_MA = 'DERRIERE', DX=0.),
-                                  _F(GROUP_MA = 'GAUCHE'  , DY=0.)));
+                                  _F(GROUP_MA = 'GAUCHE'  , DY=0.)))
 
 TAN=DEFI_LIST_REEL(DEBUT=0.,
                    INTERVALLE=(_F(JUSQU_A = 1. , NOMBRE = 50),
                                _F(JUSQU_A = 2. , NOMBRE = 10),
-                               _F(JUSQU_A = 10., NOMBRE = 10)));
+                               _F(JUSQU_A = 10., NOMBRE = 10)))
 
 SIEF=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='AFFE',
@@ -98,7 +98,7 @@ SIEF=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                 PROL_ZERO='OUI',
                 AFFE=_F(TOUT    = 'OUI',
                         NOM_CMP = ('SIXX','SIYY','SIZZ'),
-                        VALE    = (-PCO,-PCO,-PCO)));
+                        VALE    = (-PCO,-PCO,-PCO)))
 
 
 #   ====================
@@ -107,7 +107,7 @@ SIEF=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 
 
 DEP_V=AFFE_CHAR_MECA(MODELE=MODELE,
-                     FACE_IMPO=_F(GROUP_MA = 'HAUT',DZ = 1.));
+                     FACE_IMPO=_F(GROUP_MA = 'HAUT',DZ = 1.))
 
 EVOL_DEV=DEFI_FONCTION(NOM_PARA='INST',
                        PROL_DROITE='LINEAIRE',
@@ -115,7 +115,7 @@ EVOL_DEV=DEFI_FONCTION(NOM_PARA='INST',
                        VALE=(0. ,  0.     ,
                              1. , -1.E-2  ,
                              2. , -2.E-02 ,
-                             10., -10.E-02));
+                             10., -10.E-02))
 
 U1=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,
@@ -130,7 +130,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE   = 'TANGENTE',
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
-                                ITER_GLOB_MAXI = 10));
+                                ITER_GLOB_MAXI = 10))
 
 U1=CALC_CHAMP(reuse=U1,VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U1)
 
@@ -140,20 +140,20 @@ TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                  RESULTAT=U1,
                                  NOM_CHAM='VARI_ELNO',
                                  NOM_CMP=('V1','V3','V4','V5','V6','V7'),
-                                 OPERATION='EXTRACTION'));
+                                 OPERATION='EXTRACTION'))
 
 TAB_EPSZ=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_ELNO',
                                  GROUP_NO='NO8',
                                  RESULTAT=U1,
                                  NOM_CHAM='EPSI_ELNO',
                                  NOM_CMP='EPZZ',
-                                 OPERATION='EXTRACTION'));
+                                 OPERATION='EXTRACTION'))
 
 TAB_VARI=CALC_TABLE(reuse=TAB_VARI,
                     TABLE=TAB_VARI,
                     ACTION=_F(OPERATION='COMB',
                               TABLE=TAB_EPSZ,
-                              NOM_PARA='INST'));
+                              NOM_PARA='INST'))
 
 
 # TEST DE LA CONTRAINTE VOLUMIQUE PAR RAPPORT AUX REFERENCES FLAQ
@@ -354,4 +354,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=-0.10000000000000001,),
            )
 
-FIN () ;
+FIN ()

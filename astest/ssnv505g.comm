@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # ---------------------  MAILLAGE ----------------
 
-MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,
@@ -33,7 +33,7 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
                                    NOM='GROUP1',),
                                  _F(GROUP_MA=('POU2',),
                                    NOM='GROUP2',),
-                                 ));
+                                 ))
 
 # ---- MODELE : POUTRE DROITE D'EULER ----
 
@@ -44,15 +44,15 @@ MODE=AFFE_MODELE(MAILLAGE=MAILL1,
                        _F(GROUP_MA='POU2',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_E',),
-                       ),);
+                       ),)
 
 # ------------- DEFINITON DU MATERIAU -----------
 
-MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,NU=0.33333,RHO=7800.,),);
+MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,NU=0.33333,RHO=7800.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                  AFFE=_F(GROUP_MA=('POU1','POU2'),
-                         MATER=MPOUTRE,),);
+                         MATER=MPOUTRE,),)
 
 CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,
                         POUTRE=(_F(GROUP_MA='POU1',
@@ -63,7 +63,7 @@ CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,
                                    SECTION='RECTANGLE',
                                    CARA=('HY','HZ',),
                                    VALE=(63.5,10.16,),),
-                                ),);
+                                ),)
 
 # ------------- DEFINITION D'UN CARA_ELEM POUR LE CONTACT -----------
 
@@ -71,14 +71,14 @@ MOD2=AFFE_MODELE(MAILLAGE=MAILL1,
                  AFFE=(_F(GROUP_MA='POU2',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_E',),
-                       ),);
+                       ),)
 
 DEFI_R=AFFE_CARA_ELEM(MODELE=MOD2,
                         POUTRE=(_F(GROUP_MA='POU2',
                                    SECTION = 'CERCLE',
                                    CARA = ('R' , 'EP',),
                                    VALE = ( 31.75 ,  1.0 ),),
-                                ),);
+                                ),)
 
 # ---------- CONDITIONS AUX LIMITES --------------
 
@@ -88,15 +88,15 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
                                      DRX=0.0,DRY=0.0,DRZ=0.0),
                                   _F(GROUP_NO=('GROUP1','GROUP2'),
                                      DZ=0.0,DRX=0.0,DRY=0.0,),
-                                  ),);
+                                  ),)
 
 CH1=AFFE_CHAR_MECA(MODELE=MODE,
-                   DDL_IMPO=_F(GROUP_NO=('C'), DY=-790.,), );
+                   DDL_IMPO=_F(GROUP_NO=('C'), DY=-790.,), )
 
 # ---- METHODE LAGRANGIENNE ----
 
-F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
-F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
+F_DIST_M=DEFI_CONSTANTE(VALE=31.75)
+F_DIST_E=DEFI_CONSTANTE(VALE=31.75)
 
 
 CHLAG = DEFI_CONTACT(MODELE       = MODE,
@@ -159,15 +159,15 @@ CHPOUC = DEFI_CONTACT(MODELE       = MODE,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
-                                     NOMBRE=50,),),);
+                                     NOMBRE=50,),),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
-                                     NOMBRE=25,),),);
+                                     NOMBRE=25,),),)
 
 # ------------------------------------------------------------------------
 #  CALCUL DE REFERENCE
@@ -189,19 +189,19 @@ ULAG=STAT_NON_LINE(SOLVEUR=_F(),
                 NEWTON=_F(REAC_ITER=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
-                INFO=1,);
+                INFO=1,)
 
 ULAG=CALC_CHAMP( reuse =ULAG, RESULTAT=ULAG,
-              FORCE='FORC_NODA', );
+              FORCE='FORC_NODA', )
 
 T_REA_LA=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO=('A','B'),
                                  RESULTAT=ULAG,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
-IMPR_TABLE(TABLE=T_REA_LA,);
+IMPR_TABLE(TABLE=T_REA_LA,)
 
 # ------------------------------------------------------------------------
 #  CALCUL VALIDANT DIST_POUTRE EN FORMULATION DISCRETE
@@ -223,19 +223,19 @@ ULAG2=STAT_NON_LINE(SOLVEUR=_F(),
                 NEWTON=_F(REAC_ITER=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
-                INFO=1,);
+                INFO=1,)
 
 ULAG2=CALC_CHAMP( reuse =ULAG2, RESULTAT=ULAG2,
-               FORCE='FORC_NODA', );
+               FORCE='FORC_NODA', )
 
 T_REA_L2=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO=('A','B'),
                                  RESULTAT=ULAG2,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
-IMPR_TABLE(TABLE=T_REA_L2,);
+IMPR_TABLE(TABLE=T_REA_L2,)
 
 # ------------------------------------------------------------------------
 #  CALCUL VALIDANT DIST_POUTRE EN FORMULATION CONTINUE
@@ -257,17 +257,17 @@ UCONT=STAT_NON_LINE(SOLVEUR=_F(),
                 NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
-                INFO=1,);
+                INFO=1,)
 
 UCONT=CALC_CHAMP( reuse =UCONT, RESULTAT=UCONT,
-               FORCE='FORC_NODA', );
+               FORCE='FORC_NODA', )
 
 T_REA_C =POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO=('A','B'),
                                  RESULTAT=UCONT,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 
 # ------------------------------------------------------------------------
@@ -324,4 +324,4 @@ TEST_TABLE(VALE_REFE=1251.4883178278,
            )
 
 # ------------------------------------------------------------------------
-FIN();
+FIN()

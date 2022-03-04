@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ NPAS=100
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=tfin,
                                     NOMBRE=NPAS,),
-                                    ),);
+                                    ),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
@@ -56,7 +56,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H=1.0,
                                   ),
                     MONO_CINE1=_F(D=36.68,),
-                    );
+                    )
 
 Nu=0.3
 E_L=145200.
@@ -81,14 +81,14 @@ MATFRONT=DEFI_MATERIAU(
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,tfin,0.005,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),)
 
 
 def DEFI_ANGLES(Ng,COMPMONO,**args):
@@ -249,7 +249,7 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
-                        );
+                        )
 
 
 IMPR_TABLE(TABLE=SOLNL,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
@@ -258,13 +258,13 @@ IMPR_TABLE(TABLE=SOLNL,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
 FSIZZ=RECU_FONCTION(TABLE=SOLNL,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 FEPZZ=RECU_FONCTION(TABLE=SOLNL,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 SOLMF=SIMU_POINT_MAT(INFO=1,
                      COMPORTEMENT=_F(RELATION='MFRONT',
@@ -283,7 +283,7 @@ SOLMF=SIMU_POINT_MAT(INFO=1,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
-                        );
+                        )
 
 
 IMPR_TABLE(TABLE=SOLMF,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
@@ -292,13 +292,13 @@ IMPR_TABLE(TABLE=SOLMF,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
 MFSIZZ=RECU_FONCTION(TABLE=SOLMF,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 MFEPZZ=RECU_FONCTION(TABLE=SOLMF,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 #pilote='INTERACTIF'
 pilote=''
@@ -308,15 +308,15 @@ IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
                     _F( FONC_X=FEPZZ,    FONC_Y=FSIZZ,  LEGENDE='polycristal aster'),
                     _F( FONC_X=MFEPZZ,   FONC_Y=MFSIZZ, LEGENDE='polycristal mfront'),
                     ),
-            );
+            )
 
 
 DIF1=CALC_FONCTION(COMB=(
                           _F( FONCTION = FSIZZ, COEF =  1.),
                           _F( FONCTION = MFSIZZ, COEF = -1.),
-                          ) );
+                          ) )
 
-TINT1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
+TINT1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),)
 
 TEST_TABLE(NOM_PARA='NEUT1',TYPE_TEST='SOMM_ABS',TABLE=TINT1,VALE_CALC=8.77130389904)
 

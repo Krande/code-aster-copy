@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,48 +22,48 @@
 #             NAUTIQUES DANS REST_SOUS_STRUCT
 # FICHIER DE COMMANDE ASTER
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA_BRAS=LIRE_MAILLAGE(UNITE=20,
-                      FORMAT='MED',);
+                      FORMAT='MED',)
 
-  
+
 MA_CENTR=LIRE_MAILLAGE(UNITE=22,
-                       FORMAT='MED',);
+                       FORMAT='MED',)
 
 
 MO_BRAS=AFFE_MODELE(MAILLAGE=MA_BRAS,
                     AFFE=_F(GROUP_MA='bras',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),);
+                            MODELISATION='DKT',),)
 
 MO_CENTR=AFFE_MODELE(MAILLAGE=MA_CENTR,
                      AFFE=_F(GROUP_MA='centre',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='DKT',),);
+                             MODELISATION='DKT',),)
 
-                             
+
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1e11,
                             NU=0.3,
-                            RHO=7800.,),);
+                            RHO=7800.,),)
 
 CH_BRAS=AFFE_MATERIAU(MODELE=MO_BRAS,
                       MAILLAGE=MA_BRAS,
                       AFFE=_F(GROUP_MA='bras',
-                              MATER=ACIER,),);
+                              MATER=ACIER,),)
 
 CH_CENTR=AFFE_MATERIAU(MODELE=MO_CENTR,
                        MAILLAGE=MA_CENTR,
                        AFFE=_F(GROUP_MA='centre',
-                               MATER=ACIER,),);
+                               MATER=ACIER,),)
 
 CA_BRAS=AFFE_CARA_ELEM(MODELE=MO_BRAS,
                        COQUE=_F(GROUP_MA='bras',
-                                EPAIS=0.005,),);
+                                EPAIS=0.005,),)
 
 CA_CENTR=AFFE_CARA_ELEM(MODELE=MO_CENTR,
                         COQUE=_F(GROUP_MA='centre',
-                                 EPAIS=0.005,),);
+                                 EPAIS=0.005,),)
 
 CL_BRAS=AFFE_CHAR_MECA(MODELE=MO_BRAS,
                        DDL_IMPO=(_F(GROUP_NO=('intf',),
@@ -80,8 +80,8 @@ CL_BRAS=AFFE_CHAR_MECA(MODELE=MO_BRAS,
                                     DZ=0.,
                                     DRX=0.,
                                     DRY=0.,
-                                    DRZ=0.,),  
-                                   ),);
+                                    DRZ=0.,),
+                                   ),)
 
 CL_CENTR=AFFE_CHAR_MECA(MODELE=MO_CENTR,
                         DDL_IMPO=_F(GROUP_NO=('intf_px','intf_py','intf_my',),
@@ -91,7 +91,7 @@ CL_CENTR=AFFE_CHAR_MECA(MODELE=MO_CENTR,
                                     DRX=0.,
                                     DRY=0.,
                                     DRZ=0.,
-                                    ),);
+                                    ),)
 
 BRAS=CREA_ELEM_SSD(MODELE=MO_BRAS,
                    CHAM_MATER=CH_BRAS,
@@ -104,9 +104,9 @@ BRAS=CREA_ELEM_SSD(MODELE=MO_BRAS,
                    CALC_FREQ=_F(NMAX_FREQ=10,
                                   APPROCHE='REEL',
                                   STOP_ERREUR='OUI',
-                                  OPTION='PLUS_PETITE',),             
+                                  OPTION='PLUS_PETITE',),
                    BASE_MODALE=_F(TYPE='CLASSIQUE',),
-                   );
+                   )
 
 CENTRE=CREA_ELEM_SSD(MODELE=MO_CENTR,
                      CHAM_MATER=CH_CENTR,
@@ -127,7 +127,7 @@ CENTRE=CREA_ELEM_SSD(MODELE=MO_CENTR,
                                   STOP_ERREUR='OUI',
                                   OPTION='PLUS_PETITE',),
                      BASE_MODALE=_F(TYPE='CLASSIQUE',),
-                     );
+                     )
 
 ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('MODGEN'),
                                NUME_DDL_GENE=CO('NUMGEN'),
@@ -169,7 +169,7 @@ ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('MODGEN'),
              VERIF=_F(STOP_ERREUR='NON',
                        PRECISION=1e-3,
                        CRITERE='ABSOLU',),
-                       );
+                       )
 
 
 SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODGEN,
@@ -180,7 +180,7 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODGEN,
                                  _F(NOM='BR_PY',
                                     GROUP_MA='bras',),
                                  _F(NOM='BR_MY',
-                                    GROUP_MA='bras',),),);
+                                    GROUP_MA='bras',),),)
 
 SQUEL = DEFI_GROUP( reuse = SQUEL, MAILLAGE = SQUEL,
                       CREA_GROUP_NO= (
@@ -199,11 +199,11 @@ MOGS=CALC_MODES(MATR_RIGI=KGEN,
                 CALC_FREQ=_F(NMAX_FREQ=10,FREQ=25.0),
                 VERI_MODE=_F(STOP_ERREUR='NON',
                                    STURM='NON',),
-                INFO=1,);        
+                INFO=1,)
 
 MOGECOMP=REST_SOUS_STRUC(RESU_GENE=MOGS,
-                         SQUELETTE=SQUEL);
-                         
+                         SQUELETTE=SQUEL)
+
 
 TAB_N1=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
                            NOM_CHAM='DEPL',
@@ -240,8 +240,8 @@ TAB_N6=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
                         TOUT_ORDRE='OUI',
                         TOUT_CMP='OUI',
                         GROUP_NO='NO131',
-                        ),)                           
-                           
+                        ),)
+
 extrX = FORMULE(VALE='DX',
                 NOM_PARA='DX',)
 extrY = FORMULE(VALE='DY',
@@ -375,11 +375,11 @@ TAB_TOT=CALC_TABLE(TABLE=TAB_N1,
                              TABLE=TAB_N4,),
                            _F(OPERATION='COMB',
                              NOM_PARA='NUME_ORDRE',
-                             TABLE=TAB_N5,),      
+                             TABLE=TAB_N5,),
                            _F(OPERATION='COMB',
                              NOM_PARA='NUME_ORDRE',
                              TABLE=TAB_N6,),),)
-                                                          
+
 reln1 = FORMULE(VALE='( ( (N1X-N4X)**2 + (N1Y-N4Y)**2 + (N1Z-N4Z)**2 )**(0.5) /(N1X**2+N1Y**2+N1Z**2)**0.5    )',
                 NOM_PARA=['N1X', 'N1Y', 'N1Z', 'N4X', 'N4Y', 'N4Z'],)
 reln2 = FORMULE(VALE='( ( (N2X-N5X)**2 + (N2Y-N5Y)**2 + (N2Z-N5Z)**2 )**(0.5) /(N2X**2+N2Y**2+N2Z**2)**0.5    )',
@@ -390,13 +390,13 @@ reln3 = FORMULE(VALE='( ( (N3X-N6X)**2 + (N3Y-N6Y)**2 + (N3Z-N6Z)**2 )**(0.5) /(
 TAB_REL=CALC_TABLE(TABLE=TAB_TOT,
                   ACTION=(_F(OPERATION='OPER',
                              NOM_PARA='RELN1',
-                             FORMULE=reln1,), 
+                             FORMULE=reln1,),
                           _F(OPERATION='OPER',
                              NOM_PARA='RELN2',
-                             FORMULE=reln2,), 
+                             FORMULE=reln2,),
                           _F(OPERATION='OPER',
                              NOM_PARA='RELN3',
-                             FORMULE=reln3,), 
+                             FORMULE=reln3,),
                           ),)
 
 #-- test sur les modes 2 a 6 : traction/compression - flexion 1 - flexion 2
@@ -488,6 +488,6 @@ TEST_TABLE(TABLE=TAB_REL,
            VALE_CALC=2.55291E-14,
            REFERENCE='ANALYTIQUE',
            VALE_REFE=0.,
-           CRITERE='ABSOLU',)           
-          
-FIN();
+           CRITERE='ABSOLU',)
+
+FIN()

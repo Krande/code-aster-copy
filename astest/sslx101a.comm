@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-COS30=0.8660254037844;
+COS30=0.8660254037844
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 #-----------   SECTION TUBE FIN CIRCULAIRE  --------------------
 #  SUR UNE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN COQUES
 #  SUR L'AUTRE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN POUTRES
@@ -33,7 +33,7 @@ MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA='CERCL1',),);
+              CREA_GROUP_NO=_F(GROUP_MA='CERCL1',),)
 
 MO1=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=(_F(GROUP_MA=('CYL','CERCL1','CERCL2',),
@@ -44,14 +44,14 @@ MO1=AFFE_MODELE(MAILLAGE=MA,
                          MODELISATION='POU_D_E',),
                       _F(GROUP_MA='P_ORIG',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DIS_TR',),),);
+                         MODELISATION='DIS_TR',),),)
 
 MATR=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
-                           NU=0.3,),);
+                           NU=0.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATR,),);
+                            MATER=MATR,),)
 
 CAREL1=AFFE_CARA_ELEM(MODELE=MO1,
                       POUTRE=_F(GROUP_MA='POU',
@@ -67,7 +67,7 @@ CAREL1=AFFE_CARA_ELEM(MODELE=MO1,
                                  _F(GROUP_MA='P_ORIG',
                                  CARA='K_TR_D_N',
                                  VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                       ));
+                       ))
 
 CH1=AFFE_CHAR_MECA(MODELE=MO1,
                    DDL_IMPO=_F(GROUP_NO='P_ORIG',
@@ -86,26 +86,26 @@ CH1=AFFE_CHAR_MECA(MODELE=MO1,
                                     GROUP_MA_1='CERCL1',
                                     GROUP_NO_2='P_ORIG',
                                     CARA_ELEM=CAREL1,
-                                    AXE_POUTRE=(COS30,0.5,0.0,),),),);
+                                    AXE_POUTRE=(COS30,0.5,0.0,),),),)
 
 CHTX=AFFE_CHAR_MECA(MODELE=MO1,
                     FORCE_NODALE=_F(GROUP_NO='NOPOU2',
                                     FX=COS30,
-                                    FY=0.5,),);
+                                    FY=0.5,),)
 
 CHRX=AFFE_CHAR_MECA(MODELE=MO1,
                     FORCE_NODALE=_F(GROUP_NO='NOPOU2',
                                     MX=COS30,
-                                    MY=0.5,),);
+                                    MY=0.5,),)
 
 CHRY=AFFE_CHAR_MECA(MODELE=MO1,
                     FORCE_NODALE=_F(GROUP_NO='NOPOU2',
                                     MX=-0.5,
-                                    MY=COS30,),);
+                                    MY=COS30,),)
 
 CHRZ=AFFE_CHAR_MECA(MODELE=MO1,
                     FORCE_NODALE=_F(GROUP_NO='NOPOU2',
-                                    MZ=1.0,),);
+                                    MZ=1.0,),)
 
 MEST1=MACRO_ELAS_MULT(MODELE=MO1,
                       CHAM_MATER=CHMAT,
@@ -118,7 +118,7 @@ MEST1=MACRO_ELAS_MULT(MODELE=MO1,
                                   _F(NOM_CAS='RY',
                                      CHAR_MECA=CHRY,),
                                   _F(NOM_CAS='RZ',
-                                     CHAR_MECA=CHRZ,),),);
+                                     CHAR_MECA=CHRZ,),),)
 
 TEST_RESU(RESU=(_F(GROUP_NO='NOPOU2',
                    REFERENCE='ANALYTIQUE',
@@ -213,5 +213,5 @@ TEST_RESU(RESU=(_F(GROUP_NO='NOPOU2',
                 ),
           )
 
-FIN();
+FIN()
 #

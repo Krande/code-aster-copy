@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -158,16 +158,16 @@ DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 
 #
-# W0 =  ( K / M ) ** 0.5 ;
-# C  = COULOMB * M * G / K  ;
-# T1 =  pi / W0  ;
-# R1 = ( ( 2. * C ) - U0 ) * ANG ;
-# T2 =  2. * pi / W0 ;
-# R2 = ( U0 - ( 4. * C ) ) * ANG ;
-# T3 =  3. * pi / W0 ;
-# R3 =  ( ( 6. * C ) - U0 ) * ANG ;
-# T4 =  4. * pi / W0  ;
-# R4 =  ( U0 - ( 8. * C ) ) * ANG ;
+# W0 =  ( K / M ) ** 0.5
+# C  = COULOMB * M * G / K
+# T1 =  pi / W0
+# R1 = ( ( 2. * C ) - U0 ) * ANG
+# T2 =  2. * pi / W0
+# R2 = ( U0 - ( 4. * C ) ) * ANG
+# T3 =  3. * pi / W0
+# R3 =  ( ( 6. * C ) - U0 ) * ANG
+# T4 =  4. * pi / W0
+# R4 =  ( U0 - ( 8. * C ) ) * ANG
 #
 
 

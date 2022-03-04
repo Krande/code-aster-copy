@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ from code_aster.Commands import *
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),
       ERREUR=_F(ERREUR_F='EXCEPTION'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', );
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
 MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
                     AFFE=( _F( GROUP_MA     = ('ROCHE',),
@@ -42,7 +42,7 @@ MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
                                                'GAUCHE',),
                                PHENOMENE    = 'MECANIQUE',
                                MODELISATION = 'D_PLAN',),),
-                           );
+                           )
 
 MATER1 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
                                       NU = 0.3,),
@@ -50,7 +50,7 @@ MATER1 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
                                    ALPHA = 0.33,
                                    SY = 2.11E6,
                                    P_ULTM = 0.01,
-                                   ECROUISSAGE = 'LINEAIRE',),);
+                                   ECROUISSAGE = 'LINEAIRE',),)
 
 MATER2 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
                                       NU = 0.3,),
@@ -58,7 +58,7 @@ MATER2 = DEFI_MATERIAU(ELAS = _F( E  = 5800.0E6,
                                    ALPHA = 0.33,
                                    SY = 2.E6,
                                    P_ULTM = 0.01,
-                                   ECROUISSAGE = 'LINEAIRE',),);
+                                   ECROUISSAGE = 'LINEAIRE',),)
 
 MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,
                         MAILLAGE=MAILLAGE,
@@ -74,7 +74,7 @@ CHMAT = AFFE_MATERIAU( MAILLAGE = MAILLAGE,
                                   MATER  = MATER1,),
                               _F( GROUP_MA = 'M1',
                                   MATER = MATER2),
-                                  ),);
+                                  ),)
 
 SIGINIT=CREA_CHAMP( TYPE_CHAM='CART_SIEF_R',
                     OPERATION='AFFE',
@@ -99,7 +99,7 @@ SIGINIT=CREA_CHAMP( TYPE_CHAM='CART_SIEF_R',
                                          0.0,
                                          0.0,
                                          0.0,
-                                         0.0,),),);
+                                         0.0,),),)
 
 CHAR_DR=AFFE_CHAR_MECA(    MODELE=MODELE,
                            PRES_REP=_F(   GROUP_MA = 'EXTREM',
@@ -118,7 +118,7 @@ DEPL_BA=AFFE_CHAR_MECA(    MODELE=MODELE,
 
 DEPL_GA=AFFE_CHAR_MECA(    MODELE=MODELE,
                               DDL_IMPO=_F(  GROUP_MA = 'GAUCHE',
-                                          DX = 0.), ) ;
+                                          DX = 0.), )
 
 DEPL_HA=AFFE_CHAR_MECA(MODELE=MODELE,
                     FACE_IMPO=_F(  GROUP_MA = 'HAUT',
@@ -171,7 +171,7 @@ U=CALC_CHAMP(reuse=U,CRITERES=('INDL_ELGA','PDIL_ELGA'),RESULTAT=U,NUME_ORDRE=(1
 ############################################################
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U,
 #                  NUME_ORDRE = (19,last_iter),
-#                  NOM_CHAM   = ('INDL_ELGA',),),);
+#                  NOM_CHAM   = ('INDL_ELGA',),),)
 ############################################################
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=19,
@@ -431,4 +431,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=19,
                   ),
           )
 
-FIN();
+FIN()

@@ -46,11 +46,11 @@ MODI = AFFE_MODELE(MAILLAGE=Mail,
 MODI=AFFE_MODELE(MAILLAGE=Mail,
                     AFFE=_F(GROUP_MA= ('Haut', 'Bas',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),);
+                            MODELISATION='DKT',),)
 
 CARAMECA=AFFE_CARA_ELEM(MODELE=MODI,
                         COQUE=_F(GROUP_MA=('Haut', 'Bas',),
-                                 EPAIS=0.01,),);
+                                 EPAIS=0.01,),)
 
 DF1=DEFI_FONCTION(NOM_PARA='INST', NOM_RESU='DEPL',
                   VERIF='CROISSANT',  PROL_DROITE='LINEAIRE',
@@ -69,7 +69,7 @@ DN=DEFI_NAPPE( NOM_PARA='AMOR', NOM_RESU='ACCE',
 DFO = FORMULE(NOM_PARA='INST', VALE='sin(INST)')
 
 # tester la catalogue 2 zones :
-# global parameters and contactParameters 
+# global parameters and contactParameters
 DEFICO = DEFI_CONT(MODELE=MODI,
                    INFO=2,
                    LISSAGE='OUI',
@@ -99,18 +99,18 @@ vari_cont = [code_aster.ContactVariant.Robust, code_aster.ContactVariant.Rapide]
 
 for i in range(DEFICO.getNumberOfContactZones()):
     zone = DEFICO.getContactZone(i)
-    test.assertEqual(zone.getVerbosity(), 2)  
+    test.assertEqual(zone.getVerbosity(), 2)
     zone.setVerbosity(1)
     test.assertEqual(zone.getVerbosity(), 1)
 
-    test.assertTrue(zone.checkNormals())      # 
+    test.assertTrue(zone.checkNormals())      #
     zone.checkNormals(False)
-    test.assertFalse(zone.checkNormals()) 
- 
-    test.assertEqual(zone.getModel().getName(), MODI.getName())
-    test.assertEqual(zone.getMesh().getName(), Mail.getName()) 
+    test.assertFalse(zone.checkNormals())
 
-    contParam = zone.getContactParameter()   
+    test.assertEqual(zone.getModel().getName(), MODI.getName())
+    test.assertEqual(zone.getMesh().getName(), Mail.getName())
+
+    contParam = zone.getContactParameter()
     test.assertEqual(contParam.getAlgorithm(), algo_cont[i])
     contParam.setAlgorithm(algo_cont[1-i])
     test.assertEqual(contParam.getAlgorithm(), algo_cont[1-i])
@@ -129,8 +129,8 @@ for i in range(DEFICO.getNumberOfContactZones()):
 
 zone.setSlaveGroupOfCells('Group_4' )
 zone.setMasterGroupOfCells('Group_3')
-test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_4')  
-test.assertEqual(zone.getMasterGroupOfCells(), 'Group_3')  
+test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_4')
+test.assertEqual(zone.getMasterGroupOfCells(), 'Group_3')
 
 DEFICO.hasFriction(True)
 test.assertTrue(DEFICO.hasFriction())
@@ -143,7 +143,7 @@ DEFICO.appendContactZone(zone)  # comment créer un nouveau ContactZone pour app
 test.assertEqual(DEFICO.getNumberOfContactZones(), 3)
 
 # tester la catalogue avec 1 zone :
-# frictionParameters 
+# frictionParameters
 DEFICO2 = DEFI_CONT(MODELE=MODI,
                     INFO=2,
                     # FROTTEMENT='OUI',
@@ -202,13 +202,13 @@ test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Nitsche)
 fricParam.setType(code_aster.FrictionType.Coulomb)
 test.assertEqual(fricParam.getType(), code_aster.FrictionType.Coulomb)
 
-test.assertEqual(fricParam.getCoefficient(), 100.) 
-fricParam.setCoefficient( 1000.) 
-test.assertEqual(fricParam.getCoefficient(), 1000.) 
+test.assertEqual(fricParam.getCoefficient(), 100.)
+fricParam.setCoefficient( 1000.)
+test.assertEqual(fricParam.getCoefficient(), 1000.)
 
-test.assertEqual(fricParam.getCoulomb(), -1.) 
-fricParam.setCoulomb( 100.) 
-test.assertEqual(fricParam.getCoulomb(), 100.) 
+test.assertEqual(fricParam.getCoulomb(), -1.)
+fricParam.setCoulomb( 100.)
+test.assertEqual(fricParam.getCoulomb(), 100.)
 
 
 # zone 1 :
@@ -223,12 +223,12 @@ fricParam.setType(code_aster.FrictionType.Tresca)
 test.assertEqual(fricParam.getType(), code_aster.FrictionType.Tresca)
 
 # test.assertEqual(fricParam.getCoefficient(), 100.) # =1000. modifié par zone0
-fricParam.setCoefficient( 1000.) 
-test.assertEqual(fricParam.getCoefficient(), 1000.) 
+fricParam.setCoefficient( 1000.)
+test.assertEqual(fricParam.getCoefficient(), 1000.)
 
-test.assertEqual(fricParam.getTresca(), -1.) 
-fricParam.setTresca( 100.) 
-test.assertEqual(fricParam.getTresca(), 100.) 
+test.assertEqual(fricParam.getTresca(), -1.)
+fricParam.setTresca( 100.)
+test.assertEqual(fricParam.getTresca(), 100.)
 
 print(fricParam.getCoulomb())  # zone1 a les paramètres de zone
 
@@ -270,7 +270,7 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     test.assertEqual(contParam.getAlgorithm(), code_aster.ContactAlgo.Nitsche)
     test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)
     test.assertEqual(contParam.getCoefficient(), 312.)
-    fricParam = zone.getFrictionParameter()  
+    fricParam = zone.getFrictionParameter()
     test.assertTrue(fricParam.hasFriction())
     test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Nitsche)
     test.assertEqual(fricParam.getType(), code_aster.FrictionType.Without)
@@ -278,7 +278,7 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     pairParam = zone.getPairingParameter()   # setPairingParameter ??
     test.assertEqual(pairParam.getAlgorithm(), code_aster.PairingAlgo.Mortar)
     pairParam.setPairingDistance(0.1)
-    test.assertEqual(pairParam.getPairingDistance(), 0.1) 
+    test.assertEqual(pairParam.getPairingDistance(), 0.1)
 
     test.assertEqual(pairParam.getInitialState(), code_aster.InitialState.Interpenetrated)
     pairParam.setInitialState(code_aster.InitialState.Yes)
@@ -301,7 +301,7 @@ DEFICO4 = DEFI_CONT(MODELE=MODI,
                             APPARIEMENT='MORTAR',
                             DIST_APPA=-1,
                             DIST_POUTRE='OUI',
-                            CARA_ELEM = CARAMECA, 
+                            CARA_ELEM = CARAMECA,
                             DIST_SUPP=DF1,
                             CONTACT_INIT='INTERPENETRE',
                             ),)
@@ -309,13 +309,13 @@ DEFICO4 = DEFI_CONT(MODELE=MODI,
 for i in range(DEFICO4.getNumberOfContactZones()):
     zone = DEFICO4.getContactZone(i)
     contParam = zone.getContactParameter()
-    fricParam = zone.getFrictionParameter()  
+    fricParam = zone.getFrictionParameter()
     test.assertTrue(fricParam.hasFriction())
     test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Nitsche)
     test.assertEqual(fricParam.getType(), code_aster.FrictionType.Coulomb)
     test.assertEqual(fricParam.getCoulomb(), 200.)
 
-    pairParam = zone.getPairingParameter()  
+    pairParam = zone.getPairingParameter()
     pairParam.getDistanceFunction()
     test.assertEqual(pairParam.getDistanceFunction().getName(), DF1.getName())
     pairParam.setDistanceFunction(DN)

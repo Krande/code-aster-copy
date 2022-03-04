@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ MAIL1 = CREA_MAILLAGE(MAILLAGE=MAIL0,
 
 MAIL1=DEFI_GROUP(reuse =MAIL1,
                     MAILLAGE=MAIL1,
-                    CREA_GROUP_NO=_F(GROUP_MA=('SRADIER')));
+                    CREA_GROUP_NO=_F(GROUP_MA=('SRADIER')))
 
 MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAIL1,
                   CREA_POI1 =_F(NOM_GROUP_MA = 'PRADIER',
@@ -528,5 +528,5 @@ IMPR_CONCEPT( FORMAT='MED', UNITE=77,
            CONCEPT=(
              _F(CARA_ELEM  = CARA_ELE),
            ))
-           
+
 FIN( )

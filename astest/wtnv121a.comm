@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=31536.E3,
                                     NOMBRE=10,),
                                 ),
-                                 );
+                                 )
 
 MA=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -81,7 +81,7 @@ ZERO=DEFI_CONSTANTE(VALE=0.)
 
 LI3=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1.,
-                                 PAS=0.1,),);
+                                 PAS=0.1,),)
 
 EN = FORMULE(VALE='(1.e-13*(1.+1.e6*ENDO**3))',
              NOM_PARA='ENDO',)
@@ -91,12 +91,12 @@ KENDO=CALC_FONC_INTERP(FONCTION=EN,
                        NOM_PARA='ENDO',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 ####  FONCTION SATURATION ET SA DERIVEE : UNITE DE PRESSION : PA
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=5.E8,
-                                 PAS=1.E5,),);
+                                 PAS=1.E5,),)
 
 SL = FORMULE(VALE='(1.+(PCAP*2.1433E-8)**1.825)**(-0.57609)',
              NOM_PARA='PCAP',)
@@ -106,7 +106,7 @@ SATU=CALC_FONC_INTERP(FONCTION=SL,
                       NOM_PARA='PCAP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      INFO=2,);
+                      INFO=2,)
 
 DSL = FORMULE(VALE="""-2.2565573E-8*(PCAP*2.1433E-8)**0.825
           *(1+(PCAP*2.143365E-8)**1.825)**-1.57609""",
@@ -117,12 +117,12 @@ DSATU=CALC_FONC_INTERP(FONCTION=DSL,
                        NOM_PARA='PCAP',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 #####PERMEABILITE RELATIVE AU LIQUIDE ET SA DERIVEE
 LI1=DEFI_LIST_REEL(DEBUT=1.E-3,
                    INTERVALLE=_F(JUSQU_A=0.995,
-                                 PAS=0.001,),);
+                                 PAS=0.001,),)
 
 
 PERM = FORMULE(VALE=""" SAT**0.5*(1-(1-SAT
@@ -134,7 +134,7 @@ PERML=CALC_FONC_INTERP(FONCTION=PERM,
                        NOM_PARA='SAT',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 DPERM = FORMULE(VALE=""" 0.5*SAT**(-0.5)
                     *(1.-(1.-SAT**(1. / 0.57609))**0.57609)**2
@@ -148,7 +148,7 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPERM,
                         NOM_PARA='SAT',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        INFO=2,);
+                        INFO=2,)
 
 #####PERMEABILITE RELATIVE AU GAZ ET SA DERIVEE
 
@@ -161,7 +161,7 @@ PERMG=CALC_FONC_INTERP(FONCTION=PG,
                        NOM_PARA='SAT',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 DPG = FORMULE(VALE=""" -0.5*(1.-SAT)**(-0.5)
                      *(1.-SAT**(1. / 0.57609))**(2.*0.57609)
@@ -174,7 +174,7 @@ DPERMG=CALC_FONC_INTERP(FONCTION=DPG,
                         NOM_PARA='SAT',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        INFO=2,);
+                        INFO=2,)
 #
 
 
@@ -219,7 +219,7 @@ MATERIAU=DEFI_MATERIAU(
                                 PRE2 = 0.1013E6,
                                 PORO = 0.149,
                                 )
-                              );
+                              )
 
 CHMAT=AFFE_MATERIAU(
                 MAILLAGE=MA,
@@ -240,7 +240,7 @@ CLIM=AFFE_CHAR_MECA(
 
 #CHARGEMENT - MOUILLAGE
 CHARGT = AFFE_CHAR_MECA(MODELE=MO,
-                          DDL_IMPO=(_F( GROUP_NO=('FIXE1S') ,PRE1=1.0),),);
+                          DDL_IMPO=(_F( GROUP_NO=('FIXE1S') ,PRE1=1.0),),)
 
 CAP = DEFI_FONCTION(NOM_PARA='INST',
                      VALE=( 0.,         3.7144951E7,
@@ -257,7 +257,7 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MA,
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(_F(GROUP_NO='ROCHES',
                              NOM_CMP='PRE1',
-                             VALE=6.92413E7,),),);
+                             VALE=6.92413E7,),),)
 
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MA,
@@ -280,7 +280,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MA,
                             0.0,
                             0.0,0.0,0.0,0.0,
                             0.0,0.0,0.0,0.0,0.0,0.0,
-                            0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
+                            0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),)
 
 REPONSE=STAT_NON_LINE( MODELE     = MO,
                        CHAM_MATER = CHMAT,
@@ -300,7 +300,7 @@ REPONSE=STAT_NON_LINE( MODELE     = MO,
                                         REAC_ITER = 1     ),
                       CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6,
                                         ITER_GLOB_MAXI = 20),
-                      SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),                                   
+                      SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
                      )
 
 REPONSE=CALC_CHAMP(reuse=REPONSE,RESULTAT=REPONSE,PRECISION=1.E-10,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
@@ -310,7 +310,7 @@ REPONSE=CALC_CHAMP(reuse =REPONSE,
                RESULTAT=REPONSE,
                PRECISION = 1.E-10,
                CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',
-               TOUT='OUI');
+               TOUT='OUI')
 
 TEST_RESU(RESU=(_F(GROUP_NO='E',
                    INST=0.5,
@@ -371,4 +371,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='E',
                 ),
           )
 
-FIN () ;
+FIN ()

@@ -31,13 +31,13 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #
 
 LIST_R=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=80.,
-                                    NOMBRE=10,),);
+                                    NOMBRE=10,),)
 
 #
 ########################################################################
@@ -71,7 +71,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLA,
                             MODELISATION='DIS_TR',),
                          _F(GROUP_MA='MASSE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 #
 
@@ -87,7 +87,7 @@ PARAM=AFFE_CARA_ELEM(MODELE=MODELE,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                               _F(CARA='M_T_D_N',
                                  GROUP_MA='MASSE',
-                                 VALE=1.,),),);
+                                 VALE=1.,),),)
 
 #
 # ----- DEFINITION DU CHARGEMENT
@@ -102,13 +102,13 @@ CHARGE_L=AFFE_CHAR_MECA(MODELE=MODELE,
                                   _F(NOEUD='N1',
                                      DX=0.,),
                                   _F(NOEUD='N3',
-                                     DX=0.,),),);
+                                     DX=0.,),),)
 
 #
 
 CHARTRAN=AFFE_CHAR_MECA(MODELE=MODELE,
                         FORCE_NODALE=_F(NOEUD='N2',
-                                        FX=1.,),);
+                                        FX=1.,),)
 
 #
 # ----- MATRICES ET VECTEURS ELEMENTS FINIS
@@ -116,40 +116,40 @@ CHARTRAN=AFFE_CHAR_MECA(MODELE=MODELE,
 MERIME_L=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_L,);
+                        CHARGE=CHARGE_L,)
 
 #
 
 MEMAME_L=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODELE,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_L,);
+                        CHARGE=CHARGE_L,)
 
 #
 
 V_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                      CHARGE=CHARTRAN,);
+                      CHARGE=CHARTRAN,)
 
 #
 # ----- NUMEROTATION DU PROBLEME ELEMENTS FINIS
 
-NUMDDL_L=NUME_DDL(MATR_RIGI=MERIME_L,);
+NUMDDL_L=NUME_DDL(MATR_RIGI=MERIME_L,)
 
 #
 # ----- ASSEMBLAGE DES MATRICES ET VECTEURS
 
 RAID_L=ASSE_MATRICE(MATR_ELEM=MERIME_L,
-                    NUME_DDL=NUMDDL_L,);
+                    NUME_DDL=NUMDDL_L,)
 
 #
 
 MASS_L=ASSE_MATRICE(MATR_ELEM=MEMAME_L,
-                    NUME_DDL=NUMDDL_L,);
+                    NUME_DDL=NUMDDL_L,)
 
 #
 
 V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,
-                    NUME_DDL=NUMDDL_L,);
+                    NUME_DDL=NUMDDL_L,)
 
 #
 # ----- CALCUL DES MODES PROPRES DES SS
@@ -168,7 +168,7 @@ LINT1_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_L,
                           INTERFACE=_F(NOM='DROITE',
                                        TYPE='CRAIGB',
                                        NOEUD='N3',
-                                       MASQUE=('DY','DZ','DRX','DRY','DRZ',),),);
+                                       MASQUE=('DY','DZ','DRX','DRY','DRZ',),),)
 
 #
 
@@ -176,32 +176,32 @@ LINT2_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_L,
                           INTERFACE=_F(NOM='GAUCHE',
                                        TYPE='CRAIGB',
                                        NOEUD='N1',
-                                       MASQUE=('DY','DZ','DRX','DRY','DRZ',),),);
+                                       MASQUE=('DY','DZ','DRX','DRY','DRZ',),),)
 
 #
 # ----- CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 
 BAMO1_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT1_CL,
                                        MODE_MECA=MODES_L,
-                                       NMAX_MODE=1,),);
+                                       NMAX_MODE=1,),)
 
 #
 
 BAMO2_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT2_CL,
                                        MODE_MECA=MODES_L,
-                                       NMAX_MODE=1,),);
+                                       NMAX_MODE=1,),)
 
 #
 # ----- CALCUL DU MACRO-ELEMENT
 
-MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BAMO1_CL,);
+MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BAMO1_CL,)
 
-MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BAMO2_CL,);
+MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BAMO2_CL,)
 
 #
 
 IMPR_MACR_ELEM(MACR_ELEM_DYNA=MACEL1,
-               FORMAT='IDEAS',);
+               FORMAT='IDEAS',)
 
 #
 # ----- CALCUL SUR MODELE GENERALISE DES SOUS-STRUCTURES
@@ -220,40 +220,40 @@ MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='COTE1',
                                    INTERFACE_2='GAUCHE',),
                         VERIF=_F(STOP_ERREUR='OUI',
                                  PRECISION=1.E-6,
-                                 CRITERE='RELATIF',),);
+                                 CRITERE='RELATIF',),)
 
 #
 # ----- NUMEROTATION DU PROBLEME GENERALISE DES SOUS-STRUCTURES
 
-NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGE);
+NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGE)
 
 #
 # ----- ASSEMBLAGE DES MATRICES ET VECTEURS
 
 MASGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
-                      OPTION='MASS_GENE',);
+                      OPTION='MASS_GENE',)
 
 #
 
 RIGGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
-                      OPTION='RIGI_GENE',);
+                      OPTION='RIGI_GENE',)
 
 #
 
 FGEN=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
                     CHAR_SOUS_STRUC=_F(SOUS_STRUC='COTE1',
-                                       VECT_ASSE=V_ASSE,),);
+                                       VECT_ASSE=V_ASSE,),)
 
 #-- ajout pour tester la methode 'INITIAL'
 FZERO=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
-                     METHODE='INITIAL',);
+                     METHODE='INITIAL',)
 
 
 #---------------------------------------------------------------------
 # TEST IMPR_GENE
 
 DEFI_FICHIER(UNITE=38,
-             FICHIER='./REPE_OUT/FGEN.gene',);
+             FICHIER='./REPE_OUT/FGEN.gene',)
 
 IMPR_GENE(UNITE=38,
           GENE=(_F(RESU_GENE=FGEN,
@@ -263,10 +263,10 @@ IMPR_GENE(UNITE=38,
                    INFO_CMP_GENE='NON',),
                 _F(RESU_GENE=FGEN,
                    NUME_CMP_GENE=(1,5,7,),
-                   INFO_CMP_GENE='OUI',),),);
+                   INFO_CMP_GENE='OUI',),),)
 
 DEFI_FICHIER(ACTION='LIBERER',
-             UNITE=38,);
+             UNITE=38,)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/FGEN.gene",
              NB_VALE_I=16,
@@ -288,13 +288,13 @@ RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
                   )
 
 
-#IMPR_CO(CONCEPT=_F(NOM='RESGEN',),);
+#IMPR_CO(CONCEPT=_F(NOM='RESGEN',),)
 
 #---------------------------------------------------------------------
 # TEST IMPR_GENE
 
 DEFI_FICHIER(UNITE=37,
-             FICHIER='./REPE_OUT/RESU.gene',);
+             FICHIER='./REPE_OUT/RESU.gene',)
 
 IMPR_GENE(
           UNITE=37,
@@ -311,10 +311,10 @@ IMPR_GENE(
                    NUME_ORDRE=1,
                    NUME_CMP_GENE=(1,3,),
                    NOM_PARA=('FREQ','MASS_GENE','RIGI_GENE',),
-                   INFO_CMP_GENE='OUI',),),);
+                   INFO_CMP_GENE='OUI',),),)
 
 DEFI_FICHIER(ACTION='LIBERER',
-             UNITE=37,);
+             UNITE=37,)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/RESU.gene",
              NB_VALE_I=65,
@@ -333,19 +333,19 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODEGE,
                                  _F(NOM='COTE2',
 #                                    TOUT='OUI',
                                     GROUP_MA='RESSORT'
-                                    ),),);
+                                    ),),)
 
 #
 
 MODCOT=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        TOUT_ORDRE='OUI',
-                       SOUS_STRUC='COTE1',);
+                       SOUS_STRUC='COTE1',)
 
 #
 
 MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        TOUT_ORDRE='OUI',
-                       SQUELETTE=SQUEL,);
+                       SQUELETTE=SQUEL,)
 
 
 #
@@ -360,7 +360,7 @@ PROJ_BASE(BASE=RESGEN,
                              MATR_ASSE_GENE=MASGEN,),),
           VECT_ASSE_GENE=_F(VECTEUR=CO('VECPRO'),
                             VECT_ASSE_GENE=FGEN,
-                            TYPE_VECT='FORC'),);
+                            TYPE_VECT='FORC'),)
 
 #
 # ----- CALCULS TRANSITOIRES
@@ -374,7 +374,7 @@ TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=1, LIST_INST=LIST_R),
                          EXCIT=_F(VECT_ASSE_GENE=VECPRO,
-                                  COEF_MULT=1.,),);
+                                  COEF_MULT=1.,),)
 
 #
 
@@ -387,7 +387,7 @@ TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=1, LIST_INST=LIST_R),
                          EXCIT=_F(VECT_ASSE_GENE=VECPRO,
-                                  COEF_MULT=1.,),);
+                                  COEF_MULT=1.,),)
 
 #
 
@@ -400,7 +400,7 @@ TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=1, LIST_INST=LIST_R),
                          EXCIT=_F(VECT_ASSE_GENE=VECPRO,
-                                  COEF_MULT=1.,),);
+                                  COEF_MULT=1.,),)
 
 #
 
@@ -417,7 +417,7 @@ TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=0.001,),
                          ARCHIVAGE=_F(PAS_ARCH=1, LIST_INST=LIST_R),
                          EXCIT=_F(VECT_ASSE_GENE=VECPRO,
-                                  COEF_MULT=1.,),);
+                                  COEF_MULT=1.,),)
 
 #
 
@@ -431,7 +431,7 @@ TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10, LIST_INST=LIST_R),
                          EXCIT=_F(VECT_ASSE_GENE=FGEN,
-                                  COEF_MULT=1.,),);
+                                  COEF_MULT=1.,),)
 
 TRANGEN6=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',
@@ -444,7 +444,7 @@ TRANGEN6=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=1, LIST_INST=LIST_R),
                          EXCIT=_F(VECT_ASSE_GENE=VECPRO,
-                                  COEF_MULT=1.,),);
+                                  COEF_MULT=1.,),)
 
 TRANGEN7=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',
@@ -457,19 +457,19 @@ TRANGEN7=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=0.1,),
                          ARCHIVAGE=_F(PAS_ARCH=1, LIST_INST=LIST_R),
                          EXCIT=_F(VECT_ASSE_GENE=FGEN,
-                                  COEF_MULT=1.,),);
+                                  COEF_MULT=1.,),)
 #
 #
 # ----- VISUALISATION
 
-DEBUG(SDVERI='OUI',);
+DEBUG(SDVERI='OUI',)
 
 TRAN1=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                      MODE_MECA=MODGLO,
                      LIST_INST=LIST_R,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
-                     NOEUD='NO3',);
+                     NOEUD='NO3',)
 
 #
 
@@ -478,7 +478,7 @@ TRAN2=REST_GENE_PHYS(RESU_GENE=TRANGEN2,
                      LIST_INST=LIST_R,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
-                     NOEUD='NO3',);
+                     NOEUD='NO3',)
 #
 
 TRAN3=REST_GENE_PHYS(RESU_GENE=TRANGEN3,
@@ -486,7 +486,7 @@ TRAN3=REST_GENE_PHYS(RESU_GENE=TRANGEN3,
                      LIST_INST=LIST_R,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
-                     NOEUD='NO3',);
+                     NOEUD='NO3',)
 
 #
 
@@ -495,16 +495,16 @@ TRAN4=REST_GENE_PHYS(RESU_GENE=TRANGEN4,
                      LIST_INST=LIST_R,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
-                     NOEUD='NO3',);
+                     NOEUD='NO3',)
 
 TRAN6=REST_GENE_PHYS(RESU_GENE=TRANGEN6,
                      MODE_MECA=MODGLO,
                      LIST_INST=LIST_R,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
-                     NOEUD='NO3',);
+                     NOEUD='NO3',)
 
-DEBUG(SDVERI='OUI',);
+DEBUG(SDVERI='OUI',)
 
 #
 
@@ -513,20 +513,20 @@ TRAN5=REST_SOUS_STRUC(RESU_GENE=TRANGEN5,
                       INTERPOL='LIN',
                       TOUT_CHAM='OUI',
                       NOEUD='NO3',
-                      SQUELETTE=SQUEL,);
+                      SQUELETTE=SQUEL,)
 
 TRAN7=REST_SOUS_STRUC(RESU_GENE=TRANGEN7,
                       LIST_INST=LIST_R,
                       INTERPOL='LIN',
                       TOUT_CHAM='OUI',
                       NOEUD='NO3',
-                      SQUELETTE=SQUEL,);
+                      SQUELETTE=SQUEL,)
 
 TRAN_SS=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                        MODE_MECA=MODCOT,
                        LIST_INST=LIST_R,
                        INTERPOL='LIN',
-                       TOUT_CHAM='OUI',);
+                       TOUT_CHAM='OUI',)
 
 TEST_RESU(RESU=_F(INST=80.0,
                   RESULTAT=TRAN1,
@@ -845,7 +845,7 @@ MODEL=AFFE_MODELE(MAILLAGE=MAYA,
                            MODELISATION='DIS_TR',),
                         _F(GROUP_MA='MASSE',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DIS_T',),),);
+                           MODELISATION='DIS_T',),),)
 
 #
 
@@ -861,7 +861,7 @@ PARAME=AFFE_CARA_ELEM(MODELE=MODEL,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                                _F(CARA='M_T_D_N',
                                   GROUP_MA='MASSE',
-                                  VALE=1.,),),);
+                                  VALE=1.,),),)
 
 #
 
@@ -875,47 +875,47 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MODEL,
                                  _F(NOEUD='NO1',
                                     DX=0.,),
                                  _F(NOEUD='NO5',
-                                    DX=0.,),),);
+                                    DX=0.,),),)
 
 #
 
 CHA_TRAN=AFFE_CHAR_MECA(MODELE=MODEL,
                         FORCE_NODALE=_F(NOEUD='NO2',
-                                        FX=1.,),);
+                                        FX=1.,),)
 
 #
 
 K_ELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=MODEL,
                       CARA_ELEM=PARAME,
-                      CHARGE=CONDLIM,);
+                      CHARGE=CONDLIM,)
 
 #
 
 M_ELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=MODEL,
                       CARA_ELEM=PARAME,
-                      CHARGE=CONDLIM,);
+                      CHARGE=CONDLIM,)
 
 #
 
 F_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                      CHARGE=CHA_TRAN,);
+                      CHARGE=CHA_TRAN,)
 
 #
 
-NUMERO=NUME_DDL(MATR_RIGI=K_ELEM,);
+NUMERO=NUME_DDL(MATR_RIGI=K_ELEM,)
 
 #
 
 K_ASSE=ASSE_MATRICE(MATR_ELEM=K_ELEM,
-                    NUME_DDL=NUMERO,);
+                    NUME_DDL=NUMERO,)
 
 M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
-                    NUME_DDL=NUMERO,);
+                    NUME_DDL=NUMERO,)
 
 F_ASSE=ASSE_VECTEUR(VECT_ELEM=F_ELEM,
-                    NUME_DDL=NUMERO,);
+                    NUME_DDL=NUMERO,)
 
 #
 
@@ -1006,7 +1006,7 @@ PROJ_BASE(BASE=MODYNA,
                              MATR_ASSE=M_ASSE,),),
           VECT_ASSE_GENE=_F(VECTEUR=CO('F_PROJ'),
                             VECT_ASSE=F_ASSE,
-                            TYPE_VECT='FORC'),);
+                            TYPE_VECT='FORC'),)
 
 #
 
@@ -1019,7 +1019,7 @@ TRANG1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10, LIST_INST=LIST_R),
                        EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
-                                COEF_MULT=1.,),);
+                                COEF_MULT=1.,),)
 
 #
 
@@ -1032,7 +1032,7 @@ TRANG2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10, LIST_INST=LIST_R),
                        EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
-                                COEF_MULT=1.,),);
+                                COEF_MULT=1.,),)
 
 #
 
@@ -1045,7 +1045,7 @@ TRANG3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10, LIST_INST=LIST_R),
                        EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
-                                COEF_MULT=1.,),);
+                                COEF_MULT=1.,),)
 
 #
 
@@ -1062,13 +1062,13 @@ TRANG4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     PAS=0.001,),
                        ARCHIVAGE=_F(PAS_ARCH=1, LIST_INST=LIST_R),
                        EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
-                                COEF_MULT=1.,),);
+                                COEF_MULT=1.,),)
 
 #
 
 LISTEIMP=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=_F(JUSQU_A=82.,
-                                      NOMBRE=800,),);
+                                      NOMBRE=800,),)
 
 #
 
@@ -1076,13 +1076,13 @@ PAS1=RECU_FONCTION(RESU_GENE=TRANG4,
                    LIST_INST=LISTEIMP,
                    INTERP_NUME='LIN',
                    NOM_CHAM='PTEM',
-                   INTERPOL='LIN',);
+                   INTERPOL='LIN',)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               PILOTE='POSTSCRIPT',
               UNITE=24,
               COURBE=_F(FONCTION=PAS1,),
-              TITRE='PAS DE TEMPS (LOG)',);
+              TITRE='PAS DE TEMPS (LOG)',)
 
 #
 
@@ -1090,7 +1090,7 @@ RESULT1=REST_GENE_PHYS(RESU_GENE=TRANG1,
                        LIST_INST=LIST_R,
                        INTERPOL='LIN',
                        TOUT_CHAM='OUI',
-                       NOEUD='NO3',);
+                       NOEUD='NO3',)
 
 #
 
@@ -1098,7 +1098,7 @@ RESULT2=REST_GENE_PHYS(RESU_GENE=TRANG2,
                        LIST_INST=LIST_R,
                        INTERPOL='LIN',
                        TOUT_CHAM='OUI',
-                       NOEUD='NO3',);
+                       NOEUD='NO3',)
 
 #
 
@@ -1106,7 +1106,7 @@ RESULT3=REST_GENE_PHYS(RESU_GENE=TRANG3,
                        LIST_INST=LIST_R,
                        INTERPOL='LIN',
                        TOUT_CHAM='OUI',
-                       NOEUD='NO3',);
+                       NOEUD='NO3',)
 
 #
 
@@ -1114,7 +1114,7 @@ RESULT4=REST_GENE_PHYS(RESU_GENE=TRANG4,
                        LIST_INST=LIST_R,
                        INTERPOL='LIN',
                        TOUT_CHAM='OUI',
-                       NOEUD='NO3',);
+                       NOEUD='NO3',)
 
 
 #
@@ -1161,6 +1161,6 @@ TEST_RESU(RESU=_F(INST=80.0,
 
 #
 
-FIN();
+FIN()
 
 #

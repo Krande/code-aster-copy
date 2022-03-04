@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,34 +19,34 @@
 
 # MODELISATION B : FISSURE X-FEM, RESOLUTION MECANIQUE
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST0_24','RUPTURE0_46',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST0_24','RUPTURE0_46',),)
 
 #----------------------------------------------
 #                   MAILLAGE
 #----------------------------------------------
 
-MAILLAGE=LIRE_MAILLAGE(UNITE=20, 
-                       FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(UNITE=20,
+                       FORMAT='MED',)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=(_F(GROUP_MA='SURFINF',),),);
+                    CREA_GROUP_NO=(_F(GROUP_MA='SURFINF',),),)
 
 #----------------------------------------------
-#                   MODELE 
+#                   MODELE
 #----------------------------------------------
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFINF','SURFSUP',),),);
+                       ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFINF','SURFSUP',),),)
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='3D',),);
+                             MODELISATION='3D',),)
 
 #----------------------------------------------
-#                   FISSURE 
+#                   FISSURE
 #----------------------------------------------
 
 LN = FORMULE(VALE='Z-0.5',
@@ -56,10 +56,10 @@ LT = FORMULE(VALE='-Y-X/2.+1.',
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     DEFI_FISS=_F(FONC_LT=LT,
-                                 FONC_LN=LN,),);
-                                 
+                                 FONC_LN=LN,),)
+
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,);
+                         FISSURE=FISS,)
 
 
 #----------------------------------------------
@@ -85,15 +85,15 @@ EFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
                      VALE=(90. , 204000.E6,
-                           110., 206000.E6),);
+                           110., 206000.E6),)
 
 NUFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
                       VALE=(0., 0.,
-                            1., 0.),);
+                            1., 0.),)
 
-ALPHA=DEFI_CONSTANTE(VALE=0.);
+ALPHA=DEFI_CONSTANTE(VALE=0.)
 
 MATTEMP=DEFI_MATERIAU(ELAS_FO=_F(E=EFTEMP,
                                  NU=NUFTEMP,
@@ -123,13 +123,13 @@ EFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
                      VALE=(90. , 204000.E6,
-                           110., 206000.E6),);
+                           110., 206000.E6),)
 
 NUFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
                       VALE=(0., 0.,
-                            1., 0.),);
+                            1., 0.),)
 
 MATNEUT=DEFI_MATERIAU(ELAS_FO=_F(E=EFNEUT,
                                  NU=NUFNEUT))
@@ -149,19 +149,19 @@ CHMANEUT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                                     NOM_VARC='NEUT1'))
 
 #----------------------------------------------
-#                   CHARGEMENTS 
+#                   CHARGEMENTS
 #----------------------------------------------
 
 CHA1=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='SURFINF',
                                  DX=0.0,
                                  DY=0.0,
-                                 DZ=0.0,),),);
-                                
+                                 DZ=0.0,),),)
+
 CHA2=AFFE_CHAR_MECA(MODELE=MODELEK,
                     PRES_REP=_F(GROUP_MA='SURFSUP',
                                 PRES=-1.E6 ,),)
-                                    
+
 #----------------------------------------------
 #                   RESOLUTIONS
 #----------------------------------------------
@@ -177,7 +177,7 @@ DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST,),)
 RESx=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA,
                    EXCIT=(_F(CHARGE=CHA1),
-                          _F(CHARGE=CHA2),),); 
+                          _F(CHARGE=CHA2),),)
 
 #---
 # 2. avec la variable de commande TEMP
@@ -200,7 +200,7 @@ RExNEUT=STAT_NON_LINE(MODELE=MODELEK,
                              _F(CHARGE=CHA2)),
                       COMPORTEMENT=_F(RELATION='ELAS',),
                       INCREMENT=_F(LIST_INST=DEFLIST,),)
-                   
+
 #----------------------------------------------
 #                   POST-TRAITEMENT
 #----------------------------------------------
@@ -396,4 +396,4 @@ TEST_TABLE(VALE_CALC=100,
                      VALE_I=24,),
            )
 
-FIN();
+FIN()

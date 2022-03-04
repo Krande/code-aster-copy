@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ BILIN = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                             2*sigma_max/EE,   sigma_max*(1+1/ratio),
                             ),
                             PROL_DROITE = 'LINEAIRE',
-                            PROL_GAUCHE = 'LINEAIRE',);
+                            PROL_GAUCHE = 'LINEAIRE',)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E = EE,
                           NU = poisson,
@@ -159,7 +159,7 @@ RESUTH=CALC_CHAMP(reuse=RESUTH,
                     CONTRAINTE=('SIEF_ELNO',),
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
                     CRITERES=('SIEQ_ELGA',),
-                    VARI_INTERNE=('VARI_ELNO',),);
+                    VARI_INTERNE=('VARI_ELNO',),)
 
 IMPR_RESU(RESU=_F(RESULTAT=RESUTH), UNITE=80, FORMAT='MED')
 
@@ -178,7 +178,7 @@ RESUINI=CALC_CHAMP(reuse=RESUINI,
                     CONTRAINTE=('SIEF_ELNO',),
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
                     CRITERES=('SIEQ_ELGA',),
-                    VARI_INTERNE=('VARI_ELNO',),);
+                    VARI_INTERNE=('VARI_ELNO',),)
 
 IMPR_RESU(RESU=_F(RESULTAT=RESUINI), UNITE=81, FORMAT='MED')
 
@@ -198,7 +198,7 @@ GTH1=CALC_G(RESULTAT=RESUTH,
                 R_INF=1.,
                 R_SUP=5.),
             OPTION='G_EPSI',
-            );
+            )
 
 GTH2=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -207,7 +207,7 @@ GTH2=CALC_G(RESULTAT=RESUTH,
                     R_INF=5.,
                     R_SUP=10.),
             OPTION='G_EPSI',
-                    );
+                    )
 
 GTH3=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -216,7 +216,7 @@ GTH3=CALC_G(RESULTAT=RESUTH,
                     R_INF=10.,
                     R_SUP=20.),
             OPTION='G_EPSI',
-                    );
+                    )
 
 GTH4=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -225,7 +225,7 @@ GTH4=CALC_G(RESULTAT=RESUTH,
                      R_INF=20.,
                      R_SUP=30.),
             OPTION='G_EPSI',
-                     );
+                     )
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES
@@ -238,7 +238,7 @@ GINI1=CALC_G(RESULTAT=RESUINI,
                     R_INF=1.,
                     R_SUP=5.),
             OPTION='G_EPSI',
-            );
+            )
 
 GINI2=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -247,7 +247,7 @@ GINI2=CALC_G(RESULTAT=RESUINI,
                 R_INF=5.,
                 R_SUP=10.),
             OPTION='G_EPSI',
-                );
+                )
 
 GINI3=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -256,7 +256,7 @@ GINI3=CALC_G(RESULTAT=RESUINI,
                 R_INF=10.,
                 R_SUP=20.),
             OPTION='G_EPSI',
-                );
+                )
 
 GINI4=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -265,7 +265,7 @@ GINI4=CALC_G(RESULTAT=RESUINI,
                     R_INF=20.,
                     R_SUP=30.),
             OPTION='G_EPSI',
-                    );
+                    )
 
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #

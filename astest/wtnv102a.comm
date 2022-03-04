@@ -19,7 +19,7 @@
 #
 # TRIAX AVEC VISC_MAXWELL et COUPLAGE HYDRAULIQUE  CONFINEMENT DE 0.5 MPa
 # ======================================================================
-# 
+#
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 
@@ -48,20 +48,20 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
 
 MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(  GROUP_MA_PEAU = ('HAUT', 'DEVANT', 'DROITE',),  )
-                     );
-                     
+                     )
+
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
                           CREA_GROUP_MA=(_F(NOM='ROCHE',
                                             TOUT='OUI',)),
                           CREA_GROUP_NO=(_F(NOM='ROCHES',
                                             CRIT_NOEUD='SOMMET',
-                                            GROUP_MA='ROCHE'),),);
+                                            GROUP_MA='ROCHE'),),)
 
 
-BITUME=DEFI_MATERIAU( ELAS=_F( 
-                              E = 24.1E6,   
-                              NU= 0.47,   
+BITUME=DEFI_MATERIAU( ELAS=_F(
+                              E = 24.1E6,
+                              NU= 0.47,
                               ALPHA=1.E-5 ),
                        VISC_MAXWELL =_F(
                               ETA_D=1.59e+7,
@@ -130,9 +130,9 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
 
 U1=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
-                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = DEP_SYM,), 
+                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = DEP_SYM,),
                              _F(CHARGE = P0,)),
                  COMPORTEMENT=_F(RELATION = 'KIT_HM',
                                  RELATION_KIT = ('VISC_MAXWELL','LIQU_SATU','HYDR_UTIL',),
@@ -146,7 +146,7 @@ U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESUL
 
 IMPR_RESU(FORMAT="RESULTAT",MODELE=MODELE,
           RESU=(_F(RESULTAT=U1,INST=(7000.)),
-                   ),);
+                   ),)
 
 TEMPS2=DEFI_LIST_REEL(   DEBUT=7000.,
                          INTERVALLE=(_F(  JUSQU_A = 8000.00,    NOMBRE = 10, ),
@@ -179,9 +179,9 @@ EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 U2=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
-                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = DEP_V,FONC_MULT = EVOL_DEV,), 
-                             _F(CHARGE = DEP_SYM,), 
+                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = DEP_V,FONC_MULT = EVOL_DEV,),
+                             _F(CHARGE = DEP_SYM,),
                             # _F(CHARGE = P0,)
                             ),
                  COMPORTEMENT=_F(RELATION = 'KIT_HM',

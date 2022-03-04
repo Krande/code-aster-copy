@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # TEST V4.61.103
 # MAILLAGE : QUAD8
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 ###################################################
 # SIMULATION DE LA TREMPE D'UN BARREAU CYLINDRIQUE
@@ -32,16 +32,16 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
 # MAILLAGE  ET MODELE
 ###################################################
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL = DEFI_GROUP(reuse=MAIL,
          MAILLAGE=MAIL,
-         CREA_GROUP_NO =(_F(GROUP_MA= 'ECHANGES',),),);
+         CREA_GROUP_NO =(_F(GROUP_MA= 'ECHANGES',),),)
 
 MOTH = AFFE_MODELE (MAILLAGE = MAIL,
                     AFFE     =_F(TOUT         = 'OUI',
                                  PHENOMENE   = 'THERMIQUE',
-                                 MODELISATION = 'AXIS',),);
+                                 MODELISATION = 'AXIS',),)
 
 #################################################################
 # DEFINITION ET AFFECTATION DES CARACTERISTIQUES THERMOPHYSIQUES
@@ -77,7 +77,7 @@ LAMB =DEFI_FONCTION(NOM_PARA='TEMP',
                          900.,  25.4,
                          1000.,  26.9,),
                   PROL_GAUCHE='LINEAIRE',
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 
 # ENTHALPIE DU 16MND5 LA MEME POUR TOUTES LES PHASES
 
@@ -110,7 +110,7 @@ BETA =DEFI_FONCTION(NOM_PARA='TEMP',
                             900.,  4129.8E6,
                            1000.,  4603.3E6,),
                      PROL_GAUCHE='LINEAIRE',
-                     PROL_DROITE='LINEAIRE',);
+                     PROL_DROITE='LINEAIRE',)
 
 # DEFINITION DES CARACTERISTIQUES METALLURGIQUES
 # DEFINITION TRC
@@ -393,7 +393,7 @@ _F(VALE = (
              AKM=-30.791,
              BKM=11.698,
              TPLM=-1.,),
-  GRAIN_AUST=_F(DREF = 11.0,),) ;
+  GRAIN_AUST=_F(DREF = 11.0,),)
 
 # DEFINITION DU MATERIAU
 
@@ -412,13 +412,13 @@ ACIER   = DEFI_MATERIAU (
               F2_DURT = 184.,
               F3_DURT = 309.,
               F4_DURT = 450.,
-              C_DURT = 100., ));
+              C_DURT = 100., ))
 
 # AFFECTATION DU MATERIAU SUR LE MAILLAGE
 
 MAT  = AFFE_MATERIAU (MAILLAGE = MAIL,
                       AFFE    =_F(TOUT  = 'OUI',
-                                  MATER = ACIER ),);
+                                  MATER = ACIER ),)
 
 ################################################################
 # CONDITIONS AUX LIMITES ET CHARGEMENT
@@ -433,7 +433,7 @@ H = DEFI_FONCTION(NOM_PARA='INST',
                         13.0,  100.,
                         14.0, 10000.,),
                   PROL_GAUCHE='CONSTANT',
-                  PROL_DROITE='CONSTANT',);
+                  PROL_DROITE='CONSTANT',)
 
 # FLUX FONCTION DE T
 FLUX = DEFI_FONCTION(NOM_PARA='TEMP',
@@ -451,24 +451,24 @@ FLUX = DEFI_FONCTION(NOM_PARA='TEMP',
                             550.,     -7.00E+6,
                             600.,     -7.9E+6,),
                   PROL_GAUCHE='LINEAIRE',
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 
 # TEMPERATURE EXTERIEURE
-T_EXT    = DEFI_CONSTANTE ( VALE = 25. );
+T_EXT    = DEFI_CONSTANTE ( VALE = 25. )
 
 # TEMPERATURE INITIALE
-T_INI    = DEFI_CONSTANTE ( VALE = 906. );
+T_INI    = DEFI_CONSTANTE ( VALE = 906. )
 
 # AFFECTATION DES CHARGEMENTS THERMIQUES CORRESPONDANTS
 CH1 = AFFE_CHAR_THER_F (
         MODELE   = MOTH,
         ECHANGE = (_F(GROUP_MA = 'ECHANGES',
                       COEF_H= H,
-                      TEMP_EXT = T_EXT,),),);
+                      TEMP_EXT = T_EXT,),),)
 
 CH2 = AFFE_CHAR_THER_F (
         MODELE   = MOTH,
-        FLUX_NL = (_F(GROUP_MA = 'ECHANGES',FLUN = FLUX,),),);
+        FLUX_NL = (_F(GROUP_MA = 'ECHANGES',FLUN = FLUX,),),)
 
 ###################################################################
 # DEFINITION DE LA LISTE D'INSTANT POUR LE CALCUL THERMIQUE
@@ -476,7 +476,7 @@ CH2 = AFFE_CHAR_THER_F (
 
 LIST = DEFI_LIST_REEL (DEBUT =  0.,
          INTERVALLE = (_F(JUSQU_A=   60.,  NOMBRE=  60, ),
-                       _F(JUSQU_A=   240., NOMBRE=  45, ),),);
+                       _F(JUSQU_A=   240., NOMBRE=  45, ),),)
 
 ###################################################################
 # RESOLUTION THERMIQUE
@@ -493,7 +493,7 @@ TEMPE = THER_NON_LINE(
           ETAT_INIT  = _F(VALE = 906., ),
           NEWTON = _F(ITER_LINE_MAXI = 3,),
           CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                           ITER_GLOB_MAXI = 30,),);
+                           ITER_GLOB_MAXI = 30,),)
 
 # LORS DE LA TREMPE DANS L'EAU
 
@@ -509,7 +509,7 @@ TEMPE = THER_NON_LINE(reuse=TEMPE,
                           NUME_ORDRE =   14, ),
           NEWTON = _F(ITER_LINE_MAXI = 3,),
           CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                           ITER_GLOB_MAXI = 30,), );
+                           ITER_GLOB_MAXI = 30,), )
 
 ###########################################################################
 #  CALCUL METALLURGIQUE
@@ -522,7 +522,7 @@ PHASINIT=CREA_CHAMP(TYPE_CHAM='CART_VAR2_R',
                     MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',
                              NOM_CMP=('V1','V2','V3','V4','V5','V6', 'V7',),
-                              VALE=(0.0,0.0,0.0,0.0,1.0,0.0,11.0,),),),);
+                              VALE=(0.0,0.0,0.0,0.0,1.0,0.0,11.0,),),),)
 
 # RESOLUTION METALLURGIQUE
 
@@ -532,7 +532,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 RESULTAT=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
                 COMPORTEMENT=_F(RELATION='ACIER',),
-                OPTION=('META_ELNO','META_NOEU','DURT_ELNO','DURT_NOEU',),);
+                OPTION=('META_ELNO','META_NOEU','DURT_ELNO','DURT_NOEU',),)
 
 #################################################################
 # TESTS DES RESULTATS
@@ -1061,4 +1061,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=105,
                 ),
           )
 
-FIN();
+FIN()

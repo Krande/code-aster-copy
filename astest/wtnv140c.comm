@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),)
 
 
 ## ANGLE NAUTIQUE UTILISES PAR ASTER (A. Nautique classique)
@@ -104,14 +104,14 @@ MAIL=DEFI_GROUP(reuse=MAIL,
                                _F(NOM='BAS',GROUP_MA='GM8'),
                                _F(NOM='GAUCHE',GROUP_MA='GM7'),
                                _F(NOM='DROITE',GROUP_MA='GM9'),
-                                                            ),);
+                                                            ),)
 MAIL=DEFI_GROUP(reuse=MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='ROCHE',),
                                _F(GROUP_MA='DROITE',),
                                _F(GROUP_MA='GAUCHE',),
                                _F(GROUP_MA='HAUT',),
-                               _F(GROUP_MA='BAS'),),);
+                               _F(GROUP_MA='BAS'),),)
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
@@ -119,8 +119,8 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
                                              'BAS',
                                              'GAUCHE',
                                              'DROITE',
-                                             ),),);
-                                             
+                                             ),),)
+
 MAIL=DEFI_GROUP( reuse=MAIL,
                  MAILLAGE=MAIL,
                  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -168,14 +168,14 @@ MAT=DEFI_MATERIAU(
            ),
  THM_INIT=_F(PRE1 = 0.,
              PORO = 0.14,),
-     );
+     )
 #***********************************************************************
 #    LISTE DES INSTANTS DE CALCUL
 #***********************************************************************
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = 1.,NOMBRE = 10,),),
-                     );
+                     )
 
 ##################################################################################################
 #
@@ -187,19 +187,19 @@ MODELM=AFFE_MODELE(MAILLAGE=MAIL,
             AFFE=_F(TOUT='OUI',
       PHENOMENE = 'MECANIQUE',
              MODELISATION ='AXIS',),
-        );
+        )
 
 
 ORIREP=AFFE_CARA_ELEM(MODELE=MODELM,
        MASSIF=( _F(GROUP_MA=('TOUT',),
       ANGL_REP=(ALPHA),
                         ),),
-    );
+    )
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
                      MATER = MAT,),
-                    );
+                    )
 
 #***********************************************************************
 #        CONDITIONS INITIALES POUR LES CHAMPS DE CONTRAINTES ET DE
@@ -215,7 +215,7 @@ SIGIM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
       VALE=(SIEFX,SIEFY,SIEFZ,SIEFXY,
          ),),
                           ),
-                   );
+                   )
 
 DEPIM=CREA_CHAMP(MAILLAGE=MAIL,
      OPERATION='AFFE',
@@ -227,7 +227,7 @@ DEPIM=CREA_CHAMP(MAILLAGE=MAIL,
        NOM_CMP = 'DY',
        VALE=0.,),
                 ),
-                  );
+                  )
 
 #***********************************************************************
 #             CHARGEMENT MECANIQUE (CONDITIONS AUX LIMITES)
@@ -237,7 +237,7 @@ DEPIM=CREA_CHAMP(MAILLAGE=MAIL,
 
 CH_PREY=AFFE_CHAR_CINE(MODELE=MODELM,
                       MECA_IMPO=(_F(GROUP_MA='HAUT', DY=1.,),),
-                      );
+                      )
 COEF=DEFI_FONCTION(      NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
@@ -246,7 +246,7 @@ COEF=DEFI_FONCTION(      NOM_PARA='INST',
                        )
 CH_PREX=AFFE_CHAR_MECA(MODELE=MODELM,
                       PRES_REP=(_F(GROUP_MA='DROITE', PRES=PRESREPX,),),
-                      );
+                      )
 
 
 CH_SYM2=AFFE_CHAR_CINE(MODELE=MODELM,
@@ -254,7 +254,7 @@ CH_SYM2=AFFE_CHAR_CINE(MODELE=MODELM,
                                  _F(GROUP_MA='GAUCHE', DX=0.0,   ),
                                  _F(GROUP_MA='BAS',    DY=0.0,   ),
                                 ),
-                      );
+                      )
 
 
 #*****************************************************************
@@ -280,7 +280,7 @@ UM=STAT_NON_LINE(MODELE=MODELM,
    INCREMENT=_F(LIST_INST = TEMPS1,
          INST_FIN=1.,
            ),
-                );
+                )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    RESULTAT=UM,
@@ -307,15 +307,15 @@ PHASE1=AFFE_MODELE(MAILLAGE=MAIL,
             AFFE=_F(TOUT='OUI',
              PHENOMENE = 'MECANIQUE',
              MODELISATION ='AXIS_HMS',),
-        );
+        )
 
 CH_PREYP=AFFE_CHAR_CINE(MODELE=PHASE1,
                       MECA_IMPO=(_F(GROUP_MA='HAUT', DY=1.,),),
-                      );
+                      )
 
 CH_PREXP=AFFE_CHAR_MECA(MODELE=PHASE1,
                       PRES_REP=(_F(GROUP_MA='DROITE', PRES=PRESREPX,),),
-                      );
+                      )
 
 
 CH_SYM2P=AFFE_CHAR_CINE(MODELE=PHASE1,
@@ -323,7 +323,7 @@ CH_SYM2P=AFFE_CHAR_CINE(MODELE=PHASE1,
                                  _F(GROUP_MA='GAUCHE', DX=0.0,   ),
                                  _F(GROUP_MA='BAS',    DY=0.0,   ),
                                 ),
-                      );
+                      )
 
 
 # CI
@@ -343,7 +343,7 @@ SIGINI=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                                  SIPXY0,SIPXZ0,SIPYZ0,
          0.,0.,0.,0.,),),
                           ),
-                   );
+                   )
 
 DEPINIT=CREA_CHAMP(MAILLAGE=MAIL,
      OPERATION='AFFE',
@@ -358,11 +358,11 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MAIL,
        NOM_CMP = 'PRE1',
        VALE=0.,),
                 ),
-                  );
+                  )
 
 CH_P=AFFE_CHAR_CINE(MODELE=PHASE1,
                       MECA_IMPO=(_F(TOUT='OUI', PRE1=PLIMP,),
-                                 ),);
+                                 ),)
 
 #*****************************************************************
 #              CALCUL HM
@@ -390,7 +390,7 @@ U0=STAT_NON_LINE(MODELE=PHASE1,
    INCREMENT=_F(LIST_INST = TEMPS1,
          INST_FIN=1.,
              ),
-                );
+                )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    RESULTAT=U0,
@@ -412,4 +412,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    ),
                 ),
           )
-FIN();
+FIN()

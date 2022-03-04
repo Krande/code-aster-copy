@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ MAIL = DEFI_GROUP(reuse         = MAIL,
                  _F(NOM='BAS',GROUP_MA = ('GM20'),),
                  _F(NOM='ENCASTRE',UNION = ('BAS','HAUT'),),
                  _F(NOM='BFISH',GROUP_MA = ('GM13'),),
-                 _F(NOM='BFISB',UNION = ('GM17'),), ),);
+                 _F(NOM='BFISB',UNION = ('GM17'),), ),)
 
 MAIL = DEFI_GROUP(
               reuse    = MAIL,
@@ -299,4 +299,4 @@ for icalc in range(Npos):
     DETRUIRE(NOM = TEMPECR)
     DETRUIRE(NOM = TABLECR)
 
-FIN();
+FIN()

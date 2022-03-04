@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 # Copyright (C) 2019 Aether Engineering Solutions - www.aethereng.com
 # Copyright (C) 2019 Kobe Innovation Engineering - www.kobe-ie.com
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -243,7 +243,7 @@ ASSEMBLAGE(MODELE = model,
            MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('MASSE'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 
 MODMECA=CALC_MODES(MATR_RIGI=RIGIDITE,
                   OPTION='BANDE',
@@ -251,11 +251,11 @@ MODMECA=CALC_MODES(MATR_RIGI=RIGIDITE,
                                ),
                   MATR_MASS=MASSE,
                   NORM_MODE=_F(NORME='TRAN'), # MASS_GENE
-                  );
+                  )
 
 TABFREQ = RECU_TABLE(CO=MODMECA,
                      NOM_PARA=('FREQ','FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ'),
-                        );
+                        )
 
 # Comparaison frequences calculees et analytiques
 TEST_TABLE(  TABLE=TABFREQ,
@@ -268,7 +268,7 @@ TEST_TABLE(  TABLE=TABFREQ,
              VALE_CALC=freqCalc[0],
              VALE_REFE=freq1,
              PRECISION=2.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=TABFREQ,
              FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -280,7 +280,7 @@ TEST_TABLE(  TABLE=TABFREQ,
              VALE_CALC=freqCalc[1],
              VALE_REFE=freq2,
              PRECISION=2.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=TABFREQ,
              FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -292,7 +292,7 @@ TEST_TABLE(  TABLE=TABFREQ,
              VALE_CALC=freqCalc[2],
              VALE_REFE=freq3,
              PRECISION=2.E-2,
-             );
+             )
 
 # Comparaison deplacements modaux calculees et analytiques
 coupe=MACR_LIGN_COUPE(RESULTAT=MODMECA, NOM_CHAM='DEPL',
@@ -302,7 +302,7 @@ coupe=MACR_LIGN_COUPE(RESULTAT=MODMECA, NOM_CHAM='DEPL',
                            DISTANCE_MAX=1.0,
                            COOR_ORIG= (0.,4500.,-1500.),
                            COOR_EXTR= (0.,4500.,1500.),
-                    )));
+                    )))
 
 TEST_TABLE(  TABLE=coupe,
              FILTRE=(_F(NOM_PARA='ABSC_CURV',
@@ -317,7 +317,7 @@ TEST_TABLE(  TABLE=coupe,
              VALE_CALC= phiCalc[0],
              VALE_REFE=phi1,
              PRECISION=1.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=coupe,
              FILTRE=(_F(NOM_PARA='ABSC_CURV',
@@ -333,7 +333,7 @@ TEST_TABLE(  TABLE=coupe,
              VALE_CALC= phiCalc[1],
              VALE_REFE=phi2,
              PRECISION=1.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=coupe,
              FILTRE=(_F(NOM_PARA='ABSC_CURV',
@@ -348,7 +348,7 @@ TEST_TABLE(  TABLE=coupe,
              VALE_CALC= phiCalc[2],
              VALE_REFE=-phi3,
              PRECISION=1.E-2,
-             );
+             )
 
 # Comparaisons efforts modaux (moment et cisaillement) calcules et analytiques
 MODMECA = CALC_CHAMP(reuse=MODMECA,
@@ -356,7 +356,7 @@ MODMECA = CALC_CHAMP(reuse=MODMECA,
                         MODELE = model,
                         CHAM_MATER = fieldmat,
                         CARA_ELEM = elemprop,
-                        CONTRAINTE=('EFGE_NOEU',),);
+                        CONTRAINTE=('EFGE_NOEU',),)
 
 coupEff = MACR_LIGN_COUPE(RESULTAT=MODMECA,
                             NOM_CHAM='EFGE_NOEU',
@@ -369,7 +369,7 @@ coupEff = MACR_LIGN_COUPE(RESULTAT=MODMECA,
                                     COOR_ORIG= (0.,4500.,-1500.),
                                     COOR_EXTR= (0.,4500.,1500.),),
                                         ),
-                                );
+                                )
 
 TEST_TABLE(  TABLE=coupEff,
              FILTRE=(_F(NOM_PARA='ABSC_CURV',
@@ -384,7 +384,7 @@ TEST_TABLE(  TABLE=coupEff,
              VALE_CALC= MPhiCalc[0],
              VALE_REFE= Mphi1,
              PRECISION= 1.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=coupEff,
              FILTRE=(_F(NOM_PARA='ABSC_CURV',
@@ -400,7 +400,7 @@ TEST_TABLE(  TABLE=coupEff,
              VALE_CALC= MPhiCalc[1],
              VALE_REFE=Mphi2,
              PRECISION=1.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=coupEff,
              FILTRE=(_F(NOM_PARA='ABSC_CURV',
@@ -415,7 +415,7 @@ TEST_TABLE(  TABLE=coupEff,
              VALE_CALC= MPhiCalc[2],
              VALE_REFE=-Mphi3,
              PRECISION=1.E-2,
-             );
+             )
 
 
 TEST_TABLE(  TABLE=coupEff,
@@ -432,7 +432,7 @@ TEST_TABLE(  TABLE=coupEff,
              VALE_CALC= TPhiCalc[0],
              VALE_REFE=Tphi1,
              PRECISION=12.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=coupEff,
              FILTRE=(_F(NOM_PARA='ABSC_CURV',
@@ -448,7 +448,7 @@ TEST_TABLE(  TABLE=coupEff,
              VALE_REFE=Tphi2,
              PRECISION=12.E-2,
              VALE_ABS='OUI',
-             );
+             )
 
 TEST_TABLE(  TABLE=coupEff,
              FILTRE=(_F(NOM_PARA='ABSC_CURV',
@@ -464,19 +464,19 @@ TEST_TABLE(  TABLE=coupEff,
              VALE_CALC= TPhiCalc[2],
              VALE_REFE=-Tphi3,
              PRECISION=12.E-2,
-             );
+             )
 
 ACCE=DEFI_FONCTION(  NOM_PARA='FREQ', INTERPOL='LIN',
                              PROL_DROITE='CONSTANT',
                              PROL_GAUCHE='CONSTANT',
                             VALE=( 0., valSpectre,   1., valSpectre,  ),
-                            );
+                            )
 
 SPECT=DEFI_NAPPE(    NOM_PARA='AMOR',
                         INTERPOL=( 'LIN', 'LIN', ),
                         PARA=(      0.001,    0.1,),
                         FONCTION=( ACCE,  ACCE, ),
-                        );
+                        )
 
 tbextr = CALC_COUPURE(RESULTAT=MODMECA,
                       OPERATION='EXTRACTION',
@@ -512,7 +512,7 @@ TEST_TABLE(  TABLE=tbextr,
              NOM_PARA='MYY',
              VALE_CALC=4627.16795565386,
              VALE_REFE=Mphi1,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbextr,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -531,7 +531,7 @@ TEST_TABLE(  TABLE=tbextr,
              VALE_CALC=2.843947299879801E-10,
              VALE_REFE=-Tphi1,
              PRECISION = 1.2E-1,
-             );
+             )
 
 tbcoup = CALC_COUPURE(  RESULTAT=MODMECA,
                         OPERATION='RESULTANTE',
@@ -567,7 +567,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=13777141.549543874,
              VALE_REFE=Mphi1*H,
              PRECISION=1E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -583,7 +583,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=-2.347513158717119E-07,
              VALE_REFE=-Tphi1*H,
              PRECISION = 1.2E-1,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=(_F(NOM_PARA='TYPE',
@@ -598,7 +598,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=209008775.921893,
              VALE_REFE=M1,
              PRECISION=1E-2,
-             );
+             )
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
                        VALE_K='RIX',
@@ -613,7 +613,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=4.600947286273307E-15,
              VALE_REFE=M2,
              PRECISION=3E-1,
-             );
+             )
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
                        VALE_K='RIX',
@@ -627,7 +627,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=-7741154.825747078,
              VALE_REFE=-M3,
              PRECISION=5E-2,
-             );
+             )
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
                        VALE_K='CQCX',
@@ -638,7 +638,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=209148006.01160133,
              VALE_REFE=MCQCX,
              PRECISION=1E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -655,7 +655,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_REFE=T1,
              TOLE_MACHINE=1e-5,
              PRECISION=2E-3,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -671,7 +671,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=2.121322241237171E-07,
              VALE_REFE=T2,
              PRECISION=3E-1,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -687,7 +687,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=3.1331701208538796E-08,
              VALE_REFE=T3,
              PRECISION=5E-3,
-             );
+             )
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
                        VALE_K='CQCX',
@@ -700,7 +700,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_REFE=TCQCX,
              TOLE_MACHINE=1e-5,
              PRECISION=2E-3,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -712,7 +712,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=209148006.01160124,
              VALE_REFE=MNM1,
              PRECISION=1E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -724,7 +724,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=209148006.01160142,
              VALE_REFE=abs(MNM1),
              PRECISION=1E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -736,7 +736,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=-209148006.01160142,
              VALE_REFE=MNM5,
              PRECISION=1E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -750,7 +750,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_REFE=TNM1,
              TOLE_MACHINE=1e-5,
              PRECISION=2E-3,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -764,7 +764,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_REFE=abs(TNM1),
              TOLE_MACHINE=1e-5,
              PRECISION=2E-3,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -778,7 +778,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_REFE=TNM5,
              TOLE_MACHINE=1e-5,
              PRECISION=2E-3,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -790,7 +790,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=83659202.40464047,
              VALE_REFE=MNM9,
              PRECISION=1E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -802,7 +802,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_CALC=-83659202.40464061,
              VALE_REFE=MNM10,
              PRECISION=1E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -816,7 +816,7 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_REFE=TNM9,
              TOLE_MACHINE=1e-5,
              PRECISION=2E-3,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup,
              FILTRE=( _F(NOM_PARA='TYPE',
@@ -830,6 +830,6 @@ TEST_TABLE(  TABLE=tbcoup,
              VALE_REFE=TNM10,
              TOLE_MACHINE=1e-5,
              PRECISION=2E-3,
-             );
+             )
 
 FIN()

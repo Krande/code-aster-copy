@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
 
 MO1=AFFE_MODELE(MAILLAGE=MA1,
                 AFFE=_F(GROUP_MA=('PLAQ1', 'L12',),
-                        PHENOMENE='MECANIQUE', MODELISATION='Q4G',),);
+                        PHENOMENE='MECANIQUE', MODELISATION='Q4G',),)
 
 EP1=AFFE_CARA_ELEM(MODELE=MO1,
                    COQUE=_F(GROUP_MA=('PLAQ1','L12'),
@@ -93,7 +93,7 @@ EP1=AFFE_CARA_ELEM(MODELE=MO1,
                              EXCENTREMENT=e, INER_ROTA='OUI',
                              ))
 
-MATISO=DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho,),);
+MATISO=DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho,),)
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
                      AFFE=(_F(GROUP_MA='PLAQ1',
                               MATER=MATISO,)))
@@ -108,12 +108,12 @@ CL1=AFFE_CHAR_MECA(MODELE=MO1,
                                   DRX=0.0,
                                   DRY=0.0,
                                   DRZ=0.0,),),
-                                     );
+                                     )
 
 # calcul statique :
 #------------------
 CHME1A=AFFE_CHAR_MECA(MODELE=MO1,
-                      FORCE_ARETE=_F(GROUP_MA='L12', FX=fx, FZ=fz),);
+                      FORCE_ARETE=_F(GROUP_MA='L12', FX=fx, FZ=fz),)
 
 RESU1A=MECA_STATIQUE(MODELE=MO1,
                 CHAM_MATER=CHMAT1,
@@ -191,7 +191,7 @@ EP0=AFFE_CARA_ELEM(MODELE=MO1,
                              ))
 ASSEMBLAGE(     MODELE=MO1, CHAM_MATER=CHMAT1, CARA_ELEM=EP0, CHARGE=CL1, NUME_DDL=CO('NU0'),
                 MATR_ASSE=(_F(MATRICE=CO('MATASS0'), OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MATASM0'), OPTION='MASS_MECA',),),);
+                           _F(MATRICE=CO('MATASM0'), OPTION='MASS_MECA',),),)
 
 MODE0=CALC_MODES(MATR_RIGI=MATASS0,
                  OPTION='PLUS_PETITE',
@@ -206,7 +206,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1, PARA='FREQ',  RESULTAT=MODE0,  VALE_CALC=18.2223
 #---------------------------------
 ASSEMBLAGE(     MODELE=MO1, CHAM_MATER=CHMAT1, CARA_ELEM=EP1, CHARGE=CL1, NUME_DDL=CO('NU1'),
                 MATR_ASSE=(_F(MATRICE=CO('MATASS1'), OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MATASM1'), OPTION='MASS_MECA',),),);
+                           _F(MATRICE=CO('MATASM1'), OPTION='MASS_MECA',),),)
 
 MODE1=CALC_MODES(MATR_RIGI=MATASS1,
                  OPTION='PLUS_PETITE',
@@ -222,4 +222,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1, PARA='FREQ',  RESULTAT=MODE1,
 
 
 
-FIN();
+FIN()

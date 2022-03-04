@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ LOI_COMPORTEMENT = 'ENDO_ISOT_BETON'
 CALCUL = 'STATIQUE'
 RESOLUTION = 'TANGENTE'
 
-Nmax = 30;
+Nmax = 30
 Nmaxdb = 40
 RESI_GLOB_RELA = 1E-7
 Pas = 1.5E-3
@@ -40,7 +40,7 @@ ResiDB=1.E-4
 #              MAILLAGE
 #-----------------------------------------------------------------------
 
-MA = LIRE_MAILLAGE(FORMAT="ASTER");
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MURS = []
 MURS.append('F1_QUAD')
@@ -58,7 +58,7 @@ MA = DEFI_GROUP(reuse = MA,
                 MAILLAGE = MA,
                  CREA_GROUP_NO = (  _F(NOM = 'TETENO', GROUP_MA = 'MURS1',),
                                   ),
-               );
+               )
 
 MA = DEFI_GROUP(reuse = MA,
                 MAILLAGE = MA,
@@ -69,7 +69,7 @@ MA = DEFI_GROUP(reuse = MA,
                 MAILLAGE = MA,
                 CREA_GROUP_NO = (  _F(NOM = 'TETENO_T'    , GROUP_MA = 'MURS',),
                 ),
-              );
+              )
 
 MA = DEFI_GROUP(reuse = MA,
                 MAILLAGE = MA,
@@ -138,7 +138,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                INFO=1,
 
                AFFE=modele_aff,
-                ) ;
+                )
 
 #-----------------------------------------------------------------------
 #              DEFINITION DES MATERIAUX
@@ -160,7 +160,7 @@ BETON = DEFI_MATERIAU(ELAS_FO = _F(E   = E,
                                              D_SIGM_EPSI = -7000.e6,
                                              SYC         = 25.E6,
                                              ),
-                        );
+                        )
 
 #----- acier du liner -----
 
@@ -171,7 +171,7 @@ ACIER1 = DEFI_MATERIAU ( ELAS =_F( E   = 2.0E11 ,
                                    RHO = RHOACI ,
                                   ),
                          ECRO_LINE =_F(D_SIGM_EPSI=300.0E6,
-                                       SY=570.0E6,),) ;
+                                       SY=570.0E6,),)
 
 #-----------------------------------------------------------------------
 #              AFFECTATION DES MATERIAUX AUX ELEMENTS
@@ -185,7 +185,7 @@ aff_mater.append({'GROUP_MA':gr_armature, 'MATER':ACIER1})
 
 MATER = AFFE_MATERIAU (MAILLAGE = MA ,
                        AFFE = aff_mater,
-                       );
+                       )
 
 #-----------------------------------------------------------------------
 #              DEFINITION DES CARACTERISTIQUES DES ELEMENTS
@@ -244,7 +244,7 @@ CAEL = AFFE_CARA_ELEM(MODELE = MO,
                       COQUE = coque,
                       GRILLE = liste_carac_grille,
                       DISCRET = discret,
-                      );
+                      )
 
 #-----------------------------------------------------------------------
 #              DEFINITION DES CL ET DES CHARGEMENTS
@@ -263,7 +263,7 @@ CHAR0 = AFFE_CHAR_MECA(MODELE = MO,
                                   ),
                        LIAISON_UNIF = _F(GROUP_NO = 'HAUT_TOU',
                                          DDL = ('DZ','DX')),
-                                        );
+                                        )
 #----- Chargements -----
 #----- Cacul de la matrice de masse -----
 
@@ -271,34 +271,34 @@ RIGI_ELE = CALC_MATR_ELEM( MODELE= MO,
                            OPTION= 'RIGI_MECA',
                            CARA_ELEM=CAEL,
                            CHAM_MATER=MATER,
-                           CHARGE=CHAR0 );
+                           CHARGE=CHAR0 )
 
 MASS_ELE = CALC_MATR_ELEM( MODELE=MO,
                            OPTION='MASS_MECA',
                            CARA_ELEM=CAEL,
                            CHAM_MATER=MATER,
-                           CHARGE=CHAR0);
+                           CHARGE=CHAR0)
 
-NUM_DDL = NUME_DDL( MATR_RIGI=RIGI_ELE); 
+NUM_DDL = NUME_DDL( MATR_RIGI=RIGI_ELE)
 
 MASSE = ASSE_MATRICE( MATR_ELEM=MASS_ELE,
-                         NUME_DDL=NUM_DDL );
+                         NUME_DDL=NUM_DDL )
 
 #----- Poids propre -----
 
 DEPSZ = CALC_CHAR_SEISME ( MATR_MASS=MASSE,
                           MONO_APPUI='OUI',
-                          DIRECTION=(0.,0,1.),);
+                          DIRECTION=(0.,0,1.),)
 
 # on transforme le cham_no_depl_r en char_meca
 
 POIDS = AFFE_CHAR_MECA ( MODELE =MO,
-                         VECT_ASSE =DEPSZ);
+                         VECT_ASSE =DEPSZ)
 
 # il y a deja un moins dans calc_char_seisme !!!
 
-GG = DEFI_CONSTANTE( VALE=9.81);
-L0 = DEFI_LIST_REEL( VALE=(-1.,0.));
+GG = DEFI_CONSTANTE( VALE=9.81)
+L0 = DEFI_LIST_REEL( VALE=(-1.,0.))
 
 #----- Deplacement impose -----
 
@@ -306,18 +306,18 @@ DEPL = AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO = (_F(NOEUD= NOEUD_PILOTE,
                                       DX=0.01,),
                                   ),
-                      );
+                      )
 
 LINST = DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(_F(JUSQU_A=Tmax,
                                       PAS= Pas ,),
-                           ),);
+                           ),)
 
 RAMPE = DEFI_FONCTION(
        NOM_PARA = 'INST',
        VALE     = (0,0,1,1),
        PROL_DROITE = 'CONSTANT',
-       );
+       )
 
 #-----------------------------------------------------------------------
 #  DEFINITION DES METHODES DE RESOLUTION DES LOIS DE COMPORTEMENT
@@ -371,7 +371,7 @@ RESU = STAT_NON_LINE (
                                      RESI_GLOB_RELA=RESI_GLOB_RELA,
                                      ITER_GLOB_MAXI=Nmax,
                                      ),
-                  );
+                  )
 
 #-----------------------------------------------------------------------
 #              POST TRATEMENT
@@ -380,13 +380,13 @@ RESU = STAT_NON_LINE (
 GROUPES =  MURS + gr_armature
 
 RESU=CALC_CHAMP(reuse =RESU,RESULTAT=RESU,GROUP_MA=GROUPES,
-             FORCE=('FORC_NODA','REAC_NODA',),);
+             FORCE=('FORC_NODA','REAC_NODA',),)
 
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=RESU,
-                  NOM_CHAM=('DEPL',),),);
+                  NOM_CHAM=('DEPL',),),)
 
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
@@ -395,7 +395,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  NOM_CHAM='REAC_NODA',
                                  LIST_INST=LINST,
                                  RESULTANTE='DX',
-                                 OPERATION = 'EXTRACTION'),);
+                                 OPERATION = 'EXTRACTION'),)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=0.6,

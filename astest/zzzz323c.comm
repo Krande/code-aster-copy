@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 # MODELISATIONS COQUES ET GRILLES QUADRATIQUES
 MA1=LIRE_MAILLAGE(FORMAT="ASTER",    UNITE=20 )
@@ -66,7 +66,7 @@ CARAELEM=AFFE_CARA_ELEM(
                        MEMBRANE=_F(  GROUP_MA='MEMB4',
                                    EPAIS = 0.1,
                                    ANGL_REP_1=(45.0,-45.0),
-                                ),  
+                                ),
                          )
 
 

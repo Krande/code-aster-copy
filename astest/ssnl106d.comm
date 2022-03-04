@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,24 +24,24 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-TITRE='SSNL106 TUYAU NCOU=3 NSEC=16';
+TITRE='SSNL106 TUYAU NCOU=3 NSEC=16'
 
-COMMENT='R=0.1 EP=0.001 ';
-EP = 0.001;
+COMMENT='R=0.1 EP=0.001 '
+EP = 0.001
 
-REXT = 0.1;
+REXT = 0.1
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM='TOUT',
-                               TOUT='OUI',),);
+                               TOUT='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='TUYAU_3M',),);
+                       MODELISATION='TUYAU_3M',),)
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      POUTRE=_F(GROUP_MA='TOUT',
@@ -50,16 +50,16 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                                VALE=(REXT,EP,),),
                      ORIENTATION=_F(GROUP_NO='A',
                                     CARA='GENE_TUYAU',
-                                    VALE=(0.0,0.0,1.0,),),);
+                                    VALE=(0.0,0.0,1.0,),),)
 
 MATC2=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                             NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=2000000000.0,
-                                 SY=150000000.0,),);
+                                 SY=150000000.0,),)
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATC2,),);
+                             MATER=MATC2,),)
 
 CHART=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='A',
@@ -70,10 +70,10 @@ CHART=AFFE_CHAR_MECA(MODELE=MO,
                                   DRY=0.0,
                                   DRZ=0.0,),
                                _F(GROUP_NO='B',
-                                  DX=0.00075,),),);
+                                  DX=0.00075,),),)
 
 FONCT=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,10.0,10.0,),);
+                    VALE=(0.0,0.0,10.0,10.0,),)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=1.0,
@@ -81,7 +81,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=2.0,
                                     NOMBRE=10,),
                                  _F(JUSQU_A=3.0,
-                                    NOMBRE=10,),),);
+                                    NOMBRE=10,),),)
 
 REST=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT1,
@@ -95,39 +95,39 @@ REST=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=3,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=0.0001,
-                                  ITER_GLOB_MAXI=20,),);
+                                  ITER_GLOB_MAXI=20,),)
 
 REST=CALC_CHAMP(reuse=REST,
                 RESULTAT=REST,
                 CONTRAINTE=('EFGE_ELNO','SIGM_ELGA','SIGM_ELNO'),
                 VARI_INTERNE=('VARI_ELNO'),
                 DEFORMATION=('EPSI_ELGA','EPSI_ELNO','DEGE_ELNO'),
-                CRITERES=('SIEQ_ELGA','EPEQ_ELGA'),);
+                CRITERES=('SIEQ_ELGA','EPEQ_ELGA'),)
 
 
 REST=CALC_CHAMP(reuse =REST,
              RESULTAT=REST,
-             FORCE='REAC_NODA',);
+             FORCE='REAC_NODA',)
 
 REST1=POST_CHAMP(RESULTAT=REST,
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO'),
                                NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
-                               ANGLE=90,),);
+                               ANGLE=90,),)
 REST2=POST_CHAMP(RESULTAT=REST,
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM='VARI_ELNO',
                                NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
-                               ANGLE=360,),);
+                               ANGLE=360,),)
 
 REST3=POST_CHAMP(RESULTAT=REST,
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM=('SIGM_ELGA','EPSI_ELGA','SIEQ_ELGA','EPEQ_ELGA'),
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',
-                               ANGLE=0,),);
+                               ANGLE=0,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=REST1,
@@ -225,18 +225,18 @@ TAB1=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
                              RESULTAT=REST,
                              NOM_CHAM='DEGE_ELNO',
                              TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=TAB1)
 
 MATC1=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                             NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                 SY=150000000.0,),);
+                                 SY=150000000.0,),)
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATC1,),);
+                             MATER=MATC1,),)
 
 CHARM=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='A',
@@ -251,16 +251,16 @@ CHARM=AFFE_CHAR_MECA(MODELE=MO,
                                   VO3=0.0,
                                   WO3=0.0,),
                                _F(GROUP_NO='B',
-                                  DRZ=0.0075,),),);
+                                  DRZ=0.0075,),),)
 
 FONCM=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,100.0,100.0,),);
+                    VALE=(0.0,0.0,100.0,100.0,),)
 
 LINSR=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=1.0,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=5.0,
-                                    NOMBRE=20,),),);
+                                    NOMBRE=20,),),)
 
 RESM=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT2,
@@ -273,11 +273,11 @@ RESM=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LINSR,),
                    NEWTON=_F(REAC_ITER=5,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=0.0001,
-                                  ITER_GLOB_MAXI=1000),);
+                                  ITER_GLOB_MAXI=1000),)
 
 RESM=CALC_CHAMP(reuse =RESM,
              RESULTAT=RESM,
-             FORCE='REAC_NODA',);
+             FORCE='REAC_NODA',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='B',
@@ -302,27 +302,27 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 RESM=CALC_CHAMP(reuse=RESM,
                 RESULTAT=RESM,
                 CONTRAINTE=('SIGM_ELNO'),
-                DEFORMATION=('DEGE_ELNO'),);
+                DEFORMATION=('DEGE_ELNO'),)
 
 RESM1=POST_CHAMP(RESULTAT=RESM,
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
-                               ANGLE=90,),);
+                               ANGLE=90,),)
 
 RESM2=POST_CHAMP(RESULTAT=RESM,
                  TOUT_ORDRE='OUI',
                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='INF',
-                               ANGLE=90,),);
+                               ANGLE=90,),)
 #
 # POUR VALIDER L'IMPRESSION DES VARIABLES INTERNES:
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=REST,
                   NOM_CHAM='VARI_ELNO',
                   INST=1.1,
-                  GROUP_MA='M1',),);
+                  GROUP_MA='M1',),)
 
 # SOLUTION ANALYTIQUE EVIDENTE : LA COURBURE EST CONSTANTE, CAR LA ROTATION
 # VARIE LINEAIREMENT (LE MOMENT EST CONSTANT)
@@ -344,9 +344,9 @@ TAB2=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
                              RESULTAT=RESM,
                              NOM_CHAM='DEGE_ELNO',
                              TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=TAB2)
 
 
-FIN();
+FIN()

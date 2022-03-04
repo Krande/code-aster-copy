@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,19 +19,19 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=2.1e11,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 AFFMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATER,),);
+                             MATER=MATER,),)
 
 AFFMOD=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DKT',),);
+                           MODELISATION='DKT',),)
 
 AFFCI=AFFE_CHAR_CINE(MODELE=AFFMOD,
                      MECA_IMPO=(_F(GROUP_MA='AB',
@@ -44,7 +44,7 @@ AFFCI=AFFE_CHAR_CINE(MODELE=AFFMOD,
                                 _F(GROUP_MA='CD',
                                    DX=1,
                                    DY=0,
-                                   DZ=0,),),);
+                                   DZ=0,),),)
 
 CAREL=AFFE_CARA_ELEM(MODELE=AFFMOD,
                      INFO=2,
@@ -53,16 +53,16 @@ CAREL=AFFE_CARA_ELEM(MODELE=AFFMOD,
                             _F(GROUP_MA=('M33',),
                                EPAIS=0.01,
                                VECTEUR=(1,1,1),),
-                           ),);
+                           ),)
 
 MESTA=MECA_STATIQUE(MODELE=AFFMOD,
                     CHAM_MATER=AFFMAT,
                     CARA_ELEM=CAREL,
-                    EXCIT=_F(CHARGE=AFFCI,),);
+                    EXCIT=_F(CHARGE=AFFCI,),)
 
 MESTA=CALC_CHAMP(reuse=MESTA,
                  RESULTAT=MESTA,
-                 CONTRAINTE=('EFGE_NOEU',),);
+                 CONTRAINTE=('EFGE_NOEU',),)
 
 TEST_RESU(RESU=(_F(GROUP_NO='POINT',
                    INST=0,
@@ -81,4 +81,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='POINT',
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 #----------------------------------------------
 #                   PARAMETRES
 #----------------------------------------------
@@ -26,24 +26,24 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
 #    GEOMETRIE (A modifier avec le maillage)
 #
 # EPAISSEUR DE L EPROUVETTE SELON X
-B = 1. ;
+B = 1.
 # DEMI-LONGUEUR DE L EPROUVETTE SELON Y
-W = 5. ;
+W = 5.
 # DEMI-LONGUEUR DE L EPROUVETTE SELON Z
-L = 10. ;
+L = 10.
 #**********************************************
 
 #*********************************************************
 #          BLOCAGE DES MODES RIGIDES ET SYMETRIE
 #
 # PRECISION POUR LES CREA_GROUP_NO
-PRECIS = 1.E-5;
+PRECIS = 1.E-5
 #
 # LONGUEUR D ARETE AUTOUR DES NOEUDS A BLOQUER
 #  (inutile si blocage = 1)
-LAR = 2.;
+LAR = 2.
 #
-blocage = 1;
+blocage = 1
 #
 # blocage=1 :
 #  Le nombre d elements exterieur selon z est pair
@@ -55,28 +55,28 @@ blocage = 1;
 #*********************************************************
 
 # DEMI-LONGUEUR DE LA FISSURE CENTRALE
-A = 1. ;
+A = 1.
 
 # ANGLE D INCLINAISON DE LA FISSURE CENTRALE
-ALPHA = 0.*pi/180. ;
+ALPHA = 0.*pi/180.
 
 # COURONNES POUR LE CALCUL DES SIF
-RI = [ 0.1 , 0.2 , 0.1 ];
-RS = [ 0.2 , 0.3 , 0.3 ];
+RI = [ 0.1 , 0.2 , 0.1 ]
+RS = [ 0.2 , 0.3 , 0.3 ]
 
 # PROPRIETES DE L ACIER UTILISE
-E   = 1.E6;
-nu  = 0.;
-rho = 7800.0;
+E   = 1.E6
+nu  = 0.
+rho = 7800.0
 
 # ACTIVATION DU CONTACT
-contact = False ;
+contact = False
 
 # COEFFICIENT DE FROTTEMENT
-COULOM = 0. ;
+COULOM = 0.
 
 # ACTIVATION DE L ALGO_LAGR DE DEFI_FISS_XFEM
-ALGOLAG='VERSION1' ;
+ALGOLAG='VERSION1'
 
 # K1 ANALYTIQUES DU TEST DE BUI
 if not contact :
@@ -90,11 +90,11 @@ GREF=(1-nu**2)/E*K1REF**2
 #************************************************************
 #  PRESSION APPLIQUEE SUR LES FACES INFERIEURE ET SUPERIEURE
 #
-fonction = 1;
+fonction = 1
 # fonction=0 : la pression PRES est constante
 # fonction=1 : la pression PRES est une fonction de l espace
 #
-PRES = -1.;
+PRES = -1.
 FCTPRES = FORMULE(VALE='PRES*Y',
                   PRES=PRES,
                   NOM_PARA=['X', 'Y', 'Z'],)
@@ -105,10 +105,10 @@ FCTPRES = FORMULE(VALE='PRES*Y',
 #                   MAILLAGE
 #----------------------------------------------
 
-MAILLAG0=LIRE_MAILLAGE(FORMAT='MED');
+MAILLAG0=LIRE_MAILLAGE(FORMAT='MED')
 
 MAILLAG1 = CREA_MAILLAGE(MAILLAGE = MAILLAG0,
-                         LINE_QUAD = _F(TOUT = 'OUI'));
+                         LINE_QUAD = _F(TOUT = 'OUI'))
 
 if blocage == 1 :
    PT1 = [ 0. , -W , 0. ]
@@ -140,7 +140,7 @@ MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
                                         PRECISION=PRECIS,
                                         RAYON=PRECIS),
                                     ),
-                      INFO=1, );
+                      INFO=1, )
 
 if blocage == 2 :
    MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
@@ -161,7 +161,7 @@ if blocage == 2 :
                                            PRECISION=PRECIS,
                                            RAYON=PRECIS),
                                        ),
-                      INFO=1, );
+                      INFO=1, )
 
 
 MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
@@ -172,7 +172,7 @@ MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
                                        VECT_NORMALE=(0.,-sin(ALPHA),cos(ALPHA)),
                                        PRECISION=PRECIS),
                                     ),
-                     INFO=2,);
+                     INFO=2,)
 
 #----------------------------------------------
 #                   MODELE
@@ -183,12 +183,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),
                            ),
-                     );
+                     )
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF'))
-                       );
+                       )
 
 #----------------------------------------------
 #                   FISSURE
@@ -202,15 +202,15 @@ LT = FORMULE(VALE='abs(Z*sin(ALPHA)+Y*cos(ALPHA))-A',
              A=A,
              NOM_PARA=['X', 'Y', 'Z'],)
 
-XFONI = 0. ;
-YFONI = -A*cos(ALPHA) ;
-ZFONI = -A*sin(ALPHA) ;
-XORI = B/2. ;
-YORI = 0. ;
-ZORI = 0. ;
-XVECT = 0. ;
-YVECT = -sin(ALPHA) ;
-ZVECT = cos(ALPHA) ;
+XFONI = 0.
+YFONI = -A*cos(ALPHA)
+ZFONI = -A*sin(ALPHA)
+XORI = B/2.
+YORI = 0.
+ZORI = 0.
+XVECT = 0.
+YVECT = -sin(ALPHA)
+ZVECT = cos(ALPHA)
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT,
@@ -226,20 +226,20 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
 if not contact :
    MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS, DECOUPE_FACETTE='SOUS_ELEMENTS',
-                         INFO=1,);
+                         INFO=1,)
 else :
    MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS, DECOUPE_FACETTE='SOUS_ELEMENTS',
                          CONTACT='STANDARD',
-                         INFO=1,);
+                         INFO=1,)
    CTXFEM = DEFI_CONTACT(MODELE  = MODELEK,
                           FORMULATION    = 'XFEM',
                           ZONE = (_F(INTEGRATION   = 'NOEUD',
                                      FISS_MAIT     = FISS,
                                      #ALGO_LAGR     = 'VERSION2',
-                                     ),));
+                                     ),))
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,)
 
 #----------------------------------------------
 #                   MATERIAU
@@ -247,13 +247,13 @@ MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,);
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=rho,),);
+                            RHO=rho,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
                                MATER=ACIER,
-                               ),);
+                               ),)
 
 #----------------------------------------------
 #         BLOCAGE DES MODES RIGIDES
@@ -269,7 +269,7 @@ if blocage == 1 :
                                        DX=0.0,
                                        DZ=0.0,),
                                     _F(GROUP_NO='NOEUD3',
-                                       DZ=0.0,),   ), );
+                                       DZ=0.0,),   ), )
 
 elif blocage == 2 :
    CHRIGI=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -298,7 +298,7 @@ elif blocage == 2 :
                                       _F(GROUP_NO=('NOEUD3','NOEUD3S',),
                                          DDL=('DZ','DZ',),
                                          COEF_MULT=(1.0,1.0),
-                                         COEF_IMPO=0.0,), ), );
+                                         COEF_IMPO=0.0,), ), )
 
 #----------------------------------------------
 #              CHARGEMENT
@@ -307,12 +307,12 @@ if fonction == 0 :
    CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
                          PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
                                      PRES=PRES,),
-                         );
+                         )
 elif fonction == 1 :
    CHPRES=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                            PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
                                        PRES=FCTPRES,),
-                           );
+                           )
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -325,11 +325,11 @@ if not contact :
                            _F(CHARGE=CHPRES,),),
                     SOLVEUR=_F(METHODE='MULT_FRONT',
                                ),
-                    INFO=1,);
+                    INFO=1,)
 else :
   L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
+                                    NOMBRE=3,),)
 
   RESU1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
@@ -342,7 +342,7 @@ else :
                     SOLVEUR=_F(METHODE='MULT_FRONT',
                                ),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+                    INFO=1,)
 
 
 #----------------------------------------------
@@ -356,9 +356,9 @@ if False and contact :
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                TOUT_CMP='OUI',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
-  #IMPR_TABLE(TABLE=TABLAG,FORMAT_R='E14.7',);
+  #IMPR_TABLE(TABLE=TABLAG,FORMAT_R='E14.7',)
   tab1 = TABLAG.EXTR_TABLE()
   tab2 = (tab1.COOR_X > -1.1*cos(ALPHA))
   tab3 = (tab2.COOR_X < 1.1*cos(ALPHA))
@@ -387,21 +387,21 @@ VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),
                            ),
-                     );
+                     )
 
-RES_XFEM=POST_CHAM_XFEM(RESULTAT=RESU1,MODELE_VISU=VISU);
+RES_XFEM=POST_CHAM_XFEM(RESULTAT=RESU1,MODELE_VISU=VISU)
 
 RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
                    RESULTAT=RES_XFEM,
                    CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),
                    INFO=2,
-                   );
+                   )
 
 IMPR_RESU(FORMAT='GMSH',
           RESU=_F(RESULTAT=RES_XFEM,
                   NOM_CHAM=('DEPL'),
                   TYPE_CHAM='VECT_3D',
-                  NOM_CMP=('DX','DY','DZ'),),);
+                  NOM_CMP=('DX','DY','DZ'),),)
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
@@ -421,9 +421,9 @@ for i in range(0,n) :
                         ),
                LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
                            LISSAGE_G='LAGRANGE',),
-               INFO=1,);
+               INFO=1,)
 
-   #IMPR_TABLE(TABLE=SIF1[i],);
+   #IMPR_TABLE(TABLE=SIF1[i],)
 
    SIF2[i]=CALC_G_XFEM(
                RESULTAT=RESU1,
@@ -434,16 +434,16 @@ for i in range(0,n) :
                         ),
                LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
                            LISSAGE_G='LAGRANGE',),
-               INFO=1,);
+               INFO=1,)
 
-   #IMPR_TABLE(TABLE=SIF2[i],);
+   #IMPR_TABLE(TABLE=SIF2[i],)
 
 #
 #tests exhaustifs sur le fond en ouverture
 #
-K1_CALC =[0.887626657993, 0.888416087807, 0.8880213729];
-K2_CALC =[0.00058390315049, 0.000768652936997, 0.000676278043743];
-G_CALC =[7.85556418396E-07, 7.87768339312E-07, 7.86662378854E-07];
+K1_CALC =[0.887626657993, 0.888416087807, 0.8880213729]
+K2_CALC =[0.00058390315049, 0.000768652936997, 0.000676278043743]
+G_CALC =[7.85556418396E-07, 7.87768339312E-07, 7.86662378854E-07]
 
 
 for i in range(0,n) :
@@ -453,20 +453,20 @@ for i in range(0,n) :
               VALE_CALC=K1_CALC[i],
               CRITERE='RELATIF',TYPE_TEST='MAX',
               PRECISION=0.005,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K2',
               VALE_REFE=0.,
                    VALE_CALC=K2_CALC[i],
               CRITERE='ABSOLU',TYPE_TEST='MAX',
               PRECISION=0.001,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='G',
               VALE_REFE=GREF,
               VALE_CALC=G_CALC[i],
               CRITERE='RELATIF',TYPE_TEST='MAX',
               PRECISION=0.01,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
 
-FIN();
+FIN()

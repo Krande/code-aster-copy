@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='NON',),);
+      DEBUG=_F(SDVERI='NON',),)
 
 #......................................................................
 # MODELISATION G : MODELISATION BASEE SUR LA MODELISATION A
@@ -29,39 +29,39 @@ DEBUT(CODE=_F(
 #                  ETUDE DU RAFFINEEMNT DU PAS DE TEMPS
 #......................................................................
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
 
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
                             NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=1930.,
                                  SY=181.,),
-                    PRAGER=_F(C=0.,),);
+                    PRAGER=_F(C=0.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=_F(TOUT='OUI',
-                         MATER=ACIER,),);
+                         MATER=ACIER,),)
 
 SIGMA_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                             1.0,151.2,
                             2.0,257.2,
                             3.0,0.0,
-                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 TAU_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           1.0,93.1,
                           2.0,33.1,
                           3.0,0.0,
-                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 TRACTION=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_FACE=_F(GROUP_MA='GAUCHE',
-                                      FX=-1.,),);
+                                      FX=-1.,),)
 
 CISAIL=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_FACE=(_F(GROUP_MA='GAUCHE',
@@ -71,7 +71,7 @@ CISAIL=AFFE_CHAR_MECA(MODELE=MO,
                                   _F(GROUP_MA='HAUT',
                                      FX=1.,),
                                   _F(GROUP_MA='BAS',
-                                     FX=-1.,),),);
+                                     FX=-1.,),),)
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='NO4',
@@ -84,7 +84,7 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                                  _F(GROUP_NO='NO2',
                                     DX=0.,),
                                  _F(GROUP_NO='NO6',
-                                    DX=0.,),),);
+                                    DX=0.,),),)
 
 # LISTE D'INSTANTS PLUS GROSSIERE QUE CELLE DE LA MODELISATION A
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -92,7 +92,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=0.9,NOMBRE=5,),
                                   _F(JUSQU_A=1.0,NOMBRE=1,),
                                   _F(JUSQU_A=2.0,NOMBRE=20,),
-                                  _F(JUSQU_A=3.0,NOMBRE=1,),),);
+                                  _F(JUSQU_A=3.0,NOMBRE=1,),),)
 
 
 # gestion manuelle
@@ -223,4 +223,4 @@ TEST_RESU(RESU=(_F(INST=2.0,
                 ),
           )
 
-FIN();
+FIN()

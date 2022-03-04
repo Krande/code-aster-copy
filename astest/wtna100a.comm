@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 
 # (CALCUL AXIS_HHD)
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 #
 #  LISTE DES INSTANTS DE CALCUL
@@ -35,7 +35,7 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=1.E8,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=1.E9,
-                                    NOMBRE=9,),),);
+                                    NOMBRE=9,),),)
 
 
 MAIL=DEFI_GROUP(reuse =MAIL,
@@ -46,12 +46,12 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='LINTBG',),
                                _F(GROUP_MA='SURFBO',),
                                _F(GROUP_MA='SURFBG',),
-                               _F(GROUP_MA='SURF',),),);
+                               _F(GROUP_MA='SURF',),),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_HHD',),);
+                           MODELISATION='AXIS_HHD',),)
 #
 #
 MAIL=DEFI_GROUP( reuse=MAIL,
@@ -62,32 +62,32 @@ MAIL=DEFI_GROUP( reuse=MAIL,
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='ROCHE'),),)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,);
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,)
 
-VISCOGAZ=DEFI_CONSTANTE(VALE=1.8E-05,);
+VISCOGAZ=DEFI_CONSTANTE(VALE=1.8E-05,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,)
 
-DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,)
 
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1.E9,
-                                 PAS=1.E6,),);
+                                 PAS=1.E6,),)
 
 LI1=DEFI_LIST_REEL(DEBUT=1.E-5,
                    INTERVALLE=_F(JUSQU_A=1.0,
-                                 PAS=0.099999,),);
+                                 PAS=0.099999,),)
 # PROPRIETES DE LA B.O.
 #
 
 
 
-LTBO=DEFI_CONSTANTE(VALE=0.6,);
+LTBO=DEFI_CONSTANTE(VALE=0.6,)
 LSO = FORMULE(VALE='(0.35*SAT)',
               NOM_PARA='SAT',)
 
@@ -96,8 +96,8 @@ LSBO=CALC_FONC_INTERP(FONCTION=LSO,
                         NOM_PARA='SAT',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
-                        INFO=2,);
-DLSBO=DEFI_CONSTANTE(VALE=0.35,);
+                        INFO=2,)
+DLSBO=DEFI_CONSTANTE(VALE=0.35,)
 
 SL = FORMULE(VALE='0.99*(1.-PCAP*6.E-9)',
              NOM_PARA='PCAP',)
@@ -107,7 +107,7 @@ SATUBO=CALC_FONC_INTERP(FONCTION=SL,
                         NOM_PARA='PCAP',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        INFO=2,);
+                        INFO=2,)
 
 
 DSL = FORMULE(VALE='-6.E-9*0.99',
@@ -118,7 +118,7 @@ DSATBO=CALC_FONC_INTERP(FONCTION=DSL,
                         NOM_PARA='PCAP',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        INFO=2,);
+                        INFO=2,)
 
 
 PERM = FORMULE(VALE='SAT',
@@ -129,7 +129,7 @@ PERM11BO=CALC_FONC_INTERP(FONCTION=PERM,
                           NOM_PARA='SAT',
                           PROL_DROITE='CONSTANT',
                           PROL_GAUCHE='CONSTANT',
-                          INFO=2,);
+                          INFO=2,)
 
 
 DPERMBO = FORMULE(VALE='1.',
@@ -140,7 +140,7 @@ DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMBO,
                           NOM_PARA='SAT',
                          PROL_DROITE='CONSTANT',
                          PROL_GAUCHE='CONSTANT',
-                         INFO=2,);
+                         INFO=2,)
 
 
 PERM2BO = FORMULE(VALE='1.-SAT',
@@ -151,7 +151,7 @@ PERM21BO=CALC_FONC_INTERP(FONCTION=PERM2BO,
                           NOM_PARA='SAT',
                           PROL_DROITE='CONSTANT',
                           PROL_GAUCHE='CONSTANT',
-                          INFO=2,);
+                          INFO=2,)
 
 
 DPERM2BO = FORMULE(VALE='-1.',
@@ -162,22 +162,22 @@ DPR21BO=CALC_FONC_INTERP(FONCTION=DPERM2BO,
                           NOM_PARA='SAT',
                          PROL_DROITE='CONSTANT',
                          PROL_GAUCHE='CONSTANT',
-                         INFO=2,);
+                         INFO=2,)
 #
 # CONDUCTIVITE THERMIQUE DE LA BO
 #
 
 
-DM8=DEFI_CONSTANTE(VALE=1.E-07,);
+DM8=DEFI_CONSTANTE(VALE=1.E-07,)
 
-KINTBO=DEFI_CONSTANTE(VALE=1.E-20,);
+KINTBO=DEFI_CONSTANTE(VALE=1.E-20,)
 EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,
              VALE = ( 0.     ,  1.9E+20  ,
                       500.    ,  1.9E+20  , ),
                         PROL_DROITE  ='CONSTANT' ,
-                        PROL_GAUCHE  ='CONSTANT' , );
+                        PROL_GAUCHE  ='CONSTANT' , )
 
-NU=DEFI_CONSTANTE(VALE=0.2,);
+NU=DEFI_CONSTANTE(VALE=0.2,)
 BIDON = 0.,
 RHOF=DEFI_CONSTANTE(VALE = 2670.,)
 
@@ -229,11 +229,11 @@ MATERBO=DEFI_MATERIAU(
                                    LAMB_T=LTBO,
                                    LAMB_S=LSBO,
                                    D_LB_S=DLSBO,
-                                   LAMB_CT=0.728),);
+                                   LAMB_CT=0.728),)
 # PROPRIETES DE LA B.G.
 #
 
-KINTBG=DEFI_CONSTANTE(VALE=1.E-19,);
+KINTBG=DEFI_CONSTANTE(VALE=1.E-19,)
 
 # CONDUCTIVITE THERMIQUE DE LA BG
 #
@@ -241,7 +241,7 @@ KINTBG=DEFI_CONSTANTE(VALE=1.E-19,);
 
 
 
-LTBG=DEFI_CONSTANTE(VALE=0.6,);
+LTBG=DEFI_CONSTANTE(VALE=0.6,)
 LSG = FORMULE(VALE='(0.05*SAT)',
               NOM_PARA='SAT',)
 
@@ -250,8 +250,8 @@ LSBG=CALC_FONC_INTERP(FONCTION=LSG,
                         NOM_PARA='SAT',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
-                        INFO=2,);
-DLSBG=DEFI_CONSTANTE(VALE=0.05,);
+                        INFO=2,)
+DLSBG=DEFI_CONSTANTE(VALE=0.05,)
 
 
 THMALP2 = DEFI_CONSTANTE(VALE=0.000100)
@@ -302,12 +302,12 @@ MATERBG=DEFI_MATERIAU(
                                    LAMB_T=LTBG,
                                    LAMB_S=LSBG,
                                    D_LB_S=DLSBG,
-                                   LAMB_CT=1.539),);
+                                   LAMB_CT=1.539),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=(_F(GROUP_MA='SURFBO', MATER=MATERBO,),
                            _F(GROUP_MA='SURFBG', MATER=MATERBG,),),
-                              );
+                              )
 IMPR_CO(CONCEPT=_F(NOM=CHMAT0))
 #
 # AFFECTATION DE L ETAT INITIAL
@@ -331,11 +331,11 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                              VALE=0.0,),
                           _F(GROUP_NO='SURFBG',
                              NOM_CMP='PRE2',
-                             VALE=0.0,),),);
+                             VALE=0.0,),),)
 
 CALEXT=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=(_F(GROUP_NO='ROCHES',
-                                   PRE2=0.0,),),);
+                                   PRE2=0.0,),),)
 
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
@@ -358,7 +358,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                             VALE=
                             (0.0, 0.0, 0.0,
                              0.0, 0.0, 0.0,
-                             0.0, 0.0, 0.0,),),),);
+                             0.0, 0.0, 0.0,),),),)
 
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
@@ -375,7 +375,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=10,),
                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-05,
                                 ITER_GLOB_MAXI=150,),
-                 ARCHIVAGE=_F(PAS_ARCH=1,),);
+                 ARCHIVAGE=_F(PAS_ARCH=1,),)
 
 U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U0)
 
@@ -386,7 +386,7 @@ TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             NOM_CHAM='DEPL',
                             NUME_ORDRE=(1,10,11,20),
                             NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
+                            OPERATION='EXTRACTION',),)
 
 TRB11=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             GROUP_NO=('LBABG','LBABO'),
@@ -394,7 +394,7 @@ TRB11=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             NOM_CHAM='DEPL',
                             NUME_ORDRE=(11),
                             NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
+                            OPERATION='EXTRACTION',),)
 
 TRB2=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                              GROUP_NO=('LBABG','LBABO'),
@@ -402,7 +402,7 @@ TRB2=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                              NOM_CHAM='SIEF_ELNO',
 
                              NOM_CMP=('M11','FH11X','FH11Y'),
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 ZTRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              GROUP_NO=('NO294','NO295','NO299','NO300','NO304','NO305','NO309'),
@@ -410,7 +410,7 @@ ZTRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              NOM_CHAM='DEPL',
 
                              NOM_CMP=('PRE1'),
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 ZTRB2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                              GROUP_NO=('NO294','NO295','NO299','NO300','NO304','NO305','NO309'),
@@ -418,7 +418,7 @@ ZTRB2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                               NOM_CHAM='SIEF_ELNO',
 
                               NOM_CMP=('M11','FH11X','M21','FH21X'),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
 
 
 ZTRB3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -427,42 +427,42 @@ ZTRB3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                               NOM_CHAM='VARI_ELNO',
 
                               NOM_CMP=('V2'),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
 IMPR_TABLE(TABLE=TRB,
            UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','PRE1'),);
+           NOM_PARA=('INST','COOR_X','PRE1'),)
 
 IMPR_TABLE(TABLE=ZTRB,
            UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','PRE1'),);
+           NOM_PARA=('INST','COOR_X','PRE1'),)
 
 IMPR_TABLE(TABLE=ZTRB2,
            UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','M11'),);
+           NOM_PARA=('INST','COOR_X','M11'),)
 
 IMPR_TABLE(TABLE=ZTRB2,
            UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','FH11X'),);
+           NOM_PARA=('INST','COOR_X','FH11X'),)
 
 IMPR_TABLE(TABLE=ZTRB2,
            UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','M21'),);
+           NOM_PARA=('INST','COOR_X','M21'),)
 
 IMPR_TABLE(TABLE=ZTRB2,
            UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','FH21X'),);
+           NOM_PARA=('INST','COOR_X','FH21X'),)
 #
 # V2 masse volumique du liquide
 #
@@ -470,7 +470,7 @@ IMPR_TABLE(TABLE=ZTRB3,
            UNITE=8,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','V2'),);
+           NOM_PARA=('INST','COOR_X','V2'),)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=U0,
@@ -552,4 +552,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   ),
           )
 
-FIN();
+FIN()

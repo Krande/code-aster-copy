@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
 #                MAILLAGE
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'))
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -79,7 +79,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                     _F(NOM='BAT',
                                        DIFFE=('BA','SURF','LIG1','LIG2','LIG3','LIG4')),
                                     ),
-                    INFO=1);
+                    INFO=1)
 
 MAILLAG2= COPIER(CONCEPT= MAILLAG1,)
 
@@ -99,13 +99,13 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                       VECT_NORMALE=(0.,1.,0.),
                                       PRECISION=1.2E-3),
                                    ),
-                    INFO=1);
+                    INFO=1)
 
 MAILLAG2=MODI_MAILLAGE(reuse=MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU=(_F(GROUP_MA_PEAU = 'SUR2'),
                                      _F(GROUP_MA_PEAU = 'SUR3'),
-                                     _F(GROUP_MA_PEAU = 'SUR4')));
+                                     _F(GROUP_MA_PEAU = 'SUR4')))
 
 # visualiser le maillage
 IMPR_RESU(UNITE=81,
@@ -132,7 +132,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                            _F(GROUP_MA=('SUR4'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D')),
-                              INFO=1);
+                              INFO=1)
 
 # FORME ANALYTIQUE POUR LA FISSURE
 
@@ -147,7 +147,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='STANDARD',
                          INFO=1,
-                         );
+                         )
 
 #----------------------------------------------
 #                   MATERIAU
@@ -160,16 +160,16 @@ rho=7800.
 CHABNO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   OPERATION='EXTR',
                   FISSURE=FISS,
-                  NOM_CHAM='LNNO');
+                  NOM_CHAM='LNNO')
 
-MATVAR=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
+MATVAR=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho))
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOLU'),
                                 MATER=MATVAR)),
                        AFFE_VARC=_F(NOM_VARC='NEUT1',CHAM_GD=CHABNO),
-                       );
+                       )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -195,7 +195,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,INFO=2,
                                COEF_FROT      = 100000.,
                              ),
                          ),
-                   );
+                   )
 
 H_plus=-2
 
@@ -240,13 +240,13 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                     COEF_MULT_2= (1., H_plus),
                                     COEF_IMPO= 0.),
                                 ),
-                  );
+                  )
 
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                     FORCE IMPOSEE EN A
                       PRES_REP=(_F(GROUP_MA = 'SUR3',
-                                   PRES = 5.E07)));
+                                   PRES = 5.E07)))
 
 def pr(y) :
    if y  < -1.E-15:  return 0.E07
@@ -259,7 +259,7 @@ FCTPRES = FORMULE(VALE='pr(Y)',
 
 CHAF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                       PRES_REP=_F(GROUP_MA = ('SUR2','SUR4'),
-                                  PRES=FCTPRES));
+                                  PRES=FCTPRES))
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -270,7 +270,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='LINEAIRE',
                     VALE=(0.0,0.0,1.0,1.0))
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1));
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1))
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
@@ -296,7 +296,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     NEWTON=_F(REAC_ITER=1),
                     AFFICHAGE=_F(INFO_RESIDU='OUI'),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
-                    );
+                    )
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
@@ -327,7 +327,7 @@ MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                                      POINT=(0.0125,0.,0.),
                                      RAYON=0.000001,
                                      PRECISION=0.00001)),
-                   INFO=1);
+                   INFO=1)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
@@ -348,22 +348,22 @@ DEP_NFI=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 DEP_NFI = CALC_TABLE(reuse = DEP_NFI,
                      TABLE = DEP_NFI,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]')));
+                                  VALE_K    = 'N[^M]')))
 
 DEP_NFI = CALC_TABLE(reuse = DEP_NFI,
                      TABLE = DEP_NFI,
                      ACTION=_F(OPERATION='TRI',
                                NOM_PARA='COOR_X',
-                               ORDRE='CROISSANT'));
+                               ORDRE='CROISSANT'))
 
-IMPR_TABLE(TABLE=DEP_NFI);
+IMPR_TABLE(TABLE=DEP_NFI)
 
 DEP_PPA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPA'),
@@ -371,13 +371,13 @@ DEP_PPA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 DEP_PPA = CALC_TABLE(reuse = DEP_PPA,
                      TABLE = DEP_PPA,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]')));
+                                  VALE_K    = 'N[^M]')))
 
 DEP_PPC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPC'),
@@ -385,13 +385,13 @@ DEP_PPC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 DEP_PPC = CALC_TABLE(reuse = DEP_PPC,
                      TABLE = DEP_PPC,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]')));
+                                  VALE_K    = 'N[^M]')))
 
 DEP_PPD=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPD'),
@@ -399,13 +399,13 @@ DEP_PPD=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 DEP_PPD = CALC_TABLE(reuse = DEP_PPD,
                      TABLE = DEP_PPD,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]')));
+                                  VALE_K    = 'N[^M]')))
 
 DEP_PPE=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPE'),
@@ -413,19 +413,19 @@ DEP_PPE=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 DEP_PPE = CALC_TABLE(reuse = DEP_PPE,
                      TABLE = DEP_PPE,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]')));
+                                  VALE_K    = 'N[^M]')))
 
 #----------------------------------------------
 #                   TEST TABLE
 #----------------------------------------------
 
-preci=1.0e-2;
+preci=1.0e-2
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
@@ -454,4 +454,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='MAX',
            TABLE=DEP_PPD,)
 
-FIN();
+FIN()

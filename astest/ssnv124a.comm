@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,62 +19,62 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA=('LAB','LBC','LDA',),),);
+              CREA_GROUP_NO=_F(GROUP_MA=('LAB','LBC','LDA',),),)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=_F(GROUP_MA='S',
                                NOM='SOMMETS',
-                               CRIT_NOEUD='SOMMET',),);
+                               CRIT_NOEUD='SOMMET',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_UPG',),);
+                       MODELISATION='D_PLAN_INCO_UPG',),)
 
 CM=DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0,
-                              SY=10,),);
+                              SY=10,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=CM,),);
+                            MATER=CM,),)
 # ----------- CONDITIONS AUX LIMITES -------------------------------
 
 CH_CL=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='LBC',
                                   DY=0.0,),
                                _F(GROUP_NO='LAB',
-                                  DX=0.0,),),);
+                                  DX=0.0,),),)
 # ----------- CHARGEMENT PERMANENT ----------------------------------
 
 CH0=AFFE_CHAR_MECA(MODELE=MO,
                    FORCE_CONTOUR=_F(GROUP_MA='LDA',
-                                    FY=-0.2,),);
+                                    FY=-0.2,),)
 # ----------- CHARGEMENT A PILOTER (CAS 1)-----------------------------
 
 CH_PILO1=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_CONTOUR=_F(GROUP_MA='LCD',
-                                         FX=-0.8,),);
+                                         FX=-0.8,),)
 # ----------- CHARGEMENT A PILOTER (CAS 2)-----------------------------
 
 CH_PILO2=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_CONTOUR=_F(GROUP_MA='LCD',
-                                         FX=-1.0,),);
+                                         FX=-1.0,),)
 # --- CONDITION D INCOMPRESSIBILITE ---
 
 INCOMP=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_NO='SOMMETS',
-                                  GONF=0,),);
+                                  GONF=0,),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=1,
                                      NOMBRE=1,),
                                   _F(JUSQU_A=1.69897,
-                                     NOMBRE=1,),),);
+                                     NOMBRE=1,),),)
 # -------------- CALCUL AVEC LA LOI DE NORTON-HOFF (CAS 1)-------------
 
 RESU1=STAT_NON_LINE(MODELE=MO,
@@ -88,10 +88,10 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    PILOTAGE=_F(TYPE='ANA_LIM',),);
+                    PILOTAGE=_F(TYPE='ANA_LIM',),)
 
 ECHL1=POST_ELEM(CHAR_LIMITE=_F(CHAR_CSTE='OUI',),
-                RESULTAT=RESU1,);
+                RESULTAT=RESU1,)
 # -------------- CALCUL AVEC LA LOI DE NORTON-HOFF (CAS 2)-------------
 
 RESU2=STAT_NON_LINE(MODELE=MO,
@@ -104,11 +104,11 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    PILOTAGE=_F(TYPE='ANA_LIM',),);
+                    PILOTAGE=_F(TYPE='ANA_LIM',),)
 
 ECHL2=POST_ELEM(CHAR_LIMITE=_F(),
                 INST=1.69897,
-                RESULTAT=RESU2,);
+                RESULTAT=RESU2,)
 #--------------------------------------------------------------
 #      TEST DE LA CHARGE LIMITE
 #--------------------------------------------------------------
@@ -181,4 +181,4 @@ TEST_RESU(RESU=(_F(INST=1.6989700000000001,
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ pimp=0.21
 
 coef=1./(vchar/2)
 
-VISCOL=DEFI_CONSTANTE(VALE=1.E-9,);
+VISCOL=DEFI_CONSTANTE(VALE=1.E-9,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.,)
 
-PERML=DEFI_CONSTANTE(VALE=1.E-19,);
+PERML=DEFI_CONSTANTE(VALE=1.E-19,)
 
 ####################################
 #  LISTE DES INSTANTS DE CALCUL
@@ -47,15 +47,15 @@ PERML=DEFI_CONSTANTE(VALE=1.E-19,);
 LISTINST=DEFI_LIST_REEL(DEBUT = 0.,
                         INTERVALLE=(
                                     _F(JUSQU_A = tfin,
-                                      NOMBRE = int(tfin/pas) ,),),);
+                                      NOMBRE = int(tfin/pas) ,),),)
 
 ####################################
 #  OPERATIONS SUR LE MAILLAGE
 ####################################
 
-MA0=LIRE_MAILLAGE(FORMAT='MED');
+MA0=LIRE_MAILLAGE(FORMAT='MED')
 
-MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'));
+MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_NO= (
@@ -86,12 +86,12 @@ MA = DEFI_GROUP(reuse = MA,
            _F(NOM='MEMB',DIFFE=('I1','BORD_F'),),
            _F(NOM='OUVERT',DIFFE=('FISSURE','I3','BORD_F','I1'),),
            _F(NOM='FERME',DIFFE=('FISSURE','OUVERT','BORD_F',),),
-       ),);
+       ),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_FISSURE=_F(GROUP_MA='FISSURE'),
-                 );
+                 )
 
 ####################################
 ## AFFECTATION DU MODELE
@@ -103,7 +103,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='D_PLAN_HMS',),
                          _F(GROUP_MA=('FISSURE','ENTREE','SORTIE',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='PLAN_JHMS',),),);
+                            MODELISATION='PLAN_JHMS',),),)
 
 ####################################
 ## ORIENTATION FISSURE
@@ -112,7 +112,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                         MASSIF=(_F(GROUP_MA=('FISSURE'),
                                   ANGL_REP=(0.,0.,0.,),),
-                                ),);
+                                ),)
 
 ####################################
 ## DEFINITION DES MATERIAUX
@@ -134,7 +134,7 @@ MAT_1=DEFI_MATERIAU(ELAS=_F(E=27500,
                                    UN_SUR_K=0.,
                                    VISC=VISCOL,
                                    D_VISC_TEMP=DVISCOL,),
-                         );
+                         )
 
 MAT_2=DEFI_MATERIAU(
                   COMP_THM='LIQU_SATU',
@@ -156,7 +156,7 @@ MAT_2=DEFI_MATERIAU(
                   RUPT_FRAG=_F(GC=gc,
                                SIGM_C=sigc,
                                PENA_ADHERENCE=1.E-3,),
-                         );
+                         )
 
 MAT_3=DEFI_MATERIAU(
                   COMP_THM='LIQU_SATU',
@@ -175,7 +175,7 @@ MAT_3=DEFI_MATERIAU(
                   JOINT_BANDIS=_F(K=kni,
                                   DMAX=ouvm,
                                   GAMMA=0.,),
-                         );
+                         )
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(_F(TOUT='OUI',
@@ -196,7 +196,7 @@ FORCE=AFFE_CHAR_MECA(
     _F(GROUP_NO='AG',FX=-3.73,FY=-1.,),
     _F(GROUP_NO='AD',FX=3.73,FY=-1.,),
     ),
-  );
+  )
 
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
@@ -205,7 +205,7 @@ LIAISON=AFFE_CHAR_MECA(
     _F(GROUP_NO=('MEMB'),PRE1=0.),
     _F(GROUP_MA=('SORTIE','BORD' ),PRE1=0.),
     ),
-  );
+  )
 
 SYM=AFFE_CHAR_MECA(
   MODELE=MO,
@@ -215,19 +215,19 @@ SYM=AFFE_CHAR_MECA(
     COEF_MULT=(1.,1.),
     COEF_IMPO=0.),
     ),
-  );
+  )
 
 PRESS=AFFE_CHAR_MECA(
   MODELE=MO,
   DDL_IMPO=(
     _F(GROUP_NO  =('OUVERT',),PRE1=pimp,),
-  ),);
+  ),)
 
 IMPER=AFFE_CHAR_CINE(
   MODELE=MO,
   MECA_IMPO=(
     _F(GROUP_MA  =('I1',),LH1=0.,),
-  ),);
+  ),)
 
 ####################################
 ## INITIALISATION DES CHAMPS
@@ -246,7 +246,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MA,
                             _F(GROUP_MA=('I3','BETON'),
                              NOM_CMP='PRE1',
                              VALE=0.,), ),
-                           );
+                           )
 
 CH_VARI=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO, PROL_ZERO='OUI',
          AFFE=(
@@ -255,7 +255,7 @@ CH_VARI=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO, PROL_Z
            _F( GROUP_MA = 'I2',      NOM_CMP = ('V1','V2','V3','V4','V5','V11',),
                                       VALE   = ( dc,   1,   2,   1., gc,   0.)),
            _F( GROUP_MA = 'I3',      NOM_CMP = 'V11', VALE =  0),
-                    ),);
+                    ),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
                         ECHEC=_F(
@@ -265,7 +265,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
                   SUBD_PAS  = 5,
                   SUBD_PAS_MINI = 1.E-10,
                   SUBD_NIVEAU=12,
-                                 ),);
+                                 ),)
 
 ####################################
 ## STAT NON LINE
@@ -309,7 +309,7 @@ U_1=STAT_NON_LINE(
   CONVERGENCE=_F(
                  ITER_GLOB_MAXI=50,),
   SOLVEUR = _F(METHODE = 'MUMPS', NPREC=-1),
-  );
+  )
 
 ####################################
 ## TESTS DE VALIDATION
@@ -319,7 +319,7 @@ U_1=CALC_CHAMP(reuse=U_1,
         TOUT_ORDRE='OUI',
         TOUT='OUI',
         FORCE='FORC_NODA',
-        RESULTAT=U_1,);
+        RESULTAT=U_1,)
 
 # TEST FY EN 'AD' A 100S, 150S ET 200S
 
@@ -361,4 +361,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   ),
           )
 
-FIN();
+FIN()

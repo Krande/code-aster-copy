@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 
 CoefRef = 1.0E-05
 
-MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2);
+MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2)
 
 # Poutes multifibres POU_D_EM et POU_D_TGM
 # lecture du maillage de la section
@@ -104,7 +104,7 @@ RE_D_T=DYNA_NON_LINE(MODELE     = MO_D_T,
                                       MOMENT_REFE = CoefRef,
                                      ),
       ARCHIVAGE=_F(LIST_INST  = L_ARCH),
-   );
+   )
 
 TB_D_T = RECU_TABLE(CO=RE_D_T,NOM_PARA=('ITER_GLOB'),)
 
@@ -169,7 +169,7 @@ RE_D_E=DYNA_NON_LINE(MODELE     = MO_D_E,
                                       MOMENT_REFE = CoefRef,
                                      ),
       ARCHIVAGE=_F(LIST_INST  = L_ARCH),
-   );
+   )
 
 TB_D_E = RECU_TABLE(CO=RE_D_E,NOM_PARA=('ITER_GLOB'),)
 
@@ -237,7 +237,7 @@ RE_D_EM=DYNA_NON_LINE(MODELE     = MO_D_EM,
                                       MOMENT_REFE = CoefRef,
                                      ),
       ARCHIVAGE=_F(LIST_INST  = L_ARCH),
-   );
+   )
 
 TB_D_EM = RECU_TABLE(CO=RE_D_EM,NOM_PARA=('ITER_GLOB'),)
 
@@ -302,7 +302,7 @@ RE_D_TGD=DYNA_NON_LINE(
                                       MOMENT_REFE = CoefRef,
                                      ),
       ARCHIVAGE=_F(LIST_INST  = L_ARCH),
-   );
+   )
 
 TB_D_TGD = RECU_TABLE(CO=RE_D_TGD,NOM_PARA=('ITER_GLOB'),)
 

@@ -20,7 +20,7 @@
 #  MODELISATION A : CALCUL ELASTIQUE
 #--------------------------------------------------------
 
-POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),);
+POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),)
 
 #--------------------------------------------------------------
 # 3- DEFINITION DES CHARGEMENTS
@@ -33,23 +33,23 @@ CLIM=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0.,),
                               _F(GROUP_MA='SYME_Z',
                                  DZ=0.,),
-                      ),);
+                      ),)
 
 CHARGEF=AFFE_CHAR_MECA(MODELE=MO,
                        FORCE_ARETE=_F(GROUP_MA='FORCE',
-                                      FY=-38400,),);
+                                      FY=-38400,),)
 #--------------------------------------------------------------
 # DEFINITION DES VARIABLE DE COMMANDE
 #--------------------------------------------------------------
 SECPROJ=PROJ_CHAMP(PROJECTION='OUI',
                    RESULTAT=RESUSEC,
                    MAILLAGE_1=MALINE,
-                   MAILLAGE_2=MA,);
+                   MAILLAGE_2=MA,)
 
 THPROJ=PROJ_CHAMP(PROJECTION='OUI',
                   RESULTAT=RESUTH,
                   MODELE_1=MODTHER,
-                  MODELE_2=MO2,);
+                  MODELE_2=MO2,)
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
@@ -67,7 +67,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                                _F(GROUP_MA='BETON',
                                   NOM_VARC='SECH',
                                   EVOL=SECPROJ,
-                                  VALE_REF=120,),),);
+                                  VALE_REF=120,),),)
 
 #--------------------------------------------------------------
 # 4- RESOLUTION DU PROBLEME
@@ -83,7 +83,7 @@ RESUSTA=MECA_STATIQUE(MODELE=MO,
                       CARA_ELEM=CARAMECA,
                       EXCIT=_F(CHARGE=CLIM,),
                       LIST_INST=L_INST,
-                      INST_FIN=4320000.,);
+                      INST_FIN=4320000.,)
 
 RESUSTA=MECA_STATIQUE(reuse =RESUSTA,
                       RESULTAT=RESUSTA,
@@ -92,23 +92,23 @@ RESUSTA=MECA_STATIQUE(reuse =RESUSTA,
                       CARA_ELEM=CARAMECA,
                       EXCIT=(_F(CHARGE=CLIM,),
                              _F(CHARGE=CHARGEF,),),
-                      INST=8640000.,);
+                      INST=8640000.,)
 
 RESUSTA=CALC_CHAMP(reuse =RESUSTA,
                    RESULTAT=RESUSTA,
                    GROUP_MA='BETON',
                    CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),
                    DEFORMATION=('EPSI_NOEU','EPVC_NOEU','EPME_ELNO',),
-                   FORCE='FORC_NODA',);
+                   FORCE='FORC_NODA',)
 
 IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=RESUSTA,),
                 _F(RESULTAT=SECPROJ,),
-                _F(RESULTAT=THPROJ,),),);
+                _F(RESULTAT=THPROJ,),),)
 
 IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=RESUTH,),
-                _F(RESULTAT=RESUSEC,),),);
+                _F(RESULTAT=RESUSEC,),),)
 
 CONTG=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='sixx',
@@ -116,7 +116,7 @@ CONTG=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='SIEF_ELNO',
                               NUME_ORDRE=5,
                               GROUP_NO='G',
-                              NOM_CMP='SIXX',),);
+                              NOM_CMP='SIXX',),)
 
 CONTC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='sixx',
@@ -124,7 +124,7 @@ CONTC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='SIEF_ELNO',
                               NUME_ORDRE=5,
                               GROUP_NO='C',
-                              NOM_CMP='SIXX',),);
+                              NOM_CMP='SIXX',),)
 
 VC_G=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='epvc',
@@ -132,7 +132,7 @@ VC_G=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              NOM_CHAM='EPVC_NOEU',
                              NUME_ORDRE=5,
                              GROUP_NO='G',
-                             NOM_CMP=('EPTHER_L','EPSECH','EPHYDR'),),);
+                             NOM_CMP=('EPTHER_L','EPSECH','EPHYDR'),),)
 
 VC_C=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='epvc',
@@ -140,7 +140,7 @@ VC_C=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              NOM_CHAM='EPVC_NOEU',
                              NUME_ORDRE=5,
                              GROUP_NO='C',
-                             NOM_CMP=('EPTHER_L','EPSECH','EPHYDR'),),);
+                             NOM_CMP=('EPTHER_L','EPSECH','EPHYDR'),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
@@ -185,4 +185,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            TABLE=CONTG,)
 
 
-FIN();
+FIN()

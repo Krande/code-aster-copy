@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 import numpy as N
 
@@ -40,9 +40,9 @@ tmax =1.
 NCAL = 20
 
 
-ZERO =DEFI_CONSTANTE(VALE=0.0);
+ZERO =DEFI_CONSTANTE(VALE=0.0)
 
-UN =DEFI_CONSTANTE(VALE=1.0);
+UN =DEFI_CONSTANTE(VALE=1.0)
 
 compor='PINTO_MENEGOTTO'
 
@@ -51,10 +51,10 @@ Nbvari=8
 
 YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 2.E11,
                                          500., 1.E11,
-                                           ),);
+                                           ),)
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 1.E-4,
                                          500., 2.E-4,
-                                           ),);
+                                           ),)
 
 
 
@@ -78,18 +78,18 @@ MATER=DEFI_MATERIAU( ELAS_FO=_F(  E = YOUN,
 
 CHMATER=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATER,),);
+                              MATER=MATER,),)
 
 MOMECA=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='BARRE',),);
+                           MODELISATION='BARRE',),)
 
 CARAELEM=AFFE_CARA_ELEM(MODELE=MOMECA,
                         BARRE=_F(GROUP_MA='M1',
                                  SECTION='GENERALE',
                                  CARA='A',
-                                 VALE=1.0,),);
+                                 VALE=1.0,),)
 
 # definition explicite de la liste d'instants
 # pour que CALC_FONCTION/COMB fonctionne
@@ -114,13 +114,13 @@ CHP_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
                     MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP='TEMP',
-                            VALE_F=TIMP,),);
+                            VALE_F=TIMP,),)
 
 RTEMP=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
                 AFFE=_F(CHAM_GD=CHP_TEMP,
-                        LIST_INST=L_INST,),);
+                        LIST_INST=L_INST,),)
 
 CHMTH=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
@@ -136,7 +136,7 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
                                     DX=0.0,
                                     DY=0.0,
                                     DZ=0.0,),
-                                    ),);
+                                    ),)
 
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CHMTH,
@@ -148,7 +148,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(REAC_INCR=1,
                           REAC_ITER=1,),
-);
+)
 
 TABU=CREA_TABLE(
                  RESU=_F(RESULTAT=U,
@@ -164,14 +164,14 @@ TABU_VAR=CREA_TABLE(
                              NOM_CHAM='VARI_ELGA',),
                     )
 
-IMPR_TABLE(TABLE = TABU_VAR);
+IMPR_TABLE(TABLE = TABU_VAR)
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIEF_ELNO'))
 
 
 U=CALC_CHAMP(reuse =U,
                RESULTAT=U,
-               CONTRAINTE='SIEF_NOEU');
+               CONTRAINTE='SIEF_NOEU')
 
 
 SIGN3=POST_RELEVE_T(ACTION=_F(INTITULE='N_N3',
@@ -179,9 +179,9 @@ SIGN3=POST_RELEVE_T(ACTION=_F(INTITULE='N_N3',
                                 RESULTAT=U,
                                 NOM_CHAM='SIEF_NOEU',
                                 NOM_CMP='N',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
-IMPR_TABLE(TABLE=SIGN3);
+IMPR_TABLE(TABLE=SIGN3)
 
 
 # IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=U,)))
@@ -225,7 +225,7 @@ for i in range(1,NCAL+1):
 
           # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
 
-          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
+          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF))
 
           print('i=',i, ' instant=', time, ' Temperature=',Ti)
 
@@ -245,14 +245,14 @@ for i in range(1,NCAL+1):
                                                             A6_PM     = 620.0,
                                                             C_PM      = 0.5,
                                                             A_PM      = 0.008)
-                                );
+                                )
 
           listinst = DEFI_LIST_REEL(DEBUT=timem,
-                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
+                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),)
 
           CHMTH[i]=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATER[i],),);
+                              MATER=MATER[i],),)
 
           LIAISON2=AFFE_CHAR_MECA(MODELE=MOMECA,
                        DDL_IMPO=(_F(GROUP_NO='N3',
@@ -262,11 +262,11 @@ for i in range(1,NCAL+1):
                                  _F(GROUP_NO='N7',
                                     DX=0.0,
                                     DY=0.0,),
-                                    ),);
+                                    ),)
 
           CHRGE[i]=AFFE_CHAR_MECA_F(MODELE=MOMECA,
                        DDL_IMPO=(_F(GROUP_NO='N7',
-                                    DZ=epsimp,),),);
+                                    DZ=epsimp,),),)
 
 
           if i == 1 :
@@ -280,7 +280,7 @@ for i in range(1,NCAL+1):
                                  INCREMENT=_F(LIST_INST=listinst,),
                                  NEWTON=_F(REAC_INCR=1,
                                  REAC_ITER=1,),
-                                 );
+                                 )
           else :
 
               NOR = FORMULE(NOM_PARA='N',VALE='YOUN(Ti)/YOUN(Tm)*N',
@@ -309,22 +309,22 @@ for i in range(1,NCAL+1):
                              INCREMENT=_F(LIST_INST=listinst,),
                              NEWTON=_F(REAC_INCR=1,
                              REAC_ITER=1,),
-                            );
+                            )
 
-              DETRUIRE(NOM =EM);
-              DETRUIRE(NOM =SM1);
-              DETRUIRE(NOM =SM);
-              DETRUIRE(NOM =VM);
-              DETRUIRE(NOM =NOR);
-              DETRUIRE(NOM =SIG1);
-              DETRUIRE(NOM =SIG2);
+              DETRUIRE(NOM =EM)
+              DETRUIRE(NOM =SM1)
+              DETRUIRE(NOM =SM)
+              DETRUIRE(NOM =VM)
+              DETRUIRE(NOM =NOR)
+              DETRUIRE(NOM =SIG1)
+              DETRUIRE(NOM =SIG2)
 
           RESU[i]=CALC_CHAMP(reuse=RESU[i],RESULTAT=RESU[i],CONTRAINTE=('SIEF_ELNO'))
 
 
           RESU[i]=CALC_CHAMP(reuse =RESU[i],
            RESULTAT=RESU[i],
-           CONTRAINTE='SIEF_NOEU');
+           CONTRAINTE='SIEF_NOEU')
 
           EM  = CREA_CHAMP(  TYPE_CHAM = 'NOEU_DEPL_R',
                                OPERATION = 'EXTR',
@@ -342,12 +342,12 @@ for i in range(1,NCAL+1):
                            OPERATION='EXTR',
                            RESULTAT=RESU[i],
                            NOM_CHAM='VARI_ELGA',
-                           NUME_ORDRE=1,  );
+                           NUME_ORDRE=1,  )
 
-          DETRUIRE(NOM =epsimp);
-          DETRUIRE(NOM =listinst);
-          DETRUIRE(NOM =CHRGE[i]);
-          DETRUIRE(NOM =LIAISON2);
+          DETRUIRE(NOM =epsimp)
+          DETRUIRE(NOM =listinst)
+          DETRUIRE(NOM =CHRGE[i])
+          DETRUIRE(NOM =LIAISON2)
 
           IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=RESU[i])))
 
@@ -356,7 +356,7 @@ for i in range(1,NCAL+1):
                                 RESULTAT=RESU[i],
                                 NOM_CHAM='SIEF_NOEU',
                                 NOM_CMP='N',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
           VARN3[i]=CREA_TABLE(
                              RESU=_F(RESULTAT=RESU[i],
@@ -376,7 +376,7 @@ for i in range(1,NCAL+1):
                                    NOM_PARA='DIFF', NOM_COLONNE=(NOMPARA, 'VAL_CAL')),
                                    ),)
 
-          DETRUIRE(NOM =TCOMPR);
+          DETRUIRE(NOM =TCOMPR)
           NOMPARA='V1'
           TCOMPR =CALC_TABLE(TABLE=TABU_VAR,ACTION=(
                                 _F(OPERATION='FILTRE',NOM_PARA=('INST'),VALE=time,),
@@ -393,6 +393,6 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE(NOM =TCOMPR);
+          DETRUIRE(NOM =TCOMPR)
 
-FIN();
+FIN()

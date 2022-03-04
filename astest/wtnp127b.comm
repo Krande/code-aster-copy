@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,15 +69,15 @@ ITER_GLOB_MAXI = 5
 # Definition des caracteristiques fluides
 #**********************************************************
 
-UN=DEFI_CONSTANTE(VALE=1.0);
-ZERO=DEFI_CONSTANTE(VALE=0.0);
-PERMINT=DEFI_CONSTANTE(VALE=1.E-13);
-HENRY=DEFI_CONSTANTE(VALE=1.E10);
+UN=DEFI_CONSTANTE(VALE=1.0)
+ZERO=DEFI_CONSTANTE(VALE=0.0)
+PERMINT=DEFI_CONSTANTE(VALE=1.E-13)
+HENRY=DEFI_CONSTANTE(VALE=1.E10)
 
 #*********************
 # Lecture du maillage
 #*********************
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
@@ -85,8 +85,8 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
                    _F(GROUP_MA_PEAU='MMIL',
                       GROUP_MA_INTERNE='DROITE'),
                    _F(GROUP_MA_PEAU=('MDROIT','MGAUCHE')))
-                    );
-                    
+                    )
+
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(
@@ -95,7 +95,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 _F(GROUP_MA='MMIL'),
                 _F(GROUP_MA='MDROIT'),
                 _F(GROUP_MA='MGAUCHE'),
-                   ));
+                   ))
 
 
 
@@ -108,7 +108,7 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION=MODELISA),
-                  );
+                  )
 
 #*********************************************************
 # DEFI_MATERIAU
@@ -186,7 +186,7 @@ MATERIAU=DEFI_MATERIAU(
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='TOUT',
-                             MATER=MATERIAU)));
+                             MATER=MATERIAU)))
 
 #*************************************************************
 # Affectation de l etat initial
@@ -208,7 +208,7 @@ CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
        MECA_IMPO=(_F(TOUT='OUI',PRE2=0.),
                  _F(GROUP_MA = 'MGAUCHE',PRE1=PRE1GAUCHE),
                  _F(GROUP_MA = 'MDROIT',PRE1=PCINI),
-                 ));
+                 ))
 
 #
 #
@@ -220,7 +220,7 @@ CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=TFINAL,
                                     NOMBRE=NBDECOUP)),
-                     );
+                     )
 
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
                                 ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -258,13 +258,13 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI),
 
                  ARCHIVAGE=_F(LIST_INST     = INST1 ),
-                 );
+                 )
 #
 #*************************************************************
 # Impressions
 #*************************************************************
 #
-L_INST=DEFI_LIST_REEL(VALE=(0.,10000.,50000.));
+L_INST=DEFI_LIST_REEL(VALE=(0.,10000.,50000.))
 
 
 PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -273,7 +273,7 @@ PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
              NOM_CHAM='DEPL',
              LIST_INST=L_INST,
              NOM_CMP=('PRE1'),
-             OPERATION='EXTRACTION'));
+             OPERATION='EXTRACTION'))
 
 TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   REFERENCE='ANALYTIQUE',
@@ -296,7 +296,7 @@ F_EAUG=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU GAUCHE',
                            NOM_CHAM='SIEF_ELNO',
                            INST=TFINAL,
                            NOM_CMP=('FH11X','FH11Y'),
-                           OPERATION='EXTRACTION'));
+                           OPERATION='EXTRACTION'))
 
 F_EAUD=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU DROITE',
                            GROUP_NO=('MDROIT'),
@@ -304,7 +304,7 @@ F_EAUD=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU DROITE',
                            NOM_CHAM='SIEF_ELNO',
                            INST=TFINAL,
                            NOM_CMP=('FH11X','FH11Y','FH22X','FH22Y'),
-                           OPERATION='EXTRACTION'));
+                           OPERATION='EXTRACTION'))
 
 F_EAUM=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU MILIEU',
                            GROUP_NO=('MMIL'),
@@ -312,7 +312,7 @@ F_EAUM=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU MILIEU',
                            NOM_CHAM='SIEF_ELNO',
                            INST=TFINAL,
                            NOM_CMP=('FH11X','FH11Y'),
-                           OPERATION='EXTRACTION'));
+                           OPERATION='EXTRACTION'))
 
 cal1= CALC_CHAMP( reuse    = cal1,
                    RESULTAT = cal1,
@@ -450,7 +450,7 @@ CH2=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',
                             NOM_CMP_RESU =('X1')))
 
 CH3=CREA_CHAMP(OPERATION = 'DISC', TYPE_CHAM = 'NOEU_NEUT_R',
-                 CHAM_GD=CH2, MODELE = MODELT );
+                 CHAM_GD=CH2, MODELE = MODELT )
 
 CH4=CREA_CHAMP(TYPE_CHAM = 'NOEU_SIEF_R', OPERATION = 'ASSE',
                MODELE = MODELT,
@@ -550,7 +550,7 @@ CHFON=CREA_CHAMP(OPERATION='AFFE',
                  AFFE=_F( TOUT='OUI', NOM_CMP = 'X1', VALE_F = MASQ))
 
 CHEXT=CREA_CHAMP(OPERATION = 'EXTR', TYPE_CHAM='NOEU_SIEF_R',
-                 NOM_CHAM  = 'SIEF_NOEU', RESULTAT  = cal1, NUME_ORDRE=5);
+                 NOM_CHAM  = 'SIEF_NOEU', RESULTAT  = cal1, NUME_ORDRE=5)
 
 CHNEXT=CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R', OPERATION = 'ASSE',MODELE = MODELT,
                   ASSE = _F(TOUT='OUI',
@@ -561,7 +561,7 @@ CHNEXT=CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R', OPERATION = 'ASSE',MODELE = MODELT,
 CHEVA=CREA_CHAMP(OPERATION='EVAL',
                  TYPE_CHAM='NOEU_NEUT_R',
                  CHAM_F=CHFON,
-                 CHAM_PARA=CHNEXT);
+                 CHAM_PARA=CHNEXT)
 
 INTVOL=POST_ELEM( CHAM_GD=CHEVA,
                   CHAM_MATER=CHMAT,
@@ -574,4 +574,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            NOM_PARA='INTE_X1',
            TABLE=INTVOL,)
 
-FIN();
+FIN()

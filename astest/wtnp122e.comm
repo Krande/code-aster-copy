@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ ITER_GLOB_MAXI = 4
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=TFINAL,
                                     NOMBRE=NBDECOUP,),),
-                     );
+                     )
 
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
                                 ECHEC=_F(EVENEMENT = 'ERREUR',
@@ -72,7 +72,7 @@ LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
 # Lecture du maillage
 #*********************
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -81,7 +81,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 _F(GROUP_MA='MBAS',),
                 _F(GROUP_MA='MDROIT',),
                 _F(GROUP_MA='MGAUCHE',),
-                   ),);
+                   ),)
 
 #*********************************************************
 # Modele de calcul
@@ -91,23 +91,23 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='D_PLAN_HS',),
-                  );
+                  )
 
 
 #*********************************************************
 # Definition des caracteristiques fluides
 #**********************************************************
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-VISCOGAZ=DEFI_CONSTANTE(VALE=1.,);
+VISCOGAZ=DEFI_CONSTANTE(VALE=1.,)
 
-DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,)
 
 
 VALKINT=1.E-3 /PGREF
-KINT=DEFI_CONSTANTE(VALE=VALKINT,);
+KINT=DEFI_CONSTANTE(VALE=VALKINT,)
 #*********************************************************
 # Definition des materiaux
 #**********************************************************
@@ -151,7 +151,7 @@ MATERIAU=DEFI_MATERIAU(
          PRE1 = PGREF,
          PORO = 1.,
                  ),
-   );
+   )
 #****************************************************************
 # Affectation des materiaux
 #****************************************************************
@@ -159,7 +159,7 @@ MATERIAU=DEFI_MATERIAU(
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='TOUT',
-                             MATER=MATERIAU,),),);
+                             MATER=MATERIAU,),),)
 
 #*************************************************************
 # Affectation de l etat initial
@@ -171,7 +171,7 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
                     AFFE=_F( GROUP_MA = 'TOUT'  ,
                              NOM_CMP  = 'PRE1' ,
                              VALE     = PG0 , ),
-                );
+                )
 
 #*************************************************************
 # Affectation des CL
@@ -179,7 +179,7 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
 #
 CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
        MECA_IMPO=_F(GROUP_MA = 'MGAUCHE',PRE1=PRE1G0,),
-       );
+       )
 
 
 #
@@ -213,7 +213,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI,),
 
                  ARCHIVAGE=_F(LIST_INST     = INST1  ,),
-                 );
+                 )
 
 
 #
@@ -221,7 +221,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
 # Impressions
 #*************************************************************
 
-L_INST=DEFI_LIST_REEL(VALE=(1.,10.,100.,),);
+L_INST=DEFI_LIST_REEL(VALE=(1.,10.,100.,),)
 
 
 PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -230,13 +230,13 @@ PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                NOM_CHAM='DEPL',
                LIST_INST=L_INST,
                NOM_CMP=('PRE1'),
-               OPERATION='EXTRACTION',),);
+               OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=PR1_BAS,
              PAGINATION = 'INST' ,
              NOM_PARA=('INST','COOR_X','PRE1'),
              TRI   = (_F( NOM_PARA = ('COOR_X' ,),
-             ORDRE    = 'CROISSANT',),),);
+             ORDRE    = 'CROISSANT',),),)
 
 PR2_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                GROUP_NO=('MBAS'),
@@ -244,13 +244,13 @@ PR2_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                NOM_CHAM='DEPL',
                LIST_INST=L_INST,
                NOM_CMP=('PRE1'),
-               OPERATION='EXTRACTION',),);
+               OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=PR2_BAS,
              PAGINATION = 'INST' ,
              NOM_PARA=('INST','COOR_X','PRE1'),
              TRI   = (_F( NOM_PARA = ('COOR_X' ,),
-             ORDRE    = 'CROISSANT',),),);
+             ORDRE    = 'CROISSANT',),),)
 
 # NOEUD DU BAS
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
@@ -305,4 +305,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   PRECISION=1.E-2,),
           )
 
-FIN();
+FIN()

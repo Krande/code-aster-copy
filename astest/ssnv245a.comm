@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,18 +20,18 @@
 #       CAS_TEST SSNV245A: 2D, ELEMENTS Q4, XFEM
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-              
+
 #----------------------------------------------
 #                   MAILLAGE
 #----------------------------------------------
 # precision
-n = 1000.0;
+n = 1000.0
 
 # dimensions de la structure
-lx = 1.0;
-ly = 5.0;
+lx = 1.0
+ly = 5.0
 
-MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
@@ -43,7 +43,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                    _F(GROUP_MA='LIG4'),
                                   ),
                     INFO=2,
-                   );
+                   )
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -53,7 +53,7 @@ MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN',),
-              );
+              )
 
 LS_N = FORMULE(VALE='Y-2.6',
                NOM_PARA=['X', 'Y'],)
@@ -62,33 +62,33 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LS_N,),
                     INFO=1,
-                   );
+                   )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          INFO=1,
-                        );
+                        )
 
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
-UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,);
+UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,)
 
-ZERO = DEFI_CONSTANTE(VALE = 0.0,);
+ZERO = DEFI_CONSTANTE(VALE = 0.0,)
 
-KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,);
+KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,)
 
 SOL  = DEFI_MATERIAU(ELAS      = _F(E           = 5800.0E6,
                                     NU          = 0.,
                                     ALPHA       = 0.0,),
-                    );
+                    )
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
                                MATER=SOL,
                               ),
-                      );
+                      )
 
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAILLAG2,),)
 
@@ -137,19 +137,19 @@ CH=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                             _F(TOUT='OUI', DY=DEPL_Y,),
                            ),
                   INFO=2,
-                 );
+                 )
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='LIG2',DX=DEPL_X,),
                              ),
                     INFO=2,
-                   );
+                   )
 
 CH3=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='LIG4',DX=DEPL_N,),
                              ),
                     INFO=2,
-                   );
+                   )
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -164,7 +164,7 @@ MULT=DEFI_FONCTION(NOM_PARA='INST',
 
 L_INS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=1,),
-                    );
+                    )
 
 UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                     CHAM_MATER  = CHAMPMAT,
@@ -178,18 +178,18 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                                         ITER_INTE_MAXI = 100,
                                        ),
                     NEWTON      = _F(MATRICE   = 'TANGENTE',
-                                     REAC_ITER = 1, 
+                                     REAC_ITER = 1,
                                     ),
                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                                     ITER_GLOB_MAXI = 100,    
+                                     ITER_GLOB_MAXI = 100,
                                     ),
                     INCREMENT   = _F(LIST_INST = L_INS,),
                     INFO=2,
                    )
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
 
@@ -197,11 +197,11 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),),
-                    );  
+                    )
 
 RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                       RESULTAT    = UTOT1,
-                     );
+                     )
 
 
 #MODELIN=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -209,7 +209,7 @@ RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
 #                            PHENOMENE='MECANIQUE',
 #                            MODELISATION='D_PLAN',
 #                           ),
-#                   );
+#                   )
 #IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',
 #  UNITE=80,
 #  RESU= (_F(MAILLAGE=MA_XFEM,
@@ -221,9 +221,9 @@ RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
 #         )
 
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              GROUP_NO=('NFISSU',),
@@ -233,9 +233,9 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
-#IMPR_TABLE(TABLE=DEP1,);
+#IMPR_TABLE(TABLE=DEP1,)
 
 DEP1P = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
@@ -244,7 +244,7 @@ DEP1P = CALC_TABLE(TABLE = DEP1,
                                 VALE_K    = 'N[^P]',
                                ),
                             ),
-                  );
+                  )
 
 
 DEP1M = CALC_TABLE(TABLE = DEP1,
@@ -254,11 +254,11 @@ DEP1M = CALC_TABLE(TABLE = DEP1,
                                 VALE_K    = 'N[^M]',
                                ),
                             ),
-                  );
+                  )
 
-#IMPR_TABLE(TABLE=DEP1P,);
+#IMPR_TABLE(TABLE=DEP1P,)
 
-#IMPR_TABLE(TABLE=DEP1M,);
+#IMPR_TABLE(TABLE=DEP1M,)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -285,7 +285,7 @@ DEP2 = CALC_TABLE(TABLE = DEP1,
                                 VALE_K    = 'NP5',
                                ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -301,7 +301,7 @@ DEP3 = CALC_TABLE(TABLE = DEP1,
                                 VALE_K    = 'NM4',
                                ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -311,4 +311,4 @@ TEST_TABLE(CRITERE='RELATIF',
            NOM_PARA='DX',
            TABLE=DEP3,)
 
-FIN();
+FIN()

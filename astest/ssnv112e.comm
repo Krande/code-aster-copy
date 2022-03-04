@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,28 +32,28 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT='MED');
+M=LIRE_MAILLAGE(FORMAT='MED')
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_INCO_UPG'));
+                       MODELISATION='3D_INCO_UPG'))
 
 M=MODI_MAILLAGE(reuse =M,
                 MAILLAGE=M,
-                ORIE_PEAU=_F(GROUP_MA_PEAU=('FACEAB','FACSUP','FACINF','FACEEF','FACEAE')));
+                ORIE_PEAU=_F(GROUP_MA_PEAU=('FACEAB','FACSUP','FACINF','FACEEF','FACEAE')))
 
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.,
                          NU=0.49999,
                          ALPHA=0.),
                  ECRO_LINE=_F(D_SIGM_EPSI=1000.,
-                              SY=1.E9));
+                              SY=1.E9))
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA));
+                         MATER=MA))
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(GROUP_MA='FACEAB',
@@ -65,15 +65,15 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                   FACE_IMPO=(_F(GROUP_MA='FACEEF',
                                 DNOR=0.),
                              _F(GROUP_MA='FACEAE',
-                                DNOR=-6.E-5)));
+                                DNOR=-6.E-5)))
 
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=_F(JUSQU_A=1.,
-                                      NOMBRE=1));
+                                      NOMBRE=1))
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                           1.,1.,
-                          ));
+                          ))
 
 EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
@@ -86,7 +86,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(SIGM_REFE=60.0,
                                   EPSI_REFE=3.E-4,
                                   RESI_REFE_RELA=1.E-3),
-                   SOLVEUR=_F(METHODE='MUMPS',));
+                   SOLVEUR=_F(METHODE='MUMPS',))
 
 # REMARQUE : STRICTO SENSU, LE CALCUL DE ERME_ELEM EST FAUX CAR
 #            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
@@ -95,11 +95,11 @@ EVOL=STAT_NON_LINE(MODELE=MO,
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
                 CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'),
-                CRITERES=('SIEQ_ELNO','SIEQ_NOEU'),);
+                CRITERES=('SIEQ_ELNO','SIEQ_NOEU'),)
 
 EVOL=CALC_ERREUR(reuse =EVOL,
                  RESULTAT=EVOL,
-                 OPTION=('ERME_ELEM','ERME_ELNO'));
+                 OPTION=('ERME_ELEM','ERME_ELNO'))
 
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
@@ -301,6 +301,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
                 ),
           )
 
-FIN();
+FIN()
 
 #

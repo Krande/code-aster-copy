@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=32000000000.0,
                             NU=0.2,
@@ -32,76 +32,76 @@ BETON=DEFI_MATERIAU(ELAS=_F(E=32000000000.0,
                     ENDO_ORTH_BETON=_F(K0=300.0,
                                        K1=10500000.0,
                                        ECROB=1000.0,
-                                       ECROD=60000.0,),);
+                                       ECROD=60000.0,),)
 
 MOMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=BETON,),);
+                            MATER=BETON,),)
 
 BLOQX=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='bloc_x',
-                                 DX=0.0,),);
+                                 DX=0.0,),)
 
 BLOQY=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='bloc_y',
-                                 DY=0.0,),);
+                                 DY=0.0,),)
 
 BLOQZ=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='bloc_z',
-                                 DZ=0.0,),);
+                                 DZ=0.0,),)
 
 DEP_X=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='depl_x',
-                                 DX=0.0025,),);
+                                 DX=0.0025,),)
 
 DEP_Y=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='depl_y',
-                                 DY=0.0025,),);
+                                 DY=0.0025,),)
 
 DEP_Z=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='depl_z',
-                                 DZ=0.0025,),);
+                                 DZ=0.0025,),)
 
 DEP_X_2=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='depl_x',
-                                   DX=0.0,),);
+                                   DX=0.0,),)
 
 DEP_Y_2=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='depl_y',
-                                   DY=0.0,),);
+                                   DY=0.0,),)
 
 DEP_Z_2=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='depl_z',
-                                   DZ=0.0,),);
+                                   DZ=0.0,),)
 
 FONC_X=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1.0,1.0,
-                           ),PROL_DROITE='CONSTANT',);
+                           ),PROL_DROITE='CONSTANT',)
 
 FONC_Y=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1.0,0.0,
                            2.0,1.0,
-                           ),PROL_DROITE='CONSTANT',);
+                           ),PROL_DROITE='CONSTANT',)
 
 FONC_Z=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            2.0,0.0,
                            2.5,0.5,
                            3.0,0.0,
                            4.0,-60.0,
-                           ),PROL_DROITE='CONSTANT',);
+                           ),PROL_DROITE='CONSTANT',)
 
 L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=4.0,
-                                   NOMBRE=40,),);
+                                   NOMBRE=40,),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=4.0,
-                                    NOMBRE=40,),);
+                                    NOMBRE=40,),)
 
 L_INST=DEFI_LIST_INST(METHODE='MANUEL',
                       DEFI_LIST=_F(LIST_INST=L_TPS,),
                       ECHEC=_F(SUBD_PAS=10,
-                               SUBD_NIVEAU=5,),);
+                               SUBD_NIVEAU=5,),)
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=MOMAT,
@@ -120,7 +120,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 ARCHIVAGE=_F(LIST_INST=L_ARCH,),
                 NEWTON=_F(REAC_ITER=1,),
                 ENERGIE=_F(),
-);
+)
 
 U=STAT_NON_LINE(reuse =U,
                 MODELE=MO,
@@ -141,7 +141,7 @@ U=STAT_NON_LINE(reuse =U,
                 ARCHIVAGE=_F(LIST_INST=L_ARCH,),
                 NEWTON=_F(REAC_ITER=1,),
                 ENERGIE=_F(),
-);
+)
 
 U=STAT_NON_LINE(reuse =U,
                 MODELE=MO,
@@ -162,7 +162,7 @@ U=STAT_NON_LINE(reuse =U,
                 ARCHIVAGE=_F(LIST_INST=L_ARCH,),
                 NEWTON=_F(REAC_ITER=1,),
                 ENERGIE=_F(),
-);
+)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   POINT=1,
@@ -238,11 +238,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=40,
 
 # Validation croisee des calculs d'energie :
 #-------------------------------------------
-ENER1=RECU_TABLE(CO=U,NOM_TABLE='PARA_CALC',);
+ENER1=RECU_TABLE(CO=U,NOM_TABLE='PARA_CALC',)
 #IMPR_TABLE(TABLE=ENER1)
 
 
-U=CALC_CHAMP(reuse = U, FORCE='FORC_NODA', RESULTAT=U, );
+U=CALC_CHAMP(reuse = U, FORCE='FORC_NODA', RESULTAT=U, )
 ENER2 = POST_ELEM( RESULTAT = U, TRAV_EXT = _F(),)
 #IMPR_TABLE(TABLE=ENER2)
 
@@ -302,4 +302,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=4.0,),
            )
 
-FIN();
+FIN()

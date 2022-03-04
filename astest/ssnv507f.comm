@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 # TRIANGLES QUADRATIQUES, CONTRAINTES PLANES
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
-R = 8;
+R = 8
 
 MAILLAG=DEFI_GROUP(reuse =MAILLAG,
                     MAILLAGE=MAILLAG,
@@ -33,12 +33,12 @@ MAILLAG=DEFI_GROUP(reuse =MAILLAG,
                                       OPTION ='ENV_SPHERE',
                                       POINT  = (0.0,0.0),
                                       RAYON = 1,
-                                      PRECISION = 2.0)));
+                                      PRECISION = 2.0)))
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG,
                      AFFE=(_F(GROUP_MA=('SURF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN')));
+                              MODELISATION='C_PLAN')))
 
 LN1 = FORMULE(VALE='-X*X-Y*Y+R*R',
               R=R,
@@ -47,12 +47,12 @@ LN1 = FORMULE(VALE='-X*X-Y*Y+R*R',
 FISS1=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN1),
-                    INFO=1);
+                    INFO=1)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1),
                          CONTACT='SANS',
-                         INFO=1);
+                         INFO=1)
 
 E=100.0E6
 nu=0.3
@@ -64,16 +64,16 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT=('OUI'),
                                 MATER=ACIER,
-                                ));
+                                ))
 
 DTH=-2*pi
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.,0.,1.,1.));
+                    VALE=(0.,0.,1.,1.))
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA=('LB','LH','LD','LG'),DX=0,DY=0)),
-                   INFO=1);
+                   INFO=1)
 
 tournex = FORMULE(VALE='sqrt(X*X+Y*Y)*cos(atan2(Y,X)+DTH*INST)-X',
                   DTH=DTH,
@@ -85,12 +85,12 @@ tourney = FORMULE(VALE='sqrt(X*X+Y*Y)*sin(atan2(Y,X)+DTH*INST)-Y',
 
 ROT=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='INTER',
-                                 DX=tournex,DY=tourney)));
+                                 DX=tournex,DY=tourney)))
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1,
-                                    NOMBRE=4));
+                                    NOMBRE=4))
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -105,22 +105,22 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                   RESI_GLOB_MAXI=1E-5)),
                    SOLVEUR=_F(METHODE='MUMPS',),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
-                   INFO=1);
+                   INFO=1)
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
-RINF = R - 1;
+RINF = R - 1
 MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                    MAILLAGE=MA_XFEM,
                    CREA_GROUP_NO=(_F(NOM='N_INT',
                    OPTION ='ENV_SPHERE',
                    POINT  = (0.0,0.0),
                    RAYON = 1,
-                   PRECISION = 1)));
+                   PRECISION = 1)))
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
@@ -146,7 +146,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                                  NOM_CHAM='DEPL',
                                  INST=inst[i],
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION'));
+                                 OPERATION='EXTRACTION'))
 
   DEP[i]=CALC_TABLE(reuse = DEP[i],
                     TABLE = DEP[i],
@@ -168,9 +168,9 @@ for i in [1,2,3,4]: #Boucle sur les increments
                               _F(OPERATION = 'FILTRE',
                                  NOM_PARA  = 'NOEUD',
                                  CRIT_COMP = 'REGEXP',
-                                 VALE_K    = 'N[^M]')));
+                                 VALE_K    = 'N[^M]')))
 
-  IMPR_TABLE(TABLE=DEP[i]);
+  IMPR_TABLE(TABLE=DEP[i])
 
   TEST_TABLE(CRITERE='ABSOLU',
              REFERENCE='ANALYTIQUE',
@@ -181,4 +181,4 @@ for i in [1,2,3,4]: #Boucle sur les increments
              TYPE_TEST='SOMM',
              TABLE=DEP[i],)
 
-FIN();
+FIN()

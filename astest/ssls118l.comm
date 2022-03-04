@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -31,25 +31,25 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_NO=(_F(GROUP_MA='AB',),
                              _F(GROUP_MA='BC',),
                              _F(GROUP_MA='CD',),
-                             _F(GROUP_MA='DA',),),);
+                             _F(GROUP_MA='DA',),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='DST',),);
+                       MODELISATION='DST',),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_NORM_COQUE=_F(GROUP_MA='MAIL1',
                                     VECT_NORM=(0.0,0.0,1.0,),
                                     GROUP_NO='O',),
-                 INFO=2,);
+                 INFO=2,)
 
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
                        COQUE=_F(GROUP_MA='TOUT',
                                 EPAIS=0.1,
                                 COQUE_NCOU=5,
-                                ANGL_REP=(20.0,-30.0,),),);
+                                ANGL_REP=(20.0,-30.0,),),)
 
 MAT=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=25.0,
                                E_T=25.0,
@@ -57,7 +57,7 @@ MAT=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=25.0,
                                NU_LT=0.25,
                                G_LT=10.0,
                                G_LN=10.0,
-                               G_TN=10.0,),);
+                               G_TN=10.0,),)
 
 MULTI=DEFI_COMPOSITE(COUCHE=(_F(EPAIS=0.02,
                                 MATER=MAT,
@@ -73,11 +73,11 @@ MULTI=DEFI_COMPOSITE(COUCHE=(_F(EPAIS=0.02,
                                 ORIENTATION=0.0,),
                              _F(EPAIS=0.02,
                                 MATER=MAT,
-                                ORIENTATION=0.0,),),);
+                                ORIENTATION=0.0,),),)
 
 CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MULTI,),);
+                               MATER=MULTI,),)
 
 PO=1.0
 P = FORMULE(VALE="""
@@ -145,17 +145,17 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                                 _F(GROUP_MA='BC',
                                    MX=0.0,),
                                 _F(GROUP_MA='DA',
-                                   MX=0.0,),),);
+                                   MX=0.0,),),)
 
 CHA_P=AFFE_CHAR_MECA_F(MODELE=MO,
                        FORCE_COQUE=_F(TOUT='OUI',
-                                      PRES=P,),);
+                                      PRES=P,),)
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHAM_MAT,
                    CARA_ELEM=CAR_ELE,
                    EXCIT=(_F(CHARGE=CHA,),
-                          _F(CHARGE=CHA_P,),),);
+                          _F(CHARGE=CHA_P,),),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
@@ -165,51 +165,51 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 #COUCHE 2: CALCUL DES CONTRAINTES
 SIG_C2_S=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 SIG_C2_I=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 #COUCHE 3: CALCUL DES CONTRAINTES
 SIG_C3_S=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=3,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 SIG_C3_M=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=3,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 SIG_C3_I=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=3,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 #COUCHE 4: CALCUL DES CONTRAINTES
 SIG_C4_S=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=4,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 SIG_C4_I=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=4,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 #COUCHE 5: CALCUL DES CONTRAINTES
 SIG_C5_S=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=5,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 SIG_C5_I=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=5,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='O',
                    REFERENCE='ANALYTIQUE',
@@ -547,4 +547,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

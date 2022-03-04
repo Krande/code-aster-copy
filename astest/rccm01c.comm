@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ COURFATA = FORMULE(VALE='5.E5/SIGM ',
 
 L_INST=DEFI_LIST_REEL(  DEBUT=1.,
                         INTERVALLE=_F(  JUSQU_A = 1000., PAS = 0.25) )
-                           
+
 FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
                           NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
@@ -50,31 +50,31 @@ MAT2=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                                SM = 50.,
                                SY_02 = 200.)
                                )
- 
+
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE EVOLUTION
 #--------------------------------------------------------------------------------
-# SITUATION 1 : CONTRAINTES TOTALES                               
+# SITUATION 1 : CONTRAINTES TOTALES
 T_TOT1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=1,)
 
-# SITUATION 1 : CONTRAINTES THERMIQUES                            
+# SITUATION 1 : CONTRAINTES THERMIQUES
 T_TH1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=2,)
 
-# SITUATION 1 : CONTRAINTES DE PRESSION                            
+# SITUATION 1 : CONTRAINTES DE PRESSION
 T_PR1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=3,)
 
-# SITUATION 2 : CONTRAINTES TOTALES                        
+# SITUATION 2 : CONTRAINTES TOTALES
 T_TOT2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=5,)
 
-# SITUATION 2 : CONTRAINTES THERMIQUES                            
+# SITUATION 2 : CONTRAINTES THERMIQUES
 T_TH2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=6,)
 
-# SITUATION 2 : CONTRAINTES DE PRESSION                            
+# SITUATION 2 : CONTRAINTES DE PRESSION
 T_PR2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=7,)
 
@@ -85,7 +85,7 @@ FAT12=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                 MATER=MAT,
                 TITRE='CALCUL DE FATIGUE, SITUATIONS 1 et 2, NOCC1 = 1',
                 TRANSITOIRE=(_F( TABL_RESU_MECA = T_TOT1,
-                                 TABL_SIGM_THER = T_TH1, 
+                                 TABL_SIGM_THER = T_TH1,
                                   NB_OCCUR=1,
                                    TOUT_INST='OUI',
                                   ),
@@ -105,7 +105,7 @@ FAT12b=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                 MATER=MAT,
                 TITRE='CALCUL DE FATIGUE, SITUATIONS 1 et 2, NOCC1=10',
                 TRANSITOIRE=(_F( TABL_RESU_MECA = T_TOT1,
-                                 TABL_SIGM_THER = T_TH1, 
+                                 TABL_SIGM_THER = T_TH1,
                                   NB_OCCUR=10,
                                    TOUT_INST='OUI',
                                   ),
@@ -125,7 +125,7 @@ FAT12c=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                 MATER=MAT2,
                 TITRE='CALCUL DE FATIGUE SECOND MATERIAU, SITUATIONS 1 et 2, NOCC1 = 10',
                 TRANSITOIRE=(_F( TABL_RESU_MECA = T_TOT1,
-                                 TABL_SIGM_THER = T_TH1, 
+                                 TABL_SIGM_THER = T_TH1,
                                   NB_OCCUR=10,
                                    TOUT_INST='OUI',),
                              _F( TABL_RESU_MECA = T_TOT2,
@@ -144,7 +144,7 @@ FAT12MIX=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                 MATER=MAT2,
                 TITRE='CALCUL DE FATIGUE EN KE MIXTE, SITUATIONS 1 et 2',
                 TRANSITOIRE=(_F( TABL_RESU_MECA = T_TOT1,
-                                 TABL_SIGM_THER = T_TH1, 
+                                 TABL_SIGM_THER = T_TH1,
                                   NB_OCCUR=1,
                                    TOUT_INST='OUI',),
                              _F( TABL_RESU_MECA = T_TOT2,

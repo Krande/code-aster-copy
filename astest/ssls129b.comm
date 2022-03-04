@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,32 +26,32 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MAILLA=LIRE_MAILLAGE(FORMAT='MED',);
-EPAI_COQ = 20;
+MAILLA=LIRE_MAILLAGE(FORMAT='MED',)
+EPAI_COQ = 20
 
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MAILLA,
                    MODI_MAILLE=_F(GROUP_MA='PLAQUE',
-                                  OPTION='QUAD8_9',),);
+                                  OPTION='QUAD8_9',),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='DROITE',),
-                               _F(GROUP_MA='GAUCHE',),),);
+                               _F(GROUP_MA='GAUCHE',),),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA=('PLAQUE','GAUCHE','DROITE',),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='COQUE_3D',),);
+                           MODELISATION='COQUE_3D',),)
 # DEFINITION DU MATERIAU
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=204000.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 #
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='PLAQUE',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 #
 
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
@@ -68,7 +68,7 @@ CC=AFFE_CHAR_MECA(MODELE=MODELE,
                               DZ=0.0,
                               DRX=0.0,
                               DRY=0.0,
-                              DRZ=0.0,),);
+                              DRZ=0.0,),)
 #
 # DEFINITION DES CHARGES
 #
@@ -76,18 +76,18 @@ CC=AFFE_CHAR_MECA(MODELE=MODELE,
 
 FORCEX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_ARETE=_F(GROUP_MA='DROITE',
-                                     FX=10.0,),);
+                                     FX=10.0,),)
 
 # FORCE LINEIQUE EN Z SUR LA PARTIE DROITE
 
 FORCEZ=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_ARETE=_F(GROUP_MA='DROITE',
-                                     FZ=-10.0,),);
+                                     FZ=-10.0,),)
 # RESOLUTION PAR STAT_NON_LINE
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=1,),);
+                                  NOMBRE=1,),)
 
 SNL1=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
@@ -97,12 +97,12 @@ SNL1=STAT_NON_LINE(MODELE=MODELE,
                           _F(CHARGE=FORCEX,),),
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LIST,),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),)
 
 SNL1=CALC_CHAMP(reuse =SNL1,
              RESULTAT=SNL1,
              CONTRAINTE=('EFGE_ELNO','EFGE_NOEU'),
-             FORCE='FORC_NODA',);
+             FORCE='FORC_NODA',)
 
 SNL3=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
@@ -112,12 +112,12 @@ SNL3=STAT_NON_LINE(MODELE=MODELE,
                           _F(CHARGE=FORCEZ,),),
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LIST,),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),)
 
 SNL3=CALC_CHAMP(reuse =SNL3,
                 RESULTAT=SNL3,
                 CONTRAINTE=('EFGE_ELNO','EFGE_NOEU'),
-                FORCE='FORC_NODA',);
+                FORCE='FORC_NODA',)
 
 PSNL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSNL1_GAUCHE',
                               GROUP_NO='GAUCHE',
@@ -135,7 +135,7 @@ PSNL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSNL1_GAUCHE',
                               MOMENT=('DRX','DRY','DRZ',),
                               POINT=(0.0,0.0,0.0,),
                               OPERATION='EXTRACTION',),
-                              ),);
+                              ),)
 
 PSNL3=POST_RELEVE_T(ACTION=(_F(INTITULE='PSNL3_GAUCHE',
                               GROUP_NO='GAUCHE',
@@ -153,7 +153,7 @@ PSNL3=POST_RELEVE_T(ACTION=(_F(INTITULE='PSNL3_GAUCHE',
                               MOMENT=('DRX','DRY','DRZ',),
                               POINT=(0.0,0.0,0.0,),
                               OPERATION='EXTRACTION',),
-                              ),);
+                              ),)
 
 # Filtrage etat inital
 
@@ -164,7 +164,7 @@ PSNL1=CALC_TABLE(reuse =PSNL1,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
+                         ),),)
 
 PSNL3=CALC_TABLE(reuse =PSNL3,
                TABLE=PSNL3,
@@ -173,7 +173,7 @@ PSNL3=CALC_TABLE(reuse =PSNL3,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
+                         ),),)
 
 # TEST SUR LE RESULTAT STAT_NON_LINE 1
 
@@ -333,23 +333,23 @@ RESU1=MECA_STATIQUE(MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARA_ELE,
                     EXCIT=(_F(CHARGE=CC,),
-                           _F(CHARGE=FORCEX,),),);
+                           _F(CHARGE=FORCEX,),),)
 
 RESU1=CALC_CHAMP(reuse =RESU1,
                  RESULTAT=RESU1,
                  CONTRAINTE=('EFGE_ELNO','EFGE_NOEU',),
-                 FORCE='FORC_NODA',);
+                 FORCE='FORC_NODA',)
 
 RESU3=MECA_STATIQUE(MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARA_ELE,
                     EXCIT=(_F(CHARGE=CC,),
-                           _F(CHARGE=FORCEZ,),),);
+                           _F(CHARGE=FORCEZ,),),)
 
 RESU3=CALC_CHAMP(reuse =RESU3,
                  RESULTAT=RESU3,
                  CONTRAINTE=('EFGE_ELNO','EFGE_NOEU',),
-                 FORCE='FORC_NODA',);
+                 FORCE='FORC_NODA',)
 
 PSL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSL1_GAUCHE',
                               GROUP_NO='GAUCHE',
@@ -367,7 +367,7 @@ PSL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSL1_GAUCHE',
                               MOMENT=('DRX','DRY','DRZ',),
                               POINT=(0.0,0.0,0.0,),
                               OPERATION='EXTRACTION',),
-                              ),);
+                              ),)
 
 PSL3=POST_RELEVE_T(ACTION=(_F(INTITULE='PSL3_GAUCHE',
                               GROUP_NO='GAUCHE',
@@ -385,7 +385,7 @@ PSL3=POST_RELEVE_T(ACTION=(_F(INTITULE='PSL3_GAUCHE',
                               MOMENT=('DRX','DRY','DRZ',),
                               POINT=(0.0,0.0,0.0,),
                               OPERATION='EXTRACTION',),
-                              ),);
+                              ),)
 
 
 # TEST SUR LE RESULTAT MECA_STATIQUE 1
@@ -544,4 +544,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

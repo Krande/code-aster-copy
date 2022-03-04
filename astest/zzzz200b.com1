@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ AMODE2=CALC_MODES(MATR_RIGI=MATRRIGI,
                   MATR_MASS=MATRMASS,
                   CALC_FREQ=_F(  NMAX_FREQ = 10),
                   #VERI_MODE=_F(  STOP_ERREUR='NON')
-                 );
+                 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -62,7 +62,7 @@ AMODE3=CALC_MODES(MATR_RIGI=MATRRIGB,
                   MATR_MASS=MATRMASB,
                   CALC_FREQ=_F(  NMAX_FREQ = 10),
                   #VERI_MODE=_F(  STOP_ERREUR='NON')
-                 );
+                 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -97,4 +97,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN( );
+FIN( )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,12 +38,12 @@ rho = 7800.
 longueur = 1.
 section = 0.3*0.2
 
-POUTRE=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), );
+POUTRE=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), )
 
 MODEL=AFFE_MODELE(MAILLAGE=POUTRE,
                   AFFE=_F( GROUP_MA = 'TOUT_ELT',
                            PHENOMENE = 'MECANIQUE',
-                           MODELISATION = '3D',),);
+                           MODELISATION = '3D',),)
 
 POUTRE=DEFI_GROUP(reuse =POUTRE,
                 MAILLAGE=POUTRE,
@@ -51,7 +51,7 @@ POUTRE=DEFI_GROUP(reuse =POUTRE,
                              _F(GROUP_MA='AY',NOM='AY',),
                              _F(GROUP_MA='AZ',NOM='AZ',),
                              _F(GROUP_MA='SURF2',NOM='SURF2',),
-                              ),);
+                              ),)
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES MATERIAUX
@@ -59,11 +59,11 @@ POUTRE=DEFI_GROUP(reuse =POUTRE,
 #
 ACIER=DEFI_MATERIAU(ELAS=_F( E = young,
                              NU = poisson,
-                             RHO = rho),);
+                             RHO = rho),)
 
 MAT=AFFE_MATERIAU( MAILLAGE=POUTRE,
                    AFFE=_F( GROUP_MA = 'TOUT_ELT', MATER = ACIER)
-                 );
+                 )
 
 #
 #---------------------------------------------------------------------
@@ -81,7 +81,7 @@ CHAR0=AFFE_CHAR_MECA( MODELE=MODEL,
                       LIAISON_UNIF=( # pour la force de traction
                                _F( GROUP_NO = 'SURF2',DDL=('DX',)),
                         ),
-                      );
+                      )
 #
 #---------------------------------------------------------------------
 #                     RESOLUTION
@@ -91,13 +91,13 @@ M_EL_RIG=CALC_MATR_ELEM( MODELE=MODEL,
                          CHAM_MATER=MAT,
                          CHARGE=CHAR0,
                          OPTION='RIGI_MECA'
-                           );
+                           )
 
 M_EL_MAS=CALC_MATR_ELEM( MODELE=MODEL,
                          CHAM_MATER=MAT,
                          CHARGE=CHAR0,
                          OPTION='MASS_MECA'
-                           );
+                           )
 
 NU=NUME_DDL( MATR_RIGI=M_EL_RIG)
 M_AS_RIG=ASSE_MATRICE( MATR_ELEM=M_EL_RIG,   NUME_DDL=NU)
@@ -167,7 +167,7 @@ if projection:
                                 NOM_CHAM = 'EPSI_NOEU',
                                 DDL_ACTIF = ('EPXX','EPYY',),),
                               ),
-                  );
+                  )
 
     OBSMXT = OBSERVATION(
                    RESULTAT = MODES,
@@ -184,7 +184,7 @@ if projection:
                                 NOM_CHAM = 'DEPL',
                                 DDL_ACTIF = ('DX','DY',),),
                               ),
-                  );
+                  )
 
 else:
     OBSJAU = OBSERVATION(
@@ -217,7 +217,7 @@ else:
                                   NOM_CHAM = 'EPSI_NOEU',
                                   DDL_ACTIF = ('EPXX','EPYY',),),
                              ),
-                  );
+                  )
 
     OBSMXT = OBSERVATION(
                    RESULTAT = MODES,
@@ -235,7 +235,7 @@ else:
                               _F( GROUP_NO = 'P3',
                                   NOM_CHAM = 'DEPL',
                                   DDL_ACTIF = ('DX','DY',),),),
-                  );
+                  )
 
 #---------------------------------------------------------------------
 #                     VERIFICATION DES RESULTATS
@@ -298,4 +298,4 @@ if modes:
                   ),
             )
 
-FIN();
+FIN()

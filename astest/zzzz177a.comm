@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ DEBUT (CODE=_F(
 FCT=DEFI_FONCTION(NOM_PARA='X',
                   VALE=(0.0,5.0,
                         4.0,17.5,),
-                );
+                )
 
-TF1=CREA_TABLE(FONCTION=_F(FONCTION=FCT));
+TF1=CREA_TABLE(FONCTION=_F(FONCTION=FCT))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=5.000000000,
@@ -44,7 +44,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TF2=CREA_TABLE(FONCTION=_F(FONCTION=FCT,
-                PARA=('F1','F2')));
+                PARA=('F1','F2')))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=17.500000000,
@@ -63,7 +63,7 @@ TB1=CREA_TABLE(LISTE=(_F(LISTE_I=(0,1,2),
                          PARA='Y'),
                       _F(LISTE_R=(4.0,17.5,5.),
                          PARA='Z'),
-                     ));
+                     ))
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=4.000000000,
            VALE_REFE=4.0,
@@ -85,7 +85,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TB2=CREA_TABLE(LISTE=(_F(LISTE_I=(4,17),
                          PARA='N1'),
                       _F(LISTE_I=(0,1),
-                         PARA='N2')));
+                         PARA='N2')))
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=1,
            VALE_REFE_I=1,
@@ -98,7 +98,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TB3=CREA_TABLE(LISTE=(_F(LISTE_R=(4.0,17.5),
                          PARA='R1'),
                       _F(LISTE_R=(0.6,1.9),
-                         PARA='R2')));
+                         PARA='R2')))
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.600000000,
            VALE_REFE=0.59999999999999998,
@@ -111,7 +111,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TB4=CREA_TABLE(LISTE=(_F(LISTE_K=('UN','UNE'),
                          PARA='L1'),
                       _F(LISTE_K=('JOUR','NUIT'),
-                         PARA='L2')));
+                         PARA='L2')))
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_K='NUIT',
            VALE_REFE_K='NUIT',
@@ -124,7 +124,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TB5=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT'),
                          PARA='L2'),
                       _F(LISTE_R=(4.0,17.5),
-                         PARA='R1')));
+                         PARA='R1')))
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=4.000000000,
            VALE_REFE=4.0,
@@ -137,7 +137,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TB6=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT','BLEUE','BLANCHE'),
                          PARA='L2'),
                       _F(LISTE_I=(0,1,2,3),
-                         PARA='N2')));
+                         PARA='N2')))
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=2,
            VALE_REFE_I=2,
@@ -150,7 +150,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TB7=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT BLEUE'),
                          PARA='L2',TYPE_K='K16'),
                       _F(LISTE_I=(0,1),
-                         PARA='N2')));
+                         PARA='N2')))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=1,
@@ -164,7 +164,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TB8=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT BLEUE AZURE'),
                          PARA='L2',TYPE_K='K24'),
                       _F(LISTE_I=(0,1),
-                         PARA='N2')));
+                         PARA='N2')))
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=1,
            VALE_REFE_I=1,
@@ -177,7 +177,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TB9=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT BLEUE AZURE'),
                          PARA='L2',TYPE_K='K24'),
                       _F(LISTE_R=(0.6,1.9),
-                         PARA='R2')));
+                         PARA='R2')))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=1.900000000,
@@ -221,17 +221,17 @@ SIYY=DEFI_FONCTION(      NOM_PARA='EPSI',
 TABF1=CREA_TABLE(FONCTION=_F(FONCTION=SIYY,
                              PARA=('EPSI','SIYY',),
                             ),
-                 );
+                 )
 
 F2=RECU_FONCTION(TABLE=TABF1,
                   PARA_Y='SIYY',INTERPOL='LIN',
-                  PARA_X='EPSI',);
+                  PARA_X='EPSI',)
 
 DIFF=CALC_FONCTION(COMB=(
                           _F(  FONCTION = SIYY, COEF =  1.),
                           _F(  FONCTION = F2,   COEF = -1.),
-                          ),);
-TOLE=1.E-10;
+                          ),)
+TOLE=1.E-10
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
@@ -550,4 +550,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 
-FIN();
+FIN()

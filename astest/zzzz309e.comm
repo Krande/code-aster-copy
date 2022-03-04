@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,13 +34,13 @@ modele=AFFE_MODELE(MAILLAGE=mesh,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),)
 
-Alu=DEFI_MATERIAU(ELAS=_F(E=70000,NU=0.34,),);
+Alu=DEFI_MATERIAU(ELAS=_F(E=70000,NU=0.34,),)
 
 ChAlu=AFFE_MATERIAU(MAILLAGE=mesh,
                     MODELE=modele,
                     AFFE=_F(TOUT='OUI',
                             MATER=Alu,),
-                    );
+                    )
 
 fiss = DEFI_FISS_XFEM(MAILLAGE=mesh,
                       DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
@@ -57,7 +57,7 @@ SIF10=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
                         _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
                         _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
 
-modX=MODI_MODELE_XFEM(MODELE_IN=modele,FISSURE=fiss,INFO=1,);
+modX=MODI_MODELE_XFEM(MODELE_IN=modele,FISSURE=fiss,INFO=1,)
 
 fissP = CO('fissP')
 
@@ -78,7 +78,7 @@ PROPA_FISS(MODELE=modX,
            COMP_LINE=_F(COEF_MULT_MINI=0.,
                         COEF_MULT_MAXI=1.,),
            CRIT_ANGL_BIFURCATION = 'PLAN',
-           );
+           )
 
 # ***********************************************
 

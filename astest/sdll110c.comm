@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ TUBE=DEFI_GROUP(reuse=TUBE,
                                   GROUP_NO='N_02_060',),
                                _F(GROUP_MA='POUTRE',),),
                 CREA_GROUP_MA=_F(NOM='POUTRE',
-                                 TOUT='OUI',),);
+                                 TOUT='OUI',),)
 
 MODELE=AFFE_MODELE(  MAILLAGE=TUBE,
                      AFFE=_F(  GROUP_MA = 'POUTRE',
@@ -73,7 +73,7 @@ PROFVIT1=DEFI_FONC_FLUI(MAILLAGE=TUBE,
                         GROUP_NO_INIT='GR_NO_INIT',
                         GROUP_NO_FIN='GR_NO_FIN',
                         VITE=_F(PROFIL='UNIFORME',
-                                VALE=1.000000E+00),);
+                                VALE=1.000000E+00),)
 
 
 def includeExternalData(theFile):

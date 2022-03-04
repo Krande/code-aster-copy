@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,30 +23,30 @@
 
 DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'))
 
-ACIER=DEFI_MATERIAU(          
+ACIER=DEFI_MATERIAU(
                          ELAS=_F(  RHO = 2700.,
-                           NU = 0.3, 
+                           NU = 0.3,
                            E = 7.2E10))
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 
-MATER=AFFE_MATERIAU(    MAILLAGE=MAYA, 
-                                 AFFE=_F(  TOUT = 'OUI', 
+MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,
+                                 AFFE=_F(  TOUT = 'OUI',
                                         MATER = ACIER))
 
 STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,
-                               AFFE=_F(  TOUT = 'OUI', 
-                                      MODELISATION = '3D', 
+                               AFFE=_F(  TOUT = 'OUI',
+                                      MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'))
 
 # CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE ET DE MASSE
 
 K_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                                CHAM_MATER=MATER, 
+                                CHAM_MATER=MATER,
                                    OPTION='RIGI_MECA' )
 
 M_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
-                                CHAM_MATER=MATER, 
+                                CHAM_MATER=MATER,
                                    OPTION='MASS_MECA' )
 
 # NUMEROTATION
@@ -56,10 +56,10 @@ NUMERO=NUME_DDL(    MATR_RIGI=K_ELEM )
 # ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
 
 
-K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM, 
+K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM,
                              NUME_DDL=NUMERO )
 
-M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM, 
+M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
                              NUME_DDL=NUMERO )
 
 # CALCUL DES MODES PAR SORENSEN

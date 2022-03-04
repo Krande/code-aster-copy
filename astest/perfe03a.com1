@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,20 @@ import random
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-MAILLA2=LIRE_MAILLAGE(UNITE=20,FORMAT='MED',);
+MAILLA2=LIRE_MAILLAGE(UNITE=20,FORMAT='MED',)
 
 MODEL2=AFFE_MODELE(MAILLAGE=MAILLA2,
                AFFE=_F(
                        TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',
-                       ),);
+                       ),)
 
 RESUV2=LIRE_RESU(  TYPE_RESU='EVOL_NOLI', FORMAT='MED',  MODELE=MODEL2, TOUT_ORDRE='OUI',UNITE=87,
          FORMAT_MED=(_F( NOM_RESU    ='SIG_____VARI',
                          NOM_CHAM    ='VARI_ELGA',
                          NOM_CMP=('V79','V80'),
-                         NOM_CMP_MED=('V79','V80'),)),);
+                         NOM_CMP_MED=('V79','V80'),)),)
 
 SIGMOY2=LIRE_FONCTION(   UNITE=81,  NOM_PARA='INST',NOM_RESU='MOYE_SIZZ_1',
                          PROL_GAUCHE='LINEAIRE',PROL_DROITE='LINEAIRE',INDIC_RESU =[1,3],)
@@ -83,7 +83,7 @@ for i in range(20):
    print('Sig-Griffith',CARBUR(1))
 
 CHBID=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R', OPERATION='AFFE',MODELE=MODEL2, PROL_ZERO='OUI',
-              AFFE=_F( TOUT='OUI',  NOM_CMP=('X',),   VALE=1.),);
+              AFFE=_F( TOUT='OUI',  NOM_CMP=('X',),   VALE=1.),)
 dico = RESUV2.LIST_VARI_ACCES()
 NBNUM  = dico['NUME_ORDRE'][-1]
 instants   = dico['INST']
@@ -100,16 +100,16 @@ maxdif1=-17000.
 
 # voir si on peut se passer de detruire
 CHGRIF=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F', OPERATION='AFFE', MODELE=MODEL2,PROL_ZERO='OUI',
-                      AFFE=_F(TOUT='OUI',NOM_CMP='X1',VALE_F=CARBUR),);
+                      AFFE=_F(TOUT='OUI',NOM_CMP='X1',VALE_F=CARBUR),)
 for itirage in range(ntirage):
 
     print('================================')
     print('- tirage numero ',itirage, '----')
     print('================================')
 
-    CHGRIR=CREA_CHAMP(TYPE_CHAM ='ELGA_NEUT_R', OPERATION ='EVAL',CHAM_F= CHGRIF,CHAM_PARA = CHBID);
+    CHGRIR=CREA_CHAMP(TYPE_CHAM ='ELGA_NEUT_R', OPERATION ='EVAL',CHAM_F= CHGRIF,CHAM_PARA = CHBID)
     SIGRIF=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',OPERATION='ASSE',MODELE = MODEL2,PROL_ZERO='OUI',
-               ASSE=_F( TOUT='OUI', CHAM_GD=CHGRIR,   NOM_CMP=('X1'),  NOM_CMP_RESU=('V79'), ),);
+               ASSE=_F( TOUT='OUI', CHAM_GD=CHGRIR,   NOM_CMP=('X1'),  NOM_CMP_RESU=('V79'), ),)
     for step in range(NBNUM):
 
         t2=instants[step+1]
@@ -119,16 +119,16 @@ for itirage in range(ntirage):
         print('--------------------------------')
         # extraction of the field of stress tensor at gauss points
         VAR2=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',OPERATION='EXTR', RESULTAT=RESUV2,
-                        NOM_CHAM='VARI_ELGA', NUME_ORDRE=step+1,  );
+                        NOM_CHAM='VARI_ELGA', NUME_ORDRE=step+1,  )
 
         # compute Sig-Clivage - Sig-Griffith
         DIF=CREA_CHAMP(TYPE_CHAM ='ELGA_VARI_R',MODELE = MODEL2,OPERATION ='ASSE',PROL_ZERO='OUI',
              ASSE=( _F(CHAM_GD=SIGRIF, COEF_R=-1., TOUT='OUI', CUMUL='OUI',NOM_CMP='V79'),
-                    _F(CHAM_GD=VAR2, COEF_R= 1., TOUT='OUI', CUMUL='OUI',NOM_CMP='V79'),));
+                    _F(CHAM_GD=VAR2, COEF_R= 1., TOUT='OUI', CUMUL='OUI',NOM_CMP='V79'),))
 
         # extract max of (Sig-Clivage - Sig-Griffith)
         MDIF=POST_ELEM(MINMAX=_F(MODELE=MODEL2,NOM_CMP='V79',TOUT='OUI',CHAM_GD=DIF))
-        DETRUIRE(NOM=DIF,);
+        DETRUIRE(NOM=DIF,)
 
         maxdif2=MDIF['MAX_V79',1]
         if maxdif2 >= 0 :
@@ -137,26 +137,26 @@ for itirage in range(ntirage):
            # equivalent plastic strain at point pg_diff2 for wich Sig_Cliv > Sig_Griffith
            feps2 = RECU_FONCTION(CHAM_GD=VAR2, NOM_CMP='V80',MAILLE=ma_dif2,POINT=pg_dif2)
            epspeq=feps2(t2)
-           DETRUIRE(NOM=feps2,);
-           DETRUIRE(NOM=VAR2,);
-           DETRUIRE(NOM=MDIF,);
+           DETRUIRE(NOM=feps2,)
+           DETRUIRE(NOM=VAR2,)
+           DETRUIRE(NOM=MDIF,)
            if epspeq > epspmin :
                fcliv=RECU_FONCTION(RESULTAT=RESUV2,NOM_CHAM='VARI_ELGA',NOM_CMP='V79',
                                    MAILLE=ma_dif2,POINT=pg_dif2)
                scliv1=fcliv(t1)
                scliv2=fcliv(t2)
-               DETRUIRE(NOM=fcliv,);
+               DETRUIRE(NOM=fcliv,)
                sgrif=scliv2-maxdif2
                maxdif1=scliv1-sgrif
                tr=-maxdif1*(t2-t1)/(maxdif2-maxdif1)+t1
                listrup.append(tr)
                break
         else:
-           DETRUIRE(NOM=VAR2,);
-           DETRUIRE(NOM=MDIF,);
+           DETRUIRE(NOM=VAR2,)
+           DETRUIRE(NOM=MDIF,)
         # fin de la boucle sur les instants
-    DETRUIRE(NOM=SIGRIF,);
-    DETRUIRE(NOM=CHGRIR,);
+    DETRUIRE(NOM=SIGRIF,)
+    DETRUIRE(NOM=CHGRIR,)
     # fin de la boucle sur les tirages
 
 print('list of rupture time',listrup)
@@ -178,4 +178,4 @@ if n > 1 :
     IMPR_FONCTION(     COURBE=_F(  FONCTION = PROBAS), )
     IMPR_FONCTION(     COURBE=_F(  FONCTION = PROBAS),FORMAT='XMGRACE',UNITE=39,   )
 
-FIN() ;
+FIN()

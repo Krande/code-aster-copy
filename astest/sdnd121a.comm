@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@
 #
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
-MAILLA=LIRE_MAILLAGE(FORMAT='ASTER',);
+MAILLA=LIRE_MAILLAGE(FORMAT='ASTER',)
 
 MODEL=AFFE_MODELE(MAILLAGE=MAILLA,
                   AFFE=(_F(GROUP_MA='M_PATIN',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DIS_T',),),);
+                           MODELISATION='DIS_T',),),)
 
 
 k_rappel = 2.E6 # ressort de rappel (N/m)
@@ -42,19 +42,19 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
                                  _F(CARA='M_T_D_N',
                                     GROUP_MA='M_PATIN',
                                     VALE=m,),
-                                    ),);
+                                    ),)
 
 # Le patin ne se deplace que suivant X :
 CHAR_MEC=AFFE_CHAR_MECA(MODELE=MODEL,
                         DDL_IMPO=_F(GROUP_MA='M_PATIN',
                                     DY=0.,
                                     DZ=0.,
-                                    ),);
+                                    ),)
 # Definition du chargement patin selon X :
 
 F_EXT=AFFE_CHAR_MECA(MODELE=MODEL,
                      FORCE_NODALE=_F(GROUP_NO='N_PATIN',
-                                     FX=1.,),);
+                                     FX=1.,),)
 
 # Calcul des matrices (raideur et masse, il n'y a pas
 # d'amortissement structural) et des vecteurs assembles:
@@ -69,7 +69,7 @@ ASSEMBLAGE(MODELE=MODEL,
                               OPTION='MASS_MECA',),),
                 VECT_ASSE=(_F(VECTEUR=CO("F_ASSE"),
                               OPTION='CHAR_MECA',
-                              CHARGE=F_EXT),),);
+                              CHARGE=F_EXT),),)
 
 
 # Calcul du mode associe au ressort de rappel :
@@ -97,11 +97,11 @@ PROJ_BASE(BASE=modes,
                           _F(MATRICE=CO('K_GENE'),
                              MATR_ASSE=K_ASSE,),),
           VECT_ASSE_GENE=_F(VECTEUR=CO('F_GENE'),
-                            VECT_ASSE=F_ASSE, TYPE_VECT='FORC'),);
+                            VECT_ASSE=F_ASSE, TYPE_VECT='FORC'),)
 
 
 # Definition de l'obstacle
-OBSTA_C=DEFI_OBSTACLE(TYPE='PLAN_Z',);
+OBSTA_C=DEFI_OBSTACLE(TYPE='PLAN_Z',)
 kn_choc = 1.E10
 cn_choc = 0.
 jeu_choc = 1.E-3
@@ -135,7 +135,7 @@ DTMEULER=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   AMOR_NOR=cn_choc,
                                  ),
                                ),
-                        );
+                        )
 
 # Schema des differences centrees ('ADAPT' a pas constant):
 DTMADAPT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -167,7 +167,7 @@ DTMADAPT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   AMOR_NOR=cn_choc,
                                  ),
                                ),
-                        );
+                        )
 
 # Schema 'ADAPT' (ne sert que pour verifier les forces de contact) :
 DTMADAP2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -199,54 +199,54 @@ DTMADAP2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   AMOR_NOR=cn_choc,
                                  ),
                                ),
-                        );
+                        )
 
 ### Grandeurs cinematiques et force de choc :
 D_EULER=RECU_FONCTION(RESU_GENE=DTMEULER,
                       TOUT_INST='OUI',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
-                      GROUP_NO='N_PATIN',);
+                      GROUP_NO='N_PATIN',)
 
 V_EULER=RECU_FONCTION(RESU_GENE=DTMEULER,
                       TOUT_INST='OUI',
                       NOM_CHAM='VITE',
                       NOM_CMP='DX',
-                      GROUP_NO='N_PATIN',);
+                      GROUP_NO='N_PATIN',)
 
 A_EULER=RECU_FONCTION(RESU_GENE=DTMEULER,
                       TOUT_INST='OUI',
                       NOM_CHAM='ACCE',
                       NOM_CMP='DX',
-                      GROUP_NO='N_PATIN',);
+                      GROUP_NO='N_PATIN',)
 
 D_ADAPT=RECU_FONCTION(RESU_GENE=DTMADAPT,
                       TOUT_INST='OUI',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
-                      GROUP_NO='N_PATIN',);
+                      GROUP_NO='N_PATIN',)
 
 V_ADAPT=RECU_FONCTION(RESU_GENE=DTMADAPT,
                       TOUT_INST='OUI',
                       NOM_CHAM='VITE',
                       NOM_CMP='DX',
-                      GROUP_NO='N_PATIN',);
+                      GROUP_NO='N_PATIN',)
 
 A_ADAPT=RECU_FONCTION(RESU_GENE=DTMADAPT,
                       TOUT_INST='OUI',
                       NOM_CHAM='ACCE',
                       NOM_CMP='DX',
-                      GROUP_NO='N_PATIN',);
+                      GROUP_NO='N_PATIN',)
 
 D_ADAP2=RECU_FONCTION(RESU_GENE=DTMADAP2,
                       TOUT_INST='OUI',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
-                      GROUP_NO='N_PATIN',);
+                      GROUP_NO='N_PATIN',)
 
 FC_ADAP2=RECU_FONCTION(RESU_GENE=DTMADAP2,
                        GROUP_NO_CHOC='N_PATIN',
                        PARA_X='INST',
-                       PARA_Y='FN',);
+                       PARA_Y='FN',)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAGE = DEFI_GROUP(reuse =MAILLAGE,MAILLAGE=MAILLAGE,
                       CREA_GROUP_NO=(_F(TOUT_GROUP_MA = 'OUI',),
@@ -28,16 +28,16 @@ MAILLAGE = DEFI_GROUP(reuse =MAILLAGE,MAILLAGE=MAILLAGE,
                                     _F(OPTION = 'NOEUD_ORDO',
                                        GROUP_MA = 'LSUP',
                                        NOM = 'GSUP'), ),
-                      );
+                      )
 
 MAILLAGE = MODI_MAILLAGE(reuse = MAILLAGE,  MAILLAGE = MAILLAGE,
                          MODI_MAILLE = _F(OPTION = 'NOEUD_QUART',
                                          GROUP_NO_FOND = 'PF0',),
-                        );
+                        )
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE, MAILLAGE=MAILLAGE,
                        ORIE_PEAU=(_F(GROUP_MA_PEAU='LSUP',),),
-                       );
+                       )
 
 
 #
@@ -46,7 +46,7 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE, MAILLAGE=MAILLAGE,
 MODEMECA=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE=_F(GROUP_MA = ('SCYL','LSUP'),
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='D_PLAN',),);
+                             MODELISATION='D_PLAN',),)
 
 rayon = 0.046
 MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
@@ -63,19 +63,19 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
 MATERIO=AFFE_MATERIAU (MAILLAGE=MAILLAGE,
                        AFFE=_F(GROUP_MA = 'SCYL',
                                 MATER=MAT,
-                                ),);
+                                ),)
 
 #
 #  Conditions aux limites
 #
 BLOCAGE = AFFE_CHAR_MECA(MODELE=MODEMECA,
                          DDL_IMPO=(_F(GROUP_NO='PF0',   DY=0.0,),
-                                   _F(GROUP_NO='GBLOC', DY=0.0,DX=0.0,),),);
+                                   _F(GROUP_NO='GBLOC', DY=0.0,DX=0.0,),),)
 
 
 FORC_IMP = AFFE_CHAR_MECA(MODELE=MODEMECA,
                           FORCE_CONTOUR=(_F(GROUP_MA='LSUP',  FY= 3.,),
-                                         _F(GROUP_MA='LINF2', FY=-3.,),),);
+                                         _F(GROUP_MA='LINF2', FY=-3.,),),)
 
 #
 # Transitoire 1
@@ -92,15 +92,15 @@ RESU1=MECA_STATIQUE(MODELE=MODEMECA,
                        LIST_INST=LINST1,
                        EXCIT=(_F(CHARGE=BLOCAGE,),
                               _F(CHARGE=FORC_IMP,FONC_MULT = FMUL1),),
-                  );
+                  )
 RESU1=CALC_CHAMP(reuse=RESU1,RESULTAT=RESU1,CONTRAINTE=('SIGM_ELNO'))
 
 
 RESU1=CALC_CHAMP(reuse=RESU1, RESULTAT=RESU1,
-              CONTRAINTE='SIGM_NOEU',);
+              CONTRAINTE='SIGM_NOEU',)
 
-Xo = 143. ;
-Xr = Xo - rayon ;
+Xo = 143.
+Xr = Xo - rayon
 TAB_SIG1 = MACR_LIGN_COUPE( RESULTAT=RESU1,
                             NOM_CHAM='SIGM_NOEU',
                             LIGN_COUPE=_F(TYPE='ARC',
@@ -108,7 +108,7 @@ TAB_SIG1 = MACR_LIGN_COUPE( RESULTAT=RESU1,
                                           COOR_ORIG= (Xr, 0.),
                                           CENTRE= (Xo, 0.),
                                           ANGLE=360.,
-                                          REPERE='CYLINDRIQUE',),);
+                                          REPERE='CYLINDRIQUE',),)
 IMPR_TABLE(TABLE = TAB_SIG1)
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MAILLAGE, SYME='NON',
@@ -119,9 +119,9 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MAILLAGE, SYME='NON',
 TABK = POST_K1_K2_K3(FOND_FISS = FISS,
                      RESULTAT = RESU1,
                      INFO=2,
-                     );
+                     )
 
-IMPR_TABLE(TABLE=TABK,);
+IMPR_TABLE(TABLE=TABK,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
@@ -142,19 +142,19 @@ LINST2=DEFI_LIST_REEL(   DEBUT=0.,
 FMUL2=DEFI_FONCTION(  NOM_PARA='INST',
                        VALE=( 0.0,  10.0,
                               1.0,  110.0,
-                              2.0,  50.0,  )   );
+                              2.0,  50.0,  )   )
 
 RESU2=MECA_STATIQUE(MODELE=MODEMECA,
                     CHAM_MATER=MATERIO,
                     LIST_INST=LINST2,
                     EXCIT=(_F(CHARGE=BLOCAGE,),
                            _F(CHARGE=FORC_IMP,FONC_MULT = FMUL2),),
-                  );
+                  )
 RESU2=CALC_CHAMP(reuse=RESU2,RESULTAT=RESU2,CONTRAINTE=('SIGM_ELNO'))
 
 
 RESU2=CALC_CHAMP(reuse=RESU2, RESULTAT=RESU2,
-              CONTRAINTE='SIGM_NOEU',);
+              CONTRAINTE='SIGM_NOEU',)
 
 TAB_SIG2 = MACR_LIGN_COUPE( RESULTAT=RESU2,
                             NOM_CHAM='SIGM_NOEU',

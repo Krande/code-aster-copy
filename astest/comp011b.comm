@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,31 +32,31 @@ Tmax = 500.
 
 NCAL = 20
 
-ZERO =DEFI_CONSTANTE(VALE=0.0);
+ZERO =DEFI_CONSTANTE(VALE=0.0)
 
 YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 3.2E10,
                                          500., 1.6e10,
-                                           ),);
+                                           ),)
 
 NU0=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(   0., 0.2,
                                          500., 0.18,
-                                           ),);
+                                           ),)
 
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 1.2e-05,
                                          500., 2.0e-05,
-                                           ),);
+                                           ),)
 
 EPSD0=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 0.0001,
                                           500., 0.00005,
-                                           ),);
+                                           ),)
 
 AC=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 1.4,
                                           500., 1.0,
-                                           ),);
+                                           ),)
 
 AT=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 1,
                                           500., 0.8,
-                                           ),);
+                                           ),)
 
 BC=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 2000.,
                                        500., 1000.
@@ -64,11 +64,11 @@ BC=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 2000.,
 
 BT=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 10000,
                                           500., 20000,
-                                           ),);
+                                           ),)
 
 K=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(     0., 0.7,
                                           500., 0.7,
-                                           ),);
+                                           ),)
 
 MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                NU=NU0 ,
@@ -80,7 +80,7 @@ MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                  AT   = AT,
                                  BC   = BC,
                                  BT   = BT),
-                 );
+                 )
 
 
 LMAT2  = [None]*(NCAL)
@@ -100,7 +100,7 @@ for i in range(NCAL):
                                        AT    = AT(Ti),
                                        BC    = BC(Ti),
                                        BT    = BT(Ti)),
-                                );
+                                )
 
 
 ############################################################################

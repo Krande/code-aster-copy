@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,25 +95,25 @@ MASSES=POST_ELEM(
 
 TEST_TABLE(
            VALE_CALC=12.2545,
-           
+
            NOM_PARA='MASSE',
            TABLE=MASSES,)
 
 TEST_TABLE(
            VALE_CALC=0.02013189,
-           
+
            NOM_PARA='CDG_X',
            TABLE=MASSES,)
 
 TEST_TABLE(
            VALE_CALC=2.5530207999999999E-3,
-           
+
            NOM_PARA='IX_G',
            TABLE=MASSES,)
 
 TEST_TABLE(
            VALE_CALC=3.8438576999999998E-3,
-           
+
            NOM_PARA='IY_G',
            TABLE=MASSES,)
 

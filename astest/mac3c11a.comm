@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ efforts = []
 ig = []
 
 for i in range(10) :
-  
+
   POSTP[i] = POST_RELEVE_T(
     ACTION=_F(INTITULE='FORCE',
               GROUP_NO=('GRIL_%d'%(i+1)),
@@ -120,9 +120,9 @@ for i in range(10) :
   tab = POSTP[i]
   efforts.append(tab['DY',1])
   ig.append(i+1)
-  
+
 print(efforts)
-  
+
 
 POSTC = POST_RELEVE_T(
   ACTION=_F(INTITULE='FORCE',

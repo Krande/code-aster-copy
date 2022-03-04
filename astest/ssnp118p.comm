@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,16 +35,16 @@ MA=DEFI_GROUP(reuse=MA,
               CREA_GROUP_NO=(
                 _F(GROUP_MA='GAUCHE',),
                 _F(GROUP_MA='DROITE',),
-              ),);
+              ),)
 
 # meme modelisation pour toutes les mailles
 MO=AFFE_MODELE(MAILLAGE=MA,
-               
+
                AFFE=
                 _F(GROUP_MA = ('G_CUBE','DROITE','GAUCHE'),
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = 'D_PLAN'),
-               );
+               )
 # angle en radian
 THETA = 30.*pi/180.
 
@@ -58,13 +58,13 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='G_CUBE',
-                    INFO=1,);
+                    INFO=1,)
 
 # enrichissement du modele avec contact P2P1
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          CONTACT='STANDARD',
-                         );
+                         )
 
 # definition du contact avec loi cohesive
 CTXFEM = DEFI_CONTACT(
@@ -76,7 +76,7 @@ CTXFEM = DEFI_CONTACT(
                      ORDRE_INT=2,
                      ALGO_CONT='CZM',
                      FISS_MAIT = FISS,
-                     RELATION='CZM_TAC_MIX',),),);
+                     RELATION='CZM_TAC_MIX',),),)
 
 
 # definition materiau inchangee
@@ -87,14 +87,14 @@ MAT=DEFI_MATERIAU(
                     SIGM_C = Sc,
                     PENA_LAGR = 100.,
                     RIGI_GLIS = 10.,),
-            );
+            )
 
 # affectation sur le modele enrichi
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  MODELE=MODELEK,
                  AFFE=_F(GROUP_MA = 'G_CUBE',
                          MATER = MAT),
-                );
+                )
 
 # plus besoin d orientation par angles nautiques
 
@@ -178,14 +178,14 @@ U_OUV = STAT_NON_LINE(
 # --- TESTS MODE I
 #
 FDX_OUV=RECU_FONCTION( RESULTAT=U_OUV,
-              NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL');
+              NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
 
-TDX_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FDX_OUV));
+TDX_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FDX_OUV))
 
 FETA_OUV=RECU_FONCTION( RESULTAT=U_OUV,
-              NOM_PARA_RESU='ETA_PILOTAGE');
+              NOM_PARA_RESU='ETA_PILOTAGE')
 
-TETA_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FETA_OUV));
+TETA_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FETA_OUV))
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=1.79522935553,

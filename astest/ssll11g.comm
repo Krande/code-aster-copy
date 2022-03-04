@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -239,22 +239,22 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 T0 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'CH1',
                                 OPERATION = 'EXTREMA',
-                                CHAM_GD = CH1,         ), )  ;
-IMPR_TABLE( TABLE = T0 )  ;
+                                CHAM_GD = CH1,         ), )
+IMPR_TABLE( TABLE = T0 )
 
 T1 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'DEPL',
                                 OPERATION = 'EXTREMA',
                                 NOM_CHAM = 'DEPL',
                                 NOM_CMP = ('DX','DRZ'),
-                                RESULTAT = RESU1       ), )  ;
-IMPR_TABLE( TABLE = T1 )  ;
+                                RESULTAT = RESU1       ), )
+IMPR_TABLE( TABLE = T1 )
 
 T2 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'SIGM',
                                 OPERATION = 'EXTREMA',
                                 NOM_CHAM = 'SIPM_ELNO',
                                 TOUT_CMP = 'OUI',
-                                RESULTAT = RESU1       ), )  ;
-IMPR_TABLE( TABLE = T2 )  ;
+                                RESULTAT = RESU1       ), )
+IMPR_TABLE( TABLE = T2 )
 
 #---------------------------------------------------------------------
 

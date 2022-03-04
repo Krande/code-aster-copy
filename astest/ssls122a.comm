@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,15 +69,15 @@ largeur  =  1.
 
 # -----> partie P1
 
-epais_P1S =  0.05     # Epaisseur;
-excen_P1S =  0.015    # Excentricite;
-epais_P1I =  0.05     # Epaisseur;
-excen_P1I = -0.035    # Excentricite;
+epais_P1S =  0.05     # Epaisseur
+excen_P1S =  0.015    # Excentricite
+epais_P1I =  0.05     # Epaisseur
+excen_P1I = -0.035    # Excentricite
 
 # -----> partie P2
 
-epais_P2 = 0.08       # Epaisseur;
-excen_P2 = 0.0        # Excentricite;
+epais_P2 = 0.08       # Epaisseur
+excen_P2 = 0.0        # Excentricite
 
 # - Caracteristiques mecanique
 #
@@ -103,21 +103,21 @@ alpha=0.
 beta=0.
 #---------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',INFO=2);
+MA=LIRE_MAILLAGE(FORMAT='MED',INFO=2)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_MA='FA',),
                              _F(GROUP_MA='CD',),),
               CREA_GROUP_MA=(_F(GROUP_MA='PLAQ_P1',NOM='PLAQ_P1S',),),
-              );
+              )
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MA,INFO=2,
                  CREA_MAILLE=_F(NOM='PLAQ_P1I',
                                   GROUP_MA='PLAQ_P1S',
-                                  PREF_MAILLE='S',),);
+                                  PREF_MAILLE='S',),)
 
 MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
                       CREA_GROUP_MA= (
@@ -133,7 +133,7 @@ MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
 MODEL=AFFE_MODELE(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION=mod_EF,),);
+                          MODELISATION=mod_EF,),)
 #
 # On impose l'orientation de la normale vers le Z Global
 #
@@ -141,7 +141,7 @@ MAIL=MODI_MAILLAGE(MAILLAGE=MAIL,reuse=MAIL,
                       ORIE_NORM_COQUE=_F(GROUP_MA=('PLAQ_P2','PLAQ_P1S','PLAQ_P1I',),
                                          VECT_NORM=(0.0,0.0,1.0),
                                          GROUP_NO='B',),
-                      );
+                      )
 #
 # Definition
 #   - des epaisseurs
@@ -175,14 +175,14 @@ CARA=AFFE_CARA_ELEM(MODELE=MODEL,
                               EXCENTREMENT=excen_P1I,
                               INER_ROTA='OUI',),
                            ),
-                    );
+                    )
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=young,
-                            NU=poisson,),);
+                            NU=poisson,),)
 
 MATER=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 #
 # Conditions aux limites en deplacement
 #
@@ -195,24 +195,24 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODEL,
                                   _F(GROUP_NO='A',
                                      DX=0.0,
                                      DY=0.0,
-                                     DRZ=0.0,),),);
+                                     DRZ=0.0,),),)
 # Chargement
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
                      FORCE_ARETE=_F(GROUP_MA='BE',
-                                    FZ=force,),);
+                                    FZ=force,),)
 
 RESU=MECA_STATIQUE(MODELE=MODEL,
                    CHAM_MATER=MATER,
                    CARA_ELEM=CARA,
                    EXCIT=(_F(CHARGE=COND_LIM,),
-                          _F(CHARGE=FORCE,),),);
+                          _F(CHARGE=FORCE,),),)
 
 RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),RESULTAT=RESU)
 
 
 RESU=CALC_CHAMP(reuse =RESU, CONTRAINTE='EFGE_NOEU',
-             RESULTAT=RESU,);
+             RESULTAT=RESU,)
 
 #------------------------------------------------------
 # Test sur les deplacements et les rotations
@@ -315,4 +315,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

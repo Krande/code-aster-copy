@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ AIR=DEFI_MATERIAU( FLUIDE=_F( RHO = 1.3, CELE_C = ('RI',343.,10.,)))
 CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,
                                  AFFE=_F( TOUT = 'OUI',  MATER = AIR) )
 
-GUIDE=AFFE_MODELE(  MAILLAGE=MAIL,     
+GUIDE=AFFE_MODELE(  MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI', MODELISATION = '3D',
                                      PHENOMENE = 'ACOUSTIQUE') )
 
@@ -289,7 +289,7 @@ IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=PRESHARM,  NOM_CHAM = 'PRES',  NUME_ORDRE = 1,
                   PARTIE='REEL',NOM_CMP='PRES',NOM_CHAM_MED='PRESHARM_DEPL_PRES_REEL'),
                 _F(RESULTAT=PRESHARM,  NOM_CHAM = 'PRES',  NUME_ORDRE = 1,
-                  PARTIE='IMAG',NOM_CMP='PRES',NOM_CHAM_MED='PRESHARM_DEPL_PRES_IMAG'),),);
+                  PARTIE='IMAG',NOM_CMP='PRES',NOM_CHAM_MED='PRESHARM_DEPL_PRES_IMAG'),),)
 
 
 PRESHARM=CALC_CHAMP( reuse=PRESHARM,

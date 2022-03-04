@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
               MAILLAGE=MAILLAGE,
@@ -30,7 +30,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                              _F(GROUP_MA='CAB3',),
                              _F(GROUP_MA='CAB4',),
                              _F(GROUP_MA='CAB5',),
-                             ),);
+                             ),)
 MO=AFFE_MODELE(MAILLAGE=MAILLAGE,
                AFFE=(
                        _F(GROUP_MA='VOLTOT',
@@ -38,19 +38,19 @@ MO=AFFE_MODELE(MAILLAGE=MAILLAGE,
                         MODELISATION='3D',),
                        _F(GROUP_MA=('CAB1','CAB2','CAB3','CAB4','CAB5'),
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='BARRE',),),);
+                         MODELISATION='BARRE',),),)
 
 CE=AFFE_CARA_ELEM(MODELE=MO,
                   BARRE=_F(
                            GROUP_MA=('CAB1','CAB2','CAB3','CAB4','CAB5'),
                            SECTION='CERCLE',
                            CARA='R',
-                           VALE=2.8209E-2,),);
+                           VALE=2.8209E-2,),)
 
 MBETON=DEFI_MATERIAU(ELAS=_F(E=4.E10,
                              NU=0.20,
                              RHO=2500,),
-                     BPEL_BETON=_F(),);
+                     BPEL_BETON=_F(),)
 
 MCABLE=DEFI_MATERIAU(ELAS=_F(E=1.93000000000E11,
                              NU=0.3,
@@ -66,7 +66,7 @@ CMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                          _F(GROUP_MA='VOLTOT',
                             MATER=MBETON,),
                          _F(GROUP_MA=('CAB1','CAB2','CAB3','CAB4','CAB5'),
-                            MATER=MCABLE,),),);
+                            MATER=MCABLE,),),)
 
 CLIM =AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                     DDL_IMPO=(
@@ -95,7 +95,7 @@ CAB_BP1=DEFI_CABLE_BP(MODELE=MO,
                       TENSION_INIT=3.750000E6,
                       RECUL_ANCRAGE=0.001,
                       INFO=2,
-                      );
+                      )
 
 CAB_BP2=DEFI_CABLE_BP(MODELE=MO,
                        CHAM_MATER=CMAT,
@@ -105,7 +105,7 @@ CAB_BP2=DEFI_CABLE_BP(MODELE=MO,
                                      GROUP_NO_ANCRAGE=('PC2D','PC2F',),),
                        TYPE_ANCRAGE=('ACTIF','PASSIF',),
                        TENSION_INIT=3.750000E6,
-                       RECUL_ANCRAGE=0.001,);
+                       RECUL_ANCRAGE=0.001,)
 
 CAB_BP3=DEFI_CABLE_BP(MODELE=MO,
                        CHAM_MATER=CMAT,
@@ -115,7 +115,7 @@ CAB_BP3=DEFI_CABLE_BP(MODELE=MO,
                                      GROUP_NO_ANCRAGE=('PC3D','PC3F',),),
                        TYPE_ANCRAGE=('ACTIF','PASSIF',),
                        TENSION_INIT=3.750000E6,
-                       RECUL_ANCRAGE=0.001,);
+                       RECUL_ANCRAGE=0.001,)
 
 
 CAB_BP4=DEFI_CABLE_BP(MODELE=MO,
@@ -126,7 +126,7 @@ CAB_BP4=DEFI_CABLE_BP(MODELE=MO,
                                     GROUP_NO_ANCRAGE=('PC4D','PC4F',),),
                       TYPE_ANCRAGE=('ACTIF','PASSIF',),
                       TENSION_INIT=3.750000E6,
-                      RECUL_ANCRAGE=0.001,);
+                      RECUL_ANCRAGE=0.001,)
 
 CAB_BP5=DEFI_CABLE_BP(MODELE=MO,
                       CHAM_MATER=CMAT,
@@ -137,7 +137,7 @@ CAB_BP5=DEFI_CABLE_BP(MODELE=MO,
                       TYPE_ANCRAGE=('ACTIF','ACTIF',),
                       TENSION_INIT=3.750000E6,
                       RECUL_ANCRAGE=0.001,
-                      );
+                      )
 
 CMCAB1=AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                   RELA_CINE_BP=_F(CABLE_BP=CAB_BP1,
@@ -158,10 +158,10 @@ CMCAB4=AFFE_CHAR_MECA(MODELE=MO,INFO=2,
 CMCAB5=AFFE_CHAR_MECA(MODELE=MO,INFO=2,
                   RELA_CINE_BP=_F(CABLE_BP=CAB_BP5,
                                    SIGM_BPEL='NON',
-                                   RELA_CINE='OUI',),);
+                                   RELA_CINE='OUI',),)
 
 
-LINST=DEFI_LIST_REEL(VALE=(0.0,150.,300.,450.,600.),);
+LINST=DEFI_LIST_REEL(VALE=(0.0,150.,300.,450.,600.),)
 
 # ETAPE 1 : EFFET DE LA PESANTEUR
 
@@ -597,4 +597,4 @@ TEST_RESU(RESU=(_F(INST=600.0,
                 ),
           )
 
-FIN();
+FIN()

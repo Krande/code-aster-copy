@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               ),DEBUG=_F(SDVERI='OUI'))
 
-Mesh=LIRE_MAILLAGE(FORMAT='MED',NOM_MED='Mblock');
+Mesh=LIRE_MAILLAGE(FORMAT='MED',NOM_MED='Mblock')
 
 Mesh = DEFI_GROUP( reuse = Mesh, MAILLAGE = Mesh,
                       CREA_GROUP_NO= (
@@ -38,7 +38,7 @@ Mesh = DEFI_GROUP( reuse = Mesh, MAILLAGE = Mesh,
 Mod3d=AFFE_MODELE(MAILLAGE=Mesh,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 
 Mesh=MODI_MAILLAGE(reuse=Mesh,MAILLAGE=Mesh,
@@ -48,49 +48,49 @@ Mesh=MODI_MAILLAGE(reuse=Mesh,MAILLAGE=Mesh,
 Pression = -6.000
 FORCE=AFFE_CHAR_MECA(MODELE=Mod3d,
                      PRES_REP=_F(GROUP_MA='Atop',
-                                 PRES=Pression),);
+                                 PRES=Pression),)
 
 DEPL=AFFE_CHAR_MECA(MODELE=Mod3d,
                      DDL_IMPO=(_F(GROUP_MA='Abot',DZ=0.0),
                                _F(GROUP_NO='Nfixx',DY=0.0),
-                               _F(GROUP_NO='Nfixy',DX=0.0),),);
+                               _F(GROUP_NO='Nfixy',DX=0.0),),)
 
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=20,),
-                     INFO=2);
+                     INFO=2)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,0.0,
                       1.0,1.0,),
-                INFO=2);
+                INFO=2)
 
 
 
 # MATERIAU HYPER-ELASTIQUE: Mooney-Rivlin
-C01 = 2.3456;
-C10 = 0.709;
-C20 = 0.0;
+C01 = 2.3456
+C10 = 0.709
+C20 = 0.0
 NU  = 0.499
 K   = (6*(C10+C01))/(3*(1-2*NU))
 
 rubber=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
                                    C01=C01,
                                    C20=C20,
-                                   K=K,),);
+                                   K=K,),)
 
 
 MatRub=AFFE_MATERIAU(MAILLAGE=Mesh,
                     MODELE=Mod3d,
                     AFFE=_F(TOUT='OUI',
-                            MATER=rubber,),);
+                            MATER=rubber,),)
 
 # CALCUL EN PETITES PERTURBATIONS (HPP)
 # PRESSION APPLIQUEE = 6Pa
 
 LIST_HPP=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.e-6,NOMBRE=1,),
-                     INFO=2);
+                     INFO=2)
 
 res_HPP=STAT_NON_LINE(MODELE=Mod3d,
                    CHAM_MATER=MatRub,
@@ -103,7 +103,7 @@ res_HPP=STAT_NON_LINE(MODELE=Mod3d,
                                 DEFORMATION = 'GROT_GDEP',
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',)),
-                   INCREMENT=_F(LIST_INST=LIST_HPP,),);
+                   INCREMENT=_F(LIST_INST=LIST_HPP,),)
 
 # POST-TRAITEMENT
 
@@ -138,7 +138,7 @@ res=STAT_NON_LINE(MODELE=Mod3d,
                                 TOUT='OUI',),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=50)),
-                   INCREMENT=_F(LIST_INST=LISTE,),);
+                   INCREMENT=_F(LIST_INST=LISTE,),)
 
 # POST-TRAITEMENT
 
@@ -236,4 +236,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                 ),
           )
 
-FIN();
+FIN()

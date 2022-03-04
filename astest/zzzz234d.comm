@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 CoefRef = 1.0E-05
 
-MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2);
+MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2)
 
 MATE = DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3),)
 
@@ -60,7 +60,7 @@ RE_DISTL=STAT_NON_LINE(MODELE  = MO_DISTL,
                                       EFFORT_REFE = CoefRef,
                                       MOMENT_REFE = CoefRef,
                                      ),
-   );
+   )
 
 R2_DISTL=STAT_NON_LINE(MODELE  = MO_DISTL,
                      CHAM_MATER = CHMAT,
@@ -74,7 +74,7 @@ R2_DISTL=STAT_NON_LINE(MODELE  = MO_DISTL,
                                       MOMENT_REFE = CoefRef,
                                      ),
                      NEWTON=_F(PAS_MINI_ELAS = 2.0),
-   );
+   )
 
 
 TB_DISTL = RECU_TABLE(CO=RE_DISTL,NOM_PARA=('ITER_GLOB'),)
@@ -285,7 +285,7 @@ RE_DISTN=STAT_NON_LINE(MODELE  = MO_DISTN,
                                       EFFORT_REFE = CoefRef,
                                       MOMENT_REFE = CoefRef,
                                      ),
-   );
+   )
 
 TB_DISTN = RECU_TABLE(CO=RE_DISTN,NOM_PARA=('ITER_GLOB'),)
 
@@ -471,7 +471,7 @@ RE_DITRL=STAT_NON_LINE(MODELE  = MO_DITRL,
                                       EFFORT_REFE = CoefRef,
                                       MOMENT_REFE = CoefRef,
                                      ),
-   );
+   )
 
 R2_DITRL=STAT_NON_LINE(MODELE  = MO_DITRL,
                      CHAM_MATER = CHMAT,
@@ -485,7 +485,7 @@ R2_DITRL=STAT_NON_LINE(MODELE  = MO_DITRL,
                                       MOMENT_REFE = CoefRef,
                                      ),
                      NEWTON=_F(PAS_MINI_ELAS = 2.0),
-   );
+   )
 
 TB_DITRL = RECU_TABLE(CO=RE_DITRL,NOM_PARA=('ITER_GLOB'),)
 
@@ -676,7 +676,7 @@ RE_DITRN=STAT_NON_LINE(MODELE  = MO_DITRN,
                                       EFFORT_REFE = CoefRef,
                                       MOMENT_REFE = CoefRef,
                                      ),
-   );
+   )
 
 TB_DITRN = RECU_TABLE(CO=RE_DITRN,NOM_PARA=('ITER_GLOB'),)
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,13 +31,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
 # ==============================================================
 
 MAFLUIDE=LIRE_MAILLAGE(UNITE=22,
-                       FORMAT='MED',);
+                       FORMAT='MED',)
 
 
 MOFLUIDE=AFFE_MODELE(MAILLAGE=MAFLUIDE,
                   AFFE=_F(GROUP_MA=('Face1','Face2','Face3','Face4','Face5','Face6',),
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='3D',),);
+                          MODELISATION='3D',),)
 
 FORM = FORMULE(VALE='1.E-4*INST*(X+Y+Z)',
                NOM_PARA=['X', 'Y', 'Z', 'INST'],)
@@ -49,11 +49,11 @@ VALE=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_F',
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='PRES',
                         VALE_F=FORM,),
-                INFO=1,);
+                INFO=1,)
 
 L_INST0=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.0,
-                                     NOMBRE=2,),);
+                                     NOMBRE=2,),)
 
 RES_PRES=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_CHAR',
@@ -61,12 +61,12 @@ RES_PRES=CREA_RESU(OPERATION='AFFE',
                    AFFE=_F(CHAM_GD=VALE,
                            MODELE=MOFLUIDE,
                            LIST_INST=L_INST0),
-                        );
+                        )
 
 #IMPR_RESU(FORMAT='GMSH',
 #          UNITE=97,
 #          RESU=_F(RESULTAT=RES_PRES,
-#                  ),);
+#                  ),)
 
 
 # ==============================================================
@@ -76,19 +76,19 @@ RES_PRES=CREA_RESU(OPERATION='AFFE',
 # ==============================================================
 
 MASOLIDE=LIRE_MAILLAGE(UNITE=23,
-                       FORMAT='MED',);
+                       FORMAT='MED',)
 
 MOSOLIDE=AFFE_MODELE(MAILLAGE=MASOLIDE,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='3D',),);
+                          MODELISATION='3D',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=1.,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 MATER=AFFE_MATERIAU(MAILLAGE=MASOLIDE,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 RES_PROJ=PROJ_CHAMP(METHODE='COLLOCATION',
                     RESULTAT=RES_PRES,
@@ -96,28 +96,28 @@ RES_PROJ=PROJ_CHAMP(METHODE='COLLOCATION',
                     MODELE_2=MOSOLIDE,
                     VIS_A_VIS=_F(TOUT_1='OUI',
                                  GROUP_MA_2=('Face1','Face2','Face3','Face4','Face5','Face6',),),
-                    );
+                    )
 
 #IMPR_RESU(FORMAT='GMSH',
 #          UNITE=98,
-#          RESU=_F(RESULTAT=RES_PROJ,),);
+#          RESU=_F(RESULTAT=RES_PROJ,),)
 
 CHA_PROJ=AFFE_CHAR_MECA(MODELE=MOSOLIDE,
-                        EVOL_CHAR=RES_PROJ,);
+                        EVOL_CHAR=RES_PROJ,)
 
 CHA_IMPO=AFFE_CHAR_MECA(MODELE=MOSOLIDE,
                       FACE_IMPO=_F(GROUP_MA='Face1',
                                    DX=0.0,
                                    DY=0.0,
-                                   DZ=0.0,),);
+                                   DZ=0.0,),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=5,),);
+                                    NOMBRE=5,),)
 
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,1.0,1.0,),);
+                    VALE=(0.0,0.0,1.0,1.0,),)
 
 
 RESU=STAT_NON_LINE(MODELE=MOSOLIDE,
@@ -126,7 +126,7 @@ RESU=STAT_NON_LINE(MODELE=MOSOLIDE,
                           _F(CHARGE=CHA_PROJ,),),
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   );
+                   )
 
 
 TEST_RESU(RESU=(_F(INST=1.0,
@@ -162,6 +162,6 @@ TEST_RESU(RESU=(_F(INST=1.0,
 #IMPR_RESU(FORMAT='GMSH',
 #          UNITE=99,
 #          RESU=_F(RESULTAT=RESU,
-#                  NOM_CHAM='DEPL',),);
+#                  NOM_CHAM='DEPL',),)
 
-FIN();
+FIN()

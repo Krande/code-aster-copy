@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # person_in_charge: samuel.geniaut at edf.fr
 # METHODE PAR PROJECTION SUR UN MAILLAGE - FISSURE INITIALE INCLINEE
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),)
 
 #----------------------------------------------
 #                 MAILLAGE
@@ -42,18 +42,18 @@ MA =  [None]*(nbcalc+1)
 MAX =  [None]*(nbcalc+1)
 FF = [None]*(nbcalc+1)
 
-MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
+MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED')
 
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA=('VOL','SURFINF','LIG1','LIG5'),),);
+                    CREA_GROUP_NO=_F(GROUP_MA=('VOL','SURFINF','LIG1','LIG5'),),)
 
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
-                       );
+                       )
 
 #----------------------------------------------
 #                   MATERIAU
@@ -62,7 +62,7 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 E=205000.0E6
 nu=0.3
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
 
 #----------------------------------------------
 #                   FISSURE INITIALE
@@ -80,13 +80,13 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          POINT_EXTR =  (1., 2., 9.),
          DTAN = (0., 0.5, 0.5),
          NB_POINT_FOND = 5,
-         );
+         )
 
 #----------------------------------------------
 #         PROPAGATION SUR 3 PAS DE TEMPS
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),)
 RI = 0.2
 PRES=-1.E6
 
@@ -98,39 +98,39 @@ for i in range(nbcalc) :
                                MODELISATION='3D',),
                             _F(GROUP_MA=('SURFINF','SURFSUP',),
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='3D',),),);
+                               MODELISATION='3D',),),)
 
    FF[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                  GROUP_MA_FOND='FOND_'+str(i)),
                    TYPE_ENRI_FOND = 'GEOMETRIQUE',
                    NB_COUCHES = 2,
                       MAILLAGE=MA[i],
-                      );
+                      )
 
-   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[i],FISSURE=FF[i],INFO=1,);
+   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[i],FISSURE=FF[i],INFO=1,)
 
 
    CHMAT[i]=AFFE_MATERIAU(MAILLAGE=MA[i],
                           MODELE=MODELX[i],
-                          AFFE=_F(TOUT='OUI',MATER=ACIER,));
+                          AFFE=_F(TOUT='OUI',MATER=ACIER,))
 
    CHAR[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
                    PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
                    DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
                              _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
-                             _F(GROUP_NO='P4',DY=0.0,),),);
+                             _F(GROUP_NO='P4',DY=0.0,),),)
 
    RESV[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHMAT[i],
                          EXCIT=(
                                 _F(CHARGE=CHAR[i],),),
-                         INFO=1,);
+                         INFO=1,)
 
    SIF[i]=POST_K1_K2_K3(RESULTAT=RESV[i],
                       FISSURE=FF[i],
-                      INFO=2,);
+                      INFO=2,)
 
-   IMPR_TABLE(TABLE=SIF[i],);
+   IMPR_TABLE(TABLE=SIF[i],)
 
    if ( i != nbcalc) :
       MAX[i+1]=CO('MAX_%d' %(i+1) )
@@ -152,7 +152,7 @@ for i in range(nbcalc) :
             COMP_LINE=_F(COEF_MULT_MINI=0.,
                          COEF_MULT_MAXI=1.,
                         ),
-            );
+            )
 
 #----------------------------------------------
 #   TEST DE NON-REGRESSION SUR LA POSITION FINALE DE LA FISSURE
@@ -161,7 +161,7 @@ for i in range(nbcalc) :
 CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
                 NOM_CHAM='LNNO',
-                FISSURE=FF[i],);
+                FISSURE=FF[i],)
 
 
 MA[i]=DEFI_GROUP(reuse =MA[i],
@@ -172,9 +172,9 @@ TAB= POST_RELEVE_T(ACTION=_F(INTITULE='test',
                                             GROUP_NO='FOND_'+str(i),
                                             CHAM_GD=CHLN,
                                             TOUT_CMP='OUI',
-                                            OPERATION='EXTRACTION',),);
+                                            OPERATION='EXTRACTION',),)
 
-IMPR_TABLE(TABLE=TAB);
+IMPR_TABLE(TABLE=TAB)
 
 TEST_TABLE(REFERENCE='NON_DEFINI',
            PRECISION=0.050000000000000003,
@@ -195,7 +195,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
            )
 
 i=nbcalc-1
-MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i]);
+MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i])
 
 MOVISU=AFFE_MODELE(MAILLAGE=MAXFEM,
                       AFFE=_F(TOUT='OUI',
@@ -205,10 +205,10 @@ MOVISU=AFFE_MODELE(MAILLAGE=MAXFEM,
 DEPL=POST_CHAM_XFEM(
                        MODELE_VISU   = MOVISU,
                        RESULTAT=RESV[i],
-                       );
+                       )
 
 IMPR_RESU(FORMAT='IDEAS',
-          RESU=_F(RESULTAT=DEPL,MAILLAGE=MAXFEM),);
+          RESU=_F(RESULTAT=DEPL,MAILLAGE=MAXFEM),)
 
 
-FIN();
+FIN()

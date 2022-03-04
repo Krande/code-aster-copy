@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ R2 = 250.0
 G2 = 10.0
 RK = 50.0
 P0 = 1.e-3
-GM = 0.15                    
+GM = 0.15
 
 
 # Cible de chargement
@@ -72,7 +72,7 @@ q  = R0 + RH*ka + R1*(1-exp(-G1*ka)) + R2*(1-exp(-G2*ka)) + RK*(ka+P0)**GM
 # Reponse
 err = 1.5*ka*nrr + (1+NU)/E*q*srr - NU/E*q*(srr+stt+szz)
 ezz = 1.5*ka*nzz + (1+NU)/E*q*szz - NU/E*q*(srr+stt+szz)
-erz = 1.5*ka*nrz + (1+NU)/E*q*srz 
+erz = 1.5*ka*nrz + (1+NU)/E*q*srz
 ur  = Rext*err
 uz  = ezz*L + 2*erz*(Rext-Rint)
 
@@ -114,22 +114,22 @@ CH_BORD = AFFE_CHAR_MECA(
         _F(GROUP_MA = 'INF', FX=-srz, FY=-szz),
         ),
     )
-    
 
-F_VOLU = FORMULE(NOM_PARA='X', VALE='-srz/X', srz=srz) 
+
+F_VOLU = FORMULE(NOM_PARA='X', VALE='-srz/X', srz=srz)
 
 
 CH_VOLU = AFFE_CHAR_MECA_F(
     MODELE     =  MO,
     FORCE_INTERNE = _F(GROUP_MA='VOLU', FY=F_VOLU),
     )
-    
+
 
 RIGIDE = AFFE_CHAR_MECA(
     MODELE = MO,
     DDL_IMPO = _F(GROUP_NO='INF_INT', DY=0),
     )
-    
+
 
 
 L_INST = DEFI_LIST_REEL(
@@ -139,13 +139,13 @@ L_INST = DEFI_LIST_REEL(
         _F(JUSQU_A=1 ,   NOMBRE=2),
         ),
     )
-    
+
 RAMPE = DEFI_FONCTION(
     NOM_PARA    = 'INST',
     VALE        = (0,0, 1,q),
     )
-    
-    
+
+
 EVOL = STAT_NON_LINE(
     MODELE=MO,
     CHAM_MATER=CM,
@@ -161,7 +161,7 @@ EVOL = STAT_NON_LINE(
 
 
 EVOL = CALC_CHAMP(reuse=EVOL,
-    RESULTAT     = EVOL, 
+    RESULTAT     = EVOL,
     CONTRAINTE   = 'SIEF_NOEU',
     VARI_INTERNE = 'VARI_NOEU',
     DEFORMATION  = 'EPSI_NOEU',
@@ -171,45 +171,45 @@ EVOL = CALC_CHAMP(reuse=EVOL,
 TEST_RESU(
     RESU = (
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='SIEF_NOEU', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='SIEF_NOEU',
             NOM_CMP='SIXX',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=q*srr, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=q*srr,
             VALE_CALC = 138.39401017274753,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='DEPL', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='DEPL',
             NOM_CMP='DX',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=ur, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=ur,
             VALE_CALC = -1.2854854965989326,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='DEPL', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='DEPL',
             NOM_CMP='DY',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=uz, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=uz,
             VALE_CALC = 4.437982891444107,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='VARI_NOEU', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='VARI_NOEU',
             NOM_CMP='V6',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=1.5*ka*nrz, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=1.5*ka*nrz,
             VALE_CALC = 0.03749999559270819,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
@@ -236,7 +236,7 @@ EPSA = CREA_CHAMP(
     MODELE=MO,
     AFFE=_F(TOUT='OUI',
                         NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),
-                        VALE=(-1.,-1.,-1.,0.,0.,0.),),);
+                        VALE=(-1.,-1.,-1.,0.,0.,0.),),)
 
 
 SECH=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MA,
@@ -252,7 +252,7 @@ CM_Func = AFFE_MATERIAU(
                              _F(TOUT='OUI',
                                 CHAM_GD=SECH,VALE_REF=0.,
                                 NOM_VARC='SECH',),
-),);
+),)
 
 EVOL2 = STAT_NON_LINE(
     MODELE=MO,
@@ -268,7 +268,7 @@ EVOL2 = STAT_NON_LINE(
     )
 
 EVOL = CALC_CHAMP(reuse=EVOL2,
-    RESULTAT     = EVOL2, 
+    RESULTAT     = EVOL2,
     CONTRAINTE   = 'SIEF_NOEU',
     VARI_INTERNE = 'VARI_NOEU',
     DEFORMATION  = 'EPSI_NOEU',
@@ -277,12 +277,12 @@ EVOL = CALC_CHAMP(reuse=EVOL2,
 TEST_RESU(
     RESU = (
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL2, 
-            NOM_CHAM='SIEF_NOEU', 
+            INST=1.0,
+            RESULTAT=EVOL2,
+            NOM_CHAM='SIEF_NOEU',
             NOM_CMP='SIXX',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=q*srr, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=q*srr,
             VALE_CALC = 138.39401017274753,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,13 +26,13 @@ POURSUITE(CODE='OUI')
 
 MATER=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',
-                             MATER=mat_dhrc,),),);
+                             MATER=mat_dhrc,),),)
 
 CAEL=AFFE_CARA_ELEM(MODELE=MO,
                     COQUE=_F(GROUP_MA='POUTRE',
                              EPAIS=ep_beton,
                              ANGL_REP=(0.0,0.0,),
-                             INER_ROTA='OUI',),);
+                             INER_ROTA='OUI',),)
 
 #-----------------------------------------------
 # DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
@@ -47,11 +47,11 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                                DRZ=0.0,),
                             _F(GROUP_MA='A',
                                DX=0.0,
-                               DRZ=0.0,),),);
+                               DRZ=0.0,),),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_ARETE=_F(GROUP_MA='B',
-                                     FX=1000.0/0.15,),);
+                                     FX=1000.0/0.15,),)
 
 t1 = 1.0
 t2 = 3.0
@@ -64,7 +64,7 @@ t8 = 15.0
 t9 = 17.0
 t10 = 19.0
 
-dt = 0.05;
+dt = 0.05
 
 FOFO=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,
@@ -79,16 +79,16 @@ FOFO=DEFI_FONCTION(NOM_PARA='INST',
                          t9,-790.0,
                          t10,376.0,),
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='CONSTANT',);
+                   PROL_GAUCHE='CONSTANT',)
 
 INST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=t10,
-                                  PAS=dt,),);
+                                  PAS=dt,),)
 
 LINST=DEFI_LIST_INST(METHODE='MANUEL',
                      DEFI_LIST=_F(LIST_INST=INST,),
                      ECHEC=_F(ACTION='DECOUPE',
-                              SUBD_METHODE='MANUEL',),);
+                              SUBD_METHODE='MANUEL',),)
 
 #-----------------------------------------------
 # CALCUL DES RESULTATS POUR LE CHARGEMENT
@@ -103,7 +103,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                    ITER_INTE_MAXI=30,),
                    INCREMENT=_F(LIST_INST=LINST,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=30,),
-                   NEWTON=_F(REAC_ITER=1,),);
+                   NEWTON=_F(REAC_ITER=1,),)
 
 #-----------------------------------------------
 # CALCUL DES TEST_RESU
@@ -216,19 +216,19 @@ TEST_RESU(RESU=(_F(NOM_CMP='DX',
                     REFERENCE='SOURCE_EXTERNE',
                     VALE_CALC=0.0018312013572,
                     VALE_REFE=(val_exp[2*604]*0.7, ),
-                    PRECISION=0.1,),),);
+                    PRECISION=0.1,),),)
 
-#CALC_CHAMP(reuse=RESU,RESULTAT=RESU,FORCE = ('FORC_NODA'));
+#CALC_CHAMP(reuse=RESU,RESULTAT=RESU,FORCE = ('FORC_NODA'))
 
 #tb_f=CREA_TABLE(RESU=_F(TOUT_CMP='OUI',
                 #RESULTAT=RESU,
                 #NOM_CHAM='FORC_NODA',
-                #GROUP_MA='B',),);
+                #GROUP_MA='B',),)
 
 #tb_db=CREA_TABLE(RESU=_F(TOUT_CMP='OUI',
                          #RESULTAT=RESU,
                          #NOM_CHAM='DEPL',
-                         #GROUP_NO ='BB',),);
+                         #GROUP_NO ='BB',),)
 
 #DX=tb_db.EXTR_TABLE().values()['DX']
 #table_f = tb_f.EXTR_TABLE().values()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,31 +19,31 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=_F(GROUP_MA='S',
                                NOM='SOMMETS',
-                               CRIT_NOEUD='SOMMET',),);
+                               CRIT_NOEUD='SOMMET',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_INCO_UPG',),);
+                       MODELISATION='3D_INCO_UPG',),)
 
 CM=DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0,
-                              SY=10,),);
+                              SY=10,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=CM,),);
+                            MATER=CM,),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.69897,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 #------------ CONDITIONS LIMITES -------------------------------------
 
@@ -53,11 +53,11 @@ CH_CL=AFFE_CHAR_MECA(MODELE=MO,
                                _F(GROUP_MA='FYINF',
                                   DY=0.,),
                                _F(GROUP_MA='FZINF',
-                                  DZ=0.,),),);
+                                  DZ=0.,),),)
 
 INCOMP=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_NO='SOMMETS',
-                                  GONF=0,),);
+                                  GONF=0,),)
 
 # ----------- CHARGEMENT A PILOTER ------------------------------------
 # REMARQUE : ON IMPOSE EXPLICITEMENT LA FORCE NULLE POUR UN CALCUL
@@ -69,7 +69,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                                _F(GROUP_MA='FYSUP',
                                   FY=-0.8E0,),
                                _F(GROUP_MA='FZSUP',
-                                  FZ=0.0,),),);
+                                  FZ=0.0,),),)
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -85,18 +85,18 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-5,
                                   ITER_GLOB_MAXI=15,),
                    SOLVEUR=_F(METHODE='MULT_FRONT',
-                              RENUM='MDA',),);
+                              RENUM='MDA',),)
 
 ECHL=POST_ELEM(CHAR_LIMITE=_F(),
                RESULTAT=RESU,
-               NUME_ORDRE=1,);
+               NUME_ORDRE=1,)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,DEFORMATION=('EPSI_ELNO'))
 
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
-                 OPTION=('ERME_ELEM','ERME_ELNO',),);
+                 OPTION=('ERME_ELEM','ERME_ELNO',),)
 
 #--------------------------------------------------------------
 #      TEST DE LA CHARGE LIMITE
@@ -155,4 +155,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   ),
           )
 
-FIN();
+FIN()

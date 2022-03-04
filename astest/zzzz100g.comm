@@ -57,11 +57,11 @@ Lcx = 40.
 Lcy = 40.
 beta_E = 0.2
 cov_E = sqrt(exp(beta_E**2)-1.)
-Esol = 18885000000;
+Esol = 18885000000
 Am_E = Esol
 nbmod = 60
-LX = DEFI_LIST_REEL(DEBUT = xmin, INTERVALLE=_F(JUSQU_A = xmax, PAS = 0.5),);
-LY = DEFI_LIST_REEL(DEBUT = ymin, INTERVALLE=_F(JUSQU_A = ymax, PAS = 0.5),);
+LX = DEFI_LIST_REEL(DEBUT = xmin, INTERVALLE=_F(JUSQU_A = xmax, PAS = 0.5),)
+LY = DEFI_LIST_REEL(DEBUT = ymin, INTERVALLE=_F(JUSQU_A = ymax, PAS = 0.5),)
 
 # ----------- FONCTION 1D ---------------
 
@@ -279,7 +279,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC= 1.498236241959E+10  ,
 #FONC_E  = DEFI_FONCTION ( NOM_RESU    = 'ACCE',  NOM_PARA    = 'INST',
 #            PROL_GAUCHE = 'CONSTANT',  PROL_DROITE  = 'CONSTANT',
 #            ABSCISSE        = X,
-#            ORDONNEE     = FM);
+#            ORDONNEE     = FM)
 
 # -------------- FONCTION 3D------------
 Lcz = 0.1*Lcx
@@ -351,7 +351,7 @@ r2 = E_vari3_2(0.0, 0.0, 15.0)
 F_Emodul = CREA_TABLE(LISTE=(
                  _F(LISTE_R= (e0,e1,e2, r1,r2) , PARA='Modulus'),
                  _F(LISTE_K = ('E1', 'E2', 'E3' , 'R1', 'R2') ,PARA='NOEUD') ,),
-);
+)
 
 TEST_TABLE ( TABLE = F_Emodul , NOM_PARA = 'Modulus',
              FILTRE = ( _F(NOM_PARA = 'NOEUD', VALE_K = 'E1'),),
@@ -392,14 +392,14 @@ E_vari = DEFI_PROP_ALEA (
             Y_MAXI     = ymax ,
             NB_TERM_Y  = 50,)
 
-mail=LIRE_MAILLAGE(FORMAT='MED',);
+mail=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 
 mail=MODI_MAILLAGE(reuse = mail,
                 MAILLAGE = mail,
                 ORIE_PEAU = _F(GROUP_MA_PEAU= ('L_Gauche','L_Droite','Bottom',), GROUP_MA_INTERNE='Surface',),
-                );
+                )
 
 MODELE = AFFE_MODELE(MAILLAGE=mail,
                    AFFE=(_F(GROUP_MA=('Surface',),
@@ -408,7 +408,7 @@ MODELE = AFFE_MODELE(MAILLAGE=mail,
             _F(GROUP_MA=('L_Gauche','L_Droite','Bottom',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='D_PLAN_ABSO',),
-             ), );
+             ), )
 
 
 F_2 = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
@@ -437,7 +437,7 @@ IMPR_RESU(FORMAT='MED',
            RESU=(  _F( NOM_CHAM_MED = 'E_modulus',
                       CHAM_GD = Modulus, ),
                         ),
-                 );
+                 )
 
 """
 

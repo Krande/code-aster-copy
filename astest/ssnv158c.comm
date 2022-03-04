@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -220,28 +220,28 @@ DEP      = POST_RELEVE_T ( ACTION    =_F( INTITULE   = 'DEPL'  ,
                                          GROUP_NO   = ('N4',)  ,
                                          NOM_CHAM   = 'DEPL'  ,
                                          NOM_CMP    = ( 'DY','DX') ,
-                                         OPERATION  = 'EXTRACTION',),);
+                                         OPERATION  = 'EXTRACTION',),)
 
 IMPR_TABLE ( TABLE = DEP ,
              TRI   = (_F( NOM_PARA = 'INST'    ,
                           ORDRE    = 'CROISSANT' ,),),
              PAGINATION = 'INST' ,
              NOM_PARA=('INST','DY','DX',),
-            );
+            )
 
 SIG     = POST_RELEVE_T ( ACTION    =_F( INTITULE   = 'SIGM_NOEU'  ,
                                          RESULTAT   =  U2   ,
                                          GROUP_NO   = ('N4',)  ,
                                          NOM_CHAM   = 'SIGM_NOEU'  ,
                                          NOM_CMP    = ( 'SIXX','SIYY',) ,
-                                         OPERATION  = 'EXTRACTION',),);
+                                         OPERATION  = 'EXTRACTION',),)
 
 IMPR_TABLE ( TABLE = SIG ,
              TRI   = (_F( NOM_PARA = 'INST'    ,
                           ORDRE    = 'CROISSANT' ,),),
              PAGINATION = 'INST' ,
              NOM_PARA=('INST','SIXX','SIYY',),
-            );
+            )
 
 #-------------------------
 #    TEST_RESU AU POINT 4
@@ -252,25 +252,25 @@ RODEPX=RECU_FONCTION(RESULTAT=U2,
                      NOM_CMP='DX',
                      INST = 4.5,
                      GROUP_NO='N4',
-                     TITRE='DEP X',);
+                     TITRE='DEP X',)
 RODEPY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
                      INST = 4.5,
                      GROUP_NO='N4',
-                     TITRE='DEP Y',);
+                     TITRE='DEP Y',)
 ROSIGX=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIXX',
                      INST = 4.5,
                      GROUP_NO='N4',
-                     TITRE='SIG X',);
+                     TITRE='SIG X',)
 ROSIGY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIYY',
                      INST = 4.5,
                      GROUP_NO='N4',
-                     TITRE='SIG Y',);
+                     TITRE='SIG Y',)
 
 TEST_RESU(RESU=(_F(INST=4.5,
                    RESULTAT=U2,

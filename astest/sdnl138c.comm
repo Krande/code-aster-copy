@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 )
 
 # lecture du maillage
-mail=LIRE_MAILLAGE(FORMAT='MED',);
+mail=LIRE_MAILLAGE(FORMAT='MED',)
 
 affect=AFFE_MODELE(
     MAILLAGE=mail,
@@ -142,7 +142,7 @@ RESU=STAT_NON_LINE(
     NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
     CONVERGENCE=_F(
         ITER_GLOB_MAXI=15,
-        RESI_REFE_RELA=1.0E-06 ,        
+        RESI_REFE_RELA=1.0E-06 ,
 EFFORT_REFE = 1.0,
         MOMENT_REFE = 1.0,
     ),
@@ -216,8 +216,8 @@ MATM=CALC_MATR_ELEM(OPTION='MASS_MECA',
 )
 
 # Assemblage
-MATASM=ASSE_MATRICE(MATR_ELEM=MATM, NUME_DDL=NUDDL,);
-MATASR=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NUDDL,);
+MATASM=ASSE_MATRICE(MATR_ELEM=MATM, NUME_DDL=NUDDL,)
+MATASR=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NUDDL,)
 # Calcul des modes propres avec precontrainte
 MODET = CALC_MODES(
     TYPE_RESU='DYNAMIQUE', MATR_RIGI=MATASR, MATR_MASS=MATASM,

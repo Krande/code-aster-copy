@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,27 +42,27 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 MA=DEFI_MATERIAU(ELAS=_F(E=26.,
                          NU=0.3,
                          RHO=35.,
-                         ALPHA=0.,),);
+                         ALPHA=0.,),)
 
 M=MODI_MAILLAGE(reuse =M,
                 MAILLAGE=M,
-                ORIE_PEAU=_F(GROUP_MA_PEAU=('FACEEF','FACEAE',),),);
+                ORIE_PEAU=_F(GROUP_MA_PEAU=('FACEEF','FACEAE',),),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA,),);
+                         MATER=MA,),)
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(TOUT='OUI',
@@ -72,34 +72,34 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                   FACE_IMPO=_F(GROUP_MA='FACEEF',
                                DNOR=0.,),
                   PRES_REP=_F(GROUP_MA='FACEAE',
-                              PRES=1.,),);
+                              PRES=1.,),)
 
 KE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                   MODELE=MO,
                   CHAM_MATER=CM,
-                  CHARGE=CH,);
+                  CHARGE=CH,)
 
 ME=CALC_MATR_ELEM(OPTION='MASS_MECA',
                   MODELE=MO,
                   CHAM_MATER=CM,
-                  CHARGE=CH,);
+                  CHARGE=CH,)
 
 VE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
                   CHARGE=CH,
-                  CHAM_MATER=CM,);
+                  CHAM_MATER=CM,)
 
-NU=NUME_DDL(MATR_RIGI=KE,);
+NU=NUME_DDL(MATR_RIGI=KE,)
 
 KAS=ASSE_MATRICE(MATR_ELEM=KE,
-                 NUME_DDL=NU,);
+                 NUME_DDL=NU,)
 
 MAS=ASSE_MATRICE(MATR_ELEM=ME,
-                 NUME_DDL=NU,);
+                 NUME_DDL=NU,)
 
 VAS=ASSE_VECTEUR(VECT_ELEM=VE,
-                 NUME_DDL=NU,);
+                 NUME_DDL=NU,)
 
-FREQ=DEFI_LIST_REEL(VALE=0.03183,);
+FREQ=DEFI_LIST_REEL(VALE=0.03183,)
 
 DYNAH=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  TYPE_CALCUL='HARM',
@@ -107,7 +107,7 @@ DYNAH=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  MATR_RIGI=KAS,
                  LIST_FREQ=FREQ,
                  EXCIT=_F(VECT_ASSE=VAS,
-                          COEF_MULT=1.0,),);
+                          COEF_MULT=1.0,),)
 
 DYNAH=CALC_CHAMP(reuse=DYNAH,RESULTAT=DYNAH,CONTRAINTE=('SIGM_ELNO'))
 
@@ -497,6 +497,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 #--------------------------------------------------------------------
 
-FIN();
+FIN()
 
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,26 +19,26 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-maillage=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(APLAT=0.001,),);
+maillage=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(APLAT=0.001,),)
 
 maillage=DEFI_GROUP(reuse =maillage,
                     MAILLAGE=maillage,
-                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 modmeca=AFFE_MODELE(MAILLAGE=maillage,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D_SI',),);
+                            MODELISATION='3D_SI',),)
 
 elast=DEFI_MATERIAU(ELAS_HYPER=_F(C10=2.668,
                                 C01=0.271,
                                 C20=0.466,
                                 K=2939,
-                                RHO=1000.0,),);
+                                RHO=1000.0,),)
 
 chmat=AFFE_MATERIAU(MAILLAGE=maillage,
                     AFFE=_F(TOUT='OUI',
-                            MATER=elast,),);
+                            MATER=elast,),)
 
 encastr=AFFE_CHAR_MECA(MODELE=modmeca,
                        DDL_IMPO=(_F(GROUP_MA='S4',
@@ -48,14 +48,14 @@ encastr=AFFE_CHAR_MECA(MODELE=modmeca,
                                  _F(GROUP_MA='S6',
                                     DX=0,
                                     DY=0,
-                                    DZ=0,),),);
+                                    DZ=0,),),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=2.0,
-                                    NOMBRE=50,),);
+                                    NOMBRE=50,),)
 
 l=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,0.0,1.0,1.0,2.0,0.0),);
+                VALE=(0.0,0.0,1.0,1.0,2.0,0.0),)
 
 RESU=STAT_NON_LINE(MODELE=modmeca,
                    CHAM_MATER=chmat,
@@ -71,7 +71,7 @@ RESU=STAT_NON_LINE(MODELE=modmeca,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1E-6,
                                   ITER_GLOB_MAXI=26,),
-                   ARCHIVAGE=_F(PAS_ARCH=1,),);
+                   ARCHIVAGE=_F(PAS_ARCH=1,),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSG_ELNO'))
 
@@ -82,7 +82,7 @@ RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              FORCE='FORC_NODA',
 
-             );
+             )
 
 TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  GROUP_NO='S4',
@@ -90,22 +90,22 @@ TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  NOM_CHAM='FORC_NODA',
                                  LIST_INST=L_INST,
                                  RESULTANTE='DX',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=TAB_FORC)
 
 FXA=RECU_FONCTION(TABLE=TAB_FORC,
                   PARA_X='INST',
-                  PARA_Y='DX',);
+                  PARA_Y='DX',)
 
 DXA=RECU_FONCTION(RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  GROUP_NO= 'N2',);
+                  GROUP_NO= 'N2',)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONC_X=DXA,
-                        FONC_Y=FXA,),);
+                        FONC_Y=FXA,),)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1171.417,
                         VALE_REFE=1180.67,
@@ -116,4 +116,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1171.417,
                         FONCTION=FXA,),
               )
 
-FIN();
+FIN()

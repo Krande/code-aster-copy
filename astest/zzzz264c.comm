@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ MAIL = LIRE_MAILLAGE( UNITE  = 80,
 
 # --------------------------------------
 # LECTURE RESULTAT MED
-#                             
+#
 EVOL = LIRE_RESU( TYPE_RESU  = 'EVOL_NOLI',
                   FORMAT     = 'MED',
                   INST       = inst,
@@ -54,14 +54,14 @@ EVOL = LIRE_RESU( TYPE_RESU  = 'EVOL_NOLI',
 
 
 #~ MAIL0=CREA_MAILLAGE(MAILLAGE=MAIL, RESTREINT=_F(GROUP_MA='FACECENT'), )
-#~ 
+#~
 #~ MO1B=AFFE_MODELE(MAILLAGE=MAIL0,
                #~ AFFE=_F(TOUT='OUI',
                        #~ PHENOMENE='MECANIQUE',
-                       #~ MODELISATION='D_PLAN',),);
-                       #~ 
-#~ EVOL1=EXTR_RESU(RESULTAT=EVOL, RESTREINT=_F(MODELE=MO1B,)); 
-#~ 
+                       #~ MODELISATION='D_PLAN',),)
+                       #~
+#~ EVOL1=EXTR_RESU(RESULTAT=EVOL, RESTREINT=_F(MODELE=MO1B,))
+#~
 #~ IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=EVOL1,NOM_CHAM=('DEPL','VARI_NOEU'),) )
 
 
@@ -83,7 +83,7 @@ MAFI = POST_ENDO_FISS( TABLE      = CO('TAB_FISS'),
                                       ),)
 
 # --------------------------------------
-# TESTS 
+# TESTS
 #
 
 DIST = FORMULE(VALE='abs(COORY)',

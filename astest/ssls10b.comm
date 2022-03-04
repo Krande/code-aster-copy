@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 
 #
 # MODELISATION : DST
-# 
+#
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               ),
               DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 MAIL=DEFI_GROUP(reuse =MAIL,
@@ -42,7 +42,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MOEL=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DST',),);
+                         MODELISATION='DST',),)
 
 #
 #---------------------------------------------------------------------
@@ -61,20 +61,20 @@ CAEL=AFFE_CARA_ELEM(MODELE=MOEL,
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=2.1E+11,
                                NU=0.3,
-                               RHO=7800,),);
+                               RHO=7800,),)
 
 #
 
 CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATERIAU,),);
+                               MATER=MATERIAU,),)
 
 mass=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                MODELE=MOEL,
                CHAM_MATER=CHAM_MAT,
-               CARA_ELEM=CAEL,);
+               CARA_ELEM=CAEL,)
 
-IMPR_TABLE(TABLE=mass,);
+IMPR_TABLE(TABLE=mass,)
 
 #
 #---------------------------------------------------------------------
@@ -95,7 +95,7 @@ CON_LI=AFFE_CHAR_MECA(MODELE=MOEL,
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MOEL,
                       PRES_REP=(_F(GROUP_MA=('Tore_Q4','Tore_T3'),
-                                      PRES=10000.,),),);
+                                      PRES=10000.,),),)
 
 #
 #---------------------------------------------------------------------
@@ -106,7 +106,7 @@ RES=MECA_STATIQUE(MODELE=MOEL,
                   CHAM_MATER=CHAM_MAT,
                   CARA_ELEM=CAEL,
                   EXCIT=(_F(CHARGE=CON_LI,),
-                         _F(CHARGE=CHARGE,),),);
+                         _F(CHARGE=CHARGE,),),)
 
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RES,NOM_CHAM='DEPL',GROUP_NO='A_TRIA'))
@@ -165,13 +165,13 @@ RES=CALC_CHAMP(   RESULTAT=RES,reuse=RES,
 SIG_M_EL=POST_CHAMP(RESULTAT=RES,
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 
 SIG_M_EL=CALC_CHAMP( RESULTAT=SIG_M_EL,reuse= SIG_M_EL,
                     CONTRAINTE=('SIGM_NOEU'))
 
 SIG_M_NO=CALC_CHAMP(RESULTAT=SIG_M_EL,
-                CONTRAINTE='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=SIG_M_NO,NOM_CHAM='SIGM_NOEU',GROUP_NO=('A_QUAD','A_TRIA')))
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=SIG_M_NO,NOM_CHAM='SIGM_NOEU',GROUP_NO=('B_QUAD','B_TRIA')))
@@ -266,4 +266,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    CRITERE='RELATIF',
                    PRECISION=4.E-2,),))
 
-FIN();
+FIN()

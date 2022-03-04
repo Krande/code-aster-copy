@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,26 +23,26 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 M=DEFI_GROUP(reuse =M,
              MAILLAGE=M,
-             CREA_GROUP_NO=_F(GROUP_MA='D3',),);
+             CREA_GROUP_NO=_F(GROUP_MA='D3',),)
 
 MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
-E=DEFI_CONSTANTE(VALE=31000.0,);
+E=DEFI_CONSTANTE(VALE=31000.0,)
 
-NU=DEFI_CONSTANTE(VALE=0.2,);
+NU=DEFI_CONSTANTE(VALE=0.2,)
 
-ALPHA=DEFI_CONSTANTE(VALE=0.,);
+ALPHA=DEFI_CONSTANTE(VALE=0.,)
 
 FONC1=DEFI_FONCTION(NOM_PARA='SECH',VALE=(0.0,0.0,
                           1.,1.,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
@@ -52,33 +52,33 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                     BETON_GRANGER =_F(J1=3.2258E-5,
                                        J2=6.4516E-5,
                                        TAUX_1=432000.,
-                                       TAUX_2=4320000.,),);
+                                       TAUX_2=4320000.,),)
 
 SECH=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=1.,),);
+                        VALE=1.,),)
 
 SECH1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
                 AFFE=_F(CHAM_GD=SECH,
-                        INST=0.,),);
+                        INST=0.,),)
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=20.,),);
+                        VALE=20.,),)
 
 TEMP1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
                 AFFE=_F(CHAM_GD=TEMP,
-                        INST=0.,),);
+                        INST=0.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
@@ -93,26 +93,26 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                                NOM_VARC='TEMP',
                                EVOL=TEMP1,
                                NOM_CHAM='TEMP',
-                               VALE_REF=20.0,),),);
+                               VALE_REF=20.0,),),)
 
 FORCE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           10.,20.,
                           31536010.,20.,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    FACE_IMPO=_F(GROUP_MA='D1',
-                                DY=0.,),);
+                                DY=0.,),)
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                      PRES_REP=_F(GROUP_MA='D3',
-                                 PRES=FORCE,),);
+                                 PRES=FORCE,),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=10.0,
                                      NOMBRE=1,),
                                   _F(JUSQU_A=31536010.,
-                                     NOMBRE=73,),),);
+                                     NOMBRE=73,),),)
 
 #DELTAT=432000=5J
 
@@ -125,7 +125,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
-                               ITER_GLOB_MAXI=25,),);
+                               ITER_GLOB_MAXI=25,),)
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -196,6 +196,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 ),
           )
 
-FIN();
+FIN()
 
 #

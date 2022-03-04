@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 #
 #------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
@@ -40,7 +40,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='DKT',),
-                  );
+                  )
 
 # DEFINITION DE LA FONCTION DE TEMPERATURE
 # ----------------------------------------
@@ -112,12 +112,12 @@ CLIM=AFFE_CHAR_MECA(MODELE=MODELE,
 RESU=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARAELEM,
-                   EXCIT=_F(CHARGE=CLIM,),);
+                   EXCIT=_F(CHARGE=CLIM,),)
 
 RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
                NUME_ORDRE=1,
-               CONTRAINTE=('SIGM_ELNO',),);
+               CONTRAINTE=('SIGM_ELNO',),)
 
 #-------------------------------------------------------------
 #
@@ -136,14 +136,14 @@ RESU=CALC_CHAMP(reuse =RESU,
 SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),);
+                                  NIVE_COUCHE='INF',),)
 
 CON_C1_I=MACR_LIGN_COUPE(RESULTAT=SIG_C1_I,
                      NOM_CHAM='SIGM_ELNO',
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=11,
                                    COOR_ORIG=(0.,0.,0.,),
-                                   COOR_EXTR=(0.,2.,0.,),),);
+                                   COOR_EXTR=(0.,2.,0.,),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
@@ -182,14 +182,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='MOY',),);
+                                  NIVE_COUCHE='MOY',),)
 
 CON_C1_M=MACR_LIGN_COUPE(RESULTAT=SIG_C1_M,
                      NOM_CHAM='SIGM_ELNO',
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=11,
                                    COOR_ORIG=(0.,0.,0.,),
-                                   COOR_EXTR=(0.,2.,0.,),),);
+                                   COOR_EXTR=(0.,2.,0.,),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            CRITERE='ABSOLU',
@@ -229,14 +229,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='SUP',),);
+                                  NIVE_COUCHE='SUP',),)
 
 CON_C1_S=MACR_LIGN_COUPE(RESULTAT=SIG_C1_S,
                      NOM_CHAM='SIGM_ELNO',
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=11,
                                    COOR_ORIG=(0.,0.,0.,),
-                                   COOR_EXTR=(0.,2.,0.,),),);
+                                   COOR_EXTR=(0.,2.,0.,),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.5E-2,
@@ -284,14 +284,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 SIG_C3_I=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=3,
-                                  NIVE_COUCHE='INF',),);
+                                  NIVE_COUCHE='INF',),)
 
 CON_C3_I=MACR_LIGN_COUPE(RESULTAT=SIG_C3_I,
                      NOM_CHAM='SIGM_ELNO',
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=11,
                                    COOR_ORIG=(4.,0.,0.,),
-                                   COOR_EXTR=(4.,2.,0.,),),);
+                                   COOR_EXTR=(4.,2.,0.,),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.5E-2,
@@ -330,14 +330,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 SIG_C3_M=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='MOY',),);
+                                  NIVE_COUCHE='MOY',),)
 
 CON_C3_M=MACR_LIGN_COUPE(RESULTAT=SIG_C3_M,
                      NOM_CHAM='SIGM_ELNO',
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=11,
                                    COOR_ORIG=(4.,0.,0.,),
-                                   COOR_EXTR=(4.,2.,0.,),),);
+                                   COOR_EXTR=(4.,2.,0.,),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            CRITERE='ABSOLU',
@@ -377,14 +377,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 SIG_C3_S=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='SUP',),);
+                                  NIVE_COUCHE='SUP',),)
 
 CON_C3_S=MACR_LIGN_COUPE(RESULTAT=SIG_C3_S,
                      NOM_CHAM='SIGM_ELNO',
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=11,
                                    COOR_ORIG=(4.,0.,0.,),
-                                   COOR_EXTR=(4.,2.,0.,),),);
+                                   COOR_EXTR=(4.,2.,0.,),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.5E-2,

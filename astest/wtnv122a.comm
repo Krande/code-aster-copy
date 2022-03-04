@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,12 +55,12 @@ MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
 
 MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(  GROUP_MA_PEAU = ('HAUT', 'DEVANT', 'DROITE',),  )
-                     );
-                     
+                     )
+
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
                           CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI',),
-                          CREA_GROUP_NO=_F(GROUP_MA='ROCHE',),);
+                          CREA_GROUP_NO=_F(GROUP_MA='ROCHE',),)
 
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
@@ -201,7 +201,7 @@ RES1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=U1,
                 NOM_CHAM='SIEF_ELGA',
-                INST=1.0,);
+                INST=1.0,)
 
 #CALCUL HYDROSTATIQUE
 
@@ -398,4 +398,4 @@ TEST_RESU(RESU=(_F(INST=3.0,
                 ),
           )
 
-FIN () ;
+FIN ()

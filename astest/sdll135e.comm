@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,28 +20,28 @@
 # MODELISATION BARRE
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='BARRE',),);
+                           MODELISATION='BARRE',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000E6,
                             NU=0.29,
-                            RHO=7830.0,),);
+                            RHO=7830.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
                      BARRE=_F(GROUP_MA='TOUT',
                                SECTION='CERCLE',
                                CARA=('R','EP',),
-                               VALE=(0.16,0.01,),),);
+                               VALE=(0.16,0.01,),),)
 
 
 # DEFINITION DES LISTES D INSTANTS
@@ -52,7 +52,7 @@ CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=2.E-4,
-                                   PAS=1e-07,),);
+                                   PAS=1e-07,),)
 
 # ENCASTREMENT SUR UNE EXTREMITE
 
@@ -61,14 +61,14 @@ CL=AFFE_CHAR_MECA(MODELE=MODELE,
                               DX=0.0,
                               DY=0.0,
                               DZ=0.0,
-                              ),);
+                              ),)
 
 # CHARGEMENT SOUS LA FORME D UNE FORCE ( OU D UN MOMENT ) DE TYPE HEAVYSIDE
 
 CHARFX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='B',
                                       FX=0.70710678118654746,
-                                      FY=0.70710678118654746),);
+                                      FY=0.70710678118654746),)
 
 
 
@@ -80,7 +80,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('RIGID'),
-                              OPTION='RIGI_MECA',),),);
+                              OPTION='RIGI_MECA',),),)
 
 # LISTE DISCRETISE TRES FINEMENT POUR RESPECTER
 # LE RAPPORT TAILLE DE MAILLE VITESSE DE L ONDE DE COMPRESSION
@@ -98,7 +98,7 @@ DYNATRAF=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         EXCIT=(_F(CHARGE=CHARFX,),
                                _F(CHARGE=CL,),),
                         INCREMENT=_F(LIST_INST=LISTE,),
-                        ARCHIVAGE=_F(PAS_ARCH=100,),);
+                        ARCHIVAGE=_F(PAS_ARCH=100,),)
 
 DYNATRAF=CALC_CHAMP(reuse=DYNATRAF,RESULTAT=DYNATRAF,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO'))
 
@@ -110,7 +110,7 @@ DYNATRAF=CALC_CHAMP(reuse =DYNATRAF,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARAC,
                     EXCIT=(_F(CHARGE=CHARFX,),
-                           _F(CHARGE=CL,),),);
+                           _F(CHARGE=CL,),),)
 
 
 DYNANOLI=DYNA_NON_LINE(
@@ -129,7 +129,7 @@ DYNANOLI=DYNA_NON_LINE(
                                 RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 20),
                 ARCHIVAGE=_F(PAS_ARCH=100,),
-            );
+            )
 
 DYNANOLI=CALC_CHAMP(reuse=DYNANOLI,RESULTAT=DYNANOLI,CONTRAINTE=('SIEF_ELNO'))
 
@@ -140,7 +140,7 @@ DYNANOLI=CALC_CHAMP(reuse =DYNANOLI,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARAC,
                     EXCIT=(_F(CHARGE=CHARFX,),
-                           _F(CHARGE=CL,),),);
+                           _F(CHARGE=CL,),),)
 
 
 
@@ -548,4 +548,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   CRITERE='ABSOLU',),
           )
 
-FIN();
+FIN()

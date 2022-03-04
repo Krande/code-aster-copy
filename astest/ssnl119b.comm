@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,34 +62,34 @@ sy_acier = 400*MPa
 Dsde_acier = 3280*MPa
 # masse volumique acier
 Rho_acier = 7800
-# deformation au pic de compores 
+# deformation au pic de compores
 epsi_c = 0.7*((-fc)/MPa)**(0.31)*1e-3
 
 ###
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------
 # LECTURE DU MAILLAGE
 #-----------------------------------------------
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='A',),
-                               _F(GROUP_MA='B',),),);
+                               _F(GROUP_MA='B',),),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='POUTRE',
                                       VECT_NORM=(0.,1.,0.,),
-                                      GROUP_NO='A',),);
+                                      GROUP_NO='A',),)
 
 # creation du renforcement supplementaire
 MA=CREA_MAILLAGE(MAILLAGE = MAIL,
                       CREA_MAILLE =(_F(NOM = 'RENF_H',
                                         GROUP_MA = 'POUTRE',
-                                        PREF_MAILLE = 'H',),),);
+                                        PREF_MAILLE = 'H',),),)
 
 #-----------------------------------------------
 # CREATION DU MODELE
@@ -100,7 +100,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='DKTG',),
                      _F(GROUP_MA='RENF_H',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='GRILLE_EXCENTRE',),));
+                        MODELISATION='GRILLE_EXCENTRE',),))
 
 #-----------------------------------------------
 # DEFINTION DES MATERIAUX
@@ -109,9 +109,9 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 BETON = DEFI_MATER_GC(
           BETON_GLRC=_F(
                         CODIFICATION='ESSAI',
-                        FCJ=-fc, 
-                        EIJ=E_beton, 
-                        FTJ=ft, 
+                        FCJ=-fc,
+                        EIJ=E_beton,
+                        FTJ=ft,
                         EPSI_C=epsi_c,
                         NU=Nu_beton,),
           RHO=Rho_beton,)
@@ -136,13 +136,13 @@ MAT_T=DEFI_GLRC(RELATION='GLRC_DM',
                          FLEXION='RIGI_ACIER',
 #                         KAPPA_FLEX = 6E-4,
                          ),
-                INFO=2,);
+                INFO=2,)
 
 MATER=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='POUTRE',
                              MATER=MAT_T,),
                           _F(GROUP_MA='RENF_H',
-                             MATER=ACIER,),),);
+                             MATER=ACIER,),),)
 
 CAEL=AFFE_CARA_ELEM(MODELE=MO,
                     COQUE=_F(GROUP_MA='POUTRE',
@@ -152,7 +152,7 @@ CAEL=AFFE_CARA_ELEM(MODELE=MO,
                     GRILLE=_F(GROUP_MA='RENF_H',
                               SECTION=section_acier_suppl,
                               ANGL_REP_1=(0.0,0.0,),
-                              EXCENTREMENT=-excentr,),);
+                              EXCENTREMENT=-excentr,),)
 
 #-----------------------------------------------
 # DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
@@ -165,22 +165,22 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                                DRX=0.0,
                                DRY=0.0,),
                             _F(GROUP_NO='B',
-                               DY=0.0,),),);
+                               DY=0.0,),),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_NO='C',
-                                  DY=-1.E-2,),);
+                                  DY=-1.E-2,),)
 
 FOFO=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,5.,5.),
                    PROL_DROITE='EXCLU',
-                   PROL_GAUCHE='EXCLU',);
+                   PROL_GAUCHE='EXCLU',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.1,NOMBRE=2,),
                                  _F(JUSQU_A=1.4,NOMBRE=13,),
                                  _F(JUSQU_A=3. ,NOMBRE=16,),
-                                 _F(JUSQU_A=5. ,NOMBRE=10,),),);
+                                 _F(JUSQU_A=5. ,NOMBRE=10,),),)
 
 #-----------------------------------------------
 # CALCUL DES RESULTATS POUR LE CHARGEMENT
@@ -205,18 +205,18 @@ RESU=STAT_NON_LINE(MODELE=MO,
                           EFFORT_REFE = 1.E5,
                           MOMENT_REFE = 1.E3,
                           EPSI_REFE = 1.E-3),
-                    );
+                    )
 
 CALC_CHAMP(reuse=RESU,
            RESULTAT=RESU,
-           FORCE=('FORC_NODA','REAC_NODA'),);
+           FORCE=('FORC_NODA','REAC_NODA'),)
 CALC_CHAMP(reuse=RESU,
            RESULTAT=RESU,
            DEFORMATION=('EPSI_ELGA', 'EPSI_NOEU'),
-           GROUP_MA='RENF_H');
+           GROUP_MA='RENF_H')
 
 
-MA2=CREA_MAILLAGE(MAILLAGE=MA,  RESTREINT=_F(GROUP_MA='POUTRE',),);
+MA2=CREA_MAILLAGE(MAILLAGE=MA,  RESTREINT=_F(GROUP_MA='POUTRE',),)
 IMPR_CO(CONCEPT=_F(NOM=MA2))
 
 
@@ -224,13 +224,13 @@ MO2=AFFE_MODELE(MAILLAGE=MA2,
                AFFE=(_F(GROUP_MA=('POUTRE'),
                         PHENOMENE='MECANIQUE',
                         MODELISATION='DKTG',),
-                     ));
+                     ))
 
 
 MATER2=AFFE_MATERIAU(MAILLAGE=MA2,
                     AFFE=(_F(GROUP_MA='POUTRE',
                              MATER=MAT_T,),
-                          ),);
+                          ),)
 
 
 CAEL2=AFFE_CARA_ELEM(MODELE=MO2,
@@ -238,12 +238,12 @@ CAEL2=AFFE_CARA_ELEM(MODELE=MO2,
                              EPAIS=ep_beton,
                              ANGL_REP=(0.0,0.0,),
                              INER_ROTA='OUI',),
-                    );
+                    )
 
 
 
-U1B=EXTR_RESU(RESULTAT=RESU, RESTREINT=_F(MODELE=MO2, 
-),);
+U1B=EXTR_RESU(RESULTAT=RESU, RESTREINT=_F(MODELE=MO2,
+),)
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U1B, NUME_ORDRE = 1))
 
 
@@ -262,7 +262,7 @@ POST=POST_RELEVE_T(ACTION=_F(INTITULE='RESULTANTE',
                              RESULTANTE=('DY'),
                              REPERE='GLOBAL',
                              MOYE_NOEUD='OUI',
-                             NOM_CHAM='REAC_NODA',),);
+                             NOM_CHAM='REAC_NODA',),)
 
 IMPR_TABLE(TABLE=POST, UNITE=6)
 
@@ -280,7 +280,7 @@ TEST_TABLE(TABLE=POST,
            VALE_REFE=(val_exp[3]*0.5 ),
            PRECISION=0.11,
            CRITERE='RELATIF',
-           VALE_ABS='NON',);
+           VALE_ABS='NON',)
 
 TEST_TABLE(TABLE=POST,
            NOM_PARA='DY',
@@ -294,7 +294,7 @@ TEST_TABLE(TABLE=POST,
            VALE_REFE=(val_exp[6]*0.5 ),
            PRECISION=0.16,
            CRITERE='RELATIF',
-           VALE_ABS='NON',);
+           VALE_ABS='NON',)
 
 TEST_TABLE(TABLE=POST,
            NOM_PARA='DY',
@@ -308,7 +308,7 @@ TEST_TABLE(TABLE=POST,
            VALE_REFE=(val_exp[9]*0.5 ),
            PRECISION=0.19,
            CRITERE='RELATIF',
-           VALE_ABS='NON',);
+           VALE_ABS='NON',)
 
 TEST_TABLE(TABLE=POST,
            NOM_PARA='DY',
@@ -322,7 +322,7 @@ TEST_TABLE(TABLE=POST,
            VALE_REFE=(val_exp[12]*0.5 ),
            PRECISION=0.23,
            CRITERE='RELATIF',
-           VALE_ABS='NON',);
+           VALE_ABS='NON',)
 
 TEST_TABLE(TABLE=POST,
            NOM_PARA='DY',
@@ -336,7 +336,7 @@ TEST_TABLE(TABLE=POST,
            VALE_REFE=(val_exp[15]*0.5 ),
            PRECISION=0.22,
            CRITERE='RELATIF',
-           VALE_ABS='NON',);
+           VALE_ABS='NON',)
 
 TEST_TABLE(TABLE=POST,
            NOM_PARA='DY',
@@ -350,7 +350,7 @@ TEST_TABLE(TABLE=POST,
            VALE_REFE=(val_exp[18]*0.5  ),
            PRECISION=0.20,
            CRITERE='RELATIF',
-           VALE_ABS='NON',);
+           VALE_ABS='NON',)
 
 TEST_TABLE(TABLE=POST,
            NOM_PARA='DY',
@@ -364,7 +364,7 @@ TEST_TABLE(TABLE=POST,
            VALE_REFE=(val_exp[21]*0.5  ),
            PRECISION=0.06,
            CRITERE='RELATIF',
-           VALE_ABS='NON',);
+           VALE_ABS='NON',)
 
 TEST_RESU(RESU=(_F(POINT=1,
                    NOM_CMP='EXX',
@@ -435,6 +435,6 @@ TEST_RESU(RESU=(_F(POINT=1,
                    REFERENCE='SOURCE_EXTERNE',
                    VALE_CALC=(0.006439930394327235 ),
                    VALE_REFE=(val_exp[23]  ),
-                   PRECISION=0.7,),),);
+                   PRECISION=0.7,),),)
 
 FIN()

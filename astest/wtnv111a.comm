@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ ALPHA = 30.
 ORIREP=AFFE_CARA_ELEM(MODELE=MODELE,
        MASSIF=( _F(GROUP_MA=('TOUT'),
               ANGL_REP=(ALPHA,BETA),
-                        ),),);
+                        ),),)
 #
 #
 # PERMEABILITE INTRINSEQUE, RELATIVE DU LIQUIDE, RELATIVE DU GAZ
@@ -183,7 +183,7 @@ CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,
                         FLUX_THM_REP=_F(  GROUP_MA = 'HAUT',
                                    FLUN = 0.5,
                                    FLUN_HYDR1 = 0.)
-                  );
+                  )
 
 MESTAT=STAT_NON_LINE( MODELE=MODELE,
                 CARA_ELEM=ORIREP,

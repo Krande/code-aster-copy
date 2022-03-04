@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -541,9 +541,9 @@ TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
 # TEST DES VALEURS DE ACCE_ABSOLU
 # VALEUR DE REFERENCE ACCE_ABSOLU
 #   IDENTIQUES A CELLES DU MONO_APPUI ASTER (13.2.2) SISM_MO1
-## N1_AX  = 1.96200E+00 ;
-## N5_AX  = 1.96200E+00 ;
-## N9_AX  = 1.96200E+00 ;
+## N1_AX  = 1.96200E+00
+## N5_AX  = 1.96200E+00
+## N9_AX  = 1.96200E+00
 
 
 TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',
@@ -919,7 +919,7 @@ TEST_RESU(RESU=(_F(
 #         ON VERIFIE LES RESULTATS PAR RAPPORT AU MONO-APPUI:
 #---------------------------------------------------------
 #
-# 
+#
 
 #
 
@@ -967,7 +967,7 @@ SISM_MU6=COMB_SISM_MODAL(      MODE_MECA=MODE,
 # TEST DES VALEURS DE DEPLACEMENT
 # VALEUR DE REFERENCE DEPL         CASTEM 2000
 
-# VALEUR DE REFERENCE DEPL         CASTEM2000    ASTER 
+# VALEUR DE REFERENCE DEPL         CASTEM2000    ASTER
 
 N3_DX_2=1.78952E-04
 
@@ -1010,9 +1010,9 @@ TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
 # TEST DES VALEURS DE ACCE_ABSOLU
 # VALEUR DE REFERENCE ACCE_ABSOLU
 #   IDENTIQUES A CELLES DU MONO_APPUI ASTER (13.2.2) SISM_MO2
-## N1_AX  = 1.96200E+00 ;
-## N5_AX  = 1.96200E+00 ;
-## N9_AX  = 1.96200E+00 ;
+## N1_AX  = 1.96200E+00
+## N5_AX  = 1.96200E+00
+## N9_AX  = 1.96200E+00
 
 
 TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,29 +19,29 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
                             E=100000,),
                     ECRO_LINE = _F( D_SIGM_EPSI = 10000.,
                                        SY          = 100.,
-                                     ),);
+                                     ),)
 
 
 CH_MATER=AFFE_MATERIAU(AFFE=(_F(MATER=ACIER,
                                 TOUT='OUI',),),
-                       MAILLAGE=MAILLAGE,);
+                       MAILLAGE=MAILLAGE,)
 
 MODELE=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='BARRE',),
-                   MAILLAGE=MAILLAGE,);
+                   MAILLAGE=MAILLAGE,)
 
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                         BARRE=_F(SECTION='GENERALE',
                                  GROUP_MA='TOUT',
                                  CARA='A',
-                                 VALE=1.0,),);
+                                 VALE=1.0,),)
 
 CHARGE_1=AFFE_CHAR_MECA(DDL_IMPO=(_F(TOUT='OUI',
                                      DZ=0.0,
@@ -49,17 +49,17 @@ CHARGE_1=AFFE_CHAR_MECA(DDL_IMPO=(_F(TOUT='OUI',
                                   _F(DX=0.0,
                                      GROUP_NO='A',),),
                         MODELE=MODELE,
-                                     );
+                                     )
 
 CHARGE_2 = AFFE_CHAR_MECA(MODELE = MODELE,
                           DDL_IMPO=_F(DX=0.1,
-                                     GROUP_NO='B'),);
+                                     GROUP_NO='B'),)
 
-TFIN = 10;
+TFIN = 10
 
 F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            TFIN,1.0,
-                           ),PROL_DROITE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE',)
 
 
 
@@ -68,17 +68,17 @@ F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
 L_INS1 = DEFI_LIST_REEL(DEBUT = 0.0,
                         INTERVALLE = (
                                   _F(JUSQU_A=TFIN,
-                                     NOMBRE=2,),),);
+                                     NOMBRE=2,),),)
 DFLIST1=DEFI_LIST_INST(METHODE='MANUEL',
                        DEFI_LIST=_F( LIST_INST=L_INS1,),
                        ECHEC=_F(SUBD_PAS=4,
-                                SUBD_NIVEAU=3,),);
+                                SUBD_NIVEAU=3,),)
 
 
 L_ARCH = DEFI_LIST_REEL(DEBUT = 0.0,
                         INTERVALLE = (
                                   _F(JUSQU_A=TFIN,
-                                     NOMBRE=2,),),);
+                                     NOMBRE=2,),),)
 
 
 STATIQU1=STAT_NON_LINE(MODELE=MODELE,
@@ -123,4 +123,4 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   GROUP_MA='M4',),
           )
 
-FIN();
+FIN()

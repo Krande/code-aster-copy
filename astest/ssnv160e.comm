@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
                             M=0.9,
                             PRES_CRIT=3.E5,
                             KCAM=0.,
-                            PTRAC=0.,),);
+                            PTRAC=0.,),)
 
 ############################################
 
@@ -49,7 +49,7 @@ PRESS1=DEFI_FONCTION(NOM_PARA='INST',
                     (0.0,0.0,
                     100.0,-100000.0),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU',);
+                    PROL_GAUCHE='EXCLU',)
 
 PRESS2=DEFI_FONCTION(NOM_PARA='INST',
                     NOM_RESU='PRESSION',
@@ -62,7 +62,7 @@ PRESS2=DEFI_FONCTION(NOM_PARA='INST',
                     6000.0,-600000.0,
                     8000.0,-800000.0),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU',);
+                    PROL_GAUCHE='EXCLU',)
 
 ############################################
 
@@ -92,7 +92,7 @@ LI1=DEFI_LIST_REEL(DEBUT=0.0,
                                _F(JUSQU_A=9990.0,
                                   NOMBRE=9,),
                                _F(JUSQU_A=1.E4,
-                                  NOMBRE=1,),),);
+                                  NOMBRE=1,),),)
 
 ############################################
 # CALCUL ELASTIQUE PRELIMINAIRE
@@ -105,7 +105,7 @@ RESU1=SIMU_POINT_MAT(
                    INCREMENT=_F(LIST_INST=LI1,INST_FIN=100.),
                    SIGM_IMPOSE=_F(SIXX=PRESS1, SIYY=PRESS1, SIZZ=PRESS1,
                    ),
-                        );
+                        )
 
 IMPR_TABLE(TABLE=RESU1)
 
@@ -132,7 +132,7 @@ RESU2=SIMU_POINT_MAT(
                                 ),
                    SIGM_IMPOSE=_F(SIXX=PRESS2, SIYY=PRESS2, SIZZ=PRESS2,
                    ),
-                        );
+                        )
 IMPR_TABLE(TABLE=RESU2)
 
 ############################################
@@ -170,7 +170,7 @@ RESU3=SIMU_POINT_MAT(
                                 ),
                    SIGM_IMPOSE=_F(SIXX=PRESS2, SIYY=PRESS2, SIZZ=PRESS2,
                    ),
-                        );
+                        )
 IMPR_TABLE(TABLE=RESU3)
 
 ############################################

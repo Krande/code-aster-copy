@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
-              DEBUG=_F(SDVERI='OUI'),);
+              DEBUG=_F(SDVERI='OUI'),)
 
 import numpy as NP
 tours=NP.array([ 0.0, 30000.0,])
@@ -34,7 +34,7 @@ tours=NP.array([ 0.0, 30000.0,])
 ################                  BLOCK MAILLAGE                        ################
 ########################################################################################
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",INFO=2,);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",INFO=2,)
 
 
 ########################################################################################
@@ -51,7 +51,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='DIS_TR',
                             ),
                          ),
-                   );
+                   )
 
 
 ########################################################################################
@@ -63,7 +63,7 @@ MAT=DEFI_MATERIAU(ELAS=(_F(E=2.1e+11,
                            RHO=7800.0,
                            ),
                         ),
-                  );
+                  )
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
@@ -72,7 +72,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                              MATER=MAT,
                              ),
                           ),
-                    );
+                    )
 
 
 ########################################################################################
@@ -88,28 +88,28 @@ KXX1=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,1e+12,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 KXY1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='KXY1',
                    VALE=(0.0,1000000000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 KYX1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='KYX1',
                    VALE=(0.0,2000000000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 KYY1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='KYY1',
                    VALE=(0.0,1e+12,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 # Amortissement
 
@@ -118,28 +118,28 @@ AXX1=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,70000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 AXY1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='AXY1',
                    VALE=(0.0,50000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 AYX1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='AYX1',
                    VALE=(0.0,70000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 AYY1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='AYY1',
                    VALE=(0.0,50000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 # Masse
 
@@ -148,28 +148,28 @@ MXX1=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 MXY1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='MXY1',
                    VALE=(0.0,0.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 MYX1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='MYX1',
                    VALE=(0.0,0.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 MYY1=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='MYY1',
                    VALE=(0.0,0.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 # Raideur
 
@@ -178,28 +178,28 @@ KXX2=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,1e+12,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 KXY2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='KXY2',
                    VALE=(0.0,1000000000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 KYX2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='KYX2',
                    VALE=(0.0,2000000000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 KYY2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='KYY2',
                    VALE=(0.0,1e+12,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 # Amortissement
 
@@ -208,28 +208,28 @@ AXX2=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,70000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 AXY2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='AXY2',
                    VALE=(0.0,50000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 AYX2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='AYX2',
                    VALE=(0.0,70000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 AYY2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='AYY2',
                    VALE=(0.0,50000.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 # Masse
 
@@ -238,28 +238,28 @@ MXX2=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 MXY2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='MXY2',
                    VALE=(0.0,0.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 MYX2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='MYX2',
                    VALE=(0.0,0.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 MYY2=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='MYY2',
                    VALE=(0.0,0.0,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 
 ########################################################################################
@@ -407,7 +407,7 @@ for i, nbTour in enumerate(tours):
 # Supports simplifiés
 
                                       ),
-                              );
+                              )
 
 
 
@@ -432,7 +432,7 @@ BCR=AFFE_CHAR_MECA(MODELE=MODELE,
 #                                 DRX=0.0,),
                              ),
 
-                   );
+                   )
 
 
 ########################################################################################
@@ -456,13 +456,13 @@ for j,NTRIM in enumerate(tours):
                              CHAM_MATER=CHMAT,
                              CARA_ELEM=CEK[j],
                              CHARGE=BCR,
-                             );
+                             )
 
-        NDDL[j]=NUME_DDL(MATR_RIGI=Ke[j]);
+        NDDL[j]=NUME_DDL(MATR_RIGI=Ke[j])
 
         K[j]=ASSE_MATRICE(MATR_ELEM=Ke[j],
                           NUME_DDL=NDDL[j],
-                          );
+                          )
 
 
         Me[j]=CALC_MATR_ELEM(OPTION='MASS_MECA',
@@ -470,11 +470,11 @@ for j,NTRIM in enumerate(tours):
                              CHAM_MATER=CHMAT,
                              CARA_ELEM=CEK[j],
                              CHARGE=BCR,
-                             );
+                             )
 
         M[j]=ASSE_MATRICE(MATR_ELEM=Me[j],
                           NUME_DDL=NDDL[j],
-                          );
+                          )
 
 
 # Amortissement inclu
@@ -494,11 +494,11 @@ for j,NTRIM in enumerate(tours):
                              CARA_ELEM=CEK[j],
                              RIGI_MECA=Ke[j],
                              MASS_MECA=Me[j],
-                             );
+                             )
 
         A[j]=ASSE_MATRICE(MATR_ELEM=Ae[j],
                           NUME_DDL=NDDL[j],
-                          );
+                          )
 
 
 GOM=[None]*nbT
@@ -518,25 +518,25 @@ for j,NTRIM in enumerate(tours):
                       CARA_ELEM=CEK[j],
                       CHARGE=BCR,
                       GROUP_MA='MA_AR',
-                     );
+                     )
 
 
-        G[j]=ASSE_MATRICE(MATR_ELEM=Ge[j],NUME_DDL=NDDL[j],);
+        G[j]=ASSE_MATRICE(MATR_ELEM=Ge[j],NUME_DDL=NDDL[j],)
 
 #raideur gyroscopique (vitesse variable uniquement)
 
         RGe[j]=CALC_MATR_ELEM(OPTION='RIGI_GYRO',
                                 MODELE=MODELE,
                                 CHAM_MATER=CHMAT,
-                                CARA_ELEM=CEK[j],);
+                                CARA_ELEM=CEK[j],)
 
-        RG[j]=ASSE_MATRICE(MATR_ELEM=RGe[j],NUME_DDL=NDDL[j]);
+        RG[j]=ASSE_MATRICE(MATR_ELEM=RGe[j],NUME_DDL=NDDL[j])
 
         GOM[j]=COMB_MATR_ASSE(COMB_R=(
                                       _F(MATR_ASSE=G[j],COEF_R=OM,),
                                       _F(MATR_ASSE=A[j],COEF_R=1,),
                                       ),
-                             );
+                             )
 
 MODES=[None]*nbT
 
@@ -556,7 +556,7 @@ for j,NTRIM in enumerate(tours):
                              OPTION='PLUS_PETITE',
                              CALC_FREQ=_F(NMAX_FREQ=13,),
 
-                              );
+                              )
 
 
 ########################################################################################
@@ -746,7 +746,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #                  PRECISION=0.0010000000000000001,
 #                  ),
                  ),
-          );
+          )
 
 
 # VITESSE DE ROTATION 30000 rpm, METHODE QZ DIRECT
@@ -932,11 +932,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #                  PRECISION=0.0010000000000000001,
 #                  ),
                  ),
-          );
+          )
 
 
 ########################################################################################
 ################                       BLOCK FIN                        ################
 ########################################################################################
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,55 +20,55 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # LECTURE DU MAILLAGE
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA='34',),);
+                CREA_GROUP_NO=_F(GROUP_MA='34',),)
 
 # AFFECTATION DU MODELE SUR LE MAILLAGE
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='D_PLAN',),);
+                         MODELISATION='D_PLAN',),)
 
 # DEFINITION DES PARAMETRES DE LA LOI DE COMPORTEMENT
 MA=DEFI_MATERIAU(ELAS=_F(E=70,
                          NU=0.2,),
                  ECRO_LINE=_F(D_SIGM_EPSI=2.170542,
-                              SY=0.24,),);
+                              SY=0.24,),)
 
 # AFFECTATION DU MATERIAU SUR L ENSEMBLE DU MAILLAGE
 MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MA,),);
+                           MATER=MA,),)
 
 # CONDITIONS AUX LIMITES ET CHARGEMENTS
 CHAR=AFFE_CHAR_MECA(MODELE=MODE,
                     DDL_IMPO=(_F(GROUP_MA='12',
                                   DY=0.0,),
                                _F(GROUP_MA='45',
-                                  DX=0.0,),),);
+                                  DX=0.0,),),)
 
 CHAR2=AFFE_CHAR_MECA(MODELE=MODE,
                      DDL_IMPO=_F(GROUP_MA='34',
-                                  DY=0.3,),);
+                                  DY=0.3,),)
 
 F_DEPL=DEFI_FONCTION(NOM_PARA    = 'INST',
                      VALE        = (0,0, 1,1),
-                     PROL_DROITE = 'LINEAIRE',);
+                     PROL_DROITE = 'LINEAIRE',)
 
 # DISCRETISATION EN TEMPS
-TFIN = 1.1;
+TFIN = 1.1
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.,
-                                    NOMBRE=50,),);
+                                    NOMBRE=50,),)
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),);
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),)
 
 
-L_ARCH=DEFI_LIST_REEL(VALE=(0.00,0.32,0.6,1.,1.1),);
+L_ARCH=DEFI_LIST_REEL(VALE=(0.00,0.32,0.6,1.,1.1),)
 
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.005,
@@ -83,7 +83,7 @@ L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),
                                             _F(JUSQU_A=1.1,
                                     NOMBRE=1,),
-                                   ),);
+                                   ),)
 
 # RESOLUTION AVEC LA METHODE ITERATIVE DE NEWTON-RAPHSON
 RESUNL=STAT_NON_LINE(MODELE=MODE,
@@ -97,26 +97,26 @@ RESUNL=STAT_NON_LINE(MODELE=MODE,
                      NEWTON=_F(REAC_ITER=1,),
                      ARCHIVAGE = _F(
                                     LIST_INST= L_ARCH),
-                                    );
+                                    )
 
 # EXTRACTION DE LA COURBE FORCE APPLIQUEE EN FONCTION DU TEMPS
 RESUNL=CALC_CHAMP(reuse =RESUNL,
                RESULTAT=RESUNL,
-               FORCE='FORC_NODA');
+               FORCE='FORC_NODA')
 
 FORC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='FORCE',
                              RESULTAT=RESUNL,
                              NOM_CHAM='FORC_NODA',
                              GROUP_NO='34',
-                             RESULTANTE='DY',),);
+                             RESULTANTE='DY',),)
 
 FX=RECU_FONCTION(TABLE=FORC,
                  PARA_X='INST',
                  PARA_Y='DY',
                  INTERPOL='LIN',
                  PROL_DROITE='CONSTANT',
-                 PROL_GAUCHE='CONSTANT');
+                 PROL_GAUCHE='CONSTANT')
 
 
 
@@ -129,7 +129,7 @@ DEFLIST1 = DEFI_LIST_INST(METHODE='AUTO',
                           ADAPTATION=_F(EVENEMENT='TOUT_INST',
                                        MODE_CALCUL_TPLUS='IMPLEX'
                                        ),
-                          );
+                          )
 
 
 RESUIE=STAT_NON_LINE(MODELE=MODE,
@@ -142,19 +142,19 @@ RESUIE=STAT_NON_LINE(MODELE=MODE,
                      METHODE = 'IMPLEX',
                      ARCHIVAGE = _F(
                                     LIST_INST= L_ARCH),
-);
+)
 
 # EXTRACTION DE LA COURBE FORCE APPLIQUEE EN FONCTION DU TEMPS
 RESUIE=CALC_CHAMP(reuse =RESUIE,
                RESULTAT=RESUIE,
-               FORCE='FORC_NODA');
+               FORCE='FORC_NODA')
 
 FORCIE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='FORCE',
                                RESULTAT=RESUIE,
                                NOM_CHAM='FORC_NODA',
                                GROUP_NO='34',
-                               RESULTANTE='DY',),);
+                               RESULTANTE='DY',),)
 
 
 FXIE=RECU_FONCTION(TABLE=FORCIE,
@@ -162,13 +162,13 @@ FXIE=RECU_FONCTION(TABLE=FORCIE,
                    PARA_Y='DY',
                    INTERPOL='LIN',
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='CONSTANT');
+                   PROL_GAUCHE='CONSTANT')
 
 # DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
 DIFF=CALC_FONCTION(COMB=(
                           _F( FONCTION = FX, COEF =  1.),
                           _F( FONCTION = FXIE, COEF = -1.),
-                          ) );
+                          ) )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.000250591666747,
                          VALE_REFE=0.0,
@@ -201,4 +201,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.000250591666747,
                       ),
               )
 
-FIN();
+FIN()

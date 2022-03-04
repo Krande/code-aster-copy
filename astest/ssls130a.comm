@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,60 +28,60 @@ MAYA = LIRE_MAILLAGE(FORMAT='IDEAS',
 
 MATELAS=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
                               NU=0.3,
-                              RHO=1.E-9,),);
+                              RHO=1.E-9,),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAYA,
                    AFFE=_F(GROUP_MA='ALL_EL',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DKT',),);
+                           MODELISATION='DKT',),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATELAS,),);
+                            MATER=MATELAS,),)
 
 CHCAR=AFFE_CARA_ELEM(MODELE=MODELE,
                      COQUE=_F(GROUP_MA='ALL_EL',
-                              EPAIS=0.001,),);
+                              EPAIS=0.001,),)
 
 ENCAS=AFFE_CHAR_MECA(MODELE=MODELE,
                      DDL_IMPO=_F(GROUP_NO='GOCH_NO',
-                                 BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),);
+                                 BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),)
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
                      FORCE_NODALE=_F(GROUP_NO='DROI_NO',
                                      FX=100.0,
-                                     FZ=1.0,),);
+                                     FZ=1.0,),)
 
 MECASTAT=MECA_STATIQUE(MODELE=MODELE,
                        CHAM_MATER=CHMAT,
                        CARA_ELEM=CHCAR,
                        EXCIT=(_F(CHARGE=ENCAS,),
                               _F(CHARGE=FORCE,),),
-                       OPTION='SIEF_ELGA',);
+                       OPTION='SIEF_ELGA',)
 
-                       
+
 MECASTAT=CALC_CHAMP(reuse=MECASTAT,RESULTAT=MECASTAT,
                     CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'),
-                    DEFORMATION=('EPSI_ELGA'),                    
+                    DEFORMATION=('EPSI_ELGA'),
                     )
 
 
 MECASTA2=POST_CHAMP(RESULTAT=MECASTAT,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELGA',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 
 #IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTA2,NOM_CHAM=('SIGM_ELGA',)))
-                                   
+
 MECASTA2=CALC_CHAMP(reuse =MECASTA2,
                  RESULTAT=MECASTA2,
-                 CONTRAINTE='SIGM_NOEU',);
+                 CONTRAINTE='SIGM_NOEU',)
 
 DEPLVER=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=MECASTA2,
                    NOM_CHAM='SIGM_NOEU',
-                   NUME_ORDRE=1,);
+                   NUME_ORDRE=1,)
 
 TEST_RESU(CHAM_NO=(_F(
                       NOM_CMP='SIXX',
@@ -108,7 +108,7 @@ TEST_RESU(CHAM_NO=(_F(
 
 listinst = DEFI_LIST_REEL(DEBUT=0.0,
              INTERVALLE=_F(JUSQU_A=1.0, PAS=1.0),
-                          );
+                          )
 
 MECASTAN=STAT_NON_LINE(MODELE=MODELE,
                        CHAM_MATER=CHMAT,
@@ -116,9 +116,9 @@ MECASTAN=STAT_NON_LINE(MODELE=MODELE,
                        INCREMENT = _F(  LIST_INST = listinst, ),
                        EXCIT=(_F(CHARGE=ENCAS,),
                               _F(CHARGE=FORCE,),),
-                       );
+                       )
 
-                       
+
 MECASTAN=CALC_CHAMP(reuse=MECASTAN,RESULTAT=MECASTAN,
                   CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIGM_ELGA'),
                   DEFORMATION=('EPSI_ELGA'),
@@ -128,23 +128,23 @@ MECASTAN=CALC_CHAMP(reuse=MECASTAN,RESULTAT=MECASTAN,
 MECASTN2=POST_CHAMP(RESULTAT=MECASTAN,INST=1.0,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELGA',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 
 EPSISTN2=POST_CHAMP(RESULTAT=MECASTAN,INST=1.0,
                      EXTR_COQUE=_F(NOM_CHAM='EPSI_ELGA',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 
 
 EPSISTA2=POST_CHAMP(RESULTAT=MECASTAT,
                      EXTR_COQUE=_F(NOM_CHAM='EPSI_ELGA',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 
 #IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTN2,NOM_CHAM=('SIGM_ELGA',)))
 #IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=EPSISTN2,NOM_CHAM=('EPSI_ELGA',)))
 #IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=EPSISTA2,NOM_CHAM=('EPSI_ELGA',)))
-# TEST OF SIXZ,SIYZ BETWEEN STAT_NON_LINE VS MECA_STATIQUE       
+# TEST OF SIXZ,SIYZ BETWEEN STAT_NON_LINE VS MECA_STATIQUE
 TEST_RESU(RESU=(
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
@@ -154,7 +154,7 @@ TEST_RESU(RESU=(
                   NOM_CHAM='SIGM_ELGA',
                   NOM_CMP='SIXZ',
                   VALE_CALC= 7.97446387680735E+04 ,),
-                  
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   POINT=1,
@@ -162,8 +162,8 @@ TEST_RESU(RESU=(
                   RESULTAT=MECASTA2,
                   NOM_CHAM='SIGM_ELGA',
                   NOM_CMP='SIYZ',
-                  VALE_CALC= 14377.0954149 ,), 
-                  
+                  VALE_CALC= 14377.0954149 ,),
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   POINT=1,
@@ -172,7 +172,7 @@ TEST_RESU(RESU=(
                   NOM_CHAM='EPSI_ELGA',
                   NOM_CMP='EPXZ',
                   VALE_CALC= 1.16809048336333E-06 ,),
-                  
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   POINT=1,
@@ -180,9 +180,9 @@ TEST_RESU(RESU=(
                   RESULTAT=EPSISTA2,
                   NOM_CHAM='EPSI_ELGA',
                   NOM_CMP='EPYZ',
-                  VALE_CALC= 2.10594073682869E-07 ,), 
-                  
-                  
+                  VALE_CALC= 2.10594073682869E-07 ,),
+
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   POINT=1,
@@ -194,7 +194,7 @@ TEST_RESU(RESU=(
                   VALE_CALC= 7.97446387680735E+04 ,
                   VALE_REFE= 7.97446387680735E+04 ,
                   ),
-                  
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   POINT=1,
@@ -205,8 +205,8 @@ TEST_RESU(RESU=(
                   REFERENCE='AUTRE_ASTER',
                   VALE_CALC= 14377.0954149 ,
                   VALE_REFE= 14377.0954149 ,
-                  ),                    
-                  
+                  ),
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   POINT=1,
@@ -218,7 +218,7 @@ TEST_RESU(RESU=(
                   VALE_CALC= 1.16809048336333E-06 ,
                   VALE_REFE= 1.16809048336333E-06 ,
                   ),
-                  
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   POINT=1,
@@ -229,12 +229,12 @@ TEST_RESU(RESU=(
                   REFERENCE='AUTRE_ASTER',
                   VALE_CALC= 2.10594073682869E-07  ,
                   VALE_REFE= 2.10594073682869E-07 ,
-                  ),                    
-                  
+                  ),
+
                   ),
           )
-          
-          
+
+
 # TEST OF QX,QY BETWEEN STAT_NON_LINE VS MECA_STATIQUE
 
 #IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MECASTAT,NOM_CHAM=('EFGE_ELNO',)))
@@ -248,7 +248,7 @@ TEST_RESU(RESU=(
                   NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='QX',
                   VALE_CALC= 5.31630925120490E+01,),
-                 
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   GROUP_NO='N2168',
@@ -256,8 +256,8 @@ TEST_RESU(RESU=(
                   NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='QY',
                   VALE_CALC= 9.58473027659211E+00,),
-                  
-                  
+
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   GROUP_NO='N2168',
@@ -268,7 +268,7 @@ TEST_RESU(RESU=(
                   VALE_CALC= 5.31630925120490E+01,
                   VALE_REFE= 5.31630925120490E+01,
                   ),
-                  
+
                _F(NUME_ORDRE=1,
                   GROUP_MA='M1533',
                   POINT=1,
@@ -279,11 +279,11 @@ TEST_RESU(RESU=(
                   REFERENCE='AUTRE_ASTER',
                   VALE_CALC= 9.58473027659211E+00,
                   VALE_REFE= 9.58473027659211E+00,
-                  ),                    
-                  
+                  ),
+
                   ),
           )
 
-          
 
-FIN();
+
+FIN()

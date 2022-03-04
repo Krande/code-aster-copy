@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ MAILET=LIRE_MAILLAGE(FORMAT="ASTER",  UNITE=20)
 
 MAILET=DEFI_GROUP(MAILLAGE=MAILET,reuse=MAILET,
      CREA_GROUP_MA=_F(NOM='3D', TOUT='OUI', TYPE_MAILLE='3D')
-);
+)
 
 #
 
@@ -50,8 +50,8 @@ CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILET,
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,
                          DDL_IMPO=_F( GROUP_NO = 'PIED', DX = 0.0, DY = 0.0, DZ = 0.0),
                          ROTATION=_F(VITESSE = 3000.,
-                                     AXE = (1.,0.,-1.,), 
-                                     CENTRE=(10.,10.,10.),),);
+                                     AXE = (1.,0.,-1.,),
+                                     CENTRE=(10.,10.,10.),),)
 
 #
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,27 +18,27 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 MATERI_1=DEFI_MATERIAU(ELAS=_F(E=450000.,
-                               NU=0.3,),);
+                               NU=0.3,),)
 
-MAILLA_1=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLA_1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLA_1=DEFI_GROUP(reuse =MAILLA_1,
                     MAILLAGE=MAILLA_1,
                     CREA_GROUP_MA=_F(NOM='TOUT',
-                                     TOUT='OUI',),);
+                                     TOUT='OUI',),)
 
 CH_MAT_1=AFFE_MATERIAU(MAILLAGE=MAILLA_1,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATERI_1,),);
+                               MATER=MATERI_1,),)
 
 MODELE_1=AFFE_MODELE(MAILLAGE=MAILLA_1,
-                     
+
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='COQUE_3D',),);
+                             MODELISATION='COQUE_3D',),)
 
 CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE_1,
                         DDL_IMPO=(_F(GROUP_NO='G_10',
@@ -64,22 +64,22 @@ CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE_1,
                                      DRY=0.,
                                      DRZ=0.,),),
                         FORCE_COQUE=_F(TOUT='OUI',
-                                       FZ=-1.,),);
+                                       FZ=-1.,),)
 
 CARAC_1=AFFE_CARA_ELEM(MODELE=MODELE_1,
                        COQUE=_F(GROUP_MA='TOUT',
                                 EPAIS=0.125,
-                                COEF_RIGI_DRZ=1.E-5,),);
+                                COEF_RIGI_DRZ=1.E-5,),)
 
 D_FONC=DEFI_FONCTION(
                      NOM_PARA='INST',
                      VALE=(0.,0.,
                            1.,1.,
-                           ),);
+                           ),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=0.4,
-                                    NOMBRE=10,),);
+                                    NOMBRE=10,),)
 
 SIGMINI0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     PROL_ZERO='OUI',
@@ -88,7 +88,7 @@ SIGMINI0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     MODELE=MODELE_1,
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP='SIXX',
-                            VALE=0.,),);
+                            VALE=0.,),)
 
 NONLIN=STAT_NON_LINE(MODELE=MODELE_1,
                      CHAM_MATER=CH_MAT_1,
@@ -102,7 +102,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODELE_1,
                      INCREMENT=_F(LIST_INST=L_INST,),
                      NEWTON=_F(REAC_ITER=1,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                    ITER_GLOB_MAXI=25,),);
+                                    ITER_GLOB_MAXI=25,),)
 
 #   MI CHARGE
 #   CHARGE MAXIMALE
@@ -121,7 +121,7 @@ TEST_RESU(RESU=_F(RESULTAT=NONLIN,
                   VALE_REFE=-0.10433,
                   PRECISION=0.01,
                   REFERENCE='NON_DEFINI',
-                  VALE_CALC=-0.103963325,),);
+                  VALE_CALC=-0.103963325,),)
 
 #   CHARGE MAXIMALE
 ##################################################################
@@ -139,7 +139,7 @@ TEST_RESU(RESU=_F(RESULTAT=NONLIN,
                   VALE_REFE=-0.39351,
                   PRECISION=0.01,
                   REFERENCE='NON_DEFINI',
-                  VALE_CALC=-0.392085998,),);
+                  VALE_CALC=-0.392085998,),)
 
-FIN();
+FIN()
 #CHECKSUM:e773a4f47dcfb4c7a07521aaa0dcfe0d  -:FIN CHECKSUM

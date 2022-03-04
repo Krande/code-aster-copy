@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI',), INFO=1,);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI',), INFO=1,)
 
 Mail=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 
 Mail1=CREA_MAILLAGE(MAILLAGE=Mail,
-                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Edge_1',),);
+                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Edge_1',),)
 
 
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=Mail1),)
@@ -48,15 +48,15 @@ TEST_RESU(MAILLAGE=(_F(MAILLAGE=Mail1,
                       ),
             )
 
-           
-           
+
+
 ### TEST TRIA6
 
 Mailt6=CREA_MAILLAGE(MAILLAGE=Mail,
-                   LINE_QUAD=_F(TOUT='OUI',),);
+                   LINE_QUAD=_F(TOUT='OUI',),)
 
 Mailt61=CREA_MAILLAGE(MAILLAGE=Mailt6,
-                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Edge_1',),);
+                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Edge_1',),)
 
 
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=Mailt61),)

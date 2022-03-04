@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #  - ANALYSE DYNAMIQUE D'UNE TUYAUTERIE COMPORTANT UN COUDE
 #  - MODELISATION AVEC DES ELEMENTS 'TUYAU' SEG4 (3 MODES DE FOURIER)
 #---------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',   INFO=2)
 
@@ -109,7 +109,7 @@ MOD_CAL=CALC_MODES(MATR_RIGI=K,
 
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
 IMPR_RESU(FORMAT='MED', UNITE=81,
-          RESU=_F( RESULTAT=MOD_CAL, NOM_CHAM='DEPL',),);
+          RESU=_F( RESULTAT=MOD_CAL, NOM_CHAM='DEPL',),)
 
 MODES=LIRE_RESU(FORMAT='MED', UNITE=81,
                 FORMAT_MED=_F(NOM_CHAM='DEPL',
@@ -118,7 +118,7 @@ MODES=LIRE_RESU(FORMAT='MED', UNITE=81,
                 MATR_RIGI=K,
                 MATR_MASS=M,
                 TOUT_ORDRE='OUI',
-                MAILLAGE=MAILLAGE,);
+                MAILLAGE=MAILLAGE,)
 #
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS

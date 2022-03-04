@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(
 #
 
 mail0=LIRE_MAILLAGE(FORMAT='MED',
-                    VERI_MAIL=_F(VERIF='OUI',),);
+                    VERI_MAIL=_F(VERIF='OUI',),)
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
@@ -36,7 +36,7 @@ mail=CREA_MAILLAGE(MAILLAGE=mail0,
                               _F(NOM_GROUP_MA='PFONDAT',
                                  GROUP_MA='SURFBAS2',),
                               _F(NOM_GROUP_MA='PC',
-                                 GROUP_NO=('PC1','PC2','PC3',),),),);
+                                 GROUP_NO=('PC1','PC2','PC3',),),),)
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
@@ -45,7 +45,7 @@ mail=CREA_MAILLAGE(MAILLAGE=mail0,
 mail=DEFI_GROUP(reuse =mail,
                 MAILLAGE=mail,
                 CREA_GROUP_NO=_F(GROUP_MA='SURFBAS2',
-                                 NOM='ISOLSTR',),);
+                                 NOM='ISOLSTR',),)
 
 #
 # Orientation des elements d interface.
@@ -63,9 +63,9 @@ mail=MODI_MAILLAGE(reuse =mail,
                                        GROUP_NO='N316',),
                                     _F(GROUP_MA='SLIBREM2',
                                        VECT_NORM=(0.,0.,1.,),
-                                       GROUP_NO='N1043',),),);
+                                       GROUP_NO='N1043',),),)
 
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=mail,));
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=mail,))
 
 modele=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=(_F(GROUP_MA='STRVOU2',
@@ -76,19 +76,19 @@ modele=AFFE_MODELE(MAILLAGE=mail,
                             MODELISATION='DIS_TR',),
                          _F(GROUP_MA='PC',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 #
 
 mat1=DEFI_MATERIAU(ELAS=_F(E=3.6E+10,
                            NU=0.2,
-                           RHO=2400.,),);
+                           RHO=2400.,),)
 
 #
 
 champmat=AFFE_MATERIAU(MAILLAGE=mail,
                        AFFE=_F(GROUP_MA='STRVOU2',
-                               MATER=mat1,),);
+                               MATER=mat1,),)
 
 cara_ele=AFFE_CARA_ELEM(MODELE=modele,
                         DISCRET=(_F(REPERE='GLOBAL',
@@ -104,7 +104,7 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
                                     VALE=0.,),
                                  _F(CARA='K_T_D_N',
                                     GROUP_MA='PC',
-                                    VALE=(0.,0.,0.,),),),);
+                                    VALE=(0.,0.,0.,),),),)
 
 #
 #========================================
@@ -128,7 +128,7 @@ cond_lim=AFFE_CHAR_MECA(MODELE=modele,
                                      DX=0.,
                                      DY=0.,
                                      DZ=0.,),),
-                        LIAISON_SOLIDE=_F(GROUP_NO='ISOLSTR',),);
+                        LIAISON_SOLIDE=_F(GROUP_NO='ISOLSTR',),)
 
 #
 #
@@ -139,7 +139,7 @@ rigi_ele=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=modele,
                         CHAM_MATER=champmat,
                         CARA_ELEM=cara_ele,
-                        CHARGE=cond_lim,);
+                        CHARGE=cond_lim,)
 
 #
 
@@ -147,21 +147,21 @@ mass_ele=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=modele,
                         CHAM_MATER=champmat,
                         CARA_ELEM=cara_ele,
-                        CHARGE=cond_lim,);
+                        CHARGE=cond_lim,)
 
 #
 
-nume_ddl=NUME_DDL(MATR_RIGI=rigi_ele,);
+nume_ddl=NUME_DDL(MATR_RIGI=rigi_ele,)
 
 #
 # Assemblage des matrices et vecteurs
 #-------------------------------------
 
 MATRIGI=ASSE_MATRICE(MATR_ELEM=rigi_ele,
-                     NUME_DDL=nume_ddl,);
+                     NUME_DDL=nume_ddl,)
 
 MATMASS=ASSE_MATRICE(MATR_ELEM=mass_ele,
-                     NUME_DDL=nume_ddl,);
+                     NUME_DDL=nume_ddl,)
 
 #
 # Calcul de la masse du barrage voute
@@ -171,7 +171,7 @@ mass_bar=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                    MODELE=modele,
                    CHAM_MATER=champmat,
                    CARA_ELEM=cara_ele,
-                   INFO=1,);
+                   INFO=1,)
 
 #
 # calcul des modes
@@ -199,17 +199,17 @@ mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
 interdy=DEFI_INTERF_DYNA(NUME_DDL=nume_ddl,
                          INTERFACE=_F(NOM='SOLBAR',
                                       TYPE='CRAIGB',
-                                      GROUP_NO='N316',),);
+                                      GROUP_NO='N316',),)
 
 #
 
 bamo=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=interdy,
                                    MODE_MECA=mode_rig,
-                                   NMAX_MODE=999,),);
+                                   NMAX_MODE=999,),)
 
 #
 
-mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,);
+mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,)
 
 # Table de sol en manuel pour reference :
 # TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
@@ -290,7 +290,7 @@ mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,);
 #                                 NUME_MATE=1,),
 #                              _F(SUBSTRATUM='OUI',
 #                                 NUME_MATE=2,),),
-#                      TITRE='SOL HOMOGENE',);
+#                      TITRE='SOL HOMOGENE',)
 
 TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
                                   NU=0.16,
@@ -303,8 +303,8 @@ TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
                                     GROUP_MA_INTERF='SURFBAS2',
                                     MAILLAGE=mail,
                                     GROUP_MA_CONTROL='PC',
-                                     ),     
-                     TITRE='SOL HOMOGENE',INFO=2,);
+                                     ),
+                     TITRE='SOL HOMOGENE',INFO=2,)
 
 tfin = 0.2
 df = 1.0 / tfin
@@ -323,7 +323,7 @@ fonsin = FORMULE(VALE='sin(omega*INST) ',
 accsin=CALC_FONC_INTERP(FONCTION=fonsin,
                         NOM_PARA='INST',
                         NOM_RESU='EVOL',
-                        LIST_PARA=ltps);
+                        LIST_PARA=ltps)
 
 tabctr=CALC_MISS(TYPE_RESU='TABLE_CONTROL',
                  PROJET='FDLV112E',
@@ -469,4 +469,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.98413993987259,
 #                       _F(FONCTION=acce_z3,),),
 #               UNITE=8,)
 
-FIN();
+FIN()

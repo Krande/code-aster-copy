@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,25 +44,25 @@ import numpy.linalg as LA
 from math import pi, acos, atan2
 
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 
 MO=AFFE_MODELE(MAILLAGE=MA,
               AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
-                       );
+                       )
 
 L_INST = DEFI_LIST_REEL (
               DEBUT=0.0,
               INTERVALLE=(_F(JUSQU_A=1.00,NOMBRE=2,),
                           _F(JUSQU_A=2.00,NOMBRE=50,),
-                          ),);
+                          ),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
               INTERVALLE=(_F(JUSQU_A=1.00,NOMBRE=2,),
                           _F(JUSQU_A=2.00,NOMBRE=5,),
-                          ),);
+                          ),)
 
 
 
@@ -77,16 +77,16 @@ C_RIGIDE = AFFE_CHAR_MECA(
     _F(GROUP_NO=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
     _F(GROUP_NO=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
     )
-  );
+  )
 
 
 U_CHAR=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.,0.,1.,0.9375e-4,2.,2.e-3),
-                     PROL_DROITE='CONSTANT',);
+                     PROL_DROITE='CONSTANT',)
 
 U_CIS=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(1.,0.,2.,5.e-4),
-                     PROL_DROITE='CONSTANT',);
+                     PROL_DROITE='CONSTANT',)
 
 
 
@@ -94,13 +94,13 @@ U_CIS=DEFI_FONCTION(NOM_PARA='INST',
 CHR_T = AFFE_CHAR_MECA(
                         MODELE = MO,
                         DDL_IMPO = (_F(GROUP_NO='N1', DX=1.),),
-                        );
+                        )
 
 CHR_C = AFFE_CHAR_MECA(
                        MODELE = MO,
                        DDL_IMPO = (_F(GROUP_NO='N1', DX=0.5,DY=0.5),
                                    _F(GROUP_NO='N2', DY=0.75),),
-                       );
+                       )
 
 
 BETON= DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0,),
@@ -111,12 +111,12 @@ BETON= DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0,),
                                    K2 = 6.e-4,
                                    ECROB=0.e-3,
                                    ECROD=0.06,
-                                   ),);
+                                   ),)
 
 
 CHP_M=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=BETON,),);
+                             MATER=BETON,),)
 
 
 U=STAT_NON_LINE(MODELE=MO,
@@ -135,7 +135,7 @@ U=STAT_NON_LINE(MODELE=MO,
               CONVERGENCE=_F(RESI_GLOB_RELA=1.E-15,
                              ITER_GLOB_MAXI=15),
              ARCHIVAGE=_F(LIST_INST=L_INST),
-             );
+             )
 
 U=STAT_NON_LINE(reuse=U,
                 ETAT_INIT=_F(EVOL_NOLI=U),
@@ -156,7 +156,7 @@ U=STAT_NON_LINE(reuse=U,
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
                                ITER_GLOB_MAXI=15,),
                 ARCHIVAGE=_F(LIST_INST=L_INST),
-              );
+              )
 
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELGA'))
@@ -227,11 +227,11 @@ aster_core.matfpe(1)
 
 ROT_EPSI=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(1.,angle_defi),
-                     PROL_DROITE='CONSTANT',);
+                     PROL_DROITE='CONSTANT',)
 
 ROT_ENDO=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(1.,angle_endo),
-                     PROL_DROITE='CONSTANT',);
+                     PROL_DROITE='CONSTANT',)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=(135.716, -44.284),
                         VALE_PARA=1.0,

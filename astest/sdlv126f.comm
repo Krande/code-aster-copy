@@ -2,7 +2,7 @@
 # coding: utf-8
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 # CAS_TEST__: SDLv126F
 #
 # BUT DE LA FAMILLE DE TEST
-# Ce test unitaire permet de verifier la bone implémentation des 
+# Ce test unitaire permet de verifier la bone implémentation des
 # routines de calcul des matrices de rigidité pour les matériaux
 # élastique et viscoélastique 3D.
 #
@@ -56,9 +56,9 @@ mail.readMedFile('sdlv126a.med')
 # In[ ]:
 
 
-model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('3D'), 
-                             PHENOMENE='MECANIQUE', 
-                             MODELISATION='3D') 
+model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('3D'),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D')
                           ),
                     MAILLAGE=mail)
 
@@ -89,12 +89,12 @@ deltane_hyst = DEFI_MATERIAU(ELAS=_F(E=Ev.real, NU=0.3, AMOR_HYST=Ev.imag/Ev.rea
 # In[ ]:
 
 
-mater_vhyst = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('3D'), 
+mater_vhyst = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('3D'),
                                      MATER=deltane_hyst
                                     ),),
                              MODELE=model)
 
-mater_v = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('3D'), 
+mater_v = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('3D'),
                                  MATER=deltane
                                  ),),
                         MODELE=model)
@@ -138,7 +138,7 @@ kvh = KVh.EXTR_MATR()
 np.savetxt('test.txt', np.real(kv - kvh))
 TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7, CRITERE='ABSOLU')
 np.savetxt('test.txt', np.imag(kv - kvh))
-TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7, 
+TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7,
              CRITERE='ABSOLU', TOLE_MACHINE=1e-5)
 
 
@@ -146,4 +146,3 @@ TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e
 
 
 FIN()
-

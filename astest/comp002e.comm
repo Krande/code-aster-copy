@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,36 +22,36 @@
 
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 
 
 #parametres elastiques
-YOUNG = 200000.0;
-POISSON = 0.3;
+YOUNG = 200000.0
+POISSON = 0.3
 
 #parametres viscosite
 Minv = 1/5.6
 Kinv= 3.2841e-4
 N = 11
 # parametres loi de taheri
-SY = 437.0;
-Sinf = 758.0;
-alpha = 0.3;
-m = 0.1;
-A = 312.0;
-b = 30.0;
-c1 = -0.012;
+SY = 437.0
+Sinf = 758.0
+alpha = 0.3
+m = 0.1
+A = 312.0
+b = 30.0
+c1 = -0.012
 cinf = 0.065
 # def des materiaux
 ACIER = [None]*2
 #unite en Pa
 C_Pa = 1.e+6
 YOUNG_Pa = YOUNG * C_Pa
-A_Pa = A * C_Pa;
-SY_Pa = SY * C_Pa;
-Sinf_Pa = Sinf * C_Pa;
-Kinv_Pa = Kinv / C_Pa;
+A_Pa = A * C_Pa
+SY_Pa = SY * C_Pa
+Sinf_Pa = Sinf * C_Pa
+Kinv_Pa = Kinv / C_Pa
 
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON,
@@ -65,7 +65,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                             C1 = c1,
                             C_INF = cinf,
                             S = Sinf_Pa),
-                                 );
+                                 )
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,
@@ -79,7 +79,7 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                             C1 = c1,
                             C_INF = cinf,
                             S = Sinf),
-                                 );
+                                 )
 
 
 compor='VISC_TAHERI'

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ inst1=0.8
 #===============================================================================================================
 from math import *
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
-MO1=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA='BARR1',  PHENOMENE='MECANIQUE', MODELISATION='D_PLAN',),);
-MO2=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA='BARR2',  PHENOMENE='MECANIQUE', MODELISATION='D_PLAN',),);
+MO1=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA='BARR1',  PHENOMENE='MECANIQUE', MODELISATION='D_PLAN',),)
+MO2=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA='BARR2',  PHENOMENE='MECANIQUE', MODELISATION='D_PLAN',),)
 
 MATA=DEFI_MATERIAU(ELAS=_F(E=2.E11, NU=0.3),  ECRO_LINE=_F(D_SIGM_EPSI=5.E10,  SY=1.E6,))
 MATB=DEFI_MATERIAU(ELAS=_F(E=6.E11, NU=0.3),  ECRO_LINE=_F(D_SIGM_EPSI=2.E10,  SY=1.2E6,))
@@ -74,7 +74,7 @@ CHARG2=AFFE_CHAR_MECA_F(MODELE=MO2,  FORCE_INTERNE=_F( GROUP_MA = 'BARR2', FX=F1
 
 # Calcul de la reponse du barreau au chargement :
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,  INTERVALLE=_F(JUSQU_A=1.0,  NOMBRE=10,),);
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,  INTERVALLE=_F(JUSQU_A=1.0,  NOMBRE=10,),)
 
 FMULT=DEFI_FONCTION(NOM_PARA='INST',  VALE=(0.0,  0.0,    1.0,  1.))
 

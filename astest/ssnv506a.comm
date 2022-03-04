@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-SSNV506A=LIRE_MAILLAGE(FORMAT='MED',);
+SSNV506A=LIRE_MAILLAGE(FORMAT='MED',)
 
 SSNV506A=DEFI_GROUP(reuse =SSNV506A,
                     MAILLAGE=SSNV506A,
-                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 #-------------------------------------------------------------
 #                 GRANDEURS PHYSIQUES
@@ -38,15 +38,15 @@ SSNV506A=DEFI_GROUP(reuse =SSNV506A,
 ACIER_B=DEFI_MATERIAU(ELAS=_F(E=210000.,
                               NU=0.3,),
                       ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                   SY=50,),);
+                                   SY=50,),)
 
 AC_SPH=DEFI_MATERIAU(ELAS=_F(E=21000000.,
-                                NU=0.3,),);
+                                NU=0.3,),)
 
 DPLY=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,
                          1.0,1.0,),
-                   INTERPOL='LIN',);
+                   INTERPOL='LIN',)
 
 #----------------------------------------------------------------
 #                       MODELE
@@ -55,20 +55,20 @@ DPLY=DEFI_FONCTION(NOM_PARA='INST',
 MO=AFFE_MODELE(MAILLAGE=SSNV506A,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
 #REORIENTATION DES NORMALES
 SSNV506A=MODI_MAILLAGE(reuse =SSNV506A,
                        MAILLAGE=SSNV506A,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SMAI','SESC'),),
-                       );
+                       )
 
 #AFFECTATION DU MATERIAU
 CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506A,
                     AFFE=(_F(GROUP_MA='MAT1',
                              MATER=AC_SPH,),
                           _F(GROUP_MA='MAT2',
-                             MATER=ACIER_B,),),);
+                             MATER=ACIER_B,),),)
 
 #CONDITIONS AUX LIMITES
 
@@ -104,7 +104,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
 #                                    DDL=('DY','DY'),
 #                                    COEF_MULT=(1.0,-1.0),
 #                                    COEF_IMPO=0.0,),
-                                   );
+                                   )
 
 # CHA2=AFFE_CHAR_CINE(MODELE=MO,
 #                     MECA_IMPO=(_F(GROUP_NO='NDPL',
@@ -113,7 +113,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
 # #                                  DX=0.0,),
 #                               _F(GROUP_NO='PLANX',
 #                                  DX=0.0,DY=0.0,),),
-#                                    );
+#                                    )
 
 #------------------------------------------------------------------
 #                         RESOLUTION
@@ -125,7 +125,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=0.15,
                                     NOMBRE=24,),
                                  _F(JUSQU_A=1.0,
-                                    NOMBRE=17,),),);
+                                    NOMBRE=17,),),)
 
 U=STAT_NON_LINE(SOLVEUR=_F(#METHODE='MUMPS',
                            ),
@@ -145,7 +145,7 @@ U=STAT_NON_LINE(SOLVEUR=_F(#METHODE='MUMPS',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=15,),
                 INFO=1,
-                );
+                )
 
 #------------------------------------------------------------------
 #                         POST TRAITEMENT
@@ -156,11 +156,11 @@ U=CALC_CHAMP(reuse =U,
           FORCE='REAC_NODA',
 
 
-          );
+          )
 
 LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=10,),);
+                                   NOMBRE=10,),)
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO='SESC',
@@ -168,10 +168,10 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  NOM_CHAM='REAC_NODA',
                                  LIST_INST=LINST2,
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=TAB_REAC,
-           FORMAT='TABLEAU',);
+           FORMAT='TABLEAU',)
 
 #------------------------------------------------------------------
 #                         TESTS DES RESULTATS
@@ -248,4 +248,4 @@ TEST_RESU(RESU=_F(INST=1.0,
                   ),
           )
 
-FIN();
+FIN()

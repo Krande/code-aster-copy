@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ alpha = 2.*xi/(w1+w2)
 beta = 2.*xi*w1*w2/(w1+w2)
 
 
-MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
@@ -48,7 +48,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='DIS_T',),
                          _F(GROUP_MA='MASSE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     DISCRET=(_F(CARA='K_T_D_L',
@@ -65,15 +65,15 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                                 VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
                              _F(CARA='M_T_D_N',
                                 GROUP_MA='MASSE',
-                                VALE=m,),),);
+                                VALE=m,),),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=160000000000.0,
                           NU=0.3,
-                          RHO=13000.0,),);
+                          RHO=13000.0,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MAT,),);
+                               MATER=MAT,),)
 
 COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=(_F(GROUP_NO=('P1','P4',),
@@ -82,7 +82,7 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DZ=0.0,),
                                   _F(GROUP_NO='MASSE',
                                      DY=0.0,
-                                     DZ=0.0,),),);
+                                     DZ=0.0,),),)
 
 ASSEMBLAGE(MODELE=MODELE,
            CHAM_MATER=CHAMPMAT,
@@ -92,7 +92,7 @@ ASSEMBLAGE(MODELE=MODELE,
            MATR_ASSE=(_F(MATRICE=CO('MATRMASS'),
                          OPTION='MASS_MECA',),
                       _F(MATRICE=CO('MATRRIGI'),
-                         OPTION='RIGI_MECA',),),);
+                         OPTION='RIGI_MECA',),),)
 
 
 # construction de la matrice d'amortissement de Rayleigh (alpha.K+beta.M)
@@ -100,11 +100,11 @@ MATAMOR=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATRRIGI,
                                   COEF_R=alpha,),
                                _F(MATR_ASSE=MATRMASS,
                                   COEF_R=beta,),
-                                  ),);
+                                  ),)
 
 MAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
               MODELE=MODELE,
-              CARA_ELEM=CARA,);
+              CARA_ELEM=CARA,)
 
 MODES=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=2,
                               ),
@@ -117,19 +117,19 @@ MODES=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=2,
 MODES=NORM_MODE(reuse =MODES,
                 MODE=MODES,
                 NORME='MASS_GENE',
-                INFO=2,);
+                INFO=2,)
 
 MODES=CALC_CHAMP(reuse =MODES,
                  RESULTAT=MODES,
-                 CONTRAINTE=('SIEF_ELGA','EFGE_ELNO',),);
+                 CONTRAINTE=('SIEF_ELGA','EFGE_ELNO',),)
 
 MODES=CALC_CHAMP(reuse =MODES,
                  RESULTAT=MODES,
-                 FORCE='FORC_NODA',);
+                 FORCE='FORC_NODA',)
 
 MODES=CALC_CHAMP(reuse =MODES,
                  RESULTAT=MODES,
-                 FORCE='REAC_NODA',);
+                 FORCE='REAC_NODA',)
 
 TEST_RESU(RESU=(_F(RESULTAT=MODES,
                    NUME_ORDRE=1,
@@ -142,14 +142,14 @@ TEST_RESU(RESU=(_F(RESULTAT=MODES,
                    PARA='FREQ',
                    VALE_REFE=2.236,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=2.236081039,),),);
+                   VALE_CALC=2.236081039,),),)
 
 DDLGENE=NUME_DDL_GENE(BASE=MODES,
-                      STOCKAGE='DIAG',);
+                      STOCKAGE='DIAG',)
 
 AMORGEN=PROJ_MATR_BASE(BASE=MODES,
                        NUME_DDL_GENE=DDLGENE,
-                       MATR_ASSE=MATAMOR,);
+                       MATR_ASSE=MATAMOR,)
 
 #-----------------------------------------------------------------------
 # CALCUL DES MODES STATIQUES POUR L'ENTRAINEMENT
@@ -158,19 +158,19 @@ AMORGEN=PROJ_MATR_BASE(BASE=MODES,
 MODE_STA=MODE_STATIQUE(MATR_RIGI=MATRRIGI,
                        MATR_MASS=MATRMASS,
                        MODE_STAT=_F(GROUP_NO=('P1','P4',),
-                                    AVEC_CMP='DX',),);
+                                    AVEC_CMP='DX',),)
 
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,
                     RESULTAT=MODE_STA,
-                    CONTRAINTE=('SIEF_ELGA','EFGE_ELNO',),);
+                    CONTRAINTE=('SIEF_ELGA','EFGE_ELNO',),)
 
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,
                     RESULTAT=MODE_STA,
-                    FORCE='FORC_NODA',);
+                    FORCE='FORC_NODA',)
 
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,
                     RESULTAT=MODE_STA,
-                    FORCE='REAC_NODA',);
+                    FORCE='REAC_NODA',)
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_STA,
                    NOEUD_CMP=('P1','DX',),
@@ -203,7 +203,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_STA,
                    GROUP_NO='P3',
                    VALE_REFE=0.6,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=0.6,),),);
+                   VALE_CALC=0.6,),),)
 
 #-----------------------------------------------------------------------
 # CALCUL DES MODES STATIQUES POUR LA CORRECTION STATIQUE
@@ -212,19 +212,19 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_STA,
 MODE_CO2=MODE_STATIQUE(MATR_RIGI=MATRRIGI,
                        MATR_MASS=MATRMASS,
                        PSEUDO_MODE=_F(GROUP_NO=('P1','P4',),
-                                      AVEC_CMP='DX',),);
+                                      AVEC_CMP='DX',),)
 
 MODE_CO2=CALC_CHAMP(reuse =MODE_CO2,
                     RESULTAT=MODE_CO2,
-                    CONTRAINTE=('SIEF_ELGA','EFGE_ELNO',),);
+                    CONTRAINTE=('SIEF_ELGA','EFGE_ELNO',),)
 
 MODE_CO2=CALC_CHAMP(reuse =MODE_CO2,
                     RESULTAT=MODE_CO2,
-                    FORCE='FORC_NODA',);
+                    FORCE='FORC_NODA',)
 
 MODE_CO2=CALC_CHAMP(reuse =MODE_CO2,
                     RESULTAT=MODE_CO2,
-                    FORCE='REAC_NODA',);
+                    FORCE='REAC_NODA',)
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE_CO2,
                    NOEUD_CMP=('P1','DX',),
@@ -257,25 +257,25 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_CO2,
                    GROUP_NO='P3',
                    VALE_REFE=0.01317,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=0.0131716,),),);
+                   VALE_CALC=0.0131716,),),)
 
 # -------------------------------
 #   DEFINITION DU SEISME
 #--------------------------------
 
-F0 = 1.0;
-F1 = 1.5;
-F2 = 2.0;
+F0 = 1.0
+F1 = 1.5
+F2 = 2.0
 
-OMEGA1 = ((2 * pi) * F1);
-OMEGA2 = ((2 * pi) * F2);
+OMEGA1 = ((2 * pi) * F1)
+OMEGA2 = ((2 * pi) * F2)
 
-A1 = 0.5;
-A2 = 0.5;
+A1 = 0.5
+A2 = 0.5
 
 L_FREQ=DEFI_LIST_REEL(DEBUT=0.01,
                       INTERVALLE=_F(JUSQU_A=20.0,
-                                    PAS=0.002,),);
+                                    PAS=0.002,),)
 
 FSRO0 = FORMULE(VALE='10.0',
                 NOM_PARA='FREQ',)
@@ -299,35 +299,35 @@ SRO0=CALC_FONC_INTERP(FONCTION=FSRO0,
                       NOM_PARA='FREQ',
                       INTERPOL='LOG',
                       PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
+                      PROL_GAUCHE='LINEAIRE',)
 
 SRO1=CALC_FONC_INTERP(FONCTION=FSRO1,
                       LIST_PARA=L_FREQ,
                       NOM_PARA='FREQ',
                       INTERPOL='LOG',
                       PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
+                      PROL_GAUCHE='LINEAIRE',)
 
 SRO2=CALC_FONC_INTERP(FONCTION=FSRO2,
                       LIST_PARA=L_FREQ,
                       NOM_PARA='FREQ',
                       INTERPOL='LOG',
                       PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
+                      PROL_GAUCHE='LINEAIRE',)
 
 SPEC1=DEFI_NAPPE(NOM_PARA='AMOR',
                  PARA=(0.0,xi,),
                  FONCTION=(SRO0,SRO1,),
                  INTERPOL=('LIN','LOG',),
                   PROL_DROITE='LINEAIRE',
-                  PROL_GAUCHE='LINEAIRE',);
+                  PROL_GAUCHE='LINEAIRE',)
 
 SPEC2=DEFI_NAPPE(NOM_PARA='AMOR',
                  PARA=(0.0,xi,),
                  FONCTION=(SRO0,SRO2,),
                  INTERPOL=('LIN','LOG',),
                  PROL_DROITE='LINEAIRE',
-                  PROL_GAUCHE='LINEAIRE',);
+                  PROL_GAUCHE='LINEAIRE',)
 
 MUQACQC=COMB_SISM_MODAL(MODE_MECA=MODES,
                         AMOR_GENE=AMORGEN,
@@ -352,7 +352,7 @@ MUQACQC=COMB_SISM_MODAL(MODE_MECA=MODES,
                                            DX=0.0,),
                         OPTION=('DEPL','SIEF_ELGA','EFGE_ELNO','FORC_NODA','REAC_NODA',),
                         IMPRESSION=_F(TOUT='OUI',),
-                                       );
+                                       )
 
 #On retrouve bien avec l'utilisation de AMOR_GENE le meme resulat qu'avec un AMOR_REDUIT equivalent
 
@@ -371,6 +371,6 @@ TEST_RESU(RESU=(_F(RESULTAT=MUQACQC,
                    GROUP_NO='P3',
                    VALE_REFE=0.00565157,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=0.00565210016,),),);
+                   VALE_CALC=0.00565210016,),),)
 
-FIN();
+FIN()

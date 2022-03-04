@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -864,7 +864,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE=1.0,),
            )
 
-           
+
 
 # ---------------------------------------------------------------------
 # D2L_G: LISTE DE NOEUDS P2 P3, REPERE GLOBAL

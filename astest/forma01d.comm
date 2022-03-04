@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -128,16 +128,16 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
 
 MA[nb_iter]=MODI_MAILLAGE(reuse =MA[nb_iter],
                           MAILLAGE=MA[nb_iter],
-                          ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),);
+                          ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),)
 
 MA[nb_iter]=DEFI_GROUP(reuse =MA[nb_iter],
                        MAILLAGE=MA[nb_iter],
-                       CREA_GROUP_MA=_F(NOM='plaque',TOUT='OUI',TYPE_MAILLE='2D'),);
+                       CREA_GROUP_MA=_F(NOM='plaque',TOUT='OUI',TYPE_MAILLE='2D'),)
 
 MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),);
+                         MODELISATION='C_PLAN',),)
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                      TYPE_DISCONTINUITE='INTERFACE',
@@ -150,11 +150,11 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                                   ),)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODE,
-                         FISSURE=FISS,);
+                         FISSURE=FISS,)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
                    AFFE=_F(TOUT='OUI',
-                           MATER=MAT,),);
+                           MATER=MAT,),)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_MA='bas',
@@ -162,19 +162,19 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
                               _F(GROUP_MA='gauche',
                                  DX=0.0,),),
                     PRES_REP=_F(GROUP_MA='haut',
-                                PRES=-100.0,),);
+                                PRES=-100.0,),)
 
 # pour bloquer les modes rigides de l'inclusion centrale
 #CHARINC=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                       DDL_IMPO=_F(GROUP_NO='NTROU',
 #                                   DX=0.0,DY=-10.0,),
-#                       );
+#                       )
 
 RESU=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHAR,),
       #                   _F(CHARGE=CHARINC,),
-                           ),);
+                           ),)
 
 # ======================================================================
 #                 POST-TRAITEMENT
@@ -204,7 +204,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
 RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,
                     RESULTAT=RES_XFEM,
                     CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU'),
-                    CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'),);
+                    CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'),)
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM))
 
@@ -214,7 +214,7 @@ SIG_A=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               RESULTAT=RES_XFEM,
                               NOM_CHAM='SIGM_NOEU',
                               GROUP_NO='A',
-                              NOM_CMP='SIXX',),);
+                              NOM_CMP='SIXX',),)
 
 # on filtre en supprimant les noeuds cote "moins" (cote trou)
 SIG_A = CALC_TABLE(reuse = SIG_A,
@@ -222,7 +222,7 @@ SIG_A = CALC_TABLE(reuse = SIG_A,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
                                 CRIT_COMP = 'REGEXP',
-                                VALE_K    = 'N[^M]')));
+                                VALE_K    = 'N[^M]')))
 
 IMPR_TABLE(TABLE=SIG_A)
 
@@ -231,7 +231,7 @@ SIG_B=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               RESULTAT=RES_XFEM,
                               NOM_CHAM='SIGM_NOEU',
                               GROUP_NO='B',
-                              NOM_CMP='SIYY',),);
+                              NOM_CMP='SIYY',),)
 
 # on filtre en supprimant les noeuds cote "moins" (cote trou)
 SIG_B = CALC_TABLE(reuse = SIG_B,
@@ -239,7 +239,7 @@ SIG_B = CALC_TABLE(reuse = SIG_B,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                 NOM_PARA  = 'NOEUD',
                                 CRIT_COMP = 'REGEXP',
-                                VALE_K    = 'N[^M]')));
+                                VALE_K    = 'N[^M]')))
 
 IMPR_TABLE(TABLE=SIG_B)
 

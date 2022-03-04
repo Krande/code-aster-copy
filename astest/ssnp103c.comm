@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ MESH = CREA_MAILLAGE(LINE_QUAD=_F(TOUT='OUI'),
 MESH = MODI_MAILLAGE(reuse=MESH,
                       MAILLAGE=MESH,
                       ORIE_PEAU=_F(GROUP_MA_PEAU=('HAUT')))
-                      
+
 #BARSOUM
 MESH = MODI_MAILLAGE(reuse=MESH,
                       MAILLAGE=MESH,
@@ -61,7 +61,7 @@ MODE = AFFE_MODELE(AFFE=_F(MODELISATION=('AXIS', ),
                             PHENOMENE='MECANIQUE',
                             TOUT='OUI'),
                     MAILLAGE=MESH)
-                    
+
 #MATERIAU ELASTIQUE BI-LINEAIRE
 MATER = DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=EE/ratio,
                                    SY=sigma_max),
@@ -122,8 +122,8 @@ FISS = DEFI_FOND_FISS(CONFIG_INIT='COLLEE',
                        LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
                        MAILLAGE=MESH,
                        SYME='OUI')
-                       
-# A PROXIMITE DE LA FISSURE, LES CARACTERISTIQUES MATERIAUX A UTILISER  
+
+# A PROXIMITE DE LA FISSURE, LES CARACTERISTIQUES MATERIAUX A UTILISER
 # PAR POST_K1_K2_K3 NE SONT PAS CELLES DE L'ELASTICITE LINEAIRE
 MATERINF = DEFI_MATERIAU(ELAS=_F(E=EE/ratio,
                                  NU=0.5*(1.-1./ratio)+poisson/ratio))
@@ -135,8 +135,8 @@ T_FIC = POST_K1_K2_K3(ABSC_CURV_MAXI=4e-6,
                       RESULTAT=RESU,
                       TOUT_ORDRE='OUI',
                       INFO=2,)
-                      
-#CALCUL DE G PAR CALC_G               
+
+#CALCUL DE G PAR CALC_G
 # ON CALCULE G POUR TROIS COURONNES D'INTEGRATIONS
 T_G1 = CALC_G(OPTION='G',
              RESULTAT=RESU,
@@ -169,13 +169,13 @@ T_1=CALC_TABLE(TABLE=T_FIC,
                             NOM_PARA=('INST','G'),
                             ),
                         ),
-                    );
+                    )
 #CHANGEMENT DE NOM DE LA COLONNE POUR G EN G_K
 T_1=CALC_TABLE(TABLE=T_1,reuse=T_1,
                     ACTION=_F(OPERATION='RENOMME',
                             NOM_PARA=('G','G_K'),
                            ),
-                );
+                )
 
 #  CREATION D UNE TABLE  AVEC LES G ISSUES DE CALC_G
 T_2=CALC_TABLE(TABLE=T_G1,
@@ -184,20 +184,20 @@ T_2=CALC_TABLE(TABLE=T_G1,
                             NOM_PARA=('INST','G'),
                             ),
                         ),
-                    );
+                    )
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_G1
 T_2=CALC_TABLE(TABLE=T_2,reuse=T_2,
                     ACTION=_F(OPERATION='RENOMME',
                             NOM_PARA=('G','G1'),
                             ),
-               );
+               )
 
 # CREATION DE TABLE 3 COLONNES : INST - GK - CALC_G1
 T_2=CALC_TABLE(reuse =T_2,
           TABLE=T_2,
           ACTION=_F(OPERATION='COMB',
                     TABLE=T_1,
-                    NOM_PARA='INST'));
+                    NOM_PARA='INST'))
 
 # CREATION DE LA COLONNE AVEC LES G ISSUES DE CALC_G2
 T_3=CALC_TABLE(TABLE=T_G2,
@@ -206,20 +206,20 @@ T_3=CALC_TABLE(TABLE=T_G2,
                             NOM_PARA=('INST','G'),
                             ),
                         ),
-                    );
+                    )
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_G2
 T_3=CALC_TABLE(TABLE=T_3,reuse=T_3,
                     ACTION=_F(OPERATION='RENOMME',
                             NOM_PARA=('G','G2'),
                             ),
-               );
+               )
 
 # CREATION DE TABLE 3 COLONNES : INST - GK - CALC_G2
 T_3=CALC_TABLE(reuse =T_3,
           TABLE=T_3,
           ACTION=_F(OPERATION='COMB',
                     TABLE=T_2,
-                    NOM_PARA='INST'));
+                    NOM_PARA='INST'))
 
 # CREATION DE LA COLONNE AVEC LES G ISSUES DE CALC_G3
 T_4=CALC_TABLE(TABLE=T_G3,
@@ -228,28 +228,28 @@ T_4=CALC_TABLE(TABLE=T_G3,
                             NOM_PARA=('INST','G'),
                             ),
                         ),
-                    );
+                    )
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_G3
 T_4=CALC_TABLE(TABLE=T_4,reuse=T_4,
                     ACTION=_F(OPERATION='RENOMME',
                             NOM_PARA=('G','G3'),
                             ),
-               );
+               )
 
 # CREATION DE TABLE 3 COLONNES : INST - GK - CALC_G2
 T_4=CALC_TABLE(reuse =T_4,
           TABLE=T_4,
           ACTION=_F(OPERATION='COMB',TABLE=T_3,NOM_PARA='INST'),
 
-                    );
+                    )
 
-# SUPPRESSION DE LA PREMIER LIGNE DE LA TABLE SUR LAQUELLE TOUTES 
+# SUPPRESSION DE LA PREMIER LIGNE DE LA TABLE SUR LAQUELLE TOUTES
 #LES VALEURS SONT NULLES
 T_FIN=CALC_TABLE(TABLE=T_4,
                  ACTION=(
                          _F(OPERATION='FILTRE',NOM_PARA=('INST'),CRIT_COMP = 'GT', VALE=0.0),
                         ),
-                    );
+                    )
 
 
 QUOT = FORMULE(VALE='A/B',
@@ -262,7 +262,7 @@ T_FIN=CALC_TABLE(reuse =T_FIN,
                          _F(OPERATION='OPER',FORMULE=QUOT,NOM_COLONNE=('G2','G_K'),NOM_PARA=('G2/G_K',),),
                          _F(OPERATION='OPER',FORMULE=QUOT,NOM_COLONNE=('G3','G_K'),NOM_PARA=('G3/G_K',),),
                          ),
-                );
+                )
 
 IMPR_TABLE(TABLE=T_FIN)
 
@@ -277,7 +277,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0105853488955125,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.015,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -289,11 +289,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.005758930362982,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.006,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G1/G_K',
              FILTRE=_F(NOM_PARA='INST',
@@ -301,7 +301,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0009686357851506,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -313,7 +313,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0105853503513644,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.015,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -325,11 +325,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0057589281029182,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.006,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G2/G_K',
              FILTRE=_F(NOM_PARA='INST',
@@ -337,7 +337,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0009688819439337,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -350,7 +350,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.01058498945885,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.015,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -362,11 +362,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0057590498390634,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.006,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G3/G_K',
              FILTRE=_F(NOM_PARA='INST',
@@ -374,7 +374,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0009695492348343,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -391,7 +391,7 @@ TEST_TABLE(  TABLE=T_FIN ,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=3386.7591225532888,
-             VALE_REFE=3.35679E+03, 
+             VALE_REFE=3.35679E+03,
              PRECISION=0.015,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -402,7 +402,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=10249.14922029958,
-             VALE_REFE=1.01970E+04, 
+             VALE_REFE=1.01970E+04,
              PRECISION=0.006,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -413,7 +413,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=165191.49931692754,
-             VALE_REFE=1.64979E+05, 
+             VALE_REFE=1.64979E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -426,7 +426,7 @@ TEST_TABLE(  TABLE=T_FIN ,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=3386.759127432263,
-             VALE_REFE=3.35679E+03, 
+             VALE_REFE=3.35679E+03,
              PRECISION=0.015,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -437,7 +437,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=10249.149197268483,
-             VALE_REFE=1.01970E+04, 
+             VALE_REFE=1.01970E+04,
              PRECISION=0.006,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -448,12 +448,12 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=165191.53994091618,
-             VALE_REFE=1.64979E+05, 
+             VALE_REFE=1.64979E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
-             
+
+
 #G3R
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G3',
@@ -462,11 +462,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=3386.7579179787344,
-             VALE_REFE=3.35679E+03, 
+             VALE_REFE=3.35679E+03,
              PRECISION=0.015,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G3',
              FILTRE=_F(NOM_PARA='INST',
@@ -474,11 +474,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=10249.150437816174,
-             VALE_REFE=1.01970E+04, 
+             VALE_REFE=1.01970E+04,
              PRECISION=0.006,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G3',
              FILTRE=_F(NOM_PARA='INST',
@@ -486,7 +486,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=165191.65006503035,
-             VALE_REFE=1.64979E+05, 
+             VALE_REFE=1.64979E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)

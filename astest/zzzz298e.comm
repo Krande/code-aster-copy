@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,13 +81,13 @@ EFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
                      VALE=(0., 210000e6,
-                           1., 210000e6),);
+                           1., 210000e6),)
 
 NUFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
                       VALE=(0., 0.3,
-                            1., 0.3),);
+                            1., 0.3),)
 
 # alpha est la fonction nulle, afin de ne pas generer de deformations thermiques
 
@@ -95,7 +95,7 @@ ALPFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
                        VALE=(0., 0.,
-                             1., 0.),);
+                             1., 0.),)
 
 MATTEMP=DEFI_MATERIAU(ELAS_FO=_F(E=EFTEMP,
                                  NU=NUFTEMP,
@@ -129,13 +129,13 @@ EFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
                      VALE=(0., 210000e6,
-                           1., 210000e6),);
+                           1., 210000e6),)
 
 NUFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
                       VALE=(0., 0.3,
-                            1., 0.3),);
+                            1., 0.3),)
 
 MATNEUT=DEFI_MATERIAU(ELAS_FO=_F(E=EFNEUT,
                                  NU=NUFNEUT))
@@ -247,7 +247,7 @@ KNEUT=POST_K1_K2_K3(RESULTAT=RESUNEUT,
 IMPR_TABLE(TABLE=KNEUT)
 
 #---
-# 4. sans variables de commande et en ecrasant le materiau 
+# 4. sans variables de commande et en ecrasant le materiau
 #    avec un materiau constant identique
 #---
 

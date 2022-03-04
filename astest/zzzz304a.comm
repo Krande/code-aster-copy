@@ -1,18 +1,18 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
-# 
+#
 # code_aster is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # code_aster is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # Principe du test :
 # ------------------
 # La structure est 2D. C'est un carre forme de 2 zones CARR1 et CARR2.
-# 
+#
 #    +--------------+
 #    |              |
 #    |   CARR2      |
@@ -36,14 +36,14 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #    |   CARR1      |
 #    |              |
 #    +--------------+
-# 
+#
 #  Cette structure est maillee 2 fois (MA1) et (MA2).
 #  Les maillages sont differents.
-# 
+#
 #  Sur MA1, on cree un champ par elements ELNO d'hydratation (CH1).
 #    Sur CARR1 : CH1 vaut 0.8
 #    Sur CARR2 : CH1 vaut 0.2
-# 
+#
 #  On veut projeter CH1 sur MA2 pour obtenir CH2 de telle sorte
 #  que CARR1 et CARR2 conservent les memes valeurs.
 # -------------------------------------------------------------------------------------

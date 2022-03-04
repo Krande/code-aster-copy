@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,38 +21,38 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MOTHER=AFFE_MODELE(MAILLAGE=MA,
 
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='THERMIQUE',
-                           MODELISATION='3D_DIAG',),);
+                           MODELISATION='3D_DIAG',),)
 
 INOX=DEFI_MATERIAU(ELAS=_F(E=174700.,
                            NU=0.3,
                            ALPHA=17.83E-6,),
                    THER=_F(LAMBDA=19.97E-3,
-                           RHO_CP=4.89488E-3,),);
+                           RHO_CP=4.89488E-3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=INOX,),);
+                            MATER=INOX,),)
 
-PAROI=DEFI_CONSTANTE(VALE=40000.E-6,);
+PAROI=DEFI_CONSTANTE(VALE=40000.E-6,)
 
 #                                             W/MM.MM.DEGC
 
 TP_FLUID=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,289.,
                              12.0,20.,
-                             ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                             ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 CHAR_TH=AFFE_CHAR_THER_F(MODELE=MOTHER,
                          ECHANGE=_F(GROUP_MA='ECHANGE',
                                     COEF_H=PAROI,
-                                    TEMP_EXT=TP_FLUID,),);
+                                    TEMP_EXT=TP_FLUID,),)
 
 LISTTH=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A=12.,
@@ -66,23 +66,23 @@ LISTTH=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=400.,
                                      NOMBRE=2,),
                                   _F(JUSQU_A=2000.,
-                                     NOMBRE=8,),),);
+                                     NOMBRE=8,),),)
 
-LIST=DEFI_LIST_REEL(VALE=(12.,100.,600.,2000.,),);
+LIST=DEFI_LIST_REEL(VALE=(12.,100.,600.,2000.,),)
 
 TEMPE=THER_LINEAIRE(MODELE=MOTHER,
                     CHAM_MATER=CHMAT,
                     EXCIT=_F(CHARGE=CHAR_TH,),
                     INCREMENT=_F(LIST_INST=LISTTH,),
                     ETAT_INIT=_F(VALE=289.,),
-                    ARCHIVAGE=_F(LIST_INST=LISTTH,),);
+                    ARCHIVAGE=_F(LIST_INST=LISTTH,),)
 
 tab2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='t02',
                              RESULTAT=TEMPE,
                              NOM_CHAM='TEMP',
                              GROUP_NO='M1',
-                             TOUT_CMP='OUI',),);
+                             TOUT_CMP='OUI',),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=289.0,
@@ -95,25 +95,25 @@ TEMP_1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='EXTR',
                   RESULTAT=TEMPE,
                   NOM_CHAM='TEMP',
-                  INST=12.,);
+                  INST=12.,)
 
 TEMP_2=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='EXTR',
                   RESULTAT=TEMPE,
                   NOM_CHAM='TEMP',
-                  INST=100.,);
+                  INST=100.,)
 
 TEMP_3=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='EXTR',
                   RESULTAT=TEMPE,
                   NOM_CHAM='TEMP',
-                  INST=600.,);
+                  INST=600.,)
 
 TEMP_4=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='EXTR',
                   RESULTAT=TEMPE,
                   NOM_CHAM='TEMP',
-                  INST=2000.,);
+                  INST=2000.,)
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='AUTRE_ASTER',
                       NOM_CMP='TEMP',
@@ -220,6 +220,6 @@ TEST_RESU(CHAM_NO=(_F(REFERENCE='AUTRE_ASTER',
                    ),
           )
 
-FIN();
+FIN()
 
 #

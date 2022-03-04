@@ -34,7 +34,7 @@ MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI', PHENOMENE='THERMIQUE', MODELISATION='3D',),
-                  );
+                  )
 
 # DEFINITION DES FONCTIONS DE TEMPERATURE ET D'HYDRATATION
 # --------------------------------------------------------
@@ -110,7 +110,7 @@ MOGRI=AFFE_MODELE(MAILLAGE=MAGRI,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='GRILLE_EXCENTRE',),
-                  );
+                  )
 
 
 GRICA=AFFE_CARA_ELEM( MODELE=MOGRI,
@@ -121,7 +121,7 @@ GRICA=AFFE_CARA_ELEM( MODELE=MOGRI,
                                    ANGL_REP_1 = (0.,0.),
 
                                     ),
-                    );
+                    )
 
 
 

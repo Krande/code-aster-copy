@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,9 +83,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                        GROUP_MA=('C_4_cote',),),),
                MAILLAGE_FRONTIERE=MA_INTER,
                NOMBRE='OUI',
-               PROP_CALCUL='OUI',);
+               PROP_CALCUL='OUI',)
 
-#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_3,),);
+#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_3,),)
 
 #
 # 6. Un p'tit calcul pour un TEST_RESU
@@ -106,7 +106,7 @@ REMECA3=STAT_NON_LINE( MODELE=MOMECA3,
                       EXCIT=_F( CHARGE = CHMECA3,),
                       INCREMENT=_F(LIST_INST=LI,),
                     )
-#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=REMECA,),);
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=REMECA,),)
 #
 TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    GROUP_NO='S_2',
@@ -131,4 +131,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                 ),
           )
 #
-FIN();
+FIN()

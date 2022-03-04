@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 #
 # Calcul thermique
@@ -38,8 +38,8 @@ MOTH = AFFE_MODELE ( MAILLAGE = MAIL,
                      AFFE     =_F(TOUT         = 'OUI',
                                   PHENOMENE    = 'THERMIQUE',
                                   MODELISATION = 'AXIS',
-                                 ),  
-                   );
+                                 ),
+                   )
 
 LAMBC  = DEFI_FONCTION (NOM_PARA  = 'TEMP',
                         VALE      = ( 20., 14.,
@@ -58,8 +58,8 @@ LAMBC  = DEFI_FONCTION (NOM_PARA  = 'TEMP',
                                     1500., 70.,
                                       ),
                         PROL_DROITE = 'LINEAIRE',
-                        PROL_GAUCHE = 'LINEAIRE', 
-                       ) 
+                        PROL_GAUCHE = 'LINEAIRE',
+                       )
 
 RHOCPA    = DEFI_FONCTION (NOM_PARA    = 'TEMP',
                            VALE        = (  20., 3900000.0,
@@ -67,20 +67,20 @@ RHOCPA    = DEFI_FONCTION (NOM_PARA    = 'TEMP',
                                           1402., 3900000.0,
                                          ),
                            PROL_DROITE = 'LINEAIRE',
-                           PROL_GAUCHE = 'LINEAIRE', 
-                          ) ;
+                           PROL_GAUCHE = 'LINEAIRE',
+                          )
 
 ACIERC   = DEFI_MATERIAU (THER_NL = _F(RHO_CP   = RHOCPA,
                                        LAMBDA   = LAMBC,
-                                      ),     
-                         );
+                                      ),
+                         )
 
 
 MATC  = AFFE_MATERIAU ( MAILLAGE = MAIL,
                         AFFE     = _F(TOUT  = 'OUI',
-                                      MATER = ACIERC 
-                                     ), 
-                      );
+                                      MATER = ACIERC
+                                     ),
+                      )
 
 TEMP1 = DEFI_FONCTION (NOM_PARA    = 'INST',
                        VALE        = (  0.,   20.,
@@ -88,14 +88,14 @@ TEMP1 = DEFI_FONCTION (NOM_PARA    = 'INST',
                                       200.,   21.,
                                      ),
                        PROL_GAUCHE = 'CONSTANT',
-                       PROL_DROITE = 'CONSTANT',);
+                       PROL_DROITE = 'CONSTANT',)
 
 CHAR_C = AFFE_CHAR_THER_F (MODELE    = MOTH,
                            TEMP_IMPO = (_F(TOUT = 'OUI',
                                            TEMP = TEMP1,
                                           ),
                                        ),
-                          );
+                          )
 
 LLPAS = DEFI_LIST_REEL (DEBUT      = 0.0,
                         INTERVALLE =(_F(JUSQU_A = 100., NOMBRE = 100,),
@@ -113,24 +113,24 @@ THER1 = THER_NON_LINE (MODELE         = MOTH,
                        NEWTON         = _F(ITER_LINE_MAXI = 3,),
                        CONVERGENCE    = _F(RESI_GLOB_RELA = 5.E-5,
                                            ITER_GLOB_MAXI = 50,
-                                          ), 
+                                          ),
                       )
 #
 # Calcul mecanique
 #
- 
+
 MOMECA1 = AFFE_MODELE (MAILLAGE = MAIL,
                        AFFE     = _F(TOUT         = 'OUI',
                                      PHENOMENE    = 'MECANIQUE',
                                      MODELISATION = 'AXIS',
                                     ),
-                      );
+                      )
 
 CHMECA1 = AFFE_CHAR_MECA (MODELE   = MOMECA1,
                           DDL_IMPO = _F(GROUP_NO = ('NO1', 'NO2', 'NO5', 'NO6'),
                                         DY       = 0.,
-                                       ), 
-                         );
+                                       ),
+                         )
 
 
 E = DEFI_FONCTION ( NOM_PARA = 'TEMP',
@@ -149,14 +149,14 @@ E = DEFI_FONCTION ( NOM_PARA = 'TEMP',
                                 1200.,  57000.E+6,
                                 1300.,  30000.E+6,
                                 1400.,   2000.E+6,
-                                1500.,   1000.E+6, 
+                                1500.,   1000.E+6,
                                ),
                     PROL_DROITE = 'CONSTANT',
                     PROL_GAUCHE = 'LINEAIRE',
-                  ) ;
+                  )
 
 
-NU = DEFI_CONSTANTE ( VALE = 0.3, ), ;
+NU = DEFI_CONSTANTE ( VALE = 0.3, ),
 
 SIGM  = DEFI_FONCTION ( NOM_PARA = 'TEMP',
                         VALE     = (  20., 286.E+6,
@@ -172,7 +172,7 @@ SIGM  = DEFI_FONCTION ( NOM_PARA = 'TEMP',
                                    ),
                        PROL_DROITE = 'CONSTANT',
                        PROL_GAUCHE = 'CONSTANT',
-                      ) 
+                      )
 
 DSDE = DEFI_FONCTION ( NOM_PARA = 'TEMP',
                        VALE     = (   20., 2.400E+9,
@@ -186,7 +186,7 @@ DSDE = DEFI_FONCTION ( NOM_PARA = 'TEMP',
                                    ),
                        PROL_DROITE = 'CONSTANT',
                        PROL_GAUCHE = 'LINEAIRE',
-                     ) 
+                     )
 
 ALPHA = DEFI_FONCTION (NOM_PARA = 'TEMP',
                        VALE     = (  20., 14.56E-6,
@@ -207,7 +207,7 @@ ALPHA = DEFI_FONCTION (NOM_PARA = 'TEMP',
                                   ),
                        PROL_DROITE = 'CONSTANT',
                        PROL_GAUCHE = 'CONSTANT',
-                      ) ;
+                      )
 # PARAMETRES DE RESTAURATION D'ECROUISSAGE
 #------------------------------------------------
 Tdebut =  600.                # Temperature de debut de restauration
@@ -221,24 +221,24 @@ REST1 = DEFI_FONCTION (NOM_PARA    = 'TEMP',
 
 
 ACIERME0 = DEFI_MATERIAU (ELAS_FO      = _F(E              = E,
-                                            NU             = NU, 
+                                            NU             = NU,
                                             ALPHA          = ALPHA,
                                             TEMP_DEF_ALPHA = 20.00,
                                            ),
                           ECRO_LINE_FO = _F(D_SIGM_EPSI = DSDE,
                                             SY          = SIGM,
                                            ),
-                          REST_ECRO    = _F(FONC_MULT = REST1), 
+                          REST_ECRO    = _F(FONC_MULT = REST1),
                          )
 ACIERME1 = DEFI_MATERIAU (ELAS_FO      = _F(E              = E,
-                                            NU             = NU, 
+                                            NU             = NU,
                                             ALPHA          = ALPHA,
                                             TEMP_DEF_ALPHA = 20.00,
                                            ),
                           ECRO_LINE_FO = _F(D_SIGM_EPSI = DSDE,
                                             SY          = SIGM,
-                                           ), 
-                         )  
+                                           ),
+                         )
 
 CHMATM0 = AFFE_MATERIAU (MAILLAGE  = MAIL,
                          AFFE      = (_F(GROUP_MA  = 'M1',
@@ -253,7 +253,7 @@ CHMATM0 = AFFE_MATERIAU (MAILLAGE  = MAIL,
                                         NOM_CHAM = 'TEMP',
                                         VALE_REF = 20.,
                                        ),
-                        ) 
+                        )
 
 U1 =  STAT_NON_LINE (MODELE       = MOMECA1,
                      CHAM_MATER   = CHMATM0,
@@ -331,4 +331,4 @@ TEST_RESU (RESU = (
                 )
           )
 
-FIN();
+FIN()

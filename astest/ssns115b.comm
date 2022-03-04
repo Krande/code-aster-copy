@@ -41,15 +41,15 @@ nbPasPress = 2
 # --------------------------------------------------------------------------- #
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 #
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 #
 # DEFINITION DU MODELE
@@ -58,7 +58,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    DISTRIBUTION=_F(METHODE='SOUS_DOMAINE', PARTITIONNEUR='SCOTCH',),
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='MEMBRANE',),);
+                           MODELISATION='MEMBRANE',),)
 
 #
 
@@ -66,27 +66,27 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='membrane',
                                       VECT_NORM=(0.0,0.0,1.0,),
-                                      GROUP_NO='point_O',),);
+                                      GROUP_NO='point_O',),)
 
 #
 # DEFINITION DU MATERIAU
 
 CAOUT=DEFI_MATERIAU(ELAS=_F(E=young,
-                            NU=poisson,),);
+                            NU=poisson,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     INFO=2,
                     MEMBRANE=_F(GROUP_MA='membrane',
                                 ANGL_REP_1=(0.0,0.0,),
                                 EPAIS=1.0,
-                                N_INIT=1.E-6,),);
+                                N_INIT=1.E-6,),)
 
 #
 # ATTRIBUTION DU MATERIAU
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=CAOUT,),);
+                            MATER=CAOUT,),)
 
 
 # --------------------------------------------------------------------------- #
@@ -98,7 +98,7 @@ ENCAST=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=_F(GROUP_NO='bord',
                                   DX=0.0,
                                   DY=0.0,
-                                  DZ=0.0,),);
+                                  DZ=0.0,),)
 
 
 # -----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ ENCAST=AFFE_CHAR_MECA(MODELE=MODELE,
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                       PRES_REP=_F(GROUP_MA='membrane',
-                                  PRES=1.,),);
+                                  PRES=1.,),)
 
 # CALCUL
 FONCCB=DEFI_FONCTION(
@@ -116,12 +116,12 @@ FONCCB=DEFI_FONCTION(
                      VALE=(0.0 ,0.0,
                            1.0 ,pressfinale ,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 
 
 LIST1=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=nbPasPress,),);
+                                   NOMBRE=nbPasPress,),)
 
 RES1=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
@@ -153,7 +153,7 @@ RES1=STAT_NON_LINE(MODELE=MODELE,
                                   ARRET='OUI',),
                    SOLVEUR=_F(METHODE='MUMPS'),
                    ARCHIVAGE=_F(CRITERE='RELATIF',
-                                PRECISION=1e-06,),);
+                                PRECISION=1e-06,),)
 
 
 
@@ -167,7 +167,7 @@ IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=RES1,
-                  NOM_CHAM=('DEPL','SIEF_ELGA',),),);
+                  NOM_CHAM=('DEPL','SIEF_ELGA',),),)
 
 # Test resultat
 TEST_RESU(RESU=_F(LEGENDE='Depl point O',
@@ -179,8 +179,8 @@ TEST_RESU(RESU=_F(LEGENDE='Depl point O',
                   VALE_CALC=2494.19523571,
                   REFERENCE='SOURCE_EXTERNE',
                   VALE_REFE=2448.,
-                  PRECISION=2E-2,),);
+                  PRECISION=2E-2,),)
 
 
-FIN();
+FIN()
 #CHECKSUM:6486cbb01d689c5212139f50f89b9437  -:FIN CHECKSUM

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,7 +111,7 @@ GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
                                  R_INF_FO=RINF1,
                                 DISCRETISATION='LEGENDRE',
                                 DEGRE=7,
-                                CHAM_THETA=CO('cham_theta_no1'),                                
+                                CHAM_THETA=CO('cham_theta_no1'),
                                  ),
 
                        )

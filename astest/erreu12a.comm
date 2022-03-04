@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ MA0 = LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
                  HEXA20_27=_F(TOUT='OUI'),
-                 );
+                 )
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT = 'OUI',
@@ -68,7 +68,7 @@ CHBLO = AFFE_CHAR_MECA(MODELE=MO,
 
 CHFORCE = AFFE_CHAR_MECA (MODELE=MO,
                           FORCE_FACE = _F(GROUP_MA='F_TOP',
-                                          FZ=-1000.0,),);
+                                          FZ=-1000.0,),)
 
 CHCO1=DEFI_CONTACT(MODELE        = MO,
                   FORMULATION    = 'CONTINUE',
@@ -89,10 +89,10 @@ LIST=DEFI_LIST_REEL(DEBUT=0.,
                     )
 
 DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST,),
-                         ECHEC=_F(SUBD_NIVEAU=2),);
+                         ECHEC=_F(SUBD_NIVEAU=2),)
 
 RAMPE = DEFI_FONCTION (NOM_PARA='INST',
-                       VALE=(0,0,1,1,),);
+                       VALE=(0,0,1,1,),)
 
 is_ok = 0
 try :

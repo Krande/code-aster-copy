@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,22 +20,22 @@
 #
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-             
+
 #----------------------------------------------
 #                   MAILLAGE
 #----------------------------------------------
 
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='ASTER');
+MAILLAG1=LIRE_MAILLAGE(FORMAT='ASTER')
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE  = MAILLAG1,
                        LINE_QUAD = _F(TOUT='OUI'),
-                      );
+                      )
 
 
 MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
                AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='3D'),
-              );
+              )
 
 LN = FORMULE(VALE='(X-3/4)**2+(Y-3/4)**2+(Z-1/4)**2-19/16',
              NOM_PARA=['X', 'Y', 'Z'],)
@@ -43,14 +43,14 @@ LN = FORMULE(VALE='(X-3/4)**2+(Y-3/4)**2+(Z-1/4)**2-19/16',
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN),
-                    INFO=1);
+                    INFO=1)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
-                         INFO=1);
+                         INFO=1)
 
-MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK);
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE = MA_XFEM));
+MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE = MA_XFEM))
 
 CHXN =CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
       NOM_CHAM='GEOMETRIE', MAILLAGE=MA_XFEM )
@@ -61,7 +61,7 @@ POSX1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -78,7 +78,7 @@ POSY1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -95,7 +95,7 @@ POSZ1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -112,7 +112,7 @@ POSX2=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -129,7 +129,7 @@ POSY2=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -146,7 +146,7 @@ POSZ2=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -163,7 +163,7 @@ POSX3=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -180,7 +180,7 @@ POSY3=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -197,7 +197,7 @@ POSZ3=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -214,7 +214,7 @@ POSX4=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -231,7 +231,7 @@ POSY4=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -248,7 +248,7 @@ POSZ4=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -259,4 +259,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='MIN',
            TABLE=POSZ4,)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # ==================================================== #
-# 
+#
 #~ BETON_GRANGER_V CONSTITUTIVE LAW FOR CREEP OF CONCRETE :
 #     EFFECT OF AGING AT CONSTANT TEMPERATURE
-# 
+#
 # ==================================================== #
 
 # ---------------------------------------------------- #
@@ -53,7 +53,7 @@ def creepStrainGrangerConst(fv,Time,h0,sigma0,JS, TAUS) :
 MPa = 1000000.0
 day = 86400.0
 
-# MATERIAL PROPERTIES 
+# MATERIAL PROPERTIES
 young  = 30000.0 * MPa
 YOUNG  = DEFI_CONSTANTE(VALE=(young),)
 NU     = DEFI_CONSTANTE(VALE=0.2,)
@@ -106,7 +106,7 @@ FONC_T = DEFI_CONSTANTE(VALE = 20.0,)   # Constant temperature equal to the refe
 # ----------------------------------------- #
 # COMPUTATION
 # ----------------------------------------- #
- 
+
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=(_F(JUSQU_A=2.*day,
                                    NOMBRE=1000,),
@@ -146,7 +146,7 @@ for i in range(len(AGES)) :
   fv = agingGranger(age)
   Epsf_ana = creepStrainGrangerConst(fv, np.array([instFin]), 1., sigma0, np.array(JS), np.array(TAUS) )
   Eps_ana  = sigma0/young + Epsf_ana[0]
-  
+
   TEST_TABLE(CRITERE   = 'RELATIF',
              REFERENCE = 'ANALYTIQUE',
              VALE_CALC = ValeCalc[i],
@@ -175,4 +175,4 @@ for i in range(len(AGES)) :
               #~ LEGENDE_X='Temps [secondes]',
               #~ LEGENDE_Y='Epszz',)
 
-FIN();
+FIN()

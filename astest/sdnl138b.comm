@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,7 +126,7 @@ RESUD=DYNA_NON_LINE(
     NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
     CONVERGENCE=_F(
         ITER_GLOB_MAXI=15,
-        RESI_REFE_RELA=1.0E-06 ,         
+        RESI_REFE_RELA=1.0E-06 ,
         EFFORT_REFE = 1.0,
         MOMENT_REFE = 1.0,
 ),
@@ -136,9 +136,9 @@ RESUD=DYNA_NON_LINE(
 
 
 TAB_SPEC=RECU_TABLE(CO=RESUD,
-                    NOM_TABLE='ANALYSE_MODALE',);
+                    NOM_TABLE='ANALYSE_MODALE',)
 
-IMPR_TABLE(TABLE=TAB_SPEC);
+IMPR_TABLE(TABLE=TAB_SPEC)
 
 TEST_TABLE(
            VALE_CALC=6.27962E+01,
@@ -186,7 +186,7 @@ RESUE=DYNA_NON_LINE(
     NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
     CONVERGENCE=_F(
         ITER_GLOB_MAXI=15,
-        RESI_REFE_RELA=1.0E-06 ,         
+        RESI_REFE_RELA=1.0E-06 ,
         EFFORT_REFE = 1.0,
         MOMENT_REFE = 1.0,
 ),
@@ -196,9 +196,9 @@ RESUE=DYNA_NON_LINE(
 
 
 TAB_SPE2=RECU_TABLE(CO=RESUE,
-                    NOM_TABLE='ANALYSE_MODALE',);
+                    NOM_TABLE='ANALYSE_MODALE',)
 
-IMPR_TABLE(TABLE=TAB_SPE2);
+IMPR_TABLE(TABLE=TAB_SPE2)
 
 TEST_TABLE(
            VALE_CALC_I=8,

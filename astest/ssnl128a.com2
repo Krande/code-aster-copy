@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ STNL1=STAT_NON_LINE(
               REAC_ITER=1),
    COMPORTEMENT=_F(RELATION='MULTIFIBRE',
                    GROUP_MA=('TOUT',),),
-                   );
+                   )
 
 STNL1=CALC_CHAMP(reuse =STNL1, RESULTAT=STNL1, CONTRAINTE=('SIGM_ELNO'),)
 

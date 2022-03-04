@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,18 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
 ################
 ### MAILLAGE ###
 ################
 
-MA=LIRE_MAILLAGE(FORMAT = 'MED',);
-                       
+MA=LIRE_MAILLAGE(FORMAT = 'MED',)
+
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=(_F(GROUP_MA_PEAU='SCO1',),
-                               _F(GROUP_MA_PEAU='SCO2',),),);
+                               _F(GROUP_MA_PEAU='SCO2',),),)
 
 ##############
 ### MODELE ###
@@ -38,28 +38,28 @@ MA=MODI_MAILLAGE(reuse =MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),);
+                       MODELISATION='D_PLAN',),)
 #################
 ### MATERIAUX ###
 #################
 
 BASUP=DEFI_MATERIAU(ELAS=_F(E=1.0E5,
                              NU=0.3,
-                             RHO=2.7E-5,),                             
+                             RHO=2.7E-5,),
                     ECRO_LINE=_F(D_SIGM_EPSI=9.0E4,
-                                 SY=10.E100,),);
+                                 SY=10.E100,),)
 
 BAINF=DEFI_MATERIAU(ELAS=_F(E=1.0E3,
                              NU=0.3,
-                             RHO=2.7E-5,),                             
+                             RHO=2.7E-5,),
                     ECRO_LINE=_F(D_SIGM_EPSI=9.0E2,
-                                 SY=10.E100,),);
+                                 SY=10.E100,),)
 
 BLOCK=DEFI_MATERIAU(ELAS=_F(E=3.0E2,
                              NU=0.3,
-                             RHO=2.7E-5,),                             
+                             RHO=2.7E-5,),
                     ECRO_LINE=_F(D_SIGM_EPSI=10.0,
-                                 SY=10.E100,),);
+                                 SY=10.E100,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                       MODELE=MO,
@@ -68,7 +68,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             _F(GROUP_MA='BAINF',
                                MATER=BAINF,),
                             _F(GROUP_MA='BLOC',
-                               MATER=BLOCK,),),);
+                               MATER=BLOCK,),),)
 
 ########################
 ### CHARGEMENT ET CL ###
@@ -80,30 +80,30 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DY=0.0,),
                               _F(GROUP_MA='DEPL',
                                  DX=0.0,
-                                 DY=-90.0,),),);
+                                 DY=-90.0,),),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           1.0,1.0,),
                           PROL_DROITE='LINEAIRE',
-                          PROL_GAUCHE='LINEAIRE',);
+                          PROL_GAUCHE='LINEAIRE',)
 
 ###############
 ### CONTACT ###
 ###############
-           
+
 NGENE=DEFI_CONTACT(MODELE=MO,
                    FORMULATION='CONTINUE',
                    FROTTEMENT='COULOMB',
-                   CONT_STAT_ELAS = 3,                  
+                   CONT_STAT_ELAS = 3,
                    LISSAGE ='OUI',
-                   RESI_GEOM = 1.0E-3,                            
+                   RESI_GEOM = 1.0E-3,
                    ZONE=_F(GROUP_MA_MAIT='SCO2',
                            GROUP_MA_ESCL='SCO1',
                            SANS_GROUP_NO='SANS',
                            ALGO_CONT='STANDARD',
                            COEF_CONT = 1.0e2,
-                           COULOMB=0.5,),);
+                           COULOMB=0.5,),)
 
 ######################
 ### LISTE INSTANTS ###
@@ -111,12 +111,12 @@ NGENE=DEFI_CONTACT(MODELE=MO,
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A=0.6,
-                                     NOMBRE=12,),),);
+                                     NOMBRE=12,),),)
 
 LINST=DEFI_LIST_INST(METHODE='MANUEL',
                      DEFI_LIST=_F(LIST_INST=L_INST,),
                      ECHEC=_F(SUBD_PAS=5,
-                              SUBD_NIVEAU=5,),);
+                              SUBD_NIVEAU=5,),)
 
 ##################
 ### RESOLUTION ###
@@ -135,7 +135,7 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                    NEWTON=_F(PREDICTION='ELASTIQUE',
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   ARCHIVAGE=_F(LIST_INST=L_INST,),);
+                   ARCHIVAGE=_F(LIST_INST=L_INST,),)
 
 #######################
 ### POST-TRAITEMENT ###
@@ -144,15 +144,15 @@ RESU=DYNA_NON_LINE(MODELE=MO,
 RESU=CALC_CHAMP(reuse=RESU,
                 RESULTAT=RESU,
                 FORCE=('FORC_NODA','REAC_NODA'),
-                CRITERES='SIEQ_NOEU');
+                CRITERES='SIEQ_NOEU')
 
 RESU=CALC_CHAMP(reuse=RESU,
                 RESULTAT=RESU,
-                DEFORMATION='EPSL_NOEU');
+                DEFORMATION='EPSL_NOEU')
 
 IMPR_RESU(UNITE=80,
           FORMAT='MED',
-          RESU=_F(RESULTAT=RESU,),);
+          RESU=_F(RESULTAT=RESU,),)
 
 ##################
 ### VALIDATION ###
@@ -259,6 +259,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='LAGS_F1',
                    GROUP_NO='PB',
-                   VALE_CALC=0.3052489636662426,),),);
+                   VALE_CALC=0.3052489636662426,),),)
 
-FIN();
+FIN()

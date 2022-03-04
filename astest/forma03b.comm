@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,17 +25,17 @@ DEBUT(CODE=_F(
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # LECTURE DU MAILLAGE
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),)
 
 # AFFECTATION DU MODELE (CONTRAINTES PLANES)
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),);
+                         MODELISATION='C_PLAN',),)
 
 # COURBE DE TRACTION
 CTRAC = LIRE_FONCTION(UNITE=21,
@@ -47,17 +47,17 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONCTION=CTRAC,),
               TITRE='Courbe de traction',
               LEGENDE_X='Deformation',
-              LEGENDE_Y='Contrainte (MPa)',);
+              LEGENDE_Y='Contrainte (MPa)',)
 
 
 # DEFINITION DU MATERIAU
 ACIER =DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.3,),
-                 TRACTION=_F(SIGM=CTRAC,),);
+                 TRACTION=_F(SIGM=CTRAC,),)
 
 CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=ACIER,),);
+                             MATER=ACIER,),)
 
 # CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
 CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
@@ -65,28 +65,28 @@ CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
                                  DY=0.0,),
                                  _F(GROUP_MA='gauche',
                                  DX=0.0,),),
-                                );
+                                )
 
 # CHARGEMENT EN FORCE
 CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
                       FORCE_CONTOUR=_F(GROUP_MA='haut',
-                                       FY=1.,),);
+                                       FY=1.,),)
 
 # RAMPE APPLICATION CHARGEMENT
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1000.0,1000.0,
-                           ),);
+                           ),)
 
 # DISCRETISATION EN TEMPS
-TFIN  = 230.0;
-TELAS = 10.0;
+TFIN  = 230.0
+TELAS = 10.0
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=TELAS,
                                      NOMBRE=1,),
                                   _F(JUSQU_A=TFIN,
                                      NOMBRE=50,),
-                                  ),);
+                                  ),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
                         ECHEC=_F(EVENEMENT='ERREUR',
@@ -106,7 +106,7 @@ RESUNL=STAT_NON_LINE(MODELE=MODE,
                                FONC_MULT=RAMPE,),),
                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
                      INCREMENT=_F(LIST_INST=DEFLIST,
-                                  INST_FIN=TELAS,),);
+                                  INST_FIN=TELAS,),)
 
 ########################################################################
 #
@@ -126,7 +126,7 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
                                   INST_FIN=TFIN,
                                   ),
                      NEWTON=_F(REAC_ITER=1,),
-                     );
+                     )
 
 ########################################################################
 #
@@ -140,7 +140,7 @@ RESUNL=CALC_CHAMP(reuse=RESUNL,RESULTAT=RESUNL,CONTRAINTE=('SIGM_ELNO'))
 
 RESUNL=CALC_CHAMP(reuse =RESUNL,
                RESULTAT=RESUNL,
-               CONTRAINTE='SIGM_NOEU');
+               CONTRAINTE='SIGM_NOEU')
 
 # INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
 RESUNL=CALC_CHAMP(reuse=RESUNL,RESULTAT=RESUNL,VARI_INTERNE=('VARI_ELNO'))
@@ -148,7 +148,7 @@ RESUNL=CALC_CHAMP(reuse=RESUNL,RESULTAT=RESUNL,VARI_INTERNE=('VARI_ELNO'))
 
 RESUNL=CALC_CHAMP(reuse =RESUNL,
                RESULTAT=RESUNL,
-               VARI_INTERNE='VARI_NOEU',);
+               VARI_INTERNE='VARI_NOEU',)
 
 ########################################################################
 #
@@ -157,7 +157,7 @@ RESUNL=CALC_CHAMP(reuse =RESUNL,
 ########################################################################
 
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=RESUNL,),);
+          RESU=_F(RESULTAT=RESUNL,),)
 
 #########################################################################
 #
@@ -167,14 +167,14 @@ IMPR_RESU(FORMAT='MED',
 
 
 # DISCRETISATION EN TEMPS
-TCHAR   = 230.0;
-TDECHAR = 300.0;
+TCHAR   = 230.0
+TDECHAR = 300.0
 
 # RAMPE APPLICATION CHARGE PUIS DECHARGE
 RAMPE2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                             TCHAR,TCHAR,
                             TDECHAR,0.,
-                            ),);
+                            ),)
 
 # DISCRETISATION EN TEMPS
 L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
@@ -183,7 +183,7 @@ L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=TCHAR,
                                       NOMBRE=30,),
                                    _F(JUSQU_A=TDECHAR,
-                                      NOMBRE=10,),),);
+                                      NOMBRE=10,),),)
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),
                         ECHEC=_F(EVENEMENT    = 'ERREUR',
@@ -204,7 +204,7 @@ RESUNL2=STAT_NON_LINE(MODELE=MODE,
                       INCREMENT=_F(LIST_INST=DEFLIST2),
                       NEWTON=_F(PREDICTION='ELASTIQUE',
                                 REAC_ITER=1,),
-                      ARCHIVAGE=_F(LIST_INST=L_INST2,),);
+                      ARCHIVAGE=_F(LIST_INST=L_INST2,),)
 
 ########################################################################
 #
@@ -217,7 +217,7 @@ RESUNL2=CALC_CHAMP(reuse=RESUNL2,RESULTAT=RESUNL2,CONTRAINTE=('SIGM_ELNO'))
 
 RESUNL2=CALC_CHAMP(reuse =RESUNL2,
                RESULTAT=RESUNL2,
-               CONTRAINTE='SIGM_NOEU');
+               CONTRAINTE='SIGM_NOEU')
 
 # INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
 RESUNL2=CALC_CHAMP(reuse=RESUNL2,RESULTAT=RESUNL2,VARI_INTERNE=('VARI_ELNO'))
@@ -225,7 +225,7 @@ RESUNL2=CALC_CHAMP(reuse=RESUNL2,RESULTAT=RESUNL2,VARI_INTERNE=('VARI_ELNO'))
 
 RESUNL2=CALC_CHAMP(reuse =RESUNL2,
                RESULTAT=RESUNL2,
-               VARI_INTERNE='VARI_NOEU',);
+               VARI_INTERNE='VARI_NOEU',)
 
                 ########################################################################
 #
@@ -234,7 +234,7 @@ RESUNL2=CALC_CHAMP(reuse =RESUNL2,
 ########################################################################
 
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=RESUNL2,),);
+          RESU=_F(RESULTAT=RESUNL2,),)
 
 ########################################################################
 #
@@ -406,4 +406,4 @@ TEST_RESU(RESU=_F(INST=300.,
                   ),
           )
 
-FIN();
+FIN()

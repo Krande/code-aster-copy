@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -255,10 +255,10 @@ TBRCCM1=POST_RCCM(TYPE_RESU='DETAILS',
                      NOM_SITU='Seisme',
                      NUME_GROUPE=1,
                      CHAR_ETAT=(1000,1001,1002,1003,1004,1005,1006),),),
-          );
+          )
 
 
-IMPR_TABLE(TABLE=TBRCCM1,);
+IMPR_TABLE(TABLE=TBRCCM1,)
 
 # CALCUL SUIVANT LE RCCM AVEC SITUATIONS DE PASSAGE
 TBRCCM2=POST_RCCM(TYPE_RESU='DETAILS',
@@ -394,10 +394,10 @@ TBRCCM2=POST_RCCM(TYPE_RESU='DETAILS',
                      CHAR_ETAT_A=7,
                      CHAR_ETAT_B=8,
                      NUME_RESU_THER=(12,22),),),
-          );
+          )
 
 
-IMPR_TABLE(TABLE=TBRCCM2,);
+IMPR_TABLE(TABLE=TBRCCM2,)
 
 
 #--------------------------------------------------------------------------------

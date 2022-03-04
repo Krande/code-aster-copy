@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,15 +35,15 @@ MAYA = LIRE_MAILLAGE(FORMAT='IDEAS',
 MODELE=AFFE_MODELE(MAILLAGE=MAYA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='POU_D_T',),);
+                           MODELISATION='POU_D_T',),)
 
 MATELAS=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
                               NU=0.3,
-                              RHO=7820,),);
+                              RHO=7820,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATELAS,),);
+                            MATER=MATELAS,),)
 
 
 MODEXP=LIRE_RESU(TYPE_RESU='MODE_MECA_C',
@@ -57,7 +57,7 @@ MODEXP=LIRE_RESU(TYPE_RESU='MODE_MECA_C',
                                  POSI_ORDRE=(7,4,),
                                  POSI_FREQ=(8,1,),
                                  NOM_CMP=('DX','DY','DZ',),),
-                 NUME_ORDRE=(1,2,),);
+                 NUME_ORDRE=(1,2,),)
 
 
 MODEXP=LIRE_RESU(TYPE_RESU='MODE_MECA_C',
@@ -73,7 +73,7 @@ MODEXP=LIRE_RESU(TYPE_RESU='MODE_MECA_C',
                                  POSI_ORDRE=(7,4,),
                                  POSI_FREQ=(8,1,),
                                  NOM_CMP=('DX','DY','DZ',),),
-                 NUME_ORDRE=(3,),);
+                 NUME_ORDRE=(3,),)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MODEXP,NUME_ORDRE=2),)
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=MODEXP,PARTIE='REEL',NUME_ORDRE=2),)
@@ -116,7 +116,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 # FORMAT GMSH
 # -----------
 
-IMPR_RESU(FORMAT='GMSH', UNITE=60, RESU=_F(MAILLAGE=MAYA,), );
+IMPR_RESU(FORMAT='GMSH', UNITE=60, RESU=_F(MAILLAGE=MAYA,), )
 
 
 MA22 = LIRE_MAILLAGE(FORMAT='GMSH',
@@ -127,7 +127,7 @@ MA22 = LIRE_MAILLAGE(FORMAT='GMSH',
 # FORMAT IDEAS
 # ------------
 
-IMPR_RESU(FORMAT='IDEAS', UNITE=62, RESU=_F(MAILLAGE=MAYA,), );
+IMPR_RESU(FORMAT='IDEAS', UNITE=62, RESU=_F(MAILLAGE=MAYA,), )
 
 
 MA23 = LIRE_MAILLAGE(FORMAT='IDEAS',
@@ -136,9 +136,9 @@ MA23 = LIRE_MAILLAGE(FORMAT='IDEAS',
 
 # FORMAT IDEAS POUR TESTER LE RETOUR DE DEFI_FICHIER
 # --------------------------------------------------
-uniideas=DEFI_FICHIER(FICHIER='./REPE_OUT/fic_ideas');
+uniideas=DEFI_FICHIER(FICHIER='./REPE_OUT/fic_ideas')
 
-IMPR_RESU(FORMAT='IDEAS', UNITE=uniideas, RESU=_F(MAILLAGE=MAYA,), );
+IMPR_RESU(FORMAT='IDEAS', UNITE=uniideas, RESU=_F(MAILLAGE=MAYA,), )
 
 TEST_FICHIER(FICHIER="./REPE_OUT/fic_ideas",
              NB_VALE_I=659,
@@ -158,4 +158,4 @@ TEST_RESU(OBJET=(_F(
                     NOM='00000007.COORDO    .VALE',),)
           )
 
-FIN();
+FIN()

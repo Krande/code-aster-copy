@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,28 +34,28 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000.,
                                NU=0.25,),
                        ECRO_LINE=_F(D_SIGM_EPSI=1000.0,
                                     SY=200.0,),
-                           );
+                           )
 
 CH_MATER=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATERIAU,),);
+                               MATER=MATERIAU,),)
 
-zero = DEFI_CONSTANTE(VALE=0.0);
+zero = DEFI_CONSTANTE(VALE=0.0)
 
 hy = FORMULE(VALE='15.*(1-(Y*Y)/4.)',
              NOM_PARA='Y',)
@@ -97,11 +97,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
-                                      NOMBRE=1,),);
+                                      NOMBRE=1,),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0, 1.0,
-                          1.0, 1.0,),);
+                          1.0, 1.0,),)
 
 #
 #   TEST EN PLASTICITE
@@ -115,7 +115,7 @@ CONVERGENCE=_F(ITER_GLOB_MAXI=30, RESI_GLOB_RELA=1.E-6),
                         DEFORMATION ='PETIT',),
                    INCREMENT=_F(LIST_INST=INSTANTS,),
                    NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P3',
@@ -136,4 +136,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

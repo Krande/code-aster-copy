@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ Liaison = {}
 for nb in list(Relation.keys()):
    Liaison[nb] = ['N%d' %i for i in Relation[nb] ]
 
-DDLS = {};
+DDLS = {}
 DDLS['DX']  = ['DX']*5;  DDLS['DY']  = ['DY']*5;  DDLS['DZ']  = ['DZ']*5
 DDLS['DRX'] = ['DRX']*5; DDLS['DRY'] = ['DRY']*5; DDLS['DRZ'] = ['DRZ']*5
 COEFFS = [-1.0] +  [un4]*4

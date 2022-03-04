@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ ACIER=DEFI_MATERIAU(
 # AFFECTATION DES MODELES
 # -------------------------------------------------
 #
-LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,
                         AFFE=_F(  GROUP_MA = ('GEOB','GEOBB'),
                                PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'GRILLE_EXCENTRE',
@@ -574,7 +574,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    PRECISION=1.E-4,
                    CRITERE='ABSOLU',
                    ),
-                   
+
                 _F(INST=1.0,
                    TYPE_TEST='MAX',
                    RESULTAT=LEDEP,
@@ -586,7 +586,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    PRECISION=1.E-4,
                    CRITERE='ABSOLU',
                    ),
-                   
+
                 _F(INST=1.0,
                    RESULTAT=LEDEP,
                    NOM_CHAM='VARI_ELNO', GROUP_MA='MA1', POINT=1,

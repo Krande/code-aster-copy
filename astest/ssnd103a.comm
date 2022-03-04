@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ CHMAT=AFFE_MATERIAU(
    AFFE=_F(TOUT='OUI',MATER=DISCR),
 )
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
 FSerraXY=DEFI_FONCTION(
    NOM_PARA='INST',

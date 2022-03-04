@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 # Raffinement avec homard -> creation de PYRA5
 # ###################################################
 
-MA0 = LIRE_MAILLAGE(FORMAT = 'MED',);
+MA0 = LIRE_MAILLAGE(FORMAT = 'MED',)
 
 MODBID = AFFE_MODELE(MAILLAGE = MA0,
                      AFFE = _F(TOUT = 'OUI',
@@ -53,7 +53,7 @@ MACR_ADAP_MAIL(ADAPTATION = 'RAFFINEMENT',
                MAILLAGE_N = MA0,
                MAILLAGE_NP1 = MA1)
 
-#MA1 = LIRE_MAILLAGE(FORMAT = 'MED',);
+#MA1 = LIRE_MAILLAGE(FORMAT = 'MED',)
 
 MAILLAGE = CREA_MAILLAGE(MAILLAGE = MA1,
                          CREA_POI1 = (_F(NOM_GROUP_MA = 'POCOUPE1',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 # SDVERI='NON' A CAUSE SUR SUR-COUT CPU
 
-M=LIRE_MAILLAGE(FORMAT="ASTER",);
+M=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),);
+                       MODELISATION='D_PLAN',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=178600.0,
                             NU=0.3,
@@ -43,47 +43,47 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=178600.0,
                                 UN_SUR_M=0.178571429,),
                     VISC_ENDO=_F(SY=0.0,
                                  R_D=3.0,
-                                 A_D=100000.0,),);
+                                 A_D=100000.0,),)
 
 
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=ACIER,),);
+                         MATER=ACIER,),)
 # LES FORCES SONT MULTIPLIEES PAR 2 PAR RAPPORT AU TEST SSNP05A
 
 P30=DEFI_FONCTION(NOM_PARA='INST',
                   VALE=
                   (0.0,0.0,30.0,60.62177826,3630.0,60.62177826,3660.0,121.2435565,7260.0,121.2435565,),
                   PROL_DROITE='LINEAIRE',
-                  PROL_GAUCHE='LINEAIRE',);
+                  PROL_GAUCHE='LINEAIRE',)
 
 M30=DEFI_FONCTION(NOM_PARA='INST',
                   VALE=
                   (0.0,0.0,30.0,-60.62177826,3630.0,-60.62177826,3660.0,-121.2435565,7260.0,-121.2435565,),
                   PROL_DROITE='LINEAIRE',
-                  PROL_GAUCHE='LINEAIRE',);
+                  PROL_GAUCHE='LINEAIRE',)
 
 M52M30=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=
                      (0.0,0.0,30.0,-165.6217783,3630.0,-165.6217783,3660.0,-121.2435565,7260.0,
                             -121.2435565,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 
 M52P30=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=
                      (0.0,0.0,30.0,-44.37822174,3630.0,-44.37822174,3660.0,121.2435565,7260.0,
                             121.2435565,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='N4',
                                 DX=0.0,
                                 DY=0.0,),
                              _F(GROUP_NO='N3',
-                                DX=0.0,),),);
+                                DX=0.0,),),)
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                      FORCE_NODALE=(_F(GROUP_NO='N2',
@@ -97,7 +97,7 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                                       FY=M30,),
                                    _F(GROUP_NO='N4',
                                       FX=M30,
-                                      FY=P30,),),);
+                                      FY=P30,),),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=30.0,
@@ -107,7 +107,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=3660.0,
                                      NOMBRE=3,),
                                   _F(JUSQU_A=3720.0,
-                                     NOMBRE=1,),),);
+                                     NOMBRE=1,),),)
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
@@ -120,7 +120,7 @@ U=STAT_NON_LINE(MODELE=MO,
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,
                                ITER_GLOB_MAXI=25,),
-                );
+                )
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -222,7 +222,7 @@ L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=3660.0,
                                       NOMBRE=130,),
                                    _F(JUSQU_A=3720.0,
-                                      NOMBRE=110,),),);
+                                      NOMBRE=110,),),)
 
 U2=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CM,
@@ -237,7 +237,7 @@ U2=STAT_NON_LINE(MODELE=MO,
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                ITER_GLOB_MAXI=25,),);
+                                ITER_GLOB_MAXI=25,),)
 
 U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -271,5 +271,5 @@ TEST_RESU(RESU=(_F(INST=30.0,
                 ),
           )
 
-FIN();
+FIN()
 #

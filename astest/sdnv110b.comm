@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 # ROTOR 3D SUPPORTE PAR DEUX PALIERS AUTOUR DE SON AXE
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
-MBI=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
+MBI=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,)
 
 MBI = DEFI_GROUP( reuse = MBI, MAILLAGE = MBI,
                       CREA_GROUP_NO= (
@@ -39,23 +39,23 @@ MOD=AFFE_MODELE(MAILLAGE=MBI,
                             MODELISATION='3D',),
                          _F(GROUP_MA=('PALIER1','PALIER2'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 ELAS=DEFI_MATERIAU(ELAS=_F(E=2.078E+11,
                            NU=0.3,
-                           RHO=7806,),);
+                           RHO=7806,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MBI,
                     AFFE=(_F(GROUP_MA=('EL1_RO','EL2_RO','EL3_RO','EL4_RO','EL5_RO',
                                        'EL6_RO','EL7_RO','EL8_RO','EL9_RO','EL10_RO',
                                        'EL11_RO','EL12_RO','EL13_RO','EL14_RO','EL15_RO',
                                        'EL16_RO','EL17_RO','EL18_RO','PALIER1','PALIER2'),
-                           MATER=ELAS,),),);
+                           MATER=ELAS,),),)
 
 CLDG=AFFE_CHAR_MECA(MODELE=MOD,
                   DDL_IMPO=(
                             _F(GROUP_NO='N5822',DX=0,),
-                            ),);
+                            ),)
 
 # --------------------------------
 # DEFINITION DES SECTIONS ET DES RAIDEURS
@@ -74,13 +74,13 @@ cara=AFFE_CARA_ELEM(MODELE=MOD,
                                 CARA='A_T_N',
                                 VALE=(0.,0.0,0.0,0.,0.0,0.0,),),
                            )
-                        );
+                        )
 
 # VECTEUR DIRECTEUR AXE DE ROTATION : nx,ny,nz
-nx=1;ny=0;nz=0;
+nx=1;ny=0;nz=0
 CL1=AFFE_CHAR_MECA(MODELE=MOD,
                    ROTATION=_F(VITESSE= 1,
-                   AXE = (nx,ny,nz,),),);
+                   AXE = (nx,ny,nz,),),)
 
 ASSEMBLAGE(MODELE=MOD,
            CHAM_MATER=CHMAT,
@@ -93,17 +93,17 @@ ASSEMBLAGE(MODELE=MOD,
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('AMOR'),
                               OPTION='AMOR_MECA',),
-                              ),);
+                              ),)
 
 GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
                       MODELE=MOD,
                       CARA_ELEM=cara,
                       CHARGE=(CL1,CLDG),
                       CHAM_MATER=CHMAT,
-                      );
+                      )
 
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
 OM=100000*pi/30.
 GYASSi=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=AMOR,COEF_R=1.0,),

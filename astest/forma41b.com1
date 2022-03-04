@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ CHARSECH=AFFE_CHAR_THER(MODELE=MODTHER,
                         TEMP_IMPO=(_F(GROUP_MA='HAUT',
                                       TEMP=70,),
                                    _F(GROUP_MA='BAS',
-                                      TEMP=50,),),);
+                                      TEMP=50,),),)
 
 RESUSEC=THER_NON_LINE(MODELE=MODTHER,
                       CHAM_MATER=MABETTH,
@@ -33,6 +33,6 @@ RESUSEC=THER_NON_LINE(MODELE=MODTHER,
                       EVOL_THER_SECH=RESUTH,
                       EXCIT=_F(CHARGE=CHARSECH,),
                       INCREMENT=_F(LIST_INST=LISTARCH,),
-                      ETAT_INIT=_F(VALE=120,),);
+                      ETAT_INIT=_F(VALE=120,),)
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,27 +21,27 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'));
+      DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 # CAS TEST THERMOPLASTICITE ELEMENTAIRE
 #......................................................................
 # DEFINITION DES CARACTERISTIQUES DU MATERIAU
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
 #
 # DONNEES DE MODELISATION
 
 FCT1=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.200E-2,400.,
                          0.400E-2,500.,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE');
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE')
 
 #
 
 FCT2=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.100E-2,200.,
                          0.300E-2,300.,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE');
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE')
 
 #
 
@@ -49,7 +49,7 @@ CTRACB=DEFI_NAPPE(NOM_PARA='TEMP',
                   PARA=(0.,50.),
                   FONCTION=(FCT1,FCT2),
                   PROL_DROITE='LINEAIRE',
-                  PROL_GAUCHE='LINEAIRE');
+                  PROL_GAUCHE='LINEAIRE')
 
 #
 
@@ -58,13 +58,13 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=200.E+3,
                           ALPHA=10.0E-6),
                   TRACTION=_F(SIGM=CTRACB),
                   THER=_F(LAMBDA=1.0E-3,
-                          RHO_CP=0.0E-3));
+                          RHO_CP=0.0E-3))
 
 #
 
 CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MAT));
+                         MATER=MAT))
 
 #
 
@@ -73,7 +73,7 @@ T0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
               MAILLAGE=MAIL,
               AFFE=_F(TOUT='OUI',
                       NOM_CMP='TEMP',
-                      VALE=0.0));
+                      VALE=0.0))
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A=66.666E0,
@@ -81,33 +81,33 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=80.000E0,
                                      NOMBRE=2),
                                   _F(JUSQU_A=90.000E0,
-                                     NOMBRE=2)));
+                                     NOMBRE=2)))
 
 #
 
 TIMPVAR=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.E0,0.E0,
                             100.E0,100.E0,
-                            ));
+                            ))
 
 #
 
 MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='THERMIQUE',
-                           MODELISATION='3D'));
+                           MODELISATION='3D'))
 
 #
 
 MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D_INCO_UP'));
+                           MODELISATION='3D_INCO_UP'))
 
 #
 
 CHTHER=AFFE_CHAR_THER_F(MODELE=MOTHER,
                         TEMP_IMPO=_F(TOUT='OUI',
-                                     TEMP=TIMPVAR));
+                                     TEMP=TIMPVAR))
 
 #
 
@@ -115,7 +115,7 @@ TEMPE=THER_LINEAIRE(MODELE=MOTHER,
                     CHAM_MATER=CM,
                     EXCIT=_F(CHARGE=CHTHER),
                     INCREMENT=_F(LIST_INST=L_INST),
-                    ETAT_INIT=_F(CHAM_NO=T0));
+                    ETAT_INIT=_F(CHAM_NO=T0))
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
                       DDL_IMPO=(_F(GROUP_MA='GRDX',
@@ -123,7 +123,7 @@ CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
                                 _F(GROUP_MA='GRDY',
                                    DY=0.),
                                 _F(GROUP_MA='GRDZ',
-                                   DZ=0.)));
+                                   DZ=0.)))
 
 CTM=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
@@ -132,7 +132,7 @@ CTM=AFFE_MATERIAU(MAILLAGE=MAIL,
                                NOM_VARC='TEMP',
                                EVOL=TEMPE,
                                NOM_CHAM='TEMP',
-                               VALE_REF=0.));
+                               VALE_REF=0.))
 
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CTM,
@@ -144,7 +144,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                           REAC_ITER=1),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
                                ITER_GLOB_MAXI=10),
-                SOLVEUR=_F(METHODE='MUMPS',));
+                SOLVEUR=_F(METHODE='MUMPS',))
 
 #
 
@@ -245,6 +245,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
           )
 
 
-FIN();
+FIN()
 
 #

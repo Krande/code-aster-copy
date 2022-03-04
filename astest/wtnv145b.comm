@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 
 # double jonction en F, D_PLAN, QUAD4
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA='SURF',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_HM',),),);
+                              MODELISATION='3D_HM',),),)
 
 LN1 = FORMULE(VALE='Z-0.5*X-2.7',
               NOM_PARA=['X', 'Y', 'Z'],)
@@ -34,7 +34,7 @@ LN1 = FORMULE(VALE='Z-0.5*X-2.7',
 FISS1=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN1,),
-                    INFO=1,);
+                    INFO=1,)
 
 LN2 = FORMULE(VALE='Z-7.3+0.5*X',
               NOM_PARA=['X', 'Y', 'Z'],)
@@ -42,21 +42,21 @@ FISS2=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN2,),
                     JONCTION=_F(FISSURE=(FISS1,),POINT=(10,0,2)),
-                    INFO=1,);
+                    INFO=1,)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          DECOUPE_FACETTE='SOUS_ELEMENTS',
-                         INFO=1,);
+                         INFO=1,)
 
 
 E=5800.0E6
 nu=0.0
-UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,);
+UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,)
 
-ZERO = DEFI_CONSTANTE(VALE = 0.0,);
+ZERO = DEFI_CONSTANTE(VALE = 0.0,)
 
-KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,);
+KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
@@ -75,14 +75,14 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                                     UN_SUR_K    = 5E-10,
                                     VISC        = UNM3,
                                     D_VISC_TEMP = ZERO,),
-                    );
+                    )
 
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT=('OUI',),
                                 MATER=ACIER,
-                                ),);
+                                ),)
 
 
 def depn(x,y,z) :
@@ -96,17 +96,17 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(
                              _F(TOUT='OUI',DX=0.,H1X=0,H2X=0.0,DY=0.0,H1Y=0.0,H2Y=0.0),
                             ),
-                   INFO=1,);
+                   INFO=1,)
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA=('LB'),DZ=0.0, H1Z=0.0,),
                              _F(GROUP_MA=('LH'),DZ=0.0, H1Z=0.0,),
                              _F(GROUP_NO=('N87','N93','N156','N169'),DZ=0.0,H1Z=0.0,H2Z=0.),),
-                   INFO=1,);
+                   INFO=1,)
 
 CH3=AFFE_CHAR_MECA(MODELE=MODELEK,
                    PRES_REP=_F(FISSURE=FISS1,PRES=10000000,),
-                   );
+                   )
 
 HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(
@@ -124,7 +124,7 @@ HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                              _F(GROUP_NO=('N13','N69','N65','N14','N70','N71'),H1PRE1=2.0E5),
                              _F(GROUP_NO=('N46','N50','N62','N66'),H1PRE1=2.0E5,H2PRE1=1.0E5),
                              _F(GROUP_NO=('N55','N59'),H1PRE1=1.0E5,H2PRE1=-1.0E5),
-                             _F(GROUP_NO=('N54','N58'),H1PRE1=1.0E5,H2PRE1=-1.0E5),                            
+                             _F(GROUP_NO=('N54','N58'),H1PRE1=1.0E5,H2PRE1=-1.0E5),
                              _F(GROUP_NO=('N47','N67'),H1PRE1=-2.0E5,H2PRE1=-1.0E5),
                              _F(GROUP_NO=('N51','N63'),H1PRE1=-1.0E5,H2PRE1=-2.0E5),
                              _F(GROUP_NO=('N18','N22'),H1PRE1=1.0E5),
@@ -132,11 +132,11 @@ HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                             _F(GROUP_NO=('N61','N57','N21','N22'),H2PRE1=0.0E5),
                              ),
                     INFO=1,
-                   );
+                   )
 
 FLUH=AFFE_CHAR_MECA(MODELE=MODELEK,
                     FLUX_THM_REP=_F(TOUT='OUI',FLUN_HYDR1=0.,),
-                   );
+                   )
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -151,7 +151,7 @@ MULT=DEFI_FONCTION(NOM_PARA='INST',
 
 L_INS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=1,),
-                    );
+                    )
 
 UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                     CHAM_MATER  = CHAMPMAT,
@@ -177,13 +177,13 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                     INFO=1,
                    )
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=UTOT1,));
+#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=UTOT1,))
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
@@ -193,7 +193,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 RES_TEST=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,)
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_TEST));
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_TEST))
 #----------------------------------------------
 #                   POST RELEVE
 #----------------------------------------------
@@ -205,8 +205,8 @@ DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                  NOM_CHAM='DEPL',
                                  NUME_ORDRE=1,
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=DEP,);
+                                 OPERATION='EXTRACTION',),)
+IMPR_TABLE(TABLE=DEP,)
 
 DEP1 = CALC_TABLE(TABLE = DEP,
                    ACTION = (_F(OPERATION = 'FILTRE',
@@ -214,7 +214,7 @@ DEP1 = CALC_TABLE(TABLE = DEP,
                                 VALE_K    = 'NMSV',
                               ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -230,7 +230,7 @@ DEP2 = CALC_TABLE(TABLE = DEP,
                                 VALE_K    = 'NPRB',
                                ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -246,7 +246,7 @@ DEP3 = CALC_TABLE(TABLE = DEP,
                                 VALE_K    = 'NM105',
                                ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -262,7 +262,7 @@ DEP4 = CALC_TABLE(TABLE = DEP,
                                 VALE_K    = 'NPX5',
                                ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -278,7 +278,7 @@ DEP5 = CALC_TABLE(TABLE = DEP,
                                 VALE_K    = 'NM8C',
                                ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -294,7 +294,7 @@ DEP6 = CALC_TABLE(TABLE = DEP,
                                 VALE_K    = 'NP6I',
                                ),
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -304,4 +304,4 @@ TEST_TABLE(CRITERE='RELATIF',
            NOM_PARA='DZ',
            TABLE=DEP6,)
 
-FIN();
+FIN()

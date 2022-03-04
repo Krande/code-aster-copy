@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                             9., 0.38,
                             10., 0.40,),
                       PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
+                      PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(
                              DEBUT=0.,
@@ -1016,4 +1016,4 @@ TEST_TABLE(PRECISION=1.E-2,
                      VALE_I=10,),
            )
 
-FIN();
+FIN()

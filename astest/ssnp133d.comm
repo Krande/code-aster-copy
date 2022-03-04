@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ Gc = 200.
 Sc = 2.E5
 pena_adh = 1.E-3
 
-MA = LIRE_MAILLAGE(FORMAT='MED');
+MA = LIRE_MAILLAGE(FORMAT='MED')
 
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
@@ -53,7 +53,7 @@ MA = DEFI_GROUP(reuse = MA,
           _F(NOM = 'N_INF',GROUP_NO = 'NINF'),
           _F(NOM = 'N_SUP',GROUP_NO = 'NSUP'),
          ),
-       );
+       )
 
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
@@ -102,16 +102,16 @@ CHMAT = AFFE_MATERIAU(
 RIGIDE = AFFE_CHAR_MECA(
   MODELE   = MO,
   DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0.0),
-  );
+  )
 
-fyi=1.0;
+fyi=1.0
 # EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
 TRACTION = AFFE_CHAR_MECA(
   MODELE = MO,
   FORCE_CONTOUR = (_F(GROUP_MA = 'FACE_SUP', FY = fyi),
                    _F(GROUP_MA = 'FACE_INF', FY = -fyi),
                    ),
-  );
+  )
 
 SYMETRIE = AFFE_CHAR_MECA(
   MODELE        = MO,
@@ -123,7 +123,7 @@ SYMETRIE = AFFE_CHAR_MECA(
                     COEF_MULT_2 = 1.,
                     COEF_IMPO=0.),
   )
-  
+
 #--------------------------------------------------------------
 # REALISATION DU CALCUL
 #--------------------------------------------------------------
@@ -132,7 +132,7 @@ INST0 = DEFI_LIST_REEL(
                           DEBUT = 0.,
                           INTERVALLE = (_F(JUSQU_A =  1, NOMBRE = 2)),
                           )
-                          
+
 FONC0 = DEFI_FONCTION(NOM_PARA = 'INST',
                       VALE     = (0, 0, 1, f[0]),
                       PROL_DROITE = 'LINEAIRE')
@@ -155,7 +155,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
                   SUBD_PAS_MINI = 1.E-8,
                   SUBD_NIVEAU=10,
                                  ))
-   
+
 inst=[]
 
 #SNL 0
@@ -203,11 +203,11 @@ EVOL = STAT_NON_LINE(reuse = EVOL,
              SOLVEUR = _F(METHODE = 'MUMPS',),
              ARCHIVAGE = _F(CHAM_EXCLU='VARI_ELGA')
         )
-        
+
 dico = EVOL.LIST_VARI_ACCES()
 l_inst = dico['INST']
 inst.append(l_inst[-1])
-                          
+
 # SNL 2
 EVOL = STAT_NON_LINE(reuse = EVOL,
              ETAT_INIT = _F(EVOL_NOLI = EVOL),
@@ -235,11 +235,11 @@ EVOL = STAT_NON_LINE(reuse = EVOL,
              SOLVEUR = _F(METHODE = 'MUMPS',),
              ARCHIVAGE = _F(CHAM_EXCLU='VARI_ELGA')
         )
-        
+
 dico = EVOL.LIST_VARI_ACCES()
 l_inst = dico['INST']
 inst.append(l_inst[-1])
-                                 
+
 # SNL 3
 EVOL = STAT_NON_LINE(reuse = EVOL,
              ETAT_INIT = _F(EVOL_NOLI = EVOL),
@@ -267,7 +267,7 @@ EVOL = STAT_NON_LINE(reuse = EVOL,
              SOLVEUR = _F(METHODE = 'MUMPS',),
              ARCHIVAGE = _F(CHAM_EXCLU='VARI_ELGA')
         )
-        
+
 dico = EVOL.LIST_VARI_ACCES()
 l_inst = dico['INST']
 inst.append(l_inst[-1])
@@ -316,7 +316,7 @@ lU=TAB_U.EXTR_TABLE().values()['DY']
 
 f_vs_ouv=CREA_TABLE(LISTE=(_F(LISTE_R=lU,PARA='Deplacement'),
                            _F(LISTE_R =lF,PARA='Force')))
-           
+
 IMPR_TABLE(FORMAT='NUMPY',
            TABLE=f_vs_ouv,
            UNITE=9,)

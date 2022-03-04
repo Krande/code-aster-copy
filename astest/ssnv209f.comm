@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 OPTION='PLAN',
                                 POINT=(0.,0.,0.),
                                 VECT_NORMALE=(0.,1.,0.),
-                                PRECISION=1.E-6,),),);
+                                PRECISION=1.E-6,),),)
 
 #----------------------------------------------
 #                   MODELE
@@ -59,22 +59,22 @@ MA=DEFI_GROUP(reuse =MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT = 'OUI',
                        PHENOMENE = 'MECANIQUE',
-                       MODELISATION = '3D',),);
+                       MODELISATION = '3D',),)
 
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=(_F(GROUP_MA_PEAU = 'SPRESV',),
                                _F(GROUP_MA_PEAU = 'SPRESH',),
                                _F(GROUP_MA_PEAU = 'SBATI',),
-                               _F(GROUP_MA_PEAU = 'SBLOCX',),),);
+                               _F(GROUP_MA_PEAU = 'SBLOCX',),),)
 
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
 
-MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,NU = 0.2,),);
+MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,NU = 0.2,),)
 
-MATBAT=DEFI_MATERIAU(ELAS=_F(E = 1.E16,NU = 0.0,),);
+MATBAT=DEFI_MATERIAU(ELAS=_F(E = 1.E16,NU = 0.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA ='MTOT',
@@ -91,7 +91,7 @@ CHCINE=AFFE_CHAR_MECA(MODELE=MO,
                                 DX=0.,
                                 DY=0.,
                                 DZ=0.),
-                           ),);
+                           ),)
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA = 'SPRESV',
@@ -108,7 +108,7 @@ FCTPRES = FORMULE(VALE='pr(Y)',
 
 CHAF=AFFE_CHAR_MECA_F(MODELE=MO,
                       PRES_REP=_F(GROUP_MA = ('SPRESH','SBLOCX',),
-                                  PRES=FCTPRES,),);
+                                  PRES=FCTPRES,),)
 
 
 CHA2 = DEFI_CONTACT(MODELE         = MO,
@@ -135,7 +135,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              COULOMB       = 1.0,
                              ),
                           ),
-                   );
+                   )
 
 
 #----------------------------------------------
@@ -190,7 +190,7 @@ DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
                                NOM_CHAM='DEPL',
                                INST=1.0,
                                TOUT_CMP='OUI',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
 TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               GROUP_NO='RELEVE',
@@ -198,10 +198,10 @@ TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               NOM_CHAM='CONT_NOEU',
                               INST=1.0,
                               TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
 
-IMPR_TABLE(TABLE=DEPLAC,);
-IMPR_TABLE(TABLE=TCONT,);
+IMPR_TABLE(TABLE=DEPLAC,)
+IMPR_TABLE(TABLE=TCONT,)
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE  = 'DEPLACEMENT',
                             GROUP_NO  = 'NFISSU',
@@ -209,9 +209,9 @@ DEP=POST_RELEVE_T(ACTION=_F(INTITULE  = 'DEPLACEMENT',
                             NOM_CHAM  = 'DEPL',
                             INST      = 1.,
                             TOUT_CMP  ='OUI',
-                            OPERATION = 'EXTRACTION',),);
+                            OPERATION = 'EXTRACTION',),)
 
-IMPR_TABLE(TABLE=DEP,);
+IMPR_TABLE(TABLE=DEP,)
 
 #----------------------------------------------
 #                   TEST TABLE

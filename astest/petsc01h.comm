@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,39 +19,39 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-       DEBUG=_F(SDVERI='OUI'),);
+       DEBUG=_F(SDVERI='OUI'),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
                DISTRIBUTION=_F(METHODE='MAIL_CONTIGU',),
-               );
+               )
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
                           NU=0.3,
-                          RHO=1.e-1,),);
+                          RHO=1.e-1,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='GRNO7',
                                  DX=0.0,
-                                 DY=0.01,),);
+                                 DY=0.01,),)
 
 CHA2=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=(_F(GROUP_NO='GRNO1',
                                  DZ=0.0,),
                               _F(GROUP_NO='GRNO8',
-                                 DY=0.0,),),);
+                                 DY=0.0,),),)
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=2,),);
+                                  NOMBRE=2,),)
 
 EVOL=DYNA_NON_LINE(MODELE=MO,
                    INFO=1,
@@ -67,7 +67,7 @@ EVOL=DYNA_NON_LINE(MODELE=MO,
                    SOLVEUR=_F(METHODE='PETSC',
                               ALGORITHME='FGMRES',
                               PRE_COND='LDLT_SP',
-                              PCENT_PIVOT=20,),);
+                              PCENT_PIVOT=20,),)
 
 TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    NUME_ORDRE=2,
@@ -113,6 +113,6 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    VALE_CALC=-3.22055868665E-05,
                    VALE_REFE=-3.2205586901003E-05,
                    PRECISION=0.00015,
-                   REFERENCE='NON_DEFINI',),),);
+                   REFERENCE='NON_DEFINI',),),)
 
-FIN();
+FIN()

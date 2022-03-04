@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 # Copyright (C) 2019 Aether Engineering Solutions - www.aethereng.com
 # Copyright (C) 2019 Kobe Innovation Engineering - www.kobe-ie.com
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -205,7 +205,7 @@ TEST_TABLE(  TABLE=tbcoup1,
              NOM_PARA='N',
              VALE_CALC=5999996.918069465,
              VALE_REFE=effortNormal,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup1,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -267,7 +267,7 @@ TEST_TABLE(  TABLE=tbcoup1,
              NOM_PARA='N',
              VALE_CALC=5999999.989004114,
              VALE_REFE=effortNormal,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup1,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -352,7 +352,7 @@ TEST_TABLE(  TABLE=tbcoup2,
              VALE_REFE=0.0,
              ORDRE_GRANDEUR=1.E-6,
              PRECISION=1.E-6,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup2,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -417,7 +417,7 @@ TEST_TABLE(  TABLE=tbcoup2,
              VALE_REFE=0.0,
              ORDRE_GRANDEUR=1E-6,
              PRECISION=1E-6,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbcoup2,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -495,7 +495,7 @@ TEST_TABLE(  TABLE=tbextr1,
              NOM_PARA='NXY',
              VALE_CALC=-300.13757617991877,
              VALE_REFE=3.*cisaillementPL/(2*H),
-             );
+             )
 
 TEST_TABLE(  TABLE=tbextr1,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -510,7 +510,7 @@ TEST_TABLE(  TABLE=tbextr1,
              VALE_CALC=2010.0207531416586,
              VALE_REFE=effortNormal/H,
              PRECISION=1.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbextr1,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -526,7 +526,7 @@ TEST_TABLE(  TABLE=tbextr1,
              VALE_CALC=-1.9857910079889354E-10,
              VALE_REFE=0.0,
              PRECISION=1.E-6,
-            );
+            )
 
 TEST_TABLE(  TABLE=tbextr1,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -542,7 +542,7 @@ TEST_TABLE(  TABLE=tbextr1,
              VALE_CALC=-2.2128155426823603E-14,
              VALE_REFE=0.0,
              PRECISION=1.E-6,
-             );
+             )
 
 # ------------------------- #
 # TEST COUPE 3.15 m, ch2
@@ -569,7 +569,7 @@ TEST_TABLE(  TABLE=tbextr2,
              VALE_CALC=5.550330362483553E-15,
              VALE_REFE=0.0,
              PRECISION=1.E-6,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbextr2,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -586,7 +586,7 @@ TEST_TABLE(  TABLE=tbextr2,
              VALE_REFE=0.0,
              ORDRE_GRANDEUR=1.E-6,
              PRECISION=1.E-6,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbextr2,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -601,7 +601,7 @@ TEST_TABLE(  TABLE=tbextr2,
              VALE_CALC=-293338.8205064163,
              VALE_REFE=momentHP_d2/H,
              PRECISION=1.E-2,
-             );
+             )
 
 TEST_TABLE(  TABLE=tbextr2,
              FILTRE=(_F(NOM_PARA='INTITULE',
@@ -616,6 +616,6 @@ TEST_TABLE(  TABLE=tbextr2,
              VALE_CALC=-32.22488838150452,
              VALE_REFE=cisaillementHP/H,
              PRECISION=4E-2,
-            );
+            )
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,12 +62,12 @@ CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
 CARE=AFFE_CARA_ELEM(MODELE=MO,
                     COQUE=_F(GROUP_MA='TOUT',
                              COQUE_NCOU=2,
-                             EPAIS=1.0,),);
+                             EPAIS=1.0,),)
 
 CARETHE=AFFE_CARA_ELEM(MODELE=MOTHER,
                        COQUE=_F(GROUP_MA='TOUT',
                                 COQUE_NCOU=2,
-                                EPAIS=1.0,),);
+                                EPAIS=1.0,),)
 
 CHTHE=AFFE_CHAR_THER(
             MODELE=MOTHER,
@@ -100,12 +100,12 @@ TEMPHOM=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 TEMPLIN=THER_LINEAIRE(MODELE=MOTHER,
                       CHAM_MATER=CHMATHE,
                       CARA_ELEM=CARETHE,
-                      EXCIT=_F( CHARGE = CHTHE),);
+                      EXCIT=_F( CHARGE = CHTHE),)
 
 TEMPLI2=THER_LINEAIRE(MODELE=MOTHER,
                       CHAM_MATER=CHMATHE,
                       CARA_ELEM=CARETHE,
-                      EXCIT=_F( CHARGE = CHTH2),);
+                      EXCIT=_F( CHARGE = CHTH2),)
 
 CREA_RESU( reuse=TEMPLI2,  RESULTAT=TEMPLI2,
            OPERATION='AFFE', TYPE_RESU='EVOL_THER',
@@ -151,7 +151,7 @@ CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
 DEPLPES=MECA_STATIQUE(MODELE=MO,
                       CARA_ELEM=CARE,
                       CHAM_MATER=CHMAT,
-                      EXCIT=_F( CHARGE = CHPES),);
+                      EXCIT=_F( CHARGE = CHPES),)
 
 DEPLPES=CALC_CHAMP(reuse=DEPLPES,RESULTAT=DEPLPES,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
 
@@ -159,11 +159,11 @@ DEPLPES=CALC_CHAMP(reuse=DEPLPES,RESULTAT=DEPLPES,CONTRAINTE=('EFGE_ELNO','SIGM_
 DPES2=POST_CHAMP(RESULTAT=DEPLPES,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='INF',),);
+                               NIVE_COUCHE='INF',),)
 DEPLDIL=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT1,
                       CARA_ELEM=CARE,
-                      EXCIT=_F( CHARGE = CHDIL),);
+                      EXCIT=_F( CHARGE = CHDIL),)
 
 DEPLDIL=CALC_CHAMP(reuse=DEPLDIL,RESULTAT=DEPLDIL,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
 
@@ -171,11 +171,11 @@ DEPLDIL=CALC_CHAMP(reuse=DEPLDIL,RESULTAT=DEPLDIL,CONTRAINTE=('EFGE_ELNO','SIGM_
 DDIL2=POST_CHAMP(RESULTAT=DEPLDIL,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='INF',),);
+                               NIVE_COUCHE='INF',),)
 DEPLDIL2=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT1,
                        CARA_ELEM=CARE,
-                       EXCIT=_F(CHARGE=CHDIL),);
+                       EXCIT=_F(CHARGE=CHDIL),)
 
 DEPLDIL2=CALC_CHAMP(reuse=DEPLDIL2,RESULTAT=DEPLDIL2,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
 
@@ -183,11 +183,11 @@ DEPLDIL2=CALC_CHAMP(reuse=DEPLDIL2,RESULTAT=DEPLDIL2,CONTRAINTE=('EFGE_ELNO','SI
 DDIL22=POST_CHAMP(RESULTAT=DEPLDIL2,
                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=2,
-                                NIVE_COUCHE='SUP',),);
+                                NIVE_COUCHE='SUP',),)
 DEPLDI2=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT2,
                       CARA_ELEM=CARE,
-                      EXCIT=_F( CHARGE = CHDIL),);
+                      EXCIT=_F( CHARGE = CHDIL),)
 
 DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,RESULTAT=DEPLDI2,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
 
@@ -195,7 +195,7 @@ DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,RESULTAT=DEPLDI2,CONTRAINTE=('EFGE_ELNO','SIGM_
 DDI22=POST_CHAMP(RESULTAT=DEPLDI2,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='INF',),);
+                               NIVE_COUCHE='INF',),)
 #---------------------------------------------------------------------
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',

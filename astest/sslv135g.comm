@@ -47,7 +47,7 @@ CUBE = DEFI_GROUP( reuse = CUBE,
                         _F(GROUP_MA='FACE6',
                            CRIT_NOEUD='TOUS')),
                          MAILLAGE=CUBE,
-               );
+               )
 
 CUBE = DEFI_GROUP( reuse = CUBE,
                    ALARME='OUI',
@@ -77,7 +77,7 @@ CUBE = DEFI_GROUP( reuse = CUBE,
                                   GROUP_NO='FACE6',
                                   NOM='FACE6_3D')),
                     MAILLAGE=CUBE,
-               );
+               )
 
 TROISD = AFFE_MODELE ( MAILLAGE = CUBE,
                        AFFE = _F( PHENOMENE    = 'MECANIQUE',
@@ -90,7 +90,7 @@ TR_CS = AFFE_CHAR_MECA ( MODELE =  TROISD,
                DDL_IMPO   = ( _F( GROUP_NO= 'P3' , DZ=0.) ),
                   FORCE_FACE = ( _F( GROUP_MA= 'FACE4', FX=1.),
                                  _F( GROUP_MA= 'FACE1', FY=1.) )
-                             );
+                             )
 
 PHIZ = FORMULE(VALE=' acos(abs(VNM1Z))*180.0/pi ',
                NOM_PARA='VNM1Z',)
@@ -111,7 +111,7 @@ MAT   = AFFE_MATERIAU  ( MAILLAGE = CUBE,
 
 LINST = DEFI_LIST_REEL ( DEBUT =  0.,
                          INTERVALLE =_F (JUSQU_A= 2.0, NOMBRE = 2 )
-                          );
+                          )
 
 NBALP = 23
 ALP   = [None]*NBALP
@@ -158,7 +158,7 @@ MAT2   = AFFE_MATERIAU  ( MAILLAGE = CUBE,
 
 LINST2 = DEFI_LIST_REEL ( DEBUT =  0.,
                           INTERVALLE = _F (JUSQU_A= 2.0, NOMBRE = 10 )
-                          );
+                          )
 
 NBALP2 = 5
 ALP2   = [None]*NBALP2
@@ -166,7 +166,7 @@ COEF2  = [None]*NBALP2
 SONL   = [None]*NBALP2
 
 for i in range(NBALP2):
-   ALP2[i] = i;
+   ALP2[i] = i
    COEF2[i] = DEFI_FONCTION ( NOM_PARA = 'INST',
                              PROL_DROITE = 'LINEAIRE',
                              PROL_GAUCHE = 'LINEAIRE',
@@ -255,7 +255,7 @@ for i in range(NBALP):
                                         GROUP_NO = 'N1',
                                         CHAM_GD = FATDC[i],
                                       NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                                        OPERATION='EXTRACTION',),);
+                                        OPERATION='EXTRACTION',),)
    TABDC[i] = CALC_TABLE( reuse = TABDC[i],
                                TABLE=TABDC[i],
                                ACTION = ( _F( OPERATION ='OPER',
@@ -285,7 +285,7 @@ for i in range(NBALP2):
                               GROUP_NO = 'N1',
                               CHAM_GD = FATDC2[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
    TABDC2[i] = CALC_TABLE(    reuse = TABDC2[i],
                               TABLE = TABDC2[i],
                               ACTION = ( _F( OPERATION ='OPER',
@@ -338,7 +338,7 @@ for i in range(NBALP):
                               GROUP_NO = 'N1',
                               CHAM_GD = FATMC[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
    TABMC[i] = CALC_TABLE(    reuse = TABMC[i],
                               TABLE = TABMC[i],
                               ACTION = ( _F( OPERATION ='OPER',
@@ -369,7 +369,7 @@ for i in range(NBALP2):
                               GROUP_NO = 'N1',
                               CHAM_GD = FATMC2[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
    TABMC2[i] = CALC_TABLE(    reuse = TABMC2[i],
                               TABLE = TABMC2[i],
                               ACTION = ( _F( OPERATION ='OPER',
@@ -429,7 +429,7 @@ for i in range(NBALP):
                               GROUP_NO = 'N1',
                               CHAM_GD = FATDV[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
    TABDV[i] = CALC_TABLE(    reuse = TABDV[i],
                               TABLE = TABDV[i],
                               ACTION = ( _F( OPERATION ='OPER',
@@ -459,7 +459,7 @@ for i in range(NBALP2):
                               GROUP_NO = 'N1',
                               CHAM_GD = FATDV2[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
    TABDV2[i] = CALC_TABLE(    reuse = TABDV2[i],
                               TABLE = TABDV2[i],
                               ACTION = ( _F( OPERATION ='OPER',
@@ -522,7 +522,7 @@ for i in range(1, NBALP):
                               GROUP_NO = 'N1',
                               CHAM_GD = FATMV[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
    TABMV[i] = CALC_TABLE(    reuse = TABMV[i],
                               TABLE = TABMV[i],
                               ACTION = ( _F( OPERATION ='OPER',
@@ -553,7 +553,7 @@ for i in range(1, NBALP2):
                                          GROUP_NO = 'N1',
                                          CHAM_GD = FATMV2[i],
                                        NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                                       OPERATION='EXTRACTION',),);
+                                       OPERATION='EXTRACTION',),)
    TABMV2[i] = CALC_TABLE(    reuse = TABMV2[i],
                               TABLE = TABMV2[i],
                               ACTION = ( _F(  OPERATION ='OPER',
@@ -634,7 +634,7 @@ for i in range(NBALP):
                               GROUP_NO = 'N1',
                               CHAM_GD = FATF[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
    TABF[i] = CALC_TABLE(    reuse = TABF[i],
                               TABLE = TABF[i],
                               ACTION = ( _F( OPERATION ='OPER',
@@ -664,7 +664,7 @@ for i in range(NBALP2):
                                              GROUP_NO = 'N1',
                                              CHAM_GD = FATF2[i],
                                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
-                                             OPERATION='EXTRACTION',),);
+                                             OPERATION='EXTRACTION',),)
    TABF2[i]= CALC_TABLE(reuse = TABF2[i],
                         TABLE = TABF2[i],
                         ACTION = ( _F( OPERATION ='OPER',

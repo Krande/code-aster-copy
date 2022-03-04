@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
 MA=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -51,7 +51,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('R1','R4','R7','R11','R15','R17','R23','R36','R38','R31',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 MODEL1=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=(_F(GROUP_MA=('E1','E3','E4','E6','E8','E9','E10','E11','E12','E14',
@@ -63,7 +63,7 @@ MODEL1=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('R1','R4','R7','R11','R15','R17',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 MODEL2=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=(_F(GROUP_MA=('E21','E22','E24','E25','E27','E28','E30','E31','E32','E33',
@@ -75,55 +75,55 @@ MODEL2=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('R23','R36','R38','R31',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 # -------------------------------------------------------------
 # CARACTERISTIQUES DES SECTIONS ET DES RAIDEURS
 # -------------------------------------------------------------
 #SEC1:
-R1 = 1.75;
+R1 = 1.75
 
-e1 = 0.216;
+e1 = 0.216
 
-rc1 = 4.5;
+rc1 = 4.5
 
-lambda1 = ((e1 * rc1) / ((R1 - (e1 / 2.0)) ** 2));
+lambda1 = ((e1 * rc1) / ((R1 - (e1 / 2.0)) ** 2))
 
-cflex1 = (1.65 / lambda1);
+cflex1 = (1.65 / lambda1)
 
 
 #SEC2:
-R2 = 2.25;
+R2 = 2.25
 
-e2 = 0.237;
+e2 = 0.237
 
-rc2 = 6.0;
+rc2 = 6.0
 
-lambda2 = ((e2 * rc2) / ((R2 - (e2 / 2.0)) ** 2));
+lambda2 = ((e2 * rc2) / ((R2 - (e2 / 2.0)) ** 2))
 
-cflex2 = (1.65 / lambda2);
+cflex2 = (1.65 / lambda2)
 
 
 #SEC3:
-R3 = 4.3125;
+R3 = 4.3125
 
-e3 = 0.322;
+e3 = 0.322
 
-rc3 = 12.0;
+rc3 = 12.0
 
-lambda3 = ((e3 * rc3) / ((R3 - (e3 / 2.0)) ** 2));
+lambda3 = ((e3 * rc3) / ((R3 - (e3 / 2.0)) ** 2))
 
-cflex3 = (1.65 / lambda3);
+cflex3 = (1.65 / lambda3)
 
 
 #RAIDEUR :
-raideur1 = 1e+20;
+raideur1 = 1e+20
 
-raideur2 = 100000000000.0;
+raideur2 = 100000000000.0
 
-raideur3 = 100000000.0;
+raideur3 = 100000000.0
 
-raideur4 = 100000.0;
+raideur4 = 100000.0
 
 
 #AFFECTATION :
@@ -163,7 +163,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
         _F(CARA='M_TR_D_L', GROUP_MA='R23', VALE=(0.,0.,0.,0.,),),
         _F(CARA='M_TR_D_L', GROUP_MA='R31', VALE=(0.,0.,0.,0.,),),
     ),
-);
+)
 
 CARA1=AFFE_CARA_ELEM(
     MODELE=MODEL1,
@@ -220,22 +220,22 @@ CARA2=AFFE_CARA_ELEM(
 # -------------------------------------------------------------
 # CARACTERISTIQUES MATERIAUX
 # -------------------------------------------------------------
-YOUNG = 29000000.0;
+YOUNG = 29000000.0
 
-POISSON = 0.3;
+POISSON = 0.3
 
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                            NU=POISSON,
-                           RHO=1.0429E-3,),);
+                           RHO=1.0429E-3,),)
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                            NU=POISSON,
-                           RHO=1.1073E-3,),);
+                           RHO=1.1073E-3,),)
 
 MAT3=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                            NU=POISSON,
-                           RHO=1.2901E-3,),);
+                           RHO=1.2901E-3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     MODELE=MODELE,
@@ -244,19 +244,19 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                           _F(GROUP_MA='SEC2',
                              MATER=MAT2,),
                           _F(GROUP_MA='SEC3',
-                             MATER=MAT3,),),);
+                             MATER=MAT3,),),)
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                      MODELE=MODEL1,
                      AFFE=_F(GROUP_MA='SEC1',
-                             MATER=MAT1,),);
+                             MATER=MAT1,),)
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                      MODELE=MODEL2,
                      AFFE=(_F(GROUP_MA='SEC2',
                               MATER=MAT2,),
                            _F(GROUP_MA='SEC3',
-                              MATER=MAT3,),),);
+                              MATER=MAT3,),),)
 
 # ANALYSE MODALE
 # -------------------------------------------------------------
@@ -268,7 +268,7 @@ SUPPORT=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DZ=0,
                                    DRX=0,
                                    DRY=0,
-                                   DRZ=0,),);
+                                   DRZ=0,),)
 
 ASSEMBLAGE(MODELE=MODELE,
            CHAM_MATER=CHMAT,
@@ -278,7 +278,7 @@ ASSEMBLAGE(MODELE=MODELE,
            MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('MASSE'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 
 MODECA=CALC_MODES(MATR_RIGI=RIGIDITE,
                   OPTION='BANDE',
@@ -301,7 +301,7 @@ SUPPOR1=AFFE_CHAR_MECA(MODELE=MODEL1,
                                     DZ=0,
                                     DRX=0,
                                     DRY=0,
-                                    DRZ=0,),),);
+                                    DRZ=0,),),)
 
 SUPPOR2=AFFE_CHAR_MECA(MODELE=MODEL2,
                        DDL_IMPO=(_F(GROUP_NO=('N36B','N38B','N23B','N31B',),
@@ -317,7 +317,7 @@ SUPPOR2=AFFE_CHAR_MECA(MODELE=MODEL2,
                                     DZ=0,
                                     DRX=0,
                                     DRY=0,
-                                    DRZ=0,),),);
+                                    DRZ=0,),),)
 
 MACEL1=CREA_ELEM_SSD(MODELE=MODEL1,
                      CHAM_MATER=CHMAT1,
@@ -328,7 +328,7 @@ MACEL1=CREA_ELEM_SSD(MODELE=MODEL1,
                                   GROUP_NO='N21',),
                      BASE_MODALE=_F(TYPE='CLASSIQUE',),
                      CALC_FREQ=_F(OPTION='BANDE',
-                                  FREQ=(0.,32.,),),);
+                                  FREQ=(0.,32.,),),)
 
 MACEL2=CREA_ELEM_SSD(MODELE=MODEL2,
                      CHAM_MATER=CHMAT2,
@@ -339,7 +339,7 @@ MACEL2=CREA_ELEM_SSD(MODELE=MODEL2,
                                   GROUP_NO='N21',),
                      BASE_MODALE=_F(TYPE='CLASSIQUE',),
                      CALC_FREQ=_F(OPTION='BANDE',
-                                  FREQ=(0.,32.,),),);
+                                  FREQ=(0.,32.,),),)
 
 ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('MODEGE'),
                                NUME_DDL_GENE=CO('NUMEGE'),
@@ -352,7 +352,7 @@ ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('MODEGE'),
               LIAISON=_F(SOUS_STRUC_1='S11',
                          INTERFACE_1='N21_11',
                          SOUS_STRUC_2='S23',
-                         INTERFACE_2='N21_23',),);
+                         INTERFACE_2='N21_23',),)
 
 MODEGEN=CALC_MODES(MATR_RIGI=RIGGEN,
                    OPTION='BANDE',
@@ -365,11 +365,11 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODEGE,
                      SOUS_STRUC=(_F(NOM='S11',
                                     TOUT='OUI',),
                                  _F(NOM='S23',
-                                    TOUT='OUI',),),);
+                                    TOUT='OUI',),),)
 #
 #   RESTITUTION SUR MAILLAGE SQUELETTE
 MODSQEL=REST_SOUS_STRUC(RESU_GENE=MODEGEN,
-                        SQUELETTE=SQUEL,);
+                        SQUELETTE=SQUEL,)
 
 SQUEL = DEFI_GROUP( reuse = SQUEL, MAILLAGE = SQUEL,
                       CREA_GROUP_NO= (
@@ -493,7 +493,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODSQEL,
                    VALE_REFE=14.5074655891,
                    PRECISION=0.04,
                    REFERENCE='SOURCE_EXTERNE',
-                   VALE_CALC=14.9387206453,),),);
+                   VALE_CALC=14.9387206453,),),)
 
 
 # -------------------------------------------------------------
@@ -503,11 +503,11 @@ TEST_RESU(RESU=(_F(RESULTAT=MODSQEL,
 SPECTRE=LIRE_FONCTION(UNITE=21,
                       NOM_PARA='FREQ',
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 
 SRO=DEFI_NAPPE(NOM_PARA='AMOR',
                PARA=0.01,
-               FONCTION=SPECTRE,);
+               FONCTION=SPECTRE,)
 ###############################################################
 
 
@@ -522,7 +522,7 @@ ANA_A2=COMB_SISM_MODAL(MODE_MECA=MODECA,
                                 ECHELLE=386.4,),
                        MONO_APPUI='OUI',
                        COMB_MODE=_F(TYPE='CQC',),
-                       OPTION=('DEPL','ACCE_ABSOLU',),);
+                       OPTION=('DEPL','ACCE_ABSOLU',),)
 
 TEST_RESU(RESU=(_F(RESULTAT=ANA_A2,
                    NUME_ORDRE=1,
@@ -543,7 +543,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='N30',
-                   VALE_CALC=0.0082258901925,),),);
+                   VALE_CALC=0.0082258901925,),),)
 
 
 TEST_RESU(RESU=(_F(RESULTAT=ANA_A2,
@@ -565,7 +565,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2,
                    NOM_CHAM='ACCE_ABSOLU',
                    NOM_CMP='DX',
                    GROUP_NO='N30',
-                   VALE_CALC=177.079820668,),),);
+                   VALE_CALC=177.079820668,),),)
 
 
 ANA_A2_S=COMB_SISM_MODAL(MODE_MECA=MODSQEL,
@@ -575,7 +575,7 @@ ANA_A2_S=COMB_SISM_MODAL(MODE_MECA=MODSQEL,
                                   ECHELLE=386.4,),
                          MONO_APPUI='OUI',
                          COMB_MODE=_F(TYPE='CQC',),
-                         OPTION=('DEPL','ACCE_ABSOLU',),);
+                         OPTION=('DEPL','ACCE_ABSOLU',),)
 
 TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    NUME_ORDRE=1,
@@ -603,7 +603,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    VALE_REFE=0.00825,
                    PRECISION=0.05,
                    REFERENCE='AUTRE_ASTER',
-                   VALE_CALC=0.00785627009058,),),);
+                   VALE_CALC=0.00785627009058,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    NUME_ORDRE=1,
@@ -631,10 +631,10 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    VALE_REFE=177.284,
                    PRECISION=0.04,
                    REFERENCE='AUTRE_ASTER',
-                   VALE_CALC=170.986032732,),),);
+                   VALE_CALC=170.986032732,),),)
 
 IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=ANA_A2,),
-                _F(RESULTAT=ANA_A2_S,),),);
+                _F(RESULTAT=ANA_A2_S,),),)
 
-FIN();
+FIN()

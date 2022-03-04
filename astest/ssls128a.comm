@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,12 +52,12 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                   GROUP_NO_CENTRE='N62',
                                   VECT_NORMALE=(1.0,0.0,),
                                   PRECISION=0.2,),),
-                INFO=2,);
+                INFO=2,)
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=(_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DKT',),),);
+                         MODELISATION='DKT',),),)
 
 CARBONE=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=59000,
                                    E_T=59000,
@@ -67,14 +67,14 @@ CARBONE=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=59000,
                                    XC=-475.0,
                                    YT=560,
                                    YC=-475,
-                                   S_LT=48,),);
+                                   S_LT=48,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MOD,
 #                    COQUE=_F(GROUP_MA='GM170',
                    COQUE=_F(GROUP_MA='TOUT',
                              EPAIS=4.48,
                              COQUE_NCOU=16,
-                             ANGL_REP=(0.0,0.0,),),);
+                             ANGL_REP=(0.0,0.0,),),)
 
 COMPO=DEFI_COMPOSITE(COUCHE=(_F(EPAIS=0.28,
                                 MATER=CARBONE,
@@ -124,11 +124,11 @@ COMPO=DEFI_COMPOSITE(COUCHE=(_F(EPAIS=0.28,
                              _F(EPAIS=0.28,
                                 MATER=CARBONE,
                                 ORIENTATION=0.0,),),
-                     IMPRESSION=_F(UNITE=8),);
+                     IMPRESSION=_F(UNITE=8),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
-                               MATER=COMPO,),);
+                               MATER=COMPO,),)
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MOD,
                        DDL_IMPO=(_F(GROUP_NO='N1',
@@ -140,12 +140,12 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MOD,
                                  _F(GROUP_NO='GAUCHE',
                                     DX=0.0,),),
                        FORCE_ARETE=_F(GROUP_MA='DROITE',
-                                      FX=-784,),);
+                                      FX=-784,),)
 
 RESU=MECA_STATIQUE(MODELE=MOD,
                    CHAM_MATER=CHAMPMAT,
                    CARA_ELEM=CARA,
-                   EXCIT=_F(CHARGE=CONDLIM,),);
+                   EXCIT=_F(CHARGE=CONDLIM,),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
@@ -153,7 +153,7 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 RESU1=POST_CHAMP(RESULTAT=RESU,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='INF',),);
+                               NIVE_COUCHE='INF',),)
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU1,
@@ -183,7 +183,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 RESU2=POST_CHAMP(RESULTAT=RESU,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=2,
-                               NIVE_COUCHE='INF',),);
+                               NIVE_COUCHE='INF',),)
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU2,
@@ -210,4 +210,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_MA='M49',),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-mailcol=LIRE_MAILLAGE(FORMAT="MED",UNITE=20);
+mailcol=LIRE_MAILLAGE(FORMAT="MED",UNITE=20)
 
 #
 #-----------------------------
@@ -55,23 +55,23 @@ linst = DEFI_LIST_REEL ( DEBUT = 0.,
                                          PAS=1*dt,
                                          ),
                                        ),
-                           );
+                           )
 
 ACCEX=CALC_FONCTION(COMB=_F(FONCTION=LBNS,
                                COEF=1.5,),
-                       LIST_PARA=linst,);
+                       LIST_PARA=linst,)
 
 ACCEXL=CALC_FONCTION(COMB=_F(FONCTION=ACCEX,
                             COEF=1.e-6,),
-               LIST_PARA=linst,); 
+               LIST_PARA=linst,)
 
 ACCEY=CALC_FONCTION(COMB=_F(FONCTION=LBEW,
                                COEF=1.5,),
-                       LIST_PARA=linst,);
+                       LIST_PARA=linst,)
 
-vitex=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEX,));
+vitex=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEX,))
 
-deplx0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitex,));
+deplx0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitex,))
 
 deplxF = FORMULE(VALE='deplx0(INST)-(INST*deplx0(TFIN-dt)/(TFIN-dt))',
                  deplx0=deplx0,
@@ -82,11 +82,11 @@ deplxF = FORMULE(VALE='deplx0(INST)-(INST*deplx0(TFIN-dt)/(TFIN-dt))',
 deplx=CALC_FONC_INTERP(FONCTION=deplxF, NOM_PARA = 'INST',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=linst);
+                        LIST_PARA=linst)
 
-vitey=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEY,));
+vitey=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEY,))
 
-deply0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitey,));
+deply0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitey,))
 
 deplyF = FORMULE(VALE='deply0(INST)-(INST*deply0(TFIN-dt)/(TFIN-dt))',
                  deply0=deply0,
@@ -97,7 +97,7 @@ deplyF = FORMULE(VALE='deply0(INST)-(INST*deply0(TFIN-dt)/(TFIN-dt))',
 deply=CALC_FONC_INTERP(FONCTION=deplyF, NOM_PARA = 'INST',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=linst);
+                        LIST_PARA=linst)
 
 freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
                           INTERVALLE = (
@@ -114,13 +114,13 @@ freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
                                          NOMBRE = 65,
                                        ),
                                        ),
-                           );
-                           
-                           
+                           )
+
+
 labsr = DEFI_LIST_REEL ( VALE=(0.000001, 0.000005, 0.000015, 0.00005,
                                  0.0001, 0.0004, 0.001, 0.004, 0.01),
-                           );
-                           
+                           )
+
 lfreqc = DEFI_LIST_REEL(DEBUT=0.15,
                           INTERVALLE=_F(PAS=0.15,
                                         JUSQU_A=8.4,),
@@ -244,14 +244,14 @@ tabsol2= DEFI_SOL_EQUI(MAILLAGE=mailcol,
                        LIST_FREQ_SPEC_OSCI=freqspec,
                        SURF='OUI',
                        FREQ_COUP=9.5,
-                       COEF_AMPL_ACCE=1.);
+                       COEF_AMPL_ACCE=1.)
 
-IMPR_TABLE(TABLE=tabsol2);
+IMPR_TABLE(TABLE=tabsol2)
 
 T_resu2=LIRE_TABLE(UNITE=25,
                FORMAT='TABLEAU',
                NUME_TABLE=1,
-               TITRE='',);
+               TITRE='',)
 
 # test valeurs G/Gmax
 # comparaison résultats entre modélisations ONDE_PLANE et MONO_APPUI (zzzz412a)
@@ -263,7 +263,7 @@ TEST_TABLE(  TABLE=T_resu2,
                        CRITERE='RELATIF',
                        ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=7.01518E-01, 
+             VALE_REFE=7.01518E-01,
              VALE_CALC=(0.69929217, ),
              PRECISION=0.02,
              CRITERE='RELATIF',
@@ -276,7 +276,7 @@ TEST_TABLE(  TABLE=T_resu2,
                        CRITERE='RELATIF',
                        ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=6.57171E-01, 
+             VALE_REFE=6.57171E-01,
              VALE_CALC=(0.65687733, ),
              PRECISION=0.02,
              CRITERE='RELATIF',
@@ -291,7 +291,7 @@ TEST_TABLE(  TABLE=T_resu2,
                        CRITERE='RELATIF',
                        ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=5.76934E-02, 
+             VALE_REFE=5.76934E-02,
              VALE_CALC=(0.057817102, ),
              PRECISION=0.02,
              CRITERE='RELATIF',
@@ -304,7 +304,7 @@ TEST_TABLE(  TABLE=T_resu2,
                        CRITERE='RELATIF',
                        ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=6.88408E-02, 
+             VALE_REFE=6.88408E-02,
              VALE_CALC=(0.068868826, ),
              PRECISION=0.02,
              CRITERE='RELATIF',
@@ -319,7 +319,7 @@ TEST_TABLE(  TABLE=T_resu2,
                        CRITERE='RELATIF',
                        ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=5.01924E-04, 
+             VALE_REFE=5.01924E-04,
              VALE_CALC=(0.00049728128, ),
              PRECISION=0.02,
              CRITERE='RELATIF',
@@ -332,11 +332,11 @@ TEST_TABLE(  TABLE=T_resu2,
                        CRITERE='RELATIF',
                        ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=3.42543E-04, 
+             VALE_REFE=3.42543E-04,
              VALE_CALC=(0.00034269659,),
              PRECISION=0.1,
              TOLE_MACHINE=1.3E-6,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 
-FIN();
+FIN()

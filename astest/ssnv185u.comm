@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ h = 15.
 #                MAILLAGE
 #----------------------------------------------
 
-MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
 MAILLAGE= COPIER(CONCEPT= MAILLAG2)
 
@@ -63,7 +63,7 @@ MAILLAG2=DEFI_GROUP(reuse=MAILLAG2,
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=(_F(NOM='VOLQUAD',GROUP_MA='VOL'),
-                                   _F(NOM='NFISSU',OPTION='PLAN',POINT=(0.,h),VECT_NORMALE=(0.,1.),PRECISION=0.01)));
+                                   _F(NOM='NFISSU',OPTION='PLAN',POINT=(0.,h),VECT_NORMALE=(0.,1.),PRECISION=0.01)))
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -75,12 +75,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='D_PLAN'),
                            _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN')));
+                              MODELISATION='D_PLAN')))
 
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF')),
-                       );
+                       )
 
 LN = FORMULE(VALE='Y-h',
              h=h,
@@ -91,12 +91,12 @@ LT = FORMULE(VALE='-X+a',
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
-                    );
+                    )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='STANDARD',
-                         INFO=1);
+                         INFO=1)
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
@@ -108,7 +108,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                CONTACT_INIT = 'OUI',
                              ),
                          ),
-                   );
+                   )
 
 #----------------------------------------------
 #                   MATERIAU
@@ -117,13 +117,13 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho))
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER),
-                             );
+                             )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -144,18 +144,18 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                    COEF_IMPO=0.0),
                                ),
                    INFO=2
-                  );
+                  )
 
 # PRESSION POSITIVE = COMPRESSION
 PRES=1.E6
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES));
+                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES))
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3));
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3))
 #MATRICE QUASI-SINGULIERE, NE FONCTIONNE QU'AVEC MUMPS
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
@@ -170,7 +170,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    SOLVEUR=_F(METHODE='MUMPS',NPREC=-1),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
-                   INFO=1);
+                   INFO=1)
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -192,7 +192,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 IMPR_RESU(FORMAT='MED',
           #RESU=_F(MAILLAGE=MAILLAG2)
           RESU=_F(RESULTAT=RES_XFEM)
-         ) 
+         )
 
 PK=POST_K1_K2_K3(FISSURE=FISS,
                  RESULTAT=UTOT1,
@@ -214,7 +214,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 # solution analytique :
 #    - deplacement
-def uy(X,Y): 
+def uy(X,Y):
     return -PRES/E*(Y-h)
 
 UY = FORMULE(VALE='uy(X,Y)',
@@ -270,7 +270,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabNRJ,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=8.74962009694E-05,
@@ -278,7 +278,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabNRJ,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -288,7 +288,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=1.33151309798E-05,
@@ -296,5 +296,5 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
-FIN();
+           )
+FIN()

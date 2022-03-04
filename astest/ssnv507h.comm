@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 # QUADRANGLES, CONTACT OUI
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
-R  = 8.;
-R1 = 1.;
-R2 = 20.;
+R  = 8.
+R1 = 1.
+R2 = 20.
 
 MAILLAG2= COPIER(CONCEPT= MAILLAG)
 
@@ -38,7 +38,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                       OPTION ='ENV_SPHERE',
                                       POINT  = (0.0,0.0),
                                       RAYON = R1,
-                                      PRECISION = 2.0)));
+                                      PRECISION = 2.0)))
 
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
@@ -47,7 +47,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='D_PLAN'),
                            _F(GROUP_MA=('LB','LH','LG','LD'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN')));
+                              MODELISATION='D_PLAN')))
 
 LN = FORMULE(VALE='-X*X-Y*Y+R*R',
              R=R,
@@ -56,12 +56,12 @@ LN = FORMULE(VALE='-X*X-Y*Y+R*R',
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN),
-                    INFO=1);
+                    INFO=1)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='STANDARD',
-                         INFO=1);
+                         INFO=1)
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
@@ -80,25 +80,25 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_CONT    = 100.,
                               ),
                             )
-                    );
+                    )
 
 
 E=100.0E6
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0));
+                            RHO=7800.0))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT=('OUI'),
                                 MATER=ACIER,
-                                ));
+                                ))
 
 DTH=-pi/2.
 #DTH=0
 
-VAR1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,1.,1.,1.));
+VAR1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,1.,1.,1.))
 
 p=1.E6
 a=-(p/E)*( (R2*R2)/(R1*R1+R2*R2) )
@@ -115,7 +115,7 @@ uy = FORMULE(VALE='(a*sqrt(X*X+Y*Y)+b/sqrt(X*X+Y*Y))*sin(atan2(Y,X))',
 
 CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_MA=('LB','LG','LH','LD'),
-                                 DX=ux,DY=uy)));
+                                 DX=ux,DY=uy)))
 
 tournex = FORMULE(VALE='sqrt(X*X+Y*Y)*cos(atan2(Y,X)+DTH*INST)-X',
                   DTH=DTH,
@@ -127,11 +127,11 @@ tourney = FORMULE(VALE='sqrt(X*X+Y*Y)*sin(atan2(Y,X)+DTH*INST)-Y',
 
 ROT=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='INTER',
-                                 DX=tournex,DY=tourney)));
+                                 DX=tournex,DY=tourney)))
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1,
-                                    NOMBRE=4));
+                                    NOMBRE=4))
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -148,7 +148,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                   RESI_GLOB_RELA=1E-6)),
                    SOLVEUR=_F(METHODE='MUMPS',NPREC=-1),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
-                   INFO=1);
+                   INFO=1)
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
@@ -164,7 +164,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                 ))
 
 RES_XFEM=POST_CHAM_XFEM( MODELE_VISU  = MOD_VISU,
-                         RESULTAT        = UTOT1);
+                         RESULTAT        = UTOT1)
 
 #----------------------------------------------
 #                   POST RELEVE
@@ -188,7 +188,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                                  NOM_CHAM='DEPL',
                                  INST=inst[i],
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION'));
+                                 OPERATION='EXTRACTION'))
 
   LAG[i] = CALC_TABLE(TABLE = LAG[i],
                   reuse = LAG[i],
@@ -199,9 +199,9 @@ for i in [1,2,3,4]: #Boucle sur les increments
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'LAGS_C',
                                CRIT_COMP = 'NE',
-                               VALE      = 0)));
+                               VALE      = 0)))
 
-  IMPR_TABLE(TABLE=LAG[i]);
+  IMPR_TABLE(TABLE=LAG[i])
 
   TEST_TABLE(CRITERE='RELATIF',
              REFERENCE='ANALYTIQUE',
@@ -221,4 +221,4 @@ for i in [1,2,3,4]: #Boucle sur les increments
              TYPE_TEST='MIN',
              TABLE=LAG[i],)
 
-FIN();
+FIN()

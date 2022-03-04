@@ -36,7 +36,7 @@ MAIL.readMedFile("mesh004b/%d.med"%rank, True)
 MATER=DEFI_MATERIAU(ELAS=_F(E=10000.0,
                             NU=0.,
                             RHO=1.0,),
-                            );
+                            )
 
 affectMat = code_aster.MaterialField(MAIL)
 affectMat.addMaterialsOnMesh(MATER)
@@ -46,7 +46,7 @@ MODT=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='D_PLAN',),
-                 DISTRIBUTION=_F(METHODE='CENTRALISE',),);
+                 DISTRIBUTION=_F(METHODE='CENTRALISE',),)
 
 #MODT = code_aster.Model(MAIL))
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI',),)
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='TUYAU_3M',),);
+                       MODELISATION='TUYAU_3M',),)
 
 EP=AFFE_CARA_ELEM(MODELE=MO,
                   POUTRE=(_F(GROUP_MA='GR1',
@@ -41,14 +41,14 @@ EP=AFFE_CARA_ELEM(MODELE=MO,
                              TUYAU_NCOU = 2,),),
                   ORIENTATION=(_F(GROUP_MA='GR2',
                                   CARA='ANGL_VRIL',
-                                  VALE=30.0,),),);
+                                  VALE=30.0,),),)
 
 MAT1A=DEFI_MATERIAU(ELAS=_F(E=6800.0,
-                            NU=0.35,),);
+                            NU=0.35,),)
 
 CHMUL1=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT1A,),);
+                             MATER=MAT1A,),)
 
 CHME=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='N1',
@@ -60,33 +60,33 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                                  DRZ=0.0,),
                               _F(GROUP_NO='N5',
                                  DX=0.0707099974155,
-                                 DY=0.0707099974155,),),);
+                                 DY=0.0707099974155,),),)
 
 STA1=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMUL1,
                    CARA_ELEM=EP,
-                   EXCIT=_F(CHARGE=CHME,),);
+                   EXCIT=_F(CHARGE=CHME,),)
 
 # IMPR_RESU(FORMAT='MED',
 #           RESU=_F(RESULTAT=STA1,
 #                   #~ À rétablir en même temps que issue26562
 #                   #~ CARA_ELEM=EP,
-#                   ),);
+#                   ),)
 
 IMPR_RESU(FORMAT='MED',
           VERSION_MED='3.3.1',
           UNITE=80,
-          RESU=_F(RESULTAT=STA1,),);
+          RESU=_F(RESULTAT=STA1,),)
 
 IMPR_RESU(FORMAT='MED',
           VERSION_MED='4.0.0',
           UNITE=81,
-          RESU=_F(RESULTAT=STA1,),);
+          RESU=_F(RESULTAT=STA1,),)
 
 IMPR_RESU(FORMAT='MED',
           VERSION_MED='4.1.0',
           UNITE=82,
-          RESU=_F(RESULTAT=STA1,),);
+          RESU=_F(RESULTAT=STA1,),)
 
 # "DUMMY" TEST RESU
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -97,6 +97,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DY',
                    VALE_CALC=0.0707099974155,
                    VALE_REFE=0.0707099974155,
-                   PRECISION=5.0000000000000001E-3,),),);
+                   PRECISION=5.0000000000000001E-3,),),)
 
-FIN();
+FIN()

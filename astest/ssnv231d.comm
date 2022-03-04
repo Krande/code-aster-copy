@@ -19,7 +19,7 @@
 
 import math
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
 #Nombre de calculs : INCO_UPG (SM), INCO_UPG (GDEF_LOG), INCO_UP
 nb_calcul=3
@@ -65,32 +65,32 @@ RAYON = FORMULE(VALE='(COOR_X*COOR_X+COOR_Y*COOR_Y)**(0.5)',
 SOL_ANA=FORMULE(NOM_PARA=('RAYON'),
                 VALE='''
 (3.*(K*(1-(1-4.*SIGY/K*log(RAYON/RB_FIN))**0.5))+2.*SIGY)/exp(2.*SIGY/(3.*K)+1-(1-4.*SIGY/K*(log(RAYON/RB_FIN)))**0.5)''',
-                K=K, SIGY=SIGY, RB_FIN=RB_FIN);
+                K=K, SIGY=SIGY, RB_FIN=RB_FIN)
 INTEG=FORMULE(NOM_PARA=('RAYON'),
               VALE='''
 (3.*RAYON**2.)/(exp(2.*SIGY/(3.*K)+1-(1.-4.*SIGY/K*(log(RAYON/RB_FIN)))**0.5))''',
-              K=K, SIGY=SIGY, RB_FIN=RB_FIN);
+              K=K, SIGY=SIGY, RB_FIN=RB_FIN)
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA = _F(NOM='VOLUME',TOUT='OUI',TYPE_MAILLE='2D'),);
+              CREA_GROUP_MA = _F(NOM='VOLUME',TOUT='OUI',TYPE_MAILLE='2D'),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=E,
                           NU=NU,),
                   ECRO_LINE=_F(D_SIGM_EPSI=0.,
-                               SY=SIGY,),);
+                               SY=SIGY,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 LREEL=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=10,),);
+                                   NOMBRE=10,),)
 
-LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LREEL),);
+LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LREEL),)
 
 #for i in range(0,len(model)):
 for i in range(0,2):
@@ -98,17 +98,17 @@ for i in range(0,2):
     MO[i]=AFFE_MODELE(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION=model[i],),);
+                              MODELISATION=model[i],),)
 
     CHAR=AFFE_CHAR_MECA(MODELE=MO[i],
                         PRES_REP=_F(GROUP_MA='S_INT',
-                                    PRES=1,),);
+                                    PRES=1,),)
 
     CL=AFFE_CHAR_CINE(MODELE=MO[i],
                       MECA_IMPO=(_F(GROUP_MA='SYM_Y',
                                     DY=0,),
                                  _F(GROUP_MA='SYM_X',
-                                    DX=0,),),);
+                                    DX=0,),),)
 
     RESU[i]=STAT_NON_LINE(MODELE=MO[i],
                           CHAM_MATER=CHMAT,
@@ -127,44 +127,44 @@ for i in range(0,2):
                           CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                          EPSI_REFE=SIGY/E,
                                          SIGM_REFE=SIGY,
-                                         RESI_REFE_RELA=1.E-4,),);
+                                         RESI_REFE_RELA=1.E-4,),)
 
     DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=RESU[i],
                     NOM_CHAM='DEPL',
-                    INST=1,);
+                    INST=1,)
 
     MA=MODI_MAILLAGE(reuse=MA,
                      MAILLAGE=MA,
                      DEFORME=_F(OPTION='TRAN',
-                                DEPL=DEPL),);
+                                DEPL=DEPL),)
 
     RESU[i]=CALC_CHAMP(reuse=RESU[i],
                        RESULTAT=RESU[i],
                        CRITERES=('SIEQ_ELGA','SIEQ_NOEU'),
-                       CONTRAINTE=('SIEF_NOEU'),);
+                       CONTRAINTE=('SIEF_NOEU'),)
 
 #Calcul de la solution analytique
     SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU[i],
                    NOM_CHAM='SIEF_ELGA',
-                   INST=1,);
+                   INST=1,)
 
     P_N=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU[i],
                    NOM_CHAM='VARI_ELGA',
-                   INST=1,);
+                   INST=1,)
 
     TRESU=CREA_TABLE(RESU=_F(CHAM_GD=SIG,
                              TOUT_CMP='OUI',
-                             TOUT='OUI',),);
+                             TOUT='OUI',),)
 
     TRESUP=CREA_TABLE(RESU=_F(CHAM_GD=P_N,
                               NOM_CMP='V1',
-                              TOUT='OUI',),);
+                              TOUT='OUI',),)
 
     TRESU=CALC_TABLE(reuse=TRESU,
                      TABLE=TRESU,
@@ -184,7 +184,7 @@ for i in range(0,2):
                                 NOM_PARA=('V1','P_N'),),
                              _F(OPERATION='TRI',
                                 NOM_PARA='RAYON',
-                                ORDRE='CROISSANT',),),);
+                                ORDRE='CROISSANT',),),)
 
 #Pour calculer la solution analytique pour la déformation plastique cumulée
 #il faut et décommenter les lignes qui suivent
@@ -199,9 +199,9 @@ for i in range(0,2):
 #                             NOM_PARA='DX',
 #                            VALE_PARA=tval,
 #                             PROL_DROITE='EXCLU',
-#                             PROL_GAUCHE='EXCLU',);
+#                             PROL_GAUCHE='EXCLU',)
 #
-#    FINTEG=CALC_FONCTION(INTEGRE=_F(FONCTION=FAINTEG,),);
+#    FINTEG=CALC_FONCTION(INTEGRE=_F(FONCTION=FAINTEG,),)
 #
 #    rayon, finteg = FINTEG.Valeurs()
 #
@@ -216,20 +216,20 @@ for i in range(0,2):
 #    TRESUPA=CREA_TABLE(LISTE=(_F(LISTE_R=tval,
 #                                 PARA='RAYON',),
 #                              _F(LISTE_R=P_A,
-#                                 PARA='P_A',),),);
+#                                 PARA='P_A',),),)
 #
 #    TRESU=CALC_TABLE(reuse=TRESU,
 #                     TABLE=TRESU,
 #                     ACTION=_F(OPERATION='COMB',
 #                               TABLE=TRESUPA,
-#                               NOM_PARA='RAYON',),);
+#                               NOM_PARA='RAYON',),)
 #
 #    IMPR_TABLE(TABLE=TRESU,
 #               FORMAT_R='E12.10',
-#               NOM_PARA=('MAILLE','POINT','RAYON','SIH_N','SIH_A','P_N','P_A'),);
+#               NOM_PARA=('MAILLE','POINT','RAYON','SIH_N','SIH_A','P_N','P_A'),)
 #
 #    DETRUIRE(NOM=(TRESUPA,FINTEG,FAINTEG),
-#             INFO=1,);
+#             INFO=1,)
 
 #Fin des instructions pour calculer la solution analytique
 
@@ -240,7 +240,7 @@ for i in range(0,2):
                REFERENCE='ANALYTIQUE',
                VALE_REFE=SIH_A_RMIN[i],
                PRECISION=0.0065,
-               VALE_CALC=SIH_N_RMIN[i],);
+               VALE_CALC=SIH_N_RMIN[i],)
 
     TEST_TABLE(TABLE=TRESU,
                NOM_PARA='SIH_N',
@@ -249,7 +249,7 @@ for i in range(0,2):
                REFERENCE='ANALYTIQUE',
                VALE_REFE=SIH_A_RMAX[i],
                PRECISION=0.002,
-               VALE_CALC=SIH_N_RMAX[i],);
+               VALE_CALC=SIH_N_RMAX[i],)
 
     TEST_TABLE(TABLE=TRESU,
                NOM_PARA='P_N',
@@ -258,7 +258,7 @@ for i in range(0,2):
                REFERENCE='ANALYTIQUE',
                VALE_REFE=P_A_RMIN[i],
                PRECISION=0.32,
-               VALE_CALC=P_N_RMIN[i],);
+               VALE_CALC=P_N_RMIN[i],)
 
     TEST_TABLE(TABLE=TRESU,
                NOM_PARA='P_N',
@@ -267,37 +267,37 @@ for i in range(0,2):
                REFERENCE='ANALYTIQUE',
                VALE_REFE=P_A_RMAX[i],
                PRECISION=0.46,
-               VALE_CALC=P_N_RMAX[i],);
+               VALE_CALC=P_N_RMAX[i],)
 
     DEPLM=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                      OPERATION='COMB',
                      COMB=_F(CHAM_GD=DEPL,
-                             COEF_R=-1.0,),);
+                             COEF_R=-1.0,),)
 
     MA=MODI_MAILLAGE(reuse=MA,
                      MAILLAGE=MA,
                      DEFORME=_F(OPTION='TRAN',
-                                DEPL=DEPLM),);
+                                DEPL=DEPLM),)
 
     DETRUIRE(NOM=(P_N,CHAR,CL,DEPL,DEPLM,SIG,TRESU,TRESUP),
-             INFO=1,);
+             INFO=1,)
 
 for i in range(2,3):
 
     MO[i]=AFFE_MODELE(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION=model[i],),);
+                              MODELISATION=model[i],),)
 
     CHAR=AFFE_CHAR_MECA(MODELE=MO[i],
                         PRES_REP=_F(GROUP_MA='S_INT',
-                                    PRES=1,),);
+                                    PRES=1,),)
 
     CL=AFFE_CHAR_CINE(MODELE=MO[i],
                       MECA_IMPO=(_F(GROUP_MA='SYM_Y',
                                     DY=0,),
                                  _F(GROUP_MA='SYM_X',
-                                    DX=0,),),);
+                                    DX=0,),),)
 
     RESU[i]=STAT_NON_LINE(MODELE=MO[i],
                           CHAM_MATER=CHMAT,
@@ -316,44 +316,44 @@ for i in range(2,3):
                           CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                          EPSI_REFE=SIGY/E,
                                          SIGM_REFE=SIGY,
-                                         RESI_REFE_RELA=1.E-4,),);
+                                         RESI_REFE_RELA=1.E-4,),)
 
     DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=RESU[i],
                     NOM_CHAM='DEPL',
-                    INST=1,);
+                    INST=1,)
 
     MA=MODI_MAILLAGE(reuse=MA,
                      MAILLAGE=MA,
                      DEFORME=_F(OPTION='TRAN',
-                                DEPL=DEPL),);
+                                DEPL=DEPL),)
 
     RESU[i]=CALC_CHAMP(reuse=RESU[i],
                        RESULTAT=RESU[i],
                        CRITERES=('SIEQ_ELGA','SIEQ_NOEU'),
-                       CONTRAINTE=('SIEF_NOEU'),);
+                       CONTRAINTE=('SIEF_NOEU'),)
 
 #Calcul de la solution analytique
     SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU[i],
                    NOM_CHAM='SIEF_ELGA',
-                   INST=1,);
+                   INST=1,)
 
     P_N=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU[i],
                    NOM_CHAM='VARI_ELGA',
-                   INST=1,);
+                   INST=1,)
 
     TRESU=CREA_TABLE(RESU=_F(CHAM_GD=SIG,
                              TOUT_CMP='OUI',
-                             TOUT='OUI',),);
+                             TOUT='OUI',),)
 
     TRESUP=CREA_TABLE(RESU=_F(CHAM_GD=P_N,
                               NOM_CMP='V1',
-                              TOUT='OUI',),);
+                              TOUT='OUI',),)
 
     TRESU=CALC_TABLE(reuse=TRESU,
                      TABLE=TRESU,
@@ -373,7 +373,7 @@ for i in range(2,3):
                                 NOM_PARA=('V1','P_N'),),
                              _F(OPERATION='TRI',
                                 NOM_PARA='RAYON',
-                                ORDRE='CROISSANT',),),);
+                                ORDRE='CROISSANT',),),)
 
 #Pour calculer la solution analytique pour la déformation plastique cumulée
 #il faut et décommenter les lignes qui suivent
@@ -388,9 +388,9 @@ for i in range(2,3):
 #                             NOM_PARA='DX',
 #                            VALE_PARA=tval,
 #                             PROL_DROITE='EXCLU',
-#                             PROL_GAUCHE='EXCLU',);
+#                             PROL_GAUCHE='EXCLU',)
 #
-#    FINTEG=CALC_FONCTION(INTEGRE=_F(FONCTION=FAINTEG,),);
+#    FINTEG=CALC_FONCTION(INTEGRE=_F(FONCTION=FAINTEG,),)
 #
 #    rayon, finteg = FINTEG.Valeurs()
 #
@@ -405,20 +405,20 @@ for i in range(2,3):
 #    TRESUPA=CREA_TABLE(LISTE=(_F(LISTE_R=tval,
 #                                 PARA='RAYON',),
 #                              _F(LISTE_R=P_A,
-#                                 PARA='P_A',),),);
+#                                 PARA='P_A',),),)
 #
 #    TRESU=CALC_TABLE(reuse=TRESU,
 #                     TABLE=TRESU,
 #                     ACTION=_F(OPERATION='COMB',
 #                               TABLE=TRESUPA,
-#                               NOM_PARA='RAYON',),);
+#                               NOM_PARA='RAYON',),)
 #
 #    IMPR_TABLE(TABLE=TRESU,
 #               FORMAT_R='E12.10',
-#               NOM_PARA=('MAILLE','POINT','RAYON','SIH_N','SIH_A','P_N','P_A'),);
+#               NOM_PARA=('MAILLE','POINT','RAYON','SIH_N','SIH_A','P_N','P_A'),)
 #
 #    DETRUIRE(NOM=(TRESUPA,FINTEG,FAINTEG),
-#             INFO=1,);
+#             INFO=1,)
 #
 
 #Fin des instructions pour calculer la solution analytique
@@ -430,7 +430,7 @@ for i in range(2,3):
                REFERENCE='ANALYTIQUE',
                VALE_REFE=SIH_A_RMIN[i],
                PRECISION=0.0065,
-               VALE_CALC=SIH_N_RMIN[i],);
+               VALE_CALC=SIH_N_RMIN[i],)
 
     TEST_TABLE(TABLE=TRESU,
                NOM_PARA='SIH_N',
@@ -439,7 +439,7 @@ for i in range(2,3):
                REFERENCE='ANALYTIQUE',
                VALE_REFE=SIH_A_RMAX[i],
                PRECISION=0.002,
-               VALE_CALC=SIH_N_RMAX[i],);
+               VALE_CALC=SIH_N_RMAX[i],)
 
     TEST_TABLE(TABLE=TRESU,
                NOM_PARA='P_N',
@@ -448,7 +448,7 @@ for i in range(2,3):
                REFERENCE='ANALYTIQUE',
                VALE_REFE=P_A_RMIN[i],
                PRECISION=0.32,
-               VALE_CALC=P_N_RMIN[i],);
+               VALE_CALC=P_N_RMIN[i],)
 
     TEST_TABLE(TABLE=TRESU,
                NOM_PARA='P_N',
@@ -457,19 +457,19 @@ for i in range(2,3):
                REFERENCE='ANALYTIQUE',
                VALE_REFE=P_A_RMAX[i],
                PRECISION=0.46,
-               VALE_CALC=P_N_RMAX[i],);
+               VALE_CALC=P_N_RMAX[i],)
 
     DEPLM=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                      OPERATION='COMB',
                      COMB=_F(CHAM_GD=DEPL,
-                             COEF_R=-1.0,),);
+                             COEF_R=-1.0,),)
 
     MA=MODI_MAILLAGE(reuse=MA,
                      MAILLAGE=MA,
                      DEFORME=_F(OPTION='TRAN',
-                                DEPL=DEPLM),);
+                                DEPL=DEPLM),)
 
     DETRUIRE(NOM=(P_N,CHAR,CL,DEPL,DEPLM,SIG,TRESU,TRESUP),
-             INFO=1,);
+             INFO=1,)
 
-FIN();
+FIN()

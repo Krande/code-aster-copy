@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,17 +69,17 @@ RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
 RESU=CALC_CHAMP(reuse=RESU,
                 RESULTAT=RESU,
                 CONTRAINTE=('SIGM_ELNO',),
-                DEFORMATION=('EPSI_ELNO',),);
+                DEFORMATION=('EPSI_ELNO',),)
 
 RESC1SUP=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 
 RESU=CALC_CHAMP(reuse=RESU,
                 RESULTAT=RESU,
                 CONTRAINTE=('EFGE_ELNO'),
-                DEFORMATION=('DEGE_ELNO'),);
+                DEFORMATION=('DEGE_ELNO'),)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

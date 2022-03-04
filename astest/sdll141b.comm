@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E11,
                             NU=0.0,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 
 
@@ -46,9 +46,9 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                  CARA='R',
                                  VALE=(.025),),),
                         )
-                                 
-                                 
-# CONDITIONS AUX LIMITES 
+
+
+# CONDITIONS AUX LIMITES
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=(
@@ -61,7 +61,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                          ANGL_NAUT=(45.,0.,0.)),
                                         )
                           )
-                                    
+
 #MATRICES ASSEMBLEES K, M ET C
 
 ASSEMBLAGE(MODELE=MODELE,
@@ -74,19 +74,19 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),)
 
 
 GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
                       MODELE=MODELE,
                       CHAM_MATER=CHMAT,
-                      CARA_ELEM=CARELEM,);
+                      CARA_ELEM=CARELEM,)
 
 
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
-                    
+
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  OPTION='BANDE',
                  CALC_FREQ=_F(FREQ=(3.,3000.),
@@ -94,7 +94,7 @@ MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  MATR_MASS=MASSE,
                  )
 
-                                  
+
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='ANALYTIQUE',
@@ -193,4 +193,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

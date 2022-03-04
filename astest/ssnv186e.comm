@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 MAILLAG2 = LIRE_MAILLAGE(FORMAT='GMSH', UNITE=19)
@@ -29,14 +29,14 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     CREA_GROUP_MA =(_F(NOM='SURFINF',GROUP_MA='GM1'),
                                     _F(NOM='SURFSUP',GROUP_MA='GM2'),
                                     _F(NOM='VOL',    GROUP_MA='GM3')),
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL'));
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL'))
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
-                    CREA_GROUP_NO=_F(NOM='VOLQUAD',GROUP_MA='VOL'));
+                    CREA_GROUP_NO=_F(NOM='VOLQUAD',GROUP_MA='VOL'))
 
 #IMPR_RESU(FORMAT='RESULTAT',
-#          RESU=_F(MAILLAGE=MAILLAG2));
+#          RESU=_F(MAILLAGE=MAILLAG2))
 
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
@@ -45,19 +45,19 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='3D'),
                            _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D')));
+                              MODELISATION='3D')))
 
 LN = FORMULE(VALE='Z-17.5',
              NOM_PARA=['X', 'Y', 'Z'],)
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN));
+                    DEFI_FISS=_F(FONC_LN=LN))
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='STANDARD',
-                         INFO=1);
+                         INFO=1)
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -76,18 +76,18 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_CONT    = 100.,
                              ),
                          ),
-                   );
+                   )
 
 
 E=1.0E11
 nu=0.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=7800.0));
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=7800.0))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP'),
                                 MATER=ACIER,
-                                ));
+                                ))
 
 pres=100.*E/1e6
 
@@ -95,11 +95,11 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='SURFINF',DX=0.0,DY=0.0,DZ=0.0),
                              _F(GROUP_MA='SURFSUP',DX=0.0,DY=0.0)),
                    PRES_REP=_F(GROUP_MA='SURFSUP',PRES=pres),
-                   INFO=1);
+                   INFO=1)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1));
+                                    NOMBRE=1))
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -112,7 +112,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
    ),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
-                   INFO=1);
+                   INFO=1)
 
 
 # -------------------------------------------------------------
@@ -137,7 +137,7 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                             NOM_CHAM='DEPL',
                             NUME_ORDRE=1,
                             NOM_CMP='LAGS_C',
-                            OPERATION='EXTRACTION'));
+                            OPERATION='EXTRACTION'))
 
 LAG=CALC_TABLE(TABLE=LAG,
                reuse=LAG,
@@ -145,9 +145,9 @@ LAG=CALC_TABLE(TABLE=LAG,
                          NOM_PARA='LAGS_C',
                          CRIT_COMP='NE',
                          VALE=0.),
-               );
+               )
 
-IMPR_TABLE(TABLE=LAG);
+IMPR_TABLE(TABLE=LAG)
 
 # TESTS
 LAREF=-1.*pres
@@ -170,4 +170,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='MIN',
            TABLE=LAG,)
 
-FIN();
+FIN()

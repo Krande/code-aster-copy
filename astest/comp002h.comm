@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,22 +24,22 @@
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-   );
+   )
 
 
 
-YOUNG = 200000.0;
-POISSON = 0.3;
+YOUNG = 200000.0
+POISSON = 0.3
 #parametres viscosite
 Minv = 0.0
 Kinv= 3.2841e-4
 N = 11.0
 # parametres loi de chaboche
-SY = 437.0;
-Rinf = 758.0;
-Qzer   = 758.0-437.;
-Qinf   = Qzer + 100.;
-b = 2.3;
+SY = 437.0
+Rinf = 758.0
+Qzer   = 758.0-437.
+Qinf   = Qzer + 100.
+b = 2.3
 C1inf = 63767.0/2.0
 C2inf = 63767.0/2.0
 Gam1 = 341.0
@@ -49,13 +49,13 @@ ACIER = [None]*2
 #unite en Pa
 C_Pa = 1.e+6
 YOUNG_Pa = YOUNG * C_Pa
-SY_Pa = SY * C_Pa;
-Rinf_Pa  = Rinf * C_Pa;
-Qzer_Pa  = Qzer * C_Pa;
-Qinf_Pa  = Qinf * C_Pa;
-C1inf_Pa = C1inf * C_Pa;
-C2inf_Pa = C2inf * C_Pa;
-Kinv_Pa = Kinv / C_Pa;
+SY_Pa = SY * C_Pa
+Rinf_Pa  = Rinf * C_Pa
+Qzer_Pa  = Qzer * C_Pa
+Qinf_Pa  = Qinf * C_Pa
+C1inf_Pa = C1inf * C_Pa
+C2inf_Pa = C2inf * C_Pa
+Kinv_Pa = Kinv / C_Pa
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON,
                                ALPHA=11.8e-6),
@@ -74,7 +74,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                    Q_0 = Qzer_Pa,
                                    ETA = 0.5,
                                  ),
-                                 );
+                                 )
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,
@@ -94,7 +94,7 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                    Q_0 = Qzer,
                                    ETA = 0.5,
                                  ),
-                                 );
+                                 )
 
 compor='VISC_CIN2_MEMO'
 

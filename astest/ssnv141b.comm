@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,25 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
-MAILLA=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MAILLA,
                    MODI_MAILLE=_F(OPTION='TRIA6_7',
-                                  TOUT='OUI',),);
+                                  TOUT='OUI',),)
 
 MODELE_1=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
                              MODELISATION='COQUE_3D',),
-                     MAILLAGE=MAIL,);
+                     MAILLAGE=MAIL,)
 
 MATERI_1=DEFI_MATERIAU(ELAS=_F(NU=0.3,
-                               E=6.8250000E7,),);
+                               E=6.8250000E7,),)
 
 CH_MAT_1=AFFE_MATERIAU(AFFE=_F(MATER=MATERI_1,
                                TOUT='OUI',),
-                       MAILLAGE=MAIL,);
+                       MAILLAGE=MAIL,)
 
 CHARGE_1=AFFE_CHAR_MECA(FORCE_NODALE=(_F(FX=1.0,
                                          GROUP_NO='P1',),
@@ -51,19 +51,19 @@ CHARGE_1=AFFE_CHAR_MECA(FORCE_NODALE=(_F(FX=1.0,
                                      DRY=0.0,),
                                   _F(DZ=0.0,
                                      GROUP_NO='P5',),),
-                        MODELE=MODELE_1,);
+                        MODELE=MODELE_1,)
 
 CARAC_1=AFFE_CARA_ELEM(MODELE=MODELE_1,
                        COQUE=_F(GROUP_MA='TOUT_ELT',
                                 COEF_RIGI_DRZ=1.E-3,
-                                EPAIS=0.04,),);
+                                EPAIS=0.04,),)
 
 L_INST=DEFI_LIST_REEL(INTERVALLE=_F(JUSQU_A=100.0,
                                     NOMBRE=10,),
-                      DEBUT=0.0,);
+                      DEBUT=0.0,)
 
 D_FONC=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,500.0,500.0),);
+                     VALE=(0.0,0.0,500.0,500.0),)
 
 NONLIN=STAT_NON_LINE(CHAM_MATER=CH_MAT_1,
                      MODELE=MODELE_1,
@@ -76,23 +76,23 @@ NONLIN=STAT_NON_LINE(CHAM_MATER=CH_MAT_1,
                      NEWTON=_F(REAC_ITER=1,
                                MATRICE='TANGENTE',),
                      EXCIT=_F(CHARGE=CHARGE_1,
-                              FONC_MULT=D_FONC,),);
+                              FONC_MULT=D_FONC,),)
 
 DEPX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='DX',
                              TOUT_CMP='OUI',
                              GROUP_NO='P1',
                              RESULTAT=NONLIN,
-                             NOM_CHAM='DEPL',),);
+                             NOM_CHAM='DEPL',),)
 
 DEPY=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='DY',
                              TOUT_CMP='OUI',
                              GROUP_NO='P2',
                              RESULTAT=NONLIN,
-                             NOM_CHAM='DEPL',),);
+                             NOM_CHAM='DEPL',),)
 
-IMPR_TABLE(TABLE=DEPX,);
+IMPR_TABLE(TABLE=DEPX,)
 
 IMPR_TABLE(TABLE=DEPY,),
 
@@ -134,19 +134,19 @@ TEST_RESU(RESU=_F(GROUP_NO='P1',
 
 IMPR_TABLE(TABLE=DEPX,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=50.0,),);
+                     VALE=50.0,),)
 
 IMPR_TABLE(TABLE=DEPY,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=50.0,),);
+                     VALE=50.0,),)
 
 IMPR_TABLE(TABLE=DEPX,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=100.0,),);
+                     VALE=100.0,),)
 
 IMPR_TABLE(TABLE=DEPY,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=100.0,),);
+                     VALE=100.0,),)
 
 TEST_RESU(RESU=_F(GROUP_NO='P2',
                   INST=20.0,
@@ -184,4 +184,4 @@ TEST_RESU(RESU=_F(GROUP_NO='P2',
                   PRECISION=0.014999999999999999,),
           )
 
-FIN();
+FIN()

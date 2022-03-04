@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,9 @@ MATE=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
 TCISA1 = CO('TCISA1')
 TBILAN = CO('TBILAN')
 #donnees de l'essai
-p_confCISA=(50000.);
+p_confCISA=(50000.)
 gamma_impCISA=(4e-5,4e-4,4e-3)
-nb_cy=1;
+nb_cy=1
 
 
 CALC_ESSAI_GEOMECA(INFO=1,
@@ -67,7 +67,7 @@ CALC_ESSAI_GEOMECA(INFO=1,
                                      TYPE_CHARGE = 'TRIANGULAIRE',
                                      NB_CYCLE    = nb_cy,
                                      TABLE_RESU  = (TCISA1,TBILAN),),
-                   );
+                   )
 
 #---------------------
 # comparaison aux résultats de ssnv205b

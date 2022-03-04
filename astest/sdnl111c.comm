@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,NU=0.3,RHO=7800.,
                        AMOR_ALPHA=1.E-7, AMOR_BETA=1.E-3,
-                     ),);
+                     ),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(
@@ -89,7 +89,7 @@ CONTACT = DEFI_CONTACT(MODELE      = MODELE,
                              GROUP_MA_MAIT='CNT_POU1',
                              GROUP_MA_ESCL='CNT_POU2',
                              ),
-                      );
+                      )
 
 # ************************************************************
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
@@ -247,5 +247,5 @@ TEST_RESU(RESU=(_F(GROUP_NO='N1',
                 ),
           )
 #
-FIN();
+FIN()
 #

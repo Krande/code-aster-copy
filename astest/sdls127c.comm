@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
 
 # LECTURE DU MAILLAGE AU FORMAT MED
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                             NU=0.3,
                             RHO=7800,
-                            AMOR_HYST=0.002,),);
+                            AMOR_HYST=0.002,),)
 
 # DEFINITION DE LA MODELISATION PLAQUE
 
@@ -44,7 +44,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='DKT'),
                          _F(GROUP_MA=('VOLUME'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D'),),);
+                            MODELISATION='3D'),),)
 
 
 # DEFINITION ET AFFECTATION DES PROPRIETES DES PLAQUES
@@ -57,50 +57,50 @@ CARAPLAQ=AFFE_CARA_ELEM(MODELE=MODELE,
                                _F(GROUP_MA='DESSUS',
                                   EPAIS=0.5E-3,
                                   EXCENTREMENT=0.25E-3,
-                                  INER_ROTA='OUI',),),);
+                                  INER_ROTA='OUI',),),)
 
 # DEFINITION DES CONDITIONS D'ENCASTREMENT
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_MA='ENCAS',
                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),
-                                   ),);
+                                   ),)
 
 # DEFINITION DU CHARGEMENT
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
                      FORCE_NODALE=_F(GROUP_NO='A',
                                      FZ=1.,
-                                     ),);
+                                     ),)
 
 
 # DEFINITION DE LA DEPENDANCE EN FREQUENCE DES PROPRIETES DES MATERIAUX VISCOELASTIQUES
 
-list_f=DEFI_LIST_REEL(VALE=(1.,10.,50.,100.,500.,1000.,1500.),);
+list_f=DEFI_LIST_REEL(VALE=(1.,10.,50.,100.,500.,1000.,1500.),)
 
-list_E=DEFI_LIST_REEL(VALE=(23.2E6,58.E6,145.E6,203.E6,348.E6,435.E6,464.E6),);
+list_E=DEFI_LIST_REEL(VALE=(23.2E6,58.E6,145.E6,203.E6,348.E6,435.E6,464.E6),)
 
-list_eta=DEFI_LIST_REEL(VALE=(1.1,0.85,0.7,0.6,0.4,0.35,0.34),);                            
+list_eta=DEFI_LIST_REEL(VALE=(1.1,0.85,0.7,0.6,0.4,0.35,0.34),)
 
 fonc_E=DEFI_FONCTION(NOM_PARA='FREQ',
                      VALE_PARA=list_f,
                      VALE_FONC=list_E,
                      INTERPOL=('LOG','LOG',),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='CONSTANT',);
+                     PROL_GAUCHE='CONSTANT',)
 
 fonc_eta=DEFI_FONCTION(NOM_PARA='FREQ',
                        VALE_PARA=list_f,
                        VALE_FONC=list_eta,
                        INTERPOL=('LOG','LOG',),
                        PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='CONSTANT',);
+                       PROL_GAUCHE='CONSTANT',)
 
 # DEFINITION DES FREQUENCES DE CALCUL DE LA REPONSE HARMONIQUE
 
 listfr=DEFI_LIST_REEL(DEBUT=1.,
                       INTERVALLE=(_F(JUSQU_A=500.,
-                                     PAS=1.,),),);
+                                     PAS=1.,),),)
 
 
 # CALCUL DE LA REPONSE HARMONIQUE
@@ -117,7 +117,7 @@ visco=DYNA_VISCO(MODELE=MODELE,
                  MATER_ELAS_FO=(_F(E=fonc_E,
                                    AMOR_HYST=fonc_eta,
                                    RHO=1200.,
-                                   NU=0.45, 
+                                   NU=0.45,
                                    GROUP_MA='VOLUME',),),
                  EXCIT=_F(CHARGE=(CONDLIM, FORCE),),
                  LIST_FREQ=listfr,
@@ -125,7 +125,7 @@ visco=DYNA_VISCO(MODELE=MODELE,
                  TYPE_MODE='BETA_REEL',
                  COEF_FREQ_MAX=2.,
                  # MODE_MECA=CO('modes'), # décommenter si on veut récuperer les modes propres
-                 );
+                 )
 
 
 TEST_RESU(RESU=(_F(RESULTAT=visco,
@@ -155,14 +155,14 @@ TEST_RESU(RESU=(_F(RESULTAT=visco,
                    VALE_REFE_C=-1.302768494e-05 - 1.65977932083e-06j,
                    REFERENCE='AUTRE_ASTER',
                    PRECISION=4.e-2),
-               ),);
+               ),)
 
 
 # SI ON VEUT VISUALISER LES MODES PROPRES CALCULES
 # IMPR_RESU(FORMAT='MED',
-#           UNITE=80, 
+#           UNITE=80,
 #           RESU=_F(MAILLAGE=MAIL,
-#                   RESULTAT=modes),);
+#                   RESULTAT=modes),)
 
 
 # POST-TRAITEMENTS POUR VISUALISER
@@ -173,12 +173,12 @@ dz_a=RECU_FONCTION(RESULTAT=visco,
                    GROUP_NO='A')
 
 dz_a_abs=CALC_FONCTION(EXTRACTION=_F(FONCTION=dz_a,
-                                     PARTIE='MODULE'),);
+                                     PARTIE='MODULE'),)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=29,
               COURBE=(
                       _F(FONCTION=dz_a_abs),
-                      ),);
+                      ),)
 
-FIN();
+FIN()

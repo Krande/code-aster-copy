@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,17 +43,17 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 #
 
-MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',);
+MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',)
 
 MA1=DEFI_GROUP(reuse =MA1,
                MAILLAGE=MA1,
                CREA_GROUP_MA=_F(NOM='TOUT',
-                                TOUT='OUI',),);
+                                TOUT='OUI',),)
 
 MA=CREA_MAILLAGE(MAILLAGE=MA1,
                  CREA_MAILLE=_F(NOM='PLAQ2',
                                   GROUP_MA='PLAQ1',
-                                  PREF_MAILLE='MAIL',),);
+                                  PREF_MAILLE='MAIL',),)
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_MA= (
@@ -72,17 +72,17 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_NO=(_F(GROUP_MA='PLAQ1',
                                 NOM='PLAQ1',),
                              _F(GROUP_MA='PLAQ2',
-                                NOM='PLAQ2',),),);
+                                NOM='PLAQ2',),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='DKT',),);
+                       MODELISATION='DKT',),)
 
 MO1=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=_F(GROUP_MA='PLAQ1',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKT',),);
+                        MODELISATION='DKT',),)
 
 EP=AFFE_CARA_ELEM(MODELE=MO,
                   COQUE=(_F(GROUP_MA='TOUT',
@@ -99,33 +99,33 @@ EP=AFFE_CARA_ELEM(MODELE=MO,
                             ANGL_REP=(0.0,0.0),
                             EXCENTREMENT=-0.10000000000000001,
                             COQUE_NCOU=2,
-                            INER_ROTA='OUI',),),);
+                            INER_ROTA='OUI',),),)
 
 EP1=AFFE_CARA_ELEM(MODELE=MO1,
                    COQUE=_F(GROUP_MA='TOUT',
                             EPAIS=0.40000000000000002,
                             COQUE_NCOU=4,
-                            ANGL_REP=(0.0,0.0),),);
+                            ANGL_REP=(0.0,0.0),),)
 
 MAT1A=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=2.E10,
                                  E_T=2.E10,
                                  NU_LT=0.29999999999999999,
-                                 G_LT=2.E9,),);
+                                 G_LT=2.E9,),)
 
 MAT1B=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=1.5000000000E10,
                                  E_T=1.5000000000E10,
                                  NU_LT=0.29999999999999999,
-                                 G_LT=1.500000000E9,),);
+                                 G_LT=1.500000000E9,),)
 
 MAT1C=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=2.E10,
                                  E_T=2.E10,
                                  NU_LT=0.29999999999999999,
-                                 G_LT=2.E9,),);
+                                 G_LT=2.E9,),)
 
 MAT1D=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=1.5000000000E10,
                                  E_T=1.5000000000E10,
                                  NU_LT=0.29999999999999999,
-                                 G_LT=1.500000000E9,),);
+                                 G_LT=1.500000000E9,),)
 #
 #
 
@@ -141,31 +141,31 @@ MU=DEFI_COMPOSITE(COUCHE=(_F(EPAIS=0.10000000000000001,
                              ORIENTATION=0.0,),
                           _F(EPAIS=0.10000000000000001,
                              MATER=MAT1A,
-                             ORIENTATION=0.0,),),);
+                             ORIENTATION=0.0,),),)
 
 MU1=DEFI_COMPOSITE(COUCHE=(_F(EPAIS=0.10000000000000001,
                               MATER=MAT1B,
                               ORIENTATION=0.0,),
                            _F(EPAIS=0.10000000000000001,
                               MATER=MAT1A,
-                              ORIENTATION=0.0,),),);
+                              ORIENTATION=0.0,),),)
 
 MU2=DEFI_COMPOSITE(COUCHE=(_F(EPAIS=0.10000000000000001,
                               MATER=MAT1D,
                               ORIENTATION=0.0,),
                            _F(EPAIS=0.10000000000000001,
                               MATER=MAT1C,
-                              ORIENTATION=0.0,),),);
+                              ORIENTATION=0.0,),),)
 
 CHMUL=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MU,),);
+                            MATER=MU,),)
 
 CHMU2=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='PLAQ1',
                              MATER=MU1,),
                           _F(GROUP_MA='PLAQ2',
-                             MATER=MU2,),),);
+                             MATER=MU2,),),)
 
 CHME=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='A1',
@@ -179,7 +179,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0.0,
                                  DY=0.0,),),
                     FORCE_NODALE=_F(GROUP_NO='A3',
-                                    FZ=-1000.0,),);
+                                    FZ=-1000.0,),)
 
 CHME1=AFFE_CHAR_MECA(MODELE=MO1,
                      DDL_IMPO=(_F(GROUP_NO='A1',
@@ -193,7 +193,7 @@ CHME1=AFFE_CHAR_MECA(MODELE=MO1,
                                   DX=0.0,
                                   DY=0.0,),),
                      FORCE_NODALE=_F(GROUP_NO='A3',
-                                     FZ=-1000.0,),);
+                                     FZ=-1000.0,),)
 # ______________________________________________________________________
 #
 #                         RESOLUTION
@@ -206,7 +206,7 @@ DEP=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMU2,
                    CARA_ELEM=EP,
                    EXCIT=_F(CHARGE=CHME,),
-                  );
+                  )
 
 DEP=CALC_CHAMP(reuse=DEP,RESULTAT=DEP,CONTRAINTE=('SIGM_ELNO','EFGE_ELNO'))
 
@@ -214,11 +214,11 @@ DEP=CALC_CHAMP(reuse=DEP,RESULTAT=DEP,CONTRAINTE=('SIGM_ELNO','EFGE_ELNO'))
 DEP1INF=POST_CHAMP(RESULTAT=DEP,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 DEP2SUP=POST_CHAMP(RESULTAT=DEP,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DEP2SUP,NOM_CHAM='SIGM_ELNO',
                    NUME_ORDRE=1,GROUP_MA=('M10',)))
 
@@ -237,7 +237,7 @@ DEPQ=MECA_STATIQUE(MODELE=MO1,
                    CHAM_MATER=CHMUL,
                    CARA_ELEM=EP1,
                    EXCIT=_F(CHARGE=CHME1,),
-                  );
+                  )
 
 DEPQ=CALC_CHAMP(reuse=DEPQ,RESULTAT=DEPQ,CONTRAINTE=('SIGM_ELNO','EFGE_ELNO'))
 
@@ -248,7 +248,7 @@ DEPQ=CALC_CHAMP(reuse=DEPQ,RESULTAT=DEPQ,CONTRAINTE=('SIGM_ELNO','EFGE_ELNO'))
 DEPQ1INF=POST_CHAMP(RESULTAT=DEPQ,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DEPQ1INF,NOM_CHAM='SIGM_ELNO',
                    NUME_ORDRE=1,GROUP_MA=('M10',)))
 
@@ -258,7 +258,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DEPQ1INF,NOM_CHAM='SIGM_ELNO',
 DEPQ4SUP=POST_CHAMP(RESULTAT=DEPQ,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=4,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DEPQ4SUP,NOM_CHAM='SIGM_ELNO',
                    NUME_ORDRE=1,GROUP_MA=('M10',)))
 
@@ -392,6 +392,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 #
 #

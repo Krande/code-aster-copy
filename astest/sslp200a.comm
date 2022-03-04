@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -213,7 +213,7 @@ MAT2=DEFI_MATERIAU(    ELAS_FO=_F(  E = FO1,
 
 
 nutn = 0.4
-glt = 1.5/(2*(1+0.25)) 
+glt = 1.5/(2*(1+0.25))
 MAT3=DEFI_MATERIAU(    ELAS_ORTH=_F(  E_L = 1.5,
                                       E_T = 1.5,
                                       E_N = 0.4,
@@ -502,12 +502,12 @@ CALC_CHAMP(reuse=MSLIN,
            CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO','EPEQ_ELGA'),
            DEFORMATION=('EPME_ELGA','EPME_ELNO','EPSI_ELGA','EPSI_ELNO'),
            ENERGIE=('EPOT_ELEM'),
-           CONTRAINTE=('SIGM_ELNO'),);
+           CONTRAINTE=('SIGM_ELNO'),)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MSLIN,NOM_CHAM=('SIEF_ELGA','SIEQ_ELGA')))
 
 
-SIEQNO1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R', 
+SIEQNO1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
                    RESULTAT=MSLIN, NOM_CHAM='SIEQ_ELNO', NUME_ORDRE=1)
 SIEQNO1B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
                     MODELE=MO, PROL_ZERO='OUI',
@@ -519,8 +519,8 @@ SIEQNO1B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
           'VECT_3_X','VECT_3_Y','VECT_3_Z','TRSIG')
                       )
                    )
-                   
-SIEQNO2=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R', 
+
+SIEQNO2=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
                    RESULTAT=MSLIN, NOM_CHAM='SIEQ_ELNO', NUME_ORDRE=2)
 SIEQNO2B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
                     MODELE=MO, PROL_ZERO='OUI',
@@ -534,7 +534,7 @@ SIEQNO2B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
                    )
 
 
-SIEQNO3=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R', 
+SIEQNO3=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
                    RESULTAT=MSLIN, NOM_CHAM='SIEQ_ELNO', NUME_ORDRE=3)
 SIEQNO3B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
                     MODELE=MO, PROL_ZERO='OUI',
@@ -547,7 +547,7 @@ SIEQNO3B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R',
                       )
                    )
 
-SIEQGA1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R', 
+SIEQGA1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                    RESULTAT=MSLIN, NOM_CHAM='SIEQ_ELGA', NUME_ORDRE=1)
 SIEQGA1B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
                     MODELE=MO, PROL_ZERO='OUI',
@@ -560,7 +560,7 @@ SIEQGA1B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
                       )
                    )
 
-SIEQGA2=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R', 
+SIEQGA2=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                    RESULTAT=MSLIN, NOM_CHAM='SIEQ_ELGA', NUME_ORDRE=2)
 SIEQGA2B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
                     MODELE=MO, PROL_ZERO='OUI',
@@ -573,7 +573,7 @@ SIEQGA2B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
                       )
                    )
 
-SIEQGA3=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R', 
+SIEQGA3=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                    RESULTAT=MSLIN, NOM_CHAM='SIEQ_ELGA', NUME_ORDRE=3)
 SIEQGA3B=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
                     MODELE=MO, PROL_ZERO='OUI',
@@ -822,7 +822,7 @@ CALC_CHAMP(reuse=MSLI2,
            CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO','EPEQ_ELGA'),
            DEFORMATION=('EPME_ELGA','EPME_ELNO','EPSG_ELGA','EPSG_ELNO','EPSI_ELGA','EPSI_ELNO'),
            ENERGIE=('EPOT_ELEM'),
-           CONTRAINTE=('SIGM_ELNO'),);
+           CONTRAINTE=('SIGM_ELNO'),)
 
 CALC_CHAMP(reuse=MSLI2,DEFORMATION='EPSI_NOEU',CRITERES=('SIEQ_NOEU','EPEQ_NOEU'),CONTRAINTE='SIGM_NOEU',
                        RESULTAT=MSLI2,
@@ -1467,7 +1467,7 @@ TABLE3B=MACR_LIGN_COUPE(CHAM_GD = CHAMNO1, MODELE=MO, NOM_CHAM='DEPL',
                      LIGN_COUPE=(
                         _F(INTITULE='TABLE_3B',
                            RESULTANTE = ('DY', 'DX',),
-                           OPERATION = 'EXTRACTION',         
+                           OPERATION = 'EXTRACTION',
                            TYPE='GROUP_NO',GROUP_NO='CHEM1',),
                        ))
 

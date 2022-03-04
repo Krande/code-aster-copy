@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ YOUNG_F = DEFI_FONCTION(NOM_PARA='Y',
                    VALE=
                    (0.0,E, 0.5,E, 1.0, E,),
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='CONSTANT',);
+                   PROL_GAUCHE='CONSTANT',)
 
-NU_FONC = DEFI_CONSTANTE(VALE=(3.*K-2.*G) /(6.*K+2.*G));
+NU_FONC = DEFI_CONSTANTE(VALE=(3.*K-2.*G) /(6.*K+2.*G))
 
 print('young=',YOUNG_F,' /// nu=',NU_FONC)
 
@@ -48,41 +48,41 @@ P0=100000.
 #***********************************************************************
 #    MAILLAGE + MODELE
 #***********************************************************************
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', );
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT         = 'OUI',
                            PHENOMENE    = 'MECANIQUE',
-                           MODELISATION = '3D'));
+                           MODELISATION = '3D'))
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('DEVANT','DROIT','ARRIERE','GAUCHE','BAS','HAUT','APPUI','COTE')),
-                       INFO=1);
+                       INFO=1)
 
 CHGEOM=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                   OPERATION='EXTR',
                   MAILLAGE=MAILLAGE,
-                  NOM_CHAM='GEOMETRIE',);
+                  NOM_CHAM='GEOMETRIE',)
 
 #***********************************************************************
 #    INCREMENTS DE TEMPS
 #***********************************************************************
 TEMPS0=DEFI_LIST_REEL(DEBUT=-20.,
                       INTERVALLE=(_F(JUSQU_A = -10., NOMBRE = 1),
-                                  _F(JUSQU_A =  0., NOMBRE = 100)));
+                                  _F(JUSQU_A =  0., NOMBRE = 100)))
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A =  1., NOMBRE = 10),
                                   _F(JUSQU_A =  7., NOMBRE = 60),
-                                  _F(JUSQU_A = 10., NOMBRE = 30)));
+                                  _F(JUSQU_A = 10., NOMBRE = 30)))
 TEMPS2=DEFI_LIST_REEL(DEBUT=10.,
                       INTERVALLE=(_F(JUSQU_A = 11., NOMBRE = 10),
                                   _F(JUSQU_A = 17., NOMBRE = 60),
-                                  _F(JUSQU_A = 20., NOMBRE = 30)));
+                                  _F(JUSQU_A = 20., NOMBRE = 30)))
 
 TEMPS3=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 10., NOMBRE = 200));
+                      INTERVALLE=_F(JUSQU_A = 10., NOMBRE = 200))
 
 
 #***********************************************************************
@@ -108,7 +108,7 @@ SOL0=DEFI_MATERIAU(ELAS_FO=_F(E = YOUNG_F, NU = NU_FONC),
                             XM       = 1.,
                             RD_CYC   = 0.005,
                             RI_CYC   = 0.001,
-                            DILA     = 1.0,));
+                            DILA     = 1.0,))
 
 SOL=DEFI_MATERIAU(ELAS_FO=_F(E = YOUNG_F, NU = NU_FONC),
                   HUJEUX=_F(N        = 0.4,
@@ -130,19 +130,19 @@ SOL=DEFI_MATERIAU(ELAS_FO=_F(E = YOUNG_F, NU = NU_FONC),
                             XM       = 1.,
                             RD_CYC   = 0.005,
                             RI_CYC   = 0.001,
-                            DILA     = 1.0,));
+                            DILA     = 1.0,))
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                      AFFE=_F(TOUT='OUI', MATER=SOL0),
                      AFFE_VARC=_F(NOM_VARC='GEOM',
                                  CHAM_GD=CHGEOM),
-                     );
+                     )
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI', MATER=SOL),
                     AFFE_VARC=_F(NOM_VARC='GEOM',
                                  CHAM_GD=CHGEOM),
-                    );
+                    )
 
 
 #***********************************************************************
@@ -150,22 +150,22 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 #***********************************************************************
 CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA=('COTE','APPUI'),
-                                   PRES = 1.));
+                                   PRES = 1.))
 
 CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA=('COTE','APPUI',),
-                                   PRES = -1.));
+                                   PRES = -1.))
 
 
 DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
                 FACE_IMPO=(_F(GROUP_MA='BAS',DZ = 0.),
                            _F(GROUP_MA='GAUCHE',DX = 0.),
-                           _F(GROUP_MA='DEVANT',DY = 0.)));
+                           _F(GROUP_MA='DEVANT',DY = 0.)))
 
 COEF0=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-20., 0.0,
-                          -10., P0 ));
+                          -10., P0 ))
 
 #***********************************************************************
 #    PRECONSOLIDATION ELASTIQUE JUSQU'A P0 (100 kPa)
@@ -179,7 +179,7 @@ U0M=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE = 'ELASTIQUE'),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 20),
-                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = -10.));
+                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = -10.))
 # ----------- FIN
 
 SIG0=CREA_CHAMP(INFO=2,
@@ -187,19 +187,19 @@ SIG0=CREA_CHAMP(INFO=2,
                 OPERATION='EXTR',
                 RESULTAT=U0M,
                 NOM_CHAM='SIEF_ELGA',
-                INST=-10.0,);
+                INST=-10.0,)
 
 COEF1=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-10.0, P0,
                            0.0, 3*P0,
                            10.0,3*P0,
-                           20.0,3*P0+2.4E5));
+                           20.0,3*P0+2.4E5))
 
 COEF2=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=( 0.0, 0.0,
-                          10.0, 2*P0));
+                          10.0, 2*P0))
 
 DEFLIST0 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS0),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -236,21 +236,21 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  ARCHIVAGE=_F(LIST_INST = TEMPS0),
                  INCREMENT=_F(LIST_INST = DEFLIST0,
                               INST_INIT = -10.0,
-                              INST_FIN = 0.0));
+                              INST_FIN = 0.0))
 
 SIG1=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=U0,
                 NOM_CHAM='SIEF_ELGA',
-                INST=0.0,);
+                INST=0.0,)
 
 VAR1=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U0,
                 NOM_CHAM='VARI_ELGA',
-                INST=0.0,);
+                INST=0.0,)
 
 #***********************************************************************
 #    DECHARGE DE CONSOLIDATION JUSQU'A 100KPa
@@ -275,21 +275,21 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  ARCHIVAGE=_F(LIST_INST = TEMPS1),
                  INCREMENT=_F(LIST_INST = DEFLIST1,
                               INST_INIT=0.0,
-                              INST_FIN =10.));
+                              INST_FIN =10.))
 
 SIG2=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=U1,
                 NOM_CHAM='SIEF_ELGA',
-                INST=10.0,);
+                INST=10.0,)
 
 VAR2=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U1,
                 NOM_CHAM='VARI_ELGA',
-                INST=10.0,);
+                INST=10.0,)
 
 
 
@@ -324,7 +324,7 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                  ARCHIVAGE=_F(LIST_INST = TEMPS2),
                  INCREMENT=_F(LIST_INST = DEFLIST2,
                               INST_INIT=10.0,
-                              INST_FIN =20.));
+                              INST_FIN =20.))
 
 
 #*******************************************************************************
@@ -341,28 +341,28 @@ U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFOR
 U0=CALC_CHAMP(reuse=U0,
 
            CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSI_NOEU',
-           RESULTAT=U0);
+           RESULTAT=U0)
 
 TAB_SIG0=POST_RELEVE_T(ACTION=_F(INTITULE='SIGM_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U0,
                                 NOM_CHAM='SIGM_NOEU',
                                 NOM_CMP='SIZZ',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VAR0=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U0,
                                 NOM_CHAM='VARI_NOEU',
                                 NOM_CMP=('V4','V8','V23','V32'),
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VAR0=CALC_TABLE(reuse=TAB_VAR0,
                     TABLE=TAB_VAR0,
                     ACTION=_F(OPERATION='COMB',
                               TABLE=TAB_SIG0,
-                              NOM_PARA='INST'));
-IMPR_TABLE(TABLE=TAB_VAR0);
+                              NOM_PARA='INST'))
+IMPR_TABLE(TABLE=TAB_VAR0)
 
 #*******************************************************************************
 #                                      U1
@@ -374,28 +374,28 @@ U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFOR
 U1=CALC_CHAMP(reuse=U1,
 
            CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSI_NOEU',
-           RESULTAT=U1);
+           RESULTAT=U1)
 
 TAB_SIG1=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='SIGM_NOEU',
                                 NOM_CMP='SIZZ',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VAR1=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='VARI_NOEU',
                                 NOM_CMP=('V4','V8','V23','V32'),
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VAR1=CALC_TABLE(reuse=TAB_VAR1,
                     TABLE=TAB_VAR1,
                     ACTION=_F(OPERATION='COMB',
                               TABLE=TAB_SIG1,
-                              NOM_PARA='INST'));
-IMPR_TABLE(TABLE=TAB_VAR1);
+                              NOM_PARA='INST'))
+IMPR_TABLE(TABLE=TAB_VAR1)
 #*******************************************************************************
 #                                      U2
 #*******************************************************************************
@@ -406,29 +406,29 @@ U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFOR
 U2=CALC_CHAMP(reuse=U2,
 
            CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSI_NOEU',
-           RESULTAT=U2);
+           RESULTAT=U2)
 
 TAB_SIG2=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 GROUP_NO='C',
                                 RESULTAT=U2,
                                 NOM_CHAM='SIGM_NOEU',
                                 NOM_CMP='SIZZ',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VAR2=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U2,
                                 NOM_CHAM='VARI_NOEU',
                                 NOM_CMP=('V4','V8','V23','V32'),
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VAR2=CALC_TABLE(reuse=TAB_VAR2,
                     TABLE=TAB_VAR2,
                     ACTION=_F(OPERATION='COMB',
                               TABLE=TAB_SIG2,
-                              NOM_PARA='INST'));
+                              NOM_PARA='INST'))
 
-IMPR_TABLE(TABLE=TAB_VAR2);
+IMPR_TABLE(TABLE=TAB_VAR2)
 #*******************************************************************************
 #                                  TEST_RESU
 #*******************************************************************************
@@ -673,4 +673,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=-340000,),
            )
 
-FIN();
+FIN()

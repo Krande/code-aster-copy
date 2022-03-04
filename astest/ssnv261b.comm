@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ import math
 
 
 # parametres a renseigner dans DEFI_MATER_GC (si utilise)
-young = 34129.12261731629 
+young = 34129.12261731629
 nu    = 0.20
 fc    = 40.0
 ft    = 3.023810519747695
@@ -60,7 +60,7 @@ Lf    = 200.0
 
 
 # Parametres a renseigner dans DEFI_MATERIAU (si utilise)
-young = 34129.12261731629 
+young = 34129.12261731629
 nu    = 0.20
 kappa = 5.841940483092377
 p     = 2.0
@@ -70,9 +70,9 @@ rest  = 8532.280654329064
 
 
 # Autres parametres internes pour la solution analytique
-m0    = 0.5890486225480862        
-D1    = 4.08104856952699          
-r     = 3.9498515721856102        
+m0    = 0.5890486225480862
+D1    = 4.08104856952699
+r     = 3.9498515721856102
 ec    = 37921.24735257366
 
 
@@ -88,7 +88,7 @@ eps    = sig/(ec*B)
 wc    = 0.5*sigc**2/ec
 a     = 0.5*(m0*b + (D1-m0)*b**r - (D1-m0)*(r-1)/(r+1)*b**(r+1))
 wdiss = kappa*wc*a
-welas = 0.5*eps*sig  
+welas = 0.5*eps*sig
 
 
 # Branche en compression
@@ -108,9 +108,9 @@ sigcomp    = B*sigall + (1-B)*signeg
 # MATERIAU                                                       #
 #----------------------------------------------------------------#
 
-#MATE = DEFI_MATERIAU( 
+#MATE = DEFI_MATERIAU(
     #ELAS = _F(
-        #E=young, 
+        #E=young,
         #NU=nu,
         #),
     #ENDO_LOCA_EXP = _F(
@@ -121,12 +121,12 @@ sigcomp    = B*sigall + (1-B)*signeg
         #REST_RIGIDITE = rest,
         #),
     #)
-    
-MATE = DEFI_MATER_GC( 
+
+MATE = DEFI_MATER_GC(
     ENDO_LOCA_EXP = _F(
         FC              = fc,
         NU              = nu,
-        E               = young, 
+        E               = young,
         FT              = ft,
         GF              = GF,
         P               = p,
@@ -134,8 +134,8 @@ MATE = DEFI_MATER_GC(
         REST_RIGI_FC    = 0.95,
         ),
     )
- 
-TEMPS1 = DEFI_LIST_REEL( 
+
+TEMPS1 = DEFI_LIST_REEL(
     DEBUT      = 0.0,
     INTERVALLE = (
       _F(JUSQU_A = 1.0, NOMBRE  = 2),
@@ -144,7 +144,7 @@ TEMPS1 = DEFI_LIST_REEL(
       ),
     )
 
-DEFLIST1 = DEFI_LIST_INST( 
+DEFLIST1 = DEFI_LIST_INST(
     DEFI_LIST = _F( LIST_INST=TEMPS1),
     ECHEC     = _F( ACTION='DECOUPE', SUBD_PAS=4, SUBD_NIVEAU=2),
     )
@@ -164,10 +164,10 @@ ZERO  = DEFI_CONSTANTE( VALE =  0.0 )
 
 
 
-EVOL_DP = SIMU_POINT_MAT( 
+EVOL_DP = SIMU_POINT_MAT(
     SUPPORT       = 'ELEMENT',
     MODELISATION  = 'D_PLAN',
-    COMPORTEMENT  = _F( 
+    COMPORTEMENT  = _F(
         RELATION       = 'ENDO_LOCA_EXP',
         ITER_INTE_MAXI = 20,
         RESI_INTE_RELA = 1.E-8,
@@ -177,7 +177,7 @@ EVOL_DP = SIMU_POINT_MAT(
     NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
     CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
     ARCHIVAGE  = _F(LIST_INST = TEMPS1,),
-    EPSI_IMPOSE= _F( 
+    EPSI_IMPOSE= _F(
         EPXX = HISTORY,
         EPYY = ZERO,
         EPZZ = ZERO,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -394,7 +394,7 @@ TEST_RESU(CHAM_NO=(_F(GROUP_NO='N1',
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=TM_2400))
 DEFI_GROUP( reuse  = MAIL, MAILLAGE = MAIL,
             CREA_GROUP_NO = _F(NOM='G954', OPTION='INTERVALLE_VALE',
-            CHAM_GD=TM_2400, NOM_CMP='TEMP', VALE=(954., 955.),),);
+            CHAM_GD=TM_2400, NOM_CMP='TEMP', VALE=(954., 955.),),)
 
 # j'ai verifie (avec mes yeux) que G954 contient les noeuds N26,N27,...,N31
 # On va tester la valeur des coordonnees de ces noeuds

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
                                   VECT_NORMALE = (-1.,0.,0.,)))
                    )
 
-# IMPR_CO (CO : MAIL) ;
+# IMPR_CO (CO : MAIL)
 #
 # DEFINITION DU MODELE
 MODELE=AFFE_MODELE(    MAILLAGE=MAIL,

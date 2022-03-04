@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ SPECTRE2=LIRE_FONCTION(UNITE=30,
 
 #----------------------------------------------------------------------------------
 #Definition de la liste de frequence en fonction des parametres
-L_FREQ = DEFI_LIST_REEL(DEBUT=fmin, INTERVALLE=(_F(JUSQU_A=1.0, PAS=fpas,),_F(JUSQU_A=10.0, PAS=10*fpas,),_F(JUSQU_A=fmax, PAS=50*fpas,),) );
+L_FREQ = DEFI_LIST_REEL(DEBUT=fmin, INTERVALLE=(_F(JUSQU_A=1.0, PAS=fpas,),_F(JUSQU_A=10.0, PAS=10*fpas,),_F(JUSQU_A=fmax, PAS=50*fpas,),) )
 
 #----------------------------------------------------------------------------------
 #Generation des acceleros
@@ -245,19 +245,19 @@ SPECTRE = LIRE_FONCTION(UNITE=31,
 L_FREQ = DEFI_LIST_REEL(DEBUT=fmin,
                         INTERVALLE=(_F(JUSQU_A=1.0, PAS=fpas,),
                                     _F(JUSQU_A=20.0, PAS=10*fpas,),
-                                    _F(JUSQU_A= 50., PAS=50*fpas,),) );
+                                    _F(JUSQU_A= 50., PAS=50*fpas,),) )
 
 L_FREQ2 = DEFI_LIST_REEL(DEBUT=fmin,
                         INTERVALLE=(_F(JUSQU_A=10., PAS=5.,),
-                                    _F(JUSQU_A=50.0, PAS=1.0,),) );
-                                    
+                                    _F(JUSQU_A=50.0, PAS=1.0,),) )
+
 #----------------------------------------------------------------------------------
 SPECTRE2 = CALC_FONC_INTERP(FONCTION= SPECTRE,
                             NOM_PARA='FREQ',
                             LIST_PARA = L_FREQ,
                             PROL_GAUCHE='CONSTANT',
                             PROL_DROITE='EXCLU',
-                            INTERPOL='LOG');
+                            INTERPOL='LOG')
 
 #----------------------------------------------------------------------------------
 #Generation des acceleros
@@ -292,15 +292,15 @@ for i in range(n_tir):
                     FILTRE=_F(NOM_PARA = 'NUME_ORDRE',VALE_I = i+1),
                     NOM_PARA_TABL='FONCTION',)
 
-    SRO = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2, 
-                          NORME=9.81, AMOR_REDUIT=(amor,),),);  
+    SRO = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2,
+                          NORME=9.81, AMOR_REDUIT=(amor,),),)
 
-    SRO2 = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2, 
-                          NORME=9.81, AMOR_REDUIT=(0.02,),),);  
+    SRO2 = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2,
+                          NORME=9.81, AMOR_REDUIT=(0.02,),),)
 
-    SRO1 = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2, 
-                          NORME=9.81, AMOR_REDUIT=(0.1,),),);  
- 
+    SRO1 = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2,
+                          NORME=9.81, AMOR_REDUIT=(0.1,),),)
+
     l_SRO.append(SRO)
     l_SRO2.append(SRO2)
     l_SRO1.append(SRO1)
@@ -315,25 +315,25 @@ SRO_MEAN2=CALC_FONCTION(MOYENNE = _F(FONCTION=l_SRO2, ) )
 
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.34067309739490,
-                         VALE_REFE= ZPA    ,                   
+                         VALE_REFE= ZPA    ,
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 35.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION= SRO_MEAN,),
                       _F(VALE_CALC= 0.65668917213612,
-                         VALE_REFE= 0.655    ,                       
+                         VALE_REFE= 0.655    ,
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION= SRO_MEAN,),
                         _F(VALE_CALC= 0.33953497220673,
-                         VALE_REFE= ZPA ,                          
+                         VALE_REFE= ZPA ,
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.1, 35.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION= SRO_MEAN1,),
                         _F(VALE_CALC=  0.34265202957992,
-                         VALE_REFE= ZPA  ,                       
+                         VALE_REFE= ZPA  ,
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.02, 35.),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,

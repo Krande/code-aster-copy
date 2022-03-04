@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ SIF4=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
 #----------------------------------------------
 
 MA=LIRE_MAILLAGE(INFO=1,
-                 FORMAT='MED',);
+                 FORMAT='MED',)
 
 
 #----------------------------------------------
@@ -82,7 +82,7 @@ MA=LIRE_MAILLAGE(INFO=1,
 
 E=70656
 nu=0.34
-Alu=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+Alu=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),)
 
 
 #----------------------------------------------
@@ -103,7 +103,7 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
            POINT_EXTR = (30., a0, 5.),
            DTAN = (0., 1., 0.),
            NB_POINT_FOND=10,
-           );
+           )
 
 #----------------------------------------------
 #                   MODELE
@@ -113,7 +113,7 @@ Mod=AFFE_MODELE(MAILLAGE=MATOT[0],
                 AFFE=(_F(
                          GROUP_MA='Vol',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),),);
+                         MODELISATION='3D',),),)
 
 #----------------------------------------------
 #           CREATION DES LEVEL SET
@@ -122,17 +122,17 @@ Mod=AFFE_MODELE(MAILLAGE=MATOT[0],
 FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MATOT[0],
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(0),
                                     GROUP_MA_FOND='FOND_'+str(0)),
-                        );
+                        )
 
 
 LSN[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   OPERATION='EXTR',
                   FISSURE=FISS[0],
-                  NOM_CHAM='LNNO',);
+                  NOM_CHAM='LNNO',)
 LST[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   OPERATION='EXTR',
                   FISSURE=FISS[0],
-                  NOM_CHAM='LTNO',);
+                  NOM_CHAM='LTNO',)
 
 #----------------------------------------------
 #                  PROPAGATION
@@ -141,7 +141,7 @@ LST[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
 # AVANCEE IMPOSEE
 da=12.0
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),)
 RI = 0.2
 RS = 1.0
 
@@ -181,7 +181,7 @@ for i in range(nbcalc) :
          MATOT[i]=DEFI_GROUP(reuse=MATOT[i],
                              MAILLAGE=MATOT[i],
                              DETR_GROUP_MA=(_F(NOM=list_FISS),
-                                            _F(NOM=list_FOND),),);
+                                            _F(NOM=list_FOND),),)
          MeH[0] =MATOT[i]
 
       MeH[j+1]=CO('MeH_%d'%(j+1))
@@ -206,7 +206,7 @@ for i in range(nbcalc) :
                                _F(CHAM_GD=CHERR[j],
                                   TYPE_CHAM='NOEU_NEUT_R',
                                   CHAM_MAJ=CHERR[j+1],),),
-                     );
+                     )
 
    MeshH[i] = ASSE_MAILLAGE(MAILLAGE_1 = MeH[j+1],
                             MAILLAGE_2 = MaFi[i],
@@ -216,7 +216,7 @@ for i in range(nbcalc) :
                          AFFE=(_F(
                          GROUP_MA='Vol',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),),);
+                         MODELISATION='3D',),),)
 
    FISSH[i] = DEFI_FISS_XFEM(MAILLAGE=MeshH[i],
                              DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
@@ -226,11 +226,11 @@ for i in range(nbcalc) :
    LSNH[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EXTR',
                        FISSURE=FISSH[i],
-                       NOM_CHAM='LNNO',);
+                       NOM_CHAM='LNNO',)
    LSTH[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EXTR',
                        FISSURE=FISSH[i],
-                       NOM_CHAM='LTNO',);
+                       NOM_CHAM='LTNO',)
 
    for j in range(0,infit+1) :
       DETRUIRE(NOM=MeH[j],)
@@ -244,9 +244,9 @@ for i in range(nbcalc) :
    MatRaf=AFFE_MATERIAU(MAILLAGE=MeshH[i],
                         MODELE=ModH[i],
                         AFFE=_F(GROUP_MA='Vol',
-                                MATER=Alu,),);
+                                MATER=Alu,),)
 
-   MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
+   MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,)
 
 
    DETRUIRE(NOM=MatRaf,)
@@ -255,8 +255,8 @@ for i in range(nbcalc) :
 
 # STEP 3: CRACK PROPAGATION ON THE REFINED MODEL
 
-   MATOT[i+1]=CO('MATOT_%d'%(i+1));
-   MaFi[i+1]=CO('MaFi_%d'%(i+1));
+   MATOT[i+1]=CO('MATOT_%d'%(i+1))
+   MaFi[i+1]=CO('MaFi_%d'%(i+1))
 
    if ( i == 1 ) :
       PROPA_FISS(
@@ -276,7 +276,7 @@ for i in range(nbcalc) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  CRIT_ANGL_BIFURCATION = 'PLAN',
-                 INFO=1,);
+                 INFO=1,)
 
    else :
 
@@ -297,29 +297,29 @@ for i in range(nbcalc) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  CRIT_ANGL_BIFURCATION = 'PLAN',
-                 INFO=1,);
+                 INFO=1,)
 
-   DETRUIRE(NOM=Mod,);
+   DETRUIRE(NOM=Mod,)
    Mod=AFFE_MODELE(MAILLAGE=MATOT[i+1],
                    AFFE=_F(GROUP_MA='Vol',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
    if ( i < nbcalc-1 ) :
       FISS[i+1]=DEFI_FISS_XFEM(MAILLAGE=MATOT[i+1],
                                DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i+1),
                                             GROUP_MA_FOND='FOND_'+str(i+1)),
-                               );
+                               )
 
 
       LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='EXTR',
                           FISSURE=FISS[i+1],
-                          NOM_CHAM='LNNO',);
+                          NOM_CHAM='LNNO',)
       LST[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='EXTR',
                           FISSURE=FISS[i+1],
-                          NOM_CHAM='LTNO',);
+                          NOM_CHAM='LTNO',)
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -373,4 +373,4 @@ TEST_TABLE(CRITERE='ABSOLU',
            TYPE_TEST='MAX',
            TABLE=TB_FOND2,)
 
-FIN();
+FIN()

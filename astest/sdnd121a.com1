@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 #
-POURSUITE(CODE='OUI',);
+POURSUITE(CODE='OUI',)
 
 import numpy as NP
 import aster
@@ -26,7 +26,7 @@ import aster
 ############################################################
 ################  Bilan energetique  #######################
 ############################################################
-tmpd = D_EULER.getValues();
+tmpd = D_EULER.getValues()
 t = NP.array(tmpd[0:len(tmpd)//2])
 fext = Fa*NP.sin(2*NP.pi*f*t)  # formule qui definit le chargement exterieur
 
@@ -42,7 +42,7 @@ tmpa = A_EULER.getValues()
 a_euler = NP.array(tmpa[len(tmpa)//2:len(tmpa)])
 del tmpa
 
-# tmpf = aster.getvectjev('FC_EULER           .VALE        ');
+# tmpf = aster.getvectjev('FC_EULER           .VALE        ')
 # fchoc_euler = NP.array(tmpf[len(tmpf)//2:len(tmpf)])
 # del tmpf
 
@@ -73,7 +73,7 @@ tmpa = A_ADAPT.getValues()
 a_adapt = NP.array(tmpa[len(tmpa)//2:len(tmpa)])
 del tmpa
 
-# tmpf = aster.getvectjev('FC_ADAPT           .VALE        ');
+# tmpf = aster.getvectjev('FC_ADAPT           .VALE        ')
 # fchoc_adapt = NP.array(tmpf[len(tmpf)//2:len(tmpf)])
 # del tmpf
 
@@ -143,19 +143,19 @@ t_inout_adapt.sort()
 
 from sdnd121a import F_linst
 t_inout_analyique=F_linst()
- 
-# Test du bilan energetique :
-TEMPSFIN = DEFI_LIST_REEL(VALE=duree,);
 
-ERRE_eul= DEFI_LIST_REEL(VALE=err_globale_E_euler,);
+# Test du bilan energetique :
+TEMPSFIN = DEFI_LIST_REEL(VALE=duree,)
+
+ERRE_eul= DEFI_LIST_REEL(VALE=err_globale_E_euler,)
 E_E_eul = DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=TEMPSFIN,
-                        VALE_FONC=ERRE_eul,);
+                        VALE_FONC=ERRE_eul,)
 
-ERRE_ada= DEFI_LIST_REEL(VALE=err_globale_E_adapt,);
+ERRE_ada= DEFI_LIST_REEL(VALE=err_globale_E_adapt,)
 E_E_ada = DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=TEMPSFIN,
-                        VALE_FONC=ERRE_ada,);
+                        VALE_FONC=ERRE_ada,)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0, TOLE_MACHINE=0.1,
                         VALE_REFE=0.0,
@@ -176,10 +176,10 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0, TOLE_MACHINE=0.1,
               )
 
 # Test de la coherence entre force de choc et cinematique :
-ERRF_ada= DEFI_LIST_REEL(VALE=err_globale_F_adap2,);
+ERRF_ada= DEFI_LIST_REEL(VALE=err_globale_F_adap2,)
 E_F_ada = DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=TEMPSFIN,
-                        VALE_FONC=ERRF_ada,);
+                        VALE_FONC=ERRF_ada,)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0,
                         VALE_REFE=0.0,
@@ -191,10 +191,10 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0,
               )
 
 # Test des instants d'entree et sortie de contact :
-tio_eul = DEFI_LIST_REEL(VALE=t_inout_euler,);
+tio_eul = DEFI_LIST_REEL(VALE=t_inout_euler,)
 tio_eulb= DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=tio_eul,
-                        VALE_FONC=tio_eul,);
+                        VALE_FONC=tio_eul,)
 
 # valeurs calculées (vale_calc_euler):
 vale_calc_euler={}
@@ -349,10 +349,10 @@ for i in range(0,len(t_inout_euler)):
                            FONCTION=tio_eulb,),
                  )
 
-tio_ada = DEFI_LIST_REEL(VALE=t_inout_adapt,);
+tio_ada = DEFI_LIST_REEL(VALE=t_inout_adapt,)
 tio_adab= DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=tio_ada,
-                        VALE_FONC=tio_ada,);
+                        VALE_FONC=tio_ada,)
 
 # valeurs calculées (vale_calc_adapt):
 vale_calc_adapt={}
@@ -525,47 +525,47 @@ for i in range(0,len(t_inout_adapt)):
 # err_globale_A_adapt = NP.sqrt( NP.sum((a_adapt-A)**2) / NP.sum(A**2) ) *100
 #
 #
-# TEMPSFIN = DEFI_LIST_REEL(VALE=duree,);
+# TEMPSFIN = DEFI_LIST_REEL(VALE=duree,)
 #
-# ERRE_eul= DEFI_LIST_REEL(VALE=err_globale_E_euler,);
+# ERRE_eul= DEFI_LIST_REEL(VALE=err_globale_E_euler,)
 # E_E_eul = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
-#                         VALE_FONC=ERRE_eul,);
+#                         VALE_FONC=ERRE_eul,)
 #
-# ERRD_eul= DEFI_LIST_REEL(VALE=err_globale_D_euler,);
+# ERRD_eul= DEFI_LIST_REEL(VALE=err_globale_D_euler,)
 # E_D_eul = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
-#                         VALE_FONC=ERRD_eul,);
+#                         VALE_FONC=ERRD_eul,)
 #
-# ERRV_eul= DEFI_LIST_REEL(VALE=err_globale_V_euler,);
+# ERRV_eul= DEFI_LIST_REEL(VALE=err_globale_V_euler,)
 # E_V_eul = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
-#                         VALE_FONC=ERRV_eul,);
+#                         VALE_FONC=ERRV_eul,)
 #
-# ERRA_eul= DEFI_LIST_REEL(VALE=err_globale_A_euler,);
+# ERRA_eul= DEFI_LIST_REEL(VALE=err_globale_A_euler,)
 # E_A_eul = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
-#                         VALE_FONC=ERRA_eul,);
+#                         VALE_FONC=ERRA_eul,)
 #
-# ERRE_ada= DEFI_LIST_REEL(VALE=err_globale_E_adapt,);
+# ERRE_ada= DEFI_LIST_REEL(VALE=err_globale_E_adapt,)
 # E_E_ada = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
-#                         VALE_FONC=ERRE_ada,);
+#                         VALE_FONC=ERRE_ada,)
 #
-# ERRD_ada= DEFI_LIST_REEL(VALE=err_globale_D_adapt,);
+# ERRD_ada= DEFI_LIST_REEL(VALE=err_globale_D_adapt,)
 # E_D_ada = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
-#                         VALE_FONC=ERRD_ada,);
+#                         VALE_FONC=ERRD_ada,)
 #
-# ERRV_ada= DEFI_LIST_REEL(VALE=err_globale_V_adapt,);
+# ERRV_ada= DEFI_LIST_REEL(VALE=err_globale_V_adapt,)
 # E_V_ada = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
-#                         VALE_FONC=ERRV_ada,);
+#                         VALE_FONC=ERRV_ada,)
 #
-# ERRA_ada= DEFI_LIST_REEL(VALE=err_globale_A_adapt,);
+# ERRA_ada= DEFI_LIST_REEL(VALE=err_globale_A_adapt,)
 # E_A_ada = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
-#                         VALE_FONC=ERRA_ada,);
+#                         VALE_FONC=ERRA_ada,)
 #
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_E_eul,
 #                             PRECISION = 1.2E-1,
@@ -573,7 +573,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             REFERENCE = 'ANALYTIQUE',
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
-#                             ),),);
+#                             ),),)
 #
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_D_eul,
 #                             PRECISION = 1.E-2,
@@ -581,7 +581,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             REFERENCE = 'ANALYTIQUE',
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
-#                             ),),);
+#                             ),),)
 #
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_V_eul,
 #                             PRECISION = 2.E-1,
@@ -589,7 +589,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             REFERENCE = 'ANALYTIQUE',
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
-#                             ),),);
+#                             ),),)
 #
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_A_eul,
 #                             PRECISION = 4.E-1,
@@ -597,7 +597,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             REFERENCE = 'ANALYTIQUE',
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
-#                             ),),);
+#                             ),),)
 #
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_E_ada,
 #                             PRECISION = 5.E-2,
@@ -605,7 +605,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             REFERENCE = 'ANALYTIQUE',
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
-#                             ),),);
+#                             ),),)
 #
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_D_ada,
 #                             PRECISION = 1.E-2,
@@ -613,7 +613,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             REFERENCE = 'ANALYTIQUE',
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
-#                             ),),);
+#                             ),),)
 #
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_V_ada,
 #                             PRECISION = 4.E-2,
@@ -621,7 +621,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             REFERENCE = 'ANALYTIQUE',
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
-#                             ),),);
+#                             ),),)
 #
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_A_ada,
 #                             PRECISION = 4.E-1,
@@ -629,6 +629,6 @@ for i in range(0,len(t_inout_adapt)):
 #                             REFERENCE = 'ANALYTIQUE',
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
-#                             ),),);
+#                             ),),)
 
-FIN();
+FIN()

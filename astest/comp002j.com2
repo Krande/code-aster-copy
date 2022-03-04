@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ for i in range(Ncal):
                                  _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
 
         DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
                                 ECHEC=_F(ACTION='DECOUPE',
@@ -75,7 +75,7 @@ for i in range(Ncal):
                    INCREMENT=_F(LIST_INST=temps),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
                                   EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
-                        );
+                        )
         #IMPR_TABLE(TABLE=RESU[i])
         DETRUIRE(NOM=temps)
         DETRUIRE(NOM=DEFLIST)
@@ -130,7 +130,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = Linst,),
                                 ECHEC=_F(ACTION='DECOUPE',
@@ -156,7 +156,7 @@ RESU_TGT=SIMU_POINT_MAT(
                    INCREMENT=_F(LIST_INST=Linst,),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
                                   EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
-                        );
+                        )
 
 DIFF_MAT=VERI_MATR_TANG()
 
@@ -175,4 +175,4 @@ TEST_TABLE(CRITERE='ABSOLU',
            TYPE_TEST='MAX',
            TABLE=DIFF_MAT,)
 
-FIN();
+FIN()

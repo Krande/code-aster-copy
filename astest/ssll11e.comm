@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 MA = LIRE_MAILLAGE(FORMAT='ASTER',
                    )
 
-# lecture du maillage de la premiere section de type couronne 
+# lecture du maillage de la premiere section de type couronne
 # Epaisseur, Rayon
 E2=0.006
 R2=(2.E-04 + pi*E2*E2) / (2.*pi*E2)
@@ -38,7 +38,7 @@ MASEC1 = LIRE_MAILLAGE(FORMAT='GMSH',
                        UNITE=18,
                        )
 
-# lecture du maillage de la deuxieme section de type couronne 
+# lecture du maillage de la deuxieme section de type couronne
 # Epaisseur, Rayon
 E1=0.005
 R1=(1.E-04 + pi*E1*E1) / (2.*pi*E1)
@@ -491,4 +491,4 @@ TEST_RESU(RESU=(_F(VALE_CALC_C=-1.64396616E-05+-9.09481830E-06j,
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.,
 FMULT=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0., 0.,
                           1., 2.,),
-                    PROL_DROITE='CONSTANT',);
+                    PROL_DROITE='CONSTANT',)
 
 RESU=MECA_STATIQUE(MODELE=MODE,
                    CHAM_MATER=MATE,

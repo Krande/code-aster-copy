@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,27 +44,27 @@ EForcN = AFFE_CHAR_MECA(FORCE_NODALE=_F(FX=0., GROUP_NO=('Top', )), MODELE=model
 
 
 # Compute modes with BC: EModal
-ASSEMBLAGE(CHAM_MATER=fieldmat, 
+ASSEMBLAGE(CHAM_MATER=fieldmat,
            CHARGE=(EModal,EForcN),
            MODELE=model,
-           MATR_ASSE=(_F(MATRICE=CO('AsseK'), OPTION='RIGI_MECA'), 
-                      _F(MATRICE=CO('AsseM'), OPTION='MASS_MECA')),  
+           MATR_ASSE=(_F(MATRICE=CO('AsseK'), OPTION='RIGI_MECA'),
+                      _F(MATRICE=CO('AsseM'), OPTION='MASS_MECA')),
            NUME_DDL=CO('numedof'))
 
 modes = CALC_MODES(MATR_MASS=AsseM, MATR_RIGI=AsseK)
 
 # Compute new matrixes with BC: EBottom and ETop
-ASSEMBLAGE(CHAM_MATER=fieldmat, 
-           CHARGE=(EBottom, ETop, EForcN), 
+ASSEMBLAGE(CHAM_MATER=fieldmat,
+           CHARGE=(EBottom, ETop, EForcN),
            MODELE=model,
-           MATR_ASSE=(_F(MATRICE=CO('AsseK2'), OPTION='RIGI_MECA'), 
-                      _F(MATRICE=CO('AsseM2'), OPTION='MASS_MECA')),  
+           MATR_ASSE=(_F(MATRICE=CO('AsseK2'), OPTION='RIGI_MECA'),
+                      _F(MATRICE=CO('AsseM2'), OPTION='MASS_MECA')),
            NUME_DDL=CO('nume2'))
 
 # Projection of modes on BC: EModal
 
-mode2 = DEFI_BASE_MODALE(NUME_REF=nume2, 
-                         RITZ=(_F(MODE_MECA=(modes, ), NMAX_MODE=(0, )), 
+mode2 = DEFI_BASE_MODALE(NUME_REF=nume2,
+                         RITZ=(_F(MODE_MECA=(modes, ), NMAX_MODE=(0, )),
                                _F(MODE_INTF=modes, NMAX_MODE=(1999, ))))
 
 numegene = NUME_DDL_GENE(BASE=mode2, STOCKAGE='PLEIN')
@@ -85,24 +85,24 @@ listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=5))
 
 rampe = DEFI_FONCTION(NOM_PARA='INST', VALE=(0.0, 0.0, 1.0, 1.0))
 
-resu = DYNA_NON_LINE(AMOR_MODAL=_F(AMOR_REDUIT=(0.05, ), MODE_MECA=modes1, NB_MODE=1), 
-                     CHAM_MATER=fieldmat, 
-                     COMPORTEMENT=_F(DEFORMATION='PETIT', RELATION='ELAS', TOUT='OUI'), 
-                     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-05), 
-                     EXCIT=(_F(CHARGE=EBottom), _F(CHARGE=ETop, FONC_MULT=rampe)), 
-                     INCREMENT=_F(LIST_INST=listr), 
-                     MODELE=model, 
+resu = DYNA_NON_LINE(AMOR_MODAL=_F(AMOR_REDUIT=(0.05, ), MODE_MECA=modes1, NB_MODE=1),
+                     CHAM_MATER=fieldmat,
+                     COMPORTEMENT=_F(DEFORMATION='PETIT', RELATION='ELAS', TOUT='OUI'),
+                     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-05),
+                     EXCIT=(_F(CHARGE=EBottom), _F(CHARGE=ETop, FONC_MULT=rampe)),
+                     INCREMENT=_F(LIST_INST=listr),
+                     MODELE=model,
                      SCHEMA_TEMPS=_F(FORMULATION='DEPLACEMENT', SCHEMA='NEWMARK'))
 
 
 # Non-linear dynamic with modal damping: test with FORCE_NODALE (#29009)
-resu2 = DYNA_NON_LINE(AMOR_MODAL=_F(AMOR_REDUIT=(0.05, ), MODE_MECA=modes1, NB_MODE=1), 
-                     CHAM_MATER=fieldmat, 
-                     COMPORTEMENT=_F(DEFORMATION='PETIT', RELATION='ELAS', TOUT='OUI'), 
+resu2 = DYNA_NON_LINE(AMOR_MODAL=_F(AMOR_REDUIT=(0.05, ), MODE_MECA=modes1, NB_MODE=1),
+                     CHAM_MATER=fieldmat,
+                     COMPORTEMENT=_F(DEFORMATION='PETIT', RELATION='ELAS', TOUT='OUI'),
                      CONVERGENCE=_F(RESI_GLOB_MAXI=1e-05),
-                     EXCIT=(_F(CHARGE=EBottom), _F(CHARGE=EForcN), _F(CHARGE=ETop, FONC_MULT=rampe)), 
-                     INCREMENT=_F(LIST_INST=listr), 
-                     MODELE=model, 
+                     EXCIT=(_F(CHARGE=EBottom), _F(CHARGE=EForcN), _F(CHARGE=ETop, FONC_MULT=rampe)),
+                     INCREMENT=_F(LIST_INST=listr),
+                     MODELE=model,
                      SCHEMA_TEMPS=_F(FORMULATION='DEPLACEMENT', SCHEMA='NEWMARK'))
 
-FIN();
+FIN()

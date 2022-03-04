@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 #
 # DEFINITION DES GROUPES DE NOEUDS
 
@@ -30,14 +30,14 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='BORD_CH1',),
                                _F(GROUP_MA='BORD_CH2',),
                                _F(GROUP_NO=('N171','N336','N345',),
-                                  NOM='RESULT',),),);
+                                  NOM='RESULT',),),)
 #
 # DEFINITION DU MODELE
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),);
+                           MODELISATION='C_PLAN',),)
 #
 # DEFINITION DU MATERIAU (REPERE D'ORTHOTROPIE = REPERE GLOBAL)
 
@@ -49,19 +49,19 @@ ACIER=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=40000000000.0,
                                  NU_TN=0.3,
                                  G_LT=4500000000.0,
                                  G_LN=4500000000.0,
-                                 G_TN=3500000000.0,),);
+                                 G_TN=3500000000.0,),)
 #
 # ATTRIBUTION DU MATERIAU
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
-COS30=cos(30*pi/180);
+COS30=cos(30*pi/180)
 
-COS30E4=1.E4*cos(30*pi/180);
+COS30E4=1.E4*cos(30*pi/180)
 
-MCOS30E4=-1.E4*cos(30*pi/180);
+MCOS30E4=-1.E4*cos(30*pi/180)
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 # DANS LE REPERE GLOBAL , ON A : 0.5*SQRT(3)*U - 0.5*V = 0.
@@ -79,13 +79,13 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                                         FY=-5000.0,),
                                      _F(GROUP_MA='BORD_CH1',
                                         FX=MCOS30E4,
-                                        FY=5000.0,),),);
+                                        FY=5000.0,),),)
 #
 # RESOLUTION
 
 DEF=MECA_STATIQUE(MODELE=MODELE,
                   CHAM_MATER=CHMAT,
-                  EXCIT=_F(CHARGE=CHARGT,),);
+                  EXCIT=_F(CHARGE=CHARGT,),)
 #
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
 
@@ -93,7 +93,7 @@ U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
              OPERATION='EXTR',
              RESULTAT=DEF,
              NOM_CHAM='DEPL',
-             NUME_ORDRE=1,);
+             NUME_ORDRE=1,)
 #
 # CALCUL DES CONTRAINTES
 
@@ -106,13 +106,13 @@ DEF2=MODI_REPERE(RESULTAT=DEF,
                               NOM_CMP=('DX','DY',),),
                  REPERE='UTILISATEUR',
                  AFFE=_F(TOUT='OUI',
-                                ANGL_NAUT=-30.0,),);
+                                ANGL_NAUT=-30.0,),)
 
 U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
               OPERATION='EXTR',
               RESULTAT=DEF2,
               NOM_CHAM='DEPL',
-              NUME_ORDRE=1,);
+              NUME_ORDRE=1,)
 
 TEST_RESU(CHAM_NO=(_F(GROUP_NO='N171',
                       CRITERE='ABSOLU',
@@ -256,5 +256,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 #

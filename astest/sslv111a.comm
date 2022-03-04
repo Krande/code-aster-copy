@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,33 +23,33 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MI=LIRE_MAILLAGE(FORMAT='MED',);
+MI=LIRE_MAILLAGE(FORMAT='MED',)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
-          RESU=_F(MAILLAGE=MI,),);
+          RESU=_F(MAILLAGE=MI,),)
 
 M=LIRE_MAILLAGE(UNITE=80,
                 FORMAT='MED',
-                INFO=2,);
+                INFO=2,)
 
 MO=AFFE_MODELE(MAILLAGE=M,
 
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 MA=DEFI_MATERIAU(ELAS=_F(E=1000.,
                          NU=0.3,
                          ALPHA=0.,),
                  THER=_F(LAMBDA=0.,
-                         RHO_CP=1.,),);
+                         RHO_CP=1.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA,),);
+                         MATER=MA,),)
 
 F1 = FORMULE(VALE="""
 1.-(1.5*cos(2.*atan2(Y,4.))+cos(4.*atan2(Y,4.))) /(16.+Y*Y)
@@ -97,7 +97,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                    FACE_IMPO=(_F(GROUP_MA='GRMA1',
                                  DY=0.,),
                               _F(GROUP_MA='GRMA2',
-                                 DX=0.,),),);
+                                 DX=0.,),),)
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                      FORCE_CONTOUR=(_F(GROUP_MA='GRMA3',
@@ -105,30 +105,30 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                                        FY=F2,),
                                     _F(GROUP_MA='GRMA4',
                                        FX=F3,
-                                       FY=F4,),),);
+                                       FY=F4,),),)
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CH2,),),);
+                          _F(CHARGE=CH2,),),)
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
                  TOUT_ORDRE='OUI',
                  SOLVEUR=_F(METHODE='MULT_FRONT'),
-                 OPTION=('ERZ1_ELEM','ERZ2_ELEM','ERME_ELEM','ERME_ELNO',),);
+                 OPTION=('ERZ1_ELEM','ERZ2_ELEM','ERME_ELEM','ERME_ELNO',),)
 
 SIGZZ1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIZ1_NOEU',
-                  NUME_ORDRE=1,);
+                  NUME_ORDRE=1,)
 
 SIGZZ2=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIZ2_NOEU',
-                  NUME_ORDRE=1,);
+                  NUME_ORDRE=1,)
 
 TEST_RESU(CHAM_NO=(_F(CRITERE='RELATIF',
                       NOM_CMP='SIXX',
@@ -377,7 +377,7 @@ IMPR_RESU(FORMAT="RESULTAT",MODELE=MO,
                    NOM_CMP='NUEST',
                    BORNE_INF=10.0,
                    SOUS_TITRE=
-                   ('ESTIMATEUR DERREUR EN RESIDU :LISTE DES MAILLES OU LERREUR RELATIVE EST SUPERIEURE A 10 POUR CENT',),),),);
+                   ('ESTIMATEUR DERREUR EN RESIDU :LISTE DES MAILLES OU LERREUR RELATIVE EST SUPERIEURE A 10 POUR CENT',),),),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    POINT=1,
@@ -455,23 +455,23 @@ DEPL1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=RESU,
                  NOM_CHAM='DEPL',
-                 NUME_ORDRE=1,);
+                 NUME_ORDRE=1,)
 
 M=MODI_MAILLAGE(reuse =M,
                 MAILLAGE=M,
                 DEFORME=_F(OPTION='TRAN',
-                           DEPL=DEPL1,),);
+                           DEPL=DEPL1,),)
 
 MO2=AFFE_MODELE(MAILLAGE=M,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='C_PLAN',),);
+                        MODELISATION='C_PLAN',),)
 
 CH21=AFFE_CHAR_MECA(MODELE=MO2,
                     FACE_IMPO=(_F(GROUP_MA='GRMA1',
                                   DY=0.,),
                                _F(GROUP_MA='GRMA2',
-                                  DX=0.,),),);
+                                  DX=0.,),),)
 
 CH22=AFFE_CHAR_MECA_F(MODELE=MO2,
                       FORCE_CONTOUR=(_F(GROUP_MA='GRMA3',
@@ -479,12 +479,12 @@ CH22=AFFE_CHAR_MECA_F(MODELE=MO2,
                                         FY=F2,),
                                      _F(GROUP_MA='GRMA4',
                                         FX=F3,
-                                        FY=F4,),),);
+                                        FY=F4,),),)
 
 RESU2=MECA_STATIQUE(MODELE=MO2,
                     CHAM_MATER=CM,
                     EXCIT=(_F(CHARGE=CH21,),
-                           _F(CHARGE=CH22,),),);
+                           _F(CHARGE=CH22,),),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU,
@@ -503,6 +503,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,36 +22,36 @@
 # ELEMENTS QUADRATIQUES
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),);
+                       MODELISATION='D_PLAN',),)
 
 TRAC1=DEFI_FONCTION(NOM_PARA='EPSI',
                     VALE=(0.00155,310.0,0.4,600.0,1.0,700.0,),
-                    PROL_DROITE='LINEAIRE',);
+                    PROL_DROITE='LINEAIRE',)
 
 TRAC2=DEFI_FONCTION(NOM_PARA='EPSI',
                     VALE=(0.00221,442.0,0.4,600.0,1.0,650.0,),
-                    PROL_DROITE='LINEAIRE',);
+                    PROL_DROITE='LINEAIRE',)
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                            NU=0.3,
                            ALPHA=0.0,),
-                   TRACTION=_F(SIGM=TRAC1,),);
+                   TRACTION=_F(SIGM=TRAC1,),)
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                            NU=0.3,
                            ALPHA=0.0,),
-                   TRACTION=_F(SIGM=TRAC2,),);
+                   TRACTION=_F(SIGM=TRAC2,),)
 
 MAT3=DEFI_MATERIAU(ELAS=_F(E=60000000000.0,
                            NU=0.3,
-                           ALPHA=0.0,),);
+                           ALPHA=0.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='AUSTENI',
@@ -59,7 +59,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                           _F(GROUP_MA='FERRITI',
                              MATER=MAT2,),
                           _F(GROUP_MA='GOUP',
-                             MATER=MAT3,),),);
+                             MATER=MAT3,),),)
 
 CL=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(GROUP_NO='PB',
@@ -67,22 +67,22 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                             _F(GROUP_NO='PB',
                                DY=0.0,),
                             _F(GROUP_NO='PA',
-                               DX=0.0,),),);
+                               DX=0.0,),),)
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=_F(GROUP_NO='PA',
-                              DY=1.0,),);
+                              DY=1.0,),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.4,
                                      NOMBRE=40,),
                                   _F(JUSQU_A=1.0,
-                                     NOMBRE=180,),),);
+                                     NOMBRE=180,),),)
 
 CHAMDEPL=STAT_NON_LINE(MODELE=MO,
                        CHAM_MATER=CHMAT,
@@ -96,7 +96,7 @@ CHAMDEPL=STAT_NON_LINE(MODELE=MO,
                        INCREMENT=_F(LIST_INST=L_INST,),
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1,),
-                       CONVERGENCE=_F(RESI_GLOB_RELA=0.001,),);
+                       CONVERGENCE=_F(RESI_GLOB_RELA=0.001,),)
 
 CHAMDEPL=CALC_CHAMP(reuse=CHAMDEPL,RESULTAT=CHAMDEPL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -106,7 +106,7 @@ FOND_NEW=DEFI_FOND_FISS(MAILLAGE=MA,SYME='NON',
                     FOND_FISS=_F(GROUP_NO='PFI1',),
                     LEVRE_SUP=_F(GROUP_MA = 'LEVR_SUP',),
                     LEVRE_INF=_F(GROUP_MA = 'LEVR_INF',),
-                    );
+                    )
 
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA0
@@ -119,7 +119,7 @@ G5_0=CALC_G(OPTION='G',
                      FISSURE=FOND_NEW,
                      ),
            RESULTAT=CHAMDEPL,NUME_ORDRE=5,
-            );
+            )
 #
 
 G10_0=CALC_G(OPTION='G',
@@ -129,7 +129,7 @@ G10_0=CALC_G(OPTION='G',
                       R_SUP=0.18,
                       ),
            RESULTAT=CHAMDEPL,NUME_ORDRE=10,
-             );
+             )
 #
 
 G20_0=CALC_G(OPTION='G',
@@ -139,7 +139,7 @@ G20_0=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
            RESULTAT=CHAMDEPL,NUME_ORDRE=20,
-             );
+             )
 #
 
 G30_0=CALC_G(OPTION='G',
@@ -149,7 +149,7 @@ G30_0=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=30,
-             );
+             )
 #
 
 G40_0=CALC_G(OPTION='G',
@@ -159,7 +159,7 @@ G40_0=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=40,
-             );
+             )
 #
 
 G70_0=CALC_G(OPTION='G',
@@ -169,7 +169,7 @@ G70_0=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=70,
-             );
+             )
 #
 
 G100_0=CALC_G(OPTION='G',
@@ -179,7 +179,7 @@ G100_0=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=100,
-              );
+              )
 #
 
 G130_0=CALC_G(OPTION='G',
@@ -189,7 +189,7 @@ G130_0=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=130,
-               );
+               )
 #
 
 G160_0=CALC_G(OPTION='G',
@@ -199,7 +199,7 @@ G160_0=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=160,
-               );
+               )
 #
 
 G190_0=CALC_G(OPTION='G',
@@ -209,7 +209,7 @@ G190_0=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=190,
-               );
+               )
 #
 
 G220_0=CALC_G(OPTION='G',
@@ -219,7 +219,7 @@ G220_0=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=220,
-               );
+               )
 
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA1
@@ -232,7 +232,7 @@ G5_1=CALC_G(OPTION='G',
                      FISSURE=FOND_NEW,
                      ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=5,
-             );
+             )
 #
 
 G10_1=CALC_G(OPTION='G',
@@ -242,7 +242,7 @@ G10_1=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=10,
-              );
+              )
 #
 
 G20_1=CALC_G(OPTION='G',
@@ -252,7 +252,7 @@ G20_1=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=20,
-              );
+              )
 #
 
 G30_1=CALC_G(OPTION='G',
@@ -262,7 +262,7 @@ G30_1=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=30,
-              );
+              )
 #
 
 G40_1=CALC_G(OPTION='G',
@@ -272,7 +272,7 @@ G40_1=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=40,
-              );
+              )
 #
 
 G70_1=CALC_G(OPTION='G',
@@ -282,7 +282,7 @@ G70_1=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=70,
-              );
+              )
 #
 
 G100_1=CALC_G(OPTION='G',
@@ -292,7 +292,7 @@ G100_1=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=100,
-               );
+               )
 #
 
 G130_1=CALC_G(OPTION='G',
@@ -302,7 +302,7 @@ G130_1=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=130,
-               );
+               )
 #
 
 G160_1=CALC_G(OPTION='G',
@@ -312,7 +312,7 @@ G160_1=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=160,
-               );
+               )
 #
 
 G190_1=CALC_G(OPTION='G',
@@ -322,7 +322,7 @@ G190_1=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=190,
-               );
+               )
 #
 
 G220_1=CALC_G(OPTION='G',
@@ -332,7 +332,7 @@ G220_1=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=220,
-               );
+               )
 
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA2
@@ -345,7 +345,7 @@ G5_2=CALC_G(OPTION='G',
                      FISSURE=FOND_NEW,
                      ),
            RESULTAT=CHAMDEPL,NUME_ORDRE=5,
-            );
+            )
 #
 
 G10_2=CALC_G(OPTION='G',
@@ -355,7 +355,7 @@ G10_2=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=10,
-             );
+             )
 #
 
 G20_2=CALC_G(OPTION='G',
@@ -365,7 +365,7 @@ G20_2=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=20,
-             );
+             )
 #
 
 G30_2=CALC_G(OPTION='G',
@@ -375,7 +375,7 @@ G30_2=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=30,
-             );
+             )
 #
 
 G40_2=CALC_G(OPTION='G',
@@ -385,7 +385,7 @@ G40_2=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=40,
-             );
+             )
 #
 
 G70_2=CALC_G(OPTION='G',
@@ -395,7 +395,7 @@ G70_2=CALC_G(OPTION='G',
                       FISSURE=FOND_NEW,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=70,
-             );
+             )
 #
 
 G100_2=CALC_G(OPTION='G',
@@ -405,7 +405,7 @@ G100_2=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=100,
-              );
+              )
 #
 
 G130_2=CALC_G(OPTION='G',
@@ -415,7 +415,7 @@ G130_2=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=130,
-              );
+              )
 #
 
 G160_2=CALC_G(OPTION='G',
@@ -425,7 +425,7 @@ G160_2=CALC_G(OPTION='G',
                        FISSURE=FOND_NEW,
                        ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=160,
-              );
+              )
 #
 
 G190_2=CALC_G(OPTION='G',
@@ -435,7 +435,7 @@ G190_2=CALC_G(OPTION='G',
                        R_SUP=2.0,
                        ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=190,
-              );
+              )
 #
 
 G220_2=CALC_G(OPTION='G',
@@ -445,7 +445,7 @@ G220_2=CALC_G(OPTION='G',
                        R_SUP=2.0,
                        ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=220,
-              );
+              )
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA3
 # --------------------------------------
@@ -457,7 +457,7 @@ G5_3=CALC_G(OPTION='G',
                      R_SUP=3.0,
                      ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=5,
-             );
+             )
 #
 
 G10_3=CALC_G(OPTION='G',
@@ -467,7 +467,7 @@ G10_3=CALC_G(OPTION='G',
                       R_SUP=3.0,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=10,
-              );
+              )
 #
 
 G20_3=CALC_G(OPTION='G',
@@ -477,7 +477,7 @@ G20_3=CALC_G(OPTION='G',
                       R_SUP=3.0,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=20,
-              );
+              )
 #
 
 G30_3=CALC_G(OPTION='G',
@@ -487,7 +487,7 @@ G30_3=CALC_G(OPTION='G',
                       R_SUP=3.0,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=30,
-              );
+              )
 #
 
 G40_3=CALC_G(OPTION='G',
@@ -497,7 +497,7 @@ G40_3=CALC_G(OPTION='G',
                       R_SUP=3.0,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=40,
-              );
+              )
 #
 
 G70_3=CALC_G(OPTION='G',
@@ -507,7 +507,7 @@ G70_3=CALC_G(OPTION='G',
                       R_SUP=3.0,
                       ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=70,
-              );
+              )
 #
 
 G100_3=CALC_G(OPTION='G',
@@ -517,7 +517,7 @@ G100_3=CALC_G(OPTION='G',
                        R_SUP=3.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=100,
-               );
+               )
 #
 
 G130_3=CALC_G(OPTION='G',
@@ -527,7 +527,7 @@ G130_3=CALC_G(OPTION='G',
                        R_SUP=3.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=130,
-               );
+               )
 #
 
 G160_3=CALC_G(OPTION='G',
@@ -537,7 +537,7 @@ G160_3=CALC_G(OPTION='G',
                        R_SUP=3.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=160,
-               );
+               )
 #
 
 G190_3=CALC_G(OPTION='G',
@@ -547,7 +547,7 @@ G190_3=CALC_G(OPTION='G',
                        R_SUP=3.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=190,
-               );
+               )
 #
 
 G220_3=CALC_G(OPTION='G',
@@ -557,7 +557,7 @@ G220_3=CALC_G(OPTION='G',
                        R_SUP=3.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=220,
-               );
+               )
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA4
 # --------------------------------------
@@ -569,7 +569,7 @@ G5_4=CALC_G(OPTION='G',
                      R_SUP=5.0,
                      ),
              RESULTAT=CHAMDEPL,NUME_ORDRE=5,
-            );
+            )
 #
 
 G10_4=CALC_G(OPTION='G',
@@ -579,7 +579,7 @@ G10_4=CALC_G(OPTION='G',
                       R_SUP=5.0,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=10,
-             );
+             )
 #
 
 G20_4=CALC_G(OPTION='G',
@@ -589,7 +589,7 @@ G20_4=CALC_G(OPTION='G',
                       R_SUP=5.0,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=20,
-             );
+             )
 #
 
 G30_4=CALC_G(OPTION='G',
@@ -599,7 +599,7 @@ G30_4=CALC_G(OPTION='G',
                       R_SUP=5.0,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=30,
-            );
+            )
 #
 
 G40_4=CALC_G(OPTION='G',
@@ -609,7 +609,7 @@ G40_4=CALC_G(OPTION='G',
                       R_SUP=5.0,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=40,
-             );
+             )
 #
 
 G70_4=CALC_G(OPTION='G',
@@ -619,7 +619,7 @@ G70_4=CALC_G(OPTION='G',
                       R_SUP=5.0,
                       ),
             RESULTAT=CHAMDEPL,NUME_ORDRE=70,
-             );
+             )
 #
 
 G100_4=CALC_G(OPTION='G',
@@ -629,7 +629,7 @@ G100_4=CALC_G(OPTION='G',
                        R_SUP=5.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=100,
-               );
+               )
 #
 
 G130_4=CALC_G(OPTION='G',
@@ -639,7 +639,7 @@ G130_4=CALC_G(OPTION='G',
                        R_SUP=5.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=130,
-               );
+               )
 #
 
 G160_4=CALC_G(OPTION='G',
@@ -649,7 +649,7 @@ G160_4=CALC_G(OPTION='G',
                        R_SUP=5.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=160,
-               );
+               )
 #
 
 G190_4=CALC_G(OPTION='G',
@@ -659,7 +659,7 @@ G190_4=CALC_G(OPTION='G',
                        R_SUP=5.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=190,
-               );
+               )
 #
 
 G220_4=CALC_G(OPTION='G',
@@ -669,7 +669,7 @@ G220_4=CALC_G(OPTION='G',
                        R_SUP=5.0,
                        ),
               RESULTAT=CHAMDEPL,NUME_ORDRE=220,
-               );
+               )
 
 #
 # IMPRESSION DES RESULTATS COURONNE 0
@@ -871,5 +871,5 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 test = code_aster.TestCase()
 test.assertTrue( True )
 
-FIN();
+FIN()
 #

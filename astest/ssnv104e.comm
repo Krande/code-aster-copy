@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,25 +26,25 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_MA='CON1',),
-                             _F(GROUP_MA='CON2')));
+                             _F(GROUP_MA='CON2')))
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='AXIS')));
+                        MODELISATION='AXIS')))
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.E4,
                           NU=0.3,
-                          ALPHA=1.E-2));
+                          ALPHA=1.E-2))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT));
+                            MATER=MAT))
 
 CHA1 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
@@ -60,7 +60,7 @@ CHA1 = DEFI_CONTACT(MODELE         = MO,
                              COEF_CONT     = 10000.,
                              ),
                           ),
-                   );
+                   )
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='SPHSUP',
@@ -69,18 +69,18 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                  DY=2.0,),
                               _F(GROUP_NO='AXE',
                                  DX=0.0)),
-                    INFO=1);
+                    INFO=1)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0,2.,0.),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.0,
                                      NOMBRE=10),
                                   _F(JUSQU_A=2.0,
-                                     NOMBRE=10)));
+                                     NOMBRE=10)))
 
 RESU0=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -96,7 +96,7 @@ RESU0=STAT_NON_LINE(MODELE=MO,
                                  UNITE=37,),),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.))
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -137,7 +137,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.,
-                                  ITER_GLOB_MAXI=30 ));
+                                  ITER_GLOB_MAXI=30 ))
 
 
 
@@ -145,21 +145,21 @@ RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),R
 
 
 TAB_OBS = RECU_TABLE (CO = RESU,
-                      NOM_TABLE = 'OBSERVATION');
+                      NOM_TABLE = 'OBSERVATION')
 
-IMPR_TABLE(TABLE=TAB_OBS);
+IMPR_TABLE(TABLE=TAB_OBS)
 
 SIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIEF_ELGA',
-                  NUME_ORDRE=10,);
+                  NUME_ORDRE=10,)
 
 SIELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIGM_ELNO',
-                  NUME_ORDRE=10,);
+                  NUME_ORDRE=10,)
 
 TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N291',
                        CRITERE='RELATIF',
@@ -231,7 +231,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
 #           UNITE=37,
 #           RESU=_F(MAILLAGE=MA,
 #                   RESULTAT=RESU,
-#                   NOM_CHAM=('DEPL','CONT_NOEU')));
+#                   NOM_CHAM=('DEPL','CONT_NOEU')))
 
 # TEST DE LA FONCTIONNALITE GLISSIERE:
 # On teste que les noeuds restent bien colles apres contact
@@ -243,9 +243,9 @@ TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONTACT',
                                  NOM_CHAM='CONT_NOEU',
                                  LIST_INST=L_INST,
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION'));
+                                 OPERATION='EXTRACTION'))
 
-IMPR_TABLE(TABLE=TAB_CONT);
+IMPR_TABLE(TABLE=TAB_CONT)
 
 # -- A T=2sec
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -483,4 +483,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   CRITERE='ABSOLU',),
           )
 
-FIN();
+FIN()

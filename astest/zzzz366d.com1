@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,20 +19,20 @@
 
 # person_in_charge: nicolas.sellenet at edf.fr
 POURSUITE(CODE='OUI')
-     
-              
-IMPR_JEVEUX (ENTITE='REPERTOIRE', CLASSE='G')             
- 
-IMPR_CO (CONCEPT=(_F(NOM=MAIL),       
-                  _F(NOM=MODL10),     
-                  _F(NOM=CHAM10_1),   
-                  _F(NOM=CHAM10_2),   
-                  _F(NOM=CHAM10_3),   
-                  _F(NOM=MAIL2),      
-                  _F(NOM=MODL04),     
-                  _F(NOM=CHAM04_1),   
-                  _F(NOM=CHAM04_2),   
+
+
+IMPR_JEVEUX (ENTITE='REPERTOIRE', CLASSE='G')
+
+IMPR_CO (CONCEPT=(_F(NOM=MAIL),
+                  _F(NOM=MODL10),
+                  _F(NOM=CHAM10_1),
+                  _F(NOM=CHAM10_2),
+                  _F(NOM=CHAM10_3),
+                  _F(NOM=MAIL2),
+                  _F(NOM=MODL04),
+                  _F(NOM=CHAM04_1),
+                  _F(NOM=CHAM04_2),
                   _F(NOM=CHAM04_3),  )
         )
-              
+
 FIN()

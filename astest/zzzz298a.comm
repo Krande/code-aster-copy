@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST0_24','RUPTURE0_46',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST0_24','RUPTURE0_46',),)
 
 #----------------------------------------------
 #                   MAILLAGE
@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('POST
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED')
 
 #----------------------------------------------
-#                   MODELE 
+#                   MODELE
 #----------------------------------------------
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
@@ -61,15 +61,15 @@ EFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
                      VALE=(0., 205000.E6,
-                           1., 205000.E6),);
+                           1., 205000.E6),)
 
 NUFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
                       VALE=(0., 0.,
-                            1., 0.),);
+                            1., 0.),)
 
-ALPHA=DEFI_CONSTANTE(VALE=0.);
+ALPHA=DEFI_CONSTANTE(VALE=0.)
 
 MATTEMP=DEFI_MATERIAU(ELAS_FO=_F(E=EFTEMP,
                                  NU=NUFTEMP,
@@ -99,13 +99,13 @@ EFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
                      VALE=(0., 205000.E6,
-                           1., 205000.E6),);
+                           1., 205000.E6),)
 
 NUFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
                       VALE=(0., 0.,
-                            1., 0.),);
+                            1., 0.),)
 
 MATNEUT=DEFI_MATERIAU(ELAS_FO=_F(E=EFNEUT,
                                  NU=NUFNEUT))
@@ -125,7 +125,7 @@ CHMANEUT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                                     NOM_VARC='NEUT1'))
 
 #----------------------------------------------
-#                   CHARGEMENTS 
+#                   CHARGEMENTS
 #----------------------------------------------
 
 CHA1=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -133,11 +133,11 @@ CHA1=AFFE_CHAR_MECA(MODELE=MODELE,
                                 DX=0.,
                                 DY=0.,
                                 DZ=0.))
-                                
+
 CHA2=AFFE_CHAR_MECA(MODELE=MODELE,
                     PRES_REP=_F(GROUP_MA='SURFSUP',
                                 PRES=-1.E6))
-                                    
+
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
@@ -147,9 +147,9 @@ CHA2=AFFE_CHAR_MECA(MODELE=MODELE,
 #---
 
 RESU=MECA_STATIQUE(MODELE=MODELE,
-                   CHAM_MATER=CHAMPMA,              
+                   CHAM_MATER=CHAMPMA,
                    EXCIT=(_F(CHARGE=CHA1),
-                          _F(CHARGE=CHA2)))                   
+                          _F(CHARGE=CHA2)))
 
 #---
 # 2. avec la variable de commande TEMP
@@ -346,4 +346,4 @@ TEST_TABLE(VALE_CALC=100,
                      VALE_I=1,),
            )
 
-FIN();
+FIN()

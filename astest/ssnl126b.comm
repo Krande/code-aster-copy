@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,36 +26,36 @@ MODI_MAILLAGE(reuse =mail, MAILLAGE=mail, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,)
 modele=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 CC=AFFE_CHAR_MECA(MODELE=modele,
                   DDL_IMPO=(_F(GROUP_MA='ENCAST',
                                DX=0.0,
                                DY=0.0,
-                               DZ=0.0,),),);
+                               DZ=0.0,),),)
 
 CSEL=AFFE_CHAR_MECA(MODELE=modele,
                   FORCE_FACE=_F(GROUP_MA='EFFORT',
-                                FX=-20000000.0,),);
+                                FX=-20000000.0,),)
 
 acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,RHO=7800.,
                             NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=70000000000.0,
-                                 SY=4000000.0,),);
+                                 SY=4000000.0,),)
 
 ch_mat=AFFE_MATERIAU(MAILLAGE=mail,
                      AFFE=_F(TOUT='OUI',
-                             MATER=acier,),);
+                             MATER=acier,),)
 
 fonc=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0.0,0.0,1.0,1.0,),);
+                   VALE=(0.0,0.0,1.0,1.0,),)
 #listinst=DEFI_LIST_REEL(DEBUT=0.0,
 #                    INTERVALLE=_F(JUSQU_A=1.0,
-#                                  NOMBRE=10,),);
+#                                  NOMBRE=10,),)
 
 listinst=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1,
-                                  NOMBRE=10,),);
+                                  NOMBRE=10,),)
 
 resuel=STAT_NON_LINE(MODELE=modele,
                    CHAM_MATER=ch_mat,
@@ -72,7 +72,7 @@ resuel=STAT_NON_LINE(MODELE=modele,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                   ITER_GLOB_MAXI=10,),
                    CRIT_STAB=_F()
-                  );
+                  )
 
 resuel=STAT_NON_LINE(reuse=resuel,
                    MODELE=modele,
@@ -91,10 +91,10 @@ resuel=STAT_NON_LINE(reuse=resuel,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                   ITER_GLOB_MAXI=10,),
                    CRIT_STAB=_F()
-                  );
+                  )
 
 TABSPEC0=RECU_TABLE(CO=resuel,
-                   NOM_TABLE='ANALYSE_MODALE',);
+                   NOM_TABLE='ANALYSE_MODALE',)
 
 IMPR_TABLE(TABLE=TABSPEC0)
 
@@ -117,7 +117,7 @@ TEST_TABLE(
 # ELASTOPLASTIQUE
 CS=AFFE_CHAR_MECA(MODELE=modele,
                   FORCE_FACE=_F(GROUP_MA='EFFORT',
-                                FX=-10000000.0,),);
+                                FX=-10000000.0,),)
 resu=STAT_NON_LINE(MODELE=modele,
                    CHAM_MATER=ch_mat,
                    EXCIT=(_F(CHARGE=CC,),
@@ -133,7 +133,7 @@ resu=STAT_NON_LINE(MODELE=modele,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                   ITER_GLOB_MAXI=10,),
                    CRIT_STAB=_F()
-                  );
+                  )
 
 resu=STAT_NON_LINE(reuse=resu,
                    MODELE=modele,
@@ -152,10 +152,10 @@ resu=STAT_NON_LINE(reuse=resu,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                   ITER_GLOB_MAXI=10,),
                    CRIT_STAB=_F()
-                  );
+                  )
 
 TABSPEC1=RECU_TABLE(CO=resu,
-                   NOM_TABLE='ANALYSE_MODALE',);
+                   NOM_TABLE='ANALYSE_MODALE',)
 
 IMPR_TABLE(TABLE=TABSPEC1)
 
@@ -272,4 +272,4 @@ MODES = NORM_MODE(reuse =MODES,
 
 
 
-FIN();
+FIN()

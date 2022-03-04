@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,20 +26,20 @@
 #---------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-PLAQ_MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
+PLAQ_MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',)
 #
 
 MODEL=AFFE_MODELE(MAILLAGE=PLAQ_MA,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='DST',),);
+                          MODELISATION='DST',),)
 
 PLAQ_MA=DEFI_GROUP(reuse =PLAQ_MA,
                    MAILLAGE=PLAQ_MA,
                    CREA_GROUP_NO=_F(GROUP_MA='BORDS',
-                                    NOM='BORDS',),);
+                                    NOM='BORDS',),)
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES
@@ -48,7 +48,7 @@ PLAQ_MA=DEFI_GROUP(reuse =PLAQ_MA,
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
                         COQUE=_F(GROUP_MA='TOUT_ELT',
                                  EPAIS=1.0,
-                                 ANGL_REP=(15.5,0.0,),),);
+                                 ANGL_REP=(15.5,0.0,),),)
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES MATERIAUX
@@ -56,12 +56,12 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                             NU=0.3,
-                            RHO=8000.0,),);
+                            RHO=8000.0,),)
 #
 
 MAT=AFFE_MATERIAU(MAILLAGE=PLAQ_MA,
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
+                          MATER=ACIER,),)
 #
 #---------------------------------------------------------------------
 #                     CHARGEMENTS
@@ -69,7 +69,7 @@ MAT=AFFE_MATERIAU(MAILLAGE=PLAQ_MA,
 
 CHAR0=AFFE_CHAR_MECA(MODELE=MODEL,
                      DDL_IMPO=_F(GROUP_NO='BORDS',
-                                 DZ=0.0,),);
+                                 DZ=0.0,),)
 #
 #---------------------------------------------------------------------
 #                     RESOLUTION
@@ -79,25 +79,25 @@ M_EL_RIG=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODEL,
                         CHAM_MATER=MAT,
                         CARA_ELEM=CARA_ELE,
-                        CHARGE=CHAR0,);
+                        CHARGE=CHAR0,)
 #
 
 M_EL_MAS=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODEL,
                         CHAM_MATER=MAT,
                         CARA_ELEM=CARA_ELE,
-                        CHARGE=CHAR0,);
+                        CHARGE=CHAR0,)
 #
 
-NU=NUME_DDL(MATR_RIGI=M_EL_RIG,);
+NU=NUME_DDL(MATR_RIGI=M_EL_RIG,)
 #
 
 M_AS_RIG=ASSE_MATRICE(MATR_ELEM=M_EL_RIG,
-                      NUME_DDL=NU,);
+                      NUME_DDL=NU,)
 #
 
 M_AS_MAS=ASSE_MATRICE(MATR_ELEM=M_EL_MAS,
-                      NUME_DDL=NU,);
+                      NUME_DDL=NU,)
 #
 
 MODES=CALC_MODES(MATR_RIGI=M_AS_RIG,
@@ -173,4 +173,4 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                 ),
           )
 
-FIN();
+FIN()

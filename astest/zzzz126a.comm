@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ IMPR_RESU(FORMAT='RESULTAT',
           RESU=_F(CHAM_GD=ACH03,
                   IMPR_COOR='NON',
                   FORMAT_R='1PE12.5',),
-          INFO=1,);
+          INFO=1,)
 
 # C : CHAM_NO_NEUT_F :
 # ------------------
@@ -140,14 +140,14 @@ ACH06=CREA_CHAMP(INFO=2,
                  OPTION = 'NSPG_NBVA',
                  MODELE=MO,
                  PROL_ZERO='OUI',
-                 );
+                 )
 
 IMPR_RESU(FORMAT='RESULTAT',
           UNITE=8,
           RESU=_F(CHAM_GD=ACH06,
                   IMPR_COOR='NON',
                   FORMAT_R='1PE12.5',),
-          INFO=1,);
+          INFO=1,)
 
 #================================================================
 #  VALIDATION :CREA_CHAMP/ASSE
@@ -525,7 +525,7 @@ TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
 # F : CHAM_NO_DEPL_R (NOEU)
 # -------------------------
 
-T1=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=1,SEPARATEUR=' ');
+T1=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=1,SEPARATEUR=' ')
 IMPR_TABLE(TABLE=T1)
 IMPR_CO(CONCEPT=_F(NOM=T1))
 
@@ -544,7 +544,7 @@ TEST_RESU(CHAM_NO=_F(GROUP_NO='A2',
 # G : CHAM_ELEM_SIEF_R (ELNO)
 # ---------------------------
 
-T2=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=2,SEPARATEUR=' ');
+T2=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=2,SEPARATEUR=' ')
 
 CH2=CREA_CHAMP(OPERATION='EXTR', INFO=2,
               TYPE_CHAM='ELNO_SIEF_R',TABLE=T2,
@@ -574,7 +574,7 @@ TEST_RESU(CHAM_ELEM=_F(CRITERE='ABSOLU',
 # H : CHAM_ELEM_SIEF_R (ELGA)
 # ---------------------------
 
-T3=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=3,SEPARATEUR=' ');
+T3=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=3,SEPARATEUR=' ')
 
 CH3=CREA_CHAMP(OPERATION='EXTR', INFO=2,
               TYPE_CHAM='ELGA_SIEF_R',TABLE=T3,
@@ -605,7 +605,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
 # I : CHAM_ELEM_ENER_R (ELEM)
 # ---------------------------
 
-T4=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=4,SEPARATEUR=' ');
+T4=LIRE_TABLE(UNITE=39,FORMAT='ASTER',NUME_TABLE=4,SEPARATEUR=' ')
 
 CH4=CREA_CHAMP(OPERATION='EXTR',INFO=2,
               TYPE_CHAM='ELEM_ENER_R',TABLE=T4,

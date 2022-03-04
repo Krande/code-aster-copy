@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # lecture maillage lineique
-MAPOU=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,);
+MAPOU=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,)
 
 
 
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
-                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_TG',),);
+                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_TG',),)
 
 
 
@@ -43,24 +43,24 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
 # LES MATERIAUX
 BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10,
                             NU=0.25,
-                            RHO=9167.0,),);
+                            RHO=9167.0,),)
 
 #
 # LES CHAMPS DE MATERIAUX
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
                     AFFE=_F(TOUT='OUI', MATER=(BETON)),
-                         );
+                         )
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
                         DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,  DRX=0.0, DRY = 0.0, DRZ=0.0,),
                                   ),)
 
 CHARGT=AFFE_CHAR_MECA(MODELE=MOPOU,
-                      FORCE_NODALE=_F(GROUP_NO='B', FZ=1.E4,),);
+                      FORCE_NODALE=_F(GROUP_NO='B', FZ=1.E4,),)
 
 # RESOLUTION DU PROBLEME ELASTIQUE
 U1=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
-                  EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
+                  EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),)
 
 
 # CALCUL DE L'ENERGIE POTENTIELLE
@@ -105,7 +105,7 @@ MASSELE=CALC_MATR_ELEM(CARA_ELEM=POUCA,
                             MODELE=MOPOU,
                             CHAM_MATER=CHMAT,
                             CHARGE = BLOQUAGE,
-                            );
+                            )
         #  -------------                  -----------------
 RIGIELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                             MODE_FOURIER=0,
@@ -114,19 +114,19 @@ RIGIELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                             MODELE=MOPOU,
                             CHAM_MATER=CHMAT,
                             CHARGE = BLOQUAGE,
-                            );
+                            )
         #  -------------                  -----------------
 NUM=NUME_DDL(
                    MATR_RIGI=RIGIELE,
-                     );
+                     )
         #  -------------                  -----------------
 MASS=ASSE_MATRICE(NUME_DDL=NUM,
                           MATR_ELEM=MASSELE,
-                          );
+                          )
         #  -------------                  -----------------
 KASS=ASSE_MATRICE(NUME_DDL=NUM,
                           MATR_ELEM=RIGIELE,
-                          );
+                          )
 
 
 MODES=CALC_MODES(MATR_RIGI=KASS,
@@ -170,4 +170,4 @@ TEST_TABLE(
 
 
 
-FIN();
+FIN()

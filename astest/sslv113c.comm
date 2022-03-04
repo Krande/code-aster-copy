@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,39 +21,39 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MESH=LIRE_MAILLAGE(FORMAT='MED',);
+MESH=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MESH,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
 MESH=MODI_MAILLAGE(reuse =MESH,
                    MAILLAGE=MESH,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('GRMA1','GRMA2','GRMA3','GRMA4',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('GRMA1','GRMA2','GRMA3','GRMA4',),),)
 ##IMPR_RESU(FORMAT="RESULTAT",
 ##FORMAT='MED',
 ##
 ##RESU=_F(MAILLAGE=MESH,),
-##);
+##)
 
 
 MA1=DEFI_MATERIAU(ELAS=_F(E=2.0,
                           NU=0.3,
-                          ALPHA=0.0,),);
+                          ALPHA=0.0,),)
 
 MA2=DEFI_MATERIAU(ELAS=_F(E=1.0,
                           NU=0.3,
-                          ALPHA=0.0,),);
+                          ALPHA=0.0,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MESH,
                  AFFE=(_F(GROUP_MA='DOM1',
                           MATER=MA1,),
                        _F(GROUP_MA='DOM2',
-                          MATER=MA2,),),);
+                          MATER=MA2,),),)
 
 #-----------------------------------------------------------------------
 #
@@ -73,16 +73,16 @@ CHARPRIM=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_CONTOUR=(_F(GROUP_MA='GRMA3',
                                           FX=1.0,),
                                        _F(GROUP_MA='GRMA4',
-                                          FX=-2.0,),),);
+                                          FX=-2.0,),),)
 
 RESUPRIM=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CM,
-                       EXCIT=_F(CHARGE=CHARPRIM,),);
+                       EXCIT=_F(CHARGE=CHARPRIM,),)
 
 RESUPRIM=CALC_ERREUR(reuse =RESUPRIM,
                    RESULTAT=RESUPRIM,
                    TOUT_ORDRE='OUI',
-                   OPTION='ERME_ELEM',);
+                   OPTION='ERME_ELEM',)
 
 #-----------------------------------------------------------------------
 #
@@ -104,16 +104,16 @@ CHARDUAL=AFFE_CHAR_MECA(MODELE=MO,
                                        _F(GROUP_MA='GRMA4',
                                           FX=0.0,),),
                         FORCE_INTERNE=_F(TOUT='OUI',
-                                         FX=1.0,),);
+                                         FX=1.0,),)
 
 RESUDUAL=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CM,
-                       EXCIT=_F(CHARGE=CHARDUAL,),);
+                       EXCIT=_F(CHARGE=CHARDUAL,),)
 
 RESUDUAL=CALC_ERREUR(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
                    TOUT_ORDRE='OUI',
-                   OPTION='ERME_ELEM',);
+                   OPTION='ERME_ELEM',)
 
 #-----------------------------------------------------------------------
 #
@@ -124,7 +124,7 @@ RESUDUAL=CALC_ERREUR(reuse =RESUDUAL,
 RESUPRIM=CALC_ERREUR(reuse =RESUPRIM,
                    RESULTAT=RESUPRIM,
                    OPTION=('QIRE_ELEM','QIRE_ELNO',),
-                   RESU_DUAL=RESUDUAL,);
+                   RESU_DUAL=RESUDUAL,)
 
 #-----------------------------------------------------------------------
 #
@@ -138,7 +138,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='ERREST',
                   VALE_CALC=0.015854340000000001,
-                  
+
                   CRITERE='RELATIF',
                   GROUP_MA='M1',),
           )
@@ -149,7 +149,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='QIRE_ELEM',
                   NOM_CMP='ERREST',
                   VALE_CALC=-0.01064853,
-                  
+
                   CRITERE='RELATIF',
                   GROUP_MA='M1',),
           )
@@ -160,7 +160,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='N1',
                   NOM_CMP='ERREST',
                   VALE_CALC=-2.5606039799999999E-4,
-                  
+
                   CRITERE='RELATIF',
                   GROUP_MA='M4',),
           )
@@ -169,9 +169,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
                   RESULTAT=RESUPRIM,
                   VALE_CALC=0.012093681,
-                  
+
                   CRITERE='RELATIF',
                   ),
           )
 
-FIN();
+FIN()

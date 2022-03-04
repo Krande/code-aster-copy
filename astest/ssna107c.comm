@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MA = LIRE_MAILLAGE(FORMAT='MED',);
+MA = LIRE_MAILLAGE(FORMAT='MED',)
 
 MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
-                   ORIE_LIGNE=_F(GROUP_MA ='cyl', 
-                   VECT_TANG =   (0.,1.,0.), 
-                   GROUP_NO=   'B',         
+                   ORIE_LIGNE=_F(GROUP_MA ='cyl',
+                   VECT_TANG =   (0.,1.,0.),
+                   GROUP_NO=   'B',
                    ))
 
 
@@ -131,25 +131,25 @@ RESU = CALC_CHAMP( reuse= RESU,
                    CONTRAINTE=('SIGM_ELNO'),)
 
 
-CHPOSTI=POST_CHAMP(RESULTAT=RESU, 
+CHPOSTI=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                  NUME_COUCHE=1, 
-                                  NIVE_COUCHE='INF',),);
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),)
 
 CHPOSTI=CALC_CHAMP(reuse=CHPOSTI,RESULTAT=CHPOSTI,CONTRAINTE=('SIGM_NOEU'))
 
 
-CHPOSTM=POST_CHAMP(RESULTAT=RESU, 
+CHPOSTM=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                  NUME_COUCHE=1, 
-                                  NIVE_COUCHE='MOY',),);
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='MOY',),)
 
 CHPOSTM=CALC_CHAMP(reuse=CHPOSTM,RESULTAT=CHPOSTM,CONTRAINTE=('SIGM_NOEU'))
 
-CHPOSTS=POST_CHAMP(RESULTAT=RESU, 
+CHPOSTS=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                  NUME_COUCHE=1, 
-                                  NIVE_COUCHE='SUP',),);
+                                  NUME_COUCHE=1,
+                                  NIVE_COUCHE='SUP',),)
 
 CHPOSTS=CALC_CHAMP(reuse=CHPOSTS,RESULTAT=CHPOSTS,CONTRAINTE=('SIGM_NOEU'))
 
@@ -161,7 +161,7 @@ SILINE=POST_RELEVE_T(ACTION=(
                                   RESULTAT=CHPOSTI,
                                   NOM_CHAM='SIGM_NOEU',
                                   GROUP_NO='cyl',
-                                  NOM_CMP='SIYY',), 
+                                  NOM_CMP='SIYY',),
 
                            _F(OPERATION='EXTRACTION',
                                   INTITULE='SI',
@@ -169,7 +169,7 @@ SILINE=POST_RELEVE_T(ACTION=(
                                   RESULTAT=CHPOSTM,
                                   NOM_CHAM='SIGM_NOEU',
                                   GROUP_NO='cyl',
-                                  NOM_CMP='SIYY',),  
+                                  NOM_CMP='SIYY',),
 
                            _F(OPERATION='EXTRACTION',
                                   INTITULE='SI',
@@ -180,10 +180,10 @@ SILINE=POST_RELEVE_T(ACTION=(
                                   NOM_CMP='SIYY',),
 
                        )
-);
+)
 
 IMPR_TABLE(TABLE=SILINE,UNITE=11, COMMENTAIRE='#', TRI=_F(NOM_PARA=('COOR_Y'),
-                      ORDRE='CROISSANT'));
+                      ORDRE='CROISSANT'))
 
 
 TEST_RESU(RESU=(_F(INST=4.,

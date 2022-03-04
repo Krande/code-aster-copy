@@ -27,7 +27,7 @@ import numpy as np
 
 
 class SOLUTION:
-    
+
     # Parametres utilisateurs
     Ep   = 4.e2     # module de Young branche plastique
     nup  = 0.15     # coefficient de Poisson branche plastique
@@ -45,16 +45,16 @@ class SOLUTION:
 
     #sdir = (0.2,0.3,0.4,0.5,0.6,0.7)  # direction de sollicitation
     sdir = (1.0,0.2,0.4,0.1,0.3,0.5)  # direction de sollicitation
-    
-    
+
+
     # Parametres internes
     rac2 = np.array((1,1,1,2**0.5,2**0.5,2**0.5))
     krn  = np.array((1,1,1,0,0,0))/3**0.5
-    
+
     epsComp = dict(EPXX=0, EPYY=1, EPZZ=2, EPXY=3, EPXZ=4, EPYZ=5)
     sigComp = dict(SIXX=0, SIYY=1, SIZZ=2, SIXY=3, SIXZ=4, SIYZ=5)
-    
-    
+
+
     def Sph(self,v): return np.dot(v,self.krn)
     def Dev(self,v): return v-self.Sph(v)*self.krn
 
@@ -64,15 +64,15 @@ class SOLUTION:
         self.sdir = np.array(self.sdir)*self.rac2
         self.sdir = self.sdir / np.dot(self.sdir,self.sdir)**0.5
         self.sig0 = self.sm*self.sdir
-        
+
         self.eta = (self.sm**(self.gam-1)*self.eta1)**(1.0/self.gam)
-        
+
         self.inst = np.linspace(0,2*self.tc,Npas+1)
         self.CalcSolution()
-        
-        
+
+
     def CalcSolution(self):
-        
+
         cv_h = self.Ev/(1-2*self.nuv)
         cv_d = self.Ev/(1+self.nuv)
         cp_h = self.Ep/(1-2*self.nup)
@@ -82,18 +82,18 @@ class SOLUTION:
 
         sig0_h = self.Sph(self.sig0)
         sig0_d = self.Dev(self.sig0)
-        
+
         v_s0      = v_h*sig0_h*self.krn + v_d*sig0_d
         s0_nor    = (v_h*sig0_h**2 + v_d*np.dot(sig0_d,sig0_d))**0.5
         e0        = self.tc/self.eta**self.gam*s0_nor**(self.gam-1)*v_s0
         cvm_s0    = 1/cv_h*sig0_h*self.krn + 1/cv_d*sig0_d
         cp_cvm_s0 = cp_h/cv_h*sig0_h*self.krn + cp_d/cv_d*sig0_d
         cp_e0     = cp_h*self.Sph(e0)*self.krn + cp_d*self.Dev(e0)
-     
+
         tb   = self.inst/self.tc
         st   = np.minimum(1.0,tb)
         evt  = 1/(self.gam+1)*np.minimum(1.0,tb**(self.gam+1)) + np.maximum(0.0, tb-1)
-        
+
         self.epv = np.outer(e0,evt)
         self.sig = np.outer(cp_cvm_s0,st) + np.outer(cp_e0,evt) + np.outer(self.sig0,st)
         self.eps = np.outer(cvm_s0,st) + self.epv
@@ -102,19 +102,19 @@ class SOLUTION:
 
 
     def GetInst(self): return self.inst.tolist()
-    def GetSig(self,nom_cmp): return (self.sig[self.sigComp[nom_cmp],:]/self.rac2[self.sigComp[nom_cmp]]).tolist() 
+    def GetSig(self,nom_cmp): return (self.sig[self.sigComp[nom_cmp],:]/self.rac2[self.sigComp[nom_cmp]]).tolist()
     def GetEps(self,nom_cmp): return (self.eps[self.epsComp[nom_cmp],:]/self.rac2[self.epsComp[nom_cmp]]).tolist()
     def GetEpv(self,nom_cmp): return (self.epv[self.epsComp[nom_cmp],:]/self.rac2[self.epsComp[nom_cmp]]).tolist()
     def GetEpvCum(self)     : return self.epvcum.tolist()
-    
-    
+
+
 sol = SOLUTION(Npas=100)
 
 
 
-MATE = DEFI_MATERIAU( 
+MATE = DEFI_MATERIAU(
     ELAS = _F(
-        E  = sol.Ep, 
+        E  = sol.Ep,
         NU = sol.nup,
         ),
     KICHENIN_NL = _F(
@@ -127,9 +127,9 @@ MATE = DEFI_MATERIAU(
         N_AMOR      = 1.0/sol.gam,
         ),
     )
-     
 
-DEFLIST1 = DEFI_LIST_INST( 
+
+DEFLIST1 = DEFI_LIST_INST(
     DEFI_LIST = _F( VALE = sol.GetInst()),
     ECHEC     = _F( ACTION='DECOUPE', SUBD_PAS=4, SUBD_NIVEAU=2),
     )
@@ -177,17 +177,17 @@ SIYZ = DEFI_FONCTION(
     )
 
 
-EVOL = SIMU_POINT_MAT( 
+EVOL = SIMU_POINT_MAT(
     SUPPORT       = 'ELEMENT',
     MODELISATION  = '3D',
-    COMPORTEMENT  = _F( 
+    COMPORTEMENT  = _F(
         RELATION       = 'KICHENIN_NL',
         ),
     MATER      = MATE,
     INCREMENT  = _F( LIST_INST=DEFLIST1,),
     NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
     CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
-    SIGM_IMPOSE= _F( 
+    SIGM_IMPOSE= _F(
         SIXX = SIXX,
         SIYY = SIYY,
         SIZZ = SIZZ,

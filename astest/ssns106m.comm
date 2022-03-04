@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,24 +25,24 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
-EP = 0.1;
+EP = 0.1
 
-D0 = 0.0033;
+D0 = 0.0033
 
-DR0 = 0.03;
+DR0 = 0.03
 
-t1 = 1.0;
+t1 = 1.0
 
-t2 = (3 * t1);
+t2 = (3 * t1)
 
-t3 = (4.0 * t1);
+t3 = (4.0 * t1)
 
-dt = 0.05;
+dt = 0.05
 
-fx = 500000.0;
+fx = 500000.0
 
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -51,13 +51,13 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='A2A4',),
                                _F(GROUP_MA='A3A1',),
                                _F(DIFFE=('BORDS','A1',),
-                                  NOM='CL_IMPOS',),),);
+                                  NOM='CL_IMPOS',),),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
                                       VECT_NORM=(0.,0.,1.,),
-                                      GROUP_NO='A1',),);
+                                      GROUP_NO='A1',),)
 
 MA=CREA_MAILLAGE(MAILLAGE=MAIL,
                  CREA_MAILLE=(_F(NOM='ACIER1L',
@@ -74,7 +74,7 @@ MA=CREA_MAILLAGE(MAILLAGE=MAIL,
                                    PREF_MAILLE='A2T',),
                                 _F(NOM='DALLE_G',
                                    GROUP_MA='DALLE',
-                                   PREF_MAILLE='G',),),);
+                                   PREF_MAILLE='G',),),)
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_MA= (
@@ -103,21 +103,21 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='GRILLE_EXCENTRE',),
                      _F(GROUP_MA='ACIER2T',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='GRILLE_EXCENTRE',),),);
+                        MODELISATION='GRILLE_EXCENTRE',),),)
 
 MO_G=AFFE_MODELE(MAILLAGE=MA,
                  INFO=1,
                  AFFE=_F(GROUP_MA='DALLE_G',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DKTG',),);
-EB = 32308000000.0;
+                         MODELISATION='DKTG',),)
+EB = 32308000000.0
 
 
 BETON_E=DEFI_MATERIAU(ELAS=_F(E=EB,
                               NU=0.2,
                               RHO=2500.0,),
                       BETON_ECRO_LINE=_F(D_SIGM_EPSI=(-0.2 * EB),
-                                         SYT=3.4E6,),);
+                                         SYT=3.4E6,),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.2,
@@ -126,13 +126,13 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             AMOR_BETA=2.6476993459625175,),
                     ECRO_LINE=_F(D_SIGM_EPSI=3.E8,
                                  SY=5.70000000E8,),
-                    INFO=1,);
+                    INFO=1,)
 
-EGM = 35625000000.0;
+EGM = 35625000000.0
 
-EGF = 38660000000.0;
+EGF = 38660000000.0
 
-NUF = 0.17;
+NUF = 0.17
 
 
 MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
@@ -145,8 +145,8 @@ MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
                                NYT=3.7E5,
                                MYF=9.E3,
                                NYC = 0.0,
-                               ALPHA_C = 1.0,),);
+                               ALPHA_C = 1.0,),)
 
 
 
-FIN();
+FIN()

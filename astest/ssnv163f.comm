@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,36 +26,36 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 youn1 = 31000.
 nu1   = 0.2
 
-M = LIRE_MAILLAGE( FORMAT = "ASTER",);
+M = LIRE_MAILLAGE( FORMAT = "ASTER",)
 
 M = DEFI_GROUP( reuse = M, MAILLAGE = M,
-                CREA_GROUP_NO = _F( GROUP_MA = 'L_INF'),);
+                CREA_GROUP_NO = _F( GROUP_MA = 'L_INF'),)
 
 M = DEFI_GROUP( reuse = M, MAILLAGE = M,
-                CREA_GROUP_NO = _F( GROUP_MA = 'L_SUP'),);
+                CREA_GROUP_NO = _F( GROUP_MA = 'L_SUP'),)
 
 M = DEFI_GROUP( reuse = M, MAILLAGE = M,
-                CREA_GROUP_NO = _F( GROUP_MA = 'L_GCH'),);
+                CREA_GROUP_NO = _F( GROUP_MA = 'L_GCH'),)
 
 M = DEFI_GROUP( reuse = M, MAILLAGE = M,
-                CREA_GROUP_NO = _F( GROUP_MA = 'L_DRT'),);
+                CREA_GROUP_NO = _F( GROUP_MA = 'L_DRT'),)
 
 MO = AFFE_MODELE( MAILLAGE = M,
                   AFFE = _F( TOUT = 'OUI',
                   PHENOMENE = 'MECANIQUE',
-                  MODELISATION = 'C_PLAN'),);
+                  MODELISATION = 'C_PLAN'),)
 
 FONC1 = DEFI_FONCTION( NOM_PARA = 'SECH',
                        PROL_DROITE = 'LINEAIRE',
                        PROL_GAUCHE = 'LINEAIRE',
                        VALE = (0.0, 0.0,
-                               1.0, 1.0,),);
+                               1.0, 1.0,),)
 
-E = DEFI_CONSTANTE( VALE = youn1,);
+E = DEFI_CONSTANTE( VALE = youn1,)
 
-Nu = DEFI_CONSTANTE( VALE = nu1,);
+Nu = DEFI_CONSTANTE( VALE = nu1,)
 
-ALPHA = DEFI_CONSTANTE( VALE = 0.);
+ALPHA = DEFI_CONSTANTE( VALE = 0.)
 
 BETON = DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                     NU = Nu,
@@ -73,64 +73,64 @@ BETON = DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                          ETA_ID = 1.0e+11,
                                          ETA_FD = 0.,
                                          QSR_K  = 0.,
-                                         TEMP_0_C  = 20.,),);
+                                         TEMP_0_C  = 20.,),)
 
 SECH = CREA_CHAMP( OPERATION ='AFFE',
                    TYPE_CHAM = 'NOEU_TEMP_R',
                    MAILLAGE = M,
                    AFFE = _F( TOUT = 'OUI',
                               NOM_CMP = 'TEMP',
-                              VALE = 1.),);
+                              VALE = 1.),)
 
 TEMP = CREA_CHAMP( OPERATION = 'AFFE',
                    TYPE_CHAM = 'NOEU_TEMP_R',
                    MAILLAGE = M,
                    AFFE = _F( TOUT = 'OUI',
                               NOM_CMP = 'TEMP',
-                              VALE = 20.),);
+                              VALE = 20.),)
 
 CM = AFFE_MATERIAU( MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
                                MATER = BETON),
-                    AFFE_VARC = ( _F( TOUT = 'OUI', 
+                    AFFE_VARC = ( _F( TOUT = 'OUI',
                                       CHAM_GD = SECH,
                                       NOM_VARC = 'SECH',
                                       VALE_REF = 1),
                                   _F( TOUT = 'OUI',
                                       CHAM_GD = TEMP,
                                       NOM_VARC = 'TEMP',
-                                      VALE_REF = 20),),);
+                                      VALE_REF = 20),),)
 
 FORCE = DEFI_FONCTION( NOM_PARA = 'INST',
                        PROL_DROITE = 'LINEAIRE',
                        PROL_GAUCHE = 'LINEAIRE',
-                       VALE = (0.0,        0.0, 
+                       VALE = (0.0,        0.0,
                                1.,        -0.5,
-                               31536010., -0.5,),);
+                               31536010., -0.5,),)
 
 CH10 = AFFE_CHAR_MECA( MODELE = MO,
                        DDL_IMPO = _F( GROUP_NO = 'L_INF',
-                                       DY = 0.),);
+                                       DY = 0.),)
 
 CH11 = AFFE_CHAR_MECA( MODELE = MO,
                        DDL_IMPO = _F( GROUP_NO = 'L_GCH',
-                                      DX = 0.),);
+                                      DX = 0.),)
 
 CH12 = AFFE_CHAR_MECA( MODELE = MO,
                        LIAISON_UNIF = _F( GROUP_NO = 'L_DRT',
-                                          DDL = 'DX'),);
+                                          DDL = 'DX'),)
 
 CH2 = AFFE_CHAR_MECA_F( MODELE = MO,
                         FORCE_NODALE = _F( GROUP_NO = 'L_SUP',
                                            FY = FORCE),
                         LIAISON_UNIF = _F( GROUP_NO = 'L_SUP',
-                                           DDL = 'DY'),);
+                                           DDL = 'DY'),)
 
 L_INST = DEFI_LIST_REEL( DEBUT = -1.0,
                          INTERVALLE = ( _F( JUSQU_A = 0.0,       NOMBRE = 1),
                                         _F( JUSQU_A = 1.0,       NOMBRE = 1),
                                         _F( JUSQU_A = 138629.44, NOMBRE = 50),
-                                        _F( JUSQU_A = 8640000.,  NOMBRE = 50),),);
+                                        _F( JUSQU_A = 8640000.,  NOMBRE = 50),),)
 
 U = STAT_NON_LINE( MODELE = MO,
                    CHAM_MATER = CM,
@@ -146,12 +146,12 @@ U = STAT_NON_LINE( MODELE = MO,
                                 MATRICE = 'TANGENTE',
                                 REAC_ITER = 1),
                    CONVERGENCE = _F( RESI_GLOB_MAXI = 1.E-8,
-                                     ITER_GLOB_MAXI = 25),);
+                                     ITER_GLOB_MAXI = 25),)
 
 U = CALC_CHAMP( reuse = U, RESULTAT = U,
                 CONTRAINTE = ('SIGM_ELNO'),
                 VARI_INTERNE = ('VARI_ELNO'),
-                DEFORMATION = ('EPSI_ELNO'),);
+                DEFORMATION = ('EPSI_ELNO'),)
 
 
 # TESTS SUR LES DEFORMATIONS TOTALES

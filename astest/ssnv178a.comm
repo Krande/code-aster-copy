@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,10 +78,10 @@ SIGXX_armature=ESPXX_armature*Ea
 #----------------------------------------------------
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',INFO=2);
+MA=LIRE_MAILLAGE(FORMAT='MED',INFO=2)
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=E,
-                            NU=nu,),);
+                            NU=nu,),)
 
 ACIER=DEFI_MATERIAU(
             ELAS=_F(  E = Ea,   NU = 0.0),
@@ -95,7 +95,7 @@ MATE=AFFE_MATERIAU(MAILLAGE=MA,
                                       'SURF_INF','SURF_SUP',
                                       'SURF_DRO','SURF_GAU'),
                            MATER=BETON,),
-                        _F(  GROUP_MA = ('SURF_EXT',),MATER = ACIER,),),);
+                        _F(  GROUP_MA = ('SURF_EXT',),MATER = ACIER,),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,INFO=2,
                AFFE=(
@@ -107,7 +107,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,INFO=2,
                        MODELISATION='3D',),
                     _F(  GROUP_MA = 'SURF_EXT',
                           PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'GRILLE_MEMBRANE'),));
+                          MODELISATION = 'GRILLE_MEMBRANE'),))
 
 MA=MODI_MAILLAGE( reuse=MA,
                  MAILLAGE=MA,
@@ -139,11 +139,11 @@ CHAR_3=AFFE_CHAR_MECA(MODELE=MO,
       )
 
 FM=DEFI_FONCTION(NOM_PARA='INST',
-                 VALE=(0.0,0.0,1.0,1.0,),);
+                 VALE=(0.0,0.0,1.0,1.0,),)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=MATE,
@@ -158,7 +158,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                 GROUP_MA='CYLINDRE',),
                              _F(RELATION='GRILLE_ISOT_LINE',
                                 GROUP_MA='SURF_EXT',),),
-                   INCREMENT=_F(LIST_INST=LINST,),);
+                   INCREMENT=_F(LIST_INST=LINST,),)
 
 CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),RESULTAT=RESU)
 
@@ -290,7 +290,7 @@ FIN()
 CHAMELG=CALC_CHAM_ELEM(MODELE=MO,
                        CARA_ELEM=CAREL,
                        GROUP_MA='BETON',
-                       OPTION='COOR_ELGA',);
+                       OPTION='COOR_ELGA',)
 
 x=CHAMELG.EXTR_COMP("X",[])
 y=CHAMELG.EXTR_COMP("Y",[])

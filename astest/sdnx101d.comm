@@ -26,7 +26,7 @@ MAIL0=LIRE_MAILLAGE(FORMAT='MED',)
 MAIL1 = CREA_MAILLAGE(MAILLAGE=MAIL0,
                   CREA_POI1 =_F(NOM_GROUP_MA = 'PSI0',GROUP_NO = ('PSI0'),),)
 #IMPR_RESU(RESU=_F(MAILLAGE=MAIL1,),FORMAT='ASTER',UNITE=8)
-#FIN( );
+#FIN( )
 
 #
 # créer un noeud fictif
@@ -128,7 +128,7 @@ BETARM=DEFI_MATERIAU(ELAS=_F(E=4.0E10,
                              #AMOR_ALPHA=0.1*ca*aamult,
                              #AMOR_BETA=0.1*ca*abmult,
                              ),
-                    );
+                    )
 #
 #----- BETON PRECONTRAINT -----
 
@@ -139,7 +139,7 @@ BETPRE=DEFI_MATERIAU(ELAS=_F(E=40000000000.0,
                              #AMOR_ALPHA=0.1*ca*aamult,
                              #AMOR_BETA=0.1*ca*abmult,
                              ),
-                     );
+                     )
 
 #
 #----- MATERIAU CHOC -----
@@ -284,11 +284,11 @@ NDDLGENE = NUME_DDL_GENE( BASE= MODST0, STOCKAGE= 'PLEIN',)
 
 RIGIGEN=PROJ_MATR_BASE(BASE=MODST0,
                        NUME_DDL_GENE=NDDLGENE,
-                       MATR_ASSE=MATR,);
+                       MATR_ASSE=MATR,)
 
 MASSGEN=PROJ_MATR_BASE(BASE=MODST0,
                        NUME_DDL_GENE=NDDLGENE,
-                       MATR_ASSE=MATM,);
+                       MATR_ASSE=MATM,)
 
 modgen=CALC_MODES( #OPTION='BANDE',
                    MATR_RIGI=RIGIGEN,
@@ -296,9 +296,9 @@ modgen=CALC_MODES( #OPTION='BANDE',
                    CALC_FREQ=_F( NMAX_FREQ=30 ),
                    #CALC_FREQ=_F( FREQ=(-0.1,215.) ),
                    VERI_MODE=_F( STOP_ERREUR='NON' ),
-                  );
+                  )
 
-MODSTA=REST_GENE_PHYS(RESU_GENE=modgen,NOM_CHAM='DEPL',);
+MODSTA=REST_GENE_PHYS(RESU_GENE=modgen,NOM_CHAM='DEPL',)
 
 
 BAMO2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODSTA,
@@ -484,7 +484,7 @@ MATRRIGH=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=MATRRG0H,
                                 COEF_C=(1+0.0j),),
                         ),
                      #SANS_CMP='LAGR',
-                      );
+                      )
 
 #
 # CALCUL DES MODES SUR TAPIS DE RESSORTS:
@@ -542,7 +542,7 @@ MODEBH=CALC_MODES(INFO=1,
                  SOLVEUR_MODAL=_F(APPROCHE='REEL',
                                   METHODE='SORENSEN',
                                   ),
-                  );
+                  )
 TEST_RESU(RESU=(
                 #_F(NUME_ORDRE=1,
                 #   PARA='FREQ',

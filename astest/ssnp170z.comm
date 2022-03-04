@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,37 +22,37 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),
-      INFO=1,);
+      INFO=1,)
 
 lisi=DEFI_LIST_REEL(DEBUT=0,
                     INTERVALLE=_F(JUSQU_A=1,
-                                  PAS=1,),);
+                                  PAS=1,),)
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi,),
                          ECHEC=_F(EVENEMENT='ERREUR',
-                         ACTION='DECOUPE',),);
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1),);
+                         ACTION='DECOUPE',),)
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1),)
 
 Mail=[None]*8
 
 Mail[0]=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 Mail[1]=LIRE_MAILLAGE(UNITE=21,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 Mail[2]=LIRE_MAILLAGE(UNITE=22,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 Mail[3]=LIRE_MAILLAGE(UNITE=23,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 Mail[4]=LIRE_MAILLAGE(UNITE=24,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 Mail[5]=LIRE_MAILLAGE(UNITE=25,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 Mail[6]=LIRE_MAILLAGE(UNITE=26,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 Mail[7]=LIRE_MAILLAGE(UNITE=27,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 mat1=DEFI_MATERIAU(ELAS=_F(E=2000,
-                           NU=0.3,),);
+                           NU=0.3,),)
 for i in range(8):
     MESH=CREA_MAILLAGE(MAILLAGE=Mail[i],
                         DECOUPE_LAC=_F(GROUP_MA_ESCL='cont_escl',),)
@@ -60,12 +60,12 @@ for i in range(8):
     MODI=AFFE_MODELE(MAILLAGE=MESH,
                         AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='3D',),);
+                             MODELISATION='3D',),)
 
     AFFE=AFFE_MATERIAU(MAILLAGE=MESH,
                        MODELE=MODI,
                        AFFE=_F(TOUT='OUI',
-                               MATER=mat1,),);
+                               MATER=mat1,),)
 
     DEFICO=DEFI_CONTACT(MODELE=MODI,
                         INFO=1,
@@ -76,7 +76,7 @@ for i in range(8):
                                 GROUP_MA_MAIT='cont_mait',
                                 GROUP_MA_ESCL='cont_escl',
                                 ALGO_CONT='LAC',
-                                TYPE_APPA="ROBUSTE",),);
+                                TYPE_APPA="ROBUSTE",),)
 
     CHAR1=AFFE_CHAR_CINE(MODELE=MODI,
                          MECA_IMPO=(_F(GROUP_MA='symx',
@@ -84,10 +84,10 @@ for i in range(8):
                                     _F(GROUP_MA='symy',
                                        DY=0,),
                                     _F(GROUP_MA='base',
-                                       DZ=0,),),);
+                                       DZ=0,),),)
     CHAR2= AFFE_CHAR_MECA(MODELE=MODI,
                                  PRES_REP=_F(GROUP_MA='press',
-                                 PRES=25,), );
+                                 PRES=25,), )
 
 
 
@@ -112,11 +112,11 @@ for i in range(8):
                                  RESI_RELA=1.E-6,
                                  PCENT_PIVOT= 30,),
                       CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                     ITER_GLOB_MAXI=50,));
+                                     ITER_GLOB_MAXI=50,))
 
     CALC_CHAMP(reuse=RES,
                RESULTAT=RES,
-               CONTRAINTE=('SIEF_NOEU'),);
+               CONTRAINTE=('SIEF_NOEU'),)
 
 
     if i in (0, 1, 4, 5):
@@ -161,8 +161,8 @@ for i in range(8):
                         VALE_CALC=-25.0,
                         ),
                         ),
-                );
-                
+                )
+
         TEST_RESU(RESU=(_F(INST=1.0,
                         TYPE_TEST='MIN',
                         RESULTAT=RES,
@@ -273,8 +273,8 @@ for i in range(8):
                         VALE_CALC=-25.000281927430052,
                         ),
                         ),
-                );
-                
+                )
+
         TEST_RESU(RESU=(_F(INST=1.0,
                         TYPE_TEST='MIN',
                         RESULTAT=RES,
@@ -385,8 +385,8 @@ for i in range(8):
                         VALE_CALC=-25.000225821518555,
                         ),
                         ),
-                );
-                
+                )
+
         TEST_RESU(RESU=(_F(INST=1.0,
                         TYPE_TEST='MIN',
                         RESULTAT=RES,
@@ -497,8 +497,8 @@ for i in range(8):
                         VALE_CALC=-25.000062379935038,
                         ),
                         ),
-                );
-                
+                )
+
         TEST_RESU(RESU=(_F(INST=1.0,
                         TYPE_TEST='MIN',
                         RESULTAT=RES,
@@ -609,8 +609,8 @@ for i in range(8):
                         VALE_CALC=-25.00030619976533,
                         ),
                         ),
-                );
-                
+                )
+
         TEST_RESU(RESU=(_F(INST=1.0,
                         TYPE_TEST='MIN',
                         RESULTAT=RES,
@@ -677,5 +677,5 @@ for i in range(8):
                         ),
                         ),
                 )
-              
+
 FIN()

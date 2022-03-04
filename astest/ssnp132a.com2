@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'))
 IRRA_0=CREA_CHAMP(
    TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=MAIL,
    AFFE=_F( TOUT='OUI', NOM_CMP='IRRA', VALE=0.0,),
-);
+)
 
 IRRA_1=CREA_CHAMP(
    TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=MAIL,
@@ -53,7 +53,7 @@ CL=AFFE_CHAR_MECA(
 TEMP_0=CREA_CHAMP(
    TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=MAIL,
    AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=0.0,),
-);
+)
 
 TEMP_1=CREA_CHAMP(
    TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=MAIL,
@@ -62,7 +62,7 @@ TEMP_1=CREA_CHAMP(
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.,
     INTERVALLE=(_F(JUSQU_A=100.0, NOMBRE=  10, ),
-                _F(JUSQU_A=200.0, NOMBRE= 100,),),);
+                _F(JUSQU_A=200.0, NOMBRE= 100,),),)
 
 TEMPE=CREA_RESU(
    OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
@@ -103,7 +103,7 @@ STAT=STAT_NON_LINE(
    ),
    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,REAC_INCR=1),
    INCREMENT=_F(LIST_INST=DEFLIST),
-);
+)
 
 # TEST DE NON REGRESSION ( ZMAT N EST PAS POSSIBLE EN CONTRAINTE PLANE )
 TEST_RESU(RESU=_F(POINT=1,
@@ -313,11 +313,11 @@ TEST_RESU(RESU=_F(POINT=1,
                   VALE_ABS='NON',),
           TEST_NAN='NON',)
 
-FIN();
+FIN()
 
 # Solution de Reference
 # Liste d'instant
 #    _F(JUSQU_A=100.0, NOMBRE= 50, ),
-#    _F(JUSQU_A=200.0, NOMBRE=1000,),),);
+#    _F(JUSQU_A=200.0, NOMBRE=1000,),),)
 # DEFI_MATERIAU, par defaut c'est 1.0E-02
 #  Toler_ET           0.1E-02

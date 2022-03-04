@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ SQUEL1 = DEFI_GROUP( reuse = SQUEL1, MAILLAGE = SQUEL1,
                                         _F( NOM = 'NO000027', NOEUD = 'NO000027'),
                                      ),
          )
-                             
+
 SQUEL1=DEFI_GROUP(reuse=SQUEL1,
                   MAILLAGE=SQUEL1,
                   CREA_GROUP_NO=_F(NOM='CENTRE',
@@ -135,11 +135,11 @@ SQUEL1=DEFI_GROUP(reuse=SQUEL1,
                                    POINT=(0.,0.,0.1),
                                    RAYON=1e-7,
                                    PRECISION=1e-6,),)
-                             
-#IMPR_CO(UNITE=8,CONCEPT=_F(NOM=SQUEL1))                               
+
+#IMPR_CO(UNITE=8,CONCEPT=_F(NOM=SQUEL1))
 
 #
-MODSEC=REST_SOUS_STRUC(  
+MODSEC=REST_SOUS_STRUC(
                              RESU_GENE=MODCYC,
 # modif Ionel
 #                              RESULTAT=MODCYC,
@@ -184,8 +184,8 @@ TAB_N6=CREA_TABLE(RESU=_F(RESULTAT=MODGL1,
                         TOUT_ORDRE='OUI',
                         TOUT_CMP='OUI',
                         GROUP_NO='NO000412',
-                        ),)                           
-                           
+                        ),)
+
 module = FORMULE(VALE='(DX**2+DY**2+DZ**2)**(0.5)',
                  NOM_PARA=['DX', 'DY', 'DZ'],)
 TAB_N1=CALC_TABLE(reuse=TAB_N1,
@@ -206,7 +206,7 @@ TAB_N3=CALC_TABLE(reuse=TAB_N3,
                              NOM_PARA='MODN3',
                              FORMULE=module,), ),
                              )
-                             
+
 TAB_N4=CALC_TABLE(reuse=TAB_N4,
                   TABLE=TAB_N4,
                   ACTION=(_F(OPERATION='OPER',
@@ -225,7 +225,7 @@ TAB_N6=CALC_TABLE(reuse=TAB_N6,
                              NOM_PARA='MODN6',
                              FORMULE=module,),),
                              )
-                                                                                                                                                 
+
 TAB_TOT=CALC_TABLE(TABLE=TAB_N1,
                    ACTION=(_F(OPERATION='COMB',
                               NOM_PARA='NUME_ORDRE',
@@ -238,7 +238,7 @@ TAB_TOT=CALC_TABLE(TABLE=TAB_N1,
                              TABLE=TAB_N4,),
                            _F(OPERATION='COMB',
                              NOM_PARA='NUME_ORDRE',
-                             TABLE=TAB_N5,),      
+                             TABLE=TAB_N5,),
                            _F(OPERATION='COMB',
                              NOM_PARA='NUME_ORDRE',
                              TABLE=TAB_N6,),),)
@@ -265,30 +265,30 @@ moyn6 = FORMULE(VALE='abs(1-6*MODN6/(MODN1+MODN2+MODN3+MODN4+MODN5+MODN6))',
 TAB_REL=CALC_TABLE(TABLE=TAB_TOT,
                   ACTION=(_F(OPERATION='OPER',
                              NOM_PARA='RELN1',
-                             FORMULE=moyn1,), 
+                             FORMULE=moyn1,),
                           _F(OPERATION='OPER',
                              NOM_PARA='RELN2',
-                             FORMULE=moyn2,), 
+                             FORMULE=moyn2,),
                           _F(OPERATION='OPER',
                              NOM_PARA='RELN3',
-                             FORMULE=moyn3,), 
+                             FORMULE=moyn3,),
                           _F(OPERATION='OPER',
                              NOM_PARA='RELN4',
-                             FORMULE=moyn4,), 
+                             FORMULE=moyn4,),
                           _F(OPERATION='OPER',
                              NOM_PARA='RELN5',
-                             FORMULE=moyn5,), 
+                             FORMULE=moyn5,),
                           _F(OPERATION='OPER',
                              NOM_PARA='RELN6',
-                             FORMULE=moyn6,), 
+                             FORMULE=moyn6,),
                              ),)
 
 
-#IMPR_CO(UNITE=8,CONCEPT=_F(NOM=TAB_REL)) 
-                            
-#IMPR_TABLE(TABLE=TAB_REL)                            
-                            
-#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=MODGL1),);
+#IMPR_CO(UNITE=8,CONCEPT=_F(NOM=TAB_REL))
+
+#IMPR_TABLE(TABLE=TAB_REL)
+
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=MODGL1),)
 
 #-- Test sur le mode de traction compression
 
@@ -352,7 +352,7 @@ TEST_TABLE(TABLE=TAB_REL,
            REFERENCE='ANALYTIQUE',
            VALE_REFE=0.,
            CRITERE='ABSOLU',)
-           
+
 
 #-- Test sur le mode de flexion 1 - direction 1
 
@@ -409,8 +409,8 @@ TEST_TABLE(TABLE=TAB_REL,
            VALE_CALC=4.00684E-06,
            REFERENCE='ANALYTIQUE',
            VALE_REFE=0.,
-           CRITERE='ABSOLU',)           
-           
+           CRITERE='ABSOLU',)
+
 
 #-- Test sur le mode de flexion 1 - direction 2
 
@@ -468,7 +468,7 @@ TEST_TABLE(TABLE=TAB_REL,
            REFERENCE='ANALYTIQUE',
            VALE_REFE=0.,
            CRITERE='ABSOLU',)
-           
-           
+
+
 FIN()
 #

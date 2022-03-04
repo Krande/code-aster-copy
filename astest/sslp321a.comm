@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 #----------------------------------------------
 #                 MAILLAGE
 #----------------------------------------------
-MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED',)
 
 #Nb de pas de propagation
 NPAS = 13
@@ -52,7 +52,7 @@ MOD = [None]*(NPAS+1)
 MOD[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
                       AFFE=(_F(GROUP_MA=('Surface',),
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),),);
+                               MODELISATION='D_PLAN',),),)
 
 #----------------------------------------------
 #                   MATERIAU
@@ -61,7 +61,7 @@ MOD[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
 E=31370E6
 nu=0.2
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),)
 
 #----------------------------------------------
 #                FISSURE INITIALE
@@ -82,7 +82,7 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          INFO=2,
          PFON = (xinit, yinit, 0.),
          DTAN = (0., 1., 0.),
-         );
+         )
 
 #----------------------------------------------
 #         PROPAGATION SUR 3 PAS DE TEMPS
@@ -96,7 +96,7 @@ LST = [None]*(NPAS+1)
 CHAMA = [None]*(NPAS+1)
 CHRIG = [None]*(NPAS+1)
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),)
 
 VALE_CALC=[
 0.245840984011,
@@ -134,15 +134,15 @@ for i in range(NPAS+1) :
                       AFFE=(_F(GROUP_MA=('Surface',),
                                PHENOMENE='MECANIQUE',
                                MODELISATION='D_PLAN',),
-                            ),);
+                            ),)
 
 
     FISS[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                     GROUP_MA_FOND='FOND_'+str(i),),
                    MAILLAGE=MAT[i],RAYON_ENRI=12.,
-             );
+             )
 
-    MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i],INFO=1,);
+    MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i],INFO=1,)
 
 
     CHAMA[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
@@ -150,18 +150,18 @@ for i in range(NPAS+1) :
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
     CHRIG[i]=AFFE_CHAR_MECA(MODELE=MODE[i],
                       DDL_IMPO=( _F(GROUP_NO=('P1',), DX=0.0, DY=0.0),_F(GROUP_NO=('P2',), DY=0.0)),
                       FORCE_NODALE=_F(GROUP_NO=('P3',),FY=-1.,),
-                                    );
+                                    )
 
     RESU[i]=MECA_STATIQUE(MODELE=MODE[i],
                          CHAM_MATER=CHAMA[i],
                          EXCIT=(
                                 _F(CHARGE=CHRIG[i],),),
-                         INFO=1,);
+                         INFO=1,)
 
 
 
@@ -169,10 +169,10 @@ for i in range(NPAS+1) :
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i],
                                    R_INF=RI,
-                                   R_SUP=RS,),);
+                                   R_SUP=RS,),)
 
     IMPR_TABLE(TABLE=SIF[i],
-                INFO=1,);
+                INFO=1,)
 
 # TEST DE KI PAR RAPPORT A KI RERERENCE (MAILLAGE)
     TEST_TABLE(CRITERE='RELATIF',
@@ -189,8 +189,8 @@ for i in range(NPAS+1) :
                TABLE=SIF[i],)
 
     if ( i != NPAS+1 ) :
-        MAX[i+1]=CO('MAX_%d' %(i+1));
-        MAT[i+1]=CO('MAT_%d'%(i+1));
+        MAX[i+1]=CO('MAX_%d' %(i+1))
+        MAT[i+1]=CO('MAT_%d'%(i+1))
         PROPA_FISS(METHODE_PROPA='MAILLAGE',
             MAIL_STRUC=MAILLAG1,
             MAIL_TOTAL = MAT[i+1],
@@ -207,7 +207,7 @@ for i in range(NPAS+1) :
             COMP_LINE=_F(COEF_MULT_MINI=0.,
                          COEF_MULT_MAXI=1.,
                         ),
-            );
+            )
 
 #----------------------------------------------
 #         EDITION DE FICHIERS MED
@@ -217,7 +217,7 @@ for i in range(NPAS+1) :
     MOVIS = [None]*(NPAS+1)
     DEPL = [None]*(NPAS+1)
 
-    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i]);
+    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i])
 
     MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
                          AFFE=_F(TOUT='OUI',
@@ -227,11 +227,11 @@ for i in range(NPAS+1) :
     DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
                           RESULTAT=RESU[i],
-                          );
+                          )
 
-    DEFI_FICHIER(UNITE=30,TYPE = 'BINARY');
+    DEFI_FICHIER(UNITE=30,TYPE = 'BINARY')
     IMPR_RESU(   FORMAT='MED',
              UNITE=30,
-             RESU=_F(RESULTAT=DEPL[i],),);
+             RESU=_F(RESULTAT=DEPL[i],),)
 
-FIN();
+FIN()

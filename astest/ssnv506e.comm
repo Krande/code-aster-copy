@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-SSNV506E=LIRE_MAILLAGE(FORMAT='MED',);
+SSNV506E=LIRE_MAILLAGE(FORMAT='MED',)
 
 SSNV506E=DEFI_GROUP(reuse =SSNV506E,
                     MAILLAGE=SSNV506E,
-                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 #-------------------------------------------------------------
 #                 GRANDEURS PHYSIQUES
@@ -32,15 +32,15 @@ SSNV506E=DEFI_GROUP(reuse =SSNV506E,
 ACIER_B=DEFI_MATERIAU(ELAS=_F(E=210000.,
                               NU=0.3,),
                       ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                   SY=50,),);
+                                   SY=50,),)
 
 AC_SPH=DEFI_MATERIAU(ELAS=_F(E=21000000.,
-                                NU=0.3,),);
+                                NU=0.3,),)
 
 DPLY=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,
                          1.0,1.0,),
-                   INTERPOL='LIN',);
+                   INTERPOL='LIN',)
 
 #----------------------------------------------------------------
 #                       MODELE
@@ -49,20 +49,20 @@ DPLY=DEFI_FONCTION(NOM_PARA='INST',
 MO=AFFE_MODELE(MAILLAGE=SSNV506E,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
 #REORIENTATION DES NORMALES
 SSNV506E=MODI_MAILLAGE(reuse =SSNV506E,
                        MAILLAGE=SSNV506E,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SMAI','SESC'),),
-                       );
+                       )
 
 #AFFECTATION DU MATERIAU
 CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506E,
                     AFFE=(_F(GROUP_MA='MAT1',
                              MATER=AC_SPH,),
                           _F(GROUP_MA='MAT2',
-                             MATER=ACIER_B,),),);
+                             MATER=ACIER_B,),),)
 
 #CONDITIONS AUX LIMITES
 CHA1 = DEFI_CONTACT(MODELE         = MO,
@@ -77,7 +77,7 @@ CHA1 = DEFI_CONTACT(MODELE         = MO,
                               SANS_GROUP_NO=('E','S',),
                              ),
                           ),
-                   );
+                   )
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='NDPL',
@@ -89,7 +89,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     LIAISON_DDL=_F(GROUP_NO=('E','S'),
                                    DDL=('DY','DY'),
                                    COEF_MULT=(1.0,-1.0),
-                                   COEF_IMPO=0.0,),);
+                                   COEF_IMPO=0.0,),)
 
 #------------------------------------------------------------------
 #                         RESOLUTION
@@ -101,7 +101,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=0.15,
                                     NOMBRE=24,),
                                  _F(JUSQU_A=1.0,
-                                    NOMBRE=34,),),);
+                                    NOMBRE=34,),),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -125,7 +125,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=15,),
-                );
+                )
 
 #------------------------------------------------------------------
 #                         POST TRAITEMENT
@@ -133,11 +133,11 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_CHAMP(reuse =U,
           RESULTAT=U,
-          FORCE='REAC_NODA',);
+          FORCE='REAC_NODA',)
 
 LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=10,),);
+                                   NOMBRE=10,),)
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO='SESC',
@@ -145,7 +145,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  NOM_CHAM='REAC_NODA',
                                  LIST_INST=LINST2,
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 #------------------------------------------------------------------
 #                         TESTS DES RESULTATS
@@ -201,4 +201,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),
            )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ COURFATA = FORMULE(VALE='5.E5/SIGM ',
 
 L_INST=DEFI_LIST_REEL(  DEBUT=1.,
                         INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
-                           
+
 FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
                           NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
@@ -39,43 +39,43 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                               SY_02 = 200.)
                                )
 
-#  CONTRAINTES THERMIQUES (SITUATION 1)                 
+#  CONTRAINTES THERMIQUES (SITUATION 1)
 T_THER = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=1,)
 
-#  CONTRAINTES DE PRESSION (SITUATION 1)                 
+#  CONTRAINTES DE PRESSION (SITUATION 1)
 T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=2,)
 
-#  CONTRAINTES MECANIQUES (SITUATION 1)                 
+#  CONTRAINTES MECANIQUES (SITUATION 1)
 T_MEC = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=3,)
 
-#  TEMPERATURE (SITUATION 1)                 
+#  TEMPERATURE (SITUATION 1)
 T_TEMP = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=7,)
 
-#  CONTRAINTES THERMIQUES (SITUATION 2)                 
+#  CONTRAINTES THERMIQUES (SITUATION 2)
 T_THER2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=4,)
 
-#  CONTRAINTES DE PRESSION (SITUATION 2)                 
+#  CONTRAINTES DE PRESSION (SITUATION 2)
 T_PRES2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=5,)
 
-#  CONTRAINTES MECANIQUES (SITUATION 2)                 
+#  CONTRAINTES MECANIQUES (SITUATION 2)
 T_MEC2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=6,)
 
-#  TEMPERATURE (SITUATION 2)                 
+#  TEMPERATURE (SITUATION 2)
 T_TEMP2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=8,)
 
-#  MODULE D'YOUNG FONCTION DE LA TEMPERATURE                
+#  MODULE D'YOUNG FONCTION DE LA TEMPERATURE
 T_YOUNG = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=9,)
 
-#  CONTRAINTES DUES AU SEISME                
+#  CONTRAINTES DUES AU SEISME
 TABLS = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=10,)
 
@@ -87,17 +87,17 @@ SN1s = POST_RCCM( MATER=MAT,
                  TYPE_RESU_MECA='B3200',
                  OPTION='SN',
                  INFO=2,
-                 TYPE_KE='KE_MECA', 
+                 TYPE_KE='KE_MECA',
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  RESU_PRES= (_F(NUME_RESU_PRES=1,
-                            TABL_RESU_PRES=T_PRES, ), 
+                            TABL_RESU_PRES=T_PRES, ),
                             _F(NUME_RESU_PRES=2,
                             TABL_RESU_PRES=T_PRES2, ), ),
                  RESU_MECA= (_F(NUME_RESU_MECA=1,
-                            TABL_RESU_MECA=T_MEC, ), 
+                            TABL_RESU_MECA=T_MEC, ),
                             _F(NUME_RESU_MECA=2,
                             TABL_RESU_MECA=T_MEC2, ), ),
                   SEISME =_F(NB_OCCUR =2,
@@ -126,7 +126,7 @@ SN1s = POST_RCCM( MATER=MAT,
                      NUME_RESU_THER = 2,
                      NUME_RESU_PRES = 2,
                      NUME_RESU_MECA = 2,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=SN1s,)
 
@@ -137,17 +137,17 @@ FAT = POST_RCCM( MATER=MAT,
                  TYPE_RESU_MECA='B3200',
                  OPTION='FATIGUE',
                  INFO=2,
-                 TYPE_KE='KE_MECA', 
+                 TYPE_KE='KE_MECA',
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  RESU_PRES= (_F(NUME_RESU_PRES=1,
-                            TABL_RESU_PRES=T_PRES, ), 
+                            TABL_RESU_PRES=T_PRES, ),
                             _F(NUME_RESU_PRES=2,
                             TABL_RESU_PRES=T_PRES2, ), ),
                  RESU_MECA= (_F(NUME_RESU_MECA=1,
-                            TABL_RESU_MECA=T_MEC, ), 
+                            TABL_RESU_MECA=T_MEC, ),
                             _F(NUME_RESU_MECA=2,
                             TABL_RESU_MECA=T_MEC2, ), ),
                   SEISME =_F(NB_OCCUR =2,
@@ -176,11 +176,11 @@ FAT = POST_RCCM( MATER=MAT,
                      NUME_RESU_THER = 2,
                      NUME_RESU_PRES = 2,
                      NUME_RESU_MECA = 2,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=FAT,)
 
-# VALIDATION DU CALCUL DE EFAT AVEC EFFET D'ENVIRONNEMENT 
+# VALIDATION DU CALCUL DE EFAT AVEC EFFET D'ENVIRONNEMENT
 FATENV = POST_RCCM( MATER=MAT,
                  METHODE='TRESCA',
                  TYPE_RESU='DETAILS',
@@ -189,17 +189,17 @@ FATENV = POST_RCCM( MATER=MAT,
                  INFO=2,
                  TYPE_KE='KE_MECA',
                  FACT_SIGM=(_F(KT_SN=2,
-                              KT_SP=3,),), 
+                              KT_SP=3,),),
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  RESU_PRES= (_F(NUME_RESU_PRES=1,
-                            TABL_RESU_PRES=T_PRES, ), 
+                            TABL_RESU_PRES=T_PRES, ),
                             _F(NUME_RESU_PRES=2,
                             TABL_RESU_PRES=T_PRES2, ), ),
                  RESU_MECA= (_F(NUME_RESU_MECA=1,
-                            TABL_RESU_MECA=T_MEC, ), 
+                            TABL_RESU_MECA=T_MEC, ),
                             _F(NUME_RESU_MECA=2,
                             TABL_RESU_MECA=T_MEC2, ), ),
                  ENVIRONNEMENT=(_F(
@@ -239,9 +239,9 @@ FATENV = POST_RCCM( MATER=MAT,
                      NUME_RESU_MECA = 2,
                      O_ETOILE         =1.0,
                      TABL_TEMP        =T_TEMP2,
-                        ),),);
+                        ),),)
 
-IMPR_TABLE(    TABLE=FATENV,) 
+IMPR_TABLE(    TABLE=FATENV,)
 
 # VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES, DE PRESSION ET MECANIQUES
 # AVEC SEISME
@@ -251,17 +251,17 @@ SN1bs = POST_RCCM( MATER=MAT,
                  TYPE_RESU_MECA='B3200',
                  OPTION='SN',
                  INFO=2,
-                 TYPE_KE='KE_MECA', 
+                 TYPE_KE='KE_MECA',
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  RESU_PRES= (_F(NUME_RESU_PRES=1,
-                            TABL_RESU_PRES=T_PRES, ), 
+                            TABL_RESU_PRES=T_PRES, ),
                             _F(NUME_RESU_PRES=2,
                             TABL_RESU_PRES=T_PRES2, ), ),
                  RESU_MECA= (_F(NUME_RESU_MECA=1,
-                            TABL_RESU_MECA=T_MEC, ), 
+                            TABL_RESU_MECA=T_MEC, ),
                             _F(NUME_RESU_MECA=2,
                             TABL_RESU_MECA=T_MEC2, ), ),
                   SEISME =_F(NB_OCCUR =2,
@@ -290,7 +290,7 @@ SN1bs = POST_RCCM( MATER=MAT,
                      NUME_RESU_THER = 2,
                      NUME_RESU_PRES = 2,
                      NUME_RESU_MECA = 2,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=SN1bs,)
 
@@ -301,17 +301,17 @@ FATb = POST_RCCM( MATER=MAT,
                  TYPE_RESU_MECA='B3200',
                  OPTION='FATIGUE',
                  INFO=2,
-                 TYPE_KE='KE_MECA', 
+                 TYPE_KE='KE_MECA',
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  RESU_PRES= (_F(NUME_RESU_PRES=1,
-                            TABL_RESU_PRES=T_PRES, ), 
+                            TABL_RESU_PRES=T_PRES, ),
                             _F(NUME_RESU_PRES=2,
                             TABL_RESU_PRES=T_PRES2, ), ),
                  RESU_MECA= (_F(NUME_RESU_MECA=1,
-                            TABL_RESU_MECA=T_MEC, ), 
+                            TABL_RESU_MECA=T_MEC, ),
                             _F(NUME_RESU_MECA=2,
                             TABL_RESU_MECA=T_MEC2, ), ),
                   SEISME =_F(NB_OCCUR =2,
@@ -340,11 +340,11 @@ FATb = POST_RCCM( MATER=MAT,
                      NUME_RESU_THER = 2,
                      NUME_RESU_PRES = 2,
                      NUME_RESU_MECA = 2,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=FATb,)
 
-# VALIDATION DU CALCUL DE EFAT AVEC EFFET D'ENVIRONNEMENT 
+# VALIDATION DU CALCUL DE EFAT AVEC EFFET D'ENVIRONNEMENT
 FATENVb = POST_RCCM( MATER=MAT,
                  METHODE='TOUT_INST',
                  TYPE_RESU='DETAILS',
@@ -353,17 +353,17 @@ FATENVb = POST_RCCM( MATER=MAT,
                  INFO=2,
                  TYPE_KE='KE_MECA',
                  FACT_SIGM=(_F(KT_SN=2,
-                              KT_SP=3,),), 
+                              KT_SP=3,),),
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  RESU_PRES= (_F(NUME_RESU_PRES=1,
-                            TABL_RESU_PRES=T_PRES, ), 
+                            TABL_RESU_PRES=T_PRES, ),
                             _F(NUME_RESU_PRES=2,
                             TABL_RESU_PRES=T_PRES2, ), ),
                  RESU_MECA= (_F(NUME_RESU_MECA=1,
-                            TABL_RESU_MECA=T_MEC, ), 
+                            TABL_RESU_MECA=T_MEC, ),
                             _F(NUME_RESU_MECA=2,
                             TABL_RESU_MECA=T_MEC2, ), ),
                  ENVIRONNEMENT=(_F(
@@ -403,7 +403,7 @@ FATENVb = POST_RCCM( MATER=MAT,
                      NUME_RESU_MECA = 2,
                      O_ETOILE         =1.0,
                      TABL_TEMP        =T_TEMP2,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=FATENVb,)
 
@@ -411,13 +411,13 @@ IMPR_TABLE(    TABLE=FATENVb,)
 IMPR_TABLE(TABLE=FATENVb,
            FILTRE=_F(NOM_PARA='TYPE',
                      VALE_K='FACT',),
-           TITRE='impression du facteur d usage',);
+           TITRE='impression du facteur d usage',)
 
 #Impression  des maxima
 IMPR_TABLE(TABLE=FATENVb,
            FILTRE=_F(NOM_PARA='TYPE',
                      VALE_K='MAXI',),
-           TITRE='impression des maxima',);
+           TITRE='impression des maxima',)
 
 #-------------------------------------------------------------------------------
 #   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
@@ -573,7 +573,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
            NOM_PARA='SP_THER_MAX',
-           ORDRE_GRANDEUR = 1.0E-6, 
+           ORDRE_GRANDEUR = 1.0E-6,
            TABLE=FAT,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
@@ -738,7 +738,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
            NOM_PARA='SP_THER_MAX',
-           ORDRE_GRANDEUR = 1.0E-6, 
+           ORDRE_GRANDEUR = 1.0E-6,
            TABLE=FATb,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
@@ -772,4 +772,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='ORIG',),
            )
 
-FIN();
+FIN()

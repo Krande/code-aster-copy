@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 # --------------------------------------------------------------------
 
 # Pour des raisons de performances, on force SDVERI='NON'.
-DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'));
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
-MAIL0=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL0=LIRE_MAILLAGE(FORMAT='MED',)
 MAIL = CREA_MAILLAGE(MAILLAGE=MAIL0,
-                  CREA_POI1 =_F(NOM_GROUP_MA = 'PSI0',GROUP_NO = ('PSI0'),),);
+                  CREA_POI1 =_F(NOM_GROUP_MA = 'PSI0',GROUP_NO = ('PSI0'),),)
 IMPR_RESU(RESU=_F(MAILLAGE=MAIL,), FORMAT='ASTER',UNITE=8)
 
 #
@@ -43,7 +43,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='DKT',),
                          _F(GROUP_MA='LIGRAD',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 MODELE1=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA=('SRADIER','ST_B_PRE',),
@@ -52,12 +52,12 @@ MODELE1=AFFE_MODELE(MAILLAGE=MAIL,
                          _F(GROUP_MA='PSI0',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_TR',),),
-                    );
+                    )
 
 #
 
 FO1=DEFI_FONCTION(NOM_PARA='INST',
-                  VALE=(-1.0,0.0,100.0,0.0,),);
+                  VALE=(-1.0,0.0,100.0,0.0,),)
 #
 # -------------------------------------------------------------------
 # DEFINITION DES MATERIAUX
@@ -71,7 +71,7 @@ BETARM=DEFI_MATERIAU(ELAS=_F(E=4.0E10,
                              RHO=3000.0,
                              AMOR_ALPHA=0., AMOR_BETA=0.,
                              ),
-                    );
+                    )
 #
 #----- BETON PRECONTRAINT -----
 
@@ -80,14 +80,14 @@ BETPRE=DEFI_MATERIAU(ELAS=_F(E=40000000000.0,
                              RHO=2500.0,
                              AMOR_ALPHA=0., AMOR_BETA=0.,
                              ),
-                     );
+                     )
 
 #
 #----- MATERIAU CHOC -----
 
 MAT_C=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E+15,
                                    DIST_1 = 1.E-6,
-                                   DIST_2 = 1.E-6),);
+                                   DIST_2 = 1.E-6),)
 #
 #-----------------------------------------------------------------------
 #              AFFECTATION DES MATERIAUX AUX ELEMENTS
@@ -99,7 +99,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                             _F(GROUP_MA='SRADIER',
                                MATER=BETARM,),
                             _F(GROUP_MA='LIGRAD',
-                               MATER=MAT_C,),),);
+                               MATER=MAT_C,),),)
 #
 # -------------------------------------------------------------------
 # DEFINITION DES CARACTERISTIQUES DES ELEMENTS
@@ -128,7 +128,7 @@ ELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                  ),
                                ),
                              ),
-                        );
+                        )
 
 ELEM1=AFFE_CARA_ELEM(MODELE=MODELE1,
                     COQUE=(_F(GROUP_MA=('SRADIER',),
@@ -145,7 +145,7 @@ ELEM1=AFFE_CARA_ELEM(MODELE=MODELE1,
                              _F(GROUP_MA='PSI0',
                                 CARA='M_TR_D_N',
                                 VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),))
-                        );
+                        )
 
 #
 # LA STRUCTURE EST ENCASTREE A L INTERFACE
@@ -153,7 +153,7 @@ ELEM1=AFFE_CARA_ELEM(MODELE=MODELE1,
 COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=(_F(GROUP_NO='BRADIER',
                                      DX=0.0,DY=0.0,DZ=0.0,),
-                                     ),);
+                                     ),)
 
 COND_LI1=AFFE_CHAR_MECA(MODELE=MODELE1,
                         DDL_IMPO=(_F(GROUP_NO='PSI0',
@@ -163,7 +163,7 @@ COND_LI1=AFFE_CHAR_MECA(MODELE=MODELE1,
                         LIAISON_SOLIDE=(
                                         _F(GROUP_NO='SRADIER',),
                                         ),
-                        );
+                        )
 
 # ----------------------------------------------------------------------
 #---------------------------------------------
@@ -183,28 +183,28 @@ MELR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=ELEM,
                     CHARGE=(COND_LIM),
-                    );
+                    )
 
 MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                     MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=ELEM,
                     CHARGE=(COND_LIM),
-                    );
+                    )
 
 
 NUM=NUME_DDL(MATR_RIGI=MELR,
-             );
+             )
 
 
 MATR=ASSE_MATRICE(MATR_ELEM=MELR,
-                  NUME_DDL=NUM,);
+                  NUME_DDL=NUM,)
    #
    #
 
 
 MATM=ASSE_MATRICE(MATR_ELEM=MELM,
-                  NUME_DDL=NUM,);
+                  NUME_DDL=NUM,)
 
    #
    #
@@ -219,7 +219,7 @@ MASSES=POST_ELEM(MODELE=MODELE,
                  CHAM_MATER=CHMAT,
                  CARA_ELEM=ELEM,
                  INFO=1,
-                 MASS_INER=_F(TOUT='OUI',),);
+                 MASS_INER=_F(TOUT='OUI',),)
    #
    #------------------------------------------------
    #  CALCUL DES MODES DYNAMIQUES SUR BASE ENCASTREE
@@ -240,15 +240,15 @@ INTERDYN=DEFI_INTERF_DYNA(  NUME_DDL=NUM,
             INTERFACE=_F( NOM = 'DROITE',
                        TYPE = 'CRAIGB',
                        GROUP_NO = ('BRADIER',))
-           );
+           )
 
 BAMO=DEFI_BASE_MODALE(   CLASSIQUE=_F( INTERF_DYNA = INTERDYN,
                                       MODE_MECA = MOD_DYN,
                                       NMAX_MODE = 20)
-       );
+       )
 
 MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO,
-                   );
+                   )
 
 #
 # TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL
@@ -306,32 +306,32 @@ MODSTA=MODE_STATIQUE(MATR_RIGI=MATR,
                      MODE_STAT=_F(GROUP_NO='BRADIER',
                                   TOUT_CMP='OUI',
                                   ),
-                     );
+                     )
 
 BAMO2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MOD_DYN,
                                 NMAX_MODE=0,),
                              _F(MODE_INTF=MODSTA,),),
                        INTERF_DYNA=INTERDYN,
-                       NUME_REF=NUM,);
+                       NUME_REF=NUM,)
 
-NDDLGE2 = NUME_DDL_GENE( BASE= BAMO2, STOCKAGE= 'PLEIN',);
+NDDLGE2 = NUME_DDL_GENE( BASE= BAMO2, STOCKAGE= 'PLEIN',)
 
 MATI = LIRE_IMPE_MISS(UNITE_RESU_IMPE=25, FREQ_EXTR=3.0,
-                      BASE=BAMO2, NUME_DDL_GENE=NDDLGE2);
+                      BASE=BAMO2, NUME_DDL_GENE=NDDLGE2)
 
 MAEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
                        MATR_IMPE = MATI,
                        FREQ_EXTR=3.0,
                        AMOR_SOL=0.05,
-                       );
+                       )
 
 CHPE11=AFFE_CHAR_MECA(MODELE=MODELE1,
                       PESANTEUR= _F(GRAVITE=9.81,
-                                    DIRECTION=(0.,0.,-1.,),),);
+                                    DIRECTION=(0.,0.,-1.,),),)
 
 CHPE12=AFFE_CHAR_MECA(MODELE=MODELE1,
                       PESANTEUR= _F(GRAVITE=1.0,
-                                    DIRECTION=(-1.0,0.0,0.0,),),);
+                                    DIRECTION=(-1.0,0.0,0.0,),),)
 
 ASSEMBLAGE(MODELE=MODELE1,
                 CHAM_MATER=CHMAT,
@@ -349,7 +349,7 @@ ASSEMBLAGE(MODELE=MODELE1,
                               CHARGE=CHPE11),
                            _F(VECTEUR=CO("VECAS2"),
                               OPTION='CHAR_MECA',
-                              CHARGE=CHPE12),),);
+                              CHARGE=CHPE12),),)
 
 
 
@@ -358,7 +358,7 @@ ASSEMBLAGE(MODELE=MODELE1,
 #                                         NMAX_FREQ=120,
 #                                        ),
 #                            VERI_MODE=_F(  STOP_ERREUR='NON')
-#                          );
+#                          )
 MODE1=CALC_MODES(MATR_RIGI=MATR1,
                  OPTION='BANDE',
                  CALC_FREQ=_F(FREQ=(3.,20.,31.,41.,),
@@ -372,13 +372,13 @@ MODSTA1=MODE_STATIQUE(MATR_RIGI=MATR1,
                                    # AVEC_CMP=('DX','DY','DZ'),
                                    TOUT_CMP='OUI',
                                    ),
-                                  );
+                                  )
 
 INTERDY1=DEFI_INTERF_DYNA(  NUME_DDL=NUME1,
             INTERFACE=_F( NOM = 'DROITE',
                        TYPE = 'CRAIGB',
                        GROUP_NO = ('PSI0',))
-           );
+           )
 
 BAMO1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE1,
                                 NMAX_MODE=120,),
@@ -386,16 +386,16 @@ BAMO1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE1,
                                 NMAX_MODE=1999,),
                              ),
                        INTERF_DYNA=INTERDY1,
-                       NUME_REF=NUME1,);
+                       NUME_REF=NUME1,)
 
 
-NDDLGE1 = NUME_DDL_GENE( BASE= BAMO1, STOCKAGE= 'PLEIN',);
+NDDLGE1 = NUME_DDL_GENE( BASE= BAMO1, STOCKAGE= 'PLEIN',)
 
 VECGE1=PROJ_VECT_BASE(  BASE=BAMO1,  NUME_DDL_GENE=NDDLGE1,
-                            VECT_ASSE=VECAS1, TYPE_VECT='FORC' );
+                            VECT_ASSE=VECAS1, TYPE_VECT='FORC' )
 
 VECGE2=PROJ_VECT_BASE(  BASE=BAMO1,  NUME_DDL_GENE=NDDLGE1,
-                            VECT_ASSE=VECAS2, TYPE_VECT='FORC' );
+                            VECT_ASSE=VECAS2, TYPE_VECT='FORC' )
 
 MAEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
                        MATR_RIGI=MATR1,
@@ -408,10 +408,10 @@ MAEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
                                  _F(NOM_CAS='CHP2',
                                     VECT_ASSE_GENE=VECGE2,),
                                    ),
-                     );
+                     )
 
-IMPR_CO(CHAINE='MAEL1   .LINO');
-IMPR_CO(CHAINE='MAEL2   .LINO');
+IMPR_CO(CHAINE='MAEL1   .LINO')
+IMPR_CO(CHAINE='MAEL2   .LINO')
 
 MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
                           _F(MACR_ELEM=MAEL1,
@@ -421,11 +421,11 @@ MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
                                          ),
                       RECO_GLOBAL=_F(TOUT='OUI',),
                       DEFI_NOEUD=_F(TOUT='OUI',
-                                     INDEX=(1,0,1,8,),),);
+                                     INDEX=(1,0,1,8,),),)
 
 MAILB=ASSE_MAILLAGE(MAILLAGE_1=MAIL,
                     MAILLAGE_2=MAYADYN,
-                    OPERATION='SOUS_STR',);
+                    OPERATION='SOUS_STR',)
 
 
 CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
@@ -434,7 +434,7 @@ CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
                            _F(GROUP_MA='PSI0',
                               MATER=BETARM,),
                            ),
-                     );
+                     )
 
 MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                    AFFE_SOUS_STRUC=_F(SUPER_MAILLE=('STAT1','STAT2',),
@@ -446,7 +446,7 @@ MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='DIS_TR',),
                         ),
-                  );
+                  )
 #
 # ----------------------------------------------------------------------
 # AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES RIGI_MISS_3D
@@ -476,13 +476,13 @@ ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
                                  ),
                                ),
                              ),
-                        );
+                        )
 
 COND_LIB=AFFE_CHAR_MECA(MODELE=MODELB,
                         LIAISON_SOLIDE=(
                                         _F(GROUP_NO='SRADIER',),
                                         ),
-                        );
+                        )
 
 ASSEMBLAGE(MODELE=MODELB,
                 CHAM_MATER=CHMATB,
@@ -496,7 +496,7 @@ ASSEMBLAGE(MODELE=MODELB,
                            _F(MATRICE=CO('MATRAMOB'),
                               OPTION='AMOR_MECA',),
                            ),
-               );
+               )
 
 #
 # CALCUL DES MODES SUR TAPIS DE RESSORTS:
@@ -511,7 +511,7 @@ MASSTOT=POST_ELEM(MODELE=MODELB,
                             ),
                   )
 
-IMPR_TABLE(TABLE=MASSTOT,);
+IMPR_TABLE(TABLE=MASSTOT,)
 
 
 MODEB=CALC_MODES(MATR_RIGI=MATRRIGB,
@@ -545,34 +545,34 @@ TEST_RESU(RESU=(_F(RESULTAT=MODEB,
                    PARA='FREQ',
                    CRITERE='RELATIF',
                    VALE_CALC=7.880432144688727E+00,),
-                ),);
+                ),)
 
 
 CHAPP=AFFE_CHAR_MECA(MODELE=MODELB,
                      PESANTEUR=_F(GRAVITE=9.81,
-                                  DIRECTION=(0.0,0.0,-1.0,),),);
+                                  DIRECTION=(0.0,0.0,-1.0,),),)
 #
 
 TEMPL2B=DEFI_LIST_REEL(
                       DEBUT=0.01,
                       INTERVALLE=_F(JUSQU_A=5.00,
                                     NOMBRE=499,),
-                      );
+                      )
 
 TEMPL2C=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=5.00,
-                                    NOMBRE=500,),);
+                                    NOMBRE=500,),)
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=-10.0,
                       INTERVALLE=_F(JUSQU_A=0.0,
-                                    NOMBRE=10,),);
+                                    NOMBRE=10,),)
 #
 # EVOLUTIONS
 #  LECTURE DE L ACCELEROGRAMME DE SOL ACCE
 
 FC1 = DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(-10., 1.0, 100.0, 1.0, ),);
+                    VALE=(-10., 1.0, 100.0, 1.0, ),)
 
 ACCE1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=
@@ -716,32 +716,32 @@ ACCE1=DEFI_FONCTION(NOM_PARA='INST',
                            -0.06106,9.96,-0.08536,9.97,-0.11346,9.98,-0.1446,9.99,-0.1616,10.0,-0.17295,
                            10.01, 0.0, 10.24, 0.0,
                            ),
-                           );
+                           )
 
 ACCE=CALC_FONCTION(COMB=_F(FONCTION=ACCE1,
-                           COEF=3.5,),);
+                           COEF=3.5,),)
 #  LECTURE DES CHARGES NODALES
 
 CHFONO=AFFE_CHAR_MECA(MODELE=MODELB,
                      PESANTEUR=_F(GRAVITE=1.0,
-                                  DIRECTION=(-1.0,0.0,0.0,),),);
+                                  DIRECTION=(-1.0,0.0,0.0,),),)
 
 #
 VELPP=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
            CHARGE=CHAPP, CHAM_MATER=CHMATB, CARA_ELEM=ELEMB,
            MODELE=MODELB,
            SOUS_STRUC=_F( CAS_CHARGE = 'CHP1', SUPER_MAILLE = 'STAT1',)
-               );
+               )
 
 VELFO=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
            CHARGE=CHFONO, CHAM_MATER=CHMATB, CARA_ELEM=ELEMB,
            MODELE=MODELB,
            SOUS_STRUC=_F( CAS_CHARGE = 'CHP2', SUPER_MAILLE = 'STAT1',)
-               );
+               )
 
 
-VECASPP=ASSE_VECTEUR(   NUME_DDL=NUMEROTB,  VECT_ELEM=VELPP);
-VECASFO=ASSE_VECTEUR(   NUME_DDL=NUMEROTB,  VECT_ELEM=VELFO);
+VECASPP=ASSE_VECTEUR(   NUME_DDL=NUMEROTB,  VECT_ELEM=VELPP)
+VECASFO=ASSE_VECTEUR(   NUME_DDL=NUMEROTB,  VECT_ELEM=VELFO)
 
 # Calcul de la position statique initiale sous pesanteur
 EVOL0=DYNA_VIBRA( TYPE_CALCUL='TRAN',
@@ -752,15 +752,15 @@ EVOL0=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                       INCREMENT=_F( LIST_INST = L_INST),
                       ARCHIVAGE=_F( PAS_ARCH=10),
                      EXCIT=_F( VECT_ASSE=VECASPP, COEF_MULT = 1.0,),
-                    );
+                    )
 
 DEP0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                  RESULTAT= EVOL0, INST=0.0,
-                 NOM_CHAM = 'DEPL');
+                 NOM_CHAM = 'DEPL')
 
 VIT0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                  RESULTAT= EVOL0, INST=0.0,
-                 NOM_CHAM = 'VITE');
+                 NOM_CHAM = 'VITE')
 
 
 # Boucle de calculs lineaires iteratifs en recalculant les forces
@@ -785,7 +785,7 @@ for k in range(1,NF):
                             _F( VECT_ASSE=VECASPP, COEF_MULT = 1.0,),
                             _F( VECT_ASSE=VECASFO, FONC_MULT = ACCE,),
                             ),
-                    );
+                    )
 
 
   else:
@@ -797,7 +797,7 @@ for k in range(1,NF):
                              _F(RELATION='DIS_CHOC',
                                 GROUP_MA='LIGRAD',),
                              ),
-                       );
+                       )
 
     DETRUIRE(NOM=EVOL)
     EVOL=DYNA_VIBRA(TYPE_CALCUL='TRAN',
@@ -817,7 +817,7 @@ for k in range(1,NF):
                     EXCIT_RESU=(
                            _F( RESULTAT = resunl, COEF_MULT = -1.0,),
                                ),
-                       );
+                       )
 
     DETRUIRE(NOM=resunl)
 
@@ -830,7 +830,7 @@ RESUGLO=REST_COND_TRAN(  RESULTAT=EVOL,
                          LIST_INST=TEMPL2B,
                          PRECISION=1.E-4,
                          NOM_CHAM='DEPL',
-                       );
+                       )
 TEST_RESU(RESU=(_F(INST=0.0,
                    RESULTAT=EVOL,
                    NOM_CHAM='DEPL',
@@ -862,7 +862,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CMP='DX',
                    VALE_CALC=-0.24960739558065342,
                    CRITERE=('RELATIF', 'ABSOLU'),
-                ),),);
+                ),),)
 
 
-FIN();
+FIN()

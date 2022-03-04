@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ Ng = 300
 #=====  1 - MESH READING  AND MODEL DEFINITION =================================
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 # changing the scale of the RVE if necessary
 MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL, ECHELLE=1.)
@@ -67,9 +67,9 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL, ECHELLE=1.)
 # global dimension
 
 TABG=RECU_TABLE(CO=MAIL,
-                NOM_TABLE='CARA_GEOM',);
+                NOM_TABLE='CARA_GEOM',)
 
-IMPR_TABLE(TABLE=TABG,);
+IMPR_TABLE(TABLE=TABG,)
 
 if defi_groups==1 :
    xmin=TABG['X_MIN',1]
@@ -80,21 +80,21 @@ if defi_groups==1 :
    zmax=TABG['Z_MAX',1]
 else:
 # 50 microns, en m
-   xmin = 0.0;
-   xmax = 5e-05;
-   ymin = 0.0;
-   ymax = 5e-05;
-   zmin = 0.0;
-   zmax = 5e-05;
+   xmin = 0.0
+   xmax = 5e-05
+   ymin = 0.0
+   ymax = 5e-05
+   zmin = 0.0
+   zmax = 5e-05
 dim=zmax-zmin
 
 print('Dimensions x',xmin,xmax)
 print('Dimensions y',ymin,ymax)
 print('Dimensions z',zmin,zmax)
 
-haut = (zmax - zmin);
+haut = (zmax - zmin)
 
-precis = (haut / 100.0);
+precis = (haut / 100.0)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -127,7 +127,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                   NOM='FACYZ',
                                   POINT=(xmin,0.,0.,),
                                   VECT_NORMALE=(1.0,0.,0.,),
-                                  PRECISION=precis,),),);
+                                  PRECISION=precis,),),)
 
 
 # evaluate the elsets for each grain and add it to the mesh
@@ -141,7 +141,7 @@ if mail_libre==0 :
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # define the orientations of each elset for each germ
 if defi_orientations==1 :
@@ -153,7 +153,7 @@ else:
 
 #=====  2 - MATERIAL DEFINITION ================================================
 #print "Defining the material..."
-Coef = 1000000.0;
+Coef = 1000000.0
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=(210000.0 * Coef),
@@ -168,17 +168,17 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=(210000.0 * Coef),
                                   H2=1.0,
                                   H3=1.0,
                                   H4=1.0,),
-                    MONO_CINE1=_F(D=0.0,),);
+                    MONO_CINE1=_F(D=0.0,),)
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
                                    ECOULEMENT='MONO_VISC1',
                                    ECRO_ISOT='MONO_ISOT1',
                                    ECRO_CINE='MONO_CINE1',
-                                   FAMI_SYST_GLIS='BCC24',),);
+                                   FAMI_SYST_GLIS='BCC24',),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 #=====  3 - LOADING AND MATERIAL AFFECTATION ===================================
 
@@ -188,35 +188,35 @@ TRAC1=AFFE_CHAR_CINE(MODELE=MO,
                                 _F(GROUP_NO='FACXZ',
                                    DY=0.0,),
                                 _F(GROUP_NO='FACYZ',
-                                   DX=0.0,),),);
+                                   DX=0.0,),),)
 
 FO_EZ=LIRE_FONCTION(UNITE=33,
                     NOM_PARA='INST',
                     NOM_RESU='EPYY_0',
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 FO_UZ=CALC_FONCTION(COMB=_F(FONCTION=FO_EZ,
-                            COEF=haut,),);
+                            COEF=haut,),)
 
 TRAC2=AFFE_CHAR_MECA_F(MODELE=MO,
                        DDL_IMPO=_F(GROUP_NO='FAC1XY',
-                                   DZ=FO_UZ,),);
+                                   DZ=FO_UZ,),)
 
 TRAC3=AFFE_CHAR_MECA(MODELE=MO,
                      LIAISON_UNIF=(_F(GROUP_NO='FAC1XZ',
                                       DDL='DY',),
                                    _F(GROUP_NO='FAC1YZ',
-                                      DDL='DX',),),);
-TMAX = 27.5;
+                                      DDL='DX',),),)
+TMAX = 27.5
 
 
-#TFIN = TMAX;
-TFIN = 1.4;
+#TFIN = TMAX
+TFIN = 1.4
 
-NPAS = 200;
+NPAS = 200
 
-NARCH = 20;
+NARCH = 20
 
 
 # this list corresponds to the list of the 'archiving' instants
@@ -227,7 +227,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.,
                                  _F(JUSQU_A=1.4,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TMAX,
-                                    NOMBRE=NARCH,),),);
+                                    NOMBRE=NARCH,),),)
 
 # for the resolution, a maximum increment of deformation of 0.05%
 # is required... Therefore, the number of steps is multiplied so
@@ -239,7 +239,7 @@ LINSTC=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=1.4,
                                      NOMBRE=2,),
                                   _F(JUSQU_A=TMAX,
-                                     NOMBRE=NPAS,),),);
+                                     NOMBRE=NPAS,),),)
 
 #=====  4 - RESOLUTION ============================================
 
@@ -275,7 +275,7 @@ SIG=STAT_NON_LINE(MODELE=MO,
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
                                  ),
-                  );
+                  )
 
 #=====  5 - OUTPUT FIELDS CALCULATIONS =========================================
 # calculation of stress fields at nodes from gauss points
@@ -285,7 +285,7 @@ SIG=CALC_CHAMP(reuse =SIG,
 
 
               RESULTAT=SIG,
-               DEFORMATION=('EPSI_ELGA'),);
+               DEFORMATION=('EPSI_ELGA'),)
 
 # Calcul des moyennes
 
@@ -294,26 +294,26 @@ INT_SI=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
                               NOM_CMP='SIZZ',
                               TYPE_MAILLE='3D',),
                  MODELE=MO,
-                 RESULTAT=SIG,);
+                 RESULTAT=SIG,)
 
 INT_EP=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
                               NOM_CHAM='EPSI_ELGA',
                               NOM_CMP='EPZZ',
                               TYPE_MAILLE='3D',),
                  MODELE=MO,
-                 RESULTAT=SIG,);
+                 RESULTAT=SIG,)
 
 FSI=RECU_FONCTION(TABLE=INT_SI,
                   PARA_X='INST',
-                  PARA_Y='MOYE_SIZZ',);
+                  PARA_Y='MOYE_SIZZ',)
 
 FEP=RECU_FONCTION(TABLE=INT_EP,
                   PARA_X='INST',
-                  PARA_Y='MOYE_EPZZ',);
+                  PARA_Y='MOYE_EPZZ',)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=FSI,),
-              UNITE=8,);
+              UNITE=8,)
 
 TEST_TABLE(
            VALE_CALC=370356696.05,
@@ -328,6 +328,6 @@ IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=SIG,
                   IMPR_NOM_VARI='NON',
                   NOM_CHAM='VARI_ELGA',
-                  NOM_CMP=('V79','V80',),),);
+                  NOM_CMP=('V79','V80',),),)
 
-FIN();
+FIN()

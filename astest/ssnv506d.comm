@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@
 # SPHERE RIGIDE MODELISER UNIQUEMENT PAR LA SURFACE DE CONTACT
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
 #-------------------------------------------------------------------
 #                      LECTURE MAILLAGE SSNV506D.MGIB
 #-------------------------------------------------------------------
 
-SSNV506D=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+SSNV506D=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 #--------------------------------------------------------------------
 #                     DEFINITION DU MODELE
@@ -37,37 +37,37 @@ SSNV506D=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
 
 SSNV506D=DEFI_GROUP(reuse =SSNV506D,
                     MAILLAGE=SSNV506D,
-                    CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',), ),);
+                    CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',), ),)
 
 MO=AFFE_MODELE(MAILLAGE=SSNV506D,
                AFFE=_F(TOUT='OUI',
                        #GROUP_MA=('BATI','SPHSUP'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # REORENTATION DES NORMALES DES SURFACES DE CONTACT
 SSNV506D=MODI_MAILLAGE(reuse =SSNV506D,
                        MAILLAGE=SSNV506D,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SMAI','SESC'),),
-                       INFO=1,);
+                       INFO=1,)
 
 #----------------------------------------------------------------------
 #                      DEFINITION DES MATERIAUX
 #----------------------------------------------------------------------
 
 MSPH=DEFI_MATERIAU(ELAS=_F(E=21000000,
-                           NU=0.29999999999999999,),);
+                           NU=0.29999999999999999,),)
 
 MBATI=DEFI_MATERIAU(ELAS=_F(E=210000,
                             NU=0.29999999999999999,),
                     ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                 SY=50.0,),);
+                                 SY=50.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506D,
                     AFFE=(_F(GROUP_MA='SPHSUP',
                              MATER=MSPH,),
                           _F(GROUP_MA='BATI',
-                             MATER=MBATI,),),);
+                             MATER=MBATI,),),)
 
 #----------------------------------------------------------------------
 #              DEFINITION DES PARAMETRES DE CHARGEMENT
@@ -77,7 +77,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           1.0,1.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.01,
@@ -85,7 +85,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=0.1,
                                     NOMBRE=9,),
                                  _F(JUSQU_A=1.0,
-                                    NOMBRE=18,),),);
+                                    NOMBRE=18,),),)
 
 #---------------------------------------------------------------------
 #              AFFECTATION DES CONDITIONS AUX LIMITES
@@ -104,7 +104,7 @@ DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
                        LIAISON_DDL=_F(GROUP_NO=('S','E'),
                                       DDL=('DY','DY'),
                                       COEF_MULT=(1.0,-1.0),
-                                      COEF_IMPO=0.,),);
+                                      COEF_IMPO=0.,),)
 
 CONT = DEFI_CONTACT(MODELE=MO,
                     FORMULATION='DISCRETE',
@@ -148,7 +148,7 @@ SSNV506=STAT_NON_LINE(SOLVEUR=_F(),
                        CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
                                       ITER_GLOB_MAXI=15,
                                       ARRET='OUI',),
-                       INFO=1,);
+                       INFO=1,)
 
 #----------------------------------------------------------------------
 #                         POST TRAITEMENT
@@ -157,7 +157,7 @@ SSNV506=STAT_NON_LINE(SOLVEUR=_F(),
 SSNV506=CALC_CHAMP(reuse =SSNV506,
                  RESULTAT=SSNV506,
                  FORCE='REAC_NODA',
-                 );
+                 )
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  GROUP_NO='SESC',
@@ -165,10 +165,10 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  NOM_CHAM='REAC_NODA',
                                  LIST_INST=LINST,
                                  RESULTANTE='DY',
-                                 OPERATION = 'EXTRACTION'),);
+                                 OPERATION = 'EXTRACTION'),)
 
 IMPR_TABLE(TABLE=TAB_REAC,
-           FORMAT='TABLEAU',);
+           FORMAT='TABLEAU',)
 
 #----------------------------------------------------------------------
 #                   TESTS DES RESULTATS
@@ -224,4 +224,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),
            )
 
-FIN();
+FIN()

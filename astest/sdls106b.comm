@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,21 +42,21 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 MAILLA1 = LIRE_MAILLAGE(FORMAT='IDEAS', UNITE=19)
 
 MAILLA2 = LIRE_MAILLAGE(FORMAT='IDEAS', UNITE=29)
-                                                                                                                            
+
 # Pertubation legere des coordonnes des maillages pour eviter les modes multiples ou retournes :
-MAILLA1=MODI_MAILLAGE(reuse =MAILLA1, MAILLAGE=MAILLA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
-MAILLA2=MODI_MAILLAGE(reuse =MAILLA2, MAILLAGE=MAILLA2, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
+MAILLA1=MODI_MAILLAGE(reuse =MAILLA1, MAILLAGE=MAILLA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
+MAILLA2=MODI_MAILLAGE(reuse =MAILLA2, MAILLAGE=MAILLA2, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 
 MODELE1=AFFE_MODELE(MAILLAGE=MAILLA1,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'),)
 
 MODELE2=AFFE_MODELE(MAILLAGE=MAILLA2,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'),)
 
 
 #
@@ -195,14 +195,14 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID_1,
                         MODE_INTERF=_F(GROUP_NO = 'GAUCHE',
                                      TOUT_CMP='OUI',
                                      NB_MODE=20,
-                                     SHIFT=1.,),);
+                                     SHIFT=1.,),)
 
 MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID_2,
                         MATR_MASS=MASS_2,
                         MODE_INTERF=_F(GROUP_NO = 'BLOQUE',
                                      TOUT_CMP='OUI',
                                      NB_MODE=20,
-                                     SHIFT=1.,),);
+                                     SHIFT=1.,),)
 #
 #  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
@@ -262,11 +262,11 @@ NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE,
 #  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
 #
 MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
-                                  OPTION='MASS_GENE',);
+                                  OPTION='MASS_GENE',)
 
 #
 RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
-                                  OPTION='RIGI_GENE',);
+                                  OPTION='RIGI_GENE',)
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #

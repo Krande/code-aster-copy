@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #  GUIDE D'ONDE A SORTIE ANECHOIQUE CAS AXIS (en U-PSI)
 #
 
-import numpy 
+import numpy
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -37,8 +37,8 @@ AIR=DEFI_MATERIAU( FLUIDE=_F( RHO = 1.3, CELE_R = 343.))
 CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
                                  AFFE=_F( TOUT = 'OUI',  MATER = AIR) )
 
-COLONNE=AFFE_MODELE(  MAILLAGE=MAYA,     
-                      AFFE=_F(TOUT = 'OUI', 
+COLONNE=AFFE_MODELE(  MAILLAGE=MAYA,
+                      AFFE=_F(TOUT = 'OUI',
                               MODELISATION = 'AXIS_FLUIDE',
                               FORMULATION='U_PSI',
                               PHENOMENE = 'MECANIQUE') )
@@ -67,7 +67,7 @@ MATELE_K=CALC_MATR_ELEM(   MODELE=COLONNE,  CHAM_MATER=CHAMPMAT,
 
 MATELE_M=CALC_MATR_ELEM(   MODELE=COLONNE,  CHAM_MATER=CHAMPMAT,
                                 OPTION='MASS_MECA', CHARGE=CHARMECA)
-                                
+
 MATELE_C=CALC_MATR_ELEM(   MODELE=COLONNE,  CHAM_MATER=CHAMPMAT,
                                 OPTION='AMOR_MECA', CHARGE=CHARMECA, RIGI_MECA = MATELE_K)
 
@@ -90,7 +90,7 @@ MATASC=ASSE_MATRICE(  MATR_ELEM=MATELE_C,   NUME_DDL=NUM )
 MATASC = COMB_MATR_ASSE(reuse  = MATASC, MATR_ASSE = MATASC, COMB_R = (_F(MATR_ASSE = MATASC,  COEF_R = 1.0,),
                                                                        _F(MATR_ASSE = MATASI,  COEF_R = 1.0,),
                                                                        ),
-                       );
+                       )
 
 VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELEM,   NUME_DDL=NUM )
 

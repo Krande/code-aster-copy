@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
 
 # Material - Rigidity
-NEUT3  = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R', 
+NEUT3  = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                     OPERATION='AFFE',
                     MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI', NOM_CMP='X1', VALE=2.,),
@@ -81,7 +81,7 @@ CONDLIM=AFFE_CHAR_THER(MODELE=MODE,
 K_ELEM=CALC_MATR_ELEM(MODELE=MODE,
                             CHAM_MATER=CHMAT_R,
                                OPTION='RIGI_THER',
-                                CHARGE=CONDLIM 
+                                CHARGE=CONDLIM
                                 )
 
 MV_ELEM=CALC_MATR_ELEM(      MODELE=MODE,
@@ -89,7 +89,7 @@ MV_ELEM=CALC_MATR_ELEM(      MODELE=MODE,
                                OPTION='MASS_THER',
                             INCR_INST= 1.0,
                                 )
-                                                        
+
 
 M_ELEM=CALC_MATR_ELEM(
                       MODELE     = MODE,
@@ -145,9 +145,9 @@ LIMODE=CALC_TABLE(reuse =LIMODE,
 
 IMPR_TABLE(TABLE=LIMODE)
 
-TEST_TABLE ( TABLE = LIMODE , NOM_PARA = 'DIFF', TYPE_TEST='MAX', REFERENCE = 'ANALYTIQUE', VALE_CALC = 3.01524E-04, PRECISION=5E-4, VALE_REFE = 0.0,CRITERE ='ABSOLU') 
+TEST_TABLE ( TABLE = LIMODE , NOM_PARA = 'DIFF', TYPE_TEST='MAX', REFERENCE = 'ANALYTIQUE', VALE_CALC = 3.01524E-04, PRECISION=5E-4, VALE_REFE = 0.0,CRITERE ='ABSOLU')
 
-                             
+
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=MODES,),
           )
@@ -156,103 +156,103 @@ IMPR_RESU(FORMAT='MED',
 TABMODE = RECU_TABLE(CO=MODES,TOUT_PARA = 'OUI')
 IMPR_TABLE(UNITE=6, TABLE=TABMODE)
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'FREQ', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'FREQ',
              VALE_CALC = 0.15919913067934227,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'NUME_MODE', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'NUME_MODE',
              VALE_CALC_I = 1,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'AMOR_GENE', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'AMOR_GENE',
              VALE_CALC = 0. ,
              ORDRE_GRANDEUR = 1.,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'AMOR_REDUIT', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'AMOR_REDUIT',
              VALE_CALC = 0. ,
              ORDRE_GRANDEUR = 1.,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'FACT_PARTICI_DX', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'FACT_PARTICI_DX',
              VALE_CALC = 0. ,
              ORDRE_GRANDEUR = 1.,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
-            
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'FACT_PARTICI_DY', 
+
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'FACT_PARTICI_DY',
              VALE_CALC = 0. ,
              ORDRE_GRANDEUR = 1.,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'FACT_PARTICI_DZ', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'FACT_PARTICI_DZ',
              VALE_CALC = 0. ,
              ORDRE_GRANDEUR = 1.,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'MASS_EFFE_DX', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'MASS_EFFE_DX',
              VALE_CALC = 0. ,
              ORDRE_GRANDEUR = 1.,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'MASS_EFFE_DY', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'MASS_EFFE_DY',
              VALE_CALC = 0. ,
              ORDRE_GRANDEUR = 1.,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'MASS_EFFE_DZ', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'MASS_EFFE_DZ',
              VALE_CALC = 0. ,
              ORDRE_GRANDEUR = 1.,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'MASS_GENE', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'MASS_GENE',
              VALE_CALC = 0.17724552793739665 ,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'OMEGA2', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'OMEGA2',
              VALE_CALC = 1.000555354683716 ,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
-TEST_TABLE ( TABLE = TABMODE , 
-             NOM_PARA = 'RIGI_GENE', 
+TEST_TABLE ( TABLE = TABMODE ,
+             NOM_PARA = 'RIGI_GENE',
              VALE_CALC = 0.1773439620715138 ,
              FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                       VALE_I   = 1), 
+                       VALE_I   = 1),
             )
 
 
@@ -268,7 +268,7 @@ TEST_TABLE ( TABLE = TABMODE ,
 #X3   = RECU_FONCTION(TABLE=COUP1,  PARA_X='ABSC_CURV',PARA_Y='TEMP',FILTRE = _F(NOM_PARA='NUME_MODE', VALE_I=3))
 #X4   = RECU_FONCTION(TABLE=COUP1,  PARA_X='ABSC_CURV',PARA_Y='TEMP',FILTRE = _F(NOM_PARA='NUME_MODE', VALE_I=4))
 #X5   = RECU_FONCTION(TABLE=COUP1,  PARA_X='ABSC_CURV',PARA_Y='TEMP',FILTRE = _F(NOM_PARA='NUME_MODE', VALE_I=5))
-#                                         
+#
 #IMPR_FONCTION(UNITE=38, FORMAT='XMGRACE',PILOTE='PNG',COURBE=(_F(MARQUEUR=0,FONCTION=X1),_F(MARQUEUR=0,FONCTION=X2),_F(MARQUEUR=0,FONCTION=X3),_F(MARQUEUR=0,FONCTION=X4),_F(MARQUEUR=0,FONCTION=X5)))
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #      K_D NE DEPEND QUE DE LA TEMPERATURE (FONCTION)
 #----------------------------------------------------------------------
 
-EPROU=LIRE_MAILLAGE(FORMAT="ASTER",);
+EPROU=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 CT1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='AFFE',
@@ -94,7 +94,7 @@ CT1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   VALE=1000.),
                _F(GROUP_NO='N8',
                   NOM_CMP='TEMP',
-                  VALE=1000.)));
+                  VALE=1000.)))
 
 CT2=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='AFFE',
@@ -123,7 +123,7 @@ CT2=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   VALE=1025.),
                _F(GROUP_NO='N8',
                   NOM_CMP='TEMP',
-                  VALE=1025.)));
+                  VALE=1025.)))
 
 CTHER=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
@@ -136,44 +136,44 @@ CTHER=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=CT2,
                    INST=2000000.0),
                 _F(CHAM_GD=CT2,
-                   INST=3000000.0)));
+                   INST=3000000.0)))
 
 EPD3=AFFE_MODELE(MAILLAGE=EPROU,
                  DISTRIBUTION=_F(METHODE='CENTRALISE'),
                  AFFE=_F(GROUP_MA='MA1',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D'));
+                         MODELISATION='3D'))
 
-SEUIL=DEFI_CONSTANTE(VALE=0.);
+SEUIL=DEFI_CONSTANTE(VALE=0.)
 
-A1=DEFI_CONSTANTE(VALE=0.);
+A1=DEFI_CONSTANTE(VALE=0.)
 
-A2=DEFI_CONSTANTE(VALE=0.);
+A2=DEFI_CONSTANTE(VALE=0.)
 
 N_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,12.2,
                         1000.,10.8,
                         1025.,10.45,
-                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT');
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT')
 
 M_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,(1.0/10.5),
                         1000.,(1.0/9.8),
                         1025.,(1.0/9.625),
-                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT');
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT')
 
 K_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,(1.0/2110.),
                         1000.,(1.0/1450.),
                         1025.,(1.0/1285.),
-                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT');
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT')
 
 A_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,3191.62,
                         1000.,2511.35,
                         1025.,2341.3,
-                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT');
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT')
 
 R_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(900.,6.3,
                         1000.,5.2,
                         1025.,4.925,
-                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT');
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT')
 
 KD_T=DEFI_NAPPE(NOM_PARA='TEMP',
                 PARA=(900.,1000.,1025.,1050.),
@@ -181,13 +181,13 @@ KD_T=DEFI_NAPPE(NOM_PARA='TEMP',
                 DEFI_FONCTION=(_F(VALE=(.01,14.355,100.,14.855,200.,15.355),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE'),
                                _F(VALE=(.01,14.5,100.,15.,200.,15.5),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE'),
                                _F(VALE=(.01,14.5363,100.,15.0363,200.,15.5363),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE'),
-                               _F(VALE=(.01,14.5725,100.,15.0725,200.,15.5725),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE')),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE');
+                               _F(VALE=(.01,14.5725,100.,15.0725,200.,15.5725),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE')),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE')
 
-F_E=DEFI_CONSTANTE(VALE=150000.);
+F_E=DEFI_CONSTANTE(VALE=150000.)
 
-F_NU=DEFI_CONSTANTE(VALE=0.3);
+F_NU=DEFI_CONSTANTE(VALE=0.3)
 
-F_ALPHA=DEFI_CONSTANTE(VALE=0.);
+F_ALPHA=DEFI_CONSTANTE(VALE=0.)
 
 ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=F_E,
                                NU=F_NU,
@@ -202,7 +202,7 @@ ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=F_E,
                                     BETA_D=A2,
                                     R_D=R_T,
                                     A_D=A_T,
-                                    K_D=KD_T));
+                                    K_D=KD_T))
 
 MAT=AFFE_MATERIAU(MAILLAGE=EPROU,
                   AFFE=_F(GROUP_MA='MA1',
@@ -210,7 +210,7 @@ MAT=AFFE_MATERIAU(MAILLAGE=EPROU,
                   AFFE_VARC=_F(TOUT='OUI',
                                EVOL=CTHER,
                                NOM_VARC='TEMP',
-                               VALE_REF=1000.));
+                               VALE_REF=1000.))
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=(_F(JUSQU_A=.2,
@@ -232,7 +232,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.,
                                  _F(JUSQU_A=1600000.,
                                     NOMBRE=10),
                                  _F(JUSQU_A=1700000.,
-                                    NOMBRE=10)));
+                                    NOMBRE=10)))
 
 COND_LIM=AFFE_CHAR_MECA(MODELE=EPD3,
                         DDL_IMPO=(_F(GROUP_NO='N1',
@@ -258,7 +258,7 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=EPD3,
                                      DZ=0.1),
                                   _F(GROUP_NO='N8',
                                      DX=0.,
-                                     DZ=0.1)));
+                                     DZ=0.1)))
 
 COEF_TR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                             0.1,1.,
@@ -267,7 +267,7 @@ COEF_TR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                             2400000.,1.,
                             2450000.,1.,
                             3000000.,1.,
-                            ));
+                            ))
 
 SOLNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
                     MODELE=EPD3,
@@ -288,7 +288,7 @@ SOLNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
                               REAC_ITER=1),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=20),
-                    TITRE='TEST RELAXATION SIMPLE');
+                    TITRE='TEST RELAXATION SIMPLE')
 
 SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -515,7 +515,7 @@ SOLNL2=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
                               REAC_ITER=1),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=20),
-                    TITRE='TEST RELAXATION SIMPLE');
+                    TITRE='TEST RELAXATION SIMPLE')
 
 SOLNL2=CALC_CHAMP(reuse=SOLNL2,RESULTAT=SOLNL2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -644,5 +644,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
 
 
 
-FIN();
+FIN()
 #

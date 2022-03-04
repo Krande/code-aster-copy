@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ import numpy as np
 # NOMBRE DU PAS DE CALCUL
 nb_pas = 500
 
-# NOMBRE DU PAS D'ARCHIVAGE 
+# NOMBRE DU PAS D'ARCHIVAGE
 nb_arch = 100
 
 # INSTANT DE FIN <= DERNIER INSTANT
@@ -52,7 +52,7 @@ inst_total = 1000.0
 
 # DEPLACEMENT IMPOSE: 1.5 pour NT2, 2 pour NT4, 3.2 pour NT10
 depl = 2
-                       
+
 
 # -------------------------------------------------------------------------
 # OBJET ASTER
@@ -67,9 +67,9 @@ MODE = AFFE_MODELE(MAILLAGE = MAIL,
                         MODELISATION = 'AXIS_GRAD_VARI',
                      ),
            )
-                    
-# MODELISATION DU MATERIAU 
-# LES PARAMETRES UTILISES CI-DESSOUS VIENNENT DE LA THESE DE YI ZHANG(2016)                         
+
+# MODELISATION DU MATERIAU
+# LES PARAMETRES UTILISES CI-DESSOUS VIENNENT DE LA THESE DE YI ZHANG(2016)
 ACIER = DEFI_MATERIAU(ELAS = _F(E=190000.0, NU=0.3),
               ECRO_NL  = _F(R0 = 488.361123569,
                     RH = 0,
@@ -81,23 +81,23 @@ ACIER = DEFI_MATERIAU(ELAS = _F(E=190000.0, NU=0.3),
                       GTN = _F(Q1 = 1.5,
                                      Q2 = 1.07,
                                      PORO_INIT = 2.e-4,
-                                     COAL_PORO = 0.05, 
+                                     COAL_PORO = 0.05,
                                      COAL_ACCE = 3,
                                      NUCL_GAUSS_PORO = 0.0,
                                      NUCL_GAUSS_PLAS = 0.2,
                                      NUCL_GAUSS_DEV = 0.01,
-                     ), 
+                     ),
               NON_LOCAL = _F(C_GRAD_VARI = 1,
-                     PENA_LAGR   =5000,),          
+                     PENA_LAGR   =5000,),
                 NORTON = _F(K=150, N=14),
-                      ) 
+                      )
 
-# AFFECTATION DES MATERIAUX                              
+# AFFECTATION DES MATERIAUX
 MATE = AFFE_MATERIAU (MAILLAGE = MAIL,
                 AFFE     = _F(TOUT  ='OUI',
                       MATER = ACIER),)
 
-# CONDITIONS AUX LIMITES DE CHARGEMENT 
+# CONDITIONS AUX LIMITES DE CHARGEMENT
 CL = AFFE_CHAR_MECA(MODELE=MODE,
                     DDL_IMPO=(_F(GROUP_MA = 'LEFT_ed', DX = 0.),
                               _F(GROUP_MA = 'BOTTOM_ed',DY = 0.),),)
@@ -109,7 +109,7 @@ CHAR = AFFE_CHAR_MECA(MODELE=MODE,
 # LISTE DES INSTANTS DE CALCUL
 REEL_CAL = DEFI_LIST_REEL(DEBUT      = 0,
                           INTERVALLE = _F(JUSQU_A=inst_total, NOMBRE=nb_pas),)
-                          
+
 INST_CAL = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST=REEL_CAL),METHODE='AUTO')
 
 REEL_ARC = DEFI_LIST_REEL(DEBUT      = 0,
@@ -117,7 +117,7 @@ REEL_ARC = DEFI_LIST_REEL(DEBUT      = 0,
 
 FONC = DEFI_FONCTION(NOM_PARA = 'INST',
                      VALE     = (0.0, 0.0 ,inst_total, 1.0),
-                     PROL_DROITE = 'LINEAIRE',) 
+                     PROL_DROITE = 'LINEAIRE',)
 
 # CALCUL NON LINEAIRE
 RESU = STAT_NON_LINE (MODELE       = MODE,
@@ -133,7 +133,7 @@ RESU = STAT_NON_LINE (MODELE       = MODE,
                       SOLVEUR      = _F(METHODE='MUMPS', PCENT_PIVOT=20, MATR_DISTRIBUEE='OUI',
                                         POSTTRAITEMENTS='MINI'),
                       ARCHIVAGE    = _F(LIST_INST=REEL_ARC),
-            ) 
+            )
 
 
 # COORDONNEES DES POINTS DE GAUSS
@@ -146,17 +146,17 @@ COORY = COOR.EXTR_COMP('Y',['NT4']).valeurs
 
     # PREMIER POINT A TESTER: PG LE PLUS PROCHE DE L'ORIGINE j
     # DEUXIEME POINT A TESTER: PG MILIEU
-for i in range (len(COORX)): 
+for i in range (len(COORX)):
     if(COORX[i]<0.06 and COORY[i]<0.06):
         j = i
     if(COORX[i]>2.5 and COORX[i]<2.56098 and COORY[i]<0.06):
         k = i
-    
 
-#--------------------------------------------------------------------------------------------------------------- 
+
+#---------------------------------------------------------------------------------------------------------------
 #------------------------------------------ TEST SUR SIYY-------------------------------------------------------
-#--------------------------------------------------------------------------------------------------------------- 
-# ATTENTION: LA DISTRIBUTION DE SIYY N'EST PAS DU TOUT HOMOGENE!!! 
+#---------------------------------------------------------------------------------------------------------------
+# ATTENTION: LA DISTRIBUTION DE SIYY N'EST PAS DU TOUT HOMOGENE!!!
 
 SIGMA1 = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
                  OPERATION = 'EXTR',
@@ -188,9 +188,9 @@ TEST_TABLE(TABLE = SXX12,
            )
 
 
-#--------------------------------------------------------------------------------------------------------------- 
+#---------------------------------------------------------------------------------------------------------------
 #------------------------------------- TEST SUR VARIABLE INTERNE : k et f---------------------------------------
-#--------------------------------------------------------------------------------------------------------------- 
+#---------------------------------------------------------------------------------------------------------------
 
 VI1 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
                OPERATION = 'EXTR',
@@ -198,7 +198,7 @@ VI1 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
                  NOM_CHAM  = 'VARI_ELGA',
                  INST      = inst_fin,
                  )
-   
+
 #   VARIABLE D'ECROUISSAGE
 V11 = VI1.EXTR_COMP('V1',['NT4']).valeurs
 V111 = CREA_TABLE(LISTE = (_F(PARA='V1',LISTE_R = V11[j])))

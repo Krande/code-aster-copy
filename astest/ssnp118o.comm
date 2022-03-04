@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_NO=(_F(
                                 GROUP_MA='GM_DROI',
                                 NOM='DROITE')),
-                               );
+                               )
 
 MO=AFFE_MODELE(
 
@@ -101,7 +101,7 @@ CM=AFFE_MATERIAU(
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,INFO=1,
                      MASSIF=(
            _F(GROUP_MA='PRISMDEG',ANGL_REP=(30,0,0)),
-                                 ));
+                                 ))
 
 
 # ENCASTREMENT
@@ -184,7 +184,7 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(       0.0,   0.0,
                                               tfin,   delc*1.1,
 
                                                         ),
-                                 PROL_DROITE='LINEAIRE');
+                                 PROL_DROITE='LINEAIRE')
 
 
 LISTCY =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL1 ),
@@ -200,7 +200,7 @@ LREEL2=DEFI_LIST_REEL(DEBUT   = 0.0,INTERVALLE=(
                                                  _F( JUSQU_A =   tfin,    NOMBRE = 10*tfin ),
       ))
 
-FCTMON=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.0,   0.0, tfin,   delc*1.1),  PROL_DROITE='LINEAIRE');
+FCTMON=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.0,   0.0, tfin,   delc*1.1),  PROL_DROITE='LINEAIRE')
 
 
 LISTMO =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL2 ),
@@ -281,7 +281,7 @@ U_TRA=CALC_CHAMP(
             reuse =U_TRA,
             RESULTAT=U_TRA,
             FORCE='FORC_NODA',
-            );
+            )
 
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
 TF_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -290,7 +290,7 @@ TF_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='FORC_NODA',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
-                               RESULTANTE=('DX','DY','DZ')));
+                               RESULTANTE=('DX','DY','DZ')))
 
 
 # PROJECTEUR SUR LA NORMALE
@@ -303,7 +303,7 @@ TF_N=CALC_TABLE(reuse =TF_N,
                   TABLE=TF_N,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_N'));
+                            NOM_PARA='F_N'))
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TU_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -312,24 +312,24 @@ TU_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='NO2',
-                              NOM_CMP=('DX','DY','DZ')));
+                              NOM_CMP=('DX','DY','DZ')))
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
 TU_N=CALC_TABLE(reuse =TU_N,
                     TABLE=TU_N,
                     ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='U_N'));
+                            NOM_PARA='U_N'))
 
 
 # MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FN=RECU_FONCTION(TABLE=TF_N,
                   PARA_X='INST',
-                  PARA_Y='F_N');
+                  PARA_Y='F_N')
 
 DN=RECU_FONCTION(TABLE=TU_N,
                   PARA_X='INST',
-                  PARA_Y='U_N');
+                  PARA_Y='U_N')
 
 
 # RECUPERATION DES VALEURS DE VI EN FONCTION DES INSTANT ET IMPRESSION DANS UNE TABLE UNIQUE : TRESU
@@ -387,11 +387,11 @@ T_SIGN=CREA_TABLE(FONCTION=_F(FONCTION=SIGN))
 
 SN=RECU_FONCTION(TABLE=T_SIGN,
                   PARA_X='INST',
-                  PARA_Y='SIGN');
+                  PARA_Y='SIGN')
 
 DN2=RECU_FONCTION(TABLE=T_VARI_7,
                   PARA_X='INST',
-                  PARA_Y='V7');
+                  PARA_Y='V7')
 
 
 TRESU = CALC_TABLE(reuse = TRESU,
@@ -404,7 +404,7 @@ TRESU = CALC_TABLE(reuse = TRESU,
                      _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_SIGN),
 
                                ),
-                        );
+                        )
 
 #IMPR_FONCTION(FORMAT='XMGRACE',
 #              PILOTE='INTERACTIF',
@@ -583,9 +583,9 @@ IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONC_X=DN,
                         FONC_Y=FN,
                         LEGENDE='REPONSE GLOBALE'),
-             );
+             )
 
-IMPR_TABLE(TABLE = TRESU);
+IMPR_TABLE(TABLE = TRESU)
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_TRA,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,16 +20,16 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       IGNORE_ALARM=('MODELISA4_9',) )
 
-tfin = 1.01;
+tfin = 1.01
 fmax=250.
 
-pas = 1e-05;
+pas = 1e-05
 
-YOUNG = 210.e9;
+YOUNG = 210.e9
 
-DIAM = .8;
-LONG = (2.0 * DIAM);
-I = (((((pi * DIAM) * DIAM) * DIAM) * DIAM) / 64.0);
+DIAM = .8
+LONG = (2.0 * DIAM)
+I = (((((pi * DIAM) * DIAM) * DIAM) * DIAM) / 64.0)
 PEN = YOUNG*I/2/LONG
 
 
@@ -37,7 +37,7 @@ coef=10000.
 raidmax = coef*PEN
 
 
-MAIL1=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL1=DEFI_GROUP(reuse =MAIL1,
               MAILLAGE=MAIL1,
@@ -49,15 +49,15 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL1,
                             MODELISATION='POU_D_E',),
                          _F(GROUP_MA='FIS',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                             NU=0.3,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL1,
                     AFFE=_F(GROUP_MA='ROTOR',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA='ROTOR',
@@ -69,7 +69,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                   VALE=(raidmax,raidmax,raidmax,raidmax,raidmax,raidmax,),),
                                 _F(CARA='M_TR_D_L', GROUP_MA='FIS', VALE=(0,0,0,0)),
                                ),
-                       );
+                       )
 
 CARELEF=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA='ROTOR',
@@ -81,7 +81,7 @@ CARELEF=AFFE_CARA_ELEM(MODELE=MODELE,
                                   VALE=(raidmax,raidmax,raidmax,raidmax,0,0,),),
                                 _F(CARA='M_TR_D_L', GROUP_MA='FIS', VALE=(0,0,0,0)),
                                ),
-                       );
+                       )
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=(_F(GROUP_NO='PAL_G',
@@ -92,7 +92,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DRY=0.,
                                      DRZ=0.,),
                                   _F(GROUP_NO='PAL_D',
-                                     DRX=0.,),),);
+                                     DRX=0.,),),)
 
 
 ASSEMBLAGE(MODELE=MODELE,
@@ -103,7 +103,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('RIGIAS'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSAS'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 MODES=CALC_MODES(MATR_RIGI=RIGIAS,
                  VERI_MODE=_F(STURM='NON',
@@ -117,12 +117,12 @@ MODES=CALC_MODES(MATR_RIGI=RIGIAS,
 CHA_FY=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(
                                       GROUP_NO='PAL_D',
-                                      MY=-1.,),);
+                                      MY=-1.,),)
 
 CHA_FZ=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(
                         GROUP_NO='PAL_D',
-          MZ=0.,),);
+          MZ=0.,),)
 
 ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -139,7 +139,7 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(VECTEUR=CO("VASFZ"),
                               OPTION='CHAR_MECA',
                               CHARGE=CHA_FZ),
-                           ),);
+                           ),)
 
 MODFF=CALC_MODES(MATR_RIGI=RIGIAF,
                  VERI_MODE=_F(STURM='NON',
@@ -152,11 +152,11 @@ MODFF=CALC_MODES(MATR_RIGI=RIGIAF,
                  )
 
 
-MODEF=EXTR_MODE(FILTRE_MODE=_F(MODE=MODFF, NUME_MODE=(1,2,), ),);
+MODEF=EXTR_MODE(FILTRE_MODE=_F(MODE=MODFF, NUME_MODE=(1,2,), ),)
 
 
 BMOD=DEFI_BASE_MODALE(RITZ=_F(MODE_MECA=(MODEF,MODES,),),
-                      NUME_REF=NUD,);
+                      NUME_REF=NUD,)
 
 
 PROJ_BASE(  BASE=BMOD,
@@ -201,7 +201,7 @@ RAMP=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0,0,
                          0.2,1,
                          10,1,
-                         ),);
+                         ),)
 
 
 PROJ_BASE(  BASE=BMOD,
@@ -244,7 +244,7 @@ TRANGEN = DYNA_VIBRA   (     MATR_MASS=MASGEN,   MATR_RIGI=RIGGEN,
 DEPN4Z=RECU_FONCTION(RESU_GENE=TRANGEN,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DZ',
-                      GROUP_NO='N4',);
+                      GROUP_NO='N4',)
 
 
 IMPR_FONCTION(FORMAT='XMGRACE',
@@ -269,4 +269,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.83088061479e-09,
                       ),
               )
 
-FIN();
+FIN()

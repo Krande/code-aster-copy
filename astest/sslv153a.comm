@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,47 +43,47 @@ NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # A. Prealables
 # A.1. Constantes
-_prestetr = 13.0;
+_prestetr = 13.0
 
-_prespyra = 14.0;
+_prespyra = 14.0
 
-_prespent = 15.0;
+_prespent = 15.0
 
-_preshexa = 16.0;
+_preshexa = 16.0
 
-_pres0 = 1e-14;
+_pres0 = 1e-14
 
 
 # A.2. Maillage initial
 
 BLOC=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 G_00=CREA_MAILLAGE(MAILLAGE=BLOC,
-                   LINE_QUAD=_F(TOUT='OUI',),);
+                   LINE_QUAD=_F(TOUT='OUI',),)
 
 # A.3. Modele mecanique
 
 MODE=AFFE_MODELE(MAILLAGE=G_00,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 # A.4. Orientation des mailles de bord
 
 G_00=MODI_MAILLAGE(reuse =G_00,
                    MAILLAGE=G_00,
                    ORIE_PEAU=_F(GROUP_MA_PEAU=('MURHEXA','MURPENT','CHARTETR','CHARPYRA','CHARPENT','CHARHEXA','LIBRE','LIBRE2',),),
-                   INFO=2,);
+                   INFO=2,)
 
 # A.5. Mise en place des materiaux
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=400000.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 MATE=AFFE_MATERIAU(MAILLAGE=G_00,
                    AFFE=_F(GROUP_MA='VOLUME',
-                           MATER=MATER,),);
+                           MATER=MATER,),)
 ###########################################################################
 
 
@@ -106,28 +106,28 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODE,
                               _F(GROUP_MA='CHARHEXA',
                                  PRES=_preshexa,),
                               _F(GROUP_MA=('LIBRE','LIBRE2',),
-                                 PRES=_pres0,),),);
+                                 PRES=_pres0,),),)
 
 # B.1.2. Resolution
 
 SOLUPR=MECA_STATIQUE(MODELE=MODE,
                      CHAM_MATER=MATE,
-                     EXCIT=_F(CHARGE=CHAR,),);
+                     EXCIT=_F(CHARGE=CHAR,),)
 
 # B.2. Calcul d'erreur
 # B.2.1. Erreur en residu
 
 SOLUPR=CALC_CHAMP(reuse=SOLUPR,
                   RESULTAT=SOLUPR,
-                  CONTRAINTE='SIGM_ELNO',);
+                  CONTRAINTE='SIGM_ELNO',)
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
-                   OPTION=('ERME_ELEM','ERME_ELNO',),);
+                   OPTION=('ERME_ELEM','ERME_ELNO',),)
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
-                   OPTION='ERME_NOEU',);
+                   OPTION='ERME_NOEU',)
 
 # B.2.2. Erreur en quantite d'interet
 # B.2.2.1. Chargement dual
@@ -151,34 +151,34 @@ CHARDU=AFFE_CHAR_MECA(MODELE=MODE,
                                 _F(GROUP_MA='CHARHEXA',
                                    PRES=_pres0,),
                                 _F(GROUP_MA=('LIBRE','LIBRE2',),
-                                   PRES=_pres0,),),);
+                                   PRES=_pres0,),),)
 
 # B.2.2.2. Resolution du probleme dual
 
 SOLUDU=MECA_STATIQUE(MODELE=MODE,
                      CHAM_MATER=MATE,
-                     EXCIT=_F(CHARGE=CHARDU,),);
+                     EXCIT=_F(CHARGE=CHARDU,),)
 
 # B.2.2.3. Calcul d'erreur
 
 SOLUDU=CALC_CHAMP(reuse =SOLUDU,
                   RESULTAT=SOLUDU,
-                  CONTRAINTE='SIGM_ELNO',);
+                  CONTRAINTE='SIGM_ELNO',)
 
 SOLUDU=CALC_ERREUR(reuse =SOLUDU,
                    RESULTAT=SOLUDU,
-                   OPTION=('ERME_ELEM','ERME_ELNO',),);
+                   OPTION=('ERME_ELEM','ERME_ELNO',),)
 
 SOLUDU=CALC_ERREUR(reuse =SOLUDU,
                    RESULTAT=SOLUDU,
-                   OPTION='ERME_NOEU',);
+                   OPTION='ERME_NOEU',)
 
 # B.3. Calcul de l'estimateur d'erreur en quantite d'interet
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
                    OPTION='QIRE_NOEU',
-                   RESU_DUAL=SOLUDU,);
+                   RESU_DUAL=SOLUDU,)
 
 # B.4. Test de non regression
 
@@ -220,7 +220,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 # B.5. Menage
 
 DETRUIRE(NOM=(CHAR,CHARDU,SOLUDU,SOLUPR,),
-         INFO=1,);
+         INFO=1,)
 ###########################################################################
 
 
@@ -228,25 +228,25 @@ DETRUIRE(NOM=(CHAR,CHARDU,SOLUDU,SOLUPR,),
 # C.0. Fonctions
 
 F_0=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
-                        ),);
+                        ),)
 
 F_1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,1.,
-                        ),);
+                        ),)
 
 F_ZERO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_pres0,
-                           ),);
+                           ),)
 
 F_TETR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_prestetr,
-                           ),);
+                           ),)
 
 F_PYRA=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_prespyra,
-                           ),);
+                           ),)
 
 F_PENT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_prespent,
-                           ),);
+                           ),)
 
 F_HEXA=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,_preshexa,
-                           ),);
+                           ),)
 
 # C.1. Calcul primal
 # C.1.1. Chargement
@@ -265,24 +265,24 @@ CHAR=AFFE_CHAR_MECA_F(MODELE=MODE,
                                 _F(GROUP_MA='CHARHEXA',
                                    PRES=F_HEXA,),
                                 _F(GROUP_MA=('LIBRE','LIBRE2',),
-                                   PRES=F_ZERO,),),);
+                                   PRES=F_ZERO,),),)
 
 # C.1.2. Resolution
 
 SOLUPR=MECA_STATIQUE(MODELE=MODE,
                      CHAM_MATER=MATE,
-                     EXCIT=_F(CHARGE=CHAR,),);
+                     EXCIT=_F(CHARGE=CHAR,),)
 
 # C.2. Calcul d'erreur
 # C.2.1. Erreur en residu
 
 SOLUPR=CALC_CHAMP(reuse =SOLUPR,
                   RESULTAT=SOLUPR,
-                  CONTRAINTE='SIGM_ELNO',);
+                  CONTRAINTE='SIGM_ELNO',)
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
-                   OPTION='ERME_NOEU',);
+                   OPTION='ERME_NOEU',)
 
 # C.2.2. Erreur en quantite d'interet
 # C.2.2.1. Chargement dual
@@ -306,30 +306,30 @@ CHARDU=AFFE_CHAR_MECA_F(MODELE=MODE,
                                   _F(GROUP_MA='CHARHEXA',
                                      PRES=F_ZERO,),
                                   _F(GROUP_MA=('LIBRE','LIBRE2',),
-                                     PRES=F_ZERO,),),);
+                                     PRES=F_ZERO,),),)
 
 # C.2.2.2. Resolution du probleme dual
 
 SOLUDU=MECA_STATIQUE(MODELE=MODE,
                      CHAM_MATER=MATE,
-                     EXCIT=_F(CHARGE=CHARDU,),);
+                     EXCIT=_F(CHARGE=CHARDU,),)
 
 # C.2.2.3. Calcul d'erreur
 
 SOLUDU=CALC_CHAMP(reuse =SOLUDU,
                   RESULTAT=SOLUDU,
-                  CONTRAINTE='SIGM_ELNO',);
+                  CONTRAINTE='SIGM_ELNO',)
 
 SOLUDU=CALC_ERREUR(reuse =SOLUDU,
                    RESULTAT=SOLUDU,
-                   OPTION=('ERME_ELEM','ERME_ELNO','ERME_NOEU',),);
+                   OPTION=('ERME_ELEM','ERME_ELNO','ERME_NOEU',),)
 
 # C.3. Calcul de l'estimateur d'erreur en quantite d'interet
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
                    OPTION=('QIRE_ELEM','QIRE_ELNO','QIRE_NOEU',),
-                   RESU_DUAL=SOLUDU,);
+                   RESU_DUAL=SOLUDU,)
 
 # C.4. Test de non regression
 
@@ -368,4 +368,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

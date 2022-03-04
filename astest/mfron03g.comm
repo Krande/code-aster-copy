@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 # Validation basée sur SIZZ et V7 (variables internes MFront) en testant
 # le maximum de la différence relative entre Code_Aster et MFront
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 import numpy as NP
 from numpy.linalg import norm
@@ -93,7 +93,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU, ),
                                      PHI_SAT  =PHI_SAT ,
                                      XI_IRRA  =XI_IRRA ,
                                      DZ_IRRA  =DZ_IRRA ,
-                                   ),);
+                                   ),)
 G=E/2./(1.+NU)
 MATFR=DEFI_MATERIAU(
                   ELAS=_F( E=E, NU=NU, ),
@@ -110,7 +110,7 @@ LISTARCH=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=1.,
                                       NOMBRE=100,),
                                   ),
-                      );
+                      )
 
 LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
@@ -119,20 +119,20 @@ LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=1.,
                                       NOMBRE=100,),
                                   ),
-                      );
+                      )
 
 LIS2DD=DEFI_LIST_INST(INFO=1,
                         DEFI_LIST=_F(LIST_INST=LINSTDD),
                         ECHEC=_F(SUBD_NIVEAU=20,
                                  SUBD_PAS=10),
-                        );
+                        )
 
 
 # deformation imposee
 E3=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,0.05),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 
 # densites de dislocation initiales : variables internes
@@ -165,7 +165,7 @@ COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=MATER,
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
                                     ),
-                                    );
+                                    )
 
 # avec irradiation
 IMPLAS=SIMU_POINT_MAT(INFO=1,
@@ -183,26 +183,26 @@ IMPLAS=SIMU_POINT_MAT(INFO=1,
                                   ),
                       EPSI_IMPOSE=_F(EPZZ=E3,),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );
+                       )
 
 #IMPR_TABLE(TABLE=IMPLAS)
 
-epsXXi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN');
-epsYYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPYY',INTERPOL='LIN');
-epsZZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPZZ',INTERPOL='LIN');
-epsXYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPXY',INTERPOL='LIN');
-epsXZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPXZ',INTERPOL='LIN');
-epsYZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPYZ',INTERPOL='LIN');
+epsXXi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN')
+epsYYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPYY',INTERPOL='LIN')
+epsZZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPZZ',INTERPOL='LIN')
+epsXYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPXY',INTERPOL='LIN')
+epsXZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPXZ',INTERPOL='LIN')
+epsYZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPYZ',INTERPOL='LIN')
 
-sigXXi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN');
-sigYYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIYY',INTERPOL='LIN');
-sigZZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIZZ',INTERPOL='LIN');
-sigXYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN');
-sigXZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIXZ',INTERPOL='LIN');
-sigYZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIYZ',INTERPOL='LIN');
+sigXXi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN')
+sigYYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIYY',INTERPOL='LIN')
+sigZZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIZZ',INTERPOL='LIN')
+sigXYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN')
+sigXZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIXZ',INTERPOL='LIN')
+sigYZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIYZ',INTERPOL='LIN')
 
-rho1as=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='V7',INTERPOL='LIN');
-rhl1as=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='V43',INTERPOL='LIN');
+rho1as=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='V7',INTERPOL='LIN')
+rhl1as=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='V43',INTERPOL='LIN')
 
 ########################################################################################"
 
@@ -239,26 +239,26 @@ IMPLMF=SIMU_POINT_MAT(INFO=1,
                                   ),
                       EPSI_IMPOSE=_F(EPZZ=E3,),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );
+                       )
 
 #IMPR_TABLE(TABLE=IMPLMF)
 
 
-epsXX=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN');
-epsYY=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPYY',INTERPOL='LIN');
-epsZZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPZZ',INTERPOL='LIN');
-epsXY=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPXY',INTERPOL='LIN');
-epsXZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPXZ',INTERPOL='LIN');
-epsYZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPYZ',INTERPOL='LIN');
+epsXX=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN')
+epsYY=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPYY',INTERPOL='LIN')
+epsZZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPZZ',INTERPOL='LIN')
+epsXY=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPXY',INTERPOL='LIN')
+epsXZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPXZ',INTERPOL='LIN')
+epsYZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='EPYZ',INTERPOL='LIN')
 
-sigXX=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN');
-sigYY=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIYY',INTERPOL='LIN');
-sigZZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIZZ',INTERPOL='LIN');
-sigXY=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN');
-sigXZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIXZ',INTERPOL='LIN');
-sigYZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIYZ',INTERPOL='LIN');
+sigXX=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN')
+sigYY=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIYY',INTERPOL='LIN')
+sigZZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIZZ',INTERPOL='LIN')
+sigXY=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN')
+sigXZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIXZ',INTERPOL='LIN')
+sigYZ=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='SIYZ',INTERPOL='LIN')
 
-rho1mf=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='V7',INTERPOL='LIN');
+rho1mf=RECU_FONCTION(TABLE=IMPLMF,PARA_X='INST',PARA_Y='V7',INTERPOL='LIN')
 
 
 pilote=''
@@ -274,7 +274,7 @@ IMPR_FONCTION(
             _F(FONC_X=epsZZ,FONC_Y=sigZZ, ),
             _F(FONC_X=epsZZi,FONC_Y=sigZZi, ),
             ),
-            );
+            )
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -286,27 +286,27 @@ IMPR_FONCTION(
             _F(FONCTION=rho1as, ),
             _F(FONCTION=rho1mf, ),
             ),
-            );
+            )
 
 
 # DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
 DIF1=CALC_FONCTION(COMB=(
                           _F( FONCTION = sigZZ, COEF =  1.),
                           _F( FONCTION = sigZZi, COEF = -1.),
-                          ) );
+                          ) )
 
 DIF2=CALC_FONCTION(COMB=(
                           _F( FONCTION = rho1as, COEF =  1.),
                           _F( FONCTION = rho1mf, COEF = -1.),
-                          ) );
+                          ) )
 
-TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
+TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),)
 
-TDIF2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),);
+TDIF2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),)
 
-TREF1=CREA_TABLE(FONCTION= _F(FONCTION = sigZZi,PARA = ('INST','SIZZ')),);
+TREF1=CREA_TABLE(FONCTION= _F(FONCTION = sigZZi,PARA = ('INST','SIZZ')),)
 
-TREF2=CREA_TABLE(FONCTION= _F(FONCTION = rho1as,PARA = ('INST','V7')),);
+TREF2=CREA_TABLE(FONCTION= _F(FONCTION = rho1as,PARA = ('INST','V7')),)
 
 
 def ecart_relatif(diff, ref):

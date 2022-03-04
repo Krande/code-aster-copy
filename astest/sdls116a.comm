@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,12 +51,12 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='A4A3' ,),
                                _F(GROUP_MA='A2A4' ,),
                                _F(GROUP_MA='A3A1' ,),
-                             ),);
+                             ),)
 
 MOD1=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKT',),);
+                        MODELISATION='DKT',),)
 
 
 
@@ -66,12 +66,12 @@ MAT=DEFI_MATERIAU(
                              NU   =  NU,
                              RHO  = RHO,
                            ),
-                 );
+                 )
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',MATER=MAT,),),
-                    );
+                    )
 
 CELE1=AFFE_CARA_ELEM(MODELE=MOD1,
                         COQUE=_F(GROUP_MA='MESH',
@@ -79,7 +79,7 @@ CELE1=AFFE_CARA_ELEM(MODELE=MOD1,
                                  INER_ROTA = 'OUI',
                                  ANGL_REP=(0.0,0.0),
                                 ),
-                       );
+                       )
 
 
 
@@ -106,11 +106,11 @@ COND_L1=AFFE_CHAR_MECA(MODELE=MOD1,
                                       FX       = F0,
                                       FZ       = F0
                                       )
-                       );
+                       )
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                           _F(JUSQU_A = TMAX,PAS = DT),
-                      ),);
+                      ),)
 
 chf1 = DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(
@@ -119,7 +119,7 @@ chf1 = DEFI_FONCTION(NOM_PARA='INST',
                            ),
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
-                    );
+                    )
 
 NN1  = int(TMAX/DT)
 
@@ -138,14 +138,14 @@ RESU1 = DYNA_NON_LINE(
                              ),
                        SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',FORMULATION='ACCELERATION',),
                        MASS_DIAG = 'OUI',
-                     );
+                     )
 
 #--------------------------------------------------------------------
 RESU1=CALC_CHAMP(reuse = RESU1,
                FORCE='FORC_NODA',
                PRECISION=1.E-3,
                RESULTAT=RESU1,
-               );
+               )
 RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('EFGE_ELGA','SIGM_ELGA'),DEFORMATION=('DEGE_ELGA','EPSI_ELGA'),RESULTAT=RESU1)
 
 
@@ -171,10 +171,10 @@ TEST_RESU(RESU=(_F(INST=1.2E-3,
           )
 
 
-# TEST OF SIXZ,SIYZ  DYNA_NON_LINE 
+# TEST OF SIXZ,SIYZ  DYNA_NON_LINE
 TEST_RESU(RESU=(
-               
-                  
+
+
                _F(INST=TMAX,
                   GROUP_MA='CellTest',
                   POINT=1,
@@ -184,7 +184,7 @@ TEST_RESU(RESU=(
                   NOM_CMP='SIXZ',
                   VALE_CALC= 28317132.8214 ,
                   ),
-                  
+
                _F(INST=TMAX,
                   GROUP_MA='CellTest',
                   POINT=1,
@@ -193,10 +193,10 @@ TEST_RESU(RESU=(
                   NOM_CHAM='SIGM_ELGA',
                   NOM_CMP='SIYZ',
                   VALE_CALC= 4247900.92854 ,
-                  ),                    
-                  
+                  ),
+
                   ),
           )
-          
 
-FIN();
+
+FIN()

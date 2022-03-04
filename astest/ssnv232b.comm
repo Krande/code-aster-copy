@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from code_aster.Commands import *
 from code_aster.MacroCommands.Contrib.essai_triaxial import Triaxial_DR
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
 # modules mecaniques [kPa]
 K=516.2E6
@@ -47,19 +47,19 @@ P0=50.E3
 #***********************************************************************
 #    MAILLAGE + MODELE
 #***********************************************************************
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT         = 'OUI',
                            PHENOMENE    = 'MECANIQUE',
-                           MODELISATION = '3D'));
+                           MODELISATION = '3D'))
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('DEVANT','DROIT',
                         'ARRIERE','GAUCHE','BAS',
                         'HAUT','APPUI','COTE',),),
-                       INFO=1);
+                       INFO=1)
 
 
 #***********************************************************************
@@ -71,22 +71,22 @@ tfin   =30.
 npas   =30
 
 TEMPS0=DEFI_LIST_REEL(DEBUT=-1.,
-                      INTERVALLE=_F(JUSQU_A =0., NOMBRE =1),);
+                      INTERVALLE=_F(JUSQU_A =0., NOMBRE =1),)
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A =tarret, NOMBRE =19,),
-                                  _F(JUSQU_A =tfin  , NOMBRE =210,),),);
+                                  _F(JUSQU_A =tfin  , NOMBRE =210,),),)
 
 T_ARCH=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A =tarret, NOMBRE =19,),
-                                  _F(JUSQU_A =tfin  , NOMBRE =210,),),);
+                                  _F(JUSQU_A =tfin  , NOMBRE =210,),),)
 
 DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS1,),
                        ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION       = 'DECOUPE',
                                  SUBD_METHODE = 'MANUEL',
                                  SUBD_PAS     = 4,
-                                 SUBD_NIVEAU  = 10,),);
+                                 SUBD_NIVEAU  = 10,),)
 
 #***********************************************************************
 #    MATERIAU : SOL
@@ -95,42 +95,42 @@ SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON, ALPHA=0.0),
                   MOHR_COULOMB=_F(
                             PHI      = 33.,
                             ANGDIL   = 27.,
-                            COHESION = 1.0E+3,),);
+                            COHESION = 1.0E+3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL),);
+                    AFFE=_F(TOUT='OUI', MATER=SOL),)
 
 
 #***********************************************************************
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
 #***********************************************************************
 # CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
-#                        PRES_REP=_F(GROUP_MA='COTE',PRES = 1.));
+#                        PRES_REP=_F(GROUP_MA='COTE',PRES = 1.))
 
 CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=(_F(GROUP_MA='DROIT',PRES = 1.),
-                                 _F(GROUP_MA='ARRIERE',PRES = 1.001),),);
+                                 _F(GROUP_MA='ARRIERE',PRES = 1.001),),)
 
 CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PRES_REP=_F(GROUP_MA='APPUI',PRES = 1.));
+                       PRES_REP=_F(GROUP_MA='APPUI',PRES = 1.))
 
 CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
-                       FACE_IMPO=_F(GROUP_MA='APPUI',DZ = -1.));
+                       FACE_IMPO=_F(GROUP_MA='APPUI',DZ = -1.))
 
 DEPL_1=AFFE_CHAR_CINE(MODELE=MODELE,
                 MECA_IMPO=(_F(GROUP_MA='BAS',DZ = 0.),
                            _F(GROUP_MA='GAUCHE',DX = 0.),
-                           _F(GROUP_MA='DEVANT',DY = 0.)));
+                           _F(GROUP_MA='DEVANT',DY = 0.)))
 
 COEF0=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-1.0, 0.0,
-                           0. , P0 ,));
+                           0. , P0 ,))
 
 COEF3=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(0.0, 0.0,
-                          tfin, .0003));
+                          tfin, .0003))
 
 
 #***********************************************************************
@@ -145,7 +145,7 @@ U0M=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE = 'ELASTIQUE'),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
                                 ITER_GLOB_MAXI = 20),
-                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = 0.));
+                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = 0.))
 # ----------- FIN
 
 SIG0=CREA_CHAMP(INFO=1,
@@ -153,7 +153,7 @@ SIG0=CREA_CHAMP(INFO=1,
                 OPERATION='EXTR',
                 RESULTAT=U0M,
                 NOM_CHAM='SIEF_ELGA',
-                INST=0.0,);
+                INST=0.0,)
 
 #***********************************************************************
 #    ESSAI TRIAXIAL DRAINE
@@ -177,7 +177,7 @@ U1=STAT_NON_LINE(INFO=1,MODELE=MODELE,
                             NPREC=8,),
                  INCREMENT=_F(LIST_INST = DEFLIST,
                               INST_INIT=0.0,
-                              INST_FIN =30.));
+                              INST_FIN =30.))
 
 #-------------------------
 #    TEST_RESU AU POINT C
@@ -186,14 +186,14 @@ U1=CALC_CHAMP(reuse=U1,
               CONTRAINTE=('SIGM_ELNO'),
               VARI_INTERNE=('VARI_ELNO'),
               DEFORMATION=('EPSI_ELNO'),
-              RESULTAT=U1,);
+              RESULTAT=U1,)
 
 
 U1=CALC_CHAMP(reuse=U1,
               CONTRAINTE='SIGM_NOEU',
               VARI_INTERNE='VARI_NOEU',
               DEFORMATION='EPSI_NOEU',
-              RESULTAT=U1);
+              RESULTAT=U1)
 
 
 TAB_SIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGM_NOEU',
@@ -201,25 +201,25 @@ TAB_SIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGM_NOEU',
                                 RESULTAT=U1,
                                 NOM_CHAM='SIGM_NOEU',
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='VARI_NOEU',
                                 NOM_CMP=('V1','V2','V3',),
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_EPSI=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='EPSI_NOEU',
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
-IMPR_TABLE(TABLE=TAB_SIGM,);
-IMPR_TABLE(TABLE=TAB_EPSI,);
-IMPR_TABLE(TABLE=TAB_VARI,);
+IMPR_TABLE(TABLE=TAB_SIGM,)
+IMPR_TABLE(TABLE=TAB_EPSI,)
+IMPR_TABLE(TABLE=TAB_VARI,)
 
 # =============================================================================
 #
@@ -243,7 +243,7 @@ TEST_TABLE(NOM_PARA='SIXX', TABLE=TAB_SIGM,
            VALE_CALC=-50000.000333466,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=sixx[-1],);
+           VALE_REFE=sixx[-1],)
 
 TEST_TABLE(NOM_PARA='SIZZ', TABLE=TAB_SIGM,
            FILTRE=_F(NOM_PARA ='INST',
@@ -254,7 +254,7 @@ TEST_TABLE(NOM_PARA='SIZZ', TABLE=TAB_SIGM,
            VALE_CALC=-1.7328954273525E+05,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=sizz[-1],);
+           VALE_REFE=sizz[-1],)
 
 TEST_TABLE(NOM_PARA='V1', TABLE=TAB_VARI,
            FILTRE=_F(NOM_PARA ='INST',
@@ -265,7 +265,7 @@ TEST_TABLE(NOM_PARA='V1', TABLE=TAB_VARI,
            VALE_CALC=1.6784502297244E-04,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=epsivp[-1],);
+           VALE_REFE=epsivp[-1],)
 
 TEST_TABLE(NOM_PARA='V2', TABLE=TAB_VARI,
            FILTRE=_F(NOM_PARA ='INST',
@@ -276,7 +276,7 @@ TEST_TABLE(NOM_PARA='V2', TABLE=TAB_VARI,
            VALE_CALC=3.3099447063618E-04,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=epsidp[-1],);
+           VALE_REFE=epsidp[-1],)
 
 
 
@@ -284,82 +284,82 @@ TEST_TABLE(NOM_PARA='V2', TABLE=TAB_VARI,
 #                            POST-TRAITEMENTS
 # ================================================================
 #
-# tsigm = TAB_SIGM.EXTR_TABLE().values();
-# tepsi = TAB_EPSI.EXTR_TABLE().values();
-# tvari = TAB_VARI.EXTR_TABLE().values();
+# tsigm = TAB_SIGM.EXTR_TABLE().values()
+# tepsi = TAB_EPSI.EXTR_TABLE().values()
+# tvari = TAB_VARI.EXTR_TABLE().values()
 #
-# epxx = tepsi['EPXX'];
-# epyy = tepsi['EPYY'];
-# epxy = tepsi['EPXY'];
-# epzz = tepsi['EPZZ'];
-# sixx = tsigm['SIXX'];
-# siyy = tsigm['SIYY'];
-# sixy = tsigm['SIXY'];
-# sizz = tsigm['SIZZ'];
-# epvp = tvari['V1'];
-# edvp = tvari['V2'];
-# indi = tvari['V3'];
+# epxx = tepsi['EPXX']
+# epyy = tepsi['EPYY']
+# epxy = tepsi['EPXY']
+# epzz = tepsi['EPZZ']
+# sixx = tsigm['SIXX']
+# siyy = tsigm['SIYY']
+# sixy = tsigm['SIXY']
+# sizz = tsigm['SIZZ']
+# epvp = tvari['V1']
+# edvp = tvari['V2']
+# indi = tvari['V3']
 #
-# co_sigm,co_epsi,co_vari,co_seuil,= [],[],[],[],;
+# co_sigm,co_epsi,co_vari,co_seuil,= [],[],[],[],
 #
 # # CHAMPS CINEMATIQUES
 # # _____________________________
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=sizz,
 #         legend='SIZZ',
-#         color=1,);
+#         color=1,)
 #
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=sixx,
 #         legend='SIXX',
-#         color=2,);
+#         color=2,)
 #
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=siyy,
 #         legend='SIYY',
-#         color=3,);
+#         color=3,)
 #
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=sixy,
 #         legend='SIXY',
-#         color=4,);
+#         color=4,)
 #
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=epxx,
 #         legend='EPXX',
-#         color=1,);
+#         color=1,)
 #
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=epvp,
 #         legend='EPVP',
-#         color=2,);
+#         color=2,)
 #
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=edvp,
 #         legend='EDVP',
-#         color=3,);
+#         color=3,)
 #
 # co_vari=Defi_Xmcourbe(courbe=co_vari,
 #         X=epzz, Y=indi,
 #         legend='INDICATEUR PLASTIQUE',
-#         color=2,);
+#         color=2,)
 #
-# Courbes = [co_sigm,co_epsi,co_vari,];
+# Courbes = [co_sigm,co_epsi,co_vari,]
 #
-# Nom_Fichier= ['tria3d_sigm.agr','tria3d_epsi.agr','tria3d_vari.agr',];
+# Nom_Fichier= ['tria3d_sigm.agr','tria3d_epsi.agr','tria3d_vari.agr',]
 #
 # unit=38
 # for c in range(len(Nom_Fichier)):
 #
 #   DEFI_FICHIER(ACTION='ASSOCIER',
 #                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
-#                UNITE=unit,);
+#                UNITE=unit,)
 #
 #   IMPR_FONCTION(FORMAT='XMGRACE',
 #               UNITE=unit,
-#               COURBE=Courbes[c]);
+#               COURBE=Courbes[c])
 #
 #   DEFI_FICHIER(ACTION='LIBERER',
-#                UNITE=unit,);
+#                UNITE=unit,)
 
-FIN();
+FIN()

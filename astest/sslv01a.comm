@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ cas_adh_tan = ('ELAS','PARFAITE')
 def Solution(sig, adh_nor, adh_tan):
     assert adh_nor  in cas_adh_nor
     assert adh_tan in cas_adh_tan
-    
+
     exx =  sig/E
     eyy = -nu*exx
     ezz = -nu*exx
@@ -56,7 +56,7 @@ def Solution(sig, adh_nor, adh_tan):
     st  = -0.5*sig
 
     dn = dict(
-        ELAS     =  sn/kn, 
+        ELAS     =  sn/kn,
         UNILATER =  0.5*(sn+abs(sn))/kn,
         PARFAITE =  0.0*sn,
         )[adh_nor]
@@ -65,7 +65,7 @@ def Solution(sig, adh_nor, adh_tan):
         ELAS     = st/kt,
         PARFAITE = 0.0*st,
         )[adh_tan]
-        
+
     dx = (dn-dt)/2**0.5
     dy = (dn+dt)/2**0.5
     dz = 0*dn
@@ -73,17 +73,17 @@ def Solution(sig, adh_nor, adh_tan):
     ux = exx*L + dx
     uy = eyy*L + dy
     uz = ezz*L + dz
-    
+
     return dict(ux=ux, uy=uy, uz=uz, dn=dn, dt=dt)
-    
+
 
 
 # Valeurs de non-regression telles que calculees (ordre chronologique du calcul)
 non_reg = [0.11969967525565837, 0.004344336196329924, -0.01333333333333375, -0.11969967525565924, -0.004344336196329583, 0.013333333333334174, 0.10202200572599437, 0.02202200572599386, -0.01333333333333365, -0.10202200572599507, -0.022022005725993762, 0.013333333333334025, 0.11969967525565837, 0.004344336196329924, -0.01333333333333375, -0.08434433619632993, 0.031011002862996864, 0.013333333333333192, 0.10202200572599437, 0.02202200572599386, -0.01333333333333365, -0.06666666666666624, 0.013333333333333273, 0.013333333333333326, 0.08434433619633047, -0.031011002862996906, -0.01333333333333346, -0.0843443361963308, 0.031011002862996878, 0.013333333333333676, 0.06666666666666679, -0.013333333333332925, -0.013333333333333669, -0.06666666666666726, 0.013333333333332498, 0.013333333333334092]
 
-    
 
-    
+
+
 ma = LIRE_MAILLAGE()
 
 
@@ -107,13 +107,13 @@ orie = AFFE_CARA_ELEM(
     MASSIF = _F(GROUP_MA='ITF',ANGL_REP=(45, 0 ,0)),
     )
 
-    
+
 effort = AFFE_CHAR_MECA(
     MODELE     = mo,
     FORCE_FACE = _F(GROUP_MA='DROITE', FX=1),
     )
-    
-    
+
+
 blocage = AFFE_CHAR_MECA(
     MODELE    = mo,
     FACE_IMPO = (
@@ -122,8 +122,8 @@ blocage = AFFE_CHAR_MECA(
         _F(GROUP_MA='BAS',    DZ=0),
         ),
     )
-    
-    
+
+
 temps = DEFI_LIST_INST(
     DEFI_LIST = _F(VALE=(0,1,2)),
     )
@@ -137,25 +137,25 @@ rampe = DEFI_FONCTION(
 
 for adh_nor in cas_adh_nor:
     for adh_tan in cas_adh_tan:
-        
+
         mat = DEFI_MATERIAU(
             ELAS     = _F(E=E, NU=nu),
             CZM_ELAS = _F(
-                ADHE_NOR = adh_nor, 
-                ADHE_TAN = adh_tan, 
-                RIGI_NOR = kn, 
-                RIGI_TAN = kt, 
+                ADHE_NOR = adh_nor,
+                ADHE_TAN = adh_tan,
+                RIGI_NOR = kn,
+                RIGI_TAN = kt,
                 PENA_LAGR_ABSO = 10*(kn+kt),
                 ),
             )
-            
-            
+
+
         cm = AFFE_MATERIAU(
             MAILLAGE = ma,
             AFFE     = _F(GROUP_MA=('SOLIDE','ITF'), MATER=mat),
             )
-            
-            
+
+
         evol = STAT_NON_LINE(
             MODELE     = mo,
             CHAM_MATER = cm,
@@ -170,14 +170,14 @@ for adh_nor in cas_adh_nor:
                 _F(GROUP_MA='ITF',    RELATION='CZM_ELAS_MIX'),
                 ),
             )
-            
+
 
         for inst in (1,2):
-            
+
             sig = rampe(inst)
             resu = Solution(sig, adh_nor, adh_tan)
-            
-            
+
+
             TEST_RESU(
                 RESU = (
                     _F(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,7 +208,7 @@ SN5=POST_RCCM( MATER=MAT,
                      TEMP_B=400.0,
                      TABL_TEMP = T_TEMP5,
                      PRES_A=0.0,
-                     PRES_B=0.0,),),);
+                     PRES_B=0.0,),),)
 
 IMPR_TABLE(    TABLE=SN5,)
 
@@ -242,7 +242,7 @@ SN5b=POST_RCCM( MATER=MAT,
                      TEMP_B=400.0,
                      TABL_TEMP = T_TEMP5b,
                      PRES_A=0.0,
-                     PRES_B=0.0,),),);
+                     PRES_B=0.0,),),)
 
 IMPR_TABLE(    TABLE=SN5b,)
 
@@ -280,7 +280,7 @@ SN6=POST_RCCM( MATER=MAT,
                      TEMP_B=400.0,
                      TABL_TEMP = T_TEMP6,
                      PRES_A=10.0,
-                     PRES_B=20.0,),),);
+                     PRES_B=20.0,),),)
 
 IMPR_TABLE(    TABLE=SN6,)
 
@@ -338,7 +338,7 @@ SN56=POST_RCCM( MATER=MAT,
                      TEMP_B=400.0,
                      TABL_TEMP = T_TEMP6,
                      PRES_A=10.0,
-                     PRES_B=20.0,),),);
+                     PRES_B=20.0,),),)
 
 IMPR_TABLE(    TABLE=SN56,)
 

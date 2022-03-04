@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ penrup=0.2
 
 ##################################
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -74,7 +74,7 @@ MA=DEFI_GROUP(reuse =MA,
     _F(NOM = 'JOINT_H'  ,  GROUP_MA = 'JOINT_H',OPTION='NOEUD_ORDO'),
     _F(NOM = 'JOINT_B'  ,  GROUP_MA = 'JOINT_B',OPTION='NOEUD_ORDO'),
     _F(NOM = 'BAR_AMON'  , GROUP_MA = 'BAR_AMON',OPTION='NOEUD_ORDO'),
-                               ));
+                               ))
 
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -93,7 +93,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='D_PLAN',),
                      _F(GROUP_MA='JOINT',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='PLAN_JOINT',),),);
+                        MODELISATION='PLAN_JOINT',),),)
 
 # MATERIAU BETON ET TERRE
 MAT_B=DEFI_MATERIAU(ELAS=_F(
@@ -121,37 +121,37 @@ CM_M=AFFE_MATERIAU(MAILLAGE=MA,
                       _F(GROUP_MA='BARRAGE',MATER = MAT_B),
                       _F(GROUP_MA='TERRE',  MATER = MAT_T),
                       _F(GROUP_MA='JOINT',  MATER = MAT_J))
-                 );
+                 )
 
 
 # CONDITION AUX LIMITES SUR LA TERRE
-TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TERRE_BO',DX=0.0,DY=0.0,),);
+TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TERRE_BO',DX=0.0,DY=0.0,),)
 
 # POIDS
 PESBAR = AFFE_CHAR_MECA(
   MODELE = MO,
   FORCE_INTERNE = (_F(GROUP_MA='BARRAGE',FX=0, FY=-rho_b*ap))
-  );
+  )
 PESTER = AFFE_CHAR_MECA(
   MODELE = MO,
   FORCE_INTERNE = (_F(GROUP_MA='TERRE',  FX=0, FY=-rho_t*ap))
-  );
+  )
 
 # PRESSION D'EAU SUR LE BARRAGE
-#p_am = FORMULE(VALE='max(rho_e*ap*(INST-Y),0)',NOM_PARA=('Y','INST',),);
+#p_am = FORMULE(VALE='max(rho_e*ap*(INST-Y),0)',NOM_PARA=('Y','INST',),)
 p_am = FORMULE(VALE='rho_e*ap*INST',
                rho_e=rho_e,
                ap=ap,
                NOM_PARA='INST',)
 
 
-PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=p_am,),);
+PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=p_am,),)
 
 # PRESSION D'EAU HOMOGENE POUR LE PILOTAGE
-PREPILO=AFFE_CHAR_MECA(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=rho_e*ap,),);
+PREPILO=AFFE_CHAR_MECA(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=rho_e*ap,),)
 
 # LISTE D'INSTANTS
-LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=telas, NOMBRE=5,),_F(JUSQU_A=tpilot, NOMBRE=5,),_F(JUSQU_A=tfin, NOMBRE=10,)));
+LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=telas, NOMBRE=5,),_F(JUSQU_A=tpilot, NOMBRE=5,),_F(JUSQU_A=tfin, NOMBRE=10,)))
 L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),
                         ECHEC=_F(
                                  SUBD_NIVEAU=6,
@@ -179,7 +179,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                  RESI_GLOB_RELA=1E-5),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = LR)
-                  );
+                  )
 
 # POURSUITE EN PILOTAGE POUR TESTER LA STABILITE DE LA REPONSE
 EVOL=STAT_NON_LINE(reuse = EVOL,
@@ -206,7 +206,7 @@ EVOL=STAT_NON_LINE(reuse = EVOL,
                                  RESI_GLOB_RELA=1E-5),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = LR)
-                  );
+                  )
 
 ## POURSUITE SANS PILOTAGE APRES l'INSTABLITE
 EVOL=STAT_NON_LINE(reuse = EVOL,
@@ -230,24 +230,24 @@ EVOL=STAT_NON_LINE(reuse = EVOL,
                                  RESI_GLOB_RELA=1E-5),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = LR)
-                  );
+                  )
 
 ################### POST TRAITEMENT U_M  #######################
 
 EVOL=CALC_CHAMP(reuse =EVOL,
               RESULTAT=EVOL,
               VARI_INTERNE=('VARI_ELNO'),
-              GROUP_MA='JOINT');
+              GROUP_MA='JOINT')
 
 EVOL=CALC_CHAMP(reuse =EVOL,
               RESULTAT=EVOL,
               CONTRAINTE=('SIEF_ELNO'),
-              GROUP_MA='JOINT');
+              GROUP_MA='JOINT')
 
 EVOL=CALC_CHAMP(reuse =EVOL,
             RESULTAT=EVOL,
             VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIEF_NOEU',
-            GROUP_MA='JOINT');
+            GROUP_MA='JOINT')
 
 # SAUT NORMALE DANS LE JOINT
 SAUT_M=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -256,7 +256,7 @@ SAUT_M=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=tpost,
                                GROUP_NO=('JOINT_H',),
-                               NOM_CMP='V7',),);
+                               NOM_CMP='V7',),)
 
 # CONTRAINTE NORMALE DANS LE JOINT
 SIGN_M=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -265,14 +265,14 @@ SIGN_M=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                INST=tpost,
                                GROUP_NO = ('JOINT_H',),
-                               NOM_CMP='SIGN'),);
+                               NOM_CMP='SIGN'),)
 
 
 
 # OUVERTURE DE JOINT
-IMPR_TABLE(TABLE=SAUT_M,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'),);
+IMPR_TABLE(TABLE=SAUT_M,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'),)
 # EFFORT DANS LE JOINT
-IMPR_TABLE(TABLE=SIGN_M,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'),);
+IMPR_TABLE(TABLE=SIGN_M,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'),)
 
 ####################################################################
 ############### PLOT DE LA COURBE FORCE(DEPLACEMENT) ###############
@@ -321,13 +321,13 @@ T_U=CALC_TABLE(TABLE=U_HAUT,
                             NOM_PARA=('NUME_ORDRE','DY'),
                             ),
                         ),
-                    );
+                    )
 #CHANGEMENT DE NOM DE LA COLONNE POUR LE DEPLACEMENT
 T_U=CALC_TABLE(TABLE=T_U,reuse=T_U,
                     ACTION=_F(OPERATION='RENOMME',
                             NOM_PARA=('DY','DEPL'),
                            ),
-                );
+                )
 
 # CREATION DE LA COLONNE AVEC LES FORCES
 T_F=CALC_TABLE(TABLE=FPILO,
@@ -336,20 +336,20 @@ T_F=CALC_TABLE(TABLE=FPILO,
                             NOM_PARA=('NUME_ORDRE','DX'),
                             ),
                         ),
-                    );
+                    )
 #CHANGEMENT DE NOM DE COLONNE POUR LES FORCES
 T_F=CALC_TABLE(TABLE=T_F,reuse=T_F,
                     ACTION=_F(OPERATION='RENOMME',
                             NOM_PARA=('DX','FORCE'),
                             ),
-               );
+               )
 
 # CREATION DE INST_FORCE_DEPL
 T_F=CALC_TABLE(reuse =T_F,
           TABLE=T_F,
           ACTION=_F(OPERATION='COMB',
                     TABLE=T_U,
-                    NOM_PARA='NUME_ORDRE'));
+                    NOM_PARA='NUME_ORDRE'))
 
 # CREATION DU TABLEAU FORCES-DEPL AVEC LES DEPLACEMENTS
 T_FU=CALC_TABLE(TABLE=T_F,
@@ -358,7 +358,7 @@ T_FU=CALC_TABLE(TABLE=T_F,
                             NOM_PARA=('DEPL','FORCE'),
                             ),
                         ),
-                    );
+                    )
 
 
 

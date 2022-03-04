@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,26 +108,26 @@ RESULT = STAT_NON_LINE(
 
 # tester NOM_CMP / NOM_VARI dans MIN_MAX_SP / POST_CHAMP
 SOLPL1=POST_CHAMP(RESULTAT=RESULT,
-                  MIN_MAX_SP=_F(NOM_CHAM='VARI_ELGA', 
+                  MIN_MAX_SP=_F(NOM_CHAM='VARI_ELGA',
                                 NOM_CMP='V7',
                                 TYPE_MAXI='MAXI',
-                                NUME_CHAM_RESU=7),),  
+                                NUME_CHAM_RESU=7),),
 
 SOLPL2=POST_CHAMP(RESULTAT=RESULT,
                   GROUP_MA='TTronM',
-                  MIN_MAX_SP=_F(NOM_CHAM='VARI_ELGA', 
+                  MIN_MAX_SP=_F(NOM_CHAM='VARI_ELGA',
                                 NOM_CMP='V7',
                                 TYPE_MAXI='MAXI',
-                                NUME_CHAM_RESU=7),),  
+                                NUME_CHAM_RESU=7),),
 
 SOLPL3=POST_CHAMP(RESULTAT=RESULT,
                   GROUP_MA='TTronM',
-                  MIN_MAX_SP=_F(NOM_CHAM='VARI_ELGA', 
+                  MIN_MAX_SP=_F(NOM_CHAM='VARI_ELGA',
                                 NOM_VARI='INDIPLAS',
                                 TYPE_MAXI='MAXI',
                                 NUME_CHAM_RESU=7),),
 SOLPL4=POST_CHAMP(RESULTAT=RESULT,
-                  MIN_MAX_SP=_F(NOM_CHAM='VARI_ELGA', 
+                  MIN_MAX_SP=_F(NOM_CHAM='VARI_ELGA',
                                 NOM_VARI='INDIPLAS',
                                 TYPE_MAXI='MAXI',
                                 NUME_CHAM_RESU=7),),

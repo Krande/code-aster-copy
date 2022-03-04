@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'));
+      DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
 #
 # DEFINITION DU MODELE
@@ -31,7 +31,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED');
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA='SURF',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_INCO_UPG'));
+                           MODELISATION='AXIS_INCO_UPG'))
 
 #
 # DEFINITION DU MATERIAU
@@ -39,36 +39,36 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                             NU=0.3,
                             RHO=8000.,
-                            ALPHA=1.E-5));
+                            ALPHA=1.E-5))
 
 #
 # ATTRIBUTION DU MATERIAU
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER));
+                            MATER=ACIER))
 
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 
 CLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=_F(GROUP_MA='APPUI',
-                                DY=0.));
+                                DY=0.))
 
 #
 
 F_Y=DEFI_FONCTION(NOM_PARA='Y',VALE=(0.,-78500.,
                         3.,-78500.,
                         6.,-78500.,
-                        ));
+                        ))
 
 CHARGT=AFFE_CHAR_MECA_F(MODELE=MODELE,
                         FORCE_INTERNE=_F(TOUT='OUI',
-                                         FY=F_Y));
+                                         FY=F_Y))
 
 CH_PESA=AFFE_CHAR_MECA(MODELE=MODELE,
                        PESANTEUR=_F(GRAVITE=9.8125,
-                                    DIRECTION=(0.,-1.,0.)));
+                                    DIRECTION=(0.,-1.,0.)))
 
 #
 # RESOLUTION
@@ -80,11 +80,11 @@ CH_PESA=AFFE_CHAR_MECA(MODELE=MODELE,
 
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
-                                      NOMBRE=1));
+                                      NOMBRE=1))
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           1.0,1.0,
-                          ));
+                          ))
 
 # CALCUL
 #========
@@ -98,11 +98,11 @@ DEF=STAT_NON_LINE(MODELE=MODELE,
                   INCREMENT=_F(LIST_INST=INSTANTS),
                   NEWTON=_F(REAC_ITER=1),
                   SOLVEUR=_F(METHODE='MUMPS',
-   ));
+   ))
 
 DEF=CALC_ERREUR(reuse =DEF,
                 RESULTAT=DEF,
-                OPTION=('ERME_ELEM','ERME_ELNO'));
+                OPTION=('ERME_ELEM','ERME_ELNO'))
 
 #
 # TEST_RESU DEPLACEMENTS
@@ -210,6 +210,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 
 #

@@ -48,20 +48,20 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
 
 MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(  GROUP_MA_PEAU = ('HAUT', 'DEVANT', 'DROITE',),  )
-                     );
-                     
+                     )
+
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
                           CREA_GROUP_MA=(_F(NOM='ROCHE',
                                             TOUT='OUI',)),
                           CREA_GROUP_NO=(_F(NOM='ROCHES',
                                             CRIT_NOEUD='SOMMET',
-                                            GROUP_MA='ROCHE'),),);
+                                            GROUP_MA='ROCHE'),),)
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.0001)
-BITUME=DEFI_MATERIAU( ELAS=_F( 
-                              E = 24.1E6,   
-                              NU= 0.47,   
+BITUME=DEFI_MATERIAU( ELAS=_F(
+                              E = 24.1E6,
+                              NU= 0.47,
                               ALPHA=8.E-06,),
                        VISC_MAXWELL =_F(
                               ETA_D=1.59e+30,
@@ -142,10 +142,10 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
 #***********************************************************************
 U1=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
-                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = TEMP_LATE,), 
-                             _F(CHARGE = DEP_SYM,), 
+                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = TEMP_LATE,),
+                             _F(CHARGE = DEP_SYM,),
                              ),
                  COMPORTEMENT=_F(RELATION = 'KIT_THM',
                                  RELATION_KIT = ('ELAS','LIQU_SATU','HYDR_UTIL',),
@@ -179,10 +179,10 @@ TEST_RESU(RESU=_F(INST=7000.,
 #***********************************************************************
 U2=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
-                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = TEMP_LATE,), 
-                             _F(CHARGE = DEP_SYM,), 
+                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = TEMP_LATE,),
+                             _F(CHARGE = DEP_SYM,),
                              ),
                  COMPORTEMENT=_F(RELATION = 'KIT_THM',
                                  RELATION_KIT = ('VISC_MAXWELL','LIQU_SATU','HYDR_UTIL',),

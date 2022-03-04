@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,22 +28,22 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 # CALCUL DE LA BASE DE PROJECTION
 #********************************
 
-MAYAFE0=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20);
+MAYAFE0=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20)
 
 
 MAYAFE0=DEFI_GROUP(reuse =MAYAFE0,
                    MAILLAGE=MAYAFE0,
                    CREA_GROUP_MA=_F(NOM='ALL_EL',
                                     TOUT='OUI',),
-                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MATER1=DEFI_MATERIAU(ELAS=_F(E=72000000000.0,
                              NU=0.34,
-                             RHO=2700.0,),);
+                             RHO=2700.0,),)
 
 MATER2=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                              NU=0.29,
-                             RHO=7800.0,),);
+                             RHO=7800.0,),)
 
 MAYAFEM=CREA_MAILLAGE(MAILLAGE=MAYAFE0,
     CREA_POI1=(
@@ -61,13 +61,13 @@ MODFEM=AFFE_MODELE(MAILLAGE=MAYAFEM,
                             MODELISATION='DIS_TR',),
                          _F(GROUP_MA='GROUP10',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAYAFEM,
                     AFFE=(_F(GROUP_MA=('GROUP1','GROUP2','GROUP3','GROUP4','GROUP5','GROUP6','GROUP7','GROUP9',),
                              MATER=MATER1,),
                           _F(GROUP_MA='GROUP8',
-                             MATER=MATER2,),),);
+                             MATER=MATER2,),),)
 
 CHCAR=AFFE_CARA_ELEM(MODELE=MODFEM,
                      COQUE=(_F(GROUP_MA=('GROUP2','GROUP3','GROUP4','GROUP5','GROUP7',),
@@ -91,7 +91,7 @@ CHCAR=AFFE_CARA_ELEM(MODELE=MODFEM,
                                  0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                               _F(GROUP_MA='GROUP10',
                                  CARA='M_T_D_N',
-                                 VALE=0.5,),),);
+                                 VALE=0.5,),),)
 
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MODFEM,
@@ -101,34 +101,34 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MODFEM,
                                   DZ=0.0,
                                   DRX=0.0,
                                   DRY=0.0,
-                                  DRZ=0.0,),);
+                                  DRZ=0.0,),)
 
 KELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MODFEM,
                      CHAM_MATER=CHMAT,
                      CARA_ELEM=CHCAR,
                      CHARGE=CHARGE,
-                     );
+                     )
 
 MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                      MODELE=MODFEM,
                      CHAM_MATER=CHMAT,
                      CARA_ELEM=CHCAR,
                      CHARGE=CHARGE,
-                     );
+                     )
 
-NUME=NUME_DDL(MATR_RIGI=KELEM,);
+NUME=NUME_DDL(MATR_RIGI=KELEM,)
 
 KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
-                  NUME_DDL=NUME,);
+                  NUME_DDL=NUME,)
 
 MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
-                  NUME_DDL=NUME,);
+                  NUME_DDL=NUME,)
 
 MASSE=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                 MODELE=MODFEM,
                 CHAM_MATER=CHMAT,
-                CARA_ELEM=CHCAR,);
+                CARA_ELEM=CHCAR,)
 
 
 
@@ -158,19 +158,19 @@ nb_ddl = nb_noeuds*3
 
 CHSTAT = AFFE_CHAR_MECA( MODELE=MODFEM,
                          DDL_IMPO=_F(NOEUD=noeuds,
-                                     DX=0.0,DY=0.0,DZ=0.0,),);
+                                     DX=0.0,DY=0.0,DZ=0.0,),)
 
 KELSTAT = CALC_MATR_ELEM( OPTION='RIGI_MECA',
                           MODELE=MODFEM,
                           CHAM_MATER=CHMAT,
                           CARA_ELEM=CHCAR,
                           CHARGE=CHSTAT
-                          );
+                          )
 
-NUMSTAT = NUME_DDL( MATR_RIGI = KELSTAT,);
+NUMSTAT = NUME_DDL( MATR_RIGI = KELSTAT,)
 
 KASTAT = ASSE_MATRICE( MATR_ELEM=KELSTAT,
-                       NUME_DDL=NUMSTAT,);
+                       NUME_DDL=NUMSTAT,)
 
 # NPREC NECESSAIRE
 MODSTAT = MODE_STATIQUE( MATR_RIGI = KASTAT, SOLVEUR=_F(NPREC=9),
@@ -184,7 +184,7 @@ MODSTAT = MODE_STATIQUE( MATR_RIGI = KASTAT, SOLVEUR=_F(NPREC=9),
 #********************************
 
 
-MAYAtmp=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=22);
+MAYAtmp=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=22)
 
 
 
@@ -192,7 +192,7 @@ MAYAtmp=DEFI_GROUP(reuse =MAYAtmp,
                    MAILLAGE=MAYAtmp,
                    CREA_GROUP_MA=_F(NOM='ALL_EXP',
                                     TOUT='OUI',),
-                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 
 MAYAEXP=CREA_MAILLAGE(MAILLAGE=MAYAtmp,
@@ -204,7 +204,7 @@ MAYAEXP=CREA_MAILLAGE(MAILLAGE=MAYAtmp,
 MODEXP=AFFE_MODELE(MAILLAGE=MAYAEXP,
                    AFFE=_F(GROUP_MA='NOEU',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DIS_T',),);
+                           MODELISATION='DIS_T',),)
 
 CHCAREXP=AFFE_CARA_ELEM(MODELE=MODEXP,
                      DISCRET=(_F(GROUP_MA='NOEU',
@@ -216,24 +216,24 @@ CHCAREXP=AFFE_CARA_ELEM(MODELE=MODEXP,
                                  REPERE='GLOBAL',
                                  CARA='M_T_D_N',
                                  VALE=(0.,),
-                                ),));
+                                ),))
 
 KELEXP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MODEXP,
                      CARA_ELEM=CHCAREXP,
-                     );
+                     )
 
 MELEXP=CALC_MATR_ELEM(OPTION='MASS_MECA',
                      MODELE=MODEXP,
                      CARA_ELEM=CHCAREXP,
-                     );
+                     )
 
 
-NUMEXP=NUME_DDL(MATR_RIGI=KELEXP );
+NUMEXP=NUME_DDL(MATR_RIGI=KELEXP )
 
-KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP, NUME_DDL=NUMEXP,);
+KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP, NUME_DDL=NUMEXP,)
 
-MASSEXP=ASSE_MATRICE(MATR_ELEM=MELEXP, NUME_DDL=NUMEXP,);
+MASSEXP=ASSE_MATRICE(MATR_ELEM=MELEXP, NUME_DDL=NUMEXP,)
 
 
 
@@ -259,7 +259,7 @@ MODMES=LIRE_RESU(TYPE_RESU='MODE_MECA',
                                  POSI_MASS_GENE=(8,2),
                                  POSI_AMOR_GENE=(8,3),
                                  NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),),
-                 TOUT_ORDRE='OUI',);
+                 TOUT_ORDRE='OUI',)
 
 
 ## On effectue les memes operations d'expnsion avec une macro
@@ -282,19 +282,19 @@ MACRO_EXPANS( MODELE_CALCUL = _F(MODELE = MODFEM,
 #                                 REGUL='NORM_MIN',
 #                                 COEF_PONDER = 1.0E-6
                                  ),
-             );
+             )
 
 # Calcul du MAC apres expansion sur tout le maillage
 MAC_ET=MAC_MODES(BASE_1=RES_MODE,
                  BASE_2=RES_MODE,
-                 INFO       =2);
+                 INFO       =2)
 
 
 # Calcul du MAC aux points de mesure
 MAC_RDEX=MAC_MODES(BASE_1=RED_MODE,
                    BASE_2=MODMES,
                    INFO       =2,
-                  );
+                  )
 
 
 # Verification : la diagonale du MAC entre modes etendus reduits
@@ -320,4 +320,4 @@ for ind in range(21):
                        ),
                )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,27 +44,27 @@ MODE=AFFE_MODELE(
 # PUDX : Puissance cinematique
 # LUDX : Limite cinematique
 
-lt_ledx= 1000.0; lt_kedx= 3400000.0; lt_ludx= 1000.0; lt_kcdx=  700000.0; lt_pudx= 2.00;
-lt_ledy= 1500.0; lt_kedy= 2000000.0; lt_ludy=  800.0; lt_kcdy=  900000.0; lt_pudy= 1.50;
-lt_ledz= 2000.0; lt_kedz= 2500000.0; lt_ludz=  800.0; lt_kcdz=  700000.0; lt_pudz= 2.25;
+lt_ledx= 1000.0; lt_kedx= 3400000.0; lt_ludx= 1000.0; lt_kcdx=  700000.0; lt_pudx= 2.00
+lt_ledy= 1500.0; lt_kedy= 2000000.0; lt_ludy=  800.0; lt_kcdy=  900000.0; lt_pudy= 1.50
+lt_ledz= 2000.0; lt_kedz= 2500000.0; lt_ludz=  800.0; lt_kcdz=  700000.0; lt_pudz= 2.25
 
-nt_ledx= 1000.0; nt_kedx= 3400000.0; nt_ludx= 1000.0; nt_kcdx=  700000.0; nt_pudx= 2.00;
-nt_ledy= 1500.0; nt_kedy= 2000000.0; nt_ludy=  800.0; nt_kcdy=  900000.0; nt_pudy= 1.50;
-nt_ledz= 2000.0; nt_kedz= 2500000.0; nt_ludz=  800.0; nt_kcdz=  700000.0; nt_pudz= 2.25;
+nt_ledx= 1000.0; nt_kedx= 3400000.0; nt_ludx= 1000.0; nt_kcdx=  700000.0; nt_pudx= 2.00
+nt_ledy= 1500.0; nt_kedy= 2000000.0; nt_ludy=  800.0; nt_kcdy=  900000.0; nt_pudy= 1.50
+nt_ledz= 2000.0; nt_kedz= 2500000.0; nt_ludz=  800.0; nt_kcdz=  700000.0; nt_pudz= 2.25
 
-lr_ledx= 1000.0; lr_kedx= 3400000.0; lr_ludx= 1000.0; lr_kcdx=  700000.0; lr_pudx= 2.00;
-lr_ledy= 1500.0; lr_kedy= 2000000.0; lr_ludy=  800.0; lr_kcdy=  900000.0; lr_pudy= 1.50;
-lr_ledz= 2000.0; lr_kedz= 2500000.0; lr_ludz=  800.0; lr_kcdz=  700000.0; lr_pudz= 2.25;
-lr_lerx= 3000.0; lr_kerx= 3000000.0; lr_lurx= 1000.0; lr_kcrx=  600000.0; lr_purx= 2.00;
-lr_lery= 3500.0; lr_kery= 2700000.0; lr_lury= 1800.0; lr_kcry=  800000.0; lr_pury= 1.50;
-lr_lerz= 2500.0; lr_kerz= 3200000.0; lr_lurz= 1400.0; lr_kcrz=  850000.0; lr_purz= 2.25;
+lr_ledx= 1000.0; lr_kedx= 3400000.0; lr_ludx= 1000.0; lr_kcdx=  700000.0; lr_pudx= 2.00
+lr_ledy= 1500.0; lr_kedy= 2000000.0; lr_ludy=  800.0; lr_kcdy=  900000.0; lr_pudy= 1.50
+lr_ledz= 2000.0; lr_kedz= 2500000.0; lr_ludz=  800.0; lr_kcdz=  700000.0; lr_pudz= 2.25
+lr_lerx= 3000.0; lr_kerx= 3000000.0; lr_lurx= 1000.0; lr_kcrx=  600000.0; lr_purx= 2.00
+lr_lery= 3500.0; lr_kery= 2700000.0; lr_lury= 1800.0; lr_kcry=  800000.0; lr_pury= 1.50
+lr_lerz= 2500.0; lr_kerz= 3200000.0; lr_lurz= 1400.0; lr_kcrz=  850000.0; lr_purz= 2.25
 
-nr_ledx= 1000.0; nr_kedx= 3400000.0; nr_ludx= 1000.0; nr_kcdx=  700000.0; nr_pudx= 2.00;
-nr_ledy= 1500.0; nr_kedy= 2000000.0; nr_ludy=  800.0; nr_kcdy=  900000.0; nr_pudy= 1.50;
-nr_ledz= 2000.0; nr_kedz= 2500000.0; nr_ludz=  800.0; nr_kcdz=  700000.0; nr_pudz= 2.25;
-nr_lerx= 3000.0; nr_kerx= 3000000.0; nr_lurx= 1000.0; nr_kcrx=  600000.0; nr_purx= 2.00;
-nr_lery= 3500.0; nr_kery= 2700000.0; nr_lury= 1800.0; nr_kcry=  800000.0; nr_pury= 1.50;
-nr_lerz= 2500.0; nr_kerz= 3200000.0; nr_lurz= 1400.0; nr_kcrz=  850000.0; nr_purz= 2.25;
+nr_ledx= 1000.0; nr_kedx= 3400000.0; nr_ludx= 1000.0; nr_kcdx=  700000.0; nr_pudx= 2.00
+nr_ledy= 1500.0; nr_kedy= 2000000.0; nr_ludy=  800.0; nr_kcdy=  900000.0; nr_pudy= 1.50
+nr_ledz= 2000.0; nr_kedz= 2500000.0; nr_ludz=  800.0; nr_kcdz=  700000.0; nr_pudz= 2.25
+nr_lerx= 3000.0; nr_kerx= 3000000.0; nr_lurx= 1000.0; nr_kcrx=  600000.0; nr_purx= 2.00
+nr_lery= 3500.0; nr_kery= 2700000.0; nr_lury= 1800.0; nr_kcry=  800000.0; nr_pury= 1.50
+nr_lerz= 2500.0; nr_kerz= 3200000.0; nr_lurz= 1400.0; nr_kcrz=  850000.0; nr_purz= 2.25
 
 # Definition des materiaux
 MAT_LT  = DEFI_MATERIAU(
@@ -129,15 +129,15 @@ CARELEM=AFFE_CARA_ELEM(
 )
 
 # Amplitudes des chargements
-lt_amdx= 5.0*lt_ledx/lt_kedx; lt_amdy= 5.0*lt_ledy/lt_kedy; lt_amdz= 5.0*lt_ledz/lt_kedz;
+lt_amdx= 5.0*lt_ledx/lt_kedx; lt_amdy= 5.0*lt_ledy/lt_kedy; lt_amdz= 5.0*lt_ledz/lt_kedz
 
-nt_amdx= 5.0*nt_ledx/nt_kedx; nt_amdy= 5.0*nt_ledy/nt_kedy; nt_amdz= 5.0*nt_ledz/nt_kedz;
+nt_amdx= 5.0*nt_ledx/nt_kedx; nt_amdy= 5.0*nt_ledy/nt_kedy; nt_amdz= 5.0*nt_ledz/nt_kedz
 
-lr_amdx= 5.0*lr_ledx/lr_kedx; lr_amdy= 5.0*lr_ledy/lr_kedy; lr_amdz= 5.0*lr_ledz/lr_kedz;
-lr_amrx= 5.0*lr_lerx/lr_kerx; lr_amry= 5.0*lr_lery/lr_kery; lr_amrz= 5.0*lr_lerz/lr_kerz;
+lr_amdx= 5.0*lr_ledx/lr_kedx; lr_amdy= 5.0*lr_ledy/lr_kedy; lr_amdz= 5.0*lr_ledz/lr_kedz
+lr_amrx= 5.0*lr_lerx/lr_kerx; lr_amry= 5.0*lr_lery/lr_kery; lr_amrz= 5.0*lr_lerz/lr_kerz
 
-nr_amdx= 5.0*nr_ledx/nr_kedx; nr_amdy= 5.0*nr_ledy/nr_kedy; nr_amdz= 5.0*nr_ledz/nr_kedz;
-nr_amrx= 5.0*nr_lerx/nr_kerx; nr_amry= 5.0*nr_lery/nr_kery; nr_amrz= 5.0*nr_lerz/nr_kerz;
+nr_amdx= 5.0*nr_ledx/nr_kedx; nr_amdy= 5.0*nr_ledy/nr_kedy; nr_amdz= 5.0*nr_ledz/nr_kedz
+nr_amrx= 5.0*nr_lerx/nr_kerx; nr_amry= 5.0*nr_lery/nr_kery; nr_amrz= 5.0*nr_lerz/nr_kerz
 
 
 CONDLIM =AFFE_CHAR_MECA(MODELE=MODE,

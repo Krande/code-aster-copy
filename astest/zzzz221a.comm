@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #===========================================================
 # CALCUL THERMO HYDRATATION ET SECHAGE BETON
@@ -27,31 +27,31 @@ DEBUT(CODE=_F(
 #===========================================================
 # UNITES J H M KG Pa N
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MOTHER_1=AFFE_MODELE(MAILLAGE=MAIL,
                      AFFE=_F(GROUP_MA=('LEVEE_1','L1_INT','L1_EXT','L1_SUP','INTER','L1_INF',),
                              PHENOMENE='THERMIQUE',
-                             MODELISATION='AXIS',),);
+                             MODELISATION='AXIS',),)
 
 MOTHER_2=AFFE_MODELE(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='THERMIQUE',
-                             MODELISATION='AXIS',),);
+                             MODELISATION='AXIS',),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('L1_INT','L1_EXT','L1_INF','L1_SUP','L2_EXT','L2_INT','L2_SUP',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('L1_INT','L1_EXT','L1_INF','L1_SUP','L2_EXT','L2_INT','L2_SUP',),),)
 
 #
 # DEFINITION DE L'AFFINITE FONCTION DU DEGRE D'HYDRATATION [-]
-Ar = 4700;
+Ar = 4700
 
-TZ0 = 273.15;
+TZ0 = 273.15
 
 
 AA0=DEFI_FONCTION(NOM_PARA='HYDR',VALE=(0.0,6510.0,
@@ -90,7 +90,7 @@ AA0=DEFI_FONCTION(NOM_PARA='HYDR',VALE=(0.0,6510.0,
                         0.98,30.0,
                         0.99,15.0,
                         1.0,0.0,
-                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',);
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',)
 
 AA = FORMULE(VALE='exp(-Ar/(TZ0+TEMP))*(AA0(HYDR))',
              Ar=Ar,
@@ -99,11 +99,11 @@ AA = FORMULE(VALE='exp(-Ar/(TZ0+TEMP))*(AA0(HYDR))',
              NOM_PARA=['HYDR', 'TEMP'],)
 
 LL=DEFI_LIST_REEL(VALE=(0.0,0.008,0.016,0.019,0.022,0.0258,0.038,0.047,0.08,0.138,0.232,0.351,0.44,0.5,0.55,0.594,0.63,0.66,0.697,
-                         0.73,0.76,0.79,0.81,0.83,0.84,0.87,0.88,0.89,0.9,0.906,0.91,0.95,0.97,0.98,0.99,1.0,),);
+                         0.73,0.76,0.79,0.81,0.83,0.84,0.87,0.88,0.89,0.9,0.906,0.91,0.95,0.97,0.98,0.99,1.0,),)
 
 LT=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=_F(JUSQU_A=200.0,
-                                PAS=0.1,),);
+                                PAS=0.1,),)
 
 AFF=CALC_FONC_INTERP(FONCTION=AA,
                      LIST_PARA=LL,
@@ -114,14 +114,14 @@ AFF=CALC_FONC_INTERP(FONCTION=AA,
                      NOM_PARA_FONC='TEMP',
                      LIST_PARA_FONC=LT,
                      PROL_DROITE_FONC='LINEAIRE',
-                     PROL_GAUCHE_FONC='LINEAIRE',);
+                     PROL_GAUCHE_FONC='LINEAIRE',)
 
 #
 # CONDUCTIVITE THERMIQUE [J/H/M2/K] ==> 2,4 [W/M2/K]
 
 COND=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.0,8640.0,
                          300.0,8640.0,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 #
 # ENTHALPIE [J/M3]
@@ -130,7 +130,7 @@ ENTH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.0,655000000.0,
                          20.0,703000000.0,
                          50.0,775000000.0,
                          70.0,823000000.0,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 #
 # CONSTANTE D'ARRHENIUS [K]
@@ -150,37 +150,37 @@ BETON=DEFI_MATERIAU(THER_HYDR=_F(LAMBDA=COND,
                     SECH_GRANGER=_F(A=1.368e-09,
                                     B=0.05,
                                     QSR_K=4700.0,
-                                    TEMP_0_C=0.0,),);
+                                    TEMP_0_C=0.0,),)
 
 AFMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='LEVEE_1',
                              MATER=BETON,),
                           _F(GROUP_MA='LEVEE_2',
-                             MATER=BETON,),),);
+                             MATER=BETON,),),)
 
 #
 # CHARGEMENT
 # ----------
-TEMPEXT = 25.0;
+TEMPEXT = 25.0
 
-TEMPINI = 25.0;
+TEMPINI = 25.0
 
 
 #
 # COEFF D'ECHANGE [W/M2/K]
-# [J/H/M2/K) ==> 4.5 [W/M2/K];
-COEFH = 16200;
+# [J/H/M2/K) ==> 4.5 [W/M2/K]
+COEFH = 16200
 
 
 CL_HYDR1=AFFE_CHAR_THER(MODELE=MOTHER_1,
                         ECHANGE=_F(GROUP_MA=('L1_INT','L1_EXT','L1_SUP','INTER',),
                                    COEF_H=COEFH,
-                                   TEMP_EXT=TEMPEXT,),);
+                                   TEMP_EXT=TEMPEXT,),)
 
 CL_HYDR2=AFFE_CHAR_THER(MODELE=MOTHER_2,
                         ECHANGE=_F(GROUP_MA=('L1_INT','L2_INT','L1_EXT','L2_EXT','L1_SUP','L2_SUP',),
                                    COEF_H=COEFH,
-                                   TEMP_EXT=TEMPEXT,),);
+                                   TEMP_EXT=TEMPEXT,),)
 
 #
 #
@@ -191,15 +191,15 @@ CL_HYDR2=AFFE_CHAR_THER(MODELE=MOTHER_2,
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=200.0,
-                                   PAS=10.0,),);
+                                   PAS=10.0,),)
 
 LARCH1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=100.0,
-                                    PAS=20.,),);
+                                    PAS=20.,),)
 
 LARCH2=DEFI_LIST_REEL(DEBUT=100.0,
                       INTERVALLE=_F(JUSQU_A=200.0,
-                                    PAS=20.,),);
+                                    PAS=20.,),)
 
 #
 # =====================================================================
@@ -211,14 +211,14 @@ T_INIT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   MAILLAGE=MAIL,
                   AFFE=_F(GROUP_NO='LEVEE_1',
                           NOM_CMP='TEMP',
-                          VALE=TEMPINI,),);
+                          VALE=TEMPINI,),)
 
 T_INIT2=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                    OPERATION='AFFE',
                    MAILLAGE=MAIL,
                    AFFE=_F(GROUP_NO='LEVEE_2',
                            NOM_CMP='TEMP',
-                           VALE=TEMPINI,),);
+                           VALE=TEMPINI,),)
 
 RES_HYD1=THER_NON_LINE(MODELE=MOTHER_1,
                        CHAM_MATER=AFMAT,
@@ -232,13 +232,13 @@ RES_HYD1=THER_NON_LINE(MODELE=MOTHER_1,
                        CONVERGENCE=_F(RESI_GLOB_MAXI=0.01,
                                       ITER_GLOB_MAXI=100,),
                        PARM_THETA=0.57,
-                       ARCHIVAGE=_F(LIST_INST=LARCH1,),);
+                       ARCHIVAGE=_F(LIST_INST=LARCH1,),)
 
 TEMP_1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='EXTR',
                   RESULTAT=RES_HYD1,
                   NOM_CHAM='TEMP',
-                  INST=100.0,);
+                  INST=100.0,)
 
 T100=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='ASSE',
@@ -247,19 +247,19 @@ T100=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 _F(GROUP_MA='LEVEE_2',
                    CHAM_GD=T_INIT2,),
                 _F(GROUP_MA='LEVEE_1',
-                   CHAM_GD=TEMP_1,),),);
+                   CHAM_GD=TEMP_1,),),)
 
 RES_HYD1=CALC_CHAMP(reuse =RES_HYD1,
                     RESULTAT=RES_HYD1,
                     INST=100.0,
-                    THERMIQUE='HYDR_NOEU',);
+                    THERMIQUE='HYDR_NOEU',)
 
 HY100_L1=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                     OPERATION='EXTR',
                     RESULTAT=RES_HYD1,
                     NOM_CHAM='HYDR_ELNO',
                     INST=100.0,
-                    INFO=1,);
+                    INFO=1,)
 
 HY100_L2=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                     OPTION='RESI_RIGI_MASS',
@@ -269,7 +269,7 @@ HY100_L2=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                     AFFE=_F(GROUP_MA='LEVEE_2',
                             NOM_CMP='HYDR',
                             VALE=0.0000777,),
-                    INFO=1,);
+                    INFO=1,)
 
 HY100=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                  OPERATION='ASSE',
@@ -279,14 +279,14 @@ HY100=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                     CHAM_GD=HY100_L2,),
                  _F(GROUP_MA='LEVEE_1',
                     CHAM_GD=HY100_L1,),),
-                 INFO=1,);
+                 INFO=1,)
 
 RESU_100=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
                    NOM_CHAM='TEMP',
                    AFFE=_F(CHAM_GD=T100,
                            MODELE=MOTHER_2,
-                           INST=100.0,),);
+                           INST=100.0,),)
 
 RESU_100=CREA_RESU(reuse=RESU_100,
                    RESULTAT=RESU_100,
@@ -295,7 +295,7 @@ RESU_100=CREA_RESU(reuse=RESU_100,
                    NOM_CHAM='HYDR_ELNO',
                    AFFE=_F(CHAM_GD=HY100,
                            MODELE=MOTHER_2,
-                           INST=100.0,),);
+                           INST=100.0,),)
 
 #SMP : NOUVEAU THER_NON_LINE EN PARTANT DE L'ETAT INITIAL CREE SUR L'ENSEMBLE DU MODELE
 
@@ -312,7 +312,7 @@ RES_HYD2=THER_NON_LINE(MODELE=MOTHER_2,
                        NEWTON=_F(REAC_ITER=1,),
                        CONVERGENCE=_F(RESI_GLOB_MAXI=0.01,
                                       ITER_GLOB_MAXI=100,),
-                       ARCHIVAGE=_F(LIST_INST=LARCH2,),);
+                       ARCHIVAGE=_F(LIST_INST=LARCH2,),)
 
 TT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                            INTITULE='TT',
@@ -320,7 +320,7 @@ TT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                            NOM_CHAM='TEMP',
                            INST=200,
                            GROUP_NO='MAIL',
-                           TOUT_CMP='OUI',),);
+                           TOUT_CMP='OUI',),)
 
 # NON-REGRESSION PAR RAPPORT A LA VERSION 10.1
 
@@ -349,4 +349,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                 ),
           )
 
-FIN();
+FIN()

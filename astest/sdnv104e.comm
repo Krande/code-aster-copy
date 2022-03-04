@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ MAILL=DEFI_GROUP(reuse =MAILL,
                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
-                 
+
                  AFFE=(_F(GROUP_MA=('PATIN','LESC','FSUP','FLAT','BATI','LMAI'),
                           PHENOMENE='MECANIQUE',
                           MODELISATION='D_PLAN',),
@@ -56,7 +56,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODE,
                                   VALE=(12.E3,0.0),),
                                _F(GROUP_MA='RESLAT',
                                   CARA='M_T_L',
-                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),));
+                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),))
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX

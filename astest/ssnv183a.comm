@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@
 #----------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 #----------------------------------------------------------------------
 #              TEST MODELE VENDOCHAB 3D
 #      PAS DE CHARGEMENT THERMIQUE (ALPHA = 0 )
@@ -66,18 +66,18 @@ DEBUT(CODE=_F(
 #      K_D NE DEPEND QUE DE LA TEMPERATURE (FONCTION)
 #----------------------------------------------------------------------
 
-EPROU=LIRE_MAILLAGE(FORMAT="ASTER",);
+EPROU=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 EPROU=DEFI_GROUP(reuse =EPROU,
                  MAILLAGE=EPROU,
                  CREA_GROUP_MA=_F(NOM='FACE',
                                   OPTION='FACE_NORMALE',
-                                  VECT_NORMALE=(0.0,0.0,1.0,),),);
+                                  VECT_NORMALE=(0.0,0.0,1.0,),),)
 
 EPD3=AFFE_MODELE(MAILLAGE=EPROU,
                  AFFE=_F(GROUP_MA=('MA1','MA2',),
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=150000.0,
                             NU=0.3,),
@@ -92,12 +92,12 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=150000.0,
                                  R_D=6.3,
                                  A_D=3191.0,
                                  K_D=14.0,),
-                                 );
+                                 )
 
 MAT=AFFE_MATERIAU(MAILLAGE=EPROU,
                   AFFE=_F(GROUP_MA='MA1',
                           MATER=ACIER,
-                          ),);
+                          ),)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.2,
@@ -135,7 +135,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=2400000.0,
                                     NOMBRE=40,),
                                  _F(JUSQU_A=2500000.0,
-                                    NOMBRE=40,),),);
+                                    NOMBRE=40,),),)
 
 COND_LIM=AFFE_CHAR_MECA(MODELE=EPD3,
                         DDL_IMPO=(_F(GROUP_NO='N1',
@@ -158,10 +158,10 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=EPD3,
                                   _F(GROUP_NO='N8',
                                      DX=0.0,),),
                         PRES_REP=_F(GROUP_MA='FACEINT',
-                                    PRES=-200.0,),);
+                                    PRES=-200.0,),)
 
 COEF_TR=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.0,0.0,0.1,1.0,100.0,1.0,1500000.0,1.0,2400000.0,1.0,2450000.0,1.0,3000000.0,1.0,),);
+                      VALE=(0.0,0.0,0.1,1.0,100.0,1.0,1500000.0,1.0,2400000.0,1.0,2450000.0,1.0,3000000.0,1.0,),)
 
 # IMPLICITE
 
@@ -179,7 +179,7 @@ SOLNL2=STAT_NON_LINE(MODELE=EPD3,
                      NEWTON=_F(REAC_ITER=3,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                     ITER_GLOB_MAXI=60),
-                     TITRE='TEST RELAXATION SIMPLE',);
+                     TITRE='TEST RELAXATION SIMPLE',)
 
 SOLNL2=CALC_CHAMP(reuse=SOLNL2,RESULTAT=SOLNL2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -293,7 +293,7 @@ SOLNL=STAT_NON_LINE(MODELE=EPD3,
                               REAC_ITER=3,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=60),
-                    TITRE='TEST RELAXATION SIMPLE',);
+                    TITRE='TEST RELAXATION SIMPLE',)
 
 SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -406,22 +406,22 @@ TABR=POST_RELEVE_T(ACTION=_F(INTITULE='R',
                              RESULTAT=SOLNL2,
                              NOM_CHAM='VARI_ELNO',
                              NOM_CMP='V8',
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 TABD=POST_RELEVE_T(ACTION=_F(INTITULE='D',
                              GROUP_NO='N1',
                              RESULTAT=SOLNL2,
                              NOM_CHAM='VARI_ELNO',
                              NOM_CMP='V9',
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=TABR,UNITE=29,
            FORMAT='TABLEAU',
-           NOM_PARA=('INST','V8',),);
+           NOM_PARA=('INST','V8',),)
 
 IMPR_TABLE(TABLE=TABD,UNITE=29,
            FORMAT='TABLEAU',
-           NOM_PARA=('INST','V9',),);
+           NOM_PARA=('INST','V9',),)
 
 ####
 # TEST DE PRE_SIGM
@@ -432,7 +432,7 @@ SIG_CART=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                   MODELE=EPD3,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
-                          VALE=(0.,0.,200.,0.,0.,0.),),);
+                          VALE=(0.,0.,200.,0.,0.,0.),),)
 
 
 SIG_CHAM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -440,7 +440,7 @@ SIG_CHAM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   MODELE=EPD3,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
-                          VALE=(0.,0.,200.,0.,0.,0.),),);
+                          VALE=(0.,0.,200.,0.,0.,0.),),)
 
 
 
@@ -464,20 +464,20 @@ CL=AFFE_CHAR_MECA(MODELE=EPD3,
                                      DY=0.0,),
                                   _F(GROUP_NO='N8',
                                      DX=0.0,),),
-                                    );
+                                    )
 CHA_CART=AFFE_CHAR_MECA(MODELE=EPD3,
                         PRE_SIGM=_F(SIGM=SIG_CART),
-                                    );
+                                    )
 
 CHA_CHAM=AFFE_CHAR_MECA(MODELE=EPD3,
                         PRE_SIGM=_F(SIGM=SIG_CHAM),
-                                    );
+                                    )
 
 
 MS_PRES=MECA_STATIQUE(MODELE=EPD3,
                     CHAM_MATER=MAT,
                     EXCIT=_F(CHARGE=COND_LIM,),
-                        );
+                        )
 
 MS_CART=MECA_STATIQUE(MODELE=EPD3,
                     CHAM_MATER=MAT,
@@ -579,5 +579,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=82,
                   GROUP_MA='MA1',),
           )
 
-FIN();
+FIN()
 #

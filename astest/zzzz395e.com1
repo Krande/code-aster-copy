@@ -70,7 +70,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=-0.0201730121515,
                    ),
                 ),
-          );
+          )
 
 # Tests de la base primale (DEPL) obtenue par POD_INCR
 
@@ -118,7 +118,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=(-0.0213200068417,0.0213200068417),
                    ),
                 ),
-          );
+          )
 
 # Tests de la base duale (SIEF_NOEU) obtenue par POD
 
@@ -208,7 +208,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=0.00153482671155,
                    ),
                 ),
-          );
+          )
 
 # Tests de la base duale (SIEF_NOEU) obtenue par POD_INCR
 
@@ -298,7 +298,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=-0.00169432162924,
                    ),
                 ),
-          );
+          )
 
 
 FIN()

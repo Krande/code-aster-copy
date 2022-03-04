@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ ACIER=DEFI_MATERIAU(
 
 #AMOR_ALPHA : 0.1141100220E-03
 
-#AMOR_BETA  : 230.4812469 ));
+#AMOR_BETA  : 230.4812469 ))
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAYA))
@@ -342,10 +342,10 @@ rhof = FORMULE(VALE='rho(X)',
                NOM_PARA='X',)
 ACIE3=DEFI_MATERIAU( ELAS_FO=_F(  RHO = rhof, NU = nuf,  E = ef,))
 
-CHGEOM=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R', OPERATION='EXTR', MAILLAGE=MAYA, NOM_CHAM='GEOMETRIE',);
+CHGEOM=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R', OPERATION='EXTR', MAILLAGE=MAYA, NOM_CHAM='GEOMETRIE',)
 MATER=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE= _F(  TOUT = 'OUI', MATER = ACIE3),
-                    AFFE_VARC=_F(NOM_VARC='GEOM', CHAM_GD=CHGEOM),);
+                    AFFE_VARC=_F(NOM_VARC='GEOM', CHAM_GD=CHGEOM),)
 
 K_ELEM=CALC_MATR_ELEM( MODELE=STRUCTUR, CHAM_MATER=MATER, OPTION='RIGI_MECA',
                        CHARGE=( FIXA, PLAN_X0,PLAN_XL, ))

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 #   OPERATIONS SUR LE MAILLAGE
 #
 #
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 ############################################
 
@@ -57,7 +57,7 @@ LI1=DEFI_LIST_REEL(DEBUT=0.0,
                                _F(JUSQU_A=9000.0,
                                   NOMBRE=200,),
                               _F(JUSQU_A=1.E4,
-                                  NOMBRE=20,),),);
+                                  NOMBRE=20,),),)
 
 ############################################
 
@@ -75,12 +75,12 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                             M        = 1.02,
                             PRES_CRIT= 1.E7,
                             KCAM     = 6.5E6,
-                            PTRAC    = -1.E5),);
+                            PTRAC    = -1.E5),)
 
 
 CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATER,),);
+                              MATER=MATER,),)
 
 ############################################
 
@@ -101,7 +101,7 @@ PRESS2=DEFI_FONCTION(NOM_PARA='INST',
                     10000.0,   -1.E5,
                      ),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU',);
+                    PROL_GAUCHE='EXCLU',)
 
 ############################################
 
@@ -114,13 +114,13 @@ CHA0=AFFE_CHAR_MECA(MODELE=MODELE,
                               _F(GROUP_NO=('NO3','NO4','NO7','NO8'),
                                  DY=0.0,),
                               _F(GROUP_NO=('NO2','NO4','NO6','NO8'),
-                                 DX=0.0,),),);
+                                 DX=0.0,),),)
 
 
 CHA2=AFFE_CHAR_MECA_F(MODELE=MODELE,
                       PRES_REP=_F(GROUP_MA=('HAUT','DROITE','ARRIERE'),
                                   PRES=PRESS2,),
-                                  VERI_NORM='OUI');
+                                  VERI_NORM='OUI')
 
 ############################################
 #
@@ -144,7 +144,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                                 ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=200,
                                      RESI_GLOB_MAXI=1.E-06,),
-                      SOLVEUR=_F(METHODE='LDLT',STOP_SINGULIER='NON'),);
+                      SOLVEUR=_F(METHODE='LDLT',STOP_SINGULIER='NON'),)
 
 ############################################
 #
@@ -173,7 +173,7 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                                      #RESI_REFE_RELA=1.0E-3,
                                      #SIGM_REFE      = 1.0E+6,
                                      ),
-                      SOLVEUR=_F(METHODE='LDLT'),);
+                      SOLVEUR=_F(METHODE='LDLT'),)
 
 TDEP=(5000.,6500.,7000.,7500.,8000.,8500.,9000.,9500.)
 
@@ -265,4 +265,4 @@ TEST_RESU(RESU=(_F(INST=5000.0,
                 ),
           )
 
-FIN ();
+FIN ()

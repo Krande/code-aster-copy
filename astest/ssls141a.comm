@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,12 +44,12 @@ h = 0.8;     # epaisseur
 hs2 = h/2
 hs4 = h/4    # excentrement sup
 hs4m = -hs4  # excentrement inf
-E = 200000000000.0;
+E = 200000000000.0
 Nu=0.0
 G = E/2/(1.0+Nu)
 
 # chargement
-frep = -1000.0;
+frep = -1000.0
 
 # solution analytique
 L=10.0
@@ -98,26 +98,26 @@ epxy2 = 0.5*T*b/(k*G*A)
                                    # CISA_L=5.0/6.0*G*h,
                                    # CISA_T=5.0/6.0*G*h,
                                    # RHO=1000.0,
-                                   # ),);
+                                   # ),)
 MATISO=DEFI_MATERIAU(ELAS=_F(E=E,
                              NU=0.0,
-                             RHO=1000.0,),);
+                             RHO=1000.0,),)
 # ______________________________________________________________________
 #
 #                         1 PLAQUE DST ( QUA4 )
 # ______________________________________________________________________
-MA1=LIRE_MAILLAGE(FORMAT="ASTER",VERI_MAIL=_F(VERIF='OUI',),);
+MA1=LIRE_MAILLAGE(FORMAT="ASTER",VERI_MAIL=_F(VERIF='OUI',),)
 
 MA1=DEFI_GROUP(reuse =MA1,
                MAILLAGE=MA1,
                CREA_GROUP_NO=(_F(GROUP_MA='PLAQ1',
                                  NOM='PLAQ1',),
-                                 ),);
+                                 ),)
 
 MO2=AFFE_MODELE(MAILLAGE=MA1,
                 AFFE=_F(GROUP_MA=('PLAQ1','L12',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DST',),);
+                        MODELISATION='DST',),)
 
 
 EP2=AFFE_CARA_ELEM(MODELE=MO2,
@@ -126,12 +126,12 @@ EP2=AFFE_CARA_ELEM(MODELE=MO2,
                              ANGL_REP=(0.0,0.0,),
                              INER_ROTA='OUI',
                              COQUE_NCOU =ncou),
-                             ),);
+                             ),)
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA1,
                      AFFE=(_F(GROUP_MA='PLAQ1',
                               MATER=MATISO,),
-                              ),);
+                              ),)
 
 CL2=AFFE_CHAR_MECA(MODELE=MO2,
                      DDL_IMPO=(_F(GROUP_MA='L14',
@@ -141,11 +141,11 @@ CL2=AFFE_CHAR_MECA(MODELE=MO2,
                                   DRX=0.0,
                                   DRY=0.0,
                                   DRZ=0.0,),),
-                                     );
+                                     )
 
 CHME2A=AFFE_CHAR_MECA(MODELE=MO2,
                       FORCE_ARETE=_F(GROUP_MA='L12',
-                                      FZ=frep),);
+                                      FZ=frep),)
 
 
 
@@ -174,95 +174,95 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='DEPL',NUME_ORDRE=1,
                      GROUP_NO='A3',PRECISION=0.001,
                      VALE_REFE=u_l,NOM_CMP='DZ',
                      VALE_CALC = -3.9212499999961E-05,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 
 # TEST CONTRAINTE AXIALE SIXX A LA FIBRE NEUTRE (maille extremite)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M1',POINT=1,SOUS_POINT=nssp_neutre,PRECISION=1.0E-8,
                      VALE_REFE=0.,NOM_CMP='SIXX',CRITERE='ABSOLU',
                      VALE_CALC=0.0E+00,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST CONTRAINTE AXIALE SIXX A LA FIBRE EXTERIEUR (maille extremite)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M1',POINT=1,SOUS_POINT=nssp_sup,PRECISION=0.001,
                      VALE_REFE=sixx1,NOM_CMP='SIXX',
                      VALE_CALC =  1981.170613172,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST CONTRAINTE CISA SIXZ A LA FIBRE NEUTRE (maille extremite)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M1',POINT=1,SOUS_POINT=nssp_neutre,PRECISION=0.001,
                      VALE_REFE=sixy1,NOM_CMP='SIXZ',
                      VALE_CALC =-1875.0000000001,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST CONTRAINTE CISA SIXZ A LA FIBRE EXTERIEURE (maille extremite)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M1',POINT=1,SOUS_POINT=nssp_sup,PRECISION=1.0E-8,
                      VALE_REFE=0.0,NOM_CMP='SIXZ',CRITERE='ABSOLU',
                      VALE_CALC =0.0E+00 ,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 
 # TEST CONTRAINTE AXIALE SIXX A LA FIBRE NEUTRE (maille encastrement)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M50',POINT=2,SOUS_POINT=nssp_neutre,PRECISION=1.0E-8,
                      VALE_REFE=0.,NOM_CMP='SIXX',CRITERE='ABSOLU',
                      VALE_CALC = 0.0E+00 ,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST CONTRAINTE AXIALE SIXX A LA FIBRE EXTERIEUR (maille encastrement)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M50',POINT=2,SOUS_POINT=nssp_sup,PRECISION=0.001,
                      VALE_REFE=sixx2,NOM_CMP='SIXX',
                      VALE_CALC= 91768.829386711,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST CONTRAINTE CISA SIXZ A LA FIBRE NEUTRE (maille encastrement)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M50',POINT=2,SOUS_POINT=nssp_neutre,PRECISION=0.001,
                      VALE_REFE=sixy2,NOM_CMP='SIXZ',
                      VALE_CALC = -1874.9999999961,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST CONTRAINTE CISA SIXZ A LA FIBRE EXTERIEURE (maille encastrement)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M50',POINT=2,SOUS_POINT=nssp_sup,PRECISION=1.0E-8,
                      VALE_REFE=0.0,NOM_CMP='SIXZ',CRITERE='ABSOLU',
                      VALE_CALC = 0.0E+00,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 
 # TEST DEFORMATION AXIALE SIXX A LA FIBRE NEUTRE (maille encastrement)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M50',POINT=2,SOUS_POINT=nssp_neutre,PRECISION=1.0E-8,
                      VALE_REFE=0.,NOM_CMP='EPXX',CRITERE='ABSOLU',
                      VALE_CALC = 0.0E+00,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST DEFORMATION AXIALE SIXX A LA FIBRE EXTERIEUR (maille encastrement)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M50',POINT=2,SOUS_POINT=nssp_sup,PRECISION=0.001,
                      VALE_REFE=epxx2,NOM_CMP='EPXX',
                      VALE_CALC = 4.5884414693356E-07,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST DEFORMATION CISA SIXZ A LA FIBRE NEUTRE (maille encastrement)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M50',POINT=2,SOUS_POINT=nssp_neutre,PRECISION=0.001,
                      VALE_REFE=epxy2,NOM_CMP='EPXZ',
                      VALE_CALC = -7.4999999999845E-09,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 # TEST DEFORMATION CISA SIXZ A LA FIBRE EXTERIEURE (maille encastrement)
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
                      GROUP_MA='M50',POINT=2,SOUS_POINT=nssp_sup,PRECISION=0.001,
                      VALE_REFE=epxy2,NOM_CMP='EPXZ',
                      VALE_CALC = -7.4999999999845E-09,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 
 #
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,PRECISION=0.001,
                      GROUP_NO='A1',
                      VALE_REFE=-1000.0,NOM_CMP='QX',
                      VALE_CALC =  -999.99999999758,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,PRECISION=0.001,
                      GROUP_NO='A1',
                      VALE_REFE=10000.0,NOM_CMP='MXX',
                      VALE_CALC =9999.999999987,
-                     REFERENCE='ANALYTIQUE',),);
+                     REFERENCE='ANALYTIQUE',),)
 
 #################################################################################################
 tb1  = CREA_TABLE (
@@ -272,7 +272,7 @@ tb1  = CREA_TABLE (
                 NOM_CHAM='SIEF_ELGA',
                 GROUP_MA='M1',
                 ),
-                              );
+                              )
 IMPR_TABLE ( TABLE = tb1)
 
 tb2  = CREA_TABLE (
@@ -282,7 +282,7 @@ tb2  = CREA_TABLE (
                 NOM_CHAM='EPSI_ELGA',
                 GROUP_MA='M1',
                 ),
-                              );
+                              )
 IMPR_TABLE ( TABLE = tb2)
 
 # chcek sur une maille pres du support
@@ -294,7 +294,7 @@ tb3  = CREA_TABLE (
                 NOM_CHAM='SIEF_ELGA',
                 GROUP_MA='M50',
                 ),
-                              );
+                              )
 IMPR_TABLE ( TABLE = tb3)
 
-FIN();
+FIN()

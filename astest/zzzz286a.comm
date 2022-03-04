@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,11 +89,11 @@ MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT='OUI',MODELISATION='3D',PHENOMENE='MECAN
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04E11,
                             NU=0.3,
-                            ALPHA=1.092E-05,),);
+                            ALPHA=1.092E-05,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 #
 # 1 - VALIDATION DE ARETE_IMPO/DTAN (ARETES NORMALES AU PLAN OXY)
 # ===============================================================
@@ -101,7 +101,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 # 1.1 REFERENCE AVEC DDL_IMPO
 # ---------------------------
 
-CHARG0=AFFE_CHAR_MECA(MODELE=MO, INFO = 2, 
+CHARG0=AFFE_CHAR_MECA(MODELE=MO, INFO = 2,
                       FACE_IMPO=_F(GROUP_MA='DBC',
                                    SANS_GROUP_NO=('D','B','C'),
                                    DNOR=10),
@@ -114,7 +114,7 @@ CHARG0=AFFE_CHAR_MECA(MODELE=MO, INFO = 2,
 
 RESU0=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHARG0,),);
+                   EXCIT=_F(CHARGE=CHARG0,),)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU0,NOM_CHAM='DEPL',GROUP_NO='A'),)
 
@@ -167,7 +167,7 @@ CHARG1=AFFE_CHAR_MECA(MODELE=MO,
 
 RESU1=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHARG1,),);
+                   EXCIT=_F(CHARGE=CHARG1,),)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -207,7 +207,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 # 1.1 REFERENCE AVEC LIAISON_OBLIQUE
 # -----------------------------------
-F=1.0;
+F=1.0
 
 CHARG2=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=(_F(GROUP_NO='ABC',
@@ -221,7 +221,7 @@ CHARG2=AFFE_CHAR_MECA(MODELE=MO,
 
 RESU2=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHARG2,),);
+                   EXCIT=_F(CHARGE=CHARG2,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='AUTRE_ASTER',
@@ -273,7 +273,7 @@ CHARG3=AFFE_CHAR_MECA(MODELE=MO,
 
 RESU3=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHARG3,),);
+                   EXCIT=_F(CHARGE=CHARG3,),)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

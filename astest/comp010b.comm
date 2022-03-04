@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ Tmax = 500.
 
 NCAL = 20
 
-ZERO =DEFI_CONSTANTE(VALE=0.0);
+ZERO =DEFI_CONSTANTE(VALE=0.0)
 
 # Parametres elastiques
 
@@ -43,17 +43,17 @@ YOUN=DEFI_FONCTION(  NOM_PARA='TEMP',
                            Tmax, 200.E3,)  )
 
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   2.0E-5,
-                                         Tmax, 2.0E-5,),);
+                                         Tmax, 2.0E-5,),)
 # Parametre de la loi de Lemaitre
 
 N_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   10.8,
-                                        Tmax,  8.0,),);
+                                        Tmax,  8.0,),)
 
 UNSK_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   6.9E-4,
-                                           Tmax, 4.0E-4,),);
+                                           Tmax, 4.0E-4,),)
 
 UNSM_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.102,
-                                           Tmax, 0.05));
+                                           Tmax, 0.05))
 
 MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                 NU=ZERO,
@@ -62,7 +62,7 @@ MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                      LEMAITRE_FO=_F(N=N_F,
                                     UN_SUR_K=UNSK_F,
                                     UN_SUR_M=UNSM_F,),
-                      );
+                      )
 
 
 LMT2  = [None]*(NCAL)
@@ -79,7 +79,7 @@ for i in range(NCAL):
                         LEMAITRE=_F(N=N_F(Ti),
                                     UN_SUR_K=UNSK_F(Ti),
                                     UN_SUR_M=UNSM_F(Ti),),
-                                );
+                                )
 
 
 ############################################################################

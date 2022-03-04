@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ ZERO = DEFI_CONSTANTE(VALE = 0.0)
 UN   = DEFI_CONSTANTE(VALE = 1.0)
 
 nu = 0.02
-POISSON = DEFI_CONSTANTE(VALE = nu);
+POISSON = DEFI_CONSTANTE(VALE = nu)
 
 YOUN = DEFI_FONCTION(NOM_PARA = 'TEMP',VALE = (  0., 30000.0E6,
                                                500., 20000.0E6, ),)

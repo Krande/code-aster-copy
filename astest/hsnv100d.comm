@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ MAT=DEFI_MATERIAU(
                         )
 
 TIMPVAR=DEFI_FONCTION(    NOM_PARA='INST',  NOM_RESU='TEMP',
-           VALE=(  0.E0,  0.E0, 100.E0, 100.E0,),);
+           VALE=(  0.E0,  0.E0, 100.E0, 100.E0,),)
 
 CHP_TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
 MAILLAGE=MAIL,
@@ -94,7 +94,7 @@ CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                        EVOL=TEMPE,
                        NOM_VARC='TEMP',
                        NOM_CHAM='TEMP',
-                       VALE_REF=0),);
+                       VALE_REF=0),)
 
 
 CHMECA=AFFE_CHAR_MECA(    MODELE=MOMECA,DDL_IMPO=(

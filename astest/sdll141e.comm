@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI'))
 
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA='ROTOR',
@@ -31,15 +31,15 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='POU_D_E',),
                          _F(GROUP_MA=('DISQUI','DISQUB',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E11,
                             NU=0.0,
-                            RHO=0.0,),);
+                            RHO=0.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='ROTOR',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA='ROTOR',
@@ -64,7 +64,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                    VALE=(0.3829,1.196E-4,1.395E-4,1.395E-4,0.,0.,0.,0.,0.,0.,),),),
                        ORIENTATION=_F(GROUP_MA=('DISQUI','DISQUB',),
                                       CARA='ANGL_NAUT',
-                                      VALE=(45.,0.,0.,),),);
+                                      VALE=(45.,0.,0.,),),)
 
 # CONDITIONS AUX LIMITES
 
@@ -75,7 +75,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                     DZ=0.,),
                         LIAISON_OBLIQUE=_F(GROUP_NO=('PALIER_A','PALIER_B',),
                                            ANGL_NAUT=(45.,0.,0.,),
-                                           DRX=0.,),);
+                                           DRX=0.,),)
 
 #MATRICES ASSEMBLEES K, M ET C
 
@@ -89,15 +89,15 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),)
 
 GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
                       MODELE=MODELE,
                       CHAM_MATER=CHMAT,
-                      CARA_ELEM=CARELEM,);
+                      CARA_ELEM=CARELEM,)
 
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  OPTION='BANDE',
@@ -138,13 +138,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-OM = 10000.0;
+OM = 10000.0
 
 
 GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS,
                                COEF_R=OM,),
                             _F(MATR_ASSE=AMOR,
-                               COEF_R=1.,),),);
+                               COEF_R=1.,),),)
 
 MODEG=CALC_MODES(MATR_RIGI=RIGIDITE,
                  VERI_MODE=_F(SEUIL=1.E-3,
@@ -219,4 +219,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

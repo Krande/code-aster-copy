@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,23 +25,23 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON',DEBUG=_F(SDVERI='OUI'))
 #  A.1. Bases
 # ----------
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
-KINT=DEFI_CONSTANTE(VALE=1.E-08,);
-BIDON=DEFI_CONSTANTE(VALE=1792.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
+KINT=DEFI_CONSTANTE(VALE=1.E-08,)
+BIDON=DEFI_CONSTANTE(VALE=1792.0,)
 
 #  1.2. Discretisation en temps
 # ---------------------------
-TFINAL = 0.0001;
+TFINAL = 0.0001
 NOMBRE_DT = 5
 LI=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=_F(JUSQU_A=TFINAL,
-                                NOMBRE=NOMBRE_DT,),);
+                                NOMBRE=NOMBRE_DT,),)
 
 #  A.3. Parametres d adaptation de maillage
 # ----------------------------------------
-n_adap_max = 4;
-BLOC     = [None]*(10*(n_adap_max+1));
+n_adap_max = 4
+BLOC     = [None]*(10*(n_adap_max+1))
 #
 #  A.4. Proprietes du materiau (copiees sur wtnl100a)
 # ---------------------------------------------------
@@ -85,7 +85,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                   VISC=BIDON,
                                   D_VISC_TEMP=BIDON,),
                        THM_VAPE_GAZ=_F(MASS_MOL=0.018,
-                                       CP=1870.0,),);
+                                       CP=1870.0,),)
 #
 # B. Boucle d adaptation
 # ----------------------
@@ -99,11 +99,11 @@ for n_adap in range(n_adap_max ) :
 # -----------------------------------------------------
   if ( n_adap == 0 ) :
 
-    BLOC[n_adap]=LIRE_MAILLAGE(FORMAT='MED',);
+    BLOC[n_adap]=LIRE_MAILLAGE(FORMAT='MED',)
 
     BLOC[n_adap]=MODI_MAILLAGE(reuse =BLOC[n_adap],
                    MAILLAGE=BLOC[n_adap],
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Z_MIN','Z_MAX','COTE_0','COTE_1','COTE_2','COTE_3',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Z_MIN','Z_MAX','COTE_0','COTE_1','COTE_2','COTE_3',),),)
 
 #
     #MACR_INFO_MAIL( MAILLAGE=BLOC[n_adap],
@@ -121,11 +121,11 @@ for n_adap in range(n_adap_max ) :
 # B.2. Modele courant
 # ------------------
   MODELE=AFFE_MODELE(MAILLAGE=BLOC[n_adap],
-                    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D_HMS',),);
+                    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D_HMS',),)
 # B.3. Materiau
 # -------------
   CHMAT=AFFE_MATERIAU(MAILLAGE=BLOC[n_adap],
-                      AFFE=_F(GROUP_MA='BLOC', MATER=MATERIAU,),);
+                      AFFE=_F(GROUP_MA='BLOC', MATER=MATERIAU,),)
 #
 # B.4. Conditions aux limites
 # ---------------------------
@@ -140,7 +140,7 @@ for n_adap in range(n_adap_max ) :
                       MECA_IMPO=(_F(GROUP_MA='Z_MIN',
                                     DX=0.0,DY=0.0,DZ=0.0,),
                                  _F(GROUP_MA=('COTE_0','COTE_1','COTE_2','COTE_3',),
-                                    PRE1=1.E5,),),);
+                                    PRE1=1.E5,),),)
 
   CHMECA=AFFE_CHAR_MECA(MODELE=MODELE,
                       PRES_REP=(_F(GROUP_MA=('COTE_0','COTE_1','COTE_2','COTE_3',),
@@ -148,7 +148,7 @@ for n_adap in range(n_adap_max ) :
                                 _F(GROUP_MA='Z_MAX',
                                     PRES=1.E5,),),
                       FLUX_THM_REP=(_F(GROUP_MA=('Z_MIN','Z_MAX'),
-                                    FLUN_HYDR1=0.0,),),);
+                                    FLUN_HYDR1=0.0,),),)
 
 # B.5. Calcul
 # -----------
@@ -166,7 +166,7 @@ for n_adap in range(n_adap_max ) :
                    INCREMENT=_F(LIST_INST=LI,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=10,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),);
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),)
   else :
 #
 # B.5.2. Aux passages suivants :
@@ -179,7 +179,7 @@ for n_adap in range(n_adap_max ) :
             OPERATION = 'ASSE',
             MODELE    = MODELE,
             ASSE      = (_F(TOUT='OUI',CHAM_GD  = D_MECA),
-                         _F(TOUT='OUI',CHAM_GD  = D_PRES, NOM_CMP = 'PRE1'),),);
+                         _F(TOUT='OUI',CHAM_GD  = D_PRES, NOM_CMP = 'PRE1'),),)
     DETRUIRE(NOM = (D_MECA, D_PRES,),)
 #
 # . Lecture des champs aux points de Gauss qui avaient ete mis a jour mais
@@ -211,7 +211,7 @@ for n_adap in range(n_adap_max ) :
                    INCREMENT=_F(LIST_INST=LI,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=10,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),);
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),)
 #
     DETRUIRE(NOM = (DP_IN, SG_IN, V_IN,),)
 
@@ -222,37 +222,37 @@ for n_adap in range(n_adap_max ) :
 # -------------------------------------------------------------------
     DEPLI= CREA_CHAMP(OPERATION='EXTR',
                       TYPE_CHAM='NOEU_DEPL_R',
-                      RESULTAT=RESU,NOM_CHAM='DEPL',INST=TFINAL,);
+                      RESULTAT=RESU,NOM_CHAM='DEPL',INST=TFINAL,)
 
     DEPLIR=CREA_CHAMP(OPERATION='ASSE',
                       TYPE_CHAM='NOEU_DEPL_R',
                       MAILLAGE=BLOC[n_adap],
                       ASSE=( _F(TOUT='OUI', CHAM_GD=DEPLI, NOM_CMP='DX',),
                              _F(TOUT='OUI', CHAM_GD=DEPLI, NOM_CMP='DY',),
-                             _F(TOUT='OUI', CHAM_GD=DEPLI, NOM_CMP='DZ',),),);
+                             _F(TOUT='OUI', CHAM_GD=DEPLI, NOM_CMP='DZ',),),)
 #
 # B.7.2. Impression MED eventuelles dans le cas_test de HOMARD sfr_2d_thm_d2
     ###IMPR_RESU(FORMAT='MED',
               ###UNITE=80+n_adap,
               ###RESU=_F(RESULTAT=RESU,NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ',),
-                      ###INST=TFINAL),);
+                      ###INST=TFINAL),)
     ###IMPR_RESU(FORMAT='MED',
               ###UNITE=80+n_adap,
               ###RESU=_F(RESULTAT=RESU,NOM_CHAM='DEPL',NOM_CMP=('PRE1',),
                       ###INST=TFINAL,
                       ###NOM_CHAM_MED='PRESSION',
-                      ###),);
+                      ###),)
     ###IMPR_RESU(FORMAT='MED',
               ###UNITE=80+n_adap,
               ###RESU=_F(RESULTAT=RESU,NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
                       ###INST=TFINAL,
-                      ###),);
+                      ###),)
     ###IMPR_RESU(FORMAT='MED',
               ###UNITE=80+n_adap,
-              ###RESU=_F(CHAM_GD=DEPLIR),);
+              ###RESU=_F(CHAM_GD=DEPLIR),)
 # B.7.3. Adaptation
 # -----------------
-    BLOC[n_adap+1]=CO('BLOC_%d'%(n_adap+1),);
+    BLOC[n_adap+1]=CO('BLOC_%d'%(n_adap+1),)
 #
     MACR_ADAP_MAIL (
        ADAPTATION   = 'RAFF_DERA',    #Le maillage est raffine et deraffine en fonction d'un champ
@@ -304,7 +304,7 @@ for n_adap in range(n_adap_max ) :
                         RESULTAT=RESU, NOM_CHAM   = 'VARI_ELGA',
                         NUME_ORDRE=NOMBRE_DT,),
                   ),
-                  );
+                  )
     DETRUIRE(NOM = (DEPLI,DEPLIR,),)
 # C. Test de non-regression
 # -------------------------
@@ -319,4 +319,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   ),
           )
 
-FIN();
+FIN()

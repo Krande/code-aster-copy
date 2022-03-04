@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ MAILLAGE=POUTRE,
                                  NOM_CMP = 'DY',   VALE = -2.96786)) )
 
 NUMDDL_G=NUME_DDL_GENE(BASE=MODES,
-                       STOCKAGE='PLEIN',);
+                       STOCKAGE='PLEIN',)
 
 PROJ_BASE(  BASE=MODES,
             STOCKAGE='DIAG',

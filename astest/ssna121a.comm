@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'))
 
 # PARAMETRE D'ETUDE
 
-PRES_INT=1E6;
+PRES_INT=1E6
 
 #------------------------------------------------------------------
 # 1- LLECTURE MAILLAGE
 #------------------------------------------------------------------
 
-MAILME=LIRE_MAILLAGE(INFO=2,FORMAT='MED');
+MAILME=LIRE_MAILLAGE(INFO=2,FORMAT='MED')
 
 
 #------------------------------------------------------------------
@@ -44,7 +44,7 @@ MODELEME=AFFE_MODELE(MAILLAGE=MAILME,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='AXIS'),
                             ),
-                         );
+                         )
 
 MAILME=DEFI_GROUP(reuse=MAILME,
                   MAILLAGE=MAILME,
@@ -52,9 +52,9 @@ MAILME=DEFI_GROUP(reuse=MAILME,
                                  _F( GROUP_MA = 'SBASSE'),
                                  _F( GROUP_MA = 'SHAUTE'),
                                  _F( GROUP_MA = 'SEXTERI'),),
-                  );
+                  )
 
-MAILME=MODI_MAILLAGE(reuse =MAILME,MAILLAGE=MAILME,ORIE_PEAU=_F(GROUP_MA_PEAU='SINTERI',),);
+MAILME=MODI_MAILLAGE(reuse =MAILME,MAILLAGE=MAILME,ORIE_PEAU=_F(GROUP_MA_PEAU='SINTERI',),)
 
 
 #------------------------------------------------------------------
@@ -65,15 +65,15 @@ MAILME=MODI_MAILLAGE(reuse =MAILME,MAILLAGE=MAILME,ORIE_PEAU=_F(GROUP_MA_PEAU='S
 
 E = DEFI_CONSTANTE(VALE = 31.0E9)
 
-NU=DEFI_CONSTANTE(VALE=0.200,);
+NU=DEFI_CONSTANTE(VALE=0.200,)
 
-ALPHA=DEFI_CONSTANTE(VALE=0.0,);
+ALPHA=DEFI_CONSTANTE(VALE=0.0,)
 
 FCTD=DEFI_FONCTION(NOM_PARA='SECH',
                    VALE=(0.0,0.0,
                          1.0,1.0,  ),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
@@ -89,7 +89,7 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                      ETA_RD = 1.0E16,    #[Pa.s]
                                      ETA_ID = 1.0E17 ,  # [Pa.s]
                                      ),
-               );
+               )
 
 
 
@@ -98,8 +98,8 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
 # #------------------------------------------------
 
 #TEMPS 10 HEURES
-TPS_10H=10*3600.;
-TPS_1AN=3600*365.25*24;
+TPS_10H=10*3600.
+TPS_1AN=3600*365.25*24
 # #-------------------------------------------------
 # 5.  DEFINITION LISTE D'INSTANTS
 # #------------------------------------------------
@@ -108,7 +108,7 @@ LINST=DEFI_LIST_REEL(DEBUT=-1.0,
                         INTERVALLE=(_F(JUSQU_A = 0.0,      NOMBRE = 1),
                                     _F(JUSQU_A = TPS_10H,  NOMBRE = 10),
                                     _F(JUSQU_A = TPS_1AN,  NOMBRE = 100),
-                                    ),);
+                                    ),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=_F(ACTION='DECOUPE',
@@ -129,7 +129,7 @@ TEMP=CREA_CHAMP(OPERATION='AFFE',
                 AFFE=_F(TOUT = 'OUI',
                         NOM_CMP = 'TEMP',
                         VALE = 20.),
-                );
+                )
 
 # CHAMP DE SECHAGE
 
@@ -152,7 +152,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILME,
                                _F(TOUT='OUI',CHAM_GD=TEMP,NOM_VARC='TEMP',VALE_REF=20.,),
                                _F(TOUT='OUI',CHAM_GD=SECH,NOM_VARC='SECH',VALE_REF=1.,),
                               ),
-                    );
+                    )
 
 
 # #---------------------------------------------------------------------------------
@@ -166,11 +166,11 @@ CLIM=AFFE_CHAR_MECA(MODELE=MODELEME,
                     LIAISON_UNIF=(_F(GROUP_NO ='SEXTERI',DDL = 'DX',),
                                   _F(GROUP_NO ='SHAUTE',DDL = 'DY',),
                                  ),
-                   );
+                   )
 
 # 8.2 CHARGEMENT EN PRESSION
 
-CH_P = AFFE_CHAR_MECA(MODELE=MODELEME,PRES_REP=_F(GROUP_MA='SINTERI',PRES = PRES_INT),);
+CH_P = AFFE_CHAR_MECA(MODELE=MODELEME,PRES_REP=_F(GROUP_MA='SINTERI',PRES = PRES_INT),)
 
 
 
@@ -202,7 +202,7 @@ RESUMECA=STAT_NON_LINE(
                                        GROUP_MA='M1',),
                                       ),
                         ARCHIVAGE =_F(LIST_INST =LINST),
-             );
+             )
 
 
 # #---------------------------------------------------------------------------------
@@ -217,7 +217,7 @@ RESUMECA=CALC_CHAMP(reuse=RESUMECA,RESULTAT=RESUMECA,DEFORMATION=('EPSI_ELGA'))
 
 CHAMELG=CALC_CHAM_ELEM(MODELE=MODELEME,GROUP_MA='M1',OPTION='COOR_ELGA')
 
-TABLE=RECU_TABLE(CO=RESUMECA,NOM_TABLE='OBSERVATION',);
+TABLE=RECU_TABLE(CO=RESUMECA,NOM_TABLE='OBSERVATION',)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',

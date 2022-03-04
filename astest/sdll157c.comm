@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ maillage=MODI_MAILLAGE(reuse =maillage,
            ABSC_CURV=_F(
                 TOUT='OUI',
                 GROUP_NO_ORIG=('ENCA1',),),
-                );
+                )
 
 CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
                      NOM_CHAM = 'ABSC_CURV' , MAILLAGE = maillage , )
@@ -60,7 +60,7 @@ modele = AFFE_MODELE(MAILLAGE = maillage,
                     AFFE = _F(MODELISATION = "POU_D_T",
                               PHENOMENE = "MECANIQUE",
                               TOUT = "OUI",))
-                    
+
 acier=DEFI_MATERIAU(ELAS=_F(E = Young,
                             RHO = Rho,
                             ALPHA = 1.2E-5,
@@ -101,7 +101,7 @@ ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
                        AFFE=(_F(TOUT="OUI", MATER = acier),
                              ))
 
-cara_elem=AFFE_CARA_ELEM(MODELE=modele, 
+cara_elem=AFFE_CARA_ELEM(MODELE=modele,
                          POUTRE=_F(GROUP_MA="tuyau", SECTION = 'CERCLE',
                                    CARA = ('R', 'EP'),
                                    VALE = (Dext/2, hc)),
@@ -159,7 +159,7 @@ ASSEMBLAGE(MODELE=modele,
            MATR_ASSE=(_F(MATRICE=CO('matrice_rigi'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('matrice_mass'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 modes_dyn=CALC_MODES(OPTION='BANDE',
                      MATR_RIGI=matrice_rigi,
                      MATR_MASS=matrice_mass,
@@ -236,13 +236,13 @@ sismique_qs = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
 
 ch_tot= CREA_CHAMP (OPERATION = 'EXTR',
                        TYPE_CHAM = 'ELNO_SIEF_R',
-                       RESULTAT  = sismique_tot, 
+                       RESULTAT  = sismique_tot,
                        NOM_CHAM  = 'EFGE_ELNO',
                        NUME_ORDRE=4,)
 
 ch_qs= CREA_CHAMP (OPERATION = 'EXTR',
                        TYPE_CHAM = 'ELNO_SIEF_R',
-                       RESULTAT  = sismique_qs, 
+                       RESULTAT  = sismique_qs,
                        NOM_CHAM  = 'EFGE_ELNO',
                        NUME_ORDRE=4,)
 

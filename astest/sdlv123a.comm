@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # INFINI EN D_PLAN SOUMISE A UNE PRESSION
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA=('LP1P111','LP2P4'),),);
+                CREA_GROUP_NO=_F(GROUP_MA=('LP1P111','LP2P4'),),)
 
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
@@ -33,17 +33,17 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='D_PLAN',),
                          _F(GROUP_MA=('LP4P41','LP111P41',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN_ABSO',),),);
+                            MODELISATION='D_PLAN_ABSO',),),)
 
 
 acier=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                             NU=0.3,
-                            RHO=7500.0,),);
+                            RHO=7500.0,),)
 
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=(_F(GROUP_MA=('SUT',),
-                                MATER=acier,),),);
+                                MATER=acier,),),)
 
 FPRES=DEFI_CONSTANTE(NOM_RESU='PRES',
                      VALE=100000000.0,)
@@ -60,15 +60,15 @@ CH_PF=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                   _F(GROUP_NO='P4',
                                      DX=ZERO,DY=ZERO,),),
                         PRES_REP=_F(GROUP_MA='LP1P2',
-                                    PRES=FPRES,),);
+                                    PRES=FPRES,),)
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0.0,0.0,1.E-6,1.0,0.1,1.0,),);
+                   VALE=(0.0,0.0,1.E-6,1.0,0.1,1.0,),)
 
 
 TEMPLI=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=0.1,
-                                    NOMBRE=5000,),);
+                                    NOMBRE=5000,),)
 
 RIGIEL=CALC_MATR_ELEM( MODELE=MODELE,
                        CHAM_MATER=CHAMPMAT,
@@ -113,7 +113,7 @@ evol=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                        EXCIT=_F(CHARGE=CH_PF,
                                 FONC_MULT=FONC,),
                        INCREMENT=_F(LIST_INST=TEMPLI,),
-                       ARCHIVAGE=_F(PAS_ARCH=100,),);
+                       ARCHIVAGE=_F(PAS_ARCH=100,),)
 
 FOND_NEW=DEFI_FOND_FISS(MAILLAGE=MAIL,
                     FOND_FISS=_F( GROUP_NO = ('P2',)),
@@ -168,11 +168,11 @@ G4=CALC_G(          OPTION='G_EPSI',
                              FONC_MULT=FONC,),
                   )
 
-IMPR_TABLE ( TABLE   = G1 );
+IMPR_TABLE ( TABLE   = G1 )
 
-IMPR_TABLE ( TABLE   = G2 );
+IMPR_TABLE ( TABLE   = G2 )
 
-IMPR_TABLE ( TABLE   = G3 );
+IMPR_TABLE ( TABLE   = G3 )
 
 # TEST de FONC_MULT + charge non fonction dans CALC_G (Issue21096)
 F_UNIT=DEFI_CONSTANTE(NOM_RESU='PRES',
@@ -186,7 +186,7 @@ CH_P=AFFE_CHAR_MECA(MODELE=MODELE,
                                   _F(GROUP_NO='P4',
                                      DX=0.,DY=0.,),),
                         PRES_REP=_F(GROUP_MA='LP1P2',
-                                    PRES=100000000.,),);
+                                    PRES=100000000.,),)
 
 G5=CALC_G(          OPTION='G_EPSI',
                     RESULTAT=evol,
@@ -208,7 +208,7 @@ G5=CALC_G(          OPTION='G_EPSI',
 IMPR_RESU( FORMAT='MED', UNITE = 37,
            RESU=(_F(MAILLAGE=MAIL,),
                  _F(RESULTAT=evol,),
-                  ),);
+                  ),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.014,
@@ -303,4 +303,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 
-FIN();
+FIN()

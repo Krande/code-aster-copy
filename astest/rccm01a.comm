@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ COURFATA = FORMULE(VALE='5.E5/SIGM ',
 
 L_INST=DEFI_LIST_REEL(  DEBUT=1.,
                         INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
-                           
+
 FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
                           NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
@@ -41,23 +41,23 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                               SM = 200.,
                               SY_02 = 200.)
                                )
- 
+
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE EVOLUTION
 #--------------------------------------------------------------------------------
-# SITUATION 1 : CONTRAINTES TOTALES                               
+# SITUATION 1 : CONTRAINTES TOTALES
 T_TOT1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=1,)
 
-# SITUATION 1 : CONTRAINTES THERMIQUES                            
+# SITUATION 1 : CONTRAINTES THERMIQUES
 T_TH1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=2,)
 
-# SITUATION 2 : CONTRAINTES TOTALES                        
+# SITUATION 2 : CONTRAINTES TOTALES
 T_TOT2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=5,)
 
-# SITUATION 2 : CONTRAINTES THERMIQUES                            
+# SITUATION 2 : CONTRAINTES THERMIQUES
 T_TH2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=6,)
 
@@ -73,7 +73,7 @@ PMPB1=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                                    )
                  )
 
-IMPR_TABLE(    TABLE=PMPB1,)        
+IMPR_TABLE(    TABLE=PMPB1,)
 
 # CALCUL DE PM ET PB POUR LA SITUATION 2
 PMPB2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
@@ -87,7 +87,7 @@ PMPB2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                                    )
                  )
 
-IMPR_TABLE(    TABLE=PMPB2,)         
+IMPR_TABLE(    TABLE=PMPB2,)
 
 # CALCUL DE PM ET PB EN SUPPOSANT QUE LA SITUATION 1 N'A PAS DE THERMIQUE
 PMPB1ath=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
@@ -100,24 +100,24 @@ PMPB1ath=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                  )
                  )
 
-IMPR_TABLE(    TABLE=PMPB1ath,)        
- 
+IMPR_TABLE(    TABLE=PMPB1ath,)
+
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE UNITAIRE
 #--------------------------------------------------------------------------------
-# CONTRAINTES "MX" UNITAIRES           
+# CONTRAINTES "MX" UNITAIRES
 T_MX = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=9,)
 
-# CONTRAINTES "MY" UNITAIRES                           
+# CONTRAINTES "MY" UNITAIRES
 T_MY = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=10,)
-                      
-# CONTRAINTES "MZ" UNITAIRES                            
+
+# CONTRAINTES "MZ" UNITAIRES
 T_MZ = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=11,)
 
-# CONTRAINTES "PRES" UNITAIRES                            
+# CONTRAINTES "PRES" UNITAIRES
 T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=12,)
 
@@ -148,9 +148,9 @@ PMPB3=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=1,
                      CHAR_ETAT_B=2,
                      PRES_A=1.0,
-                     PRES_B=10.0,),),);
+                     PRES_B=10.0,),),)
 
-IMPR_TABLE(    TABLE=PMPB3,) 
+IMPR_TABLE(    TABLE=PMPB3,)
 
 # CALCUL DE PM ET PB POUR LA SITUATION 4
 PMPB4=POST_RCCM( MATER=MAT,
@@ -179,14 +179,14 @@ PMPB4=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
-IMPR_TABLE(    TABLE=PMPB4,) 
+IMPR_TABLE(    TABLE=PMPB4,)
 
 #--------------------------------------------------------------------------------
 #   TEST SUR EVOLUTION (SOLUTION DE REFERENCE ANALYTIQUE)
 #--------------------------------------------------------------------------------
-# SITUATION 1 
+# SITUATION 1
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=37.500000000,
            VALE_REFE=37.5,
@@ -301,7 +301,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 
-# SITUATION 1 SANS THERMIQUE 
+# SITUATION 1 SANS THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=100.000000000,
            VALE_REFE=100.0,
@@ -338,7 +338,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #--------------------------------------------------------------------------------
 #   TEST SUR UNITAIRE (SOLUTION DE REFERENCE ANALYTIQUE)
 #--------------------------------------------------------------------------------
-# SITUATION 3 
+# SITUATION 3
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=37.500000000,
            VALE_REFE=37.5,

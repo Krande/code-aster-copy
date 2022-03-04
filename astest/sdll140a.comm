@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E11,
                             NU=0.3,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
@@ -85,15 +85,15 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                     VALE=(55.134951,1.1716177,0.6023493,0.6023493,0,0,0,0,0,0),
                                   ),
                         ))
-                                 
-                                 
+
+
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=(_F(GROUP_NO=('PALIER_A',),
                                      DX=0., DRX=0.
                                      ),
                                    ))
-                                    
+
 
 ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -105,19 +105,19 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),)
 
 GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
                       MODELE=MODELE,
                       CHAM_MATER=CHMAT,
-                      CARA_ELEM=CARELEM,);
+                      CARA_ELEM=CARELEM,)
 
 
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
 
-                    
+
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  OPTION='BANDE',
                  CALC_FREQ=_F(FREQ=(3.,3000.),
@@ -365,7 +365,7 @@ PROJ_BASE(BASE=MODES,
                           _F(MATRICE=CO('RIGE'),
                              MATR_ASSE=RIGIDITE,),
                           _F(MATRICE=CO('OMGE'),
-                             MATR_ASSE=GYOM,),),);
+                             MATR_ASSE=GYOM,),),)
 
 
 MOD2ETAG=CALC_MODES(MATR_RIGI=RIGE,

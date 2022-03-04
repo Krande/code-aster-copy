@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,54 +19,54 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
-              ),);
+              ),)
 
 
-_OMEGA = 6.4;
-Fz=-100;
+_OMEGA = 6.4
+Fz=-100
 
 #Choix de l'amortissement numerique pour le modeles de reference 1D, 3D et 1D-3D
-alpha=0.25;
+alpha=0.25
 
 FSIN = FORMULE(VALE='sin((INST)*_OMEGA)',
                _OMEGA=_OMEGA,
                NOM_PARA='INST',)
-Ti=0;
-Tf=3.0;
-Tb=2.0;
+Ti=0
+Tf=3.0
+Tb=2.0
 
-dt=0.0015;
+dt=0.0015
 
-Tb_1=Tb-dt;
-Tb_2=Tb+dt;
+Tb_1=Tb-dt
+Tb_2=Tb+dt
 
-Mail=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,);
+Mail=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,)
 
 Mail=DEFI_GROUP(reuse =Mail,
                 MAILLAGE=Mail,
                 CREA_GROUP_MA=_F(NOM='Poutre',
-                                 TOUT='OUI',),);
+                                 TOUT='OUI',),)
 
 MODELE=AFFE_MODELE(MAILLAGE=Mail,
                    AFFE=(_F(GROUP_MA=('Poutre'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_T',),),);
+                            MODELISATION='POU_D_T',),),)
 
 Carel1D=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA=('Poutre'),
                                  SECTION='CERCLE',
                                  CARA='R',
-                                 VALE=0.005,),);
+                                 VALE=0.005,),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                            NU=0.3,
-                           RHO=7800.0,),);
+                           RHO=7800.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=Mail,
                     AFFE=(
                           _F(GROUP_MA=('Poutre'),
                              MATER=MAT,),
-                           ),);
+                           ),)
 
 CondLim=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO=('CL1','CL2',),
@@ -74,11 +74,11 @@ CondLim=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DY=0,
                                    DZ=0,
                                    DRX=0,),
-                        );
+                        )
 
 Charge=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='NF',
-                                      FZ=Fz,),);
+                                      FZ=Fz,),)
 
 ASSEMBLAGE(MODELE=MODELE,
            CHAM_MATER=CHMAT,
@@ -91,12 +91,12 @@ ASSEMBLAGE(MODELE=MODELE,
                          OPTION='MASS_MECA',),
                       _F(MATRICE=CO('AMOR'),
                          OPTION='AMOR_MECA',),
-                      ),);
+                      ),)
 
 LISTa1D=DEFI_LIST_REEL(DEBUT=Ti,
                     INTERVALLE=(_F(JUSQU_A=Tf,
                                    PAS=10*dt,),
-                                ),);
+                                ),)
 
 RefM1D=DYNA_NON_LINE(MODELE=MODELE,
                   CHAM_MATER=CHMAT,
@@ -113,12 +113,12 @@ RefM1D=DYNA_NON_LINE(MODELE=MODELE,
                                   FORMULATION='DEPLACEMENT',),
                   NEWTON=_F(MATRICE='ELASTIQUE',),
                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-2,
-                                 ITER_GLOB_MAXI=20,),);
+                                 ITER_GLOB_MAXI=20,),)
 
 DEPN14Z=RECU_FONCTION(RESULTAT=RefM1D,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DZ',
-                     GROUP_NO='N14',);
+                     GROUP_NO='N14',)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.000330546,
                         VALE_PARA=2.205,
@@ -131,4 +131,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0003306501,
                         ),
               )
 
-FIN();
+FIN()

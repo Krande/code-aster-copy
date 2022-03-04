@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 CREA_LIB_MFRONT(UNITE_MFRONT=40,UNITE_LIBRAIRIE=39)
 
-MAILIN=LIRE_MAILLAGE(FORMAT='MED',);
+MAILIN=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAGE = CREA_MAILLAGE(
                          MAILLAGE  = MAILIN,
@@ -38,7 +38,7 @@ MAILLAGE = CREA_MAILLAGE(
 MODELE   = AFFE_MODELE( MAILLAGE = MAILLAGE,
                         AFFE     = _F( TOUT         = 'OUI',
                                        PHENOMENE    = 'MECANIQUE',
-                                       MODELISATION = 'D_PLAN_HM',),);
+                                       MODELISATION = 'D_PLAN_HM',),)
 
 MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
@@ -54,20 +54,20 @@ MAILLAGE = DEFI_GROUP( reuse    = MAILLAGE,
                                          _F(GROUP_MA='EXTREM',),
                                          _F(GROUP_MA='CAVITE',),
                                          _F(GROUP_MA='HAUT',),
-                                         _F(GROUP_MA='BAS',),),);
+                                         _F(GROUP_MA='BAS',),),)
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,
                MAILLAGE=MAILLAGE,
                CREA_GROUP_NO=(_F(NOM='ROCHES',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='ROCHE'),),)
 
-UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,);
+UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,)
 
-ZERO = DEFI_CONSTANTE(VALE = 0.0,);
+ZERO = DEFI_CONSTANTE(VALE = 0.0,)
 
-KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,);
+KINT = DEFI_CONSTANTE(VALE = 1.01937E-19,)
 
-SOL  = DEFI_MATERIAU( 
+SOL  = DEFI_MATERIAU(
                       ELAS=_F( E = 2.E11,
                                NU = 0.30,RHO=1.,
                                ALPHA = 1.E-5),
@@ -90,19 +90,19 @@ SOL  = DEFI_MATERIAU(
                       THM_LIQU  = _F( RHO         = 1000,
                                       UN_SUR_K    = 5E-10,
                                       VISC        = UNM3,
-                                      D_VISC_TEMP = ZERO,),);
+                                      D_VISC_TEMP = ZERO,),)
 
 
 CHMAT = AFFE_MATERIAU( MAILLAGE = MAILLAGE,
                        AFFE     = _F( TOUT  = 'OUI',
-                                      MATER =  SOL,),);
+                                      MATER =  SOL,),)
 
 
 # CONDITIONS AUX LIMITES DE SYMETRIE ET BLOCAGE DE LA PARTIE HYDRAULIQUE
 
 CALBAS=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=(_F(GROUP_NO='BAS',
-                                   DY=0.0,),),);
+                                   DY=0.0,),),)
 
 FSX = FORMULE(VALE='15.4E6',
               NOM_PARA='X',)
@@ -113,19 +113,19 @@ FSY = FORMULE(VALE='11.0E6',
 CALGAU = AFFE_CHAR_MECA(
                            MODELE   =  MODELE,
                            DDL_IMPO=(_F(GROUP_NO='CAVITE',
-                                   DX=0.0,),),);
+                                   DX=0.0,),),)
 
 CALHAU=AFFE_CHAR_MECA_F(MODELE=MODELE,
                       PRES_REP=_F(GROUP_MA = 'HAUT',
-                                  PRES     = FSX,),);
+                                  PRES     = FSX,),)
 
 CALDRO=AFFE_CHAR_MECA_F(MODELE=MODELE,
                       PRES_REP=_F(GROUP_MA = 'EXTREM',
-                                  PRES     = FSY,),);
+                                  PRES     = FSY,),)
 
 CALPRE=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=_F(GROUP_NO='ROCHES',
-                                  PRE1     = 0.00,),);
+                                  PRE1     = 0.00,),)
 
 TEMPS_EL=DEFI_LIST_REEL(
                       DEBUT     = 0.0,
@@ -161,7 +161,7 @@ U1 = STAT_NON_LINE(
 U1=CALC_CHAMP(reuse=U1,
               RESULTAT=U1,
               DEFORMATION=('EPSI_ELGA','EPSI_ELNO'),
-              CRITERES=('SIEQ_ELGA','SIEQ_ELNO','EPEQ_ELGA','EPEQ_ELNO'),);
+              CRITERES=('SIEQ_ELGA','SIEQ_ELNO','EPEQ_ELGA','EPEQ_ELNO'),)
 
 
 
@@ -216,6 +216,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
-
+FIN()
 

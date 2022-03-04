@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,24 +48,24 @@ L_INST=DEFI_LIST_REEL( VALE=linst)
 
 compor='ELAS_VMIS_LINE'
 
-ZERO =DEFI_CONSTANTE(VALE=0.0);
+ZERO =DEFI_CONSTANTE(VALE=0.0)
 
-UN =DEFI_CONSTANTE(VALE=1.0);
+UN =DEFI_CONSTANTE(VALE=1.0)
 
 YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 200000.,
                                          500., 100000.,
-                                           ),);
+                                           ),)
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 1.E-4,
                                          500., 2.E-4,
-                                           ),);
+                                           ),)
 
 SIGY=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 1000.,
                                          500.,  800.,
-                                           ),);
+                                           ),)
 
 DSDE=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 2000.,
                                          500., 1000.,
-                                           ),);
+                                           ),)
 
 MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                 NU=ZERO,
@@ -73,7 +73,7 @@ MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                 ALPHA=ALPH,),
                      ECRO_LINE_FO=_F(
                                   D_SIGM_EPSI = DSDE,
-                                  SY = SIGY));
+                                  SY = SIGY))
 
 
 # resolution thermomecanique
@@ -96,9 +96,9 @@ U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  EPSI_IMPOSE=_F(EPXX=ZERO,),
-                 INFO=1,);
+                 INFO=1,)
 
-IMPR_TABLE(TABLE=U,);
+IMPR_TABLE(TABLE=U,)
 
 
 #  Formules pour la comparaison calcul 1  / calcul 2
@@ -137,7 +137,7 @@ for i in range(1,NCAL+1):
 
           # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
 
-          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
+          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF))
 
           print('i=',i, ' instant=', time, ' Temperature=',Ti)
 
@@ -149,7 +149,7 @@ for i in range(1,NCAL+1):
                                           SY = SIGY(Ti)))
 
           listinst = DEFI_LIST_REEL(DEBUT=timem,
-                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
+                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),)
 
           RESU[i]=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
                                  MATER=MATER[i],
@@ -159,12 +159,12 @@ for i in range(1,NCAL+1):
                                              MATRICE='TANGENTE',
                                              REAC_ITER=1,),
                                  EPSI_IMPOSE=_F(EPXX=epsimp),
-                                 INFO=1,);
+                                 INFO=1,)
 
-          # IMPR_TABLE(TABLE=RESU[i]);
+          # IMPR_TABLE(TABLE=RESU[i])
 
-          DETRUIRE(NOM =epsimp);
-          DETRUIRE(NOM =listinst);
+          DETRUIRE(NOM =epsimp)
+          DETRUIRE(NOM =listinst)
 
           # Tests des differences entre les deux resultats : U et RESU[I]
 
@@ -183,7 +183,7 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE(NOM =TCOMPR);
+          DETRUIRE(NOM =TCOMPR)
 
           NOMPARA='TRACE'
           TCOMPR =CALC_TABLE(TABLE=U,ACTION=(
@@ -201,7 +201,7 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE(NOM =TCOMPR);
+          DETRUIRE(NOM =TCOMPR)
 
           NOMPARA='V1'
           TCOMPR =CALC_TABLE(TABLE=U,ACTION=(
@@ -219,10 +219,10 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE(NOM =TCOMPR);
+          DETRUIRE(NOM =TCOMPR)
 
 
-FIN();
+FIN()
 
 #          pratique pour tester N variables internes
 #          for j in range(Nbvari):
@@ -231,4 +231,4 @@ FIN();
 #                TEST_TABLE(TABLE=RESU[i],
 #                     NOM_PARA=nomvari,VALE=U[nomvari,i+1],
 #                     FILTRE=_F(NOM_PARA='INST',VALE=time),
-#                     REFERENCE='AUTRE_ASTER',);
+#                     REFERENCE='AUTRE_ASTER',)

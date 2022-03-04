@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ CHF2_1=AFFE_CHAR_MECA(MODELE=MO_1,
 
 CHF3_1=AFFE_CHAR_MECA(MODELE=MO_1,
                     PESANTEUR=_F(GRAVITE=-9.81,
-                                 DIRECTION=(1.0,0.0,0.0,),),);
+                                 DIRECTION=(1.0,0.0,0.0,),),)
 
 #=======================================================================
 #
@@ -205,7 +205,7 @@ CHAGF2=AFFE_CHAR_MECA(MODELE=MOG,
 
 CHAGF3=AFFE_CHAR_MECA(MODELE=MOG,
                     PESANTEUR=_F(GRAVITE=-9.81,
-                                 DIRECTION=(1.0,0.0,0.0,),),);
+                                 DIRECTION=(1.0,0.0,0.0,),),)
 
 #  RIGIDITE:
 #  ---------
@@ -257,7 +257,7 @@ U1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
               OPERATION='EXTR',
               RESULTAT=U,
               NOM_CHAM='DEPL',
-              NUME_ORDRE=3,);
+              NUME_ORDRE=3,)
 
 #=======================================================================
 #
@@ -361,7 +361,7 @@ ACCNUL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       NOM_CMP = ('DX','DY'),
                       VALE    = (0.,0.),),
 
-              );
+              )
 
 
 U=DYNA_NON_LINE( reuse=U,
@@ -398,7 +398,7 @@ U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
               OPERATION='EXTR',
               RESULTAT=U,
               NOM_CHAM='DEPL',
-              NUME_ORDRE=5,);
+              NUME_ORDRE=5,)
 
 U2S_123=DEPL_INTERNE(   DEPL_GLOBAL=U2,    SUPER_MAILLE='S_123',
                             NOM_CAS='CHF2' )
@@ -489,4 +489,4 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N15',
                    ),
           )
 
-FIN();
+FIN()

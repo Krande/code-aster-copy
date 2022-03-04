@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -162,7 +162,7 @@ T4=4. * pi / W0
 
 R4=( U0 - ( 8. * C ) ) * ANG
 
-print('Valeurs theoriques :') 
+print('Valeurs theoriques :')
 print(R1)
 print(R2)
 print(R3)
@@ -215,7 +215,7 @@ DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
 #                    NOM_CMP='DY',
 #                    GROUP_NO='NO1',
 #                    INTERPOL='LIN',
-#                    );  
+#                    )
 
 
 # t2=RECU_FONCTION(RESULTAT=DYNATRA1,
@@ -225,7 +225,7 @@ DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
 #                    NOM_CMP='DY',
 #                    GROUP_NO='NO1',
 #                    INTERPOL='LIN',
-#                    );  
+#                    )
 
 # t3=RECU_FONCTION(RESULTAT=DYNATRA1,
 #                    INST=T3,
@@ -234,7 +234,7 @@ DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
 #                    NOM_CMP='DY',
 #                    GROUP_NO='NO1',
 #                    INTERPOL='LIN',
-#                    );  
+#                    )
 
 # t4=RECU_FONCTION(RESULTAT=DYNATRA1,
 #                    INST=T4,
@@ -243,15 +243,15 @@ DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
 #                    NOM_CMP='DY',
 #                    GROUP_NO='NO1',
 #                    INTERPOL='LIN',
-#                    );  
+#                    )
 
 
-# print('Valeurs du calcul :')                 
-# print(np.array(t1.Ordo()))  
-# print(np.array(t2.Ordo()))  
-# print(np.array(t3.Ordo()))  
-# print(np.array(t4.Ordo())) 
- 
+# print('Valeurs du calcul :')
+# print(np.array(t1.Ordo()))
+# print(np.array(t2.Ordo()))
+# print(np.array(t3.Ordo()))
+# print(np.array(t4.Ordo()))
+
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DYNATRA1,

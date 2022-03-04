@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -193,7 +193,7 @@ INTKTJ2=DEFI_INTE_SPEC(    DIMENSION=1,
                                         PROL_DROITE = 'CONSTANT')
                        )
 
-INTCS=DEFI_INTE_SPEC(  
+INTCS=DEFI_INTE_SPEC(
                          CONSTANT=_F(  NOEUD_I = 'PA11',
                                         NOM_CMP_I = 'DY',
                                         NOEUD_J = 'PB11',
@@ -207,15 +207,15 @@ INTCS=DEFI_INTE_SPEC(
 
  #*********************************************************************#
 # *****TEST DES VARIANCES PAR GENE_FONC_ALEA**********#
-#*********************************************************************#                                                
-                         
+#*********************************************************************#
+
 STADE=POST_DYNA_ALEA(INTERSPECTRE=_F(
                           INTE_SPEC=INTKTJ1,
                           NUME_ORDRE_J = 1,
                           NUME_ORDRE_I = 1,
                           DUREE =10.,),
                           INFO=2,
-                      ) 
+                      )
 
 
 STADE_F=POST_DYNA_ALEA(INTERSPECTRE=_F(
@@ -224,10 +224,10 @@ STADE_F=POST_DYNA_ALEA(INTERSPECTRE=_F(
                           NUME_ORDRE_I = 1,
                           DUREE =10., FRACTILE = 0.95),
                           INFO=2,
-                      ) 
+                      )
 
-  
-                      
+
+
 STADEJ2=POST_DYNA_ALEA(INTERSPECTRE=_F(
                          INTE_SPEC=INTKTJ2,
                          NOEUD_I = 'PA11',
@@ -236,8 +236,8 @@ STADEJ2=POST_DYNA_ALEA(INTERSPECTRE=_F(
                          NOM_CMP_J = 'DY',
                          DUREE =10.,),
                            INFO=2,
-                      )   
-                      
+                      )
+
 STADECS=POST_DYNA_ALEA(INTERSPECTRE=_F(
                          INTE_SPEC=INTCS,
                          NOEUD_I = 'PA11',
@@ -246,10 +246,10 @@ STADECS=POST_DYNA_ALEA(INTERSPECTRE=_F(
                          NOM_CMP_J = 'DY',
                          DUREE =10.,),
                           INFO=2,
-                      )   
+                      )
 
 
-                      
+
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=5.5220842862402,
            NOM_PARA='ECART',
@@ -341,24 +341,24 @@ TEST_TABLE(CRITERE='RELATIF',
 IMPR_TABLE(TABLE=STADE,
            UNITE=8,
            TITRE='DSP_RESU ',
-           FORMAT='TABLEAU',);    
-                                                             
+           FORMAT='TABLEAU',)
+
 GENE_KT=GENE_FONC_ALEA(INTE_SPEC=INTKTJ1,
                        FREQ_INIT=0.,
                        FREQ_FIN=50.,
                        NB_TIRAGE=20,
                        NB_POIN=2048,
-                       INFO=2,);
-                         
+                       INFO=2,)
+
 FONCT1=RECU_FONCTION(INTE_SPEC=GENE_KT,
                      NUME_ORDRE = 1,
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='EXCLU',
-                    );
-                           
-test_KT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FONCT1 ),);    
-    
+                    )
+
+test_KT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FONCT1 ),)
+
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
@@ -371,7 +371,7 @@ TEST_TABLE(CRITERE='RELATIF',
 #            UNITE=8,
 #            TITRE='ECART_TYPE ',
 #            FORMAT='TABLEAU',
-# );                             
+# )
 
 
 #*********************************************************************#

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 
 #           PLAQUE DECOUPEE EN 2 PARTIES
 
-#           AVEC INTERFACES DE TYPE CRAIG-BAMPTON 
+#           AVEC INTERFACES DE TYPE CRAIG-BAMPTON
 
 #           MAILLAGES INCOMPATIBLES ET MODES DE COUPLAGE
 
@@ -45,21 +45,21 @@ MAILLA2 = LIRE_MAILLAGE(FORMAT='IDEAS', UNITE=29)
 
 
 # Pertubation legere des coordonnes des maillages pour eviter les modes multiples ou retournes :
-MAILLA1=MODI_MAILLAGE(reuse =MAILLA1, MAILLAGE=MAILLA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
-MAILLA2=MODI_MAILLAGE(reuse =MAILLA2, MAILLAGE=MAILLA2, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
+MAILLA1=MODI_MAILLAGE(reuse =MAILLA1, MAILLAGE=MAILLA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
+MAILLA2=MODI_MAILLAGE(reuse =MAILLA2, MAILLAGE=MAILLA2, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 
 MODELE1=AFFE_MODELE(MAILLAGE=MAILLA1,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'));
+                             MODELISATION = 'DKT'))
 
 MODELE2=AFFE_MODELE(MAILLAGE=MAILLA2,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'));
-                             
-                             
+                             MODELISATION = 'DKT'))
+
+
 #
 MATER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E11,  NU = 0.30,  RHO = 7800.0))
 
@@ -69,7 +69,7 @@ CHAMAT1=AFFE_MATERIAU(  MAILLAGE=MAILLA1,
                                     MATER = MATER))
 CHAMAT2=AFFE_MATERIAU(  MAILLAGE=MAILLA2,
                        AFFE=_F( GROUP_MA = 'CALCUL',
-                                    MATER = MATER))                                    
+                                    MATER = MATER))
 #
 PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
                             COQUE=_F( EPAIS = 0.01,
@@ -197,14 +197,14 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID_1,
                         MODE_INTERF=_F(GROUP_NO = 'GAUCHE',
                                      TOUT_CMP='OUI',
                                      NB_MODE=20,
-                                     SHIFT=1.));
- 
+                                     SHIFT=1.))
+
 MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID_2,
                         MATR_MASS=MASS_2,
                         MODE_INTERF=_F(GROUP_NO = 'BLOQUE',
                                      TOUT_CMP='OUI',
                                      NB_MODE=20,
-                                     SHIFT=1.));
+                                     SHIFT=1.))
 #
 #  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
@@ -262,11 +262,11 @@ NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE,
 #  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
 #
 MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
-                                  OPTION='MASS_GENE');
+                                  OPTION='MASS_GENE')
 
 #
 RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
-                                  OPTION='RIGI_GENE');
+                                  OPTION='RIGI_GENE')
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
@@ -309,9 +309,9 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        SQUELETTE=SQUEL,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI')
-                       
+
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=MODGLO));                       
+          RESU=_F(RESULTAT=MODGLO))
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,

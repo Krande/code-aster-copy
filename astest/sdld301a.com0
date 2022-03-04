@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 #  ANALYSE SPECTRALE MONO SUPPORTEE
 #
 #
-POURSUITE(CODE='OUI');
+POURSUITE(CODE='OUI')
 
 MOSRS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MASS_INER=MAS,
@@ -33,7 +33,7 @@ MOSRS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       OPTION=('DEPL','VITE','SIEF_ELGA','EFGE_ELNO','FORC_NODA','REAC_NODA'),
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOSRS,
@@ -65,7 +65,7 @@ MOABS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       OPTION=('DEPL','VITE','SIEF_ELGA','EFGE_ELNO','FORC_NODA','REAC_NODA'),
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOABS,
@@ -96,9 +96,9 @@ MODPC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MONO_APPUI='OUI',
                       OPTION=('DEPL','VITE','SIEF_ELGA','EFGE_ELNO','FORC_NODA','REAC_NODA'),
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
-                              
+
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MODPC,
@@ -130,7 +130,7 @@ MOCQC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MONO_APPUI='OUI',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MOCQC,
@@ -163,7 +163,7 @@ MODSC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       OPTION=('DEPL','VITE','SIEF_ELGA','EFGE_ELNO','FORC_NODA','REAC_NODA'),
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=MODSC,
@@ -184,4 +184,4 @@ TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                 ),
           )
 
-FIN();
+FIN()

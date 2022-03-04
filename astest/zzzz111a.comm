@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -104,14 +104,14 @@ CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
                                 TENSION_INIT=2.0E+5,
                                RECUL_ANCRAGE=5.0E-4,
                                TYPE_RELAX='BPEL',
-                               R_J = 0.7970032677, 
+                               R_J = 0.7970032677,
                                  # RELAXATION=_F(  R_J = 0.7970032677),
                                        TITRE=(
                              'VALIDATION DE L OPERATEUR DEFI_CABLE_BP', )
                                            )
 
 
-DEFI_GROUP(reuse = MAILLAGE, MAILLAGE = MAILLAGE, 
+DEFI_GROUP(reuse = MAILLAGE, MAILLAGE = MAILLAGE,
            CREA_GROUP_NO = _F(OPTION = 'RELA_CINE_BP', CABLE_BP = CABLEPR)
           )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 # NOEUDS SONT CONFONDUS
 #
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', );
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA=('SRADIER','HRADIER'),),);
+                    CREA_GROUP_NO=_F(GROUP_MA=('SRADIER','HRADIER'),),)
 
 STICKMOD=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                       _F(  GROUP_MA = 'POU_D_T',PHENOMENE = 'MECANIQUE',
@@ -40,22 +40,22 @@ STICKMOD=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                            _F(  GROUP_MA = 'VRADIER',PHENOMENE = 'MECANIQUE',
                              MODELISATION = '3D'),
                                                   )
-                        );
+                        )
 
 # ----------------------------------------------------------------------
 #  DEFINITION DES MATERIAUX
 
 MAT_1=DEFI_MATERIAU(  ELAS=_F(
                          E = 4.000000000E+10,NU = 1.494252874E-01,
-                         RHO = 0.000000000E+00,ALPHA = 0.000000000E+00) );
+                         RHO = 0.000000000E+00,ALPHA = 0.000000000E+00) )
 
 MAT_2=DEFI_MATERIAU(  ELAS=_F(
                          E = 4.000000000E+10,NU = 1.494252874E-01,
-                         RHO = 2.500000000E+03,ALPHA = 0.000000000E+00) );
+                         RHO = 2.500000000E+03,ALPHA = 0.000000000E+00) )
 
 MAT_3=DEFI_MATERIAU(  ELAS=_F(
                          E = 4.000000000E+10,NU = 1.494252874E-01,
-                         RHO = 2.500000000E+00,ALPHA = 0.000000000E+00) );
+                         RHO = 2.500000000E+00,ALPHA = 0.000000000E+00) )
 
 #
 
@@ -65,7 +65,7 @@ CHAMPMAT=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,AFFE=(
                           _F(  GROUP_MA = 'VRADIER',   MATER = MAT_2),
                           #_F(  GROUP_MA = 'SRADIER',   MATER = MAT_3)
                                                                      )
-                           );
+                           )
 
 #
 # ----------------------------------------------------------------------
@@ -341,7 +341,7 @@ CARA_ELE=AFFE_CARA_ELEM( MODELE=STICKMOD,
             VALE = ( 1.900000000E+11, 1.900000000E+11, 2.000000000E+09,
                    5.000000000E+11, 5.000000000E+11, 1.000000000E+14,),
                   REPERE = 'GLOBAL'))
-               );
+               )
 
 # LA STRUCTURE EST RIGIDIFIEE A L INTERFACE
 #------------------------------------------
@@ -352,14 +352,14 @@ COND_LIM=AFFE_CHAR_MECA(  MODELE=STICKMOD,
                    DDL_IMPO=_F(  GROUP_NO = ('SRADIER',),
                                  DX = 0., DY = 0., DZ = 0.,
                                   )
-                                             );
+                                             )
 
 #
 # CALCUL DE LA MASSE ET INERTIES DE LA STRUCTURE -----------------------
 
 MASSESTR=POST_ELEM(  MODELE=STICKMOD,
                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
-                        MASS_INER=_F(  TOUT = 'OUI') );
+                        MASS_INER=_F(  TOUT = 'OUI') )
 
 #
 
@@ -368,19 +368,19 @@ MASSESTR=POST_ELEM(  MODELE=STICKMOD,
 
 RIGI_ELE=CALC_MATR_ELEM(  MODELE=STICKMOD,  OPTION='RIGI_MECA',
                         CHARGE=COND_LIM,
-                        CHAM_MATER=CHAMPMAT,  CARA_ELEM=CARA_ELE );
+                        CHAM_MATER=CHAMPMAT,  CARA_ELEM=CARA_ELE )
 
 MASS_ELE=CALC_MATR_ELEM( MODELE=STICKMOD,  OPTION='MASS_MECA',
                         CHARGE=COND_LIM,
-                        CHAM_MATER=CHAMPMAT,  CARA_ELEM=CARA_ELE );
+                        CHAM_MATER=CHAMPMAT,  CARA_ELEM=CARA_ELE )
 
 #
 
-NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE );
+NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE )
 
-RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUMEDDL );
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUMEDDL )
 
-MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL );
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL )
 
 
 #
@@ -391,20 +391,20 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUMEDDL );
 MODE=CALC_MODES( MATR_RIGI=RIGIDITE,
                  MATR_MASS=MASSE,
                  CALC_FREQ=_F( NMAX_FREQ = 10 ),
-                );
+                )
 '''
 
 MODSTA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,
                      MODE_STAT=_F(
-                     GROUP_NO = 'SRADIER', 
+                     GROUP_NO = 'SRADIER',
                      AVEC_CMP = ('DX','DY','DZ',),
-                                 ));
+                                 ))
 
 INTERDYN=DEFI_INTERF_DYNA(  NUME_DDL=NUMEDDL,
             INTERFACE=_F( NOM = 'DROITE',
                        TYPE = 'CRAIGB',
                        GROUP_NO = ('SRADIER',))
-           );
+           )
 
 BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODSTA,
                                 NMAX_MODE=0,),
@@ -412,9 +412,9 @@ BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODSTA,
                                 NMAX_MODE=1999,),
                              ),
                        INTERF_DYNA=INTERDYN,
-                       NUME_REF=NUMEDDL,);
-                       
-NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',);
+                       NUME_REF=NUMEDDL,)
+
+NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',)
 
 #
 # CALCUL DU MACRO-ELEMENT DYNAMIQUE :
@@ -423,11 +423,11 @@ NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',);
 
 MAEL0=MACR_ELEM_DYNA( BASE_MODALE=BAMO,
                       MATR_RIGI=RIGIDITE,
-                      MATR_MASS=MASSE,);
+                      MATR_MASS=MASSE,)
 
 #
 FO1=DEFI_FONCTION(   NOM_PARA='FREQ',
-          VALE=( 0., 1., 100., 1., ) );
+          VALE=( 0., 1., 100., 1., ) )
 
 #Pour reference :
 TABSOL0=DEFI_SOL_MISS(
@@ -492,30 +492,30 @@ CALC_MISS(
     ),
 )
 
-impe = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,           
+impe = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,
                         UNITE_RESU_IMPE=31, FREQ_EXTR=3.,
                         SYME='OUI',
                         #TYPE='BINAIRE',
-                           );
+                           )
 
 '''
-                           
-impe0 = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,              
+
+impe0 = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,
                         UNITE_RESU_IMPE=31, FREQ_EXTR=0.3,
                         SYME='OUI',
                         #TYPE='BINAIRE',
-                           );
+                           )
 
 '''
-                           
-                        
+
+
 rito=COMB_MATR_ASSE(COMB_R=(
                              _F(MATR_ASSE=impe, #impe0,
                                 PARTIE='REEL',
                                 COEF_R=1.0,),
                              ),
                                 SANS_CMP='LAGR',
-                    );
+                    )
 
 '''
 
@@ -530,10 +530,10 @@ mato=COMB_MATR_ASSE(COMB_R=(
                                 COEF_R=-2.85e-3,),
                             ),
                                 SANS_CMP='LAGR',
-                    );
+                    )
 
 '''
- 
+
 amto2=COMB_MATR_ASSE(COMB_R=(
                              _F(MATR_ASSE=impe,
                                 PARTIE='IMAG',
@@ -541,9 +541,9 @@ amto2=COMB_MATR_ASSE(COMB_R=(
                                 #COEF_R=3.975e-2,),
                             ),
                                 SANS_CMP='LAGR',
-                    );
- 
-# 
+                    )
+
+#
 
 CALC_MISS(
              TYPE_RESU='FICHIER_TEMPS',
@@ -580,45 +580,45 @@ CALC_MISS(
                   SPEC_MAX=0.03,
                   SPEC_NB=2048,
                   ),
-             );
+             )
 
 MATK = LIRE_IMPE_MISS(UNITE_RESU_IMPE=35, INST_EXTR=0.0,
                       SYME='OUI', #TYPE='BINAIRE',
-                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
-                      
+                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN)
+
 MATC = LIRE_IMPE_MISS(UNITE_RESU_IMPE=37, INST_EXTR=0.0,
                       SYME='OUI', #TYPE='BINAIRE',
-                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
+                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN)
 
 '''
 
 MATM = LIRE_IMPE_MISS(UNITE_RESU_IMPE=38, INST_EXTR=0.0,
                       SYME='OUI', TYPE='BINAIRE',
-                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
+                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN)
 
 '''
-                      
-                      
+
+
 # Termes Z0
 
 MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO,
                        MATR_IMPE_RIGI = MATK,
                        MATR_IMPE_AMOR = MATC,
                        #MATR_IMPE_MASS = MATM,
-                       );
-                       
-                                              
+                       )
+
+
 MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
                           _F(MACR_ELEM=MAEL,
                              SUPER_MAILLE='STAT1',),
                                          ),
                       RECO_GLOBAL=_F(TOUT='OUI',),
                       DEFI_NOEUD=_F(TOUT='OUI',
-                                     INDEX=(1,0,1,8,),),);
-                                     
+                                     INDEX=(1,0,1,8,),),)
+
 MAILB=ASSE_MAILLAGE(MAILLAGE_1=MAILLAGE,
                     MAILLAGE_2=MAYADYN,
-                    OPERATION='SOUS_STR',);
+                    OPERATION='SOUS_STR',)
 #
 
 
@@ -635,8 +635,8 @@ MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                            _F(  GROUP_MA = 'VRADIER',PHENOMENE = 'MECANIQUE',
                              MODELISATION = '3D'),
                                                   ),
-                     );
-                     
+                     )
+
 ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
 
             POUTRE=(
@@ -907,7 +907,7 @@ ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
                    5.000000000E+11, 5.000000000E+11, 1.000000000E+14,),
                   REPERE = 'GLOBAL'),
                                      ),
-               );
+               )
 
 
 CHMATB=AFFE_MATERIAU(   MAILLAGE=MAILB,
@@ -917,14 +917,14 @@ CHMATB=AFFE_MATERIAU(   MAILLAGE=MAILB,
                           _F(  GROUP_MA = 'VRADIER',   MATER = MAT_2),
                           #_F(  GROUP_MA = 'SRADIER',   MATER = MAT_3)
                                                                      )
-                           );
+                           )
 
 # LA STRUCTURE EST RIGIDIFIEE A L INTERFACE
 #------------------------------------------
 
 COND_LB=AFFE_CHAR_MECA(  MODELE=MODELB,
                 LIAISON_SOLIDE=(_F( GROUP_NO = ('HRADIER',)), ),
-                      );
+                      )
 
 ASSEMBLAGE(MODELE=MODELB,
                 CHAM_MATER=CHMATB,
@@ -934,7 +934,7 @@ ASSEMBLAGE(MODELE=MODELB,
                 MATR_ASSE=(_F(MATRICE=CO('MATRRIGI'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MATRMASS'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 #
 # CALCUL DES MODES :
@@ -944,7 +944,7 @@ MODE2=CALC_MODES( MATR_RIGI=MATRRIGI,
                   MATR_MASS=MATRMASS,
                   CALC_FREQ=_F( NMAX_FREQ = 10 ),
                  VERI_MODE=_F(  STOP_ERREUR='NON')
-                 );
+                 )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -980,5 +980,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN( );
+FIN( )
 #

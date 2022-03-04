@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ MATER    = DEFI_MATERIAU( ELAS = _F(E  = 3.E4,
 
 CHMAT    = AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                          AFFE=_F(TOUT='OUI',
-                                 MATER=MATER),);
+                                 MATER=MATER),)
 
 COEF1    = DEFI_FONCTION( NOM_PARA    = 'INST',
                           PROL_DROITE = 'LINEAIRE',
@@ -60,7 +60,7 @@ MO     = AFFE_MODELE(MAILLAGE=MAILLAGE,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='D_PLAN_GRAD_VARI',
                             ),
-                     );
+                     )
 
 CH_U1  = AFFE_CHAR_CINE( MODELE   = MO,
                          MECA_IMPO= ( _F( GROUP_MA = 'M7', DY = 1.,),),
@@ -108,7 +108,7 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,INFO=2,
 #    TEST COMPARAISON AVEC D_PLAN
 #***********************************************************************
 TABSPEC0=RECU_TABLE(CO=EVOL,
-                    NOM_TABLE='ANALYSE_MODALE',);
+                    NOM_TABLE='ANALYSE_MODALE',)
 
 
 
@@ -267,4 +267,4 @@ TEST_TABLE(
                    ),
            )
 
-FIN();
+FIN()

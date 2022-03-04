@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ MAILLA_1=LIRE_MAILLAGE( FORMAT='MED',UNITE = 19  )
 
 MA1=CREA_MAILLAGE(MAILLAGE=MAILLA_1,
                   MODI_MAILLE=_F(TOUT='OUI',
-                                 OPTION='QUAD8_9'));
+                                 OPTION='QUAD8_9'))
 
 MA1=DEFI_GROUP( reuse=MA1,   MAILLAGE=MA1, INFO=2,
   CREA_GROUP_NO=(_F(  NOM = 'AB' , GROUP_MA='AB'),
@@ -40,13 +40,13 @@ MA1=DEFI_GROUP( reuse=MA1,   MAILLAGE=MA1, INFO=2,
                  _F(  NOM = 'EA' , GROUP_MA='EA'),
                  _F(  NOM = 'FE', GROUP_MA='FE'),
                  _F(  NOM = 'BFSANSB' , DIFFE=('BF','AB')),
-                 _F(  NOM = 'EASANSA' , DIFFE=('EA','AB'))));
+                 _F(  NOM = 'EASANSA' , DIFFE=('EA','AB'))))
 
 MAILLA_2=LIRE_MAILLAGE( FORMAT='MED',UNITE = 23  )
 
 MA2=CREA_MAILLAGE(MAILLAGE=MAILLA_2,
                   MODI_MAILLE=_F(TOUT='OUI',
-                                 OPTION='QUAD8_9'));
+                                 OPTION='QUAD8_9'))
 
 MA2=DEFI_GROUP( reuse=MA2,   MAILLAGE=MA2, INFO=2,
   CREA_GROUP_NO=(_F(  NOM = 'EF' , GROUP_MA='EF'),
@@ -54,25 +54,25 @@ MA2=DEFI_GROUP( reuse=MA2,   MAILLAGE=MA2, INFO=2,
                  _F(  NOM = 'FC' , GROUP_MA='FC'),
                  _F(  NOM = 'DE' , GROUP_MA='DE'),
                  _F(  NOM = 'FCSANSC' , DIFFE=('FC','CD')),
-                 _F(  NOM = 'DESANSD' , DIFFE=('DE','CD'))));
+                 _F(  NOM = 'DESANSD' , DIFFE=('DE','CD'))))
 
 MA3=ASSE_MAILLAGE(MAILLAGE_1=MA1,
                   MAILLAGE_2=MA2,
                   OPERATION='COLLAGE',
                   COLLAGE=_F(GROUP_MA_1='FE',
-                             GROUP_MA_2='EF'));
+                             GROUP_MA_2='EF'))
 
 MA3=DEFI_GROUP( reuse=MA3,   MAILLAGE=MA3,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 MA3=DEFI_GROUP( reuse=MA3,   MAILLAGE=MA3, INFO=2,
   CREA_GROUP_NO=(_F(  NOM = 'BCSANSBC', UNION=('BFSANSB','FCSANSC')),
-                 _F(  NOM = 'ADSANSAD', UNION=('EASANSA','DESANSD'))));
+                 _F(  NOM = 'ADSANSAD', UNION=('EASANSA','DESANSD'))))
 
 CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MA3,
                             AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
 
-MODELE_1=AFFE_MODELE(  MAILLAGE=MA3, 
+MODELE_1=AFFE_MODELE(  MAILLAGE=MA3,
                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
                                 PHENOMENE = 'MECANIQUE') )
 

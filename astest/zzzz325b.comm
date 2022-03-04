@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ CHAEL= CREA_CHAMP(TYPE_CHAM = 'ELEM_NEUT_R',
                     PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA='LIGNE',
                                    NOM_CMP  = 'X1',
-                                   VALE   = 1.0,),);
+                                   VALE   = 1.0,),)
 
 def fonc(sn,x1):
     a = sn*x1
@@ -131,8 +131,8 @@ CHAELR = CREA_CHAMP(TYPE_CHAM = 'ELEM_NEUT_R',
 
 #-------------------------------------------------------------------------
 # LE CHAMP SIGM_ELGA OBTENU EST HOMOGENE :
-#  SIXX    SIYY    SIZZ    SIXY  
-#  1.E+02  2.E+02  0.E+0   1.E+02   
+#  SIXX    SIYY    SIZZ    SIXY
+#  1.E+02  2.E+02  0.E+0   1.E+02
 
 #-------------------------------------------------------------------------
 # SIRO_ELEM SUR UNE ARETE ORIENTEE SELON OX
@@ -959,4 +959,4 @@ TEST_RESU(CHAM_ELEM=(_F(REFERENCE='AUTRE_ASTER',
                    CHAM_GD=CHAELR,
                    VALE_ABS='NON'),
             ),)
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='NON',),
-      IGNORE_ALARM=('ELEMENTS3_11','ELEMENTS6_3',),);
+      IGNORE_ALARM=('ELEMENTS3_11','ELEMENTS6_3',),)
 
 # SDVERI='NON' car la verification est trop couteuse en CPU
 # IGNORE_ALARM=('ELEMENTS3_11','ELEMENTS6_3',) : utilisation d'une loi de comportement
@@ -31,10 +31,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 # ELASTOPLASTICITE ISOTROPE VON MISES   (1 QUAD8)
 #......................................................................
 
-MA0=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
-                 LINE_QUAD=_F(TOUT='OUI',),);
+                 LINE_QUAD=_F(TOUT='OUI',),)
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_MA= (
@@ -55,33 +55,33 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN_SI',),);
+                       MODELISATION='C_PLAN_SI',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
                             NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=1930.,
                                  SY=181.,),
-                    PRAGER=_F(C=0.,),);
+                    PRAGER=_F(C=0.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=_F(TOUT='OUI',
-                         MATER=ACIER,),);
+                         MATER=ACIER,),)
 
 SIGMA_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                             1.0,151.2,
                             2.0,257.2,
                             3.0,0.0,
-                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 TAU_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           1.0,93.1,
                           2.0,33.1,
                           3.0,0.0,
-                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 TRACTION=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_CONTOUR=_F(GROUP_MA='GAUCHE',
-                                         FX=-1.,),);
+                                         FX=-1.,),)
 
 CISAIL=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_CONTOUR=(_F(GROUP_MA='GAUCHE',
@@ -91,14 +91,14 @@ CISAIL=AFFE_CHAR_MECA(MODELE=MO,
                                      _F(GROUP_MA='HAUT',
                                         FX=1.,),
                                      _F(GROUP_MA='BAS',
-                                        FX=-1.,),),);
+                                        FX=-1.,),),)
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='NO4',
                                     DX=0.,
                                     DY=0.,),
                                  _F(GROUP_NO=('NO2','NS2',),
-                                    DX=0.,),),);
+                                    DX=0.,),),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.1,
@@ -110,7 +110,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=2.0,
                                      NOMBRE=40,),
                                   _F(JUSQU_A=3.0,
-                                     NOMBRE=1,),),);
+                                     NOMBRE=1,),),)
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
@@ -124,18 +124,18 @@ U=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=3,),
                 RECH_LINEAIRE=_F(RHO_MAX=150,),
-                CONVERGENCE=_F(ITER_GLOB_MAXI=50,),);
+                CONVERGENCE=_F(ITER_GLOB_MAXI=50,),)
 
 U=CALC_CHAMP(reuse =U,
              RESULTAT=U,
              CONTRAINTE='SIGM_ELNO',
              DEFORMATION='EPSI_ELGA',
              CRITERES='SIEQ_ELGA',
-             VARI_INTERNE='VARI_ELNO',);
+             VARI_INTERNE='VARI_ELNO',)
 
 U=CALC_CHAMP(reuse =U,
              RESULTAT=U,
-             DEFORMATION=('EPSP_ELGA','EPSI_ELNO',),);
+             DEFORMATION=('EPSP_ELGA','EPSI_ELNO',),)
 
 U2=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CM,
@@ -149,35 +149,35 @@ U2=STAT_NON_LINE(MODELE=MO,
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=3,),
                  RECH_LINEAIRE=_F(RHO_MAX=150,),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),);
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),)
 
 U2=CALC_CHAMP(reuse =U2,
               RESULTAT=U2,
               CONTRAINTE='SIGM_ELNO',
               DEFORMATION='EPSI_ELGA',
-              VARI_INTERNE='VARI_ELNO',);
+              VARI_INTERNE='VARI_ELNO',)
 
 U2=CALC_CHAMP(reuse =U2,
               RESULTAT=U2,
-              DEFORMATION=('EPSP_ELGA','EPSI_ELNO',),);
+              DEFORMATION=('EPSP_ELGA','EPSI_ELNO',),)
 
 U2=CALC_CHAMP(reuse =U2,
               RESULTAT=U2,
-              ENERGIE='ETOT_ELGA',);
+              ENERGIE='ETOT_ELGA',)
 
 U2=CALC_CHAMP(reuse =U2,
               RESULTAT=U2,
-              ENERGIE='ETOT_ELNO',);
+              ENERGIE='ETOT_ELNO',)
 
 U2=CALC_CHAMP(reuse =U2,
               RESULTAT=U2,
-              ENERGIE='ETOT_ELEM',);
+              ENERGIE='ETOT_ELEM',)
 
 VARI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U,
                 NOM_CHAM='VARI_ELNO',
-                INST=1.,);
+                INST=1.,)
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                        GROUP_MA='CUBE',
@@ -295,19 +295,19 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    POINT=4,
                    VALE_REFE=0.325349,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=0.325348653,),),);
+                   VALE_CALC=0.325348653,),),)
 
 ENER_TOT=POST_ELEM(ENER_TOTALE=_F(GROUP_MA='CUBE',),
-                   RESULTAT=U,);
+                   RESULTAT=U,)
 
 ENER_TO2=POST_ELEM(ENER_TOTALE=_F(GROUP_MA='CUBE',),
-                   RESULTAT=U2,);
+                   RESULTAT=U2,)
 
 ENER_TO3=POST_ELEM(ENER_TOTALE=_F(GROUP_MA='GXXXXXX_CUBE_G',),
-                   RESULTAT=U2,);
+                   RESULTAT=U2,)
 
 ENER_TO4=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),
-                   RESULTAT=U2,);
+                   RESULTAT=U2,)
 
 TEST_RESU(RESU=(_F(RESULTAT=U2,
                    INST=0.1,
@@ -428,7 +428,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U2,
                    CRITERE='RELATIF',
                    VALE_REFE=9.40794,
                    REFERENCE='AUTRE_ASTER',
-                   VALE_CALC=9.406505127,),),);
+                   VALE_CALC=9.406505127,),),)
 
 #
 # SI ENERGIE CALCULEE SUR UNE MAILLE
@@ -440,7 +440,7 @@ TEST_TABLE(TABLE=ENER_TO2,
            CRITERE='RELATIF',
            VALE_REFE=0.00116403,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=0.00116403144,);
+           VALE_CALC=0.00116403144,)
 
 TEST_TABLE(TABLE=ENER_TO2,
            FILTRE=_F(NOM_PARA='INST',
@@ -449,7 +449,7 @@ TEST_TABLE(TABLE=ENER_TO2,
            CRITERE='RELATIF',
            VALE_REFE=1.8434,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=1.84222238,);
+           VALE_CALC=1.84222238,)
 
 TEST_TABLE(TABLE=ENER_TO2,
            FILTRE=_F(NOM_PARA='INST',
@@ -458,7 +458,7 @@ TEST_TABLE(TABLE=ENER_TO2,
            CRITERE='RELATIF',
            VALE_REFE=9.58487,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=9.583429296,);
+           VALE_CALC=9.583429296,)
 
 TEST_TABLE(TABLE=ENER_TO2,
            FILTRE=_F(NOM_PARA='INST',
@@ -467,7 +467,7 @@ TEST_TABLE(TABLE=ENER_TO2,
            CRITERE='RELATIF',
            VALE_REFE=9.40794,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=9.406505127,);
+           VALE_CALC=9.406505127,)
 
 #
 # SI ENERGIE CALCULEE SUR UN GROUPE DE MAILLE
@@ -479,7 +479,7 @@ TEST_TABLE(TABLE=ENER_TO3,
            CRITERE='RELATIF',
            VALE_REFE=0.00116403,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=0.00116403144,);
+           VALE_CALC=0.00116403144,)
 
 TEST_TABLE(TABLE=ENER_TO3,
            FILTRE=_F(NOM_PARA='INST',
@@ -488,7 +488,7 @@ TEST_TABLE(TABLE=ENER_TO3,
            CRITERE='RELATIF',
            VALE_REFE=1.8434,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=1.84222238,);
+           VALE_CALC=1.84222238,)
 
 TEST_TABLE(TABLE=ENER_TO3,
            FILTRE=_F(NOM_PARA='INST',
@@ -497,7 +497,7 @@ TEST_TABLE(TABLE=ENER_TO3,
            CRITERE='RELATIF',
            VALE_REFE=9.58487,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=9.583429296,);
+           VALE_CALC=9.583429296,)
 
 TEST_TABLE(TABLE=ENER_TO3,
            FILTRE=_F(NOM_PARA='INST',
@@ -506,7 +506,7 @@ TEST_TABLE(TABLE=ENER_TO3,
            CRITERE='RELATIF',
            VALE_REFE=9.40794,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=9.406505127,);
+           VALE_CALC=9.406505127,)
 
 #
 # SI ENERGIE CALCULEE SUR TOUT LE MAILLAGE
@@ -518,7 +518,7 @@ TEST_TABLE(TABLE=ENER_TO4,
            CRITERE='RELATIF',
            VALE_REFE=0.00116403,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=0.00116403144,);
+           VALE_CALC=0.00116403144,)
 
 TEST_TABLE(TABLE=ENER_TO4,
            FILTRE=_F(NOM_PARA='INST',
@@ -527,7 +527,7 @@ TEST_TABLE(TABLE=ENER_TO4,
            CRITERE='RELATIF',
            VALE_REFE=1.8434,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=1.84222238,);
+           VALE_CALC=1.84222238,)
 
 TEST_TABLE(TABLE=ENER_TO4,
            FILTRE=_F(NOM_PARA='INST',
@@ -536,7 +536,7 @@ TEST_TABLE(TABLE=ENER_TO4,
            CRITERE='RELATIF',
            VALE_REFE=9.58487,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=9.583429296,);
+           VALE_CALC=9.583429296,)
 
 TEST_TABLE(TABLE=ENER_TO4,
            FILTRE=_F(NOM_PARA='INST',
@@ -545,18 +545,18 @@ TEST_TABLE(TABLE=ENER_TO4,
            CRITERE='RELATIF',
            VALE_REFE=9.40794,
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=9.406505127,);
+           VALE_CALC=9.406505127,)
 
 #
 # INDICATEURS DE CHARGE - DECHARGE
 
 IND_ENER=POST_ELEM(INDIC_ENER=_F(TOUT='OUI',),
                    RESULTAT=U,
-                   INST=(1.,2.,3.,),);
+                   INST=(1.,2.,3.,),)
 
 IND_SEUI=POST_ELEM(INDIC_SEUIL=_F(TOUT='OUI',),
                    RESULTAT=U,
-                   NUME_ORDRE=(12,52,53,),);
+                   NUME_ORDRE=(12,52,53,),)
 
 TEST_TABLE(TABLE=IND_ENER,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -567,7 +567,7 @@ TEST_TABLE(TABLE=IND_ENER,
            CRITERE='ABSOLU',
            VALE_REFE=0.0,
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.0,);
+           VALE_CALC=0.0,)
 
 TEST_TABLE(TABLE=IND_ENER,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -578,7 +578,7 @@ TEST_TABLE(TABLE=IND_ENER,
            VALE_REFE=0.0326,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.033376265,);
+           VALE_CALC=0.033376265,)
 
 TEST_TABLE(TABLE=IND_ENER,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -589,7 +589,7 @@ TEST_TABLE(TABLE=IND_ENER,
            VALE_REFE=0.0469,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.047729905,);
+           VALE_CALC=0.047729905,)
 
 TEST_TABLE(TABLE=IND_SEUI,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -600,7 +600,7 @@ TEST_TABLE(TABLE=IND_SEUI,
            CRITERE='ABSOLU',
            VALE_REFE=0.0,
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.0,);
+           VALE_CALC=0.0,)
 
 TEST_TABLE(TABLE=IND_SEUI,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -611,7 +611,7 @@ TEST_TABLE(TABLE=IND_SEUI,
            VALE_REFE=0.0971,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.096406983,);
+           VALE_CALC=0.096406983,)
 
 TEST_TABLE(TABLE=IND_SEUI,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
@@ -622,7 +622,7 @@ TEST_TABLE(TABLE=IND_SEUI,
            VALE_REFE=1.0,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=1.0,);
+           VALE_CALC=1.0,)
 
-FIN();
+FIN()
 #CHECKSUM:c1380931a1099c6bd704ac0b6610f8a6  -:FIN CHECKSUM

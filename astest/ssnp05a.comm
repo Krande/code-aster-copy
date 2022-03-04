@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
 # LOI DE LEMAITRE
 #......................................................................
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 M = DEFI_GROUP( reuse = M, MAILLAGE = M,
                       CREA_GROUP_MA= (
@@ -47,10 +47,10 @@ M = DEFI_GROUP( reuse = M, MAILLAGE = M,
          )
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 ANEL=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                FORMAT='IDEAS',
@@ -58,17 +58,17 @@ ANEL=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                MODELE=MO,
                UNITE=19,
                NOM_CHAM='EPSA_ELNO',
-               NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10,11,),);
+               NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10,11,),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=178600.,
                             NU=0.3,),
                     LEMAITRE=_F(N=11.,
                                 UN_SUR_K=0.00032840723,
-                                UN_SUR_M=0.178571429,),);
+                                UN_SUR_M=0.178571429,),)
 
 CM1=AFFE_MATERIAU(MAILLAGE=M,
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
+                          MATER=ACIER,),)
 
 CM2=AFFE_MATERIAU(MAILLAGE=M,
                   AFFE=_F(TOUT='OUI',
@@ -76,35 +76,35 @@ CM2=AFFE_MATERIAU(MAILLAGE=M,
                   AFFE_VARC=_F(TOUT='OUI',
                                EVOL=ANEL,
                                NOM_VARC='EPSA',
-                               NOM_CHAM='EPSA_ELNO',),);
+                               NOM_CHAM='EPSA_ELNO',),)
 
 P30=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                         30.0,30.31088913,
                         3630.0,30.31088913,
                         3660.0,60.62177826,
                         7260.0,60.62177826,
-                        ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                        ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 M30=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                         30.0,-30.31088913,
                         3630.0,-30.31088913,
                         3660.0,-60.62177826,
                         7260.0,-60.62177826,
-                        ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                        ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 M52M30=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            30.0,-82.81088913,
                            3630.0,-82.81088913,
                            3660.0,-60.62177826,
                            7260.0,-60.62177826,
-                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 M52P30=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            30.0,-22.18911087,
                            3630.0,-22.18911087,
                            3660.0,60.62177826,
                            7260.0,60.62177826,
-                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 INIT0=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                 FORMAT='IDEAS',
@@ -112,7 +112,7 @@ INIT0=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                 NB_VARI=2,
                 UNITE=19,
                 NOM_CHAM=('VARI_ELNO','SIGM_ELNO',),
-                INST=15.,);
+                INST=15.,)
 
 # POUR TESTER LIRE_RESU /IDEAS/NUME_DATASET:2414 :
 
@@ -138,19 +138,19 @@ INIT=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                   POSI_ORDRE=(10,3,),
                   POSI_INST=(12,1,),
                   NOM_CMP=('SIXX','SIXY','SIYY','SIXZ','SIYZ','SIZZ',),),),
-               INST=15.,);
+               INST=15.,)
 
 CHSIG0=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=INIT,
                   NOM_CHAM='SIGM_ELNO',
-                  NUME_ORDRE=1,);
+                  NUME_ORDRE=1,)
 
 CHVAR0=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
                   OPERATION='EXTR',
                   RESULTAT=INIT0,
                   NOM_CHAM='VARI_ELNO',
-                  NUME_ORDRE=1,);
+                  NUME_ORDRE=1,)
 
 CHDEP0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='AFFE',
@@ -173,7 +173,7 @@ CHDEP0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                      VALE=-1.83723E-04,),
                   _F(GROUP_NO=('N1','N2','N3','N4',),
                      NOM_CMP='DZ',
-                     VALE=1.83723E-04,),),);
+                     VALE=1.83723E-04,),),)
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='N4',
@@ -186,7 +186,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                              _F(GROUP_NO='N2',
                                 DX=0.,),
                              _F(GROUP_NO='N6',
-                                DX=0.,),),);
+                                DX=0.,),),)
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                      FORCE_NODALE=(_F(GROUP_NO=('N1','N5',),
@@ -200,7 +200,7 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                                       FY=M30,),
                                    _F(GROUP_NO=('N4','N8',),
                                       FX=M30,
-                                      FY=P30,),),);
+                                      FY=P30,),),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=30.0,
@@ -210,7 +210,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=3660.0,
                                      NOMBRE=3,),
                                   _F(JUSQU_A=3720.0,
-                                     NOMBRE=1,),),);
+                                     NOMBRE=1,),),)
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM1,
@@ -223,7 +223,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
-                               ITER_GLOB_MAXI=25,),);
+                               ITER_GLOB_MAXI=25,),)
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -412,7 +412,7 @@ U2=STAT_NON_LINE(MODELE=MO,
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
-                                ITER_GLOB_MAXI=25,),);
+                                ITER_GLOB_MAXI=25,),)
 
 U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -553,4 +553,4 @@ TEST_RESU(RESU=(_F(INST=30.0,
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,30 +19,30 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IGNORE_ALARM='CONTACT3_16',DEBUG=_F(SDVERI='OUI'))
 
-MESH=LIRE_MAILLAGE(FORMAT='MED',);
+MESH=LIRE_MAILLAGE(FORMAT='MED',)
 
 MESH=MODI_MAILLAGE(reuse =MESH,
                    MAILLAGE=MESH,
                    ORIE_PEAU=(_F(GROUP_MA_PEAU='Top_B',),
-                                 _F(GROUP_MA_PEAU='Bottom_C',),),);
+                                 _F(GROUP_MA_PEAU='Bottom_C',),),)
 
 MESH=DEFI_GROUP(reuse=MESH,
                   MAILLAGE=MESH,
-                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),);
+                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),)
 
 MAT_cy=DEFI_MATERIAU(ELAS=_F(E=210000.0,
-                             NU=0.3,),);
+                             NU=0.3,),)
 
 MAT_bl=DEFI_MATERIAU(ELAS=_F(E=70000.0,
-                             NU=0.3,),);
+                             NU=0.3,),)
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                          1.0,1.0,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                     NOMBRE=2,),);
+                                     NOMBRE=2,),)
 
 MO=AFFE_MODELE(MAILLAGE=MESH,
                  AFFE=(_F(GROUP_MA=('Block',),
@@ -52,24 +52,24 @@ MO=AFFE_MODELE(MAILLAGE=MESH,
                          PHENOMENE='MECANIQUE',
                          MODELISATION=('D_PLAN',),),
                          ),
-                         );
+                         )
 
 MA=AFFE_MATERIAU(MAILLAGE=MESH,
                    AFFE=(_F(GROUP_MA='Block',
                             MATER=MAT_bl,),
                          _F(GROUP_MA='Cylinder',
-                            MATER=MAT_cy,),),);
+                            MATER=MAT_cy,),),)
 
 CH_LIM=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=(_F(GROUP_NO='Axe',
                                  DX=0.0,),
                               _F(GROUP_NO='Encast',
                                  DX=0.0,
-                                 DY=0.0,),),);
+                                 DY=0.0,),),)
 
 FORCE=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=_F(GROUP_NO='Force',
-                                    FY=-17500.0,),);
+                                    FY=-17500.0,),)
 
 CONT=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
@@ -81,7 +81,7 @@ CONT=DEFI_CONTACT(MODELE=MO,
                           CONTACT_INIT='OUI',
                           INTEGRATION='GAUSS',
                           ADAPTATION = 'TOUT',
-                          ),);
+                          ),)
 
 MESH=DEFI_GROUP(reuse =MESH,
                   MAILLAGE=MESH,
@@ -92,7 +92,7 @@ MESH=DEFI_GROUP(reuse =MESH,
                                  _F(OPTION='NOEUD_ORDO',
                                    NOM='Top_n',
                                    GROUP_MA='Top_B',
-                                   GROUP_NO_ORIG='B',),),);
+                                   GROUP_NO_ORIG='B',),),)
 
 RESU=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=MA,
@@ -105,25 +105,25 @@ RESU=STAT_NON_LINE(MODELE=MO,
                      INCREMENT=_F(LIST_INST=L_INST,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                      SOLVEUR=_F(),
-                     NEWTON=_F(REAC_ITER=1,),);
+                     NEWTON=_F(REAC_ITER=1,),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIEF_ELNO'))
 
 
 RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
-               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'));
+               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'))
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(RESULTAT=RESU,
-                  NOM_CHAM=('DEPL','FORC_NODA',),),);
+                  NOM_CHAM=('DEPL','FORC_NODA',),),)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
           RESU=_F(RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOM_CMP=('DX','DY',),),);
+                  NOM_CMP=('DX','DY',),),)
 
 MOINS_UN = FORMULE(VALE='1.0*LAGS_C',
                    NOM_PARA='LAGS_C',)
@@ -134,17 +134,17 @@ RELE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='DEPL',
                                INST=1.0,
                                GROUP_NO='Bottom_n',
-                               NOM_CMP='LAGS_C',),);
+                               NOM_CMP='LAGS_C',),)
 
 RELE=CALC_TABLE(reuse=RELE,
                 TABLE=RELE,
                 ACTION=(_F(OPERATION='OPER',
                            NOM_PARA='MLAGS_C',
-                           FORMULE=MOINS_UN,),),);
+                           FORMULE=MOINS_UN,),),)
 
 PRES=RECU_FONCTION(TABLE=RELE,
                      PARA_X='ABSC_CURV',
-                     PARA_Y='MLAGS_C',);
+                     PARA_Y='MLAGS_C',)
 
 # ===========================================
 
@@ -162,49 +162,49 @@ depl=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 RESULTAT=RESU,
                 NOM_CHAM='DEPL',
                 INST=1.0,
-                );
+                )
 mdepl=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='COMB',
                 COMB=_F(CHAM_GD=depl,
                         COEF_R=-1.0,),
-                );
+                )
 
 MESH=MODI_MAILLAGE(reuse=MESH,
                    MAILLAGE=MESH,
                    DEFORME=_F(OPTION='TRAN',
-                              DEPL=depl,),);
+                              DEPL=depl,),)
 
 MESH=MODI_MAILLAGE(reuse=MESH,
                    MAILLAGE=MESH,
                    DEFORME=_F(OPTION='TRAN',
-                              DEPL=depl,),);
+                              DEPL=depl,),)
 
 # abscisse curviligne sur la deformee
 CALC_PSF=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',RESULTAT=RESU,
                                 INTITULE='P_S',INST=1.0,
                                 NOM_CHAM='PRES_NOEU',NOM_CMP='PRES',
                                 GROUP_NO='Bottom_n',
-                                ),);
+                                ),)
 
 # abscisse curviligne sur la deformee
 CALC_PMF=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',RESULTAT=RESU,
                                 INTITULE='P_M',INST=1.0,
                                 NOM_CHAM='PRES_NOEU',NOM_CMP='PRES',
                                 GROUP_NO='Top_n',
-                                ),);
+                                ),)
 
 MESH=MODI_MAILLAGE(reuse=MESH,
                    MAILLAGE=MESH,
                    DEFORME=_F(OPTION='TRAN',
-                              DEPL=mdepl,),);
+                              DEPL=mdepl,),)
 
 PS_FONCF=RECU_FONCTION(TABLE=CALC_PSF,
                       PARA_X='ABSC_CURV',
-                      PARA_Y='PRES',);
+                      PARA_Y='PRES',)
 
 PM_FONCF=RECU_FONCTION(TABLE=CALC_PMF,
                       PARA_X='ABSC_CURV',
-                      PARA_Y='PRES',);
+                      PARA_Y='PRES',)
 
 # ===========================================
 
@@ -220,7 +220,7 @@ absc=DEFI_LIST_REEL(DEBUT=0,
                                   NOMBRE=100,),
                                 _F(JUSQU_A=a,
                                   NOMBRE=100,),
-                                ));
+                                ))
 SOL=CALC_FONC_INTERP(FONCTION=p,
                      NOM_PARA='X',
                      LIST_PARA=absc)
@@ -240,7 +240,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               GRILLE_X=1,
               GRILLE_Y=500,
               LEGENDE_X='Densite surfacique (N/mm2)',
-              LEGENDE_Y='Abscisse curviligne (mm)',);
+              LEGENDE_Y='Abscisse curviligne (mm)',)
 
 
 # ===========================================
@@ -269,4 +269,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                 ),
           )
 
-FIN();
+FIN()

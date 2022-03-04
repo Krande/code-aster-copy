@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ POURSUITE(CODE='OUI',)
 
 n_pas_temps_max    = 10000
 n_pas_incr         = 1
-noeu_depl          = dict();
+noeu_depl          = dict()
 noeu_depl['TEMPS'] = [0.0]
 cle                = [ ]
 list_pas_temps     = [ ]
@@ -61,22 +61,22 @@ noeu_tass_0        = [ ]
 # -->20: début boucle for
 for n in range(nbcouche):
 
-  cle.append('ELEMEN'+str(n));
+  cle.append('ELEMEN'+str(n))
   noeu_depl[cle[n]] = [0.0]*n_pas_temps_max
 
   tab = T_DEP[n].EXTR_TABLE()
   t = tab.INST.values()
   dy = tab.DY.values()
 
-  n_pas_temps  = int(len(t)/(n+1));
+  n_pas_temps  = int(len(t)/(n+1))
 
   n_pas_incr_0 = n_pas_incr
   n_pas_incr  += n_pas_temps
 
-  list_pas_temps.append(n_pas_incr-2);
+  list_pas_temps.append(n_pas_incr-2)
 
   noeu_depl['TEMPS'] += list( array(t[::n+1]) *T0 )
-  noeu_tass_0.append(dy[(n+1)*n_pas_temps-1]);
+  noeu_tass_0.append(dy[(n+1)*n_pas_temps-1])
 
   # -->30: début boucle for
   for m in range(n+1):
@@ -91,7 +91,7 @@ for n in range(nbcouche):
 # -->50: début boucle for
 for n in range(nbcouche):
 
-  del(noeu_depl[cle[n]][n_pas_incr:]);
+  del(noeu_depl[cle[n]][n_pas_incr:])
 
 # <--50: fin boucle for
 
@@ -109,8 +109,8 @@ for n in range(nbcouche):
 #    -------------------------------------------------
 
 
-n_pas_temps = len(noeu_depl['TEMPS']);
-noeu_tass   = dict();
+n_pas_temps = len(noeu_depl['TEMPS'])
+noeu_tass   = dict()
 
 # -->100: début boucle for
 for n in range(n_pas_temps-1):
@@ -129,7 +129,7 @@ for n in range(n_pas_temps-1):
     tass_value = 0.
     if noeu_depl[cle[m]][n+1] != 0. : tass_value = noeu_depl[cle[m]][n+1] - noeu_tass_0[m]
 
-    noeu_tass['TEMPS'+str(n)].append(tass_value);
+    noeu_tass['TEMPS'+str(n)].append(tass_value)
 
   # <--40: fin boucle for
 
@@ -143,66 +143,66 @@ for n in range(n_pas_temps-1):
 
 tass       = [0.]*n_pas_temps
 COURBE     = []
-n_pas_temps= len(list_pas_temps);
+n_pas_temps= len(list_pas_temps)
 
 
 
-file =open('./REPE_OUT/wtnv132d.dat','w');
+file =open('./REPE_OUT/wtnv132d.dat','w')
 
 # -->200: début boucle for
 for n in range(n_pas_temps):
 
   def_courbe={'ABSCISSE': noeu_tass['TEMPS'+str(list_pas_temps[n])]}
   def_courbe['ORDONNEE'] = list(range(1,nbcouche+1))
-  def_courbe['LEGENDE' ] = 'TEMPS'+str(list_pas_temps[n]);
+  def_courbe['LEGENDE' ] = 'TEMPS'+str(list_pas_temps[n])
   def_courbe['COULEUR' ] = list_pas_temps[n]+1
   def_courbe['MARQUEUR'] = list_pas_temps[n]+1
 
-  COURBE.append(def_courbe);
+  COURBE.append(def_courbe)
 
   l_cote=DEFI_LIST_REEL(TITRE = 'COTE',
-                        VALE  = def_courbe['ORDONNEE']);
+                        VALE  = def_courbe['ORDONNEE'])
 
   l_tass=DEFI_LIST_REEL(TITRE = 'TASSEMENT',
-                        VALE  = def_courbe['ABSCISSE']);
+                        VALE  = def_courbe['ABSCISSE'])
 
   tass[n]=DEFI_FONCTION(NOM_PARA  = 'Z',
                         NOM_RESU  = 'TASSEMENT',
                         VALE_PARA = l_cote,
-                        VALE_FONC = l_tass);
+                        VALE_FONC = l_tass)
 
   IMPR_FONCTION(FORMAT ='TABLEAU',
                 UNITE  =8,
-                COURBE =_F(FONCTION=tass[n]));
+                COURBE =_F(FONCTION=tass[n]))
 
 
   absc =def_courbe['ABSCISSE']
   ordo =def_courbe['ORDONNEE']
 
   impr ='# TASSEMENT NO %d \n\n'
-  file.write(impr %(n));
+  file.write(impr %(n))
 
 
   impr =' %16.12e'*(2)+'\n'
   for i,z in enumerate(ordo):
-    file.write(impr %(z,absc[i]));
+    file.write(impr %(z,absc[i]))
 
-  del(def_courbe);
-  DETRUIRE(NOM=(l_cote,l_tass));
+  del(def_courbe)
+  DETRUIRE(NOM=(l_cote,l_tass))
 
 # <--200: fin boucle for
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=25,
-              COURBE=COURBE);
+              COURBE=COURBE)
 
 unit =38
 DEFI_FICHIER(ACTION='ASSOCIER',
               FICHIER='./REPE_OUT/wtnv132d.dat',
-              UNITE=unit,);
+              UNITE=unit,)
 
 
-file.close();
+file.close()
 
 #              ------------------------------------
 # VALIDATION-  Comparaison des valeurs de tassement
@@ -274,7 +274,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-4.384033E-03,
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.04,
                          FONCTION=tass[10],),
-                      ),);
+                      ),)
 
 # tassement de la deuxième couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-8.408947E-03,
@@ -333,7 +333,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-8.408947E-03,
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.02,
                          FONCTION=tass[10],),
-                      ),);
+                      ),)
 
 # tassement de la troixième couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01195430,
@@ -385,7 +385,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01195430,
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.02,
                          FONCTION=tass[10],),
-                      ),);
+                      ),)
 
 # tassement de la quatrième couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01544826,
@@ -430,7 +430,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01544826,
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.02,
                          FONCTION=tass[10],),
-                      ),);
+                      ),)
 
 # tassement de la cinquième couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01895453,
@@ -468,7 +468,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.01895453,
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.02,
                          FONCTION=tass[10],),
-                      ),);
+                      ),)
 
 # tassement de la sixième couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.02253686,
@@ -499,7 +499,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.02253686,
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.02,
                          FONCTION=tass[10],),
-                      ),);
+                      ),)
 
 # tassement de la septième couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.02624944,
@@ -523,7 +523,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.02624944,
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.02,
                          FONCTION=tass[10],),
-                      ),);
+                      ),)
 
 # tassement de la huitième couche
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.03011804,
@@ -540,7 +540,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.03011804,
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.02,
                          FONCTION=tass[10],),
-                      ),);
+                      ),)
 
 # tassement de la neuvième couche
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.03415776,
@@ -549,6 +549,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.03415776,
                         VALE_PARA=10.0,
                         REFERENCE='SOURCE_EXTERNE',
                         PRECISION=0.025000000000000001,
-                        FONCTION=tass[10],),);
+                        FONCTION=tass[10],),)
 
-FIN();
+FIN()

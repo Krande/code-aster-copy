@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,39 +24,39 @@
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 
-MAILLAG0=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAG0=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAG1 = CREA_MAILLAGE(MAILLAGE = MAILLAG0,
-                         LINE_QUAD = _F(TOUT = 'OUI'));
+                         LINE_QUAD = _F(TOUT = 'OUI'))
 
 #----------------------------------------
 # epaisseur (suivant x)
-lx = 16.0;
+lx = 16.0
 
 
 # largeur (suivant y)
-ly = 50.0;
+ly = 50.0
 
 
 # nb element suivant la largeur
-nx = 25.0;
+nx = 25.0
 
 
 # nb element suivant la hauteur
-ny = 71.0;
+ny = 71.0
 
 
 # longueur de la fissure
-a = 6;
+a = 6
 
 
 #----------------------------------------
 # tailles des elements suivant x et y
-hy = (ly / ny);
-hx = (lx / nx);
+hy = (ly / ny)
+hx = (lx / nx)
 h = sqrt(hy**2+hx**2)
 
 
@@ -83,7 +83,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                       NOM='C2',
                                       POINT=(((lx - a) - (2 * hx)),(hy / 2.0),),
                                       RAYON=(1 / (8.0 * ny)),
-                                      PRECISION=(1 / (8.0 * ny)),),),);
+                                      PRECISION=(1 / (8.0 * ny)),),),)
 
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
@@ -92,12 +92,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='C_PLAN',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);
+                              MODELISATION='C_PLAN',),),)
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FORM_FISS = 'DEMI_DROITE',
                                  PFON      =(0. , 0. ,0.),
-                                 DTAN      =(1. , 0. ,0.),),);
+                                 DTAN      =(1. , 0. ,0.),),)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS)
@@ -111,12 +111,12 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=2.0601E5,
                           NU=0.3,
                           ALPHA=0.,),
                   ECRO_LINE=_F(D_SIGM_EPSI=0.,
-                               SY=808.344,),);
+                               SY=808.344,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MAT,),);
+                               MATER=MAT,),)
 
 #----------------------------------------------------------
 #                   CHARGEMENT
@@ -135,16 +135,16 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                _F(GROUP_NO=('C1','C2',),
                                   DDL=('DY','DY',),
                                   COEF_MULT=(0.5,0.5,),
-                                  COEF_IMPO=0.,),),);
+                                  COEF_IMPO=0.,),),)
 
 CHF=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIG1',DY=-1.,),
-                             _F(GROUP_MA='LIG3',DY= 1.,),),);
+                             _F(GROUP_MA='LIG3',DY= 1.,),),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,
                           1.,1.,),
-                    PROL_DROITE='LINEAIRE',);
+                    PROL_DROITE='LINEAIRE',)
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -158,7 +158,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=0.08,NOMBRE=npas),
                                   _F(JUSQU_A=0.10,NOMBRE=npas),
                                   ),
-                      );
+                      )
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A=0.02,NOMBRE=1),
@@ -167,7 +167,7 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=0.08,NOMBRE=1),
                                   _F(JUSQU_A=0.10,NOMBRE=1),
                                   ),
-                      );
+                      )
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
@@ -227,18 +227,18 @@ MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                                     NOM='NTEST',
                                     POINT=(-a,0.,),
                                     RAYON=0.0001,
-                                    PRECISION=0.0001,),);
+                                    PRECISION=0.0001,),)
 
 TABDEP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='DEPLACEMENT_FISSURE',
                                CHAM_GD=DEPLFIN,
                                GROUP_NO='NTEST',
-                               NOM_CMP=('DX','DY',),),);
+                               NOM_CMP=('DX','DY',),),)
 
 IMPR_TABLE(TABLE=TABDEP)
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
-DEPREF = 0.0987568989597;
+DEPREF = 0.0987568989597
 
 
 TEST_TABLE(CRITERE='RELATIF',
@@ -389,6 +389,6 @@ TEST_TABLE(
                      VALE=0.10000000000000001,),
            )
 
-FIN();
+FIN()
 
 #

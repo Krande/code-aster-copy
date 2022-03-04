@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ ACIER1=INCLUDE_MATERIAU(NOM_AFNOR='Z2CND1712',
                         VARIANTE='A',
                         TYPE_VALE='NOMI',
                         EXTRACTION=_F(COMPOR='ELAS',
-                                      TEMP_EVAL=Temp,),  );
+                                      TEMP_EVAL=Temp,),  )
 
 # LE C_I DU MODELE VMIS_CIN1_CHAB EST DETERMINE PAR C_I = C1*A1
 

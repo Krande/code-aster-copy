@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -30,28 +30,28 @@ MA=DEFI_GROUP(reuse =MA,
                              _F(DIFFE=('SXX','MILIEU',),
                                 NOM='SXX1',),
                              _F(DIFFE=('SYY','MILIEU',),
-                                NOM='SYY1',),),);
+                                NOM='SYY1',),),)
 
 MODE=AFFE_MODELE(MAILLAGE=MA,
 
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION=('3D',),),);
+                         MODELISATION=('3D',),),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=_F(GROUP_MA_PEAU=('SZZ','RIGID',),),
-                 INFO=1,);
+                 INFO=1,)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=117.E3,
                             NU=0.35,
                             RHO=8.930E-9,),
                     ECRO_LINE=_F(D_SIGM_EPSI=100.,
-                                 SY=400.,),);
+                                 SY=400.,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA=('VOL','VOL_RIG',),
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CH=AFFE_CHAR_MECA(MODELE=MODE,
                   DDL_IMPO=(_F(GROUP_MA='RIGID',
@@ -66,7 +66,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODE,
                                DY=0.,),
                             _F(GROUP_NO='SXX1',
                                DX=0.,),),
-                  );
+                  )
 
 
 CHCONT  = DEFI_CONTACT(MODELE         = MODE,
@@ -86,7 +86,7 @@ CHCONT  = DEFI_CONTACT(MODELE         = MODE,
                              GROUP_MA_ESCL  = 'SZZ',
                              COEF_MATR_FROT = 0.4,
                                ),
-                      );
+                      )
 
 VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='AFFE',
@@ -101,7 +101,7 @@ VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     VALE=(0.,0.,0.,),),
                  _F(GROUP_NO='RIGID',
                     NOM_CMP=('DX','DY','DZ',),
-                    VALE=(0.,0.,0.,),),),);
+                    VALE=(0.,0.,0.,),),),)
 
 
 NPAS_IMPA   = 30
@@ -114,7 +114,7 @@ temps=DEFI_LIST_REEL(DEBUT=-1.E-5,
                       INTERVALLE=(_F(JUSQU_A=IMPACT,
                                      NOMBRE = NPAS_IMPA,),
                                   _F(JUSQU_A=IFIN,
-                                     NOMBRE=NPAS_POST,),),);
+                                     NOMBRE=NPAS_POST,),),)
 
 DEFLIST =DEFI_LIST_INST(  DEFI_LIST=_F(LIST_INST = temps,),
                           ECHEC    =(
@@ -153,7 +153,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
                                   ITER_GLOB_MAXI=20,),
-                                );
+                                )
 
 TABJEU = POST_RELEVE_T (ACTION = _F(GROUP_NO='B1',
                                  INTITULE = 'MESSAGE',
@@ -167,21 +167,21 @@ DEPL_A2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A2',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
                                 GROUP_NO='A2',
                                 RESULTAT=RESU,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 DEPL_A1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A1',
                                 GROUP_NO='A1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 
 VITE_A1=POST_RELEVE_T(ACTION=_F(INTITULE='CITE EN A1',
@@ -189,21 +189,21 @@ VITE_A1=POST_RELEVE_T(ACTION=_F(INTITULE='CITE EN A1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
                                 GROUP_NO='B1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DZ',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 VITE_B1=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN B1',
                                 GROUP_NO='B1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DZ',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 # DEPLACEMENT ET VITESSE VERTICAL AU POINT D'IMPACT
 #
@@ -259,4 +259,4 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 IMPR_TABLE(TABLE=TABJEU,)
 
-FIN();
+FIN()

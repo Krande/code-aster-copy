@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=_F(CHARGE=CH,),
-                    );
+                    )
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
@@ -296,7 +296,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=2.5738700000000001E-05,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,),
-                   
+
                 _F(NUME_ORDRE=1,
                    GROUP_NO='A',
                    REFERENCE='ANALYTIQUE',
@@ -341,7 +341,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-2,
                    GROUP_MA='M1',),
-                   
+
                 _F(NUME_ORDRE=1,
                    GROUP_NO='B',
                    REFERENCE='ANALYTIQUE',
@@ -386,7 +386,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    CRITERE='ABSOLU',
                    PRECISION=1.E-2,
                    GROUP_MA='M12',),
-                   
+
                 _F(NUME_ORDRE=1,
                    GROUP_NO='C',
                    REFERENCE='ANALYTIQUE',
@@ -475,7 +475,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,
                    GROUP_MA='M85',),
-                   
+
                 _F(NUME_ORDRE=1,
                    GROUP_NO='D',
                    REFERENCE='ANALYTIQUE',
@@ -564,7 +564,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,
                    GROUP_MA='M96',),
-                   
+
                 _F(NUME_ORDRE=1,
                    GROUP_NO='E',
                    REFERENCE='ANALYTIQUE',
@@ -609,7 +609,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,
                    GROUP_MA='M136',),
-                   
+
                 _F(NUME_ORDRE=1,
                    GROUP_NO='F',
                    REFERENCE='ANALYTIQUE',

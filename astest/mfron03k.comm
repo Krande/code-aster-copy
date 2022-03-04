@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 # Validation basée sur EPZZ, SIZZ en testant le maximum de la différence
 # entre Code_Aster et MFront
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),)
 
 
 CREA_LIB_MFRONT(UNITE_MFRONT=38,UNITE_LIBRAIRIE=42)
@@ -96,14 +96,14 @@ ACIERDA=DEFI_MATERIAU(ELAS=_F(E=E,
                                     H6      =a_ncol,
                                     DEPDT=epsi_1,
                                      ),
-                    );
+                    )
 
 # DD_CC
 COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDA,
                                     ECOULEMENT='MONO_DD_CC',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='CUBIQUE1',
-                                    ),);
+                                    ),)
 
 from mfron03k import F_COMPORP
 COMPORP = F_COMPORP(COMPORT, MU)
@@ -126,7 +126,7 @@ EPSZZ=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='EPSI',
                     PROL_DROITE='LINEAIRE',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=tmax,NOMBRE=500,),);
+                     INTERVALLE=_F(JUSQU_A=tmax,NOMBRE=500,),)
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),)
 
@@ -163,15 +163,15 @@ SOLNLA=SIMU_POINT_MAT(INFO=2,
                       EPSI_IMPOSE=_F(EPZZ=EPSZZ),
                       AFFE_VARC=_F(NOM_VARC='TEMP',
                                    VALE_FONC=TIMP,
-                                   VALE_REF=TEMP),);
+                                   VALE_REF=TEMP),)
 
 F_SIA=RECU_FONCTION(TABLE=SOLNLA,
                     PARA_X='INST',
-                    PARA_Y='SIZZ',);
+                    PARA_Y='SIZZ',)
 
 F_EPA=RECU_FONCTION(TABLE=SOLNLA,
                     PARA_X='INST',
-                    PARA_Y='EPZZ',);
+                    PARA_Y='EPZZ',)
 
 ##MFRONT
 nbgr=30
@@ -202,15 +202,15 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                      EPSI_IMPOSE=_F(EPZZ=EPSZZ),
                      AFFE_VARC=_F(NOM_VARC='TEMP',
                                   VALE_FONC=TIMP,
-                                  VALE_REF=TEMP),);
+                                  VALE_REF=TEMP),)
 
 F_SIM=RECU_FONCTION(TABLE=SOLNL,
                     PARA_X='INST',
-                    PARA_Y='SIZZ',);
+                    PARA_Y='SIZZ',)
 
 F_EPM=RECU_FONCTION(TABLE=SOLNL,
                     PARA_X='INST',
-                    PARA_Y='EPZZ',);
+                    PARA_Y='EPZZ',)
 
 ##COMPARAISON
 IMPR_FONCTION(FORMAT ='XMGRACE',UNITE=38,COURBE=(_F(FONC_X=F_EPM, FONC_Y=F_SIM),
@@ -218,18 +218,18 @@ IMPR_FONCTION(FORMAT ='XMGRACE',UNITE=38,COURBE=(_F(FONC_X=F_EPM, FONC_Y=F_SIM),
 
 # DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
 DIF1=CALC_FONCTION(COMB=(_F(FONCTION = F_EPA, COEF =  1.),
-                         _F(FONCTION = F_EPM, COEF = -1.),),);
+                         _F(FONCTION = F_EPM, COEF = -1.),),)
 
-TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
+TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),)
 
-TEP=CREA_TABLE(FONCTION= _F(FONCTION = F_EPA,PARA = ('INST','EPZZ')),);
+TEP=CREA_TABLE(FONCTION= _F(FONCTION = F_EPA,PARA = ('INST','EPZZ')),)
 
 DIF2=CALC_FONCTION(COMB=(_F( FONCTION = F_SIA, COEF =  1.),
-                         _F( FONCTION = F_SIM, COEF = -1.),),);
+                         _F( FONCTION = F_SIM, COEF = -1.),),)
 
-TDIF2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),);
+TDIF2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),)
 
-TSI=CREA_TABLE(FONCTION= _F(FONCTION = F_SIA,PARA = ('INST','SIZZ')),);
+TSI=CREA_TABLE(FONCTION= _F(FONCTION = F_SIA,PARA = ('INST','SIZZ')),)
 
 def ecart_relatif(diff, ref):
     if abs(ref) == 0 :

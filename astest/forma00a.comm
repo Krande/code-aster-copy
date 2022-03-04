@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # ------------------
 # Lecture du maillage dans le fichier de maillage et creation du concept mail
 
-mail = LIRE_MAILLAGE  ( FORMAT='MED') ;
+mail = LIRE_MAILLAGE  ( FORMAT='MED')
 
 
 # Definition du modele
@@ -48,7 +48,7 @@ mail = LIRE_MAILLAGE  ( FORMAT='MED') ;
 modl=AFFE_MODELE(MAILLAGE=mail,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='AXIS',),);
+                        MODELISATION='AXIS',),)
 
 
 # Definition du materiau
@@ -58,7 +58,7 @@ modl=AFFE_MODELE(MAILLAGE=mail,
 #   - coefficient de poisson.
 
 acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 # Affectation du materiau sur le maillage
 # ---------------------------------------
@@ -67,7 +67,7 @@ acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
 
 chmat=AFFE_MATERIAU(MAILLAGE=mail,
                     AFFE=_F(TOUT='OUI',
-                            MATER=acier,),);
+                            MATER=acier,),)
 
 # Definition des conditions aux limites
 # -------------------------------------
@@ -78,7 +78,7 @@ chmat=AFFE_MATERIAU(MAILLAGE=mail,
 
 clim=AFFE_CHAR_MECA(MODELE=modl,
                 FACE_IMPO=_F(GROUP_MA='LAB',
-                            DY=0,),);
+                            DY=0,),)
 
 # Definition du chargement:
 # -------------------------
@@ -91,7 +91,7 @@ clim=AFFE_CHAR_MECA(MODELE=modl,
 
 f_y=DEFI_FONCTION(NOM_PARA='Y',
                   VALE=(0.0,200000.0,
-                        4.0,0.0,),);
+                        4.0,0.0,),)
 
 # Affectation du chargement
 # -------------------------
@@ -100,7 +100,7 @@ f_y=DEFI_FONCTION(NOM_PARA='Y',
 
 charg=AFFE_CHAR_MECA_F(MODELE=modl,
            PRES_REP=_F(GROUP_MA=('LDA',),
-                       PRES=f_y,),);
+                       PRES=f_y,),)
 
 # Resolution
 # ----------
@@ -113,7 +113,7 @@ res1=MECA_STATIQUE(
                    MODELE=modl,
                    CHAM_MATER=chmat,
                    EXCIT=(_F(CHARGE=charg,),
-                        _F(CHARGE=clim,),),);
+                        _F(CHARGE=clim,),),)
 
 # Calcul des contraintes
 # ----------------------
@@ -133,12 +133,12 @@ res1=CALC_CHAMP(reuse=res1,RESULTAT=res1,CONTRAINTE=('SIGM_ELNO'))
 
 IMPR_RESU(FORMAT="RESULTAT",MODELE=modl,
           RESU=_F(RESULTAT=res1,
-                  GROUP_NO='NOEUDA',),);
+                  GROUP_NO='NOEUDA',),)
 
 # Impression des resultats pour une visualisation avec SALOME
 
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=res1,),);
+          RESU=_F(RESULTAT=res1,),)
 
 # Verification des resultats (Test de non-regression)
 #
@@ -167,4 +167,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 # Commande obligatoire pour clore une execution
 # ---------------------------------------------
 
-FIN();
+FIN()

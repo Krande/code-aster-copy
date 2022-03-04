@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # person_in_charge: marina.bottoni at edf.fr
 #
 # -------------------------------------------------------
-# NON REGRESSION TEST, ONE CRACK, HOT AIR INJECTION 
+# NON REGRESSION TEST, ONE CRACK, HOT AIR INJECTION
 #  Test of the "POURSUITE" command on MACR_ECREVISSE
 # -------------------------------------------------------
 
@@ -28,7 +28,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 
-# Tested non regression values 
+# Tested non regression values
 NONREGR = (9.98114973621, 8.46099239237E-06, 8.21283844798E-06,\
            6.61912102113E-06,-6.99999370406E-05,10.7893260664,\
            25.9790113468,135.256043116,116.706888382,0.02456396, 0.001040661)
@@ -326,7 +326,7 @@ T_E_HD = POST_RELEVE_T(ACTION = _F(CRITERE    = 'RELATIF',
 
 # TEST OF RESULTS (NON-REGRESSION)
 # ---------------------------------
-ENERGIE = RECU_TABLE(CO=RMECA,NOM_TABLE='PARA_CALC',);
+ENERGIE = RECU_TABLE(CO=RMECA,NOM_TABLE='PARA_CALC',)
 
 TEST_TABLE(CRITERE   = 'RELATIF',
            VALE_CALC = NONREGR[0],
@@ -344,7 +344,7 @@ TEST_TABLE(
            FILTRE    = _F(NOM_PARA = 'INST',
                           VALE     = 500.0,),
            )
-           
+
 TEST_TABLE(
            VALE_CALC = NONREGR[2],
            NOM_PARA  = 'DY',

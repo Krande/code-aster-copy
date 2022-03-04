@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,48 +19,48 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IGNORE_ALARM='CONTACT2_14',DEBUG=_F(SDVERI='OUI'))
 
-MESH=LIRE_MAILLAGE(FORMAT='MED',);
+MESH=LIRE_MAILLAGE(FORMAT='MED',)
 
 MESH=MODI_MAILLAGE(reuse =MESH,
                    MAILLAGE=MESH,
                    ORIE_PEAU=(_F(GROUP_MA_PEAU='P_cont',),
-                                 _F(GROUP_MA_PEAU='M_cont',),),);
+                                 _F(GROUP_MA_PEAU='M_cont',),),)
 
 MAT_pu=DEFI_MATERIAU(ELAS=_F(E=210000.0,
-                             NU=0.3,),);
+                             NU=0.3,),)
 
 MAT_fo=DEFI_MATERIAU(ELAS=_F(E=70000.0,
-                             NU=0.3,),);
+                             NU=0.3,),)
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                          1.0,1.0,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=2,),);
+                                    NOMBRE=2,),)
 
 MO=AFFE_MODELE(MAILLAGE=MESH,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
 MA=AFFE_MATERIAU(MAILLAGE=MESH,
                  AFFE=(_F(GROUP_MA='Massif',
                           MATER=MAT_fo,),
                        _F(GROUP_MA='Poincon',
-                          MATER=MAT_pu,),),);
+                          MATER=MAT_pu,),),)
 
 CL=AFFE_CHAR_CINE(MODELE=MO,
                   MECA_IMPO=(_F(GROUP_MA='Axe',
                                 DX=0.0,),
                              _F(GROUP_MA='Encast',
                                 DX=0.0,
-                                DY=0.0,),),);
+                                DY=0.0,),),)
 
 Force=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_CONTOUR=_F(GROUP_MA='Force',
-                                      FY=-100.0,),);
+                                      FY=-100.0,),)
 
 Cont=DEFI_CONTACT(MODELE         = MO,
                   FORMULATION    = 'CONTINUE',
@@ -69,7 +69,7 @@ Cont=DEFI_CONTACT(MODELE         = MO,
                   ZONE=_F(GROUP_MA_MAIT='M_cont',
                           GROUP_MA_ESCL='P_cont',
                           CONTACT_INIT='INTERPENETRE',
-                          ),);
+                          ),)
 
 ContFr=DEFI_CONTACT(MODELE       = MO,
                   FORMULATION    = 'CONTINUE',
@@ -83,7 +83,7 @@ ContFr=DEFI_CONTACT(MODELE       = MO,
                           CONTACT_INIT='INTERPENETRE',
                           COULOMB=0.1,
                           SANS_GROUP_NO_FR='P',
-                          ),);
+                          ),)
 
 MESH=DEFI_GROUP(reuse =MESH,
                   MAILLAGE=MESH,
@@ -94,7 +94,7 @@ MESH=DEFI_GROUP(reuse =MESH,
                                  _F(OPTION='NOEUD_ORDO',
                                    NOM='Top_n',
                                    GROUP_MA='P_cont',
-                                   GROUP_NO_ORIG='P',),),);
+                                   GROUP_NO_ORIG='P',),),)
 # Calcul sans frottement
 
 RESU=STAT_NON_LINE(MODELE=MO,
@@ -110,14 +110,14 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(),
                    NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),);
+                             REAC_ITER=1,),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIEF_ELNO'))
 
 
 RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
-               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'));
+               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'))
 
 # Calcul avec frottement
 
@@ -134,14 +134,14 @@ RESUFr=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(),
                    NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),);
+                             REAC_ITER=1,),)
 
 RESUFr=CALC_CHAMP(reuse=RESUFr,RESULTAT=RESUFr,CONTRAINTE=('SIEF_ELNO'))
 
 
 RESUFr=CALC_CHAMP(reuse =RESUFr,
                RESULTAT=RESUFr,
-               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'));
+               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'))
 
 
 IMPR_RESU(FORMAT='MED',
@@ -150,7 +150,7 @@ IMPR_RESU(FORMAT='MED',
                   NOM_CHAM=('DEPL','FORC_NODA',),),
                 _F(RESULTAT=RESUFr,
                   NOM_CHAM=('DEPL','FORC_NODA',),),),
-                );
+                )
 
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
@@ -160,7 +160,7 @@ IMPR_RESU(FORMAT='MED',
                 _F(RESULTAT=RESUFr,
                   NOM_CHAM='DEPL',
                   NOM_CMP=('DX','DY',),),),
-                );
+                )
 
 RELE=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='Depl. axial',
@@ -183,7 +183,7 @@ RELE=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INST=1,
                               GROUP_NO='Top_n',
                               NOM_CMP='LAGS_C',),
-                           ),);
+                           ),)
 
 RELEFr=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='Depl. axial avec frott.',
@@ -206,7 +206,7 @@ RELEFr=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INST=1,
                               GROUP_NO='Top_n',
                               NOM_CMP=('LAGS_C','LAGS_F1',)),
-                           ),);
+                           ),)
 
 MOINS_UN = FORMULE(VALE='-1.0*LAGS_C',
                    NOM_PARA='LAGS_C',)
@@ -218,7 +218,7 @@ RELE=CALC_TABLE(reuse=RELE,
                 ACTION=(_F(OPERATION='OPER',
                            NOM_PARA='MLAGS_C',
                            FORMULE=MOINS_UN,),
-                        ),);
+                        ),)
 
 RELEFr=CALC_TABLE(reuse=RELEFr,
                 TABLE=RELEFr,
@@ -228,35 +228,35 @@ RELEFr=CALC_TABLE(reuse=RELEFr,
                         _F(OPERATION='OPER',
                            NOM_PARA='MLAGS_F1',
                            FORMULE=PRESTANG,),
-                        ),);
+                        ),)
 
 DEPLax=RECU_FONCTION(TABLE=RELE,
                      PARA_X='ABSC_CURV',
-                     PARA_Y='DY',);
+                     PARA_Y='DY',)
 
 DEPLra=RECU_FONCTION(TABLE=RELE,
                      PARA_X='ABSC_CURV',
-                     PARA_Y='DX',);
+                     PARA_Y='DX',)
 
 PRES=RECU_FONCTION(TABLE=RELE,
                    PARA_X='ABSC_CURV',
-                   PARA_Y='MLAGS_C',);
+                   PARA_Y='MLAGS_C',)
 
 DEPLaxFr=RECU_FONCTION(TABLE=RELEFr,
                      PARA_X='ABSC_CURV',
-                     PARA_Y='DY',);
+                     PARA_Y='DY',)
 
 DEPLraFr=RECU_FONCTION(TABLE=RELEFr,
                      PARA_X='ABSC_CURV',
-                     PARA_Y='DX',);
+                     PARA_Y='DX',)
 
 PRESFr=RECU_FONCTION(TABLE=RELEFr,
                    PARA_X='ABSC_CURV',
-                   PARA_Y='MLAGS_C',);
+                   PARA_Y='MLAGS_C',)
 
 PRESTgFr=RECU_FONCTION(TABLE=RELEFr,
                    PARA_X='ABSC_CURV',
-                   PARA_Y='MLAGS_F1',);
+                   PARA_Y='MLAGS_F1',)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=29,
@@ -270,7 +270,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               GRILLE_X=10,
               GRILLE_Y=0.02,
               LEGENDE_X='Rayon (mm)',
-              LEGENDE_Y='Deplacement axial (mm)',);
+              LEGENDE_Y='Deplacement axial (mm)',)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=30,
@@ -284,7 +284,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               GRILLE_X=10,
               GRILLE_Y=0.002,
               LEGENDE_X='Rayon (mm)',
-              LEGENDE_Y='Deplacement radial (mm)',);
+              LEGENDE_Y='Deplacement radial (mm)',)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=31,
@@ -298,7 +298,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               GRILLE_X=10,
               GRILLE_Y=50,
               LEGENDE_X='Rayon',
-              LEGENDE_Y='Pression',);
+              LEGENDE_Y='Pression',)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=32,
@@ -311,7 +311,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               GRILLE_X=10,
               GRILLE_Y=5,
               LEGENDE_X='Rayon',
-              LEGENDE_Y='Pression',);
+              LEGENDE_Y='Pression',)
 
 # ===========================================
 # Tests
@@ -358,4 +358,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='M',
                 ),
           )
 
-FIN();
+FIN()

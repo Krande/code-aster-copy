@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ MA_A=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = M_LLLL,
                                      M_TTLT = 0.,
                                      M_LTLT = M_LTLT),)
 
-MAIL=LIRE_MAILLAGE(FORMAT    = 'MED',);
+MAIL=LIRE_MAILLAGE(FORMAT    = 'MED',)
 
 MODE=AFFE_MODELE(MAILLAGE = MAIL,
                  AFFE     = (_F(GROUP_MA    = ('BETON','BOUT'),
@@ -69,7 +69,7 @@ MATE=AFFE_MATERIAU(MAILLAGE = MAIL,
                    AFFE     = (_F(GROUP_MA = 'MEMBRA',
                                   MATER    = MA_A,),
                                _F(GROUP_MA = 'BETON',
-                                  MATER    = MA_B,)));
+                                  MATER    = MA_B,)))
 
 CL_DEPL=AFFE_CHAR_MECA(MODELE   = MODE,
                         DOUBLE_LAGRANGE='NON',
@@ -78,7 +78,7 @@ CL_DEPL=AFFE_CHAR_MECA(MODELE   = MODE,
                                       DY = 0.,
                                       DZ = 0.),
                                    _F(GROUP_MA = 'BORDS',
-                                      DY = 0.)),);
+                                      DY = 0.)),)
 
 # Couple de 400 N.m exerce en bout de plaque
 F_FORCE = FORMULE(VALE='((Z-0.08)/0.08)*937500.',
@@ -91,7 +91,7 @@ COUPLE=AFFE_CHAR_MECA_F(MODELE   = MODE,
 ORI_MEMB=AFFE_CARA_ELEM(MODELE = MODE,
                         MEMBRANE =(_F(GROUP_MA     = 'MEMBRA',
                                       ANGL_REP_1   = (0., 0.,),
-                                      EPAIS = 1.0)));
+                                      EPAIS = 1.0)))
 
 #
 # ----------------------------------------------
@@ -169,4 +169,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

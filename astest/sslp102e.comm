@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E = EE,
                           NU = poisson,
                           ALPHA = 1.0e-5),
                   ECRO_LINE=_F(D_SIGM_EPSI=EE/ratio,
-                               SY=sigma_max), 
+                               SY=sigma_max),
 
                                  )
 
@@ -98,7 +98,7 @@ CM=AFFE_MATERIAU(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
                                   MATER = MAT),
                                    )
-                                   
+
 #AVEC DEFORMATION THERMIQUE
 CMTH=AFFE_MATERIAU(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
@@ -150,7 +150,7 @@ RESUTH=CALC_CHAMP(reuse=RESUTH,
                     CONTRAINTE=('SIEF_ELNO',),
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
                     CRITERES=('SIEQ_ELGA',),
-                    VARI_INTERNE=('VARI_ELNO',),);
+                    VARI_INTERNE=('VARI_ELNO',),)
 
 IMPR_RESU(RESU=_F(RESULTAT=RESUTH), UNITE=80, FORMAT='MED')
 
@@ -169,9 +169,9 @@ RESUINI=CALC_CHAMP(reuse=RESUINI,
                     CONTRAINTE=('SIEF_ELNO',),
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
                     CRITERES=('SIEQ_ELGA',),
-                    VARI_INTERNE=('VARI_ELNO',),);
+                    VARI_INTERNE=('VARI_ELNO',),)
 
-IMPR_RESU(RESU=_F(RESULTAT=RESUINI), UNITE=81, FORMAT='MED')              
+IMPR_RESU(RESU=_F(RESULTAT=RESUINI), UNITE=81, FORMAT='MED')
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS THERMIQUES
@@ -189,7 +189,7 @@ GTH1=CALC_G(RESULTAT=RESUTH,
                 R_INF=1.,
                 R_SUP=5.),
             OPTION='G_EPSI',
-            );
+            )
 
 GTH2=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -198,7 +198,7 @@ GTH2=CALC_G(RESULTAT=RESUTH,
                     R_INF=5.,
                     R_SUP=10.),
             OPTION='G_EPSI',
-                    );
+                    )
 
 GTH3=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -207,7 +207,7 @@ GTH3=CALC_G(RESULTAT=RESUTH,
                     R_INF=10.,
                     R_SUP=20.),
             OPTION='G_EPSI',
-                    );
+                    )
 
 GTH4=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -216,7 +216,7 @@ GTH4=CALC_G(RESULTAT=RESUTH,
                      R_INF=20.,
                      R_SUP=30.),
             OPTION='G_EPSI',
-                     );
+                     )
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES
@@ -229,7 +229,7 @@ GINI1=CALC_G(RESULTAT=RESUINI,
                     R_INF=1.,
                     R_SUP=5.),
             OPTION='G_EPSI',
-            );
+            )
 
 GINI2=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -238,7 +238,7 @@ GINI2=CALC_G(RESULTAT=RESUINI,
                 R_INF=5.,
                 R_SUP=10.),
             OPTION='G_EPSI',
-                );
+                )
 
 GINI3=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -247,7 +247,7 @@ GINI3=CALC_G(RESULTAT=RESUINI,
                 R_INF=10.,
                 R_SUP=20.),
             OPTION='G_EPSI',
-                );
+                )
 
 GINI4=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -256,8 +256,8 @@ GINI4=CALC_G(RESULTAT=RESUINI,
                     R_INF=20.,
                     R_SUP=30.),
             OPTION='G_EPSI',
-                    );
-                    
+                    )
+
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #
 #--------------------------------------------------------------------
@@ -271,7 +271,7 @@ Gther4_elas= 0.6300259991916937
 #VALEURS EN ELASTO PLASTICITE
 Gther1= 0.43624301954411676
 Gther2= 0.4359888525889636
-Gther3= 0.43596620466516045 
+Gther3= 0.43596620466516045
 Gther4= 0.4359945607557262
 
 

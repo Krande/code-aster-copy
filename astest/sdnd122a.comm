@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='NON'),      # ok sdveri mais temps x1.5
      )
 
-MA=LIRE_MAILLAGE(FORMAT='ASTER',);
+MA=LIRE_MAILLAGE(FORMAT='ASTER',)
 
 MO = AFFE_MODELE( MAILLAGE = MA,
         AFFE = (_F(  GROUP_MA=('M1','P2',), PHENOMENE='MECANIQUE', MODELISATION = 'DIS_T'),
@@ -47,21 +47,21 @@ CDL=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=( _F(  GROUP_NO='N1', DX = 0., DY = 0.,
 
 Ke=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                   MODELE=MO,
-                  CARA_ELEM=CARA_ELE,);
+                  CARA_ELEM=CARA_ELE,)
 
 Me=CALC_MATR_ELEM(OPTION='MASS_MECA',
                   MODELE=MO,
-                  CARA_ELEM=CARA_ELE,);
+                  CARA_ELEM=CARA_ELE,)
 
-NUM=NUME_DDL(MATR_RIGI=Ke,);
+NUM=NUME_DDL(MATR_RIGI=Ke,)
 
 K=ASSE_MATRICE(MATR_ELEM=Ke,
                NUME_DDL=NUM,
-               CHAR_CINE=CDL,);
+               CHAR_CINE=CDL,)
 
 M=ASSE_MATRICE(MATR_ELEM=Me,
                NUME_DDL=NUM,
-               CHAR_CINE=CDL,);
+               CHAR_CINE=CDL,)
 
 MODES=CALC_MODES(MATR_RIGI=K,
                  CALC_FREQ=_F(FREQ=(0.01,10.,),
@@ -75,10 +75,10 @@ MODES=CALC_MODES(MATR_RIGI=K,
                  )
 
 # les parametres pour MODE_NON_LINE
-hu=5;
-hf=200;
-nbranch=105;
-ndiscr=1;
+hu=5
+hf=200
+nbranch=105
+ndiscr=1
 kchoc = 50.
 jeu = 0.01
 
@@ -154,4 +154,4 @@ MODE_20 = REST_MODE_NONL(MODE_NON_LINE=MNL,
                      TYPE_RESU = 'DYNA_TRANS',
                      NUME_ORDRE = 10,)
 
-FIN();
+FIN()

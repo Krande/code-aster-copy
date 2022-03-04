@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-TITRE = 'PHI2AS TEST 2 VISC_CIN2_MEMO ';
+TITRE = 'PHI2AS TEST 2 VISC_CIN2_MEMO '
 
 
 #################################
@@ -73,7 +73,7 @@ UN=DEFI_CONSTANTE( VALE=1.0)
 
 ZERO=DEFI_CONSTANTE( VALE=0.0)
 
-Q=DEFI_CONSTANTE(VALE=0.,);
+Q=DEFI_CONSTANTE(VALE=0.,)
 
 ETA=DEFI_FONCTION(NOM_PARA='TEMP', VALE=(0.,0.5,2000.,0.5))
 
@@ -192,7 +192,7 @@ P_MOINS=DEFI_FONCTION(
                                )
                         )
 
-#DYVAR= -0.02 ;
+#DYVAR= -0.02
 DY1=-2.08000E-02
 
 DY2=-8.0E-04
@@ -329,7 +329,7 @@ RESU=STAT_NON_LINE(
                                  EVAL_CHAM ='MAX',),
                                  ),
 
-                       );
+                       )
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
 

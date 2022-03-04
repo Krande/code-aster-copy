@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,23 +20,23 @@
 #
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      IGNORE_ALARM = ('CALCCHAMP_6'),);
+      IGNORE_ALARM = ('CALCCHAMP_6'),)
 
-# On ignore l'alarme CALCCHAMP_6 : elle est generee par l'utilisation de CALC_CHAMP 
+# On ignore l'alarme CALCCHAMP_6 : elle est generee par l'utilisation de CALC_CHAMP
 # sans le mot-cle EXCIT avec des concepts de type dynamique (modes) qui ne contiennent pas l'excitation
 #
 
-S1 = 0.08;
+S1 = 0.08
 
-I1 = 0.00106667;
+I1 = 0.00106667
 
-I2 = 0.000266667;
+I2 = 0.000266667
 
-I3 = 0.000745;
+I3 = 0.000745
 
 #
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 #
 
 
@@ -46,16 +46,16 @@ MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAT0=DEFI_MATERIAU(ELAS=_F(E=40000000000.0,
                            NU=0.15,
-                           RHO=0.0,),);
+                           RHO=0.0,),)
 #
 MAT1=DEFI_MATERIAU(ELAS=_F(E=40000000000.0,
                            NU=0.15,
-                           RHO=2500.0,),);
+                           RHO=2500.0,),)
 #
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E=40000000000.0,
                            NU=0.15,
-                           RHO=4620.0,),);
+                           RHO=4620.0,),)
 #
 # AFFECTATION DU MATERIAU
 
@@ -66,7 +66,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                              MATER=MAT2,),
                           _F(GROUP_MA='JONCTIONS',
                              MATER=MAT0,),
-                             ),);
+                             ),)
 #
 # DEFINITION DU MODELE
 # les mailles particulieres ajoutees sont des seg2 assurant la
@@ -82,7 +82,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                      _F(GROUP_MA='JONCTIONS',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='POU_D_T',)
-                        ,),);
+                        ,),)
 #
 # CARACTERISTIQUES DES POUTRES, ET AUTRES ELEMENTS
 # les mailles particulieres ajoutees sont des seg2 assurant la
@@ -101,7 +101,7 @@ CARAELEM=AFFE_CARA_ELEM(MODELE=MO,
                                   CARA=('A','IY','IZ','AY','AZ','JX',),
                                   VALE=(0.0000000001,0.0000000001,10.,1.2,1.2,0.0000000001,),),),
                         COQUE=_F(GROUP_MA=('PLAN11','PLAN12','PLAN22','PLAN21','PLAN32','PLAN31',),
-                                 EPAIS=0.2,),);
+                                 EPAIS=0.2,),)
 #
 # CALCUL DE LA BASE MODALE
 #
@@ -115,7 +115,7 @@ CH1A=AFFE_CHAR_MECA(MODELE=MO,
                                 DZ=0.0,
                                 DRX=0.0,
                                 DRY=0.0,
-                                DRZ=0.0,),);
+                                DRZ=0.0,),)
 #
 #
 # CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITES
@@ -124,7 +124,7 @@ RIGIELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MO,
                         CHAM_MATER=CHMAT,
                         CARA_ELEM=CARAELEM,
-                        CHARGE=CH1A,);
+                        CHARGE=CH1A,)
 #
 # CALCUL DES MATRICES ELEMENTAIRES DE MASSES
 
@@ -132,7 +132,7 @@ MASSELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MO,
                         CHAM_MATER=CHMAT,
                         CARA_ELEM=CARAELEM,
-                        CHARGE=CH1A,);
+                        CHARGE=CH1A,)
 #
 # NUMEROTATIOM
 
@@ -141,12 +141,12 @@ NUMEDDL=NUME_DDL(MATR_RIGI=RIGIELEM)
 # MATRICE DE RIGIDITE
 
 RIGIDITE=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
-                      NUME_DDL=NUMEDDL,);
+                      NUME_DDL=NUMEDDL,)
 #
 # MATRICE DE MASSE
 
 MASSE=ASSE_MATRICE(MATR_ELEM=MASSELEM,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 #
 # CALCUL MODAL POUR LES RECOMBINAISOMS
 
@@ -177,7 +177,7 @@ IMPR_RESU(MODELE=MO,
           UNITE=39,
           RESU=_F(RESULTAT=MODE1,
                   NOM_CHAM='DEPL',
-                  NUME_MODE=(1,2,3,4,5,6,7,8,),),);
+                  NUME_MODE=(1,2,3,4,5,6,7,8,),),)
 #
 MODE1=CALC_CHAMP(reuse=MODE1,RESULTAT=MODE1,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
 
@@ -185,7 +185,7 @@ MODE1=CALC_CHAMP(reuse=MODE1,RESULTAT=MODE1,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO')
 
 MODE1=CALC_CHAMP(reuse =MODE1,
               RESULTAT=MODE1,
-              FORCE='REAC_NODA',);
+              FORCE='REAC_NODA',)
 
 
 ##################
@@ -584,34 +584,34 @@ TEST_RESU(RESU=_F(NUME_ORDRE=8,
 TABMASS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                   MODELE=MO,
                   CHAM_MATER=CHMAT,
-                  CARA_ELEM=CARAELEM,);
+                  CARA_ELEM=CARAELEM,)
 #
 #
 
 LFREQ=DEFI_LIST_REEL(DEBUT=1.0,
                      INTERVALLE=_F(JUSQU_A=16.0,
-                                   PAS=0.01,),);
+                                   PAS=0.01,),)
 #
 # INTERSPECTRE D EXCITATION
-XSHI = 0.05;
+XSHI = 0.05
 
 #
-F1 = 1.51;
+F1 = 1.51
 
-F2 = 2.05;
+F2 = 2.05
 
-F3 = 2.34;
+F3 = 2.34
 
-F4 = 4.86;
+F4 = 4.86
 
 #
-A1 = 0.15;
+A1 = 0.15
 
-A2 = 0.25;
+A2 = 0.25
 
-A3 = 0.25;
+A3 = 0.25
 
-A4 = 0.3;
+A4 = 0.3
 
 #
 
@@ -785,18 +785,18 @@ SDEPL1=CALC_FONC_INTERP(FONCTION=SDEPL,
                         INTERPOL='LIN',
                         PROL_DROITE='LINEAIRE',
                         PROL_GAUCHE='LINEAIRE',
-                        TITRE='SPECTRE DE DEPLACEMENT',);
+                        TITRE='SPECTRE DE DEPLACEMENT',)
 #
 
 SPECT_X=DEFI_NAPPE(NOM_PARA='AMOR',
                    PARA=0.05,
                    FONCTION=SDEPL1,
-                   INTERPOL='LIN',);
+                   INTERPOL='LIN',)
 #
 
 MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
-                       PSEUDO_MODE=_F(AXE='X',),);
+                       PSEUDO_MODE=_F(AXE='X',),)
 #
 
 MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
@@ -805,12 +805,12 @@ MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EF
 
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
-                 FORCE='FORC_NODA',);
+                 FORCE='FORC_NODA',)
 #
 
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
-                 FORCE='REAC_NODA',);
+                 FORCE='REAC_NODA',)
 #
 
 SISMC=COMB_SISM_MODAL(MODE_MECA=MODE1,
@@ -825,7 +825,7 @@ SISMC=COMB_SISM_MODAL(MODE_MECA=MODE1,
                                NATURE='DEPL',),
                       COMB_MODE=_F(TYPE='CQC',),
                       OPTION=('DEPL','REAC_NODA','EFGE_ELNO',),
-                      IMPRESSION=_F(),);
+                      IMPRESSION=_F(),)
 #
 
 SISMS=COMB_SISM_MODAL(MODE_MECA=MODE1,
@@ -840,7 +840,7 @@ SISMS=COMB_SISM_MODAL(MODE_MECA=MODE1,
                                NATURE='DEPL',),
                       COMB_MODE=_F(TYPE='SRSS',),
                       OPTION=('DEPL','REAC_NODA','EFGE_ELNO',),
-                      IMPRESSION=_F(),);
+                      IMPRESSION=_F(),)
 #
 
 SISMR=COMB_SISM_MODAL(MODE_MECA=MODE1,
@@ -856,7 +856,7 @@ SISMR=COMB_SISM_MODAL(MODE_MECA=MODE1,
                       COMB_MODE=_F(TYPE='DSC',
                                    DUREE=30.0,),
                       OPTION=('DEPL','REAC_NODA','EFGE_ELNO',),
-                      IMPRESSION=_F(),);
+                      IMPRESSION=_F(),)
 #
 
 DEPLMOC=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -864,7 +864,7 @@ DEPLMOC=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    RESULTAT=SISMC,
                    NOM_CHAM='DEPL',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='CHAMP DE DEPLACEMENT',);
+                   TITRE='CHAMP DE DEPLACEMENT',)
 #
 
 REACMOC=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -872,7 +872,7 @@ REACMOC=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    RESULTAT=SISMC,
                    NOM_CHAM='REAC_NODA',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='REACTIONS NODALES',);
+                   TITRE='REACTIONS NODALES',)
 #
 
 EFGEMOC=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
@@ -880,7 +880,7 @@ EFGEMOC=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    RESULTAT=SISMC,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='CONTRAINTES',);
+                   TITRE='CONTRAINTES',)
 #
 
 DEPLMOS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -888,7 +888,7 @@ DEPLMOS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    RESULTAT=SISMS,
                    NOM_CHAM='DEPL',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='CHAMP DE DEPLACEMENT',);
+                   TITRE='CHAMP DE DEPLACEMENT',)
 #
 
 REACMOS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -896,7 +896,7 @@ REACMOS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    RESULTAT=SISMS,
                    NOM_CHAM='REAC_NODA',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='REACTIONS NODALES',);
+                   TITRE='REACTIONS NODALES',)
 #
 
 EFGEMOS=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
@@ -904,7 +904,7 @@ EFGEMOS=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    RESULTAT=SISMS,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='CONTRAINTES',);
+                   TITRE='CONTRAINTES',)
 #
 
 DEPLMOR=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -912,7 +912,7 @@ DEPLMOR=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    RESULTAT=SISMR,
                    NOM_CHAM='DEPL',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='CHAMP DE DEPLACEMENT',);
+                   TITRE='CHAMP DE DEPLACEMENT',)
 #
 
 REACMOR=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -920,7 +920,7 @@ REACMOR=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    RESULTAT=SISMR,
                    NOM_CHAM='REAC_NODA',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='REACTIONS NODALES',);
+                   TITRE='REACTIONS NODALES',)
 #
 
 EFGEMOR=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
@@ -928,7 +928,7 @@ EFGEMOR=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    RESULTAT=SISMR,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD_CMP=('DIR','X',),
-                   TITRE='CONTRAINTES',);
+                   TITRE='CONTRAINTES',)
 #
 #
 # COLONNE B
@@ -5711,4 +5711,4 @@ TEST_RESU(CHAM_NO=(_F(REFERENCE='SOURCE_EXTERNE',
 
 #
 
-FIN();
+FIN()

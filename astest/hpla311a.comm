@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -105,9 +105,9 @@ MO=AFFE_MODELE( MAILLAGE=MA,
                        )
 
 #
-E_T=DEFI_CONSTANTE(VALE=2.E11,);
-NU_T=DEFI_CONSTANTE(VALE=0.3,);
-ALPHA_T=DEFI_CONSTANTE(VALE=1.2E-5,);
+E_T=DEFI_CONSTANTE(VALE=2.E11,)
+NU_T=DEFI_CONSTANTE(VALE=0.3,)
+ALPHA_T=DEFI_CONSTANTE(VALE=1.2E-5,)
 
 MAT=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_T,
                                  NU = NU_T,
@@ -146,7 +146,7 @@ RIGI_ELE=CALC_MATR_ELEM(        MODELE=MO,
 
 LIST1=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=1,),);
+                                  NOMBRE=1,),)
 
 CONT1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
             MODELE=MO,
@@ -155,7 +155,7 @@ CONT1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
                          NUME_ORDRE=1),
             EXCIT=_F(CHARGE=CH),
             COMPORTEMENT=_F(RELATION='ELAS',),
-            );
+            )
 
 VECT_ELE=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT1,

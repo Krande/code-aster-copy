@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ MATER=DEFI_MATERIAU(
                                RHO        = 2500.,
                                AMOR_ALPHA = 6.69E-5,
                                AMOR_BETA  = 20.06),
-                    );
+                    )
 
 
 MAILL=LIRE_MAILLAGE(FORMAT='MED')
@@ -45,7 +45,7 @@ MAILL=LIRE_MAILLAGE(FORMAT='MED')
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
                           AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
 
-MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,
                         AFFE=_F( TOUT = 'OUI',   MODELISATION = 'Q4GG',
                               PHENOMENE = 'MECANIQUE') )
 
@@ -66,14 +66,14 @@ CARELEM=AFFE_CARA_ELEM( MODELE=MODEL,
 INER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                MODELE=MODEL,
                CHAM_MATER=CHMAT,
-               CARA_ELEM=CARELEM,);
+               CARA_ELEM=CARELEM,)
 
 IMPR_TABLE(TABLE=INER)
 
 F_PRES=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,    0.0,
                                            0.0001, 1.0,
                                            1.0,    1.0,
-                           ),);
+                           ),)
 
 #-------------------------------------------------------------------------
 #
@@ -84,7 +84,7 @@ F_PRES=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,    0.0,
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
 #                     INTERVALLE=_F(JUSQU_A=2.7E-2,
                      INTERVALLE=_F(JUSQU_A=1.E-3,
-                                   PAS=1e-05,),);
+                                   PAS=1e-05,),)
 
 
 DYNA_AMO = DYNA_NON_LINE( MODELE=MODEL,
@@ -100,29 +100,29 @@ DYNA_AMO = DYNA_NON_LINE( MODELE=MODEL,
                                 REAC_INCR=1,),
                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                 FORMULATION='ACCELERATION',),
-                      );
+                      )
 
 '''
 DAMO_DEP=RECU_FONCTION(RESULTAT=DYNA_AMO,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DZ',
-                     GROUP_NO='N9',);
+                     GROUP_NO='N9',)
 
-IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_DEP,),),);
+IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_DEP,),),)
 
 DAMO_VIT=RECU_FONCTION(RESULTAT=DYNA_AMO,
                      NOM_CHAM='VITE',
                      NOM_CMP='DZ',
-                     GROUP_NO='N9',);
+                     GROUP_NO='N9',)
 
-IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_VIT,),),);
+IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_VIT,),),)
 
 DAMO_ACC=RECU_FONCTION(RESULTAT=DYNA_AMO,
                      NOM_CHAM='ACCE',
                      NOM_CMP='DZ',
-                     GROUP_NO='N9',);
+                     GROUP_NO='N9',)
 
-IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_ACC,),),);
+IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_ACC,),),)
 '''
 # ------------------------------
 # VERIFICATION DES DEPLACEMENTS

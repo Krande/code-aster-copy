@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,18 +25,18 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 
 lisi=DEFI_LIST_REEL(DEBUT=0,
                     INTERVALLE=_F(JUSQU_A=1,
-                                  PAS=1,),);
+                                  PAS=1,),)
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi,),
                          ECHEC=_F(EVENEMENT='ERREUR',
-                         ACTION='DECOUPE',),);
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1),);
+                         ACTION='DECOUPE',),)
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1),)
 
 Mail=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 Mail=MODI_MAILLAGE(reuse=Mail,
                    MAILLAGE=Mail,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_2','Group_1','Group_3','Group_4',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_2','Group_1','Group_3','Group_4',),),)
 
 Mail2=CREA_MAILLAGE(MAILLAGE=Mail,
                     DECOUPE_LAC=_F(GROUP_MA_ESCL='Group_1',),)
@@ -48,17 +48,17 @@ Mail2 = DEFI_GROUP( reuse = Mail2, MAILLAGE = Mail2,
          )
 
 mat1=DEFI_MATERIAU(ELAS=_F(E=2000,
-                           NU=0.3,),);
+                           NU=0.3,),)
 
 MODI=AFFE_MODELE(MAILLAGE=Mail2,
                     AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 AFFE=AFFE_MATERIAU(MAILLAGE=Mail2,
                    MODELE=MODI,
                    AFFE=_F(TOUT='OUI',
-                           MATER=mat1,),);
+                           MATER=mat1,),)
 
 DEFICO=DEFI_CONTACT(MODELE=MODI,
                     INFO=1,
@@ -69,7 +69,7 @@ DEFICO=DEFI_CONTACT(MODELE=MODI,
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
                             ALGO_CONT='LAC',
-                            TYPE_APPA="ROBUSTE",),);
+                            TYPE_APPA="ROBUSTE",),)
 
 CHAR1=AFFE_CHAR_CINE(MODELE=MODI,
                      MECA_IMPO=(_F(GROUP_MA='Symx',
@@ -77,10 +77,10 @@ CHAR1=AFFE_CHAR_CINE(MODELE=MODI,
                                 _F(GROUP_MA='Symy',
                                    DY=0,),
                                 _F(GROUP_MA='Group_3',
-                                   DZ=0,),),);
+                                   DZ=0,),),)
 CHAR2= AFFE_CHAR_MECA(MODELE=MODI,
                              PRES_REP=_F(GROUP_MA='Group_4',
-                             PRES=25,), );
+                             PRES=25,), )
 
 
 
@@ -114,7 +114,7 @@ RES=STAT_NON_LINE(INFO=1,
                                   EVAL_CHAM  ='VALE',),
                                   ),
                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                 ITER_GLOB_MAXI=50,));
+                                 ITER_GLOB_MAXI=50,))
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RES, NOM_CHAM=('SIEF_ELGA','CONT_ELEM'), INST=1.0, GROUP_MA=('C1527'),))
 
@@ -127,7 +127,7 @@ IMPR_TABLE(TABLE=TAB)
 
 CALC_CHAMP(reuse=RES,
            RESULTAT=RES,
-           CONTRAINTE=('SIEF_NOEU'),);
+           CONTRAINTE=('SIEF_NOEU'),)
 
 
 
@@ -172,7 +172,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    VALE_CALC=-25.0,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(_F(INST=1.0,
                    TYPE_TEST='MIN',

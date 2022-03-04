@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
 
-                     );
+                     )
 
 G_0=CALC_G( OPTION='G',
             THETA=_F(
@@ -110,7 +110,7 @@ G_0=CALC_G( OPTION='G',
                      R_SUP=0.6,),
                      RESULTAT=CHAMDEP,
                      TOUT_ORDRE='OUI',
-            );
+            )
 
 
 # TEST DE REFERENCE SERVANT DE COMPARAISON AU CALCUL QUI SUIT
@@ -238,7 +238,7 @@ CHAMDEP2=STAT_NON_LINE( MODELE=MO,
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
 
-                     );
+                     )
 
 G_0_2=CALC_G( OPTION='G',
               THETA=_F(
@@ -247,7 +247,7 @@ G_0_2=CALC_G( OPTION='G',
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP2,
                        TOUT_ORDRE='OUI',
-            );
+            )
 
 # TEST DE LA LOI DE COMPORTEMENT ELAS_VMIS_PUIS DANS CALC_G
 
@@ -374,7 +374,7 @@ CHAMDEP3=STAT_NON_LINE( MODELE=MO,
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
 
-                     );
+                     )
 
 ###########################
 
@@ -388,7 +388,7 @@ G_0_3=CALC_G( OPTION='G',
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP3,
                        TOUT_ORDRE='OUI',
-             );
+             )
 
 # TEST DE LA LOI DE COMPORTEMENT ELAS_VMIS_PUIS DANS CALC_G
 
@@ -508,12 +508,12 @@ SIGM = FORMULE(VALE='SY+SY*(E*p/APUI/SY)**(1./NPUI)',
 
 Lx=DEFI_LIST_REEL(DEBUT=0,
                   INTERVALLE=_F(JUSQU_A=1.,
-                                PAS=0.0001,),);
+                                PAS=0.0001,),)
 
 
 SIGM2=CALC_FONC_INTERP(FONCTION=SIGM,
                       LIST_PARA=Lx,
-                      NOM_PARA='p',);
+                      NOM_PARA='p',)
 
 T1=CREA_TABLE(FONCTION=_F(FONCTION=SIGM2,PARA=('p','SIGM')))
 
@@ -546,7 +546,7 @@ CHAMDEP4=STAT_NON_LINE( MODELE=MO,
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
 
-                     );
+                     )
 
 ###########################
 
@@ -560,7 +560,7 @@ G_0_4=CALC_G( OPTION='G',
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP4,
                        TOUT_ORDRE='OUI',
-            );
+            )
 
 # TEST DE LA LOI DE COMPORTEMENT ELAS_VMIS_PUIS DANS CALC_G
 
@@ -679,7 +679,7 @@ CHAMDEP5=STAT_NON_LINE( MODELE=MO,
                        NEWTON=_F(MATRICE = 'TANGENTE',
                                  REAC_ITER = 1),
 
-                     );
+                     )
 
 ###########################
 

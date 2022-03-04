@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,75 +29,75 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IMPR_MACRO='OUI',DEBUG=_F(SDVERI='OUI'))
 # lecture du maillage lineaire
 ##############################
 
-MAIL_INI=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL_INI=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 #################################################
 # Creation des maillages hydraulique et mecanique
 #################################################
 
 MAIL_HY=CREA_MAILLAGE(MAILLAGE=MAIL_INI,
-                      LINE_QUAD=_F(TOUT='OUI',),);
+                      LINE_QUAD=_F(TOUT='OUI',),)
 
 MAIL_ME=CREA_MAILLAGE(MAILLAGE=MAIL_INI,
-                      LINE_QUAD=_F(TOUT='OUI',),);
+                      LINE_QUAD=_F(TOUT='OUI',),)
 
 MAIL_ME=MODI_MAILLAGE(reuse =MAIL_ME,
                       MAILLAGE=MAIL_ME,
-                      ORIE_PEAU=_F(GROUP_MA_PEAU=('GXXXXXX_GM3','GXXXXXX_GM2','GXXXXXX_GM1','GXXXXXX_GM4',),),);
+                      ORIE_PEAU=_F(GROUP_MA_PEAU=('GXXXXXX_GM3','GXXXXXX_GM2','GXXXXXX_GM1','GXXXXXX_GM4',),),)
 
 ########################################
 # Precision pour l'erreur en hydraulique
 # critere : resi_glob_maxi
 ########################################
 
-p_prec = 1e-10;
+p_prec = 1e-10
 
 #####################
 # Parametres materiau
 #####################
 
-p_e = 2.25E8;
-p_nu = 0.4;
-p_rhos = 2000.0;
-p_atm = 100000.0;
-p_rhom = 1600.0;
-p_biot = 1.;
-p_g = 10.0;
+p_e = 2.25E8
+p_nu = 0.4
+p_rhos = 2000.0
+p_atm = 100000.0
+p_rhom = 1600.0
+p_biot = 1.
+p_g = 10.0
 
-p_viscoliq = 0.001;
-p_permint = 1e-15;
-p_rhol = 1000.0;
-p_long = 5.0;
+p_viscoliq = 0.001
+p_permint = 1e-15
+p_rhol = 1000.0
+p_long = 5.0
 
-p_lambda = ((p_e * p_nu) / ((1 + p_nu) * (1 - (2 * p_nu))));
+p_lambda = ((p_e * p_nu) / ((1 + p_nu) * (1 - (2 * p_nu))))
 
-p_mu = (p_e / (2 * (1 + p_nu)));
+p_mu = (p_e / (2 * (1 + p_nu)))
 
-p_3k = p_e/(1.-2.*p_nu);
+p_3k = p_e/(1.-2.*p_nu)
 
-PERMINT=DEFI_CONSTANTE(VALE=p_permint,);
+PERMINT=DEFI_CONSTANTE(VALE=p_permint,)
 
-P_E=DEFI_CONSTANTE(VALE=p_e,);
+P_E=DEFI_CONSTANTE(VALE=p_e,)
 
-P_NU=DEFI_CONSTANTE(VALE=p_nu,);
+P_NU=DEFI_CONSTANTE(VALE=p_nu,)
 
-P_RHOM=DEFI_CONSTANTE(VALE=p_rhom,);
+P_RHOM=DEFI_CONSTANTE(VALE=p_rhom,)
 
-VISCOLIQ=DEFI_CONSTANTE(VALE=p_viscoliq,);
+VISCOLIQ=DEFI_CONSTANTE(VALE=p_viscoliq,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
 ######################
 # Parametres temporels (bidons !)
 ######################
 
-p_inst_fin = 1000;
+p_inst_fin = 1000
 
-p_npas = 1;
+p_npas = 1
 
 LINS_MEC=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=p_inst_fin,
-                                      NOMBRE=p_npas,),);
+                                      NOMBRE=p_npas,),)
 
 ################################
 # Creation du modele hydraulique
@@ -106,7 +106,7 @@ LINS_MEC=DEFI_LIST_REEL(DEBUT=0.0,
 MODEHY=AFFE_MODELE(MAILLAGE=MAIL_HY,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HS',),);
+                           MODELISATION='D_PLAN_HS',),)
 
 ################################
 # Creation du modele mecanique
@@ -115,7 +115,7 @@ MODEHY=AFFE_MODELE(MAILLAGE=MAIL_HY,
 MODE1=AFFE_MODELE(MAILLAGE=MAIL_ME,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),);
+                           MODELISATION='D_PLAN',),)
 
 ############################################
 # Modele 2 (uniquement pour endo_heterogene)
@@ -124,7 +124,7 @@ MODE1=AFFE_MODELE(MAILLAGE=MAIL_ME,
 MODE2=AFFE_MODELE(MAILLAGE=MAIL_ME,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_GRAD_SIGM',),);
+                           MODELISATION='D_PLAN_GRAD_SIGM',),)
 
 ###############
 # On teste differents materiaux, mais on reste toujours dans
@@ -151,7 +151,7 @@ MATE1=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
                      THM_LIQU=_F(RHO=p_rhol,
                                  UN_SUR_K=0.0,
                                  VISC=VISCOLIQ,
-                                 D_VISC_TEMP=ZERO,),);
+                                 D_VISC_TEMP=ZERO,),)
 
 MATE2=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
                      ELAS=_F(E=p_e,
@@ -173,7 +173,7 @@ MATE2=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
                      THM_LIQU=_F(RHO=p_rhol,
                                  UN_SUR_K=0.0,
                                  VISC=VISCOLIQ,
-                                 D_VISC_TEMP=ZERO,),);
+                                 D_VISC_TEMP=ZERO,),)
 
 MATE3=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
                      ELAS=_F(E=p_e,
@@ -195,7 +195,7 @@ MATE3=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
                      THM_LIQU=_F(RHO=p_rhol,
                                  UN_SUR_K=0.0,
                                  VISC=VISCOLIQ,
-                                 D_VISC_TEMP=ZERO,),);
+                                 D_VISC_TEMP=ZERO,),)
 
 MATE4=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
                      ELAS=_F(E=p_e,
@@ -222,6 +222,6 @@ MATE4=DEFI_MATERIAU(COMP_THM='LIQU_SATU',
                      THM_LIQU=_F(RHO=p_rhol,
                                  UN_SUR_K=0.0,
                                  VISC=VISCOLIQ,
-                                 D_VISC_TEMP=ZERO,),);
+                                 D_VISC_TEMP=ZERO,),)
 
-FIN();
+FIN()

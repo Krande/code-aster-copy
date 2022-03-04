@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -432,13 +432,13 @@ DEFI_FICHIER( UNITE=36,
 
 IMPR_RESU(UNITE=36,FORMAT='GMSH',
           RESU=(_F(RESULTAT=DYNHAC0,TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ'),NOM_CHAM='DEPL',PARTIE='REEL'),
-                _F(RESULTAT=DYNHAC0,NOM_CMP=('DRX','DRY','DRZ'),NOM_CHAM='DEPL',PARTIE='REEL'),),);
+                _F(RESULTAT=DYNHAC0,NOM_CMP=('DRX','DRY','DRZ'),NOM_CHAM='DEPL',PARTIE='REEL'),),)
 
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=DYNHAC0,NOM_CHAM='DEPL',PARTIE='REEL'),);
+          RESU=_F(RESULTAT=DYNHAC0,NOM_CHAM='DEPL',PARTIE='REEL'),)
 
 IMPR_RESU(FORMAT="RESULTAT",
-          RESU=_F(RESULTAT=DYNHAC0,NOM_CHAM='DEPL',),);
+          RESU=_F(RESULTAT=DYNHAC0,NOM_CHAM='DEPL',),)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 
@@ -447,7 +447,7 @@ DEFI_FICHIER( UNITE=37,
 
 IMPR_RESU(UNITE=37,FORMAT='GMSH',
           RESU=(_F(RESULTAT=DYNHAC0,TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ'),NOM_CHAM='DEPL',PARTIE='IMAG'),
-                _F(RESULTAT=DYNHAC0,NOM_CMP=('DRX','DRY','DRZ'),NOM_CHAM='DEPL',PARTIE='IMAG'),),);
+                _F(RESULTAT=DYNHAC0,NOM_CMP=('DRX','DRY','DRZ'),NOM_CHAM='DEPL',PARTIE='IMAG'),),)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
@@ -502,7 +502,7 @@ STL1 = CREA_RESU(OPERATION='AFFE',
                          CARA_ELEM=CAREL,
                          CHAM_MATER=CHMAT,
                          )
-                );
+                )
 
 
 STL1=CALC_CHAMP(reuse=STL1,RESULTAT=STL1,INST=0.,CONTRAINTE=('EFGE_ELNO'))

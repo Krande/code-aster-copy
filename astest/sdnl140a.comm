@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
-mail0=LIRE_MAILLAGE(FORMAT='MED');
-MACR_ADAP_MAIL(MAILLAGE_N=mail0, MAILLAGE_NP1=CO('mail'), ADAPTATION='RAFFINEMENT_UNIFORME',);
-#mail=CREA_MAILLAGE(MAILLAGE=mail0,LINE_QUAD=_F(TOUT='OUI'),);
+mail0=LIRE_MAILLAGE(FORMAT='MED')
+MACR_ADAP_MAIL(MAILLAGE_N=mail0, MAILLAGE_NP1=CO('mail'), ADAPTATION='RAFFINEMENT_UNIFORME',)
+#mail=CREA_MAILLAGE(MAILLAGE=mail0,LINE_QUAD=_F(TOUT='OUI'),)
 
 mail=MODI_MAILLAGE(reuse =mail,
                    MAILLAGE=mail,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Haut_Contact','Bas_Contact',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Haut_Contact','Bas_Contact',),),)
 
 mail=DEFI_GROUP(reuse =mail,
               MAILLAGE=mail,
@@ -43,15 +43,15 @@ mail=DEFI_GROUP(reuse =mail,
 modele=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION=('3D',),),);
+                           MODELISATION=('3D',),),)
 
 acier=DEFI_MATERIAU(ELAS=_F(E=200e9,
                             NU=0,
-                            RHO=7800,),);
+                            RHO=7800,),)
 
 affe_mat=AFFE_MATERIAU(MAILLAGE=mail,
                        AFFE=_F(TOUT='OUI',
-                               MATER=acier,),);
+                               MATER=acier,),)
 
 clim=AFFE_CHAR_MECA(MODELE=modele,
                     DDL_IMPO=(
@@ -62,12 +62,12 @@ clim=AFFE_CHAR_MECA(MODELE=modele,
                            _F(GROUP_NO=('depl_lateral',),
                                 DZ=0,),
                                 ),
-                                );
+                                )
 
 
 force=AFFE_CHAR_MECA(MODELE=modele,
                      FORCE_ARETE=_F(GROUP_MA='Haut_Pression',
-                                    FY=-1.e8,),);
+                                    FY=-1.e8,),)
 
 #contact = NEWTON_GENERALISE
 contact=DEFI_CONTACT(MODELE=modele,
@@ -90,7 +90,7 @@ contact=DEFI_CONTACT(MODELE=modele,
                              ADAPTATION='NON',
                              SANS_GROUP_NO = ('Clim_Bas', ),
                              #DIST_APPA = 0.,
-                             COULOMB=0.2),);
+                             COULOMB=0.2),)
 
 contac2=DEFI_CONTACT(MODELE=modele,
                      FORMULATION='CONTINUE',
@@ -107,7 +107,7 @@ contac2=DEFI_CONTACT(MODELE=modele,
                              COEF_FROT=1.E6,COEF_CONT=1.E9,
                              SANS_GROUP_NO = 'excl2',
                              DIST_APPA = 0.2,
-                             COULOMB=0.2),);
+                             COULOMB=0.2),)
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.    , 0.,
                                           0.001 , 1.0,
@@ -141,7 +141,7 @@ listinst=DEFI_LIST_REEL(DEBUT=0.,
                                       NOMBRE=nombre*1,),
 
 
-                                      ));
+                                      ))
 listarch=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=(
                                     _F(JUSQU_A=.001,
@@ -164,7 +164,7 @@ listarch=DEFI_LIST_REEL(DEBUT=0.,
 
                                     _F(JUSQU_A=.15,
                                       NOMBRE=nombre,),
-                                      ));
+                                      ))
 
 listarc2=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=(
@@ -188,10 +188,10 @@ listarc2=DEFI_LIST_REEL(DEBUT=0.,
 
                                     _F(JUSQU_A=.15,
                                       NOMBRE=nombre*1,),
-                                      ));
-list2=DEFI_LIST_INST(METHODE='MANUEL', 
+                                      ))
+list2=DEFI_LIST_INST(METHODE='MANUEL',
                      DEFI_LIST=_F( LIST_INST=listinst,),
-                     ECHEC=_F(SUBD_PAS=2,SUBD_NIVEAU=12,),);
+                     ECHEC=_F(SUBD_PAS=2,SUBD_NIVEAU=12,),)
 
 evol1=DYNA_NON_LINE(MODELE=modele,
                        CHAM_MATER=affe_mat,
@@ -207,8 +207,8 @@ evol1=DYNA_NON_LINE(MODELE=modele,
                        CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=5.E-4,),
                        SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250,),
                        SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.2, MODI_EQUI='NON',
-                                       FORMULATION='DEPLACEMENT',),);
-#IMPR_RESU(RESU=_F(RESULTAT=evol1,LIST_INST=listarc2), UNITE=80, FORMAT='MED');
+                                       FORMULATION='DEPLACEMENT',),)
+#IMPR_RESU(RESU=_F(RESULTAT=evol1,LIST_INST=listarc2), UNITE=80, FORMAT='MED')
 
 
 TEST_RESU(RESU=_F(INST=0.0006,
@@ -221,5 +221,5 @@ TEST_RESU(RESU=_F(INST=0.0006,
           )
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=evol1))
 
-FIN();
+FIN()
 #CHECKSUM:2af6539f8f0ef1542b8f866eb84ee269  -:FIN CHECKSUM

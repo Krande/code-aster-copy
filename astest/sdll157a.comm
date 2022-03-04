@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ maillage=MODI_MAILLAGE(reuse =maillage,
            ABSC_CURV=_F(
                 TOUT='OUI',
                 GROUP_NO_ORIG=('ENCA1',),),
-                );
+                )
 
 CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
                      NOM_CHAM = 'ABSC_CURV' , MAILLAGE = maillage , )
@@ -69,7 +69,7 @@ acier=DEFI_MATERIAU(ELAS=_F(E = Young,
                                   RAMB_OSGO_EXPO=n,
                                   )
                     )
-                    
+
 acierCoude=DEFI_MATERIAU(ELAS=_F(E = Young,
                             RHO = Rho,
                             ALPHA = 1.2E-5,
@@ -111,7 +111,7 @@ ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
 
 # calculer les bonnes orientations pour les coudes (pour POST_ROCHE selon RCCM_RX)
 
-# 1- creation des groupes de noeuds de coude ordonnés 
+# 1- creation des groupes de noeuds de coude ordonnés
 maillage=DEFI_GROUP(reuse =maillage,
                 MAILLAGE=maillage,
                 CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
@@ -123,12 +123,12 @@ maillage=DEFI_GROUP(reuse =maillage,
                                  GROUP_MA='Arc_3',
                                  GROUP_NO_ORIG='Arc_3_Orig',),
                                ),
-                    );
+                    )
 # 2- récupération des numéros de noeuds
 nodesArc1 = maillage.getNodes('Arc_1_ordo')
 nodesArc3 = maillage.getNodes('Arc_3_ordo')
 
-# 3- calcul du vect_y du coude en question pour correspondre à 
+# 3- calcul du vect_y du coude en question pour correspondre à
 # la norme RCCM_RX des moments dans le plan et hors plan du coude
 def calc_vectY(maillage, groupNoOrdo):
     import numpy as np
@@ -142,7 +142,7 @@ def calc_vectY(maillage, groupNoOrdo):
     coord1 = np.array(coord[dime*(n1-1):dime*(n1-1)+3])
     coord2 = np.array(coord[dime*(n2-1):dime*(n2-1)+3])
     coord3 = np.array(coord[dime*(n3-1):dime*(n3-1)+3])
-    
+
     v1 = coord2-coord1
     v2 = coord3-coord1
     vect_y = np.cross(v1,v2)
@@ -150,12 +150,12 @@ def calc_vectY(maillage, groupNoOrdo):
     vect_y=vect_y/normy
 
     return vect_y
-    
+
 vect_y_Arc1 = calc_vectY(maillage, 'Arc_1_ordo')
 vect_y_Arc3 = calc_vectY(maillage, 'Arc_3_ordo')
 
 
-cara_elem=AFFE_CARA_ELEM(MODELE=modele, 
+cara_elem=AFFE_CARA_ELEM(MODELE=modele,
                          POUTRE=_F(GROUP_MA="tuyau", SECTION = 'CERCLE',
                                    CARA = ('R', 'EP'),
                                    VALE = (Dext/2, hc)),
@@ -213,7 +213,7 @@ ASSEMBLAGE(MODELE=modele,
            MATR_ASSE=(_F(MATRICE=CO('matrice_rigi'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('matrice_mass'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 modes_dyn=CALC_MODES(OPTION='BANDE',
                      MATR_RIGI=matrice_rigi,
                      MATR_MASS=matrice_mass,
@@ -240,7 +240,7 @@ poids_propre = MECA_STATIQUE(MODELE=modele,
 poids_propre = CALC_CHAMP(reuse=poids_propre,
                             RESULTAT=poids_propre,
                             CONTRAINTE='EFGE_ELNO')
-                            
+
 # Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT / TOUT
 
 TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
@@ -255,10 +255,10 @@ TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
 #IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
 
 # -- on construit les résultats de référence pour un couple maille/noeud
-TABMO = CREA_TABLE(RESU=_F(RESULTAT=poids_propre, 
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=poids_propre,
                            NOM_CMP=('MT', 'MFY', 'MFZ'),
                            NOM_CHAM='EFGE_ELNO',
-                           TOUT='OUI', 
+                           TOUT='OUI',
                            TOUT_ORDRE='OUI'))
 
 
@@ -270,7 +270,7 @@ TABM575N4 = CALC_TABLE(TABLE=TABMO,
                              _F(OPERATION='FILTRE',
                                 NOM_PARA='NOEUD',
                                 VALE_K ='N4'),
-                            ) 
+                            )
                     )
 # IMPR_TABLE(UNITE=6, TABLE=TABM575N4)
 
@@ -283,14 +283,14 @@ TABM575N4 = CALC_TABLE(TABLE=TABM575N4,reuse=TABM575N4,
                                 FORMULE=MOMEQ_FO,
                                 NOM_PARA='MEQ',
                                 NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
-                            ) 
+                            )
                     )
-                    
+
 TABM575N4MAX = CALC_TABLE(TABLE=TABM575N4,
                      ACTION=(_F(OPERATION='CALCUL',
                                 NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
                                 TYPE_CALCUL = 'MAXI_ABS'),
-                            ) 
+                            )
                     )
 
 TEST_TABLE(  TABLE=TABM575N4MAX,
@@ -308,7 +308,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=112.05420713101194, 
+             VALE_REFE=112.05420713101194,
              VALE_CALC=112.05420708008751,
              )
 
@@ -329,10 +329,10 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=125.72354340030415, 
+             VALE_REFE=125.72354340030415,
              VALE_CALC=125.72354340030415,
              )
-             
+
 TEST_TABLE(  TABLE=TABM575N4MAX,
              NOM_PARA='MFZ',
              VALE_CALC=110.4648667822179,
@@ -348,7 +348,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=110.4648667822179, 
+             VALE_REFE=110.4648667822179,
              VALE_CALC=110.4648667822179,
              )
 
@@ -367,7 +367,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=201.40764999559582, 
+             VALE_REFE=201.40764999559582,
              VALE_CALC=201.40765001034208,
              )
 
@@ -391,7 +391,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=1.9887184282676795, 
+             VALE_REFE=1.9887184282676795,
              VALE_CALC=1.9887184282676795,
              )
 
@@ -445,13 +445,13 @@ sismique_qs = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
 
 ch_tot= CREA_CHAMP (OPERATION = 'EXTR',
                        TYPE_CHAM = 'ELNO_SIEF_R',
-                       RESULTAT  = sismique_tot, 
+                       RESULTAT  = sismique_tot,
                        NOM_CHAM  = 'EFGE_ELNO',
                        NUME_ORDRE=4,)
 
 ch_qs= CREA_CHAMP (OPERATION = 'EXTR',
                        TYPE_CHAM = 'ELNO_SIEF_R',
-                       RESULTAT  = sismique_qs, 
+                       RESULTAT  = sismique_qs,
                        NOM_CHAM  = 'EFGE_ELNO',
                        NUME_ORDRE=4,)
 

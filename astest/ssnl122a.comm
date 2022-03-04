@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -175,7 +175,7 @@ CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO,
 # Elements avec le materiau : E360.
 _F( GROUP_MA= ('S002','S001'),MATER= MAT0001 ),
       ),
-AFFE_COMPOR=_F(GROUP_MA=('S001','S002'),COMPOR=COMPF));
+AFFE_COMPOR=_F(GROUP_MA=('S001','S002'),COMPOR=COMPF))
 
 
 # AFFECTATION DES CARACTERISTIQUES DES ELEMENTS
@@ -536,7 +536,7 @@ XXX2=POST_CHAMP(  RESULTAT=STNL, GROUP_MA='E00200',
                 _F( NOM_CHAM='VARI_ELGA', NOM_CMP='V1', TYPE_MAXI='MAXI', NUME_CHAM_RESU=1),
                 _F( NOM_CHAM='VARI_ELGA', NOM_CMP='V1', TYPE_MAXI='MINI', NUME_CHAM_RESU=2),
              ))
-IMPR_RESU(FORMAT="RESULTAT",UNITE=6, RESU=_F(RESULTAT=XXX2)) 
+IMPR_RESU(FORMAT="RESULTAT",UNITE=6, RESU=_F(RESULTAT=XXX2))
 
 
 FIN()

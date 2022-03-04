@@ -41,23 +41,23 @@ MA=DEFI_GROUP(reuse =MA,
                              _F(NOM='BORDSUP',
                                 GROUP_MA='GM2',),
                              _F(NOM='CUBE',
-                                GROUP_MA='GM1',),),);
+                                GROUP_MA='GM1',),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('CUBE','BORDINF','BORDSUP'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=210000.0,
                           ALPHA = 1.E-6,
                           NU=0.3,),
                   ECRO_LINE=_F(D_SIGM_EPSI=1930.,
-                               SY=181.,),);
+                               SY=181.,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_MA='BORDINF',
@@ -68,15 +68,15 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                                 DX=1.,
                                 DY=1.,
                                 DZ=1.,
-                                ),),);
+                                ),),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0., 0.,
-                          1., 1));
+                          1., 1))
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=1,),);
+                                  NOMBRE=1,),)
 
 
 
@@ -90,7 +90,7 @@ U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
              AFFE=_F(TOUT='OUI',
                      NOM_CMP=('DX','DY','DZ',),
                      VALE=(0.,0.,0.,),
-                     ),);
+                     ),)
 
 
 SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -100,7 +100,7 @@ SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                         NOM_CMP=('SIXX','SIYY','SIZZ',
                                  'SIXY','SIYZ','SIXZ',),
                         VALE=(0.,0.,0.,0.,0.,0.,),
-                        ),);
+                        ),)
 
 
 VARIP=CREA_CHAMP(OPERATION='AFFE',
@@ -111,7 +111,7 @@ VARIP=CREA_CHAMP(OPERATION='AFFE',
                          VALE =   (  0.,  0.,))
                  )
 NU=NUME_DDL(MODELE=MO,
-            CHARGE=CHARGE,);
+            CHARGE=CHARGE,)
 
 DU=code_aster.FieldOnNodesReal(NU)
 
@@ -132,26 +132,26 @@ M_EL_tab = CALCUL(__use_namedtuple__=True,
                   SIGM=SIGP,
                   VARI=VARIP,
                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-                  INFO=2,);
+                  INFO=2,)
 
 M_EL = M_EL_tab.MATR_TANG_ELEM
 
 M_EL.setModel(MO)
 
 CHAR_EL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                      CHARGE=CHARGE,);
+                      CHARGE=CHARGE,)
 
 CHAR=ASSE_VECTEUR(VECT_ELEM=CHAR_EL,
-                  NUME_DDL=NU,);
+                  NUME_DDL=NU,)
 
 MATAS=ASSE_MATRICE(MATR_ELEM=M_EL,
-                   NUME_DDL=NU,);
+                   NUME_DDL=NU,)
 
 MATAS=FACTORISER(reuse =MATAS,
-                MATR_ASSE=MATAS,);
+                MATR_ASSE=MATAS,)
 
 DU=RESOUDRE(MATR=MATAS,
-             CHAM_NO=CHAR,);
+             CHAM_NO=CHAR,)
 
 
 
@@ -172,7 +172,7 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM',
             SIGM=SIGP,
             VARI=VARIP,
             COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-            INFO=2,);
+            INFO=2,)
 
 
 MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
@@ -216,19 +216,19 @@ FORC=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
 
 
 FORCAS=ASSE_VECTEUR(VECT_ELEM=FORC,
-                    NUME_DDL=NU,);
+                    NUME_DDL=NU,)
 
 
 MATAS2=ASSE_MATRICE(MATR_ELEM=MATR,
-                    NUME_DDL=NU,);
+                    NUME_DDL=NU,)
 
 
 MATAS2=FACTORISER(reuse =MATAS2,
-                MATR_ASSE=MATAS2,);
+                MATR_ASSE=MATAS2,)
 
 
 DX=RESOUDRE(MATR=MATAS2,
-            CHAM_NO=CHAR,);
+            CHAM_NO=CHAR,)
 
 #=========================================================
 #          DETERMINATION DE LA REFERENCE
@@ -250,7 +250,7 @@ CALC=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
                                     ARRET = 'NON'),
 
-                   );
+                   )
 
 # ON EXTRAIT LES CHAMPS A TESTER
 SIG_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
@@ -267,7 +267,7 @@ CALC=CALC_CHAMP(reuse=CALC,
                    TOUT_ORDRE='OUI',
                    TOUT='OUI',
                    FORCE='FORC_NODA',
-                   RESULTAT=CALC,);
+                   RESULTAT=CALC,)
 
 
 FOR_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
@@ -370,4 +370,4 @@ TEST_RESU(CHAM_NO=(_F(CRITERE='ABSOLU',
           )
 
 
-FIN();
+FIN()

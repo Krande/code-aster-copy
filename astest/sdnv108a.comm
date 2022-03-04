@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,22 +22,22 @@
 import numpy as NP
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
-MBI=LIRE_MAILLAGE(FORMAT='MED',);
+MBI=LIRE_MAILLAGE(FORMAT='MED',)
 
 MOD=AFFE_MODELE(MAILLAGE=MBI,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),);
+                        MODELISATION='3D',),)
 
 ELAS=DEFI_MATERIAU(ELAS=_F(E=2.07E11,
                            NU=0.28,
-                           RHO=7860.0,),);
+                           RHO=7860.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MBI,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ELAS,),);
+                            MATER=ELAS,),)
 
 
 DEBV=1000; # VITESSE DEBUT
@@ -46,12 +46,12 @@ PASV = 1000. # PAS DE VITESSE DE ROTATION
 VIT=NP.arange(DEBV,FINV+1,PASV); #LISTE DES VITESSES EN TR/MIN
 nbV=len(VIT)
 # LISTE DES VITESSES EN RAD/S
-omega=[VIT[ii]*pi/30. for ii in range(nbV)];
+omega=[VIT[ii]*pi/30. for ii in range(nbV)]
 # VECTEUR DIRECTEUR AXE DE ROTATION : nx,ny,nz
-nx=0;ny=0;nz=1;
+nx=0;ny=0;nz=1
 CL1=AFFE_CHAR_MECA(MODELE=MOD,
                    ROTATION=_F(VITESSE= 1,
-                   AXE = (nx,ny,nz,),),);
+                   AXE = (nx,ny,nz,),),)
 
 ASSEMBLAGE(MODELE=MOD,
            CHAM_MATER=CHMAT,
@@ -64,16 +64,16 @@ ASSEMBLAGE(MODELE=MOD,
                            _F(MATRICE=CO('AMOR'),
                               OPTION='AMOR_MECA',),
                            _F(MATRICE=CO('RIGIDR'),
-                              OPTION='RIGI_ROTA',),),);
+                              OPTION='RIGI_ROTA',),),)
 
 GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
                       MODELE=MOD,
                       CHARGE=(CL1),
                       CHAM_MATER=CHMAT,
-                      );
+                      )
 
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
 # CALCUL DES MODES A L'ARRET
 MODES0=CALC_MODES(MATR_RIGI=RIGID,
@@ -215,8 +215,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                 ),
           )
 
-lmod1=[None]*nbV;
-lmod2=[None]*nbV;
+lmod1=[None]*nbV
+lmod2=[None]*nbV
 for i in range(nbV):
     OM=omega[i]
     RIGIDi=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGID,COEF_R=1.0,),

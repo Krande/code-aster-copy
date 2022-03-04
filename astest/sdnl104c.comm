@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ OBSTACLE=DEFI_OBSTACLE( TYPE='CERCLE')
 
 t_fin = 0.16
 
-F_UN = DEFI_FONCTION(NOM_PARA="INST", 
+F_UN = DEFI_FONCTION(NOM_PARA="INST",
                      VALE = (0., 1., t_fin, 1.),
                      PROL_DROITE="CONSTANT",
                      PROL_GAUCHE="CONSTANT")
@@ -166,12 +166,12 @@ MODES20 = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODES0,
                                      NMAX_MODE=30),
                                   _F(MODE_INTF=MS)),
                            NUME_REF=NUM,
-                           INFO=1);
+                           INFO=1)
 
 MODES2 = DEFI_BASE_MODALE(ORTHO_BASE=_F(BASE=MODES20,
                                         MATRICE=K_ASSE),
                                       #  MATRICE=M_ASSE),
-                          INFO=1);
+                          INFO=1)
 
 ## SANS ORTHO
 MODES3 = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODES0,
@@ -180,7 +180,7 @@ MODES3 = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODES0,
                                 ),
                           NUME_REF=NUM,
                           INFO=1
-                          );
+                          )
 
 #
 # PROJECTIONS SUR BASE MODALE :
@@ -384,7 +384,7 @@ TEST_RESU(RESU=(
                   PRECISION=1e-2,
                   LEGENDE='ortho (vit)',
                ),
-               
+
                _F(INST=t_vite,
                   RESULTAT=TRAN2,
                   NOM_CHAM='VITE',

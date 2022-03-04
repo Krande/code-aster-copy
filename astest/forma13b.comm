@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAY_POM=LIRE_MAILLAGE(UNITE=20,
                       FORMAT='MED',
-                      VERI_MAIL=_F(VERIF='NON',),);
+                      VERI_MAIL=_F(VERIF='NON',),)
 
 POMPE=AFFE_MODELE(MAILLAGE=MAY_POM,
                   AFFE=(_F(GROUP_MA=('Pal_3D','Vol_3D','Tuy_3D',),
@@ -33,27 +33,27 @@ POMPE=AFFE_MODELE(MAILLAGE=MAY_POM,
                            MODELISATION='3D',),
                         _F(GROUP_MA=('Pal_2D','Vol_2D','Tuy_2D',),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DKT',),),);
+                           MODELISATION='DKT',),),)
 
-E = 210.E9;
+E = 210.E9
 
-rho = 7800.0;
+rho = 7800.0
 
-nu = 0.3;
+nu = 0.3
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=rho,),);
+                            RHO=rho,),)
 
 
 MAT_POM=AFFE_MATERIAU(MAILLAGE=MAY_POM,
                       AFFE=_F(TOUT='OUI',
-                              MATER=ACIER,),);
+                              MATER=ACIER,),)
 
 
 CHA_POM=AFFE_CHAR_MECA(MODELE=POMPE,
                        DDL_IMPO=_F(GROUP_MA=('BC_pal','BC_vol','BC_tuy',),
-                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),);
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),)
 
 
 CAR_POM=AFFE_CARA_ELEM(MODELE=POMPE,
@@ -65,7 +65,7 @@ CAR_POM=AFFE_CARA_ELEM(MODELE=POMPE,
                                  EPAIS=0.05,),
                               _F(GROUP_MA=('tuy_vol','vol_tuy',
                                            'vol_pal','pal_vol',),
-                                 EPAIS=0.05,),),);
+                                 EPAIS=0.05,),),)
 
 
 ASSEMBLAGE(MODELE=POMPE,
@@ -76,7 +76,7 @@ ASSEMBLAGE(MODELE=POMPE,
            MATR_ASSE=(_F(MATRICE=CO('MASS'),
                          OPTION='MASS_MECA',),
                       _F(MATRICE=CO('RIGI'),
-                         OPTION='RIGI_MECA',),),);
+                         OPTION='RIGI_MECA',),),)
 
 
 MOD_POMP=CALC_MODES(MATR_RIGI=RIGI,
@@ -97,13 +97,13 @@ MOD_POMP=CALC_MODES(MATR_RIGI=RIGI,
 
 
 MAY_PAL=LIRE_MAILLAGE(UNITE=21,
-                      FORMAT='MED',);
+                      FORMAT='MED',)
 
 MAY_VOL=LIRE_MAILLAGE(UNITE=22,
-                      FORMAT='MED',);
+                      FORMAT='MED',)
 
 MAY_TUY=LIRE_MAILLAGE(UNITE=23,
-                      FORMAT='MED',);
+                      FORMAT='MED',)
 
 
 PALIER=AFFE_MODELE(MAILLAGE=MAY_PAL,
@@ -112,7 +112,7 @@ PALIER=AFFE_MODELE(MAILLAGE=MAY_PAL,
                             MODELISATION='3D',),
                          _F(GROUP_MA='Pal_2D',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),),);
+                            MODELISATION='DKT',),),)
 
 VOLUTE=AFFE_MODELE(MAILLAGE=MAY_VOL,
                    AFFE=(_F(GROUP_MA='Vol_3D',
@@ -120,7 +120,7 @@ VOLUTE=AFFE_MODELE(MAILLAGE=MAY_VOL,
                             MODELISATION='3D',),
                          _F(GROUP_MA='Vol_2D',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),),);
+                            MODELISATION='DKT',),),)
 
 TUYAU=AFFE_MODELE(MAILLAGE=MAY_TUY,
                   AFFE=(_F(GROUP_MA='Tuy_3D',
@@ -128,39 +128,39 @@ TUYAU=AFFE_MODELE(MAILLAGE=MAY_TUY,
                            MODELISATION='3D',),
                         _F(GROUP_MA='Tuy_2D',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DKT',),),);
+                           MODELISATION='DKT',),),)
 
 
 MAT_PAL=AFFE_MATERIAU(MAILLAGE=MAY_PAL,
                       AFFE=_F(TOUT='OUI',
-                              MATER=ACIER,),);
+                              MATER=ACIER,),)
 
 MAT_VOL=AFFE_MATERIAU(MAILLAGE=MAY_VOL,
                       AFFE=_F(TOUT='OUI',
-                              MATER=ACIER,),);
+                              MATER=ACIER,),)
 
 MAT_TUY=AFFE_MATERIAU(MAILLAGE=MAY_TUY,
                       AFFE=_F(TOUT='OUI',
-                              MATER=ACIER,),);
+                              MATER=ACIER,),)
 
 
 CHA_PAL=AFFE_CHAR_MECA(MODELE=PALIER,
                        DDL_IMPO=(_F(GROUP_MA='BC_pal',
                                     BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
                                  _F(GROUP_MA='pal_vol',
-                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),)
 
 CHA_VOL=AFFE_CHAR_MECA(MODELE=VOLUTE,
                        DDL_IMPO=(_F(GROUP_MA='BC_vol',
                                     BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
                                  _F(GROUP_MA=('vol_pal','vol_tuy',),
-                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),)
 
 CHA_TUY=AFFE_CHAR_MECA(MODELE=TUYAU,
                        DDL_IMPO=(_F(GROUP_MA='BC_tuy',
                                     BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
                                  _F(GROUP_MA='tuy_vol',
-                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),)
 
 
 CAR_PAL=AFFE_CARA_ELEM(MODELE=PALIER,
@@ -168,21 +168,21 @@ CAR_PAL=AFFE_CARA_ELEM(MODELE=PALIER,
                                 EPAIS=0.03,),
                              _F(GROUP_MA='pal_vol',
                                 EPAIS=0.05,),),
-                                );
+                                )
 
 CAR_VOL=AFFE_CARA_ELEM(MODELE=VOLUTE,
                        COQUE=(_F(GROUP_MA='Vol_2D',
                                 EPAIS=0.05,),
                              _F(GROUP_MA=('vol_pal','vol_tuy',),
                                 EPAIS=0.05,),),
-                                );
+                                )
 
 CAR_TUY=AFFE_CARA_ELEM(MODELE=TUYAU,
                        COQUE=(_F(GROUP_MA='Tuy_2D',
                                 EPAIS=0.01,),
                              _F(GROUP_MA='tuy_vol',
                                 EPAIS=0.05,),),
-                                );
+                                )
 
 MAC_PAL=CREA_ELEM_SSD(MODELE=PALIER,
                       CHAM_MATER=MAT_PAL,
@@ -193,7 +193,7 @@ MAC_PAL=CREA_ELEM_SSD(MODELE=PALIER,
                                    GROUP_NO='pal_vol',),
                       BASE_MODALE=_F(TYPE='RITZ',
                                      TYPE_MODE='INTERFACE',
-                                     NMAX_MODE_INTF=30,),);
+                                     NMAX_MODE_INTF=30,),)
 
 MAC_TUY=CREA_ELEM_SSD(MODELE=TUYAU,
                       CHAM_MATER=MAT_TUY,
@@ -204,7 +204,7 @@ MAC_TUY=CREA_ELEM_SSD(MODELE=TUYAU,
                                    GROUP_NO='tuy_vol',),
                       BASE_MODALE=_F(TYPE='RITZ',
                                      TYPE_MODE='INTERFACE',
-                                     NMAX_MODE_INTF=30,),);
+                                     NMAX_MODE_INTF=30,),)
 
 MAC_VOL=CREA_ELEM_SSD(MODELE=VOLUTE,
                       CHAM_MATER=MAT_VOL,
@@ -218,7 +218,7 @@ MAC_VOL=CREA_ELEM_SSD(MODELE=VOLUTE,
                                     GROUP_NO='vol_tuy',),),
                       BASE_MODALE=_F(TYPE='RITZ',
                                      TYPE_MODE='INTERFACE',
-                                     NMAX_MODE_INTF=30,),);
+                                     NMAX_MODE_INTF=30,),)
 
 ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('POMPE_GE'),
                                NUME_DDL_GENE=CO('NU_GENE'),
@@ -243,7 +243,7 @@ ASSE_ELEM_SSD(RESU_ASSE_SSD=_F(MODELE=CO('POMPE_GE'),
                           SOUS_STRUC_2='VOL_GE',
                           INTERFACE_2='VOL_TUY',
                           OPTION='REDUIT',),),
-              METHODE='ELIMINE',);
+              METHODE='ELIMINE',)
 
 SQUEL=DEFI_SQUELETTE(MODELE_GENE=POMPE_GE,
                      SOUS_STRUC=(_F(NOM='PAL_GE',
@@ -251,7 +251,7 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=POMPE_GE,
                                  _F(NOM='VOL_GE',
                                     GROUP_MA=('Vol_3D','Vol_2D',),),
                                  _F(NOM='TUY_GE',
-                                    GROUP_MA=('Tuy_3D','Tuy_2D',),),),);
+                                    GROUP_MA=('Tuy_3D','Tuy_2D',),),),)
 
 
 MODES_GE=CALC_MODES(MATR_RIGI=RIGI_GE,
@@ -265,14 +265,14 @@ MODES_GE=CALC_MODES(MATR_RIGI=RIGI_GE,
 MODES=REST_SOUS_STRUC(RESU_GENE=MODES_GE,
                       TOUT_ORDRE='OUI',
                       NOM_CHAM='DEPL',
-                      SQUELETTE=SQUEL,);
+                      SQUELETTE=SQUEL,)
 
 
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=(_F(RESULTAT=MODES,),
-                _F(RESULTAT=MOD_POMP,),),);
+                _F(RESULTAT=MOD_POMP,),),)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -314,7 +314,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=10,
                    PARA='FREQ',
                    RESULTAT=MOD_POMP,
-                   VALE_CALC=278.070045602),),);
+                   VALE_CALC=278.070045602),),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -387,4 +387,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=278.070045602,
                    VALE_CALC=286.399175563,)))
 
-FIN();
+FIN()

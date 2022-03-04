@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',  )
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
+MO=AFFE_MODELE(  MAILLAGE=MA,
      AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
 
 MA=DEFI_GROUP(reuse=MA,
@@ -43,7 +43,7 @@ MA = MODI_MAILLAGE(reuse = MA,
                   MODI_MAILLE=_F(OPTION='NOEUD_QUART',
                                  GROUP_NO_FOND='FOND'
                                  ),
-                 );
+                 )
 
 MAT1=DEFI_MATERIAU( ELAS=_F(  E = 198000.,  NU = 0.1) )
 
@@ -56,21 +56,21 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
 
 # ------------------------------------------------------------------
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
-                     CREA_GROUP_NO=_F( 
-                        GROUP_MA = ( 'LFF', 'LEVREINF', 'LFFS',  'LEVREINS', 
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+                     CREA_GROUP_NO=_F(
+                        GROUP_MA = ( 'LFF', 'LEVREINF', 'LFFS',  'LEVREINS',
                                      'SAV_S', 'SSUP_S', ))
                  )
 
-CH=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=( 
-       _F(  GROUP_NO = 'SAV_S', DY = 0.), 
-                _F(  GROUP_NO = 'PORIG', DX = 0.), 
-                _F(  GROUP_NO = 'SSUP_S', DZ = 0.), 
-                _F(  GROUP_NO = 'LEVREINF', DZ = 0.)), 
+CH=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
+       _F(  GROUP_NO = 'SAV_S', DY = 0.),
+                _F(  GROUP_NO = 'PORIG', DX = 0.),
+                _F(  GROUP_NO = 'SSUP_S', DZ = 0.),
+                _F(  GROUP_NO = 'LEVREINF', DZ = 0.)),
        PRES_REP=_F(  GROUP_MA = 'LEVREINS',  PRES = 1.)
                     )
 
-CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
+CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
               EXCIT=_F( CHARGE = CH)
                           )
 
@@ -100,10 +100,10 @@ MOD_T1=DEFI_CONSTANTE(   VALE=1.)
 
 GLO1_LE5=CALC_G(  RESULTAT=CHAMDEPL,
                  OPTION='G',
-                 THETA=_F(FISSURE=FISS1, 
+                 THETA=_F(FISSURE=FISS1,
                           R_INF_FO=RAY_INF1,  R_SUP_FO=RAY_SUP1,
                           DISCRETISATION='LEGENDRE',
-                          ),  
+                          ),
                        )
 
 #
@@ -126,7 +126,7 @@ MOD_T2=DEFI_CONSTANTE(    VALE=1.   )
 
 GLO2_LE5=CALC_G(  RESULTAT=CHAMDEPL,
                  OPTION='G',
-                  THETA=_F(FISSURE=FISS1, 
+                  THETA=_F(FISSURE=FISS1,
                             R_INF_FO=RAY_INF2,  R_SUP_FO=RAY_SUP2,
                           DISCRETISATION='LEGENDRE',
                             ),)

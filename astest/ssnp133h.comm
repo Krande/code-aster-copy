@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ Gc = 200.
 Sc = 2.E5
 pena_adh = 1.E-4
 
-MA1 = LIRE_MAILLAGE(FORMAT='MED');
+MA1 = LIRE_MAILLAGE(FORMAT='MED')
 
 MA =  COPIER(CONCEPT= MA1)
 
@@ -49,7 +49,7 @@ MA = DEFI_GROUP(reuse = MA,
           _F(NOM = 'N_INTER',GROUP_NO = 'INTER'),
           _F(NOM = 'N_SUP',GROUP_NO = 'NSUP'),
          )
-       );
+       )
 
 MO = AFFE_MODELE(
        MAILLAGE = MA,
@@ -58,7 +58,7 @@ MO = AFFE_MODELE(
            GROUP_MA     = ('MATIERE','FACE_SUP','FACE_INF'),
            PHENOMENE    = 'MECANIQUE',
            MODELISATION = 'D_PLAN'),
-         );
+         )
 
  # FORME ANALYTIQUE POUR LA FISSURE
 
@@ -70,19 +70,19 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN),
                     GROUP_MA_ENRI='MATIERE',
-                    );
+                    )
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(FISSURE=FISS,
                                NOM='TRAVERS',
                                OPTION='FISS_XFEM',
-                               TYPE_GROUP='HEAVISIDE'));
+                               TYPE_GROUP='HEAVISIDE'))
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          CONTACT='STANDARD',
-                         );
+                         )
 
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
@@ -96,7 +96,7 @@ CTXFEM = DEFI_CONTACT(
                      ALGO_CONT='CZM',
                      FISS_MAIT = FISS,
                      RELATION='CZM_LIN_REG',
-                     )));
+                     )))
 
 #--------------------------------------------------------------
 # DEFINITION DES PARAMETRES MATERIAUX
@@ -108,29 +108,29 @@ BETON = DEFI_MATERIAU(ELAS = _F( E = young,
                                       SIGM_C = Sc,
                                       PENA_ADHERENCE=pena_adh,
                                       ),
-                         );
+                         )
 
 CHAMPMA=AFFE_MATERIAU(MAILLAGE=MA,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA='MATIERE',MATER=BETON),
                             ),
-                      );
+                      )
 
 
 # ON BLOQUE LES MOUVEMENTS DE CORPS RIGIDE DS LA DIRECTION X AU POINT P_RIG
 RIGIDE = AFFE_CHAR_MECA(
   MODELE   = MODELEK,
   DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0.0),
-  );
+  )
 
-fyi=1.0;
+fyi=1.0
 # EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
 TRACTION = AFFE_CHAR_MECA(
   MODELE = MODELEK,
   FORCE_CONTOUR = (_F(GROUP_MA = 'FACE_SUP', FY = fyi),
               _F(GROUP_MA = 'FACE_INF', FY = -fyi),
                    ),
-  );
+  )
 
 SYMETRIE = AFFE_CHAR_MECA(
   MODELE        = MODELEK,
@@ -200,7 +200,7 @@ EVOL = STAT_NON_LINE(
 
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
-                FORCE='FORC_NODA');
+                FORCE='FORC_NODA')
 
 FORCE = POST_RELEVE_T(
                       ACTION = _F(

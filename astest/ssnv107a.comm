@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
- 
+
 
 #  TEST PRISE EN COMPTE DE FIXATION ALUS EN RSI
 
 # -----------------------------------------------------
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 M = DEFI_GROUP( reuse = M, MAILLAGE = M,
                       CREA_GROUP_MA= (
@@ -38,16 +38,16 @@ M = DEFI_GROUP( reuse = M, MAILLAGE = M,
 mod=AFFE_MODELE(MAILLAGE=M,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),);
+                        MODELISATION='3D',),)
 
-youn1=30000.;
-nu1=0.2;
+youn1=30000.
+nu1=0.2
 
-E=DEFI_CONSTANTE(VALE=youn1,);
+E=DEFI_CONSTANTE(VALE=youn1,)
 
-Nu=DEFI_CONSTANTE(VALE=nu1,);
+Nu=DEFI_CONSTANTE(VALE=nu1,)
 
-ALPHA=DEFI_CONSTANTE(VALE=0.0,);
+ALPHA=DEFI_CONSTANTE(VALE=0.0,)
 
 RHOF=DEFI_CONSTANTE(VALE = 0.,)
 mat2=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
@@ -123,24 +123,24 @@ mat2=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                                                     TTKF            =  70.,
                                                                     NRJF            =  180000.,
 # 3eme dimension si calcul 2D ou AXIS
-                                                                    DIM3            = 0.4,),);  
+                                                                    DIM3            = 0.4,),)
 
 
- 
+
 
 HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='HYDR',
-                         VALE=1.0,),);
+                         VALE=1.0,),)
 
 HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='HYDR',
-                         VALE=1.0,),);
+                         VALE=1.0,),)
 
 HYDR=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_VARC',
@@ -150,23 +150,23 @@ HYDR=CREA_RESU(OPERATION='AFFE',
                   INST=0.0,),
                _F(CHAM_GD=HYDRF,
 
-                  INST=350000.,),),);
+                  INST=350000.,),),)
 
- 
+
 
 SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=164,),);
+                         VALE=164,),)
 
 SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=164,),);
+                         VALE=164,),)
 
 SECH=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_THER',
@@ -175,28 +175,28 @@ SECH=CREA_RESU(OPERATION='AFFE',
                _F(CHAM_GD=SECHI,
                   INST=0.0,),
                _F(CHAM_GD=SECHF,
-                  INST=35000.0,),),);
+                  INST=35000.0,),),)
 
 TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=20,),);
+                         VALE=20,),)
 
 TEMP70=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=70,),);
+                         VALE=70,),)
 
 TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=20,),);
+                         VALE=20,),)
 
 TEMP=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_THER',
@@ -211,7 +211,7 @@ TEMP=CREA_RESU(OPERATION='AFFE',
                _F(CHAM_GD=TEMPF,
                   INST=5.0,),
                _F(CHAM_GD=TEMPF,
-                  INST=500.,),),);
+                  INST=500.,),),)
 
 afmat=AFFE_MATERIAU(MAILLAGE=M,
                       AFFE=_F(TOUT='OUI',
@@ -228,7 +228,7 @@ afmat=AFFE_MATERIAU(MAILLAGE=M,
                                     NOM_CHAM='TEMP',
                                     VALE_REF=0.,),
                                 ),
-                                    );
+                                    )
 
 
 CL=AFFE_CHAR_MECA(MODELE=mod,
@@ -238,20 +238,20 @@ CL=AFFE_CHAR_MECA(MODELE=mod,
                                DY=0,),
                             _F(GROUP_NO='SYMZ',
                                DZ=0,),),
-);
+)
 litps=DEFI_LIST_REEL(DEBUT=0,
                      INTERVALLE=(_F(JUSQU_A=1,
                                     PAS=0.1),
                                  _F(JUSQU_A=15,
                                     PAS=0.1),
-                                 ),);
+                                 ),)
 
 liarc=DEFI_LIST_REEL(DEBUT=0,
                      INTERVALLE=(_F(JUSQU_A=1,
                                     PAS=0.1),
                                  _F(JUSQU_A=15,
                                     PAS=0.1),
-                                 ),);
+                                 ),)
 
 RESU=STAT_NON_LINE(MODELE=mod,
                    CHAM_MATER=afmat,
@@ -267,18 +267,18 @@ RESU=STAT_NON_LINE(MODELE=mod,
                                  RESI_GLOB_MAXI=1.E-8),
                   RECH_LINEAIRE=_F(METHODE='MIXTE',
                                    ITER_LINE_MAXI=5,),
-                  ARCHIVAGE=_F(LIST_INST = liarc),);
+                  ARCHIVAGE=_F(LIST_INST = liarc),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,
-                VARI_INTERNE=('VARI_NOEU',),);
+                VARI_INTERNE=('VARI_NOEU',),)
 
 IMPR_RESU(FORMAT='RESULTAT',
           UNITE=8,
-          RESU=(_F(RESULTAT=RESU,           
+          RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM=('VARI_NOEU',),
                    NOM_CMP=('V101',),),
                                ),
-                 );
+                 )
 
 TEST_RESU(RESU=(_F(INST=15.,
                    RESULTAT=RESU,
@@ -362,7 +362,7 @@ mat3=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                                                     TTKF            =  65.,
                                                                     NRJF            =  180000.,
 # 3eme dimension si calcul 2D ou AXIS
-                                                                    DIM3            = 0.4,),);  
+                                                                    DIM3            = 0.4,),)
 
 afmat3=AFFE_MATERIAU(MAILLAGE=M,
                       AFFE=_F(TOUT='OUI',
@@ -379,7 +379,7 @@ afmat3=AFFE_MATERIAU(MAILLAGE=M,
                                     NOM_CHAM='TEMP',
                                     VALE_REF=0.,),
                                 ),
-                                    );
+                                    )
 
 RESU3=STAT_NON_LINE(MODELE=mod,
                    CHAM_MATER=afmat3,
@@ -395,11 +395,11 @@ RESU3=STAT_NON_LINE(MODELE=mod,
                                  ARRET='OUI',),
                   RECH_LINEAIRE=_F(METHODE='MIXTE',
                                     ITER_LINE_MAXI=5,),
-                  ARCHIVAGE=_F(LIST_INST = liarc),);
+                  ARCHIVAGE=_F(LIST_INST = liarc),)
 
 RESU3=CALC_CHAMP(reuse=RESU3,RESULTAT=RESU3,
-                 
-                VARI_INTERNE=('VARI_NOEU',),);
+
+                VARI_INTERNE=('VARI_NOEU',),)
 
 
 TEST_RESU(RESU=(_F(INST=15.,
@@ -412,4 +412,4 @@ TEST_RESU(RESU=(_F(INST=15.,
                 ),
           )
 
-FIN();
+FIN()

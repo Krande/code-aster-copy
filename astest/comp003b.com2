@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,11 +36,11 @@ for i in range(Ncal):
                                  _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
 #       DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
 #                          ECHEC=_F(SUBD_METHODE='UNIFORME',
 #                                   SUBD_PAS=10,
-#                                   SUBD_NIVEAU=2,),);
+#                                   SUBD_NIVEAU=2,),)
 #       Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
                    COMPORTEMENT=_F(RELATION=compor),
@@ -62,12 +62,12 @@ for i in range(Ncal):
 #                  SUBD_METHODE='UNIFORME',SUBD_PAS=10,SUBD_NIVEAU=2,
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
                                   EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
-                        );
+                        )
         DETRUIRE(NOM=temps)
 #       DETRUIRE(NOM=DEFLIST)
 # On renomme les composantes en fonction de  l'ordre de discretisation
         R_SI=rename_components(i,N_pas,label_cal,ch_param,RESU,R_SI)
-#        IMPR_TABLE(TABLE=RESU[i]);
+#        IMPR_TABLE(TABLE=RESU[i])
 # TEST_RESU sur les erreurs relatives
 TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,vale_calc,prec_zero,coef_para)
 
@@ -76,5 +76,5 @@ TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,vale_calc,prec_
 #for i in range(len(ch_param)):
 #        IMPR_TABLE(TABLE=R_SI[i])
 
-FIN();
+FIN()
 #

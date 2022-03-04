@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 from numpy.linalg import norm
@@ -96,7 +96,7 @@ ACIERECP=DEFI_MATERIAU(
                                      H4      = a_Lomer,
                                      H5      = a_Hirth,
                                    ),
-                      );
+                      )
 
 
 # ECP_CFC
@@ -104,7 +104,7 @@ CMP_MONO=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERECP,
                                     ECOULEMENT='MONO_DD_FAT',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
-                                    ),);
+                                    ),)
 
 NBGR=40
 
@@ -154,7 +154,7 @@ CMP_POLY=DEFI_COMPOR(POLYCRISTAL=(
   ),
   LOCALISATION='BETA',DL=100.0,DA=0.,
   MU_LOCA=74000.,
-);
+)
 
 # essai  eps-point=1.E-3 /s
 tmax=150.
@@ -165,7 +165,7 @@ EPSIMPO=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,tmax,0.15),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',
-                   );
+                   )
 
 # LOI DE COMPORTEMENT ECP_CFC en Explicite
 LISTARCH=DEFI_LIST_REEL(DEBUT=0.0,
@@ -173,20 +173,20 @@ LISTARCH=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=tmax,
                                       NOMBRE=200,),
                                   ),
-                      );
+                      )
 
 LINSTECP=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                                    _F(JUSQU_A=tmax,
                                       NOMBRE=400,),
                                   ),
-                      );
+                      )
 
 LIS2ECP=DEFI_LIST_INST(INFO=1,
                         DEFI_LIST=_F(LIST_INST=LINSTECP),
                         ECHEC=_F(SUBD_NIVEAU=20,
                                  SUBD_PAS=4),
-                        );
+                        )
 
 
 
@@ -223,19 +223,19 @@ POLYECP=SIMU_POINT_MAT(INFO=1,
                                   ),
                       NB_VARI_TABLE=6,
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );
+                       )
 
 
 sigeps=RECU_FONCTION(TABLE=POLYECP,
                    PARA_X='EPZZ',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 sigtps=RECU_FONCTION(TABLE=POLYECP,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 #Valeur experimentale
 TEST_FONCTION(VALEUR=_F(VALE_CALC=407.7115377185,
@@ -262,7 +262,7 @@ IMPR_FONCTION(
                         LEGENDE= 'ECP',),
                    ),
             UNITE=29,
-            TITRE='SIG = f(EPS) pour '+str(NBGR)+' phases');
+            TITRE='SIG = f(EPS) pour '+str(NBGR)+' phases')
 
 IMPR_TABLE(TABLE=POLYECP)
 

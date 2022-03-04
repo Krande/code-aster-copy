@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,19 +19,19 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-tfin = 0.5;
+tfin = 0.5
 
-pa = 0.002;
+pa = 0.002
 
-fc = 15.0;
+fc = 15.0
 
 om = ((2.0 * pi) * fc)
 
-E = 200.E9;
+E = 200.E9
 
-rho = 8000.0;
+rho = 8000.0
 
-nu = 0.3;
+nu = 0.3
 
 
 MAIL=LIRE_MAILLAGE(UNITE=20,

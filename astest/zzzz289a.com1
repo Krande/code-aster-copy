@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,10 +71,10 @@ TEST_RESU(OBJET=_F(VALE_CALC= valmRigi,
 rigiElemPartial=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                                MODELE=MODELUPG,
                                CHAM_MATER=CHMAT_Q,
-                               GROUP_MA = 'V1');
+                               GROUP_MA = 'V1')
 
 rigiAssePartial=ASSE_MATRICE(MATR_ELEM=(rigiElemPartial,),
-                             NUME_DDL=NUMEUPG,);
+                             NUME_DDL=NUMEUPG,)
 
 TEST_RESU(OBJET=_F(VALE_CALC=valmRigi,
                    NOM=rigiAssePartial.getName()[:8] + '           .VALM',), )

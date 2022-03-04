@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -162,7 +162,7 @@ IMPR_RESU(
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP=('V1',),
                    NUME_ORDRE = 1),
-                ));
+                ))
 
 ULOG=EXTR_RESU(RESULTAT=TLOG,ARCHIVAGE=_F(NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),))
 
@@ -199,7 +199,7 @@ WEIB=POST_ELEM(
 IMPR_TABLE(TABLE=WEIB)
 F_WEIB=RECU_FONCTION(TABLE=WEIB,
                    PARA_X='INST',
-                   PARA_Y='SIGMA_WEIBULL',);
+                   PARA_Y='SIGMA_WEIBULL',)
 
 
 
@@ -210,27 +210,27 @@ BERE=POST_BEREMIN(RESULTAT=U,
 IMPR_TABLE(TABLE=BERE)
 F_BERE=RECU_FONCTION(TABLE=BERE,
                    PARA_X='inst',
-                   PARA_Y='sigma_weibull',);
+                   PARA_Y='sigma_weibull',)
 
 
 
 IMPR_FONCTION(FORMAT='XMGRACE',
              PILOTE='',
-             LEGENDE_X = 'inst', 
-             LEGENDE_Y = 'sigma weibull', 
+             LEGENDE_X = 'inst',
+             LEGENDE_Y = 'sigma weibull',
              COURBE=(
-                  _F(FONCTION = F_WEIB, 
+                  _F(FONCTION = F_WEIB,
                       COULEUR= 4,
-                       STYLE = 2, 
+                       STYLE = 2,
                        MARQUEUR = 5,
                        LEGENDE= 'POST_ELEM',),
-                    _F(FONCTION = F_BERE, 
+                    _F(FONCTION = F_BERE,
                         COULEUR= 2,
-                       STYLE = 5, 
+                       STYLE = 5,
                        MARQUEUR = 8,
                       LEGENDE= 'POST_BEREMIN',),),
                       UNITE=28,
-             TITRE="Trace de sigma weibull avec SIGM_ELGA, PETIT deformation");
+             TITRE="Trace de sigma weibull avec SIGM_ELGA, PETIT deformation")
 
 
 # WEIBULL AVEC OPTION SIGM_ELGA, SIMO_MIEHE, SANS CORRECTION DE PLASTICITE
@@ -242,7 +242,7 @@ WEIBSM=POST_ELEM(
                                     OPTION = 'SIGM_ELGA',
                                     CORR_PLAST = 'NON')
                    )
-                   
+
 # WEIBULL ET BEREMIN AVEC OPTION SIGM_ELGA, GDEF_LOG, SANS CORRECTION DE PLASTICITE
 
 WEIBLOG=POST_ELEM(
@@ -255,7 +255,7 @@ WEIBLOG=POST_ELEM(
 IMPR_TABLE(TABLE=WEIBLOG)
 F_WEIBLOG=RECU_FONCTION(TABLE=WEIBLOG,
                    PARA_X='INST',
-                   PARA_Y='SIGMA_WEIBULL',);
+                   PARA_Y='SIGMA_WEIBULL',)
 
 
 
@@ -268,7 +268,7 @@ BERELOG=POST_BEREMIN(RESULTAT=ULOG,
 IMPR_TABLE(TABLE=BERELOG)
 F_BERELOG=RECU_FONCTION(TABLE=BERELOG,
                    PARA_X='inst',
-                   PARA_Y='sigma_weibull',);
+                   PARA_Y='sigma_weibull',)
 
 
 
@@ -288,7 +288,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                        MARQUEUR = 8,
                        LEGENDE= 'POST_BEREMIN',),),
                        UNITE=29,
-              TITRE="Trace de sigma weibull avec SIGM_ELGA, GDEF_LOG");
+              TITRE="Trace de sigma weibull avec SIGM_ELGA, GDEF_LOG")
 
 
 
@@ -305,7 +305,7 @@ WEIB2=POST_ELEM(
 IMPR_TABLE(TABLE=WEIB2)
 F_WEIB2=RECU_FONCTION(TABLE=WEIB2,
                    PARA_X='INST',
-                   PARA_Y='SIGMA_WEIBULL',);
+                   PARA_Y='SIGMA_WEIBULL',)
 
 
 
@@ -318,7 +318,7 @@ BERE2=POST_BEREMIN(RESULTAT=U,
 IMPR_TABLE(TABLE=BERE2)
 F_BERE2=RECU_FONCTION(TABLE=BERE2,
                    PARA_X='inst',
-                   PARA_Y='sigma_weibull',);
+                   PARA_Y='sigma_weibull',)
 
 
 
@@ -339,7 +339,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                        MARQUEUR = 8,
                        LEGENDE= 'POST_BEREMIN',),),
                        UNITE=30,
-              TITRE="Trace de sigma weibull avec SIGM_ELMOY, PETIT deformation");
+              TITRE="Trace de sigma weibull avec SIGM_ELMOY, PETIT deformation")
 
 
 

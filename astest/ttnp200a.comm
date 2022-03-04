@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ FOE=DEFI_FONCTION(       NOM_PARA='INST',
                                        18.2,   1.5,  ),
                          PROL_DROITE='LINEAIRE',
                         PROL_GAUCHE='LINEAIRE'     )
-                        
+
 FOE2=DEFI_FONCTION(       NOM_PARA='TEMP',
                                VALE=( -10.3,   0.87,
                                         5.3,   1.6,
@@ -105,7 +105,7 @@ FOG=DEFI_FONCTION(       NOM_PARA='INST',
                                       3.15,  1.2,
                                      16.2,   1.34,
                                      31.25,  1.22, ) )
-# pour M116 le vecteur normal est (nx,ny)                                     
+# pour M116 le vecteur normal est (nx,ny)
 nx = -0.99062788251219891
 ny = -0.1365884269965691
 FOGX=DEFI_FONCTION(       NOM_PARA='INST',
@@ -133,7 +133,7 @@ FOI=DEFI_FONCTION(       NOM_PARA='INST',
                                       21.6,   0.98,  ),
                          PROL_DROITE='LINEAIRE',
                         PROL_GAUCHE='LINEAIRE'     )
-                        
+
 FOI2=DEFI_FONCTION(       NOM_PARA='TEMP',
                                VALE=( -0.45,  1.02,
                                        1.4,   0.8,
@@ -383,8 +383,8 @@ CHTH1_EC=AFFE_CHAR_THER(MODELE=MO,
                         EVOL_CHAR=EVOL_FLU,
                         )
 ##
-                                              
-                                              
+
+
 
 CHTH1B=AFFE_CHAR_THER(         MODELE=MO,
                            ECHANGE=(
@@ -488,7 +488,7 @@ THL10=CALC_META(reuse=THL10,
                 OPTION='META_ELNO',
                 ETAT_INIT=_F(META_INIT_ELNO=CARTE),
                 COMPORTEMENT=_F(RELATION='ACIER',
-                             TOUT='OUI'),);
+                             TOUT='OUI'),)
 
 #     -  THERMIQUE NON LINEAIRE
 #        ----------------------
@@ -506,8 +506,8 @@ THNL1_EC=THER_NON_LINE(   MODELE=MO,
                                  _F(  CHARGE = CHTH1_EC),
                                  _F(  CHARGE = CHTH1B)),
                           CONVERGENCE=_F() )
-                          
-                          
+
+
 
 THNL6=THER_NON_LINE(        MODELE=MO,
                           CHAM_MATER=CHMATNL,EXCIT=(
@@ -525,7 +525,7 @@ THNL6=THER_NON_LINE(        MODELE=MO,
 
 THNL6=CALC_CHAMP(reuse=THNL6,
                  RESULTAT=THNL6,
-                 THERMIQUE=('FLUX_ELGA','FLUX_ELNO',),);
+                 THERMIQUE=('FLUX_ELGA','FLUX_ELNO',),)
 
 THNL6=CALC_META(reuse=THNL6,
                 MODELE=MO,
@@ -534,7 +534,7 @@ THNL6=CALC_META(reuse=THNL6,
                 OPTION='META_ELNO',
                 ETAT_INIT=_F(META_INIT_ELNO=CARTE),
                 COMPORTEMENT=_F(RELATION='ACIER',
-                             TOUT = 'OUI'),);
+                             TOUT = 'OUI'),)
 
 ENGENDRE_TEST (  CO = (THNL1, THNL6, THL10) )
 

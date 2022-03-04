@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -816,7 +816,7 @@ PRESS0 = DEFI_FONCTION ( NOM_PARA    = 'INST',
                        PROL_DROITE = 'CONSTANT',
                        PROL_GAUCHE = 'CONSTANT'
 # FIN PARAM
-                      );
+                      )
 # APPLICATION DU COEFFICIENT MULTIPLICATEUR
 PRESS = CALC_FONCTION (
           COMB        =_F ( FONCTION = PRESS0,
@@ -895,7 +895,7 @@ CHME2 = AFFE_CHAR_MECA_F ( MODELE        = MO_MECA,
 
 # 3.6.1 DEFINITION DES INSTANTS DE RESOLUTION
 
-LINST_ME = DEFI_LIST_REEL (DEBUT = 0., INTERVALLE=_F(JUSQU_A=3400.0, PAS=10.0),);
+LINST_ME = DEFI_LIST_REEL (DEBUT = 0., INTERVALLE=_F(JUSQU_A=3400.0, PAS=10.0),)
 
 
 # 3.6.2 RESOLUTION EN ELASTICITE LINEAIRE
@@ -907,7 +907,7 @@ SIG = MECA_STATIQUE(    MODELE = MO_MECA,
                                           MATR_DISTRIBUEE='NON',
                                           RESI_RELA=-1.0,
                                           PCENT_PIVOT=100,),),
-                        LIST_INST=LINST_ME);
+                        LIST_INST=LINST_ME)
 
 SIG = CALC_CHAMP (reuse      = SIG,
          CONTRAINTE=('SIGM_ELNO'),
@@ -1081,7 +1081,7 @@ S1M_G=MACR_LIGN_COUPE(RESULTAT=SIG,
                                  NB_POINTS=5,
                                  COOR_ORIG=(debut,0.0,),
                                  COOR_EXTR=(fin,0.0,),
-                                 ),);
+                                 ),)
 #
 TEMP_G=MACR_LIGN_COUPE(RESULTAT=TEMP,
                    NOM_CHAM='TEMP',
@@ -1089,7 +1089,7 @@ TEMP_G=MACR_LIGN_COUPE(RESULTAT=TEMP,
                    LIGN_COUPE=_F(TYPE='SEGMENT',
                                  NB_POINTS=5,
                                  COOR_ORIG=(debut,0.0,),
-                                 COOR_EXTR=(fin,0.0,),),);
+                                 COOR_EXTR=(fin,0.0,),),)
 
 FCT_L = FORMULE(VALE='SIYY+L_SG_R_L(COOR_X*1000)',
                 L_SG_R_L=L_SG_R_L,
@@ -1117,7 +1117,7 @@ S1_G=CALC_TABLE(TABLE=S1M_G,
                       _F(OPERATION='RENOMME',
                           NOM_PARA=('SIYYP','SIYY'),),
                       _F(OPERATION='RENOMME',
-                          NOM_PARA=('SIZZP','SIZZ'),),));
+                          NOM_PARA=('SIZZP','SIZZ'),),))
 
 #*********************************************************************************************
 

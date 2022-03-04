@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,19 +32,19 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
-MO=AFFE_MODELE(MAILLAGE=MA, 
+MA=LIRE_MAILLAGE(FORMAT='MED')
+MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='D_PLAN_INCO_UPG'),
                DISTRIBUTION=_F(METHODE='SOUS_DOMAINE',NB_SOUS_DOMAINE=4),
-);
+)
 
-MATERIAU=DEFI_MATERIAU(ELAS=_F(E=100., NU=0.4999));
-CH_MATER=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT='OUI',  MATER=MATERIAU));
+MATERIAU=DEFI_MATERIAU(ELAS=_F(E=100., NU=0.4999))
+CH_MATER=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT='OUI',  MATER=MATERIAU))
 
-SYMETRI2=AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO= _F(TOUT='OUI', DX=1.0 , DY=2.0));
+SYMETRI2=AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO= _F(TOUT='OUI', DX=1.0 , DY=2.0))
 
-INSTANTS=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1));
-RAMPE=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.0,  0.0, 1.0,  1.0));
+INSTANTS=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
+RAMPE=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.0,  0.0, 1.0,  1.0))
 
 #  1 : MUMPS (centralise)
 # -------------------------
@@ -57,7 +57,7 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS));
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS))
 
 TEST_RESU(RESU=(_F(GROUP_NO='C',
                    INST=1.0,
@@ -91,7 +91,7 @@ RESU11=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS));
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS))
 
 TEST_RESU(RESU=(_F(GROUP_NO='C',
                    INST=1.0,
@@ -121,7 +121,7 @@ RESU12=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS));
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS))
 
 TEST_RESU(RESU=(_F(GROUP_NO='C',
                    INST=1.0,
@@ -151,7 +151,7 @@ RESU13=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS));
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS))
 
 TEST_RESU(RESU=(_F(GROUP_NO='C',
                    INST=1.0,
@@ -185,7 +185,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS));
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS))
 
 TEST_RESU(RESU=(_F(GROUP_NO='C',
                    INST=1.0,
@@ -218,7 +218,7 @@ RESU3=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS));
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS))
 
 TEST_RESU(RESU=(_F(GROUP_NO='C',
                    INST=1.0,
@@ -256,7 +256,7 @@ RESU4=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
                    NEWTON=_F(REAC_ITER=1),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS));
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS))
 
 TEST_RESU(RESU=(_F(GROUP_NO='C',
                    INST=1.0,
@@ -279,4 +279,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
                 ),
           )
 
-FIN();
+FIN()

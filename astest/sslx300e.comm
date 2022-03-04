@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,21 +27,21 @@ t1=LIRE_TABLE(UNITE=31, FORMAT='ASTER',
 #                         Lecture du maillage
 #
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA=(_F(NOM='ALL', TOUT= 'OUI',),),);
+              CREA_GROUP_MA=(_F(NOM='ALL', TOUT= 'OUI',),),)
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),);
+              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),)
 
 
 
 MA2=CREA_MAILLAGE(MAILLAGE=MA,
                  MODI_MAILLE=_F(GROUP_MA='GRMA1',
-                                OPTION='QUAD8_9',),);
+                                OPTION='QUAD8_9',),)
 
 MA2 = DEFI_GROUP( reuse = MA2, MAILLAGE = MA2,
                       CREA_GROUP_NO= (
@@ -56,12 +56,12 @@ MA2 = DEFI_GROUP( reuse = MA2, MAILLAGE = MA2,
 
 MA2=DEFI_GROUP(reuse=MA2,
               MAILLAGE=MA2,
-              CREA_GROUP_MA=(_F(NOM='HE1', TOUT='OUI', TYPE_MAILLE='3D',),),);
+              CREA_GROUP_MA=(_F(NOM='HE1', TOUT='OUI', TYPE_MAILLE='3D',),),)
 
 
 MA2=DEFI_GROUP(reuse=MA2,
               MAILLAGE=MA2,
-              CREA_GROUP_MA=(_F(NOM='MORIG', TOUT='OUI', TYPE_MAILLE='POI1',),),);
+              CREA_GROUP_MA=(_F(NOM='MORIG', TOUT='OUI', TYPE_MAILLE='POI1',),),)
 
 #-----------------------------------------------------------------------
 #                         modele mecanique
@@ -78,23 +78,23 @@ MO=AFFE_MODELE(MAILLAGE=MA2,
                         MODELISATION='COQUE_3D',),
                      _F(GROUP_MA='GRMA2',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='POU_D_E',),),);
+                        MODELISATION='POU_D_E',),),)
 
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=3.E10,
                            NU=0.2,
                            RHO=2400,
-                           ALPHA=1.096e-05,),);
+                           ALPHA=1.096e-05,),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.0,
                             RHO=7800.0,
-                            ALPHA=1.096e-05,),);
+                            ALPHA=1.096e-05,),)
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA2,
                     AFFE=(_F(TOUT=('OUI'),
-                             MATER=(BETON,),),));
+                             MATER=(BETON,),),))
 
 #-----------------------------------------------------------------------
 #   carateristiques des elements de structure
@@ -115,7 +115,7 @@ CARAEL=AFFE_CARA_ELEM(MODELE=MO,
                              _F(GROUP_MA='MORIG',
                                CARA='K_TR_D_N',
                                VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                          ));
+                          ))
 
 #-----------------------------------------------------------------------
 #                      defi et affe materiaux
@@ -124,20 +124,20 @@ CARAEL=AFFE_CARA_ELEM(MODELE=MO,
 
 YOUN_ACI=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20., 2.E11,
                                          500., 1.E11,
-                                           ),);
+                                           ),)
 YOUN_BET=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20., 3.E10,
                                          500., 1.5E10,
-                                           ),);
+                                           ),)
 NU_ACI=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20., 0.2,
                                          500., 0.2,
-                                           ),);
+                                           ),)
 NU_BET=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20., 0.3,
                                          500., 0.3,
-                                           ),);
-RHO_ACI =DEFI_CONSTANTE(VALE=7800.);
-RHO_BET =DEFI_CONSTANTE(VALE=2400.);
-ALPH_ACI =DEFI_CONSTANTE(VALE=1.096e-05);
-ALPH_BET =DEFI_CONSTANTE(VALE=1.096e-05);
+                                           ),)
+RHO_ACI =DEFI_CONSTANTE(VALE=7800.)
+RHO_BET =DEFI_CONSTANTE(VALE=2400.)
+ALPH_ACI =DEFI_CONSTANTE(VALE=1.096e-05)
+ALPH_BET =DEFI_CONSTANTE(VALE=1.096e-05)
 
 BETON_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_BET,
                                 NU=NU_BET,
@@ -145,7 +145,7 @@ BETON_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_BET,
                                 ALPHA=ALPH_BET,
                                 TEMP_DEF_ALPHA=20.),),
                     THER=_F(LAMBDA=54.6,
-                            RHO_CP=3710000.0,),);
+                            RHO_CP=3710000.0,),)
 
 ACIER_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_ACI,
                                 NU=NU_ACI,
@@ -153,7 +153,7 @@ ACIER_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_ACI,
                                 ALPHA=ALPH_ACI,
                                 TEMP_DEF_ALPHA=20.),),
                     THER=_F(LAMBDA=54.6,
-                            RHO_CP=3710000.0,),);
+                            RHO_CP=3710000.0,),)
 
 
 #
@@ -168,7 +168,7 @@ FTEMP=DEFI_FONCTION(NOM_PARA='X',
                     NOM_RESU='TOUTRESU',
                     PROL_DROITE = 'CONSTANT',
                     PROL_GAUCHE = 'CONSTANT',
-                    VALE=(0,20.0,30.,50.0),);
+                    VALE=(0,20.0,30.,50.0),)
 
 CHAR_TH2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                                       MAILLAGE=MA2,
@@ -176,7 +176,7 @@ CHAR_TH2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                                       NOM_CMP = 'TEMP',
                                       VALE_F = FTEMP))
 
-LINST=DEFI_LIST_REEL(VALE=(0.,),);
+LINST=DEFI_LIST_REEL(VALE=(0.,),)
 
 RESUTF = CREA_RESU(OPERATION='AFFE',
                   TYPE_RESU = 'EVOL_THER',
@@ -254,7 +254,7 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MO,
                                       AXE_POUTRE=(1.0,0.0,0.0,),),
                                    _F(OPTION='3D_POU',
                                       GROUP_MA_1='FACE1',
-                                      GROUP_NO_2='ORIG',),),);
+                                      GROUP_NO_2='ORIG',),),)
 
 
 # 6 chargements mécaniques
@@ -302,13 +302,13 @@ PHYDR=DEFI_FONCTION(NOM_PARA='X',
                     NOM_RESU='TOUTRESU',
                     PROL_DROITE = 'CONSTANT',
                     PROL_GAUCHE = 'CONSTANT',
-                    VALE=(10.,-10000.0,20.,0.0),);
+                    VALE=(10.,-10000.0,20.,0.0),)
 
 pvar = AFFE_CHAR_MECA_F(MODELE=MO,
                         FORCE_COQUE = _F(GROUP_MA='GRMA1',
                                         FY = PHYDR,
                                         ),
-                       );
+                       )
 
 #-----------------------------------------------------------------------
 # Appel de la macro

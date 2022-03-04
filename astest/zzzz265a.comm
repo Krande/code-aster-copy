@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,64 +18,64 @@
 # --------------------------------------------------------------------
 
 # A RAJOUTER AUX TESTS MPI SUR 2 PROCS
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-_IMAX = 1.73435331104e-08;
+_IMAX = 1.73435331104e-08
 
-_XEIP = 0.46443271637;
+_XEIP = 0.46443271637
 
-_XEIL = 0.46443271637;
+_XEIL = 0.46443271637
 
-_AIRE = 0.000408493752924;
+_AIRE = 0.000408493752924
 
-_ELAS = 69632222222.2;
+_ELAS = 69632222222.2
 
-_RHO = 3351.33644077;
+_RHO = 3351.33644077
 
-_TEMPELAS = -47.5086271764;
+_TEMPELAS = -47.5086271764
 
-_OMEGA = 137.18;
+_OMEGA = 137.18
 
-_ALPHA = 2e-05;
+_ALPHA = 2e-05
 
-_AMALPHA = 3.65566215458e-06;
+_AMALPHA = 3.65566215458e-06
 
-_AMBETA = 0.0683810077783;
+_AMBETA = 0.0683810077783
 
-_TPDEB = 10.1;
+_TPDEB = 10.1
 
-_TFIN = 10.5;
+_TFIN = 10.5
 
-_TFIN2 = 10.6;
+_TFIN2 = 10.6
 
-_EXC = 'EXCIT19';
+_EXC = 'EXCIT19'
 
-_FORCE = 3.46;
+_FORCE = 3.46
 
-_PK = 'PK19';
+_PK = 'PK19'
 
 MAIL0=LIRE_MAILLAGE(UNITE=20,
-                    FORMAT='MED',);
+                    FORMAT='MED',)
 
 MAIL0=DEFI_GROUP(reuse =MAIL0,
                  MAILLAGE=MAIL0,
                  CREA_GROUP_MA=_F(NOM='TOTAL',
-                                  TOUT='OUI',),);
+                                  TOUT='OUI',),)
 
 MAIL0=DEFI_GROUP(reuse =MAIL0,
                  MAILLAGE=MAIL0,
                  CREA_GROUP_NO=_F(GROUP_MA='TOTAL',
                                   NOM='NCABLE',
-                                  CRIT_NOEUD='TOUS',),);
+                                  CRIT_NOEUD='TOUS',),)
 
 MAIL1=CREA_MAILLAGE(MAILLAGE=MAIL0,
                     CREA_MAILLE=_F(NOM='TOTAL1',
                                      GROUP_MA='TOTAL',
-                                     PREF_MAILLE='ZZ',),);
+                                     PREF_MAILLE='ZZ',),)
 
 MAIL2=CREA_MAILLAGE(MAILLAGE=MAIL1,
                     CREA_POI1=_F(NOM_GROUP_MA='DIS',
-                                 GROUP_NO='NCABLE',),);
+                                 GROUP_NO='NCABLE',),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL2,
                    AFFE=(_F(GROUP_MA='TOTAL',
@@ -86,7 +86,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL2,
                             MODELISATION='DIS_T',),
                          _F(GROUP_MA='TOTAL1',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='CABLE',),),);
+                            MODELISATION='CABLE',),),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     POUTRE=(_F(GROUP_MA=('CHP','CHPL',),
@@ -108,14 +108,14 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                                VALE=(0.0,0.0,0.0,),),
                              _F(CARA='M_T_D_N',
                                GROUP_MA='DIS',
-                               VALE=(0.0,),),));
+                               VALE=(0.0,),),))
 
 MPOU=DEFI_MATERIAU(ELAS=_F(E=_ELAS,
                            NU=0.3,
                            RHO=_RHO,
                            ALPHA=_ALPHA,
                            AMOR_ALPHA=_AMALPHA,
-                           AMOR_BETA=_AMBETA,),);
+                           AMOR_BETA=_AMBETA,),)
 
 MCAB=DEFI_MATERIAU(ELAS=_F(E=_ELAS,
                            NU=0.3,
@@ -123,21 +123,21 @@ MCAB=DEFI_MATERIAU(ELAS=_F(E=_ELAS,
                            ALPHA=_ALPHA,
                            AMOR_ALPHA=_AMALPHA,
                            AMOR_BETA=_AMBETA,),
-                   CABLE=_F(EC_SUR_E=0.0001,),);
+                   CABLE=_F(EC_SUR_E=0.0001,),)
 
 CH02=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MODELE=MODELE,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=_TEMPELAS,),);
+                        VALE=_TEMPELAS,),)
 
 CH01=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MODELE=MODELE,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=0.0,),);
+                        VALE=0.0,),)
 
 RES01=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_VARC',
@@ -146,7 +146,7 @@ RES01=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=CH01,
                    INST=0.0,),
                 _F(CHAM_GD=CH02,
-                   INST=1.0,),),);
+                   INST=1.0,),),)
 
 MAT=AFFE_MATERIAU(MAILLAGE=MAIL2,
                   MODELE=MODELE,
@@ -160,7 +160,7 @@ MAT=AFFE_MATERIAU(MAILLAGE=MAIL2,
                                NOM_VARC='TEMP',
                                EVOL=RES01,
                                PROL_DROITE='CONSTANT',
-                               VALE_REF=0.0,),);
+                               VALE_REF=0.0,),)
 
 BC=AFFE_CHAR_MECA(MODELE=MODELE,
                   PESANTEUR=_F(GRAVITE=9.81,
@@ -171,13 +171,13 @@ BC=AFFE_CHAR_MECA(MODELE=MODELE,
                               DZ=0.0,
                               DRX=0.0,
                               DRY=0.0,
-                              DRZ=0.0,),);
+                              DRZ=0.0,),)
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=(_F(JUSQU_A=10.0,
                                    NOMBRE=5,),
                                 _F(JUSQU_A=11.0,
-                                   PAS=0.01,),),);
+                                   PAS=0.01,),),)
 
 SNL=STAT_NON_LINE(MODELE=MODELE,
                   CHAM_MATER=MAT,
@@ -197,18 +197,18 @@ SNL=STAT_NON_LINE(MODELE=MODELE,
                                  RESI_GLOB_RELA=1E-09,
                                  ITER_GLOB_MAXI=500,
                                  ),
-                  SOLVEUR=_F(METHODE='MULT_FRONT',),);
+                  SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
           PROC0='NON',
           RESU=_F(RESULTAT=SNL,
-          NOM_CHAM='DEPL',),);
+          NOM_CHAM='DEPL',),)
 
 
 LOAD=AFFE_CHAR_MECA(MODELE=MODELE,
                     FORCE_NODALE=_F(GROUP_NO='EXCIT19',
-                                    FZ=_FORCE,),);
+                                    FZ=_FORCE,),)
 
 FSIN = FORMULE(VALE='sin((INST-10)*_OMEGA)',
                _OMEGA=_OMEGA,
@@ -235,7 +235,7 @@ DNL=DYNA_NON_LINE(MODELE=MODELE,
                             REAC_ITER=1,),
                   SOLVEUR=_F(METHODE='MUMPS',
                              MATR_DISTRIBUEE='OUI'),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),);
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),)
 
 TEST_RESU(RESU=(_F(INST=10.5,
                    RESULTAT=DNL,
@@ -278,4 +278,4 @@ DEPL_LU = LIRE_RESU(TYPE_RESU='EVOL_NOLI', FORMAT='MED', UNITE=81,
                          _F(NOM_RESU='SNL', NOM_CHAM='DEPL'),))
 
 
-FIN();
+FIN()

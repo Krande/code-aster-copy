@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,25 +27,25 @@ from code_aster.Commands import *
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
       ERREUR=_F(ERREUR_F='EXCEPTION',),)
 
-mail=LIRE_MAILLAGE(FORMAT="ASTER",);
+mail=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 modele=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='POU_D_E',),);
+                           MODELISATION='POU_D_E',),)
 
 cara_pou=AFFE_CARA_ELEM(MODELE=modele,
                         POUTRE=_F(GROUP_MA='POUT',
                                   SECTION='RECTANGLE',
                                   CARA=('HY','HZ',),
-                                  VALE=(30.0,0.6,),),);
+                                  VALE=(30.0,0.6,),),)
 
 alu=DEFI_MATERIAU(ELAS=_F(E=71240,
-                          NU=0.3,),);
+                          NU=0.3,),)
 
 ch_mat=AFFE_MATERIAU(MAILLAGE=mail,
                      AFFE=_F(TOUT='OUI',
-                             MATER=alu,),);
+                             MATER=alu,),)
 
 encast=AFFE_CHAR_MECA(MODELE=modele,
                       DDL_IMPO=_F(GROUP_NO='A',
@@ -54,24 +54,24 @@ encast=AFFE_CHAR_MECA(MODELE=modele,
                                   DZ=0.0,
                                   DRX=0.0,
                                   DRY=0.0,
-                                  DRZ=0.0,),);
+                                  DRZ=0.0,),)
 
 fonc=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0.0,0.0,1.0,1.0,),);
+                   VALE=(0.0,0.0,1.0,1.0,),)
 
 listinst=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=10,),);
+                                  NOMBRE=10,),)
 
 effort2=AFFE_CHAR_MECA(MODELE=modele,
                       FORCE_NODALE=_F(GROUP_NO='C',
-                                      FX=-1,),);
+                                      FX=-1,),)
 
 #
 #  On teste l'arret propre EVENEMENT='INSTABILITE' sous DEFI_LIST_INST
 #
 list2=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = listinst),
-                        ECHEC=_F(EVENEMENT='INSTABILITE',ACTION='ARRET',),);
+                        ECHEC=_F(EVENEMENT='INSTABILITE',ACTION='ARRET',),)
 import re
 fmt_raison='-'*80+"""
 
@@ -99,7 +99,7 @@ try :
                   NEWTON=_F(MATRICE='TANGENTE',),
                   SOLVEUR=_F(METHODE='LDLT'),
                   CRIT_STAB=_F(OPTION='BANDE',CHAR_CRIT=(0., 2.),SIGNE='POSITIF_NEGATIF',),
-                  );
+                  )
 except AsterError as err:
    print(fmt_raison % str(err))
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
@@ -136,7 +136,7 @@ try :
                   NEWTON=_F(MATRICE='TANGENTE',),
                   SOLVEUR=_F(METHODE='LDLT'),
                   CRIT_STAB=_F(OPTION='BANDE',CHAR_CRIT=(0., 2.),SIGNE='POSITIF',),
-                  );
+                  )
 except AsterError as err:
    print(fmt_raison % str(err))
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
@@ -175,7 +175,7 @@ try :
                   NEWTON=_F(MATRICE='TANGENTE',),
                   SOLVEUR=_F(METHODE='LDLT'),
                   CRIT_STAB=_F(OPTION='BANDE',CHAR_CRIT=(0., 2.),SIGNE='NEGATIF',),
-                  );
+                  )
 except AsterError as err:
    print(fmt_raison % str(err))
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
@@ -196,4 +196,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 #DETRUIRE(NOM=(res2L_A, TAB1),)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI')
       )
 
-# dimension du cube 
+# dimension du cube
 LX = 1.
 LY = 1.
 LZ = 1.
@@ -78,7 +78,7 @@ LST_P5=POST_RELEVE_T(ACTION=_F(GROUP_NO = 'P5',
                                TOUT_CMP='OUI',
                                INTITULE='LST P5',
                                OPERATION = 'EXTRACTION') )
-                               
+
 IMPR_TABLE(TABLE=LST_P4)
 IMPR_TABLE(TABLE=LST_P5)
 

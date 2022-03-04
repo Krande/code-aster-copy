@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,38 +22,38 @@
 #======================================================================
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
-   IGNORE_ALARM='CALCCHAMP_5');
+   IGNORE_ALARM='CALCCHAMP_5')
 
 #
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM='TOUT',
-                               TOUT='OUI',),);
+                               TOUT='OUI',),)
 
 #
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_T',),);
+                       MODELISATION='POU_D_T',),)
 
 #
 MATR=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                            NU=0.3,
-                           RHO=7800.,),);
+                           RHO=7800.,),)
 
 #
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATR,),);
+                            MATER=MATR,),)
 
 #
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      POUTRE=_F(GROUP_MA='TOUT',
                                SECTION='CERCLE',
                                CARA=('R','EP',),
-                               VALE=(0.01E0,0.01E0,),),);
+                               VALE=(0.01E0,0.01E0,),),)
 
 #
 # CHARGEMENT REPARTI
@@ -65,14 +65,14 @@ F1=DEFI_FONCTION(
                  VALE=(-1.,939.6926208,
                        1.,939.6926208,
                        ),
-                 INTERPOL='LIN',);
+                 INTERPOL='LIN',)
 
 F2=DEFI_FONCTION(
                  NOM_PARA='Y',
                  VALE=(-1.,342.0201433,
                        1.,342.0201433,
                        ),
-                 INTERPOL='LIN',);
+                 INTERPOL='LIN',)
 
 #
 
@@ -90,42 +90,42 @@ BLODDL1=AFFE_CHAR_MECA(MODELE=MO,
                                     DZ=0.,
                                     DRX=0.,
                                     DRY=0.,
-                                    DRZ=0.,),),);
+                                    DRZ=0.,),),)
 
 #
 REPFX=AFFE_CHAR_MECA_F(MODELE=MO,
                        FORCE_POUTRE=_F(TOUT='OUI',
                                        FX=F1,
-                                       FY=F2,),);
+                                       FY=F2,),)
 
 #
 MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                      MODELE=MO,
                      CHAM_MATER=CHMAT,
-                     CARA_ELEM=CAREL,);
+                     CARA_ELEM=CAREL,)
 
 #
 KELEM1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=MO,
                       CHAM_MATER=CHMAT,
                       CARA_ELEM=CAREL,
-                      CHARGE=BLODDL1,);
+                      CHARGE=BLODDL1,)
 
 #
-NUMEROTA=NUME_DDL(MATR_RIGI=KELEM1,);
+NUMEROTA=NUME_DDL(MATR_RIGI=KELEM1,)
 
 #
 MMATR1=ASSE_MATRICE(MATR_ELEM=MELEM,
-                    NUME_DDL=NUMEROTA,);
+                    NUME_DDL=NUMEROTA,)
 
 #
 KMATR1=ASSE_MATRICE(MATR_ELEM=KELEM1,
-                    NUME_DDL=NUMEROTA,);
+                    NUME_DDL=NUMEROTA,)
 
 #
 L_TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.,
-                                     NOMBRE=3,),);
+                                     NOMBRE=3,),)
 
 #
 fCOS = FORMULE(VALE='cos(INST) ',
@@ -146,7 +146,7 @@ DYNFX=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  INCREMENT=_F(PAS=0.3333333,
                               INST_FIN=1.,),
                  EXCIT=_F(CHARGE=REPFX,
-                          FONC_MULT=fCOS,),);
+                          FONC_MULT=fCOS,),)
 
 #
 DYN_FX=CALC_CHAMP(MODELE=MO,
@@ -155,7 +155,7 @@ DYN_FX=CALC_CHAMP(MODELE=MO,
                   RESULTAT=DYNFX,
                   EXCIT=_F(CHARGE=REPFX,
                            FONC_MULT=fCOS,),
-                  CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
+                  CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),)
 
 # VALIDATION DE CALC_CHAMP / EXCIT / COEF_MULT
 POST_1=CALC_CHAMP(MODELE=MO,
@@ -165,7 +165,7 @@ POST_1=CALC_CHAMP(MODELE=MO,
                   RESULTAT=DYNFX,
                   EXCIT=_F(CHARGE=REPFX,
                            COEF_MULT=fCOS(2./3.),),
-                  CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
+                  CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),)
 
 #
 # EFFORT NORMAL A X = 0
@@ -266,35 +266,35 @@ BLODDL2=AFFE_CHAR_MECA(MODELE=MO,
                                    DZ=0.,
                                    DRX=0.,
                                    DRY=0.,
-                                   DRZ=0.,),);
+                                   DRZ=0.,),)
 
 KELEM2=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=MO,
                       CHAM_MATER=CHMAT,
                       CARA_ELEM=CAREL,
-                      CHARGE=BLODDL2,);
+                      CHARGE=BLODDL2,)
 
 #
-NUMEROTB=NUME_DDL(MATR_RIGI=KELEM2,);
+NUMEROTB=NUME_DDL(MATR_RIGI=KELEM2,)
 
 #
 MMATR2=ASSE_MATRICE(MATR_ELEM=MELEM,
-                    NUME_DDL=NUMEROTB,);
+                    NUME_DDL=NUMEROTB,)
 
 KMATR2=ASSE_MATRICE(MATR_ELEM=KELEM2,
-                    NUME_DDL=NUMEROTB,);
+                    NUME_DDL=NUMEROTB,)
 
 #
 PONF20=AFFE_CHAR_MECA_F(MODELE=MO,
                         FORCE_NODALE=_F(GROUP_NO='N03',
                                         FX=F1,
-                                        FY=F2,),);
+                                        FY=F2,),)
 
 #
 PONM20=AFFE_CHAR_MECA_F(MODELE=MO,
                         FORCE_NODALE=_F(GROUP_NO='N03',
                                         MX=F1,
-                                        MY=F2,),);
+                                        MY=F2,),)
 
 #
 DYNPOF20=DYNA_VIBRA(BASE_CALCUL='PHYS',
@@ -307,7 +307,7 @@ DYNPOF20=DYNA_VIBRA(BASE_CALCUL='PHYS',
                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                     INCREMENT=_F(LIST_INST=L_TEMPS,),
                     EXCIT=_F(CHARGE=PONF20,
-                             FONC_MULT=fCOS,),);
+                             FONC_MULT=fCOS,),)
 
 #
 DYNP_F20=CALC_CHAMP(MODELE=MO,
@@ -315,7 +315,7 @@ DYNP_F20=CALC_CHAMP(MODELE=MO,
                     CARA_ELEM=CAREL,
                     RESULTAT=DYNPOF20,
                     EXCIT=_F(CHARGE=PONF20, FONC_MULT=fCOS,),
-                    CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
+                    CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),)
 
 # VALIDATION DE CALC_CHAMP / EXCIT / COEF_MULT
 POST_2=CALC_CHAMP(MODELE=MO,
@@ -324,7 +324,7 @@ POST_2=CALC_CHAMP(MODELE=MO,
                   CARA_ELEM=CAREL,
                   RESULTAT=DYNPOF20,
                   EXCIT=_F(CHARGE=PONF20, COEF_MULT=fCOS(2./3.),),
-                  CONTRAINTE=('EFGE_ELNO',),);
+                  CONTRAINTE=('EFGE_ELNO',),)
 
 #
 # EFFORT NORMAL A X = 0
@@ -384,7 +384,7 @@ DYNPOM20=DYNA_VIBRA(BASE_CALCUL='PHYS',
                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                     INCREMENT=_F(LIST_INST=L_TEMPS,),
                     EXCIT=_F(CHARGE=PONM20,
-                             FONC_MULT=fCOS,),);
+                             FONC_MULT=fCOS,),)
 
 #
 DYNP_M20=CALC_CHAMP(MODELE=MO,
@@ -392,7 +392,7 @@ DYNP_M20=CALC_CHAMP(MODELE=MO,
                     CARA_ELEM=CAREL,
                     RESULTAT=DYNPOM20,
                     EXCIT=_F(CHARGE=PONM20, FONC_MULT=fCOS,),
-                    CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),);
+                    CONTRAINTE=('EFGE_ELNO','SIPM_ELNO',),)
 
 # VALIDATION DE CALC_CHAMP / EXCIT / COEF_MULT
 POST_3=CALC_CHAMP(MODELE=MO,
@@ -401,7 +401,7 @@ POST_3=CALC_CHAMP(MODELE=MO,
                   CARA_ELEM=CAREL,
                   RESULTAT=DYNPOM20,
                   EXCIT=_F(CHARGE=PONM20, COEF_MULT=fCOS(2./3.),),
-                  CONTRAINTE=('EFGE_ELNO',),);
+                  CONTRAINTE=('EFGE_ELNO',),)
 
 #
 # MOMENT DE TORSION A X = 0
@@ -451,6 +451,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   GROUP_MA='S01',),
           )
 
-FIN();
+FIN()
 
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # solution analytique python dans ssnd110a.22
 
@@ -87,7 +87,7 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                      H4      = 1.0,
                                      H5      = 1.0,
                                    ),
-                      );
+                      )
 
 
 
@@ -98,7 +98,7 @@ COMPORDD=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
                                     ECOULEMENT='MONO_DD_CFC',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
-                                    ),);
+                                    ),)
 
 
 # LOI DE COMPORTEMENT DD_CFC en Explicite
@@ -107,20 +107,20 @@ LISTARCH=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=1.,
                                       NOMBRE=100,),
                                   ),
-                      );
+                      )
 
 LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                                    _F(JUSQU_A=1.,
                                       NOMBRE=1000,),
                                   ),
-                      );
+                      )
 
 LIS2DD=DEFI_LIST_INST(INFO=1,
                         DEFI_LIST=_F(LIST_INST=LINSTDD),
                         ECHEC=_F(SUBD_NIVEAU=20,
                                  SUBD_PAS=10),
-                        );
+                        )
 
 # vecteurs direction de chargement
 l_orient=[[0.,0.,1.],[0.,1.,1.],[1.,1.,1.],[1.,5.,9.],[0.,1.,2.],[-1.,2.,5.]]
@@ -136,27 +136,27 @@ SIGMA0=100.
 S1=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][0]*l_norm[ori][0]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S2=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][1]*l_norm[ori][1]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S3=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][2]*l_norm[ori][2]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S4=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][0]*l_norm[ori][1]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S5=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][0]*l_norm[ori][2]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S6=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][1]*l_norm[ori][2]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 
 # densites de dislocation initiales : variables internes de 0 a 44
@@ -185,7 +185,7 @@ EXPLDD=SIMU_POINT_MAT(INFO=1,
                                    _F(SIXX=S1,SIYY=S2,SIZZ=S3,SIXY=S4,SIXZ=S5,SIYZ=S6),
                                   ),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );
+                       )
 
 
 rhoini=DEFI_CONSTANTE(VALE=RHO_0)
@@ -193,63 +193,63 @@ rhoini=DEFI_CONSTANTE(VALE=RHO_0)
 epsXX=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='EPXX',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsYY=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='EPYY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsZZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsXY=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='EPXY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsXZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='EPXZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsYZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='EPYZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 sigXX=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='SIXX',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigYY=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='SIYY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigZZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigXY=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='SIXY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigXZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='SIXZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigYZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='SIYZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 epsDIR=CALC_FONCTION(COMB=(_F(FONCTION = epsXX,
@@ -265,7 +265,7 @@ epsDIR=CALC_FONCTION(COMB=(_F(FONCTION = epsXX,
                            _F(FONCTION = epsYZ,
                               COEF= 2*l_norm[ori][1]*l_norm[ori][2],),
                            ),
-                    );
+                    )
 
 
 sigDIR=CALC_FONCTION(COMB=(_F(FONCTION = sigXX,
@@ -281,7 +281,7 @@ sigDIR=CALC_FONCTION(COMB=(_F(FONCTION = sigXX,
                            _F(FONCTION = sigYZ,
                               COEF= 2*l_norm[ori][1]*l_norm[ori][2],),
                            ),
-                    );
+                    )
 
 
 IMPR_FONCTION(
@@ -291,7 +291,7 @@ IMPR_FONCTION(
                        COULEUR= 0,
                        LEGENDE= 'Edir',),),
             UNITE=28,
-            TITRE='Edir = f(INST)');
+            TITRE='Edir = f(INST)')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -301,7 +301,7 @@ IMPR_FONCTION(
                         COULEUR= 0,
                         LEGENDE= 'SIGdir',),),
             UNITE=29,
-            TITRE='SIGdir = f(Edir)');
+            TITRE='SIGdir = f(Edir)')
 
 gamma=[None]*13
 rho=[None]*13
@@ -314,12 +314,12 @@ for i in range(1,13):
     gamma[i]=RECU_FONCTION(TABLE=EXPLDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(8+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
     rho[i]=RECU_FONCTION(TABLE=EXPLDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(7+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
 
     IMPR_FONCTION(
@@ -333,7 +333,7 @@ for i in range(1,13):
                            COULEUR = i,
                            MARQUEUR = 0,
                            LEGENDE= str(system[i]),),),
-                UNITE=30,);
+                UNITE=30,)
 
     IMPR_FONCTION(
                 FORMAT='XMGRACE',
@@ -346,7 +346,7 @@ for i in range(1,13):
                            COULEUR= i,
                            MARQUEUR = 0,
                            LEGENDE= str(system[i]),),),
-                UNITE=31,);
+                UNITE=31,)
 
 # densites de dislocation
 
@@ -392,7 +392,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.72095549006e-05,
 EVIXX=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V1',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.97001688044e-05,
                         VALE_REFE=-3.97022317E-05,
@@ -405,7 +405,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.97001688044e-05,
 EVIZZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=3.97001688044e-05,
                         VALE_REFE=3.97022317E-05,
@@ -418,7 +418,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=3.97001688044e-05,
 EVIXY=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V4',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.81363174213e-05,
                         VALE_REFE=1.8136977500000001E-05,
@@ -431,7 +431,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.81363174213e-05,
 EVIYZ=RECU_FONCTION(TABLE=EXPLDD,
                    PARA_X='INST',
                    PARA_Y='V6',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.80722585758e-05,
                         VALE_REFE=2.80737173E-05,
@@ -447,7 +447,7 @@ COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
                                     ECOULEMENT='MONO_DD_CFC',
                                     ELAS='ELAS',
                                     ),
-                                    ROTA_RESEAU='POST');
+                                    ROTA_RESEAU='POST')
 
 # densites de dislocation initiales : variables internes de 0 a 60
 avari = zeros(61+12)
@@ -473,7 +473,7 @@ IMPLDD=SIMU_POINT_MAT(INFO=1,
                                   ),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
                       OPER_TANGENT='OUI',
-                       );
+                       )
 
 
 gammi=[None]*13
@@ -487,12 +487,12 @@ for i in range(1,13):
     gammi[i]=RECU_FONCTION(TABLE=IMPLDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(8+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
     rhoi[i]=RECU_FONCTION(TABLE=IMPLDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(7+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
 
     IMPR_FONCTION(
@@ -506,7 +506,7 @@ for i in range(1,13):
                            COULEUR = i,
                            MARQUEUR = 0,
                            LEGENDE= str(system[i]),),),
-                UNITE=30,);
+                UNITE=30,)
 
     IMPR_FONCTION(
                 FORMAT='XMGRACE',
@@ -519,7 +519,7 @@ for i in range(1,13):
                            COULEUR= i,
                            MARQUEUR = 0,
                            LEGENDE= str(system[i]),),),
-                UNITE=31,);
+                UNITE=31,)
 
 # densites de dislocation
 
@@ -565,7 +565,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.74370825229e-05,
 EVIiXX=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V1',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.00309653626e-05,
                         VALE_REFE=-3.97022317E-05,
@@ -579,7 +579,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.00309653626e-05,
 EVIiZZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.00309653626e-05,
                         VALE_REFE=3.97022317E-05,
@@ -593,7 +593,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=4.00309653626e-05,
 EVIiXY=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V4',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.82388627769e-05,
                         VALE_REFE=1.8136977500000001E-05,
@@ -607,7 +607,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.82388627769e-05,
 EVIiYZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V6',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.83061670654e-05,
                         VALE_REFE=2.80737173E-05,
@@ -625,7 +625,7 @@ COMPODDP=DEFI_COMPOR(POLYCRISTAL=(
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     MU_LOCA=80000.,
-                    );
+                    )
 
 # densites de dislocation initiales : variables internes de 0 a 44
 avari = zeros(56)
@@ -650,7 +650,7 @@ POLYDD=SIMU_POINT_MAT(INFO=1,
                                    _F(SIXX=S1,SIYY=S2,SIZZ=S3,SIXY=S4,SIXZ=S5,SIYZ=S6),
                                   ),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );
+                       )
 
 
 gammp=[None]*13
@@ -664,12 +664,12 @@ for i in range(1,13):
     gammp[i]=RECU_FONCTION(TABLE=POLYDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(15+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
     rhop[i]=RECU_FONCTION(TABLE=POLYDD,
                          PARA_X='INST',
                         PARA_Y='V'+str(14+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
 
 # densites de dislocation
@@ -716,7 +716,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.72095549006e-05,
 EVIpXX=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V1',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.00309653626e-05,
                         VALE_REFE=-3.97022317E-05,
@@ -730,7 +730,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.00309653626e-05,
 EVIpZZ=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V3',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.00309653626e-05,
                         VALE_REFE=3.97022317E-05,
@@ -744,7 +744,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=4.00309653626e-05,
 EVIpXY=RECU_FONCTION(TABLE=POLYDD,
                    PARA_X='INST',
                    PARA_Y='V4',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.81363174213e-05,
                         VALE_REFE=1.8136977500000001E-05,
@@ -758,7 +758,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.81363174213e-05,
 EVIpYZ=RECU_FONCTION(TABLE=POLYDD,
                    PARA_X='INST',
                    PARA_Y='V6',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.80722585758e-05,
                         VALE_REFE=2.80737173E-05,
@@ -774,7 +774,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.80722585758e-05,
 OMP1=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V64',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=3.39820276751e-07,
                         VALE_REFE=3.3981999999999998E-07,
@@ -789,7 +789,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=3.39820276751e-07,
 OMP2=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V65',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.95455453269e-07,
                         VALE_REFE=2.9545499999999999E-07,
@@ -804,7 +804,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.95455453269e-07,
 OMP3=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V66',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.47724162198e-07,
                         VALE_REFE=-1.4772400000000001E-07,
@@ -819,7 +819,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.47724162198e-07,
 OME1=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V67',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.39820276751e-07,
                         VALE_REFE=-3.3981999999999998E-07,
@@ -834,7 +834,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-3.39820276751e-07,
 OME2=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V68',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-2.95455453269e-07,
                         VALE_REFE=-2.9545499999999999E-07,
@@ -849,7 +849,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-2.95455453269e-07,
 OME3=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
                    PARA_Y='V69',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.47724162198e-07,
                         VALE_REFE=1.4772400000000001E-07,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 
@@ -35,7 +35,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   Q=9.77,
                                   B=19.34,
                                   H=0.0,),
-                    MONO_CINE1=_F(D=36.68,),);
+                    MONO_CINE1=_F(D=36.68,),)
 
 MU=145200./2.6
 
@@ -44,7 +44,7 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
                                    ECRO_ISOT='MONO_ISOT1',
                                    ECRO_CINE='MONO_CINE1',
                                    ELAS='ELAS',
-                                   FAMI_SYST_GLIS='OCTAEDRIQUE',),);
+                                   FAMI_SYST_GLIS='OCTAEDRIQUE',),)
 
 COMPORP=DEFI_COMPOR(POLYCRISTAL=_F(MONOCRISTAL=COMPORT,
                                    FRAC_VOL=1.0,
@@ -52,7 +52,7 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=_F(MONOCRISTAL=COMPORT,
                     LOCALISATION='BETA',
                     MU_LOCA=MU,
                     DL=4.,
-                    DA=5.,);
+                    DA=5.,)
 
 IMPR_CO(CONCEPT=_F(NOM=COMPORP))
 
@@ -60,16 +60,16 @@ IMPR_CO(CONCEPT=_F(NOM=COMPORP))
 CHARGE=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,140.0,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
-TFIN = 1.5;
+TFIN = 1.5
 
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.87,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN,
-                                    NOMBRE=300,),),);
+                                    NOMBRE=300,),),)
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -87,7 +87,7 @@ MONOEXPL=SIMU_POINT_MAT(INFO=1,
                    MATER = ACIER,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
-                        );
+                        )
 
 # reference : ssnv171a
 
@@ -134,7 +134,7 @@ POLYEXPL=SIMU_POINT_MAT(INFO=1,
                    MATER = ACIER,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
-                        );
+                        )
 
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -170,4 +170,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 
-FIN();
+FIN()

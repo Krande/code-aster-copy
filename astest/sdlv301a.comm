@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ M_ELEM=CALC_MATR_ELEM(      MODELE=ROUET,
                                 CHARGE=( LIMIT, ))
 
 #
-NUM=NUME_DDL(  MATR_RIGI=K_ELEM) 
+NUM=NUME_DDL(  MATR_RIGI=K_ELEM)
 
 #
 K_ASSE=ASSE_MATRICE(  MATR_ELEM=K_ELEM,

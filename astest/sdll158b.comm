@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ MODES_L = CALC_MODES(MATR_RIGI=MATRIGI,
 # Extraction des 5 premiers modes
 MODES_0=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES_L,
                                   NUME_MODE=(1,2,3,4,5),
-                                  ),);
+                                  ),)
 
 LIMODE0 = RECU_TABLE(CO = MODES_0,
                      NOM_PARA = ('FREQ','MASS_EFFE_DY','MASS_EFFE_UN_DY','FACT_PARTICI_DY')
@@ -97,7 +97,7 @@ modes0 = LIMODE0.EXTR_TABLE()
 IMPR_TABLE(TABLE=LIMODE0,
            FORMAT='TABLEAU',
            UNITE=8,
-           NOM_PARA=('FREQ','MASS_EFFE_DY','MASS_EFFE_UN_DY','FACT_PARTICI_DY'));
+           NOM_PARA=('FREQ','MASS_EFFE_DY','MASS_EFFE_UN_DY','FACT_PARTICI_DY'))
 '''
 
 '''
@@ -193,7 +193,7 @@ MODES_2 = CALC_MODES(
 # Restitution des modes_gene
 MODES_PH=REST_GENE_PHYS(RESU_GENE=MODES_2,
                         TOUT_ORDRE='OUI',
-                        NOM_CHAM='DEPL',);
+                        NOM_CHAM='DEPL',)
 
 
 # Normalisation des modes et calcul des facteurs de participation et masses effectives
@@ -202,7 +202,7 @@ MODES_PH = NORM_MODE( MODE=MODES_PH, reuse=MODES_PH, MASSE=MATRMASS, NORME="MASS
 # Extraction des 5 premiers modes
 MODES_2=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES_PH,
                                   NUME_MODE=(1,2,3,4,5),
-                                  ),);
+                                  ),)
 
 # Test des fréquences
 TEST_RESU(RESU=(
@@ -260,7 +260,7 @@ LIMODE2 = RECU_TABLE(CO = MODES_2,
 IMPR_TABLE(TABLE=LIMODE2,
            FORMAT='TABLEAU',
            UNITE=8,
-           NOM_PARA=('FREQ','MASS_EFFE_DY','MASS_EFFE_UN_DY','FACT_PARTICI_DY'));
+           NOM_PARA=('FREQ','MASS_EFFE_DY','MASS_EFFE_UN_DY','FACT_PARTICI_DY'))
 '''
 
 # Test des masses effectives
@@ -284,7 +284,7 @@ TEST_TABLE(TABLE=LIMODE2,
 # Extraction des 2 premiers modes
 MODES_2b=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES_PH,
                                   NUME_MODE=(1,2),
-                                  ),);
+                                  ),)
 
 LIMODE2b = RECU_TABLE(CO = MODES_2b,
                     NOM_PARA = ('FREQ','MASS_EFFE_DY','MASS_EFFE_UN_DY','FACT_PARTICI_DY')
@@ -309,4 +309,4 @@ TEST_TABLE(TABLE=LIMODE2b,
            )
 
 
-FIN();
+FIN()

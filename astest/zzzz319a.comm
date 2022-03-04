@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      IGNORE_ALARM='HOMARD0_9',);
+      IGNORE_ALARM='HOMARD0_9',)
 
 MA_INIT=LIRE_MAILLAGE(UNITE=20,
-                      FORMAT='MED',);
+                      FORMAT='MED',)
 MA_INIT = MODI_MAILLAGE( reuse = MA_INIT,
                     MAILLAGE     = MA_INIT,
-                    ORIE_PEAU = _F( GROUP_MA_PEAU  = ('GAUCHE','DROITE','HAUT','BAS',),),);
+                    ORIE_PEAU = _F( GROUP_MA_PEAU  = ('GAUCHE','DROITE','HAUT','BAS',),),)
 
 #################################################################
 ### RAFFINEMENT #################################################
@@ -38,7 +38,7 @@ MA_INIT = MODI_MAILLAGE( reuse = MA_INIT,
 MO=AFFE_MODELE(MAILLAGE=MA_INIT,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),);
+                       MODELISATION='D_PLAN',),)
 
 CHA_INDI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
                     OPERATION='AFFE',
@@ -48,7 +48,7 @@ CHA_INDI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
                              VALE=-1.0,),
                           _F(GROUP_MA='FACE_2',
                              NOM_CMP='V1',
-                             VALE=-2.0,),),);
+                             VALE=-2.0,),),)
 
 MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
                MAILLAGE_NP1=CO('MA_R1_RE'),
@@ -57,9 +57,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
                USAGE_CMP='RELATIF',
                CRIT_RAFF_PE=0.5,
                ADD_CHAM=(_F(CHAM_GD=CO('D_R1_RE'),
-                            CHAM_CAT='DIAMETRE',),),);
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R1_RE,),);
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R1_RE,),);
+                            CHAM_CAT='DIAMETRE',),),)
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R1_RE,),)
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R1_RE,),)
 
 MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
                MAILLAGE_NP1=CO('MA_R1_AB'),
@@ -68,9 +68,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
                USAGE_CMP='ABSOLU',
                CRIT_RAFF_PE=0.5,
                ADD_CHAM=_F(CHAM_GD=CO('D_R1_AB'),
-                           CHAM_CAT='DIAMETRE',),);
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R1_AB,),);
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R1_AB,),);
+                           CHAM_CAT='DIAMETRE',),)
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R1_AB,),)
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R1_AB,),)
 
 TEST_RESU(CARTE=(_F(REFERENCE='ANALYTIQUE',
                     NOM_CMP='X1',
@@ -112,8 +112,8 @@ MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
                LANGUE = 'ANGLAIS',
                MAILLAGE_NP1=CO('MA_INIT2'),
                ADAPTATION='RIEN',)
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_INIT2,),);
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_INIT2,),);
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_INIT2,),)
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_INIT2,),)
 
 #################################################################
 ### DEUX CYCLES DE RAFFINEMENT-DERAFFINEMENT ####################
@@ -124,26 +124,26 @@ MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
                MAILLAGE_NP1=CO('MA_R1'),
                ADAPTATION='RAFFINEMENT_UNIFORME',
                ADD_CHAM=_F(CHAM_GD=CO('N_R1'),
-                           CHAM_CAT='NIVEAU',),);
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R1,),);
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R1,),);
+                           CHAM_CAT='NIVEAU',),)
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R1,),)
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R1,),)
 
 MACR_ADAP_MAIL(MAILLAGE_N=MA_R1,
                MAILLAGE_NP1=CO('MA_D1'),
                ADAPTATION='DERAFFINEMENT',
                CHAM_GD=N_R1,
                CRIT_DERA_ABS=3.,
-               NIVE_MIN=1,);
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_D1,),);
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_D1,),);
+               NIVE_MIN=1,)
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_D1,),)
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_D1,),)
 
 MACR_ADAP_MAIL(MAILLAGE_N=MA_D1,
                MAILLAGE_NP1=CO('MA_R2'),
                ADAPTATION='RAFFINEMENT_UNIFORME',
                ADD_CHAM=_F(CHAM_GD=CO('N_R2'),
-                           CHAM_CAT='NIVEAU',),);
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R2,),);
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R2,),);
+                           CHAM_CAT='NIVEAU',),)
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_R2,),)
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_R2,),)
 
 MACR_ADAP_MAIL(MAILLAGE_N=MA_R2,
                MAILLAGE_NP1=CO('MA_D2'),
@@ -152,9 +152,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=MA_R2,
                CRIT_DERA_ABS=3.,
                NIVE_MIN=1,
                ADD_CHAM=_F(CHAM_GD=CO('N_D2'),
-                           CHAM_CAT='NIVEAU',),);
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_D2,),);
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_D2,),);
+                           CHAM_CAT='NIVEAU',),)
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MA_D2,),)
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_D2,),)
 
 TEST_RESU(CARTE=(_F(REFERENCE='ANALYTIQUE',
                     NOM_CMP='X1',
@@ -188,15 +188,15 @@ TEST_RESU(CARTE=(_F(REFERENCE='ANALYTIQUE',
 MQ9_00 = CREA_MAILLAGE(MAILLAGE=MA_INIT,
                        MODI_MAILLE=(_F(OPTION='TRIA6_7',TOUT='OUI'),
                                     _F(OPTION='QUAD8_9',TOUT='OUI'),),)
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MQ9_00,),);
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MQ9_00,),)
 
 #                                          LOGICIEL='/netdata/homard/ASTER_HOMARD/homard',
 # RAFFINEMENT DU GROUPE DE GAUCHE
 MACR_ADAP_MAIL(MAILLAGE_N=MQ9_00,
                MAILLAGE_NP1=CO('MQ9_01'),
                ADAPTATION='RAFFINEMENT_UNIFORME',
-               GROUP_MA='FACE_1',);
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MQ9_01,),);
+               GROUP_MA='FACE_1',)
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MQ9_01,),)
 
 # RAFFINEMENT AUTOUR D'UNE ZONE
 MACR_ADAP_MAIL(MAILLAGE_N=MQ9_01,
@@ -206,8 +206,8 @@ MACR_ADAP_MAIL(MAILLAGE_N=MQ9_01,
                         X_CENTRE  = 0.75,
                         Y_CENTRE  = 0.75,
                         RAYON_INT = 0.10,
-                        RAYON_EXT = 0.40,),),);
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MQ9_02,),);
+                        RAYON_EXT = 0.40,),),)
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MQ9_02,),)
 
 # RAFFINEMENT AUTOUR D'UNE ZONE, DERAFFINEMENT AUTOUR D'UNE AUTRE
 MACR_ADAP_MAIL(MAILLAGE_N=MQ9_02,
@@ -220,11 +220,11 @@ MACR_ADAP_MAIL(MAILLAGE_N=MQ9_02,
                       _F(TYPE = 'RECTANGLE',
                         X_MINI =  1.49, X_MAXI = 2.01,
                         Y_MINI = -0.01, Y_MAXI = 0.51,
-                        USAGE='RAFFINEMENT',),),);
+                        USAGE='RAFFINEMENT',),),)
                #ADD_CHAM=_F(CHAM_GD=CO('N_Q9_03'),
-                           #CHAM_CAT='NIVEAU',),);
+                           #CHAM_CAT='NIVEAU',),)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MQ9_03,),);
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=MQ9_03,),)
 
 # TESTS SUR LES CARACTERISTIQUES DE LA STRUCTURE
 MATER1=DEFI_MATERIAU(ELAS=_F(E=180000.,NU = 0.30, ALPHA = 15.E-6, RHO = 7700., ) )
@@ -260,4 +260,4 @@ TEST_TABLE(TABLE=MCG2,
             NOM_PARA='IZ_PRIN_G',
             VALE_CALC=1.383333333,)
 
-FIN();
+FIN()

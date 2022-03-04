@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE, MAILLAGE=MAILLAGE,
                      CREA_GROUP_NO=_F(  GROUP_MA = ('CABLE','CB3', 'CB5'), ),
-                    );
+                    )
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                  AFFE=(_F(  GROUP_MA = 'BETON',
@@ -116,7 +116,7 @@ EVOLNOLI=CALC_CHAMP( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI,
 
 EVOLNOL2=CALC_CHAMP(RESULTAT=EVOLNOLI,
                     GROUP_MA='CABLE',
-                    CONTRAINTE='SIEF_NOEU',);
+                    CONTRAINTE='SIEF_NOEU',)
 
 ESSAI1=POST_RELEVE_T(ACTION=(_F(
                               INTITULE='ESSAI1',
@@ -127,7 +127,7 @@ ESSAI1=POST_RELEVE_T(ACTION=(_F(
                               NOM_CMP='N',
                               OPERATION='EXTRACTION',),
                             ),
-                    ) ;
+                    )
 
 #
 ########################################################################

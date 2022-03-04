@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ CHMATG=AFFE_MATERIAU(MAILLAGE=MA,
                                 VALE_REF=0.,
                                 )),
                      AFFE=_F(  GROUP_MA = ('LI1'), MATER = MAT_G),
-                     );
+                     )
 
 NEUT_VI = CREA_CHAMP(MODELE    = MO,
                      OPERATION = 'AFFE',
@@ -48,7 +48,7 @@ NEUT_VI = CREA_CHAMP(MODELE    = MO,
                      TYPE_CHAM = 'ELGA_NEUT_R',
                      AFFE = (_F(GROUP_MA = 'LI1',
                                 NOM_CMP  = ('X1','X2'),
-                                VALE     =  (1.0,0.)),),);
+                                VALE     =  (1.0,0.)),),)
 
 
 VARI_V6 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
@@ -58,7 +58,7 @@ VARI_V6 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
                      ASSE      = _F( GROUP_MA     = 'LI1',
                                      CHAM_GD      =  NEUT_VI,
                                      NOM_CMP      = ('X1','X2'),
-                                     NOM_CMP_RESU = ('V6','V7'),),);
+                                     NOM_CMP_RESU = ('V6','V7'),),)
 
 RESG=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMATG,
@@ -77,12 +77,12 @@ RESG=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,
                               ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=100,)
-              );
+              )
 
 RESG=CALC_CHAMP(reuse =RESG,
             RESULTAT=RESG,
             FORCE='FORC_NODA',
-            GROUP_MA=('LI1'),);
+            GROUP_MA=('LI1'),)
 
 
 TABDEP=POST_RELEVE_T(
@@ -92,13 +92,13 @@ TABDEP=POST_RELEVE_T(
       RESULTAT=RESG,
       NOM_CHAM='DEPL',
       NOM_CMP=('DRX'),
-      OPERATION='EXTRACTION',),);
+      OPERATION='EXTRACTION',),)
 
 DEPN2=RECU_FONCTION(TABLE=TABDEP,
                     PARA_X='INST',
                     PARA_Y='DRX',
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);
+                    PROL_GAUCHE='CONSTANT',)
 
 TABFOR=POST_RELEVE_T(
    ACTION=_F(
@@ -107,13 +107,13 @@ TABFOR=POST_RELEVE_T(
       RESULTAT=RESG,
       NOM_CHAM='FORC_NODA',
       NOM_CMP=('DRX'),
-      OPERATION='EXTRACTION',),);
+      OPERATION='EXTRACTION',),)
 
 FORN2=RECU_FONCTION(TABLE=TABFOR,
                     PARA_X='INST',
                     PARA_Y='DRX',
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);
+                    PROL_GAUCHE='CONSTANT',)
 
 
 TEST_RESU(RESU=(_F(INST=0.050000000000000003,

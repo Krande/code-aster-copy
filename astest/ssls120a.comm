@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,24 +24,24 @@
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',)
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='AXIS',),);
+                            MODELISATION='AXIS',),)
 
 MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU=_F(GROUP_MA_PEAU='LIGNEGAU',),
-                   );
+                   )
 
 E  = 210000000000.0
 Nu = 0.3
 
 
 ACIER1=DEFI_MATERIAU( ELAS=_F( E  = E,
-                               NU = Nu, ),);
+                               NU = Nu, ),)
 
 EL=2.1E11
 ET=4.E10
@@ -66,14 +66,14 @@ ACIER2=DEFI_MATERIAU(   ELAS_ORTH=_F(  E_L   = EL,
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='VIROLE',
-                            MATER=ACIER1,),);
+                            MATER=ACIER1,),)
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='VIROLE',
-                            MATER=ACIER2,),);
+                            MATER=ACIER2,),)
 
 CARAELE=AFFE_CARA_ELEM(MODELE=MODMECA,
                        MASSIF=_F(GROUP_MA='VIROLE',
-                                ANGL_REP=(0.0),),);
+                                ANGL_REP=(0.0),),)
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
                        DDL_IMPO=(_F(GROUP_NO='PM',
@@ -82,11 +82,11 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
 
 PHYDR=DEFI_FONCTION(NOM_PARA='Y',
                     NOM_RESU='TOUTRESU',
-                    VALE=(0.0,15000.0,16.0,0.0),);
+                    VALE=(0.0,15000.0,16.0,0.0),)
 
 PH=AFFE_CHAR_MECA_F(MODELE=MODMECA,
                     FORCE_CONTOUR=_F(GROUP_MA='LIGNEGAU',
-                                   FX=PHYDR,),);
+                                   FX=PHYDR,),)
 
 # CAS ISOTROPE : SOLUTION ANALYTIQUE EPAISSEUR 0.04
 
@@ -95,18 +95,18 @@ ELAS1=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT1,
                     EXCIT=(_F(CHARGE=BLOCAGE,),
                            _F(CHARGE=PH,),),
-                    );
+                    )
 
 CALC_CHAMP(reuse=ELAS1,RESULTAT=ELAS1,CONTRAINTE=('SIGM_ELNO'))
 
 
-R = 5.7;
+R = 5.7
 
-L = 16.0;
+L = 16.0
 
-h = 0.04;
+h = 0.04
 
-P = 15000.0;
+P = 15000.0
 
 DZMAX = (-Nu*P*R*L)/E/h/2.
 DXMAX = P*R*R/E/h
@@ -170,7 +170,7 @@ ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CARAELE,
                     EXCIT=(_F(CHARGE=BLOCAGE,),
-                           _F(CHARGE=PH,),),);
+                           _F(CHARGE=PH,),),)
 
 CALC_CHAMP(reuse=ELAS2,RESULTAT=ELAS2,CONTRAINTE=('SIGM_ELNO'))
 
@@ -222,7 +222,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=1,),);
+                                  NOMBRE=1,),)
 
 ELAS3=STAT_NON_LINE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT2,
@@ -230,7 +230,7 @@ ELAS3=STAT_NON_LINE(MODELE=MODMECA,
                     COMPORTEMENT=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LIST,),
                     EXCIT=(_F(CHARGE=BLOCAGE,),
-                           _F(CHARGE=PH,),),);
+                           _F(CHARGE=PH,),),)
 
 CALC_CHAMP(reuse=ELAS3,RESULTAT=ELAS3,CONTRAINTE=('SIGM_ELNO'))
 
@@ -281,4 +281,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_MA='M2',),
           )
 
-FIN();
+FIN()

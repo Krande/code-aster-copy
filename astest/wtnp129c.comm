@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,14 +44,14 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 DEFI_GROUP(reuse=MAIL,MAILLAGE=MAIL, CREA_GROUP_NO=_F( TOUT_GROUP_MA = 'OUI'))
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HM_SI',),);
+                           MODELISATION='D_PLAN_HM_SI',),)
 
 ##############################
 # LISTE DES INSTANTS DE CALCUL
@@ -69,15 +69,15 @@ LI=DEFI_LIST_REEL(DEBUT=0.0,
                               _F(JUSQU_A=1.0,
                                  NOMBRE=25,),
                               _F(JUSQU_A=10,
-                                 NOMBRE=75,),),);
+                                 NOMBRE=75,),),)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-BIDON=DEFI_CONSTANTE(VALE=0.0,);
+BIDON=DEFI_CONSTANTE(VALE=0.0,)
 
-KINT=DEFI_CONSTANTE(VALE=1.E-08,);
+KINT=DEFI_CONSTANTE(VALE=1.E-08,)
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=5.8E9,
                                NU=0.0,
@@ -97,11 +97,11 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=5.8E9,
                                     PESA_Y=0.0,
                                     PESA_Z=0.0,
                                     PERM_IN=KINT,
-                                    ),);
+                                    ),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATERIAU,),);
+                             MATER=MATERIAU,),)
 
 CHAR=AFFE_CHAR_CINE(MODELE=MODELE,
                     MECA_IMPO=(_F(GROUP_MA='HAUT',
@@ -110,14 +110,14 @@ CHAR=AFFE_CHAR_CINE(MODELE=MODELE,
                                  DX=0.0,
                                  DY=0.0,),
                               _F(GROUP_MA=('GAUCHE','DROITE',),
-                                 DX=0.0,),),);
+                                 DX=0.0,),),)
 
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
                     EXCIT=_F(CHARGE=CHAR,),
                     COMPORTEMENT=_F(RELATION='KIT_HM',
                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
-                    INCREMENT=_F(LIST_INST=LI,),);
+                    INCREMENT=_F(LIST_INST=LI,),)
 
 RESU1=CALC_CHAMP(reuse=RESU1,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'),CONTRAINTE=('SIEF_ELNO'),RESULTAT=RESU1)
 
@@ -137,7 +137,7 @@ EXDEP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
                                  NUME_ORDRE=74,
-                                 GROUP_NO='DROITE'));
+                                 GROUP_NO='DROITE'))
 
 EXPRE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -145,7 +145,7 @@ EXPRE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='PRE1',
                                  NUME_ORDRE=74,
-                                 GROUP_NO='DROITE'));
+                                 GROUP_NO='DROITE'))
 
 EXDEP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -153,7 +153,7 @@ EXDEP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
                                  NUME_ORDRE=149,
-                                 GROUP_NO='DROITE'));
+                                 GROUP_NO='DROITE'))
 
 EXPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -161,7 +161,7 @@ EXPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='PRE1',
                                  NUME_ORDRE=149,
-                                 GROUP_NO='DROITE'));
+                                 GROUP_NO='DROITE'))
 
 EXSIG1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='MAIL',
@@ -169,7 +169,7 @@ EXSIG1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                NOM_CMP='SIYY',
                                NUME_ORDRE=74,
-                               GROUP_NO='DROITE'));
+                               GROUP_NO='DROITE'))
 
 EXSIG2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='MAIL',
@@ -177,12 +177,12 @@ EXSIG2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                NOM_CMP='SIYY',
                                NUME_ORDRE=149,
-                               GROUP_NO='DROITE'));
+                               GROUP_NO='DROITE'))
 
 IMPR_TABLE(TABLE=EXDEP1,
            FORMAT='TABLEAU',
            UNITE=8,
-           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','DY'));
+           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','DY'))
 #########
 # Tests sur la pression a l'ordre 74 (t=1 s)
 #########
@@ -466,4 +466,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N1',),
            )
-FIN();
+FIN()

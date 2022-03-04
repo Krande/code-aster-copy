@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 # Caracteristiques poutre
 import numpy
 
-ray=0.5;
-epe=0.01;
+ray=0.5
+epe=0.01
 #
 Cd1=1.
 D1=2.0*ray
@@ -32,9 +32,9 @@ dt=0.05
 tfin = 100.
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-ma=LIRE_MAILLAGE();
+ma=LIRE_MAILLAGE()
 
 
 
@@ -44,15 +44,15 @@ mo=AFFE_MODELE(MAILLAGE=ma,
                         MODELISATION='POU_D_E',),
                      _F(GROUP_MA=('R1','R2',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DIS_TR',),),);
+                        MODELISATION='DIS_TR',),),)
 
 bracing=DEFI_MATERIAU(ELAS=_F(E=2.e11,
                               NU=0.3,
-                              RHO=rho,),);
+                              RHO=rho,),)
 
 mater=AFFE_MATERIAU(MAILLAGE=ma,
                     AFFE=_F(GROUP_MA='POUTRE',
-                            MATER=bracing,),);
+                            MATER=bracing,),)
 
 
 
@@ -68,7 +68,7 @@ cara=AFFE_CARA_ELEM(MODELE=mo,
                             _F(CARA='M_TR_D_L',
                                GROUP_MA=('R1','R2',),
                                VALE=(0.,0.,0.,0.),),)
-);
+)
 
 
 encas14=AFFE_CHAR_MECA(MODELE=mo,
@@ -78,21 +78,21 @@ encas14=AFFE_CHAR_MECA(MODELE=mo,
                                    DZ=0.,
                                    DRX=0.,
                                    DRY=0.,
-                                   DRZ=0.,),);
+                                   DRZ=0.,),)
 
 plan=AFFE_CHAR_MECA(MODELE=mo,
                     DDL_IMPO=_F(GROUP_NO='POUTRE',
-                                DY=0.,),);
+                                DY=0.,),)
 
 DZ=AFFE_CHAR_MECA(MODELE=mo,
                   DDL_IMPO=_F(GROUP_NO='POUTRE',
-                              DZ=1.,),);
+                              DZ=1.,),)
 
 liai=AFFE_CHAR_MECA(MODELE=mo,
                     LIAISON_DDL=_F(GROUP_NO=('N0002','N0003',),
                                    DDL=('DZ','DZ',),
                                    COEF_MULT=(1.0,-1.0,),
-                                   COEF_IMPO=0.,),);
+                                   COEF_IMPO=0.,),)
 
 from sdnl141a import *
 
@@ -107,15 +107,15 @@ FZP = FORMULE(VALE="""Fmor(rhoeau,Cd1,D1,X,Y,Z,INST,H,T,L,thetai,0.,0.,proinf,de
 visqueux=AFFE_CHAR_MECA_F(MODELE=mo,
                      FORCE_POUTRE=_F(GROUP_MA='POUTRE',
                                      TYPE_CHARGE='FORCE',
-                                     FZ=FZP,),);
+                                     FZ=FZP,),)
 
 temps=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=tfin,
-                                   PAS=dt,),);
+                                   PAS=dt,),)
 
 tempsm=DEFI_LIST_REEL(DEBUT=-1.,
                       INTERVALLE=_F(JUSQU_A=0.,
-                                    PAS=1,),);
+                                    PAS=1,),)
 
 stat=STAT_NON_LINE(MODELE=mo,
                    CHAM_MATER=mater,
@@ -130,7 +130,7 @@ stat=STAT_NON_LINE(MODELE=mo,
                    INCREMENT=_F(LIST_INST=tempsm,),
                    NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
-                   SOLVEUR=_F(),);
+                   SOLVEUR=_F(),)
 
 dyna=DYNA_NON_LINE(
     MODELE=mo,
@@ -147,7 +147,7 @@ dyna=DYNA_NON_LINE(
     INCREMENT=_F(LIST_INST=temps,
                 INST_FIN=tfin,),
     SCHEMA_TEMPS=_F(SCHEMA='HHT',MODI_EQUI='NON',FORMULATION='DEPLACEMENT',),
-);
+)
 
 # Test de non-régression
 TEST_RESU(
@@ -161,4 +161,4 @@ TEST_RESU(
     ),
 )
 
-FIN();
+FIN()

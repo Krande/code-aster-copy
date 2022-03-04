@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,12 +63,12 @@ MAT = DEFI_MATERIAU( ELAS_ORTH_FO =_F(  E_L   = EL,
                                         TEMP_DEF_ALPHA = 20.,
                                         B_ENDOGE = 1.5,
                                         K_DESSIC = 3.5), )
-                                    
+
 MOD = AFFE_MODELE(MAILLAGE = MAIL,
                   AFFE=(_F(GROUP_MA='TOUT',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),),)
-                       
+
 BLOC = AFFE_CHAR_CINE(
                       MODELE=MOD,
                       MECA_IMPO=(_F(DX=0.0,
@@ -82,15 +82,15 @@ BLOC = AFFE_CHAR_CINE(
                                     DY=0.0,
                                     GROUP_NO=('NO7',),),)
                             )
-                       
+
 LINST = DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(_F(JUSQU_A=1.0,
                                       NOMBRE=1,),
-                                        ),);
+                                        ),)
 
-           
+
 # - Test de la bonne prise en compte de la déformation thermique (TEMP)
-                                                       
+
 # --- Angles permettant d'avoir des composantes de cisaillement
 #     non nulles pour la déformation
 
@@ -100,13 +100,13 @@ ang3 = 0.0
 
 tref = 20.0
 tempi = tref
-tempf = 3*tref  
-              
-                       
+tempf = 3*tref
+
+
 ELEMPRO1 = AFFE_CARA_ELEM(MASSIF=_F(ANGL_EULER=(ang1, ang2, ang3),
                                     GROUP_MA='TOUT',),
                           MODELE=MOD)
-                            
+
 TEMPI = CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                    OPERATION='AFFE',
                    MODELE = MOD,
@@ -128,7 +128,7 @@ CHTEMP = CREA_RESU(OPERATION='AFFE',
                             INST=0.0,),
                          _F(CHAM_GD=TEMPF,
                             INST=1.0,),),)
-                                    
+
 CHMATT = AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(GROUP_MA='TOUT',
                                MATER=MAT,),
@@ -137,7 +137,7 @@ CHMATT = AFFE_MATERIAU(MAILLAGE=MAIL,
                                      NOM_VARC='TEMP',
                                      NOM_CHAM='TEMP',
                                      VALE_REF=tref),),)
-                      
+
 UTEMP = STAT_NON_LINE(CHAM_MATER=CHMATT,
                       COMPORTEMENT=(_F(RELATION='ELAS'),),
                       CARA_ELEM=ELEMPRO1,
@@ -164,7 +164,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   PRECISION=0.001,),
           )
-          
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='NO4',
                   REFERENCE='ANALYTIQUE',
@@ -176,7 +176,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   PRECISION=0.001,),
           )
-                     
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='NO7',
                   REFERENCE='ANALYTIQUE',
@@ -188,30 +188,30 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   PRECISION=0.001,),
           )
-                     
+
 # - Test de la bonne prise en compte du retrait endogène (HYDR)
-                    
+
 ang1 = 75.2
 ang2 = 12.3
 ang3 = 46.5
-                       
+
 ELEMPRO2 = AFFE_CARA_ELEM(MASSIF=_F(ANGL_EULER=(ang1, ang2, ang3),
                                     GROUP_MA='TOUT',),
                           MODELE=MOD)
-                                    
+
 HYDRI = CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                    OPERATION='AFFE',
                    MODELE = MOD,
                    AFFE=_F(GROUP_MA='TOUT',
                            NOM_CMP='HYDR',
-                           VALE=0.0,),);
+                           VALE=0.0,),)
 
 HYDRF = CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                    OPERATION='AFFE',
                    MODELE = MOD,
                    AFFE=_F(GROUP_MA='TOUT',
                            NOM_CMP='HYDR',
-                           VALE=2.0,),);
+                           VALE=2.0,),)
 
 CHHYDR = CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
@@ -220,7 +220,7 @@ CHHYDR = CREA_RESU(OPERATION='AFFE',
                             INST=0.0,),
                          _F(CHAM_GD=HYDRF,
                             INST=1.0,),),)
-                                    
+
 CHMATH = AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(GROUP_MA='TOUT',
                                MATER=MAT,),
@@ -228,14 +228,14 @@ CHMATH = AFFE_MATERIAU(MAILLAGE=MAIL,
                                      EVOL=CHHYDR,
                                      NOM_VARC='HYDR',
                                      NOM_CHAM='HYDR_NOEU',),),)
-                                    
+
 UHYDR = STAT_NON_LINE(CHAM_MATER=CHMATH,
                       COMPORTEMENT=(_F(RELATION='ELAS'),),
                       CARA_ELEM=ELEMPRO2,
                       EXCIT=_F(CHARGE=BLOC,),
                       INCREMENT=_F(LIST_INST=LINST),
                       MODELE=MOD)
-               
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='NO4',
                   REFERENCE='ANALYTIQUE',
@@ -247,13 +247,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   PRECISION=0.001,),
           )
-                      
+
 # - Test de la bonne prise en compte du retrait de dessication (SECH)
 
 sechref = 2.0
 sechi = sechref
 sechf = 3*sechref
-                                    
+
 SECHI = CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                    OPERATION='AFFE',
                    MODELE = MOD,
@@ -275,7 +275,7 @@ CHSECH = CREA_RESU(OPERATION='AFFE',
                             INST=0.0,),
                          _F(CHAM_GD=SECHF,
                             INST=1.0,),),)
-                                    
+
 CHMATS = AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(GROUP_MA='TOUT',
                                MATER=MAT,),
@@ -284,14 +284,14 @@ CHMATS = AFFE_MATERIAU(MAILLAGE=MAIL,
                                      NOM_VARC='SECH',
                                      NOM_CHAM='TEMP',
                                      VALE_REF=sechref),),)
-                      
+
 USECH = STAT_NON_LINE(CHAM_MATER=CHMATS,
                       COMPORTEMENT=(_F(RELATION='ELAS'),),
                       CARA_ELEM=ELEMPRO2,
                       EXCIT=_F(CHARGE=BLOC,),
                       INCREMENT=_F(LIST_INST=LINST),
                       MODELE=MOD)
-               
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='NO4',
                   REFERENCE='ANALYTIQUE',
@@ -314,7 +314,7 @@ EPS0 = CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                            VALE=(0.,0.,0.,)),
                         _F(TOUT='OUI',
                            NOM_CMP=('EPXY','EPXZ','EPYZ',),
-                           VALE=(0.,0.,0.),),),);
+                           VALE=(0.,0.,0.),),),)
 
 EPSXXIMP=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                     OPERATION='AFFE',
@@ -324,8 +324,8 @@ EPSXXIMP=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                          VALE=(7.,0.,0.,),),
                       _F(TOUT='OUI',
                          NOM_CMP=('EPXY','EPXZ','EPYZ',),
-                         VALE=(0.,0.,0.),),),);
-                         
+                         VALE=(0.,0.,0.),),),)
+
 EPSXYIMP=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                     OPERATION='AFFE',
                     MODELE=MOD,
@@ -334,7 +334,7 @@ EPSXYIMP=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                          VALE=(0.,0.,0.,),),
                       _F(TOUT='OUI',
                          NOM_CMP=('EPXY','EPXZ','EPYZ',),
-                         VALE=(12.,0.,0.),),),);
+                         VALE=(12.,0.,0.),),),)
 
 # --- Test pour EPSAXX
 
@@ -351,14 +351,14 @@ CHMAT1 = AFFE_MATERIAU(MAILLAGE=MAIL,
                                     EVOL=EPSA1,
                                     NOM_VARC='EPSA',
                                     NOM_CHAM='EPSA_ELNO',),)
-                      
+
 UEPSA1 = STAT_NON_LINE(CHAM_MATER=CHMAT1,
                        COMPORTEMENT=(_F(RELATION='ELAS'),),
                        CARA_ELEM=ELEMPRO2,
                        EXCIT=_F(CHARGE=BLOC,),
                        INCREMENT=_F(LIST_INST=LINST),
                        MODELE=MOD)
-               
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='NO4',
                   REFERENCE='ANALYTIQUE',
@@ -372,13 +372,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 # --- Test pour EPSAXY
-                 
+
 EPSA2=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_VARC',
                NOM_CHAM='EPSA_ELNO',
                AFFE=(_F(CHAM_GD=EPS0    ,  INST=0.,),
                      _F(CHAM_GD=EPSXYIMP,  INST=1.,),),)
-                                    
+
 CHMAT2 = AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(GROUP_MA='TOUT',
                                MATER=MAT,),
@@ -386,14 +386,14 @@ CHMAT2 = AFFE_MATERIAU(MAILLAGE=MAIL,
                                     EVOL=EPSA2,
                                     NOM_VARC='EPSA',
                                     NOM_CHAM='EPSA_ELNO',),)
-          
+
 UEPSA2 = STAT_NON_LINE(CHAM_MATER=CHMAT2,
                        COMPORTEMENT=(_F(RELATION='ELAS'),),
                        CARA_ELEM=ELEMPRO2,
                        EXCIT=_F(CHARGE=BLOC,),
                        INCREMENT=_F(LIST_INST=LINST),
                        MODELE=MOD)
-               
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='NO1',
                   REFERENCE='ANALYTIQUE',
@@ -405,5 +405,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   PRECISION=0.001,),
           )
-   
+
 FIN()

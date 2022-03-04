@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # person_in_charge: david.haboussa at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),
-);
+)
 
 # donnee materiau et fonction
 
@@ -70,7 +70,7 @@ ELAS_ORTH=_F(   E_L   = EL*C_Pa  ,
                               B=B,
                               H=H),
                 MONO_CINE1=_F(D=D),
-                                 );
+                                 )
 
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(
@@ -100,14 +100,14 @@ COMP1[0]=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER[0],
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS_ORTH',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),)
 
 COMP1[1]=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER[1],
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS_ORTH',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),)
 
 
 ##################################################################################
@@ -124,7 +124,7 @@ P_imat = [0] + [1] + (Ncal-2)*[1]
 vitesse = 1.e-2
 t_0 = 5.e-2/(8.0*vitesse)
 # calibrage des deformations maximum (dans  .93)
-calibrage = 3.5;
+calibrage = 3.5
 CALIB_E=EL
 CALIB_NU=NULT
 

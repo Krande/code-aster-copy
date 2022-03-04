@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@
 #=======================================================================
 import numpy as N
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
-# PRE_GIBI( );
+# PRE_GIBI( )
 
 MAIL=LIRE_MAILLAGE(FORMAT="ASTER", )
 
@@ -39,7 +39,7 @@ MAIL = MODI_MAILLAGE(reuse=MAIL,
 
 MAT1=DEFI_MATERIAU( ELAS=_F(  E = 4.44E+8, RHO = 1900.,  NU = 0.48)
                     )
-                    
+
 MAT2=DEFI_MATERIAU( ELAS=_F(  E = 4.44E+8, RHO = 1900.,  NU = 0.48, LONG_CARA=5.)
                     )
 from sdlv121a import F_FONC
@@ -49,7 +49,7 @@ MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
                          _F(  GROUP_MA = 'VOLU',
                                 PHENOMENE = 'MECANIQUE',
                                 MODELISATION = '3D'),
-                         _F(  GROUP_MA = 'CONTOUR', 
+                         _F(  GROUP_MA = 'CONTOUR',
                                 PHENOMENE = 'MECANIQUE',
                                 MODELISATION = '3D_ABSO'))
                         )
@@ -57,12 +57,12 @@ MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
 CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,AFFE=(
                    _F(  GROUP_MA = 'VOLU',
                           MATER = MAT1),
-                   _F(  GROUP_MA = 'CONTOUR', 
+                   _F(  GROUP_MA = 'CONTOUR',
                           MATER = MAT2))
                            )
-                           
-FONCD=CALC_FONCTION(INTEGRE=_F(FONCTION=FONCT,),   
-   PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+
+FONCD=CALC_FONCTION(INTEGRE=_F(FONCTION=FONCT,),
+   PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 ONDE=AFFE_CHAR_MECA_F(  MODELE=MODELE,
 
@@ -137,14 +137,14 @@ DZN26=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N26',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DZ'
                        )
-                       
+
 IMPR_FONCTION(FORMAT='TABLEAU',
                 COURBE=(
                         _F(FONCTION=DXN26,),
                         _F(FONCTION=DYN26,),
                         _F(FONCTION=DZN26,),
                         ),
-                UNITE=8,);
+                UNITE=8,)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
@@ -222,14 +222,14 @@ DZNB26=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
                          NOM_CHAM='DEPL',
                          NOM_CMP='DZ'
                        )
-                       
+
 IMPR_FONCTION(FORMAT='TABLEAU',
                 COURBE=(
                         _F(FONCTION=DXNB26,),
                         _F(FONCTION=DYNB26,),
                         _F(FONCTION=DZNB26,),
                         ),
-                UNITE=8,);
+                UNITE=8,)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                          CRITERE='ABSOLU',
@@ -260,4 +260,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                       ),
               )
 
-FIN();
+FIN()

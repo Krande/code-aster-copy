@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ U_3D=STAT_NON_LINE(MODELE=MOD_3D,
                                              ),
                  COMPORTEMENT=_F(GROUP_MA=('POUTRE',),RELATION='ELAS'),
                  INCREMENT=_F(LIST_INST=LINST),
-                 );
+                 )
 
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT = U_3D, NOM_CHAM=('DEPL',), GROUP_NO = 'N_MIL'))
@@ -157,7 +157,7 @@ MAPOU=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=18,)
 
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
                   AFFE=_F(GROUP_MA = 'POUTRE', PHENOMENE='MECANIQUE', MODELISATION='POU_D_TGM',),
-                  );
+                  )
 
 GF=DEFI_GEOM_FIBRE( INFO=1,
                     FIBRE = (_F(GROUP_FIBRE='SBET',
@@ -197,7 +197,7 @@ POUCA=AFFE_CARA_ELEM( MODELE=MOPOU,
                                         ),
                         GEOM_FIBRE=GF,
                         MULTIFIBRE=(_F( GROUP_MA=('POUTRE'), PREC_AIRE=1.0E-06,  PREC_INERTIE=2.55E-01, GROUP_FIBRE=('SBET','SACI') ), )
-                    );
+                    )
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=BETON,
                   MULTIFIBRE=(_F(GROUP_FIBRE='SBET',MATER=BETON,RELATION='ELAS',),
@@ -234,7 +234,7 @@ U_POU=STAT_NON_LINE(MODELE=MOPOU,
                                              ),
                  COMPORTEMENT=_F(GROUP_MA=('POUTRE',),RELATION='MULTIFIBRE'),
                  INCREMENT=_F(LIST_INST=LINST),
-                 );
+                 )
 
 CALC_CHAMP(reuse=U_POU,RESULTAT=U_POU,DEFORMATION=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA',))
 CALC_CHAMP(reuse=U_POU,RESULTAT=U_POU,DEFORMATION=('EPSI_ELNO', 'EPME_ELNO', 'EPVC_ELNO',))
@@ -467,7 +467,7 @@ U_POU2=STAT_NON_LINE(MODELE=MOPOU,
                                              ),
                  COMPORTEMENT=_F(GROUP_MA=('POUTRE',),RELATION='MULTIFIBRE'),
                  INCREMENT=_F(LIST_INST=LINST),
-                 );
+                 )
 
 CALC_CHAMP(reuse=U_POU2,RESULTAT=U_POU2, DEFORMATION = 'EPSI_ELGA')
 
@@ -506,7 +506,7 @@ U_POU3=STAT_NON_LINE(MODELE=MOPOU,
                                              ),
                  COMPORTEMENT=_F(GROUP_MA=('POUTRE',),RELATION='MULTIFIBRE'),
                  INCREMENT=_F(LIST_INST=LINST),
-                 );
+                 )
 
 
 CALC_CHAMP(reuse=U_POU3,RESULTAT=U_POU3,DEFORMATION=('EPME_ELGA', 'EPVC_ELGA','EPSP_ELGA'))

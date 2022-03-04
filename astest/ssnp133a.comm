@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -145,7 +145,7 @@ INST0 = DEFI_LIST_REEL(
                           DEBUT = 0.,
                           INTERVALLE = (_F(JUSQU_A =  1, NOMBRE = 2)),
                           )
-                          
+
 FONC0 = DEFI_FONCTION(NOM_PARA = 'INST',
                       VALE     = (0, 0, 1, f[0]),
                       PROL_DROITE = 'LINEAIRE')
@@ -186,11 +186,11 @@ EVOL = STAT_NON_LINE(MODELE = MO,
                                       ITER_GLOB_MAXI = 12,),
                      SOLVEUR = _F(METHODE = 'MUMPS'),
               )
-              
+
 dico = EVOL.LIST_VARI_ACCES()
 l_inst = dico['INST']
 inst.append(l_inst[-1])
-   
+
 #SNL 1 : TRACTION jusqu'à 5000 (en décharge)
 EVOL = STAT_NON_LINE(reuse = EVOL,
                      ETAT_INIT = _F(EVOL_NOLI = EVOL),
@@ -220,11 +220,11 @@ EVOL = STAT_NON_LINE(reuse = EVOL,
                      SOLVEUR = _F(METHODE = 'MUMPS'),
                      ARCHIVAGE = _F(LIST_INST = INS_ARCH)
               )
-              
+
 dico = EVOL.LIST_VARI_ACCES()
 l_inst = dico['INST']
 inst.append(l_inst[-1])
-              
+
 #SNL 2 : TRACTION jusqu'à 5500 (en charge)
 EVOL = STAT_NON_LINE(reuse = EVOL,
                      ETAT_INIT = _F(EVOL_NOLI = EVOL),
@@ -254,11 +254,11 @@ EVOL = STAT_NON_LINE(reuse = EVOL,
                      SOLVEUR = _F(METHODE = 'MUMPS'),
                      ARCHIVAGE = _F(LIST_INST = INS_ARCH)
               )
-              
+
 dico = EVOL.LIST_VARI_ACCES()
 l_inst = dico['INST']
 inst.append(l_inst[-1])
-              
+
 #SNL 3 : TRACTION jusqu'à 2370 (en décharge)
 EVOL = STAT_NON_LINE(reuse = EVOL,
                      ETAT_INIT = _F(EVOL_NOLI = EVOL),
@@ -288,11 +288,11 @@ EVOL = STAT_NON_LINE(reuse = EVOL,
                      SOLVEUR = _F(METHODE = 'MUMPS'),
                      ARCHIVAGE = _F(LIST_INST = INS_ARCH)
               )
-              
+
 dico = EVOL.LIST_VARI_ACCES()
 l_inst = dico['INST']
 inst.append(l_inst[-1])
-           
+
 tab_eta = RECU_TABLE(CO=EVOL,
                      NOM_PARA=('ETA_PILOTAGE', ))
 
@@ -332,14 +332,14 @@ TAB_U = POST_RELEVE_T(
                                   GROUP_NO      = 'N2',
                                  ),
                      )
-                     
+
 
 lF=FORCE.EXTR_TABLE().values()['DY']
 lU=TAB_U.EXTR_TABLE().values()['DY']
 
 f_vs_ouv=CREA_TABLE(LISTE=(_F(LISTE_R=lU,PARA='Deplacement'),
                            _F(LISTE_R =lF,PARA='Force')))
-           
+
 IMPR_TABLE(
            FORMAT='NUMPY',
            TABLE=f_vs_ouv,

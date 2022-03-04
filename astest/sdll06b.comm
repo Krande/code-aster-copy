@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -152,7 +152,7 @@ DYNA1=REST_GENE_PHYS(  RESU_GENE=TRAN_GEN,
                               LIST_INST=L_RECU,   NOM_CHAM='DEPL'    )
 
 #FONC_DY1 = RECU_FONCTION ( NOEUD: N02, NOM_CMP: 'DX',  NOM_CHAM: 'DEPL'
-#                           RESULTAT: DYNA1,  LIST_INST: L_RECU      ) ;
+#                           RESULTAT: DYNA1,  LIST_INST: L_RECU      )
 #
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

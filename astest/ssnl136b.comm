@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,24 +26,24 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # DETECTION DE SINGULARITE (MULT_FRONT/LDLT VERSUS MUMPS).
 #========================================================================
 
-MA=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);
+MA=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',)
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA))
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_T_GD',),);
+                       MODELISATION='POU_D_T_GD',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=1.0E+7,
-                            NU=0.,),);
+                            NU=0.,),)
 
 MAT=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
+                          MATER=ACIER,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
                     POUTRE=_F(GROUP_MA='AB',
@@ -52,7 +52,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                               VALE=(1.0,0.0833333333333,0.0833333333333,1.2,1.2,0.3333333333333,),),
                     ORIENTATION=_F(GROUP_MA='AB',
                                    CARA='ANGL_VRIL',
-                                   VALE=0.,),);
+                                   VALE=0.,),)
 #0.3333333333333,
 #0.0069444444444,),),
 
@@ -63,18 +63,18 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                               DZ=0.,
                               DRX=0.,
                               DRY=0.,
-                              DRZ=0.,),);
+                              DRZ=0.,),)
 
 FORCE=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=_F(GROUP_NO='PB',
-                                     FZ=600.0,),);
+                                     FZ=600.0,),)
 
 F_FORCE=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.,0.,10.0,10.0,),);
+                      VALE=(0.,0.,10.0,10.0,),)
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=60,),);
+                                   NOMBRE=60,),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
                         ECHEC=_F(ACTION='DECOUPE',
@@ -98,14 +98,14 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(METHODE='MULT_FRONT',
-                   ),);
+                   ),)
 
 
 DEPZ=RECU_FONCTION(RESULTAT=RESO,
                    TOUT_ORDRE='OUI',
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='PB',);
+                   GROUP_NO='PB',)
 
 TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLA',
                                  GROUP_NO='PB',
@@ -113,7 +113,7 @@ TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLA',
                                  NOM_CHAM='DEPL',
                                  TOUT_ORDRE='OUI',
                                  NOM_CMP=('DX','DY','DZ',),
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 GEOM_DX = FORMULE(VALE='DX+29.3',
                   NOM_PARA='DX',)
@@ -128,20 +128,20 @@ TAB_DEPL=CALC_TABLE(reuse=TAB_DEPL,
 
 COOR_X=RECU_FONCTION(TABLE=TAB_DEPL,
                      PARA_X='INST',
-                     PARA_Y='X_FINAL',);
+                     PARA_Y='X_FINAL',)
 
 COOR_Y=RECU_FONCTION(TABLE=TAB_DEPL,
                      PARA_X='INST',
-                     PARA_Y='Y_FINAL',);
+                     PARA_Y='Y_FINAL',)
 
 X_REF=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.,29.3,0.5,22.28,1.0,15.67,),);
+                      VALE=(0.,29.3,0.5,22.28,1.0,15.67,),)
 
 Y_REF=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.,70.7,0.5,58.74,1.0,46.99,),);
+                      VALE=(0.,70.7,0.5,58.74,1.0,46.99,),)
 
 Z_REF=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.,0.,0.5,40.12,1.0,53.62,),);
+                      VALE=(0.,0.,0.5,40.12,1.0,53.62,),)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=(_F(FONCTION=COOR_X,),
@@ -150,12 +150,12 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                       _F(FONCTION=X_REF,),
                       _F(FONCTION=Y_REF,),
                       _F(FONCTION=Z_REF,),),
-              TITRE='Coordonnees du point B en fonction du pseudo-temps',);
+              TITRE='Coordonnees du point B en fonction du pseudo-temps',)
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=RESO,
-                  NOM_CHAM='DEPL',),);
+                  NOM_CHAM='DEPL',),)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=22.6185108484,
                          VALE_REFE=22.28,
@@ -259,14 +259,14 @@ RESOM=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                   ),);
+                   ),)
 
 
 DEPZM=RECU_FONCTION(RESULTAT=RESOM,
                    TOUT_ORDRE='OUI',
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='PB',);
+                   GROUP_NO='PB',)
 
 TAB_DEPM=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLA',
                                  GROUP_NO='PB',
@@ -274,7 +274,7 @@ TAB_DEPM=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLA',
                                  NOM_CHAM='DEPL',
                                  TOUT_ORDRE='OUI',
                                  NOM_CMP=('DX','DY','DZ',),
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 
 TAB_DEPM=CALC_TABLE(reuse=TAB_DEPM,
@@ -284,11 +284,11 @@ TAB_DEPM=CALC_TABLE(reuse=TAB_DEPM,
 
 COOR_XM=RECU_FONCTION(TABLE=TAB_DEPM,
                      PARA_X='INST',
-                     PARA_Y='X_FINAL',);
+                     PARA_Y='X_FINAL',)
 
 COOR_YM=RECU_FONCTION(TABLE=TAB_DEPM,
                      PARA_X='INST',
-                     PARA_Y='Y_FINAL',);
+                     PARA_Y='Y_FINAL',)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=22.6185108484,
                          VALE_REFE=22.28,
@@ -376,4 +376,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=16.059366042097999,
                       ),
               )
 
-FIN();
+FIN()

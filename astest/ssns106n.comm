@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,22 +28,22 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
-EP = 0.1;
+EP = 0.1
 
-D0 = -0.03;
+D0 = -0.03
 
-t1 = 1.0;
+t1 = 1.0
 
-t2 = (3 * t1);
+t2 = (3 * t1)
 
-t3 = (4 * t1);
+t3 = (4 * t1)
 
-dt = 0.05;
+dt = 0.05
 
-fx = 5000000.0;
+fx = 5000000.0
 
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -52,26 +52,26 @@ MA=DEFI_GROUP(reuse =MA,
                              _F(GROUP_MA='A2A4',),
                              _F(GROUP_MA='A3A1',),
                              _F(DIFFE=('BORDS','A1',),
-                                NOM='CL_IMPOS',),),);
+                                NOM='CL_IMPOS',),),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
                                     VECT_NORM=(0.,0.,1.,),
-                                    GROUP_NO='A1',),);
+                                    GROUP_NO='A1',),)
 
 
 MO_G=AFFE_MODELE(MAILLAGE=MA,
                  INFO=1,
                  AFFE=_F(GROUP_MA=('DALLE','A1A2','A4A3','A2A4','A3A1',),
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DKTG',),);
+                         MODELISATION='DKTG',),)
 
-EB = 32308000000.0;
+EB = 32308000000.0
 
-EGM = 35625000000.0;
+EGM = 35625000000.0
 
-EGF = 38660000000.0;
+EGF = 38660000000.0
 
 MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
                                  NU_M=0.18,
@@ -83,6 +83,6 @@ MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
                                NYT=3.7E5,
                                MYF=9.E3,
                                NYC = 0.0,
-                               ALPHA_C = 1.0,),);
+                               ALPHA_C = 1.0,),)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ ECR=DEFI_FONCTION(PROL_GAUCHE='LINEAIRE',
 # rigidité k (Pa) : rigidité apparente (k+écrouissage négatif) soit toujours positive
 # si k pas assez grand, on peut se trouver dans la situation où il n'y aurait pas de solution
 k = 2.E5
-# temps caractéristique tau (s) : il faut estimer la vitesse de déformation. tau doit être 
-# petit (1 à 10 %) devant le temps pour traverser le domaine élastique à cette vitesse. 
-# sigma_elas = 27 MPa, E=2.e5 MPa => epsi_elas = 27/2.e5 = 1.35e-4 
+# temps caractéristique tau (s) : il faut estimer la vitesse de déformation. tau doit être
+# petit (1 à 10 %) devant le temps pour traverser le domaine élastique à cette vitesse.
+# sigma_elas = 27 MPa, E=2.e5 MPa => epsi_elas = 27/2.e5 = 1.35e-4
 # l_init = 10mm => l_elas = 1.35e-4 * 10 =1.35e-3 mm
 # dep_imposé = 10 mm pendant 10s => 10% de l_elas => 1.35e-4 s
 tau = 1.e-4

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ IRRA=CREA_CHAMP(
    OPERATION='AFFE',
    MAILLAGE=MAIL,
    AFFE=_F( TOUT='OUI', NOM_CMP='IRRA', VALE=0.0),
-);
+)
 
 CL=AFFE_CHAR_MECA(
    MODELE=MODEL,
@@ -161,4 +161,4 @@ TEST_RESU(RESU=_F(INST=400.0,
                   ),
           )
 
-FIN();
+FIN()

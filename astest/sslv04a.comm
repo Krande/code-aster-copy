@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,20 +33,20 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 DEFI_GROUP(reuse=M, MAILLAGE=M,
-           CREA_GROUP_NO=_F(NOM = 'DIRI', GROUP_MA = 'DIRI'));
+           CREA_GROUP_NO=_F(NOM = 'DIRI', GROUP_MA = 'DIRI'))
 
 MO=AFFE_MODELE(MAILLAGE=M,
 
                AFFE=_F(TOUT = 'OUI',
                        PHENOMENE = 'MECANIQUE',
-                       MODELISATION = '3D'));
+                       MODELISATION = '3D'))
 
 MA=DEFI_MATERIAU(ELAS=_F(E = 200000.,
                          NU = 0.3,
-                         ALPHA = 0.));
+                         ALPHA = 0.))
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT = 'OUI',
@@ -55,12 +55,12 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
 CH=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(_F(GROUP_NO = 'DIRI', DY = 0.),
                                       _F(GROUP_NO = 'F',    DZ = 0.)),
                             FACE_IMPO=_F(GROUP_MA = 'DNOR', DNOR = 0.),
-                            PRES_REP =_F(GROUP_MA = 'PRES', PRES = 60.));
+                            PRES_REP =_F(GROUP_MA = 'PRES', PRES = 60.))
 
 nor_DNOR = CREA_CHAMP(TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
-                      GROUP_MA  = 'DNOR');
+                      GROUP_MA  = 'DNOR')
 
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
@@ -93,9 +93,9 @@ TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
 nor_PRES = CREA_CHAMP(TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
-                      GROUP_MA  = 'PRES'  );
+                      GROUP_MA  = 'PRES'  )
 
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD= nor_PRES ));
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD= nor_PRES ))
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='X',
@@ -129,14 +129,14 @@ TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
           )
 
 RESU=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CM,
-                   EXCIT=_F(CHARGE = CH));
+                   EXCIT=_F(CHARGE = CH))
 
 
 #----------------------------------------------------------------
 #
 
 CALC_CHAMP(reuse=RESU,RESULTAT=RESU,GROUP_MA='PRES',CONTRAINTE=('SIRO_ELEM'))
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU,NOM_CHAM='SIRO_ELEM',GROUP_MA='PRES'),);
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU,NOM_CHAM='SIRO_ELEM',GROUP_MA='PRES'),)
 
 # TEST DU CHAMP 'SIRO_ELEM'
 # MAILLE M1380 PRES DU POINT A
@@ -498,7 +498,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M,RESULTAT=RESU,));
+IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M,RESULTAT=RESU,))
 
 
 #-----------------------------------------------------------------
@@ -506,7 +506,7 @@ IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M,RESULTAT=RESU,));
 CALC_CHAMP(reuse=RESU,
            RESULTAT=RESU,
            DEFORMATION=('EPSI_ELNO','EPSI_NOEU',),
-           CONTRAINTE=('SIGM_ELNO','SIGM_NOEU', 'SIGM_ELGA',),);
+           CONTRAINTE=('SIGM_ELNO','SIGM_NOEU', 'SIGM_ELGA',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='A',
@@ -988,7 +988,7 @@ RESU1=MODI_REPERE(RESULTAT=RESU,
                                 TYPE_CHAM='VECT_3D',),),
                   REPERE='UTILISATEUR',
                   AFFE=_F(ANGL_NAUT = (0.,0.,0.,),TOUT='OUI',),
-                  INFO=2,);
+                  INFO=2,)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -1875,14 +1875,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
-                                     NOMBRE=1,),),);
+                                     NOMBRE=1,),),)
 
 
 RESUNL=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CM,
                      EXCIT=_F(CHARGE=CH,),
                      COMPORTEMENT=_F(RELATION='ELAS',),
-                     INCREMENT=_F(LIST_INST=L_INST),);
+                     INCREMENT=_F(LIST_INST=L_INST),)
 
 #----------------------------------------------------------------
 #

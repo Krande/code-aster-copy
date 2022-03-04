@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 #                MAILLAGE : hexa_5_31_51.mgib
 #----------------------------------------------
 
-MAILLAG0=LIRE_MAILLAGE(FORMAT='MED');
+MAILLAG0=LIRE_MAILLAGE(FORMAT='MED')
 
 MAILLAG1 = CREA_MAILLAGE(MAILLAGE = MAILLAG0,
-                         LINE_QUAD = _F(TOUT = 'OUI'));
+                         LINE_QUAD = _F(TOUT = 'OUI'))
 
 MAILLAG1 = DEFI_GROUP( reuse = MAILLAG1, MAILLAGE = MAILLAG1,
                       CREA_GROUP_NO= (
@@ -46,12 +46,12 @@ MAILLAG1 = DEFI_GROUP( reuse = MAILLAG1, MAILLAGE = MAILLAG1,
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),
-                    );
+                    )
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -63,12 +63,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='3D',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D',),),)
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
-                       );
+                       )
 
 LN = FORMULE(VALE='Z-15.',
              NOM_PARA=['X', 'Y', 'Z'],)
@@ -78,9 +78,9 @@ LT = FORMULE(VALE='-Y+5.',
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
-                    );
+                    )
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,)
 
 
 #----------------------------------------------
@@ -90,14 +90,14 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -158,7 +158,7 @@ UTOT2x=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CHB),
                           _F(CHARGE=CHPRES),
                           ),
-                   );
+                   )
 
 
 
@@ -198,4 +198,4 @@ TEST_TABLE(CRITERE='RELATIF',
 
 
 
-FIN();
+FIN()

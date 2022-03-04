@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,20 +35,20 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('COMP
 
 CREA_LIB_MFRONT(UNITE_MFRONT=38,UNITE_LIBRAIRIE=41)
 
-MU       = 80000. ;
-NU       = 0.3    ;
-E        =  MU*2*(1.+NU)   ;
+MU       = 80000.
+NU       = 0.3
+E        =  MU*2*(1.+NU)
 
-TAU_F  = 80. ;
-Y      = 2.5E-7 ;
-N      = 20.  ;
-GAMMA0 = 1.E-3;
-RHO_0  = 1.E5;
-RHOREF = 1.E6;
-ALPHA  = 0.35 ;
-BETA   = 2.54E-7;
-A      = 0.13   ;
-B      = 0.005  ;
+TAU_F  = 80.
+Y      = 2.5E-7
+N      = 20.
+GAMMA0 = 1.E-3
+RHO_0  = 1.E5
+RHOREF = 1.E6
+ALPHA  = 0.35
+BETA   = 2.54E-7
+A      = 0.13
+B      = 0.005
 
 RHO_0 = RHO_0*BETA*BETA
 
@@ -65,13 +65,13 @@ ACIER = DEFI_MATERIAU(ELAS=_F(E=E,
                                            RHO_REF= RHOREF,
                                            ALPHA=ALPHA,
                                            BETA=BETA,
-                                           H1      = 0.124,   # AETOIL = 0.124 ;
-                                           H2      = 0.625,   # ACOLIN = 0.625 ;
-                                           H3      = 0.137,   # AGLISS = 0.137 ;
-                                           H4      = 0.122,   # ALOMER = 0.122 ;
-                                           H5      = 0.07,    # AHIRTH = 0.07  ;
+                                           H1      = 0.124,   # AETOIL = 0.124
+                                           H2      = 0.625,   # ACOLIN = 0.625
+                                           H3      = 0.137,   # AGLISS = 0.137
+                                           H4      = 0.122,   # ALOMER = 0.122
+                                           H5      = 0.07,    # AHIRTH = 0.07
                                           ),
-                           );
+                           )
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                          ELAS='ELAS',
@@ -79,7 +79,7 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                          FAMI_SYST_GLIS='OCTAEDRIQUE',
                                         ),
                                      ),
-                         );
+                         )
 
 G=E/2./(1.+NU)
 
@@ -98,11 +98,11 @@ NPAS=100
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=tfin,
                                     NOMBRE=NPAS,),
-                                    ),);
+                                    ),)
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,tfin,0.05,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 
 
@@ -270,7 +270,7 @@ SOLMF=SIMU_POINT_MAT(INFO=1,
                    ARCHIVAGE=_F(LIST_INST=LINST),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ),
                    VARI_INIT=_F(VALE=lvari),
-                        );
+                        )
 
 
 IMPR_TABLE(TABLE=SOLMF,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
@@ -310,7 +310,7 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ),
                    VARI_INIT=_F(VALE=lvari, ),
 
-                        );
+                        )
 
 
 IMPR_TABLE(TABLE=SOLNL,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
@@ -322,13 +322,13 @@ IMPR_TABLE(TABLE=SOLNL,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
 MFSIZZ=RECU_FONCTION(TABLE=SOLMF,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 MFEPZZ=RECU_FONCTION(TABLE=SOLMF,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 
@@ -337,13 +337,13 @@ MFEPZZ=RECU_FONCTION(TABLE=SOLMF,
 FSIZZ=RECU_FONCTION(TABLE=SOLNL,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 FEPZZ=RECU_FONCTION(TABLE=SOLNL,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 #pilote='INTERACTIF'
@@ -355,18 +355,18 @@ IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
                     _F( FONC_X=FEPZZ,    FONC_Y=FSIZZ,  LEGENDE='polyCrystal aster'),
                     _F( FONC_X=MFEPZZ,   FONC_Y=MFSIZZ, LEGENDE='polyCrystal mfront'),
                     ),
-            );
+            )
 
 # DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
 DIF1=CALC_FONCTION(COMB=(
                           _F( FONCTION = FSIZZ, COEF =  1.),
                           _F( FONCTION = MFSIZZ, COEF = -1.),
-                          ) );
+                          ) )
 
 
-TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
+TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),)
 
-TSIG1=CREA_TABLE(FONCTION= _F(FONCTION = FSIZZ,PARA = ('INST','SIZZ')),);
+TSIG1=CREA_TABLE(FONCTION= _F(FONCTION = FSIZZ,PARA = ('INST','SIZZ')),)
 
 
 def ecart_relatif(diff, ref):

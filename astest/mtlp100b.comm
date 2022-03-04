@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -618,7 +618,7 @@ PHASINIT=CREA_CHAMP(TYPE_CHAM='CART_VAR2_R',
                     MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP=('V1','V2','V3','V4','V5','V6','V7',),
-                            VALE=(0.7,0.0,0.3,0.0,0.0,0.0,0.0),),);
+                            VALE=(0.7,0.0,0.3,0.0,0.0,0.0,0.0),),)
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTH,
                            CHAM_MATER=CHMAT,
@@ -637,7 +637,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
                 COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),
-                OPTION='META_ELNO',);
+                OPTION='META_ELNO',)
 
 TEMPE=THER_LINEAIRE( reuse=TEMPE,       MODELE=MOTH,
                            CHAM_MATER=CHMAT,
@@ -658,13 +658,13 @@ TEMPE=CALC_META(reuse=TEMPE,
                              NUME_INIT=40),
                 COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT = 'OUI'),
-                OPTION='META_ELNO',);
+                OPTION='META_ELNO',)
 
 TEMPE=CALC_META(reuse=TEMPE,
                 MODELE=MOTH,
                 RESULTAT=TEMPE,
                 CHAM_MATER=CHMAT,
-                OPTION='DURT_ELNO',);
+                OPTION='DURT_ELNO',)
 
 
 

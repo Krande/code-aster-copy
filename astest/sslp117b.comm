@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #------------------------------------------------------------------
 #
@@ -41,7 +41,7 @@ MAIL=DEFI_GROUP(reuse=MAIL,MAILLAGE=MAIL,
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='DKT',),
-                  );
+                  )
 
 # DEFINITION DES FONCTIONS DE TEMPERATURE
 # ---------------------------------------
@@ -174,7 +174,7 @@ CLIM=AFFE_CHAR_CINE(MODELE=MODELE,
 RESU=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARAELEM,
-                   EXCIT=_F(CHARGE=CLIM,),);
+                   EXCIT=_F(CHARGE=CLIM,),)
 
 
 depl_AB=MACR_LIGN_COUPE(RESULTAT=RESU,
@@ -182,7 +182,7 @@ depl_AB=MACR_LIGN_COUPE(RESULTAT=RESU,
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=6,
                                    COOR_ORIG=(0.,0.,0.,),
-                                   COOR_EXTR=(10.,0.,0.,),),);
+                                   COOR_EXTR=(10.,0.,0.,),),)
 
 IMPR_TABLE(TABLE=depl_AB,NOM_PARA=('NOM_CHAM','ABSC_CURV','DZ'))
 
@@ -203,7 +203,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
                NUME_ORDRE=1,
-               CONTRAINTE=('SIGM_ELNO','EFGE_ELNO','EFGE_NOEU'));
+               CONTRAINTE=('SIGM_ELNO','EFGE_ELNO','EFGE_NOEU'))
 
 
 Mxx_AB=MACR_LIGN_COUPE(RESULTAT=RESU,
@@ -211,7 +211,7 @@ Mxx_AB=MACR_LIGN_COUPE(RESULTAT=RESU,
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=11,
                                    COOR_ORIG=(0.,0.,0.,),
-                                   COOR_EXTR=(10.,0.,0.,),),);
+                                   COOR_EXTR=(10.,0.,0.,),),)
 
 IMPR_TABLE(TABLE=Mxx_AB,NOM_PARA=('NOM_CHAM','ABSC_CURV','MXX'))
 
@@ -239,7 +239,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),);
+                                  NIVE_COUCHE='INF',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_MA='M2700',
@@ -279,7 +279,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='MOY',),);
+                                  NIVE_COUCHE='MOY',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_MA='M2700',
@@ -320,7 +320,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='SUP',),);
+                                  NIVE_COUCHE='SUP',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_MA='M2700',
@@ -369,7 +369,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 SIG_C7_I=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=7,
-                                  NIVE_COUCHE='INF',),);
+                                  NIVE_COUCHE='INF',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_MA='M2700',
@@ -409,7 +409,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 SIG_C7_M=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=7,
-                                  NIVE_COUCHE='MOY',),);
+                                  NIVE_COUCHE='MOY',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_MA='M2700',
@@ -450,7 +450,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 SIG_C7_S=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=7,
-                                  NIVE_COUCHE='SUP',),);
+                                  NIVE_COUCHE='SUP',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_MA='M2700',

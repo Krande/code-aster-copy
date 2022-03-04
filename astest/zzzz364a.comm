@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -268,7 +268,7 @@ for modeli in lmodeli :
         DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(NOM=solide, GROUP_MA=solide))
 
 
-    CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R', OPERATION='EXTR', MAILLAGE=MA, NOM_CHAM='GEOMETRIE',);
+    CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R', OPERATION='EXTR', MAILLAGE=MA, NOM_CHAM='GEOMETRIE',)
 
     MO=AFFE_MODELE(   MAILLAGE=MA,
                AFFE=_F( GROUP_MA = solide,  PHENOMENE = 'MECANIQUE', MODELISATION = modeli))
@@ -280,7 +280,7 @@ for modeli in lmodeli :
     if not modeli in ('POU_D_EM', 'POU_D_TGM') :
         CM=AFFE_MATERIAU(   MAILLAGE=MA,  AFFE=_F( GROUP_MA = solide, MATER = MAT) )
     else :
-        MASEC=LIRE_MAILLAGE(FORMAT="GIBI", UNITE=17);
+        MASEC=LIRE_MAILLAGE(FORMAT="GIBI", UNITE=17)
         GF=DEFI_GEOM_FIBRE(
            SECTION = _F ( GROUP_FIBRE='SEC1',
                             MAILLAGE_SECT = MASEC , GROUP_MA_SECT = 'SURF1',
@@ -290,7 +290,7 @@ for modeli in lmodeli :
 
         CM=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',MATER=MAT,),
-                    AFFE_COMPOR=_F(GROUP_MA = solide,COMPOR=COMPF));
+                    AFFE_COMPOR=_F(GROUP_MA = solide,COMPOR=COMPF))
 
 
     # AFFE_CARA_ELEM :
@@ -348,7 +348,7 @@ for modeli in lmodeli :
                                       ITER_GLOB_MAXI=maxiter,),
                        SOLVEUR=_F(METHODE='MUMPS', RESI_RELA=resi_rela, POSTTRAITEMENTS='FORCE', ),
 
-                       );
+                       )
     #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U1, NOM_CHAM='SIEF_ELGA', INST=(2.,), GROUP_MA=solide),UNITE=6)
 
 
@@ -369,12 +369,12 @@ for modeli in lmodeli :
     for inst in linst :
            if inst > inst_fin : continue
            UR2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR',INFO=1,
-                          NOM_CHAM='DEPL', RESULTAT=U1, INST=inst );
+                          NOM_CHAM='DEPL', RESULTAT=U1, INST=inst )
 
            CHTIME=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R', MAILLAGE=MA, INFO=1, OPERATION='AFFE',
-                             AFFE=_F(TOUT='OUI', NOM_CMP='INST',VALE=inst),);
+                             AFFE=_F(TOUT='OUI', NOM_CMP='INST',VALE=inst),)
 
-           UR1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R', OPERATION='EVAL', CHAM_F=UF, CHAM_PARA=(CHXN,CHTIME), INFO=1,);
+           UR1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R', OPERATION='EVAL', CHAM_F=UF, CHAM_PARA=(CHXN,CHTIME), INFO=1,)
 
 
            # Deplacements :
@@ -433,4 +433,4 @@ for modeli in lmodeli :
 
 
 
-FIN();
+FIN()

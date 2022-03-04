@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),
 # ON IGNORE LE MESSAGE D'ALARME XFEM2_60 QUI DIT QUE L'OPTION TEST_MAIL A ETE
 # UTILISEE PAR L'UTILISATEUR.
 
-MaiPlate=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MaiPlate=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 plate=AFFE_MODELE(MAILLAGE=MaiPlate,
                    AFFE=(_F(GROUP_MA=('ALL',),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),),);
+                           MODELISATION='3D',),),)
 
 #***********************************
 # DEFINITION DE LA FISSURE (CERCLE)
@@ -47,7 +47,7 @@ Fiss[0] = DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
                                       DEMI_PETIT_AXE = rayon,
                                       CENTRE         = (0., 0., 0.),
                                       VECT_X         = (1. , 0. , 0. ),
-                                      VECT_Y         = (0., 1. , 0. ),),);
+                                      VECT_Y         = (0., 1. , 0. ),),)
 
 
 #****************************
@@ -55,7 +55,7 @@ Fiss[0] = DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
 #****************************
 
 ModX=MODI_MODELE_XFEM(MODELE_IN=plate,
-                      FISSURE=Fiss[0],);
+                      FISSURE=Fiss[0],)
 
 Fiss[1]=CO('Fiss_1')
 PROPA_FISS(MODELE=ModX,
@@ -68,7 +68,7 @@ PROPA_FISS(MODELE=ModX,
            METHODE_PROPA='UPWIND',
            RAYON=avance*4,
            ZONE_MAJ='TOUT',
-           INFO=0,);
+           INFO=0,)
 
 #****************************
 # TEST TABLE
@@ -84,15 +84,15 @@ PROPA_FISS(MODELE=ModX,
 CHLT=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
                 NOM_CHAM='LTNO',
-                FISSURE=Fiss[1],);
+                FISSURE=Fiss[1],)
 
 TABLST = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
                                  GROUP_NO=('A','B','C','D','E','F','G','H',),
                                  CHAM_GD=CHLT,
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
-IMPR_TABLE(TABLE=TABLST,);
+IMPR_TABLE(TABLE=TABLST,)
 
 dist = 500.*sqrt(2.) - (rayon+nbcalc*avance)
 
@@ -116,4 +116,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=TABLST,
            )
 
-FIN();
+FIN()

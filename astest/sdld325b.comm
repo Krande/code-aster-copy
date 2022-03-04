@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@
 # EXCITATION CRENEAU
 #
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -242,7 +242,7 @@ DYNMODAD=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              MATR_AMOR=AMORTGEN,
                              EXCIT=_F(  VECT_ASSE_GENE = EFFOGENE,
                                      FONC_MULT = FONCALPH),
-                             INCREMENT=_F(INST_INIT = 0.,  INST_FIN = 2.5, 
+                             INCREMENT=_F(INST_INIT = 0.,  INST_FIN = 2.5,
                                           PAS = 0.00005),
                              ARCHIVAGE=_F(  PAS_ARCH = 10**8, INST=AR_LIST),)
 
@@ -1536,7 +1536,7 @@ TEST_RESU(RESU=_F(INST=1.0800000000000001,
                   NOM_CHAM='VITE',
                   GROUP_NO='N3',
                   NOM_CMP='DX',
-                  VALE_CALC=-0.0260428118014,    
+                  VALE_CALC=-0.0260428118014,
                   VALE_REFE=-0.02603700,
                   CRITERE='ABSOLU',
                   REFERENCE='NON_DEFINI',
@@ -1548,7 +1548,7 @@ TEST_RESU(RESU=_F(INST=1.27,
                   NOM_CHAM='VITE',
                   GROUP_NO='N3',
                   NOM_CMP='DX',
-                  VALE_CALC=0.0163059897214,                  
+                  VALE_CALC=0.0163059897214,
                   VALE_REFE=0.0163020,
                   CRITERE='ABSOLU',
                   REFERENCE='NON_DEFINI',

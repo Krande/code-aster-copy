@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='GAUCHE'),
                                _F(NOEUD=('NO6','NO5','NO9','NS12','NS11','NS10'),
                                 NOM='GAUCHE2'),
-                               ));
+                               ))
 
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
@@ -162,7 +162,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(GROUP_MA='PRISM', MATER = MAT_CUB),
                       _F(GROUP_MA='PRISMDEG', MATER = MAT_JOI))
-                 );
+                 )
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
 LIAISON=AFFE_CHAR_MECA(
@@ -193,7 +193,7 @@ PAM_J = AFFE_CHAR_MECA(
   DDL_IMPO = (
               _F(GROUP_NO=('NS13'), PRE1=press ),
               )
-  );
+  )
 
 # CREATION DE LISTE D'INSTANT
 L_INST=DEFI_LIST_REEL(VALE=list(range(insfin+1)))
@@ -205,7 +205,7 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
                                         linst[2], U_endo,              # TRACTION JUSQU'A ENDOMMAGEMENT PARTIEL
                                         linst[3],-U_elas,              # DECHARGEMENT COMPRESSION
                                         linst[4], U_max*0.99999999),   # TRACTION JUSQU'A LA RUPTURE QUASI-COMPLETE
-                  PROL_DROITE='LINEAIRE');
+                  PROL_DROITE='LINEAIRE')
 
 
 U_HM=STAT_NON_LINE(
@@ -237,25 +237,25 @@ U_HM=STAT_NON_LINE(
 U_HM=CALC_CHAMP(reuse =U_HM,
                 RESULTAT=U_HM,
                 VARI_INTERNE=('VARI_ELNO'),
-                );
+                )
 
 U_HM=CALC_CHAMP(reuse =U_HM,
                 RESULTAT=U_HM,
                 CONTRAINTE=('SIEF_ELNO'),
-                );
+                )
 
 U_HM=CALC_CHAMP(reuse =U_HM,
              RESULTAT=U_HM,
              VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIEF_NOEU',
              GROUP_MA='PRISMDEG'
-             );
+             )
 
 
 # CALCUL DE LA FORCE NODALE
 U_HM=CALC_CHAMP(reuse =U_HM,
             RESULTAT=U_HM,
             FORCE='FORC_NODA',
-            );
+            )
 
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y) SUR LA PARTIE CHARGEE
 TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -265,7 +265,7 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
                                RESULTANTE=('DX','DY'),
-                               ));
+                               ))
 
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y) AU NIVEAU DE L'ENCASTREMENT
 TFORCE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -275,7 +275,7 @@ TFORCE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='GAUCHE2',
                                RESULTANTE=('DX','DY'),
-                               ));
+                               ))
 
 # PROJECTEUR SUR LA NORMALE
 PNOR = FORMULE(VALE='DX*cos(angle)+DY*sin(angle)',
@@ -287,12 +287,12 @@ TFORCE=CALC_TABLE(reuse=TFORCE,
                   TABLE=TFORCE,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_N'));
+                            NOM_PARA='F_N'))
 TFORCE2=CALC_TABLE(reuse=TFORCE2,
                    TABLE=TFORCE2,
                    ACTION=_F(OPERATION='OPER',
                              FORMULE=PNOR,
-                             NOM_PARA='F_N'));
+                             NOM_PARA='F_N'))
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -301,14 +301,14 @@ TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='TOUTSEUL',
-                              NOM_CMP=('DX','DY')));
+                              NOM_CMP=('DX','DY')))
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
 TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
                     TABLE=TDELTA_N,
                     ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='U_N'));
+                            NOM_PARA='U_N'))
 
 #----------------------------------------------------------------------------------
 # IMPRESSION DE RESULTAT CALCUL MODE I PURE
@@ -317,15 +317,15 @@ TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
 # LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FN=RECU_FONCTION(TABLE=TFORCE,
                   PARA_X='INST',
-                  PARA_Y='F_N');
+                  PARA_Y='F_N')
 
 FN2=RECU_FONCTION(TABLE=TFORCE2,
                   PARA_X='INST',
-                  PARA_Y='F_N');
+                  PARA_Y='F_N')
 
 DN=RECU_FONCTION(TABLE=TDELTA_N,
                   PARA_X='INST',
-                  PARA_Y='U_N');
+                  PARA_Y='U_N')
 
 
 #----------------------------------------------------------------------------------
@@ -427,20 +427,20 @@ TEST_RESU(RESU=_F(INST=insfin,
           )
 
 # IMPRESSION DE LA FORCE NODALE NORMALE SUR LA PARTIE CHARGEE
-IMPR_TABLE(TABLE=TFORCE);
+IMPR_TABLE(TABLE=TFORCE)
 
 # IMPRESSION DE LA FORCE NODALE NORMALE AU NIVEAU DE L'ENCASTREMENT
-IMPR_TABLE(TABLE=TFORCE2);
+IMPR_TABLE(TABLE=TFORCE2)
 
 # IMPRESSION DE L'OUVERTURE NORMALE DU JOINT
-IMPR_TABLE(TABLE=TDELTA_N);
+IMPR_TABLE(TABLE=TDELTA_N)
 
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONC_X=DN,
                         FONC_Y=FN,
                         LEGENDE='Force Deplacement'),
-             );
+             )
 ## EN MODE INTERACTIF SEULEMENT
 #IMPR_FONCTION(FORMAT='XMGRACE',
 #              PILOTE='INTERACTIF',
@@ -450,7 +450,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 #              LEGENDE_X='\\xd\\s\\0n',
 #              LEGENDE_Y='F\\sn',
 #              TITRE='mode I avec charge-decharge',
-#              );
+#              )
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ'),GROUP_MA = ('PRISMDEG','PRISM'))))
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='VARI_ELGA',TYPE_CHAM='VECT_2D',NOM_CMP=('V12','V13'),GROUP_MA = ('PRISMDEG'))))

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
               IMPR_MACRO='OUI')
 
-MA0=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
     CREA_POI1=(
@@ -46,14 +46,14 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='DIS_T',),
                      _F(GROUP_MA='MASSE',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DIS_T',),),);
+                        MODELISATION='DIS_T',),),)
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 CHMATER=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATER,),);
+                              MATER=MATER,),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                        DISCRET=(_F(GROUP_MA='RESSORT',
@@ -67,7 +67,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                                    VALE = (0.,0.,0.)),
                                 _F(GROUP_MA='AMORTIS',
                                    CARA='A_T_D_L',
-                                   VALE=(50.0,1.0,1.0,),),),);
+                                   VALE=(50.0,1.0,1.0,),),),)
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(GROUP_NO='A_ET_B',
@@ -76,7 +76,7 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                                DZ=0.0,),
                             _F(GROUP_NO='MASSE',
                                DY=0.0,
-                               DZ=0.0,),),);
+                               DZ=0.0,),),)
 # --------------------------------------------------------------------
 #
 #
@@ -93,7 +93,7 @@ ASSEMBLAGE(MODELE=MO,
                       _F(MATRICE=CO('MATASSM'),
                          OPTION='MASS_MECA',),
                       _F(MATRICE=CO('MATASSC'),
-                         OPTION='AMOR_MECA',),),);
+                         OPTION='AMOR_MECA',),),)
 # --------------------------------------------------------------------
 #
 #
@@ -420,4 +420,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

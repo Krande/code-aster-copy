@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,20 +24,20 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
 # donnee materiau et fonction
 
 #parametres elastiques
-RYOUNG = 31000;
+RYOUNG = 31000
 YOUNG=DEFI_FONCTION( NOM_PARA='TEMP',
                  PROL_DROITE='LINEAIRE',
                  PROL_GAUCHE='LINEAIRE',
                  VALE=(0.0, RYOUNG, 1.0, RYOUNG,)
                )
 
-RNU = 0.2;
+RNU = 0.2
 POISSON=DEFI_FONCTION( NOM_PARA='TEMP',
                   PROL_DROITE='LINEAIRE',
                   PROL_GAUCHE='LINEAIRE',
-                  VALE=(0.0,RNU,1.0,RNU,));
+                  VALE=(0.0,RNU,1.0,RNU,))
 
-ALPHA=DEFI_CONSTANTE(VALE=1.0E-6);
+ALPHA=DEFI_CONSTANTE(VALE=1.0E-6)
 
 FONC1=DEFI_FONCTION( NOM_PARA='SECH',
                      PROL_DROITE='LINEAIRE',
@@ -47,13 +47,13 @@ FONC1=DEFI_FONCTION( NOM_PARA='SECH',
 
 #parametres viscosite
 
-K_RS      = 2.E5;
-ETA_RS    = 4.E10;
-ETA_IS    = 1.E11;
-K_RD      = 5.0E4;
-ETA_RD    = 1.0E10;
-ETA_ID    = 1.E11;
-K_IS      = 5.0E4;
+K_RS      = 2.E5
+ETA_RS    = 4.E10
+ETA_IS    = 1.E11
+K_RD      = 5.0E4
+ETA_RD    = 1.0E10
+ETA_ID    = 1.E11
+K_IS      = 5.0E4
 
 # def des materiaux
 BETON = [None]*3
@@ -83,7 +83,7 @@ BETON[0]=DEFI_MATERIAU(ELAS_FO     =_F(NU=POISSON,
                                    ETA_RD    = ETA_RD_Pa,
                                    ETA_ID    = ETA_ID_Pa,
                                    K_IS      = K_IS_Pa,),
-                                    );
+                                    )
 
 #unite en MPa
 
@@ -98,7 +98,7 @@ BETON[1]=DEFI_MATERIAU(ELAS_FO     =_F(NU=POISSON,
                                    ETA_RD    = ETA_RD,
                                    ETA_ID    = ETA_ID,
                                    K_IS      = K_IS,),
-                                    );
+                                    )
 
 compor='BETON_UMLV'
 
@@ -116,7 +116,7 @@ P_imat = [0] + [1] + (Ncal-2)*[1]
 vitesse = 1.e-2
 t_0 = 5.e-2/(8.0*vitesse)*1.E5
 # calibrage des deformations maximum dans l'extension 93
-calibrage = 1.0e-2;
+calibrage = 1.0e-2
 CALIB_E=RYOUNG
 CALIB_NU=RNU
 

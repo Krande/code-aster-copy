@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 import math
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 #=======================================================================
 #
 # Ce test purement informatique sert a valider la programmation relative
@@ -36,7 +36,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
 # ======================================================================
 
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA,
               CREA_GROUP_MA=(_F(NOM='CUBE',TOUT='OUI'),
@@ -44,26 +44,26 @@ MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA,
                                                 'EF','CD','GH','BF','BC',
                                                 'FG','CG'),),
                              _F(NOM='1D2D',UNION=('2D','1D',),),
-                             _F(NOM='3D',  DIFFE=('CUBE','1D2D',),),),);
+                             _F(NOM='3D',  DIFFE=('CUBE','1D2D',),),),)
 
 MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA,
-              DETR_GROUP_MA=_F(NOM=('1D2D','1D'),),);
+              DETR_GROUP_MA=_F(NOM=('1D2D','1D'),),)
 
 MA=MODI_MAILLAGE(MAILLAGE=MA,reuse=MA,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU='BCGF'),);
+                 ORIE_PEAU=_F(GROUP_MA_PEAU='BCGF'),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_INCO_UP',),);
+                       MODELISATION='3D_INCO_UP',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04E11,
                             NU=0.3,
-                            ALPHA=1.092E-05,),);
+                            ALPHA=1.092E-05,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CHARG=AFFE_CHAR_MECA(MODELE=MO,
                      FACE_IMPO=_F(GROUP_MA='BCGF',
@@ -72,15 +72,15 @@ CHARG=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_NO=('A','B','D','E'),
                                  DX=0.0,
                                  DY=0.0,
-                                 DZ=0.0,),);
+                                 DZ=0.0,),)
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHARG,),);
+                   EXCIT=_F(CHARGE=CHARG,),)
 
 RESU=CALC_CHAMP(reuse=RESU,
                 RESULTAT=RESU,
-                CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','SIGM_NOEU'),);
+                CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','SIGM_NOEU'),)
 
 # Extraction des champs (DEPL, SIGM_ELNO, SIEF_ELGA)
 
@@ -88,44 +88,44 @@ DDL=CREA_CHAMP(OPERATION='EXTR',
                TYPE_CHAM='NOEU_DEPL_R',
                NOM_CHAM='DEPL',
                NUME_ORDRE=1,
-               RESULTAT=RESU);
+               RESULTAT=RESU)
 
 DEPL=CREA_CHAMP(OPERATION='ASSE',
                 TYPE_CHAM='NOEU_DEPL_R',
                 MODELE=MO,
                 ASSE=_F(CHAM_GD=DDL,
                         TOUT='OUI',
-                        NOM_CMP=('DX','DY','DZ'),),);
+                        NOM_CMP=('DX','DY','DZ'),),)
 
 SIGA=CREA_CHAMP(OPERATION='EXTR',
                 TYPE_CHAM='ELGA_SIEF_R',
                 NOM_CHAM='SIEF_ELGA',
                 NUME_ORDRE=1,
-                RESULTAT=RESU);
+                RESULTAT=RESU)
 
 SIGMA=CREA_CHAMP(OPERATION='EXTR',
                  TYPE_CHAM='ELGA_SIEF_R',
                  NOM_CHAM='SIGM_ELGA',
                  NUME_ORDRE=1,
-                 RESULTAT=RESU);
+                 RESULTAT=RESU)
 
 SIGELNO=CREA_CHAMP(OPERATION='EXTR',
                    TYPE_CHAM='ELNO_SIEF_R',
                    NOM_CHAM='SIGM_ELNO',
                    NUME_ORDRE=1,
-                   RESULTAT=RESU);
+                   RESULTAT=RESU)
 
 SIGNOEU=CREA_CHAMP(OPERATION='EXTR',
                    TYPE_CHAM='NOEU_SIEF_R',
                    NOM_CHAM='SIGM_NOEU',
                    NUME_ORDRE=1,
-                   RESULTAT=RESU);
+                   RESULTAT=RESU)
 
 DEPLELGA=CREA_CHAMP(OPERATION='DISC',
                     TYPE_CHAM='ELGA_DEPL_R',
                     PROL_ZERO='OUI',
                     CHAM_GD=DEPL,
-                    MODELE=MO, );
+                    MODELE=MO, )
 
 
 # Formule
@@ -145,31 +145,31 @@ FFROB6 = FORMULE(VALE='SIXX*SIXX + SIYY*SIYY + SIZZ*SIZZ + SIXY*SIXY + SIYZ*SIYZ
 F3DNO=CREA_CHAMP(OPERATION='AFFE',
                  TYPE_CHAM='NOEU_NEUT_F',
                  MAILLAGE=MA,
-                 AFFE=_F(GROUP_MA='CUBE',NOM_CMP='X1',VALE_F=FNORM3),);
+                 AFFE=_F(GROUP_MA='CUBE',NOM_CMP='X1',VALE_F=FNORM3),)
 
 F3DEGA=CREA_CHAMP(OPERATION='AFFE',
                   TYPE_CHAM='ELGA_NEUT_F',
                   MODELE=MO,
                   PROL_ZERO='OUI',
-                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORM6),);
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORM6),)
 
 FFDEGA=CREA_CHAMP(OPERATION='AFFE',
                   TYPE_CHAM='ELGA_NEUT_F',
                   MODELE=MO,
                   PROL_ZERO='OUI',
-                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FFROB6),);
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FFROB6),)
 
 F2DEGA=CREA_CHAMP(OPERATION='AFFE',
                   TYPE_CHAM='ELGA_NEUT_F',
                   MODELE=MO,
                   PROL_ZERO='OUI',
-                  AFFE=_F(GROUP_MA='2D',NOM_CMP='X1',VALE_F=FNORM3),);
+                  AFFE=_F(GROUP_MA='2D',NOM_CMP='X1',VALE_F=FNORM3),)
 
 F3DENO=CREA_CHAMP(OPERATION='AFFE',
                   TYPE_CHAM='ELNO_NEUT_F',
                   MODELE=MO,
                   PROL_ZERO='OUI',
-                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORM6),);
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORM6),)
 
 
 # Evaluation des valeurs du champ
@@ -177,27 +177,27 @@ F3DENO=CREA_CHAMP(OPERATION='AFFE',
 TEMP00=CREA_CHAMP(OPERATION='EVAL',
                   TYPE_CHAM='NOEU_NEUT_R',
                   CHAM_F=F3DNO,
-                  CHAM_PARA=DEPL);
+                  CHAM_PARA=DEPL)
 
 TEMPAA=CREA_CHAMP(OPERATION='EVAL',
                   TYPE_CHAM='ELGA_NEUT_R',
                   CHAM_F=F3DEGA,
-                  CHAM_PARA=SIGA);
+                  CHAM_PARA=SIGA)
 
 TEMPAB=CREA_CHAMP(OPERATION='EVAL',
                   TYPE_CHAM='ELGA_NEUT_R',
                   CHAM_F=FFDEGA,
-                  CHAM_PARA=SIGA);
+                  CHAM_PARA=SIGA)
 
 TEMPAZ=CREA_CHAMP(OPERATION='EVAL',
                   TYPE_CHAM='ELGA_NEUT_R',
                   CHAM_F=F2DEGA,
-                  CHAM_PARA=DEPLELGA);
+                  CHAM_PARA=DEPLELGA)
 
 TEMPBB=CREA_CHAMP(OPERATION='EVAL',
                   TYPE_CHAM='ELNO_NEUT_R',
                   CHAM_F=F3DENO,
-                  CHAM_PARA=SIGELNO);
+                  CHAM_PARA=SIGELNO)
 
 
 
@@ -206,55 +206,55 @@ TEMPBB=CREA_CHAMP(OPERATION='EVAL',
 Norme00=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL',NOM_CMP='X1',GROUP_MA='3D',TYPE_MAILLE='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL',NOM_CMP='X1',GROUP_MA='3D',TYPE_MAILLE='3D'),)
 
 Norme01=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL',NOM_CMP='X1',GROUP_MA='CUBE',TYPE_MAILLE='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL',NOM_CMP='X1',GROUP_MA='CUBE',TYPE_MAILLE='3D'),)
 
 Norme02=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL',NOM_CMP='X1',GROUP_MA='3D',TYPE_MAILLE='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL',NOM_CMP='X1',GROUP_MA='3D',TYPE_MAILLE='3D'),)
 
 Norme03=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='DEPL',NOM_CMP='X1',GROUP_MA='2D',TYPE_MAILLE='2D'),);
+                  INTEGRALE=_F(NOM_CHAM='DEPL',NOM_CMP='X1',GROUP_MA='2D',TYPE_MAILLE='2D'),)
 
 Norme11=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMPAA,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1',GROUP_MA='CUBE',TYPE_MAILLE='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1',GROUP_MA='CUBE',TYPE_MAILLE='3D'),)
 
 
 NormeF1=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMPAB,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1',GROUP_MA='CUBE',TYPE_MAILLE='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1',GROUP_MA='CUBE',TYPE_MAILLE='3D'),)
 
 Norme22=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMPBB,
                   CHAM_MATER=CHMAT,
-                  INTEGRALE=_F(NOM_CHAM='SIGM_ELNO',NOM_CMP='X1',GROUP_MA='CUBE',TYPE_MAILLE='3D'),);
+                  INTEGRALE=_F(NOM_CHAM='SIGM_ELNO',NOM_CMP='X1',GROUP_MA='CUBE',TYPE_MAILLE='3D'),)
 
 
 # calcul de la norme (reference):
 
-Norm00=math.sqrt(Norme00['INTE_X1',1]);
+Norm00=math.sqrt(Norme00['INTE_X1',1])
 
-Norm01=math.sqrt(Norme01['INTE_X1',1]);
+Norm01=math.sqrt(Norme01['INTE_X1',1])
 
-Norm02=math.sqrt(Norme02['INTE_X1',1]);
+Norm02=math.sqrt(Norme02['INTE_X1',1])
 
-Norm03=math.sqrt(Norme03['INTE_X1',1]);
+Norm03=math.sqrt(Norme03['INTE_X1',1])
 
-Norm11=math.sqrt(Norme11['INTE_X1',1]);
+Norm11=math.sqrt(Norme11['INTE_X1',1])
 
-NormF1=math.sqrt(NormeF1['INTE_X1',1]);
+NormF1=math.sqrt(NormeF1['INTE_X1',1])
 
-Norm22=math.sqrt(Norme22['INTE_X1',1]);
+Norm22=math.sqrt(Norme22['INTE_X1',1])
 
 # calcul de la norme directement par POST_ELEM
 #---------------------------------------------
@@ -264,65 +264,65 @@ Norm22=math.sqrt(Norme22['INTE_X1',1]);
 TB3=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                        TOUT='OUI',
                        CHAM_GD=DEPL,
-                       MODELE=MO),);
+                       MODELE=MO),)
 
 TB4=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                        GROUP_MA='CUBE',
                        CHAM_GD=DEPL,
-                       MODELE=MO),);
+                       MODELE=MO),)
 
 NDEPL3D=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                        GROUP_MA='CUBE',
                        CHAM_GD=DEPL,
                        TYPE_MAILLE='3D',
-                       MODELE=MO),);
+                       MODELE=MO),)
 
 TB6=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                        GROUP_MA='CUBE',
                        CHAM_GD=DEPL,
                        TYPE_MAILLE='2D',
-                       MODELE=MO),);
+                       MODELE=MO),)
 
 # champ SIEF_ELGA
 
 TBA1=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         TOUT='OUI',
                         CHAM_GD=SIGA,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 TBA2=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGA,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 TCA2=POST_ELEM(NORME=_F(TYPE_NORM='FROBENIUS',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGA,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 # champ SIEF_ELGA (apres interpolation aux noeuds)
 
 TBA3=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         TOUT='OUI',
                         CHAM_GD=SIGNOEU,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 TBA4=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGNOEU,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 NSIEGA=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                           GROUP_MA='CUBE',
                           CHAM_GD=SIGA,
                           TYPE_MAILLE='3D',
-                          MODELE=MO),);
+                          MODELE=MO),)
 
 NSIEGA2=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                           GROUP_MA='CUBE',
                           CHAM_GD=SIGMA,
                           TYPE_MAILLE='3D',
-                          MODELE=MO),);
+                          MODELE=MO),)
 
 
 # champ SIGM_ELNO
@@ -330,36 +330,36 @@ NSIEGA2=POST_ELEM(NORME=_F(TYPE_NORM='L2',
 TBB1=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         TOUT='OUI',
                         CHAM_GD=SIGELNO,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 TBB2=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGELNO,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 # champ SIGM_ELNO (apres interpolation aux noeuds)
 
 TBB3=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         TOUT='OUI',
                         CHAM_GD=SIGNOEU,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 TBB4=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGNOEU,
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 NSIGNO=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGELNO,
                         TYPE_MAILLE='3D',
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 TBB6=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGNOEU,
                         TYPE_MAILLE='2D',
-                        MODELE=MO),);
+                        MODELE=MO),)
 
 #  tests
 # =======
@@ -368,12 +368,12 @@ TBB6=POST_ELEM(NORME=_F(TYPE_NORM='L2',
 # champ DEPL (2D et 3D) : TOUT='OUI'
 TEST_TABLE(VALE_CALC=2.4296305040333404,
            NOM_PARA='VALE_NORM',
-           TABLE=TB3,);
+           TABLE=TB3,)
 
 # champ DEPL (2D et 3D) : GROUP_MA='CUBE'
 TEST_TABLE(VALE_CALC=2.4296305040333404,
            NOM_PARA='VALE_NORM',
-           TABLE=TB4,);
+           TABLE=TB4,)
 
 # champ DEPL (2D) : GROUP_MA='CUBE'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -381,7 +381,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=2.2437238017569907,
            VALE_REFE=2.22064182302,
            NOM_PARA='VALE_NORM',
-           TABLE=TB6,);
+           TABLE=TB6,)
 
 #-------------------------
 
@@ -391,7 +391,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=86545353454.47694,
            VALE_REFE=86545353454.47694,
            NOM_PARA='VALE_NORM',
-           TABLE=TBA1,);
+           TABLE=TBA1,)
 
 # champ SIEF_ELGA (3D) : GROUP_MA='CUBE'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -399,7 +399,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=86545353454.47694,
            VALE_REFE=86545353454.47694,
            NOM_PARA='VALE_NORM',
-           TABLE=TBA2,);
+           TABLE=TBA2,)
 
 
 # champ SIEF_ELGA (3D) : GROUP_MA='CUBE'
@@ -408,19 +408,19 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=78072059214.3294,
            VALE_REFE=78072059214.3294,
            NOM_PARA='VALE_NORM',
-           TABLE=TCA2,);
+           TABLE=TCA2,)
 
 # champ SIEF_ELGA (2D et 3D) :  TOUT='OUI'
 # apres interpolation aux noeuds
 TEST_TABLE(VALE_CALC=263294322419.71957,
            NOM_PARA='VALE_NORM',
-           TABLE=TBA3,);
+           TABLE=TBA3,)
 
 # champ SIEF_ELGA (2D et 3D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
 TEST_TABLE(VALE_CALC=263294322419.71957,
            NOM_PARA='VALE_NORM',
-           TABLE=TBA4,);
+           TABLE=TBA4,)
 
 #-------------------------
 
@@ -430,7 +430,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=86545353454.47694,
            VALE_REFE=86545353454.47694,
            NOM_PARA='VALE_NORM',
-           TABLE=TBB1,);
+           TABLE=TBB1,)
 
 # champ SIGM_ELNO (3D) : GROUP_MA='CUBE'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -438,24 +438,24 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=86545353454.47694,
            VALE_REFE=86545353454.47694,
            NOM_PARA='VALE_NORM',
-           TABLE=TBB2,);
+           TABLE=TBB2,)
 
 # champ SIGM_ELNO (2D et 3D) :  TOUT='OUI'
 # apres interpolation aux noeuds
 TEST_TABLE(VALE_CALC=263294322419.71957,
            NOM_PARA='VALE_NORM',
-           TABLE=TBB3,);
+           TABLE=TBB3,)
 
 # champ SIGM_ELNO (2D et 3D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
 TEST_TABLE(VALE_CALC=263294322419.71957,
            NOM_PARA='VALE_NORM',
-           TABLE=TBB4,);
+           TABLE=TBB4,)
 
 # champ SIGM_ELNO (2D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
 TEST_TABLE(VALE_CALC=256448487687.7402,
            NOM_PARA='VALE_NORM',
-           TABLE=TBB6,);
+           TABLE=TBB6,)
 
-FIN();
+FIN()

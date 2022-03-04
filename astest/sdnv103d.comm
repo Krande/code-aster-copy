@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,29 +28,29 @@ MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
 
 MODE=AFFE_MODELE(
             MAILLAGE=MA,
-            
+
             AFFE=(
 _F( TOUT='OUI',
                PHENOMENE = 'MECANIQUE',
                MODELISATION = ('AXIS')),
            _F( TOUT='OUI',
                PHENOMENE = 'MECANIQUE',
-               MODELISATION = ('AXIS_SI',)),),);
+               MODELISATION = ('AXIS_SI',)),),)
 
 MA=MODI_MAILLAGE( reuse=MA,
              MAILLAGE=MA,
              ORIE_PEAU=_F(  GROUP_MA_PEAU = ('SZZ', 'RIGID')),
-             INFO=2);
+             INFO=2)
 
 ACIER=DEFI_MATERIAU(
                 ELAS=_F( E = 117.E3, NU = 0.35,  RHO = 8.930E-9),
-                ECRO_LINE=_F(D_SIGM_EPSI = 100., SY = 400.));
+                ECRO_LINE=_F(D_SIGM_EPSI = 100., SY = 400.))
 
 CHMAT = AFFE_MATERIAU(
             MAILLAGE=MA,
             AFFE=(
               _F( GROUP_MA = ('VOL','VOL_RIG'), MATER = ACIER),),
-                        );
+                        )
 
 CH=AFFE_CHAR_MECA(
             MODELE=MODE,
@@ -59,7 +59,7 @@ CH=AFFE_CHAR_MECA(
              _F( GROUP_MA = 'VOL_RIG',    DX = 0., DY = 0.),
              _F( GROUP_MA = 'AXE',        DX = 0.),
              ),
-               );
+               )
 
 CHCONT  = DEFI_CONTACT(MODELE         = MODE,
                        FORMULATION    = 'DISCRETE',
@@ -78,7 +78,7 @@ CHCONT  = DEFI_CONTACT(MODELE         = MODE,
                              GROUP_MA_ESCL  = 'SZZ',
                              COEF_MATR_FROT = 0.4,
                                ),
-                      );
+                      )
 
 VIT_0=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_DEPL_R',
@@ -94,7 +94,7 @@ VIT_0=CREA_CHAMP( OPERATION='AFFE',
                      _F(GROUP_NO = 'RIGID',
                         NOM_CMP = ('DX', 'DY'),
                         VALE = (  0.0,  0.0, )),
-                    ));
+                    ))
 
 L_INST=DEFI_LIST_REEL(DEBUT=-1.E-5,INTERVALLE=(
                          _F( JUSQU_A = -1.E-7, NOMBRE = 1),
@@ -138,7 +138,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    SOLVEUR=_F(METHODE='LDLT',),
                    ARCHIVAGE=_F(
                                 LIST_INST=L_SAUV),
-                   );
+                   )
 
 
 VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
@@ -146,21 +146,21 @@ VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
                                 RESULTAT=RESU,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 DEPL_A1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A1',
                                 GROUP_NO= 'A1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
                                 GROUP_NO= 'B1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 
 #####################################################

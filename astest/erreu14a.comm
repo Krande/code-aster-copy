@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -145,7 +145,7 @@ is_ok = 0
 try :
 
     CHAR_FI=AFFE_CHAR_MECA(MODELE=MO,
-                       FORCE_INTERNE=_F(GROUP_MA=('CARRE','BORD1'), FX=4.0,),);
+                       FORCE_INTERNE=_F(GROUP_MA=('CARRE','BORD1'), FX=4.0,),)
 except AsterError as err:
    print(fmt_raison % str(err))
    # on verifie que l'erreur fatale est bien celle que l'on attendait :

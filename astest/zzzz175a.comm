@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ MACR_INFO_MAIL( MAILLAGE=maill_fr,
                )
 #
 #    On imprime ce maillage pour pouvoir l'utiliser dans le cas_test de HOMARD sfr_1d_poignee_d2
-###IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=maill_fr),);
+###IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=maill_fr),)
 #
 # C. Dimensionnement des tableaux des concepts maillage
 #    On affecte les valeurs a None (peu importe)
@@ -128,7 +128,7 @@ for num_calc in range(nbre_calcul):
   mode[num_calc]=AFFE_MODELE(MAILLAGE=Mad2[num_calc],
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),);
+                         MODELISATION='C_PLAN',),)
 #
 # E.2. Le MODI_MAILLAGE n'est utile que la premiere fois, car HOMARD conserve
 #      les orientations
@@ -144,13 +144,13 @@ for num_calc in range(nbre_calcul):
                                         'U1', 'U2',
                                         'EXT',
                                         'PRES1', 'PRES2', ),),
-             );
-             
+             )
+
 #
 # E.3. Mise en place des materiaux
 #
   chma[num_calc]=AFFE_MATERIAU(MAILLAGE=Mad2[num_calc],
-                     AFFE=_F(GROUP_MA='SOLIDE',MATER=acier,),);
+                     AFFE=_F(GROUP_MA='SOLIDE',MATER=acier,),)
 #
 # E.4. Les chargements
 #    Face          |         Chargement
@@ -162,7 +162,7 @@ for num_calc in range(nbre_calcul):
   bloq[num_calc]=AFFE_CHAR_MECA(MODELE=mode[num_calc],
                          FACE_IMPO=_F(GROUP_MA='ENCASTR',
                                       DX=0.0,
-                                      DY=0.0,),);
+                                      DY=0.0,),)
   pres[num_calc]=AFFE_CHAR_MECA_F(MODELE=mode[num_calc],
                       PRES_REP=(_F(GROUP_MA=( 'SUP_1', 'SUP_2', 'SUP_3', 'SUP_4', 'SUP_5', 'SUP_6', 'SUP_7', 'SUP_8',
                                               'INF_1', 'INF_2', 'INF_3', 'INF_4', 'INF_5', 'INF_6', 'INF_7', 'INF_8',
@@ -171,7 +171,7 @@ for num_calc in range(nbre_calcul):
                                               'EXT',
                                               'PRES2',),
                                     PRES=F0,),
-                                _F(GROUP_MA=('PRES1',),PRES=rampe,),),);
+                                _F(GROUP_MA=('PRES1',),PRES=rampe,),),)
 #
 # E.5. Calcul non-lineaire en Von Mises
 #
@@ -195,7 +195,7 @@ for num_calc in range(nbre_calcul):
                                  ),
                         COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                         INCREMENT=_F(LIST_INST=DEFLIST,
-                                     INST_FIN=inst_fin,),);
+                                     INST_FIN=inst_fin,),)
   #else :
   if ( num_calc > 0 ) :
 #
@@ -213,7 +213,7 @@ for num_calc in range(nbre_calcul):
                                   RESULTAT=resu[num_calc],
                                   NOM_CHAM='DEPL',
                                   TOUT_CMP='OUI',
-                                  OPERATION='EXTRACTION',),);
+                                  OPERATION='EXTRACTION',),)
 
     ###IMPR_TABLE(FORMAT_R='1PF14.7',TABLE=depl[num_calc],NOM_PARA=('INST','DX','DY',),)
     ###IMPR_TABLE(FORMAT='XMGRACE',PILOTE='POSTSCRIPT',UNITE=31,TABLE=depl[num_calc],NOM_PARA=('INST','DX',),)
@@ -230,13 +230,13 @@ for num_calc in range(nbre_calcul):
     resu[num_calc]=CALC_ERREUR(reuse =resu[num_calc],
                       OPTION=('ERME_ELEM',),
                       RESULTAT=resu[num_calc],
-                      INST=inst_fin,);
+                      INST=inst_fin,)
 #
 # E.7.2. Impression du resultat pour utilisation dans le cas_test de HOMARD sfr_1d_poignee_d2
 #
-    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('DEPL',),INST=inst_fin,),);
-    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),INST=inst_fin,),);
-    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM='ERME_ELEM',NOM_CMP='ERREST',INST=inst_fin,),);
+    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('DEPL',),INST=inst_fin,),)
+    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),INST=inst_fin,),)
+    ##IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM='ERME_ELEM',NOM_CMP='ERREST',INST=inst_fin,),)
 #
 # E.7.3. Adaptation vraie
 #      ATTENTION : on est dans le cas particulier d une macro commande
@@ -284,7 +284,7 @@ for num_calc in range(nbre_calcul):
 #    que le mecanisme de nommage automatique n'a pas ete degrade.
 #
 if ( nbre_calcul >= 4 ) :
-  ###IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('DEPL',),INST=inst_fin,),);
+  ###IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu[num_calc],NOM_CHAM=('DEPL',),INST=inst_fin,),)
   TEST_RESU(RESU=(
        _F(  RESULTAT = resu[3],    INST=T_test_resu,
             NOM_CHAM = 'DEPL',    GROUP_NO = 'A1',

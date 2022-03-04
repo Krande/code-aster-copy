@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,10 +98,10 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                                 DRX=0.0,),
                              _F(GROUP_MA='COTE_DA',
                                 DZ=0.0,
-                                DRX=0.0,),),);
-PZERO = 0.01;
+                                DRX=0.0,),),)
+PZERO = 0.01
 
-L = 1;
+L = 1
 
 
 PRES = FORMULE(VALE='( PZERO*sin(pi*X/L)*sin(pi*Y/L) )',
@@ -111,7 +111,7 @@ PRES = FORMULE(VALE='( PZERO*sin(pi*X/L)*sin(pi*Y/L) )',
 
 CHAP=AFFE_CHAR_MECA_F(MODELE=MO,
                         FORCE_COQUE=_F(GROUP_MA='TOUT_ELT',
-                                       PRES=PRES,),);
+                                       PRES=PRES,),)
 
 
 
@@ -148,46 +148,46 @@ RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),RESULTAT=RESU)
 C2_M=POST_CHAMP(RESULTAT=RESU,
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 C2_M=CALC_CHAMP(reuse =C2_M,
              RESULTAT=C2_M,
-             CONTRAINTE='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',)
 
 SIG_C2_M=CREA_CHAMP(RESULTAT=C2_M,
                     OPERATION='EXTR',
                     TYPE_CHAM='NOEU_SIEF_R',
                     NOM_CHAM='SIGM_NOEU',
-                    NUME_ORDRE=1);
+                    NUME_ORDRE=1)
 
 C2_S=POST_CHAMP(RESULTAT=RESU,
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 C2_S=CALC_CHAMP(reuse =C2_S,
               RESULTAT=C2_S,
-              CONTRAINTE='SIGM_NOEU',);
+              CONTRAINTE='SIGM_NOEU',)
 
 SIG_C2_S=CREA_CHAMP(RESULTAT=C2_S,
                     OPERATION='EXTR',
                     TYPE_CHAM='NOEU_SIEF_R',
                     NOM_CHAM='SIGM_NOEU',
-                    NUME_ORDRE=1);
+                    NUME_ORDRE=1)
 
 #COUCHE 3 : CALCUL DES CONTRAINTES
 ##################################
 C3_S=POST_CHAMP(RESULTAT=RESU,
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=3,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 C3_S=CALC_CHAMP(reuse =C3_S,
              RESULTAT=C3_S,
-             CONTRAINTE='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',)
 
 SIG_C3_S=CREA_CHAMP(RESULTAT=C3_S,
                     OPERATION='EXTR',
                     TYPE_CHAM='NOEU_SIEF_R',
                     NOM_CHAM='SIGM_NOEU',
-                    NUME_ORDRE=1);
+                    NUME_ORDRE=1)
 
 
 #

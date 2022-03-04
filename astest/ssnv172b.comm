@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,16 +21,16 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL2D=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL2D=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 
 MODEL2D=AFFE_MODELE(MAILLAGE=MAIL2D,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),);
+                           MODELISATION='C_PLAN',),)
 TFIN=3.
 
-NPAS = 20;
+NPAS = 20
 
 
 
@@ -38,13 +38,13 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.52,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN,
-                                    NOMBRE=NPAS,),),);
+                                    NOMBRE=NPAS,),),)
 
 
 COEF=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 
 TRAC=AFFE_CHAR_MECA(MODELE=MODEL2D,
@@ -54,7 +54,7 @@ TRAC=AFFE_CHAR_MECA(MODELE=MODEL2D,
                                  DX=0.0,),
                               _F(GROUP_NO='DROIT',
                                  DX=0.001,),
-                                 ),);
+                                 ),)
 
 
 # MATERIAU DE TYPE CHABOCHE, SOIT MACRO, SOIT MONOCRISTAL
@@ -79,12 +79,12 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   B=19.34,
                                   H=0.0,),
                     MONO_CINE1=_F(D=36.68,),
-                                  );
+                                  )
 
 
 MAT=AFFE_MATERIAU(MAILLAGE=MAIL2D,
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
+                          MATER=ACIER,),)
 
 
 
@@ -101,7 +101,7 @@ SOLCHAB=STAT_NON_LINE(MODELE=MODEL2D,
                                     TOUT='OUI',),),
                       INCREMENT=(_F(LIST_INST=LINST,),),
                       NEWTON=(_F(REAC_ITER=1,),),
-                      ARCHIVAGE=_F(LIST_INST=LINST,),);
+                      ARCHIVAGE=_F(LIST_INST=LINST,),)
 
 
 TEST_RESU(RESU=_F(INST=3.0,
@@ -118,12 +118,12 @@ COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
-                                    FAMI_SYST_GLIS='UNIAXIAL',),),);
+                                    FAMI_SYST_GLIS='UNIAXIAL',),),)
 
 
 ORIEN=AFFE_CARA_ELEM(MODELE=MODEL2D,
                      MASSIF=_F(GROUP_MA='TOUT',
-                               ANGL_REP=(180.0,180.0,0.0,),),);
+                               ANGL_REP=(180.0,180.0,0.0,),),)
 
 # IMPLICITE : TEST DE MONO_VISC1, MONO_LINE1, MONO_CINE1
 
@@ -142,7 +142,7 @@ IMPL1=STAT_NON_LINE(MODELE=MODEL2D,INFO=1,
                      INCREMENT=(_F(LIST_INST=LINST,),),
                      NEWTON=(_F(REAC_ITER=1),),
                      ARCHIVAGE=_F(LIST_INST=LINST,),
-                                     );
+                                     )
 
 TEST_RESU(RESU=_F(INST=3.0,
                   REFERENCE='AUTRE_ASTER',
@@ -173,7 +173,7 @@ EXPL1=STAT_NON_LINE(MODELE=MODEL2D,
                                 MATRICE='ELASTIQUE',
                                 REAC_ITER=0,),),
                     INCREMENT=(_F(LIST_INST=LINST,),),
-                    );
+                    )
 
 
 TEST_RESU(RESU=_F(INST=3.0,
@@ -187,4 +187,4 @@ TEST_RESU(RESU=_F(INST=3.0,
                   GROUP_MA='MA1',),
           )
 
-FIN();
+FIN()

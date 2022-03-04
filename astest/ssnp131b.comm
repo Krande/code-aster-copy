@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
-              ));
+              ))
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',);
+MA1=LIRE_MAILLAGE(FORMAT='MED',)
 MA=RAFF_GP(MAILLAGE_N=MA1,
                TRANCHE_2D=_F(
                              CENTRE=(27.4,0.),
@@ -38,7 +38,7 @@ MA=RAFF_GP(MAILLAGE_N=MA1,
 MOD=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=_F(GROUP_MA=('SEPRO','FOND_0','SGOUP',),
                  PHENOMENE='MECANIQUE',
-                 MODELISATION='D_PLAN',),);
+                 MODELISATION='D_PLAN',),)
 
 
 
@@ -66,12 +66,12 @@ CT_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
 0.058235889,    1017.5664,
                             ),
                             PROL_DROITE = 'CONSTANT',
-                            PROL_GAUCHE = 'LINEAIRE',);
+                            PROL_GAUCHE = 'LINEAIRE',)
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=214100,
                                NU=0.3,),
-                    TRACTION=_F(SIGM=CT_100,),);
+                    TRACTION=_F(SIGM=CT_100,),)
 
 #----------------------------------------------------------------------
 #---------------- DONNEES MECANIQUES GOUPILLE  -------------------
@@ -84,7 +84,7 @@ MATGOUP=DEFI_MATERIAU(ELAS=_F(   E=2.E6,
                                  ALPHA = 0.),
                       ECRO_LINE=_F(D_SIGM_EPSI=200000.,
                                    SY=200000, )
-                      );
+                      )
 
 #----------------------------------------------------------------------
 # DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS
@@ -94,12 +94,12 @@ RAMPD=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(   0.0   ,    0.0 ,
                            100.    ,    0.25 ),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=(_F(JUSQU_A=40.0,
                                    NOMBRE=10,),
-                     ),);
+                     ),)
 
 #----------------------------------------------------------------------
 # AFFECTATION DES PROPRIETES MECANIQUES
@@ -113,7 +113,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             MATER=ACIER,),
                          _F(GROUP_MA='SGOUP',
                             MATER=MATGOUP,),),
-                         );
+                         )
 
 
 #----------------------------------------------------------------------
@@ -124,10 +124,10 @@ COND_LIM=AFFE_CHAR_CINE(MODELE=MOD,
                         MECA_IMPO=(_F(GROUP_MA='LIGBE',
                                      DY=0.0,),
                                   _F(GROUP_NO='PGOUP',
-                                     DX=0.0,),),);
+                                     DX=0.0,),),)
 CHAD=AFFE_CHAR_MECA_F(MODELE=MOD,
                       DDL_IMPO=_F(GROUP_NO='PGOUP',
-                                      DY=RAMPD,),);
+                                      DY=RAMPD,),)
 
 #----------------------------------------------------------------------
 #---------------  RESOLUTION   ------------------
@@ -152,7 +152,7 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(METHODE='MULT_FRONT',
-                              RENUM='METIS',),);
+                              RENUM='METIS',),)
 
 
 
@@ -163,7 +163,7 @@ RESU=STAT_NON_LINE(MODELE=MOD,
 L_INSTGP=DEFI_LIST_REEL(DEBUT=4.0,
                     INTERVALLE=(_F(JUSQU_A=40.0,
                                    NOMBRE=9,),
-                     ),);
+                     ),)
 
 TESTSCOP= CALC_GP(RESULTAT=RESU,
              LIST_INST=L_INSTGP,

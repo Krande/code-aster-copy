@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,33 +22,33 @@ NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # DEFINITION DU PROBLEME
 #=======================
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA='SURF',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_UPG',),);
+                       MODELISATION='D_PLAN_INCO_UPG',),)
 YOUNG=200000.0
 SIGY=200.0
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=0.3,),
                        ECRO_LINE=_F(D_SIGM_EPSI=1000.0,
-                                    SY=SIGY,),);
+                                    SY=SIGY,),)
 
 CH_MATER=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATERIAU,),);
+                               MATER=MATERIAU,),)
 
 SYMETRIE=AFFE_CHAR_MECA(MODELE=MO,
                         FACE_IMPO=(_F(GROUP_MA=('LCD','LBC',),
                                       DY=0.0,),
                                    _F(GROUP_MA=('LDE','LEF',),
-                                      DX=0.0,),),);
+                                      DX=0.0,),),)
 
 TRACTION=AFFE_CHAR_MECA(MODELE=MO,
                         FACE_IMPO=_F(GROUP_MA='LFG',
-                                     DY=0.1,),);
+                                     DY=0.1,),)
 
 # Dummy time step is added to test PRECISION keyword in MACR_LIGN_COUPE
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
@@ -56,10 +56,10 @@ INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                                       NOMBRE=5,),
                                     _F(JUSQU_A=1.000001,
                                       NOMBRE=1,),
-                                    ),);
+                                    ),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,1.0,1.0,),PROL_DROITE='LINEAIRE',);
+                    VALE=(0.0,0.0,1.0,1.0,),PROL_DROITE='LINEAIRE',)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),)
 
@@ -78,7 +78,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                   SIGM_REFE=SIGY,
                                   RESI_REFE_RELA=1.E-4,),
                    SOLVEUR=_F(METHODE='MUMPS',),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),)
 
 # Dummy calculation to test PRECISION keyword in MACR_LIGN_COUPE
 RESU_2=STAT_NON_LINE(ETAT_INIT=_F(EVOL_NOLI=RESU,),
@@ -94,7 +94,7 @@ RESU_2=STAT_NON_LINE(ETAT_INIT=_F(EVOL_NOLI=RESU,),
                                   SIGM_REFE=SIGY,
                                   RESI_REFE_RELA=1.E-4,),
                    SOLVEUR=_F(METHODE='MUMPS',),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),)
 
 # POST TRAITEMENT
 #=================
@@ -104,15 +104,15 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
 RESU=CALC_ERREUR(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('ERME_ELEM','ERME_ELNO',),);
+               OPTION=('ERME_ELEM','ERME_ELNO',),)
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             CONTRAINTE='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',)
 
 RESU_2=CALC_CHAMP(reuse =RESU_2,
              RESULTAT=RESU_2,
-             CONTRAINTE='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',)
 
 # test PRECISION which is needed to discriminate between possible choices
 S_T=MACR_LIGN_COUPE(RESULTAT=RESU_2,  NOM_CHAM='SIGM_NOEU', INST=1.0, CRITERE='ABSOLU',PRECISION=0.0000005,
@@ -124,7 +124,7 @@ S_T=MACR_LIGN_COUPE(RESULTAT=RESU_2,  NOM_CHAM='SIGM_NOEU', INST=1.0, CRITERE='A
 
 
 
-#IMPR_TABLE(TABLE=S_T,);
+#IMPR_TABLE(TABLE=S_T,)
 
 
 # TESTS NON REGRESSION
@@ -210,4 +210,4 @@ TEST_RESU(RESU=_F(INST=1.0,
                   ),
           )
 
-FIN();
+FIN()

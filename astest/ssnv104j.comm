@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
@@ -71,7 +71,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                       NOM='IP',
                                       POINT=(0.0,50.629660000000001,7.9100999999999999),
                                       RAYON=1.E-2,
-                                      PRECISION=1.E-2,),),);
+                                      PRECISION=1.E-2,),),)
 #_____________________________________________________________________
 #
 #                    DEFINITION DU MODELE
@@ -83,17 +83,17 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
 MO=AFFE_MODELE(MAILLAGE=MAILLAGE,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU='SESC',),
-                       );
+                       )
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU='SMAI',),
-                       );
+                       )
 #_____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX
@@ -104,11 +104,11 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.E4,
                           NU=0.29999999999999999,
-                          ALPHA=1.E-2,),);
+                          ALPHA=1.E-2,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 #_____________________________________________________________________
 #
 #                    AFFECTATION DES CONDITIONS AUX LIMITES
@@ -126,7 +126,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='LIM1',
                                  DX=0.0,),
                               _F(GROUP_NO='LIM2',
-                                 DZ=0.0,),),);
+                                 DZ=0.0,),),)
 
 CHA2=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='DISCRETE',
@@ -137,7 +137,7 @@ CHA2=DEFI_CONTACT(MODELE=MO,
                   ZONE=_F(ALGO_CONT='GCP',
                           GROUP_MA_MAIT='SMAI',
                           GROUP_MA_ESCL='SESC',),
-                    );
+                    )
 #_____________________________________________________________________
 #
 #                    DEFINITIONS DES FONCTIONS TEMPORELLES
@@ -148,12 +148,12 @@ CHA2=DEFI_CONTACT(MODELE=MO,
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 #_____________________________________________________________________
 #
 #                          RESOLUTION
@@ -171,7 +171,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='ELASTIQUE',
                              REAC_INCR=0,),
-                            );
+                            )
 
 RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU)
 
@@ -180,13 +180,13 @@ SIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIEF_ELGA',
-                  INST=1.,);
+                  INST=1.,)
 
 SIELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIGM_ELNO',
-                  INST=1.,);
+                  INST=1.,)
 #_____________________________________________________________________
 #
 # TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
@@ -372,4 +372,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='G1',
                 ),
           )
 
-FIN();
+FIN()

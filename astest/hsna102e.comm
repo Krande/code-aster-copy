@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,13 +51,13 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=20.0,),);
+                        VALE=20.0,),)
 
 RESUTHER=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
                    NOM_CHAM='TEMP',
                    AFFE=(_F(CHAM_GD=TEMP,
-                            INST=0.0,),),);
+                            INST=0.0,),),)
 
 
 CEQ = DEFI_CONSTANTE ( VALE = 58.8, )
@@ -334,4 +334,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='P6',
                 ),
           )
 
-FIN () ;
+FIN ()

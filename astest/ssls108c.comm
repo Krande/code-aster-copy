@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,13 +57,13 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
                       FORCE_NODALE=(_F(GROUP_NO = 'A1',
                                       FZ=0.5,),
                                     _F(GROUP_NO = 'A2',
-                                      FZ=0.5,),),);
+                                      FZ=0.5,),),)
 
 # Calcul élastique linéaire - First case
 RESU1=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHM,
                     EXCIT=_F(CHARGE=CHARGT,),
-                    );
+                    )
 
 # Test des résultats - First case
 dispDYRefe = -0.00172
@@ -103,13 +103,13 @@ CHARGT2=AFFE_CHAR_MECA(MODELE=MODMECA,
                       FORCE_NODALE=(_F(GROUP_NO = 'A1',
                                       FY=0.5,),
                                     _F(GROUP_NO = 'A2',
-                                      FY=0.5,),),);
+                                      FY=0.5,),),)
 
 # Calcul élastique linéaire - Second case
 RESU2=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHM,
                     EXCIT=_F(CHARGE=CHARGT2,),
-                    );
+                    )
 
 # Test des résultats - Second case
 dispDYRefe = 0.00175

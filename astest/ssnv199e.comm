@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -121,7 +121,7 @@ MO=AFFE_MODELE(
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
                              _F(GROUP_MA='DCB_J',ANGL_REP=(-90, 0 ,-90)),
-                                 ));
+                                 ))
 
 
 
@@ -277,7 +277,7 @@ U = CALC_CHAMP(reuse = U,
                RESULTAT = U,
                FORCE='FORC_NODA',
                GROUP_MA='DCB_1'
-               );
+               )
 
 # INTERPOLATION NODALE DES CHAMPS AUX PG
 U=CALC_CHAMP(reuse =U,
@@ -285,7 +285,7 @@ U=CALC_CHAMP(reuse =U,
              VARI_INTERNE='VARI_ELNO',
              CONTRAINTE='SIEF_ELNO',
              GROUP_MA='DCB_J'
-             );
+             )
 
 U=CALC_CHAMP(
              reuse =U,
@@ -293,7 +293,7 @@ U=CALC_CHAMP(
              VARI_INTERNE='VARI_NOEU',
              CONTRAINTE='SIEF_NOEU',
              GROUP_MA='DCB_J'
-             );
+             )
 
 # DEPLACEMENT PILOTE
 UPILO = POST_RELEVE_T(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
       ERREUR=_F(ERREUR_F='EXCEPTION'),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
 import re
 fmt_raison='-'*80+"""
@@ -37,43 +37,43 @@ fmt_raison='-'*80+"""
 
 """+'-'*80+'\n'
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
                DISTRIBUTION=_F(METHODE='MAIL_CONTIGU',),
-               );
+               )
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
                           NU=0.3,
-                          RHO=1.e-1,),);
+                          RHO=1.e-1,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='GRNO7',
                                  DX=0.0,
-                                 DY=0.01,),);
+                                 DY=0.01,),)
 
 CHA2=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=(_F(GROUP_NO='GRNO1',
                                  DZ=0.0,),
                               _F(GROUP_NO='GRNO8',
-                                 DY=0.0,),),);
+                                 DY=0.0,),),)
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=10,),);
+                                  NOMBRE=10,),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0,0,1,1),);
+                    VALE=(0,0,1,1),)
 
 DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST,),
-                       ECHEC=_F(ACTION='DECOUPE',),);
+                       ECHEC=_F(ACTION='DECOUPE',),)
 
 is_ok = 0
 try :
@@ -91,7 +91,7 @@ try :
                       SOLVEUR=_F(METHODE='GCPC',
                                  PRE_COND='LDLT_SP',
                                  NMAX_ITER=1,
-                                 ),);
+                                 ),)
 
 except AsterError as err:
    print(fmt_raison % str(err))
@@ -111,4 +111,4 @@ TEST_TABLE(TABLE=TAB1,
            VALE_CALC_I=1,
            REFERENCE='ANALYTIQUE')
 
-FIN();
+FIN()

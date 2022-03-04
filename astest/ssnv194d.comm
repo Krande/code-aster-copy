@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('COMPOR4_62',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('COMPOR4_62',),)
 
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
@@ -84,13 +84,13 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                     H6      =a_ncol,
                                     DEPDT=epsi_1,
                                      ),
-                    );
+                    )
 
 # DD_CC
 COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
                                     ECOULEMENT='MONO_DD_CC',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='CUBIQUE1',
-                                    ),);
+                                    ),)
 
 FIN()

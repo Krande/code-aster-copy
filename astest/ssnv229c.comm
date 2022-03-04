@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -205,7 +205,7 @@ clim = AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0,
 # #######################################################################################################
 # ############################################ CALCUL ###################################################
 # #######################################################################################################
-res0 = CALC_PRECONT(                   
+res0 = CALC_PRECONT(
                     CABLE_BP=(cab_ref,cab_5),
                     CARA_ELEM=cara,
                     CHAM_MATER=mat,
@@ -248,14 +248,14 @@ tensc6 = POST_RELEVE_T(ACTION=_F(GROUP_MA='CAB6',
                                  OPERATION='EXTRACTION',
                                  RESULTAT=res0))
 
-                               
+
 
 # impression de la tension initiale
 #IMPR_TABLE(TABLE=tensc5,UNITE=8)
 #IMPR_TABLE(TABLE=tensc5,UNITE=28,FORMAT='XMGRACE',NOM_PARA=('ABSC_CURV', 'N'),)
 
 # Estimation de la tension dans le cable apres rupture
-# hypothese : rupture a l'abscisse s0, "reancrage lineaire" sur une distance lc (de part et d'autre du point de rupture) 
+# hypothese : rupture a l'abscisse s0, "reancrage lineaire" sur une distance lc (de part et d'autre du point de rupture)
 s0=64.39464
 lc=20.
 TENSLIN= FORMULE(NOM_PARA= ('ABSC_CURV', 'N'),
@@ -269,12 +269,12 @@ tensc5=CALC_TABLE(TABLE=tensc5,
                       NOM_PARA = 'TENSKC'),
                    _F(OPERATION='SUPPRIME', NOM_PARA='N'),
                    _F(OPERATION='RENOMME', NOM_PARA = ('TENSKC','N')),
-                   )) 
-                     
+                   ))
+
 
 # impression de la tension après rupture
-#IMPR_TABLE(TABLE=tensc5,UNITE=8)    
-#IMPR_TABLE(TABLE=tensc5,UNITE=29,FORMAT='XMGRACE', NOM_PARA=('ABSC_CURV', 'N'),)    
+#IMPR_TABLE(TABLE=tensc5,UNITE=8)
+#IMPR_TABLE(TABLE=tensc5,UNITE=29,FORMAT='XMGRACE', NOM_PARA=('ABSC_CURV', 'N'),)
 # definition du concept lie au nouveau cable casse
 
 cab_KC = DEFI_CABLE_BP(CARA_ELEM=cara,
@@ -289,7 +289,7 @@ cab_KC = DEFI_CABLE_BP(CARA_ELEM=cara,
                         TYPE_ANCRAGE=('ACTIF', 'ACTIF'),
                         )
 
-tensc5nw = RECU_TABLE(CO=cab_KC, 
+tensc5nw = RECU_TABLE(CO=cab_KC,
                       NOM_TABLE='CABLE_BP')
 
 
@@ -298,7 +298,7 @@ tensc5nw = RECU_TABLE(CO=cab_KC,
 #IMPR_TABLE(TABLE=tensc5,UNITE=30,FORMAT='XMGRACE',NOM_PARA= ('ABSC_CURV','N'))
 # #######################################################################################################
 # on applique la nouvelle tension
-res0 = CALC_PRECONT(reuse = res0,                   
+res0 = CALC_PRECONT(reuse = res0,
                     CABLE_BP=(cab_KC),
                     CARA_ELEM=cara,
                     CHAM_MATER=mat,
@@ -337,7 +337,7 @@ TABRES = CALC_TABLE(TABLE=tensc5f,
                     ACTION=_F (OPERATION='CALCUL',
                                NOM_PARA='N',
                                TYPE_CALCUL=('MAXI','MINI','SOMM')))
-         
+
 IMPR_TABLE(TABLE=TABRES)
 
 
@@ -348,7 +348,7 @@ IMPR_TABLE(TABLE=TABRES)
 #---------------------------------
 TEST_TABLE(TABLE=tensc5, TYPE_TEST='MIN',NOM_PARA='N',VALE_CALC=561.2384876376018,CRITERE='RELATIF')
 
-TEST_TABLE(TABLE=tensc5, TYPE_TEST='SOMM',NOM_PARA='N',VALE_CALC=957773249.6324579,CRITERE='RELATIF') 
+TEST_TABLE(TABLE=tensc5, TYPE_TEST='SOMM',NOM_PARA='N',VALE_CALC=957773249.6324579,CRITERE='RELATIF')
 
 # VERIFICATION A LA SORTIE DE DEFI_CABLE_BP
 #---------------------------------
@@ -357,15 +357,15 @@ TEST_TABLE(TABLE=tensc5nw, TYPE_TEST='MIN',NOM_PARA='TENSION',VALE_CALC=561.2384
 
 TEST_TABLE(TABLE=tensc5nw, TYPE_TEST='SOMM',NOM_PARA='TENSION',VALE_CALC=957773249.6324579,
     VALE_REFE=957773249.6324579,CRITERE='RELATIF',PRECISION=1.E-4,REFERENCE='AUTRE_ASTER')
-    
+
 # VERIFICATION A LA SORTIE DE CALC_PRECONT
-#---------------------------------    
+#---------------------------------
 TEST_TABLE(TABLE=tensc5f, TYPE_TEST='MIN',NOM_PARA='N',VALE_CALC=162511.58200605563,
     VALE_REFE=561.2384876376018,VALE_ABS='OUI',CRITERE='RELATIF',REFERENCE='AUTRE_ASTER',PRECISION=3.E4)
 
 TEST_TABLE(TABLE=tensc5f, TYPE_TEST='SOMM',NOM_PARA='N',VALE_CALC=957795674.8002765,
     VALE_REFE=957773249.6324579,VALE_ABS='OUI',CRITERE='RELATIF',PRECISION=1E-2, REFERENCE='AUTRE_ASTER')
-    
- 
-    
+
+
+
 FIN()

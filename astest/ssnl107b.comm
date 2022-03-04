@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA='L1',),);
+              CREA_GROUP_NO=_F(GROUP_MA='L1',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA='S1',
@@ -38,10 +38,10 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='DIS_TR',),
                      _F(GROUP_MA='POUTRE',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='POU_D_E',),),);
+                        MODELISATION='POU_D_E',),),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                          NU=0.3,),);
+                          NU=0.3,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
                     POUTRE=_F(GROUP_MA='POUTRE',
@@ -58,11 +58,11 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                              _F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
                                CARA='K_TR_D_N',
                                VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                   ));
+                   ))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 #
 #
 
@@ -85,7 +85,7 @@ CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
                                 DRY=0.0,
                                 DRZ=0.0,),),
 
-                               );
+                               )
 #
 CONT = DEFI_CONTACT   (MODELE      = MO,
                        FORMULATION = 'DISCRETE',
@@ -108,18 +108,18 @@ CONT = DEFI_CONTACT   (MODELE      = MO,
                                    ESCL_FIXE     = (0.0,0.0,-1.0,),
                                   ),
                               ),
-                      );
+                      )
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=5.0,
-                                    NOMBRE=5,),);
+                                    NOMBRE=5,),)
 #
 #
 
 
 FONCM=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,100.0,100.0,),);
+                    VALE=(0.0,0.0,100.0,100.0,),)
 
 RESU=STAT_NON_LINE(SOLVEUR=_F(),
                    MODELE=MO,
@@ -132,7 +132,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 NUME_INST_FIN=2,),
                    NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,),);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,),)
 
 RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU)
 
@@ -178,7 +178,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                 ),
           )
 
-FIN();
+FIN()
 #
 #
 #

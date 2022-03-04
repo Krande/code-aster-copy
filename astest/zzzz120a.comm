@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ modele=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='2D_DIS_T',),
                          _F(GROUP_MA='BRIDE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='AXIS',),),);
+                            MODELISATION='AXIS',),),)
 
 carael=AFFE_CARA_ELEM(MODELE=modele,
                       POUTRE=_F(GROUP_MA='GOUJON',
@@ -46,13 +46,13 @@ carael=AFFE_CARA_ELEM(MODELE=modele,
                                 VALE=73.6478136849,),
                       DISCRET_2D=_F(GROUP_MA='FILETS',
                                     CARA='K_T_D_L',
-                                    VALE=(10000000.0,10000000.0,),),);
+                                    VALE=(10000000.0,10000000.0,),),)
 
-MF_1=DEFI_MATERIAU(TRACTION=_F(SIGM=PFM155A,),);
+MF_1=DEFI_MATERIAU(TRACTION=_F(SIGM=PFM155A,),)
 
-MF_2=DEFI_MATERIAU(TRACTION=_F(SIGM=DFM155A,),);
+MF_2=DEFI_MATERIAU(TRACTION=_F(SIGM=DFM155A,),)
 
-MF_C=DEFI_MATERIAU(TRACTION=_F(SIGM=FCM155A,),);
+MF_C=DEFI_MATERIAU(TRACTION=_F(SIGM=FCM155A,),)
 
 chmat=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='GOUJON',
@@ -64,7 +64,7 @@ chmat=AFFE_MATERIAU(MAILLAGE=MAIL,
                           _F(GROUP_MA='FIL001',
                              MATER=MF_1,),
                           _F(GROUP_MA='FIL002',
-                             MATER=MF_2,),),);
+                             MATER=MF_2,),),)
 
 charme=AFFE_CHAR_MECA(MODELE=modele,
                       DDL_IMPO=_F(GROUP_NO=('GOUJ_NO','FILET_NO','BRIDE_NO',),
@@ -75,11 +75,11 @@ charme=AFFE_CHAR_MECA(MODELE=modele,
                                     DZ=0.0,
                                     DRY=0.0,),),
                       FORCE_NODALE=_F(GROUP_NO='PHGOUJ',
-                                      FY=1.0,),);
+                                      FY=1.0,),)
 
 fonc=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='TOUTRESU',
-                   VALE=(0.0,0.0,5.0,5000000.0,),);
+                   VALE=(0.0,0.0,5.0,5000000.0,),)
 
 listinst=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=(_F(JUSQU_A=1.0,
@@ -91,7 +91,7 @@ listinst=DEFI_LIST_REEL(DEBUT=0.0,
                                 _F(JUSQU_A=4.0,
                                    NOMBRE=1,),
                                 _F(JUSQU_A=5.0,
-                                   NOMBRE=1,),),);
+                                   NOMBRE=1,),),)
 
 CALC=STAT_NON_LINE(MODELE=modele,
                    CHAM_MATER=chmat,
@@ -110,14 +110,14 @@ CALC=STAT_NON_LINE(MODELE=modele,
                                  GROUP_MA='FILETS',),),
                    INCREMENT=_F(LIST_INST=listinst,),
                    NEWTON=_F(REAC_ITER=3,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,),);
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,),)
 
 CALC=CALC_CHAMP(reuse =CALC,
              RESULTAT=CALC,
              PRECISION=0.001,
              CRITERE='RELATIF',
              FORCE='FORC_NODA',
-             GROUP_MA='FILETS',);
+             GROUP_MA='FILETS',)
 
 tab1=POST_RELEVE_T(ACTION=_F(INTITULE='RESU_T1',
                              GROUP_NO='NDFILETS',
@@ -130,7 +130,7 @@ tab1=POST_RELEVE_T(ACTION=_F(INTITULE='RESU_T1',
                              NOM_CMP='DY',
                              REPERE='GLOBAL',
                              MOYE_NOEUD='OUI',
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 tab1=CALC_TABLE(reuse =tab1,
                TABLE=tab1,
@@ -139,44 +139,44 @@ tab1=CALC_TABLE(reuse =tab1,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
+                         ),),)
 
-tab2=POST_GOUJ(TABLE=tab1,);
+tab2=POST_GOUJ(TABLE=tab1,)
 
 IMPR_TABLE(TABLE=tab2,
            UNITE=8,
            FORMAT='AGRAF',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
 
 IMPR_TABLE(TABLE=tab2,
            UNITE=8,
            FORMAT='AGRAF',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=2,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
 
 IMPR_TABLE(TABLE=tab2,
            UNITE=8,
            FORMAT='AGRAF',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=3,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
 
 IMPR_TABLE(TABLE=tab2,
            UNITE=8,
            FORMAT='AGRAF',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=4,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
 
 IMPR_TABLE(TABLE=tab2,
            UNITE=8,
            FORMAT='AGRAF',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=5,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),);
+           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
 
 # POST-TRAITMENT
 
@@ -186,7 +186,7 @@ TFORC=POST_RELEVE_T(ACTION=_F(INTITULE='C_TEST1',
                               NOM_CHAM='FORC_NODA',
                               TOUT_ORDRE='OUI',
                               NOM_CMP='DY',
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
 
 TFORC=CALC_TABLE(reuse =TFORC,
                TABLE=TFORC,
@@ -195,9 +195,9 @@ TFORC=CALC_TABLE(reuse =TFORC,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
+                         ),),)
 
-NTFORC=POST_GOUJ(TABLE=TFORC,);
+NTFORC=POST_GOUJ(TABLE=TFORC,)
 
 #---------------------------------------------
 # TEST DES VALEURS
@@ -613,5 +613,5 @@ TEST_TABLE(
                    ),
            )
 
-FIN();
+FIN()
 #

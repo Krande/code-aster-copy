@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ L_INST =DEFI_LIST_REEL(  DEBUT=0.0,
                         _F( PAS = 0.01,        JUSQU_A = 0.24),
 )
                       )
-MA = LIRE_MAILLAGE(FORMAT='MED',);
+MA = LIRE_MAILLAGE(FORMAT='MED',)
 
 MA = DEFI_GROUP(reuse =MA,
                 MAILLAGE=MA,

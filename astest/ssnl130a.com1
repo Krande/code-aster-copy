@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ Aresu=STAT_NON_LINE(
    NEWTON=(_F(REAC_INCR=1,MATRICE='TANGENTE',REAC_ITER=1,),),
    CONVERGENCE= _F(ITER_GLOB_MAXI=60,),
    INCREMENT=_F(LIST_INST=ll, INST_FIN=2.0,),
-);
+)
 
 
 TEST_RESU(RESU=(_F(GROUP_NO='PT01',
@@ -131,4 +131,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='PT01',
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ COURFATA = FORMULE(VALE='5.E5/SIGM ',
 
 L_INST=DEFI_LIST_REEL(  DEBUT=1.,
                         INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
-                           
+
 FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
                           NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
@@ -42,19 +42,19 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                               SY_02 = 200.)
                                )
 
-# CONTRAINTES "MX"    
+# CONTRAINTES "MX"
 T_MX = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=1,)
 
-# CONTRAINTES "MY"                  
+# CONTRAINTES "MY"
 T_MY = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=2,)
-                      
-# CONTRAINTES "MZ"      
+
+# CONTRAINTES "MZ"
 T_MZ = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=3,)
 
-#  CONTRAINTES "PRES"                    
+#  CONTRAINTES "PRES"
 T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=4,)
 
@@ -62,7 +62,7 @@ T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
 T1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=5,)
 
-# TEMPERATURES (SITUATION 4)                 
+# TEMPERATURES (SITUATION 4)
 T_TEMP4 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=12,)
 
@@ -111,9 +111,9 @@ FAT14 = POST_RCCM( MATER=MAT,
                      TEMP_B=300.0,
                      TABL_TEMP = T_TEMP4,
                      PRES_A=0,
-                     PRES_B=0,),),);
+                     PRES_B=0,),),)
 
-IMPR_TABLE(    TABLE=FAT14,) 
+IMPR_TABLE(    TABLE=FAT14,)
 
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4a
 # METHODE TOUT_INST
@@ -161,9 +161,9 @@ FAT14b = POST_RCCM( MATER=MAT,
                      TEMP_B=300.0,
                      TABL_TEMP = T_TEMP4,
                      PRES_A=0,
-                     PRES_B=0,),),);
+                     PRES_B=0,),),)
 
-IMPR_TABLE(    TABLE=FAT14b,) 
+IMPR_TABLE(    TABLE=FAT14b,)
 
 # MELANGE DES 3 TYPES DE CHARGEMENTS
 
@@ -211,11 +211,11 @@ FAT14c = POST_RCCM( MATER=MAT,
                      CHAR_ETAT_B=2,
                      NUME_RESU_THER = 1,
                      PRES_A=0,
-                     PRES_B=0,),),);
+                     PRES_B=0,),),)
 
-IMPR_TABLE(    TABLE=FAT14c,) 
+IMPR_TABLE(    TABLE=FAT14c,)
 
-# VALIDATION DU CALCUL EN FATIGUE : 
+# VALIDATION DU CALCUL EN FATIGUE :
 # SITUATION 4a (unitaire) + SITUATION 4a (unitaire avec interpolation)
 # METHODE TOUT_INST
 FAT14d = POST_RCCM( MATER=MAT,
@@ -260,9 +260,9 @@ FAT14d = POST_RCCM( MATER=MAT,
                      CHAR_ETAT_B=2,
                      NUME_RESU_THER = 1,
                      PRES_A=0,
-                     PRES_B=0,),),);
+                     PRES_B=0,),),)
 
-IMPR_TABLE(    TABLE=FAT14d,) 
+IMPR_TABLE(    TABLE=FAT14d,)
 
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4b
 # LA PRESSION EST DEFINIE DIFFEREMMENT
@@ -313,9 +313,9 @@ FAT14e = POST_RCCM( MATER=MAT,
                      TABL_TEMP = T_TEMP4,
                      PRES_A=0,
                      PRES_B=0,),
-                     ),);
+                     ),)
 
-IMPR_TABLE(    TABLE=FAT14e,) 
+IMPR_TABLE(    TABLE=FAT14e,)
 
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4b
 # LA PRESSION EST DEFINIE DIFFEREMMENT
@@ -367,9 +367,9 @@ FAT14f = POST_RCCM( MATER=MAT,
                      TABL_TEMP = T_TEMP4,
                      PRES_A=0,
                      PRES_B=0,),
-                     ),);
+                     ),)
 
-IMPR_TABLE(    TABLE=FAT14f,) 
+IMPR_TABLE(    TABLE=FAT14f,)
 
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4c
 # COMB de UNITAIRE ET RESU_MECA
@@ -418,9 +418,9 @@ FAT14g = POST_RCCM( MATER=MAT,
                      TABL_TEMP = T_TEMP4,
                      PRES_A=0,
                      PRES_B=0,),
-                     ),);
+                     ),)
 
-IMPR_TABLE(    TABLE=FAT14g,) 
+IMPR_TABLE(    TABLE=FAT14g,)
 
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4c
 # COMB de UNITAIRE ET RESU_MECA
@@ -470,9 +470,9 @@ FAT14h = POST_RCCM( MATER=MAT,
                      TABL_TEMP = T_TEMP4,
                      PRES_A=0,
                      PRES_B=0,),
-                     ),);
+                     ),)
 
-IMPR_TABLE(    TABLE=FAT14h,) 
+IMPR_TABLE(    TABLE=FAT14h,)
 
 #-------------------------------------------------------------------------------
 #   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
@@ -782,4 +782,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            )
 
-FIN();
+FIN()

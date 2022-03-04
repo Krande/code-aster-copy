@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CONTACT2_15',DEBUG=_F(SDVERI
 #
 
 
-MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,
@@ -52,7 +52,7 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
                                  _F(GROUP_MA='LNK',
                                     NOM='LNK',),
                                  _F(GROUP_MA='SESC1',
-                                    NOM='SESC1',),),);
+                                    NOM='SESC1',),),)
 #_____________________________________________________________________
 #
 #                    DEFINITION DU MODELE
@@ -64,7 +64,7 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
 MO=AFFE_MODELE(MAILLAGE=MAILL1,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 #
 # REORIENTATION DU MAILLAGE
 #
@@ -74,12 +74,12 @@ MO=AFFE_MODELE(MAILLAGE=MAILL1,
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU=_F(GROUP_MA_PEAU=('SMAI1','SESC1'),),
-                     );
+                     )
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU=_F(GROUP_MA_PEAU=('SMAI2','SESC2'),),
-                     );
+                     )
 #_____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX
@@ -89,16 +89,16 @@ MAILL1=MODI_MAILLAGE(reuse =MAILL1,
 
 
 MLOPIN=DEFI_MATERIAU(ELAS=_F(E=5000.0,
-                             NU=0.45000000000000001,),);
+                             NU=0.45000000000000001,),)
 
 MFILIERE=DEFI_MATERIAU(ELAS=_F(E=2.E5,
-                               NU=0.29999999999999999,),);
+                               NU=0.29999999999999999,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                  AFFE=(_F(GROUP_MA='LOPIN',
                           MATER=MLOPIN,),
                        _F(GROUP_MA='FILIERE',
-                          MATER=MFILIERE,),),);
+                          MATER=MFILIERE,),),)
 #_____________________________________________________________________
 #
 #                    AFFECTATION DES CONDITIONS AUX LIMITES
@@ -119,11 +119,11 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                                 DX=0.0,
                                 DY=0.0,),
                              _F(GROUP_NO='LNK',
-                                DX=0.0,),),);
+                                DX=0.0,),),)
 
 CH0=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=_F(GROUP_NO='LMN',
-                               DY=1.0,),);
+                               DY=1.0,),)
 
 CH2 = DEFI_CONTACT(MODELE       = MO,
                    FORMULATION  = 'DISCRETE',
@@ -175,7 +175,7 @@ CH3 = DEFI_CONTACT(MODELE       = MO,
 DPLY=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=5.0,
@@ -189,7 +189,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=140.0,
                                      PAS=5.0,),
                                   _F(JUSQU_A=155.0,
-                                     PAS=5.0,),),);
+                                     PAS=5.0,),),)
 
 U=STAT_NON_LINE(SOLVEUR=_F(),
                 MODELE=MO,
@@ -204,7 +204,7 @@ U=STAT_NON_LINE(SOLVEUR=_F(),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
-                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
+                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='K',
@@ -275,7 +275,7 @@ U2=STAT_NON_LINE(MODELE=MO,
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
-                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
+                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),)
 
 
 
@@ -284,10 +284,10 @@ TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                RESULTAT=U2,
                                NOM_CHAM='CONT_NOEU',
                                GROUP_NO='SESC1',
-                             
-                               NOM_CMP=('CONT','JEU',),),);
 
-IMPR_TABLE(TABLE=TAB_VC);
+                               NOM_CMP=('CONT','JEU',),),)
+
+IMPR_TABLE(TABLE=TAB_VC)
 
 # Validation for not-paired node
 TEST_RESU(RESU=(_F(GROUP_NO='N1',
@@ -347,5 +347,5 @@ TEST_TABLE(VALE_CALC=-5.00000E+00,
                    ),
            )
 
-FIN();
+FIN()
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 #
 
-MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,
@@ -53,33 +53,33 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
                                     NOM='LIM3',),
                                  _F(GROUP_MA='LHE',
                                     NOM='LIM4',),),
-                  INFO=2,);
+                  INFO=2,)
 
 MODEL=AFFE_MODELE(MAILLAGE=MAILL1,
-                  
+
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='AXIS',),);
+                          MODELISATION='AXIS',),)
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU=_F(GROUP_MA_PEAU='LFC2S',),
-                     );
+                     )
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU=_F(GROUP_MA_PEAU='LC1DS',),
-                     );
+                     )
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU=_F(GROUP_MA_PEAU='LEA2S',),
-                     );
+                     )
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU=_F(GROUP_MA_PEAU='LA1BS',),
-                     );
+                     )
 
 
 
@@ -217,21 +217,21 @@ SI=DEFI_FONCTION(NOM_PARA='EPSI',
                         2.2011675 , 698.3656304 ,
                         2.4011675 , 705.1030380 ,
                         2.6011675 , 724.0243058 ,
-                        ),);
+                        ),)
 
 
 
 MFLAN=DEFI_MATERIAU(ELAS=_F(E=6.9004E4,
                             NU=0.29999999999999999,),
-                    TRACTION=_F(SIGM=SI,),);
+                    TRACTION=_F(SIGM=SI,),)
 
 MMATRICE=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                NU=0.29999999999999999,),
-                       ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.)         );
+                       ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.)         )
 
 MPOINCON=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                NU=0.29999999999999999,),
-                         ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.)         );
+                         ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.)         )
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                  AFFE=(_F(GROUP_MA='FLAN',
@@ -239,7 +239,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                        _F(GROUP_MA='MATRICE',
                           MATER=MMATRICE,),
                        _F(GROUP_MA='POINCON',
-                          MATER=MPOINCON,),),);
+                          MATER=MPOINCON,),),)
 #
 #-----------------------------------------------------------------------
 #            CONDITIONS AUX LIMITES ET CHARGEMENT SURFACIQUE
@@ -267,7 +267,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODEL,
                                   COEF_MULT=(1.0,-1.0),
                                   COEF_IMPO=0.0,),
                    PRES_REP=_F(GROUP_MA='LHE',
-                               PRES=12.33,),);
+                               PRES=12.33,),)
 #
 #-----------------------------------------------------------------------
 #                      CARACTERISTIQUES DU CONTACT
@@ -292,7 +292,7 @@ CH2  = DEFI_CONTACT(MODELE         = MODEL,
                              ),
 
                           ),
-                   );
+                   )
 
 
 #
@@ -306,13 +306,13 @@ CH2  = DEFI_CONTACT(MODELE         = MODEL,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.5,
                                      NOMBRE=50,),
                                   _F(JUSQU_A=1.0,
-                                     NOMBRE=50,),),);
+                                     NOMBRE=50,),),)
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
                         ECHEC=_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
@@ -337,12 +337,12 @@ U=STAT_NON_LINE(MODELE=MODEL,
                               REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
                                    ITER_GLOB_MAXI=200),
-                    INFO=1,);
+                    INFO=1,)
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MAILL1,
                   RESULTAT=U,
-                  NOM_CHAM=('DEPL',),),);
+                  NOM_CHAM=('DEPL',),),)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
@@ -497,4 +497,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 ),
           )
 
-FIN();
+FIN()

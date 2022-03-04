@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ CM=AFFE_MATERIAU(      MAILLAGE=M,
 BLOQU=AFFE_CHAR_MECA_F(       MODELE=MO,DDL_IMPO=(
                _F(  GROUP_NO = 'N1',           DX = U0,   DY = U0,    DZ = U0,   ),
                         _F(  GROUP_NO = 'N2',           DY = U0,   ),
-                        _F(  GROUP_NO = 'N3',           DY = U0,   ),),);
+                        _F(  GROUP_NO = 'N3',           DY = U0,   ),),)
 
-CH=AFFE_CHAR_MECA_F( MODELE=MO, PRES_REP=_F(  GROUP_MA = 'BOUT', PRES =P,  ),);
+CH=AFFE_CHAR_MECA_F( MODELE=MO, PRES_REP=_F(  GROUP_MA = 'BOUT', PRES =P,  ),)
 
 
 
@@ -340,7 +340,7 @@ SIG_CART=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                   MODELE=MO,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
-                          VALE=(0.,0.,200.,0.,0.,0.),),);
+                          VALE=(0.,0.,200.,0.,0.,0.),),)
 
 
 SIG_CHAM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -348,19 +348,19 @@ SIG_CHAM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   MODELE=MO,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
-                          VALE=(0.,0.,-200.,0.,0.,0.),),);
+                          VALE=(0.,0.,-200.,0.,0.,0.),),)
 
 
 CHA_CART=AFFE_CHAR_MECA(MODELE=MO,
                         PRE_SIGM=_F(SIGM=SIG_CART),
-                                    );
+                                    )
 
 CHA_CHAM=AFFE_CHAR_MECA(MODELE=MO,
                         PRE_SIGM=_F(SIGM=SIG_CHAM),
-                                    );
+                                    )
 
-RESU3=MACRO_ELAS_MULT(MODELE=MO, 
-                      CHAM_MATER=CM, 
+RESU3=MACRO_ELAS_MULT(MODELE=MO,
+                      CHAM_MATER=CM,
                       CHAR_MECA_GLOBAL=BLOQU,
                        CAS_CHARGE=_F( MODE_FOURIER = 1, TYPE_MODE = 'SYME',
                                  CHAR_MECA = (CHA_CART, CHA_CHAM, CH2), SOUS_TITRE = 'MODE FOURIER 1 SYME' ))

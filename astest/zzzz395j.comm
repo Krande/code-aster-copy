@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 # --------------------------------------------------------------------
 # person_in_charge: mickael.abbas at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # Read the mesh
-mesh=LIRE_MAILLAGE(FORMAT='MED',);
+mesh=LIRE_MAILLAGE(FORMAT='MED',)
 
 mesh=MODI_MAILLAGE(reuse =mesh,
                    MAILLAGE=mesh,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),)
 
 # Define the material
 steel=DEFI_MATERIAU(
@@ -35,18 +35,18 @@ steel=DEFI_MATERIAU(
 
 chmat=AFFE_MATERIAU(MAILLAGE=mesh,
                     AFFE=_F(TOUT='OUI',
-                            MATER=steel,),);
+                            MATER=steel,),)
 # Mechanic model
 model=AFFE_MODELE(MAILLAGE=mesh,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # Boundary condition
 chg_b=AFFE_CHAR_CINE(MODELE=model,
                       MECA_IMPO=_F(GROUP_MA='S_inf',
                                  DX=0,DY=0.0,DZ=0),
-                     );
+                     )
 
 chg_p=AFFE_CHAR_MECA(MODELE=model,
                      PRES_REP=_F(GROUP_MA='S_e',
@@ -56,13 +56,13 @@ chg_p=AFFE_CHAR_MECA(MODELE=model,
 # Time discretization
 list_t=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=10.0,
-                                    PAS=1.0,),);
+                                    PAS=1.0,),)
 
-list_i=DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST=list_t,),);
+list_i=DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST=list_t,),)
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                                           10.,1.,
-                   ),);
+                   ),)
 
 ####################################################################################################
 #
@@ -80,7 +80,7 @@ stnl=STAT_NON_LINE(MODELE=model,
 
 stnl=CALC_CHAMP(reuse=stnl,
                 RESULTAT=stnl,
-                CONTRAINTE='SIEF_NOEU',);
+                CONTRAINTE='SIEF_NOEU',)
 
 ####################################################################################################
 #
@@ -95,7 +95,7 @@ base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
                  UNITE      = 70,
                  FORMAT_MED =_F(NOM_CHAM_MED = 'base_p__DEPL',
                                 NOM_CHAM     = 'DEPL',),
-                 NUME_ORDRE=(1,2,3),);
+                 NUME_ORDRE=(1,2,3),)
 
 # Récupère base duale
 base_d=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
@@ -104,28 +104,28 @@ base_d=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
                  UNITE      = 71,
                  FORMAT_MED = _F(NOM_CHAM_MED = 'base_d__SIEF_NOEU',
                                  NOM_CHAM     = 'SIEF_NOEU',),
-                 NUME_ORDRE=(1,2,3),);
+                 NUME_ORDRE=(1,2,3),)
 
 # Define HROM
 mesh=DEFI_GROUP(reuse=mesh,
                 MAILLAGE=mesh,
                 CREA_GROUP_MA=_F(NOM='S_e_rid',
-                               INTERSEC=('RID','S_e',),),);
+                               INTERSEC=('RID','S_e',),),)
 
 mesh=DEFI_GROUP(reuse=mesh,
                 MAILLAGE=mesh,
                 CREA_GROUP_MA=_F(NOM='S_inf_rid',
-                                 INTERSEC=('RID','S_inf',),),);
+                                 INTERSEC=('RID','S_inf',),),)
 
 # Mechanic model
 model_r=AFFE_MODELE(MAILLAGE=mesh,
                AFFE=_F(GROUP_MA='RID',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # Truncation of base
 base_t=DEFI_BASE_REDUITE(OPERATION='TRONCATURE',
-                         MODELE_REDUIT = model_r, 
+                         MODELE_REDUIT = model_r,
                          BASE = base_p,
                          INFO=2)
 
@@ -133,7 +133,7 @@ base_t=DEFI_BASE_REDUITE(OPERATION='TRONCATURE',
 chg_b_r=AFFE_CHAR_CINE(MODELE=model_r,
                       MECA_IMPO=_F(GROUP_MA='S_inf_rid',
                                  DX=0,DY=0.0,DZ=0),
-                     );
+                     )
 
 chg_p_r=AFFE_CHAR_MECA(MODELE=model_r,
                      PRES_REP=_F(GROUP_MA='S_e_rid',
@@ -162,9 +162,9 @@ redu=STAT_NON_LINE(MODELE=model_r,
 
 redu=CALC_CHAMP(reuse=redu,
                 RESULTAT=redu,
-                CONTRAINTE='SIEF_NOEU',);
+                CONTRAINTE='SIEF_NOEU',)
 
-coor_red=RECU_TABLE(CO=redu,NOM_TABLE='COOR_REDUIT',);
+coor_red=RECU_TABLE(CO=redu,NOM_TABLE='COOR_REDUIT',)
 
 IMPR_TABLE(TABLE=coor_red, UNITE=6)
 
@@ -188,7 +188,7 @@ reduX=STAT_NON_LINE(MODELE=model_r,
                     ),
                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),)
 
-coor_rex=RECU_TABLE(CO=reduX,NOM_TABLE='COOR_REDUIT',);
+coor_rex=RECU_TABLE(CO=reduX,NOM_TABLE='COOR_REDUIT',)
 
 IMPR_TABLE(TABLE=coor_rex, UNITE=6)
 
@@ -213,7 +213,7 @@ reduD=STAT_NON_LINE(MODELE=model_r,
                     ),
                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),)
 
-coor_rec=RECU_TABLE(CO=reduD,NOM_TABLE='COOR_REDUIT',);
+coor_rec=RECU_TABLE(CO=reduD,NOM_TABLE='COOR_REDUIT',)
 
 IMPR_TABLE(TABLE=coor_rec, UNITE=6)
 
@@ -225,8 +225,8 @@ IMPR_TABLE(TABLE=coor_rec, UNITE=6)
 
 
 # Reconstruction du champ de déplacements "à la main"
-MODE1 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR', RESULTAT=base_p, NOM_CHAM='DEPL',NUME_ORDRE=1);
-MODE2 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR', RESULTAT=base_p, NOM_CHAM='DEPL',NUME_ORDRE=2);
+MODE1 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR', RESULTAT=base_p, NOM_CHAM='DEPL',NUME_ORDRE=1)
+MODE2 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR', RESULTAT=base_p, NOM_CHAM='DEPL',NUME_ORDRE=2)
 
 # Valeurs extraites de la table COOR_REDUIT
 reduD1 = -2.70377286222
@@ -245,13 +245,13 @@ U=CREA_CHAMP( OPERATION='COMB',
 
 
 # Reconstruction du champ de déplacements "à la main"
-MODE1s = CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='SIEF_NOEU',NUME_ORDRE=1);
-MODE2s = CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='SIEF_NOEU',NUME_ORDRE=2);
-MODE3s = CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='SIEF_NOEU',NUME_ORDRE=3);
+MODE1s = CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='SIEF_NOEU',NUME_ORDRE=1)
+MODE2s = CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='SIEF_NOEU',NUME_ORDRE=2)
+MODE3s = CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='SIEF_NOEU',NUME_ORDRE=3)
 
 # Valeurs extraites de la table COOR_REDUIT
-comb1 = -108950.59263472102  
-comb2 = -15280.860912969722  
+comb1 = -108950.59263472102
+comb2 = -15280.860912969722
 comb3 =   20485.486855804837
 
 SIEF=CREA_CHAMP( OPERATION='COMB',

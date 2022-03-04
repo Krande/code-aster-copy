@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -132,7 +132,7 @@ MO=AFFE_MODELE(
 
 # DEFINITION DE LA POSITION DE LA FISSURE DANS LE REPERE GLOBAL
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
-                     MASSIF=(_F(GROUP_MA='DCBJ',ANGL_REP=(90, 0 ,0))));
+                     MASSIF=(_F(GROUP_MA='DCBJ',ANGL_REP=(90, 0 ,0))))
 
 
 MATE=DEFI_MATERIAU(
@@ -322,8 +322,8 @@ TEST_RESU(RESU=_F(INST=5,
                   GROUP_MA='M9788',),
           )
 
-IMPR_TABLE(TABLE = DEPLA);
-IMPR_TABLE(TABLE = FORC);
+IMPR_TABLE(TABLE = DEPLA)
+IMPR_TABLE(TABLE = FORC)
 IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U,
                                      NOM_CHAM='VARI_ELGA',
                                      INST=tfin,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ IGNORE_ALARM=('MODELE1_63'),DEBUG=_F(SDVERI='OUI'))
 #  PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 #......................................................
 
-MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
+MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'))
 
 MA2=CREA_MAILLAGE(MAILLAGE=MA,
-                   QUAD_LINE=_F(TOUT='OUI',),);
+                   QUAD_LINE=_F(TOUT='OUI',),)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -41,36 +41,36 @@ MA=DEFI_GROUP(reuse =MA,
                                 OPTION='NOEUD_ORDO',
                                 NOM='RELEVE',
                                 GROUP_NO_ORIG='PPA',
-                                GROUP_NO_EXTR='PPS')));
+                                GROUP_NO_EXTR='PPS')))
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT = 'OUI',
                        PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'D_PLAN'));
+                       MODELISATION = 'D_PLAN'))
 
 MO2=AFFE_MODELE(MAILLAGE=MA2,
                AFFE=_F(TOUT = 'OUI',
                        PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'D_PLAN'));
+                       MODELISATION = 'D_PLAN'))
 
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=(_F(GROUP_MA_PEAU = 'LPRESV'),
-                               _F(GROUP_MA_PEAU = 'LPRESH')));
+                               _F(GROUP_MA_PEAU = 'LPRESH')))
 
 MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
-                             NU = 0.2));
+                             NU = 0.2))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT = 'OUI',
-                             MATER = MATPLA));
+                             MATER = MATPLA))
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_MA = 'LBATI',  DX = 0.0, DY = 0.0),
                               _F(GROUP_NO = 'PPS',    DX = 0.0, DY = 0.0),
                               _F(GROUP_MA = 'LBLOCX', DX = 0.0)),
                     PRES_REP=(_F(GROUP_MA = 'LPRESV', PRES = 5.E07),
-                              _F(GROUP_MA = 'LPRESH', PRES = 15.E07)));
+                              _F(GROUP_MA = 'LPRESH', PRES = 15.E07)))
 
 CHA2=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
@@ -91,7 +91,7 @@ CHA2=DEFI_CONTACT(MODELE=MO,
                           COEF_FROT =1.e5,
                              ADAPTATION    = 'ADAPT_COEF',
                            ),
-                              );
+                              )
 
 
 
@@ -114,14 +114,14 @@ CHA3=DEFI_CONTACT(MODELE=MO,
                           GLIS_MAXI = 1.e-4,
                           ADAPTATION    = 'TOUT',
                            ),
-                              );
+                              )
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,1.0,1.0));
+                    VALE=(0.0,0.0,1.0,1.0))
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1));
+                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1))
 
 L_INST=DEFI_LIST_INST(METHODE='MANUEL',
                       DEFI_LIST=_F(LIST_INST=LINST,),
@@ -129,7 +129,7 @@ L_INST=DEFI_LIST_INST(METHODE='MANUEL',
                               ACTION='DECOUPE',
                               SUBD_METHODE = 'MANUEL',
                               SUBD_PAS=5,
-                              SUBD_NIVEAU=5,),);
+                              SUBD_NIVEAU=5,),)
 
 #-----------------------------------------------------------
 
@@ -147,7 +147,7 @@ U2M=STAT_NON_LINE(MODELE     = MO,
                                  ITER_GLOB_MAXI = 15,
                                  RESI_GLOB_RELA = 1.0E-4),
                   INFO=2,INFO_DBG = 'MECANONLINE',
-               );
+               )
 
 
 contnoeu=CREA_CHAMP(INST = 1.0,
@@ -158,7 +158,7 @@ evo2 = PROJ_CHAMP(METHODE= 'COLLOCATION' , CHAM_GD = contnoeu,
 
 IMPR_RESU(FORMAT='MED',RESU=_F(CHAM_GD=evo2),)
 
-STATIS=RECU_TABLE(CO=U2M,NOM_TABLE='STAT',);
+STATIS=RECU_TABLE(CO=U2M,NOM_TABLE='STAT',)
 IMPR_TABLE(TABLE=STATIS)
 
 TEST_TABLE(CRITERE='RELATIF',
@@ -282,7 +282,7 @@ U3M=STAT_NON_LINE(MODELE     = MO,
                                  ITER_GLOB_MAXI = 45,
                                  RESI_GLOB_RELA = 1.0E-4),
 #                  INFO=2,
-               );
+               )
 
 
 
@@ -295,7 +295,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    VALE_CALC=2.94832691701E-05,
                    VALE_REFE=2.8600000000000001E-05,
                    PRECISION=0.050000000000000003,
-                   ),));
+                   ),))
 
-FIN();
+FIN()
 #

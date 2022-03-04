@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 youn1 = 31000.
 nu1   = 0.2
 
-M = LIRE_MAILLAGE( FORMAT = 'MED',);
+M = LIRE_MAILLAGE( FORMAT = 'MED',)
 
 M = DEFI_GROUP( reuse = M, MAILLAGE = M,
                 CREA_GROUP_NO = ( _F( GROUP_MA = 'S_INF'),
@@ -32,29 +32,29 @@ M = DEFI_GROUP( reuse = M, MAILLAGE = M,
                                   _F( GROUP_MA = 'S_GCH'),
                                   _F( GROUP_MA = 'S_DRT'),
                                   _F( GROUP_MA = 'S_AVT'),
-                                  _F( GROUP_MA = 'S_ARR'),),);
+                                  _F( GROUP_MA = 'S_ARR'),),)
 
 
 MO = AFFE_MODELE( MAILLAGE = M,
                   AFFE = _F( TOUT = 'OUI',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = '3D'),);
+                             MODELISATION = '3D'),)
 
 FONC1 = DEFI_FONCTION( NOM_PARA = 'SECH',
                        PROL_DROITE = 'LINEAIRE',
                        PROL_GAUCHE = 'LINEAIRE',
                        VALE = (0.0,   0.0,
-                               100.0, 1.0,),);
+                               100.0, 1.0,),)
 
-E = DEFI_CONSTANTE( VALE = youn1,);
+E = DEFI_CONSTANTE( VALE = youn1,)
 
-Nu = DEFI_CONSTANTE( VALE = nu1,);
+Nu = DEFI_CONSTANTE( VALE = nu1,)
 
 ALPHA = DEFI_FONCTION( NOM_PARA = 'TEMP',
                        PROL_DROITE = 'LINEAIRE',
                        PROL_GAUCHE = 'LINEAIRE',
                        VALE = (0.0, 10.0E-6,
-                               1.0, 10.0E-6,),);
+                               1.0, 10.0E-6,),)
 
 BETON = DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                     NU = Nu,
@@ -74,21 +74,21 @@ BETON = DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                          ETA_ID   = 1.64e12,
                                          ETA_FD   = 5.30E+03,
                                          QSR_K    = 0.,
-                                         TEMP_0_C = 20.,),);
+                                         TEMP_0_C = 20.,),)
 
 SECHI = CREA_CHAMP( TYPE_CHAM = 'NOEU_TEMP_R',
                     OPERATION = 'AFFE',
                     MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
-                               VALE = 100.),);
+                               VALE = 100.),)
 
 SECHF = CREA_CHAMP( TYPE_CHAM = 'NOEU_TEMP_R',
                     OPERATION = 'AFFE',
                     MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
-                               VALE = 50.),);
+                               VALE = 50.),)
 
 SECH1 = CREA_RESU( OPERATION = 'AFFE',
                    TYPE_RESU = 'EVOL_THER',
@@ -96,21 +96,21 @@ SECH1 = CREA_RESU( OPERATION = 'AFFE',
                    AFFE = ( _F( CHAM_GD = SECHI,
                                 INST = 0.0,),
                             _F( CHAM_GD = SECHF,
-                                INST = 64800000.0,),),);
+                                INST = 64800000.0,),),)
 
 HYDRI = CREA_CHAMP( TYPE_CHAM = 'NOEU_HYDR_R',
                     OPERATION = 'AFFE',
                     MODELE = MO,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'HYDR',
-                               VALE = 0.0,),);
+                               VALE = 0.0,),)
 
 HYDRF = CREA_CHAMP( TYPE_CHAM = 'NOEU_HYDR_R',
                     OPERATION = 'AFFE',
                     MODELE = MO,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'HYDR',
-                               VALE = 1.0,),);
+                               VALE = 1.0,),)
 
 HYDR1 = CREA_RESU( OPERATION = 'AFFE',
                    TYPE_RESU = 'EVOL_THER',
@@ -118,21 +118,21 @@ HYDR1 = CREA_RESU( OPERATION = 'AFFE',
                    AFFE = ( _F( CHAM_GD = HYDRI,
                                 INST = 0.0,),
                             _F( CHAM_GD = HYDRF,
-                                INST = 2419200.0,),),);
+                                INST = 2419200.0,),),)
 
 TEMPI = CREA_CHAMP( OPERATION = 'AFFE',
                     TYPE_CHAM = 'NOEU_TEMP_R',
                     MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
-                               VALE = 20.),);
+                               VALE = 20.),)
 
 TEMPF = CREA_CHAMP( OPERATION = 'AFFE',
                     TYPE_CHAM = 'NOEU_TEMP_R',
                     MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
-                               VALE = 40.),);
+                               VALE = 40.),)
 
 TEMP1 = CREA_RESU( OPERATION = 'AFFE',
                    TYPE_RESU = 'EVOL_THER',
@@ -140,7 +140,7 @@ TEMP1 = CREA_RESU( OPERATION = 'AFFE',
                    AFFE = ( _F( CHAM_GD = TEMPI,
                                 INST = 0.0,),
                             _F( CHAM_GD = TEMPF,
-                                INST = 64800000.0,),),);
+                                INST = 64800000.0,),),)
 
 CM = AFFE_MATERIAU( MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
@@ -160,37 +160,37 @@ CM = AFFE_MATERIAU( MAILLAGE = M,
                                       EVOL = TEMP1,
                                       NOM_VARC = 'TEMP',
                                       NOM_CHAM = 'TEMP',
-                                      VALE_REF = 20),),);
+                                      VALE_REF = 20),),)
 
 FORCE = DEFI_FONCTION( NOM_PARA = 'INST',
                        PROL_DROITE = 'LINEAIRE',
                        PROL_GAUCHE = 'LINEAIRE',
                        VALE = (0.0,        0.0,
                                1.0,        -3.0,
-                               64800000.0, -3.0,),);
+                               64800000.0, -3.0,),)
 
 CH10 = AFFE_CHAR_MECA( MODELE = MO,
                        DDL_IMPO = _F( GROUP_NO = 'S_INF',
-                                      DZ = 0.),);
+                                      DZ = 0.),)
 
 CH11 = AFFE_CHAR_MECA( MODELE = MO,
                        DDL_IMPO = _F( GROUP_NO = 'S_GCH',
-                                      DX = 0.),);
+                                      DX = 0.),)
 
 CH12 = AFFE_CHAR_MECA( MODELE = MO,
                        DDL_IMPO = _F( GROUP_NO = 'S_AVT',
-                                      DY = 0.),);
+                                      DY = 0.),)
 
 CH22 = AFFE_CHAR_MECA_F( MODELE = MO,
                          FORCE_NODALE = _F( GROUP_NO = 'S_SUP',
-                                            FZ = FORCE),);
+                                            FZ = FORCE),)
 
 L_INST = DEFI_LIST_REEL( DEBUT = 0.0,
                          INTERVALLE = ( _F( JUSQU_A = 1.0,        NOMBRE = 2),
                                         _F( JUSQU_A = 64800.0,    NOMBRE = 20),
                                         _F( JUSQU_A = 648000.0,   NOMBRE = 20),
                                         _F( JUSQU_A = 6480000.0,  NOMBRE = 20),
-                                        _F( JUSQU_A = 64800000.0, NOMBRE = 20),),);
+                                        _F( JUSQU_A = 64800000.0, NOMBRE = 20),),)
 
 U = STAT_NON_LINE( MODELE = MO,
                    CHAM_MATER = CM,
@@ -205,14 +205,14 @@ U = STAT_NON_LINE( MODELE = MO,
                                 MATRICE = 'TANGENTE',
                                 REAC_ITER = 1),
                    CONVERGENCE = _F( RESI_GLOB_MAXI = 1.E-8,
-                                     ITER_GLOB_MAXI = 25),);
+                                     ITER_GLOB_MAXI = 25),)
 
 U = CALC_CHAMP( reuse = U, RESULTAT = U,
-                DEFORMATION = ('EPSI_ELNO','EPVC_ELGA','EPVC_ELNO','EPFD_ELGA','EPFP_ELGA','EPFD_ELNO','EPFP_ELNO'),);
+                DEFORMATION = ('EPSI_ELNO','EPVC_ELGA','EPVC_ELNO','EPFD_ELGA','EPFP_ELGA','EPFD_ELNO','EPFP_ELNO'),)
 
 
 U = CALC_CHAMP( reuse = U, RESULTAT = U,
-                DEFORMATION = ('EPVC_NOEU','EPFD_NOEU','EPFP_NOEU'),);
+                DEFORMATION = ('EPVC_NOEU','EPFD_NOEU','EPFP_NOEU'),)
 
 RELEVE_ = POST_RELEVE_T( ACTION = ( _F( RESULTAT = U,
                                         INTITULE = 'DEPL',
@@ -221,7 +221,7 @@ RELEVE_ = POST_RELEVE_T( ACTION = ( _F( RESULTAT = U,
                                         LIST_INST = L_INST,
                                         PRECISION = 1.E-8,
                                         GROUP_NO = 'PC',
-                                        OPERATION = 'EXTRACTION',),),);
+                                        OPERATION = 'EXTRACTION',),),)
 
 
 # TESTS SUR LES DEFORMATIONS TOTALES

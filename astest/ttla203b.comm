@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #            MAILLAGE
 #----------------------------------------------
 
-MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',)
 
 # COORDONNEES DU POINT POUR 'ENV_SPHERE'
 LX     = 1.
@@ -40,27 +40,27 @@ MA=DEFI_GROUP(reuse =MA,
                              _F(NOM='FACESUP',GROUP_MA=('G_1D_7')),
                              _F(NOM='FACEINF',GROUP_MA=('G_1D_8')),
                              ),
-              );
+              )
 
 #----------------------------------------------
-#            MODELE 
+#            MODELE
 #----------------------------------------------
 
 MODTHIN=AFFE_MODELE(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA='VOLUME',
                             PHENOMENE='THERMIQUE',
                             MODELISATION='AXIS',
-                            ),);
+                            ),)
 
 FISSTH=DEFI_FISS_XFEM(MAILLAGE=MA,
                       DEFI_FISS=_F(FORM_FISS='DEMI_DROITE',
                                    PFON=( 0.5*LX, 0.5*LY, 0.,),
                                    DTAN=(    -1.,     0., 0.,),),
-                      INFO=1,);
+                      INFO=1,)
 
 MODTHX=MODI_MODELE_XFEM(MODELE_IN=MODTHIN,
                         FISSURE=FISSTH,
-                        INFO=2,);
+                        INFO=2,)
 
 #----------------------------------------------
 #            MATERIAU
@@ -78,12 +78,12 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 #----------------------------------------------
 
 TIMPSUP=DEFI_FONCTION(NOM_PARA='INST',
-                      NOM_RESU='TEMP',  
+                      NOM_RESU='TEMP',
         VALE=(0.,    20. ,
               1.,    40.,))
 
 TIMPINF=DEFI_FONCTION(NOM_PARA='INST',
-                      NOM_RESU='TEMP',  
+                      NOM_RESU='TEMP',
         VALE=(0.,    10. ,
               1.,    20.,))
 
@@ -104,7 +104,7 @@ TEMPEX=THER_LINEAIRE(MODELE=MODTHX,
                     CHAM_MATER=CHMAT,
                     EXCIT=_F(CHARGE=CHTH),
                     ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
-                    INCREMENT=_F( LIST_INST = LR8),                    
+                    INCREMENT=_F( LIST_INST = LR8),
                     )
 
 #----------------------------------------------
@@ -187,4 +187,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_VISU))
 
-FIN();
+FIN()

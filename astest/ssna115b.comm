@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@ DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
 ),DEBUG=_F(SDVERI='OUI'))
 
-tfin = 10;
+tfin = 10
 
-nbpas = tfin;
+nbpas = tfin
 
-nbarch = nbpas;
+nbarch = nbpas
 
-cmultpilo = 5;
+cmultpilo = 5
 
 
 
@@ -63,24 +63,24 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='GN_J_G',
                                 GROUP_MA='GM5',
                                 GROUP_NO_ORIG='NO_JBG',
-                                GROUP_NO_EXTR='NO_JHG',),),);
+                                GROUP_NO_EXTR='NO_JHG',),),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_FISSURE=_F(GROUP_MA='JOINT',),
-                 INFO=2,);
+                 INFO=2,)
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=100.0,
                             NU=0.,),
                     RUPT_FRAG=_F(GC=0.9,
                                  SIGM_C=3.0,
-                                 PENA_ADHERENCE=0.00001,),);
+                                 PENA_ADHERENCE=0.00001,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='MATRICE',
                              MATER=BETON,),
                           _F(GROUP_MA='JOINT',
-                             MATER=BETON,),),);
+                             MATER=BETON,),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA='MATRICE',
@@ -88,7 +88,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='AXIS',),
                      _F(GROUP_MA='JOINT',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='AXIS_JOINT',),),);
+                        MODELISATION='AXIS_JOINT',),),)
 
 FIXE=AFFE_CHAR_MECA(MODELE=MO,
                     FACE_IMPO=(_F(GROUP_MA='DROITE',
@@ -97,27 +97,27 @@ FIXE=AFFE_CHAR_MECA(MODELE=MO,
                                _F(GROUP_MA='HAUT',
                                   DX=0.,),
                                _F(GROUP_MA='BAS',
-                                  DX=0.,),),);
+                                  DX=0.,),),)
 
 TRACTION=AFFE_CHAR_MECA(MODELE=MO,
                         FACE_IMPO=_F(GROUP_MA='J_G',
                                      DX=0.,
-                                     DY=1.,),);
+                                     DY=1.,),)
 
 INSTANTS=DEFI_LIST_REEL(DEBUT=-1.,
                         INTERVALLE=(_F(JUSQU_A=0.0,
                                        NOMBRE=1,),
                                     _F(JUSQU_A=tfin,
-                                       NOMBRE=nbpas,),),);
+                                       NOMBRE=nbpas,),),)
 
 INS_ARCH=DEFI_LIST_REEL(DEBUT=-1.,
                         INTERVALLE=(_F(JUSQU_A=0.0,
                                        NOMBRE=1,),
                                     _F(JUSQU_A=tfin,
-                                       NOMBRE=nbarch,),),);
+                                       NOMBRE=nbarch,),),)
 
 FCT=DEFI_FONCTION(NOM_PARA='INST',
-                  VALE=(-1.0,0.0,0.0,0.00001,),);
+                  VALE=(-1.0,0.0,0.0,0.00001,),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTANTS),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -141,7 +141,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   ARCHIVAGE=_F(LIST_INST=INS_ARCH,),);
+                   ARCHIVAGE=_F(LIST_INST=INS_ARCH,),)
 
 EVOL=STAT_NON_LINE(reuse =EVOL,
                    MODELE=MO,
@@ -168,14 +168,14 @@ EVOL=STAT_NON_LINE(reuse =EVOL,
                                GROUP_MA='JOINT',),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-4,
                                   ITER_GLOB_MAXI=10,),
-                   ARCHIVAGE=_F(LIST_INST=INS_ARCH,),);
+                   ARCHIVAGE=_F(LIST_INST=INS_ARCH,),)
 
 EVOL=CALC_CHAMP(reuse =EVOL,
              RESULTAT=EVOL,
              FORCE='FORC_NODA',
 
 
-             GROUP_MA='JOINT',);
+             GROUP_MA='JOINT',)
 
 # DEPLACEMENT PILOTE
 
@@ -185,7 +185,7 @@ UPILO=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='NO_JHG',
-                              NOM_CMP='DY',),);
+                              NOM_CMP='DY',),)
 
 # FORCE RESULTANTE DANS LA DIRECTION Y, SUR UN RADIAN
 # A MULITPLIER PAR 2PI
@@ -196,7 +196,7 @@ FRES=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              NOM_CHAM='FORC_NODA',
                              TOUT_ORDRE='OUI',
                              GROUP_NO='GN_J_G',
-                             RESULTANTE=('DX','DY',),),);
+                             RESULTANTE=('DX','DY',),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
@@ -258,8 +258,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=8.0,),
            )
 
-IMPR_TABLE(TABLE=UPILO,);
+IMPR_TABLE(TABLE=UPILO,)
 
-IMPR_TABLE(TABLE=FRES,);
+IMPR_TABLE(TABLE=FRES,)
 
-FIN();
+FIN()

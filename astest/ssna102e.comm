@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
 # --------------------------------------------------------------------
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 #
 
 MAIL=DEFI_GROUP(reuse =MAIL,
@@ -39,7 +39,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='LCD4',),
                                _F(GROUP_MA='LCD4I',),
                                _F(DIFFE=('LCD4I','PC4',),
-                                  NOM='LCD4P',),),);
+                                  NOM='LCD4P',),),)
 #
 # --------------------------------------------------------------------
 #                   MODELISATION 2D AXISYMETRIQUE
@@ -48,19 +48,19 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='AXIS',),);
+                        MODELISATION='AXIS',),)
 #
 # --------------------------------------------------------------------
 #         DEFINITION ET AFFECTATION D'UN MATERIAU ELASTIQUE
 # --------------------------------------------------------------------
 
 ELAS=DEFI_MATERIAU(ELAS=_F(E=200000.,
-                           NU=0.3,),);
+                           NU=0.3,),)
 #
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ELAS,),);
+                            MATER=ELAS,),)
 #
 # --------------------------------------------------------------------
 #                   ENCASTREMENT DE LA LIGNE LBC4
@@ -69,7 +69,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 BLOQ=AFFE_CHAR_MECA(MODELE=MOD,
                     DDL_IMPO=_F(GROUP_NO='LBC4',
                                 DX=0.0,
-                                DY=0.0,),);
+                                DY=0.0,),)
 #
 # --------------------------------------------------------------------
 #               DEPLACEMENT IMPOSE SUR LA LIGNE LCD1
@@ -77,7 +77,7 @@ BLOQ=AFFE_CHAR_MECA(MODELE=MOD,
 
 DEPL=AFFE_CHAR_MECA(MODELE=MOD,
                     DDL_IMPO=_F(GROUP_NO='LCD1',
-                                DY=-2.0,),);
+                                DY=-2.0,),)
 #
 # --------------------------------------------------------------------
 #     SUPPRESSION DES MOUVEMENTS DE CORPS RIGIDE DES DEUX SPHERES
@@ -91,7 +91,7 @@ LIAI=AFFE_CHAR_MECA(MODELE=MOD,
                                  _F(GROUP_NO=('PM3','PD4',),
                                     DDL=('DY','DY',),
                                     COEF_MULT=(1.,-1.,),
-                                    COEF_IMPO=0.,),),);
+                                    COEF_IMPO=0.,),),)
 CONT = DEFI_CONTACT(MODELE        = MOD,
                     FORMULATION   = 'DISCRETE',
                     ITER_GCP_MAXI = 500,
@@ -118,7 +118,7 @@ CONT = DEFI_CONTACT(MODELE        = MOD,
                              GROUP_MA_ESCL='LCD4',
                              SANS_GROUP_NO=('PD4',),),
                           ),
-                     );
+                     )
 
 #
 # --------------------------------------------------------------------
@@ -127,12 +127,12 @@ CONT = DEFI_CONTACT(MODELE        = MOD,
 # --------------------------------------------------------------------
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0.,0.,1.,1.,),);
+                   VALE=(0.,0.,1.,1.,),)
 #
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 #
 # --------------------------------------------------------------------
 #                            CALCUL NON LINEAIRE
@@ -153,7 +153,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(),
 # NE PAS MODIFIER: TEST BUG FICHE 19580
                                   ITER_GLOB_MAXI=3,
                                   ),
-                   INFO=1,);
+                   INFO=1,)
 #
 # --------------------------------------------------------------------
 #                    CALCUL DES CONTRAINTES AUX NOEUDS
@@ -162,11 +162,11 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(),
 
 RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
-                CONTRAINTE=('SIGM_ELNO'),);
+                CONTRAINTE=('SIGM_ELNO'),)
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             CONTRAINTE='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',)
 #
 # --------------------------------------------------------------------
 #          CALCUL DES FORCES NODALES ET DES REACTIONS NODALES
@@ -174,7 +174,7 @@ RESU=CALC_CHAMP(reuse =RESU,
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             FORCE='REAC_NODA',);
+             FORCE='REAC_NODA',)
 #
 # --------------------------------------------------------------------
 #                COMPARAISON SOURCE EXTERNE
@@ -206,7 +206,7 @@ REACENC=POST_RELEVE_T(ACTION=_F(INTITULE='ENCASTREMENT',
                                 INST=1.,
                                 RESULTANTE=('DX','DY',),
                                 REPERE='GLOBAL',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 #
 
 TEST_TABLE(CRITERE='RELATIF',
@@ -218,5 +218,5 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=REACENC,)
 
 
-FIN();
+FIN()
 #

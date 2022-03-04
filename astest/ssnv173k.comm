@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,14 +30,14 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MA0,
                      AFFE=_F(GROUP_MA=('VOL',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),
-                       );
+                       )
 
 LN = FORMULE(VALE='Z-12.5 ',
              NOM_PARA=['X', 'Y', 'Z'],)
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MA0,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),);
+                    DEFI_FISS=_F(FONC_LN=LN,),)
 
 CHERR= RAFF_XFEM(FISSURE=FISS)
 
@@ -50,8 +50,8 @@ MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
                MAILLAGE_N = MA0,
                MAILLAGE_NP1 = MA1)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA1));
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA1));
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA1))
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA1))
 #-------------------------------------------------------------------
 
 
@@ -62,7 +62,7 @@ MOD=AFFE_MODELE(MAILLAGE=MA1,
 
 FISS1=DEFI_FISS_XFEM(MAILLAGE=MA1,
                      TYPE_DISCONTINUITE='INTERFACE',
-                     DEFI_FISS=_F(FONC_LN=LN,),);    
+                     DEFI_FISS=_F(FONC_LN=LN,),)
 
 MODX=MODI_MODELE_XFEM(MODELE_IN=MOD,FISSURE=FISS1)
 
@@ -90,18 +90,18 @@ CH2=AFFE_CHAR_MECA(MODELE=MODX,
                                 DY=DEPY,
                                 DZ=DEPZ,),
                              ),
-                   );
+                   )
 
 
 UTOT2=MECA_STATIQUE(MODELE=MODX,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH2),
-                          
+
                           ),
-                   ); 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+                   )
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODX,
@@ -110,18 +110,18 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT2,
-                        
-                        INFO          = 2)
- 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM));
 
-# -------------------------------------------------------------   
+                        INFO          = 2)
+
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM))
+
+# -------------------------------------------------------------
 #            POST-TRAITEMENT DES DEPLACEMENTS AUX NOEUDS
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                  MAILLAGE=MA_XFEM,
@@ -135,7 +135,7 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT SUR LES LEVRES',
                                NOM_CHAM='DEPL',
                                NUME_ORDRE = 1,
                                TOUT_CMP='OUI',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
 #IMPR_TABLE(TABLE=TABDEP)
 
@@ -155,9 +155,9 @@ TABDEPM = CALC_TABLE(TABLE = TABDEP,
                                  NOM_PARA  = 'NOEUD',
                                  CRIT_COMP = 'REGEXP',
                                  VALE_K    = 'NM',),
-                                 )        
-IMPR_TABLE(TABLE=TABDEPP);
-IMPR_TABLE(TABLE=TABDEPM);
+                                 )
+IMPR_TABLE(TABLE=TABDEPP)
+IMPR_TABLE(TABLE=TABDEPM)
 
 # TESTS SUR LES NOEUDS DE LA LEVRE MOINS : DX = DY = DZ = 0
 TEST_TABLE(CRITERE='ABSOLU',

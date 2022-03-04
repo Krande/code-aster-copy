@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,15 +60,15 @@ ITER_GLOB_MAXI = 5
 # Definition des caracteristiques fluides
 #**********************************************************
 
-UN=DEFI_CONSTANTE(VALE=1.0);
-ZERO=DEFI_CONSTANTE(VALE=0.0);
-PERMINT=DEFI_CONSTANTE(VALE=1.E-13);
-HENRY=DEFI_CONSTANTE(VALE=1.E10);
+UN=DEFI_CONSTANTE(VALE=1.0)
+ZERO=DEFI_CONSTANTE(VALE=0.0)
+PERMINT=DEFI_CONSTANTE(VALE=1.E-13)
+HENRY=DEFI_CONSTANTE(VALE=1.E10)
 
 #*********************
 # Lecture du maillage
 #*********************
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
@@ -76,8 +76,8 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
                    _F(GROUP_MA_PEAU='MMIL',
                       GROUP_MA_INTERNE='DROITE'),
                    _F(GROUP_MA_PEAU=('MDROIT','MGAUCHE')))
-                                   );
-                                   
+                                   )
+
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(
@@ -86,7 +86,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 _F(GROUP_MA='MMIL'),
                 _F(GROUP_MA='MDROIT'),
                 _F(GROUP_MA='MGAUCHE'),
-                   ));
+                   ))
 
 
 
@@ -99,7 +99,7 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION=MODELISA),
-                  );
+                  )
 
 #*********************************************************
 # DEFI_MATERIAU
@@ -150,7 +150,7 @@ MATERIAU=DEFI_MATERIAU(
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA=('GAUCHE','DROITE'),
-                             MATER=MATERIAU)));
+                             MATER=MATERIAU)))
 
 #*************************************************************
 # Affectation de l etat initial
@@ -171,12 +171,12 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
 CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
        MECA_IMPO=(
                  _F(GROUP_MA = 'MDROIT',PRE1=P0),
-                 ));
+                 ))
 
 CH_FLU1=AFFE_CHAR_MECA(   MODELE=MODELT,FLUX_THM_REP=(
                           _F(GROUP_MA = 'MGAUCHE',
                              FLUN_HYDR1 = -2.E-10),
-                                   ));
+                                   ))
 #
 #
 #*************************************************************
@@ -187,7 +187,7 @@ CH_FLU1=AFFE_CHAR_MECA(   MODELE=MODELT,FLUX_THM_REP=(
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=TFINAL,
                                     NOMBRE=NBDECOUP)),
-                     );
+                     )
 
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
                                 ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -226,13 +226,13 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI),
 
                  ARCHIVAGE=_F(LIST_INST     = INST1  ),
-                 );
+                 )
 #
 #*************************************************************
 # Impressions
 #*************************************************************
 #
-L_INST=DEFI_LIST_REEL(VALE=(0.,10000.,100000.));
+L_INST=DEFI_LIST_REEL(VALE=(0.,10000.,100000.))
 
 
 PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -241,7 +241,7 @@ PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
              NOM_CHAM='DEPL',
              LIST_INST=L_INST,
              NOM_CMP=('PRE1'),
-             OPERATION='EXTRACTION'));
+             OPERATION='EXTRACTION'))
 
 
 cal1=CALC_CHAMP(reuse=cal1,CONTRAINTE=('SIEF_ELNO'),RESULTAT=cal1)
@@ -253,7 +253,7 @@ F_EAUG=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU GAUCHE',
                            NOM_CHAM='SIEF_ELNO',
                            INST=TFINAL,
                            NOM_CMP=('FH11X','FH11Y'),
-                           OPERATION='EXTRACTION'));
+                           OPERATION='EXTRACTION'))
 
 F_EAUD=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU DROITE',
                            GROUP_NO=('MDROIT'),
@@ -261,7 +261,7 @@ F_EAUD=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU DROITE',
                            NOM_CHAM='SIEF_ELNO',
                            INST=TFINAL,
                            NOM_CMP=('FH11X','FH11Y'),
-                           OPERATION='EXTRACTION'));
+                           OPERATION='EXTRACTION'))
 
 F_EAUM=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU MILIEU',
                            GROUP_NO=('MMIL'),
@@ -269,7 +269,7 @@ F_EAUM=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX EAU MILIEU',
                            NOM_CHAM='SIEF_ELNO',
                            INST=TFINAL,
                            NOM_CMP=('FH11X','FH11Y'),
-                           OPERATION='EXTRACTION'));
+                           OPERATION='EXTRACTION'))
 
 cal1= CALC_CHAMP( reuse    = cal1,
                    RESULTAT = cal1,
@@ -325,4 +325,4 @@ TEST_TABLE(VALE_REFE=2.0E-10,
            NOM_PARA='INTE_FH11',
            TABLE=FLUXNG,)
 
-FIN();
+FIN()

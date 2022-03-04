@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
-TFIN = 0.005;
+TFIN = 0.005
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.001,
@@ -32,7 +32,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=140,),
                                  _F(JUSQU_A=TFIN,
                                     NOMBRE=150,),
-                                    ),);
+                                    ),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
@@ -47,7 +47,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H3=1.0,
                                   H4=1.0,
                                   ),
-                    MONO_CINE1=_F(D=36.68,),);
+                    MONO_CINE1=_F(D=36.68,),)
 
 ACIER2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
@@ -62,19 +62,19 @@ ACIER2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H3=1.0,
                                   H4=1.0,
                                   ),
-                    MONO_CINE1=_F(D=36.68,),);
+                    MONO_CINE1=_F(D=36.68,),)
 
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
-                                    FAMI_SYST_GLIS='BCC24',),),);
+                                    FAMI_SYST_GLIS='BCC24',),),)
 
 
 COMPORT2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
@@ -82,7 +82,7 @@ COMPORT2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
-                                    FAMI_SYST_GLIS='BCC24',),),);
+                                    FAMI_SYST_GLIS='BCC24',),),)
 
 
 
@@ -117,7 +117,7 @@ COMPORP2=DEFI_COMPOR(POLYCRISTAL=(
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     MU_LOCA=145200./2.6,
-                    );
+                    )
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=(
@@ -156,7 +156,7 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
-                        );
+                        )
 
 # comparaison a la modelisation A - agregat 10 grains
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -221,7 +221,7 @@ SOLNL2=SIMU_POINT_MAT(INFO=1,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
-                        );
+                        )
 
 # comparaison a la modelisation A - agregat 10 grains
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -282,7 +282,7 @@ TBEPZZ=CALC_TABLE(TABLE = SOLNL2,
 FEPZZ=RECU_FONCTION(TABLE=TBEPZZ,
                    PARA_X='INST',
                    PARA_Y='VALEUR',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TBSIZZ=CALC_TABLE(TABLE = SOLNL2,
                ACTION =_F(OPERATION='FILTRE',
@@ -292,7 +292,7 @@ TBSIZZ=CALC_TABLE(TABLE = SOLNL2,
 FSIZZ=RECU_FONCTION(TABLE=TBSIZZ,
                    PARA_X='INST',
                    PARA_Y='VALEUR',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 IMPR_FONCTION(
@@ -300,6 +300,6 @@ IMPR_FONCTION(
                     _F( FONC_X=FEPZZ,
                         FONC_Y=FSIZZ),
                         ),
-            );
+            )
 
 FIN()

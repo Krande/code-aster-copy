@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MAILLE=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLE=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,
                        CREA_POI1=(_F(NOM_GROUP_MA='NOBLOC',
                                      GROUP_NO='NOBLOC',),
                                   _F(NOM_GROUP_MA='NOTORS',
-                                     GROUP_NO='NOTORS',),),);
+                                     GROUP_NO='NOTORS',),),)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
@@ -36,7 +36,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                    _F(GROUP_MA='FISSUR_P',),
                                    _F(GROUP_MA='FISSUR_N',),
                                    _F(GROUP_MA='SLAT_POS',),
-                                   _F(GROUP_MA='SLAT_NEG',),),);
+                                   _F(GROUP_MA='SLAT_NEG',),),)
 
 # POUR ELIMINER LES NOEUDS COMMUNS AUX SURFACES DE CONTACT
 MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
@@ -50,21 +50,21 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='3D',),
                          _F(GROUP_MA=('NOBLOC','NOTORS',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SLAT_POS','SLAT_NEG','FISSUR_P','FISSUR_N',),),
-                       );
+                       )
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             NU=0.3,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     DISCRET=_F(GROUP_MA=('NOBLOC','NOTORS',),
                                CARA='K_TR_D_N',
-                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),);
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELE,
@@ -72,7 +72,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                                 MATER=ACIER,
                                 ),
                              _F(GROUP_MA=('NOBLOC','NOTORS',),
-                                MATER=ACIER,),),);
+                                MATER=ACIER,),),)
 #*********************************************************************
 #                          CONDITIONS AUX LIMITES                    *
 #*********************************************************************
@@ -80,17 +80,17 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 MTORS=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(1.0,3000000.0,2.0,0.0,3.0,0.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 MFLEX=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(1.0,0.0,2.0,1500000.0,3.0,0.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 TRACT=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(1.0,6000000.0,2.0,0.0,3.0,0.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='NOBLOC',
@@ -106,7 +106,7 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
                                      _F(OPTION='3D_POU',
                                         GROUP_MA_1='SLAT_POS',
                                         GROUP_NO_2='NOTORS',),),
-                       INFO=1,);
+                       INFO=1,)
 
 CHARFISS=DEFI_CONTACT(MODELE         = MODELE,
                   FORMULATION    = 'DISCRETE',
@@ -122,11 +122,11 @@ CHARTOFL=AFFE_CHAR_MECA_F(MODELE=MODELE,
                           FORCE_NODALE=_F(GROUP_NO='NOTORS',
                                           FX=TRACT,
                                           MX=MTORS,
-                                          MY=MFLEX,),);
+                                          MY=MFLEX,),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=1.,
                       INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=2,),);
+                                    NOMBRE=2,),)
 
 UTOT=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
@@ -137,7 +137,7 @@ UTOT=MECA_STATIQUE(MODELE=MODELE,
                    INST_FIN=2.0,
                    SOLVEUR=_F(METHODE='MULT_FRONT',
                               RENUM='METIS',),
-                   INFO=1,);
+                   INFO=1,)
 
 
 
@@ -163,23 +163,23 @@ UTOTC=STAT_NON_LINE(MODELE=MODELE,
                                METHODE='MULT_FRONT',
                                RENUM='METIS',),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+                    INFO=1,)
 
 UTOT=CALC_CHAMP(reuse =UTOT,
                RESULTAT=UTOT,
-                CONTRAINTE=('SIGM_ELNO'),);
+                CONTRAINTE=('SIGM_ELNO'),)
 
 UTOTC=CALC_CHAMP(reuse =UTOTC,
                 RESULTAT=UTOTC,
-                 CONTRAINTE=('SIGM_ELNO'),);
+                 CONTRAINTE=('SIGM_ELNO'),)
 
 UTOT=CALC_CHAMP(reuse =UTOT,
              RESULTAT=UTOT,
-             CONTRAINTE='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',)
 
 UTOTC=CALC_CHAMP(reuse =UTOTC,
               RESULTAT=UTOTC,
-              CONTRAINTE='SIGM_NOEU',);
+              CONTRAINTE='SIGM_NOEU',)
 
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MAILLAGE, SYME='NON',
@@ -188,7 +188,7 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MAILLAGE, SYME='NON',
                                  GROUP_NO_EXTR='PFON_FIN',),
                     LEVRE_SUP=_F(GROUP_MA='FISSUR_P',),
                     LEVRE_INF=_F(GROUP_MA='FISSUR_N',),
-                    INFO=1,);
+                    INFO=1,)
 
 
 
@@ -198,19 +198,19 @@ K1_1=POST_K1_K2_K3(FOND_FISS=FISS,
                    RESULTAT=UTOT,
                    NUME_ORDRE=1,
                    INFO=1,
-                  );
+                  )
 
 K1_2=POST_K1_K2_K3(FOND_FISS=FISS,
                    RESULTAT=UTOT,
                    NUME_ORDRE=2,
                    INFO=1,
-                  );
+                  )
 
 K1_3=POST_K1_K2_K3(FOND_FISS=FISS,
                    RESULTAT=UTOTC,
                    NUME_ORDRE=1,
                    INFO=1,
-                  );
+                  )
 
 IMPR_TABLE(TABLE=K1_1,
            UNITE = 8,
@@ -218,7 +218,7 @@ IMPR_TABLE(TABLE=K1_1,
            TRI=_F(NOM_PARA='ABSC_CURV',
                   ORDRE='CROISSANT',),
            FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON',)
 
 IMPR_TABLE(TABLE=K1_2,
            UNITE = 8,
@@ -226,7 +226,7 @@ IMPR_TABLE(TABLE=K1_2,
            TRI=_F(NOM_PARA='ABSC_CURV',
                   ORDRE='CROISSANT',),
            FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON',)
 
 IMPR_TABLE(TABLE=K1_3,
            UNITE = 8,
@@ -234,17 +234,17 @@ IMPR_TABLE(TABLE=K1_3,
            TRI=_F(NOM_PARA='ABSC_CURV',
                   ORDRE='CROISSANT',),
            FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON',)
 
 
 
-K1REF=5350000.0;
+K1REF=5350000.0
 
-K1AREF=11710000.0;
+K1AREF=11710000.0
 
-K3REF=-11220000.0;
+K3REF=-11220000.0
 
-K1APRE=10168397.0325;
+K1APRE=10168397.0325
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.16,
@@ -286,4 +286,4 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
                      VALE_K='N5618',),
            )
 
-FIN();
+FIN()

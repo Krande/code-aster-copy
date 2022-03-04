@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 OPTION='SPHERE',
                                 POINT=(0.228545,0.768977),
                                 RAYON=(0.04),),),
-                                );
+                                )
 MA=DEFI_GROUP(reuse =MA,
                MAILLAGE=MA,
                CREA_GROUP_NO=(_F(
@@ -60,7 +60,7 @@ MA=DEFI_GROUP(reuse =MA,
                               _F(
                                 NOM='TEST3',
                                 GROUP_MA='TEST3',),),
-                                );
+                                )
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=MA),)
 
 # champ de geometrie et de points de gauss (coordonnees des points de gauss)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ dtemps    =temps_max/npas
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = tarret   , NOMBRE = 5),
-                                  _F(JUSQU_A = temps_max, NOMBRE = 5),),);
+                                  _F(JUSQU_A = temps_max, NOMBRE = 5),),)
 
 
 #***********************************************************************
@@ -74,30 +74,30 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.),
                   MOHR_COULOMB=_F(
                             PHI      = 33.,
                             ANGDIL   = 27.,
-                            COHESION = 1.0E+3,),);
+                            COHESION = 1.0E+3,),)
 
 
 COEF0=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, 0.,
-                           temps_max, 0.,),);
+                           temps_max, 0.,),)
 
 
 COEFH=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, -PCO,
-                           temps_max, -PCO,),);
+                           temps_max, -PCO,),)
 
 
 COEFV=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, -3.*PCO,
-                           temps_max, -3.*PCO,),);
+                           temps_max, -3.*PCO,),)
 
 COEXY=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=( 0.0, 0.0,
-                           temps_max, epxy_min),);
+                           temps_max, epxy_min),)
 # Verification lorsqu'on change l'axe de chargement
 
 axe_char ='DX'
@@ -145,13 +145,13 @@ verif     =True
 if matr_tang & verif:
   comp_incr =_F(RELATION='MOHR_COULOMB',
                 TYPE_MATR_TANG='VERIFICATION',
-                VALE_PERT_RELA=1.E-10,);
+                VALE_PERT_RELA=1.E-10,)
 elif matr_tang:
   comp_incr =_F(RELATION='MOHR_COULOMB',
                 TYPE_MATR_TANG='PERTURBATION',
-                VALE_PERT_RELA=1.E-10,);
+                VALE_PERT_RELA=1.E-10,)
 else:
-  comp_incr =_F(RELATION='MOHR_COULOMB',);
+  comp_incr =_F(RELATION='MOHR_COULOMB',)
 
 
 DEBUG(SDVERI='NON')
@@ -181,8 +181,8 @@ TSIGPERT=SIMU_POINT_MAT(INFO=2,
                                EPZZ=0.,
                                EPXY=0.,
                                EPXZ=0.,
-                               EPYZ=0.,),);
-IMPR_TABLE(TABLE=TSIGPERT,);
+                               EPYZ=0.,),)
+IMPR_TABLE(TABLE=TSIGPERT,)
 
 #
 # Calcul avec matrice tangente consistente calculee
@@ -208,7 +208,7 @@ TSIGTANG=SIMU_POINT_MAT(INFO=2,
                                EPZZ=0.,
                                EPXY=0.,
                                EPXZ=0.,
-                               EPYZ=0.,),);
+                               EPYZ=0.,),)
 
 # ================================================================
 #
@@ -228,9 +228,9 @@ TSIGTANG=CALC_TABLE(reuse=TSIGTANG,TABLE=TSIGTANG,
                             _F(OPERATION='OPER',
                                FORMULE  =DIFF,
                                NOM_PARA ='NB_ITER_DIFF',),
-                            ),);
+                            ),)
 
-IMPR_TABLE(TABLE=TSIGTANG,);
+IMPR_TABLE(TABLE=TSIGTANG,)
 #
 # On verifie que NB_ITER1 < NB_ITER a chaque instant
 #
@@ -244,32 +244,32 @@ TEST_TABLE(NOM_PARA='NB_ITER_DIFF',
            REFERENCE='AUTRE_ASTER',
            CRITERE='ABSOLU',
            PRECISION=.1,
-           VALE_REFE=0.,);
+           VALE_REFE=0.,)
 
 # ================================================================
 #                            POST-TRAITEMENTS
 # ================================================================
 #
-# tsigm = TSIGTANG.EXTR_TABLE().values();
+# tsigm = TSIGTANG.EXTR_TABLE().values()
 #
-# epxx = tsigm['EPXX'];
-# epyy = tsigm['EPYY'];
-# epxy = tsigm['EPXY'];
-# epzz = tsigm['EPZZ'];
-# sixx = tsigm['SIXX'];
-# siyy = tsigm['SIYY'];
-# sixy = tsigm['SIXY'];
-# sizz = tsigm['SIZZ'];
-# epvp = tsigm['V1'];
-# edvp = tsigm['V2'];
-# indi = tsigm['V3'];
+# epxx = tsigm['EPXX']
+# epyy = tsigm['EPYY']
+# epxy = tsigm['EPXY']
+# epzz = tsigm['EPZZ']
+# sixx = tsigm['SIXX']
+# siyy = tsigm['SIYY']
+# sixy = tsigm['SIXY']
+# sizz = tsigm['SIZZ']
+# epvp = tsigm['V1']
+# edvp = tsigm['V2']
+# indi = tsigm['V3']
 #
 # # Verif
 # # -------------
 # sig1_calc =list( -2.*PCO+np.sqrt(PCO**2.+np.array(sixy)**2.) )
 # sig3_calc =list( -2.*PCO-np.sqrt(PCO**2.+np.array(sixy)**2.) )
 #
-# co_sigm,co_epsi,co_vari,= [],[],[],;
+# co_sigm,co_epsi,co_vari,= [],[],[],
 #
 # # CHAMPS CINEMATIQUES
 # # _____________________________
@@ -277,16 +277,16 @@ TEST_TABLE(NOM_PARA='NB_ITER_DIFF',
 #         #X=epxy, Y=sizz,
 #         X=epxy, Y=sig1_calc,
 #         legend='SIG1_CALC',
-#         color=1,);
+#         color=1,)
 #
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         #X=epxy, Y=sixx,
 #         X=epxy, Y=sig3_calc,
 #         legend='SIG3_CALC',
-#         color=2,);
+#         color=2,)
 #
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epxy, Y=siyy,
 #         legend='SIYY',
-#         color=3,);
-FIN();
+#         color=3,)
+FIN()

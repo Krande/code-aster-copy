@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: felix.latourte at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 import numpy as np
 
@@ -35,7 +35,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=210000.0,
                                   H2=0.7,
                                   H3=0.1,
                                   H4=0.1),
-                    MONO_CINE1=_F(D=0.0,),);
+                    MONO_CINE1=_F(D=0.0,),)
 
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
@@ -43,7 +43,7 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
                                    ECOULEMENT='MONO_VISC1',
                                    ECRO_ISOT='MONO_ISOT1',
                                    ECRO_CINE='MONO_CINE1',
-                                   FAMI_SYST_GLIS='BCC24',),);
+                                   FAMI_SYST_GLIS='BCC24',),)
 
 
 COMPORP=DEFI_COMPOR(POLYCRISTAL=(_F(MONOCRISTAL=COMPORT,
@@ -137,38 +137,38 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(_F(MONOCRISTAL=COMPORT,
                                     FRAC_VOL=0.033333,
                                     ANGL_REP=(58.0,169.0,224.0,),),),
                     LOCALISATION='BZ',
-                    MU_LOCA=210000.0/2.6);
+                    MU_LOCA=210000.0/2.6)
 
 # 3.4 IMPOSED LOADING ALONG UZ AXIS
 
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           100.0,0.1,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
-TFIN = 10.0;
+TFIN = 10.0
 
-T2 = 4.0;
+T2 = 4.0
 
-NPAS1 = 100;
+NPAS1 = 100
 
-NPAS2 = 500;
+NPAS2 = 500
 
-NARCH1 = 10;
+NARCH1 = 10
 
-NARCH2 = 50;
+NARCH2 = 50
 
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=( _F(JUSQU_A=4.,
                                     NOMBRE=60,),
                                  _F(JUSQU_A=10.,
-                                    NOMBRE=30),),);
+                                    NOMBRE=30),),)
 
 LINSTA=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A=4.,
                                      NOMBRE=20,),
                                   _F(JUSQU_A=10.,
-                                     NOMBRE=3),),);
+                                     NOMBRE=3),),)
 
 LISTPS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
                          ECHEC=_F(SUBD_NIVEAU=10,
@@ -177,7 +177,7 @@ LISTPS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
                                   EVENEMENT='ERREUR',
                                   SUBD_PAS_MINI=1e-8,
                                   ACTION='DECOUPE'),
-                                  );
+                                  )
 
 
 SIGEPS=SIMU_POINT_MAT(INFO=2,
@@ -194,7 +194,7 @@ SIGEPS=SIMU_POINT_MAT(INFO=2,
                    INCREMENT=_F(LIST_INST=LISTPS),
                    ARCHIVAGE=_F(LIST_INST=LINSTA),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ),
-                        );
+                        )
 
 
 
@@ -202,7 +202,7 @@ IMPR_TABLE(TABLE=SIGEPS,
            FORMAT='TABLEAU',
            UNITE=38,
            NOM_PARA=('INST','EPZZ','SIZZ',),
-           TITRE='Courbe SigZZ_moy=f(EpsZZ_moy)',);
+           TITRE='Courbe SigZZ_moy=f(EpsZZ_moy)',)
 
 TEST_TABLE(
            VALE_CALC=440.511663307,
@@ -214,8 +214,8 @@ TEST_TABLE(
 
 FSIGEPS=RECU_FONCTION(TABLE=SIGEPS,
                       PARA_X='EPZZ',
-                      PARA_Y='SIZZ',);
+                      PARA_Y='SIZZ',)
 
-#IMPR_FONCTION(FORMAT='XMGRACE',COURBE=_F(FONCTION=FSIGEPS,),UNITE=39,PILOTE='INTERACTIF');
+#IMPR_FONCTION(FORMAT='XMGRACE',COURBE=_F(FONCTION=FSIGEPS,),UNITE=39,PILOTE='INTERACTIF')
 
-FIN();
+FIN()

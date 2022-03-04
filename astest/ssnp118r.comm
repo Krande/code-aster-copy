@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ CM=AFFE_MATERIAU(
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
            _F(GROUP_MA='CUBEDEG',ANGL_REP=(30,0,0)),
-                                 ));
+                                 ))
 
 
 LIAISON=AFFE_CHAR_MECA(
@@ -106,14 +106,14 @@ L_INST=DEFI_LIST_REEL(
       _F( JUSQU_A = tfin,     NOMBRE = nbpas ),
       )
      )
-     
+
 TEMP   = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = L_INST),
                            ECHEC     = _F(ACTION='DECOUPE',
                                           SUBD_METHODE='MANUEL',
                                           SUBD_NIVEAU=3,
                                           SUBD_PAS=4,
-                                          )                          
-                           );      
+                                          )
+                           )
 
 FCT = DEFI_FONCTION(
   NOM_PARA = 'INST',
@@ -184,7 +184,7 @@ U_1=CALC_CHAMP(reuse = U_1,
                  VARI_INTERNE='VARI_ELNO',
                  CONTRAINTE='SIEF_ELNO',
                  GROUP_MA='CUBEDEG'
-                );
+                )
 
 U_1=CALC_CHAMP(
                  reuse = U_1,
@@ -192,7 +192,7 @@ U_1=CALC_CHAMP(
                  VARI_INTERNE='VARI_NOEU',
                  CONTRAINTE='SIEF_NOEU',
                  GROUP_MA='CUBEDEG'
-                 );
+                 )
 
 
 IMPR_RESU(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ MATERI=DEFI_MATERIAU( THER=_F(  LAMBDA = 0.75, RHO_CP = 2.0))
 #
 MD1=LIRE_MAILLAGE(FORMAT='MED', )
 M[0]=CREA_MAILLAGE(MAILLAGE=MD1,
-                   LINE_QUAD=_F(TOUT='OUI',),);
+                   LINE_QUAD=_F(TOUT='OUI',),)
 
 #-------------------------------------------------------------------------------
 #                     BOUCLE CALCUL INDICATEUR/REMAILLAGE
@@ -57,8 +57,8 @@ for k in range(nbcalc):
      M[k]=MODI_MAILLAGE( reuse=M[k],
                  MAILLAGE=M[k],
                  ORIE_PEAU=_F(  GROUP_MA_PEAU = ( 'ECHA', 'F1INF', 'FLUX', 'Z_0', 'Z_0_05', 'FACE_A', 'FACE_B', ),  )
-                      );
-                      
+                      )
+
    CHA1[k]=AFFE_CHAR_THER( MODELE=MODE[k],
              TEMP_IMPO=_F( GROUP_MA = 'F1INF',   TEMP = 100.),
              FLUX_REP=(_F( GROUP_MA = 'FLUX',    FLUN = -1200.),

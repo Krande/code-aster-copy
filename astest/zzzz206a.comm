@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MAQ=LIRE_MAILLAGE(FORMAT='MED',);
+MAQ=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAL=CREA_MAILLAGE(MAILLAGE=MAQ,
                                 QUAD_LINE=_F(GROUP_MA=('PENTA6','HEX278','HEX208','PYRAM5',
@@ -51,4 +51,4 @@ IMPR_RESU(FORMAT='RESULTAT',UNITE=50,
           RESU=_F(MAILLAGE=MAL,),)
 
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ delta_x= sig_m/k_n
 delta_sci = delta_x/3.
 
 # SCIAGE EN FONCTION DU TEMPS
-sci_ins=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,-1. , i_sci-eps,-1 , i_sci,1. , i_sci+eps,-1 ,  tfin,-1.));
+sci_ins=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,-1. , i_sci-eps,-1 , i_sci,1. , i_sci+eps,-1 ,  tfin,-1.))
 # SCIAGE EN FONCTION DE L'ESPACE
 sci_y = FORMULE(VALE='delta_sci',
                 delta_sci=delta_sci,
@@ -66,7 +66,7 @@ fonc_sci = FORMULE(VALE='sci_y(Y)*sci_ins(INST)',
 
 ##################################
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -83,7 +83,7 @@ MA=DEFI_GROUP(reuse =MA,
       _F(NOM = 'JOINT_G', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_G'),
       _F(NOM = 'JOINT_D', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_D'),
           ),
-    );
+    )
 
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
@@ -99,7 +99,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='D_PLAN',),
                      _F(GROUP_MA='JOINT',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='PLAN_JOINT',),),);
+                        MODELISATION='PLAN_JOINT',),),)
 
 
 
@@ -124,7 +124,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(GROUP_MA='BARRAGE',MATER = MATPLO),
                       _F(GROUP_MA='JOINT',  MATER = MATJOI))
-                 );
+                 )
 
 
 # MATERIAU JOINT MECANIQUE AVEC FROTTEMENT
@@ -135,25 +135,25 @@ MAT_JF=DEFI_MATERIAU(
                                      MU=mu,
                                      ADHESION=adhe,
                                      SCIAGE=fonc_sci,
-                                ),);
+                                ),)
 CM_JF=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(GROUP_MA='BARRAGE',MATER = MATPLO),
                       _F(GROUP_MA='JOINT',  MATER = MAT_JF))
-                 );
+                 )
 
 
 # CONDITION AUX LIMITES
 CL_GAUCH=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=_F(GROUP_NO=('ENCAST_G',),DX=delta_x,DY=0.0),);
+                       DDL_IMPO=_F(GROUP_NO=('ENCAST_G',),DX=delta_x,DY=0.0),)
 # CONDITION AUX LIMITES
 CL_DROIT=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=_F(GROUP_NO=('ENCAST_D',),DX=0.0,    DY=0.0,),);
+                       DDL_IMPO=_F(GROUP_NO=('ENCAST_D',),DX=0.0,    DY=0.0,),)
 
 
 # CREATION DE LISTE D'INSTANT
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),);
-L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbarch,),);
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),)
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbarch,),)
 
 # CALCUL JOINT_MECA_RUPT
 U_1=STAT_NON_LINE(MODELE=MO,
@@ -172,7 +172,7 @@ U_1=STAT_NON_LINE(MODELE=MO,
                                  RESI_GLOB_RELA=1E-7),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = L_ARCH,),
-                  );
+                  )
 
 ############# POST TRAITEMENT #################
 
@@ -180,7 +180,7 @@ U_1=CALC_CHAMP(reuse =U_1,
               RESULTAT=U_1,
               VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),
               CONTRAINTE=('SIEF_ELNO','SIEF_NOEU'),
-              GROUP_MA='JOINT');
+              GROUP_MA='JOINT')
 
 # AVANT SCIAGE
 ################
@@ -192,7 +192,7 @@ VAR_AV1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=av_sci,
                                GROUP_NO='JOINT_D',
-                               NOM_CMP=('V7','V10'),),);
+                               NOM_CMP=('V7','V10'),),)
 
 
 # CONTRAINTE NORMALE DANS LE JOINT
@@ -202,7 +202,7 @@ SIG_AV1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                INST=av_sci,
                                GROUP_NO = 'JOINT_D',
-                               NOM_CMP=('SIGN')),);
+                               NOM_CMP=('SIGN')),)
 
 
 # APRES SCIAGE
@@ -215,7 +215,7 @@ VAR_AP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=ap_sci,
                                GROUP_NO='JOINT_G',
-                               NOM_CMP=('V7','V10')),);
+                               NOM_CMP=('V7','V10')),)
 
 
 
@@ -226,7 +226,7 @@ SIG_AP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                INST=ap_sci,
                                GROUP_NO = 'JOINT_G',
-                               NOM_CMP=('SIGN')),);
+                               NOM_CMP=('SIGN')),)
 
 
 
@@ -306,7 +306,7 @@ U_JF=STAT_NON_LINE(MODELE=MO,
                                  RESI_GLOB_RELA=1E-7),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = L_ARCH,),
-                  );
+                  )
 
 
 ############# POST TRAITEMENT #################
@@ -315,7 +315,7 @@ U_JF=CALC_CHAMP(reuse =U_JF,
               RESULTAT=U_JF,
               VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),
               CONTRAINTE=('SIEF_ELNO','SIEF_NOEU'),
-              GROUP_MA='JOINT');
+              GROUP_MA='JOINT')
 
 # AVANT SCIAGE
 ################
@@ -327,7 +327,7 @@ VAR_AV2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=av_sci,
                                GROUP_NO='JOINT_D',
-                               NOM_CMP=('V7','V10'),),);
+                               NOM_CMP=('V7','V10'),),)
 
 
 # CONTRAINTE NORMALE DANS LE JOINT
@@ -337,7 +337,7 @@ SIG_AV2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                INST=av_sci,
                                GROUP_NO = 'JOINT_D',
-                               NOM_CMP=('SIGN')),);
+                               NOM_CMP=('SIGN')),)
 
 
 # APRES SCIAGE
@@ -350,7 +350,7 @@ VAR_AP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=ap_sci,
                                GROUP_NO='JOINT_G',
-                               NOM_CMP=('V7','V10')),);
+                               NOM_CMP=('V7','V10')),)
 
 
 
@@ -361,7 +361,7 @@ SIG_AP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                INST=ap_sci,
                                GROUP_NO = 'JOINT_G',
-                               NOM_CMP=('SIGN')),);
+                               NOM_CMP=('SIGN')),)
 
 
 

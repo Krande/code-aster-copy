@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,11 +109,11 @@ STAT1=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARAC,
                    EXCIT=(_F(CHARGE=BLOQ,),
-                          _F(CHARGE=CHFORC_1,),),);
+                          _F(CHARGE=CHFORC_1,),),)
 
 SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT1, NUME_ORDRE=1,
-                    NOM_CHAM='SIEF_ELGA' );
+                    NOM_CHAM='SIEF_ELGA' )
 
 
 RIGELG_1=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
@@ -218,11 +218,11 @@ STAT2=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARAC,
                    EXCIT=(_F(CHARGE=BLOQ,),
-                          _F(CHARGE=CHFORC_2,),),);
+                          _F(CHARGE=CHFORC_2,),),)
 
 SIGMA_2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT2, NUME_ORDRE=1,
-                    NOM_CHAM='SIEF_ELGA' );
+                    NOM_CHAM='SIEF_ELGA' )
 
 RIGELG_2=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
                              CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_2 )
@@ -260,7 +260,7 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
                    NUME_MODE=16,
                    RESULTAT=MOD_2,
                    VALE_CALC=-1.4790446000000001E6,
-                   
+
                    ),
                 ),
           )
@@ -284,11 +284,11 @@ STAT3=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARAC,
                    EXCIT=(_F(CHARGE=BLOQ,),
-                          _F(CHARGE=CHFORC_3,),),);
+                          _F(CHARGE=CHFORC_3,),),)
 
 SIGMA_3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT3, NUME_ORDRE=1,
-                    NOM_CHAM='SIEF_ELGA' );
+                    NOM_CHAM='SIEF_ELGA' )
 
 RIGELG_3=CALC_MATR_ELEM( MODELE=MO, OPTION='RIGI_GEOM',
                              CARA_ELEM=CARAC,  SIEF_ELGA=SIGMA_3 )
@@ -349,7 +349,7 @@ STAT4=MECA_STATIQUE(MODELE=MO,
                    CARA_ELEM=CARAC,
                    SOLVEUR=_F(METHODE='MULT_FRONT'),
                    EXCIT=(_F(CHARGE=BLOQ,),
-                          _F(CHARGE=CHFORC_4,),),);
+                          _F(CHARGE=CHFORC_4,),),)
 
 SIGMA_4=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT4, NUME_ORDRE=1,

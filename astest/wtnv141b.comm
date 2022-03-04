@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,50 +33,50 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # Parametres physiques
 ######################
 
-P_KAPPA = 0.05;
+P_KAPPA = 0.05
 
-P_BIOT = 1.;
+P_BIOT = 1.
 
-P_NU = 0.25;
+P_NU = 0.25
 
-P_E = 2.5;
+P_E = 2.5
 
-P_LAMBDA = ((P_E * P_NU) / ((1 + P_NU) * (1 - (2 * P_NU))));
+P_LAMBDA = ((P_E * P_NU) / ((1 + P_NU) * (1 - (2 * P_NU))))
 
-P_MU = (P_E / (2 * (1 + P_NU)));
+P_MU = (P_E / (2 * (1 + P_NU)))
 
 ########################################
 # Ces parametres n ont aucune importance
 ########################################
 
-P_PORO = 1.;
+P_PORO = 1.
 
-P_RHO_S = 1.0;
+P_RHO_S = 1.0
 
-P_RHO_L = 1.0;
+P_RHO_L = 1.0
 
-P_RHO_H = (((1.0 - P_PORO) * P_RHO_S) + (P_PORO * P_RHO_L));
+P_RHO_H = (((1.0 - P_PORO) * P_RHO_S) + (P_PORO * P_RHO_L))
 
-P_COEF = 3.0 * pi * pi * P_KAPPA;
+P_COEF = 3.0 * pi * pi * P_KAPPA
 
-PERMIN=DEFI_CONSTANTE(VALE=P_KAPPA);
+PERMIN=DEFI_CONSTANTE(VALE=P_KAPPA)
 
-ZERO=DEFI_CONSTANTE(VALE=0.);
+ZERO=DEFI_CONSTANTE(VALE=0.)
 
-UN=DEFI_CONSTANTE(VALE=1.);
+UN=DEFI_CONSTANTE(VALE=1.)
 
 ###############
 # Instant final
 ###############
 
-p_npas = 4;
+p_npas = 4
 
-P_T1 = 0.01;
+P_T1 = 0.01
 
-linsta=P_T1*numpy.arange(p_npas+1)/p_npas;
-linst=list(linsta);
+linsta=P_T1*numpy.arange(p_npas+1)/p_npas
+linst=list(linsta)
 
-LISTINST=DEFI_LIST_REEL(VALE=list(linst));
+LISTINST=DEFI_LIST_REEL(VALE=list(linst))
 
 ######################################
 # Definition de la solution analytique
@@ -227,7 +227,7 @@ FLUHZ0 = FORMULE(VALE='FLUHZ(0.,X,Y,Z)',
 #####################
 
 MAILL_00=LIRE_MAILLAGE(UNITE=20,
-                       FORMAT='MED');
+                       FORMAT='MED')
 
 ###############################
 # Champ de deplacements initial
@@ -239,19 +239,19 @@ DEP_00=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_F',
                   MAILLAGE=MAILL_00,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP=('DX','DY','DZ','PRE1'),
-                          VALE_F=(UX0,UY0,UZ0,P0)));
+                          VALE_F=(UX0,UY0,UZ0,P0)))
 
 DEP_INIB=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_NOLI',
                    NOM_CHAM='DEPL',
                    AFFE=_F(CHAM_GD=DEP_00,
-                           INST=0.));
+                           INST=0.))
 
 DEPL_INI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=DEP_INIB,
                     NUME_ORDRE=1,
-                    NOM_CHAM='DEPL');
+                    NOM_CHAM='DEPL')
 
 ######################################
 # Affectation du modele et du materiau
@@ -260,7 +260,7 @@ DEPL_INI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 MODE_00=AFFE_MODELE(MAILLAGE=MAILL_00,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D_HMS'));
+                            MODELISATION='3D_HMS'))
 
 ###########################################
 # On cree un champ de contraintes initiales
@@ -269,12 +269,12 @@ MODE_00=AFFE_MODELE(MAILLAGE=MAILL_00,
 CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                 OPERATION='EXTR',
                 MAILLAGE=MAILL_00,
-                NOM_CHAM='GEOMETRIE');
+                NOM_CHAM='GEOMETRIE')
 
 CHXG=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R',
                 OPERATION='DISC', PROL_ZERO='OUI',
                 MODELE=MODE_00,
-                CHAM_GD=CHXN);
+                CHAM_GD=CHXN)
 
 SIEFINI1=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F',
                     OPERATION='AFFE',
@@ -284,12 +284,12 @@ SIEFINI1=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F',
                             NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12','X13','X14','X15'),
                             VALE_F=(SIGXX0,SIGXX0,SIGXX0,SIGXY0,SIGXZ0,SIGYZ0,
                                     SIGPRE0, SIGPRE0, SIGPRE0,ZERO,ZERO,ZERO,
-                                    FLUHX0,FLUHY0,FLUHZ0)));
+                                    FLUHX0,FLUHY0,FLUHZ0)))
 
 SIEFINI2=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R',
                     OPERATION='EVAL',
                     CHAM_F=SIEFINI1,
-                    CHAM_PARA=CHXG);
+                    CHAM_PARA=CHXG)
 
 SIEF_INI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     OPERATION='ASSE',
@@ -300,7 +300,7 @@ SIEF_INI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                             NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12','X13','X14','X15'),
                             NOM_CMP_RESU=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',
                                           'SIPXX','SIPYY','SIPZZ','SIPXY','SIPXZ','SIPYZ',
-                                          'FH11X','FH11Y','FH11Z')));
+                                          'FH11X','FH11Y','FH11Z')))
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=P_E,
                                NU=P_NU,
@@ -318,7 +318,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=P_E,
                        THM_LIQU=_F(RHO=P_RHO_L,
                                    UN_SUR_K=0.0,
                                    VISC=UN,
-                                   D_VISC_TEMP=ZERO));
+                                   D_VISC_TEMP=ZERO))
 
 ###############################################################
 # Le chargement sur les bords est egal a la solution analytique
@@ -329,7 +329,7 @@ CHAR_00=AFFE_CHAR_CINE_F(MODELE=MODE_00,
                                       DX=DEPL_X,
                                       DY=DEPL_Y,
                                       DZ=DEPL_Z,
-                                      PRE1=PRESSION));
+                                      PRE1=PRESSION))
 
 FMX   = [None]*(p_npas+1)
 FMY   = [None]*(p_npas+1)
@@ -344,33 +344,33 @@ instant  = [None]*(p_npas+1)
 
 for k in range(p_npas+1) :
 
-  instant = str(eval('linst[k]'));
+  instant = str(eval('linst[k]'))
 
   FMX = FORMULE(VALE='FXME('+instant+',X,Y,Z)',
                 NOM_PARA=('X','Y','Z'),
-                FXME=FXME);
+                FXME=FXME)
 
   FMY = FORMULE(VALE='FYME('+instant+',X,Y,Z)',
                 NOM_PARA=('X','Y','Z'),
-                FYME=FYME);
+                FYME=FYME)
 
   FMZ = FORMULE(VALE='FZME('+instant+',X,Y,Z)',
                 NOM_PARA=('X','Y','Z'),
-                FZME=FZME);
+                FZME=FZME)
 
   FORF=CREA_CHAMP(TYPE_CHAM='NOEU_FORC_F',
                  OPERATION='AFFE',
                  MODELE=MODE_00,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP=('FX','FY','FZ'),
-                         VALE_F=(FMX,FMY,FMZ)));
+                         VALE_F=(FMX,FMY,FMZ)))
   if (k == 0) :
 
     CHAME=CREA_RESU(OPERATION='AFFE',
                     TYPE_RESU='EVOL_CHAR',
                     NOM_CHAM='FVOL_3D',
                     AFFE=_F(CHAM_GD=FORF,
-                            INST=eval(instant)));
+                            INST=eval(instant)))
   else :
     CHAME=CREA_RESU(reuse=CHAME,
                     RESULTAT=CHAME,
@@ -378,16 +378,16 @@ for k in range(p_npas+1) :
                     TYPE_RESU='EVOL_CHAR',
                     NOM_CHAM='FVOL_3D',
                     AFFE=_F(CHAM_GD=FORF,
-                            INST=eval(instant)));
+                            INST=eval(instant)))
 
-  DETRUIRE(NOM=(FMX,FMY,FMZ,FORF));
+  DETRUIRE(NOM=(FMX,FMY,FMZ,FORF))
 
 CHARME=AFFE_CHAR_MECA(MODELE=MODE_00,
-                      EVOL_CHAR=CHAME);
+                      EVOL_CHAR=CHAME)
 
 MATE_00=AFFE_MATERIAU(MAILLAGE=MAILL_00,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATERIAU));
+                              MATER=MATERIAU))
 ########################
 # Resolution du probleme
 ########################
@@ -402,7 +402,7 @@ RESU_00=STAT_NON_LINE(MODELE=MODE_00,
                       ETAT_INIT=_F(DEPL=DEPL_INI,
                                    SIGM=SIEF_INI),
                       SOLVEUR = _F(METHODE = 'MUMPS'),
-                      INCREMENT=_F(LIST_INST=LISTINST));
+                      INCREMENT=_F(LIST_INST=LISTINST))
 
 ########################################
 # On teste la solution a l'instant final
@@ -410,29 +410,29 @@ RESU_00=STAT_NON_LINE(MODELE=MODE_00,
 # p_no1, p_no2 et p_no3
 ########################################
 
-p_no1 = 'N1948' ;
+p_no1 = 'N1948'
 
-p_x1 = 0.8 ;
+p_x1 = 0.8
 
-p_y1 = 0.2 ;
+p_y1 = 0.2
 
-p_z1 = 0.2 ;
+p_z1 = 0.2
 
-p_no2 = 'N1900' ;
+p_no2 = 'N1900'
 
-p_x2 = 0.2 ;
+p_x2 = 0.2
 
-p_y2 = 0.8 ;
+p_y2 = 0.8
 
-p_z2 = 0.2 ;
+p_z2 = 0.2
 
-p_no3 = 'N2380' ;
+p_no3 = 'N2380'
 
-p_x3 = 0.2 ;
+p_x3 = 0.2
 
-p_y3 = 0.2 ;
+p_y3 = 0.2
 
-p_z3 = 0.8 ;
+p_z3 = 0.8
 
 TEST_RESU(RESU=(_F(INST=1.E-2,
                    REFERENCE='ANALYTIQUE',
@@ -557,4 +557,4 @@ TEST_RESU(RESU=(_F(INST=1.E-2,
                 ),
           )
 
-FIN();
+FIN()

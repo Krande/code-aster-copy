@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ TEST_RESU(RESU=_F(GROUP_NO=('P', ),
                   VALE_CALC=(dispCal1, ),
                   VALE_REFE=(dispRef1, )))
 
-# Calcul sur base physique 
+# Calcul sur base physique
 resgene = DYNA_LINE(BANDE_ANALYSE=(100.0, ),
                     BASE_CALCUL='GENE',
                     CHAM_MATER=fieldmat,
@@ -124,7 +124,7 @@ TEST_RESU(RESU=_F(GROUP_NO=('P', ),
                   VALE_CALC=(dispCal2, ),
                   VALE_REFE=(dispRef2, )))
 
-# Reference with 3D case (HEXA27) => too long 
+# Reference with 3D case (HEXA27) => too long
 '''tfin = 0.1'''
 tfin = 0.01
 dtN = 0.002
@@ -191,7 +191,7 @@ DEPL_DZ = RECU_FONCTION(GROUP_NO=('P', ),
                         NOM_CMP='DZ',
                         RESULTAT=DYNADNL)
 
-# Reference with 3D case (HEXA27) => too long 
+# Reference with 3D case (HEXA27) => too long
 '''dispRef3 = 0.14511192651534
 dispCal3 = 0.14505042018335
 dispTol3 = 0.05 * 0.01

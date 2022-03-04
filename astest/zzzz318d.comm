@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI', PHENOMENE='THERMIQUE', MODELISATION='3D',),
-                  );
+                  )
 
 # DEFINITION DES FONCTIONS DE TEMPERATURE ET D'HYDRATATION
 # --------------------------------------------------------
@@ -93,7 +93,7 @@ MOCOQ=AFFE_MODELE(MAILLAGE=MACOQ,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='DKT',),
-                  );
+                  )
 
 
 COQCA=AFFE_CARA_ELEM( MODELE=MOCOQ,
@@ -102,7 +102,7 @@ COQCA=AFFE_CARA_ELEM( MODELE=MOCOQ,
                                    COQUE_NCOU = 2,
                                    EPAIS = 1.0,
                                     ),
-                    );
+                    )
 
 
 

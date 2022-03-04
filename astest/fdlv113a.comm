@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 
 #
 # CAS TEST POUR L INTERACTION SOL-FLUIDE-STRUCTURE = SPHERE DOUBLE
-# - DDL SELON Z DE L INTERFACE MASQUES ;
-# - PLANS DE SYMETRIE BLOQUES SELON LA DIRECTION ORTHOGONALE ;
+# - DDL SELON Z DE L INTERFACE MASQUES
+# - PLANS DE SYMETRIE BLOQUES SELON LA DIRECTION ORTHOGONALE
 # - MODES STATIQUES CALCULES SUR L INTERFACE SOL-STRUCTURE ET SUR
-#   LA DEMI SPHERE INFERIEURE EXTERNE ;
+#   LA DEMI SPHERE INFERIEURE EXTERNE
 # - PAS DE MODES DYNAMIQUES
 #
 # MAILLAGE
@@ -341,11 +341,11 @@ mdzc1r7=CALC_FONCTION(EXTRACTION=_F(FONCTION=dzc1r7,
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=mdzc1r7,
                          VALE_PARA=21.0,
-                         TOLE_MACHINE=0.001,    # En attente issue24202 
+                         TOLE_MACHINE=0.001,    # En attente issue24202
                          VALE_CALC=0.016791,),
                       _F(FONCTION=mdxa1r7,
                          VALE_PARA=1.0,
-                         TOLE_MACHINE=0.001,    # En attente issue24202 
+                         TOLE_MACHINE=0.001,    # En attente issue24202
                          VALE_REFE=0.00026476,
                          PRECISION=0.09,
                          REFERENCE='SOURCE_EXTERNE',

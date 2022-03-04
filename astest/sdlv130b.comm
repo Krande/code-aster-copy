@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,25 +22,25 @@
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #----------------------------------------------
 #                MAILLAGE : hexa_5_30_50.mgib
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED',)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='SURFINF',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='SURFINF',),)
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -52,46 +52,46 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='3D',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D',),),)
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),);
+                       ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),)
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
                                  PFON=(0.,5.,15.,),
                                  NORMALE=(0.,0.,1.,),
                                  DTAN=(0.,-1.,0.,),),
-                    INFO=1,);
+                    INFO=1,)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         INFO=1,);
+                         INFO=1,)
 
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
-E = 205000000000.0;
+E = 205000000000.0
 
-nu = 0.0;
+nu = 0.0
 
-rho = 7800.0;
+rho = 7800.0
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=rho,),);
+                            RHO=rho,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
-                               MATER=ACIER,),);
+                               MATER=ACIER,),)
 
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------
-PRES = -10000000.0;
+PRES = -10000000.0
 
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -103,11 +103,11 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                 DZ=0.0,),
                              _F(GROUP_NO='N3760',
                                 DX=0.0,
-                                DZ=0.0,),),);
+                                DZ=0.0,),),)
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
-                               PRES=PRES,),);
+                               PRES=PRES,),)
 
 
 #----------------------------------------------
@@ -117,29 +117,29 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
 MELR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                     MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
-                    CHARGE=(CH1,CH2,),);
+                    CHARGE=(CH1,CH2,),)
 
 MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                     MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
-                    CHARGE=(CH1,CH2,),);
+                    CHARGE=(CH1,CH2,),)
 
 #----------------------------------------------
 #           ASSEMBLAGE DES MATRICES
 #----------------------------------------------
 
 NUM=NUME_DDL(MATR_RIGI=MELR,
-             );
+             )
 
 MATR=ASSE_MATRICE(MATR_ELEM=MELR,
-                  NUME_DDL=NUM,);
+                  NUME_DDL=NUM,)
 
 MATM=ASSE_MATRICE(MATR_ELEM=MELM,
-                  NUME_DDL=NUM,);
+                  NUME_DDL=NUM,)
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
@@ -148,26 +148,26 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH2),
                           ),
                    INFO=1,
-                   );
+                   )
 # CALCUL DES CONTRAINTES ASSOCIEES
 
 CONTR=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='EXTR',
                  RESULTAT=UTOT1,
                  NOM_CHAM='SIEF_ELGA',
-                 NUME_ORDRE=1,);
+                 NUME_ORDRE=1,)
 
 MELRG=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                      MODELE=MODELEK,
-                     SIEF_ELGA=CONTR,);
+                     SIEF_ELGA=CONTR,)
 
 MATRG=ASSE_MATRICE(MATR_ELEM=MELRG,
-                   NUME_DDL=NUM,);
+                   NUME_DDL=NUM,)
 
 MATRC=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR,
                                 COEF_R=1.0,),
                              _F(MATR_ASSE=MATRG,
-                                COEF_R=1.0,),),);
+                                COEF_R=1.0,),),)
 
 #----------------------------------------------
 #                   CALCUL MODAL
@@ -188,22 +188,22 @@ MODES=CALC_MODES(MATR_RIGI=MATRC,
 #----------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
-                       INFO=2,);
+                       INFO=2,)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='3D',),);
+                             MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU=MOD_VISU,
                         RESULTAT=MODES,
-                        INFO=1,);
+                        INFO=1,)
 
 IMPR_RESU(FORMAT='GMSH',
           UNITE=37,
           RESU=_F(RESULTAT=RES_XFEM,
                   TYPE_CHAM='VECT_3D',
-                  NOM_CMP=('DX','DY','DZ',),),);
+                  NOM_CMP=('DX','DY','DZ',),),)
 
 #----------------------------------------------
 #               VALIDATION DES RESULTATS
@@ -289,4 +289,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=8,
                   PRECISION=5.0000000000000001E-3,),
           )
 
-FIN();
+FIN()

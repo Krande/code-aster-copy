@@ -81,4 +81,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # np.savez("/tmp/res.npz", md=matr_dense, data=data, row=row, col=col)
 
-FIN();
+FIN()

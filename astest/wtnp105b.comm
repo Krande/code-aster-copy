@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                        _F(JUSQU_A=5000000000.,NOMBRE=100,),
-                                 ),);
+                                 ),)
 
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -38,12 +38,12 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='GAUCHE',),
                                _F(GROUP_MA='DROIT',),
                                _F(GROUP_MA='BO',),
-                               ),);
+                               ),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HH2MS',),);
+                           MODELISATION='D_PLAN_HH2MS',),)
 
 MAIL=DEFI_GROUP( reuse=MAIL,
                MAILLAGE=MAIL,
@@ -56,34 +56,34 @@ MAIL=DEFI_GROUP( reuse=MAIL,
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='GAUCHE'),
                                  ),)
-UN=DEFI_CONSTANTE(VALE=1.0,);
-UNDEMI=DEFI_CONSTANTE(VALE=0.5,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
+UNDEMI=DEFI_CONSTANTE(VALE=0.5,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,);
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,)
 
-VISCOGAZ=DEFI_CONSTANTE(VALE=1.E-03,);
+VISCOGAZ=DEFI_CONSTANTE(VALE=1.E-03,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,)
 
-DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,)
 
 LI2=DEFI_LIST_REEL(DEBUT=-1.E9,
                       INTERVALLE=(
                                   _F(JUSQU_A=1.E9,
-                                     NOMBRE=500,),),);
+                                     NOMBRE=500,),),)
 
 LI1=DEFI_LIST_REEL(DEBUT=0.1,
                    INTERVALLE=_F(JUSQU_A=0.99,
-                                 PAS=1.E-2,),);
+                                 PAS=1.E-2,),)
 
 
 
 
 
 # LIMITATION DE LA SATURATION MAX (<1)
-#CONSTBO = DEFI_CONSTANTE ( VALE : 0.99);
+#CONSTBO = DEFI_CONSTANTE ( VALE : 0.99)
 #
 
 
@@ -95,10 +95,10 @@ SATUBO=CALC_FONC_INTERP(FONCTION=SLO,
 NOM_PARA='PCAP',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
-                        INFO=2,);
+                        INFO=2,)
 
 
-DSATBO=DEFI_CONSTANTE(VALE=0.,);
+DSATBO=DEFI_CONSTANTE(VALE=0.,)
 #
 
 #
@@ -106,10 +106,10 @@ DSATBO=DEFI_CONSTANTE(VALE=0.,);
 #
 
 
-FICK=DEFI_CONSTANTE(VALE=6.E-10,);
+FICK=DEFI_CONSTANTE(VALE=6.E-10,)
 
-KINTBO=DEFI_CONSTANTE(VALE=1.E-19,);
-HENRY=DEFI_CONSTANTE(VALE=50000.,);
+KINTBO=DEFI_CONSTANTE(VALE=1.E-19,)
+HENRY=DEFI_CONSTANTE(VALE=50000.,)
 
 
 
@@ -160,12 +160,12 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                                    D_PERM_PRES_GAZ=ZERO,
                                    FICKV_T=ZERO,
                                    FICKA_T=FICK,
-                                   ),);
+                                   ),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=(_F(GROUP_MA='BO',
                               MATER=MATERBO,),
-                              ),);
+                              ),)
 
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
@@ -181,7 +181,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                           _F(TOUT='OUI',
                              NOM_CMP='PRE1',
                              VALE=1.E6,),
-                             ),);
+                             ),)
 
 
 
@@ -196,7 +196,7 @@ TIMP=AFFE_CHAR_MECA(MODELE=MODELE,
                      _F(GROUP_NO='GAUCHES',
                              PRE1=1.E6,),
                              ),
-                             );
+                             )
 
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
@@ -221,7 +221,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                              0.0,0.0,0.0,
                              0.0,0.0,0.0,0.0,
                              0.,0.,0.,0.),),
-                             ),  );
+                             ),  )
 
 
 U0=STAT_NON_LINE(MODELE=MODELE,
@@ -245,7 +245,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                                 ),
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
-                 );
+                 )
 
 U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U0)
 
@@ -275,4 +275,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   PRECISION=0.050000000000000003,),
           )
 
-FIN();
+FIN()

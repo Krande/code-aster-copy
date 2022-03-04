@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=0.529606351907,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=stnl,
@@ -90,7 +90,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=1.80949985804,
                    ),
                 ),
-          );
+          )
 
 # Test des coordonnées réduites (calcul réduit avec prédiction standard)
 TEST_TABLE(
@@ -152,7 +152,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=0.529809828586,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=redu,
@@ -186,7 +186,7 @@ TEST_RESU(RESU=(
                    PRECISION = 0.002,
                    ),
                 ),
-          );
+          )
 
 # Test des coordonnées réduites (calcul réduit avec prédiction EXTRAPOLE)
 TEST_TABLE(
@@ -248,5 +248,5 @@ TEST_RESU(RESU=(
                    VALE_CALC=0.529809828586,
                    ),
                 ),
-          );
+          )
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,20 +27,20 @@
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
-MESH0=LIRE_MAILLAGE(FORMAT="ASTER",);
+MESH0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MESH=CREA_MAILLAGE(MAILLAGE=MESH0,
                    CREA_POI1=(_F(NOM_GROUP_MA='NE_FRICT',
                                  GROUP_NO='N_FRICT',),
                               _F(NOM_GROUP_MA='NE_IMPOF',
-                                 GROUP_NO='N_IMPOF',),),);
+                                 GROUP_NO='N_IMPOF',),),)
 
 MODEL=AFFE_MODELE(MAILLAGE=MESH,
                   AFFE=(_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DIS_T',),),);
+                           MODELISATION='DIS_T',),),)
 
 
 k = 1.E4; # spring
@@ -55,17 +55,17 @@ ELEM=AFFE_CARA_ELEM(MODELE=MODEL,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.)),
                              _F(CARA='M_T_D_N',
                                 GROUP_MA=('NE_FRICT','NE_IMPOF'),
-                                VALE=m,), ),);
+                                VALE=m,), ),)
 
 
 BOUNDARY=AFFE_CHAR_MECA(MODELE=MODEL,
                         DDL_IMPO=(_F(GROUP_NO='N_ALL',
                                      DY=0.,
-                                     DZ=0.,),),);
+                                     DZ=0.,),),)
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
                      FORCE_NODALE=_F(GROUP_NO='N_IMPOF',
-                                     FX=1.),);
+                                     FX=1.),)
 
 ASSEMBLAGE(MODELE=MODEL,
                 CARA_ELEM=ELEM,
@@ -77,14 +77,14 @@ ASSEMBLAGE(MODELE=MODEL,
                               OPTION='MASS_MECA',),),
                 VECT_ASSE=(_F(VECTEUR=CO("F_ASSEMB"),
                               OPTION='CHAR_MECA',
-                              CHARGE=FORCE),),);
+                              CHARGE=FORCE),),)
 
 F0=3000.; # value of the imposed force
 F_FUNCT=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.0,F0,
                             0.2,F0,
                             0.200001,0.0),
-                      PROL_DROITE='CONSTANT',);
+                      PROL_DROITE='CONSTANT',)
 
 MODES=CALC_MODES(MATR_RIGI=K_ASSEMB,
                  OPTION='BANDE',
@@ -98,7 +98,7 @@ MODES=CALC_MODES(MATR_RIGI=K_ASSEMB,
 IMPR_RESU(UNITE=80,
           FORMAT='MED',
           RESU=_F(MAILLAGE=MESH,
-                  RESULTAT=MODES,),);
+                  RESULTAT=MODES,),)
 
 
 PROJ_BASE(BASE=MODES,
@@ -108,13 +108,13 @@ PROJ_BASE(BASE=MODES,
                           _F(MATRICE=CO('K_GENERA'),
                              MATR_ASSE=K_ASSEMB,),),
           VECT_ASSE_GENE=_F(VECTEUR=CO('F_GENERA'),
-          VECT_ASSE=F_ASSEMB, TYPE_VECT='FORC'),);
+          VECT_ASSE=F_ASSEMB, TYPE_VECT='FORC'),)
 
 
-OBSTA_F=DEFI_OBSTACLE(TYPE='PLAN_Z',);
+OBSTA_F=DEFI_OBSTACLE(TYPE='PLAN_Z',)
 
-duration = 0.35;
-time_step = 1.e-04;
+duration = 0.35
+time_step = 1.e-04
 
 testlist = [0.02, 0.15, 0.339965]
 
@@ -143,7 +143,7 @@ RESU_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   FROTTEMENT='COULOMB_STAT_DYNA',
                                   COULOMB_DYNA=0.2,
                                   COULOMB_STAT=0.3,),),
-                                 );
+                                 )
 
 
 ### Grandeurs au noeud de traction:
@@ -152,21 +152,21 @@ DX_IMPOF=RECU_FONCTION(RESU_GENE=RESU_GEN,
                       TOUT_INST='OUI',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
-                      GROUP_NO='N_IMPOF');
+                      GROUP_NO='N_IMPOF')
 
 SX_IMPOF=RECU_FONCTION(RESU_GENE=RESU_GEN,
                     #   RESULTAT=RESU_PHY,
                       TOUT_INST='OUI',
                       NOM_CHAM='VITE',
                       NOM_CMP='DX',
-                      GROUP_NO='N_IMPOF',);
+                      GROUP_NO='N_IMPOF',)
 
 AX_IMPOF=RECU_FONCTION(RESU_GENE=RESU_GEN,
                     #   RESULTAT=RESU_PHY,
                       TOUT_INST='OUI',
                       NOM_CHAM='ACCE',
                       NOM_CMP='DX',
-                      GROUP_NO='N_IMPOF',);
+                      GROUP_NO='N_IMPOF',)
 
 ### Grandeurs au noeud de frottement
 
@@ -174,29 +174,29 @@ DX_FRICT=RECU_FONCTION(RESU_GENE=RESU_GEN,
                        TOUT_INST='OUI',
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
-                       GROUP_NO='N_FRICT',);
+                       GROUP_NO='N_FRICT',)
 
 SX_FRICT=RECU_FONCTION(RESU_GENE=RESU_GEN,
                        TOUT_INST='OUI',
                        NOM_CHAM='VITE',
                        NOM_CMP='DX',
-                       GROUP_NO='N_FRICT',);
+                       GROUP_NO='N_FRICT',)
 
 AX_FRICT=RECU_FONCTION(RESU_GENE=RESU_GEN,
                        TOUT_INST='OUI',
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
-                       GROUP_NO='N_FRICT',);
+                       GROUP_NO='N_FRICT',)
 
 FN_FRICT=RECU_FONCTION(RESU_GENE=RESU_GEN,
                        GROUP_NO_CHOC='N_FRICT',
                        PARA_X='INST',
-                       PARA_Y='FN',);
+                       PARA_Y='FN',)
 
 FT_FRICT=RECU_FONCTION(RESU_GENE=RESU_GEN,
                        GROUP_NO_CHOC='N_FRICT',
                        PARA_X='INST',
-                       PARA_Y='FT1',);
+                       PARA_Y='FT1',)
 
 
 
@@ -212,7 +212,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
                       _F(FONCTION=FN_FRICT,),
                       _F(FONCTION=FT_FRICT,),
               _F(FONCTION=F_FUNCT,)),
-              UNITE=38,);
+              UNITE=38,)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.062164499878E-05,
                          VALE_REFE=0.0,
@@ -259,4 +259,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.062164499878E-05,
                       ),
               )
 
-FIN();
+FIN()

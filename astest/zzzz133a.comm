@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,20 +52,20 @@ MAT = DEFI_MATERIAU( ELAS_ORTH_FO =_F(  E_L   = EL,
                                         NU_TN = NUTN,
                                         B_ENDOGE = 1.5,
                                         K_DESSIC = 3.5), )
-                                    
+
 HYDRIMP = DEFI_FONCTION( NOM_PARA='INST',
                          NOM_RESU='HYDR',
                          VALE=( 0. , 0. , 1. , 2.),)
-                         
+
 SECHIMP = DEFI_FONCTION( NOM_PARA='INST',
                          NOM_RESU='SECH',
                          VALE=( 0. , SECHI , 1. , SECHF),)
-                       
+
 LINST = DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(_F(JUSQU_A=1.0,
                                       NOMBRE=1,),
-                                        ),);
-                       
+                                        ),)
+
 UHYDR = SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='ELAS',),
                        MATER=MAT,
                        SUPPORT='POINT',
@@ -73,8 +73,8 @@ UHYDR = SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='ELAS',),
                                        VALE_FONC = HYDRIMP),
                                     ),
                        INCREMENT=_F(LIST_INST=LINST,),
-                       INFO=1,);
-                       
+                       INFO=1,)
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=-3.0,
            VALE_REFE=-3.0,
@@ -84,7 +84,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      NOM_PARA='INST',
                      VALE=1.0,),
            )
-           
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=-3.0,
            VALE_REFE=-3.0,
@@ -94,7 +94,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      NOM_PARA='INST',
                      VALE=1.0,),
            )
-           
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=-3.0,
            VALE_REFE=-3.0,
@@ -104,7 +104,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      NOM_PARA='INST',
                      VALE=1.0,),
            )
-           
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.0,
            VALE_REFE=0.0,
@@ -123,7 +123,7 @@ USECH = SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='ELAS',),
                                        VALE_REF = SECHREF),
                                     ),
                        INCREMENT=_F(LIST_INST=LINST,),
-                       INFO=2,);
+                       INFO=2,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=14.0,
@@ -134,7 +134,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      NOM_PARA='INST',
                      VALE=1.0,),
            )
-           
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=14.0,
            VALE_REFE=14.0,
@@ -144,7 +144,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      NOM_PARA='INST',
                      VALE=1.0,),
            )
-           
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=14.0,
            VALE_REFE=14.0,
@@ -154,7 +154,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      NOM_PARA='INST',
                      VALE=1.0,),
            )
-           
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.0,
            VALE_REFE=0.0,

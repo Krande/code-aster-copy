@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -213,22 +213,22 @@ RODEPX=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
                      GROUP_NO='N4',
-                     TITRE='DEP X',);
+                     TITRE='DEP X',)
 RODEPY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
                      GROUP_NO='N4',
-                     TITRE='DEP Y',);
+                     TITRE='DEP Y',)
 ROSIGX=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIXX',
                      GROUP_NO='N4',
-                     TITRE='SIG X',);
+                     TITRE='SIG X',)
 ROSIGY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIYY',
                      GROUP_NO='N4',
-                     TITRE='SIG Y',);
+                     TITRE='SIG Y',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    RESULTAT=U2,

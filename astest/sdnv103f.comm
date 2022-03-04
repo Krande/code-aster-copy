@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,29 +31,29 @@ MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
 
 MODE=AFFE_MODELE(
             MAILLAGE=MA,
-            
+
             AFFE=(
 _F( TOUT='OUI',
                PHENOMENE = 'MECANIQUE',
                MODELISATION = ('AXIS')),
            _F( TOUT='OUI',
                PHENOMENE = 'MECANIQUE',
-               MODELISATION = ('AXIS_SI',)),),);
+               MODELISATION = ('AXIS_SI',)),),)
 
 MA=MODI_MAILLAGE( reuse=MA,
              MAILLAGE=MA,
              ORIE_PEAU=_F(  GROUP_MA_PEAU = ('SZZ', 'RIGID')),
-             INFO=2);
+             INFO=2)
 
 ACIER=DEFI_MATERIAU(
                 ELAS=_F( E = 117.E3, NU = 0.35,  RHO = 8.930E-9),
-                ECRO_LINE=_F(D_SIGM_EPSI = 100., SY = 400.));
+                ECRO_LINE=_F(D_SIGM_EPSI = 100., SY = 400.))
 
 CHMAT = AFFE_MATERIAU(
             MAILLAGE=MA,
             AFFE=(
               _F( GROUP_MA = ('VOL','VOL_RIG'), MATER = ACIER),),
-                        );
+                        )
 
 CH=AFFE_CHAR_MECA(
             MODELE=MODE,
@@ -62,7 +62,7 @@ CH=AFFE_CHAR_MECA(
              _F( GROUP_MA = 'VOL_RIG',    DX = 0., DY = 0.),
              _F( GROUP_MA = 'AXE',        DX = 0.),
              ),
-               );
+               )
 
 CH2 = DEFI_CONTACT(MODELE         = MODE,
                    FORMULATION    = 'CONTINUE',
@@ -95,7 +95,7 @@ VIT_0=CREA_CHAMP( OPERATION='AFFE',
                      _F(GROUP_NO = 'RIGID',
                         NOM_CMP = ('DX', 'DY'),
                         VALE = (  0.0,  0.0, )),
-                    ));
+                    ))
 
 
 # AVEC DETECTION DE COLLISION
@@ -107,7 +107,7 @@ IFIN        = +2.0E-5
 temps2=DEFI_LIST_REEL(DEBUT=-1.E-5,
                       INTERVALLE=(_F(JUSQU_A=IFIN,
                                      NOMBRE=NPAS_IMPA,),
-                                   ),);
+                                   ),)
 
 
 
@@ -151,7 +151,7 @@ RESU2=DYNA_NON_LINE(MODELE=MODE,SOLVEUR=_F(METHODE='MULT_FRONT'),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
                                   ITER_GLOB_MAXI=30,
                                   ARRET='OUI',),
-                   );
+                   )
 
 #
 ### POST-TRAITEMENTS
@@ -169,21 +169,21 @@ VITEA2_2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
                                 RESULTAT=RESU2,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 DEPLA1_2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A1',
                                 GROUP_NO= 'A1',
                                 RESULTAT=RESU2,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 DEPLB1_2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
                                 GROUP_NO= 'B1',
                                 RESULTAT=RESU2,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 
 #####################################################
@@ -256,22 +256,22 @@ TEST_TABLE(CRITERE='ABSOLU',
 F_DY_2=RECU_FONCTION( RESULTAT=RESU2,
                       NOM_CHAM='DEPL',
                       GROUP_NO='A1',
-                      NOM_CMP='DY',);
+                      NOM_CMP='DY',)
 IMPR_FONCTION(FORMAT='XMGRACE',
           UNITE=41,
           COURBE=(
-       _F(FONCTION=F_DY_2),),);
+       _F(FONCTION=F_DY_2),),)
 
 
 
 F_VY_2=RECU_FONCTION( RESULTAT=RESU2,
                       NOM_CHAM='VITE',
                       GROUP_NO='A1',
-                      NOM_CMP='DY',);
+                      NOM_CMP='DY',)
 IMPR_FONCTION(FORMAT='XMGRACE',
           UNITE=42,
           COURBE=(
-       _F(FONCTION=F_VY_2),),);
+       _F(FONCTION=F_VY_2),),)
 
 
 FIN()

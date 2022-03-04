@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -135,7 +135,7 @@ PHASINIT=CREA_CHAMP(AFFE=_F(VALE=(0.7,0.0,0.3,0.0,0.0,0.0, 0.0),
                             TOUT='OUI',),
                     TYPE_CHAM='CART_VAR2_R',
                     MAILLAGE=MAIL,
-                    OPERATION='AFFE',);
+                    OPERATION='AFFE',)
 
 
 TEMPE=CALC_META(reuse=TEMPE,
@@ -145,7 +145,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
                 COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),
-                OPTION='META_ELNO',);
+                OPTION='META_ELNO',)
 
 
 PHAS_0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',

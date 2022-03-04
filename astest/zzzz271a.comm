@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -156,9 +156,9 @@ TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
 MA4=LIRE_MAILLAGE(FORMAT='MED',UNITE=14)
 MA3_0=LIRE_MAILLAGE(FORMAT='MED',UNITE=13)
 # on raffine le maillage trop grossier forme de TETRA4 (1 PG par maille) :
-MACR_ADAP_MAIL(MAILLAGE_N=MA3_0, MAILLAGE_NP1=CO('MA3_1'), ADAPTATION='RAFFINEMENT_UNIFORME',);
-MACR_ADAP_MAIL(MAILLAGE_N=MA3_1, MAILLAGE_NP1=CO('MA3_2'), ADAPTATION='RAFFINEMENT_UNIFORME',);
-MACR_ADAP_MAIL(MAILLAGE_N=MA3_2, MAILLAGE_NP1=CO('MA3'),   ADAPTATION='RAFFINEMENT_UNIFORME',);
+MACR_ADAP_MAIL(MAILLAGE_N=MA3_0, MAILLAGE_NP1=CO('MA3_1'), ADAPTATION='RAFFINEMENT_UNIFORME',)
+MACR_ADAP_MAIL(MAILLAGE_N=MA3_1, MAILLAGE_NP1=CO('MA3_2'), ADAPTATION='RAFFINEMENT_UNIFORME',)
+MACR_ADAP_MAIL(MAILLAGE_N=MA3_2, MAILLAGE_NP1=CO('MA3'),   ADAPTATION='RAFFINEMENT_UNIFORME',)
 
 
 # 2. Affectation des modeles
@@ -367,4 +367,4 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        #VALE_REFE=200,),
           #)
 
-FIN();
+FIN()

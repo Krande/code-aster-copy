@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=5.E5,
-                                    NOMBRE=10,),),);
+                                    NOMBRE=10,),),)
 
 EVOLFLU=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.0,0.0,10000.0,1.0),
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED', );
+MAIL=LIRE_MAILLAGE(FORMAT='MED', )
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -37,26 +37,26 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='LGAUCHE',),
                                _F(GROUP_MA='LBAS',),
                                _F(GROUP_MA='LHAUT',),
-                               _F(GROUP_MA='BG',),),);
+                               _F(GROUP_MA='BG',),),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_THMS',),);
+                           MODELISATION='AXIS_THMS',),)
 
-BIDON=DEFI_CONSTANTE(VALE=0.0,);
+BIDON=DEFI_CONSTANTE(VALE=0.0,)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,);
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,)
 
-LAMB=DEFI_CONSTANTE(VALE=1.8,);
+LAMB=DEFI_CONSTANTE(VALE=1.8,)
 
-KINTBG=DEFI_CONSTANTE(VALE=9.9999999999999998E-20,);
+KINTBG=DEFI_CONSTANTE(VALE=9.9999999999999998E-20,)
 
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
@@ -102,30 +102,30 @@ MATERBG=DEFI_MATERIAU(ELAS=_F(E=2.166000000E9,
                                    D_PERM_SATU_GAZ=BIDON,
                                    D_PERM_PRES_GAZ=BIDON,
                                    LAMB_T=LAMB,
-                                   ),);
+                                   ),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(GROUP_MA='BG',
-                             MATER=MATERBG,),);
+                             MATER=MATERBG,),)
 
 CALBORD=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=(_F(GROUP_NO='LGAUCHE',
                                     DX=0.0,),
                                  _F(GROUP_NO='LDROIT',
-                                    DX=0.0,),),);
+                                    DX=0.0,),),)
 
 CALBAS=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=_F(GROUP_NO='LBAS',
-                                  DY=0.0,),);
+                                  DY=0.0,),)
 
 CALHAUT=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='LHAUT',
-                                   DY=0.0,),);
+                                   DY=0.0,),)
 
 FLUXT=AFFE_CHAR_MECA(MODELE=MODELE,
                      FLUX_THM_REP=_F(GROUP_MA='LHAUT',
                                      FLUN=100.0,
-                                     FLUN_HYDR1=0.0,),);
+                                     FLUN_HYDR1=0.0,),)
 
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
@@ -140,7 +140,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
-                 ARCHIVAGE=_F(PAS_ARCH=1,),);
+                 ARCHIVAGE=_F(PAS_ARCH=1,),)
 
 U0=CALC_CHAMP(reuse=U0,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U0)
 
@@ -221,4 +221,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET',))
 
-MAILLAG0 = LIRE_MAILLAGE(FORMAT='MED') ;
+MAILLAG0 = LIRE_MAILLAGE(FORMAT='MED')
 #
 MAILLAG0=DEFI_GROUP(reuse =MAILLAG0,
                 MAILLAGE=MAILLAG0,
                 CREA_GROUP_NO=_F(GROUP_MA=('SBASE','SEXTER'),
                                 ),
-               );
+               )
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
     CREA_POI1=(
@@ -46,12 +46,12 @@ MODELE = AFFE_MODELE( MAILLAGE= MAILLAGE,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D_ABSO'),
                 ),
-                        ) ;
+                        )
 #
 
 mat1      = DEFI_MATERIAU( ELAS=_F( E= 4.13E+9 , RHO= 2420.,
                                     AMOR_HYST = 0.1,
-                                    NU= 0.333  )    ) ;
+                                    NU= 0.333  )    )
 
 
 champmat = AFFE_MATERIAU( MAILLAGE= MAILLAGE,
@@ -59,33 +59,33 @@ champmat = AFFE_MATERIAU( MAILLAGE= MAILLAGE,
               _F( GROUP_MA= 'VOLUM' , MATER= mat1 ),
               _F( GROUP_MA= 'SEXTER' , MATER= mat1 ),
               )
-                           ) ;
+                           )
 #
 # La structure est liaisonnee a l interface SBASE
 #-----------------------------------------
 cond_lim = AFFE_CHAR_MECA( MODELE= MODELE,
                        LIAISON_SOLIDE=(_F(GROUP_NO=('SBASE')),
                                       ),
-                                             ) ;
+                                             )
 
 charge1 = AFFE_CHAR_MECA( MODELE= MODELE,
                        FORCE_NODALE=_F(GROUP_NO='PB', FX=1.E6),
-                                             ) ;
+                                             )
 charge2 = AFFE_CHAR_MECA( MODELE= MODELE,
                        FORCE_NODALE=_F(GROUP_NO='PB', FY=1.E6),
-                                             ) ;
+                                             )
 charge3 = AFFE_CHAR_MECA( MODELE= MODELE,
                        FORCE_NODALE=_F(GROUP_NO='PB', FZ=1.E6),
-                                             ) ;
+                                             )
 charge4 = AFFE_CHAR_MECA( MODELE= MODELE,
                        FORCE_NODALE=_F(GROUP_NO='PB', MX=1.E6),
-                                             ) ;
+                                             )
 charge5 = AFFE_CHAR_MECA( MODELE= MODELE,
                        FORCE_NODALE=_F(GROUP_NO='PB', MY=1.E6),
-                                             ) ;
+                                             )
 charge6 = AFFE_CHAR_MECA( MODELE= MODELE,
                        FORCE_NODALE=_F(GROUP_NO='PB', MZ=1.E6),
-                                             ) ;
+                                             )
 
 caraele = AFFE_CARA_ELEM( MODELE=MODELE,
                         DISCRET=(
@@ -99,7 +99,7 @@ caraele = AFFE_CARA_ELEM( MODELE=MODELE,
                                     CARA='A_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0)),
                                   ),
-                         );
+                         )
 
 # FIN DE AFFE_CARA_ELEM  ------------
 #
@@ -108,18 +108,18 @@ caraele = AFFE_CARA_ELEM( MODELE=MODELE,
 rigi_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
-                             CHARGE= cond_lim                      ) ;
+                             CHARGE= cond_lim                      )
 
 righ_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA_HYST',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
                              RIGI_MECA= rigi_ele,
-                             CHARGE= cond_lim                      ) ;
+                             CHARGE= cond_lim                      )
 
 mass_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'MASS_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
-                             CHARGE= cond_lim                      ) ;
+                             CHARGE= cond_lim                      )
 
 
 amor_ele = CALC_MATR_ELEM( MODELE=MODELE,
@@ -129,56 +129,56 @@ amor_ele = CALC_MATR_ELEM( MODELE=MODELE,
                              RIGI_MECA = rigi_ele,
                              MASS_MECA = mass_ele,
                              CHARGE= cond_lim
-                            );
+                            )
 
 vectele1=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
                              CHARGE= charge1
-                            );
+                            )
 vectele2=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
                              CHARGE= charge2
-                            );
+                            )
 vectele3=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
                              CHARGE= charge3
-                            );
+                            )
 vectele4=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
                              CHARGE= charge4
-                            );
+                            )
 vectele5=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
                              CHARGE= charge5
-                            );
+                            )
 vectele6=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
                              CHARGE= charge6
-                            );
+                            )
 
 nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele)
 
 #
 # Assemblage des matrices et vecteurs=
 #-------------------------------------
-rigihyst = ASSE_MATRICE( MATR_ELEM= righ_ele , NUME_DDL= nume_ddl ) ;
+rigihyst = ASSE_MATRICE( MATR_ELEM= righ_ele , NUME_DDL= nume_ddl )
 
-masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
+masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl )
 
-amort    = ASSE_MATRICE( MATR_ELEM= amor_ele , NUME_DDL= nume_ddl ) ;
+amort    = ASSE_MATRICE( MATR_ELEM= amor_ele , NUME_DDL= nume_ddl )
 
-vecas1   = ASSE_VECTEUR( VECT_ELEM= vectele1 , NUME_DDL= nume_ddl ) ;
-vecas2   = ASSE_VECTEUR( VECT_ELEM= vectele2 , NUME_DDL= nume_ddl ) ;
-vecas3   = ASSE_VECTEUR( VECT_ELEM= vectele3 , NUME_DDL= nume_ddl ) ;
-vecas4   = ASSE_VECTEUR( VECT_ELEM= vectele4 , NUME_DDL= nume_ddl ) ;
-vecas5   = ASSE_VECTEUR( VECT_ELEM= vectele5 , NUME_DDL= nume_ddl ) ;
-vecas6   = ASSE_VECTEUR( VECT_ELEM= vectele6 , NUME_DDL= nume_ddl ) ;
+vecas1   = ASSE_VECTEUR( VECT_ELEM= vectele1 , NUME_DDL= nume_ddl )
+vecas2   = ASSE_VECTEUR( VECT_ELEM= vectele2 , NUME_DDL= nume_ddl )
+vecas3   = ASSE_VECTEUR( VECT_ELEM= vectele3 , NUME_DDL= nume_ddl )
+vecas4   = ASSE_VECTEUR( VECT_ELEM= vectele4 , NUME_DDL= nume_ddl )
+vecas5   = ASSE_VECTEUR( VECT_ELEM= vectele5 , NUME_DDL= nume_ddl )
+vecas6   = ASSE_VECTEUR( VECT_ELEM= vectele6 , NUME_DDL= nume_ddl )
 
 #
 # CALCUL DES REPONSES
@@ -187,7 +187,7 @@ l_freq = DEFI_LIST_REEL(DEBUT = 8.5,
                         INTERVALLE = _F(JUSQU_A = 25.5,
                                         PAS = 17.,
                                        ),
-                        );
+                        )
 
 repot = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                           MODELE= MODELE,
@@ -204,7 +204,7 @@ repot = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                                  _F ( VECT_ASSE = vecas3,
                                       COEF_MULT= 1.),
                                   ),
-                        );
+                        )
 
 repor = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                           MODELE= MODELE,
@@ -221,40 +221,40 @@ repor = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                                  _F ( VECT_ASSE = vecas6,
                                       COEF_MULT= 1.),
                                   ),
-                        );
+                        )
 
 
 # Extraction des deplacements
 
 U11 = RECU_FONCTION ( RESULTAT = repot,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX')
 
 U51 = RECU_FONCTION ( RESULTAT = repot,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY')
 
 U22 = RECU_FONCTION ( RESULTAT = repot,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY')
 
 U42 = RECU_FONCTION ( RESULTAT = repot,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX')
 
 U33 = RECU_FONCTION ( RESULTAT = repot,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DZ');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DZ')
 
 U24 = RECU_FONCTION ( RESULTAT = repor,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY')
 
 U44 = RECU_FONCTION ( RESULTAT = repor,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX')
 
 U15 = RECU_FONCTION ( RESULTAT = repor,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX')
 
 U55 = RECU_FONCTION ( RESULTAT = repor,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY')
 
 U66 = RECU_FONCTION ( RESULTAT = repor,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRZ');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRZ')
 
 
 
@@ -265,7 +265,7 @@ MODELEB = AFFE_MODELE( MAILLAGE= MAILLAGE,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DST'),
                 ),
-                        ) ;
+                        )
 
 MODELE2 = AFFE_MODELE( MAILLAGE= MAILLAGE,
           AFFE=(
@@ -279,7 +279,7 @@ MODELE2 = AFFE_MODELE( MAILLAGE= MAILLAGE,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DST'),
                 ),
-                        ) ;
+                        )
 #
 
 
@@ -288,7 +288,7 @@ champmab = AFFE_MATERIAU( MAILLAGE= MAILLAGE,
               AFFE=(
               _F( GROUP_MA= 'SBASE' , MATER= mat1 ),
               )
-                           ) ;
+                           )
 #
 # La structure est encastree a l interface
 #-----------------------------------------
@@ -304,7 +304,7 @@ cond_lib = AFFE_CHAR_MECA( MODELE= MODELEB,
                                  ),
                        LIAISON_SOLIDE=(_F(GROUP_NO=('SBASE')),
                                       ),
-                                             ) ;
+                                             )
 
 
 cond_li2 = AFFE_CHAR_MECA( MODELE= MODELE2,
@@ -325,13 +325,13 @@ cond_li2 = AFFE_CHAR_MECA( MODELE= MODELE2,
                                  ),
                        LIAISON_SOLIDE=(_F(GROUP_NO=('SBASE')),
                                       ),
-                                             ) ;
+                                             )
 
 caraeleb = AFFE_CARA_ELEM( MODELE=MODELEB,
                         COQUE=_F(GROUP_MA='SBASE',
                                  ANGL_REP=(45.,45.),
                                  EPAIS=0.00001),
-                                 );
+                                 )
 
 caraele2 = AFFE_CARA_ELEM( MODELE=MODELE2,
                         COQUE=_F(GROUP_MA='SBASE',
@@ -347,7 +347,7 @@ caraele2 = AFFE_CARA_ELEM( MODELE=MODELE2,
                                  _F(GROUP_MA='RESSORT',
                                     CARA='K_TR_D_L',
                                     VALE=(1.0E12,1.0E12,1.0E12,1.0E12,1.0E12,1.0E12)),
-                                 ));
+                                 ))
 
 # FIN DE AFFE_CARA_ELEM  ------------
 #
@@ -356,40 +356,40 @@ caraele2 = AFFE_CARA_ELEM( MODELE=MODELE2,
 rigi_elb = CALC_MATR_ELEM( MODELE= MODELEB , OPTION= 'RIGI_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraeleb,
-                             CHARGE= cond_lib                      ) ;
+                             CHARGE= cond_lib                      )
 
 mass_elb = CALC_MATR_ELEM( MODELE= MODELEB , OPTION= 'MASS_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraeleb,
-                             CHARGE= cond_lib                      ) ;
+                             CHARGE= cond_lib                      )
 
 
-nume_ddb = NUME_DDL( MATR_RIGI= rigi_elb);
+nume_ddb = NUME_DDL( MATR_RIGI= rigi_elb)
 
 
 rigi_el2 = CALC_MATR_ELEM( MODELE= MODELE2 , OPTION= 'RIGI_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraele2,
-                             CHARGE= cond_li2                      ) ;
+                             CHARGE= cond_li2                      )
 
 mass_el2 = CALC_MATR_ELEM( MODELE= MODELE2 , OPTION= 'MASS_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraele2,
-                             CHARGE= cond_li2                      ) ;
+                             CHARGE= cond_li2                      )
 
 
-nume_dd2 = NUME_DDL( MATR_RIGI= rigi_el2);
+nume_dd2 = NUME_DDL( MATR_RIGI= rigi_el2)
 
 #
 # Assemblage des matrices et vecteurs=
 #-------------------------------------
-rigidb = ASSE_MATRICE( MATR_ELEM= rigi_elb , NUME_DDL= nume_ddb ) ;
+rigidb = ASSE_MATRICE( MATR_ELEM= rigi_elb , NUME_DDL= nume_ddb )
 
-masseb = ASSE_MATRICE( MATR_ELEM= mass_elb , NUME_DDL= nume_ddb ) ;
+masseb = ASSE_MATRICE( MATR_ELEM= mass_elb , NUME_DDL= nume_ddb )
 
-rigid2 = ASSE_MATRICE( MATR_ELEM= rigi_el2 , NUME_DDL= nume_dd2 ) ;
+rigid2 = ASSE_MATRICE( MATR_ELEM= rigi_el2 , NUME_DDL= nume_dd2 )
 
-masse2 = ASSE_MATRICE( MATR_ELEM= mass_el2 , NUME_DDL= nume_dd2 ) ;
+masse2 = ASSE_MATRICE( MATR_ELEM= mass_el2 , NUME_DDL= nume_dd2 )
 
 #
 # CALCUL DES MODES =
@@ -410,7 +410,7 @@ MODESTA1=MODE_STATIQUE(  MATR_RIGI=rigidb,
                      GROUP_NO = 'PB',
                      AVEC_CMP = ('DX','DY','DZ','DRX','DRY','DRZ'),
                                  )
-                      );
+                      )
 
 bamo=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = mode, NMAX_MODE = 0),
                               _F( MODE_INTF = MODESTA1,
@@ -420,7 +420,7 @@ bamo=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = mode, NMAX_MODE = 0),
 
 mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,
                     MATR_RIGI=rigidb,
-                    MATR_MASS=masseb);
+                    MATR_MASS=masseb)
 #
 
 # Pour reference :
@@ -456,7 +456,7 @@ TABSOL = DEFI_SOL_MISS(
                NOMBRE_RECEPTEUR=4,
                GROUP_MA_INTERF='SBASE',
                MAILLAGE=MAILLAGE,
-                ),     
+                ),
     INFO=2,
 )
 
@@ -488,86 +488,86 @@ CALC_MISS(
 
 charge1b = AFFE_CHAR_MECA( MODELE= MODELEB,
                        FORCE_NODALE=_F(GROUP_NO='PB', FX=1.E6),
-                                             ) ;
+                                             )
 charge2b = AFFE_CHAR_MECA( MODELE= MODELEB,
                        FORCE_NODALE=_F(GROUP_NO='PB', FY=1.E6),
-                                             ) ;
+                                             )
 charge3b = AFFE_CHAR_MECA( MODELE= MODELEB,
                        FORCE_NODALE=_F(GROUP_NO='PB', FZ=1.E6),
-                                             ) ;
+                                             )
 charge4b = AFFE_CHAR_MECA( MODELE= MODELEB,
                        FORCE_NODALE=_F(GROUP_NO='PB', MX=1.E6),
-                                             ) ;
+                                             )
 charge5b = AFFE_CHAR_MECA( MODELE= MODELEB,
                        FORCE_NODALE=_F(GROUP_NO='PB', MY=1.E6),
-                                             ) ;
+                                             )
 charge6b = AFFE_CHAR_MECA( MODELE= MODELEB,
                        FORCE_NODALE=_F(GROUP_NO='PB', MZ=1.E6),
-                                             ) ;
+                                             )
 
 vectel1b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraeleb,
                              CHARGE= charge1b
-                            );
+                            )
 vectel2b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraeleb,
                              CHARGE= charge2b
-                            );
+                            )
 vectel3b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraeleb,
                              CHARGE= charge3b
-                            );
+                            )
 vectel4b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraeleb,
                              CHARGE= charge4b
-                            );
+                            )
 vectel5b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraeleb,
                              CHARGE= charge5b
-                            );
+                            )
 vectel6b=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
                              CHAM_MATER= champmab ,
                              CARA_ELEM= caraeleb,
                              CHARGE= charge6b
-                            );
-vecas1b   = ASSE_VECTEUR( VECT_ELEM= vectel1b , NUME_DDL= nume_ddb ) ;
-vecas2b   = ASSE_VECTEUR( VECT_ELEM= vectel2b , NUME_DDL= nume_ddb ) ;
-vecas3b   = ASSE_VECTEUR( VECT_ELEM= vectel3b , NUME_DDL= nume_ddb ) ;
-vecas4b   = ASSE_VECTEUR( VECT_ELEM= vectel4b , NUME_DDL= nume_ddb ) ;
-vecas5b   = ASSE_VECTEUR( VECT_ELEM= vectel5b , NUME_DDL= nume_ddb ) ;
-vecas6b   = ASSE_VECTEUR( VECT_ELEM= vectel6b , NUME_DDL= nume_ddb ) ;
+                            )
+vecas1b   = ASSE_VECTEUR( VECT_ELEM= vectel1b , NUME_DDL= nume_ddb )
+vecas2b   = ASSE_VECTEUR( VECT_ELEM= vectel2b , NUME_DDL= nume_ddb )
+vecas3b   = ASSE_VECTEUR( VECT_ELEM= vectel3b , NUME_DDL= nume_ddb )
+vecas4b   = ASSE_VECTEUR( VECT_ELEM= vectel4b , NUME_DDL= nume_ddb )
+vecas5b   = ASSE_VECTEUR( VECT_ELEM= vectel5b , NUME_DDL= nume_ddb )
+vecas6b   = ASSE_VECTEUR( VECT_ELEM= vectel6b , NUME_DDL= nume_ddb )
 
 nddlgen = NUME_DDL_GENE( BASE= bamo,
-                          STOCKAGE= 'PLEIN');
+                          STOCKAGE= 'PLEIN')
 
 rigigen=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
-                            MATR_ASSE=rigidb );
+                            MATR_ASSE=rigidb )
 
 massgen=PROJ_MATR_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
-                            MATR_ASSE=masseb );
+                            MATR_ASSE=masseb )
 
 vecge1b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
-                            VECT_ASSE=vecas1b, TYPE_VECT='FORC');
+                            VECT_ASSE=vecas1b, TYPE_VECT='FORC')
 
 vecge2b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
-                            VECT_ASSE=vecas2b, TYPE_VECT='FORC');
+                            VECT_ASSE=vecas2b, TYPE_VECT='FORC')
 
 vecge3b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
-                            VECT_ASSE=vecas3b, TYPE_VECT='FORC');
+                            VECT_ASSE=vecas3b, TYPE_VECT='FORC')
 
 vecge4b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
-                            VECT_ASSE=vecas4b, TYPE_VECT='FORC');
+                            VECT_ASSE=vecas4b, TYPE_VECT='FORC')
 
 vecge5b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
-                            VECT_ASSE=vecas5b, TYPE_VECT='FORC');
+                            VECT_ASSE=vecas5b, TYPE_VECT='FORC')
 
 vecge6b=PROJ_VECT_BASE(  BASE=bamo,  NUME_DDL_GENE=nddlgen,
-                            VECT_ASSE=vecas6b, TYPE_VECT='FORC');
+                            VECT_ASSE=vecas6b, TYPE_VECT='FORC')
 
 NF = 3
 impe=[None]*NF
@@ -579,7 +579,7 @@ for k in range(1,NF):
   impe[k] = LIRE_IMPE_MISS(BASE=bamo,  NUME_DDL_GENE=nddlgen,
                        UNITE_RESU_IMPE=38, FREQ_EXTR=-8.5+17.*k,
                        # TYPE='BINAIRE',
-                          );
+                          )
 
 
   rito[k]=COMB_MATR_ASSE(COMB_C=(
@@ -589,7 +589,7 @@ for k in range(1,NF):
                                  COEF_C=1.0+0.j),
                                  ),
                                  SANS_CMP='LAGR',
-                                 );
+                                 )
 
 
   if k==1:
@@ -605,7 +605,7 @@ for k in range(1,NF):
                                    _F ( VECT_ASSE_GENE = vecge3b,
                                         COEF_MULT= 1.),
                                   ),
-                        );
+                        )
 
     dyger = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                            MATR_MASS = massgen,
@@ -619,7 +619,7 @@ for k in range(1,NF):
                                    _F ( VECT_ASSE_GENE = vecge6b,
                                         COEF_MULT= 1.),
                                   ),
-                        );
+                        )
   else:
     dyget = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                            reuse=dyget, RESULTAT=dyget,
@@ -634,7 +634,7 @@ for k in range(1,NF):
                                    _F ( VECT_ASSE_GENE = vecge3b,
                                         COEF_MULT= 1.),
                                   ),
-                        );
+                        )
 
     dyger = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                            reuse=dyger, RESULTAT=dyger,
@@ -649,39 +649,39 @@ for k in range(1,NF):
                                    _F ( VECT_ASSE_GENE = vecge6b,
                                         COEF_MULT= 1.),
                                   ),
-                        );
+                        )
 
 # Extraction des deplacements
 
 U11b = RECU_FONCTION ( RESU_GENE = dyget,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX')
 
 U51b = RECU_FONCTION ( RESU_GENE = dyget,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY')
 
 U22b = RECU_FONCTION ( RESU_GENE = dyget,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY')
 
 U42b = RECU_FONCTION ( RESU_GENE = dyget,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX')
 
 U33b = RECU_FONCTION ( RESU_GENE = dyget,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DZ');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DZ')
 
 U24b = RECU_FONCTION ( RESU_GENE = dyger,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DY')
 
 U44b= RECU_FONCTION ( RESU_GENE = dyger,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRX')
 
 U15b = RECU_FONCTION ( RESU_GENE = dyger,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DX')
 
 U55b = RECU_FONCTION ( RESU_GENE = dyger,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY')
 
 U66b = RECU_FONCTION ( RESU_GENE = dyger,
-           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRZ');
+           NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRZ')
 
 
 
@@ -759,7 +759,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(4.405562E-06-3.103320E-06j),
                          PRECISION=1.0000000000000001E-2,
                          FONCTION=U11b,
                          ),
-                         
+
                       _F(VALE_CALC_C=(4.462425E-06-3.297199E-06j),
                          VALE_REFE_C=(4.174931E-06-2.920876E-06j),
                          VALE_PARA=8.5,
@@ -774,7 +774,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(4.405562E-06-3.103320E-06j),
                          PRECISION=2.2000000000000001E-2,
                          FONCTION=U22b,
                          ),
-                         
+
                       _F(VALE_CALC_C=(1.469668E-06-2.876367E-06j),
                          VALE_REFE_C=(1.042063E-06-2.641335E-06j),
                          VALE_PARA=25.5,
@@ -834,7 +834,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(4.405562E-06-3.103320E-06j),
                          PRECISION=7.0000000000000001E-2,
                          FONCTION=U44b,
                          ),
-  
+
                       _F(VALE_CALC_C=(6.415414E-08-5.661873E-08j),
                          VALE_REFE_C=(4.736895E-08-4.387128E-08j),
                          VALE_PARA=25.5,
@@ -912,4 +912,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(4.405562E-06-3.103320E-06j),
                       ),
               )
 
-FIN( );
+FIN( )

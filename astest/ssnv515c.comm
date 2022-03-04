@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,11 +98,11 @@ def Defi_Xmcourbe(X=None,Y=None,FUNCTION=None,courbe=None,legend='X',color=0,mar
   def_co['MARQUEUR'] = mark
 
   try:
-    courbe.append(def_co);
+    courbe.append(def_co)
   except:
-    courbe=[def_co,];
+    courbe=[def_co,]
 
-  return courbe;
+  return courbe
 # Fin
 
 #***********************************************************************
@@ -112,7 +112,7 @@ def Defi_Xmcourbe(X=None,Y=None,FUNCTION=None,courbe=None,legend='X',color=0,mar
 #***********************************************************************
 
 # ======================================================================
-DEBUT(CODE   =_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE   =_F(NIV_PUB_WEB='INTERNET',),)
 
 #***********************************************************************
 #
@@ -120,18 +120,18 @@ DEBUT(CODE   =_F(NIV_PUB_WEB='INTERNET',),);
 #
 #***********************************************************************
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT         = 'OUI',
                            PHENOMENE    = 'MECANIQUE',
-                           MODELISATION = 'AXIS',),);
+                           MODELISATION = 'AXIS',),)
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('DROIT','GAUCHE',
                                                  'BAS','HAUT'),),
-                       INFO=1,);
+                       INFO=1,)
 
 #***********************************************************************
 #
@@ -150,7 +150,7 @@ ltemps    =[dtemps*i for i in range(npas+1)]
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=(_F(JUSQU_A =tarret   , NOMBRE =2,),
-                                 _F(JUSQU_A =temps_max, NOMBRE =npas,),),);
+                                 _F(JUSQU_A =temps_max, NOMBRE =npas,),),)
 
 #***********************************************************************
 #
@@ -177,10 +177,10 @@ print('g_modu=',G,'     /// k_modu=',K)
 
 SOL=DEFI_MATERIAU(ELAS   =_F(E =YOUNG, NU =POISSON, ALPHA=0.,),
                   RANKINE=_F(SIGMA_T = SIGMA_T,),
-                  INFO   =1,);
+                  INFO   =1,)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL,),);
+                    AFFE=_F(TOUT='OUI', MATER=SOL,),)
 
 
 #***********************************************************************
@@ -202,18 +202,18 @@ sixx,sizz,epxx_ela,epxx,epsvp,epsdp = \
 
 SIGLAT=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA=('DROIT',),
-                                   PRES    =P0,),);
+                                   PRES    =P0,),)
 
 DEPHAUT=AFFE_CHAR_MECA(MODELE=MODELE,
-                DDL_IMPO=(_F(GROUP_MA=('HAUT',), DY=1.,),),);
+                DDL_IMPO=(_F(GROUP_MA=('HAUT',), DY=1.,),),)
 
 DEPL_1=AFFE_CHAR_CINE(MODELE=MODELE,
-                MECA_IMPO=(_F(GROUP_MA='BAS',   DY = 0.,),),);
+                MECA_IMPO=(_F(GROUP_MA='BAS',   DY = 0.,),),)
 
 COEF2=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(  0., 0.,
-                     temps_max, EPZZ,),);
+                     temps_max, EPZZ,),)
 
 #***********************************************************************
 #
@@ -228,7 +228,7 @@ SIG0=CREA_CHAMP(INFO=2,
                 PROL_ZERO='OUI',
                 AFFE=_F(GROUP_MA='BLOC',
                         NOM_CMP=('SIXX','SIYY','SIZZ'),
-                        VALE=(-P0,-P0,-P0,),),);
+                        VALE=(-P0,-P0,-P0,),),)
 
 #***********************************************************************
 #
@@ -253,7 +253,7 @@ table_suivi_ddl= [_F(NOM_CMP ='SIXX',
                      NOM_CHAM ='SIEF_ELGA',
                      EVAL_ELGA='MIN',
                      EVAL_CHAM='MIN',
-                     GROUP_MA =GrMa,),];
+                     GROUP_MA =GrMa,),]
 
 U1=STAT_NON_LINE(MODELE    =MODELE,
                  CHAM_MATER=CHMAT,
@@ -281,7 +281,7 @@ U1=STAT_NON_LINE(MODELE    =MODELE,
 
                  INCREMENT=_F(LIST_INST=TEMPS,
                               INST_INIT=0.,
-                              INST_FIN =tfin,),);
+                              INST_FIN =tfin,),)
 
 # ================================================================
 #
@@ -293,59 +293,59 @@ U1=CALC_CHAMP(reuse       =U1,
               CONTRAINTE  ='SIGM_NOEU',
               VARI_INTERNE='VARI_NOEU',
               DEFORMATION ='EPSI_NOEU',
-              RESULTAT    =U1);
+              RESULTAT    =U1)
 
 fsizz = RECU_FONCTION(RESULTAT = U1,
                    NOM_CHAM = 'SIGM_NOEU',
                    GROUP_MA = 'BLOC',
                    GROUP_NO = 'C',
                    NOM_CMP  = 'SIYY',
-                   INFO     = 1,);
+                   INFO     = 1,)
 
 fepxx = RECU_FONCTION(RESULTAT = U1,
                    NOM_CHAM = 'EPSI_NOEU',
                    GROUP_MA = 'BLOC',
                    GROUP_NO = 'C',
-                   NOM_CMP  = 'EPXX');
+                   NOM_CMP  = 'EPXX')
 
 fepdp = RECU_FONCTION(RESULTAT = U1,
                    NOM_CHAM = 'VARI_NOEU',
                    GROUP_MA = 'BLOC',
                    GROUP_NO = 'C',
-                   NOM_CMP  = 'V2');
+                   NOM_CMP  = 'V2')
 
 REFSIZZ  =DEFI_FONCTION(NOM_PARA  ='INST',
                       NOM_RESU   ='SIYY',
                       ABSCISSE   =linst,
                       ORDONNEE   =sizz,
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 
 REFEPXX  =DEFI_FONCTION(NOM_PARA  ='INST',
                       NOM_RESU   ='EPXX',
                       ABSCISSE   =linst,
                       ORDONNEE   =epxx,
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 
 REFEPDP =DEFI_FONCTION(NOM_PARA  ='INST',
                       NOM_RESU   ='V2',
                       ABSCISSE   =linst,
                       ORDONNEE   =epsdp,
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 
 refsizz=CALC_FONC_INTERP(FONCTION =REFSIZZ,
                          NOM_PARA ='INST',
-                         LIST_PARA=TEMPS,);
+                         LIST_PARA=TEMPS,)
 
 refepxx=CALC_FONC_INTERP(FONCTION =REFEPXX,
                          NOM_PARA ='INST',
-                         LIST_PARA=TEMPS,);
+                         LIST_PARA=TEMPS,)
 
 refepdp=CALC_FONC_INTERP(FONCTION =REFEPDP,
                          NOM_PARA ='INST',
-                         LIST_PARA=TEMPS,);
+                         LIST_PARA=TEMPS,)
 
 npas   =20
 dtemps =temps_max/npas
@@ -353,21 +353,21 @@ linst  =[dtemps*i for i in range(npas)]
 
 DSIZZ = CALC_FONCTION(INFO=2,
                       COMB=(_F(FONCTION=fsizz,   COEF = 1.),
-                            _F(FONCTION=refsizz, COEF =-1.),),);
+                            _F(FONCTION=refsizz, COEF =-1.),),)
 
 DEPXX = CALC_FONCTION(INFO=1,
                       COMB=(_F(FONCTION=fepxx,   COEF = 1.),
-                            _F(FONCTION=refepxx, COEF =-1.),),);
+                            _F(FONCTION=refepxx, COEF =-1.),),)
 
 DEPDP = CALC_FONCTION(INFO=1,
                       COMB=(_F(FONCTION=fepdp,   COEF = 1.),
-                            _F(FONCTION=refepdp, COEF =-1.),),);
+                            _F(FONCTION=refepdp, COEF =-1.),),)
 
-TABDSIZZ = CREA_TABLE(FONCTION=_F(FONCTION=DSIZZ),);
+TABDSIZZ = CREA_TABLE(FONCTION=_F(FONCTION=DSIZZ),)
 
-TABDEPXX = CREA_TABLE(FONCTION=_F(FONCTION=DEPXX),);
+TABDEPXX = CREA_TABLE(FONCTION=_F(FONCTION=DEPXX),)
 
-TABDEPDP = CREA_TABLE(FONCTION=_F(FONCTION=DEPDP),);
+TABDEPDP = CREA_TABLE(FONCTION=_F(FONCTION=DEPDP),)
 
 TEST_TABLE(NOM_PARA ='SIYY',
            TABLE    =TABDSIZZ,
@@ -379,7 +379,7 @@ TEST_TABLE(NOM_PARA ='SIYY',
 
            REFERENCE='ANALYTIQUE',
            PRECISION=1.e-8,
-           VALE_REFE=0.,);
+           VALE_REFE=0.,)
 
 TEST_TABLE(NOM_PARA ='EPXX',
            TABLE    =TABDEPXX,
@@ -391,7 +391,7 @@ TEST_TABLE(NOM_PARA ='EPXX',
 
            REFERENCE='ANALYTIQUE',
            PRECISION=1.e-4,
-           VALE_REFE=0.,);
+           VALE_REFE=0.,)
 
 TEST_TABLE(NOM_PARA ='V2',
            TABLE    =TABDEPDP,
@@ -403,5 +403,5 @@ TEST_TABLE(NOM_PARA ='V2',
 
            REFERENCE='ANALYTIQUE',
            PRECISION=1.e-4,
-           VALE_REFE=0.,);
-FIN();
+           VALE_REFE=0.,)
+FIN()

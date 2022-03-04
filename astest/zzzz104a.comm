@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 
 # person_in_charge: mickael.abbas at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
@@ -48,9 +48,9 @@ TEMP1=CREA_CHAMP(OPERATION='AFFE',
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
                                MATER=BETON,),
-                    AFFE_VARC=_F(GROUP_MA = 'POUTRE', 
-                                 NOM_VARC = 'TEMP', 
-                                 CHAM_GD=TEMP1, 
+                    AFFE_VARC=_F(GROUP_MA = 'POUTRE',
+                                 NOM_VARC = 'TEMP',
+                                 CHAM_GD=TEMP1,
                                  VALE_REF=0.),
                    )
 
@@ -59,7 +59,7 @@ BLOQ=AFFE_CHAR_MECA(MODELE=MOD,
                                   DX=0.0,
                                   DY=0.0,
                                   ),),
-                               );
+                               )
 
 LIS_INST=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=(_F(JUSQU_A=1.0,
@@ -75,7 +75,7 @@ RESUREF=STAT_NON_LINE(MODELE=MOD,
                        INCREMENT=_F(LIST_INST=LIS_INST,),
                        NEWTON=_F(MATRICE='ELASTIQUE',
                                  REAC_ITER=1,),
-                       );
+                       )
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESUREF, NOM_CHAM = 'SIEF_ELGA', INST = 1.0,))
 
@@ -112,7 +112,7 @@ BLOQMACR=AFFE_CHAR_MECA(MODELE=MODMACR,
                                   DX=0.0,
                                   DY=0.0,
                                   ),),
-                               );
+                               )
 
 MACSS=MACR_ELEM_STAT(DEFINITION=_F(MODELE=MODMACR,
                                    CHAM_MATER=CHMAT,
@@ -121,17 +121,17 @@ MACSS=MACR_ELEM_STAT(DEFINITION=_F(MODELE=MODMACR,
                      RIGI_MECA=_F(),
                      CAS_CHARGE=_F(NOM_CAS='K1',
                                    SUIV='OUI',
-                                   CHARGE=BLOQMACR,),);
-                                   
+                                   CHARGE=BLOQMACR,),)
+
 MAYSS=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=_F(MACR_ELEM=MACSS,
                                         SUPER_MAILLE='MAILLE1',),
                     DEFI_NOEUD=_F(TOUT='OUI',
                     INDEX=(1,0,1,8,),),
-                                  );
+                                  )
 
 MAG=ASSE_MAILLAGE(MAILLAGE_1=MAIL,
                   MAILLAGE_2=MAYSS,
-                  OPERATION='SOUS_STR',);
+                  OPERATION='SOUS_STR',)
 
 
 TEMPMACR=CREA_CHAMP(OPERATION='AFFE',
@@ -147,12 +147,12 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MAG,
                     AFFE=(_F(TOUT='OUI',
                             MATER=BETON,),
                           ),
-                    AFFE_VARC=_F(#TOUT = 'OUI', 
-# memes resultats que l'on affecte sur TOUT ou sur POUPOS 
+                    AFFE_VARC=_F(#TOUT = 'OUI',
+# memes resultats que l'on affecte sur TOUT ou sur POUPOS
 # (la partie de la poutre hors du macro element)
                                  GROUP_MA = 'POUPOS',
-                                 NOM_VARC = 'TEMP', 
-                                 CHAM_GD=TEMPMACR, 
+                                 NOM_VARC = 'TEMP',
+                                 CHAM_GD=TEMPMACR,
                                  VALE_REF=0.),
                     )
 
@@ -161,14 +161,14 @@ MOMACR=AFFE_MODELE(MAILLAGE=MAG,
                                   PHENOMENE='MECANIQUE',),
                AFFE=_F(GROUP_MA=('POUPOS',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),);
+                       MODELISATION='D_PLAN',),)
 
 
 ENCAST2=AFFE_CHAR_MECA(MODELE=MOMACR,
                       DDL_IMPO=_F(GROUP_MA='ENCPOS',
                                   DX=0.0,
                                   DY=0.0,
-                                  ),);
+                                  ),)
 
 RESUMACR=STAT_NON_LINE(MODELE=MOMACR,
                 CHAM_MATER=CHMAT2,
@@ -183,7 +183,7 @@ RESUMACR=STAT_NON_LINE(MODELE=MOMACR,
                 INCREMENT=_F(LIST_INST=LIS_INST,),
                 NEWTON=_F(MATRICE='ELASTIQUE',
                           REAC_ITER=1,),
-                INFO=1,);
+                INFO=1,)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESUMACR, NOM_CHAM = 'SIEF_ELGA', INST = 1.0,))
 
@@ -212,4 +212,4 @@ TEST_RESU(RESU=(_F(INST=1.0,
 
 
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,15 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 # ATTENTION : Unite de temps : heure
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MODTHER=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='THERMIQUE',
-                            MODELISATION='3D_DIAG',),);
-                            
+                            MODELISATION='3D_DIAG',),)
+
 # =====================================================================
 #                            LISTE D'INSTANTS
 # =====================================================================
@@ -34,11 +34,11 @@ listinst=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=(_F(JUSQU_A=100,
                                        PAS=1,),
                                     _F(JUSQU_A=528,
-                                       PAS=2,),),);
-                                       
-lisarch2=DEFI_LIST_REEL(VALE=(48,144,192,360,528,),);
+                                       PAS=2,),),)
+
+lisarch2=DEFI_LIST_REEL(VALE=(48,144,192,360,528,),)
 # ======================================================================
-#  Creation du champ de temperature 
+#  Creation du champ de temperature
 #  LA TEMPERATURE EST CONSTANTE ET EGALE A 20 DEG. PDT TT L'ESSAI
 # ======================================================================
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
@@ -46,38 +46,38 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=20.0,),);
+                        VALE=20.0,),)
 
 RESUTHER=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
                    NOM_CHAM='TEMP',
                    AFFE=(_F(CHAM_GD=TEMP,
-                            LIST_INST=listinst,),),);
+                            LIST_INST=listinst,),),)
 # ======================================================================
 #  Parametres materiau de sechage
 # ======================================================================
-PARA__=2.5e-11;#m2/h                    
-PARB__=0.12;    
+PARA__=2.5e-11;#m2/h
+PARB__=0.12
 MATSECH=DEFI_MATERIAU(SECH_GRANGER=_F(A=PARA__,
                                       B=PARB__,
                                       QSR_K=4700,
-                                      TEMP_0_C=0.0,),);
+                                      TEMP_0_C=0.0,),)
 
 CHMASECH=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATSECH,),);
+                               MATER=MATSECH,),)
 # =========================================================================
 #  Concentration en eau correspondant a 50% d'humidite (Ceq) et a 100% (C0)
 # =========================================================================
-Ceq = 29.1;
+Ceq = 29.1
 
-C0 = 106.42;
+C0 = 106.42
 # =========================================================================
 #  Condition limite de concentration en eau imposee
 # =========================================================================
 charsec=AFFE_CHAR_THER(MODELE=MODTHER,
                        TEMP_IMPO=_F(GROUP_MA='echange',
-                                    TEMP=Ceq,),);
+                                    TEMP=Ceq,),)
 # =========================================================================
 #  Resolution
 # =========================================================================
@@ -92,7 +92,7 @@ RESUSECH=THER_NON_LINE(MODELE=MODTHER,
                                     ),
                        ETAT_INIT=_F(VALE=C0,),
                        ARCHIVAGE=_F(LIST_INST=lisarch2,),
-                       );
+                       )
 
 # =========================================================================
 #  Calcul de la perte de masse
@@ -100,8 +100,8 @@ RESUSECH=THER_NON_LINE(MODELE=MODTHER,
 #Calcul de la masse d'eau moyenne a chaque instant
 CMoy=POST_ELEM(INTEGRALE=_F(GROUP_MA='MAILVOL',
                                NOM_CMP='TEMP',NOM_CHAM='TEMP',TYPE_MAILLE='3D'),
-                  RESULTAT=RESUSECH,MODELE=MODTHER,CHAM_MATER=CHMASECH,LIST_INST=lisarch2);
-IMPR_TABLE(TABLE=CMoy,);
+                  RESULTAT=RESUSECH,MODELE=MODTHER,CHAM_MATER=CHMASECH,LIST_INST=lisarch2)
+IMPR_TABLE(TABLE=CMoy,)
 
 ## calcul de la perte de masse en % a chaque instant
 Dmasse = FORMULE(VALE='100*(C0-MOYE_TEMP)/2410',
@@ -110,8 +110,8 @@ Dmasse = FORMULE(VALE='100*(C0-MOYE_TEMP)/2410',
 TPERTE0=CALC_TABLE(TABLE=CMoy,
                   ACTION=(_F(OPERATION='OPER',
                                            FORMULE=Dmasse,
-                                             NOM_PARA='DP_P',),),);                                          
-IMPR_TABLE(TABLE=TPERTE0,);
+                                             NOM_PARA='DP_P',),),)
+IMPR_TABLE(TABLE=TPERTE0,)
 
 TEST_TABLE(TABLE=TPERTE0,
            NOM_PARA='DP_P',
@@ -150,4 +150,4 @@ TEST_TABLE(TABLE=TPERTE0,
            REFERENCE='SOURCE_EXTERNE',)
 
 
-FIN();
+FIN()

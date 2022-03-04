@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
-          ),DEBUG=_F(SDVERI='OUI'));
+          ),DEBUG=_F(SDVERI='OUI'))
 
 # MODELISATION K : X-FEM MULTI-FISSURE - TRACTION
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -44,12 +44,12 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                 ),
                                     )
 
-                    );
+                    )
 
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP'));
+                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP'))
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -59,7 +59,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                 POINT  = (0.0,0.0,0.0),
                                 RAYON = 1E-3,
                                 PRECISION = 2E-3,
-                                ));
+                                ))
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -69,7 +69,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                       GROUP_NO_CENTRE  = 'ORIG',
                                       VECT_NORMALE = (0.0,0.0,1.0),
                                       PRECISION = 1E-3,
-                                      ));
+                                      ))
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -81,12 +81,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='3D'),
                            _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D')));
+                              MODELISATION='3D')))
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF')),
-                       );
+                       )
 
 # PARAMETRES DE LA FISSURE : 0 < a < 6.5 -> influt sur le choix Rsup !
 #                            b = 10.
@@ -108,14 +108,14 @@ LT2 = FORMULE(VALE='b-a-Y',
 
 FISS1=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1),
-                    );
+                    )
 
 FISS2=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT2,FONC_LN=LN2),
-                    );
+                    )
 
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=(FISS1,FISS2),INFO=1);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=(FISS1,FISS2),INFO=1)
 
 
 #----------------------------------------------
@@ -125,13 +125,13 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=(FISS1,FISS2),INFO=1);
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho))
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER),
-                             );
+                             )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -147,10 +147,10 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                   _F(GROUP_NO='POINT2',DX=0.0,DY=0.0),
                               _F(GROUP_NO='POINT1',DX=0.0,DY=0.0),
                     ),
-              );
+              )
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES));
+                   PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES))
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -162,10 +162,10 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH1),
                           _F(CHARGE=CH2),
                           ),
-                   SOLVEUR=_F(   
+                   SOLVEUR=_F(
                             METHODE='MUMPS'),
                    INFO=1,
-                   ); 
+                   )
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
@@ -190,9 +190,9 @@ for i in range(0,nbc) :
                           R_INF=RI[i],
                           R_SUP=RS[i]),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE'));
+                            LISSAGE_G='LAGRANGE'))
 
-   IMPR_TABLE(TABLE=SIF1[i]);
+   IMPR_TABLE(TABLE=SIF1[i])
 
 SIF2 = [None]*nbc
 
@@ -204,9 +204,9 @@ for i in range(0,nbc) :
                           R_INF=RI[i],
                           R_SUP=RS[i]),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE'));
+                            LISSAGE_G='LAGRANGE'))
 
-   IMPR_TABLE(TABLE=SIF2[i]);
+   IMPR_TABLE(TABLE=SIF2[i])
 
 
 # SOLUTION ANALYTIQUE (chaboche p.53)
@@ -234,11 +234,11 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[ct], 
+              VALE_CALC=VAL_CALC[ct],
               VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=prec,    
-              REFERENCE='ANALYTIQUE');
+              PRECISION=prec,
+              REFERENCE='ANALYTIQUE')
    ct = ct+1
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
@@ -246,28 +246,28 @@ for i in range(0,nbc) :
               VALE_CALC=VAL_CALC[ct],
               VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=prec,    
-              REFERENCE='ANALYTIQUE');
+              PRECISION=prec,
+              REFERENCE='ANALYTIQUE')
 
 for i in range(0,nbc) :
    ct = ct+1
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[ct], 
+              VALE_CALC=VAL_CALC[ct],
               VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=prec,    
-              REFERENCE='ANALYTIQUE');
+              PRECISION=prec,
+              REFERENCE='ANALYTIQUE')
    ct = ct+1
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[ct], 
+              VALE_CALC=VAL_CALC[ct],
               VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=prec,    
-              REFERENCE='ANALYTIQUE');
+              PRECISION=prec,
+              REFERENCE='ANALYTIQUE')
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -284,9 +284,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
+#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM))
 
-FIN();
+FIN()

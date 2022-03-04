@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -322,34 +322,34 @@ print("Norme de sigma calculee =",norme)
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",VERI_MAIL=_F(VERIF='OUI',),
-                       INFO=2,);
+                       INFO=2,)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),);
+                           MODELISATION='D_PLAN',),)
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=2.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(GROUP_MA='GROUP_MA_DOMAINE',
-                               MATER=MATER,),);
+                               MATER=MATER,),)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                     FACE_IMPO=_F(GROUP_MA='GROUP_MA_DA',
                                  DX=0.0,
                                  DY=0.0,),
                     FORCE_CONTOUR=_F(GROUP_MA='GROUP_MA_BC',
-                                     FX=1.0,),);
+                                     FX=1.0,),)
 
 RESU=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=_F(CHARGE=CHAR,),);
+                   EXCIT=_F(CHARGE=CHAR,),)
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
-                 OPTION=('ERME_ELEM',),);
+                 OPTION=('ERME_ELEM',),)
 
 ##############################################
 #                                            #
@@ -393,4 +393,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=1.0000000000000001E-05,),
           )
 
-FIN();
+FIN()

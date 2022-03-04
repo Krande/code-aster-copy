@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT="MED",);
+MA=LIRE_MAILLAGE(FORMAT="MED",)
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_NO= (
@@ -51,15 +51,15 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='DKT',),
                      _F(GROUP_MA='GROUP_MA_GRMA2',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='POU_D_E',),),);
+                        MODELISATION='POU_D_E',),),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                           NU=0.3,
-                          ALPHA=0.0,),);
+                          ALPHA=0.0,),)
 
 CHMA=AFFE_MATERIAU(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MAT,),);
+                           MATER=MAT,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
                     POUTRE=_F(GROUP_MA='GROUP_MA_GRMA2',
@@ -67,7 +67,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                               CARA=('HZ','HY',),
                               VALE=(3.0,1.0,),),
                     COQUE=_F(GROUP_MA='GROUP_MA_GRMA1',
-                             EPAIS=1.0,),);
+                             EPAIS=1.0,),)
 
 CHME=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='GROUP_NO_GRNO1',
@@ -120,12 +120,12 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                                       COEF_MULT_2=-0.5,
                                       COEF_IMPO=0.0,),),
                     FORCE_NODALE=_F(GROUP_NO='N28',
-                                    FY=-1.0,),);
+                                    FY=-1.0,),)
 
 DEP=MECA_STATIQUE(MODELE=MO,
                   CHAM_MATER=CHMA,
                   CARA_ELEM=CARA,
-                  EXCIT=_F(CHARGE=CHME,),);
+                  EXCIT=_F(CHARGE=CHME,),)
 
 
 #-----------------------------------------
@@ -150,19 +150,19 @@ DEP2=STAT_NON_LINE(MODELE=MO,
                   COMPORTEMENT=_F( RELATION = 'ELAS',),
                   CONVERGENCE=_F(ITER_GLOB_MAXI = 50),
                   INCREMENT=_F(LIST_INST = L_INST),
-                  NEWTON=_F(REAC_ITER = 1,MATRICE = 'TANGENTE'));
+                  NEWTON=_F(REAC_ITER = 1,MATRICE = 'TANGENTE'))
 
 CALC_CHAMP(reuse=DEP2,
            RESULTAT=DEP2,
            GROUP_MA=('Volume1',),
            CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),
-           );
+           )
 
 DEP2=CALC_PRESSION(MAILLAGE=MA,reuse = DEP2,
                 RESULTAT=DEP2,
                 GROUP_MA=('Face1','Face2',),
                 INST=1.0,
-                );
+                )
 
 #-----------------------------------------
 
@@ -170,7 +170,7 @@ DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=DEP,
                 NOM_CHAM='DEPL',
-                NUME_ORDRE=1,);
+                NUME_ORDRE=1,)
 
 TEST_RESU(CHAM_NO=(_F(GROUP_NO='N1',
                       CRITERE='ABSOLU',
@@ -218,5 +218,5 @@ TEST_RESU(CHAM_NO=(_F(GROUP_NO='N1',
                    ),
           )
 
-FIN();
+FIN()
 #

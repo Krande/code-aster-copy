@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,17 +43,17 @@ P0=100000.
 #***********************************************************************
 #    MAILLAGE + MODELE
 #***********************************************************************
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', );
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT         = 'OUI',
                            PHENOMENE    = 'MECANIQUE',
-                           MODELISATION = '3D'));
+                           MODELISATION = '3D'))
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('DEVANT','DROIT','ARRIERE','GAUCHE','BAS','HAUT','APPUI','COTE')),
-                       INFO=1);
+                       INFO=1)
 
 
 #***********************************************************************
@@ -61,7 +61,7 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
 #***********************************************************************
 TEMPS0=DEFI_LIST_REEL(DEBUT=-20.,
                       INTERVALLE=(_F(JUSQU_A = -10., NOMBRE = 1),
-                                  _F(JUSQU_A =  0., NOMBRE = 100)));
+                                  _F(JUSQU_A =  0., NOMBRE = 100)))
 
 
 #***********************************************************************
@@ -75,7 +75,7 @@ SOL0=DEFI_MATERIAU(ELAS_ORTH=_F(E_L = 100*YOUNG,
                                NU_LN = POISSON,
                                G_LT = 50*G,
                                G_LN = 100*G,
-                               G_TN = G,),);
+                               G_TN = G,),)
 
 SOL=DEFI_MATERIAU(ELAS_ORTH=_F(E_L = 100*YOUNG,
                                E_T = 50*YOUNG,
@@ -105,13 +105,13 @@ SOL=DEFI_MATERIAU(ELAS_ORTH=_F(E_L = 100*YOUNG,
                             XM     = 1.,
                             RD_CYC = 0.005,
                             RI_CYC = 0.001,
-                            DILA   = 1.0,));
+                            DILA   = 1.0,))
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                     AFFE=_F(TOUT='OUI', MATER=SOL0));
+                     AFFE=_F(TOUT='OUI', MATER=SOL0))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL));
+                    AFFE=_F(TOUT='OUI', MATER=SOL))
 
 
 #***********************************************************************
@@ -119,21 +119,21 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 #***********************************************************************
 CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA='COTE',
-                                   PRES = 1.));
+                                   PRES = 1.))
 
 CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA='APPUI',
-                                   PRES = 1.));
+                                   PRES = 1.))
 
 DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
                 FACE_IMPO=(_F(GROUP_MA='BAS',DZ = 0.),
                            _F(GROUP_MA='GAUCHE',DX = 0.),
-                           _F(GROUP_MA='DEVANT',DY = 0.)));
+                           _F(GROUP_MA='DEVANT',DY = 0.)))
 
 COEF0=DEFI_FONCTION(NOM_PARA   ='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-20., 0.0,
-                          -10., P0 ));
+                          -10., P0 ))
 
 #***********************************************************************
 #    PRECONSOLIDATION ELASTIQUE JUSQU'A P0 (100 kPa)
@@ -149,7 +149,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE = 'ELASTIQUE'),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 20),
-                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = -10.));
+                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = -10.))
 # ----------- FIN
 
 SIG0=CREA_CHAMP(INFO=1,
@@ -157,12 +157,12 @@ SIG0=CREA_CHAMP(INFO=1,
                 OPERATION='EXTR',
                 RESULTAT =U0,
                 NOM_CHAM ='SIEF_ELGA',
-                INST     =-10.0,);
+                INST     =-10.0,)
 
 COEF1=DEFI_FONCTION(NOM_PARA   ='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-10.0, P0,
-                            0.0, 3*P0));
+                            0.0, 3*P0))
 
 
 #***********************************************************************
@@ -184,7 +184,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                                 ITER_GLOB_MAXI = 20),
                  INCREMENT=_F(LIST_INST    = TEMPS0,
                               INST_INIT    = -10.0,
-                              INST_FIN     = 0.0));
+                              INST_FIN     = 0.0))
 
 
 #*******************************************************************************
@@ -196,32 +196,32 @@ U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFOR
 U1=CALC_CHAMP(reuse     =U1,
 
            CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSI_NOEU',
-           RESULTAT  =U1);
+           RESULTAT  =U1)
 
 TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='SIGM_NOEU',
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_EPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='EPSI_NOEU',
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VAR=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='VARI_NOEU',
                                 NOM_CMP =('V4','V8','V23'),
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
-IMPR_TABLE(TABLE=TAB_SIG);
-IMPR_TABLE(TABLE=TAB_EPS);
-IMPR_TABLE(TABLE=TAB_VAR);
+IMPR_TABLE(TABLE=TAB_SIG)
+IMPR_TABLE(TABLE=TAB_EPS)
+IMPR_TABLE(TABLE=TAB_VAR)
 
 
 #*******************************************************************************
@@ -362,4 +362,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=-3.2000000000000003E-4,),
            )
 
-FIN();
+FIN()

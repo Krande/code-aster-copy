@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ MAT2=DEFI_MATERIAU(ELAS_FO=_F(E  = T_E,
                               NU = T_NU,),
                    DOMMA_LEMAITRE=_F(S = T_S,
                                      EPSP_SEUIL = EPSP_S,
-                                     EXP_S = 1.003,),);
+                                     EXP_S = 1.003,),)
 
 # --------------------------------------------------------------------
 # POST_FATIGUE
@@ -110,10 +110,10 @@ TAB_2=POST_FATIGUE(CHARGEMENT='QUELCONQUE',
                                TEMP = T_TEMP,),
                    MATER=MAT2,
                    DOMMAGE='LEMAITRE',
-                   CUMUL='LINEAIRE',);
+                   CUMUL='LINEAIRE',)
 
 IMPR_TABLE(TABLE=TAB_2,
-           FORMAT='AGRAF',);
+           FORMAT='AGRAF',)
 
 # --------------------------------------------------------------------
 # VERIFICATION DES SOLUTIONS OBTENUES ...
@@ -211,4 +211,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=2.2400E4,),
            )
 
-FIN();
+FIN()

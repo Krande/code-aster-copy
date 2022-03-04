@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,35 +19,35 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 T20=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.0,20.0,
                         1200.0,20.0,
-                        ),);
+                        ),)
 
 HE=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='H',VALE=(0.0,142.0,
                        1200.0,142.0,
-                       ),);
+                       ),)
 
 CONDUC=DEFI_FONCTION(NOM_PARA='TEMP',NOM_RESU='LAMBDA',VALE=(0.0,40.0,
                            1200.0,40.0,
-                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 ENTHAL=DEFI_FONCTION(NOM_PARA='TEMP',NOM_RESU='CP',VALE=(0.0,0.0,
                            1200.0,1200.0,
-                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 SIGM=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,5.73E-8,
                          1.0,5.73E-8,
-                         ),);
+                         ),)
 
 EPSI=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.15,
                          1.0,0.15,
-                         ),);
+                         ),)
 
 TEXT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,500.,
                          1.0,500.,
-                         ),);
+                         ),)
 
 RAYO=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(5.,6039.403646,
                          10.,6031.803263,
@@ -149,38 +149,38 @@ RAYO=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(5.,6039.403646,
                          490.,311.667762,
                          495.,157.355171,
                          500.,0.,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 MATER=DEFI_MATERIAU(THER_NL=_F(LAMBDA=CONDUC,
-                               BETA=ENTHAL,),);
+                               BETA=ENTHAL,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),);
+                            MATER=MATER,),)
 
 MOTH=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='3D_DIAG',),);
+                         MODELISATION='3D_DIAG',),)
 
 CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,
                       FLUX_NL=_F(GROUP_MA='FACE_INT',
                                  FLUN=RAYO,),
                       ECHANGE=_F(GROUP_MA='FACE_EXT',
                                  COEF_H=HE,
-                                 TEMP_EXT=T20,),);
+                                 TEMP_EXT=T20,),)
 
 CHTHB=AFFE_CHAR_THER(MODELE=MOTH,
                      RAYONNEMENT=_F(GROUP_MA='FACE_INT',
                                     SIGMA=5.73E-8,
                                     EPSILON=0.15,
-                                    TEMP_EXT=500.,),);
+                                    TEMP_EXT=500.,),)
 
 CHTHC=AFFE_CHAR_THER_F(MODELE=MOTH,
                        RAYONNEMENT=_F(GROUP_MA='FACE_INT',
                                       SIGMA=SIGM,
                                       EPSILON=EPSI,
-                                      TEMP_EXT=TEXT,),);
+                                      TEMP_EXT=TEXT,),)
 
 TEMPE=THER_NON_LINE(MODELE=MOTH,
                     CHAM_MATER=CHMAT,
@@ -188,26 +188,26 @@ TEMPE=THER_NON_LINE(MODELE=MOTH,
                            _F(CHARGE=CHTHB,),
                            _F(CHARGE=CHTHC,),),
                     ETAT_INIT=_F(STATIONNAIRE='OUI',),
-                    NEWTON=_F(REAC_ITER=1,),);
+                    NEWTON=_F(REAC_ITER=1,),)
 
 TEMPE=CALC_CHAMP(reuse =TEMPE,
                 RESULTAT=TEMPE,
                 INST=0.,
-                 THERMIQUE=('FLUX_ELNO'),);
+                 THERMIQUE=('FLUX_ELNO'),)
 
 resu=MACR_LIGN_COUPE(RESULTAT=TEMPE,
                      NOM_CHAM='TEMP',
                      LIGN_COUPE=_F(TYPE='SEGMENT', DISTANCE_MAX=0.001,
                                    NB_POINTS=5,
                                    COOR_ORIG=(0.3,0.,0.,),
-                                   COOR_EXTR=(0.391,0.,0.,),),);
+                                   COOR_EXTR=(0.391,0.,0.,),),)
 
 resu2=MACR_LIGN_COUPE(RESULTAT=TEMPE,
                       NOM_CHAM='FLUX_ELNO',
                       LIGN_COUPE=_F(TYPE='SEGMENT',DISTANCE_MAX=0.001,
                                     NB_POINTS=5,
                                     COOR_ORIG=(0.3,0.,0.,),
-                                    COOR_EXTR=(0.391,0.,0.,),),);
+                                    COOR_EXTR=(0.391,0.,0.,),),)
 
 # TEST DE LA TEMPERATURE
 
@@ -279,4 +279,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=0.090999999999999998,),
            )
 
-FIN();
+FIN()

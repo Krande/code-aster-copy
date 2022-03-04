@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,13 +51,13 @@ TFIN=100.
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F( JUSQU_A = TFIN     , NOMBRE = 1,),
-                     ),);
- 
+                     ),)
+
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
                    ECHEC=_F(ACTION        = 'DECOUPE',
                             SUBD_METHODE  = 'MANUEL',
                             SUBD_PAS=5,
-                            SUBD_PAS_MINI=0.1,),) 
+                            SUBD_PAS_MINI=0.1,),)
 
 #***********************************************************************
 #    MAILLAGE + MODELE
@@ -65,7 +65,7 @@ LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
 
 
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
@@ -85,24 +85,24 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                    _F(GROUP_MA='left',),
                                    _F(GROUP_MA='ROCHE',),
                                    ),
-                    );
+                    )
 MAILLAGE=MODI_MAILLAGE(reuse=MAILLAGE,MAILLAGE=MAILLAGE,
                    ORIE_PEAU=(
                    _F(GROUP_MA_PEAU=('up','down')))
-                    );                    
+                    )
 
 MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT = 'OUI',
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'AXIS_HMS',
                             ),
-                    );
+                    )
 
 
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
 
-SOL=DEFI_MATERIAU(   ELAS=_F(  E = 7.5E15,    
+SOL=DEFI_MATERIAU(   ELAS=_F(  E = 7.5E15,
                                NU = 0.3,
                                RHO = 2300.,
                                ALPHA = 1.E-5,
@@ -129,13 +129,13 @@ SOL=DEFI_MATERIAU(   ELAS=_F(  E = 7.5E15,
                                  PORO = 0.2,
                                  PRES_VAPE = 0.1,
                                  ),
-                     );
-                           
+                     )
+
 CHMAT=AFFE_MATERIAU( MAILLAGE=MAILLAGE,
-                     AFFE=(_F(GROUP_MA = 'ROCHE',    
+                     AFFE=(_F(GROUP_MA = 'ROCHE',
                               MATER = SOL,  ),
                            ),
-                     );
+                     )
 
 #*************************************************************
 # AFFECTATION DES CL
@@ -144,22 +144,22 @@ CHMAT=AFFE_MATERIAU( MAILLAGE=MAILLAGE,
 FLUX = AFFE_CHAR_MECA ( MODELE = MODELE ,
                         FLUX_THM_REP = _F( GROUP_MA  = 'up' ,
                                            FLUN_HYDR1 = 1.0 ,),
-                        );
+                        )
 
 
 
 CHIMP = AFFE_CHAR_MECA ( MODELE = MODELE ,
-                         DDL_IMPO  = _F( GROUP_MA = ('down',), 
+                         DDL_IMPO  = _F( GROUP_MA = ('down',),
                                          PRE1   = PREF ,
                                          ),
-                         );
+                         )
 
 CLIM = AFFE_CHAR_MECA ( MODELE = MODELE ,
                         DDL_IMPO  = (
                                      _F(GROUP_MA='left',DX = 0. ,),
                                      _F(GROUP_MA='down',DY = 0. ,),
                                      ),
-                        );
+                        )
 
 # AFFECTATION DE L ETAT INITIAL
 #
@@ -170,7 +170,7 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                              NOM_CMP=('PRE1','DX','DY',),
                              VALE   =(PREF   ,0.0 ,0.0 ,),
                               ),
-                          ),);
+                          ),)
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                    OPERATION='AFFE',
@@ -183,16 +183,16 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                            VALE=
                            (0.0,0.0,0.0,0.0,0.0,0.0,
                             0.0,0.0,0.0,0.0,0.0,0.0,
-                            0.0,0.0,0.0,0.0),),);
+                            0.0,0.0,0.0,0.0),),)
 
 
 
 #flux de liquide entrant
 cofl=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0,1,                   
+                   VALE=(0,1,
                          TFIN, 1,
                          ),
-                   PROL_DROITE='CONSTANT',);
+                   PROL_DROITE='CONSTANT',)
 
 
 ################### Calcul
@@ -219,7 +219,7 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,
                  CONVERGENCE=_F( ITER_GLOB_MAXI=100,
                                  RESI_GLOB_RELA=1.0E-6,
                                  ),
-                 );
+                 )
 
 
 #Pression du liquide
@@ -248,4 +248,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=1.E-2,),
           )
 
-FIN () ;
+FIN ()

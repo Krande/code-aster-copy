@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,17 +18,17 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('MODELE1_63'));
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('MODELE1_63'))
 
 n = 51
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=(_F(GROUP_MA='SURFINF',),
                                    _F(GROUP_MA='VOL',),
                                    ),
-                    INFO=1);
+                    INFO=1)
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
@@ -37,30 +37,30 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 MOTH=AFFE_MODELE(MAILLAGE=MAILLAG1,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
-                           RHO_CP=0.0,),);
+                           RHO_CP=0.0,),)
 
 CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MATH,),);
+                           MATER=MATH,),)
 
 CHTH=AFFE_CHAR_THER(MODELE=MOTH,
                     TEMP_IMPO=(_F(GROUP_MA='SURFGAU',TEMP=20.0,),
-                               _F(GROUP_MA='SURFDRO',TEMP=220.0,),),);
+                               _F(GROUP_MA='SURFDRO',TEMP=220.0,),),)
 
 THLI=THER_LINEAIRE(MODELE=MOTH,
                    CHAM_MATER=CMTH,
-                   EXCIT=_F(CHARGE=CHTH,),);
+                   EXCIT=_F(CHARGE=CHTH,),)
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='EXTR',
                 RESULTAT=THLI,
                 NOM_CHAM='TEMP',
-                INST=0.0,);
+                INST=0.0,)
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(CHAM_GD = TEMP,))   
+#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(CHAM_GD = TEMP,))
 
 #--------------------------------------------------------------------
 #               FIN DU THERMIQUE                                    #
@@ -71,7 +71,7 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
                    AFFE=(_F(GROUP_MA='VOL',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
+                            MODELISATION='3D',),),)
 
 LN = FORMULE(VALE='Y-0.5',
              NOM_PARA=['X', 'Y'],)
@@ -79,19 +79,19 @@ LT = FORMULE(VALE='-X+0.5',
              NOM_PARA=['X', 'Y'],)
 
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,  
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
-                    );
+                    )
 
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS,INFO=2,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS,INFO=2,)
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             NU=0.3,
                             RHO=7800.0,
-                            ALPHA=1.282E-05,),);
+                            ALPHA=1.282E-05,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
@@ -100,7 +100,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                                      NOM_VARC='TEMP',
                                      CHAM_GD=TEMP,
                                      VALE_REF=20.0),
-                       );
+                       )
 
 
 #*********************************************************************
@@ -109,11 +109,11 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=_F(GROUP_NO='SURFINF',DX=0.0,DY=0.0,DZ=0.0),
-                       INFO=1,);
+                       INFO=1,)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
+                                    NOMBRE=3,),)
 
 UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -128,14 +128,14 @@ MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT,
                         INFO          = 2)
 
 
-IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'))   
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'))
 
 
 SIF=CALC_G_XFEM(RESULTAT=UTOT,
@@ -145,10 +145,10 @@ SIF=CALC_G_XFEM(RESULTAT=UTOT,
                     R_SUP=0.2,),
 #           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
 #                      LISSAGE_G='LAGRANGE',),
-           INFO=2,);
+           INFO=2,)
 
 
-IMPR_TABLE(TABLE=SIF,);
+IMPR_TABLE(TABLE=SIF,)
 
 TABG=CALC_G_XFEM(RESULTAT=UTOT,
            OPTION='CALC_G',
@@ -157,10 +157,10 @@ TABG=CALC_G_XFEM(RESULTAT=UTOT,
                     R_SUP=0.2,),
 #           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
 #                      LISSAGE_G='LAGRANGE',),
-           INFO=2,);
+           INFO=2,)
 
 
-IMPR_TABLE(TABLE=TABG,);
+IMPR_TABLE(TABLE=TABG,)
 
 
 # on ne peut pas les obtenir avec la modelisation a (2d), ni c (3d avec DZ=0)
@@ -191,9 +191,9 @@ TEST_TABLE(CRITERE='RELATIF',
 
 # CLe bareau est libre de dilation thermique.
 
-# On note que G_IRWIN est très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions 
+# On note que G_IRWIN est très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions
 # singulières d'un problème thermo-mécanique a entrainé des valuers des K mauvais. Cependant, les valeurs de G est juste.
 # Voir les documents pour plus d'information.
 
 # On note que les valeurs de G obtenues avec l'option CALC_G et CALC_K_G sont identiques.
-FIN();
+FIN()

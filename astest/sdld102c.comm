@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@
 # LA BASE DE PROJECTION DES SOUS-STRUCTURES EST DE TYPE 'CRAIGB'.
 #
 # 6 SCHEMAS D'INTEGRATION DE DYNA_VIBRA ('DIFF_CENTRE', 'NEWMARK'
-# 'ADAPT_ORDRE_2', 'RUNGE_KUTTA_32', 'RUNGE_KUTTA_54', ET 'DEVOGE') 
+# 'ADAPT_ORDRE_2', 'RUNGE_KUTTA_32', 'RUNGE_KUTTA_54', ET 'DEVOGE')
 # SONT TESTES.
 #
 # A PARTIR DU NUME_DDL_GENE, ON DUPLIQUE LE CALCUL CALC_MODES(L'UN BASE SUR LES

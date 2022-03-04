@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),
-      IGNORE_ALARM='MODELE1_63',);
+      IGNORE_ALARM='MODELE1_63',)
 
 # <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
 #  LE MODELE PROVOQUANT CES ALARMES CONTIENT UNE SURFACE RIGIDE POUR LE CONTACT
@@ -33,11 +33,11 @@ DEBUT(CODE=_F(
 #-------------------------------------------------------
 
 MA=LIRE_MAILLAGE(FORMAT='MED',
-                 INFO=1,);
+                 INFO=1,)
 
 SSNV506G=CREA_MAILLAGE(MAILLAGE=MA,
                        RESTREINT=_F(GROUP_MA=('BATI','BASE','SBXY','SBYZ','SESC','SMAI',),
-                                    GROUP_NO=('S','E',),),);
+                                    GROUP_NO=('S','E',),),)
 
 #-------------------------------------------------------
 #                     DEFINITION DU MODELE
@@ -45,44 +45,44 @@ SSNV506G=CREA_MAILLAGE(MAILLAGE=MA,
 
 SSNV506G=DEFI_GROUP(reuse =SSNV506G,
                     MAILLAGE=SSNV506G,
-                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=SSNV506G,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # REORENTATION DES NORMALES DES SURFACES DE CONTACT
 
 SSNV506G=MODI_MAILLAGE(reuse =SSNV506G,
                        MAILLAGE=SSNV506G,
                        ORIE_PEAU=_F(GROUP_MA_PEAU='SESC',),
-                       INFO=1,);
+                       INFO=1,)
 
 SSNV506G=MODI_MAILLAGE(reuse =SSNV506G,
                        MAILLAGE=SSNV506G,
                        ORIE_NORM_COQUE=_F(GROUP_MA='SMAI',
                                           VECT_NORM=(0.0,-1.0,0.0,),
                                           GROUP_NO='E',),
-                       INFO=1,);
+                       INFO=1,)
 
 #----------------------------------------------------------------------
 #                      DEFINITION DES MATERIAUX
 #----------------------------------------------------------------------
 
 MSPH=DEFI_MATERIAU(ELAS=_F(E=210000,
-                           NU=0.29999999999999999,),);
+                           NU=0.29999999999999999,),)
 
 MBATI=DEFI_MATERIAU(ELAS=_F(E=210000,
                             NU=0.29999999999999999,),
                     ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                 SY=50.0,),);
+                                 SY=50.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506G,
                     AFFE=(_F(GROUP_MA='SMAI',
                              MATER=MSPH,),
                           _F(GROUP_MA='BATI',
-                             MATER=MBATI,),),);
+                             MATER=MBATI,),),)
 
 #----------------------------------------------------------------------
 #              DEFINITION DES PARAMETRES DE CHARGEMENT
@@ -92,7 +92,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           1.0,1.0,
                           ),
-                    PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                    PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.01,
@@ -100,7 +100,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=0.1,
                                     NOMBRE=18,),
                                  _F(JUSQU_A=1.0,
-                                    NOMBRE=9,),),);
+                                    NOMBRE=9,),),)
 
 #---------------------------------------------------------------------
 #              AFFECTATION DES CONDITIONS AUX LIMITES
@@ -119,7 +119,7 @@ DPLIMPO=AFFE_CHAR_CINE(MODELE=MO,
                                  _F(GROUP_NO='SBYZ',
                                     DX=0.,),
                                  _F(GROUP_NO='SBXY',
-                                    DZ=0.,),),);
+                                    DZ=0.,),),)
 
 CONT=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='DISCRETE',
@@ -127,9 +127,9 @@ CONT=DEFI_CONTACT(MODELE=MO,
                   RESI_ABSO=1.e-3,
                   ZONE=_F(GROUP_MA_MAIT='SMAI',
                           GROUP_MA_ESCL='SESC',
-                          ALGO_CONT='GCP',),);
+                          ALGO_CONT='GCP',),)
 
-DEFLIST=DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST=LINST,),);
+DEFLIST=DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST=LINST,),)
 
 #----------------------------------------------------------------------
 #                         RESOLUTION
@@ -152,7 +152,7 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
                                  PRE_COND='LDLT_SP',
                                  PCENT_PIVOT=30,
                                  ),
-                      INFO=1,);
+                      INFO=1,)
 
 #----------------------------------------------------------------------
 #                         POST TRAITEMENT
@@ -160,7 +160,7 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
 
 SSNV506=CALC_CHAMP(reuse =SSNV506,
                    RESULTAT=SSNV506,
-                   FORCE='REAC_NODA',);
+                   FORCE='REAC_NODA',)
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='FORCE',
@@ -168,7 +168,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='REAC_NODA',
                                  LIST_INST=LINST,
                                  GROUP_NO='SESC',
-                                 RESULTANTE='DY',),);
+                                 RESULTANTE='DY',),)
 
 #----------------------------------------------------------------------
 #                   TESTS DES RESULTATS
@@ -185,4 +185,4 @@ TEST_TABLE(TABLE=TAB_REAC,
            VALE_CALC=-3.6492888860861E+05,)
 
 
-FIN();
+FIN()

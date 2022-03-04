@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,14 +122,14 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                      XI_IRRA=XI,
                                        DEPDT=epsi_1,
                                      ),
-                    );
+                    )
 
 # DD_CC
 COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
                                     ECOULEMENT='MONO_DD_CC_IRRA',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='CUBIQUE1',
-                                    ),);
+                                    ),)
 
 #Orientations cristallographiques
 COMPORP=DEFI_COMPOR(POLYCRISTAL=(_F(MONOCRISTAL=COMPORT,
@@ -223,27 +223,27 @@ COMPORP=DEFI_COMPOR(POLYCRISTAL=(_F(MONOCRISTAL=COMPORT,
                                     FRAC_VOL=0.033333,
                                     ANGL_REP=(58.0,169.0,224.0,),),),
                     LOCALISATION='BZ',
-                    MU_LOCA=MU,);
+                    MU_LOCA=MU,)
 
 ##chargement
 
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           100.0,0.1,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
-TFIN = 100.0;
+TFIN = 100.0
 
-TELAS = 1.72;
+TELAS = 1.72
 
-T2 = 5.0;
+T2 = 5.0
 
-NPAS1 = 100;
+NPAS1 = 100
 
-NPAS2 = 500;
+NPAS2 = 500
 
-NARCH1 = 10;
+NARCH1 = 10
 
-NARCH2 = 50;
+NARCH2 = 50
 
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
@@ -252,7 +252,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.,
                                  _F(JUSQU_A=T2,
                                     NOMBRE=NPAS1,),
                                  _F(JUSQU_A=TFIN,
-                                    NOMBRE=NPAS2,),),);
+                                    NOMBRE=NPAS2,),),)
 
 LINSTA=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A=TELAS,
@@ -260,7 +260,7 @@ LINSTA=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=T2,
                                      NOMBRE=NARCH1,),
                                   _F(JUSQU_A=TFIN,
-                                     NOMBRE=NARCH2,),),);
+                                     NOMBRE=NARCH2,),),)
 
 LISTPS =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),)
 
@@ -310,7 +310,7 @@ SIGEPS=SIMU_POINT_MAT(INFO=2,
                    AFFE_VARC=_F(  NOM_VARC='TEMP',
                                      VALE_FONC=TIMP,
                                      VALE_REF=TEMP),
-                        );
+                        )
 
 
 
@@ -318,7 +318,7 @@ IMPR_TABLE(TABLE=SIGEPS,
            FORMAT='TABLEAU',
            UNITE=38,
            NOM_PARA=('INST','EPZZ','SIZZ',),
-           TITRE='Courbe SigZZ_moy=f(EpsZZ_moy)',);
+           TITRE='Courbe SigZZ_moy=f(EpsZZ_moy)',)
 
 TEST_TABLE(
            VALE_CALC=0.1,
@@ -337,4 +337,4 @@ TEST_TABLE(
            )
 
 
-FIN();
+FIN()

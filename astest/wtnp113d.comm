@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 #   OPERATIONS SUR LE MAILLAGE
 ####################################
 
-MAILIN=LIRE_MAILLAGE(FORMAT='MED',);
+MAILIN=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL = CREA_MAILLAGE(
                          MAILLAGE  = MAILIN,
@@ -99,7 +99,7 @@ LI=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                        _F(  JUSQU_A =31536.E6,  NOMBRE = 5),
 # 10000 ans :
                        _F(  JUSQU_A =31536.E7,  NOMBRE = 5),
-                     ),);
+                     ),)
 
 
 ############################################
@@ -109,28 +109,28 @@ LI=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 #
 ####
 
-VISCOL=DEFI_CONSTANTE(VALE=1.,);
+VISCOL=DEFI_CONSTANTE(VALE=1.,)
 
-VISCOG=DEFI_CONSTANTE(VALE=1.8E-05,);
+VISCOG=DEFI_CONSTANTE(VALE=1.8E-05,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,)
 
-DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,)
 
 ####
-UN=DEFI_CONSTANTE(    VALE=1.,);
+UN=DEFI_CONSTANTE(    VALE=1.,)
 
-ZERO=DEFI_CONSTANTE(    VALE=0.,);
+ZERO=DEFI_CONSTANTE(    VALE=0.,)
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=(_F(JUSQU_A=1.E6,  PAS=1.E5,),
                                  _F(JUSQU_A=1.E7,  PAS=1.E5,),
                                  _F(JUSQU_A=1.E8,  PAS=1.E6,),)
-                   );
+                   )
 
 LI1=DEFI_LIST_REEL(DEBUT=1.E-5,
                    INTERVALLE=_F(JUSQU_A=1.0,
-                                 PAS=0.099999,),);
+                                 PAS=0.099999,),)
 #
 # PRESSION CAPILLAIRE S(PC)
 #
@@ -141,7 +141,7 @@ SATU=CALC_FONC_INTERP(FONCTION=SL,
                       NOM_PARA='PCAP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      INFO=2,);
+                      INFO=2,)
 DSL = FORMULE(VALE='- 0.999*(2.71E-8*(6.5E-8*PCAP)**0.49/((1+(6.5E-8*PCAP)**1.49)**1.33))',
               NOM_PARA='PCAP',)
 
@@ -150,7 +150,7 @@ DSATU=CALC_FONC_INTERP(FONCTION=DSL,
                        NOM_PARA='PCAP',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 #
 # PERMEABILITE INTRINSEQUE, RELATIVE DU LIQUIDE, RELATIVE DU GAZ
 # UNITE INTRINSEQUE : METRES CARRES , UNITE RELATIVE : SANS
@@ -166,7 +166,7 @@ PERML=CALC_FONC_INTERP(FONCTION=PL,
                        NOM_PARA='SAT',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 DPL = FORMULE(VALE='0.999*3*SAT**2',
               NOM_PARA='SAT',)
@@ -176,7 +176,7 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPL,
                        NOM_PARA='SAT',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
@@ -247,25 +247,25 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',
                              NOM_CMP=('PRE1','PRE2','TEMP',),
                              VALE=(1.E5,0.,0.),
-                             ),),);
+                             ),),)
 CALHAU=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='HAUT2',
-                                   PRE1=1E5,),);
+                                   PRE1=1E5,),)
 CALBAS=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='BAS2',
-                                   PRE1=1E5,),);
+                                   PRE1=1E5,),)
 CAL_IA=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='INT_ALVS',
-                                   PRE1=9.4E+7,),);
+                                   PRE1=9.4E+7,),)
 
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='ROCHES',
-                                   PRE2=0.,),);
+                                   PRE2=0.,),)
 CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='ROCHES',
-                                   TEMP=0.,),);
+                                   TEMP=0.,),)
 
-INST_ETAT_INIT=473040000.;
+INST_ETAT_INIT=473040000.
 
 RESU0=STAT_NON_LINE(
                 MODELE=MODELE,
@@ -291,7 +291,7 @@ RESU0=STAT_NON_LINE(
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
-              );
+              )
 ######################
 # DEUXIEME PHASE
 ######################
@@ -304,17 +304,17 @@ SIG1=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='ELGA_SIEF_R',
                     NOM_CHAM='SIEF_ELGA',
                     RESULTAT=RESU0,
-                    INST=473040000.,);
+                    INST=473040000.,)
 VARI1=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='ELGA_VARI_R',
                     NOM_CHAM='VARI_ELGA',
                     RESULTAT=RESU0,
-                    INST=473040000.,);
+                    INST=473040000.,)
 DEP0=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='NOEU_DEPL_R',
                     NOM_CHAM='DEPL',
                     RESULTAT=RESU0,
-                    INST=473040000.,);
+                    INST=473040000.,)
 INID=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
@@ -322,15 +322,15 @@ INID=CREA_CHAMP(MAILLAGE=MAIL,
                            _F(GROUP_NO='INT_ALV',
                              NOM_CMP='PRE1',
                              VALE=3015.E4,),
-                             ),);
+                             ),)
 DEP1=CREA_CHAMP(MAILLAGE=MAIL,
                  OPERATION='ASSE',
                  TYPE_CHAM='NOEU_DEPL_R',
                  ASSE=( _F(CHAM_GD=DEP0,TOUT='OUI',),
                         _F(CHAM_GD=INID,GROUP_NO='INT_ALV',),
-                             ),);
+                             ),)
 
-INST_SANS_RL = 31536.E6;
+INST_SANS_RL = 31536.E6
 
 RESU0=STAT_NON_LINE(reuse=RESU0,
                 MODELE=MODELE,
@@ -356,23 +356,23 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=50,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=70,),
-              );
+              )
 
 SIG2=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='ELGA_SIEF_R',
                     NOM_CHAM='SIEF_ELGA',
                     RESULTAT=RESU0,
-                    INST=INST_SANS_RL,);
+                    INST=INST_SANS_RL,)
 VARI2=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='ELGA_VARI_R',
                     NOM_CHAM='VARI_ELGA',
                     RESULTAT=RESU0,
-                    INST=INST_SANS_RL,);
+                    INST=INST_SANS_RL,)
 DEP2=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='NOEU_DEPL_R',
                     NOM_CHAM='DEPL',
                     RESULTAT=RESU0,
-                    INST=INST_SANS_RL,);
+                    INST=INST_SANS_RL,)
 
 RESU0=STAT_NON_LINE(reuse=RESU0,
                 MODELE=MODELE,
@@ -394,14 +394,14 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=70,),
-              );
+              )
 
 RESU0=CALC_CHAMP(reuse=RESU0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU0)
 
 
 RESU0=CALC_CHAMP(reuse=RESU0,
         VARI_INTERNE='VARI_NOEU',
-        RESULTAT=RESU0,);
+        RESULTAT=RESU0,)
 
 MODELIN=AFFE_MODELE(   MAILLAGE=MAILIN,
                         AFFE=_F(  TOUT = 'OUI',
@@ -514,4 +514,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
 
 
 
-FIN();
+FIN()

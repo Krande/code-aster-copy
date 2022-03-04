@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ MAILLA=LIRE_MAILLAGE(FORMAT='MED', UNITE=20 )
 
 #
 #&MAILLA=DEFI_GROUP(MAILLAGE:MAILLA
-#            CREA_GROUP_NO:(GROUP_MA:CYLINDRE));
+#            CREA_GROUP_NO:(GROUP_MA:CYLINDRE))
 
 FLUIDE=AFFE_MODELE(  MAILLAGE=MAILLA,AFFE=(
                            _F( GROUP_MA = 'LIQUIDE',
@@ -346,7 +346,7 @@ RESGEN2=CALC_MODES(MATR_RIGI=RIGGEN,
                    OPTION='BANDE',
                    CALC_FREQ=_F(FREQ=(2.,70.,),
                                 ),
-                                
+
                    MATR_MASS=MASTOT2,
                    SOLVEUR=_F(METHODE='MULT_FRONT'),
                    )

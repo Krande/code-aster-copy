@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 # MATERIAU NEO-HOOKEEN
 nh=300
@@ -35,15 +35,15 @@ k=e/(3*(1-2*nu))
 resi=1.0E-9
 
 HOOKE=DEFI_MATERIAU(ELAS=_F(E=e,
-                            NU=nu,),);
+                            NU=nu,),)
 
 NEOHK_K=DEFI_MATERIAU(ELAS_HYPER=_F(C10=nh,
-                                     K=k,),);
+                                     K=k,),)
 
 NEOHK_NU=DEFI_MATERIAU(ELAS_HYPER=_F(C10=nh,
-                                     NU=nu,),);
+                                     NU=nu,),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='ASTER',);
+MAIL=LIRE_MAILLAGE(FORMAT='ASTER',)
 
 MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
                       CREA_GROUP_MA= (
@@ -53,24 +53,24 @@ MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='HAUT',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='HAUT',),)
 
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 CHHOOKE=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
-                              MATER=HOOKE,),);
+                              MATER=HOOKE,),)
 
 CHNHK_K=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
-                              MATER=NEOHK_K,),);
+                              MATER=NEOHK_K,),)
 
 CHNHK_NU=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
-                              MATER=NEOHK_NU,),);
+                              MATER=NEOHK_NU,),)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODE,
                     DDL_IMPO=(_F(GROUP_NO='O',
@@ -90,10 +90,10 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODE,
                                  DY=0.0,
                                  DZ=0.0,),),
                     PRES_REP=_F(GROUP_MA='HAUT',
-                                PRES=1.0,),);
+                                PRES=1.0,),)
 
-TPS=DEFI_LIST_REEL(VALE=(0,0.5,1,),);
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1,),);
+TPS=DEFI_LIST_REEL(VALE=(0,0.5,1,),)
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1,),)
 
 # ELASTICITE DE HOOKE EN PETITES PERTURBATIONS
 
@@ -101,11 +101,11 @@ RESU_HK=STAT_NON_LINE(MODELE=MODE,
                       CHAM_MATER=CHHOOKE,
                       EXCIT=_F(CHARGE=CHAR,FONC_MULT=RAMPE,),
                       COMPORTEMENT=_F(RELATION='ELAS',),
-                      INCREMENT=_F(LIST_INST=TPS,),);
+                      INCREMENT=_F(LIST_INST=TPS,),)
 
 RESU_HK=CALC_CHAMP(reuse =RESU_HK,
                    RESULTAT=RESU_HK,
-                   DEFORMATION='EPSI_ELGA',);
+                   DEFORMATION='EPSI_ELGA',)
 
 # HYPERELASTICITE, COMPORTEMENT NEO-HOOKEEN INCREMENTAL (A PARTIR DE K)
 
@@ -115,7 +115,7 @@ SIGMINI0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     PROL_ZERO='OUI',
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP=('SIXX',),
-                            VALE=0.));
+                            VALE=0.))
 
 IN_NH_K=STAT_NON_LINE(MODELE=MODE,
                       CHAM_MATER=CHNHK_K,
@@ -125,11 +125,11 @@ IN_NH_K=STAT_NON_LINE(MODELE=MODE,
                       NEWTON=_F(REAC_ITER=1,),
                       ETAT_INIT=_F(SIGM=SIGMINI0),
                       CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
-                      INCREMENT=_F(LIST_INST=TPS,),);
+                      INCREMENT=_F(LIST_INST=TPS,),)
 
 IN_NH_K=CALC_CHAMP(reuse =IN_NH_K,
                    RESULTAT=IN_NH_K,
-                   DEFORMATION='EPSI_ELGA',);
+                   DEFORMATION='EPSI_ELGA',)
 
 # HYPERELASTICITE, COMPORTEMENT NEO-HOOKEEN INCREMENTAL (A PARTIR DE NU)
 
@@ -141,11 +141,11 @@ IN_NH_NU=STAT_NON_LINE(MODELE=MODE,
                       NEWTON=_F(REAC_ITER=1,),
                       ETAT_INIT=_F(SIGM=SIGMINI0),
                       CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
-                      INCREMENT=_F(LIST_INST=TPS,),);
+                      INCREMENT=_F(LIST_INST=TPS,),)
 
 IN_NH_NU=CALC_CHAMP(reuse =IN_NH_NU,
                    RESULTAT=IN_NH_NU,
-                   DEFORMATION='EPSI_ELGA',);
+                   DEFORMATION='EPSI_ELGA',)
 
 # HYPERELASTICITE, COMPORTEMENT NEO-HOOKEEN TOTAL (A PARTIR DE NU)
 
@@ -156,11 +156,11 @@ EL_NH_NU=STAT_NON_LINE(MODELE=MODE,
                                    DEFORMATION='GROT_GDEP',),
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(RESI_GLOB_RELA=resi,),
-                      INCREMENT=_F(LIST_INST=TPS,),);
+                      INCREMENT=_F(LIST_INST=TPS,),)
 
 EL_NH_NU=CALC_CHAMP(reuse =EL_NH_NU,
                    RESULTAT=EL_NH_NU,
-                   DEFORMATION='EPSI_ELGA',);
+                   DEFORMATION='EPSI_ELGA',)
 
 # ======================================================================
 # TESTS
@@ -434,25 +434,25 @@ IMPR_RESU(FORMAT='RESULTAT',
           RESU=(_F(RESULTAT=RESU_HK ,INST=1.0,NOM_CHAM='DEPL',),
                 _F(RESULTAT=IN_NH_K ,INST=1.0,NOM_CHAM='DEPL',),
                 _F(RESULTAT=IN_NH_NU,INST=1.0,NOM_CHAM='DEPL',),
-                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='DEPL',),),);
+                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='DEPL',),),)
 
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=(_F(RESULTAT=RESU_HK ,INST=1.0,NOM_CHAM='SIEF_ELGA',),
                 _F(RESULTAT=IN_NH_K ,INST=1.0,NOM_CHAM='SIEF_ELGA',),
                 _F(RESULTAT=IN_NH_NU,INST=1.0,NOM_CHAM='SIEF_ELGA',),
-                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='SIEF_ELGA',),),);
+                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='SIEF_ELGA',),),)
 
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=(_F(RESULTAT=RESU_HK ,INST=1.0,NOM_CHAM='EPSI_ELGA',),
                 _F(RESULTAT=IN_NH_K ,INST=1.0,NOM_CHAM='EPSI_ELGA',),
                 _F(RESULTAT=IN_NH_NU,INST=1.0,NOM_CHAM='EPSI_ELGA',),
-                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='EPSI_ELGA',),),);
+                _F(RESULTAT=EL_NH_NU,INST=1.0,NOM_CHAM='EPSI_ELGA',),),)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=(_F(RESULTAT=RESU_HK,),
                 _F(RESULTAT=IN_NH_K,),
                 _F(RESULTAT=IN_NH_NU,),
-                _F(RESULTAT=EL_NH_NU,),),);
+                _F(RESULTAT=EL_NH_NU,),),)
 
-FIN();
+FIN()

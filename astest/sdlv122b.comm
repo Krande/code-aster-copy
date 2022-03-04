@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -152,7 +152,7 @@ BASE=CALC_CHAMP(reuse=BASE,
                 CARA_ELEM=CARAELEM,
                 MODELE=MODELE,
                 CHAM_MATER=MATER,
-                CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),);
+                CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),)
 
 #
 # DEFINITION DU MAILLAGE DE MESURE
@@ -201,13 +201,13 @@ REPGENE=PROJ_MESU_MODAL(
 # =========================
 #
 #DEPLACE = REST_GENE_PHYS (RESU_GENE : REPGENE
-#                          NOM_CHAM  : 'DEPL'                        );
+#                          NOM_CHAM  : 'DEPL'                        )
 #
 #VITESSE = REST_GENE_PHYS (RESU_GENE : REPGENE
-#                          NOM_CHAM  : 'VITE'                        );
+#                          NOM_CHAM  : 'VITE'                        )
 #
 #ACCELER = REST_GENE_PHYS (RESU_GENE : REPGENE
-#                          NOM_CHAM  : 'ACCE'                        );
+#                          NOM_CHAM  : 'ACCE'                        )
 #
 REPONSE=REST_GENE_PHYS(   RESU_GENE=REPGENE,
                             TOUT_CHAM='OUI'                          )
@@ -218,12 +218,12 @@ LTEMPS=DEFI_LIST_REEL(   VALE=(9.E-4,  17.E-4,  25.E-4,)              )
 #
 REPONS=CALC_CHAMP(RESULTAT=REPONSE,
                   LIST_INST=LTEMPS,
-                  CONTRAINTE='SIGM_ELNO',);
+                  CONTRAINTE='SIGM_ELNO',)
 
 #
 REPON2=CALC_CHAMP(RESULTAT=REPONS,
                   LIST_INST=LTEMPS,
-                  CONTRAINTE='SIGM_NOEU',);
+                  CONTRAINTE='SIGM_NOEU',)
 
 #
 # TEST DES RESULTATS

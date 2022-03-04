@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@
 #
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
-MAINI=LIRE_MAILLAGE(FORMAT='MED',);
+MAINI=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAINI=DEFI_GROUP(reuse =MAINI,
                  MAILLAGE=MAINI,
                  CREA_GROUP_MA=_F(NOM='TOUT',
                                   TOUT='OUI',),
-                 CREA_GROUP_NO=_F(GROUP_MA='TOUT',),);
+                 CREA_GROUP_NO=_F(GROUP_MA='TOUT',),)
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MAINI,
                    MODI_MAILLE=(_F(TOUT='OUI',
                                    OPTION='QUAD8_9',),
                                 _F(TOUT='OUI',
-                                   OPTION='TRIA6_7',),),);
+                                   OPTION='TRIA6_7',),),)
 #
 # DEFINITION DES GROUPES DE NOEUDS
 #
@@ -47,7 +47,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='BORD_CH1',),
                                _F(GROUP_MA='BORD_CH2',),
                                _F(GROUP_NO=('N171','N336','N345'),
-                                  NOM='RESULT',),),);
+                                  NOM='RESULT',),),)
 #
 # DEFINITION DU MODELE
 #
@@ -56,7 +56,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='COQUE_3D',),);
+                           MODELISATION='COQUE_3D',),)
 #
 # DEFINITION DU MATERIAU
 #
@@ -66,7 +66,7 @@ ACIER=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=4.E10,
                                  E_T=1.E10,
                                  NU_LT=0.3,
                                  G_LT=4.500000000E9,
-                                 G_TN=3.500000000E9,),);
+                                 G_TN=3.500000000E9,),)
 #
 #
 
@@ -74,7 +74,7 @@ ACIER=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=4.E10,
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     COQUE=_F(GROUP_MA='TOUT',
                              EPAIS=1.0,COQUE_NCOU=1,
-                             ANGL_REP=(30.0,0.0),),);
+                             ANGL_REP=(30.0,0.0),),)
 #
 # ATTRIBUTION DU MATERIAU
 #
@@ -82,7 +82,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 #
@@ -102,11 +102,11 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_ARETE=(_F(GROUP_MA='BORD_CH2',
                                       FX=1.E4,),
                                    _F(GROUP_MA='BORD_CH1',
-                                      FX=-1.E4,),),);
+                                      FX=-1.E4,),),)
 
 linst=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 DEF=STAT_NON_LINE(MODELE=MODELE,
                   CHAM_MATER=CHMAT,
@@ -114,7 +114,7 @@ DEF=STAT_NON_LINE(MODELE=MODELE,
                   EXCIT=_F(CHARGE=CHARGT,),
                   COMPORTEMENT=_F(RELATION='ELAS',
                                DEFORMATION='GROT_GDEP',),
-                  INCREMENT=_F(LIST_INST=linst,),);
+                  INCREMENT=_F(LIST_INST=linst,),)
 #
 # RESOLUTION
 #
@@ -124,7 +124,7 @@ U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
              OPERATION='EXTR',
              RESULTAT=DEF,
              NOM_CHAM='DEPL',
-             NUME_ORDRE=1,);
+             NUME_ORDRE=1,)
 #
 #
 # TEST_RESU DU DEPLACEMENT
@@ -186,7 +186,7 @@ DEF=CALC_CHAMP(reuse=DEF,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RES
 DEFPOS=POST_CHAMP(RESULTAT=DEF,
                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=1,
-                                NIVE_COUCHE='MOY',),);
+                                NIVE_COUCHE='MOY',),)
 #
 # TEST_RESU DE LA CONTRAINTE DANS LE REPERE D'ORTHOTROPIE=REPERE UTILISATEUR COQUE
 #
@@ -290,7 +290,7 @@ DEF1=STAT_NON_LINE(MODELE=MODELE,
                   EXCIT=_F(CHARGE=CHARGT,),
                   COMPORTEMENT=_F(RELATION='ELAS',
                                DEFORMATION='PETIT',),
-                  INCREMENT=_F(LIST_INST=linst,),);
+                  INCREMENT=_F(LIST_INST=linst,),)
 #
 # RESOLUTION
 #
@@ -300,7 +300,7 @@ U1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
              OPERATION='EXTR',
              RESULTAT=DEF1,
              NOM_CHAM='DEPL',
-             NUME_ORDRE=1,);
+             NUME_ORDRE=1,)
 #
 #
 # TEST_RESU DU DEPLACEMENT
@@ -362,7 +362,7 @@ DEF1=CALC_CHAMP(reuse=DEF1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),R
 DEFPOS1=POST_CHAMP(RESULTAT=DEF1,
                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=1,
-                                NIVE_COUCHE='MOY',),);
+                                NIVE_COUCHE='MOY',),)
 #
 # TEST_RESU DE LA CONTRAINTE DANS LE REPERE D'ORTHOTROPIE=REPERE UTILISATEUR COQUE
 #

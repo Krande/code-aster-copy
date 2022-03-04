@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(
 
 
 # LECTURE DU MAILLAGE
-MAIL0=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL0=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 # creation de plaq2 : meme noeuds que plaq1 mais mailles distinctes
@@ -40,12 +40,12 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                CREA_GROUP_NO=(_F(GROUP_MA='ALL_FAC',
                                  NOM='ALL_FAC',),
                               _F(GROUP_MA='ALL_FAC1',
-                                 NOM='ALL_FAC1',),),);
+                                 NOM='ALL_FAC1',),),)
 
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),)
 
 
 
@@ -53,18 +53,18 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
 MODE=AFFE_MODELE(MAILLAGE=MAIL0,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DKT',),);
+                         MODELISATION='DKT',),)
 
 MODE1=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DKT',),);
+                         MODELISATION='DKT',),)
 ep=1.0
 EP=AFFE_CARA_ELEM(MODELE=MODE,
                    COQUE= (
                            _F(GROUP_MA=('ALL_FAC','haut','bas','gauche','droite',),
                              EPAIS=ep,EXCENTREMENT=0., INER_ROTA='OUI',COQUE_NCOU=5,),
-                           ),  
+                           ),
                              )
 
 EP1=AFFE_CARA_ELEM(MODELE=MODE1,
@@ -73,7 +73,7 @@ EP1=AFFE_CARA_ELEM(MODELE=MODE1,
                              EPAIS=ep/2,EXCENTREMENT=ep/4, INER_ROTA='OUI',COQUE_NCOU=5,),
                            _F(GROUP_MA=('ALL_FAC1',),
                              EPAIS=ep/2,EXCENTREMENT=-ep/4, INER_ROTA='OUI',COQUE_NCOU=5,)
-                           ),  
+                           ),
                              )
 
 
@@ -88,19 +88,19 @@ CTRAC = LIRE_FONCTION(UNITE=21,
               #COURBE=_F(FONCTION=CTRAC,),
               #TITRE='Courbe de traction',
               #LEGENDE_X='Deformation',
-              #LEGENDE_Y='Contrainte (MPa)',);
+              #LEGENDE_Y='Contrainte (MPa)',)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                     NU=0.3,),
-                 TRACTION=_F(SIGM=CTRAC,),);
+                 TRACTION=_F(SIGM=CTRAC,),)
 
 CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL0,
                      AFFE=_F(TOUT='OUI',
-                           MATER=ACIER,),);
-                           
+                           MATER=ACIER,),)
+
 CHMATE1=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                           MATER=ACIER,),);
+                           MATER=ACIER,),)
 # CONDITIONS DE SYMETRIE
 CHSYME=AFFE_CHAR_MECA(MODELE=MODE,
                       DDL_IMPO=(_F(GROUP_MA='bas',
@@ -110,7 +110,7 @@ CHSYME=AFFE_CHAR_MECA(MODELE=MODE,
                                 # _F(GROUP_NO='F',
                                 # DRX=0.0,DRY=0.0,DRZ=0.0,),
                                  ),
-                                );
+                                )
 
 CHSYME1=AFFE_CHAR_MECA(MODELE=MODE1,
                       DDL_IMPO=(_F(GROUP_MA='bas',
@@ -120,30 +120,30 @@ CHSYME1=AFFE_CHAR_MECA(MODELE=MODE1,
                                 # _F(GROUP_NO='F',
                                 # DRX=0.0,DRY=0.0,DRZ=0.0,),
                                  ),
-                                );
+                                )
 
 # CHARGEMENT EN FORCE
 CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
-                      FORCE_ARETE=_F(GROUP_MA='haut', FY=1.0,),);
-                      
+                      FORCE_ARETE=_F(GROUP_MA='haut', FY=1.0,),)
+
 CHFORC1=AFFE_CHAR_MECA(MODELE=MODE1,
-                      FORCE_ARETE=_F(GROUP_MA='haut', FY=1.0,),);
-                      
+                      FORCE_ARETE=_F(GROUP_MA='haut', FY=1.0,),)
+
 # RAMPE APPLICATION CHARGEMENT
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1000.,1000.,
-                           ),);
+                           ),)
 
 # DISCRETISATION EN TEMPS
-TFIN  = 110.0;
-TELAS = 10.0;
+TFIN  = 110.0
+TELAS = 10.0
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=TELAS,
                                      NOMBRE=1,),
                                   _F(JUSQU_A=TFIN,
                                      NOMBRE=50,),
-                                  ),);
+                                  ),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
                         ECHEC=_F(EVENEMENT='ERREUR',
@@ -168,7 +168,7 @@ RESU=STAT_NON_LINE(MODELE=MODE,
                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
                      CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,ITER_GLOB_MAXI=15,),
                      INCREMENT=_F(LIST_INST=DEFLIST,
-                                  INST_FIN=TELAS,),);
+                                  INST_FIN=TELAS,),)
 RESU1=STAT_NON_LINE(MODELE=MODE1,
                      CHAM_MATER=CHMATE1,
                    CARA_ELEM=EP1,
@@ -180,7 +180,7 @@ RESU1=STAT_NON_LINE(MODELE=MODE1,
                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
                      CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,ITER_GLOB_MAXI=15,),
                      INCREMENT=_F(LIST_INST=DEFLIST,
-                                  INST_FIN=TELAS,),);
+                                  INST_FIN=TELAS,),)
 
 ########################################################################
 #
@@ -202,7 +202,7 @@ RESU=STAT_NON_LINE(reuse =RESU,
                                   ),
                      NEWTON=_F(REAC_ITER=1,PREDICTION='ELASTIQUE',),
                      CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,ITER_GLOB_MAXI=200,),
-                     );
+                     )
 
 
 RESU1=STAT_NON_LINE(reuse =RESU1,
@@ -219,7 +219,7 @@ RESU1=STAT_NON_LINE(reuse =RESU1,
                                   ),
                      NEWTON=_F(REAC_ITER=1,PREDICTION='ELASTIQUE',),
                      CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,ITER_GLOB_MAXI=200,),
-                     );
+                     )
 
 
 ########################################################################
@@ -233,25 +233,25 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,DEFORMATION=('EPSI_ELNO'),CONTRAINTE=('
 RESUPOS=POST_CHAMP(RESULTAT=RESU,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),);
+                                 NIVE_COUCHE='MOY',),)
 RESUPOS=CALC_CHAMP(reuse =RESUPOS,
                 RESULTAT=RESUPOS,
-                CONTRAINTE='SIGM_NOEU',);                
+                CONTRAINTE='SIGM_NOEU',)
 
 DEFOPOS=POST_CHAMP(RESULTAT=RESU,
                    EXTR_COQUE=_F(NOM_CHAM='EPSI_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),);
+                                 NIVE_COUCHE='MOY',),)
 DEFOPOS=CALC_CHAMP(reuse =DEFOPOS,
                 RESULTAT=DEFOPOS,
-                DEFORMATION='EPSI_NOEU',);                
+                DEFORMATION='EPSI_NOEU',)
 
 
 # INTERPOLATION DES CONTRAINTES EQUIVALENTES AUX NOEUDS
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELNO'))
 # IMPRESSION DES RESULTATS
 #IMPR_RESU(FORMAT='MED',
-          #RESU=_F(RESULTAT=RESU,),);
+          #RESU=_F(RESULTAT=RESU,),)
 
 
 ########RESU1
@@ -259,18 +259,18 @@ RESU1=CALC_CHAMP(reuse=RESU1,RESULTAT=RESU1,DEFORMATION=('EPSI_ELNO'),CONTRAINTE
 RESUPOS1=POST_CHAMP(RESULTAT=RESU1,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),);
+                                 NIVE_COUCHE='MOY',),)
 RESUPOS1=CALC_CHAMP(reuse =RESUPOS1,
                 RESULTAT=RESUPOS1,
-                CONTRAINTE='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',)
 
 DEFOPOS1=POST_CHAMP(RESULTAT=RESU1,
                    EXTR_COQUE=_F(NOM_CHAM='EPSI_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),);
+                                 NIVE_COUCHE='MOY',),)
 DEFOPOS1=CALC_CHAMP(reuse =DEFOPOS1,
                 RESULTAT=DEFOPOS1,
-                DEFORMATION='EPSI_NOEU',);                
+                DEFORMATION='EPSI_NOEU',)
 
 
 # INTERPOLATION DES CONTRAINTES EQUIVALENTES AUX NOEUDS
@@ -279,9 +279,9 @@ RESU1=CALC_CHAMP(reuse=RESU1,RESULTAT=RESU1,CRITERES=('SIEQ_ELNO'))
 
 # IMPRESSION DES RESULTATS
 #IMPR_RESU(FORMAT='MED',
-          #RESU=_F(RESULTAT=RESU1,),);
-          
-          
+          #RESU=_F(RESULTAT=RESU1,),)
+
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='B',
                   RESULTAT=RESUPOS,
@@ -291,7 +291,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',),
           )
 
-          
+
 TEST_RESU(RESU=_F(
                   REFERENCE='AUTRE_ASTER',
                   NUME_ORDRE=1,
@@ -338,4 +338,4 @@ TEST_RESU(RESU=_F(
 
 
 
-FIN();
+FIN()

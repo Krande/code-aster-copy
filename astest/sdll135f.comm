@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@
 #            500 mailles suivant la longueur
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
 rayon_ext   = 0.16
 epaisseur   = 0.01
 rayon_moyen = rayon_ext-epaisseur/2.
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MA,
@@ -39,32 +39,32 @@ MAIL=CREA_MAILLAGE(MAILLAGE=MA,
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=( _F(GROUP_MA='Encas',),
-                               ));
+                               ))
 
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='DKT',),
-                         _F(GROUP_MA = 'POI_A',PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'),));
+                         _F(GROUP_MA = 'POI_A',PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'),))
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000E6,
                             NU=0.29,
-                            RHO=7830.0,),);
+                            RHO=7830.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
                      COQUE  =_F(GROUP_MA=('Tuyau','Encas', 'Libre'),EPAIS=epaisseur,),
                      DISCRET=(_F(GROUP_MA = 'POI_A',CARA = 'K_TR_D_N',VALE = ( 0.,0.,0.,0.,0.,0. ),),
                               _F(GROUP_MA = 'POI_A',CARA = 'M_TR_D_N',VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,0. ),),
-                              ));
-                              
+                              ))
+
 CARAC1=AFFE_CARA_ELEM(MODELE=MODELE,
                      COQUE  =_F(GROUP_MA=('Tuyau','Encas', 'Libre'),EPAIS=epaisseur,COEF_RIGI_DRZ=-1.E-12),
                      DISCRET=(_F(GROUP_MA = 'POI_A',CARA = 'K_TR_D_N',VALE = ( 0.,0.,0.,0.,0.,0. ),),
                               _F(GROUP_MA = 'POI_A',CARA = 'M_TR_D_N',VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,0. ),),
-                              ));
+                              ))
 
 # ENCASTREMENT SUR UNE EXTREMITE
 
@@ -81,7 +81,7 @@ CL=AFFE_CHAR_MECA(MODELE=MODELE,
                                    GROUP_NO_2='Point_A',
                                    CARA_ELEM=CARAC,
                                    AXE_POUTRE=(1.0,0.0,0.0,),),
-             ));
+             ))
 CL1=AFFE_CHAR_MECA(MODELE=MODELE,
                   DDL_IMPO=_F(GROUP_NO='Point_A',
                               DX=0.0,
@@ -95,7 +95,7 @@ CL1=AFFE_CHAR_MECA(MODELE=MODELE,
                                    GROUP_NO_2='Point_A',
                                    CARA_ELEM=CARAC1,
                                    AXE_POUTRE=(1.0,0.0,0.0,),),
-             ));
+             ))
 
 
 
@@ -107,7 +107,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('RIGID'),
-                              OPTION='RIGI_MECA',),),);
+                              OPTION='RIGI_MECA',),),)
 ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARAC1,
@@ -116,10 +116,10 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('MASSE1'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('RIGID1'),
-                              OPTION='RIGI_MECA',),),);
+                              OPTION='RIGI_MECA',),),)
 
 
-# RECHERCHE DES MODES PROPRES 
+# RECHERCHE DES MODES PROPRES
 #----------------------------
 
 NBMODE_A = INFO_MODE(MATR_RIGI=RIGID,
@@ -277,7 +277,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   CRITERE='RELATIF',
                   PRECISION=0.0025))
 
-# ON SAUTE SCIEMMENT QUELQUES MODES (D'OU STURM='NON')                    
+# ON SAUTE SCIEMMENT QUELQUES MODES (D'OU STURM='NON')
 MOD_DRX1=CALC_MODES(MATR_RIGI=RIGID1,VERI_MODE=_F(STURM='NON'),
                     OPTION='PROCHE', SOLVEUR=_F(METHODE='MULT_FRONT'),
                     CALC_FREQ=_F(FREQ=(786.619,2359.856,3933.094,5506.33,),
@@ -319,6 +319,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   VALE_CALC=5505.40797115,
                   VALE_REFE= 5506.33,
                   CRITERE='RELATIF',
-                  PRECISION=0.0025))   
-       
+                  PRECISION=0.0025))
+
 FIN()

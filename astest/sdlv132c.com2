@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ for j,NTRIM in enumerate(tours):
     FREQ=NTRIM/60.
     OM=(FREQ * 2) * NP.pi
 
-    KS[j]=ASSE_MATRICE(MATR_ELEM=Ke[j],NUME_DDL=NDDL[j],SYME='OUI');
-    MS[j]=ASSE_MATRICE(MATR_ELEM=Me[j],NUME_DDL=NDDL[j],SYME='OUI');
+    KS[j]=ASSE_MATRICE(MATR_ELEM=Ke[j],NUME_DDL=NDDL[j],SYME='OUI')
+    MS[j]=ASSE_MATRICE(MATR_ELEM=Me[j],NUME_DDL=NDDL[j],SYME='OUI')
     MODES[j]=CALC_MODES(MATR_RIGI=KS[j],
                                                 MATR_MASS=MS[j],
                                                 VERI_MODE=_F(STOP_ERREUR='NON',),
@@ -49,10 +49,10 @@ for j,NTRIM in enumerate(tours):
                                                 OPTION='BANDE',
                                                 CALC_FREQ=_F(FREQ=(-1,3000.0,),),
 
-                                        );
+                                        )
 
 
-    MODE2N[j]=NORM_MODE(MODE=MODES[j],NORME='EUCL_TRAN',INFO=2,);
+    MODE2N[j]=NORM_MODE(MODE=MODES[j],NORME='EUCL_TRAN',INFO=2,)
 
 
 # CALCUL DU MACRO-ELEMENT DYNAMIQUE
@@ -60,7 +60,7 @@ for j,NTRIM in enumerate(tours):
     INT2[j]=DEFI_INTERF_DYNA(NUME_DDL=NDDL[j],
                              INTERFACE=(_F(NOM='PALIER_R',TYPE='CRAIGB',GROUP_NO='NO_PAL',),
                              ),
-                             );
+                             )
 
 
     BAMO2[j]=DEFI_BASE_MODALE(CLASSIQUE=(
@@ -68,14 +68,14 @@ for j,NTRIM in enumerate(tours):
 
                                         ),
                                         INFO = 2,
-                              );
+                              )
 
     MACR2[j]=MACR_ELEM_DYNA(BASE_MODALE=BAMO2[j],
                   MATR_RIGI=K[j],
                   MATR_MASS=M[j],
                   MATR_AMOR=GOM[j],
 
-                  );
+                  )
 
 
 # DEFINITION DU MODELE GENERALISE
@@ -102,19 +102,19 @@ for j,NTRIM in enumerate(tours):
                              INTERFACE_2='PALIER_R',
                              OPTION='CLASSIQUE',
                             ),
-                  );
+                  )
 
 # NUMEROTATION DU PROBLEME GENERALISE DES SOUS-STRUCTURES
 
-    NUMG[j]=NUME_DDL_GENE(MODELE_GENE=MODG[j],);
+    NUMG[j]=NUME_DDL_GENE(MODELE_GENE=MODG[j],)
 
 # ASSEMBLAGE DES MATRICES
 
-    MASG[j]=ASSE_MATR_GENE(NUME_DDL_GENE=NUMG[j],OPTION='MASS_GENE',);
+    MASG[j]=ASSE_MATR_GENE(NUME_DDL_GENE=NUMG[j],OPTION='MASS_GENE',)
 
-    RIGG[j]=ASSE_MATR_GENE(NUME_DDL_GENE=NUMG[j],OPTION='RIGI_GENE',);
+    RIGG[j]=ASSE_MATR_GENE(NUME_DDL_GENE=NUMG[j],OPTION='RIGI_GENE',)
 
-    AMOG[j]=ASSE_MATR_GENE(NUME_DDL_GENE=NUMG[j],OPTION='AMOR_GENE',);
+    AMOG[j]=ASSE_MATR_GENE(NUME_DDL_GENE=NUMG[j],OPTION='AMOR_GENE',)
 
 
 
@@ -143,7 +143,7 @@ for j,NTRIM in enumerate(tours):
                                         OPTION='PLUS_PETITE',
                                         CALC_FREQ=_F(NMAX_FREQ=13,),
 
-                              );
+                              )
 
 
 # CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
@@ -157,13 +157,13 @@ for j,NTRIM in enumerate(tours):
                                     GROUP_MA=('MA_AR'),
                                    ),
                                 ),
-                           );
+                           )
 
 
 # RESTITUTION SUR MAILLAGE SQUELETTE (partie reel)
 
 
-    MODP[j]=REST_SOUS_STRUC(RESU_GENE=REG0[j],SOUS_STRUC='COTE2',TOUT_ORDRE='OUI',NOM_CHAM=('DEPL', ),);
+    MODP[j]=REST_SOUS_STRUC(RESU_GENE=REG0[j],SOUS_STRUC='COTE2',TOUT_ORDRE='OUI',NOM_CHAM=('DEPL', ),)
 
 
 #VITESSE DE ROTATION 0 rpm, METHODE QZ DIRECT
@@ -328,7 +328,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #                   CRITERE='RELATIF',
 #                   PRECISION=0.0010000000000000001,),
                 ),
-          );
+          )
 
 #VITESSE DE ROTATION 30000 rpm, METHODE QZ DIRECT
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -492,6 +492,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #                   CRITERE='RELATIF',
 #                   PRECISION=0.0010000000000000001,),
                 ),
-          );
+          )
 
-FIN();
+FIN()

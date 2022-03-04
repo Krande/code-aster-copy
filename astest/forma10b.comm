@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,27 +21,27 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 #  SDVERI='NON' pour des raisons de cout CPU
-Pilote = 'PNG';
+Pilote = 'PNG'
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
                             NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=1930.,
-                                 SY=181.,),);
+                                 SY=181.,),)
 
 Sig=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                         1.,151.2,
                         2.,257.2,
                         3.,259.3,
                         4.,0.,
-                        ),);
+                        ),)
 
 Tau=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                         1.,93.1,
                         2.,33.1,
                         3.,0.,
                         4.,0.,
-                        ),);
+                        ),)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               PILOTE=Pilote,
@@ -49,14 +49,14 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONC_X=Sig,
                         FONC_Y=Tau,),
               LEGENDE_X='Sig',
-              LEGENDE_Y='Tau',);
+              LEGENDE_Y='Tau',)
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.81,NOMBRE=1,),
                                   _F(JUSQU_A=1.00,NOMBRE=1,),
                                   _F(JUSQU_A=2.00,NOMBRE=1,),
-                                  _F(JUSQU_A=3.00,NOMBRE=1,),),);
+                                  _F(JUSQU_A=3.00,NOMBRE=1,),),)
 
 # gestion manuelle avec event-driven
 DEFLIST = DEFI_LIST_INST(METHODE='MANUEL',
@@ -77,9 +77,9 @@ U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8),
                  SIGM_IMPOSE=_F(SIXX=Sig,
-                                SIXY=Tau,),INFO=1);
+                                SIXY=Tau,),INFO=1)
 
-IMPR_TABLE(TABLE=U,);
+IMPR_TABLE(TABLE=U,)
 
 # A
 
@@ -155,22 +155,22 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 EPXX=RECU_FONCTION(TABLE=U,
                    PARA_X='INST',
-                   PARA_Y='EPXX',);
+                   PARA_Y='EPXX',)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=EPXX,
                         LEGENDE='EPXX',
                         MARQUEUR=1,),
-              UNITE=31,);
+              UNITE=31,)
 
 EPXY=RECU_FONCTION(TABLE=U,
                    PARA_X='INST',
-                   PARA_Y='EPXY',);
+                   PARA_Y='EPXY',)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=EPXY,
                         LEGENDE='EPXY',
                         MARQUEUR=1,),
-              UNITE=32,);
+              UNITE=32,)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,9 @@ TREF = TR1
 T0   = TR1
 Tmax = TR3
 
-ZERO =DEFI_CONSTANTE(VALE=0.0);
+ZERO =DEFI_CONSTANTE(VALE=0.0)
 
-UN   =DEFI_CONSTANTE(VALE=1.0);
+UN   =DEFI_CONSTANTE(VALE=1.0)
 
 #===========================================================
 #                  RELATION = 'ELAS'
@@ -78,13 +78,13 @@ ALPHA1=DEFI_FONCTION(NOM_PARA='TEMP',
                      VALE=(TR1, 1.0E-5,
                            TR2, 1.5E-5,
                            TR3, 2.0E-5
-                           ),);
+                           ),)
 
 ALPHA2=DEFI_FONCTION(NOM_PARA='TEMP',
                      VALE=(TR1, 1.0E-5,
                            TR2, 1.5E-5,
                            TR3, 2.0E-5
-                           ),);
+                           ),)
 
 MCISA_2=DEFI_FONCTION(  NOM_PARA='TEMP',
                    VALE=( TR1, G1,  TR2, G2,  TR3, G3, )  )
@@ -97,7 +97,7 @@ MATERI=DEFI_MATERIAU(  ELAS_ISTR_FO=_F(E_L   = YOUN_L,
                                        TEMP_DEF_ALPHA = TREF,
                                        ALPHA_L = ALPHA1,
                                        ALPHA_N = ALPHA2,),
-                    );
+                    )
 
 tfin = 1.
 
@@ -116,7 +116,7 @@ for i in range(NCAL):
                                         G_LN    = MCISA_2(Ti),
                                         ALPHA_L = 0.,
                                         ALPHA_N = 0.,),
-                                );
+                                )
 
 ############################################################################
 # MACRO pour test thermoplastique
@@ -127,4 +127,4 @@ tabresu=TEST_COMPOR(SUPPORT='ELEMENT',
               NEWTON=_F(REAC_ITER=1),
               NB_VARI=0,)
 
-FIN();
+FIN()

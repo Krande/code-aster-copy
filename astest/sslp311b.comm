@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 #
 MA=LIRE_MAILLAGE(FORMAT='MED',
-                 VERI_MAIL=_F(VERIF='OUI',),);
+                 VERI_MAIL=_F(VERIF='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 #
 # CE BLOC SERT A VALIDER LA VARIABLE DE COMMANDE ESPACE
@@ -38,7 +38,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 CHGEOM=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                   OPERATION='EXTR',
                   MAILLAGE=MA,
-                  NOM_CHAM='GEOMETRIE',);
+                  NOM_CHAM='GEOMETRIE',)
 
 def E(x,y) :
 #   a=tan(30deg)
@@ -50,11 +50,11 @@ E_F = FORMULE(VALE='E(X,Y)',
               E=E,
               NOM_PARA=['X', 'Y'],)
 
-NU_F=DEFI_CONSTANTE(VALE=0.3,);
+NU_F=DEFI_CONSTANTE(VALE=0.3,)
 
 RHO_F=DEFI_CONSTANTE(VALE = 0.0,)
 
-MAT=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=RHO_F,),);
+MAT=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=RHO_F,),)
 
 #
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
@@ -65,13 +65,13 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                           _F(GROUP_MA='LP7P8',MATER=MAT),
                           _F(GROUP_MA='LP6P7',MATER=MAT),),
                     AFFE_VARC=_F(NOM_VARC='GEOM',
-                                 CHAM_GD=CHGEOM),);
+                                 CHAM_GD=CHGEOM),)
 
 #
 #
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA=('LP3P4','LP2P3','LP6P7','LP7P8',),),);
+              CREA_GROUP_NO=_F(GROUP_MA=('LP3P4','LP2P3','LP6P7','LP7P8',),),)
 
 #
 #
@@ -85,16 +85,16 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                   FORCE_CONTOUR=(_F(GROUP_MA='LP3P4',
                                     FY=100.E6,),
                                  _F(GROUP_MA='LP2P3',
-                                    FY=100.E6,),),);
+                                    FY=100.E6,),),)
 
 #
 CHDEPL=MECA_STATIQUE(MODELE=MO,
                      CHAM_MATER=CHMAT,
-                     EXCIT=_F(CHARGE=CH,),);
+                     EXCIT=_F(CHARGE=CH,),)
 
-MAT1=DEFI_MATERIAU(ELAS=_F(E=20.E11,NU = 0.3,RHO=0.,ALPHA=0.,),);
+MAT1=DEFI_MATERIAU(ELAS=_F(E=20.E11,NU = 0.3,RHO=0.,ALPHA=0.,),)
 
-MAT2=DEFI_MATERIAU(ELAS=_F(E=2.E11,NU=0.3,RHO=0.,ALPHA=0.,),);
+MAT2=DEFI_MATERIAU(ELAS=_F(E=2.E11,NU=0.3,RHO=0.,ALPHA=0.,),)
 
 #
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
@@ -103,11 +103,11 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                            _F(GROUP_MA='LP2P3',MATER = MAT1),
                            _F(GROUP_MA='VTOT2',MATER = MAT2),
                            _F(GROUP_MA='LP7P8',MATER = MAT2),
-                           _F(GROUP_MA='LP6P7',MATER = MAT2),),);
+                           _F(GROUP_MA='LP6P7',MATER = MAT2),),)
 
 CHAMDEPL=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT2,
-                       EXCIT=_F(CHARGE=CH,),);
+                       EXCIT=_F(CHARGE=CH,),)
 
 #
 # ON VALIDE QUE LES DEUX DEFINITIONS DES MATERIAUX SONT EQUIVALENTES :
@@ -159,7 +159,7 @@ FOND1=DEFI_FOND_FISS(MAILLAGE=MA,SYME='NON',
                      FOND_FISS=_F(GROUP_NO='P0',),
                      LEVRE_SUP=_F(GROUP_MA = 'LEVR_SUP',),
                      LEVRE_INF=_F(GROUP_MA = 'LEVR_INF',),
-                     );
+                     )
 
 
 #
@@ -169,7 +169,7 @@ G01A=CALC_G(THETA=_F(
                      R_SUP=0.001875E-2,
                      ),
             RESULTAT=CHAMDEPL,
-            OPTION='G',);
+            OPTION='G',)
 
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -187,7 +187,7 @@ G01B=CALC_G(THETA=_F(
                      R_SUP=0.003750E-2,
                      ),
             RESULTAT=CHAMDEPL,
-            OPTION='G',);
+            OPTION='G',)
 
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -205,7 +205,7 @@ G01C=CALC_G(THETA=_F(
                      R_SUP=0.005625E-2,
                      ),
             RESULTAT=CHAMDEPL,
-            OPTION='G',);
+            OPTION='G',)
 
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -222,7 +222,7 @@ G01D=CALC_G(THETA=_F(
                      R_SUP=0.007500E-2,
                      ),
             RESULTAT=CHAMDEPL,
-            OPTION='G',);
+            OPTION='G',)
 
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -240,7 +240,7 @@ FOND2=DEFI_FOND_FISS(MAILLAGE=MA,SYME='NON',
                      FOND_FISS=_F(GROUP_NO='P0G',),
                      LEVRE_SUP=_F(GROUP_MA = 'LEVR_SUP',),
                      LEVRE_INF=_F(GROUP_MA = 'LEVR_INF',),
-                     );
+                     )
 
 #
 G02A=CALC_G(THETA=_F(
@@ -249,7 +249,7 @@ G02A=CALC_G(THETA=_F(
                      R_SUP=0.001875E-2,
                      ),
             RESULTAT=CHAMDEPL,
-            OPTION='G',);
+            OPTION='G',)
 
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -267,7 +267,7 @@ G02B=CALC_G(THETA=_F(
                      R_SUP=0.003750E-2,
                      ),
             RESULTAT=CHAMDEPL,
-            OPTION='G',);
+            OPTION='G',)
 
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -285,7 +285,7 @@ G02C=CALC_G(THETA=_F(
                      R_SUP=0.005625E-2,
                      ),
             RESULTAT=CHAMDEPL,
-            OPTION='G',);
+            OPTION='G',)
 
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -303,7 +303,7 @@ G02D=CALC_G(THETA=_F(
                      R_SUP=0.007500E-2,
                      ),
             RESULTAT=CHAMDEPL,
-            OPTION='G',);
+            OPTION='G',)
 
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',

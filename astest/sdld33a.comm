@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@
 ##############################
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #
 
-MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 #
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
@@ -48,7 +48,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                          _F(GROUP_MA=('GROUP_NO_MASSE',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),VERI_JACOBIEN='OUI',
-                     );
+                     )
 
 #
 
@@ -108,19 +108,19 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                              _F(GROUP_MA='P4',
                                 CARA='M_T_D_N',
                                 SYME='OUI',
-                                VALE=10.0,),),);
+                                VALE=10.0,),),)
 
 #
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.6E+11,
                           NU=0.3,
-                          RHO=1.3E+04,),);
+                          RHO=1.3E+04,),)
 
 #
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MAT,),);
+                               MATER=MAT,),)
 
 #
 
@@ -131,39 +131,39 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DZ=0.,),
                                   _F(GROUP_NO='GROUP_NO_MASSE',
                                      DY=0.,
-                                     DZ=0.,),),);
+                                     DZ=0.,),),)
 
 #
 
 RIGIELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CARA_ELEM=CARA,
-                        CHARGE=COND_LIM,);
+                        CHARGE=COND_LIM,)
 
 #
 
 MASSELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODELE,
                         CARA_ELEM=CARA,
-                        CHARGE=COND_LIM,);
+                        CHARGE=COND_LIM,)
 
 #
 
-NUMEROTA=NUME_DDL(MATR_RIGI=RIGIELEM,);
+NUMEROTA=NUME_DDL(MATR_RIGI=RIGIELEM,)
 
 #
 
 MATRRIGI=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
-                      NUME_DDL=NUMEROTA,);
+                      NUME_DDL=NUMEROTA,)
 
 MATRMASS=ASSE_MATRICE(MATR_ELEM=MASSELEM,
-                      NUME_DDL=NUMEROTA,);
+                      NUME_DDL=NUMEROTA,)
 
 #
 
 MAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
               MODELE=MODELE,
-              CARA_ELEM=CARA,);
+              CARA_ELEM=CARA,)
 
 #
 
@@ -180,7 +180,7 @@ MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
 
 MODES=NORM_MODE(reuse =MODES,
                 MODE=MODES,
-                NORME='TRAN',);
+                NORME='TRAN',)
 
 #
 
@@ -189,11 +189,11 @@ MODES=CALC_CHAMP(reuse=MODES,RESULTAT=MODES,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO')
 
 MODES=CALC_CHAMP(reuse =MODES,
               RESULTAT=MODES,
-              FORCE='FORC_NODA',);
+              FORCE='FORC_NODA',)
 
 MODES=CALC_CHAMP(reuse =MODES,
               RESULTAT=MODES,
-              FORCE='REAC_NODA',);
+              FORCE='REAC_NODA',)
 #
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -221,7 +221,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 MODE_STA=MODE_STATIQUE(MATR_RIGI=MATRRIGI,
                        MATR_MASS=MATRMASS,
                        MODE_STAT=_F(GROUP_NO=('GROUP_NO_PO1','GROUP_NO_PO3','GROUP_NO_PO5',),
-                                    AVEC_CMP='DX',),);
+                                    AVEC_CMP='DX',),)
 
 #
 
@@ -230,11 +230,11 @@ MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EF
 
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
-                 FORCE='FORC_NODA',);
+                 FORCE='FORC_NODA',)
 
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
-                 FORCE='REAC_NODA',);
+                 FORCE='REAC_NODA',)
 
 #
 
@@ -311,20 +311,20 @@ SORA1=DEFI_FONCTION(NOM_PARA='FREQ',
                           3.1831, 5),
                     INTERPOL='LOG',
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 SORA2=DEFI_FONCTION(NOM_PARA='FREQ',
                     VALE=(2.25079,7.7,
                           3.1831, 5.5),
                     INTERPOL='LOG',
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 SORA3=DEFI_FONCTION(NOM_PARA='FREQ',
                     VALE=(2.25079,12.0,
                           3.1831, 6.0),
                     INTERPOL='LOG',
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 #
 SPEC1=DEFI_NAPPE(NOM_PARA='AMOR',
@@ -333,21 +333,21 @@ SPEC1=DEFI_NAPPE(NOM_PARA='AMOR',
                     PARA=(0.0, 1.0, ),
                     PROL_GAUCHE='CONSTANT',
                     PROL_DROITE='CONSTANT',
-                    FONCTION=(SORA1, SORA1,),);
+                    FONCTION=(SORA1, SORA1,),)
 SPEC2=DEFI_NAPPE(NOM_PARA='AMOR',
                     INTERPOL=('LIN','LOG',),
                     INFO=2,
                     PARA=(0.0, 1.0, ),
                     PROL_GAUCHE='CONSTANT',
                     PROL_DROITE='CONSTANT',
-                    FONCTION=(SORA2, SORA2,),);
+                    FONCTION=(SORA2, SORA2,),)
 SPEC3=DEFI_NAPPE(NOM_PARA='AMOR',
                     INTERPOL=('LIN','LOG',),
                     INFO=2,
                     PARA=(0.0, 1.0, ),
                     PROL_GAUCHE='CONSTANT',
                     PROL_DROITE='CONSTANT',
-                    FONCTION=(SORA3, SORA3,),);
+                    FONCTION=(SORA3, SORA3,),)
 
 
 #
@@ -389,7 +389,7 @@ MUDEQA=COMB_SISM_MODAL(MODE_MECA=MODES,
                         GROUP_APPUI=(_F(GROUP_NO =('P1','P3',),),
                                      _F(GROUP_NO =('GROUP_NO_PO5',),),
                                      ),
-                        OPTION=('DEPL','REAC_NODA'),);
+                        OPTION=('DEPL','REAC_NODA'),)
 
 #
 
@@ -483,4 +483,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='GROUP_NO_PO1',
 
 #
 
-FIN();
+FIN()

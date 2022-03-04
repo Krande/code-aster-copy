@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # lecture maillage lineique
-MAPOU=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,);
+MAPOU=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,)
 
 # lecture maillage section1
-MASEC=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=21,);
+MASEC=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=21,)
 
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
-                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),);
+                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),)
 
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10, NU=0.0,  RHO=2400.0,),)
@@ -50,31 +50,31 @@ POUCA_0=AFFE_CARA_ELEM( MODELE=MOPOU,
                                         ),
                         GEOM_FIBRE=GF,
                         MULTIFIBRE=(_F( GROUP_MA=('POUTRE'), PREC_AIRE=1.0E-06, PREC_INERTIE=2.55E-01, GROUP_FIBRE=('SBET',)  ),  )
-                    );
+                    )
 
 COMPPMF=DEFI_COMPOR(    GEOM_FIBRE=GF,
                         MATER_SECT=BETON,
                         MULTIFIBRE=_F(  GROUP_FIBRE='SBET',
                                         MATER=BETON,
                                     ),
-                    );
+                    )
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
                     AFFE=_F(GROUP_MA='POUTRE', MATER=BETON,),
                     AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=COMPPMF),
-                          );
+                          )
 
 BLOCAGE=AFFE_CHAR_MECA( MODELE=MOPOU,
                         DDL_IMPO=(_F(GROUP_NO='ENC', DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0,),
-                                 ),);
+                                 ),)
 CHARGE=AFFE_CHAR_MECA(  MODELE=MOPOU,
                         FORCE_NODALE=(_F(GROUP_NO='CHA',FX = 100.0,FY = 100.0,FZ = 100.)
-                                 ),);
+                                 ),)
 
 FOFO=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,3.5,3.5),
                    PROL_DROITE='EXCLU',
-                   PROL_GAUCHE='EXCLU',);
+                   PROL_GAUCHE='EXCLU',)
 
 
 LINST=DEFI_LIST_REEL(   DEBUT=0.0,
@@ -83,7 +83,7 @@ LINST=DEFI_LIST_REEL(   DEBUT=0.0,
                                     _F(JUSQU_A=2.84 ,  NOMBRE=9,),
                                     _F(JUSQU_A=3. ,  NOMBRE=10,),
                                     ),
-                    );
+                    )
 
 U_0=STAT_NON_LINE(MODELE=MOPOU,
                  CHAM_MATER=CHMAT,
@@ -96,7 +96,7 @@ U_0=STAT_NON_LINE(MODELE=MOPOU,
                  NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA=3.E-5,
                                 ITER_GLOB_MAXI=250,),
-                 );
+                 )
 
 
 U_0=CALC_CHAMP(DEFORMATION=('EPSI_ELGA'),reuse=U_0,RESULTAT=U_0)

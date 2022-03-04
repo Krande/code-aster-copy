@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,25 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET') );
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 
-maillage=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(APLAT=1.E-3,),);
+maillage=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(APLAT=1.E-3,),)
 
 modmeca=AFFE_MODELE(MAILLAGE=maillage,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN',),);
+                            MODELISATION='D_PLAN',),)
 
 mat=DEFI_MATERIAU(ELAS_HYPER=_F(C10=2.668,
                                 C01=0.271,
                                 C20=0.466,
                                 K=2939,
-                                RHO=1000.0),);
+                                RHO=1000.0),)
 
 chmat=AFFE_MATERIAU(MAILLAGE=maillage,
                     AFFE=_F(TOUT='OUI',
-                            MATER=mat,),);
+                            MATER=mat,),)
 
 encastr=AFFE_CHAR_MECA(MODELE=modmeca,
                        DDL_IMPO=(_F(GROUP_MA='L4',
@@ -43,13 +43,13 @@ encastr=AFFE_CHAR_MECA(MODELE=modmeca,
                                     DY=0,),
                                  _F(GROUP_MA='L2',
                                     DX=0,
-                                    DY=50.0,),),);
+                                    DY=50.0,),),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=20,),);
+                                    NOMBRE=20,),)
 l=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,0.0,1.0,1.0,),);
+                VALE=(0.0,0.0,1.0,1.0,),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -66,7 +66,7 @@ RESU=STAT_NON_LINE(MODELE=modmeca,
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=DEFLIST,
                                 INST_FIN=1.0,),
-                   ARCHIVAGE=_F(LIST_INST=L_INST,),);
+                   ARCHIVAGE=_F(LIST_INST=L_INST,),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSG_ELNO'))
 
@@ -77,7 +77,7 @@ RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              FORCE='FORC_NODA',
 
-             );
+             )
 
 TAB_FORC=MACR_LIGN_COUPE(RESULTAT=RESU, LIST_INST=L_INST,  NOM_CHAM='FORC_NODA',
                        LIGN_COUPE = _F(TYPE='GROUP_MA',  MAILLAGE=maillage, RESULTANTE='DY',
@@ -86,16 +86,16 @@ TAB_FORC=MACR_LIGN_COUPE(RESULTAT=RESU, LIST_INST=L_INST,  NOM_CHAM='FORC_NODA',
 
 FYA=RECU_FONCTION(TABLE=TAB_FORC,
                   PARA_X='INST',
-                  PARA_Y='DY',);
+                  PARA_Y='DY',)
 
 DYA=RECU_FONCTION(RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='N1',);
+                  GROUP_NO='N1',)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONC_X=DYA,
-                        FONC_Y=FYA,),);
+                        FONC_Y=FYA,),)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=229.3379,
                         VALE_REFE=229.336,
@@ -105,4 +105,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=229.3379,
                         FONCTION=FYA,),
               )
 
-FIN();
+FIN()

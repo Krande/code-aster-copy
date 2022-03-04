@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -35,17 +35,17 @@ MODE=AFFE_MODELE(MAILLAGE=MA,
 
                  AFFE=_F(GROUP_MA=('VOL','VOL_RIG'),
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=117.E3,
                             NU=0.35,
                             RHO=8.930E-9,),
                     ECRO_LINE=_F(D_SIGM_EPSI=100.,
-                                 SY=400.,),);
+                                 SY=400.,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA=('VOL','VOL_RIG'),
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='AFFE',
@@ -75,13 +75,13 @@ L_INST=DEFI_LIST_REEL(DEBUT=-1.E-5,
                                   _F(JUSQU_A=2.5E-7,
                                      NOMBRE=10,),
                                   _F(JUSQU_A=80.E-6,
-                                     NOMBRE=316,),),);
+                                     NOMBRE=316,),),)
 
 L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,
                       INTERVALLE=(_F(JUSQU_A=2.5E-7,
                                      NOMBRE=2,),
                                   _F(JUSQU_A=80.E-6,
-                                     NOMBRE=316,),),);
+                                     NOMBRE=316,),),)
 
 RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
@@ -102,7 +102,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
                                   ITER_GLOB_MAXI=20,
                                   ARRET='OUI',),
-                   );
+                   )
 
 RESU=CALC_CHAMP(reuse=RESU,
                 RESULTAT=RESU,

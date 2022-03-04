@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER", )
 MAILLAG0=DEFI_GROUP(reuse=MAILLAG0,
                     MAILLAGE=MAILLAG0,
                     CREA_GROUP_NO=_F( NOM='GROUP_NO_GN2',
-                                      GROUP_NO=('N02',),),);
+                                      GROUP_NO=('N02',),),)
 MAILLAG0=DEFI_GROUP(reuse=MAILLAG0,
                     MAILLAGE=MAILLAG0,
                     CREA_GROUP_NO=_F( NOM='GROUP_NO_GN3',
-                                      GROUP_NO=('N03',),),);
+                                      GROUP_NO=('N03',),),)
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
     CREA_POI1=(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,14 +51,14 @@ DEFI_GROUP( reuse=MA, MAILLAGE=MA,
 #      TRIA3  QUAD4  TRIA6  QUAD8  QUAD9
 MO=AFFE_MODELE(
             MAILLAGE=MA,
-            
+
             AFFE=(
 _F( TOUT='OUI',
                PHENOMENE = 'MECANIQUE',
                MODELISATION = ('AXIS')),
            _F( TOUT='OUI',
                PHENOMENE = 'MECANIQUE',
-               MODELISATION = ('AXIS_SI',)),),);
+               MODELISATION = ('AXIS_SI',)),),)
 
 MOTH=AFFE_MODELE(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
@@ -221,7 +221,7 @@ MAT2=DEFI_MATERIAU(    ELAS_FO=_F(  E = FO1,
 
 
 nutn = 0.4
-glt = 1.5/(2*(1+0.25)) 
+glt = 1.5/(2*(1+0.25))
 MAT3=DEFI_MATERIAU(    ELAS_ORTH=_F(  E_L = 1.5,
                                       E_T = 1.5,
                                       E_N = 0.4,
@@ -531,12 +531,12 @@ MSLIN=CALC_CHAMP(reuse= MSLIN,
                  CONTRAINTE='SIGM_ELNO',
                  DEFORMATION=('EPME_ELGA','EPME_ELNO','EPSI_ELGA','EPSI_ELNO',),
                  CRITERES=('SIEQ_ELGA','SIEQ_ELNO','EPEQ_ELNO','EPEQ_ELGA','EPMQ_ELNO','EPMQ_ELGA',),
-                 ENERGIE=('EPOT_ELEM','ENEL_ELGA','ENEL_ELNO',),);
+                 ENERGIE=('EPOT_ELEM','ENEL_ELGA','ENEL_ELNO',),)
 
 MSLIN=CALC_CHAMP(reuse=MSLIN,
                  RESULTAT=MSLIN,
                  NUME_ORDRE=2,
-                 CRITERES=('EPEQ_NOEU','EPMQ_NOEU',),);
+                 CRITERES=('EPEQ_NOEU','EPMQ_NOEU',),)
 
 ENGENDRE_TEST (  CO = MSLIN )
 
@@ -792,7 +792,7 @@ MSLI2=CALC_CHAMP(reuse=MSLI2,
                  CONTRAINTE='SIGM_ELNO',
                  DEFORMATION=('EPME_ELGA','EPME_ELNO','EPSG_ELGA', 'EPSG_ELNO','EPSI_ELGA','EPSI_ELNO',),
                  ENERGIE='EPOT_ELEM',
-                 CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO', 'EPEQ_ELGA','EPMQ_ELNO',),);
+                 CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO', 'EPEQ_ELGA','EPMQ_ELNO',),)
 
 MSLI2=CALC_CHAMP(reuse=MSLI2,
                  RESULTAT=MSLI2,
@@ -801,7 +801,7 @@ MSLI2=CALC_CHAMP(reuse=MSLI2,
                  INST=11.5,
                  CONTRAINTE='SIGM_NOEU',
                  DEFORMATION='EPSI_NOEU',
-                 CRITERES=('SIEQ_NOEU','EPEQ_NOEU','EPMQ_NOEU',),);
+                 CRITERES=('SIEQ_NOEU','EPEQ_NOEU','EPMQ_NOEU',),)
 
 ENGENDRE_TEST (  CO = MSLI2, )
 
@@ -1129,7 +1129,7 @@ MSLI2=CALC_CHAMP(reuse=MSLI2,
                  RESULTAT=MSLI2,
                  GROUP_MA=('M11','M14',),
                  NUME_ORDRE=3,
-                 FORCE='REAC_NODA',);
+                 FORCE='REAC_NODA',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    TYPE_TEST='SOMM_ABS',
@@ -1523,7 +1523,7 @@ TABLE3B=MACR_LIGN_COUPE(CHAM_GD = CHAMNO1, MODELE=MO, NOM_CHAM='DEPL',
                      LIGN_COUPE=(
                         _F(INTITULE='TABLE3B',
                            RESULTANTE = ('DY', 'DX',),
-                           OPERATION = 'EXTRACTION', 
+                           OPERATION = 'EXTRACTION',
                            TYPE='GROUP_NO',GROUP_NO='CHEM1',),
          ))
 

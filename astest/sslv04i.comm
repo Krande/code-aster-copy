@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,34 +32,34 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-M=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
+M=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,)
 
 MO=AFFE_MODELE(MAILLAGE=M,
 
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.,
                          NU=0.3,
                          RHO=7800.,
-                         ALPHA=0.,),);
+                         ALPHA=0.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA,),);
+                         MATER=MA,),)
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=_F(GROUP_NO='F',
                               DY=0.,),
                   PRES_REP=_F(GROUP_MA='GRMA13',
-                              PRES=60.,),);
+                              PRES=60.,),)
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CM,
-                   EXCIT=_F(CHARGE=CH,),);
+                   EXCIT=_F(CHARGE=CH,),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,NUME_ORDRE=1,DEFORMATION=('EPSI_ELNO'))
 
@@ -72,7 +72,7 @@ TR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             RESULTAT=RESU,
                             NOM_CHAM='SIGM_ELNO',
                             GROUP_NO=('A','B','C','D','E','F',),
-                            NOM_CMP=('SIXX','SIYY','SIZZ','SIXY',),),);
+                            NOM_CMP=('SIXX','SIYY','SIZZ','SIXY',),),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='A',
@@ -488,11 +488,11 @@ CHROT=AFFE_CHAR_MECA(MODELE=MO,
                      ROTATION=_F(VITESSE=100.,
                                  AXE=(0.,1.,0.,),),
                      DDL_IMPO=_F(GROUP_NO='F',
-                                 DY=0.,),);
+                                 DY=0.,),)
 
 RESU2=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CM,
-                    EXCIT=_F(CHARGE=CHROT,),);
+                    EXCIT=_F(CHARGE=CHROT,),)
 
 RESU2=CALC_CHAMP(reuse=RESU2,RESULTAT=RESU2,NUME_ORDRE=1,CONTRAINTE=('SIGM_ELNO'))
 
@@ -576,26 +576,26 @@ MO2=AFFE_MODELE(MAILLAGE=M,
 
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='AXIS_FOURIER',),);
+                        MODELISATION='AXIS_FOURIER',),)
 
 CH2=AFFE_CHAR_MECA(MODELE=MO2,
                    ROTATION=_F(VITESSE=100.,
-                               AXE=(0.,1.,0.,),),);
+                               AXE=(0.,1.,0.,),),)
 
 CHDIR=AFFE_CHAR_MECA(MODELE=MO2,
                      DDL_IMPO=_F(GROUP_NO='F',
                                  DY=0.,
-                                 DZ=0.,),);
+                                 DZ=0.,),)
 
 RESU3=MACRO_ELAS_MULT(MODELE=MO2,
                       CHAM_MATER=CM,
                       CHAR_MECA_GLOBAL=CHDIR,
                       CAS_CHARGE=_F(MODE_FOURIER=0,
-                                    CHAR_MECA=CH2,),);
+                                    CHAR_MECA=CH2,),)
 
 RESUFOUR=COMB_FOURIER(RESULTAT=RESU3,
                       ANGLE=0.,
-                      NOM_CHAM='DEPL',);
+                      NOM_CHAM='DEPL',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='A',
@@ -642,7 +642,7 @@ EXTRFO=MACR_LIGN_COUPE(CHAM_GD=DEPLFO,
                                   NB_POINTS=3,
                                   DISTANCE_MAX=0.001,
                                   COOR_ORIG=(0.1,0.),
-                                  COOR_EXTR=(0.1,0.01),),),);
+                                  COOR_EXTR=(0.1,0.01),),),)
 
 # Point A
 TEST_TABLE(TABLE=EXTRFO,
@@ -677,7 +677,7 @@ EXTRFR=MACR_LIGN_COUPE(RESULTAT=RESUFOUR,
                                   NB_POINTS=3,
                                   DISTANCE_MAX=0.001,
                                   COOR_ORIG=(0.1,0.),
-                                  COOR_EXTR=(0.1,0.01),),),);
+                                  COOR_EXTR=(0.1,0.01),),),)
 
 
 # Point A
@@ -718,14 +718,14 @@ TEST_TABLE(TABLE=EXTRFR,
 
 CHFO=AFFE_CHAR_MECA(MODELE=MO2,
         PRES_REP=_F(GROUP_MA='GRMA13',
-                              PRES=60.,),);
+                              PRES=60.,),)
 
 RESUF=MACRO_ELAS_MULT(MODELE=MO2,
                       CHAM_MATER=CM,
                       CHAR_MECA_GLOBAL=CHDIR,
                       CAS_CHARGE=_F(MODE_FOURIER=0,
-                                    CHAR_MECA=CHFO,),);
-                                    
+                                    CHAR_MECA=CHFO,),)
+
 
 DEPLF2 = CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='NOEU_DEPL_R',
@@ -742,7 +742,7 @@ EXTRF3=MACR_LIGN_COUPE(CHAM_GD=DEPLF2,
                                   NB_POINTS=3,
                                   DISTANCE_MAX=0.001,
                                   COOR_ORIG=(0.1,0.),
-                                  COOR_EXTR=(0.1,0.01),),),);
+                                  COOR_EXTR=(0.1,0.01),),),)
 
 # Point A
 TEST_TABLE(TABLE=EXTRF3,
@@ -777,7 +777,7 @@ EXTRF4=MACR_LIGN_COUPE(RESULTAT=RESUF,
                                   NB_POINTS=3,
                                   DISTANCE_MAX=0.001,
                                   COOR_ORIG=(0.1,0.),
-                                  COOR_EXTR=(0.1,0.01),),),);
+                                  COOR_EXTR=(0.1,0.01),),),)
 
 # Point A
 TEST_TABLE(TABLE=EXTRF3,
@@ -817,7 +817,7 @@ RESUF = CALC_CHAMP(reuse=RESUF,
 
 RESUFO=COMB_FOURIER(RESULTAT=RESUF,
                       ANGLE=48.5,
-                      NOM_CHAM=('DEPL','EPSI_ELNO'));
+                      NOM_CHAM=('DEPL','EPSI_ELNO'))
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -872,6 +872,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 
-FIN();
+FIN()
 
 #

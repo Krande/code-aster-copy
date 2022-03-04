@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,4 +38,4 @@ MAT_D = DEFI_MATERIAU(
         GC = [0.17743898647913647, 1.0, 1.0, 0.18123770749561866, 0.17743898576171227, 1.0, 1.0, 0.1812377078270441],
     ),
 )
-FIN();
+FIN()

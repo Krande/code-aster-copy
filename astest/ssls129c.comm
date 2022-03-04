@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,17 +34,17 @@ MESH=DEFI_GROUP(reuse         = MESH,
 
 # Material parameters
 ACIER=DEFI_MATERIAU(ELAS=_F(E=204000.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MESH,
                     AFFE=_F(GROUP_MA='VOL',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 # Select finite elements
 MODELE=AFFE_MODELE(MAILLAGE=MESH,
                    AFFE=_F(GROUP_MA=('VOL','GAUCHE','DROITE',),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='COQUE_SOLIDE',),);
+                           MODELISATION='COQUE_SOLIDE',),)
 
 # Boundary conditions and loads - First case
 CC=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -53,24 +53,24 @@ CC=AFFE_CHAR_MECA(MODELE=MODELE,
                               DY=0.0,
                               DZ=0.0,
                               ),
-                );
+                )
 
 FORCEZ=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_FACE=_F(GROUP_MA='DROITE',
-                                      FZ=-0.5,),);
+                                      FZ=-0.5,),)
 
 # Static linear - First case
 resuForceZ=MECA_STATIQUE(MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CC,),
-                           _F(CHARGE=FORCEZ,),),);
+                           _F(CHARGE=FORCEZ,),),)
 
 # Post-treatement - First case
 resuForceZ = CALC_CHAMP(reuse      = resuForceZ,
                         RESULTAT   = resuForceZ,
                         CONTRAINTE = ('SIGM_ELNO', 'SIGM_NOEU'),
                         FORCE      = 'FORC_NODA',
-             );
+             )
 
 forcForceZ=POST_RELEVE_T(ACTION=(_F(INTITULE='FZ_GAUCHE',
                               GROUP_NO='GAUCHE',
@@ -88,7 +88,7 @@ forcForceZ=POST_RELEVE_T(ACTION=(_F(INTITULE='FZ_GAUCHE',
                               MOMENT=('DRX','DRY','DRZ',),
                               POINT=(0.0,0.0,0.0,),
                               OPERATION='EXTRACTION',),
-                              ),);
+                              ),)
 
 # Test des résultats - First case
 # DEPLACEMENT (ref: ssls129a)
@@ -184,20 +184,20 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # Boundary conditions and loads - Second case
 FORCEX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_FACE=_F(GROUP_MA='DROITE',
-                                      FX=0.5,),);
+                                      FX=0.5,),)
 
 # Static linear - Second case
 resuForceX=MECA_STATIQUE(MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CC,),
-                           _F(CHARGE=FORCEX,),),);
+                           _F(CHARGE=FORCEX,),),)
 
 # Post-treatement - Second case
 resuForceX = CALC_CHAMP(reuse      = resuForceX,
                         RESULTAT   = resuForceX,
                         CONTRAINTE = ('SIGM_ELNO', 'SIGM_NOEU'),
                         FORCE      = 'FORC_NODA',
-             );
+             )
 
 forcForceX=POST_RELEVE_T(ACTION=(_F(INTITULE='FX_GAUCHE',
                               GROUP_NO='GAUCHE',
@@ -215,7 +215,7 @@ forcForceX=POST_RELEVE_T(ACTION=(_F(INTITULE='FX_GAUCHE',
                               MOMENT=('DRX','DRY','DRZ',),
                               POINT=(0.0,0.0,0.0,),
                               OPERATION='EXTRACTION',),
-                              ),);
+                              ),)
 
 # Test des résultats - Second case
 # DEPLACEMENT

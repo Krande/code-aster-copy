@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 # Premier calcul : CRIT_INIT = 'TURON' (CRITERE ELLIPTIQUE MODULE PAR LE TAUX DE MIXITE)
 # Second calcul : CRIT_INIT = 'YE' (CRITERE ELLIPTIQUE SIMPLE)
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ##########################################################################
 # PARAMETRES
@@ -72,9 +72,9 @@ CHAR = AFFE_CHAR_CINE(MODELE = MO,
                       MECA_IMPO = (_F(GROUP_NO = 'OUV_HAUT', DY = deply_h),
                                    _F(GROUP_NO = 'OUV_BAS', DY = 0.0),
                                    _F(GROUP_NO = 'APPUI_CENTRE', DY = deply_b),),)
-                      
+
 BLOC = AFFE_CHAR_CINE(MODELE = MO,
-                      MECA_IMPO = _F(GROUP_NO = 'APPUI_GAUCHE', DX = 0.0, DY = 0.0),) 
+                      MECA_IMPO = _F(GROUP_NO = 'APPUI_GAUCHE', DX = 0.0, DY = 0.0),)
 
 #DEFINITION DES INSTANTS DE CALCUL
 DEF_LIST = DEFI_LIST_REEL(DEBUT = 0,
@@ -97,7 +97,7 @@ FCT = DEFI_FONCTION(NOM_PARA = 'INST',
 MAT_TU = DEFI_MATERIAU(
                       ELAS=_F(E =  young,
                               NU = nu),
-                      RUPT_TURON = _F(GC_N = Gc1, 
+                      RUPT_TURON = _F(GC_N = Gc1,
                                       GC_T = Gc2,
                                       SIGM_C_N = sigc1,
                                       SIGM_C_T = sigc2,
@@ -107,7 +107,7 @@ MAT_TU = DEFI_MATERIAU(
                                       CRIT_INIT = 'TURON',
                                           ),
                             )
-                    
+
 CM_TU=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=_F(GROUP_MA = ('TOUT'),
                          MATER = MAT_TU),
@@ -135,14 +135,14 @@ U_TU = CALC_CHAMP(reuse = U_TU,
                   RESULTAT = U_TU,
                   FORCE='FORC_NODA',
                   GROUP_MA='COMP')
-               
+
 #IMPR_RESU(FORMAT= 'MED', RESU=_F(RESULTAT=U), UNITE=80,)
 
 ##########################################################################
 # TEST (NON-REGRESSION) - CRIT_INIT = 'TURON'
 ##########################################################################
-           
-           
+
+
 TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   INST            = tfin,
                   RESULTAT        = U_TU,
@@ -150,7 +150,7 @@ TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   NOM_CMP         = 'DY',
                   VALE_CALC       = 1.214799307607657,
                         ),)
-           
+
 TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
                   INST            = tfin,
                   RESULTAT        = U_TU,
@@ -158,16 +158,16 @@ TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
                   NOM_CMP         = 'DY',
                   VALE_CALC       = 0.604943746250424,
                         ),)
-                        
+
 ##########################################################################
 # CALCUL - CRIT_INIT = 'YE'
 ##########################################################################
-                            
+
 #DEFINITION ET AFFECTATION DU MATERIAU
 MAT_YE = DEFI_MATERIAU(
                       ELAS=_F(E =  young,
                               NU = nu),
-                      RUPT_TURON = _F(GC_N = Gc1, 
+                      RUPT_TURON = _F(GC_N = Gc1,
                                       GC_T = Gc2,
                                       SIGM_C_N = sigc1,
                                       SIGM_C_T = sigc2,
@@ -177,8 +177,8 @@ MAT_YE = DEFI_MATERIAU(
                                       CRIT_INIT = 'YE',
                                           ),
                             )
-                            
-                      
+
+
 CM_YE=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=_F(GROUP_MA = ('TOUT'),
                          MATER = MAT_YE),
@@ -206,14 +206,14 @@ U_YE = CALC_CHAMP(reuse = U_YE,
                   RESULTAT = U_YE,
                   FORCE='FORC_NODA',
                   GROUP_MA='COMP')
-               
+
 #IMPR_RESU(FORMAT= 'MED', RESU=_F(RESULTAT=U), UNITE=80,)
 
 ##########################################################################
 # TEST (NON-REGRESSION) - CRIT_INIT = 'YE'
 ##########################################################################
-           
-           
+
+
 TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   INST            = tfin,
                   RESULTAT        = U_YE,
@@ -221,7 +221,7 @@ TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   NOM_CMP         = 'DY',
                   VALE_CALC       = 1.2274042022495133,
                         ),)
-           
+
 TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
                   INST            = tfin,
                   RESULTAT        = U_YE,

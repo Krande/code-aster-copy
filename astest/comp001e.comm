@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,22 +21,22 @@
 # ECROUISSAGE CINEMATIQUE LINERAIRE et ISOTROPE NON-LINEAIRE (FCT EXPONENTIEL)
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 
 #parametres elastiques
-YOUNG = 200000.0;
-POISSON = 0.3;
+YOUNG = 200000.0
+POISSON = 0.3
 
 #paramtres loi ECMI_TRAC
-C_PRAG = 1486.9;
+C_PRAG = 1486.9
 
 # def des materiaux
 ACIER = [None]*2
 #unite en Pa
 C_Pa = 1.e+6
 YOUNG_Pa = YOUNG * C_Pa
-C_PRAG_Pa = C_PRAG * C_Pa;
+C_PRAG_Pa = C_PRAG * C_Pa
 
 A_ECM=DEFI_FONCTION(    NOM_PARA='EPSI',
                               VALE=(
@@ -176,21 +176,21 @@ A_ECM=DEFI_FONCTION(    NOM_PARA='EPSI',
                           PROL_GAUCHE='LINEAIRE')
 
 A_ECM_Pa=CALC_FONCTION(COMB=_F(FONCTION=A_ECM,
-                             COEF=C_Pa,),);
+                             COEF=C_Pa,),)
 
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON,
                                ALPHA=11.8e-6),
                     TRACTION=_F(SIGM=A_ECM_Pa,),
                     PRAGER=_F(C=C_PRAG_Pa),
-                                 );
+                                 )
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,
                                ALPHA=11.8e-6),
                     TRACTION=_F(SIGM=A_ECM,),
                     PRAGER=_F(C=C_PRAG),
-                                 );
+                                 )
 
 
 

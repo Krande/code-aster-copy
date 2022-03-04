@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -261,7 +261,7 @@ VECTELEC=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
                             )
 
 NUMEDDLC=NUME_DDL(    MATR_RIGI=RIGI_ELC )
-#METHODE : 'LDLT');
+#METHODE : 'LDLT')
 
 RIGIDITC=ASSE_MATRICE(    MATR_ELEM=RIGI_ELC,
                             NUME_DDL=NUMEDDL

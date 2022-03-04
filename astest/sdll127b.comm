@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
-              DEBUG=_F(SDVERI='OUI'),);
+              DEBUG=_F(SDVERI='OUI'),)
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -33,7 +33,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA=('POUTRE'),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='POU_D_T',),);
+                           MODELISATION='POU_D_T',),)
 
 #
 # DEFINITION DES MATERIAUX AFFECTES AUX ELEMENTS DE TYPE RAIDEUR
@@ -41,14 +41,14 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
 KMAT0    = DEFI_MATERIAU(ELAS=_F
            (E=0.2000E+12,
            NU=0.3000E+00,
-          RHO=0.7800E+04));
+          RHO=0.7800E+04))
 
 #
 # AFFECTATION MATERIAUX AUX ELEMENTS DE MASSE ET DE RAIDEUR
 #
 MAT=AFFE_MATERIAU( MAILLAGE=MAIL,AFFE=(
         _F(GROUP_MA='POUTRE    ' , MATER = KMAT0    ),
-                   ),);
+                   ),)
 #
 # AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES AUX ELEMENTS
 #
@@ -10056,7 +10056,7 @@ VALE=(0.500500E-01,0.200000E-01)
 VALE=(0.500250E-01,0.200000E-01)
          ),
 # FIN DE DEFINITION DES ELEMENTS POUTRES
-                ),);
+                ),)
 
 
 # DEFINITION DES CONDITIONS AUX LIMITES
@@ -10082,7 +10082,7 @@ ASSEMBLAGE(MODELE=MO,
                            _F(MATRICE=CO('GYASS'),
                               OPTION='MECA_GYRO',),
                            _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),)
 
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  OPTION='BANDE',
@@ -10190,7 +10190,7 @@ PROJ_BASE(BASE=MODES,
                           _F(MATRICE=CO('RIGE'),
                              MATR_ASSE=RIGIDITE,),
                           _F(MATRICE=CO('OMGE'),
-                             MATR_ASSE=GYOM,),),);
+                             MATR_ASSE=GYOM,),),)
 
 MOD2ETAG=CALC_MODES(MATR_RIGI=RIGE,
                     OPTION='TOUT',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ ITER_GLOB_MAXI = 0
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=TFINAL,
                                     NOMBRE=NBDECOUP)),
-                     );
+                     )
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
                                 ECHEC=_F(EVENEMENT = 'ERREUR',
                                          ACTION    = 'ARRET'))
@@ -87,17 +87,17 @@ LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
 # Definition des caracteristiques fluides
 #**********************************************************
 
-UN=DEFI_CONSTANTE(VALE=1.0);
-ZERO=DEFI_CONSTANTE(VALE=0.0);
-PERMINT=DEFI_CONSTANTE(VALE=1.E-13);
-HENRY=DEFI_CONSTANTE(VALE=1.0);
+UN=DEFI_CONSTANTE(VALE=1.0)
+ZERO=DEFI_CONSTANTE(VALE=0.0)
+PERMINT=DEFI_CONSTANTE(VALE=1.E-13)
+HENRY=DEFI_CONSTANTE(VALE=1.0)
 
 #*********************
 # Lecture du maillage
 #*********************
 
 
-MAILINI=LIRE_MAILLAGE(FORMAT='MED');
+MAILINI=LIRE_MAILLAGE(FORMAT='MED')
 
 
 MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
@@ -113,7 +113,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
          _F(GROUP_MA='MGAUCHE'),
          _F(GROUP_MA='TOUT',NOM='NS',CRIT_NOEUD='MILIEU'),
          _F(GROUP_MA='TOUT',NOM='NK',CRIT_NOEUD='CENTRE')
-                   ));
+                   ))
 
 
 #*********************************************************
@@ -125,7 +125,7 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION=MODELISA),
-                  );
+                  )
 
 
 #*********************************************************
@@ -205,7 +205,7 @@ MATERIAU=DEFI_MATERIAU(
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='TOUT',
-                             MATER=MATERIAU)));
+                             MATER=MATERIAU)))
 
 #*************************************************************
 # Affectation de l etat initial
@@ -227,7 +227,7 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
 CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
        MECA_IMPO=(_F(TOUT='OUI',PRE2=0.),
                  _F(GROUP_MA = 'MGAUCHE',PRE1=PRE1GAUCHE),
-                 ));
+                 ))
 
 
 #
@@ -263,7 +263,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI),
 
                  ARCHIVAGE=_F(LIST_INST     = INST1 ),
-                 );
+                 )
 
 
 #
@@ -271,7 +271,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
 # Impressions
 #*************************************************************
 #
-L_INST=DEFI_LIST_REEL(VALE=(0.,1.,10.,100.));
+L_INST=DEFI_LIST_REEL(VALE=(0.,1.,10.,100.))
 
 
 #============== t=100======================
@@ -302,4 +302,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
         )
 
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #-----------------------------------------------
 # LECTURE DU MAILLAGE
 #-----------------------------------------------
-MAIL=LIRE_MAILLAGE(FORMAT='ASTER',);
+MAIL=LIRE_MAILLAGE(FORMAT='ASTER',)
 
 #-----------------------------------------------
 # CREATION DU MODELE
@@ -66,7 +66,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='ASTER',);
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                AFFE=_F(GROUP_MA='POUTRE',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_EM',),);
+                       MODELISATION='POU_D_EM',),)
 
 #-----------------------------------------------
 # DEFINTION DES MATERIAUX ET CARACTERSISTIQUES
@@ -76,7 +76,7 @@ GF=DEFI_GEOM_FIBRE(FIBRE=(_F(GROUP_FIBRE='SBET',
                              VALE=(0,0,4*(a_fibre-a_acier),),),
                           _F(GROUP_FIBRE='SACI',
                              COOR_AXE_POUTRE=(0.,0.,),
-                             VALE=(0,0,4*a_acier,),),),);
+                             VALE=(0,0,4*a_acier,),),),)
 
 BETON=DEFI_MATER_GC(MAZARS=_F(CODIFICATION='ESSAI',
                               FCJ=-fc,
@@ -85,11 +85,11 @@ BETON=DEFI_MATER_GC(MAZARS=_F(CODIFICATION='ESSAI',
                               FTJ=ft,
                               AT=AT,),
                     RHO=Rho_beton,
-                    INFO=2,);
+                    INFO=2,)
 
 ACIER=DEFI_MATER_GC(ACIER=_F(E=E_acier,
                              SY=sy_acier,),
-                    RHO=Rho_acier,);
+                    RHO=Rho_acier,)
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,
                   MATER_SECT=BETON,
@@ -98,13 +98,13 @@ COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,
                                  RELATION='VMIS_CINE_GC'),
                               _F(GROUP_FIBRE='SBET',
                                  MATER=BETON,
-                                 RELATION='MAZARS_GC'),),);
+                                 RELATION='MAZARS_GC'),),)
 
 MATER=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='POUTRE',
                             MATER=(BETON,ACIER)),
                     AFFE_COMPOR=_F(TOUT='OUI',
-                                   COMPOR=COMPF),);
+                                   COMPOR=COMPF),)
 
 CAEL=AFFE_CARA_ELEM(MODELE=MO,
                     POUTRE=_F(GROUP_MA=('POUTRE'), SECTION='RECTANGLE',CARA=('HY','HZ'), VALE=(ht,ht),),
@@ -113,7 +113,7 @@ CAEL=AFFE_CARA_ELEM(MODELE=MO,
                     MULTIFIBRE=_F(GROUP_MA=('POUTRE'),
                                   GROUP_FIBRE=('SBET','SACI'),
                                   PREC_AIRE=2.0E-02,
-                                  PREC_INERTIE=10,),);
+                                  PREC_INERTIE=10,),)
 
 #-----------------------------------------------
 # DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
@@ -131,11 +131,11 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                                DZ=0.0,
                                DRX=0.0,
                                DRY=0.0,
-                               DRZ=0.0,),),);
+                               DRZ=0.0,),),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_NODALE=_F(GROUP_NO='B',
-                                      FX=1000.0,),);
+                                      FX=1000.0,),)
 
 t1 = 1.0
 t2 = 3.0
@@ -148,7 +148,7 @@ t8 = 15.0
 t9 = 17.0
 t10 = 19.0
 
-dt = 0.05;
+dt = 0.05
 
 FOFO=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,
@@ -163,16 +163,16 @@ FOFO=DEFI_FONCTION(NOM_PARA='INST',
                          t9,-790.0,
                          t10,376.0,),
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='CONSTANT',);
+                   PROL_GAUCHE='CONSTANT',)
 
 INST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=t10,
-                                  PAS=dt,),);
+                                  PAS=dt,),)
 
 LINST=DEFI_LIST_INST(METHODE='MANUEL',
                      DEFI_LIST=_F(LIST_INST=INST,),
                      ECHEC=_F(ACTION='DECOUPE',
-                              SUBD_METHODE='MANUEL',),);
+                              SUBD_METHODE='MANUEL',),)
 
 #-----------------------------------------------
 # CALCUL DES RESULTATS POUR LE CHARGEMENT
@@ -187,13 +187,13 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LINST,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                                   RESI_GLOB_RELA = 1.E-6,),
-                   NEWTON=_F(REAC_ITER=1,),);
+                   NEWTON=_F(REAC_ITER=1,),)
 
 #-----------------------------------------------
 # CALCUL DES TEST_RESU
 #-----------------------------------------------
 # les resultats experimentaux sont donnees dans le fichier joint
-# il s'agit des points de la numerisation de la courbe de reponse du specimen: deformation (-) et force (kN)                   
+# il s'agit des points de la numerisation de la courbe de reponse du specimen: deformation (-) et force (kN)
 
 from ssns112a import val_exp
 
@@ -301,19 +301,19 @@ TEST_RESU(RESU=(_F(NOM_CMP='DX',
                      REFERENCE='SOURCE_EXTERNE',
                      VALE_CALC=(2.0899585943919E-03, ),
                      VALE_REFE=(val_exp[2*604]*0.7, ),
-                     PRECISION=0.06,),),);
+                     PRECISION=0.06,),),)
 
-#CALC_CHAMP(reuse=RESU,RESULTAT=RESU,FORCE = ('FORC_NODA'));
+#CALC_CHAMP(reuse=RESU,RESULTAT=RESU,FORCE = ('FORC_NODA'))
 
 #tb_f=CREA_TABLE(RESU=_F(TOUT_CMP='OUI',
 #                RESULTAT=RESU,
 #                NOM_CHAM='FORC_NODA',
-#                GROUP_NO='B',),);
+#                GROUP_NO='B',),)
 
 #tb_db=CREA_TABLE(RESU=_F(TOUT_CMP='OUI',
 #                         RESULTAT=RESU,
 #                         NOM_CHAM='DEPL',
-#                         GROUP_NO ='B',),);
+#                         GROUP_NO ='B',),)
 
 #DX=tb_db.EXTR_TABLE().values()['DX']
 #FX= tb_f.EXTR_TABLE().values()['DX']

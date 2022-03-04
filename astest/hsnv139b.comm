@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ MA=LIRE_MAILLAGE(FORMAT="ASTER", )
 # Calcul Thermique
 #
 
-ZIRC=DEFI_MATERIAU(   
+ZIRC=DEFI_MATERIAU(
                    THER=_F(  RHO_CP = 2.0E-3, LAMBDA = 9.9999),
                    META_ZIRC=_F(
                                TDEQ = 809.,    K = 1.135E-2,   N = 2.187,
@@ -41,14 +41,14 @@ ZIRC=DEFI_MATERIAU(
                                )
                    )
 
-CHMAT=AFFE_MATERIAU(    
+CHMAT=AFFE_MATERIAU(
                    MAILLAGE=MA,
                    AFFE=_F(  TOUT = 'OUI', MATER = ZIRC)
                    )
 
-MOTH=AFFE_MODELE(    
+MOTH=AFFE_MODELE(
                 MAILLAGE=MA,
-                AFFE=_F(  
+                AFFE=_F(
                        TOUT = 'OUI',
                        MODELISATION = '3D',
                        PHENOMENE = 'THERMIQUE'
@@ -61,13 +61,13 @@ TIMPO=DEFI_CONSTANTE(
 
 CHTH=AFFE_CHAR_THER_F(
                      MODELE=MOTH,
-                     TEMP_IMPO=_F( 
+                     TEMP_IMPO=_F(
                                  TOUT = 'OUI',
                                  TEMP = TIMPO
                                  )
                      )
 
-LR8=DEFI_LIST_REEL(   
+LR8=DEFI_LIST_REEL(
                   DEBUT=0.,
                   INTERVALLE=_F(  JUSQU_A = 3.0,  NOMBRE = 3)
                   )
@@ -88,7 +88,7 @@ TEMPE=THER_LINEAIRE(
 PHASINIT=CREA_CHAMP(
                    OPERATION='AFFE', TYPE_CHAM='CART_VAR2_R',
                    MAILLAGE=MA,
-                   AFFE=_F(  
+                   AFFE=_F(
                           TOUT = 'OUI',
                           NOM_CMP = ('V1', 'V2', 'V3','V4', 'V5'),
                           VALE = ( 1.0, 0.0, 0.0, 20.,0.)
@@ -111,11 +111,11 @@ TEMPE=CALC_META(
 # Calcul Mecanique
 #
 MO=AFFE_MODELE(
-               MAILLAGE=MA,                 
+               MAILLAGE=MA,
                AFFE=_F(
                       TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
-                      MODELISATION = '3D' 
+                      MODELISATION = '3D'
                       )
               )
 
@@ -241,16 +241,16 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=2.0,
                                      NOMBRE=40,),
                                   _F(JUSQU_A=3.0,
-                                     NOMBRE=1,),),);
+                                     NOMBRE=1,),),)
 
 U=STAT_NON_LINE(
                 MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(
-                      _F(CHARGE = LIAISON), 
+                      _F(CHARGE = LIAISON),
                       _F(CHARGE = TRACTION,
                          FONC_MULT = SIGMA_F,
-                        ), 
+                        ),
                       _F(CHARGE = CISAIL,
                          FONC_MULT = TAU_F,)
                       ),
@@ -440,10 +440,10 @@ FIN()
 #                            NU=0.3,),
 #                    ECRO_LINE=_F(D_SIGM_EPSI=1930.,
 #                                 SY=181.,),
-#                    );
+#                    )
 #CM2=AFFE_MATERIAU(MAILLAGE=MA,
 #                 AFFE=_F(TOUT='OUI',
-#                         MATER=ZIRC3,),);
+#                         MATER=ZIRC3,),)
 #
 #U2=STAT_NON_LINE(
 #                MODELE=MO,

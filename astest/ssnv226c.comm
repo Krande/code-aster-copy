@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 
-CUBE=LIRE_MAILLAGE(FORMAT="ASTER",);
+CUBE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 PRECIS=1.E-6
 
@@ -48,11 +48,11 @@ CUBE=DEFI_GROUP(reuse =CUBE,
                                 NOM='ARRIERE',
                                 POINT=(0.0,0.0,0.0,),
                                 VECT_NORMALE=(1.0,0.0,0.0,),
-                                PRECISION=PRECIS,),),);
+                                PRECISION=PRECIS,),),)
 
 
 
-SY = 750.E6;
+SY = 750.E6
 E=2.E11
 Eps0=SY/E
 
@@ -68,18 +68,18 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                      VISC_SINH=_F( SIGM_0=6176.E6,
                                    EPSI_0=3.31131121483e13,
                                    M=6.76,),
-                                 );
+                                 )
 
 TROISD=AFFE_MODELE(MAILLAGE=CUBE,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 
 
 MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
+                          MATER=ACIER,),)
 
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                      DDL_IMPO=(
@@ -108,7 +108,7 @@ EPSZZ=DEFI_FONCTION(
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=tmax,
                                     NOMBRE=100,),
-                                    ),);
+                                    ),)
 
 DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),)
 
@@ -140,13 +140,13 @@ SOLNL=STAT_NON_LINE( MODELE=TROISD,
                                   EVAL_ELGA  ='MAX',
                                   EVAL_CHAM  ='MAX',),
                                   ),
-                    );
+                    )
 
 
 
 SOLNL=CALC_CHAMP(reuse =SOLNL,
                  RESULTAT=SOLNL,
-                 DEFORMATION=('EPSP_ELGA',),);
+                 DEFORMATION=('EPSP_ELGA',),)
 
 
 
@@ -176,11 +176,11 @@ IMPR_TABLE(TABLE=INT_EP)
 
 F_SI=RECU_FONCTION(TABLE=INT_SI,
                            PARA_X='INST',
-                           PARA_Y='INTE_SIZZ',);
+                           PARA_Y='INTE_SIZZ',)
 
 F_EP=RECU_FONCTION(TABLE=INT_EP,
                            PARA_X='INST',
-                           PARA_Y='INTE_EPZZ',);
+                           PARA_Y='INTE_EPZZ',)
 
 INT_VI=POST_ELEM(MODELE=TROISD,
                    RESULTAT=SOLNL,

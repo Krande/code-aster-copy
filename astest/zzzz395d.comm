@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # Read the mesh
-mesh=LIRE_MAILLAGE(FORMAT='MED',);
+mesh=LIRE_MAILLAGE(FORMAT='MED',)
 
 # Thermal conductivity depending by the temperature (W.mm-1.K-1)
 Lambda=DEFI_FONCTION(
@@ -38,7 +38,7 @@ Lambda=DEFI_FONCTION(
                            1000.0 ,0.0273 ,
                            1200.0 ,0.0299 ,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 
 # Volumetric heat capacity depending by the temperature (J.mm-3.K-1)
 rho_cp=DEFI_FONCTION(
@@ -56,13 +56,13 @@ rho_cp=DEFI_FONCTION(
                            1000.0 ,0.0049962 ,
                            1200.0 ,0.00504365 ,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 # Heat transfer coefficient with air (W.mm-2.K-1)
-C_echang=DEFI_CONSTANTE(VALE=1.5e-05,);
+C_echang=DEFI_CONSTANTE(VALE=1.5e-05,)
 # Heat transfer coefficient with one face of the cube (W.mm-2.K-1)
-C_echanf=DEFI_CONSTANTE(VALE=1.0,);
+C_echanf=DEFI_CONSTANTE(VALE=1.0,)
 # Ambient temperature
-T_ex=DEFI_CONSTANTE(VALE=20.0,);
+T_ex=DEFI_CONSTANTE(VALE=20.0,)
 # Temperature of one face of the cube
 T_im=DEFI_FONCTION(
                    NOM_PARA='INST',
@@ -77,23 +77,23 @@ T_im=DEFI_FONCTION(
                          8.0 ,800.0 ,
                          9.0 ,1000.0 ,),
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 # Emissivity
-C_epsi=DEFI_CONSTANTE(VALE=0.75,);
+C_epsi=DEFI_CONSTANTE(VALE=0.75,)
 # Stefan–Boltzmann constant (J.mm-2.s-1.K-4)
-C_sigma=DEFI_CONSTANTE(VALE=5.67e-14,);
+C_sigma=DEFI_CONSTANTE(VALE=5.67e-14,)
 # Define the material
 steel=DEFI_MATERIAU(THER_NL=_F(LAMBDA=Lambda,
-                             RHO_CP=rho_cp,),);
+                             RHO_CP=rho_cp,),)
 # Define the material field
 chmat=AFFE_MATERIAU(MAILLAGE=mesh,
                     AFFE=_F(TOUT='OUI',
-                            MATER=steel,),);
+                            MATER=steel,),)
 # Thermic model
 model=AFFE_MODELE(MAILLAGE=mesh,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='THERMIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 # Boundary condition
 chg_th=AFFE_CHAR_THER_F(MODELE=model,
                         RAYONNEMENT=_F(GROUP_MA='S_e',
@@ -105,7 +105,7 @@ chg_th=AFFE_CHAR_THER_F(MODELE=model,
                                     TEMP_EXT=T_ex,),
                                  _F(GROUP_MA='S_f',
                                     COEF_H=C_echanf,
-                                    TEMP_EXT=T_im,),),);
+                                    TEMP_EXT=T_im,),),)
 
 ####################################################################################################
 #
@@ -116,10 +116,10 @@ chg_th=AFFE_CHAR_THER_F(MODELE=model,
 # Time discretization
 list_t=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=10.0,
-                                    PAS=1.0,),);
+                                    PAS=1.0,),)
 
 list_i=DEFI_LIST_INST(METHODE='MANUEL',
-                      DEFI_LIST=_F(LIST_INST=list_t,),);
+                      DEFI_LIST=_F(LIST_INST=list_t,),)
 
 # Non-linear thermic
 thnl=THER_NON_LINE(MODELE=model,
@@ -129,11 +129,11 @@ thnl=THER_NON_LINE(MODELE=model,
                    ETAT_INIT=_F(VALE=20.0,),
                    NEWTON=_F(REAC_ITER=1,
                              ITER_LINE_MAXI=3,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),)
 
 thnl = CALC_CHAMP(reuse=thnl,
                   RESULTAT=thnl,
-                  THERMIQUE='FLUX_NOEU',);
+                  THERMIQUE='FLUX_NOEU',)
 
 # Test non-regression values on complete problem
 TEST_RESU(RESU=(
@@ -166,7 +166,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=999.349943608,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=thnl,
@@ -198,7 +198,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=999.12502482,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=thnl,
@@ -216,7 +216,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=-0.003152488515227189,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=thnl,
@@ -234,7 +234,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=0.0063191212851786,
                    ),
                 ),
-          );
+          )
 
 ####################################################################################################
 #
@@ -246,18 +246,18 @@ TEST_RESU(RESU=(
 mesh=DEFI_GROUP(reuse=mesh,
                 MAILLAGE=mesh,
                 CREA_GROUP_MA=_F(NOM='S_e_rid',
-                               INTERSEC=('RID','S_e',),),);
+                               INTERSEC=('RID','S_e',),),)
 
 mesh=DEFI_GROUP(reuse=mesh,
                 MAILLAGE=mesh,
                 CREA_GROUP_MA=_F(NOM='S_f_rid',
-                                 INTERSEC=('RID','S_f',),),);
+                                 INTERSEC=('RID','S_f',),),)
 
 # Thermic model
 model_r=AFFE_MODELE(MAILLAGE=mesh,
                   AFFE=_F(GROUP_MA='RID',
                           PHENOMENE='THERMIQUE',
-                          MODELISATION='3D',),);
+                          MODELISATION='3D',),)
 # Boundary condition
 chg_th_r=AFFE_CHAR_THER_F(MODELE=model_r,
                         RAYONNEMENT=_F(GROUP_MA='S_e_rid',
@@ -269,7 +269,7 @@ chg_th_r=AFFE_CHAR_THER_F(MODELE=model_r,
                                     TEMP_EXT=T_ex,),
                                  _F(GROUP_MA='S_f_rid',
                                     COEF_H=C_echanf,
-                                    TEMP_EXT=T_im,),),);
+                                    TEMP_EXT=T_im,),),)
 
 # Get empiric modes from previous computation (from zzzz395b)
 base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
@@ -279,11 +279,11 @@ base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
                  FORMAT_MED =_F(NOM_CHAM_MED = 'base_p__TEMP',
                                 NOM_CHAM     = 'TEMP',),
                  NUME_ORDRE=(1,2,3),
-                 );
+                 )
 
 # Truncation of empiric modes for RID
 base_t=DEFI_BASE_REDUITE(OPERATION='TRONCATURE',
-                         MODELE_REDUIT = model_r, 
+                         MODELE_REDUIT = model_r,
                          BASE = base_p,
                          INFO=2)
 
@@ -300,11 +300,11 @@ redu=THER_NON_LINE(MODELE=model_r,INFO=2,
                     DOMAINE_REDUIT  = 'OUI',
                     GROUP_NO_INTERF = 'INF',
                     ),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),)
 
 redu = CALC_CHAMP(reuse=redu,
                   RESULTAT=redu,
-                  THERMIQUE='FLUX_NOEU',);
+                  THERMIQUE='FLUX_NOEU',)
 
 # Test du modèle hyper-réduit par rapport au modèle complet
 TEST_RESU(RESU=(
@@ -349,7 +349,7 @@ TEST_RESU(RESU=(
                    PRECISION=5.E-6,
                    ),
                 ),
-          );
+          )
 
 ####################################################################################################
 #
@@ -360,7 +360,7 @@ TEST_RESU(RESU=(
 
 # Get reduced coordinates from thermal problem
 coorRedu = RECU_TABLE(CO=redu,
-                      NOM_TABLE='COOR_REDUIT',);
+                      NOM_TABLE='COOR_REDUIT',)
 IMPR_TABLE(TABLE=coorRedu, UNITE=6)
 
 # Gappy-POD (reconstruction tout le domaine)
@@ -416,7 +416,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.00003,
                    ),
                 ),
-          );
+          )
 
 ####################################################################################################
 #
@@ -431,7 +431,7 @@ base_d = LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
                    UNITE      = 71,
                    FORMAT_MED = _F(NOM_CHAM_MED = 'base_d__FLUX_NOEU',
                                    NOM_CHAM     = 'FLUX_NOEU',),
-                   TOUT_ORDRE = 'OUI',);
+                   TOUT_ORDRE = 'OUI',)
 
 # Gappy-POD (reconstruction tout le domaine)
 reduS = REST_REDUIT_COMPLET(
@@ -465,7 +465,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.074,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=reduS,
@@ -489,5 +489,5 @@ TEST_RESU(RESU=(
                    PRECISION=0.099,
                    ),
                 ),
-          );
-FIN();
+          )
+FIN()

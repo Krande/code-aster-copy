@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,12 +32,12 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   Q=9.77,
                                   B=19.34,
                                   H=0.0,),
-                    MONO_CINE1=_F(D=36.68,),);
+                    MONO_CINE1=_F(D=36.68,),)
 
 CHARGE=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,140.0,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 
 COMPOR1=DEFI_COMPOR( ROTA_RESEAU='POST',
@@ -46,15 +46,15 @@ COMPOR1=DEFI_COMPOR( ROTA_RESEAU='POST',
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),);
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),),)
 
-TFIN = 1.5;
+TFIN = 1.5
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.87,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN,
-                                    NOMBRE=300,),),);
+                                    NOMBRE=300,),),)
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                         ECHEC=_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
@@ -71,7 +71,7 @@ MONOIMPR=SIMU_POINT_MAT(INFO=1,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST,PRECISION=1.E-6),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
-                        );
+                        )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-6,
@@ -143,7 +143,7 @@ MONOIMPP=SIMU_POINT_MAT(INFO=2,
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST,PRECISION=1.E-6),
                    SIGM_IMPOSE=_F(SIXX=CHARGE),
-                        );
+                        )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-6,

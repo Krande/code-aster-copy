@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI');
+POURSUITE(CODE='OUI')
 
 #######################################################################
 
@@ -89,10 +89,10 @@ gamma3=CALC_FONCTION(COMB=_F(FONCTION=eps_xy,COEF=2.0/sqrt(3.),) )
 IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
               COURBE=(_F(FONCTION=eps_xx,MARQUEUR=0),
                       _F(FONCTION=gamma3,MARQUEUR=0),
-                      ),);
+                      ),)
 
 # trace de gamma en fonction de epsxx
 IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
               COURBE=(_F(FONC_X=eps_xx,FONC_Y=gamma3,MARQUEUR=0),
-                      ),);
+                      ),)
 FIN()

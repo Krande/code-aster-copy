@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -249,7 +249,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=2.0,
                                      NOMBRE=40,),
                                   _F(JUSQU_A=3.0,
-                                     NOMBRE=1,),),);
+                                     NOMBRE=1,),),)
 
 U=STAT_NON_LINE(
                 MODELE=MO,
@@ -454,10 +454,10 @@ FIN()
 #                            NU=NU,),
 #                    ECRO_LINE=_F(D_SIGM_EPSI=1930.,
 #                                 SY=181.,),
-#                    );
+#                    )
 #CM2=AFFE_MATERIAU(MAILLAGE=MA,
 #                 AFFE=_F(TOUT='OUI',
-#                         MATER=ZIRC3,),);
+#                         MATER=ZIRC3,),)
 ##
 #U2=STAT_NON_LINE(
 #                MODELE=MO,

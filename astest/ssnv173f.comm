@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #                MAILLAGE : ssnv173f.mgib
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
 
 #----------------------------------------------
@@ -35,7 +35,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='C_PLAN'),
                            _F(GROUP_MA=('LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN')));
+                              MODELISATION='C_PLAN')))
 
 
 # FORME ANALYTIQUE POUR LA FISSURE
@@ -47,9 +47,9 @@ LT = FORMULE(VALE='-X-1',
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN));
+                    DEFI_FISS=_F(FONC_LN=LN))
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1)
 
 
 #----------------------------------------------
@@ -59,14 +59,14 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1);
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho))
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('SURF'),
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -77,23 +77,23 @@ DEPMILY=DEPY/2.
 ZERO=0.0
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIG1',DX=0.0,DY=0.0),
-                             _F(GROUP_MA='LIG3',DX=0.0,DY=DEPY)));
+                             _F(GROUP_MA='LIG3',DX=0.0,DY=DEPY)))
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3));
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3))
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(
                           _F(CHARGE=CH1),
                           ),
-                   SOLVEUR=_F(   
+                   SOLVEUR=_F(
                             METHODE='MUMPS'),
                    INFO=1,
-                   ); 
+                   )
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -111,12 +111,12 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         )
 
-IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM))
 
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -125,25 +125,25 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 IMPR_TABLE(TABLE=DEP1,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON');
+           IMPR_FONCTION='NON')
 
 DEPP = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]')));
+                               VALE_K    = 'N[^P]')))
 
 
 DEPM = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]')));
+                               VALE_K    = 'N[^M]')))
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -231,10 +231,10 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    VALE_CALC=1.3E-05,
-                   
+
                    CRITERE='RELATIF',
                    ),
                 ),
           )
 
-FIN();
+FIN()

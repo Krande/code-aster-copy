@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('RUPTURE0_55','RESULT1_40'))
 
-# on ignore les 2 alarmes'RUPTURE0_55' et 'RESULT1_40' car le but de ce cas test 
+# on ignore les 2 alarmes'RUPTURE0_55' et 'RESULT1_40' car le but de ce cas test
 # est de tester CALC_G avec different type de charges (fcontion, constante, pression...)
 # sans pour autant realiser un calcul mecanique avec chacune de ces charges.
 # Ainsi, on realise un unique calcul mecanique et on fait plusieurs post-traitements.
@@ -111,7 +111,7 @@ Gloc1=CALC_G(RESULTAT=CHAMDEPL,
                       R_SUP_FO=RSUP,
                       R_INF_FO=RINF,
                       DISCRETISATION='LEGENDRE',
-                      ), 
+                      ),
              )
 
 # post-traitement avec une charge en force face constante
@@ -157,11 +157,11 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=0.0,),
            )
 
-Ga_cal = 6.9828699868854E-05 
+Ga_cal = 6.9828699868854E-05
 # deuxieme test pour verif que la valeur que l'on cherche a reproduire n'a pas bouge
 TEST_TABLE(
            VALE_CALC=6.918074674215766E-05,
-           
+
            NOM_PARA='G',
            TABLE=Gloc1,
            FILTRE=_F(NOM_PARA='ABSC_CURV',

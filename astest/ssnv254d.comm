@@ -82,10 +82,10 @@ ACIER = DEFI_MATERIAU(ELAS = _F(E=190000.0, NU=0.3),
                                      NUCL_GAUSS_PORO = 0.0,
                                      NUCL_GAUSS_PLAS = 0.6,
                                      NUCL_GAUSS_DEV = 0.01,
-                     ),                
-                      ) 
-                                 
-# AFFECTATION DES MATERIAUX                               
+                     ),
+                      )
+
+# AFFECTATION DES MATERIAUX
 MATE = AFFE_MATERIAU (MAILLAGE = MAIL,
                       AFFE     = _F(GROUP_MA='SPECIMEN', MATER = ACIER),)
 

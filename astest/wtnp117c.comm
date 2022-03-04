@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ PARM_ALPHA=1.
 # Lecture du maillage
 #*********************
 #
-MAILINI  = LIRE_MAILLAGE (FORMAT='MED', );
+MAILINI  = LIRE_MAILLAGE (FORMAT='MED', )
 
 MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
                  MODI_MAILLE=(
@@ -85,27 +85,27 @@ MODELE  = AFFE_MODELE ( MAILLAGE =  MAIL,
 #*********************************************************
 # Definition des caracteristiques fluides
 #**********************************************************
-UN   = DEFI_CONSTANTE ( VALE = 1.);
-ZERO = DEFI_CONSTANTE ( VALE = 0.);
-BIDON = DEFI_CONSTANTE ( VALE = 0.);
+UN   = DEFI_CONSTANTE ( VALE = 1.)
+ZERO = DEFI_CONSTANTE ( VALE = 0.)
+BIDON = DEFI_CONSTANTE ( VALE = 0.)
 SMAX=0.999
 #
-VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3  ) ;
-VISCOGAZ = DEFI_CONSTANTE ( VALE = 1.8E-5  ) ;
+VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3  )
+VISCOGAZ = DEFI_CONSTANTE ( VALE = 1.8E-5  )
 #
-DVISCOL  = DEFI_CONSTANTE ( VALE = 0. ) ;
-DVISCOG  = DEFI_CONSTANTE ( VALE = 0. ) ;
+DVISCOL  = DEFI_CONSTANTE ( VALE = 0. )
+DVISCOG  = DEFI_CONSTANTE ( VALE = 0. )
 #
 #
 #************************************#
 # PERMEABILITE INTRINSEQUE
 #************************************
-KINTBO=DEFI_CONSTANTE(VALE=1.e-20,);
-KINTBG=DEFI_CONSTANTE(VALE=1.e-19,);
+KINTBO=DEFI_CONSTANTE(VALE=1.e-20,)
+KINTBG=DEFI_CONSTANTE(VALE=1.e-19,)
 #
 #
 
-HENRY = DEFI_CONSTANTE(VALE=1.E20,);
+HENRY = DEFI_CONSTANTE(VALE=1.E20,)
 
 
 
@@ -114,15 +114,15 @@ HENRY = DEFI_CONSTANTE(VALE=1.E20,);
 BBO = 0.06
 BBG=0.412
 
-PRBO = 1.5E6   ;
-NBO  = 1./(1.- BBO) ;
-MBO  = 1-1/NBO  ;
-SRBO = 0.00  ;
+PRBO = 1.5E6
+NBO  = 1./(1.- BBO)
+MBO  = 1-1/NBO
+SRBO = 0.00
 
-PRBG = 1.E7   ;
-NBG  = 1./(1.- BBG) ;
-MBG  = 1-1/NBG  ;
-SRBG = 0.00  ;
+PRBG = 1.E7
+NBG  = 1./(1.- BBG)
+MBG  = 1-1/NBG
+SRBG = 0.00
 
 #
 #
@@ -276,7 +276,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
       AFFE=(_F(GROUP_MA='BO',
          MATER=MATERBO,),
          _F(GROUP_MA='BG',
-         MATER=MATERBG,),),);
+         MATER=MATERBG,),),)
 #*************************************************************
 # Affectation de l etat initial
 #*************************************************************
@@ -322,7 +322,7 @@ INST1 = DEFI_LIST_REEL ( DEBUT   = 0.0,
   _F( JUSQU_A = 50000.  , NOMBRE = 30  ,),
   _F( JUSQU_A = 100000.  , NOMBRE = 20  ,),
        ),
-        );
+        )
 #
 #******************************************************************
 # Simulation de la corrosion et du chauffage entre 0 et 5000 ans
@@ -361,11 +361,11 @@ cal1 = STAT_NON_LINE (
            RESI_GLOB_MAXI = 1.E-15  ,
           ),
 #     INFO=2,
-        );
+        )
 #***********************
 # POST TRAITEMENT
 #***********************
-LINST=DEFI_LIST_REEL(VALE=(100.,10000.,50000,100000., ),);
+LINST=DEFI_LIST_REEL(VALE=(100.,10000.,50000,100000., ),)
 
 TRB2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
        GROUP_NO='NSBAS',
@@ -373,14 +373,14 @@ TRB2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
        LIST_INST=LINST,
        NOM_CHAM='DEPL',
        NOM_CMP=('PRE2',),
-       OPERATION='EXTRACTION',),);
+       OPERATION='EXTRACTION',),)
 
 IMPR_TABLE ( TABLE =  TRB2  ,
    FORMAT   = 'TABLEAU_CROISE' ,
    TRI    = (_F( NOM_PARA = 'COOR_X',
    ORDRE = 'CROISSANT',),),
    NOM_PARA=('INST','COOR_X', 'PRE2',),
-    );
+    )
 
 TRB0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
        GROUP_NO='NSBAS',
@@ -388,14 +388,14 @@ TRB0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
        LIST_INST=LINST,
        NOM_CHAM='DEPL',
        NOM_CMP=('PRE1',),
-       OPERATION='EXTRACTION',),);
+       OPERATION='EXTRACTION',),)
 
 IMPR_TABLE ( TABLE =  TRB0  ,
     FORMAT   = 'TABLEAU_CROISE' ,
     TRI   = (_F( NOM_PARA = 'COOR_X' ,
     ORDRE = 'CROISSANT',),),
     NOM_PARA=('INST','COOR_X', 'PRE1',),
-    );
+    )
 
 #================================================================
 #                          TEST_RESU
@@ -505,4 +505,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=110,
                ),
        )
 
-FIN ( ) ;
+FIN ( )

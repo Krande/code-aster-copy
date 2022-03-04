@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,66 +21,66 @@
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
+MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',)
 
 MAP=CREA_MAILLAGE(MAILLAGE=MA1,
                   MODI_MAILLE=(_F(GROUP_MA='Q21',
                                   OPTION='QUAD8_9',),
                                _F(GROUP_MA='Q1',
-                                  OPTION='QUAD8_9',),),);
+                                  OPTION='QUAD8_9',),),)
 #
 # TRANSFO EN TRIA3
 
 MATRI3=CREA_MAILLAGE(MAILLAGE=MAP,
                      MODI_MAILLE=_F(TOUT='OUI',
-                                    OPTION='QUAD_TRIA3',),);
+                                    OPTION='QUAD_TRIA3',),)
 #
 # TRANSFO EN TRIA6
 
 MATRI6=CREA_MAILLAGE(MAILLAGE=MATRI3,
                      LINE_QUAD=_F(TOUT='OUI',
-                                  PREF_NOEUD='NW',),);
+                                  PREF_NOEUD='NW',),)
 #
 # TRANSFO EN TRIA7
 
 MA2=CREA_MAILLAGE(MAILLAGE=MATRI6,
                   MODI_MAILLE=_F(TOUT='OUI',
                                  OPTION='TRIA6_7',
-                                 PREF_NOEUD='NT',),);
+                                 PREF_NOEUD='NT',),)
 
-# Pertubation legere des coordonnes du maillage 
+# Pertubation legere des coordonnes du maillage
 MA2=MODI_MAILLAGE(reuse =MA2, MAILLAGE=MA2, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 
 MO=AFFE_MODELE(MAILLAGE=MA2,
                AFFE=(_F(GROUP_MA=('Q1','Q21',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='COQUE_3D',),),);
+                        MODELISATION='COQUE_3D',),),)
 
 
 MA2=DEFI_GROUP(reuse =MA2,
                MAILLAGE=MA2,
-               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      COQUE=(_F(GROUP_MA='Q21',
                                EPAIS=0.5,),
                             _F(GROUP_MA='Q1',
-                               EPAIS=0.5,),),);
+                               EPAIS=0.5,),),)
 
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
-                          NU=0.3,),);
+                          NU=0.3,),)
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA2,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=_F(GROUP_MA='Q21',
-                                PRES=-250000000.0,),);
+                                PRES=-250000000.0,),)
 
 CHA0=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=(
@@ -112,7 +112,7 @@ CHA0=AFFE_CHAR_CINE(MODELE=MO,
                                  DX=0.0,
                                  DZ=0.0,
                                  DRX=0.0,),
-                                 ),);
+                                 ),)
 
 CHA2=DEFI_CONTACT(MODELE         = MO,
                   FORMULATION    = 'DISCRETE',
@@ -130,12 +130,12 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           1.0,1.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=5,),);
+                                    NOMBRE=5,),)
 
 
 RESU=STAT_NON_LINE(SOLVEUR=_F(),
@@ -149,7 +149,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(),
                    CONTACT  = CHA2,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   INFO=1,);
+                   INFO=1,)
 
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
@@ -158,10 +158,10 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 RESUPOS=POST_CHAMP(RESULTAT=RESU,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='INF',),);
+                                 NIVE_COUCHE='INF',),)
 RESUPOS=CALC_CHAMP(reuse =RESUPOS,
                 RESULTAT=RESUPOS,
-                CONTRAINTE='SIGM_NOEU');
+                CONTRAINTE='SIGM_NOEU')
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                    GROUP_NO='CENTE1',
@@ -221,4 +221,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=5,
                 ),
           )
 
-FIN();
+FIN()

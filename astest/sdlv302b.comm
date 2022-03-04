@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@
 #
 # CE FICHIER DE COMMANDE CONTIENT LES INSTRUCTIONS POUR CALCULER LES
 # FREQUENCES  PROPRES D'UNE POUTRE BI-APPUYEE.
-# LES VALEURS DE REFERENCE SONT CALCULEES SUR UNE POUTRE DE 
+# LES VALEURS DE REFERENCE SONT CALCULEES SUR UNE POUTRE DE
 # TIMOSHENKO DEFORMABLE A L'EFFORT TRANCHANT ET TENANT COMPTE DE
 # L'INERTIE ROTATOIRE DES SECTIONS.
 #
 #################################################################
 #
 # LA POUTRE EST DIVISEE EN DEUX SUPER-ELEMENTS DE TYPE CRAIG-BAMPTON
-# 
+#
 #################################################################
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 MAT=DEFI_MATERIAU(  ELAS=_F( RHO = 7.8E03,  NU = 0.3,  E = 2.1E11))
@@ -41,27 +41,27 @@ MAT=DEFI_MATERIAU(  ELAS=_F( RHO = 7.8E03,  NU = 0.3,  E = 2.1E11))
 MAYA=LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
 
 #
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA, 
-                              AFFE=_F( TOUT = 'OUI', 
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                              AFFE=_F( TOUT = 'OUI',
                                     MATER = MAT))
 
 #
 POVOL=AFFE_MODELE(  MAILLAGE=MAYA,
-                              AFFE=_F( TOUT = 'OUI', 
-                                  MODELISATION = '3D', 
+                              AFFE=_F( TOUT = 'OUI',
+                                  MODELISATION = '3D',
                                   PHENOMENE = 'MECANIQUE'))
 
 #
 #################################################################
 #
-#  MODELISATION DU SUPER ELEMENT  DE GAUCHE    
+#  MODELISATION DU SUPER ELEMENT  DE GAUCHE
 #
 #################################################################
 #
 #
 FIXAT1=AFFE_CHAR_MECA(    MODELE=POVOL,DDL_IMPO=(
                  _F(  GROUP_NO = 'COND1',  DX = 0.,  DY = 0.),
-                 _F(  GROUP_NO = 'COND3',  DZ = 0.), 
+                 _F(  GROUP_NO = 'COND3',  DZ = 0.),
 #
 #  INTERFACE DE CRAIG BAMPTON --> FIXATION DE L'INTERFACE
 #
@@ -69,7 +69,7 @@ FIXAT1=AFFE_CHAR_MECA(    MODELE=POVOL,DDL_IMPO=(
 
 #
 PLAN_F1=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
-                            
+
      _F( GROUP_NO = ('N1','N21','N9',), DDL = ('DX','DX','DX',),
      COEF_MULT = ( 1.00,   .00000, -1.00000,), COEF_IMPO = 0.),
      _F( GROUP_NO = ('N2','N21','N9',), DDL = ('DX','DX','DX',),
@@ -135,17 +135,17 @@ PLAN_F1=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
            )
 
 #
-K_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
+K_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL,
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA',
                                 CHARGE=( FIXAT1,
                                        PLAN_F1, ))
 
 #
-M_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL, 
+M_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
-                                CHARGE=( FIXAT1, 
+                               OPTION='MASS_MECA',
+                                CHARGE=( FIXAT1,
                                        PLAN_F1, ))
 
 #
@@ -185,7 +185,7 @@ MACRO1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,)
 #
 #################################################################
 #
-#  MODELISATION DU SUPER ELEMENT DE DROITE 
+#  MODELISATION DU SUPER ELEMENT DE DROITE
 #
 #################################################################
 #
@@ -199,7 +199,7 @@ FIXAT2=AFFE_CHAR_MECA(    MODELE=POVOL,DDL_IMPO=(
 
 #
 PLAN_F2=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
-                            
+
      _F( GROUP_NO = ('N741','N761','N749',), DDL = ('DX','DX','DX',),
      COEF_MULT = ( 1.00,   .00000, -1.00000,), COEF_IMPO = 0.),
      _F( GROUP_NO = ('N742','N761','N749',), DDL = ('DX','DX','DX',),
@@ -265,17 +265,17 @@ PLAN_F2=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
                )
 
 #
-K_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
+K_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL,
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA',
                                 CHARGE=( FIXAT2,
                                          PLAN_F2, ))
 
 #
-M_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL, 
+M_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
-                                CHARGE=( FIXAT2, 
+                               OPTION='MASS_MECA',
+                                CHARGE=( FIXAT2,
                                          PLAN_F2, ))
 
 #
@@ -314,10 +314,10 @@ MACRO2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,)
 #
 #################################################################
 #
-#       CALCUL SUR LE MODELE GENERALISE   
+#       CALCUL SUR LE MODELE GENERALISE
 #
 #################################################################
-#    
+#
 #   CREATION DU MODELE GENERALISE
 #
 MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=( _F( NOM = 'COTE1',
@@ -358,14 +358,14 @@ RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
 #
 #  RESTITUTION SUR LE MAILLAGE GLOBAL
 #
-GLOBAL=DEFI_SQUELETTE(    MODELE_GENE=MODEGE,SOUS_STRUC=(  
+GLOBAL=DEFI_SQUELETTE(    MODELE_GENE=MODEGE,SOUS_STRUC=(
                               _F(  NOM = 'COTE1',
-                                           TOUT = 'OUI'), 
+                                           TOUT = 'OUI'),
                               _F(  NOM = 'COTE2',
                                            TOUT = 'OUI')))
 
 #
-MODGLO=REST_SOUS_STRUC(    RESU_GENE=RESGEN,   
+MODGLO=REST_SOUS_STRUC(    RESU_GENE=RESGEN,
                              SQUELETTE=GLOBAL,
                             TOUT_ORDRE='OUI' )
 

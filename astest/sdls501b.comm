@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
 #
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -38,7 +38,7 @@ MA=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
 MODELE=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DKT',),);
+                           MODELISATION='DKT',),)
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES
@@ -56,14 +56,14 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,COQUE=_F(GROUP_MA='TOUT',EPAIS=0.05),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                             NU=0.3,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 #
 #
 #
 
 AFF_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
-                              MATER=ACIER,),);
+                              MATER=ACIER,),)
 
 
 #---------------------------------------------------------------------
@@ -77,7 +77,7 @@ AFF_MAT=AFFE_MATERIAU(MAILLAGE=MA,
 MAT_EL_R=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         CARA_ELEM=CARA,
                         MODELE=MODELE,
-                        CHAM_MATER=AFF_MAT,);
+                        CHAM_MATER=AFF_MAT,)
 #
 #
 #
@@ -86,28 +86,28 @@ MAT_EL_R=CALC_MATR_ELEM(OPTION='RIGI_MECA',
 MAT_EL_M=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         CARA_ELEM=CARA,
                         MODELE=MODELE,
-                        CHAM_MATER=AFF_MAT,);
+                        CHAM_MATER=AFF_MAT,)
 #
 #
 #
 
 
 NUM=NUME_DDL(MATR_RIGI=MAT_EL_R,
-             );
+             )
 #
 #
 #
 
 
 MAT_AS_R=ASSE_MATRICE(MATR_ELEM=MAT_EL_R,
-                      NUME_DDL=NUM,);
+                      NUME_DDL=NUM,)
 #
 #
 #
 
 
 MAT_AS_M=ASSE_MATRICE(MATR_ELEM=MAT_EL_M,
-                      NUME_DDL=NUM,);
+                      NUME_DDL=NUM,)
 #
 #
 #
@@ -137,7 +137,7 @@ DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=MODE,
                 NOM_CHAM='DEPL',
-                NUME_ORDRE=1,);
+                NUME_ORDRE=1,)
 
 ELAS=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_ELAS',
@@ -146,7 +146,7 @@ ELAS=CREA_RESU(OPERATION='AFFE',
                CHAM_GD=DEPL,
                MODELE=MODELE,
                CHAM_MATER=AFF_MAT,
-               INST=0.0,),);
+               INST=0.0,),)
 
 ELAS=CALC_CHAMP(reuse=ELAS,RESULTAT=ELAS,
                 CARA_ELEM=CARA, CONTRAINTE=('SIEF_ELGA'),)
@@ -186,5 +186,5 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
           )
 
 
-FIN();
+FIN()
 #

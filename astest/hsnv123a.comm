@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
                 COMPORTEMENT=_F(RELATION='ZIRC',
                              TOUT='OUI'),
-                OPTION='META_ELNO',);
+                OPTION='META_ELNO',)
 
 YOUNG=DEFI_CONSTANTE( VALE=200000.)
 
@@ -275,7 +275,7 @@ CM2=AFFE_MATERIAU( MAILLAGE=MAIL,
 
            )
 
-MO=AFFE_MODELE(  MAILLAGE=MAIL,    
+MO=AFFE_MODELE(  MAILLAGE=MAIL,
                  AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
                            MODELISATION = 'AXIS'))
 

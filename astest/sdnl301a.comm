@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ EPAIS=.00115
 
 AMPL=41.38
 
-FORCEP=8.276 /2;
+FORCEP=8.276 /2
 
-FORCEM=-8.276 /2;
+FORCEM=-8.276 /2
 
 OMEGA=251.2 # (#40 Hz)
 
@@ -46,21 +46,21 @@ TFIN=.25
 DELT=.5E-5
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E = 2.07E11, NU = 0.3, RHO = 7870.,
-                            AMOR_ALPHA = 1.79E-5, AMOR_BETA = .1526));
+                            AMOR_ALPHA = 1.79E-5, AMOR_BETA = .1526))
 
 #-----   MODELE ----------------
 
-POUTRE=LIRE_MAILLAGE(FORMAT='MED',);
+POUTRE=LIRE_MAILLAGE(FORMAT='MED',)
 
 POUTRE=DEFI_GROUP(reuse=POUTRE,
                   MAILLAGE=POUTRE,
                   CREA_GROUP_MA=_F(NOM = 'TOUT',
-                                   TOUT = 'OUI'));
+                                   TOUT = 'OUI'))
 
 MO=AFFE_MODELE(MAILLAGE=POUTRE,
                AFFE=_F(TOUT        = 'OUI',
                        PHENOMENE   = 'MECANIQUE',
-                       MODELISATION= 'POU_D_T'));
+                       MODELISATION= 'POU_D_T'))
 
 SINO = FORMULE(VALE='sin (OMEGA *INST)',
                OMEGA=OMEGA,
@@ -68,27 +68,27 @@ SINO = FORMULE(VALE='sin (OMEGA *INST)',
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A= TFIN,
-                                   PAS    = .0001));
+                                   PAS    = .0001))
 
 SINOT=CALC_FONC_INTERP(FONCTION=SINO,
                        LIST_PARA=LINST,
-                       NOM_PARA='INST');
+                       NOM_PARA='INST')
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                        POUTRE=_F(GROUP_MA= 'TOUT',
                                  SECTION = 'CERCLE',
                                  CARA    = ('R','EP'),
-                                 VALE    = (RAYON, EPAIS)));
+                                 VALE    = (RAYON, EPAIS)))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=POUTRE,
                     AFFE=_F(TOUT = 'OUI',
-                            MATER= ACIER));
+                            MATER= ACIER))
 
 CLIMIT=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=(_F(TOUT ='OUI',
                                    DZ=.0, DRX=.0, DRY=.0),
                                 _F(GROUP_NO='N1',
-                                   DX=.0, DY=.0, DRZ=.0)));
+                                   DX=.0, DY=.0, DRZ=.0)))
 
 FORCE=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=(_F(FY = FORCEP,
@@ -104,9 +104,9 @@ FORCE=AFFE_CHAR_MECA(MODELE=MO,
                                                'N23','N24','N25',
                                                'N39','N40','N41','N42',
                                                'N43','N44','N45','N46',
-                                               'N47','N48','N49',))));
+                                               'N47','N48','N49',))))
 
-BUTE=DEFI_OBSTACLE(TYPE='PLAN_Y');
+BUTE=DEFI_OBSTACLE(TYPE='PLAN_Y')
 
 # ASSEMBLAGE MATRICE
 
@@ -114,34 +114,34 @@ MELER=CALC_MATR_ELEM(MODELE    =MO,
                      OPTION    ='RIGI_MECA',
                      CARA_ELEM =CARELEM,
                      CHAM_MATER=CHMAT,
-                     CHARGE    =CLIMIT);
+                     CHARGE    =CLIMIT)
 
 MELEM=CALC_MATR_ELEM(MODELE    =MO,
                      OPTION    ='MASS_MECA',
                      CARA_ELEM =CARELEM,
                      CHAM_MATER=CHMAT,
-                     CHARGE    =CLIMIT);
+                     CHARGE    =CLIMIT)
 
 MELEA=CALC_MATR_ELEM(MODELE    =MO,
                      OPTION    ='AMOR_MECA',
                      CARA_ELEM =CARELEM,
                      MASS_MECA =MELEM,
                      RIGI_MECA =MELER,
-                     CHAM_MATER=CHMAT);
+                     CHAM_MATER=CHMAT)
 
-# CHARGE: CLIMIT);
+# CHARGE: CLIMIT)
 
-VELEM=CALC_VECT_ELEM(CHARGE=FORCE, OPTION='CHAR_MECA');
+VELEM=CALC_VECT_ELEM(CHARGE=FORCE, OPTION='CHAR_MECA')
 
-NDDL=NUME_DDL(MATR_RIGI=MELER);
+NDDL=NUME_DDL(MATR_RIGI=MELER)
 
-MATR=ASSE_MATRICE(MATR_ELEM=MELER, NUME_DDL=NDDL);
+MATR=ASSE_MATRICE(MATR_ELEM=MELER, NUME_DDL=NDDL)
 
-MATM=ASSE_MATRICE(MATR_ELEM=MELEM, NUME_DDL=NDDL);
+MATM=ASSE_MATRICE(MATR_ELEM=MELEM, NUME_DDL=NDDL)
 
-MATA=ASSE_MATRICE(MATR_ELEM=MELEA, NUME_DDL=NDDL);
+MATA=ASSE_MATRICE(MATR_ELEM=MELEA, NUME_DDL=NDDL)
 
-VECT=ASSE_VECTEUR(VECT_ELEM=VELEM, NUME_DDL=NDDL);
+VECT=ASSE_VECTEUR(VECT_ELEM=VELEM, NUME_DDL=NDDL)
 
 # CALCUL MODAL :30 MODES
 # (jusqu'a 4800 Hz)
@@ -159,28 +159,28 @@ MODE=CALC_CHAMP(reuse=MODE,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARELEM,
                    RESULTAT=MODE,
-                   CONTRAINTE=('SIPO_ELNO','EFGE_ELNO','EFGE_ELGA',),);
+                   CONTRAINTE=('SIPO_ELNO','EFGE_ELNO','EFGE_ELGA',),)
 
-NDDLGEN=NUME_DDL_GENE(BASE=MODE);
+NDDLGEN=NUME_DDL_GENE(BASE=MODE)
 
 # PROJECTION DANS LA BASSE MODALE
 
 RIGIPROJ=PROJ_MATR_BASE(BASE         =MODE,
                         NUME_DDL_GENE=NDDLGEN,
-                        MATR_ASSE    =MATR);
+                        MATR_ASSE    =MATR)
 
 MASSPROJ=PROJ_MATR_BASE(BASE         =MODE,
                         NUME_DDL_GENE=NDDLGEN,
-                        MATR_ASSE    =MATM);
+                        MATR_ASSE    =MATM)
 
 AMORPROJ=PROJ_MATR_BASE(BASE         =MODE,
                         NUME_DDL_GENE=NDDLGEN,
-                        MATR_ASSE    =MATA);
+                        MATR_ASSE    =MATA)
 
 VECTPROJ=PROJ_VECT_BASE(BASE         =MODE,
                         VECT_ASSE    =VECT,
                         NUME_DDL_GENE=NDDLGEN,
-                        TYPE_VECT    ='FORC');
+                        TYPE_VECT    ='FORC')
 
 TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
@@ -230,13 +230,13 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                           IMPRESSION=_F(NIVEAU  = 'DEPL_LOC',
                           #              TOUT='OUI',
                           #              INST_INIT= 0.01,
-                                        INST_FIN= 0.01),);
+                                        INST_FIN= 0.01),)
 
 POST=POST_DYNA_MODA_T(RESU_GENE=TRANGENE,
                       CHOC=_F(INST_INIT= TDEB,
-                              INST_FIN = TFIN));
+                              INST_FIN = TFIN))
 
-IMPR_TABLE(TABLE=POST);
+IMPR_TABLE(TABLE=POST)
 
 TEST_TABLE(VALE_CALC=23.9833137772,
            NOM_PARA='RMS_T_TOTAL',
@@ -250,7 +250,7 @@ TEST_TABLE(VALE_CALC=23.9833137772,
 
 # ON PASSE EN SDVERI=NON LE TEMPS DE LA REST_GENE_PHYS
 # A CAUSE DU TEMPS CPU TROP IMPORTANT (FACTEUR +40)
-DEBUG(SDVERI='NON');
+DEBUG(SDVERI='NON')
 
 RESPHY1 = REST_GENE_PHYS(RESU_GENE =TRANGENE,
                          TOUT_ORDRE='OUI',
@@ -262,39 +262,39 @@ RESPHY1=CALC_CHAMP(reuse=RESPHY1,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARELEM,
                    RESULTAT=RESPHY1,
-                   CONTRAINTE=('EFGE_ELGA',),);
+                   CONTRAINTE=('EFGE_ELGA',),)
 
-DEBUG(SDVERI='OUI');
+DEBUG(SDVERI='OUI')
 
 # RECU_FONCTION/RESULTAT=RESPHY1 (pour comparaison REST_GENE_PHYS/POST_GENE_PHYS)
 SVY_N1=RECU_FONCTION(RESULTAT=RESPHY1,
                   NOM_CHAM='SIPO_ELNO',
                   NOM_CMP='SVY',
                    GROUP_MA='M1',
-                  GROUP_NO='N1',);
+                  GROUP_NO='N1',)
 
 MFZ_N1=RECU_FONCTION(RESULTAT=RESPHY1,
                   NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='MFZ',
                    GROUP_MA='M1',
-                  GROUP_NO='N1',);
+                  GROUP_NO='N1',)
 
 DY_N3=RECU_FONCTION(RESULTAT=RESPHY1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='N3',);
+                  GROUP_NO='N3',)
 
 ADRZ_N3=RECU_FONCTION(RESULTAT=RESPHY1,
                   NOM_CHAM='ACCE',
                   NOM_CMP='DRZ',
-                  GROUP_NO='N3',);
+                  GROUP_NO='N3',)
 
 VY_G1=RECU_FONCTION(RESULTAT=RESPHY1,
                   NOM_CHAM='EFGE_ELGA',
                   NOM_CMP='VY',
                    GROUP_MA='M1',
                   POINT=1,
-                 );
+                 )
 
 #par POST_GENE_PHYS:
 T_SIPO=POST_GENE_PHYS(RESU_GENE=TRANGENE,
@@ -440,13 +440,13 @@ dN25_Y1a = RECU_FONCTION(RESULTAT= RESPHY1,
                          NOM_CHAM= 'DEPL',
                          GROUP_NO   = 'N2',
                          INTERPOL= 'LIN',
-                         NOM_CMP = 'DY');
+                         NOM_CMP = 'DY')
 
 dN25_Y1b = RECU_FONCTION(RESU_GENE= TRANGENE,
                          NOM_CHAM = 'DEPL',
                          GROUP_NO    = 'N2',
                          INTERPOL = 'LIN',
-                         NOM_CMP  = 'DY');
+                         NOM_CMP  = 'DY')
 
 
 # ---- PRISE EN COMPTE DES MODES STATIQUES DANS LA BASE MODALE
@@ -456,20 +456,20 @@ MODE_STA = MODE_STATIQUE(MATR_RIGI   = MATR,
                          MATR_MASS   = MATM,
                          FORCE_NODALE=_F(GROUP_NO=('N14','N26','N38','N2'),
                                          AVEC_CMP=('DX','DY',)),
-                         INFO=1);
+                         INFO=1)
 
 BASEMODA = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODE,
                                       NMAX_MODE=30),
                                    _F(MODE_INTF=MODE_STA)),
                             NUME_REF=NDDL,
-                            INFO=2);
+                            INFO=2)
 
-#IMPR_CO(CHAINE='BASEMODA           .REFE');
-#IMPR_CO(CHAINE='MODE_STA           .REFE');
-#IMPR_CO(CHAINE='MODE               .REFE');
+#IMPR_CO(CHAINE='BASEMODA           .REFE')
+#IMPR_CO(CHAINE='MODE_STA           .REFE')
+#IMPR_CO(CHAINE='MODE               .REFE')
 
 NDDLGEN2 = NUME_DDL_GENE(BASE= BASEMODA,
-                         STOCKAGE= 'PLEIN');
+                         STOCKAGE= 'PLEIN')
 
 # MATRICES GENERALISEES
 # ---------------------
@@ -482,12 +482,12 @@ PROJ_BASE(BASE=BASEMODA,
                              MATR_ASSE=MATM),
                           _F(MATRICE  =CO('AMORPRO2'),
                              MATR_ASSE=MATA)),
-          STOCKAGE='PLEIN');
+          STOCKAGE='PLEIN')
 
 VECTPRO2=PROJ_VECT_BASE(BASE         =BASEMODA,
                         VECT_ASSE    =VECT,
                         NUME_DDL_GENE=NDDLGEN2,
-                        TYPE_VECT    ='FORC');
+                        TYPE_VECT    ='FORC')
 
 TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
@@ -538,12 +538,12 @@ TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            IMPRESSION=_F(NIVEAU  = 'DEPL_LOC',
                            #              TOUT='OUI',
                            #             INST_INIT= 0.01,
-                                        INST_FIN= 0.01));
+                                        INST_FIN= 0.01))
 
 POST2=POST_DYNA_MODA_T(RESU_GENE=TRANGEN2,
                       CHOC=_F(INST_INIT= TDEB,
-                              INST_FIN = TFIN));
-IMPR_TABLE(TABLE=POST2);
+                              INST_FIN = TFIN))
+IMPR_TABLE(TABLE=POST2)
 
 TEST_TABLE(VALE_CALC=24.5382986473,
            NOM_PARA='RMS_T_TOTAL',
@@ -556,4 +556,4 @@ TEST_TABLE(VALE_CALC=24.5382986473,
            )
 
 
-FIN();
+FIN()

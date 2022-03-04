@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # Lecture du maillage
 #*********************
 #
-CORDEC = LIRE_MAILLAGE (FORMAT='MED', );
+CORDEC = LIRE_MAILLAGE (FORMAT='MED', )
 
 CORDEC = DEFI_GROUP ( reuse    = CORDEC,
             MAILLAGE  = CORDEC,
@@ -73,39 +73,39 @@ MODELT = AFFE_MODELE ( MAILLAGE = CORDEC,
 #*********************************************************
 # Definition des caracteristiques fluides
 #**********************************************************
-UN  = DEFI_CONSTANTE ( VALE = 1.);
-ZERO = DEFI_CONSTANTE ( VALE = 0.);
-BIDON = DEFI_CONSTANTE ( VALE = 0.);
+UN  = DEFI_CONSTANTE ( VALE = 1.)
+ZERO = DEFI_CONSTANTE ( VALE = 0.)
+BIDON = DEFI_CONSTANTE ( VALE = 0.)
 SMAX=0.999
 #
-VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3 ) ;
-VISCOGAZ = DEFI_CONSTANTE ( VALE = 1.8E-5 ) ;
+VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3 )
+VISCOGAZ = DEFI_CONSTANTE ( VALE = 1.8E-5 )
 #
-DVISCOL = DEFI_CONSTANTE ( VALE = 0. ) ;
-DVISCOG = DEFI_CONSTANTE ( VALE = 0. ) ;
+DVISCOL = DEFI_CONSTANTE ( VALE = 0. )
+DVISCOG = DEFI_CONSTANTE ( VALE = 0. )
 #
 #
 #************************************#
 # PERMEABILITE INTRINSEQUE
 #************************************
-KINTJEU = DEFI_CONSTANTE ( VALE = 1.019E-13 );
-KINTZE  = DEFI_CONSTANTE ( VALE = 5.097E-18 );
-KINTCOX = DEFI_CONSTANTE ( VALE = 5.097E-21 );
+KINTJEU = DEFI_CONSTANTE ( VALE = 1.019E-13 )
+KINTZE  = DEFI_CONSTANTE ( VALE = 5.097E-18 )
+KINTCOX = DEFI_CONSTANTE ( VALE = 5.097E-21 )
 #
 #
-FICKJEU  = DEFI_CONSTANTE ( VALE = 0.0015 );
-FICKZE   = DEFI_CONSTANTE ( VALE = 0.00075 );
-FICKCOX  = DEFI_CONSTANTE ( VALE = 0.00075 );
+FICKJEU  = DEFI_CONSTANTE ( VALE = 0.0015 )
+FICKZE   = DEFI_CONSTANTE ( VALE = 0.00075 )
+FICKCOX  = DEFI_CONSTANTE ( VALE = 0.00075 )
 ###
 
 #
 # Fick melange liquide Couplex
 #
-FadJEU   = DEFI_CONSTANTE ( VALE = 4.47E-10 );
-FadZE   = DEFI_CONSTANTE ( VALE = 2.23632E-10 );
-FadCOX   = DEFI_CONSTANTE ( VALE = 2.23632E-10 );
+FadJEU   = DEFI_CONSTANTE ( VALE = 4.47E-10 )
+FadZE   = DEFI_CONSTANTE ( VALE = 2.23632E-10 )
+FadCOX   = DEFI_CONSTANTE ( VALE = 2.23632E-10 )
 #
-KHENRY  = DEFI_CONSTANTE ( VALE = 1.252E05 );
+KHENRY  = DEFI_CONSTANTE ( VALE = 1.252E05 )
 
 
 # Fonction de saturation et sa derivee
@@ -130,20 +130,20 @@ LIJEU = DEFI_LIST_REEL ( DEBUT   = 0.089,
 #**********************
 # PARAMETRE MUALEM- VAN-GENUCHTEN
 #
-PRJEU  = 4.91E3   ;
-NJEU  = 1.55    ;
-MJEU  = 1-1/NJEU ;
-SRJEU  = 0.08    ;
+PRJEU  = 4.91E3
+NJEU  = 1.55
+MJEU  = 1-1/NJEU
+SRJEU  = 0.08
 
-PRZE  = 4.91E6  ;
-NZE   = 1.50   ;
-MZE   = 1-1/NZE ;
-SRZE  = 0.00   ;
+PRZE  = 4.91E6
+NZE   = 1.50
+MZE   = 1-1/NZE
+SRZE  = 0.00
 
-PRCOX  = 1.47E7  ;
-NCOX  = 1.49   ;
-MCOX  = 1-1/NCOX ;
-SRCOX  = 0.01   ;
+PRCOX  = 1.47E7
+NCOX  = 1.49
+MCOX  = 1-1/NCOX
+SRCOX  = 0.01
 
 #
 #
@@ -159,7 +159,7 @@ FVPSR = CALC_FONC_INTERP ( FONCTION  = FVP_SR  ,
               NOM_PARA  = 'SAT'   ,
               PROL_GAUCHE = 'CONSTANT' ,
               PROL_DROITE = 'CONSTANT' ,
-              INFO    = 2     ,);
+              INFO    = 2     ,)
 
 FA_SR = FORMULE(VALE=' SAT',
                 NOM_PARA='SAT',)
@@ -169,7 +169,7 @@ FASR = CALC_FONC_INTERP ( FONCTION  = FA_SR   ,
               NOM_PARA  = 'SAT'   ,
               PROL_GAUCHE = 'CONSTANT' ,
               PROL_DROITE = 'CONSTANT' ,
-              INFO    = 2     ,);
+              INFO    = 2     ,)
 # Pour la ZE et COX
 #==================
 FVP_S = FORMULE(VALE=' ( 0.999-SAT)',
@@ -180,7 +180,7 @@ FVPS = CALC_FONC_INTERP ( FONCTION  = FVP_S   ,
               NOM_PARA  = 'SAT'   ,
               PROL_GAUCHE = 'CONSTANT' ,
               PROL_DROITE = 'CONSTANT' ,
-              INFO    = 2     ,);
+              INFO    = 2     ,)
 
 FA_S = FORMULE(VALE=' SAT',
                NOM_PARA='SAT',)
@@ -190,7 +190,7 @@ FAS = CALC_FONC_INTERP ( FONCTION  = FA_S   ,
               NOM_PARA  = 'SAT'   ,
               PROL_GAUCHE = 'CONSTANT' ,
               PROL_DROITE = 'CONSTANT' ,
-              INFO    = 2     ,);
+              INFO    = 2     ,)
 #
 # Conductivite thermique
 #************************
@@ -511,7 +511,7 @@ CHMAT = AFFE_MATERIAU ( MAILLAGE = CORDEC,
                    _F( GROUP_MA  = 'COX',
                    MATER   = MATCOX,),
                    ),
-             );
+             )
 #*************************************************************
 # Affectation de l etat initial
 #*************************************************************
@@ -548,7 +548,7 @@ CHIMP = AFFE_CHAR_MECA ( MODELE = MODELT ,
              _F ( GROUP_MA = 'DROITE',
                PRE2   = 0.0,),
                     ),
-            );
+            )
 
 #
 #***********************************************************************************************
@@ -565,7 +565,7 @@ FLUXE0 = DEFI_FONCTION ( NOM_PARA  = 'INST' ,
    3.1536E+11 ,  2.13E-10 , # au bout de 10 000 ans
    3.1536E+12 ,  2.13E-10 ), # au bout de 100 000 ans
             PROL_DROITE ='EXCLU' ,
-            PROL_GAUCHE ='EXCLU' , );
+            PROL_GAUCHE ='EXCLU' , )
 #
 #***********************************************************************************************
 # Flux hydraulique gaz = production de gaz appliquee au niveau de la paroi gauche du Jeu ( x 3)
@@ -580,7 +580,7 @@ FLUXG0 = DEFI_FONCTION ( NOM_PARA  = 'INST' ,
    3.1536E+11 ,  2.37E-11 , # au bout de 10 000 ans
    3.1536E+12 ,  2.37E-11 ), # au bout de 100 000 ans
             PROL_DROITE ='EXCLU' ,
-            PROL_GAUCHE ='EXCLU' , );
+            PROL_GAUCHE ='EXCLU' , )
 #
 #
 #******************************************************************
@@ -633,7 +633,7 @@ _F( JUSQU_A = 9.4608E+07 , NOMBRE = 6 ,), # Au bout de 3 ans
  _F( JUSQU_A = 3.1536E+11 , NOMBRE = 20 ,), # Au bout de 10000 ans
  _F( JUSQU_A = 3.1536E+12 , NOMBRE = 30 ,), # Au bout de 100000 ans
                    ),
-            );
+            )
 TFIN=6.3072E+08
 #
 #******************************************************************
@@ -672,7 +672,7 @@ cal1 = STAT_NON_LINE (
                    RESI_GLOB_RELA = 1.E-5  ,
                    ),
 
-            );
+            )
 #
 # POST TRAITEMENT
 #
@@ -683,7 +683,7 @@ cal1=CALC_CHAMP(reuse=cal1,INST=(8640.,3.1536E+8,6.3072E+08),CONTRAINTE=('SIEF_E
 cal1  = CALC_CHAMP  ( reuse    = cal1  ,
             VARI_INTERNE='VARI_NOEU',
             INST = (8640.,3.1536E+8, 6.3072E+08),
-            RESULTAT   = cal1  ,);
+            RESULTAT   = cal1  ,)
 
 PgTU1  = POST_RELEVE_T ( ACTION  =_F( INTITULE  = 'DEPL' ,
                       RESULTAT  = cal1 ,
@@ -691,7 +691,7 @@ PgTU1  = POST_RELEVE_T ( ACTION  =_F( INTITULE  = 'DEPL' ,
           GROUP_NO   = 'HAUT'  ,
            NOM_CHAM  = 'DEPL' ,
           NOM_CMP  = ('PRE1', 'PRE2',) ,
-           OPERATION = 'EXTRACTION',),);
+           OPERATION = 'EXTRACTION',),)
 
 SATU1  = POST_RELEVE_T ( ACTION  =_F( INTITULE  = 'DEPL' ,
                       RESULTAT  = cal1 ,
@@ -699,26 +699,26 @@ SATU1  = POST_RELEVE_T ( ACTION  =_F( INTITULE  = 'DEPL' ,
           GROUP_NO   = 'HAUT'  ,
            NOM_CHAM  = 'VARI_NOEU' ,
           NOM_CMP  = ('V4', ) ,
-           OPERATION = 'EXTRACTION',),);
+           OPERATION = 'EXTRACTION',),)
 
 IMPR_TABLE ( TABLE  = PgTU1   ,
        FORMAT  = 'TABLEAU_CROISE'  ,
        NOM_PARA = ( 'INST', 'COOR_X', 'PRE2', ),
    TRI  = (_F( NOM_PARA = ('COOR_X' ,),
       ORDRE  = 'CROISSANT' ,),),
-           );
+           )
 IMPR_TABLE ( TABLE  = PgTU1   ,
        FORMAT  = 'TABLEAU_CROISE'  ,
        NOM_PARA = ( 'INST', 'COOR_X', 'PRE1', ),
        TRI  = (_F( NOM_PARA = ('COOR_X' ,),
        ORDRE  = 'CROISSANT' ,),),
-          );
+          )
 IMPR_TABLE ( TABLE  = SATU1   ,
        FORMAT  = 'TABLEAU_CROISE'  ,
        NOM_PARA = ( 'INST', 'COOR_X', 'V4', ),
        TRI  = (_F( NOM_PARA = ('COOR_X' ,),
        ORDRE  = 'CROISSANT' ,),),
-      );
+      )
 
 TEST_RESU(RESU=_F(INST=3.15360000E8,
                   REFERENCE='NON_DEFINI',
@@ -768,4 +768,4 @@ TEST_RESU(RESU=_F(INST=6.30720000E8,
                   PRECISION=1.E-2,),
           )
 
-FIN ( ) ;
+FIN ( )

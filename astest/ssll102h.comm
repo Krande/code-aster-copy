@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ CHARG2=AFFE_CHAR_MECA_F(          MODELE=MO,
                                             FY = F1)
                           )
 
-LINST=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.,  NOMBRE=1,));
+LINST=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.,  NOMBRE=1,))
 MEST1=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CHMAT,
                  CARA_ELEM=CAREL,
@@ -285,7 +285,7 @@ SITU90=POST_CHAMP(RESULTAT=MEST1B,
                   EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=1,
                                 NIVE_COUCHE='SUP',
-                                ANGLE=90,),);
+                                ANGLE=90,),)
 # la maille la plus proche de L/SQRT(3)
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='P8',
@@ -318,7 +318,7 @@ SITU89=POST_CHAMP(RESULTAT=MEST1B,
                   EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=1,
                                 NIVE_COUCHE='SUP',
-                                ANGLE=89,),);
+                                ANGLE=89,),)
 # la maille la plus proche de L/SQRT(3)
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='P8',
@@ -338,7 +338,7 @@ SITU91=POST_CHAMP(RESULTAT=MEST1B,
                   EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=1,
                                 NIVE_COUCHE='SUP',
-                                ANGLE=91,),);
+                                ANGLE=91,),)
 # la maille la plus proche de L/SQRT(3)
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='P8',
@@ -358,7 +358,7 @@ SITU0=POST_CHAMP(RESULTAT=MEST1B,
                  EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',
-                               ANGLE=360,),);
+                               ANGLE=360,),)
 # la maille la plus proche de L/SQRT(3)
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='P8',

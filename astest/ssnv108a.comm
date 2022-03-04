@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 #
 # --------------------------------------------------------------------
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
                      CREA_GROUP_MA= (_F(NOM = 'CT_2D',TYPE_MAILLE = '2D',GROUP_MA='CT'),
@@ -52,12 +52,12 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
                  MODI_MAILLE=_F(OPTION='NOEUD_QUART',
-                                GROUP_NO_FOND='PTFIS'));
+                                GROUP_NO_FOND='PTFIS'))
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 FONC1=DEFI_FONCTION(NOM_PARA='EPSI',
                     VALE=
@@ -65,18 +65,18 @@ FONC1=DEFI_FONCTION(NOM_PARA='EPSI',
                            0.004,546.1,0.004667,551.9,0.008,565.6,0.016,590.0,0.024,614.3,0.035,643.6,0.045,663.1,0.055,669.0,
                            0.075,674.8,0.1,676.0,1.0,680.0,100.0,700.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=205000.0,
                           NU=0.3,
                           RHO=0.0,
                           ALPHA=0.0,),
-                  TRACTION=_F(SIGM=FONC1,),);
+                  TRACTION=_F(SIGM=FONC1,),)
 
 MATG=DEFI_MATERIAU(ELAS=_F(E=205000.0,
                           NU=0.3,
                           RHO=0.0,
-                          ALPHA=0.0,),);
+                          ALPHA=0.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='CT_3D',
@@ -85,7 +85,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     _F(GROUP_MA='GOUP_3D',
                             MATER=MATG,
                             ))
-                    );
+                    )
 
 # ------------------------------------------------------------------
 #    -------------------------------------------------------------
@@ -97,7 +97,7 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                                DY=0.0,),
                             _F(GROUP_NO='NGOUP',
                                DX=0.0,
-                               DY=1.0,),),);
+                               DY=1.0,),),)
 #
 RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
                         VALE=(0.,0.,1.,1.,),
@@ -106,7 +106,7 @@ RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
 
 L_REEL=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 L_INST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_REEL))
 
@@ -125,7 +125,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 CONVERGENCE=_F(SIGM_REFE=0.055,
                                RESI_REFE_RELA=1.0,
                                ITER_GLOB_MAXI=25,),
-                 );
+                 )
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -136,9 +136,9 @@ TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT_FISSURE',
                                    RESULTAT   = U,
                                    NOM_CHAM   = 'DEPL',
                                    NOM_CMP    = ( 'DX','DY',),
-                                   OPERATION  = 'EXTRACTION',),);
+                                   OPERATION  = 'EXTRACTION',),)
 
-IMPR_TABLE(TABLE=TABDEP,);
+IMPR_TABLE(TABLE=TABDEP,)
 
 
 TEST_TABLE(CRITERE='RELATIF',
@@ -169,7 +169,7 @@ FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
                      SYME='OUI',
                      FOND_FISS=_F(GROUP_MA='FOND_FISS',),
                      LEVRE_SUP=_F( GROUP_MA = 'LEVRE2D'),
-                    );
+                    )
 
 #
 
@@ -247,7 +247,7 @@ TEST_TABLE(
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=U,
                                          #NOM_CHAM='DEPL',
                                          #NUME_ORDRE=1,
-             #));
+             #))
 
 #NO793
 #NO794
@@ -258,5 +258,5 @@ TEST_TABLE(
 
 # ======================================================================
 
-FIN();
+FIN()
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ resu_temp_fo = CREA_RESU(TYPE_RESU = 'EVOL_THER',
                         AFFE=(
                             _F(CHAM_GD=tbid, INST=1.0),
                             _F(CHAM_GD=tbid2, INST=0.0),))
-# l'instant 0 provoque des NOOK, comme attendu 
+# l'instant 0 provoque des NOOK, comme attendu
 
 
 ch_materfo=AFFE_MATERIAU(MAILLAGE=maillage,
@@ -137,7 +137,7 @@ ch_materfo=AFFE_MATERIAU(MAILLAGE=maillage,
 #                        pour déclarer le champ de température lié à POST_ROCHE_FO
 #                        cela évite le recours au mot-clé INST_TEMP de la macro-commande POST_ROCHE
 #                        On utilise EVOL ici, uniquement pour couverture du mot-clé INST_TEMP
-                         # CHAM_GD=tbid, 
+                         # CHAM_GD=tbid,
                          EVOL = resu_temp_fo,
                          VALE_REF=0.0,
                          ),
@@ -188,7 +188,7 @@ ASSEMBLAGE(MODELE=modele,
            MATR_ASSE=(_F(MATRICE=CO('matrice_rigi'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('matrice_mass'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 
 modes_dyn=CALC_MODES(MATR_RIGI=matrice_rigi,
                      MATR_MASS=matrice_mass,
@@ -232,7 +232,7 @@ deplacement_impose = CALC_CHAMP(reuse=deplacement_impose,
 
 tabInteg = POST_ELEM(MODELE=modele,
                      RESULTAT=deplacement_impose,
-                     NUME_ORDRE=1, 
+                     NUME_ORDRE=1,
                      INTEGRALE=_F(NOM_CHAM = 'EFGE_ELNO',
                                   NOM_CMP='MT',
                                   TYPE_MAILLE = '1D',
@@ -249,7 +249,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
            )
-           
+
 
 dilatation_thermique = MECA_STATIQUE(MODELE=modele,
                                      CHAM_MATER=ch_mater,
@@ -273,8 +273,8 @@ sismique = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
                            OPTION=('EFGE_ELNO')
                           )
-                        
-                    
+
+
 # appel à POST_ROCHE
 
 chPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
@@ -310,8 +310,8 @@ chPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                   ),
                     )
 
-IMPR_RESU(UNITE=6, FORMAT='RESULTAT', 
-           RESU=_F(CHAM_GD=chPostRocheTout, 
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT',
+           RESU=_F(CHAM_GD=chPostRocheTout,
                    NOM_CMP=('X1','X2','X3','X4','X5','X6',
                             'X7','X8','X9','X10','X11','X12',
                             'X13','X14','X15','X16','X17','X18','X19','X20')))
@@ -412,9 +412,9 @@ chPostRocheTout_D = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                  NUME_ORDRE=1,
                                  ),
                                 ),
-                    )               
+                    )
 
-# 2- deplacement + pression (DP)                    
+# 2- deplacement + pression (DP)
 chPostRocheTout_DP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
@@ -434,9 +434,9 @@ chPostRocheTout_DP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      VALE = 1E6,
                                     ),
                                   ),
-                    )                    
+                    )
 
-# 3- deplacement + pression + poids propre (DPG)                   
+# 3- deplacement + pression + poids propre (DPG)
 chPostRocheTout_DPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
@@ -460,9 +460,9 @@ chPostRocheTout_DPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      VALE = 1E6,
                                     ),
                                   ),
-                    )         
- 
-# 4- seisme inertiel (S)               
+                    )
+
+# 4- seisme inertiel (S)
 chPostRocheTout_S = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
@@ -477,7 +477,7 @@ chPostRocheTout_S = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                  DIRECTION='COMBI',
                                  ),
                                 ),
-                    )         
+                    )
 
 # 5- seisme inertiel + pression (SP)
 chPostRocheTout_SP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
@@ -499,7 +499,7 @@ chPostRocheTout_SP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      VALE = 1E6,
                                     ),
                                   ),
-                    )  
+                    )
 
 # 6- seisme inertiel + pression + poids propre (SPG)
 chPostRocheTout_SPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
@@ -525,8 +525,8 @@ chPostRocheTout_SPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      VALE = 1E6,
                                     ),
                                   ),
-                    )  
-                    
+                    )
+
 # 7- seisme inertiel + deplacement (SD)
 chPostRocheTout_SD = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
@@ -548,17 +548,17 @@ chPostRocheTout_SD = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                  ),
                                 ),
 
-                    )                    
+                    )
 
 ##Importation de fichier resu format 'MED' sauve au prealable
-                    
+
 poids_propre_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          # _F(NOM_RESU='poids_propre', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
                          _F(NOM_RESU='poids_propre', NOM_CHAM=('EFGE_ELNO'),),)
                          )
-                         
+
 deplacement_impose_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
@@ -566,20 +566,20 @@ deplacement_impose_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          _F(NOM_RESU='deplacement_impose', NOM_CHAM=('EFGE_ELNO',),),)
                          )
 
-                         
-                       
+
+
 dilatation_thermique_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          # _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
                          _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('EFGE_ELNO',),),)
-                         )                         
+                         )
 
 sismique_lu = LIRE_RESU(TYPE_RESU='MODE_MECA', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          _F(NOM_RESU='sismique', NOM_CHAM=('EFGE_ELNO',),),)
-                          ) 
+                          )
 
 # 2nd appel à POST_ROCHE
 
@@ -619,8 +619,8 @@ chLuPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                     )
 
 
-# IMPR_RESU(UNITE=6, FORMAT='RESULTAT', 
-           # RESU=_F(CHAM_GD=chLuPostRocheTout, 
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT',
+           # RESU=_F(CHAM_GD=chLuPostRocheTout,
                    # NOM_CMP=('X1','X2','X3','X4','X5','X6',
                             # 'X7','X8','X9','X10','X11','X12',
                             # 'X13','X14','X15','X16','X17','X18','X19','X20')))
@@ -726,7 +726,7 @@ chLuPostRocheTout_D = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                 ),
                     )
 
-# 2- deplacement + pression (DP)                    
+# 2- deplacement + pression (DP)
 chLuPostRocheTout_DP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
@@ -746,9 +746,9 @@ chLuPostRocheTout_DP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      VALE = 1E6,
                                     ),
                                   ),
-                    )                    
+                    )
 
-# 3- deplacement + pression + poids propre (DPG)                   
+# 3- deplacement + pression + poids propre (DPG)
 chLuPostRocheTout_DPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
@@ -772,9 +772,9 @@ chLuPostRocheTout_DPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      VALE = 1E6,
                                     ),
                                   ),
-                    )         
- 
-# 4- seisme inertiel (S)               
+                    )
+
+# 4- seisme inertiel (S)
 chLuPostRocheTout_S = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
@@ -789,7 +789,7 @@ chLuPostRocheTout_S = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                  DIRECTION='COMBI',
                                  ),
                                 ),
-                    )         
+                    )
 
 # 5- seisme inertiel + pression (SP)
 chLuPostRocheTout_SP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
@@ -811,7 +811,7 @@ chLuPostRocheTout_SP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      VALE = 1E6,
                                     ),
                                   ),
-                    )  
+                    )
 
 # 6- seisme inertiel + pression + poids propre (SPG)
 chLuPostRocheTout_SPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
@@ -837,8 +837,8 @@ chLuPostRocheTout_SPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      VALE = 1E6,
                                     ),
                                   ),
-                    )  
-                    
+                    )
+
 # 7- seisme inertiel + deplacement (SD)
 chLuPostRocheTout_SD = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
@@ -860,7 +860,7 @@ chLuPostRocheTout_SD = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                  ),
                                 ),
 
-                    )                    
+                    )
 
-                   
+
 FIN()

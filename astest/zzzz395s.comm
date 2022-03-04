@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 # --------------------------------------------------------------------
 # person_in_charge: mickael.abbas at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-mesh=LIRE_MAILLAGE(FORMAT='MED',);
+mesh=LIRE_MAILLAGE(FORMAT='MED',)
 
 mesh=MODI_MAILLAGE(reuse =mesh,
                    MAILLAGE=mesh,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),)
 
 # Define the material
 steel=DEFI_MATERIAU(
@@ -34,18 +34,18 @@ steel=DEFI_MATERIAU(
 
 chmat=AFFE_MATERIAU(MAILLAGE=mesh,
                     AFFE=_F(TOUT='OUI',
-                            MATER=steel,),);
+                            MATER=steel,),)
 # Mechanic model
 model=AFFE_MODELE(MAILLAGE=mesh,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # Boundary condition
 chg_b=AFFE_CHAR_CINE(MODELE=model,
                       MECA_IMPO=_F(GROUP_MA='S_inf',
                                  DX=0,DY=0.0,DZ=0),
-                     );
+                     )
 
 chg_p=AFFE_CHAR_MECA(MODELE=model,
                      PRES_REP=_F(GROUP_MA='S_e',
@@ -55,14 +55,14 @@ chg_p=AFFE_CHAR_MECA(MODELE=model,
 # Time discretization
 list_t=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=10.0,
-                                    PAS=1.0,),);
+                                    PAS=1.0,),)
 
 list_i=DEFI_LIST_INST(METHODE='MANUEL',
-                      DEFI_LIST=_F(LIST_INST=list_t,),);
+                      DEFI_LIST=_F(LIST_INST=list_t,),)
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                                           10.,1.,
-                   ),);
+                   ),)
 
 # Complete computation to create base
 stnl=STAT_NON_LINE(MODELE=model,
@@ -84,14 +84,14 @@ baseVariElgaPOD=DEFI_BASE_REDUITE(RESULTAT = stnl,
                          INFO     = 2,
                          NOM_CHAM = 'VARI_ELGA',
                          NOM_CMP  = 'V1',
-                         TOLE_SVD = 1.E-3,);
+                         TOLE_SVD = 1.E-3,)
 
 
 # Print base (VARI_ELGA)
 IMPR_RESU(FORMAT='MED', UNITE=81, RESU=_F(RESULTAT=baseVariElgaPOD, IMPR_NOM_VARI='NON',))
 
 # Get table
-coorReduPOD=RECU_TABLE(CO=baseVariElgaPOD, NOM_TABLE='COOR_REDUIT',);
+coorReduPOD=RECU_TABLE(CO=baseVariElgaPOD, NOM_TABLE='COOR_REDUIT',)
 
 # Print reduced coordinates
 IMPR_TABLE(TABLE=coorReduPOD, UNITE=6)
@@ -110,13 +110,13 @@ base_d=DEFI_BASE_REDUITE(OPERATION = 'POD_INCR',
                           NOM_CHAM = 'VARI_ELGA',
                           #NOM_CMP  = 'V1',
                           NOM_VARI = 'EPSPEQ',
-                          TOLE_SVD = 1.E-3,);
+                          TOLE_SVD = 1.E-3,)
 
 # Print base (VARI_ELGA)
 IMPR_RESU(FORMAT='MED', UNITE=81, RESU=_F(RESULTAT=base_d, IMPR_NOM_VARI='NON', NOM_RESU_MED='base_d'))
 
 # Get table of reduced coordinates
-coorReduPODINCR=RECU_TABLE(CO=base_d, NOM_TABLE='COOR_REDUIT',);
+coorReduPODINCR=RECU_TABLE(CO=base_d, NOM_TABLE='COOR_REDUIT',)
 
 # Print reduced coordinates
 IMPR_TABLE(TABLE=coorReduPODINCR, UNITE=6)
@@ -127,8 +127,8 @@ IMPR_TABLE(TABLE=coorReduPODINCR, UNITE=6)
 #
 ####################################################################################################
 
-modeVariPOD_1 = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=baseVariElgaPOD, NOM_CHAM='VARI_ELGA', NUME_ORDRE=1);
-modeVariPOD_2 = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=baseVariElgaPOD, NOM_CHAM='VARI_ELGA', NUME_ORDRE=2);
+modeVariPOD_1 = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=baseVariElgaPOD, NOM_CHAM='VARI_ELGA', NUME_ORDRE=1)
+modeVariPOD_2 = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=baseVariElgaPOD, NOM_CHAM='VARI_ELGA', NUME_ORDRE=2)
 
 coefVariPOD_1 = -2.83491E+00
 coefVariPOD_2 = -4.74811E-03
@@ -147,8 +147,8 @@ recombVariPOD = CREA_CHAMP(OPERATION = 'ASSE',
 #
 ####################################################################################################
 
-modeVariPODINCR_1 = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='VARI_ELGA', NUME_ORDRE=1);
-modeVariPODINCR_2 = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='VARI_ELGA', NUME_ORDRE=2);
+modeVariPODINCR_1 = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='VARI_ELGA', NUME_ORDRE=1)
+modeVariPODINCR_2 = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=base_d, NOM_CHAM='VARI_ELGA', NUME_ORDRE=2)
 
 coefVariPODINCR_1 = -2.83491E+00
 coefVariPODINCR_2 = -4.95104E-03

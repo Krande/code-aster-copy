@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 YOUNG=143006.0
 NU=0.33
 
-R0= 0.1893467592e-1;
+R0= 0.1893467592e-1
 
 PETITB=0.2709891156
 
@@ -51,9 +51,9 @@ AINF=10.60515818
 
 EXP_N=14.97577311
 
-ETA=278.5754646;
+ETA=278.5754646
 
-UNSURETA= 1./ETA ;
+UNSURETA= 1./ETA
 
 UNSURM=0.0
 
@@ -72,27 +72,27 @@ P10CD910=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                        LEMAITRE=_F(N=EXP_N,
                                       UN_SUR_K=UNSURETA,
                                       UN_SUR_M=UNSURM,),
-                                      );
+                                      )
 
 MAT_PLAS=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
                                MATER=P10CD910,
-                               ),);
+                               ),)
 
 
-TPS_FIN=10000.0;
-NBRE_INC=100;
+TPS_FIN=10000.0
+NBRE_INC=100
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(
                       _F(JUSQU_A=TPS_FIN,NOMBRE=NBRE_INC,),
-                                     ),);
+                                     ),)
 
-HAUTEUR=0.01;
+HAUTEUR=0.01
 
-EPS_FIN=0.01;
+EPS_FIN=0.01
 
-EPS_IMPO= HAUTEUR*EPS_FIN;
+EPS_IMPO= HAUTEUR*EPS_FIN
 
 DY_IMPO=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=
@@ -100,23 +100,23 @@ DY_IMPO=DEFI_FONCTION(NOM_PARA='INST',
                      10000.0,EPS_IMPO),
                     INTERPOL='LIN',
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAILLAGE,
                     AFFE=(_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='AXIS',),),);
+                             MODELISATION='AXIS',),),)
 
 BLOCAGES=AFFE_CHAR_MECA(MODELE=MODMECA,
                         DDL_IMPO=(_F(GROUP_MA='BLOC_X',
                                       DX=0.0,),
                                    _F(GROUP_MA='BLOC_Y',
                                       DY=0.0,),
-                                      ),);
+                                      ),)
 
 PRESSION=AFFE_CHAR_MECA_F(MODELE=MODMECA,
                           FACE_IMPO=(_F(GROUP_MA=('LOAD'),
-                                        DY=DY_IMPO,),),);
+                                        DY=DY_IMPO,),),)
 
 RESUPLAS=STAT_NON_LINE(MODELE=MODMECA,
                        CHAM_MATER=MAT_PLAS,
@@ -132,7 +132,7 @@ RESUPLAS=STAT_NON_LINE(MODELE=MODMECA,
                                  REAC_ITER=1,
                                  PREDICTION='TANGENTE',
                                  MATRICE='TANGENTE',),
-                       INFO=1,);
+                       INFO=1,)
 
 RESUPLAS=CALC_CHAMP(reuse=RESUPLAS,LIST_INST=L_INST,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=RESUPLAS)
 
@@ -141,14 +141,14 @@ RESUPLAS=CALC_CHAMP(reuse =RESUPLAS,
                  LIST_INST=L_INST,
                  CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU',VARI_INTERNE='VARI_NOEU',
 
-                );
+                )
 
 
 SYYP=RECU_FONCTION(RESULTAT=RESUPLAS,INTERPOL='LIN',
                    NOM_CHAM='SIGM_NOEU',
 
                    NOM_CMP='SIYY',
-                   GROUP_NO='N1',);
+                   GROUP_NO='N1',)
 
 
 EXP1=DEFI_FONCTION(NOM_PARA='INST',
@@ -689,4 +689,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=14.3292584024,
                       ),
               )
 
-FIN();
+FIN()

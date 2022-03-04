@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MA0=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 # POUR TESTER LA COMMANDE DEFI_GROUP :
 
@@ -57,7 +57,7 @@ MA0=DEFI_GROUP(reuse =MA0,
                              _F(INTERSEC=('GN1','GM1',),
                                 NOM='GN3',),
                              _F(UNION=('GN3','GN2',),
-                                NOM='GN4',),),);
+                                NOM='GN4',),),)
 
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
     CREA_POI1=(
@@ -74,7 +74,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='2D_DIS_T',),
                      _F(GROUP_MA='GN4',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='2D_DIS_T',),),);
+                        MODELISATION='2D_DIS_T',),),)
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   LIAISON_DDL=(_F(GROUP_NO=('P1','P1',),
@@ -108,7 +108,7 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                                _F(GROUP_NO=('P8','P8',),
                                   DDL=('DX','DY',),
                                   COEF_MULT=(-4.,3.,),
-                                  COEF_IMPO=0.,),),);
+                                  COEF_IMPO=0.,),),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                        DISCRET_2D=(_F(REPERE='LOCAL',
@@ -133,7 +133,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                                       VALE=10.,),),
                        ORIENTATION=_F(GROUP_MA='GN4',
                                       CARA='ANGL_NAUT',
-                                      VALE=(53.130102,0.,0.,),),);
+                                      VALE=(53.130102,0.,0.,),),)
 
 # --------------------------------------------------------------------
 
@@ -144,13 +144,13 @@ ASSEMBLAGE(MODELE=MO,
                 MATR_ASSE=(_F(MATRICE=CO('MATASSR'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MATASSM'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 #TEST DU CALCUL DE LA MASSE ET DU CENTRE DE GRAVITE
 
 MASSIN=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                  MODELE=MO,INFO=2,
-                 CARA_ELEM=CARELEM,);
+                 CARA_ELEM=CARELEM,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=80.0,
@@ -170,7 +170,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='CDG_Y',
            TABLE=MASSIN,)
 
-IMPR_TABLE(TABLE=MASSIN,);
+IMPR_TABLE(TABLE=MASSIN,)
 
 # --------------------------------------------------------------------
 
@@ -186,12 +186,12 @@ FREQ=NORM_MODE(reuse =FREQ,
                NORME='TRAN_ROTA',
                MODE_SIGNE=_F(GROUP_NO='P2',
                              NOM_CMP='DY',
-                             SIGNE='NEGATIF',),);
+                             SIGNE='NEGATIF',),)
 
-L_ARCH=DEFI_LIST_ENTI(VALE=8,);
+L_ARCH=DEFI_LIST_ENTI(VALE=8,)
 
 FREQ2=EXTR_RESU(RESULTAT=FREQ,
-                ARCHIVAGE=_F(LIST_ARCH=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_ARCH=L_ARCH,),)
 
 # --------------------------------------------------------------------
 
@@ -199,28 +199,28 @@ MODE1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=FREQ,
                  NOM_CHAM='DEPL',
-                 NUME_ORDRE=1,);
+                 NUME_ORDRE=1,)
 
 MODE8=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=FREQ2,
                  NOM_CHAM='DEPL',
-                 NUME_ORDRE=8,);
+                 NUME_ORDRE=8,)
 
 MODE81=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='EXTR',
                   RESULTAT=FREQ,
                   NOM_CHAM='DEPL',
-                  FREQ=31.3474,);
+                  FREQ=31.3474,)
 
 MODE82=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='EXTR',
                   RESULTAT=FREQ2,
                   NOM_CHAM='DEPL',
-                  NUME_MODE=8,);
+                  NUME_MODE=8,)
 
 # --------------------------------------------------------------------
-CMP = 'DY';
+CMP = 'DY'
 
 
 # ----------------------------------------------------------------------
@@ -450,7 +450,7 @@ TEST_RESU(CHAM_NO=(_F(CRITERE='RELATIF',
 
 FREQ=NORM_MODE(reuse =FREQ,
                MODE=FREQ,
-               NORME='MASS_GENE',);
+               NORME='MASS_GENE',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -675,7 +675,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 FREQ=NORM_MODE(reuse =FREQ,
                MODE=FREQ,
-               NORME='RIGI_GENE',);
+               NORME='RIGI_GENE',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -896,4 +896,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

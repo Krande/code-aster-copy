@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ TREF = 0.
 T0   = TREF
 Tmax = 500.
 
-ZERO = DEFI_CONSTANTE(VALE=0.0);
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-UN   = DEFI_CONSTANTE(VALE=1.0);
+UN   = DEFI_CONSTANTE(VALE=1.0)
 
 tfin = 1.
 
@@ -49,11 +49,11 @@ NB_VARI = 5
 #=====================================================================
 YOUN=DEFI_FONCTION(NOM_PARA='TEMP',
                    VALE=(T0, 200000.,
-                         Tmax, 100000.,),);
+                         Tmax, 100000.,),)
 
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',
                    VALE=(T0, 1.E-5,
-                         Tmax, 2.E-5,),);
+                         Tmax, 2.E-5,),)
 
 #parametres loi JOHN_COOK
 A=90.e6
@@ -76,7 +76,7 @@ MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                   M_PUIS=M_PUIS,
                                   EPSP0=EPSP0,
                                   TROOM=TROOM,
-                                  TMELT=TMELT),);
+                                  TMELT=TMELT),)
 
 LMAT2  = [None]*(NCAL)
 time=0.
@@ -95,7 +95,7 @@ for i in range(NCAL):
                                       M_PUIS=M_PUIS,
                                       EPSP0=EPSP0,
                                       TROOM=TROOM,
-                                      TMELT=TMELT),);
+                                      TMELT=TMELT),)
 
 
 ############################################################################
@@ -108,4 +108,4 @@ tabresu=TEST_COMPOR(
               NB_VARI=NB_VARI,  VARI_TEST=('V1','V2'),
               )
 
-FIN();
+FIN()

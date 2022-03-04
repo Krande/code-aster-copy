@@ -2,7 +2,7 @@
 # coding: utf-8
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@
 # CAS_TEST__: SDLv126B
 #
 # BUT DE LA FAMILLE DE TEST
-# Ce test unitaire permet de verifier la bone implémentation des 
+# Ce test unitaire permet de verifier la bone implémentation des
 # routines de calcul des matrices de rigidité pour les matériaux
 # élastique et viscoélastique 3D isotropes.
 #
 # BUT DE L'INDICE B
-# test de contructions des matrices de rigidités d'un matériaux 
+# test de contructions des matrices de rigidités d'un matériaux
 # viscoélastique 3D orthotrope.
 # ### Import des packages et démarrage d'aster
 
@@ -57,9 +57,9 @@ mail.readMedFile('sdlv126a.med')
 # In[3]:
 
 
-model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('3D'), 
-                             PHENOMENE='MECANIQUE', 
-                             MODELISATION='3D') 
+model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('3D'),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D')
                           ),
                     MAILLAGE=mail)
 
@@ -88,7 +88,7 @@ materiau_2 = DEFI_MATERIAU(ELAS_ORTH=_F(E_L=E2, E_T=E2, E_N=E2,
                                         NU_LT=NU2, NU_TN=NU2, NU_LN=NU2))
 
 # materiaux viscoélastique
-G =G1 + 1j*G2 
+G =G1 + 1j*G2
 K = K1 + 1j*K2
 NU = (3*K - 2*G)/(2*(3*K + G))
 E = 2*G*(1+NU)
@@ -196,4 +196,3 @@ TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e
 
 
 FIN()
-

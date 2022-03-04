@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',));
+      DEBUG=_F(SDVERI='OUI',))
 
 #
 
-MAYA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAYA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MAYA = DEFI_GROUP( reuse = MAYA, MAILLAGE = MAYA,
                       CREA_GROUP_MA= (
@@ -47,11 +47,11 @@ MAYA = DEFI_GROUP( reuse = MAYA, MAILLAGE = MAYA,
 
 MATERIO1=DEFI_MATERIAU(ELAS=_F(E=1.E10,
                                NU=0.3,
-                               RHO=1.E08,),);
+                               RHO=1.E08,),)
 
 MATERIO2=DEFI_MATERIAU(ELAS=_F(E=1.E15,
                                NU=0.,
-                               RHO=0.,),);
+                               RHO=0.,),)
 
 #
 
@@ -59,14 +59,14 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE=(_F(GROUP_MA='GROUP_MA_TOUT',
                              MATER=MATERIO1,),
                           _F(GROUP_MA='GROUP_MA_RIGIDE',
-                             MATER=MATERIO2,),),);
+                             MATER=MATERIO2,),),)
 
 #
 
 BARRE=AFFE_MODELE(MAILLAGE=MAYA,
                   AFFE=_F(GROUP_MA='GROUP_MA_TOUT',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='POU_D_E',),);
+                          MODELISATION='POU_D_E',),)
 
 #
 
@@ -74,7 +74,7 @@ CARA=AFFE_CARA_ELEM(MODELE=BARRE,
                     POUTRE=_F(GROUP_MA='GROUP_MA_TOUT',
                               SECTION='CERCLE',
                               CARA=('R','EP',),
-                              VALE=(0.1,0.01,),),);
+                              VALE=(0.1,0.01,),),)
 
 #
 
@@ -86,18 +86,18 @@ GUIDAGE=AFFE_CHAR_MECA(MODELE=BARRE,
                                     DRY=0.,),
                                  _F(GROUP_NO='GROUP_NO_L1',
                                     DY=0.,
-                                    DRZ=0.,),),);
+                                    DRZ=0.,),),)
 
 #
 
 CHARTRAN=AFFE_CHAR_MECA(MODELE=BARRE,
                         FORCE_NODALE=_F(GROUP_NO='N8',
-                                        FY=1000.,),);
+                                        FY=1000.,),)
 
 #
 # DEFINITION DE L'OBSTACLE
 
-OBSTACLE=DEFI_OBSTACLE(TYPE='BI_PLAN_Y',);
+OBSTACLE=DEFI_OBSTACLE(TYPE='BI_PLAN_Y',)
 
 #
 ###
@@ -107,7 +107,7 @@ OBSTACLE=DEFI_OBSTACLE(TYPE='BI_PLAN_Y',);
 
 LISTINST=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=_F(JUSQU_A=1.,
-                                      NOMBRE=250,),);
+                                      NOMBRE=250,),)
 #
 ###
 ###### CALCULS TRANSITOIRES AVEC DYNA_LINE
@@ -117,7 +117,7 @@ FM = DEFI_CONSTANTE(VALE = 1000.)
 
 TRANLIN1 =DYNA_LINE(TYPE_CALCUL='TRAN',
                     BASE_CALCUL='GENE',
-                    
+
                     SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                     MODELE = BARRE,
                     CARA_ELEM = CARA,
@@ -146,7 +146,7 @@ TRANLIN1 =DYNA_LINE(TYPE_CALCUL='TRAN',
 
 TRANLIN2 =DYNA_LINE(TYPE_CALCUL='TRAN',
                     BASE_CALCUL='GENE',
-                    
+
                     SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', PAS_MAXI=4.E-4),
                     MODELE = BARRE,
                     CARA_ELEM = CARA,
@@ -351,7 +351,7 @@ FONC1=RECU_FONCTION(RESU_GENE=TRAN_GE1,
                     NOM_CHAM='DEPL',
                     NOM_CMP='DY',
                     GROUP_NO='M8',
-                    INTERPOL='LIN',);
+                    INTERPOL='LIN',)
 
 ##RESTITUTION D'UN PARAMETRE DE CHOC
 
@@ -360,7 +360,7 @@ FONC2=RECU_FONCTION(RESU_GENE=TRAN_GE1,
                     PARA_X='INST',
                     PARA_Y='FN',
                     LIST_PARA=LISTINST,
-                    INTITULE='CHOC1_2',);
+                    INTITULE='CHOC1_2',)
 
 ##IMPRESSION D'UN DEPLACEMENT
 
@@ -369,7 +369,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONCTION=FONC1,),
               TITRE='EULER - DY NOEUD M8',
               LEGENDE_X='TEMPS(S)',
-              LEGENDE_Y='DEPLACEMENT(M)',);
+              LEGENDE_Y='DEPLACEMENT(M)',)
 
 ##IMPRESSION D'UN PARAMETRE DE CHOC
 
@@ -379,7 +379,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=_F(FONCTION=FONC2,),
               TITRE='EULER - FN NOEUD M8',
               LEGENDE_X='TEMPS(S)',
-              LEGENDE_Y='DEPLACEMENT(M)',);
+              LEGENDE_Y='DEPLACEMENT(M)',)
 
 ##CALCULS STATISTIQUES
 
@@ -388,6 +388,6 @@ TABLE=POST_DYNA_MODA_T(RESU_GENE=TRAN_GE1,
                                INST_FIN=1.,
                                NB_BLOC=10,
                                SEUIL_FORCE=0.,
-                               DUREE_REPOS=0.,),);
+                               DUREE_REPOS=0.,),)
 
 FIN()

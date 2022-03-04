@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI', );
+POURSUITE(CODE='OUI', )
 
 resu='UP245___'
 
@@ -46,7 +46,7 @@ UP245B=LIRE_RESU(
                     COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',
                                  DEFORMATION='SIMO_MIEHE',
                                  GROUP_MA=('CT','GOUP',),),
-          TOUT_ORDRE='OUI',);
+          TOUT_ORDRE='OUI',)
 
 #IMPR_RESU(RESU=_F(RESULTAT=UP245B, NOM_CHAM='VARI_ELGA',VALE_MAX='OUI'))
 
@@ -54,7 +54,7 @@ UP245B=LIRE_RESU(
 UP245B=CALC_CHAMP(reuse =UP245B,
                   RESULTAT=UP245B,
                   CONTRAINTE=('SIEF_ELNO',),
-                  DEFORMATION=('EPSG_ELGA',),);
+                  DEFORMATION=('EPSG_ELGA',),)
 
 # Weibull post-processing
 
@@ -63,7 +63,7 @@ TWEIB45=POST_ELEM(WEIBULL=_F(GROUP_MA='CT',
                              CORR_PLAST='OUI',
                              COEF_MULT=50.8,),
                   RESULTAT=UP245B,
-                  TITRE='Weibull post-treatment, norder, INST, SIGw, Pf ',);
+                  TITRE='Weibull post-treatment, norder, INST, SIGw, Pf ',)
 
 
 
@@ -87,7 +87,7 @@ IMPR_TABLE(TABLE=BERE)
 
 
 #IMPR_TABLE(TABLE=TWEIB45,
-           #FORMAT='TABLEAU',);
+           #FORMAT='TABLEAU',)
 
 # ### after we just extract the list of instants and the failure probabilities
 # weibull_tab = TWEIB45.EXTR_TABLE()
@@ -103,7 +103,7 @@ IMPR_TABLE(TABLE=BERE)
 
 IMPR_TABLE(TABLE=TWEIB45,
            NOM_PARA=('INST','PROBA_WEIBULL',),
-           TITRE='CT : failure probabilities',);
+           TITRE='CT : failure probabilities',)
 
 TEST_TABLE(
            VALE_CALC=0.783625250054,

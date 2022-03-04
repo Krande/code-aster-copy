@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ MO         = AFFE_MODELE(MAILLAGE=MAILLAGE,
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
                                  MODELISATION='D_PLAN',),
-                        );
+                        )
 
 #***********************************************************************
 #    CHARGEMENT MECANIQUE
@@ -100,9 +100,9 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,INFO=1,
 #***********************************************************************
 
 TABSPEC0=RECU_TABLE(CO=EVOL,
-                    NOM_TABLE='ANALYSE_MODALE',);
+                    NOM_TABLE='ANALYSE_MODALE',)
 
-IMPR_TABLE(TABLE=TABSPEC0);
+IMPR_TABLE(TABLE=TABSPEC0)
 
 TEST_TABLE(
                   VALE_CALC=0.14644660940673,
@@ -120,4 +120,4 @@ TEST_TABLE(
                    ),
            )
 
-FIN();
+FIN()

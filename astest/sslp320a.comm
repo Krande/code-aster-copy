@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 #----------------------------------------------
 #                 MAILLAGE
 #----------------------------------------------
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED', );
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED', )
 
 #Largeur de la plaque
 W = 10.
@@ -62,12 +62,12 @@ MOD[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
                                MODELISATION='D_PLAN',),
                             _F(GROUP_MA=('LIG2','LIG4'),
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),),);
+                               MODELISATION='D_PLAN',),),)
 
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='Surface',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='Surface',),)
 
 #----------------------------------------------
 #                   MATERIAU
@@ -75,7 +75,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 
 E=205000.0E6
 nu=0.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),)
 
 #----------------------------------------------
 #                FISSURE INITIALE
@@ -96,7 +96,7 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          INFO=2,
          PFON = (xinit, yinit, 0.),
          DTAN = (1., 0., 0.),
-         );
+         )
 
 #----------------------------------------------
 #         PROPAGATION SUR npas PAS DE TEMPS
@@ -111,7 +111,7 @@ CHAMA = [None]*(NPAS+1)
 CHRIG = [None]*(NPAS+1)
 TAB   = [None]*(NPAS+2)
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),)
 
 FOND1 = FORMULE(VALE='0*NUME_ORDRE+1',
                 NOM_PARA='NUME_ORDRE',)
@@ -176,7 +176,7 @@ for i in range(NPAS+1) :
                                MODELISATION='D_PLAN',),
                             _F(GROUP_MA=('LIG2','LIG4'),
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),),);
+                               MODELISATION='D_PLAN',),),)
 
 
     FISS[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
@@ -184,9 +184,9 @@ for i in range(NPAS+1) :
                    MAILLAGE=MAT[i],
          #          TYPE_ENRI_FOND = 'GEOMETRIQUE',
          #           TYPE_ENRI_FOND = 'TOPOLOGIQUE',
-             );
+             )
 
-    MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i],);
+    MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i],)
 
 
     CHAMA[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
@@ -194,26 +194,26 @@ for i in range(NPAS+1) :
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
     CHRIG[i]=AFFE_CHAR_MECA(MODELE=MODE[i],
                       DDL_IMPO=( _F(GROUP_NO='P1', DY=0.0,),_F(GROUP_NO=('P4',), DX=0.0, DY=0.0)),
                       PRES_REP=_F(GROUP_MA=('LIG2','LIG4'),PRES=PRES,),
-                                    );
+                                    )
 
     RESU[i]=MECA_STATIQUE(MODELE=MODE[i],
                          CHAM_MATER=CHAMA[i],
                          EXCIT=(
                                 _F(CHARGE=CHRIG[i],),),
-                         );
+                         )
 
     SIF[i]=CALC_G_XFEM        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i],),
-                         );
+                         )
 
     IMPR_TABLE(TABLE=SIF[i],
-                );
+                )
 
 #Formule de KI (ref. Tada Irwin)
     faW[i]=1.12-0.231*((afiss[i]/W))+10.55*((afiss[i]/W)**2)-21.72*((afiss[i]/W)**3)+30.35*((afiss[i]/W)**4)
@@ -228,8 +228,8 @@ for i in range(NPAS+1) :
                VALE_REFE=K1REF[i],
                CRITERE='RELATIF',
                PRECISION=0.02,
-               REFERENCE='ANALYTIQUE',);
-    IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K1');
+               REFERENCE='ANALYTIQUE',)
+    IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K1')
 
 
 # Test de KII en pourcentage de KI theorique
@@ -242,20 +242,20 @@ for i in range(NPAS+1) :
                VALE_REFE=0,
                CRITERE='ABSOLU',
                PRECISION=(10**(-4))*K1REF[i],
-               REFERENCE='AUTRE_ASTER',);
+               REFERENCE='AUTRE_ASTER',)
     # TEST DE NON REGRESSION SUR K2
  #  LA NON REGRESSION SUR ZERO EST RES FRAGILE ET CONDUIT A DES OSCILLATIONS
  #  ON SE CONTENTE DU TEST ANALYTIQUE
  #   TEST_TABLE(TABLE=SIF[i],
  #              NOM_PARA='K2',
  #              TYPE_TEST='MAX',
- #              VALE_CALC=VAL_CALC[ct],);
- #   IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K2');
+ #              VALE_CALC=VAL_CALC[ct],)
+ #   IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K2')
 
 #Propagation de la fissure avec la methode maillage
     if ( i != NPAS+1 ) :
-        MAX[i+1]=CO('MAX_%d' %(i+1));
-        MAT[i+1]=CO('MAT_%d'%(i+1));
+        MAX[i+1]=CO('MAX_%d' %(i+1))
+        MAT[i+1]=CO('MAT_%d'%(i+1))
         PROPA_FISS(METHODE_PROPA='MAILLAGE',
             MAIL_STRUC=MAILLAG1,
             MAIL_TOTAL = MAT[i+1],
@@ -272,13 +272,13 @@ for i in range(NPAS+1) :
             COMP_LINE=_F(COEF_MULT_MINI=0.,
                          COEF_MULT_MAXI=1.,
                         ),
-            );
+            )
 
         MAT[i+1]=DEFI_GROUP(reuse =MAT[i+1],
                             MAILLAGE=MAT[i+1],
                             CREA_GROUP_NO=_F(NOM='FOND_%d' %(i+1),
                                              GROUP_MA='FOND_%d' %(i+1),),
-                            );
+                            )
 
 #       CHAMP DE GEOMETRIE
         CHXN=CREA_CHAMP(OPERATION='EXTR',
@@ -290,11 +290,11 @@ for i in range(NPAS+1) :
                                GROUP_NO='FOND_%d' %(i+1),
                                CHAM_GD= CHXN,
                                NOM_CMP=('X','Y'),
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
-        DETRUIRE(NOM=CHXN);
+        DETRUIRE(NOM=CHXN)
 
-        IMPR_TABLE(TABLE=TAB[i+1]);
+        IMPR_TABLE(TABLE=TAB[i+1])
 
         ct = ct +1
         TEST_TABLE(TABLE=TAB[i+1],
@@ -303,6 +303,6 @@ for i in range(NPAS+1) :
                    PRECISION=1.E-4,
                    VALE_CALC= VAL_CALC[ct],
                    VALE_REFE= yinit)
-        IMPR_TABLE(TABLE=TAB[i+1],FORMAT_R='E20.13',NOM_PARA='Y');
+        IMPR_TABLE(TABLE=TAB[i+1],FORMAT_R='E20.13',NOM_PARA='Y')
 
-FIN();
+FIN()

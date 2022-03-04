@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,10 +58,10 @@ CHAR3D=AFFE_CHAR_MECA(  MODELE=MOD3D,DDL_IMPO=(
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=5,),);
+                                    NOMBRE=5,),)
 
 
-FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,1.,1.),);
+FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,1.,1.),)
 
 MEST1=STAT_NON_LINE(MODELE=MOD3D,
                     CHAM_MATER=CHMATIST,
@@ -69,17 +69,17 @@ MEST1=STAT_NON_LINE(MODELE=MOD3D,
                     EXCIT=_F( CHARGE = CHAR3D,FONC_MULT=FONC),
                     NEWTON=_F(PREDICTION='TANGENTE'),
                     COMPORTEMENT=_F(RELATION='ELAS'),
-                    INCREMENT=_F(LIST_INST=LISTE),);
+                    INCREMENT=_F(LIST_INST=LISTE),)
 
 MACR_ECLA_PG( RESULTAT = CO('MEST_PG'),
               MAILLAGE = CO('MA2'),
               RESU_INIT = MEST1,
               MODELE_INIT = MOD3D,
               NOM_CHAM = 'SIEF_ELGA',
-             );
+             )
 
-IMPR_RESU ( RESU = _F( RESULTAT = MEST1, NUME_ORDRE=1, NOM_CHAM = 'SIEF_ELGA',) , ) ;
-IMPR_RESU ( RESU = _F( RESULTAT = MEST_PG, NUME_ORDRE=1 ) , ) ;
+IMPR_RESU ( RESU = _F( RESULTAT = MEST1, NUME_ORDRE=1, NOM_CHAM = 'SIEF_ELGA',) , )
+IMPR_RESU ( RESU = _F( RESULTAT = MEST_PG, NUME_ORDRE=1 ) , )
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   TYPE_TEST='SOMM_ABS',
                   RESULTAT=MEST_PG,
@@ -256,14 +256,14 @@ CHMATORT=AFFE_MATERIAU(  MAILLAGE=MA,
 
 LISTE2=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 MEST2=STAT_NON_LINE(MODELE=MOD3D,
                     CHAM_MATER=CHMATORT,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D),
                     COMPORTEMENT=_F(RELATION='ELAS'),
-                    INCREMENT=_F(LIST_INST=LISTE2),);
+                    INCREMENT=_F(LIST_INST=LISTE2),)
 
 CALC_CHAMP(reuse=MEST2,RESULTAT=MEST2,DEFORMATION=('EPSI_ELGA'),ENERGIE=('ENEL_ELGA','ENEL_ELNO'))
 
@@ -460,7 +460,7 @@ MEST3=STAT_NON_LINE(MODELE=MOD3D,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D2),
                     COMPORTEMENT=_F(RELATION='ELAS'),
-                    INCREMENT=_F(LIST_INST=LISTE2),);
+                    INCREMENT=_F(LIST_INST=LISTE2),)
 
 MEST3=CALC_CHAMP(reuse=MEST3,RESULTAT=MEST3,DEFORMATION=('EPSI_ELGA'))
 
@@ -580,7 +580,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 MEST4=MECA_STATIQUE(MODELE=MOD3D,
                     CHAM_MATER=CHM3D3,
                     CARA_ELEM=CAREL3D,
-                    EXCIT=_F( CHARGE = CHAR3D3),);
+                    EXCIT=_F( CHARGE = CHAR3D3),)
 
 MEST4=CALC_CHAMP(reuse=MEST4,RESULTAT=MEST4,DEFORMATION=('EPSI_ELGA'))
 

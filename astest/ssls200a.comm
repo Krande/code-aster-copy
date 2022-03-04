@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,20 +29,20 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-M1=LIRE_MAILLAGE(FORMAT="ASTER",);
+M1=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 M1=DEFI_GROUP(reuse =M1,
               MAILLAGE=M1,
               CREA_GROUP_MA=_F(NOM='TOUT',
-                               TOUT='OUI',),);
+                               TOUT='OUI',),)
 
 MA=CREA_MAILLAGE(MAILLAGE=M1,
                  MODI_MAILLE=(_F(MAILLE='Q9',
                                  OPTION='QUAD8_9',),
                               _F(GROUP_MA='T7',
-                                 OPTION='TRIA6_7',),),);
+                                 OPTION='TRIA6_7',),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA='S1',
@@ -74,45 +74,45 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='COQUE_3D',),
                      _F(GROUP_MA='T7',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='COQUE_3D',),),);
+                        MODELISATION='COQUE_3D',),),)
 
 F1=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(-1000.,-1200.,
                        1000.,1200.,
-                       ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='CONSTANT',);
+                       ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='CONSTANT',)
 
-F2=DEFI_CONSTANTE(VALE=0.3,);
+F2=DEFI_CONSTANTE(VALE=0.3,)
 
 RHOF=DEFI_CONSTANTE(VALE = 8.1,)
 MAT=DEFI_MATERIAU(ELAS_FO=_F(E=F1,
                              NU=F2,
                              RHO=RHOF,
                              TEMP_DEF_ALPHA=1.5,
-                             ALPHA=F1,),);
+                             ALPHA=F1,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
                     COQUE=_F(GROUP_MA='TOUT',
                              EPAIS=0.7,
                              ANGL_REP=(10.,-20.,),
-                             A_CIS=0.6,),);
+                             A_CIS=0.6,),)
 
 TEMPLIN=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                    OPERATION='AFFE',
                    MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP',),
-                           VALE=(12.,18.,24.,),),);
+                           VALE=(12.,18.,24.,),),)
 
 TEMPLI=CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=TEMPLIN,
-                         INST=0.0,),);
+                         INST=0.0,),)
 
 TEMPER=CREA_RESU(OPERATION='PREP_VRC2',
                  TYPE_RESU='EVOL_THER',
                  PREP_VRC2=_F(EVOL_THER=TEMPLI,
                               MODELE=MO,
-                              CARA_ELEM=CARA,),);
+                              CARA_ELEM=CARA,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
@@ -121,7 +121,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                                  EVOL=TEMPER,
                                  NOM_VARC='TEMP',
                                  NOM_CHAM='TEMP',
-                                 VALE_REF=1.5,),);
+                                 VALE_REF=1.5,),)
 
 # ------------------------------------------------------------------
 
@@ -148,11 +148,11 @@ CHPES=AFFE_CHAR_MECA(MODELE=MO,
                                     F1=5.,
                                     F2=8.,
                                     F3=9.,
-                                    MF1=5.,),);
+                                    MF1=5.,),)
 
 CHME2=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_COQUE=_F(TOUT='OUI',
-                                    PRES=5.,),);
+                                    PRES=5.,),)
 
 # ------------------------------------------------------------------
 
@@ -160,28 +160,28 @@ MESTAT=MECA_STATIQUE(MODELE=MO,
                      CHAM_MATER=CHMAT,
                      CARA_ELEM=CARA,
                      EXCIT=(_F(CHARGE=CHPES,),
-                            _F(CHARGE=CHME2,),),);
+                            _F(CHARGE=CHME2,),),)
 
 MESTAT=CALC_CHAMP(reuse =MESTAT,
                   RESULTAT=MESTAT,
                   CONTRAINTE=('SIGM_ELNO','EFGE_ELNO',),
-                  DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),);
+                  DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),)
 
 MESTAT2=POST_CHAMP(RESULTAT=MESTAT,
                    EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO',),
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),);
+                                 NIVE_COUCHE='MOY',),)
 MESTAT=CALC_CHAMP(reuse =MESTAT,
                   RESULTAT=MESTAT,
                   GROUP_MA=('Q1','T1','Q2','Q3','T3','T4','Q9','T7'),
-                  DEFORMATION=('DEGE_ELNO','DEGE_ELGA',));
+                  DEFORMATION=('DEGE_ELNO','DEGE_ELGA',))
 
 MESTAT2=CALC_CHAMP(reuse =MESTAT2,
                RESULTAT=MESTAT2,
                CONTRAINTE='SIGM_NOEU',
-               DEFORMATION='EPSI_NOEU');
+               DEFORMATION='EPSI_NOEU')
 
-ENGENDRE_TEST(CO=MESTAT,);
+ENGENDRE_TEST(CO=MESTAT,)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -246,15 +246,15 @@ MASS2=POST_ELEM(ENER_POT=_F(GROUP_MA=('Q1','T1','Q2','Q3','T3','T4'),),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA,
-                RESULTAT=MESTAT,);
+                RESULTAT=MESTAT,)
 
 MASS3=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA,
-                RESULTAT=MESTAT,);
+                RESULTAT=MESTAT,)
 
-ENGENDRE_TEST(CO=(MASS2,MASS3,),);
+ENGENDRE_TEST(CO=(MASS2,MASS3,),)
 
 TEST_TABLE(
            VALE_CALC_I=6,
@@ -399,10 +399,10 @@ TEST_TABLE(
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=MESTAT,
-                  NOM_CHAM='SIEF_ELGA',),);
+                  NOM_CHAM='SIEF_ELGA',),)
 
 IMPR_RESU(RESU=_F(RESULTAT=MESTAT,NOM_CHAM=('EPSI_ELGA','EPSI_ELNO')))
 
-FIN();
+FIN()
 
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ L_INST=DEFI_LIST_REEL(         DEBUT=0.0,INTERVALLE=(
                               _F(  JUSQU_A = 1.0,  NOMBRE = 10),
                                          _F(  JUSQU_A = 2.0,  NOMBRE = 10))
                           )
-                          
+
 TFONC=DEFI_FONCTION(NOM_PARA='INST',
                     NOM_RESU='TEMP',
                     VALE=( 0. ,   1200.0,
@@ -49,7 +49,7 @@ TEMPE=CREA_RESU(OPERATION='AFFE',
 
 # PARTIE MECANIQUE
 # ON DEGENERE LA LOI POUR AVOIR UNE LOI DE VISCOSITE
-# DE TYPE NORTON D OU F1_M=0.D0                                 
+# DE TYPE NORTON D OU F1_M=0.D0
 # CETTE LOI ANISOTROPE AVEC UNE SEULE PHASE ET UNE LOI DE NORTON
 # EST IDENTIQUE A UNE LOI CONTENUE DANS ZMAT
 
@@ -60,7 +60,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E = 80000.,
                                        LEMAITRE=_F(N = 4.39,
                                                               UN_SUR_K = 0.003944,
                                                               UN_SUR_M = 0.
-                                       ),);
+                                       ),)
 
 CM2=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F( TOUT = 'OUI', MATER = ACIER ),
@@ -74,7 +74,7 @@ CM2=AFFE_MATERIAU(MAILLAGE=MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE ='MECANIQUE',
-                       MODELISATION ='AXIS'))                             
+                       MODELISATION ='AXIS'))
 
 
 F_CHAR=DEFI_FONCTION(      NOM_PARA='INST',

@@ -38,20 +38,20 @@ model = DEFI_GROUP(reuse =mesh,
                                        VECT_NORMALE= (0.,0.,-1.),
                                        DIST=0.15),
                                        ),
-                    INFO=2);
+                    INFO=2)
 
 
 model=AFFE_MODELE( MAILLAGE=mesh,
-                AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),);
+                AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),)
 material=DEFI_MATERIAU(ELAS=_F(E=1, NU=0.0,  RHO=1,),)
 
 fieldMate=AFFE_MATERIAU(MAILLAGE=mesh,
                     AFFE=_F(TOUT='OUI', MATER=material,),
-                    );
+                    )
 
 clamp=AFFE_CHAR_MECA( MODELE=model,
                         DDL_IMPO=(_F(GROUP_MA='BOTTOM', DX=0.0, DY=0.0, DZ=0.0,),
-                                 ),);
+                                 ),)
 
 gravity=AFFE_CHAR_MECA( MODELE=model,
                         PESANTEUR=_F(GRAVITE=9.81,DIRECTION=( 0., 0., -1.),),)

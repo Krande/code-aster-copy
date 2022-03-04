@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 ####################################
 
-#PRE_GIBI();
+#PRE_GIBI()
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -57,7 +57,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(NOM='DROITS',
                                   CRIT_NOEUD='SOMMET',
                                   GROUP_MA='DROIT',),
-                               ),);
+                               ),)
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
@@ -69,12 +69,12 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
 ####################################
 LI=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                        _F(  JUSQU_A = 36000,  NOMBRE = 20),),
-                     );
+                     )
 
 
 LI_AR=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                        _F(  JUSQU_A = 36000,  NOMBRE = 1),),
-                     );
+                     )
 
 
 ############################################
@@ -84,26 +84,26 @@ LI_AR=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 #
 ####
 
-VISCOL=DEFI_CONSTANTE(VALE=1.,);
+VISCOL=DEFI_CONSTANTE(VALE=1.,)
 
-VISCOG=DEFI_CONSTANTE(VALE=1.8E-05,);
+VISCOG=DEFI_CONSTANTE(VALE=1.8E-05,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,)
 
-DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,)
 
 ####
-UN=DEFI_CONSTANTE(    VALE=1.,);
+UN=DEFI_CONSTANTE(    VALE=1.,)
 
-ZERO=DEFI_CONSTANTE(    VALE=0.,);
+ZERO=DEFI_CONSTANTE(    VALE=0.,)
 
 LI1=DEFI_LIST_REEL(DEBUT=0.1,
                    INTERVALLE=_F(JUSQU_A=0.999,
-                                 PAS=0.001,),);
+                                 PAS=0.001,),)
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=50,
-                                 PAS=0.01,),);
+                                 PAS=0.01,),)
 #
 # PRESSION CAPILLAIRE S(PC)
 #
@@ -114,7 +114,7 @@ SATU=CALC_FONC_INTERP(FONCTION=SL,
                       NOM_PARA='PCAP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      INFO=2,);
+                      INFO=2,)
 DSL = FORMULE(VALE='-2.4595*(2.9227*PCAP)**1.0304/((1+(2.9227*PCAP)**2.0304)**1.5075)',
               NOM_PARA='PCAP',)
 
@@ -123,19 +123,19 @@ DSATU=CALC_FONC_INTERP(FONCTION=DSL,
                        NOM_PARA='PCAP',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 #
 # PERMEABILITE INTRINSEQUE, RELATIVE DU LIQUIDE, RELATIVE DU GAZ
 # UNITE INTRINSEQUE : METRES CARRES , UNITE RELATIVE : SANS
 #
 KINT=DEFI_CONSTANTE(    VALE=1.625E-5)
 
-A=0.81667;
-B=0.4925;
-C=1-A;
-D=2.4977;
-E=2.304;
-ADB=2*A*A*D*B;
+A=0.81667
+B=0.4925
+C=1-A
+D=2.4977
+E=2.304
+ADB=2*A*A*D*B
 
 PL = FORMULE(VALE='exp(-D*((A/(SAT-C))**2-1)**B)',
              D=D,
@@ -149,7 +149,7 @@ PERML=CALC_FONC_INTERP(FONCTION=PL,
                        NOM_PARA='SAT',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 DPL = FORMULE(VALE='(ADB/(SAT-C)**3)*(A*A/(SAT-C)**2-1)**(B-1)*exp(-D*((A/(SAT-C))**2-1)**B) ',
               ADB=ADB,
@@ -163,7 +163,7 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPL,
                        NOM_PARA='SAT',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 
 
@@ -211,7 +211,7 @@ MATERIAU=DEFI_MATERIAU(
          PRE1 = 0.,
          PRE2 = 1.E5,
          PORO = 0.3,
-         DEGR_SATU = 0.408,), );
+         DEGR_SATU = 0.408,), )
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F( TOUT = 'OUI',
@@ -226,16 +226,16 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                           _F(TOUT='OUI',
                              NOM_CMP='PRE1',
                              VALE=1.15,),
-                             ),);
+                             ),)
 CALGAU=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='GAUCHES',
-                                   PRE1=0.,),);
+                                   PRE1=0.,),)
 CALDRO=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='DROITS',
-                                   PRE1=1.15,),);
+                                   PRE1=1.15,),)
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='ROCHES',
-                                   PRE2=0.,),);
+                                   PRE2=0.,),)
 
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LI),
@@ -260,7 +260,7 @@ RESU0=STAT_NON_LINE(
                            REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                 ARCHIVAGE  = _F(LIST_INST = LI_AR),
-              );
+              )
 
 RESU0=CALC_CHAMP(reuse=RESU0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU0)
 
@@ -271,11 +271,11 @@ TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             NOM_CHAM='DEPL',
                             INST = 36000,
                             NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
+                            OPERATION='EXTRACTION',),)
 IMPR_TABLE(TABLE=TRB,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','PRE1'),);
+           NOM_PARA=('INST','COOR_X','PRE1'),)
 
 TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             GROUP_NO=('BAS'),
@@ -283,11 +283,11 @@ TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             NOM_CHAM='VARI_ELNO',
                             INST = 36000,
                             NOM_CMP=('V4'),
-                            OPERATION='EXTRACTION',),);
+                            OPERATION='EXTRACTION',),)
 IMPR_TABLE(TABLE=TRV,
            FORMAT='AGRAF',
            PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','V4'),);
+           NOM_PARA=('INST','COOR_X','V4'),)
 
 TEST_RESU(RESU=_F(INST=36000,
                   REFERENCE='SOURCE_EXTERNE',

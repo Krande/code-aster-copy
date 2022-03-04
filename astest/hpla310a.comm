@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -239,7 +239,7 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=T0,
-                         INST=.0,),);
+                         INST=.0,),)
 
 TEMP1=CREA_RESU(reuse=TEMP1,
                 RESULTAT=TEMP1,
@@ -247,7 +247,7 @@ TEMP1=CREA_RESU(reuse=TEMP1,
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=RESU1,
-                         INST=0.312,),);
+                         INST=0.312,),)
 
 CHMTA1=AFFE_MATERIAU(  MAILLAGE=MA,
                                  AFFE=_F( TOUT = 'OUI',
@@ -285,7 +285,7 @@ CH1A=AFFE_CHAR_MECA(           MODELE=MO,
                             )
 
 #
-INSME1A=DEFI_LIST_REEL(VALE=0.312);
+INSME1A=DEFI_LIST_REEL(VALE=0.312)
 CHDEP1A=MECA_STATIQUE(        MODELE=MO,
                               CHAM_MATER=CHMTA1,
                                    LIST_INST=INSME1A,
@@ -345,7 +345,7 @@ CHDEP1B=STAT_NON_LINE(SOLVEUR=_F(NPREC=-1,METHODE='MUMPS'),
                       NEWTON=_F(MATRICE = 'ELASTIQUE'),
                       INCREMENT=_F(LIST_INST = L_INST1),
                       CONVERGENCE=_F(ITER_GLOB_MAXI = 15,),
-                      );
+                      )
 
 CALC_CHAMP(reuse=CHDEP1B,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=CHDEP1B)
 
@@ -392,7 +392,7 @@ TEMP2=CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=T0,
-                         INST=.0,),);
+                         INST=.0,),)
 
 TEMP2=CREA_RESU(reuse=TEMP2,
                 RESULTAT=TEMP2,
@@ -400,8 +400,8 @@ TEMP2=CREA_RESU(reuse=TEMP2,
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=RESU2,
-                         INST=12.48,),);
-#                         INST=0.312,),);
+                         INST=12.48,),)
+#                         INST=0.312,),)
 
 CHMTA2=AFFE_MATERIAU(  MAILLAGE=MA,
                                  AFFE=_F( TOUT = 'OUI',
@@ -440,7 +440,7 @@ CH2A=AFFE_CHAR_MECA(           MODELE=MO,
                             )
 
 #
-INSME2A=DEFI_LIST_REEL(VALE=12.48);
+INSME2A=DEFI_LIST_REEL(VALE=12.48)
 CHDEP2A=MECA_STATIQUE(         MODELE=MO,
                                CHAM_MATER=CHMTA2,
                                     LIST_INST=INSME2A,
@@ -493,7 +493,7 @@ CHDEP2B=STAT_NON_LINE(SOLVEUR=_F(NPREC=-1,METHODE='MUMPS'),
                       NEWTON=_F(MATRICE = 'ELASTIQUE'),
                       INCREMENT=_F(LIST_INST = L_INST2),
                       CONVERGENCE=_F(ITER_GLOB_MAXI = 15,),
-                      );
+                      )
 
 
 
@@ -542,7 +542,7 @@ TEMP3=CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=T0,
-                         INST=.0,),);
+                         INST=.0,),)
 
 TEMP3=CREA_RESU(reuse=TEMP3,
                  RESULTAT=TEMP3,
@@ -550,7 +550,7 @@ TEMP3=CREA_RESU(reuse=TEMP3,
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=RESU3,
-                         INST=312.,),);
+                         INST=312.,),)
 
 CHMTA3=AFFE_MATERIAU(  MAILLAGE=MA,
                                  AFFE=_F( TOUT = 'OUI',
@@ -590,7 +590,7 @@ CH3A=AFFE_CHAR_MECA(           MODELE=MO,
                             )
 
 #
-INSME3A=DEFI_LIST_REEL(VALE=312.);
+INSME3A=DEFI_LIST_REEL(VALE=312.)
 CHDEP3A=MECA_STATIQUE(         MODELE=MO,
                                CHAM_MATER=CHMTA3,
                                     LIST_INST=INSME3A,
@@ -643,7 +643,7 @@ CHDEP3B=STAT_NON_LINE(SOLVEUR=_F(NPREC=-1,METHODE='MUMPS'),
                       NEWTON=_F(MATRICE = 'ELASTIQUE'),
                       INCREMENT=_F(LIST_INST = L_INST3),
                       CONVERGENCE=_F(ITER_GLOB_MAXI = 15,),
-                      );
+                      )
 
 CALC_CHAMP(reuse=CHDEP3B,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=CHDEP3B)
 

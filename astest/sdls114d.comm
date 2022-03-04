@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ MODELIN=AFFE_MODELE(MAILLAGE=M,
                        MODELISATION='3D',),
 
                        ),
-                       );
+                       )
 
 LN = FORMULE(VALE='Y-0.05',
              NOM_PARA=['X', 'Y', 'Z'],)
@@ -56,31 +56,31 @@ FF2=DEFI_FISS_XFEM(MAILLAGE=M,
                                 FONC_LN = LN,
                                 ),
                    GROUP_MA_ENRI='VOL',
-                  );
+                  )
 
 MO=MODI_MODELE_XFEM(MODELE_IN=MODELIN,
-                         FISSURE=FF2,);
+                         FISSURE=FF2,)
 
 M = MODI_MAILLAGE(reuse = M,
                   MAILLAGE = M,
                   ORIE_PEAU = (_F(GROUP_MA_PEAU='SR_INF'),),
-                 );
+                 )
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200.0E+9,
                          NU=0.3,
                          ALPHA = 0.0,
-                         RHO=7800),);
+                         RHO=7800),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,
-                         ),);
+                         ),)
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='SR_SUP',
                                     DX = 0,
                                     DY = 0,
-                                    DZ = 0,),);
+                                    DZ = 0,),)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_FACE=_F(GROUP_MA='SR_INF',
@@ -88,20 +88,20 @@ CHAR=AFFE_CHAR_MECA(MODELE=MO,
                                   FY=-5E+6,
                                   FZ=-0.4E+6,)
 
-                                  ,);
+                                  ,)
 ROTAT=AFFE_CHAR_MECA(MODELE=MO,
                      ROTATION=_F(VITESSE=157.08,
                                  AXE=(0.0,1.0,0.0,),
                                  CENTRE=(0.0,0.0,0.0,),
                                  ),
-                     );
+                     )
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           tau,1.0,
                           0.2, 1.0,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 ##################################
 #  CONSTRUCTION DES MATRICES
@@ -110,40 +110,40 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 MRIGI=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MO,
                      CHAM_MATER=CM,
-                     CHARGE=BLOCAGE,);
+                     CHARGE=BLOCAGE,)
 
 MMASSE=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=MO,
                       CHAM_MATER=CM,
-                      CHARGE=BLOCAGE,);
+                      CHARGE=BLOCAGE,)
 
 MAMOR=CALC_MATR_ELEM(OPTION='AMOR_MECA',
                      MODELE=MO,
                      RIGI_MECA = MRIGI,
                      MASS_MECA = MMASSE,
                      CHAM_MATER=CM,
-                     CHARGE=BLOCAGE,);
+                     CHARGE=BLOCAGE,)
 
 VCHA=CALC_VECT_ELEM(OPTION='CHAR_MECA',
                     CHARGE =(BLOCAGE, CHAR, ROTAT),
                     CHAM_MATER=CM,
-                    );
+                    )
 
 
 NUM=NUME_DDL(MODELE= MO,
-             CHARGE=BLOCAGE,);
+             CHARGE=BLOCAGE,)
 
 RIG_ASS=ASSE_MATRICE(MATR_ELEM=MRIGI,
-                     NUME_DDL=NUM,);
+                     NUME_DDL=NUM,)
 
 MA_ASS=ASSE_MATRICE(MATR_ELEM=MMASSE,
-                    NUME_DDL=NUM,);
+                    NUME_DDL=NUM,)
 
 AMO_ASS=ASSE_MATRICE(MATR_ELEM=MAMOR,
-                    NUME_DDL=NUM,);
+                    NUME_DDL=NUM,)
 
 VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
-                    NUME_DDL=NUM,);
+                    NUME_DDL=NUM,)
 
 ###################################
 #  CALCUL DES MODES PROPRES ET DES K MODAUX
@@ -159,7 +159,7 @@ MODE=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=n_mode,
 
 MODE=NORM_MODE(reuse=MODE,
                MODE=MODE,
-               NORME='MASS_GENE',);
+               NORME='MASS_GENE',)
 
 
 GLMO1=CALC_G_XFEM(OPTION='CALC_K_G',
@@ -170,7 +170,7 @@ GLMO1=CALC_G_XFEM(OPTION='CALC_K_G',
                        R_SUP=3E-3,),
 #              LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
 #                         LISSAGE_G='LAGRANGE',),
-            );
+            )
 
 IMPR_TABLE(TABLE=GLMO1)
 
@@ -187,7 +187,7 @@ PROJ_BASE(BASE=MODE,
                                 _F(MATRICE=CO('AMOR_GE'),
                                    MATR_ASSE=AMO_ASS,),),
                 VECT_ASSE_GENE=_F(VECTEUR=CO('CHA_ASS'),
-                                  VECT_ASSE=VE_ASS, TYPE_VECT='FORC'),);
+                                  VECT_ASSE=VE_ASS, TYPE_VECT='FORC'),)
 
 RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                     BASE_CALCUL='GENE',
@@ -203,13 +203,13 @@ RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                     EXCIT=_F(VECT_ASSE_GENE=CHA_ASS,
                             FONC_MULT=RAMPE,),
                     ARCHIVAGE=_F(PAS_ARCH = 200,),
-                    IMPRESSION = _F(TOUT='OUI',),);
+                    IMPRESSION = _F(TOUT='OUI',),)
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    K_MODAL = _F(TABL_K_MODA =GLMO1,
                                 FISSURE=FF2,
                                ),
-                   );
+                   )
 
 IMPR_TABLE(TABLE=KT1, TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 
@@ -269,7 +269,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # ##############################################
 #
 ### CES COMMANDES ONT ETE UTILISEE POUR OBTENIR LES VALEURS DE REFERENCES
-# 
+#
 # RES_DYN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',
 #                     BASE_CALCUL='PHYS',
 # #                    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
@@ -285,21 +285,21 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 #                             FONC_MULT=RAMPE,),
 #                     ARCHIVAGE=_F(PAS_ARCH = 200,),
 # #                    IMPRESSION = _F(TOUT='OUI',),
-#                     );
-# 
+#                     )
+#
 # GLMO2 = CALC_G_XFEM(  RESULTAT=RES_DYN2,
 #                  OPTION='CALC_K_G',
 #                  THETA=_F( FISSURE=FF2,
 #                                    R_INF=1E-3,
 #                                    R_SUP=3E-3,
-# 
+#
 #                                    ),
 #                  EXCIT= ( _F(  CHARGE= (CHAR),
 #                                FONC_MULT=RAMPE,),
 #                           _F(  CHARGE= (ROTAT),
 #                                FONC_MULT=RAMPE,),
 #                            )
-#                          );
-# IMPR_TABLE(TABLE=GLMO2, TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),);
+#                          )
+# IMPR_TABLE(TABLE=GLMO2, TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 
-FIN();
+FIN()

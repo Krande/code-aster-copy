@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 pilote=''
 #pilote='INTERACTIF'
@@ -60,7 +60,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,NU=POISSON),
                                UN_SUR_K=1/156.9,
                                UN_SUR_M = 0.),
 
-                               );
+                               )
 
 
 ncal=1
@@ -78,4 +78,4 @@ for index,ical in enumerate(typcal) :
    legende[index]=ical[0]+'_'+ical[1]+'_delta1='+str( int(delta[ical[2]][0]*10000.)/10000.)+'_delta2='+str( int(delta[ical[2]][0]*10000.)/10000.)
 print('legende=',legende)
 
-FIN();
+FIN()

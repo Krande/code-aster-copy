@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                    _F(NOM='LIGINF',OPTION='PLAN',POINT=(0.,0.,),VECT_NORMALE=(0.,1.),PRECISION=1.e-6),
                                    _F(NOM='PTEXTR',OPTION='ENV_SPHERE',POINT=(1.,1.,),RAYON=1.e-6,PRECISION=1.e-6),
                                    ),
-                     );
+                     )
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
@@ -40,28 +40,28 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
 MOTH=AFFE_MODELE(MAILLAGE=MAILLAGE,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='PLAN',),);
+                         MODELISATION='PLAN',),)
 
 MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
-                           RHO_CP=0.0,),);
+                           RHO_CP=0.0,),)
 
 CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MATH,),);
+                           MATER=MATH,),)
 
 CHTH=AFFE_CHAR_THER(MODELE=MOTH,
                     TEMP_IMPO=(_F(GROUP_NO='LIGGAU',TEMP=20.0,),
-                               _F(GROUP_NO='LIGDRO',TEMP=220.0,),),);
+                               _F(GROUP_NO='LIGDRO',TEMP=220.0,),),)
 
 THLI=THER_LINEAIRE(MODELE=MOTH,
                    CHAM_MATER=CMTH,
-                   EXCIT=_F(CHARGE=CHTH,),);
+                   EXCIT=_F(CHARGE=CHTH,),)
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='EXTR',
                 RESULTAT=THLI,
                 NOM_CHAM='TEMP',
-                INST=0.0,);
+                INST=0.0,)
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(CHAM_GD = TEMP,))
 #--------------------------------------------------------------------
@@ -72,12 +72,12 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA='SURF',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN',),),);
+                            MODELISATION='D_PLAN',),),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             NU=0.3,
                             RHO=7800.0,
-                            ALPHA=1.282E-05,),);
+                            ALPHA=1.282E-05,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELE,
@@ -87,7 +87,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                                      NOM_VARC='TEMP',
                                      CHAM_GD=TEMP,
                                      VALE_REF=20.0),
-                       );
+                       )
 
 
 #*********************************************************************
@@ -98,7 +98,7 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='LIGINF',
                                    DX=0.0,
                                    DY=0.0,),
-                       INFO=1,);
+                       INFO=1,)
 
 UTOT=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
@@ -106,7 +106,7 @@ UTOT=MECA_STATIQUE(MODELE=MODELE,
                    INST=1.,
                    SOLVEUR=_F(METHODE='MULT_FRONT',
                               RENUM='METIS',),
-                   INFO=1,);
+                   INFO=1,)
 
 #---------------POST-------------------------------------------
 
@@ -117,7 +117,7 @@ TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
                         RESULTAT   = UTOT,
                         NOM_CHAM   = 'DEPL',
                         NOM_CMP   = ( 'DX','DY'),
-                        OPERATION = 'EXTRACTION',),);
+                        OPERATION = 'EXTRACTION',),)
 
 IMPR_TABLE(TABLE=TABDEP)
 
@@ -151,7 +151,7 @@ TABSIF=CALC_G(RESULTAT=UTOT,
               OPTION='K',
               )
 
-IMPR_TABLE(TABLE=TABSIF,);
+IMPR_TABLE(TABLE=TABSIF,)
 
 TABG=CALC_G(OPTION='G',
             RESULTAT=UTOT,
@@ -161,7 +161,7 @@ TABG=CALC_G(OPTION='G',
                         FISSURE=FOND1),
               )
 
-IMPR_TABLE(TABLE=TABG,);
+IMPR_TABLE(TABLE=TABG,)
 
 PK=POST_K1_K2_K3(FOND_FISS = FOND1,
                  RESULTAT  = UTOT,
@@ -192,4 +192,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=TABG,
            )
 
-FIN();
+FIN()

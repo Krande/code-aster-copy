@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ MA_INI = LIRE_MAILLAGE(FORMAT='GMSH',
 NPAS = 35
 
 #Pas de propagation
-DA = 0.1 
+DA = 0.1
 
 # RAYONS INFERIEUR ET SUPERIEUR DES COURONNES D'INTEGRATION POUR CALC_G
 # RQ : ce choix n'est pas optimal car on se rapproche des trous a une distance de moins de 0.1
@@ -43,8 +43,8 @@ RI = 0.1
 RS = 0.2
 
 #longueur de fissure initiale
-xinit = 5. 
-yinit = 1.5 
+xinit = 5.
+yinit = 1.5
 
 #----------------------------------------------
 #                   MODELE
@@ -55,7 +55,7 @@ MA_INI=DEFI_GROUP(reuse =MA_INI,
                                  _F(NOM='P2',GROUP_NO='GM3'),
                                  _F(NOM='P3',GROUP_NO='GM4'),),
                   CREA_GROUP_MA=(_F(NOM='Surface',GROUP_MA='GM1')))
-                    
+
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA_INI))
 
 MODEL = [None]*(NPAS+1)
@@ -105,21 +105,21 @@ LST   = [None]*(NPAS+1)
 CHAMA = [None]*(NPAS+1)
 CHRIG = [None]*(NPAS+1)
 
- 
+
 for i in range(NPAS+1) :
-    
+
     MODEL[i]=AFFE_MODELE(MAILLAGE=MAT[i],
                       AFFE=_F(GROUP_MA='Surface',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN')
                             )
- 
-                                                                       
-    FISS[i]=DEFI_FISS_XFEM(MAILLAGE=MAT[i],    
+
+
+    FISS[i]=DEFI_FISS_XFEM(MAILLAGE=MAT[i],
                            DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                         GROUP_MA_FOND='FOND_'+str(i))
-                           )              
-                                             
+                           )
+
     MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i])
 
     CHAMA[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
@@ -127,7 +127,7 @@ for i in range(NPAS+1) :
                            AFFE=_F(TOUT = 'OUI',
                                    MATER=ACIER)
                            )
-                                                                      
+
     CHRIG[i]=AFFE_CHAR_MECA(MODELE=MODE[i],
                             DDL_IMPO=(_F(GROUP_NO='P1',DX=0.,DY=0.),
                                       _F(GROUP_NO='P2',DY=0.)),
@@ -137,17 +137,17 @@ for i in range(NPAS+1) :
     RESV[i]=MECA_STATIQUE(MODELE=MODE[i],
                           CHAM_MATER=CHAMA[i],
                           EXCIT=_F(CHARGE=CHRIG[i]))
-       
+
     SIF[i]=CALC_G_XFEM(RESULTAT=RESV[i],
                   OPTION='CALC_K_G',
                   THETA=_F(FISSURE=FISS[i],
                            R_INF=RI,
                            R_SUP=RS)
-                  )         
-               
+                  )
+
     if ( i != NPAS+1 ) :
-        MAX[i+1]=CO('MAX_%d' %(i+1));
-        MAT[i+1]=CO('MAT_%d'%(i+1));
+        MAX[i+1]=CO('MAX_%d' %(i+1))
+        MAT[i+1]=CO('MAT_%d'%(i+1))
         PROPA_FISS(METHODE_PROPA='MAILLAGE',
                    MAIL_STRUC=MA_INI,
                    MAIL_TOTAL = MAT[i+1],
@@ -165,7 +165,7 @@ for i in range(NPAS+1) :
                                 COEF_MULT_MAXI=1.,
                                ),
                    )
-                
+
         IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MAX[i+1]))
 
 #----------------------------------------------
@@ -178,18 +178,18 @@ for i in range(NPAS+1) :
     MOVIS = [None]*(NPAS+1)
     DEPL  = [None]*(NPAS+1)
 
-    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i]);
+    MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i])
 
     MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
-                                 MODELISATION='D_PLAN')) 
+                                 MODELISATION='D_PLAN'))
 
     DEPL[i]=POST_CHAM_XFEM(MODELE_VISU=MOVIS[i],
                            RESULTAT=RESV[i])
 
     IMPR_RESU(FORMAT='MED',UNITE=82,RESU=_F(RESULTAT=DEPL[i]))
-             
+
 
 # TEST DE KI ET KII AU DERNIER PAS
 TEST_TABLE(CRITERE='RELATIF',
@@ -207,4 +207,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=SIF[35],
            )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ epzz_max=-.0003
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = tarret   , NOMBRE = 190),
-                                  _F(JUSQU_A = temps_max, NOMBRE = 110),),);
+                                  _F(JUSQU_A = temps_max, NOMBRE = 110),),)
 
 
 #***********************************************************************
@@ -65,17 +65,17 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.),
                   MOHR_COULOMB=_F(
                             PHI      = 33.,
                             ANGDIL   = 27.,
-                            COHESION = 1.0E+3,),);
+                            COHESION = 1.0E+3,),)
 
 COEF1=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, 0.,
-                           temps_max, 0.,),);
+                           temps_max, 0.,),)
 
 COEF2=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, -PCO,
-                           temps_max, -PCO,),);
+                           temps_max, -PCO,),)
 
 epsilon =1.+1e-6
 
@@ -83,12 +83,12 @@ COEF4=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0 , -PCO,
                            20.0, -PCO*epsilon,
-                           temps_max, -PCO*epsilon,),);
+                           temps_max, -PCO*epsilon,),)
 
 COEF3=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=( 0.0, 0.0,
-                           temps_max, epzz_max,),);
+                           temps_max, epzz_max,),)
 
 TSIMU=SIMU_POINT_MAT(
                   COMPORTEMENT=_F(RELATION='MOHR_COULOMB',),
@@ -116,8 +116,8 @@ TSIMU=SIMU_POINT_MAT(
                                EPZZ=0.,
                                EPXY=0.,
                                EPXZ=0.,
-                               EPYZ=0.,),);
-IMPR_TABLE(TABLE=TSIMU,);
+                               EPYZ=0.,),)
+IMPR_TABLE(TABLE=TSIMU,)
 
 # =============================================================================
 #
@@ -138,7 +138,7 @@ TEST_TABLE(NOM_PARA='SIXX', TABLE=TSIMU,
            VALE_CALC=-50000.,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=sixx[-1],);
+           VALE_REFE=sixx[-1],)
 
 TEST_TABLE(NOM_PARA='SIZZ', TABLE=TSIMU,
            FILTRE=_F(NOM_PARA ='EPZZ',
@@ -149,7 +149,7 @@ TEST_TABLE(NOM_PARA='SIZZ', TABLE=TSIMU,
            VALE_CALC=-1.7328954160409E+05,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=sizz[-1],);
+           VALE_REFE=sizz[-1],)
 
 TEST_TABLE(NOM_PARA='V1', TABLE=TSIMU,
            FILTRE=_F(NOM_PARA ='EPZZ',
@@ -160,7 +160,7 @@ TEST_TABLE(NOM_PARA='V1', TABLE=TSIMU,
            VALE_CALC=1.6784461035395E-04,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=epsivp[-1],);
+           VALE_REFE=epsivp[-1],)
 
 TEST_TABLE(NOM_PARA='V2', TABLE=TSIMU,
            FILTRE=_F(NOM_PARA ='EPZZ',
@@ -171,72 +171,72 @@ TEST_TABLE(NOM_PARA='V2', TABLE=TSIMU,
            VALE_CALC=3.3099365694249E-04,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=epsidp[-1],);
+           VALE_REFE=epsidp[-1],)
 
 # ================================================================
 #                            POST-TRAITEMENTS
 # ================================================================
 #
-# tsigm = TAB_SIG.EXTR_TABLE().values();
+# tsigm = TAB_SIG.EXTR_TABLE().values()
 #
-# epxx = tsigm['EPXX'];
-# epzz = tsigm['EPZZ'];
-# sixx = tsigm['SIXX'];
-# sizz = tsigm['SIZZ'];
-# epvp = tsigm['V1'];
-# edvp = tsigm['V2'];
-# indi = tsigm['V3'];
+# epxx = tsigm['EPXX']
+# epzz = tsigm['EPZZ']
+# sixx = tsigm['SIXX']
+# sizz = tsigm['SIZZ']
+# epvp = tsigm['V1']
+# edvp = tsigm['V2']
+# indi = tsigm['V3']
 #
-# co_sigm,co_epsi,co_vari,co_seuil,= [],[],[],[],;
+# co_sigm,co_epsi,co_vari,co_seuil,= [],[],[],[],
 #
 # # CHAMPS CINEMATIQUES
 # # _____________________________
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=sizz,
 #         legend='SIZZ',
-#         color=1,);
+#         color=1,)
 #
 # co_sigm =Defi_Xmcourbe(courbe=co_sigm,
 #         X=epzz, Y=sixx,
 #         legend='SIXX',
-#         color=2,);
+#         color=2,)
 #
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=epxx,
 #         legend='EPXX',
-#         color=1,);
+#         color=1,)
 #
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=epvp,
 #         legend='EPVP',
-#         color=2,);
+#         color=2,)
 #
 # co_epsi =Defi_Xmcourbe(courbe=co_epsi,
 #         X=epzz, Y=edvp,
 #         legend='EDVP',
-#         color=3,);
+#         color=3,)
 #
 # co_vari =Defi_Xmcourbe(courbe=co_vari,
 #         X=epzz, Y=indi,
 #         legend='INDICATEUR PLASTIQUE',
-#         color=1,);
+#         color=1,)
 #
-# Courbes = [co_sigm,co_epsi,co_vari,co_seuil,];
+# Courbes = [co_sigm,co_epsi,co_vari,co_seuil,]
 #
-# Nom_Fichier= ['triax0d_sigm.agr','triax0d_epsi.agr','triax0d_vari.agr',];
+# Nom_Fichier= ['triax0d_sigm.agr','triax0d_epsi.agr','triax0d_vari.agr',]
 #
 # unit=38
 # for c in range(len(Nom_Fichier)):
 #
 #   DEFI_FICHIER(ACTION='ASSOCIER',
 #                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
-#                UNITE=unit,);
+#                UNITE=unit,)
 #
 #   IMPR_FONCTION(FORMAT='XMGRACE',
 #               UNITE=unit,
-#               COURBE=Courbes[c]);
+#               COURBE=Courbes[c])
 #
 #   DEFI_FICHIER(ACTION='LIBERER',
-#                UNITE=unit,);
+#                UNITE=unit,)
 
-FIN();
+FIN()

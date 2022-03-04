@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,13 +31,13 @@ h = 15.
 #                MAILLAGE : hexa_5_31_51.mgib
 #----------------------------------------------
 
-MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
 MAILLAGE= COPIER(CONCEPT= MAILLAG2)
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL'));
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL'))
 
 # coordonnees Z assoicees aux points A, B et C:
 #   - au-dessous de l'interface
@@ -86,7 +86,7 @@ MAILLAG2=DEFI_GROUP(reuse=MAILLAG2,
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=(_F(NOM='VOLQUAD',GROUP_MA='VOL'),
-                                   _F(NOM='NFISSU',OPTION='PLAN',POINT=(0.,0.,h),VECT_NORMALE=(0.,0.,1.),PRECISION=0.01)));
+                                   _F(NOM='NFISSU',OPTION='PLAN',POINT=(0.,0.,h),VECT_NORMALE=(0.,0.,1.),PRECISION=0.01)))
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -98,12 +98,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='3D'),
                            _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D')));
+                              MODELISATION='3D')))
 
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF')),
-                       );
+                       )
 
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
@@ -118,13 +118,13 @@ LT = FORMULE(VALE='-Y+a',
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
-                    );
+                    )
 
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='STANDARD',
-                         INFO=1);
+                         INFO=1)
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -137,7 +137,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                CONTACT_INIT = 'OUI',
                              ),
                          ),
-                   );
+                   )
 
 #----------------------------------------------
 #                   MATERIAU
@@ -146,13 +146,13 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho))
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER),
-                             );
+                             )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -183,18 +183,18 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                    DDL=('DZ','DZ'),
                                    COEF_MULT=(1.0,1.0),
                                    COEF_IMPO=0.0),
-                             ));
+                             ))
 
 # PRESSION POSITIVE = COMPRESSION
 PRES=1.E6
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES));
+                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES))
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3));
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3))
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
@@ -210,7 +210,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                               ),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
-                   INFO=1);
+                   INFO=1)
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -242,7 +242,7 @@ TABLAG0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='LAGS_C',
-                               OPERATION='EXTRACTION'));
+                               OPERATION='EXTRACTION'))
 
 # table des pressions de contact suivant y, en x=1
 TABLAG1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -251,7 +251,7 @@ TABLAG1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='LAGS_C',
-                               OPERATION='EXTRACTION'));
+                               OPERATION='EXTRACTION'))
 
 
 LAGREF=-PRES
@@ -320,7 +320,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 # solution analytique :
 #    - deplacement
-def uz(X,Y,Z): 
+def uz(X,Y,Z):
     return -PRES/E*(Z-h)
 
 UZ = FORMULE(VALE='uz(X,Y,Z)',
@@ -376,7 +376,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabNRJ,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=0.000369734093422,
@@ -384,7 +384,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabNRJ,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -394,7 +394,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=0.000246743788625,
@@ -402,6 +402,6 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
-FIN();
+FIN()

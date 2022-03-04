@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1,
 
 #
 
-MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, 
+MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1,
                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
                                 PHENOMENE = 'MECANIQUE', ) )
 
@@ -82,7 +82,7 @@ RESU=MECA_STATIQUE(MODELE=MODELE_1,
                    CHAM_MATER=CH_MAT_1,
                    CARA_ELEM=CARAC_1,
                    EXCIT=_F(CHARGE=CHARGE_1,),
-                   INFO=2);
+                   INFO=2)
 
 
 #

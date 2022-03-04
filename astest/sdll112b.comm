@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -151,7 +151,7 @@ SISM_MO1=COMB_SISM_MODAL(      MODE_MECA=MODE,
 
 #-----------------------------------------
 # TEST DES VALEURS DE DEPLACEMENT
-# VALEUR DE REFERENCE DEPL   
+# VALEUR DE REFERENCE DEPL
 
 N3_DX=1.78952E-04
 
@@ -193,7 +193,7 @@ TEST_RESU(RESU=(_F(
 
 #-----------------------------------------
 # TEST DES VALEURS DE ACCE_ABSOLU
-# VALEUR DE REFERENCE ACCE_ABSOLU 
+# VALEUR DE REFERENCE ACCE_ABSOLU
 
 N1_AX=1.96200E+00
 
@@ -231,7 +231,7 @@ TEST_RESU(RESU=(_F(
 #
 #-----------------------------------------
 # TEST DES VALEURS DE REACTIONS
-# VALEUR DE REFERENCE REAC 
+# VALEUR DE REFERENCE REAC
 
 N1_RX=6.696036E+02
 
@@ -310,7 +310,7 @@ SISM_MO2=COMB_SISM_MODAL(    MODE_MECA=MODE,
 
 #-----------------------------------------
 # TEST DES VALEURS DE DEPLACEMENT
-# VALEUR DE REFERENCE DEPL  
+# VALEUR DE REFERENCE DEPL
 
 N3_DX_2=1.78952E-04
 
@@ -549,9 +549,9 @@ TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',
 # TEST DES VALEURS DE ACCE_ABSOLU
 # VALEUR DE REFERENCE ACCE_ABSOLU
 #   IDENTIQUES A CELLES DU MONO_APPUI SISM_MO1 aster 13.2.2
-## N1_AX  =1.96200E+00 ;
-## N5_AX  =1.96200E+00 ;
-## N9_AX  =1.96200E+00 ;
+## N1_AX  =1.96200E+00
+## N5_AX  =1.96200E+00
+## N9_AX  =1.96200E+00
 
 TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
@@ -870,9 +870,9 @@ TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',
 # TEST DES VALEURS DE ACCE_ABSOLU
 # VALEUR DE REFERENCE ACCE_ABSOLU
 #   IDENTIQUES A CELLES DU MONO_APPUI SISM_MO2 aster 13.2.2
-## N1_AX  =1.96200E+00 ;
-## N5_AX  =1.96200E+00 ;
-## N9_AX  =1.96200E+00 ;
+## N1_AX  =1.96200E+00
+## N5_AX  =1.96200E+00
+## N9_AX  =1.96200E+00
 
 TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU6,

@@ -39,11 +39,11 @@ KINT=DEFI_CONSTANTE(VALE=1.E-21)
 #***********************************************************************
 
 MAIL1=LIRE_MAILLAGE(FORMAT='MED', )
-            
+
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE  = MAIL1,
                    LINE_QUAD = _F(TOUT='OUI'),
-                   );
+                   )
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(  TOUT = 'OUI',
@@ -54,20 +54,20 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
 
 MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(  GROUP_MA_PEAU = ('HAUT', 'DEVANT', 'DROITE',),  )
-                     );
-                     
+                     )
+
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
                           CREA_GROUP_MA=(_F(NOM='ROCHE',
                                             TOUT='OUI',)),
                           CREA_GROUP_NO=(_F(NOM='ROCHES',
                                             CRIT_NOEUD='SOMMET',
-                                            GROUP_MA='ROCHE'),),);
+                                            GROUP_MA='ROCHE'),),)
 
 
-BITUME=DEFI_MATERIAU( ELAS=_F( 
-                            E = 24.E6,   
-                            NU= 0.47,   
+BITUME=DEFI_MATERIAU( ELAS=_F(
+                            E = 24.E6,
+                            NU= 0.47,
                             ALPHA=0. ),
                        VISC_MAXWELL_MT =_F(
                               ETA_D=1.59e+7,
@@ -145,9 +145,9 @@ TEMPS1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LT1),
 
 U1=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
-                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = DEP_SYM,), 
+                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = DEP_SYM,),
                              _F(CHARGE = P0,)),
                  COMPORTEMENT=_F(RELATION = 'KIT_HM',
                                  RELATION_KIT = ('VISC_MAXWELL_MT','LIQU_SATU','HYDR_UTIL',),
@@ -197,9 +197,9 @@ EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
 TFIN=7010.
 U2=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
-                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,), 
-                             _F(CHARGE = DEP_V,FONC_MULT = EVOL_DEV,), 
-                             _F(CHARGE = DEP_SYM,), 
+                             _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,),
+                             _F(CHARGE = DEP_V,FONC_MULT = EVOL_DEV,),
+                             _F(CHARGE = DEP_SYM,),
                              ),
                  COMPORTEMENT=_F(RELATION = 'KIT_HM',
                                  RELATION_KIT = ('VISC_MAXWELL_MT','LIQU_SATU','HYDR_UTIL',),
@@ -227,4 +227,4 @@ TEST_RESU(RESU=_F(INST=TFIN, RESULTAT=U2,NOM_CHAM='SIGM_NOEU',
                   ),  )
 
 
-FIN();
+FIN()

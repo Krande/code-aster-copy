@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -201,7 +201,7 @@ if ok_poursuite == 1:
             ok_poursuite = 2
 
 
-U1MAZAR=CALC_CHAMP(FORCE='REAC_NODA', reuse =U1MAZAR, RESULTAT=U1MAZAR, );
+U1MAZAR=CALC_CHAMP(FORCE='REAC_NODA', reuse =U1MAZAR, RESULTAT=U1MAZAR, )
 U1MAZAR=CALC_CHAMP(reuse=U1MAZAR, RESULTAT=U1MAZAR, DEFORMATION=('EPSI_ELGA'), )
 
 # Réaction

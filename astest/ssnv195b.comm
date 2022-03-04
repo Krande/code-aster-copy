@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLE=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLE=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
 MAILLE=DEFI_GROUP(reuse = MAILLE,
                   MAILLAGE = MAILLE,
@@ -46,7 +46,7 @@ MAILLE=DEFI_GROUP(reuse = MAILLE,
                                 PRECISION = 2E-3,
                                 ),
                             )
-           );
+           )
 
 
 MAILLE=DEFI_GROUP(reuse = MAILLE,
@@ -75,7 +75,7 @@ MAILLE=DEFI_GROUP(reuse = MAILLE,
                                 ),
 #                              _F(GROUP_MA='VOL'),
                             )
-           );
+           )
 
 
 MAILLAGE= COPIER(CONCEPT= MAILLE)
@@ -83,13 +83,13 @@ MAILLAGE= COPIER(CONCEPT= MAILLE)
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL'),
-                    );
+                    )
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(GROUP_MA=('VOL'),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D'),
-                     );
+                     )
 
 
 
@@ -103,18 +103,18 @@ LN2 = FORMULE(VALE='Z-37.5',
 
 FISS1=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN1));
+                    DEFI_FISS=_F(FONC_LN=LN1))
 
 
 FISS2=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN2));
+                    DEFI_FISS=_F(FONC_LN=LN2))
 
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          CONTACT='STANDARD',
-                        );
+                        )
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -137,7 +137,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_CONT    = 100.,
                              ),
                          ),
-                   );
+                   )
 
 
 
@@ -146,14 +146,14 @@ E=100.0E6
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0));
+                            RHO=7800.0))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOL'),
                                 MATER=ACIER,
                                 ),
-                             ));
+                             ))
 ZERO=0.0
 DEPX=1.E-3
 DEPY=2.E-3
@@ -176,11 +176,11 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                     DZ=DEPZ,
                                     ),
                                  ),
-                       INFO=1);
+                       INFO=1)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1));
+                                    NOMBRE=1))
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -193,7 +193,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                ),
                    NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
-                   );
+                   )
 
 
 # -------------------------------------------------------------
@@ -215,7 +215,7 @@ RES_XFEM=POST_CHAM_XFEM(
 
                         INFO          = 2)
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
+#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM))
 
 
 # -------------------------------------------------------------
@@ -229,12 +229,12 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 IMPR_TABLE(TABLE=LAG,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON');
+           IMPR_FONCTION='NON')
 
 LAREF=-1.2E4
 LA1REF=0.
@@ -295,4 +295,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='MIN',
            TABLE=LAG,)
 
-FIN();
+FIN()

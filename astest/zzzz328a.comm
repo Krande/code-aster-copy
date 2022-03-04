@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,29 +19,29 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1e9,
-                            NU=0.2,),);
+                            NU=0.2,),)
 
 L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 # MODELISATION 3D
 
 MO0=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 MOMAT0=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 AX=0.0
 AY=0.0
@@ -100,16 +100,16 @@ BLOC0=AFFE_CHAR_MECA(MODELE=MO0,
                                  _F(GROUP_NO='H',
                                     DX=HX,
                                     DY=HY,
-                                    DZ=HZ,),),);
+                                    DZ=HZ,),),)
 
 U0=STAT_NON_LINE(MODELE=MO0,
                 CHAM_MATER=MOMAT0,
                 EXCIT=_F(CHARGE=BLOC0,),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM',  RESULTAT=U0, );
+U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM',  RESULTAT=U0, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -118,12 +118,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=6680.555556,
                   VALE_CALC=6680.555556,
-                  GROUP_MA='M19',),);
+                  GROUP_MA='M19',),)
 
 # MODELISATION 3D_SI
 
 MA1 = CREA_MAILLAGE(MAILLAGE = MA,
-                    LINE_QUAD = _F(TOUT = 'OUI'),);
+                    LINE_QUAD = _F(TOUT = 'OUI'),)
 
 MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
                       CREA_GROUP_NO= (
@@ -145,11 +145,11 @@ MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
 MO1=AFFE_MODELE(MAILLAGE=MA1,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_SI',),);
+                       MODELISATION='3D_SI',),)
 
 MOMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 NS1X=(AX+EX)*0.5
 NS1Y=(AY+EY)*0.5
@@ -268,16 +268,16 @@ BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                                  _F(GROUP_NO='NS12',
                                     DX=NS12X,
                                     DY=NS12Y,
-                                    DZ=NS12Z,),),);
+                                    DZ=NS12Z,),),)
 
 U1=STAT_NON_LINE(MODELE=MO1,
                 CHAM_MATER=MOMAT1,
                 EXCIT=_F(CHARGE=BLOC1,),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', DEFORMATION='EPSP_ELGA', RESULTAT=U1, );
+U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', DEFORMATION='EPSP_ELGA', RESULTAT=U1, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -286,6 +286,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=6680.555556,
                   VALE_CALC=6680.555556,
-                  GROUP_MA='M19',),);
+                  GROUP_MA='M19',),)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,10 +85,10 @@ ACIER = DEFI_MATERIAU(ELAS = _F(E=190000.0, NU=0.3),
                                      NUCL_GAUSS_PORO = 0.0,
                                      NUCL_GAUSS_PLAS = 0.6,
                                      NUCL_GAUSS_DEV = 0.01,
-                     ),                
-                      ) 
-                                 
-# AFFECTATION DES MATERIAUX                               
+                     ),
+                      )
+
+# AFFECTATION DES MATERIAUX
 MATE = AFFE_MATERIAU (MAILLAGE = MAIL,
                       AFFE     = _F(GROUP_MA='SPECIMEN', MATER = ACIER),)
 

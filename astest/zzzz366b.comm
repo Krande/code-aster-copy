@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: nicolas.sellenet at edf.fr
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='ASTER',);
+MAIL=LIRE_MAILLAGE(FORMAT='ASTER',)
 
 
 # Cas Penta15
@@ -28,7 +28,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='ASTER',);
 MODL15=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA='Penta15',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 CHAM15_1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     MODELE=MODL15,
@@ -47,19 +47,19 @@ CHAM15_1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                           _F(GROUP_NO='N12', NOM_CMP=('SIYY',), VALE=(12.,),),
                           _F(GROUP_NO='N13', NOM_CMP=('SIYY',), VALE=(13.,),),
                           _F(GROUP_NO='N14', NOM_CMP=('SIYY',), VALE=(14.,),),
-                          _F(GROUP_NO='N15', NOM_CMP=('SIYY',), VALE=(15.,),),),);
+                          _F(GROUP_NO='N15', NOM_CMP=('SIYY',), VALE=(15.,),),),)
 
 CHAM15_2=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                     MODELE=MODL15,
                     OPERATION='DISC',
                     PROL_ZERO='OUI',
-                    CHAM_GD=CHAM15_1,);
+                    CHAM_GD=CHAM15_1,)
 
 IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(CHAM_GD=CHAM15_2,),);
+          RESU=_F(CHAM_GD=CHAM15_2,),)
 
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(CHAM_GD=CHAM15_2,),);
+          RESU=_F(CHAM_GD=CHAM15_2,),)
 
 CHAM15_3=LIRE_CHAMP(UNITE=80,
                     FORMAT='MED',
@@ -67,16 +67,16 @@ CHAM15_3=LIRE_CHAMP(UNITE=80,
                     TYPE_CHAM='ELNO_SIEF_R',
                     NOM_CMP_IDEM='OUI',
                     MAILLAGE=MAIL,
-                    MODELE=MODL15,);
+                    MODELE=MODL15,)
 
 IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(CHAM_GD=CHAM15_3,),);
+          RESU=_F(CHAM_GD=CHAM15_3,),)
 
 MAIL2=LIRE_MAILLAGE(FORMAT='MED',
-                    UNITE=80,);
+                    UNITE=80,)
 
 IMPR_RESU(FORMAT='ASTER',
-          RESU=_F(MAILLAGE=MAIL2,),);
+          RESU=_F(MAILLAGE=MAIL2,),)
 
 TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CHAM15_3,
                         NOM_CMP='SIYY',
@@ -152,7 +152,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CHAM15_3,
                         NOM_CMP='SIYY',
                         GROUP_MA='M1',
                         GROUP_NO='N15',
-                        VALE_CALC=15.),),);
+                        VALE_CALC=15.),),)
 
 
 # Cas Penta6
@@ -160,7 +160,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CHAM15_3,
 MODL06=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA='Penta6',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 CHAM06_1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     MODELE=MODL06,
@@ -170,20 +170,20 @@ CHAM06_1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                           _F(GROUP_NO='N3', NOM_CMP=('SIYY',), VALE=(3.,),),
                           _F(GROUP_NO='N4', NOM_CMP=('SIYY',), VALE=(4.,),),
                           _F(GROUP_NO='N5', NOM_CMP=('SIYY',), VALE=(5.,),),
-                          _F(GROUP_NO='N6', NOM_CMP=('SIYY',), VALE=(6.,),),),);
+                          _F(GROUP_NO='N6', NOM_CMP=('SIYY',), VALE=(6.,),),),)
 
 CHAM06_2=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                     MODELE=MODL06,
                     OPERATION='DISC',
                     PROL_ZERO='OUI',
-                    CHAM_GD=CHAM06_1,);
+                    CHAM_GD=CHAM06_1,)
 
 IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(CHAM_GD=CHAM06_2,),);
+          RESU=_F(CHAM_GD=CHAM06_2,),)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
-          RESU=_F(CHAM_GD=CHAM06_2,),);
+          RESU=_F(CHAM_GD=CHAM06_2,),)
 
 CHAM06_3=LIRE_CHAMP(UNITE=81,
                     FORMAT='MED',
@@ -191,10 +191,10 @@ CHAM06_3=LIRE_CHAMP(UNITE=81,
                     TYPE_CHAM='ELNO_SIEF_R',
                     NOM_CMP_IDEM='OUI',
                     MAILLAGE=MAIL,
-                    MODELE=MODL06,);
+                    MODELE=MODL06,)
 
 IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(CHAM_GD=CHAM06_3,),);
+          RESU=_F(CHAM_GD=CHAM06_3,),)
 
 TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CHAM06_3,
                         NOM_CMP='SIYY',
@@ -225,6 +225,6 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CHAM06_3,
                         NOM_CMP='SIYY',
                         GROUP_MA='M2',
                         GROUP_NO='N6',
-                        VALE_CALC=6.),),);
+                        VALE_CALC=6.),),)
 
-FIN();
+FIN()

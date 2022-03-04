@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',
                      0.802410212,972.221955,
                      0.90250577 ,991.1425412,
                      1.002586229,1007.073281,),
-                     PROL_DROITE='LINEAIRE',);
+                     PROL_DROITE='LINEAIRE',)
 
 # A TITRE INDICATIF ON DONNE LES PARAMETRES DE ROUSSELIER
 # AYANT SERVIS POUR LE CALCUL DE REFERENCE
@@ -69,39 +69,39 @@ MA_EPR=DEFI_MATERIAU(ELAS=_F(E=215000.0,
                                    M=6.76,),
                      ROUSSELIER=_F(D=0.0001,
                                    SIGM_1=1575.0,
-                                   PORO_INIT=5e-09,),);
+                                   PORO_INIT=5e-09,),)
 
 # ------------------------------------------------------------
 
 #  PREMIER CALCUL : VITESSE LENTE  10-3 s-1
 # ------------------------------------------------------------
 
-IFIN = 2000.0;
+IFIN = 2000.0
 
 
 
 FCT_L=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,IFIN,0.2,),
                     PROL_DROITE='EXCLU',
-                    PROL_GAUCHE='EXCLU',);
+                    PROL_GAUCHE='EXCLU',)
 
 L_INSTL=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(_F(JUSQU_A=IFIN,
-                                      NOMBRE=100,),),);
+                                      NOMBRE=100,),),)
 
 L_ARCH_L=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=IFIN,
-                                      NOMBRE=20,),);
+                                      NOMBRE=20,),)
 
 F1=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,1.0,IFIN,1.2),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 F2=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,1.0,IFIN,1.),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 ZERO=DEFI_CONSTANTE(VALE=0.)
 
 TABLRESU=SIMU_POINT_MAT(INFO=1,
@@ -123,7 +123,7 @@ TABLRESU=SIMU_POINT_MAT(INFO=1,
                                       F31=ZERO,
                                       F32=ZERO,
                                    ),
-                       );
+                       )
 
 IMPR_TABLE(TABLE=TABLRESU)
 
@@ -145,4 +145,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=2000.0,),
            )
 
-FIN();
+FIN()

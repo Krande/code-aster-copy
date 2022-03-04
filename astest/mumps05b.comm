@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,10 +44,10 @@ solveur = 'MUMPS'
 #  de XX, le parametre mem_pivot autorise MUMPS a en prendre    #
 #  (1+mem_pivot/100)*XX                                         #
 # --------------------------------------------------------------#
-mem_pivot = 40;
+mem_pivot = 40
 #
 # Choix de la methode de renumeration
-meth_renum = 'METIS';
+meth_renum = 'METIS'
 #
 # Mode verbeux 1/2
 niv_info = 2
@@ -61,23 +61,23 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # pour obtenir un maillage lineaire :
 #----------------------------------------
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.E+05,
-                          NU=0.3));
+                          NU=0.3))
 
 CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MAT));
+                               MATER=MAT))
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D'));
+                       MODELISATION='3D'))
 
 CHARF=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_FACE=_F(GROUP_MA='COTE_H',
-                                   FZ=1.E+4));
+                                   FZ=1.E+4))
 
 CHARD=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='A',
@@ -86,11 +86,11 @@ CHARD=AFFE_CHAR_MECA(MODELE=MO,
                                _F(GROUP_NO='B',
                                   DY=0.),
                                _F(GROUP_MA='COTE_B',
-                                  DZ=0.)));
+                                  DZ=0.)))
 
 TPS=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1,
-                                 NOMBRE=1));
+                                 NOMBRE=1))
 
 # 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE
 #----------------------------------------------------------
@@ -102,8 +102,8 @@ MECAC=MECA_STATIQUE(INFO=niv_info,
                      EXCIT=(_F(CHARGE=CHARF),
                             _F(CHARGE=CHARD)),
                      OPTION='SANS',
-                     SOLVEUR=_F(METHODE=solveur, 
-                      RENUM=meth_renum, RESI_RELA=-1.0, PCENT_PIVOT=mem_pivot,GESTION_MEMOIRE='IN_CORE'));
+                     SOLVEUR=_F(METHODE=solveur,
+                      RENUM=meth_renum, RESI_RELA=-1.0, PCENT_PIVOT=mem_pivot,GESTION_MEMOIRE='IN_CORE'))
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='D',
@@ -138,8 +138,8 @@ MECAD1=MECA_STATIQUE(INFO=niv_info,
                      EXCIT=(_F(CHARGE=CHARF),
                             _F(CHARGE=CHARD)),
                      OPTION='SANS',
-                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, 
-                     GESTION_MEMOIRE='IN_CORE'));
+                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0,
+                     GESTION_MEMOIRE='IN_CORE'))
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   NUME_ORDRE=1,
@@ -147,7 +147,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   NOM_CMP='DZ',
                   GROUP_NO='D',
                   VALE=0.1,
-                  REFERENCE='ANALYTIQUE'));
+                  REFERENCE='ANALYTIQUE'))
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   NUME_ORDRE=1,
@@ -159,4 +159,4 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   PRECISION=1e-08,
                   REFERENCE='ANALYTIQUE'));"""
 
-FIN();
+FIN()

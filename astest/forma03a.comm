@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,25 +25,25 @@ DEBUT(CODE=_F(
 
 
 # LECTURE DU MAILLAGE
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),)
 
 # AFFECTATION DU MODELE (CONTRAINTES PLANES)
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),);
+                         MODELISATION='C_PLAN',),)
 
 # DEFINITION DU MATERIAU
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                    NU=0.3,),);
+                    NU=0.3,),)
 
 CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                           MATER=ACIER,),);
+                           MATER=ACIER,),)
 
 # CONDITIONS DE SYMETRIE
 CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
@@ -51,22 +51,22 @@ CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
                                  DY=0.0,),
                                  _F(GROUP_MA='gauche',
                                  DX=0.0,),),
-                                );
+                                )
 
 # CHARGEMENT EN FORCE
 CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
                       FORCE_CONTOUR=_F(GROUP_MA='haut',
-                                       FY=1.,),);
+                                       FY=1.,),)
 
 
 # RAMPE APPLICATION CHARGEMENT
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1000.,1000.,
-                           ),);
+                           ),)
 
 # DISCRETISATION EN TEMPS
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=10.0,NOMBRE=1,),);
+                      INTERVALLE=_F(JUSQU_A=10.0,NOMBRE=1,),)
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),)
 
 
@@ -77,7 +77,7 @@ RESU=STAT_NON_LINE(MODELE=MODE,
                           _F(CHARGE=CHFORC,
                              FONC_MULT=RAMPE,),),
                    COMPORTEMENT=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=DEFLIST,INST_FIN=10.),);
+                   INCREMENT=_F(LIST_INST=DEFLIST,INST_FIN=10.),)
 
 # INTERPOLATION DES CONTRAINTES AUX NOEUDS
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
@@ -85,7 +85,7 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             CONTRAINTE='SIGM_NOEU');
+             CONTRAINTE='SIGM_NOEU')
 
 # INTERPOLATION DES CONTRAINTES EQUIVALENTES AUX NOEUDS
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'))
@@ -93,11 +93,11 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'))
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             CRITERES='SIEQ_NOEU');
+             CRITERES='SIEQ_NOEU')
 
 # IMPRESSION DES RESULTATS
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=RESU,),);
+          RESU=_F(RESULTAT=RESU,),)
 
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -144,4 +144,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   ),
           )
 
-FIN();
+FIN()

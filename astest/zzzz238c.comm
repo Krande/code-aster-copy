@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MA2 = LIRE_MAILLAGE(FORMAT='MED',)
 
 MA1=CREA_MAILLAGE(MAILLAGE=MA2,
-                  LINE_QUAD=_F(TOUT='OUI',),);
+                  LINE_QUAD=_F(TOUT='OUI',),)
 
 MA=CREA_MAILLAGE(MAILLAGE=MA1,
-                  PENTA15_18=_F(TOUT='OUI',PREF_NOEUD='NP'),);
+                  PENTA15_18=_F(TOUT='OUI',PREF_NOEUD='NP'),)
 
 
 MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA,
@@ -41,15 +41,15 @@ MAT=DEFI_MATERIAU( ELAS=_F( E = 200000.,
                             NU = 0.,),)
 
 CHMAT=AFFE_MATERIAU( MAILLAGE=MA,
-                     AFFE=_F( TOUT = 'OUI', 
+                     AFFE=_F( TOUT = 'OUI',
                               MATER = MAT,),)
 
 CHBLO = AFFE_CHAR_MECA( MODELE=MO,
-                        DDL_IMPO=_F( GROUP_NO ='GAUCHE', 
+                        DDL_IMPO=_F( GROUP_NO ='GAUCHE',
                                      DX=0.0, DY=0.0, DZ = 0.0),)
 
 CHDNOR = AFFE_CHAR_MECA( MODELE=MO,
-                         FACE_IMPO=_F( GROUP_MA ='DROITE', 
+                         FACE_IMPO=_F( GROUP_MA ='DROITE',
                                        DNOR=0.15),)
 
 SOL = MECA_STATIQUE( MODELE=MO,

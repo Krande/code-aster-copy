@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,17 +21,17 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='NON'))
 
 # SDVERI is too much expensive
 
-Esol = 18885000000.0;
+Esol = 18885000000.0
 
-Nusol = 0.33;
+Nusol = 0.33
 
-Msol = 2650.0;
+Msol = 2650.0
 
-alpha = 1.0;
+alpha = 1.0
 
 beta=1.0
 
-rb = 100.0;
+rb = 100.0
 
 Gsol = (Esol / (2 * (1 + Nusol)))
 

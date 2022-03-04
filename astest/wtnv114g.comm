@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 ####################################
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
-                  
+
 MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
                       _F( GROUP_MA = 'BAS'),
                       _F( GROUP_MA = 'HAUT'))
@@ -173,7 +173,7 @@ RESU0=STAT_NON_LINE(
                              _F(
                 CHARGE = CH_FLU1)),
                 SCHEMA_THM=_F(PARM_THETA=1.,),
-                         COMPORTEMENT=_F( 
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = ('ELAS','LIQU_SATU','HYDR_UTIL',),
                 ITER_INTE_MAXI = 5),
@@ -202,7 +202,7 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='P_SUP',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='P_INF',
                              GROUP_NO=('NO13','NO15','NO18','NO20',),
@@ -212,12 +212,12 @@ DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='P_INF',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
-IMPR_TABLE(TABLE=DEP1,);
+IMPR_TABLE(TABLE=DEP1,)
 
 
-IMPR_TABLE(TABLE=DEP2,);
+IMPR_TABLE(TABLE=DEP2,)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',

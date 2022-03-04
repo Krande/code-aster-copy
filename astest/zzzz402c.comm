@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -167,7 +167,7 @@ MATDYN=AFFE_MATERIAU(INFO=1,MAILLAGE=MA,
 G =9.81
 PES=AFFE_CHAR_MECA(MODELE=MODSTAT,
                    PESANTEUR=_F(GRAVITE=G,
-                                DIRECTION=(0.0,-1.0,0.0),),);
+                                DIRECTION=(0.0,-1.0,0.0),),)
 
 CL = AFFE_CHAR_MECA(MODELE = MODSTAT,
                     DDL_IMPO=(_F(GROUP_MA = ('GAU','DRO'),
@@ -182,7 +182,7 @@ STATIC = MECA_STATIQUE(MODELE=MODSTAT,
                    EXCIT=(_F(CHARGE=PES,),
                           _F(CHARGE = CL),
                         ),
-                    );
+                    )
 
 STATIC = CALC_CHAMP(reuse = STATIC,
            RESULTAT = STATIC,
@@ -191,7 +191,7 @@ STATIC = CALC_CHAMP(reuse = STATIC,
            EXCIT=(_F(CHARGE=PES,),
                   _F(CHARGE = CL),),
            CONTRAINTE = ('SIEF_ELGA',),
-           );
+           )
 
 ### ===============================================================
 ###
@@ -369,7 +369,7 @@ EVOL_CH=AFFE_CHAR_MECA(MODELE=MODYN,
 import numpy as np
 
 
-####### NOYAU 
+####### NOYAU
 phi = 33.2
 cohesion = 49e3
 cohesion=0.
@@ -380,7 +380,7 @@ CHAPHINO= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('NOYAU',),
                                    NOM_CMP  = 'X1',
-                                   VALE   = phi,),);
+                                   VALE   = phi,),)
 
 CHACNO= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     OPERATION = 'AFFE',
@@ -388,9 +388,9 @@ CHACNO= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('NOYAU',),
                                    NOM_CMP  = 'X2',
-                                   VALE   = cohesion,),);
+                                   VALE   = cohesion,),)
 
-####### FILTRE 
+####### FILTRE
 
 phi = 42.2
 cohesion = 78e3
@@ -402,7 +402,7 @@ CHAPHIFI= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('FILTRE',),
                                    NOM_CMP  = 'X1',
-                                   VALE   = phi,),);
+                                   VALE   = phi,),)
 
 CHACFI= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     OPERATION = 'AFFE',
@@ -410,10 +410,10 @@ CHACFI= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('FILTRE',),
                                    NOM_CMP  = 'X2',
-                                   VALE   = cohesion,),);
+                                   VALE   = cohesion,),)
 
 
-####### TRANSITION 
+####### TRANSITION
 
 phi = 39.9
 cohesion = 39e3
@@ -425,7 +425,7 @@ CHAPHITR= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('TRANS','TRANSW'),
                                    NOM_CMP  = 'X1',
-                                   VALE   = phi,),);
+                                   VALE   = phi,),)
 
 CHACTR = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     OPERATION = 'AFFE',
@@ -433,10 +433,10 @@ CHACTR = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('TRANS','TRANSW'),
                                    NOM_CMP  = 'X2',
-                                   VALE   = cohesion,),);
+                                   VALE   = cohesion,),)
 
 
-####### ENROCHEMENT INTERNE AMONT 
+####### ENROCHEMENT INTERNE AMONT
 
 phi = 42.7
 cohesion = 49e3
@@ -448,7 +448,7 @@ CHAPHIEW= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('ENROCW'),
                                    NOM_CMP  = 'X1',
-                                   VALE   = phi,),);
+                                   VALE   = phi,),)
 
 CHACEW= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     OPERATION = 'AFFE',
@@ -456,7 +456,7 @@ CHACEW= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('ENROCW'),
                                    NOM_CMP  = 'X2',
-                                   VALE   = cohesion,),);
+                                   VALE   = cohesion,),)
 
 
 ####### ENROCHEMENT EXTERNE
@@ -471,7 +471,7 @@ CHAPHIEN= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('ENR','ENRW'),
                                    NOM_CMP  = 'X1',
-                                   VALE   = phi,),);
+                                   VALE   = phi,),)
 
 CHACEN= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     OPERATION = 'AFFE',
@@ -479,10 +479,10 @@ CHACEN= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('ENR','ENRW'),
                                    NOM_CMP  = 'X2',
-                                   VALE   = cohesion,),);
+                                   VALE   = cohesion,),)
 
 
-####### ENROCHEMENT INTERNE AVAL 
+####### ENROCHEMENT INTERNE AVAL
 
 phi = 40.2
 cohesion = 49e3
@@ -494,7 +494,7 @@ CHAPHIE= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('ENROC'),
                                    NOM_CMP  = 'X1',
-                                   VALE   = phi,),);
+                                   VALE   = phi,),)
 
 CHACE= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     OPERATION = 'AFFE',
@@ -502,20 +502,20 @@ CHACE= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('ENROC'),
                                    NOM_CMP  = 'X2',
-                                   VALE   = cohesion,),);
+                                   VALE   = cohesion,),)
 
-####### BEDROCK 
+####### BEDROCK
 
 phi = 30.
 cohesion =0.
-    
+
 CHAPHIRK= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     OPERATION = 'AFFE',
                     MODELE    = MODYN,
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('Fondation'),
                                    NOM_CMP  = 'X1',
-                                   VALE   = phi,),);
+                                   VALE   = phi,),)
 
 CHACRK= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     OPERATION = 'AFFE',
@@ -523,12 +523,12 @@ CHACRK= CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                     #PROL_ZERO='OUI',
                     AFFE      = _F(GROUP_MA = ('Fondation'),
                                    NOM_CMP  = 'X2',
-                                   VALE   = cohesion,),);
+                                   VALE   = cohesion,),)
 
 
 CHAPHI = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
-                     OPERATION = 'ASSE', 
-                     MODELE    = MODYN, 
+                     OPERATION = 'ASSE',
+                     MODELE    = MODYN,
                      #PROL_ZERO='OUI',
                      ASSE      = (_F(CHAM_GD = CHAPHINO,
                                    GROUP_MA= ('NOYAU'),
@@ -559,12 +559,12 @@ CHAPHI = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                                    CUMUL   = 'OUI',
                                    COEF_R  = 1.),
                                 ),
-                   INFO =1,);
+                   INFO =1,)
 
 
 CHAC = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
-                     OPERATION = 'ASSE', 
-                     MODELE    = MODYN, 
+                     OPERATION = 'ASSE',
+                     MODELE    = MODYN,
                      #PROL_ZERO='OUI',
                      ASSE      = (_F(CHAM_GD = CHACNO,
                                    GROUP_MA= ('NOYAU'),
@@ -595,7 +595,7 @@ CHAC = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
                                    CUMUL   = 'OUI',
                                    COEF_R  = 1.),
                                 ),
-                   INFO =1,);
+                   INFO =1,)
 
 
 DYNA_VC=DYNA_VIBRA(BASE_CALCUL='PHYS',

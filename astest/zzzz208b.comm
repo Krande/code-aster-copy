@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,81 +54,81 @@ import aster
 #******************************
 
 # lecture du maillage
-MAYA=LIRE_MAILLAGE(FORMAT='MED',);
+MAYA=LIRE_MAILLAGE(FORMAT='MED',)
 
 #definition des groupes de noeuds des interfaces
 MAYA=DEFI_GROUP(reuse =MAYA,
                 MAILLAGE=MAYA,
-                CREA_GROUP_NO=_F(GROUP_MA='GM3',),);
+                CREA_GROUP_NO=_F(GROUP_MA='GM3',),)
 
 MAYA=DEFI_GROUP(reuse =MAYA,
                 MAILLAGE=MAYA,
-                CREA_GROUP_NO=_F(GROUP_MA='GM2',),);
+                CREA_GROUP_NO=_F(GROUP_MA='GM2',),)
 
 # affectation du modele mecanique 3D
 MODEL=AFFE_MODELE(MAILLAGE=MAYA,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='3D',),);
+                          MODELISATION='3D',),)
 
 # definition du materiau
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                             NU=0.3,
                             RHO=7800.0,
-                            AMOR_HYST=0.01,),);
+                            AMOR_HYST=0.01,),)
 
 # affecatation du materiau
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE=_F(GROUP_MA='GM1',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 # affectation des conditions aux limites : encastrement sur interfaces
 CHARGE=AFFE_CHAR_MECA(MODELE=MODEL,
                       DDL_IMPO=_F(GROUP_MA=('GM2','GM3',),
                                   DX=0.0,
                                   DY=0.0,
-                                  DZ=0.0,),);
+                                  DZ=0.0,),)
 
 # affectation d'une charge ponctuelle
 FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
                      FORCE_NODALE=_F(GROUP_NO='N107',
-                                     FZ=1.0,),);
+                                     FZ=1.0,),)
 
 # calcul des matrices & vecteurs elementaires
 KELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MODEL,
                      CHAM_MATER=CHMAT,
-                     CHARGE=CHARGE,);
+                     CHARGE=CHARGE,)
 
 KELEMC=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
                       MODELE=MODEL,
                       CHARGE=CHARGE,
                       CHAM_MATER=CHMAT,
-                      RIGI_MECA=KELEM,);
+                      RIGI_MECA=KELEM,)
 
 MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                      MODELE=MODEL,
                      CHAM_MATER=CHMAT,
-                     CHARGE=CHARGE,);
+                     CHARGE=CHARGE,)
 
 FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                     CHARGE=FORCE,);
+                     CHARGE=FORCE,)
 
 # Nmerotation & Assemblage
 NUME=NUME_DDL(MATR_RIGI=KELEM,
 
-              );
+              )
 
 #IMPR_CO(CHAINE='.SMOS',POSITION=15,ATTRIBUT='OUI',)
 
 KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
-                  NUME_DDL=NUME,);
+                  NUME_DDL=NUME,)
 
 KASC=ASSE_MATRICE(MATR_ELEM=KELEMC,
-                  NUME_DDL=NUME,);
+                  NUME_DDL=NUME,)
 
 MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
-                  NUME_DDL=NUME,);
+                  NUME_DDL=NUME,)
 
 # Calcul des modes dynamiques interfaces encastrees
 MODES=CALC_MODES(MATR_RIGI=KASS,
@@ -145,23 +145,23 @@ MODES=CALC_MODES(MATR_RIGI=KASS,
 MODSTA2=MODE_STATIQUE(MATR_RIGI=KASS,
                       MATR_MASS=MASS,
                       MODE_STAT=_F(GROUP_NO='GM2',
-                                   TOUT_CMP='OUI',),);
+                                   TOUT_CMP='OUI',),)
 
 MODSTA1=MODE_STATIQUE(MATR_RIGI=KASS,
                       MATR_MASS=MASS,
                       MODE_STAT=_F(GROUP_NO='GM3',
-                                   TOUT_CMP='OUI',),);
+                                   TOUT_CMP='OUI',),)
 
 # definition des interfaces dynamiques
 INTERFA1=DEFI_INTERF_DYNA(NUME_DDL=NUME,
                           INTERFACE=_F(NOM='INTER1',
                                        TYPE='CRAIGB',
-                                       GROUP_NO='GM3',),);
+                                       GROUP_NO='GM3',),)
 
 INTERFA2=DEFI_INTERF_DYNA(NUME_DDL=NUME,
                           INTERFACE=_F(NOM='INTER2',
                                        TYPE='CRAIGB',
-                                       GROUP_NO='GM2',),);
+                                       GROUP_NO='GM2',),)
 
 # definition des bases de modes statiques pour calculer
 # les modes d'interface
@@ -170,7 +170,7 @@ BASE1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,
                                 ),
                              _F(MODE_INTF=MODSTA1,),),
                        INTERF_DYNA=INTERFA1,
-                       NUME_REF=NUME,);
+                       NUME_REF=NUME,)
 
 
 
@@ -179,17 +179,17 @@ BASE2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,
                                 ),
                              _F(MODE_INTF=MODSTA2,),),
                        INTERF_DYNA=INTERFA2,
-                       NUME_REF=NUME,);
+                       NUME_REF=NUME,)
 
 # creation des macro-elements dynamiques qui ne comporte
 # que des modes statiques
 MACRSTA1=MACR_ELEM_DYNA(BASE_MODALE=BASE1,
                      MATR_RIGI=KASS,
-                     MATR_MASS=MASS);
+                     MATR_MASS=MASS)
 
 MACRSTA2=MACR_ELEM_DYNA(BASE_MODALE=BASE2,
                      MATR_RIGI=KASS,
-                     MATR_MASS=MASS,);
+                     MATR_MASS=MASS,)
 
 MODLGENE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
                                          MACR_ELEM_DYNA=MACRSTA1,
@@ -202,16 +202,16 @@ MODLGENE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
                           LIAISON=_F(SOUS_STRUC_1='SS1',
                                      INTERFACE_1='INTER1',
                                      SOUS_STRUC_2='SS2',
-                                     INTERFACE_2='INTER2',),);
+                                     INTERFACE_2='INTER2',),)
 
-NUMGEN=NUME_DDL_GENE(MODELE_GENE=MODLGENE,);
+NUMGEN=NUME_DDL_GENE(MODELE_GENE=MODLGENE,)
 
 
 KGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGEN,
-                    OPTION='RIGI_GENE',);
+                    OPTION='RIGI_GENE',)
 
 MGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGEN,
-                    OPTION='MASS_GENE',);
+                    OPTION='MASS_GENE',)
 
 # calcul des modes generalises du complement de Schur
 # a l'interface
@@ -229,11 +229,11 @@ MODGEN=CALC_MODES(MATR_RIGI=KGEN,
 # expansion des modes generalises d'interface sur chaque sous-structure
 MODPHY1=REST_SOUS_STRUC(RESU_GENE=MODGEN,
                       TOUT_ORDRE='OUI',
-                      SOUS_STRUC='SS1',);
+                      SOUS_STRUC='SS1',)
 
 MODPHY2=REST_SOUS_STRUC(RESU_GENE=MODGEN,
                       TOUT_ORDRE='OUI',
-                      SOUS_STRUC='SS2',);
+                      SOUS_STRUC='SS2',)
 
 
 # definition des bases modales des macro-elements dynamiques
@@ -244,23 +244,23 @@ BASE11=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,),
 #                             _F(MODE_MECA=MODPHY1,),),
                              _F(MODE_INTF=MODPHY1,),),
                        INTERF_DYNA=INTERFA1,
-                       NUME_REF=NUME,);
+                       NUME_REF=NUME,)
 
 
 BASE22=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,),
 #                             _F(MODE_MECA=MODPHY2,),),
                              _F(MODE_INTF=MODPHY2,),),
                        INTERF_DYNA=INTERFA2,
-                       NUME_REF=NUME,);
+                       NUME_REF=NUME,)
 
 
 MACR1=MACR_ELEM_DYNA(BASE_MODALE=BASE11,
                      MATR_RIGI=KASS,
-                     MATR_MASS=MASS,);
+                     MATR_MASS=MASS,)
 
 MACR2=MACR_ELEM_DYNA(BASE_MODALE=BASE22,
                      MATR_RIGI=KASS,
-                     MATR_MASS=MASS,);
+                     MATR_MASS=MASS,)
 
 # definition du modele generalise avec option REDUIT
 # pour prise en compte des modes d'interface
@@ -277,15 +277,15 @@ MODLGENR=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
                                      INTERFACE_1='INTER1',
                                      SOUS_STRUC_2='SS2',
                                      INTERFACE_2='INTER2',
-                                     OPTION ='REDUIT'),);
+                                     OPTION ='REDUIT'),)
 
-NUMGENR=NUME_DDL_GENE(MODELE_GENE=MODLGENR,);
+NUMGENR=NUME_DDL_GENE(MODELE_GENE=MODLGENR,)
 
 KGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGENR,
-                    OPTION='RIGI_GENE',);
+                    OPTION='RIGI_GENE',)
 
 MGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUMGENR,
-                    OPTION='MASS_GENE',);
+                    OPTION='MASS_GENE',)
 
 # calcul des modes generalises
 MODGENR=CALC_MODES(MATR_RIGI=KGENR,
@@ -401,15 +401,15 @@ MACM[MTOT_M1:(MTOT_M1+MDYNM2),MDYNM1:MTOT_M1]=MAC2M12
 # d'assemblage par elimination
 NUGER=NUME_DDL_GENE(MODELE_GENE=MODLGENR,
                     METHODE='INITIAL',
-                    );
+                    )
 
 KPYR=ASSE_MATR_GENE(NUME_DDL_GENE=NUGER,
                     METHODE='INITIAL',
-                    );
+                    )
 
 MPYR=ASSE_MATR_GENE(NUME_DDL_GENE=NUGER,
                     METHODE='INITIAL',
-                    );
+                    )
 
 # Recuperation des matrices dans Aster depuis Python
 KPYR.RECU_MATR_GENE(MACK)
@@ -471,4 +471,4 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                 ),
           )
 
-FIN();
+FIN()

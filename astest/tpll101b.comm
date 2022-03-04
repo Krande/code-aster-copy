@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,29 +19,29 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 from math import *
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='THERMIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # CALCUL ELECTRIQUE
 
 ACIER_EL=DEFI_MATERIAU(THER=_F(LAMBDA=1.,
-                               RHO_CP=0.,),);
+                               RHO_CP=0.,),)
 
 CHMAT_EL=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
-                               MATER=ACIER_EL,),);
+                               MATER=ACIER_EL,),)
 
 CHAR_EL=AFFE_CHAR_THER(MODELE=MO,
                        TEMP_IMPO=_F(GROUP_NO='LBC',
@@ -51,16 +51,16 @@ CHAR_EL=AFFE_CHAR_THER(MODELE=MO,
                                  _F(GROUP_MA='LDC',
                                     FLUN=0.,),
                                  _F(GROUP_MA='LAD',
-                                    FLUN=-10.,),),);
+                                    FLUN=-10.,),),)
 
 POT_ELRE=THER_LINEAIRE(MODELE=MO,
                        CHAM_MATER=CHMAT_EL,
-                       EXCIT=_F(CHARGE=CHAR_EL,),);
+                       EXCIT=_F(CHARGE=CHAR_EL,),)
 
 POT_ELRE=CALC_CHAMP(reuse =POT_ELRE,
                    RESULTAT=POT_ELRE,
                    INST=0.0,
-                    THERMIQUE=('SOUR_ELGA'),);
+                    THERMIQUE=('SOUR_ELGA'),)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=0,
                   POINT=1,
@@ -75,7 +75,7 @@ SOURCE=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                   OPERATION='EXTR',
                   RESULTAT=POT_ELRE,
                   NOM_CHAM='SOUR_ELGA',
-                  NUME_ORDRE=0,);
+                  NUME_ORDRE=0,)
 
 # CALCUL THERMIQUE
 
@@ -87,38 +87,38 @@ CHAR_TH=AFFE_CHAR_THER(MODELE=MO,
                        FLUX_REP=(_F(GROUP_MA='LAB',
                                     FLUN=0.,),
                                  _F(GROUP_MA='LDC',
-                                    FLUN=0.,),),);
+                                    FLUN=0.,),),)
 
 CHAR_SO=AFFE_CHAR_THER(MODELE=MO,
-                       SOURCE=_F(SOUR_CALCULEE=SOURCE,),);
+                       SOURCE=_F(SOUR_CALCULEE=SOURCE,),)
 
 ACIER_TH=DEFI_MATERIAU(THER=_F(LAMBDA=2.E-2,
-                               RHO_CP=0.,),);
+                               RHO_CP=0.,),)
 
 CHMAT_TH=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
-                               MATER=ACIER_TH,),);
+                               MATER=ACIER_TH,),)
 
 TEMPRESU=THER_LINEAIRE(MODELE=MO,
                        CHAM_MATER=CHMAT_TH,
                        EXCIT=(_F(CHARGE=CHAR_TH,),
-                              _F(CHARGE=CHAR_SO,),),);
+                              _F(CHARGE=CHAR_SO,),),)
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='EXTR',
                 RESULTAT=TEMPRESU,
                 NOM_CHAM='TEMP',
-                NUME_ORDRE=0,);
-x = (1.8591 * cos((pi / 12)));
+                NUME_ORDRE=0,)
+x = (1.8591 * cos((pi / 12)))
 
-y = (1.8591 * sin((pi / 12)));
+y = (1.8591 * sin((pi / 12)))
 
 
 LIGN=MACR_LIGN_COUPE(RESULTAT=TEMPRESU,
                      LIGN_COUPE=_F(TYPE='SEGMENT',
                                    NB_POINTS=5,
                                    COOR_ORIG=(x,0.,y,),
-                                   COOR_EXTR=(x,0.1,y,),),);
+                                   COOR_EXTR=(x,0.1,y,),),)
 
 TEST_TABLE(PRECISION=1.E-2,
            VALE_CALC=585.90271454742,
@@ -130,6 +130,6 @@ TEST_TABLE(PRECISION=1.E-2,
                      VALE=0.025,),
            )
 
-FIN();
+FIN()
 
 #

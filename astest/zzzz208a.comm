@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI'))
 #******************************
 
 # lecture du maillage
-MAYA=LIRE_MAILLAGE(FORMAT='MED',);
+MAYA=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 # Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
@@ -42,69 +42,69 @@ MAYA=MODI_MAILLAGE(reuse =MAYA, MAILLAGE=MAYA, DEFORME=_F(OPTION='TRAN', ALEA=1.
 MODEL=AFFE_MODELE(MAILLAGE=MAYA,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='3D',),);
+                          MODELISATION='3D',),)
 
 # Definition du materiau
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                             NU=0.3,
                             RHO=7800.0,
-                            AMOR_HYST=0.01,),);
+                            AMOR_HYST=0.01,),)
 
 # Affectation du materiau
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE=_F(GROUP_MA=('GM1',),
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 # Affectation des conditions aux limites cinematiques : encastrement
 CHARCINE=AFFE_CHAR_CINE(MODELE=MODEL,
                         MECA_IMPO=_F(GROUP_MA='GM2',
                                      DX=0.0,
                                      DY=0.0,
-                                     DZ=0.0,),);
+                                     DZ=0.0,),)
 
 # Affectation du chargement : force ponctuelle sur un noeud
 FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
                      FORCE_NODALE=_F(GROUP_NO='N107',
-                                     FZ=1.0,),);
+                                     FZ=1.0,),)
 
 # Calcul des matrices & vecteurs elementaires
 KELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MODEL,
-                     CHAM_MATER=CHMAT,);
+                     CHAM_MATER=CHMAT,)
 
 KELEMC=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
                      MODELE=MODEL,
                      CHAM_MATER=CHMAT,
-                     RIGI_MECA=KELEM,);
+                     RIGI_MECA=KELEM,)
 
 MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                      MODELE=MODEL,
-                     CHAM_MATER=CHMAT,);
+                     CHAM_MATER=CHMAT,)
 
 FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                     CHARGE=FORCE,);
+                     CHARGE=FORCE,)
 
 # Numerotation et assemblage
 NUME=NUME_DDL(MATR_RIGI=KELEM,
 
-              );
+              )
 
 KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
                   NUME_DDL=NUME,
-                  CHAR_CINE=CHARCINE,);
+                  CHAR_CINE=CHARCINE,)
 
 KASC=ASSE_MATRICE(MATR_ELEM=KELEMC,
                   NUME_DDL=NUME,
-                  CHAR_CINE=CHARCINE,);
+                  CHAR_CINE=CHARCINE,)
 
 MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
                   NUME_DDL=NUME,
-                  CHAR_CINE=CHARCINE,);
+                  CHAR_CINE=CHARCINE,)
 
 MASSC=COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=MASS,COEF_C=('RI',0.,1.),),)
 
 FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
-                  NUME_DDL=NUME,);
+                  NUME_DDL=NUME,)
 
 FASC2=CREA_CHAMP(OPERATION='R2C',TYPE_CHAM='NOEU_DEPL_C',
                     CHAM_GD=FASS)
@@ -112,7 +112,7 @@ FASC2=CREA_CHAMP(OPERATION='R2C',TYPE_CHAM='NOEU_DEPL_C',
 FASC =CREA_CHAMP(OPERATION='ASSE',MODELE=MODEL,TYPE_CHAM='NOEU_DEPL_C',
                  NUME_DDL=NUME,
                  ASSE=_F(CHAM_GD=FASC2,TOUT='OUI',CUMUL='NON',
-                          COEF_C=('RI',1.0,0.5,),),);
+                          COEF_C=('RI',1.0,0.5,),),)
 
 
 
@@ -134,27 +134,27 @@ MODES=CALC_MODES(MATR_RIGI=KASS,
 
 # Projection des matrices & vecteurs sur la base des modes calcules
 NUMDIAG=NUME_DDL_GENE(BASE=MODES,
-                      STOCKAGE='DIAG',);
+                      STOCKAGE='DIAG',)
 
 KDIAG=PROJ_MATR_BASE(BASE=MODES,
                      NUME_DDL_GENE=NUMDIAG,
-                     MATR_ASSE=KASS,);
+                     MATR_ASSE=KASS,)
 
 KDIAGC=PROJ_MATR_BASE(BASE=MODES,
                      NUME_DDL_GENE=NUMDIAG,
-                     MATR_ASSE=KASC,);
+                     MATR_ASSE=KASC,)
 
 MDIAG=PROJ_MATR_BASE(BASE=MODES,
                      NUME_DDL_GENE=NUMDIAG,
-                     MATR_ASSE=MASS,);
+                     MATR_ASSE=MASS,)
 
 FDIAG=PROJ_VECT_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMDIAG,
-                    VECT_ASSE=FASS, TYPE_VECT='FORC');
+                    VECT_ASSE=FASS, TYPE_VECT='FORC')
 
 FDIAGC=PROJ_VECT_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMDIAG,
-                    VECT_ASSE=FASC, TYPE_VECT='FORC');
+                    VECT_ASSE=FASC, TYPE_VECT='FORC')
 
 
 
@@ -227,7 +227,7 @@ DYNDIAG=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     SOLVEUR=_F( METHODE='LDLT', ),
                     FREQ=500.,
                     EXCIT=_F(VECT_ASSE_GENE=FDIAGC,
-                             COEF_MULT=1.0,),);
+                             COEF_MULT=1.0,),)
 
 
 
@@ -378,27 +378,27 @@ TEST_RESU(OBJET=_F(VALE_CALC=6.97377669876E-08,
 # MEME CHOSE QUE PRECEDEMMENT AVEC NUMEROTATION PLEINE
 
 NUMPLEIN=NUME_DDL_GENE(BASE=MODES,
-                      STOCKAGE='PLEIN',);
+                      STOCKAGE='PLEIN',)
 
 KPLEIN=PROJ_MATR_BASE(BASE=MODES,
                      NUME_DDL_GENE=NUMPLEIN,
-                     MATR_ASSE=KASS,);
+                     MATR_ASSE=KASS,)
 
 KPLEINC=PROJ_MATR_BASE(BASE=MODES,
                      NUME_DDL_GENE=NUMPLEIN,
-                     MATR_ASSE=KASC,);
+                     MATR_ASSE=KASC,)
 
 MPLEIN=PROJ_MATR_BASE(BASE=MODES,
                      NUME_DDL_GENE=NUMPLEIN,
-                     MATR_ASSE=MASS,);
+                     MATR_ASSE=MASS,)
 
 FPLEIN=PROJ_VECT_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMPLEIN,
-                    VECT_ASSE=FASS, TYPE_VECT='FORC');
+                    VECT_ASSE=FASS, TYPE_VECT='FORC')
 
 FPLEINC=PROJ_VECT_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMPLEIN,
-                    VECT_ASSE=FASC, TYPE_VECT='FORC');
+                    VECT_ASSE=FASC, TYPE_VECT='FORC')
 
 MODEGP=CALC_MODES(MATR_RIGI=KPLEIN,
                   VERI_MODE=_F(STOP_ERREUR='NON',
@@ -416,7 +416,7 @@ DYNPLEIN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     SOLVEUR=_F( METHODE='LDLT', ),
                     FREQ=500.,
                     EXCIT=_F(VECT_ASSE_GENE=FPLEINC,
-                             COEF_MULT=1.0,),);
+                             COEF_MULT=1.0,),)
 
 # EXTRACTION DES MATRICES & VECTEURS GENERALISES VERS PYTHON
 #-----------------------------------------------------------
@@ -457,7 +457,7 @@ DYNPLEI2=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     SOLVEUR=_F( METHODE='LDLT', ),
                     FREQ=500.,
                     EXCIT=_F(VECT_ASSE_GENE=FPLEINC,
-                             COEF_MULT=1.0,),);
+                             COEF_MULT=1.0,),)
 
 # MEME CALCUL PAR NUMPY
 #----------------------
@@ -595,8 +595,8 @@ DETRUIRE(NOM=(TAB),)
 
 # Comparaison des solutions aster et numpy
 # -------------------------------------------------------------
-MASSC = FACTORISER(reuse=MASSC,MATR_ASSE=MASSC, METHODE= 'LDLT');
-VCINE = CALC_CHAR_CINE (NUME_DDL=NUME, CHAR_CINE=CHARCINE);
+MASSC = FACTORISER(reuse=MASSC,MATR_ASSE=MASSC, METHODE= 'LDLT')
+VCINE = CALC_CHAR_CINE (NUME_DDL=NUME, CHAR_CINE=CHARCINE)
 VCINEC=CREA_CHAMP(OPERATION='R2C',TYPE_CHAM='NOEU_DEPL_C',CHAM_GD=VCINE)
 u=RESOUDRE( MATR = MASSC, CHAM_NO= FASC2 , CHAM_CINE= VCINEC)
 uref=u.EXTR_COMP().valeurs
@@ -620,4 +620,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
 
 DETRUIRE(NOM=(TAB),)
 
-FIN();
+FIN()

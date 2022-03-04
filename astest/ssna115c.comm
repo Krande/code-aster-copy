@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ MO = AFFE_MODELE(
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
                              _F(GROUP_MA='JOINT',ANGL_REP=(180, 0 ,0)),
-                                 ));
+                                 ))
 
 
 FIXE=AFFE_CHAR_MECA(
@@ -253,7 +253,7 @@ EVOL=CALC_CHAMP(reuse =EVOL,
                 VARI_INTERNE='VARI_ELNO',
                 CONTRAINTE='SIEF_ELNO',
                 GROUP_MA='JOINT'
-               );
+               )
 
 EVOL=CALC_CHAMP(
                 reuse =EVOL,
@@ -261,7 +261,7 @@ EVOL=CALC_CHAMP(
                 VARI_INTERNE='VARI_NOEU',
                 CONTRAINTE='SIEF_NOEU',
                 GROUP_MA='JOINT'
-               );
+               )
 
 
 # DEPLACEMENT PILOTE

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,7 +208,7 @@ EPS0=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                 MODELE=MO,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),
-                        VALE=(0.,0.,0.,0.,0.,0.),),);
+                        VALE=(0.,0.,0.,0.,0.,0.),),)
 
 EPSA=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_VARC',
@@ -216,7 +216,7 @@ EPSA=CREA_RESU(OPERATION='AFFE',
                AFFE=(
                      _F(CHAM_GD=EPS0,  INST=0.,),
                      _F(CHAM_GD=CH_EPS,  INST=1.0,),
-                     ));
+                     ))
 
 CTM=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F(TOUT='OUI',
@@ -226,7 +226,7 @@ CTM=AFFE_MATERIAU(MAILLAGE=MA,
                                 NOM_VARC='EPSA',
                                 NOM_CHAM='EPSA_ELNO',
                                 ),
-                            ),);
+                            ),)
 
 
 ##################################################################################################

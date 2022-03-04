@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ sy_acier = 400*MPa
 Dsde_acier = 3280*MPa
 # masse volumique acier
 Rho_acier = 7800
-# deformation au pic de compores 
+# deformation au pic de compores
 epsi_c = 0.7*((-fc)/MPa)**(0.31)*1e-3
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -71,19 +71,19 @@ ACS2C11 = F_ACS2C11()
 #-----------------------------------------------
 # LECTURE DU MAILLAGE
 #-----------------------------------------------
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
                 MAILLAGE=MA,
                 CREA_GROUP_NO=(_F(GROUP_MA='A',),
                                _F(GROUP_MA='B',),
-                               ),);
+                               ),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
                    ORIE_NORM_COQUE=_F(GROUP_MA='POUTRE',
                                       VECT_NORM=(0.,1.,0.,),
-                                      GROUP_NO='CC',),);
+                                      GROUP_NO='CC',),)
 
 #-----------------------------------------------
 # CREATION DU MODELE
@@ -94,7 +94,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                  AFFE=(_F(GROUP_MA=('POUTRE'),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='DKTG',),
-                      ));
+                      ))
 
 
 #-----------------------------------------------
@@ -107,7 +107,7 @@ BETON = DEFI_MATER_GC(
       FCJ=-fc, EIJ=E_beton, FTJ=ft, EPSI_C=epsi_c,
       NU=Nu_beton,
    ),
-   RHO=Rho_beton, 
+   RHO=Rho_beton,
 )
 
 ACIER = DEFI_MATER_GC(
@@ -146,14 +146,14 @@ MAT_T = DEFI_GLRC(
 MATER=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='POUTRE',
                              MATER=MAT_T,),
-                             ),);
+                             ),)
 
 CAEL=AFFE_CARA_ELEM(MODELE=MO,
                       COQUE=_F(GROUP_MA='POUTRE',
                                EPAIS=ep_beton,
                                ANGL_REP=(0.0,0.0,),
                                INER_ROTA='OUI',),
-                               );
+                               )
 
 #-----------------------------------------------
 # DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
@@ -172,12 +172,12 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                                     DRX = 0.0,
                                     DRY = 0.0)
                                     ),
-                                    );
+                                    )
 
-MASS_ELE=CALC_MATR_ELEM(MODELE=MO, OPTION='MASS_MECA', CARA_ELEM=CAEL, CHAM_MATER=MATER, CHARGE=CL,);
-RIGI_ELE=CALC_MATR_ELEM(MODELE=MO, OPTION='RIGI_MECA', CARA_ELEM=CAEL, CHAM_MATER=MATER, CHARGE=CL,);
+MASS_ELE=CALC_MATR_ELEM(MODELE=MO, OPTION='MASS_MECA', CARA_ELEM=CAEL, CHAM_MATER=MATER, CHARGE=CL,)
+RIGI_ELE=CALC_MATR_ELEM(MODELE=MO, OPTION='RIGI_MECA', CARA_ELEM=CAEL, CHAM_MATER=MATER, CHARGE=CL,)
 NUMEDDL=NUME_DDL(MATR_RIGI=RIGI_ELE)
-MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE, NUME_DDL=NUMEDDL,);
+MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE, NUME_DDL=NUMEDDL,)
 #
 # ON DEFINIT L'ACCELEROGRAMME DU SEISME
 ACCELERO = CALC_FONCTION( COMB= _F(FONCTION= ACS2C11, COEF= 45.))
@@ -221,7 +221,7 @@ RESU = DYNA_NON_LINE (MODELE=MO,
                                      ARRET='OUI',),
                       ARCHIVAGE=_F( LIST_INST=LINST, ),
                       AMOR_RAYL_RIGI='ELASTIQUE',
-                          ) ;
+                          )
 #
 RESU=CALC_CHAMP(reuse =RESU, RESULTAT=RESU, FORCE='FORC_NODA', TOUT_ORDRE='OUI', TOUT='OUI',)
 

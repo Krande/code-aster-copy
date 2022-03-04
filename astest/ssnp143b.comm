@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ ap_cla = tfin
 eps    = 1.E-5
 
 # CLAVAGE EN FONCTION DU TEMPS
-cla_ins=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,-1. , i_clav-eps,-1 , i_clav,1. , i_clav+eps,-1 ,  tfin,-1.));
+cla_ins=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,-1. , i_clav-eps,-1 , i_clav,1. , i_clav+eps,-1 ,  tfin,-1.))
 # CLAVAGE EN FONCTION DE L'ESPACE
 cla_y = FORMULE(VALE='5.0E4',
                 NOM_PARA='Y',)
@@ -55,7 +55,7 @@ fonc_cla = FORMULE(VALE='cla_y(Y)*cla_ins(INST)',
 
 ##################################
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -73,7 +73,7 @@ MA=DEFI_GROUP(reuse =MA,
       _F(NOM = 'JOINT_D', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_D'),
           ),
 
-    );
+    )
 
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -90,7 +90,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='3D',),
                      _F(GROUP_MA='JOINT',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='3D_JOINT',),),);
+                        MODELISATION='3D_JOINT',),),)
 
 
 # MATERIAU DES PLOTS
@@ -113,20 +113,20 @@ CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(GROUP_MA='BARRAGE',MATER = MAT_PLO),
                       _F(GROUP_MA='JOINT',  MATER = MAT_JOI))
-                 );
+                 )
 
 # CONDITION AUX LIMITES SUR LA TERRE
 CL_TERRE=AFFE_CHAR_MECA(MODELE=MO,
-                       FACE_IMPO=_F(GROUP_MA=('FONDATIO',),DX=0.0,DY=0.0,DZ=0.0),);
+                       FACE_IMPO=_F(GROUP_MA=('FONDATIO',),DX=0.0,DY=0.0,DZ=0.0),)
 
 # CHAMPS DE PESANTEUR
 CH_PES = AFFE_CHAR_MECA(
   MODELE = MO,
-  FORCE_INTERNE = (_F(GROUP_MA=('BARRAGE',),FX=0.0, FY=-rho_b*ap,FZ=0.0)));
+  FORCE_INTERNE = (_F(GROUP_MA=('BARRAGE',),FX=0.0, FY=-rho_b*ap,FZ=0.0)))
 
 # CREATION DE LISTE D'INSTANT
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),);
-L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbarch,),);
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),)
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbarch,),)
 
 # CALCUL
 U_1=STAT_NON_LINE(MODELE=MO,
@@ -146,7 +146,7 @@ U_1=STAT_NON_LINE(MODELE=MO,
                   SOLVEUR=_F(METHODE='MUMPS',),
                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                   ARCHIVAGE = _F(LIST_INST = L_ARCH,),
-                  );
+                  )
 
 
 ################### POST TRAITEMENT  #######################
@@ -155,13 +155,13 @@ U_1=CALC_CHAMP(reuse =U_1,
                RESULTAT=U_1,
                VARI_INTERNE=('VARI_ELNO'),
                CONTRAINTE=('SIEF_ELNO'),
-               GROUP_MA='JOINT');
+               GROUP_MA='JOINT')
 
 U_1=CALC_CHAMP(reuse =U_1,
             RESULTAT=U_1,
             VARI_INTERNE='VARI_NOEU',
             CONTRAINTE='SIEF_NOEU',
-            GROUP_MA='JOINT');
+            GROUP_MA='JOINT')
 
 
 
@@ -175,7 +175,7 @@ VAR_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=av_cla,
                                GROUP_NO=('JOINT_D',),
-                               NOM_CMP=('V7','V10')),);
+                               NOM_CMP=('V7','V10')),)
 
 # CONTRAINTE NORMALE DANS LE JOINT
 SIG_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -184,7 +184,7 @@ SIG_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                INST=av_cla,
                                GROUP_NO = ('JOINT_D'),
-                               NOM_CMP='SIGN'),);
+                               NOM_CMP='SIGN'),)
 
 
 # APRES CLAVAGE
@@ -197,7 +197,7 @@ VAR_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=ap_cla,
                                GROUP_NO=('JOINT_D',),
-                               NOM_CMP=('V7','V10'),),);
+                               NOM_CMP=('V7','V10'),),)
 
 
 # CONTRAINTE NORMALE DANS LE JOINT
@@ -207,7 +207,7 @@ SIG_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                INST=ap_cla,
                                GROUP_NO = ('JOINT_D',),
-                               NOM_CMP='SIGN'),);
+                               NOM_CMP='SIGN'),)
 
 
 ################### TESTS COMPARAISON GEFDYN ####################

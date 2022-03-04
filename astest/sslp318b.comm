@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),)
 #***********************************
 
 MaiPlate=LIRE_MAILLAGE(FORMAT='MED',
-                       INFO_MED=1,);
+                       INFO_MED=1,)
 
 MaiPlate=MODI_MAILLAGE(reuse =MaiPlate,
                        MAILLAGE=MaiPlate,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU='force',),);
+                       ORIE_PEAU=_F(GROUP_MA_PEAU='force',),)
 
 plate=AFFE_MODELE(MAILLAGE=MaiPlate,
                    AFFE=(_F(GROUP_MA=('All',),
@@ -38,18 +38,18 @@ plate=AFFE_MODELE(MAILLAGE=MaiPlate,
                            MODELISATION='C_PLAN',),
                         _F(GROUP_MA=('force',),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),),);
+                           MODELISATION='C_PLAN',),),)
 
 #***********************************
 # MATERIAU
 #***********************************
 
 steel=DEFI_MATERIAU(ELAS=_F(E=2.06E11,
-                            NU=0.33,),);
+                            NU=0.33,),)
 
 champma=AFFE_MATERIAU(MAILLAGE=MaiPlate,
                       AFFE=_F(TOUT='OUI',
-                              MATER=steel,),);
+                              MATER=steel,),)
 
 #***********************************
 # DEFINITION DE LA FISSURE
@@ -74,7 +74,7 @@ Fiss = [None]*NPS
 
 Fiss[1]=DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
                        DEFI_FISS=_F(FONC_LT=LT,
-                                    FONC_LN=LN,),);
+                                    FONC_LN=LN,),)
 
 # FUNCTION POUR AJOUTER LA COLONNE NUME_ORDRE
 # A LA TABLE ISSUE PAR CALC_G
@@ -105,18 +105,18 @@ da_fiss = 30.
 for i in range(1,NPS-1) :
 
     ModX[i]=MODI_MODELE_XFEM(MODELE_IN=plate,
-                         FISSURE=Fiss[i]);
+                         FISSURE=Fiss[i])
 
     vinc[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
                            DDL_IMPO=(_F(GROUP_NO='incastro',
                                         DX=0,
                                         DY=0,),
                                      _F(GROUP_NO='carrello',
-                                        DY=0,),),);
+                                        DY=0,),),)
 
     force[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
                             PRES_REP=_F(GROUP_MA='force',
-                                        PRES=-1E6,),);
+                                        PRES=-1E6,),)
 
 
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
@@ -124,20 +124,20 @@ for i in range(1,NPS-1) :
                          EXCIT=(_F(CHARGE=force[i],),
                                 _F(CHARGE=vinc[i],),
                                 ),
-                         INST=1.,);
+                         INST=1.,)
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
 #   DE FISSURE A GAUCHE
     SIFL[i]=CALC_G_XFEM(THETA=_F(FISSURE=Fiss[i],),
                    RESULTAT=ResX[i],
-                   OPTION='CALC_K_G',);
+                   OPTION='CALC_K_G',)
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
 #   DE FISSURE A DROITE
     SIFR[i]=CALC_G_XFEM(THETA=_F(FISSURE=Fiss[i],
                             NUME_FOND=2,),
                    RESULTAT=ResX[i],
-                   OPTION='CALC_K_G',);
+                   OPTION='CALC_K_G',)
 
 #   ON MODIFIE LA TABLE DES SIF POUR AJOUTER LA COLONNE NUME_FISS QUI EST
 #   NECESSAIRE POUR PROPA_FISS (VOIR DOCUMENTATION). EN PLUS, ON FAIT L'UNION
@@ -147,9 +147,9 @@ for i in range(1,NPS-1) :
                                 TABLE=SIFL[i],
                                 NOM_PARA=('NUME_ORDRE','NUME_FOND'),),
                              ),
-                      );
+                      )
 
-#    IMPR_TABLE(TABLE=SIF[i],);
+#    IMPR_TABLE(TABLE=SIF[i],)
 
     if ( i != NPS ) :
       Fiss[i+1]=CO('Fiss_%d'%(i+1))
@@ -169,7 +169,7 @@ for i in range(1,NPS-1) :
                               COEF_MULT_MAXI=1.,
                              ),
                  RAYON=RS,
-                 INFO=0,);
+                 INFO=0,)
 
 #----------------------------------------------
 #         VERIFICATION DES RESULTATS
@@ -182,14 +182,14 @@ for i in range(1,NPS-1) :
 # ELLE EST EGAL A 1% DE LA VALEUR DE KI.
 
 
-W=1000;
+W=1000
 sigma=1E6
 #==================================
 #Propa 1
 #==================================
 i=1
 a=a0+da_fiss*(i-1)
-KI_broek=sigma*sqrt(pi*a/cos(pi*a/W));
+KI_broek=sigma*sqrt(pi*a/cos(pi*a/W))
 TOL_K2=0.01*KI_broek
 
 #TEST sur KI
@@ -213,7 +213,7 @@ TEST_TABLE(TABLE=SIF[1],
            PRECISION=TOL_K2,)
 
 IMPR_TABLE(TABLE=SIF[1],
-           FORMAT_R='E20.13');
+           FORMAT_R='E20.13')
 
 #TEST RELATIF sur KII
 #TEST EN NON_REGRESSION PURE LE LABEL AUTRE_ATER EST ERRONE
@@ -228,7 +228,7 @@ TEST_TABLE(TABLE=SIF[1],
 #==================================
 i=2
 a=a0+da_fiss*(i-1)
-KI_broek=sigma*sqrt(pi*a/cos(pi*a/W));
+KI_broek=sigma*sqrt(pi*a/cos(pi*a/W))
 TOL_K2=0.01*KI_broek
 
 #TEST sur KI
@@ -252,7 +252,7 @@ TEST_TABLE(TABLE=SIF[2],
            PRECISION=TOL_K2,)
 
 IMPR_TABLE(TABLE=SIF[2],
-           FORMAT_R='E20.13');
+           FORMAT_R='E20.13')
 
 #TEST RELATIF sur KII
 #TEST EN NON_REGRESSION PURE LE LABEL AUTRE_ATER EST ERRONE
@@ -267,7 +267,7 @@ TEST_TABLE(TABLE=SIF[2],
 #==================================
 i=3
 a=a0+da_fiss*(i-1)
-KI_broek=sigma*sqrt(pi*a/cos(pi*a/W));
+KI_broek=sigma*sqrt(pi*a/cos(pi*a/W))
 TOL_K2=0.01*KI_broek
 
 #TEST sur KI
@@ -291,7 +291,7 @@ TEST_TABLE(TABLE=SIF[3],
            PRECISION=TOL_K2,)
 
 IMPR_TABLE(TABLE=SIF[3],
-           FORMAT_R='E20.13');
+           FORMAT_R='E20.13')
 
 #TEST RELATIF sur KII
 #TEST EN NON_REGRESSION PURE LE LABEL AUTRE_ATER EST ERRONE
@@ -310,7 +310,7 @@ DEPL = [None]*NPS
 
 
 for i in range(1,NPS-1) :
-   MAXFM[i]=POST_MAIL_XFEM(MODELE=ModX[i]);
+   MAXFM[i]=POST_MAIL_XFEM(MODELE=ModX[i])
 
    MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFM[i],
                          AFFE=_F(TOUT='OUI',
@@ -320,12 +320,12 @@ for i in range(1,NPS-1) :
    DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
                           RESULTAT=ResX[i],
-                          );
+                          )
 
-   DEFI_FICHIER(UNITE=31,TYPE = 'BINARY');
+   DEFI_FICHIER(UNITE=31,TYPE = 'BINARY')
    IMPR_RESU(FORMAT='MED',
              UNITE=31,
-             RESU=_F(RESULTAT=DEPL[i],),);
+             RESU=_F(RESULTAT=DEPL[i],),)
 
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,33 +19,33 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1e9,
-                            NU=0.2,),);
+                            NU=0.2,),)
 
 L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 # MODELISATION DKT
 
 MO0=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='DKT',),);
+                       MODELISATION='DKT',),)
 
 MOMAT0=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CARA0=AFFE_CARA_ELEM(MODELE=MO0,
                      COQUE=_F(EPAIS=1.,
-                              GROUP_MA='FACE'),);
+                              GROUP_MA='FACE'),)
 
 AX=0.0
 AY=0.0
@@ -82,7 +82,7 @@ BLOC0=AFFE_CHAR_MECA(MODELE=MO0,
                                  _F(GROUP_NO='D',
                                     DX=DX,
                                     DY=DY,
-                                    DZ=DZ,),),);
+                                    DZ=DZ,),),)
 
 U0=STAT_NON_LINE(MODELE=MO0,
                 CARA_ELEM=CARA0,
@@ -90,9 +90,9 @@ U0=STAT_NON_LINE(MODELE=MO0,
                 EXCIT=_F(CHARGE=BLOC0,),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, );
+U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -101,22 +101,22 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=2395.833333,
                   VALE_CALC=2395.833333,
-                  GROUP_MA='M5',),);
+                  GROUP_MA='M5',),)
 
 # MODELISATION DKTG
 
 MO1=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKTG',),);
+                        MODELISATION='DKTG',),)
 
 MOMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT,),);
+                             MATER=MAT,),)
 
 CARA1=AFFE_CARA_ELEM(MODELE=MO1,
                      COQUE=_F(EPAIS=1.,
-                              GROUP_MA='FACE'),);
+                              GROUP_MA='FACE'),)
 
 BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                        DDL_IMPO=(_F(GROUP_NO='A',
@@ -137,7 +137,7 @@ BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                                  _F(GROUP_NO='D',
                                     DX=DX,
                                     DY=DY,
-                                    DZ=DZ,),),);
+                                    DZ=DZ,),),)
 
 U1=STAT_NON_LINE(MODELE=MO1,
                 CARA_ELEM=CARA1,
@@ -145,9 +145,9 @@ U1=STAT_NON_LINE(MODELE=MO1,
                 EXCIT=_F(CHARGE=BLOC1,),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, );
+U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -156,22 +156,22 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=2395.833333,
                   VALE_CALC=2395.833333,
-                  GROUP_MA='M5',),);
+                  GROUP_MA='M5',),)
 
 # MODELISATION Q4GG
 
 MO2=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='Q4GG',),);
+                        MODELISATION='Q4GG',),)
 
 MOMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT,),);
+                             MATER=MAT,),)
 
 CARA2=AFFE_CARA_ELEM(MODELE=MO2,
                      COQUE=_F(EPAIS=1.,
-                              GROUP_MA='FACE'),);
+                              GROUP_MA='FACE'),)
 
 BLOC2=AFFE_CHAR_MECA(MODELE=MO2,
                        DDL_IMPO=(_F(GROUP_NO='A',
@@ -192,7 +192,7 @@ BLOC2=AFFE_CHAR_MECA(MODELE=MO2,
                                  _F(GROUP_NO='D',
                                     DX=DX,
                                     DY=DY,
-                                    DZ=DZ,),),);
+                                    DZ=DZ,),),)
 
 U2=STAT_NON_LINE(MODELE=MO2,
                 CARA_ELEM=CARA2,
@@ -200,9 +200,9 @@ U2=STAT_NON_LINE(MODELE=MO2,
                 EXCIT=_F(CHARGE=BLOC2,),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U2=CALC_CHAMP(reuse = U2, ENERGIE='ENEL_ELEM', RESULTAT=U2, );
+U2=CALC_CHAMP(reuse = U2, ENERGIE='ENEL_ELEM', RESULTAT=U2, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -211,6 +211,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=2395.833333,
                   VALE_CALC=2395.833333,
-                  GROUP_MA='M5',),);
+                  GROUP_MA='M5',),)
 
-FIN();
+FIN()

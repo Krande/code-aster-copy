@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ ACIER2 = [None]*2
 #unite en Pa
 C_Pa = 1.e+6
 YOUNG_Pa = YOUNG * C_Pa
-SY_Pa = SY * C_Pa;
+SY_Pa = SY * C_Pa
 
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON),
@@ -43,7 +43,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                  N_PUIS=NPUI,
                                  SY=SY_Pa,
                                  ),
-                                 );
+                                 )
 
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
@@ -66,11 +66,11 @@ Rdep = FORMULE(VALE='SY+SY*(YOUNG*p/APUI/SY)**(1./NPUI)',
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.,INFO=1,
                         INTERVALLE=_F(JUSQU_A=1.,
-                                      NOMBRE=1000,),);
+                                      NOMBRE=1000,),)
 
 Rdep2=CALC_FONC_INTERP(FONCTION=Rdep,
                        LIST_PARA=LISTE,
-                       NOM_PARA='p');
+                       NOM_PARA='p')
 
 # transforamtion en courbe Sigma=F(epsilon)
 
@@ -87,15 +87,15 @@ Ftrac=RECU_FONCTION(TABLE=TTRAC,PARA_X='EPSI',PARA_Y='SIGM')
 
 ACIER2[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                             NU=POISSON),
-                    TRACTION=_F(SIGM=Ftrac),);
+                    TRACTION=_F(SIGM=Ftrac),)
 
 FtracPa=CALC_FONCTION(COMB=(
                           _F( FONCTION = Ftrac, COEF =  C_Pa),
-                          ) );
+                          ) )
 
 ACIER2[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                             NU=POISSON),
-                    TRACTION=_F(SIGM=FtracPa),);
+                    TRACTION=_F(SIGM=FtracPa),)
 
 
 

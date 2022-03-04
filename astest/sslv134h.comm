@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ SIFTH1=CALC_G_XFEM( RESULTAT=UTOT1,
                OPTION='CALC_K_G',
                THETA = _F(FISSURE=FISS))
 
-IMPR_TABLE(TABLE=SIFTH1,);
+IMPR_TABLE(TABLE=SIFTH1,)
 
 # LISSAGE LEGENDRE + REPARTITION UNIFORME DE 24 POINTS
 SIFTH2=CALC_G_XFEM(    RESULTAT=UTOT1,

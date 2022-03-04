@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 #
-POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('COMPOR4_62',),);
+POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('COMPOR4_62',),)
 COMPORP=DEFI_COMPOR(
                     POLYCRISTAL=(
                                  _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.01,ANGL_EULER=(27.20854918326857, 318.67802797505612, 285.59944509903261),),

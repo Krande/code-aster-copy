@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,7 +126,7 @@ P_imat    = [0 , 1 , 1]
 vitesse = 1.e-2
 t_0 = 5.e-2/(8.0*vitesse)
 # calibrage des deformations maximum dans l'extension 93
-calibrage = 1.0e-2;
+calibrage = 1.0e-2
 CALIB_E=YOUNG
 CALIB_NU=POISSON
 
@@ -134,7 +134,7 @@ CALIB_NU=POISSON
 temps_ar=DEFI_LIST_REEL( VALE =[t_0*i for i in range(9)],)
 
 # angles utilises pour la rotation
-angle2=30.0; angle0=0.0;
+angle2=30.0; angle0=0.0
 angles=[angle0,angle2,angle0]
 
 # Les précisions sur chaque TEST_RESU

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ MA=DEFI_GROUP(reuse =MA,
                                       OPTION='PLAN',
                                       POINT=(0.,0.),
                                       VECT_NORMALE=(0.,1.),
-                                      PRECISION=1.E-6,),),);
+                                      PRECISION=1.E-6,),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT = 'OUI',
@@ -86,7 +86,7 @@ FCTPRES = FORMULE(VALE='pr(Y)',
 
 CHAF=AFFE_CHAR_MECA_F(MODELE=MO,
                      PRES_REP=_F(GROUP_MA = ('LPRESH','LBLOCX',),
-                              PRES=FCTPRES,),);
+                              PRES=FCTPRES,),)
 
 # ==================================================
 
@@ -107,7 +107,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              ADAPTATION    = 'TOUT',
                              ),
                           ),
-                    );
+                    )
 
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',

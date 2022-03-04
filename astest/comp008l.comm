@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,9 +37,9 @@ tfin = 1.
 NCAL = 10
 
 
-ZERO =DEFI_CONSTANTE(VALE=0.0);
+ZERO =DEFI_CONSTANTE(VALE=0.0)
 
-UN =DEFI_CONSTANTE(VALE=1.0);
+UN =DEFI_CONSTANTE(VALE=1.0)
 
 compor='VISC_CIN2_MEMO'
 
@@ -51,53 +51,53 @@ NB_VARI=28
 #=====================================================================
 YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 200000.,
                                          Tmax, 100000.,
-                                           ),);
+                                           ),)
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 1.E-5,
                                         Tmax, 2.E-5,
-                                           ),);
+                                           ),)
 
 Rinf =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 300.,
                                           Tmax,150.,
-                                           ),);
+                                           ),)
 
 SIGY=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 100.,
                                          Tmax, 50.,
-                                           ),);
+                                           ),)
 
 b=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 12.,
                                       Tmax, 5.,
-                                           ),);
+                                           ),)
 C_PRAG=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 2000.,
                                            Tmax, 500.,
-                                           ),);
+                                           ),)
 
 Gamma0=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 45.,
                                            Tmax, 75.,
-                                           ),);
+                                           ),)
 
 Q_0 =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 140.,
                                          Tmax,100.,
-                                           ),);
+                                           ),)
 
 Q_M =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 340.,
                                          Tmax,460.,
-                                           ),);
+                                           ),)
 
 MU =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 17.,
                                         Tmax,19.,
-                                           ),);
+                                           ),)
 
 ETA =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 0.5,
                                         Tmax,0.5,
-                                           ),);
+                                           ),)
 
 Nlem =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 24.,
                                           Tmax,16.,
-                                           ),);
+                                           ),)
 
 UNSURK =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 1./100.,
                                             Tmax,1./150.,
-                                           ),);
+                                           ),)
 
 MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                NU=ZERO,
@@ -123,7 +123,7 @@ MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                      LEMAITRE_FO =_F(N=Nlem,
                                      UN_SUR_K=UNSURK,
                                      UN_SUR_M=ZERO),
-                  );
+                  )
 
 LMAT2  = [None]*(NCAL)
 time=0.
@@ -151,7 +151,7 @@ for i in range(NCAL):
 
                            LEMAITRE  =_F(N=Nlem(Ti),
                                          UN_SUR_K=UNSURK(Ti) ),
-                                );
+                                )
 
 ############################################################################
 # MACRO pour test thermoplastique
@@ -162,4 +162,4 @@ tabresu=TEST_COMPOR(SUPPORT='ELEMENT',
               NB_VARI=NB_VARI,
               )
 
-FIN();
+FIN()

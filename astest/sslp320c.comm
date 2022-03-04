@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 #                 MAILLAGE
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED');
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED')
 
-MAILLAG2=LIRE_MAILLAGE(UNITE=21, FORMAT='MED');
+MAILLAG2=LIRE_MAILLAGE(UNITE=21, FORMAT='MED')
 
 #Largeur de la plaque
 W = 10.
@@ -70,13 +70,13 @@ MODEL[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
                                MODELISATION='D_PLAN',),
                             _F(GROUP_MA=('LIG2','LIG4'),
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),),);
+                               MODELISATION='D_PLAN',),),)
 
-grille=DEFI_GRILLE(MAILLAGE=MAILLAG2);
+grille=DEFI_GRILLE(MAILLAGE=MAILLAG2)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='Surface',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='Surface',),)
 
 #----------------------------------------------
 #                   MATERIAU
@@ -84,14 +84,14 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 
 E=205000.0E6
 nu=0.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODEL[0],
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------
 #                   FISSURE
@@ -114,7 +114,7 @@ FISS = [None]*(NPAS+1)
 FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                        MAILLAGE_GRILLE=grille,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                       );
+                       )
 
 #----------------------------------------------
 #         PROPAGATION SUR 3 PAS DE TEMPS
@@ -136,7 +136,7 @@ FOND1 = FORMULE(VALE='0*NUME_ORDRE+1',
 
 VALE_CALC=[
  4240263.2141,
--8878.19396748, 
+-8878.19396748,
  4677158.26366341,
  3527.165153498055,
  5152168.395981917,
@@ -171,18 +171,18 @@ for i in range(1,NPAS+1) :
 
     afiss[i]=xinit+i*DA
 
-    MODEL[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[0],FISSURE=FISS[i-1],);
+    MODEL[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[0],FISSURE=FISS[i-1],)
 
     CHRIG[i]=AFFE_CHAR_MECA(MODELE=MODEL[i],
                             DDL_IMPO=( _F(GROUP_NO='P1', DY=0.0,),_F(GROUP_NO=('P4',), DX=0.0, DY=0.0)),
                             PRES_REP=_F(GROUP_MA=('LIG2','LIG4',),PRES=PRES,),
-                                          );
+                                          )
 
     RESU[i]=MECA_STATIQUE(MODELE=MODEL[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(
                                 _F(CHARGE=CHRIG[i],),),
-                         );
+                         )
 
     SIF[i]=POST_K1_K2_K3(FISSURE = FISS[i-1],
                          RESULTAT = RESU[i],
@@ -205,7 +205,7 @@ for i in range(1,NPAS+1) :
                NOM_PARA='K1',
                TYPE_TEST='MAX',
                TABLE=SIF[i],)
-    IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K1');
+    IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K1')
 
 # Test de KII en pourcentage de KI theorique
     # TEST DE REFERENCE SUR K2
@@ -222,7 +222,7 @@ for i in range(1,NPAS+1) :
                NOM_PARA='K2',
                TYPE_TEST='MAX',
                TABLE=SIF[i],)
-    IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K2');
+    IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K2')
 
     FISS[i] = CO('FISS_%d'%(i))
 #Propagation de la fissure avec la methode upwind_fmm
@@ -240,7 +240,7 @@ for i in range(1,NPAS+1) :
                  RAYON=RP,
                  COMP_LINE =_F(COEF_MULT_MINI=0.,
                                COEF_MULT_MAXI=1.,),
-                 );
+                 )
 
 #Test des coordonnees du fond de fissure y proche de yinit
 #en developpement
@@ -255,7 +255,7 @@ DEPL = [None]*(NPAS+1)
 
 
 for i in range(1,NPAS+1) :
-   MAXFE[i]=POST_MAIL_XFEM(MODELE=MODEL[i]);
+   MAXFE[i]=POST_MAIL_XFEM(MODELE=MODEL[i])
 
    MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
                          AFFE=_F(TOUT='OUI',
@@ -265,12 +265,12 @@ for i in range(1,NPAS+1) :
    DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
                           RESULTAT=RESU[i],
-                          );
+                          )
 
-#   DEFI_FICHIER(UNITE=30+i,);
+#   DEFI_FICHIER(UNITE=30+i,)
 #   IMPR_RESU(FORMAT="RESULTAT",
 #             FORMAT='MED',
 #             UNITE=30+i,
-#             RESU=_F(RESULTAT=DEPL[i],),);
+#             RESU=_F(RESULTAT=DEPL[i],),)
 
-FIN();
+FIN()

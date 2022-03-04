@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       BASE=_F(FICHIER='GLOBALE', LONG_REPE=7000),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
 # DEFINITION DES CARACTERISTIQUES DU MATERIAU
 
@@ -580,33 +580,33 @@ ACIER=DEFI_MATERIAU(THER=_F(LAMBDA=33.5,
                                  F2_DURT=200.0,
                                  F3_DURT=300.0,
                                  F4_DURT=400.0,
-                                 C_DURT=100.0,),);
+                                 C_DURT=100.0,),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 MOTH=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='PLAN',),);
+                         MODELISATION='PLAN',),)
 
 TIMPO=DEFI_FONCTION(NOM_PARA='INST',
                     NOM_RESU='TEMP',
                     VALE=(0.0,700.0,200.0,900.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 CHTH1=AFFE_CHAR_THER_F(MODELE=MOTH,
                        TEMP_IMPO=_F(TOUT='OUI',
-                                    TEMP=TIMPO,),);
+                                    TEMP=TIMPO,),)
 
 CHTH2=AFFE_CHAR_THER(MODELE=MOTH,
                      ECHANGE=_F(GROUP_MA='GRMA3',
                                 COEF_H=1675.0,
-                                TEMP_EXT=15.0,),);
+                                TEMP_EXT=15.0,),)
 
 LR8=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=(_F(JUSQU_A=200.0,
@@ -614,14 +614,14 @@ LR8=DEFI_LIST_REEL(DEBUT=0.0,
                                _F(JUSQU_A=240.0,
                                   NOMBRE=40,),
                                _F(JUSQU_A=410.0,
-                                  NOMBRE=85,),),);
+                                  NOMBRE=85,),),)
 
 PHASINIT=CREA_CHAMP(TYPE_CHAM='CART_VAR2_R',
                     OPERATION='AFFE',
                     MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP=('V1','V2','V3','V4','V5','V6', 'V7',),
-                            VALE=(0.7,0.0,0.3,0.0,0.0,0.0,0.0),),);
+                            VALE=(0.7,0.0,0.3,0.0,0.0,0.0,0.0),),)
 
 TEMPE=THER_LINEAIRE(MODELE=MOTH,
                     CHAM_MATER=CHMAT,
@@ -631,7 +631,7 @@ TEMPE=THER_LINEAIRE(MODELE=MOTH,
                     ETAT_INIT=_F(VALE=700.0,),
                     SOLVEUR=_F(METHODE='LDLT',
                                ),
-                    PARM_THETA=0.57,);
+                    PARM_THETA=0.57,)
 
 TEMPE=CALC_META(reuse =TEMPE,
                 MODELE=MOTH,
@@ -640,14 +640,14 @@ TEMPE=CALC_META(reuse =TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
                 COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI',),
-                OPTION='META_ELNO',);
+                OPTION='META_ELNO',)
 
 TEMPE=CALC_META(reuse =TEMPE,
                 RESULTAT=TEMPE,
-                OPTION='DURT_ELNO',);
+                OPTION='DURT_ELNO',)
 
 TEMPE1=EXTR_RESU(RESULTAT=TEMPE,
-                 ARCHIVAGE=_F(INST=(195.0,200.0,),),);
+                 ARCHIVAGE=_F(INST=(195.0,200.0,),),)
 
 TEMPE1=THER_LINEAIRE(reuse =TEMPE1,
                 #      EVOL_THER=TEMPE1,
@@ -660,7 +660,7 @@ TEMPE1=THER_LINEAIRE(reuse =TEMPE1,
                                   NUME_ORDRE=40,),
                      SOLVEUR=_F(METHODE='LDLT',
                                 ),
-                     PARM_THETA=0.57,);
+                     PARM_THETA=0.57,)
 
 TEMPE1=CALC_META(reuse =TEMPE1,
                  MODELE=MOTH,
@@ -670,7 +670,7 @@ TEMPE1=CALC_META(reuse =TEMPE1,
                               INST_INIT=200.0,),
                  COMPORTEMENT=_F(RELATION='ACIER',
                               TOUT='OUI',),
-                 OPTION=('META_ELNO','DURT_ELNO',),);
+                 OPTION=('META_ELNO','DURT_ELNO',),)
 
 TEST_RESU(RESU=(_F(INST=300.0,
                    REFERENCE='NON_DEFINI',
@@ -785,4 +785,4 @@ TEST_RESU(RESU=(_F(INST=300.0,
                 ),
           )
 
-FIN();
+FIN()

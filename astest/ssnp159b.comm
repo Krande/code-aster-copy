@@ -1,7 +1,7 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(    MAILLAGE=MA,
-                   
+
                    AFFE=_F(  TOUT = 'OUI',
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = 'AXIS')
                        )
 
-  
+
 ACIER=DEFI_MATERIAU(
                    ELAS=_F(
                    E = 200000.,
@@ -92,7 +92,7 @@ LOG_T=STAT_NON_LINE(
 
 ENELOG=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
                  RESULTAT=LOG_T,
-                 );
+                 )
 ####################################################
 #Test_resu au dernier instant et calcul ENER_ELAS
 ####################################################
@@ -185,7 +185,7 @@ VAR_LOG1=CREA_CHAMP(INFO=2,
                 OPERATION='EXTR',
                 RESULTAT=LOG1,
                 NOM_CHAM='VARI_ELGA',
-                INST=1.0,);
+                INST=1.0,)
 
 
 DEP_LOG1=CREA_CHAMP(INFO=2,
@@ -193,7 +193,7 @@ DEP_LOG1=CREA_CHAMP(INFO=2,
                 OPERATION='EXTR',
                 RESULTAT=LOG1,
                 NOM_CHAM='DEPL',
-                INST=1.0,);
+                INST=1.0,)
 
 
 ###################################################
@@ -222,7 +222,7 @@ LOG2=STAT_NON_LINE(
 
 ENELOG2=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
                  RESULTAT=LOG2,
-                 );
+                 )
 
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG2,
@@ -305,7 +305,7 @@ LOG1=STAT_NON_LINE(reuse=LOG1,
 
 ENELOG1=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
                  RESULTAT=LOG1,
-                 );
+                 )
 
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG1,

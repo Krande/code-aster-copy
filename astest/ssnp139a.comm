@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -123,7 +123,7 @@ MO=AFFE_MODELE(
 
 # DEFINITION DE LA POSITION DE LA FISSURE DANS LE REPERE GLOBAL
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
-                     MASSIF=(_F(GROUP_MA='DCBJ',ANGL_REP=(90, 0 ,0))));
+                     MASSIF=(_F(GROUP_MA='DCBJ',ANGL_REP=(90, 0 ,0))))
 
 
 MATE=DEFI_MATERIAU(
@@ -289,7 +289,7 @@ U_PLAS=CALC_CHAMP(reuse =U_PLAS,
              VARI_INTERNE='VARI_ELNO',
              CONTRAINTE='SIEF_ELNO',
              GROUP_MA='DCBJ'
-             );
+             )
 
 U_PLAS=CALC_CHAMP(
              reuse =U_PLAS,
@@ -297,7 +297,7 @@ U_PLAS=CALC_CHAMP(
              VARI_INTERNE='VARI_NOEU',
              CONTRAINTE='SIEF_NOEU',
              GROUP_MA='DCBJ'
-             );
+             )
 
 
 F_PLAS = POST_RELEVE_T(
@@ -352,14 +352,14 @@ L_CZM_P = POST_CZM_FISS(RESULTAT = U_PLAS,
                       GROUP_MA='DCBJ',
                       POINT_ORIG=(0.0,-0.025),
                       VECT_TANG=(1.,0.))
-IMPR_TABLE(TABLE=L_CZM_P);
+IMPR_TABLE(TABLE=L_CZM_P)
 
 L_CZM_E = POST_CZM_FISS(RESULTAT = U_ELAS,
                       OPTION='LONGUEUR',
                       GROUP_MA='DCBJ',
                       POINT_ORIG=(0.0,-0.025),
                       VECT_TANG=(1.0,0.0))
-IMPR_TABLE(TABLE=L_CZM_E);
+IMPR_TABLE(TABLE=L_CZM_E)
 
 # TESTS DE LA LONGUEUR DE FISSURE COHESIVE A PARTIR DE LA SOLUTION POUTRE
 # epaisseur de la poutre
@@ -471,10 +471,10 @@ TEST_RESU(RESU=_F(INST=10,
                   ),
           )
 
-IMPR_TABLE(TABLE = D_PLAS);
-IMPR_TABLE(TABLE = F_PLAS);
-IMPR_TABLE(TABLE = D_ELAS);
-IMPR_TABLE(TABLE = F_ELAS);
+IMPR_TABLE(TABLE = D_PLAS)
+IMPR_TABLE(TABLE = F_PLAS)
+IMPR_TABLE(TABLE = D_ELAS)
+IMPR_TABLE(TABLE = F_ELAS)
 
 # TESTS DES VALEURS AU POINTS DE GAUSS
 IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_PLAS,

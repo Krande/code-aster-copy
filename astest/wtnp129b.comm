@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@
 
 import numpy
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
 DEFI_GROUP(reuse=MAIL,MAILLAGE=MAIL, CREA_GROUP_NO=_F( TOUT_GROUP_MA = 'OUI'))
 
@@ -58,17 +58,17 @@ MAILLIN = CREA_MAILLAGE(
 MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN'));
+                           MODELISATION='D_PLAN'))
 
 MODMEC=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_SI'));
+                           MODELISATION='D_PLAN_SI'))
 
 MODHYD=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HS'));
+                           MODELISATION='D_PLAN_HS'))
 
 MATPROJ = PROJ_CHAMP(
                METHODE='COLLOCATION',
@@ -86,41 +86,41 @@ MATPROJ2 = PROJ_CHAMP(
 # LISTE DES INSTANTS DE CALCUL
 ##############################
 
-p_np1 = 10;
-P_T1  = 1.E-4;
-p_np2 = 9;
-P_T2  = 1.E-3;
-p_np3 = 10;
-P_T3  = 1.E-2;
-p_np4 = 20;
-P_T4  = 1.E-1;
-p_np5 = 25;
-P_T5  = 1.;
-p_np6 = 75;
-P_T6  = 10.;
+p_np1 = 10
+P_T1  = 1.E-4
+p_np2 = 9
+P_T2  = 1.E-3
+p_np3 = 10
+P_T3  = 1.E-2
+p_np4 = 20
+P_T4  = 1.E-1
+p_np5 = 25
+P_T5  = 1.
+p_np6 = 75
+P_T6  = 10.
 
-p_np7 = 47;
-P_T7  = 100.;
-p_np8 = 8;
-P_T8  = 250.;
+p_np7 = 47
+P_T7  = 100.
+p_np8 = 8
+P_T8  = 250.
 
-linsta =               P_T1 * numpy.arange(p_np1+1)/p_np1;
-linstb = P_T1 + (P_T2-P_T1) * numpy.arange(1,p_np2+1)/p_np2;
-linstc = P_T2 + (P_T3-P_T2) * numpy.arange(1,p_np3+1)/p_np3;
-linstd = P_T3 + (P_T4-P_T3) * numpy.arange(1,p_np4+1)/p_np4;
-linste = P_T4 + (P_T5-P_T4) * numpy.arange(1,p_np5+1)/p_np5;
-linstf = P_T5 + (P_T6-P_T5) * numpy.arange(1,p_np6+1)/p_np6;
-#linstg = P_T6 + (P_T7-P_T6) * numpy.arange(1,p_np7+1)/p_np7;
-#linsth = P_T7 + (P_T8-P_T7) * numpy.arange(1,p_np8+1)/p_np8;
+linsta =               P_T1 * numpy.arange(p_np1+1)/p_np1
+linstb = P_T1 + (P_T2-P_T1) * numpy.arange(1,p_np2+1)/p_np2
+linstc = P_T2 + (P_T3-P_T2) * numpy.arange(1,p_np3+1)/p_np3
+linstd = P_T3 + (P_T4-P_T3) * numpy.arange(1,p_np4+1)/p_np4
+linste = P_T4 + (P_T5-P_T4) * numpy.arange(1,p_np5+1)/p_np5
+linstf = P_T5 + (P_T6-P_T5) * numpy.arange(1,p_np6+1)/p_np6
+#linstg = P_T6 + (P_T7-P_T6) * numpy.arange(1,p_np7+1)/p_np7
+#linsth = P_T7 + (P_T8-P_T7) * numpy.arange(1,p_np8+1)/p_np8
 
-linst=list(linsta);
-linst+=list(linstb);
-linst+=list(linstc);
-linst+=list(linstd);
-linst+=list(linste);
-linst+=list(linstf);
-#linst+=list(linstg);
-#linst+=list(linsth);
+linst=list(linsta)
+linst+=list(linstb)
+linst+=list(linstc)
+linst+=list(linstd)
+linst+=list(linste)
+linst+=list(linstf)
+#linst+=list(linstg)
+#linst+=list(linsth)
 
 print('################################\n\n')
 print('liste d instants du calcul : \n\n')
@@ -150,22 +150,22 @@ print('################################\n\n')
 #                              _F(JUSQU_A=1000,
 #                                 NOMBRE=48),
 #                              _F(JUSQU_A=10000,
-#                                 NOMBRE=50)));
+#                                 NOMBRE=50)))
 
 lenlinst=len(linst)
 
-UN=DEFI_CONSTANTE(VALE=1.0);
+UN=DEFI_CONSTANTE(VALE=1.0)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0);
+ZERO=DEFI_CONSTANTE(VALE=0.0)
 
-BIDON=DEFI_CONSTANTE(VALE=0.0);
+BIDON=DEFI_CONSTANTE(VALE=0.0)
 
 #
 #
 #K=k*mu/(rhow*g)
 #
 
-KINT=DEFI_CONSTANTE(VALE=1.E-08);
+KINT=DEFI_CONSTANTE(VALE=1.E-08)
 #
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=5.8E9,
@@ -185,22 +185,22 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=5.8E9,
                                     PESA_X=0.0,
                                     PESA_Y=0.0,
                                     PESA_Z=0.0,
-                                    PERM_IN=KINT));
+                                    PERM_IN=KINT))
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATERIAU));
+                             MATER=MATERIAU))
 
 CHARMEC=AFFE_CHAR_CINE(MODELE=MODMEC,
                     MECA_IMPO=(_F(GROUP_MA='BAS',
                                  DX=0.0,
                                  DY=0.0),
                               _F(GROUP_MA=('GAUCHE','DROITE'),
-                                 DX=0.0)));
+                                 DX=0.0)))
 
 CHARHYD=AFFE_CHAR_CINE(MODELE=MODHYD,
                        MECA_IMPO=(_F(GROUP_MA='HAUT',
-                                 PRE1=2.E6)));
+                                 PRE1=2.E6)))
 
 CHAINAGE_THM(
              TYPE_CHAINAGE = 'INIT',
@@ -209,19 +209,19 @@ CHAINAGE_THM(
              MATR_MH       = CO('MATMH'),
              MATR_HM1      = CO('MATHM1'),
              MATR_HM2      = CO('MATHM2'),
-);
+)
 
 for k in range(1,lenlinst) :
 
   UNPAS=DEFI_LIST_REEL(DEBUT=linst[k-1],
                        INTERVALLE=_F(JUSQU_A=linst[k],
-                                     NOMBRE=1));
+                                     NOMBRE=1))
 
   UNPASSUB =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =UNPAS ),
                            ECHEC=_F(
                                     SUBD_METHODE='MANUEL',
                                     SUBD_PAS  = 4,
-                                    SUBD_NIVEAU=5));
+                                    SUBD_NIVEAU=5))
 
   if (k>1) :
 
@@ -229,19 +229,19 @@ for k in range(1,lenlinst) :
                       MODELE_HYDR=MODHYD,
                       MATR_MH=MATMH,
                       TYPE_CHAINAGE='MECA_HYDR',
-                      INST=linst[k]);
+                      INST=linst[k])
 
     MATEHY=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
                               MATER=MATERIAU),
                       AFFE_VARC=_F(NOM_VARC='DIVU',
-                                   EVOL=DEFVHY));
+                                   EVOL=DEFVHY))
 
   else :
 
     MATEHY=AFFE_MATERIAU(MAILLAGE=MAIL,
                          AFFE=_F(TOUT='OUI',
-                                 MATER=MATERIAU));
+                                 MATER=MATERIAU))
 
   if (k==1) :
 
@@ -252,7 +252,7 @@ for k in range(1,lenlinst) :
                         ARCHIVAGE=_F(LIST_INST=UNPAS),
                         COMPORTEMENT=_F(RELATION='KIT_H',
                                      RELATION_KIT=('LIQU_SATU','HYDR_UTIL')),
-                        INCREMENT=_F(LIST_INST=UNPASSUB));
+                        INCREMENT=_F(LIST_INST=UNPASSUB))
 
     PRELIN = PROJ_CHAMP(
                RESULTAT=PRELIQ,
@@ -260,7 +260,7 @@ for k in range(1,lenlinst) :
                NOM_CHAM ='DEPL',
                INST=linst[0])
 
-    IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[0]),FORMAT='MED',UNITE=81);
+    IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[0]),FORMAT='MED',UNITE=81)
 
     DETRUIRE(NOM=(PRELIN))
 
@@ -276,9 +276,9 @@ for k in range(1,lenlinst) :
                                       INST=linst[k-1]),
                          COMPORTEMENT=_F(RELATION='KIT_H',
                                       RELATION_KIT=('LIQU_SATU','HYDR_UTIL')),
-                         INCREMENT=_F(LIST_INST=UNPASSUB));
+                         INCREMENT=_F(LIST_INST=UNPASSUB))
 
-  IMPR_RESU(RESU=_F(RESULTAT=PRELIQ,INST=linst[k]),FORMAT='MED',UNITE=82);
+  IMPR_RESU(RESU=_F(RESULTAT=PRELIQ,INST=linst[k]),FORMAT='MED',UNITE=82)
 
   PRELIN = PROJ_CHAMP(
                RESULTAT=PRELIQ,
@@ -286,7 +286,7 @@ for k in range(1,lenlinst) :
                NOM_CHAM ='DEPL',
                INST=linst[k])
 
-  IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[k]),FORMAT='MED',UNITE=81);
+  IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[k]),FORMAT='MED',UNITE=81)
 
   DETRUIRE(NOM=(PRELIN))
 
@@ -298,14 +298,14 @@ for k in range(1,lenlinst) :
                       TYPE_CHAINAGE='HYDR_MECA',
                       MATR_HM1=MATHM1,
                       MATR_HM2=MATHM2,
-                      INST=linst[k]);
+                      INST=linst[k])
 
   MATEME=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
                                MATER=MATERIAU),
                        AFFE_VARC=_F(TOUT='OUI',
                                     EVOL=REPTOT,
-                                    NOM_VARC='PTOT'));
+                                    NOM_VARC='PTOT'))
 
   if (k==1) :
 
@@ -315,7 +315,7 @@ for k in range(1,lenlinst) :
                     COMPORTEMENT=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=UNPASSUB),
                     ARCHIVAGE=_F(LIST_INST=UNPAS),
-                    SOLVEUR=_F(METHODE='MUMPS'));
+                    SOLVEUR=_F(METHODE='MUMPS'))
 
     DEPLA=CALC_CHAMP(reuse=DEPLA,CONTRAINTE=('SIEF_ELNO'),RESULTAT=DEPLA,INST=linst[k])
 
@@ -337,7 +337,7 @@ for k in range(1,lenlinst) :
                     ETAT_INIT=_F(EVOL_NOLI=DEPLA,
                                       INST=linst[k-1]),
                     INCREMENT=_F(LIST_INST=UNPASSUB),
-                    SOLVEUR=_F(METHODE='MUMPS'));
+                    SOLVEUR=_F(METHODE='MUMPS'))
 
     DEPLA=CALC_CHAMP(reuse=DEPLA,CONTRAINTE=('SIEF_ELNO'),RESULTAT=DEPLA,INST=linst[k])
 
@@ -368,7 +368,7 @@ for k in range(1,lenlinst) :
                  OPERATION='EXTR',
                  RESULTAT=PJNOEU,
                  NOM_CHAM='DEPL',
-                 INST=linst[k]);
+                 INST=linst[k])
 
   DEP_PP=CREA_CHAMP(OPERATION='ASSE',
                  TYPE_CHAM='NOEU_DEPL_R',
@@ -381,7 +381,7 @@ for k in range(1,lenlinst) :
   DEPPGA=CREA_CHAMP(TYPE_CHAM='ELGA_DEPL_R',
                   MODELE=MODMEC,PROL_ZERO='OUI',
                   OPERATION='DISC',
-                  CHAM_GD=DEP_PP);
+                  CHAM_GD=DEP_PP)
 
   SIPGA=CREA_CHAMP(OPERATION='ASSE',INFO=1,
                  TYPE_CHAM='ELGA_SIEF_R',PROL_ZERO='OUI',
@@ -402,7 +402,7 @@ for k in range(1,lenlinst) :
                          CHAM_GD=DEPPGA,
                          NOM_CMP_RESU='SIZZ',
                          ),
-                       ));
+                       ))
 
   SIPNO=CREA_CHAMP(OPERATION='ASSE',INFO=1,
                  TYPE_CHAM='NOEU_SIEF_R',
@@ -423,7 +423,7 @@ for k in range(1,lenlinst) :
                          CHAM_GD=DEP_PP,
                          NOM_CMP_RESU='SIZZ',
                          ),
-                       ));
+                       ))
 
   SIGEFFCH=CREA_CHAMP(OPERATION='ASSE',INFO=1,
                  TYPE_CHAM='ELGA_SIEF_R',PROL_ZERO='OUI',
@@ -439,7 +439,7 @@ for k in range(1,lenlinst) :
                          CUMUL='OUI',
                          ),
                          ),
-                       );
+                       )
 
   SIEFFNO=CREA_CHAMP(OPERATION='ASSE',INFO=1,
                  TYPE_CHAM='NOEU_SIEF_R',
@@ -455,7 +455,7 @@ for k in range(1,lenlinst) :
                          CUMUL='OUI',
                          ),
                          ),
-                       );
+                       )
 
   if (k==1) :
 
@@ -466,7 +466,7 @@ for k in range(1,lenlinst) :
                    EXCIT=_F(CHARGE=CHARMEC),
                    AFFE=_F(CHAM_GD=SIGEFFCH,
                            MODELE=MODMEC,
-                           INST=linst[k]));
+                           INST=linst[k]))
 
 
     SIGEFFNO=CREA_RESU(OPERATION='AFFE',
@@ -476,7 +476,7 @@ for k in range(1,lenlinst) :
                    EXCIT=_F(CHARGE=CHARMEC),
                    AFFE=_F(CHAM_GD=SIEFFNO,
                            MODELE=MODMEC,
-                           INST=linst[k]));
+                           INST=linst[k]))
 
   else :
 
@@ -489,7 +489,7 @@ for k in range(1,lenlinst) :
                    EXCIT=_F(CHARGE=CHARMEC),
                    AFFE=_F(CHAM_GD=SIGEFFCH,
                            MODELE=MODMEC,
-                           INST=linst[k]));
+                           INST=linst[k]))
 
     SIGEFFNO=CREA_RESU(reuse=SIGEFFNO,
                    RESULTAT=SIGEFFNO,
@@ -500,11 +500,11 @@ for k in range(1,lenlinst) :
                    EXCIT=_F(CHARGE=CHARMEC),
                    AFFE=_F(CHAM_GD=SIEFFNO,
                            MODELE=MODMEC,
-                           INST=linst[k]));
+                           INST=linst[k]))
 
 
-  IMPR_RESU(RESU=_F(RESULTAT=SIGEFF,INST=linst[k]),FORMAT='MED',UNITE=83);
-  IMPR_RESU(RESU=_F(RESULTAT=SIGEFFNO,INST=linst[k]),FORMAT='MED',UNITE=84);
+  IMPR_RESU(RESU=_F(RESULTAT=SIGEFF,INST=linst[k]),FORMAT='MED',UNITE=83)
+  IMPR_RESU(RESU=_F(RESULTAT=SIGEFFNO,INST=linst[k]),FORMAT='MED',UNITE=84)
 
   DETRUIRE(NOM=(SIG,SIGNO,PJNOEU,SIPNO,SIEFFNO,DEP_P,DEP_PP,DEPPGA,SIPGA,SIGEFFCH))
 
@@ -512,7 +512,7 @@ for k in range(1,lenlinst) :
 # Fin manipulation
 #########
 
-  IMPR_RESU(RESU=_F(RESULTAT=DEPLA,INST=linst[k]),FORMAT='MED',UNITE=80);
+  IMPR_RESU(RESU=_F(RESULTAT=DEPLA,INST=linst[k]),FORMAT='MED',UNITE=80)
 
   if (k>1) :
     DETRUIRE(NOM=(DEFVHY))
@@ -529,7 +529,7 @@ EXDEP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
                                  NUME_ORDRE=74,
-                                 GROUP_NO='DROITE'));
+                                 GROUP_NO='DROITE'))
 
 EXPRE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -537,7 +537,7 @@ EXPRE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='PRE1',
                                  NUME_ORDRE=74,
-                                 GROUP_NO='DROITE'));
+                                 GROUP_NO='DROITE'))
 
 EXDEP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -545,7 +545,7 @@ EXDEP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
                                  NUME_ORDRE=149,
-                                 GROUP_NO='DROITE'));
+                                 GROUP_NO='DROITE'))
 
 EXPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -553,7 +553,7 @@ EXPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='PRE1',
                                  NUME_ORDRE=149,
-                                 GROUP_NO='DROITE'));
+                                 GROUP_NO='DROITE'))
 
 EXSIG1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='MAIL',
@@ -561,7 +561,7 @@ EXSIG1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                NOM_CMP='SIYY',
                                NUME_ORDRE=74,
-                               GROUP_NO='DROITE'));
+                               GROUP_NO='DROITE'))
 
 EXSIG2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='MAIL',
@@ -569,12 +569,12 @@ EXSIG2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                NOM_CMP='SIYY',
                                NUME_ORDRE=149,
-                               GROUP_NO='DROITE'));
+                               GROUP_NO='DROITE'))
 
 IMPR_TABLE(TABLE=EXDEP1,
            FORMAT='TABLEAU',
            UNITE=8,
-           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','DY'));
+           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','DY'))
 #########
 # Tests sur la pression a l'ordre 74 (t=1 s)
 #########
@@ -859,4 +859,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE_K='N1',),
            )
 
-FIN();
+FIN()

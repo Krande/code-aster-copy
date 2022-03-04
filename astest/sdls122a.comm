@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,17 +56,17 @@ MAILLA3 = LIRE_MAILLAGE(FORMAT='IDEAS', UNITE=39)
 MODELE1=AFFE_MODELE(MAILLAGE=MAILLA1,
                     AFFE=_F( GROUP_MA = 'CARRE1',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'),)
 
 MODELE2=AFFE_MODELE(MAILLAGE=MAILLA2,
                     AFFE=_F( GROUP_MA = 'CARRE2',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'),)
 
 MODELE3=AFFE_MODELE(MAILLAGE=MAILLA3,
                     AFFE=_F( GROUP_MA = 'RECT',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'),)
 
 #-- DEFINITION DU MATERIAU
 MATER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E11,  NU = 0.30,  RHO = 7800.0))
@@ -244,12 +244,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 LINT1_CL=DEFI_INTERF_DYNA(NUME_DDL=NUME1,
                           INTERFACE=_F(NOM='INTF1',
                                        TYPE='CRAIGB',
-                                       GROUP_NO='INTF1',),);
+                                       GROUP_NO='INTF1',),)
 
 LINT2_CL=DEFI_INTERF_DYNA(NUME_DDL=NUME2,
                           INTERFACE=_F(NOM='INTF2',
                                        TYPE='CRAIGB',
-                                       GROUP_NO='INTF2',),);
+                                       GROUP_NO='INTF2',),)
 
 #-- CALCUL DES MODES D'INTERFACE
 MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID1,
@@ -258,7 +258,7 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID1,
                                       TOUT_CMP='OUI',
                                       NB_MODE=15,
                                       ),
-                      );
+                      )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=17.0766310916   ))
 TEST_RESU(RESU=_F(NUME_ORDRE=3,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=46.8649647866   ))
@@ -283,30 +283,30 @@ MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID2,
                                       TOUT_CMP='OUI',
                                       NB_MODE=15,
                                       ),
-                      );
+                      )
 
 MODES_1=NORM_MODE(reuse=MODES_1,
                   MODE=MODES_1,
                   NORME='MASS_GENE',
                   MODE_SIGNE=_F(GROUP_NO='N19',NOM_CMP='DZ'),
-                  MASSE=MASS1,);
+                  MASSE=MASS1,)
 MODES_2=NORM_MODE(reuse=MODES_2,
                   MODE=MODES_2,
                   NORME='MASS_GENE',
                   MODE_SIGNE=_F(GROUP_NO='N44',NOM_CMP='DZ'),
-                  MASSE=MASS2,);
+                  MASSE=MASS2,)
 MODESTA1=NORM_MODE(reuse=MODESTA1,
                   MODE=MODESTA1,
                   NORME='MASS_GENE',
                   MASSE=MASS1,
                   MODE_SIGNE=_F(GROUP_NO='N19',NOM_CMP='DZ'),
-                  RAIDE=RAID1,);
+                  RAIDE=RAID1,)
 MODESTA2=NORM_MODE(reuse=MODESTA2,
                   MODE=MODESTA2,
                   NORME='MASS_GENE',
                   MODE_SIGNE=_F(GROUP_NO='N44',NOM_CMP='DZ'),
                   MASSE=MASS2,
-                  RAIDE=RAID2,);
+                  RAIDE=RAID2,)
 #-- CONSTRUCTION DES BASES : 1 MODE A INTERFACE FIXE / 6 MODES D'INTERFACE
 NMP=1
 NMI=6
@@ -316,7 +316,7 @@ BAMO1_CL=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_1,
                                 NMAX_MODE=NMI,),),
                        INTERF_DYNA=LINT1_CL,
                        NUME_REF=NUME1,
-                       );
+                       )
 
 BAMO2_CL=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_2,
                                 NMAX_MODE=NMP,),
@@ -324,16 +324,16 @@ BAMO2_CL=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_2,
                                 NMAX_MODE=NMI,),),
                        INTERF_DYNA=LINT2_CL,
                        NUME_REF=NUME2,
-                       );
+                       )
 
 #-- CONSTRUCTION DES MACRO-ELEMENTS
 MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BAMO1_CL,
                       MATR_RIGI=RAID1,
-                      MATR_MASS=MASS1,);
+                      MATR_MASS=MASS1,)
 
 MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BAMO2_CL,
                       MATR_RIGI=RAID2,
-                      MATR_MASS=MASS2,);
+                      MATR_MASS=MASS2,)
 
 #--  ASSEMBLAGE DU MODELE GENERALISE
 ASSE_ELEM_SSD(RESU_ASSE_SSD = _F(MODELE = CO('MODEGE'),
@@ -484,7 +484,7 @@ S1_LIBRE=EXTR_TABLE(TABLE=CALC_ENR,
                     FILTRE=(_F(NOM_PARA='NOM_OBJET',
                               VALE_K='CARRE1',),
                             _F(NOM_PARA='INTERF',
-                              VALE_K='LIBRE',),),);
+                              VALE_K='LIBRE',),),)
 
 S1_ENCAS=EXTR_TABLE(TABLE=CALC_ENR,
                     TYPE_RESU='MODE_MECA',
@@ -492,7 +492,7 @@ S1_ENCAS=EXTR_TABLE(TABLE=CALC_ENR,
                     FILTRE=(_F(NOM_PARA='NOM_OBJET',
                               VALE_K='CARRE1',),
                             _F(NOM_PARA='INTERF',
-                              VALE_K='ENCAS',),),);
+                              VALE_K='ENCAS',),),)
 
 
 #--   POUR LA SOUS STRUCTURE 2
@@ -502,14 +502,14 @@ S2_LIBRE=EXTR_TABLE(TABLE=CALC_ENR,
                     FILTRE=(_F(NOM_PARA='NOM_OBJET',
                               VALE_K='CARRE2',),
                             _F(NOM_PARA='INTERF',
-                              VALE_K='LIBRE',),),);
+                              VALE_K='LIBRE',),),)
 S2_ENCAS=EXTR_TABLE(TABLE=CALC_ENR,
                     TYPE_RESU='MODE_MECA',
                     NOM_PARA='NOM_SD',
                     FILTRE=(_F(NOM_PARA='NOM_OBJET',
                               VALE_K='CARRE2',),
                             _F(NOM_PARA='INTERF',
-                              VALE_K='ENCAS',),),);
+                              VALE_K='ENCAS',),),)
 
 #-- ENRICHISSEMENTS DES BASES MODALES
 #--
@@ -529,7 +529,7 @@ LIB_S1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODESTA1,
                         NUME_REF=NUME1,
                         ORTHO='OUI',
                         MATRICE=MASS1,
-                        );
+                        )
 
 LIB_S2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODESTA2,
                                 NMAX_MODE=NMI,),
@@ -540,7 +540,7 @@ LIB_S2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODESTA2,
                         NUME_REF=NUME2,
                         ORTHO='OUI',
                         MATRICE=MASS2,
-                        );
+                        )
 
 
 #-- ORTHONORMALISATION DES FAMILLES DES VECTEURS A INTERFACE FIXE
@@ -553,7 +553,7 @@ ENC_S1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_1,
                         NUME_REF=NUME1,
                         ORTHO='OUI',
                         MATRICE=MASS1,
-                        );
+                        )
 
 ENC_S2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_2,
                                 NMAX_MODE=NMP,),
@@ -564,7 +564,7 @@ ENC_S2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_2,
                         NUME_REF=NUME2,
                         ORTHO='OUI',
                         MATRICE=MASS2,
-                        );
+                        )
 
 #-- CONCATENATION DES DIFFERENTES FAMILLES
 BAMO_S1=DEFI_BASE_MODALE(RITZ=(_F(BASE_MODALE=LIB_S1,
@@ -574,7 +574,7 @@ BAMO_S1=DEFI_BASE_MODALE(RITZ=(_F(BASE_MODALE=LIB_S1,
                               ),
                         INTERF_DYNA=LINT1_CL,
                         NUME_REF=NUME1,
-                        );
+                        )
 
 
 
@@ -585,16 +585,16 @@ BAMO_S2=DEFI_BASE_MODALE(RITZ=(_F(BASE_MODALE=LIB_S2,
                               ),
                         INTERF_DYNA=LINT2_CL,
                         NUME_REF=NUME2,
-                        );
+                        )
 
 #-- CONSTRUCTION DES NOUVEAUX MACROS ELEMENTS
 MACR1=MACR_ELEM_DYNA(BASE_MODALE=BAMO_S1,
                       MATR_RIGI=RAID1,
-                      MATR_MASS=MASS1,);
+                      MATR_MASS=MASS1,)
 
 MACR2=MACR_ELEM_DYNA(BASE_MODALE=BAMO_S2,
                       MATR_RIGI=RAID2,
-                      MATR_MASS=MASS2,);
+                      MATR_MASS=MASS2,)
 
 #-- DEFINITION D'UN NOUVEAU MODELE GENERALISE  / ANCIENNE SYNTAXE
 #--               ALTERNATIVE A ASSE_ELEM_SSD
@@ -614,18 +614,18 @@ MODEGE2=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
 
                                     OPTION='REDUIT',),
                                  ),
-                        VERIF=_F(STOP_ERREUR='OUI',),);
+                        VERIF=_F(STOP_ERREUR='OUI',),)
 
 #--  NUMEROTATION DU PROBLEME GENERALISE
 NUM_G2=NUME_DDL_GENE(MODELE_GENE=MODEGE2,
-                     METHODE='ELIMINE',);
+                     METHODE='ELIMINE',)
 
 #--  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE GENERALISES
 M_G2=ASSE_MATR_GENE(NUME_DDL_GENE=NUM_G2,
-                      OPTION='MASS_GENE',);
+                      OPTION='MASS_GENE',)
 
 K_G2=ASSE_MATR_GENE(NUME_DDL_GENE=NUM_G2,
-                      OPTION='RIGI_GENE',);
+                      OPTION='RIGI_GENE',)
 
 #-- RESOLUTION DU PROBLEME GENERALISE
 RESGEN2=CALC_MODES(MATR_RIGI=K_G2,
@@ -698,4 +698,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 #-- TESTER EGALEMENT UN DIMINUTION DE LA VALEUR DES INDICATEURS
-FIN();
+FIN()

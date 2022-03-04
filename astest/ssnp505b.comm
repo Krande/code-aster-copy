@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # cas avec contact
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # nbre de raffinements et pourcentage a rafiner
 nb_raff = 3
@@ -38,14 +38,14 @@ r_sup = 5*h
 MA    = [None]*(nb_raff+1)
 CHERR = [None]*(nb_raff+1)
 
-MA[0]=LIRE_MAILLAGE(FORMAT="ASTER",INFO=1,);
+MA[0]=LIRE_MAILLAGE(FORMAT="ASTER",INFO=1,)
 
 for num_calc in range(nb_raff+1):
 
   MO=AFFE_MODELE(MAILLAGE=MA[num_calc],
                  AFFE=(_F(GROUP_MA=('GM200','GM11','GM12','GM13','GM14',),
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='D_PLAN',),),);
+                          MODELISATION='D_PLAN',),),)
 
   #========================
   # Definition des fissures
@@ -55,19 +55,19 @@ for num_calc in range(nb_raff+1):
                        TYPE_DISCONTINUITE='FISSURE', TYPE_ENRI_FOND='TOPOLOGIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM21',
                                     GROUP_MA_FOND='GM1'),
-                       INFO=1,);
+                       INFO=1,)
 
   FISS2=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE', TYPE_ENRI_FOND='TOPOLOGIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM22',
                                     GROUP_MA_FOND='GM2'),
-                       INFO=1,);
+                       INFO=1,)
 
   FISS3=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE', TYPE_ENRI_FOND='TOPOLOGIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM23',
                                     GROUP_MA_FOND='GM3'),
-                       INFO=1,);
+                       INFO=1,)
 
 
   if (num_calc == nb_raff):
@@ -76,31 +76,31 @@ for num_calc in range(nb_raff+1):
                          JONCTION=_F(FISSURE=FISS1,POINT=(0.2030945,1.557297),),
                          DEFI_FISS=_F(GROUP_MA_FISS='GM24',
                                       GROUP_MA_FOND='GM4'),
-                         INFO=1,);
+                         INFO=1,)
   else:
     FISS4=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                          TYPE_DISCONTINUITE='FISSURE', TYPE_ENRI_FOND='TOPOLOGIQUE',
                          DEFI_FISS=_F(GROUP_MA_FISS='GM24',
                                       GROUP_MA_FOND='GM4'),
-                         INFO=1,);
+                         INFO=1,)
 
   FISS5=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE', TYPE_ENRI_FOND='TOPOLOGIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM31',
                                     GROUP_MA_FOND='GM5'),
-                       INFO=1,);
+                       INFO=1,)
 
   FISS6=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE', TYPE_ENRI_FOND='TOPOLOGIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM32',
                                     GROUP_MA_FOND='GM6'),
-                       INFO=1,);
+                       INFO=1,)
 
   FISS7=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM33',
                                     GROUP_MA_FOND='GM7'),
-                       INFO=1,);
+                       INFO=1,)
 
   if (num_calc == nb_raff):
     FISS8=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
@@ -108,20 +108,20 @@ for num_calc in range(nb_raff+1):
                          JONCTION=_F(FISSURE=FISS5,POINT=(-0.2030955,0.057297),),
                          DEFI_FISS=_F(GROUP_MA_FISS='GM34',
                                       GROUP_MA_FOND='GM8'),
-                         INFO=1,);
+                         INFO=1,)
   else:
     FISS8=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                          TYPE_DISCONTINUITE='FISSURE', TYPE_ENRI_FOND='TOPOLOGIQUE',
                          DEFI_FISS=_F(GROUP_MA_FISS='GM34',
                                       GROUP_MA_FOND='GM8'),
-                         INFO=1,);
+                         INFO=1,)
 
   # on ne raffine pas la derniere iteration
   if num_calc < nb_raff :
     CHERR[num_calc] = RAFF_XFEM(FISSURE=(FISS1,FISS2,FISS3,FISS4,
-                                         FISS5,FISS6,FISS7,FISS8,),);
+                                         FISS5,FISS6,FISS7,FISS8,),)
 
-    MA[num_calc+1]=CO('MA_%d' % (num_calc+1));
+    MA[num_calc+1]=CO('MA_%d' % (num_calc+1))
 
     MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
                    GROUP_MA = ('GM200','GM11','GM12','GM13','GM14',),
@@ -131,7 +131,7 @@ for num_calc in range(nb_raff+1):
                    MAILLAGE_N = MA[num_calc],
                    MAILLAGE_NP1 = MA[num_calc+1])
 
-    DETRUIRE(NOM=(MO,FISS1,FISS2,FISS3,FISS4,FISS5,FISS6,FISS7,FISS8));
+    DETRUIRE(NOM=(MO,FISS1,FISS2,FISS3,FISS4,FISS5,FISS6,FISS7,FISS8))
 
 #=====================
 # Definition du modele
@@ -141,7 +141,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=(FISS1,FISS2,FISS3,FISS4,
                          FISS5,FISS6,FISS7,FISS8,),
                          CONTACT='STANDARD',
-                         INFO=1,);
+                         INFO=1,)
 
 CTXFEM = DEFI_CONTACT(MODELE             = MODELEK,
                       FORMULATION    = 'XFEM', ELIM_ARETE = 'ELIM',
@@ -163,7 +163,7 @@ CTXFEM = DEFI_CONTACT(MODELE             = MODELEK,
                               _F(INTEGRATION   = 'NOEUD',
                                  FISS_MAIT     = FISS8,),
                              )
-                      );
+                      )
 
 
 #====================
@@ -172,11 +172,11 @@ CTXFEM = DEFI_CONTACT(MODELE             = MODELEK,
 
 E = 1.E5
 NU = 0.3
-MATER=DEFI_MATERIAU(ELAS=_F(E=E,NU=NU,),);
+MATER=DEFI_MATERIAU(ELAS=_F(E=E,NU=NU,),)
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATER,),);
+                               MATER=MATER,),)
 
 #=======================
 # Conditions aux limites
@@ -187,7 +187,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  _F(GROUP_MA=('GM13','GM14',),FX=-1.,FY=-1.,),),
                   DDL_IMPO=(_F(GROUP_MA='GM18',DX=0,DY=0),
                             _F(GROUP_MA='GM17',DX=1.4e-4,DY=5e-4,),),
-                            );
+                            )
 
 #=======
 # Calcul
@@ -195,7 +195,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 L_INST=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=_F(JUSQU_A=1,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMAT,
                     CONTACT = CTXFEM,
@@ -208,21 +208,21 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     NEWTON=_F(REAC_ITER=1,),
                     CONVERGENCE=_F(ARRET='OUI',),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+                    INFO=1,)
 
 #================
 # Post-traitement
 #================
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(GROUP_MA='GM200',
                      PHENOMENE='MECANIQUE',
-                     MODELISATION='D_PLAN',),);
+                     MODELISATION='D_PLAN',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
-                        RESULTAT    = UTOT1,);
+                        RESULTAT    = UTOT1,)
 
 PK = [None]*14
 Points = ['A','B','C','F','G','H','I','A\'','B\'','C\'','F\'','G\'','H\'','I\'']
@@ -240,11 +240,11 @@ for i in range(14):
                  THETA=_F(NUME_FOND=NumFond[i],
                           FISSURE=Fissure[i],
                           R_INF=r_inf,
-                          R_SUP=r_sup,),);
+                          R_SUP=r_sup,),)
 
     IMPR_TABLE(TABLE=PK[i],
                FORMAT='AGRAF',
-               FORMAT_R='1PE12.7',);
+               FORMAT_R='1PE12.7',)
 
 TEST_TABLE(TABLE=PK[0],
            NOM_PARA='K1',
@@ -443,4 +443,4 @@ TEST_TABLE(TABLE=PK[13],
            VALE_ABS='NON',
            INFO=1,)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,14 +33,14 @@ MODELE=AFFE_MODELE(
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'BARRE'),
                       ),
-                  );
+                  )
 
 CARAELE=AFFE_CARA_ELEM( MODELE=MODELE,
                         BARRE=_F(SECTION='GENERALE',
                                  GROUP_MA=('CABLE1'),
                                  CARA=('A'),
                                  VALE=(0.00015),),
-                       );
+                       )
 
 # ------------------------------------------------------------------------
 #                       Definition des materiaux
@@ -49,12 +49,12 @@ MBETON=DEFI_MATERIAU(ELAS=_F(E=4.E10,
 #                             NU=0.20,
                              NU=0.0,
                              RHO=2500,),
-                     BPEL_BETON=_F(),);
+                     BPEL_BETON=_F(),)
 
 MCABLE=DEFI_MATERIAU(ELAS=_F(E=1.93000000000E11,
                              NU=0.0,
                              RHO=7850,),
-                     BPEL_ACIER=_F(F_PRG=1.94000000000E9,),);
+                     BPEL_ACIER=_F(F_PRG=1.94000000000E9,),)
 
 CHMATER=AFFE_MATERIAU(
                    MAILLAGE=MAIL,AFFE=(
@@ -62,7 +62,7 @@ CHMATER=AFFE_MATERIAU(
                               MATER = MBETON),
                        _F(GROUP_MA=('CABLE1'),
                              MATER=MCABLE),
-                              ),);
+                              ),)
 
 # ------------------------------------------------------------------------
 #                       Definition du cable de precontrainte
@@ -75,7 +75,7 @@ CAB_BP1=DEFI_CABLE_BP(MODELE=MODELE,
                                     GROUP_MA='CABLE1',),
                       TYPE_ANCRAGE=('PASSIF','ACTIF',),
                       TENSION_INIT=3.750000E5,
-                      RECUL_ANCRAGE=0.00,);
+                      RECUL_ANCRAGE=0.00,)
 
 
 DEFI_GROUP(reuse = MAIL, MAILLAGE = MAIL,
@@ -117,7 +117,7 @@ CHARMECA=AFFE_CHAR_MECA(
                                DX = 0.,
                                DY = 0.,
                                DZ = 0.,),
-                               ),);
+                               ),)
 
 PRES =AFFE_CHAR_MECA(MODELE=MODELE,
                     PRES_REP=_F(PRES = 1.E5,GROUP_MA = 'FACE_SUP',),
@@ -129,14 +129,14 @@ FONCCB=DEFI_FONCTION(NOM_PARA='INST',
                            ),
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
-                     );
+                     )
 
 # ------------------------------------------------------------------------
 #                       Calculs
 # ------------------------------------------------------------------------
 LINST = DEFI_LIST_REEL (DEBUT = 0.0,
                         INTERVALLE =(_F(JUSQU_A= 2.0, PAS= 0.5,),),
-                       );
+                       )
 
 # Chargement 1 : Mise en tension du cable de precontrainte
 # ------------------------------------------------------------------------
@@ -151,7 +151,7 @@ RES1 =  CALC_PRECONT(MODELE=MODELE,
                      CABLE_BP   =( CAB_BP1,),
                      ENERGIE = _F(),
                      INCREMENT=_F(LIST_INST = LINST,
-                                  INST_FIN  = 1., ),);
+                                  INST_FIN  = 1., ),)
 
 # Chargement 2 : Pression
 # ------------------------------------------------------------------------
@@ -167,13 +167,13 @@ RES1 = STAT_NON_LINE(reuse=RES1,
                      EXCIT   =(_F(CHARGE = CHARMECA),
                                _F(CHARGE = PRES,FONC_MULT=FONCCB),
                                _F(CHARGE = CMCAB1),),
-                     INCREMENT=_F(LIST_INST = LINST,),);
+                     INCREMENT=_F(LIST_INST = LINST,),)
 
 # ------------------------------------------------------------------------
 #                       Post-traitement
 # ------------------------------------------------------------------------
 
-ENERGIE=RECU_TABLE(CO=RES1,NOM_TABLE='PARA_CALC',);
+ENERGIE=RECU_TABLE(CO=RES1,NOM_TABLE='PARA_CALC',)
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=212.5031098818,
@@ -238,4 +238,4 @@ TEST_RESU(RESU=_F(GROUP_NO='NODE_REF',
                   CRITERE='RELATIF',
                   PRECISION=0.02,),
           )
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),)
 
 #-----------------------------------------------------------------------
 # POINTS: O     MAILLES  M30  M33
@@ -30,14 +30,14 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
 #-----------------------------------------------------------------------
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=1.,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
-MAILL=LIRE_MAILLAGE(FORMAT='MED');
+MAILL=LIRE_MAILLAGE(FORMAT='MED')
 
 MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
                  CREA_GROUP_MA=_F(NOM='TOUT',
-                                  TOUT='OUI',),);
+                                  TOUT='OUI',),)
 
 MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
@@ -49,21 +49,21 @@ MAILL=DEFI_GROUP(reuse =MAILL,
                                    'M37','M38','M39','M40','M41','M42','M43','M44','M45','M46','M47','M48','M49',
                                    'M50','M51','M52','M53','M54','M55','M56','M57','M58','M59','M60','M61','M62',
                                    'M63','M64','M65','M66','M67','M68','M69','M70','M71','M72','M73','M74','M75',
-                                   'M76',),),);
+                                   'M76',),),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),);
+                            MATER=MATER,),)
 
 MODEL=AFFE_MODELE(MAILLAGE=MAILL,
 
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='DKT',),);
+                          MODELISATION='DKT',),)
 
 MAILL=MODI_MAILLAGE(reuse =MAILL,
                     MAILLAGE=MAILL,
-                    ORIE_NORM_COQUE=_F(GROUP_MA='COQUE',),);
+                    ORIE_NORM_COQUE=_F(GROUP_MA='COQUE',),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MODEL,
                       DDL_IMPO=(_F(GROUP_NO='GRNO_ABC',
@@ -88,77 +88,77 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MODEL,
                                    DRY=0.,
                                    DRZ=0.,),),
                       FORCE_COQUE=_F(TOUT='OUI',
-                                     PRES=1.,),);
+                                     PRES=1.,),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODEL,
                        COQUE=_F(GROUP_MA='TOUT',
                                 EPAIS=0.1,
                                 ANGL_REP=(0.,0.,),
-                                COQUE_NCOU=3,),);
+                                COQUE_NCOU=3,),)
 
 RESU=MECA_STATIQUE(MODELE=MODEL,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARELEM,
-                   EXCIT=_F(CHARGE=CHARGE,),);
+                   EXCIT=_F(CHARGE=CHARGE,),)
 
 RESU=CALC_CHAMP(reuse =RESU,
                 RESULTAT=RESU,
                 CONTRAINTE=('SIGM_ELNO','EFGE_ELNO',),
-                DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),);
+                DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),)
 
 EPSIC1S=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=1,
                                  NIVE_COUCHE='SUP',
-                                 NOM_CHAM=('EPSI_ELGA','EPSI_ELNO',),),);
+                                 NOM_CHAM=('EPSI_ELGA','EPSI_ELNO',),),)
 
 EPSIC1M=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=1,
                                  NIVE_COUCHE='MOY',
-                                 NOM_CHAM='EPSI_ELNO',),);
+                                 NOM_CHAM='EPSI_ELNO',),)
 
 EPSIC1I=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=1,
                                  NIVE_COUCHE='INF',
-                                 NOM_CHAM='EPSI_ELNO',),);
+                                 NOM_CHAM='EPSI_ELNO',),)
 
 EPSIC2S=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=2,
                                  NIVE_COUCHE='SUP',
-                                 NOM_CHAM=('EPSI_ELGA','EPSI_ELNO',),),);
+                                 NOM_CHAM=('EPSI_ELGA','EPSI_ELNO',),),)
 
 EPSIC2M=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=2,
                                  NIVE_COUCHE='MOY',
-                                 NOM_CHAM='EPSI_ELNO',),);
+                                 NOM_CHAM='EPSI_ELNO',),)
 
 EPSIC2I=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=2,
                                  NIVE_COUCHE='INF',
-                                 NOM_CHAM=('EPSI_ELGA','EPSI_ELNO',),),);
+                                 NOM_CHAM=('EPSI_ELGA','EPSI_ELNO',),),)
 
 EPSIC3S=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=3,
                                  NIVE_COUCHE='SUP',
-                                 NOM_CHAM='EPSI_ELNO',),);
+                                 NOM_CHAM='EPSI_ELNO',),)
 
 EPSIC3M=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=3,
                                  NIVE_COUCHE='MOY',
-                                 NOM_CHAM='EPSI_ELNO',),);
+                                 NOM_CHAM='EPSI_ELNO',),)
 
 EPSIC3I=POST_CHAMP(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    EXTR_COQUE=_F(NUME_COUCHE=3,
                                  NIVE_COUCHE='INF',
-                                 NOM_CHAM=('EPSI_ELGA','EPSI_ELNO',),),);
+                                 NOM_CHAM=('EPSI_ELGA','EPSI_ELNO',),),)
 
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=(_F(RESULTAT=EPSIC1S,),
@@ -169,7 +169,7 @@ IMPR_RESU(FORMAT='RESULTAT',
                 _F(RESULTAT=EPSIC2I,),
                 _F(RESULTAT=EPSIC3S,),
                 _F(RESULTAT=EPSIC3M,),
-                _F(RESULTAT=EPSIC3I,),),);
+                _F(RESULTAT=EPSIC3I,),),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
@@ -248,7 +248,7 @@ EFFORT=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='EFGE_ELNO',
-                  NUME_ORDRE=1,);
+                  NUME_ORDRE=1,)
 
 #--------------------------------------------------------------------
 
@@ -263,7 +263,7 @@ RELEVE_1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                   NOM_CHAM='DEPL',
                                   NUME_ORDRE=1,
                                   GROUP_NO=('O','A','B','C','D','E','F',),
-                                  NOM_CMP=('DX','DY',),),),);
+                                  NOM_CMP=('DX','DY',),),),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
@@ -412,7 +412,7 @@ RELEVE_2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  CHAM_GD=EFFORT,
                                  GROUP_NO=('O','A','B','C','D','E','F',),
                                  NOM_CMP=('MXX','MYY',),
-                                 MOYE_NOEUD='NON',),);
+                                 MOYE_NOEUD='NON',),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.044999999999999998,
@@ -446,7 +446,7 @@ RELEVE_3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  GROUP_MA=('M30','M76','M40','M1','M65','M8','M46',),
                                  GROUP_NO=('O','A','B','C','D','E','F',),
                                  NOM_CMP=('MXX','MYY',),
-                                 MOYE_NOEUD='NON',),);
+                                 MOYE_NOEUD='NON',),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.014999999999999999,
@@ -823,6 +823,6 @@ TEST_TABLE(TABLE=VOLUM2,
            VALE_CALC=0.0782172359038)
 
 
-FIN();
+FIN()
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('XFEM_22', 'MODELE1_63'),
-      );
+      )
 
 # IGNORE_ALARM : 'XFEM_22' -> on ne modelise qu'un demi-tube, donc on
 #                             applique la condition de symetrie sur des
@@ -84,7 +84,7 @@ print('nb_iter = %f' % nb_iter)
 print('h = %f' % h)
 
 i_raff=0
-MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED',);
+MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED',)
 
 # refinements loop
 for i_raff in range(nb_iter) :
@@ -97,7 +97,7 @@ for i_raff in range(nb_iter) :
                        CENTRE=(R1, 0., 0.),
                        VECT_X=(0., 1., 0.),
                        VECT_Y=(1., 0., 0.),),
-                ),);
+                ),)
 
 
    l_fiss = (Fiss_01,)
@@ -160,11 +160,11 @@ MA[nb_iter]=DEFI_GROUP(reuse =MA[nb_iter],
                                          PRECISION=eps,
                                          RAYON=eps),
                                       ),
-                       INFO=2);
+                       INFO=2)
 
 MA[nb_iter]=MODI_MAILLAGE(reuse=MA[nb_iter],
                           MAILLAGE=MA[nb_iter],
-                          ORIE_PEAU=_F(GROUP_MA_PEAU=('inter',),),);
+                          ORIE_PEAU=_F(GROUP_MA_PEAU=('inter',),),)
 
 Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                        DEFI_FISS=(
@@ -174,7 +174,7 @@ Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                               CENTRE=(R1, 0., 0.),
                               VECT_X=(0., 1., 0.),
                               VECT_Y=(1., 0., 0.),),
-                       ),);
+                       ),)
 
 l_fiss = (Fiss_01,)
 
@@ -209,7 +209,7 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODX,
                               _F(GROUP_MA='inter', PRES=1000000.0,),
                               _F(FISSURE=l_fiss  , PRES=1000000.0,),
                              ),
-                    );
+                    )
 
 RESU=MECA_STATIQUE(MODELE=MODX,
                    CHAM_MATER=MATE,
@@ -297,7 +297,7 @@ CGla15=CALC_G_XFEM(RESULTAT=RESU,
               THETA = _F(R_INF=rinf,
                          R_SUP=rsup,
                          FISSURE=l_fiss,
-                         NB_POINT_FOND = 15,),);
+                         NB_POINT_FOND = 15,),)
 
 #----------------------------------------------------------------------
 #               passage des FICs en MPa rac(m)
@@ -381,7 +381,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               TITRE='sslv322c / taux de restitution d energie',
               LEGENDE_X='s',
               LEGENDE_Y='G',
-              );
+              )
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=32,
@@ -398,7 +398,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               TITRE='sslv322c / FICs (K1)',
               LEGENDE_X='s',
               LEGENDE_Y='K1',
-              );
+              )
 
 #----------------------------------------------------------------------
 #                       GRANDEURS TESTEES

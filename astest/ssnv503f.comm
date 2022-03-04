@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -34,10 +34,10 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                   GROUP_MA='LF',),
                                _F(NOM='RES_HAUT',
                                   GROUP_MA='LP',),),
-                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),);
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),)
 
 MO=AFFE_MODELE(MAILLAGE=MAIL,
-               
+
                AFFE=(_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='3D',),
@@ -49,12 +49,12 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
                         MODELISATION='DIS_T',),
                      _F(GROUP_MA='RES_HAUT',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DIS_T',),),);
+                        MODELISATION='DIS_T',),),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU=_F(GROUP_MA_PEAU=('SMAI','SESC','FACESUP','FACELAT'),),
-                   );
+                   )
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES ELEMENTAIRES
@@ -68,17 +68,17 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                              _F(GROUP_MA='RES_LAT',
                                 REPERE='LOCAL',
                                 CARA='K_T_D_L',
-                                VALE=(2.E1,0.0,0.0),),),);
+                                VALE=(2.E1,0.0,0.0),),),)
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 
 MPATIN=DEFI_MATERIAU(ELAS=_F(E=2.10000E6,
-                             NU=0.0,),);
+                             NU=0.0,),)
 
 MBATI=DEFI_MATERIAU(ELAS=_F(E=1.E5,
-                            NU=0.0,),);
+                            NU=0.0,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                  MODELE=MO,
@@ -86,7 +86,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                           MATER=MPATIN,),
                        _F(GROUP_MA='BATI',
                           MATER=MBATI,),
-                          ),);
+                          ),)
 
 #---------------------------------------------------------------------
 #                         CHARGEMENTS
@@ -99,27 +99,27 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MO,
                                                'F1','F2','F3','F4',
                                                'P1','P2','P3','P4'),
                                      DX=0.0,DY=0.0,DZ=0.0),
-                                  ),);
+                                  ),)
 
 # CHARGEMENT 1 : APPLICATION DE LA PRESSION NORMALE
 
 PNOR=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=_F(GROUP_MA='FACESUP',
-                                PRES=300.0,),);
+                                PRES=300.0,),)
 
 # CHARGEMENT 2 : APPLICATION DE LA PRESSION NORMALE ET DE LA PRESSION
 #                  TANGENTIELLE (PT=0.3*PN*0.99)
 
 PTAN_99=AFFE_CHAR_MECA(MODELE=MO,
                        PRES_REP=_F(GROUP_MA='FACELAT',
-                                   PRES=178.19999999999999,),);
+                                   PRES=178.19999999999999,),)
 
 # CHARGEMENT 3 : APPLICATION DE LA PRESSION NORMALE ET DE LA PRESSION
 #                  TANGENTIELLE (PT=0.3*PN*1.01)
 
 PTAN_101=AFFE_CHAR_MECA(MODELE=MO,
                         PRES_REP=_F(GROUP_MA='FACELAT',
-                                    PRES=181.80000000000001,),);
+                                    PRES=181.80000000000001,),)
 
 # DEFINITION DU CONTACT
 
@@ -158,18 +158,18 @@ RAMP1=DEFI_FONCTION(NOM_PARA='INST',
                           0.5,1.0,
                           1.0,1.0),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 RAMP2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           0.5,0.0,
                           1.0,1.0),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=2,),);
+                                    NOMBRE=2,),)
 
 # CHARGEMENT 1
 U_NOR=STAT_NON_LINE(MODELE=MO,
@@ -187,12 +187,12 @@ U_NOR=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=30,),
-                    INFO=1,);
+                    INFO=1,)
 
 U_NOR=CALC_CHAMP(reuse =U_NOR,
               RESULTAT=U_NOR,
               FORCE='REAC_NODA',
-             );
+             )
 # CHARGEMENT 2
 U_99=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
@@ -210,12 +210,12 @@ U_99=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    SOLVEUR=_F(
                               METHODE='LDLT',),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),);
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),)
 
 U_99=CALC_CHAMP(reuse =U_99,
              RESULTAT=U_99,
              FORCE='REAC_NODA',
-            );
+            )
 # CHARGEMENT 3
 U_101=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CM,
@@ -235,12 +235,12 @@ U_101=STAT_NON_LINE(MODELE=MO,
                                METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),
                    INFO=1,
-                    );
+                    )
 
 U_101=CALC_CHAMP(reuse =U_101,
               RESULTAT=U_101,
               FORCE='REAC_NODA',
-             );
+             )
 #---------------------------------------------------------------------
 #                         VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
@@ -328,7 +328,7 @@ TU_NOR=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                NOM_CMP=('DX','DY'),
                                #REPERE='LOCAL',
                                OPERATION='EXTRACTION',
-                               INST=1.,),);
+                               INST=1.,),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.050000000000000003,
@@ -430,7 +430,7 @@ TU_99=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                               NOM_CMP=('DX','DY'),
                               #REPERE='LOCAL',
                               OPERATION='EXTRACTION',
-                              INST=1.),);
+                              INST=1.),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.050000000000000003,
@@ -532,7 +532,7 @@ TU_101=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                NOM_CMP=('DX','DY'),
                                #REPERE='LOCAL',
                                OPERATION='EXTRACTION',
-                               INST=1.),);
+                               INST=1.),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.050000000000000003,
@@ -550,4 +550,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='SOMM',
            TABLE=TU_101,)
 
-FIN();
+FIN()

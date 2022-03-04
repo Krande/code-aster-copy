@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-# MAILLAGE PLEXUS ;
+# MAILLAGE PLEXUS
 
 MAILPLE=LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=18)
 
 MAILPLEX=LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=18)
 
-# MAILLAGE ASTER ;
+# MAILLAGE ASTER
 
 MAIN2=LIRE_MAILLAGE(FORMAT='MED',)
 

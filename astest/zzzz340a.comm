@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
 #----------------------------------------------
 #            MAILLAGE
 #----------------------------------------------
 
-MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',)
 
 # longueur du cote de la plaque
 L = 1.
@@ -41,17 +41,17 @@ MA=DEFI_GROUP(reuse =MA,
 MODTHIN=AFFE_MODELE(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA='SURF',
                             PHENOMENE='THERMIQUE',
-                            MODELISATION='PLAN',),);
+                            MODELISATION='PLAN',),)
 
 FISSTH=DEFI_FISS_XFEM(MAILLAGE=MA, TYPE_ENRI_FOND='TOPOLOGIQUE',
                       DEFI_FISS=_F(FORM_FISS='DEMI_DROITE',
                                    PFON=( 0.5*L, 0.5*L, 0.,),
                                    DTAN=(   -1.,    0., 0.,),),
-                      INFO=1,);
+                      INFO=1,)
 
 MODTHX=MODI_MODELE_XFEM(MODELE_IN=MODTHIN,
                         FISSURE=FISSTH,
-                        INFO=2,);
+                        INFO=2,)
 
 #----------------------------------------------
 #            MATERIAU
@@ -266,7 +266,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
                    VALE_CALC=-5.96855898038E-13    ,
-                   CRITERE='ABSOLU',),),);
+                   CRITERE='ABSOLU',),),)
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='DTX',
@@ -277,7 +277,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
                    VALE_CALC=-9.37906191503E-13 ,
-                   CRITERE='ABSOLU',),),);
+                   CRITERE='ABSOLU',),),)
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='DTX',
@@ -288,7 +288,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
                    VALE_CALC=0.0  ,
-                   CRITERE='ABSOLU',),),);
+                   CRITERE='ABSOLU',),),)
 
 # CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER_F
 
@@ -302,7 +302,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
                    VALE_CALC=-5.96855898038E-13  ,
-                   CRITERE='ABSOLU',),),);
+                   CRITERE='ABSOLU',),),)
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='DTX',
@@ -313,7 +313,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
                    VALE_CALC=9.40558337779E-15 ,
-                   CRITERE='ABSOLU',),),);
+                   CRITERE='ABSOLU',),),)
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='DTX',
@@ -324,7 +324,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
                    VALE_CALC=-9.37906191503E-13  ,
-                   CRITERE='ABSOLU',),),);
+                   CRITERE='ABSOLU',),),)
 
 # TEST SUR LE GRADIENT DE TEMPERATURE SELON Y
 # CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER
@@ -338,7 +338,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
                    VALE_CALC=10.0,
-                   CRITERE='RELATIF',),),);
+                   CRITERE='RELATIF',),),)
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='DTY',
@@ -348,7 +348,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
                    VALE_CALC=10.0,
-                   CRITERE='RELATIF',),),);
+                   CRITERE='RELATIF',),),)
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='DTY',
@@ -358,7 +358,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
                    VALE_CALC=10.0 ,
-                   CRITERE='RELATIF',),),);
+                   CRITERE='RELATIF',),),)
 
 # CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER_F
 
@@ -371,7 +371,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
                    VALE_CALC=10.0  ,
-                   CRITERE='RELATIF',),),);
+                   CRITERE='RELATIF',),),)
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='DTY',
@@ -381,7 +381,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
                    VALE_CALC=10.0  ,
-                   CRITERE='RELATIF',), ),);
+                   CRITERE='RELATIF',), ),)
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='DTY',
@@ -391,7 +391,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
                    VALE_CALC=10.0  ,
-                   CRITERE='RELATIF',),),);
+                   CRITERE='RELATIF',),),)
 
 #----------------------------------------------
 #            IMPRESSIONS
@@ -410,4 +410,4 @@ IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MA_VISU))
 IMPR_RESU(FORMAT='GMSH',RESU=_F(RESULTAT=TEMPEXR))
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_VISR))
 
-FIN();
+FIN()

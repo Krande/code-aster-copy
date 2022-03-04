@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@
 # CE TEST VALIDE LES ELEMENTS XFEM C_PLAN MULTI-HEAVISIDE EN CONTACT HPP
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG=LIRE_MAILLAGE(FORMAT="ASTER",INFO=1);
+MAILLAG=LIRE_MAILLAGE(FORMAT="ASTER",INFO=1)
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG,
                      AFFE=(_F(GROUP_MA=('SURF','LH','LG'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN')));
+                              MODELISATION='C_PLAN')))
 
 LN1 = FORMULE(VALE='Y-0.5',
               NOM_PARA=['X', 'Y'],)
@@ -44,23 +44,23 @@ LN4 = FORMULE(VALE='Y-3.5',
 FISS1=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN1),
-                     INFO=1);
+                     INFO=1)
 FISS2=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN2),
-                     INFO=1);
+                     INFO=1)
 FISS3=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN3),
-                     INFO=1);
+                     INFO=1)
 FISS4=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN4),
-                     INFO=1);
+                     INFO=1)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2,FISS3,FISS4),
-                         INFO=1);
+                         INFO=1)
 
 
 
@@ -68,12 +68,12 @@ E=100.0E6
 nu=0.0
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0));
+                            RHO=7800.0))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
-                                MATER=ACIER));
+                                MATER=ACIER))
 
 def pression(y) :
    if y >=3.5 : return 40e6
@@ -93,17 +93,17 @@ def depy(y) :
    return 0
 
 CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     PRES_REP=(_F(GROUP_MA='LG',PRES = PRESSION)));
+                     PRES_REP=(_F(GROUP_MA='LG',PRES = PRESSION)))
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LD',DX=0,H1X=0,H2X=0,H3X=0,H4X=0,
                                               DY=0,H1Y=0,H2Y=0,H3Y=0,H4Y=0),
                              ),
-                   );
+                   )
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1));
+                                    NOMBRE=1))
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,INFO=1,
                     CHAM_MATER=CHAMPMAT,
@@ -117,13 +117,13 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,INFO=1,
                     NEWTON=_F(REAC_ITER=1),
                     CONVERGENCE=_F(ARRET='OUI',RESI_GLOB_RELA=1E-14),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
-                    );
+                    )
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -141,7 +141,7 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT SUR LES LEVRES',
                                INST=1.0,
                                GROUP_NO=('NFISSU'),
                                TOUT_CMP='OUI',
-                               OPERATION='EXTRACTION'));
+                               OPERATION='EXTRACTION'))
 
 depl_y = FORMULE(VALE='0.',
                  NOM_PARA=['DY', 'COOR_Y'],)
@@ -153,7 +153,7 @@ TABDEP = CALC_TABLE(reuse = TABDEP,
                                ORDRE='CROISSANT'),
                              _F(OPERATION = 'OPER',
                                 NOM_PARA  = 'DY-DY',
-                                FORMULE = depl_y)));
+                                FORMULE = depl_y)))
 
 # FILTRE SUR LES NOMS DES NOEUDS POUR NE GARDER QUE LES NP (COTE MAITRE)
 
@@ -170,11 +170,11 @@ TABDEPP = CALC_TABLE(TABLE = TABDEP,
                                  NOM_PARA  = 'DX-DXP',
                                  FORMULE = depl_p),
                               _F(OPERATION = 'EXTR',
-                                 NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DX-DXP','DY-DY'))));
+                                 NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DX-DXP','DY-DY'))))
 
 IMPR_TABLE(TABLE=TABDEPP,
            TRI=_F(NOM_PARA = ('COOR_Y','COOR_X'),
-                  ORDRE ='CROISSANT'));
+                  ORDRE ='CROISSANT'))
 
 # FILTRE SUR LES NOMS DES NOEUDS POUR NE GARDER QUE LES NM (COTE ESCLAVE)
 
@@ -191,15 +191,15 @@ TABDEPM = CALC_TABLE(TABLE = TABDEP,
                                  NOM_PARA  = 'DX-DXM',
                                  FORMULE = depl_m),
                               _F(OPERATION = 'EXTR',
-                                 NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DX-DXM','DY-DY'))));
+                                 NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DX-DXM','DY-DY'))))
 
 IMPR_TABLE(TABLE=TABDEPM,
            TRI=_F(NOM_PARA = ('COOR_Y','COOR_X'),
-                  ORDRE ='CROISSANT'));
+                  ORDRE ='CROISSANT'))
 
 # solution analytique :
 #    - deplacement
-def ux(X,Y): 
+def ux(X,Y):
     return (2.-X)*pression(Y)/E
 
 UX = FORMULE(VALE='ux(X,Y)',
@@ -290,7 +290,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabNRJ,
-           );
+           )
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=1.38382174822E-15,
@@ -298,7 +298,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabNRJ,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -308,7 +308,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=2.55041016394E-15,
@@ -316,6 +316,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
-FIN();
+FIN()

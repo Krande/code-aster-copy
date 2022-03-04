@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -291,7 +291,7 @@ MAT0002 = DEFI_MATERIAU(
 
 # Materiau bidon pour tous les discrets
 MDI0001 = DEFI_MATERIAU(
-  ELAS=_F( E=2.10e+11, NU=0.30, RHO=7850.0 ));
+  ELAS=_F( E=2.10e+11, NU=0.30, RHO=7850.0 ))
 
 
 # COMPORTEMENT DE FIBRES
@@ -562,13 +562,13 @@ MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM='MEKELEC',
                                TOUT='OUI',),
-              CREA_GROUP_NO=_F(GROUP_MA='MEKELEC',),);
+              CREA_GROUP_NO=_F(GROUP_MA='MEKELEC',),)
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_NO='H00101',
                                 NOM='PC3',),
                              _F(GROUP_NO='H00100',
-                                 NOM='PC4',),),);
+                                 NOM='PC4',),),)
 # ----------------------------------------------------------------------
 # --------------- DEFINITION DES CHARGEMENTS VARIABLES -----------------
 
@@ -576,11 +576,11 @@ TEMPS=DEFI_LIST_REEL(DEBUT=0.000000e+00,
                      INTERVALLE=(_F(JUSQU_A=0.1,
                                    NOMBRE=5,),
                                  _F(JUSQU_A=1.0,
-                                   PAS=0.01,),),);
+                                   PAS=0.01,),),)
 
 FORCT_F=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.,0.,1.0,16200.0,),
-                      PROL_DROITE='LINEAIRE',);
+                      PROL_DROITE='LINEAIRE',)
 # ----------------------------------------------------------------------
 # ----------------------- DEPLACEMENTS ---------------------------------
 
@@ -590,20 +590,20 @@ DEPLT=AFFE_CHAR_MECA(MODELE=MO,
                                  DY=0.0,
                                  DZ=0.0,
                                  DRX=0.0,
-                                 DRY=0.0,),);
+                                 DRY=0.0,),)
 # ----------------------------------------------------------------------
 # --------------------------- EFFORTS ----------------------------------
 
 FORCT=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=_F(GROUP_NO='H00101',
-                                     FY=+1.0,),);
+                                     FY=+1.0,),)
 # ----------------------------------------------------------------------
 # **********************************************************************
 #                  C A L C U L   N O N   L I N E A I R E
 # **********************************************************************
-NBGL = 50;
+NBGL = 50
 
-RESGL = 1e-06;
+RESGL = 1e-06
 
 # ----------------------------------------------------------------------
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
@@ -632,7 +632,7 @@ MEKEFOR0=STAT_NON_LINE(MODELE=MO,
                                 REAC_ITER=1,),
                       CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
                                      ITER_GLOB_MAXI=NBGL,),
-                      );
+                      )
 
 MEKEFOR=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
@@ -660,36 +660,36 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                   NOM_CMP=('DX','DY','DZ',),),
                       CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
                                      ITER_GLOB_MAXI=NBGL,),
-                      );
+                      )
 
 
 ETA_PILO=RECU_FONCTION(RESULTAT=MEKEFOR,
-                       NOM_PARA_RESU='ETA_PILOTAGE',);
+                       NOM_PARA_RESU='ETA_PILOTAGE',)
 
 DEP_TETE=RECU_FONCTION(RESULTAT=MEKEFOR,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DY',
-                       GROUP_NO='H00101',);
+                       GROUP_NO='H00101',)
 
 
 
 
-T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=ETA_PILO,),);
+T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=ETA_PILO,),)
 
-T_DEPL=CREA_TABLE(FONCTION=_F(FONCTION=DEP_TETE,),);
+T_DEPL=CREA_TABLE(FONCTION=_F(FONCTION=DEP_TETE,),)
 
 TAB_COMB=CALC_TABLE(TABLE=T_ETA,
                     ACTION=(_F(OPERATION='COMB', TABLE=T_DEPL, NOM_PARA='INST'),),
-                    );
+                    )
 
 DEPL_ETA=RECU_FONCTION(TABLE=TAB_COMB,
                      PARA_X='DY',
                      PARA_Y='ETA_PILO',
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+                     PROL_GAUCHE='CONSTANT',)
 
-IMPR_TABLE(TABLE=TAB_COMB,);
+IMPR_TABLE(TABLE=TAB_COMB,)
 
 # NON REGRESSION
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=9789.764253130,
@@ -728,12 +728,12 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=(_F(FONC_X=DEP_TETE,
                         FONC_Y=ETA_PILO,),
                       _F(LIST_PARA=TET_REF,
-                         LIST_RESU=ETA_REF,),),);
+                         LIST_RESU=ETA_REF,),),)
 
 # --------------- TEST SUR LA CHARGE DE RUINE ESTIMEE ---------------
 
 TAB_PILO=RECU_TABLE(CO=MEKEFOR,
-                    NOM_PARA='ETA_PILOTAGE',);
+                    NOM_PARA='ETA_PILOTAGE',)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
@@ -744,4 +744,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='MAX',
            TABLE=TAB_PILO,)
 
-FIN();
+FIN()

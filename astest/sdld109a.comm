@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-              DEBUG=_F(SDVERI='NON',),IGNORE_ALARM='SPECTRAL0_16',);
+              DEBUG=_F(SDVERI='NON',),IGNORE_ALARM='SPECTRAL0_16',)
 
 import math
 
@@ -269,7 +269,7 @@ tabl_cor = CALC_SPECTRE_IPM(MAILLAGE = MAILLAGE,
 )
 
 
-#IMPR_TABLE(TABLE=tabl_spe,FORMAT='TABLEAU',UNITE=28);
+#IMPR_TABLE(TABLE=tabl_spe,FORMAT='TABLEAU',UNITE=28)
 
 TEST_TABLE(TABLE=tabl_spe,
              NOM_PARA='IPM NOEUD2 5%',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 #
 # DESCRIPTION DES PAS DE CALCUL ET D ARCHIVAGE
@@ -37,24 +37,24 @@ MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=1.,
-                                    PAS=0.0005,),);
+                                    PAS=0.0005,),)
 
 # L_INST2=DEFI_LIST_REEL(DEBUT=0.,
                        # INTERVALLE=_F(JUSQU_A=0.5,
-                                     # PAS=0.002,),);
+                                     # PAS=0.002,),)
 LISTIMP=DEFI_LIST_REEL(DEBUT=0.002,
                        INTERVALLE=_F(JUSQU_A=0.5,
-                                     NOMBRE=249,),);
+                                     NOMBRE=249,),)
 
 INTLI=DEFI_LIST_ENTI(OPERATION='DEFI',
                      DEBUT=1,
                      INTERVALLE=_F(JUSQU_A=501,
-                                   PAS=2,),);
+                                   PAS=2,),)
 
 #
 # DESCRIPTION DES ACCELEROGRAMMES ET DE LEURS INTEGRALES :
 #---------------------------------------------------------
-OMEGAA = ((2.0 * pi) * 10.0);
+OMEGAA = ((2.0 * pi) * 10.0)
 ALPHA = 10000.
 
 
@@ -69,7 +69,7 @@ ACCELER1=CALC_FONC_INTERP(FONCTION=ACCE1,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 ACCE2 = FORMULE(VALE='- ALPHA*INST*sin(OMEGAA*INST) ',
                 OMEGAA=OMEGAA,
@@ -82,7 +82,7 @@ ACCELER2=CALC_FONC_INTERP(FONCTION=ACCE2,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 VITE1 = FORMULE(VALE='ALPHA/OMEGAA/OMEGAA*sin(OMEGAA*INST)-ALPHA/OMEGAA*INST*cos(OMEGAA*INST)',
                 OMEGAA=OMEGAA,
@@ -95,7 +95,7 @@ VITESSE1=CALC_FONC_INTERP(FONCTION=VITE1,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 DEPL1 = FORMULE(VALE='-2*ALPHA/OMEGAA**3*cos(OMEGAA*INST)-ALPHA/OMEGAA**2*INST*sin(OMEGAA*INST)+2*ALPHA/OMEGAA**3',
                 OMEGAA=OMEGAA,
@@ -108,7 +108,7 @@ DEPLACE1=CALC_FONC_INTERP(FONCTION=DEPL1,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 #
 
@@ -123,7 +123,7 @@ VITESSE2=CALC_FONC_INTERP(FONCTION=VITE2,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 DEPL2 = FORMULE(VALE='2*ALPHA/OMEGAA**3*cos(OMEGAA*INST)+ALPHA/OMEGAA**2*INST*sin(OMEGAA*INST)-2*ALPHA/OMEGAA**3',
                 OMEGAA=OMEGAA,
@@ -136,7 +136,7 @@ DEPLACE2=CALC_FONC_INTERP(FONCTION=DEPL2,
                           NOM_PARA='INST',
                           PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='LINEAIRE',
-                          INFO=1,);
+                          INFO=1,)
 
 #
 # MATERIAU
@@ -151,7 +151,7 @@ lraide = NU.array( [2.00, 2.00, 2.00, 2.000, 2.000,  2.000,  2.000,   2.000,] )*
 lamort = NU.array( [1.00, 1.00, 1.00, 0.800, 0.800,  0.700,  0.600,   0.600,] )*0.0
 
 
-             
+
 
 fctfx=DEFI_FONCTION(NOM_PARA='DX', ABSCISSE=ldepla, ORDONNEE=lforce,PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',)
 fctrd=DEFI_FONCTION(NOM_PARA='DX', ABSCISSE=ldepla, ORDONNEE=lraide,PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',)
@@ -168,7 +168,7 @@ MATCHO=DEFI_MATERIAU(INFO=2,
 
 MATBID=DEFI_MATERIAU(ELAS=_F(E=1.E10,
                              NU=0.3,
-                             RHO=0.,),);
+                             RHO=0.,),)
 
 #
 
@@ -178,7 +178,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                           _F(GROUP_MA=('MASSES1','MASSES2',),
                              MATER=MATBID,),
                           _F(GROUP_MA='RESSORT2',
-                             MATER=MATCHO,),),);
+                             MATER=MATCHO,),),)
 
 #
 #=======================================================================
@@ -195,7 +195,7 @@ BICHOC=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='DIS_T',),
                          _F(GROUP_MA=('MASSES1','MASSES2',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 CL_BICHO=AFFE_CHAR_MECA(MODELE=BICHOC,
                         DDL_IMPO=(_F(GROUP_NO='ENCBICHO',
@@ -204,7 +204,7 @@ CL_BICHO=AFFE_CHAR_MECA(MODELE=BICHOC,
                                      DZ=0.,),
                                   _F(GROUP_NO=('MASSES1','MASSES2',),
                                      DY=0.,
-                                     DZ=0.,),),);
+                                     DZ=0.,),),)
 
 #
 
@@ -215,11 +215,11 @@ CARA_BIC=AFFE_CARA_ELEM(MODELE=BICHOC,
                                     VALE=(500.,0.,0.,),),
                                  _F(REPERE='GLOBAL',
                                     GROUP_MA = 'RESSORTS',
-                                    CARA = 'M_T_D_L',  
+                                    CARA = 'M_T_D_L',
                                     VALE = (0.0,),),
                                  _F(REPERE='GLOBAL',
-                                    GROUP_MA = 'RESSORTS', 
-                                    CARA = 'A_T_D_L',  
+                                    GROUP_MA = 'RESSORTS',
+                                    CARA = 'A_T_D_L',
                                     VALE = (0.0, 0.0, 0.0), ),
                                  _F(REPERE='LOCAL',
                                     CARA='K_T_D_L',
@@ -227,7 +227,7 @@ CARA_BIC=AFFE_CARA_ELEM(MODELE=BICHOC,
                                     VALE=(0.,0.,0.,),),
                                  _F(REPERE='LOCAL',
                                     GROUP_MA = 'RESSORT2',
-                                    CARA = 'M_T_D_L',  
+                                    CARA = 'M_T_D_L',
                                     VALE = (0.0,),),
                                  _F(REPERE='LOCAL',
                                     CARA='A_T_D_L',
@@ -251,7 +251,7 @@ CARA_BIC=AFFE_CARA_ELEM(MODELE=BICHOC,
                                  _F(CARA='A_T_D_N',
                                     GROUP_MA='MASSES2',
                                     VALE=(0.,0.,0.,),),
-                                    ),);
+                                    ),)
 
 ASSEMBLAGE(MODELE=BICHOC,
                 CARA_ELEM=CARA_BIC,
@@ -260,7 +260,7 @@ ASSEMBLAGE(MODELE=BICHOC,
                 MATR_ASSE=(_F(MATRICE=CO('RIGI_BIC'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASS_BIC'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 # CALCUL DES MODES STATIQUES AUX POINTS D ANCRAGE ET DES CHARGEMENTS
 # SISMIQUES :
@@ -268,25 +268,25 @@ ASSEMBLAGE(MODELE=BICHOC,
 MSTA_BIC=MODE_STATIQUE(MATR_RIGI=RIGI_BIC,
                        MATR_MASS=MASS_BIC,
                        MODE_STAT=_F(TOUT='OUI',
-                                    AVEC_CMP='DX',),);
+                                    AVEC_CMP='DX',),)
 
 #
 
 MULT_X1=CALC_CHAR_SEISME(MATR_MASS=MASS_BIC,
                          DIRECTION=(1.,0.,0.,),
                          MODE_STAT=MSTA_BIC,
-                         GROUP_NO='NO1',);
+                         GROUP_NO='NO1',)
 
 MULT_X2=CALC_CHAR_SEISME(MATR_MASS=MASS_BIC,
                          DIRECTION=(1.,0.,0.,),
                          MODE_STAT=MSTA_BIC,
-                         GROUP_NO='NO11',);
+                         GROUP_NO='NO11',)
 
 CHAR_SE1=AFFE_CHAR_MECA(MODELE=BICHOC,
-                        VECT_ASSE=MULT_X1,);
+                        VECT_ASSE=MULT_X1,)
 
 CHAR_SE2=AFFE_CHAR_MECA(MODELE=BICHOC,
-                        VECT_ASSE=MULT_X2,);
+                        VECT_ASSE=MULT_X2,)
 
 MODE_BIC=CALC_MODES(MATR_RIGI=RIGI_BIC,
                     OPTION='BANDE',
@@ -300,7 +300,7 @@ MODE_BIC=CALC_MODES(MATR_RIGI=RIGI_BIC,
 
 MODE_BIC=NORM_MODE(reuse =MODE_BIC,
                    MODE=MODE_BIC,
-                   NORME='MASS_GENE',);
+                   NORME='MASS_GENE',)
 
 # CALCUL DIRECT
 # -------------
@@ -342,7 +342,7 @@ TRAN_DY2=DYNA_NON_LINE(MODELE=BICHOC,
                        CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                       ITER_GLOB_MAXI=20,),
                        #ARCHIVAGE=_F(LIST_INST=L_INST2,),
-                          );
+                          )
 
 TRAN_DY2=DYNA_NON_LINE(reuse = TRAN_DY2,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY2),
                        MODELE=BICHOC,
@@ -382,20 +382,20 @@ TRAN_DY2=DYNA_NON_LINE(reuse = TRAN_DY2,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY2),
                        CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                       ITER_GLOB_MAXI=20,),
                        #ARCHIVAGE=_F(LIST_INST=L_INST2,),
-                      );
+                      )
 
 
 
 #import matplotlib.pyplot as plt
 
-DEPL10=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL',      NOM_CMP='DX',GROUP_NO='NO1') 
-DEPL11=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL_ABSOLU',      NOM_CMP='DX',GROUP_NO='NO1') 
+DEPL10=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL',      NOM_CMP='DX',GROUP_NO='NO1')
+DEPL11=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL_ABSOLU',      NOM_CMP='DX',GROUP_NO='NO1')
 #plt.plot(DEPL10.Absc(), DEPL10.Ordo(),'r')
 #plt.plot(DEPL11.Absc(), DEPL11.Ordo(),'b')
 #plt.savefig('/tmp/TOTO.png')
 
 
-DEPL1=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL',      NOM_CMP='DX',GROUP_NO='MASSES1')  
+DEPL1=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL',      NOM_CMP='DX',GROUP_NO='MASSES1')
 DEPL2=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL',      NOM_CMP='DX',GROUP_NO='MASSES2',)
 
 FORC_1=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='SIEF_ELGA', NOM_CMP='N', GROUP_MA='RESSORT2',POINT=1)
@@ -428,7 +428,7 @@ prec_force = [1E-3, 1E-3, 1E-3, 1E-3, 1.5, 1E-3,]
 motclef = {}; motclef['VALEUR'] = []
 
 for ii in range(len(time)):
-    
+
     motclef['VALEUR'].append( _F(FONCTION=DEPL1,  NOM_PARA='INST', VALE_PARA=time[ii],
                                      VALE_CALC=d1[ii],),)
     motclef['VALEUR'].append( _F(FONCTION=DEPL2,  NOM_PARA='INST', VALE_PARA=time[ii],
@@ -440,9 +440,9 @@ for ii in range(len(time)):
                                      VALE_CALC=deft[ii],),)
     motclef['VALEUR'].append( _F(FONCTION=DEFP,  NOM_PARA='INST', VALE_PARA=time[ii],
                                      VALE_CALC=defp[ii],),)
-    
+
 TEST_FONCTION(**motclef)
 
-FIN();
+FIN()
 
 #

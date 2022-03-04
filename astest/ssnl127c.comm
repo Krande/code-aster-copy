@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ SECTION='GENERALE',
             VALE=(2.82743e-5,1.0,1.0,6.36172e-11,6.36172e-11,12.72344e-11,0.,0.),),
 GEOM_FIBRE=GF,
 MULTIFIBRE=_F(GROUP_MA = 'TOUT',PREC_AIRE=1.2E-06, PREC_INERTIE=1.0E-06, GROUP_FIBRE='SFIB'     ),
-);
+)
 
 
 
@@ -116,7 +116,7 @@ CHCOR=CREA_CHAMP(TYPE_CHAM='CART_CORR_R',
                  AFFE=_F(
                  TOUT='OUI',
                  NOM_CMP='CORR',
-                 VALE=0.0,),);
+                 VALE=0.0,),)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.002,
@@ -124,7 +124,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=0.018,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=0.02,
-                                    NOMBRE=10,),),);
+                                    NOMBRE=10,),),)
 
 CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
      AFFE= _F( GROUP_MA = 'TOUT', MATER = MATC2),
@@ -150,7 +150,7 @@ REST=STAT_NON_LINE(MODELE=MO,
                                     RHO_MIN=1e-06,
                                     RHO_MAX=10.0,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
-                                  ITER_GLOB_MAXI=10,),);
+                                  ITER_GLOB_MAXI=10,),)
 
 CALC_CHAMP(reuse=REST,RESULTAT=REST,  CONTRAINTE=('EFGE_ELNO'))
 
@@ -158,7 +158,7 @@ NdeU=RECU_FONCTION(RESULTAT=REST,
                    NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
                    GROUP_MA='SR1',
-                   GROUP_NO='R3');
+                   GROUP_NO='R3')
 
 DdeU=RECU_FONCTION(RESULTAT=REST,
                    NOM_CHAM='VARI_ELGA',
@@ -166,7 +166,7 @@ DdeU=RECU_FONCTION(RESULTAT=REST,
                    GROUP_MA='SR1',
                    POINT=1,
                    SOUS_POINT=1,
-                   );
+                   )
 
 PdeU=RECU_FONCTION(RESULTAT=REST,
                    NOM_CHAM='VARI_ELGA',
@@ -174,19 +174,19 @@ PdeU=RECU_FONCTION(RESULTAT=REST,
                    GROUP_MA='SR1',
                    POINT=1,
                    SOUS_POINT=1,
-                   );
+                   )
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=NdeU,),
-              UNITE=8,);
+              UNITE=8,)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=PdeU,),
-              UNITE=8,);
+              UNITE=8,)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=DdeU,),
-              UNITE=8,);
+              UNITE=8,)
 
 CHCOR2=CREA_CHAMP(TYPE_CHAM='CART_CORR_R',
                   OPERATION='AFFE',
@@ -194,13 +194,13 @@ CHCOR2=CREA_CHAMP(TYPE_CHAM='CART_CORR_R',
                   AFFE=_F(
                   TOUT='OUI',
                   NOM_CMP='CORR',
-                  VALE=2.5,),);
+                  VALE=2.5,),)
 
 LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.002,
                                      NOMBRE=10,),
                                   _F(JUSQU_A=0.018,
-                                     NOMBRE=20,),),);
+                                     NOMBRE=20,),),)
 
 CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE= _F( GROUP_MA = 'TOUT', MATER = MATC2),
@@ -227,7 +227,7 @@ REST2=STAT_NON_LINE(MODELE=MO,
                                      RHO_MAX=10.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
-                                   ITER_GLOB_ELAS=10,),);
+                                   ITER_GLOB_ELAS=10,),)
 
 CALC_CHAMP(reuse=REST2,RESULTAT=REST2,  CONTRAINTE=('EFGE_ELNO'))
 
@@ -235,7 +235,7 @@ NdeU2=RECU_FONCTION(RESULTAT=REST2,
                     NOM_CHAM='EFGE_ELNO',
                     NOM_CMP='N',
                     GROUP_MA='SR1',
-                    GROUP_NO='R3');
+                    GROUP_NO='R3')
 
 DdeU2=RECU_FONCTION(RESULTAT=REST2,
                     NOM_CHAM='VARI_ELGA',
@@ -243,7 +243,7 @@ DdeU2=RECU_FONCTION(RESULTAT=REST2,
                     GROUP_MA='SR1',
                     POINT=1,
                     SOUS_POINT=1,
-                    );
+                    )
 
 PdeU2=RECU_FONCTION(RESULTAT=REST2,
                     NOM_CHAM='VARI_ELGA',
@@ -251,19 +251,19 @@ PdeU2=RECU_FONCTION(RESULTAT=REST2,
                     GROUP_MA='SR1',
                     POINT=1,
                     SOUS_POINT=1,
-                    );
+                    )
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=NdeU2,),
-              UNITE=8,);
+              UNITE=8,)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=PdeU2,),
-              UNITE=8,);
+              UNITE=8,)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=DdeU2,),
-              UNITE=8,);
+              UNITE=8,)
 
 CHCOR3=CREA_CHAMP(TYPE_CHAM='CART_CORR_R',
                   OPERATION='AFFE',
@@ -271,13 +271,13 @@ CHCOR3=CREA_CHAMP(TYPE_CHAM='CART_CORR_R',
                   AFFE=_F(
                   TOUT='OUI',
                   NOM_CMP='CORR',
-                  VALE=13.0,),);
+                  VALE=13.0,),)
 
 LINST3=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.003,
                                      NOMBRE=10,),
                                   _F(JUSQU_A=0.008,
-                                     NOMBRE=30,),),);
+                                     NOMBRE=30,),),)
 
 CHMAT3=AFFE_MATERIAU(   MAILLAGE=MA,
       AFFE= _F( GROUP_MA = 'TOUT', MATER = MATC2),
@@ -304,7 +304,7 @@ REST3=STAT_NON_LINE(MODELE=MO,
                                      RHO_MAX=10.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
-                                   ITER_GLOB_ELAS=10,),);
+                                   ITER_GLOB_ELAS=10,),)
 
 CALC_CHAMP(reuse=REST3,RESULTAT=REST3,  CONTRAINTE=('EFGE_ELNO'))
 
@@ -312,7 +312,7 @@ NdeU3=RECU_FONCTION(RESULTAT=REST3,
                     NOM_CHAM='EFGE_ELNO',
                     NOM_CMP='N',
                     GROUP_MA='SR1',
-                    GROUP_NO='R3',);
+                    GROUP_NO='R3',)
 
 DdeU3=RECU_FONCTION(RESULTAT=REST3,
                     NOM_CHAM='VARI_ELGA',
@@ -320,7 +320,7 @@ DdeU3=RECU_FONCTION(RESULTAT=REST3,
                     GROUP_MA='SR1',
                     POINT=1,
                     SOUS_POINT=1,
-                    );
+                    )
 
 PdeU3=RECU_FONCTION(RESULTAT=REST3,
                     NOM_CHAM='VARI_ELGA',
@@ -328,19 +328,19 @@ PdeU3=RECU_FONCTION(RESULTAT=REST3,
                     GROUP_MA='SR1',
                     POINT=1,
                     SOUS_POINT=1,
-                    );
+                    )
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=NdeU3,),
-              UNITE=8,);
+              UNITE=8,)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=PdeU3,),
-              UNITE=8,);
+              UNITE=8,)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONCTION=DdeU3,),
-              UNITE=8,);
+              UNITE=8,)
 
 TEST_RESU(RESU=(_F(INST=0.019,
                    RESULTAT=REST,
@@ -457,7 +457,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                       _F(FONCTION=NdeU2,
                          LEGENDE='2.5% CORROSION',),
                       _F(FONCTION=NdeU3,
-                         LEGENDE='13% CORROSION',),),);
+                         LEGENDE='13% CORROSION',),),)
 
 
 

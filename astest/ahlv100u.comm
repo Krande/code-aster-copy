@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ AIR=DEFI_MATERIAU( FLUIDE=_F( RHO = 1.3, CELE_R = 343.))
 CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
                                  AFFE=_F( TOUT = 'OUI',  MATER = AIR) )
 
-COLONNE=AFFE_MODELE(  MAILLAGE=MAYA,     
-                      AFFE=_F(TOUT = 'OUI', 
+COLONNE=AFFE_MODELE(  MAILLAGE=MAYA,
+                      AFFE=_F(TOUT = 'OUI',
                               MODELISATION = 'AXIS_FLUIDE',
                               FORMULATION='U_P',
                               PHENOMENE = 'MECANIQUE') )
@@ -130,7 +130,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 DYNAHARM=CALC_CHAMP(reuse=DYNAHARM,
                     TOUT_ORDRE='OUI',
                     RESULTAT=DYNAHARM,
-                    ACOUSTIQUE='PRME_ELNO',);
+                    ACOUSTIQUE='PRME_ELNO',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DYNAHARM,

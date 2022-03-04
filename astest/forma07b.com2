@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # PARTIE 3 : POST-TRAITEMENTS RUPTURE
 
-POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),);
+POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),)
 
 ########
 # Post-traitement de la rupture : calculs de G et K
@@ -30,50 +30,50 @@ rinf = 2.*h
 rsup = 5.*h
 
 
-G_LEG = CALC_G_XFEM(LISSAGE=_F(DEGRE=5, 
+G_LEG = CALC_G_XFEM(LISSAGE=_F(DEGRE=5,
                           LISSAGE_G='LEGENDRE',
                           LISSAGE_THETA='LEGENDRE'),
                OPTION='CALC_K_G',
                RESULTAT=RESU,
-               THETA=_F(FISSURE=FISS, 
-                        R_INF=rinf, 
-                        R_SUP=rsup,),);
+               THETA=_F(FISSURE=FISS,
+                        R_INF=rinf,
+                        R_SUP=rsup,),)
 
-IMPR_TABLE(TABLE=G_LEG);
+IMPR_TABLE(TABLE=G_LEG)
 
 G_LAG = CALC_G_XFEM(LISSAGE=_F(LISSAGE_G='LAGRANGE',
                           LISSAGE_THETA='LAGRANGE'),
                OPTION='CALC_K_G',
                RESULTAT=RESU,
-               THETA=_F(FISSURE=FISS, 
-                        R_INF=rinf, 
-                        R_SUP=rsup,),);
+               THETA=_F(FISSURE=FISS,
+                        R_INF=rinf,
+                        R_SUP=rsup,),)
 
-IMPR_TABLE(TABLE=G_LAG);
+IMPR_TABLE(TABLE=G_LAG)
 
 G_LAG_20 = CALC_G_XFEM(LISSAGE=_F(LISSAGE_G='LAGRANGE',
                             LISSAGE_THETA='LAGRANGE'),
                  OPTION='CALC_K_G',
                  RESULTAT=RESU,
                  THETA=_F(FISSURE=FISS,
-                          NB_POINT_FOND=20, 
-                          R_INF=rinf, 
-                          R_SUP=rsup,),);
+                          NB_POINT_FOND=20,
+                          R_INF=rinf,
+                          R_SUP=rsup,),)
 
-IMPR_TABLE(TABLE=G_LAG_20);
+IMPR_TABLE(TABLE=G_LAG_20)
 
-PK = POST_K1_K2_K3(ABSC_CURV_MAXI=rsup, 
-                   FISSURE=FISS, 
-                   RESULTAT=RESU,);
+PK = POST_K1_K2_K3(ABSC_CURV_MAXI=rsup,
+                   FISSURE=FISS,
+                   RESULTAT=RESU,)
 
-IMPR_TABLE(TABLE=PK);
+IMPR_TABLE(TABLE=PK)
 
-PK_20 = POST_K1_K2_K3(ABSC_CURV_MAXI=rsup, 
-                      FISSURE=FISS, 
-                      NB_POINT_FOND=20, 
-                      RESULTAT=RESU,);
+PK_20 = POST_K1_K2_K3(ABSC_CURV_MAXI=rsup,
+                      FISSURE=FISS,
+                      NB_POINT_FOND=20,
+                      RESULTAT=RESU,)
 
-IMPR_TABLE(TABLE=PK_20);
+IMPR_TABLE(TABLE=PK_20)
 
 K1ref = 1.5957e6
 
@@ -101,4 +101,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MAX',
            TABLE=PK_20,)
 
-FIN();
+FIN()

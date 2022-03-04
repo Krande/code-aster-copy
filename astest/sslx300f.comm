@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,24 +29,24 @@ t1=LIRE_TABLE(UNITE=31, FORMAT='ASTER',
 #                         Lecture du maillage
 #
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA=(_F(NOM='ALL', TOUT= 'OUI',),),);
+              CREA_GROUP_MA=(_F(NOM='ALL', TOUT= 'OUI',),),)
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),);
+              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),)
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA=(_F(NOM='HE1', TOUT='OUI', TYPE_MAILLE='3D',),),);
+              CREA_GROUP_MA=(_F(NOM='HE1', TOUT='OUI', TYPE_MAILLE='3D',),),)
 
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA=(_F(NOM='MORIG', TOUT='OUI', TYPE_MAILLE='POI1',),),);
+              CREA_GROUP_MA=(_F(NOM='MORIG', TOUT='OUI', TYPE_MAILLE='POI1',),),)
 
 MA2=CREA_MAILLAGE(
                MAILLAGE=MA,
@@ -67,7 +67,7 @@ MA3=CREA_MAILLAGE(
                            )
 
 MA4=CREA_MAILLAGE(MAILLAGE=MA3,
-                 QUAD_LINE=_F(GROUP_MA=('GRMA1', 'GRMA3','ACMOINS','ACPLUS',),),);
+                 QUAD_LINE=_F(GROUP_MA=('GRMA1', 'GRMA3','ACMOINS','ACPLUS',),),)
 
 
 #-----------------------------------------------------------------------
@@ -88,7 +88,7 @@ MO=AFFE_MODELE(MAILLAGE=MA4,
                         MODELISATION = 'MEMBRANE',),
                     _F(GROUP_MA='GRMA2',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='CABLE',),),);
+                        MODELISATION='CABLE',),),)
 
 
 #-----------------------------------------------------------------------
@@ -98,7 +98,7 @@ MO=AFFE_MODELE(MAILLAGE=MA4,
 BETON=DEFI_MATERIAU(ELAS=_F(E=3.E10,
                            NU=0.2,
                            RHO=2400,
-                           ALPHA=1.096e-05,),);
+                           ALPHA=1.096e-05,),)
 
 ACIERmem=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = 2.E11, # E*section_l=2e11*1
                                      M_LLTT = 0.,
@@ -112,10 +112,10 @@ ACIERmem=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = 2.E11, # E*section_l=2e11*1
 CABLE=DEFI_MATERIAU(   ELAS=_F(  E = 2.E11,  NU=0.3,  RHO = 7800., ALPHA=1.096e-05),
                        CABLE=_F(EC_SUR_E = 1.E0),
                        THER=_F(LAMBDA=54.6,
-                                RHO_CP=3710000.0,),);
+                                RHO_CP=3710000.0,),)
 
 
-F_TEMP1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,20.,1.0,50.,),);
+F_TEMP1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,20.,1.0,50.,),)
 
 
 
@@ -125,7 +125,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA4,
                           _F(GROUP_MA=('ACPLUS','ACMOINS', ),
                              MATER=(ACIERmem,),),
                           _F(GROUP_MA=('GRMA2', ),
-                             MATER=(CABLE,),),),);
+                             MATER=(CABLE,),),),)
 
 
 CARAEL=AFFE_CARA_ELEM(MODELE=MO,
@@ -147,7 +147,7 @@ CARAEL=AFFE_CARA_ELEM(MODELE=MO,
                              _F(GROUP_MA='MORIG',
                                CARA='K_TR_D_N',
                                VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),),
-                    );
+                    )
 
 
 #
@@ -169,25 +169,25 @@ MO_TH=AFFE_MODELE(MAILLAGE=MA4,
                         MODELISATION = 'DKT',),
                     _F(GROUP_MA='GRMA2',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='CABLE',),),);
+                        MODELISATION='CABLE',),),)
 
 #
 YOUN_ACI=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20., 2.E11,
                                          500., 1.E11,
-                                           ),);
+                                           ),)
 YOUN_BET=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20., 3.E10,
                                          500., 1.5E10,
-                                           ),);
+                                           ),)
 NU_ACI=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20., 0.2,
                                          500., 0.2,
-                                           ),);
+                                           ),)
 NU_BET=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(20., 0.3,
                                          500., 0.3,
-                                           ),);
-RHO_ACI =DEFI_CONSTANTE(VALE=7800.);
-RHO_BET =DEFI_CONSTANTE(VALE=2400.);
-ALPH_ACI =DEFI_CONSTANTE(VALE=1.096e-05);
-ALPH_BET =DEFI_CONSTANTE(VALE=1.096e-05);
+                                           ),)
+RHO_ACI =DEFI_CONSTANTE(VALE=7800.)
+RHO_BET =DEFI_CONSTANTE(VALE=2400.)
+ALPH_ACI =DEFI_CONSTANTE(VALE=1.096e-05)
+ALPH_BET =DEFI_CONSTANTE(VALE=1.096e-05)
 
 BETON_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_BET,
                                 NU=NU_BET,
@@ -195,7 +195,7 @@ BETON_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_BET,
                                 ALPHA=ALPH_BET,
                                 TEMP_DEF_ALPHA=20.),),
                     THER=_F(LAMBDA=54.6,
-                            RHO_CP=3710000.0,),);
+                            RHO_CP=3710000.0,),)
 
 ACIER_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_ACI,
                                 NU=NU_ACI,
@@ -203,7 +203,7 @@ ACIER_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_ACI,
                                 ALPHA=ALPH_ACI,
                                 TEMP_DEF_ALPHA=20.),),
                     THER=_F(LAMBDA=54.6,
-                            RHO_CP=3710000.0,),);
+                            RHO_CP=3710000.0,),)
 
 #--------------preparer des champs ou resu pour affe_varc --------------
 CHAR_TH1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
@@ -212,7 +212,7 @@ CHAR_TH1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                                       NOM_CMP = 'TEMP',
                                       VALE_F = F_TEMP1))
 
-LINST=DEFI_LIST_REEL(VALE=(0., 1.),);
+LINST=DEFI_LIST_REEL(VALE=(0., 1.),)
 
 RESUTF1 = CREA_RESU(OPERATION='AFFE',
                   TYPE_RESU = 'EVOL_THER',
@@ -251,7 +251,7 @@ CHMATTH1=AFFE_MATERIAU(    MAILLAGE=MA4,
                           _F(GROUP_MA=('GRMA2', ),
                              MATER=(CABLE,),),),
                   AFFE_VARC =_F(TOUT='OUI', EVOL=RESUTF1,VALE_REF=20., NOM_VARC='TEMP',),
-                          );
+                          )
 
 CHMATTH2=AFFE_MATERIAU(    MAILLAGE=MA4,
                   AFFE=(_F(GROUP_MA=('GRMA1', 'HE1', 'FACE1', 'FACE2', 'GRMA4', 'GRMA3'),
@@ -261,7 +261,7 @@ CHMATTH2=AFFE_MATERIAU(    MAILLAGE=MA4,
                           _F(GROUP_MA=('GRMA2', ),
                              MATER=(CABLE,),),),
                   AFFE_VARC =_F(TOUT='OUI', EVOL=RESUTF,VALE_REF=20., NOM_VARC='TEMP',),
-                          );
+                          )
 
 CARAELTH=AFFE_CARA_ELEM(MODELE=MO_TH,
                     CABLE=_F(GROUP_MA='GRMA2',
@@ -282,15 +282,15 @@ CARAELTH=AFFE_CARA_ELEM(MODELE=MO_TH,
                              _F(GROUP_MA='MORIG',
                                CARA='K_TR_D_N',
                                VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),),
-                    );
+                    )
 
 
 list_re=DEFI_LIST_REEL(  DEBUT=0.0,
-                        INTERVALLE=(_F( JUSQU_A = 0.5, NOMBRE = 5),),);
+                        INTERVALLE=(_F( JUSQU_A = 0.5, NOMBRE = 5),),)
 
 instant=DEFI_LIST_INST(DEFI_LIST=(_F(LIST_INST=list_re,),),
                          ECHEC=(_F(SUBD_METHODE='AUTO',
-                                    ACTION='DECOUPE',),),);
+                                    ACTION='DECOUPE',),),)
 
 #-----------------------------------------------------------------------
 #              chargements meca
@@ -353,7 +353,7 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MO,
                                       COEF_IMPO=0.,),),
                         LIAISON_ELEM=(_F(OPTION='3D_POU',
                                       GROUP_MA_1='FACE1',
-                                      GROUP_NO_2='ORIG',),),);
+                                      GROUP_NO_2='ORIG',),),)
 
 
 # pour thermique (cas particulier de MEMBRANE)
@@ -411,7 +411,7 @@ CONDLI_T=AFFE_CHAR_MECA(MODELE=MO_TH,
                                       COEF_IMPO=0.,),),
                         LIAISON_ELEM=(_F(OPTION='3D_POU',
                                       GROUP_MA_1='FACE1',
-                                      GROUP_NO_2='ORIG',),),);
+                                      GROUP_NO_2='ORIG',),),)
 
 # --------------------------------------------------------------------
 # 6 chargements mécanique
@@ -459,13 +459,13 @@ PHYDR=DEFI_FONCTION(NOM_PARA='X',
                     NOM_RESU='TOUTRESU',
                     PROL_DROITE = 'CONSTANT',
                     PROL_GAUCHE = 'CONSTANT',
-                    VALE=(0.,-10000.0,10.,0.0),);
+                    VALE=(0.,-10000.0,10.,0.0),)
 
 pvar = AFFE_CHAR_MECA_F(MODELE=MO,
                         FORCE_FACE = _F(GROUP_MA='FACE2',
                                         FY = PHYDR,
                                         ),
-                       );
+                       )
 
 
 #-----------------------------------------------------------------------

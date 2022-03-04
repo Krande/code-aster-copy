@@ -30,7 +30,7 @@ from code_aster.Objects.table_py import Table
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
-              DEBUG=_F(SDVERI='OUI'),);
+              DEBUG=_F(SDVERI='OUI'),)
 
 
 K1YY=DEFI_FONCTION(NOM_PARA='INST',
@@ -42,7 +42,7 @@ K1YY=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,1.2000000e+08,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='EXCLU',
-                   );
+                   )
 
 K1YX=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='K1YX',
@@ -54,7 +54,7 @@ K1YX=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,-7.0000000e+05,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 K1XY=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='K1XY',
@@ -66,7 +66,7 @@ K1XY=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,7.0000000e+05,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 K1XX=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='K1XX',
@@ -78,7 +78,7 @@ K1XX=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,3.0000000e+08,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 C1YY=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='C1YY',
@@ -90,7 +90,7 @@ C1YY=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,0.7000000e+05,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 C1YX=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='C1YX',
@@ -102,7 +102,7 @@ C1YX=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,3.0000000e+02,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 C1XY=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='C1XY',
@@ -114,7 +114,7 @@ C1XY=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,-4.0000000e+02,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 C1XX=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='C1XX',
@@ -126,7 +126,7 @@ C1XX=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,1.5000000e+05,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 K2YY=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='K2YY',
@@ -138,7 +138,7 @@ K2YY=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,1.0000000e+08,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 K2YX=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='K2YX',
@@ -150,7 +150,7 @@ K2YX=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,-6.0000000e+05,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 K2XY=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='K2XY',
@@ -162,7 +162,7 @@ K2XY=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,6.0000000e+05,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 K2XX=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='K2XX',
@@ -174,7 +174,7 @@ K2XX=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,1.4000000e+08,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 C2YY=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='C2YY',
@@ -186,7 +186,7 @@ C2YY=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,0.6000000e+05,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 C2YX=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='C2YX',
@@ -198,7 +198,7 @@ C2YX=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,3.0000000e+02,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 C2XY=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='C2XY',
@@ -210,7 +210,7 @@ C2XY=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,-3.0000000e+02,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
 C2XX=DEFI_FONCTION(NOM_PARA='INST',
                    NOM_RESU='C2XX',
@@ -222,16 +222,16 @@ C2XX=DEFI_FONCTION(NOM_PARA='INST',
                          14000.0,0.8000000e+05,),
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='CONSTANT',
-                   );
+                   )
 
-mail=LIRE_MAILLAGE(FORMAT="ASTER",);
+mail=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 # ---------------------
 # DEFINITION DU MATERIAU
 # ---------------------
 acier=DEFI_MATERIAU(ELAS=_F(E=2.e11,
                             NU=0.3,
-                            RHO=7800,),);
+                            RHO=7800,),)
 
 # ---------------------
 # AFFECTATION DU MODELE
@@ -242,14 +242,14 @@ modele=AFFE_MODELE(MAILLAGE=mail,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('DISQ1','DISQ2','DISQ3','PALIER1','PALIER2'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 # -----------------------
 # AFFECTATION DU MATERIAU
 # -----------------------
 chmat=AFFE_MATERIAU(MAILLAGE=mail,
                     AFFE=_F(GROUP_MA='ROTOR',
-                            MATER=acier,),);
+                            MATER=acier,),)
 
 # ------------------
 # CONDITIONS AUX LIMITES
@@ -327,7 +327,7 @@ cara1=AFFE_CARA_ELEM(MODELE=modele,
                       ORIENTATION=_F(GROUP_MA=('DISQ1','DISQ2','DISQ3'),
                                       CARA='ANGL_NAUT',
                                       VALE=(0.,-90.,0.,),),
-                        );
+                        )
 
 ASSEMBLAGE(MODELE=modele,
                 CHAM_MATER=chmat,
@@ -339,7 +339,7 @@ ASSEMBLAGE(MODELE=modele,
                            _F(MATRICE=CO('MASSE1'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('AMOR1'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),)
 
 MODET=CALC_MODES(MATR_RIGI=RIGIDIT1,
                  OPTION='BANDE',
@@ -356,13 +356,13 @@ MODES=EXTR_MODE(FILTRE_MODE=_F(MODE=MODET,
                                            27,28,29,32,33,37,38,39,40,42,43,46,47,50,51,52,
                                            53,55,56,58,59),),)
 
-DEBV=0.0;
-FINV=20000;
-PASV = 500.0;
-nbF=12;
-VIT=NP.arange(DEBV,FINV+1,PASV);
-nbV=len(VIT);
-L_VITROT=[VIT[ii]*2*pi/60. for ii in range(nbV)];
+DEBV=0.0
+FINV=20000
+PASV = 500.0
+nbF=12
+VIT=NP.arange(DEBV,FINV+1,PASV)
+nbV=len(VIT)
+L_VITROT=[VIT[ii]*2*pi/60. for ii in range(nbV)]
 
 cara=[None]*nbV
 RIGI=[None]*nbV
@@ -377,8 +377,8 @@ GYGE=[None]*nbV
 OMGE=[None]*nbV
 NUME=[None]*nbV
 
-_mod1=[None]*nbV;
-_mod2=[None]*nbV;
+_mod1=[None]*nbV
+_mod2=[None]*nbV
 tab=Table()
 dictToAdd = {}
 
@@ -478,7 +478,7 @@ for kk in range(0,nbV,1) :
                       ORIENTATION=_F(GROUP_MA=('DISQ1','DISQ2','DISQ3'),
                                       CARA='ANGL_NAUT',
                                       VALE=(0.,-90.,0.,),),
-                        );
+                        )
 
    # --------------------------------
    #MATRICES ASSEMBLEES K, M
@@ -507,7 +507,7 @@ for kk in range(0,nbV,1) :
                            _F(MATRICE=GYAS[kk],
                               OPTION='MECA_GYRO',),
                            _F(MATRICE=AMOR[kk],
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),)
 
    GYOM[kk]=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS[kk], COEF_R=OM,),
                                    _F(MATR_ASSE=AMOR[kk], COEF_R=1.,),))
@@ -523,7 +523,7 @@ for kk in range(0,nbV,1) :
                             _F(MATRICE=GYGE[kk],
                                MATR_ASSE=GYAS[kk],),
                             _F(MATRICE=OMGE[kk],
-                               MATR_ASSE=GYOM[kk],),),);
+                               MATR_ASSE=GYOM[kk],),),)
 
    _mod1[kk]=CALC_MODES(MATR_RIGI=RIGI[kk],
                            VERI_MODE=_F(PREC_SHIFT=5.000000000000000E-3,
@@ -561,7 +561,7 @@ for kk in range(0,nbV,1) :
    dictToAdd['MODE_MECA_'+str(kk)] = _mod1[kk]
 
 motcles=tab.dict_CREA_TABLE()
-tab_out=CREA_TABLE(TYPE_TABLE = 'TABLE_CONTAINER', **motcles);
+tab_out=CREA_TABLE(TYPE_TABLE = 'TABLE_CONTAINER', **motcles)
 for key, value in dictToAdd.items():
     tab_out.addDependency(value)
    #  tab_out.addObject(key, value)
@@ -1094,4 +1094,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -270,10 +270,10 @@ DYNHARM=CALC_CHAMP(reuse=DYNHARM,RESULTAT=DYNHARM,CONTRAINTE=('SIEF_ELGA','SIGM_
 DHPOS=POST_CHAMP(RESULTAT=DYNHARM,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='MOY',),);
+                               NIVE_COUCHE='MOY',),)
 DYNHARM=CALC_CHAMP(reuse =DYNHARM,
               RESULTAT=DYNHARM,
-              CONTRAINTE='EFGE_NOEU',);
+              CONTRAINTE='EFGE_NOEU',)
 
 
 # Test PARTIE

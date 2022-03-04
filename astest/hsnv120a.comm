@@ -23,7 +23,7 @@ MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(
                MAILLAGE=MA,
-                  
+
                AFFE=_F(
                TOUT = 'OUI',
                PHENOMENE = 'MECANIQUE',

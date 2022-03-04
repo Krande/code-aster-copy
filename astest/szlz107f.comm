@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ WHOL = DEFI_FONCTION(   NOM_PARA = 'SIGM',
                                  840.8, 100,
                                  1098.9, 50,
                                  2156.3, 10,)
-                                 )    
+                                 )
 
 ZERO = DEFI_FONCTION(   NOM_PARA = 'INST',
                         VALE = ( 1, 0.0,
@@ -43,7 +43,7 @@ ZERO = DEFI_FONCTION(   NOM_PARA = 'INST',
                                  3, 0.0,
                                  ))
 
-# Angle calculated from VNM1Z, absolute value of VNM1Z is used because 
+# Angle calculated from VNM1Z, absolute value of VNM1Z is used because
 # the sign could not be decided for this particular case
 PHIZ = FORMULE(   NOM_PARA = ('VNM1Z'),
                   VALE = ''' acos(abs(VNM1Z))*180.0/pi '''
@@ -72,7 +72,7 @@ MATDC = DEFI_MATERIAU   ( ELAS = _F( E = 193000.,
                                                D_VAN_B  = 2.0,
                                                COEF_CISA_TRAC = 1.0 )
                          )
-              
+
 TABDC   = [None]*NBALP
 for i in range(NBALP):
     ALP[i] = i/2.0-1.0
@@ -87,7 +87,7 @@ for i in range(NBALP):
                                     2,   SYM[i]-SA,
                                     3,   SYM[i]+SA,
                                  ))
- 
+
     TABDC[i] = POST_FATIGUE(CHARGEMENT = 'MULTIAXIAL',
                               TYPE_CHARGE = 'PERIODIQUE',
                               HISTOIRE = _F( SIGM_XX = SX[i],
@@ -96,7 +96,7 @@ for i in range(NBALP):
                                           SIGM_XY = ZERO,
                                           SIGM_XZ = ZERO,
                                           SIGM_YZ = ZERO,
-                                              
+
                                           EPS_XX = ZERO,
                                           EPS_YY = ZERO,
                                           EPS_ZZ = ZERO,
@@ -108,7 +108,7 @@ for i in range(NBALP):
                               METHODE = 'CERCLE_EXACT',
                               MATER = MATDC,
                            DOMMAGE = 'WOHLER',
-                           )    
+                           )
 
     TABDC[i] = CALC_TABLE(   reuse = TABDC[i],
                          TABLE = TABDC[i],
@@ -116,8 +116,8 @@ for i in range(NBALP):
                                        FORMULE = PHIZ,
                                        NOM_PARA = 'PHIZ',),
                                            )
-                          ) 
-               
+                          )
+
     TEST_TABLE(
          VALE_REFE = 45,
          VALE_CALC = 44.5,
@@ -125,7 +125,7 @@ for i in range(NBALP):
          REFERENCE ='ANALYTIQUE',
          NOM_PARA = 'PHIZ',
          TABLE = TABDC[i],)
-             
+
 ###############################################################################
 #Test MATAKE_MODI_AC criterion
 
@@ -138,10 +138,10 @@ MATMC = DEFI_MATERIAU( ELAS = _F( E = 193000.,
                                             MATAKE_B = 2.0,
                                             COEF_FLEX_TORS = 1.0 )
                       )
-               
+
 TABMC = [None]*NBALP
 for i in range(NBALP):
- 
+
    TABMC[i] = POST_FATIGUE( CHARGEMENT = 'MULTIAXIAL',
                             TYPE_CHARGE = 'PERIODIQUE',
                             HISTOIRE = _F( SIGM_XX = SX[i],
@@ -150,7 +150,7 @@ for i in range(NBALP):
                                           SIGM_XY = ZERO,
                                           SIGM_XZ = ZERO,
                                           SIGM_YZ = ZERO,
-                                       
+
                                           EPS_XX = ZERO,
                                           EPS_YY = ZERO,
                                           EPS_ZZ = ZERO,
@@ -162,23 +162,23 @@ for i in range(NBALP):
                            METHODE = 'CERCLE_EXACT',
                            MATER = MATMC,
                         DOMMAGE = 'WOHLER',
-                           )    
+                           )
 
    TABMC[i] = CALC_TABLE(    reuse = TABMC[i],
                          TABLE = TABMC[i],
                          ACTION = ( _F( OPERATION ='OPER',
                                             FORMULE = PHIZ,
                                             NOM_PARA = 'PHIZ',),)
-                         )  
-           
-   TEST_TABLE(   
+                         )
+
+   TEST_TABLE(
          REFERENCE = 'ANALYTIQUE',
             VALE_REFE = 45,
             VALE_CALC = 44.5,
              PRECISION = 0.015,
              NOM_PARA = 'PHIZ',
              TABLE = TABMC[i],)
-             
+
 ##########################################################################
 # Test DANG_VAN_MODI_AV criterion
 
@@ -207,7 +207,7 @@ for i in range(NBALP):
                                              SIGM_XY = ZERO,
                                              SIGM_XZ = ZERO,
                                              SIGM_YZ = ZERO,
-                                          
+
                                              EPS_XX = ZERO,
                                              EPS_YY = ZERO,
                                              EPS_ZZ = ZERO,
@@ -218,16 +218,16 @@ for i in range(NBALP):
                               CRITERE = 'DANG_VAN_MODI_AV',
                               PROJECTION = 'UN_AXE',
                               MATER = MATD,
-                              )    
- 
- 
+                              )
+
+
      TABD[i]= CALC_TABLE(reuse = TABD[i],
                              TABLE=TABD[i],
                              ACTION = ( _F( OPERATION ='OPER',
                                                FORMULE = PHIZ,
                                                NOM_PARA = 'PHIZ',),)
-                          ) 
-               
+                          )
+
      TEST_TABLE(
                 REFERENCE = 'ANALYTIQUE',
                 VALE_REFE = (45, 45),
@@ -235,7 +235,7 @@ for i in range(NBALP):
                 VALE_CALC = RESUC[i],
                 NOM_PARA = 'PHIZ',
                 TABLE = TABD[i],)
-             
+
 ###############################################################################
 #Test MATAKE_MODI_AV criterion
 
@@ -260,7 +260,7 @@ RESUC = [(43.75,46.25),46.25,46.5 ,47.25,47.75,48.5 ,49.25,50.0 ,
          50.75,51.25,52.0 ,52.75,53.25,53.75,53.75,56.25,
          56.25,56.5 ,57.0 ,57.75,58.25,58.75,59.5]
 for i in range(NBALP):
- 
+
    TABM[i] = POST_FATIGUE( CHARGEMENT = 'MULTIAXIAL',
                            TYPE_CHARGE = 'NON_PERIODIQUE',
                            HISTOIRE = _F(  SIGM_XX = SX[i],
@@ -269,7 +269,7 @@ for i in range(NBALP):
                                           SIGM_XY = ZERO,
                                           SIGM_XZ = ZERO,
                                           SIGM_YZ = ZERO,
-                                       
+
                                           EPS_XX = ZERO,
                                           EPS_YY = ZERO,
                                           EPS_ZZ = ZERO,
@@ -280,16 +280,16 @@ for i in range(NBALP):
                            CRITERE = 'MATAKE_MODI_AV',
                            PROJECTION = 'UN_AXE',
                            MATER = MATM,
-                           )    
+                           )
 
    TABM[i] = CALC_TABLE( reuse = TABM[i],
                          TABLE=TABM[i],
                          ACTION = ( _F( OPERATION ='OPER',
                                             FORMULE = PHIZ,
                                             NOM_PARA = 'PHIZ',),)
-                       ) 
-           
-   TEST_TABLE( 
+                       )
+
+   TEST_TABLE(
       REFERENCE = 'ANALYTIQUE',
       VALE_REFE = RESUM[i],
       PRECISION = 0.03,
@@ -316,7 +316,7 @@ MANCOF = DEFI_FONCTION( NOM_PARA='EPSI',
                      0.057463434, 100,
                      0.225885749, 10,
                                  )  )
-                                
+
 MATF   = DEFI_MATERIAU   ( ELAS  = _F( E        = 193000.,
                                        NU       = .3,
                                        ALPHA    = 0. ),
@@ -340,7 +340,7 @@ RESUF  = [(45,45), 45.34014828, 45.67180774, 45.99482259, 46.30909462, 46.614578
 RESUC  = [(43.75,46.25),46.25,46.25,46.25,46.25,46.5 ,47.0 ,47.25,
          47.5 ,47.75,48.0 ,48.25,48.5 ,48.75,49.0 ,49.25,
          49.5 ,49.5 ,49.75,50.0 ,50.25,50.5 ,50.5]
-                             
+
 for i in range(NBALP):
     EX[i] = DEFI_FONCTION(  NOM_PARA = 'INST',
                            VALE = (    1,    ((SXM[i]+SA)-0.3*(SYM[i]+SA))/193000,
@@ -365,7 +365,7 @@ for i in range(NBALP):
                                           SIGM_XY = ZERO,
                                           SIGM_XZ = ZERO,
                                           SIGM_YZ = ZERO,
-                                 
+
                                           EPS_XX = EX[i],
                                           EPS_YY = EY[i],
                                           EPS_ZZ = EZ[i],
@@ -381,13 +381,13 @@ for i in range(NBALP):
                          ACTION = ( _F( OPERATION ='OPER',
                                        FORMULE = PHIZ,
                                        NOM_PARA = 'PHIZ',),)
-                       ) 
-    TEST_TABLE( 
+                       )
+    TEST_TABLE(
       REFERENCE='ANALYTIQUE',
       VALE_REFE=RESUF[i],
       PRECISION = 0.03,
       VALE_CALC= RESUC[i],
       NOM_PARA = 'PHIZ',
       TABLE= TABF[i],)
-                             
+
 FIN()

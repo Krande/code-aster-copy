@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,23 +30,23 @@ R  =  50.
 
 # -- Lecture du maillage et affectation du modele, des chargements
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=MODI_MAILLAGE(reuse =MA,
  MAILLAGE=MA,
- ORIE_PEAU=_F(GROUP_MA_PEAU=('CONT1','CONT2',),),);
+ ORIE_PEAU=_F(GROUP_MA_PEAU=('CONT1','CONT2',),),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=E,
-  NU=nu,),);
+  NU=nu,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 AFFE=_F(GROUP_MA=('SPH_HAU','SPH_BAS',),
-MATER=MAT,),);
+MATER=MAT,),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
    AFFE=_F(GROUP_MA=('SPH_HAU','SPH_BAS',),
    PHENOMENE='MECANIQUE',
-   MODELISATION='AXIS',),);
+   MODELISATION='AXIS',),)
 
 CL=AFFE_CHAR_MECA(MODELE=MO,
   DDL_IMPO=(_F(GROUP_MA='A1A2',
@@ -54,11 +54,11 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
 _F(GROUP_MA='A2B2',
    DY=h_m,),
 _F(GROUP_MA='A1B1',
-   DY=h,),),);
+   DY=h,),),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
   1,1,
-  ),);
+  ),)
 
 # -- Definition du contact
 
@@ -70,13 +70,13 @@ CONT=DEFI_CONTACT(MODELE = MO,
   GROUP_MA_ESCL='CONT1',
   INTEGRATION='GAUSS',
   CONTACT_INIT='OUI',
-  ),);
+  ),)
 
 TPS=DEFI_LIST_REEL(DEBUT=0,
    INTERVALLE=(_F(JUSQU_A=0.1,
  NOMBRE=2,),
    _F(JUSQU_A=1,
- NOMBRE=1,),),);
+ NOMBRE=1,),),)
 
 STNL=STAT_NON_LINE(MODELE=MO,
    CHAM_MATER=CHMAT,
@@ -87,7 +87,7 @@ FONC_MULT=RAMPE,),
    NEWTON=_F(REAC_ITER=1,MATRICE='ELASTIQUE'),
    INCREMENT=_F(LIST_INST=TPS,),
    CONVERGENCE=_F(ITER_GLOB_MAXI=50),
-   );
+   )
 
 # -- Post-traitement
 
@@ -96,7 +96,7 @@ STNL=CALC_CHAMP(reuse=STNL,RESULTAT=STNL,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONT
 
 STNL=CALC_CHAMP(reuse =STNL,
   RESULTAT=STNL,
- CONTRAINTE='SIEF_NOEU',CRITERES='SIEQ_NOEU');
+ CONTRAINTE='SIEF_NOEU',CRITERES='SIEQ_NOEU')
 
 # -- Groupe de noeuds oriente depuis le centre de la zone de contact esclave
 
@@ -105,7 +105,7 @@ MA=DEFI_GROUP(reuse =MA,
   CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
    NOM='CONT_ord',
    GROUP_MA='CONT1',
-   GROUP_NO_ORIG='C1',),);
+   GROUP_NO_ORIG='C1',),)
 
 # -- Pression de contact extraite sur le bord oriente
 
@@ -115,19 +115,19 @@ LAGS_abs=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
  NOM_CHAM='DEPL',
  INST=1.0,
  GROUP_NO='CONT_ord',
- NOM_CMP='LAGS_C',),);
+ NOM_CMP='LAGS_C',),)
 
-IMPR_TABLE(TABLE=LAGS_abs,);
+IMPR_TABLE(TABLE=LAGS_abs,)
 
 # -- Trace de la pression et de la solution analytique
 
 LAGS_f=RECU_FONCTION(TABLE=LAGS_abs,
  PARA_X='ABSC_CURV',
- PARA_Y='LAGS_C',);
+ PARA_Y='LAGS_C',)
 
 V_ABSC=DEFI_LIST_REEL(DEBUT=0,
   INTERVALLE=_F(JUSQU_A=10,
-NOMBRE=100,),);
+NOMBRE=100,),)
 
 
 # -- Pression de hertz et demi-largeur de contact
@@ -138,11 +138,11 @@ a  = sqrt(R*h)
 PRES = FORMULE(VALE='p0*sqrt(1.0-(x/a)*(x/a))',
    NOM_PARA='x',
    p0=p0,
-   a=a);
+   a=a)
 
 PRES_sol=CALC_FONC_INTERP(FONCTION=PRES,
   LIST_PARA=V_ABSC,
-  NOM_PARA='x',);
+  NOM_PARA='x',)
 
 # -- Validation des resultats
 
@@ -171,10 +171,10 @@ IMPR_FONCTION(FORMAT='XMGRACE',
   GRILLE_X=1,
   GRILLE_Y=500,
   LEGENDE_X='Abscisse curviligne (mm)',
-  LEGENDE_Y='Pression (Mpa)',);
+  LEGENDE_Y='Pression (Mpa)',)
 
 IMPR_RESU(FORMAT='MED',
-  RESU=_F(RESULTAT=STNL,),);
+  RESU=_F(RESULTAT=STNL,),)
 
 # Vérification de calc_pression
 
@@ -185,7 +185,7 @@ STNL=CALC_PRESSION(reuse=STNL,
                    GROUP_MA=('CONT1','CONT2',),
                    INST=(0.1, 0.1, 1.0,),
                    #TOUT_ORDRE='OUI',
-                   );
+                   )
 
 
 TEST_RESU(RESU=_F(
@@ -205,7 +205,7 @@ IMPR_RESU(FORMAT="RESULTAT",
           UNITE=17,
           RESU=_F(RESULTAT=STNL,GROUP_NO='C1',
                   INST = 1.0, NOM_CHAM=('PRES_NOEU'),
-                  )) ;
+                  ))
 
 
-FIN();
+FIN()

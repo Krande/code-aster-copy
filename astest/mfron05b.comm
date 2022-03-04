@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,42 +20,42 @@
 # person_in_charge: david.haboussa at edf.fr
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 CREA_LIB_MFRONT(UNITE_MFRONT=38,UNITE_LIBRAIRIE=40)
 CREA_LIB_MFRONT(UNITE_MFRONT=39,UNITE_LIBRAIRIE=41)
 
 #temperature de travail en degres celsius
-Tdegc=600;
+Tdegc=600
 
 #ATTENTION : f en h-1 et non en %/h
-feps=5.2e7;
-Qeps=3e5;
-aK = -3.3e-2;
-bK = 38.5;
-fA = 9e4;
-QA = 2e5;
-f0 = 3.5e-2;
-Q0 = -4.85e4;
+feps=5.2e7
+Qeps=3e5
+aK = -3.3e-2
+bK = 38.5
+fA = 9e4
+QA = 2e5
+f0 = 3.5e-2
+Q0 = -4.85e4
 
 ########################################
 ######### DEFINITION DU CHARGEMENT #####
 ########################################
 
 #niveau de contrainte nominal
-sigmap = 160;
+sigmap = 160
 
 
 #  temps final
-tref=2000;
+tref=2000
 
 #######################################################
 
 #quelques calculs intermediaires
-ep0val=feps*exp(-Qeps/(8.314*(Tdegc+273.)));
-Kcoef=aK*(Tdegc+273.)+bK;
-A0 = fA*exp(-QA/(8.314*(Tdegc+273.)));
-sig0val = f0*exp(-Q0/(8.314*(Tdegc+273.)));
+ep0val=feps*exp(-Qeps/(8.314*(Tdegc+273.)))
+Kcoef=aK*(Tdegc+273.)+bK
+A0 = fA*exp(-QA/(8.314*(Tdegc+273.)))
+sig0val = f0*exp(-Q0/(8.314*(Tdegc+273.)))
 h1=30000.
 h2=-280.
 H1star=0.33
@@ -77,12 +77,12 @@ MATFRONT=DEFI_MATERIAU(
 char=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                          100.,sigmap,
                          100000000,sigmap,
-                         ),);
+                         ),)
 
 
 lalist=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=tref,
-                                     NOMBRE=2000,),),);
+                                     NOMBRE=2000,),),)
 
 listtps = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lalist,),
                          ECHEC=_F(SUBD_NIVEAU=10,
@@ -94,7 +94,7 @@ listtps = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lalist,),
                                   )
 
 listarch=DEFI_LIST_REEL(DEBUT=0,
-                      INTERVALLE=(_F(JUSQU_A=tref,NOMBRE=2000,),),);
+                      INTERVALLE=(_F(JUSQU_A=tref,NOMBRE=2000,),),)
 
 ###########
 # explicite
@@ -111,19 +111,19 @@ resuexpl=SIMU_POINT_MAT(MATER=MATFRONT,INFO=1,
                      NEWTON=_F(MATRICE='ELASTIQUE'),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=50),
                      ARCHIVAGE=_F(LIST_INST=listarch),
-                     );
+                     )
 
 IMPR_TABLE(TABLE=resuexpl, UNITE=37)
 
 epYYexpl=RECU_FONCTION(TABLE=resuexpl,
                    PARA_X='INST',
                    PARA_Y='EPYY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 endoexpl=RECU_FONCTION(TABLE=resuexpl,
                    PARA_X='INST',
                    PARA_Y='V16',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 #fluage secondaire comparaison ssnv225a
@@ -187,19 +187,19 @@ resuimpl=SIMU_POINT_MAT(MATER=MATFRONT,INFO=1,
                      INCREMENT=_F(LIST_INST=listtps,),
                      NEWTON=_F(REAC_ITER=1),
                      ARCHIVAGE=_F(LIST_INST=listarch),
-                     );
+                     )
 
 IMPR_TABLE(TABLE=resuimpl, UNITE=44)
 
 epYYimpl=RECU_FONCTION(TABLE=resuimpl,
                    PARA_X='INST',
                    PARA_Y='EPYY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 endoimpl=RECU_FONCTION(TABLE=resuimpl,
                    PARA_X='INST',
                    PARA_Y='V7',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 #fluage secondaire comparaison ssnv225a
@@ -258,7 +258,7 @@ IMPR_FONCTION(
             ),
             UNITE=45,
             PILOTE=pilote,
-            TITRE='Espilon = f(INST)');
+            TITRE='Espilon = f(INST)')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -268,7 +268,7 @@ IMPR_FONCTION(
             ),
             PILOTE=pilote,
             UNITE=42,
-            TITRE='endo = f(INST)');
+            TITRE='endo = f(INST)')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -278,6 +278,6 @@ IMPR_FONCTION(
             ),
             UNITE=43,
             PILOTE=pilote,
-            TITRE='depsdt = f(INST)');
+            TITRE='depsdt = f(INST)')
 
-FIN();
+FIN()

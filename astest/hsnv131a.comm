@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), DEBUG=_F(SDVERI='OUI'))
 #......................................................................
 # TEST DE INCLUDE_MATERIAU
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=INCLUDE_MATERIAU(NOM_AFNOR='Z2CND1712',
                     TYPE_MODELE='REF',
                     VARIANTE='A',
                     TYPE_VALE='NOMI',
-                    UNITE_LONGUEUR='MM',);
+                    UNITE_LONGUEUR='MM',)
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
@@ -39,21 +39,21 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=80.000E0,
                                      NOMBRE=2,),
                                   _F(JUSQU_A=90.000E0,
-                                     NOMBRE=2,),),);
+                                     NOMBRE=2,),),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=MA,
-                            ),);
+                            ),)
 
 TIMPVAR=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.E0,25.E0,
                             100.E0,100.E0,
-                            ),);
+                            ),)
 
 MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='THERMIQUE',
-                           MODELISATION='PLAN',),);
+                           MODELISATION='PLAN',),)
 
 CHTHE=AFFE_CHAR_THER_F(MODELE=MOTHER,
                        TEMP_IMPO=(_F(GROUP_NO='GRNO1',
@@ -63,25 +63,25 @@ CHTHE=AFFE_CHAR_THER_F(MODELE=MOTHER,
                                   _F(GROUP_NO='GRNO3',
                                      TEMP=TIMPVAR,),
                                   _F(GROUP_NO='GRNO4',
-                                     TEMP=TIMPVAR,),),);
+                                     TEMP=TIMPVAR,),),)
 
 T25=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='AFFE',
                MAILLAGE=MAIL,
                AFFE=_F(TOUT='OUI',
                        NOM_CMP='TEMP',
-                       VALE=25.0,),);
+                       VALE=25.0,),)
 
 MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),);
+                           MODELISATION='C_PLAN',),)
 
 TEMP=THER_NON_LINE(MODELE=MOTHER,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHTHE,),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   ETAT_INIT=_F(CHAM_NO=T25,),);
+                   ETAT_INIT=_F(CHAM_NO=T25,),)
 
 CHMTM=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
@@ -91,7 +91,7 @@ CHMTM=AFFE_MATERIAU(MAILLAGE=MAIL,
                                   NOM_VARC='TEMP',
                                   NOM_CHAM='TEMP',
                                   VALE_REF=25.),
-                     );
+                     )
 
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
@@ -100,7 +100,7 @@ CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
                                 _F(GROUP_NO='GRNO1',
                                    DY=0.,),
                                 _F(GROUP_NO='GRNO3',
-                                   DY=0.,),),);
+                                   DY=0.,),),)
 
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CHMTM,
@@ -110,7 +110,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,
-                               ITER_GLOB_MAXI=10,),);
+                               ITER_GLOB_MAXI=10,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    REFERENCE='ANALYTIQUE',
@@ -211,4 +211,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                 ),
           )
 
-FIN();
+FIN()

@@ -172,7 +172,7 @@ MODES_1=CALC_MODES(
                  TYPE_RESU='DYNAMIQUE',
                  SOLVEUR=_F(METHODE='MUMPS',
                             NPREC=11,),
-                 VERI_MODE=_F(STOP_ERREUR='NON',),);
+                 VERI_MODE=_F(STOP_ERREUR='NON',),)
 
 
 with shared_tmpdir('foo') as tmpdir:
@@ -190,7 +190,7 @@ MODES_2=CALC_MODES(
                  TYPE_RESU='DYNAMIQUE',
                  SOLVEUR=_F(METHODE='MUMPS',
                             NPREC=11,),
-                 VERI_MODE=_F(STOP_ERREUR='NON',),);
+                 VERI_MODE=_F(STOP_ERREUR='NON',),)
 
 with shared_tmpdir('foo') as tmpdir:
    printToMedFile(MODES_2, osp.join(tmpdir, 'modes2.resu.med'))

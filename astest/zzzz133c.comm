@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
- 
+
 MAIL = LIRE_MAILLAGE(UNITE = 20,
                      FORMAT='ASTER',)
 
@@ -38,12 +38,12 @@ MAIL = DEFI_GROUP(reuse = MAIL,
 
 MAT = DEFI_MATERIAU(ELAS =_F(E = 10.,
                              NU = 0.3,),)
-                                    
+
 MOD = AFFE_MODELE(MAILLAGE = MAIL,
                   AFFE=(_F(GROUP_MA='TOUT',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),),)
-                       
+
 BLOC = AFFE_CHAR_CINE(
                       MODELE=MOD,
                       MECA_IMPO=(_F(DX=0.0,
@@ -57,11 +57,11 @@ BLOC = AFFE_CHAR_CINE(
                                     DY=0.0,
                                     GROUP_NO=('NO7',),),)
                             )
-                       
+
 LINST = DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(_F(JUSQU_A=1.0,
                                       NOMBRE=1,),
-                                        ),);
+                                        ),)
 
 EPS0 = CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                   OPERATION='AFFE',
@@ -71,7 +71,7 @@ EPS0 = CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                            VALE=(0.,0.,0.,)),
                         _F(TOUT='OUI',
                            NOM_CMP=('EPXY','EPXZ','EPYZ',),
-                           VALE=(0.,0.,0.),),),);
+                           VALE=(0.,0.,0.),),),)
 
 EPSXXIMP=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                     OPERATION='AFFE',
@@ -81,8 +81,8 @@ EPSXXIMP=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                          VALE=(7.,0.,0.,),),
                       _F(TOUT='OUI',
                          NOM_CMP=('EPXY','EPXZ','EPYZ',),
-                         VALE=(0.,0.,0.),),),);
-                         
+                         VALE=(0.,0.,0.),),),)
+
 EPSXYIMP=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                     OPERATION='AFFE',
                     MODELE=MOD,
@@ -91,7 +91,7 @@ EPSXYIMP=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                          VALE=(0.,0.,0.,),),
                       _F(TOUT='OUI',
                          NOM_CMP=('EPXY','EPXZ','EPYZ',),
-                         VALE=(12.,0.,0.),),),);
+                         VALE=(12.,0.,0.),),),)
 
 # --- Test pour EPSAXX
 
@@ -108,13 +108,13 @@ CHMAT1 = AFFE_MATERIAU(MAILLAGE=MAIL,
                                     EVOL=EPSA1,
                                     NOM_VARC='EPSA',
                                     NOM_CHAM='EPSA_ELNO',),)
-                      
+
 UEPSA1 = STAT_NON_LINE(CHAM_MATER=CHMAT1,
                        COMPORTEMENT=(_F(RELATION='ELAS'),),
                        EXCIT=_F(CHARGE=BLOC,),
                        INCREMENT=_F(LIST_INST=LINST),
                        MODELE=MOD)
-               
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='NO4',
                   REFERENCE='ANALYTIQUE',
@@ -128,13 +128,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 # --- Test pour EPSAXY
-                 
+
 EPSA2=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_VARC',
                NOM_CHAM='EPSA_ELNO',
                AFFE=(_F(CHAM_GD=EPS0    ,  INST=0.,),
                      _F(CHAM_GD=EPSXYIMP,  INST=1.,),),)
-          
+
 CHMAT2 = AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(GROUP_MA='TOUT',
                                MATER=MAT,),
@@ -142,13 +142,13 @@ CHMAT2 = AFFE_MATERIAU(MAILLAGE=MAIL,
                                     EVOL=EPSA2,
                                     NOM_VARC='EPSA',
                                     NOM_CHAM='EPSA_ELNO',),)
-          
+
 UEPSA2 = STAT_NON_LINE(CHAM_MATER=CHMAT2,
                        COMPORTEMENT=(_F(RELATION='ELAS'),),
                        EXCIT=_F(CHARGE=BLOC,),
                        INCREMENT=_F(LIST_INST=LINST),
                        MODELE=MOD)
-               
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='NO1',
                   REFERENCE='ANALYTIQUE',
@@ -160,5 +160,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   PRECISION=0.001,),
           )
-          
+
 FIN()

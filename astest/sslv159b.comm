@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,35 +19,35 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
-              ),);
+              ),)
 
-MBI=LIRE_MAILLAGE(FORMAT='ASTER');
+MBI=LIRE_MAILLAGE(FORMAT='ASTER')
 
 MOD=AFFE_MODELE(MAILLAGE=MBI,
                 AFFE=(
                       _F(GROUP_MA='POU',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_T',),
-                      ),);
+                      ),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                            NU=0.3,
-                           RHO=7800.0,),);
+                           RHO=7800.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MBI,
                     AFFE=_F(GROUP_MA=('POU'),
                              MATER=MAT,),
-                    );
+                    )
 
 CARA_POU=AFFE_CARA_ELEM(MODELE=MOD,
                         POUTRE=_F(GROUP_MA=('POU',),
                                   SECTION='RECTANGLE',
                                   CARA='H',
-                                  VALE=(.02),),);
+                                  VALE=(.02),),)
 CL=AFFE_CHAR_MECA(MODELE=MOD,
                   DDL_IMPO=_F(GROUP_NO='Encas',
                               DX=0,DY=0,DZ=0,
-                              DRX=0,DRY=0,DRZ=0,),);
+                              DRX=0,DRY=0,DRZ=0,),)
 
 ASSEMBLAGE(MODELE=MOD,
            CHAM_MATER=CHMAT,
@@ -58,18 +58,18 @@ ASSEMBLAGE(MODELE=MOD,
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('MASSE'),
                          OPTION='MASS_MECA',),),
-           );
+           )
 
 FORCE=AFFE_CHAR_MECA(MODELE=MOD,
                      FORCE_NODALE=_F(GROUP_NO='ForNod',
-                                     FZ=-500.0,),);
+                                     FZ=-500.0,),)
 
 FONC = FORMULE(VALE='sin(0.025*pi*INST)',
                NOM_PARA='INST',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=80.0,
-                                   PAS=1,),);
+                                   PAS=1,),)
 
 TRANSI=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       MODELE=MOD,
@@ -77,17 +77,17 @@ TRANSI=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       CARA_ELEM=CARA_POU,
                       MATR_MASS=MASSE,
                       MATR_RIGI=RIGIDITE,
-                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                       EXCIT=(_F(CHARGE=FORCE,
                                 FONC_MULT=FONC,),
                              _F(CHARGE=CL,),),
-                      INCREMENT=_F(LIST_INST=LINST,),);
+                      INCREMENT=_F(LIST_INST=LINST,),)
 
 DZ_DIS=RECU_FONCTION(RESULTAT=TRANSI,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DZ',
                      GROUP_NO='ForNod',
-                     INTERPOL='LIN',);
+                     INTERPOL='LIN',)
 
 #TEST AVEC SOLUTION ANALYTIQUE
 
@@ -96,13 +96,13 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.002686535,
                         REFERENCE='ANALYTIQUE',
                         VALE_PARA=20,
                         PRECISION=1.E-2,
-                        FONCTION=DZ_DIS,),);
+                        FONCTION=DZ_DIS,),)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC= 0.002686443,
                         VALE_REFE= 0.002679687,
                         REFERENCE='ANALYTIQUE',
                         VALE_PARA=60,
                         PRECISION=1.E-2,
-                        FONCTION=DZ_DIS,),);
+                        FONCTION=DZ_DIS,),)
 
-FIN();
+FIN()

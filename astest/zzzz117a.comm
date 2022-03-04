@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ FISSH=DEFI_FOND_FISS(MAILLAGE=M,
                     LEVRE_SUP=_F(GROUP_MA='CD',),
                     SYME='OUI',
                     CONFIG_INIT='DECOLLEE',
-                    NORMALE=(0.,1.,0.));
+                    NORMALE=(0.,1.,0.))
 
 baseloc0=FISSH.sdj.BASLOC.VALE.get()
 
@@ -66,7 +66,7 @@ TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
                         _F(LISTE_R=vnorY,PARA='VNORY'),
                         _F(LISTE_R=vdirX,PARA='VDIRX'),
                         _F(LISTE_R=vdirY,PARA='VDIRY'),
-                        ),);
+                        ),)
 
 #EN 2D, BASLOC EST IDENTIQUE EN TOUT POINT :
 #   -CHAQUE NOEUD SE PROJETTE SUR LE FOND DE FISSURE EN (4,0)

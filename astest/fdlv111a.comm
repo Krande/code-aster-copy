@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 #                        ARCHIVAGE=_F(  LIST_ARCH = INTLI),
                          SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                          SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
-                  
+
                         )
 
 # --- TEST SUR LES ENERGIES ---------------------------------------------------
@@ -136,7 +136,7 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 #     AUX TESTS A T = 0.6 CAR LA MULTITUDE DE PAS DE TEMPS ENTRAINE DES ECARTS.
 #     LA DISSIPATION DU SCHEMA EST TESTEE EN ABSOLU.
 
-ENER1=RECU_TABLE(CO=DYN,NOM_TABLE='PARA_CALC',);
+ENER1=RECU_TABLE(CO=DYN,NOM_TABLE='PARA_CALC',)
 
 TEST_TABLE(
            VALE_CALC=16174.2169227,
@@ -314,7 +314,7 @@ INLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 401, PAS = 1))
 
 
 ACCE0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELE,
-                   AFFE=_F(TOUT='OUI',NOM_CMP=('DX', 'DY', 'DZ', 'PRES', 'PHI',),VALE = (0., 0., 0., 0., 0.,),),);
+                   AFFE=_F(TOUT='OUI',NOM_CMP=('DX', 'DY', 'DZ', 'PRES', 'PHI',),VALE = (0., 0., 0., 0., 0.,),),)
 
 DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
                           EXCIT=_F(  CHARGE = COND_LIM,
@@ -341,7 +341,7 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
 #     AUX TESTS A T = 0.6 CAR LA MULTITUDE DE PAS DE TEMPS ENTRAINE DES ECARTS.
 #     LA DISSIPATION DU SCHEMA EST TESTEE EN ABSOLU.
 
-ENER=RECU_TABLE(CO=DYNA,NOM_TABLE='PARA_CALC',);
+ENER=RECU_TABLE(CO=DYNA,NOM_TABLE='PARA_CALC',)
 
 
 TEST_TABLE(

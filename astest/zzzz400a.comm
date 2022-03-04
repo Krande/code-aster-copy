@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,23 +36,23 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='BBAS',),
                                _F(GROUP_MA='BORD3',),
                                _F(GROUP_MA='BORD1',),
-                                ),);
+                                ),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(
                        _F(TOUT='OUI',  PHENOMENE='MECANIQUE', MODELISATION='AXIS',),
-                       ));
+                       ))
 
 MAIL = MODI_MAILLAGE(reuse=MAIL,
                      MAILLAGE=MAIL,
                      ORIE_PEAU=(_F(GROUP_MA_PEAU='BORD3',),
-                                   _F(GROUP_MA_PEAU='BORD1',),),);
+                                   _F(GROUP_MA_PEAU='BORD1',),),)
 
 LI1=DEFI_LIST_REEL(DEBUT=0.0,
-                   INTERVALLE=(  _F(JUSQU_A=1.E4, NOMBRE=4,),),);
+                   INTERVALLE=(  _F(JUSQU_A=1.E4, NOMBRE=4,),),)
 
 LI2=DEFI_LIST_REEL(DEBUT=5.e3,
-                   INTERVALLE=(  _F(JUSQU_A=1.E4, NOMBRE=2,),),);
+                   INTERVALLE=(  _F(JUSQU_A=1.E4, NOMBRE=2,),),)
 
 
 MATE1=DEFI_MATERIAU(ELAS=_F(E=7.74E6, NU=0.285, ALPHA=0.,),
@@ -72,14 +72,14 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0, 1.e4, 1.e4))
 
 CHA0=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=(_F(GROUP_NO='BBAS', DY=0.0,),
-                              _F(GROUP_NO='B',    DX=0.0,),),);
+                              _F(GROUP_NO='B',    DX=0.0,),),)
 
 CHA2=AFFE_CHAR_MECA(MODELE=MODELE,
                       PRES_REP=(
                         _F(GROUP_MA=('BORD3',), PRES=1.E3,),
                         _F(GROUP_MA=('BORD1',), PRES=3.E3,),
                         ),
-                     VERI_NORM='OUI');
+                     VERI_NORM='OUI')
 
 
 # RESU1 : calcul de reference (en une seule fois) :
@@ -94,7 +94,7 @@ RESU1=STAT_NON_LINE(  MODELE=MODELE,  CHAM_MATER=CHM0,
                       INCREMENT=_F(LIST_INST=LI1 ,),
                       NEWTON=_F( MATRICE='TANGENTE', REAC_ITER=2, ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=40, RESI_GLOB_RELA=1.E-06,),
-                      SOLVEUR=_F(METHODE='LDLT',),);
+                      SOLVEUR=_F(METHODE='LDLT',),)
 
 #IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',))
 #IMPR_RESU(UNITE=80, FORMAT='MED', RESU=_F(RESULTAT=RESU1, IMPR_NOM_VARI='OUI',))
@@ -125,7 +125,7 @@ RESU20=STAT_NON_LINE(  MODELE=MODELE,  CHAM_MATER=CHM0,
                       INCREMENT=_F(LIST_INST=LI1 , INST_FIN=5.e3),
                       NEWTON=_F( MATRICE='TANGENTE', REAC_ITER=2, ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=40, RESI_GLOB_RELA=1.E-06,),
-                      SOLVEUR=_F(METHODE='LDLT',),);
+                      SOLVEUR=_F(METHODE='LDLT',),)
 
 IMPR_RESU(UNITE=80, FORMAT='MED', RESU=_F(RESULTAT=RESU20,), )
 
@@ -155,7 +155,7 @@ RESU2=STAT_NON_LINE(  MODELE=MODELE,  CHAM_MATER=CHM0,
                       INCREMENT=_F(LIST_INST=LI2 , INST_FIN=1.e4),
                       NEWTON=_F( MATRICE='TANGENTE', REAC_ITER=2, ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=40, RESI_GLOB_RELA=1.E-06,),
-                      SOLVEUR=_F(METHODE='LDLT',),);
+                      SOLVEUR=_F(METHODE='LDLT',),)
 
 
 
@@ -171,4 +171,4 @@ TEST_RESU(RESU=(
                     NOM_CMP='V7', VALE_CALC=1.0,),
           ))
 
-FIN();
+FIN()

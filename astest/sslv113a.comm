@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,19 +24,19 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
 young = DEFI_FONCTION(NOM_PARA='X',VALE=(0.90, 2.0,
                                          1.51, 2.0,
-                                         1.52, 1.0, 
+                                         1.52, 1.0,
                                          2.10, 1.0),)
 nu = DEFI_CONSTANTE(VALE=0.3)
 alpha = DEFI_CONSTANTE(VALE=0.)
@@ -44,12 +44,12 @@ zero = DEFI_CONSTANTE(VALE=0.)
 
 MA1=DEFI_MATERIAU(ELAS_FO=_F(E=young,
                           NU=nu,
-                          ALPHA=alpha,TEMP_DEF_ALPHA=0.),);
+                          ALPHA=alpha,TEMP_DEF_ALPHA=0.),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=(_F(GROUP_MA='DOM',
                           MATER=MA1,),
-                       ),);
+                       ),)
 
 F1 = FORMULE(VALE="""
 1.15385*(2*-0.98097+0.91333)+2*0.76923*(-0.98097
@@ -83,30 +83,30 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                   FORCE_CONTOUR=(_F(GROUP_MA='GRMA3',
                                     FX=1.,),
                                  _F(GROUP_MA='GRMA4',
-                                    FX=-2.,),),);
+                                    FX=-2.,),),)
 
 LISTR=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
-                                   
+                                   NOMBRE=1,),)
+
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0 ,0.0 ,
-                          1.0 ,1.0 ,),);
+                          1.0 ,1.0 ,),)
 
-RESU=STAT_NON_LINE(MODELE=MO, 
+RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
                    COMPORTEMENT=_F(TOUT='OUI', RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=LISTR),
-                   EXCIT=_F(CHARGE=CH,FONC_MULT=RAMPE),);
+                   EXCIT=_F(CHARGE=CH,FONC_MULT=RAMPE),)
 
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
                  TOUT_ORDRE='OUI',
-                 OPTION='ERME_ELEM',);
+                 OPTION='ERME_ELEM',)
 
 # RQ: LES CHAMPS SIGM_ELNO (CAS XFEM) ET SIGM_ELNO SONT AUTOMATIQUEMENT
-#     CALCULES DANS LA COMMANDE CALC_ERREUR POUR TROUVER L'ESTIMATEUR 
+#     CALCULES DANS LA COMMANDE CALC_ERREUR POUR TROUVER L'ESTIMATEUR
 #     D'ERREUR EN RESIDU
 
 
@@ -324,6 +324,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 
 #

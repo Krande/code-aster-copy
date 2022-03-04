@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,42 +23,42 @@
 #  SUR L'AUTRE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN POUTRES
 # CHARGEMENT : PRESSION VARIANT LINEAIREMENT SELON X
 #
-#CREATION DU FICHIER IDEAS SIMILAIRE A PLEXUS ;
-#MA = LIRE_MAILLAGE(FORMAT="ASTER", );
+#CREATION DU FICHIER IDEAS SIMILAIRE A PLEXUS
+#MA = LIRE_MAILLAGE(FORMAT="ASTER", )
 #MO = AFFE_MODELE ( MAILLAGE: MA
 #                   AFFE:( TOUT : 'OUI' PHENOMENE:'MECANIQUE'
-#                           MODELISATION:'BARRE' ) );
-#MATR = DEFI_MATERIAU ( ELAS: (E:2.E11  NU:0.3 ) );
+#                           MODELISATION:'BARRE' ) )
+#MATR = DEFI_MATERIAU ( ELAS: (E:2.E11  NU:0.3 ) )
 #CHMAT = AFFE_MATERIAU ( MAILLAGE: MA
-#                        AFFE: (TOUT:'OUI', MATER: MATR)  );
+#                        AFFE: (TOUT:'OUI', MATER: MATR)  )
 #CAREL = AFFE_CARA_ELEM ( MODELE: MO
 #                         BARRE:(
 #       GROUP_MA : TOUT
 #  SECTION: 'RECTANGLE'
-#                                 CARA:'H'    VALE:1.  ) ) ;
+#                                 CARA:'H'    VALE:1.  ) )
 #CHAR = AFFE_CHAR_MECA ( MODELE: MO
 #                        DDL_IMPO: (GROUP_NO:A    DX:0. )
 #                        DDL_IMPO: (TOUT : 'OUI'  DY:0. DZ:0. )
-#                        FORCE_POUTRE : ( TOUT : 'OUI' FX : 10. ) ) ;
+#                        FORCE_POUTRE : ( TOUT : 'OUI' FX : 10. ) )
 #FONCT = DEFI_FONCTION ( NOM_PARA: 'INST'
-#                          VALE : ( 0. 0. 1. 1. ) );
+#                          VALE : ( 0. 0. 1. 1. ) )
 #LINST = DEFI_LIST_REEL ( DEBUT:0.
-#                         INTERVALLE:(JUSQU_A: 1. NOMBRE: 1 ));
+#                         INTERVALLE:(JUSQU_A: 1. NOMBRE: 1 ))
 #RESU =  MECA_STATIQUE ( MODELE   : MO     CHAM_MATER: CHMAT
 #                        CARA_ELEM: CAREL  LIST_INST :LINST
 #                        EXCIT:( CHARGE: CHAR FONC_MULT: FONCT )
-#                        OPTION: 'SIEF_ELGA' ) ;
+#                        OPTION: 'SIEF_ELGA' )
 #IMPR_RESU(FORMAT :'IDEAS',
 #          RESU:( MAILLAGE : MA RESULTAT : RESU NUME_ORDRE:2
-#                 NOM_CHAM : 'SIEF_ELGA' ));
-#FIN();
+#                 NOM_CHAM : 'SIEF_ELGA' ))
+#FIN()
 # PUIS MODIFICATION DU FICHIER IDEAS SOUS EDITEUR POUR AVOIR SEULEMENT
 # 20 COMPOSANTES PAR MAILLE
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-# MAILLAGE PLEXUS ;
+# MAILLAGE PLEXUS
 
 
 MAILPLEX = LIRE_MAILLAGE(FORMAT='IDEAS',
@@ -68,7 +68,7 @@ MAILPLEX = LIRE_MAILLAGE(FORMAT='IDEAS',
 MAILPLEX=DEFI_GROUP( reuse=MAILPLEX,   MAILLAGE=MAILPLEX,
   CREA_GROUP_MA=_F(  NOM = 'TOUTPL', TOUT = 'OUI'))
 
-# MAILLAGE ASTER ;
+# MAILLAGE ASTER
 
 MAILAST = LIRE_MAILLAGE(FORMAT='MED',
                         )
@@ -135,7 +135,7 @@ RESU2=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
 RESU2=CALC_CHAMP(reuse=RESU2,
                  RESULTAT=RESU2,
                  LIST_INST=L_INST,
-                 CONTRAINTE=('SIGM_ELNO',),);
+                 CONTRAINTE=('SIGM_ELNO',),)
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
@@ -173,7 +173,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
           )
 
 #TEST MATERIAU MULT DATASET 56
-# MAILLAGE PLEXUS ;
+# MAILLAGE PLEXUS
 
 
 MAIPLEX2 = LIRE_MAILLAGE(FORMAT='IDEAS',
@@ -220,7 +220,7 @@ RESU3=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
 RESU3=CALC_CHAMP(reuse=RESU3,
                  RESULTAT=RESU3,
                  LIST_INST=L_INST2,
-                 CONTRAINTE=('SIGM_ELNO',),);
+                 CONTRAINTE=('SIGM_ELNO',),)
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER

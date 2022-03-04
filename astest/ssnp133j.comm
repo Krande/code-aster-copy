@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ MA = DEFI_GROUP(reuse = MA,
              PRECISION = 0.01,
              ),
          ),
-       );
+       )
 # renumerotaion locale pas necessaire
 # en effet on ne sait plus reperer les elements d interface
 
@@ -98,7 +98,7 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='MATIERE',
-                    INFO=1,);
+                    INFO=1,)
 
 # definition du groupe de mailles enrichies pour pilotage PRED_ELAS
 
@@ -108,13 +108,13 @@ MA=DEFI_GROUP(reuse=MA,
               CREA_GROUP_MA=_F(FISSURE=FISS,
                                NOM='TRAVERS',
                                OPTION='FISS_XFEM',
-                               TYPE_GROUP='HEAVISIDE',),);
+                               TYPE_GROUP='HEAVISIDE',),)
 
 # definition du contact : P2P1
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          CONTACT='STANDARD',
-                         );
+                         )
 
 # on met un algo de type CZM
 CTXFEM = DEFI_CONTACT(
@@ -127,7 +127,7 @@ CTXFEM = DEFI_CONTACT(
                      ALGO_CONT='CZM',
                      FISS_MAIT = FISS,
                      RELATION='CZM_OUV_MIX',
-                     ),),);
+                     ),),)
 
 #--------------------------------------------------------------
 # DEFINITION DES PARAMETRES MATERIAUX
@@ -260,7 +260,7 @@ EVOL = STAT_NON_LINE(INFO=1,
 
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
-                FORCE='FORC_NODA');
+                FORCE='FORC_NODA')
 
 FORCE = POST_RELEVE_T(
                       ACTION = _F(

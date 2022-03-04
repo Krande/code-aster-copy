@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                    _F(NOM_PARA='INST',
                       VALE=2.,),
                    _F(NOM_PARA='NUME_FOND',
-                      VALE_I=1,),),);
+                      VALE_I=1,),),)
 
 DETRUIRE(NOM=TAB)
 
@@ -144,7 +144,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                    _F(NOM_PARA='INST',
                       VALE=2.,),
                    _F(NOM_PARA='NUME_FOND',
-                      VALE_I=1,),),);
+                      VALE_I=1,),),)
 
 #---------------------------------------------------------------------------------------
 #  VALIDATION DE L'OPERATEUR POST_RUPTURE, OPERATION = 'ABSC_CURV_NORM'

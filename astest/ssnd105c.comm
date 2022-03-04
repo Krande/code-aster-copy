@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,31 +25,31 @@ DEBUT(CODE=_F(
 DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-CUBE=LIRE_MAILLAGE(FORMAT="ASTER",);
+CUBE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MOD2D=AFFE_MODELE(MAILLAGE=CUBE,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS',),);
-R_0 = 35.0;
+                           MODELISATION='AXIS',),)
+R_0 = 35.0
 
-Q_0 = 140.0;
+Q_0 = 140.0
 
-Q_M = 460.0;
+Q_M = 460.0
 
-MU = 19.0;
+MU = 19.0
 
-b = 12.0;
+b = 12.0
 
-ETA = 0.5;
+ETA = 0.5
 
-E = 145000.0;
+E = 145000.0
 
-COMPOR1 = 'VISC_CIN2_MEMO';
+COMPOR1 = 'VISC_CIN2_MEMO'
 
-COMPOR2 = 'VISC_CIN2_CHAB';
+COMPOR2 = 'VISC_CIN2_CHAB'
 
-COMPOR3 = 'VISCOCHAB';
+COMPOR3 = 'VISCOCHAB'
 
 
 ACIER2=DEFI_MATERIAU(ELAS=_F(E=200000.,
@@ -82,56 +82,56 @@ ACIER2=DEFI_MATERIAU(ELAS=_F(E=200000.,
                                   G2_0=1300.,
                                   ),
                      LEMAITRE=_F(N=24.,
-                                 UN_SUR_K=0.0142857142857,),);
+                                 UN_SUR_K=0.0142857142857,),)
 
 MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
                    AFFE=_F(GROUP_MA='MA1',
-                           MATER=ACIER2,),);
+                           MATER=ACIER2,),)
 
 COND_LIM=AFFE_CHAR_CINE(MODELE=MOD2D,
                         MECA_IMPO=(_F(GROUP_NO='Y0',
                                      DY=0.,),
                                   _F(GROUP_NO='X0',
-                                     DX=0.,),),);
-T1 = 10.0;
+                                     DX=0.,),),)
+T1 = 10.0
 
-T2 = 11.0;
+T2 = 11.0
 
-SIGMAX = 220.0;
+SIGMAX = 220.0
 
 
 TRAC=AFFE_CHAR_MECA(MODELE=MOD2D,
                     PRES_REP=_F(GROUP_MA='Y1',
-                                PRES=SIGMAX,),);
+                                PRES=SIGMAX,),)
 
 
 COEF_TR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                             T1,1.0,
                             T2,0.,
-                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                            ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=(_F(JUSQU_A=T1,
                                     NOMBRE=60,),
                                  _F(JUSQU_A=T2,
-                                    NOMBRE=10,),),);
+                                    NOMBRE=10,),),)
 
 # cycles en deformation imposee
-TINI = T2;
+TINI = T2
 
-DT = 5.0;
+DT = 5.0
 
-EPSMAX = 0.005;
+EPSMAX = 0.005
 
-EPSMIN = -0.005;
+EPSMIN = -0.005
 
-NBCYCLE = 10;
+NBCYCLE = 10
 
 NPAS=250
 
-TFIN = ((TINI + (DT / 2.0)) + ((2.0 * DT) * NBCYCLE));
+TFIN = ((TINI + (DT / 2.0)) + ((2.0 * DT) * NBCYCLE))
 
-epsmoy = 0.0;
+epsmoy = 0.0
 
 def epsimp(INST):
     vit=(EPSMAX-EPSMIN)/DT
@@ -153,21 +153,21 @@ epsi = FORMULE(VALE='epsimp(INST)',
 
 lisn=DEFI_LIST_REEL(DEBUT=TINI,
                     INTERVALLE=_F(JUSQU_A=TFIN,
-                                  PAS=0.01,),);
+                                  PAS=0.01,),)
 
 EPSIMP=CALC_FONC_INTERP(FONCTION=epsi,
                         LIST_PARA=lisn,
                         PROL_DROITE='LINEAIRE',
-                        PROL_GAUCHE='LINEAIRE',);
+                        PROL_GAUCHE='LINEAIRE',)
 
 CHARG2=AFFE_CHAR_MECA_F(MODELE=MOD2D,
                         DDL_IMPO=_F(GROUP_MA='Y1',
-                                    DY=EPSIMP,),);
+                                    DY=EPSIMP,),)
 
 LINST2=DEFI_LIST_REEL(DEBUT=TINI,
                       INTERVALLE=_F(JUSQU_A=TFIN,
                                     NOMBRE=NPAS,
-                                    ),);
+                                    ),)
 ################
 # avec memoire
 ################
@@ -207,7 +207,7 @@ VISCMEMO=STAT_NON_LINE(MODELE=MOD2D,
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
                                  ),
-                       );
+                       )
 
 VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
                        MODELE=MOD2D,
@@ -247,7 +247,7 @@ VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
                                     ),
 
 
-                      );
+                      )
 
 #   V1 = p
 #   V23 = epspxx
@@ -286,7 +286,7 @@ VISCOCH=STAT_NON_LINE(MODELE=MOD2D,
                                     EVAL_ELGA='MAX',),
                                 ),
 
-                      );
+                      )
 
 VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
                       MODELE=MOD2D,
@@ -316,7 +316,7 @@ VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
                                     EVAL_ELGA='MAX',),
                                 ),
 
-                      );
+                      )
 
 #################################
 # TEST_RESU
@@ -332,25 +332,25 @@ FEPXX=RECU_FONCTION(RESULTAT=VISCMEMO,
                     NOM_CHAM='EPSI_ELGA',
                     NOM_CMP='EPYY',
                     GROUP_MA='MA1',INTERPOL='LIN',
-                    POINT=1,);
+                    POINT=1,)
 
 FSIXX=RECU_FONCTION(RESULTAT=VISCMEMO,
                     NOM_CHAM='SIEF_ELGA',
                     NOM_CMP='SIYY',
                     GROUP_MA='MA1',INTERPOL='LIN',
-                    POINT=1,);
+                    POINT=1,)
 
 FEPXX2=RECU_FONCTION(RESULTAT=VISCOCH,
                      NOM_CHAM='EPSI_ELGA',
                      NOM_CMP='EPYY',
                      GROUP_MA='MA1',INTERPOL='LIN',
-                     POINT=1,);
+                     POINT=1,)
 
 FSIXX2=RECU_FONCTION(RESULTAT=VISCOCH,
                      NOM_CHAM='SIEF_ELGA',
                      NOM_CMP='SIYY',
                      GROUP_MA='MA1',INTERPOL='LIN',
-                     POINT=1,);
+                     POINT=1,)
 
 TEST_RESU(RESU=(_F(INST=10.0,
                    REFERENCE='ANALYTIQUE',
@@ -378,7 +378,7 @@ DIFEPS=CALC_FONCTION(COMB=(_F(FONCTION=FEPXX,
                              COEF=1,),
                           _F(FONCTION=FEPXX2,
                              COEF=-1.),
-                             ),);
+                             ),)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-4.80029373889e-10,
                          VALE_REFE=0.0,
@@ -408,7 +408,7 @@ DIFSIG=CALC_FONCTION(COMB=(_F(FONCTION=FSIXX,
                              COEF=1,),
                           _F(FONCTION=FSIXX2,
                              COEF=-1.),
-                             ),);
+                             ),)
 
 # pour le dernier TEST, SIXX vaut :
 # 3.75459E+02 pour VISCOCHAB et 3.72353E+02 pour VISC_CIN2_MEMO
@@ -472,7 +472,7 @@ VMISCIN2=STAT_NON_LINE(MODELE=MOD2D,
                                     NOM_CHAM='VARI_ELGA',
                                     EVAL_CHAM='MAX',
                                     EVAL_ELGA='MAX',),
-                                ),);
+                                ),)
 
 VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
                        MODELE=MOD2D,
@@ -502,7 +502,7 @@ VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
                                 ),
 
 
-                                       );
+                                       )
 
 
 #################################
@@ -517,13 +517,13 @@ FEPXX3=RECU_FONCTION(RESULTAT=VMISCIN2,
                      NOM_CHAM='EPSI_ELGA',
                      NOM_CMP='EPYY',INTERPOL='LIN',
                      GROUP_MA='MA1',
-                     POINT=1,);
+                     POINT=1,)
 
 FSIXX3=RECU_FONCTION(RESULTAT=VMISCIN2,
                      NOM_CHAM='SIEF_ELGA',
                      NOM_CMP='SIYY',INTERPOL='LIN',
                      GROUP_MA='MA1',
-                     POINT=1,);
+                     POINT=1,)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=29,
@@ -538,7 +538,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          LEGENDE='VMIS_CIN2_CHAB',),),
               TITRE='Essai cyclique DEPS=+/-0.5%',
               LEGENDE_X='D\xe9formation',
-              LEGENDE_Y='Contrainte (MPa)',);
+              LEGENDE_Y='Contrainte (MPa)',)
 
 
 
@@ -550,4 +550,4 @@ IMPR_FONCTION(COURBE=_F(FONCTION=FSIXX2,),)
 
 IMPR_FONCTION(COURBE=_F(FONCTION=FEPXX3,),)
 IMPR_FONCTION(COURBE=_F(FONCTION=FSIXX3,),)
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 # Pour des raisons de performances, on force SDVERI='NON'.
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON',DEBUG=_F(SDVERI='NON'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON',DEBUG=_F(SDVERI='NON'))
 
 NbIncr=20
 DT=10./NbIncr
@@ -31,14 +31,14 @@ VAR=[None]*(NbIncr+1)
 ERR=[None]*(NbIncr+1)
 VMI=[None]*(NbIncr+1)
 
-MA[0]=LIRE_MAILLAGE(FORMAT='MED',);
-FRONT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21);
+MA[0]=LIRE_MAILLAGE(FORMAT='MED',)
+FRONT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
 
 MO[0]=AFFE_MODELE(MAILLAGE=MA[0],
 
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 # -----------------------------------------------------------------------------
 #  CREATION DES OBJETS DE L'ETUDE (MODELE, CHARGEMENTS, ...)
@@ -87,32 +87,32 @@ CTRAC=DEFI_FONCTION(VALE=(1.00000E-03,  2.00000E+02,
                           2.00000E-01,  2.69996E+02,
                           ),
                     NOM_PARA='EPSI',
-                    PROL_DROITE='CONSTANT',);
+                    PROL_DROITE='CONSTANT',)
 
 MATE=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                            NU=0.3,),
-                   TRACTION=_F(SIGM=CTRAC,),);
+                   TRACTION=_F(SIGM=CTRAC,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MA[0],
                  AFFE=_F(TOUT='OUI',
-                         MATER=MATE,),);
+                         MATER=MATE,),)
 
 CH1=AFFE_CHAR_CINE(MODELE=MO[0],
                    MECA_IMPO=(_F(GROUP_MA='bas',    DY=0.0,),
                               _F(GROUP_MA='gauche', DX=0.0,),
-                              _F(GROUP_MA='haut',   DY=Depl,)),);
+                              _F(GROUP_MA='haut',   DY=Depl,)),)
 
 
 F_DEPL=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,  0.0,
                            10.0, 1.0,
-                           ),);
+                           ),)
 
 INST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=10.0,
-                                  NOMBRE=NbIncr,),);
+                                  NOMBRE=NbIncr,),)
 
-L_INST=DEFI_LIST_INST(METHODE='AUTO', DEFI_LIST=_F(LIST_INST=INST, PAS_MINI=0.001,));
+L_INST=DEFI_LIST_INST(METHODE='AUTO', DEFI_LIST=_F(LIST_INST=INST, PAS_MINI=0.001,))
 
 
 
@@ -137,7 +137,7 @@ for iNumPas in range(0,NbIncr):
                                               INST_FIN=(iNumPas+1)*DT,),
                                  NEWTON=_F(REAC_ITER=1,),
                                  SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',),
-                                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,),);
+                                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,),)
       else:
            RESUNL=STAT_NON_LINE(MODELE=MO[iNumPas],
                                  CHAM_MATER=CM,
@@ -153,18 +153,18 @@ for iNumPas in range(0,NbIncr):
                                               INST_FIN=(iNumPas+1)*DT,),
                                  NEWTON=_F(REAC_ITER=1,),
                                  SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',),
-                                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,),);
+                                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,),)
 
       RESUNL=CALC_CHAMP(reuse =RESUNL,
                         RESULTAT=RESUNL,
                         CONTRAINTE='SIEF_NOEU',
                         CRITERES='SIEQ_ELNO',
-                        VARI_INTERNE='VARI_NOEU',);
+                        VARI_INTERNE='VARI_NOEU',)
 
       RESUNL=CALC_ERREUR(reuse=RESUNL,
                          RESULTAT=RESUNL,
                          SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_INC',),
-                         OPTION=('ERZ1_ELEM',),);
+                         OPTION=('ERZ1_ELEM',),)
 
       VAR[iNumPas]=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R', NOM_CHAM='VARI_NOEU', RESULTAT=RESUNL, INST=(iNumPas+1)*DT)
       DEP[iNumPas]=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL',      RESULTAT=RESUNL, INST=(iNumPas+1)*DT)
@@ -216,14 +216,14 @@ for iNumPas in range(0,NbIncr):
                                   TYPE_CHAM='NOEU_DEPL_R',
                                   RESULTAT=RESUNL,
                                   NOM_CHAM='DEPL',
-                                  NUME_ORDRE=1,),),);
+                                  NUME_ORDRE=1,),),)
 
       #  PROJECTION DES CHAMPS (ON A BESOIN DU MODELE SUR LE NOUVEAU MAILLAGE)
       # ----------------------------------------------------------------------
       MO[iNumPas+1]=AFFE_MODELE(MAILLAGE=MA[iNumPas+1],
                       AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),);
+                              MODELISATION='C_PLAN',),)
 
       VARI2=PROJ_CHAMP(CHAM_GD=VARI1,MODELE_1=MO[iNumPas], MODELE_2=MO[iNumPas+1],METHODE='ECLA_PG')
       SIGM2=PROJ_CHAMP(CHAM_GD=SIGM1,MODELE_1=MO[iNumPas], MODELE_2=MO[iNumPas+1],METHODE='ECLA_PG')
@@ -234,12 +234,12 @@ for iNumPas in range(0,NbIncr):
 
       CM=AFFE_MATERIAU(MAILLAGE=MA[iNumPas+1],
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATE,),);
+                               MATER=MATE,),)
 
       CH1=AFFE_CHAR_CINE(MODELE=MO[iNumPas+1],
                          MECA_IMPO=(_F(GROUP_MA='bas',    DY=0.0,),
                                     _F(GROUP_MA='gauche', DX=0.0,),
-                                    _F(GROUP_MA='haut',   DY=Depl,)),);
+                                    _F(GROUP_MA='haut',   DY=Depl,)),)
 
       EQUILIB=STAT_NON_LINE(MODELE=MO[iNumPas+1],
                             CHAM_MATER=CM,
@@ -256,13 +256,13 @@ for iNumPas in range(0,NbIncr):
                                          INST_FIN=(iNumPas+1)*DT,),
                             NEWTON=_F(REAC_ITER=1,PREDICTION='ELASTIQUE'),
                             SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',),
-                            );
+                            )
 
 
 EQUILIB=CALC_CHAMP(reuse=EQUILIB,
                   RESULTAT=EQUILIB,
                   CONTRAINTE='SIGM_NOEU',
-                  VARI_INTERNE='VARI_NOEU',);
+                  VARI_INTERNE='VARI_NOEU',)
 
 
 TEST_RESU(RESU=(_F(GROUP_NO='B',
@@ -290,9 +290,9 @@ SIGBAS2=MACR_LIGN_COUPE(RESULTAT=EQUILIB,
                         NOM_CHAM='VARI_NOEU',
                         LIGN_COUPE=_F(NB_POINTS=30,
                                       COOR_ORIG=(0,30,),
-                                      COOR_EXTR=(100,30,),),);
+                                      COOR_EXTR=(100,30,),),)
 
 IMPR_TABLE(TABLE=SIGBAS2,
-           NOM_PARA=('ABSC_CURV','V1',),);
+           NOM_PARA=('ABSC_CURV','V1',),)
 
-FIN();
+FIN()

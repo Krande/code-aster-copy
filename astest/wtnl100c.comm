@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 params = ExecutionParameter()
 params.disable(Options.UseLegacyMode)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HMS'));
+                           MODELISATION='D_PLAN_HMS'))
 #  LISTE DES INSTANTS DE CALCUL
 
 LI=DEFI_LIST_REEL(DEBUT=0.0,
@@ -52,18 +52,18 @@ LI=DEFI_LIST_REEL(DEBUT=0.0,
                               _F(JUSQU_A=1000,
                                  NOMBRE=48),
                               _F(JUSQU_A=10000,
-                                 NOMBRE=50)));
+                                 NOMBRE=50)))
 
-UN=DEFI_CONSTANTE(VALE=1.0);
+UN=DEFI_CONSTANTE(VALE=1.0)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0);
+ZERO=DEFI_CONSTANTE(VALE=0.0)
 
-BIDON=DEFI_CONSTANTE(VALE=0.0);
+BIDON=DEFI_CONSTANTE(VALE=0.0)
 #
 #
 #K=k*mu/(rhow*g)
 
-KINT=DEFI_CONSTANTE(VALE=1e-08);
+KINT=DEFI_CONSTANTE(VALE=1e-08)
 #
 
 
@@ -112,11 +112,11 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
                        MASS_MOL=0.018,
                        CP=1870.0,
                        VISC=BIDON,
-                       D_VISC_TEMP=BIDON));
+                       D_VISC_TEMP=BIDON))
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATERIAU));
+                             MATER=MATERIAU))
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=(_F(GROUP_NO='HAUT',
@@ -127,10 +127,10 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                               _F(GROUP_NO='BORDVERT',
                                  DX=0.0)),
                     PRES_REP=_F(GROUP_MA='FACESUP',
-                                PRES=1.0));
+                                PRES=1.0))
 
-linst = [0,0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0];
-nbinst = len(linst);
+linst = [0,0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0]
+nbinst = len(linst)
 
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
@@ -146,7 +146,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     SOLVEUR=_F(METHODE='MUMPS',
    ),
                     ARCHIVAGE=_F(INST=linst,
-                                 PRECISION=0.001));
+                                 PRECISION=0.001))
 
 
 
@@ -174,12 +174,12 @@ MAILLIN = CREA_MAILLAGE(
 
 MAILLIN=DEFI_GROUP(reuse =MAILLIN,
                    MAILLAGE=MAILLIN,
-                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'));
+                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
 
 MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN'));
+                           MODELISATION='D_PLAN'))
 
 RESULIN = PROJ_CHAMP(
                METHODE='COLLOCATION',
@@ -248,7 +248,7 @@ EXTR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               GROUP_NO='COUL_7',
 
-                              NOM_CMP='PRE1'));
+                              NOM_CMP='PRE1'))
 
 INCNUM = FORMULE(VALE='NUMAUX+1',
                  NOM_PARA='NUMAUX',)
@@ -262,7 +262,7 @@ EXTR1=CALC_TABLE(   reuse=EXTR1,
                               FORMULE=INCNUM,
                               NOM_PARA='NUME_ORDRE'),
 
-                 ));
+                 ))
 
 EXTR2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='MAIL',
@@ -270,7 +270,7 @@ EXTR2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               GROUP_NO='COUL_7',
 
-                              NOM_CMP='PRE1'));
+                              NOM_CMP='PRE1'))
 
 EXTR2=CALC_TABLE(reuse=EXTR2,TABLE=EXTR2,
                  ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('PRE1','PREPROJ')),
@@ -288,7 +288,7 @@ DIFF = FORMULE(VALE='abs(PREPROJ-PRE1)',
 TBDIF=CALC_TABLE(   TABLE=EXTR1,
                     ACTION=_F(OPERATION='OPER',
                               FORMULE=DIFF,
-                              NOM_PARA='DIFF'));
+                              NOM_PARA='DIFF'))
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=1.0000000000000001E-09,
@@ -326,7 +326,7 @@ IMPR_RESU(FORMAT = 'GMSH', UNITE = 37,
                    MAILLAGE=MAILLIN,
                    NOM_CHAM ='SIEF_NOEU',
                    NOM_CMP  ='SIYY',
-                   INST=250.));
+                   INST=250.))
 
 
 #############
@@ -336,7 +336,7 @@ SIGMA2=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA',
                                            INST = (0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0),
                             NOM_CHAM='SIEF_NOEU',
                             NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
-                            OPERATION='EXTRACTION'));
+                            OPERATION='EXTRACTION'))
 
 VARIN2=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
                                RESULTAT=RESU1,
@@ -344,7 +344,7 @@ VARIN2=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
                                NOM_CHAM='VARI_NOEU',
                                TOUT_CMP='OUI',
                                               INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0),
-                               OPERATION='EXTRACTION'));
+                               OPERATION='EXTRACTION'))
 
 DEPLA2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                RESULTAT=RESU1,
@@ -352,11 +352,11 @@ DEPLA2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                               INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0),
                                NOM_CHAM='DEPL',
                                               TOUT_CMP = 'OUI',
-                               OPERATION='EXTRACTION'));
+                               OPERATION='EXTRACTION'))
 
-IMPR_TABLE(TABLE=SIGMA2);
-IMPR_TABLE(TABLE=VARIN2);
-IMPR_TABLE(TABLE=DEPLA2);
+IMPR_TABLE(TABLE=SIGMA2)
+IMPR_TABLE(TABLE=VARIN2)
+IMPR_TABLE(TABLE=DEPLA2)
 
 TEST_RESU(RESU=(_F(INST=1.E-4,
                    REFERENCE='ANALYTIQUE',
@@ -771,4 +771,4 @@ TEST_RESU(RESU=(_F(INST=250.0,
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -435,12 +435,12 @@ TEST_TABLE(
 #=================================================
 #
 # Test SIGM_ELNO
-# 
+#
 #=================================================
 
 DEP1G=CALC_CHAMP(reuse =DEP1G,
              RESULTAT=DEP1G,
-             CONTRAINTE='SIGM_ELNO');
+             CONTRAINTE='SIGM_ELNO')
 
 VOLUM3=POST_ELEM( RESULTAT=DEP1G,
                   MODELE=MOPOU,
@@ -471,7 +471,7 @@ TEST_TABLE(
 #=================================================
 #
 # Test VOLUME
-# 
+#
 #=================================================
 
 VOLUM4=POST_ELEM( RESULTAT=DEP1G,

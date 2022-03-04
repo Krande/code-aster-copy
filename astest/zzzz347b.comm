@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -145,7 +145,7 @@ EVOLNOLI=CALC_PRECONT( CHAM_MATER=CHMATER,
                               _F(CHARGE=CLIM,),
                                  ),
                        CABLE_BP=( CABLEPR ,),
-                       INFO=1,);
+                       INFO=1,)
 
 EVOLNOLI=STAT_NON_LINE(reuse=EVOLNOLI,
                        ETAT_INIT=_F(EVOL_NOLI=EVOLNOLI),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 #
 # DEFINITION DES GROUPES DE NOEUDS
@@ -31,14 +31,14 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='ENCAST',),
                                _F(GROUP_MA='SURF',),
-                               _F(GROUP_MA='BORD_CH',),),);
+                               _F(GROUP_MA='BORD_CH',),),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_MA=_F(NOM='VOLUM',
                                  OPTION='APPUI',
                                  GROUP_NO='SURF',
-                                 TYPE_APPUI='AU_MOINS_UN',),);
+                                 TYPE_APPUI='AU_MOINS_UN',),)
 
 #
 # DEFINITION DU MODELE
@@ -46,21 +46,21 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),);
+                           MODELISATION='C_PLAN',),)
 
 #
 # DEFINITION DU MATERIAU
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                             NU=0.3,
-                            RHO=7950,),);
+                            RHO=7950,),)
 
 #
 # ATTRIBUTION DU MATERIAU
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
@@ -69,11 +69,11 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 
 MASTOT=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                  MODELE=MODELE,
-                 CHAM_MATER=CHMAT,);
+                 CHAM_MATER=CHMAT,)
 
 MASVOL=POST_ELEM(MASS_INER=_F(GROUP_MA='VOLUM',),
                  MODELE=MODELE,
-                 CHAM_MATER=CHMAT,);
+                 CHAM_MATER=CHMAT,)
 
 # LA VALEUR DE LA MASSE EN VOLUM EST UN TIERS DE LA MASSE TOTALE
 
@@ -88,7 +88,7 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DX=0.0,
                                   DY=0.0,),
                       FORCE_CONTOUR=_F(GROUP_MA='BORD_CH',
-                                       FY=1.7E5,),);
+                                       FY=1.7E5,),)
 
 #
 # RESOLUTION
@@ -97,7 +97,7 @@ DEF=MECA_STATIQUE(MODELE=MODELE,
                   CHAM_MATER=CHMAT,
                   SOLVEUR=_F(METHODE='MULT_FRONT'),
                   EXCIT=_F(CHARGE=CHARGT,),
-                  INFO=1,);
+                  INFO=1,)
 
 #
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
@@ -106,7 +106,7 @@ U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
              OPERATION='EXTR',
              RESULTAT=DEF,
              NOM_CHAM='DEPL',
-             NUME_ORDRE=1,);
+             NUME_ORDRE=1,)
 
 #
 # CALCUL DES CONTRAINTES
@@ -167,6 +167,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 
 #

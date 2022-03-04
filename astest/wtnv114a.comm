@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -170,7 +170,7 @@ RESU0=STAT_NON_LINE(
                              _F(
                 CHARGE = CH_FLU1)),
                 SCHEMA_THM=_F(PARM_THETA=1.,),
-                         COMPORTEMENT=_F( 
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_HM',
                 RELATION_KIT = ('ELAS','LIQU_SATU','HYDR_UTIL',),
                 ITER_INTE_MAXI = 5),

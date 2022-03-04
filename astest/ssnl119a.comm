@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 # lecture maillage lineique
-MAPOU=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);
+MAPOU=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',)
 # lecture maillage section1
-MASEC=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',);
+MASEC=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',)
 
 GF=DEFI_GEOM_FIBRE(
    INFO=2,
@@ -72,7 +72,7 @@ FctSigm=DEFI_FONCTION(NOM_PARA='EPSI',
             Epsi1    , Sigm1, ),
     PROL_GAUCHE ='CONSTANT',
     PROL_DROITE ='LINEAIRE',
-);
+)
 
 ACIER=DEFI_MATER_GC(
    ACIER=_F( E = Young, D_SIGM_EPSI=DSiEps, SY=Sy,),
@@ -167,7 +167,7 @@ U1MAZAR=STAT_NON_LINE(
    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5, ITER_GLOB_MAXI=10,),
 )
 
-U1MAZAR=CALC_CHAMP(FORCE='REAC_NODA', reuse =U1MAZAR, RESULTAT=U1MAZAR, );
+U1MAZAR=CALC_CHAMP(FORCE='REAC_NODA', reuse =U1MAZAR, RESULTAT=U1MAZAR, )
 
 # Instants
 instant=[  0.100       ,   1.400       ,   2.680       ]

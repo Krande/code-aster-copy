@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,50 +37,50 @@ DEBUG=_F(SDVERI='NON'))
 # CREATION DU MACRO-ELEMENT DYNAMIQUE 1
 #**************************************
 
-MAYA1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20);
+MAYA1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20)
 
 MAYA1=DEFI_GROUP( reuse=MAYA1,   MAILLAGE=MAYA1,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 ELAS1=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
                             NU=0.3,
-                            RHO=2700.0,),);
+                            RHO=2700.0,),)
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAYA1,
                      AFFE=_F(GROUP_MA='ALL_EL1',
-                             MATER=ELAS1,),);
+                             MATER=ELAS1,),)
 
 MODELE1=AFFE_MODELE(MAILLAGE=MAYA1,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),);
+                            MODELISATION='3D',),)
 
 CHARGE1=AFFE_CHAR_MECA(MODELE=MODELE1,
                        DDL_IMPO=_F(GROUP_NO=('GOCH_NO1','INT_NO1',),
                                    DX=0.0,
                                    DY=0.0,
                                    DZ=0.0),
-                       INFO=1,);
+                       INFO=1,)
 
 KELEM1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=MODELE1,
                       CHAM_MATER=CHMAT1,
-                      CHARGE=CHARGE1,);
+                      CHARGE=CHARGE1,)
 
 MELEM1=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=MODELE1,
                       CHAM_MATER=CHMAT1,
-                      CHARGE=CHARGE1,);
+                      CHARGE=CHARGE1,)
 
 NUME1=NUME_DDL(MATR_RIGI=KELEM1,
 
-              );
+              )
 
 KASS1=ASSE_MATRICE(MATR_ELEM=KELEM1,
-                   NUME_DDL=NUME1,);
+                   NUME_DDL=NUME1,)
 
 MASS1=ASSE_MATRICE(MATR_ELEM=MELEM1,
-                   NUME_DDL=NUME1,);
+                   NUME_DDL=NUME1,)
 
 MODES1=CALC_MODES(MATR_RIGI=KASS1,
                   MATR_MASS=MASS1,
@@ -92,12 +92,12 @@ MODES1=CALC_MODES(MATR_RIGI=KASS1,
 LINT1=DEFI_INTERF_DYNA(NUME_DDL=NUME1,
                        INTERFACE=_F(NOM='LIAIS1',
                                     TYPE='CRAIGB',
-                                    GROUP_NO='INT_NO1',),);
+                                    GROUP_NO='INT_NO1',),)
 
 #   CALCUL DES MODES CONTRAINTES STATIQUES
 MODESTA1=MODE_STATIQUE(MATR_RIGI=KASS1,
                        MODE_STAT=_F(GROUP_NO='INT_NO1',
-                                    AVEC_CMP=('DX','DY','DZ',),),);
+                                    AVEC_CMP=('DX','DY','DZ',),),)
 
 # ON CREE UNE BASE QUI NE CONTIENT QUE LES MODES STATIQUES
 BASE1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES1,
@@ -106,11 +106,11 @@ BASE1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES1,
                                 MODE_INTF=MODESTA1,),),
                        INTERF_DYNA=LINT1,
                        NUME_REF=NUME1,
-                       );
+                       )
 
 MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BASE1,
                       MATR_RIGI=KASS1,
-                      MATR_MASS=MASS1,);
+                      MATR_MASS=MASS1,)
 
 
 #**************************************
@@ -118,50 +118,50 @@ MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BASE1,
 #**************************************
 
 
-MAYA2=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=21);
+MAYA2=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=21)
 
 MAYA2=DEFI_GROUP( reuse=MAYA2,   MAILLAGE=MAYA2,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 ELAS2=DEFI_MATERIAU(ELAS=_F(E=120000000000.0,
                             NU=0.3,
-                            RHO=7820.0,),);
+                            RHO=7820.0,),)
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MAYA2,
                      AFFE=_F(GROUP_MA='ALL_EL2',
-                             MATER=ELAS2,),);
+                             MATER=ELAS2,),)
 
 MODELE2=AFFE_MODELE(MAILLAGE=MAYA2,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),);
+                            MODELISATION='3D',),)
 
 CHARGE2=AFFE_CHAR_MECA(MODELE=MODELE2,
                        DDL_IMPO=_F(GROUP_NO=('DROI_NO2','INT_NO2',),
                                    DX=0.0,
                                    DY=0.0,
                                    DZ=0.0),
-                       INFO=1,);
+                       INFO=1,)
 
 KELEM2=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=MODELE2,
                       CHAM_MATER=CHMAT2,
-                      CHARGE=CHARGE2,);
+                      CHARGE=CHARGE2,)
 
 MELEM2=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=MODELE2,
                       CHAM_MATER=CHMAT2,
-                      CHARGE=CHARGE2,);
+                      CHARGE=CHARGE2,)
 
 NUME2=NUME_DDL(MATR_RIGI=KELEM2,
 
-              );
+              )
 
 KASS2=ASSE_MATRICE(MATR_ELEM=KELEM2,
-                   NUME_DDL=NUME2,);
+                   NUME_DDL=NUME2,)
 
 MASS2=ASSE_MATRICE(MATR_ELEM=MELEM2,
-                   NUME_DDL=NUME2,);
+                   NUME_DDL=NUME2,)
 
 MODES2=CALC_MODES(MATR_RIGI=KASS2,
                   MATR_MASS=MASS2,
@@ -173,22 +173,22 @@ MODES2=CALC_MODES(MATR_RIGI=KASS2,
 LINT2=DEFI_INTERF_DYNA(NUME_DDL=NUME2,
                        INTERFACE=_F(NOM='LIAIS2',
                                     TYPE='CRAIGB',
-                                    GROUP_NO='INT_NO2',),);
+                                    GROUP_NO='INT_NO2',),)
 
 MODESTA2=MODE_STATIQUE(MATR_RIGI=KASS2,
                        MODE_STAT=_F(GROUP_NO='INT_NO2',
-                                    AVEC_CMP=('DX','DY','DZ',),),);
+                                    AVEC_CMP=('DX','DY','DZ',),),)
 
 BASE2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES2,
                                 NMAX_MODE=0,),
                              _F(NMAX_MODE=999,
                                 MODE_INTF=MODESTA2,),),
                        INTERF_DYNA=LINT2,
-                       NUME_REF=NUME2,);
+                       NUME_REF=NUME2,)
 
 MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BASE2,
                       MATR_RIGI=KASS2,
-                      MATR_MASS=MASS2,);
+                      MATR_MASS=MASS2,)
 
 #****************************************
 # COUPLAGE DES 2 MACRO-ELEMENTS DYNAMIQUE
@@ -212,18 +212,18 @@ MODELG=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='MAIL1',
                                    SOUS_STRUC_1='MAIL1',
                                    INTERFACE_1='LIAIS1',),
                         VERIF=_F(STOP_ERREUR='NON',),
-                        INFO=1);
+                        INFO=1)
 
 
-NUGE=NUME_DDL_GENE(MODELE_GENE=MODELG,);
+NUGE=NUME_DDL_GENE(MODELE_GENE=MODELG,)
 
 #
 #  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE GENERALISEES STATIQUES
 MGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUGE,
-                      OPTION='MASS_GENE',);
+                      OPTION='MASS_GENE',)
 
 KGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUGE,
-                      OPTION='RIGI_GENE',);
+                      OPTION='RIGI_GENE',)
 
 #
 #   CALCUL DES MODES D'INTERFACE GENERALISES DE LA STRUCTURE GLOBALE
@@ -240,12 +240,12 @@ MODG=CALC_MODES(MATR_RIGI=KGEN,
 MODINT1=REST_SOUS_STRUC(RESU_GENE=MODG,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI',
-                       SOUS_STRUC='MAIL1',);
+                       SOUS_STRUC='MAIL1',)
 
 MODINT2=REST_SOUS_STRUC(RESU_GENE=MODG,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI',
-                       SOUS_STRUC='MAIL2',);
+                       SOUS_STRUC='MAIL2',)
 
 
 # DEFINITION DES MACRO-ELEMENTS DYNAMIQUES AVEC MODES D'INTERFACE
@@ -255,22 +255,22 @@ BASER1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES1,),
                              _F(MODE_INTF=MODINT1,),),
                        INTERF_DYNA=LINT1,
                        NUME_REF=NUME1,
-                       );
+                       )
 
 BASER2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES2,),
 #                             _F(MODE_MECA=MODINT2,),),
                              _F(MODE_INTF=MODINT2,),),
                        INTERF_DYNA=LINT2,
                        NUME_REF=NUME2,
-                       );
+                       )
 
 MACELR1=MACR_ELEM_DYNA(BASE_MODALE=BASER1,
                       MATR_RIGI=KASS1,
-                      MATR_MASS=MASS1,);
+                      MATR_MASS=MASS1,)
 
 MACELR2=MACR_ELEM_DYNA(BASE_MODALE=BASER2,
                       MATR_RIGI=KASS2,
-                      MATR_MASS=MASS2,);
+                      MATR_MASS=MASS2,)
 
 #
 # CREATION DU MODELE GENERALISE AVEC MODES D'INTERFACE
@@ -288,18 +288,18 @@ MODELRG=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='MAILR1',
                                    OPTION     = 'REDUIT',
                                    SOUS_STRUC_1='MAILR2',
                                    INTERFACE_1='LIAIS2',),
-                        VERIF=_F(STOP_ERREUR='NON',));
+                        VERIF=_F(STOP_ERREUR='NON',))
 
-NUGER=NUME_DDL_GENE(MODELE_GENE=MODELRG,);
+NUGER=NUME_DDL_GENE(MODELE_GENE=MODELRG,)
 
 #
 #  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE GENERALISEES
 
 MGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUGER,
-                    OPTION='MASS_GENE',);
+                    OPTION='MASS_GENE',)
 
 KGENR=ASSE_MATR_GENE(NUME_DDL_GENE=NUGER,
-                    OPTION='RIGI_GENE',);
+                    OPTION='RIGI_GENE',)
 #
 #   CALCUL DES MODES GENERALISES DE LA STRUCTURE GLOBALE
 
@@ -320,11 +320,11 @@ GLOBAL=DEFI_SQUELETTE(MODELE_GENE=MODELRG,
                                      ),
                                   _F(NOM='MAILR2',
                                      GROUP_MA='TOUT'
-                                 ),),);
+                                 ),),)
 
 MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGENR,
                       TOUT_ORDRE='OUI',
-                      SQUELETTE=GLOBAL,);
+                      SQUELETTE=GLOBAL,)
 
 
 
@@ -377,4 +377,4 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 #
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -247,7 +247,7 @@ CH_POS2=CREA_CHAMP(TITRE = 'POSITION DES NOEUDS MILIEU',
                   TYPE_CHAM = 'NOEU_GEOM_R',
                   OPERATION = 'EXTR',
                   MAILLAGE = MA3 ,
-                  NOM_CHAM ='GEOMETRIE',);
+                  NOM_CHAM ='GEOMETRIE',)
 
 MA3=MODI_MAILLAGE( reuse = MA3,
                    MAILLAGE = MA3,
@@ -262,8 +262,8 @@ CH_POS=CREA_CHAMP(TITRE = 'POSITION DES NOEUDS MILIEU',
                   TYPE_CHAM = 'NOEU_GEOM_R',
                   OPERATION = 'EXTR',
                   MAILLAGE = MA3 ,
-                  NOM_CHAM ='GEOMETRIE',);
-                  
+                  NOM_CHAM ='GEOMETRIE',)
+
 
 POS_N17 = POST_RELEVE_T(ACTION=_F(INTITULE = 'POSITION',
                                  OPERATION = 'EXTRACTION',

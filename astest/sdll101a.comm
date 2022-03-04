@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,31 +28,31 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM='TOUT',
-                               TOUT='OUI',),);
+                               TOUT='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_T',),);
+                       MODELISATION='POU_D_T',),)
 
 CARAELEM=AFFE_CARA_ELEM(MODELE=MO,
                         POUTRE=_F(GROUP_MA='TOUT',
                                   SECTION='CERCLE',
                                   CARA=('R','EP',),
-                                  VALE=(0.005,0.005,),),);
+                                  VALE=(0.005,0.005,),),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                           NU=0.3,
-                          RHO=7800.0,),);
+                          RHO=7800.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(TOUT='OUI',
@@ -63,46 +63,46 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                                DX=0.0,
                                DY=0.0,),
                             _F(GROUP_NO='B',
-                               DY=0.0,),),);
+                               DY=0.0,),),)
 
 MELR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                     MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARAELEM,
-                    CHARGE=CH,);
+                    CHARGE=CH,)
 
 MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                     MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARAELEM,
-                    CHARGE=CH,);
+                    CHARGE=CH,)
 
-NUM=NUME_DDL(MATR_RIGI=MELR,);
+NUM=NUME_DDL(MATR_RIGI=MELR,)
 
 MATASSR=ASSE_MATRICE(MATR_ELEM=MELR,
-                     NUME_DDL=NUM,);
+                     NUME_DDL=NUM,)
 
 MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,
-                     NUME_DDL=NUM,);
+                     NUME_DDL=NUM,)
 # RESOLUTION STATIQUE ------------------------------------------------
 #
 # DEFINITION DES 4 CHARGEMENTS
 
 C_0=AFFE_CHAR_MECA(MODELE=MO,
                    FORCE_NODALE=_F(GROUP_NO='B',
-                                   FX=0.0,),);
+                                   FX=0.0,),)
 
 C_10=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='B',
-                                    FX=10.0,),);
+                                    FX=10.0,),)
 
 C_100=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=_F(GROUP_NO='B',
-                                     FX=100.0,),);
+                                     FX=100.0,),)
 
 C_1000=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_NODALE=_F(GROUP_NO='B',
-                                      FX=1000.0,),);
+                                      FX=1000.0,),)
 
 # ON RESOUD LES 4 CAS DE CHARGES
 
@@ -117,7 +117,7 @@ DEP=MACRO_ELAS_MULT(MODELE=MO,
                                 _F(NOM_CAS='CHARGE3',
                                    CHAR_MECA=C_100,),
                                 _F(NOM_CAS='CHARGE4',
-                                   CHAR_MECA=C_1000,),),);
+                                   CHAR_MECA=C_1000,),),)
 #---------------------------------------------------------------------
 #
 # RESOLUTION DYNAMIQUE -----------------------------------------------
@@ -147,42 +147,42 @@ RESULTAT=DEP, NUME_ORDRE=4,
 MEG_0=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                      MODELE=MO,
                      CARA_ELEM=CARAELEM,
-                     SIEF_ELGA=S_0,);
+                     SIEF_ELGA=S_0,)
 
 MEG_10=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                       MODELE=MO,
                       CARA_ELEM=CARAELEM,
-                      SIEF_ELGA=S_10,);
+                      SIEF_ELGA=S_10,)
 
 MEG_100=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                        MODELE=MO,
                        CARA_ELEM=CARAELEM,
-                       SIEF_ELGA=S_100,);
+                       SIEF_ELGA=S_100,)
 
 MEG_1000=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                         MODELE=MO,
                         CARA_ELEM=CARAELEM,
-                        SIEF_ELGA=S_1000,);
+                        SIEF_ELGA=S_1000,)
 #
 
 MAR_0=ASSE_MATRICE(MATR_ELEM=MEG_0,
-                   NUME_DDL=NUM,);
+                   NUME_DDL=NUM,)
 
 MAR_10=ASSE_MATRICE(MATR_ELEM=MEG_10,
-                    NUME_DDL=NUM,);
+                    NUME_DDL=NUM,)
 
 MAR_100=ASSE_MATRICE(MATR_ELEM=MEG_100,
-                     NUME_DDL=NUM,);
+                     NUME_DDL=NUM,)
 
 MAR_1000=ASSE_MATRICE(MATR_ELEM=MEG_1000,
-                      NUME_DDL=NUM,);
+                      NUME_DDL=NUM,)
 #
 # CALCUL MODAL AVEC PRECONTRAINTE NULLE
 
 MATASSR1=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATASSR,
                                    COEF_R=1.0,),
                                 _F(MATR_ASSE=MAR_0,
-                                   COEF_R=1.0,),),);
+                                   COEF_R=1.0,),),)
 
 MD_0=CALC_MODES(MATR_RIGI=MATASSR1,
                 OPTION='PLUS_PETITE',
@@ -201,7 +201,7 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                         COMB_R=(_F(MATR_ASSE=MATASSR,
                                    COEF_R=1.0,),
                                 _F(MATR_ASSE=MAR_10,
-                                   COEF_R=1.0,),),);
+                                   COEF_R=1.0,),),)
 
 MD_10=CALC_MODES(MATR_RIGI=MATASSR1,
                  OPTION='PLUS_PETITE',
@@ -219,7 +219,7 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                         COMB_R=(_F(MATR_ASSE=MATASSR,
                                    COEF_R=1.0,),
                                 _F(MATR_ASSE=MAR_100,
-                                   COEF_R=1.0,),),);
+                                   COEF_R=1.0,),),)
 
 MD_100=CALC_MODES(MATR_RIGI=MATASSR1,
                   OPTION='PLUS_PETITE',
@@ -238,7 +238,7 @@ MATASSR1=COMB_MATR_ASSE(reuse =MATASSR1,
                         COMB_R=(_F(MATR_ASSE=MATASSR,
                                    COEF_R=1.0,),
                                 _F(MATR_ASSE=MAR_1000,
-                                   COEF_R=1.0,),),);
+                                   COEF_R=1.0,),),)
 
 MD_1000=CALC_MODES(MATR_RIGI=MATASSR1,
                    OPTION='PLUS_PETITE',
@@ -406,5 +406,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 #
 
-FIN();
+FIN()
 #

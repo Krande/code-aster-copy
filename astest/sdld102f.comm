@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,13 +28,13 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #
 
 LIST_R=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=80.,
-                                    NOMBRE=10,),);
+                                    NOMBRE=10,),)
 
 #
 ########################################################################
@@ -79,7 +79,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLA,
                             MODELISATION='DIS_TR',),
                          _F(GROUP_MA='MASSE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 MODELR=AFFE_MODELE(MAILLAGE=MAILLA1,
                    AFFE=(_F(GROUP_MA='RESSORT',
@@ -87,7 +87,7 @@ MODELR=AFFE_MODELE(MAILLAGE=MAILLA1,
                             MODELISATION='DIS_TR',),
                          _F(GROUP_MA='MASSE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 #
 k = 1.
@@ -105,7 +105,7 @@ PARAM=AFFE_CARA_ELEM(MODELE=MODELE,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                               _F(CARA='M_T_D_N',
                                  GROUP_MA='MASSE',
-                                 VALE=m,),),);
+                                 VALE=m,),),)
 
 PARAMR=AFFE_CARA_ELEM(MODELE=MODELR,
                      DISCRET=(_F(CARA='K_TR_D_L',
@@ -119,7 +119,7 @@ PARAMR=AFFE_CARA_ELEM(MODELE=MODELR,
                                         0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                               _F(CARA='M_T_D_N',
                                  GROUP_MA='MASSE',
-                                 VALE=m,),),);
+                                 VALE=m,),),)
 
 #
 # ----- DEFINITION DU CHARGEMENT
@@ -134,7 +134,7 @@ CHARGE_L=AFFE_CHAR_MECA(MODELE=MODELE,
                                   _F(GROUP_NO='N1',
                                      DX=0.,),
                                   _F(GROUP_NO='N3',
-                                     DX=0.,),),);
+                                     DX=0.,),),)
 
 CHARGE_R=AFFE_CHAR_MECA(MODELE=MODELR,
                         DDL_IMPO=(_F(TOUT='OUI',
@@ -144,13 +144,13 @@ CHARGE_R=AFFE_CHAR_MECA(MODELE=MODELR,
                                      DRY=0.,
                                      DRZ=0.,),
                                   _F(GROUP_NO='NN1',
-                                     DX=0.,),),);
+                                     DX=0.,),),)
 
 #
 
 CHARTRAN=AFFE_CHAR_MECA(MODELE=MODELE,
                         FORCE_NODALE=_F(GROUP_NO='N2',
-                                        FX=1.,),);
+                                        FX=1.,),)
 
 #
 # ----- MATRICES ET VECTEURS ELEMENTS FINIS
@@ -158,58 +158,58 @@ CHARTRAN=AFFE_CHAR_MECA(MODELE=MODELE,
 MERIME_L=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_L,);
+                        CHARGE=CHARGE_L,)
 
 MERIME_R=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELR,
                         CARA_ELEM=PARAMR,
-                        CHARGE=CHARGE_R,);
+                        CHARGE=CHARGE_R,)
 
 #
 
 MEMAME_L=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODELE,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_L,);
+                        CHARGE=CHARGE_L,)
 
 MEMAME_R=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODELR,
                         CARA_ELEM=PARAMR,
-                        CHARGE=CHARGE_R,);
+                        CHARGE=CHARGE_R,)
 
 #
 
 V_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                      CHARGE=CHARTRAN,);
+                      CHARGE=CHARTRAN,)
 
 #
 # ----- NUMEROTATION DU PROBLEME ELEMENTS FINIS
 
-NUMDDL_L=NUME_DDL(MATR_RIGI=MERIME_L,);
+NUMDDL_L=NUME_DDL(MATR_RIGI=MERIME_L,)
 
-NUMDDL_R=NUME_DDL(MATR_RIGI=MERIME_R,);
+NUMDDL_R=NUME_DDL(MATR_RIGI=MERIME_R,)
 
 #
 # ----- ASSEMBLAGE DES MATRICES ET VECTEURS
 
 RAID_L=ASSE_MATRICE(MATR_ELEM=MERIME_L,
-                    NUME_DDL=NUMDDL_L,);
+                    NUME_DDL=NUMDDL_L,)
 
 RAID_R=ASSE_MATRICE(MATR_ELEM=MERIME_R,
-                    NUME_DDL=NUMDDL_R,);
+                    NUME_DDL=NUMDDL_R,)
 
 #
 
 MASS_L=ASSE_MATRICE(MATR_ELEM=MEMAME_L,
-                    NUME_DDL=NUMDDL_L,);
+                    NUME_DDL=NUMDDL_L,)
 
 MASS_R=ASSE_MATRICE(MATR_ELEM=MEMAME_R,
-                    NUME_DDL=NUMDDL_R,);
+                    NUME_DDL=NUMDDL_R,)
 
 #
 
 V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,
-                    NUME_DDL=NUMDDL_L,);
+                    NUME_DDL=NUMDDL_L,)
 
 #
 # ----- CALCUL DES MODES PROPRES DES SS
@@ -234,7 +234,7 @@ LINT1_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_L,
                           INTERFACE=_F(NOM='DROITE',
                                        TYPE='CRAIGB',
                                        GROUP_NO='N3',
-                                       MASQUE=('DY','DZ','DRX','DRY','DRZ',),),);
+                                       MASQUE=('DY','DZ','DRX','DRY','DRZ',),),)
 
 #
 
@@ -242,28 +242,28 @@ LINT2_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_R,
                           INTERFACE=_F(NOM='GAUCHE',
                                        TYPE='CRAIGB',
                                        GROUP_NO='NN1',
-                                       MASQUE=('DY','DZ','DRX','DRY','DRZ',),),);
+                                       MASQUE=('DY','DZ','DRX','DRY','DRZ',),),)
 
 #
 # ----- CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 
 BAMO1_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT1_CL,
                                        MODE_MECA=MODES_L,
-                                       NMAX_MODE=1,),);
+                                       NMAX_MODE=1,),)
 
 #
 BAMO2_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT2_CL,
                                        MODE_MECA=MODES_R,
-                                       NMAX_MODE=1,),);
+                                       NMAX_MODE=1,),)
 
 
 
 #
 # ----- CALCUL DU MACRO-ELEMENT
 
-MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BAMO1_CL,);
+MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BAMO1_CL,)
 
-MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BAMO2_CL,);
+MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BAMO2_CL,)
 
 #
 
@@ -283,29 +283,29 @@ MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='COTE1',
                                    INTERFACE_2='GAUCHE',),
                         VERIF=_F(STOP_ERREUR='OUI',
                                  PRECISION=1.E-6,
-                                 CRITERE='RELATIF',),);
+                                 CRITERE='RELATIF',),)
 
 #
 # ----- NUMEROTATION DU PROBLEME GENERALISE DES SOUS-STRUCTURES
 
-NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGE);
+NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGE)
 
 #
 # ----- ASSEMBLAGE DES MATRICES ET VECTEURS
 
 MASGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
-                      OPTION='MASS_GENE',);
+                      OPTION='MASS_GENE',)
 
 #
 
 RIGGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
-                      OPTION='RIGI_GENE',);
+                      OPTION='RIGI_GENE',)
 
 #
 
 FGEN=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
                     CHAR_SOUS_STRUC=_F(SOUS_STRUC='COTE1',
-                                       VECT_ASSE=V_ASSE,),);
+                                       VECT_ASSE=V_ASSE,),)
 
 #---------------------------------------------------------------------
 #
@@ -323,7 +323,7 @@ RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
 
 MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        TOUT_ORDRE='OUI',
-                       SOUS_STRUC='COTE1',);
+                       SOUS_STRUC='COTE1',)
 
 
 #---------------------------------------------------------------------
@@ -339,7 +339,7 @@ PROJ_BASE(BASE=RESGEN,
                              MATR_ASSE_GENE=MASGEN,),),
           VECT_ASSE_GENE=_F(VECTEUR=CO('VECPRO'),
                             VECT_ASSE_GENE=FGEN,
-                            TYPE_VECT='FORC'),);
+                            TYPE_VECT='FORC'),)
 
 #
 # ----- CALCULS TRANSITOIRES
@@ -367,7 +367,7 @@ TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=1, LIST_INST=LIST_R),
                          EXCIT=_F(VECT_ASSE_GENE=VECPRO,
-                                  COEF_MULT=1.,),);
+                                  COEF_MULT=1.,),)
 
 #
 
@@ -376,7 +376,7 @@ TRAN1=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                      LIST_INST=LIST_R,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
-                     GROUP_NO='N3',);
+                     GROUP_NO='N3',)
 
 #
 
@@ -421,6 +421,6 @@ TEST_RESU(RESU=_F(INST=80.0,
           )
 
 #
-FIN();
+FIN()
 
 #

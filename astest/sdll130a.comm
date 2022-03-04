@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,17 +28,17 @@ from sdll130a import F_ACS2C11
 ACS2C11=F_ACS2C11()
 
 # LECTURE MAILLAGE LINEIQUE
-MAPOU=LIRE_MAILLAGE(FORMAT='MED',UNITE=19);
+MAPOU=LIRE_MAILLAGE(FORMAT='MED',UNITE=19)
 MAPOU=DEFI_GROUP(reuse =MAPOU,
                  MAILLAGE=MAPOU,
                  CREA_GROUP_NO=_F(GROUP_MA='POUTRE',
                                   NOM='TOUS_NO',),
-                 INFO=1,);
+                 INFO=1,)
 
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='POU_D_E',),);
+                          MODELISATION='POU_D_E',),)
 # LES MATERIAUX
 #
 
@@ -47,7 +47,7 @@ BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10,
                             NU=0.0,
                             RHO=2400.0,
                             AMOR_ALPHA=8.5000000000000006E-05,
-                            AMOR_BETA=18.984999999999999,),);
+                            AMOR_BETA=18.984999999999999,),)
 #
 # LES CHAMPS DE MATERIAUX
 #
@@ -55,7 +55,7 @@ BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10,
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
                     AFFE=_F(GROUP_MA='POUTRE',
-                            MATER=BETON,),);
+                            MATER=BETON,),)
 #
 # ORIENTATIONS ET RIGIDITE DE TORSION
 #
@@ -68,7 +68,7 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
                                VALE=(0.109,0.0025138000000000001,0.00025000000000000001,1.0),),
                      ORIENTATION=_F(GROUP_MA=('POUTRE'),
                                     CARA='ANGL_VRIL',
-                                    VALE=-90.0,),);
+                                    VALE=-90.0,),)
 #
 #
 
@@ -82,7 +82,7 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
                                  _F(GROUP_NO='TOUS_NO',
                                     DZ=0.0,
                                     DRX=0.0,
-                                    DRY=0.0,),),);
+                                    DRY=0.0,),),)
 #
 #
 
@@ -91,13 +91,13 @@ RIGI_ELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MOPOU,
                         CHAM_MATER=CHMAT,
                         CARA_ELEM=POUCA,
-                        CHARGE=BLOCAGE,);
+                        CHARGE=BLOCAGE,)
 
 MASS_ELE=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MOPOU,
                         CHAM_MATER=CHMAT,
                         CARA_ELEM=POUCA,
-                        CHARGE=BLOCAGE,);
+                        CHARGE=BLOCAGE,)
 
 AMOR_ELE=CALC_MATR_ELEM(OPTION='AMOR_MECA',
                         MODELE=MOPOU,
@@ -105,24 +105,24 @@ AMOR_ELE=CALC_MATR_ELEM(OPTION='AMOR_MECA',
                         CHAM_MATER=CHMAT,
                         RIGI_MECA=RIGI_ELE,
                         MASS_MECA=MASS_ELE,
-                        CHARGE=BLOCAGE,);
+                        CHARGE=BLOCAGE,)
 #
 #
 
 
-NUMEDDL=NUME_DDL(MATR_RIGI=RIGI_ELE, );
+NUMEDDL=NUME_DDL(MATR_RIGI=RIGI_ELE, )
 #
 #
 
 
 RIGIDITE=ASSE_MATRICE(MATR_ELEM=RIGI_ELE,
-                      NUME_DDL=NUMEDDL,);
+                      NUME_DDL=NUMEDDL,)
 
 MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
 AMORT=ASSE_MATRICE(MATR_ELEM=AMOR_ELE,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
 MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
                     OPTION='PLUS_PETITE',
@@ -137,21 +137,21 @@ MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
 
 
 ACCELERO=CALC_FONCTION(COMB=_F(FONCTION=ACS2C11,
-                               COEF=137.0,),);
+                               COEF=137.0,),)
 #
 #
 
 
 DIRSEISM=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                           DIRECTION=(0.0,-1.0,0.0),
-                          MONO_APPUI='OUI',);
+                          MONO_APPUI='OUI',)
 # CALCUL DYNAMIQUE LINEAIRE TRANSITOIRE
 #
 
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=5.0,
-                                   NOMBRE=500,),);
+                                   NOMBRE=500,),)
 
 U1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
@@ -160,7 +160,7 @@ U1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                     EXCIT=_F(VECT_ASSE=DIRSEISM,
                              FONC_MULT=ACCELERO,),
-                    INCREMENT=_F(LIST_INST=LINST,),);
+                    INCREMENT=_F(LIST_INST=LINST,),)
 
 U1=CALC_CHAMP(reuse =U1,
 
@@ -169,7 +169,7 @@ U1=CALC_CHAMP(reuse =U1,
                TOUT='OUI',
                TOUT_ORDRE='OUI',
                 CONTRAINTE=('SIEF_ELGA'),
-               RESULTAT=U1,);
+               RESULTAT=U1,)
 
 U1=CALC_CHAMP(reuse =U1,
 
@@ -178,7 +178,7 @@ U1=CALC_CHAMP(reuse =U1,
              FORCE='REAC_NODA',
 
 
-             TOUT='OUI',);
+             TOUT='OUI',)
 
 # QUELQUES TEST DE RESULTATS, REFERENCE='NON_DEFINI',
 TEST_RESU(RESU=(_F(PARA='FREQ',
@@ -277,4 +277,4 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                 ),
           )
 
-FIN();
+FIN()

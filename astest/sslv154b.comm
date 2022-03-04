@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,11 +44,11 @@ MA=DEFI_GROUP( reuse=MA,
                CREA_GROUP_MA=_F(  NOM = 'CUBE',
                                   TOUT = 'OUI',
                                   TYPE_MAILLE='3D',
-                                 ),);
+                                 ),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_SUP','FACE_INF'),),);
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_SUP','FACE_INF'),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('CUBE','FACE_SUP','FACE_INF','FACE_LAD','FACE_AV','FACE_LAG',),
@@ -70,7 +70,7 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
 
 # elements X-FEM
 MOX=MODI_MODELE_XFEM(MODELE_IN=MO,
-                     FISSURE=FISS,);
+                     FISSURE=FISS,)
 
 # charge X-FEM specifique
 
@@ -92,7 +92,7 @@ SYMETR=AFFE_CHAR_MECA(MODELE=MOX,
                                    DY=0.,H1Y=0.),
                                   ),
                       #FACE_IMPO=_F(GROUP_MA='FACE_AV',DY=0.,),
-                      );
+                      )
 
 PRESSION=AFFE_CHAR_MECA(MODELE=MOX,
                         FORCE_FACE=(_F(GROUP_MA='FACE_SUP', FX= cos(alpha)*sin(alpha)*sig, FZ= sin(alpha)*sin(alpha)*sig ),
@@ -331,4 +331,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=90.0,),
            )
 
-FIN();
+FIN()

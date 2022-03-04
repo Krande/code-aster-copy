@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_INT','FACE_SUP',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_INT','FACE_SUP',),),)
 
 # PARTIES THERMIQUE ET METALLURGIQUE
 # TEMPERATURE DE 700 DEGRES PARTOUT DANS LE TUBE
@@ -138,23 +138,23 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
 
 CH_L=AFFE_CHAR_MECA(MODELE=MO,
                     FACE_IMPO=_F(GROUP_MA='FACE_INF',DNOR=0.,),
-                    LIAISON_UNIF=_F(GROUP_MA='FACE_SUP',DDL='DY',),);
+                    LIAISON_UNIF=_F(GROUP_MA='FACE_SUP',DDL='DY',),)
 
 # ON MET UNE PRESSION INTERNE ET L EFFET DE FOND
-RINT = 4.118;
-REXT = 4.746;
-COEF = ((RINT * RINT) / ((REXT * REXT) - (RINT * RINT)));
+RINT = 4.118
+REXT = 4.746
+COEF = ((RINT * RINT) / ((REXT * REXT) - (RINT * RINT)))
 
 CHPC=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA='FACE_INT',PRES=1.,),
-                              _F(GROUP_MA='FACE_SUP',PRES=-COEF,),),);
+                              _F(GROUP_MA='FACE_SUP',PRES=-COEF,),),)
 
 FMULT=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           1.1,7.5,
                           100.0,9.5,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);
+                    PROL_GAUCHE='CONSTANT',)
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM2,
@@ -175,7 +175,7 @@ U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA
 
 U=CALC_CHAMP(reuse =U,
           RESULTAT=U,
-          DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU');
+          DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU')
 
 # NA (CE NOEUD SE SITUE A L INTERIEUR DU TUBE EN Y=0)
 # TEST DES TROIS DEFORMATIONS ET DES TROIS CONTRAINTES

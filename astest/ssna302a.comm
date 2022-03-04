@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 
 MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
-                                
+
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'MECANIQUE',
                                         MODELISATION = '3D')
@@ -66,7 +66,7 @@ gg=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_F',
                     _F( GROUP_MA = 'FACE',
                         NOM_CMP  = 'PRES',
                         VALE_F   = PRES_FO    ),),
-              ) ;
+              )
 
 evol_gg=CREA_RESU(OPERATION='AFFE',
                   TYPE_RESU='EVOL_CHAR',
@@ -78,7 +78,7 @@ evol_gg=CREA_RESU(OPERATION='AFFE',
                           ) )
 
 PRES=AFFE_CHAR_MECA( MODELE=MODEL,
-                     EVOL_CHAR=evol_gg, );
+                     EVOL_CHAR=evol_gg, )
 #
 CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
                               _F(  GROUP_NO = 'FIX_C1',

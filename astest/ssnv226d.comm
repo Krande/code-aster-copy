@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 # AVEC DYNA_NON_LINE
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-CUBE=LIRE_MAILLAGE(FORMAT="ASTER",);
-PRECIS = 1e-06;
+CUBE=LIRE_MAILLAGE(FORMAT="ASTER",)
+PRECIS = 1e-06
 
 
 CUBE=DEFI_GROUP(reuse =CUBE,
@@ -49,17 +49,17 @@ CUBE=DEFI_GROUP(reuse =CUBE,
                                   NOM='ARRIERE',
                                   POINT=(0.0,0.0,0.0,),
                                   VECT_NORMALE=(1.0,0.0,0.0,),
-                                  PRECISION=PRECIS,),),);
-SY = 750000000.0;
+                                  PRECISION=PRECIS,),),)
+SY = 750000000.0
 
-E = 200000000000.0;
+E = 200000000000.0
 
-Eps0 = (SY / E);
+Eps0 = (SY / E)
 
 
 CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(Eps0,SY,
                           1.,1500.E6,
-                          ),);
+                          ),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=0.3,
@@ -70,16 +70,16 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                                  EPSI_0=3.31131121483e13,
                                  M=6.76,),
                     CRIT_RUPT=_F(SIGM_C=7.8E8,
-                                 COEF=10000.,),);
+                                 COEF=10000.,),)
 
 TROISD=AFFE_MODELE(MAILLAGE=CUBE,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
+                          MATER=ACIER,),)
 
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                     DDL_IMPO=(_F(GROUP_NO='ARRIERE',
@@ -89,28 +89,28 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                               _F(GROUP_NO='GAUCHE',
                                  DY=0.0,),
                               _F(GROUP_NO='HAUT',
-                                 DZ=1.0,),),);
+                                 DZ=1.0,),),)
 ##chargement
 
-EpsMax = 0.05;
+EpsMax = 0.05
 
-viteps = 0.0001;
+viteps = 0.0001
 
-tmax = (EpsMax / viteps);
+tmax = (EpsMax / viteps)
 
 
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='EPSI',
                     VALE=(0.,0.,
                           tmax,EpsMax,
                           ),
-                    PROL_DROITE='LINEAIRE',);
+                    PROL_DROITE='LINEAIRE',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=tmax,
-                                   NOMBRE=100,),);
+                                   NOMBRE=100,),)
 
 DEFLIST1=DEFI_LIST_INST(METHODE='MANUEL',
-                        DEFI_LIST=_F(LIST_INST=LINST,),);
+                        DEFI_LIST=_F(LIST_INST=LINST,),)
 
 SOLNL=DYNA_NON_LINE(MODELE=TROISD,
                     CHAM_MATER=MAT,
@@ -137,11 +137,11 @@ SOLNL=DYNA_NON_LINE(MODELE=TROISD,
                                   EVAL_CHAM='MAX',
                                   NOM_CMP='SIZZ',
                                   TOUT='OUI',
-                                  EVAL_ELGA='MAX',),),);
+                                  EVAL_ELGA='MAX',),),)
 
 SOLNL=CALC_CHAMP(reuse =SOLNL,
                  RESULTAT=SOLNL,
-                 DEFORMATION=('EPSP_ELGA',),);
+                 DEFORMATION=('EPSP_ELGA',),)
 
 # Calcul des moyennes
 
@@ -151,40 +151,40 @@ INT_SI=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
                               TYPE_MAILLE='3D'),
                  MODELE=TROISD,
                  RESULTAT=SOLNL,
-                 );
+                 )
 
-IMPR_TABLE(TABLE=INT_SI,);
+IMPR_TABLE(TABLE=INT_SI,)
 
 INT_EP=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
                               NOM_CHAM='EPSP_ELGA',
                               NOM_CMP=('EPXX','EPYY','EPZZ',),
                               TYPE_MAILLE='3D'),
                  MODELE=TROISD,
-                 RESULTAT=SOLNL,);
+                 RESULTAT=SOLNL,)
 
-IMPR_TABLE(TABLE=INT_EP,);
+IMPR_TABLE(TABLE=INT_EP,)
 
 F_SI=RECU_FONCTION(TABLE=INT_SI,
                    PARA_X='INST',
-                   PARA_Y='INTE_SIZZ',);
+                   PARA_Y='INTE_SIZZ',)
 
 F_EP=RECU_FONCTION(TABLE=INT_EP,
                    PARA_X='INST',
-                   PARA_Y='INTE_EPZZ',);
+                   PARA_Y='INTE_EPZZ',)
 
 INT_VI=POST_ELEM(INTEGRALE=_F(TOUT='OUI',
                               NOM_CHAM='VARI_ELGA',
                               NOM_CMP=('V1','V14',),
                               TYPE_MAILLE='3D'),
                  MODELE=TROISD,
-                 RESULTAT=SOLNL,);
+                 RESULTAT=SOLNL,)
 
-IMPR_TABLE(TABLE=INT_VI,);
+IMPR_TABLE(TABLE=INT_VI,)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=40,
               COURBE=_F(FONC_X=F_EP,
-                        FONC_Y=F_SI,),);
+                        FONC_Y=F_SI,),)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=7.80304E8,
                         VALE_REFE=7.80304E8,
@@ -204,4 +204,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=8.77866E4,
                         ),
               )
 
-FIN();
+FIN()

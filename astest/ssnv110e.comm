@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 # CHARGEMENT EN DEPLACEMENT IMPOSE
 # MAILLAGE QUADRATIQUE, EN MM
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ##########################################################################
 # PARAMETRES
@@ -58,7 +58,7 @@ e_T = 13.15E9     #E22
 e_N = 13.15E9     #E33
 nu_LT = 0.25      #nu12   #0.73
 g_LT  = 4.06E9    #G12    #13.15E9/2/(1+nu_LT)
-nu_LN = 0.25      #nu12   #0.09 
+nu_LN = 0.25      #nu12   #0.09
 nu_TN = nu_LN     #nu23 ?
 g_LN  = g_LT      #G13
 g_TN  = 3.8E9     #G23
@@ -151,7 +151,7 @@ colleczm = DEFI_MATERIAU(
                                       PENA_CONTACT=1.0,
                                       SIGM_C=sigreg)
                                           )
-                                       
+
 acier = DEFI_MATERIAU(ELAS=_F(E=2.E+11,
                               NU=0.3))
 
@@ -219,7 +219,7 @@ liaisons = AFFE_CHAR_MECA(LIAISON_DDL=(
                                        _F(GROUP_NO=('adh_sup_contInsert','insertContSup'),DDL=('DY','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
 
                                        _F(GROUP_NO=('insertLat','insertContInf'),DDL=('DX','DX'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
-                                       ),   
+                                       ),
                           MODELE=model)
 
 blocage = AFFE_CHAR_CINE(MECA_IMPO=(_F(DX=0.,
@@ -319,7 +319,7 @@ resucal0=CREA_TABLE(LISTE=(_F(LISTE_R=lD0,PARA='Deplacement'),
 
 IMPR_TABLE(TABLE=resucal0,
            UNITE=8,)
-           
+
 ##########################################################################
 # TEST (NON-REGRESSION)
 ##########################################################################
@@ -371,7 +371,7 @@ TEST_TABLE(
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.5,),
            )
-           
+
 ##########################################################################
 # CALCUL (CZM_TURON)
 ##########################################################################

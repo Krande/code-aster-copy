@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ SIGM_0 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                   0.802410212, 972.221955,
                                   0.90250577,  991.1425412,
                                   1.002586229, 1007.073281,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_20 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -108,7 +108,7 @@ SIGM_20 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                   0.80231768, 953.9007239,
                                   0.902413239, 972.8213101,
                                   1.002493697, 988.7520496,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_40 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -138,7 +138,7 @@ SIGM_40 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                   0.802239257, 938.3728695,
                                   0.902334815, 957.2934557,
                                   1.002415274, 973.2241952,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_60 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -168,7 +168,7 @@ SIGM_60 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                   0.802173505, 925.3539806,
                                   0.902269063, 944.2745668,
                                   1.002349522, 960.2053063,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_80 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -198,7 +198,7 @@ SIGM_80 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                   0.802119415, 914.6442492,
                                   0.902214974, 933.5648354,
                                   1.002295432, 949.495575,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -228,7 +228,7 @@ SIGM_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                   0.802076322, 906.1117631,
                                   0.902171881, 925.0323493,
                                   1.002252339, 940.9630888,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_120 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -258,7 +258,7 @@ SIGM_120 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                  0.802043834, 899.6790973,
                                  0.902139392, 918.5996835,
                                  1.002219851, 934.5304231,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_140 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -288,7 +288,7 @@ SIGM_140 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                  0.802021781, 895.3125543,
                                  0.902117339, 914.2331405,
                                  1.002197797, 930.16388,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_160 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -318,7 +318,7 @@ SIGM_160 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                  0.802010169, 893.0135284,
                                  0.902105728, 911.9341146,
                                  1.002186186, 927.8648541,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_180 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -348,7 +348,7 @@ SIGM_180 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                  0.802009149, 892.8115758,
                                  0.902104708, 911.732162,
                                  1.002185166, 927.6629015,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 
 SIGM_200 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                           VALE = (
@@ -378,7 +378,7 @@ SIGM_200 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                  0.802018984, 894.7588533,
                                  0.902114543, 913.6794395,
                                  1.002195001, 929.610179,),
-                                  PROL_DROITE = 'LINEAIRE',);
+                                  PROL_DROITE = 'LINEAIRE',)
 SIGM_F=DEFI_NAPPE(NOM_PARA='TEMP',
                   PROL_DROITE='LINEAIRE',
                   PROL_GAUCHE='LINEAIRE',
@@ -398,7 +398,7 @@ SIGM_1F = DEFI_FONCTION ( NOM_PARA = 'TEMP',
                                   180., 442.,
                                   200., 438.,),
                                   PROL_DROITE = 'LINEAIRE',
-                                  PROL_GAUCHE = 'CONSTANT',);
+                                  PROL_GAUCHE = 'CONSTANT',)
 
 PORO_IF = DEFI_CONSTANTE( VALE =  0.0005,)
 
@@ -454,21 +454,21 @@ LINST=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=1.0,
 # 5. CALCUL DU CHAMP THERMIQUE AU 1ER INSTANT
 #-------------------------------------------------
 CH_SOU0 = AFFE_CHAR_THER(MODELE=MOD_THER,
-                         SOURCE=_F(SOUR=0.0, TOUT='OUI',),);
+                         SOURCE=_F(SOUR=0.0, TOUT='OUI',),)
 
 RESUTH=THER_LINEAIRE(MODELE=MOD_THER,
                      CHAM_MATER=CHMAT,
                      EXCIT=_F(CHARGE=CH_SOU0,),
                      INCREMENT=_F(LIST_INST=LINST,
                                  NUME_INST_FIN=1,),
-                     ETAT_INIT=_F(VALE = 0.,),);
+                     ETAT_INIT=_F(VALE = 0.,),)
 
 # ------------------------------------------------------------
 #  6. DEBUT DE LA BOUCLE DE RESOLUTION MECANIQUE / THERMIQUE
 # ------------------------------------------------------------
 # recuperation automatique du nombre de pas de temps :
-# ls = LINST.Valeurs();
-# NBPAS = len(ls)-1 ;
+# ls = LINST.Valeurs()
+# NBPAS = len(ls)-1
 NBPAS = 168
 for k in range(1,NBPAS+1) :
 
@@ -529,7 +529,7 @@ for k in range(1,NBPAS+1) :
                OPERATION='EXTR',
                RESULTAT=RESU,
                NOM_CHAM='VARI_ELGA',
-               NUME_ORDRE=k,);
+               NUME_ORDRE=k,)
 
   DISSIP=CREA_CHAMP(
                   OPTION='TOU_INI_ELGA',
@@ -540,10 +540,10 @@ for k in range(1,NBPAS+1) :
                           CHAM_GD=CH1,
                           NOM_CMP='V3',
                           NOM_CMP_RESU='SOUR',
-                   ),);
+                   ),)
 
   CH_SOU=AFFE_CHAR_THER(MODELE=MOD_THER,
-                        SOURCE=_F(SOUR_CALCULEE=DISSIP,),);
+                        SOURCE=_F(SOUR_CALCULEE=DISSIP,),)
 
   if ( k < NBPAS ) :
     RESUTH=THER_LINEAIRE(reuse=RESUTH,
@@ -552,13 +552,13 @@ for k in range(1,NBPAS+1) :
                       CHAM_MATER=CHMAT,
                       EXCIT=_F(CHARGE=CH_SOU,),
                       INCREMENT=_F(LIST_INST=LINST,
-                                   NUME_INST_FIN=k+1,),);
+                                   NUME_INST_FIN=k+1,),)
 
   if k < NBPAS :
     DETRUIRE(NOM=(CH_SOU,CH1,DISSIP,CHMTM ))
 
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESUTH),);
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESUTH),)
 # ------------------------------------------------------------
 #  7. TESTS
 # ------------------------------------------------------------

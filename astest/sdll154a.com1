@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -415,28 +415,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -502,7 +502,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X13',
                         VALE_CALC=0.26683288724384757,
@@ -615,7 +615,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2973187.7181828306,
                         VALE_REFE=post_roche_analytic._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout,
@@ -640,7 +640,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout,
@@ -664,7 +664,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X18',
                         VALE_CALC=1.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout,
@@ -689,7 +689,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout,
@@ -713,7 +713,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X20',
                         VALE_CALC=1.0),
-                     # X21 = contrainte vraie 
+                     # X21 = contrainte vraie
                      _F(MAILLE='M1',
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
@@ -829,7 +829,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X24',
                         VALE_CALC=322408.01561597147,
                         VALE_REFE=post_roche_analytic._sigma_sismique_opt[3]),
-                     # X25 = deformation vraie 
+                     # X25 = deformation vraie
                      _F(MAILLE='M1',
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
@@ -1046,7 +1046,7 @@ TEST_RESU(CHAM_ELEM=(
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheRCCMRX,
                         NOM_CMP='X13',
                         VALE_CALC=0.7586652393300823,
@@ -1291,7 +1291,7 @@ TEST_RESU(CHAM_ELEM=(
                         NOM_CMP='X24',
                         VALE_CALC=172291000.0,
                         VALE_REFE=sigv),
-                     # X25 = deformation vraie 
+                     # X25 = deformation vraie
                      _F(MAILLE='M1',
                         POINT=1,
                         REFERENCE="ANALYTIQUE",
@@ -1692,28 +1692,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheGrMa,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheGrMa,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheGrMa,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheGrMa,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -1779,7 +1779,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheGrMa,
                         NOM_CMP='X13',
                         VALE_CALC=0.26683288724384757,
@@ -1892,7 +1892,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2973187.7181828306,
                         VALE_REFE=post_roche_analytic._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheGrMa,
@@ -1917,7 +1917,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheGrMa,
@@ -1941,7 +1941,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         CHAM_GD=chPostRocheGrMa,
                         NOM_CMP='X18',
                         VALE_CALC=1.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheGrMa,
@@ -1966,7 +1966,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheGrMa,
@@ -2283,7 +2283,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -2291,7 +2291,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_D._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -2299,7 +2299,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_D._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -2307,7 +2307,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_D._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -2374,7 +2374,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
                         NOM_CMP='X13',
                         VALE_CALC=0.3144887495729975,
@@ -2487,7 +2487,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=3444861.379938064,
                         VALE_REFE=post_roche_analytic_D._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_D,
@@ -2512,7 +2512,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_D,
@@ -2537,7 +2537,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_D,
@@ -2562,7 +2562,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_D,
@@ -2880,7 +2880,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -2888,7 +2888,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DP._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -2896,7 +2896,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DP._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -2904,7 +2904,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DP._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -2971,7 +2971,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
                         NOM_CMP='X13',
                         VALE_CALC=0.26683288724384757,
@@ -3084,7 +3084,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2922846.3956556837,
                         VALE_REFE=post_roche_analytic_DP._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DP,
@@ -3109,7 +3109,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DP,
@@ -3134,7 +3134,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DP,
@@ -3159,7 +3159,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DP,
@@ -3477,7 +3477,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -3485,7 +3485,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DPG._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -3493,7 +3493,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DPG._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -3501,7 +3501,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DPG._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -3568,7 +3568,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
                         NOM_CMP='X13',
                         VALE_CALC=0.26683288724384757,
@@ -3681,7 +3681,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2922846.3956556837,
                         VALE_REFE=post_roche_analytic_DPG._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DPG,
@@ -3706,7 +3706,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DPG,
@@ -3731,7 +3731,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DPG,
@@ -3756,7 +3756,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DPG,
@@ -3784,7 +3784,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                     )
         )
 
-# TEST_RESU chPostRocheTout_S       
+# TEST_RESU chPostRocheTout_S
 print ("\n----------------TEST_RESU seisme inertiel (S)--------------------")
 TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      _F(GROUP_MA='M1',
@@ -4070,28 +4070,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_S,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_S._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_S,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_S._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_S,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_S._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_S,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -4157,7 +4157,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_S,
                         NOM_CMP='X13',
                         VALE_CALC=1.0,
@@ -4270,7 +4270,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=544806.5298395046,
                         VALE_REFE=post_roche_analytic_S._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_S,
@@ -4295,7 +4295,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_S,
@@ -4320,7 +4320,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_S,
@@ -4345,7 +4345,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_S,
@@ -4370,7 +4370,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X20',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                    # X21 = contrainte vraie 
+                    # X21 = contrainte vraie
                      _F(MAILLE='M1',
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
@@ -4494,7 +4494,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X24',
                         VALE_CALC=322408.01561597147,
                         VALE_REFE=post_roche_analytic_S._sigma_sismique_opt[3]),
-                     # X25 = deformation vraie 
+                     # X25 = deformation vraie
                      _F(MAILLE='M1',
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
@@ -4908,28 +4908,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SP,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SP._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SP,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SP._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SP,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SP._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SP,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -4995,7 +4995,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SP,
                         NOM_CMP='X13',
                         VALE_CALC=1.0,
@@ -5108,7 +5108,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=544806.5298395322,
                         VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SP,
@@ -5133,7 +5133,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SP,
@@ -5157,7 +5157,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         CHAM_GD=chPostRocheTout_SP,
                         NOM_CMP='X18',
                         VALE_CALC=1.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SP,
@@ -5182,7 +5182,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SP,
@@ -5209,7 +5209,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                     )
         )
 
-# TEST_RESU chPostRocheTout_SPG       
+# TEST_RESU chPostRocheTout_SPG
 print ("\n----------------TEST_RESU seisme inertiel + pression + poids propre (SPG)--------------------")
 TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      _F(GROUP_MA='M1',
@@ -5495,28 +5495,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SPG,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SPG._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SPG,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SPG._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SPG,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SPG._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SPG,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -5582,7 +5582,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SPG,
                         NOM_CMP='X13',
                         VALE_CALC=1.0,
@@ -5695,7 +5695,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=544806.5298395446,
                         VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SPG,
@@ -5720,7 +5720,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SPG,
@@ -5744,7 +5744,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         CHAM_GD=chPostRocheTout_SPG,
                         NOM_CMP='X18',
                         VALE_CALC=1.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SPG,
@@ -5769,7 +5769,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SPG,
@@ -6070,28 +6070,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SD._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SD._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SD._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -6157,7 +6157,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
                         NOM_CMP='X13',
                         VALE_CALC=0.3144887495729975,
@@ -6270,7 +6270,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=3487676.0288112406,
                         VALE_REFE=post_roche_analytic_SD._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SD,
@@ -6295,7 +6295,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SD,
@@ -6320,7 +6320,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SD,
@@ -6345,7 +6345,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SD,
@@ -6654,28 +6654,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout,
                         NOM_CMP='X10',
                         VALE_CALC=4.2762871993852976,
                         VALE_REFE=post_roche_analytic._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout,
                         NOM_CMP='X10',
                         VALE_CALC=4.2762871993852976,
                         VALE_REFE=post_roche_analytic._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout,
                         NOM_CMP='X10',
                         VALE_CALC=4.2762871993852976,
                         VALE_REFE=post_roche_analytic._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout,
                         NOM_CMP='X10',
                         VALE_CALC=4.2762871993852976,
@@ -6741,7 +6741,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout,
                         NOM_CMP='X13',
                         VALE_CALC=0.266832887244042,
@@ -6854,7 +6854,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2973187.718182238,
                         VALE_REFE=post_roche_analytic._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout,
@@ -6879,7 +6879,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout,
@@ -6903,7 +6903,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         CHAM_GD=chLuPostRocheTout,
                         NOM_CMP='X18',
                         VALE_CALC=1.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout,
@@ -6928,7 +6928,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout,
@@ -7026,7 +7026,7 @@ TEST_RESU(CHAM_ELEM=(
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheRCCMRX,
                         NOM_CMP='X13',
                         VALE_CALC=0.7586652393301838,
@@ -7263,7 +7263,7 @@ TEST_RESU(CHAM_ELEM=(
                         NOM_CMP='X24',
                         VALE_CALC=172291000.0,
                         VALE_REFE=sigv),
-                     # X25 = deformation vraie 
+                     # X25 = deformation vraie
                      _F(MAILLE='M1',
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
@@ -7667,28 +7667,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheGrMa,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382204,
                         VALE_REFE=post_roche_analytic_Coude._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheGrMa,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382204,
                         VALE_REFE=post_roche_analytic_Coude._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheGrMa,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382204,
                         VALE_REFE=post_roche_analytic_Coude._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheGrMa,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382204,
@@ -7754,7 +7754,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheGrMa,
                         NOM_CMP='X13',
                         VALE_CALC=0.26683288724384757,
@@ -7867,7 +7867,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=3221284.1933373916,
                         VALE_REFE=post_roche_analytic_Coude._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheGrMa,
@@ -7892,7 +7892,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheGrMa,
@@ -7916,7 +7916,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         CHAM_GD=chLuPostRocheGrMa,
                         NOM_CMP='X18',
                         VALE_CALC=1.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheGrMa,
@@ -7941,7 +7941,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheGrMa,
@@ -8258,7 +8258,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_D,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -8266,7 +8266,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_D._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_D,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -8274,7 +8274,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_D._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_D,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -8282,7 +8282,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_D._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_D,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -8349,7 +8349,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_D,
                         NOM_CMP='X13',
                         VALE_CALC=0.3144887495729975,
@@ -8462,7 +8462,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=3444861.379938064,
                         VALE_REFE=post_roche_analytic_D._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_D,
@@ -8487,7 +8487,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_D,
@@ -8512,7 +8512,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_D,
@@ -8537,7 +8537,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_D,
@@ -8855,7 +8855,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DP,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -8863,7 +8863,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DP._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DP,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -8871,7 +8871,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DP._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DP,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -8879,7 +8879,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DP._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DP,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -8946,7 +8946,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DP,
                         NOM_CMP='X13',
                         VALE_CALC=0.26683288724384757,
@@ -9059,7 +9059,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2922846.3956556837,
                         VALE_REFE=post_roche_analytic_DP._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_DP,
@@ -9084,7 +9084,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_DP,
@@ -9109,7 +9109,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_DP,
@@ -9134,7 +9134,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_DP,
@@ -9452,7 +9452,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DPG,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -9460,7 +9460,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DPG._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DPG,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -9468,7 +9468,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DPG._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DPG,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -9476,7 +9476,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         VALE_REFE=post_roche_analytic_DPG._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DPG,
                         NOM_CMP='X10',
                         ORDRE_GRANDEUR=1,
@@ -9543,7 +9543,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_DPG,
                         NOM_CMP='X13',
                         VALE_CALC=0.26683288724384757,
@@ -9656,7 +9656,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2922846.3956556837,
                         VALE_REFE=post_roche_analytic_DPG._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_DPG,
@@ -9681,7 +9681,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_DPG,
@@ -9706,7 +9706,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_DPG,
@@ -9731,7 +9731,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_DPG,
@@ -9759,7 +9759,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                     )
         )
 
-# TEST_RESU chLuPostRocheTout_S        
+# TEST_RESU chLuPostRocheTout_S
 print ("\n----------------TEST_RESU CHAMP LU  seisme inertiel (S)--------------------")
 TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      _F(GROUP_MA='M1',
@@ -10045,28 +10045,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_S,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_S._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_S,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_S._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_S,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_S._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_S,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -10132,7 +10132,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_S,
                         NOM_CMP='X13',
                         VALE_CALC=1.0,
@@ -10245,7 +10245,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=544806.5298395046,
                         VALE_REFE=post_roche_analytic_S._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_S,
@@ -10270,7 +10270,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_S,
@@ -10295,7 +10295,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_S,
@@ -10320,7 +10320,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_S,
@@ -10634,28 +10634,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SP,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SP._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SP,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SP._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SP,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SP._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SP,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -10721,7 +10721,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SP,
                         NOM_CMP='X13',
                         VALE_CALC=1.0,
@@ -10834,7 +10834,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=544806.5298395322,
                         VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SP,
@@ -10844,7 +10844,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                     )
         )
 
-# TEST_RESU chLuPostRocheTout_SPG        
+# TEST_RESU chLuPostRocheTout_SPG
 print ("\n----------------TEST_RESU CHAMP LU  seisme inertiel + poids propre (SPG)--------------------")
 TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      _F(GROUP_MA='M1',
@@ -11130,28 +11130,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SPG,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SPG._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SPG,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SPG._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SPG,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SPG._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SPG,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -11217,7 +11217,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SPG,
                         NOM_CMP='X13',
                         VALE_CALC=1.0,
@@ -11330,7 +11330,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=544806.5298395446,
                         VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SPG,
@@ -11355,7 +11355,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SPG,
@@ -11379,7 +11379,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         CHAM_GD=chLuPostRocheTout_SPG,
                         NOM_CMP='X18',
                         VALE_CALC=1.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SPG,
@@ -11404,7 +11404,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SPG,
@@ -11705,28 +11705,28 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X10 = facteur d'effet de ressort maximal r_S_Max
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SD,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SD._r_smax[0]),
                      _F(GROUP_MA='M1',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SD,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SD._r_smax[1]),
                      _F(GROUP_MA='M2',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SD,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
                         VALE_REFE=post_roche_analytic_SD._r_smax[2]),
                      _F(GROUP_MA='M2',
                         POINT=2,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SD,
                         NOM_CMP='X10',
                         VALE_CALC=4.276287199382205,
@@ -11792,7 +11792,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      # X13 = coefficient d'abattement optimisé gOpt
                      _F(GROUP_MA='M1',
                         POINT=1,
-                        REFERENCE="AUTRE_ASTER",                        
+                        REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chLuPostRocheTout_SD,
                         NOM_CMP='X13',
                         VALE_CALC=0.3144887495729975,
@@ -11905,7 +11905,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=3487676.0288112406,
                         VALE_REFE=post_roche_analytic_SD._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SD,
@@ -11930,7 +11930,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SD,
@@ -11955,7 +11955,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SD,
@@ -11980,7 +11980,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chLuPostRocheTout_SD,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@ import numpy as NP
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),);
+              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA=('POU1','COL1',),
@@ -33,20 +33,20 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='POU_D_T',),
                      _F(GROUP_MA=('RADIER','PLANC1','VOILE1','SEMELLES',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKT',) ,),);
+                        MODELISATION='DKT',) ,),)
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=3.E10,
                            NU=0.2,
-                           RHO=2400,),);
+                           RHO=2400,),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.0,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA=('COL1','POU1','PLANC1','VOILE1','SEMELLES','RADIER'),
-                             MATER=(BETON,),),));
+                             MATER=(BETON,),),))
 
 CARAEL=AFFE_CARA_ELEM(MODELE=MO,
                       POUTRE=(_F(GROUP_MA='POU1',
@@ -74,7 +74,7 @@ CARAEL=AFFE_CARA_ELEM(MODELE=MO,
                                       VALE=(1.,0.,0.,),),
                                    _F(GROUP_MA='COL1',
                                       CARA='VECT_Y',
-                                      VALE=(0.,-1.,1.,),),),);
+                                      VALE=(0.,-1.,1.,),),),)
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='CDG',
@@ -91,7 +91,7 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MO,
                                    DRX=0.0,
                                    DRY=0.0,
                                    DRZ=0.0,)),
-                       LIAISON_SOLIDE=_F(GROUP_NO=('RADIER'),),);
+                       LIAISON_SOLIDE=_F(GROUP_NO=('RADIER'),),)
 
 
 
@@ -127,7 +127,7 @@ MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
 #
 # DESCRIPTION DES PAS DES FONCTIONS:
 #-----------------------------------
-Tps_fin = 1.0;
+Tps_fin = 1.0
 
 L_INST=DEFI_LIST_REEL(  DEBUT=0.,
                         INTERVALLE=_F(  JUSQU_A = Tps_fin, PAS = 0.01) )
@@ -350,7 +350,7 @@ RESU=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                           VITE=VITEPZ,
                           DEPL=DEPLPZ),),
                  ARCHIVAGE=_F(PAS_ARCH = 1),
-                 INCREMENT=_F(LIST_INST=L_INST2,),);
+                 INCREMENT=_F(LIST_INST=L_INST2,),)
 
 
 #

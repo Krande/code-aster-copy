@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=_F(GROUP_MA='haut',
-                                 NOM='depno',),);
+                                 NOM='depno',),)
 
 MA=DEFI_MATERIAU(ELAS=_F(E=34000000000.0,
                           NU=0.19,
@@ -35,45 +35,45 @@ MA=DEFI_MATERIAU(ELAS=_F(E=34000000000.0,
                            AC=1.25,
                            BC=1965.0,
                            EPSD0=0.00011,
-                          K=0.7),);
+                          K=0.7),)
 
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),);
+                         MODELISATION='C_PLAN',),)
 
 MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MA,),);
+                           MATER=MA,),)
 
 BLO=AFFE_CHAR_MECA(MODELE=MODE,
                     DDL_IMPO=(
                         _F(GROUP_MA='gau',
                            DX=0.0,),
                         _F(GROUP_MA='bas',
-                           DY=0.0,),),);
+                           DY=0.0,),),)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODE,
                     PRES_REP=(
                         _F(GROUP_MA='droi',
                            PRES=-1560000.0,),
-                        ), );
+                        ), )
 PRESS=AFFE_CHAR_MECA(MODELE=MODE,
                     PRES_REP=(
                         _F(GROUP_MA='haut',
                            PRES=30000000.0,),
                         ),
-                    );
+                    )
 
 List=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=(_F(JUSQU_A=0.46,
                                   PAS=0.01,),
-                                  ),);
+                                  ),)
 
 
 Fonc=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                          1.0,2.0,
-                         ),INTERPOL=('LIN','LIN',),);
+                         ),INTERPOL=('LIN','LIN',),)
 
 STAT=STAT_NON_LINE(MODELE=MODE,
                      CHAM_MATER=MATE,
@@ -88,7 +88,7 @@ STAT=STAT_NON_LINE(MODELE=MODE,
                                     ITER_GLOB_MAXI=100,
                                     ARRET='OUI',),
                      NEWTON=_F(MATRICE='TANGENTE',
-                               REAC_ITER=1,),);
+                               REAC_ITER=1,),)
 
 
 
@@ -97,7 +97,7 @@ STAT=CALC_CHAMP  ( reuse  = STAT,
                 RESULTAT=STAT,
                 NUME_ORDRE = (6,46),
                 CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU',
-                );
+                )
 
 
 TEST_RESU(RESU=(_F(RESULTAT=STAT,
@@ -134,4 +134,4 @@ TEST_RESU(RESU=(_F(RESULTAT=STAT,
                    VALE_CALC=-2.7600630870447E+07,
                    VALE_REFE=-27899998.,),),)
 
-FIN();
+FIN()

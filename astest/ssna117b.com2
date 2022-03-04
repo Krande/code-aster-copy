@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,26 +28,26 @@ LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1),
                                  _F(JUSQU_A=TEMPSF,
                                     NOMBRE=3)),
-                     INFO=2);
+                     INFO=2)
 
 DEFLIST=DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST=LISTE),
                        ECHEC=_F(ACTION='DECOUPE',
                                 SUBD_METHODE='MANUEL',
-                                SUBD_NIVEAU=6));
+                                SUBD_NIVEAU=6))
 
 # calcul avec SIMU_POINT_MAT
 
 IRRA2=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='IRRA',VALE=(0.,0,
                           1.,0.,
                           TEMPSF,10.,
-                          ));
+                          ))
 
-TEMP2=DEFI_CONSTANTE(VALE=400.);
+TEMP2=DEFI_CONSTANTE(VALE=400.)
 
 SYY=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                         1.,200.,
                         TEMPSF,200.,
-                        ));
+                        ))
 
 U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='IRRAD3M',
                               DEFORMATION='PETIT',
@@ -67,9 +67,9 @@ U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='IRRAD3M',
                  _F(NOM_VARC='IRRA',
                     VALE_FONC=IRRA2)),
                  SIGM_IMPOSE=_F(SIYY=SYY),
-                 INFO=1);
+                 INFO=1)
 
-IMPR_TABLE(TABLE=U);
+IMPR_TABLE(TABLE=U)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
@@ -112,34 +112,34 @@ IRRA_0=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                   MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP='IRRA',
-                          VALE=0.0));
+                          VALE=0.0))
 
 IRRA_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                   OPERATION='AFFE',
                   MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP='IRRA',
-                          VALE=10.0));
+                          VALE=10.0))
 
 CL=AFFE_CHAR_MECA(MODELE=MODEL,
                   DDL_IMPO=(_F(GROUP_MA='AD',
                                DX=0.),
                             _F(GROUP_MA='AB',
-                               DY=0.)));
+                               DY=0.)))
 
 TEMP_0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='AFFE',
                   MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP='TEMP',
-                          VALE=0.0));
+                          VALE=0.0))
 
 TEMP_1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='AFFE',
                   MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP='TEMP',
-                          VALE=400.0));
+                          VALE=400.0))
 
 # RAMPE D IRRADIATION A TEMPERATURE CONSTANTE
 
@@ -150,7 +150,7 @@ TEMPE=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=TEMP_1,
                    INST=0.),
                 _F(CHAM_GD=TEMP_1,
-                   INST=TEMPSF)));
+                   INST=TEMPSF)))
 
 IRRAD=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_VARC',
@@ -161,7 +161,7 @@ IRRAD=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=IRRA_0,
                    INST=1.),
                 _F(CHAM_GD=IRRA_1,
-                   INST=TEMPSF)));
+                   INST=TEMPSF)))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
@@ -172,16 +172,16 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                                _F(TOUT='OUI',
                                   NOM_VARC='TEMP',
                                   EVOL=TEMPE,
-                                  VALE_REF=400.0)));
+                                  VALE_REF=400.0)))
 
 CS=AFFE_CHAR_MECA(MODELE=MODEL,
                   FORCE_CONTOUR=_F(GROUP_MA='DC',
-                                   FY=200.));
+                                   FY=200.))
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                           1.,1.,
                           TEMPSF,1.,
-                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',VERIF='CROISSANT');
+                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',VERIF='CROISSANT')
 
 STAT=STAT_NON_LINE(MODELE=MODEL,
                    CHAM_MATER=CHMAT,
@@ -200,13 +200,13 @@ STAT=STAT_NON_LINE(MODELE=MODEL,
                              REAC_ITER=1),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                    SOLVEUR=_F(METHODE='MUMPS',
-   ));
+   ))
 
 STAT=CALC_CHAMP(reuse =STAT,
                RESULTAT=STAT,
-                DEFORMATION=('EPSI_ELNO'));
+                DEFORMATION=('EPSI_ELNO'))
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=STAT));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=STAT))
 
 # DEFORMATIONS, DEPLACEMENT ET VARIABLES INTERNES
 
@@ -248,4 +248,4 @@ TEST_RESU(RESU=_F(INST=2000.0,
                   ),
           )
 
-FIN();
+FIN()

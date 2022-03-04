@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-#           
+#
 # ======================================================================
 # TRIAX AVEC VISC_MAXWELL  CONFINEMENT DE 5 bar
 # ======================================================================
@@ -43,7 +43,7 @@ KINT=DEFI_CONSTANTE(VALE=1.E-21)
 #***********************************************************************
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='ASTER', )
-#MAILLAGE=CREA_MAILLAGE(MAILLAGE  = MAIL, LINE_QUAD = _F(TOUT='OUI'),     );
+#MAILLAGE=CREA_MAILLAGE(MAILLAGE  = MAIL, LINE_QUAD = _F(TOUT='OUI'),     )
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(  TOUT = 'OUI',
                    PHENOMENE = 'MECANIQUE',
@@ -53,10 +53,10 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
 
 
 
-BITUME=DEFI_MATERIAU( ELAS=_F( 
-                            E = 24.1E6,   
-                            NU= 0.47,   
-                            ALPHA=0. 
+BITUME=DEFI_MATERIAU( ELAS=_F(
+                            E = 24.1E6,
+                            NU= 0.47,
+                            ALPHA=0.
                         ),
                        VISC_MAXWELL =_F(
                         ETA_D=1.59e+7,
@@ -102,7 +102,7 @@ COMPOR = 'VISC_MAXWELL'
 
 U1=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
-                             _F(CHARGE = CHAR_U1,FONC_MULT = COEF1,), 
+                             _F(CHARGE = CHAR_U1,FONC_MULT = COEF1,),
                              _F(CHARGE = CHAR_U2,FONC_MULT = COEF1,),
                              _F(CHARGE = DEPL_1,)
                               ),
@@ -138,8 +138,8 @@ COEF2=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 U2=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
-                             _F(CHARGE = CHAR_U2,FONC_MULT = COEF1,), 
-                             _F(CHARGE = DEPL_2,FONC_MULT = COEF2,), 
+                             _F(CHARGE = CHAR_U2,FONC_MULT = COEF1,),
+                             _F(CHARGE = DEPL_2,FONC_MULT = COEF2,),
                              _F(CHARGE = DEPL_1,), ),
                  COMPORTEMENT=_F(RELATION = COMPOR,),
                  ETAT_INIT=_F(EVOL_NOLI = U1,),

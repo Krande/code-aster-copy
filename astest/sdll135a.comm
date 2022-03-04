@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
            MAILLAGE=MAIL,
@@ -31,7 +31,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                 TOUT='OUI',
                 # GROUP_MA ='PART1',
                 GROUP_NO_ORIG=('A',),),
-                );
+                )
 
 CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
                      NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAIL , )
@@ -43,21 +43,21 @@ TAB_ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='POU_D_E',),);
+                           MODELISATION='POU_D_E',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000E6,
                             NU=0.29,
-                            RHO=7830.0,),);
+                            RHO=7830.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
                      POUTRE=_F(GROUP_MA='TOUT',
                                SECTION='CERCLE',
                                CARA=('R','EP',),
-                               VALE=(0.16,0.01,),),);
+                               VALE=(0.16,0.01,),),)
 
 
 # DEFINITION DES LISTES D INSTANTS
@@ -68,13 +68,13 @@ CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=2.E-4,
-                                   PAS=1e-07,),);
+                                   PAS=1e-07,),)
 
 # LA SECONDE CORRESPOND A L ONDRE DE TORSION
 
 LISTE2=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.2E-4,
-                                    PAS=1e-07,),);
+                                    PAS=1e-07,),)
 
 # ENCASTREMENT SUR UNE EXTREMITE
 
@@ -85,17 +85,17 @@ CL=AFFE_CHAR_MECA(MODELE=MODELE,
                               DZ=0.0,
                               DRX=0.0,
                               DRY=0.0,
-                              DRZ=0.0,),);
+                              DRZ=0.0,),)
 
 # CHARGEMENT SOUS LA FORME D UNE FORCE ( OU D UN MOMENT ) DE TYPE HEAVYSIDE
 
 CHARFX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='B',
-                                      FX=1.0,),);
+                                      FX=1.0,),)
 
 CHARMX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='B',
-                                      MX=1.0,),);
+                                      MX=1.0,),)
 
 ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -105,7 +105,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('RIGID'),
-                              OPTION='RIGI_MECA',),),);
+                              OPTION='RIGI_MECA',),),)
 
 # LISTE DISCRETISE TRES FINEMENT POUR RESPECTER
 # LE RAPPORT TAILLE DE MAILLE VITESSE DE L ONDE DE COMPRESSION
@@ -122,7 +122,7 @@ DYNATRAF=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         EXCIT=(_F(CHARGE=CHARFX,),
                                _F(CHARGE=CL,),),
                         INCREMENT=_F(LIST_INST=LISTE,),
-                        ARCHIVAGE=_F(PAS_ARCH=100,),);
+                        ARCHIVAGE=_F(PAS_ARCH=100,),)
 
 DYNATRAF=CALC_CHAMP(reuse=DYNATRAF,RESULTAT=DYNATRAF,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO'))
 
@@ -134,7 +134,7 @@ DYNATRAF=CALC_CHAMP(reuse =DYNATRAF,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARAC,
                     EXCIT=(_F(CHARGE=CHARFX,),
-                           _F(CHARGE=CL,),),);
+                           _F(CHARGE=CL,),),)
 
 # TEST DU CHAMP DE DEPLACEMENT SUR LE NOEUD EXTREMITE
 
@@ -393,7 +393,7 @@ DYNATRAM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         EXCIT=(_F(CHARGE=CHARMX,),
                                _F(CHARGE=CL,),),
                         INCREMENT=_F(LIST_INST=LISTE2,),
-                        ARCHIVAGE=_F(PAS_ARCH=100,),);
+                        ARCHIVAGE=_F(PAS_ARCH=100,),)
 
 DYNATRAM=CALC_CHAMP(reuse=DYNATRAM,RESULTAT=DYNATRAM,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO','EFGE_ELNO'))
 
@@ -405,7 +405,7 @@ DYNATRAM=CALC_CHAMP(reuse =DYNATRAM,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARAC,
                     EXCIT=(_F(CHARGE=CHARMX,),
-                           _F(CHARGE=CL,),),);
+                           _F(CHARGE=CL,),),)
 
 # TEST SUR LES DEPLACEMENTS
 
@@ -525,10 +525,10 @@ TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
 
 
 # -- on construit les résultats de référence pour un couple maille/noeud
-TABMO = CREA_TABLE(RESU=_F(RESULTAT=DYNATRAM, 
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=DYNATRAM,
                            NOM_CMP=('MT', 'MFY', 'MFZ'),
                            NOM_CHAM='EFGE_ELNO',
-                           TOUT='OUI', 
+                           TOUT='OUI',
                            TOUT_ORDRE='OUI'))
 
 TABM937N939 = CALC_TABLE(TABLE=TABMO,
@@ -538,7 +538,7 @@ TABM937N939 = CALC_TABLE(TABLE=TABMO,
                              _F(OPERATION='FILTRE',
                                 NOM_PARA='NOEUD',
                                 VALE_K ='N939'),
-                            ) 
+                            )
                     )
 # IMPR_TABLE(UNITE=6, TABLE=TABM937N939)
 
@@ -551,14 +551,14 @@ TABM937N939 = CALC_TABLE(TABLE=TABM937N939,reuse=TABM937N939,
                                 FORMULE=MOMEQ_FO,
                                 NOM_PARA='MEQ',
                                 NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
-                            ) 
+                            )
                     )
-                    
+
 TABM937N939MAX = CALC_TABLE(TABLE=TABM937N939,
                      ACTION=(_F(OPERATION='CALCUL',
                                 NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
                                 TYPE_CALCUL = 'MAXI_ABS'),
-                            ) 
+                            )
                     )
 
 # MFY et MFZ sont nulles sur toutes les mailles
@@ -577,7 +577,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=1.005623252173637, 
+             VALE_REFE=1.005623252173637,
              VALE_CALC=1.005623252173637,
              )
 
@@ -596,7 +596,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=1.005623252173637, 
+             VALE_REFE=1.005623252173637,
              VALE_CALC=1.005623252173637,
              )
 
@@ -620,7 +620,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=0.937000000000001, 
+             VALE_REFE=0.937000000000001,
              VALE_CALC=0.937000000000001,
              )
 
@@ -640,7 +640,7 @@ TAB_MEQ2 = POST_RCCM(TYPE_RESU_MECA='B3600',
                     )
 
 # -- on construit les résultats de référence pour un couple maille/noeud
-TABMOCH = CREA_TABLE(RESU=_F(CHAM_GD=CHMOM, 
+TABMOCH = CREA_TABLE(RESU=_F(CHAM_GD=CHMOM,
                            NOM_CMP=('MT', 'MFY', 'MFZ'),
                            TOUT='OUI', ))
 
@@ -651,7 +651,7 @@ TABM937N939CH = CALC_TABLE(TABLE=TABMOCH,
                              _F(OPERATION='FILTRE',
                                 NOM_PARA='NOEUD',
                                 VALE_K ='N939'),
-                            ) 
+                            )
                     )
 
 TABM937N939CH = CALC_TABLE(TABLE=TABM937N939CH,reuse=TABM937N939CH,
@@ -659,8 +659,8 @@ TABM937N939CH = CALC_TABLE(TABLE=TABM937N939CH,reuse=TABM937N939CH,
                                 FORMULE=MOMEQ_FO,
                                 NOM_PARA='MEQ',
                                 NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
-                            ) 
-                    )  
+                            )
+                    )
 
 # MFY et MFZ sont nulles sur toutes les mailles
 TEST_TABLE(  TABLE=TABM937N939CH,
@@ -678,7 +678,7 @@ TEST_TABLE(  TABLE=TAB_MEQ2,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=0.9998954707298446, 
+             VALE_REFE=0.9998954707298446,
              VALE_CALC=0.9998954707298446,
              )
 
@@ -697,8 +697,8 @@ TEST_TABLE(  TABLE=TAB_MEQ2,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=0.9998954707298446, 
+             VALE_REFE=0.9998954707298446,
              VALE_CALC=0.9998954707298446,
              )
 
-FIN();
+FIN()

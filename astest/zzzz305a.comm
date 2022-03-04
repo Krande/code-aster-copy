@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -328,7 +328,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   ),
           )
-  
+
 
 #
 
@@ -341,8 +341,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   ),
           )
-      
-   
+
+
 #
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -356,10 +356,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
-       
-         
-   
-      
+
+
+
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOLNOLI,
@@ -384,7 +384,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
- 
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOLNOLI,
@@ -397,7 +397,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
-        
+
 
 
 
@@ -412,8 +412,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
-           
-           
+
+
 
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -440,8 +440,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
-          
-          
+
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOLNOLI,
@@ -454,8 +454,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
-     
-      
+
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOLNOLI,
@@ -537,7 +537,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
-         
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOLNOLI,
@@ -630,7 +630,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='RELATIF',
                   ),
           )
-        
+
 #
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -656,7 +656,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
- 
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOLNOLI,
@@ -669,7 +669,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
- 
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOLNOLI,
@@ -696,7 +696,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #
- 
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOLNOLI,
@@ -764,7 +764,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='N502',
                   NOM_CMP='DZ',
                   VALE_CALC=-0.00320846939142,
-                  #VALE_REFE=-3.3099113960562E-3, 
+                  #VALE_REFE=-3.3099113960562E-3,
                   #REFERENCE='NON_DEFINI',
                   CRITERE='RELATIF',
                   #PRECISION=1.E-2,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,26 +21,26 @@
 
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
-TFIN = 2.5;
+TFIN = 2.5
 
-TDEB = 0.0;
+TDEB = 0.0
 
-NPAS = 1000;
+NPAS = 1000
 
 
 LINST=DEFI_LIST_REEL(DEBUT=TDEB,
                      INTERVALLE=_F(JUSQU_A=TFIN,
-                                   NOMBRE=NPAS,),);
+                                   NOMBRE=NPAS,),)
 
 LARCH=DEFI_LIST_REEL(DEBUT=TDEB,
                      INTERVALLE=_F(JUSQU_A=TFIN,
-                                   NOMBRE=100,),);
+                                   NOMBRE=100,),)
 
 COEF=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                          0.5,0.002,
                          1.5,-0.002,
                          2.5,0.002,
-                         ),);
+                         ),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=190000.0,
                             NU=0.3,),
@@ -51,14 +51,14 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=190000.0,
                                   Q=0.,
                                   B=5.,
                                   H=0.,),
-                    MONO_CINE1=_F(D=4150.,),);
+                    MONO_CINE1=_F(D=4150.,),)
 
 CMP_MONO=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),);
+                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),)
 
 
 CMP_POLY=DEFI_COMPOR(POLYCRISTAL=(
@@ -66,12 +66,12 @@ CMP_POLY=DEFI_COMPOR(POLYCRISTAL=(
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     MU_LOCA=190000/2.6,
-                    );
+                    )
 
 DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
                         ECHEC=_F(SUBD_PAS=10,
                                  SUBD_NIVEAU=10,),
-                        );
+                        )
 
 IMPL1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='MONOCRISTAL',
                                   COMPOR=CMP_MONO,
@@ -85,20 +85,20 @@ IMPL1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='MONOCRISTAL',
                                REAC_ITER=1,),
                      ARCHIVAGE=_F(LIST_INST=LARCH,),
                      EPSI_IMPOSE=_F(EPXX=COEF,),
-                     INFO=1);
+                     INFO=1)
 
 REPONSE1=CALC_TABLE(TABLE=IMPL1,
                     ACTION=_F(OPERATION='EXTR',
-                              NOM_PARA=('INST','EPXX','SIXX',),),);
+                              NOM_PARA=('INST','EPXX','SIXX',),),)
 
 
 EPS1=RECU_FONCTION(TABLE=REPONSE1,
                    PARA_X='INST',
-                   PARA_Y='EPXX',);
+                   PARA_Y='EPXX',)
 
 SIG1=RECU_FONCTION(TABLE=REPONSE1,
                    PARA_X='INST',
-                   PARA_Y='SIXX',);
+                   PARA_Y='SIXX',)
 
 EXPL2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='MONOCRISTAL',
                                   COMPOR=CMP_MONO,
@@ -109,20 +109,20 @@ EXPL2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='MONOCRISTAL',
                                REAC_ITER=1,),
                      ARCHIVAGE=_F(LIST_INST=LARCH,),
                      EPSI_IMPOSE=_F(EPXX=COEF,),
-                     INFO=1);
+                     INFO=1)
 
 REPONSE2=CALC_TABLE(TABLE=EXPL2,
                     ACTION=_F(OPERATION='EXTR',
-                              NOM_PARA=('INST','EPXX','SIXX',),),);
+                              NOM_PARA=('INST','EPXX','SIXX',),),)
 
 
 EPS2=RECU_FONCTION(TABLE=REPONSE2,
                    PARA_X='INST',
-                   PARA_Y='EPXX',);
+                   PARA_Y='EPXX',)
 
 SIG2=RECU_FONCTION(TABLE=REPONSE2,
                    PARA_X='INST',
-                   PARA_Y='SIXX',);
+                   PARA_Y='SIXX',)
 
 EXPL3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='POLYCRISTAL',
                                   COMPOR=CMP_POLY,
@@ -132,32 +132,32 @@ EXPL3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='POLYCRISTAL',
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      ARCHIVAGE=_F(LIST_INST=LARCH,),
-                     EPSI_IMPOSE=_F(EPXX=COEF,),);
+                     EPSI_IMPOSE=_F(EPXX=COEF,),)
 
 REPONSE3=CALC_TABLE(TABLE=EXPL3,
                     ACTION=_F(OPERATION='EXTR',
-                              NOM_PARA=('INST','EPXX','SIXX',),),);
+                              NOM_PARA=('INST','EPXX','SIXX',),),)
 
 
 EPS3=RECU_FONCTION(TABLE=REPONSE3,
                    PARA_X='INST',
-                   PARA_Y='EPXX',);
+                   PARA_Y='EPXX',)
 
 SIG3=RECU_FONCTION(TABLE=REPONSE3,
                    PARA_X='INST',
-                   PARA_Y='SIXX',);
+                   PARA_Y='SIXX',)
 
 EPSZ=LIRE_FONCTION(INDIC_PARA=(1,1,),
                    INDIC_RESU=(1,2,),
                    UNITE=34,
                    NOM_PARA='INST',
-                   PROL_DROITE='LINEAIRE',);
+                   PROL_DROITE='LINEAIRE',)
 
 SIGZ=LIRE_FONCTION(INDIC_PARA=(1,1,),
                    INDIC_RESU=(1,3,),
                    UNITE=34,
                    NOM_PARA='INST',
-                   PROL_DROITE='LINEAIRE',);
+                   PROL_DROITE='LINEAIRE',)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=(_F(FONCTION=EPSZ,),
@@ -165,9 +165,9 @@ IMPR_FONCTION(FORMAT='TABLEAU',
                       _F(FONCTION=SIG1,),
                       _F(FONCTION=SIG2,),
                       _F(FONCTION=SIG3,),),
-              UNITE=8,);
+              UNITE=8,)
 
-INST = 0.5;
+INST = 0.5
 
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.002,
@@ -202,7 +202,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=156.210724634,
                         FONCTION=SIG3,),
               )
 
-INST = 1.5;
+INST = 1.5
 
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.002,
@@ -237,7 +237,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-163.973873214,
                         FONCTION=SIG3,),
               )
 
-INST = 2.5;
+INST = 2.5
 
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.002,
@@ -272,4 +272,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=163.280596719,
                         FONCTION=SIG3,),
               )
 
-FIN();
+FIN()

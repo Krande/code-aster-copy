@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ FOFO=DEFI_FONCTION(NOM_PARA='INST',
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
 INTERVALLE=(_F(JUSQU_A=1.1,  NOMBRE=11,),
            ),
-            );
+            )
 
 
 U1=STAT_NON_LINE(MODELE=MOPOU,
@@ -116,7 +116,7 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
                  NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                 ITER_GLOB_MAXI=100,),
-                 );
+                 )
 U1=CALC_CHAMP(CONTRAINTE=('SIEF_ELNO','SIPM_ELNO'),reuse=U1,RESULTAT=U1)
 
 

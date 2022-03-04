@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ DEFI_GROUP(reuse =MAIL,
                 _F(GROUP_MA='GM10005',NOM='EFOND',),
                 _F(GROUP_MA='GM10004',NOM='SURFINT',),
                 _F(GROUP_MA='GM10003',NOM='SURFEXT',),
-                ),);
+                ),)
 
 DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -66,7 +66,7 @@ DEFI_GROUP(reuse =MAIL,
                                   VECT_NORMALE=(1.0,0.0,0.0,),
                                   PRECISION=0.001,),
                                _F(INTERSEC=('EFOND','PLANY','REXT',),
-                                  NOM='PB',),),);
+                                  NOM='PB',),),)
 
 # DEFINITION DES ELEMENTS FINIS UTILISES POUR LE CALCUL THERMIQUE
 #
@@ -76,7 +76,7 @@ DEFI_GROUP(reuse =MAIL,
 MODETH=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='THERMIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 # DEFINITION DES ELEMENTS FINIS UTILISES POUR LE CALCUL MECANIQUE
 #
 #
@@ -85,7 +85,7 @@ MODETH=AFFE_MODELE(MAILLAGE=MAIL,
 MADMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),);
+                            MODELISATION='3D',),)
 
 # DEFINITION DU MATERIAU UTILISE POUR LE CALCUL THERMOMECANIQUE
 #
@@ -97,11 +97,11 @@ ACIER_TH=DEFI_MATERIAU(ELAS=_F(E=204000.0000000,
                                NU=0.3,
                                ALPHA=1.092e-05,),
                        THER=_F(LAMBDA=54.6,
-                               RHO_CP=3710000.0,),);
+                               RHO_CP=3710000.0,),)
 
 CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI', MATER=ACIER_TH,),
-                  );
+                  )
 # DEFINITION DES CONDITIONS AUX LIMITES THERMIQUES
 #    TEMPERATURE IMPOSEE SUR LA FACE INTERNE DU TUBE
 #     ET ECHANGE NUL SUR LA FACE EXTERNE DU TUBE
@@ -114,26 +114,26 @@ CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
 F_TEMP=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,20.0,10.0,70.0,),
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+                     PROL_GAUCHE='CONSTANT',)
 
-H=DEFI_CONSTANTE(VALE=0.0,);
+H=DEFI_CONSTANTE(VALE=0.0,)
 
-T_EXT=DEFI_CONSTANTE(VALE=20.0,);
+T_EXT=DEFI_CONSTANTE(VALE=20.0,)
 
 CHTH=AFFE_CHAR_THER_F(MODELE=MODETH,
                       TEMP_IMPO=_F(GROUP_NO='SURFINT',
                                    TEMP=F_TEMP,),
                       ECHANGE=_F(GROUP_MA='SURFEXT',
                                  COEF_H=H,
-                                 TEMP_EXT=T_EXT,),);
+                                 TEMP_EXT=T_EXT,),)
 
-INST=DEFI_LIST_REEL(VALE=(2.0, 7.0, 10.0,),);
+INST=DEFI_LIST_REEL(VALE=(2.0, 7.0, 10.0,),)
 
 TEMPE=THER_LINEAIRE(MODELE=MODETH,
                     CHAM_MATER=CHM,
                     EXCIT=_F(CHARGE=CHTH,),
                     INCREMENT=_F(LIST_INST=INST,),
-                    ETAT_INIT=_F(VALE=20.0,),);
+                    ETAT_INIT=_F(VALE=20.0,),)
 # DEFINITION DES CONDITIONS AUX LIMITES  CALCUL THERMO-MECANIQUE
 #    ENCASTREMENT SUR LA SECTION ENCAST ET EFOND
 #    SYMETRIE PAR RAPPORT AU PLAN XOY
@@ -144,12 +144,12 @@ TEMPE=THER_LINEAIRE(MODELE=MODETH,
 
 # On fait en sorte que les instants du calcul thermique ne soient pas
 # les memes que ceux du calcul mecanique
-INST2=DEFI_LIST_REEL(VALE=(5.0,9.0,),);
+INST2=DEFI_LIST_REEL(VALE=(5.0,9.0,),)
 
 CHM2=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI', MATER=ACIER_TH,),
                   AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',EVOL=TEMPE,VALE_REF=0.),
-                  );
+                  )
 
 CHARGT=AFFE_CHAR_MECA(MODELE=MADMECA,
                       #TEMP_CALCULEE=TEMPE,
@@ -158,7 +158,7 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MADMECA,
                                    DY=0.0,
                                    DZ=0.0,),
                                 _F(GROUP_MA='SYMETRIE',
-                                   DZ=0.0,),),);
+                                   DZ=0.0,),),)
 # CALCUL THERMO-MECANIQUE ET EXTRACTION DE RESULTATS
 #
 #
@@ -170,15 +170,15 @@ RESUT=MECA_STATIQUE(MODELE=MADMECA,
                     CHAM_MATER=CHM,
                     EXCIT=_F(CHARGE=CHARGT,),
                     LIST_INST=INST2,
-                    );
+                    )
 
 CALC_CHAMP( reuse= RESUT ,RESULTAT= RESUT ,
                      LIST_INST=INST2,
-                     CONTRAINTE='SIGM_ELNO',);
+                     CONTRAINTE='SIGM_ELNO',)
 
 CALC_CHAMP(reuse =RESUT,
                 CRITERES='SIEQ_ELNO',
-                RESULTAT=RESUT,);
+                RESULTAT=RESUT,)
 
 # ORIENTATION DES NORMALES AUX COQUES
 # RENTRANTES DANS LE TUYAU
@@ -189,23 +189,23 @@ MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU=(_F(GROUP_MA_PEAU='SURFINT',),
                                  _F(GROUP_MA_PEAU='EFOND',),),
-                   );
-FYTOT = 100000.0;
+                   )
+FYTOT = 100000.0
 
-EPTUB = 0.02;
+EPTUB = 0.02
 
-REXT = 0.2;
+REXT = 0.2
 
 
-RINT=REXT-EPTUB;
+RINT=REXT-EPTUB
 
-SINT=pi*(RINT*RINT);
+SINT=pi*(RINT*RINT)
 
-SEXT=pi*(REXT*REXT);
+SEXT=pi*(REXT*REXT)
 
-SFON=SEXT-SINT;
+SFON=SEXT-SINT
 
-FYREP=FYTOT/SFON;
+FYREP=FYTOT/SFON
 
 CHARG1=AFFE_CHAR_MECA(MODELE=MADMECA,
                       DDL_IMPO=(_F(GROUP_MA='ENCAST',
@@ -215,25 +215,25 @@ CHARG1=AFFE_CHAR_MECA(MODELE=MADMECA,
                                 _F(GROUP_MA='SYMETRIE',
                                    DZ=0.0,),),
                       FORCE_FACE=_F(GROUP_MA='EFOND',
-                                    FY=FYREP,),);
+                                    FY=FYREP,),)
 
 # Attention ! E donne en MPa pour les besoins du cas test
 ACIER=DEFI_MATERIAU(ELAS=_F(E=204000.0000000,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI', MATER=ACIER,),
-                    );
+                    )
 
 
 RESU1=MECA_STATIQUE(MODELE=MADMECA,
                      CHAM_MATER=CHMAT,
                      EXCIT=_F(CHARGE=CHARG1,),
-                     );
+                     )
 
 CALC_CHAMP( reuse= RESU1 ,RESULTAT= RESU1 ,
-                     CONTRAINTE='SIGM_ELNO',);
-PRES = 15000000.0;
+                     CONTRAINTE='SIGM_ELNO',)
+PRES = 15000000.0
 
 
 CHARG2=AFFE_CHAR_MECA(MODELE=MADMECA,
@@ -244,33 +244,33 @@ CHARG2=AFFE_CHAR_MECA(MODELE=MADMECA,
                                 _F(GROUP_MA='SYMETRIE',
                                    DZ=0.0,),),
                       PRES_REP=_F(GROUP_MA='SURFINT',
-                                  PRES=PRES,),);
+                                  PRES=PRES,),)
 
 RESU2=MECA_STATIQUE(MODELE=MADMECA,
                      CHAM_MATER=CHMAT,
                      EXCIT=_F(CHARGE=CHARG2,),
-                     );
+                     )
 
 CALC_CHAMP( reuse= RESU2 ,RESULTAT= RESU2 ,
-                     CONTRAINTE='SIGM_ELNO',);
+                     CONTRAINTE='SIGM_ELNO',)
 
 TABDEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB1',
                                 GROUP_NO='PB',
                                 RESULTAT=RESU1,
                                 NOM_CHAM='DEPL',
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 TABDEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB2',
                                 GROUP_NO='PB',
                                 RESULTAT=RESU2,
                                 NOM_CHAM='DEPL',
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 RESU1=CALC_CHAMP(reuse =RESU1,
                  RESULTAT=RESU1,
-                 FORCE='FORC_NODA',);
+                 FORCE='FORC_NODA',)
 
 REAC=POST_RELEVE_T(ACTION=_F(INTITULE='RESULTANTES',
                              GROUP_NO='ENCAST',
@@ -279,7 +279,7 @@ REAC=POST_RELEVE_T(ACTION=_F(INTITULE='RESULTANTES',
                              RESULTANTE=('DX','DY','DZ',),
                              MOMENT=('DRX','DRY','DRZ',),
                              POINT=(0.0,0.0,0.0,),
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 FAPP=POST_RELEVE_T(ACTION=_F(INTITULE='RESULTANTES',
                              GROUP_NO='EFOND',
@@ -288,11 +288,11 @@ FAPP=POST_RELEVE_T(ACTION=_F(INTITULE='RESULTANTES',
                              RESULTANTE=('DX','DY','DZ',),
                              MOMENT=('DRX','DRY','DRZ',),
                              POINT=(3.6,3.6,0.0,),
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 # resultats mecaniques
 RESUT1=CALC_CHAMP(RESULTAT=RESU1,
-                  CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),);
+                  CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),)
 
 # On simule la presence d un revetement interieur (2 coupes)
 
@@ -303,7 +303,7 @@ T_MECA_R=MACR_LIGN_COUPE(RESULTAT=RESUT1,
                          LIGN_COUPE=_F(NB_POINTS=3,
                                        COOR_ORIG=(0.18,0.1,0.0,),
                                        COOR_EXTR=(0.185,0.1,0.0,),
-                                       DISTANCE_MAX=1.E-4,),);
+                                       DISTANCE_MAX=1.E-4,),)
 
 # 2. Coupe de la structure
 T_MECA_S=MACR_LIGN_COUPE(RESULTAT=RESUT1,
@@ -312,7 +312,7 @@ T_MECA_S=MACR_LIGN_COUPE(RESULTAT=RESUT1,
                          LIGN_COUPE=_F(NB_POINTS=9,
                                        COOR_ORIG=(0.185,0.1,0.0,),
                                        COOR_EXTR=(0.200,0.1,0.0,),
-                                       DISTANCE_MAX=1.E-4,),);
+                                       DISTANCE_MAX=1.E-4,),)
 
 
 IMPR_OAR(TYPE_CALC  = 'COMPOSANT',
@@ -340,12 +340,12 @@ RESUT2 = CALC_CHAMP(CHAM_MATER=CHM2,
                    LIST_INST=INST2,
                    RESULTAT=RESUT,
                    CONTRAINTE='SIEF_ELNO',
-                   EXCIT=_F( CHARGE=CHARGT, ),);
+                   EXCIT=_F( CHARGE=CHARGT, ),)
 
 RESUT2=CALC_CHAMP(reuse=RESUT2,
                   RESULTAT=RESUT2,
                   LIST_INST=INST2,
-                  CONTRAINTE='SIEF_NOEU',);
+                  CONTRAINTE='SIEF_NOEU',)
 
 # On simule la presence d un revetement interieur (4 coupes 2 mecaniques, 2 thermiques)
 
@@ -357,7 +357,7 @@ T_MEC2_R=MACR_LIGN_COUPE(RESULTAT=RESUT2,
                          LIGN_COUPE=_F(NB_POINTS=3,
                                        COOR_ORIG=(0.18,0.1,0.0,),
                                        COOR_EXTR=(0.185,0.1,0.0,),
-                                       DISTANCE_MAX=1.E-4,),);
+                                       DISTANCE_MAX=1.E-4,),)
 
 #  1.2 Thermique
 T_THE2_R = MACR_LIGN_COUPE(RESULTAT=TEMPE,
@@ -366,7 +366,7 @@ T_THE2_R = MACR_LIGN_COUPE(RESULTAT=TEMPE,
                            LIGN_COUPE=_F(NB_POINTS=3,
                                          COOR_ORIG=(0.18,0.1,0.0,),
                                          COOR_EXTR=(0.185,0.1,0.0,),
-                                         DISTANCE_MAX=1.E-4,),);
+                                         DISTANCE_MAX=1.E-4,),)
 
 # 2. Coupe de la structure
 #  2.1 Mecanique
@@ -376,7 +376,7 @@ T_MEC2_S=MACR_LIGN_COUPE(RESULTAT=RESUT2,
                 LIGN_COUPE=_F(NB_POINTS=9,
                               COOR_ORIG=(0.185,0.1,0.0,),
                               COOR_EXTR=(0.200,0.1,0.0,),
-                              DISTANCE_MAX=0.0001,),);
+                              DISTANCE_MAX=0.0001,),)
 
 #  2.2 Thermique
 T_THE2_S = MACR_LIGN_COUPE(RESULTAT=TEMPE,
@@ -385,7 +385,7 @@ T_THE2_S = MACR_LIGN_COUPE(RESULTAT=TEMPE,
                            LIGN_COUPE=_F(NB_POINTS=9,
                                          COOR_ORIG=(0.185,0.1,0.0,),
                                          COOR_EXTR=(0.200,0.1,0.0,),
-                                         DISTANCE_MAX=1.E-4,),);
+                                         DISTANCE_MAX=1.E-4,),)
 
 
 IMPR_OAR(TYPE_CALC='COMPOSANT',
@@ -403,4 +403,4 @@ TEST_FICHIER(FICHIER='fort.38',
              VALE_CALC_K='51c424f3508920069d12be79284e6c95',
              TOLE_MACHINE=1.E-3)
 
-FIN();
+FIN()

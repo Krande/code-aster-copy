@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA='ROTOR',
@@ -31,15 +31,15 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('PALIER_E','DISQUES',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E11,
                             NU=0.3,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='ROTOR',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA='ROTOR',
@@ -67,7 +67,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                   ),
                         ORIENTATION=_F(GROUP_MA=('DISQUES'),
                                       CARA='ANGL_NAUT',
-                                      VALE=(0.,-90.,0.,),),);
+                                      VALE=(0.,-90.,0.,),),)
 
 CARELEM2=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA='ROTOR',
@@ -111,23 +111,23 @@ CARELEM2=AFFE_CARA_ELEM(MODELE=MODELE,
                                        ),
                     ORIENTATION=_F(GROUP_MA=('DISQUES'),
                                CARA='ANGL_NAUT',
-                               VALE=(0.,-90.,0.,),),);
+                               VALE=(0.,-90.,0.,),),)
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=(_F(TOUT='OUI',
                                      DZ=0.0,DRZ=0,),
                                   _F(GROUP_NO=('PALIER_A','PALIER_B',),
                                      DX=0.0,DY=0,),
-                                     ),);
-balou = 0.15 * 1e-04;
+                                     ),)
+balou = 0.15 * 1e-04
 
 bal_FX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
-                                      FX=(balou),),);
+                                      FX=(balou),),)
 
 bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
-                                      FY=(balou),),);
+                                      FY=(balou),),)
 
 ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -141,7 +141,7 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(MATRICE=CO('GYRO'),
                               OPTION='MECA_GYRO',),
                            _F(MATRICE=CO('AMOR'),
-                              OPTION='AMOR_MECA',),),);
+                              OPTION='AMOR_MECA',),),)
 
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  OPTION='BANDE',
@@ -171,7 +171,7 @@ ASSEMBLAGE(MODELE=MODELE,
                            _F(VECTEUR=CO("bal_Xass"),
                               OPTION='CHAR_MECA',
                               CHARGE=bal_FX),
-                           ),);
+                           ),)
 
 
 
@@ -238,7 +238,7 @@ PROJ_BASE(BASE=MODES,
                 VECT_ASSE_GENE=(_F(VECTEUR=CO('BXGE'),
                                    VECT_ASSE=bal_Xass, TYPE_VECT='FORC'),
                                 _F(VECTEUR=CO('BYGE'),
-                                   VECT_ASSE=bal_Yass, TYPE_VECT='FORC'),),);
+                                   VECT_ASSE=bal_Yass, TYPE_VECT='FORC'),),)
 
 
 TRANGEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -258,7 +258,7 @@ TRANGEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         EXCIT=(_F(VECT_ASSE_GENE=BXGE,
                                   FONC_MULT=forx,),
                                _F(VECT_ASSE_GENE=BYGE,
-                                  FONC_MULT=fory,),),);
+                                  FONC_MULT=fory,),),)
 
 TRANGEN=DYNA_VIBRA(reuse=TRANGEN,
                         TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -279,13 +279,13 @@ TRANGEN=DYNA_VIBRA(reuse=TRANGEN,
                         EXCIT=(_F(VECT_ASSE_GENE=BXGE,
                                   FONC_MULT=forx,),
                                _F(VECT_ASSE_GENE=BYGE,
-                                  FONC_MULT=fory,),),);
+                                  FONC_MULT=fory,),),)
 
 DX_GED2=RECU_FONCTION(RESU_GENE=TRANGEN,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
                       GROUP_NO='N_DIS2',
-                      INTERPOL='LIN',);
+                      INTERPOL='LIN',)
 
 DX2_GED2=CALC_FONCTION(PUISSANCE=_F(FONCTION=DX_GED2,
                                     EXPOSANT=2),)
@@ -294,7 +294,7 @@ DY_GED2=RECU_FONCTION(RESU_GENE=TRANGEN,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DY',
                       GROUP_NO='N_DIS2',
-                      INTERPOL='LIN',);
+                      INTERPOL='LIN',)
 
 DY2_GED2=CALC_FONCTION(PUISSANCE=_F(FONCTION=DY_GED2,
                                     EXPOSANT=2),)
@@ -311,4 +311,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.024424907701E-09,
                         FONCTION=MOD_GED2,),
               )
 
-FIN();
+FIN()

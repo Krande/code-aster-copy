@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,48 +19,48 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 # AFFECTATION DE LA GEOMETRIE
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 # DEFINITION DU COMPORTEMENT DES MATERIAUX
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000.,
                           NU=0.3,
                           RHO=1.E-6,),
-                  ECRO_LINE=_F(SY=1.E10, D_SIGM_EPSI=0.));
+                  ECRO_LINE=_F(SY=1.E10, D_SIGM_EPSI=0.))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 # CHOIX DU TYPE D'ELEMENTS FINIS
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 # DEFINITION DU CHARGEMENT
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_NO='ANCRAGE',
                                    DX=0.,
-                                   DY=0.,),);
+                                   DY=0.,),)
 
 POIDS=AFFE_CHAR_MECA(MODELE=MO,
                      PESANTEUR=_F(GRAVITE=9810.,
-                                  DIRECTION=(0.,-1.,0.,),),);
+                                  DIRECTION=(0.,-1.,0.,),),)
 
 COMPRESS=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_CONTOUR=_F(GROUP_MA='LIBRE',
-                                         FX=-1.,),);
+                                         FX=-1.,),)
 
 # DISCRETISATION
 
@@ -68,7 +68,7 @@ INSTANTS=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=(_F(JUSQU_A=1.,
                                        NOMBRE=10,),
                                     _F(JUSQU_A=2.,
-                                       NOMBRE=50,),),);
+                                       NOMBRE=50,),),)
 
 # ON LAISSE LE POIDS PROPRE S'ETABLIR PAR PILOTAGE
 
@@ -87,7 +87,7 @@ PHASE_1=STAT_NON_LINE(MODELE=MO,
                                   ETA_PILO_MAX=1.,
                                   GROUP_NO='A',
                                   NOM_CMP='DY',),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),);
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),)
 
 # ON ETABLIT LA COMPRESSION PAR PILOTAGE
 
@@ -110,7 +110,7 @@ PHASE_2=STAT_NON_LINE(MODELE=MO,
                                   SELECTION='ANGL_INCR_DEPL',
                                   GROUP_NO='POUTRE',
                                   NOM_CMP=('DX','DY',),),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),);
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),)
 
 # VERIFICATION DES ETATS FINALS
 
@@ -126,19 +126,19 @@ VERIF_1=STAT_NON_LINE(MODELE=MO,
                                    INST_FIN=0.1,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),);
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),)
 
 DEPPHA_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=PHASE_1,
                     NOM_CHAM='DEPL',
-                    NUME_ORDRE=8,);
+                    NUME_ORDRE=8,)
 
 DEPVER_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=VERIF_1,
                     NOM_CHAM='DEPL',
-                    NUME_ORDRE=1,);
+                    NUME_ORDRE=1,)
 
 DEPDIF_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPTION='DEPL',
@@ -152,12 +152,12 @@ DEPDIF_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     _F(TOUT='OUI',
                        CHAM_GD=DEPVER_1,
                        CUMUL='OUI',
-                       COEF_R=-1.,),),);
+                       COEF_R=-1.,),),)
 
 NORDIF_1=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   CHAM_GD=DEPDIF_1,);
+                   CHAM_GD=DEPDIF_1,)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='AUTRE_ASTER',
@@ -172,7 +172,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 COMPR407=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_CONTOUR=_F(GROUP_MA='LIBRE',
-                                         FX=-407.,),);
+                                         FX=-407.,),)
 
 VERIF_2=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
@@ -187,19 +187,19 @@ VERIF_2=STAT_NON_LINE(MODELE=MO,
                                    NUME_INST_FIN=1,),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),);
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),)
 
 DEPPHA_2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=PHASE_2,
                     NOM_CHAM='DEPL',
-                    NUME_ORDRE=13,);
+                    NUME_ORDRE=13,)
 
 DEPVER_2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=VERIF_2,
                     NOM_CHAM='DEPL',
-                    NUME_ORDRE=1,);
+                    NUME_ORDRE=1,)
 
 DEPDIF_2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPTION='DEPL',
@@ -213,12 +213,12 @@ DEPDIF_2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     _F(TOUT='OUI',
                        CHAM_GD=DEPVER_2,
                        CUMUL='OUI',
-                       COEF_R=-1.,),),);
+                       COEF_R=-1.,),),)
 
 NORDIF_2=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   CHAM_GD=DEPDIF_2,);
+                   CHAM_GD=DEPDIF_2,)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='AUTRE_ASTER',
@@ -237,13 +237,13 @@ DEP_MOIN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=PHASE_1,
                     NOM_CHAM='DEPL',
-                    NUME_ORDRE=2,);
+                    NUME_ORDRE=2,)
 
 DEP_PLUS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=PHASE_1,
                     NOM_CHAM='DEPL',
-                    NUME_ORDRE=3,);
+                    NUME_ORDRE=3,)
 
 DEP_DELT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPTION='DEPL',
@@ -257,7 +257,7 @@ DEP_DELT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     _F(TOUT='OUI',
                        CHAM_GD=DEP_MOIN,
                        CUMUL='OUI',
-                       COEF_R=-1.,),),);
+                       COEF_R=-1.,),),)
 
 TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      NOM_CMP='DY',
@@ -293,13 +293,13 @@ PHASE_2B=STAT_NON_LINE(MODELE=MO,
                                    GROUP_NO='POUTRE',
                                    NOM_CMP=('DX','DY',),),
                        CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,),
-                       );
+                       )
 
 DEPPHA2B=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=PHASE_2B,
                     NOM_CHAM='DEPL',
-                    NUME_ORDRE=13,);
+                    NUME_ORDRE=13,)
 
 DEPDIF2B=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPTION='DEPL',
@@ -313,12 +313,12 @@ DEPDIF2B=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     _F(TOUT='OUI',
                        CHAM_GD=DEPVER_2,
                        CUMUL='OUI',
-                       COEF_R=-1.,),),);
+                       COEF_R=-1.,),),)
 
 NORDIF2B=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   CHAM_GD=DEPDIF2B,);
+                   CHAM_GD=DEPDIF2B,)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='AUTRE_ASTER',
@@ -331,6 +331,6 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE_K='00000001',),
            )
 
-FIN();
+FIN()
 
 #

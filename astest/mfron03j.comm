@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 # (Code_Aster) en grande deformation (SIMO_MIEHE) sur un point materiel
 # Validation basée sur EPZZ, SIZZ, GAMMA_1, GAMMA_9, GAMMA_12.
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 import numpy as NP
 
@@ -31,19 +31,19 @@ CREA_LIB_MFRONT(UNITE_MFRONT=38,UNITE_LIBRAIRIE=40)
 CREA_LIB_MFRONT(UNITE_MFRONT=39,UNITE_LIBRAIRIE=41)
 
 
-N__=    10.  ;
-K__=    25.0   ;
-C__=     14363.   ;
-R_0__ = 66.62;
-Q__=     11.43 ;
-B__=     2.1 ;
-D__=     494. ;
-H1__=    1;
-H2__=    1.;
-H3__=    0.6;
-H4__=    12.3;
-H5__=    1.6;
-H6__=    1.8;
+N__=    10.
+K__=    25.0
+C__=     14363.
+R_0__ = 66.62
+Q__=     11.43
+B__=     2.1
+D__=     494.
+H1__=    1
+H2__=    1.
+H3__=    0.6
+H4__=    12.3
+H5__=    1.6
+H6__=    1.8
 
 
 aniso=0
@@ -66,9 +66,9 @@ if aniso :
     Nu=1.0/(1.0+y1111/y1122)
     E_L=y1111*(1.0-3.0*Nu**2-2.0*Nu**3)/(1.0-Nu**2)
 else :
-    G       = 80000. ;
-    Nu       = 0.3    ;
-    E_L       =  G*2*(1.+Nu)   ;
+    G       = 80000.
+    Nu       = 0.3
+    E_L       =  G*2*(1.+Nu)
 
 MATA=DEFI_MATERIAU(
                      ELAS=_F(E=E_L, NU=Nu,),
@@ -97,7 +97,7 @@ MATA=DEFI_MATERIAU(
                                   H6=H6__,),
 
                     MONO_CINE1=_F(D=D__,),
-                    );
+                    )
 
 COMPORA=DEFI_COMPOR(MONOCRISTAL=_F(MATER=MATA,
                                    ECOULEMENT='MONO_VISC1',
@@ -105,7 +105,7 @@ COMPORA=DEFI_COMPOR(MONOCRISTAL=_F(MATER=MATA,
                                    ECRO_CINE='MONO_CINE1',
                                    ELAS='ELAS_ORTH',
                                    FAMI_SYST_GLIS='OCTAEDRIQUE',),
-                                   );
+                                   )
 
 
 MATF=DEFI_MATERIAU(
@@ -114,7 +114,7 @@ MATF=DEFI_MATERIAU(
                                     ),)
                             ,)
 
-MAIL = LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MAIL = DEFI_GROUP(reuse = MAIL,
                   MAILLAGE = MAIL,
@@ -125,7 +125,7 @@ MAIL = DEFI_GROUP(reuse = MAIL,
 MAIL = MODI_MAILLAGE(reuse = MAIL,
                      MAILLAGE = MAIL,
                      ORIE_PEAU=_F(GROUP_MA_PEAU=('Z0','Z1',),),
-                     );
+                     )
 
 TROISD = AFFE_MODELE(MAILLAGE = MAIL,
                      AFFE=(_F(
@@ -138,16 +138,16 @@ TROISD = AFFE_MODELE(MAILLAGE = MAIL,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='DIS_T',),
                            ),
-                   );
+                   )
 
 
 CHMATA=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
-                          MATER=MATA,),);
+                          MATER=MATA,),)
 
 CHMATF=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
-                          MATER=MATF,),);
+                          MATER=MATF,),)
 
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                     DDL_IMPO=(
@@ -156,12 +156,12 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                               _F(GROUP_MA='Z1', DZ=1.0, ),
                               ),
                     INFO=1,
-                   );
+                   )
 COEF=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',
-                   );
+                   )
 
 t1=0.01
 t2=0.02
@@ -178,7 +178,7 @@ LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=tmax,
                                       NOMBRE=90,),
                                   ),
-                      );
+                      )
 
 
 LIS2DD=DEFI_LIST_INST(INFO=1,METHODE='MANUEL',
@@ -186,7 +186,7 @@ LIS2DD=DEFI_LIST_INST(INFO=1,METHODE='MANUEL',
                         ECHEC=_F(SUBD_NIVEAU=10,
                                  SUBD_PAS=10,
                                  ),
-                        );
+                        )
 
 
 NORME = FORMULE(VALE='sqrt(DX*DX+DY*DY+DZ*DZ)',
@@ -213,7 +213,7 @@ ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                      DISCRET=_F(GROUP_MA=('PX1',),
                                 CARA='K_T_D_N',
                                 VALE=(0.,pena,0.,),),
-                     );
+                     )
 
 
 
@@ -249,7 +249,7 @@ SOLNL=STAT_NON_LINE(
                                   EVAL_ELGA  ='MAX',
                                   EVAL_CHAM  ='MAX',),
                                  ),
-                    );
+                    )
 
 
 SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSG_ELGA'))
@@ -262,19 +262,19 @@ epsDIR=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CMP='EPZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigDIR=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 nom_cas='traction_cube-1_2_5'
 
 DEFI_FICHIER(UNITE = 28,
-             FICHIER = 'REPE_OUT/epdir_'+ nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/epdir_'+ nom_cas + '.dat')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -283,14 +283,14 @@ IMPR_FONCTION(
                        COULEUR= 0,
                        LEGENDE= 'Edir',),),
             UNITE=28,
-            TITRE='Edir = f(INST)');
+            TITRE='Edir = f(INST)')
 
 DEFI_FICHIER(UNITE = 28,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 DEFI_FICHIER(UNITE = 28,
-                FICHIER = 'REPE_OUT/sigdir_'+ nom_cas + '.dat');
+                FICHIER = 'REPE_OUT/sigdir_'+ nom_cas + '.dat')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -300,10 +300,10 @@ IMPR_FONCTION(
                         COULEUR= 0,
                         LEGENDE= 'SIGdir',),),
             UNITE=28,
-            TITRE='SIGdir = f(Edir)');
+            TITRE='SIGdir = f(Edir)')
 
 DEFI_FICHIER(UNITE = 28,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 
@@ -312,7 +312,7 @@ gamma=[None]*13
 system=['', 'B4', 'B2', 'B5', 'D4', 'D1', 'D6', 'A2', 'A6', 'A3', 'C5', 'C3', 'C1']
 
 DEFI_FICHIER(UNITE = 31,
-             FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat')
 
 for i in range(1,13):
 
@@ -322,7 +322,7 @@ for i in range(1,13):
                    GROUP_MA='CUBE',
                    POINT=numpg,
                    NOM_CMP='V'+str(8+3*(i-1)),
-                           INTERPOL='LIN');
+                           INTERPOL='LIN')
 
     IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -336,10 +336,10 @@ for i in range(1,13):
                        MARQUEUR = i,
                        FREQ_MARQUEUR = 10,
                        LEGENDE= system[i],),),
-            UNITE=31,);
+            UNITE=31,)
 
 DEFI_FICHIER(UNITE = 31,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 
@@ -356,7 +356,7 @@ VAIN11= CREA_CHAMP(OPERATION = 'AFFE', TYPE_CHAM = 'ELGA_VARI_R', MODELE = TROIS
                    AFFE=(_F(GROUP_MA = 'VOL', NOM_CMP = liste_var, VALE = liste_vale, ),
                          _F(GROUP_MA = 'PX1', NOM_CMP = 'V1', VALE = 0, ),
                         ),
-                   );
+                   )
 
 
 SOLMF=STAT_NON_LINE(
@@ -396,7 +396,7 @@ SOLMF=STAT_NON_LINE(
                                   EVAL_ELGA  ='MAX',
                                   EVAL_CHAM  ='MAX',),
                                  ),
-                    );
+                    )
 
 
 SOLMF=CALC_CHAMP(reuse=SOLMF,RESULTAT=SOLMF,DEFORMATION=('EPSG_ELGA'))
@@ -409,19 +409,19 @@ epsMF=RECU_FONCTION(RESULTAT=SOLMF,
                    NOM_CMP='EPZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigMF=RECU_FONCTION(RESULTAT=SOLMF,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 nom_cas='traction_cube-1_2_5-MF'
 
 DEFI_FICHIER(UNITE = 28,
-             FICHIER = 'REPE_OUT/epdir_'+ nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/epdir_'+ nom_cas + '.dat')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -430,14 +430,14 @@ IMPR_FONCTION(
                        COULEUR= 0,
                        LEGENDE= 'Edir',),),
             UNITE=28,
-            TITRE='Edir = f(INST)');
+            TITRE='Edir = f(INST)')
 
 DEFI_FICHIER(UNITE = 28,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 DEFI_FICHIER(UNITE = 28,
-                FICHIER = 'REPE_OUT/sigMF_'+ nom_cas + '.dat');
+                FICHIER = 'REPE_OUT/sigMF_'+ nom_cas + '.dat')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -447,10 +447,10 @@ IMPR_FONCTION(
                         COULEUR= 0,
                         LEGENDE= 'sigMF',),),
             UNITE=28,
-            TITRE='sigMF = f(Edir)');
+            TITRE='sigMF = f(Edir)')
 
 DEFI_FICHIER(UNITE = 28,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 
@@ -458,7 +458,7 @@ gammf=[None]*13
 
 
 DEFI_FICHIER(UNITE = 31,
-             FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat')
 
 for i in range(1,13):
 
@@ -468,7 +468,7 @@ for i in range(1,13):
                    GROUP_MA='CUBE',
                    POINT=numpg,
                    NOM_CMP='V'+str(i),
-                           INTERPOL='LIN');
+                           INTERPOL='LIN')
 
     IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -482,10 +482,10 @@ for i in range(1,13):
                        MARQUEUR = 13+i,
                        FREQ_MARQUEUR = 1,
                        LEGENDE= system[i],),),
-            UNITE=31,);
+            UNITE=31,)
 
 DEFI_FICHIER(UNITE = 31,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 
@@ -527,7 +527,7 @@ SOLMFn=STAT_NON_LINE(
                                   EVAL_ELGA  ='MAX',
                                   EVAL_CHAM  ='MAX',),
                                  ),
-                    );
+                    )
 
 
 SOLMFn=CALC_CHAMP(reuse=SOLMFn,RESULTAT=SOLMFn,DEFORMATION=('EPSG_ELGA'))
@@ -539,14 +539,14 @@ epsMFn=RECU_FONCTION(RESULTAT=SOLMFn,
                    NOM_CMP='EPZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigMFn=RECU_FONCTION(RESULTAT=SOLMFn,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 

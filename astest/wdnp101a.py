@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1707,7 +1707,7 @@ def F_ACCE() :
         16.76, 0.000000, 
         16.77, 0.000000, 
         16.78, 0.000000, 
-        16.79, 0.000000,  ),);
+        16.79, 0.000000,  ),)
 
         # Solutions de reference
         # ------------------------------
@@ -2114,7 +2114,7 @@ def F_ACCE() :
         3.98,0.7716361,
         3.99,0.58219072,
         4,0.45942131,
-          ),);
+          ),)
 
         VITXREFE=DEFI_FONCTION(NOM_RESU='VITEREF',  NOM_PARA='INST',
                                   PROL_GAUCHE='EXCLU',  PROL_DROITE='EXCLU',
@@ -2518,7 +2518,7 @@ def F_ACCE() :
         3.98,-0.025140818,
         3.99,-0.018394298,
         4,-0.013221767,
-                 ),);
+                 ),)
 
         DEPXREFE=DEFI_FONCTION(NOM_RESU='ACCEREF',  NOM_PARA='INST',
                                   PROL_GAUCHE='EXCLU',  PROL_DROITE='EXCLU',
@@ -2922,7 +2922,7 @@ def F_ACCE() :
         3.98,-0.013749954,
         3.99,-0.01413481,
         4,-0.014427749,
-         ),);
+         ),)
 
 
         PRE1REFE=DEFI_FONCTION(NOM_RESU='PRE1REF',  NOM_PARA='INST',
@@ -3327,7 +3327,7 @@ def F_ACCE() :
         3.98,117059.46,
         3.99,117067.47,
         4,117059.48,
-         ),);
+         ),)
          
          
         SIXYREFE=DEFI_FONCTION(NOM_RESU='SIXYREF',  NOM_PARA='INST',
@@ -3732,6 +3732,6 @@ def F_ACCE() :
         3.98,-10391.495,
         3.99,-11492.031,
         4,-12527.183,
-                 ),);
+                 ),)
         return ACCEINI, ACCXREFE, VITXREFE, DEPXREFE, PRE1REFE, SIXYREFE
 # ------------------------------------------------------------------------------

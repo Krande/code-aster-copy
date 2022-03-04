@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,11 +70,11 @@ CHF1=AFFE_CHAR_MECA(MODELE=MO,
 CHF2=AFFE_CHAR_MECA(MODELE=MO,
 #       NON-SUIVEUR:
          FORCE_NODALE=_F( GROUP_NO = ('N11','N19','N27','N33','N31',), FY = -20.0)
-                       );
+                       )
 
 CHF3=AFFE_CHAR_MECA(MODELE=MO,
                     PESANTEUR=_F(GRAVITE=-9.81,
-                                 DIRECTION=(1.0,0.0,0.0,),),);
+                                 DIRECTION=(1.0,0.0,0.0,),),)
 
 LISTIN1=DEFI_LIST_REEL(DEBUT=0.,
               INTERVALLE=_F( JUSQU_A = .1,NOMBRE = 3))
@@ -111,7 +111,7 @@ U1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
               OPERATION='EXTR',
               RESULTAT=U,
               NOM_CHAM='DEPL',
-              NUME_ORDRE=3,);
+              NUME_ORDRE=3,)
 
 
 TEST_RESU(CHAM_NO=(_F(GROUP_NO='N31',
@@ -201,7 +201,7 @@ U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
               OPERATION='EXTR',
               RESULTAT=U,
               NOM_CHAM='DEPL',
-              NUME_ORDRE=5,);
+              NUME_ORDRE=5,)
 
 
 TEST_RESU(CHAM_NO=(_F(GROUP_NO='N31',
@@ -263,4 +263,4 @@ TEST_RESU(CHAM_NO=(_F(GROUP_NO='N31',
                    ),
           )
 
-FIN();
+FIN()

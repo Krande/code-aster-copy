@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -229,7 +229,7 @@ print(sep)
 #             LE CONCEPT POUR LE RECREER CORRECTEMENT
 #             --> exception generique AsterError
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 try:
    MO=AFFE_MODELE(MAILLAGE=MA,
@@ -237,7 +237,7 @@ try:
                           PHENOMENE='MECANIQUE',
                           MODELISATION='DIS_TR',),
                   DISTRIBUTION=_F(METHODE='CENTRALISE',),
-);
+)
 except AsterError as err:
     # on verifie que la bonne exception a ete levee
     assert err.id_message == "MODELISA7_77", 'unexpected id : %s' % err.id_message
@@ -249,17 +249,17 @@ except AsterError as err:
                            PHENOMENE='MECANIQUE',
                            MODELISATION='DIS_TR',),
                   DISTRIBUTION=_F(METHODE='CENTRALISE',),
-    );
+    )
 
 F1=DEFI_FONCTION(NOM_PARA='INST',
                  VALE=(0.,0.,1.,6.,2.,7.,3.,17.,4.,40.,6.,20.,8.,42.,
                        10.,-0.1,11.,-7.,12.,-17.,),
                  PROL_DROITE='LINEAIRE',
-                 PROL_GAUCHE='LINEAIRE',);
+                 PROL_GAUCHE='LINEAIRE',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=12.0,
-                                   PAS=1.0,),);
+                                   PAS=1.0,),)
 
 MAT02=DEFI_MATERIAU(ASSE_CORN=_F(NU_1=10050.0,
                                  MU_1=150000.0,
@@ -274,11 +274,11 @@ MAT02=DEFI_MATERIAU(ASSE_CORN=_F(NU_1=10050.0,
                                  KY=1000000.0,
                                  KZ=1000000.0,
                                  KRX=1000000000.0,
-                                 KRZ=1000000000.0,),);
+                                 KRZ=1000000000.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA='D1',
-                            MATER=MAT02,),);
+                            MATER=MAT02,),)
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      DISCRET=_F(GROUP_MA='D1',
@@ -286,7 +286,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                                 VALE=(1000000.0,1000000.0,1000000.0,1000000000.0,1000000000.0,1000000000.0,),),
                      ORIENTATION=_F(GROUP_MA='D1',
                                     CARA='ANGL_VRIL',
-                                    VALE=(0.0,),),);
+                                    VALE=(0.0,),),)
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=_F(GROUP_NO='N2',
@@ -302,7 +302,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                                    FZ=0.0,
                                    MX=0.0,
                                    MY=3000.0,
-                                   MZ=0.0,),);
+                                   MZ=0.0,),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST))
 
@@ -360,7 +360,7 @@ except ConvergenceError as err:
                                        NUME_INST_FIN=12,),
                           NEWTON=_F(MATRICE='TANGENTE',
                                     REAC_ITER=1,),
-                          CONVERGENCE=_F(ITER_GLOB_MAXI=10,),);
+                          CONVERGENCE=_F(ITER_GLOB_MAXI=10,),)
 
 try:
     TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -368,7 +368,7 @@ try:
                                      RESULTAT=STATNL,
                                      NOM_CHAM='TEMP',
                                      NOM_CMP='TEMP',
-                                     OPERATION='EXTRACTION',),);
+                                     OPERATION='EXTRACTION',),)
 except AsterError as err:
     # on verifie que la bonne exception a ete levee
     assert err.id_message == "POSTRELE_46", 'unexpected id : %s' % err.id_message
@@ -377,7 +377,7 @@ except AsterError as err:
                                      RESULTAT=STATNL,
                                      NOM_CHAM='DEPL',
                                      NOM_CMP='DY',
-                                     OPERATION='EXTRACTION',),);
+                                     OPERATION='EXTRACTION',),)
     # bypass garbage collector in Python3
     e = err
 err = e
@@ -489,5 +489,5 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 DETRUIRE(NOM=TAB1)
 
-FIN();
+FIN()
 #

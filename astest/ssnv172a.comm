@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ TROISD=AFFE_MODELE(MAILLAGE=CUBE,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),)
-TFIN = 0.955;
-TFIN2 = 10.;
+TFIN = 0.955
+TFIN2 = 10.
 TFIN3=2.
 
-NPAS = 20;
+NPAS = 20
 
-NPASC = 100;
+NPASC = 100
 
 
 LINSTC=DEFI_LIST_REEL(DEBUT=0.0,

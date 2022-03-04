@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -204,7 +204,7 @@ tfin = 2.
 EVOL=CALC_CHAMP(reuse =EVOL,PARALLELISME_TEMPS='OUI',
                 RESULTAT=EVOL,
                 VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),
-                );
+                )
 
 
 # -----------------------------------------------------
@@ -279,7 +279,7 @@ EVOL=CALC_CHAMP(reuse =EVOL,PARALLELISME_TEMPS='OUI',
                 CONTRAINTE  = ('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO','SIEF_NOEU'),
                 DEFORMATION = ('EPSI_ELGA','EPSI_ELNO','EPSI_NOEU','EPSG_ELGA','EPSG_ELNO','EPSG_NOEU'),
                 CRITERES    = ('EPEQ_ELGA','EPEQ_ELNO','EPEQ_NOEU','SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU'),
-                );
+                )
 
 
 EPEQ = POST_RELEVE_T(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -232,7 +232,7 @@ L_CZM_E = POST_CZM_FISS(RESULTAT = U_ELAS,
                       GROUP_MA='DCBJ',
                       POINT_ORIG = (0.0 , 0.0),
                       VECT_TANG  = (1.0 , 0.0))
-IMPR_TABLE(TABLE=L_CZM_E);
+IMPR_TABLE(TABLE=L_CZM_E)
 
 # TESTS DE LA LONGUEUR DE FISSURE COHESIVE A PARTIR DE LA SOLUTION APPROCHEE POUTRE
 # epaisseur de la poutre
@@ -287,8 +287,8 @@ TEST_TABLE(
            )
 
 
-IMPR_TABLE(TABLE = D_ELAS);
-IMPR_TABLE(TABLE = F_ELAS);
+IMPR_TABLE(TABLE = D_ELAS)
+IMPR_TABLE(TABLE = F_ELAS)
 
 # TESTS DES VALEURS AU POINTS DE GAUSS
 IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_ELAS,

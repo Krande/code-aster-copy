@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,13 +41,13 @@ MAILTRQU = LIRE_MAILLAGE(FORMAT='IDEAS',
 MODETRQU=AFFE_MODELE(  MAILLAGE=MAILTRQU,
                        AFFE=_F(  TOUT         = 'OUI',
                                  PHENOMENE    = 'MECANIQUE',
-                                 MODELISATION = 'D_PLAN') );
+                                 MODELISATION = 'D_PLAN') )
 
 #
 # 3.2. Orientation des mailles de bord
 #
 MAILTRQU=MODI_MAILLAGE( reuse=MAILTRQU,   MAILLAGE=MAILTRQU,
-                     ORIE_PEAU=_F(  GROUP_MA_PEAU = ('BORD_GAU','BORD_INF','BORD_DRO','BORD_SUP',),),);
+                     ORIE_PEAU=_F(  GROUP_MA_PEAU = ('BORD_GAU','BORD_INF','BORD_DRO','BORD_SUP',),),)
 
 #
 # 3.3. Mise en place des materiaux
@@ -57,7 +57,7 @@ MATETEST=AFFE_MATERIAU( MAILLAGE=MAILTRQU,
                                    MATER    = MATER1),
                               _F(  GROUP_MA = 'QUAD',
                                    MATER    = MATER2))
-                      );
+                      )
 
 #
 # 3.4. Chargements
@@ -66,7 +66,7 @@ CHARTRQU=AFFE_CHAR_MECA(    MODELE=MODETRQU,
                   DDL_IMPO =_F(  GROUP_NO = 'ORIGINE',     DY = 0.,),
                   PRES_REP =_F(  GROUP_MA = 'BORD_SUP',    PRES = 1000.,),
                   FACE_IMPO=_F(  GROUP_MA = 'BORD_GAU',    DNOR = 0.,)
-                          );
+                          )
 #
 # 3.4. Resolution
 #
@@ -85,7 +85,7 @@ INFO_RESU(RESULTAT=RESUTRQU)
 
 DEFI_FICHIER( FICHIER = 'MED_70', TYPE = 'LIBRE',UNITE = 70)
 
-IMPR_RESU(FORMAT='MED',UNITE = 70,RESU=_F(RESULTAT=RESUTRQU,),);
+IMPR_RESU(FORMAT='MED',UNITE = 70,RESU=_F(RESULTAT=RESUTRQU,),)
 
 
 RESUTRQ2=LIRE_RESU(
@@ -97,7 +97,7 @@ RESUTRQ2=LIRE_RESU(
               FORMAT_MED=_F( NOM_RESU = "RESUTRQU",
                              NOM_CHAM  ='DEPL' ),
               UNITE=70,
-              TOUT_ORDRE ='OUI',);
+              TOUT_ORDRE ='OUI',)
 
 #
 # 3.6. Calculs d autres champs
@@ -105,14 +105,14 @@ RESUTRQ2=LIRE_RESU(
 RESUTRQ2=CALC_CHAMP(reuse=RESUTRQ2,
                     RESULTAT=RESUTRQ2,
                     CONTRAINTE='SIGM_ELNO',
-                    DEFORMATION='EPSI_ELNO',);
+                    DEFORMATION='EPSI_ELNO',)
 
 RESU2=CALC_ERREUR(RESULTAT=RESUTRQ2,
-                  OPTION='ERME_ELEM',);
+                  OPTION='ERME_ELEM',)
 
 RESUTRQ2=CALC_ERREUR(reuse=RESUTRQ2,
                      RESULTAT=RESUTRQ2,
-                     OPTION='ERME_ELEM',);
+                     OPTION='ERME_ELEM',)
 
 #
 # 3.7. On cree un champ aux noeuds avec le deplacement
@@ -121,7 +121,7 @@ REQT_GD=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='EXTR',
                    RESULTAT=RESUTRQ2,
                    NUME_ORDRE=1,
-                   NOM_CHAM = 'DEPL',);
+                   NOM_CHAM = 'DEPL',)
 #
 # 4. Impressions
 #
@@ -217,7 +217,7 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_ELAS',
                               NOM_CHAM    ='EPSI_ELNO'),
                          ) ,
                PROL_ZERO='OUI',
-               UNITE=81,TOUT_ORDRE='OUI');
+               UNITE=81,TOUT_ORDRE='OUI')
 
 DEFI_FICHIER(UNITE=82, FICHIER='./fort.82', TYPE = 'BINARY')
 

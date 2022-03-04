@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@
 #               2 - direction (DEPSxx,DEPSyy,DEPSxy)=(1, 1.5, 1) jusqu a EPSxx=0.0015
 # ________________________________________________________
 
-DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'NON'));
+DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'NON'))
 
-MAIL = LIRE_MAILLAGE( FORMAT = "MED");
+MAIL = LIRE_MAILLAGE( FORMAT = "MED")
 
 MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
                       CREA_GROUP_MA= (
@@ -51,7 +51,7 @@ MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
 MODELE = AFFE_MODELE( AFFE = _F( TOUT = 'OUI',
                                  PHENOMENE = 'MECANIQUE',
                                  MODELISATION = '3D'),
-                                 MAILLAGE = MAIL);
+                                 MAILLAGE = MAIL)
 
 coef = 1.0e6 # Pa
 #coef = 1.   # MPa
@@ -70,20 +70,20 @@ MATER = DEFI_MATERIAU( BETON_RAG =_F( COMP_BETON  = 'ENDO',
                                       ENDO_DRUPRA = 0.15),
                        ELAS =_F( NU = 0.2,
                                  E = YOUNG__,
-                                 ALPHA = 0.0),);
+                                 ALPHA = 0.0),)
 
 CAR_MAT = AFFE_MATERIAU( MAILLAGE = MAIL,
-                         AFFE = _F( TOUT = 'OUI', MATER = MATER),);
+                         AFFE = _F( TOUT = 'OUI', MATER = MATER),)
 
 CLIM = AFFE_CHAR_MECA( MODELE = MODELE,
                        DDL_IMPO = (_F( GROUP_NO = 'COTEG', DX = 0.0),
                                    _F( GROUP_NO = 'N1', DY = 0.0, DZ = 0.0),
-                                   _F( GROUP_NO = 'N5', DY = 0.0),),);
+                                   _F( GROUP_NO = 'N5', DY = 0.0),),)
 
 CHAR1 = AFFE_CHAR_MECA ( MODELE = MODELE,
                          DDL_IMPO = (_F( GROUP_NO = ('N2','N6'), DY = 0.0),
                                      _F( GROUP_NO = 'COTED', DX = 1.0),
-                                     _F( GROUP_NO = 'HAUT', DY = -0.125),),);
+                                     _F( GROUP_NO = 'HAUT', DY = -0.125),),)
 
 CHAR2 = AFFE_CHAR_MECA( MODELE = MODELE,
                         DDL_IMPO = (_F( GROUP_NO = 'COTED', DX = 1.0),
@@ -92,19 +92,19 @@ CHAR2 = AFFE_CHAR_MECA( MODELE = MODELE,
                                     _F( GROUP_NO = 'N3', DY = 3.5),
                                     _F( GROUP_NO = 'N7', DY = 3.5),
                                     _F( GROUP_NO = 'N2', DY = 2.0),
-                                    _F( GROUP_NO = 'N6', DY = 2.0),),);
+                                    _F( GROUP_NO = 'N6', DY = 2.0),),)
 
 L_INS1 = DEFI_LIST_REEL( DEBUT = 0.0,
                          INTERVALLE = (_F( JUSQU_A = 1.0e-2, NOMBRE = 10),
-                                       _F( JUSQU_A = 5.0e-2, NOMBRE = 300),),);
+                                       _F( JUSQU_A = 5.0e-2, NOMBRE = 300),),)
 
 FCT_MUL1 = DEFI_FONCTION( INTERPOL = ('LIN','LIN'), NOM_PARA = 'INST',
                           VALE = (0.0,    0.0,
-                                  1.0e-2, 0.84E-04),);
+                                  1.0e-2, 0.84E-04),)
 
 FCT_MUL2 = DEFI_FONCTION( INTERPOL = ('LIN','LIN'), NOM_PARA = 'INST',
                           VALE = (1.0e-2, 0.0,
-                                  5.0e-2, 4.76E-4),);
+                                  5.0e-2, 4.76E-4),)
 
 RESU = STAT_NON_LINE( TITRE = 'BENCH-B',
                       CHAM_MATER = CAR_MAT,
@@ -114,7 +114,7 @@ RESU = STAT_NON_LINE( TITRE = 'BENCH-B',
                       INCREMENT =_F( LIST_INST = L_INS1, INST_FIN = 1.0e-2 ),
                       NEWTON =_F( PREDICTION = 'ELASTIQUE', MATRICE = 'TANGENTE'),
                       EXCIT = (_F( CHARGE = CLIM),
-                               _F( CHARGE = CHAR1, FONC_MULT = FCT_MUL1),),);
+                               _F( CHARGE = CHAR1, FONC_MULT = FCT_MUL1),),)
 
 RESU = STAT_NON_LINE( TITRE = 'BENCH-A',
                       reuse = RESU,
@@ -130,7 +130,7 @@ RESU = STAT_NON_LINE( TITRE = 'BENCH-A',
                       EXCIT = (_F( CHARGE = CLIM),
                                _F( CHARGE = CHAR2, TYPE_CHARGE = 'DIDI', FONC_MULT = FCT_MUL2),),
                       ETAT_INIT = _F( EVOL_NOLI = RESU),
-                      ARCHIVAGE = _F( LIST_INST = L_INS1),);
+                      ARCHIVAGE = _F( LIST_INST = L_INS1),)
 
 '''
 # NE PAS EFFACER SERT A FAIRE LES COURBES DE LA DOCUMENTATION
@@ -138,42 +138,42 @@ RESU = STAT_NON_LINE( TITRE = 'BENCH-A',
 # POST TRAITEMENT : COURBE SIGMA-EPSI
 RESU = CALC_CHAMP( reuse = RESU, RESULTAT = RESU,
                    CONTRAINTE = 'SIEF_ELNO',
-                   DEFORMATION = 'EPSI_NOEU');
+                   DEFORMATION = 'EPSI_NOEU')
 
 T_DEF = POST_RELEVE_T( ACTION = _F( OPERATION = 'EXTRACTION',
                                     INTITULE = 'epsi',
                                     GROUP_NO = 'N1',
                                     RESULTAT = RESU,
                                     NOM_CHAM = 'EPSI_NOEU',
-                                    NOM_CMP = ('EPXX','EPYY','EPXY'),),);
+                                    NOM_CMP = ('EPXX','EPYY','EPXY'),),)
 
 T_SIG = POST_RELEVE_T( ACTION = _F( OPERATION = 'EXTRACTION',
                                     INTITULE = 'sigma',
                                     GROUP_NO = 'N1',
                                     RESULTAT = RESU,
                                     NOM_CHAM = 'SIEF_ELNO',
-                                    NOM_CMP = ('SIXX','SIYY','SIXY'),),);
+                                    NOM_CMP = ('SIXX','SIYY','SIXY'),),)
 
-EPXX_ECH = FORMULE( NOM_PARA = 'EPXX', VALE = 'EPXX*1e3');
-EPYY_ECH = FORMULE( NOM_PARA = 'EPYY', VALE = 'EPYY*1e3');
-EPXY_ECH = FORMULE( NOM_PARA = 'EPXY', VALE = 'EPXY*1e3');
-SIXX_ECH = FORMULE( NOM_PARA = 'SIXX', VALE = ('SIXX/'+str(coef)),);
-SIYY_ECH = FORMULE( NOM_PARA = 'SIYY', VALE = ('SIYY/'+str(coef)),);
-SIXY_ECH = FORMULE( NOM_PARA = 'SIXY', VALE = ('SIXY/'+str(coef)),);
+EPXX_ECH = FORMULE( NOM_PARA = 'EPXX', VALE = 'EPXX*1e3')
+EPYY_ECH = FORMULE( NOM_PARA = 'EPYY', VALE = 'EPYY*1e3')
+EPXY_ECH = FORMULE( NOM_PARA = 'EPXY', VALE = 'EPXY*1e3')
+SIXX_ECH = FORMULE( NOM_PARA = 'SIXX', VALE = ('SIXX/'+str(coef)),)
+SIYY_ECH = FORMULE( NOM_PARA = 'SIYY', VALE = ('SIYY/'+str(coef)),)
+SIXY_ECH = FORMULE( NOM_PARA = 'SIXY', VALE = ('SIXY/'+str(coef)),)
 T_DEF = CALC_TABLE( reuse = T_DEF, TABLE = T_DEF,
                     ACTION = (_F( OPERATION = 'OPER', FORMULE = EPXX_ECH, NOM_PARA = 'EPXX_ECH'),
                               _F( OPERATION = 'OPER', FORMULE = EPYY_ECH, NOM_PARA = 'EPYY_ECH'),
-                              _F( OPERATION = 'OPER', FORMULE = EPXY_ECH, NOM_PARA = 'EPXY_ECH'),),);
+                              _F( OPERATION = 'OPER', FORMULE = EPXY_ECH, NOM_PARA = 'EPXY_ECH'),),)
 T_SIG = CALC_TABLE( reuse = T_SIG, TABLE = T_SIG,
                     ACTION = (_F( OPERATION = 'OPER', FORMULE = SIXX_ECH, NOM_PARA = 'SIXX_ECH'),
                               _F( OPERATION = 'OPER', FORMULE = SIYY_ECH, NOM_PARA = 'SIYY_ECH'),
-                              _F( OPERATION = 'OPER', FORMULE = SIXY_ECH, NOM_PARA = 'SIXY_ECH'),),);
+                              _F( OPERATION = 'OPER', FORMULE = SIXY_ECH, NOM_PARA = 'SIXY_ECH'),),)
 
 deformation = T_DEF.EXTR_TABLE()
 contrainte = T_SIG.EXTR_TABLE()
 
 DEFI_FICHIER( ACTION = 'ASSOCIER', UNITE = 33,
-              FICHIER = ('REPE_OUT/ssnv215a.png'),);
+              FICHIER = ('REPE_OUT/ssnv215a.png'),)
 IMPR_FONCTION( FORMAT = 'XMGRACE',
                UNITE = 33,
                PILOTE = 'PNG',
@@ -188,8 +188,8 @@ IMPR_FONCTION( FORMAT = 'XMGRACE',
                              ORDONNEE = contrainte.values()['SIYY_ECH']),
                          _F( LEGENDE = 'SIGMA-XY',
                              ABSCISSE = deformation.values()['EPXX_ECH'],
-                             ORDONNEE = contrainte.values()['SIXY_ECH']),),);
-DEFI_FICHIER( ACTION = 'LIBERER', UNITE = 33);
+                             ORDONNEE = contrainte.values()['SIXY_ECH']),),)
+DEFI_FICHIER( ACTION = 'LIBERER', UNITE = 33)
 '''
 
 # TESTS
@@ -197,7 +197,7 @@ RESU = CALC_CHAMP( reuse  = RESU, RESULTAT = RESU,
                    NUME_ORDRE = (10,25,310),
                    DEFORMATION = ('EPSI_ELNO','EPSI_NOEU'),
                    CONTRAINTE = ('SIGM_ELNO','SIGM_NOEU'),
-                   VARI_INTERNE = ('VARI_ELNO','VARI_NOEU'),);
+                   VARI_INTERNE = ('VARI_ELNO','VARI_NOEU'),)
 
 TEST_RESU( RESU = (_F( NUME_ORDRE = 10,
                        RESULTAT = RESU,
@@ -358,6 +358,6 @@ TEST_RESU( RESU = (_F( NUME_ORDRE = 10,
                        VALE_CALC = -0.402606135*coef,
                        TOLE_MACHINE = 1.E-3,
                        CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1'),),);
+                       GROUP_MA = 'M1'),),)
 
-FIN() ;
+FIN()

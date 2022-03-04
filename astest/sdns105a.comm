@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
            CREA_GROUP_NO=_F(GROUP_MA=('LIG','JOININF','SURFACE1',
-         'COTD','COTSUP','COTG','JOINT'),),);
+         'COTD','COTSUP','COTG','JOINT'),),)
 
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_FISSURE=_F(GROUP_MA=('JOINT',),),);
+                   ORIE_FISSURE=_F(GROUP_MA=('JOINT',),),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA=('SURFACE1',),
@@ -42,13 +42,13 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='PLAN_JOINT',),
                           ),
-                            );
+                            )
 T_X=DEFI_FONCTION(PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',
                     NOM_PARA='X',
                     VALE=
                     (0.0,10.,10.,10.,20.,20.,30.,30.,40.,40.,50.,50.,
                     60.,60.,70.,70.,80.,80.,90.,90.,100.,100.),
-                    );
+                    )
 
 TEMPF = CREA_CHAMP ( OPERATION= 'AFFE',
                     TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MAIL,
@@ -58,7 +58,7 @@ TEMPF = CREA_CHAMP ( OPERATION= 'AFFE',
 
 acier=DEFI_MATERIAU(ELAS=_F(E=2.E11,ALPHA=0.,
                             NU=0.3,
-                            RHO=750.00,),);
+                            RHO=750.00,),)
 
 
 GC_T=DEFI_FONCTION(NOM_PARA='TEMP',
@@ -71,7 +71,7 @@ GC_T=DEFI_FONCTION(NOM_PARA='TEMP',
                      50.  ,1400. ,
                      200. ,38400.,
                      250. ,38400.,
-                     300. ,38400. ));
+                     300. ,38400. ))
 
 SIGM_CT=DEFI_FONCTION(NOM_PARA='TEMP',
                     VALE=
@@ -83,7 +83,7 @@ SIGM_CT=DEFI_FONCTION(NOM_PARA='TEMP',
                      50.  ,3.6E6,
                      200. ,9.6E6,
                      250. ,9.6E6,
-                     300. ,9.6E6 ));
+                     300. ,9.6E6 ))
 
 
 PENA_T=DEFI_FONCTION(NOM_PARA='TEMP',
@@ -96,24 +96,24 @@ PENA_T=DEFI_FONCTION(NOM_PARA='TEMP',
                       50.  ,0.46285714285714E-3,
                       200. ,0.12E-3            ,
                       250. ,0.12E-3            ,
-                      300. ,0.12E-3             ));
+                      300. ,0.12E-3             ))
 
 fissmob=DEFI_MATERIAU(RUPT_FRAG_FO = _F(
                      GC = GC_T,
                      SIGM_C = SIGM_CT,
                      PENA_ADHERENCE = PENA_T,
-                     PENA_LAGR=100.,       
-                     RIGI_GLIS=10.,                     
-                    ),);
+                     PENA_LAGR=100.,
+                     RIGI_GLIS=10.,
+                    ),)
 
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0.0,0.0,1e-02,1.),);
+                   VALE=(0.0,0.0,1e-02,1.),)
 #
 
 TEMPLI=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1e-02,
-                                    NOMBRE=40,),);
+                                    NOMBRE=40,),)
 #
 EVTEMP = CREA_RESU(OPERATION = 'AFFE',
                    TYPE_RESU = 'EVOL_THER',
@@ -143,7 +143,7 @@ charge=AFFE_CHAR_MECA(MODELE=MODELE,
                                         DDL_2='DY',
                                         COEF_MULT_2=1.0,
                                         COEF_IMPO=0.0,),),
-                                             );
+                                             )
 
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
@@ -151,7 +151,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                              _F(GROUP_MA=('JOINT'), MATER=fissmob),
                              ),
                        AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',EVOL=EVTEMP,VALE_REF=0.),
-                                );
+                                )
 
 evol=DYNA_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
@@ -169,7 +169,7 @@ evol=DYNA_NON_LINE(MODELE=MODELE,
                    NEWTON=_F(PREDICTION='TANGENTE',
                              MATRICE='TANGENTE',REAC_ITER=1),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,
-                                 RESI_GLOB_RELA=1e-06,),);
+                                 RESI_GLOB_RELA=1e-06,),)
 
 #**********************************************************************************
 #
@@ -182,7 +182,7 @@ evol=CALC_CHAMP(reuse=evol,VARI_INTERNE=('VARI_ELNO'),RESULTAT=evol)
 evol   = CALC_CHAMP    (  reuse      = evol,
                        TOUT_ORDRE = 'OUI'    ,
                        VARI_INTERNE='VARI_NOEU',
-                       RESULTAT   = evol   ,);
+                       RESULTAT   = evol   ,)
 
 
 #
@@ -263,4 +263,4 @@ TEST_RESU(RESU=(_F(INST=8.25E-3,
                 ),
           )
 
-FIN();
+FIN()

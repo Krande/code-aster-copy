@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ LISTE =DEFI_LIST_REEL(
       _F(JUSQU_A= 0.10  , NOMBRE =   2, ),
       _F(JUSQU_A= 1.00  , NOMBRE =   5, ),
    ),
-);
+)
 
 # RAMPE D IRRADIATION, LA TEMPERATURE NE JOUANT AUCUN ROLE DANS CE CAS TEST
 IRRAD=CREA_RESU(OPERATION='AFFE',
@@ -57,7 +57,7 @@ IRRAD=CREA_RESU(OPERATION='AFFE',
    AFFE=(
       _F(CHAM_GD=IRRA_0, INST=0.,),
       _F(CHAM_GD=IRRA_1, INST=1.,),),
-);
+)
 
 TEMPER=CREA_RESU(OPERATION='AFFE',
    TYPE_RESU='EVOL_THER',
@@ -86,7 +86,7 @@ STAT=STAT_NON_LINE(
    INCREMENT=_F(LIST_INST=LISTE,),
 )
 
-STAT=CALC_CHAMP(reuse=STAT,RESULTAT=STAT,  DEFORMATION=('EPSI_ELNO'));
+STAT=CALC_CHAMP(reuse=STAT,RESULTAT=STAT,  DEFORMATION=('EPSI_ELNO'))
 
 # TEST AVEC COMPARAISON AVEC SOLUTION EXACTE
 # Irrad =  14 dpa   ==>   8.880718400966039E-03
@@ -149,4 +149,4 @@ TEST_RESU(RESU=_F(INST=1.0,
                   ),
           )
 
-FIN();
+FIN()

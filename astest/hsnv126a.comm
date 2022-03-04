@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
                 COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),
-                OPTION='META_ELNO',);
+                OPTION='META_ELNO',)
 
 # CALCUL MECANIQUE
 
@@ -242,14 +242,14 @@ CHP_MATL=AFFE_MATERIAU(
                              EVOL=TEMPE,
                              VALE_REF=20,
                              NOM_VARC='TEMP',
-                             NOM_CHAM='TEMP'),),);
+                             NOM_CHAM='TEMP'),),)
 
 L_INST=DEFI_LIST_REEL(
                 DEBUT=0.0,INTERVALLE=(
            _F( JUSQU_A = 1.00, NOMBRE = 1),
                       _F( JUSQU_A = 2.00, NOMBRE = 200)))
 
-INST_M=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       L_INST)) 
+INST_M=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       L_INST))
 
 F_CHAR=DEFI_FONCTION(
             NOM_PARA='INST',

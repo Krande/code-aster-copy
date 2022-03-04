@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,36 +28,36 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
-M2 = 10.0;
+      DEBUG=_F(SDVERI='OUI',),)
+M2 = 10.0
 
-M3 = 10.0;
+M3 = 10.0
 
-K1 = 1000.0;
+K1 = 1000.0
 
-K2 = 1000.0;
+K2 = 1000.0
 
-K3 = 10000.0;
+K3 = 10000.0
 
 
 # PARAMETRES EXCITATIONS MULTI APPUIS SRO+DDS
 # NO1
-A1_F1 = 7.0;
+A1_F1 = 7.0
 
-A1_F2 = 5.0;
+A1_F2 = 5.0
 
-DDS1 = -0.04;
+DDS1 = -0.04
 
 
 # NO4
-A2_F1 = 12.0;
+A2_F1 = 12.0
 
-A2_F2 = 6.0;
+A2_F2 = 6.0
 
-DDS2 = 0.06;
+DDS2 = 0.06
 
 
-MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
@@ -74,7 +74,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='DIS_T',),
                          _F(GROUP_MA='MASSES',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 #
 
@@ -111,17 +111,17 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                                     VALE=M2,),
                                  _F(CARA='M_T_D_N',
                                     GROUP_MA='NO3',
-                                    VALE=M3,),),);
+                                    VALE=M3,),),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.6E+11,
                           NU=0.3,
-                          RHO=1.3E+04,),);
+                          RHO=1.3E+04,),)
 
 #
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MAT,),);
+                               MATER=MAT,),)
 
 #
 
@@ -132,7 +132,7 @@ CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                     DZ=0.,),
                                  _F(GROUP_NO='MASSES',
                                     DY=0.,
-                                    DZ=0.,),),);
+                                    DZ=0.,),),)
 
 #
 
@@ -144,7 +144,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 #
 # CALCUL DES MODES AVEC BLOCAGE DES ANCRAGES:
@@ -153,7 +153,7 @@ ASSEMBLAGE(MODELE=MODELE,
 MASSINER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                    MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
-                   CARA_ELEM=CARA_ELE,);
+                   CARA_ELEM=CARA_ELE,)
 
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  CALC_FREQ=_F(NMAX_FREQ=3,
@@ -168,7 +168,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=MODES,
 #
 MODES=NORM_MODE(reuse =MODES,
                 MODE=MODES,
-                NORME='MASS_GENE',);
+                NORME='MASS_GENE',)
 
 #
 
@@ -178,7 +178,7 @@ MODES=CALC_CHAMP(reuse=MODES,RESULTAT=MODES,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO')
 MODES=CALC_CHAMP(reuse =MODES,
               RESULTAT=MODES,
 
-              FORCE=('FORC_NODA','REAC_NODA'));
+              FORCE=('FORC_NODA','REAC_NODA'))
 
 # TESTS DES FREQUENCES PROPRES
 # REF : ANALYTIQUE
@@ -208,7 +208,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        MODE_STAT=_F(TOUT='OUI',
-                                    AVEC_CMP='DX',),);
+                                    AVEC_CMP='DX',),)
 
 MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
 
@@ -216,7 +216,7 @@ MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EF
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
 
-                 FORCE=('FORC_NODA','REAC_NODA'));
+                 FORCE=('FORC_NODA','REAC_NODA'))
 
 #-------------------------------------------------
 #-------------------------------------------------
@@ -230,7 +230,7 @@ MODE_STA=CALC_CHAMP(reuse =MODE_STA,
 
 ACCX1=DEFI_FONCTION(NOM_PARA='FREQ',VALE=(2.18815,A1_F1,
                           5.30485,A1_F2,
-                          ),INTERPOL='LOG',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                          ),INTERPOL='LOG',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 SPEX1=DEFI_NAPPE(NOM_PARA='AMOR',
                  PARA=(0.0,1.0,),
@@ -238,13 +238,13 @@ SPEX1=DEFI_NAPPE(NOM_PARA='AMOR',
                  INTERPOL=('LIN','LOG',),
                  PROL_DROITE='CONSTANT',
                  PROL_GAUCHE='CONSTANT',
-                 INFO=2,);
+                 INFO=2,)
 
 # ACC X NO4
 
 ACCX2=DEFI_FONCTION(NOM_PARA='FREQ',VALE=(2.18815,A2_F1,
                           5.30485,A2_F2,
-                          ),INTERPOL='LOG',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                          ),INTERPOL='LOG',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 SPEX2=DEFI_NAPPE(NOM_PARA='AMOR',
                  PARA=(0.0,1.0,),
@@ -252,7 +252,7 @@ SPEX2=DEFI_NAPPE(NOM_PARA='AMOR',
                  INTERPOL=('LIN','LOG',),
                  PROL_DROITE='CONSTANT',
                  PROL_GAUCHE='CONSTANT',
-                 INFO=2,);
+                 INFO=2,)
 
 #------------------------------------------
 # RGQBC
@@ -289,7 +289,7 @@ RGQBC=COMB_SISM_MODAL(MODE_MECA=MODES,
                       OPTION=('DEPL','REAC_NODA',),
                       GROUP_APPUI=(_F(GROUP_NO='NO1',),),
                       INFO=2,
-                      IMPRESSION=_F(TOUT='OUI',),);
+                      IMPRESSION=_F(TOUT='OUI',),)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=RGQBC,
                    TOUT_PARA = 'OUI',)))
@@ -398,7 +398,7 @@ RGQBI=COMB_SISM_MODAL(MODE_MECA=MODES,
                                    _F(GROUP_NO='NO4',),),
                       OPTION=('DEPL','REAC_NODA',),
                       INFO=2,
-                      IMPRESSION=_F(TOUT='OUI',),);
+                      IMPRESSION=_F(TOUT='OUI',),)
 
 # TESTS DES DEPLACEMENTS
 #------------------------------------------
@@ -474,7 +474,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 MODEC=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                     MATR_MASS=MASSE,
                     PSEUDO_MODE=_F(GROUP_NO=('NO1','NO4',),
-                                   AVEC_CMP='DX',),);
+                                   AVEC_CMP='DX',),)
 
 MODEC=CALC_CHAMP(reuse=MODEC,RESULTAT=MODEC,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
 
@@ -482,7 +482,7 @@ MODEC=CALC_CHAMP(reuse=MODEC,RESULTAT=MODEC,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO')
 MODEC=CALC_CHAMP(reuse =MODEC,
               RESULTAT=MODEC,
 
-              FORCE='REAC_NODA',);
+              FORCE='REAC_NODA',)
 
 #------------------------------------------
 # RGQBIC
@@ -522,7 +522,7 @@ RGQBIC=COMB_SISM_MODAL(MODE_MECA=MODES,
                                    _F(GROUP_NO='NO4',),),
                        OPTION=('DEPL','REAC_NODA',),
                        INFO=2,
-                       IMPRESSION=_F(TOUT='OUI',),);
+                       IMPRESSION=_F(TOUT='OUI',),)
 
 # TESTS DES DEPLACEMENTS
 #------------------------------------------
@@ -593,7 +593,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 # TESTS D IMPRESSIONS
 #----------------------
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =RGQBIC));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =RGQBIC))
 
 TES_R = POST_RELEVE_T(ACTION=(_F(RESULTAT=RGQBIC,
                                  INTITULE='DEPLACEMENT_N1',
@@ -642,9 +642,9 @@ TES_R = POST_RELEVE_T(ACTION=(_F(RESULTAT=RGQBIC,
                                  NOM_CHAM=('REAC_NODA',),
                                  GROUP_NO='NO4',
                                  NOM_CMP = 'DX',
-                                 OPERATION = 'EXTRACTION')));
+                                 OPERATION = 'EXTRACTION')))
 
-IMPR_TABLE(TABLE=TES_R);
+IMPR_TABLE(TABLE=TES_R)
 
 #-------------------------------------------------
 #-------------------------------------------------
@@ -695,7 +695,7 @@ PQQBC=COMB_SISM_MODAL(MODE_MECA=MODES,
                                    _F(GROUP_NO='NO4',),),
                       OPTION=('DEPL','REAC_NODA',),
                       INFO=2,
-                      IMPRESSION=_F(TOUT='OUI',),);
+                      IMPRESSION=_F(TOUT='OUI',),)
 
 # TEST COMPONSANTE PRIMAIRE
 #------------------------------------------
@@ -838,7 +838,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=200,
 # TESTS D IMPRESSIONS
 #----------------------
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =PQQBC));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =PQQBC))
 
 TES_R0 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQQBC,
                                  INTITULE='DEPLACEMENT_N1',
@@ -887,9 +887,9 @@ TES_R0 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQQBC,
                                  NOM_CHAM=('REAC_NODA',),
                                  GROUP_NO='NO4',
                                  NOM_CMP = 'DX',
-                                 OPERATION = 'EXTRACTION')));
+                                 OPERATION = 'EXTRACTION')))
 
-IMPR_TABLE(TABLE=TES_R0);
+IMPR_TABLE(TABLE=TES_R0)
 
 #------------------------------------------
 # PQLBI
@@ -932,7 +932,7 @@ PQLBI=COMB_SISM_MODAL(MODE_MECA=MODES,
                                    _F(GROUP_NO='NO4',),),
                       OPTION=('DEPL','REAC_NODA',),
                       INFO=2,
-                      IMPRESSION=_F(TOUT='OUI',),);
+                      IMPRESSION=_F(TOUT='OUI',),)
 
 # TEST COMPONSANTE PRIMAIRE
 #------------------------------------------
@@ -1075,7 +1075,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=200,
 # TESTS D IMPRESSIONS
 #----------------------
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =PQLBI));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =PQLBI))
 
 TES_R1 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQLBI,
                                  INTITULE='DEPLACEMENT_N1',
@@ -1124,9 +1124,9 @@ TES_R1 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQLBI,
                                  NOM_CHAM=('REAC_NODA',),
                                  GROUP_NO='NO4',
                                  NOM_CMP = 'DX',
-                                 OPERATION = 'EXTRACTION')));
+                                 OPERATION = 'EXTRACTION')))
 
-IMPR_TABLE(TABLE=TES_R1);
+IMPR_TABLE(TABLE=TES_R1)
 
 #------------------------------------------
 # PQABIC
@@ -1170,7 +1170,7 @@ PQABIC=COMB_SISM_MODAL(MODE_MECA=MODES,
                                    _F(GROUP_NO='NO4',),),
                        OPTION=('DEPL','REAC_NODA',),
                        INFO=2,
-                       IMPRESSION=_F(TOUT='OUI',),);
+                       IMPRESSION=_F(TOUT='OUI',),)
 
 
 # TEST COMPONSANTE PRIMAIRE
@@ -1294,7 +1294,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=200,
 # TESTS D IMPRESSIONS
 #----------------------
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =PQABIC));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =PQABIC))
 
 TES_R2 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQABIC,
                                  INTITULE='DEPLACEMENT_N1',
@@ -1343,9 +1343,9 @@ TES_R2 = POST_RELEVE_T(ACTION=(_F(RESULTAT=PQABIC,
                                  NOM_CHAM=('REAC_NODA',),
                                  GROUP_NO='NO4',
                                  NOM_CMP = 'DX',
-                                 OPERATION = 'EXTRACTION')));
+                                 OPERATION = 'EXTRACTION')))
 
-IMPR_TABLE(TABLE=TES_R2);
+IMPR_TABLE(TABLE=TES_R2)
 
 #------------------------------------------
 # CDDS
@@ -1360,15 +1360,15 @@ IMPR_TABLE(TABLE=TES_R2);
 #     PLUSIEURS OCCURRENCES DE DEPL_MULT_APPUI
 #     PLUSIEURS OCCURRENCES DE COMB_DEPL_APPUI
 #------------------------------------------
-DDSA = -0.04;
+DDSA = -0.04
 
-DDSB = 0.06;
+DDSB = 0.06
 
-DDSC = 0.03;
+DDSC = 0.03
 
-DDSD = -0.07;
+DDSD = -0.07
 
-DDSE = 0.05;
+DDSE = 0.05
 
 
 CDDS=COMB_SISM_MODAL(MODE_MECA=MODES,
@@ -1424,7 +1424,7 @@ CDDS=COMB_SISM_MODAL(MODE_MECA=MODES,
                                    _F(GROUP_NO='NO4',),),
                      OPTION=('DEPL','REAC_NODA',),
                      INFO=2,
-                     IMPRESSION=_F(NIVEAU=('SPEC_OSCI','MASS_EFFE','MAXI_GENE',),),);
+                     IMPRESSION=_F(NIVEAU=('SPEC_OSCI','MASS_EFFE','MAXI_GENE',),),)
 
 #----------------- OCCURRENCE 1 COMB_DEPL_APPUI ----
 # DEPLACEMENT
@@ -1764,7 +1764,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=204,
 # TESTS D IMPRESSIONS
 #----------------------
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =CDDS));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT =CDDS))
 
 TES_RE = POST_RELEVE_T(ACTION=(_F(RESULTAT=CDDS,
                                  INTITULE='DEPLACEMENT_N1',
@@ -1813,8 +1813,8 @@ TES_RE = POST_RELEVE_T(ACTION=(_F(RESULTAT=CDDS,
                                  NOM_CHAM=('REAC_NODA',),
                                  GROUP_NO='NO4',
                                  NOM_CMP = 'DX',
-                                 OPERATION = 'EXTRACTION')));
+                                 OPERATION = 'EXTRACTION')))
 
-IMPR_TABLE(TABLE=TES_RE);
+IMPR_TABLE(TABLE=TES_RE)
 
-FIN();
+FIN()

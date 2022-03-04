@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
-                            NU=0.0,),);
+                            NU=0.0,),)
 
 
 # 1 - VALIDATION DE ORIE_PEAU/GROUP_MA_INTERNE
@@ -48,7 +48,7 @@ acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
 # L'etat initial est tel que la maille CD est mal orientee, il faut donc la
 # reoriente avec MODI_MAILLAGE et ORIE_PEAU/GROUP_MA_INTERNE
 #
-mail2D = LIRE_MAILLAGE (FORMAT="ASTER",INFO=2) ;
+mail2D = LIRE_MAILLAGE (FORMAT="ASTER",INFO=2)
 
 mail2D=MODI_MAILLAGE(reuse=mail2D,
                  MAILLAGE=mail2D,
@@ -57,29 +57,29 @@ mail2D=MODI_MAILLAGE(reuse=mail2D,
 
 chmat2D=AFFE_MATERIAU(MAILLAGE=mail2D,
                     AFFE=_F(TOUT='OUI',
-                            MATER=acier,),);
+                            MATER=acier,),)
 
 mo2D=AFFE_MODELE(MAILLAGE=mail2D,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='C_PLAN',),);
+                        MODELISATION='C_PLAN',),)
 
 
 clim2D=AFFE_CHAR_MECA(MODELE=mo2D,
                     DDL_IMPO=_F(GROUP_NO=('GXXXXXX_AB',),
-                                DX=0.,DY=0.,),);
+                                DX=0.,DY=0.,),)
 
 # On ajoute VERI_NORM='NON' pour annuler la verification de la normale
 
 pres2D=AFFE_CHAR_MECA(MODELE=mo2D,VERI_NORM='NON',
                       PRES_REP=_F(GROUP_MA=('GXXXXXX_CD',),
-                      PRES=-1.E8),);
+                      PRES=-1.E8),)
 
 resu2D=MECA_STATIQUE(
                    MODELE=mo2D,
                    CHAM_MATER=chmat2D,
                    EXCIT=(_F(CHARGE=pres2D,),
-                        _F(CHARGE=clim2D,),),);
+                        _F(CHARGE=clim2D,),),)
 
 resu2D=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=resu2D,reuse=resu2D)
 
@@ -141,7 +141,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu2D))
 # reoriente avec MODI_MAILLAGE et ORIE_PEAU/GROUP_MA_INTERNE
 #
 
-mail3D = LIRE_MAILLAGE (FORMAT="ASTER",UNITE=21,INFO=2) ;
+mail3D = LIRE_MAILLAGE (FORMAT="ASTER",UNITE=21,INFO=2)
 
 mail3D=MODI_MAILLAGE(reuse=mail3D,
                  MAILLAGE=mail3D,
@@ -150,28 +150,28 @@ mail3D=MODI_MAILLAGE(reuse=mail3D,
 
 chmat3D=AFFE_MATERIAU(MAILLAGE=mail3D,
                     AFFE=_F(TOUT='OUI',
-                            MATER=acier,),);
+                            MATER=acier,),)
 
 mo3D=AFFE_MODELE(MAILLAGE=mail3D,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),);
+                        MODELISATION='3D',),)
 
 clim3D=AFFE_CHAR_MECA(MODELE=mo3D,
                     DDL_IMPO=_F(GROUP_MA=('GXXXXXX_M1',),
-                                DX=0.,DY=0.,DZ=0.),);
+                                DX=0.,DY=0.,DZ=0.),)
 
 # On ajoute VERI_NORM='NON' pour annuler la verification de la normale
 
 pres3D=AFFE_CHAR_MECA(MODELE=mo3D,VERI_NORM='NON',
                       PRES_REP=_F(GROUP_MA=('GXXXXXX_M2',),
-                      PRES=-1.E8),);
+                      PRES=-1.E8),)
 
 resu3D=MECA_STATIQUE(
                    MODELE=mo3D,
                    CHAM_MATER=chmat3D,
                    EXCIT=(_F(CHARGE=pres3D,),
-                        _F(CHARGE=clim3D,),),);
+                        _F(CHARGE=clim3D,),),)
 
 resu3D=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=resu3D,reuse=resu3D)
 
@@ -204,4 +204,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu3D))
 
 
-FIN();
+FIN()

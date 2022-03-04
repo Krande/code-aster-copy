@@ -53,7 +53,7 @@ funcNu=DEFI_FONCTION(NOM_PARA='Z',
                       VALE=(0.  , nu,
                             0.25, nu),)
 
-funcAlpha=DEFI_CONSTANTE(VALE=alpha);
+funcAlpha=DEFI_CONSTANTE(VALE=alpha)
 
 mecaMate=DEFI_MATERIAU(ELAS_FO = _F(E              = funcYoung,
                                    NU             = funcNu,
@@ -102,7 +102,7 @@ modelMeca=AFFE_MODELE(MAILLAGE = meshHE9,
 resthe= PROJ_CHAMP(PROJECTION='OUI',
                    RESULTAT=resuTher,
                    MODELE_1=modelTher,
-                   MODELE_2=modelMeca,);
+                   MODELE_2=modelMeca,)
 
 kineCondition=AFFE_CHAR_CINE(MODELE    = modelMeca,
                              MECA_IMPO = (_F(GROUP_MA = ('FaceDA'),

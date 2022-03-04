@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ prodDamp = PROD_MATR_CHAM(MATR_ASSE=AMORTC, CHAM_NO=vite,)
 
 prodRigi = PROD_MATR_CHAM(MATR_ASSE=RIGIDITC, CHAM_NO=disp,)
 
-resuSolu = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', 
+resuSolu = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='COMB',
                       COMB=(_F(CHAM_GD=prodMass, COEF_R=+1.0,),
                             _F(CHAM_GD=prodDamp, COEF_R=+1.0,),
@@ -62,7 +62,7 @@ charWaveAsse = ASSE_VECTEUR(VECT_ELEM = charWaveElem,
                             NUME_DDL  = NUMEDDLC)
 
 # Make difference
-resuVect = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', 
+resuVect = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='COMB',
                       COMB=(_F(CHAM_GD=resuSolu, COEF_R=+1.0,),
                             _F(CHAM_GD=charWaveAsse, COEF_R=-1.0,),),

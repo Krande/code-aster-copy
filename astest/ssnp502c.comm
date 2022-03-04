@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -37,7 +37,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='LRESU',
                                 GROUP_MA='LESC',
                                 GROUP_NO_ORIG='A',
-                                GROUP_NO_EXTR='D',),),);
+                                GROUP_NO_EXTR='D',),),)
 
 #----- GRANDEUR PHYSIQUE ------
 
@@ -52,12 +52,12 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=20700000,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('ANNEAU','PLAQUE','LMAI','LESC'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=_F(GROUP_MA_PEAU=('LMAI','LESC'),),
-                 INFO=2,);
+                 INFO=2,)
 
 
 
@@ -65,7 +65,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='PLAQUE',
                              MATER=ACIER,),
                           _F(GROUP_MA='ANNEAU',
-                             MATER=POLTH,),),);
+                             MATER=POLTH,),),)
 
 #------ CONDITIONS AUX LIMITES -----------------
 
@@ -80,11 +80,11 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                   LIAISON_DDL=_F(GROUP_NO=('A','P1'),
                                  DDL=('DY','DY'),
                                  COEF_MULT=(1.0,-1.0),
-                                 COEF_IMPO=0.0,),);
+                                 COEF_IMPO=0.0,),)
 
 DEPL=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='PLAQUE',
-                                DY=-2.225,),);
+                                DY=-2.225,),)
 
 CON  = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
@@ -100,18 +100,18 @@ CON  = DEFI_CONTACT(MODELE         = MO,
                              SANS_GROUP_NO = ('A','P1'),
                              ),
                           ),
-                   );
+                   )
 
 
 #--------- DEFINITION DES FONCTIONS -----------------
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,4.0,1.0),
-                    INTERPOL='LIN',);
+                    INTERPOL='LIN',)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=4.0,
-                                   NOMBRE=16,),);
+                                   NOMBRE=16,),)
 
 #-------- CALCUL STATIQUE --------------------------
 
@@ -129,7 +129,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
                                   ITER_GLOB_MAXI=50,
-                                  ARRET='OUI',),);
+                                  ARRET='OUI',),)
 
 #------- POST TRAITEMENT -----------------------
 
@@ -137,19 +137,19 @@ RESU=CALC_CHAMP(reuse =RESU,
 
 
                 CONTRAINTE=('SIGM_ELNO'),
-               RESULTAT=RESU,);
+               RESULTAT=RESU,)
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              FORCE='REAC_NODA',
 
 
-             );
+             )
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              CONTRAINTE='SIGM_NOEU',
-                       );
+                       )
 
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
@@ -157,7 +157,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  RESULTAT=RESU,
                                  NOM_CHAM='REAC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 TAB_PRES=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  GROUP_NO='LRESU',
@@ -165,7 +165,7 @@ TAB_PRES=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  NOM_CHAM='SIGM_NOEU',
                                  INST=4.0,
                                  NOM_CMP=('SIYY','SIXY'),
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 
 #------- TEST DES RESULTATS --------------
@@ -248,4 +248,4 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   ),
           )
 
-FIN();
+FIN()

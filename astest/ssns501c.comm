@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -152,7 +152,7 @@ RESULTAT=STAT_NON_LINE(       MODELE=MODELE,
                           )
 
 
-RESULTAT=STAT_NON_LINE(reuse=RESULTAT,      
+RESULTAT=STAT_NON_LINE(reuse=RESULTAT,
                         MODELE=MODELE,
                         CHAM_MATER=CHAM_MAT,
                         CARA_ELEM=CARA_ELT,
@@ -163,8 +163,8 @@ RESULTAT=STAT_NON_LINE(reuse=RESULTAT,
                         COMPORTEMENT=_F( RELATION = 'ELAS',
                                          DEFORMATION = 'GROT_GDEP',),
                         INCREMENT=_F( LIST_INST = LIS_INST,
-                                      NUME_INST_INIT = 13,    
-                                      NUME_INST_FIN = 99),    
+                                      NUME_INST_INIT = 13,
+                                      NUME_INST_FIN = 99),
                         PILOTAGE=_F( TYPE = 'LONG_ARC',
                                      SELECTION='ANGL_INCR_DEPL',
                                      GROUP_NO = 'TOUT_ELT',

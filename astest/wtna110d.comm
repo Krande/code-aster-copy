@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ print('SINETAGO0 ',  SINETAGO0)
 #***********************************************************************
 
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER", );
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER", )
 
 MAILLAGE= DEFI_GROUP(reuse=MAILLAGE,
                   MAILLAGE=MAILLAGE,
@@ -104,7 +104,7 @@ MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
                                     PHENOMENE = 'MECANIQUE',
                                     MODELISATION = 'AXIS_THHMS',
                                    ),
-                          );
+                          )
 ################### DEFINITION DU MATERIAU ARGILEUX
 LI1 = DEFI_LIST_REEL ( DEBUT      = 1000.0,
                        INTERVALLE = (
@@ -114,9 +114,9 @@ LI1 = DEFI_LIST_REEL ( DEBUT      = 1000.0,
 LI2 = DEFI_LIST_REEL ( DEBUT      = 0.8,
                        INTERVALLE = (
                          _F( JUSQU_A = 0.99999999993 , NOMBRE = 2000,),
-                                    ),);
+                                    ),)
 #
-FICKARG = DEFI_CONSTANTE ( VALE = 3.8475e-5);
+FICKARG = DEFI_CONSTANTE ( VALE = 3.8475e-5)
 
 #
 FFVPPG = FORMULE(VALE='(101000.0/PG)',
@@ -127,7 +127,7 @@ FVPPG = CALC_FONC_INTERP ( FONCTION      =  FFVPPG       ,
                             NOM_PARA     = 'PGAZ'      ,
                             PROL_GAUCHE  = 'CONSTANT' ,
                             PROL_DROITE  = 'CONSTANT' ,
-                            INFO         = 2          , );
+                            INFO         = 2          , )
 #
 FDFVPPG = FORMULE(VALE='-101000.0/(PG**2)',
                   NOM_PARA='PG',)
@@ -137,9 +137,9 @@ DFVPPG = CALC_FONC_INTERP ( FONCTION     =  FDFVPPG,
                             NOM_PARA     = 'PGAZ'      ,
                             PROL_GAUCHE  = 'CONSTANT' ,
                             PROL_DROITE  = 'CONSTANT' ,
-                            INFO         = 2          , );
+                            INFO         = 2          , )
 
-FICKWAR=DEFI_CONSTANTE ( VALE = 2.14206E-10);
+FICKWAR=DEFI_CONSTANTE ( VALE = 2.14206E-10)
 
 FFAS = FORMULE(VALE='SAT',
                NOM_PARA='SAT',)
@@ -148,20 +148,20 @@ FAS   = CALC_FONC_INTERP ( FONCTION     =  FFAS       ,
                            NOM_PARA     = 'SAT'      ,
                            PROL_GAUCHE  = 'CONSTANT' ,
                            PROL_DROITE  = 'CONSTANT' ,
-                           INFO         = 2          , );
+                           INFO         = 2          , )
 #
-HENRYCF = DEFI_CONSTANTE ( VALE = 130509.8);
-ZERO = DEFI_CONSTANTE ( VALE = 0.);
-UN   = DEFI_CONSTANTE ( VALE = 1.);
-VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3  );
-DVISCOL  = DEFI_CONSTANTE ( VALE = 0.0  );
+HENRYCF = DEFI_CONSTANTE ( VALE = 130509.8)
+ZERO = DEFI_CONSTANTE ( VALE = 0.)
+UN   = DEFI_CONSTANTE ( VALE = 1.)
+VISCOLIQ = DEFI_CONSTANTE ( VALE = 1.0E-3  )
+DVISCOL  = DEFI_CONSTANTE ( VALE = 0.0  )
 #
-VISCOH2 = DEFI_CONSTANTE ( VALE = 9.0E-6) ;
-VISCOH20 = DEFI_CONSTANTE ( VALE = 1.0E-5 );
-KINTAGO  = DEFI_CONSTANTE ( VALE = 8.E-21);
+VISCOH2 = DEFI_CONSTANTE ( VALE = 9.0E-6)
+VISCOH20 = DEFI_CONSTANTE ( VALE = 1.0E-5 )
+KINTAGO  = DEFI_CONSTANTE ( VALE = 8.E-21)
 
-FICKAGO = DEFI_CONSTANTE ( VALE = 1.5459e-5);
-FICKWAG=DEFI_CONSTANTE ( VALE = 8.60651E-11);
+FICKAGO = DEFI_CONSTANTE ( VALE = 1.5459e-5)
+FICKWAG=DEFI_CONSTANTE ( VALE = 8.60651E-11)
 
 
 
@@ -217,7 +217,7 @@ MATAGO=DEFI_MATERIAU(ELAS=_F(
                                   FICKA_T               = FICKWAG,
                                   FICKA_S               = FAS,
                                   LAMB_CT                = 1.0,
-                                  ),);
+                                  ),)
 
 #######################
 
@@ -260,7 +260,7 @@ DEPINAR=CREA_CHAMP(MAILLAGE=MAILLAGE,
                      _F(TOUT='OUI', NOM_CMP=('PRE2',),VALE=    PGAGO0  ,),
                      _F(TOUT='OUI', NOM_CMP=('TEMP',),VALE=    0.  ,),
                         ),
-                );
+                )
 
 
 SIGINIT=CREA_CHAMP(     MODELE=MODELE,
@@ -291,7 +291,7 @@ SIGINIT=CREA_CHAMP(     MODELE=MODELE,
                                  ),
                                         ),
                                 ),
-                  );
+                  )
 
 
 TEMPS2=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
@@ -306,7 +306,7 @@ MSTEP=DEFI_FONCTION( NOM_PARA='INST',
                                  0.0,   PCAGO0,
                                   1.,  -10.E6,
                        ),
-                );
+                )
 
 
 
@@ -365,12 +365,12 @@ SIG3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             RESULTAT=U2,
                             NOM_CHAM='SIEF_NOEU',
                             GROUP_NO='N3',
-                            NOM_CMP=('SIXX','SIPXX',),),);
+                            NOM_CMP=('SIXX','SIPXX',),),)
 
 IMPR_TABLE(TABLE=SIG3,
            TRI=_F(NOM_PARA='INST',
                   ORDRE='CROISSANT',),
-           NOM_PARA=('INST','SIXX','SIPXX',),);
+           NOM_PARA=('INST','SIXX','SIPXX',),)
 
 
 
@@ -379,24 +379,24 @@ PRES=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             RESULTAT=U2,
                             NOM_CHAM='DEPL',
                             GROUP_NO='N3',
-                            NOM_CMP=('PRE1','PRE2',),),);
+                            NOM_CMP=('PRE1','PRE2',),),)
 
 IMPR_TABLE(TABLE=PRES,
            TRI=_F(NOM_PARA='INST',
                   ORDRE='CROISSANT',),
-           NOM_PARA=('INST','PRE1','PRE2',),);
+           NOM_PARA=('INST','PRE1','PRE2',),)
 
 DEPL=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='DEPL',
                             RESULTAT=U2,
                             NOM_CHAM='DEPL',
                             GROUP_NO='N3',
-                            NOM_CMP=('DX','DY',),),);
+                            NOM_CMP=('DX','DY',),),)
 
 IMPR_TABLE(TABLE=DEPL,
            TRI=_F(NOM_PARA='INST',
                   ORDRE='CROISSANT',),
-           NOM_PARA=('INST','DX','DY',),);
+           NOM_PARA=('INST','DX','DY',),)
 
 
 SAT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -404,12 +404,12 @@ SAT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             RESULTAT=U2,
                             NOM_CHAM='VARI_NOEU',
                             GROUP_NO='N3',
-                            NOM_CMP=('V3',),),);
+                            NOM_CMP=('V3',),),)
 
 IMPR_TABLE(TABLE=SAT,
            TRI=_F(NOM_PARA='INST',
                   ORDRE='CROISSANT',),
-           NOM_PARA=('INST','V3',),);
+           NOM_PARA=('INST','V3',),)
 
 TEST_RESU(RESU=_F(INST=2.E-3,
                   RESULTAT=U2,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,12 +44,12 @@ MA_B=DEFI_MATERIAU(ELAS =_F(E  = E_B,
 MA_A=DEFI_MATERIAU(ELAS =_F(E  = E_A,
                             NU = NU_A,),)
 
-MA_0=LIRE_MAILLAGE(FORMAT    = 'MED',);
+MA_0=LIRE_MAILLAGE(FORMAT    = 'MED',)
 
 MAIL=CREA_MAILLAGE(MAILLAGE      = MA_0,
                    CREA_MAILLE =_F(NOM         = 'MEMBRA_T',
                                      GROUP_MA    = 'MEMBRA',
-                                     PREF_MAILLE = 'T_',),);
+                                     PREF_MAILLE = 'T_',),)
 
 MODE=AFFE_MODELE(MAILLAGE = MAIL,
                  AFFE     = (_F(GROUP_MA    = ('BETON','BOUT'),
@@ -63,7 +63,7 @@ MATE=AFFE_MATERIAU(MAILLAGE = MAIL,
                    AFFE     = (_F(GROUP_MA = ('MEMBRA','MEMBRA_T'),
                                   MATER    = MA_A,),
                                _F(GROUP_MA = 'BETON',
-                                  MATER    = MA_B,)));
+                                  MATER    = MA_B,)))
 
 CL_DEPL=AFFE_CHAR_CINE(MODELE   = MODE,
                        MECA_IMPO =(_F(GROUP_MA = 'ENCAST',
@@ -71,7 +71,7 @@ CL_DEPL=AFFE_CHAR_CINE(MODELE   = MODE,
                                       DY = 0.,
                                       DZ = 0.),
                                    _F(GROUP_MA = 'BORDS',
-                                      DY = 0.)),);
+                                      DY = 0.)),)
 
 # Couple de 400 N.m exerce en bout de plaque
 F_FORCE = FORMULE(VALE='((Z-0.08)/0.08)*937500.',
@@ -87,7 +87,7 @@ ORI_GRIL=AFFE_CARA_ELEM(MODELE = MODE,
                                     ANGL_REP_1 = (0., 0.,),),
                                 _F(GROUP_MA    = 'MEMBRA_T',
                                     SECTION    = section/pas,
-                                    ANGL_REP_1 = (90., 0.,),),));
+                                    ANGL_REP_1 = (90., 0.,),),))
 
 #
 # ----------------------------------------------
@@ -139,7 +139,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    VALE_CALC=-8.39637862664E-05,
-                   
+
                    ),
                 ),
           )
@@ -152,7 +152,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='EPSI_NOEU',
                    NOM_CMP='EXX',
                    VALE_CALC=5.64030196185E-06,
-                   
+
                    ),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='POINT_2',
@@ -160,9 +160,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIXX',
                    VALE_CALC=1128060.39237,
-                   
+
                    ),
                 ),
           )
 
-FIN();
+FIN()

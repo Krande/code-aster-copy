@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 #  ANALYSE SPECTRALE MONO SUPPORTEE AVEC
 #  CORRECTION STATIQUE
 #
-POURSUITE(CODE='OUI');
+POURSUITE(CODE='OUI')
 
 #-----------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@ POURSUITE(CODE='OUI');
 
 MODE_CO=MODE_STATIQUE(MATR_MASS=MATRMASS,
                       PSEUDO_MODE=_F(AXE='X',),
-                      MATR_RIGI=MATRRIGI,);
+                      MATR_RIGI=MATRRIGI,)
 
 MODE_CO=CALC_CHAMP(reuse=MODE_CO,RESULTAT=MODE_CO,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
 
@@ -77,7 +77,7 @@ COABS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MODE_CORR=MODE_CO,
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COABS,
@@ -112,7 +112,7 @@ COSRS=COMB_SISM_MODAL(CORR_FREQ='NON',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
 
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COSRS,
@@ -146,7 +146,7 @@ CODPC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MONO_APPUI='OUI',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=CODPC,
@@ -180,7 +180,7 @@ COCQC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MONO_APPUI='OUI',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=COCQC,
@@ -215,7 +215,7 @@ CODSC=COMB_SISM_MODAL(CORR_FREQ='NON',
                       MONO_APPUI='OUI',
                       EXCIT=_F(AXE=(1.0,0.0,0.0),
                                SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),);
+                               ECHELLE=1.0,),)
 
 TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    RESULTAT=CODSC,
@@ -236,4 +236,4 @@ TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                 ),
           )
 
-FIN();
+FIN()

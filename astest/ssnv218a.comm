@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,50 +19,50 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('RUPTURE1_42', 'RUPTURE1_47'),
-);
+)
 
 
 # LECTURE ET MODIFICATION DU MAILLAGE POUR L'UTILISATION DE POST_GP
 # CUMUL DES COPEAUX
 
-MA=LIRE_MAILLAGE(FORMAT='MED' );
+MA=LIRE_MAILLAGE(FORMAT='MED' )
 
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
                  ORIE_PEAU =( _F( GROUP_MA_PEAU=('SINF'), ), ),
-                 );
+                 )
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA=('SLAT_S','SSUP_S','SAR',),),);
+              CREA_GROUP_NO=_F(GROUP_MA=('SLAT_S','SSUP_S','SAR',),),)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA=_F(UNION=('CO_1_1','CO_1_2',),NOM='CO_CUM'),);
+              CREA_GROUP_MA=_F(UNION=('CO_1_1','CO_1_2',),NOM='CO_CUM'),)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               DETR_GROUP_MA=_F(NOM='CO_1_2'),
-              CREA_GROUP_MA=_F(NOM='CO_1_2',UNION=('CO_CUM'),),);
+              CREA_GROUP_MA=_F(NOM='CO_1_2',UNION=('CO_CUM'),),)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,DETR_GROUP_MA=_F(NOM='CO_CUM'),
-              CREA_GROUP_MA=_F(UNION=('CO_2_1','CO_2_2',),NOM='CO_CUM'),);
+              CREA_GROUP_MA=_F(UNION=('CO_2_1','CO_2_2',),NOM='CO_CUM'),)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               DETR_GROUP_MA=_F(NOM='CO_2_2'),
-              CREA_GROUP_MA=_F(NOM='CO_2_2',UNION=('CO_CUM'),),);
+              CREA_GROUP_MA=_F(NOM='CO_2_2',UNION=('CO_CUM'),),)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,DETR_GROUP_MA=_F(NOM='CO_CUM'),
-              CREA_GROUP_MA=_F(UNION=('CO_3_1','CO_3_2',),NOM='CO_CUM'),);
+              CREA_GROUP_MA=_F(UNION=('CO_3_1','CO_3_2',),NOM='CO_CUM'),)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               DETR_GROUP_MA=_F(NOM='CO_3_2'),
-              CREA_GROUP_MA=_F(NOM='CO_3_2',UNION=('CO_CUM'),),);
+              CREA_GROUP_MA=_F(NOM='CO_3_2',UNION=('CO_CUM'),),)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,DETR_GROUP_MA=_F(NOM='CO_CUM'),
-              CREA_GROUP_MA=_F(UNION=('CO_4_1','CO_4_2',),NOM='CO_CUM'),);
+              CREA_GROUP_MA=_F(UNION=('CO_4_1','CO_4_2',),NOM='CO_CUM'),)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               DETR_GROUP_MA=_F(NOM='CO_4_2'),
-              CREA_GROUP_MA=_F(NOM='CO_4_2',UNION=('CO_CUM'),),);
+              CREA_GROUP_MA=_F(NOM='CO_4_2',UNION=('CO_CUM'),),)
 
 #
 #----------------  AFFECTATION MODELE MECANIQUE    --------------------
@@ -71,7 +71,7 @@ MA=DEFI_GROUP(reuse =MA,
 MOD=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=_F(GROUP_MA=('VBLOC','SINF'),
                  PHENOMENE='MECANIQUE',
-                 MODELISATION='3D',),);
+                 MODELISATION='3D',),)
 
 #---------------- DONNEES MECANIQUES ACIER  -------------------
 
@@ -97,12 +97,12 @@ SIGM3=DEFI_FONCTION(NOM_PARA='EPSI',
                     0.80379042 , 1396.8 ,
                     0.90379042 , 1418.7 ,
                     1.00379042 , 1438.7 ,
-                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                      ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 
 M_TR_M3=DEFI_MATERIAU(ELAS = _F(NU=0.3,
                                 E=223194,),
-                      TRACTION = _F(SIGM=SIGM3,),);
+                      TRACTION = _F(SIGM=SIGM3,),)
 
 #
 # DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS
@@ -112,7 +112,7 @@ M_TR_M3=DEFI_MATERIAU(ELAS = _F(NU=0.3,
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=3.,  NOMBRE=3,),
-                     ),);
+                     ),)
 
 
 # AFFECTATION DES PROPRIETES MECANIQUES
@@ -126,7 +126,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 #                 AFFE_VARC=_F(EVOL=RESU_T,NOM_VARC='TEMP',
 #                              VALE_REF=tpcal,
 #                              TOUT='OUI',),
-                            );
+                            )
 
 # CONDITIONS LIMITES
 # -------------------
@@ -138,7 +138,7 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
                                   _F(GROUP_NO='SSUP_S',
                                      DZ=0.,),
                                   _F(GROUP_NO='SAR',
-                                     DY=0.,),),);
+                                     DY=0.,),),)
 
 #
 # CHARGEMENT
@@ -150,11 +150,11 @@ RAMPE_LF=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=( 0.,     0.,
                           20.,   -2000.,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 CHARF=AFFE_CHAR_MECA_F(MODELE=MOD,
                        FORCE_FACE=_F(GROUP_MA='SINF',
-                                      FZ = RAMPE_LF,),);
+                                      FZ = RAMPE_LF,),)
 
 
 nufin = 3
@@ -173,12 +173,12 @@ RESX=STAT_NON_LINE(MODELE=MOD,
                                ITER_GLOB_MAXI=30),
                    SOLVEUR=_F(METHODE='MULT_FRONT',
                               RENUM='METIS',
-                              ),);
+                              ),)
 
 RESU = EXTR_RESU(RESULTAT=RESX,
                  ARCHIVAGE=_F(NUME_ORDRE=(
                  1,2,3,
-                 ),),);
+                 ),),)
 
 # POST_TRAITEMENT VIA CALC_GP
 # DEFINITION DU FOND DE FISSURE
@@ -190,12 +190,12 @@ FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
                        SYME='OUI',
                        NORMALE=(0.,0.,1.,),
                        LEVRE_SUP=_F(GROUP_MA='LEVREINF'),
-                       );
-                       
+                       )
+
 l_copeaux1 = ('CO_1_1','CO_1_2')
 l_copeaux4 = ('CO_4_1','CO_4_2')
 
-L_INS_GP = DEFI_LIST_REEL(VALE=[1.0,3.0],);
+L_INS_GP = DEFI_LIST_REEL(VALE=[1.0,3.0],)
 conv = 1000.**0.5
 kjc1=conv*57.739
 
@@ -216,10 +216,10 @@ tabgp=CALC_GP(RESULTAT=RESU,
                           _F(GROUP_MA=l_copeaux4,),
                           ),
             LIST_INST=L_INS_GP,
-            GPMAX     = CO('tab2max'),);
+            GPMAX     = CO('tab2max'),)
 
 
-IMPR_TABLE(TABLE=tabgp);
+IMPR_TABLE(TABLE=tabgp)
 IMPR_TABLE(TABLE=gtheta,UNITE=8)
 #Test du calcul de G
 TEST_TABLE(VALE_CALC=20.69454398473108,
@@ -326,4 +326,4 @@ TEST_TABLE(VALE_CALC=0.761443594485,
            )
 
 
-FIN();
+FIN()

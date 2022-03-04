@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,22 +25,22 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 #
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=20000.0,
                           NU=0.3,
-                          ALPHA=0.01,),);
+                          ALPHA=0.01,),)
 #
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 #
 
 CHAR = AFFE_CHAR_MECA(MODELE=MO,
@@ -49,7 +49,7 @@ CHAR = AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='SPHINF',
                                  DY=2.0,),
                               _F(GROUP_NO='AXE',
-                                 DX=0.0,),),);
+                                 DX=0.0,),),)
 
 CHA2=DEFI_CONTACT(MODELE      = MO,
                   FORMULATION = 'DISCRETE',
@@ -59,7 +59,7 @@ CHA2=DEFI_CONTACT(MODELE      = MO,
                                GROUP_MA_MAIT='CON1',
                                GROUP_MA_ESCL='CON2',
                                E_N = 1E10),
-                    INFO=2,);
+                    INFO=2,)
 #
 
 CHA3=DEFI_CONTACT(MODELE      = MO,
@@ -70,7 +70,7 @@ CHA3=DEFI_CONTACT(MODELE      = MO,
                                GROUP_MA_MAIT='CON1',
                                GROUP_MA_ESCL='CON2',
                                E_N = 1E10,),
-                    INFO=2,);
+                    INFO=2,)
 #
 
 CHA4=DEFI_CONTACT(MODELE      = MO,
@@ -79,7 +79,7 @@ CHA4=DEFI_CONTACT(MODELE      = MO,
                                ALGO_CONT='CONTRAINTE',
                                GROUP_MA_MAIT='CON1',
                                GROUP_MA_ESCL='CON2',),
-                    INFO=2,);
+                    INFO=2,)
 #
 
 CHA5=DEFI_CONTACT(MODELE      = MO,
@@ -90,17 +90,17 @@ CHA5=DEFI_CONTACT(MODELE      = MO,
                                ALGO_CONT='CONTRAINTE',
                                GROUP_MA_MAIT='CON1',
                                GROUP_MA_ESCL='CON2',),
-                    INFO=2,);
+                    INFO=2,)
 #
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           1.0,1.0,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 #
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.,
-                                    NOMBRE=10,),);
+                                    NOMBRE=10,),)
 #
 
 RESU2=STAT_NON_LINE(MODELE=MO,
@@ -114,7 +114,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(),);
+                    SOLVEUR=_F(),)
 
 RESU2=CALC_CHAMP(reuse=RESU2,RESULTAT=RESU2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -124,14 +124,14 @@ SIELGA2=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU2,
                    NOM_CHAM='SIEF_ELGA',
-                   NUME_ORDRE=10,);
+                   NUME_ORDRE=10,)
 #
 
 SIELNO2=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU2,
                    NOM_CHAM='SIGM_ELNO',
-                   NUME_ORDRE=10,);
+                   NUME_ORDRE=10,)
 # TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
 
 TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N291',
@@ -201,7 +201,7 @@ RESU3=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(),);
+                    SOLVEUR=_F(),)
 
 RESU3=CALC_CHAMP(reuse=RESU3,RESULTAT=RESU3,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -211,14 +211,14 @@ SIELGA3=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU3,
                    NOM_CHAM='SIEF_ELGA',
-                   NUME_ORDRE=10,);
+                   NUME_ORDRE=10,)
 #
 
 SIELNO3=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU3,
                    NOM_CHAM='SIGM_ELNO',
-                   NUME_ORDRE=10,);
+                   NUME_ORDRE=10,)
 
 TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N291',
                        CRITERE='RELATIF',
@@ -287,7 +287,7 @@ RESU4=STAT_NON_LINE(MODELE=MO,INFO=2,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(),);
+                    SOLVEUR=_F(),)
 
 RESU4=CALC_CHAMP(reuse=RESU4,RESULTAT=RESU4,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -297,14 +297,14 @@ SIELGA4=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU4,
                    NOM_CHAM='SIEF_ELGA',
-                   NUME_ORDRE=10,);
+                   NUME_ORDRE=10,)
 #
 
 SIELNO4=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU4,
                    NOM_CHAM='SIGM_ELNO',
-                   NUME_ORDRE=10,);
+                   NUME_ORDRE=10,)
 
 TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N291',
                        CRITERE='RELATIF',
@@ -375,7 +375,7 @@ RESU5=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(MATRICE='ELASTIQUE',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(),);
+                    SOLVEUR=_F(),)
 
 RESU5=CALC_CHAMP(reuse=RESU5,RESULTAT=RESU5,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -385,14 +385,14 @@ SIELGA5=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU5,
                    NOM_CHAM='SIEF_ELGA',
-                   NUME_ORDRE=10,);
+                   NUME_ORDRE=10,)
 #
 
 SIELNO5=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=RESU5,
                    NOM_CHAM='SIGM_ELNO',
-                   NUME_ORDRE=10,);
+                   NUME_ORDRE=10,)
 
 TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N291',
                        CRITERE='RELATIF',
@@ -451,5 +451,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
           )
 
 
-FIN();
+FIN()
 #

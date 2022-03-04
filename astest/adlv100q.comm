@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ COLONNE=AFFE_MODELE(MAILLAGE=MAYA,
                              PHENOMENE = 'MECANIQUE',
                              FORMULATION = 'U_P'),
                           _F(GROUP_MA = ('COUPLAIR',  'COUPLEAU',),
-                             MODELISATION = 'AXIS_FLUI_STRU', 
+                             MODELISATION = 'AXIS_FLUI_STRU',
                              PHENOMENE = 'MECANIQUE',
                              FORMULATION = 'U_P'),
                           _F(GROUP_MA = 'PISTON',
@@ -59,7 +59,7 @@ COLONNE=AFFE_MODELE(MAILLAGE=MAYA,
                     )
 
 SURFLIBR=AFFE_CHAR_MECA( MODELE=COLONNE,
-#             DDL_IMPO:(GROUP_NO:NOEUSURF  PRES:0.  PHI:0.));
+#             DDL_IMPO:(GROUP_NO:NOEUSURF  PRES:0.  PHI:0.))
 #  -- POUR TESTER LIAISON_UNIF :
               DDL_IMPO=_F( GROUP_NO = 'N19',  PRES = 0.,),
               LIAISON_UNIF=_F( GROUP_NO = 'NOEUSURF', DDL = ('PRES',)))
@@ -109,7 +109,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=2.406165E-3,
-           
+
            NOM_PARA='IZ_G',
            TABLE=MASSES,)
 

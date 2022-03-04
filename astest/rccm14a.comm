@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ COURFATA = FORMULE(VALE='5.E5/SIGM ',
 
 L_INST=DEFI_LIST_REEL(  DEBUT=1.,
                         INTERVALLE=_F(  JUSQU_A = 1000., PAS = 0.1) )
-                           
+
 FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
                           NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
@@ -42,36 +42,36 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                               SY_02 = 200.)
                                )
 
-# CONTRAINTES THERMIQUES SITU 1                            
+# CONTRAINTES THERMIQUES SITU 1
 T_TH1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=1,)
 
-# CONTRAINTES THERMIQUES SITU 2                        
+# CONTRAINTES THERMIQUES SITU 2
 T_TH2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=2,)
 
-# CONTRAINTES THERMIQUES SITU 1                            
+# CONTRAINTES THERMIQUES SITU 1
 T_TH3 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=3,)
 
-# CONTRAINTES THERMIQUES SITU 2                        
+# CONTRAINTES THERMIQUES SITU 2
 T_TH4 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=4,)
 
 
-# CONTRAINTES "MX" UNITAIRES           
+# CONTRAINTES "MX" UNITAIRES
 T_MX = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=5,)
 
-# CONTRAINTES "MY" UNITAIRES                           
+# CONTRAINTES "MY" UNITAIRES
 T_MY = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=6,)
-                      
-# CONTRAINTES "MZ" UNITAIRES                            
+
+# CONTRAINTES "MZ" UNITAIRES
 T_MZ = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=7,)
 
-# CONTRAINTES "PRES" UNITAIRES                            
+# CONTRAINTES "PRES" UNITAIRES
 T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=8,)
 
@@ -141,9 +141,9 @@ FAT=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
-IMPR_TABLE(    TABLE=FAT,) 
+IMPR_TABLE(    TABLE=FAT,)
 
 # UN SEUL GROUPE ET UNE SITUATION NON COMBINABLE
 # PLUS LES SOUS_CYCLES
@@ -178,11 +178,11 @@ FATss=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
 IMPR_TABLE(    TABLE=FATss,
            FILTRE=(_F(NOM_PARA='TYPE',
-                      VALE_K='SITU',),),) 
+                      VALE_K='SITU',),),)
 
 # UN SEUL GROUPE ET UNE SITUATION NON COMBINABLE
 # PLUS LES SOUS_CYCLES
@@ -217,11 +217,11 @@ FATssb=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.0,
-                     PRES_B=0.0,),),);
+                     PRES_B=0.0,),),)
 
 IMPR_TABLE(    TABLE=FATssb,
            FILTRE=(_F(NOM_PARA='TYPE',
-                      VALE_K='SITU',),),) 
+                      VALE_K='SITU',),),)
 
 # CALCUL DE FATIGUE POUR LES SITUATIONS 1,2,3
 # METHODE TOUT_INST
@@ -289,9 +289,9 @@ FATb=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
-IMPR_TABLE(    TABLE=FATb,) 
+IMPR_TABLE(    TABLE=FATb,)
 
 # CALCUL DE FATIGUE POUR LES SITUATIONS 1,2,3
 # METHODE TOUT_INST
@@ -358,9 +358,9 @@ FATc=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
-IMPR_TABLE(    TABLE=FATc,) 
+IMPR_TABLE(    TABLE=FATc,)
 
 # CALCUL DE FATIGUE POUR LES SITUATIONS 1,2,3
 # METHODE TOUT_INST
@@ -423,15 +423,15 @@ FATd=POST_RCCM( MATER=MAT,
                   _F(NB_OCCUR=10,
                      NUME_SITU=3,
                      NOM_SITU='Situation3',
-                     NUME_PARTAGE = 1, 
+                     NUME_PARTAGE = 1,
                      NUME_GROUPE=2,
                      NUME_RESU_THER = 2,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
-IMPR_TABLE(    TABLE=FATd,) 
+IMPR_TABLE(    TABLE=FATd,)
 
 # CALCUL DE FATIGUE POUR LES SITUATIONS 1,2,3
 # METHODE TOUT_INST
@@ -485,7 +485,7 @@ FATe=POST_RCCM( MATER=MAT,
                   _F(NB_OCCUR=10,
                      NUME_SITU=2,
                      NOM_SITU='Situation2',
-                     NUME_PARTAGE = 1, 
+                     NUME_PARTAGE = 1,
                      NUME_GROUPE=2,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
@@ -495,15 +495,15 @@ FATe=POST_RCCM( MATER=MAT,
                   _F(NB_OCCUR=10,
                      NUME_SITU=3,
                      NOM_SITU='Situation3',
-                     NUME_PARTAGE = 1, 
+                     NUME_PARTAGE = 1,
                      NUME_GROUPE=2,
                      NUME_RESU_THER = 2,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
-IMPR_TABLE(    TABLE=FATe,) 
+IMPR_TABLE(    TABLE=FATe,)
 
 # CALCUL DE FATIGUE POUR LES SITUATIONS 1,2,3
 # METHODE TOUT_INST
@@ -557,7 +557,7 @@ FATf=POST_RCCM( MATER=MAT,
                   _F(NB_OCCUR=7,
                      NUME_SITU=2,
                      NOM_SITU='Situation2',
-                     NUME_PARTAGE = 1, 
+                     NUME_PARTAGE = 1,
                      NUME_GROUPE=1,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
@@ -567,17 +567,17 @@ FATf=POST_RCCM( MATER=MAT,
                   _F(NB_OCCUR=10,
                      NUME_SITU=3,
                      NOM_SITU='Situation3',
-                     NUME_PARTAGE = 1, 
+                     NUME_PARTAGE = 1,
                      NUME_GROUPE=2,
                      NUME_RESU_THER = 2,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
-IMPR_TABLE(    TABLE=FATf,) 
+IMPR_TABLE(    TABLE=FATf,)
 
-# CALCUL DE FATIGUE 
+# CALCUL DE FATIGUE
 # METHODE TOUT_INST
 # 5 GROUPES ET UNE SITUATION DE PASSAGE
 FATg=POST_RCCM( MATER=MAT,
@@ -669,9 +669,9 @@ FATg=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=5,
                      CHAR_ETAT_B=6,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
-IMPR_TABLE(    TABLE=FATg,) 
+IMPR_TABLE(    TABLE=FATg,)
 
 #--------------------------------------------------------------------------------
 #   TEST SUR UNITAIRE (SOLUTION DE REFERENCE ANALYTIQUE)
@@ -682,7 +682,7 @@ IMPR_TABLE(    TABLE=FATg,)
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=127.50000000,
            VALE_REFE=127.5,
-           NOM_PARA='SN_MAX', 
+           NOM_PARA='SN_MAX',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FAT,)
@@ -690,7 +690,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=395.00000000,
            VALE_REFE=395.0,
-           NOM_PARA='SN_MAX', 
+           NOM_PARA='SN_MAX',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT,)
@@ -698,7 +698,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=165.00000000,
            VALE_REFE=165.0,
-           NOM_PARA='SN*_MAX', 
+           NOM_PARA='SN*_MAX',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FAT,)
@@ -706,7 +706,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=295.00000000,
            VALE_REFE=295.0,
-           NOM_PARA='SN*_MAX', 
+           NOM_PARA='SN*_MAX',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT,)
@@ -714,7 +714,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=150.00000000,
            VALE_REFE=150.0,
-           NOM_PARA='SP_MAX', 
+           NOM_PARA='SP_MAX',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FAT,)
@@ -722,7 +722,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=410.00000000,
            VALE_REFE=410.0,
-           NOM_PARA='SP_MAX', 
+           NOM_PARA='SP_MAX',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT,)
@@ -730,7 +730,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=75.00000000,
            VALE_REFE=75.0,
-           NOM_PARA='SALT_MAX', 
+           NOM_PARA='SALT_MAX',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FAT,)
@@ -738,7 +738,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=205.00000000,
            VALE_REFE=205.0,
-           NOM_PARA='SALT_MAX', 
+           NOM_PARA='SALT_MAX',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT,)
@@ -746,7 +746,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00230000000,
            VALE_REFE=0.00230,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FAT,)
@@ -754,7 +754,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00668000000,
            VALE_REFE=0.00668,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT,)
@@ -765,7 +765,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=105.00000000,
            VALE_REFE=105.0,
-           NOM_PARA='SN', 
+           NOM_PARA='SN',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
                     _F(NOM_PARA='TYPE',
@@ -778,7 +778,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=55.00000000,
            VALE_REFE=55.0,
-           NOM_PARA='SALT', 
+           NOM_PARA='SALT',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
                     _F(NOM_PARA='TYPE',
@@ -791,7 +791,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000260000,
            VALE_REFE=0.00026,
-           NOM_PARA='FU_UNIT', 
+           NOM_PARA='FU_UNIT',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
                     _F(NOM_PARA='TYPE',
@@ -804,7 +804,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00260000,
            VALE_REFE=0.0026,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
                     ),
@@ -813,7 +813,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=307.50000000,
            VALE_REFE=307.5,
-           NOM_PARA='SN', 
+           NOM_PARA='SN',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
                     _F(NOM_PARA='TYPE',
@@ -826,7 +826,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=170.00000000,
            VALE_REFE=170.0,
-           NOM_PARA='SALT', 
+           NOM_PARA='SALT',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
                     _F(NOM_PARA='TYPE',
@@ -839,7 +839,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.001090000,
            VALE_REFE=0.00109,
-           NOM_PARA='FU_UNIT', 
+           NOM_PARA='FU_UNIT',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
                     _F(NOM_PARA='TYPE',
@@ -852,7 +852,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.01090000,
            VALE_REFE=0.0109,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
                     ),
@@ -865,7 +865,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=112.50000000,
            VALE_REFE=112.5,
-           NOM_PARA='SN', 
+           NOM_PARA='SN',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
                     _F(NOM_PARA='TYPE',
@@ -878,7 +878,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=75.00000000,
            VALE_REFE=75.0,
-           NOM_PARA='SALT', 
+           NOM_PARA='SALT',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
                     _F(NOM_PARA='TYPE',
@@ -891,7 +891,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00415000,
            VALE_REFE=0.00415,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
                     ),
@@ -900,7 +900,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=37.50000000,
            VALE_REFE=37.5,
-           NOM_PARA='SN', 
+           NOM_PARA='SN',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
                     _F(NOM_PARA='TYPE',
@@ -914,7 +914,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00000000,
            VALE_REFE=0.0,
            NOM_PARA='SALT',
-           ORDRE_GRANDEUR=1.0e-6,   
+           ORDRE_GRANDEUR=1.0e-6,
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
                     _F(NOM_PARA='TYPE',
@@ -928,7 +928,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.0023000000,
            VALE_REFE=0.0023,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FATb,)
@@ -936,7 +936,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00668000000,
            VALE_REFE=0.00668,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FATb,)
@@ -945,7 +945,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00215000000,
            VALE_REFE=0.00215,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FATc,)
@@ -953,7 +953,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00627000000,
            VALE_REFE=0.00627,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FATc,)
@@ -962,7 +962,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.0023000000,
            VALE_REFE=0.0023,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FATd,)
@@ -970,7 +970,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00668000000,
            VALE_REFE=0.00668,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FATd,)
@@ -979,7 +979,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.0027500000,
            VALE_REFE=0.00275,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FATe,)
@@ -987,7 +987,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00791000000,
            VALE_REFE=0.00791,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FATe,)
@@ -996,7 +996,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.0015300000,
            VALE_REFE=0.00153,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FATf,)
@@ -1004,7 +1004,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.0043000000,
            VALE_REFE=0.0043,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FATf,)
@@ -1013,7 +1013,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00215000000,
            VALE_REFE=0.00215,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),),
            TABLE=FATg,)
@@ -1021,7 +1021,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00627000000,
            VALE_REFE=0.00627,
-           NOM_PARA='FU_TOTAL', 
+           NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FATg,)

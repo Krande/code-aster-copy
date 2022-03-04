@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -102,22 +102,22 @@ LISPOST=DEFI_LIST_REEL(VALE=(
 #          T100_000ANS,
 #          T500_000ANS,
 #          TMILLION,
-          ));
+          ))
 
-UN=DEFI_CONSTANTE(VALE=1.0);
-ZERO=DEFI_CONSTANTE(VALE=0.0);
+UN=DEFI_CONSTANTE(VALE=1.0)
+ZERO=DEFI_CONSTANTE(VALE=0.0)
 
-VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3);
-VISCOGAZ=DEFI_CONSTANTE(VALE=9.E-06);
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3)
+VISCOGAZ=DEFI_CONSTANTE(VALE=9.E-06)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0);
-DVISCOG=DEFI_CONSTANTE(VALE=0.0);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0)
+DVISCOG=DEFI_CONSTANTE(VALE=0.0)
 
-HENRY=DEFI_CONSTANTE(VALE=130719.);
+HENRY=DEFI_CONSTANTE(VALE=130719.)
 
-KINT=DEFI_CONSTANTE(VALE=5.E-20);
+KINT=DEFI_CONSTANTE(VALE=5.E-20)
 
-FICKWAR=DEFI_CONSTANTE ( VALE = 0.45E-9);
+FICKWAR=DEFI_CONSTANTE ( VALE = 0.45E-9)
 FLUGAZ=5.57E-6/(365.*24.*3600.)    #FLUGAZ=1.766E-13KG.M^2.S^-1
 
 #*********************************************************
@@ -135,7 +135,7 @@ FLUXG = DEFI_FONCTION ( NOM_PARA  = 'INST' ,
 #   TSIM             ,  0. ,
    ),
             PROL_DROITE ='EXCLU' ,
-            PROL_GAUCHE ='EXCLU' );
+            PROL_GAUCHE ='EXCLU' )
 
 #================================
 # FICK DANS LE MELANGE LIQUIDE
@@ -143,7 +143,7 @@ FLUXG = DEFI_FONCTION ( NOM_PARA  = 'INST' ,
 LI2  = DEFI_LIST_REEL ( DEBUT      = 0.4,
                        INTERVALLE = (
                          _F( JUSQU_A = 0.99999 , NOMBRE = 2000),
-                                    ));
+                                    ))
 
 
 # ================================
@@ -157,7 +157,7 @@ FAS   = CALC_FONC_INTERP ( FONCTION     =  FFAS      ,
                            NOM_PARA     = 'SAT'      ,
                            PROL_GAUCHE  = 'CONSTANT' ,
                            PROL_DROITE  = 'CONSTANT' ,
-                           INFO         = 2          );
+                           INFO         = 2          )
 
 #
 #
@@ -194,7 +194,7 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
  _F( JUSQU_A = T400_000ANS , NOMBRE = 40 ),          #DT=5000 ANS
  _F( JUSQU_A = T500_000ANS , NOMBRE = 20 ),          #DT=15000 ANS
  _F( JUSQU_A = TMILLION , NOMBRE = 30 ),             #DT=16666 ANS
-                     ));
+                     ))
 
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
                                 ECHEC=_F(ACTION        = 'DECOUPE',
@@ -210,7 +210,7 @@ LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
 #*********************
 
 
-MAILINI=LIRE_MAILLAGE(FORMAT='MED');
+MAILINI=LIRE_MAILLAGE(FORMAT='MED')
 MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
           MODI_MAILLE=(
            _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ'),
@@ -245,7 +245,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
       'N979','N980','N981','N982','N983','N984','N985','N986','N987','N988',
       'N989','N990','N991','N992','N993','N994','N995','N996','N997','N998',
       'N999','N1000','N1001','N1002','N1003')),
-              ));
+              ))
 
 
 #*********************************************************
@@ -255,7 +255,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION=MODELISA));
+                           MODELISATION=MODELISA))
 
 
 
@@ -310,7 +310,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                                    FICKA_T= FICKWAR,
                                    FICKA_S  = FAS   ,
                                    LAMB_TL=ZERO,
-                                   LAMB_TT=ZERO,),);
+                                   LAMB_TT=ZERO,),)
 #****************************************************************
 # AFFECTATION DES MATERIAUX
 #****************************************************************
@@ -318,7 +318,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=(_F(GROUP_MA='TOUT',
                               MATER=MATER),
-                              ));
+                              ))
 
 #*************************************************************
 # AFFECTATION DE L ETAT INITIAL
@@ -335,7 +335,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                           _F(GROUP_NO='TOUT',
                              NOM_CMP='PRE2',
                              VALE=0.),
-                             ));
+                             ))
 
 
 #*************************************************************
@@ -348,7 +348,7 @@ CHG = AFFE_CHAR_MECA ( MODELE = MODELE ,
                                          GROUP_MA  = 'GAUCHE' ,
                                     FLUN_HYDR2 = 1.0 ,
                                    )
-                   );
+                   )
 
 
 
@@ -359,7 +359,7 @@ CHIMP = AFFE_CHAR_MECA ( MODELE = MODELE ,
                               _F ( GROUP_MA = 'DROIT',
                                    PRE2   = 0. ),
                                   ),
-                     );
+                     )
 
 
 #
@@ -379,7 +379,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  SCHEMA_THM=_F(PARM_THETA=1.,
                                PARM_ALPHA=PARM_ALPHA,),
                  COMPORTEMENT=_F(RELATION='KIT_HH2',
-                              
+
                               ITER_INTE_MAXI=5,
                               RELATION_KIT=(LOI,'HYDR_VGM')),
 
@@ -405,7 +405,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                                  PAS_OBSE=1,NOEUD=NOEUD_G)),
 
 
-               );
+               )
 
 #*************************************************************
 # IMPRESSIONS
@@ -418,13 +418,13 @@ PR1_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
          NOM_CHAM='DEPL',
          LIST_INST=LISPOST,
          NOM_CMP=('PRE1'),
-         OPERATION='EXTRACTION'));
+         OPERATION='EXTRACTION'))
 
 IMPR_TABLE(TABLE=PR1_BAS,
        FORMAT   = 'TABLEAU_CROISE'    ,
        NOM_PARA=('INST','COOR_X','PRE1'),
        TRI   = (_F( NOM_PARA = ('COOR_X' ),
-       ORDRE    = 'CROISSANT')));
+       ORDRE    = 'CROISSANT')))
 
 
 
@@ -434,12 +434,12 @@ PR2_BAS=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
          NOM_CHAM='DEPL',
          LIST_INST=LISPOST,
          NOM_CMP=('PRE2'),
-         OPERATION='EXTRACTION'));
+         OPERATION='EXTRACTION'))
 IMPR_TABLE(TABLE=PR2_BAS,
        FORMAT   = 'TABLEAU_CROISE'    ,
        NOM_PARA=('INST','COOR_X','PRE2'),
        TRI   = (_F( NOM_PARA = ('COOR_X' ),
-       ORDRE    = 'CROISSANT')));
+       ORDRE    = 'CROISSANT')))
 
 
 #=================PC======================

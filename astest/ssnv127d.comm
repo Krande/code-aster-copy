@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 
-SSNV127D=LIRE_MAILLAGE(FORMAT='MED',);
+SSNV127D=LIRE_MAILLAGE(FORMAT='MED',)
 #
 #
 
@@ -49,7 +49,7 @@ SSNV127D=DEFI_GROUP(reuse =SSNV127D,
                                       OPTION='NOEUD_ORDO',
                                       NOM='RELEVE',
                                       GROUP_NO_ORIG='A1',
-                                      GROUP_NO_EXTR='B2',),),);
+                                      GROUP_NO_EXTR='B2',),),)
 
 # POUR ELIMINER LES NOEUDS COMMUNS AUX SURFACES DE CONTACT
 SSNV127D=DEFI_GROUP(reuse=SSNV127D,
@@ -71,17 +71,17 @@ SSNV127D=DEFI_GROUP(reuse=SSNV127D,
 MO=AFFE_MODELE(MAILLAGE=SSNV127D,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 SSNV127D=MODI_MAILLAGE(reuse =SSNV127D,
                        MAILLAGE=SSNV127D,
                        ORIE_PEAU=_F(GROUP_MA_PEAU='BCC1',),
-                      );
+                      )
 
 SSNV127D=MODI_MAILLAGE(reuse =SSNV127D,
                        MAILLAGE=SSNV127D,
                        ORIE_PEAU=_F(GROUP_MA_PEAU='BCC2',),
-                      );
+                      )
 #_____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX
@@ -91,14 +91,14 @@ SSNV127D=MODI_MAILLAGE(reuse =SSNV127D,
 
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
-                           NU=0.29999999999999999,),);
+                           NU=0.29999999999999999,),)
 #
 #
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV127D,
                     AFFE=_F(GROUP_MA='SURFF',
-                            MATER=MAT1,),);
+                            MATER=MAT1,),)
 #_____________________________________________________________________
 #
 #                    AFFECTATION DES CONDITIONS AUX LIMITES
@@ -125,7 +125,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='BD4',
                                  DX=0.0,),),
                     FORCE_NODALE=_F(GROUP_NO='O2',
-                                    FY=-9.37500E5,),);
+                                    FY=-9.37500E5,),)
 #
 #
 
@@ -144,7 +144,7 @@ CHA2=DEFI_CONTACT(MODELE      = MO,
                            GROUP_MA_ESCL = 'BCC2',
                            SANS_GROUP_NO = 'BCC_SGN',
                          ),
-                  );
+                  )
 
 #
 #_____________________________________________________________________
@@ -158,11 +158,11 @@ CHA2=DEFI_CONTACT(MODELE      = MO,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 #_____________________________________________________________________
 #
 #                            RESOLUTION
@@ -184,7 +184,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 SOLVEUR=_F(
                            METHODE='LDLT'),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=50),
-                );
+                )
 
 U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),RESULTAT=U)
 
@@ -198,7 +198,7 @@ TPRESS=POST_RELEVE_T(ACTION=_F(INTITULE='PRESS',
                               NOM_CHAM='SIGM_ELNO',
                               NOM_CMP='SIXX',
                               REPERE='POLAIRE',
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
 
 
 TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
@@ -207,7 +207,7 @@ TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               INST=1.,
                               NOM_CHAM='CONT_NOEU',
                               TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION',),);
+                              OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=TPRESS)
 IMPR_TABLE(TABLE=TCONT)
@@ -485,4 +485,4 @@ TEST_TABLE(
                    ),
            )
 
-FIN();
+FIN()

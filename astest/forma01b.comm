@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,22 +24,22 @@ DEBUT(CODE=_F(
 ),DEBUG=_F(SDVERI='OUI'))
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                         NU=0.3,),);
+                         NU=0.3,),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),);
+                         MODELISATION='C_PLAN',),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),)
 
 MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MA,),);
+                           MATER=MA,),)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODE,
                     DDL_IMPO=(_F(GROUP_MA='bas',
@@ -47,26 +47,26 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODE,
                               _F(GROUP_MA='gauche',
                                  DX=0.0,),),
                     PRES_REP=_F(GROUP_MA='haut',
-                                PRES=-100.0,),);
+                                PRES=-100.0,),)
 
 RESU=MECA_STATIQUE(MODELE=MODE,
                    CHAM_MATER=MATE,
-                   EXCIT=_F(CHARGE=CHAR,),);
+                   EXCIT=_F(CHARGE=CHAR,),)
 
 RESU=CALC_CHAMP(reuse =RESU,
                 RESULTAT=RESU,
                 CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
-                CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU',),);
+                CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU',),)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=RESU,
-                  NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),);
+                  NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),)
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
-                 OPTION='ERME_ELEM',);
+                 OPTION='ERME_ELEM',)
 
 MACR_ADAP_MAIL(MAILLAGE_N=MAIL,
                MAILLAGE_NP1=CO('MAIL2'),
@@ -74,16 +74,16 @@ MACR_ADAP_MAIL(MAILLAGE_N=MAIL,
                RESULTAT_N=RESU,
                NOM_CHAM='ERME_ELEM',
                NOM_CMP='ERREST',
-               CRIT_RAFF_PE=0.1,);
+               CRIT_RAFF_PE=0.1,)
 
 MODE2=AFFE_MODELE(MAILLAGE=MAIL2,
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='C_PLAN',),);
+                          MODELISATION='C_PLAN',),)
 
 MATE2=AFFE_MATERIAU(MAILLAGE=MAIL2,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MA,),);
+                            MATER=MA,),)
 
 CHAR2=AFFE_CHAR_MECA(MODELE=MODE2,
                      DDL_IMPO=(_F(GROUP_MA='bas',
@@ -91,26 +91,26 @@ CHAR2=AFFE_CHAR_MECA(MODELE=MODE2,
                                _F(GROUP_MA='gauche',
                                   DX=0.0,),),
                      PRES_REP=_F(GROUP_MA='haut',
-                                 PRES=-100.0,),);
+                                 PRES=-100.0,),)
 
 RESU2=MECA_STATIQUE(MODELE=MODE2,
                     CHAM_MATER=MATE2,
-                    EXCIT=_F(CHARGE=CHAR2,),);
+                    EXCIT=_F(CHARGE=CHAR2,),)
 
 RESU2=CALC_CHAMP(reuse =RESU2,
                  RESULTAT=RESU2,
                  CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
-                 CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU',),);
+                 CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU',),)
 
 RESU3=CALC_ERREUR(
                   RESULTAT=RESU2,
-                  OPTION='ERME_ELEM',);
+                  OPTION='ERME_ELEM',)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
           RESU=_F(MAILLAGE=MAIL2,
                   RESULTAT=RESU2,
-                  NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),);
+                  NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='B',
@@ -160,4 +160,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=0.035,),
           )
 
-FIN();
+FIN()

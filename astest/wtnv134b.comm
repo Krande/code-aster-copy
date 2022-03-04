@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,21 +26,21 @@ poro = 0.425 ;  # porosite
 rhol = 1000. ;  # masse volumique du fluide
 kin  = 1.E-8 ;  # permeabilite intrinsinque
 k_w  = 1.E10 ;  # module de compressibilite de l'eau
-#UNSURK = 1/k_w ;
-UNSURK = 1.E-12 ;
-visco  = 0.001   ;
-dvisco = 0.0     ;
-k_int    = DEFI_CONSTANTE(VALE=kin)   ;
-viscoliq = DEFI_CONSTANTE(VALE=visco) ;
-dviscoli = DEFI_CONSTANTE(VALE=dvisco);
+#UNSURK = 1/k_w
+UNSURK = 1.E-12
+visco  = 0.001
+dvisco = 0.0
+k_int    = DEFI_CONSTANTE(VALE=kin)
+viscoliq = DEFI_CONSTANTE(VALE=visco)
+dviscoli = DEFI_CONSTANTE(VALE=dvisco)
 
 
 # modules mecaniques [Pa]
-K = 516.2E6 ;
-G = 238.2E6 ;
+K = 516.2E6
+G = 238.2E6
 # =>
-YOUNG   = 9.*K*G /(3.*K+G)        ;
-POISSON = (3.*K-2.*G) /(6.*K+2.*G);
+YOUNG   = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
 
 degr  = pi /180.
 M     = sin(degr*31.)
@@ -51,9 +51,9 @@ kapa  = lambd /2.
 print('young=',YOUNG,' /// nu=',POISSON)
 
 # pression de preconsolidation [en Pa]
-PCR = -1.E6 ;
+PCR = -1.E6
 
-PCO =  3.E4 ;
+PCO =  3.E4
 
 # cohesion
 r_ela =0.005
@@ -95,12 +95,12 @@ TEMPS1o=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A = 210.,NOMBRE = 50),
                                   _F(JUSQU_A = 220.,NOMBRE = 100),
                                   _F(JUSQU_A = 230.,NOMBRE = 100),
-                                  _F(JUSQU_A = 240.,NOMBRE = 100),));
+                                  _F(JUSQU_A = 240.,NOMBRE = 100),))
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = 50., NOMBRE = 50),
                                   _F(JUSQU_A = 55., NOMBRE = 1),
-                                  ));
+                                  ))
 
 
 #***********************************************************************
@@ -139,7 +139,7 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                    THM_LIQU=_F(RHO         = rhol,
                                UN_SUR_K    = UNSURK,
                                VISC        = viscoliq,
-                               D_VISC_TEMP = dviscoli,),);
+                               D_VISC_TEMP = dviscoli,),)
 
 SOL1=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                   HUJEUX=_F(N        = 0.4,
@@ -175,14 +175,14 @@ SOL1=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                    THM_LIQU=_F(RHO         = rhol,
                                UN_SUR_K    = UNSURK,
                                VISC        = viscoliq,
-                               D_VISC_TEMP = dviscoli,),);
+                               D_VISC_TEMP = dviscoli,),)
 
 COEF1=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, -PCO,
-                          10.0, -PCO,),);
+                          10.0, -PCO,),)
 
-dsig = 1.5E+4;
+dsig = 1.5E+4
 
 COEF3=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
@@ -210,14 +210,14 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
                           210.0, -PCO+dsig,
                           220.0, -PCO-dsig,
                           230.0, -PCO+dsig,
-                          240.0, -PCO-dsig,),);
+                          240.0, -PCO-dsig,),)
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS1 ),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS      = 10,
-                                 SUBD_NIVEAU   = 10,),);
+                                 SUBD_NIVEAU   = 10,),)
 
 
 DEFLIST=DEFI_LIST_INST(METHODE='AUTO',
@@ -226,7 +226,7 @@ DEFLIST=DEFI_LIST_INST(METHODE='AUTO',
                                 ACTION        = 'DECOUPE',
                                 SUBD_METHODE  = 'MANUEL',
                                 SUBD_PAS=10),
-                        );
+                        )
 
 
 b=1.
@@ -279,7 +279,7 @@ TAB_SIG=SIMU_POINT_MAT(INFO=1,
                                EPZZ=0,
                                EPXY=0,
                                EPXZ=0,
-                               EPYZ=0,),);
+                               EPYZ=0,),)
 
 
 #-------------------------
@@ -531,8 +531,8 @@ TEST_TABLE(CRITERE='RELATIF',
                      NOM_PARA='INST',
                      VALE=55.0,),)
 
-IMPR_TABLE(TABLE=TAB_SIG,);
+IMPR_TABLE(TABLE=TAB_SIG,)
 
 
 
-FIN();
+FIN()

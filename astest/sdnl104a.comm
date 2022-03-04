@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,7 +202,7 @@ t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA,
                 RESULTAT=DNL,
-                );
+                )
 
 
 TEST_TABLE(VALE_CALC=0.0514081404196,

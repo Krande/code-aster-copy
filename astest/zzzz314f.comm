@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
                         _F(LISTE_R=vdirX,PARA='VDIRX'),
                         _F(LISTE_R=vdirY,PARA='VDIRY') ,
                         _F(LISTE_R=vdirZ,PARA='VDIRZ'),
-                        ),);
+                        ),)
 
 # Calcul des valeurs analytiques des vecteurs de direction de
 # propagation de fissure :
@@ -256,4 +256,4 @@ for i in range(0,len(ndfon)):
               PRECISION=1.8e-3,
               REFERENCE='ANALYTIQUE' )
 
-FIN();
+FIN()

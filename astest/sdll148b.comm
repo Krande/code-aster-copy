@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                                     'RY','RZ','RT',),
                               VALE=(1.26737E-04,2.71577E-09,2.71577E-09,
                                     1.69403E+00,1.69403E+00,5.43155E-09,
-                                    7.93900E-03,7.93900E-03,7.93900E-03,),),);
+                                    7.93900E-03,7.93900E-03,7.93900E-03,),),)
 
 MAT=DEFI_MATERIAU(  ELAS=_F( E = 2.200000E+11,
                              RHO = 8.330000E+03,
@@ -152,13 +152,13 @@ INTESPEC=CREA_TABLE(LISTE=(_F(LISTE_K=(SXX.getName(),
                            _F(LISTE_K=('DX','DY','DX','DY'),PARA='NUME_ORDRE_I'),
                            _F(LISTE_K=('DX','DY','DY','DX'),PARA='NUME_ORDRE_J'),),
                     TYPE_TABLE='TABLE_FONCTION',
-                    TITRE='EXCITATION FLUIDE TURBULENTE');
+                    TITRE='EXCITATION FLUIDE TURBULENTE')
 INTESPEC.addFunction(SXX)
 INTESPEC.addFunction(SYY)
 INTESPEC.addFunction(SXY)
 INTESPEC.addFunction(SYX)
 
-SPECTRE1=DEFI_SPEC_TURB( SPEC_CORR_CONV_3=_F( TABLE_FONCTION = INTESPEC ),);
+SPECTRE1=DEFI_SPEC_TURB( SPEC_CORR_CONV_3=_F( TABLE_FONCTION = INTESPEC ),)
 
 
 SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE1,
@@ -168,7 +168,7 @@ SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE1,
                        FREQ_INIT= 1 ,
                        FREQ_FIN= 2 ,
                        TOUT_CMP='NON',
-                       MODE_MECA=MODES );
+                       MODE_MECA=MODES )
 
 
 #--------------------

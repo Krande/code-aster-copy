@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,9 +65,9 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,
 nor_DNOR = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
-                      GROUP_MA  = 'FE'     );
+                      GROUP_MA  = 'FE'     )
 
-IMPR_RESU(FORMAT="RESULTAT", RESU=_F( CHAM_GD= nor_DNOR ), );
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F( CHAM_GD= nor_DNOR ), )
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='X',
@@ -99,9 +99,9 @@ TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
 nor_PRES = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
-                      GROUP_MA  = 'AE'     );
+                      GROUP_MA  = 'AE'     )
 
-IMPR_RESU(FORMAT="RESULTAT", RESU=_F( CHAM_GD= nor_PRES ), );
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F( CHAM_GD= nor_PRES ), )
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='X',

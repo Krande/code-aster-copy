@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@
 #
 # CE FICHIER DE COMMANDE CONTIENT LES INSTRUCTIONS POUR CALCULER LES
 # FREQUENCES  PROPRES D'UNE POUTRE BI-APPUYEE.
-# LES VALEURS DE REFERENCE SONT CALCULEES SUR UNE POUTRE DE 
+# LES VALEURS DE REFERENCE SONT CALCULEES SUR UNE POUTRE DE
 # TIMOSHENKO DEFORMABLE A L'EFFORT TRANCHANT ET TENANT COMPTE DE
 # L'INERTIE ROTATOIRE DES SECTIONS.
-# 
+#
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
@@ -38,25 +38,25 @@ MAT=DEFI_MATERIAU(  ELAS=_F( RHO = 7.8E03,  NU = 0.3,  E = 2.1E11))
 MAYA=LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
 
 #
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA, 
-                              AFFE=_F( TOUT = 'OUI', 
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                              AFFE=_F( TOUT = 'OUI',
                                     MATER = MAT))
 
 #
 POVOL=AFFE_MODELE(  MAILLAGE=MAYA,
-                              AFFE=_F( TOUT = 'OUI', 
-                                  MODELISATION = '3D', 
+                              AFFE=_F( TOUT = 'OUI',
+                                  MODELISATION = '3D',
                                   PHENOMENE = 'MECANIQUE'))
 
 #
 FIXAT=AFFE_CHAR_MECA(    MODELE=POVOL,DDL_IMPO=(
-                    _F(  GROUP_NO = 'COND1',  DX = 0.,  DY = 0.), 
-                    _F(  GROUP_NO = 'COND2',  DY = 0.), 
+                    _F(  GROUP_NO = 'COND1',  DX = 0.,  DY = 0.),
+                    _F(  GROUP_NO = 'COND2',  DY = 0.),
                     _F(  GROUP_NO = 'COND3',  DZ = 0.)))
 
 #
 PLAN_F1=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
-                            
+
      _F( GROUP_NO = ('N1','N21','N9',), DDL = ('DX','DX','DX',),
      COEF_MULT = ( 1.00,   .00000, -1.00000,), COEF_IMPO = 0.),
      _F( GROUP_NO = ('N2','N21','N9',), DDL = ('DX','DX','DX',),
@@ -122,7 +122,7 @@ PLAN_F1=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
        )
 
 PLAN_F2=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
-                            
+
      _F( GROUP_NO = ('N1481','N1501','N1489',), DDL = ('DX','DX','DX',),
      COEF_MULT = ( 1.00,   .00000, -1.00000,), COEF_IMPO = 0.),
      _F( GROUP_NO = ('N1482','N1501','N1489',), DDL = ('DX','DX','DX',),
@@ -188,30 +188,30 @@ PLAN_F2=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
        )
 
 #
-K_ELEM=CALC_MATR_ELEM(      MODELE=POVOL, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
-                                CHARGE=( FIXAT, 
-                                       PLAN_F1, 
+K_ELEM=CALC_MATR_ELEM(      MODELE=POVOL,
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA',
+                                CHARGE=( FIXAT,
+                                       PLAN_F1,
                                        PLAN_F2, ))
 
 #
-M_ELEM=CALC_MATR_ELEM(      MODELE=POVOL, 
+M_ELEM=CALC_MATR_ELEM(      MODELE=POVOL,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
-                                CHARGE=( FIXAT, 
-                                       PLAN_F1, 
+                               OPTION='MASS_MECA',
+                                CHARGE=( FIXAT,
+                                       PLAN_F1,
                                        PLAN_F2, ))
 
 #
 NUMERO=NUME_DDL(  MATR_RIGI=K_ELEM)
 
 #
-K_ASSE=ASSE_MATRICE(  MATR_ELEM=K_ELEM, 
+K_ASSE=ASSE_MATRICE(  MATR_ELEM=K_ELEM,
                            NUME_DDL=NUMERO)
 
 #
-M_ASSE=ASSE_MATRICE(  MATR_ELEM=M_ELEM, 
+M_ASSE=ASSE_MATRICE(  MATR_ELEM=M_ELEM,
                            NUME_DDL=NUMERO)
 
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 #       (3D ET FORCE_INTERNE)
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 #
 # DEFINITION DES GROUPES DE NOEUDS
 
@@ -31,32 +31,32 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA=('FACE1','FACE2',),),
                                _F(GROUP_MA='SECT_MED',),
-                               _F(GROUP_MA='PLAN_SYM',),),);
+                               _F(GROUP_MA='PLAN_SYM',),),)
 #
 # DEFINITION DU MODELE
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU=_F(GROUP_MA_PEAU=('GR1','GR2','GR3','GR4','GR5','GR6','GR7','GR8',),),
-                   );
+                   )
 #
 # DEFINITION DU MATERIAU
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                             NU=0.3,
                             RHO=7800.0,
-                            ALPHA=1e-05,),);
+                            ALPHA=1e-05,),)
 #
 # ATTRIBUTION DU MATERIAU
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 
@@ -66,7 +66,7 @@ CLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                  DY=0.0,
                                  DZ=0.0,),
                               _F(GROUP_NO='PLAN_SYM',
-                                 DY=0.0,),),);
+                                 DY=0.0,),),)
 
 CHAR_PR=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=(_F(GROUP_MA='GR1',
@@ -84,14 +84,14 @@ CHAR_PR=AFFE_CHAR_MECA(MODELE=MODELE,
                                  _F(GROUP_MA='GR7',
                                     PRES=-8155.0,),
                                  _F(GROUP_MA='GR8',
-                                    PRES=-9620.0,),),);
+                                    PRES=-9620.0,),),)
 #   GRAVITE SUIVANT X : AVEC LES 2 MOTS-CLES
 
 CHAR_GR=AFFE_CHAR_MECA(MODELE=MODELE,
                        PESANTEUR=_F(GRAVITE=4.905,
                                     DIRECTION=(1.0,0.0,0.0,),),
                        FORCE_INTERNE=_F(TOUT='OUI',
-                                        FX=38259.0,),);
+                                        FX=38259.0,),)
 #
 # RESOLUTION
 
@@ -101,7 +101,7 @@ DEF=MACRO_ELAS_MULT(MODELE=MODELE,
                     CAS_CHARGE=(_F(NOM_CAS='CHARGE1',
                                    CHAR_MECA=CHAR_PR,),
                                 _F(NOM_CAS='CHARGE2',
-                                   CHAR_MECA=(CHAR_PR,CHAR_GR,),),),);
+                                   CHAR_MECA=(CHAR_PR,CHAR_GR,),),),)
 #
 # CALCUL DES CONTRAINTES
 
@@ -159,7 +159,7 @@ T1=POST_RELEVE_T(ACTION=_F(INTITULE='SIG',
                            NOM_CHAM='SIGM_ELNO',
                            NUME_ORDRE=1,
                            TOUT_CMP='OUI',
-                           OPERATION='EXTRACTION',),);
+                           OPERATION='EXTRACTION',),)
 #
 
 TEST_TABLE(PRECISION=1.E-2,
@@ -243,7 +243,7 @@ T2=POST_RELEVE_T(ACTION=_F(INTITULE='SIG',
                            NOM_CHAM='SIGM_ELNO',
                            RESULTAT=DEF,
                            TOUT_CMP='OUI',
-                           OPERATION='EXTRACTION',),);
+                           OPERATION='EXTRACTION',),)
 #
 
 TEST_TABLE(PRECISION=1.E-2,
@@ -276,5 +276,5 @@ TEST_TABLE(PRECISION=1.E-2,
                      VALE_K='N965',),
            )
 
-FIN();
+FIN()
 #

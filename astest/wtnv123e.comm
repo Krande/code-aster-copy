@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@ DVISCOG=DEFI_CONSTANTE(    VALE=0.)
 
 KINT=DEFI_CONSTANTE(    VALE=1.E-18)
 
-LAMBLIQ=DEFI_CONSTANTE(VALE=0.6,);
-LAMBGAZ=DEFI_CONSTANTE(VALE=0.03,);
+LAMBLIQ=DEFI_CONSTANTE(VALE=0.6,)
+LAMBGAZ=DEFI_CONSTANTE(VALE=0.03,)
 
 
 ####  FONCTION SATURATION ET SA DERIVEE : UNITE DE PRESSION : PA
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1.6E8,
-                                 PAS=1.E6,),);
+                                 PAS=1.E6,),)
 
 SL = FORMULE(VALE=' 0.99*(1.-PCAP*4.495E-6)',
              NOM_PARA='PCAP',)
@@ -53,7 +53,7 @@ SATU=CALC_FONC_INTERP(FONCTION=SL,
                        NOM_PARA='PCAP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      INFO=2,);
+                      INFO=2,)
 
 DSL = FORMULE(VALE=' -4.495E-6*0.99',
               NOM_PARA='PCAP',)
@@ -63,7 +63,7 @@ DSATU=CALC_FONC_INTERP(FONCTION=DSL,
                        NOM_PARA='PCAP',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 #***********************************************************************
 #    MAILLAGE + MODELE
@@ -209,7 +209,7 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                              NOM_CMP='PRE2',
                               VALE=0.,
                               ),
-                                 ),);
+                                 ),)
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                    OPERATION='AFFE',
@@ -231,7 +231,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                             0.0,
                             0.0,0.0,0.0,0.0,
                            +200.,0.0,0.0,0.0,2.E3,0.0,
-                            0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
+                            0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),)
 #CALCUL HYDROSTATIQUE
 
 EVO_DES=DEFI_FONCTION(      NOM_PARA='INST',
@@ -436,4 +436,4 @@ TEST_RESU(RESU=(_F(INST=6.0,
                 ),
           )
 
-FIN () ;
+FIN ()

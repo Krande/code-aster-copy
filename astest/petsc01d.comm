@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,  NU=0.3,),);
+MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,  NU=0.3,),)
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT='OUI', MATER=MAT,),);
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT='OUI', MATER=MAT,),)
 
 #RESULTAT DE REFERENCE : CALCUL AVEC UN SOLVEUR DIRECT (MUMPS)
 MO=AFFE_MODELE(MAILLAGE=MA,
@@ -33,22 +33,22 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='GRNO1',
                                           DZ=0.0,),
                               _F(GROUP_NO='GRNO8',
-                                          DY=0.0,),),);
+                                          DY=0.0,),),)
 
 CHA2=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=_F(GROUP_NO='GRNO7',
                                           DX=0.0,
-                                          DY=0.01,),);
+                                          DY=0.01,),)
 
 RESREF=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CHA1,),
                            _F(CHARGE=CHA2,),),
-                    SOLVEUR=_F(METHODE='MUMPS',),);
+                    SOLVEUR=_F(METHODE='MUMPS',),)
 TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'UREF', GROUP_NO =('NO2958','NO2974'), OPERATION = 'EXTRACTION',
-                     RESULTAT = RESREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = 'DY', ));
+                     RESULTAT = RESREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = 'DY', ))
 
-DETRUIRE(NOM=(MO,CHA1,CHA2,),INFO=1,);
+DETRUIRE(NOM=(MO,CHA1,CHA2,),INFO=1,)
 # VALEURS DE NON-REGRESSION
 vcalc=[ 0.01,   0.00928897503835,
         0.00999999999995, 0.00928897503615,
@@ -86,12 +86,12 @@ for matr_distribuee in ('OUI', 'NON') :
                              DDL_IMPO=(_F(GROUP_NO='GRNO1',
                                           DZ=0.0,),
                                        _F(GROUP_NO='GRNO8',
-                                          DY=0.0,),),);
+                                          DY=0.0,),),)
 
          CHA2=AFFE_CHAR_CINE(MODELE=MO,
                              MECA_IMPO=_F(GROUP_NO='GRNO7',
                                           DX=0.0,
-                                          DY=0.01,),);
+                                          DY=0.01,),)
          MESTAT=MECA_STATIQUE(MODELE=MO,
                              INFO=2,
                              CHAM_MATER=CHMAT,
@@ -104,7 +104,7 @@ for matr_distribuee in ('OUI', 'NON') :
                                         GESTION_MEMOIRE='AUTO',
                                         RESI_RELA=1.E-06,
                                         ),
-                             );
+                             )
 
          ico+=2
          TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
@@ -126,7 +126,7 @@ for matr_distribuee in ('OUI', 'NON') :
                             VALE_REFE=TREF['DY',2],
                             PRECISION=1.E-06,
                             REFERENCE='AUTRE_ASTER',),
-                        ),);
+                        ),)
          DETRUIRE(NOM=(MO,CHA1,CHA2,MESTAT),INFO=1,)
 
-FIN();
+FIN()

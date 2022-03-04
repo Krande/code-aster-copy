@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,12 +79,12 @@ MATER    = DEFI_MATERIAU(    ELAS=_F(  E  = 4500.0,
                                      ALPHAHB            =3.3,
                                      PHI_RUP            =15.0,
                                      PHI_RES            =30.0)
-                                     );
+                                     )
 
 CHMAT    = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
                            AFFE     = _F(  TOUT  = 'OUI',
                                            MATER = MATER )
-                        );
+                        )
 
 #***********************************************************************
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
@@ -377,5 +377,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=16,
                 ),
           )
 
-FIN();
+FIN()
 #

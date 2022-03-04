@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ ASSEMBLAGE(  MODELE=MO,     CHARGE=CH,      CARA_ELEM=CARELEM,
                                _F(  MATRICE = CO("MATASSR"),  OPTION = 'RIGI_MECA'),
                                _F(  MATRICE = CO("MATASSM"),  OPTION = 'MASS_MECA'),
                                _F(  MATRICE = CO("MATASSC"),  OPTION = 'AMOR_MECA')),
-             VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_MECA'),),);
+             VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_MECA'),),)
 # --------------------------------------------------------------------
 
 
@@ -1120,7 +1120,7 @@ DYNAHAR2=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
 
 # pour valider PROJ_CHAMP / DYNA_HARMO :
 # on projette DYANAHAR2 sur son propre maillage => DYNAHAR3 (identique a DYNAHAR2)
-DYNAHAR3=PROJ_CHAMP(METHODE='COLLOCATION', RESULTAT=DYNAHAR2,  MODELE_1=MO, MODELE_2=MO, TOUT_ORDRE='OUI');
+DYNAHAR3=PROJ_CHAMP(METHODE='COLLOCATION', RESULTAT=DYNAHAR2,  MODELE_1=MO, MODELE_2=MO, TOUT_ORDRE='OUI')
 
 
 
@@ -1394,7 +1394,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 DYNAHARM=CALC_CHAMP(reuse=DYNAHARM,
                     NUME_ORDRE=1,
                     RESULTAT=DYNAHARM,
-                    CONTRAINTE=('EFGE_ELNO',),);
+                    CONTRAINTE=('EFGE_ELNO',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC_C=1.520796456-0.107148249j,

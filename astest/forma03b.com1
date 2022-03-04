@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ IMPR_RESU(FORMAT="RESULTAT",
                    VALE_MAX='OUI',),
                 _F(RESULTAT=RESUNL,
                    NOM_CHAM='VARI_ELGA',
-                   VALE_MAX='OUI',),),);
+                   VALE_MAX='OUI',),),)
 
 ########################################################################
 #
@@ -50,12 +50,12 @@ IMPR_RESU(FORMAT="RESULTAT",
 DYG=RECU_FONCTION(RESULTAT=RESUNL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='G',);
+                  GROUP_NO='G',)
 
 SYG=RECU_FONCTION(RESULTAT=RESUNL,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='G',);
+                  GROUP_NO='G',)
 
 # COURBES AVEC XMGRACE
 IMPR_FONCTION(FORMAT='XMGRACE',
@@ -68,7 +68,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                         FONC_Y=SYG,),
               TITRE='SigmaYY en fonction de DY au point G ',
               LEGENDE_X='Deplacement DY au point G',
-              LEGENDE_Y='Contraine SIGMAYY',);
+              LEGENDE_Y='Contraine SIGMAYY',)
 
 ########################################################################
 #
@@ -81,13 +81,13 @@ SIGBAS=MACR_LIGN_COUPE(RESULTAT=RESUNL,
                        NOM_CHAM='SIGM_ELNO',
                        LIGN_COUPE=_F(NB_POINTS=30,
                                      COOR_ORIG=(10,0,),
-                                     COOR_EXTR=(100,0,),),);
+                                     COOR_EXTR=(100,0,),),)
 
 # IMPRESSION TABLE
 IMPR_TABLE(TABLE=SIGBAS,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=TFIN,),
-           NOM_PARA=('ABSC_CURV','SIYY',),);
+           NOM_PARA=('ABSC_CURV','SIYY',),)
 
 ########################################################################
 #
@@ -104,7 +104,7 @@ STHETA=MACR_LIGN_COUPE(RESULTAT=RESUNL, INST=TELAS, NOM_CHAM='SIGM_ELNO',
 # IMPRESSION DE LA TABLE
 IMPR_TABLE( UNITE=8,
             TABLE=STHETA,
-            FORMAT='TABLEAU',);
+            FORMAT='TABLEAU',)
 
 # RECUPERATION DE LA FONCTION SIYY = F(ABSC_CURV)
 STCALC=RECU_FONCTION(TABLE=STHETA,
@@ -112,11 +112,11 @@ STCALC=RECU_FONCTION(TABLE=STHETA,
                      PARA_Y='SIYY',
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+                     PROL_GAUCHE='CONSTANT',)
 
 
 # RESULTAT ANALYTIQUE
-R = 10.0;
+R = 10.0
 STTA = FORMULE(VALE='TELAS*(1.+2.*cos(2.*S/R))',
                TELAS=TELAS,
                R=R,
@@ -125,12 +125,12 @@ SMAX = pi/2*R
 
 LISABS=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=SMAX,
-                                    NOMBRE=30,),);
+                                    NOMBRE=30,),)
 
 STTAC=CALC_FONC_INTERP(FONCTION=STTA,NOM_PARA='S',
                        NOM_RESU='ANALYTIC',
                        LIST_PARA=LISABS,
-                       INTERPOL='LIN',);
+                       INTERPOL='LIN',)
 
 # COMPARAISON ANALYTIQUE/NUMERIQUE
 IMPR_FONCTION(FORMAT    = 'XMGRACE',
@@ -165,13 +165,13 @@ IMPR_FONCTION(FORMAT    = 'XMGRACE',
 RESUNL=CALC_CHAMP(reuse =RESUNL,
                RESULTAT=RESUNL,
                FORCE='FORC_NODA',
-               );
+               )
 
 # EXTRACTION VALEURS
 DYG2=RECU_FONCTION(RESULTAT=RESUNL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  GROUP_NO='G',);
+                  GROUP_NO='G',)
 
 FHAUT=MACR_LIGN_COUPE(RESULTAT=RESUNL, NOM_CHAM='FORC_NODA',
                        LIGN_COUPE = _F(TYPE='GROUP_MA', MAILLAGE=MAIL,
@@ -181,7 +181,7 @@ FHAUT=MACR_LIGN_COUPE(RESULTAT=RESUNL, NOM_CHAM='FORC_NODA',
 F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_X='INST',
                      PARA_Y='DY',
-                     INTERPOL='LIN',);
+                     INTERPOL='LIN',)
 
 # COURBES AVEC XMGRACE
 IMPR_FONCTION(FORMAT    = 'XMGRACE',
@@ -194,7 +194,7 @@ IMPR_FONCTION(FORMAT    = 'XMGRACE',
               GRILLE_Y  = 5000.,
               TITRE     = "Resultante de Fy(FG) fonction de Dy(G)",
               COURBE    = (_F(FONC_X = DYG2,
-                             FONC_Y = F_FY_G,),),);
+                             FONC_Y = F_FY_G,),),)
 
 
-FIN();
+FIN()

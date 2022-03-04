@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,24 +31,24 @@
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLA=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+MAILLA=LIRE_MAILLAGE(FORMAT='MED',UNITE=20)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLA,
                    AFFE=_F(GROUP_MA='CALCUL',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DKT'));
+                           MODELISATION='DKT'))
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                             NU=0.3,
-                            RHO=7800));
+                            RHO=7800))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLA,
                        AFFE=_F(GROUP_MA='CALCUL',
-                               MATER=MATER));
+                               MATER=MATER))
 
 PARAM=AFFE_CARA_ELEM(MODELE=MODELE,
                      COQUE=_F(GROUP_MA='CALCUL',
-                              EPAIS=0.01));
+                              EPAIS=0.01))
 #
 #
 #//////////////////////////////////////////////////////////////////////
@@ -65,27 +65,27 @@ CHARGE_L=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DY=0,
                                      DZ=0,
                                      DRX=0,
-                                     DRY=0)));
+                                     DRY=0)))
 
 MERIME_L=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_L);
+                        CHARGE=CHARGE_L)
 
 MEMAME_L=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_L);
+                        CHARGE=CHARGE_L)
 
-NUMDDL_L=NUME_DDL(MATR_RIGI=MERIME_L);
+NUMDDL_L=NUME_DDL(MATR_RIGI=MERIME_L)
 
 RAID_L=ASSE_MATRICE(MATR_ELEM=MERIME_L,
-                    NUME_DDL=NUMDDL_L);
+                    NUME_DDL=NUMDDL_L)
 
 MASS_L=ASSE_MATRICE(MATR_ELEM=MEMAME_L,
-                    NUME_DDL=NUMDDL_L);
+                    NUME_DDL=NUMDDL_L)
 
 MODES_L1=CALC_MODES(MATR_RIGI=RAID_L,
                     OPTION='BANDE',
@@ -138,27 +138,27 @@ CHARGE_M=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DY=0,
                                      DZ=0,
                                      DRX=0,
-                                     DRY=0)));
+                                     DRY=0)))
 
 MERIME_M=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_M);
+                        CHARGE=CHARGE_M)
 
 MEMAME_M=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_M);
+                        CHARGE=CHARGE_M)
 
-NUMDDL_M=NUME_DDL(MATR_RIGI=MERIME_M);
+NUMDDL_M=NUME_DDL(MATR_RIGI=MERIME_M)
 
 RAID_M=ASSE_MATRICE(MATR_ELEM=MERIME_M,
-                    NUME_DDL=NUMDDL_M);
+                    NUME_DDL=NUMDDL_M)
 
 MASS_M=ASSE_MATRICE(MATR_ELEM=MEMAME_M,
-                    NUME_DDL=NUMDDL_M);
+                    NUME_DDL=NUMDDL_M)
 
 MODES_M1=CALC_MODES(MATR_RIGI=RAID_M,
                     OPTION='BANDE',
@@ -207,27 +207,27 @@ CHARGE_E=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DY=0,
                                      DZ=0,
                                      DRX=0,
-                                     DRY=0)));
+                                     DRY=0)))
 
 MERIME_E=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_E);
+                        CHARGE=CHARGE_E)
 
 MEMAME_E=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=PARAM,
-                        CHARGE=CHARGE_E);
+                        CHARGE=CHARGE_E)
 
-NUMDDL_E=NUME_DDL(MATR_RIGI=MERIME_E);
+NUMDDL_E=NUME_DDL(MATR_RIGI=MERIME_E)
 
 RAID_E=ASSE_MATRICE(MATR_ELEM=MERIME_E,
-                    NUME_DDL=NUMDDL_E);
+                    NUME_DDL=NUMDDL_E)
 
 MASS_E=ASSE_MATRICE(MATR_ELEM=MEMAME_E,
-                    NUME_DDL=NUMDDL_E);
+                    NUME_DDL=NUMDDL_E)
 
 MODE_E=CALC_MODES(MATR_RIGI=RAID_E,
                   VERI_MODE=_F(STOP_ERREUR='NON',
@@ -249,7 +249,7 @@ LINT1_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_L,
                           INTERFACE=_F(NOM='BASE_L',
                                        TYPE='CRAIGB',
                                        GROUP_NO='BASE',
-                                       MASQUE='DRZ'));
+                                       MASQUE='DRZ'))
 
 LINT2_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_M,
                           INTERFACE=(_F(NOM='DROITE_M',
@@ -263,13 +263,13 @@ LINT2_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_M,
                                      _F(NOM='BASE_M',
                                         TYPE='CRAIGB',
                                         GROUP_NO='BASE',
-                                        MASQUE='DRZ')));
+                                        MASQUE='DRZ')))
 
 LINT3_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_E,
                           INTERFACE=_F(NOM='DROITE_E',
                                        TYPE='CRAIGB',
                                        GROUP_NO='DROITE',
-                                       MASQUE='DRZ'));
+                                       MASQUE='DRZ'))
 
 #
 #
@@ -281,15 +281,15 @@ LINT3_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL_E,
 
 BAMO1_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT1_CL,
                                        MODE_MECA=(MODES_L1,MODES_L2,MODES_L3),
-                                       NMAX_MODE=20));
+                                       NMAX_MODE=20))
 
 BAMO2_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT2_CL,
                                        MODE_MECA=(MODES_M1,MODES_M2,MODES_M3),
-                                       NMAX_MODE=20));
+                                       NMAX_MODE=20))
 
 BAMO3_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT3_CL,
                                        MODE_MECA=MODE_E,
-                                       NMAX_MODE=20));
+                                       NMAX_MODE=20))
 
 
 #
@@ -300,11 +300,11 @@ BAMO3_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT3_CL,
 #
 #//////////////////////////////////////////////////////////////////////
 
-MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BAMO1_CL);
+MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BAMO1_CL)
 
-MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BAMO2_CL);
+MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BAMO2_CL)
 
-MACEL3=MACR_ELEM_DYNA(BASE_MODALE=BAMO3_CL);
+MACEL3=MACR_ELEM_DYNA(BASE_MODALE=BAMO3_CL)
 
 
 #
@@ -348,19 +348,19 @@ MODEGENE=DEFI_MODELE_GENE(SOUS_STRUC=(
                                       INTERFACE_1='DROITE_M'),
                                        ),
                           VERIF=_F(PRECISION=1e-06,
-                                   CRITERE='RELATIF'));
+                                   CRITERE='RELATIF'))
 
 NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGENE,
-                     STOCKAGE='LIGN_CIEL');
+                     STOCKAGE='LIGN_CIEL')
 
 
 
 RIGIGENE=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
-                        OPTION='RIGI_GENE');
+                        OPTION='RIGI_GENE')
 
 
 MASSGENE=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
-                        OPTION='MASS_GENE');
+                        OPTION='MASS_GENE')
 
 RESGEN=CALC_MODES(MATR_RIGI=RIGIGENE,
                   CALC_FREQ=_F(FREQ=(0.0,250.0),
@@ -384,7 +384,7 @@ SKEL=DEFI_SQUELETTE(MODELE_GENE=MODEGENE,
                                 _F(NOM='TRI3',
                                    GROUP_MA='CALCUL'),
                                 _F(NOM='TRI4',
-                                   GROUP_MA='CALCUL')));
+                                   GROUP_MA='CALCUL')))
 
 SKEL = DEFI_GROUP( reuse = SKEL, MAILLAGE = SKEL,
                       CREA_GROUP_NO= (
@@ -397,7 +397,7 @@ MODPHY=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                       TOUT_ORDRE='OUI',
                       TOUT_CHAM='OUI',
                       SQUELETTE=SKEL,
-                      );
+                      )
 
 #
 #
@@ -471,4 +471,4 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                 ),
           )
 
-FIN();
+FIN()

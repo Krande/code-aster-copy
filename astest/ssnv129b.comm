@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,46 +23,46 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
+MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',)
 
 MA=CREA_MAILLAGE(MAILLAGE=MA1,
                  MODI_MAILLE=(_F(GROUP_MA='Q21',
                                  OPTION='QUAD8_9',),
                               _F(GROUP_MA='Q1',
-                                 OPTION='QUAD8_9',),),);
+                                 OPTION='QUAD8_9',),),)
 
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA=('Q1','Q21',),
                         PHENOMENE='MECANIQUE',
                         MODELISATION='COQUE_3D',),
-                     ),);
+                     ),)
 
 
 MA=DEFI_GROUP(reuse =MA,
                MAILLAGE=MA,
-               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      COQUE=(_F(GROUP_MA='Q21',
                                EPAIS=0.5,),
                             _F(GROUP_MA='Q1',
-                               EPAIS=0.5,),),);
+                               EPAIS=0.5,),),)
 
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
-                          NU=0.3,),);
+                          NU=0.3,),)
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=_F(GROUP_MA='Q21',
-                                PRES=-250000000.0,),);
+                                PRES=-250000000.0,),)
 
 CHA0=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=(
@@ -94,7 +94,7 @@ CHA0=AFFE_CHAR_CINE(MODELE=MO,
                                  DX=0.0,
                                  DZ=0.0,
                                  DRX=0.0,),
-                                 ),);
+                                 ),)
 
 CHA2=DEFI_CONTACT(MODELE         = MO,
                   FORMULATION    = 'DISCRETE',
@@ -113,12 +113,12 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                           1.0,1.0,
                           ),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 
 RESU=STAT_NON_LINE(SOLVEUR=_F(),
@@ -132,7 +132,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(),
                    CONTACT  = CHA2,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   INFO=1,);
+                   INFO=1,)
 
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
@@ -141,10 +141,10 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 RESUPOS=POST_CHAMP(RESULTAT=RESU,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='INF',),);
+                                 NIVE_COUCHE='INF',),)
 RESUPOS=CALC_CHAMP(reuse =RESUPOS,
                 RESULTAT=RESUPOS,
-                CONTRAINTE='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',)
 
 IMPR_RESU(MODELE=MO,
           FORMAT='GMSH',
@@ -152,7 +152,7 @@ IMPR_RESU(MODELE=MO,
           RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM=('DEPL',),),
                 _F(RESULTAT=RESUPOS,
-                   NOM_CHAM=('SIGM_NOEU',),),),);
+                   NOM_CHAM=('SIGM_NOEU',),),),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='CENTE1',
@@ -212,4 +212,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,20 +22,20 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MODELE=AFFE_MODELE(AFFE    =_F(TOUT = 'OUI',
                                PHENOMENE='MECANIQUE',
                                MODELISATION='3D'),
-                   MAILLAGE=MAIL);
+                   MAILLAGE=MAIL)
 
 
 
-E=DEFI_CONSTANTE(VALE=2000,);
+E=DEFI_CONSTANTE(VALE=2000,)
 
-Nu=DEFI_CONSTANTE(VALE=0.2,);
+Nu=DEFI_CONSTANTE(VALE=0.2,)
 
-ALPHA=DEFI_CONSTANTE(VALE=0,);
+ALPHA=DEFI_CONSTANTE(VALE=0,)
 
 RHOF=DEFI_CONSTANTE(VALE = 2300.,)
 MATERIAU=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
@@ -59,21 +59,21 @@ MATERIAU=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                      GFR             =  1.0e-4,
                      DT80            =  0.83,
                      TSTH            =  83.,
-                     DIM3            =  3.,),);
+                     DIM3            =  3.,),)
 
 TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=20.0,),);
+                         VALE=20.0,),)
 
 TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=20.0,),);
+                         VALE=20.0,),)
 
 TEMP=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_THER',
@@ -82,30 +82,30 @@ TEMP=CREA_RESU(OPERATION='AFFE',
                _F(CHAM_GD=TEMPI,
                   INST=0.0,),
                _F(CHAM_GD=TEMPF,
-                  INST=100.0,),),);
+                  INST=100.0,),),)
 
 L_THER=DEFI_LIST_REEL(DEBUT=0,
                   INTERVALLE=_F(JUSQU_A=210,
-                                PAS=1,),);
+                                PAS=1,),)
 
 F_VG=DEFI_FONCTION(
                    NOM_PARA='INST',
                    VALE=(0,0.,
                          210,0.,),
-                   PROL_DROITE='CONSTANT',);
+                   PROL_DROITE='CONSTANT',)
 
 VGF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                  OPERATION='AFFE',
                 MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='X1',
-                         VALE_F= F_VG,),);
+                         VALE_F= F_VG,),)
 
 VG=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_THER',
                NOM_CHAM='TEMP',
                AFFE=(_F(CHAM_GD=VGF,
-                        LIST_INST=L_THER,),),);
+                        LIST_INST=L_THER,),),)
 
 CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
                               TOUT='OUI'),
@@ -119,7 +119,7 @@ CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
                                  _F(TOUT='OUI',
                                     NOM_VARC='NEUT1',
                                     NOM_CHAM='TEMP',
-                                    EVOL=VG,),),);
+                                    EVOL=VG,),),)
 
 CLIM=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
                                  GROUP_NO='COTEG'),
@@ -128,7 +128,7 @@ CLIM=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
                                  DY=0.0),
                               _F(GROUP_NO='N5',
                                  DY=0.0),),
-                    MODELE=MODELE);
+                    MODELE=MODELE)
 
 DEPL1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=( 0.0,0.0,
@@ -140,11 +140,11 @@ DEPL1=DEFI_FONCTION(NOM_PARA='INST',
                            6.0,-2.0e-3,
                            7.0,0.0),
                     PROL_DROITE='EXCLU',
-                    PROL_GAUCHE='EXCLU',);
+                    PROL_GAUCHE='EXCLU',)
 
 CHAR1=AFFE_CHAR_MECA_F(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='COTED',
-                                   DX=DEPL1,),);
+                                   DX=DEPL1,),)
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.0,
@@ -160,7 +160,7 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=6.0,
                                      NOMBRE=50,),
                                   _F(JUSQU_A=7.0,
-                                     NOMBRE=50,),),);
+                                     NOMBRE=50,),),)
 
 RES1=STAT_NON_LINE(CHAM_MATER=CAR_MAT,
                    MODELE=MODELE,
@@ -172,7 +172,7 @@ RES1=STAT_NON_LINE(CHAM_MATER=CAR_MAT,
                    NEWTON=_F(PREDICTION='ELASTIQUE',
                              MATRICE='TANGENTE',),
                    EXCIT      =(_F(CHARGE=CLIM),
-                                _F(CHARGE=CHAR1,),), );
+                                _F(CHARGE=CHAR1,),), )
 
 RES1=CALC_CHAMP(reuse=RES1,RESULTAT=RES1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
@@ -224,4 +224,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=25,
           )
 
 
-FIN();
+FIN()

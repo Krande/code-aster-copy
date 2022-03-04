@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,26 +22,26 @@
 #  PENALISATION
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MAILL=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
-                 
+
                  AFFE=(_F(GROUP_MA=('PATIN','LESC','FSUP','FLAT','BATI','LMAI',),
                           PHENOMENE='MECANIQUE',
                           MODELISATION='D_PLAN',),
                        _F(GROUP_MA='RESLAT',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='2D_DIS_T',),),);
+                          MODELISATION='2D_DIS_T',),),)
 
 MAILL=MODI_MAILLAGE(reuse =MAILL,
                     MAILLAGE=MAILL,
-                    ORIE_PEAU=_F(GROUP_MA_PEAU=('LMAI','LESC','FSUP','FLAT',),),);
+                    ORIE_PEAU=_F(GROUP_MA_PEAU=('LMAI','LESC','FSUP','FLAT',),),)
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
@@ -52,25 +52,25 @@ CARA=AFFE_CARA_ELEM(MODELE=MODE,
                                   VALE=(12.E3,0.0,),),
                                _F(GROUP_MA='RESLAT',
                                   CARA='M_T_L',
-                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),));
+                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),))
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 
 MPATIN=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.0,
-                             RHO=7.E3,),);
+                             RHO=7.E3,),)
 
 MBATI=DEFI_MATERIAU(ELAS=_F(E=1.0E11,
                             NU=0.0,
-                            RHO=0.0,),);
+                            RHO=0.0,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL,
                  MODELE=MODE,
                  AFFE=(_F(GROUP_MA='PATIN',
                           MATER=MPATIN,),
                        _F(GROUP_MA='BATI',
-                          MATER=MBATI,),),);
+                          MATER=MBATI,),),)
 #---------------------------------------------------------------------
 #                         CHARGEMENTS
 #---------------------------------------------------------------------
@@ -82,17 +82,17 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
                                      DY=0.0,),
                                   _F(GROUP_NO=('R1','R2',),
                                      DX=0.0,
-                                     DY=0.0,),),);
+                                     DY=0.0,),),)
 # CHARGEMENT 1 : APPLICATION DE LA GRAVITE
 
 POIDS=AFFE_CHAR_MECA(MODELE=MODE,
                      PRES_REP=_F(GROUP_MA='FSUP',
-                                 PRES=70000.,),);
+                                 PRES=70000.,),)
 # CHARGEMENT 2 : APPLICATION TANGENTIELLE
 
 PTAN=AFFE_CHAR_MECA(MODELE=MODE,
                     PRES_REP=_F(GROUP_MA='FLAT',
-                                PRES=200000.0,),);
+                                PRES=200000.0,),)
 # DEFINITION DU CONTACT
 CTACP = DEFI_CONTACT(MODELE         = MODE,
                      FORMULATION    = 'DISCRETE',
@@ -118,11 +118,11 @@ CTACP = DEFI_CONTACT(MODELE         = MODE,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           0.07,1.0,
                           10.0,1.0,
-                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',);
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.5,
-                                    NOMBRE=350,),);
+                                    NOMBRE=350,),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
                         ECHEC=_F(ACTION='DECOUPE',
@@ -150,7 +150,7 @@ UPM=DYNA_NON_LINE(MODELE=MODE,
                   SOLVEUR=_F(METHODE='MULT_FRONT',
                              ),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                  );
+                  )
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',
                    INST=1.7,
@@ -194,7 +194,7 @@ UPL=DYNA_NON_LINE(MODELE=MODE,
                   SOLVEUR=_F(METHODE='LDLT',
                              ),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                  );
+                  )
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',
                    INST=1.7,
@@ -220,5 +220,5 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
 ##############################
 
 
-FIN();
+FIN()
 #

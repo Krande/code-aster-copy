@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ R2 = 250.0
 G2 = 10.0
 RK = 50.0
 P0 = 1.e-3
-GM = 0.15                    
+GM = 0.15
 
 
 # Cible de chargement
@@ -69,7 +69,7 @@ q  = R0 + RH*ka + R1*(1-exp(-G1*ka)) + R2*(1-exp(-G2*ka)) + RK*(ka+P0)**GM
 # Reponse
 err = 1.5*ka*nrr + (1+NU)/E*q*srr - NU/E*q*(srr+stt+szz)
 ezz = 1.5*ka*nzz + (1+NU)/E*q*szz - NU/E*q*(srr+stt+szz)
-erz = 1.5*ka*nrz + (1+NU)/E*q*srz 
+erz = 1.5*ka*nrz + (1+NU)/E*q*srz
 ur  = Rext*err
 uz  = ezz*L + 2*erz*(Rext-Rint)
 
@@ -106,7 +106,7 @@ CISA_SX = FORMULE(NOM_PARA=('X','Y'), VALE='srz*X/RAY(X,Y)' , srz=srz, RAY=RAY)
 CISA_SY = FORMULE(NOM_PARA=('X','Y'), VALE='srz*Y/RAY(X,Y)' , srz=srz, RAY=RAY)
 CISA_IX = FORMULE(NOM_PARA=('X','Y'), VALE='-srz*X/RAY(X,Y)', srz=srz, RAY=RAY)
 CISA_IY = FORMULE(NOM_PARA=('X','Y'), VALE='-srz*Y/RAY(X,Y)', srz=srz, RAY=RAY)
-F_VOLU  = FORMULE(NOM_PARA=('X','Y'), VALE='-srz/RAY(X,Y)'  , srz=srz, RAY=RAY) 
+F_VOLU  = FORMULE(NOM_PARA=('X','Y'), VALE='-srz/RAY(X,Y)'  , srz=srz, RAY=RAY)
 
 
 CH1_BORD = AFFE_CHAR_MECA(
@@ -122,8 +122,8 @@ CH1_BORD = AFFE_CHAR_MECA(
         _F(GROUP_MA = 'EXT', PRES=-srr),
         ),
     )
-    
-    
+
+
 CH2_BORD = AFFE_CHAR_MECA_F(
     MODELE     =  MO,
     FORCE_FACE = (
@@ -131,13 +131,13 @@ CH2_BORD = AFFE_CHAR_MECA_F(
         _F(GROUP_MA = 'INF', FX=CISA_IX, FY=CISA_IY),
         ),
     )
-    
+
 
 CH_VOLU = AFFE_CHAR_MECA_F(
     MODELE     =  MO,
     FORCE_INTERNE = _F(GROUP_MA='VOLU', FZ=F_VOLU),
     )
-    
+
 
 LIAISON = AFFE_CHAR_MECA(
     MODELE    = MO,
@@ -147,7 +147,7 @@ LIAISON = AFFE_CHAR_MECA(
         _F(GROUP_MA='LNY', DY=0),
         ),
     )
-    
+
 
 
 L_INST = DEFI_LIST_REEL(
@@ -157,13 +157,13 @@ L_INST = DEFI_LIST_REEL(
         _F(JUSQU_A=1        , NOMBRE=2),
         ),
     )
-    
+
 RAMPE = DEFI_FONCTION(
     NOM_PARA    = 'INST',
     VALE        = (0,0, 1,q),
     )
-    
-    
+
+
 EVOL = STAT_NON_LINE(
     MODELE=MO,
     CHAM_MATER=CM,
@@ -180,7 +180,7 @@ EVOL = STAT_NON_LINE(
 
 
 EVOL = CALC_CHAMP(reuse=EVOL,
-    RESULTAT     = EVOL, 
+    RESULTAT     = EVOL,
     CONTRAINTE   = 'SIEF_NOEU',
     VARI_INTERNE = 'VARI_NOEU',
     DEFORMATION  = 'EPSI_NOEU',
@@ -190,45 +190,45 @@ EVOL = CALC_CHAMP(reuse=EVOL,
 TEST_RESU(
     RESU = (
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='SIEF_NOEU', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='SIEF_NOEU',
             NOM_CMP='SIXX',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=q*srr, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=q*srr,
             VALE_CALC = 138.42323029605325,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='DEPL', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='DEPL',
             NOM_CMP='DX',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=ur, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=ur,
             VALE_CALC = -1.2855305274684912,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='DEPL', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='DEPL',
             NOM_CMP='DZ',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=uz, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=uz,
             VALE_CALC = 4.438161558442464,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='VARI_NOEU', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='VARI_NOEU',
             NOM_CMP='V7',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=1.5*ka*nrz, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=1.5*ka*nrz,
             VALE_CALC = 0.03749444226908088,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,

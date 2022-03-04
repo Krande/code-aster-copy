@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# MODELISATION 'MECANIQUE' AXIS_FLUIDE  
+# MODELISATION 'MECANIQUE' AXIS_FLUIDE
 # AVEC MEAXFL_QU8 ET MEAXFL_SE3
 #
 # VALIDATION INDEPENDANTE PAR LMS_NT (J.P.ROSSION)
@@ -31,9 +31,9 @@ MA = LIRE_MAILLAGE(FORMAT='IDEAS',
                    )
 
 MO=AFFE_MODELE(
-         MAILLAGE=MA, 
-         AFFE=_F( TOUT = 'OUI', 
-              PHENOMENE = 'MECANIQUE', 
+         MAILLAGE=MA,
+         AFFE=_F( TOUT = 'OUI',
+              PHENOMENE = 'MECANIQUE',
               FORMULATION = 'U_P_PHI',
               MODELISATION = 'AXIS_FLUIDE')
          )
@@ -47,7 +47,7 @@ AIR=DEFI_MATERIAU(
          )
 
 CHM=AFFE_MATERIAU(
-         MAILLAGE=MA, 
+         MAILLAGE=MA,
          AFFE=_F( TOUT = 'OUI',
               MATER = AIR)
          )
@@ -60,7 +60,7 @@ VITES=AFFE_CHAR_MECA(
          VITE_FACE=_F( GROUP_MA = 'velo',
                   VNOR = -1.0),
           IMPE_FACE=_F( GROUP_MA = 'velo',
-                    IMPE = -1000.)  
+                    IMPE = -1000.)
          )
 
 IMPE=AFFE_CHAR_MECA(
@@ -118,7 +118,7 @@ VECAS=ASSE_VECTEUR(
 #
 #  REPONSE HARMONIQUE
 #
-HARMO=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', 
+HARMO=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
          MATR_MASS=MATM,
          MATR_RIGI=MATK,
          MATR_IMPE_PHI=MATA,

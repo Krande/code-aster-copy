@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,34 +44,34 @@
 DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI',))
 
 
-t1 = 1.0;
-dt = 0.05;
+t1 = 1.0
+dt = 0.05
 
 
-MAIL=LIRE_MAILLAGE(FORMAT='ASTER');
+MAIL=LIRE_MAILLAGE(FORMAT='ASTER')
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='A1A2',),
                                _F(GROUP_MA='A4A3',),
                                _F(GROUP_MA='A2A4',),
-                               _F(GROUP_MA='A3A1',),),);
+                               _F(GROUP_MA='A3A1',),),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
                                       VECT_NORM=(0.,0.,1.,),
-                                      GROUP_NO='A1',),);
+                                      GROUP_NO='A1',),)
 
 MO_G=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(GROUP_MA='DALLE',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DKT',),);
+                         MODELISATION='DKT',),)
 
 #=====================================================================================
 # Materiau pour RELATION = 'BETON_PR' :
 #-------------------------------------
-EB = 32308000000.0;
+EB = 32308000000.0
 
 MAT_G=DEFI_MATERIAU(
              ELAS=_F(E=EB,
@@ -85,7 +85,7 @@ MAT_G=DEFI_MATERIAU(
                                 SYC  = 35e6,
                                 EPSC = 0.002,
                                 N = 2
-                                ),                   );
+                                ),                   )
 
 
 #=====================================================================================
@@ -95,7 +95,7 @@ CAEL_G=AFFE_CARA_ELEM(MODELE=MO_G,
                       COQUE=_F(GROUP_MA='DALLE',
                                EPAIS=0.10,
                                ANGL_REP=(0.0,0.0,),
-                               INER_ROTA='OUI',),);
+                               INER_ROTA='OUI',),)
 
 COND_0G=AFFE_CHAR_MECA(MODELE=MO_G,
                        DDL_IMPO=(_F(GROUP_NO='A1',
@@ -107,19 +107,19 @@ COND_0G=AFFE_CHAR_MECA(MODELE=MO_G,
                                     DRZ=0.0,),
                                  _F(GROUP_MA='A3A1',
                                     DX=0.0,
-                                    DRY=0.0,),),);
+                                    DRY=0.0,),),)
 
 
 chf1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0, 0.0, t1, 1.,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 
-inst1=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=t1, PAS=dt,),);
+inst1=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=t1, PAS=dt,),)
 
 lisnt1=DEFI_LIST_INST(METHODE='MANUEL',
                       DEFI_LIST=_F( LIST_INST=inst1,),
                       ECHEC=_F(ACTION        = 'DECOUPE',
-                               SUBD_METHODE  = 'MANUEL',),);
+                               SUBD_METHODE  = 'MANUEL',),)
 
 
 #--------------------------------------------------------------------------------------
@@ -155,7 +155,7 @@ TEMPLI1 = CREA_RESU(OPERATION='PREP_VRC2',
                                             EVOL_THER=TEMPLI1T,
                                             GROUP_MA = 'DALLE'
                                             ),
-                               );
+                               )
 
 MATER2=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='DALLE',  MATER=MAT_G,),
@@ -184,7 +184,7 @@ TEMPLI2 = CREA_RESU(OPERATION='PREP_VRC2',
                                             EVOL_THER=TEMPLI2T,
                                             GROUP_MA = 'DALLE'
                                             ),
-                               );
+                               )
 
 MATER3=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='DALLE',  MATER=MAT_G,),
@@ -196,22 +196,22 @@ MATER3=AFFE_MATERIAU(MAILLAGE=MAIL,
 # -------------------------------------------
 # condition limite sur A2A4 (calcul sans dilatation thermique)
 ch1_1=AFFE_CHAR_MECA(MODELE=MO_G,
-                       DDL_IMPO=_F(GROUP_MA='A2A4',  DX=2.e-4,),);
+                       DDL_IMPO=_F(GROUP_MA='A2A4',  DX=2.e-4,),)
 
 # condition limite sur A2A4 (calcul avec dilatation thermique)
 ch1_2=AFFE_CHAR_MECA(MODELE=MO_G,
-                       DDL_IMPO=_F(GROUP_MA='A2A4',  DX=0.,),);
+                       DDL_IMPO=_F(GROUP_MA='A2A4',  DX=0.,),)
 
 #--------------------------------------------------------------------------------------
 # chargement 2 : (effort de flexion MXX) :
 # -------------------------------------------
 # condition limite sur A2A4 (calcul sans dilatation thermique)
 ch2_1=AFFE_CHAR_MECA(MODELE=MO_G,
-                       DDL_IMPO=_F(GROUP_MA='A2A4',  DRY=6.e-3,),);
+                       DDL_IMPO=_F(GROUP_MA='A2A4',  DRY=6.e-3,),)
 
 # condition limite sur A2A4 (calcul avec dilatation thermique)
 ch2_2=AFFE_CHAR_MECA(MODELE=MO_G,
-                       DDL_IMPO=_F(GROUP_MA='A2A4',  DRY=0.,),);
+                       DDL_IMPO=_F(GROUP_MA='A2A4',  DRY=0.,),)
 
 #--------------------------------------------------------------------------------------
 # L'etat de contrainte (et d'effort) est homogene dans la plaque.
@@ -242,7 +242,7 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
-                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+                      ARCHIVAGE=_F(LIST_INST=inst1,),)
 
 RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
@@ -265,7 +265,7 @@ RESU_G2=STAT_NON_LINE(MODELE=MO_G,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1, MATRICE='ELASTIQUE'),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=26),
-                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+                      ARCHIVAGE=_F(LIST_INST=inst1,),)
 
 RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
@@ -295,7 +295,7 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
-                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+                      ARCHIVAGE=_F(LIST_INST=inst1,),)
 
 RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
@@ -318,7 +318,7 @@ RESU_G2=STAT_NON_LINE(MODELE=MO_G,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1, MATRICE='ELASTIQUE'),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
-                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+                      ARCHIVAGE=_F(LIST_INST=inst1,),)
 
 RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 

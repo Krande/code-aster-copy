@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,TEMP_IMPO=(
           _F( GROUP_NO = 'T_0000', TEMP = TIMP_0))
           )
 
-CHNO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+CHNO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAIL,AFFE=(
                _F( GROUP_NO = 'N1', NOM_CMP = 'TEMP',  VALE = 0.10000E+01),
                _F( GROUP_NO = 'N2', NOM_CMP = 'TEMP',  VALE = 0.10000E+01),

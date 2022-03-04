@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ GAMMA0 = 1.E-3
 ALPHA=0.35
 BETA=2.54E-7     # 2.54 Angstrom
 A      = 0.13
-B      = 0.005  ;
+B      = 0.005  
 Y      = 2.5E-7  # 2.5 Angstrom
 
 rho = 12*[RHO_0]

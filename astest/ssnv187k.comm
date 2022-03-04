@@ -1,18 +1,18 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
-# 
+#
 # code_aster is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # code_aster is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
@@ -26,14 +26,14 @@ MAIL = LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
                    ORIE_PEAU=_F(GROUP_MA_PEAU='SURF_DER',),)
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
                      PRES_REP=_F(GROUP_MA='SURF_DER',
-                                 PRES=0.876,),);
+                                 PRES=0.876,),)
 
 DEPL=AFFE_CHAR_MECA(MODELE=MODELE,
                      DDL_IMPO=(_F(GROUP_MA='SURF_DEV',
@@ -44,21 +44,21 @@ DEPL=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DZ=0.0,),
                                _F(GROUP_MA='SURF_HAU',
                                   DZ=0.0,),
-                               ),);
+                               ),)
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=20,),);
+                                   NOMBRE=20,),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,0.0,1.0,1.0,),);
+                VALE=(0.0,0.0,1.0,1.0,),)
 
 
 
 # MATERIAU HYPERELASTIQUE: MOONEY-RIVLIN
-C01 = 2.3456;
-C10 = 0.709;
-C20 = 0.0;
+C01 = 2.3456
+C10 = 0.709
+C20 = 0.0
 NU  = 0.499
 K   = (6*(C10+C01))/(3*(1-2*NU))
 
@@ -68,13 +68,13 @@ RUBBER1=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
                                    K=K,
                                    RHO=1000.0),
                        MFRONT=_F( LISTE_COEF=(C01,C10,C20,K),),
-);
+)
 
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODELE,
                     AFFE=_F(TOUT='OUI',
-                            MATER=RUBBER1,),);
+                            MATER=RUBBER1,),)
 
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT1,
@@ -94,16 +94,16 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                                   ),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),
-                   INCREMENT=_F(LIST_INST=LISTE,),);
+                   INCREMENT=_F(LIST_INST=LISTE,),)
 
 RESU1=CALC_CHAMP(reuse=RESU1,
                  RESULTAT=RESU1,
-                 CONTRAINTE=('SIGM_NOEU'),);
+                 CONTRAINTE=('SIGM_NOEU'),)
 
 # MATERIAU HYPERELASTIQUE: NEO-HOOKEEN
-C01 = 0.0;
-C10 = 1.2345;
-C20 = 0.0;
+C01 = 0.0
+C10 = 1.2345
+C20 = 0.0
 NU  = 0.499
 K   = (6*(C10+C01))/(3*(1-2*NU))
 
@@ -114,14 +114,14 @@ RUBBER2=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
                                    K=K,
                                    RHO=1000.0),
                        MFRONT=_F( LISTE_COEF=(C01,C10,C20,K),),
-);
+)
 
 
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODELE,
                     AFFE=_F(TOUT='OUI',
-                            MATER=RUBBER2,),);
+                            MATER=RUBBER2,),)
 
 RESU2=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT2,
@@ -142,18 +142,18 @@ RESU2=STAT_NON_LINE(MODELE=MODELE,
                                   ),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),
-                   INCREMENT=_F(LIST_INST=LISTE,),);
+                   INCREMENT=_F(LIST_INST=LISTE,),)
 
 RESU2=CALC_CHAMP(reuse=RESU2,
                  RESULTAT=RESU2,
-                 CONTRAINTE=('SIGM_NOEU'),);
+                 CONTRAINTE=('SIGM_NOEU'),)
 
 
 
 # MATERIAU HYPERELASTIQUE: SIGNORINI
-C01 = 1.2345;
-C10 = 0.1234;
-C20 = 0.456;
+C01 = 1.2345
+C10 = 0.1234
+C20 = 0.456
 NU  = 0.499
 K   = (6*(C10+C01))/(3*(1-2*NU))
 
@@ -164,14 +164,14 @@ RUBBER3=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
                                    K=K,
                                    RHO=1000.0),
                        MFRONT=_F( LISTE_COEF=(C01,C10,C20,K),),
-);
+)
 
 
 
 CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODELE,
                     AFFE=_F(TOUT='OUI',
-                            MATER=RUBBER3,),);
+                            MATER=RUBBER3,),)
 
 RESU3=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT3,
@@ -191,11 +191,11 @@ RESU3=STAT_NON_LINE(MODELE=MODELE,
                                   ),
                    CONVERGENCE=(_F(ARRET='OUI',
                                    ITER_GLOB_MAXI=20)),
-                   INCREMENT=_F(LIST_INST=LISTE,),);
+                   INCREMENT=_F(LIST_INST=LISTE,),)
 
 RESU3=CALC_CHAMP(reuse=RESU3,
                  RESULTAT=RESU3,
-                 CONTRAINTE=('SIGM_NOEU'),);
+                 CONTRAINTE=('SIGM_NOEU'),)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   GROUP_NO=('TestDisp', ),
@@ -297,4 +297,4 @@ TEST_RESU(
 )
 
 
-FIN();
+FIN()

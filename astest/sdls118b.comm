@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,33 +18,33 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
-MAIL0=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),);
+MAIL0=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),)
 
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAIL0,
                      CREA_POI1=_F(NOM_GROUP_MA='P3',
-                                  GROUP_NO=('P3',),),);
+                                  GROUP_NO=('P3',),),)
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA='RADIER',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='RADIER',),)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA='L1',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='L1',),)
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_NORM_COQUE=_F(GROUP_MA='RADIER',
                                           VECT_NORM=(0,0,-1,),
-                                          GROUP_NO='P3',),);
+                                          GROUP_NO='P3',),)
 
 STICKMOD=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(  _F(GROUP_MA='RADIER',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DST',),
-                            ),);
+                            ),)
 
 # ----------------------------------------------------------------------
 #  DEFINITION DES MATERIAUX
@@ -52,18 +52,18 @@ STICKMOD=AFFE_MODELE(MAILLAGE=MAILLAGE,
 MAT_0= DEFI_MATERIAU( ELAS=_F( E=4.000000000E+10,
                             NU=1.494252874E-01,
                             RHO=0.000000000E+00,
-                            ALPHA=0.000000000E+00,),);
+                            ALPHA=0.000000000E+00,),)
 MAT_2=DEFI_MATERIAU(ELAS=_F(E=4.000000000E+10,
                             NU=1.494252874E-01,
                             RHO=1.00000000E+00,
-                            ALPHA=0.000000000E+00,),);
+                            ALPHA=0.000000000E+00,),)
 
 CHAMPMA0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                      AFFE=(_F(GROUP_MA='RADIER',
-                              MATER=MAT_0,),),);
+                              MATER=MAT_0,),),)
 CHAMPMA2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                      AFFE=(_F(GROUP_MA='RADIER',
-                              MATER=MAT_2,),),);
+                              MATER=MAT_2,),),)
 
 # ----------------------------------------------------------------------
 # AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES
@@ -71,7 +71,7 @@ CHAMPMA2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 CARA_EL0=AFFE_CARA_ELEM( MODELE=STICKMOD,
           COQUE=_F( GROUP_MA = 'RADIER', EPAIS = 0.001),
 
-             );
+             )
 
 # LA STRUCTURE EST RIGIDIFIEE A L INTERFACE
 #------------------------------------------
@@ -87,7 +87,7 @@ cond_li0 = AFFE_CHAR_MECA( MODELE=STICKMOD,
                                ),
                      LIAISON_SOLIDE=(_F(GROUP_NO=('RADIER'),),
                                     ),
-                                           );
+                                           )
 
 cond_li2 = AFFE_CHAR_MECA( MODELE=STICKMOD,
                       DDL_IMPO=(
@@ -99,7 +99,7 @@ cond_li2 = AFFE_CHAR_MECA( MODELE=STICKMOD,
                                  DRY=0.0,
                                  DRZ=0.0,),),
 
-                                    );
+                                    )
 
 
 # mode =CALC_MODES
@@ -109,7 +109,7 @@ cond_li2 = AFFE_CHAR_MECA( MODELE=STICKMOD,
 MASSESTR=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                  MODELE=STICKMOD,
                  CHAM_MATER=CHAMPMA2,
-                 CARA_ELEM=CARA_EL0,);
+                 CARA_ELEM=CARA_EL0,)
 #
 # ----------------------------------------------------------------------
 
@@ -117,16 +117,16 @@ RIGI_EL0=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=STICKMOD,
                       CHAM_MATER=CHAMPMA0,
                       CARA_ELEM=CARA_EL0,
-                      CHARGE=cond_li0 ,);
+                      CHARGE=cond_li0 ,)
 
 MASS_EL0=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=STICKMOD,
                       CHAM_MATER=CHAMPMA0,
                       CARA_ELEM=CARA_EL0,
-                      CHARGE=cond_li0 ,);
+                      CHARGE=cond_li0 ,)
 #
 
-NUME_DD0=NUME_DDL(MATR_RIGI=RIGI_EL0,);
+NUME_DD0=NUME_DDL(MATR_RIGI=RIGI_EL0,)
 
 # -------------------
 
@@ -134,26 +134,26 @@ RIGI_EL2=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=STICKMOD,
                       CHAM_MATER=CHAMPMA2,
                       CARA_ELEM=CARA_EL0,
-                      CHARGE=cond_li2,);
+                      CHARGE=cond_li2,)
 
 MASS_EL2=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=STICKMOD,
                       CHAM_MATER=CHAMPMA2,
                       CARA_ELEM=CARA_EL0,
-                      CHARGE=cond_li2,);
+                      CHARGE=cond_li2,)
 #
 
-NUME_DD2=NUME_DDL(MATR_RIGI=RIGI_EL2,);
+NUME_DD2=NUME_DDL(MATR_RIGI=RIGI_EL2,)
 
 # Assemblage des matrices et vecteurs=
 #-------------------------------------
-rigid0 = ASSE_MATRICE( MATR_ELEM= RIGI_EL0, NUME_DDL= NUME_DD0) ;
+rigid0 = ASSE_MATRICE( MATR_ELEM= RIGI_EL0, NUME_DDL= NUME_DD0)
 
-masse0 = ASSE_MATRICE( MATR_ELEM= MASS_EL0, NUME_DDL= NUME_DD0) ;
+masse0 = ASSE_MATRICE( MATR_ELEM= MASS_EL0, NUME_DDL= NUME_DD0)
 
-rigid2 = ASSE_MATRICE( MATR_ELEM=  RIGI_EL2, NUME_DDL= NUME_DD2 ) ;
+rigid2 = ASSE_MATRICE( MATR_ELEM=  RIGI_EL2, NUME_DDL= NUME_DD2 )
 
-masse2 = ASSE_MATRICE( MATR_ELEM=  MASS_EL2, NUME_DDL= NUME_DD2 ) ;
+masse2 = ASSE_MATRICE( MATR_ELEM=  MASS_EL2, NUME_DDL= NUME_DD2 )
 
 
 #---------------------------------------------
@@ -166,7 +166,7 @@ MODESTA1=MODE_STATIQUE(  MATR_RIGI=rigid0,
                    GROUP_NO = 'P3',
                    AVEC_CMP = ('DX','DY','DZ','DRX','DRY','DRZ'),
                                ),
-                    );
+                    )
 
 MODE=CALC_MODES(MATR_RIGI=rigid2,
                 MATR_MASS=masse2,
@@ -183,18 +183,18 @@ BAMO=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODE, NMAX_MODE = 0),
 
 MAEL=MACR_ELEM_DYNA(BASE_MODALE=BAMO,
                   MATR_RIGI=rigid0,
-                  MATR_MASS=masse0);
+                  MATR_MASS=masse0)
 
 NDDLGEN=NUME_DDL_GENE(BASE=BAMO,
-                    STOCKAGE='PLEIN',);
+                    STOCKAGE='PLEIN',)
 
 RIGIGEN=PROJ_MATR_BASE(BASE=BAMO,
                      NUME_DDL_GENE=NDDLGEN,
-                     MATR_ASSE=rigid0,);
+                     MATR_ASSE=rigid0,)
 
 MASSGEN=PROJ_MATR_BASE(BASE=BAMO,
                      NUME_DDL_GENE=NDDLGEN,
-                     MATR_ASSE=masse0,);
+                     MATR_ASSE=masse0,)
 
 
 AMORT=COMB_MATR_ASSE(CALC_AMOR_GENE=_F(MASS_GENE = MASSGEN,
@@ -202,9 +202,9 @@ AMORT=COMB_MATR_ASSE(CALC_AMOR_GENE=_F(MASS_GENE = MASSGEN,
                                        AMOR_REDUIT= (
                                         0.0,0.0,0.0,0.0,0.0,0.0,),
                                         ),
-                                        );
+                                        )
 #                      SANS_CMP = 'LAGR',
-#                                 );
+#                                 )
 
 # #-------------------------------------
 # ACCELERO SISMIQUES
@@ -217,9 +217,9 @@ from sdls118b import F_FONC
 ACCE1, ACCE2 =F_FONC()
 
 ACCE_X=CALC_FONCTION(COMB=_F(FONCTION=ACCE1,
-                            COEF=9.8100000000000005,),);
+                            COEF=9.8100000000000005,),)
 ACCE_X2=CALC_FONCTION(COMB=_F(FONCTION=ACCE2,
-                            COEF=9.8100000000000005,),);
+                            COEF=9.8100000000000005,),)
 #
 # tt, vale_s=ACCE_X.Valeurs()
 #
@@ -232,7 +232,7 @@ ACCE_X2=CALC_FONCTION(COMB=_F(FONCTION=ACCE2,
 # # # print f_sig
 # OMF =1./(2*DT)
 #
-# ACCE_X2=DEFI_FONCTION(NOM_PARA='INST', ABSCISSE=tt[:Nb_pas], ORDONNEE=vale_s[:Nb_pas], INTERPOL='LIN',   );
+# ACCE_X2=DEFI_FONCTION(NOM_PARA='INST', ABSCISSE=tt[:Nb_pas], ORDONNEE=vale_s[:Nb_pas], INTERPOL='LIN',   )
 
 #
 #  -------------------------   -------------------------     ------------------------- -------------------------
@@ -264,7 +264,7 @@ ssi_1_a = DYNA_ISS_VARI(
                                  MATR_RIGI = RIGIGEN,
                                  MATR_AMOR = AMORT,
                            ),
-                       INFO   =1 ,);
+                       INFO   =1 ,)
 
 
 ssi_1=RECU_FONCTION(RESU_GENE=ssi_1_a,
@@ -272,22 +272,22 @@ ssi_1=RECU_FONCTION(RESU_GENE=ssi_1_a,
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',)
 
 DX11_1a = RECU_FONCTION(RESU_GENE=ssi_1_a,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='DEPLACEMENT AU CENTRE BAS DU RADIER',);
+                       TITRE='DEPLACEMENT AU CENTRE BAS DU RADIER',)
 
 ##Sans variabilite spatiale, la reponse en acceleration
 ##est egale au signal d'entree (le filtre h(w) vaut 1)
 
 test_1=CALC_FONCTION(COMB=(_F(FONCTION=ssi_1, COEF=1.0, ),        #calcul de l'erreur
                            _F(FONCTION=ACCE_X2, COEF=-1.0, ),)
-                                                                         );
-testr_1=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_1 ),);
+                                                                         )
+testr_1=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_1 ),)
 
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -327,14 +327,14 @@ ssi_1_b = DYNA_ISS_VARI(
                                  MATR_RIGI = RIGIGEN,
                                  MATR_AMOR = AMORT,
                            ),
-                       INFO   =1 ,);
+                       INFO   =1 ,)
 
 ssi_1b=RECU_FONCTION(RESU_GENE=ssi_1_b,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',)
 
 
 DX11_1b = RECU_FONCTION(RESU_GENE=ssi_1_b,
@@ -342,7 +342,7 @@ DX11_1b = RECU_FONCTION(RESU_GENE=ssi_1_b,
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='DEPLACEMENT AU CENTRE BAS DU RADIER',);
+                       TITRE='DEPLACEMENT AU CENTRE BAS DU RADIER',)
 
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02794363058252,
@@ -358,8 +358,8 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02794363058252,
 
 test_1b=CALC_FONCTION(COMB=(_F(FONCTION=ssi_1b, COEF=1.0, ),        #calcul de l'erreur
                                                     _F(FONCTION=ACCE_X, COEF=-1.0, ),)
-                                                                         );
-testr_1b=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_1b ),);
+                                                                         )
+testr_1b=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_1b ),)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -400,14 +400,14 @@ ssi_2_a = DYNA_ISS_VARI(
                                  MATR_RIGI = RIGIGEN,
                                  MATR_AMOR = AMORT,
                            ),
-                       INFO   =1,);
+                       INFO   =1,)
 
 ssi_2a=RECU_FONCTION(RESU_GENE=ssi_2_a,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',)
 
 
 
@@ -436,14 +436,14 @@ ssi_2_b = DYNA_ISS_VARI(
                                  MATR_RIGI = RIGIGEN,
                                  MATR_AMOR = AMORT,
                            ),
-                       INFO   =2,);
+                       INFO   =2,)
 
 ssi_2b=RECU_FONCTION(RESU_GENE=ssi_2_b,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',)
 
 
 
@@ -458,7 +458,7 @@ L_FREQ = DEFI_LIST_REEL(DEBUT=0.1,
                           _F(JUSQU_A=50.0, PAS=0.5,),
 #                          _F(JUSQU_A=100.0, PAS=2.0,),
                         )
-                       );
+                       )
 
 
 
@@ -468,17 +468,17 @@ amo_sro=0.05
 #------- CALCUL DES SRO
 #------------------------------------------------------------------------------------------------------------------------------
 SRADBX0=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCE_X, LIST_FREQ = L_FREQ,
-                                                                         NORME=9.81, AMOR_REDUIT=amo_sro,  ),);
+                                                                         NORME=9.81, AMOR_REDUIT=amo_sro,  ),)
 
 SRADBX1=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_1b, LIST_FREQ = L_FREQ,
-                                                                         NORME=9.81, AMOR_REDUIT=amo_sro,  ),);
+                                                                         NORME=9.81, AMOR_REDUIT=amo_sro,  ),)
 
 SRADBX2=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_2a, LIST_FREQ = L_FREQ,
-                                                                          NORME=9.81, AMOR_REDUIT=amo_sro,  ),);
+                                                                          NORME=9.81, AMOR_REDUIT=amo_sro,  ),)
 
 
 SRADBX3=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_2b, LIST_FREQ = L_FREQ,
-                                                                          NORME=9.81, AMOR_REDUIT=amo_sro,  ),);
+                                                                          NORME=9.81, AMOR_REDUIT=amo_sro,  ),)
 
 
 amo, sro_sol = SRADBX0.Valeurs()
@@ -494,10 +494,10 @@ for i1,i2 in (list(zip(sro_vale0,sro_vale1))):
 test_2  = DEFI_FONCTION ( NOM_RESU    = 'ACCE',  NOM_PARA    = 'FREQ',
             PROL_GAUCHE = 'CONSTANT',  PROL_DROITE  = 'CONSTANT',
             ABSCISSE        = sro_freq,
-            ORDONNEE     = list(sro_diff));
+            ORDONNEE     = list(sro_diff))
 
-testr_2=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_2 ),);
-testm_2=INFO_FONCTION(MAX=_F(FONCTION=test_2 ),);
+testr_2=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_2 ),)
+testm_2=INFO_FONCTION(MAX=_F(FONCTION=test_2 ),)
 
 #---- REFERENCE = 'ANALYTIQUE'
 #     (ecart entre SRO du signal calcule et SRO du signal en entree pour le cas sans variabilite)
@@ -590,7 +590,7 @@ ssi_4_a = DYNA_ISS_VARI(
                                  MATR_MASS = MASSGEN,
                                  MATR_RIGI = RIGIGEN,
                                  MATR_AMOR = AMORT, ),
-                       INFO   =2,);
+                       INFO   =2,)
 
 ssi_4_b = DYNA_ISS_VARI(
                        FREQ_MAX  = fmax,  FREQ_PAS = pas_f ,
@@ -605,7 +605,7 @@ ssi_4_b = DYNA_ISS_VARI(
                        MATR_GENE = _F(
                                  MATR_MASS = MASSGEN,
                                  MATR_RIGI = RIGIGEN,
-                                 MATR_AMOR = AMORT,),);
+                                 MATR_AMOR = AMORT,),)
 
 ssi_4_c = DYNA_ISS_VARI(
                        FREQ_MAX  = fmax,  FREQ_PAS = pas_f ,
@@ -620,7 +620,7 @@ ssi_4_c = DYNA_ISS_VARI(
                        MATR_GENE = _F(
                                  MATR_MASS = MASSGEN,
                                  MATR_RIGI = RIGIGEN,
-                                 MATR_AMOR = AMORT,),);
+                                 MATR_AMOR = AMORT,),)
 
 
 ssi_4a=RECU_FONCTION(RESU_GENE=ssi_4_a,
@@ -628,30 +628,30 @@ ssi_4a=RECU_FONCTION(RESU_GENE=ssi_4_a,
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',)
 
 SRADBX4a=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_4a, LIST_FREQ = L_FREQ,
-                      NORME=9.81, AMOR_REDUIT=amo_sro,  ),);
+                      NORME=9.81, AMOR_REDUIT=amo_sro,  ),)
 
 ssi_4b=RECU_FONCTION(RESU_GENE=ssi_4_b,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',)
 
 SRADBX4b=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_4b, LIST_FREQ = L_FREQ,
-                      NORME=9.81, AMOR_REDUIT=amo_sro,  ),);
+                      NORME=9.81, AMOR_REDUIT=amo_sro,  ),)
 
 ssi_4c=RECU_FONCTION(RESU_GENE=ssi_4_c,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
                        GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION AU CENTRE BAS DU RADIER',)
 
 SRADBX4c=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_4c, LIST_FREQ = L_FREQ,
-                      NORME=9.81, AMOR_REDUIT=amo_sro,  ),);
+                      NORME=9.81, AMOR_REDUIT=amo_sro,  ),)
 
 
 
@@ -702,4 +702,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC = 0.62826985317543,
                         ),)
 
 
-FIN();
+FIN()

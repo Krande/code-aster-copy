@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_RIGI=KAS,
                     FREQ=0.0318309886184,
                     EXCIT=_F(VECT_ASSE=VAS,
-                             COEF_MULT=1,),);
+                             COEF_MULT=1,),)
 
 DYNA=CALC_CHAMP(reuse=DYNA,RESULTAT=DYNA,NUME_ORDRE=1,CONTRAINTE=('SIGM_ELNO'))
 
@@ -483,5 +483,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 #

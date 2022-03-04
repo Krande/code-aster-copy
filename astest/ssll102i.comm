@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,15 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #lecture maillage lineique
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",INFO=2,);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",INFO=2,)
 # lecture maillage section
 
-MASEC=LIRE_MAILLAGE(FORMAT='MED',UNITE=18,);
+MASEC=LIRE_MAILLAGE(FORMAT='MED',UNITE=18,)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_EM',),);
+                       MODELISATION='POU_D_EM',),)
 
 GF=DEFI_GEOM_FIBRE(
            SECTION = _F ( GROUP_FIBRE='SEC1',
@@ -41,14 +41,14 @@ GF=DEFI_GEOM_FIBRE(
             )
 
 MATR=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
-                           NU=0.3,),);
+                           NU=0.3,),)
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MATR,
                   MULTIFIBRE=(_F(GROUP_FIBRE='SEC1',MATER=MATR),))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',MATER=MATR,),
-                    AFFE_COMPOR=_F(GROUP_MA = 'G1',COMPOR=COMPF));
+                    AFFE_COMPOR=_F(GROUP_MA = 'G1',COMPOR=COMPF))
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
                      POUTRE=_F(GROUP_MA = 'G1',
@@ -62,7 +62,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
                           GEOM_FIBRE=GF,
                           MULTIFIBRE=_F(GROUP_MA='G1',
                                   GROUP_FIBRE='SEC1'),
-                  );
+                  )
 
 # ------ TORSION GX : --------------------------------------------------
 
@@ -78,14 +78,14 @@ CHARG4=AFFE_CHAR_MECA(MODELE=MO,
                                       MX= 5.7735026919E-01,
                                       MY= 5.7735026919E-01,
                                       MZ= 5.7735026919E-01,
-                                      ),);
+                                      ),)
 
 MEST4=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,
                     EXCIT=_F(CHARGE=CHARG4,),
-                    OPTION='SANS', 
-                    );
+                    OPTION='SANS',
+                    )
 
 STRX=CALC_CHAMP(
                 RESULTAT=MEST4, # INFO=2,
@@ -154,5 +154,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 #

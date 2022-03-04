@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 # NOMBRE DE NOEUDS                         981
 #
@@ -39,21 +39,21 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HHMS',),);
+                           MODELISATION='D_PLAN_HHMS',),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                  MAILLAGE=MAIL,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU='TROU',),);
+                 ORIE_PEAU=_F(GROUP_MA_PEAU='TROU',),)
 
-viscoliq=DEFI_CONSTANTE(VALE=1.E-3,);
+viscoliq=DEFI_CONSTANTE(VALE=1.E-3,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.,);
+ZERO=DEFI_CONSTANTE(VALE=0.,)
 
-UN=DEFI_CONSTANTE(VALE=1.,);
+UN=DEFI_CONSTANTE(VALE=1.,)
 
-KINT=DEFI_CONSTANTE(VALE=1.E-9,);
+KINT=DEFI_CONSTANTE(VALE=1.E-9,)
 
-KHENRY  = DEFI_CONSTANTE(VALE=1.E+14,);
+KHENRY  = DEFI_CONSTANTE(VALE=1.E+14,)
 
 BBG=0.412
 PRBG = 1.E7
@@ -95,29 +95,29 @@ MAT=DEFI_MATERIAU(ELAS=_F(E    =515.E6,
                   THM_LIQU=_F(RHO       =1.E3,
                               UN_SUR_K  =0.,
                               VISC      =viscoliq,
-                              D_VISC_TEMP=ZERO,),);
+                              D_VISC_TEMP=ZERO,),)
 
 CHMATO=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT,),);
+                             MATER=MAT,),)
 
 CHAR0=AFFE_CHAR_CINE(MODELE=MODELE,
         MECA_IMPO=(_F(GROUP_MA='BAS', DY=0.,),
                    _F(GROUP_MA=('GAUCHE','DROIT'), DX=0.,),
                    _F(GROUP_MA=('HAUT','GAUCHE','DROIT'), PRE2=0.,),
-                  ),);
+                  ),)
 
 CHAR2=AFFE_CHAR_CINE(MODELE=MODELE,
-        MECA_IMPO=_F(GROUP_MA='HAUT', PRE1=0.,),);
+        MECA_IMPO=_F(GROUP_MA='HAUT', PRE1=0.,),)
 
 # =================================
 #
 #    Conditions de suintement
 #
 # =================================
-F_IMPO = DEFI_CONSTANTE(VALE= 0.);
-F_MULT = DEFI_CONSTANTE(VALE= -1.);
-F_ZERO = DEFI_CONSTANTE(VALE= 0.);
+F_IMPO = DEFI_CONSTANTE(VALE= 0.)
+F_MULT = DEFI_CONSTANTE(VALE= -1.)
+F_ZERO = DEFI_CONSTANTE(VALE= 0.)
 
 CHAR1 = DEFI_CONTACT(MODELE      = MODELE,
                      FORMULATION = 'LIAISON_UNIL',
@@ -127,34 +127,34 @@ CHAR1 = DEFI_CONTACT(MODELE      = MODELE,
                          COEF_PENA = 1.,
                          NOM_CMP    = 'PRE1',
                          COEF_IMPO  = F_IMPO,
-                         COEF_MULT  = F_MULT,),);
+                         COEF_MULT  = F_MULT,),)
 
 CHARG0=AFFE_CHAR_MECA(MODELE=MODELE,
                       PESANTEUR=_F(GRAVITE=9.81,
-                                   DIRECTION=(0.,-1.,0.,),),);
+                                   DIRECTION=(0.,-1.,0.,),),)
 
 # Définition des Champs initiaux
 # --------------------------------------
 CHGEOMG = CREA_CHAMP(TYPE_CHAM = 'NOEU_GEOM_R',
                      OPERATION = 'EXTR',
                      MAILLAGE  = MAIL,
-                     NOM_CHAM  = 'GEOMETRIE',);
+                     NOM_CHAM  = 'GEOMETRIE',)
 
 CHGEOMG0 = CREA_CHAMP(TYPE_CHAM = 'ELGA_GEOM_R',
                       OPERATION = 'DISC',
                       MODELE    = MODELE,
                       CHAM_GD   = CHGEOMG,
-                      PROL_ZERO='OUI');
+                      PROL_ZERO='OUI')
 y_surf =3.
 
 GrMa= 'BLOC'
 
-PRE10 = FORMULE(VALE = '9.81*1000.*(Y-y_surf)', NOM_PARA=('X','Y',),y_surf=y_surf);
+PRE10 = FORMULE(VALE = '9.81*1000.*(Y-y_surf)', NOM_PARA=('X','Y',),y_surf=y_surf)
 
-SIP0 = FORMULE(VALE = 'PRE10(X,Y)', NOM_PARA=('X','Y',),PRE10=PRE10);
+SIP0 = FORMULE(VALE = 'PRE10(X,Y)', NOM_PARA=('X','Y',),PRE10=PRE10)
 
 SIYY0 = FORMULE(NOM_PARA =('X','Y',),
-                VALE    = '(2.67E3-1.E3)*(Y-y_surf)',y_surf=y_surf);
+                VALE    = '(2.67E3-1.E3)*(Y-y_surf)',y_surf=y_surf)
 
 SIGMA0a = CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_F',
                     OPERATION = 'AFFE',
@@ -164,24 +164,24 @@ SIGMA0a = CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_F',
                                     NOM_CMP=('X1','X2','X3',
                                              'X4','X5','X6',),
                                     VALE_F =(SIYY0,SIYY0,SIYY0,
-                                             SIP0,SIP0,SIP0,),),);
+                                             SIP0,SIP0,SIP0,),),)
 
 DEPL0a = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_F',
                   OPERATION = 'AFFE',
                   MODELE         = MODELE,
                   AFFE           =_F(GROUP_MA = GrMa,
                                    NOM_CMP    = ('X1','X2','X3','X4',),
-                                   VALE_F     = (ZERO,ZERO,PRE10,UN,),),);
+                                   VALE_F     = (ZERO,ZERO,PRE10,UN,),),)
 
 SIGMA0b = CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R',
                     OPERATION = 'EVAL',
                     CHAM_F    = SIGMA0a,
-                    CHAM_PARA = CHGEOMG0,);
+                    CHAM_PARA = CHGEOMG0,)
 
 DEPL0b = CREA_CHAMP(TYPE_CHAM   = 'NOEU_NEUT_R',
                     OPERATION = 'EVAL',
                     CHAM_F      = DEPL0a,
-                    CHAM_PARA   = CHGEOMG,);
+                    CHAM_PARA   = CHGEOMG,)
 
 SIGMA0c = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
               OPERATION = 'ASSE',
@@ -193,7 +193,7 @@ SIGMA0c = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
                                             'X4','X5','X6',),
                               NOM_CMP_RESU= ('SIXX','SIYY','SIZZ',
                                             'SIPXX','SIPYY','SIPZZ',),),
-              INFO=1,);
+              INFO=1,)
 
 DEPL0c=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='ASSE',
@@ -202,11 +202,11 @@ DEPL0c=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                            CHAM_GD=DEPL0b,
                            NOM_CMP=('X1','X2','X3','X4',),
                            NOM_CMP_RESU=('DX','DY','PRE1','PRE2',),),
-                   INFO=1,);
+                   INFO=1,)
 nume1 = 5
 
 LI1=DEFI_LIST_REEL(DEBUT=-1.e4,
-                  INTERVALLE=_F(JUSQU_A=0., NOMBRE=nume1,),);
+                  INTERVALLE=_F(JUSQU_A=0., NOMBRE=nume1,),)
 
 CINIT=STAT_NON_LINE(MODELE=MODELE,
                      CHAM_MATER=CHMATO,
@@ -233,7 +233,7 @@ CINIT=STAT_NON_LINE(MODELE=MODELE,
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                     ITER_GLOB_MAXI=5,
                                     ARRET='OUI',),
-                     INFO=1,);
+                     INFO=1,)
 tint = .02
 tfin = .2
 npas1= 20
@@ -243,13 +243,13 @@ pas2 = (tfin-tint)/npas2
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=(_F(JUSQU_A=tint, NOMBRE=npas1,),
-                              _F(JUSQU_A=tfin, NOMBRE=npas2,),),);
+                              _F(JUSQU_A=tfin, NOMBRE=npas2,),),)
 
 DEFLIST = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST    = LI2,),
                          ECHEC     = _F(EVENEMENT    = 'ERREUR',
                                         SUBD_METHODE = 'MANUEL',
                                         SUBD_PAS     =  4,
-                                        SUBD_NIVEAU  =  2,),);
+                                        SUBD_NIVEAU  =  2,),)
 MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      CHAM_MATER=CHMATO,
                      SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA',),
@@ -282,14 +282,14 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      OBSERVATION=(_F(GROUP_NO=('NTROU','NBASE','NSUP',),
                                      NOM_CHAM='DEPL',
                                      NOM_CMP ='PRE1',),),
-                     INFO=1,);
+                     INFO=1,)
 
 TAB_OBS = RECU_TABLE(CO=MESTAT, NOM_TABLE='OBSERVATION')
 
 IMPR_TABLE(FORMAT='ASTER',
            TABLE =TAB_OBS,
            TITRE ='Pression eau',
-           UNITE =8,);
+           UNITE =8,)
 
 TEST_RESU(RESU=(_F(INST     =5.e-3,
                    RESULTAT =MESTAT,
@@ -334,11 +334,11 @@ TEST_RESU(RESU=(_F(INST     =5.e-3,
                    REFERENCE='ANALYTIQUE',
                    VALE_REFE=2.*9.81e+3,
                    PRECISION=1e-3,),
-                ),);
+                ),)
 """
 CALC_CHAMP(RESULTAT = MESTAT,
            reuse=MESTAT,
-           CONTRAINTE= ('SIEF_NOEU',),);
+           CONTRAINTE= ('SIEF_NOEU',),)
 
 #############################################
 #                                           #
@@ -347,25 +347,25 @@ CALC_CHAMP(RESULTAT = MESTAT,
 #############################################
 
 MAILLIN = CREA_MAILLAGE(MAILLAGE  = MAIL,
-                        QUAD_LINE = _F(TOUT = 'OUI'),);
+                        QUAD_LINE = _F(TOUT = 'OUI'),)
 
 MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),);
+                           MODELISATION='D_PLAN',),)
 
 RESAUX=PROJ_CHAMP(METHODE='COLLOCATION',
                         MODELE_1=MODELE,
                         MODELE_2=MODELIN,
                         RESULTAT=MESTAT,
                         PROL_ZERO='OUI',
-                        ALARME='NON',);
+                        ALARME='NON',)
 
 IMPR_RESU(FORMAT='MED',
           UNITE =80,
-          RESU=(_F(RESULTAT=RESAUX,),),);
+          RESU=(_F(RESULTAT=RESAUX,),),)
 
-POST=[MESTAT,MESTAT,MESTAT,];
+POST=[MESTAT,MESTAT,MESTAT,]
 
 T = [1.*pas,5.*pas,10.*pas,20.,]
 
@@ -379,14 +379,14 @@ for c,u in enumerate(POST):
                 RESULTAT=u,
                 NOM_CHAM='DEPL',
                 INST=T[c],
-                INFO=1,);
+                INFO=1,)
 
    SIGM[c]=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=u,
                 NOM_CHAM='SIEF_NOEU',
                 INST=T[c],
-                INFO=1,);
+                INFO=1,)
 unit =38
 
 # coupe verticale passant par le cote gauche
@@ -394,39 +394,39 @@ xc,yc,     =1.,1.,
 DIR        ='DY'
 prec       =.01
 Group_Ma   ='GM14'
-composante =['PRE1']*len(DEPL);
+composante =['PRE1']*len(DEPL)
 
 coupe1 = Post_Coupe(DEPL,composante,X=xc,Y=yc,Z=0,Precision =prec,\
-                    DIR=DIR,grma=Group_Ma,codim=P0,);
+                    DIR=DIR,grma=Group_Ma,codim=P0,)
 
 # coupe verticale passant par le milieu
 xc,yc, =1.5,1.,
 Group_Ma   ='MAIL'
 
 coupe2 = Post_Coupe(DEPL,composante,X=xc,Y=yc,Z=0,Precision =prec,\
-                    DIR=DIR,grma=Group_Ma,codim=P0,);
+                    DIR=DIR,grma=Group_Ma,codim=P0,)
 
 DEFI_FICHIER(ACTION='ASSOCIER',
                FICHIER='./REPE_OUT/late_pre1.agr',
-               UNITE=unit,);
+               UNITE=unit,)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=unit,
-              COURBE=coupe1.COURBE);
+              COURBE=coupe1.COURBE)
 
-DEFI_FICHIER(ACTION='LIBERER', UNITE=unit,);
+DEFI_FICHIER(ACTION='LIBERER', UNITE=unit,)
 
 DEFI_FICHIER(ACTION='ASSOCIER',
                FICHIER='./REPE_OUT/midle_pre1.agr',
-               UNITE=unit,);
+               UNITE=unit,)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=unit,
-              COURBE=coupe2.COURBE);
+              COURBE=coupe2.COURBE)
 
-DEFI_FICHIER(ACTION='LIBERER', UNITE=unit,);
+DEFI_FICHIER(ACTION='LIBERER', UNITE=unit,)
 
-# IMPR_TABLE(UNITE=8,TABLE=coupe1.TABLE,);
-# IMPR_TABLE(UNITE=8,TABLE=coupe2.TABLE,);
+# IMPR_TABLE(UNITE=8,TABLE=coupe1.TABLE,)
+# IMPR_TABLE(UNITE=8,TABLE=coupe2.TABLE,)
 """
-FIN();
+FIN()

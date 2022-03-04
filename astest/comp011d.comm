@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ tmax =1.
 
 NCAL = 20
 
-ZERO =DEFI_CONSTANTE(VALE=0.0);
+ZERO =DEFI_CONSTANTE(VALE=0.0)
 
-UN =DEFI_CONSTANTE(VALE=1.0);
+UN =DEFI_CONSTANTE(VALE=1.0)
 
 compor='BETON_DOUBLE_DP'
 
@@ -59,7 +59,7 @@ YOUN=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
 
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 1.0e-05,
                                          500., 2.0e-05,
-                                           ),);
+                                           ),)
 
 FC=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
                                          PROL_GAUCHE='LINEAIRE',
@@ -106,13 +106,13 @@ MATER=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                COEF_ELAS_COMP = 33.3333333,
                                ECRO_COMP_P_PIC = 'LINEAIRE',
                                ECRO_TRAC_P_PIC = 'LINEAIRE'),
-                 );
+                 )
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1,
                                      NOMBRE=NCAL,),
-                                     ),);
+                                     ),)
 
 TIMP=DEFI_FONCTION(
                       NOM_PARA='INST',  NOM_RESU='TEMP',
@@ -132,9 +132,9 @@ U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  EPSI_IMPOSE=_F(EPXX=ZERO,),
-                 );
+                 )
 
-IMPR_TABLE(TABLE=U,);
+IMPR_TABLE(TABLE=U,)
 
 
 MATER  = [None]*NCAL
@@ -160,7 +160,7 @@ for i in range(NCAL):
 
           # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
 
-          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
+          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF))
 
           if i > 0 :
              SXM = SXM *(YOUN(Ti)/YOUN(Tm))
@@ -181,10 +181,10 @@ for i in range(NCAL):
                                              COEF_ELAS_COMP = 33.3333333,
                                              ECRO_COMP_P_PIC = 'LINEAIRE',
                                              ECRO_TRAC_P_PIC = 'LINEAIRE'),
-                                       );
+                                       )
 
           listinst = DEFI_LIST_REEL(DEBUT=timem,
-                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
+                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),)
 
           RESU[i]=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
                                  MATER=MATER[i],
@@ -202,7 +202,7 @@ for i in range(NCAL):
                                  SIGM_INIT=_F(SIXX=SXM),
                                  EPSI_INIT=_F(EPXX=EXM, EPYY=0.,EPZZ=0.,EPXY=0, EPXZ=0.,EPYZ=0.),
                                  VARI_INIT=_F(VALE=[Vim[j] for j in range(Nbvari)]),
-                                 );
+                                 )
 
           # recuperation des valeurs initiales du futur pas de temps dans la table resultat
 
@@ -213,7 +213,7 @@ for i in range(NCAL):
           for j in range(Nbvari):
              Vim[j] = RESU[i]['V'+str(j+1),1]
 
-          #IMPR_TABLE(TABLE=RESU[i]);
+          #IMPR_TABLE(TABLE=RESU[i])
 
           DETRUIRE(NOM = epsimp)
           DETRUIRE(NOM = listinst)
@@ -228,14 +228,14 @@ for i in range(NCAL):
                      VALE_CALC=RESU[i]['VMIS',2],
                      VALE_REFE=U['VMIS',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',);
+                     REFERENCE='AUTRE_ASTER',)
 
           TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='TRACE',
                      VALE_CALC=RESU[i]['TRACE',2],
                      VALE_REFE=U['TRACE',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',);
+                     REFERENCE='AUTRE_ASTER',)
 
           for j in range(Nbvari):
              nomvari='V'+str(j+1)
@@ -245,6 +245,6 @@ for i in range(NCAL):
                      VALE_CALC=RESU[i][nomvari,2],
                      VALE_REFE=U[nomvari,i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',);
+                     REFERENCE='AUTRE_ASTER',)
 
 FIN()

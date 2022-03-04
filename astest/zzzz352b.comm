@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,15 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                            NU=0.0,),);
+                            NU=0.0,),)
 
-PRE_GIBI();
+PRE_GIBI()
 
-MA_2D=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA_2D=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 CHMAT_2D=AFFE_MATERIAU(MAILLAGE=MA_2D,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATER,),);
+                               MATER=MATER,),)
 
 #  MODELE  2D :
 #  ------------
@@ -37,7 +37,7 @@ MOD1=AFFE_MODELE(MAILLAGE=MA_2D,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='D_PLAN',),
-                 DISTRIBUTION=_F(METHODE='CENTRALISE'),);
+                 DISTRIBUTION=_F(METHODE='CENTRALISE'),)
 
 CH1=AFFE_CHAR_MECA(MODELE=MOD1,
                    DDL_IMPO=_F(GROUP_NO='A',
@@ -47,7 +47,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MOD1,
                                 DX=2.0,
                                 DY=3.0,),
                    LIAISON_SOLIDE=_F(GROUP_MA='CARRE2',),
-                   INFO=1,);
+                   INFO=1,)
 # CALCUL DE REFERENCE (MUMPS + CHARGEMENT DUALISE)
 
 REREF1=MECA_STATIQUE( MODELE=MOD1, CHAM_MATER=CHMAT_2D, SOLVEUR=_F(METHODE='MUMPS',),
@@ -64,11 +64,11 @@ DYREF=TN1['DY',1]
 MES1=MECA_STATIQUE(MODELE=MOD1,
                    CHAM_MATER=CHMAT_2D,
                    EXCIT=_F(CHARGE=CH1,),
-                   SOLVEUR=_F(ELIM_LAGR='OUI',),);
+                   SOLVEUR=_F(ELIM_LAGR='OUI',),)
 
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MES1,
 #                  NOM_CHAM='DEPL',
-#                  GROUP_NO=('B',),),);
+#                  GROUP_NO=('B',),),)
 
 # TESTS
 
@@ -81,7 +81,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='B', RESULTAT=MES1,  NOM_CHAM='DEPL', N
 #
 #---------------------------------------------------------------------
 
-FIN();
+FIN()
 
 #
 #CHECKSUM:7048e3b585852ba7264d1f034c3a9212  -:FIN CHECKSUM

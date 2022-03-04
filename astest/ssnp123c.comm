@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,43 +23,43 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 # DEFINITION DU PROBLEME
 #=======================
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_SI',),);
+                       MODELISATION='3D_SI',),)
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                                NU=0.3,),
                        ECRO_LINE=_F(D_SIGM_EPSI=1000.0,
-                                    SY=200.0,),);
+                                    SY=200.0,),)
 
 CH_MATER=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATERIAU,),);
+                               MATER=MATERIAU,),)
 
 SYMETRIE=AFFE_CHAR_MECA(MODELE=MO,
                         FACE_IMPO=(_F(GROUP_MA=('LCD_FACE','LBC_FACE',),
                                       DY=0.0,),
                                    _F(GROUP_MA=('LDE_FACE','LEF_FACE',),
-                                      DX=0.0,),),);
+                                      DX=0.0,),),)
 
 APPUI=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(TOUT='OUI',
-                                   DZ=0.0,),);
+                                   DZ=0.0,),)
 
 TRACTION=AFFE_CHAR_MECA(MODELE=MO,
                         FACE_IMPO=_F(GROUP_MA='LFG_FACE',
-                                     DY=0.1,),);
+                                     DY=0.1,),)
 
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
-                                      NOMBRE=5,),);
+                                      NOMBRE=5,),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0, 0.0,
-                          1.0, 1.0,),);
+                          1.0, 1.0,),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -81,7 +81,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
                    INCREMENT=_F(LIST_INST=DEFLIST),
                    NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),)
 
 # POST TRAITEMENT
 #=================
@@ -95,11 +95,11 @@ RESU=CALC_ERREUR(reuse =RESU,
                OPTION=('ERME_ELEM',
                        'ERME_ELNO',
                       ),
-               );
+               )
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             CONTRAINTE='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',)
 
 
 
@@ -209,4 +209,4 @@ TEST_RESU(RESU=_F(INST=1.0,
                   ),
           )
 
-FIN();
+FIN()

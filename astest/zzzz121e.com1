@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # person_in_charge: gerald.nicolas at edf.fr
 #       Controle de POURSUITE en adaptation de maillage
 #       Ce cas est purement informatique
-POURSUITE(CODE='OUI',);
+POURSUITE(CODE='OUI',)
 #
 # 9. ADAPTATION DU MAILLAGE DE 02 VERS 03
 #    . RAFFINEMENT SELON DES BOITES PARALLELEPIPEDIQUES
@@ -49,7 +49,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M02,
                        Y_MAXI= 4.01,
                        Z_MINI= 1.99,
                        Z_MAXI= 2.01,),),
-               );
+               )
 #
 # 10. CALCUL SUR LE MAILLAGE 03
 # 10.1. MODELE MECANIQUE
@@ -57,14 +57,14 @@ MACR_ADAP_MAIL(MAILLAGE_N=M02,
 MODE03=AFFE_MODELE(MAILLAGE=M03,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 #
 # 10.2. MISE EN PLACE DES MATERIAUX
 
 MATE03=AFFE_MATERIAU(MAILLAGE=M03,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATER2,),);
+                             MATER=MATER2,),)
 
 #
 # 10.3. CHARGEMENTS
@@ -79,19 +79,19 @@ CHAR03=AFFE_CHAR_MECA(MODELE=MODE03,
                       PRES_REP=(_F(GROUP_MA='X_MAX',
                                    PRES=PRE,),
                                 _F(GROUP_MA=('Y_MI_MA','Z_MI_MA',),
-                                   PRES=PRES_0,),),);
+                                   PRES=PRES_0,),),)
 
 #
 # 10.4. RESOLUTION
 
 RESU03=MECA_STATIQUE(MODELE=MODE03,
                      CHAM_MATER=MATE03,
-                     EXCIT=_F(CHARGE=CHAR03,),);
+                     EXCIT=_F(CHARGE=CHAR03,),)
 
 
 # 10.5. IMPRESSION
-IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(RESULTAT=RESU03,),);
-#IMPR_RESU(RESU=_F(RESULTAT=RESU03,),);
+IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(RESULTAT=RESU03,),)
+#IMPR_RESU(RESU=_F(RESULTAT=RESU03,),)
 
 # 11. TESTS DE NON-REGRESSION
 #    ON CREE DEUX GROUPES DE NOEUD CONTENANT CHACUN UN DES NOEUDS CREES AU CENTRE
@@ -111,7 +111,7 @@ M03=DEFI_GROUP( reuse =M03,
                                   POINT=(5.,5.,1.),
                                   PRECISION=1/200.,
                                   RAYON=1/200.),),
-                INFO=2 );
+                INFO=2 )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='N76',
@@ -131,4 +131,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    ),
                 ),)
 
-FIN();
+FIN()

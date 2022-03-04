@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,11 +84,11 @@ DEPLA=MECA_STATIQUE(   MODELE=MO,
 
 LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=5,),);
+                                    NOMBRE=5,),)
 
 
 DEPLA0=STAT_NON_LINE(   MODELE=MO,  COMPORTEMENT=_F(RELATION='ELAS'),INCREMENT=_F(LIST_INST=LISTE),
-             CARA_ELEM=ESSAI0,   CHAM_MATER=CM0, EXCIT=_F(  CHARGE = CH) );
+             CARA_ELEM=ESSAI0,   CHAM_MATER=CM0, EXCIT=_F(  CHARGE = CH) )
 
 DEPLA=CALC_CHAMP( reuse=DEPLA,   RESULTAT=DEPLA,
                FORCE='REAC_NODA',

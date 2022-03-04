@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 DEBUT( CODE = _F(
                   NIV_PUB_WEB='INTERNET'),
        DEBUG=_F(SDVERI='OUI'),
-      );
+      )
 
 
 #**********************************
@@ -35,7 +35,7 @@ MAILEXP = LIRE_MAILLAGE(FORMAT='IDEAS',
 MODLEXP=AFFE_MODELE(MAILLAGE=MAILEXP,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='DIS_TR',),);
+                           MODELISATION='DIS_TR',),)
 
 Zero78 = tuple([0.0]*78)
 CHCAREXP=AFFE_CARA_ELEM(MODELE=MODLEXP,
@@ -45,24 +45,24 @@ CHCAREXP=AFFE_CARA_ELEM(MODELE=MODLEXP,
       _F(GROUP_MA='POUTRE', REPERE='GLOBAL', CARA='M_TR_L',
          VALE=Zero78, ),
    ),
-);
+)
 
 KELEXP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MODLEXP,
                      CARA_ELEM=CHCAREXP,
-                     );
+                     )
 
 MELEXP=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=MODLEXP,
                       CARA_ELEM=CHCAREXP,
-                      );
+                      )
 
-NUMEXP=NUME_DDL( MATR_RIGI=KELEXP,);
+NUMEXP=NUME_DDL( MATR_RIGI=KELEXP,)
 
-KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP, NUME_DDL=NUMEXP,);
+KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP, NUME_DDL=NUMEXP,)
 
 MASSEXP=ASSE_MATRICE(MATR_ELEM=MELEXP,
-                  NUME_DDL=NUMEXP,);
+                  NUME_DDL=NUMEXP,)
 
 # LECTURE DES MODES IDENTIFIES
 MODMESU=LIRE_RESU(TYPE_RESU='MODE_MECA',
@@ -81,7 +81,7 @@ MODMESU=LIRE_RESU(TYPE_RESU='MODE_MECA',
                                  POSI_MASS_GENE=(8,2),
                                  POSI_AMOR_GENE=(8,3),
                                  NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),),
-                 TOUT_ORDRE='OUI',);
+                 TOUT_ORDRE='OUI',)
 
 # TRI EVENTUEL
 
@@ -91,7 +91,7 @@ _nume_mode=(1,2,3,4,5)
 
 MODEIDE=EXTR_MODE(FILTRE_MODE=_F(MODE=MODMESU,
                                   NUME_MODE=_nume_mode,
-                                  ),);
+                                  ),)
 
 #********************************
 # CREATION MODELE SUPPORT
@@ -107,12 +107,12 @@ MODLSUP=AFFE_MODELE(MAILLAGE=MAILSUP,
 
 MATSUP=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.3,
-                             RHO=7800.,),);
+                             RHO=7800.,),)
 
 CHMATSUP=AFFE_MATERIAU(MAILLAGE=MAILSUP,
                        MODELE=MODLSUP,
                        AFFE=(_F(GROUP_MA='POUTRE',
-                                MATER=MATSUP,),),);
+                                MATER=MATSUP,),),)
 
 CHCARSUP=AFFE_CARA_ELEM(MODELE=MODLSUP,
                         POUTRE=(_F(GROUP_MA='POUTRE',
@@ -132,28 +132,28 @@ CONDLSUP=AFFE_CHAR_MECA(MODELE=MODLSUP,
                                    DRX=0.0,
                                    DRY=0.0,
                                    DRZ=0.0,),
-                               ),);
+                               ),)
 
 
 KELSUP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODLSUP,
                         CHAM_MATER=CHMATSUP,
                         CARA_ELEM=CHCARSUP,
-                        CHARGE=CONDLSUP,);
+                        CHARGE=CONDLSUP,)
 
 MELSUP=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODLSUP,
                         CHAM_MATER=CHMATSUP,
                         CARA_ELEM=CHCARSUP,
-                        CHARGE=CONDLSUP,);
+                        CHARGE=CONDLSUP,)
 
-NUMSUP=NUME_DDL(MATR_RIGI=KELSUP,);
+NUMSUP=NUME_DDL(MATR_RIGI=KELSUP,)
 
 KASSUP=ASSE_MATRICE(MATR_ELEM=KELSUP,
-                      NUME_DDL=NUMSUP,);
+                      NUME_DDL=NUMSUP,)
 
 MASSUP=ASSE_MATRICE(MATR_ELEM=MELSUP,
-                      NUME_DDL=NUMSUP,);
+                      NUME_DDL=NUMSUP,)
 
 MODESUP=CALC_MODES(MATR_RIGI=KASSUP,
                    VERI_MODE=_F(STOP_ERREUR='OUI',
@@ -197,19 +197,19 @@ CHCARCPL=AFFE_CARA_ELEM(MODELE=MODLCPL,
 
 MATERX=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.3,
-                             RHO=7800.,),);
+                             RHO=7800.,),)
 
 CHMATCPL=AFFE_MATERIAU(  MAILLAGE=MAILX,
                          MODELE=MODLCPL,
                          AFFE=(_F(GROUP_MA=('POUTRE',),
-                                  MATER=MATERX,),),);
+                                  MATER=MATERX,),),)
 
 CONDLCPL=AFFE_CHAR_MECA(MODELE=MODLCPL,
                       DDL_IMPO=( _F(GROUP_NO=('EXTERNE',),
                                    DX=0.0,
                                    DRX=0.0,
                                 ),
-                          ),);
+                          ),)
 
 KELCPL=CALC_MATR_ELEM(MODELE=MODLCPL,OPTION='RIGI_MECA',
                      CARA_ELEM=CHCARCPL,CHAM_MATER=CHMATCPL,
@@ -247,4 +247,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='PASS',
            TABLE=tab,)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ EVOLNOLI=CALC_PRECONT( CHAM_MATER=CHMATER,
                               _F(CHARGE=CHARMECA,),
                                  ),
                        CABLE_BP=( CABLEPR ,),
-                       INFO=1,);
+                       INFO=1,)
 
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT = EVOLNOLI, NOM_CHAM='SIEF_ELGA', GROUP_MA='BETON',))
@@ -194,7 +194,7 @@ EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
                     FORCE=('FORC_NODA','REAC_NODA'),
                     CONTRAINTE  =('SIEF_ELNO','SIEF_NOEU',),
                     GROUP_MA=('CABLE'),
-                    RESULTAT=EVOLNOLI,);
+                    RESULTAT=EVOLNOLI,)
 PROF_TEN = CREA_TABLE(RESU=_F(RESULTAT = EVOLNOLI, NOM_CHAM = 'SIEF_NOEU', NOM_CMP = 'N',GROUP_MA='CABLE'))
 IMPR_TABLE(UNITE = 45, TABLE = PROF_TEN,NOM_PARA=('INST','NOEUD','N'))
 
@@ -261,13 +261,13 @@ EVOLNOL2=CALC_PRECONT( CHAM_MATER=CHMATER,
                               _F(CHARGE=CHARMEC2,),
                                  ),
                        CABLE_BP=( CABLEP2 ,),
-                       INFO=1,);
+                       INFO=1,)
 
 
 #EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
                     #FORCE=('FORC_NODA','REAC_NODA'),
                     #GROUP_MA=('CABLE'),
-                    #RESULTAT=EVOLNOLI,);
+                    #RESULTAT=EVOLNOLI,)
 
 IMPR_RESU(FORMAT="RESULTAT",
           RESU=_F(RESULTAT=EVOLNOL2,
@@ -333,13 +333,13 @@ EVOLNOL3=CALC_PRECONT( CHAM_MATER=CHMATER,
                               _F(CHARGE=CHARMEC3,),
                                  ),
                        CABLE_BP=( CABLEP3 ,),
-                       INFO=1,);
+                       INFO=1,)
 
 
 #EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
                     #FORCE=('FORC_NODA','REAC_NODA'),
                     #GROUP_MA=('CABLE'),
-                    #RESULTAT=EVOLNOLI,);
+                    #RESULTAT=EVOLNOLI,)
 
 IMPR_RESU(FORMAT="RESULTAT",
           RESU=_F(RESULTAT=EVOLNOL3,

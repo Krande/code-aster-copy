@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ fmt_raison='-'*80+"""
 
 
 # Lecture des maillages
-MA=LIRE_MAILLAGE(UNITE=20, FORMAT='ASTER',);
+MA=LIRE_MAILLAGE(UNITE=20, FORMAT='ASTER',)
 #
 MSec22a=LIRE_MAILLAGE(UNITE=22, FORMAT='ASTER',)  # Pas la bonne section caractéristiques <=0
 MSec22b=LIRE_MAILLAGE(UNITE=82, FORMAT='MED',)    # La bonne section

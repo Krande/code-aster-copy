@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,11 +106,11 @@ EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,
              VALE = ( 0.     ,  225.E6,
                       500.    ,225.E6,),
                         PROL_DROITE  ='CONSTANT' ,
-                        PROL_GAUCHE  ='CONSTANT' , );
+                        PROL_GAUCHE  ='CONSTANT' , )
 
-NU=DEFI_CONSTANTE(VALE=0.,);
+NU=DEFI_CONSTANTE(VALE=0.,)
 BIDON = 0.,
-ALPHA=DEFI_CONSTANTE(VALE=8.E-6,);
+ALPHA=DEFI_CONSTANTE(VALE=8.E-6,)
 
 
 RHOF=DEFI_CONSTANTE(VALE=2000.)

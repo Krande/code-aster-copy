@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ MAILLAGE  =  LIRE_MAILLAGE(FORMAT='MED')
 
 MA         = CREA_MAILLAGE( MAILLAGE = MAILLAGE,
                             LINE_QUAD = _F(TOUT = 'OUI'),
-                          );
+                          )
 
 TEMPS1     = DEFI_LIST_REEL( DEBUT=0.,
                              INTERVALLE=_F(JUSQU_A=3.0,
@@ -44,7 +44,7 @@ MATER      = DEFI_MATERIAU( ELAS = _F(E  = 1.0,
 
 CHMAT      = AFFE_MATERIAU(MAILLAGE=MA,
                            AFFE=_F(TOUT='OUI',
-                                   MATER=MATER),);
+                                   MATER=MATER),)
 
 COEF1      = DEFI_FONCTION( NOM_PARA    = 'INST',
                             PROL_DROITE = 'LINEAIRE',
@@ -60,7 +60,7 @@ MO         = AFFE_MODELE(MAILLAGE=MA,
                                  PHENOMENE='MECANIQUE',
                                  MODELISATION='D_PLAN_GVNO',
                                 ),
-                        );
+                        )
 
 #***********************************************************************
 #    CHARGEMENT MECANIQUE POUR OBTENIR UNE SOLUTION HOMOGENE
@@ -145,4 +145,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=6,
                   ),
           )
 
-FIN();
+FIN()

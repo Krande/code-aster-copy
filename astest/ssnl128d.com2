@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
             AFFE_VARC=(_F(NOM_VARC='IRRA', EVOL =FLUENC1,),
                       _F(NOM_VARC='TEMP', EVOL =CHTH,VALE_REF=0.),),
             AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF1),
-                   );
+                   )
 
 
 
@@ -133,7 +133,7 @@ STNL1 = STAT_NON_LINE(
 
 STNL1=CALC_CHAMP(reuse =STNL1,
                RESULTAT=STNL1,
-                CONTRAINTE=('SIGM_ELNO'),);
+                CONTRAINTE=('SIGM_ELNO'),)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=16,

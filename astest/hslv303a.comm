@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),
-      INFO=1,);
+      INFO=1,)
 
 
 
@@ -50,12 +50,12 @@ Longueur           = 0.100 # m
 # --- Conditions thermiques initiales
 #
 
-Temp_initiale  =  20.              # C 
+Temp_initiale  =  20.              # C
 
 #
-# --- Conditions aux limites thermiques 
+# --- Conditions aux limites thermiques
 #
-Temp_Choc      =  1.  # C 
+Temp_Choc      =  1.  # C
 Temp_Fluide_1C =  Temp_Choc + Temp_initiale
 Coef_H         =  20000.           # W/m/m/C
 #
@@ -71,7 +71,7 @@ Chaleur_specifique = 500.      # J/Kg/m
 
 Densite = Lambda/(Diffusivite*Chaleur_specifique)
 
-Rho_Cp = Chaleur_specifique * Densite  
+Rho_Cp = Chaleur_specifique * Densite
 
 #-------------------------------------
 #
@@ -82,7 +82,7 @@ Rho_Cp = Chaleur_specifique * Densite
 #     - tau = Epaisseur*Epaisseur / (pi*pi*Diffusivite)
 #     - tau = 0.959884897664 s
 
-tau = 1.  # s 
+tau = 1.  # s
 
 #           -------------------------
 #          /    .     .      .      .
@@ -105,8 +105,8 @@ tf      = 10.*tau   # s
 coef = 1
 
 Nb_decoupe_t0_t1  = 5*coef
-Nb_decoupe_t1_t2  = 4*coef 
-Nb_decoupe_t2_t3  = 4*coef 
+Nb_decoupe_t1_t2  = 4*coef
+Nb_decoupe_t2_t3  = 4*coef
 Nb_decoupe_t3_t4  =  coef
 Nb_decoupe_t4_tf  =  coef
 
@@ -126,7 +126,7 @@ mesh=DEFI_GROUP(reuse =mesh,
               CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
                                NOM='Epaisseur',
                                GROUP_MA='Epaisseur',
-                               GROUP_NO_ORIG='Point_Intrados',),);
+                               GROUP_NO_ORIG='Point_Intrados',),)
 
 model = AFFE_MODELE(AFFE=_F(MODELISATION=('3D_DIAG', ),
                             PHENOMENE='THERMIQUE',
@@ -148,7 +148,7 @@ Convec= DEFI_FONCTION(NOM_PARA='INST',
                             tf, Coef_H,))
 
 Tflu_1C  = DEFI_FONCTION(NOM_PARA='INST',
-                         VALE=(t0,  Temp_initiale, 
+                         VALE=(t0,  Temp_initiale,
                                t1,  Temp_Fluide_1C,
                                tf,  Temp_Fluide_1C,))
 
@@ -182,12 +182,12 @@ Reference = 'AUTRE_ASTER'
 #
 #-------------------------------------------------------------------
 #
-#                      Intrados            A                    B                   C                 D           
+#                      Intrados            A                    B                   C                 D
 #
 Vale_Calc_t1  = [ 20.444586903746544, 20.120224491977194,  20.037416988310188, 20.000946452644143, 20.000000649769955]
 Vale_Calc_t3  = [ 20.929464429086305, 20.825959516890702,  20.7471788673637,  20.543299339575817,  20.23012292274559 ]
 
-   
+
 TEST_RESU(RESU=( _F(INST=t1,
                     GROUP_NO='Point_Intrados',
                     RESULTAT=Ther_1C,
@@ -252,19 +252,19 @@ TEST_RESU(RESU=( _F(INST=t1,
 #--------------------------------------------------------------------------
 
 mesh_MEC=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
-                   
+
 ModMeca = AFFE_MODELE(AFFE=_F(MODELISATION=('3D', ),
                               PHENOMENE='MECANIQUE',
                               TOUT='OUI'),
                       MAILLAGE=mesh_MEC)
 
 
-                
+
 resthe= PROJ_CHAMP(PROJECTION='OUI',
                    RESULTAT=Ther_1C,
                    MODELE_1=model,
-                   MODELE_2=ModMeca,);
-                   
+                   MODELE_2=ModMeca,)
+
 chmMECA = AFFE_MATERIAU(AFFE=_F(MATER=(mater, ),
                                  TOUT='OUI'),
                          AFFE_VARC=_F(EVOL=resthe,
@@ -295,7 +295,7 @@ reslin=CALC_CHAMP(reuse=reslin,
                   CRITERES=('SIEQ_NOEU'),
                   CONTRAINTE='SIGM_NOEU')
 
-      
+
 # ------------------------------------- Tests de non-regression
 
 Nb_Points=61
@@ -306,17 +306,17 @@ SIGM_1C=MACR_LIGN_COUPE(RESULTAT=reslin,
                                     NB_POINTS=Nb_Points,
                                     COOR_ORIG=(0.018,0,0,),
                                     COOR_EXTR=(0.024,0,0,),),)
-                                    
-                                
+
+
 SIEQ_1C=MACR_LIGN_COUPE(RESULTAT=reslin,
                       NOM_CHAM='SIEQ_NOEU',
                       LIGN_COUPE=_F(TYPE='SEGMENT',
                                     NB_POINTS=Nb_Points,
                                     COOR_ORIG=(0.018,0,0,),
-                                    COOR_EXTR=(0.024,0,0,),),);
-                                    
+                                    COOR_EXTR=(0.024,0,0,),),)
 
-#                             Intrados                         A                              B                      C              D                Extrados          
+
+#                             Intrados                         A                              B                      C              D                Extrados
 #
 
 Val_Calc_t1_1C_SIXX = [  749.7859710845597,    -27478.196406310184, -30290.314224405145, -23242.903398812643, -9851.128558495577, -360.5297303185917  ]
@@ -324,7 +324,7 @@ Val_Calc_t1_1C_SIYY = [ -1815274.8517324745,   -432237.8255895016,  -10434.88132
 Val_Calc_t1_1C_SIZZ = [ -1796709.34370783,   -441569.59679968597,  -24627.97425208143,  102219.84030089364,    108026.89365387669,   110700.71001471273      ]
 Val_Calc_t1_1C_VMIS = [  1807069.6306590592,   409569.34995904996,   21179.72214175191,  130746.42981459787,   116706.5654903566,    104973.85377194454     ]
 
- 
+
 # --- Intrados (SIXX)
 TEST_TABLE(
            VALE_CALC=Val_Calc_t1_1C_SIXX[0],
@@ -333,7 +333,7 @@ TEST_TABLE(
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.018,))
            )
-           
+
 # --- Point A (SIXX)
 
 TEST_TABLE(
@@ -342,7 +342,7 @@ TEST_TABLE(
            TABLE=SIGM_1C,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.0185,)),
-           )           
+           )
 
 # --- Point B (SIXX)
 
@@ -384,7 +384,7 @@ TEST_TABLE(
                    _F(NOM_PARA='COOR_X',VALE=0.024,)),
            )
 
-           
+
 # --- Intrados (SIYY)
 
 TEST_TABLE(
@@ -403,7 +403,7 @@ TEST_TABLE(
            TABLE=SIGM_1C,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.0185,)),
-           )           
+           )
 
 # --- Point B (SIYY)
 
@@ -444,7 +444,7 @@ TEST_TABLE(
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.024,)),
            )
-                      
+
 # --- Intrados (SIZZ)
 
 TEST_TABLE(
@@ -463,7 +463,7 @@ TEST_TABLE(
            TABLE=SIGM_1C,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.0185,)),
-           )           
+           )
 
 # --- Point B (SIZZ)
 
@@ -522,7 +522,7 @@ TEST_TABLE(
            TABLE=SIEQ_1C,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.0185,)),
-           )           
+           )
 
 # --- Point B (VMIS)
 
@@ -697,7 +697,7 @@ Nb_Points=61
 #====================================================================================================================
 #
 # --- Choc Thermique = 50C
-# 
+#
 #  - Extraction de l'evolution des contraintes SIXX, SIYY, SIZZ et VMIS
 #    en fonction du temps aux points intrados, A, B, C, D et extrados
 #  - Extraction de l'evolution des contraintes SIXX, SIYY, SIZZ et VMIS
@@ -713,7 +713,7 @@ SIG_50C=MACR_LIGN_COUPE(RESULTAT=resmMec,
                                     NB_POINTS=Nb_Points,
                                     COOR_ORIG=(0.018,0,0,),
                                     COOR_EXTR=(0.024,0,0,),),)
-                                                                      
+
 SIE_50C=MACR_LIGN_COUPE(RESULTAT=resmMec,
                       NOM_CHAM='SIEQ_NOEU',
                       LIGN_COUPE=_F(TYPE='SEGMENT',
@@ -723,7 +723,7 @@ SIE_50C=MACR_LIGN_COUPE(RESULTAT=resmMec,
 
 
 
-                
+
 #-----------------------------------------------------------------------------------------------------------------------------------
 #
 # Verification des resultats mecaniques
@@ -737,7 +737,7 @@ SIE_50C=MACR_LIGN_COUPE(RESULTAT=resmMec,
 #
 #-----------------------------------------------------------------------------------------------------------------------------------
 
-#                             Intrados                 A                              B                      C                              D                Extrados          
+#                             Intrados                 A                              B                      C                              D                Extrados
 #
 
 Val_Refe_t1_50C_SIXX = [  37489.29855405912,   -1373909.820313106,  -1514515.7112189943, -1162145.1699433196, -492556.42792592593, -18026.48651457746 ]
@@ -773,7 +773,7 @@ TEST_TABLE(PRECISION=0.01,
            TABLE=SIG_50C,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.0185,)),
-           )           
+           )
 
 # --- Point B (SIXX)
 
@@ -822,7 +822,7 @@ TEST_TABLE(PRECISION=400.,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.024,)),
            )
-          
+
 # --- Intrados (SIYY)
 
 TEST_TABLE(PRECISION=0.01,
@@ -845,7 +845,7 @@ TEST_TABLE(PRECISION=0.01,
            TABLE=SIG_50C,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.0185,)),
-           )           
+           )
 
 # --- Point B (SIYY)
 
@@ -894,7 +894,7 @@ TEST_TABLE(PRECISION=0.01,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.024,)),
            )
-                      
+
 # --- Intrados (SIZZ)
 
 TEST_TABLE(PRECISION=0.01,
@@ -917,7 +917,7 @@ TEST_TABLE(PRECISION=0.01,
            TABLE=SIG_50C,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.0185,)),
-           )           
+           )
 
 # --- Point B (SIZZ)
 
@@ -988,7 +988,7 @@ TEST_TABLE(PRECISION=0.01,
            TABLE=SIE_50C,
            FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
                    _F(NOM_PARA='COOR_X',VALE=0.0185,)),
-           )           
+           )
 
 # --- Point B (VMIS)
 
@@ -1038,4 +1038,4 @@ TEST_TABLE(PRECISION=0.01,
                    _F(NOM_PARA='COOR_X',VALE=0.024,)),
            )
 
-FIN();
+FIN()

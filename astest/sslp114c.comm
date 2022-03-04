@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,21 +19,21 @@
 
 # sslp114a.para=tps_job 120 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
-import math;
+import math
 
 #
 # DEFINITION DU MATERIAU
-E   = 1.E5;
-nu  = 0.;
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),);
+E   = 1.E5
+nu  = 0.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),)
 
 #facteurs intensite de contrainte
-KI=1.;
-KII=0.;
+KI=1.
+KII=0.
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
+MAIL=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'))
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -42,7 +42,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(NOM='TEST_2',OPTION='SPHERE',POINT=(1.,1.),RAYON=0.5),
                                _F(NOM='TEST_3',OPTION='SPHERE',POINT=(1.,0.),RAYON=0.5),
                                    ),
-                );
+                )
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAIL,
                      AFFE=_F(GROUP_MA=('SURF','LIG1','LIG2','LIG3','LIG4','TEST_0','TEST_1','TEST_2','TEST_3'),
@@ -50,13 +50,13 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='D_PLAN'
                             ),
 #                    INFO=2,
-                     );
+                     )
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU=(_F(GROUP_MA_PEAU=('LIG1','LIG2','LIG3','LIG4'),),),
                    INFO=2,
-                       );
+                       )
 
 #ANGLE INCLINAISON :: -135 (degres) < alpha < 135 (degres)
 #Pour un tour complet voir conditions limites
@@ -65,37 +65,37 @@ pas=30
 alphamin=0
 alphamax=121
 alphaREF = list(range(alphamin,alphamax,pas))
-alpha=[None]*len(alphaREF);
+alpha=[None]*len(alphaREF)
 for J in range(len(alphaREF)):
    alpha[J]=alphaREF[J]*math.pi/180.
 
 #Definition exhaustive des champs et concepts
-FISS=[None]*len(alphaREF);
-MODELK=[None]*len(alphaREF);
-CHMA=[None]*len(alphaREF);
-U1=[None]*len(alphaREF);
-U2=[None]*len(alphaREF);
-FXX=[None]*len(alphaREF);
-FXY=[None]*len(alphaREF);
-FYX=[None]*len(alphaREF);
-FYY=[None]*len(alphaREF);
-FXXF=[None]*len(alphaREF);
-FXYF=[None]*len(alphaREF);
-FYXF=[None]*len(alphaREF);
-FYXF=[None]*len(alphaREF);
-FYYF=[None]*len(alphaREF);
-CH2=[None]*len(alphaREF);
-CH2B=[None]*len(alphaREF);
-UTOT=[None]*len(alphaREF);
-CH_G=[None]*len(alphaREF);
-DEPL=[None]*len(alphaREF);
-CH_AF=[None]*len(alphaREF);
-CH_GEO=[None]*len(alphaREF);
-CH_EV=[None]*len(alphaREF);
-Uana=[None]*len(alphaREF);
-DIFF=[None]*len(alphaREF);
-tab_du=[None]*len(alphaREF);
-tab_u=[None]*len(alphaREF);
+FISS=[None]*len(alphaREF)
+MODELK=[None]*len(alphaREF)
+CHMA=[None]*len(alphaREF)
+U1=[None]*len(alphaREF)
+U2=[None]*len(alphaREF)
+FXX=[None]*len(alphaREF)
+FXY=[None]*len(alphaREF)
+FYX=[None]*len(alphaREF)
+FYY=[None]*len(alphaREF)
+FXXF=[None]*len(alphaREF)
+FXYF=[None]*len(alphaREF)
+FYXF=[None]*len(alphaREF)
+FYXF=[None]*len(alphaREF)
+FYYF=[None]*len(alphaREF)
+CH2=[None]*len(alphaREF)
+CH2B=[None]*len(alphaREF)
+UTOT=[None]*len(alphaREF)
+CH_G=[None]*len(alphaREF)
+DEPL=[None]*len(alphaREF)
+CH_AF=[None]*len(alphaREF)
+CH_GEO=[None]*len(alphaREF)
+CH_EV=[None]*len(alphaREF)
+Uana=[None]*len(alphaREF)
+DIFF=[None]*len(alphaREF)
+tab_du=[None]*len(alphaREF)
+tab_u=[None]*len(alphaREF)
 
 #Definition des fonctions globales :: alpha passe en argument, cela evite une ambiguite dans le calcul
 def r(X,Y) :
@@ -194,7 +194,7 @@ NormeL2_U_nr=[6.8327757468908E-10,   2.0922443805192E-10,  1.7515254905471E-10, 
 for K in range(len(alphaREF)):
 
 # LONGUEUR DE LA FISSURE
-   A= 0.5/max(abs(math.cos(alpha[K])),abs(math.sin(alpha[K])));
+   A= 0.5/max(abs(math.cos(alpha[K])),abs(math.sin(alpha[K])))
 
 #Pour utiliser sereinement la TAN :
 #Diviser quand TAN tend vers l'infini, multiplier quand TAN tend vers 0 !
@@ -218,14 +218,14 @@ for K in range(len(alphaREF)):
                           TYPE_ENRI_FOND='GEOMETRIQUE',
                           RAYON_ENRI=0.2*A,
 #                         TYPE_ENRI_FOND='TOPOLOGIQUE',
-                          );
+                          )
 
-   MODELK[K]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[K]);
+   MODELK[K]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[K])
 
    CHMA[K]=AFFE_MATERIAU(MAILLAGE=MAIL,
                    MODELE=MODELK[K],
                    AFFE=_F(TOUT = 'OUI',MATER=ACIER),
-                   );
+                   )
 #PROGRAMMATION : IL FAUT FORCER PYTHON A EVALUER K EN GLOBAL LORS DE L APPEL DE L OPERATEUR FORMULE ! => EN LOCAL K A UNE VALEUR QUELCONQUE
 #EN SEQUENTIEL : PAS DE PB CAR K PREND UNE VALEUR A LA FOIS
 #EN PARALLELE : IL Y A CARTON
@@ -261,7 +261,7 @@ for K in range(len(alphaREF)):
    CH2[K]=AFFE_CHAR_MECA_F(MODELE=MODELK[K],
                            DDL_IMPO=_F(GROUP_MA=('LIG1','LIG2','LIG3'),DX=U1[K],DY=U2[K],),
                            FORCE_CONTOUR=(_F(GROUP_MA=('LIG4'),FX=FXXF[K],FY=FXYF[K]),),
-                          );
+                          )
 
 #Combinaison 2 : Dirichletx1+Neumannx3
    CH2B[K]=AFFE_CHAR_MECA_F(MODELE=MODELK[K],
@@ -270,7 +270,7 @@ for K in range(len(alphaREF)):
                                            _F(GROUP_MA=('LIG4'),FX=FXXF[K],FY=FXYF[K]),
                                            _F(GROUP_MA=('LIG1'),FX=FYXF[K],FY=FYYF[K]),
                                           ),
-                             );
+                             )
 
    UTOT[K]=MECA_STATIQUE(MODELE=MODELK[K],
                          CHAM_MATER=CHMA[K],
@@ -282,12 +282,12 @@ for K in range(len(alphaREF)):
                                     RESI_RELA=1.E-3,
                                     PCENT_PIVOT=100,
                                     ),
-                         );
+                         )
 
    CH_G[K]=CALC_G_XFEM(RESULTAT=UTOT[K],
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS[K],),
-            INFO=2);
+            INFO=2)
 
 #CHAMP DEPL :: calcul ERREUR SUR TEST_NO
    DEPL[K] = CREA_CHAMP (OPERATION='EXTR',
@@ -295,7 +295,7 @@ for K in range(len(alphaREF)):
                          TYPE_CHAM = 'NOEU_DEPL_R',
                          RESULTAT = UTOT[K],
                          NUME_ORDRE=1,
-                        );
+                        )
 
    CH_AF[K]=CREA_CHAMP(OPERATION='AFFE',
                  TYPE_CHAM='NOEU_NEUT_F',
@@ -303,15 +303,15 @@ for K in range(len(alphaREF)):
                  AFFE=(_F( TOUT='OUI', NOM_CMP = 'X1', VALE_F = U1[K]),
                        _F( TOUT='OUI', NOM_CMP = 'X2', VALE_F = U2[K]),
                       )
-                );
+                )
 
    CH_GEO[K]=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
-                NOM_CHAM='GEOMETRIE', MAILLAGE=MAIL, INFO=1);
+                NOM_CHAM='GEOMETRIE', MAILLAGE=MAIL, INFO=1)
 
    CH_EV[K]=CREA_CHAMP(OPERATION='EVAL',
                  TYPE_CHAM='NOEU_NEUT_R',
                  CHAM_F=CH_AF[K],
-                 CHAM_PARA=CH_GEO[K]);
+                 CHAM_PARA=CH_GEO[K])
 
    Uana[K]=CREA_CHAMP(OPERATION='ASSE',
                 TYPE_CHAM='NOEU_DEPL_R',
@@ -325,7 +325,7 @@ for K in range(len(alphaREF)):
                          NOM_CMP = 'X2',
                          NOM_CMP_RESU = 'DY',)
                       ),
-                );
+                )
 
    DIFF[K]=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELEIN,
 
@@ -334,7 +334,7 @@ for K in range(len(alphaREF)):
                       _F(TOUT='OUI', CHAM_GD=DEPL[K],CUMUL='OUI', COEF_R=+1., NOM_CMP='DY', NOM_CMP_RESU='DY',),
                       _F(TOUT='OUI', CHAM_GD=Uana[K], CUMUL='OUI', COEF_R=-1., NOM_CMP='DY', NOM_CMP_RESU='DY',),
                       ),
-                );
+                )
 #La zone de test ne doit pas etre coupee par la fissure ::
 #on teste le deplacement sur le coin oppose, avec la convention :
 #test=0 =>le coin (0.,0.)
@@ -351,9 +351,9 @@ for K in range(len(alphaREF)):
    elif alpha[K]>math.pi :
        test=1
 
-   tab_du[K]=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_'+str(test),CHAM_GD=DIFF[K], MODELE=MODELEIN),),INFO=1);
+   tab_du[K]=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_'+str(test),CHAM_GD=DIFF[K], MODELE=MODELEIN),),INFO=1)
 
-   tab_u[K]=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_'+str(test),CHAM_GD=Uana[K], MODELE=MODELEIN),),INFO=1);
+   tab_u[K]=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_'+str(test),CHAM_GD=Uana[K], MODELE=MODELEIN),),INFO=1)
 
    TEST_TABLE(CRITERE='RELATIF',
               REFERENCE='ANALYTIQUE',
@@ -396,7 +396,7 @@ for K in range(len(alphaREF)):
 
 #Visualisation
 K=len(alphaREF)-1
-MA_X=POST_MAIL_XFEM(MODELE=MODELK[K]);
+MA_X=POST_MAIL_XFEM(MODELE=MODELK[K])
 
 VISU=AFFE_MODELE(MAILLAGE=MA_X,
                      AFFE=_F(GROUP_MA='SURF',
@@ -409,11 +409,11 @@ RES_X=POST_CHAM_XFEM(MODELE_VISU  = VISU,
 
 RES_X=CALC_CHAMP(reuse=RES_X,
                  RESULTAT=RES_X,
-                 CRITERES=('SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU',),);
+                 CRITERES=('SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU',),)
 
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_X,
                                  NOM_CHAM=('DEPL'),
                                  TYPE_CHAM='VECT_2D',
-                                 NOM_CMP=('DX','DY',),),),);
+                                 NOM_CMP=('DX','DY',),),),)
 
-FIN();
+FIN()

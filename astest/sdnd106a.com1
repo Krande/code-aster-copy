@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 #
-POURSUITE(CODE='OUI',);
+POURSUITE(CODE='OUI',)
 
 import numpy as NP
 import aster
@@ -61,10 +61,10 @@ instants_transition_analytique=[0.03512, 0.31492]
 ############################################################
 # Time transition tests :
 ############################################################
-tio_inst = DEFI_LIST_REEL(VALE=instants_transition,);
+tio_inst = DEFI_LIST_REEL(VALE=instants_transition,)
 tio_fonc= DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=tio_inst,
-                        VALE_FONC=tio_inst,);
+                        VALE_FONC=tio_inst,)
 
 vale_calc=[0.0352, 0.31495624999436]
 for i in range(0,len(instants_transition)):
@@ -77,4 +77,4 @@ for i in range(0,len(instants_transition)):
                            FONCTION=tio_fonc,),
                  )
 
-FIN();
+FIN()

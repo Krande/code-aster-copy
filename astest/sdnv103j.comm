@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 DEBUG=_F(SDVERI='OUI'))
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',);
+MA1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=CREA_MAILLAGE(MAILLAGE=MA1,
-                 QUAD_LINE=_F(TOUT='OUI',),);
+                 QUAD_LINE=_F(TOUT='OUI',),)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -37,31 +37,31 @@ MODE=AFFE_MODELE(MAILLAGE=MA,
                           PHENOMENE='MECANIQUE',
                           MODELISATION=('3D_SI',),),
                       ),
-);
+)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=_F(GROUP_MA_PEAU=('SZZ','RIGID',),),
-                 INFO=2,);
+                 INFO=2,)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=117.E3,
                             NU=0.35,
                             RHO=8.930E-9,),
                     ECRO_LINE=_F(D_SIGM_EPSI=100.,
-                                 SY=400.,),);
+                                 SY=400.,),)
 
 # pour ce test, il faut que l'elasticite soit incrementale
 ACIERE=DEFI_MATERIAU(ELAS=_F(E=117.E3,
                             NU=0.35,
                             RHO=8.930E-9,),
                     ECRO_LINE=_F(D_SIGM_EPSI=100.,
-                                 SY=400.E6,),);
+                                 SY=400.E6,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(
                     _F(GROUP_MA=('VOL',),MATER=ACIER,),
                     _F(GROUP_MA=('VOL_RIG',),MATER=ACIERE,),
-                            ));
+                            ))
 
 
 CH=AFFE_CHAR_MECA(MODELE=MODE,
@@ -77,7 +77,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODE,
                                DY=0.,),
                             _F(GROUP_NO='SXX',
                                DX=0.,),),
-                  INFO=1,);
+                  INFO=1,)
 
 
 CHCONT  = DEFI_CONTACT(MODELE         = MODE,
@@ -97,7 +97,7 @@ CHCONT  = DEFI_CONTACT(MODELE         = MODE,
                              GROUP_MA_ESCL  = 'SZZ',
                              COEF_MATR_FROT = 0.4,
                                ),
-                      );
+                      )
 
 
 VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -113,7 +113,7 @@ VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     VALE=(0.,0.,0.,),),
                  _F(GROUP_NO='RIGID',
                     NOM_CMP=('DX','DY','DZ',),
-                    VALE=(0.,0.,0.,),),),);
+                    VALE=(0.,0.,0.,),),),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=-1.E-5,
                       INTERVALLE=(_F(JUSQU_A=-2.5E-7,
@@ -121,20 +121,20 @@ L_INST=DEFI_LIST_REEL(DEBUT=-1.E-5,
                                   _F(JUSQU_A=2.5E-7,
                                      NOMBRE=10,),
                                   _F(JUSQU_A=80.E-6,
-                                     NOMBRE=316,),),);
+                                     NOMBRE=316,),),)
 
 L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,
                       INTERVALLE=(_F(JUSQU_A=2.5E-7,
                                      NOMBRE=2,),
                                   _F(JUSQU_A=80.E-6,
-                                     NOMBRE=316,),),);
+                                     NOMBRE=316,),),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
                         ECHEC=_F(EVENEMENT='ERREUR',
                                  ACTION='DECOUPE',
                                  SUBD_METHODE='MANUEL',
                                  SUBD_PAS=2,
-                                 SUBD_PAS_MINI=1.E-30,),);
+                                 SUBD_PAS_MINI=1.E-30,),)
 #
 #  On teste la sous-division du pas de temps
 #  On en profite aussi pour avoir un schema en temps plus adapte
@@ -172,28 +172,28 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
 #                                  ITER_GLOB_MAXI=20,
                                   ITER_GLOB_MAXI=5,
                                   ARRET='OUI',),
-                   );
+                   )
 
 VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
                                 GROUP_NO='A2',
                                 RESULTAT=RESU,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 DEPL_A1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A1',
                                 GROUP_NO='A1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
                                 GROUP_NO='B1',
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 #####################################################
 #####################################################
 
@@ -225,7 +225,7 @@ TABJEU=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                RESULTAT=RESU,
                                NOM_CHAM='CONT_NOEU',
                                TOUT_CMP='OUI',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 # JEU
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -237,6 +237,6 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE=2.5E-07,),
            )
 
-IMPR_TABLE(TABLE=TABJEU,);
+IMPR_TABLE(TABLE=TABJEU,)
 
-FIN();
+FIN()

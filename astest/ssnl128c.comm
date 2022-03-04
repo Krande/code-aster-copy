@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,42 +21,42 @@
 
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTRANET',),DEBUG=_F(SDVERI='OUI'))
-EP = 0.001;
+EP = 0.001
 
-REXT = 0.1;
+REXT = 0.1
 
 from ssnl128c_mater import *
 
-M1=LIRE_MAILLAGE(FORMAT="ASTER",);
+M1=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=CREA_MAILLAGE(MAILLAGE=M1,
                  MODI_MAILLE=_F(MAILLE=('M1','M2',),
-                                OPTION='SEG3_4',),);
+                                OPTION='SEG3_4',),)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM='TOUT',
-                               TOUT='OUI',),);
+                               TOUT='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='TUYAU_3M',),);
+                       MODELISATION='TUYAU_3M',),)
 
 CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                 OPERATION='EXTR',
                 MAILLAGE=MA,
-                NOM_CHAM='GEOMETRIE',);
+                NOM_CHAM='GEOMETRIE',)
 
 FLUXAX=DEFI_FONCTION(NOM_PARA='X',
-                     VALE=(0.,1E-5,4000.,1E-5,),);
+                     VALE=(0.,1E-5,4000.,1E-5,),)
 
 FLUX_Y=DEFI_FONCTION(NOM_PARA='Y',
-                     VALE=(0.,1.,100.,1.,),);
+                     VALE=(0.,1.,100.,1.,),)
 
 FLUXPL=DEFI_NAPPE(NOM_PARA='Z',
                   PARA=(0.,100.,),
-                  FONCTION=(FLUX_Y,FLUX_Y,),);
+                  FONCTION=(FLUX_Y,FLUX_Y,),)
 #------------------------------------------------
 # CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXAX
 #------------------------------------------------
@@ -67,12 +67,12 @@ CH_FAX=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                   AFFE=_F(
                   TOUT='OUI',
                   NOM_CMP='X1',
-                  VALE_F=FLUXAX,),);
+                  VALE_F=FLUXAX,),)
 
 CH_FAX_R=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                     OPERATION='EVAL',
                     CHAM_F=CH_FAX,
-                    CHAM_PARA=CHXN,);
+                    CHAM_PARA=CHXN,)
 #-----------------------------------------------
 # CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXPL
 #-----------------------------------------------
@@ -83,12 +83,12 @@ CH_FPL=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                   AFFE=_F(
                   TOUT='OUI',
                   NOM_CMP='X2',
-                  VALE_F=FLUXPL,),);
+                  VALE_F=FLUXPL,),)
 
 CH_FPL_R=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                     OPERATION='EVAL',
                     CHAM_F=CH_FPL,
-                    CHAM_PARA=CHXN,);
+                    CHAM_PARA=CHXN,)
 #------------------
 # FONCTION PRODUIT
 #------------------
@@ -102,7 +102,7 @@ CHRES=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                  AFFE=_F(
                  TOUT='OUI',
                  NOM_CMP='X1',
-                 VALE_F=MULT,),);
+                 VALE_F=MULT,),)
 #-----------------------------------------------------
 # CREATION DU CHAMP FLUENC1 ASSOCIE A LA LISTE LINST
 # LE CHAMP EST CALCULE POUR LES 5 PREMIERS INSTANTS
@@ -115,12 +115,12 @@ INST0_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
                    AFFE=_F(
                    TOUT='OUI',
                    NOM_CMP='INST',
-                   VALE=0.0,),);
+                   VALE=0.0,),)
 
 REST0_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                    OPERATION='EVAL',
                    CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST0_1,),);
+                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST0_1,),)
 
 RES00_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    OPERATION='ASSE',
@@ -130,7 +130,7 @@ RES00_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    CHAM_GD=REST0_1,
                    NOM_CMP='X1',
                    NOM_CMP_RESU='IRRA',),
-                   INFO=2,);
+                   INFO=2,)
 #
 #
 #
@@ -141,12 +141,12 @@ INST1_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
                    AFFE=_F(
                    TOUT='OUI',
                    NOM_CMP='INST',
-                   VALE=1.0,),);
+                   VALE=1.0,),)
 
 REST1_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                    OPERATION='EVAL',
                    CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST1_1,),);
+                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST1_1,),)
 
 RES11_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    OPERATION='ASSE',
@@ -156,7 +156,7 @@ RES11_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    CHAM_GD=REST1_1,
                    NOM_CMP='X1',
                    NOM_CMP_RESU='IRRA',),
-                   INFO=2,);
+                   INFO=2,)
 #
 #
 
@@ -166,12 +166,12 @@ INST2_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
                    AFFE=_F(
                    TOUT='OUI',
                    NOM_CMP='INST',
-                   VALE=864.99,),);
+                   VALE=864.99,),)
 
 REST2_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                    OPERATION='EVAL',
                    CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST2_1,),);
+                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST2_1,),)
 
 RES22_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    OPERATION='ASSE',
@@ -181,7 +181,7 @@ RES22_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    CHAM_GD=REST2_1,
                    NOM_CMP='X1',
                    NOM_CMP_RESU='IRRA',),
-                   INFO=2,);
+                   INFO=2,)
 #
 #
 
@@ -191,12 +191,12 @@ INST3_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
                    AFFE=_F(
                    TOUT='OUI',
                    NOM_CMP='INST',
-                   VALE=1728.98,),);
+                   VALE=1728.98,),)
 
 REST3_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                    OPERATION='EVAL',
                    CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST3_1,),);
+                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST3_1,),)
 
 RES33_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    OPERATION='ASSE',
@@ -206,7 +206,7 @@ RES33_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    CHAM_GD=REST3_1,
                    NOM_CMP='X1',
                    NOM_CMP_RESU='IRRA',),
-                   INFO=2,);
+                   INFO=2,)
 #
 #
 
@@ -216,12 +216,12 @@ INST4_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
                    AFFE=_F(
                    TOUT='OUI',
                    NOM_CMP='INST',
-                   VALE=2592.97,),);
+                   VALE=2592.97,),)
 
 REST4_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                    OPERATION='EVAL',
                    CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST4_1,),);
+                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST4_1,),)
 
 RES44_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    OPERATION='ASSE',
@@ -231,7 +231,7 @@ RES44_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    CHAM_GD=REST4_1,
                    NOM_CMP='X1',
                    NOM_CMP_RESU='IRRA',),
-                   INFO=2,);
+                   INFO=2,)
 #
 #
 
@@ -241,12 +241,12 @@ INST5_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
                    AFFE=_F(
                    TOUT='OUI',
                    NOM_CMP='INST',
-                   VALE=3456.96,),);
+                   VALE=3456.96,),)
 
 REST5_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                    OPERATION='EVAL',
                    CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST5_1,),);
+                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST5_1,),)
 
 RES55_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    OPERATION='ASSE',
@@ -256,7 +256,7 @@ RES55_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
                    CHAM_GD=REST5_1,
                    NOM_CMP='X1',
                    NOM_CMP_RESU='IRRA',),
-                   INFO=2,);
+                   INFO=2,)
 #
 #
 
@@ -277,11 +277,11 @@ FLUENC1=CREA_RESU(OPERATION='AFFE',
                   _F(CHAM_GD=RES55_1,
                      INST=3456.96,),
                   _F(CHAM_GD=RES55_1,
-                     INST=5000.,),),);
+                     INST=5000.,),),)
 
 FON_T=DEFI_FONCTION(NOM_PARA='X',
                     NOM_RESU='TEMP',
-                    VALE=(0.,299.85,1.,299.85,),);
+                    VALE=(0.,299.85,1.,299.85,),)
 
 CHTEM=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
                  OPERATION='AFFE',
@@ -289,7 +289,7 @@ CHTEM=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
                  AFFE=_F(
                  TOUT='OUI',
                  NOM_CMP='TEMP',
-                 VALE_F=FON_T,),);
+                 VALE_F=FON_T,),)
 CHTH=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                        NOM_CHAM='TEMP',AFFE=(
                        _F(  CHAM_GD = CHTEM,
@@ -309,7 +309,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      ORIENTATION=_F(GROUP_NO='A',
                                     CARA='GENE_TUYAU',
                                     VALE=(0.,0.,1.,),),
-);
+)
 
 
-FIN();
+FIN()

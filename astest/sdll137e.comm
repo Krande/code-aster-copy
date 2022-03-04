@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 DEBUT( CODE=_F(
                 NIV_PUB_WEB='INTERNET'),
        DEBUG=_F(SDVERI='OUI'),
-       );
+       )
 
 #**********************************
 # CREATION DU MODELE EXPERIMENTAL
@@ -34,7 +34,7 @@ MAILEXP = LIRE_MAILLAGE(FORMAT='IDEAS',
 MODLEXP=AFFE_MODELE(MAILLAGE=MAILEXP,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),);
+                            MODELISATION='DIS_TR',),)
 
 CHCAREXP=AFFE_CARA_ELEM(MODELE=MODLEXP,
                         DISCRET=(_F(REPERE='GLOBAL',
@@ -44,7 +44,7 @@ CHCAREXP=AFFE_CARA_ELEM(MODELE=MODLEXP,
                                  _F(REPERE='GLOBAL',
                                     CARA='M_TR_L',
                                     GROUP_MA='POUTRE',
-                                    VALE=[0.0]*78,),),);
+                                    VALE=[0.0]*78,),),)
 
 ASSEMBLAGE(MODELE=MODLEXP,
                 CARA_ELEM=CHCAREXP,
@@ -52,7 +52,7 @@ ASSEMBLAGE(MODELE=MODLEXP,
                 MATR_ASSE=(_F(MATRICE=CO('KASSEXP'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSEXP'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 
 # LECTURE DES MODES IDENTIFIES
@@ -72,13 +72,13 @@ MODMtmp=LIRE_RESU(TYPE_RESU='MODE_MECA',
                                   NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),),
                   MATR_RIGI=KASSEXP,
                   MATR_MASS=MASSEXP,
-                  TOUT_ORDRE='OUI',);
+                  TOUT_ORDRE='OUI',)
 
 # TRI EVENTUEL
-_nume_mode = (1, 2, 3, 4, 5);
+_nume_mode = (1, 2, 3, 4, 5)
 
 MODMESU=EXTR_MODE(FILTRE_MODE=_F(MODE=MODMtmp,
-                                 NUME_MODE=_nume_mode,),);
+                                 NUME_MODE=_nume_mode,),)
 
 
 #************************
@@ -104,20 +104,20 @@ MAILSUP = LIRE_MAILLAGE(FORMAT='ASTER',
 
 MAILSUP=DEFI_GROUP(reuse=MAILSUP,MAILLAGE=MAILSUP,
                    CREA_GROUP_NO=_F(NOM='CAPT2',
-                                    DIFFE=('CAPTEUR','EXTERNE'),),);
+                                    DIFFE=('CAPTEUR','EXTERNE'),),)
 
 MODLSUP=AFFE_MODELE(MAILLAGE=MAILSUP,
                     AFFE=_F(GROUP_MA=('SIMPLE','VISUAL',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_E',),);
+                            MODELISATION='POU_D_E',),)
 
 MATSUP=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.3,
-                             RHO=7800.,),);
+                             RHO=7800.,),)
 
 MATDBL=DEFI_MATERIAU(ELAS=_F(E=4.2E11,
                              NU=0.3,
-                             RHO=15600.,),);
+                             RHO=15600.,),)
 
 # 'SIMPLE' : groupe ne portant pas la modif. 'VISUAL' : groupe
 # supportant la modif
@@ -126,7 +126,7 @@ CHMATSUP=AFFE_MATERIAU(MAILLAGE=MAILSUP,
                        AFFE=(_F(GROUP_MA='SIMPLE',
                                 MATER=MATSUP,),
                              _F(GROUP_MA='VISUAL',
-                                MATER=MATDBL,),),);
+                                MATER=MATDBL,),),)
 
 CHCARSUP=AFFE_CARA_ELEM(MODELE=MODLSUP,
                         POUTRE=_F(GROUP_MA='POUTRE',
@@ -135,17 +135,17 @@ CHCARSUP=AFFE_CARA_ELEM(MODELE=MODLSUP,
                                   VALE=(9E-3,38E-3,),),
                         ORIENTATION=_F(GROUP_MA='POUTRE',
                                        CARA='VECT_Y',
-                                       VALE=(0.,0.,1.,),),);
+                                       VALE=(0.,0.,1.,),),)
 
 CONDLSUP=AFFE_CHAR_MECA(MODELE=MODLSUP,
                         DDL_IMPO=(_F(GROUP_NO='FIXE',
-                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'))));
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'))))
 
 ##CONDLSUP=AFFE_CHAR_MECA(MODELE=MODLSUP,
 ##                        DDL_IMPO=(_F(GROUP_NO='FIXE',
 ##                                     BLOCAGE = ('DEPLACEMENT', 'ROTATION')),
 ##                                  _F(GROUP_NO=('CAPT2','EXTERNE'),
-##                                     DY=0.0,DZ=0.0),),);
+##                                     DY=0.0,DZ=0.0),),)
 
 ASSEMBLAGE(MODELE=MODLSUP,
                 CHAM_MATER=CHMATSUP,
@@ -155,7 +155,7 @@ ASSEMBLAGE(MODELE=MODLSUP,
                 MATR_ASSE=(_F(MATRICE=CO('KASSUP'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSUP'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 mod=CALC_MODES(MATR_RIGI=KASSUP,
                MATR_MASS=MASSUP,
@@ -166,7 +166,7 @@ mod=CALC_MODES(MATR_RIGI=KASSUP,
 BAMO=MODE_STATIQUE(MATR_RIGI=KASSUP,
                    MATR_MASS=MASSUP,
                    FORCE_NODALE=(_F(GROUP_NO=('CAPT2','EXTERNE'),
-                                 AVEC_CMP=('DY','DZ',),),),);
+                                 AVEC_CMP=('DY','DZ',),),),)
 
 # On peut passer indifferemment par FORCE_NODALE ou MODE_STAT.
 # Si on prend MODE_STAT, choisir un CONDSUP qui bloque
@@ -176,7 +176,7 @@ BAMO=MODE_STATIQUE(MATR_RIGI=KASSUP,
 ##BAMO=MODE_STATIQUE(MATR_RIGI=KASSUP,
 ##                   MATR_MASS=MASSUP,
 ##                   MODE_STAT=(_F(GROUP_NO=('CAPT2','EXTERNE'),
-##                                 AVEC_CMP=('DY','DZ',),),),);
+##                                 AVEC_CMP=('DY','DZ',),),),)
 
 
 ### Si les capteurs ne sont pas confondus avec des noeuds du maillage
@@ -202,7 +202,7 @@ PROJ_BASE( BASE=BAMO,
            MATR_ASSE_GENE=(_F(MATRICE=CO('KPROJ'),
                               MATR_ASSE=KASSUP,),
                            _F(MATRICE=CO('MPROJ'),
-                              MATR_ASSE=MASSUP,),),);
+                              MATR_ASSE=MASSUP,),),)
 
 # PARAMETRE DE PILOTAGE : LE NOMBRE DE MODES DANS LA BASE D'EXPANSION
 # Inferieur a 8 (nombre de donnees experimentales aux capteurs).
@@ -229,7 +229,7 @@ MODREPHY=REST_GENE_PHYS(RESU_GENE=MODGENE,NOM_CHAM='DEPL')
 tmp=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODLSUP,
                                      BASE=MODREPHY,),
                     MODELE_MESURE=_F(MODELE=MODLEXP,
-                                     MESURE=MODMESU,),);
+                                     MESURE=MODMESU,),)
 
 # base de modes etendue pour la structure
 MODEET=REST_GENE_PHYS(RESU_GENE=tmp)
@@ -273,7 +273,7 @@ mass = [0.25664999999999999, 0.25783, 0.021293000000000006, 0.007903499999999999
 MACELSTR=MACR_ELEM_DYNA( BASE_MODALE=BAMOSTRU,
                          MODELE_MESURE=_F(FREQ=freq,
                                           MASS_GENE=mass,
-                                          AMOR_REDUIT=amor,));
+                                          AMOR_REDUIT=amor,))
 
 
 #*********************************************
@@ -285,7 +285,7 @@ MAILMODI = LIRE_MAILLAGE(FORMAT='ASTER',
 MODMODI=AFFE_MODELE(MAILLAGE=MAILMODI,
                     AFFE=_F(GROUP_MA=('POUTRE',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_E',),);
+                            MODELISATION='POU_D_E',),)
 
 CARAMODI=AFFE_CARA_ELEM(MODELE=MODMODI,
                         POUTRE=(_F(GROUP_MA='POUTRE',
@@ -294,16 +294,16 @@ CARAMODI=AFFE_CARA_ELEM(MODELE=MODMODI,
                                    VALE=(9.E-3,38.E-3,),),),
                         ORIENTATION=(_F(GROUP_MA='POUTRE',
                                         CARA='VECT_Y',
-                                        VALE=(0.,0.,1.),),),);
+                                        VALE=(0.,0.,1.),),),)
 
 CHMAMODI=AFFE_MATERIAU(MAILLAGE=MAILMODI,
                        MODELE=MODMODI,
                        AFFE=_F(GROUP_MA='POUTRE',
-                               MATER=MATSUP,),);
+                               MATER=MATSUP,),)
 
 CONDMODI=AFFE_CHAR_MECA(MODELE=MODMODI,
                         DDL_IMPO=_F(GROUP_NO='EXTERNE',
-                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION')),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION')),)
 
 MACELMOD = CREA_ELEM_SSD(
                  MODELE = MODMODI,
@@ -316,7 +316,7 @@ MACELMOD = CREA_ELEM_SSD(
                  BASE_MODALE = _F( TYPE = 'RITZ',
                                    TYPE_MODE = 'STATIQUE',
                                    ),
-                 CALC_FREQ = _F(OPTION='SANS'),);
+                 CALC_FREQ = _F(OPTION='SANS'),)
 
 
 #**************************************
@@ -375,7 +375,7 @@ FREQ=RECU_TABLE(CO=RESGEN,NOM_PARA='FREQ')
 ##                                     TOUT='OUI',),
 ##                                 _F( NOM = 'STRUCT',
 ##                                     TOUT='OUI',),
-##                                 ),);
+##                                 ),)
 ##
 ##
 ##MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
@@ -392,7 +392,7 @@ TEST_RESU(GENE=(
                    VALE_REFE=3.277E+1,VALE_CALC=32.7733570021,
                    CRITERE='RELATIF', PRECISION=1.E-2,
                    REFERENCE='AUTRE_ASTER',),
-                ),);
+                ),)
 
 
-FIN();
+FIN()

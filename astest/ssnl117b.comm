@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -177,7 +177,7 @@ U1=CALC_CHAMP(reuse=U1,
               CRITERES=('SIEQ_ELGA','EPEQ_ELGA'),
               VARI_INTERNE=('VARI_ELNO'),
               DEFORMATION=('EPSI_ELGA','DEGE_ELNO'),
-              CONTRAINTE=('EFGE_ELNO'),);
+              CONTRAINTE=('EFGE_ELNO'),)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U1, NOM_CHAM='SIEQ_ELGA',
                   NOM_CMP='VMIS',
@@ -343,7 +343,7 @@ TAB1=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
                              RESULTAT=U1,
                              NOM_CHAM='DEGE_ELNO',
                              TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 # Initialisation des constantes
 
@@ -458,7 +458,7 @@ TAB2=POST_RELEVE_T(ACTION=_F(INTITULE='POST',
                              RESULTAT=U1,
                              NOM_CHAM='DEGE_ELNO',
                              TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',),);
+                             OPERATION='EXTRACTION',),)
 
 TAB2  = CALC_TABLE(TABLE=TAB2,reuse=TAB2,
                    ACTION=(_F(OPERATION='OPER', FORMULE=form_EN, NOM_PARA='EN' ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,13 +67,13 @@ fLST = FORMULE(VALE='Y-1.0',
 FISS[0]=DEFI_FISS_XFEM(DEFI_FISS=_F(FONC_LN=fLSN,
                                     FONC_LT=fLST),
                        MAILLAGE_GRILLE=grille,
-                       MAILLAGE=box10,);
+                       MAILLAGE=box10,)
 
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
 
-Mat=DEFI_MATERIAU(ELAS=_F(E=1.,NU=0.3,),);
+Mat=DEFI_MATERIAU(ELAS=_F(E=1.,NU=0.3,),)
 
 #----------------------------------------------
 # PROPAGATION DE FISS (SANS HOMARD)
@@ -122,7 +122,7 @@ LSTraf = [None]*(nb_step+1)
 
 for i in range(nb_step-1) :
 
-   MODXH[i]=MODI_MODELE_XFEM(MODELE_IN=MODbox10,FISSURE=FISS[i],INFO=1,);
+   MODXH[i]=MODI_MODELE_XFEM(MODELE_IN=MODbox10,FISSURE=FISS[i],INFO=1,)
 
    FISS[i+1] = CO('FISS_%d'%(i+1))
    PROPA_FISS(MODELE=MODXH[i],
@@ -139,18 +139,18 @@ for i in range(nb_step-1) :
               COMP_LINE=_F(COEF_MULT_MINI=0.,
                            COEF_MULT_MAXI=1.,),
               CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
-              INFO=1,);
+              INFO=1,)
 
 # ON RECUPERE LES CHAMPS LEVEL SETS DE L'AVANT DERNIERE PROPAGATION
 LSNraf[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EXTR',
                        NOM_CHAM='LNNO',
-                       FISSURE=FISS[i+1],);
+                       FISSURE=FISS[i+1],)
 
 LSTraf[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EXTR',
                        NOM_CHAM='LTNO',
-                       FISSURE=FISS[i+1],);
+                       FISSURE=FISS[i+1],)
 
 #--------------------------------------------
 # ON RAFFINE LE MAILLAGE DE LA STRUCTURE
@@ -189,14 +189,14 @@ MODraff=AFFE_MODELE(MAILLAGE=boxRaf,
 FISSlast=DEFI_FISS_XFEM(DEFI_FISS=_F(CHAM_NO_LSN=LSNlast,
                                      CHAM_NO_LST=LSTlast,),
                          FISS_GRILLE=FISS[i+1],
-                         MAILLAGE=boxRaf,);
+                         MAILLAGE=boxRaf,)
 
 #----------------------------------------------
 # DERNIER PAS DE PROPAGATION DE FISS SUR UN
 # MAILLAGE RAFFINE PAR HOMARD (ON GARDE LA GRILLE)
 #----------------------------------------------
 
-MODXlast=MODI_MODELE_XFEM(MODELE_IN=MODraff,FISSURE=FISSlast,INFO=1,);
+MODXlast=MODI_MODELE_XFEM(MODELE_IN=MODraff,FISSURE=FISSlast,INFO=1,)
 
 FISSresu = CO('FISSresu')
 PROPA_FISS(MODELE=MODXlast,
@@ -213,19 +213,19 @@ PROPA_FISS(MODELE=MODXlast,
            COMP_LINE=_F(COEF_MULT_MINI=0.,
                         COEF_MULT_MAXI=1.,),
            CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
-           INFO=1,);
+           INFO=1,)
 
 # ON EXTRACT LES CHAMPS LEVEL SETS DE LA FISSURE OBTENUE
 
 LSNresu=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                    OPERATION='EXTR',
                    NOM_CHAM='LNNO',
-                   FISSURE=FISSresu,);
+                   FISSURE=FISSresu,)
 
 LSTresu=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                OPERATION='EXTR',
                NOM_CHAM='LTNO',
-               FISSURE=FISSresu,);
+               FISSURE=FISSresu,)
 
 #---------------------------------------------------------
 # VERIFICATION DE LA POSITION DU FOND APRES LA PROPAGATION

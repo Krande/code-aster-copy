@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ modele = AFFE_MODELE(MAILLAGE = maillage,
                             _F(MODELISATION = "POU_D_T",
                               PHENOMENE = "MECANIQUE",
                               GROUP_MA = "BRANCH",)
-                              
-                              
-                              
+
+
+
                               ))
 
 acier=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
@@ -76,7 +76,7 @@ poids_propre = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          # _F(NOM_RESU='poids_propre', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
                          _F(NOM_RESU='poids_propre', NOM_CHAM=('EFGE_ELNO'),),)
                          )
-                         
+
 deplacement_impose = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
@@ -84,28 +84,28 @@ deplacement_impose = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          _F(NOM_RESU='deplacement_impose', NOM_CHAM=('EFGE_ELNO',),),)
                          )
 
-                         
 
 
-                       
+
+
 dilatation_thermique = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          # _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
                          _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('EFGE_ELNO',),),)
-                         )                         
+                         )
 
 resu_dyna = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          _F(NOM_RESU='resu_dyna', NOM_CHAM=('EFGE_ELNO',),),)
-                          )       
+                          )
 
 resu_corr = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          _F(NOM_RESU='resu_corr', NOM_CHAM=('EFGE_ELNO',),),)
-                          )  
+                          )
 # appel à POST_ROCHE
 
 resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
@@ -117,7 +117,7 @@ resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,                                  
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -200,8 +200,8 @@ resuPostRoche_SP = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                     ),
                                   ),
                     )
-                    
-                    
+
+
 # 6- seisme inertiel + pression + poids propre (SPG)
 resuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                                GROUP_NO_ORIG = 'A',
@@ -212,7 +212,7 @@ resuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater, 
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -232,7 +232,7 @@ resuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                     ),
                                   ),
                     )
-                    
+
 # 7- seisme inertiel + deplacement (SD)
 resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                                GROUP_NO_ORIG = 'A',
@@ -243,7 +243,7 @@ resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater, 
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -257,6 +257,6 @@ resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                  NUME_ORDRE=1,
                                  ),
                                 ),
-                    ) 
-                    
+                    )
+
 FIN()

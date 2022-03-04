@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 # Mailles QUAD4 et TRIA3
 #-----------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 from math import *
 
@@ -86,13 +86,13 @@ d_force_arete['FORCE_ARETE'] =  _F(**force_arete)
 
 
 
-mail=LIRE_MAILLAGE(FORMAT='MED');
+mail=LIRE_MAILLAGE(FORMAT='MED')
 
 acier=DEFI_MATERIAU(ELAS=_F(E=young,NU=nu))
 
 chmat=AFFE_MATERIAU(MAILLAGE=mail,
                     AFFE=_F(TOUT='OUI',
-                            MATER=acier,),);
+                            MATER=acier,),)
 
 #-----------------------------------------------------------------
 #
@@ -105,7 +105,7 @@ chmat=AFFE_MATERIAU(MAILLAGE=mail,
 mod_DKT=AFFE_MODELE(MAILLAGE=mail,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKT',),);
+                        MODELISATION='DKT',),)
 
 car_DKT = AFFE_CARA_ELEM(MODELE=mod_DKT, **d_coque)
 cli_DKT = AFFE_CHAR_CINE(MODELE=mod_DKT, **d_meca_impo)
@@ -115,11 +115,11 @@ sta_DKT = MECA_STATIQUE(MODELE=mod_DKT,
                         CHAM_MATER=chmat,
                         CARA_ELEM=car_DKT,
                         EXCIT=(_F(CHARGE=cli_DKT,),
-                               _F(CHARGE=for_DKT,),),);
+                               _F(CHARGE=for_DKT,),),)
 
 sta_DKT=CALC_CHAMP(reuse    = sta_DKT,
                    RESULTAT = sta_DKT,
-                   CONTRAINTE=('EFGE_ELNO','EFGE_ELGA','SIEF_ELGA'));
+                   CONTRAINTE=('EFGE_ELNO','EFGE_ELGA','SIEF_ELGA'))
 
 #---------------------------------------------------------
 # -> EFGE_ELNO : REPERE UTILISATEUR
@@ -595,7 +595,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 mod_Q4GG=AFFE_MODELE(MAILLAGE=mail,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='Q4GG',),);
+                        MODELISATION='Q4GG',),)
 
 car_Q4GG = AFFE_CARA_ELEM(MODELE=mod_Q4GG, **d_coque)
 cli_Q4GG = AFFE_CHAR_CINE(MODELE=mod_Q4GG, **d_meca_impo)
@@ -605,13 +605,13 @@ sta_Q4GG = MECA_STATIQUE(MODELE=mod_Q4GG,
                         CHAM_MATER=chmat,
                         CARA_ELEM=car_Q4GG,
                         EXCIT=(_F(CHARGE=cli_Q4GG,),
-                               _F(CHARGE=for_Q4GG,),),);
+                               _F(CHARGE=for_Q4GG,),),)
 
 sta_Q4GG=CALC_CHAMP(reuse    = sta_Q4GG,
                    RESULTAT = sta_Q4GG,
-                   CONTRAINTE=('EFGE_ELNO','EFGE_ELGA','SIEF_ELGA'));
+                   CONTRAINTE=('EFGE_ELNO','EFGE_ELGA','SIEF_ELGA'))
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=sta_Q4GG,NOM_CHAM='DEPL'));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=sta_Q4GG,NOM_CHAM='DEPL'))
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
@@ -1430,4 +1430,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=1.E-6,),
             ))
 
-FIN();
+FIN()

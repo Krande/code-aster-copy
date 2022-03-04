@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,17 +46,17 @@ MA=DEFI_GROUP(reuse=MA,
                              _F(NOM='M_BAS',GROUP_MA='GM62'),
                              _F(NOM='SYM_X',GROUP_MA='GM63'),
                              _F(NOM='SYM_Z',GROUP_MA='GM64'),
-                             _F(NOM='VOL',GROUP_MA='GM65'),),);
+                             _F(NOM='VOL',GROUP_MA='GM65'),),)
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_MA='P1'),
                              _F(GROUP_MA='SYM_X'),
-                             _F(GROUP_MA='SYM_Z'),),);
+                             _F(GROUP_MA='SYM_Z'),),)
 
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU=('M_HAUT','M_BAS','SYM_X','SYM_Z')));
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('M_HAUT','M_BAS','SYM_X','SYM_Z')))
 #------------------------------------------------------------------------------------------
 #                   calcul mecanique
 #------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ Sc = 2.
 Gc = 0.25e-3
 pena_lagr = 2.0
 MAT=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),
-                  RUPT_FRAG=_F(GC=Gc,SIGM_C=Sc,PENA_LAGR=pena_lagr,),);
+                  RUPT_FRAG=_F(GC=Gc,SIGM_C=Sc,PENA_LAGR=pena_lagr,),)
 
 # attention, il est imperatif de ne definir des elements finis que sur ces groupes,
 # car le maillage contient des mailles de faces situees dans le plan median de la structure
@@ -79,7 +79,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),
 MO_SAIN=AFFE_MODELE(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA=('VOL','M_HAUT','M_BAS'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D'),);
+                            MODELISATION='3D'),)
 
 # PARAMETRES DE LA FISSURE
 # on garde une fissure de type elliptique
@@ -94,11 +94,11 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                                  VECT_Y         = (0.,0.,1.),
                                  GROUP_MA_BORD  = 'FONDINI',
                                  ),
-                    );
+                    )
 # on met du contact dans le modele
 MODX=MODI_MODELE_XFEM(MODELE_IN=MO_SAIN,
                       FISSURE=FISS,
-                      CONTACT='MORTAR');
+                      CONTACT='MORTAR')
 
 # definition de la loi cohesive lors de l attribution du contact
 CTX = DEFI_CONTACT(MODELE         = MODX,
@@ -109,7 +109,7 @@ CTX = DEFI_CONTACT(MODELE         = MODX,
                             ALGO_CONT='CZM',
                             FISS_MAIT=FISS,
                             RELATION='CZM_LIN_MIX',
-                   )));
+                   )))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA,
                        MODELE=MODX,
@@ -135,19 +135,19 @@ CH_BLO=AFFE_CHAR_MECA(MODELE=MODX,
                                      COEF_MULT_1=0.5,
                                      COEF_MULT_2=0.5,
                                      COEF_IMPO=0.0),
-                                 ),);
+                                 ),)
 # application de la pression
 CH_PRE=AFFE_CHAR_MECA(MODELE=MODX,
                       PRES_REP=_F(GROUP_MA=('M_HAUT','M_BAS'),
                                   PRES=-1.))
 
 # On ne met pas de pilotage ms une fonction rampe
-LINST = DEFI_LIST_REEL(VALE=(0., 0.5, 1.),);
+LINST = DEFI_LIST_REEL(VALE=(0., 0.5, 1.),)
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
                     VALE=( 0., 0.,
-                           1., 1.));
+                           1., 1.))
 #
 RESU=STAT_NON_LINE(MODELE=MODX,
                    CHAM_MATER=CHAMPMAT,
@@ -163,7 +163,7 @@ RESU=STAT_NON_LINE(MODELE=MODX,
                    SOLVEUR    = _F(METHODE = 'MUMPS',
                                    ),
                    ARCHIVAGE = _F(CHAM_EXCLU=('VARI_ELGA',),INST=1.0),
-                   INFO=1,);
+                   INFO=1,)
 
 #------------------------------------------------------------------------------------------
 #                   post-traitements
@@ -179,9 +179,9 @@ CG=CALC_G_XFEM(RESULTAT=RESU,
                    NUME_FOND=1,
                    NB_POINT_FOND=5,),
           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                     LISSAGE_G='LAGRANGE_NO_NO',),);
+                     LISSAGE_G='LAGRANGE_NO_NO',),)
 
-IMPR_TABLE(TABLE=CG,UNITE=6);
+IMPR_TABLE(TABLE=CG,UNITE=6)
 
 #----------------------------------------------------------------------
 #              TEST DE K1 EN 2 POINTS

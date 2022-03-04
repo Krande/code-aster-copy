@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #  PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 #......................................................................
 #
-MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
+MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'))
 #
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
@@ -40,28 +40,28 @@ MA=DEFI_GROUP(reuse=MA,
                              _F(NOM='NPLAQ',
                                 GROUP_MA='VPLAQ'),
                              _F(NOM='NPLAQZ',
-                                DIFFE=('NPLAQ','NCONTAR'))));
+                                DIFFE=('NPLAQ','NCONTAR'))))
 #
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT = 'OUI',
                        PHENOMENE = 'MECANIQUE',
-                       MODELISATION = '3D'));
+                       MODELISATION = '3D'))
 #
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=(_F(GROUP_MA_PEAU = 'SPRESV'),
-                               _F(GROUP_MA_PEAU = 'SPRESH')));
-                               
+                               _F(GROUP_MA_PEAU = 'SPRESH')))
+
 #
-MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11, NU = 0.2));
+MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11, NU = 0.2))
 #
-MATBAT=DEFI_MATERIAU(ELAS=_F(E = 1.0E16, NU = 0.0));
+MATBAT=DEFI_MATERIAU(ELAS=_F(E = 1.0E16, NU = 0.0))
 #
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA = 'VPLAQ',
                              MATER = MATPLA),
                           _F(GROUP_MA = 'VBATI',
-                             MATER = MATBAT)));
+                             MATER = MATBAT)))
 #
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_MA = 'SENCA',  DX = 0.0, DY = 0.0, DZ=0.0),
@@ -70,7 +70,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_MA = 'LBLOCY', DY = 0.0),
                               _F(GROUP_NO = 'NPLAQZ', DZ = 0.0)),
                     PRES_REP=(_F(GROUP_MA = 'SPRESV', PRES = 5.E07),
-                              _F(GROUP_MA = 'SPRESH', PRES = 15.E07)));
+                              _F(GROUP_MA = 'SPRESH', PRES = 15.E07)))
 #
 CHA4 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
@@ -90,16 +90,16 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                              COEF_FROT     = 1.E5,
                              ),
                           ),
-                   );
+                   )
 
 #
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,1.0,1.0));
+                    VALE=(0.0,0.0,1.0,1.0))
 #
 LINST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 3));
+                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 3))
 
 
 L_INST=DEFI_LIST_INST(METHODE='MANUEL',
@@ -108,7 +108,7 @@ L_INST=DEFI_LIST_INST(METHODE='MANUEL',
                               ACTION='DECOUPE',
                               SUBD_METHODE = 'MANUEL',
                               SUBD_PAS=5,
-                              SUBD_NIVEAU=5,),);
+                              SUBD_NIVEAU=5,),)
 #
 #-----------------------------------------------------------
 #
@@ -124,7 +124,7 @@ U4M=STAT_NON_LINE(MODELE      = MO,
                                    ITER_GLOB_MAXI = 20,
                                    RESI_GLOB_RELA = 1.0E-5),
 #                 INFO=2,
-                );
+                )
 
 # ---- TEST ----
 
@@ -181,4 +181,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -33,24 +33,24 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                  GROUP_MA='K3',
                                  NOM='K3',
                                  GROUP_NO_EXTR='CC',
-                                 GROUP_NO_ORIG='C',),);
+                                 GROUP_NO_ORIG='C',),)
 
 MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
-               MAILLAGE=MAIL,);
+               MAILLAGE=MAIL,)
 
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
                         MASSIF=_F(GROUP_MA='TOUT_ELT',
-                                  ANGL_REP=(0.,0.),),);
+                                  ANGL_REP=(0.,0.),),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(NU=0.35,
                           E=22752510.,
-                         RHO = 8000.),);
+                         RHO = 8000.),)
 
 CHAM_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT,
                                TOUT='OUI',),
-                       MAILLAGE=MAIL,);
+                       MAILLAGE=MAIL,)
 
 CHA=AFFE_CHAR_MECA(FACE_IMPO=_F(GROUP_MA='ENCASTR',
                                DZ=0.0,
@@ -58,31 +58,31 @@ CHA=AFFE_CHAR_MECA(FACE_IMPO=_F(GROUP_MA='ENCASTR',
                                DY=0.0,),
                    MODELE=MO,
                    FORCE_FACE=_F(GROUP_MA='LIBRE',
-                                  FZ= 172.4307,),);
+                                  FZ= 172.4307,),)
 
 RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
                    MODELE=MO,
                    CARA_ELEM=CAR_ELE,
-                   EXCIT=_F(CHARGE=CHA,),);
+                   EXCIT=_F(CHARGE=CHA,),)
 
 RESU=CALC_CHAMP(reuse =RESU,
                 RESULTAT=RESU,
                 CONTRAINTE='SIGM_ELNO',
-                TOUT_ORDRE='OUI',);
+                TOUT_ORDRE='OUI',)
 
 DEP_Z=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='TAB_NORM',
                               NOM_CMP='DZ',
                               RESULTAT=RESU,
                               NOM_CHAM='DEPL',
-                              GROUP_NO='K3',),);
+                              GROUP_NO='K3',),)
 
 SIGMA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='TAB_SIGM ',
                               TOUT_CMP='OUI',
                               GROUP_NO='K3',
                               RESULTAT=RESU,
-                              NOM_CHAM='SIGM_ELNO',),);
+                              NOM_CHAM='SIGM_ELNO',),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='C',

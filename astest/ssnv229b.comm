@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # MODELISATION B : RELAXATION DES ACIERS VIA MODI_ETCC_REPRISE
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-          );
+          )
 # <CALCULEL3_47> AVEC CALC_PRECONT, ON PASSE CONSCIEMMENT DE LDC 'SANS'
 # A UNE AUTRE LOI DE COMPORTEMENT
 
@@ -44,32 +44,32 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 
 # PARAMETRES DES MATERIAUX
 # Béton
-E_bet = 30000.E6;
-NU_bet   = 0.13;
-ALPHA_b = 0.00001;
+E_bet = 30000.E6
+NU_bet   = 0.13
+ALPHA_b = 0.00001
 
 # Câbles
-E_cab    = 191500.E6;
-NU_cab  = 0.3;
-S_cab=3*0.002641;
+E_cab    = 191500.E6
+NU_cab  = 0.3
+S_cab=3*0.002641
 
-f_prg=1814.E6;
+f_prg=1814.E6
 f0=0.82*f_prg  ; #Taux de tension 1487.E6
-T0=f0*S_cab;
+T0=f0*S_cab
 
-mu_h=0.17;
-phi_h=0.0015;
-phi  = 0.0015/mu_h;
+mu_h=0.17
+phi_h=0.0015
+phi  = 0.0015/mu_h
 
-g_cab=0.008;
+g_cab=0.008
 
 # RELAXATION ACIER
-rh1000=2.5;
-nbhrelax=65*365.25*24;
+rh1000=2.5
+nbhrelax=65*365.25*24
 
 # DEFINITION DES INSTANTS DE CALCUL
 
-tps=DEFI_LIST_REEL(VALE=(0, 1.,2.,3.),);
+tps=DEFI_LIST_REEL(VALE=(0, 1.,2.,3.),)
 
 ########################################################################
 ################################## DEFINITION DU MODELE ################
@@ -77,7 +77,7 @@ tps=DEFI_LIST_REEL(VALE=(0, 1.,2.,3.),);
 
 # LECTURE DU MAILLAGE
 
-mail1=LIRE_MAILLAGE(FORMAT="ASTER",);
+mail1=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 
 #  Creation des groupes
@@ -90,28 +90,28 @@ mail1 = DEFI_GROUP(reuse    = mail1,
                                    _F(NOM='CABLES',
                                      UNION=('CAB1', 'CAB3', 'CAB5', 'CAB7', 'CAB9',
                                        'CAB2', 'CAB4', 'CAB6', 'CAB8', 'CAB10', ),),),
-                   CREA_GROUP_NO=( _F(TOUT_GROUP_MA = 'OUI'),),);
+                   CREA_GROUP_NO=( _F(TOUT_GROUP_MA = 'OUI'),),)
 
 
 # DEFINITION DES MATERIAUX
 bet=DEFI_MATERIAU(ELAS=_F(E   = E_bet,
                           NU  = NU_bet,
                           ALPHA = ALPHA_b,),
-                  ETCC_BETON=_F(),);
+                  ETCC_BETON=_F(),)
 
 aci_h=DEFI_MATERIAU(ELAS=_F(E   = E_cab,
                             NU  = NU_cab,),
                     ETCC_ACIER=_F(RELAX_1000=rh1000,
                                   F_PRG=f_prg,
                                   COEF_FROT=mu_h,
-                                  PERT_LIGNE=phi),);
+                                  PERT_LIGNE=phi),)
 
 # DEFINING MECHANICAL PROBLEM AND MODELISATION
 # Defines the type of equation to solve and the type of elements used for the modelisation of the mesh
 
 mod=AFFE_MODELE(MAILLAGE=mail1,
                 AFFE=(_F(GROUP_MA = ('FUT',),PHENOMENE = 'MECANIQUE', MODELISATION = '3D',),
-                     _F(GROUP_MA=('CABLES',), PHENOMENE='MECANIQUE', MODELISATION='BARRE',),),);
+                     _F(GROUP_MA=('CABLES',), PHENOMENE='MECANIQUE', MODELISATION='BARRE',),),)
 
 # ATTRIBUTING GEOMETRICAL CHARACTERISTICS AND RELATED PROPERTIES TO GROUPS OF ELEMENTS
 
@@ -119,13 +119,13 @@ cara=AFFE_CARA_ELEM(MODELE=mod,
                     BARRE=(_F(GROUP_MA=('CABLES',),
                               SECTION='GENERALE',
                               CARA='A',
-                              VALE=S_cab),),);
+                              VALE=S_cab),),)
 
 # ATTRIBUTING MATERIAL PROPERTIES TO GROUPS OF ELEMENTS
 mat=AFFE_MATERIAU(MAILLAGE=mail1,
                   MODELE=mod,
                   AFFE=( _F(GROUP_MA='FUT', MATER=bet,),
-                         _F(GROUP_MA='CABLES', MATER=aci_h,),),);
+                         _F(GROUP_MA='CABLES', MATER=aci_h,),),)
 
 ########################################################################################################
 ################################## DEFINITION DES CABLES ##########################################
@@ -139,7 +139,7 @@ cab_odd0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='
                      _F(GROUP_MA='CAB7', GROUP_NO_ANCRAGE=('CAB7_I','CAB7_F',),),
                      _F(GROUP_MA='CAB9', GROUP_NO_ANCRAGE=('CAB9_I','CAB9_F',),),),
                       TYPE_ANCRAGE=('ACTIF','ACTIF'),
-                      TENSION_INIT=T0,RECUL_ANCRAGE=g_cab,);
+                      TENSION_INIT=T0,RECUL_ANCRAGE=g_cab,)
 
 cab_eve0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='FUT',
              DEFI_CABLE=(
@@ -149,7 +149,7 @@ cab_eve0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='
                 _F(GROUP_MA='CAB8', GROUP_NO_ANCRAGE=('CAB8_I','CAB8_F',),),
                 _F(GROUP_MA='CAB10', GROUP_NO_ANCRAGE=('CAB10_I','CAB10_F',),),),
                 TYPE_ANCRAGE=('ACTIF','ACTIF'),TENSION_INIT=T0,RECUL_ANCRAGE=g_cab,
-                );
+                )
 
 
 ########################################################################################################
@@ -157,8 +157,8 @@ cab_eve0=DEFI_CABLE_BP(MODELE=mod,CHAM_MATER=mat,CARA_ELEM=cara,GROUP_MA_BETON='
 ########################################################################################################
 # DEFINITION LIAISONS CINEMATIQUES DES CABLES
 
-ch_odd0=AFFE_CHAR_MECA(MODELE=mod,RELA_CINE_BP=_F(CABLE_BP=cab_odd0,SIGM_BPEL='NON',RELA_CINE='OUI',),);
-ch_eve0=AFFE_CHAR_MECA(MODELE=mod,RELA_CINE_BP=_F(CABLE_BP=cab_eve0,SIGM_BPEL='NON',RELA_CINE='OUI',),);
+ch_odd0=AFFE_CHAR_MECA(MODELE=mod,RELA_CINE_BP=_F(CABLE_BP=cab_odd0,SIGM_BPEL='NON',RELA_CINE='OUI',),)
+ch_eve0=AFFE_CHAR_MECA(MODELE=mod,RELA_CINE_BP=_F(CABLE_BP=cab_eve0,SIGM_BPEL='NON',RELA_CINE='OUI',),)
 
 
 # DEFINITION DES CONDITIONS LIMITES
@@ -172,7 +172,7 @@ clim=AFFE_CHAR_MECA(MODELE=mod,
                                     DDL = ('DY','DY'),
                                     COEF_MULT=(1.,1.),
                                     COEF_IMPO=0. ),
-                                    ));
+                                    ))
 
 ########################################################################################################
 ############################################# CALCUL ###################################################
@@ -186,7 +186,7 @@ res0=CALC_PRECONT(MODELE     = mod,
                 EXCIT      = _F(CHARGE = clim,),
                 CABLE_BP=(cab_odd0,),
                 CABLE_BP_INACTIF=(cab_eve0,),
-                INCREMENT=_F(LIST_INST=tps,INST_FIN=1.0,),);
+                INCREMENT=_F(LIST_INST=tps,INST_FIN=1.0,),)
 
 #  ETAPE 2: MISE EN TENSION CABLES PAIRS
 res0=CALC_PRECONT(reuse=res0,
@@ -198,7 +198,7 @@ res0=CALC_PRECONT(reuse=res0,
      EXCIT      = (_F(CHARGE = clim,),
                    _F(CHARGE = ch_odd0,),),#  les liaisons cinématiques des câbles déjà mis en tension doivent être inclues comme chargement
      CABLE_BP=cab_eve0,
-     INCREMENT=_F(LIST_INST=tps,INST_FIN=2.0,),);
+     INCREMENT=_F(LIST_INST=tps,INST_FIN=2.0,),)
 
 
 #############################################################
@@ -209,7 +209,7 @@ res0=CALC_PRECONT(reuse=res0,
 res0=CALC_CHAMP(reuse      = res0,
                 RESULTAT   = res0,
                 INST      = 2.,
-                CONTRAINTE     = ('SIEF_ELNO',),);
+                CONTRAINTE     = ('SIEF_ELNO',),)
 
 ########################################################################################################
 ################################## EXTRACTION DES TENSIONS DANS LES CABLES ######################################
@@ -321,11 +321,11 @@ cab_odd=DEFI_CABLE_BP(MODELE=mod,
   _F(GROUP_MA='CAB5', GROUP_NO_ANCRAGE=('CAB5_I','CAB5_F',),TENSION=tensc5),
   _F(GROUP_MA='CAB7', GROUP_NO_ANCRAGE=('CAB7_I','CAB7_F',),TENSION=tensc7),
   _F(GROUP_MA='CAB9', GROUP_NO_ANCRAGE=('CAB9_I','CAB9_F',),TENSION=tensc9),
-  ), 
+  ),
                 TYPE_ANCRAGE=('ACTIF','ACTIF'),
                 TENSION_INIT=T0,
                 RECUL_ANCRAGE=g_cab,
-                NBH_RELAX=nbhrelax, );
+                NBH_RELAX=nbhrelax, )
 
 cab_eve=DEFI_CABLE_BP(MODELE=mod,
                       CHAM_MATER=mat,
@@ -343,10 +343,10 @@ _F(GROUP_MA='CAB10', GROUP_NO_ANCRAGE=('CAB10_I','CAB10_F',),TENSION=tensc10),
                       TENSION_INIT=T0,
                       RECUL_ANCRAGE=g_cab,
                       NBH_RELAX=nbhrelax
-                      );
+                      )
 
-tab_odd=RECU_TABLE(CO=cab_odd, NOM_TABLE='CABLE_BP',);
-tab_eve=RECU_TABLE(CO=cab_eve, NOM_TABLE='CABLE_BP',);
+tab_odd=RECU_TABLE(CO=cab_odd, NOM_TABLE='CABLE_BP',)
+tab_eve=RECU_TABLE(CO=cab_eve, NOM_TABLE='CABLE_BP',)
 #IMPR_TABLE(TABLE=tab_odd,UNITE=8)
 #IMPR_TABLE(TABLE=tab_eve,UNITE=8)
 
@@ -359,13 +359,13 @@ res0=CALC_PRECONT(reuse=res0,
      COMPORTEMENT=_F(RELATION='ELAS',),
      EXCIT      = (_F(CHARGE = clim,),),
      CABLE_BP=(cab_eve,cab_odd),
-     INCREMENT=_F(LIST_INST=tps,INST_FIN=3.0,),);
+     INCREMENT=_F(LIST_INST=tps,INST_FIN=3.0,),)
 
 res0=CALC_CHAMP(reuse      = res0,
                 RESULTAT   = res0,
                 INST      = 3.,
-                CONTRAINTE     = ('SIEF_ELNO',),);
-                
+                CONTRAINTE     = ('SIEF_ELNO',),)
+
 tensc9f= POST_RELEVE_T(ACTION=_F(RESULTAT=res0,
                                  INTITULE='N',
                                  NOM_CHAM='SIEF_ELNO',
@@ -468,15 +468,15 @@ TEST_TABLE(CRITERE='RELATIF',
            NOM_PARA='TENSION',
            TABLE=tab_odd,
            FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB9'),))
-                   
-TEST_TABLE(TABLE=tensc9f, 
+
+TEST_TABLE(TABLE=tensc9f,
            TYPE_TEST='SOMM',
            NOM_PARA='N',
            VALE_CALC=1066373265.9033507,
            VALE_REFE=1066341600.5904781,
            REFERENCE='AUTRE_ASTER',
            CRITERE='RELATIF',
-           PRECISION=0.05E-2) 
+           PRECISION=0.05E-2)
 
 TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='SOMM',
@@ -484,15 +484,15 @@ TEST_TABLE(CRITERE='RELATIF',
            NOM_PARA='TENSION',
            TABLE=tab_eve,
            FILTRE=(_F(NOM_PARA='NOM_CABLE',VALE_K='CAB10'),))
-                   
-TEST_TABLE(TABLE=tensc10f, 
+
+TEST_TABLE(TABLE=tensc10f,
            TYPE_TEST='SOMM',
            NOM_PARA='N',
            VALE_CALC=1063681449.2213774,
            VALE_REFE=1063650103.5108216,
            REFERENCE='AUTRE_ASTER',
            CRITERE='RELATIF',
-           PRECISION=0.05E-2) 
+           PRECISION=0.05E-2)
 
-           
-FIN();
+
+FIN()

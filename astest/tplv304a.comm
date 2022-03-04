@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # LECTURE DU MAILLAGE --------------------------------------------------
 #
 
-MA2=LIRE_MAILLAGE(FORMAT='MED',);
+MA2=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MA2,
-                   HEXA20_27=_F(TOUT='OUI',),);
+                   HEXA20_27=_F(TOUT='OUI',),)
 
 MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
                       CREA_GROUP_NO= (
@@ -57,7 +57,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                  NOM='TPR_IMP',
                                  GROUP_NO_CENTRE='N1',
                                  VECT_NORMALE=(1.,0.,0.,),
-                                 PRECISION=1E-4,),);
+                                 PRECISION=1E-4,),)
 
 
 #

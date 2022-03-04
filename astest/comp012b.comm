@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.),
                   MOHR_COULOMB=_F(
                             PHI      = 33.,
                             ANGDIL   = 27.,
-                            COHESION = 1.0E+3,),);
+                            COHESION = 1.0E+3,),)
 
 CALC_ESSAI_GEOMECA(INFO=1,
                    MATER=SOL,
@@ -73,9 +73,9 @@ CALC_ESSAI_GEOMECA(INFO=1,
                    ESSAI_TRIA_DR_M_D = _F(PRES_CONF   = PCO,
                                  EPSI_IMPOSE = epzz_max,
                                  NB_INST     = nb_inst,
-                                 TABLE_RESU  = CO('TSIMU')),);
+                                 TABLE_RESU  = CO('TSIMU')),)
 
-IMPR_TABLE(TABLE=TSIMU);
+IMPR_TABLE(TABLE=TSIMU)
 
 # =============================================================================
 #
@@ -97,7 +97,7 @@ TEST_TABLE(NOM_PARA='SIG_LAT', TABLE=TSIMU,
            VALE_CALC=50000.,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=-sixx[-1],);
+           VALE_REFE=-sixx[-1],)
 
 TEST_TABLE(NOM_PARA='SIG_AXI', TABLE=TSIMU,
            FILTRE=_F(NOM_PARA ='EPS_AXI',
@@ -108,6 +108,6 @@ TEST_TABLE(NOM_PARA='SIG_AXI', TABLE=TSIMU,
            VALE_CALC=1.7328954160409E+05,
            # Reference
            REFERENCE='ANALYTIQUE',
-           VALE_REFE=-sizz[-1],);
+           VALE_REFE=-sizz[-1],)
 
-FIN();
+FIN()

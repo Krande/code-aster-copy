@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ CARAD=AFFE_CARA_ELEM(  MODELE=BARRED,
 GUIDAGED=AFFE_CHAR_MECA(   MODELE=BARRED,DDL_IMPO=(
                              _F( GROUP_NO = 'NOEUDDL',
                                        DY = 0., ),
-                             _F( GROUP_NO = 'N1', DX = 0.),),);
+                             _F( GROUP_NO = 'N1', DX = 0.),),)
 
 
 #
@@ -113,7 +113,7 @@ RIGPROD=PROJ_MATR_BASE( BASE=MODESD,
                           MATR_ASSE=MATASKD)
 
 RIGPRCO=COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=RIGPROD,
-                               COEF_C=('RI',1.0,0.01,),),);
+                               COEF_C=('RI',1.0,0.01,),),)
 
 #
 CHARHARD=AFFE_CHAR_MECA(   MODELE=BARRED,
@@ -271,7 +271,7 @@ CARA=AFFE_CARA_ELEM(  MODELE=BARRE,
 
 ###############
 #                                   CARA: ('R','EP'),
-#                                   VALE: (0.1 0.01)));
+#                                   VALE: (0.1 0.01)))
 #
 ###
 ###### PARTIE GAUCHE :

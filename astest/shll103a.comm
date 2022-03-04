@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@
 import numpy as NP
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
-mail=LIRE_MAILLAGE(FORMAT="ASTER",);
+mail=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 acier=DEFI_MATERIAU(ELAS=_F(E=2.e11,
                             NU=0.3,
-                            RHO=7800,),);
+                            RHO=7800,),)
 
 # ---------------------
 # AFFECTATION DU MODELE
@@ -40,14 +40,14 @@ modele=AFFE_MODELE(MAILLAGE=mail,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('DISQ1','DISQ2','PALIER1','PALIER2'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 # -----------------------
 # AFFECTATION DU MATERIAU
 # -----------------------
 chmat=AFFE_MATERIAU(MAILLAGE=mail,
                     AFFE=_F(GROUP_MA='ROTOR',
-                            MATER=acier,),);
+                            MATER=acier,),)
 
 # --------------------------------
 # DEF DES SECTIONS et des RAIDEURS
@@ -112,7 +112,7 @@ cara=AFFE_CARA_ELEM(MODELE=modele,
                            ),
                         ORIENTATION=_F(GROUP_MA=('DISQ1','DISQ2'),
                                       CARA='ANGL_NAUT',
-                                      VALE=(90.,0.,0.,),),);
+                                      VALE=(90.,0.,0.,),),)
 
 # ------------------
 # CONDITIONS AUX LIMITES
@@ -129,17 +129,17 @@ blocage=AFFE_CHAR_MECA(MODELE=modele,
 # --------------------------------
 
 VIT=NP.array([60.0,1500.0,15000.0])
-nbV=len(VIT);
-val_eff= 1.0;
-FUN=DEFI_CONSTANTE(VALE=1.0,);
+nbV=len(VIT)
+val_eff= 1.0
+FUN=DEFI_CONSTANTE(VALE=1.0,)
 
 EF_HAR_X=AFFE_CHAR_MECA(MODELE=modele,
                         FORCE_NODALE=_F(GROUP_NO='N13',
-                                        FX=(val_eff),),);
+                                        FX=(val_eff),),)
 
 EF_HAR_Z=AFFE_CHAR_MECA(MODELE=modele,
                         FORCE_NODALE=_F(GROUP_NO='N13',
-                                        FZ=(val_eff),),);
+                                        FZ=(val_eff),),)
 
 ASSEMBLAGE(MODELE=modele,
                 CHAM_MATER=chmat,
@@ -158,17 +158,17 @@ ASSEMBLAGE(MODELE=modele,
                            _F(VECTEUR=CO("EF_ASS_Z"),
                               OPTION='CHAR_MECA',
                               CHARGE=EF_HAR_Z),
-                           ),);
+                           ),)
 
 
 
 GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
                       MODELE=modele,
                       CHAM_MATER=chmat,
-                      CARA_ELEM=cara,);
+                      CARA_ELEM=cara,)
 
 GYAS=ASSE_MATRICE(MATR_ELEM=GYELEM,
-                  NUME_DDL=NUMEDDL,);
+                  NUME_DDL=NUMEDDL,)
 
 
 module = FORMULE(VALE='sqrt(REEL**2 + IMAG**2)',
@@ -179,10 +179,10 @@ phase = FORMULE(VALE='atan2(IMAG, REEL)/pi*180',
 
 # ROTOR A L'ARRET
 RPM2 = 0.0
-FREQ2 = (RPM2 / 60.0);
-OM2 = FREQ2 * 2 * pi;
+FREQ2 = (RPM2 / 60.0)
+OM2 = FREQ2 * 2 * pi
 GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
-                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
+                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),)
 
 i=0
 for i, RPM in enumerate(VIT):
@@ -197,17 +197,17 @@ for i, RPM in enumerate(VIT):
                               FONC_MULT=FUN,
                               PHAS_DEG=0.0,)
                            ),
-                    );
+                    )
 
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -390,17 +390,17 @@ for i, RPM in enumerate(VIT):
                               FONC_MULT=FUN,
                               PHAS_DEG=180.0,),
                            ),
-                    );
+                    )
 
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -579,10 +579,10 @@ DETRUIRE(NOM=GYOM2)
 
 # ROTOR TOURNANT A LA VITESSE DE ROTATION DE 40000 TR/MIN
 RPM2 = 40000.0
-FREQ2 = (RPM2 / 60.0);
-OM2 = FREQ2 * 2 * pi;
+FREQ2 = (RPM2 / 60.0)
+OM2 = FREQ2 * 2 * pi
 GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
-                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
+                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),)
 
 for i, RPM in enumerate(VIT):
 
@@ -596,17 +596,17 @@ for i, RPM in enumerate(VIT):
                               FONC_MULT=FUN,
                               PHAS_DEG=0.0,)
                            ),
-                    );
+                    )
 
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -785,17 +785,17 @@ for i, RPM in enumerate(VIT):
                               FONC_MULT=FUN,
                               PHAS_DEG=180.0,),
                            ),
-                    );
+                    )
 
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -964,10 +964,10 @@ DETRUIRE(NOM=GYOM2)
 
 # ROTOR TOURNANT A LA VITESSE DE ROTATION DE 50000 TR/MIN
 RPM2 = 50000.0
-FREQ2 = (RPM2 / 60.0);
-OM2 = FREQ2 * 2 * pi;
+FREQ2 = (RPM2 / 60.0)
+OM2 = FREQ2 * 2 * pi
 GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
-                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
+                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),)
 
 for i, RPM in enumerate(VIT):
 
@@ -981,17 +981,17 @@ for i, RPM in enumerate(VIT):
                               FONC_MULT=FUN,
                               PHAS_DEG=0.0,)
                            ),
-                    );
+                    )
 
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -1168,17 +1168,17 @@ for i, RPM in enumerate(VIT):
                               FONC_MULT=FUN,
                               PHAS_DEG=180.0,),
                            ),
-                    );
+                    )
 
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -1346,10 +1346,10 @@ DETRUIRE(NOM=GYOM2)
 
 # ROTOR TOURNANT A LA VITESSE DE ROTATION DE 60000 TR/MIN
 RPM2 = 60000.0
-FREQ2 = (RPM2 / 60.0);
-OM2 = FREQ2 * 2 * pi;
+FREQ2 = (RPM2 / 60.0)
+OM2 = FREQ2 * 2 * pi
 GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
-                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
+                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),)
 
 for i, RPM in enumerate(VIT):
 
@@ -1363,17 +1363,17 @@ for i, RPM in enumerate(VIT):
                               FONC_MULT=FUN,
                               PHAS_DEG=0.0,)
                            ),
-                    );
+                    )
 
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -1560,17 +1560,17 @@ for i, RPM in enumerate(VIT):
                               FONC_MULT=FUN,
                               PHAS_DEG=180.0,),
                            ),
-                    );
+                    )
 
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   GROUP_NO='N13',);
+                   GROUP_NO='N13',)
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -1748,4 +1748,4 @@ DETRUIRE(NOM=TABMODX)
 DETRUIRE(NOM=TABMODZ)
 DETRUIRE(NOM=GYOM2)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,51 +18,51 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
                DISTRIBUTION=_F(METHODE='MAIL_DISPERSE',),
-               );
+               )
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
                           NU=0.3,),
                   THER=_F(LAMBDA=2.7,
-                          RHO_CP=0.3,),);
+                          RHO_CP=0.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='GRNO1',
                                  DZ=0.0,),
                               _F(GROUP_NO='GRNO8',
-                                 DY=0.0,),),);
+                                 DY=0.0,),),)
 
 CHA2=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=_F(GROUP_NO='GRNO7',
                                  DX=0.0,
-                                 DY=0.01,),);
+                                 DY=0.01,),)
 #Calcul de référence
 RESREF=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CHA1,),
                            _F(CHARGE=CHA2,),),
-                    SOLVEUR=_F(METHODE='MUMPS',),);
+                    SOLVEUR=_F(METHODE='MUMPS',),)
 TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'UREF', GROUP_NO =('NO2958','NO2974'), OPERATION = 'EXTRACTION',
-                     RESULTAT = RESREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = ('DX','DY'), ));
+                     RESULTAT = RESREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = ('DX','DY'), ))
 
 MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   CHARGE=CHA1,);
+                   CHARGE=CHA1,)
 
-NU=NUME_DDL(MATR_RIGI=MEL,);
+NU=NUME_DDL(MATR_RIGI=MEL,)
 
 VECAS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  NUME_DDL=NU,
@@ -70,22 +70,22 @@ VECAS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  MAILLAGE=MA,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP=('DX','DY','DZ',),
-                         VALE=(0.,0.,0.,),),);
+                         VALE=(0.,0.,0.,),),)
 
 MATAS=ASSE_MATRICE(MATR_ELEM=MEL,
                    NUME_DDL=NU,
-                   CHAR_CINE=CHA2,);
+                   CHAR_CINE=CHA2,)
 
 VCINE=CALC_CHAR_CINE(NUME_DDL=NU,
-                     CHAR_CINE=CHA2,);
+                     CHAR_CINE=CHA2,)
 
-MATAS=FACTORISER(reuse =MATAS, MATR_ASSE=MATAS, METHODE='PETSC', PRE_COND='LDLT_SP',);
+MATAS=FACTORISER(reuse =MATAS, MATR_ASSE=MATAS, METHODE='PETSC', PRE_COND='LDLT_SP',)
 
 VECAS=RESOUDRE(reuse =VECAS,
                MATR=MATAS,
                CHAM_NO=VECAS,
                CHAM_CINE=VCINE,
-               ALGORITHME='GCR',);
+               ALGORITHME='GCR',)
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=VECAS,
                       GROUP_NO='NO2958',
                       NOM_CMP='DY',
@@ -107,20 +107,20 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=VECAS,
                       VALE_REFE=TREF['DY',2],
                       PRECISION=1.E-06,
                       REFERENCE='AUTRE_ASTER',),
-                       ),);
+                       ),)
 
 
 # Validation de FACTORISER / PETSC / LDLT_INC  :
 #-----------------------------------------------
 MATAS2=ASSE_MATRICE(MATR_ELEM=MEL,
                    NUME_DDL=NU,
-                   CHAR_CINE=CHA2,);
-MATAS2=FACTORISER( reuse=MATAS2, MATR_ASSE=MATAS2, METHODE='PETSC', PRE_COND='LDLT_INC',);
+                   CHAR_CINE=CHA2,)
+MATAS2=FACTORISER( reuse=MATAS2, MATR_ASSE=MATAS2, METHODE='PETSC', PRE_COND='LDLT_INC',)
 
 VECA2=RESOUDRE(MATR=MATAS2, MATR_PREC=MATAS2,
                CHAM_NO=VECAS,
                CHAM_CINE=VCINE,
-               ALGORITHME='GMRES',);
+               ALGORITHME='GMRES',)
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=VECA2,
                       GROUP_NO='NO2958',
@@ -130,4 +130,4 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=VECA2,
                       PRECISION=1.E-06,
                       REFERENCE='AUTRE_ASTER',)))
 
-FIN();
+FIN()

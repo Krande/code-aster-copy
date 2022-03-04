@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,53 +51,53 @@ DYNGENT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  FONC_MULT=ACC_Y,),
                               _F(VECT_ASSE_GENE=VGENZ,
                                  FONC_MULT=ACC_Z,),
-                          ),);
+                          ),)
 
 #On recupere les accelerations du calcul du calcul dynamique DYNGEN
 t_a_x=RECU_FONCTION(RESU_GENE=DYNGENT,
                          NOM_CHAM='ACCE',
                          NOM_CMP='DX',
                          GROUP_NO='NO2815',
-                    );
+                    )
 
 t_a_y=RECU_FONCTION(RESU_GENE=DYNGENT,
                     NOM_CHAM='ACCE',
                     NOM_CMP='DY',
                     GROUP_NO='NO2815',
-                    );
+                    )
 
 t_a_z=RECU_FONCTION(RESU_GENE=DYNGENT,
                                 NOM_CHAM='ACCE',
                                 NOM_CMP='DZ',
                                 GROUP_NO='NO2815',
-                            );
+                            )
 #On calcule le signal absolu
 t_Abs_x0=CALC_FONCTION(INTERPOL='LIN',
                     COMB=(_F(FONCTION=t_a_x,
                                COEF=1,),
                             _F(FONCTION=ACC_X,
-                               COEF=1,),),);
+                               COEF=1,),),)
 
 t_Abs_y0=CALC_FONCTION(INTERPOL='LIN',
                     COMB=(_F(FONCTION=t_a_y,
                                COEF=1,),
                             _F(FONCTION=ACC_Y,
-                               COEF=1,),),);
+                               COEF=1,),),)
 
 t_Abs_z0=CALC_FONCTION(INTERPOL='LIN',
                     COMB=(_F(FONCTION=t_a_z,
                                COEF=1,),
                             _F(FONCTION=ACC_Z,
-                               COEF=1,),),);
+                               COEF=1,),),)
 
 L_tmp0,ordo=t_a_x.Valeurs()
-L_tmp=DEFI_LIST_REEL(VALE=L_tmp0);
+L_tmp=DEFI_LIST_REEL(VALE=L_tmp0)
 t_Abs_x=CALC_FONC_INTERP(LIST_PARA=L_tmp,
-                       FONCTION=t_Abs_x0,);
+                       FONCTION=t_Abs_x0,)
 t_Abs_y=CALC_FONC_INTERP(LIST_PARA=L_tmp,
-                       FONCTION=t_Abs_y0,);
+                       FONCTION=t_Abs_y0,)
 t_Abs_z=CALC_FONC_INTERP(LIST_PARA=L_tmp,
-                       FONCTION=t_Abs_z0,);
+                       FONCTION=t_Abs_z0,)
 
 #------------------------------------------------------------------------------------
 #          Calculs prealable a l'utilisation de la macro commande
@@ -116,7 +116,7 @@ TDYNGENX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  FONC_MULT=ACC_X,),
                               _F(VECT_ASSE_GENE=VGENX,
                                  FONC_MULT=ACC_X,),
-                          ),);
+                          ),)
 
 
 TDYNGENY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -132,7 +132,7 @@ TDYNGENY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  FONC_MULT=ACC_Y,),
                               _F(VECT_ASSE_GENE=VGENY,
                                  FONC_MULT=ACC_Y,),
-                          ),);
+                          ),)
 
 
 
@@ -149,7 +149,7 @@ TDYNGENZ=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  FONC_MULT=ACC_Z,),
                               _F(VECT_ASSE_GENE=VGENZ,
                                  FONC_MULT=ACC_Z,),
-                          ),);
+                          ),)
 
 C_TEMP=CALC_TRANSFERT(NOM_CHAM='ACCE',
                     RESULTAT_X=TDYNGENX,
@@ -167,7 +167,7 @@ C_TEMP=CALC_TRANSFERT(NOM_CHAM='ACCE',
                               MESURE_Z=t_Abs_z,
                               TYPE_RESU='HARMONIQUE',
                               TABLE_RESU=CO("TABLE01"),),
-                              );
+                              )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
           VALE_CALC=50.874056397,
@@ -205,7 +205,7 @@ C_TEMP2=CALC_TRANSFERT(NOM_CHAM='ACCE',
                               MESURE_Z=t_Abs_z,
                               TYPE_RESU='TEMPOREL',
                               TABLE_RESU=CO("TABLE02"),),
-                              );
+                              )
 
 FXT = RECU_FONCTION(TABLE=TABLE02,
                     PARA_X='INST',
@@ -228,9 +228,9 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC_C=(48.84869-22.56597j),
 # On va comparer relatif et absolu avec un entrainement nul
 #
 
-ACC_X2=CALC_FONCTION(COMB=_F(FONCTION=ACC_X,COEF=0.,),);
-ACC_Y2=CALC_FONCTION(COMB=_F(FONCTION=ACC_Y,COEF=0.,),);
-ACC_Z2=CALC_FONCTION(COMB=_F(FONCTION=ACC_Z,COEF=0.,),);
+ACC_X2=CALC_FONCTION(COMB=_F(FONCTION=ACC_X,COEF=0.,),)
+ACC_Y2=CALC_FONCTION(COMB=_F(FONCTION=ACC_Y,COEF=0.,),)
+ACC_Z2=CALC_FONCTION(COMB=_F(FONCTION=ACC_Z,COEF=0.,),)
 
 C_TEMPA=CALC_TRANSFERT(NOM_CHAM='ACCE',
                     RESULTAT_X=TDYNGENX,
@@ -244,7 +244,7 @@ C_TEMPA=CALC_TRANSFERT(NOM_CHAM='ACCE',
                               MESURE_Z=t_Abs_z,
                               TYPE_RESU='HARMONIQUE',
                               TABLE_RESU=CO("TABLE_A"),),
-                              );
+                              )
 
 C_TEMP3=CALC_TRANSFERT(NOM_CHAM='ACCE',
                     RESULTAT_X=TDYNGENX,
@@ -262,7 +262,7 @@ C_TEMP3=CALC_TRANSFERT(NOM_CHAM='ACCE',
                               MESURE_Z=t_Abs_z,
                               TYPE_RESU='HARMONIQUE',
                               TABLE_RESU=CO("TABLE03"),),
-                              );
+                              )
 
 TEST_TABLE(VALE_CALC=555.484543524,
           NOM_PARA='Re_FX',

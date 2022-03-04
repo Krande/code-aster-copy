@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #            MAILLAGE (ON GENERE DES PYRA5 AVEC HOMARD)
 #----------------------------------------------
 
-MABID=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+MABID=LIRE_MAILLAGE(INFO=1,FORMAT='MED',)
 
 # longueur du barreau
 LZ = 5.
@@ -57,12 +57,12 @@ MABID=DEFI_GROUP(reuse =MABID,
                                  VECT_NORMALE = (0.,0.,1.,),
                                  PRECISION = 0.1*LZ,),
                               ),
-               );
+               )
 
 MODELBID=AFFE_MODELE(MAILLAGE=MABID,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='THERMIQUE',
-                             MODELISATION='3D',),);
+                             MODELISATION='3D',),)
 
 LN1 = FORMULE(VALE='Z',
               NOM_PARA=['X', 'Y', 'Z'],)
@@ -70,7 +70,7 @@ LN1 = FORMULE(VALE='Z',
 FISSBID=DEFI_FISS_XFEM(MAILLAGE=MABID,
                        TYPE_DISCONTINUITE='INTERFACE',
                        DEFI_FISS=_F(FONC_LN=LN1),
-                       INFO=1,);
+                       INFO=1,)
 
 CHERR= RAFF_XFEM(FISSURE=FISSBID)
 
@@ -90,17 +90,17 @@ MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='THERMIQUE',
-                             MODELISATION='3D',),);
+                             MODELISATION='3D',),)
 
 FISS1=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN1),
-                     INFO=1,);
+                     INFO=1,)
 
 MODELEX=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS1,
-                         INFO=1,);
- 
+                         INFO=1,)
+
 #----------------------------------------------
 #            MATERIAU
 #----------------------------------------------
@@ -232,7 +232,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MAX',
            TABLE=TEMXINF,)
 
-# -- 
+# --
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=20.0,
@@ -278,7 +278,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MAX',
            TABLE=TEMCINF,)
 
-# -- 
+# --
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=20.0,
@@ -335,4 +335,4 @@ IMPR_TABLE(TABLE=TEMCINF)
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_VISU))
 IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MA_VISU))
 
-FIN();
+FIN()

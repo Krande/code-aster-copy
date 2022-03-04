@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=300000.0,
                             NU=0.,),
                     ECRO_LINE=_F(D_SIGM_EPSI=0.0,
                                  SY=300.0,),
-                    );
+                    )
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=ACIER,),
-                         );
+                         )
 
 
 ##########################################################
@@ -46,7 +46,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                      _F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='3D',),),
-                      );
+                      )
 
 
 ##########################################################
@@ -54,13 +54,13 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 ##########################################################
 INST=DEFI_LIST_REEL(DEBUT=0.,
                     INTERVALLE=_F(JUSQU_A=10.0,
-                                  PAS=1.,),);
+                                  PAS=1.,),)
 INSTANTS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=INST),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS      = 4,
-                                 SUBD_NIVEAU   = 4,),);
+                                 SUBD_NIVEAU   = 4,),)
 ##########################################################
 # CHARGEMENT
 ##########################################################
@@ -74,16 +74,16 @@ CLIM=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='AVANT',
                                  DX=0.),
                               ),
-                                 );
+                                 )
 
 TRAC=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='HAUT',
-                                    DZ=.001,),);
+                                    DZ=.001,),)
 
 
 CMULT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                                           1.0,1.0,
-                          ),PROL_DROITE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE',)
 
 
 ##########################################################
@@ -103,31 +103,31 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=0.000001,
                                   ITER_GLOB_MAXI=20,),
-                   ARCHIVAGE=_F(LIST_INST=INST),);
+                   ARCHIVAGE=_F(LIST_INST=INST),)
 
 ##########################################################
 # POST-TRAITEMENT POUR CALCUL DE BORDET
 ##########################################################
 SIGY1=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,00.,
                          100.,1000.,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 SIGY2=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,00.,
                          100.,500.,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 
 SIGY=DEFI_NAPPE(NOM_PARA='EPSI',
                 PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                 PARA=(0.0005,0.001),
-                FONCTION=(SIGY1,SIGY2),);
+                FONCTION=(SIGY1,SIGY2),)
 
 TEMP=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,10.,100.),
-                    PROL_DROITE='LINEAIRE',PROL_GAUCHE='CONSTANT',);
+                    PROL_DROITE='LINEAIRE',PROL_GAUCHE='CONSTANT',)
 
 SIGREF=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,200.,
                          100.,300.,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 
 BORDET=POST_BORDET(
@@ -220,4 +220,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=5.0,),
            )
 
-FIN();
+FIN()

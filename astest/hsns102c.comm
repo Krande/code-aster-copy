@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -194,7 +194,7 @@ DEPB=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO',),RESULTAT=DEP,GROUP_MA='GEOB')
 
 DEPB=CALC_CHAMP(reuse =DEPB,
                 RESULTAT=DEPB,
-                CONTRAINTE=('SIGM_NOEU',));
+                CONTRAINTE=('SIGM_NOEU',))
 
 
 # -------------------------------------------------
@@ -235,7 +235,7 @@ DEPA=CALC_CHAMP(CONTRAINTE=('SIEF_ELNO',),RESULTAT=DEP,GROUP_MA='GEOA')
 
 DEPA=CALC_CHAMP(reuse=DEPA,
                 RESULTAT=DEPA,
-                CONTRAINTE=('SIEF_NOEU',));
+                CONTRAINTE=('SIEF_NOEU',))
 
 TEST_RESU(RESU=_F(GROUP_NO='PMA',
                   INST=1.0,

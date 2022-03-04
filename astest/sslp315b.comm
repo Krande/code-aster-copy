@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ MAST=DEFI_GROUP(reuse =MAST,
                 CREA_GROUP_NO=(_F(NOM='NAPPUI1',GROUP_NO='GM2'),
                                _F(NOM='NAPPUI2',GROUP_NO='GM3'),
                                _F(NOM='NFORCE',GROUP_NO='GM4'),),
-                    );
+                    )
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.,NU=0.3),);
-LINST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.,NU=0.3),)
+LINST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1),)
 
 MAT    = [None]*(nb_pas+2)
 MAX    = [None]*(nb_pas+2)
@@ -63,7 +63,7 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          INFO=2,
          PFON = (40., 15., 0.),
          DTAN = (0., 10., 0.),
-         );
+         )
 
 # Propagation
 for i in range(0,nb_pas) :
@@ -71,38 +71,38 @@ for i in range(0,nb_pas) :
    MO[i]=AFFE_MODELE(MAILLAGE=MAT[i],
                       AFFE=(_F(GROUP_MA='MSURF',
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),),);
+                               MODELISATION='D_PLAN',),),)
 
    FISS[i]=DEFI_FISS_XFEM(MAILLAGE=MAT[i],
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
-                                    GROUP_MA_FOND='FOND_'+str(i),),);
+                                    GROUP_MA_FOND='FOND_'+str(i),),)
 
-   MOX[i]=MODI_MODELE_XFEM(MODELE_IN=MO[i],FISSURE=FISS[i]);
+   MOX[i]=MODI_MODELE_XFEM(MODELE_IN=MO[i],FISSURE=FISS[i])
 
 
    CHMAT[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
                           MODELE=MOX[i],
-                          AFFE=_F(TOUT='OUI',MATER=ACIER,));
+                          AFFE=_F(TOUT='OUI',MATER=ACIER,))
 
 # chargement pour la poutre 3 trous
    CHAR[i]=AFFE_CHAR_MECA(MODELE=MOX[i],
                           DDL_IMPO=(_F(GROUP_NO='NAPPUI1',DX=0.,DY=0.,),
                                     _F(GROUP_NO='NAPPUI2',DY=0.,),),
                           FORCE_NODALE=_F(GROUP_NO='NFORCE',FY=-1.,)
-                          );
+                          )
 
 
    UTOT[i]=MECA_STATIQUE(MODELE=MOX[i],
                       CHAM_MATER=CHMAT[i],
                       EXCIT=(_F(CHARGE=CHAR[i],),
                              ),
-                      );
+                      )
 
 
    SIF[i]=POST_K1_K2_K3(RESULTAT=UTOT[i],
                       FISSURE=FISS[i],
                       ABSC_CURV_MAXI=3.,
-                      INFO=2,);
+                      INFO=2,)
 
    IMPR_TABLE(TABLE=SIF[i])
 
@@ -126,14 +126,14 @@ for i in range(0,nb_pas) :
          COMP_LINE=_F(COEF_MULT_MINI=0.,
                       COEF_MULT_MAXI=1.,
                      ),
-         );
+         )
 
 # TEST DE NON-REGRESSION SUR LA POSITION DU DERNIER FOND DE FISSURE
 MAT[i]=DEFI_GROUP(reuse =MAT[i],
                 MAILLAGE=MAT[i],
                 CREA_GROUP_NO=_F(NOM='FOND_%d' %(i),
                                  GROUP_MA='FOND_%d' %(i),),
-                    );
+                    )
 
 CHXN = CREA_CHAMP (OPERATION = 'EXTR',TYPE_CHAM='NOEU_GEOM_R',
                    NOM_CHAM='GEOMETRIE',MAILLAGE=MAT[i],)
@@ -142,7 +142,7 @@ TAB = POST_RELEVE_T(ACTION=_F(INTITULE='Table pour coordonnees du fond',
                                GROUP_NO='FOND_%d' %(i),
                                CHAM_GD = CHXN ,
                                NOM_CMP=('X','Y',),
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
 TEST_TABLE(
            VALE_CALC=42.109508771017595,

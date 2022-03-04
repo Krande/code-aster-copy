@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # ==================================================== #
-# 
+#
 #~ BETON_GRANGER CONSTITUTIVE LAW FOR CREEP OF CONCRETE :
 #     EFFECT OF VARYING RELATIVE HUMIDITY
-# 
+#
 # ==================================================== #
 
 
@@ -72,7 +72,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),)
 
-# MATERIAL PROPERTIES 
+# MATERIAL PROPERTIES
 young  = 30000.0 * MPa
 YOUNG  = DEFI_CONSTANTE(VALE=(young),)
 NU     = DEFI_CONSTANTE(VALE=0.2,)
@@ -118,7 +118,7 @@ BET = DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
 # ----------------------------------------- #
 # COMPUTATION
 # ----------------------------------------- #
- 
+
 ValeCalc = [0.000532864813894]
 
 T_RE0   = SIMU_POINT_MAT(
@@ -173,4 +173,4 @@ IMPR_TABLE( TABLE=T_RE0,
             LEGENDE_X='Temps [secondes]',
             LEGENDE_Y='Epszz',)
 
-FIN();
+FIN()

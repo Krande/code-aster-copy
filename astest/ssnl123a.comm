@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -177,7 +177,7 @@ CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO,
 # Elements avec le materiau : E360.
 _F( GROUP_MA= ('S002','S001'),MATER= MAT0001 ),
       ),
-AFFE_COMPOR=_F(GROUP_MA=('S001','S002'),COMPOR=COMPF));
+AFFE_COMPOR=_F(GROUP_MA=('S001','S002'),COMPOR=COMPF))
 
 
 # AFFECTATION DES CARACTERISTIQUES DES ELEMENTS
@@ -269,10 +269,10 @@ STNL = STAT_NON_LINE(
 
 # For STRX_ELGA: no print structural elements (CARA_ELEM = None) - See #29164
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=STNL,NOM_CHAM=('STRX_ELGA')),
-          UNITE=70);
+          UNITE=70)
 
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=STNL,CARA_ELEM=CAREL,NOM_CHAM=('DEPL','VARI_ELGA','SIEF_ELGA'),IMPR_NOM_VARI='NON',),
-          UNITE=70);
+          UNITE=70)
 
 # Check IMPR_RESU / LIRE_RESU
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=STNL,IMPR_NOM_VARI='NON',),UNITE=81)
@@ -284,7 +284,7 @@ BIS=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               UNITE=81,
               FORMAT_MED=_F(NOM_RESU='STNL',
                             NOM_CHAM=('SIEF_ELGA'),),
-              );
+              )
 
 TEST_RESU(RESU = (_F(RESULTAT = BIS,
                      NUME_ORDRE = 2,
@@ -305,12 +305,12 @@ TEST_RESU(RESU = (_F(RESULTAT = BIS,
                      SOUS_POINT = 36,
                      VALE_CALC=-2500000.0,
                      VALE_REFE = -2.5E6,
-                     REFERENCE='NON_DEFINI',)),);
+                     REFERENCE='NON_DEFINI',)),)
 
 FL = [None]*3
 for i in range(1,3):
   print("Nume ordre   %d " % i)
-  inst = i * 1.0;
+  inst = i * 1.0
 
 # Matrice elementaire de rigidite
   MELRI=CALC_MATR_ELEM(

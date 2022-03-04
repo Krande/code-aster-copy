@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,25 +24,25 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 
 # FREQUENCE MAX DES MODES EN AIR
 # DOIT VALOIR 300 Hz POUR UN CALCUL PRECIS
-FMAX = 30.0;
+FMAX = 30.0
 
 
-ma=LIRE_MAILLAGE(FORMAT='MED',);
+ma=LIRE_MAILLAGE(FORMAT='MED',)
 
 ma=DEFI_GROUP(MAILLAGE=ma,reuse=ma,CREA_GROUP_NO=_F(NOM='PTEST',INTERSEC=('N_CL_FIX','N_POST_1')))
 
 mo=AFFE_MODELE(MAILLAGE=ma,
                AFFE=_F(GROUP_MA='STRU_2D',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='DKT',),);
+                       MODELISATION='DKT',),)
 
 mat=DEFI_MATERIAU(ELAS=_F(E=1.95E11,
                           NU=0.3,
-                          RHO=7850.,),);
+                          RHO=7850.,),)
 
 chmt_mat=AFFE_MATERIAU(MAILLAGE=ma,
                        AFFE=_F(GROUP_MA='STRU_2D',
-                               MATER=mat,),);
+                               MATER=mat,),)
 
 # ANCRAGE DU RESERVOIR + BLOQUAGE DE 2 GENERATRICES POUR EVITER UNE SYMETRIE => TEST UNIQUE
 aff_meca=AFFE_CHAR_MECA(MODELE=mo,
@@ -58,7 +58,7 @@ aff_meca=AFFE_CHAR_MECA(MODELE=mo,
 aff_car=AFFE_CARA_ELEM(MODELE=mo,
                        COQUE=_F(GROUP_MA='STRU_2D',
                                 EPAIS=0.015,
-                                COQUE_NCOU=1,),);
+                                COQUE_NCOU=1,),)
 
 ASSEMBLAGE(MODELE=mo,
            CHAM_MATER=chmt_mat,
@@ -68,16 +68,16 @@ ASSEMBLAGE(MODELE=mo,
            MATR_ASSE=(_F(MATRICE=CO('matrigi'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('matmass'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 
 MASSINER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                    MODELE=mo,
                    CHAM_MATER=chmt_mat,
-                   CARA_ELEM=aff_car,);
+                   CARA_ELEM=aff_car,)
 
 IMPR_TABLE(TABLE=MASSINER,
            UNITE=8,
-           NOM_PARA=('LIEU','ENTITE','MASSE',),);
+           NOM_PARA=('LIEU','ENTITE','MASSE',),)
 
 modes=CALC_MODES(MATR_RIGI=matrigi,
                  MATR_MASS=matmass,
@@ -99,15 +99,15 @@ print('Omega**2', w2)
 # Calcul des matrices de masse et de raideur generalisees
 
 numgen=NUME_DDL_GENE(BASE=modes,
-                     STOCKAGE='PLEIN',);
+                     STOCKAGE='PLEIN',)
 
 mgene=PROJ_MATR_BASE(BASE=modes,
                      NUME_DDL_GENE=numgen,
-                     MATR_ASSE=matmass,);
+                     MATR_ASSE=matmass,)
 
 riggen=PROJ_MATR_BASE(BASE=modes,
                       NUME_DDL_GENE=numgen,
-                      MATR_ASSE=matrigi,);
+                      MATR_ASSE=matrigi,)
 
 # Calcul de la matrice de masse ajoutee
 
@@ -144,7 +144,7 @@ massaj = CALC_MATR_AJOU(MODELE_INTERFACE=MODINTER,
 mastot=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=massaj,
                                  COEF_R=1.,),
                               _F(MATR_ASSE=mgene,
-                                 COEF_R=1.,),),);
+                                 COEF_R=1.,),),)
 
 # Calcul des modes de la structure immergee
 
@@ -157,7 +157,7 @@ modhumi=CALC_MODES(MATR_RIGI=riggen,
 
 mode_mou=REST_GENE_PHYS(RESU_GENE=modhumi,
                         MODE_MECA=modes,
-                        TOUT_CHAM='OUI',);
+                        TOUT_CHAM='OUI',)
 
 
 TFREMOU = RECU_TABLE(CO=mode_mou, NOM_PARA=('FREQ','MASS_EFFE_DX','MASS_EFFE_DY','MASS_EFFE_DZ',))
@@ -174,7 +174,7 @@ METHER=CALC_MATR_ELEM(OPTION='RIGI_THER', MODELE=MODELFLU, CHAM_MATER=MATFLUI, C
 
 NUDDLT=NUME_DDL(MATR_RIGI=METHER,)
 
-RIGITH=ASSE_MATRICE(MATR_ELEM=METHER, NUME_DDL =NUDDLT,);
+RIGITH=ASSE_MATRICE(MATR_ELEM=METHER, NUME_DDL =NUDDLT,)
 
 
 #  >--------- FACTORISATION (OBLIGATOIRE) DE LA MATRICE DE RIGIDITE  -----------<
@@ -194,13 +194,13 @@ result = CALC_CHAMP(reuse=result, RESULTAT=result, THERMIQUE=('FLUX_NOEU','FLUX_
 DEPROJ=PROJ_CHAMP(RESULTAT=result,
                    MAILLAGE_1=ma,
                    MODELE_2=mo,
-                   NOM_CHAM='TEMP',);
+                   NOM_CHAM='TEMP',)
 
 TEMPREP1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                     OPERATION='EXTR',
                     RESULTAT=DEPROJ,
                     NOM_CHAM='TEMP',
-                    NUME_ORDRE=0,);
+                    NUME_ORDRE=0,)
 
 REP0=CREA_CHAMP(TYPE_CHAM='NOEU_PRES_R', OPERATION='AFFE', MODELE=mo,
                  AFFE=(
@@ -216,9 +216,9 @@ PRP1=CREA_RESU(OPERATION='AFFE',
                NOM_CHAM='PRES',
                AFFE=(
                      _F(CHAM_GD=PRE1, INST=0.0, ),
-                    ) );
+                    ) )
 
-CHARP1=AFFE_CHAR_MECA(MODELE=mo, EVOL_CHAR=PRP1,);
+CHARP1=AFFE_CHAR_MECA(MODELE=mo, EVOL_CHAR=PRP1,)
 
 PRASS1=MECA_STATIQUE(MODELE=mo, CHAM_MATER=chmt_mat, CARA_ELEM=aff_car,
                      EXCIT=(_F(CHARGE=CHARP1), _F(CHARGE=aff_meca)))
@@ -276,4 +276,4 @@ VITESS = CALC_CHAM_FLUI(RIGI_THER = RIGITH,
 TEST_RESU(RESU=_F(RESULTAT=VITESS,NUME_ORDRE=0,GROUP_NO='PTEST',NOM_CHAM='TEMP',NOM_CMP='TEMP',VALE_CALC=-309.27296782      , VALE_REFE=sqrt(w2)*PresNRG, REFERENCE='AUTRE_ASTER'))
 
 
-FIN();
+FIN()

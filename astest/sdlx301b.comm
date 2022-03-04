@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,10 +146,10 @@ MASSELEM=CALC_MATR_ELEM(
 NUMEDDL=NUME_DDL(MATR_RIGI=RIGIELEM)
 
 # MATRICE DE RIGIDITE
-RIGIDITE=ASSE_MATRICE(MATR_ELEM=RIGIELEM,NUME_DDL=NUMEDDL,);
+RIGIDITE=ASSE_MATRICE(MATR_ELEM=RIGIELEM,NUME_DDL=NUMEDDL,)
 
 # MATRICE DE MASSE
-MASSE=ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMEDDL,);
+MASSE=ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMEDDL,)
 
 MODE1=CALC_MODES(MATR_RIGI=RIGIDITE,
                  SOLVEUR=_F(METHODE='MULT_FRONT', RENUM='MD'),

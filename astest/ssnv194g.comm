@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ ACIERDDi=DEFI_MATERIAU(ELAS=_F(E=E,
                                      XI_IRRA  =1.,
                                      DZ_IRRA  =1.e7,
                                    ),
-                      );
+                      )
 
 
 ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
@@ -111,7 +111,7 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                      H4      = 0.122,
                                      H5      = 0.07,
                                    ),
-                      );
+                      )
 
 
 
@@ -121,12 +121,12 @@ COMPORTi=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDDi,
                                     ECOULEMENT='MONO_DD_CFC_IRRA',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
-                                    ),);
+                                    ),)
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
                                     ECOULEMENT='MONO_DD_CFC',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
-                                    ),);
+                                    ),)
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -133,7 +133,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                           100.0,1.0,
                           ),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 
 myOptions=""" -fieldsplit_TEMP_ksp_max_it 2  -fieldsplit_TEMP_ksp_monitor  -fieldsplit_TEMP_ksp_converged_reason  -fieldsplit_TEMP_ksp_rtol 1.e-3  -fieldsplit_TEMP_ksp_type fgmres  -fieldsplit_TEMP_pc_type jacobi  -fieldsplit_DXDYDZPRE1_fieldsplit_PRE1_ksp_max_it 2  -fieldsplit_DXDYDZPRE1_fieldsplit_PRE1_ksp_monitor  -fieldsplit_DXDYDZPRE1_fieldsplit_PRE1_ksp_converged_reason  -fieldsplit_DXDYDZPRE1_fieldsplit_PRE1_ksp_rtol 1.e-3  -fieldsplit_DXDYDZPRE1_fieldsplit_PRE1_ksp_type fgmres  -fieldsplit_DXDYDZPRE1_fieldsplit_PRE1_pc_type jacobi  -fieldsplit_DXDYDZPRE1_fieldsplit_DXDYDZ_ksp_monitor  -fieldsplit_DXDYDZPRE1_fieldsplit_DXDYDZ_ksp_converged_reason  -fieldsplit_DXDYDZPRE1_fieldsplit_DXDYDZ_ksp_rtol 1e-3  -fieldsplit_DXDYDZPRE1_fieldsplit_DXDYDZ_ksp_max_it 10  -fieldsplit_DXDYDZPRE1_fieldsplit_DXDYDZ_ksp_type gmres  -fieldsplit_DXDYDZPRE1_fieldsplit_DXDYDZ_pc_type gamg  -fieldsplit_DXDYDZPRE1_fieldsplit_DXDYDZ_pc_gamg_threshold -1  -fieldsplit_DXDYDZPRE1_ksp_monitor  -fieldsplit_DXDYDZPRE1_ksp_converged_reason  -fieldsplit_DXDYDZPRE1_ksp_max_it 3  -fieldsplit_DXDYDZPRE1_ksp_rtol 1.e-3  -fieldsplit_DXDYDZPRE1_ksp_type fgmres  -fieldsplit_DXDYDZPRE1_pc_fieldsplit_schur_factorization_type upper  -fieldsplit_DXDYDZPRE1_pc_fieldsplit_schur_precondition a11  -fieldsplit_DXDYDZPRE1_pc_fieldsplit_type schur  -fieldsplit_DXDYDZPRE1_pc_type fieldsplit  -ksp_converged_reason  -ksp_type fgmres  -ksp_view  -ksp_converged_reason    -pc_fieldsplit_type multiplicative -log_view -on_error_attach_debugger"""

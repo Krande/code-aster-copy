@@ -22,7 +22,7 @@
 # CHARGEMENT EN DEPLACEMENT IMPOSE
 # MAILLAGE QUADRATIQUE, EN MM
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ##########################################################################
 # PARAMETRES
@@ -89,7 +89,7 @@ MAT = DEFI_MATERIAU(
                                  # PENA_LAGR = pen_lag,
                                  # RIGI_GLIS = ri_gli,
                                               ),
-                    RUPT_TURON = _F(GC_N = Gc1, 
+                    RUPT_TURON = _F(GC_N = Gc1,
                                     GC_T = Gc2,
                                     SIGM_C_N = sigc1,
                                     SIGM_C_T = sigc2,
@@ -108,9 +108,9 @@ CM=AFFE_MATERIAU(MAILLAGE=MA,
 CHAR = AFFE_CHAR_CINE(MODELE = MO,
                       MECA_IMPO = (_F(GROUP_NO = 'OUV_HAUT', DY = deply_h),
                                    _F(GROUP_NO = 'OUV_BAS', DY = deply_b),),)
-                      
+
 BLOC = AFFE_CHAR_CINE(MODELE = MO,
-                      MECA_IMPO = _F(GROUP_NO = 'APPUI_GAUCHE', DX = 0.0, DY = 0.0),) 
+                      MECA_IMPO = _F(GROUP_NO = 'APPUI_GAUCHE', DX = 0.0, DY = 0.0),)
 
 #DEFINITION DES INSTANTS DE CALCUL
 DEF_LIST = DEFI_LIST_REEL(DEBUT = 0,
@@ -167,7 +167,7 @@ UREF = CALC_CHAMP(reuse = UREF,
                   RESULTAT = UREF,
                   FORCE='FORC_NODA',
                   GROUP_MA='COMP')
-                  
+
 U = CALC_CHAMP(reuse = U,
                RESULTAT = U,
                FORCE='FORC_NODA',
@@ -176,7 +176,7 @@ U = CALC_CHAMP(reuse = U,
 ##########################################################################
 # TEST (NON-REGRESSION DE CZM_LIN_REG + COMPARAISON LIN_REG / TURON)
 ##########################################################################
-           
+
 TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   INST            = tfin,
                   RESULTAT        = UREF,
@@ -184,7 +184,7 @@ TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   NOM_CMP         = 'DY',
                   VALE_CALC       = 2.443483165536545,
                         ),)
-           
+
 TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
                   INST            = tfin,
                   RESULTAT        = UREF,
@@ -192,7 +192,7 @@ TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
                   NOM_CMP         = 'DY',
                   VALE_CALC       = 0.9712741760194807,
                         ),)
-           
+
 TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   INST            = tfin,
                   RESULTAT        = U,
@@ -202,7 +202,7 @@ TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   VALE_REFE       = 2.443483165536545,
                   VALE_CALC       = 2.4434821718160795,
                         ),)
-           
+
 TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
                   INST            = tfin,
                   RESULTAT        = U,

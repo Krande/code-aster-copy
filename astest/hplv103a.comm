@@ -18,9 +18,9 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+              NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT='MED');
+M=LIRE_MAILLAGE(FORMAT='MED')
 
 M=DEFI_GROUP(reuse =M,
              MAILLAGE=M,
@@ -32,7 +32,7 @@ M=DEFI_GROUP(reuse =M,
                             _F(GROUP_MA='SAR'),
                             _F(GROUP_MA='SLAT'),
                             _F(UNION=('SINF','SAR','SLAT'),
-                               NOM='INFINI')));
+                               NOM='INFINI')))
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
@@ -43,30 +43,30 @@ M=DEFI_GROUP(reuse =M,
 MOTH=AFFE_MODELE(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='3D'));
+                         MODELISATION='3D'))
 
 MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
-                           RHO_CP=0.0));
+                           RHO_CP=0.0))
 
 CMTH=AFFE_MATERIAU(MAILLAGE=M,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MATH));
+                           MATER=MATH))
 
 CHTH=AFFE_CHAR_THER(MODELE=MOTH,
                     TEMP_IMPO=(_F(GROUP_NO='INFINI',
                                   TEMP=0.0),
                                _F(GROUP_NO='LEVREINF',
-                                  TEMP=-1.0)));
+                                  TEMP=-1.0)))
 
 THLI=THER_LINEAIRE(MODELE=MOTH,
                    CHAM_MATER=CMTH,
-                   EXCIT=_F(CHARGE=CHTH));
+                   EXCIT=_F(CHARGE=CHTH))
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='EXTR',
                 RESULTAT=THLI,
                 NOM_CHAM='TEMP',
-                INST=0.0);
+                INST=0.0)
 
 #--------------------------------------------------------------------
 #               FIN DU THERMIQUE                                    #
@@ -81,12 +81,12 @@ M=MODI_MAILLAGE(reuse=M,
 MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D'));
+                       MODELISATION='3D'))
 #
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                          NU=0.3,
-                         ALPHA=1e-06));
+                         ALPHA=1e-06))
 #
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
@@ -96,7 +96,7 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                                NOM_VARC='TEMP',
                                CHAM_GD=TEMP,
                                VALE_REF=0.0),
-);
+)
 #
 
 CH=AFFE_CHAR_MECA(MODELE=MO, DOUBLE_LAGRANGE='NON',
@@ -105,18 +105,18 @@ CH=AFFE_CHAR_MECA(MODELE=MO, DOUBLE_LAGRANGE='NON',
                             _F(GROUP_NO='SLAT_S',
                                DX=0.0),
                             _F(GROUP_NO='SAV_S',
-                               DY=0.0)));
+                               DY=0.0)))
 #
 
 MEST=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CM,
-                   EXCIT=_F(CHARGE=CH));
+                   EXCIT=_F(CHARGE=CH))
 #
 
 T_POT=POST_ELEM(ENER_POT=_F(TOUT='OUI'),
-                RESULTAT=MEST);
+                RESULTAT=MEST)
 
-IMPR_TABLE(TABLE=T_POT);
+IMPR_TABLE(TABLE=T_POT)
 # VERSION=6.02.21 sans charge thermique :  3.92012E-06  (1/2U)
 # VERSION=6.02.21 avec charge thermique : -9.74690E-21  (1/2U - 1/2Th)
 # VERSION=6.02.22 avec charge thermique : -3.92012E-06  (1/2U - Th)
@@ -152,7 +152,7 @@ FF=DEFI_FOND_FISS(MAILLAGE=M,
                                GROUP_NO_EXTR='LFFE',
                                ),
                   LEVRE_SUP=_F(GROUP_MA='LEVREINF',),
-                  );
+                  )
 
 # Couronne 1, lissage legendre
 GLOC1a=CALC_G(THETA=_F(FISSURE=FF,

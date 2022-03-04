@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,29 +19,29 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1e9,
-                          NU=0.,),);
+                          NU=0.,),)
 
 L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 # MODELISATION AXIS
 
 MO0=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
 MOMAT0=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT,),);
+                             MATER=MAT,),)
 
 AX=0.0
 AY=0.0
@@ -64,16 +64,16 @@ BLOC0=AFFE_CHAR_MECA(MODELE=MO0,
                                     DY=CY,),
                                  _F(GROUP_NO='D',
                                     DX=DX,
-                                    DY=DY,),),);
+                                    DY=DY,),),)
 
 U0=STAT_NON_LINE(MODELE=MO0,
                 CHAM_MATER=MOMAT0,
                 EXCIT=_F(CHARGE=BLOC0,),NEWTON=_F(REAC_ITER=0),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, );
+U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -82,7 +82,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=7.5,
                   VALE_CALC=7.5,
-                  GROUP_MA='M5',),);
+                  GROUP_MA='M5',),)
 
 # MODELISATION AXIS_SI
 
@@ -96,7 +96,7 @@ NS4X=(DX+AX)/2.E0
 NS4Y=(DY+AY)/2.E0
 
 MA1 = CREA_MAILLAGE(MAILLAGE = MA,
-                    LINE_QUAD = _F(TOUT = 'OUI'),);
+                    LINE_QUAD = _F(TOUT = 'OUI'),)
 
 MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
                       CREA_GROUP_NO= (
@@ -110,11 +110,11 @@ MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
 MO1=AFFE_MODELE(MAILLAGE=MA1,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS_SI',),);
+                       MODELISATION='AXIS_SI',),)
 
 MOMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT,),);
+                             MATER=MAT,),)
 
 BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                        DDL_IMPO=(_F(GROUP_NO='A',
@@ -140,16 +140,16 @@ BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                                     DY=NS3Y,),
                                  _F(GROUP_NO='NS4',
                                     DX=NS4X,
-                                    DY=NS4Y,),),);
+                                    DY=NS4Y,),),)
 
 U1=STAT_NON_LINE(MODELE=MO1,
                 CHAM_MATER=MOMAT1,
                 EXCIT=_F(CHARGE=BLOC1,),NEWTON=_F(REAC_ITER=0),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, );
+U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -158,24 +158,24 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=7.5,
                   VALE_CALC=7.5,
-                  GROUP_MA='M5',),);
+                  GROUP_MA='M5',),)
 
 # MODELISATION AXIS_ELDI
 
 MO2=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='AXIS_ELDI',),);
+                        MODELISATION='AXIS_ELDI',),)
 
 MAT2=DEFI_MATERIAU(
                 ELAS=_F(E = 1.E9,
                         NU = 0.),
                 RUPT_FRAG = _F(SIGM_C = 1.E20,
-                               GC     = 100,),);
+                               GC     = 100,),)
 
 MOMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT2,),);
+                             MATER=MAT2,),)
 
 BLOC2=AFFE_CHAR_MECA(MODELE=MO2,
                        DDL_IMPO=(_F(GROUP_NO='A',
@@ -189,16 +189,16 @@ BLOC2=AFFE_CHAR_MECA(MODELE=MO2,
                                     DY=CY,),
                                  _F(GROUP_NO='D',
                                     DX=DX,
-                                    DY=DY,),),);
+                                    DY=DY,),),)
 
 U2=STAT_NON_LINE(MODELE=MO2,
                 CHAM_MATER=MOMAT2,
                 EXCIT=_F(CHARGE=BLOC2,),NEWTON=_F(REAC_ITER=0),
                 COMPORTEMENT=_F(RELATION='CZM_EXP',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U2=CALC_CHAMP(reuse = U2, ENERGIE='ENEL_ELEM', RESULTAT=U2, );
+U2=CALC_CHAMP(reuse = U2, ENERGIE='ENEL_ELEM', RESULTAT=U2, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -207,6 +207,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=7.5,
                   VALE_CALC=7.5,
-                  GROUP_MA='M5',),);
+                  GROUP_MA='M5',),)
 
-FIN();
+FIN()

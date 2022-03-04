@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -375,7 +375,7 @@ CHAM_NO=AFFE_CHAR_MECA(  MODELE=MODELE,
 #CHANNO = AFFE_CHAR_MECA( MODELE: MODELE
 #           FORCE_NODALE: ( NOEUD: (N02 N03 N04) FX: -1. )
 
-#                       );
+#                       )
 
 MODCOR=MACRO_ELAS_MULT(
                 MODELE=MODELE,   CARA_ELEM=CARA_ELE,
@@ -434,13 +434,13 @@ TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 
 
-TabPhy=POST_GENE_PHYS(RESU_GENE=TRA_GCS, 
+TabPhy=POST_GENE_PHYS(RESU_GENE=TRA_GCS,
                       OBSERVATION=(
                                    _F(NOM_CHAM='DEPL', NOM_CMP=('DX',), GROUP_NO='N02', LIST_INST=L_RECU,
                                       CRITERE='ABSOLU',
                                       PRECISION =1.e-6,
                                      ),
-                       ), );
+                       ), )
 
 TEST_TABLE(
            VALE_CALC=-1.19881773366,
@@ -511,9 +511,9 @@ TRAN_LI1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                      EXCIT=_F(  VECT_ASSE = MONO_X,  FONC_MULT = ACCELERO)
                            )
 
-ENERLI1=RECU_TABLE(CO=TRAN_LI1,NOM_TABLE='PARA_CALC',);
+ENERLI1=RECU_TABLE(CO=TRAN_LI1,NOM_TABLE='PARA_CALC',)
 
-IMPR_TABLE(TABLE=ENERLI1);
+IMPR_TABLE(TABLE=ENERLI1)
 
 TEST_TABLE(
            VALE_CALC=297.989177052,
@@ -639,9 +639,9 @@ TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                      EXCIT=_F(  VECT_ASSE = MULT_X, FONC_MULT = ACCELERO)
                            )
 
-ENERLI2=RECU_TABLE(CO=TRAN_LI2,NOM_TABLE='PARA_CALC',);
+ENERLI2=RECU_TABLE(CO=TRAN_LI2,NOM_TABLE='PARA_CALC',)
 
-IMPR_TABLE(TABLE=ENERLI2);
+IMPR_TABLE(TABLE=ENERLI2)
 
 TEST_TABLE(
            VALE_CALC=297.989177052,
@@ -762,7 +762,7 @@ TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                      _F(NOM_CHAM='DEPL',
                                             NOM_CMP='DY',
                                             PAS_OBSE=1,
-                                            GROUP_NO='MASSES',),       
+                                            GROUP_NO='MASSES',),
                                      _F(NOM_CHAM='DEPL',
                                             NOM_CMP=('DX','DY',),
                                             PAS_OBSE=1,
@@ -793,9 +793,9 @@ TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                      EXCIT=_F(  VECT_ASSE = MULT_X, FONC_MULT = ACCELERO)
                            )
 
-ENERLI4=RECU_TABLE(CO=TRAN_LI4,NOM_TABLE='PARA_CALC',);
+ENERLI4=RECU_TABLE(CO=TRAN_LI4,NOM_TABLE='PARA_CALC',)
 
-IMPR_TABLE(TABLE=ENERLI4);
+IMPR_TABLE(TABLE=ENERLI4)
 
 TEST_TABLE(
            VALE_CALC=297.837807452,
@@ -913,9 +913,9 @@ TRAN_LI3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                      EXCIT=_F(  VECT_ASSE = MULT_X,  FONC_MULT = ACCELERO)
                            )
 
-ENERLI3=RECU_TABLE(CO=TRAN_LI3,NOM_TABLE='PARA_CALC',);
+ENERLI3=RECU_TABLE(CO=TRAN_LI3,NOM_TABLE='PARA_CALC',)
 
-IMPR_TABLE(TABLE=ENERLI3);
+IMPR_TABLE(TABLE=ENERLI3)
 
 TEST_TABLE(
            VALE_CALC=10045.4909102,

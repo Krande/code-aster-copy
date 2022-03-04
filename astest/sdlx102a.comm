@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,27 +19,27 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL1=LIRE_MAILLAGE(UNITE=23,FORMAT='MED',);
+MAIL1=LIRE_MAILLAGE(UNITE=23,FORMAT='MED',)
 
-MAIL2=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL2=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAGE=ASSE_MAILLAGE(MAILLAGE_1=MAIL1,
                        MAILLAGE_2=MAIL2,
-                       OPERATION ='SOUS_STR',);
+                       OPERATION ='SOUS_STR',)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(GROUP_MA=('SBAS','SBAS1','SBAS2',
                                                'SBASM','SBAST',)),
-                    );
+                    )
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(DIFFE=('SBASM','SBAS1'),
-                                     NOM='SBASI',),);
+                                     NOM='SBASI',),)
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(DIFFE=('SBASI','SBAS2'),
-                                     NOM='SBASF',),);
+                                     NOM='SBASF',),)
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA='POU_D_T',
                             PHENOMENE='MECANIQUE',
@@ -49,7 +49,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='DIS_TR',),
                          _F(GROUP_MA='SBAST',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DST',),),);
+                            MODELISATION='DST',),),)
 # FIN DE DEFINITION DU MODELE.
 #
 # ----------------------------------------------------------------------
@@ -59,13 +59,13 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
 MAT_1=DEFI_MATERIAU(ELAS=_F(E=31000000000.0,
                             NU=0.16,
                             RHO=0.0,
-                            ALPHA=0.0,),);
+                            ALPHA=0.0,),)
 
 MAT_2=DEFI_MATERIAU(ELAS=_F(
                             E=31000000000.0e3,
                             NU=0.16,
                             RHO=0.001,
-                            ALPHA=0.0,),);
+                            ALPHA=0.0,),)
 #
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
@@ -76,12 +76,12 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                              _F(GROUP_MA='SBASM',
                                 MATER=MAT_2,),
                             ),
-                        );
+                        )
 #
 # ----------------------------------------------------------------------
 #       CONDITIONS LIMITES
 
-                      
+
 CL_RIGID=AFFE_CHAR_MECA(MODELE=MODELE,
                                     LIAISON_SOLIDE=(_F(GROUP_NO=('PA0','SBAS1',),),
                                                    _F(GROUP_NO=('PB0','SBAS2',),),
@@ -144,7 +144,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                                  _F(GROUP_MA=('MASA4','MBSA4',),
                                     CARA='K_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                                 ),);
+                                 ),)
 # FIN DE AFFE_CARA_ELEM  ------------
 #
 # MASSES ET INERTIES DE LA STRUCTURE
@@ -155,19 +155,19 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
 #                    MASS_INER=(_F(TOUT='OUI',),
 #                               _F(GROUP_MA=('MASSES','POU_D_T','SBAST',),),
 #                                 ),
-#                   );
+#                   )
 # #
-# 
-# IMPR_TABLE(TABLE=MASSE_TO,);
+#
+# IMPR_TABLE(TABLE=MASSE_TO,)
 #
 
 CHA1=AFFE_CHAR_MECA(MODELE=MODELE,
                     FORCE_NODALE=_F(GROUP_NO='NA1',
-                                    FX=10000.0,),);
+                                    FX=10000.0,),)
 
 CHA2=AFFE_CHAR_MECA(MODELE=MODELE,
                     FORCE_NODALE=_F(GROUP_NO='NA1',
-                                    FY=10000.0,),);
+                                    FY=10000.0,),)
 
 # Pour reference :
 TABSOL = DEFI_SOL_MISS(
@@ -223,7 +223,7 @@ dyph1 = DYNA_LINE(ISS="OUI",
                                OFFSET_NB=300,),
                   UNITE_RESU_IMPE=38,
                   UNITE_RESU_FORC=28,
-                  
+
                   EXCIT=(_F(CHARGE=CHA1,
                             COEF_MULT=1.,),
                             ),
@@ -253,37 +253,37 @@ dyph2 = DYNA_LINE(ISS="OUI",
 DXA1_2=RECU_FONCTION(RESULTAT = dyph1,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
-                     GROUP_NO='NA1',);
+                     GROUP_NO='NA1',)
 
 DYA1_2=RECU_FONCTION(RESULTAT = dyph2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
-                     GROUP_NO='NA1',);
+                     GROUP_NO='NA1',)
 
 MDXA1_2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DXA1_2,
-                                    PARTIE='MODULE',),);
+                                    PARTIE='MODULE',),)
 
 MDYA1_2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DYA1_2,
-                                    PARTIE='MODULE',),);
+                                    PARTIE='MODULE',),)
 
 DXB1_2=RECU_FONCTION(RESULTAT = dyph1,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
-                     GROUP_NO='NB1',);
+                     GROUP_NO='NB1',)
 
 
 DYB1_2=RECU_FONCTION(RESULTAT = dyph2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
-                     GROUP_NO='NB1',);
+                     GROUP_NO='NB1',)
 
 
 MDXB1_2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DXB1_2,
-                                    PARTIE='MODULE',),);
+                                    PARTIE='MODULE',),)
 
 
 MDYB1_2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DYB1_2,
-                                    PARTIE='MODULE',),);
+                                    PARTIE='MODULE',),)
 
 TEST_FONCTION(VALEUR=(
                       _F(VALE_CALC=0.000113210871228,
@@ -313,4 +313,4 @@ TEST_FONCTION(VALEUR=(
                       ),
               )
 
-FIN( );
+FIN( )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ MA=DEFI_GROUP( reuse=MA,  MAILLAGE=MA,
 
 MA = MODI_MAILLAGE( reuse        = MA,
                     MAILLAGE     = MA,
-                    ORIE_PEAU = _F( GROUP_MA_PEAU = ('DROITE','HAUT','BAS'),));
+                    ORIE_PEAU = _F( GROUP_MA_PEAU = ('DROITE','HAUT','BAS'),))
 
 
-T1= 3600;
+T1= 3600
 
 
 
@@ -45,7 +45,7 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                       _F( JUSQU_A=T1,NOMBRE=NORDRE,),
                              ),
-                     );
+                     )
 
 
 
@@ -55,12 +55,12 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
 MODELE=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_THMS',),);
+                           MODELISATION='AXIS_THMS',),)
 
 
 
-K0 = 4200*1.e6;
-G = 1140*1.e6;
+K0 = 4200*1.e6
+G = 1140*1.e6
 
 E0 = 9.*K0*G /(3.*K0+G)
 NU0    = (3.*K0-2.*G) /(6.*K0+2.*G)
@@ -68,27 +68,27 @@ G0 = E0/(2.*(1.+NU0))
 #
 # E0 = 3,14 GPa
 # NU = 0.375
-RHO = 2390;
+RHO = 2390
 
 
-INV_K_EAU = 5.E-10 ;
+INV_K_EAU = 5.E-10
 
-VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );
+VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 )
 
-DVISCOL  = DEFI_CONSTANTE(VALE=0.0   );
+DVISCOL  = DEFI_CONSTANTE(VALE=0.0   )
 
-KINT     = DEFI_CONSTANTE(VALE=1.E-21);
+KINT     = DEFI_CONSTANTE(VALE=1.E-21)
 
 # LAMB1 = PORO * LAMBLIQ = 0.18 * 0.6
-LAMB1=DEFI_CONSTANTE(VALE=0.108,);
+LAMB1=DEFI_CONSTANTE(VALE=0.108,)
 
 # LAMB2 = (1-PORO) * LAMBS = (1-0.18) * 1,83
 
 LAMB2=1.51
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
 # ARGILITE
 BIOTARG = 0.6
@@ -147,14 +147,14 @@ MAT1=DEFI_MATERIAU(
                                    LAMB_TT=LAMB1,
                                    LAMB_C_T=LAMB2,
                                    LAMB_C_L=LAMB2,
-                                   ),);
+                                   ),)
 
 
 # affectation du materiaux
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT1,),);
+                             MATER=MAT1,),)
 
 
 
@@ -175,7 +175,7 @@ PRHAUT = AFFE_CHAR_MECA(MODELE   = MODELE,
 
 CLFMEC=AFFE_CHAR_CINE(MODELE=MODELE,
                        MECA_IMPO=(_F(GROUP_MA='BAS',  DY=0.0,),
-                                  _F(GROUP_MA='GAUCHE',  DX=0.0,),),);
+                                  _F(GROUP_MA='GAUCHE',  DX=0.0,),),)
 
 
 
@@ -185,7 +185,7 @@ CLFMEC=AFFE_CHAR_CINE(MODELE=MODELE,
 DTEMP = 40.
 CLFT=AFFE_CHAR_CINE(MODELE=MODELE,
                        MECA_IMPO=_F(GROUP_MA=('HAUT','DROITE'),
-                                   TEMP=1.,),);
+                                   TEMP=1.,),)
 
 EV_THER=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
@@ -205,7 +205,7 @@ DDL_INIT= CREA_CHAMP(MAILLAGE = MA,
                      _F(TOUT = 'OUI', NOM_CMP = ('DX','DY'),  VALE = (0.,0.),),
                      _F(TOUT = 'OUI', NOM_CMP = 'PRE1',  VALE = PINI,),
                      _F(TOUT = 'OUI', NOM_CMP = 'TEMP',  VALE = 20.,),
-                     ),);
+                     ),)
 SIPAG0 = -BIOTARG * PINI
 SIEFF0 = -PCONF - SIPAG0
 
@@ -232,7 +232,7 @@ SIGINIT=CREA_CHAMP(     MODELE=MODELE,
                                  ),
                                         ),
                                 ),
-                  );
+                  )
 
 #
 # ON FAIT TOURNER LE REPERE POUR TESTER L'ANISOTROPIE DANS LE CAS THERMIQUE : LE MILIEU RESTE CEPENDANT ICI ISOTROPE
@@ -245,7 +245,7 @@ ALPHA = 30.
 ORIREP=AFFE_CARA_ELEM(MODELE=MODELE,
        MASSIF=( _F(GROUP_MA=('TOUT'),
                    ANGL_REP=(ALPHA,BETA),
-                        ),),);
+                        ),),)
 # On passe au calcul avec NORDRE CORRESPONDANT A WTNA112A - on teste aussi la matrice secante pour ELAS_ORTH
 
 U0=STAT_NON_LINE(MODELE=MODELE,
@@ -267,7 +267,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            PAS_MINI_ELAS=4000,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                  ARCHIVAGE  = _F( LIST_INST  = INST1,),
-                       );
+                       )
 
 
 
@@ -304,7 +304,7 @@ NORDR1 = 15
 INST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                       _F( JUSQU_A=T1,NOMBRE=NORDR1,),
-                             ),);
+                             ),)
 U1=STAT_NON_LINE(MODELE=MODELE,
                  CARA_ELEM=ORIREP,
                  CHAM_MATER=CHMAT0,
@@ -323,7 +323,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                  ARCHIVAGE  = _F( LIST_INST  = INST2),
-                       );
+                       )
 TEST_RESU(
            RESU=_F(  RESULTAT = U1,
              NUME_ORDRE = NORDR1,
@@ -348,4 +348,4 @@ TEST_RESU(
              PRECISION = 0.01,
              REFERENCE='ANALYTIQUE',)
            )
-FIN();
+FIN()

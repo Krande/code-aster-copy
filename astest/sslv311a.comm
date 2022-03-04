@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED')
-                                  
+
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_MA = ('SSUP_S','FACE2',),),
@@ -71,34 +71,34 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                                  DDL = ( 'DX',  'DX',),
                                  COEF_MULT = ( 1., 1.,  ),
                                  COEF_IMPO = 0.)
-                 );
+                 )
 
 
 FNX=DEFI_FONCTION(NOM_PARA='X',
                   VALE=(-2.0, -2.0*(500.*500.*7800.),
-                        2.0, 2.0*(500.*500.*7800.)));
+                        2.0, 2.0*(500.*500.*7800.)))
 
 
 FNY=DEFI_FONCTION(NOM_PARA='Y',
                   VALE=(-2.0, -2.0*(500.*500.*7800.),
-                        2.0, 2.0*(500.*500.*7800.)));
+                        2.0, 2.0*(500.*500.*7800.)))
 
 
 FNZ=DEFI_FONCTION(NOM_PARA='Z',
                   VALE=(-2.0, 0.0,
-                        2.0, 0.0));
+                        2.0, 0.0))
 
 
 CH1=AFFE_CHAR_MECA_F(MODELE=MO,
                      FORCE_INTERNE=_F(GROUP_MA='VMAT',
                                       FX=FNX,
                                       FY=FNY,)
-                   );
+                   )
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                      FORCE_INTERNE=_F(GROUP_MA='VMAT',
                                       FZ=FNZ,)
-                   );
+                   )
 
 ##########################
 # CALCUL MECANIQUE
@@ -109,7 +109,7 @@ CHAMDEPL=MECA_STATIQUE(MODELE=MO,
                        EXCIT=(_F( CHARGE = CL),
                               _F( CHARGE = CH1,),
                               _F( CHARGE = CH2,),)
-                      );
+                      )
 
 
 
@@ -140,7 +140,7 @@ GLO1=CALC_G(RESULTAT=CHAMDEPL,
                      R_SUP_FO=R_SUP,
                      DISCRETISATION='LEGENDRE',
                      ),
-           );
+           )
 
 
 # solution de reference : calcul ANSYS
@@ -243,7 +243,7 @@ TEST_TABLE(TABLE=GLO1,
            VALE_CALC=0.0,
            ORDRE_GRANDEUR=1e-16,
            )
-           
+
 TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K3',
            TYPE_TEST='MIN',
@@ -254,7 +254,7 @@ TEST_TABLE(TABLE=GLO1,
            VALE_CALC=0.0,
            ORDRE_GRANDEUR=1e-16,
            )
-           
+
 
 
 ##################################################
@@ -262,15 +262,15 @@ TEST_TABLE(TABLE=GLO1,
 ##################################################
 
 CH3=AFFE_CHAR_MECA(MODELE=MO,
-                   ROTATION=_F(VITESSE = 500., 
+                   ROTATION=_F(VITESSE = 500.,
                                AXE = (0., 0., 1.,),),
-                 );
+                 )
 
 CHAMDEP2=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F( CHARGE = CL),
                               _F( CHARGE = CH3))
-                      );
+                      )
 
 # lissage de legendre (par defaut)
 GK2leg=CALC_G(RESULTAT=CHAMDEP2,

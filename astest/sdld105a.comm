@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-tfin = 20.0;
+tfin = 20.0
 
-fex = 2.0;
+fex = 2.0
 
 
-MAILLAG0=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAG0=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
     CREA_POI1=(
@@ -39,7 +39,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='DIS_T',),
                          _F(GROUP_MA='MASSES',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 
 CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -50,7 +50,7 @@ CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                  _F(GROUP_NO='DY',
                                     DY=0.,),
                                  _F(GROUP_NO='DZ',
-                                    DZ=0.,),),);
+                                    DZ=0.,),),)
 
 
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
@@ -71,7 +71,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                                  _F(REPERE='GLOBAL',
                                     CARA='K_T_D_L',
                                     GROUP_MA='ELN3',
-                                    VALE=(100.0,0.,0.,),),),);
+                                    VALE=(100.0,0.,0.,),),),)
 
 
 
@@ -82,7 +82,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
                     OPTION='PLUS_PETITE',
@@ -108,31 +108,31 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 MODE_MEC=NORM_MODE(reuse =MODE_MEC,
                    MODE=MODE_MEC,
-                   NORME='MASS_GENE',);
+                   NORME='MASS_GENE',)
 
 MODE_EXT=EXTR_MODE(FILTRE_MODE=_F(MODE=MODE_MEC,
                                   NUME_MODE=(1,2,),),
-                   IMPRESSION=_F(CUMUL='OUI',),);
+                   IMPRESSION=_F(CUMUL='OUI',),)
 
 MODE_TOU=EXTR_MODE(FILTRE_MODE=_F(MODE=MODE_MEC,
                                   TOUT_ORDRE='OUI',),
-                   IMPRESSION=_F(CUMUL='OUI',),);
+                   IMPRESSION=_F(CUMUL='OUI',),)
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MODE_MEC,),);
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MODE_MEC,),)
 
 MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                        MODE_STAT=_F(GROUP_NO='N01',
-                                    AVEC_CMP='DX',),);
+                                    AVEC_CMP='DX',),)
 
 
 MONO_X=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                         DIRECTION=(1.,0.,0.,),
-                        MONO_APPUI='OUI',);
+                        MONO_APPUI='OUI',)
 
 MULT_X=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                         DIRECTION=(1.,0.,0.,),
                         MODE_STAT=MODE_STA,
-                        GROUP_NO='N01',);
+                        GROUP_NO='N01',)
 
 ACCELERO = FORMULE(VALE='sin(2*pi*fex*INST)',
                    fex=fex,
@@ -141,17 +141,17 @@ ACCELERO = FORMULE(VALE='sin(2*pi*fex*INST)',
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=tfin,
-                                    PAS=0.01,),);
+                                    PAS=0.01,),)
 PSEUDO=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                      MATR_MASS=MASSE,
                      PSEUDO_MODE=_F(AXE='X',
-                                        ),);
+                                        ),)
 MODESTAT=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                      MATR_MASS=MASSE,
                      FORCE_NODALE=_F(TOUT='OUI',
                                     AVEC_CMP='DX',
                                     )
-                      ,);
+                      ,)
 #-----------------------------------------------------------------------
 # CALCULS TRANSITOIRES PAR SYNTHESE MODALE BASE TRONQUEE
 #-----------------------------------------------------------------------
@@ -163,7 +163,7 @@ PROJ_BASE(BASE=MODE_EXT,
                           _F(MATRICE=CO('RIGI_GEN'),
                              MATR_ASSE=RIGIDITE,),),
           VECT_ASSE_GENE=_F(VECTEUR=CO('VECT_X'),
-                            VECT_ASSE=MONO_X, TYPE_VECT='FORC'),);
+                            VECT_ASSE=MONO_X, TYPE_VECT='FORC'),)
 
 
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -175,17 +175,17 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN=tfin,
                                       PAS=0.001,),
                          EXCIT=_F(VECT_ASSE_GENE=VECT_X,
-                                  FONC_MULT=ACCELERO,),);
+                                  FONC_MULT=ACCELERO,),)
 
 N04_DX_1=RECU_FONCTION(RESU_GENE=TRAN_GEN,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
-                       GROUP_NO='N04',);
+                       GROUP_NO='N04',)
 
 N02_DX_1=RECU_FONCTION(RESU_GENE=TRAN_GEN,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
-                       GROUP_NO='N02',);
+                       GROUP_NO='N02',)
 
 # ------------------------------------------------------
 # PRISE EN COMPTE DE LA CORRECTION STATIQUE A POSTERIORI
@@ -202,7 +202,7 @@ MODCOR=MACRO_ELAS_MULT(MODELE=MODELE,
                        NUME_DDL=CO('NUME_DD2'),
                        CHAR_MECA_GLOBAL=CON_LIM,
                        CAS_CHARGE=_F(NOM_CAS='CORRSTAT',
-                                     CHAR_MECA=CHAM_NO,),);
+                                     CHAR_MECA=CHAM_NO,),)
 
 
 DERI_PRE = FORMULE(VALE='2*pi*fex*cos(2*pi*fex*INST)',
@@ -226,19 +226,19 @@ TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  CORR_STAT='OUI',
                                  D_FONC_DT=DERI_PRE,
                                  D_FONC_DT2=DERI_SEC,),
-                        MODE_CORR=MODCOR,);
+                        MODE_CORR=MODCOR,)
 
 N04_DXC3=RECU_FONCTION(RESU_GENE=TRA_GCS,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
                        GROUP_NO='N04',
-                       CORR_STAT='OUI',);
+                       CORR_STAT='OUI',)
 
 N02_DXC3=RECU_FONCTION(RESU_GENE=TRA_GCS,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
                        GROUP_NO='N02',
-                       CORR_STAT='OUI',);
+                       CORR_STAT='OUI',)
 
 #-----------------------------------------------------------------------
 # CALCUL SUR BASE MODALE COMPLETE
@@ -250,7 +250,7 @@ PROJ_BASE(BASE=MODE_MEC,
                           _F(MATRICE=CO('RIGI_COM'),
                              MATR_ASSE=RIGIDITE,),),
           VECT_ASSE_GENE=_F(VECTEUR=CO('VECT_COM'),
-                            VECT_ASSE=MONO_X, TYPE_VECT='FORC'),);
+                            VECT_ASSE=MONO_X, TYPE_VECT='FORC'),)
 
 
 TRAN_COM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -262,27 +262,27 @@ TRAN_COM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN=tfin,
                                       PAS=0.001,),
                          EXCIT=_F(VECT_ASSE_GENE=VECT_COM,
-                                  FONC_MULT=ACCELERO,),);
+                                  FONC_MULT=ACCELERO,),)
 
 
 N04_DX_2=RECU_FONCTION(RESU_GENE=TRAN_COM,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
-                       GROUP_NO='N04',);
+                       GROUP_NO='N04',)
 
 N02_DX_2=RECU_FONCTION(RESU_GENE=TRAN_COM,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
-                       GROUP_NO='N02',);
+                       GROUP_NO='N02',)
 
 
-MOD1=RECU_FONCTION(RESU_GENE=TRAN_GEN,NOM_CHAM='DEPL',NUME_CMP_GENE=1);
-MOD2=RECU_FONCTION(RESU_GENE=TRAN_GEN,NOM_CHAM='DEPL',NUME_CMP_GENE=2);
-#MOD3=RECU_FONCTION(RESU_GENE=TRAN_GEN,NOM_CHAM='DEPL',NUME_CMP_GENE=3);
+MOD1=RECU_FONCTION(RESU_GENE=TRAN_GEN,NOM_CHAM='DEPL',NUME_CMP_GENE=1)
+MOD2=RECU_FONCTION(RESU_GENE=TRAN_GEN,NOM_CHAM='DEPL',NUME_CMP_GENE=2)
+#MOD3=RECU_FONCTION(RESU_GENE=TRAN_GEN,NOM_CHAM='DEPL',NUME_CMP_GENE=3)
 
-MOD1C=RECU_FONCTION(RESU_GENE=TRA_GCS,NOM_CHAM='DEPL',NUME_CMP_GENE=1);
-MOD2C=RECU_FONCTION(RESU_GENE=TRA_GCS,NOM_CHAM='DEPL',NUME_CMP_GENE=2);
-#MOD3C=RECU_FONCTION(RESU_GENE=TRA_GCS,NOM_CHAM='DEPL',NUME_CMP_GENE=3);
+MOD1C=RECU_FONCTION(RESU_GENE=TRA_GCS,NOM_CHAM='DEPL',NUME_CMP_GENE=1)
+MOD2C=RECU_FONCTION(RESU_GENE=TRA_GCS,NOM_CHAM='DEPL',NUME_CMP_GENE=2)
+#MOD3C=RECU_FONCTION(RESU_GENE=TRA_GCS,NOM_CHAM='DEPL',NUME_CMP_GENE=3)
 
 
 # -----------------------------------------
@@ -332,7 +332,7 @@ N02_DX_R=RECU_FONCTION(RESU_GENE=TRAN_RI2,
 
 MOD1R=RECU_FONCTION(RESU_GENE=TRAN_RI2,NOM_CHAM='DEPL',NUME_CMP_GENE=1),
 MOD2R=RECU_FONCTION(RESU_GENE=TRAN_RI2,NOM_CHAM='DEPL',NUME_CMP_GENE=2),
-#MOD3R=RECU_FONCTION(RESU_GENE=TRAN_RI2,NOM_CHAM='DEPL',NUME_CMP_GENE=3);
+#MOD3R=RECU_FONCTION(RESU_GENE=TRAN_RI2,NOM_CHAM='DEPL',NUME_CMP_GENE=3)
 
 
 # -----------------------------------------
@@ -384,7 +384,7 @@ N02_DX_5=RECU_FONCTION(RESU_GENE=TRAN_RI5,
 
 MOD15=RECU_FONCTION(RESU_GENE=TRAN_RI5,NOM_CHAM='DEPL',NUME_CMP_GENE=1),
 MOD25=RECU_FONCTION(RESU_GENE=TRAN_RI5,NOM_CHAM='DEPL',NUME_CMP_GENE=2),
-#MOD35=RECU_FONCTION(RESU_GENE=TRAN_RI5,NOM_CHAM='DEPL',NUME_CMP_GENE=3);
+#MOD35=RECU_FONCTION(RESU_GENE=TRAN_RI5,NOM_CHAM='DEPL',NUME_CMP_GENE=3)
 # -----------------------------------------
 # PRISE EN COMPTE DE LA CORRECTION STATIQUE A PRIORI PSEUDO-MODE et FORCE IMPOSEE AVEC ORTHOGONONALISATION ORTHO
 # -----------------------------------------
@@ -441,7 +441,7 @@ N02_DX_6=RECU_FONCTION(RESU_GENE=TRAN_RI6,
 
 MOD16=RECU_FONCTION(RESU_GENE=TRAN_RI6,NOM_CHAM='DEPL',NUME_CMP_GENE=1),
 MOD26=RECU_FONCTION(RESU_GENE=TRAN_RI6,NOM_CHAM='DEPL',NUME_CMP_GENE=2),
-#MOD36=RECU_FONCTION(RESU_GENE=TRAN_RI6,NOM_CHAM='DEPL',NUME_CMP_GENE=3);
+#MOD36=RECU_FONCTION(RESU_GENE=TRAN_RI6,NOM_CHAM='DEPL',NUME_CMP_GENE=3)
 
 
 
@@ -519,12 +519,12 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-1.669580835792E-04,
               )
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=(
-                        
+
 
                       _F(FONCTION=N02_DX_1),
                       _F(FONCTION=N02_DX_2),
                       _F(FONCTION=N02_DXC3),
-                      _F(FONCTION=N02_DX_R), 
+                      _F(FONCTION=N02_DX_R),
                       _F(FONCTION=N02_DX_5),
                       _F(FONCTION=N02_DX_6),
 
@@ -532,9 +532,9 @@ IMPR_FONCTION(FORMAT='TABLEAU',
                       _F(FONCTION=N04_DX_1),
                       _F(FONCTION=N04_DX_2),
                       _F(FONCTION=N04_DXC3),
-                      _F(FONCTION=N04_DX_R), 
-                      _F(FONCTION=N04_DX_5),    
-                      _F(FONCTION=N04_DX_6),                 
+                      _F(FONCTION=N04_DX_R),
+                      _F(FONCTION=N04_DX_5),
+                      _F(FONCTION=N04_DX_6),
                       ),
-              UNITE=98,);   
-FIN();
+              UNITE=98,)
+FIN()

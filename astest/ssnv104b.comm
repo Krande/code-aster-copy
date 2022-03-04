@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ CHA2= DEFI_CONTACT(MODELE      = MO,
                                GROUP_MA_MAIT = 'CON1',
                                GROUP_MA_ESCL = 'CON2',
                                E_N = 1E10),
-                  );
+                  )
 
 
 #
@@ -83,7 +83,7 @@ CHA3= DEFI_CONTACT(MODELE      = MO,
                                GROUP_MA_ESCL = 'CON2',
                                E_N = 1E10,
                                ),
-                  );
+                  )
 
 #
 CHA4= DEFI_CONTACT(MODELE      = MO,
@@ -92,7 +92,7 @@ CHA4= DEFI_CONTACT(MODELE      = MO,
                                ALGO_CONT = 'CONTRAINTE',
                                GROUP_MA_MAIT = 'CON1',
                                GROUP_MA_ESCL = 'CON2'),
-                  );
+                  )
 
 #
 

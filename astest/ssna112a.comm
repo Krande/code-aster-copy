@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,31 +23,31 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MALLA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),FORMAT='MED',
-                    INFO = 2,);
+                    INFO = 2,)
 
 MALLA=DEFI_GROUP(reuse =MALLA,
                  MAILLAGE=MALLA,
                  CREA_GROUP_MA=_F(NOM='TOUT',
-                                  TOUT='OUI',),);
+                                  TOUT='OUI',),)
 
 MALLA=DEFI_GROUP(reuse =MALLA,
                  MAILLAGE=MALLA,
                  CREA_GROUP_NO= (_F(GROUP_MA='ENCAST1'),
                                  _F(GROUP_MA='EJE1'),
-                 ),);
+                 ),)
 
 
 MALLA = MODI_MAILLAGE (reuse = MALLA,
                        MAILLAGE = MALLA,
                        ORIE_FISSURE = _F(GROUP_MA = 'LIAISON'),
-                       INFO = 2,);
+                       INFO = 2,)
 
 #---------------------------------
 #  Definition de modele
 #---------------------------------
 
 MODELO=AFFE_MODELE(MAILLAGE=MALLA,
-                   
+
                    AFFE=(_F(GROUP_MA =('CABOT',
                                        'ACIER',
                                        'BETON',
@@ -57,18 +57,18 @@ MODELO=AFFE_MODELE(MAILLAGE=MALLA,
                          _F(GROUP_MA = 'LIAISON',
                             PHENOMENE='MECANIQUE',
                             MODELISATION = 'AXIS_JOINT',),
-                           ),);
+                           ),)
 
 #---------------------------------
 #  Definition des materiaux
 #---------------------------------
 
 ACIERMAT=DEFI_MATERIAU(ELAS=_F( E  = 2.1E+5,
-                                NU = 0.3),);
+                                NU = 0.3),)
 
 
 BETONMAT=DEFI_MATERIAU(ELAS     =_F(NU=0.17,
-                                    E=1.55E+4),);
+                                    E=1.55E+4),)
 
 
 BOND=DEFI_MATERIAU(ELAS=_F(E=1.55E+4,
@@ -88,7 +88,7 @@ BOND=DEFI_MATERIAU(ELAS=_F(E=1.55E+4,
                                  EPSTR0 =  0.9,
                                  ADN    =  1.E-9,
                                  BDN    =  1.5,
-                                    ),);
+                                    ),)
 
 
 CHAMAT=AFFE_MATERIAU(MAILLAGE=MALLA,
@@ -99,7 +99,7 @@ CHAMAT=AFFE_MATERIAU(MAILLAGE=MALLA,
                               MATER=ACIERMAT,),
                            _F(GROUP_MA = 'LIAISON',
                               MATER=BOND,),
-                           ),);
+                           ),)
 #---------------------------------
 #  Conditions limits
 #---------------------------------
@@ -110,13 +110,13 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELO,
                                      DY=0.0,),
                                   _F(GROUP_NO='EJE1',
                                      DX=0.0,),
-                                     ),);
+                                     ),)
 
 
 TRACT=AFFE_CHAR_MECA(MODELE=MODELO,
                         DDL_IMPO=(_F(GROUP_NO=('PA2','PA3',),
                                      DY= 1.00
-                                     ),),);
+                                     ),),)
 
 #---------------------------------
 #  Functions de chargement
@@ -126,14 +126,14 @@ DEPLAC=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,
                            1.0,0.1,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 
 
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                        _F(JUSQU_A=1.0, NOMBRE=20,),
                        _F(JUSQU_A=60.0, NOMBRE=118,),
-                       ),);
+                       ),)
 
 #---------------------------------
 #  Analyses non lineaire
@@ -154,7 +154,7 @@ U1=STAT_NON_LINE(MODELE=MODELO,
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=100,
-                                RESI_GLOB_RELA=1.E-07,),);
+                                RESI_GLOB_RELA=1.E-07,),)
 
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),RESULTAT=U1)
 
@@ -163,7 +163,7 @@ U1=CALC_CHAMP(reuse =U1,
 
            FORCE='REAC_NODA',CONTRAINTE='SIGM_NOEU',
 
-           RESULTAT=U1,);
+           RESULTAT=U1,)
 
 
 #---------------------------------
@@ -177,7 +177,7 @@ L_INST2=DEFI_LIST_REEL(VALE =( 2., 4., 6., 8.,10.,
                               42.,44.,46.,48.,50.,
                               52.,54.,56.,58.,60.,
                               ),
-                       );
+                       )
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=22,
@@ -232,14 +232,14 @@ UXP=RECU_FONCTION(RESULTAT=U1,
                   NOM_CMP='DX',
                   GROUP_NO='PA2',
 
-                  );
+                  )
 
 UYP=RECU_FONCTION(RESULTAT=U1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   GROUP_NO='PA2',
 
-                  );
+                  )
 
 # ---- f(contraintes)
 
@@ -249,7 +249,7 @@ SXY661=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M66',
                    POINT = 1,
 
-                   );
+                   )
 
 SXY672=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
@@ -257,7 +257,7 @@ SXY672=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M67',
                    POINT = 2,
 
-                   );
+                   )
 
 SXY681=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
@@ -265,7 +265,7 @@ SXY681=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M68',
                    POINT = 1,
 
-                   );
+                   )
 
 SXY692=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
@@ -273,7 +273,7 @@ SXY692=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M69',
                    POINT = 2,
 
-                   );
+                   )
 
 SXY701=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
@@ -281,7 +281,7 @@ SXY701=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M70',
                    POINT = 1,
 
-                   );
+                   )
 
 SXY712=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
@@ -289,7 +289,7 @@ SXY712=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M71',
                    POINT = 2,
 
-                   );
+                   )
 
 SXY721=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
@@ -297,7 +297,7 @@ SXY721=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M72',
                    POINT = 1,
 
-                   );
+                   )
 
 SXY732=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
@@ -305,7 +305,7 @@ SXY732=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M73',
                    POINT = 2,
 
-                   );
+                   )
 
 SXY741=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
@@ -313,7 +313,7 @@ SXY741=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M74',
                    POINT = 1,
 
-                   );
+                   )
 
 # ---- f(variables internes)
 
@@ -323,7 +323,7 @@ V2PG1_66=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M66',
                    POINT = 1,
 
-                   );
+                   )
 
 V2PG2_66=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='VARI_ELGA',
@@ -331,7 +331,7 @@ V2PG2_66=RECU_FONCTION(RESULTAT=U1,
                    GROUP_MA ='M66',
                    POINT = 2,
 
-                   );
+                   )
 
 # ---------- en format AGRAF ----------
 #
@@ -361,7 +361,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                        FONC_Y=SXY732,),
                     _F(FONC_X=UYP,
                        FONC_Y=SXY741,),
-                      ),);
+                      ),)
 
 
 
@@ -381,8 +381,8 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                        FONC_Y=V2PG1_66,),
                     _F(FONC_X=UYP,
                        FONC_Y=V2PG2_66,),
-                      ),);
+                      ),)
 
 
 
-FIN();
+FIN()

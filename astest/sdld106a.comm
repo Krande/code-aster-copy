@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
       DEBUG=_F(SDVERI='NON'),
-      IGNORE_ALARM='CALCULEL3_40',);
+      IGNORE_ALARM='CALCULEL3_40',)
 
 POUTRE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
@@ -48,36 +48,36 @@ CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODELE,
                                        VALE=(0.,0.,0.,),),
                                     _F(GROUP_MA='GROUP_MA_LIAISON',
                                        CARA='A_TR_D_L',
-                                       VALE=(c1,c1,c1,),),),);
+                                       VALE=(c1,c1,c1,),),),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=(_F(GROUP_NO='GROUP_NO_FIXE',
-                                   DX=0.,DY=0.,DRZ=0.,),),);
+                                   DX=0.,DY=0.,DRZ=0.,),),)
 
 RIGIELEM=CALC_MATR_ELEM(MODELE=MODELE,
                         CHARGE=CHARGE,
                         CARA_ELEM=CHAMPCAR,
-                        OPTION='RIGI_MECA');
+                        OPTION='RIGI_MECA')
 
 MASSELEM=CALC_MATR_ELEM(MODELE=MODELE,
                         CHARGE=CHARGE,
                         CARA_ELEM=CHAMPCAR,
-                        OPTION='MASS_MECA',);
+                        OPTION='MASS_MECA',)
 
 AMORELEM=CALC_MATR_ELEM(MODELE=MODELE,
                         CARA_ELEM=CHAMPCAR,
-                        OPTION='AMOR_MECA');
+                        OPTION='AMOR_MECA')
 
-NUMEROTA=NUME_DDL(MATR_RIGI=RIGIELEM,);
+NUMEROTA=NUME_DDL(MATR_RIGI=RIGIELEM,)
 
 MATRRIGI=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
-                      NUME_DDL=NUMEROTA,);
+                      NUME_DDL=NUMEROTA,)
 
 MATRMASS=ASSE_MATRICE(MATR_ELEM=MASSELEM,
-                      NUME_DDL=NUMEROTA,);
+                      NUME_DDL=NUMEROTA,)
 
 MATRAMOR=ASSE_MATRICE(MATR_ELEM=AMORELEM,
-                      NUME_DDL=NUMEROTA,);
+                      NUME_DDL=NUMEROTA,)
 
 def sqrt(x):
     return x**.5
@@ -119,14 +119,14 @@ fext = 1.
 
 CHF=AFFE_CHAR_MECA(MODELE=MODELE,
                    FORCE_NODALE=(_F(GROUP_NO='GROUP_NO_MOBILE',
-                                    FX=fext),),);
+                                    FX=fext),),)
 
 
 
 
 L_TEMPS=DEFI_LIST_REEL(DEBUT=I_DEBUT,
                        INTERVALLE=_F(JUSQU_A=I_FIN,
-                                     NOMBRE=100,),);
+                                     NOMBRE=100,),)
 
 FORCE = FORMULE(VALE='sin(INST)',
                 NOM_PARA='INST',)
@@ -135,14 +135,14 @@ FC=CALC_FONC_INTERP(FONCTION=FORCE,
                     LIST_PARA=L_TEMPS,
                     NOM_PARA='INST',
                     PROL_GAUCHE='CONSTANT',
-                    PROL_DROITE='CONSTANT',);
+                    PROL_DROITE='CONSTANT',)
 
 F_DEBUT = 0.5*f1
 F_FIN = 1.5*f1
 
 L_FREQ=DEFI_LIST_REEL(DEBUT=F_DEBUT,
                       INTERVALLE=_F(JUSQU_A=F_FIN,
-                                    NOMBRE=2,),);
+                                    NOMBRE=2,),)
 
 DYTRN=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                  BASE_CALCUL='PHYS',
@@ -153,12 +153,12 @@ DYTRN=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                  INCREMENT=_F(LIST_INST=L_TEMPS,),
                  EXCIT=(_F(FONC_MULT=FC,
                            CHARGE=CHF),),
-                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),);
+                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
 # Test for two loads in DYNA_VIBRA, see issue23772
 CHF2=AFFE_CHAR_MECA(MODELE=MODELE,
                    FORCE_NODALE=(_F(GROUP_NO='GROUP_NO_MOBILE',
-                                    FX=fext),),);
+                                    FX=fext),),)
 
 #pour test couverture FONC_MULT_C dans CALC_CHAMP
 quart = 1./4.
@@ -170,7 +170,7 @@ FCMPLX=DEFI_FONCTION(    NOM_PARA='FREQ',
 
 CHFX=AFFE_CHAR_MECA(MODELE=MODELE,
                    FORCE_NODALE=(_F(GROUP_NO='GROUP_NO_MOBILE',
-                                    FX=fext),),);
+                                    FX=fext),),)
 
 DYHAN=DYNA_VIBRA(TYPE_CALCUL='HARM',
                  BASE_CALCUL='PHYS',
@@ -188,7 +188,7 @@ DYHAN=DYNA_VIBRA(TYPE_CALCUL='HARM',
                         _F(COEF_MULT=moitie,PHAS_DEG=0.,
                            CHARGE=CHF2),
                         ),
-             );
+             )
 
 DYHAN=CALC_CHAMP(reuse=DYHAN,RESULTAT=DYHAN,
                  EXCIT=(_F(COEF_MULT_C=quart+0.j,PUIS_PULS=0,
@@ -264,7 +264,7 @@ TEST_RESU(RESU=(
 
 
 rn = -fn   #force ext nulle a l'encastrement (a amortissement pres)
- 
+
 TEST_RESU(RESU=(
                 _F(FREQ=F_FIN,
                    RESULTAT=DYHAN,
@@ -295,14 +295,14 @@ DYHAN2=DYNA_VIBRA(TYPE_CALCUL='HARM',
                  LIST_FREQ=L_FREQ,
                  TOUT_CHAM='OUI',
                  EXCIT=(
-                        _F(FONC_MULT_C=FCMPLX2,    
+                        _F(FONC_MULT_C=FCMPLX2,
                            CHARGE=CHFX),
                         ),
-             );
+             )
 
 DYHAN2=CALC_CHAMP(reuse=DYHAN2,RESULTAT=DYHAN2,
                  EXCIT=(
-                        _F(FONC_MULT_C=FCMPLX2,  
+                        _F(FONC_MULT_C=FCMPLX2,
                            CHARGE=CHFX),
                         ),
                  FORCE=('FORC_NODA','REAC_NODA',),

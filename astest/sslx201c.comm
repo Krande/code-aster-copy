@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 modelisa = 'AXIS'
 #modelisa = 'C_PLAN'
@@ -33,7 +33,7 @@ surf_racc = 5
 
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='ELEM_BORD_SUP',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='ELEM_BORD_SUP',),)
 
 
 
@@ -42,7 +42,7 @@ MO_REF=AFFE_MODELE(MAILLAGE=MA,
                         PHENOMENE='MECANIQUE',
                         MODELISATION=modelisa,),
                         ),
-                        );
+                        )
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA=('MAIL2D','ELEM_BORD_SUP'),
@@ -52,15 +52,15 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         PHENOMENE='MECANIQUE',
                         MODELISATION='2D_DIS_TR',),
                         ),
-                        );
+                        )
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                           NU=0.0,
-                          ALPHA=0.0,),);
+                          ALPHA=0.0,),)
 
 CHMA=AFFE_MATERIAU(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MAT,),);
+                           MATER=MAT,),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                        DISCRET_2D=_F(REPERE='LOCAL',CARA='K_TR_D_L', GROUP_MA='DISCRET',
@@ -75,7 +75,7 @@ CHME_REF=AFFE_CHAR_MECA(MODELE=MO_REF,
                     PRES_REP=_F(PRES=-100/surf_racc,
                                 GROUP_MA='ELEM_BORD_SUP',
                                 ),
-                                    );
+                                    )
 
 CHME=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_MA='GAUCHE',
@@ -88,13 +88,13 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                                     FY = 100.,
                                     ),
 
-                                    );
+                                    )
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,
                   CHAM_MATER=CHMA,
                   SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
                   EXCIT=(_F(CHARGE=CHME_REF,),
-                        ),);
+                        ),)
 
 
 CALC_CHAMP(reuse=RES_REF, RESULTAT=RES_REF, FORCE='FORC_NODA')
@@ -122,7 +122,7 @@ RES=MECA_STATIQUE(MODELE=MO,
                   SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
                   CARA_ELEM  = CARELEM,
                   EXCIT=(_F(CHARGE=CHME,),
-                        ),);
+                        ),)
 
 
 CALC_CHAMP(reuse=RES, RESULTAT=RES, FORCE='FORC_NODA')
@@ -160,7 +160,7 @@ CHME_REF=AFFE_CHAR_MECA(MODELE=MO_REF,
                     PRES_REP=_F(CISA_2D=-1000/surf_racc,
                                 GROUP_MA='ELEM_BORD_SUP',
                                 ),
-                                    );
+                                    )
 
 CHME=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_MA='GAUCHE',
@@ -173,13 +173,13 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                                     FX = 1000,
                                     ),
 
-                                    );
+                                    )
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,
                   CHAM_MATER=CHMA,
                   SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
                   EXCIT=(_F(CHARGE=CHME_REF,),
-                        ),);
+                        ),)
 
 
 CALC_CHAMP(reuse=RES_REF, RESULTAT=RES_REF, FORCE='FORC_NODA')
@@ -207,7 +207,7 @@ RES=MECA_STATIQUE(MODELE=MO,
                   SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
                   CARA_ELEM  = CARELEM,
                   EXCIT=(_F(CHARGE=CHME,),
-                        ),);
+                        ),)
 
 
 CALC_CHAMP(reuse=RES, RESULTAT=RES, FORCE='FORC_NODA')
@@ -242,7 +242,7 @@ BLOQ_REF=AFFE_CHAR_MECA(MODELE=MO_REF,
                     DDL_IMPO=_F(GROUP_MA='GAUCHE',
                                 DX=0.0,
                                 DY=0.0,),
-                                    );
+                                    )
 
 # le noeud central de la zone de raccord est en x=15
 FPRES = FORMULE(VALE='-96*(X-15)',
@@ -263,14 +263,14 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                                     MZ = 1000.,
                                     ),
 
-                                    );
+                                    )
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,
                   CHAM_MATER=CHMA,
                   SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
                   EXCIT=(_F(CHARGE=CHME_REF,),
                          _F(CHARGE=BLOQ_REF,),
-                        ),);
+                        ),)
 
 
 CALC_CHAMP(reuse=RES_REF, RESULTAT=RES_REF, FORCE='FORC_NODA')
@@ -298,7 +298,7 @@ RES=MECA_STATIQUE(MODELE=MO,
                   SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
                   CARA_ELEM  = CARELEM,
                   EXCIT=(_F(CHARGE=CHME,),
-                        ),);
+                        ),)
 
 
 CALC_CHAMP(reuse=RES, RESULTAT=RES, FORCE='FORC_NODA')
@@ -325,5 +325,5 @@ TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
           )
 
 
-FIN();
+FIN()
 #

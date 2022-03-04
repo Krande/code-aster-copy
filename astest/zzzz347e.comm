@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,7 +140,7 @@ EVOLNOLI=CALC_PRECONT( CHAM_MATER=CHMATER,
                               _F(CHARGE=CHARMECA,),
                                  ),
                        CABLE_BP=( CABLEPR ,),
-                       INFO=1,);
+                       INFO=1,)
 
 EVOLNOLI=STAT_NON_LINE(reuse=EVOLNOLI,
                        ETAT_INIT=_F(EVOL_NOLI=EVOLNOLI),
@@ -174,7 +174,7 @@ EVOLNOLI=STAT_NON_LINE(reuse=EVOLNOLI,
 EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI,
                     DEFORMATION = ('EPSI_ELGA','EPSI_ELNO'),
                     GROUP_MA=('CABLE'),
-                    RESULTAT=EVOLNOLI,);
+                    RESULTAT=EVOLNOLI,)
 
 #IMPR_RESU(FORMAT="RESULTAT",
           #RESU=_F(RESULTAT=EVOLNOLI,
@@ -213,7 +213,7 @@ EVOLNOL2=CALC_PRECONT( CHAM_MATER=CHMATER,
                        CONVERGENCE=_F(
 # ITER_GLOB_MAXI est à 15 et non plus à 20 pour forcer le rédécoupage des pas de
 # temps. Cela a pour but de valider qu'il ne s'opère pas de recul d'ancrage à ANCR1
-# lors de la deuxième phase de mise en tension. 
+# lors de la deuxième phase de mise en tension.
                           ITER_GLOB_MAXI = 15,
                           RESI_REFE_RELA = 1.E-6,
                           EFFORT_REFE = 1.E5,
@@ -235,13 +235,13 @@ EVOLNOL2=CALC_PRECONT( CHAM_MATER=CHMATER,
                               _F(CHARGE=CHARMEC2,),
                                  ),
                        CABLE_BP=( CABLEP2 ,),
-                       INFO=1,);
+                       INFO=1,)
 
 
 EVOLNOL2=CALC_CHAMP(reuse =EVOLNOL2,PARALLELISME_TEMPS='OUI',
                     FORCE=('FORC_NODA',),
                     GROUP_MA=('CABLE'),
-                    RESULTAT=EVOLNOL2,);
+                    RESULTAT=EVOLNOL2,)
 
 #IMPR_RESU(FORMAT="RESULTAT",
           #RESU=_F(RESULTAT=EVOLNOL2,
@@ -300,7 +300,7 @@ EVOLNOL3=CALC_PRECONT( CHAM_MATER=CHMATER,
                               _F(CHARGE=CHARMEC3,),
                                  ),
                        CABLE_BP=( CABLEP3 ,),
-                       INFO=1,);
+                       INFO=1,)
 
 
 #IMPR_RESU(FORMAT="RESULTAT",
@@ -506,7 +506,7 @@ TEST_RESU(RESU=_F(INST=2.,
 IMPR_RESU(FORMAT='RESULTAT', UNITE=6, RESU=_F(RESULTAT=EVOLNOL2, NOM_CHAM = 'FORC_NODA',
                                               GROUP_NO = ('ANCR1',), NOM_CMP = 'GLIS'))
 
-# on verifie que la force ne diminue pas (en valeur absolue) au noeud ANCR1 
+# on verifie que la force ne diminue pas (en valeur absolue) au noeud ANCR1
 # entre la premiere phase de mise en tension et le premier instant de la seconde.
 
 TEST_RESU(RESU=_F(INST=0.9,

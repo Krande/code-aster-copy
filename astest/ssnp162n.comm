@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='DROITE',),
                               _F(GROUP_MA='G_GAUCHE',
                                 NOM='GAUCHE',),
-                               ),);
+                               ),)
 
 #IMPR_RESU(FORMAT  = 'GMSH',RESU=_F(MAILLAGE=MA),UNITE=19)
 
@@ -129,7 +129,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(GROUP_MA='CUBE', MATER = MAT_CUB),
                       _F(GROUP_MA='CUBEDEG', MATER = MAT_JOI))
-                 );
+                 )
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
 LIAISON=AFFE_CHAR_MECA(
@@ -156,7 +156,7 @@ TRAC_1=AFFE_CHAR_MECA(
 
 # CREATION DE LISTE D'INSTANT
 LR=DEFI_LIST_REEL(VALE=list(range(insfin+1)))
-L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),);
+L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),)
 
 # LISTE D'INSTANTS POUR LES TESTS DE RESULTATS
 linst=[0,insfin/4,insfin/2,3*insfin/4,insfin]
@@ -165,7 +165,7 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
                                         linst[2], delta_endo,              # TRACTION JUSQU'A ENDOMMAGEMENT PARTIEL
                                         linst[3], -delta_elas,             # DECHARGEMENT COMPRESSION
                                         linst[4], delta_max*0.99999999),   # TRACTION JUSQU'A LA RUPTURE QUASI-COMPLETE
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 
 
 U_1=STAT_NON_LINE(
@@ -201,7 +201,7 @@ U_1=CALC_CHAMP(reuse =U_1,
             FORCE='FORC_NODA',
 
 
-            );
+            )
 
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
 TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -210,7 +210,7 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='FORC_NODA',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
-                               RESULTANTE=('DX','DY'),),);
+                               RESULTANTE=('DX','DY'),),)
 
 
 # PROJECTEUR SUR LA NORMALE
@@ -223,7 +223,7 @@ TFORCE=CALC_TABLE(reuse =TFORCE,
                   TABLE=TFORCE,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_N',),);
+                            NOM_PARA='F_N',),)
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -232,14 +232,14 @@ TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='TOUTSEUL',
-                              NOM_CMP=('DX','DY',),),);
+                              NOM_CMP=('DX','DY',),),)
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
 TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
                     TABLE=TDELTA_N,
                     ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='U_N',),);
+                            NOM_PARA='U_N',),)
 
 #----------------------------------------------------------------------------------
 # IMPRESSION DE RESULTAT CALCUL MODE I PURE
@@ -248,25 +248,25 @@ TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
 
 
 # IMPRESSION LA FORCE NODALE NORMALE
-IMPR_TABLE(TABLE=TFORCE);
+IMPR_TABLE(TABLE=TFORCE)
 
 # IMPRESSION DE L'OUVERTURE NORMALE
-IMPR_TABLE(TABLE=TDELTA_N);
+IMPR_TABLE(TABLE=TDELTA_N)
 
 # LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FN=RECU_FONCTION(TABLE=TFORCE,
                   PARA_X='INST',
-                  PARA_Y='F_N',);
+                  PARA_Y='F_N',)
 
 DN=RECU_FONCTION(TABLE=TDELTA_N,
                   PARA_X='INST',
-                  PARA_Y='U_N',);
+                  PARA_Y='U_N',)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONC_X=DN,
                         FONC_Y=FN,
                         LEGENDE='Force Deplacement',),
-             );
+             )
 ## EN MODE INTERACTIF SEULEMENT
 #IMPR_FONCTION(FORMAT='XMGRACE',
 #              PILOTE='INTERACTIF',
@@ -276,7 +276,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 #              LEGENDE_X='\\xd\\s\\0n',
 #              LEGENDE_Y='F\\sn',
 #              TITRE='mode I avec charge-decharge',
-#              );
+#              )
 
 
 #----------------------------------------------------------------------------------
@@ -338,18 +338,18 @@ F2DX=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst2[3],delta_joint5*cos(angle)-delta_max_tan*sin(angle),# COMPRESSION PARTIEL
                                         linst2[4],delta_joint5*cos(angle)                          # FERMETURE TANGENTIEL
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 F2DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst2[1],delta_joint*sin(angle),                           # OUVERTURE NORMALE
                                         linst2[2],delta_joint*sin(angle)+delta_max_tan*cos(angle),  # OUVERTURE TANGENTIEL
                                         linst2[3],delta_joint5*sin(angle)+delta_max_tan*cos(angle),# COMPRESSION PARTIEL
                                         linst2[4],delta_joint5*sin(angle)                          # FERMETURE TANGENTIEL
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 F2DZ=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0., # FONCTION = 0
                                           1.,0.
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 
 TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
                       DDL_IMPO=(_F(GROUP_NO='GAUCHE',
@@ -357,7 +357,7 @@ TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
                                     DY=F2DY,
                                     DZ=F2DZ),
                                  ),
-                      );
+                      )
 
 
 #----------------------------------------------------------------------------------
@@ -626,19 +626,19 @@ F3DX=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst3[3],delta_joint9*cos(angle), # COMPRESSION NORMALE PARTIEL
                                         linst3[4],delta_joint9*cos(angle)  # MODE3 RETOUR
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 F3DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst3[1],delta_joint*sin(angle),  # OUVERTURE NORMALE
                                         linst3[2],delta_joint*sin(angle),  # MODE3 ALLEZ
                                         linst3[3],delta_joint9*sin(angle),# COMPRESSION PARTIEL
                                         linst3[4],delta_joint9*sin(angle) # MODE3 RETOUR
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 F3DZ=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                           linst3[2], -delta_max_tan, # OUVERTURE TANGENTIEL MODE3 ALLEZ
                                           linst3[4],  delta_max_tan  # FERMETURE TANGENTIEL MODE3 RETOUR
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 
 TRAC_3=AFFE_CHAR_MECA_F(MODELE=MO,
                       DDL_IMPO=(_F(GROUP_NO='GAUCHE',
@@ -646,7 +646,7 @@ TRAC_3=AFFE_CHAR_MECA_F(MODELE=MO,
                                     DY=F3DY,
                                     DZ=F3DZ),
                                  ),
-                      );
+                      )
 
 
 #----------------------------------------------------------------------------------

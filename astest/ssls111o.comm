@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,12 +44,12 @@ h = 0.8;     # epaisseur
 hs2 = h/2
 hs4 = h/4    # excentrement sup
 hs4m = -hs4  # excentrement inf
-E = 200000000000.0;
+E = 200000000000.0
 Nu=0.0
 G = E/2/(1.0+Nu)
 
 # chargement
-frep = -1000.0;
+frep = -1000.0
 
 # solution analytique
 L=10.0
@@ -65,11 +65,11 @@ M=-T*L
 #                                 E_T=E,
 #                                 NU_LT=0.0,
 #                                 G_LT=G,
-#                                 RHO=1000.0,),);
+#                                 RHO=1000.0,),)
 
 MATISO=DEFI_MATERIAU(ELAS=_F(E=E,
                              NU=0.0,
-                             RHO=1000.0,),);
+                             RHO=1000.0,),)
 
 # ______________________________________________________________________
 #
@@ -77,19 +77,19 @@ MATISO=DEFI_MATERIAU(ELAS=_F(E=E,
 # ______________________________________________________________________
 
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),);
+MA1=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),)
 
 
 MA1=DEFI_GROUP(reuse =MA1,
                MAILLAGE=MA1,
                CREA_GROUP_NO=(_F(GROUP_MA='PLAQ1',
                                  NOM='PLAQ1',),
-                              ),);
+                              ),)
 
 MO1=AFFE_MODELE(MAILLAGE=MA1,
                 AFFE=_F(GROUP_MA=('PLAQ1','L12',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKT',),);
+                        MODELISATION='DKT',),)
 
 EP1=AFFE_CARA_ELEM(MODELE=MO1,
                    COQUE=(_F(GROUP_MA=('PLAQ1'),
@@ -98,12 +98,12 @@ EP1=AFFE_CARA_ELEM(MODELE=MO1,
                              EXCENTREMENT=hs2,
                              COQUE_NCOU = 1,
                              INER_ROTA='OUI',),
-                          ),);
+                          ),)
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
                      AFFE=(_F(GROUP_MA='PLAQ1',
                               MATER=MATISO,),)
-                           );
+                           )
 
 CL1=AFFE_CHAR_MECA(MODELE=MO1,
                      DDL_IMPO=(_F(GROUP_MA='L14',
@@ -113,11 +113,11 @@ CL1=AFFE_CHAR_MECA(MODELE=MO1,
                                   DRX=0.0,
                                   DRY=0.0,
                                   DRZ=0.0,),),
-                                     );
+                                     )
 
 CHME1A=AFFE_CHAR_MECA(MODELE=MO1,
                       FORCE_ARETE=_F(GROUP_MA='L12',
-                                      FZ=frep ),);
+                                      FZ=frep ),)
 
 LISTINST = DEFI_LIST_REEL(VALE = (0.,1.))
 
@@ -173,7 +173,7 @@ EP2=AFFE_CARA_ELEM(MODELE=MO1,
                              EXCENTREMENT=hs2,
                              COQUE_NCOU = 2,
                              INER_ROTA='OUI',),
-                          ),);
+                          ),)
 
 
 RESU2A_S=STAT_NON_LINE(MODELE=MO1,
@@ -362,4 +362,4 @@ TEST_RESU(RESU=(_F(INST=0.0,
                 ),
           )
 
-FIN();
+FIN()

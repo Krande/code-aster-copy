@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.E0,INTERVALLE=(
        _F(    JUSQU_A = 4.E-0, NOMBRE = 35))
                        )
 
-LSAVE=DEFI_LIST_REEL(VALE=(1.0, 2.0, 3.0, 4.0),);
+LSAVE=DEFI_LIST_REEL(VALE=(1.0, 2.0, 3.0, 4.0),)
 
 TEMPE=THER_NON_LINE( MODELE     = MOTH,
                      ETAT_INIT  = _F(  CHAM_NO = TINIT),

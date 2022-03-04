@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ SIF40=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.
 
 nbcalc = 3
 
-MeshSEB=LIRE_MAILLAGE(INFO=1,FORMAT='MED', UNITE=20,);
+MeshSEB=LIRE_MAILLAGE(INFO=1,FORMAT='MED', UNITE=20,)
 
 #----------------------------------------------
 #                   MODELE
@@ -62,7 +62,7 @@ MeshSEB=LIRE_MAILLAGE(INFO=1,FORMAT='MED', UNITE=20,);
 ModSEB=AFFE_MODELE(MAILLAGE=MeshSEB,
                    AFFE=(_F(GROUP_MA='Vol',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
+                            MODELISATION='3D',),),)
 
 #----------------------------------------------
 #                   MATERIAU
@@ -70,14 +70,14 @@ ModSEB=AFFE_MODELE(MAILLAGE=MeshSEB,
 
 E=70656
 nu=0.34
-Alu=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+Alu=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),)
 
 ChAlu=AFFE_MATERIAU(MAILLAGE=MeshSEB,
                        MODELE=ModSEB,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=Alu,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------
 #              FISSURE INITIALE
@@ -94,7 +94,7 @@ FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MeshSEB,
                                   PFON=(30.,4.,5.),
                                   NORMALE=(0.,0.,1.),
                                   DTAN=(0.,1.,0.),
-                       ),);
+                       ),)
 
 #----------------------------------------------
 #                  PROPAGATION
@@ -145,7 +145,7 @@ LSNGR=[None]*infit
 # AVANCE IMPOSEE
 da=12.0
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),)
 RI = 0.2
 RS = 1.0
 
@@ -160,18 +160,18 @@ rayon_calcG_fitt = rayon_raff+da
 LSN[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   OPERATION='EXTR',
                   FISSURE=FISS[0],
-                  NOM_CHAM='LNNO',);
+                  NOM_CHAM='LNNO',)
 LST[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   OPERATION='EXTR',
                   FISSURE=FISS[0],
-                  NOM_CHAM='LTNO',);
+                  NOM_CHAM='LTNO',)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
-          RESU=_F(CHAM_GD=LSN[0],),);
+          RESU=_F(CHAM_GD=LSN[0],),)
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
-          RESU=_F(CHAM_GD=LST[0],),);
+          RESU=_F(CHAM_GD=LST[0],),)
 
 CHERR[0] = RAFF_XFEM(FISSURE=FISS[0])
 
@@ -216,7 +216,7 @@ for i in range(nbcalc) :
                                _F(TYPE_CHAM='NOEU_NEUT_R',
                                   CHAM_GD  = CHERR[j],
                                   CHAM_MAJ = CHERR[j+1]),),
-                       );
+                       )
 
       else:
 
@@ -238,18 +238,18 @@ for i in range(nbcalc) :
                                   _F(CHAM_GD=LSTHT[j],
                                      TYPE_CHAM='NOEU_NEUT_R',
                                      CHAM_MAJ=LSTH[i],),),
-                       );
+                       )
 
          ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
                                AFFE=(_F(
                                GROUP_MA='Vol',
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='3D',),),);
+                               MODELISATION='3D',),),)
 
          FISSH[i] = DEFI_FISS_XFEM(MAILLAGE=MeshH[i],
                                    DEFI_FISS=_F(CHAM_NO_LSN=LSNH[i],
                                                 CHAM_NO_LST=LSTH[i],),
-                                   GROUP_MA_ENRI='Vol',);
+                                   GROUP_MA_ENRI='Vol',)
 
    DETRUIRE(NOM=CHERR[0],)
 
@@ -265,9 +265,9 @@ for i in range(nbcalc) :
                         MODELE=ModH[i],
                         AFFE=_F(
                                 GROUP_MA='Vol',
-                                MATER=Alu,),);
+                                MATER=Alu,),)
 
-   MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
+   MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,)
 
 
    DETRUIRE(NOM=MatRaf,)
@@ -296,7 +296,7 @@ for i in range(nbcalc) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  CRIT_ANGL_BIFURCATION = 'PLAN',
-               );
+               )
 
       else:
 
@@ -317,16 +317,16 @@ for i in range(nbcalc) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  CRIT_ANGL_BIFURCATION = 'PLAN',
-               );
+               )
 
       LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                         OPERATION='EXTR',
                         FISSURE=FISS[i+1],
-                        NOM_CHAM='LNNO',);
+                        NOM_CHAM='LNNO',)
       LST[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                         OPERATION='EXTR',
                         FISSURE=FISS[i+1],
-                        NOM_CHAM='LTNO',);
+                        NOM_CHAM='LTNO',)
 
       CHERR[0] = RAFF_XFEM(FISSURE=FISS[i+1])
       DETRUIRE(NOM=MODX[i],)
@@ -384,4 +384,4 @@ TEST_TABLE(CRITERE='ABSOLU',
            TYPE_TEST='MAX',
            TABLE=TB_FOND2,)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ MA_B=DEFI_MATERIAU(ELAS        =_F(E  = E_B,
 # DEFINITION DU MODELE ET AFFECTATION DES MATERIAUX
 # -----------------------------------------------------
 
-MAIL=LIRE_MAILLAGE(FORMAT    = 'MED',);
+MAIL=LIRE_MAILLAGE(FORMAT    = 'MED',)
 
 MAIL=DEFI_GROUP(reuse         = MAIL,
                 MAILLAGE      = MAIL,
@@ -94,7 +94,7 @@ MATE=AFFE_MATERIAU(MAILLAGE = MAIL,
                                _F(GROUP_MA = 'CZM_BA',
                                   MATER    = MA_B,),
                                _F(GROUP_MA = 'BETON',
-                                  MATER    = MA_B,)));
+                                  MATER    = MA_B,)))
 
 # -----------------------------------------------------
 # DEFINITION DES CHARGEMENTS
@@ -108,7 +108,7 @@ BATI=AFFE_CHAR_CINE(MODELE   = MODE,
                                 _F(GROUP_MA = ('B_GAUC','A_GAUC'),
                                    DX = 0),
                                 _F(GROUP_MA = ('B_DROI','A_DROI'),
-                                   DX = 0)),);
+                                   DX = 0)),)
 
 TRAC=AFFE_CHAR_MECA(MODELE   = MODE,
                     FORCE_ARETE = _F(GROUP_MA = 'BOUT',
@@ -120,7 +120,7 @@ L_INST   = DEFI_LIST_REEL(DEBUT      = 0.,
                           INTERVALLE =(_F(JUSQU_A =  10., NOMBRE  = 2)))
 
 INSTANTS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST),
-                        ECHEC=_F(ACTION = 'DECOUPE'),);
+                        ECHEC=_F(ACTION = 'DECOUPE'),)
 
 RAMPE   = DEFI_FONCTION(NOM_PARA = 'INST',
                         VALE     = (0,0.,10,10.))
@@ -134,7 +134,7 @@ ORIENTAT=AFFE_CARA_ELEM(MODELE   = MODE,
                                    ANGL_REP = (0., -90.,0.)),
                         MEMBRANE =(_F(GROUP_MA     = 'ARMATU',
                                     ANGL_REP_1     = (-90., 0.,),
-                                    EPAIS = 1.0)));
+                                    EPAIS = 1.0)))
 
 # -----------------------------------------------------
 # CALCUL
@@ -158,7 +158,7 @@ RESU = STAT_NON_LINE(MODELE        = MODE,
                                         DEPL_REFE      = GLIS_C,
                                         ITER_GLOB_MAXI = 10),
                      SOLVEUR       = _F(METHODE = 'MUMPS',
-                                        PCENT_PIVOT = 20));
+                                        PCENT_PIVOT = 20))
 
 # -----------------------------------------------------
 # POST-TRAITEMENT ET VALIDATION DES RESULTATS
@@ -169,9 +169,9 @@ TAB_DY = POST_RELEVE_T(ACTION=_F(INTITULE = 'DEPLACEMENT',
                                  OPERATION = 'MOYENNE_ARITH',
                                  GROUP_NO = 'BOUT',
                                  NOM_CMP = 'DY',
-                                 RESULTAT = RESU));
+                                 RESULTAT = RESU))
 
-IMPR_TABLE(TABLE = TAB_DY);
+IMPR_TABLE(TABLE = TAB_DY)
 
 # Comparaison a une resolution 3D du meme probleme
 
@@ -215,4 +215,4 @@ TEST_TABLE(
                      VALE_I=2,),
            )
 
-FIN();
+FIN()

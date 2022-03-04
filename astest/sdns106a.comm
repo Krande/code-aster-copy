@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ tmax=1.0E-3
 dt=2.0E-6
 pres=20.E7
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse=MAIL,
                 MAILLAGE=MAIL,
@@ -48,38 +48,38 @@ MAIL=DEFI_GROUP(reuse=MAIL,
                                   OPTION='ENV_SPHERE',
                                   POINT=(0.4,0.2,),
                                   RAYON=0.001,
-                                  PRECISION=0.0011,),),);
+                                  PRECISION=0.0011,),),)
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
                                       VECT_NORM=(0.,0.,1.),
-                                      GROUP_NO='A1',),);
+                                      GROUP_NO='A1',),)
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKTG',),);
+                        MODELISATION='DKTG',),)
 
 IMPR_RESU(FORMAT="RESULTAT",MODELE=MOD,
-          RESU=_F(MAILLAGE=MAIL),);
+          RESU=_F(MAILLAGE=MAIL),)
 
 MAT_B=DEFI_MATERIAU(ELAS=_F(E=30000.E6,
                             NU=0.2,
                             RHO=2500.0,),
                     BETON_ECRO_LINE=_F(D_SIGM_EPSI=0.0,
                                        SYT=5.E6,
-                                       SYC=-35.E6,),);
+                                       SYC=-35.E6,),)
 
 MAT_A1=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                              NU=0.0,),
                      ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                  SY=3.E9,),);
+                                  SY=3.E9,),)
 
 MAT_A2=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                              NU=0.3,),
                      ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                  SY=5.E8,),);
+                                  SY=5.E8,),)
 
 MP1X=DEFI_FONCTION(NOM_PARA='X',
                    VALE=(-9170000.00000000,150000.000000000,
@@ -132,7 +132,7 @@ MP1X=DEFI_FONCTION(NOM_PARA='X',
                           5582500.00000000,154265.625000000,
                           11670000.0000000,-150000.000000000,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 MP2X=DEFI_FONCTION(NOM_PARA='X',
                    VALE=(-9170000.00000000,150000.000000000,
@@ -185,7 +185,7 @@ MP2X=DEFI_FONCTION(NOM_PARA='X',
                           8192500.00000000,-315290.625000000,
                           11582500.0000000,-154265.625000000,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 MP1Y=DEFI_FONCTION(NOM_PARA='X',
                    VALE=(-13640000.0000000,150000.000000000,
@@ -238,7 +238,7 @@ MP1Y=DEFI_FONCTION(NOM_PARA='X',
                           10052500.0000000,154265.625000000,
                           16140000.0000000,-150000.000000000,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 MP2Y=DEFI_FONCTION(NOM_PARA='X',
                    VALE=(-13640000.0000000,150000.000000000,
@@ -291,7 +291,7 @@ MP2Y=DEFI_FONCTION(NOM_PARA='X',
                           12662500.0000000,-315290.625000000,
                           16052500.0000000,-154265.625000000,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 MAT=DEFI_GLRC(RELATION='GLRC_DAMAGE',
               BETON=_F(MATER=MAT_B,
@@ -324,16 +324,16 @@ MAT=DEFI_GLRC(RELATION='GLRC_DAMAGE',
                             RY=0.0,
                             PREX=-3.0E6,
                             PREY=-3.0E6,),
-              INFO=2,);
+              INFO=2,)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=(_F(TOUT='OUI',MATER=MAT,),),);
+                    AFFE=(_F(TOUT='OUI',MATER=MAT,),),)
 
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MOD,
                         COQUE=_F(GROUP_MA='MESH',
                                  EPAIS=EP,
                                  INER_ROTA='OUI',
-                                 ANGL_REP=(0.0,0.0),),);
+                                 ANGL_REP=(0.0,0.0),),)
 
 
 COND_L=AFFE_CHAR_MECA(MODELE=MOD,
@@ -349,25 +349,25 @@ COND_L=AFFE_CHAR_MECA(MODELE=MOD,
                                    DX=0.0,),
                                 _F(GROUP_NO='A2A4',
                                    DZ=0.0,
-                                   DX=0.0,),),);
+                                   DX=0.0,),),)
 
 chf0=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,1.0,
                          t1 ,1.0,),
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='CONSTANT',);
+                   PROL_GAUCHE='CONSTANT',)
 
 COND_P=AFFE_CHAR_MECA(MODELE=MOD,
                       FORCE_COQUE=_F(GROUP_MA='DALLE',
-                                     PRES=pres,),);
+                                     PRES=pres,),)
 
 inst1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=tmax,
-                                   PAS=dt),);
+                                   PAS=dt),)
 
 DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=inst1,),
                        ECHEC=_F(SUBD_PAS=2,
-                                SUBD_NIVEAU=20,),);
+                                SUBD_NIVEAU=20,),)
 
 RESU1=DYNA_NON_LINE(MODELE=MOD,
                     CHAM_MATER=CHMAT,
@@ -383,7 +383,7 @@ RESU1=DYNA_NON_LINE(MODELE=MOD,
                     SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                     FORMULATION='ACCELERATION',),
                     ARCHIVAGE=_F(LIST_INST=inst1,),
-                    MASS_DIAG='OUI',);
+                    MASS_DIAG='OUI',)
 
 TEST_RESU(RESU=(_F(GROUP_NO='P04',
                    INST=2.0E-05,
@@ -432,7 +432,7 @@ RESU1=CALC_CHAMP(reuse=RESU1,
                  FORCE='FORC_NODA',
                  PRECISION=1.E-3,
                  RESULTAT=RESU1,
-                 GROUP_MA='DALLE',);
+                 GROUP_MA='DALLE',)
 
 RESU1=CALC_CHAMP(reuse=RESU1,
                  CONTRAINTE=('EFGE_ELNO'),
@@ -440,14 +440,14 @@ RESU1=CALC_CHAMP(reuse=RESU1,
                  ENERGIE=('ENEL_ELGA','ENEL_ELNO'),
                  GROUP_MA='DALLE',
                  RESULTAT=RESU1,
-                 INST=(dt,tmax),);
+                 INST=(dt,tmax),)
 
 TRAV=POST_ELEM(RESULTAT=RESU1,
-               TRAV_EXT=_F(),);
+               TRAV_EXT=_F(),)
 
 ENER=POST_ELEM(RESULTAT=RESU1,
                ENER_ELAS=_F(GROUP_MA='DALLE'),
-               INST=(dt,tmax),);
+               INST=(dt,tmax),)
 
 TEST_RESU(RESU=_F(INST=2.E-06,
                   RESULTAT=RESU1,
@@ -480,4 +480,4 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=2.E-06,),
            )
 
-FIN();
+FIN()

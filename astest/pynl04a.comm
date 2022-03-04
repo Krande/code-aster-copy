@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ UREF=CALC_CHAMP(   reuse=UREF,
                    TOUT_ORDRE='OUI',
                    TOUT='OUI',
                    FORCE='FORC_NODA',
-                   RESULTAT=UREF,);
+                   RESULTAT=UREF,)
 
 SIG_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                    NOM_CHAM='SIEF_ELGA', RESULTAT=UREF,
@@ -130,7 +130,7 @@ UREF2=CALC_CHAMP(  reuse=UREF2,
                    TOUT_ORDRE='OUI',
                    TOUT='OUI',
                    FORCE='FORC_NODA',
-                   RESULTAT=UREF2,);
+                   RESULTAT=UREF2,)
 
 SIG_REF2=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                    NOM_CHAM='SIEF_ELGA', RESULTAT=UREF2,
@@ -230,7 +230,7 @@ FORC=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                            VALE_K='FORC_NODA_ELEM'),)
 
 FORCAS=ASSE_VECTEUR(VECT_ELEM=FORC,
-                    NUME_DDL=NU,);
+                    NUME_DDL=NU,)
 
 SIGM=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  TABLE=CALC_TT,
@@ -264,7 +264,7 @@ FORC2=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                            VALE_K='FORC_NODA_ELEM'),)
 
 FORCAS2=ASSE_VECTEUR(VECT_ELEM=FORC2,
-                    NUME_DDL=NU,);
+                    NUME_DDL=NU,)
 
 SIGM2=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  TABLE=CALC_TT2,

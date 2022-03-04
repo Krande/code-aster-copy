@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
 #
 # LES MAILLES APLATIES SONT DUES AUX ELEMENTS DISCRETS DE TYPE SEG2 DONT LES
 # NOEUDS SONT CONFONDUS
-# L'ALARME PREPOST5_51 EST VOLONTAIREMENT DECLENCHEE 
+# L'ALARME PREPOST5_51 EST VOLONTAIREMENT DECLENCHEE
 # POUR TESTER AMOR_NEGATIF DANS CALC_AMOR_MODAL
 #
 METHODE='EULER'
@@ -427,7 +427,7 @@ MASS_ELE=CALC_MATR_ELEM( MODELE=STICKMOD,  OPTION='MASS_MECA',
 
 #
 
-NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE) 
+NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
 
 RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUMEDDL )
 
@@ -445,11 +445,11 @@ MODE=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=10, ),
 
 MODE=NORM_MODE(reuse=MODE,  MODE=MODE,    NORME='TRAN_ROTA',)
 
-EPOT=POST_ELEM( MODELE=STICKMOD, 
-                CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE, 
+EPOT=POST_ELEM( MODELE=STICKMOD,
+                CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE,
                          ENER_POT=(_F(
-                                    GROUP_MA = ( 'POU_D_T', 
-                                                 'MASSES',  
+                                    GROUP_MA = ( 'POU_D_T',
+                                                 'MASSES',
                                                  'LIAI_NOE',
                                                  'VRADIER',
                                                  'SRADIER',
@@ -464,9 +464,9 @@ EPOT=POST_ELEM( MODELE=STICKMOD,
                                                       5,
                                   )
                    )
-                   
-IMPR_TABLE(TABLE=EPOT);
-                   
+
+IMPR_TABLE(TABLE=EPOT)
+
 ATX=DEFI_FONCTION(
                           NOM_PARA='FREQ',
                               VALE=(
@@ -556,8 +556,8 @@ L_AMOR=CALC_AMOR_MODAL(
                                AMOR_INTERNE=_F(
                                               ENER_POT = EPOT,
                                               GROUP_MA = (
-                                                 'POU_D_T', 
-                                                 'MASSES',  
+                                                 'POU_D_T',
+                                                 'MASSES',
                                                  'LIAI_NOE',
                                                  'VRADIER',
                                                  'SRADIER',
@@ -614,8 +614,8 @@ L_AMORN=CALC_AMOR_MODAL(
                                AMOR_INTERNE=_F(
                                               ENER_POT = EPOT,
                                               GROUP_MA = (
-                                                 'POU_D_T', 
-                                                 'MASSES',  
+                                                 'POU_D_T',
+                                                 'MASSES',
                                                  'LIAI_NOE',
                                                  'VRADIER',
                                                  'SRADIER',
@@ -659,8 +659,8 @@ L_AMOR2=CALC_AMOR_MODAL(
                                AMOR_INTERNE=_F(
                                               ENER_POT = EPOT,
                                               GROUP_MA = (
-                                                 'POU_D_T', 
-                                                 'MASSES',  
+                                                 'POU_D_T',
+                                                 'MASSES',
                                                  'LIAI_NOE',
                                                  'VRADIER',
                                                  'SRADIER',
@@ -753,7 +753,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    ),
                 ),
           )
-                               
+
 #
 # TESTS SUR LES VALEURS OBTENUES DE CALC_AMOR_MODAL
 #
@@ -763,7 +763,7 @@ LISTE=DEFI_LIST_REEL(    VALE=(1.,  2.,  3.,  4.,  5., ) )
 F_AMOR=DEFI_FONCTION(    NOM_PARA='AMOR',
                               VALE_PARA=LISTE,
                               VALE_FONC=L_AMOR)
-                              
+
 #
 ####################################
 #  CALC_AMOR_MODAL AVEC RIGI_PARASOL ET SEUIL A 30#
@@ -814,7 +814,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06159355428799,
 F_AMORN=DEFI_FONCTION(    NOM_PARA='AMOR',
                               VALE_PARA=LISTE,
                               VALE_FONC=L_AMORN)
-                              
+
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01,
                         VALE_PARA=1.0,
                         FONCTION=F_AMORN,
@@ -869,8 +869,8 @@ L_AMOR3=CALC_AMOR_MODAL(
                                AMOR_INTERNE=_F(
                                               ENER_POT = EPOT,
                                               GROUP_MA = (
-                                                 'POU_D_T', 
-                                                 'MASSES',  
+                                                 'POU_D_T',
+                                                 'MASSES',
                                                  'LIAI_NOE',
                                                  'VRADIER',
                                                  'SRADIER',

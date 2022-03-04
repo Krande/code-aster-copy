@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # lecture maillage lineique
-MAPOU=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,);
+MAPOU=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,)
 
 # lecture maillage section fibres
 MASEC1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=18,)
@@ -67,9 +67,9 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=1,
 
 
 # LES MATERIAUX
-BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10, NU=0.25,),);
+BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10, NU=0.25,),)
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11, NU=0.3,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11, NU=0.3,),)
 # relation ELAS par defaut
 COMP1=DEFI_COMPOR(
     GEOM_FIBRE=GF,MATER_SECT=BETON,
@@ -101,7 +101,7 @@ CHARGT=AFFE_CHAR_MECA(
 # RESOLUTION DU PROBLEME ELASTIQUE
 U1=MECA_STATIQUE(
     MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
-    EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),);
+    EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHARGT,),),)
 #
 # CALCUL DES EFFORTS GENERALISES
 U1=CALC_CHAMP(reuse=U1,RESULTAT=U1,CONTRAINTE=('EFGE_ELNO'))

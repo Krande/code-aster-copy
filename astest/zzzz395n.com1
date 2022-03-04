@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=1.5401647755,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=stnl,
@@ -75,7 +75,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=-2327.65322131,
                    ),
                 ),
-          );
+          )
 
 # Valeurs de référence (calcul complet) - Dans RID
 TEST_RESU(RESU=(
@@ -101,7 +101,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=0.306532333698,
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=stnl,
@@ -126,7 +126,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=-2455.1448814,
                    ),
                 ),
-          );
+          )
 
 ####################################################################################################
 #
@@ -167,7 +167,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.006
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=redu,
@@ -201,7 +201,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.0013
                    ),
                 ),
-          );
+          )
 
 # Test calcul hyper-réduit/complet - Hors RID
 TEST_RESU(RESU=(
@@ -236,7 +236,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.0055
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=reduR,
@@ -270,7 +270,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.0043
                    ),
                 ),
-          );
+          )
 
 
 ####################################################################################################
@@ -312,7 +312,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.0055
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=redu2,
@@ -346,7 +346,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.0014
                    ),
                 ),
-          );
+          )
 
 
 
@@ -383,7 +383,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.0055
                    ),
                 ),
-          );
+          )
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=reduR2,
@@ -417,7 +417,7 @@ TEST_RESU(RESU=(
                    PRECISION=0.0043
                    ),
                 ),
-          );
+          )
 
 
 FIN()

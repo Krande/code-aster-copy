@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,33 +24,33 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
-              ),);
+              ),)
 
 
 # Maillage 3D et poutre
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU='SMAI',),);
+                 ORIE_PEAU=_F(GROUP_MA_PEAU='SMAI',),)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM='STRUCT',
                                TOUT='OUI',),
               CREA_GROUP_NO=(_F(GROUP_MA='STRUCT',),
-                             _F(GROUP_MA='SA',),),);
+                             _F(GROUP_MA='SA',),),)
 
 # Maillage de la section de poutre (multi-fibres)
 
 MASECT=LIRE_MAILLAGE(UNITE=21,
-                     FORMAT='MED',);
+                     FORMAT='MED',)
 
 GF=DEFI_GEOM_FIBRE(SECTION=_F(GROUP_FIBRE='GFIB1',
                               TOUT_SECT='OUI',
                               MAILLAGE_SECT=MASECT,
-                              COOR_AXE_POUTRE=(0,0,),),);
+                              COOR_AXE_POUTRE=(0,0,),),)
 
 # Modele 3D et poutre
 
@@ -60,23 +60,23 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='3D',),
                      _F(GROUP_MA='POUHAU',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='POU_D_TGM',),),);
+                        MODELISATION='POU_D_TGM',),),)
 
 # Materiau
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=6894.8,
-                            NU=0.3333,),);
+                            NU=0.3333,),)
 
 COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,
                   MATER_SECT=MATER,
                   MULTIFIBRE=_F(GROUP_FIBRE='GFIB1',
-                                MATER=MATER, RELATION='ELAS',),);
+                                MATER=MATER, RELATION='ELAS',),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MATER,),
                     AFFE_COMPOR=_F(GROUP_MA='POUHAU',
-                                   COMPOR=COMPF,),);
+                                   COMPOR=COMPF,),)
 
 # Caracteristiques de poutres multi-fibres
 
@@ -87,7 +87,7 @@ CELEM=AFFE_CARA_ELEM(MODELE=MO,
                                VALE=(645.16,5549.7523413333333333,216787.2008333333333333,1.2,1.2,5.08,0,0,0,),),
                      GEOM_FIBRE=GF,
                      MULTIFIBRE=_F(GROUP_MA='POUHAU',
-                                   GROUP_FIBRE='GFIB1',),);
+                                   GROUP_FIBRE='GFIB1',),)
 
 # Chargement
 
@@ -100,19 +100,19 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                                DZ=0,),
                             _F(GROUP_MA='POUHAU',
                                DRX=0,
-                               DRY=0,),),);
+                               DRY=0,),),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_NO='C',
-                                  DY=-790,),);
+                                  DY=-790,),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           1,1,
-                          ),);
+                          ),)
 
 # Contact discret et continu
 
-DIST_E=DEFI_CONSTANTE(VALE=31.75,);
+DIST_E=DEFI_CONSTANTE(VALE=31.75,)
 
 CONTD=DEFI_CONTACT(MODELE=MO,
                    FORMULATION='DISCRETE',
@@ -120,7 +120,7 @@ CONTD=DEFI_CONTACT(MODELE=MO,
                    ZONE=_F(GROUP_MA_MAIT='SMAI',
                            GROUP_MA_ESCL='SESC',
                            DIST_ESCL=DIST_E,
-                           ),);
+                           ),)
 
 CONTC=DEFI_CONTACT(MODELE=MO,
                    FORMULATION='CONTINUE',
@@ -130,18 +130,18 @@ CONTC=DEFI_CONTACT(MODELE=MO,
                    ZONE=_F(GROUP_MA_MAIT='SMAI',
                            GROUP_MA_ESCL='SESC',
                            DIST_ESCL=DIST_E,
-                           ),);
+                           ),)
 
 
 # Pas de calcul/archivage
 
 L_TEMPS=DEFI_LIST_REEL(DEBUT=0,
                        INTERVALLE=_F(JUSQU_A=1,
-                                     NOMBRE=50,),);
+                                     NOMBRE=50,),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=_F(JUSQU_A=1,
-                                    NOMBRE=25,),);
+                                    NOMBRE=25,),)
 
 # --------------------------------------------
 # 1er calcul : formulation discrete de contact
@@ -163,18 +163,18 @@ RESUD=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(REAC_ITER=1,),
                     SOLVEUR=_F(),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=41,),
-                    ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                    ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
 RESUD=CALC_CHAMP(reuse =RESUD,
               RESULTAT=RESUD,
-              FORCE='FORC_NODA',);
+              FORCE='FORC_NODA',)
 
 T_REACD=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='Reaction nodale de contact',
                                 RESULTAT=RESUD,
                                 NOM_CHAM='FORC_NODA',
                                 GROUP_NO=('B','SA',),
-                                RESULTANTE='DY',),);
+                                RESULTANTE='DY',),)
 
 TEST_TABLE(
            VALE_CALC=311.88546737562,
@@ -218,7 +218,7 @@ TEST_TABLE(
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUD,
-                  NOM_CHAM=('DEPL','FORC_NODA','SIEF_ELGA',),),);
+                  NOM_CHAM=('DEPL','FORC_NODA','SIEF_ELGA',),),)
 
 # ---------------------------------------------
 # 2eme calcul : formulation continue de contact
@@ -239,18 +239,18 @@ RESUC=STAT_NON_LINE(MODELE=MO,
                     INCREMENT=_F(LIST_INST=L_TEMPS,),
                     NEWTON=_F(REAC_ITER=1,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=21,),
-                    ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                    ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
 RESUC=CALC_CHAMP(reuse =RESUC,
               RESULTAT=RESUC,
-              FORCE='FORC_NODA',);
+              FORCE='FORC_NODA',)
 
 T_REACC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='Reaction nodale de contact',
                                 RESULTAT=RESUC,
                                 NOM_CHAM='FORC_NODA',
                                 GROUP_NO=('B','SA',),
-                                RESULTANTE='DY',),);
+                                RESULTANTE='DY',),)
 
 # Comparaison formulation discrete
 
@@ -345,6 +345,6 @@ TEST_TABLE(
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUC,
-                  NOM_CHAM=('DEPL','FORC_NODA','SIEF_ELGA',),),);
+                  NOM_CHAM=('DEPL','FORC_NODA','SIEF_ELGA',),),)
 
-FIN();
+FIN()

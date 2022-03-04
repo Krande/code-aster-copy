@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ MA=DEFI_GROUP(
         _F(NOM='SEC2',
             UNION=('E21','E22','E23','E24','E25','E26','E27','E28','E29','E30',),),
         _F(NOM='SEC3',
-            UNION=('E31','E32','E33','E34','E35','E36','E37',),),),);
+            UNION=('E31','E32','E33','E34','E35','E36','E37',),),),)
 
 # -------------------------------------------------------------
 # MODELISATION POUTRES DROITES ET COURBES DE TIMOCHENKO
@@ -51,7 +51,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='POU_D_T'),
                          _F(GROUP_MA=('R1','R4','R7','R11','R15','R17','R23','R36','R38','R31',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 # -------------------------------------------------------------
 # CARACTERISTIQUES DES SECTIONS ET DES RAIDEURS
@@ -62,7 +62,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MA,
 R1 = 1.75
 e1 = 0.2160
 rc1 = 4.5
-lambda1 = ((e1 * rc1) / ((R1 - (e1 / 2.0)) ** 2));
+lambda1 = ((e1 * rc1) / ((R1 - (e1 / 2.0)) ** 2))
 cflex1 = (1.65 / lambda1)
 
 #SEC2:
@@ -83,10 +83,10 @@ cflex3 = (1.65 / lambda3)
 
 #RAIDEUR :
 
-raideur1 = 1.E20;
-raideur2 = 1.E11;
-raideur3 = 1.E8;
-raideur4 = 1.E5;
+raideur1 = 1.E20
+raideur2 = 1.E11
+raideur3 = 1.E8
+raideur4 = 1.E5
 
 #AFFECTATION :
 
@@ -125,26 +125,26 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
         _F(CARA='M_TR_D_L', GROUP_MA=('R23',), VALE=(0.0,0.0,0.0,0.0,),),
         _F(CARA='M_TR_D_L', GROUP_MA=('R31',), VALE=(0.0,0.0,0.0,0.0,),),
     ),
-);
+)
 
 # -------------------------------------------------------------
 # CARACTERISTIQUES MATERIAUX
 # -------------------------------------------------------------
 
-YOUNG = 2.9E7;
-POISSON = 0.3;
+YOUNG = 2.9E7
+POISSON = 0.3
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                            NU=POISSON,
-                           RHO=1.0429E-3,),);
+                           RHO=1.0429E-3,),)
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                            NU=POISSON,
-                           RHO=1.1073E-3,),);
+                           RHO=1.1073E-3,),)
 
 MAT3=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                            NU=POISSON,
-                           RHO=1.2901E-3,),);
+                           RHO=1.2901E-3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     MODELE=MODELE,
@@ -153,7 +153,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                           _F(GROUP_MA='SEC2',
                              MATER=MAT2,),
                           _F(GROUP_MA='SEC3',
-                             MATER=MAT3,),),);
+                             MATER=MAT3,),),)
 
 # -------------------------------------------------------------
 # ANALYSE MODALE
@@ -166,7 +166,7 @@ SUPPORT=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DZ=0,
                                   DRX=0,
                                   DRY=0,
-                                  DRZ=0,),);
+                                  DRZ=0,),)
 
 ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -176,7 +176,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 MODECA=CALC_MODES(MATR_RIGI=RIGIDITE,
                   OPTION='BANDE',
@@ -306,7 +306,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 
 MODECA=NORM_MODE(reuse=MODECA,
                  MODE=MODECA,
-                 NORME='MASS_GENE',);
+                 NORME='MASS_GENE',)
 
 MODECA=CALC_CHAMP(reuse=MODECA,
                   RESULTAT=MODECA,
@@ -319,11 +319,11 @@ MODECA=CALC_CHAMP(reuse=MODECA,
 SPECTRE=LIRE_FONCTION(UNITE=21,
                       NOM_PARA='FREQ',
                       PROL_GAUCHE='CONSTANT',
-                      PROL_DROITE='CONSTANT',);
+                      PROL_DROITE='CONSTANT',)
 
 SRO=DEFI_NAPPE(NOM_PARA='AMOR',
                PARA=0.01,
-               FONCTION=SPECTRE,);
+               FONCTION=SPECTRE,)
 
 ###############################################################
 # -------------------------------------------------------------
@@ -337,7 +337,7 @@ ANA_A1=COMB_SISM_MODAL(MODE_MECA=MODECA,
                                 SPEC_OSCI=SRO,
                                 ECHELLE=386.4,),
                        COMB_MODE=_F(TYPE='SRSS',),
-                       OPTION=('REAC_NODA',),);
+                       OPTION=('REAC_NODA',),)
 
 # -------------------------------------------------------------
 # VALIDATION DES REACTIONS NODALES
@@ -628,7 +628,7 @@ ANA_A2=COMB_SISM_MODAL(MODE_MECA=MODECA,
                                 SPEC_OSCI=SRO,
                                 ECHELLE=386.4,),
                        COMB_MODE=_F(TYPE='CQC',),
-                       OPTION=('REAC_NODA',),);
+                       OPTION=('REAC_NODA',),)
 
 
 # -------------------------------------------------------------
@@ -916,7 +916,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 CORR=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                    MATR_MASS=MASSE,
-                   PSEUDO_MODE=_F(AXE=('X',),),);
+                   PSEUDO_MODE=_F(AXE=('X',),),)
 
 CORR=CALC_CHAMP(reuse=CORR,
                 RESULTAT=CORR,
@@ -930,7 +930,7 @@ ANA_A3=COMB_SISM_MODAL(MODE_MECA=MODECA,
                                 SPEC_OSCI=SRO,
                                 ECHELLE=386.4,),
                        COMB_MODE=_F(TYPE='CQC',),
-                       OPTION=('REAC_NODA',),);
+                       OPTION=('REAC_NODA',),)
 
 # -------------------------------------------------------------
 # VALIDATION DES REACTIONS NODALES
@@ -1225,7 +1225,7 @@ ANA_A4=COMB_SISM_MODAL(MODE_MECA=MODECA,
                        COMB_MODE=_F(TYPE='GUPTA',
                                     FREQ_1=2.80,
                                     FREQ_2=11.90,),
-                       OPTION=('REAC_NODA',),);
+                       OPTION=('REAC_NODA',),)
 
 # -------------------------------------------------------------
 # VALIDATION DES REACTIONS NODALES
@@ -1520,7 +1520,7 @@ ANA_A6=COMB_SISM_MODAL(MODE_MECA=MODECA,
                        COMB_MODE=_F(TYPE='GUPTA',
                                     FREQ_1=2.80,
                                     FREQ_2=6.,),
-                       OPTION=('REAC_NODA',),);
+                       OPTION=('REAC_NODA',),)
 
 # -------------------------------------------------------------
 # VALIDATION DES REACTIONS NODALES

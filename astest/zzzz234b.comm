@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 CoefRef = 1.0E-05
 
 
-MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2);
+MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2)
 
 MATE = DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3),)
 
@@ -66,7 +66,7 @@ RE_BAR=STAT_NON_LINE(MODELE     = MO_BAR,
                      CONVERGENCE = _F(RESI_REFE_RELA=1.0,
                                       EFFORT_REFE = CoefRef,
                                       MOMENT_REFE = CoefRef,),
-);
+)
 
 TB_BAR = RECU_TABLE(CO=RE_BAR,NOM_PARA=('ITER_GLOB'),)
 
@@ -101,7 +101,7 @@ RE_BAR2=STAT_NON_LINE(MODELE     = MO_BAR,
                      CONVERGENCE = _F(RESI_REFE_RELA=1.0,
                                       EFFORT_REFE = CoefRef,
                                       MOMENT_REFE = CoefRef,),
-);
+)
 
 TB_BAR2 = RECU_TABLE(CO=RE_BAR2,NOM_PARA=('ITER_GLOB'),)
 

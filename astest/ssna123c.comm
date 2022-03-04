@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MODEL=AFFE_MODELE(
    MAILLAGE=MAIL,
    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='AXIS',),
-);
+)
 
 
 R02=DEFI_CONSTANTE(VALE=5000000000)
@@ -73,7 +73,7 @@ LISTE =DEFI_LIST_REEL(
       _F(JUSQU_A= 0.10  , NOMBRE =   2, ),
       _F(JUSQU_A= 1.00  , NOMBRE =   5, ),
    ),
-);
+)
 
 # RAMPE D IRRADIATION, LA TEMPERATURE NE JOUANT AUCUN ROLE DANS CE CAS TEST
 IRRAD=CREA_RESU(OPERATION='AFFE',
@@ -82,7 +82,7 @@ IRRAD=CREA_RESU(OPERATION='AFFE',
    AFFE=(
       _F(CHAM_GD=IRRA_0, INST=0.,),
       _F(CHAM_GD=IRRA_1, INST=1.,),),
-);
+)
 
 TEMPER=CREA_RESU(OPERATION='AFFE',
    TYPE_RESU='EVOL_THER',
@@ -111,7 +111,7 @@ STAT=STAT_NON_LINE(
    INCREMENT=_F(LIST_INST=LISTE,),
 )
 
-STAT=CALC_CHAMP(reuse=STAT,RESULTAT=STAT,  DEFORMATION=('EPSI_ELNO'));
+STAT=CALC_CHAMP(reuse=STAT,RESULTAT=STAT,  DEFORMATION=('EPSI_ELNO'))
 
 
 # CONTRAINTES, DEPLACEMENT ET VARIABLES INTERNES
@@ -155,4 +155,4 @@ TEST_RESU(RESU=_F(INST=1.0,
                   ),
           )
 
-FIN();
+FIN()

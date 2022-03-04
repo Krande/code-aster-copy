@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 from numpy.linalg import norm
@@ -87,33 +87,33 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                                     H5      =a_ncol,
                                     H6      =a_ncol,
                                      ),
-                    );
+                    )
 # DD_CC
 COMPORDD=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
                                     ECOULEMENT='MONO_DD_CC',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='CUBIQUE1',
-                                    ),);
+                                    ),)
 
 LISTARCH=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                                    _F(JUSQU_A=1.,
                                       NOMBRE=100,),
                                   ),
-                      );
+                      )
 
 LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                                    _F(JUSQU_A=1.,
                                       NOMBRE=1000,),
                                   ),
-                      );
+                      )
 
 LIS2DD=DEFI_LIST_INST(INFO=1,
                         DEFI_LIST=_F(LIST_INST=LINSTDD),
                         ECHEC=_F(SUBD_NIVEAU=20,
                                  SUBD_PAS=10),
-                        );
+                        )
 
 # vecteurs direction de chargement
 l_orient=[[0.,0.,1.],[0.,1.,1.],[1.,1.,1.],[1.,5.,9.],[0.,1.,2.],[-1.,2.,5.]]
@@ -129,27 +129,27 @@ SIGMA0=100.e6
 S1=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][0]*l_norm[ori][0]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S2=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][1]*l_norm[ori][1]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S3=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][2]*l_norm[ori][2]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S4=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][0]*l_norm[ori][1]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S5=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][0]*l_norm[ori][2]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 S6=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,SIGMA0*l_norm[ori][1]*l_norm[ori][2]),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 
 # densites de dislocation initiales : variables internes de 0 a 44
@@ -185,7 +185,7 @@ IMPDD300=SIMU_POINT_MAT(INFO=1,
                       AFFE_VARC=_F(  NOM_VARC='TEMP',
                                      VALE_FONC=TIMP,
                                      VALE_REF=TEMP),
-                       );
+                       )
 
 IMPR_TABLE(TABLE=IMPDD300)
 
@@ -201,39 +201,39 @@ for i in range(1,13):
     gamma[i]=RECU_FONCTION(TABLE=IMPDD300,
                          PARA_X='INST',
                         PARA_Y='V'+str(8+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
     rho[i]=RECU_FONCTION(TABLE=IMPDD300,
                          PARA_X='INST',
                         PARA_Y='V'+str(7+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
     tau[i]=RECU_FONCTION(TABLE=IMPDD300,
                          PARA_X='INST',
                         PARA_Y='V'+str(42+i),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
 
 
 EVIXX=RECU_FONCTION(TABLE=IMPDD300,
                    PARA_X='INST',
                    PARA_Y='V1',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 EVIZZ=RECU_FONCTION(TABLE=IMPDD300,
                    PARA_X='INST',
                    PARA_Y='V3',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 EVIXY=RECU_FONCTION(TABLE=IMPDD300,
                    PARA_X='INST',
                    PARA_Y='V4',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 EVIYZ=RECU_FONCTION(TABLE=IMPDD300,
                    PARA_X='INST',
                    PARA_Y='V6',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 # tests explicite et implicite
@@ -396,12 +396,12 @@ ACIERDDI=DEFI_MATERIAU(ELAS=_F(E=E,
                                     H6      =a_ncol,
                                     DEPDT=epsi_1,
                                      ),
-                    );
+                    )
 COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDDI,
                                     ECOULEMENT='MONO_DD_CC',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='CUBIQUE1',
-                                    ),);
+                                    ),)
 
 # vecteurs direction de chargement
 l_orient=[[0.,0.,1.],[0.,1.,1.],[1.,1.,1.],[-1.,4.,9.],[0.,1.,2.],[-1.,2.,5.]]
@@ -421,27 +421,27 @@ tmax=EpsMax/viteps
 SI1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][0]*l_norm[ori][0]),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 SI2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][1]*l_norm[ori][1]),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 SI3=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][2]*l_norm[ori][2]),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 SI4=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][0]*l_norm[ori][1]),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 SI5=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][0]*l_norm[ori][2]),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 SI6=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,tmax,EpsMax*l_norm[ori][1]*l_norm[ori][2]),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 # densites de dislocation initiales : variables internes de 0 a 44
 avari = zeros(45+12)
@@ -457,20 +457,20 @@ LISTARCI=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=tmax,
                                       NOMBRE=100,),
                                   ),
-                      );
+                      )
 
 LINSTDDI=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                                    _F(JUSQU_A=tmax,
                                       NOMBRE=1000,),
                                   ),
-                      );
+                      )
 
 LIS2DDI=DEFI_LIST_INST(INFO=1,
                         DEFI_LIST=_F(LIST_INST=LINSTDDI),
                         ECHEC=_F(SUBD_NIVEAU=20,
                                  SUBD_PAS=10),
-                        );
+                        )
 
 TIMPI=DEFI_FONCTION(
                       NOM_PARA='INST',  NOM_RESU='TEMP',
@@ -506,69 +506,69 @@ IMPDD50=SIMU_POINT_MAT(MATER=ACIERDDI,
                       AFFE_VARC=_F(  NOM_VARC='TEMP',
                                      VALE_FONC=TIMPI,
                                      VALE_REF=TEMP),
-                       );
+                       )
 
 
 epsXX=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='EPXX',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsYY=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='EPYY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsZZ=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsXY=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='EPXY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsXZ=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='EPXZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsYZ=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='EPYZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 sigXX=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='SIXX',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigYY=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='SIYY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigZZ=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigXY=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='SIXY',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigXZ=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='SIXZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigYZ=RECU_FONCTION(TABLE=IMPDD50,
                    PARA_X='INST',
                    PARA_Y='SIYZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 epsDIR=CALC_FONCTION(COMB=(_F(FONCTION = epsXX,
@@ -584,7 +584,7 @@ epsDIR=CALC_FONCTION(COMB=(_F(FONCTION = epsXX,
                            _F(FONCTION = epsYZ,
                               COEF= 2*l_norm[ori][1]*l_norm[ori][2],),
                            ),
-                    );
+                    )
 
 
 sigDIR=CALC_FONCTION(COMB=(_F(FONCTION = sigXX,
@@ -600,12 +600,12 @@ sigDIR=CALC_FONCTION(COMB=(_F(FONCTION = sigXX,
                            _F(FONCTION = sigYZ,
                               COEF= 2*l_norm[ori][1]*l_norm[ori][2],),
                            ),
-                    );
+                    )
 
 nom_cas='traction_cube-1_4_9_temp' + str(TEMP)
 
 DEFI_FICHIER(UNITE = 28,
-          FICHIER = 'REPE_OUT/sigdir_'+ nom_cas + '.dat');
+          FICHIER = 'REPE_OUT/sigdir_'+ nom_cas + '.dat')
 IMPR_FONCTION(
          FORMAT='XMGRACE',
          PILOTE='',
@@ -614,9 +614,9 @@ IMPR_FONCTION(
                      COULEUR= 0,
                      LEGENDE= 'SIGdir',),),
          UNITE=28,
-         TITRE='SIGdir = f(Edir)');
+         TITRE='SIGdir = f(Edir)')
 
-DEFI_FICHIER(UNITE = 28,ACTION = 'LIBERER');
+DEFI_FICHIER(UNITE = 28,ACTION = 'LIBERER')
 
 
 gammi=[None]*13
@@ -624,10 +624,10 @@ rhoi=[None]*13
 
 
 DEFI_FICHIER(UNITE = 30,
-             FICHIER = 'REPE_OUT/rho_eps_'+  nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/rho_eps_'+  nom_cas + '.dat')
 
 DEFI_FICHIER(UNITE = 31,
-             FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat')
 
 for i in range(1,13):
 
@@ -635,12 +635,12 @@ for i in range(1,13):
     gammi[i]=RECU_FONCTION(TABLE=IMPDD50,
                          PARA_X='INST',
                         PARA_Y='V'+str(8+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
     rhoi[i]=RECU_FONCTION(TABLE=IMPDD50,
                          PARA_X='INST',
                         PARA_Y='V'+str(7+3*(i-1)),
-                        INTERPOL='LIN');
+                        INTERPOL='LIN')
 
 
     IMPR_FONCTION(
@@ -654,7 +654,7 @@ for i in range(1,13):
                            COULEUR = i,
                            MARQUEUR = 0,
                            LEGENDE= str(system[i]),),),
-                UNITE=30,);
+                UNITE=30,)
 
     IMPR_FONCTION(
                 FORMAT='XMGRACE',
@@ -667,18 +667,18 @@ for i in range(1,13):
                            COULEUR= i,
                            MARQUEUR = 0,
                            LEGENDE= str(system[i]),),),
-                UNITE=31,);
+                UNITE=31,)
 
 DEFI_FICHIER(UNITE = 30,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 DEFI_FICHIER(UNITE = 31,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 
 DEFI_FICHIER(UNITE = 28,
-                FICHIER = 'REPE_OUT/rho_5_gamma5'+  nom_cas + '.dat');
+                FICHIER = 'REPE_OUT/rho_5_gamma5'+  nom_cas + '.dat')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -689,14 +689,14 @@ IMPR_FONCTION(
                         LEGENDE= 'rho5=f(gamma5)',),
                         ),
             UNITE=28,
-            TITRE='rho5=f(gamma5)');
+            TITRE='rho5=f(gamma5)')
 
 DEFI_FICHIER(UNITE = 28,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 DEFI_FICHIER(UNITE = 28,
-                FICHIER = 'REPE_OUT/gamma8_gamma5'+  nom_cas + '.dat');
+                FICHIER = 'REPE_OUT/gamma8_gamma5'+  nom_cas + '.dat')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -707,10 +707,10 @@ IMPR_FONCTION(
                         LEGENDE= 'gamma8=f(gamma5)',),
                         ),
             UNITE=28,
-            TITRE='gamma8=f(gamma5)');
+            TITRE='gamma8=f(gamma5)')
 
 DEFI_FICHIER(UNITE = 28,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 # densites de dislocation
 

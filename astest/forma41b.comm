@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@
 #  MODELISATION A : CALCUL ELASTIQUE
 #--------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #--------------------------------------------------------------
 # 1 - MAILLAGE ET MODELE
 #--------------------------------------------------------------
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -47,16 +47,16 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='LONB',
                                 GROUP_MA='LONB',),
                              _F(GROUP_MA='SYME_X',),
-                             _F(GROUP_MA='SYME_Z',),),);
+                             _F(GROUP_MA='SYME_Z',),),)
 
 
 MALINE=CREA_MAILLAGE(MAILLAGE=MA,
-                     QUAD_LINE=_F(TOUT='OUI',),);
+                     QUAD_LINE=_F(TOUT='OUI',),)
 
 MODTHER=AFFE_MODELE(MAILLAGE=MALINE,
                     AFFE=_F(GROUP_MA=('BETON','DEVANT','COTE','BAS','HAUT',),
                             PHENOMENE='THERMIQUE',
-                            MODELISATION='3D_DIAG',),);
+                            MODELISATION='3D_DIAG',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA=('BETON','SYME_Z','SYME_X','FORCE',),
@@ -64,12 +64,12 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='3D',),
                      _F(GROUP_MA=('HA32','HA8',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='BARRE',),),);
+                        MODELISATION='BARRE',),),)
 
 MO2=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA=('BETON','SYME_Z','SYME_X','FORCE',),
                         PHENOMENE='THERMIQUE',
-                        MODELISATION='3D',),),);
+                        MODELISATION='3D',),),)
 
 #--------------------------------------------------------------
 # 2- DEFINITION DES PARAMETRES MATERIAUX
@@ -84,15 +84,15 @@ CARAMECA=AFFE_CARA_ELEM(MODELE=MO,
                                _F(GROUP_MA='HA8',
                                   SECTION='CERCLE',
                                   CARA='R',
-                                  VALE=0.40000E-2,),),);
+                                  VALE=0.40000E-2,),),)
 
 YOUNG=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0,30E10,
                                           100,40E10,
-                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
-POISSON=DEFI_CONSTANTE(VALE=0.2,);
+POISSON=DEFI_CONSTANTE(VALE=0.2,)
 
-DILAT=DEFI_CONSTANTE(VALE=1.2E-6,);
+DILAT=DEFI_CONSTANTE(VALE=1.2E-6,)
 
 RHOF=DEFI_CONSTANTE(VALE = 2400.,)
 
@@ -102,42 +102,42 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                                TEMP_DEF_ALPHA=20,
                                ALPHA=DILAT,
                                B_ENDOGE=9E-5,
-                               K_DESSIC=8E-6,),);
+                               K_DESSIC=8E-6,),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.E+6,
-                            NU=0.0,),);
+                            NU=0.0,),)
 
 #--------------------------------
 #THERMIQUE
 #CAPACITE THERMIQUE BETON ET BOIS J/m3.deg C
-RCP = 2.4e6;
+RCP = 2.4e6
 
 #CONDUCTIVITE BETON ET BOIS  W/m.deg.C
-LAMBDA = 1.0;
+LAMBDA = 1.0
 
 #CHALEUR D HYDRATATION  J/m3
-Q0 = 114000000.0;
+Q0 = 114000000.0
 
 #TEMPERATURE DE REFERENCE
-TZ0 = 273.15;
+TZ0 = 273.15
 
 # CONSTANTE ARRHENIUS
-Ar = 4000;
+Ar = 4000
 
 # COEFFICIENT DE LA FONCTION A
-a6 = 50.12;
+a6 = 50.12
 
-a5 = -190.76;
+a5 = -190.76
 
-a4 = 258.38;
+a4 = 258.38
 
-a3 = -123.71;
+a3 = -123.71
 
-a2 = -11.82;
+a2 = -11.82
 
-a1 = 15.37;
+a1 = 15.37
 
-a0 = 2.43;
+a0 = 2.43
 #---------------------------------------------------------
 #CALCUL DE LA FONCTION A ET TABULATTION EN FONCTION DE HYDR
 #---------------------------------------------------------
@@ -159,11 +159,11 @@ AA = FORMULE(VALE='exp(-Ar/(TZ0+TEMP))*(AA0(HYDR))',
 
 LL=DEFI_LIST_REEL(DEBUT=0,
                   INTERVALLE=_F(JUSQU_A=1,
-                                PAS=0.01,),);
+                                PAS=0.01,),)
 
 LT=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=_F(JUSQU_A=100.0,
-                                PAS=2.0,),);
+                                PAS=2.0,),)
 
 AFF=CALC_FONC_INTERP(FONCTION=AA,
                      LIST_PARA=LT,
@@ -174,11 +174,11 @@ AFF=CALC_FONC_INTERP(FONCTION=AA,
                      NOM_PARA_FONC='HYDR',
                      LIST_PARA_FONC=LL,
                      PROL_DROITE_FONC='CONSTANT',
-                     PROL_GAUCHE_FONC='EXCLU',);
+                     PROL_GAUCHE_FONC='EXCLU',)
 
 #DEFINITION DE LA CONDUCTIVITE ET DE L ENTHALPIE
 
-CONDBET=DEFI_CONSTANTE(VALE=LAMBDA,);
+CONDBET=DEFI_CONSTANTE(VALE=LAMBDA,)
 
 beta = FORMULE(VALE='RCP*(TEMP+TZ0)',
                RCP=RCP,
@@ -188,7 +188,7 @@ beta = FORMULE(VALE='RCP*(TEMP+TZ0)',
 ENTH=CALC_FONC_INTERP(FONCTION=beta,
                       LIST_PARA=LT,
                       PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE',);
+                      PROL_GAUCHE='LINEAIRE',)
 
 
 
@@ -199,7 +199,7 @@ THBET=DEFI_MATERIAU(THER_HYDR=_F(LAMBDA=CONDBET,
                     SECH_GRANGER=_F(A=3.3E-13,
                                     B=0.05,
                                     QSR_K=Ar,
-                                    TEMP_0_C=20,),);
+                                    TEMP_0_C=20,),)
 
 
 
@@ -207,7 +207,7 @@ THBET=DEFI_MATERIAU(THER_HYDR=_F(LAMBDA=CONDBET,
 
 MABETTH=AFFE_MATERIAU(MAILLAGE=MALINE,
                       AFFE=_F(GROUP_MA='BETON',
-                              MATER=THBET,),);
+                              MATER=THBET,),)
 
 LISTARCH=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=(
@@ -218,7 +218,7 @@ LISTARCH=DEFI_LIST_REEL(DEBUT=0,
                                     _F(JUSQU_A=2592000,
                                        NOMBRE=10,),
                                     _F(JUSQU_A=8640000,
-                                       NOMBRE=5,),),);
+                                       NOMBRE=5,),),)
 LISTINST=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=(_F(JUSQU_A=24*2*3600,
                                        NOMBRE=50,),
@@ -227,19 +227,19 @@ LISTINST=DEFI_LIST_REEL(DEBUT=0,
                                     _F(JUSQU_A=2592000,
                                        NOMBRE=10,),
                                     _F(JUSQU_A=8640000,
-                                       NOMBRE=5,),),);
+                                       NOMBRE=5,),),)
 
 TEMP_EXT=DEFI_FONCTION(NOM_PARA='INST',VALE=(864000,20,
                                              2592000,40,
-                             ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                             ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
-TEMP20=DEFI_CONSTANTE(VALE=20,);
+TEMP20=DEFI_CONSTANTE(VALE=20,)
 
 CHARTH=AFFE_CHAR_THER_F(MODELE=MODTHER,
                         TEMP_IMPO=(_F(GROUP_MA='BAS',
                                       TEMP=TEMP20,),
                                    _F(GROUP_MA='HAUT',
-                                      TEMP=TEMP_EXT,),),);
+                                      TEMP=TEMP_EXT,),),)
 
 RESUTH=THER_NON_LINE(MODELE=MODTHER,
                        CHAM_MATER=MABETTH,
@@ -247,7 +247,7 @@ RESUTH=THER_NON_LINE(MODELE=MODTHER,
                        EXCIT=_F(CHARGE=CHARTH,),
                        INCREMENT=_F(LIST_INST=LISTINST,),
                        ARCHIVAGE=_F(LIST_INST=LISTARCH,),
-                       ETAT_INIT=_F(VALE=20.0,),);
+                       ETAT_INIT=_F(VALE=20.0,),)
 
 RESUTH = CALC_CHAMP(reuse= RESUTH, # PARALLELISME_TEMPS='OUI',
                     RESULTAT = RESUTH,

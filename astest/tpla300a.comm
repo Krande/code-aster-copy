@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ MATE=DEFI_MATERIAU( THER=_F( RHO_CP = 1.0, LAMBDA = 0.04))
 # AFFECTATIONS: MATERIAU  MODELE  CHARGEMENT ----------------------
 #
 
-MODEL=AFFE_MODELE( 
+MODEL=AFFE_MODELE(
                   MAILLAGE=MAILL,
                      AFFE=_F( TOUT = 'OUI',  PHENOMENE = 'THERMIQUE',
                                        MODELISATION = 'PLAN'))
@@ -56,7 +56,7 @@ CHARGE=AFFE_CHAR_THER(
 #
 
 
-TEMP=THER_LINEAIRE( 
+TEMP=THER_LINEAIRE(
                       MODELE=MODEL,
                   CHAM_MATER=CHMATE,
                       EXCIT=_F(  CHARGE = CHARGE) )

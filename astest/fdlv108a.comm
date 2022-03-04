@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,20 +34,20 @@ MAYA = LIRE_MAILLAGE(FORMAT='IDEAS',
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                             NU=0.3,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 DOMSTRUC=AFFE_MATERIAU(MAILLAGE=MAYA,
                        AFFE=_F(GROUP_MA='INTERFAC',
-                               MATER=ACIER,),);
+                               MATER=ACIER,),)
 
 STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
                      AFFE=_F(GROUP_MA='INTERFAC',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='DKT',),);
+                             MODELISATION='DKT',),)
 
 CARA=AFFE_CARA_ELEM(MODELE=STRUCTUR,
                     COQUE=_F(GROUP_MA='INTERFAC',
-                             EPAIS=0.001,),);
+                             EPAIS=0.001,),)
 
 CHARGS=AFFE_CHAR_MECA(MODELE=STRUCTUR,
                       DDL_IMPO=(_F(GROUP_NO='NOEXT',
@@ -62,27 +62,27 @@ CHARGS=AFFE_CHAR_MECA(MODELE=STRUCTUR,
                                    DZ=0.0,
                                    DRX=0.0,
                                    DRY=0.0,
-                                   DRZ=0.0,),),);
+                                   DRZ=0.0,),),)
 
 MEL_KSTR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=STRUCTUR,
                         CHAM_MATER=DOMSTRUC,
                         CARA_ELEM=CARA,
-                        CHARGE=CHARGS,);
+                        CHARGE=CHARGS,)
 
 MEL_MSTR=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=STRUCTUR,
                         CHAM_MATER=DOMSTRUC,
                         CARA_ELEM=CARA,
-                        CHARGE=CHARGS,);
+                        CHARGE=CHARGS,)
 
-NUSTR=NUME_DDL(MATR_RIGI=MEL_KSTR,);
+NUSTR=NUME_DDL(MATR_RIGI=MEL_KSTR,)
 
 MATASKS=ASSE_MATRICE(MATR_ELEM=MEL_KSTR,
-                     NUME_DDL=NUSTR,);
+                     NUME_DDL=NUSTR,)
 
 MATASMS=ASSE_MATRICE(MATR_ELEM=MEL_MSTR,
-                     NUME_DDL=NUSTR,);
+                     NUME_DDL=NUSTR,)
 #CALCUL DES MODES MECANIQUES
 
 MODES=CALC_MODES(MATR_RIGI=MATASKS,
@@ -124,7 +124,7 @@ CHAMNO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                      VALE=(37.5,0.0,0.0,),),
                   _F(GROUP_NO='GRNO1',
                      NOM_CMP=('DX','DY','DZ',),
-                     VALE=(50.0,0.0,0.0,),),),);
+                     VALE=(50.0,0.0,0.0,),),),)
 
 MACRO_MATR_AJOU(MAILLAGE=MAYA,
                 GROUP_MA_FLUIDE='FLUIDE',
@@ -146,7 +146,7 @@ MACRO_MATR_AJOU(MAILLAGE=MAYA,
                 MATR_MASS_AJOU=CO('MASSAJ'),
                 MATR_RIGI_AJOU=CO('RIGIAJ'),
                 MATR_AMOR_AJOU=CO('AMORAJ'),
-                INFO=2,);
+                INFO=2,)
 
 TEST_RESU(OBJET=_F(VALE_CALC=1.6082276230835E+09,
                    NOM=MASSAJ.getName() + '           .VALM',),
@@ -160,4 +160,4 @@ TEST_RESU(OBJET=_F(VALE_CALC=3.4963008885108E+06,
                    NOM=RIGIAJ.getName() + '           .VALM',),
           )
 
-FIN();
+FIN()

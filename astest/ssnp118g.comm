@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 MO=AFFE_MODELE(
 
                 MAILLAGE=MA,
-                
+
 
                 AFFE= (
                 _F(
@@ -79,7 +79,7 @@ CM=AFFE_MATERIAU(
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
            _F(GROUP_MA='CUBEDEG',ANGL_REP=(30,0,0)),
-                                 ));
+                                 ))
 
 
 LIAISON=AFFE_CHAR_MECA(
@@ -186,7 +186,7 @@ U_OUV=CALC_CHAMP(reuse = U_OUV,
                  VARI_INTERNE='VARI_ELNO',
                  CONTRAINTE='SIEF_ELNO',
                  GROUP_MA='CUBEDEG'
-                );
+                )
 
 U_OUV=CALC_CHAMP(
                  reuse = U_OUV,
@@ -194,7 +194,7 @@ U_OUV=CALC_CHAMP(
                  VARI_INTERNE='VARI_NOEU',
                  CONTRAINTE='SIEF_NOEU',
                  GROUP_MA='CUBEDEG'
-                 );
+                 )
 
 #----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_TAC_MIX
@@ -268,7 +268,7 @@ U_TAC=CALC_CHAMP(reuse =U_TAC,
                  VARI_INTERNE='VARI_ELNO',
                  CONTRAINTE='SIEF_ELNO',
                  GROUP_MA='CUBEDEG'
-                );
+                )
 
 U_TAC=CALC_CHAMP(
                  reuse =U_TAC,
@@ -276,7 +276,7 @@ U_TAC=CALC_CHAMP(
                  VARI_INTERNE='VARI_NOEU',
                  CONTRAINTE='SIEF_NOEU',
                  GROUP_MA='CUBEDEG'
-                 );
+                 )
 
 
 #----------------------------------------------------------------------------------

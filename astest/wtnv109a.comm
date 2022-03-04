@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -148,12 +148,12 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                      DDL_IMPO=(_F(TOUT=('OUI'),
                                   PRE1=500.0),
                                   _F(TOUT=('OUI'), DX=0.0,),
-                                  _F(TOUT=('OUI'), DY=0.0,),                     
+                                  _F(TOUT=('OUI'), DY=0.0,),
                            _F(GROUP_NO='BAS',
                                   DZ = 0.,),
 
                                _F(GROUP_NO='HAUT',
-                                  DZ=1.E-3,),),);
+                                  DZ=1.E-3,),),)
 
 MESTAT=STAT_NON_LINE(
                             MODELE=MODELE,
@@ -163,7 +163,7 @@ MESTAT=STAT_NON_LINE(
                              EXCIT=_F(
                 CHARGE = CHAR0),
                 SCHEMA_THM=_F(PARM_THETA=1.,),
-                         COMPORTEMENT=_F( 
+                         COMPORTEMENT=_F(
                 RELATION = 'KIT_THM',
                 RELATION_KIT = (
                   'ELAS',       'LIQU_SATU', 'HYDR_UTIL',   ),

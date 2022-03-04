@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ CHA=AFFE_CHAR_MECA(        MODELE=MO,DDL_IMPO=(
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHAM_MAT,
                    CARA_ELEM=CAR_ELE,
-                   EXCIT=_F( CHARGE = CHA));
+                   EXCIT=_F( CHARGE = CHA))
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,NUME_ORDRE=1,CONTRAINTE=('SIGM_ELNO'))
 
@@ -126,18 +126,18 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,NUME_ORDRE=1,CONTRAINTE=('SIGM_ELNO'))
 SIG_C2_S=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=2,
-                                  NIVE_COUCHE='SUP',),);
+                                  NIVE_COUCHE='SUP',),)
 SIG_C2_M=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=2,
-                                  NIVE_COUCHE='MOY',),);
+                                  NIVE_COUCHE='MOY',),)
 #
 #COUCHE 3 : CALCUL DES CONTRAINTES
 ##################################
 SIG_C3_S=POST_CHAMP(RESULTAT=RESU,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=3,
-                                  NIVE_COUCHE='SUP',),);
+                                  NIVE_COUCHE='SUP',),)
 #
 #
 TEST_RESU(RESU=_F(NUME_ORDRE=1,

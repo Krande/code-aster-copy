@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',
-                   INFO=2,);
+                   INFO=2,)
 
 MAIL2=CREA_MAILLAGE(MAILLAGE=MAIL,
                     LINE_QUAD=_F(TOUT='OUI',),
-                    INFO=2,);
+                    INFO=2,)
 
 MAIL2 = DEFI_GROUP( reuse = MAIL2, MAILLAGE = MAIL2,
                       CREA_GROUP_MA= (
@@ -40,19 +40,19 @@ MAIL2=DEFI_GROUP(reuse =MAIL2,
                                   NOM='faceinf2',
                                   POINT=(0.0,0.0,0.0,),
                                   VECT_NORMALE=(0.0,0.0,-1.0,),
-                                  PRECISION=1e-7,),);
+                                  PRECISION=1e-7,),)
 
 MODTHER=AFFE_MODELE(MAILLAGE=MAIL2,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='THERMIQUE',
-                            MODELISATION='3D',),);
+                            MODELISATION='3D',),)
 
 #
 # DEFINITION DE L'AFFINITE FONCTION DU DEGRE D'HYDRATATION
 
-Ar = 4000;
+Ar = 4000
 
-TZ0 = 273.15;
+TZ0 = 273.15
 
 
 AA0=DEFI_FONCTION(NOM_PARA='HYDR',VALE=(0.,6510.,
@@ -91,7 +91,7 @@ AA0=DEFI_FONCTION(NOM_PARA='HYDR',VALE=(0.,6510.,
                         0.98,30.,
                         0.99,15.,
                         1.,0.,
-                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',);
+                        ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',)
 AA = FORMULE(VALE='exp(-Ar/(TZ0+TEMP))*(AA0(HYDR))',
              Ar=Ar,
              TZ0=TZ0,
@@ -134,11 +134,11 @@ LL=DEFI_LIST_REEL(VALE=(0.,
                         0.98,
                         0.99,
                         1.,
-                        ),);
+                        ),)
 
 LT=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=_F(JUSQU_A=100.0,
-                                PAS=0.1,),);
+                                PAS=0.1,),)
 
 AFF=CALC_FONC_INTERP(FONCTION=AA,
                      LIST_PARA=LL,
@@ -150,14 +150,14 @@ AFF=CALC_FONC_INTERP(FONCTION=AA,
                      LIST_PARA_FONC=LT,
                      PROL_DROITE_FONC='LINEAIRE',
                      PROL_GAUCHE_FONC='LINEAIRE',
-                     );
+                     )
 
 #
 #CONDUCTION EN KJ/H/M/K
 
 COND=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,6.,
                          300.,6.,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 #
 # ENTHALPIE EN KJ/H/M
@@ -166,7 +166,7 @@ ENTH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,6.55E05,
                          20.,7.03E05,
                          50.,7.75E05,
                          70.,8.23E05,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 #
 # CONSTANTE D'ARRHENIUS EN DEGRE KELVIN
@@ -174,28 +174,28 @@ ENTH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,6.55E05,
 MATHYDR=DEFI_MATERIAU(THER_HYDR=_F(LAMBDA=COND,
                                    BETA=ENTH,
                                    AFFINITE=AFF,
-                                   CHALHYDR=1.4904E05,),);
+                                   CHALHYDR=1.4904E05,),)
 
 CHMATNL=AFFE_MATERIAU(MAILLAGE=MAIL2,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATHYDR,),);
+                              MATER=MATHYDR,),)
 
 #
 # CHARGEMENT
 # ----------
-TEMPEXT = 50.0;
+TEMPEXT = 50.0
 
-TEMPINI = 20.9;
+TEMPINI = 20.9
 
 
 #COEFF D'ECHANGE EN KJ/H/M**2/K NUL EN ADIABATIQUE
-COEFH = 0.0;
+COEFH = 0.0
 
 
 CHATHER=AFFE_CHAR_THER(MODELE=MODTHER,
                        ECHANGE=_F(GROUP_MA='FACEINF',
                                   COEF_H=COEFH,
-                                  TEMP_EXT=TEMPEXT,),);
+                                  TEMP_EXT=TEMPEXT,),)
 
 #
 #
@@ -211,7 +211,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=20.,
                                     NOMBRE=40,),
                                  _F(JUSQU_A=60.,
-                                    NOMBRE=40,),),);
+                                    NOMBRE=40,),),)
 
 #
 # =====================================================================
@@ -223,7 +223,7 @@ TEMPINIT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                     MAILLAGE=MAIL2,
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP='TEMP',
-                            VALE=TEMPINI,),);
+                            VALE=TEMPINI,),)
 
 #
 
@@ -234,13 +234,13 @@ RESUTHYD=THER_NON_LINE(MODELE=MODTHER,
                        INCREMENT=_F(LIST_INST=LINST,),
                        ETAT_INIT=_F(CHAM_NO=TEMPINIT,),
                        CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-5,),
-                       PARM_THETA=0.57,);
+                       PARM_THETA=0.57,)
 ##IMPR_RESU(FORMAT="RESULTAT",
 ##FORMAT='MED',
 ##UNITE=81,
 ##
 ##RESU=_F(RESULTAT=RESUTHYD,),
-##);
+##)
 ##############################
 
 
@@ -255,19 +255,19 @@ T05=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='EXTR',
                RESULTAT=RESUTHYD,
                NOM_CHAM='TEMP',
-               NUME_ORDRE=40,);
+               NUME_ORDRE=40,)
 
 T15=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='EXTR',
                RESULTAT=RESUTHYD,
                NOM_CHAM='TEMP',
-               NUME_ORDRE=120,);
+               NUME_ORDRE=120,)
 
 T60=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                OPERATION='EXTR',
                RESULTAT=RESUTHYD,
                NOM_CHAM='TEMP',
-               NUME_ORDRE=200,);
+               NUME_ORDRE=200,)
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='SOURCE_EXTERNE',
                       NOM_CMP='TEMP',
@@ -315,19 +315,19 @@ TEST_RESU(CHAM_NO=(_F(
 
 RESUTHYD=CALC_CHAMP(reuse =RESUTHYD,
                     RESULTAT=RESUTHYD,
-                    THERMIQUE='HYDR_NOEU',);
+                    THERMIQUE='HYDR_NOEU',)
 
 HYDRELNO=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUTHYD,
                     NOM_CHAM='HYDR_ELNO',
-                    NUME_ORDRE=120,);
+                    NUME_ORDRE=120,)
 
 HYDRNOEU=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUTHYD,
                     NOM_CHAM='HYDR_NOEU',
-                    NUME_ORDRE=120,);
+                    NUME_ORDRE=120,)
 
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='SOURCE_EXTERNE',
                        POINT=1,
@@ -366,35 +366,35 @@ TEST_RESU(CHAM_NO=_F(
 MOMECA=AFFE_MODELE(MAILLAGE=MAIL2,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 FCT1=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.200E-2,400.,
                          0.400E-2,500.,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 #
 
 FCT2=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.100E-2,200.,
                          0.300E-2,300.,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 #
 
 E=DEFI_FONCTION(NOM_PARA='HYDR',VALE=(0.0,32.E+3,
                       1000.0,32.E+3,
-                      ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                      ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 #
 
 NU=DEFI_FONCTION(NOM_PARA='HYDR',VALE=(0.0,0.3E0,
                        1000.0,0.3E0,
-                       ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                       ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 #
 
 ALPHA=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.0,10.0E-6,
                           1000.0,10.0E-6,
-                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 #
 
@@ -402,7 +402,7 @@ CTRACB=DEFI_NAPPE(NOM_PARA='HYDR',
                   PARA=(0.,50.,),
                   FONCTION=(FCT1,FCT2,),
                   PROL_DROITE='LINEAIRE',
-                  PROL_GAUCHE='LINEAIRE',);
+                  PROL_GAUCHE='LINEAIRE',)
 
 #
 
@@ -415,7 +415,7 @@ MAT=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                              B_ENDOGE=0.0015,),
                   TRACTION=_F(SIGM=CTRACB,),
                   THER=_F(LAMBDA=1.0E-3,
-                          RHO_CP=0.0E-3,),);
+                          RHO_CP=0.0E-3,),)
 
 #
 
@@ -426,7 +426,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MAIL2,
                                EVOL=RESUTHYD,),
                             _F(NOM_VARC='TEMP',
                                EVOL=RESUTHYD,
-                               VALE_REF=20.9,),),);
+                               VALE_REF=20.9,),),)
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
                       DDL_IMPO=(_F(GROUP_NO='faceinf2',
@@ -436,7 +436,7 @@ CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
                                    DY=0.,),
                                 _F(GROUP_NO='B',
                                    DX=0.,
-                                   DY=0.,),),);
+                                   DY=0.,),),)
 
 #
 
@@ -450,7 +450,7 @@ LISTMECA=DEFI_LIST_REEL(DEBUT=0.0,
                                     _F(JUSQU_A=20.,
                                        NOMBRE=5,),
                                     _F(JUSQU_A=60.,
-                                       NOMBRE=5,),),);
+                                       NOMBRE=5,),),)
 
 #
 
@@ -462,7 +462,7 @@ RESUMECA=STAT_NON_LINE(MODELE=MOMECA,
                        NEWTON=_F(MATRICE='TANGENTE',),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
                        SOLVEUR=_F(METHODE='LDLT',
-                                  ),);
+                                  ),)
 
 #
 
@@ -482,7 +482,7 @@ RESUSTAT=MECA_STATIQUE(MODELE=MOMECA,
                        EXCIT=_F(CHARGE=CHMECA,),
                        LIST_INST=LISTMECA,
                        SOLVEUR=_F(METHODE='LDLT',
-                                  ),);
+                                  ),)
 
 #
 
@@ -495,6 +495,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=21,
                   ),
           )
 
-FIN();
+FIN()
 
 #

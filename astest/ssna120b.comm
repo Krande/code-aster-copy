@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ sigc  = 1200.0
 #-----------------------------------------------------------
 # LECTURE DU MAILLAGE
 #-------------------------------------------------------------
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
 #-----------------------------------------------------------
 # TRANSFORME EN MAILLAGE QUADRATIQUE
@@ -37,11 +37,11 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED');
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='top'),)
-                );
+                )
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_FISSURE=_F(GROUP_MA='joint'));
+                   ORIE_FISSURE=_F(GROUP_MA='joint'))
 
 #-----------------------------------------------------------
 # MODELISATION DU MAILLAGE
@@ -53,7 +53,7 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
                     _F(GROUP_MA='joint',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS_JOINT'),
-                     ));
+                     ))
 
 
 #-----------------------------------------------------------
@@ -85,7 +85,7 @@ SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.0025,495.,
                            0.8,977.,
                            0.9,993.,
                            1.0,1008.,
-                           ),PROL_DROITE='LINEAIRE');
+                           ),PROL_DROITE='LINEAIRE')
 
 #-----------------------------------------------------------
 # MODELISATION DU MATERIAU DE L'EPROUVETTE AE, ZONE COHESIVE Y COMPRISE
@@ -98,11 +98,11 @@ MA_EPR=DEFI_MATERIAU(ELAS=_F(E=2.07E5,
                                      GC = tenac,
                                      SIGM_C = sigc,
                                      PENA_ADHERENCE= 1.E-5,
-                            ));
+                            ))
 
 CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA_EPR));
+                         MATER=MA_EPR))
 
 #-----------------------------------------------------------
 # CONDITIONS AUX LIMITES DE CHARGEMENT ET DE SYMETRIE
@@ -111,32 +111,32 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(GROUP_MA='axe',
                                DX=0.0),
                             _F(GROUP_MA='top',
-                               DY=1.0)));
+                               DY=1.0)))
 
 #-----------------------------------------------------------
 # CONDITION LIMITE DE SYMETRIE SUR LES ELEMENTS DE JOINT
 #-------------------------------------------------------------
-SYM=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(_F(GROUP_MA='joint_b',DY=0.0)));
+SYM=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(_F(GROUP_MA='joint_b',DY=0.0)))
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS DE CALCUL
 #-------------------------------------------------------------
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.0,
-                                     NOMBRE=20));
+                                     NOMBRE=20))
 
 LINST=DEFI_LIST_INST(METHODE='MANUEL',
                      DEFI_LIST=_F(LIST_INST=L_INST1),
                      ECHEC=_F(ACTION='DECOUPE',
                               SUBD_METHODE='MANUEL',
-                              SUBD_NIVEAU=10));
+                              SUBD_NIVEAU=10))
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS D'ARCHIVAGE
 #-------------------------------------------------------------
 LIS_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
-                                      NOMBRE=20));
+                                      NOMBRE=20))
 
 FCT = DEFI_FONCTION(
           NOM_PARA = 'INST',
@@ -163,7 +163,7 @@ UP=STAT_NON_LINE(MODELE=MO,
                  SOLVEUR    = _F(METHODE = 'MUMPS',),
                  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
                  ARCHIVAGE=_F(LIST_INST=LIS_ARCH),
-                           );
+                           )
 
 #-----------------------------------------------------------
 # CALCUL DE CHAMPS COMPLEMENTAIRES
@@ -171,28 +171,28 @@ UP=STAT_NON_LINE(MODELE=MO,
 UP=CALC_CHAMP(reuse =UP,
               RESULTAT=UP,
               FORCE='REAC_NODA'
-             );
+             )
 
 UP=CALC_CHAMP(reuse =UP,
               RESULTAT=UP,
               VARI_INTERNE='VARI_NOEU',
               CONTRAINTE='SIEF_NOEU',
               GROUP_MA='joint'
-              );
+              )
 
 contra=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='Contraction diametrale',
                                 RESULTAT=UP,
                                 NOM_CHAM='DEPL',
                                 GROUP_NO='fond_ent',
-                                NOM_CMP='DX'));
+                                NOM_CMP='DX'))
 
 force=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='force',
                                RESULTAT=UP,
                                NOM_CHAM='REAC_NODA',
                                GROUP_NO='top',
-                               RESULTANTE='DY'));
+                               RESULTANTE='DY'))
 
 coefDX = FORMULE(VALE='-2*DX',
                  NOM_PARA='DX',)
@@ -206,7 +206,7 @@ coefDY = FORMULE(VALE='2*DY*pi/1000',
 contra1=CALC_TABLE(TABLE=contra,
                 ACTION=_F(OPERATION='OPER',
                           FORMULE=coefDX,
-                          NOM_PARA='NDX'));
+                          NOM_PARA='NDX'))
 
 #-----------------------------------------------------------
 # FORCE APPLIQUEE SUR L'EPROUVETTE
@@ -214,7 +214,7 @@ contra1=CALC_TABLE(TABLE=contra,
 force1=CALC_TABLE(TABLE=force,
                 ACTION=_F(OPERATION='OPER',
                           FORMULE=coefDY,
-                          NOM_PARA='FR'));
+                          NOM_PARA='FR'))
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
@@ -224,7 +224,7 @@ TEST_TABLE(TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6),
            VALE_CALC=0.25383482061260,
-           );
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
@@ -234,7 +234,7 @@ TEST_TABLE(TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6),
            VALE_CALC=25.181916890739,
-           );
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
@@ -244,7 +244,7 @@ TEST_TABLE(TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8),
            VALE_CALC=0.25445485758224,
-           );
+           )
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
@@ -254,7 +254,7 @@ TEST_TABLE(TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8),
            VALE_CALC=7.1122024373215,
-           );
+           )
 
 
 #-----------------------------------------------------------
@@ -267,7 +267,7 @@ frcontra=CALC_TABLE(TABLE=contra1,
                            NOM_PARA='INST'),
                         _F(OPERATION='EXTR',
                            NOM_PARA=('NDX','FR')),
-                        ));
+                        ))
 
 # TESTS DE QUANTITES LOCALES AUX PG
 TEST_RESU(RESU=_F(INST=0.7,
@@ -309,9 +309,9 @@ TEST_RESU(RESU=_F(INST=0.7,
 
 
 IMPR_TABLE(TABLE=frcontra,
-           FORMAT='TABLEAU');
+           FORMAT='TABLEAU')
 
 #IMPR_RESU(FORMAT='MED',RESU=(_F(RESULTAT=UP,)))
 IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=UP,NOM_CHAM='VARI_ELGA',GROUP_MA='joint',NOM_CMP=('V3','V4','V7'))))
 
-FIN();
+FIN()

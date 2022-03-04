@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 
 # PRE-CONDITIONNEUR BOOMER
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 for partition in ('GROUP_ELEM', 'SOUS_DOMAINE', 'MAIL_CONTIGU', 'MAIL_DISPERSE', 'CENTRALISE') :
 
@@ -31,17 +31,17 @@ for partition in ('GROUP_ELEM', 'SOUS_DOMAINE', 'MAIL_CONTIGU', 'MAIL_DISPERSE',
                    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),
                    DISTRIBUTION=_F(METHODE=partition,))
 
-    MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3,),);
+    MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3,),)
 
     AFMAT=AFFE_MATERIAU(MAILLAGE=MA,
                         AFFE=_F(TOUT='OUI',
-                                MATER=MAT1,));
+                                MATER=MAT1,))
 
     AFCIN=AFFE_CHAR_CINE(MODELE=MO,
                          MECA_IMPO=(_F(GROUP_NO='Cote_inferieur',
                                        DX=0,DY=0,DZ=0,),
                                     _F(GROUP_NO='Cote_superieur',
-                                       DZ=1,),),);
+                                       DZ=1,),),)
 
     MESTAT1=MECA_STATIQUE(MODELE=MO,
                           CHAM_MATER=AFMAT,
@@ -51,10 +51,10 @@ for partition in ('GROUP_ELEM', 'SOUS_DOMAINE', 'MAIL_CONTIGU', 'MAIL_DISPERSE',
                                      PRE_COND='BOOMER',
                                      RESI_RELA=1.0E-12,
                                      MATR_DISTRIBUEE='OUI',),
-                          INFO=2,);
+                          INFO=2,)
 
     IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MESTAT1,
-                      NOM_CHAM='DEPL',),);
+                      NOM_CHAM='DEPL',),)
 
     INT_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
                                     NOM_CMP='DZ',
@@ -62,21 +62,21 @@ for partition in ('GROUP_ELEM', 'SOUS_DOMAINE', 'MAIL_CONTIGU', 'MAIL_DISPERSE',
                                     TYPE_MAILLE='2D',),
                        CHAM_MATER=AFMAT,
                        RESULTAT=MESTAT1,
-                       );
+                       )
 
     INT_DEPX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
                                     NOM_CMP='DX',
                                     NOM_CHAM='DEPL',
                                     TYPE_MAILLE='1D',),
                        CHAM_MATER=AFMAT,
-                       RESULTAT=MESTAT1,);
+                       RESULTAT=MESTAT1,)
 
     INT_DEPY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
                                     NOM_CMP='DY',
                                     NOM_CHAM='DEPL',
                                     TYPE_MAILLE='1D',),
                        CHAM_MATER=AFMAT,
-                       RESULTAT=MESTAT1,);
+                       RESULTAT=MESTAT1,)
 
     TEST_TABLE(TABLE=INT_DZ,
                NOM_PARA='MOYE_DZ',
@@ -96,4 +96,4 @@ for partition in ('GROUP_ELEM', 'SOUS_DOMAINE', 'MAIL_CONTIGU', 'MAIL_DISPERSE',
     DETRUIRE(NOM=(MO, MAT1, AFMAT, AFCIN, MESTAT1, INT_DZ, INT_DEPX, INT_DEPY),INFO=1)
 
 
-FIN();
+FIN()

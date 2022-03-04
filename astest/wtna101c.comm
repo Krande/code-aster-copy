@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,15 +47,15 @@ MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
                         ( 'HAUT',
             'DEVANT',
             'DROITE',),)
-                        );
-                        
+                        )
+
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
                           CREA_GROUP_MA=(_F(NOM='ROCHE',
                                             TOUT='OUI',)),
                           CREA_GROUP_NO=(_F(NOM='ROCHES',
                                             CRIT_NOEUD='SOMMET',
-                                            GROUP_MA='ROCHE'),),);
+                                            GROUP_MA='ROCHE'),),)
 
 SOL      = DEFI_MATERIAU( ELAS     = _F( E            = 5800.E6,
                                          RHO          = 2500.,
@@ -335,25 +335,25 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #           GROUP_NO  = 'NO8',
 #           NOM_CHAM  = 'SIGM_NOEU',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION',),)
 #
 #DEFORMAT = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEFORMATION',
 #           RESULTAT  =  U2,
 #           GROUP_NO  = 'NO8',
 #           NOM_CHAM  = 'VARI_NOEU',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION',),)
 #
 #DEPLACEM = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEPLACEMENT',
 #           RESULTAT  =  U2,
 #           GROUP_NO     = 'NO8',
 #           NOM_CHAM  = 'DEPL',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION',),)
 #
-#IMPR_TABLE(TABLE=SIGMA,   );
-#IMPR_TABLE(TABLE=DEFORMAT,);
-#IMPR_TABLE(TABLE=DEPLACEM,);
+#IMPR_TABLE(TABLE=SIGMA,   )
+#IMPR_TABLE(TABLE=DEFORMAT,)
+#IMPR_TABLE(TABLE=DEPLACEM,)
 #######################################################################
 
 FIN()

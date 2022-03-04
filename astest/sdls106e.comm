@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,12 @@ MODI_MAILLAGE(reuse =MAILLA2, MAILLAGE=MAILLA2, DEFORME=_F(OPTION='TRAN', ALEA=1
 MODELE1=AFFE_MODELE(MAILLAGE=MAILLA1,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'),)
 
 MODELE2=AFFE_MODELE(MAILLAGE=MAILLA2,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'),)
 
 
 #
@@ -205,11 +205,11 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
 
 MODCOT1=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        TOUT_ORDRE='OUI',
-                       SOUS_STRUC='CARRE1',);
+                       SOUS_STRUC='CARRE1',)
 
 MODCOT2=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        TOUT_ORDRE='OUI',
-                       SOUS_STRUC='CARRE2',);
+                       SOUS_STRUC='CARRE2',)
 
 
 # VERIFICATION NULLITE DU TRAVAIL DES FORCES DE LIAISON

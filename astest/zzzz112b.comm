@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,14 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-# MAILLAGE PLEXUS ;
+# MAILLAGE PLEXUS
 
 
 MAILPLEX = LIRE_MAILLAGE(FORMAT='IDEAS',
                          UNITE=18,
                          )
 
-# MAILLAGE ASTER ;
+# MAILLAGE ASTER
 
 MAINI = LIRE_MAILLAGE(FORMAT='MED',
                       )
@@ -114,12 +114,12 @@ RESU2=MECA_STATIQUE(        MODELE=MODAST,
 RESU2=CALC_CHAMP(reuse=RESU2,
                  RESULTAT=RESU2,
                  LIST_INST=L_INST,
-                 CONTRAINTE=('SIGM_ELNO'),);
+                 CONTRAINTE=('SIGM_ELNO'),)
 
 RESUPOS=POST_CHAMP(RESULTAT=RESU2,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),);
+                                 NIVE_COUCHE='MOY',),)
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
@@ -168,13 +168,13 @@ RESU_NL=STAT_NON_LINE(        MODELE=MODAST,
 RESU_NL=CALC_CHAMP(reuse=RESU_NL,
                    RESULTAT=RESU_NL,
                    CONTRAINTE=('SIGM_ELNO'),
-                   VARI_INTERNE='VARI_ELNO',);
+                   VARI_INTERNE='VARI_ELNO',)
 
 RESNLPOS=POST_CHAMP(RESULTAT=RESU_NL,
                     INST=1.,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='MOY',),);
+                                  NIVE_COUCHE='MOY',),)
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=_F(RESULTAT=RESNLPOS,
                   NOM_CHAM='SIGM_ELNO'))

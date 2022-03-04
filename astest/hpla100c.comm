@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,13 +89,13 @@ TEMPLI1=CREA_RESU( OPERATION='AFFE',
                    AFFE=(_F( CHAM_GD=T_INIT,
                              INST=0.0,      ),
                          _F( CHAM_GD=T_FIN1,
-                             INST=1.0,      ), ), );
+                             INST=1.0,      ), ), )
 
 TEMPLI2=CREA_RESU( OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
                    NOM_CHAM='TEMP',
                    AFFE=(_F( CHAM_GD=T_FIN2,
-                             INST=0.0,      ), ), );
+                             INST=0.0,      ), ), )
 
 TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
     PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARE, EVOL_THER = TEMPLI1, ),)
@@ -119,7 +119,7 @@ CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
 CHMATH1=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI', MATER = MATTH),
                        AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
-                                      NOM_CHAM='TEMP',VALE_REF=0.0), );
+                                      NOM_CHAM='TEMP',VALE_REF=0.0), )
 
 CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
@@ -162,21 +162,21 @@ CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
 DEPLPES=MECA_STATIQUE(MODELE=MO,
                       CARA_ELEM=CARE,
                       CHAM_MATER=CHMAT,
-                      EXCIT=_F(CHARGE=CHPES),);
+                      EXCIT=_F(CHARGE=CHPES),)
 SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='EXTR',
                  RESULTAT=DEPLPES,
                  NOM_CHAM='SIEF_ELGA',
-                 NUME_ORDRE=1,);
+                 NUME_ORDRE=1,)
 
 DEPLPES=CALC_CHAMP(reuse=DEPLPES,
                    RESULTAT=DEPLPES,
-                   CONTRAINTE=('EFGE_ELNO','EFGE_NOEU','SIGM_ELNO','SIEF_ELNO',),);
+                   CONTRAINTE=('EFGE_ELNO','EFGE_NOEU','SIGM_ELNO','SIEF_ELNO',),)
 
 DEPLPES2=POST_CHAMP(RESULTAT=DEPLPES,
                     EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEF_ELNO',),
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),);
+                                  NIVE_COUCHE='INF',),)
 # ------------------------------------------------------------------
 DEPLROT=MECA_STATIQUE(MODELE=MO,
                       CARA_ELEM=CARE,
@@ -185,27 +185,27 @@ DEPLROT=MECA_STATIQUE(MODELE=MO,
 
 DEPLROT=CALC_CHAMP(reuse=DEPLROT,
                    RESULTAT=DEPLROT,
-                   CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIEF_ELNO',),);
+                   CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIEF_ELNO',),)
 
 DEPLROT2=POST_CHAMP(RESULTAT=DEPLROT,
                     EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEF_ELNO',),
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),);
+                                  NIVE_COUCHE='INF',),)
 # ------------------------------------------------------------------
-LISTIME=DEFI_LIST_REEL(VALE=(0.0,1.0,),);
+LISTIME=DEFI_LIST_REEL(VALE=(0.0,1.0,),)
 
 STATNL1=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT1,
                       CARA_ELEM=CARE,
                       COMPORTEMENT=_F(RELATION='ELAS'),
                       EXCIT=_F( CHARGE = CHDIL),
-                      INCREMENT=_F(LIST_INST=LISTIME,),);
+                      INCREMENT=_F(LIST_INST=LISTIME,),)
 
 DEP1=CREA_CHAMP(OPERATION='EXTR',
                 TYPE_CHAM='NOEU_DEPL_R',
                 RESULTAT=STATNL1,
                 NOM_CHAM='DEPL',
-                INST=1.);
+                INST=1.)
 
 DEPLDIL=CREA_RESU(OPERATION='AFFE',
                   TYPE_RESU='EVOL_ELAS',
@@ -214,30 +214,30 @@ DEPLDIL=CREA_RESU(OPERATION='AFFE',
                           CHAM_GD=DEP1,
                           MODELE=MO,
                           CHAM_MATER=CHMAT1,
-                          CARA_ELEM=CARE,),);
+                          CARA_ELEM=CARE,),)
 
 DEPLDIL=CALC_CHAMP(reuse=DEPLDIL,
                    RESULTAT=DEPLDIL,
-                   CONTRAINTE=('SIEF_ELGA','SIEF_ELNO','EFGE_ELNO','SIGM_ELNO'),);
+                   CONTRAINTE=('SIEF_ELGA','SIEF_ELNO','EFGE_ELNO','SIGM_ELNO'),)
 
 
 DEPLDIL2=POST_CHAMP(RESULTAT=DEPLDIL,
                     EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEF_ELNO',),
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),);
+                                  NIVE_COUCHE='INF',),)
 
 STATNL2=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMATH1,
                       CARA_ELEM=CARE,
                       COMPORTEMENT=_F(RELATION='ELAS'),
                       EXCIT=_F( CHARGE = CHDIL),
-                      INCREMENT=_F(LIST_INST=LISTIME,),);
+                      INCREMENT=_F(LIST_INST=LISTIME,),)
 
 DEP2=CREA_CHAMP(OPERATION='EXTR',
                 TYPE_CHAM='NOEU_DEPL_R',
                 RESULTAT=STATNL2,
                 NOM_CHAM='DEPL',
-                INST=1.,);
+                INST=1.,)
 
 DEPLDILT=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_ELAS',
@@ -246,45 +246,45 @@ DEPLDILT=CREA_RESU(OPERATION='AFFE',
                             CHAM_GD=DEP2,
                             MODELE=MO,
                             CHAM_MATER=CHMATH1,
-                            CARA_ELEM=CARE,),);
+                            CARA_ELEM=CARE,),)
 
 DEPLDILT=CALC_CHAMP(reuse=DEPLDILT,
                     RESULTAT=DEPLDILT,
-                    CONTRAINTE=('SIEF_ELGA','SIEF_ELNO','EFGE_ELNO','SIGM_ELNO'),);
+                    CONTRAINTE=('SIEF_ELGA','SIEF_ELNO','EFGE_ELNO','SIGM_ELNO'),)
 
 DDILT2=POST_CHAMP(RESULTAT=DEPLDILT,
                     EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEF_ELNO',),
                                   NUME_COUCHE=1,
-                                  NIVE_COUCHE='INF',),);
+                                  NIVE_COUCHE='INF',),)
 # ------------------------------------------------------------------
 DEPLDI2=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT2,
                       CARA_ELEM=CARE,
-                      EXCIT=_F(CHARGE=CHDIL),);
+                      EXCIT=_F(CHARGE=CHDIL),)
 
 DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,
                    RESULTAT=DEPLDI2,
-                   CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIEF_ELNO',),);
+                   CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIEF_ELNO',),)
 
 DDI2=POST_CHAMP(RESULTAT=DEPLDI2,
                 EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEF_ELNO',),
                               NUME_COUCHE=1,
-                              NIVE_COUCHE='INF',),);
+                              NIVE_COUCHE='INF',),)
 
 DEPLDI2T=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT2,
                        CARA_ELEM=CARE,
-                       EXCIT=_F(CHARGE=CHDIL),);
+                       EXCIT=_F(CHARGE=CHDIL),)
 
 DEPLDI2T=CALC_CHAMP(reuse=DEPLDI2T,
                     RESULTAT=DEPLDI2T,
-                    CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIEF_ELNO',),);
+                    CONTRAINTE=('EFGE_ELNO','SIGM_ELNO','SIEF_ELNO',),)
 
 
 DDI2T=POST_CHAMP(RESULTAT=DEPLDI2T,
                  EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','SIEF_ELNO',),
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='INF',),);
+                               NIVE_COUCHE='INF',),)
 #---------------------------------------------------------------------
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DEPLPES,
@@ -846,7 +846,7 @@ SIGMINI0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     MODELE=MO,
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP='SIXX',
-                            VALE=0.,),);
+                            VALE=0.,),)
 
 V=STAT_NON_LINE(            MODELE=MO,
                         CHAM_MATER=CHMAT3,

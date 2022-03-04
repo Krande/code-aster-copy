@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,24 +30,24 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 #
 #
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='AB',),
                                _F(GROUP_MA='BC',),
                                _F(GROUP_MA='CD',),
-                               _F(GROUP_MA='DA',),),);
+                               _F(GROUP_MA='DA',),),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS',),);
+                           MODELISATION='AXIS',),)
 
 MAIL = MODI_MAILLAGE(reuse=MAIL,
                      MAILLAGE=MAIL,
                      ORIE_PEAU=(_F(GROUP_MA_PEAU='BC',),
-                                   _F(GROUP_MA_PEAU='CD',),),);
+                                   _F(GROUP_MA_PEAU='CD',),),)
 
 ####################################
 ############################################
@@ -70,7 +70,7 @@ LI1=DEFI_LIST_REEL(DEBUT=0.0,
                                _F(JUSQU_A=9000.0,
                                   NOMBRE=20,),
                                _F(JUSQU_A=1.E4,
-                                  NOMBRE=20,),),);
+                                  NOMBRE=20,),),)
 
 ############################################
 
@@ -78,7 +78,7 @@ LI1=DEFI_LIST_REEL(DEBUT=0.0,
 #
 
 MATER0=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
-                                 NU=0.285),);
+                                 NU=0.285),)
 
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
@@ -92,15 +92,15 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=7.74E6,
                             PRES_CRIT=3.E5,
                             KCAM=0.,
                             PTRAC=0.,
-                            ),);
+                            ),)
 
 CHM0=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
-                          MATER=MATER0,),);
+                          MATER=MATER0,),)
 
 CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATER,),);
+                              MATER=MATER,),)
 
 ############################################
 
@@ -113,7 +113,7 @@ PRESS1=DEFI_FONCTION(NOM_PARA='INST',
                     (0.0,0.0,
                     100.0,100000.0),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU',);
+                    PROL_GAUCHE='EXCLU',)
 
 PRESS2=DEFI_FONCTION(NOM_PARA='INST',
                     NOM_RESU='PRESSION',
@@ -127,7 +127,7 @@ PRESS2=DEFI_FONCTION(NOM_PARA='INST',
                     9000.0,600000.0,
                     10000.0,100000.0),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='EXCLU',);
+                    PROL_GAUCHE='EXCLU',)
 
 
 ############################################
@@ -139,17 +139,17 @@ CHA0=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=(_F(GROUP_NO='AB',
                                  DY=0.0,),
                               _F(GROUP_NO='DA',
-                                 DX=0.0,),),);
+                                 DX=0.0,),),)
 
 CHA1=AFFE_CHAR_MECA_F(MODELE=MODELE,
                      PRES_REP =_F(GROUP_MA=('BC','CD'),
                                   PRES=PRESS1,),
-                                  VERI_NORM='OUI');
+                                  VERI_NORM='OUI')
 
 CHA2=AFFE_CHAR_MECA_F(MODELE=MODELE,
                       PRES_REP=_F(GROUP_MA=('BC','CD'),
                                   PRES=PRESS2,),
-                                  VERI_NORM='OUI');
+                                  VERI_NORM='OUI')
 
 
 
@@ -169,7 +169,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     NEWTON=_F(MATRICE='ELASTIQUE',
                               REAC_ITER=20,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10),
-                    SOLVEUR=_F(METHODE='LDLT',),);
+                    SOLVEUR=_F(METHODE='LDLT',),)
 
 ############################################
 #
@@ -180,7 +180,7 @@ RES1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=RESU1,
                 NOM_CHAM='SIEF_ELGA',
-                INST=100.0,);
+                INST=100.0,)
 
 #
 ############################################
@@ -204,7 +204,7 @@ RESU1=STAT_NON_LINE(reuse = RESU1,
                                 ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=40,
                                      RESI_GLOB_RELA=1.E-06,),
-                      SOLVEUR=_F(METHODE='LDLT',),);
+                      SOLVEUR=_F(METHODE='LDLT',),)
 
 
 ############################################
@@ -231,7 +231,7 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                                 ),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=200,
                                      RESI_GLOB_RELA=1.E-06),
-                      SOLVEUR=_F(METHODE='LDLT',),);
+                      SOLVEUR=_F(METHODE='LDLT',),)
 
 
 TDEP=(5000.,6500.,7000.,7500.,8000.,8500.,9000.,9500.)
@@ -322,6 +322,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
                 ),
           )
 
-FIN();
+FIN()
 #
 #

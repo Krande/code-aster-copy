@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI', PHENOMENE='THERMIQUE', MODELISATION='3D',),
-                  );
+                  )
 
 # DEFINITION DES FONCTIONS DE TEMPERATURE ET D'HYDRATATION
 # --------------------------------------------------------
@@ -91,7 +91,7 @@ MAPOU=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=19)
 
 MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
                   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_TGM',),
-                  );
+                  )
 
 GF=DEFI_GEOM_FIBRE( INFO=1,
                     FIBRE = (_F(GROUP_FIBRE='SBET',
@@ -115,7 +115,7 @@ POUCA=AFFE_CARA_ELEM( MODELE=MOPOU,
                         GEOM_FIBRE=GF,
                         MULTIFIBRE=(_F( GROUP_MA=('POUTRE'),PREC_AIRE=1.0E-06, PREC_INERTIE=2.55E-01, GROUP_FIBRE=('SBET',) ),
                                     )
-                    );
+                    )
 
 
 # PROJECTION

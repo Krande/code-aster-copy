@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,26 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_MATERIAU(ELAS=_F(E=2e+11,
                          NU=0.3,
-                         RHO = 7850,),);
+                         RHO = 7850,),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('haut','bas',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('haut','bas',),),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA=('FACE','haut','bas', 'BD',),),);
+                CREA_GROUP_NO=_F(GROUP_MA=('FACE','haut','bas', 'BD',),),)
 
 MODE=AFFE_MODELE(  MAILLAGE=MAIL,
                       AFFE=_F(GROUP_MA=('FACE','haut','bas', 'BD',),
                               PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'AXIS',), );
+                              MODELISATION = 'AXIS',), )
 LT = FORMULE(VALE='X-2',
              NOM_PARA='X',)
 
@@ -47,10 +47,10 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAIL, NB_COUCHES=5,
                     TYPE_DISCONTINUITE='FISSURE',
                     DEFI_FISS=_F(FONC_LT=LT,
                                  FONC_LN=LN,),
-                    );
+                    )
 
 MODEX=MODI_MODELE_XFEM(MODELE_IN=MODE,
-                       FISSURE=FISS,);
+                       FISSURE=FISS,)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODEX,
                     DDL_IMPO=(  _F(GROUP_NO='C',
@@ -59,19 +59,19 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODEX,
                     FORCE_CONTOUR=(
                                 _F(  GROUP_MA = 'haut',  FY = 1.E6,),
                                 _F(  GROUP_MA = 'bas', FY = -1.E6,),),
-                    );
+                    )
 
 MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                    MODELE=MODEX,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MA,),);
+                           MATER=MA,),)
 
 RESU=MECA_STATIQUE(MODELE=MODEX,
                    CHAM_MATER=MATE,
                    EXCIT=(_F(CHARGE=CHAR),
                             ),
-                   );
-# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU,),);
+                   )
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU,),)
 
 
 # -------------------------------------------------------------
@@ -90,25 +90,25 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = RESU,
                         )
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM));
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM))
 
 #-------------------------------------------------------
 # Taille d'element h = 0.1
 TABKG=CALC_G_XFEM(THETA=_F(FISSURE=FISS,),
            RESULTAT=RESU,
            COMPORTEMENT=_F(RELATION='ELAS',),
-           OPTION='CALC_K_G',);
+           OPTION='CALC_K_G',)
 
 TABG=CALC_G_XFEM(THETA=_F(FISSURE=FISS,),
-            RESULTAT=RESU,);
+            RESULTAT=RESU,)
 
-IMPR_TABLE(TABLE=TABKG,);
+IMPR_TABLE(TABLE=TABKG,)
 
 SIF=POST_K1_K2_K3(FISSURE=FISS,
                     RESULTAT=RESU,
-                    );
+                    )
 
-IMPR_TABLE(TABLE=SIF,);
+IMPR_TABLE(TABLE=SIF,)
 
 # ---------------
 # VALEUR DE REFERENCE MILIEU INFINI :
@@ -120,8 +120,8 @@ G_REF=23.17296
 # longueur de la fissure
 a = 2.
 
-# pour G obtenu avec l'operateur CALC_G, la valeur de non regression 
-# doit etre identique (a la multiplication pres par la longueur de 
+# pour G obtenu avec l'operateur CALC_G, la valeur de non regression
+# doit etre identique (a la multiplication pres par la longueur de
 # la fissure) entre les options CALC_G et CALC_K_G
 vale_calc_g = 11.756931305835
 
@@ -204,31 +204,31 @@ MA_XROT=POST_MAIL_XFEM(MODELE=MODEX)
 MOD_XROT=AFFE_MODELE(MAILLAGE=MA_XROT,
                      AFFE=_F( GROUP_MA=('FACE'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='AXIS',),);
+                              MODELISATION='AXIS',),)
 
 RES_XROT=POST_CHAM_XFEM(MODELE_VISU = MOD_XROT,
                         RESULTAT    = RESU_ROT)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XROT));
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XROT))
 
 #-------------------------------------------------------
 # Taille d'element h = 0.1
 TABKG_RO=CALC_G_XFEM(THETA=_F(FISSURE=FISS,),
                 RESULTAT=RESU_ROT,
                 COMPORTEMENT=_F(RELATION='ELAS',),
-                OPTION='CALC_K_G',);
+                OPTION='CALC_K_G',)
 
 TABG_RO=CALC_G_XFEM(THETA=_F(FISSURE=FISS,),
                RESULTAT=RESU_ROT,
-               COMPORTEMENT=_F(RELATION='ELAS',));
+               COMPORTEMENT=_F(RELATION='ELAS',))
 
-IMPR_TABLE(TABLE=TABKG_RO,);
+IMPR_TABLE(TABLE=TABKG_RO,)
 
 SIF_ROT=POST_K1_K2_K3(FISSURE=FISS,
                     RESULTAT=RESU_ROT,
-                    );
+                    )
 
-IMPR_TABLE(TABLE=SIF_ROT,);
+IMPR_TABLE(TABLE=SIF_ROT,)
 
 # VALEUR DE REFERENCE OBETNUS DE FISSURE MAILLE DANS SSLV134C (DE CALC_G)
 G_LOC=2136.52
@@ -237,8 +237,8 @@ K1_REF=21.911E6
 # POUR UN RADIAN
 G_REF=a*2136.52
 
-# pour G obtenu avec l'operateur CALC_G, la valeur de non regression 
-# doit etre identique (a la multiplication pres par la longueur de 
+# pour G obtenu avec l'operateur CALC_G, la valeur de non regression
+# doit etre identique (a la multiplication pres par la longueur de
 # la fissure) entre les options CALC_G et CALC_K_G
 vale_calc_g = 2133.0633846696
 
@@ -276,4 +276,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=K1_REF,
            NOM_PARA='K1',
            TABLE=SIF_ROT,)
-FIN();
+FIN()

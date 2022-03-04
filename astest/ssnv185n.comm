@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,21 +27,21 @@ DEBUT(CODE    = _F(NIV_PUB_WEB='INTERNET',),
 #                MAILLAGE : hexa_5_31_51.mgib
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 MAILLAGE= COPIER(CONCEPT= MAILLAG1,)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),)
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='VOL',),);
+                       LINE_QUAD=_F(GROUP_MA='VOL',),)
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),
-                    );
+                    )
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -53,12 +53,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='3D',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D',),),)
 
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
-                       );
+                       )
 
 LN = FORMULE(VALE='Z-15.',
              NOM_PARA=['X', 'Y', 'Z'],)
@@ -68,10 +68,10 @@ LT = FORMULE(VALE='-Y+5.',
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
-                    );
+                    )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,
-                          INFO=1,);
+                          INFO=1,)
 
 
 #----------------------------------------------
@@ -81,12 +81,12 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI', MATER=ACIER ),
-                             );
+                             )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -118,11 +118,11 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                    DDL=('DZ','DZ',),
                                    COEF_MULT=(1.0,1.0),
                                    COEF_IMPO=0.0,),
-                             ),);
+                             ),)
 
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
+                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),)
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -135,7 +135,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH2),
                           ),
                    INFO=1,
-                   );
+                   )
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
@@ -157,9 +157,9 @@ for i in range(0,nbc) :
                           R_SUP=RS[i],),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                             LISSAGE_G='LAGRANGE',),
-                 INFO=2,);
+                 INFO=2,)
 
-   IMPR_TABLE(TABLE=SIF[i],);
+   IMPR_TABLE(TABLE=SIF[i],)
 
 SIF[nbc]=CALC_G_XFEM(     RESULTAT=UTOT1,
                      OPTION='CALC_K_G',
@@ -168,9 +168,9 @@ SIF[nbc]=CALC_G_XFEM(     RESULTAT=UTOT1,
                               R_SUP=RS[0],),
                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                                 LISSAGE_G='LAGRANGE_NO_NO',),
-                     INFO=2,);
+                     INFO=2,)
 
-IMPR_TABLE(TABLE=SIF[nbc],);
+IMPR_TABLE(TABLE=SIF[nbc],)
 
 # SOLUTION ANALYTIQUE (chaboche p.53)
 a=5
@@ -206,7 +206,7 @@ VAL_CALC = [1.1214027087812E+07  ,
             1.1217514565089E+07  ,
             1.1193450731004E+07  ,
             1.1148748059427E+07  ,
-            1.1109058026036E+07  ];
+            1.1109058026036E+07  ]
 
 for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
@@ -215,7 +215,7 @@ for i in range(0,nbc+1) :
               VALE_CALC=VAL_CALC[4*i+0], VALE_REFE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.01,
-              REFERENCE='ANALYTIQUE');
+              REFERENCE='ANALYTIQUE')
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
@@ -223,7 +223,7 @@ for i in range(0,nbc+1) :
               VALE_CALC=VAL_CALC[4*i+1], VALE_REFE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.02,
-              REFERENCE='ANALYTIQUE');
+              REFERENCE='ANALYTIQUE')
 
 
 #------------------------------------------------------------------------
@@ -261,7 +261,7 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='DX',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
 # TEST DE NON REGRESSION PAR RAPPORT A LA VERSION 9.0.30
 
@@ -305,7 +305,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
                         INFO          = 2)
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
+#IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM))
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -334,4 +334,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

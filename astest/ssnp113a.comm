@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 MODELE=AFFE_MODELE(AFFE    =_F(TOUT = 'OUI',
                                PHENOMENE='MECANIQUE',
                                MODELISATION='3D'),
-                   MAILLAGE=MAIL);
+                   MAILLAGE=MAIL)
 MATERIAU=DEFI_MATERIAU(MAZARS=_F(K =0.7,
                                  EPSD0=9.375e-5,
                                  AC   =1.15,
@@ -42,11 +42,11 @@ MATERIAU=DEFI_MATERIAU(MAZARS=_F(K =0.7,
                                  BC   =1391.3,
                                  BT   =10000.),
                        ELAS     =_F(NU=0.2,
-                                    E=3.20000000000E10),);
+                                    E=3.20000000000E10),)
 
 CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
                               TOUT='OUI'),
-                      MAILLAGE=MAIL);
+                      MAILLAGE=MAIL)
 CLIM=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
                                  GROUP_NO='COTEG'),
                               _F(DZ=0.0,
@@ -54,14 +54,14 @@ CLIM=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
                                  DY=0.0),
                               _F(GROUP_NO='N5',
                                  DY=0.0),),
-                    MODELE=MODELE);
+                    MODELE=MODELE)
 CHAR1=AFFE_CHAR_MECA(DDL_IMPO=(_F(GROUP_NO=('N2','N6'),
                                   DY=0.0),
                                _F(DX=1.0,
                                   GROUP_NO='COTED'),
                                _F(DY=-0.2,
                                   GROUP_NO='HAUT'),),
-                     MODELE=MODELE);
+                     MODELE=MODELE)
 CHAR2=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=1.0,
                                  GROUP_NO='COTED'),
                               _F(GROUP_NO='N4',
@@ -76,18 +76,18 @@ CHAR2=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=1.0,
                                  DY=2.0),
                               _F(GROUP_NO='N6',
                                  DY=2.0),),
-                     MODELE=MODELE);
+                     MODELE=MODELE)
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.0,
                                      NOMBRE=10),
                                   _F(JUSQU_A=5.0,
-                                     NOMBRE=300) ,), );
+                                     NOMBRE=300) ,), )
 FCT_MUL1=DEFI_FONCTION(INTERPOL=('LIN','LIN'),
                        NOM_PARA='INST',
-                       VALE=(0.0,0.0,1.0,5.25E-05),);
+                       VALE=(0.0,0.0,1.0,5.25E-05),)
 FCT_MUL2=DEFI_FONCTION(INTERPOL=('LIN','LIN'),
                        NOM_PARA='INST',
-                       VALE=(1.0,0.0,5.0,7.88E-4),);
+                       VALE=(1.0,0.0,5.0,7.88E-4),)
 RES1=STAT_NON_LINE(CHAM_MATER=CAR_MAT,
                    MODELE=MODELE,
                    TITRE='BENCH-B LOI MAZARS',
@@ -99,7 +99,7 @@ RES1=STAT_NON_LINE(CHAM_MATER=CAR_MAT,
                    NEWTON     =_F(MATRICE='TANGENTE'),
                    EXCIT      =(_F(CHARGE=CLIM),
                                 _F(CHARGE=CHAR1,
-                                   FONC_MULT=FCT_MUL1),), );
+                                   FONC_MULT=FCT_MUL1),), )
 RES1=STAT_NON_LINE(reuse     = RES1,
                    CHAM_MATER=CAR_MAT,
                    MODELE    =MODELE,
@@ -118,14 +118,14 @@ RES1=STAT_NON_LINE(reuse     = RES1,
                                  TYPE_CHARGE='DIDI',
                                  FONC_MULT=FCT_MUL2),),
                   ETAT_INIT= _F( EVOL_NOLI=RES1 ),
-                  ARCHIVAGE= _F(LIST_INST = L_INS1), );
+                  ARCHIVAGE= _F(LIST_INST = L_INS1), )
 RES1=CALC_CHAMP(reuse=RES1,RESULTAT=RES1,NUME_ORDRE=(10,25,310),CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
 RES1=CALC_CHAMP  ( reuse  = RES1,
                 RESULTAT=RES1,
                 NUME_ORDRE = (10,25,310),
                 DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',
-                );
+                )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    REFERENCE='SOURCE_EXTERNE',
@@ -361,4 +361,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 ),
           )
 
-FIN() ;
+FIN()

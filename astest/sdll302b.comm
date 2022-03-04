@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -353,10 +353,10 @@ TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
 
 
 # -- on construit les résultats de référence pour un couple maille/noeud
-TABMO = CREA_TABLE(RESU=_F(RESULTAT=REP_LIN1, 
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=REP_LIN1,
                            NOM_CMP=('MT', 'MFY', 'MFZ'),
                            NOM_CHAM='EFGE_ELNO',
-                           TOUT='OUI', 
+                           TOUT='OUI',
                            TOUT_ORDRE='OUI'))
 
 
@@ -370,7 +370,7 @@ TABM10N12 = CALC_TABLE(TABLE=TABMO,
                              _F(OPERATION='FILTRE',
                                 NOM_PARA='NOEUD',
                                 VALE_K ='N12'),
-                            ) 
+                            )
                     )
 # IMPR_TABLE(UNITE=6, TABLE=TABM10N12)
 
@@ -383,14 +383,14 @@ TABM10N12 = CALC_TABLE(TABLE=TABM10N12,reuse=TABM10N12,
                                 FORMULE=MOMEQ_FO,
                                 NOM_PARA='MEQ',
                                 NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
-                            ) 
+                            )
                     )
-                    
+
 TABM10N12MAX = CALC_TABLE(TABLE=TABM10N12,
                      ACTION=(_F(OPERATION='CALCUL',
                                 NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
                                 TYPE_CALCUL = 'MAXI_ABS'),
-                            ) 
+                            )
                     )
 
 # MFY et MT sont nulles sur toutes les mailles
@@ -409,7 +409,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=125.7293341104791, 
+             VALE_REFE=125.7293341104791,
              VALE_CALC=125.7293341104791,
              )
 
@@ -428,7 +428,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=125.7293341104791, 
+             VALE_REFE=125.7293341104791,
              VALE_CALC=125.7293341104791,
              )
 
@@ -564,7 +564,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=51,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   VALE_CALC=0.000252949893806,
-                  
+
                   CRITERE='ABSOLU',
                   ),
           )

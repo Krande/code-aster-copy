@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ MA=DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
                    )
 
 MOTHER=AFFE_MODELE(    MAILLAGE=MA,
-                            
+
                               AFFE=_F(  TOUT = 'OUI',
                                      PHENOMENE = 'THERMIQUE',
                                      MODELISATION = 'PLAN_DIAG')
@@ -74,7 +74,7 @@ LISTTH=DEFI_LIST_REEL(         DEBUT=0.,INTERVALLE=(
                                         _F(  JUSQU_A = 10.,     NOMBRE = 8))
                          )
 
-LIST=DEFI_LIST_REEL(  VALE=(0.1, 0.5, 2.0, 10.0) );
+LIST=DEFI_LIST_REEL(  VALE=(0.1, 0.5, 2.0, 10.0) )
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTHER,
                            CHAM_MATER=CHMAT,
@@ -87,7 +87,7 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTHER,
 TEMPE=CALC_ERREUR(reuse=TEMPE,
                   RESULTAT=TEMPE,
                   TOUT='OUI',
-                  OPTION=('ERTH_ELEM',),);
+                  OPTION=('ERTH_ELEM',),)
 
 TEMP_1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,

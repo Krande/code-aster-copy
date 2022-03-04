@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,28 +19,28 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
-              ),);
+              ),)
 
 
-_OMEGA = 6.4;
-Fz=-100;
+_OMEGA = 6.4
+Fz=-100
 
 #Choix de l'amortissement numerique pour le modeles de reference 1D, 3D et 1D-3D
-alpha=0.25;
+alpha=0.25
 
 FSIN = FORMULE(VALE='sin((INST)*_OMEGA)',
                _OMEGA=_OMEGA,
                NOM_PARA='INST',)
-Ti=0;
-Tf=3.0;
-Tb=2.0;
+Ti=0
+Tf=3.0
+Tb=2.0
 
-dt=0.0015;
+dt=0.0015
 
-Tb_1=Tb-dt;
-Tb_2=Tb+dt;
+Tb_1=Tb-dt
+Tb_2=Tb+dt
 
-Mail=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,);
+Mail=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,)
 
 MODELE=AFFE_MODELE(MAILLAGE=Mail,
                    AFFE=(_F(GROUP_MA=('Ref3D'),
@@ -48,29 +48,29 @@ MODELE=AFFE_MODELE(MAILLAGE=Mail,
                             MODELISATION='3D',),
                          _F(GROUP_MA=('Poutre'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_T',),),);
+                            MODELISATION='POU_D_T',),),)
 
 Carel3D=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA=('Poutre','PCol'),
                                  SECTION='CERCLE',
                                  CARA='R',
-                                 VALE=0.005,),);
+                                 VALE=0.005,),)
 
 MATL=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                            NU=0.3,
-                           RHO=7800.0,),);
+                           RHO=7800.0,),)
 
 MATC=DEFI_MATERIAU(ELAS=_F(E=2.E11*0.5,
                            NU=0.3,
-                           RHO=7800.0*0.5,),);
+                           RHO=7800.0*0.5,),)
 
 MATR3=DEFI_MATERIAU(ELAS=_F(E=2.E11*0.99,
                            NU=0.3,
-                           RHO=7800.0*0.99,),);
+                           RHO=7800.0*0.99,),)
 
 MATR1=DEFI_MATERIAU(ELAS=_F(E=2.E11*0.01,
                            NU=0.3,
-                           RHO=7800.0*0.01,),);
+                           RHO=7800.0*0.01,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=Mail,
                     AFFE=(
@@ -84,7 +84,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=Mail,
                              MATER=MATR3,),
                           _F(GROUP_MA=('Col','ColHexa','ColPenta'),
                              MATER=MATC,),
-                           ),);
+                           ),)
 
 # C'EST OK AVEC DEUX CHARGES ARLEQUIN POUR HEXA (cf. ci-dessous)
 CondLim=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -98,11 +98,11 @@ CondLim=AFFE_CHAR_MECA(MODELE=MODELE,
                                         GROUP_NO_2='RP1',),
                                      _F(OPTION='3D_POU',
                                         GROUP_MA_1='R3D2',
-                                        GROUP_NO_2='RP2',),),);
+                                        GROUP_NO_2='RP2',),),)
 
 Charge=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='NF',
-                                      FZ=Fz,),);
+                                      FZ=Fz,),)
 
 ASSEMBLAGE(MODELE=MODELE,
            CHAM_MATER=CHMAT,
@@ -113,12 +113,12 @@ ASSEMBLAGE(MODELE=MODELE,
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('MASSE'),
                          OPTION='MASS_MECA',),
-                      ),);
+                      ),)
 
 LIST3D=DEFI_LIST_REEL(DEBUT=Ti,
                     INTERVALLE=(_F(JUSQU_A=Tf,
                                    PAS=10*dt,),
-                                ),);
+                                ),)
 
 RefM3D=DYNA_VIBRA(    TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
                       MODELE=MODELE,
@@ -133,12 +133,12 @@ RefM3D=DYNA_VIBRA(    TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
                       EXCIT=(_F(CHARGE=CondLim,),
                              _F(CHARGE=Charge,
                                 FONC_MULT=FSIN),),
-                      INCREMENT=_F(LIST_INST=LIST3D,),);
+                      INCREMENT=_F(LIST_INST=LIST3D,),)
 
 DN105Z=RECU_FONCTION(RESULTAT=RefM3D,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DZ',
-                     GROUP_NO='N105',);
+                     GROUP_NO='N105',)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.000327041,
                         VALE_REFE=-0.000330546,
@@ -157,4 +157,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000327144,
                         ),
               )
 
-FIN();
+FIN()

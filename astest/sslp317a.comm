@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # MODELISATION A : RAFFINEMENT AVEC UN CRITERE EN POURCENTAGE DU NOMBRE DE MAILLES
 
 # nbre de raffinement
-nb_raff = 3          
+nb_raff = 3
 
 # initialisation
 MA    = [None]*(nb_raff+1)
@@ -39,20 +39,20 @@ FISS4 = [None]*(nb_raff+1)
 
 r2 = 0.05
 
-num_calc=0   
+num_calc=0
 
-MA[num_calc]=LIRE_MAILLAGE(FORMAT='MED',);
+MA[num_calc]=LIRE_MAILLAGE(FORMAT='MED',)
 
 for num_calc in range(nb_raff+1) :
 
    MO[num_calc]=AFFE_MODELE(MAILLAGE=MA[num_calc],
                             AFFE=(_F(GROUP_MA=('SURF','LIG2','LIG3','LIG4'),
                                      PHENOMENE='MECANIQUE',
-                                     MODELISATION='D_PLAN',),),);
+                                     MODELISATION='D_PLAN',),),)
 
    # entaille
-   FISS1[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
-                                  TYPE_DISCONTINUITE='INTERFACE', 
+   FISS1[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
+                                  TYPE_DISCONTINUITE='INTERFACE',
                                   DEFI_FISS=_F(FORM_FISS     = 'ENTAILLE',
                                                DEMI_LONGUEUR = 0.3,
                                                RAYON_CONGE   = 0.05,
@@ -62,7 +62,7 @@ for num_calc in range(nb_raff+1) :
                                                ))
 
    # inclusion circulaire
-   FISS2[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
+   FISS2[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                                   TYPE_DISCONTINUITE='INTERFACE',
                                   DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                                DEMI_GRAND_AXE = r2,
@@ -72,13 +72,13 @@ for num_calc in range(nb_raff+1) :
                                                VECT_Y         = (0., 1., 0. ),
                                                ),)
 
-   FISS3[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
+   FISS3[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                                   DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                                PFON_ORIG  = (0.2, 0.25, 0.),
                                                PFON_EXTR  = (0.4, 0.25, 0.),))
 
 
-   FISS4[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
+   FISS4[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                                   DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                                PFON_ORIG  = (-0.3, 0.25, 0.),
                                                PFON_EXTR  = (-0.1, 0.25, 0.),))
@@ -118,10 +118,10 @@ for num_calc in range(nb_raff+1) :
                                              TOUT_CMP='OUI',
                                              OPERATION='EXTRACTION',),)
 
-      IMPR_TABLE(TABLE=DEP1[num_calc])                                 
-      IMPR_TABLE(TABLE=DEP2[num_calc])                                 
-      IMPR_TABLE(TABLE=DEP3[num_calc])                                 
-      IMPR_TABLE(TABLE=DEP4[num_calc])                                 
+      IMPR_TABLE(TABLE=DEP1[num_calc])
+      IMPR_TABLE(TABLE=DEP2[num_calc])
+      IMPR_TABLE(TABLE=DEP3[num_calc])
+      IMPR_TABLE(TABLE=DEP4[num_calc])
 
       REF1 = -2.70156E-01
       REF2 = -2.70156E-01
@@ -160,7 +160,7 @@ for num_calc in range(nb_raff+1) :
                  NOM_PARA='X1',
                  TABLE=DEP4[num_calc])
 
-      # SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES  
+      # SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES
       MA[num_calc+1]=CO('MA_%d' % (num_calc+1))
 
       MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
@@ -176,7 +176,7 @@ MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
                         CREA_GROUP_NO=_F(NOM='NC',OPTION='ENV_SPHERE',
                         POINT=(0.,0.),PRECISION=1/50.,RAYON=1/50.),
                         INFO=2 )
-       
+
 # definition group de noeuds pour bloquer l'entaille
 MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
                         MAILLAGE=MA[nb_raff],
@@ -190,39 +190,39 @@ MA[nb_raff]=DEFI_GROUP( reuse =MA[nb_raff],
                         POINT=(0.1,-0.3),PRECISION=1/200.,RAYON=1/200.),
                         INFO=2 )
 
-                              
+
 # impression du dernier maillage
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]));
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]))
 
 #*********************************************************************
 #                          CALCUL                                    *
 #*********************************************************************
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO[nb_raff],
-                         FISSURE=(FISS1[nb_raff],FISS2[nb_raff],FISS3[nb_raff],FISS4[nb_raff]),);
+                         FISSURE=(FISS1[nb_raff],FISS2[nb_raff],FISS3[nb_raff],FISS4[nb_raff]),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
-                            NU=0.3),);
+                            NU=0.3),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA='SURF',MATER=ACIER,),
-                       );
+                       )
 
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=_F(GROUP_MA='LIG1',
                                    DX=0.0,
                                    DY=0.0,),
-                       );
+                       )
 
 # pour bloquer les modes rigides de l'inclusion centrale et de l'entaille
 CHARINC=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=_F(GROUP_NO=('NC','NE1','NE2'),
                                    DX=0.0,DY=10.0,),
-                       );
+                       )
 
 CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      PRES_REP=_F(GROUP_MA=('LIG2','LIG3','LIG4'),PRES=-1.e6,),);
+                      PRES_REP=_F(GROUP_MA=('LIG2','LIG3','LIG4'),PRES=-1.e6,),)
 
 RESU=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -238,9 +238,9 @@ MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),) 
+                              MODELISATION='D_PLAN',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                         RESULTAT    = RESU)
 
-FIN();
+FIN()

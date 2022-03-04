@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'), IMPR_MACRO='NON
 #
 nb_mail_max = 4
 #
-_press_x = 1000.0;
+_press_x = 1000.0
 
-_press0 = 0.e-14;
-_press0 = 1.e-14;
+_press0 = 0.e-14
+_press0 = 1.e-14
 #
 M=[None]*10
 #
@@ -70,7 +70,7 @@ M[0]=DEFI_GROUP(reuse =M[0],
                                    OPTION='SPHERE',
                                    GROUP_NO_CENTRE='P',
                                    TYPE_MAILLE='3D',
-                                   RAYON=0.001,),);
+                                   RAYON=0.001,),)
 #
 # Attention : le test d'interpenetration peut etre long (voir la documentation).
 MACR_INFO_MAIL( MAILLAGE=M[0],
@@ -109,8 +109,8 @@ for num_mail in range(nb_mail_max) :
                                                     'YMIN', 'YMAX',
                                                     'ZMIN', 'ZMAX',
                                                     'CL_1', 'CL_2',),)
-                         );
-                         
+                         )
+
 #
 # 4.4. MISE EN PLACE DES MATERIAUX
 #
@@ -125,8 +125,8 @@ for num_mail in range(nb_mail_max) :
 #
 # 4.5. Chargements
 #
-  PRES   = 12.3;
-  PRES_0 = 1.E-14;
+  PRES   = 12.3
+  PRES_0 = 1.E-14
   CHAR = AFFE_CHAR_MECA(MODELE=MODELE,
                         FACE_IMPO = _F(GROUP_MA='CL_1',
                                         DX=0.,
@@ -137,7 +137,7 @@ for num_mail in range(nb_mail_max) :
                                   _F(GROUP_MA=('XMIN', 'XMAX',
                                                'YMIN', 'YMAX',
                                                'ZMIN', 'ZMAX',),
-                                      PRES=_press0,),),);
+                                      PRES=_press0,),),)
 #
 # 4.6. Resolution
 #
@@ -154,10 +154,10 @@ for num_mail in range(nb_mail_max) :
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 GROUP_NO='P',
-                                TOUT_CMP='OUI',),);
+                                TOUT_CMP='OUI',),)
 
   ##IMPR_TABLE(TABLE=DEPL_P,
-            ##NOM_PARA=('INTITULE','NOM_CHAM','NOEUD','DX','DY','DZ',),);
+            ##NOM_PARA=('INTITULE','NOM_CHAM','NOEUD','DX','DY','DZ',),)
 #
   if num_mail < nb_mail_max-1 :
 #
@@ -185,13 +185,13 @@ for num_mail in range(nb_mail_max) :
                                     _F(GROUP_MA=('XMIN', 'XMAX',
                                                  'YMIN', 'YMAX',
                                                  'ZMIN', 'ZMAX',),
-                                        PRES=_press0,),),);
+                                        PRES=_press0,),),)
 #
 # 4.8.2.2. Resolution
 #
     RESUDUAL=MECA_STATIQUE( MODELE=MODELE,
                           CHAM_MATER=CHMAT,
-                            EXCIT=_F(CHARGE=CHARDUAL,),);
+                            EXCIT=_F(CHARGE=CHARDUAL,),)
 #
 #
 # 4.8.2.3. Calcul d'erreur
@@ -207,13 +207,13 @@ for num_mail in range(nb_mail_max) :
     RESU=CALC_ERREUR(reuse =RESU,
                     RESULTAT=RESU,
                     OPTION=('QIRE_ELEM',),
-                    RESU_DUAL=RESUDUAL,);
+                    RESU_DUAL=RESUDUAL,)
 #
 # 4.10. Adaptation du maillage de num_mail vers num_mail+1
 #       IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD pen_d2_poutre
 #
     ##IMPR_RESU ( UNITE=90+num_mail, FORMAT='MED',
-                ##RESU=_F(RESULTAT=RESU, NOM_CHAM='QIRE_ELEM', NOM_CMP='ERREST') ) ;
+                ##RESU=_F(RESULTAT=RESU, NOM_CHAM='QIRE_ELEM', NOM_CMP='ERREST') )
 #
     if num_mail > 0 :
       DETRUIRE(NOM=(NIVEAUCA, DIAMCA))
@@ -232,23 +232,23 @@ for num_mail in range(nb_mail_max) :
                               _F(CHAM_GD=CO('DIAMCA'),
                                  CHAM_CAT='DIAMETRE',),),
                   )
-    #IMPR_CO(CONCEPT=_F(NOM=NIVEAU)) ;
+    #IMPR_CO(CONCEPT=_F(NOM=NIVEAU))
 #
 # 5. IMPRESSIONS POUR POST-TRAITEMENT
 #
   ##IMPR_RESU ( UNITE=80+num_mail, FORMAT='MED',
-              ##RESU=_F(RESULTAT=RESU, ),) ;
+              ##RESU=_F(RESULTAT=RESU, ),)
 #
 # 6. test de fin
 #
-#IMPR_CO(CONCEPT=_F(NOM=NIVEAUCA)) ;
+#IMPR_CO(CONCEPT=_F(NOM=NIVEAUCA))
 #NIVEAU=CREA_CHAMP( OPERATION='ASSE',
                     #TYPE_CHAM='ELEM_ERRE_R',
                     #MODELE=MODELE,
                     #PROL_ZERO='OUI',
                     #ASSE=(_F( CHAM_GD = NIVEAUCA,
-                              #TOUT='OUI',),),) ;
-#IMPR_RESU ( RESU=_F( CHAM_GD=NIVEAU, ) ) ;
+                              #TOUT='OUI',),),)
+#IMPR_RESU ( RESU=_F( CHAM_GD=NIVEAU, ) )
 #TEST_RESU(CHAM_ELEM=( _F( CHAM_GD=NIVEAU,
                       #CRITERE = 'ABSOLU',
                       #PRECISION = 1.E-3,

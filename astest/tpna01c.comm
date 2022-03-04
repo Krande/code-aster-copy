@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,24 +19,24 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 
 T20=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.0,20.0,
                         1200.0,20.0,
-                        ),);
+                        ),)
 
 HE=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='H',VALE=(0.0,71.0,
                        1200.0,71.0,
-                       ),);
+                       ),)
 
 CONDUC=DEFI_FONCTION(NOM_PARA='TEMP',NOM_RESU='LAMBDA',VALE=(0.0,40.0,
                            1200.0,40.0,
-                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 ENTHAL=DEFI_FONCTION(NOM_PARA='TEMP',NOM_RESU='CP',VALE=(0.0,0.0,
                            1200.0,1200.0,
-                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 RAYO=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.0,12093.210046,
                          5.0,12078.807291,
@@ -139,10 +139,10 @@ RAYO=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.0,12093.210046,
                          490.0,623.335524,
                          495.0,314.710342,
                          500.0,0.0,
-                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 MATER=DEFI_MATERIAU(THER_NL=_F(LAMBDA=CONDUC,
-                               BETA=ENTHAL,),);
+                               BETA=ENTHAL,),)
 
 MAIL = LIRE_MAILLAGE(FORMAT='IDEAS',
                      UNITE=19,
@@ -150,19 +150,19 @@ MAIL = LIRE_MAILLAGE(FORMAT='IDEAS',
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),);
+                            MATER=MATER,),)
 
 MOTH=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 CHAVI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='AFFE',
                  MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP=('DX','DY','DZ',),
-                         VALE=(0.,0.,0.,),),);
+                         VALE=(0.,0.,0.,),),)
 
 CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,
                       FLUX_NL=_F(GROUP_MA='FACE_INT',
@@ -170,12 +170,12 @@ CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,
                       ECHANGE=_F(GROUP_MA='FACE_EXT',
                                  COEF_H=HE,
                                  TEMP_EXT=T20,),
-                      CONVECTION=_F(VITESSE=CHAVI,),);
+                      CONVECTION=_F(VITESSE=CHAVI,),)
 
 CHTH2=AFFE_CHAR_THER(MODELE=MOTH,
                      ECHANGE=_F(GROUP_MA='FACE_EXT',
                                 COEF_H=71.,
-                                TEMP_EXT=20.,),);
+                                TEMP_EXT=20.,),)
 
 TEMPE=THER_NON_LINE_MO(MODELE=MOTH,
                        CHAM_MATER=CHMAT,
@@ -184,12 +184,12 @@ TEMPE=THER_NON_LINE_MO(MODELE=MOTH,
                        CONVERGENCE=_F(CRIT_TEMP_RELA=1.E-3,
                                       CRIT_ENTH_RELA=1.E-2,
                                       ITER_GLOB_MAXI=10,),
-                       SOLVEUR=_F(METHODE='MULT_FRONT',),);
+                       SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
 TEMPE=CALC_CHAMP(reuse =TEMPE,
                 RESULTAT=TEMPE,
                 NUME_ORDRE=0,
-                 THERMIQUE=('FLUX_ELNO'),);
+                 THERMIQUE=('FLUX_ELNO'),)
 
 # VALEURS DE REFERENCE: VERSION  3.06.09 DU CODE_ASTER
 
@@ -374,6 +374,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                 ),
           )
 
-FIN();
+FIN()
 
 #

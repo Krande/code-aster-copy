@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,21 +28,21 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
       )
 
 
-MAIL=LIRE_MAILLAGE(UNITE=20, FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(UNITE=20, FORMAT='MED',)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),);
+                   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),)
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=200.e9, NU=0.3, RHO=8000.0,),);
+MAT=DEFI_MATERIAU(ELAS=_F(E=200.e9, NU=0.3, RHO=8000.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI', MATER=MAT,),);
+                    AFFE=_F(TOUT='OUI', MATER=MAT,),)
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_MA='BLOK',
                                    DX=0.0,
                                    DY=0.0,
-                                   DZ=0.0,),);
+                                   DZ=0.0,),)
 
 ASSEMBLAGE (    MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -51,7 +51,7 @@ ASSEMBLAGE (    MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('K1'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('M1'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 
 # 1. Calcul de reference avec les matrices "completes" :
@@ -95,4 +95,4 @@ if 1 :
     TEST_RESU(RESU=_F(RESULTAT=MODE3, NUME_MODE=2, PARA='FREQ', VALE_CALC= 85.631015163879, ))
 
 
-FIN();
+FIN()

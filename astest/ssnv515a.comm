@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ def rankine_traction(YOUNG,POISSON,SIGMA_T,SIG0,epsizz_max,N_pas=100,):
 #
 #***********************************************************************
 
-DEBUT(CODE   =_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE   =_F(NIV_PUB_WEB='INTERNET',),)
 
 #***********************************************************************
 #
@@ -112,7 +112,7 @@ ltemps    =[dtemps*i for i in range(npas+1)]
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=(_F(JUSQU_A =tarret   , NOMBRE =2,),
-                                 _F(JUSQU_A =temps_max, NOMBRE =npas,),),);
+                                 _F(JUSQU_A =temps_max, NOMBRE =npas,),),)
 
 #***********************************************************************
 #
@@ -139,7 +139,7 @@ print('g_modu=',G,'     /// k_modu=',K)
 
 SOL=DEFI_MATERIAU(ELAS   =_F(E =YOUNG, NU =POISSON, ALPHA=0.,),
                   RANKINE=_F(SIGMA_T = SIGMA_T,),
-                  INFO   =1,);
+                  INFO   =1,)
 
 
 #***********************************************************************
@@ -155,12 +155,12 @@ EPZZ=.03
 COEF1=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(  0., -P0,
-                     temps_max, -P0,),);
+                     temps_max, -P0,),)
 
 COEF2=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(  0., 0.,
-                     temps_max, EPZZ,),);
+                     temps_max, EPZZ,),)
 
 #***********************************************************************
 #
@@ -199,7 +199,7 @@ T1=SIMU_POINT_MAT(INFO=2, MATER=SOL,
                                EPZZ=0.,
                                EPXY=0.,
                                EPXZ=0.,
-                               EPYZ=0.,),);
+                               EPYZ=0.,),)
 
 # ================================================================
 #
@@ -210,15 +210,15 @@ T1=SIMU_POINT_MAT(INFO=2, MATER=SOL,
 fsizz = RECU_FONCTION(TABLE = T1,
                    PARA_X   = 'INST',
                    PARA_Y   = 'SIZZ',
-                   INFO     = 1,);
+                   INFO     = 1,)
 
 fepxx = RECU_FONCTION(TABLE = T1,
                    PARA_X   = 'INST',
-                   PARA_Y   = 'EPXX',);
+                   PARA_Y   = 'EPXX',)
 
 fepdp = RECU_FONCTION(TABLE = T1,
                    PARA_X   = 'INST',
-                   PARA_Y   = 'V2',);
+                   PARA_Y   = 'V2',)
 
 npas   =300
 dtemps =temps_max/npas
@@ -232,33 +232,33 @@ REFSIZZ  =DEFI_FONCTION(NOM_PARA  ='INST',
                       ABSCISSE   =linst,
                       ORDONNEE   =sizz,
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 
 REFEPXX  =DEFI_FONCTION(NOM_PARA  ='INST',
                       NOM_RESU   ='EPXX',
                       ABSCISSE   =linst,
                       ORDONNEE   =epxx,
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 
 REFEPDP =DEFI_FONCTION(NOM_PARA  ='INST',
                       NOM_RESU   ='V2',
                       ABSCISSE   =linst,
                       ORDONNEE   =epsdp,
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 
 refsizz=CALC_FONC_INTERP(FONCTION =REFSIZZ,
                          NOM_PARA ='INST',
-                         LIST_PARA=TEMPS,);
+                         LIST_PARA=TEMPS,)
 
 refepxx=CALC_FONC_INTERP(FONCTION =REFEPXX,
                          NOM_PARA ='INST',
-                         LIST_PARA=TEMPS,);
+                         LIST_PARA=TEMPS,)
 
 refepdp=CALC_FONC_INTERP(FONCTION =REFEPDP,
                          NOM_PARA ='INST',
-                         LIST_PARA=TEMPS,);
+                         LIST_PARA=TEMPS,)
 
 npas   =20
 dtemps =temps_max/npas
@@ -266,21 +266,21 @@ linst  =[dtemps*i for i in range(npas)]
 
 DSIZZ = CALC_FONCTION(INFO=2,
                       COMB=(_F(FONCTION=fsizz,   COEF = 1.),
-                            _F(FONCTION=refsizz, COEF =-1.),),);
+                            _F(FONCTION=refsizz, COEF =-1.),),)
 
 DEPXX = CALC_FONCTION(INFO=1,
                       COMB=(_F(FONCTION=fepxx,   COEF = 1.),
-                            _F(FONCTION=refepxx, COEF =-1.),),);
+                            _F(FONCTION=refepxx, COEF =-1.),),)
 
 DEPDP = CALC_FONCTION(INFO=1,
                       COMB=(_F(FONCTION=fepdp,   COEF = 1.),
-                            _F(FONCTION=refepdp, COEF =-1.),),);
+                            _F(FONCTION=refepdp, COEF =-1.),),)
 
-TABDSIZZ = CREA_TABLE(FONCTION=_F(FONCTION=DSIZZ),);
+TABDSIZZ = CREA_TABLE(FONCTION=_F(FONCTION=DSIZZ),)
 
-TABDEPXX = CREA_TABLE(FONCTION=_F(FONCTION=DEPXX),);
+TABDEPXX = CREA_TABLE(FONCTION=_F(FONCTION=DEPXX),)
 
-TABDEPDP = CREA_TABLE(FONCTION=_F(FONCTION=DEPDP),);
+TABDEPDP = CREA_TABLE(FONCTION=_F(FONCTION=DEPDP),)
 
 TEST_TABLE(NOM_PARA ='SIZZ',
            TABLE    =TABDSIZZ,
@@ -292,7 +292,7 @@ TEST_TABLE(NOM_PARA ='SIZZ',
 
            REFERENCE='ANALYTIQUE',
            PRECISION=1.e-8,
-           VALE_REFE=0.,);
+           VALE_REFE=0.,)
 
 TEST_TABLE(NOM_PARA ='EPXX',
            TABLE    =TABDEPXX,
@@ -304,7 +304,7 @@ TEST_TABLE(NOM_PARA ='EPXX',
 
            REFERENCE='ANALYTIQUE',
            PRECISION=1.e-4,
-           VALE_REFE=0.,);
+           VALE_REFE=0.,)
 
 TEST_TABLE(NOM_PARA ='V2',
            TABLE    =TABDEPDP,
@@ -316,5 +316,5 @@ TEST_TABLE(NOM_PARA ='V2',
 
            REFERENCE='ANALYTIQUE',
            PRECISION=1.e-4,
-           VALE_REFE=0.,);
-FIN();
+           VALE_REFE=0.,)
+FIN()

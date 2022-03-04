@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # Read the mesh
-mesh=LIRE_MAILLAGE(FORMAT='MED',);
+mesh=LIRE_MAILLAGE(FORMAT='MED',)
 
 mesh=MODI_MAILLAGE(reuse =mesh,
                    MAILLAGE=mesh,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),)
 
 # Define the material
 steel=DEFI_MATERIAU(
@@ -34,18 +34,18 @@ steel=DEFI_MATERIAU(
 
 chmat=AFFE_MATERIAU(MAILLAGE=mesh,
                     AFFE=_F(TOUT='OUI',
-                            MATER=steel,),);
+                            MATER=steel,),)
 # Mechanic model
 model=AFFE_MODELE(MAILLAGE=mesh,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # Boundary condition
 chg_b=AFFE_CHAR_CINE(MODELE=model,
                       MECA_IMPO=_F(GROUP_MA='S_inf',
                                  DX=0,DY=0.0,DZ=0),
-                     );
+                     )
 
 chg_p=AFFE_CHAR_MECA(MODELE=model,
                      PRES_REP=_F(GROUP_MA='S_e',
@@ -55,14 +55,14 @@ chg_p=AFFE_CHAR_MECA(MODELE=model,
 # Time discretization
 list_t=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=10.0,
-                                    PAS=1.0,),);
+                                    PAS=1.0,),)
 
-list_i=DEFI_LIST_INST(METHODE='MANUEL', 
-                      DEFI_LIST=_F(LIST_INST=list_t,),);
+list_i=DEFI_LIST_INST(METHODE='MANUEL',
+                      DEFI_LIST=_F(LIST_INST=list_t,),)
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                                           10.,1.,
-                   ),);
+                   ),)
 
 ####################################################################################################
 #
@@ -80,7 +80,7 @@ stnl=STAT_NON_LINE(MODELE=model,
 
 stnl=CALC_CHAMP(reuse=stnl,
                 RESULTAT=stnl,
-                CONTRAINTE='SIEF_NOEU',);
+                CONTRAINTE='SIEF_NOEU',)
 
 ####################################################################################################
 #
@@ -95,7 +95,7 @@ base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
                  UNITE      = 70,
                  FORMAT_MED =_F(NOM_CHAM_MED = 'base_p__DEPL',
                                 NOM_CHAM     = 'DEPL',),
-                 TOUT_ORDRE = 'OUI',);
+                 TOUT_ORDRE = 'OUI',)
 
 redu=STAT_NON_LINE(MODELE=model,
                    CHAM_MATER=chmat,
@@ -114,9 +114,9 @@ redu=STAT_NON_LINE(MODELE=model,
 
 redu=CALC_CHAMP(reuse=redu,
                 RESULTAT=redu,
-                CONTRAINTE='SIEF_NOEU',);
+                CONTRAINTE='SIEF_NOEU',)
 
-coor_red=RECU_TABLE(CO=redu,NOM_TABLE='COOR_REDUIT',);
+coor_red=RECU_TABLE(CO=redu,NOM_TABLE='COOR_REDUIT',)
 
 IMPR_TABLE(TABLE=coor_red, UNITE=6)
 
@@ -142,7 +142,7 @@ reduX=STAT_NON_LINE(MODELE=model,
                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),)
 
 
-coor_reX=RECU_TABLE(CO=reduX,NOM_TABLE='COOR_REDUIT',);
+coor_reX=RECU_TABLE(CO=reduX,NOM_TABLE='COOR_REDUIT',)
 
 IMPR_TABLE(TABLE=coor_reX, UNITE=6)
 

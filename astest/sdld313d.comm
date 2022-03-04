@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #
 
-MASRES0=LIRE_MAILLAGE(FORMAT="ASTER",);
+MASRES0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 
 MASRES0=DEFI_GROUP(reuse =MASRES0,
                   MAILLAGE=MASRES0,
                   CREA_GROUP_MA=_F(NOM='TOUT',
-                                   TOUT='OUI',),);
+                                   TOUT='OUI',),)
 #
 
 MASRES=CREA_MAILLAGE(MAILLAGE=MASRES0,
@@ -45,25 +45,25 @@ MODELE=AFFE_MODELE(MAILLAGE=MASRES,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('B','C',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 #
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=28000.0,
                             NU=0.0,
                             RHO=0.0,
-                            AMOR_HYST=0.0,),);
+                            AMOR_HYST=0.0,),)
 
 MATHYST=DEFI_MATERIAU(ELAS=_F(E=28000.0,
                               NU=0.0,
                               RHO=0.0,
-                              AMOR_HYST=0.01,),);
+                              AMOR_HYST=0.01,),)
 #
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MASRES,
                        AFFE=(_F(GROUP_MA='K2',
                                 MATER=MATER,),
                              _F(GROUP_MA='AMORT',
-                                MATER=MATHYST,),),);
+                                MATER=MATHYST,),),)
 #
 
 RIGMAS=AFFE_CARA_ELEM(MODELE=MODELE,
@@ -83,7 +83,7 @@ RIGMAS=AFFE_CARA_ELEM(MODELE=MODELE,
                                _F(GROUP_MA='C',
                                   CARA='K_T_D_N',
                                   VALE=( 0.,0.,0.,)),
-                             ),);
+                             ),)
 #
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -94,68 +94,68 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                     DRY=0.0,
                                     DRZ=0.0,),
                                  _F(GROUP_NO='A',
-                                    DX=0.0,),),);
+                                    DX=0.0,),),)
 
 FORCENO=AFFE_CHAR_MECA(MODELE=MODELE,
                        FORCE_NODALE=_F(GROUP_NO='C',
-                                       FX=100.0,),);
+                                       FX=100.0,),)
 
 RIGIELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=RIGMAS,
-                        CHARGE=CONDLIM,);
+                        CHARGE=CONDLIM,)
 
 MASSELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=RIGMAS,
-                        CHARGE=CONDLIM,);
+                        CHARGE=CONDLIM,)
 
 RIGCMPLX=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
                         MODELE=MODELE,
                         CHARGE=CONDLIM,
                         CHAM_MATER=CHAMPMAT,
                         CARA_ELEM=RIGMAS,
-                        RIGI_MECA=RIGIELEM,);
+                        RIGI_MECA=RIGIELEM,)
 
 SCNDMEMB=CALC_VECT_ELEM(OPTION='CHAR_MECA',
                         CHARGE=FORCENO,
-                        CARA_ELEM=RIGMAS,);
+                        CARA_ELEM=RIGMAS,)
 
-INCONNUS=NUME_DDL(MATR_RIGI=RIGCMPLX) 
+INCONNUS=NUME_DDL(MATR_RIGI=RIGCMPLX)
 
 MATRRIGR=ASSE_MATRICE(MATR_ELEM=RIGIELEM,
-                      NUME_DDL=INCONNUS,);
+                      NUME_DDL=INCONNUS,)
 
 MATRRIGI=ASSE_MATRICE(MATR_ELEM=RIGCMPLX,
-                      NUME_DDL=INCONNUS,);
+                      NUME_DDL=INCONNUS,)
 
 MATRMASS=ASSE_MATRICE(MATR_ELEM=MASSELEM,
-                      NUME_DDL=INCONNUS,);
+                      NUME_DDL=INCONNUS,)
 
 VECTASS=ASSE_VECTEUR(VECT_ELEM=SCNDMEMB,
-                     NUME_DDL=INCONNUS,);
+                     NUME_DDL=INCONNUS,)
 
 VECTAS2=CREA_CHAMP(OPERATION='R2C',TYPE_CHAM='NOEU_DEPL_C',
                     CHAM_GD=VECTASS)
 
 VECTASC=CREA_CHAMP(OPERATION='ASSE',MODELE=MODELE,TYPE_CHAM='NOEU_DEPL_C',
                    NUME_DDL=INCONNUS,
-                   ASSE=_F(CHAM_GD=VECTAS2,TOUT='OUI',CUMUL='NON',COEF_C=('RI',1.0,0.01,),),);
+                   ASSE=_F(CHAM_GD=VECTAS2,TOUT='OUI',CUMUL='NON',COEF_C=('RI',1.0,0.01,),),)
 
 
 
 # DEFINITION DES PULSATIONS/FREQUENCES DE LA REPONSE HARMONIQUE
 #-------------------------------------------------
-L_REEL1 = (0.0, 3.3687, 6.4847999999999999, 8.0006000000000004);
-L_REEL2 = (11.874599999999999, 13.4747, 15.5802, 21.054300000000001);
-L_REEL = (0.0, 3.3687, 6.4847999999999999, 8.0006000000000004, 11.874599999999999, 13.4747, 15.5802, 21.054300000000001);
+L_REEL1 = (0.0, 3.3687, 6.4847999999999999, 8.0006000000000004)
+L_REEL2 = (11.874599999999999, 13.4747, 15.5802, 21.054300000000001)
+L_REEL = (0.0, 3.3687, 6.4847999999999999, 8.0006000000000004, 11.874599999999999, 13.4747, 15.5802, 21.054300000000001)
 
 
-LISFREQ1=DEFI_LIST_REEL(VALE=L_REEL1,);
-LISFREQ2=DEFI_LIST_REEL(VALE=L_REEL2,);
-LISFREQ=DEFI_LIST_REEL(VALE=L_REEL,);
+LISFREQ1=DEFI_LIST_REEL(VALE=L_REEL1,)
+LISFREQ2=DEFI_LIST_REEL(VALE=L_REEL2,)
+LISFREQ=DEFI_LIST_REEL(VALE=L_REEL,)
 
 REPHARM=DYNA_VIBRA(BASE_CALCUL='PHYS',
                    TYPE_CALCUL='HARM',
@@ -165,7 +165,7 @@ REPHARM=DYNA_VIBRA(BASE_CALCUL='PHYS',
                        LIST_FREQ=LISFREQ1,
                        EXCIT=_F(VECT_ASSE=VECTASC,
                                 COEF_MULT=1.0,
-                                PHAS_DEG=0.0,),);
+                                PHAS_DEG=0.0,),)
 
 REPHARM=DYNA_VIBRA(BASE_CALCUL='PHYS',
                    TYPE_CALCUL='HARM',
@@ -177,13 +177,13 @@ REPHARM=DYNA_VIBRA(BASE_CALCUL='PHYS',
                        LIST_FREQ=LISFREQ2,
                        EXCIT=_F(VECT_ASSE=VECTASC,
                                 COEF_MULT=1.0,
-                                PHAS_DEG=0.0,),);
+                                PHAS_DEG=0.0,),)
 
 F1=RECU_FONCTION(RESULTAT=REPHARM,
                  NOM_CHAM='DEPL',
                  LIST_FREQ=LISFREQ,
                  NOM_CMP='DX',
-                 GROUP_NO='C',);
+                 GROUP_NO='C',)
 
 
 MODES=CALC_MODES(MATR_RIGI=MATRRIGR,
@@ -191,19 +191,19 @@ MODES=CALC_MODES(MATR_RIGI=MATRRIGR,
                  )
 
 
-NUMGEN=NUME_DDL_GENE(BASE=MODES,);
+NUMGEN=NUME_DDL_GENE(BASE=MODES,)
 
 KGEN=PROJ_MATR_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMGEN,
-                    MATR_ASSE=MATRRIGI,);
+                    MATR_ASSE=MATRRIGI,)
 
 MGEN=PROJ_MATR_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMGEN,
-                    MATR_ASSE=MATRMASS,);
+                    MATR_ASSE=MATRMASS,)
 
 FGEN=PROJ_VECT_BASE(BASE=MODES,
                     NUME_DDL_GENE=NUMGEN,
-                    VECT_ASSE=VECTASC, TYPE_VECT='FORC');
+                    VECT_ASSE=VECTASC, TYPE_VECT='FORC')
 
 REPHARMG=DYNA_VIBRA(BASE_CALCUL='GENE',
                    TYPE_CALCUL='HARM',
@@ -213,7 +213,7 @@ REPHARMG=DYNA_VIBRA(BASE_CALCUL='GENE',
                        LIST_FREQ=LISFREQ1,
                        EXCIT=_F(VECT_ASSE_GENE=FGEN,
                                 COEF_MULT=1.0,
-                                PHAS_DEG=0.0,),);
+                                PHAS_DEG=0.0,),)
 
 REPHARMG=DYNA_VIBRA(BASE_CALCUL='GENE',
                    TYPE_CALCUL='HARM',
@@ -225,18 +225,18 @@ REPHARMG=DYNA_VIBRA(BASE_CALCUL='GENE',
                        LIST_FREQ=LISFREQ2,
                        EXCIT=_F(VECT_ASSE_GENE=FGEN,
                                 COEF_MULT=1.0,
-                                PHAS_DEG=0.0,),);
+                                PHAS_DEG=0.0,),)
 
 
 REPHARMP=REST_GENE_PHYS(RESU_GENE=REPHARMG,
                        TOUT_ORDRE='OUI',
-                       TOUT_CHAM='OUI',);
+                       TOUT_CHAM='OUI',)
 
 F2=RECU_FONCTION(RESULTAT=REPHARMP,
                  NOM_CHAM='DEPL',
                  LIST_FREQ=LISFREQ,
                  NOM_CMP='DX',
-                 GROUP_NO='C',);
+                 GROUP_NO='C',)
 
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(0.00714285714286+3.57142857143e-05j),
@@ -354,7 +354,7 @@ V0=CREA_CHAMP(MAILLAGE=MASRES, OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',       
                     ))
 V1=CREA_CHAMP(OPERATION='R2C',TYPE_CHAM='NOEU_DEPL_C', CHAM_GD=V0,                  INFO=1)
 V2=CREA_CHAMP(OPERATION='ASSE', MAILLAGE=MASRES, TYPE_CHAM='NOEU_DEPL_C',           INFO=2,
-                   ASSE=_F(CHAM_GD=V1,TOUT='OUI',CUMUL='NON',COEF_C=('RI',2.0,1.0),),);
+                   ASSE=_F(CHAM_GD=V1,TOUT='OUI',CUMUL='NON',COEF_C=('RI',2.0,1.0),),)
 
 V3=CREA_CHAMP(OPERATION='C2R',TYPE_CHAM='NOEU_DEPL_R', CHAM_GD=V2, PARTIE='REEL',   INFO=1)
 V4=CREA_CHAMP(OPERATION='C2R',TYPE_CHAM='NOEU_DEPL_R', CHAM_GD=V2, PARTIE='IMAG',   INFO=1)
@@ -380,5 +380,5 @@ TEST_FICHIER(
    VALE_CALC=177.91268055081,)
 #----------------------------------------------------------------------------------------
 
-FIN();
+FIN()
 #

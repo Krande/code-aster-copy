@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ E   = 210E9
 nu  = 0.
 rho = 7800.
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
 
 #*********************************************************
 
@@ -84,12 +84,12 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE= _F(GROUP_MA=('SURF','LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN'));
+                              MODELISATION='D_PLAN'))
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('LIG1','LIG3',),),
-                       );
+                       )
 
 
 
@@ -164,9 +164,9 @@ for i in range(nbcalc) :
                                  ),
                     TYPE_ENRI_FOND='GEOMETRIQUE',
                     NB_COUCHES=5,
-                    INFO=1);
+                    INFO=1)
 
-  MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i],INFO=1,);
+  MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i],INFO=1,)
 
 
   CHMA[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
@@ -174,7 +174,7 @@ for i in range(nbcalc) :
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 #
 # DEUX CHARGEMENTS VOLUMIQUES IDENTIQUES (L'UN AVEC FORCE_INTERNE L'AUTRE AVEC PESANTEUR)
 #
@@ -182,13 +182,13 @@ for i in range(nbcalc) :
   CH1[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
                        FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
                        FORCE_INTERNE=(_F(TOUT='OUI',FX=0,FY=-78000))
-                       );
+                       )
 # PESANTEUR
   CH2[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
                        FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
                        PESANTEUR=_F(GRAVITE=10,
                                     DIRECTION=(0.,-1.,0.),),
-                       );
+                       )
 
 #
 # RESOLUTIONS AVEC LES DEUX CHARGEMENTS
@@ -196,12 +196,12 @@ for i in range(nbcalc) :
   UTOT1[i]=MECA_STATIQUE(MODELE=MODELK[i],
                    CHAM_MATER=CHMA[i],
                    EXCIT=(_F(CHARGE=CH1[i])),
-                   INFO=1,);
+                   INFO=1,)
 
   UTOT2[i]=MECA_STATIQUE(MODELE=MODELK[i],
                    CHAM_MATER=CHMA[i],
                    EXCIT=(_F(CHARGE=CH2[i])),
-                   INFO=1,);
+                   INFO=1,)
 
 
 # POST-TRAITEMENT : CALCUL DES SIFS
@@ -276,36 +276,36 @@ for i in range(nbcalc) :
              NOM_PARA='K1',
              VALE_CALC=VAL_CALC[8*i+0],
              CRITERE='RELATIF',
-             );
+             )
 
   TEST_TABLE(TABLE=SI2CH1[i],
              NOM_PARA='K1',
              VALE_CALC=VAL_CALC[8*i+1],
              CRITERE='RELATIF',
-             );
+             )
 
 
   TEST_TABLE(TABLE=SI1CH2[i],
               NOM_PARA='K1',
               VALE_CALC=VAL_CALC[8*i+2],
               CRITERE='RELATIF',
-              );
+              )
 
   TEST_TABLE(TABLE=SI2CH2[i],
              NOM_PARA='K1',
              VALE_CALC=VAL_CALC[8*i+3],
              CRITERE='RELATIF',
-             );
+             )
 
   TEST_TABLE(TABLE=TG1CH1[i],
              NOM_PARA='G',
              VALE_CALC=VAL_CALC[8*i+4],
-             CRITERE='RELATIF',);
+             CRITERE='RELATIF',)
 
   TEST_TABLE(TABLE=TG1CH2[i],
              NOM_PARA='G',
              VALE_CALC=VAL_CALC[8*i+5],
-             CRITERE='RELATIF',);
+             CRITERE='RELATIF',)
 
 # 2) CALCUL AVEC POST_K1_K2_K3  POUR L'ANGLE COURANT i
 
@@ -325,15 +325,15 @@ for i in range(nbcalc) :
                        RESULTAT  = UTOT2[i],
                       )
 
-  IMPR_TABLE(TABLE = PK1[i]);
-  IMPR_TABLE(TABLE = PK2[i]);
+  IMPR_TABLE(TABLE = PK1[i])
+  IMPR_TABLE(TABLE = PK2[i])
 
   TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K1',
               VALE_CALC=VAL_CALC[8*i+6],
               CRITERE='RELATIF',
 
-              );
+              )
 
 
   TEST_TABLE(CRITERE='RELATIF',
@@ -343,4 +343,4 @@ for i in range(nbcalc) :
              TABLE=PK2[i],
              )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ FOI=DEFI_FONCTION(       NOM_PARA='INST',
                                       21.6,   0.98,  ),
                          PROL_DROITE='LINEAIRE',
                         PROL_GAUCHE='LINEAIRE'     )
-                        
+
 FOI2=DEFI_FONCTION(       NOM_PARA='TEMP',
                                VALE=( -0.45,  1.02,
                                        1.4,   0.8,
@@ -403,7 +403,7 @@ THL10=CALC_META(reuse=THL10,
                 OPTION='META_ELNO',
                 ETAT_INIT=_F(META_INIT_ELNO=CARTE),
                 COMPORTEMENT=_F(RELATION='ACIER',
-                             TOUT='OUI'),);
+                             TOUT='OUI'),)
 
 #     -  THERMIQUE NON LINEAIRE
 #        ----------------------
@@ -423,11 +423,11 @@ THNL6=THER_NON_LINE(        MODELE=MO,
                           CONVERGENCE=_F(),
                           PARM_THETA=1.,
                            ARCHIVAGE=_F(  PAS_ARCH = 2),
-                           ETAT_INIT=_F( VALE = 0.),);
+                           ETAT_INIT=_F( VALE = 0.),)
 
 THNL6=CALC_CHAMP(reuse=THNL6,
                  RESULTAT=THNL6,
-                 THERMIQUE=('FLUX_ELGA','FLUX_ELNO',),);
+                 THERMIQUE=('FLUX_ELGA','FLUX_ELNO',),)
 
 THNL6=CALC_META(reuse=THNL6,
                 MODELE=MO,
@@ -436,7 +436,7 @@ THNL6=CALC_META(reuse=THNL6,
                 OPTION='META_ELNO',
                 ETAT_INIT=_F(META_INIT_ELNO=CARTE),
                 COMPORTEMENT=_F(RELATION='ACIER',
-                             TOUT = 'OUI'),);
+                             TOUT = 'OUI'),)
 
 ENGENDRE_TEST (  CO = (THNL1, THNL6, THL10) )
 

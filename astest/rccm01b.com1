@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -153,7 +153,7 @@ SN3ath=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=1,
                      CHAR_ETAT_B=2,
                      PRES_A=1.0,
-                     PRES_B=10.0,),),);
+                     PRES_B=10.0,),),)
 
 IMPR_TABLE(    TABLE=SN3ath,)
 
@@ -188,7 +188,7 @@ SN3=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_B=2,
                      NUME_RESU_THER = 1,
                      PRES_A=1.0,
-                     PRES_B=10.0,),),);
+                     PRES_B=10.0,),),)
 
 IMPR_TABLE(    TABLE=SN3,)
 
@@ -225,7 +225,7 @@ SN4=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
 IMPR_TABLE(    TABLE=SN4,)
 
@@ -260,7 +260,7 @@ SN4b=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
 IMPR_TABLE(    TABLE=SN4b,)
 
@@ -313,7 +313,7 @@ SN34=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
                      PRES_A=0.4,
-                     PRES_B=1.0,),),);
+                     PRES_B=1.0,),),)
 
 IMPR_TABLE(    TABLE=SN34,)
 

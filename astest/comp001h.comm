@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 # ELASTOPLASTICITE  ECROUISSAGE ISOTROPE VON MISES
 #......................................................................
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IGNORE_ALARM=('ELEMENTS3_11'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IGNORE_ALARM=('ELEMENTS3_11'))
 
 # donnee materiau et fonction
 
 #parametres elastiques
-YOUNG = 200000.0;
-POISSON = 0.3;
+YOUNG = 200000.0
+POISSON = 0.3
 
 # def des materiaux
 ACIER = [None]*2
@@ -46,7 +46,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                     ECRO_PUIS=_F(A_PUIS=APUI,
                                  N_PUIS=NPUI,
                                  SY=SY_Pa),
-                                 );
+                                 )
 #unite en MPa
 
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
@@ -55,7 +55,7 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                     ECRO_PUIS=_F(A_PUIS=APUI,
                                  N_PUIS=NPUI,
                                  SY=SY,
-                                 ),);
+                                 ),)
 
 compor='VMIS_ISOT_PUIS'
 

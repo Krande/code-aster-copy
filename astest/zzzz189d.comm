@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,32 +22,32 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
-MAIL1=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL1=DEFI_GROUP(reuse =MAIL1,
                  MAILLAGE=MAIL1,
                  CREA_GROUP_MA=_F(NOM='PLAQUE',
-                                  TOUT='OUI',),);
+                                  TOUT='OUI',),)
 
 MAILL=CREA_MAILLAGE(MAILLAGE=MAIL1,
                     CREA_MAILLE=_F(NOM='GRILLE',
                                      GROUP_MA='PLAQUE',
-                                     PREF_MAILLE='B',),);
+                                     PREF_MAILLE='B',),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),);
+                            MATER=MATER,),)
 
 MODEL=AFFE_MODELE(MAILLAGE=MAILL,
-                  
+
                   AFFE=(_F(GROUP_MA='PLAQUE',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='DKT',),
                         _F(GROUP_MA='GRILLE',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='GRILLE_MEMBRANE',),),);
+                           MODELISATION='GRILLE_MEMBRANE',),),)
 
 CARA_COQ=AFFE_CARA_ELEM(MODELE=MODEL,
                         INFO=1,
@@ -56,7 +56,7 @@ CARA_COQ=AFFE_CARA_ELEM(MODELE=MODEL,
                                  COEF_RIGI_DRZ=0.,),
                         GRILLE=_F(GROUP_MA='GRILLE',
                                   SECTION=20.,
-                                  VECT_2=(0,1,0,),),);
+                                  VECT_2=(0,1,0,),),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MODEL,
                       DDL_IMPO=(_F(GROUP_NO='BCSANSBC',
@@ -81,15 +81,15 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MODEL,
                                    DZ=0.0,
                                    DRX=0.0,
                                    DRY=0.0,
-                                   DRZ=0.0,),),);
+                                   DRZ=0.0,),),)
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
                      FORCE_COQUE=_F(TOUT='OUI',
-                                    PRES=10.,),);
+                                    PRES=10.,),)
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 RESU=STAT_NON_LINE(MODELE=MODEL,
                    CHAM_MATER=CHMAT,
@@ -98,7 +98,7 @@ RESU=STAT_NON_LINE(MODELE=MODEL,
                           _F(CHARGE=FORCE,),),
                    COMPORTEMENT=_F(RELATION='ELAS',
                                 ),
-                   INCREMENT=_F(LIST_INST=TEMPS1,),);
+                   INCREMENT=_F(LIST_INST=TEMPS1,),)
 
 
 TEST_RESU(RESU=(_F(INST=1.0,
@@ -148,4 +148,4 @@ TEST_RESU(RESU=(_F(INST=1.0,
           )
 
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #            MAILLAGE
 #----------------------------------------------
 
-MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+MA=LIRE_MAILLAGE(INFO=1,FORMAT='MED',)
 
 # COORDONNEES DU POINT POUR 'ENV_SPHERE'
 LX     = 1.
@@ -48,17 +48,17 @@ MA=DEFI_GROUP(reuse =MA,
                               _F(NOM='NTESTSUP',INTERSEC=('GNOTMP','LevrSUP')),
                               _F(NOM='NTESTINF',INTERSEC=('GNOTMP','LevrINF')),
                              ),
-              );
+              )
 
 #----------------------------------------------
-#            MODELE 
+#            MODELE
 #----------------------------------------------
 
 MODELTH=AFFE_MODELE(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA='VOLUME',
                             PHENOMENE='THERMIQUE',
                             MODELISATION='AXIS',
-                            ),);
+                            ),)
 
 #----------------------------------------------
 #            MATERIAU
@@ -76,12 +76,12 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 #----------------------------------------------
 
 TIMPSUP=DEFI_FONCTION(NOM_PARA='INST',
-                      NOM_RESU='TEMP',  
+                      NOM_RESU='TEMP',
         VALE=(0.,    20. ,
               1.,    40.,))
 
 TIMPINF=DEFI_FONCTION(NOM_PARA='INST',
-                      NOM_RESU='TEMP',  
+                      NOM_RESU='TEMP',
         VALE=(0.,    10. ,
               1.,    20.,))
 
@@ -102,7 +102,7 @@ TEMPE=THER_LINEAIRE(MODELE=MODELTH,
                     CHAM_MATER=CHMAT,
                     EXCIT=_F(CHARGE=CHTH),
                     ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
-                    INCREMENT=_F( LIST_INST = LR8),                    
+                    INCREMENT=_F( LIST_INST = LR8),
 #                     SOLVEUR=_F(METHODE='GCPC',
 #                                PRE_COND='LDLT_INC',),
                     )
@@ -134,7 +134,7 @@ IMPR_TABLE(TABLE=TEMPINF)
 #            TESTS
 #----------------------------------------------
 
-# Rq : la soution de reference est obtenue avec le meme fichier de commande, 
+# Rq : la soution de reference est obtenue avec le meme fichier de commande,
 #      avec une discretisation 1000x2000 (-> 2.10^6 ddls)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -155,4 +155,4 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=TEMPE))
 
-FIN();
+FIN()

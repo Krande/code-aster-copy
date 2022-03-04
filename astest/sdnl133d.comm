@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,13 +30,13 @@ I = pi*DIAM*DIAM*DIAM*DIAM/64.
 LONG= 2.*DIAM
 
 
-MAILLE=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLE=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,
                        CREA_POI1=(_F(NOM_GROUP_MA='POCOUPE1',
                                      GROUP_NO='PCOUPE1',),
                                   _F(NOM_GROUP_MA='POCOUPE2',
-                                     GROUP_NO='PCOUPE2',),),);
+                                     GROUP_NO='PCOUPE2',),),)
 
 # GROUP_NO='PCOUPE1',  : (0,0,LONG)
 # GROUP_NO='PCOUPE2',  : (0,0,-LONG)
@@ -48,7 +48,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SCOUPE1','SCOUPE2','SFISS1','SFISS2',),),
-                       );
+                       )
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA=('VROTOR','SCOUPE1','SCOUPE2',),
@@ -56,26 +56,26 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                             MODELISATION='3D',),
                          _F(GROUP_MA=('POCOUPE1','POCOUPE2',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 IMPR_RESU(FORMAT='RESULTAT',UNITE=20,
-          RESU=_F(MAILLAGE=MAILLAGE,),);
+          RESU=_F(MAILLAGE=MAILLAGE,),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                             NU=0.3,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     DISCRET=_F(GROUP_MA=('POCOUPE1','POCOUPE2',),
                                CARA='K_TR_D_N',
-                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),);
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELE,
                        AFFE=(_F(GROUP_MA=('VROTOR',),
                                 MATER=ACIER,),
                              _F(GROUP_MA=('POCOUPE1','POCOUPE2',),
-                                MATER=ACIER,),),);
+                                MATER=ACIER,),),)
 
 #*********************************************************************
 #                          CONDITIONS AUX LIMITES                    *
@@ -101,7 +101,7 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
                                      _F(OPTION='3D_POU',
                                         GROUP_MA_1='SCOUPE2',
                                         GROUP_NO_2='PCOUPE2',),),
-                       INFO=1,);
+                       INFO=1,)
 
 CHARFISS=DEFI_CONTACT(MODELE=MODELE,
                       FORMULATION = 'DISCRETE',
@@ -111,22 +111,22 @@ CHARFISS=DEFI_CONTACT(MODELE=MODELE,
                               APPARIEMENT    = 'MAIT_ESCL',
                               ALGO_CONT      = 'CONTRAINTE',
                               SANS_GROUP_NO='NOFONFIS',),
-                      INFO=1,);
+                      INFO=1,)
 
 CHARTOFL=AFFE_CHAR_MECA_F(MODELE=MODELE,
                           FORCE_NODALE=_F(GROUP_NO='PCOUPE1',
                                           MX=COSINUS,
                                           MY=SINUS,
-                                        ),);
+                                        ),)
 
 nb_int = 36
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=360.0,
-                                    NOMBRE=nb_int,),);
+                                    NOMBRE=nb_int,),)
 
 L_ORDRE=DEFI_LIST_ENTI(DEBUT=1,
                        INTERVALLE=_F(JUSQU_A=nb_int,
-                                     PAS=1,),);
+                                     PAS=1,),)
 
 UTOTC=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHAMPMAT,
@@ -148,7 +148,7 @@ UTOTC=STAT_NON_LINE(MODELE=MODELE,
                                METHODE='MULT_FRONT',
                                RENUM='METIS',),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+                    INFO=1,)
 
 DEPE_1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='DEPE_1',
@@ -156,7 +156,7 @@ DEPE_1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              NOM_CHAM='DEPL',
                              LIST_ORDRE=L_ORDRE,
                              GROUP_NO='PCOUPE1',
-                             TOUT_CMP='OUI',),);
+                             TOUT_CMP='OUI',),)
 
 ####################
 # Calcul de kphi et dkphi
@@ -533,9 +533,9 @@ for i in range(len(phi)):
 
 TAB_RESU=CREA_TABLE(LISTE=(_F(PARA='PHI',LISTE_R = phi,),
                        _F(PARA='KPHI',LISTE_R =kphi ,),
-                       _F(PARA='DKPHI',LISTE_R =dkphi ,),),);
+                       _F(PARA='DKPHI',LISTE_R =dkphi ,),),)
 
-IMPR_TABLE(TABLE=TAB_RESU,);
+IMPR_TABLE(TABLE=TAB_RESU,)
 
 TEST_TABLE(
            VALE_CALC=18.832613937685,
@@ -586,9 +586,9 @@ TEST_TABLE(
            )
 
 TAB_SOUP=CREA_TABLE(LISTE=(_F(PARA='ANGLE',LISTE_R = anglef,),
-                       _F(PARA='SOUPLESSE',LISTE_R =souplf ,),),);
+                       _F(PARA='SOUPLESSE',LISTE_R =souplf ,),),)
 
-IMPR_TABLE(TABLE=TAB_SOUP,);
+IMPR_TABLE(TABLE=TAB_SOUP,)
 
 TEST_TABLE(
            VALE_CALC=0.24138140775014,
@@ -614,4 +614,4 @@ TEST_TABLE(
                      VALE=6.26573,),
            )
 
-FIN();
+FIN()

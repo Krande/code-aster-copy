@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -312,7 +312,7 @@ MOC1M=CALC_MODES(OPTION='CENTRE',
                               NMAX_FREQ=2,),
                  SOLVEUR=_F(METHODE='MUMPS',),)
 
-MOC2M=CALC_MODES(OPTION='PROCHE', 
+MOC2M=CALC_MODES(OPTION='PROCHE',
                  MATR_RIGI=RIGAS,
                  MATR_MASS=MASAS,
                  MATR_AMOR=AMORT,

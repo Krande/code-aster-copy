@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                        MAILLAGE=MAIL,
                        ORIE_NORM_COQUE=_F(GROUP_MA='SRADIER',
                                           VECT_NORM=(0,0,-1.,),
-                                          GROUP_NO='PSI0',),);
+                                          GROUP_NO='PSI0',),)
 
 IMPR_RESU(RESU=_F(MAILLAGE=MAIL,),UNITE=8,FORMAT='ASTER')
 
@@ -93,7 +93,7 @@ BETARM=DEFI_MATERIAU(ELAS=_F(E=4.0E10,
                              AMOR_ALPHA=0.1*ca*aamult,
                              AMOR_BETA=0.1*ca*abmult,
                              ),
-                    );
+                    )
 #
 #----- BETON PRECONTRAINT -----
 
@@ -103,7 +103,7 @@ BETPRE=DEFI_MATERIAU(ELAS=_F(E=40000000000.0,
                              AMOR_ALPHA=0.1*ca*aamult,
                              AMOR_BETA=0.1*ca*abmult,
                              ),
-                     );
+                     )
 
 #
 #----- MATERIAU CHOC -----
@@ -155,25 +155,25 @@ ELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                 VALE=(0.,0.,1.,0.,1.,0.),
                                   ),
 
-                   RIGI_PARASOL=_F( 
+                   RIGI_PARASOL=_F(
                        GROUP_MA = 'SRADIER', GROUP_MA_POI1 = 'RADIER',
                        COEF_GROUP = 1., GROUP_NO_CENTRE = 'PSI0',
                        CARA = ('K_TR_D_N','A_TR_D_N',),
 
                     VALE = (
                             0.13203E+12, 0.13206E+12, 0.16719E+12,
-                            0.81050E+14, 0.81179E+14, 0.99840E+14, 
+                            0.81050E+14, 0.81179E+14, 0.99840E+14,
                             0.31250E+10, 0.31263E+10, 0.58930E+10,
-                            0.34303E+12, 0.34410E+12, 0.29815E+12, 
+                            0.34303E+12, 0.34410E+12, 0.29815E+12,
                            ),
                                    ),
-                        );
+                        )
 
 COND_LIB=AFFE_CHAR_MECA(MODELE=MODELE,
                         LIAISON_SOLIDE=(
                                         _F(GROUP_NO='SRADIER',),
                                         ),
-                        );
+                        )
 
 # ----------------------------------------------------------------------
 #---------------------------------------------

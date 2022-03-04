@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,11 +31,11 @@ di= [0.035, 0.03, 0.028, 0.0355, 0.01, 0.02, 0.05, 0.04]
 seuil=0.035
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
-                       _F(PARA='DEFA',LISTE_I =xi ,),),);
+                       _F(PARA='DEFA',LISTE_I =xi ,),),)
 
 
 TAB2=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
-                       _F(PARA='DEMANDE',LISTE_R =di ,),),);
+                       _F(PARA='DEMANDE',LISTE_R =di ,),),)
 
 
 # liste indicateurs pour tracer les courbes
@@ -49,13 +49,13 @@ TAB_MLE=POST_DYNA_ALEA( FRAGILITE=(_F(TABL_RESU=TAB1,
                                    FRACTILE = (0.0,0.05,0.5,0.95,1.0),
                                    NB_TIRAGE =8,
                                  ),),
-                         TITRE = 'courbe 1', INFO=2, );
+                         TITRE = 'courbe 1', INFO=2, )
 
 TAB_MLE2=POST_DYNA_ALEA( FRAGILITE=(_F(TABL_RESU=TAB2,
                                    LIST_PARA=LISTEA,METHODE='EMV',
                                    AM_INI  =0.35 ,BETA_INI=0.2 ,SEUIL=seuil,
                                  ),),
-                         TITRE = 'courbe 2', INFO=2, );
+                         TITRE = 'courbe 2', INFO=2, )
 
 # tests
 TEST_TABLE(VALE_CALC=0.3575451304092581,
@@ -100,7 +100,7 @@ TEST_TABLE(VALE_CALC=0.26579213893769094,
                      VALE=0.20000000000000001,),
            )
 
-IMPR_TABLE(TABLE = TAB_MLE);
+IMPR_TABLE(TABLE = TAB_MLE)
 
 
 
@@ -113,7 +113,7 @@ TAB_REG=POST_DYNA_ALEA( FRAGILITE=(_F(TABL_RESU=TAB2,
                                    SEUIL=0.035 ,
                                  ),),
                          TITRE = 'courbe 3',
-                         INFO=2, );
+                         INFO=2, )
 
 
 # tests
@@ -150,6 +150,6 @@ TEST_TABLE(VALE_CALC=0.6095208435265016,
                      VALE=0.5,),
            )
 
-IMPR_TABLE(TABLE = TAB_REG);
+IMPR_TABLE(TABLE = TAB_REG)
 
-FIN();
+FIN()

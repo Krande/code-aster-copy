@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',
                          VERI_MAIL=_F(VERIF='OUI',
                                       APLAT=1.E-3),
                          INFO=2,
-                         );
+                         )
 
 
 BETON=DEFI_MATERIAU(    SECH_GRANGER=_F(  A = 3.8E-13,
@@ -52,12 +52,12 @@ MOTH=AFFE_MODELE(   MAILLAGE=MAIL,
 T_INT = DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0,15,
                             1.57670E+08,15,#5ans-1j
-                            1.57680E+08,35,#5ans 
+                            1.57680E+08,35,#5ans
                             1.70294E+09,35,
-                            ),);
-T_EXT=DEFI_CONSTANTE(VALE=15,);
-HEXT=DEFI_CONSTANTE(VALE=6,);
-HINT=DEFI_CONSTANTE(VALE=4,);
+                            ),)
+T_EXT=DEFI_CONSTANTE(VALE=15,)
+HEXT=DEFI_CONSTANTE(VALE=6,)
+HINT=DEFI_CONSTANTE(VALE=4,)
 CHARTH=AFFE_CHAR_THER_F(       MODELE=MOTH,
                                ECHANGE=(
                                _F(GROUP_MA='L_INT',
@@ -66,7 +66,7 @@ CHARTH=AFFE_CHAR_THER_F(       MODELE=MOTH,
                                 _F(GROUP_MA='L_EXT',
                                    COEF_H=HEXT,
                                    TEMP_EXT=T_EXT,),),
-                                   );
+                                   )
 LISTTHER=DEFI_LIST_REEL(
              DEBUT=0.,INTERVALLE=(
         _F( JUSQU_A = 3.15360E+05,       NOMBRE = 1,  ), #   0.1 AN
@@ -85,7 +85,7 @@ RESUTHER=THER_LINEAIRE(          MODELE=MOTH,
                                      EXCIT=_F( CHARGE = CHARTH,   ),
                                 CHAM_MATER=CHMAT,
                                  ETAT_INIT=_F( VALE = 15.,   ),
-                                 INCREMENT=_F( LIST_INST = DEFLISTH,),);
+                                 INCREMENT=_F( LIST_INST = DEFLISTH,),)
 
 #####################
 # CALCUL DU SECHAGE
@@ -264,11 +264,11 @@ COUP=MACR_LIGN_COUPE(RESULTAT=RESUSECH,
                          LIGN_COUPE=_F(NOM_CMP=('TEMP'),
                                        TYPE='GROUP_MA',
                                        MAILLAGE=MAIL,
-                                       GROUP_MA='RGENEF',),);
+                                       GROUP_MA='RGENEF',),)
 
-IMPR_TABLE(TABLE=COUP,FORMAT='TABLEAU_CROISE', FORMAT_R='F3.12',NOM_PARA=('INST','COOR_X','TEMP'),);
+IMPR_TABLE(TABLE=COUP,FORMAT='TABLEAU_CROISE', FORMAT_R='F3.12',NOM_PARA=('INST','COOR_X','TEMP'),)
 #-----------------------------------------------------
-# Tests 
+# Tests
 #-----------------------------------------------------
 C_ref = [[67.6838,54.2257,51.6],
          [80.9129,65.2,56.8903],
@@ -280,8 +280,8 @@ C_ref = [[67.6838,54.2257,51.6],
          [97.8,89.3776,75.9533],
          [90.1783,82.8,73.1186],
          [81,76.3516,70.815],
-         [71.2,70.0603,68.8035],];
-# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS          
+         [71.2,70.0603,68.8035],]
+# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS
 C_reg = [[69.395183802054,51.783611449759,51.655511103301],
          [81.145990523968,64.545619765794,56.461128140514],
          [90.607964813497,74.955713791528,61.974271985498],
@@ -292,9 +292,9 @@ C_reg = [[69.395183802054,51.783611449759,51.655511103301],
          [97.888144074453,89.217982420161,75.727860396727],
          [90.528261929232,83.128098638855,73.238419865076],
          [81.097356527841,76.297063327263,70.962681975733],
-         [69.361292246812,69.278013651120,69.149603178720],];
-x_test = [22.5,22.5382,22.5954,22.6809,22.8088,23,23.1912,23.3191,23.4046,23.4618,23.5];
-inst_test = [1.57680E+08,4.73040E+08,1.70294E+09,];         
+         [69.361292246812,69.278013651120,69.149603178720],]
+x_test = [22.5,22.5382,22.5954,22.6809,22.8088,23,23.1912,23.3191,23.4046,23.4618,23.5]
+inst_test = [1.57680E+08,4.73040E+08,1.70294E+09,]
 for j,t in enumerate(inst_test) :
     for i,x in enumerate(x_test) :
         TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
@@ -304,6 +304,6 @@ for j,t in enumerate(inst_test) :
                    NOM_PARA='TEMP',
                    TABLE=COUP,
                    FILTRE=(_F(NOM_PARA='COOR_X',VALE=x,),
-                           _F(NOM_PARA='INST',VALE=t,),),);
+                           _F(NOM_PARA='INST',VALE=t,),),)
 #
-FIN () ;
+FIN ()

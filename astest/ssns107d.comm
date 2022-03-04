@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
 
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=E,
-                            NU=nu,),);
+                            NU=nu,),)
 
 ACIER=DEFI_MATERIAU(
             ELAS=_F(  E = Ea,   NU = 0.0),
@@ -83,7 +83,7 @@ MATE=AFFE_MATERIAU(MAILLAGE=MA,
                    AFFE=(_F(  GROUP_MA = ('GM100007',),
                                  MATER = ACIER,),
                                  _F(GROUP_MA=('GM100005','GM100004'),
-                           MATER=BETON,),),);
+                           MATER=BETON,),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(  GROUP_MA = ('GM100007',),
@@ -91,7 +91,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                                MODELISATION = 'GRILLE_MEMBRANE'),
                      _F(GROUP_MA=('GM100005','GM100004'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),),);
+                       MODELISATION='3D',),),)
 
 CAREL=AFFE_CARA_ELEM(    MODELE=MO,
                        GRILLE=(_F( GROUP_MA = 'GM100007',
@@ -114,11 +114,11 @@ CHAR=AFFE_CHAR_MECA(MODELE=MO,
 
 
 FM=DEFI_FONCTION(NOM_PARA='INST',
-                 VALE=(0.0,0.0,1.0,1.0,),);
+                 VALE=(0.0,0.0,1.0,1.0,),)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=MATE,
@@ -131,11 +131,11 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                 GROUP_MA='GM100005',),
                              _F(RELATION='GRILLE_ISOT_LINE',
                                 GROUP_MA='GM100007',),),
-                   INCREMENT=_F(LIST_INST=LINST,),);
+                   INCREMENT=_F(LIST_INST=LINST,),)
 
 #CHAMELG=CALC_CHAM_ELEM(MODELE=MO,
 #                       GROUP_MA='GM100005',
-#                       OPTION='COOR_ELGA',);
+#                       OPTION='COOR_ELGA',)
 #
 #x=CHAMELG.EXTR_COMP("X",[])
 #y=CHAMELG.EXTR_COMP("Y",[])
@@ -173,7 +173,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 #fichier.close()
 #
 #
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU,),);
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU,),)
 TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU,

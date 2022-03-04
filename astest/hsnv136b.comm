@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E = 80000., NU = 0.35,),
                     LEMAITRE=_F(N = 4.10,
                                 UN_SUR_K = 0.00400,
                                 UN_SUR_M = 0.
-                                       ),);
+                                       ),)
 
 CM2=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F( TOUT = 'OUI', MATER = ACIER ),
-                                    );
+                                    )
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',

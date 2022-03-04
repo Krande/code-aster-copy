@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER", );
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER", )
 
 
 MATER3    = DEFI_MATERIAU(
@@ -38,17 +38,17 @@ MATER3    = DEFI_MATERIAU(
                                            ALPHA       =    0.328     ,
                                            P_ULTM      =    1.225E-2  ,
                                            SY          =    2.11E6    ,
-                                           SY_ULTM     =    1.00E6    ,),);
+                                           SY_ULTM     =    1.00E6    ,),)
 
 CHMAT3    = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
                            AFFE     = _F(  TOUT  = 'OUI',
-                                           MATER = MATER3 ));
+                                           MATER = MATER3 ))
 
 MODELE   = AFFE_MODELE(    MAILLAGE = MAILLAGE,
                            AFFE     = _F(  TOUT         = 'OUI',
                                            PHENOMENE    = 'MECANIQUE',
                                            MODELISATION = 'D_PLAN'),
-                      );
+                      )
 
 #***********************************************************************
 # *** CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES ********
@@ -58,7 +58,7 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                   MODELE=MODELE,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY',),
-                          VALE=(0.0,0.0,0.0,0.0,),),);
+                          VALE=(0.0,0.0,0.0,0.0,),),)
 
 CHAR_UM3 = AFFE_CHAR_MECA( MODELE   = MODELE,
                            PRES_REP = _F(  GROUP_MA = 'M3',
@@ -236,11 +236,11 @@ MATER4    = DEFI_MATERIAU(  ELAS      = _F( E           =  1.0E9,
                                            DILAT       =    0.328     ,
                                            P_ULTM      =    1.225E-2  ,
                                            SY          =    2.11E6    ,
-                                           SY_ULTM     =    1.00E6    ,),);
+                                           SY_ULTM     =    1.00E6    ,),)
 
 CHMAT4   = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
                            AFFE     = _F(  TOUT  = 'OUI',
-                                           MATER = MATER4 ));
+                                           MATER = MATER4 ))
 U4       = STAT_NON_LINE(
                           MODELE     = MODELE,
                           CHAM_MATER = CHMAT4,
@@ -362,4 +362,4 @@ TEST_RESU(RESU=(_F(INST=1.0700000000000001,
                 ),
           )
 
-FIN();
+FIN()

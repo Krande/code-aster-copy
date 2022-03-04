@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,44 +21,44 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),
-      INFO=1,);
+      INFO=1,)
 
 lisi=DEFI_LIST_REEL(DEBUT=0,
                     INTERVALLE=_F(JUSQU_A=1,
-                                  PAS=1,),);
+                                  PAS=1,),)
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi,),
                  ECHEC=_F(EVENEMENT='ERREUR',
-                      ACTION='DECOUPE',),);                  
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1),);
+                      ACTION='DECOUPE',),)
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1),)
 
 mat1=DEFI_MATERIAU(ELAS=_F(E=2000,
-                           NU=0.3,),);
+                           NU=0.3,),)
 
 Mail = LIRE_MAILLAGE(UNITE=20,
                      FORMAT='MED',)
 Mail=MODI_MAILLAGE(reuse =Mail,
                    MAILLAGE=Mail,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_3','Group_4','Group_2','Group_1')),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_3','Group_4','Group_2','Group_1')),)
 
 Mail2=CREA_MAILLAGE(MAILLAGE=Mail,
                     DECOUPE_LAC=_F(GROUP_MA_ESCL='Group_2',
-                                 ), );
+                                 ), )
 
-Mail2=DEFI_GROUP(reuse=Mail2, MAILLAGE=Mail2, 
+Mail2=DEFI_GROUP(reuse=Mail2, MAILLAGE=Mail2,
                  CREA_GROUP_NO=(_F(GROUP_MA='Group_1',),
                                 _F(GROUP_MA='Group_2',),),)
 
 MODI=AFFE_MODELE(MAILLAGE=Mail2,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='AXIS',),);
+                         MODELISATION='AXIS',),)
 
 AFFE=AFFE_MATERIAU(MAILLAGE=Mail2,
                    MODELE=MODI,
                    AFFE=_F(TOUT='OUI',
-                           MATER=mat1,),);
+                           MATER=mat1,),)
 
-DEFICO=DEFI_CONTACT(MODELE=MODI, 
+DEFICO=DEFI_CONTACT(MODELE=MODI,
                     INFO=1,
                     FORMULATION='CONTINUE',
                     LISSAGE='OUI',
@@ -68,7 +68,7 @@ DEFICO=DEFI_CONTACT(MODELE=MODI,
                             GROUP_MA_MAIT='Group_1',
                             GROUP_MA_ESCL='Group_2',
                             ALGO_CONT='LAC',
-                            CONTACT_INIT='OUI',),);
+                            CONTACT_INIT='OUI',),)
 
 CHAR1=AFFE_CHAR_MECA(MODELE=MODI,
                      DDL_IMPO=(_F(GROUP_MA='Symx',
@@ -76,11 +76,11 @@ CHAR1=AFFE_CHAR_MECA(MODELE=MODI,
                                  ),
                                 _F(GROUP_MA='Symy',
                                  DY=0,
-                                 ), ),);
+                                 ), ),)
 CHAR2=AFFE_CHAR_MECA(MODELE=MODI,
                      PRES_REP=_F(GROUP_MA='Group_3',
                                  PRES=25,),
-                       );                   
+                       )
 
 RES=STAT_NON_LINE(INFO=1,
                   AFFICHAGE=_F(INFO_RESIDU='OUI',),
@@ -91,48 +91,48 @@ RES=STAT_NON_LINE(INFO=1,
                          _F(CHARGE=CHAR2,
                             FONC_MULT=RAMPE,
                             #TYPE_CHARGE='SUIV',
-                            ),),       
+                            ),),
                   CONTACT=DEFICO,
-                  NEWTON=_F(REAC_ITER=1,),    
+                  NEWTON=_F(REAC_ITER=1,),
                   COMPORTEMENT=_F(RELATION='ELAS',
-                                  DEFORMATION='PETIT', 
+                                  DEFORMATION='PETIT',
                                   TOUT='OUI',),
                   INCREMENT=_F(LIST_INST=LINST,),
                   SOLVEUR=_F(ELIM_LAGR='NON',
                              METHODE='MUMPS',
                              PCENT_PIVOT= 30,),
                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
-                                 ITER_GLOB_MAXI=50,));
+                                 ITER_GLOB_MAXI=50,))
 
 CALC_CHAMP(reuse=RES,
            RESULTAT=RES,
            CONTRAINTE=('SIEF_NOEU',),
-           CRITERES=('SIEQ_NOEU',),);
+           CRITERES=('SIEQ_NOEU',),)
 
 RES=CALC_PRESSION(MAILLAGE=Mail2,reuse=RES,
                 RESULTAT=RES,
                 GROUP_MA=('Group_1','Group_2',),
                 INST=1.0,
-                );
+                )
 
-post2= POST_RELEVE_T( ACTION =_F( 
+post2= POST_RELEVE_T( ACTION =_F(
                     INTITULE  = 'pres',
-                        RESULTAT=RES, 
+                        RESULTAT=RES,
                         INST=1.0,
                         GROUP_NO='Group_2',
                         NOM_CHAM   = 'PRES_NOEU',
                         NOM_CMP   = 'PRES',
-                        OPERATION = 'EXTRACTION' ,) , 
+                        OPERATION = 'EXTRACTION' ,) ,
                     )
 
-post1= POST_RELEVE_T( ACTION =_F( 
+post1= POST_RELEVE_T( ACTION =_F(
                     INTITULE  = 'pres',
-                        RESULTAT=RES, 
+                        RESULTAT=RES,
                         INST=1.0,
                         GROUP_NO='Group_1',
                         NOM_CHAM   = 'PRES_NOEU',
                         NOM_CMP   = 'PRES',
-                        OPERATION = 'EXTRACTION' ,) , 
+                        OPERATION = 'EXTRACTION' ,) ,
                     )
 
 TEST_TABLE(TABLE=post2,
@@ -161,7 +161,7 @@ TEST_TABLE(TABLE=post1,
            VALE_REFE=-4.894178,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE',)
-                   
+
 TEST_TABLE(TABLE=post1,
            NOM_PARA='PRES',
            TYPE_TEST='MAX',
@@ -195,6 +195,6 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    ),
                 ),
-      );
+      )
 
-FIN();
+FIN()

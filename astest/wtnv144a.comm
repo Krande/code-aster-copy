@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
-#  PRE_IDEAS      ( );
+#  PRE_IDEAS      ( )
 #
 
-MAIL1=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL1,
                    LINE_QUAD = _F(TOUT='OUI'),
-                   );
+                   )
 
 
 
@@ -39,7 +39,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='BORDVERT'),
                                ),
                 INFO=2,
-                );
+                )
 
 MAIL = MODI_MAILLAGE(
               reuse        = MAIL,
@@ -49,7 +49,7 @@ MAIL = MODI_MAILLAGE(
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HM',),);
+                           MODELISATION='D_PLAN_HM',),)
 
 LS_N = FORMULE(VALE='X',
                NOM_PARA=['X', 'Y'],)
@@ -58,12 +58,12 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAIL,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LS_N,),
                     INFO=1,
-                   );
+                   )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,
                          FISSURE=FISS,
                          INFO=1,
-                        );
+                        )
 
 #  LISTE DES INSTANTS DE CALCUL
 #
@@ -86,20 +86,20 @@ LI=DEFI_LIST_REEL(DEBUT=0.0,
                               _F(JUSQU_A=1000,
                                  NOMBRE=48,),
                               _F(JUSQU_A=10000,
-                                 NOMBRE=50,),),);
+                                 NOMBRE=50,),),)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-BIDON=DEFI_CONSTANTE(VALE=0.0,);
+BIDON=DEFI_CONSTANTE(VALE=0.0,)
 
 #
 #
 #K=k*mu/(rhow*g)
 #
 
-KINT=DEFI_CONSTANTE(VALE=1.E-08,);
+KINT=DEFI_CONSTANTE(VALE=1.E-08,)
 #
 
 
@@ -143,11 +143,11 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                     D_PERM_LIQU_SATU=ZERO,
                                     PERM_GAZ=BIDON,
                                     D_PERM_SATU_GAZ=BIDON,
-                                    D_PERM_PRES_GAZ=BIDON,),);
+                                    D_PERM_PRES_GAZ=BIDON,),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATERIAU,),);
+                             MATER=MATERIAU,),)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='HAUT',
@@ -161,7 +161,7 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
                                 PRES=1.0,),
                               _F(GROUP_MA='DROITE',
                                 PRES=1.54,),),
-                    );
+                    )
 
 RES1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHMAT0,
@@ -176,7 +176,7 @@ RES1=STAT_NON_LINE(MODELE=MODELEK,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                     SOLVEUR=_F(METHODE='LDLT',),
                     ARCHIVAGE=_F(INST=(0.0001,0.001,0.01,0.10000000000000001,1.0,10.0,50.212765959999999,100.0,193.75,250.0),
-                                 PRECISION=1.E-3,),);
+                                 PRECISION=1.E-3,),)
 
 MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
 
@@ -185,17 +185,17 @@ MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                     CREA_GROUP_NO=(_F(GROUP_MA='BORDVERT'),
                                   ),
                     INFO=2,
-                   );
+                   )
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN_HM',),),
-                    );
+                    )
 
 RESU1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                      RESULTAT    = RES1,
-                     );
+                     )
 
 
 MODELIN=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -203,8 +203,8 @@ MODELIN=AFFE_MODELE(MAILLAGE=MA_XFEM,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='D_PLAN_HM',
                            ),
-                   );
-           
+                   )
+
 #IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',
 #          UNITE=80,
 #          RESU= (_F(MAILLAGE=MA_XFEM,
@@ -215,13 +215,13 @@ MODELIN=AFFE_MODELE(MAILLAGE=MA_XFEM,
 #                ),
 #         )
 
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_XFEM,));
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_XFEM,))
 
 RESU1=CALC_CHAMP(reuse=RESU1,
                  RESULTAT=RESU1,
                  CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
                  CRITERES=('SIEQ_ELNO','SIEQ_NOEU',),
-                 VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),);
+                 VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),)
 
 SIGMA2=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA',
                             RESULTAT=RESU1,
@@ -229,7 +229,7 @@ SIGMA2=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA',
                                            INST = (0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
                             NOM_CHAM='SIGM_NOEU',
                             NOM_CMP=('SIXX','SIYY','SIZZ','SIXY',),
-                            OPERATION='EXTRACTION',),);
+                            OPERATION='EXTRACTION',),)
 
 VARIN2=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
                                RESULTAT=RESU1,
@@ -237,7 +237,7 @@ VARIN2=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
                                NOM_CHAM='VARI_NOEU',
                                TOUT_CMP='OUI',
                                               INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
 DEPLA2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                RESULTAT=RESU1,
@@ -245,11 +245,11 @@ DEPLA2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                               INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
                                NOM_CHAM='DEPL',
                                               TOUT_CMP = 'OUI',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
-IMPR_TABLE(TABLE=SIGMA2,);
-IMPR_TABLE(TABLE=VARIN2,);
-IMPR_TABLE(TABLE=DEPLA2,);
+IMPR_TABLE(TABLE=SIGMA2,)
+IMPR_TABLE(TABLE=VARIN2,)
+IMPR_TABLE(TABLE=DEPLA2,)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
@@ -1110,4 +1110,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    MAILLE='M38',),
                 ),
           )
-FIN();
+FIN()

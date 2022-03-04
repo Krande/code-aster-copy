@@ -19,7 +19,7 @@
 
 # MODALISATION A : FEM (FISSURE MAILLEE)
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # demi grand axe
 a=0.25
@@ -112,7 +112,7 @@ CHAR=AFFE_CHAR_MECA(MODELE=MOD,
                     PRES_REP=( _F(GROUP_MA=('inter','FACE1','FACE2'),
                                    PRES=1000000.0,),
                         ),
-                    );
+                    )
 
 RESU=MECA_STATIQUE(MODELE=MOD,
                    CHAM_MATER=MATE,
@@ -174,7 +174,7 @@ CGKlag=CALC_G(RESULTAT=RESU,
                          R_SUP=rsup,
                          FISSURE=Fiss_01,
                          DISCRETISATION='LINEAIRE',
-                         ),);
+                         ),)
 
 #----------------------------------------------------------------------
 #               passage des FICs en MPa rac(m)
@@ -278,7 +278,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               TITRE='sslv322a / taux de restitution d energie',
               LEGENDE_X='s',
               LEGENDE_Y='G',
-              );
+              )
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=32,
@@ -299,7 +299,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               TITRE='sslv322a / FICs (K1)',
               LEGENDE_X='s',
               LEGENDE_Y='K1',
-              );
+              )
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=33,
@@ -316,7 +316,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               TITRE='sslv322a / FICs (K2)',
               LEGENDE_X='s',
               LEGENDE_Y='K2',
-              );
+              )
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=34,
@@ -333,7 +333,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               TITRE='sslv322a / FICs (K3)',
               LEGENDE_X='s',
               LEGENDE_Y='K3',
-              );
+              )
 
 #----------------------------------------------------------------------
 #                       GRANDEURS TESTEES

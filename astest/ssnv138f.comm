@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,27 +22,27 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',)
 
 MA=CREA_MAILLAGE(MAILLAGE=MAIL,
-                 QUAD_LINE=_F(TOUT='OUI',),);
+                 QUAD_LINE=_F(TOUT='OUI',),)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA='ENCASTR',),);
+              CREA_GROUP_NO=_F(GROUP_MA='ENCASTR',),)
 
 MO1=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='DKT',),
-                MAILLAGE=MA,);
+                MAILLAGE=MA,)
 
 MAT=DEFI_MATERIAU(ELAS=_F(NU=0.0,
                           ALPHA=0.0,
-                          E=1.2000000E7,),);
+                          E=1.2000000E7,),)
 
 CHMAT1=AFFE_MATERIAU(AFFE=_F(MATER=MAT,
                              TOUT='OUI',),
-                     MAILLAGE=MA,);
+                     MAILLAGE=MA,)
 
 CHA1=AFFE_CHAR_MECA(DDL_IMPO=_F(DZ=0.0,
                                 DX=0.0,
@@ -51,16 +51,16 @@ CHA1=AFFE_CHAR_MECA(DDL_IMPO=_F(DZ=0.0,
                                 DRX=0.0,
                                 DRY=0.0,
                                 GROUP_NO='ENCASTR'),
-                    MODELE=MO1,);
+                    MODELE=MO1,)
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO1,
                     FORCE_ARETE=_F(MY=-100.0,
-                                   GROUP_MA='LIBRE',),);
+                                   GROUP_MA='LIBRE',),)
 
 CARA1=AFFE_CARA_ELEM(MODELE=MO1,
                      COQUE=_F(GROUP_MA=('TOUT','ENCASTR','LIBRE','L1','L2'),
                               COEF_RIGI_DRZ=1.E-3,
-                              EPAIS=0.1,),);
+                              EPAIS=0.1,),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.2,
@@ -72,14 +72,14 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=2.4,
                                      NOMBRE=3,),
                                   _F(JUSQU_A=3,
-                                     NOMBRE=6,), 
+                                     NOMBRE=6,),
                                   _F(JUSQU_A=4.8,
                                      NOMBRE=9,),
                                   _F(JUSQU_A=6.,
-                                     NOMBRE=12,)));
+                                     NOMBRE=12,)))
 
 D_FONC=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,10.0,10.0),);
+                     VALE=(0.0,0.0,10.0,10.0),)
 
 
 NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
@@ -95,7 +95,7 @@ NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
                     INFO=1,
                     EXCIT=(_F(CHARGE=CHA1,),
                            _F(CHARGE=CHA2,
-                              FONC_MULT=D_FONC,),),);
+                              FONC_MULT=D_FONC,),),)
 
 NONLI=STAT_NON_LINE(reuse=NONLI,CHAM_MATER=CHMAT1,
                     MODELE=MO1,
@@ -111,7 +111,7 @@ NONLI=STAT_NON_LINE(reuse=NONLI,CHAM_MATER=CHMAT1,
                     INFO=1,
                     EXCIT=(_F(CHARGE=CHA1,),
                            _F(CHARGE=CHA2,
-                              FONC_MULT=D_FONC,),),);
+                              FONC_MULT=D_FONC,),),)
 
 
 DRY_P2=RECU_FONCTION(  RESULTAT=NONLI,    NOM_CHAM='DEPL',
@@ -334,4 +334,4 @@ TEST_RESU(RESU=_F(GROUP_NO='P2',
                   CRITERE='RELATIF',
                   PRECISION=1.5E-2,))
 
-FIN();
+FIN()

@@ -35,9 +35,9 @@ prag = 80.0     # constante de Prager (fictive)
 
 
 
-MATE = DEFI_MATERIAU( 
+MATE = DEFI_MATERIAU(
     ELAS = _F(
-        E  = Ep, 
+        E  = Ep,
         NU = nup,
         ),
     KICHENIN_NL = _F(
@@ -54,45 +54,45 @@ MATE = DEFI_MATERIAU(
         D_SIGM_EPSI = 1/(1/Ep + 2/(3*prag)),
         ),
     )
-     
+
 
 class  SIGMA:
-    
+
     sig1 = (1.0, 0.5, 0.5, 0.0, 0.0, 0.0)
     sig2 = (0.0, 0.0, 0.0, 1.0, 0.5, 0.5)
-    
+
     # parametres internes
     rac2 = np.array((1,1,1,2**0.5,2**0.5,2**0.5))
     kron = np.array((1.0,1.0,1.0,0.0,0.0,0.0))
-    
+
     sigComp = dict(SIXX=0, SIYY=1, SIZZ=2, SIXY=3, SIXZ=4, SIYZ=5)
-    
-    
+
+
     def __init__(self,Npas):
 
         s1 = np.array(self.sig1)*self.rac2
         d1 = s1 - np.dot(s1,self.kron)/3.0*self.kron
         s1 = s1 / (1.5*np.dot(d1,d1))**0.5
-        
+
         s2 = np.array(self.sig2)*self.rac2
         d2 = s2 - np.dot(s2,self.kron)/3.0*self.kron
         s2 = s2 / (1.5*np.dot(d2,d2))**0.5
-        
+
         self.inst = np.linspace(0.0, 1.0, Npas)
         a1 = sc*np.sin(1*2*np.pi*self.inst)
         a2 = sc*np.sin(2*2*np.pi*self.inst)
-        
+
         self.sig = np.outer(s1,a1) + np.outer(s2,a2)
 
 
     def GetInst(self): return self.inst.tolist()
-    def GetSig(self,nom_cmp): return (self.sig[self.sigComp[nom_cmp],:]/self.rac2[self.sigComp[nom_cmp]]).tolist() 
-      
+    def GetSig(self,nom_cmp): return (self.sig[self.sigComp[nom_cmp],:]/self.rac2[self.sigComp[nom_cmp]]).tolist()
+
 
 sig = SIGMA(Npas=100)
-      
-         
-DEFLIST1 = DEFI_LIST_INST( 
+
+
+DEFLIST1 = DEFI_LIST_INST(
     DEFI_LIST = _F( VALE = sig.GetInst()),
     ECHEC     = _F( ACTION='DECOUPE', SUBD_PAS=4, SUBD_NIVEAU=2),
     )
@@ -140,17 +140,17 @@ SIYZ = DEFI_FONCTION(
     )
 
 
-EVOL_PL = SIMU_POINT_MAT( 
+EVOL_PL = SIMU_POINT_MAT(
     SUPPORT       = 'ELEMENT',
     MODELISATION  = '3D',
-    COMPORTEMENT  = _F( 
+    COMPORTEMENT  = _F(
         RELATION       = 'VMIS_CINE_LINE',
         ),
     MATER      = MATE,
     INCREMENT  = _F( LIST_INST=DEFLIST1,),
     NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
     CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
-    SIGM_IMPOSE= _F( 
+    SIGM_IMPOSE= _F(
         SIXX = SIXX,
         SIYY = SIYY,
         SIZZ = SIZZ,
@@ -161,17 +161,17 @@ EVOL_PL = SIMU_POINT_MAT(
     )
 
 
-EVOL_KI = SIMU_POINT_MAT( 
+EVOL_KI = SIMU_POINT_MAT(
     SUPPORT       = 'ELEMENT',
     MODELISATION  = '3D',
-    COMPORTEMENT  = _F( 
+    COMPORTEMENT  = _F(
         RELATION       = 'KICHENIN_NL',
         ),
     MATER      = MATE,
     INCREMENT  = _F( LIST_INST=DEFLIST1,),
     NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
     CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
-    SIGM_IMPOSE= _F( 
+    SIGM_IMPOSE= _F(
         SIXX = SIXX,
         SIYY = SIYY,
         SIZZ = SIZZ,

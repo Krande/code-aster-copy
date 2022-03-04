@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,7 @@ ASSEMBLAGE(     MODELE=MODELE,          CHARGE=CHARGE,
                    _F(  MATRICE = CO("MATASSR"),  OPTION = 'RIGI_MECA'),
                    _F(  MATRICE = CO("MATASSM"),  OPTION = 'MASS_MECA'),
                    _F(  MATRICE = CO("MATASSC"),  OPTION = 'AMOR_MECA')),
-                VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_MECA'),), 
+                VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_MECA'),),
               )
 
 
@@ -128,7 +128,7 @@ DYNHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',
                    FREQ=100.,
                    TOUT_CHAM='OUI',
                    EXCIT=_F(COEF_MULT = 1.,
-                            VECT_ASSE = VECTASS),);
+                            VECT_ASSE = VECTASS),)
 
 DYNHARM=CALC_CHAMP(reuse=DYNHARM,RESULTAT=DYNHARM,CONTRAINTE=('EFGE_ELNO'))
 

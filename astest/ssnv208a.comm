@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ),
-      DEBUG=_F(SDVERI='OUI'));
+      DEBUG=_F(SDVERI='OUI'))
 
 # modules mecaniques [kPa]
 K=148.E6
@@ -38,18 +38,18 @@ P0=1.E5
 #***********************************************************************
 #    MAILLAGE + MODELE
 #***********************************************************************
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER", );
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER", )
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT         = 'OUI',
                            PHENOMENE    = 'MECANIQUE',
-                           MODELISATION = 'D_PLAN'));
+                           MODELISATION = 'D_PLAN'))
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('DROIT','GAUCHE',
                                                  'BAS','HAUT')),
-                       INFO=1);
+                       INFO=1)
 
 
 #***********************************************************************
@@ -57,12 +57,12 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
 #***********************************************************************
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A =  2., NOMBRE = 200),
-                                  _F(JUSQU_A = 10., NOMBRE = 80),));
+                                  _F(JUSQU_A = 10., NOMBRE = 80),))
 
 TEMPS2=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A =  1., NOMBRE = 10),
                                   _F(JUSQU_A =  7., NOMBRE = 60),
-                                  _F(JUSQU_A = 10., NOMBRE = 30)));
+                                  _F(JUSQU_A = 10., NOMBRE = 30)))
 #***********************************************************************
 #    MATERIAU : SOL
 #***********************************************************************
@@ -86,34 +86,34 @@ SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                             XM       = 1.,
                             RD_CYC   = 0.01,
                             RI_CYC   = 0.0001,
-                            DILA     = 1.0,));
+                            DILA     = 1.0,))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL));
+                    AFFE=_F(TOUT='OUI', MATER=SOL))
 
 #***********************************************************************
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
 #***********************************************************************
 CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA=('DROIT','GAUCHE','HAUT'),
-                                   PRES = 1.));
+                                   PRES = 1.))
 
 CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
-                       FACE_IMPO=_F(GROUP_MA='HAUT',DY = -1.));
+                       FACE_IMPO=_F(GROUP_MA='HAUT',DY = -1.))
 
 DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
                 FACE_IMPO=(_F(GROUP_MA='BAS',DY = 0.),
-                           _F(GROUP_MA='GAUCHE',DX = 0.),),);
+                           _F(GROUP_MA='GAUCHE',DX = 0.),),)
 
 COEF1=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-1.0, 0.0,
-                           0. , P0 ));
+                           0. , P0 ))
 
 COEF2=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=( 0.0, 0.0,
-                          10.0, .2));
+                          10.0, .2))
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -131,7 +131,7 @@ SIEF=CREA_CHAMP(INFO=2,
                 PROL_ZERO='OUI',
                 AFFE=_F(GROUP_MA='BLOC',
                         NOM_CMP=('SIXX','SIYY','SIZZ'),
-                        VALE=(-P0,-P0,-P0)));
+                        VALE=(-P0,-P0,-P0)))
 
 #***********************************************************************
 #    ESSAI TRIAXIAL DRAINE
@@ -156,7 +156,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  ARCHIVAGE =_F(LIST_INST=TEMPS2,),
                  INCREMENT=_F(LIST_INST = DEFLIST1,
                               INST_INIT=0.0,
-                              INST_FIN =10.));
+                              INST_FIN =10.))
 
 
 #****************************************
@@ -168,7 +168,7 @@ U1=CALC_CHAMP(reuse=U1,CRITERES=('INDL_ELGA','PDIL_ELGA'),VARI_INTERNE=('VARI_EL
 U1=CALC_CHAMP(reuse=U1,
 
            CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSI_NOEU',
-           RESULTAT=U1);
+           RESULTAT=U1)
 
 
 TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
@@ -176,7 +176,7 @@ TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 RESULTAT=U1,
                                 NOM_CHAM='SIGM_NOEU',
                                 NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 GROUP_NO='C',
@@ -184,40 +184,40 @@ TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 NOM_CHAM='VARI_NOEU',
                                 NOM_CMP=('V1','V2','V3','V4',
                                          'V5','V6','V7','V8','V23','V32'),
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_EPSY=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='EPSI_NOEU',
                                 NOM_CMP='EPYY',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 TAB_EPSV=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_VOLU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='EPSI_NOEU',
                                 INVARIANT='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 
 TAB_EPSV=CALC_TABLE(reuse=TAB_EPSV,
                     TABLE=TAB_EPSV,
                     ACTION=_F(OPERATION='COMB',
                               TABLE=TAB_EPSY,
-                              NOM_PARA='INST'));
+                              NOM_PARA='INST'))
 
 TAB_VARI=CALC_TABLE(reuse=TAB_VARI,
                     TABLE=TAB_VARI,
                     ACTION=_F(OPERATION='COMB',
                               TABLE=TAB_EPSY,
-                              NOM_PARA='INST'));
+                              NOM_PARA='INST'))
 
 TAB_SIG=CALC_TABLE(reuse=TAB_SIG,
                    TABLE=TAB_SIG,
                    ACTION=_F(OPERATION='COMB',
                              TABLE=TAB_EPSY,
-                             NOM_PARA='INST'));
+                             NOM_PARA='INST'))
 
 
 #**********************************#
@@ -639,4 +639,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   ),
           )
 
-FIN();
+FIN()

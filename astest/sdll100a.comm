@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org 
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ WILNONA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                      _F(NOM_CHAM='DEPL',
                                             NOM_CMP='DY',
                                             PAS_OBSE=200,
-                                            GROUP_NO='N2',),       
+                                            GROUP_NO='N2',),
                                      _F(NOM_CHAM='DEPL',
                                             NOM_CMP=('DX','DY',),
                                             PAS_OBSE=200,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,39 +35,39 @@ fmt_raison='-'*80+"""
 
 """+'-'*80+'\n'
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU=('ContVis','ContTrou')));
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('ContVis','ContTrou')))
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'));
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E+11,
-                            NU=0.3));
+                            NU=0.3))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER));
+                            MATER=ACIER))
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D'));
+                       MODELISATION='3D'))
 
 ENCAST=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_MA='Base',
-                                  BLOCAGE = ('DEPLACEMENT', 'ROTATION')));
+                                  BLOCAGE = ('DEPLACEMENT', 'ROTATION')))
 
 ENCAST2=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='Dimpo',
-                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION')));
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION')))
 
 Dimpo=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='ContVis',
-                                 DZ=-1));
+                                 DZ=-1))
 
 CONT2 = DEFI_CONTACT(MODELE      = MO,
                    FORMULATION   = 'DISCRETE',
@@ -86,11 +86,11 @@ CONT2 = DEFI_CONTACT(MODELE      = MO,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           1,1,
                           2,2,
-                          ),PROL_DROITE='LINEAIRE');
+                          ),PROL_DROITE='LINEAIRE')
 
 TPS=DEFI_LIST_REEL(DEBUT=0,
                    INTERVALLE=(_F(JUSQU_A=2,
-                                  NOMBRE=1)));
+                                  NOMBRE=1)))
 
 is_ok = 0
 try :
@@ -111,7 +111,7 @@ try :
                         SOLVEUR=_F(
                                    METHODE='MUMPS'),
                         CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
-                                       ITER_GLOB_MAXI=10));
+                                       ITER_GLOB_MAXI=10))
 
 except AsterError as err:
    print(fmt_raison % str(err))
@@ -132,4 +132,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-FIN();
+FIN()

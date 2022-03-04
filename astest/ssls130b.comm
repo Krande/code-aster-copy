@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,35 +31,35 @@ MAYAGRO = LIRE_MAILLAGE(FORMAT='IDEAS',
                         )
 
 MATELAS=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
-                              NU=0.3,),);
+                              NU=0.3,),)
 
 MODELGRO=AFFE_MODELE(MAILLAGE=MAYAGRO,
                      AFFE=_F(GROUP_MA='ALL_EL',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='DKT',),);
+                             MODELISATION='DKT',),)
 
 CHMATGRO=AFFE_MATERIAU(MAILLAGE=MAYAGRO,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATELAS,),);
+                               MATER=MATELAS,),)
 
 CHCARGRO=AFFE_CARA_ELEM(MODELE=MODELGRO,
                         COQUE=_F(GROUP_MA='ALL_EL',
-                                 EPAIS=0.001,),);
+                                 EPAIS=0.001,),)
 
 ENCASGRO=AFFE_CHAR_MECA(MODELE=MODELGRO,
                         DDL_IMPO=_F(GROUP_NO='GOCH_NO',
-                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),)
 
 FORCEGRO=AFFE_CHAR_MECA(MODELE=MODELGRO,
                         FORCE_NODALE=_F(GROUP_NO='DROI_NO',
                                         FX=100.0,
-                                        FZ=1.0,),);
+                                        FZ=1.0,),)
 
 MECASTAT=MECA_STATIQUE(MODELE=MODELGRO,
                        CHAM_MATER=CHMATGRO,
                        CARA_ELEM=CHCARGRO,
                        EXCIT=(_F(CHARGE=ENCASGRO,),
-                              _F(CHARGE=FORCEGRO,),),);
+                              _F(CHARGE=FORCEGRO,),),)
 
 #***************************************
 # CALCUL SUR PARTIE ZOOMEE
@@ -72,15 +72,15 @@ MAYAFIN = LIRE_MAILLAGE(FORMAT='IDEAS',
 MODELFIN=AFFE_MODELE(MAILLAGE=MAYAFIN,
                      AFFE=_F(GROUP_MA='INT_EL',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='DKT',),);
+                             MODELISATION='DKT',),)
 
 CHMATFIN=AFFE_MATERIAU(MAILLAGE=MAYAFIN,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATELAS,),);
+                               MATER=MATELAS,),)
 
 CHCARFIN=AFFE_CARA_ELEM(MODELE=MODELFIN,
                         COQUE=_F(GROUP_MA='INT_EL',
-                                 EPAIS=0.001,),);
+                                 EPAIS=0.001,),)
 
 # Phase de projection du champ de deplacement calcule
 # sur le maillage grossier sur le contour du maillage fin
@@ -93,26 +93,26 @@ CHAMPROJ=PROJ_CHAMP(METHODE='COLLOCATION',
 
                     VIS_A_VIS=_F(GROUP_MA_1='INT_EL',
                                  GROUP_NO_2='INT2_NO',),
-                    );
+                    )
 
 DEPLNO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='EXTR',
                   RESULTAT=CHAMPROJ,
                   NOM_CHAM='DEPL',
-                  NUME_ORDRE=1,);
+                  NUME_ORDRE=1,)
 
 # affectation des deplacements projetes comme
 # deplacement impose
 ENCASFIN=AFFE_CHAR_MECA(MODELE=MODELFIN,
                         CHAMNO_IMPO=_F(CHAM_NO=DEPLNO,
                                        COEF_IMPO=1.,),
-                        INFO=1);
+                        INFO=1)
 
 MECAFIN=MECA_STATIQUE(MODELE=MODELFIN,
                        CHAM_MATER=CHMATFIN,
                        CARA_ELEM=CHCARFIN,
                        EXCIT=(_F(CHARGE=ENCASFIN,),),
-                       OPTION='SIEF_ELGA',);
+                       OPTION='SIEF_ELGA',)
 
 MECAFIN=CALC_CHAMP(reuse=MECAFIN,RESULTAT=MECAFIN,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
 
@@ -120,16 +120,16 @@ MECAFIN=CALC_CHAMP(reuse=MECAFIN,RESULTAT=MECAFIN,CONTRAINTE=('EFGE_ELNO','SIGM_
 MECAFIN2=POST_CHAMP(RESULTAT=MECAFIN,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 MECAFIN2=CALC_CHAMP(reuse =MECAFIN2,
                  RESULTAT=MECAFIN2,
-                 CONTRAINTE='SIGM_NOEU',);
+                 CONTRAINTE='SIGM_NOEU',)
 
 DEPLVER=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=MECAFIN2,
                    NOM_CHAM='SIGM_NOEU',
-                   NUME_ORDRE=1,);
+                   NUME_ORDRE=1,)
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='AUTRE_ASTER',
                       NOM_CMP='SIXX',
@@ -162,4 +162,4 @@ TEST_RESU(CHAM_NO=(_F(REFERENCE='AUTRE_ASTER',
                    ),
           )
 
-FIN();
+FIN()

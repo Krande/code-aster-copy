@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,19 +21,19 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'))
 
-CUBER=LIRE_MAILLAGE(FORMAT="ASTER",);
+CUBER=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(MAILLAGE=CUBER,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 U2=DEFI_FONCTION(NOM_PARA='Y',
                  VALE=(0.0,0.0,1.0,1.0,),
                  PROL_DROITE='LINEAIRE',
-                 PROL_GAUCHE='LINEAIRE',);
+                 PROL_GAUCHE='LINEAIRE',)
 
-U3=DEFI_CONSTANTE(VALE=0.0,);
+U3=DEFI_CONSTANTE(VALE=0.0,)
 
 CHARGY=AFFE_CHAR_MECA_F(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='NO3',
@@ -45,29 +45,29 @@ CHARGY=AFFE_CHAR_MECA_F(MODELE=MO,
                                  _F(GROUP_NO='NO7',
                                     DX=U3,),
                                  _F(GROUP_NO='FACEXZ2',
-                                    DY=U2,),),);
+                                    DY=U2,),),)
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                           NU=0.3,),);
+                           NU=0.3,),)
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E=100000.0,
-                           NU=0.3,),);
+                           NU=0.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=CUBER,
                     AFFE=(_F(GROUP_MA='MA1',
                              MATER=MAT1,),
                           _F(GROUP_MA='MA2',
-                             MATER=MAT2,),),);
+                             MATER=MAT2,),),)
 
 MESTY=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHARGY,),);
+                   EXCIT=_F(CHARGE=CHARGY,),)
 
 CONTR=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='EXTR',
                  RESULTAT=MESTY,
                  NUME_ORDRE=1,
-                 NOM_CHAM='SIEF_ELGA',);
+                 NOM_CHAM='SIEF_ELGA',)
 
 INT_SIYY=POST_ELEM(MODELE=MO,
                    NUME_ORDRE=1,
@@ -83,7 +83,7 @@ IMPR_TABLE(TABLE=INT_SIYY)
 U1=DEFI_FONCTION(NOM_PARA='X',
                  VALE=(0.0,0.0,1.0,1.0,),
                  PROL_DROITE='LINEAIRE',
-                 PROL_GAUCHE='LINEAIRE',);
+                 PROL_GAUCHE='LINEAIRE',)
 
 
 
@@ -105,15 +105,15 @@ CHARGX=AFFE_CHAR_MECA_F(MODELE=MO,
                                  _F(GROUP_NO='NO10',
                                     DZ=U3,),
                                  _F(GROUP_NO='FACEZY2',
-                                    DX=U1,),),);
+                                    DX=U1,),),)
 
 
 MESTX=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHARGX,),);
+                   EXCIT=_F(CHARGE=CHARGX,),)
 
 MESTX=CALC_CHAMP(reuse =MESTX,
-               RESULTAT=MESTX,  CRITERES=('SIEQ_ELGA'));
+               RESULTAT=MESTX,  CRITERES=('SIEQ_ELGA'))
 
 
 
@@ -138,7 +138,7 @@ CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=MESTX,
                   NUME_ORDRE=1,
-                  NOM_CHAM='SIEF_ELGA',);
+                  NOM_CHAM='SIEF_ELGA',)
 
 INT_SIX1=POST_ELEM(MODELE=MO,CHAM_MATER=CHMAT,
                    CHAM_GD=CONTR1,
@@ -152,7 +152,7 @@ CONTR2=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   RESULTAT=MESTX,
                   NUME_ORDRE=1,
                   INFO = 2,
-                  NOM_CHAM='SIEQ_ELGA',);
+                  NOM_CHAM='SIEQ_ELGA',)
 
 
 INT_SIX2=POST_ELEM(MODELE=MO,
@@ -258,4 +258,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='MOYE_SIXX',
            TABLE=INT_SIX1,)
 
-FIN();
+FIN()

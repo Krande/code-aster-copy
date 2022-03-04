@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ GPRES1=CALC_G(      RESULTAT=RESU1,
                     OPTION='G',
 
               )
-              
+
 GKPRES1=CALC_G(     RESULTAT=RESU1,
                     THETA=_F(  R_INF = 22.04078,
                                R_SUP = 30.,
@@ -100,7 +100,7 @@ GPRES2=CALC_G(      RESULTAT=RESU1,
                              R_SUP=22.04078,),
                     OPTION='G',
     )
-                             
+
 GKPRES2=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_SUP = 22.04078,
                               R_INF = 15.3061094,
@@ -114,7 +114,7 @@ GPRES3=CALC_G(      RESULTAT=RESU1,
                              R_SUP=15.3061094,),
                     OPTION='G',
               )
-                             
+
 
 GKPRES3=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_INF = 9.79591846,
@@ -129,7 +129,7 @@ GPRES4=CALC_G(      RESULTAT=RESU1,
                              R_SUP=9.79591846,),
                     OPTION='G',
     )
-                             
+
 GKPRES4=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_SUP = 9.79591846,
                               R_INF = 5.510197639,

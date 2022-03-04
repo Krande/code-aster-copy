@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ RESU=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CH_MAT,
                    CARA_ELEM=CARAC,
                    EXCIT=_F(CHARGE=CHARGE,),
-                   );
+                   )
 #
 #
 ####################################################################
@@ -87,7 +87,7 @@ ASSEMBLAGE ( MODELE=MODELE,
              NUME_DDL= CO('NUMSTA'),
              MATR_ASSE=(
               _F( MATRICE= CO('MATASS'), OPTION= 'RIGI_MECA'),
-              _F( MATRICE= CO('RIGASG'), OPTION= 'RIGI_GEOM',SIEF_ELGA=SIGMA),),);
+              _F( MATRICE= CO('RIGASG'), OPTION= 'RIGI_GEOM',SIEF_ELGA=SIGMA),),)
 
 
 MOD=CALC_MODES( MATR_RIGI=MATASS,

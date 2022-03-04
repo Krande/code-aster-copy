@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,20 +28,20 @@ MAYA0=LIRE_MAILLAGE(FORMAT='MED', )
 MAYA0 = DEFI_GROUP(reuse=MAYA0,
                   MAILLAGE=MAYA0,
                   DETR_GROUP_NO=_F(NOM=('NOEUSURF','NOEUPIST'),),
-                  );
+                  )
 
-MAYA = CREA_MAILLAGE(MAILLAGE=MAYA0, LINE_QUAD=_F(TOUT='OUI',PREF_NOEUD='AA',),);
+MAYA = CREA_MAILLAGE(MAILLAGE=MAYA0, LINE_QUAD=_F(TOUT='OUI',PREF_NOEUD='AA',),)
 
 MAYA = DEFI_GROUP(reuse=MAYA,
                   MAILLAGE=MAYA,
                   CREA_GROUP_NO=_F(NOM='NOEUSURF',OPTION='PLAN',POINT=(0.,0.,0.),PRECISION=0.005,
                                    VECT_NORMALE=(1.0,0.,0.,),),
-                  );
+                  )
 
 MAYA = DEFI_GROUP(reuse=MAYA,
                   MAILLAGE=MAYA,
                   CREA_GROUP_NO=_F(NOM='NOEUPIST',GROUP_MA='HEXAPIST',),
-                  );
+                  )
 
 EAU=DEFI_MATERIAU( FLUIDE=_F( RHO = 1000.,  CELE_R = 1400.))
 

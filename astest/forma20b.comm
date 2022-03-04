@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,25 +101,25 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # DEFINITION DU MATERIAU
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E3,
-                            NU=0.2,),);
+                            NU=0.2,),)
 
 # DEFINITION DES INSTANTS POUR STAT_NON_LINE
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,
-                                NOMBRE=1,),);
+                                NOMBRE=1,),)
 F_INST=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,1.,1.),);
+                     VALE=(0.0,0.0,1.,1.),)
 
 # LECTURE ET INFO MAILLAGE
 num_calc=0
-MA[num_calc]=LIRE_MAILLAGE(FORMAT='MED',INFO=2, VERI_MAIL=_F());
+MA[num_calc]=LIRE_MAILLAGE(FORMAT='MED',INFO=2, VERI_MAIL=_F())
 MA[num_calc]=DEFI_GROUP(reuse =MA[num_calc],
                  MAILLAGE=MA[num_calc],
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 MACR_INFO_MAIL(MAILLAGE=MA[num_calc],
         QUALITE='OUI',
         CONNEXITE='OUI',
         TAILLE='OUI')
-#FIN();
+#FIN()
 
 # BOUCLE PYTHON INDICATEUR D'ERREUR/REMAILLAGE
 for num_calc in range(0,nb_calc1) :
@@ -128,20 +128,20 @@ for num_calc in range(0,nb_calc1) :
    MO[num_calc]=AFFE_MODELE(MAILLAGE=MA[num_calc],
                   AFFE=(_F(TOUT = 'OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),),);
+                           MODELISATION='C_PLAN',),),)
    CHMAT[num_calc]=AFFE_MATERIAU(MAILLAGE=MA[num_calc],
                        AFFE=_F(GROUP_MA='GM14',
-                                MATER=ACIER,),);
+                                MATER=ACIER,),)
 
 # CL D'ENCASTREMENT + PRESSION REPARTIE POUR FLEXION
    CLIM[num_calc]=AFFE_CHAR_MECA(
              MODELE=MO[num_calc],
              DDL_IMPO=_F(GROUP_MA='GM13',
                        DX=0.0,
-                       DY=0.0),);
+                       DY=0.0),)
    CH[num_calc]=AFFE_CHAR_MECA(MODELE=MO[num_calc],
                  PRES_REP=(_F(GROUP_MA='GM12',
-                              PRES=1.E-1,),),);
+                              PRES=1.E-1,),),)
 
 # CALCUL ELASTIQUE VIA STAT_NON_LINE OU MECA_STATIQUE
 #   DEPLA[num_calc]=MECA_STATIQUE(MODELE=MO[num_calc],
@@ -158,9 +158,9 @@ for num_calc in range(0,nb_calc1) :
                                  FONC_MULT=F_INST,),),
                        COMPORTEMENT=(_F(RELATION='ELAS',
                                      TOUT='OUI',), ),
-                       INCREMENT=_F(LIST_INST=L_INST),);
+                       INCREMENT=_F(LIST_INST=L_INST),)
 
-   DEPLA[num_calc]=EXTR_RESU(RESULTAT=RESV[num_calc],ARCHIVAGE=_F(NUME_ORDRE=1,),);
+   DEPLA[num_calc]=EXTR_RESU(RESULTAT=RESV[num_calc],ARCHIVAGE=_F(NUME_ORDRE=1,),)
 
 
 
@@ -178,7 +178,7 @@ for num_calc in range(0,nb_calc1) :
                        'ERZ1_ELEM',
 # CALCUL DE L'INDICATEUR EN RESIDU PAR ELEM ET AUX NOEUDS PAR ELEM
                        'ERME_ELEM',
-                       'ERME_ELNO',),);
+                       'ERME_ELNO',),)
 
 # IMPRESSION FORMAT MED I
    DEFI_FICHIER(FICHIER='IMPR',UNITE=55, TYPE='BINARY',)
@@ -187,7 +187,7 @@ for num_calc in range(0,nb_calc1) :
                     RESULTAT=DEPLA[num_calc],
                     NOM_CHAM=('DEPL','SIGM_ELNO',
                               'ERME_ELNO')
-                     ),);
+                     ),)
    DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
 
 # AFFICHAGE GIBI INTERACTIF DEPL + CONTRAINTE + INDICATEURS EN RESIDU
@@ -197,7 +197,7 @@ for num_calc in range(0,nb_calc1) :
 # CALCUL DE L'ENERGIE POTENTIELLE DE DEFORMATION
    ENER[num_calc]=POST_ELEM(
                      RESULTAT=DEPLA[num_calc],
-                     ENER_POT=_F(TOUT='OUI',),);
+                     ENER_POT=_F(TOUT='OUI',),)
 
 # CALCUL DE LA FLECHE
    FLEC[num_calc] = POST_RELEVE_T(
@@ -384,4 +384,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.10692929599999999,
 #f6.close()
 #f7.close()
 
-FIN();
+FIN()

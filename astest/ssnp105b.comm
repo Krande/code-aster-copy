@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # Macro-command: CALC_BT
 # Test 1.1: Trimmed wall plane stresses
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 # ----------------------------------------------------------------#
@@ -62,7 +62,7 @@ BC = AFFE_CHAR_MECA(DDL_IMPO = (_F(GROUP_NO = ('Bottom', ),
                      FORCE_NODALE = (_F(FX = 3000000.0,
                                      GROUP_NO = 'Corner'),
                                    ),
-                     MODELE = MODEL);
+                     MODELE = MODEL)
 
 LINST = DEFI_LIST_REEL(DEBUT = 0.,
                      INTERVALLE = _F(JUSQU_A = 1.,NOMBRE = 2))
@@ -70,7 +70,7 @@ LINST = DEFI_LIST_REEL(DEBUT = 0.,
 FMULT = DEFI_FONCTION(NOM_PARA = 'INST',
                     VALE = (0., 0.,
                           1., 1.,),
-                    PROL_DROITE = 'LINEAIRE',);
+                    PROL_DROITE = 'LINEAIRE',)
 
 ## ----------------------------------------------------------------#
 ## Static solution
@@ -115,7 +115,7 @@ STM_TOPO = CALC_BT(RESULTAT = RESU,
               SECTION_MINI = 1e-6,
               LONGUEUR_MAX = 7,
               INIT_ALEA = 0,
-              );
+              )
 
 
 STM_SEC = CALC_BT(RESULTAT = RESU,
@@ -143,7 +143,7 @@ RESU_BT = CO('RES_SEC'),
               CRIT_SECTION = 0.5,
               SECTION_MINI = 1e-6,
               LONGUEUR_MAX = 7,
-              );
+              )
 
 
 ## ----------------------------------------------------------------#
@@ -177,41 +177,41 @@ TEST_TABLE(VALE_CALC   = -1.00000E+06 ,
            TABLE = STM_SEC,
            FILTRE = _F(NOM_PARA = 'L',
                        VALE = 1.00000E+00,),
-           );
+           )
 
 TEST_TABLE(VALE_CALC   = 0.028571429710642082 ,
            NOM_PARA = 'A',
            TABLE = STM_SEC,
            FILTRE = _F(NOM_PARA = 'L',
                        VALE = 1.00000E+00 ,),
-           );
+           )
 
 TEST_TABLE(VALE_CALC   = 0.95,
            NOM_PARA = 'COORD_X NOEUD_I',
            TABLE = STM_SEC,
            FILTRE = _F(NOM_PARA = 'L',
                        VALE = 1.37931E+00,),
-           );
+           )
 
 TEST_TABLE(VALE_CALC   = -1.00000E+06,
            NOM_PARA = 'N',
            TABLE = STM_TOPO,
            FILTRE = _F(NOM_PARA = 'L',
                        VALE =  1.00000E+00,),
-           );
+           )
 
 TEST_TABLE(VALE_CALC   = 0.028571429710642166,
            NOM_PARA = 'A',
            TABLE = STM_TOPO,
            FILTRE = _F(NOM_PARA = 'L',
                        VALE =  1.00000E+00,),
-           );
+           )
 
 TEST_TABLE(VALE_CALC   = 0.95,
            NOM_PARA = 'COORD_X NOEUD_I',
            TABLE = STM_TOPO,
            FILTRE = _F(NOM_PARA = 'L',
                        VALE =  1.37931E+00,),
-           );
+           )
 
 FIN()

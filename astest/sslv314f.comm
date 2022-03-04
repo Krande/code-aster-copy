@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ MAIT[i_tot]=LIRE_MAILLAGE(FORMAT='MED')
 
 MAIT[i_tot]=DEFI_GROUP(reuse =MAIT[i_tot],
                   MAILLAGE=MAIT[i_tot],
-                  CREA_GROUP_NO=_F(GROUP_MA=('VOL','SURFINF','LIG1','LIG5'),),);
+                  CREA_GROUP_NO=_F(GROUP_MA=('VOL','SURFINF','LIG1','LIG5'),),)
 
 
 # boucle de raffinements +une iteration en plus pour la definition de la fissure sur le maillage le plus fin
@@ -74,12 +74,12 @@ for i_raff in range(nb_raff+1) :
                               MODELISATION='3D',),
                             _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D',),),)
 
    MAIT[i_tot]=MODI_MAILLAGE(reuse =MAIT[i_tot],
                           MAILLAGE=MAIT[i_tot],
                           ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
-                         );
+                         )
 
 
    # definition de la fissure semi elliptique ou par un demi plan
@@ -121,14 +121,14 @@ for i_raff in range(nb_raff+1) :
 #----------------------------------------------
 
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAIT[i_tot],
                        MODELE=MO,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------
 #         PROPAGATION SUR 3 PAS DE TEMPS
@@ -142,33 +142,33 @@ SIF = [None]*nbcalc
 LSN = [None]*nbcalc
 LST = [None]*nbcalc
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),)
 RI = 0.2
 RS = 0.8
 
 for i in range(nbcalc) :
 
-   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MO,FISSURE=FISS[i],INFO=1,);
+   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MO,FISSURE=FISS[i],INFO=1,)
 
    CH[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
                         PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
                         DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
                                   _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
-                                  _F(GROUP_NO='P4',DY=0.0,),),);
+                                  _F(GROUP_NO='P4',DY=0.0,),),)
 
    RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(
                                 _F(CHARGE=CH[i],),),
                          INST=1.0,
-                         INFO=1,);
+                         INFO=1,)
 
    SIF[i]=CALC_G_XFEM        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i],),
-                         LISSAGE=_F( DEGRE=0,),);
+                         LISSAGE=_F( DEGRE=0,),)
 
-   IMPR_TABLE(TABLE=SIF[i],);
+   IMPR_TABLE(TABLE=SIF[i],)
 
    if ( i != (nbcalc-1) ) :
       FISS[i+1] = CO('FISS_%d'%(i+1))
@@ -185,17 +185,17 @@ for i in range(nbcalc) :
                  RAYON=RS,
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
-                 INFO=1,);
+                 INFO=1,)
 
 #     LEVEL SET AU PAS DE PROPAGATION COURANT
       LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='EXTR',
                           FISSURE=FISS[i+1],
-                          NOM_CHAM='LNNO',);
+                          NOM_CHAM='LNNO',)
       LST[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='EXTR',
                           FISSURE=FISS[i+1],
-                          NOM_CHAM='LTNO',);
+                          NOM_CHAM='LTNO',)
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -216,16 +216,16 @@ TABLSN= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
                                 GROUP_NO=('N1130','N1028','N926',),
                                 CHAM_GD=LSN[i],
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 TABLST= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
                                 GROUP_NO=('N1130','N1028','N926',),
                                 CHAM_GD=LST[i],
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
-IMPR_TABLE(TABLE=TABLSN,);
-IMPR_TABLE(TABLE=TABLST,);
+IMPR_TABLE(TABLE=TABLSN,)
+IMPR_TABLE(TABLE=TABLST,)
 
 # ON PEUT ENFIN VERIFIER QUE LE FOND DE FISSURE CALCULE PAR PROPA_FISS
 # EST DANS L'ELEMENT EN VERIFIENT QUE LA VALEUR DES LEVEL SETS EST
@@ -277,4 +277,4 @@ TEST_TABLE(CRITERE='ABSOLU',
            TABLE=TABLST,
            )
 
-FIN();
+FIN()

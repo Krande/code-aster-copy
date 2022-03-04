@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@
 #
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 # ---------------------  MAILLAGE ----------------
 
 #Acquisition du maillage des poutres encastrees
 
-MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILL1=MODI_MAILLAGE(reuse=MAILL1,
                      MAILLAGE=MAILL1,
@@ -43,7 +43,7 @@ MAILL1=MODI_MAILLAGE(reuse=MAILL1,
                                  _F(GROUP_MA='POU2',
                                     VECT_TANG=(-1,0,0),
                                     GROUP_NO='B',),
-                                 ),);
+                                 ),)
 
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,
@@ -51,28 +51,28 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
                                    NOM='GROUP1',),
                                  _F(GROUP_MA=('POU2',),
                                    NOM='GROUP2',),
-                                 ));
+                                 ))
 
 #Acquisition du maillage de la section en fibres
 
-MA_SECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21);
+MA_SECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
 
 
 # ---- MODELE : POUTRE DROITE D'EULER ----
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL1,
-                 
+
                  AFFE=(_F(GROUP_MA='POU1',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_TGM',),
                        _F(GROUP_MA='POU2',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_TGM',),
-                       ),);
+                       ),)
 
 # ------------- DEFINITON DU MATERIAU -----------
 
-MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,NU=0.33333,RHO=7800.,),);
+MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,NU=0.33333,RHO=7800.,),)
 
 GF=DEFI_GEOM_FIBRE(
    SECTION =_F(GROUP_FIBRE='SECF',
@@ -88,7 +88,7 @@ COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MPOUTRE,
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                   AFFE=_F(GROUP_MA=('POU1','POU2'),MATER=MPOUTRE),
                   AFFE_COMPOR=_F(GROUP_MA=('POU1','POU2'),COMPOR=COMPF),
-                 );
+                 )
 
 CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,INFO=1,
                       POUTRE=_F(GROUP_MA=('POU1','POU2'),
@@ -98,7 +98,7 @@ CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,INFO=1,
                                       5.08,0.0,0.0,0.),),
                       GEOM_FIBRE=GF,
                       MULTIFIBRE=_F(GROUP_MA=('POU1','POU2'),
-                                   GROUP_FIBRE='SECF',),);
+                                   GROUP_FIBRE='SECF',),)
 
 # ---------- CONDITIONS AUX LIMITES --------------
 
@@ -108,29 +108,29 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
                                      DRX=0.0,DRY=0.0,DRZ=0.0),
                                   _F(GROUP_NO=('GROUP1','GROUP2'),
                                      DZ=0.0,DRX=0.0,DRY=0.0,),
-                                  ),);
+                                  ),)
 
 CH1=AFFE_CHAR_MECA(MODELE=MODE,
                    DDL_IMPO=(_F(GROUP_NO=('C'),
                                 DY=-790.,),
-                             ),);
+                             ),)
 
 # ---- METHODE LAGRANGIENNE ----
-F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
-F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
+F_DIST_M=DEFI_CONSTANTE(VALE=31.75)
+F_DIST_E=DEFI_CONSTANTE(VALE=31.75)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                                      INTERVALLE=(_F(JUSQU_A=.1,
-                                     NOMBRE=25,),),);
+                                     NOMBRE=25,),),)
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
-                                     NOMBRE=50,),),);
+                                     NOMBRE=50,),),)
 
 L_INST=DEFI_LIST_INST(METHODE='MANUEL',
                       DEFI_LIST=_F(LIST_INST=LINST,),
@@ -138,7 +138,7 @@ L_INST=DEFI_LIST_INST(METHODE='MANUEL',
                               ACTION='DECOUPE',
                               SUBD_METHODE = 'MANUEL',
                               SUBD_PAS=5,
-                              SUBD_NIVEAU=5,),);
+                              SUBD_NIVEAU=5,),)
 
 #
 # ---- METHODE CONTINUE ----
@@ -161,7 +161,7 @@ CHCON= DEFI_CONTACT(MODELE         = MODE,
                               DIST_ESCL      = F_DIST_E,
                              ),
                           ),
-                   );
+                   )
 
 
 
@@ -181,7 +181,7 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                 # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,RESI_GLOB_RELA=1.e-7,),
                 SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
-                INFO=1,);
+                INFO=1,)
 
 UCON=CALC_CHAMP(reuse =UCON,
           RESULTAT=UCON,
@@ -189,7 +189,7 @@ UCON=CALC_CHAMP(reuse =UCON,
           FORCE='FORC_NODA',
 
 
-         );
+         )
 
 # ---- TABLEAUX ----
 
@@ -198,17 +198,17 @@ T_REA_CO=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  RESULTAT=UCON,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 T_DEP_CO=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  GROUP_NO=('C','A1','B1'),
                                  RESULTAT=UCON,
                                  NOM_CHAM='DEPL',
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
-#IMPR_TABLE(TABLE=T_REA_CO,);
-#IMPR_TABLE(TABLE=T_DEP_CO,);
+#IMPR_TABLE(TABLE=T_REA_CO,)
+#IMPR_TABLE(TABLE=T_DEP_CO,)
 
 TEST_TABLE(
            VALE_CALC=311.885469166,
@@ -271,7 +271,7 @@ CHESCL= DEFI_CONTACT(MODELE         = MODE,
                               ESCL_VECT_Y    = (0.,0.,-1.,),
                              ),
                           ),
-                   );
+                   )
 
 UESCL=STAT_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
@@ -289,7 +289,7 @@ UESCL=STAT_NON_LINE(MODELE=MODE,
                 # on diminue la valeur de RESI_GLOB_RELA pour eviter les "TOLE MACHINE" (issue24538) :
                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,RESI_GLOB_RELA=1.e-7,),
                 SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MD'),
-                INFO=1,);
+                INFO=1,)
 
 UESCL=CALC_CHAMP(reuse =UESCL,
           RESULTAT=UESCL,
@@ -297,7 +297,7 @@ UESCL=CALC_CHAMP(reuse =UESCL,
           FORCE='FORC_NODA',
 
 
-         );
+         )
 
 # ---- TABLEAUX ----
 
@@ -306,17 +306,17 @@ T_REA_ES=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  RESULTAT=UESCL,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 T_DEP_ES=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  GROUP_NO=('C','A1','B1'),
                                  RESULTAT=UESCL,
                                  NOM_CHAM='DEPL',
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
-#IMPR_TABLE(TABLE=T_REA_ES,);
-#IMPR_TABLE(TABLE=T_DEP_ES,);
+#IMPR_TABLE(TABLE=T_REA_ES,)
+#IMPR_TABLE(TABLE=T_DEP_ES,)
 
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=UESCL))
 
@@ -360,4 +360,4 @@ TEST_TABLE(
                      VALE=0.94,),
            )
 
-FIN();
+FIN()

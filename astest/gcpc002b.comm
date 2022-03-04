@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=210000.0,
-                          NU=.3,),);
+                          NU=.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHA=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='SUPY',
@@ -44,31 +44,31 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                              _F(GROUP_NO='SUPZ',
                                 DZ=0.,),
                              _F(GROUP_NO='CHARGE',
-                                DX=-1.,),),);
+                                DX=-1.,),),)
 
 MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   CHARGE=CHA,);
+                   CHARGE=CHA,)
 
-NU=NUME_DDL(MATR_RIGI=MEL);
+NU=NUME_DDL(MATR_RIGI=MEL)
 
 MATAS=ASSE_MATRICE(MATR_ELEM=MEL,
-                   NUME_DDL=NU,);
+                   NUME_DDL=NU,)
 
 VEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                   CHARGE=CHA,);
+                   CHARGE=CHA,)
 
 VECAS=ASSE_VECTEUR(VECT_ELEM=VEL,
-                   NUME_DDL=NU,);
+                   NUME_DDL=NU,)
 
 # GCP + LDLT_INC
-KMATAS=FACTORISER(MATR_ASSE=MATAS, METHODE='GCPC',PRE_COND='LDLT_INC');
+KMATAS=FACTORISER(MATR_ASSE=MATAS, METHODE='GCPC',PRE_COND='LDLT_INC')
 
 DEP=RESOUDRE(MATR=MATAS,
              CHAM_NO=VECAS,
              RESI_RELA=1.0E-10,
-             MATR_PREC=KMATAS,);
+             MATR_PREC=KMATAS,)
 
 RESU=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_ELAS',
@@ -76,7 +76,7 @@ RESU=CREA_RESU(OPERATION='AFFE',
                AFFE=_F(CHAM_GD=DEP,
                        INST=0.,
                        MODELE=MO,
-                       CHAM_MATER=CHMAT,),);
+                       CHAM_MATER=CHMAT,),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,INST=0.,CONTRAINTE=('SIGM_ELNO'))
 
@@ -357,12 +357,12 @@ TEST_RESU(RESU=(_F(INST=0.0,
 
 # GCP + LDLT_SP
 MATAS=FACTORISER(reuse=MATAS,MATR_ASSE=MATAS,METHODE='GCPC', PRE_COND='LDLT_SP',
-                 PCENT_PIVOT=30);
+                 PCENT_PIVOT=30)
 
 DEP2=RESOUDRE(MATR=MATAS,
              CHAM_NO=VECAS,
              RESI_RELA=1.0E-8,
-             MATR_PREC=MATAS,);
+             MATR_PREC=MATAS,)
 
 TEST_RESU(CHAM_NO=(_F(GROUP_NO='NO13943',
                       NOM_CMP='DX',
@@ -500,4 +500,4 @@ TEST_RESU(CHAM_NO=(_F(GROUP_NO='NO13943',
                    ),
           )
 
-FIN();
+FIN()

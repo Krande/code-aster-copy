@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1705,8 +1705,8 @@ ACCEINI=DEFI_FONCTION(NOM_RESU='ACCE',
 16.76, 0.000000,
 16.77, 0.000000,
 16.78, 0.000000,
-16.79, 0.000000,  ),);
+16.79, 0.000000,  ),)
 
-ACCELE=CALC_FONCTION(COMB=(_F(FONCTION = ACCEINI, COEF = 0.634568),),);
+ACCELE=CALC_FONCTION(COMB=(_F(FONCTION = ACCEINI, COEF = 0.634568),),)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,17 +63,17 @@ SIG_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LIN',PROL_DROITE='CONSTANT',
 
 DSP = CALC_FONCTION ( DSP =_F( FONCTION = SRO_NGA, AMOR_REDUIT = 0.05,
                                FREQ_PAS    = 0.1, FREQ_COUP   = 100,
-                               DUREE = TSM, NORME = 9.81, ),);
+                               DUREE = TSM, NORME = 9.81, ),)
 
 INTKTJ0= DEFI_INTE_SPEC( DIMENSION = 1,
-                         PAR_FONCTION = _F(NUME_ORDRE_I = 1, NUME_ORDRE_J = 1, FONCTION =DSP , ));
+                         PAR_FONCTION = _F(NUME_ORDRE_I = 1, NUME_ORDRE_J = 1, FONCTION =DSP , ))
 POST_DSP = POST_DYNA_ALEA( INTERSPECTRE=_F( INTE_SPEC = INTKTJ0,
                                             NUME_ORDRE_J = 1,NUME_ORDRE_I = 1,
                                             DUREE = TSM, ) ,),
 
 L_FREQ = DEFI_LIST_REEL(DEBUT=10.,
               INTERVALLE=(_F(JUSQU_A=30., PAS=10,),),
-                      );
+                      )
 
 
 alea = 100000
@@ -87,7 +87,7 @@ ACCEU2 = GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea,
                                          VITE_ONDE = 250., DIRECTION = (1.0, 0.0, 0.0)),
                         SPEC_UNIQUE = _F(SPEC_OSCI = SRO_NGA, AMOR_REDUIT  = 0.05,
                                          FREQ_PAS = 0.01,  METHODE = 'NIGAM', ),
-                        MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), );
+                        MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), )
 
 
 
@@ -125,7 +125,7 @@ ACCEU3 = GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea,
                                    VITE_ONDE = 250., DIRECTION = (0.0, 1.0, 0.0)),
                         SPEC_MOYENNE = _F(SPEC_OSCI = SRO_NGA, AMOR_REDUIT  = 0.05, NB_ITER = 5,
                                          FREQ_PAS = 0.01,  METHODE = 'NIGAM', ),
-                        MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), );
+                        MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), )
 
 FONC3_1 = RECU_FONCTION(TABLE=ACCEU3, FILTRE=(_F( NOM_PARA = 'NUME_ORDRE',VALE_I = 1),
                                         _F(NOM_PARA = 'NOEUD', VALE_K = noeud1),),
@@ -153,7 +153,7 @@ ACCEU4 = GENE_ACCE_SEISME( INFO  =2, INIT_ALEA= alea,
                                    VITE_ONDE = 250., DIRECTION = (1.0, 0.0, 0.0)),
                         SPEC_FRACTILE = _F(SPEC_OSCI = SRO_NGA, AMOR_REDUIT  = 0.05,
                                  SPEC_1_SIGMA  =SIG_NGA,  ),
-                        MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), );
+                        MODULATION = _F(TYPE=   "JENNINGS_HOUSNER",), )
 
 FONC4_1 = RECU_FONCTION(TABLE=ACCEU4, FILTRE=(_F( NOM_PARA = 'NUME_ORDRE',VALE_I = 2),
                                         _F(NOM_PARA = 'NOEUD', VALE_K = noeud1),),
@@ -176,7 +176,7 @@ ACCEU1 = GENE_ACCE_SEISME( INFO  = 2, INIT_ALEA = alea,
                                   COOR_REFE  = (-10.0, 0.0, 0.0),
                                   VITE_ONDE = 300., DIRECTION = (1.0, 0.0, 0.0)),
                        DSP = _F(AMOR_REDUIT  = delta,  FREQ_FOND = frr, ),
-                       MODULATION = _F(TYPE=   "JENNINGS_HOUSNER", ACCE_MAX = ZPA),);
+                       MODULATION = _F(TYPE=   "JENNINGS_HOUSNER", ACCE_MAX = ZPA),)
 
 FONC1 = RECU_FONCTION(TABLE=ACCEU1, FILTRE=(_F( NOM_PARA = 'NUME_ORDRE',VALE_I = 2),
                                         _F(NOM_PARA = 'NOEUD', VALE_K = noeud1),),
@@ -263,4 +263,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.0,
                         NOM_PARA=('INST', ), VALE_PARA=(5.2),
                          FONCTION=FONC4_3,),
                          ),)
-FIN();
+FIN()

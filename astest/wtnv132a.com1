@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ POURSUITE(CODE='OUI',)
 
 n_pas_temps_max    = 10000
 n_pas_incr         = 1
-noeu_depl          = dict();
+noeu_depl          = dict()
 noeu_depl['TEMPS'] = [0.0]
 cle                = [ ]
 list_pas_temps     = [ ]
@@ -59,22 +59,22 @@ noeu_tass_0        = [ ]
 # -->20: début boucle for
 for n in range(nbcouche):
 
-  cle.append('ELEMEN'+str(n));
+  cle.append('ELEMEN'+str(n))
   noeu_depl[cle[n]] = [0.0]*n_pas_temps_max
 
   tab = T_DEP[n].EXTR_TABLE()
   t = tab.INST.values()
   dz = tab.DZ.values()
 
-  n_pas_temps  = int(len(t)/(n+1));
+  n_pas_temps  = int(len(t)/(n+1))
 
   n_pas_incr_0 = n_pas_incr
   n_pas_incr  += n_pas_temps
 
-  list_pas_temps.append(n_pas_incr-2);
+  list_pas_temps.append(n_pas_incr-2)
 
   noeu_depl['TEMPS'] += t[::n+1]
-  noeu_tass_0.append(dz[(n+1)*n_pas_temps-1]);
+  noeu_tass_0.append(dz[(n+1)*n_pas_temps-1])
 
   # -->30: début boucle for
   for m in range(n+1):
@@ -89,7 +89,7 @@ for n in range(nbcouche):
 # -->50: début boucle for
 for n in range(nbcouche):
 
-  del(noeu_depl[cle[n]][n_pas_incr:]);
+  del(noeu_depl[cle[n]][n_pas_incr:])
 
 # <--50: fin boucle for
 
@@ -107,8 +107,8 @@ for n in range(nbcouche):
 #    -------------------------------------------------
 
 
-n_pas_temps = len(noeu_depl['TEMPS']);
-noeu_tass   = dict();
+n_pas_temps = len(noeu_depl['TEMPS'])
+noeu_tass   = dict()
 
 # -->100: début boucle for
 for n in range(n_pas_temps-1):
@@ -127,7 +127,7 @@ for n in range(n_pas_temps-1):
     tass_value = 0.
     if noeu_depl[cle[m]][n+1] != 0. : tass_value = noeu_depl[cle[m]][n+1] - noeu_tass_0[m]
 
-    noeu_tass['TEMPS'+str(n)].append(tass_value);
+    noeu_tass['TEMPS'+str(n)].append(tass_value)
 
   # <--40: fin boucle for
 
@@ -141,42 +141,42 @@ for n in range(n_pas_temps-1):
 
 tass       = [0.]*n_pas_temps
 COURBE     = []
-n_pas_temps= len(list_pas_temps);
+n_pas_temps= len(list_pas_temps)
 
 # -->200: début boucle for
 for n in range(n_pas_temps):
 
   def_courbe={'ABSCISSE': noeu_tass['TEMPS'+str(list_pas_temps[n])]}
   def_courbe['ORDONNEE'] = list(range(1,nbcouche+1))
-  def_courbe['LEGENDE' ] = 'TEMPS'+str(list_pas_temps[n]);
+  def_courbe['LEGENDE' ] = 'TEMPS'+str(list_pas_temps[n])
   def_courbe['COULEUR' ] = list_pas_temps[n]+1
   def_courbe['MARQUEUR'] = list_pas_temps[n]+1
 
-  COURBE.append(def_courbe);
+  COURBE.append(def_courbe)
 
   l_cote=DEFI_LIST_REEL(TITRE = 'COTE',
-                        VALE  = def_courbe['ORDONNEE']);
+                        VALE  = def_courbe['ORDONNEE'])
 
   l_tass=DEFI_LIST_REEL(TITRE = 'TASSEMENT',
-                        VALE  = def_courbe['ABSCISSE']);
+                        VALE  = def_courbe['ABSCISSE'])
 
   tass[n]=DEFI_FONCTION(NOM_PARA  = 'Z',
                         NOM_RESU  = 'TASSEMENT',
                         VALE_PARA = l_cote,
-                        VALE_FONC = l_tass);
+                        VALE_FONC = l_tass)
 
   IMPR_FONCTION(FORMAT ='TABLEAU',
                 UNITE  =8,
-                COURBE =_F(FONCTION=tass[n]));
+                COURBE =_F(FONCTION=tass[n]))
 
-  del(def_courbe);
-  DETRUIRE(NOM=(l_cote,l_tass));
+  del(def_courbe)
+  DETRUIRE(NOM=(l_cote,l_tass))
 
 # <--200: fin boucle for
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=25,
-              COURBE=COURBE);
+              COURBE=COURBE)
 
 
 #              ------------------------------------
@@ -535,4 +535,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.03422270,
                         FONCTION=tass[10],),
               )
 
-FIN();
+FIN()

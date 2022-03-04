@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 
 MO=AFFE_MODELE(
                MAILLAGE=MA,
-                  
+
                AFFE=_F(
                TOUT = 'OUI',
                PHENOMENE = 'MECANIQUE',
@@ -173,7 +173,7 @@ VT=CALC_CHAMP(reuse=VT,RESULTAT=VT,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_
 VTPOS=POST_CHAMP(RESULTAT=VT,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='MOY',),);
+                               NIVE_COUCHE='MOY',),)
 TEST_RESU(RESU=(_F(NUME_ORDRE=21,
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',

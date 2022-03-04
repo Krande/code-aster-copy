@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,23 +19,23 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_MA=_F(NOM='TOUT',
-                                 TOUT='OUI',),);
+                                 TOUT='OUI',),)
 
 #
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='BARRE',),);
+                        MODELISATION='BARRE',),)
 
 #
 
@@ -43,7 +43,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.3,
                             ALPHA=1.E-5,),
                     ECRO_LINE=_F(D_SIGM_EPSI=2.E9,
-                                 SY=2.E8,),);
+                                 SY=2.E8,),)
 
 #
 
@@ -51,7 +51,7 @@ CARBA=AFFE_CARA_ELEM(MODELE=MOD,
                      BARRE=_F(GROUP_MA='TOUT',
                               SECTION='GENERALE',
                               CARA='A',
-                              VALE=5.E-4,),);
+                              VALE=5.E-4,),)
 
 #
 
@@ -63,7 +63,7 @@ F1_T=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,50.0,
                          5.0,-150.0,
                          6.0,-350.0,
                          7.0,-200.0,
-                         ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                         ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 #
 
@@ -81,7 +81,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.,
                                  _F(JUSQU_A=6.,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=7.,
-                                    NOMBRE=1,),),);
+                                    NOMBRE=1,),),)
 
 #
 
@@ -90,7 +90,7 @@ TEMPIMPO=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
                     MAILLAGE=MAIL,
                     AFFE=_F(GROUP_NO='BARRE',
                             NOM_CMP='TEMP',
-                            VALE_F=F1_T,),);
+                            VALE_F=F1_T,),)
 
 #
 
@@ -100,13 +100,13 @@ TEMPRESU=CREA_RESU(OPERATION='AFFE',
                    AFFE=_F(CHAM_GD=TEMPIMPO,
                            LIST_INST=LINST,
                            NUME_INIT=1,
-                           NUME_FIN=8,),);
+                           NUME_FIN=8,),)
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MOD,
                        DDL_IMPO=_F(TOUT='OUI',
                                    DX=0.,
                                    DY=0.,
-                                   DZ=0.,),);
+                                   DZ=0.,),)
 
 #
 
@@ -117,7 +117,7 @@ CHMTM=AFFE_MATERIAU(MAILLAGE=MAIL,
                                  NOM_VARC='TEMP',
                                  EVOL=TEMPRESU,
                                  NOM_CHAM='TEMP',
-                                 VALE_REF=50.0,),);
+                                 VALE_REF=50.0,),)
 
 #
 
@@ -125,14 +125,14 @@ UELAS=MECA_STATIQUE(MODELE=MOD,
                     CHAM_MATER=CHMTM,
                     CARA_ELEM=CARBA,
                     EXCIT=_F(CHARGE=LIAISON,),
-                    LIST_INST=LINST,);
+                    LIST_INST=LINST,)
 
 UELAS=CALC_CHAMP(reuse=UELAS,RESULTAT=UELAS,LIST_INST=LINST,CONTRAINTE=('EFGE_ELNO'))
 
 
 UELAS=CALC_CHAMP(reuse =UELAS,
               RESULTAT=UELAS,
-              FORCE='FORC_NODA',);
+              FORCE='FORC_NODA',)
 
 TEST_RESU(RESU=(_F(INST=1.0,
                    RESULTAT=UELAS,
@@ -164,14 +164,14 @@ U=STAT_NON_LINE(MODELE=MOD,
                           REAC_ITER=1,),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=8,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-04,
-                               ITER_GLOB_MAXI=40,),);
+                               ITER_GLOB_MAXI=40,),)
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIEF_ELNO'))
 
 
 U=CALC_CHAMP(reuse =U,
           RESULTAT=U,
-          FORCE='FORC_NODA',);
+          FORCE='FORC_NODA',)
 
 #
 
@@ -184,7 +184,7 @@ SIGY_T=RECU_FONCTION(RESULTAT=U,
                      NOM_PARA='INST',
                      NOM_RESU='SIGY_T',
                      INTERPOL='LIN',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 
 #
 
@@ -196,7 +196,7 @@ TEMP_T=RECU_FONCTION(RESULTAT=TEMPRESU,
                      GROUP_NO='N1',
                      NOM_PARA='INST',
                      NOM_RESU='TEMP_T',
-                     INTERPOL='LIN',);
+                     INTERPOL='LIN',)
 
 TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
@@ -337,4 +337,4 @@ TEST_RESU(RESU=(_F(INST=1.0,
                 ),
           )
 
-FIN();
+FIN()

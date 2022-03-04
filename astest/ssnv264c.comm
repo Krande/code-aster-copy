@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ nrz =  0.5
 # Parametres du materiau
 E  = 195000.
 NU = 0.3
-  
+
 class ECRO:
     def __init__(self):
         self.R0 = 490
@@ -60,10 +60,10 @@ class ECRO:
         self.G2 = 10.0
         self.RK = 50.0
         self.P0 = 1.e-3
-        self.GM = 0.15         
-        
+        self.GM = 0.15
+
     def __call__(self,ka):
-        return (self.R0 + self.RH*ka + self.R1*(1-exp(-self.G1*ka)) + 
+        return (self.R0 + self.RH*ka + self.R1*(1-exp(-self.G1*ka)) +
                 self.R2*(1-exp(-self.G2*ka)) + self.RK*(ka+self.P0)**self.GM)
 
 ecro = ECRO()
@@ -72,17 +72,17 @@ ecro = ECRO()
 class VISCO:
     def __init__(self):
         self.K    = 150.0
-        self.N    = 14.0   
-        
+        self.N    = 14.0
+
     def __call__(self,rate):
         return self.K*rate**(1.0/self.N)
-        
+
 visco = VISCO()
 
 
 
 # Cible de chargement
-rate = 0.05       
+rate = 0.05
 tmax = 1.00
 ka   = rate*tmax
 
@@ -95,7 +95,7 @@ q0 = visco(rate)+ecro(0.0)
 q   = visco(rate) + ecro(ka)
 err = 1.5*ka*nrr + (1+NU)/E*q*srr - NU/E*q*(srr+stt+szz)
 ezz = 1.5*ka*nzz + (1+NU)/E*q*szz - NU/E*q*(srr+stt+szz)
-erz = 1.5*ka*nrz + (1+NU)/E*q*srz 
+erz = 1.5*ka*nrz + (1+NU)/E*q*srz
 ur  = Rext*err
 uz  = ezz*L + 2*erz*(Rext-Rint)
 
@@ -146,7 +146,7 @@ CISA_SX = FORMULE(NOM_PARA=('X','Y'), VALE='srz*X/RAY(X,Y)' , srz=srz, RAY=RAY)
 CISA_SY = FORMULE(NOM_PARA=('X','Y'), VALE='srz*Y/RAY(X,Y)' , srz=srz, RAY=RAY)
 CISA_IX = FORMULE(NOM_PARA=('X','Y'), VALE='-srz*X/RAY(X,Y)', srz=srz, RAY=RAY)
 CISA_IY = FORMULE(NOM_PARA=('X','Y'), VALE='-srz*Y/RAY(X,Y)', srz=srz, RAY=RAY)
-F_VOLU  = FORMULE(NOM_PARA=('X','Y'), VALE='-srz/RAY(X,Y)'  , srz=srz, RAY=RAY) 
+F_VOLU  = FORMULE(NOM_PARA=('X','Y'), VALE='-srz/RAY(X,Y)'  , srz=srz, RAY=RAY)
 
 
 CH1_BORD = AFFE_CHAR_MECA(
@@ -162,8 +162,8 @@ CH1_BORD = AFFE_CHAR_MECA(
         _F(GROUP_MA = 'EXT', PRES=-srr),
         ),
     )
-    
-    
+
+
 CH2_BORD = AFFE_CHAR_MECA_F(
     MODELE     =  MO,
     FORCE_FACE = (
@@ -171,13 +171,13 @@ CH2_BORD = AFFE_CHAR_MECA_F(
         _F(GROUP_MA = 'INF', FX=CISA_IX, FY=CISA_IY),
         ),
     )
-    
+
 
 CH_VOLU = AFFE_CHAR_MECA_F(
     MODELE     =  MO,
     FORCE_INTERNE = _F(GROUP_MA='VOLU', FZ=F_VOLU),
     )
-    
+
 
 LIAISON = AFFE_CHAR_MECA(
     MODELE    = MO,
@@ -187,7 +187,7 @@ LIAISON = AFFE_CHAR_MECA(
         _F(GROUP_MA='LNY', DY=0),
         ),
     )
-    
+
 
 
 L_INST = DEFI_LIST_REEL(
@@ -197,14 +197,14 @@ L_INST = DEFI_LIST_REEL(
         _F(JUSQU_A=1 ,   NOMBRE=8),
         ),
     )
-    
-    
+
+
 RAMPE_0 = DEFI_FONCTION(
     NOM_PARA = 'INST',
     VALE     = (-1,0,0,q0),
     )
-    
-        
+
+
 RAMPE = FORMULE(
     NOM_PARA='INST',
     VALE    = 'visco(rate) + ecro(rate*INST)',
@@ -212,8 +212,8 @@ RAMPE = FORMULE(
     ecro    = ecro,
     rate    = rate,
     )
-    
-    
+
+
 INIT = STAT_NON_LINE(
     MODELE       = MO,
     CHAM_MATER   = CM_ELAS,
@@ -227,7 +227,7 @@ INIT = STAT_NON_LINE(
     INCREMENT    = _F(LIST_INST=L_INST, INST_FIN=0),
     NEWTON       = _F(REAC_ITER=1),
     )
-    
+
 
 EVOL = STAT_NON_LINE(
     ETAT_INIT = _F(EVOL_NOLI=INIT),
@@ -246,7 +246,7 @@ EVOL = STAT_NON_LINE(
 
 
 EVOL = CALC_CHAMP(reuse=EVOL,
-    RESULTAT     = EVOL, 
+    RESULTAT     = EVOL,
     CONTRAINTE   = 'SIEF_NOEU',
     VARI_INTERNE = 'VARI_NOEU',
     DEFORMATION  = 'EPSI_NOEU',
@@ -256,45 +256,45 @@ EVOL = CALC_CHAMP(reuse=EVOL,
 TEST_RESU(
     RESU = (
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='SIEF_NOEU', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='SIEF_NOEU',
             NOM_CMP='SIXX',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=q*srr, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=q*srr,
             VALE_CALC = 158.60747885018236,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='DEPL', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='DEPL',
             NOM_CMP='DX',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=ur, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=ur,
             VALE_CALC = -1.2907028503907485,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='DEPL', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='DEPL',
             NOM_CMP='DZ',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=uz, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=uz,
             VALE_CALC = 4.483808297567471,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,
             ),
         _F(
-            INST=1.0, 
-            RESULTAT=EVOL, 
-            NOM_CHAM='VARI_NOEU', 
+            INST=1.0,
+            RESULTAT=EVOL,
+            NOM_CHAM='VARI_NOEU',
             NOM_CMP='V7',
-            GROUP_NO='SUP_EXT', 
-            VALE_REFE=1.5*ka*nrz, 
+            GROUP_NO='SUP_EXT',
+            VALE_REFE=1.5*ka*nrz,
             VALE_CALC = 0.03749334606043505,
             REFERENCE='ANALYTIQUE',
             PRECISION=1.E-3,

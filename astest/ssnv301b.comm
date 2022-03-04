@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 
 MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
-                                
+
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'THERMIQUE',
                                         MODELISATION = 'AXIS')
@@ -409,7 +409,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 MODEL2=AFFE_MODELE(    MAILLAGE=MAYA,
-                                
+
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'MECANIQUE',
                                         MODELISATION = 'AXIS')
@@ -483,7 +483,7 @@ PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
 ROTA=AFFE_CHAR_MECA(        MODELE=MODEL2,
                              ROTATION=_F( VITESSE = 2400.,
                                           AXE = (0.,1.,),),
-                         );
+                         )
 
 ROTA_FO=DEFI_FONCTION(       NOM_PARA='INST',
                              PROL_DROITE='EXCLU',

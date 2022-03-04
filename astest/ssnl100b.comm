@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ CH_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                    MAILLAGE=MA1,
                    AFFE=_F(TOUT='OUI',
                            NOM_CMP='TEMP',
-                           VALE=100,),);
+                           VALE=100,),)
 
 MAT1=DEFI_MATERIAU(   ELAS=_F(  E = 5.E7,  NU=0.,  RHO = 30., ALPHA = 0.0),
                       CABLE=_F(EC_SUR_E = 1.E0),

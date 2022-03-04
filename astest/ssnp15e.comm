@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,11 +108,11 @@ U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),VARI_INTERN
 UPOS=POST_CHAMP(RESULTAT=U,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='SUP',),);
+                               NIVE_COUCHE='SUP',),)
 UPOS2=POST_CHAMP(RESULTAT=U,
                  EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='SUP',),);
+                               NIVE_COUCHE='SUP',),)
 TEST_RESU(RESU=(_F(INST=0.81879999999999997,
                    RESULTAT=U,
                    NOM_CHAM='DEPL',

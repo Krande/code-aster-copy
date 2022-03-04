@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,25 +23,25 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'));
+      DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT='MED');
+M=LIRE_MAILLAGE(FORMAT='MED')
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_UP'));
+                       MODELISATION='D_PLAN_INCO_UP'))
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.4999,
                          ALPHA=0.),
                  ECRO_LINE=_F(D_SIGM_EPSI=0.,
-                              SY=1.E6));
+                              SY=1.E6))
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA));
+                         MATER=MA))
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_MA='GRMA11',
@@ -49,15 +49,15 @@ CLIM=AFFE_CHAR_MECA(MODELE=MO,
                     FACE_IMPO=(_F(GROUP_MA='GRMA12',
                                   DNOR=0.0),
                                _F(GROUP_MA='GRMA13',
-                                  DNOR=-6e-05)));
+                                  DNOR=-6e-05)))
 
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.0,
-                                     NOMBRE=1));
+                                     NOMBRE=1))
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           1.0,1.0,
-                          ),PROL_DROITE='CONSTANT');
+                          ),PROL_DROITE='CONSTANT')
 
 
 EVOL=STAT_NON_LINE(MODELE=MO,
@@ -71,22 +71,22 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                   CONVERGENCE=_F(SIGM_REFE=60.0,
                                  EPSI_REFE=3.E-4,
                                  RESI_REFE_RELA=1.E-3),
-                   SOLVEUR=_F(METHODE='MUMPS',));
+                   SOLVEUR=_F(METHODE='MUMPS',))
 
 EVOL=CALC_CHAMP(reuse=EVOL,RESULTAT=EVOL,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
 
 EVOL=CALC_ERREUR(reuse =EVOL,
                  RESULTAT=EVOL,
-                 OPTION=('ERME_ELEM','ERME_ELNO'));
+                 OPTION=('ERME_ELEM','ERME_ELNO'))
 
 EVOL=CALC_CHAMP(reuse =EVOL,
              RESULTAT=EVOL,
-             CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU');
+             CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU')
 
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
-                DEFORMATION=('EPSL_NOEU'));
+                DEFORMATION=('EPSL_NOEU'))
 
 
 #---------------------------------------------------------------
@@ -433,4 +433,4 @@ TEST_RESU(RESU=(
                 ),
           )
 
-FIN();
+FIN()

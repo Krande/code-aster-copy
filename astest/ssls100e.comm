@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
                           AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
 
-MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,
                         AFFE=_F( TOUT = 'OUI',   MODELISATION = 'DKT',
                               PHENOMENE = 'MECANIQUE') )
 
@@ -77,7 +77,7 @@ DEP=MACRO_ELAS_MULT(MODELE=MODEL,
                                 _F(NOM_CAS='CHARGE2',
                                    CHAR_MECA=CHF3,),
                                 _F(NOM_CAS='CHARGE3',
-                                   CHAR_MECA=CHPE,),),);
+                                   CHAR_MECA=CHPE,),),)
 
 #--------------------------------------------------------------------
 

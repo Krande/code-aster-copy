@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,7 +124,7 @@ MODES=CALC_MODES(MATR_RIGI=MATK,
                  CALC_FREQ=_F(FREQ=(10.,20.,),
                               ),
                  SOLVEUR_MODAL=_F(PREC_AJUSTE=1.E-6,NMAX_ITER_INV=200,PREC_INV=1.E-9),
-                 MATR_MASS=MATM, 
+                 MATR_MASS=MATM,
                  )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,

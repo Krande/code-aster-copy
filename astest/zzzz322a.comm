@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,24 +18,24 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
-      );
+      )
 
 CoefRef = 1.0E-05
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
-MATE=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3),);
+MATE=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',MATER=MATE,),);
+                    AFFE=_F(TOUT='OUI',MATER=MATE,),)
 
-LIS_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=1,),),);
+LIS_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=1,),),)
 
 #-------------------------------------------------------------------------------------
 # 1 --> DIS_T : T_L (SEG2)
 # --------------------------
 MO_DISTL=AFFE_MODELE(MAILLAGE=MA,
-                     AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='DIS_T',),);
+                     AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='DIS_T',),)
 
 CA_DISTL=AFFE_CARA_ELEM(MODELE=MO_DISTL,
                         DISCRET=(_F(GROUP_MA = 'TOUT',
@@ -44,16 +44,16 @@ CA_DISTL=AFFE_CARA_ELEM(MODELE=MO_DISTL,
                                     VALE = ( 2.6389E8, 2.6389E8, 2.6389E8,),),
                                  _F(GROUP_MA = 'POI',
                                     CARA = 'K_T_D_N',
-                                    VALE = ( 2.6389E8, 2.6389E8, 2.6389E8,),),),);
+                                    VALE = ( 2.6389E8, 2.6389E8, 2.6389E8,),),),)
 
 CL_DISTL = AFFE_CHAR_MECA(MODELE=MO_DISTL,
                           DDL_IMPO=_F(GROUP_NO='A',
                                       DX=0.,
                                       DY=0.,
-                                      DZ=0.,),);
+                                      DZ=0.,),)
 
 CH_DISTL=AFFE_CHAR_MECA(MODELE=MO_DISTL,
-                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),);
+                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),)
 
 RE_DISTL=STAT_NON_LINE(MODELE=MO_DISTL,
                        CHAM_MATER=CHMAT,
@@ -68,7 +68,7 @@ RE_DISTL=STAT_NON_LINE(MODELE=MO_DISTL,
                                      ),
 )
 
-IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RE_DISTL,),);
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RE_DISTL,),)
 
 NVCHAM=LIRE_CHAMP(FORMAT='MED',
                   MODELE=MO_DISTL,
@@ -77,7 +77,7 @@ NVCHAM=LIRE_CHAMP(FORMAT='MED',
                   TYPE_CHAM='ELGA_SIEF_R',
                   INST=1.0,
                   UNITE=80,
-                  NOM_CMP_IDEM='OUI',);
+                  NOM_CMP_IDEM='OUI',)
 
 # LES DEUX CHAMPS DOIVENT ETRE LES MEMES
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=NVCHAM,
@@ -88,6 +88,6 @@ TEST_RESU(RESU=_F(RESULTAT=RE_DISTL,
                   INST=1.0,
                   NOM_CHAM='SIEF_ELGA',
                   TYPE_TEST='SOMM_ABS',
-                  VALE_CALC=2000.0),);
+                  VALE_CALC=2000.0),)
 
 FIN()

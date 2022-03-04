@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,23 +17,23 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 
 NbIncr=20
 DT=10./NbIncr
 Depl=0.2
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
 
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 # -----------------------------------------------------------------------------
 #  CREATION DES OBJETS DE L'ETUDE (MODELE, CHARGEMENTS, ...)
@@ -82,33 +82,33 @@ CTRAC=DEFI_FONCTION(VALE=(1.00000E-03,  2.00000E+02,
                           2.00000E-01,  2.69996E+02,
                           ),
                     NOM_PARA='EPSI',
-                    PROL_DROITE='CONSTANT',);
+                    PROL_DROITE='CONSTANT',)
 
 MATE=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                            NU=0.3,),
-                   TRACTION=_F(SIGM=CTRAC,),);
+                   TRACTION=_F(SIGM=CTRAC,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MATE,),);
+                         MATER=MATE,),)
 
 CH1=AFFE_CHAR_CINE(MODELE=MO,
                    MECA_IMPO=(_F(GROUP_MA='bas',    DY=0.0,),
                               _F(GROUP_MA='gauche', DX=0.0,),
-                              _F(GROUP_MA='haut',   DY=Depl,)),);
+                              _F(GROUP_MA='haut',   DY=Depl,)),)
 
 # L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR LFG
 F_DEPL=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,  0.0,
                            10.0, 1.0,
-                           ),);
+                           ),)
 
 # DISCRETISATION EN TEMPS
 INST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=10.0,
-                                  NOMBRE=NbIncr,),);
+                                  NOMBRE=NbIncr,),)
 
-L_INST=DEFI_LIST_INST(METHODE='AUTO', DEFI_LIST=_F(LIST_INST=INST, PAS_MINI=0.001,));
+L_INST=DEFI_LIST_INST(METHODE='AUTO', DEFI_LIST=_F(LIST_INST=INST, PAS_MINI=0.001,))
 
 # -----------------------------------------------------------------------------
 #  RESOLUTION PAS 0->10
@@ -126,13 +126,13 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
                      INCREMENT=_F(LIST_INST=L_INST,
                                   INST_FIN=10.,),
                      NEWTON=_F(REAC_ITER=1,),
-                     INFO=1,);
+                     INFO=1,)
 
 
 RESUNL=CALC_CHAMP(reuse=RESUNL,
                   RESULTAT=RESUNL,
                   CONTRAINTE='SIGM_NOEU',
-                  VARI_INTERNE='VARI_NOEU',);
+                  VARI_INTERNE='VARI_NOEU',)
 
 TEST_RESU(RESU=(_F(GROUP_NO='B',
                    INST=10.0,
@@ -156,12 +156,12 @@ SIGBAS2=MACR_LIGN_COUPE(RESULTAT=RESUNL,
                         NOM_CHAM='VARI_NOEU',
                         LIGN_COUPE=_F(NB_POINTS=30,
                                       COOR_ORIG=(0,30,),
-                                      COOR_EXTR=(100,30,),),);
+                                      COOR_EXTR=(100,30,),),)
 
 IMPR_TABLE(TABLE=SIGBAS2,
-           NOM_PARA=('ABSC_CURV','V1',),);
+           NOM_PARA=('ABSC_CURV','V1',),)
 
 
 
 
-FIN();
+FIN()

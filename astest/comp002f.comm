@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # person_in_charge: david.haboussa at edf.fr
 #......................................................................
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 #parametres vitesse de sollicitation
 vitesse = 1.e-5
@@ -35,13 +35,13 @@ temps_ar=DEFI_LIST_REEL( VALE = larch,)
 
 
 #parmetres elastiques
-YOUNG = 200000.0;
-POISSON = 0.3;
+YOUNG = 200000.0
+POISSON = 0.3
 
 
 #parametres loi ISOT_LINE
-SY = 437.0;
-pente = 2024.74690664;
+SY = 437.0
+pente = 2024.74690664
 
 #parametres viscosite
 SIGM_0=6176.
@@ -55,7 +55,7 @@ ACIER = [None]*2
 C_Pa = 1.e+6
 YOUNG_Pa = YOUNG * C_Pa
 pente_Pa = pente * C_Pa
-SY_Pa = SY * C_Pa;
+SY_Pa = SY * C_Pa
 SIGM_0_Pa=SIGM_0 * C_Pa
 
 
@@ -68,7 +68,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                    SIGM_0 = SIGM_0_Pa,
                                    EPSI_0 = EPSI_0,
                                    M      = M),
-                                 );
+                                 )
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,

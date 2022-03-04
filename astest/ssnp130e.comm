@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,27 +26,27 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 # DEFINITION DU MATERIAU
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 # DEFINITION DES INSTANTS POUR STAT_NON_LINE
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 F_INST=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1.0,1.0,
-                           ),);
+                           ),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
@@ -57,15 +57,15 @@ MA=MODI_MAILLAGE(reuse =MA,
                                _F(GROUP_MA_PEAU='DROITE',),
                                _F(GROUP_MA_PEAU='S1',),
                                _F(GROUP_MA_PEAU='S3',),
-                               _F(GROUP_MA_PEAU='S4',),),);
+                               _F(GROUP_MA_PEAU='S4',),),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 # REMARQUE : ON IMPOSE EXPLICITEMENT LA PRESSION NULLE SUR LES BORDS LIBRES
 #            POUR QUE LE CALCUL DE L'INDICATEUR D'ERREUR SOIT CORRECT
-PRES_0 = 0.0;
+PRES_0 = 0.0
 
 
 CHP=AFFE_CHAR_MECA(MODELE=MO,
@@ -84,7 +84,7 @@ CHP=AFFE_CHAR_MECA(MODELE=MO,
                              _F(GROUP_MA='S3',
                                 PRES=PRES_0,),
                              _F(GROUP_MA='S4',
-                                PRES=PRES_0,),),);
+                                PRES=PRES_0,),),)
 
 CHCL=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='PT2',
@@ -94,7 +94,7 @@ CHCL=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_MA='L1210',
                                  DY=0.0,),
                               _F(GROUP_MA='S2',
-                                 DZ=0.0,),),);
+                                 DZ=0.0,),),)
 
 DEPLA=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
@@ -103,7 +103,7 @@ DEPLA=STAT_NON_LINE(MODELE=MO,
                            _F(CHARGE=CHCL,),),
                     COMPORTEMENT=_F(RELATION='ELAS',
                                  TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,),);
+                    INCREMENT=_F(LIST_INST=L_INST,),)
 
 DEPLA=CALC_CHAMP(reuse=DEPLA,RESULTAT=DEPLA,INST=1.,ENERGIE=('ETOT_ELEM'))
 
@@ -112,7 +112,7 @@ DEPLA=CALC_ERREUR(reuse =DEPLA,
                   RESULTAT=DEPLA,
                   INST=1.,
                   OPTION=('ERME_ELEM','ERME_ELNO','SING_ELEM','SING_ELNO',),
-                  PREC_ERR=0.8,);
+                  PREC_ERR=0.8,)
 
 # TEST DE SING_ELEM VALEUR MAX ET MIN DES 2 COMPOSANTES
 
@@ -230,4 +230,4 @@ TEST_RESU(RESU=(_F(INST=1.0,
                 ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,20 +80,20 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUME1      )
 
 MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                              PSEUDO_MODE=_F(  AXE = ( 'X',  'Y',  'Z', ))  )
-                             
-STA_X = CREA_CHAMP(OPERATION='EXTR', 
+
+STA_X = CREA_CHAMP(OPERATION='EXTR',
                    TYPE_CHAM='NOEU_DEPL_R', RESULTAT=MODE_STA,
                    NOM_CHAM='DEPL',
                    NUME_ORDRE = 1,
                    )
-                   
-STA_Y = CREA_CHAMP(OPERATION='EXTR', 
+
+STA_Y = CREA_CHAMP(OPERATION='EXTR',
                    TYPE_CHAM='NOEU_DEPL_R', RESULTAT=MODE_STA,
                    NOM_CHAM='DEPL',
                    NUME_ORDRE = 2,
                    )
 
-STA_Z = CREA_CHAMP(OPERATION='EXTR', 
+STA_Z = CREA_CHAMP(OPERATION='EXTR',
                    TYPE_CHAM='NOEU_DEPL_R', RESULTAT=MODE_STA,
                    NOM_CHAM='DEPL',
                    NUME_ORDRE = 3,
@@ -120,7 +120,7 @@ MODE_ST2 = CREA_RESU( OPERATION = 'AFFE',
 
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MODE_STA))
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MODE_ST2))
-                             
+
 MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
 
 MODE_ST2=CALC_CHAMP(reuse=MODE_ST2,RESULTAT=MODE_ST2,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET',),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MODEL=AFFE_MODELE(
    MAILLAGE=MAIL,
    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),
-);
+)
 
 
 CL=AFFE_CHAR_MECA(
@@ -36,15 +36,15 @@ CL=AFFE_CHAR_MECA(
       _F(GROUP_MA='FACE1', DX=0.0, DY=0.0, DZ=0.0),
       _F(GROUP_MA='FACE2', DX=0.0, DY=0.0),
    ),
-);
+)
 
 TEMP_0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=MAIL,
    AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=0.0,),
-);
+)
 
 TEMP_1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=MAIL,
    AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=400.0,),
-);
+)
 
 TEMPE=CREA_RESU(
    OPERATION='AFFE',
@@ -55,6 +55,6 @@ TEMPE=CREA_RESU(
       _F(CHAM_GD=TEMP_1, INST= 100.0,),
       _F(CHAM_GD=TEMP_1, INST= 200.0,),
    ),
-);
+)
 
 FIN()

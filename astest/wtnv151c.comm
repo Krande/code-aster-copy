@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 #############################################################
 # CALCUL ASTER HYDRIQUE- AXIS------------------------------------------
 #############################################################
@@ -36,23 +36,23 @@ T200J = 200 * T1J
 ###Lire le maillage
 #~ ***********************
 mesh = LIRE_MAILLAGE(UNITE=20)
-                
+
 #*********************************************************
 ### Definition des caracteristiques fluides
 #**********************************************************
 
-VISCOLIQI=8.0E-4;
+VISCOLIQI=8.0E-4
 
-VISCOLIQ=DEFI_CONSTANTE(VALE=8.0E-4,);
+VISCOLIQ=DEFI_CONSTANTE(VALE=8.0E-4,)
 
-VISCOGAZ=DEFI_CONSTANTE(VALE=0.0000005,);
+VISCOGAZ=DEFI_CONSTANTE(VALE=0.0000005,)
 
 RHOW = 1000.
 RHOA = 1.2
 
-# PERMEABILITE 
+# PERMEABILITE
 perm = 1.e-18
-KINT = DEFI_CONSTANTE(VALE=perm,);
+KINT = DEFI_CONSTANTE(VALE=perm,)
 
 
 ### Module d'Young
@@ -90,7 +90,7 @@ mesh=DEFI_GROUP(reuse =mesh,
                                    _F(GROUP_MA='BAS'),
 
                                   ),
-                   );
+                   )
 
 #Fonction de Pc linéaire
 
@@ -98,10 +98,10 @@ mesh=DEFI_GROUP(reuse =mesh,
 LI1=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(
                                   _F(JUSQU_A=1.E7,
-                                     NOMBRE=100,),),);
+                                     NOMBRE=100,),),)
 LI2=DEFI_LIST_REEL(DEBUT=0.,
                    INTERVALLE=_F(JUSQU_A=1.,
-                                 PAS=1.E-2,),);   
+                                 PAS=1.E-2,),)
 
 SLO=FORMULE(NOM_PARA='PCAP',VALE='(1.-(PCAP*1.E-7))')
 SATUPC=CALC_FONC_INTERP(FONCTION=SLO,
@@ -109,20 +109,20 @@ SATUPC=CALC_FONC_INTERP(FONCTION=SLO,
                         NOM_PARA='PCAP',
                         PROL_DROITE='LINEAIRE',
                         PROL_GAUCHE='LINEAIRE',)
-#~ 
+#~
 
-DSATPC=DEFI_CONSTANTE(VALE=-1.E-7,);
+DSATPC=DEFI_CONSTANTE(VALE=-1.E-7,)
 
 
 
-PKL=DEFI_CONSTANTE(VALE=1.,);
-PDKL=DEFI_CONSTANTE(VALE=0.0,);
-#~ 
-PKG=DEFI_CONSTANTE(VALE=1.,);
+PKL=DEFI_CONSTANTE(VALE=1.,)
+PDKL=DEFI_CONSTANTE(VALE=0.0,)
+#~
+PKG=DEFI_CONSTANTE(VALE=1.,)
 PDKG=DEFI_CONSTANTE(VALE=0.0,)
 
 
-### ETAT INITIAL 
+### ETAT INITIAL
 #~ *****************
 TREF = 293.
 TINI = 20.
@@ -136,10 +136,10 @@ P20 = 0.0
 INST = DEFI_LIST_REEL(
     DEBUT=0.0,
     INTERVALLE=(
-        _F(JUSQU_A =60, NOMBRE=50), 
-        _F(JUSQU_A =60*30, NOMBRE=100), 
-        _F(JUSQU_A =60*60, NOMBRE=100), 
-   
+        _F(JUSQU_A =60, NOMBRE=50),
+        _F(JUSQU_A =60*30, NOMBRE=100),
+        _F(JUSQU_A =60*60, NOMBRE=100),
+
  )
 )
 
@@ -154,29 +154,29 @@ model = AFFE_MODELE(
     MAILLAGE=mesh
 )
 
-### Termes de diffusion 
+### Termes de diffusion
 #~ *************************
 
 # Fick melange liquide
 
-FICKBET=DEFI_CONSTANTE(VALE=0.0,);
+FICKBET=DEFI_CONSTANTE(VALE=0.0,)
 
 # Fick melange gaz
-FadBET=DEFI_CONSTANTE(VALE=0.0,);
-                     
+FadBET=DEFI_CONSTANTE(VALE=0.0,)
+
 # Coefficient de Henry pour la dissolution
 
-KHENRY=DEFI_CONSTANTE(VALE=1.30719E05,);
+KHENRY=DEFI_CONSTANTE(VALE=1.30719E05,)
 #1.30719E05,
 
 ### Fonction de saturation et sa derivee
 #************************************************
 
 
-                      
-FVPS = DEFI_CONSTANTE(VALE=0.0,);                   
 
-FAS = DEFI_CONSTANTE(VALE=0.0,);                   
+FVPS = DEFI_CONSTANTE(VALE=0.0,)
+
+FAS = DEFI_CONSTANTE(VALE=0.0,)
 
 
 ALPHAL = DEFI_CONSTANTE(VALE=1.0480)
@@ -185,19 +185,19 @@ ALPHAL = DEFI_CONSTANTE(VALE=1.0480)
 #************************
 # Conductivite thermique (factice : T = cte)
 #************************
-LAMBLIQ=DEFI_CONSTANTE(VALE=0.0,);
-LAMB=DEFI_CONSTANTE(VALE=0.0,);
+LAMBLIQ=DEFI_CONSTANTE(VALE=0.0,)
+LAMB=DEFI_CONSTANTE(VALE=0.0,)
 LS_RB = FORMULE(VALE='( 0.15*SAT)',
-                NOM_PARA='SAT',);
+                NOM_PARA='SAT',)
 
 LSRB=CALC_FONC_INTERP(FONCTION=LS_RB,
                       LIST_PARA=LI2,
                       NOM_PARA='SAT',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      INFO=2,);
-DLSRB=DEFI_CONSTANTE(VALE=0.0,);
-LCTRB=DEFI_CONSTANTE(VALE=0.0);
+                      INFO=2,)
+DLSRB=DEFI_CONSTANTE(VALE=0.0,)
+LCTRB=DEFI_CONSTANTE(VALE=0.0)
 
 UN = DEFI_CONSTANTE(VALE=1.0)
 ZERO = DEFI_CONSTANTE(VALE=0.0)
@@ -218,7 +218,7 @@ BETON = DEFI_MATERIAU(
         FICKA_T=FICKBET,
         FICKV_S=FVPS,
         FICKV_T=FadBET,
-        LAMB_S=LSRB, 
+        LAMB_S=LSRB,
         LAMB_T=LAMBLIQ,
         LAMB_CT=0.0,
         PERM_IN=KINT,
@@ -227,15 +227,15 @@ BETON = DEFI_MATERIAU(
         PESA_Z=0.0,
         RHO=RHOH,
         R_GAZ=8.315,
-        
+
         SATU_PRES=SATUPC,
-        D_SATU_PRES=DSATPC,        
+        D_SATU_PRES=DSATPC,
         PERM_LIQU=UN,
         D_PERM_LIQU_SATU=ZERO,
         PERM_GAZ=UN,
         D_PERM_SATU_GAZ=ZERO,
-        D_PERM_PRES_GAZ=ZERO,        
-        
+        D_PERM_PRES_GAZ=ZERO,
+
 
     ),
     THM_GAZ=_F(CP=0.0, D_VISC_TEMP=ZERO, MASS_MOL=0.001, VISC=VISCOGAZ),
@@ -273,19 +273,19 @@ CHARGE = AFFE_CHAR_CINE(
 # TERME d ECHANGE
 
 EC11 = 1E-14
-EC11F = DEFI_CONSTANTE(VALE=1E-14,);                   
+EC11F = DEFI_CONSTANTE(VALE=1E-14,)
 FLUEC=AFFE_CHAR_MECA(MODELE=model,
                     ECHANGE_THM =(
                     _F(GROUP_MA=('DROITE', ),COEF_11=EC11,COEF_12=0.,PRE1_EXT=1.5E8,
                                              COEF_21=0.,COEF_22=0.,PRE2_EXT=1.e5,),
-                  ), );
+                  ), )
 
 CHP = AFFE_CHAR_CINE(MODELE=model,
                    MECA_IMPO=(
                      _F(PRE1=8.E5, GROUP_MA=( 'DROITE', ),),
                      _F(PRE2=0.0, GROUP_MA=( 'DROITE', ),),
-                           ), 
-    );
+                           ),
+    )
 
 
 ##########################################
@@ -293,7 +293,7 @@ CHP = AFFE_CHAR_CINE(MODELE=model,
 ##########################################
 DEPL0 = CREA_CHAMP(
     AFFE=(
-        _F(NOM_CMP=('PRE1', ), TOUT='OUI', VALE=(10000.0,)), 
+        _F(NOM_CMP=('PRE1', ), TOUT='OUI', VALE=(10000.0,)),
         _F(NOM_CMP=('PRE2', ), TOUT='OUI', VALE=(10000.0, )
         ), _F(NOM_CMP=('TEMP', ), TOUT='OUI', VALE=(TINI,))
     ),
@@ -337,20 +337,20 @@ RESU1 = STAT_NON_LINE(
     CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1.E-6),
     ETAT_INIT=_F(DEPL=DEPL0, SIGM=SIG0),
     EXCIT=(_F(CHARGE=CHARGE),
-          _F(CHARGE=FLUEC,TYPE_CHARGE='SUIV'), #AVEC LE TERME D ECHANGE         
+          _F(CHARGE=FLUEC,TYPE_CHARGE='SUIV'), #AVEC LE TERME D ECHANGE
 
           ),
     INCREMENT=_F(LIST_INST=TIMES),
     METHODE='NEWTON',
     MODELE=model,
     NEWTON=_F(),
-    SOLVEUR=_F(METHODE='MUMPS'),  
-);
+    SOLVEUR=_F(METHODE='MUMPS'),
+)
 
 
-      
+
 ##############################################
-#########PROBLEME  THERMIQUE#############   
+#########PROBLEME  THERMIQUE#############
 ##############################################
 # Maillage lineaire
 MAILLIN = CREA_MAILLAGE(
@@ -361,9 +361,9 @@ MAILLIN = CREA_MAILLAGE(
 # DEFINITION DES CHARGEMENTS ET DU MATERIAU ------------------------
 
 
-Lambda=DEFI_CONSTANTE(VALE=(RHOW*perm) /VISCOLIQI,);
+Lambda=DEFI_CONSTANTE(VALE=(RHOW*perm) /VISCOLIQI,)
 rhocp=DEFI_CONSTANTE(VALE=0.085*1.E-7*RHOW,)
-MATE=DEFI_MATERIAU(  THER_NL=_F(  RHO_CP = rhocp, LAMBDA = Lambda), );
+MATE=DEFI_MATERIAU(  THER_NL=_F(  RHO_CP = rhocp, LAMBDA = Lambda), )
 #
 # AFFECTATIONS: MATERIAU  MODELE  CHARGEMENT ----------------------
 #
@@ -382,7 +382,7 @@ CHTH=AFFE_CHAR_THER(   MODELE=MOTH,
                             _F(  GROUP_MA = ('DROITE',), COEF_H =EC11 ,  TEMP_EXT = 1.5E8),
                             )
                         )
-                    
+
 CHTD=AFFE_CHAR_THER(   MODELE=MOTH,
                        TEMP_IMPO=(
                            _F(  GROUP_MA = ('DROITE',),  TEMP = 8.E5),
@@ -398,7 +398,7 @@ TEMPE=THER_NON_LINE(MODELE=MOTH,
                    ETAT_INIT=_F(VALE=10000.0,),
                    NEWTON=_F(),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=500,),
-                   );                       
+                   )
 
 
 
@@ -407,68 +407,68 @@ TEMPE=THER_NON_LINE(MODELE=MOTH,
 # ANALYSE DES RESULTATS THERM ------------------------------------------------
 #
 
-tresu = POST_RELEVE_T(ACTION = _F (INTITULE='TEMPE', OPERATION = 'EXTRACTION', GROUP_NO = 'HAUT', RESULTAT=TEMPE, NOM_CHAM='TEMP',NOM_CMP='TEMP'));
+tresu = POST_RELEVE_T(ACTION = _F (INTITULE='TEMPE', OPERATION = 'EXTRACTION', GROUP_NO = 'HAUT', RESULTAT=TEMPE, NOM_CHAM='TEMP',NOM_CMP='TEMP'))
 TITRE = 'Comparaison HH Thermique'
- 
-IMPR_TABLE( TABLE=tresu,  TITRE=TITRE, NOM_PARA=('COOR_X', 'TEMP',), 
-            
+
+IMPR_TABLE( TABLE=tresu,  TITRE=TITRE, NOM_PARA=('COOR_X', 'TEMP',),
+
             FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
                              VALE=60.,
                              PRECISION=0.0001),),
-             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',), 
+             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',),
              FORMAT='TABLEAU')
 
-IMPR_TABLE( TABLE=tresu, TITRE=TITRE, NOM_PARA=('COOR_X', 'TEMP',), 
-            
+IMPR_TABLE( TABLE=tresu, TITRE=TITRE, NOM_PARA=('COOR_X', 'TEMP',),
+
             FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
                              VALE=1800.,
                              PRECISION=0.0001),),
-             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',), 
+             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',),
              FORMAT='TABLEAU')
-             
-IMPR_TABLE( TABLE=tresu,  TITRE=TITRE, NOM_PARA=('COOR_X', 'TEMP',), 
-            
+
+IMPR_TABLE( TABLE=tresu,  TITRE=TITRE, NOM_PARA=('COOR_X', 'TEMP',),
+
             FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
                              VALE=3600.,
                              PRECISION=0.0001),),
-             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',), 
+             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',),
              FORMAT='TABLEAU')
 
 #
 # ANALYSE DES RESULTATS HYDRAU THM ------------------------------------------------
 #
 
-tresu1 = POST_RELEVE_T(ACTION = _F ( INTITULE = 'tablepc', 
+tresu1 = POST_RELEVE_T(ACTION = _F ( INTITULE = 'tablepc',
                   OPERATION = 'EXTRACTION', GROUP_NO = 'HAUT',
-                   RESULTAT=RESU1,NOM_CHAM='DEPL', NOM_CMP='PRE1'));
+                   RESULTAT=RESU1,NOM_CHAM='DEPL', NOM_CMP='PRE1'))
 
-                   
-                   
-IMPR_TABLE( TABLE=tresu1,  TITRE=TITRE, NOM_PARA=('COOR_X', 'PRE1',), 
-            
+
+
+IMPR_TABLE( TABLE=tresu1,  TITRE=TITRE, NOM_PARA=('COOR_X', 'PRE1',),
+
             FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
                              VALE=60.,
                              PRECISION=0.0001),),
-             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',), 
+             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',),
              FORMAT='TABLEAU')
 
-IMPR_TABLE( TABLE=tresu1, TITRE=TITRE, NOM_PARA=('COOR_X', 'PRE1',), 
-            
+IMPR_TABLE( TABLE=tresu1, TITRE=TITRE, NOM_PARA=('COOR_X', 'PRE1',),
+
             FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
                              VALE=1800.,
                              PRECISION=0.0001),),
-             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',), 
-             FORMAT='TABLEAU')                          
-             
-IMPR_TABLE( TABLE=tresu1,  TITRE=TITRE, NOM_PARA=('COOR_X', 'PRE1',), 
-            
+             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',),
+             FORMAT='TABLEAU')
+
+IMPR_TABLE( TABLE=tresu1,  TITRE=TITRE, NOM_PARA=('COOR_X', 'PRE1',),
+
             FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
                              VALE=3600.,
                              PRECISION=0.0001),),
-             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',), 
+             TRI=_F( NOM_PARA = ('COOR_X',), ORDRE = 'CROISSANT',),
              FORMAT='TABLEAU')
-             
-########################################################################################## 
+
+##########################################################################################
 TEST_RESU(RESU=_F(INST=60.,
                   RESULTAT=RESU1,
                  REFERENCE='AUTRE_ASTER',
@@ -523,14 +523,14 @@ FL_HH2M=AFFE_CHAR_MECA(MODELE=modhh2m,
                     ECHANGE_THM =(
                     _F(GROUP_MA=('DROITE', ),COEF_11=EC11,COEF_12=0.,PRE1_EXT=1.5E8,
                                              COEF_21=0.,COEF_22=0.,PRE2_EXT=1.e5,),
-                  ), );
+                  ), )
 
 
 DEPLHH2M = CREA_CHAMP(
     AFFE=(
-        _F(NOM_CMP=('PRE1', ), TOUT='OUI', VALE=(10000.0,)), 
+        _F(NOM_CMP=('PRE1', ), TOUT='OUI', VALE=(10000.0,)),
         _F(NOM_CMP=('PRE2', ), TOUT='OUI', VALE=(10000.0, )
-        ), 
+        ),
     ),
     MAILLAGE=mesh,
     OPERATION='AFFE',
@@ -573,8 +573,8 @@ R_HH2M = STAT_NON_LINE(
     METHODE='NEWTON',
     MODELE=modhh2m,
     NEWTON=_F(),
-    SOLVEUR=_F(METHODE='MUMPS'),  
-);
+    SOLVEUR=_F(METHODE='MUMPS'),
+)
 TEST_RESU(RESU=_F(INST=60.,
                   RESULTAT=R_HH2M,
                   REFERENCE='AUTRE_ASTER',
@@ -598,7 +598,7 @@ FL_THH2=AFFE_CHAR_MECA(MODELE=modthh2,
                     ECHANGE_THM =(
                     _F(GROUP_MA=('DROITE', ),COEF_11=EC11,COEF_12=0.,PRE1_EXT=1.5E8,
                                              COEF_21=0.,COEF_22=0.,PRE2_EXT=1.e5,),
-                  ), );
+                  ), )
 
 CHTHH2 = AFFE_CHAR_CINE(
                     MECA_IMPO=(
@@ -609,10 +609,10 @@ CHTHH2 = AFFE_CHAR_CINE(
 
 D_THH2= CREA_CHAMP(
     AFFE=(
-        _F(NOM_CMP=('TEMP', ), TOUT='OUI', VALE=TINI,), 
-        _F(NOM_CMP=('PRE1', ), TOUT='OUI', VALE=(10000.0,)), 
+        _F(NOM_CMP=('TEMP', ), TOUT='OUI', VALE=TINI,),
+        _F(NOM_CMP=('PRE1', ), TOUT='OUI', VALE=(10000.0,)),
         _F(NOM_CMP=('PRE2', ), TOUT='OUI', VALE=(10000.0, )
-        ), 
+        ),
     ),
     MAILLAGE=mesh,
     OPERATION='AFFE',
@@ -654,8 +654,8 @@ R_THH2 = STAT_NON_LINE(
     METHODE='NEWTON',
     MODELE=modthh2,
     NEWTON=_F(),
-    SOLVEUR=_F(METHODE='MUMPS'),  
-);
+    SOLVEUR=_F(METHODE='MUMPS'),
+)
 TEST_RESU(RESU=_F(INST=60.,
                   RESULTAT=R_THH2,
                   REFERENCE='AUTRE_ASTER',
@@ -678,14 +678,14 @@ FL_HH2=AFFE_CHAR_MECA(MODELE=modhh2,
                     ECHANGE_THM =(
                     _F(GROUP_MA=('DROITE', ),COEF_11=EC11,COEF_12=0.,PRE1_EXT=1.5E8,
                                              COEF_21=0.,COEF_22=0.,PRE2_EXT=1.e5,),
-                  ), );
+                  ), )
 
 
 
 D_HH2= CREA_CHAMP(
     AFFE=(
-        _F(NOM_CMP=('PRE1', ), TOUT='OUI', VALE=(10000.0,)), 
-        _F(NOM_CMP=('PRE2', ), TOUT='OUI', VALE=(10000.0, ) ), 
+        _F(NOM_CMP=('PRE1', ), TOUT='OUI', VALE=(10000.0,)),
+        _F(NOM_CMP=('PRE2', ), TOUT='OUI', VALE=(10000.0, ) ),
     ),
     MAILLAGE=mesh,
     OPERATION='AFFE',
@@ -721,14 +721,14 @@ R_HH2 = STAT_NON_LINE(
     CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1.E-6),
     ETAT_INIT=_F(DEPL=D_HH2, SIGM=SIGTHH2),
     EXCIT=(
-           _F(CHARGE=FL_HH2,TYPE_CHARGE='SUIV'), 
+           _F(CHARGE=FL_HH2,TYPE_CHARGE='SUIV'),
           ),
     INCREMENT=_F(LIST_INST=TIMES, INST_FIN=TFIN),
     METHODE='NEWTON',
     MODELE=modhh2,
     NEWTON=_F(),
-    SOLVEUR=_F(METHODE='MUMPS'),  
-);
+    SOLVEUR=_F(METHODE='MUMPS'),
+)
 TEST_RESU(RESU=_F(INST=60.,
                   RESULTAT=R_HH2,
                   REFERENCE='AUTRE_ASTER',
@@ -740,5 +740,5 @@ TEST_RESU(RESU=_F(INST=60.,
                   CRITERE='RELATIF',
                   PRECISION=0.05,
                   ),
-          )          
-FIN();           
+          )
+FIN()

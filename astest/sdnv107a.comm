@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                      GROUP_MA=('SURF1','SURF2','SURF3','BASE',
                                'VOLU1','VOLU2','VOLU3','VOLU',),
                      ),
-                    );
+                    )
 
 MODELE1=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                             AFFE=(
@@ -190,7 +190,7 @@ IMPR_RESU(FORMAT='MED',
           UNITE=81,
           RESU=_F(
                   RESULTAT=MOD_CAL1,
-                  NOM_CHAM='DEPL',),);
+                  NOM_CHAM='DEPL',),)
 
 MODES_1=LIRE_RESU(FORMAT='MED',
                   UNITE=81,
@@ -200,7 +200,7 @@ MODES_1=LIRE_RESU(FORMAT='MED',
                   MATR_RIGI=RAID_1,
                   MATR_MASS=MASS_1,
                   TOUT_ORDRE='OUI',
-                  MAILLAGE=MAILLAGE,);
+                  MAILLAGE=MAILLAGE,)
 
 # SOUS-STRUCTURE 2 ENCASTREE-APPUYEE - INTERFACE TYPE CRAIG-BAMPTON
 #
@@ -262,7 +262,7 @@ IMPR_RESU(FORMAT='MED',
           UNITE=82,
           RESU=_F(
                   RESULTAT=MOD_CAL2,
-                  NOM_CHAM='DEPL',),);
+                  NOM_CHAM='DEPL',),)
 
 MODES_2=LIRE_RESU(FORMAT='MED',
                   UNITE=82,
@@ -272,7 +272,7 @@ MODES_2=LIRE_RESU(FORMAT='MED',
                   MATR_RIGI=RAID_2,
                   MATR_MASS=MASS_2,
                   TOUT_ORDRE='OUI',
-                  MAILLAGE=MAILLAGE,);
+                  MAILLAGE=MAILLAGE,)
 
 #
 # SOUS-STRUCTURE 2 ENCASTREE-APPUYEE - INTERFACE TYPE CRAIG-BAMPTON
@@ -386,20 +386,20 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MEMAME,
 
 EXCIMO3=AFFE_CHAR_MECA(MODELE=MODELE3,
                       FORCE_NODALE=_F(GROUP_NO='PC3',
-                                      FX=1.E8,),);
+                                      FX=1.E8,),)
 
 
 DS1 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT= MODESTA1, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
+                  RESULTAT= MODESTA1, NUME_ORDRE=1, NOM_CHAM = 'DEPL')
 
 DS2 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT= MODESTA2, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
+                  RESULTAT= MODESTA2, NUME_ORDRE=1, NOM_CHAM = 'DEPL')
 
 DS3 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT= MODESTA3, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
+                  RESULTAT= MODESTA3, NUME_ORDRE=1, NOM_CHAM = 'DEPL')
 
 DS4 = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT= MODESTA4, NUME_ORDRE=1, NOM_CHAM = 'DEPL');
+                  RESULTAT= MODESTA4, NUME_ORDRE=1, NOM_CHAM = 'DEPL')
 
 CHS1 = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
                   MAILLAGE=MAILLAGE,
@@ -407,14 +407,14 @@ CHS1 = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
                       _F (TOUT='OUI', CHAM_GD=DS1, ),
                       _F (TOUT='OUI', CHAM_GD=DS2, ),
                        ),
-                  );
+                  )
 CHS2 = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
                   MAILLAGE=MAILLAGE,
                   ASSE=(
                       _F (TOUT='OUI', CHAM_GD=DS3, ),
                       _F (TOUT='OUI', CHAM_GD=DS4, ),
                        ),
-                  );
+                  )
 
 MODESTAA = CREA_RESU (
                        OPERATION='AFFE',
@@ -422,7 +422,7 @@ MODESTAA = CREA_RESU (
          AFFE=(
               _F( CHAM_GD= CHS1, NOM_CAS= 'CAS1'),
               ),
-                     );
+                     )
 
 MODESTAB = CREA_RESU (
                        OPERATION='AFFE',
@@ -430,9 +430,9 @@ MODESTAB = CREA_RESU (
          AFFE=(
               _F( CHAM_GD= CHS2, NOM_CAS= 'CAS1'),
               ),
-                     );
+                     )
 
-L_AMOR = DEFI_LIST_REEL(VALE=(0.02, 0.05, 0.07, 0.10, 0.1, 0.1),);
+L_AMOR = DEFI_LIST_REEL(VALE=(0.02, 0.05, 0.07, 0.10, 0.1, 0.1),)
 
 BAMODA=DEFI_BASE_MODALE(RITZ=(_F(MODE_INTF = MODES_2,
                                  NMAX_MODE = 999),
@@ -492,7 +492,7 @@ RIGIGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGIPRO1,
                                  COEF_R=1.0,),
                                 _F(MATR_ASSE=RIGIPRO3,
                                  COEF_R=1.0,),
-                                 ),);
+                                 ),)
 
 MASSGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
@@ -500,7 +500,7 @@ MASSGENE=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
                                 _F(MATR_ASSE=MASSPRO3,
                                  COEF_R=1.0,),
-                                 ),);
+                                 ),)
 
 RESGEN=CALC_MODES(MATR_RIGI=RIGIGENE,
                   OPTION='PLUS_PETITE',
@@ -544,11 +544,11 @@ RIGGENT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGPRO1,
                                  COEF_R=1.0,),
                                _F(MATR_ASSE=RIGPRO2,
                                  COEF_R=1.0,),
-                                 ),);
+                                 ),)
 
 AMOGENT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGGENT,
                                  COEF_R=0.0,),
-                                 ),);
+                                 ),)
 
 MERIME3B=CALC_MATR_ELEM(      MODELE=MODELE3,
                             CHAM_MATER=CHAMAT,
@@ -566,16 +566,16 @@ RESMO2=REST_GENE_PHYS(    RESU_GENE=RESGEN,
 
 LINSDYN=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=0.014,
-                                     NOMBRE=28,),);
+                                     NOMBRE=28,),)
 LINSDY2=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=0.014,
-                                     NOMBRE=1680,),);
+                                     NOMBRE=1680,),)
 
 #
 # DEFINITION DE LA FONCTION D EVOLUTION DE FY
 #
 
-OMEGA = 314.;
+OMEGA = 314.
 
 EVOL_FY = FORMULE(VALE='sin(OMEGA*INST) ',
                   OMEGA=OMEGA,
@@ -583,7 +583,7 @@ EVOL_FY = FORMULE(VALE='sin(OMEGA*INST) ',
 
 EVINT=CALC_FONC_INTERP(FONCTION=EVOL_FY, NOM_PARA = 'INST',
                           NOM_RESU='EVOL_FY',
-                          LIST_PARA=LINSDY2);
+                          LIST_PARA=LINSDY2)
 
 DYTREX=DYNA_NON_LINE(MODELE=MODELE3,
                      CARA_ELEM=PARAM3,
@@ -611,7 +611,7 @@ DYTREX=DYNA_NON_LINE(MODELE=MODELE3,
                                    RIGI_GENE = RIGGENT,
                                    AMOR_GENE = AMOGENT,
                                    ),
-                     );
+                     )
 
 
 RESUGLO=REST_COND_TRAN(   RESULTAT=DYTREX,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='NON'))
 
 MATERD=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=(_F(GROUP_MA='DALLE_G',
-                              MATER=MAT_D_E,),),);
+                              MATER=MAT_D_E,),),)
 
 RESU_G6=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATERD,
@@ -45,15 +45,15 @@ RESU_G6=STAT_NON_LINE(MODELE=MO_G,
                       INCREMENT=_F(LIST_INST=DEFLIST,
                                    INST_FIN=t1,),
                       NEWTON=_F(REAC_ITER=1,),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),);
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),)
 
 TRESU_G6=CREA_TABLE(RESU=_F(RESULTAT=RESU_G6,
                             NOM_CHAM='SIEF_ELGA',
                             INST=t1,
                             TOUT_CMP='OUI',
-                            TOUT='OUI',),);
+                            TOUT='OUI',),)
 
-IMPR_TABLE(TABLE=TRESU_G6,);
+IMPR_TABLE(TABLE=TRESU_G6,)
 
 RESU_G7=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATERD,
@@ -65,24 +65,24 @@ RESU_G7=STAT_NON_LINE(MODELE=MO_G,
                       COMPORTEMENT=_F(RELATION='ELAS',),
                       INCREMENT=_F(LIST_INST=DEFLIST,
                                    INST_FIN=t1,),
-                      NEWTON=_F(REAC_ITER=1,),);
+                      NEWTON=_F(REAC_ITER=1,),)
 
 TRESU_G7=CREA_TABLE(RESU=_F(RESULTAT=RESU_G7,
                             NOM_CHAM='SIEF_ELGA',
                             INST=t1,
                             TOUT_CMP='OUI',
-                            TOUT='OUI',),);
+                            TOUT='OUI',),)
 
 RESU_G8=MECA_STATIQUE(MODELE=MO_G,
                       CHAM_MATER=MATERD,
                       CARA_ELEM=CAEL_G,
                       EXCIT=(_F(CHARGE=COND_0G,),
-                             _F(CHARGE=COND_1G,),),);
+                             _F(CHARGE=COND_1G,),),)
 
 TRESU_G8=CREA_TABLE(RESU=_F(RESULTAT=RESU_G8,
                             NOM_CHAM='SIEF_ELGA',
                             TOUT_CMP='OUI',
-                            TOUT='OUI',),);
+                            TOUT='OUI',),)
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=712500.047068,
@@ -93,7 +93,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                    _F(NOM_PARA='COOR_X',
                       VALE=8.33333E-01,),
                    _F(NOM_PARA='COOR_Y',
-                      VALE=9.16667E-01,),),);
+                      VALE=9.16667E-01,),),)
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=712500.047068,
@@ -104,7 +104,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                    _F(NOM_PARA='COOR_X',
                       VALE=8.33333E-01,),
                    _F(NOM_PARA='COOR_Y',
-                      VALE=9.16667E-01,),),);
+                      VALE=9.16667E-01,),),)
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=712500.047068,
@@ -113,7 +113,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            FILTRE=(_F(NOM_PARA='COOR_X',
                       VALE=8.33333E-01,),
                    _F(NOM_PARA='COOR_Y',
-                      VALE=9.16667E-01,),),);
+                      VALE=9.16667E-01,),),)
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=18340.8968377,
@@ -124,7 +124,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                    _F(NOM_PARA='COOR_X',
                       VALE=8.33333E-01,),
                    _F(NOM_PARA='COOR_Y',
-                      VALE=9.16667E-01,),),);
+                      VALE=9.16667E-01,),),)
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=18340.8968377,
@@ -135,7 +135,7 @@ TEST_TABLE(CRITERE='ABSOLU',
                    _F(NOM_PARA='COOR_X',
                       VALE=8.33333E-01,),
                    _F(NOM_PARA='COOR_Y',
-                      VALE=9.16667E-01,),),);
+                      VALE=9.16667E-01,),),)
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=18340.8968377,
@@ -144,5 +144,5 @@ TEST_TABLE(CRITERE='ABSOLU',
            FILTRE=(_F(NOM_PARA='COOR_X',
                       VALE=8.33333E-01,),
                    _F(NOM_PARA='COOR_Y',
-                      VALE=9.16667E-01,),),);
-FIN();
+                      VALE=9.16667E-01,),),)
+FIN()

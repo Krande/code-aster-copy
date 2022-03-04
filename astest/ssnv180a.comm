@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,21 +78,21 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                         ETA_ID = 1.64e+12,
                                         ETA_FD = 5.30E+03,
                                       ),
-                  );
+                  )
 
 SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=100.),);
+                        VALE=100.),)
 
 SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=50.),);
+                        VALE=50.),)
 
 SECH1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
@@ -101,21 +101,21 @@ SECH1=CREA_RESU(OPERATION='AFFE',
                _F(CHAM_GD=SECHI,
                    INST=0.0,),
                 _F(CHAM_GD=SECHF,
-                   INST=64800000.0,),   ),);
+                   INST=64800000.0,),   ),)
 
 HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='HYDR',
-                        VALE=0.0,),);
+                        VALE=0.0,),)
 
 HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='HYDR',
-                        VALE=1.0,),);
+                        VALE=1.0,),)
 
 HYDR1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
@@ -124,21 +124,21 @@ HYDR1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=HYDRI,
                    INST=0.0,),
                 _F(CHAM_GD=HYDRF,
-                   INST=2419200.0,  ),),);
+                   INST=2419200.0,  ),),)
 
 TEMPI=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_TEMP_R',
                   MAILLAGE=M,
                   AFFE=_F( TOUT = 'OUI',
                            NOM_CMP = 'TEMP',
-                           VALE = 20.),);
+                           VALE = 20.),)
 
 TEMPF=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_TEMP_R',
                   MAILLAGE=M,
                   AFFE=_F( TOUT = 'OUI',
                            NOM_CMP = 'TEMP',
-                           VALE = 40.),);
+                           VALE = 40.),)
 
 TEMP1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
@@ -147,7 +147,7 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=TEMPI,
                    INST=0.0,),
                 _F(CHAM_GD=TEMPF,
-                   INST=64800000.0,  ),),);
+                   INST=64800000.0,  ),),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F( TOUT = 'OUI',
@@ -167,7 +167,7 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                                EVOL=TEMP1,
                                NOM_VARC='TEMP',
                                NOM_CHAM='TEMP',
-                               VALE_REF=20),));
+                               VALE_REF=20),))
 
 FORCE=DEFI_FONCTION( NOM_PARA='INST',
                      PROL_DROITE='LINEAIRE',

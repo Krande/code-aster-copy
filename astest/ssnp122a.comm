@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # GRANDE SENSIBILITE DE LA SOLUTION OBTENUE PAR RAPPORT AU SOLVEUR
 # UTILISE
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 
 
@@ -40,32 +40,32 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_MA=_F(NOM= 'ESSAI', TOUT='OUI'),
               CREA_GROUP_NO=(_F(GROUP_MA='AB'),
                              _F(GROUP_MA='DA'),
-                             _F(GROUP_MA='CD')));
+                             _F(GROUP_MA='CD')))
 
 MO_L=AFFE_MODELE(MAILLAGE=MA,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_SI'));
+                       MODELISATION='D_PLAN_SI'))
 
 # MO_NL=AFFE_MODELE(MAILLAGE=MA,
-#                
+#
 #                AFFE=_F(TOUT='OUI',
 #                        PHENOMENE='MECANIQUE',
-#                        MODELISATION='D_PLAN_GRAD_VARI'));
+#                        MODELISATION='D_PLAN_GRAD_VARI'))
 
 MO_NLG=AFFE_MODELE(MAILLAGE=MA,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_UPG'));
+                       MODELISATION='D_PLAN_INCO_UPG'))
 
 TRACT= DEFI_FONCTION(
   NOM_PARA = 'EPSI',
   VALE = (
     0.002,   400,
     1.002,  2400),
-  PROL_DROITE = 'LINEAIRE');
+  PROL_DROITE = 'LINEAIRE')
 
 ACIER = DEFI_MATERIAU(
   ELAS       = _F(E = 200000,  NU = 0.3),
@@ -74,32 +74,32 @@ ACIER = DEFI_MATERIAU(
   NON_LOCAL  = _F(
                 #   LONG_CARA=0.1,
                    C_GONF=1
-                  ));
+                  ))
 
 CHP_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
-                              MATER=ACIER));
+                              MATER=ACIER))
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.5,
-                                     NOMBRE=50)));
+                                     NOMBRE=50)))
 
 U_CHAR=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,1.5,1.5),
-                     PROL_DROITE='CONSTANT');
+                     PROL_DROITE='CONSTANT')
 
 CHA_L=AFFE_CHAR_MECA(MODELE=MO_L,
                       DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
                                 _F(GROUP_NO='A',DX=0.0),
-                                _F(GROUP_NO='CD',DY=1.0)));
+                                _F(GROUP_NO='CD',DY=1.0)))
 # CHA_NL=AFFE_CHAR_MECA(MODELE=MO_NL,
 #                       DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
 #                                 _F(GROUP_NO='A',DX=0.0),
-#                                 _F(GROUP_NO='CD',DY=1.0)));
+#                                 _F(GROUP_NO='CD',DY=1.0)))
 CHA_NLG=AFFE_CHAR_MECA(MODELE=MO_NLG,
                       DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
                                 _F(GROUP_NO='A',DX=0.0),
-                                _F(GROUP_NO='CD',DY=1.0)));
+                                _F(GROUP_NO='CD',DY=1.0)))
 
 U_L=STAT_NON_LINE(MODELE=MO_L,
                 CHAM_MATER=CHP_MAT,
@@ -114,7 +114,7 @@ U_L=STAT_NON_LINE(MODELE=MO_L,
                           REAC_ITER=1),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
-                               ITER_GLOB_MAXI=15));
+                               ITER_GLOB_MAXI=15))
 
 # U_NL=STAT_NON_LINE(MODELE=MO_NL,
 #                 CHAM_MATER=CHP_MAT,
@@ -134,7 +134,7 @@ U_L=STAT_NON_LINE(MODELE=MO_L,
 #                   RESI_DUAL_ABSO=1.E-3,
 #                   RESI_PRIM_ABSO=1.E-5,
 #                   R=50.0,
-#                   ITER_PRIM_MAXI=10));
+#                   ITER_PRIM_MAXI=10))
 
 U_NLG=STAT_NON_LINE(MODELE=MO_NLG,
                 CHAM_MATER=CHP_MAT,
@@ -150,7 +150,7 @@ U_NLG=STAT_NON_LINE(MODELE=MO_NLG,
                 SOLVEUR=_F(METHODE='MUMPS',),
                 CONVERGENCE=_F(RESI_REFE_RELA=1.E-4,
                                SIGM_REFE = 500 ,
-                               EPSI_REFE = 1));
+                               EPSI_REFE = 1))
 
 
 TEST_RESU(RESU=(_F(INST=0.93,
@@ -249,4 +249,4 @@ TEST_RESU(RESU=(_F(INST=1.5,
                 ),
           )
 
-FIN();
+FIN()

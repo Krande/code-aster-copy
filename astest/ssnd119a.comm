@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,19 +99,19 @@ Deplace = FORMULE(
                   Pulsation=Pulsation,
                   NOM_PARA='INST',)
 
-zero=DEFI_CONSTANTE(VALE=0.0,);
+zero=DEFI_CONSTANTE(VALE=0.0,)
 
 DEPLX=AFFE_CHAR_MECA_F(MODELE=Modele,
                        DDL_IMPO=_F(GROUP_NO='TRAC_X',
                                    DX=Deplace,
                                    DY=zero,DZ=zero,
-                                   ),);
+                                   ),)
 
 DEPLYZ=AFFE_CHAR_MECA_F(MODELE=Modele,
                        DDL_IMPO=_F(GROUP_NO='TRAC_YZ',
                                    DY=Deplace,
                                    DX=zero,DZ=Deplace,
-                                   ),);
+                                   ),)
 
 
 
@@ -122,7 +122,7 @@ ENCA=AFFE_CHAR_MECA(MODELE=Modele,
                                    DX=0.,
                                    DY=0.,
                                    DZ=0.,
-                                   ),);
+                                   ),)
 
 # Analytical solution: ressort
 
@@ -140,7 +140,7 @@ fxAn = FORMULE(VALE='k*Amplitude*sin(Pulsation*(INST-pas/2))',
 fxAna=CALC_FONC_INTERP(FONCTION=fxAn, NOM_PARA = 'INST',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=Linst2);
+                        LIST_PARA=Linst2)
 
 
 # Analytical solution: dashpot
@@ -156,7 +156,7 @@ fx2Ana=CALC_FONC_INTERP(FONCTION=fx2An, NOM_PARA = 'INST',
                         NOM_RESU = 'ForceAna',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=Linst2);
+                        LIST_PARA=Linst2)
 
 
 Tab2Ana = CREA_TABLE(FONCTION=_F(FONCTION=fx2Ana))
@@ -354,7 +354,7 @@ fx2AnaL=CALC_FONC_INTERP(FONCTION=fx2An, NOM_PARA = 'INST',
                         NOM_RESU = 'ForceAna',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=Linst2);
+                        LIST_PARA=Linst2)
 
 
 Tab2Ana = CREA_TABLE(FONCTION=_F(FONCTION=fx2AnaL))

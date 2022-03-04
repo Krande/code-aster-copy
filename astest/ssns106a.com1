@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ from code_aster.Commands import *
 
 POURSUITE(CODE='OUI',
           DEBUG=_F(SDVERI='OUI',),
-          );
+          )
 
 
 
@@ -76,7 +76,7 @@ MAT_G_RA=DEFI_GLRC(RELATION='GLRC_DM',
                              RX=0.8,
                              RY=0.8,),),
                    PENTE=_F(),
-                   INFO=2,);
+                   INFO=2,)
 
 matph = MAT_G_RA.sdj.NOMRC.get()
 phenom=None
@@ -97,7 +97,7 @@ valres=aster.getvectjev('%-8s.CPT.%s%s' % (MAT_G_RA.getName(), ns,'.VALR'))
 TAB_G_RA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
-                              LISTE_R=valres,),),);
+                              LISTE_R=valres,),),)
 
 #TESTE LE CALCUL DES PARAMETRES ELASTIQUES
 TEST_TABLE(
@@ -157,7 +157,7 @@ TEST_TABLE(
                      VALE_K='AMOR_BET',),
            )
 
-DETRUIRE(NOM=(TAB_G_RA),);
+DETRUIRE(NOM=(TAB_G_RA),)
 
 
 
@@ -180,7 +180,7 @@ valres=aster.getvectjev('%-8s.CPT.%s%s' % (MAT_G_RA.getName(), ns,'.VALR'))
 TAB_G_RA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
-                              LISTE_R=valres,),),);
+                              LISTE_R=valres,),),)
 
 #TESTE LE CALCUL DES PARAMETRES SPECIFIQUE A GLRC_DM
 
@@ -247,7 +247,7 @@ MAT_G_PA=DEFI_GLRC(RELATION='GLRC_DM',
                    RHO=2700.0,
                    AMOR_ALPHA=5.e-05,
                    AMOR_BETA=4.0,
-                   INFO=2,);
+                   INFO=2,)
 matph = MAT_G_PA.sdj.NOMRC.get()
 phenom=None
 ind=0
@@ -267,7 +267,7 @@ valres=aster.getvectjev('%-8s.CPT.%s%s' % (MAT_G_PA.getName(), ns,'.VALR'))
 TAB_G_PA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
-                              LISTE_R=valres,),),);
+                              LISTE_R=valres,),),)
 
 #TESTE LE CALCUL DES PARAMETRES ELASTIQUES
 TEST_TABLE(
@@ -330,7 +330,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='AMOR_BET',),
            )
 
-DETRUIRE(NOM=(TAB_G_PA),);
+DETRUIRE(NOM=(TAB_G_PA),)
 matph = MAT_G_PA.sdj.NOMRC.get()
 phenom=None
 ind=0
@@ -350,7 +350,7 @@ valres=aster.getvectjev('%-8s.CPT.%s%s' % (MAT_G_PA.getName(), ns,'.VALR'))
 TAB_G_PA=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
-                              LISTE_R=valres,),),);
+                              LISTE_R=valres,),),)
 
 TEST_TABLE(
            VALE_CALC=3.7355447425603E+05,
@@ -414,7 +414,7 @@ MAT_G_UT=DEFI_GLRC(RELATION='GLRC_DM',
                             FLEXION = 'UTIL',
                             EPSI_MEMB=0.002,
                             KAPPA_FLEX=0.03, ),
-                   INFO=2,);
+                   INFO=2,)
 matph = MAT_G_UT.sdj.NOMRC.get()
 phenom=None
 ind=0
@@ -434,7 +434,7 @@ valres=aster.getvectjev('%-8s.CPT.%s%s' % (MAT_G_UT.getName(), ns,'.VALR'))
 TAB_G_UT=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
-                              LISTE_R=valres,),),);
+                              LISTE_R=valres,),),)
 
 #TESTE LE CALCUL DES PARAMETRES ELASTIQUES
 TEST_TABLE(
@@ -497,7 +497,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='AMOR_BET',),
            )
 
-DETRUIRE(NOM=(TAB_G_UT),);
+DETRUIRE(NOM=(TAB_G_UT),)
 matph = MAT_G_UT.sdj.NOMRC.get()
 phenom=None
 ind=0
@@ -517,7 +517,7 @@ valres=aster.getvectjev('%-8s.CPT.%s%s' % (MAT_G_UT.getName(), ns,'.VALR'))
 TAB_G_UT=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
-                              LISTE_R=valres,),),);
+                              LISTE_R=valres,),),)
 
 
 TEST_TABLE(
@@ -581,7 +581,7 @@ MAT_G_CI=DEFI_GLRC(RELATION='GLRC_DM',
                              RY=0.8,),),
                    PENTE=_F(),
                    CISAIL='OUI',
-                   INFO=2,);
+                   INFO=2,)
 matph = MAT_G_CI.sdj.NOMRC.get()
 phenom=None
 ind=0
@@ -601,7 +601,7 @@ valres=aster.getvectjev('%-8s.CPT.%s%s' % (MAT_G_CI.getName(), ns,'.VALR'))
 TAB_G_CI=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
-                              LISTE_R=valres,),),);
+                              LISTE_R=valres,),),)
 
 #TESTE LE CALCUL DES PARAMETRES ELASTIQUES
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -666,7 +666,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='AMOR_BET',),
            )
 
-DETRUIRE(NOM=(TAB_G_CI),);
+DETRUIRE(NOM=(TAB_G_CI),)
 
 matph = MAT_G_CI.sdj.NOMRC.get()
 phenom=None
@@ -687,7 +687,7 @@ valres=aster.getvectjev('%-8s.CPT.%s%s' % (MAT_G_CI.getName(), ns,'.VALR'))
 TAB_G_CI=CREA_TABLE(LISTE=(_F(PARA='NOM_PARA',
                               LISTE_K=nomres,),
                            _F(PARA='VAL_PARA',
-                              LISTE_R=valres,),),);
+                              LISTE_R=valres,),),)
 
 #TESTE LE CALCUL DES PARAMETRES SPECIFIQUE A GLRC_DM
 
@@ -739,4 +739,4 @@ TEST_TABLE(
                      VALE_K='GAMMA_C',),
            )
 
-FIN();
+FIN()

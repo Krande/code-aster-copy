@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ for i in range(Ncal):
                                     _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
                                     _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
                                     _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                    _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+                                    _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
 
    DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
                         ECHEC=_F(ACTION       = 'DECOUPE',
@@ -96,7 +96,7 @@ for i in range(Ncal):
                           INCREMENT   =_F(LIST_INST=DEFLIST,),
                           EPSI_IMPOSE =_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                           EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                         INFO=1);
+                         INFO=1)
 
    R_SI=rename_components(i,N_pas,label_cal,ch_param,RESU,R_SI)
 
@@ -128,7 +128,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
 
 DEBUG(SDVERI='NON')
 RESU_TGT=SIMU_POINT_MAT(
@@ -143,7 +143,7 @@ RESU_TGT=SIMU_POINT_MAT(
                         INCREMENT=_F(LIST_INST=Linst,),
                         EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                        EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                        );
+                        )
 
 DIFF_MAT=VERI_MATR_TANG()
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,24 +30,24 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=196200000000.0,
                             NU=0.3,
                             RHO=10000.0,
                             AMOR_ALPHA=0.1,
-                            AMOR_BETA=0.1,),);
+                            AMOR_BETA=0.1,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),);
+                            MATER=MATER,),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='POU_D_T',),);
+                           MODELISATION='POU_D_T',),)
 
-F_VERT=-20000000.0;
+F_VERT=-20000000.0
 
-EP1=0.02;
+EP1=0.02
 
-RAY1=0.05;
+RAY1=0.05
 
-RAY2=0.07;
+RAY2=0.07
 
 CAREL=AFFE_CARA_ELEM(MODELE=MODELE,
                      POUTRE=(_F(GROUP_MA='GM31',
@@ -153,11 +153,11 @@ CAREL=AFFE_CARA_ELEM(MODELE=MODELE,
                              _F(GROUP_MA='GM47',
                                 SECTION='CERCLE',
                                 CARA='R',
-                                VALE=RAY1,),),);
+                                VALE=RAY1,),),)
 
 PESA=AFFE_CHAR_MECA(MODELE=MODELE,
                     PESANTEUR=_F(GRAVITE=9.81,
-                                 DIRECTION=(0.0,-1.0,0.0,),),);
+                                 DIRECTION=(0.0,-1.0,0.0,),),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=(_F(GROUP_NO=('GM24','GM21','GM26','GM29',),
@@ -165,38 +165,38 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DY=0.0,
                                    DZ=0.0,),),
                       FORCE_NODALE=_F(GROUP_NO='GM90',
-                                      FY=F_VERT,),);
+                                      FY=F_VERT,),)
 
 MATRR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MODELE,
                      CHAM_MATER=CHMAT,
                      CARA_ELEM=CAREL,
-                     CHARGE=CHARGE,);
+                     CHARGE=CHARGE,)
 
 VEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                   CHARGE=CHARGE,);
+                   CHARGE=CHARGE,)
 
-NU=NUME_DDL(MATR_RIGI=MATRR,);
+NU=NUME_DDL(MATR_RIGI=MATRR,)
 
 MATASS=ASSE_MATRICE(MATR_ELEM=MATRR,
-                    NUME_DDL=NU,);
+                    NUME_DDL=NU,)
 
 VECASS=ASSE_VECTEUR(VECT_ELEM=VEL,
-                    NUME_DDL=NU,);
+                    NUME_DDL=NU,)
 
 MATASS=FACTORISER(reuse =MATASS,
-                 MATR_ASSE=MATASS,);
+                 MATR_ASSE=MATASS,)
 
 VECASS=RESOUDRE(reuse =VECASS,
                  MATR=MATASS,
-                 CHAM_NO=VECASS,);
+                 CHAM_NO=VECASS,)
 
 
 RESU1=MECA_STATIQUE(MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,
                     EXCIT=(_F(CHARGE=CHARGE,),
-                           _F(CHARGE=PESA,),),);
+                           _F(CHARGE=PESA,),),)
 
 TEST_RESU(RESU=(_F(GROUP_NO='GM90',
                    INST=0,
@@ -243,4 +243,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='GM90',
                 ),
           )
 
-FIN();
+FIN()

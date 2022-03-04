@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -600,7 +600,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=3843835.0666461103,
                         VALE_REFE=post_roche_analytic._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout,
@@ -625,7 +625,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout,
@@ -650,7 +650,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout,
@@ -675,7 +675,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout,
@@ -896,7 +896,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -905,7 +905,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -914,7 +914,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -923,7 +923,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -966,7 +966,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -975,7 +975,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -984,7 +984,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -993,7 +993,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_D,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1205,7 +1205,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=3444861.379938055,
                         VALE_REFE=post_roche_analytic_D._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_D,
@@ -1230,7 +1230,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_D,
@@ -1255,7 +1255,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_D,
@@ -1280,7 +1280,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_D,
@@ -1501,7 +1501,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1510,7 +1510,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1519,7 +1519,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1528,7 +1528,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1571,7 +1571,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1580,7 +1580,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1589,7 +1589,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1598,7 +1598,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DP,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -1810,7 +1810,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2922846.3956556735,
                         VALE_REFE=post_roche_analytic_DP._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DP,
@@ -1835,7 +1835,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DP,
@@ -1860,7 +1860,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DP,
@@ -1885,7 +1885,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DP,
@@ -2106,7 +2106,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -2115,7 +2115,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -2124,7 +2124,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -2133,7 +2133,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -2176,7 +2176,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -2185,7 +2185,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -2194,7 +2194,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -2203,7 +2203,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_DPG,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -2415,7 +2415,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2922846.3956556735,
                         VALE_REFE=post_roche_analytic_DPG._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DPG,
@@ -2440,7 +2440,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DPG,
@@ -2465,7 +2465,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DPG,
@@ -2490,7 +2490,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_DPG,
@@ -3004,7 +3004,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2443454.3815281973,
                         VALE_REFE=post_roche_analytic_S._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_S,
@@ -3029,7 +3029,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_S,
@@ -3054,7 +3054,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_S,
@@ -3079,7 +3079,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_S,
@@ -3594,7 +3594,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2443454.3815281917,
                         VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SP,
@@ -3619,7 +3619,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SP,
@@ -3644,7 +3644,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SP,
@@ -3669,7 +3669,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SP,
@@ -4183,7 +4183,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=2443454.3815281894,
                         VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SPG,
@@ -4208,7 +4208,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SPG,
@@ -4233,7 +4233,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SPG,
@@ -4258,7 +4258,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SPG,
@@ -4286,7 +4286,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                     )
         )
 
-# TEST_RESU chPostRocheTout_SD       
+# TEST_RESU chPostRocheTout_SD
 print ("\n----------------TEST_RESU seisme inertiel + deplacement (SD)--------------------")
 TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                      _F(GROUP_MA='M1',
@@ -4467,7 +4467,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -4476,7 +4476,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -4485,7 +4485,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -4494,7 +4494,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X7',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -4533,7 +4533,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -4542,7 +4542,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -4551,7 +4551,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=1,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -4560,7 +4560,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         POINT=2,
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout_SD,
-                        CRITERE = 'ABSOLU',                        
+                        CRITERE = 'ABSOLU',
                         NOM_CMP='X9',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0,
@@ -4768,7 +4768,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X16',
                         VALE_CALC=4223451.105624178,
                         VALE_REFE=post_roche_analytic_SD._sigma_eq_opt[3]),
-                     # X17 = indicateur sigmaV <sigmaP 
+                     # X17 = indicateur sigmaV <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SD,
@@ -4793,7 +4793,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X18 = indicateur sigmaV_s <sigmaP 
+                     # X18 = indicateur sigmaV_s <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SD,
@@ -4818,7 +4818,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X19 = indicateur sigmaV_opt <sigmaP 
+                     # X19 = indicateur sigmaV_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SD,
@@ -4843,7 +4843,7 @@ TEST_RESU(CHAM_ELEM=(# X1 = contrainte de référence
                         NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                         VALE_CALC=0.0),
-                     # X20 = indicateur sigmaV_s_opt <sigmaP 
+                     # X20 = indicateur sigmaV_s_opt <sigmaP
                      _F(GROUP_MA='M1',
                         POINT=1,
                         CHAM_GD=chPostRocheTout_SD,

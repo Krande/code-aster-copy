@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
                                _F(GROUP_MA='FACE6',
                                   CRIT_NOEUD='TOUS')),
                 MAILLAGE=CUBE,
-               );
+               )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
                 ALARME='OUI',
@@ -157,7 +157,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
                                   GROUP_NO='FACE6',
                                   NOM='FACE6_3D')),
                 MAILLAGE=CUBE,
-               );
+               )
 
 WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                             INTERPOL='LOG',
@@ -241,7 +241,7 @@ ACIER2  = DEFI_MATERIAU   ( ELAS           =_F( E        = 200000.,
 
 LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
                            INTERVALLE =_F (JUSQU_A= 8.0, NOMBRE = 8  )
-                                         );
+                                         )
 
 TROISD   = AFFE_MODELE    ( MAILLAGE   =    CUBE,
                             AFFE       =_F ( PHENOMENE    = 'MECANIQUE',
@@ -270,13 +270,13 @@ CL  = AFFE_CHAR_MECA (
                             _F( GROUP_MA= 'FACE3' ,DY=0.),
                             _F( GROUP_MA= 'FACE2' ,DZ=0.),
                           ),
-                     );
+                     )
 
 
 TR  = AFFE_CHAR_MECA (
            MODELE       = TROISD,
            FORCE_FACE   = _F( GROUP_MA= 'FACE4', FX=1.0)
-                     );
+                     )
 
 CS  = AFFE_CHAR_MECA (
            MODELE       = TROISD,
@@ -284,7 +284,7 @@ CS  = AFFE_CHAR_MECA (
                            _F( GROUP_MA= 'FACE4', FY= 1.0),
                            _F( GROUP_MA= 'FACE1', FZ=-1.0),
                           )
-                     );
+                     )
 
 # CALCUL AVEC STAT_NON_LINE
 # -------------------------
@@ -313,13 +313,13 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
 SOL_NL = CALC_CHAMP(reuse=SOL_NL,
                     RESULTAT=SOL_NL,
                     CONTRAINTE= ('SIGM_ELNO',),
-                    DEFORMATION=('EPSI_ELGA','EPSI_ELNO'),);
+                    DEFORMATION=('EPSI_ELGA','EPSI_ELNO'),)
 
 SOL_NL = CALC_CHAMP(reuse=SOL_NL,
                     RESULTAT=SOL_NL,
                     GROUP_MA=('FACE1_3D', 'FACE2_3D', 'FACE3_3D','CUBE'),
                     CONTRAINTE='SIGM_NOEU',
-                    DEFORMATION='EPSI_NOEU',);
+                    DEFORMATION='EPSI_NOEU',)
 
 # TEST DES RESULTATS OBTENUS AUX POINTS DE GAUSS AVEC STAT_NON_LINE
 # -----------------------------------------------------------------

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,12 +28,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM='TOUT',
-                               TOUT='OUI',),);
+                               TOUT='OUI',),)
 #
 #
 
@@ -41,20 +41,20 @@ MA=DEFI_GROUP(reuse =MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_T',),);
+                       MODELISATION='POU_D_T',),)
 #
 #
 
 
 MATR=DEFI_MATERIAU(ELAS=_F(E=2.E11,
-                           NU=0.29999999999999999,),);
+                           NU=0.29999999999999999,),)
 #
 #
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATR,),);
+                            MATER=MATR,),)
 #
 #
 
@@ -74,7 +74,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
 
 F1=DEFI_FONCTION(NOM_PARA='X',
                  VALE=(-1.0,100.0,1.0,100.0),
-                 INTERPOL='LIN',);
+                 INTERPOL='LIN',)
 #
 #
 
@@ -88,7 +88,7 @@ CHARG1=AFFE_CHAR_MECA(MODELE=MO,
                                 _F(GROUP_NO='N31',
                                    DY=0.0,
                                    DZ=0.0,),),
-                     );
+                     )
 #
 #
 # ON FAIT DEUX FOIS LE MEME CALCUL
@@ -97,11 +97,11 @@ CHARG1=AFFE_CHAR_MECA(MODELE=MO,
 
 CHARG2_F=AFFE_CHAR_MECA_F(MODELE=MO,
                         FORCE_POUTRE=_F(TOUT='OUI',
-                                        VY=F1,),);
+                                        VY=F1,),)
 
 CHARG2_R=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_POUTRE=_F(TOUT='OUI',
-                                        VY=100.0,),);
+                                        VY=100.0,),)
 #
 #
 
@@ -111,7 +111,7 @@ MEST1=MECA_STATIQUE(MODELE=MO,
                     CARA_ELEM=CAREL,
                     SOLVEUR=_F(POSTTRAITEMENTS='MINI',),
                     EXCIT=(_F(CHARGE=CHARG1,),
-                           _F(CHARGE=CHARG2_F,),),);
+                           _F(CHARGE=CHARG2_F,),),)
 #
 #
 
@@ -126,7 +126,7 @@ MEST2=MECA_STATIQUE(MODELE=MO,
                     CARA_ELEM=CAREL,
                     SOLVEUR=_F(POSTTRAITEMENTS='MINI',),
                     EXCIT=(_F(CHARGE=CHARG1,),
-                           _F(CHARGE=CHARG2_R,),),);
+                           _F(CHARGE=CHARG2_R,),),)
 #
 #
 
@@ -274,7 +274,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #
 
 
-FIN();
+FIN()
 #
 #
 #

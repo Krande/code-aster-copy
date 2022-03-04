@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 # VERSION DYNA_NON_LINE (QUASI_STATIQUE)
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #------- MAILLAGE FILAIRE DE LA POUTRE
 
@@ -133,7 +133,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
 
 ACCE0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MO,
                    AFFE=_F(TOUT='OUI',NOM_CMP=('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' , 'GRX'),
-                                      VALE = (0., 0., 0.,0., 0., 0., 0.,),),);
+                                      VALE = (0., 0., 0.,0., 0., 0., 0.,),),)
 
 REST=DYNA_NON_LINE(
                             MODELE=MO,

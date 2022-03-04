@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1923,7 +1923,7 @@ CHMTM=AFFE_MATERIAU(  MAILLAGE=MA,
                                 EVOL=TEMP,
                                 NOM_VARC='TEMP',
                                 NOM_CHAM='TEMP',VALE_REF=0.),
-                     );
+                     )
 
 CHG1=AFFE_CHAR_MECA(   MODELE=MO,
                           DDL_IMPO=_F(  GROUP_NO = 'A',   DX = 0.,   DY = 0.,

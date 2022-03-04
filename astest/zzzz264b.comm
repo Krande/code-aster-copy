@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
 #Instant pour post_endo_fiss
 listInst = [0.9240, 1.5600, 1.6920312500000005]
@@ -33,9 +33,9 @@ lim_fpz = 0.8
 # -------------------------
 # LECTURE MAILLAGE
 #
-MAIL0 = LIRE_MAILLAGE( UNITE  = 80,                       
+MAIL0 = LIRE_MAILLAGE( UNITE  = 80,
                        FORMAT = 'MED')
-                     
+
 #~ IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MAIL0,) )
 # --------------------------------------
 # LECTURE RESULTAT MED
@@ -58,17 +58,17 @@ EVOL1 = LIRE_RESU( TYPE_RESU  = 'EVOL_NOLI',
                   ),)
 
 #~ MAIL0=CREA_MAILLAGE(MAILLAGE=MAIL00, RESTREINT=_F(GROUP_MA='FACECENT'), )
-#~ 
+#~
 #~ MO1B=AFFE_MODELE(MAILLAGE=MAIL0,
                  #~ AFFE=_F(TOUT='OUI',
                          #~ PHENOMENE='MECANIQUE',
-                         #~ MODELISATION='D_PLAN',),);
-                         #~ 
-#~ EVOL1=EXTR_RESU(RESULTAT=EVOL10, RESTREINT=_F(MODELE=MO1B,)); 
-#~ 
+                         #~ MODELISATION='D_PLAN',),)
+                         #~
+#~ EVOL1=EXTR_RESU(RESULTAT=EVOL10, RESTREINT=_F(MODELE=MO1B,))
+#~
 #~ IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=EVOL1,NOM_CHAM=('DEPL','VARI_NOEU'),) )
 #~ IMPR_RESU(FORMAT='RESULTAT',UNITE=82,RESU=_F(RESULTAT=EVOL1,NOM_CHAM=('DEPL','VARI_NOEU'),) )
-                                           
+
 # --------------------------------------
 # CREATION DU CHAMP A POST-TRAITER
 #
@@ -220,7 +220,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 #--------------------------------------
 # IMPRESSION RESULTATS
-#         
+#
 #IMPR_TABLE(TABLE=TAB_FISS)
 #IMPR_TABLE(TABLE=TAB_FIS2)
 
@@ -230,6 +230,6 @@ TEST_TABLE(CRITERE='RELATIF',
 #                     _F(MAILLAGE = MAFI,),
 #                     _F(MAILLAGE = MAFI2,),
 #         ),)
-         
+
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,38 +18,38 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
                DISTRIBUTION=_F(METHODE='CENTRALISE',),
-               );
+               )
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
-                          NU=0.3,),);
+                          NU=0.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='GRNO1',
                                  DZ=0.0,),
                               _F(GROUP_NO='GRNO8',
-                                 DY=0.0,),),);
+                                 DY=0.0,),),)
 
 CHA2=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=_F(GROUP_NO='GRNO7',
                                  DX=0.0,
-                                 DY=0.01,),);
+                                 DY=0.01,),)
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=1,),);
+                                  NOMBRE=1,),)
 
 EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -62,7 +62,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                               ALGORITHME='CR',
                               PRE_COND='LDLT_SP',
                               PCENT_PIVOT=30, ),
-                   INFO=1,);
+                   INFO=1,)
 
 TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    NUME_ORDRE=1,
@@ -108,7 +108,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    VALE_CALC=-2.91729494193E-05,
                    VALE_REFE=-2.9173e-05,
                    PRECISION=0.00015,
-                   REFERENCE='AUTRE_ASTER',),),);
+                   REFERENCE='AUTRE_ASTER',),),)
 
 EVOL2=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -121,7 +121,7 @@ EVOL2=STAT_NON_LINE(MODELE=MO,
                               ALGORITHME='CR',
                               PRE_COND='LDLT_DP',
                               PCENT_PIVOT=30, ),
-                   INFO=1,);
+                   INFO=1,)
 TEST_RESU(RESU=(_F(RESULTAT=EVOL2,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
@@ -166,5 +166,5 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL2,
                    VALE_CALC=-2.91729494193E-05,
                    VALE_REFE=-2.9173e-05,
                    PRECISION=0.00015,
-                   REFERENCE='AUTRE_ASTER',),),);
-FIN();
+                   REFERENCE='AUTRE_ASTER',),),)
+FIN()

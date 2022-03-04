@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,18 +33,18 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_UPG',),);
+                       MODELISATION='D_PLAN_INCO_UPG',),)
 
 L_INST1=DEFI_LIST_REEL(DEBUT=0.,
-                       INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,),);
+                       INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,),)
 
 
 # POUR TESTER LA POSSIBILITE DE FOURNIR DIRECTEMENT LE CHAMP DE MODULE D'YOUNG :
@@ -57,32 +57,32 @@ CHYOUNG=CREA_CHAMP(TYPE_CHAM='ELNO_NEUT_R', OPERATION='AFFE', MODELE=MO, PROL_ZE
 EVYOUNG=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_VARC', NOM_CHAM='NEUT',
                   AFFE= _F(CHAM_GD = CHYOUNG,   LIST_INST =L_INST1))
 
-NU_F=DEFI_CONSTANTE(VALE=0.4999,);
+NU_F=DEFI_CONSTANTE(VALE=0.4999,)
 
-E_F=DEFI_FONCTION(NOM_PARA='NEUT1',VALE=(-1.E-9,-1.E-9,  1.E+9,1.E+9, ),);
+E_F=DEFI_FONCTION(NOM_PARA='NEUT1',VALE=(-1.E-9,-1.E-9,  1.E+9,1.E+9, ),)
 
-MA=DEFI_MATERIAU(ELAS_FO=_F(E=E_F, NU=NU_F,),);
+MA=DEFI_MATERIAU(ELAS_FO=_F(E=E_F, NU=NU_F,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),
-               # AFFE_VARC=_F(NOM_VARC='NEUT1', CHAM_GD=CHYOUNG,),);
-                 AFFE_VARC=_F(NOM_VARC='NEUT1', EVOL=EVYOUNG,),);
+               # AFFE_VARC=_F(NOM_VARC='NEUT1', CHAM_GD=CHYOUNG,),)
+                 AFFE_VARC=_F(NOM_VARC='NEUT1', EVOL=EVYOUNG,),)
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='GRNM11',
                                 DX=0.,),
                     FACE_IMPO=_F(GROUP_MA='GRMA12',
-                                 DNOR=0.,),);
+                                 DNOR=0.,),)
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   PRES_REP=_F(GROUP_MA='GRMA13',
-                              PRES=60.,),);
+                              PRES=60.,),)
 
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                           1.,1.,
-                          ),PROL_DROITE='CONSTANT',);
+                          ),PROL_DROITE='CONSTANT',)
 
 EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
@@ -92,14 +92,14 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-                   );
+                   )
 
 EVOL=CALC_CHAMP(reuse=EVOL,RESULTAT=EVOL,CRITERES=('SIEQ_ELNO','EPEQ_ELNO'),DEFORMATION=('EPSI_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
 
 EVOL=CALC_CHAMP(reuse =EVOL,
              RESULTAT=EVOL,
-             DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'));
+             DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'))
 
 #---------------------------------------------------------------
 #       TEST DE SOLIDE INCOMPRESSIBLE NU = 0.5
@@ -432,7 +432,7 @@ M=DEFI_GROUP(reuse =M,
              MAILLAGE=M,
              CREA_GROUP_NO=_F(GROUP_MA='VOLUME',
                               NOM='MSOMMET',
-                              CRIT_NOEUD='SOMMET',),);
+                              CRIT_NOEUD='SOMMET',),)
 
 CLIM2=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='GRNM11',
@@ -440,7 +440,7 @@ CLIM2=AFFE_CHAR_MECA(MODELE=MO,
                                _F(GROUP_NO='MSOMMET',
                                   GONF=0.,),),
                      FACE_IMPO=_F(GROUP_MA='GRMA12',
-                                  DNOR=0.,),);
+                                  DNOR=0.,),)
 
 EVOL2=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CM,
@@ -450,14 +450,14 @@ EVOL2=STAT_NON_LINE(MODELE=MO,
                     COMPORTEMENT=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST1,),
                     NEWTON=_F(REAC_ITER=1,),
-                    );
+                    )
 
 EVOL2=CALC_CHAMP(reuse=EVOL2,RESULTAT=EVOL2,CRITERES=('SIEQ_ELNO','EPEQ_ELNO'),DEFORMATION=('EPSI_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
 
 EVOL2=CALC_CHAMP(reuse =EVOL2,
               RESULTAT=EVOL2,
-              DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'));
+              DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'))
 
 TEST_RESU(RESU=(_F(GROUP_NO='A',
                    INST=1.0,
@@ -781,20 +781,20 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
 #--------------------------------------------------------------------------------
 
 MOUP=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_UP',),);
+                       MODELISATION='D_PLAN_INCO_UP',),)
 
 CLIMUP=AFFE_CHAR_MECA(MODELE=MOUP,
                     DDL_IMPO=_F(GROUP_NO='GRNM11',
                                 DX=0.,),
                     FACE_IMPO=_F(GROUP_MA='GRMA12',
-                                 DNOR=0.,),);
+                                 DNOR=0.,),)
 
 CHUP=AFFE_CHAR_MECA(MODELE=MOUP,
                   PRES_REP=_F(GROUP_MA='GRMA13',
-                              PRES=60.,),);
+                              PRES=60.,),)
 
 EVOLUP=STAT_NON_LINE(MODELE=MOUP,
                    CHAM_MATER=CM,
@@ -804,14 +804,14 @@ EVOLUP=STAT_NON_LINE(MODELE=MOUP,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-                   );
+                   )
 
 EVOLUP=CALC_CHAMP(reuse=EVOLUP,RESULTAT=EVOLUP,CRITERES=('SIEQ_ELNO','EPEQ_ELNO'),DEFORMATION=('EPSI_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
 
 EVOLUP=CALC_CHAMP(reuse =EVOLUP,
              RESULTAT=EVOLUP,
-             DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'));
+             DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'))
 
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
@@ -1141,13 +1141,13 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
 #--------------------------------------------------------------------------------
 
 ML=LIRE_MAILLAGE(FORMAT='MED',
-                 UNITE=21,);
+                 UNITE=21,)
 
 MOUPL=AFFE_MODELE(MAILLAGE=ML,
-                  
+
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='D_PLAN_INCO_UP',),);
+                          MODELISATION='D_PLAN_INCO_UP',),)
 
 CHYOUNGL=CREA_CHAMP(TYPE_CHAM='ELNO_NEUT_R',
                    OPERATION='AFFE',
@@ -1156,23 +1156,23 @@ CHYOUNGL=CREA_CHAMP(TYPE_CHAM='ELNO_NEUT_R',
                    AFFE=_F(GROUP_MA='VOLUME',
                            NOM_CMP='X1',
                            VALE=200000.,),
-                   INFO=1,);
+                   INFO=1,)
 
 CML=AFFE_MATERIAU(MAILLAGE=ML,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),
                  AFFE_VARC=_F(NOM_VARC='NEUT1',
-                              CHAM_GD=CHYOUNGL,),);
+                              CHAM_GD=CHYOUNGL,),)
 
 CLIMUPL=AFFE_CHAR_MECA(MODELE=MOUPL,
                      DDL_IMPO=_F(GROUP_MA='GRNM11',
                                  DX=0.,),
                      FACE_IMPO=_F(GROUP_MA='GRMA12',
-                                  DNOR=0.,),);
+                                  DNOR=0.,),)
 
 CHUPL=AFFE_CHAR_MECA(MODELE=MOUPL,
                      PRES_REP=_F(GROUP_MA='GRMA13',
-                                 PRES=60.,),);
+                                 PRES=60.,),)
 
 EVOLUPL=STAT_NON_LINE(MODELE=MOUPL,
                    CHAM_MATER=CML,
@@ -1182,14 +1182,14 @@ EVOLUPL=STAT_NON_LINE(MODELE=MOUPL,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-                   );
+                   )
 
 EVOLUPL=CALC_CHAMP(reuse=EVOLUPL,RESULTAT=EVOLUPL,CRITERES=('SIEQ_ELNO','EPEQ_ELNO'),DEFORMATION=('EPSI_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
 
 EVOLUPL=CALC_CHAMP(reuse =EVOLUPL,
              RESULTAT=EVOLUPL,
-             DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'));
+             DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'))
 
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
@@ -1519,13 +1519,13 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
 #--------------------------------------------------------------------------------
 
 MLOS=LIRE_MAILLAGE(FORMAT='MED',
-                 UNITE=22,);
+                 UNITE=22,)
 
 MOOS=AFFE_MODELE(MAILLAGE=MLOS,
-                  
+
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='D_PLAN_INCO_UPO',),);
+                          MODELISATION='D_PLAN_INCO_UPO',),)
 
 CHYOUNOS=CREA_CHAMP(TYPE_CHAM='ELNO_NEUT_R',
                    OPERATION='AFFE',
@@ -1534,23 +1534,23 @@ CHYOUNOS=CREA_CHAMP(TYPE_CHAM='ELNO_NEUT_R',
                    AFFE=_F(GROUP_MA='VOLUME',
                            NOM_CMP='X1',
                            VALE=200000.,),
-                   INFO=1,);
+                   INFO=1,)
 
 CMOS=AFFE_MATERIAU(MAILLAGE=MLOS,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),
                  AFFE_VARC=_F(NOM_VARC='NEUT1',
-                              CHAM_GD=CHYOUNOS,),);
+                              CHAM_GD=CHYOUNOS,),)
 
 CLIMOS=AFFE_CHAR_MECA(MODELE=MOOS,
                      DDL_IMPO=_F(GROUP_MA='GRNM11',
                                  DX=0.,),
                      FACE_IMPO=_F(GROUP_MA='GRMA12',
-                                  DNOR=0.,),);
+                                  DNOR=0.,),)
 
 CHOS=AFFE_CHAR_MECA(MODELE=MOOS,
                      PRES_REP=_F(GROUP_MA='GRMA13',
-                                 PRES=60.,),);
+                                 PRES=60.,),)
 
 EVOLOS=STAT_NON_LINE(MODELE=MOOS,
                    CHAM_MATER=CMOS,
@@ -1560,14 +1560,14 @@ EVOLOS=STAT_NON_LINE(MODELE=MOOS,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-                   );
+                   )
 
 EVOLOS=CALC_CHAMP(reuse=EVOLOS,RESULTAT=EVOLOS,CRITERES=('SIEQ_ELNO','EPEQ_ELNO'),DEFORMATION=('EPSI_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
 
 EVOLOS=CALC_CHAMP(reuse =EVOLOS,
              RESULTAT=EVOLOS,
-             DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'));
+             DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU',CRITERES=('EPEQ_NOEU','SIEQ_NOEU'))
 
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
@@ -1894,4 +1894,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
                 ),
           )
 
-FIN();
+FIN()

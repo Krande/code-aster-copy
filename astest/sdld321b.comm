@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 # AMORTISSEMENT = (AMORTISSEMENT CRITIQUE)*0.01
 # EXCITATION SINUSOIDALE
 #
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET') ,DEBUG=_F(SDVERI='OUI'));
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET') ,DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -162,7 +162,7 @@ DNPY_54=DYNA_LINE(TYPE_CALCUL='TRAN',
                   BASE_CALCUL='GENE',
                   MODELE=MODELE,
                   CARA_ELEM=ELEMNT,
-                  SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.0E-06, 
+                  SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.0E-06,
                                              PAS_MAXI = 0.001,),
                   CHARGE = CL,
                   BANDE_ANALYSE=(.0,10.),
@@ -179,7 +179,7 @@ DNPY_32=DYNA_LINE(TYPE_CALCUL='TRAN',
                   BASE_CALCUL='GENE',
                   MODELE=MODELE,
                   CARA_ELEM=ELEMNT,
-                  SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-06, 
+                  SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-06,
                                              PAS_MAXI = 0.001,),
                   CHARGE = CL,
                   BANDE_ANALYSE=(.0,10.),
@@ -944,6 +944,6 @@ TEST_RESU(RESU=_F(INST=5.0,
                   PRECISION=5.E-3,),
           )
 
-#--- FIN test DYNA_LINE 
+#--- FIN test DYNA_LINE
 FIN( )
 #

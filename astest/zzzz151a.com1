@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ fic.close()
 msalom2 = EXEC_LOGICIEL(
                         SALOME=_F(
                         CHEMIN_SCRIPT   = './fort.17',  PORT=int(port),
-                        ),);
+                        ),)
 # Arrêt de l'instance salome
 #
 os.system('%s shell -p %s killSalomeWithPort.py args:%s'%(prog_salome,port,port))
@@ -52,12 +52,12 @@ os.system('%s shell -p %s killSalomeWithPort.py args:%s'%(prog_salome,port,port)
 # Test des concepts
 unite=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='./plaque.med',ACCES='NEW')
 
-MA=LIRE_MAILLAGE(FORMAT='MED',UNITE = unite,);
+MA=LIRE_MAILLAGE(FORMAT='MED',UNITE = unite,)
 
 TEST_RESU(MAILLAGE=(
        _F( REFERENCE='ANALYTIQUE', MAILLAGE=MA,
            CARA='NB_MAILLE', VALE_REFE_I=1508, VALE_CALC_I=1508,),
        _F( REFERENCE='ANALYTIQUE', MAILLAGE=MA,
-           CARA='NB_NOEUD', VALE_REFE_I=2917, VALE_CALC_I=2917,),));
+           CARA='NB_NOEUD', VALE_REFE_I=2917, VALE_CALC_I=2917,),))
 
 FIN()

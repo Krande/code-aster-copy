@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -218,7 +218,7 @@ for i_propa in range(nb_pas) :
       #definition de la fissure
       FISS[i_propa]=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
                                    DEFI_FISS=_F(CHAM_NO_LSN = LSN[nb_raff],
-                                                CHAM_NO_LST = LST[nb_raff],),);
+                                                CHAM_NO_LST = LST[nb_raff],),)
 
       DETRUIRE(NOM=LSN[nb_raff])
       DETRUIRE(NOM=LST[nb_raff])
@@ -473,7 +473,7 @@ if type_cas == 'cas_test' :
    # Fissure
    FI_TEST=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
                           DEFI_FISS=_F(CHAM_NO_LSN = LSN[nb_raff],
-                                       CHAM_NO_LST = LST[nb_raff],),);
+                                       CHAM_NO_LST = LST[nb_raff],),)
 
    # extraction des coordonnees max du fond de fissure
    TB_FOND=RECU_TABLE(CO=FI_TEST,NOM_TABLE='FOND_FISS')
@@ -488,4 +488,4 @@ if type_cas == 'cas_test' :
               TYPE_TEST='MAX',
               TABLE=TB_FOND,)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 #
-# 5 modes propres (m=1, n=2,3,4,5,6) d'un tuyau élastique mince 
-# sous 5 différentes conditions aux limites : 
+# 5 modes propres (m=1, n=2,3,4,5,6) d'un tuyau élastique mince
+# sous 5 différentes conditions aux limites :
 # FF, SF, CS, CC, SS
 # ( S, C, F représentent simply-supported, clamped et free )
-# 
-# Référence : Free vibration analysis of cylindrical shells using 
+#
+# Référence : Free vibration analysis of cylindrical shells using
 #             the Haar wavelet method, 2013, Xiang Xie, Guoyong Jin, Zhigang Liu
 #-------------------------------------------------------------------
 # 1) type d'éléments finis : COQUE_3D avec TRIA7
@@ -126,7 +126,7 @@ ASSEMBLAGE(CARA_ELEM=carac,
                          OPTION='RIGI_MECA')),
            MODELE=model,
            NUME_DDL=CO('NUMESF'))
-           
+
 modesSF = CALC_MODES(CALC_FREQ=_F(FREQ=(663.95, 1882.05, 3622.55, 5890.5, 8701.61)),
                      MATR_MASS=MASSESF,
                      MATR_RIGI=RIGIDSF,
@@ -145,7 +145,7 @@ ASSEMBLAGE(CARA_ELEM=carac,
                          OPTION='RIGI_MECA')),
            MODELE=model,
            NUME_DDL=CO('NUMECS'))
-           
+
 modesCS = CALC_MODES(CALC_FREQ=_F(FREQ=(681.14, 1889.25, 3631.73, 5902.93, 8717.66 )),
                      MATR_MASS=MASSECS,
                      MATR_RIGI=RIGIDCS,
@@ -169,7 +169,7 @@ modesCC = CALC_MODES(CALC_FREQ=_F(FREQ=(695.289, 1890.77, 3632.19, 5903.15, 8717
                      MATR_MASS=MASSECC,
                      MATR_RIGI=RIGIDCC,
                      OPTION='PROCHE',
-                     SOLVEUR=_F(METHODE='MULT_FRONT',),),                   
+                     SOLVEUR=_F(METHODE='MULT_FRONT',),),
 
 ########################################################################
 # cas SS
@@ -188,15 +188,15 @@ modesSS = CALC_MODES(CALC_FREQ=_F(FREQ=(672.797, 1888.12, 3631.32, 5902.73, 8717
                      MATR_MASS=MASSESS,
                      MATR_RIGI=RIGIDSS,
                      OPTION='PROCHE',
-                     SOLVEUR=_F(METHODE='MULT_FRONT',),),                            
+                     SOLVEUR=_F(METHODE='MULT_FRONT',),),
 
 #IMPR_RESU(FORMAT='MED',
           #RESU=_F(RESULTAT=modes),
           #UNITE=80)
- 
+
 ########################################################################
 #                             VALIDATIONS
-                    
+
 ## MODES POUR FF
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -233,7 +233,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=modesFF,
                    VALE_CALC=(8701.24390597, ),
                    VALE_REFE=(8416.323, ))))
-                   
+
 ### MODES POUR SF
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -269,7 +269,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=modesSF,
                    VALE_CALC=(8701.60597772, ),
-                   VALE_REFE=(8417.793, ))))                   
+                   VALE_REFE=(8417.793, ))))
 
 ### MODES POUR CS
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -306,7 +306,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=modesCS,
                    VALE_CALC=(8717.65967182, ),
-                   VALE_REFE=(8422.0, )))) 
+                   VALE_REFE=(8422.0, ))))
 
 
 ## MODES POUR CC
@@ -344,8 +344,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=modesCC,
                    VALE_CALC=(8717.78704104, ),
-                   VALE_REFE=(8422.237, )))) 
-                   
+                   VALE_REFE=(8422.237, ))))
+
 ## MODES POUR SS
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -381,7 +381,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=modesSS,
                    VALE_CALC=(8717.53695516, ),
-                   VALE_REFE=(8421.966, )))) 
+                   VALE_REFE=(8421.966, ))))
 
 
 FIN()

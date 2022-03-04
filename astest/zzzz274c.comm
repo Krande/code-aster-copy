@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
-              DEBUG=_F(SDVERI='OUI'),);
+              DEBUG=_F(SDVERI='OUI'),)
 
 from math import *
 
@@ -37,12 +37,12 @@ SINB = sin(BETA *pi/180 )
 COSG = cos(GAMMA*pi/180 )
 SING = sin(GAMMA*pi/180 )
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('P1'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='DIS_T',),);
+                       MODELISATION='DIS_T',),)
 
 CARNS_G=AFFE_CARA_ELEM(
    MODELE=MO,INFO=2,
@@ -75,7 +75,7 @@ CARNS_L=AFFE_CARA_ELEM(
                   VALE=(ALPHA,BETA,GAMMA,),),
 )
 
-MAT=DEFI_MATERIAU( ELAS=_F(E=1, NU=.3, RHO=1,),);
+MAT=DEFI_MATERIAU( ELAS=_F(E=1, NU=.3, RHO=1,),)
 
 AFMA=AFFE_MATERIAU(
    MAILLAGE=MA,
@@ -104,7 +104,7 @@ RDEPNS_G=MECA_STATIQUE(
 )
 RDEPNS_G=CALC_CHAMP(reuse =RDEPNS_G,
                  RESULTAT=RDEPNS_G,
-                 FORCE='REAC_NODA');
+                 FORCE='REAC_NODA')
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P1',
@@ -177,7 +177,7 @@ RDEPNS_L=MECA_STATIQUE(
 )
 RDEPNS_L=CALC_CHAMP(reuse =RDEPNS_L,
                  RESULTAT=RDEPNS_L,
-                 FORCE='REAC_NODA');
+                 FORCE='REAC_NODA')
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P1',
@@ -242,4 +242,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

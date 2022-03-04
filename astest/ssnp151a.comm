@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,16 +38,16 @@ delp=coep*delc
 #-----------------------------------------------------------
 # LECTURE DU MAILLAGE
 #-------------------------------------------------------------
-MAIL0=LIRE_MAILLAGE(FORMAT='MED');
+MAIL0=LIRE_MAILLAGE(FORMAT='MED')
 
 #-----------------------------------------------------------
 # TRANSFORME EN MAILLAGE QUADRATIQUE
 #-------------------------------------------------------------
-MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL0, LINE_QUAD = _F(TOUT='OUI'));
+MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL0, LINE_QUAD = _F(TOUT='OUI'))
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_FISSURE=_F(GROUP_MA='joint'));
+                   ORIE_FISSURE=_F(GROUP_MA='joint'))
 
 
 #-----------------------------------------------------------
@@ -60,11 +60,11 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
                      _F(GROUP_MA='joint',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='PLAN_INTERFACE'),
-             ));
+             ))
 
 # DEFINITION DU REPERE LOCAL A LA FISSURE
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
-                     MASSIF=( _F(GROUP_MA='joint',ANGL_REP=(90, 0 ,0))));
+                     MASSIF=( _F(GROUP_MA='joint',ANGL_REP=(90, 0 ,0))))
 
 
 #-----------------------------------------------------------
@@ -96,7 +96,7 @@ SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.0025,495.,
                            0.8,977.,
                            0.9,993.,
                            1.0,1008.,
-                           ),PROL_DROITE='LINEAIRE');
+                           ),PROL_DROITE='LINEAIRE')
 
 
 #-----------------------------------------------------------
@@ -111,19 +111,19 @@ MA_EPR=DEFI_MATERIAU(ELAS=_F(E=2.07E5,
                                     SIGM_C = sigc,
                                     COEF_EXTR = coee,
                                     COEF_PLAS = coep,
-                            ));
+                            ))
 
 #-----------------------------------------------------------
 # MODELISATION DU MATERIAU DE LA GOUPILLE
 #-------------------------------------------------------------
 MA_GOUPI=DEFI_MATERIAU(ELAS=_F(E=1E9,
-                     NU=0.3));
+                     NU=0.3))
 
 CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                  AFFE=(_F(GROUP_MA=('CT','joint'),
                          MATER=MA_EPR),
                        _F(GROUP_MA='goupi',
-                         MATER=MA_GOUPI)));
+                         MATER=MA_GOUPI)))
 
 #-----------------------------------------------------------
 # CONDITIONS AUX LIMITES DE CHARGEMENT
@@ -133,30 +133,30 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                                DY=4.0,
                                DX=0.0,
                                ),
-                ));
+                ))
 
 #-----------------------------------------------------------
 # CONDITION LIMITE DE SYMETRIE SUR LES ELEMENTS DE JOINT
 #-------------------------------------------------------------
-SYM=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=(_F(GROUP_MA='joint_b',DY=0.0)));
+SYM=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=(_F(GROUP_MA='joint_b',DY=0.0)))
 
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS DE CALCUL
 #-------------------------------------------------------------
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=40));
+                       INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=40))
 
 LINST=DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST=L_INST1),
                      ECHEC=_F(ACTION        = 'DECOUPE',
                               SUBD_METHODE  = 'MANUEL',
-                              SUBD_NIVEAU=10));
+                              SUBD_NIVEAU=10))
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS D'ARCHIVAGE
 #-------------------------------------------------------------
 LIS_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
-                        INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=40));
+                        INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=40))
 
 FCT = DEFI_FONCTION(
       NOM_PARA = 'INST',
@@ -190,18 +190,18 @@ UP=STAT_NON_LINE(MODELE=MO,
                  SOLVEUR    = _F(METHODE = 'MUMPS'),
                  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
                  ARCHIVAGE=_F(LIST_INST=LIS_ARCH),
-               );
+               )
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA='goupi'));
+                CREA_GROUP_NO=_F(GROUP_MA='goupi'))
 
 #-----------------------------------------------------------
 # CALCUL DE CHAMPS COMPLEMENTAIRES
 #-------------------------------------------------------------
 UP=CALC_CHAMP(reuse =UP,
              RESULTAT=UP,
-             FORCE='REAC_NODA');
+             FORCE='REAC_NODA')
 
 #-----------------------------------------------------------
 # FORCE APPLIQUEE SUR LA GOUPILLE
@@ -211,7 +211,7 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                RESULTAT=UP,
                                NOM_CHAM='REAC_NODA',
                                GROUP_NO='goupi',
-                               RESULTANTE='DY'));
+                               RESULTANTE='DY'))
 
 COEF = FORMULE(VALE='4*INST',
                NOM_PARA='INST',)
@@ -222,7 +222,7 @@ COEF = FORMULE(VALE='4*INST',
 FORCE=CALC_TABLE(TABLE=TFORCE,
                 ACTION=_F(OPERATION='OPER',
                            FORMULE=COEF,
-                           NOM_PARA='DEPLACE'));
+                           NOM_PARA='DEPLACE'))
 #-----------------------------------------------------------
 # TEST SUR LA REPONSE GLOBALE
 # ----------------------------------------------------------
@@ -263,7 +263,7 @@ TEST_TABLE(
 # ----------------------------------------------------------
 IMPR_TABLE(TABLE=FORCE,
            FORMAT='TABLEAU',
-           NOM_PARA=('DEPLACE','DY'));
+           NOM_PARA=('DEPLACE','DY'))
 
 
 FIN()

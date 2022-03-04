@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ ASSEMBLAGE(MODELE=modele,
            MATR_ASSE=(_F(MATRICE=CO('matrice_rigi'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('matrice_mass'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 
 modes_dyn=CALC_MODES(MATR_RIGI=matrice_rigi,
                      MATR_MASS=matrice_mass,
@@ -236,7 +236,7 @@ resu_corr=CREA_RESU(OPERATION='AFFE',
 
 # appel à POST_ROCHE
 
-                          
+
 resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
@@ -244,7 +244,7 @@ resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,   
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -289,7 +289,7 @@ resuPostRoche_S = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,                                  
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -309,7 +309,7 @@ resuPostRoche_SP = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,                                  
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -325,8 +325,8 @@ resuPostRoche_SP = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                     ),
                                   ),
                     )
-                    
-                    
+
+
 # 6- seisme inertiel + pression + poids propre (SPG)
 resuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
@@ -355,7 +355,7 @@ resuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                     ),
                                   ),
                     )
-                    
+
 # 7- seisme inertiel + deplacement (SD)
 resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
@@ -378,7 +378,7 @@ resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                  NUME_ORDRE=1,
                                  ),
                                 ),
-                    ) 
+                    )
 
 
 ##Importation de fichier resu format 'MED' sauve au prealable
@@ -389,7 +389,7 @@ poids_propre_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          # _F(NOM_RESU='poids_propre', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
                          _F(NOM_RESU='poids_propre', NOM_CHAM=('EFGE_ELNO'),),)
                          )
-                         
+
 deplacement_impose_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
@@ -398,30 +398,30 @@ deplacement_impose_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          )
 
 
-                       
+
 dilatation_thermique_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          # _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
                          _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('EFGE_ELNO',),),)
-                         )                         
+                         )
 
 resu_dyna_lu = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          _F(NOM_RESU='resu_dyna', NOM_CHAM=('EFGE_ELNO',),),)
-                          )       
+                          )
 
 resu_corr_lu = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
                          MODELE=modele, TOUT_ORDRE='OUI',
                          FORMAT_MED=(
                          _F(NOM_RESU='resu_corr', NOM_CHAM=('EFGE_ELNO',),),)
-                          ) 
+                          )
 
-                          
+
 # 2nd appel à POST_ROCHE
 
-                          
+
 resuLuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
@@ -429,7 +429,7 @@ resuLuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,   
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -474,7 +474,7 @@ resuLuPostRoche_S = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,                                  
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -494,7 +494,7 @@ resuLuPostRoche_SP = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,                                  
+                    CHAM_MATER=ch_mater,
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -510,8 +510,8 @@ resuLuPostRoche_SP = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                     ),
                                   ),
                     )
-                    
-                    
+
+
 # 6- seisme inertiel + pression + poids propre (SPG)
 resuLuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
@@ -540,7 +540,7 @@ resuLuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                     ),
                                   ),
                     )
-                    
+
 # 7- seisme inertiel + deplacement (SD)
 resuLuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
@@ -563,6 +563,6 @@ resuLuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                  NUME_ORDRE=1,
                                  ),
                                 ),
-                    ) 
-                          
+                    )
+
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,42 +21,42 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('RESSORT','MASS',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='DIS_T',),);
-omega0 = 18.8495559215;
+                       MODELISATION='DIS_T',),)
+omega0 = 18.8495559215
 
-KK = (omega0 * omega0);
+KK = (omega0 * omega0)
 
-AM = (0.001 * omega0);
+AM = (0.001 * omega0)
 
-HYHY = 0.001;
+HYHY = 0.001
 
-mass = 1.0;
+mass = 1.0
 
-omegex = (1.1 * omega0);
+omegex = (1.1 * omega0)
 
-F = 1.0;
+F = 1.0
 
 
 # SOLUTION ANALYTIQUE (CF : VIBRATION PROBLEMS IN ENGINEERING - WEAVER, TIMOSHENKO, YOUNG)
 
-omegaa = sqrt(((omega0 ** 2) - (AM ** 2)));
+omegaa = sqrt(((omega0 ** 2) - (AM ** 2)))
 
-NNN = (((F / mass) * ((omega0 ** 2) - (omegex ** 2))) / ((((omega0 ** 2) - (omegex ** 2)) ** 2) + ((4.0 * (AM ** 2)) * (omegex ** 2))));
+NNN = (((F / mass) * ((omega0 ** 2) - (omegex ** 2))) / ((((omega0 ** 2) - (omegex ** 2)) ** 2) + ((4.0 * (AM ** 2)) * (omegex ** 2))))
 
-MMM = (((((-2 * AM) * omegex) * F) / mass) / ((((omega0 ** 2) - (omegex ** 2)) ** 2) + ((4.0 * (AM ** 2)) * (omegex ** 2))));
+MMM = (((((-2 * AM) * omegex) * F) / mass) / ((((omega0 ** 2) - (omegex ** 2)) ** 2) + ((4.0 * (AM ** 2)) * (omegex ** 2))))
 
-C1 = -(MMM);
+C1 = -(MMM)
 
-C2 = (-(((omegex * NNN) + (AM * MMM))) / omegaa);
+C2 = (-(((omegex * NNN) + (AM * MMM))) / omegaa)
 
 solex = FORMULE(VALE='exp(-AM*INST)*(C1*cos(omegaa*INST)+C2*sin(omegaa*INST)) + MMM*cos(omegex*INST)+NNN*sin(omegex*INST)',
                 AM=AM,
@@ -90,29 +90,29 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MO,
                                     VALE=(AM,AM,AM,),),
                                  _F(CARA='M_T_D_N',
                                     GROUP_MA='MASS',
-                                    VALE=mass,),),);
+                                    VALE=mass,),),)
 
 MATE_BID=DEFI_MATERIAU(ELAS=_F(E=20000.,
                                NU=0.49999,
-                               RHO=7900.0,),);
+                               RHO=7900.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA='RESSORT',
-                            MATER=MATE_BID,),);
-pasdt = 1.e-4;
+                            MATER=MATE_BID,),)
+pasdt = 1.e-4
 
-tfin = 2.0;
+tfin = 2.0
 
-tpst1 = 0.5;
+tpst1 = 0.5
 
-tpst2 = 0.7;
+tpst2 = 0.7
 
-tpst3 = 1.0;
+tpst3 = 1.0
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=tfin,
-                                    PAS=pasdt,),);
+                                    PAS=pasdt,),)
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='A',
@@ -121,12 +121,12 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                                     DZ=0.,),
                                  _F(GROUP_NO='B',
                                     DX=0.,
-                                    DY=0.,),),);
+                                    DY=0.,),),)
 
 TRACTION=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_NODALE=_F(GROUP_NO='B',
-                                        FZ=F,),);
-OMEGA = (omega0 * 1.1);
+                                        FZ=F,),)
+OMEGA = (omega0 * 1.1)
 
 
 SINOMEGT = FORMULE(VALE='sin(OMEGA*INST)',
@@ -138,12 +138,12 @@ FSIN=CALC_FONC_INTERP(FONCTION=SINOMEGT,
                       NOM_RESU='ALPHA',
                       NOM_PARA='INST',
                       INTERPOL='LIN',
-                      TITRE='SINUS OMEGA T',);
+                      TITRE='SINUS OMEGA T',)
 
 ROLEX=CALC_FONC_INTERP(FONCTION=solex,
                        LIST_PARA=L_INST,
                        NOM_PARA='INST',
-                       INTERPOL='LIN',);
+                       INTERPOL='LIN',)
 
 ASSEMBLAGE(MODELE=MO,
                 CARA_ELEM=CARA_ELE,
@@ -157,11 +157,11 @@ ASSEMBLAGE(MODELE=MO,
                               OPTION='RIGI_MECA_HYST',),
                            _F(MATRICE=CO('AMOR'),
                               OPTION='AMOR_MECA',),),
-                VECT_ASSE=(_F(VECTEUR=CO("VRACTION"),OPTION='CHAR_MECA',CHARGE=TRACTION),),);
+                VECT_ASSE=(_F(VECTEUR=CO("VRACTION"),OPTION='CHAR_MECA',CHARGE=TRACTION),),)
 
 
 AMO2=COMB_MATR_ASSE(COMB_R=_F(MATR_ASSE=AMOR,
-                              COEF_R=2.,),);
+                              COEF_R=2.,),)
 
 # CALCUL DES MODES AVEC AMORTISSEMENT HYSTERETIQUE + VISQUEUX
 
@@ -177,7 +177,7 @@ MOSOREN=CALC_MODES(MATR_RIGI=RIGHYST,
                    )
 
 FRESOR=RECU_TABLE(CO=MOSOREN,
-                  NOM_PARA=('FREQ','AMOR_REDUIT',),);
+                  NOM_PARA=('FREQ','AMOR_REDUIT',),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=9.9999999999999995E-07,
@@ -208,7 +208,7 @@ MOLANCZ=CALC_MODES(MATR_RIGI=RIGI,
                    )
 
 FRELAN=RECU_TABLE(CO=MOLANCZ,
-                  NOM_PARA=('FREQ','AMOR_REDUIT',),);
+                  NOM_PARA=('FREQ','AMOR_REDUIT',),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=9.9999999999999995E-07,
@@ -245,7 +245,7 @@ PROJ_BASE(BASE=MODES,
                                 _F(MATRICE=CO('PAMO2'),
                                    MATR_ASSE=AMO2,),),
                 VECT_ASSE_GENE=_F(VECTEUR=CO('PRACTION'),
-                                  VECT_ASSE=VRACTION, TYPE_VECT='FORC'),);
+                                  VECT_ASSE=VRACTION, TYPE_VECT='FORC'),)
 
 
 # TRANSITOIRE - METHODE EULER
@@ -260,12 +260,12 @@ TRANGE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        EXCIT=_F(VECT_ASSE_GENE=PRACTION,
                                 FONC_MULT=FSIN,),
                        ARCHIVAGE=_F(INST=(tpst1, tpst2, tpst3),PAS_ARCH=10),
-                       );
+                       )
 
 BTRANGE=RECU_FONCTION(RESU_GENE=TRANGE,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DZ',
-                      GROUP_NO='B',);
+                      GROUP_NO='B',)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.01078498050573,
                          VALE_REFE=solex(tpst1,),
@@ -294,12 +294,12 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.01078498050573,
 # TEST DE REST_GENE_PHYS
 
 TRANSI=REST_GENE_PHYS(RESU_GENE=TRANGE,
-                      NOM_CHAM='DEPL',);
+                      NOM_CHAM='DEPL',)
 
 BTRANSI=RECU_FONCTION(RESULTAT=TRANSI,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DZ',
-                      GROUP_NO='B',);
+                      GROUP_NO='B',)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.01078498050573,
                          VALE_REFE=solex(tpst1,),
@@ -337,12 +337,12 @@ NEWTRANG=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          EXCIT=_F(VECT_ASSE_GENE=PRACTION,
                                   FONC_MULT=FSIN,),
                          ARCHIVAGE=_F(INST=(tpst1, tpst2, tpst3),PAS_ARCH=10),
-                         );
+                         )
 
 BNEWTRAN=RECU_FONCTION(RESU_GENE=NEWTRANG,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DZ',
-                       GROUP_NO='B',);
+                       GROUP_NO='B',)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.01079639373628,
                          VALE_REFE=solex(tpst1,),
@@ -385,7 +385,7 @@ DEVTRANG=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 BDEVTRAN=RECU_FONCTION(RESU_GENE=DEVTRANG,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DZ',
-                       GROUP_NO='B',);
+                       GROUP_NO='B',)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.01078498804642,
                          VALE_REFE=solex(tpst1,),
@@ -411,4 +411,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.01078498804642,
                       ),
               )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,16 @@ M=LIRE_MAILLAGE(FORMAT='MED',)
 #
 M=MODI_MAILLAGE(reuse =M, MAILLAGE=M,INFO=2,
                        ORIE_PEAU=(_F(GROUP_MA_PEAU='SLAT2',),),
-                       );
+                       )
 
-MO=AFFE_MODELE(    MAILLAGE=M,    
+MO=AFFE_MODELE(    MAILLAGE=M,
        AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
 
 MAT=DEFI_MATERIAU(
         ELAS=_F(  E = 210000.,  NU = 0.3,  RHO = 7.8E-6) )
 
 CM=AFFE_MATERIAU(    MAILLAGE=M,
-       AFFE=_F(  TOUT = 'OUI', MATER = MAT),);
+       AFFE=_F(  TOUT = 'OUI', MATER = MAT),)
 
 #
 # CONDITIONS AUX LIMITES ET CHARGEMENTS
@@ -44,11 +44,11 @@ CH=AFFE_CHAR_MECA(    MODELE=MO,
                 _F(  GROUP_NO = 'NHAUT',  DY = 0.),
                 _F(  GROUP_MA = 'SLAT1',  DZ = 0.),),
        FACE_IMPO = _F(  GROUP_MA = 'SLAT2',  DNOR = 0.),
-                );
+                )
 
 ROTA=AFFE_CHAR_MECA(MODELE=MO,
                     ROTATION= _F(VITESSE=0.5,
-                                 AXE=(0.0,1.0,0.0,),),);
+                                 AXE=(0.0,1.0,0.0,),),)
 #
 # CALCUL DES CONTRAINTES STATIQUES
 #
@@ -56,7 +56,7 @@ RES_STAT=MECA_STATIQUE(MODELE=MO,
                CHAM_MATER=CM,SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
                   EXCIT=(_F(CHARGE = CH,),
                          _F(CHARGE = ROTA, ) ),
-                        );
+                        )
 
 RES_STAT=CALC_CHAMP(reuse=RES_STAT,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'),RESULTAT=RES_STAT)
 
@@ -261,7 +261,7 @@ TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N111',
 TDMG12=POST_RELEVE_T(ACTION=_F(     INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     CHAM_GD=D_MOD12,
                                     TOUT_CMP='OUI',
-                                    OPERATION='EXTREMA',) ,) ;
+                                    OPERATION='EXTREMA',) ,)
 
 TEST_TABLE(
            VALE_CALC=6.6633585061017,
@@ -298,7 +298,7 @@ TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N111',
 TDMG12b=POST_RELEVE_T(ACTION=_F(    INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     CHAM_GD=D_MOD12b,
                                     TOUT_CMP='OUI',
-                                    OPERATION='EXTREMA',) ,) ;
+                                    OPERATION='EXTREMA',) ,)
 
 TEST_TABLE(
            VALE_CALC=8.7357950393493,
@@ -308,4 +308,4 @@ TEST_TABLE(
                      VALE_K='MIN',),
            )
 
-FIN();
+FIN()

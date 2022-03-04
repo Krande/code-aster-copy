@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ MODE=AFFE_MODELE(MAILLAGE = MAIL,
 
 # MODELISATION DU MATERIAU 20 MnMoNi 5-5  (MAQUETTE)
 
-f_0 = 2e-4;
+f_0 = 2e-4
 for i in range(nbc):
     f0 = f_0 + i*f_0
     ACIER[i] = DEFI_MATERIAU(ELAS       = _F(E=190000, NU=0.3),
@@ -100,7 +100,7 @@ for i in range(nbc):
                                              NUCL_GAUSS_PORO = 0.0,
                                              NUCL_GAUSS_PLAS = 0.6,
                                              NUCL_GAUSS_DEV = 0.01,
-                             ), 
+                             ),
                      NON_LOCAL = _F(C_GRAD_VARI = 1,
                             PENA_LAGR   =5000,),
                                )

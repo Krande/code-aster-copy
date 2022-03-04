@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,18 +37,18 @@ FEMLin=AFFE_MODELE(MAILLAGE=MeshLin,
                             MODELISATION='DKT',),
                          _F(GROUP_MA='BASEN',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 # Caracteristiques de Materiaux
 beton=DEFI_MATERIAU(ELAS=_F(E=3.0E10,
                             NU=0.15,
-                            RHO=2500.0,),);
+                            RHO=2500.0,),)
 
 # Association des materiaux au modele
 Mat=AFFE_MATERIAU(MAILLAGE=MeshLin,
                   MODELE=FEMLin,
                   AFFE=_F(TOUT='OUI',
-                          MATER=beton,),);
+                          MATER=beton,),)
 
 # Proprietes autres (notamment raideur de sol)
 AFFECARA=AFFE_CARA_ELEM(MODELE=FEMLin,
@@ -68,7 +68,7 @@ AFFECARA=AFFE_CARA_ELEM(MODELE=FEMLin,
                                         COEF_GROUP=1.0,
                                         CARA='K_T_D_N',
                                         VALE=(1250E6,1250E6,1250E6,),
-                                        COOR_CENTRE=(0.0,0.0,0.0,),),);
+                                        COOR_CENTRE=(0.0,0.0,0.0,),),)
 # Calcul de la raideur
 #   raideur unitaire = 50E6 N/m3
 #   surface = 10*10
@@ -78,7 +78,7 @@ AFFECARA=AFFE_CARA_ELEM(MODELE=FEMLin,
 # gradient de Pression
 eauPlus=DEFI_FONCTION(NOM_PARA='Z',VALE=(0.0,-49050.0,
                             5.0,0.0,
-                            ),);
+                            ),)
 
 # definition de la gravite
 Grav=AFFE_CHAR_MECA(MODELE=FEMLin,
@@ -87,21 +87,21 @@ Grav=AFFE_CHAR_MECA(MODELE=FEMLin,
 # definition de pression verticale
 pressRep=AFFE_CHAR_MECA(MODELE=FEMLin,
                         PRES_REP=_F(GROUP_MA='BASE',
-                                    PRES=49050.0,),);
+                                    PRES=49050.0,),)
 # definition de pression verticale
 pressXY=AFFE_CHAR_MECA_F(MODELE=FEMLin,
                         FORCE_COQUE=_F(GROUP_MA=('COTEX','COTEY'),
-                                      PRES=eauPlus,),);
+                                      PRES=eauPlus,),)
 # definition de forces nodales sur contour haut
 surchrep=AFFE_CHAR_MECA(MODELE=FEMLin,
                         FORCE_ARETE=_F(GROUP_MA='HAUT',
-                                        FZ=-20E3,),);
+                                        FZ=-20E3,),)
 # definition des symétries
 sym=AFFE_CHAR_MECA(MODELE=FEMLin,
                         DDL_IMPO=(_F(GROUP_NO='SYMX',
                                         DY=0.0,),
                                   _F(GROUP_NO='SYMY',
-                                        DX=0.0,),),);
+                                        DX=0.0,),),)
 
 # Calcul des efforts :
 
@@ -112,7 +112,7 @@ Solution=MECA_STATIQUE(MODELE=FEMLin,
                               _F(CHARGE=sym,),
                               _F(CHARGE=pressRep,),
                               _F(CHARGE=Grav,),
-                              _F(CHARGE=surchrep,),),);
+                              _F(CHARGE=surchrep,),),)
 
 # calculs elementaires, en complement de resultats
 Solution=CALC_CHAMP(reuse=Solution,RESULTAT=Solution,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
@@ -129,7 +129,7 @@ Solution = CALC_FERRAILLAGE( reuse = Solution, RESULTAT = Solution,
                                          ALPHA_E = 15.,
                                          SIGS_ELS = 2.8E8,
                                          SIGC_ELS = 3.5E7,
-                                         UNITE_CONTRAINTE = 'Pa'),),);
+                                         UNITE_CONTRAINTE = 'Pa'),),)
 
 IMPR_RESU(FORMAT='MED', UNITE = 80,
                 RESU=(_F(RESULTAT=Solution),),)

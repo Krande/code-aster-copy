@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -247,30 +247,30 @@ MELAS=CALC_FLUI_STRU(
                                DEFORMEE = 'NON')
                            )
 
-TT = RECU_TABLE ( CO= MELAS , NOM_TABLE='MATR_GENE' ) ;
+TT = RECU_TABLE ( CO= MELAS , NOM_TABLE='MATR_GENE' )
 
-IMPR_TABLE ( TABLE = TT ) ;
+IMPR_TABLE ( TABLE = TT )
 
 MG = EXTR_TABLE ( TYPE_RESU = 'MATR_ASSE_GENE_R',
                       TABLE = TT,
                    NOM_PARA = 'MATR_MASS',
                      FILTRE = _F( NOM_PARA = 'NUME_VITE',
                                     VALE_I = 2  ),
-                ) ;
+                )
 
 AG = EXTR_TABLE ( TYPE_RESU = 'MATR_ASSE_GENE_R',
                       TABLE = TT,
                    NOM_PARA = 'MATR_AMOR',
                      FILTRE = _F( NOM_PARA = 'NUME_VITE',
                                     VALE_I = 2  ),
-                ) ;
+                )
 
 RG = EXTR_TABLE ( TYPE_RESU = 'MATR_ASSE_GENE_R',
                       TABLE = TT,
                    NOM_PARA = 'MATR_RIGI',
                      FILTRE = _F( NOM_PARA = 'NUME_VITE',
                                     VALE_I = 2  ),
-                ) ;
+                )
 
 #-------------------------------
 # MODIFICATION DE LA BASE MODALE
@@ -337,7 +337,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.16973003569358,
 #
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.16973003569358,
-                        
+
                         VALE_PARA=4.0,
                         FONCTION=AMOR_1,
                         ),
@@ -398,7 +398,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.16973003569292,
 #
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.16973003569292,
-                        
+
                         VALE_PARA=4.0,
                         FONCTION=AMOR_2,
                         ),

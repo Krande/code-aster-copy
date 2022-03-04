@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ KINT=DEFI_CONSTANTE(    VALE=1.E-18)
 
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1.6E8,
-                                 PAS=1.E6,),);
+                                 PAS=1.E6,),)
 
 SL = FORMULE(VALE=' 0.99*(1.-PCAP*4.495E-6)',
              NOM_PARA='PCAP',)
@@ -48,7 +48,7 @@ SATU=CALC_FONC_INTERP(FONCTION=SL,
                        NOM_PARA='PCAP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      INFO=2,);
+                      INFO=2,)
 
 DSL = FORMULE(VALE=' -4.495E-6*0.99',
               NOM_PARA='PCAP',)
@@ -58,18 +58,18 @@ DSATU=CALC_FONC_INTERP(FONCTION=DSL,
                        NOM_PARA='PCAP',
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',
-                       INFO=2,);
+                       INFO=2,)
 
 # MAILLAGE + MODELE
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER", );
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER", )
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                 MAILLAGE=MAILLAGE,
                 CREA_GROUP_NO=(_F(GROUP_MA='AB',),
                                _F(GROUP_MA='BC',),
                                _F(GROUP_MA='CD',),
-                               _F(GROUP_MA='DA',),),);
+                               _F(GROUP_MA='DA',),),)
 
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
@@ -78,7 +78,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                   TOUT='OUI',),),
                 CREA_GROUP_NO=(_F(NOM='ROCHES',
                                   CRIT_NOEUD='SOMMET',
-                                  GROUP_MA='ROCHE',),),);
+                                  GROUP_MA='ROCHE',),),)
 
 MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
                              AFFE=_F(  TOUT = 'OUI',
@@ -213,7 +213,7 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                           _F(GROUP_NO='ROCHES',
                              NOM_CMP='PRE2',
                               VALE=0.,
-                              ),    ),);
+                              ),    ),)
 
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
@@ -236,7 +236,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                             0.0,
                             0.0,0.0,0.0,0.0,
                            -200.,0.0,0.0,0.0,0.0,0.0,
-                            0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
+                            0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),)
 
 # PREMIER MOUILLAGE
 
@@ -453,7 +453,7 @@ U1=CALC_CHAMP(reuse =U1,
                RESULTAT=U1,
                PRECISION = 1.E-10,
 
-               CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU');
+               CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU')
 
 
 
@@ -565,7 +565,7 @@ U3=CALC_CHAMP(reuse =U3,
                RESULTAT=U3,
                PRECISION = 1.E-10,
 
-               CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU');
+               CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU')
 
 # PREMIER TEST AU PREMIER POINT D ARRIVEE
 
@@ -706,7 +706,7 @@ U4=CALC_CHAMP(reuse =U4,
                RESULTAT=U4,
                PRECISION = 1.E-10,
 
-               CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU');
+               CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU')
 
 # PREMIER TEST AU DEUXIEME POINT D ARRIVEE
 
@@ -793,4 +793,4 @@ TEST_RESU(RESU=(_F(INST=24.0,
                 ),
           )
 
-FIN () ;
+FIN ()

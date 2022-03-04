@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -450,7 +450,7 @@ MASSX1=POST_ELEM(    MODELE=MO,
                                   _F(  GROUP_MA = ('E101', 'E102', 'E103'),)),
                    )
 
-IMPR_TABLE( TABLE = MASSX1, INFO = 2 ) 
+IMPR_TABLE( TABLE = MASSX1, INFO = 2 )
 
 IMPR_TABLE( TABLE = MASSX1, INFO = 2,
             FILTRE=(_F( NOM_PARA = 'LIEU',

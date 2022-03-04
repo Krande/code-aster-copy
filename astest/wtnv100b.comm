@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -193,7 +193,7 @@ U2=STAT_NON_LINE(
 U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
 
 
-#FIN();
+#FIN()
 
 
 
@@ -204,7 +204,7 @@ U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESUL
 #    TEST DES RESULTATS : COMPARAISON AVEC SOLUTION ANALYTIQUE
 #***********************************************************************
 
-#POURSUITE();
+#POURSUITE()
 
 
 U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,NUME_ORDRE=(5,10,20,40,60,100),DEFORMATION=('EPSI_ELNO'))

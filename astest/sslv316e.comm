@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: samuel.geniaut at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),)
 
 # ON IGNORE L'ALARME XFEM2_94 PARCE QUE MEME SI DANS LE CAS OU ELLE EST
 # EMISE ON PEUT OBTENIR DES VALEURS DE KI, KII, KIII ET BETA QUI NE SONT PAS
@@ -32,11 +32,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),);
 
 nbcalc = 4
 
-MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
+MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED')
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA=('VOL','SURFINF','LIG1','LIG5'),),);
+                    CREA_GROUP_NO=_F(GROUP_MA=('VOL','SURFINF','LIG1','LIG5'),),)
 
 
 #----------------------------------------------
@@ -50,12 +50,12 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
                                MODELISATION='3D',),
                             _F(GROUP_MA=('SURFINF','SURFSUP',),
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='3D',),),);
+                               MODELISATION='3D',),),)
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
-                       );
+                       )
 
 #----------------------------------------------
 #                   MATERIAU
@@ -64,23 +64,23 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELE,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------
 #              GRILLE AUXILIAIRE
 #----------------------------------------------
 
 MaiGril=LIRE_MAILLAGE(FORMAT='MED', UNITE=41,
-                      INFO_MED=1,);
+                      INFO_MED=1,)
 
-Grille=DEFI_GRILLE(MAILLAGE=MaiGril);
+Grille=DEFI_GRILLE(MAILLAGE=MaiGril)
 
 #----------------------------------------------
 #              FISSURE INITIALE
@@ -95,7 +95,7 @@ FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                                  PFON      =(0. , 2. ,9.),
                                  NORMALE   =(0. , 0 , 1.),
                                  DTAN      =(0. , 1. , 0.)),
-                       );
+                       )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -133,26 +133,26 @@ RS = 0.8
 
 for i in range(nbcalc) :
 
-   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS[i],INFO=1,);
+   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS[i],INFO=1,)
 
    CH[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
                         PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
                         DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
                                   _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
-                                  _F(GROUP_NO='P4',DY=0.0,),),);
+                                  _F(GROUP_NO='P4',DY=0.0,),),)
 
    RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(
                                 _F(CHARGE=CH[i],),),
-                         INFO=1,);
+                         INFO=1,)
 
    SIF[i]=CALC_G_XFEM        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i],
                                    R_INF=RI,
                                    R_SUP=RS,),
-                         LISSAGE=_F( DEGRE=0,),);
+                         LISSAGE=_F( DEGRE=0,),)
 
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
    SIF1[i] = CALC_TABLE(TABLE=SIF[i],
@@ -165,7 +165,7 @@ for i in range(nbcalc) :
                              FORMULE=ZERO,
                              NOM_PARA='BETA',),
                           ),
-                        );
+                        )
 
    if ( i != (nbcalc-1) ) :
       FISS[i+1] = CO('FISS_%d'%(i+1))
@@ -185,7 +185,7 @@ for i in range(nbcalc) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
-                 INFO=0,);
+                 INFO=0,)
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -218,12 +218,12 @@ for i in range(1,nbcalc) :
     CHLN[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                      OPERATION='EXTR',
                      NOM_CHAM='LNNO',
-                     FISSURE=FISS[i],);
+                     FISSURE=FISS[i],)
 
     CHLT[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                      OPERATION='EXTR',
                      NOM_CHAM='LTNO',
-                     FISSURE=FISS[i],);
+                     FISSURE=FISS[i],)
 
     TABLSN[i] = MACR_LIGN_COUPE( CHAM_GD=CHLN[i], MODELE=MODELE,
                  LIGN_COUPE = _F(TYPE='SEGMENT', COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),
@@ -352,4 +352,4 @@ TEST_TABLE(TABLE=TABLST[3],
            VALE_CALC=0.001989512636851501,
            VALE_REFE=0.0  )
 
-FIN();
+FIN()

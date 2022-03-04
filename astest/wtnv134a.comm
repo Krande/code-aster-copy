@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 #          ===============================================
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
 
 from math import *
 
@@ -31,21 +31,21 @@ poro = 0.425 ;  # porosite
 rhol = 1000. ;  # masse volumique du fluide
 kin  = 1.E-8 ;  # permeabilite intrinsinque
 k_w  = 1.E10 ;  # module de compressibilite de l'eau
-#UNSURK = 1/k_w ;
-UNSURK = 1.E-12 ;
-visco  = 0.001   ;
-dvisco = 0.0     ;
-k_int    = DEFI_CONSTANTE(VALE=kin)   ;
-viscoliq = DEFI_CONSTANTE(VALE=visco) ;
-dviscoli = DEFI_CONSTANTE(VALE=dvisco);
+#UNSURK = 1/k_w
+UNSURK = 1.E-12
+visco  = 0.001
+dvisco = 0.0
+k_int    = DEFI_CONSTANTE(VALE=kin)
+viscoliq = DEFI_CONSTANTE(VALE=visco)
+dviscoli = DEFI_CONSTANTE(VALE=dvisco)
 
 
 # modules mecaniques [Pa]
-K = 516.2E6 ;
-G = 238.2E6 ;
+K = 516.2E6
+G = 238.2E6
 # =>
-YOUNG   = 9.*K*G /(3.*K+G)        ;
-POISSON = (3.*K-2.*G) /(6.*K+2.*G);
+YOUNG   = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
 
 degr  = pi /180.
 M     = sin(degr*31.)
@@ -56,8 +56,8 @@ kapa  = lambd /2.
 print('young=',YOUNG,' /// nu=',POISSON)
 
 # pression de preconsolidation [en Pa]
-PCR = -1.E6 ;
-PCO =  3.E4 ;
+PCR = -1.E6
+PCO =  3.E4
 
 # cohesion
 r_ela =0.005
@@ -71,13 +71,13 @@ print('cohesion =',c)
 #*******************************************************************
 #    MAILLAGE + MODELE
 #*******************************************************************
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', );
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(TOUT         = 'OUI',
                            PHENOMENE    = 'MECANIQUE',
                            MODELISATION = '3D_HM'),
-                           INFO         = 1);
+                           INFO         = 1)
 
 MAILLAGE=MODI_MAILLAGE(reuse    = MAILLAGE,
                        MAILLAGE = MAILLAGE,
@@ -85,14 +85,14 @@ MAILLAGE=MODI_MAILLAGE(reuse    = MAILLAGE,
                             _F(GROUP_MA_PEAU=('DEVANT','DROIT','ARRIERE',
                                          'GAUCHE','BAS','HAUT','APPUI',
                                          'COTE')),
-                       INFO=1);
+                       INFO=1)
 
 
 #*******************************************************************
 #    INCREMENTS DE TEMPS
 #*******************************************************************
 TEMPS0=DEFI_LIST_REEL(DEBUT=-1.,
-                      INTERVALLE=(_F(JUSQU_A =  0., NOMBRE = 1),));
+                      INTERVALLE=(_F(JUSQU_A =  0., NOMBRE = 1),))
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = 10., NOMBRE = 10),
@@ -114,7 +114,7 @@ TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A = 130.,NOMBRE = 50),
                                   _F(JUSQU_A = 140.,NOMBRE = 50),
                                   _F(JUSQU_A = 150.,NOMBRE = 50),
-                                  _F(JUSQU_A = 160.,NOMBRE = 50),));
+                                  _F(JUSQU_A = 160.,NOMBRE = 50),))
 
 #*******************************************************************
 #    MATERIAU : SOL
@@ -132,29 +132,29 @@ SOL0=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                    THM_LIQU=_F(RHO         = rhol,
                                UN_SUR_K    = UNSURK,
                                VISC        = viscoliq,
-                               D_VISC_TEMP = dviscoli));
+                               D_VISC_TEMP = dviscoli))
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL0));
+                    AFFE=_F(TOUT='OUI', MATER=SOL0))
 
 #****************************************************************
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
 #****************************************************************
 CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA='COTE',
-                                   PRES = 1.));
+                                   PRES = 1.))
 
 CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA='APPUI',
-                                   PRES = 1.));
+                                   PRES = 1.))
 
 CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PRES_REP=_F(GROUP_MA='APPUI',PRES = 1.));
+                       PRES_REP=_F(GROUP_MA='APPUI',PRES = 1.))
 
 DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
                       FACE_IMPO=(_F(GROUP_MA='BAS',   DZ = 0.),
                                  _F(GROUP_MA='GAUCHE',DX = 0.),
-                                 _F(GROUP_MA='DEVANT',DY = 0.)));
+                                 _F(GROUP_MA='DEVANT',DY = 0.)))
 
 
 #*****************************************************************
@@ -163,13 +163,13 @@ DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
 #                           (realise par defaut)
 #*****************************************************************
 PRE0=AFFE_CHAR_MECA(MODELE=MODELE,
-                    DDL_IMPO=_F(GROUP_MA='ECHAN',PRE1 = 0.));
+                    DDL_IMPO=_F(GROUP_MA='ECHAN',PRE1 = 0.))
 
 
 COEF0=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-1.0, 0.0,
-                           0.0, PCO, ));
+                           0.0, PCO, ))
 
 # ---- premier chargement isotrope en elastique jusqu'a 50kPa
 U0M=STAT_NON_LINE(MODELE    = MODELE,
@@ -185,7 +185,7 @@ U0M=STAT_NON_LINE(MODELE    = MODELE,
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 50),
                  INCREMENT=_F(LIST_INST = TEMPS0,
-                              INST_FIN  = 0.));
+                              INST_FIN  = 0.))
 
 
 SIG0=CREA_CHAMP(INFO=1,
@@ -193,7 +193,7 @@ SIG0=CREA_CHAMP(INFO=1,
                 OPERATION='EXTR',
                 RESULTAT=U0M,
                 NOM_CHAM='SIEF_ELGA',
-                INST=0.0,);
+                INST=0.0,)
 
 
 #***********************************************************************
@@ -232,15 +232,15 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                    THM_LIQU=_F(RHO         = rhol,
                                UN_SUR_K    = UNSURK,
                                VISC        = viscoliq,
-                               D_VISC_TEMP = dviscoli));
+                               D_VISC_TEMP = dviscoli))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL));
+                    AFFE=_F(TOUT='OUI', MATER=SOL))
 
 COEF1=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, PCO,
-                          10.0, PCO,));
+                          10.0, PCO,))
 
 COEF3=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
@@ -260,7 +260,7 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
                           130.0, -15000.,
                           140.0, 15000,
                           150.0, -15000,
-                          160.0, 15000,));
+                          160.0, 15000,))
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS1 ),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -290,11 +290,11 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  ARCHIVAGE=_F(LIST_INST    = TEMPS1,),
                  INCREMENT=_F(LIST_INST    = DEFLIST,
                               INST_INIT    = 0.0,
-                              INST_FIN     = 55.0),);
+                              INST_FIN     = 55.0),)
 
 
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U1)
-U1=CALC_CHAMP(reuse= U1, CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU',VARI_INTERNE='VARI_NOEU', RESULTAT= U1);
+U1=CALC_CHAMP(reuse= U1, CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU',VARI_INTERNE='VARI_NOEU', RESULTAT= U1)
 
 
 #-------------------------------------------
@@ -315,7 +315,7 @@ TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIGM_NOEU',
                                 RESULTAT = U1,
                                 NOM_CHAM = 'SIGM_NOEU',
                                 INVARIANT = 'OUI',
-                                OPERATION= 'EXTRACTION'));
+                                OPERATION= 'EXTRACTION'))
 
 TAB_VAR=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU',
                                 GROUP_NO = 'C',
@@ -323,10 +323,10 @@ TAB_VAR=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU',
                                 NOM_CHAM = 'VARI_NOEU',
                                 NOM_CMP  = ('V1','V2','V3','V4','V5','V6',
                                             'V7','V8','V23'),
-                                OPERATION= 'EXTRACTION'));
+                                OPERATION= 'EXTRACTION'))
 
-#IMPR_TABLE(TABLE=TAB_SIG);
-#IMPR_TABLE(TABLE=TAB_VAR);
+#IMPR_TABLE(TABLE=TAB_SIG)
+#IMPR_TABLE(TABLE=TAB_VAR)
 
 # TEST SUR LA PRESSION ISOTROPE EFFECTIVE PAR RAPPORT AUX REFERENCES LAWYER
 TEST_TABLE(CRITERE='RELATIF',
@@ -630,10 +630,10 @@ SOL1=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                    THM_LIQU=_F(RHO         = rhol,
                                UN_SUR_K    = UNSURK,
                                VISC        = viscoliq,
-                               D_VISC_TEMP = dviscoli));
+                               D_VISC_TEMP = dviscoli))
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL1));
+                    AFFE=_F(TOUT='OUI', MATER=SOL1))
 
 inst_init_1=55.
 inst_fin_1 =67.
@@ -660,7 +660,7 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                  ARCHIVAGE=_F(LIST_INST    = TEMPS1,),
                  INCREMENT=_F(LIST_INST    = DEFLIST,
                               INST_INIT    = inst_init_1,
-                              INST_FIN     = inst_fin_1),);
+                              INST_FIN     = inst_fin_1),)
 
 
 #-------------------------
@@ -671,20 +671,20 @@ U2=CALC_CHAMP(reuse=U2,
               CRITERES=('SIEQ_ELGA','SIEQ_ELNO','EPEQ_ELGA','EPEQ_ELNO'),
               VARI_INTERNE=('VARI_ELNO'),
               DEFORMATION=('EPSI_ELNO'),
-              RESULTAT=U2,);
+              RESULTAT=U2,)
 
 
 U2=CALC_CHAMP(reuse      = U2,
 
            CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU',VARI_INTERNE='VARI_NOEU',
-           RESULTAT   = U2);
+           RESULTAT   = U2)
 
 TAB_SIG2=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIGM_NOEU',
                                  GROUP_NO = 'C',
                                  RESULTAT = U2,
                                  NOM_CHAM = 'SIGM_NOEU',
                                  TOUT_CMP = 'OUI',
-                                 OPERATION= 'EXTRACTION'));
+                                 OPERATION= 'EXTRACTION'))
 
 SIGMA_N = FORMULE(VALE='0.5*(SIXX+SIZZ)',
                   NOM_PARA=['SIXX', 'SIZZ'],)
@@ -696,7 +696,7 @@ TAB_EPS2=POST_RELEVE_T(ACTION=_F(INTITULE = 'EPSI_NOEU',
                                  RESULTAT = U2,
                                  NOM_CHAM = 'EPSI_NOEU',
                                  TOUT_CMP = 'OUI',
-                                 OPERATION= 'EXTRACTION'));
+                                 OPERATION= 'EXTRACTION'))
 
 TAB_SIG2=CALC_TABLE(reuse=TAB_SIG2,
                     TABLE=TAB_SIG2,
@@ -705,7 +705,7 @@ TAB_SIG2=CALC_TABLE(reuse=TAB_SIG2,
                                NOM_PARA ='SIGMA_N',),
                             _F(OPERATION='OPER',
                                FORMULE  =SIGMA_D,
-                               NOM_PARA ='SIGMA_D',),),);
+                               NOM_PARA ='SIGMA_D',),),)
 
 TAB_VAR2=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU',
                                  GROUP_NO = 'C',
@@ -713,11 +713,11 @@ TAB_VAR2=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU',
                                  NOM_CHAM = 'VARI_NOEU',
                                  NOM_CMP  = ('V1','V2','V3','V4','V5','V6',
                                             'V7','V8','V23'),
-                                 OPERATION= 'EXTRACTION'));
+                                 OPERATION= 'EXTRACTION'))
 
-IMPR_TABLE(TABLE=TAB_SIG2);
-IMPR_TABLE(TABLE=TAB_EPS2);
-IMPR_TABLE(TABLE=TAB_VAR2);
+IMPR_TABLE(TABLE=TAB_SIG2)
+IMPR_TABLE(TABLE=TAB_EPS2)
+IMPR_TABLE(TABLE=TAB_VAR2)
 
 # TEST DU DEVIATEUR DES CONTRAINTES PAR RAPPORT
 # A UN CALCUL LAWYER (GEFDYN)
@@ -948,4 +948,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=67.0,),
            )
 
-FIN();
+FIN()

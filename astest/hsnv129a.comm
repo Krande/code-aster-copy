@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
@@ -146,7 +146,7 @@ U=STAT_NON_LINE(MODELE    = MOMECA,
                    POSTTRAITEMENTS="MINI",
                 ),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                               ITER_GLOB_MAXI=20,),);
+                               ITER_GLOB_MAXI=20,),)
 
 #  POSTTRAITEMENT
 #-------------------------------------------------------
@@ -160,14 +160,14 @@ VARI=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             RESULTAT=U,
                             NOM_CHAM='VARI_ELNO',
                             NOM_CMP='V1',
-                            ),);
+                            ),)
 CONTR=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='contrainte',
                             GROUP_NO='N3',
                             RESULTAT=U,
                             NOM_CHAM='SIGM_ELNO',
                             NOM_CMP='SIZZ',
-                            ),);
+                            ),)
 TEST_RESU(RESU=(_F(INST=50.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
@@ -303,4 +303,4 @@ TEST_RESU(RESU=(_F(INST=50.0,
                 ),
           )
 
-FIN();
+FIN()

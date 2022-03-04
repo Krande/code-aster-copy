@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
-                   );
+                   )
 
 
 
@@ -261,13 +261,13 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=1,
-                                    NOMBRE=1,),),);
+                                    NOMBRE=1,),),)
 
 
 COEF=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 RESUNL0=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CHMAT,
@@ -277,7 +277,7 @@ RESUNL0=STAT_NON_LINE(MODELE=MO,
                      COMPORTEMENT=(_F(RELATION='ELAS',
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,),),
-                                     );
+                                     )
 
 RESUNL0=CALC_CHAMP(reuse=RESUNL0,RESULTAT=RESUNL0,CONTRAINTE=('SIGM_ELNO'))
 
@@ -503,7 +503,7 @@ MAT2B=DEFI_MATERIAU( ELAS_ORTH=_F(  E_L = 5.0E+11,
 
                     MONO_CINE1=_F(D=0.,),
 
-                                  );
+                                  )
 
 
 CHMAT2B=AFFE_MATERIAU(  MAILLAGE=MA,
@@ -525,7 +525,7 @@ MAT2=DEFI_MATERIAU( MATER=MAT,
 
                     MONO_CINE1=_F(D=0.,),
 
-                                  );
+                                  )
 
 
 CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
@@ -540,7 +540,7 @@ COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS_ORTH',
                                     FAMI_SYST_GLIS='UNIAXIAL',
-                                    ),),);
+                                    ),),)
 RESUMM0=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CHMAT2,
                      EXCIT=_F(CHARGE=CH,
@@ -550,7 +550,7 @@ RESUMM0=STAT_NON_LINE(MODELE=MO,
                                    COMPOR=COMPOR2,
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,),),
-                                     );
+                                     )
 
 RESUMM0=CALC_CHAMP(reuse=RESUMM0,RESULTAT=RESUMM0,CONTRAINTE=('SIGM_ELNO'))
 
@@ -759,14 +759,14 @@ DEFI_GROUP( reuse=MA,MAILLAGE=MA,
 
 ORIEN=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=_F(GROUP_MA='TOUT',
-                               ANGL_REP=(30.0,50.0,70.0,),),);
+                               ANGL_REP=(30.0,50.0,70.0,),),)
 
 
 RESUEL1=MECA_STATIQUE(MODELE=MO,
                     CARA_ELEM=ORIEN,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
-                   );
+                   )
 
 RESUEL1=CALC_CHAMP(reuse=RESUEL1,RESULTAT=RESUEL1,CONTRAINTE=('SIGM_ELNO'))
 
@@ -928,7 +928,7 @@ RESUNL1=STAT_NON_LINE(MODELE=MO,
                      COMPORTEMENT=(_F(RELATION='ELAS',
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,),),
-                                     );
+                                     )
 
 RESUNL1=CALC_CHAMP(reuse=RESUNL1,RESULTAT=RESUNL1,CONTRAINTE=('SIGM_ELNO'))
 IMPR_RESU(FORMAT='MED',
@@ -1132,7 +1132,7 @@ RESUMI1=STAT_NON_LINE(MODELE=MO,
                      ARCHIVAGE=_F(LIST_INST=LINST,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                      ),
-                                     );
+                                     )
 
 RESUMI1=CALC_CHAMP(reuse=RESUMI1,RESULTAT=RESUMI1,CONTRAINTE=('SIGM_ELNO'))
 IMPR_RESU(FORMAT='MED',
@@ -1330,7 +1330,7 @@ RESUMM1=STAT_NON_LINE(MODELE=MO,
                      NEWTON=_F(
                                MATRICE='ELASTIQUE',
                                ),
-                                     );
+                                     )
 
 RESUMM1=CALC_CHAMP(reuse=RESUMM1,RESULTAT=RESUMM1,CONTRAINTE=('SIGM_ELNO'))
 
@@ -1533,7 +1533,7 @@ RESUMP1=STAT_NON_LINE(MODELE=MO,
                      NEWTON=_F(
                                MATRICE='ELASTIQUE',
                                ),
-                                     );
+                                     )
 
 RESUMP1=CALC_CHAMP(reuse=RESUMP1,RESULTAT=RESUMP1,CONTRAINTE=('SIGM_ELNO'))
 

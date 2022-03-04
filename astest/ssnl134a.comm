@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),
 
 #Acquisition du maillage du  portique bi-encastre
 
-MAILLAGE=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 #Acquisition du maillage de la section en fibres
 
-M_SECT=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',);
+M_SECT=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',)
 #Corps du fichier de commandes : modele, materiau, caracteristiques de la poutre.
 #-----valeur de chargement ou on arrete le calcul pour le post-traitement
 etaMax=2.0
@@ -37,12 +37,12 @@ etaMax=2.0
 MOD_TGM=AFFE_MODELE(MAILLAGE=MAILLAGE,
                     AFFE=_F(GROUP_MA='OMEGA',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_TGM',),);
+                            MODELISATION='POU_D_TGM',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=720.0,
                             NU=0.3,),
                     ECRO_LINE=_F(SY=10.44,
-                      D_SIGM_EPSI=72.0,),);
+                      D_SIGM_EPSI=72.0,),)
 
 GF=DEFI_GEOM_FIBRE(
    SECTION =_F(GROUP_FIBRE='SECF',
@@ -58,7 +58,7 @@ COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
 MATER=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(GROUP_MA='OMEGA',MATER=ACIER,),
                   AFFE_COMPOR=_F(GROUP_MA='OMEGA',COMPOR=COMPF),
-                    );
+                    )
 
 CARACT=AFFE_CARA_ELEM(MODELE=MOD_TGM,
                       POUTRE=_F(GROUP_MA='OMEGA',
@@ -67,7 +67,7 @@ CARACT=AFFE_CARA_ELEM(MODELE=MOD_TGM,
                                 VALE=(6.0,4.455,1.98,1.2,1.2,8.0,0.0,0.0,0.0,),),
                       GEOM_FIBRE=GF,
                       MULTIFIBRE=_F(GROUP_MA='OMEGA',
-                                   GROUP_FIBRE='SECF'),);
+                                   GROUP_FIBRE='SECF'),)
 
 #Conditions aux limites (bi-encastrement) et chargement
 
@@ -79,25 +79,25 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MOD_TGM,
                                     DRY=0.0,),
                                  _F(GROUP_NO='OMEGA',
                                     DZ=0.0,
-                                    GRX=0.0,),),);
+                                    GRX=0.0,),),)
 
 FORCE=AFFE_CHAR_MECA(MODELE=MOD_TGM,
                      FORCE_NODALE=_F(GROUP_NO='PX',
-                                     FY=-1.0,),);
+                                     FY=-1.0,),)
 
 FO_MULT=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.0,0.0,10.0,10.0,),
                       PROL_DROITE='EXCLU',
-                      PROL_GAUCHE='EXCLU',);
+                      PROL_GAUCHE='EXCLU',)
 
 tforc=0.5
-tfin=10.0;
+tfin=10.0
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=tforc,
                                      NOMBRE=5,),
                                   _F(JUSQU_A=tfin,
-                                     PAS=0.01,),),);
+                                     PAS=0.01,),),)
 
 RESO0=STAT_NON_LINE(MODELE=MOD_TGM,
                     CHAM_MATER=MATER,
@@ -113,7 +113,7 @@ RESO0=STAT_NON_LINE(MODELE=MOD_TGM,
                               REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-6,
                                    ITER_GLOB_MAXI=50,),
-                    );
+                    )
 
 RESO=STAT_NON_LINE(MODELE=MOD_TGM,
                     CHAM_MATER=MATER,
@@ -137,7 +137,7 @@ RESO=STAT_NON_LINE(MODELE=MOD_TGM,
                                 PROJ_BORNES = 'OUI',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-5,
                                    ITER_GLOB_MAXI=10,),
-                    );
+                    )
 
 # Valeurs de reference
 
@@ -149,7 +149,7 @@ ETA_REF=DEFI_LIST_REEL(VALE=(0.968,
 1.4006,
 1.3151,
 1.1062,
-0.9275,),);
+0.9275,),)
 
 DEPX_REF=DEFI_LIST_REEL(VALE=(1.773,
 3.6975,
@@ -159,7 +159,7 @@ DEPX_REF=DEFI_LIST_REEL(VALE=(1.773,
 23.0885,
 28.6505,
 38.5155,
-45.851,),);
+45.851,),)
 
 DEPY_REF=DEFI_LIST_REEL(VALE=(10.246,
 16.1245,
@@ -169,50 +169,50 @@ DEPY_REF=DEFI_LIST_REEL(VALE=(10.246,
 48.318,
 52.057,
 57.5425,
-60.1085,),);
+60.1085,),)
 
 # Preparation des fonctions pour les tests
 
 ETA_PILO=RECU_FONCTION(RESULTAT=RESO,
-                       NOM_PARA_RESU='ETA_PILOTAGE',);
+                       NOM_PARA_RESU='ETA_PILOTAGE',)
 
 DEPX=RECU_FONCTION(RESULTAT=RESO,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='PX',);
+                   GROUP_NO='PX',)
 
 DEPY=RECU_FONCTION(RESULTAT=RESO,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   GROUP_NO='PX',);
+                   GROUP_NO='PX',)
 
 MDEPY=CALC_FONCTION(COMB=_F(FONCTION=DEPY,
-                            COEF=-1.0,),);
+                            COEF=-1.0,),)
 
-T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=ETA_PILO,),);
+T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=ETA_PILO,),)
 
-T_DEPX=CREA_TABLE(FONCTION=_F(FONCTION=DEPX,),);
+T_DEPX=CREA_TABLE(FONCTION=_F(FONCTION=DEPX,),)
 
-T_DEPY=CREA_TABLE(FONCTION=_F(FONCTION=MDEPY,),);
+T_DEPY=CREA_TABLE(FONCTION=_F(FONCTION=MDEPY,),)
 
 TAB_COMB=CALC_TABLE(TABLE=T_ETA,
                     ACTION=(_F(OPERATION='COMB', TABLE=T_DEPX, NOM_PARA='INST'),
-                            _F(OPERATION='COMB', TABLE=T_DEPY, NOM_PARA='INST'),),);
-IMPR_TABLE(TABLE=TAB_COMB,);
+                            _F(OPERATION='COMB', TABLE=T_DEPY, NOM_PARA='INST'),),)
+IMPR_TABLE(TABLE=TAB_COMB,)
 
 DEPX_ETA=RECU_FONCTION(TABLE=TAB_COMB,
                      PARA_X='DX',
                      PARA_Y='ETA_PILO',
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+                     PROL_GAUCHE='CONSTANT',)
 
 DEPY_ETA=RECU_FONCTION(TABLE=TAB_COMB,
                      PARA_X='DY',
                      PARA_Y='ETA_PILO',
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+                     PROL_GAUCHE='CONSTANT',)
 
 # Impression des courbes
 
@@ -237,7 +237,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               GRILLE_X=10,
               GRILLE_Y=0.5,
               LEGENDE_X='Deplacement (cm)',
-              LEGENDE_Y='Force (N)',);
+              LEGENDE_Y='Force (N)',)
 
 # Tests
 
@@ -308,7 +308,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.937235395674,
                       ),
               )
 
-# Les 2 derniers tests ont des tolerances tres elevees uniquement car la variation de la courbe a cette endroit est tres importante 
+# Les 2 derniers tests ont des tolerances tres elevees uniquement car la variation de la courbe a cette endroit est tres importante
 # La superposition des courbes de references et des courbes calculees montre une superposition quasi-parfaite.
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.964528504574,
@@ -474,4 +474,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.964528504574,
                       ),
               )
 
-FIN();
+FIN()

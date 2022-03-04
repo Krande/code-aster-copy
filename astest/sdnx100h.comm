@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),); #IMPR_MACRO='OUI');
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),); #IMPR_MACRO='OUI')
 
-#PRE_GIBI(UNITE_MAILLAGE=22);
+#PRE_GIBI(UNITE_MAILLAGE=22)
 
-#mailcol=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=22);
+#mailcol=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=22)
 #
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA='RADIER',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='RADIER',),)
 
 STICKMOD=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE=(_F(GROUP_MA='BK',
@@ -40,33 +40,33 @@ STICKMOD=AFFE_MODELE(MAILLAGE=MAILLAGE,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='DKT',),
                            ),
-                     );
+                     )
 # ------------------------------------------------------------------
 #  DEFINITION DES MATERIAUX
 # ------------------------------------------------------------------
 
 
 # REPERE GLOBAL !!!!!!!!!!!!
-ledx = 8.0e06;
-ledy = 8.0e06;
-ledz = 8.0e06;
-lerx = 15.0e7;
-lery = 15.0e7;
-lerz = 50.0e7;
+ledx = 8.0e06
+ledy = 8.0e06
+ledz = 8.0e06
+lerx = 15.0e7
+lery = 15.0e7
+lerz = 50.0e7
 
-ltr_ledx = 0.3*ledx;
-ltr_ledy = 0.3*ledy;
-ltr_ledz = 0.3*ledz;
-ltr_lerx = 0.3*lerx;
-ltr_lery = 0.3*lery;
-ltr_lerz = 0.3*lerz;
+ltr_ledx = 0.3*ledx
+ltr_ledy = 0.3*ledy
+ltr_ledz = 0.3*ledz
+ltr_lerx = 0.3*lerx
+ltr_lery = 0.3*lery
+ltr_lerz = 0.3*lerz
 
-ltr_kcdx = 0.5E10;
-ltr_kcdy = 0.5E10;
-ltr_kcdz = 0.4E10;
-ltr_kcrx = 0.5E15;
-ltr_kcry = 0.5E15;
-ltr_kcrz = 0.1E15;
+ltr_kcdx = 0.5E10
+ltr_kcdy = 0.5E10
+ltr_kcdz = 0.4E10
+ltr_kcrx = 0.5E15
+ltr_kcry = 0.5E15
+ltr_kcrz = 0.1E15
 
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=4.E10,
@@ -74,7 +74,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=4.E10,
                           RHO=0.0,
                           ALPHA=0.0,
                           AMOR_ALPHA=1.5e-2, AMOR_BETA=0.0,
-                          ),);
+                          ),)
 
 MAT_NL=DEFI_MATERIAU(DIS_ECRO_CINE =_F(    # DEFINIR DANS LE REPERE LOCAL !!!!!!!! La raideur globale en X correspond a la raideur locale en Z
                           LIMY_DX = ltr_ledz, KCIN_DX = ltr_kcdz,
@@ -83,7 +83,7 @@ MAT_NL=DEFI_MATERIAU(DIS_ECRO_CINE =_F(    # DEFINIR DANS LE REPERE LOCAL !!!!!!
                           LIMY_RX = ltr_lerz, KCIN_RX = ltr_kcrz,
                           LIMY_RY = ltr_lery, KCIN_RY = ltr_kcry,
                           LIMY_RZ = ltr_lerx, KCIN_RZ = ltr_kcrx,),
-                      );
+                      )
 
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
@@ -96,7 +96,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                                MATER=MAT,
                                 ),
                              ),
-                       );
+                       )
 #
 #-------------------------------------------------------------------
 # AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES
@@ -157,7 +157,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=STICKMOD,
                                     CARA='K_TR_D_N',
                                     VALE=(0.,0.,0.,0.,0.,0.,),),
                                ),
-                     );
+                     )
 
 #*****************************************************************
 #
@@ -173,7 +173,7 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=STICKMOD,
                                    DRX=0.0,
                                    DRY=0.0,
                                    DRZ=0.0,),
-                       LIAISON_SOLIDE=_F(GROUP_NO=('CENT_RAD','RADIER'),),);
+                       LIAISON_SOLIDE=_F(GROUP_NO=('CENT_RAD','RADIER'),),)
 #*****************************************************************
 #
 #   CALCUL DE LA MASSE ET DE L INERTIE DE LA STRUCTURE
@@ -186,9 +186,9 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=STICKMOD,
 #                 CARA_ELEM=CARA_ELE,
 #                 INFO=1,
 #                 MASS_INER=_F(TOUT='OUI',
-#                              GROUP_MA=('BK','MASSES',),),);
+#                              GROUP_MA=('BK','MASSES',),),)
 
-#IMPR_TABLE(TABLE=MASSE);
+#IMPR_TABLE(TABLE=MASSE)
 #
 #*****************************************************************
 #                    RESOLUTION DU PROBLEME MODAL
@@ -213,7 +213,7 @@ ASSEMBLAGE(MODELE=STICKMOD,
                       #_F(MATRICE=CO('MATRAMOR'),
                       #   OPTION='AMOR_MECA',),
                       ),
-            );
+            )
 #
 #   CALCUL DES MODES PROPRES
 #
@@ -223,7 +223,7 @@ MODE=CALC_MODES(MATR_RIGI=MATRRIGI,
                 OPTION='BANDE',
                 CALC_FREQ=_F(FREQ=(0.1,10.,),),
                 IMPRESSION=_F(),
-                );
+                )
 
 #
 # CALCUL DE LA REPARTITION DE L ENERGIE POTENTIELLE DANS LA STRUCTURE
@@ -237,7 +237,7 @@ EPOT=POST_ELEM(MODELE=STICKMOD,
                ENER_POT=(_F(TOUT='OUI',),
                          _F(GROUP_MA=('MASSES','BK'),),
                          ),
-               );
+               )
 #
 #
 # CALCUL DU MACRO-ELEMENT DYNAMIQUE :
@@ -248,13 +248,13 @@ EPOT=POST_ELEM(MODELE=STICKMOD,
 INTERDYN=DEFI_INTERF_DYNA(NUME_DDL=NUMEROTA,
                           INTERFACE=_F(NOM='DROITE',
                                        TYPE='CRAIGB',
-                                       GROUP_NO='CENT_RAD',),);
+                                       GROUP_NO='CENT_RAD',),)
 
 MODSTA=MODE_STATIQUE(  MATR_RIGI=MATRRIGI,
                      MODE_STAT=_F(
                      GROUP_NO = 'CENT_RAD',
                      AVEC_CMP = ('DX','DY','DZ','DRX','DRY','DRZ'),
-                                 ));
+                                 ))
 
 
 BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE,
@@ -263,9 +263,9 @@ BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE,
                                 NMAX_MODE=1999,),
                              ),
                        INTERF_DYNA=INTERDYN,
-                       NUME_REF=NUMEROTA,);
+                       NUME_REF=NUMEROTA,)
 
-NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',);
+NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',)
 
 
 #
@@ -304,15 +304,15 @@ linst = DEFI_LIST_REEL ( DEBUT = 0.,
                                          PAS=1.*dt,
                                          ),
                                        ),
-                           );
+                           )
 
 ACCEX=CALC_FONCTION(COMB=_F(FONCTION=LBNS,
                                COEF=1.5,),
-                       LIST_PARA=linst,);
+                       LIST_PARA=linst,)
 
 ACCEY=CALC_FONCTION(COMB=_F(FONCTION=LBEW,
                                COEF=1.5,),
-                       LIST_PARA=linst,);
+                       LIST_PARA=linst,)
 
 df=1./TFIN
 
@@ -324,20 +324,20 @@ fc = 31.0*df
 accx0=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = ACCEX, FREQ_FILTRE=fc0, METHODE="FILTRAGE") )
 accy0=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = ACCEY, FREQ_FILTRE=fc0, METHODE="FILTRAGE") )
 
-XFF0=CALC_FONCTION( FFT=_F( FONCTION = accx0, METHODE='COMPLET',) );
-YFF0=CALC_FONCTION( FFT=_F( FONCTION = accy0, METHODE='COMPLET',) );
+XFF0=CALC_FONCTION( FFT=_F( FONCTION = accx0, METHODE='COMPLET',) )
+YFF0=CALC_FONCTION( FFT=_F( FONCTION = accy0, METHODE='COMPLET',) )
 
 fc = 31.0*df
 
 lfreq= DEFI_LIST_REEL ( DEBUT = 0.,
                         INTERVALLE = _F(JUSQU_A = FMAX-df,
                                         PAS = df,),
-                      );
+                      )
 
 lfreq1= DEFI_LIST_REEL ( DEBUT = df,
                         INTERVALLE = _F(JUSQU_A = FMAX-df,
                                         PAS = df,),
-                      );
+                      )
 
 pi=3.141592654
 
@@ -347,7 +347,7 @@ invAF=FORMULE(NOM_PARA='FREQ',pi=pi,
 invA=CALC_FONC_INTERP(FONCTION=invAF, NOM_PARA = 'FREQ',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=lfreq1);
+                        LIST_PARA=lfreq1)
 
 FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
                        VALE_C=(0., 0., 0., df, 1., 0., fc, 1., 0., (fc+df), 0., 0.),
@@ -383,17 +383,17 @@ deply = CALC_FONCTION(COMB=(
 
 '''
 
-deplx = CALC_FONCTION (INTEGRE_FREQ=_F(FONCTION=ACCEX, FREQ_FILTRE=fc0,FREQ_COUP=fc,NIVEAU=2),);
+deplx = CALC_FONCTION (INTEGRE_FREQ=_F(FONCTION=ACCEX, FREQ_FILTRE=fc0,FREQ_COUP=fc,NIVEAU=2),)
 
-deply = CALC_FONCTION (INTEGRE_FREQ=_F(FONCTION=ACCEY, FREQ_FILTRE=fc0,FREQ_COUP=fc,NIVEAU=2),);
+deply = CALC_FONCTION (INTEGRE_FREQ=_F(FONCTION=ACCEY, FREQ_FILTRE=fc0,FREQ_COUP=fc,NIVEAU=2),)
 
-VITEX1 = CALC_FONCTION (DERIVE_FREQ=_F(FONCTION=deplx, FREQ_COUP=fc,NIVEAU=1),);
+VITEX1 = CALC_FONCTION (DERIVE_FREQ=_F(FONCTION=deplx, FREQ_COUP=fc,NIVEAU=1),)
 
-depx1 = CALC_FONCTION (INTEGRE_FREQ=_F(FONCTION=VITEX1, FREQ_COUP=fc,NIVEAU=1),);
+depx1 = CALC_FONCTION (INTEGRE_FREQ=_F(FONCTION=VITEX1, FREQ_COUP=fc,NIVEAU=1),)
 
-ACCEX2 = CALC_FONCTION (DERIVE_FREQ=_F(FONCTION=deplx, FREQ_COUP=fc,NIVEAU=2),);
+ACCEX2 = CALC_FONCTION (DERIVE_FREQ=_F(FONCTION=deplx, FREQ_COUP=fc,NIVEAU=2),)
 
-depx2 = CALC_FONCTION (INTEGRE_FREQ=_F(FONCTION=ACCEX2, FREQ_COUP=fc,NIVEAU=2),);
+depx2 = CALC_FONCTION (INTEGRE_FREQ=_F(FONCTION=ACCEX2, FREQ_COUP=fc,NIVEAU=2),)
 
 TEST_FONCTION(VALEUR=(
                       _F(VALE_CALC=0.05330669498324,
@@ -435,7 +435,7 @@ freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
                                          NOMBRE = 65,
                                        ),
                                        ),
-                           );
+                           )
 
 
 tabsol= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
@@ -555,44 +555,44 @@ tabsol= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
                        FREQ_COUP=9.5,
                        INTEGRATION='FREQUENCE',
                        FREQ_FILTRE=fc0,
-                       COEF_AMPL_ACCE=1.);
+                       COEF_AMPL_ACCE=1.)
 
-IMPR_TABLE(TABLE=tabsol);
+IMPR_TABLE(TABLE=tabsol)
 
-tmatel0=LIRE_TABLE(UNITE=24);
+tmatel0=LIRE_TABLE(UNITE=24)
 
 tmatel1 = CALC_TABLE( TABLE=tmatel0,
-         ACTION=_F(OPERATION='EXTR',NOM_PARA=('Y','M','RHO','Efin','NU','AHfin',))); #'GDgam')));
+         ACTION=_F(OPERATION='EXTR',NOM_PARA=('Y','M','RHO','Efin','NU','AHfin',))); #'GDgam')))
 
 tmatel1 = CALC_TABLE( reuse=tmatel1, TABLE=tmatel1,
-         ACTION=_F(OPERATION='FILTRE',NOM_PARA='Y',CRIT_COMP='GT',VALE=0.));
+         ACTION=_F(OPERATION='FILTRE',NOM_PARA='Y',CRIT_COMP='GT',VALE=0.))
 
 tmatel1 = CALC_TABLE( reuse=tmatel1, TABLE=tmatel1,
-         ACTION=_F(OPERATION='RENOMME',NOM_PARA=('AHfin','AH')));
+         ACTION=_F(OPERATION='RENOMME',NOM_PARA=('AHfin','AH')))
 
 tmatel1 = CALC_TABLE( reuse=tmatel1, TABLE=tmatel1,
-         ACTION=_F(OPERATION='AJOUT_COLONNE',NOM_PARA='GDgam',VALE=4));
+         ACTION=_F(OPERATION='AJOUT_COLONNE',NOM_PARA='GDgam',VALE=4))
 
 
 tmatel1 = CALC_TABLE( reuse=tmatel1, TABLE=tmatel1,
-         ACTION=_F(OPERATION='RENOMME',NOM_PARA=('Efin','Emax')));
+         ACTION=_F(OPERATION='RENOMME',NOM_PARA=('Efin','Emax')))
 
-IMPR_TABLE(TABLE=tmatel1);
+IMPR_TABLE(TABLE=tmatel1)
 
 accexRA=LIRE_FONCTION(UNITE=40,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[1,1],INDIC_RESU=[1,3],
-                   );
+                   )
 
 deplxCL=LIRE_FONCTION(UNITE=40,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[3,1],INDIC_RESU=[3,2],
-                   );
+                   )
 
 deplxRA=LIRE_FONCTION(UNITE=40,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[3,1],INDIC_RESU=[3,3],
-                   );
+                   )
 
 TEST_FONCTION(VALEUR=(
                       _F(VALE_CALC=0.0533945,
@@ -608,9 +608,9 @@ TEST_FONCTION(VALEUR=(
 
 #  RELECTURE DES IMPRESSIONS DE TABLES PRECEDENTES
 
-#tmatela=LIRE_TABLE(UNITE=51);
-tmatgg=LIRE_TABLE(UNITE=52);
-tmatdg=LIRE_TABLE(UNITE=53);
+#tmatela=LIRE_TABLE(UNITE=51)
+tmatgg=LIRE_TABLE(UNITE=52)
+tmatdg=LIRE_TABLE(UNITE=53)
 
 tabsol2= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
                        TITRE='DONNEES PAR TABLES',
@@ -636,9 +636,9 @@ tabsol2= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
                        SURF='OUI', #'NON',
                        #NIVE_COUCH_ENFO=32,
                        FREQ_COUP=9.5,
-                       COEF_AMPL_ACCE=1.);
+                       COEF_AMPL_ACCE=1.)
 
-IMPR_TABLE(TABLE=tabsol2);
+IMPR_TABLE(TABLE=tabsol2)
 
 tabsol3= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
                        TITRE='DONNEES PAR TABLES',
@@ -664,9 +664,9 @@ tabsol3= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
                        SURF='OUI', #'NON',
                        #NIVE_COUCH_ENFO=32,
                        FREQ_COUP=9.5,
-                       COEF_AMPL_ACCE=1.);
+                       COEF_AMPL_ACCE=1.)
 
-IMPR_TABLE(TABLE=tabsol3);
+IMPR_TABLE(TABLE=tabsol3)
 
 '''
 
@@ -693,14 +693,14 @@ TABSOL = DEFI_SOL_MISS(
       _F(SUBSTRATUM="OUI", NUME_MATE=8,),
    ),
    INFO=2,
-);
+)
 
 '''
 '''
 MAEL0=MACR_ELEM_DYNA(BASE_MODALE=BAMO,
                       MATR_RIGI=MATRRIGI,
                       MATR_MASS=MATRMASS,
-                      SANS_GROUP_NO='RADIER',);
+                      SANS_GROUP_NO='RADIER',)
 
 
 CALC_MISS(
@@ -727,10 +727,10 @@ CALC_MISS(
         SPEC_MAX=0.075,
         SPEC_NB=16384,
     ),
-);
+)
 
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=31,);
+DEFI_FICHIER(ACTION='LIBERER',UNITE=31,)
 
 
 
@@ -738,13 +738,13 @@ impe = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,
                         UNITE_RESU_IMPE=31, FREQ_EXTR=3.,
                         SYME='OUI',
                         #TYPE='BINAIRE',
-                           );
+                           )
 
 impe0 = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,
                         UNITE_RESU_IMPE=31, FREQ_EXTR=0.3,
                         SYME='OUI',
                         #TYPE='BINAIRE',
-                           );
+                           )
 
 
 rito=COMB_MATR_ASSE(COMB_R=(
@@ -754,7 +754,7 @@ rito=COMB_MATR_ASSE(COMB_R=(
                                 COEF_R=1.0,),
                              ),
                                 SANS_CMP='LAGR',
-                    );
+                    )
 
 mato=COMB_MATR_ASSE(COMB_R=(
                              _F(MATR_ASSE=impe0,
@@ -767,7 +767,7 @@ mato=COMB_MATR_ASSE(COMB_R=(
                                 COEF_R=-2.85e-3,),
                             ),
                                 SANS_CMP='LAGR',
-                    );
+                    )
 
 
 amto=COMB_MATR_ASSE(COMB_R=(
@@ -777,7 +777,7 @@ amto=COMB_MATR_ASSE(COMB_R=(
                                 COEF_R=5.30e-2,),
                             ),
                                 SANS_CMP='LAGR',
-                    );
+                    )
 
 # # ============== Librairies
 # from numpy import fft, exp, linalg, diag, zeros, real, eye, dot, float, complex
@@ -827,21 +827,21 @@ CALC_MISS(
                   OFFSET_MAX = 40,
                   OFFSET_NB = 400,
                   ),
-             );
+             )
 
 '''
 
 MATK = LIRE_IMPE_MISS(UNITE_RESU_IMPE=35, INST_EXTR=0.0,
                       SYME='OUI',
-                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
+                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN)
 
 MATC = LIRE_IMPE_MISS(UNITE_RESU_IMPE=37, INST_EXTR=0.0,
                       SYME='OUI',
-                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
+                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN)
 
 MATM = LIRE_IMPE_MISS(UNITE_RESU_IMPE=38, INST_EXTR=0.0,
                       SYME='OUI',
-                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
+                      BASE=BAMO, NUME_DDL_GENE=NDDLGEN)
 
 # Termes Z0
 
@@ -850,10 +850,10 @@ MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO,
                        MATR_IMPE_AMOR = MATC,
                        MATR_IMPE_MASS = MATM,
                        SANS_GROUP_NO='RADIER',
-                       );
+                       )
 
 
-IMPR_CO(CHAINE='MAEL    .LINO');
+IMPR_CO(CHAINE='MAEL    .LINO')
 
 MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
                           _F(MACR_ELEM=MAEL,
@@ -861,11 +861,11 @@ MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
                                          ),
                       RECO_GLOBAL=_F(TOUT='OUI',),
                       DEFI_NOEUD=_F(TOUT='OUI',
-                                     INDEX=(1,0,1,8,),),);
+                                     INDEX=(1,0,1,8,),),)
 
 MAILB=ASSE_MAILLAGE(MAILLAGE_1=MAILLAGE,
                     MAILLAGE_2=MAYADYN,
-                    OPERATION='SOUS_STR',);
+                    OPERATION='SOUS_STR',)
 #
 
 
@@ -882,7 +882,7 @@ MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='DKT',),
                            ),
-                     );
+                     )
 
 ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
                         POUTRE=(_F(GROUP_MA='BK1',
@@ -939,7 +939,7 @@ ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
                                     CARA='K_TR_D_N',
                                     VALE=(0.,0.,0.,0.,0.,0.,),),
                                ),
-                     );
+                     )
 
 # POST_TRAITEMENT
 #          CALCUL DES SPECTRES DE PLANCHERS AU NIVEAU DU SOMMET
@@ -948,7 +948,7 @@ ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
 
 COND_LIB=AFFE_CHAR_MECA(MODELE=MODELB,
                         LIAISON_SOLIDE=_F(GROUP_NO=('CENT_RAD','RADIER'),),
-                        );
+                        )
 
 CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
                      AFFE=(
@@ -960,7 +960,7 @@ CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
                                MATER=MAT,
                                 ),
                              ),
-                     );
+                     )
 dt = 0.05
 N=64
 
@@ -971,7 +971,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(
                                    JUSQU_A=(N-1)*dt,
                                    PAS=dt,),
-                     );
+                     )
 
 FSEISX=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',
                         FONC_SIGNAL=deplx,
@@ -979,7 +979,7 @@ FSEISX=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',
                         UNITE_RESU_FORC=29,
                         UNITE_RESU_IMPE = 25,
                         GROUP_NO_AFFE=('N257',),
-                        );
+                        )
 
 FSEISY=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',
                         FONC_SIGNAL=deply,
@@ -987,7 +987,7 @@ FSEISY=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',
                         UNITE_RESU_FORC=29,
                         UNITE_RESU_IMPE = 25,
                         GROUP_NO_AFFE=('N257',),
-                        );
+                        )
 
 CHSOL=AFFE_CHAR_MECA(MODELE=MODELB,
                  FORCE_SOL=_F(SUPER_MAILLE='STAT1',
@@ -998,7 +998,7 @@ CHSOL=AFFE_CHAR_MECA(MODELE=MODELB,
                              #UNITE_RESU_FORC=36,
                              NB_PAS_TRONCATURE=20,
                              ),
-                      );
+                      )
 
 DYNA=DYNA_NON_LINE(MODELE=MODELB,
                  CHAM_MATER=CHMATB,
@@ -1029,7 +1029,7 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,
                                 ARRET='OUI',),
                  INCREMENT=_F(LIST_INST=L_INST,),
                  #ARCHIVAGE=_F(PAS_ARCH=1,),
-                          );
+                          )
 
 #
 #======================================================================
@@ -1073,7 +1073,7 @@ GARADBRX=RECU_FONCTION(RESULTAT=DYNA,
                        NOM_CMP='DX',
                        GROUP_NO='CENT_RAD',
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',)
 
 
 ## GARADB_X=CALC_FONCTION(LIST_PARA=L_INST,
@@ -1082,14 +1082,14 @@ GARADBRX=RECU_FONCTION(RESULTAT=DYNA,
 ##                           _F(FONCTION=ACCEX,
 ##                              COEF=1.,),
 ##                           ),
-##                        );
+##                        )
 
 GARADBRY=RECU_FONCTION(RESULTAT=DYNA,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DY',
                        GROUP_NO='CENT_RAD',
                        INTERPOL='LIN',
-                       TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',);
+                       TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',)
 
 
 ## GARADB_Y=CALC_FONCTION(LIST_PARA=L_INST,
@@ -1098,7 +1098,7 @@ GARADBRY=RECU_FONCTION(RESULTAT=DYNA,
 ##                           _F(FONCTION=ACCEY,
 ##                              COEF=1.,),
 ##                           ),
-##                        );
+##                        )
 
 
 #
@@ -1114,7 +1114,7 @@ GABKRX=RECU_FONCTION(RESULTAT=DYNA,
                      NOM_CMP='DX',
                      GROUP_NO='SOMMET',
                      INTERPOL='LIN',
-                     TITRE='ACCELERATION ABSOLUE AU SOMMET',);
+                     TITRE='ACCELERATION ABSOLUE AU SOMMET',)
 
 
 ## GABK_X=CALC_FONCTION(LIST_PARA=L_INST,
@@ -1123,14 +1123,14 @@ GABKRX=RECU_FONCTION(RESULTAT=DYNA,
 ##                           _F(FONCTION=ACCEX,
 ##                              COEF=1.,),
 ##                           ),
-##                        );
+##                        )
 
 GABKRY=RECU_FONCTION(RESULTAT=DYNA,
                      NOM_CHAM='ACCE',
                      NOM_CMP='DY',
                      GROUP_NO='SOMMET',
                      INTERPOL='LIN',
-                     TITRE='ACCELERATION ABSOLUE AU SOMMET',);
+                     TITRE='ACCELERATION ABSOLUE AU SOMMET',)
 
 
 ## GABK_Y=CALC_FONCTION(LIST_PARA=L_INST,
@@ -1139,7 +1139,7 @@ GABKRY=RECU_FONCTION(RESULTAT=DYNA,
 ##                           _F(FONCTION=ACCEY,
 ##                              COEF=1.,),
 ##                           ),
-##                        );
+##                        )
 
 #
 #======================================================================
@@ -1161,7 +1161,7 @@ GABKRY=RECU_FONCTION(RESULTAT=DYNA,
 
 
 SRADBX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADBRX, LIST_FREQ = freqspec,
-                                   NORME=9.81, AMOR_REDUIT=(0.05),),);
+                                   NORME=9.81, AMOR_REDUIT=(0.05),),)
 
 #
 #
@@ -1174,7 +1174,7 @@ SRADBX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADBRX, LIST_FREQ = freqspec,
 
 
 SRADBY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADBRY, LIST_FREQ = freqspec,
-                                   NORME=9.81, AMOR_REDUIT=(0.05),),);
+                                   NORME=9.81, AMOR_REDUIT=(0.05),),)
 
 #
 # CALCUL DES SPECTRES DE PLANCHER AU SOMMET
@@ -1186,7 +1186,7 @@ SRADBY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADBRY, LIST_FREQ = freqspec,
 
 
 SBKX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKRX, LIST_FREQ = freqspec,
-                                 NORME=9.81, AMOR_REDUIT=(0.05),),);
+                                 NORME=9.81, AMOR_REDUIT=(0.05),),)
 
 # EN Y
 #-----
@@ -1195,12 +1195,12 @@ SBKX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKRX, LIST_FREQ = freqspec,
 
 
 SBKY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKRY, LIST_FREQ = freqspec,
-                                 NORME=9.81, AMOR_REDUIT=(0.05),),);
+                                 NORME=9.81, AMOR_REDUIT=(0.05),),)
 ## SIMPOX=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEX, LIST_FREQ = freqspec,
-##                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
+##                                  NORME=9.81, AMOR_REDUIT=(0.05),),)
 ##
 ## SIMPOY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEY, LIST_FREQ = freqspec,
-##                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
+##                                  NORME=9.81, AMOR_REDUIT=(0.05),),)
 
 
 #======================================================
@@ -1223,7 +1223,7 @@ SBKY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKRY, LIST_FREQ = freqspec,
 ##                       _F(FONCTION=GARADB_Y,),
 ##                       _F(FONCTION=GABK_Y,),
 ##                      ),
-##               );
+##               )
 ##
 IMPR_FONCTION(FORMAT='TABLEAU', #'AGRAF',
               UNITE=8,
@@ -1234,7 +1234,7 @@ IMPR_FONCTION(FORMAT='TABLEAU', #'AGRAF',
                       _F(FONCTION=SRADBY5,),
                       _F(FONCTION=SBKY5,),
                      ),
-              );
+              )
 #
 #
 # LA SOURCE DES RESULTATS PROVIENT DE CLASSI POUR LA VALIDATION DU CHAINAGE ASTER_MISS3D
@@ -1272,4 +1272,4 @@ TEST_FONCTION(VALEUR=(
                       ),
               )
 
-FIN();
+FIN()

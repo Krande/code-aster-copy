@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,42 +19,42 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D_HMS',),);
+                           MODELISATION='3D_HMS',),)
 
 
 MAIL= MODI_MAILLAGE( reuse        = MAIL,
                           MAILLAGE     = MAIL,
-                          ORIE_PEAU = _F( GROUP_MA_PEAU ='FACESUP'));
-                          
+                          ORIE_PEAU = _F( GROUP_MA_PEAU ='FACESUP'))
+
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=_F(NOM='HAUTS',
                                   CRIT_NOEUD='SOMMET',
-                                  GROUP_MA='FACESUP',),);
+                                  GROUP_MA='FACESUP',),)
 
 #  LISTE DES INSTANTS DE CALCUL
 
 LI=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=_F(JUSQU_A=1.E-4,
-                                NOMBRE=1,),);
+                                NOMBRE=1,),)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-BIDON=DEFI_CONSTANTE(VALE=0.0,);
+BIDON=DEFI_CONSTANTE(VALE=0.0,)
 #
 #
 #K=k*mu/(rhow*g)
 #
 #
 
-KINT=DEFI_CONSTANTE(VALE=1.E-08,);
+KINT=DEFI_CONSTANTE(VALE=1.E-08,)
 
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
@@ -95,11 +95,11 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                     D_PERM_LIQU_SATU=ZERO,
                                     PERM_GAZ=BIDON,
                                     D_PERM_SATU_GAZ=BIDON,
-                                    D_PERM_PRES_GAZ=BIDON,),);
+                                    D_PERM_PRES_GAZ=BIDON,),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATERIAU,),);
+                             MATER=MATERIAU,),)
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=(_F(GROUP_NO=('NO33','NO83','NO200','NO150',),
@@ -112,7 +112,7 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                               _F(GROUP_NO=('DEVANT','DERRIERE'),
                                  DZ=0.0,),),
                     PRES_REP=_F(GROUP_MA='FACESUP',
-                                PRES=1.0,),);
+                                PRES=1.0,),)
 
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
@@ -124,7 +124,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=10,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                    SOLVEUR=_F(METHODE='LDLT',),);
+                    SOLVEUR=_F(METHODE='LDLT',),)
 
 RESU1=CALC_CHAMP(reuse=RESU1,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'),RESULTAT=RESU1)
 
@@ -342,4 +342,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

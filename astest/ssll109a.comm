@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ TAB_DX = POST_RELEVE_T(ACTION = _F(RESULTAT = RESU,
                                    GROUP_NO = 'AB',))
 
 def solution(z) :
-    
+
     FX = 50
     FY = 200
     E = 200000E+6
@@ -137,7 +137,7 @@ def solution(z) :
     l = l0 # Approx
     r = FX/FY
     e = sqrt(FY/(E*IY))
-    
+
     return r*(-z + ((1/e)*(sin(e*z)+tan(e*l)*(1-cos(e*z)))))
 
 POS = [0.5, 0.45, 0.4, 0.35, 0.30,
@@ -150,7 +150,7 @@ CALC = [0.022409020093903956, 0.01903519464264965, 0.015731411911761452, 0.01256
         0.0069347606704653975, 0.004601575435956753, 0.0026786039822239813, 0.0012298128629045846, 0.0003171036328619157]
 
 for i, (vrefe, vcalc) in enumerate(zip(REFE, CALC)):
-    
+
     TEST_TABLE(REFERENCE = 'ANALYTIQUE',
                PRECISION = 1.E-2,
                TOLE_MACHINE = 1.E-06,
@@ -160,5 +160,5 @@ for i, (vrefe, vcalc) in enumerate(zip(REFE, CALC)):
                TABLE = TAB_DX,
                FILTRE = _F(NOM_PARA = 'NOEUD',
                            VALE_K = 'N%d'%(i+1),))
-    
+
 FIN()

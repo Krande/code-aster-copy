@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ ITER_GLOB_MAXI = 0
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=TFINAL,
                                     NOMBRE=NBDECOUP,),),
-                     );
+                     )
 LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
                                 ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'ARRET',),)
@@ -73,22 +73,22 @@ LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ,),
 # Definition des caracteristiques fluides
 #**********************************************************
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
-PERMINT=DEFI_CONSTANTE(VALE=1.E-13,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
+PERMINT=DEFI_CONSTANTE(VALE=1.E-13,)
 
 #*********************************************************
 # LECTURE MAILLAGE
 #*********************************************************
 #
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(
                 _F(GROUP_MA='GAUCHE',),
-                   ),);
+                   ),)
 
 #*********************************************************
 # Modele de calcul
@@ -98,7 +98,7 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D_HS',),
-                  );
+                  )
 
 #*********************************************************
 # DEFI_MATERIAU
@@ -138,7 +138,7 @@ MATERIAU=DEFI_MATERIAU(
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',
-                             MATER=MATERIAU,),),);
+                             MATER=MATERIAU,),),)
 
 #*************************************************************
 # Affectation de l etat initial
@@ -158,7 +158,7 @@ PINIT=CREA_CHAMP(MAILLAGE=MAIL,
 #
 
 CHIMP=AFFE_CHAR_CINE(MODELE=MODELT,
-       MECA_IMPO=_F(GROUP_MA = 'GAUCHE',PRE1=PRE1GAUCHE,),);
+       MECA_IMPO=_F(GROUP_MA = 'GAUCHE',PRE1=PRE1GAUCHE,),)
 
 #
 #
@@ -187,7 +187,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
                                  ITER_GLOB_MAXI = ITER_GLOB_MAXI,),
 
                  ARCHIVAGE=_F(LIST_INST     = INST1  ),
-                 );
+                 )
 
 #
 #
@@ -195,7 +195,7 @@ cal1=STAT_NON_LINE(MODELE=MODELT,
 #     IMPRESSIONS
 #*************************************************************
 
-L_INST=DEFI_LIST_REEL(VALE=(0.,10.,100.,),);
+L_INST=DEFI_LIST_REEL(VALE=(0.,10.,100.,),)
 
 DDLSMIL= POST_RELEVE_T ( ACTION=_F( INTITULE   = 'DEPL'  ,
                        RESULTAT   =  cal1   ,
@@ -203,14 +203,14 @@ DDLSMIL= POST_RELEVE_T ( ACTION=_F( INTITULE   = 'DEPL'  ,
                        GROUP_NO   = 'GAUCHE'  ,
                        NOM_CHAM   = 'DEPL'  ,
                        NOM_CMP    = ( 'PRE1',) ,
-                       OPERATION  = 'EXTRACTION',),);
+                       OPERATION  = 'EXTRACTION',),)
 
 IMPR_TABLE ( TABLE = DDLSMIL,
              TRI   = (_F( NOM_PARA = 'COOR_X'    ,
             ORDRE    = 'CROISSANT' ,),),
              PAGINATION = 'INST' ,
              NOM_PARA=('INST','COOR_X', 'PRE1',),
-           );
+           )
 
 #============== t=100======================
 
@@ -240,4 +240,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   ),
           )
 
-FIN();
+FIN()

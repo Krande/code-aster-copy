@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ CREA_LIB_MFRONT(UNITE_MFRONT=38,UNITE_LIBRAIRIE=39)
 MAIL_B=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), )
 MAIL_B=DEFI_GROUP(reuse =MAIL_B,
               MAILLAGE=MAIL_B,
-              CREA_GROUP_NO=(_F(GROUP_MA='LFE',),),);
+              CREA_GROUP_NO=(_F(GROUP_MA='LFE',),),)
 #
 MOD_B=AFFE_MODELE(   MAILLAGE=MAIL_B,
                            AFFE=_F( TOUT = 'OUI',
@@ -117,19 +117,19 @@ RESULTAT=STAT_NON_LINE(     MODELE=MOD_B,
                                              RESI_INTE_MAXI=1.E-12,
                                              ALGO_CPLAN='ANALYTIQUE',
                                                 ),
-                                            
+
                             INCREMENT=_F( LIST_INST = LIS_INST),
 
                             NEWTON=_F( PAS_MINI_ELAS = 0.24,
                                         REAC_INCR = 1,
                                         REAC_ITER = 1,
                                         REAC_ITER_ELAS = 1),
-                                        
 
-                            CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, 
-                                            ITER_GLOB_MAXI = 1030, 
+
+                            CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
+                                            ITER_GLOB_MAXI = 1030,
                                             ITER_GLOB_ELAS = 60,),
-                                        
+
                             PILOTAGE=_F( TYPE = 'DDL_IMPO',
                                         GROUP_NO = 'E',
                                         NOM_CMP = 'DX',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='DROITE',),
                               _F(NOEUD=('NO1','NO3', 'NO9', 'NO7','NS4','NS5','NS12','NS8' ),
                                 NOM='GAUCHE',),
-                               ),);
+                               ),)
 
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -156,7 +156,7 @@ MAT_JF=DEFI_MATERIAU(
                                      RHO_FLUIDE=rho_fluide,
                                      VISC_FLUIDE=visc_fluide,
                                      OUV_MIN=ouv_min
-                                ),);
+                                ),)
 
 
 
@@ -164,7 +164,7 @@ CM_F=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(GROUP_MA='CUBE',MATER = MAT_CUB),
                       _F(GROUP_MA='CUBEDEG',  MATER = MAT_JF))
-                 );
+                 )
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
 LIAISON=AFFE_CHAR_CINE(
@@ -194,7 +194,7 @@ PAM_J = AFFE_CHAR_CINE(
                 _F(GROUP_NO='NS4' , PRE1=press*1.0000003 ),
                 _F(GROUP_NO='NS20', PRE1=press*1.0000004 ),
               )
-  );
+  )
 
 
 # CHARGEMENT MODE I PUR
@@ -215,7 +215,7 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
                                         linst[2], delta_endo,              # TRACTION JUSQU'A L'OUVERTURE COMPLETE
                                         linst[3], -delta_ferm,             # DECHARGEMENT COMPRESSION
                                         linst[4], delta_equi),             # TRACTION JUSQU'A POINT D'EQUILIBRE
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 
 
 # CALCUL MECANIQUE AVEC FROTTEMENT (JOINT_MECA_FROT)
@@ -250,25 +250,25 @@ U_F=STAT_NON_LINE(
 U_F=CALC_CHAMP(reuse =U_F,
                 RESULTAT=U_F,
                 VARI_INTERNE=('VARI_ELNO'),
-                );
+                )
 
 U_F=CALC_CHAMP(reuse =U_F,
                 RESULTAT=U_F,
                 CONTRAINTE=('SIEF_ELNO'),
-                );
+                )
 
 U_F=CALC_CHAMP(reuse =U_F,
              RESULTAT=U_F,
              VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIEF_NOEU',
              GROUP_MA='CUBEDEG'
-             );
+             )
 
 
 # CALCUL DE LA FORCE NODALE
 U_F=CALC_CHAMP(reuse =U_F,
             RESULTAT=U_F,
             FORCE='FORC_NODA',
-            );
+            )
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
 TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='F_PILOTE',
@@ -276,7 +276,7 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='FORC_NODA',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
-                               RESULTANTE=('DX','DY'),),);
+                               RESULTANTE=('DX','DY'),),)
 
 
 # PROJECTEUR SUR LA NORMALE
@@ -289,7 +289,7 @@ TFORCE=CALC_TABLE(reuse =TFORCE,
                   TABLE=TFORCE,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_N',),);
+                            NOM_PARA='F_N',),)
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -298,14 +298,14 @@ TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='TOUTSEUL',
-                              NOM_CMP=('DX','DY',),),);
+                              NOM_CMP=('DX','DY',),),)
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
 TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
                     TABLE=TDELTA_N,
                     ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='U_N',),);
+                            NOM_PARA='U_N',),)
 
 #----------------------------------------------------------------------------------
 # IMPRESSION DE RESULTAT CALCUL MODE I PURE (JOINT_MECA_FROT)
@@ -314,25 +314,25 @@ TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
 
 
 # IMPRESSION LA FORCE NODALE NORMALE
-IMPR_TABLE(TABLE=TFORCE);
+IMPR_TABLE(TABLE=TFORCE)
 
 # IMPRESSION DE L'OUVERTURE NORMALE
-IMPR_TABLE(TABLE=TDELTA_N);
+IMPR_TABLE(TABLE=TDELTA_N)
 
 # LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FN=RECU_FONCTION(TABLE=TFORCE,
                   PARA_X='INST',
-                  PARA_Y='F_N',);
+                  PARA_Y='F_N',)
 
 DN=RECU_FONCTION(TABLE=TDELTA_N,
                   PARA_X='INST',
-                  PARA_Y='U_N',);
+                  PARA_Y='U_N',)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONC_X=DN,
                         FONC_Y=FN,
                         LEGENDE='Force Deplacement',),
-             );
+             )
 
 # # EN MODE INTERACTIF SEULEMENT
 # IMPR_FONCTION(FORMAT='XMGRACE',
@@ -343,7 +343,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 #              LEGENDE_X='\\xd\\s\\0n',
 #              LEGENDE_Y='F\\sn',
 #              TITRE='mode I avec charge-decharge',
-#              );
+#              )
 
 
 #----------------------------------------------------------------------------------
@@ -486,7 +486,7 @@ F2DX=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst2[3],-delta_ferm*cos(angle)+delta_max_tan*sin(angle),  # RETOUR GLISSEMENT TANGENTIEL
                                         linst2[4],-delta_ferm*cos(angle)-delta_max_tan*sin(angle)   # REGLISSEMENT TANGENTIEL
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 F2DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst2[1], delta_max_tan*cos(angle),                        # GLISSEMENT TANGENTIEL
                                         linst2[2],-delta_ferm*sin(angle)+delta_max_tan*cos(angle),  # FERMETURE NORMALE
@@ -494,7 +494,7 @@ F2DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst2[4],-delta_ferm*sin(angle)+delta_max_tan*cos(angle)   # REGLISSEMENT TANGENTIEL
                                         ),
 
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE',)
 F2DZ=DEFI_CONSTANTE(VALE=0.) # pas de mouvement en DZ
 
 TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
@@ -503,7 +503,7 @@ TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
                                     DY=F2DY,
                                     DZ=F2DZ,),
                                  ),
-                      );
+                      )
 
 
 #--------------------------------------
@@ -544,17 +544,17 @@ U_2=STAT_NON_LINE(
 U_2=CALC_CHAMP(reuse =U_2,
               RESULTAT=U_2,
               VARI_INTERNE=('VARI_ELNO'),
-              );
+              )
 # CALCUL DE L'OUVERTURE TANGENTIEL DU JOINT AUX NOEUDS
 U_2=CALC_CHAMP(reuse =U_2,
             RESULTAT=U_2,
             VARI_INTERNE='VARI_NOEU',
-            );
+            )
 # CALCUL DE LA FORCE NODALE
 U_2=CALC_CHAMP(reuse =U_2,
             RESULTAT=U_2,
             FORCE='FORC_NODA',
-            );
+            )
 # FORCE NODALE RESULTANTE  SELONS DIRECTIONS X ET Y : (F_X,F_Y)
 TFORCET=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='F_PILOTE',
@@ -562,11 +562,11 @@ TFORCET=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='FORC_NODA',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
-                               RESULTANTE=('DX','DY'),),);
+                               RESULTANTE=('DX','DY'),),)
 
 
 # IMPRESSION DU MODULE DE LA FORCE NODALE
-IMPR_TABLE(TABLE=TFORCET);
+IMPR_TABLE(TABLE=TFORCET)
 
 
 
@@ -580,7 +580,7 @@ TFORCET=CALC_TABLE(reuse =TFORCET,
                   TABLE=TFORCET,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PTAN,
-                            NOM_PARA='F_T',),);
+                            NOM_PARA='F_T',),)
 
 # DEPLACEMENT DU NOEUD DU HAUT
 TDEPLT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -589,7 +589,7 @@ TDEPLT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='TOUTSEUL',
-                              NOM_CMP=('DX','DY',),),);
+                              NOM_CMP=('DX','DY',),),)
 
 # OUVERTURE TANGENTIEL du JOINT
 TDELTA_T=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
@@ -598,14 +598,14 @@ TDELTA_T=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
                               NOM_CHAM='VARI_NOEU',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='GAUCHE',
-                              NOM_CMP='V8',),);
+                              NOM_CMP='V8',),)
 
 # FILTRAGE JUSTE DE LA VALEUR MOYENNE
 TDELTA_T=CALC_TABLE(reuse =TDELTA_T,
                  TABLE=TDELTA_T,
                  ACTION=_F(OPERATION='FILTRE',
                            NOM_PARA='QUANTITE',
-                           VALE_K='MOMENT_0',),);
+                           VALE_K='MOMENT_0',),)
 
 ###################################################
 
@@ -615,28 +615,28 @@ TDELTA_T=CALC_TABLE(reuse =TDELTA_T,
 
 
 # IMPRESSION DU MODULE DE LA FORCE NODALE
-IMPR_TABLE(TABLE=TFORCET);
+IMPR_TABLE(TABLE=TFORCET)
 
 
 # IMPRESSION DU DEPLACEMENT SELON X
 IMPR_TABLE(TABLE=TDEPLT,
-           NOM_PARA='DX',);
+           NOM_PARA='DX',)
 
 
 # IMPRESSION DE DEPLACEMENTS NORMALS
 IMPR_TABLE(TABLE=TDELTA_T,
            NOM_PARA='V8',
-           );
+           )
 
 
 # LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FT=RECU_FONCTION(TABLE=TFORCET,
                   PARA_X='INST',
-                  PARA_Y='F_T',);
+                  PARA_Y='F_T',)
 
 DT=RECU_FONCTION(TABLE=TDELTA_T,
                   PARA_X='INST',
-                  PARA_Y='V8',);
+                  PARA_Y='V8',)
 
 
 # # EN MODE INTERACTIF SEULEMENT
@@ -648,7 +648,7 @@ DT=RECU_FONCTION(TABLE=TDELTA_T,
 #              LEGENDE_X='\\xd\\s\\0t',
 #              LEGENDE_Y='F\\st',
 #              TITRE='mode II aller-retour du joint ferme',
-#              );
+#              )
 
 
 # COURBE FORCE-DEPLACEMENT JOINT+CUBE EST TESTEE :

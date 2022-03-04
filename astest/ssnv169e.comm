@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # DEFINITION DU MAILLAGE ET DU MODELE
-# PRE_GIBI();
+# PRE_GIBI()
 
 heure = 3600.
 jour = 24. * heure
 annee = 365.25 * jour
 mois = annee/12.
 
-MAIL = LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MAIL = DEFI_GROUP(MAILLAGE=MAIL,
                   reuse = MAIL,
@@ -38,35 +38,35 @@ MAIL = DEFI_GROUP(MAILLAGE=MAIL,
                                    _F(GROUP_MA = 'A3'),
                                    _F(GROUP_MA = 'Q'),
                                    ),
-                  );
+                  )
 
 MODELE = AFFE_MODELE(MAILLAGE = MAIL,
                      AFFE = (_F(GROUP_MA = ('Q','A1'),
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = 'D_PLAN',),
                              ),
-                     );
+                     )
 
 # DEFINITION DU MATERIAU
 FONC1 = DEFI_FONCTION(NOM_PARA = 'SECH',
                       PROL_DROITE = 'LINEAIRE',
                       PROL_GAUCHE = 'LINEAIRE',
                       VALE = (0.0, 1.0, 1.0e+10, 1.0),
-                      );
+                      )
 
 E = DEFI_FONCTION(NOM_PARA = 'TEMP',
                       PROL_DROITE = 'LINEAIRE',
                       PROL_GAUCHE = 'LINEAIRE',
                       VALE = (0.0, 31000, 1.0e+10, 31000),
-                      );
+                      )
 
 NU = DEFI_FONCTION(NOM_PARA = 'TEMP',
                       PROL_DROITE = 'LINEAIRE',
                       PROL_GAUCHE = 'LINEAIRE',
                       VALE = (0.0, 0.2, 1.0e+10, 0.2),
-                      );
+                      )
 
-ALPHA = DEFI_CONSTANTE(VALE=0.);
+ALPHA = DEFI_CONSTANTE(VALE=0.)
 
 BETON = DEFI_MATERIAU(ELAS_FO = _F(E = E,
                                    NU = NU,
@@ -91,7 +91,7 @@ BETON = DEFI_MATERIAU(ELAS_FO = _F(E = E,
                                    ETA_RD = 4.08E+11,
                                    ETA_ID = 5.44E+12,
                                    ),
-                       );
+                       )
 
 TEMP = CREA_CHAMP(OPERATION = 'AFFE',
                   TYPE_CHAM = 'NOEU_TEMP_R',
@@ -99,7 +99,7 @@ TEMP = CREA_CHAMP(OPERATION = 'AFFE',
                   AFFE = _F(TOUT = 'OUI',
                             NOM_CMP = 'TEMP',
                             VALE = 20.,),
-                  );
+                  )
 
 SECH = CREA_CHAMP(OPERATION = 'AFFE',
                   TYPE_CHAM = 'NOEU_TEMP_R',
@@ -107,7 +107,7 @@ SECH = CREA_CHAMP(OPERATION = 'AFFE',
                   AFFE = _F(TOUT = 'OUI',
                             NOM_CMP = 'TEMP',
                             VALE = 1.,),
-                  );
+                  )
 
 CAR_MAT = AFFE_MATERIAU(
                         MAILLAGE = MAIL,
@@ -123,7 +123,7 @@ CAR_MAT = AFFE_MATERIAU(
                                    NOM_VARC = 'TEMP',
                                    VALE_REF = 20.),
                                  ),
-                           );
+                           )
 
 # CONDITIONS AUX LIMITS
 
@@ -141,19 +141,19 @@ FORCE = DEFI_FONCTION(NOM_PARA = 'INST',
 CHAR1 = AFFE_CHAR_MECA_F(MODELE = MODELE,
                          FORCE_CONTOUR = _F(GROUP_MA = 'A1',
                                             FX = FORCE,),
-                         );
+                         )
 
 CLIM1 = AFFE_CHAR_MECA(MODELE = MODELE,
                      DDL_IMPO = _F( GROUP_NO = ('P4','P1',),
                                     DY       = 0.,
                                    ),
-                     ) ;
+                     )
 
 CLIM2 = AFFE_CHAR_MECA(MODELE = MODELE,
                      DDL_IMPO = _F( GROUP_NO = 'A3',
                                     DX       = 0.,
                                    ),
-                     ) ;
+                     )
 
 
 L_INS = DEFI_LIST_REEL( DEBUT = -1.0,
@@ -163,7 +163,7 @@ L_INS = DEFI_LIST_REEL( DEBUT = -1.0,
                                       _F(JUSQU_A = 864000., NOMBRE = 20,),
                                       _F(JUSQU_A = 6590000., NOMBRE = 60,),
                                       ),
-                          );
+                          )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INS),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -195,7 +195,7 @@ RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
                                  RESI_GLOB_RELA = 1.E-6,
                                  ITER_GLOB_MAXI = 100,
                                      ),
-                         );
+                         )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=85,
                    POINT=1,
@@ -228,4 +228,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=85,
                 ),
           )
 
-FIN();
+FIN()

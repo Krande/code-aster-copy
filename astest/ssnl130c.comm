@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'))
 
 from ssnl130a import Deplacer, Pression
 
-mail=LIRE_MAILLAGE(FORMAT='MED',);
+mail=LIRE_MAILLAGE(FORMAT='MED',)
 
 model=AFFE_MODELE(
    MAILLAGE=mail,
@@ -31,15 +31,15 @@ model=AFFE_MODELE(
       _F(GROUP_MA='DALLE',   PHENOMENE='MECANIQUE', MODELISATION='DKT',),
       _F(GROUP_MA='RESSORT', PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
    ),
-);
+)
 
 acier=DEFI_MATERIAU(
    ELAS=_F(E=200000000000.0, NU=0.3,),
-);
+)
 resso=DEFI_MATERIAU(
    ELAS=_F(E=200000000000.0, NU=0.3,),
    DIS_CONTACT= _F(DIST_1= 0.100000001),
-);
+)
 
 mater=AFFE_MATERIAU(
    MAILLAGE=mail,
@@ -47,7 +47,7 @@ mater=AFFE_MATERIAU(
       _F(GROUP_MA='DALLE',   MATER=acier,),
       _F(GROUP_MA='RESSORT', MATER=resso,),
    ),
-);
+)
 
 carelem=AFFE_CARA_ELEM(INFO=1,
    MODELE=model,
@@ -62,16 +62,16 @@ carelem=AFFE_CARA_ELEM(INFO=1,
                   CARA='K_T_D_L',
                   VALE=(10000.0,10000.0,10000.0,),
                   GROUP_NO_CENTRE='PCDG',),
-);
+)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
 ll=DEFI_LIST_REEL(DEBUT=0.0,
    INTERVALLE=(
       _F(JUSQU_A=1.0, PAS=1.000,),
       _F(JUSQU_A=2.0, PAS=0.500,),
    ),
-);
+)
 
 
 PRESS = FORMULE(VALE='Pression(INST,X,Y,Z)',
@@ -102,7 +102,7 @@ resu=STAT_NON_LINE(
               ),),
    CONVERGENCE= _F(ITER_GLOB_MAXI=60,),
    INCREMENT=_F(LIST_INST=ll, INST_FIN=2.0,),
-);
+)
 
 """
 IMPR_RESU(FORMAT='RESULTAT',UNITE=6,
@@ -202,4 +202,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='PT01',
                 ),
           )
 
-FIN();
+FIN()

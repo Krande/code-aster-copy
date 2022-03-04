@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       MESURE_TEMPS=_F(MOYENNE='NON'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL'));
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL'))
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,AFFE=_F(GROUP_MA=('VOL'), PHENOMENE='MECANIQUE', MODELISATION='3D'),
                      DISTRIBUTION=_F(METHODE='CENTRALISE'))
@@ -38,41 +38,41 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN),
                     INFO=3,
-                    );
+                    )
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, INFO=2);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, INFO=2)
 
 E=205000.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0));
+                            RHO=7800.0))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOL'),
                                 MATER=ACIER,
                                 ),
-                             ));
+                             ))
 
 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_NO=('N1','N2','N3','N4'),
                                 DX=0.,DY=0.,DZ=0.),
                              _F(GROUP_NO=('N5','N6','N7','N8'),
-                                DX=0.,DY=0.,DZ=1.E-6)));
+                                DX=0.,DY=0.,DZ=1.E-6)))
 
 
 MODI_MODELE(reuse=MODELEK, MODELE=MODELEK, DISTRIBUTION=_F(METHODE='CENTRALISE'))
 UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH),
-                          
+
                           ),
-                   SOLVEUR=_F(   
+                   SOLVEUR=_F(
                             METHODE='MUMPS'),
                    INFO=1,
-                   ); 
+                   )
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -82,8 +82,8 @@ MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
                        INFO          = 2)
 
-#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=MA_XFEM));
-#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM));
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=MA_XFEM))
+#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM))
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
@@ -96,7 +96,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
                         INFO          = 2)
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
+#IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM))
 
 
 
@@ -111,26 +111,26 @@ DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION'));
+                                OPERATION='EXTRACTION'))
 
 IMPR_TABLE(TABLE=DEP,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON');
+           IMPR_FONCTION='NON')
 
 
 DEPP = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = '^N[M]')));
+                               VALE_K    = '^N[M]')))
 
 
 DEPM = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = '^N[P]')));
+                               VALE_K    = '^N[P]')))
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -240,4 +240,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='MAX',
            TABLE=DEPM,)
 
-FIN();
+FIN()

@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
 from math import sqrt
 
-E       =   2029431300.40069     
-NU      =  0.450000000000000     
+E       =   2029431300.40069
+NU      =  0.450000000000000
 ALPHA   =  0.
 
 MAT = DEFI_MATERIAU(ELAS= _F(E=E, NU=NU, RHO=1.,),
@@ -44,45 +44,45 @@ MAT = DEFI_MATERIAU(ELAS= _F(E=E, NU=NU, RHO=1.,),
                                 RD_CYC=  1.E-2,
                                 RI_CYC=  1.E-2,
                                 DILA  =  1.,
-                                PTRAC =  0.,),);
-               
+                                PTRAC =  0.,),)
+
 epxx0 =-1.350354802792579E-021
 epyy0 =-3.980032078861482E-007
 epzz0 =0.
 epxy0 =8.492341581286122E-008/sqrt(2.)
 epxz0 =0./sqrt(2.)
 epyz0 =0./sqrt(2.)
-                    
+
 depxx = 7.372770706199615E-006
 depyy =4.632919275111915E-005
 depzz =0.000000000000000E+000
 depxy =1.733367998412452E-006/sqrt(2.)
 depxz =0.000000000000000E+000/sqrt(2.)
 depyz =0.000000000000000E+000/sqrt(2.)
-               
+
 vari_init = [0.]*50
 
 LIST=DEFI_LIST_REEL(DEBUT= 0.,
-                    INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,),);
+                    INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,),)
 
-EPXX=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epxx0, 1., epxx0+depxx),);
+EPXX=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epxx0, 1., epxx0+depxx),)
 
-EPYY=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epyy0, 1., epyy0+depyy),);
+EPYY=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epyy0, 1., epyy0+depyy),)
 
-EPZZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epzz0, 1., epzz0+depzz),);
+EPZZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epzz0, 1., epzz0+depzz),)
 
-EPXY=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epxy0, 1., epxy0+depxy),);
+EPXY=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epxy0, 1., epxy0+depxy),)
 
-EPXZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epxz0, 1., epxz0+depxz),);
+EPXZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epxz0, 1., epxz0+depxz),)
 
-EPYZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epyz0, 1., epyz0+depyz),);
+EPYZ=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., epyz0, 1., epyz0+depyz),)
 
 RESU=SIMU_POINT_MAT(INFO=1,
 
                     MATER=MAT,
-                    
+
                     INCREMENT=_F(LIST_INST=LIST),
-                    
+
                     EPSI_IMPOSE=_F(EPXX=EPXX, EPYY=EPYY, EPZZ=EPZZ,
                                    EPXY=EPXY, EPXZ=EPXZ, EPYZ=EPYZ),
 
@@ -99,7 +99,7 @@ RESU=SIMU_POINT_MAT(INFO=1,
                                  SIXY=0./sqrt(2.),
                                  SIXZ=0./sqrt(2.),
                                  SIYZ=0./sqrt(2.),),
-                    
+
                     VARI_INIT=_F(VALE=vari_init,),
 
                     COMPORTEMENT=_F(RELATION      ='HUJEUX',
@@ -109,33 +109,33 @@ RESU=SIMU_POINT_MAT(INFO=1,
                                     ITER_INTE_PAS =-10,
                                     PARM_THETA    =1.,
                                     DEFORMATION   ='PETIT',),
-                    
-                    NEWTON=_F(REAC_ITER=1,),);
 
-IMPR_TABLE(TABLE=RESU);
+                    NEWTON=_F(REAC_ITER=1,),)
+
+IMPR_TABLE(TABLE=RESU)
 
 TEST_TABLE(VALE_CALC   =-2.,
            TOLE_MACHINE=1.E-6,
            NOM_PARA    ='SIXX',
            TABLE       =RESU,
-           FILTRE      =_F(NOM_PARA='INST', VALE=1.,),);
-           
+           FILTRE      =_F(NOM_PARA='INST', VALE=1.,),)
+
 TEST_TABLE(VALE_CALC   =-2.,
            TOLE_MACHINE=1.E-6,
            NOM_PARA    ='SIYY',
            TABLE       =RESU,
-           FILTRE      =_F(NOM_PARA='INST', VALE=1.,),);
+           FILTRE      =_F(NOM_PARA='INST', VALE=1.,),)
 
 TEST_TABLE(VALE_CALC   =-2.,
            TOLE_MACHINE=1.E-6,
            NOM_PARA    ='SIZZ',
            TABLE       =RESU,
-           FILTRE      =_F(NOM_PARA='INST', VALE=1.,),);
-           
+           FILTRE      =_F(NOM_PARA='INST', VALE=1.,),)
+
 TEST_TABLE(VALE_CALC   =8.05131752866E-06,
            TOLE_MACHINE=5.E-2,
            NOM_PARA    ='V23',
            TABLE       =RESU,
-           FILTRE      =_F(NOM_PARA='INST', VALE=1.,),);
+           FILTRE      =_F(NOM_PARA='INST', VALE=1.,),)
 
-FIN();
+FIN()

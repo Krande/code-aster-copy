@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
    AFFE=_F(TOUT='OUI', MATER=ACIER,),
    AFFE_VARC=(_F(TOUT='OUI', EVOL=IRRA, NOM_VARC='IRRA',),
               _F(TOUT='OUI', EVOL =TEMPE,  NOM_VARC='TEMP', VALE_REF=0.0),),
-);
+)
 
 
 # CALCUL AVEC STAT_NON_LINE. VALIDATION DE LA MATRICE TANGENTE EN 3D AINSI
@@ -43,7 +43,7 @@ LISTE1=DEFI_LIST_REEL(DEBUT=0.,
                _F(JUSQU_A = 110.0, NOMBRE=   40,),
                _F(JUSQU_A = 200.0, NOMBRE=  180,),
               ),
-);
+)
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LISTE1),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -64,7 +64,7 @@ STAT1=STAT_NON_LINE(
    ),
    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,REAC_INCR=1),
    INCREMENT=_F(LIST_INST=DEFLIST1,),
-);
+)
 
 
 # LISTE D'INSTANT DIFFERENTE
@@ -73,7 +73,7 @@ LISTE2=DEFI_LIST_REEL(DEBUT=0.,
                _F(JUSQU_A = 110.0, NOMBRE=   10,),
                _F(JUSQU_A = 200.0, NOMBRE=   90,),
               ),
-);
+)
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LISTE2),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -97,7 +97,7 @@ STAT2=STAT_NON_LINE(
    ),
    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,REAC_INCR=1),
    INCREMENT=_F(LIST_INST=DEFLIST2),
-);
+)
 
 
 # Valeurs de references
@@ -163,7 +163,7 @@ for ii in range(len(REFER)):
                VALE_CALC=REFER[ii][icalc], VALE_REFE=REFER[ii][irefe]),
    )
 
-FIN();
+FIN()
 
 
 # Solution de Reference

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -335,17 +335,17 @@ TEST_TABLE(
 ABPI=DEFI_LIST_ENTI(    DEBUT=1,
                            INTERVALLE=_F(  JUSQU_A = 7,
                                         PAS = 2),
-                           TITRE=(""" TESTS DES DEMONS DANS LES TITRES 
-                &RL CODE &CODE COMMANDE &COMMANDE VERSION &VERSION 
-                &RL CAS TEST &CODE &RL COMMANDE &COMMANDE 
+                           TITRE=(""" TESTS DES DEMONS DANS LES TITRES
+                &RL CODE &CODE COMMANDE &COMMANDE VERSION &VERSION
+                &RL CAS TEST &CODE &RL COMMANDE &COMMANDE
                 &RL VERSION &VERSION  &RL DATE &DATE &RL""",       )
                         )
 
 ABPR=DEFI_LIST_REEL(    DEBUT=1.,
                            INTERVALLE=_F(  JUSQU_A = 7.,
                                         PAS = 2.),
-                       TITRE=( """SUITE DES TESTS DES DEMONS DANS TITRE 
-                &RL HEURE &HEURE  &RL DATE_HEURE &DATE_HEURE  
+                       TITRE=( """SUITE DES TESTS DES DEMONS DANS TITRE
+                &RL HEURE &HEURE  &RL DATE_HEURE &DATE_HEURE
                 &RL RL RETOUR LIGNE &RL LIGNE SUIVANTE""",   )
                         )
 

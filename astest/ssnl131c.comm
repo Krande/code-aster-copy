@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ MA=DEFI_GROUP(
    reuse =MA,
    MAILLAGE=MA,
    CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),
-              );
+              )
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
                  AFFE=(_F(GROUP_MA = ('LI1'),
                           PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'DIS_TR'),
                                 ),
-                  INFO=2,);
+                  INFO=2,)
 
 CHTEMP_1=CREA_CHAMP(
    TYPE_CHAM='NOEU_TEMP_R',
@@ -49,7 +49,7 @@ CHTEMP_1=CREA_CHAMP(
       _F(TOUT='OUI',
          NOM_CMP='TEMP',
          VALE=20.,),
-         ),);
+         ),)
 
 CHTEMP_2=CREA_CHAMP(
    TYPE_CHAM='NOEU_TEMP_R',
@@ -59,7 +59,7 @@ CHTEMP_2=CREA_CHAMP(
       _F(TOUT='OUI',
          NOM_CMP='TEMP',
          VALE=320.,),
-         ),);
+         ),)
 
 CHTEMP=CREA_RESU(
   TYPE_RESU='EVOL_THER',
@@ -70,7 +70,7 @@ CHTEMP=CREA_RESU(
          _F(CHAM_GD=CHTEMP_2,INST=0.5,),
          _F(CHAM_GD=CHTEMP_2,INST=1.,),
          _F(CHAM_GD=CHTEMP_2,INST=2.,),
-         ),);
+         ),)
 
 CHIRRA_1=CREA_CHAMP(
    TYPE_CHAM='NOEU_IRRA_R',
@@ -80,7 +80,7 @@ CHIRRA_1=CREA_CHAMP(
       _F(TOUT='OUI',
          NOM_CMP='IRRA',
          VALE=0.,),
-         ),);
+         ),)
 
 CHIRRA_2=CREA_CHAMP(
    TYPE_CHAM='NOEU_IRRA_R',
@@ -90,7 +90,7 @@ CHIRRA_2=CREA_CHAMP(
       _F(TOUT='OUI',
          NOM_CMP='IRRA',
          VALE=20.,),
-         ),);
+         ),)
 
 CHIRRA=CREA_RESU(
   TYPE_RESU='EVOL_VARC',
@@ -99,12 +99,12 @@ CHIRRA=CREA_RESU(
   AFFE=( _F(CHAM_GD=CHIRRA_1,INST=0.,),
          _F(CHAM_GD=CHIRRA_2,INST=1.,),
          _F(CHAM_GD=CHIRRA_2,INST=2.,),
-         ),);
+         ),)
 
 
 CHART=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='N2',DZ=1.,),),
-                       );
+                       )
 
 BLOC=AFFE_CHAR_MECA( MODELE=MO,
                      DDL_IMPO=(
@@ -117,21 +117,21 @@ BLOC=AFFE_CHAR_MECA( MODELE=MO,
                              DRX=0.,DRY=0.,
                              DRZ = 0.),
                              ),
-                       );
+                       )
 
 FONCT=DEFI_FONCTION(   NOM_PARA='INST',
                            VALE=( 0.,    0.,
                                   1.,  0.0001,
                                   2.,  -0.00001,
-                                  ) ,);
+                                  ) ,)
 
 LINST=DEFI_LIST_REEL( DEBUT=0.,
                       INTERVALLE=(
                          _F( JUSQU_A = 2., NOMBRE = 20),
                        ),
-                       );
+                       )
 
-carel=[0.]*78;
+carel=[0.]*78
 
 CAREG=AFFE_CARA_ELEM(MODELE=MO,
                      DISCRET=_F(GROUP_MA=('LI1'),
@@ -141,6 +141,6 @@ CAREG=AFFE_CARA_ELEM(MODELE=MO,
                                 ORIENTATION=(_F(GROUP_MA=('LI1',),
                                 CARA='VECT_Y',
                                 VALE=(0.,0.,1.),),),
-                        );
+                        )
 
 FIN()

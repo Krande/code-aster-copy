@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ BILIN = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                             2*sigma_max/EE,   sigma_max*(1+1/ratio),
                             ),
                             PROL_DROITE = 'LINEAIRE',
-                            PROL_GAUCHE = 'LINEAIRE',);
+                            PROL_GAUCHE = 'LINEAIRE',)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E = EE,
                           NU = poisson,
@@ -106,7 +106,7 @@ CM=AFFE_MATERIAU(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
                                   MATER = MAT),
                                    )
-                                   
+
 #AVEC DEFORMATION THERMIQUE
 CMTH=AFFE_MATERIAU(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
@@ -135,7 +135,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(  JUSQU_A = 1.0,
                                       NOMBRE = 1)
                       )
-                      
+
 #CALCUL THERMOMECANIQUE
 RESUTH=STAT_NON_LINE( MODELE=MO,
                        CHAM_MATER=CMTH,
@@ -202,7 +202,7 @@ CH_EPS=CREA_CHAMP( OPERATION='ASSE',
                         ),
                     ),
                     )
-                    
+
 ####################################################################################
 # PRISE EN COMPTE ETAT INIT VIA EPSA
 ####################################################################################
@@ -211,7 +211,7 @@ EPS0=CREA_CHAMP(TYPE_CHAM='ELNO_EPSI_R',
                 MODELE=MO,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),
-                        VALE=(0.,0.,0.,0.,0.,0.),),);
+                        VALE=(0.,0.,0.,0.,0.,0.),),)
 
 EPSA=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_VARC',
@@ -219,7 +219,7 @@ EPSA=CREA_RESU(OPERATION='AFFE',
                AFFE=(
                      _F(CHAM_GD=EPS0,  INST=0.,),
                      _F(CHAM_GD=CH_EPS,  INST=1.0,),
-                     ));
+                     ))
 
 CTM=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F(TOUT='OUI',
@@ -229,7 +229,7 @@ CTM=AFFE_MATERIAU(MAILLAGE=MA,
                                 NOM_VARC='EPSA',
                                 NOM_CHAM='EPSA_ELNO',
                                 ),
-                            ),);
+                            ),)
 
 
 ##################################################################################################
@@ -262,7 +262,7 @@ GTH1=CALC_G(RESULTAT=RESUTH,
                 R_SUP=5.,
                 DISCRETISATION='LEGENDRE',
                 ),
-            );
+            )
 
 GTH2=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -273,7 +273,7 @@ GTH2=CALC_G(RESULTAT=RESUTH,
                     R_SUP=10.,
                     DISCRETISATION='LEGENDRE',
                     ),
-                    );
+                    )
 
 GTH3=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -284,7 +284,7 @@ GTH3=CALC_G(RESULTAT=RESUTH,
                     R_SUP=20.,
                     DISCRETISATION='LEGENDRE',
                     ),
-                    );
+                    )
 
 GTH4=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
@@ -295,7 +295,7 @@ GTH4=CALC_G(RESULTAT=RESUTH,
                      R_SUP=30.,
                     DISCRETISATION='LEGENDRE',
                      ),
-                     );
+                     )
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES
@@ -310,7 +310,7 @@ GINI1=CALC_G(RESULTAT=RESUINI,
                     R_SUP=5.,
                     DISCRETISATION='LEGENDRE',
                     ),
-            );
+            )
 
 GINI2=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -321,7 +321,7 @@ GINI2=CALC_G(RESULTAT=RESUINI,
                 R_SUP=10.,
                 DISCRETISATION='LEGENDRE',
                 ),
-                );
+                )
 
 GINI3=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -332,7 +332,7 @@ GINI3=CALC_G(RESULTAT=RESUINI,
                 R_SUP=20.,
                 DISCRETISATION='LEGENDRE',
                 ),
-                );
+                )
 
 GINI4=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
@@ -343,9 +343,9 @@ GINI4=CALC_G(RESULTAT=RESUINI,
                     R_SUP=30.,
                     DISCRETISATION='LEGENDRE',
                     ),
-                    );
+                    )
 
-                           
+
 
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                  _F(NOM='C1',OPTION='ENV_SPHERE',POINT=(lx-a-2*hx, -hy/2.),PRECISION=1/(8.*ny),RAYON=1/(8.*ny)),
                                  _F(NOM='C2',OPTION='ENV_SPHERE',POINT=(lx-a-2*hx,  hy/2.),PRECISION=1/(8.*ny),RAYON=1/(8.*ny)),
                                 ),
-                 );
+                 )
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURFTOT'),
@@ -67,7 +67,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                            _F(GROUP_MA=('LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',
-                              )));
+                              )))
 
 
 LN = FORMULE(VALE='Y',
@@ -77,12 +77,12 @@ LT = FORMULE(VALE='X',
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
-                    );
+                    )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          CONTACT='STANDARD',
                          FISSURE=FISS,
-                         INFO=1);
+                         INFO=1)
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -110,7 +110,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=MAT,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------------------
 #                   CHARGEMENT
@@ -123,14 +123,14 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                _F(GROUP_NO=('A1','A2'),DDL=('DY','DY'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
                                _F(GROUP_NO=('C1','C2'),DDL=('DY','DY'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
                               ),
-                  );
+                  )
 
 CHF=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(
                              _F(GROUP_MA='LIG1',DY = -1.),
                              _F(GROUP_MA='LIG3',DY =  1.),
                             ),
-                   );
+                   )
 
 RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
                         VALE=(0.,0.,0.1,0.1,0.2,0.0,0.3,-0.1),
@@ -164,7 +164,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    NEWTON=_F(REAC_ITER=1,
                              MATRICE='TANGENTE',
                             ),
-                   INFO=1);
+                   INFO=1)
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : VISUALISATION DES DEPLACEMENTS
@@ -176,7 +176,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN')),
-                              );
+                              )
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
@@ -188,14 +188,14 @@ DEPL_1 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT = RES_XFEM,
                     NOM_CHAM='DEPL',
-                   );
+                   )
 
 DEPL_2 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     NUME_ORDRE=3*npas/2,
                     OPERATION='EXTR',
                     RESULTAT = RES_XFEM,
                     NOM_CHAM='DEPL',
-                   );
+                   )
 
 MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                    MAILLAGE=MA_XFEM,
@@ -203,24 +203,24 @@ MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                                      OPTION='ENV_SPHERE',
                                      POINT=(-a, 0.),
                                      PRECISION=0.0001,
-                                     RAYON=0.0001));
+                                     RAYON=0.0001))
 
 TABDEP_1= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT_FISSURE',
                                    GROUP_NO  = 'NTEST',
                                    CHAM_GD   = DEPL_1,
                                    NOM_CMP   = ( 'DX','DY'),
-                                   OPERATION = 'EXTRACTION'));
+                                   OPERATION = 'EXTRACTION'))
 
 TABDEP_2= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT_FISSURE',
                                    GROUP_NO  = 'NTEST',
                                    CHAM_GD   = DEPL_2,
                                    NOM_CMP   = ( 'DX','DY'),
-                                   OPERATION = 'EXTRACTION'));
+                                   OPERATION = 'EXTRACTION'))
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
-DEPREF_1=9.8756898959655E-02;
+DEPREF_1=9.8756898959655E-02
 # CETTE VALEUR EST DE NON REGRESSION
-DEPREF_2=1.7771170448857E-02;
+DEPREF_2=1.7771170448857E-02
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',

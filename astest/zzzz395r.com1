@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ TEST_RESU(RESU=(
                    PRECISION = 0.0015,
                    ),
                 ),
-          );
+          )
 
 # Tests du problème reconstruit par Gappy-POD - Sur SIXX uniquement
 TEST_RESU(RESU=(
@@ -127,7 +127,7 @@ TEST_RESU(RESU=(
                    PRECISION = 0.005,
                    ),
                 ),
-          );
+          )
 
 # SIYY et SIZZ sont forcément nulles en dehors du RID puisque la base est filtrée sur SIXX
 TEST_RESU(RESU=(
@@ -150,7 +150,7 @@ TEST_RESU(RESU=(
                    POINT     = 1,
                    NOM_CMP   = 'SIYY',
                    CRITERE   = 'ABSOLU',
-                   ORDRE_GRANDEUR = 1, 
+                   ORDRE_GRANDEUR = 1,
                    VALE_REFE = 0.0,
                    VALE_CALC = 0.0,
                    PRECISION = 1.E-6,
@@ -163,12 +163,12 @@ TEST_RESU(RESU=(
                    POINT     = 1,
                    NOM_CMP   = 'SIZZ',
                    CRITERE   = 'ABSOLU',
-                   ORDRE_GRANDEUR = 1, 
+                   ORDRE_GRANDEUR = 1,
                    VALE_REFE = 0.0,
                    VALE_CALC = 0.0,
                    PRECISION = 1.E-6,
                    ),
                 ),
-          );
+          )
 
 FIN()

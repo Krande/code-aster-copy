@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -31,25 +31,25 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_NO=(_F(GROUP_MA='AB',),
                              _F(GROUP_MA='BC',),
                              _F(GROUP_MA='CD',),
-                             _F(GROUP_MA='DA',),),);
+                             _F(GROUP_MA='DA',),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='Q4G',),);
+                       MODELISATION='Q4G',),)
 
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
                        COQUE=_F(GROUP_MA='TOUT',
                                 EPAIS=0.1,
-                                ANGL_REP=(0.0,0.0,),),);
+                                ANGL_REP=(0.0,0.0,),),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=25.0,
-                          NU=0.25,),);
+                          NU=0.25,),)
 
 CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MAT,),);
-PO = 1.0;
+                               MATER=MAT,),)
+PO = 1.0
 
 
 P = FORMULE(VALE='PO*sin(pi*X)*sin(pi*Y)',
@@ -76,7 +76,7 @@ CHA_1=AFFE_CHAR_MECA(MODELE=MO,
                                   _F(GROUP_MA='BC',
                                      MX=0.0,),
                                   _F(GROUP_MA='DA',
-                                     MX=0.0,),),);
+                                     MX=0.0,),),)
 
 CHA=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='O',
@@ -108,17 +108,17 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                                 _F(GROUP_MA='BC',
                                    MX=0.0,),
                                 _F(GROUP_MA='DA',
-                                   MX=0.0,),),);
+                                   MX=0.0,),),)
 
 CHA_P=AFFE_CHAR_MECA_F(MODELE=MO,
                        FORCE_COQUE=_F(GROUP_MA='MAIL1',
-                                      PRES=P,),);
+                                      PRES=P,),)
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHAM_MAT,
                    CARA_ELEM=CAR_ELE,
                    EXCIT=(_F(CHARGE=CHA,),
-                          _F(CHARGE=CHA_P,),),);
+                          _F(CHARGE=CHA_P,),),)
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
@@ -126,15 +126,15 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 SIG_C1_M=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 EFF=CALC_CHAMP(RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'))
 
 
@@ -1257,4 +1257,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

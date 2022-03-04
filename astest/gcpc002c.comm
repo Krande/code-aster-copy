@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,31 +22,31 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=210000.0,
-                          NU=.3,),);
+                          NU=.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='SUPY',
                                  DY=0.,),
                               _F(GROUP_NO='APPUI',
-                                 DX=0.,),),);
+                                 DX=0.,),),)
 
 CHA2=AFFE_CHAR_CINE(MODELE=MO,
                    MECA_IMPO=(_F(GROUP_NO='SUPZ',
                                  DZ=0.,),
                               _F(GROUP_NO='CHARGE',
-                                 DX=-1.,),),);
+                                 DX=-1.,),),)
 
 # ----------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ VECAS=MECA_STATIQUE(MODELE=MO,
                                PRE_COND='LDLT_INC',
                                NIVE_REMPLISSAGE=1,
                                RESI_RELA=1.E-11,
-                               NMAX_ITER=0,),);
+                               NMAX_ITER=0,),)
 
 VECAS=CALC_CHAMP(reuse=VECAS,RESULTAT=VECAS,CONTRAINTE=('SIGM_ELNO'))
 
@@ -71,7 +71,7 @@ VECAS2=MECA_STATIQUE(MODELE=MO,
                     SOLVEUR=_F(METHODE='GCPC',
                                PRE_COND='LDLT_SP',
                                RESI_RELA=1.E-11,
-                               NMAX_ITER=0,),);
+                               NMAX_ITER=0,),)
 
 # ----------------------------------------------------------------------
 # GCP + LDLT_INC
@@ -748,4 +748,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 
-FIN();
+FIN()

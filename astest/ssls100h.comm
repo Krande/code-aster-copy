@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,24 +30,24 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=1.0,
                             NU=0.3,
-                            RHO=1.0,),);
+                            RHO=1.0,),)
 
-MAILL=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
                  CREA_GROUP_MA=_F(NOM='TOUT',
-                                  TOUT='OUI',),);
+                                  TOUT='OUI',),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),);
+                            MATER=MATER,),)
 
 MODEL=AFFE_MODELE(MAILLAGE=MAILL,
-                  
+
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='Q4G',),);
+                          MODELISATION='Q4G',),)
 
 CINE=AFFE_CHAR_MECA(MODELE=MODEL,
                     DDL_IMPO=(_F(GROUP_NO='GRNO_ABC',
@@ -70,23 +70,23 @@ CINE=AFFE_CHAR_MECA(MODELE=MODEL,
                                  DY=0.0,
                                  DRX=0.0,
                                  DRY=0.0,
-                                 DRZ=0.0,),),);
+                                 DRZ=0.0,),),)
 
 PRES=AFFE_CHAR_MECA(MODELE=MODEL,
                     FORCE_COQUE=_F(TOUT='OUI',
-                                   PRES=1.0,),);
+                                   PRES=1.0,),)
 
 CHF3=AFFE_CHAR_MECA(MODELE=MODEL,
                     FORCE_COQUE=_F(TOUT='OUI',
-                                   F3=-1.0,),);
+                                   F3=-1.0,),)
 
 CHPE=AFFE_CHAR_MECA(MODELE=MODEL,
                     PESANTEUR=_F(GRAVITE=10.0,
-                                 DIRECTION=(0.0,0.0,-1.0,),),);
+                                 DIRECTION=(0.0,0.0,-1.0,),),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODEL,
                        COQUE=_F(GROUP_MA='TOUT',
-                                EPAIS=0.1,),);
+                                EPAIS=0.1,),)
 
 DEP=MACRO_ELAS_MULT(MODELE=MODEL,
                     CHAM_MATER=CHMAT,
@@ -97,7 +97,7 @@ DEP=MACRO_ELAS_MULT(MODELE=MODEL,
                                 _F(NOM_CAS='CHARGE2',
                                    CHAR_MECA=CHF3,),
                                 _F(NOM_CAS='CHARGE3',
-                                   CHAR_MECA=CHPE,),),);
+                                   CHAR_MECA=CHPE,),),)
 #--------------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -325,7 +325,7 @@ RELEVE_1=POST_RELEVE_T(ACTION=_F(INTITULE='EFGE_R',
                                  NOM_CHAM='EFGE_ELNO',
                                  NUME_ORDRE=1,
                                  NOM_CMP=('MXX','MYY',),
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
@@ -469,5 +469,5 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 #--------------------------------------------------------------------
 
-FIN();
+FIN()
 #

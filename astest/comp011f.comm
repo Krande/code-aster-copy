@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 import numpy as N
 
@@ -41,9 +41,9 @@ tmax =1.
 
 NCAL = 20
 
-ZERO =DEFI_CONSTANTE(VALE=0.);
+ZERO =DEFI_CONSTANTE(VALE=0.)
 
-UN =DEFI_CONSTANTE(VALE=1.0);
+UN =DEFI_CONSTANTE(VALE=1.0)
 
 compor='BETON_BURGER'
 
@@ -55,11 +55,11 @@ Nbvari=21
 
 YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 11000.,
                                          500., 31000.,
-                                           ),);
+                                           ),)
 
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 1.0e-04,
                                          500., 2.0e-04,
-                                           ),);
+                                           ),)
 
 FONC1=DEFI_FONCTION( NOM_PARA='SECH',
                      PROL_DROITE='LINEAIRE',
@@ -67,14 +67,14 @@ FONC1=DEFI_FONCTION( NOM_PARA='SECH',
                      VALE=(0.0, 0.0, 1.0, 1.0,)
                    )
 
-KRS_F = DEFI_CONSTANTE(VALE=4360);
-ETARS_F = DEFI_CONSTANTE(VALE=3.41e9);
-KAPPA_F = DEFI_CONSTANTE(VALE=3e-3);
-ETAIS_F = DEFI_CONSTANTE(VALE=5.76e12);
-KRD_F = DEFI_CONSTANTE(VALE=3270);
-ETARD_F = DEFI_CONSTANTE(VALE=2.55e9);
-ETAID_F = DEFI_CONSTANTE(VALE=4.32e12);
-TEMP0C_F = DEFI_CONSTANTE(VALE=20.);
+KRS_F = DEFI_CONSTANTE(VALE=4360)
+ETARS_F = DEFI_CONSTANTE(VALE=3.41e9)
+KAPPA_F = DEFI_CONSTANTE(VALE=3e-3)
+ETAIS_F = DEFI_CONSTANTE(VALE=5.76e12)
+KRD_F = DEFI_CONSTANTE(VALE=3270)
+ETARD_F = DEFI_CONSTANTE(VALE=2.55e9)
+ETAID_F = DEFI_CONSTANTE(VALE=4.32e12)
+TEMP0C_F = DEFI_CONSTANTE(VALE=20.)
 
 MATER=DEFI_MATERIAU( ELAS_FO=_F( E=YOUN,
                                  NU=ZERO,
@@ -92,17 +92,17 @@ MATER=DEFI_MATERIAU( ELAS_FO=_F( E=YOUN,
                                           ETA_ID   = ETAID_F,
                                           ETA_FD   = ZERO,
                                           QSR_K    = ZERO,
-                                          TEMP_0_C = TEMP0C_F,),);
+                                          TEMP_0_C = TEMP0C_F,),)
 
 MOMECA=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),);
+                           MODELISATION='D_PLAN',),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1,
                                      NOMBRE=NCAL,),
-                                     ),);
+                                     ),)
 
 DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -119,13 +119,13 @@ CHP_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
                     MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             NOM_CMP='TEMP',
-                            VALE_F=TIMP,),);
+                            VALE_F=TIMP,),)
 
 RTEMP=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
                 AFFE=_F(CHAM_GD=CHP_TEMP,
-                        LIST_INST=L_INST,),);
+                        LIST_INST=L_INST,),)
 
 SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                         AFFE=_F( TOUT = 'OUI',
@@ -143,7 +143,7 @@ CHMTH=AFFE_MATERIAU(MAILLAGE=MA,
                                  VALE_REF =  TREF,
                                  TOUT     = 'OUI',
                                  EVOL     =  RTEMP,
-                                 NOM_CHAM = 'TEMP',)),);
+                                 NOM_CHAM = 'TEMP',)),)
 
 
 LIAISON1=AFFE_CHAR_MECA(MODELE=MOMECA,
@@ -152,7 +152,7 @@ LIAISON1=AFFE_CHAR_MECA(MODELE=MOMECA,
                                      DX=0.0),
                                   _F(GROUP_NO=('N1','N2',),
                                      DY=0.0,),
-                                    ),);
+                                    ),)
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
                        DDL_IMPO=(
@@ -160,7 +160,7 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
                                      DX=0.0),
                                   _F(GROUP_NO=('N1','N2','N3','N4'),
                                      DY=0.0,),
-                                    ),);
+                                    ),)
 
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CHMTH,
@@ -173,7 +173,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 INCREMENT=_F(LIST_INST=DEFLIST,),
                 NEWTON=_F(REAC_INCR=1,
                           REAC_ITER=1,),
-                          );
+                          )
 
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'))
@@ -187,7 +187,7 @@ Vmis=POST_RELEVE_T(ACTION=_F(INTITULE='VMIS_N1',
                                 RESULTAT=U,
                                 NOM_CHAM='SIEQ_ELNO',
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=Vmis)
 
@@ -216,7 +216,7 @@ for i in range(NCAL):
 
           # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
 
-          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
+          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF))
 
           print('i=',i, ' instant=', time, ' Temperature=',Ti)
 
@@ -248,11 +248,11 @@ for i in range(NCAL):
                                        ETA_ID = 4.32e12,
                                        ETA_FD = 0.,
                                        QSR_K  = 0.,
-                                       TEMP_0_C  = 20.,),);
+                                       TEMP_0_C  = 20.,),)
 
 
           listinst = DEFI_LIST_REEL(DEBUT=timem,
-                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
+                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),)
 
           CHMTH[i]=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
@@ -265,7 +265,7 @@ for i in range(NCAL):
                                  VALE_REF =  TREF,
                                  TOUT     = 'OUI',
                                  EVOL     =  RTEMP,
-                                 NOM_CHAM = 'TEMP',)),);
+                                 NOM_CHAM = 'TEMP',)),)
 
           LIAISON2=AFFE_CHAR_MECA(MODELE=MOMECA,
                        DDL_IMPO=(
@@ -273,11 +273,11 @@ for i in range(NCAL):
                                      DX=0.0),
                                   _F(GROUP_NO=('N1','N2'),
                                      DY=0.0,),
-                                    ),);
+                                    ),)
 
           CHRGE[i]=AFFE_CHAR_MECA_F(MODELE=MOMECA,
                        DDL_IMPO=(_F(GROUP_NO=('N2','N3'),
-                                    DX=epsimp,),),);
+                                    DX=epsimp,),),)
 
 
           if i == 0 :
@@ -290,7 +290,7 @@ for i in range(NCAL):
                                  INCREMENT=_F(LIST_INST=listinst,),
                                  NEWTON=_F(REAC_INCR=1,
                                  REAC_ITER=1,),
-                                 );
+                                 )
           else :
 
               NOR = FORMULE(VALE='YOUN(Ti)/YOUN(Tm)*SIXX',
@@ -323,15 +323,15 @@ for i in range(NCAL):
                              INCREMENT=_F(LIST_INST=listinst,),
                              NEWTON=_F(REAC_INCR=1,
                              REAC_ITER=1,),
-                            );
+                            )
 
-              DETRUIRE(NOM =EM);
-              DETRUIRE(NOM =SM);
-              DETRUIRE(NOM =VM);
-              DETRUIRE(NOM =NOR);
-              DETRUIRE(NOM =SIG1);
-              DETRUIRE(NOM =SIG2);
-              DETRUIRE(NOM =SM1);
+              DETRUIRE(NOM =EM)
+              DETRUIRE(NOM =SM)
+              DETRUIRE(NOM =VM)
+              DETRUIRE(NOM =NOR)
+              DETRUIRE(NOM =SIG1)
+              DETRUIRE(NOM =SIG2)
+              DETRUIRE(NOM =SM1)
 
           RESU[i]=CALC_CHAMP(reuse=RESU[i],RESULTAT=RESU[i],CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIEF_ELNO'))
 
@@ -355,13 +355,13 @@ for i in range(NCAL):
                            OPERATION='EXTR',
                            RESULTAT=RESU[i],
                            NOM_CHAM='VARI_ELGA',
-                           NUME_ORDRE=1,  );
+                           NUME_ORDRE=1,  )
 
-          DETRUIRE(NOM =epsimp);
-          DETRUIRE(NOM =Ei);
-          DETRUIRE(NOM =listinst);
-          DETRUIRE(NOM =CHRGE[i]);
-          DETRUIRE(NOM =LIAISON2);
+          DETRUIRE(NOM =epsimp)
+          DETRUIRE(NOM =Ei)
+          DETRUIRE(NOM =listinst)
+          DETRUIRE(NOM =CHRGE[i])
+          DETRUIRE(NOM =LIAISON2)
 
           SVMIS[i]=POST_RELEVE_T(ACTION=_F(INTITULE='VMIS_N1',
                                 GROUP_NO='N1',
@@ -369,7 +369,7 @@ for i in range(NCAL):
                                 RESULTAT=RESU[i],
                                 NOM_CHAM='SIEQ_ELNO',
                                 NOM_CMP='PRIN_1',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
           IMPR_TABLE(TABLE=SVMIS[i])
 
           TEST_TABLE(TABLE=SVMIS[i],
@@ -377,7 +377,7 @@ for i in range(NCAL):
                      VALE_CALC=Vmis['PRIN_1',i+2],
                      VALE_REFE=Vmis['PRIN_1',i+2],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',);
+                     REFERENCE='AUTRE_ASTER',)
 
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,27 +18,27 @@
 # --------------------------------------------------------------------
 POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'))
 
-T000 = 0.;
-T_END = 0.1 ;
-pas_gro = 0.0100;
-pas_hfin = pas_gro/1. ;
+T000 = 0.
+T_END = 0.1
+pas_gro = 0.0100
+pas_hfin = pas_gro/1.
 
 # Instant list devoted to seism
 
 L_INSTh=DEFI_LIST_REEL(DEBUT=T000,
-                       INTERVALLE=(_F(JUSQU_A=T_END, PAS=pas_hfin,),),);
+                       INTERVALLE=(_F(JUSQU_A=T_END, PAS=pas_hfin,),),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=T000,
-                      INTERVALLE=_F(JUSQU_A=T_END, PAS=pas_gro,),);
+                      INTERVALLE=_F(JUSQU_A=T_END, PAS=pas_gro,),)
 
 L_COMB=DEFI_LIST_REEL(DEBUT=T000,
-                      INTERVALLE=_F(JUSQU_A=T_END, PAS=pas_gro,),);
+                      INTERVALLE=_F(JUSQU_A=T_END, PAS=pas_gro,),)
 
 DEFLISTh =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INSTh ),
                         ECHEC=_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=2,
-                                 SUBD_NIVEAU=20),);
+                                 SUBD_NIVEAU=20),)
 
 
 # CALCUL JOINT_MECA_FROT
@@ -70,7 +70,7 @@ U_JF=DYNA_NON_LINE(reuse=U_JF,
                                  FORMULATION='DEPLACEMENT',
                                  ALPHA=-0.1,
                                  ),
-                  );
+                  )
 
 DEPR1X=RECU_FONCTION(RESULTAT=U_JF,
                       TITRE='DEPR1X',
@@ -80,7 +80,7 @@ DEPR1X=RECU_FONCTION(RESULTAT=U_JF,
                       LIST_INST=L_COMB,
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      INTERPOL='LIN',);
+                      INTERPOL='LIN',)
 
 TEST_FONCTION(VALEUR=(_F(VALE_REFE=3.959E-06,
                          VALE_PARA=0.05,
@@ -93,6 +93,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_REFE=3.959E-06,
                          REFERENCE='AUTRE_ASTER',
                          VALE_CALC=3.947782254563E-06,),
                       ),
-              );
+              )
 
 FIN()

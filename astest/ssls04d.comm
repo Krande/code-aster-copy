@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,30 +19,30 @@
 
 #
 # MODELISATION : COQUE_3D
-# 
+#
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               ),
               DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 
 MA=CREA_MAILLAGE(MAILLAGE=M,
                  LINE_QUAD=_F(TOUT='OUI'),)
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MA,
-                   MODI_MAILLE=(_F(GROUP_MA='Pout_Q4',    
+                   MODI_MAILLE=(_F(GROUP_MA='Pout_Q4',
                                    OPTION = 'QUAD8_9',
                                    PREF_NOEUD='ND'),
-                                _F(GROUP_MA='Pout_T3',    
+                                _F(GROUP_MA='Pout_T3',
                                    OPTION = 'TRIA6_7',
                                    PREF_NOEUD='ND')))
 
 MOEL=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='COQUE_3D',),);
+                         MODELISATION='COQUE_3D',),)
 
 #
 #---------------------------------------------------------------------
@@ -51,7 +51,7 @@ MOEL=AFFE_MODELE(MAILLAGE=MAIL,
 
 CAEL=AFFE_CARA_ELEM(MODELE=MOEL,
                     COQUE=_F(GROUP_MA='Poutre_Z',
-                             EPAIS=0.01,),);
+                             EPAIS=0.01,),)
 
 #
 #---------------------------------------------------------------------
@@ -60,20 +60,20 @@ CAEL=AFFE_CARA_ELEM(MODELE=MOEL,
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=2.1E+11,
                                NU=0.3,
-                               RHO=7800,),);
+                               RHO=7800,),)
 
 #
 
 CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATERIAU,),);
+                               MATER=MATERIAU,),)
 
 mass=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                MODELE=MOEL,
                CHAM_MATER=CHAM_MAT,
-               CARA_ELEM=CAEL,);
+               CARA_ELEM=CAEL,)
 
-IMPR_TABLE(TABLE=mass,);
+IMPR_TABLE(TABLE=mass,)
 
 #
 #---------------------------------------------------------------------
@@ -87,7 +87,7 @@ CON_LI=AFFE_CHAR_MECA(MODELE=MOEL,
                                   DZ=0.,
                                   DRX=0.,
                                   DRY=0.,
-                                  DRZ=0.,),);
+                                  DRZ=0.,),)
 
 #
 
@@ -95,7 +95,7 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MOEL,
                       FORCE_ARETE=(_F(GROUP_MA='Fz_Haut',
                                       FZ=10000.,),
                                    _F(GROUP_MA='Fz_Bas',
-                                      FZ=-10000.,),),);
+                                      FZ=-10000.,),),)
 
 #
 #---------------------------------------------------------------------
@@ -106,7 +106,7 @@ RES=MECA_STATIQUE(MODELE=MOEL,
                   CHAM_MATER=CHAM_MAT,
                   CARA_ELEM=CAEL,
                   EXCIT=(_F(CHARGE=CON_LI,),
-                         _F(CHARGE=CHARGE,),),);
+                         _F(CHARGE=CHARGE,),),)
 
 # Test du deplacement suivant Z au point A
 
@@ -128,13 +128,13 @@ RES=CALC_CHAMP(   RESULTAT=RES,reuse=RES,
 SIG_MOY=POST_CHAMP(RESULTAT=RES,
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 
 SIG_MOY=CALC_CHAMP( RESULTAT=SIG_MOY,reuse= SIG_MOY,
                     CONTRAINTE=('SIGM_NOEU'))
 
 C3_S=CALC_CHAMP(RESULTAT=SIG_MOY,
-                CONTRAINTE='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',)
 
 
 # Test des contraintes aux pointx B et C
@@ -160,4 +160,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    CRITERE='RELATIF',
                    PRECISION=18.5E-2,)))
 
-FIN();
+FIN()

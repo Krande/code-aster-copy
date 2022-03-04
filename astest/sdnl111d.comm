@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,34 +21,34 @@
 # en traction compression.
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA=('POU1','POU2',),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU=(_F(GROUP_MA_PEAU='CNT_POU1',),
                                  _F(GROUP_MA_PEAU='CNT_POU2',),),
-                   INFO=2,);
+                   INFO=2,)
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.3,
-                            RHO=7800.,),);
+                            RHO=7800.,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='POU1',
                              MATER=MATER,),
                           _F(GROUP_MA='POU2',
-                             MATER=MATER,),),);
+                             MATER=MATER,),),)
 # *******************************************
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -56,7 +56,7 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                                     DX=0.,
                                     DY=0.,),
                                  _F(GROUP_NO='CL_POU2',
-                                    DZ=0.,),),);
+                                    DZ=0.,),),)
 
 VITINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='AFFE',
@@ -70,7 +70,7 @@ VITINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                      VALE=-1.0,),
                   _F(GROUP_NO='POU2',
                      NOM_CMP='DZ',
-                     VALE=0.0,),),);
+                     VALE=0.0,),),)
 # *******************************************
 
 CONTACT = DEFI_CONTACT(MODELE      = MODELE,
@@ -81,14 +81,14 @@ CONTACT = DEFI_CONTACT(MODELE      = MODELE,
                              GROUP_MA_MAIT='M101',
                              GROUP_MA_ESCL='M103',
                            ),
-                      );
+                      )
 
 
 # ************************************************************
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=1.E-3,
-                                    PAS=1.E-6,),);
+                                    PAS=1.E-6,),)
 
 RESU=DYNA_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
@@ -105,7 +105,7 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                                    ALPHA=-0.1,),
                    NEWTON=_F(MATRICE='TANGENTE',),
                    SOLVEUR=_F(
-                              METHODE='MULT_FRONT',),);
+                              METHODE='MULT_FRONT',),)
 #
 # TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
 
@@ -162,5 +162,5 @@ TEST_RESU(RESU=(_F(GROUP_NO='N1',
                 ),
           )
 
-FIN();
+FIN()
 #

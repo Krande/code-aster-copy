@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED', )
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = MAT) )
 
-MO=AFFE_MODELE(  MAILLAGE=MAIL, 
+MO=AFFE_MODELE(  MAILLAGE=MAIL,
          AFFE=_F( TOUT = 'OUI', MODELISATION = 'AXIS', PHENOMENE = 'MECANIQUE'))
 
 KE=CALC_MATR_ELEM(MODELE=MO, CHAM_MATER=CHMAT, OPTION='RIGI_MECA')

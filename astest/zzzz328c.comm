@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,29 +19,29 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1e9,
-                            NU=0.2,),);
+                            NU=0.2,),)
 
 L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 # MODELISATION C_PLAN
 
 MO0=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 MOMAT0=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 AX=0.0
 AY=0.0
@@ -64,16 +64,16 @@ BLOC0=AFFE_CHAR_MECA(MODELE=MO0,
                                     DY=CY,),
                                  _F(GROUP_NO='D',
                                     DX=DX,
-                                    DY=DY,),),);
+                                    DY=DY,),),)
 
 U0=STAT_NON_LINE(MODELE=MO0,
                 CHAM_MATER=MOMAT0,
                 EXCIT=_F(CHARGE=BLOC0,),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, );
+U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -82,18 +82,18 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=2395.833333,
                   VALE_CALC=2395.833333,
-                  GROUP_MA='M5',),);
+                  GROUP_MA='M5',),)
 
 # MODELISATION C_PLAN_SI
 
 MO1=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN_SI',),);
+                       MODELISATION='C_PLAN_SI',),)
 
 MOMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                        DDL_IMPO=(_F(GROUP_NO='A',
@@ -107,16 +107,16 @@ BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                                     DY=CY,),
                                  _F(GROUP_NO='D',
                                     DX=DX,
-                                    DY=DY,),),);
+                                    DY=DY,),),)
 
 U1=STAT_NON_LINE(MODELE=MO1,
                 CHAM_MATER=MOMAT1,
                 EXCIT=_F(CHARGE=BLOC1,),
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
 
-U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, );
+U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
@@ -125,7 +125,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=2395.833333,
                   VALE_CALC=2395.833333,
-                  GROUP_MA='M5',),);
+                  GROUP_MA='M5',),)
 
 
-FIN();
+FIN()

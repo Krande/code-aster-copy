@@ -44,23 +44,23 @@ MA=DEFI_GROUP(reuse =MA,
                              _F(NOM='BORDSUP',
                                 GROUP_MA='GM2',),
                              _F(NOM='CUBE',
-                                GROUP_MA='GM1',),),);
+                                GROUP_MA='GM1',),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('CUBE','BORDINF','BORDSUP'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=210000.0,
                           ALPHA = 1.E-6,
                           NU=0.3,),
                   ECRO_LINE=_F(D_SIGM_EPSI=1930.,
-                               SY=181.,),);
+                               SY=181.,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_MA='BORDINF',
@@ -71,15 +71,15 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                                 DX=1.,
                                 DY=1.,
                                 DZ=1.,
-                                ),),);
+                                ),),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0., 0.,
-                          1., 1));
+                          1., 1))
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=1,),);
+                                  NOMBRE=1,),)
 
 
 
@@ -93,7 +93,7 @@ U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
              AFFE=_F(TOUT='OUI',
                      NOM_CMP=('DX','DY','DZ',),
                      VALE=(0.,0.,0.,),
-                     ),);
+                     ),)
 
 
 SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
@@ -103,7 +103,7 @@ SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                         NOM_CMP=('SIXX','SIYY','SIZZ',
                                  'SIXY','SIYZ','SIXZ',),
                         VALE=(0.,0.,0.,0.,0.,0.,),
-                        ),);
+                        ),)
 
 
 VARIP=CREA_CHAMP(OPERATION='AFFE',
@@ -121,27 +121,27 @@ VARIP=CREA_CHAMP(OPERATION='AFFE',
 M_EL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   CHARGE=CHARGE,);
+                   CHARGE=CHARGE,)
 
-NU=NUME_DDL(MATR_RIGI=M_EL,);
+NU=NUME_DDL(MATR_RIGI=M_EL,)
 
 CHAR_EL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                      CHARGE=CHARGE,);
+                      CHARGE=CHARGE,)
 
 CHAR=ASSE_VECTEUR(VECT_ELEM=CHAR_EL,
-                  NUME_DDL=NU,);
+                  NUME_DDL=NU,)
 
 MATAS=ASSE_MATRICE(MATR_ELEM=M_EL,
-                   NUME_DDL=NU,);
+                   NUME_DDL=NU,)
 
 MATAS=FACTORISER(reuse =MATAS,
-                MATR_ASSE=MATAS,);
+                MATR_ASSE=MATAS,)
 
 DU=RESOUDRE(MATR=MATAS,
-             CHAM_NO=CHAR,);
+             CHAM_NO=CHAR,)
 
 DV=RESOUDRE(MATR=MATAS,
-             CHAM_NO=CHAR,);
+             CHAM_NO=CHAR,)
 
 
 #=========================================================
@@ -161,7 +161,7 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM',
             SIGM=SIGP,
             VARI=VARIP,
             COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-            INFO=2,);
+            INFO=2,)
 
 IMPR_TABLE(TABLE=CONT)
 
@@ -221,7 +221,7 @@ res = CALCUL(__use_namedtuple__=True,
              SIGM=SIGP,
              VARI=VARIP,
              COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-             INFO=2,);
+             INFO=2,)
 
 test.assertIsNotNone(res.MATR_TANG_ELEM.getModel(), msg="MATR_TANG_ELEM")
 test.assertIsNotNone(res.SIEF_ELGA.getModel(), msg="SIEF_ELGA")
@@ -229,19 +229,19 @@ test.assertIsNotNone(res.VARI_ELGA.getModel(), msg="VARI_ELGA")
 
 
 FORCAS=ASSE_VECTEUR(VECT_ELEM=FORC,
-                    NUME_DDL=NU,);
+                    NUME_DDL=NU,)
 
 
 MATAS2=ASSE_MATRICE(MATR_ELEM=MATR,
-                    NUME_DDL=NU,);
+                    NUME_DDL=NU,)
 
 
 MATAS2=FACTORISER(reuse =MATAS2,
-                MATR_ASSE=MATAS2,);
+                MATR_ASSE=MATAS2,)
 
 
 DX=RESOUDRE(MATR=MATAS2,
-            CHAM_NO=CHAR,);
+            CHAM_NO=CHAR,)
 
 #=========================================================
 #          DETERMINATION DE LA REFERENCE
@@ -254,7 +254,7 @@ PRED=STAT_NON_LINE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHARGE,),
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LIST,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E12,),);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E12,),)
 
 # ON INTEGRE LA LOI DE COMPORTEMENT
 CALC=STAT_NON_LINE(MODELE=MO,
@@ -270,7 +270,7 @@ CALC=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
                                     ARRET = 'NON'),
 
-                   );
+                   )
 
 # ON EXTRAIT LES CHAMPS A TESTER
 SIG_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
@@ -287,7 +287,7 @@ CALC=CALC_CHAMP(reuse=CALC,
                    TOUT_ORDRE='OUI',
                    TOUT='OUI',
                    FORCE='FORC_NODA',
-                   RESULTAT=CALC,);
+                   RESULTAT=CALC,)
 
 
 FOR_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
@@ -395,7 +395,7 @@ TEST_RESU(CHAM_NO=(_F(CRITERE='ABSOLU',
 
 LIST2=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=2,),);
+                                  NOMBRE=2,),)
 
 
 CONT=CALCUL(reuse=CONT,
@@ -412,7 +412,7 @@ CONT=CALCUL(reuse=CONT,
             SIGM=SIGP,
             VARI=VARIP,
             COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-            INFO=2,);
+            INFO=2,)
 
 
 SIGM3=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
@@ -428,7 +428,7 @@ PRED3=STAT_NON_LINE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHARGE,),
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LIST2,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E12,),);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E12,),)
 
 CALC3=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -443,7 +443,7 @@ CALC3=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
                                     ARRET = 'NON'),
 
-                   );
+                   )
 
 
 SIG_REF3=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
@@ -490,13 +490,13 @@ CHTEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 MODELE=MO,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
-                        VALE=400.,),);
+                        VALE=400.,),)
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,),
                     AFFE_VARC=_F(TOUT='OUI', VALE_REF=20.,NOM_VARC='TEMP',
-                    CHAM_GD        = CHTEMP,),);
+                    CHAM_GD        = CHTEMP,),)
 
 
 CONT2=CALCUL(
@@ -511,7 +511,7 @@ CONT2=CALCUL(
             SIGM=SIGP,
             VARI=VARIP,
             COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-            INFO=2,);
+            INFO=2,)
 
 #
 # ==========     FIN DE LA VALIDATION DE : CALCUL/TABLE   ==============
@@ -519,4 +519,4 @@ CONT2=CALCUL(
 
 test.printSummary()
 
-FIN();
+FIN()

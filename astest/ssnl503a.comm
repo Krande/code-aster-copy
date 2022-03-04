@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,23 +26,23 @@
 #---------------------------------------------------------------------
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_NO='NO1',
                                 NOM='A',),
                              _F(GROUP_NO='NO4',
-                                NOM='D',),),);
+                                NOM='D',),),)
 
 #
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='TUYAU_3M',),);
+                       MODELISATION='TUYAU_3M',),)
 
 #
 #---------------------------------------------------------------------
@@ -56,7 +56,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                                VALE=(0.2035,0.0104,),),
                      ORIENTATION=_F(GROUP_NO='A',
                                     CARA='GENE_TUYAU',
-                                    VALE=(0.,0.,1.,),),);
+                                    VALE=(0.,0.,1.,),),)
 
 #
 #---------------------------------------------------------------------
@@ -69,19 +69,19 @@ SI=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.001404,2.719E+08,
                        0.029764,4.036E+08,
                        0.050504,4.242E+08,
                        0.106404,5.276E+08,
-                       ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                       ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
 
 #
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.9374E+11,
                           NU=0.2642,),
-                  TRACTION=_F(SIGM=SI,),);
+                  TRACTION=_F(SIGM=SI,),)
 
 #
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 #
 #---------------------------------------------------------------------
@@ -91,14 +91,14 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 F_PRESS=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                             10.,1.,
                             20.,1.,
-                            ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',);
+                            ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',)
 
 #
 
 F_MOME=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                            10.,0.,
                            20.,1.,
-                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',);
+                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',)
 
 #
 
@@ -106,7 +106,7 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='A',
                                 BLOCAGE = ('DEPLACEMENT','ROTATION','TUYAU_FOURIER'),),
                                _F(GROUP_NO='D',
-                                BLOCAGE = ('TUYAU_FOURIER'),),),);
+                                BLOCAGE = ('TUYAU_FOURIER'),),),)
 
 #
 
@@ -114,21 +114,21 @@ PRESS=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=_F(GROUP_NO='D',
                                      FX=4.0414E5,),
                      FORCE_TUYAU=_F(TOUT='OUI',
-                                    PRES=1.725E+06,),);
+                                    PRES=1.725E+06,),)
 
 FPRESX=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=( 0.,1.725E+06,
                             10.,1.725E+06, ),
-                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 PRESFX=AFFE_CHAR_MECA_F(MODELE=MO,
                      FORCE_TUYAU=_F(TOUT='OUI',
-                                    PRES=FPRESX),);
+                                    PRES=FPRESX),)
 #
 
 MOME=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='D',
-                                    MZ=2.534E+05,),);
+                                    MZ=2.534E+05,),)
 
 #
 #---------------------------------------------------------------------
@@ -139,7 +139,7 @@ LIST_INS=DEFI_LIST_REEL(DEBUT=0.,
                         INTERVALLE=(_F(JUSQU_A=10.,
                                        NOMBRE=2,),
                                     _F(JUSQU_A=20.,
-                                       NOMBRE=20,),),);
+                                       NOMBRE=20,),),)
 
 #
 # ETAPE 1 : PRESSION IMPOSEE
@@ -159,7 +159,7 @@ RESUL=STAT_NON_LINE(MODELE=MO,
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                   ITER_GLOB_MAXI=10,),);
+                                   ITER_GLOB_MAXI=10,),)
 
 #
 # ETAPE 2 : ROTATION IMPOSEE (MOMENT)
@@ -187,7 +187,7 @@ RESUL=STAT_NON_LINE(reuse =RESUL,
                                 GROUP_NO='D',
                                 NOM_CMP='DRZ',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                   ITER_GLOB_MAXI=10,),);
+                                   ITER_GLOB_MAXI=10,),)
 
 TAB_DRZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='TB_DRZ',
@@ -195,9 +195,9 @@ TAB_DRZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 NOM_CHAM='DEPL',
                                 TOUT_ORDRE='OUI',
                                 GROUP_NO='D',
-                                NOM_CMP='DRZ',),);
+                                NOM_CMP='DRZ',),)
 
-IMPR_TABLE(TABLE=TAB_DRZ,);
+IMPR_TABLE(TABLE=TAB_DRZ,)
 
 #
 #---------------------------------------------------------------------
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=17,
 
 RESUL=CALC_CHAMP(reuse =RESUL,
              RESULTAT=RESUL,
-             CONTRAINTE='SIGM_ELNO');
+             CONTRAINTE='SIGM_ELNO')
 
 coor3d=CALC_CHAM_ELEM(MODELE=MO, OPTION='COOR_ELGA',CARA_ELEM=CAREL,)
 
@@ -366,6 +366,6 @@ TEST_TABLE(TABLE=VOLUM3,
                       VALE_I=22,),
                    ),
 
-FIN();
+FIN()
 
 #

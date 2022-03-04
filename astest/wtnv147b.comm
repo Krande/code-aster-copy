@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-              
+
 #----------------------------------------------
 #                   MAILLAGE
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE  = MAILLAG1,
                        LINE_QUAD = _F(TOUT='OUI'),
-                      );
+                      )
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -40,7 +40,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                    _F(GROUP_MA='Face_lat4'),
                                   ),
                     INFO=2,
-                   );
+                   )
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -50,7 +50,7 @@ MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D_HM',),
-              );
+              )
 
 LS_N = FORMULE(VALE='Z-2.5',
                NOM_PARA=['X', 'Y', 'Z'],)
@@ -59,14 +59,14 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LS_N,),
                     INFO=1,
-                   );
+                   )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          INFO=1,
                          CONTACT='MORTAR',
                          DECOUPE_FACETTE='SOUS_ELEMENTS',
-                        );
+                        )
 
 CTXFEM = DEFI_CONTACT(MODELE=MODELEK,
                       FORMULATION='XFEM',
@@ -80,16 +80,16 @@ CTXFEM = DEFI_CONTACT(MODELE=MODELEK,
                               ),
                             ),
                       INFO=2,
-                     );
+                     )
 
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
-UN = DEFI_CONSTANTE(VALE = 1.0,);
+UN = DEFI_CONSTANTE(VALE = 1.0,)
 
-ZERO = DEFI_CONSTANTE(VALE = 0.0,);
+ZERO = DEFI_CONSTANTE(VALE = 0.0,)
 
-KINT = DEFI_CONSTANTE(VALE = 1.01937E-9,);
+KINT = DEFI_CONSTANTE(VALE = 1.01937E-9,)
 
 SOL  = DEFI_MATERIAU(ELAS      = _F(E=5800E6,
                                     NU=0.0,
@@ -112,14 +112,14 @@ SOL  = DEFI_MATERIAU(ELAS      = _F(E=5800E6,
                                     SIGM_C=1.1E6,
                                     PENA_LAGR=10,
                                     ),
-                    );
+                    )
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
                                MATER=SOL,
                               ),
-                      );
+                      )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -137,7 +137,7 @@ CH=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                               _F(TOUT='OUI',DX=DEPL_N,DY=DEPL_N,DZ=DEPL_N),
                              ),
                     INFO=1,
-                   );
+                   )
 
 HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(
@@ -145,7 +145,7 @@ HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                               _F(GROUP_NO='Face_sup',PRE1=0.0,),
                              ),
                     INFO=1,
-                   );
+                   )
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(
@@ -154,11 +154,11 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                                                  LAG3_C=0.0,LAG3_F1=0.,LAG3_F2=0.0,PRE_FLU=10000000),
                              ),
                     INFO=1,
-                   );
+                   )
 
 FLUH=AFFE_CHAR_MECA(MODELE=MODELEK,
                     FLUX_THM_REP=_F(TOUT='OUI',FLUN_HYDR1=0.,),
-                   );
+                   )
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -177,7 +177,7 @@ LI=DEFI_LIST_REEL(DEBUT=0.0,
                                  NOMBRE=10,),
                               _F(JUSQU_A=10,
                                  NOMBRE=30,),
-                                 ),);
+                                 ),)
 
 
 
@@ -188,7 +188,7 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                                    _F(CHARGE = CH1 ),
                                    _F(CHARGE = FLUH ),),
                     SCHEMA_THM=_F(PARM_THETA=0.57,),
-                    COMPORTEMENT   = _F(RELATION       = 'KIT_HM', 
+                    COMPORTEMENT   = _F(RELATION       = 'KIT_HM',
                                         RELATION_KIT   = ('ELAS',
                                                           'LIQU_SATU',
                                                           'HYDR_UTIL',),
@@ -197,18 +197,18 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                                         ITER_INTE_MAXI = 100,
                                        ),
                     NEWTON      = _F(MATRICE   = 'TANGENTE',
-                                     REAC_ITER = 1, 
+                                     REAC_ITER = 1,
                                     ),
                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                                     ITER_GLOB_MAXI = 100,    
+                                     ITER_GLOB_MAXI = 100,
                                     ),
                     INCREMENT   = _F(LIST_INST = LI,),
                     CONTACT =  CTXFEM,
                    )
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
 
@@ -216,19 +216,19 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D_HM',),),
-                    );  
+                    )
 
 RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                       RESULTAT    = UTOT1,
-                     );
+                     )
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1,));
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RES_X1,));
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_XFEM));
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1,))
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RES_X1,))
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_XFEM))
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              GROUP_NO=('NFISSU'),
@@ -238,9 +238,9 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
-#IMPR_TABLE(TABLE=DEP1,);
+#IMPR_TABLE(TABLE=DEP1,)
 
 
 TEST_TABLE(CRITERE='RELATIF',
@@ -269,7 +269,7 @@ DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -289,4 +289,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TYPE_TEST='MAX',
            TABLE=DEP2,)
 
-FIN();
+FIN()

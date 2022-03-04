@@ -36,7 +36,7 @@ DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI', ))
 MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0,
                               NU=0.,
                               RHO=1.0, ),
-                      );
+                      )
 
 affectMat = code_aster.MaterialField(MAIL)
 affectMat.addMaterialsOnMesh(MATER)
@@ -56,7 +56,7 @@ MODT = AFFE_MODELE(MAILLAGE=MAIL,
 
 CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
                       PRES_REP=_F(TOUT='OUI',
-                                  PRES=-1, ), );
+                                  PRES=-1, ), )
 
 charCine = code_aster.MechanicalDirichletBC(MODT)
 charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0., "Bas1")

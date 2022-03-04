@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #......................................................................
 #
@@ -41,37 +41,37 @@ DEBUT(CODE=_F(
 #======================================================================
 #PRE_GIBI()
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS',),)
 
 MOTHER=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='THERMIQUE',
-                           MODELISATION='PLAN',),);
+                           MODELISATION='PLAN',),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.0E+5,
                           NU=0.3,
                           RHO=8.E-6,
-                          ALPHA=1.E-5,),);
+                          ALPHA=1.E-5,),)
 
 MATHER=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
-                             RHO_CP=0.0,),);
+                             RHO_CP=0.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CHMATHE=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATHER,),);
+                              MATER=MATHER,),)
 
 # ------------------------------------------------------------------
 
@@ -79,21 +79,21 @@ CHTHE=AFFE_CHAR_THER(MODELE=MOTHER,
                      TEMP_IMPO=(_F(GROUP_NO='BC',
                                    TEMP=0.5,),
                                 _F(GROUP_NO='DA',
-                                   TEMP=-0.5,),),);
+                                   TEMP=-0.5,),),)
 
 CHTH2=AFFE_CHAR_THER(MODELE=MOTHER,
                      TEMP_IMPO=(_F(GROUP_NO='BC',
                                    TEMP=0.1,),
                                 _F(GROUP_NO='DA',
-                                   TEMP=0.1,),),);
+                                   TEMP=0.1,),),)
 
 TEMPLIN=THER_LINEAIRE(MODELE=MOTHER,
                       CHAM_MATER=CHMATHE,
-                      EXCIT=_F(CHARGE=CHTHE,),);
+                      EXCIT=_F(CHARGE=CHTHE,),)
 
 TEMPLI2=THER_LINEAIRE(MODELE=MOTHER,
                       CHAM_MATER=CHMATHE,
-                      EXCIT=_F(CHARGE=CHTH2,),);
+                      EXCIT=_F(CHARGE=CHTH2,),)
 
 # ------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ CHPES=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_NO='F',
                                  DY=0.,),
                      PRES_REP=_F(GROUP_MA='HAUT',
-                                 PRES=-8.E-4,),);
+                                 PRES=-8.E-4,),)
 
 CHROT=AFFE_CHAR_MECA(MODELE=MO,
                      ROTATION=_F(GROUP_MA=
@@ -114,19 +114,19 @@ CHROT=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='BAS',
                                   DY=0.,),
                                _F(GROUP_NO='HAUT',
-                                  DY=0.,),),);
+                                  DY=0.,),),)
 
-IMPR_CO(CONCEPT=_F(NOM=CHROT,),);
+IMPR_CO(CONCEPT=_F(NOM=CHROT,),)
 
 CHDIL=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_NO='TOUT',
-                                 DY=0.,),);
+                                 DY=0.,),)
 
 CHDI2=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='BAS',
                                   DY=0.,),
                                _F(GROUP_NO='HAUT',
-                                  DY=0.,),),);
+                                  DY=0.,),),)
 
 CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
@@ -135,7 +135,7 @@ CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
                                  NOM_VARC='TEMP',
                                  EVOL=TEMPLIN,
                                  NOM_CHAM='TEMP',
-                                 VALE_REF=0.0,),);
+                                 VALE_REF=0.0,),)
 
 CHMTM2=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
@@ -144,34 +144,34 @@ CHMTM2=AFFE_MATERIAU(MAILLAGE=MA,
                                   NOM_VARC='TEMP',
                                   EVOL=TEMPLI2,
                                   NOM_CHAM='TEMP',
-                                  VALE_REF=0.0,),);
+                                  VALE_REF=0.0,),)
 
 # ------------------------------------------------------------------
 
 DEPLPES=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT,
-                      EXCIT=_F(CHARGE=CHPES,),);
+                      EXCIT=_F(CHARGE=CHPES,),)
 
 DEPLPES=CALC_CHAMP(reuse=DEPLPES,RESULTAT=DEPLPES,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPME_ELNO','EPSI_ELNO'))
 
 
 DEPLROT=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT,
-                      EXCIT=_F(CHARGE=CHROT,),);
+                      EXCIT=_F(CHARGE=CHROT,),)
 
 DEPLROT=CALC_CHAMP(reuse=DEPLROT,RESULTAT=DEPLROT,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPME_ELNO','EPSI_ELNO'))
 
 
 DEPLDIL=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMTM,
-                      EXCIT=_F(CHARGE=CHDIL,),);
+                      EXCIT=_F(CHARGE=CHDIL,),)
 
 DEPLDIL=CALC_CHAMP(reuse=DEPLDIL,RESULTAT=DEPLDIL,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPME_ELNO','EPSI_ELNO'))
 
 
 DEPLDI2=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMTM2,
-                      EXCIT=_F(CHARGE=CHDI2,),);
+                      EXCIT=_F(CHARGE=CHDI2,),)
 
 DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,RESULTAT=DEPLDI2,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPME_ELNO','EPSI_ELNO'))
 
@@ -179,9 +179,9 @@ DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,RESULTAT=DEPLDI2,CONTRAINTE=('SIGM_ELNO'),DEFOR
 #---------------------------------------------------------------------
 
 T_POT=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
-                RESULTAT=DEPLDIL,);
+                RESULTAT=DEPLDIL,)
 
-IMPR_TABLE(TABLE=T_POT,);
+IMPR_TABLE(TABLE=T_POT,)
 
 # VERSION=6.02.21 sans charge thermique :  7.73874E-04  (1/2U)
 # VERSION=6.02.21 avec charge thermique :  5.43077E-19  (1/2U - 1/2Th)
@@ -377,6 +377,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
 
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_MA= (
@@ -29,43 +29,43 @@ MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
          )
 
 # section acier
-SA = 3e-3;
-Dimp =0.001;
-EB = 30E9;
-NUB = 0.2;
-RHOB = 2500;
-EA = 200E9;
-NUA = 0.25;
-RHOA = 7500;
+SA = 3e-3
+Dimp =0.001
+EB = 30E9
+NUB = 0.2
+RHOB = 2500
+EA = 200E9
+NUA = 0.25
+RHOA = 7500
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA='BETON' , PHENOMENE='MECANIQUE', MODELISATION='3D',),
-                     _F( GROUP_MA='ACIER', PHENOMENE='MECANIQUE', MODELISATION='BARRE',) ),);
+                     _F( GROUP_MA='ACIER', PHENOMENE='MECANIQUE', MODELISATION='BARRE',) ),)
 
-BETON = DEFI_MATERIAU( ELAS=_F(E=EB, NU=NUB,),);
+BETON = DEFI_MATERIAU( ELAS=_F(E=EB, NU=NUB,),)
 
-ACIER = DEFI_MATERIAU( ELAS=_F(E=EA, NU=NUA,),);
+ACIER = DEFI_MATERIAU( ELAS=_F(E=EA, NU=NUA,),)
 
 MATE=AFFE_MATERIAU(MAILLAGE=MA, AFFE=(_F(GROUP_MA =('BETON'), MATER=BETON,),
-                                      _F(GROUP_MA =('ACIER'), MATER=ACIER,),));
+                                      _F(GROUP_MA =('ACIER'), MATER=ACIER,),))
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
-                     BARRE=(_F( GROUP_MA = 'ACIER', SECTION = 'GENERALE', CARA = 'A', VALE = SA,),)); 
+                     BARRE=(_F( GROUP_MA = 'ACIER', SECTION = 'GENERALE', CARA = 'A', VALE = SA,),))
 
-CLIM=AFFE_CHAR_MECA(MODELE=MO, 
+CLIM=AFFE_CHAR_MECA(MODELE=MO,
                     FACE_IMPO=_F(GROUP_MA='SLEFT', DX = 0),
-                    DDL_IMPO=(_F(GROUP_NO='PMID', DY=0,DZ=0), _F(GROUP_NO='P12', DY=0),)); 
+                    DDL_IMPO=(_F(GROUP_NO='PMID', DY=0,DZ=0), _F(GROUP_NO='P12', DY=0),))
 
-CHARGE = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA='SRIGHT', DZ =Dimp,)); 
+CHARGE = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=_F(GROUP_MA='SRIGHT', DZ =Dimp,))
 
-LIST = DEFI_LIST_REEL(DEBUT= 0., INTERVALLE = (_F(JUSQU_A = 1, NOMBRE = 1),),); 
+LIST = DEFI_LIST_REEL(DEBUT= 0., INTERVALLE = (_F(JUSQU_A = 1, NOMBRE = 1),),)
 
 RES =  MECA_STATIQUE(MODELE=MO,
-                     CHAM_MATER=MATE, 
-                     CARA_ELEM = CAREL, 
-                     EXCIT=(_F(CHARGE=CLIM,), _F(CHARGE=CHARGE),),);
+                     CHAM_MATER=MATE,
+                     CARA_ELEM = CAREL,
+                     EXCIT=(_F(CHARGE=CLIM,), _F(CHARGE=CHARGE),),)
 
-RES=CALC_CHAMP(reuse =RES, RESULTAT=RES, GROUP_MA='ACIER', CONTRAINTE=('EFGE_ELNO',),); 
+RES=CALC_CHAMP(reuse =RES, RESULTAT=RES, GROUP_MA='ACIER', CONTRAINTE=('EFGE_ELNO',),)
 
 # " deplacement milieu de poutre
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -79,7 +79,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=1.E-2,),
           )
 
-# contraintes beton milieu poutre 
+# contraintes beton milieu poutre
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='SOURCE_EXTERNE',
                   POINT=19,
@@ -92,7 +92,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_MA='M755',),
           )
 
-# effort acier milieu poutre 
+# effort acier milieu poutre
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='SOURCE_EXTERNE',
                   POINT=1,
@@ -105,7 +105,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_MA='M11',),
           )
 
-# " deplacement milieu de poutre 
+# " deplacement milieu de poutre
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='MID',
                   RESULTAT=RES,
@@ -114,7 +114,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=3.3167161891156E-4,),
           )
 
-# contraintes beton milieu poutre 
+# contraintes beton milieu poutre
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   POINT=19,
                   RESULTAT=RES,
@@ -124,7 +124,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_MA='M755',),
           )
 
-# effort acier milieu poutre 
+# effort acier milieu poutre
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   POINT=1,
                   RESULTAT=RES,

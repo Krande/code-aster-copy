@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,18 +21,18 @@
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',)
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='COQUE_AXIS',),);
+                            MODELISATION='COQUE_AXIS',),)
 
 MODI_MAILLAGE(reuse =MAIL,
               MAILLAGE=MAIL,
               ORIE_LIGNE=_F(GROUP_MA=('AB',),
                             GROUP_NO='A',
-                            VECT_TANG=(0.,-1.),),);
+                            VECT_TANG=(0.,-1.),),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODMECA,
                        COQUE=_F(GROUP_MA = 'TOUT',
@@ -42,11 +42,11 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODMECA,
                                 ) )
 
 MATE=DEFI_MATERIAU( ELAS=_F(E  = 1.0,
-                            NU = 0.3, ),);
+                            NU = 0.3, ),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATE,),);
+                            MATER=MATE,),)
 
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
@@ -55,19 +55,19 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
                                   ),)
 
 PRESSION=AFFE_CHAR_MECA(MODELE=MODMECA,
-                        PRES_REP=(_F(GROUP_MA='AB',PRES = 1.0)));
+                        PRES_REP=(_F(GROUP_MA='AB',PRES = 1.0)))
 
 ELAS=MECA_STATIQUE(MODELE=MODMECA,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARELEM,
                    EXCIT=(_F(CHARGE=BLOCAGE,),
                           _F(CHARGE=PRESSION,),),
-                   );
+                   )
 
 CALC_CHAMP(reuse=ELAS,
            RESULTAT=ELAS,
            CONTRAINTE=('EFGE_NOEU'))
-IMPR_RESU(UNITE=80,RESU=_F(RESULTAT=ELAS));
+IMPR_RESU(UNITE=80,RESU=_F(RESULTAT=ELAS))
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='A',
@@ -163,4 +163,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 )
           )
 
-FIN();
+FIN()

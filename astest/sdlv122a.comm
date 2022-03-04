@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -138,12 +138,12 @@ MODES=CALC_MODES(MATR_RIGI=RIGIASSE,
 #
 MODES=CALC_CHAMP(reuse=MODES,
                  RESULTAT=MODES,
-                 CONTRAINTE=('SIGM_ELNO','SIGM_ELGA'),);
+                 CONTRAINTE=('SIGM_ELNO','SIGM_ELGA'),)
 
 #
 MODES=CALC_CHAMP(reuse=MODES,
                  RESULTAT=MODES,
-                 CONTRAINTE='SIGM_NOEU',);
+                 CONTRAINTE='SIGM_NOEU',)
 
 #
 # DEFINITION DU MAILLAGE DE MESURE
@@ -192,13 +192,13 @@ REPGENE=PROJ_MESU_MODAL(
 # =========================
 #
 #DEPLACE = REST_GENE_PHYS (RESU_GENE : REPGENE
-#                          NOM_CHAM  : 'DEPL'                        );
+#                          NOM_CHAM  : 'DEPL'                        )
 #
 #VITESSE = REST_GENE_PHYS (RESU_GENE : REPGENE
-#                          NOM_CHAM  : 'VITE'                        );
+#                          NOM_CHAM  : 'VITE'                        )
 #
 #ACCELER = REST_GENE_PHYS (RESU_GENE : REPGENE
-#                          NOM_CHAM  : 'ACCE'                        );
+#                          NOM_CHAM  : 'ACCE'                        )
 #
 REPONSE=REST_GENE_PHYS(   RESU_GENE=REPGENE,
                             TOUT_CHAM='OUI'                          )
@@ -231,7 +231,7 @@ DEPL3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL3',
                       TOUT_ORDRE='OUI',
                       NOM_CMP='DX',
                       OPERATION='EXTRACTION',
-                      ),);
+                      ),)
 
 #IMPR_TABLE( UNITE = 8, TABLE = DEPL3 )
 
@@ -242,7 +242,7 @@ VITE5=POST_RELEVE_T(ACTION=_F(INTITULE='VITE5',
                       TOUT_ORDRE='OUI',
                       NOM_CMP='DX',
                       OPERATION='EXTRACTION',
-                      ),);
+                      ),)
 
 #IMPR_TABLE( UNITE = 8, TABLE = VITE5 )
 
@@ -366,7 +366,7 @@ DEPLM=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLM',
                       TOUT_ORDRE='OUI',
                       NOM_CMP='D1',
                       OPERATION='EXTRACTION',
-                      ),);
+                      ),)
 
 #IMPR_TABLE( UNITE = 8, TABLE = DEPLM )
 
@@ -377,7 +377,7 @@ VITEM=POST_RELEVE_T(ACTION=_F(INTITULE='VITEM',
                       TOUT_ORDRE='OUI',
                       NOM_CMP='D1',
                       OPERATION='EXTRACTION',
-                      ),);
+                      ),)
 
 #IMPR_TABLE( UNITE = 8, TABLE = VITEM )
 
@@ -437,13 +437,13 @@ REPONS=CALC_CHAMP(RESULTAT=REPONSE,
                   MODELE=MODELE,
                   CHAM_MATER=MATER,
                   LIST_INST=LTEMPS,
-                  DEFORMATION='EPSI_ELNO',);
+                  DEFORMATION='EPSI_ELNO',)
 
 #
 REPON2=CALC_CHAMP(RESULTAT=REPONS,
                   MODELE=MODELE,
                   LIST_INST=LTEMPS,
-                  DEFORMATION='EPSI_NOEU',);
+                  DEFORMATION='EPSI_NOEU',)
 
 #
 REPON=CALC_CHAMP(RESULTAT=REPONSE,
@@ -451,7 +451,7 @@ REPON=CALC_CHAMP(RESULTAT=REPONSE,
                  MODELE=MODELE,
                  CHAM_MATER=MATER,
                  LIST_INST=LTEMPS,
-                 CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),);
+                 CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),)
 
 SIXX4=POST_RELEVE_T(ACTION=_F(INTITULE='SIXX4',
                       GROUP_NO=('NRES4'),
@@ -460,7 +460,7 @@ SIXX4=POST_RELEVE_T(ACTION=_F(INTITULE='SIXX4',
                       TOUT_ORDRE='OUI',
                       NOM_CMP='SIXX',
                       OPERATION='EXTRACTION',
-                      ),);
+                      ),)
 
 #IMPR_TABLE( UNITE = 8, TABLE = SIXX4 )
 
@@ -471,7 +471,7 @@ SIXXM=POST_RELEVE_T(ACTION=_F(INTITULE='SIXXM',
                       TOUT_ORDRE='OUI',
                       NOM_CMP='SIXX',
                       OPERATION='EXTRACTION',
-                      ),);
+                      ),)
 
 #IMPR_TABLE( UNITE = 8, TABLE = SIXXM )
 

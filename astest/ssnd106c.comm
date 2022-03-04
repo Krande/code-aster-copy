@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,16 @@ from code_aster.Commands import *
 from code_aster.MacroCommands.Utils.veri_matr_tang import VERI_MATR_TANG
 from ssnd106a import CHAR_ROTA
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 #lire le maillage
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 #affecter les elements
 modele=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 #definir le materiau
 
@@ -44,14 +44,14 @@ A7=DEFI_FONCTION(NOM_PARA='EPSI',PROL_DROITE='LINEAIRE',
 acier=DEFI_MATERIAU(ELAS=_F(E=2e+05,NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=2000.0,SY=200.0,),
                     TRACTION=_F(SIGM=A7),
-                    );
+                    )
 
 compor=[]
 compor.append(['VMIS_ISOT_LINE','SIMO_MIEHE'])
 compor.append(['VMIS_ISOT_LINE','GDEF_LOG'])
 
 mat=AFFE_MATERIAU(MAILLAGE=MA,
-                  AFFE=_F(TOUT='OUI',MATER=acier,),);
+                  AFFE=_F(TOUT='OUI',MATER=acier,),)
 
 
 #-----------------------------donness Traction-Rotation ------------------------------
@@ -83,14 +83,14 @@ clim_tra=AFFE_CHAR_MECA(MODELE=modele,
                                      ),
                         DDL_IMPO=(_F(GROUP_NO='NAXE',
                                      DX=0.0,
-                                     ),),);
-F_trac=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,tfintrac,1.0,),PROL_DROITE='LINEAIRE',);
+                                     ),),)
+F_trac=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,tfintrac,1.0,),PROL_DROITE='LINEAIRE',)
 # pour la rotation
 ClFixe=AFFE_CHAR_MECA(MODELE=modele,DDL_IMPO=(
                         _F(GROUP_NO='NAXE',DX=0.0,DZ=0.0),
                         _F(GROUP_MA='FY0', DY=0.0,),
                       #  _F(GROUP_MA='FY1', DY=0.0,),
-                        ),);
+                        ),)
 
 
 #### boucle sur les comportements
@@ -113,7 +113,7 @@ for icomp,comp in enumerate(compor) :
                    COMPORTEMENT=_F(RELATION=comp[0],DEFORMATION=comp[1],TYPE_MATR_TANG='VERIFICATION',),
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,PREDICTION='TANGENTE',),
-                             );
+                             )
 
     DIFF_MAT=VERI_MATR_TANG()
     DETRUIRE(NOM=(DIFF_MAT),INFO=1)
@@ -128,7 +128,7 @@ for icomp,comp in enumerate(compor) :
         icl+=1
         Rota2[icl]=CHAR_ROTA(MODELE=modele,ANGLE_DEGRES=angle_degres,TINI=tini,TFIN=tfinrot,RESU=resu[icomp],MAIL=MA)
 
-        Linst2=DEFI_LIST_REEL(DEBUT=tini,INTERVALLE=_F(JUSQU_A=tfinrot,NOMBRE=npasrota),);
+        Linst2=DEFI_LIST_REEL(DEBUT=tini,INTERVALLE=_F(JUSQU_A=tfinrot,NOMBRE=npasrota),)
         DEFLIST2 = DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST = Linst2,))
 
         resu[icomp]=STAT_NON_LINE(reuse =resu[icomp],
@@ -139,7 +139,7 @@ for icomp,comp in enumerate(compor) :
                            ETAT_INIT=_F(EVOL_NOLI=resu[icomp],),
                            INCREMENT=_F(LIST_INST=DEFLIST2,),
                            NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,PREDICTION='TANGENTE',),
-                           );
+                           )
         DETRUIRE(NOM=(Linst2,DEFLIST2),INFO=1)
         # nouvelle traction
         Trac2[icl]=AFFE_CHAR_MECA(MODELE=modele,LIAISON_OBLIQUE= (
@@ -150,7 +150,7 @@ for icomp,comp in enumerate(compor) :
                                          # _F(GROUP_MA='FY1', DY=0.0,),
                                           _F(GROUP_NO='NAXE', DX=0.0,DZ=0.0),
                                           ),)
-        Ftra2[icl]=DEFI_FONCTION(NOM_PARA='INST',VALE=(tfinrot,0.,tfintrac,1.,),PROL_DROITE='LINEAIRE',);
+        Ftra2[icl]=DEFI_FONCTION(NOM_PARA='INST',VALE=(tfinrot,0.,tfintrac,1.,),PROL_DROITE='LINEAIRE',)
         Linst2=DEFI_LIST_REEL(DEBUT=tfinrot,INTERVALLE=_F(JUSQU_A=tfintrac,NOMBRE=npastrac[icomp]),)
         DEFLIST2 = DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST = Linst2,))
 
@@ -162,7 +162,7 @@ for icomp,comp in enumerate(compor) :
                            ETAT_INIT=_F(EVOL_NOLI=resu[icomp]),
                            INCREMENT=_F(LIST_INST=DEFLIST2,INST_FIN=tfintrac),
                            NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,PREDICTION='TANGENTE',),
-                                           );
+                                           )
         DIFF_MAT=VERI_MATR_TANG()
         DETRUIRE(NOM=(DIFF_MAT),INFO=1)
         DETRUIRE(NOM=(Linst2,DEFLIST2),INFO=1)
@@ -174,9 +174,9 @@ for icomp,comp in enumerate(compor) :
 
 
     vmis[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='SIEQ_ELGA',
-                              NOM_CMP='VMIS',GROUP_MA='M2',POINT=1,);
+                              NOM_CMP='VMIS',GROUP_MA='M2',POINT=1,)
     epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA',
-                              NOM_CMP='EPZZ',GROUP_MA='M2',POINT=1,);
+                              NOM_CMP='EPZZ',GROUP_MA='M2',POINT=1,)
     TEST_FONCTION(VALEUR=(_F(VALE_CALC=valec[icomp][0],
                              VALE_REFE=1019.5718,
                              VALE_PARA=0.5,
@@ -207,7 +207,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
                    _F(FONCTION=vmis[0],LEGENDE=compor[0][0]+compor[0][1]),
                    _F(FONCTION=vmis[1],LEGENDE=compor[1][0]+compor[1][1]),
                    ),
-                  TITRE='courbes_vmis_isotrope');
+                  TITRE='courbes_vmis_isotrope')
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
 
@@ -217,7 +217,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
                    _F(FONCTION=epsg[0],LEGENDE=compor[0][0]+compor[0][1]),
                    _F(FONCTION=epsg[1],LEGENDE=compor[1][0]+compor[1][1]),
                    ),
-                  TITRE='courbes_epsg_isotrope');
+                  TITRE='courbes_epsg_isotrope')
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
 

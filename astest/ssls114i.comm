@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -183,15 +183,15 @@ RESP=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
 
 RESP=CALC_CHAMP(reuse= RESP,
                 RESULTAT= RESP ,
-                CONTRAINTE='SIGM_ELNO',);
+                CONTRAINTE='SIGM_ELNO',)
 
 RESPMOY=POST_CHAMP(RESULTAT=RESP,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 RESPMOY=CALC_CHAMP(reuse=RESPMOY,
                    RESULTAT=RESPMOY,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -254,31 +254,31 @@ RESF=MECA_STATIQUE(    MODELE=MO,           CHAM_MATER=CM,EXCIT=(
 
 RESF=CALC_CHAMP(reuse= RESF,
                 RESULTAT= RESF ,
-                CONTRAINTE='SIGM_ELNO',);
+                CONTRAINTE='SIGM_ELNO',)
 
 RESFMOY=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 RESFMOY=CALC_CHAMP(reuse=RESFMOY,
                    RESULTAT=RESFMOY,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 RESFINF=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 RESFINF=CALC_CHAMP(reuse=RESFINF,
                    RESULTAT=RESFINF,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 RESFSUP=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 RESFSUP=CALC_CHAMP(reuse=RESFSUP,
                    RESULTAT=RESFSUP,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -382,31 +382,31 @@ RESG=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
 RESG=CALC_CHAMP(reuse= RESG,
                 RESULTAT= RESG ,
-                CONTRAINTE='SIGM_ELNO',);
+                CONTRAINTE='SIGM_ELNO',)
 
 RESGMOY=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
+                                   NIVE_COUCHE='MOY',),)
 RESGMOY=CALC_CHAMP(reuse=RESGMOY,
                    RESULTAT=RESGMOY,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 RESGINF=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),);
+                                   NIVE_COUCHE='INF',),)
 RESGINF=CALC_CHAMP(reuse=RESGINF,
                    RESULTAT=RESGINF,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 RESGSUP=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),);
+                                   NIVE_COUCHE='SUP',),)
 RESGSUP=CALC_CHAMP(reuse=RESGSUP,
                    RESULTAT=RESGSUP,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='PA',
@@ -509,33 +509,33 @@ RESM=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
 RESM=CALC_CHAMP(reuse= RESM,
                 RESULTAT= RESM ,
-                CONTRAINTE='SIGM_ELNO',);
+                CONTRAINTE='SIGM_ELNO',)
 
 RESMMOY=POST_CHAMP(RESULTAT=RESM,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),);
+                                 NIVE_COUCHE='MOY',),)
 RESMMOY=CALC_CHAMP(reuse=RESMMOY,
                    RESULTAT=RESMMOY,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 RESMINF=POST_CHAMP(RESULTAT=RESM,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='INF',),);
+                                 NIVE_COUCHE='INF',),)
 
 RESMINF=CALC_CHAMP(reuse=RESMINF,
                    RESULTAT=RESMINF,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 RESMSUP=POST_CHAMP(RESULTAT=RESM,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
-                                 NIVE_COUCHE='SUP',),);
+                                 NIVE_COUCHE='SUP',),)
 
 RESMSUP=CALC_CHAMP(reuse=RESMSUP,
                    RESULTAT=RESMSUP,
-                   CONTRAINTE='SIGM_NOEU',);
+                   CONTRAINTE='SIGM_NOEU',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='PA',

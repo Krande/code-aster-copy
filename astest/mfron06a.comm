@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@
 #             13 NOEUDS  2 MAILLES QUAD8
 #======================================================================
 
-DEBUT(CODE  = _F(NIV_PUB_WEB = 'INTERNET'), 
-      BASE  = _F(FICHIER = 'GLOBALE', LONG_REPE = 7000), 
+DEBUT(CODE  = _F(NIV_PUB_WEB = 'INTERNET'),
+      BASE  = _F(FICHIER = 'GLOBALE', LONG_REPE = 7000),
       DEBUG =_F(SDVERI = 'OUI')
      )
 
@@ -138,7 +138,7 @@ LR8 = DEFI_LIST_REEL(DEBUT      = 0.,
                      INTERVALLE = _F(  JUSQU_A = 90.0,  NOMBRE = 45)
                     )
 
-PHASINIT = CREA_CHAMP(OPERATION = 'AFFE', 
+PHASINIT = CREA_CHAMP(OPERATION = 'AFFE',
                       TYPE_CHAM = 'CART_VAR2_R',
                       MAILLAGE  = MAIL,
                       AFFE      = _F(TOUT    = 'OUI',
@@ -275,7 +275,7 @@ ACIER2 = DEFI_MATERIAU(ELAS_META_FO = _F(E              = YOUNG,
                                          SY_MELANGE     = FMEL,
                                          TEMP_DEF_ALPHA = 900.,
                                         ),
-                       MetaAcierEPIL_PT_FO = _F(YoungModulus = YOUNG,    
+                       MetaAcierEPIL_PT_FO = _F(YoungModulus = YOUNG,
                                                 PoissonRatio = NU,
                                                 SYY_0        = FBM2,
                                                 SYY_1        = FBM2,
@@ -315,7 +315,7 @@ CM2 = AFFE_MATERIAU(MAILLAGE  = MAIL,
 
                    )
 
-MO = AFFE_MODELE(MAILLAGE = MAIL,    
+MO = AFFE_MODELE(MAILLAGE = MAIL,
                  AFFE     = _F(TOUT         = 'OUI',
                                PHENOMENE    = 'MECANIQUE',
                                MODELISATION = 'AXIS')
@@ -329,7 +329,7 @@ CH_FO = AFFE_CHAR_MECA(MODELE        = MO,
                       )
 
 RAMPE = DEFI_FONCTION(NOM_PARA    = 'INST',
-                      PROL_GAUCHE = 'LINEAIRE',  
+                      PROL_GAUCHE = 'LINEAIRE',
                       PROL_DROITE = 'LINEAIRE',
                       VALE        = (0.0,0.0,100.,1500.0E+6,)
                      )

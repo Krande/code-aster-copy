@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,22 +76,22 @@ NU=DEFI_FONCTION( NOM_PARA='TEMP',
                   VALE=(0.0,0.2,1.0,0.2,)
                 ),
 
-ALPHA=DEFI_CONSTANTE(VALE=0.);
+ALPHA=DEFI_CONSTANTE(VALE=0.)
 NID__ = 1.0e+5;#Pa.s
 
 KRS__ = 1.956e+5;#Pa
 
-NIS__ = 1.570e+5;
+NIS__ = 1.570e+5
 
-KRD__ = 5.0E+4;
+KRD__ = 5.0E+4
 
-NRD__ = 1.0E+10;
+NRD__ = 1.0E+10
 
-NRS__ = 4.797e+10;
+NRS__ = 4.797e+10
 
-KAPPA = 5.9e-4;
+KAPPA = 5.9e-4
 
-NFD__ = 5.8e9;
+NFD__ = 5.8e9
 
 ALPHA__=(1-2.000e-06)
 
@@ -101,7 +101,7 @@ BETON28=DEFI_MATERIAU(MFRONT=_F(     LISTE_COEF=(31000., 0.2, KRS__,  NRS__, NIS
                               ELAS_FO =_F( E = E,
                                   NU = NU ,TEMP_DEF_ALPHA=0.,
                                   ALPHA = ALPHA ,
-                                  FONC_DESORP = FONC1),);
+                                  FONC_DESORP = FONC1),)
 
 
 
@@ -117,7 +117,7 @@ BETON90=DEFI_MATERIAU(MFRONT=_F(     LISTE_COEF=(31000., 0.2, KRS__, NRS__, NIS_
                               ELAS_FO =_F( E = E,
                                   NU = NU ,TEMP_DEF_ALPHA=0.,
                                   ALPHA = ALPHA ,
-                                  FONC_DESORP = FONC1),);
+                                  FONC_DESORP = FONC1),)
 
 
 
@@ -144,7 +144,7 @@ CM28=AFFE_MATERIAU(  MAILLAGE=M,
                              _F(TOUT='OUI',
                                 CHAM_GD=TEMP28,
                                 NOM_VARC='TEMP',
-                                VALE_REF=20),),);
+                                VALE_REF=20),),)
 
 CM90=AFFE_MATERIAU(  MAILLAGE=M,
                    AFFE=_F( TOUT = 'OUI',
@@ -156,7 +156,7 @@ CM90=AFFE_MATERIAU(  MAILLAGE=M,
                              _F(TOUT='OUI',
                                 CHAM_GD=TEMP90,
                                 NOM_VARC='TEMP',
-                                VALE_REF=20),),);
+                                VALE_REF=20),),)
 
 
 CH10=AFFE_CHAR_MECA( MODELE=MO,
@@ -187,14 +187,14 @@ CH21=AFFE_CHAR_MECA_F( MODELE=MO,
                                      )
                      )
 
-sigm=1;
+sigm=1
 
 
 
 #Parametres du cas de référence 28 jours
-t0=28.*3600.*24.;
-t0_1h=t0+3600.;
-tfin= 3600*24*800;
+t0=28.*3600.*24.
+t0_1h=t0+3600.
+tfin= 3600*24*800
 
 
 
@@ -266,7 +266,7 @@ UREF28=CALC_CHAMP(reuse =UREF28,
              RESULTAT=UREF28,
              CONTRAINTE='SIGM_ELNO',
              DEFORMATION=('EPSI_ELNO'),
-             VARI_INTERNE='VARI_ELNO',);
+             VARI_INTERNE='VARI_ELNO',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    REFERENCE='SOURCE_EXTERNE',
@@ -331,4 +331,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                 ),
           )
 
-FIN();
+FIN()

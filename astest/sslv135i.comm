@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
                                   CRIT_NOEUD='TOUS'),
                                _F(GROUP_MA='FACE6',
                                   CRIT_NOEUD='TOUS')),
-                MAILLAGE=CUBE,);
+                MAILLAGE=CUBE,)
 
 CUBE=DEFI_GROUP(reuse = CUBE,
                 ALARME='OUI',
@@ -109,7 +109,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
                                   TYPE_APPUI='AU_MOINS_UN',
                                   GROUP_NO='FACE6',
                                   NOM='FACE6_3D')),
-                MAILLAGE=CUBE,);
+                MAILLAGE=CUBE,)
 
 MANCOF=DEFI_FONCTION( NOM_PARA='EPSI',
                       INTERPOL='LOG',
@@ -142,7 +142,7 @@ ACIER   = DEFI_MATERIAU   ( ELAS           =_F( E         = 200000.,
                             FATIGUE        =_F( MANSON_COFFIN = MANCOF, ),)
 
 LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
-                           INTERVALLE =_F (JUSQU_A= 3.5, NOMBRE = 14  ));
+                           INTERVALLE =_F (JUSQU_A= 3.5, NOMBRE = 14  ))
 
 TROISD   = AFFE_MODELE    ( MAILLAGE   =    CUBE,
                             AFFE       =_F ( PHENOMENE    = 'MECANIQUE',
@@ -170,7 +170,7 @@ TR_CS  = AFFE_CHAR_MECA (
            DDL_IMPO     =(_F( GROUP_NO= 'P3' , DZ=0.) ),
            FORCE_FACE   =(_F( GROUP_MA= 'FACE4', FX=12.),
                           _F( GROUP_MA= 'FACE1', FY=-6.)
-                          ));
+                          ))
 
 # 1er CALCUL AVEC STAT_NON_LINE
 # -------------------------
@@ -192,13 +192,13 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
 SOL_NL = CALC_CHAMP(reuse=SOL_NL,
                     RESULTAT=SOL_NL,
                     CONTRAINTE='SIGM_ELNO',
-                    DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSP_ELGA','EPSP_ELNO',),);
+                    DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSP_ELGA','EPSP_ELNO',),)
 
 SOL_NL = CALC_CHAMP(reuse=SOL_NL,
                     RESULTAT=SOL_NL,
                     GROUP_MA=('FACE1_3D', 'FACE2_3D', 'FACE3_3D', 'CUBE'),
                     CONTRAINTE='SIGM_NOEU',
-                    DEFORMATION='EPSI_NOEU',);
+                    DEFORMATION='EPSI_NOEU',)
 
 ##################################################################
 #                                                                #

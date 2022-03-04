@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,19 +29,19 @@
 from math import *
 # Nombre de couches
 # (dont la couche elastique correspondant au BEDROCK)
-nbcouche  = 11;
+nbcouche  = 11
 
-Kref = 313.1*1.e6;
-Gref = 215.6*1.e6;
+Kref = 313.1*1.e6
+Gref = 215.6*1.e6
 
 YOUNG = 9.*Kref*Gref /(3.*Kref+Gref)
 NU    = (3.*Kref-2.*Gref) /(6.*Kref+2.*Gref)
 
 RHO = 2105.; # Valeur homogeneisee
 
-CS = sqrt(Gref/RHO);
+CS = sqrt(Gref/RHO)
 
-CP = sqrt((Kref+4./3.*Gref)/RHO);
+CP = sqrt((Kref+4./3.*Gref)/RHO)
 
 # => Choix Onde S ou P
 
@@ -52,21 +52,21 @@ print('>> Onde %s CS= %f CP= %f' %(Onde,CS,CP))
 # ------------------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
-INV_K_EAU = 1.E-5 ;
+INV_K_EAU = 1.E-5
 
-VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );
+VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 )
 
-DVISCOL  = DEFI_CONSTANTE(VALE=0.0   );
+DVISCOL  = DEFI_CONSTANTE(VALE=0.0   )
 
-KINT     = DEFI_CONSTANTE(VALE=1.E-12);
+KINT     = DEFI_CONSTANTE(VALE=1.E-12)
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MAIL = CREA_MAILLAGE(MAILLAGE=MA,
                   CREA_POI1=_F(NOM_GROUP_MA ='RESBAS',
-                                GROUP_MA ='BAS'));
+                                GROUP_MA ='BAS'))
 
 MAIL = DEFI_GROUP(reuse=MAIL,
                 MAILLAGE=MAIL,
@@ -81,11 +81,11 @@ MAIL = DEFI_GROUP(reuse=MAIL,
                                _F(NOM='LATHG',
                                   DIFFE=('LAT_LEFT','HA10')),
                                _F(NOM='LATHD',
-                                  DIFFE=('LAT_RIGH','HA10'))));
+                                  DIFFE=('LAT_RIGH','HA10'))))
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL,));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL,))
 
-list_group_ma=['ELEM'+str(n) for n in range(nbcouche)];
+list_group_ma=['ELEM'+str(n) for n in range(nbcouche)]
 
 print('>> list_group_ma=',list_group_ma)
 
@@ -102,14 +102,14 @@ MAT1=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO, ALPHA=0.),
                    THM_LIQU=_F(RHO        = 1000.0,
                                UN_SUR_K   = INV_K_EAU,
                                VISC       = VISCOLIQ,
-                               D_VISC_TEMP= DVISCOL));
+                               D_VISC_TEMP= DVISCOL))
 
-MAT_PAR=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO));
+MAT_PAR=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO))
 
 from wdnp102a import f_vite
 vite=f_vite()
 
-Paraxia = 'BAS';
+Paraxia = 'BAS'
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA = list_group_ma,
@@ -120,7 +120,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='DIS_T'),
                          _F(GROUP_MA = Paraxia,
                             PHENOMENE = 'MECANIQUE',
-                            MODELISATION = '3D_ABSO')));
+                            MODELISATION = '3D_ABSO')))
 
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     DISCRET=(_F(GROUP_MA='RESBAS',
@@ -131,7 +131,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                                   VALE=0.),
                                _F(GROUP_MA='RESBAS',
                                   CARA='A_T_D_N',
-                                  VALE=(0.,0.,0.))));
+                                  VALE=(0.,0.,0.))))
 
 CARA1=AFFE_CARA_ELEM(MODELE=MODELE,
                     DISCRET=(_F(GROUP_MA='RESBAS',
@@ -142,11 +142,11 @@ CARA1=AFFE_CARA_ELEM(MODELE=MODELE,
                                   VALE=0.),
                                _F(GROUP_MA='RESBAS',
                                   CARA='A_T_D_N',
-                                  VALE=(0.,0.,0.))));
+                                  VALE=(0.,0.,0.))))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=(_F(GROUP_MA = list_group_ma, MATER = MAT1),
-                             _F(GROUP_MA = Paraxia, MATER = MAT_PAR)));
+                             _F(GROUP_MA = Paraxia, MATER = MAT_PAR)))
 
 # La hauteur de la colonne est dirigee suivant (OY)
 LIAISON0=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -171,7 +171,7 @@ LIAISON0=AFFE_CHAR_MECA(MODELE=MODELE,
                                          DDL_2=('DY'),
                                          COEF_MULT_1 = 1.,
                                          COEF_MULT_2 = -1.,
-                                         COEF_IMPO = 0.)));
+                                         COEF_IMPO = 0.)))
 LIAISON=AFFE_CHAR_MECA(MODELE=MODELE,
                         VERI_NORM='NON',
                         LIAISON_GROUP=(_F(GROUP_NO_1='LAT_LEFT',
@@ -194,32 +194,32 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MODELE,
                                          DDL_2=('DY'),
                                          COEF_MULT_1 = 1.,
                                          COEF_MULT_2 = -1.,
-                                         COEF_IMPO = 0.)));
+                                         COEF_IMPO = 0.)))
 
 BLOQ_BAS=AFFE_CHAR_CINE(MODELE=MODELE,
-                    MECA_IMPO=_F(GROUP_MA=('BAS'),DX=0.0,DY=0.0,DZ=0.0));
+                    MECA_IMPO=_F(GROUP_MA=('BAS'),DX=0.0,DY=0.0,DZ=0.0))
 
 BLOQ_HAU=AFFE_CHAR_MECA(MODELE=MODELE,
-                    DDL_IMPO=_F(GROUP_MA=('HA10'),DY=0.0));
+                    DDL_IMPO=_F(GROUP_MA=('HA10'),DY=0.0))
 
 BLOQ_PRE=AFFE_CHAR_CINE(MODELE=MODELE,
-                    MECA_IMPO=_F(GROUP_MA=('HA10'),PRE1=0.0));
+                    MECA_IMPO=_F(GROUP_MA=('HA10'),PRE1=0.0))
 
 ONDE=AFFE_CHAR_MECA_F(MODELE=MODELE,
                       ONDE_PLANE=_F(DIRECTION = (0.,+1.,0.),
                             DIST=-5.0,
                             TYPE_ONDE = Onde,
                             FONC_SIGNAL = vite,
-                            GROUP_MA= 'BAS'));
+                            GROUP_MA= 'BAS'))
 # ---Fin
 
 
 PES =AFFE_CHAR_MECA(MODELE=MODELE,
                     PESANTEUR=_F(GRAVITE=9.81,
-                                DIRECTION=(0.0,-1.0,0.0)));
+                                DIRECTION=(0.0,-1.0,0.0)))
 
 TANBID=DEFI_LIST_REEL(DEBUT=-1.E-1,
-                      INTERVALLE=_F(JUSQU_A=0., NOMBRE=2));
+                      INTERVALLE=_F(JUSQU_A=0., NOMBRE=2))
 
 UBID=STAT_NON_LINE(MODELE=MODELE,
                  CARA_ELEM=CARA,
@@ -236,28 +236,28 @@ UBID=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1),
                  SOLVEUR=_F(NPREC=11),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
-                                ARRET='OUI'));
+                                ARRET='OUI'))
 
 BIDDEP0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=UBID,
                 NOM_CHAM='DEPL',
                 INST=0.,
-                INFO=1);
+                INFO=1)
 
 UBID=CALC_CHAMP(reuse=UBID,FORCE='FORC_NODA',
             RESULTAT=UBID,
             GROUP_MA='RESBAS',
-            );
+            )
 
 FORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=UBID,
                 NOM_CHAM='FORC_NODA',
                 INST=0.,
-                INFO=1);
+                INFO=1)
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=BIDDEP0));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=BIDDEP0))
 
 
 CHFORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -271,9 +271,9 @@ CHFORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                         _F(TOUT='OUI',
                            CHAM_GD=FORCE0,
                            CUMUL='OUI',
-                           COEF_R=-1.0)));
+                           COEF_R=-1.0)))
 
-VFORCE0 = AFFE_CHAR_MECA(MODELE=MODELE,VECT_ASSE=CHFORCE0,INFO=1);
+VFORCE0 = AFFE_CHAR_MECA(MODELE=MODELE,VECT_ASSE=CHFORCE0,INFO=1)
 
 DYNB=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHAMPMAT,
@@ -292,14 +292,14 @@ DYNB=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1
                            ),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
-                                ARRET='OUI'));
+                                ARRET='OUI'))
 
 BIDDEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=DYNB,
                 NOM_CHAM='DEPL',
                 INST=0.,
-                INFO=1);
+                INFO=1)
 
 INIZERO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='ASSE',
@@ -308,12 +308,12 @@ INIZERO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    ASSE=(_F(TOUT   ='OUI',
                             CHAM_GD=BIDDEP,
                             CUMUL  ='OUI',
-                            COEF_R =0.0)));
+                            COEF_R =0.0)))
 
-pas_ttfin = 0.001;
+pas_ttfin = 0.001
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0.,
-                     INTERVALLE=_F(JUSQU_A = 0.3, PAS =pas_ttfin));
+                     INTERVALLE=_F(JUSQU_A = 0.3, PAS =pas_ttfin))
 
 DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
@@ -344,14 +344,14 @@ DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
                                 INST_FIN =0.2),
                    #ARCHIVAGE=_F(LIST_INST = L_ARCH),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                   FORMULATION='DEPLACEMENT'));
+                                   FORMULATION='DEPLACEMENT'))
 
 # TEST DE LA VITESSE
 
 DYNV56=RECU_FONCTION(RESULTAT=DYNB,
                     GROUP_NO='N56',
                     NOM_CHAM='VITE',
-                    NOM_CMP='DY');
+                    NOM_CMP='DY')
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.08575917,
                          CRITERE='RELATIF',
@@ -378,7 +378,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.08575917,
 DYNP56=RECU_FONCTION(RESULTAT=DYNB,
                     GROUP_NO='N56',
                     NOM_CHAM='DEPL',
-                    NOM_CMP='PRE1');
+                    NOM_CMP='PRE1')
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=219.5333539865,
                          CRITERE='RELATIF',
@@ -398,4 +398,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=219.5333539865,
                       ),
               )
 
-FIN();
+FIN()

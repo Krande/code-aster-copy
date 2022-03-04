@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@
 #
 #123678901234567890123456789012345678901234567890123456789012345678901
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), 
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='NON'))
 
 #
@@ -64,7 +64,7 @@ PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,
 ########################################################################
 #
 #        PLAQUE APPUYEE-APPUYEE DECOUPEE EN 2 PARTIES
-#   SOUS-STRUCTURATION CLASSIQUE - INTERFACES TYPE MC NEAL 
+#   SOUS-STRUCTURATION CLASSIQUE - INTERFACES TYPE MC NEAL
 #                    /!\ SANS MODE D'ATTACHE /!\
 #
 ########################################################################
@@ -237,7 +237,7 @@ RESGEL=CALC_MODES(MATR_RIGI=RIGEEL,
                   MATR_MASS=MAGEEL,
                   )
 
-                                        
+
 
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'CARRE1',
@@ -255,7 +255,7 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEL,
                        SQUELETTE=SQUEL,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI')
-                                        
+
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,

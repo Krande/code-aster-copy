@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ EP=0.001
 REXT=0.1
 
 #lecture maillage lineique
-MA=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,)
 
 # lecture maillage section1
-MASEC=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=18,);
+MASEC=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=18,)
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -301,16 +301,16 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 DRZB=RECU_FONCTION(RESULTAT=RESM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRZ',
-                   GROUP_NO='B',);
+                   GROUP_NO='B',)
 
 RDRZB=RECU_FONCTION(RESULTAT=RESM,
                     NOM_CHAM='REAC_NODA',
                     NOM_CMP='DRZ',
-                    GROUP_NO='B',);
-ME = 4642.17;
+                    GROUP_NO='B',)
+ME = 4642.17
 
-RE = 0.0075;
-REMAX=0.0375;
+RE = 0.0075
+REMAX=0.0375
 
 CAa = FORMULE(VALE="""
 ME*2*DRZ/pi/RE*(asin(RE/DRZ)+RE/DRZ*(1-(RE/DRZ)**2)**(0.5))""",
@@ -340,6 +340,6 @@ IMPR_FONCTION(UNITE=25, UNITE_DIGR=26,
                     _F(FONCTION=CA,
                        LEGENDE='ANALYTIQUE',
                        COULEUR=3,
-                       MARQUEUR=2,),),);
+                       MARQUEUR=2,),),)
 
 FIN( )

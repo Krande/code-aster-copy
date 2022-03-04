@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 #
 
 mail0=LIRE_MAILLAGE(FORMAT='MED',
-                    VERI_MAIL=_F(VERIF='OUI',),);
+                    VERI_MAIL=_F(VERIF='OUI',),)
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
@@ -36,7 +36,7 @@ mail=CREA_MAILLAGE(MAILLAGE=mail0,
                    CREA_POI1=(_F(NOM_GROUP_MA='PBASE',
                                  GROUP_NO='N316',),
                               _F(NOM_GROUP_MA='PFONDAT',
-                                 GROUP_MA='SURFBAS2',),),);
+                                 GROUP_MA='SURFBAS2',),),)
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
@@ -45,7 +45,7 @@ mail=CREA_MAILLAGE(MAILLAGE=mail0,
 mail=DEFI_GROUP(reuse =mail,
                 MAILLAGE=mail,
                 CREA_GROUP_NO=_F(GROUP_MA='SURFBAS2',
-                                 NOM='ISOLSTR',),);
+                                 NOM='ISOLSTR',),)
 
 #
 # Orientation des elements d interface.
@@ -63,7 +63,7 @@ mail=MODI_MAILLAGE(reuse =mail,
                                        GROUP_NO='N316',),
                                     _F(GROUP_MA='SLIBREM2',
                                        VECT_NORM=(0.,0.,1.,),
-                                       GROUP_NO='N1043',),),);
+                                       GROUP_NO='N1043',),),)
 
 modele=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=(_F(GROUP_MA='STRVOU2',
@@ -71,19 +71,19 @@ modele=AFFE_MODELE(MAILLAGE=mail,
                             MODELISATION='3D',),
                          _F(GROUP_MA='PBASE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 #
 
 mat1=DEFI_MATERIAU(ELAS=_F(E=3.6E+10,
                            NU=0.2,
-                           RHO=2400.,),);
+                           RHO=2400.,),)
 
 #
 
 champmat=AFFE_MATERIAU(MAILLAGE=mail,
                        AFFE=_F(GROUP_MA='STRVOU2',
-                               MATER=mat1,),);
+                               MATER=mat1,),)
 
 cara_ele=AFFE_CARA_ELEM(MODELE=modele,
                         DISCRET=(_F(REPERE='GLOBAL',
@@ -93,7 +93,7 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
                                  _F(REPERE='GLOBAL',
                                     CARA='K_TR_D_N',
                                     GROUP_MA='PBASE',
-                                    VALE=(0.,0.,0.,0.,0.,0.,),),),);
+                                    VALE=(0.,0.,0.,0.,0.,0.,),),),)
 
 #
 #========================================
@@ -113,7 +113,7 @@ cond_lim=AFFE_CHAR_MECA(MODELE=modele,
                                     DRX=0.,
                                     DRY=0.,
                                     DRZ=0.,),
-                        LIAISON_SOLIDE=_F(GROUP_NO='ISOLSTR',),);
+                        LIAISON_SOLIDE=_F(GROUP_NO='ISOLSTR',),)
 
 #
 #
@@ -124,7 +124,7 @@ rigi_ele=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=modele,
                         CHAM_MATER=champmat,
                         CARA_ELEM=cara_ele,
-                        CHARGE=cond_lim,);
+                        CHARGE=cond_lim,)
 
 #
 
@@ -132,21 +132,21 @@ mass_ele=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=modele,
                         CHAM_MATER=champmat,
                         CARA_ELEM=cara_ele,
-                        CHARGE=cond_lim,);
+                        CHARGE=cond_lim,)
 
 #
 
-nume_ddl=NUME_DDL(MATR_RIGI=rigi_ele,);
+nume_ddl=NUME_DDL(MATR_RIGI=rigi_ele,)
 
 #
 # Assemblage des matrices et vecteurs
 #-------------------------------------
 
 MATRIGI=ASSE_MATRICE(MATR_ELEM=rigi_ele,
-                     NUME_DDL=nume_ddl,);
+                     NUME_DDL=nume_ddl,)
 
 MATMASS=ASSE_MATRICE(MATR_ELEM=mass_ele,
-                     NUME_DDL=nume_ddl,);
+                     NUME_DDL=nume_ddl,)
 
 #
 # Calcul de la masse du barrage voute
@@ -156,7 +156,7 @@ mass_bar=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                    MODELE=modele,
                    CHAM_MATER=champmat,
                    CARA_ELEM=cara_ele,
-                   INFO=1,);
+                   INFO=1,)
 
 #
 # calcul des modes
@@ -184,17 +184,17 @@ mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
 interdy=DEFI_INTERF_DYNA(NUME_DDL=nume_ddl,
                          INTERFACE=_F(NOM='SOLBAR',
                                       TYPE='CRAIGB',
-                                      GROUP_NO='N316',),);
+                                      GROUP_NO='N316',),)
 
 #
 
 bamo=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=interdy,
                                    MODE_MECA=mode_rig,
-                                   NMAX_MODE=999,),);
+                                   NMAX_MODE=999,),)
 
 #
 
-mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,);
+mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,)
 
 # Table de sol en manuel pour reference :
 # TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
@@ -267,7 +267,7 @@ mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,);
 #                                 NUME_MATE=1,),
 #                              _F(SUBSTRATUM='OUI',
 #                                 NUME_MATE=2,),),
-#                      TITRE='SOL HOMOGENE',);
+#                      TITRE='SOL HOMOGENE',)
 
 TABSOL=DEFI_SOL_MISS(MATERIAU=_F(E=3.0e11,
                                   NU=0.16,
@@ -280,7 +280,7 @@ TABSOL=DEFI_SOL_MISS(MATERIAU=_F(E=3.0e11,
                                     GROUP_MA_INTERF='SURFBAS2',
                                     MAILLAGE=mail,
                                    ),
-                     TITRE='SOL HOMOGENE',INFO=2,);
+                     TITRE='SOL HOMOGENE',INFO=2,)
 
 CALC_MISS(TYPE_RESU='FICHIER',
           PROJET='FDLV112B',
@@ -308,44 +308,44 @@ CALC_MISS(TYPE_RESU='FICHIER',
                        #ALGO='REGU',
                        #OFFSET_MAX=1000,
                        #OFFSET_NB=5000,
-                       ),);
+                       ),)
 
 nddlgen=NUME_DDL_GENE(BASE=bamo,
-                      STOCKAGE='PLEIN',);
+                      STOCKAGE='PLEIN',)
 
 rigigen=PROJ_MATR_BASE(BASE=bamo,
                        NUME_DDL_GENE=nddlgen,
-                       MATR_ASSE=MATRIGI,);
+                       MATR_ASSE=MATRIGI,)
 
 massgen=PROJ_MATR_BASE(BASE=bamo,
                        NUME_DDL_GENE=nddlgen,
-                       MATR_ASSE=MATMASS,);
+                       MATR_ASSE=MATMASS,)
 
 imp=LIRE_IMPE_MISS(BASE=bamo,
                    NUME_DDL_GENE=nddlgen,
                    FREQ_EXTR=3.,
                    UNITE_RESU_IMPE=25,
-                   ISSF='OUI',);
+                   ISSF='OUI',)
 
 imp0=LIRE_IMPE_MISS(BASE=bamo,
                     NUME_DDL_GENE=nddlgen,
                     FREQ_EXTR=0.1,
                     UNITE_RESU_IMPE=25,
-                    ISSF='OUI',);
+                    ISSF='OUI',)
 
 impe=LIRE_IMPE_MISS(BASE=bamo,
                     NUME_DDL_GENE=nddlgen,
                     FREQ_EXTR=3.,
                     UNITE_RESU_IMPE=25,
                     ISSF='OUI',
-                    SYME='OUI',);
+                    SYME='OUI',)
 
 impe0=LIRE_IMPE_MISS(BASE=bamo,
                      NUME_DDL_GENE=nddlgen,
                      FREQ_EXTR=0.1,
                      UNITE_RESU_IMPE=25,
                      ISSF='OUI',
-                     SYME='OUI',);
+                     SYME='OUI',)
 
 forc=LIRE_FORC_MISS(BASE=bamo,
                     NUME_DDL_GENE=nddlgen,
@@ -353,7 +353,7 @@ forc=LIRE_FORC_MISS(BASE=bamo,
                     NOM_CMP='DX',
                     NOM_CHAM='ACCE',
                     ISSF='OUI',
-                    UNITE_RESU_FORC=28,);
+                    UNITE_RESU_FORC=28,)
 
 forc0=LIRE_FORC_MISS(BASE=bamo,
                      NUME_DDL_GENE=nddlgen,
@@ -361,14 +361,14 @@ forc0=LIRE_FORC_MISS(BASE=bamo,
                      NOM_CMP='DX',
                      NOM_CHAM='ACCE',
                      ISSF='OUI',
-                     UNITE_RESU_FORC=28,);
+                     UNITE_RESU_FORC=28,)
 
 rito=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='REEL',
                                MATR_ASSE=impe0,
                                COEF_R=1.0,),
                             _F(MATR_ASSE=rigigen,
                                COEF_R=1.0,),),
-                    SANS_CMP='LAGR',);
+                    SANS_CMP='LAGR',)
 
 mato=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='REEL',
                                MATR_ASSE=impe0,
@@ -378,7 +378,7 @@ mato=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='REEL',
                                COEF_R=-2.814e-3,),
                             _F(MATR_ASSE=massgen,
                                COEF_R=1.0,),),
-                    SANS_CMP='LAGR',);
+                    SANS_CMP='LAGR',)
 
 amto=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='IMAG',
                                MATR_ASSE=impe,
@@ -386,7 +386,7 @@ amto=COMB_MATR_ASSE(COMB_R=(_F(PARTIE='IMAG',
                             _F(PARTIE='IMAG',
                                MATR_ASSE=impe0,
                                COEF_R=-5.30e-2,),),
-                    SANS_CMP='LAGR',);
+                    SANS_CMP='LAGR',)
 
 modgen=CALC_MODES(MATR_RIGI=rito,
                   VERI_MODE=_F(STOP_ERREUR='NON',
@@ -401,7 +401,7 @@ modgen=CALC_MODES(MATR_RIGI=rito,
 
 MODEF=REST_GENE_PHYS(RESU_GENE=modgen,
                      TOUT_ORDRE='OUI',
-                     NOM_CHAM='DEPL',);
+                     NOM_CHAM='DEPL',)
 
 TEST_RESU(RESU=(_F(RESULTAT=MODEF,
                    NUME_ORDRE=1,
@@ -427,19 +427,19 @@ TEST_RESU(RESU=(_F(RESULTAT=MODEF,
                    NUME_ORDRE=5,
                    PARA='FREQ',
                    CRITERE='RELATIF',
-                   VALE_CALC=7.45692990834,),),);
+                   VALE_CALC=7.45692990834,),),)
 
 imto=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=imp,
                                COEF_C=(1+0j),),
                             _F(MATR_ASSE=rigigen,
                                COEF_C=(1+0.1j),),),
-                    SANS_CMP='LAGR',);
+                    SANS_CMP='LAGR',)
 
 imto0=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=imp0,
                                 COEF_C=(1+0j),),
                              _F(MATR_ASSE=rigigen,
                                 COEF_C=(1+0.1j),),),
-                     SANS_CMP='LAGR',);
+                     SANS_CMP='LAGR',)
 
 dyge=DYNA_VIBRA(BASE_CALCUL='GENE',
                 TYPE_CALCUL='HARM',
@@ -448,7 +448,7 @@ dyge=DYNA_VIBRA(BASE_CALCUL='GENE',
                 FREQ=3.,
                 EXCIT=_F(VECT_ASSE_GENE=forc,
                          COEF_MULT=1.0,),
-                SOLVEUR=_F(METHODE='LDLT',),);
+                SOLVEUR=_F(METHODE='LDLT',),)
 
 dyge0=DYNA_VIBRA(BASE_CALCUL='GENE',
                  TYPE_CALCUL='HARM',
@@ -457,29 +457,29 @@ dyge0=DYNA_VIBRA(BASE_CALCUL='GENE',
                  FREQ=0.1,
                  EXCIT=_F(VECT_ASSE_GENE=forc0,
                           COEF_MULT=1.0,),
-                 SOLVEUR=_F(METHODE='LDLT',),);
+                 SOLVEUR=_F(METHODE='LDLT',),)
 
 dyha=REST_GENE_PHYS(RESU_GENE=dyge,
-                    NOM_CHAM=('DEPL','VITE','ACCE',),);
+                    NOM_CHAM=('DEPL','VITE','ACCE',),)
 
 dyha0=REST_GENE_PHYS(RESU_GENE=dyge0,
-                     NOM_CHAM=('DEPL','VITE','ACCE',),);
+                     NOM_CHAM=('DEPL','VITE','ACCE',),)
 
 dx253=RECU_FONCTION(RESULTAT=dyha,
                     NOM_CHAM='ACCE',
                     NOM_CMP='DX',
-                    GROUP_NO='N253',);
+                    GROUP_NO='N253',)
 
 dx253_0=RECU_FONCTION(RESULTAT=dyha0,
                       NOM_CHAM='ACCE',
                       NOM_CMP='DX',
-                      GROUP_NO='N253',);
+                      GROUP_NO='N253',)
 
 mdx253=CALC_FONCTION(EXTRACTION=_F(FONCTION=dx253,
-                                   PARTIE='MODULE',),);
+                                   PARTIE='MODULE',),)
 
 mdx253_0=CALC_FONCTION(EXTRACTION=_F(FONCTION=dx253_0,
-                                     PARTIE='MODULE',),);
+                                     PARTIE='MODULE',),)
 
 # VALEURS DE NON REGRESSION CORRIGEES SUITE A LA FICHE 16690
 
@@ -489,7 +489,7 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=mdx253,
                       _F(FONCTION=mdx253_0,
                          VALE_PARA=0.1,
                          TOLE_MACHINE=0.0001,  # En attente issue24202
-                         VALE_CALC=1.001351,),),);
+                         VALE_CALC=1.001351,),),)
 
-FIN();
+FIN()
 #CHECKSUM:e58c588108ac5cafa08b970c60460011  -:FIN CHECKSUM

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# ELEMENTS  : POI1   
+# ELEMENTS  : POI1
 # REFERENCE : ANALYTIQUE
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
@@ -25,9 +25,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 MAYA=LIRE_MAILLAGE(FORMAT="ASTER", )
 
 STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,
-                               
+
                                     AFFE=_F(  GROUP_MA = 'M1',
-                                      PHENOMENE = 'MECANIQUE', 
+                                      PHENOMENE = 'MECANIQUE',
                                       MODELISATION = 'DIS_TR'))
 
 # DEFINITION DES CONDITIONS AUX LIMITES
@@ -43,8 +43,8 @@ CARA=AFFE_CARA_ELEM(    MODELE=STRUCTUR,DISCRET=(
                   VALE = ( 160.,180.,1280.,180.,1280.,1960.,)),
 
                      _F(  CARA = 'M_TR_D_N',
-                       GROUP_MA = 'M1',      
-                       REPERE = 'GLOBAL', 
+                       GROUP_MA = 'M1',
+                       REPERE = 'GLOBAL',
                   VALE = ( 10.,10.,10.,10.,0.,0.,0.,0.,0.,0., )))
 
                   )
@@ -66,10 +66,10 @@ NUMERO=NUME_DDL(    MATR_RIGI=K_ELEM )
 # ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
 
 
-K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM, 
+K_ASSE=ASSE_MATRICE(    MATR_ELEM=K_ELEM,
                              NUME_DDL=NUMERO )
 
-M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM, 
+M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
                              NUME_DDL=NUMERO )
 
 
@@ -257,7 +257,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                 ),
           )
 
-# CALCUL DES MODES PAR JACOBI 
+# CALCUL DES MODES PAR JACOBI
 
 MODE6=CALC_MODES(MATR_RIGI=K_ASSE,
                  OPTION='BANDE',

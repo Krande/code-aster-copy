@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,28 +22,28 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=6.7E10,
                             NU=0.,
-                            RHO=2400.,),);
+                            RHO=2400.,),)
 
-MAYA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAYA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MATER=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE=_F(GROUP_MA='GROUP_MA_POUTRE',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 STRUC_1=AFFE_MODELE(MAILLAGE=MAYA,
                     AFFE=_F(GROUP_MA='GROUP_MA_POUTRE',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_TG',),);
+                            MODELISATION='POU_D_TG',),)
 
 CARA_1=AFFE_CARA_ELEM(MODELE=STRUC_1,
                       POUTRE=_F(GROUP_MA='GROUP_MA_POUTRE',
                                 SECTION='RECTANGLE',
                                 CARA=('HY','HZ',),
-                                VALE=(0.014,0.014,),),);
+                                VALE=(0.014,0.014,),),)
 
 FIXA_1=AFFE_CHAR_MECA(MODELE=STRUC_1,
                       DDL_IMPO=(_F(GROUP_NO='GROUP_NO_POINT_A',
@@ -52,7 +52,7 @@ FIXA_1=AFFE_CHAR_MECA(MODELE=STRUC_1,
                                 _F(GROUP_NO='GROUP_NO_TOUT',
                                    DZ=0.,
                                    DRX=0.,
-                                   DRY=0.,),),);
+                                   DRY=0.,),),)
 
 # CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE ET DE MASSE
 
@@ -60,25 +60,25 @@ K_EL_1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=STRUC_1,
                       CHAM_MATER=MATER,
                       CARA_ELEM=CARA_1,
-                      CHARGE=FIXA_1,);
+                      CHARGE=FIXA_1,)
 
 M_EL_1=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=STRUC_1,
                       CHAM_MATER=MATER,
                       CARA_ELEM=CARA_1,
-                      CHARGE=FIXA_1,);
+                      CHARGE=FIXA_1,)
 
 # NUMEROTATION
 
-NUMERO_1=NUME_DDL(MATR_RIGI=K_EL_1,);
+NUMERO_1=NUME_DDL(MATR_RIGI=K_EL_1,)
 
 # ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
 
 K_AS_1=ASSE_MATRICE(MATR_ELEM=K_EL_1,
-                    NUME_DDL=NUMERO_1,);
+                    NUME_DDL=NUMERO_1,)
 
 M_AS_1=ASSE_MATRICE(MATR_ELEM=M_EL_1,
-                    NUME_DDL=NUMERO_1,);
+                    NUME_DDL=NUMERO_1,)
 
 # CALCUL DES MODES PAR SORENSEN + BANDE
 
@@ -128,7 +128,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_A_1,
                    VALE_REFE=1507.9,
                    PRECISION=0.007,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=1498.7429,),),);
+                   VALE_CALC=1498.7429,),),)
 
 # CALCUL DES MODES PAR JACOBI + BANDE
 
@@ -180,7 +180,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_B_1,
                    VALE_REFE=1507.9,
                    PRECISION=0.007,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=1498.7429,),),);
+                   VALE_CALC=1498.7429,),),)
 
 #------------------------------------------------------------------
 #     CALCUL AVEC RESSORT
@@ -192,7 +192,7 @@ STRUC_2=AFFE_MODELE(MAILLAGE=MAYA,
                              MODELISATION='POU_D_TG',),
                           _F(GROUP_MA='GROUP_MA_RESSORT',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='DIS_TR',),),);
+                             MODELISATION='DIS_TR',),),)
 
 CARA_2=AFFE_CARA_ELEM(MODELE=STRUC_2,
                       POUTRE=_F(GROUP_MA='GROUP_MA_POUTRE',
@@ -206,7 +206,7 @@ CARA_2=AFFE_CARA_ELEM(MODELE=STRUC_2,
                                _F(REPERE='GLOBAL',
                                   CARA='M_TR_D_N',
                                   GROUP_MA='GROUP_MA_RESSORT',
-                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),),);
+                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),),)
 
 FIXA_2=AFFE_CHAR_MECA(MODELE=STRUC_2,
                       DDL_IMPO=(_F(GROUP_NO='GROUP_NO_POINT_A',
@@ -215,7 +215,7 @@ FIXA_2=AFFE_CHAR_MECA(MODELE=STRUC_2,
                                 _F(GROUP_NO='GROUP_NO_TOUT',
                                    DZ=0.,
                                    DRX=0.,
-                                   DRY=0.,),),);
+                                   DRY=0.,),),)
 
 # CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE ET DE MASSE
 
@@ -223,25 +223,25 @@ K_EL_2=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=STRUC_2,
                       CHAM_MATER=MATER,
                       CARA_ELEM=CARA_2,
-                      CHARGE=FIXA_2,);
+                      CHARGE=FIXA_2,)
 
 M_EL_2=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=STRUC_2,
                       CHAM_MATER=MATER,
                       CARA_ELEM=CARA_2,
-                      CHARGE=FIXA_2,);
+                      CHARGE=FIXA_2,)
 
 # NUMEROTATION
 
-NUMERO_2=NUME_DDL(MATR_RIGI=K_EL_2,);
+NUMERO_2=NUME_DDL(MATR_RIGI=K_EL_2,)
 
 # ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
 
 K_AS_2=ASSE_MATRICE(MATR_ELEM=K_EL_2,
-                    NUME_DDL=NUMERO_2,);
+                    NUME_DDL=NUMERO_2,)
 
 M_AS_2=ASSE_MATRICE(MATR_ELEM=M_EL_2,
-                    NUME_DDL=NUMERO_2,);
+                    NUME_DDL=NUMERO_2,)
 
 # A - CALCUL DES MODES PAR SORENSEN + BANDE
 
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_A_2,
                    VALE_REFE=1509.6,
                    PRECISION=0.007,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=1500.41315,),),);
+                   VALE_CALC=1500.41315,),),)
 
 # B - CALCUL DES MODES PAR JACOBI + BANDE
 
@@ -359,8 +359,8 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE_B_2,
                    VALE_REFE=1509.6,
                    PRECISION=0.007,
                    REFERENCE='ANALYTIQUE',
-                   VALE_CALC=1500.41315,),),);
+                   VALE_CALC=1500.41315,),),)
 
 #------------------------------------------------------------------
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -340,7 +340,7 @@ SIGA=CREA_CHAMP(OPERATION='EXTR',
                 TYPE_CHAM='ELGA_SIEF_R',
                 NOM_CHAM='SIGM_ELGA',
                 NUME_ORDRE=1,
-                RESULTAT=RES);
+                RESULTAT=RES)
 
 FNORML2 = FORMULE(VALE='(SIXX*SIXX + SIYY*SIYY + SIZZ*SIZZ + 2*SIXY*SIXY + 2*SIYZ*SIYZ + 2*SIXZ*SIXZ)',
                   NOM_PARA=['SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'],)
@@ -349,17 +349,17 @@ CNORML2 = CREA_CHAMP(OPERATION='AFFE',
                   TYPE_CHAM='ELGA_NEUT_F',
                   MODELE=MODELE,
                   PROL_ZERO='OUI',
-                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORML2),);
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORML2),)
 
 TEMPAA = CREA_CHAMP(OPERATION='EVAL',
                     TYPE_CHAM='ELGA_NEUT_R',
                     CHAM_F=CNORML2,
-                    CHAM_PARA=SIGA);
+                    CHAM_PARA=SIGA)
 
 Norme11 = POST_ELEM(MODELE=MODELE,
                     CHAM_GD=TEMPAA,
                     CHAM_MATER=CHAMPMAT,
-                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1', TYPE_MAILLE='3D'),);
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1', TYPE_MAILLE='3D'),)
 
 IMPR_TABLE(TABLE=Norme11, )
 #n1 = math.sqrt( Norme11['INTE_X1',1])
@@ -397,17 +397,17 @@ CNORMFR = CREA_CHAMP(OPERATION='AFFE',
                   TYPE_CHAM='ELGA_NEUT_F',
                   MODELE=MODELE,
                   PROL_ZERO='OUI',
-                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORMFR),);
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORMFR),)
 
 TEMPBB = CREA_CHAMP(OPERATION='EVAL',
                     TYPE_CHAM='ELGA_NEUT_R',
                     CHAM_F=CNORMFR,
-                    CHAM_PARA=SIGA);
+                    CHAM_PARA=SIGA)
 
 Norme22 = POST_ELEM(MODELE=MODELE,
                     CHAM_GD=TEMPBB,
                     CHAM_MATER=CHAMPMAT,
-                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1', TYPE_MAILLE='3D'),);
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELGA',NOM_CMP='X1', TYPE_MAILLE='3D'),)
 
 IMPR_TABLE(TABLE=Norme22, )
 #n2 = math.sqrt( Norme22['INTE_X1',1])
@@ -447,23 +447,23 @@ SIGELA=CREA_CHAMP(OPERATION='EXTR',
                 TYPE_CHAM='ELNO_SIEF_R',
                 NOM_CHAM='SIGM_ELNO',
                 NUME_ORDRE=1,
-                RESULTAT=RES);
+                RESULTAT=RES)
 
 CNORMF2 = CREA_CHAMP(OPERATION='AFFE',
                   TYPE_CHAM='ELNO_NEUT_F',
                   MODELE=MODELE,
                   PROL_ZERO='OUI',
-                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORMFR),);
+                  AFFE=_F(GROUP_MA='3D',NOM_CMP='X1',VALE_F=FNORMFR),)
 
 TEMPB2 = CREA_CHAMP(OPERATION='EVAL',
                     TYPE_CHAM='ELNO_NEUT_R',
                     CHAM_F=CNORMF2,
-                    CHAM_PARA=SIGELA);
+                    CHAM_PARA=SIGELA)
 
 Norme25 = POST_ELEM(MODELE=MODELE,
                     CHAM_GD=TEMPB2,
                     CHAM_MATER=CHAMPMAT,
-                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELNO',NOM_CMP='X1', TYPE_MAILLE='3D'),);
+                    INTEGRALE=_F(MAILLE='MA1',NOM_CHAM='SIGM_ELNO',NOM_CMP='X1', TYPE_MAILLE='3D'),)
 
 IMPR_TABLE(TABLE=Norme25, )
 n2 = math.sqrt( Norme25['INTE_X1',1])

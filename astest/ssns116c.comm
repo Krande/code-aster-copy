@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ nbPasPres = 10
 #
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -59,7 +59,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='membrane',
                                       VECT_NORM=(0.0,0.0,1.0,),
-                                      GROUP_NO='point_O',),);
+                                      GROUP_NO='point_O',),)
 
 #
 # DEFINITION DU MODELE
@@ -99,11 +99,11 @@ ENCAST=AFFE_CHAR_MECA(    MODELE=MODELE,DDL_IMPO=(
 
 CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                        PESANTEUR=_F(GRAVITE=gravite,
-                       DIRECTION=(0.0,0.0,-1.0,),),);
+                       DIRECTION=(0.0,0.0,-1.0,),),)
 
 PRESS=AFFE_CHAR_MECA(MODELE=MODELE,
                      PRES_REP=_F(GROUP_MA='membrane',
-                                 PRES=press,),);
+                                 PRES=press,),)
 
 # CALCULS
 FONCCB=DEFI_FONCTION(
@@ -111,13 +111,13 @@ FONCCB=DEFI_FONCTION(
                      VALE=(0.0 ,0.0,
                            1.0 ,1.0,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 
 
 # Gravite
 LINST1=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=nbPasGrav,),);
+                                   NOMBRE=nbPasGrav,),)
 
 RES1 = STAT_NON_LINE(CARA_ELEM=CARA,
                      CHAM_MATER=CHMAT,
@@ -161,7 +161,7 @@ RES1 = STAT_NON_LINE(CARA_ELEM=CARA,
 # Pression non suiveuse
 LINST2=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=nbPasPres,),);
+                                   NOMBRE=nbPasPres,),)
 
 RES2 = STAT_NON_LINE(CARA_ELEM=CARA,
                      CHAM_MATER=CHMAT,
@@ -208,11 +208,11 @@ RES2 = STAT_NON_LINE(CARA_ELEM=CARA,
 
 RES1=CALC_CHAMP(reuse = RES1,
                  RESULTAT=RES1,
-                 CONTRAINTE='SIEF_NOEU',);
+                 CONTRAINTE='SIEF_NOEU',)
 
 RES2=CALC_CHAMP(reuse = RES2,
                  RESULTAT=RES2,
-                 CONTRAINTE='SIEF_NOEU',);
+                 CONTRAINTE='SIEF_NOEU',)
 
 
 ## Visualisation sur Paravis (deplacements et contraintes)
@@ -220,13 +220,13 @@ IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=RES1,
-                  ),);
+                  ),)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=RES2,
-                  ),);
+                  ),)
 
 # Test resultat
 # Comparaison pesanteur analytique (non regression sur pesanteur)
@@ -239,7 +239,7 @@ TEST_RESU(RESU=_F(LEGENDE='Depl point O',
                   GROUP_NO='point_O',
                   VALE_CALC=-6.34895127557,
                   VALE_REFE=-6.352,
-                  PRECISION = 5E-4,),);
+                  PRECISION = 5E-4,),)
 
 # Comparaison pesanteur et pression (non régression sur pression)
 TEST_RESU(RESU=_F(LEGENDE='Depl point O',
@@ -251,7 +251,7 @@ TEST_RESU(RESU=_F(LEGENDE='Depl point O',
                   GROUP_NO='point_O',
                   VALE_REFE=-6.34895127557,
                   VALE_CALC=-6.348951275574324,
-                  PRECISION = 1E-6,),);
+                  PRECISION = 1E-6,),)
 
 
 FIN()

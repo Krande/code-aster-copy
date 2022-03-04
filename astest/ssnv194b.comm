@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-CUBE=LIRE_MAILLAGE(FORMAT="ASTER",);
+CUBE=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 PRECIS=1.E-6
 
@@ -49,13 +49,13 @@ CUBE=DEFI_GROUP(reuse =CUBE,
                                 NOM='ARRIERE',
                                 POINT=(0.0,0.0,0.0,),
                                 VECT_NORMALE=(1.0,0.0,0.0,),
-                                PRECISION=PRECIS,),),);
+                                PRECISION=PRECIS,),),)
 
 TROISD=AFFE_MODELE(MAILLAGE=CUBE,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
-TFIN = 0.005;
+                           MODELISATION='3D',),)
+TFIN = 0.005
 
 
 
@@ -67,7 +67,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=140,),
                                  _F(JUSQU_A=TFIN,
                                     NOMBRE=150,),
-                                    ),);
+                                    ),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
@@ -82,7 +82,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H3=0.0,
                                   H4=0.0,
                                   ),
-                    MONO_CINE1=_F(D=36.68,),);
+                    MONO_CINE1=_F(D=36.68,),)
 
 # test de la possibité de définir des matériaux différents
 # les valeurs sont identiques a celle de ACIER
@@ -100,19 +100,19 @@ ACIER2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H3=0.0,
                                   H4=0.0,
                                   ),
-                    MONO_CINE1=_F(D=36.68,),);
+                    MONO_CINE1=_F(D=36.68,),)
 
 COEF=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
+                          MATER=ACIER,),)
 MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
-                          MATER=(ACIER,ACIER2)),);
+                          MATER=(ACIER,ACIER2)),)
 
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                      DDL_IMPO=(
@@ -139,7 +139,7 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BCC24',),),
                       #MATR_INTER= table,
-                                    );
+                                    )
 
 COMPORT2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
                                     ECOULEMENT='MONO_VISC1',
@@ -148,7 +148,7 @@ COMPORT2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BCC24',),),
                       #MATR_INTER= table,
-                                    );
+                                    )
 
 
 
@@ -166,7 +166,7 @@ COMPORP2=DEFI_COMPOR(POLYCRISTAL=(
                         ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     MU_LOCA=145200./2.6,
-                    );
+                    )
 
 
 
@@ -190,7 +190,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                                 REAC_ITER=0,),),
                      CONVERGENCE=(_F(ITER_GLOB_MAXI=50,
                                      RESI_GLOB_RELA=1.E-4
-                                     ),),);
+                                     ),),)
 
 SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 

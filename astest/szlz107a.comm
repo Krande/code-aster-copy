@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ TAUN1=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  0.,     0.,
                                   1.,   411.,
                                   2.,     0.,
-                                  3.,  -411., 
+                                  3.,  -411.,
                                   4.,     0.,
                                   5.,   411.,  )  )
 
@@ -32,7 +32,7 @@ TAUN2=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  0.,     0.,
                                   1.,   205.,
                                   2.,     0.,
-                                  3.,  -205., 
+                                  3.,  -205.,
                                   4.,     0.,
                                   5.,   205.,
                                       )  )
@@ -70,10 +70,10 @@ WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
 MAT0=DEFI_MATERIAU(ELAS=_F(E = 200000.,
                            NU = 0.3,
                            ALPHA = 0. ),
-                    
+
                    FATIGUE=_F(WOHLER = WHOL,
                               D0 = 540.97,
-                              TAU0 = 352.),);
+                              TAU0 = 352.),)
 
 ######################################################
 #-----------------------------------------------------------------------
@@ -84,7 +84,7 @@ TAB_1=POST_FATIGUE(      CHARGEMENT='MULTIAXIAL',
                                        SIGM_ZZ = TAUN3,
                                        SIGM_XY = TAUN2,
                                        SIGM_XZ = TAUN3,
-                                       SIGM_YZ = TAUN3,                                                
+                                       SIGM_YZ = TAUN3,
                                      ),
                           CRITERE='CROSSLAND',
                           DOMMAGE='WOHLER',
@@ -201,7 +201,7 @@ CRIT_FAT =   FORMULE(
            NOM_PARA=('RAYSPH','PHYDRM'),
            VALE=''' (RAYSPH + 0.22*(max(PHYDRM,0))) - 352 '''
            )
-           
+
 # POUR RETROUVER LE CRITERE CROSSLAND
 # b = TAU0 = 352
 # a = (TAU0-D0/SQRT(3))/D0/3 = 0.22
@@ -238,8 +238,8 @@ WHOL_Fb=DEFI_FONCTION(   NOM_PARA='SIGM',
                                  1186.325173,  1.0E+02,
                                  1429.687173,  5.0E+01,
                                  1829.643475,  2.0E+01,
-                                 2204.975387,  1.0E+01,              
-                              )  
+                                 2204.975387,  1.0E+01,
+                              )
                           )
 ## -----------------------------------------------------------------------
 TAB_1a=POST_FATIGUE(   CHARGEMENT='MULTIAXIAL',
@@ -255,8 +255,8 @@ TAB_1a=POST_FATIGUE(   CHARGEMENT='MULTIAXIAL',
                        FORMULE_GRDEQ = CRIT_FAT,
                        DOMMAGE='WOHLER',
                        MATER=MAT0                 )
-                       
-IMPR_TABLE(TABLE = TAB_1a) 
+
+IMPR_TABLE(TABLE = TAB_1a)
 
 TEST_TABLE(
            VALE_REFE=137.0,
@@ -296,8 +296,8 @@ TAB_1b=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        DOMMAGE='FORM_VIE',
                        FORMULE_VIE = WHOL_F,
                        MATER=MAT0                 )
-                       
-IMPR_TABLE(TABLE = TAB_1b) 
+
+IMPR_TABLE(TABLE = TAB_1b)
 
 TEST_TABLE(
            VALE_REFE=137.0,
@@ -337,8 +337,8 @@ TAB_1c=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        DOMMAGE='FORM_VIE',
                        FORMULE_VIE = WHOL_Fb,
                        MATER=MAT0                 )
-                       
-IMPR_TABLE(TABLE = TAB_1c) 
+
+IMPR_TABLE(TABLE = TAB_1c)
 
 TEST_TABLE(
            VALE_REFE=137.0,
@@ -379,8 +379,8 @@ TAB_2a=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        FORMULE_GRDEQ = CRIT_FA2,
                        DOMMAGE='WOHLER',
                        MATER=MAT0                 )
-                       
-IMPR_TABLE(TABLE = TAB_2a) 
+
+IMPR_TABLE(TABLE = TAB_2a)
 
 TEST_TABLE(
            VALE_REFE=137.0,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ M1=DEFI_GROUP(reuse =M1,
                              _F(GROUP_MA='VANNE',),
                              _F(GROUP_MA='BIELA',),
                              _F(GROUP_MA='BIELB',),
-                             _F(GROUP_MA='BIELC',),),);
+                             _F(GROUP_MA='BIELC',),),)
 
 
 # IMPR_RESU(UNITE=6, FORMAT='ASTER', RESU=_F(MAILLAGE=M1))
@@ -51,7 +51,7 @@ M1=DEFI_GROUP(reuse =M1,
 
 MA=CREA_MAILLAGE(MAILLAGE=M1,
                  MODI_MAILLE=_F(GROUP_MA=('POUTRES','COUDES',),
-                                OPTION='SEG3_4',),);
+                                OPTION='SEG3_4',),)
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_MA= (
@@ -69,7 +69,7 @@ MA=MODI_MAILLAGE(reuse =MA,
            ABSC_CURV=_F(
                 GROUP_MA=('POUTRES','COUDES',),
                 GROUP_NO_ORIG=('B',),),
-                );
+                )
 
 CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
                      NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MA , )
@@ -90,7 +90,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='DIS_TR',),
                      _F(GROUP_MA='PATBIELB',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DIS_T',),),);
+                        MODELISATION='DIS_T',),),)
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      POUTRE=(_F(GROUP_MA=('POUTRES','COUDES',),
@@ -135,11 +135,11 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                                  VALE=2.46,),),
                      ORIENTATION=_F(GROUP_NO='B',
                                     CARA='GENE_TUYAU',
-                                    VALE=(0.,1.,0.,),),);
+                                    VALE=(0.,1.,0.,),),)
 
 MATTUB=DEFI_MATERIAU(ELAS=_F(E=1.9E11,
                              NU=0.3,
-                             RHO=13027.3,),);
+                             RHO=13027.3,),)
 
 MATCD=DEFI_MATERIAU(ELAS=_F(E=1.9E11,
                             NU=0.3,
@@ -148,23 +148,23 @@ MATCD=DEFI_MATERIAU(ELAS=_F(E=1.9E11,
 # ON DINMINUE VOLONTAIREMENT LA LIMITE ELASTIQUE (VALEUR ORIGINALE : SY=242.4E6,
 #  POUR PLASTIFIER DES LE DEBUT DU SEISME ET DONC POUVOIR ARRETER LE CALCUL PLUS TOT
                                  SY=242.4E6 / 2,),
-                    PRAGER=_F(C=5.328434E9,),);
+                    PRAGER=_F(C=5.328434E9,),)
 
 MATVAN=DEFI_MATERIAU(ELAS=_F(E=1.9E11,
                              NU=0.3,
-                             RHO=0.,),);
+                             RHO=0.,),)
 
 MATPATBA=DEFI_MATERIAU(ELAS=_F(E=1.8E11,
                                NU=0.3,
-                               RHO=4.43E3,),);
+                               RHO=4.43E3,),)
 
 MATPATBC=DEFI_MATERIAU(ELAS=_F(E=1.8E11,
                                NU=0.3,
-                               RHO=6.92E3,),);
+                               RHO=6.92E3,),)
 
 MATBIEL=DEFI_MATERIAU(ELAS=_F(E=1.8E11,
                               NU=0.3,
-                              RHO=6.86E3,),);
+                              RHO=6.86E3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(TOUT='OUI',
@@ -178,7 +178,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                           _F(GROUP_MA='PATBIELC',
                              MATER=MATPATBC,),
                           _F(GROUP_MA=('BIELA','BIELB','BIELC',),
-                             MATER=MATBIEL,),),);
+                             MATER=MATBIEL,),),)
 
 CHART=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO=('ENC1','ENCBIS1',),
@@ -195,21 +195,21 @@ CHART=AFFE_CHAR_MECA(MODELE=MO,
                      LIAISON_SOLIDE=(_F(GROUP_NO='PATVAN',),
                                      _F(GROUP_NO='VANNE',),),
                      LIAISON_UNIF=_F(GROUP_NO=('PATBIEL3','PATBIEL2',),
-                                     DDL=('DX','DY','DZ',),),);
+                                     DDL=('DX','DY','DZ',),),)
 
 CHART3=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_TUYAU=_F(GROUP_MA=('COUDES','POUTRES',),
-                                     PRES=120.E5,),);
+                                     PRES=120.E5,),)
 #--------- ACCELEROGRAMMES EXCITATION ----------------
 from sdnl113a import F_ACCEL
 ACCEL=F_ACCEL()
 
 #  LE COEFFICIENT SUIVANT PERMET DE METTRE A L'ECHELLE L'ACCELERO
-COEFMULT = 1. ;
-ACCEL2 = CALC_FONCTION(COMB=_F(FONCTION=ACCEL,COEF=COEFMULT),);
+COEFMULT = 1.
+ACCEL2 = CALC_FONCTION(COMB=_F(FONCTION=ACCEL,COEF=COEFMULT),)
 
 FONCPRE=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.,0.,0.2,1.0,40.,1.0,),);
+                      VALE=(0.,0.,0.2,1.0,40.,1.0,),)
 
 ASSEMBLAGE(MODELE=MO,
                 CHAM_MATER=CHMAT,
@@ -219,24 +219,24 @@ ASSEMBLAGE(MODELE=MO,
                 MATR_ASSE=(_F(MATRICE=CO('MATRRIGI'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MATRMASS'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 CHARSEI=CALC_CHAR_SEISME(MATR_MASS=MATRMASS,
                          DIRECTION=(1.,0.,0.,),
-                         MONO_APPUI='OUI',);
+                         MONO_APPUI='OUI',)
 
 CHART2=AFFE_CHAR_MECA(MODELE=MO,
-                      VECT_ASSE=CHARSEI,);
-TMIN = 0.0;
+                      VECT_ASSE=CHARSEI,)
+TMIN = 0.0
 
-TMAX = 20.;
-PASDT = 0.001 ;
-PASDT0 = 10 * PASDT ;
-PASDT1 = 5 * PASDT ;
+TMAX = 20.
+PASDT = 0.001
+PASDT0 = 10 * PASDT
+PASDT1 = 5 * PASDT
 # AVEC CETTE VALEUR DE TFIN ON A DEJA PLASTIFIE POUR LA VALEUR DE SY UTILISEE ICI
-TFIN = 0.17 ;
-T1 = 0.13 ;
-T2 = 0.14 ;
+TFIN = 0.17
+T1 = 0.13
+T2 = 0.14
 
 LINST=DEFI_LIST_REEL(DEBUT=TMIN,
                      INTERVALLE=(_F(JUSQU_A=T1,
@@ -245,13 +245,13 @@ LINST=DEFI_LIST_REEL(DEBUT=TMIN,
                                    PAS=PASDT1,),
                                  _F(JUSQU_A=TMAX,
                                    PAS=PASDT,),),
-                                   );
+                                   )
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST,),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS      = 2,
-                                 SUBD_PAS_MINI = PASDT/20,),);
+                                 SUBD_PAS_MINI = PASDT/20,),)
 
 RESULT=DYNA_NON_LINE(MODELE=MO,
                      CHAM_MATER=CHMAT,
@@ -275,13 +275,13 @@ RESULT=DYNA_NON_LINE(MODELE=MO,
                                 FORMULATION='DEPLACEMENT',),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                     ITER_GLOB_MAXI=10,),
-                     );
+                     )
 
 D_XVAN=RECU_FONCTION(RESULTAT=RESULT,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
                      GROUP_NO='N160',
-                     INTERPOL='LIN',);
+                     INTERPOL='LIN',)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.303804E-06,
                         VALE_PARA=1.E-2,
@@ -305,10 +305,10 @@ TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
 # IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
 
 # -- on construit les résultats de référence pour un couple maille/noeud
-TABMO = CREA_TABLE(RESU=_F(RESULTAT=RESULT, 
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=RESULT,
                            NOM_CMP=('MT', 'MFY', 'MFZ'),
                            NOM_CHAM='EFGE_ELNO',
-                           TOUT='OUI', 
+                           TOUT='OUI',
                            INST=(0.01, 0.17),))
 
 TABM64NS64 = CALC_TABLE(TABLE=TABMO,
@@ -318,7 +318,7 @@ TABM64NS64 = CALC_TABLE(TABLE=TABMO,
                              _F(OPERATION='FILTRE',
                                 NOM_PARA='NOEUD',
                                 VALE_K ='NS64'),
-                            ) 
+                            )
                     )
 # IMPR_TABLE(UNITE=6, TABLE=TABM64NS64)
 
@@ -331,14 +331,14 @@ TABM64NS64 = CALC_TABLE(TABLE=TABM64NS64,reuse=TABM64NS64,
                                 FORMULE=MOMEQ_FO,
                                 NOM_PARA='MEQ',
                                 NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
-                            ) 
+                            )
                     )
-                    
+
 TABM64NS64MAX = CALC_TABLE(TABLE=TABM64NS64,
                      ACTION=(_F(OPERATION='CALCUL',
                                 NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
                                 TYPE_CALCUL = 'MAXI_ABS'),
-                            ) 
+                            )
                     )
 
 TEST_TABLE(  TABLE=TABM64NS64MAX,
@@ -356,7 +356,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=24.049111092022407, 
+             VALE_REFE=24.049111092022407,
              VALE_CALC=24.049111092022407,
              )
 
@@ -377,10 +377,10 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=38.16540576851001, 
+             VALE_REFE=38.16540576851001,
              VALE_CALC=38.16540576851001,
              )
-             
+
 TEST_TABLE(  TABLE=TABM64NS64MAX,
              NOM_PARA='MFZ',
              VALE_CALC=80.37127397983554,
@@ -396,7 +396,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=80.37127397983554, 
+             VALE_REFE=80.37127397983554,
              VALE_CALC=80.37127397983554,
              )
 
@@ -415,7 +415,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=92.16560976271595, 
+             VALE_REFE=92.16560976271595,
              VALE_CALC=92.16560976271595,
              )
 
@@ -439,7 +439,7 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=9.182718336002361, 
+             VALE_REFE=9.182718336002361,
              VALE_CALC=9.182718336002361,
              )
 
@@ -449,12 +449,12 @@ TEST_TABLE(  TABLE=TAB_MEQ,
 RESULT=CALC_CHAMP(reuse =RESULT,
                RESULTAT=RESULT,
                INST=(0.01,TFIN),
-               FORCE='REAC_NODA');
+               FORCE='REAC_NODA')
 
 REAC=RECU_FONCTION(RESULTAT=RESULT,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
-                   GROUP_NO='N1',);
+                   GROUP_NO='N1',)
 
 TEST_RESU(RESU=(_F(GROUP_NO='L',
                    INST=1.E-2,
@@ -492,4 +492,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='L',
                 ),
           )
 
-FIN();
+FIN()

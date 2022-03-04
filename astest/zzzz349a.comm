@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 # ZZZZ349A                  COMMANDES
 # TEST UNITAIRE SUR COQUE_3D : ELEMENTS QUAD9
 #
-# MODELISATION : ELEMENTS COQUE_3D 
+# MODELISATION : ELEMENTS COQUE_3D
 # MAILLAGE     : ASTER
 # ----------------------------------------------------------------------
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -38,16 +38,16 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='COQUE_3D',),
-               MAILLAGE=MAIL,);
+               MAILLAGE=MAIL,)
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
                        COQUE=_F(ANGL_REP=(0.0,0.0),
                                 GROUP_MA='TOUT',
-                                EPAIS=0.1,),);
+                                EPAIS=0.1,),)
 MAT=DEFI_MATERIAU(ELAS=_F(NU=0.25,
-                          E=25.0,),);
+                          E=25.0,),)
 CHAM_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT,
                                TOUT='OUI',),
-                       MAILLAGE=MAIL,);
+                       MAILLAGE=MAIL,)
 
 CHA=AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0,
                                 DY=0.0,
@@ -58,7 +58,7 @@ CHA=AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0,
                                 DRY=0.0,),
                    MODELE=MO,
                        FORCE_COQUE=_F(PRES=10.,
-                                      GROUP_MA='TOUT',),);
+                                      GROUP_MA='TOUT',),)
 
 RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
                    MODELE=MO,
@@ -73,7 +73,7 @@ DEFORMATION='DEGE_ELGA')
 RESGA=POST_CHAMP(RESULTAT=RESU,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELGA',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='SUP',),);
+                               NIVE_COUCHE='SUP',),)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=RESGA,NOM_CHAM='SIGM_ELGA',
                 GROUP_MA=('M1',),),
@@ -81,8 +81,8 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=RESGA,NOM_CHAM='SIGM_ELGA',
                 GROUP_MA=('M1',),),
                 _F(RESULTAT=RESU,NOM_CHAM='DEGE_ELGA',
                 GROUP_MA=('M1',),),
-                ),) 
-                          
+                ),)
+
 TEST_RESU(RESU=(
 # TEST DE LA SYMETRIE ENTRE LES CMP SIXX ET SIYY AU POINT 5
                _F(CRITERE='RELATIF',
@@ -142,7 +142,7 @@ TEST_RESU(RESU=(
                   VALE_CALC=-4.99267316982714E+02,
                   ),
                   ),)
-                          
+
 TEST_RESU(RESU=(
 # TEST DE LA SYMETRIE ENTRE LES CMP KXX ET KYY AU POINT 5
                _F(CRITERE='RELATIF',
@@ -248,7 +248,7 @@ DEFORMATION='DEGE_ELNO')
 RESNO=POST_CHAMP(RESULTAT=RESU,
                  EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                NUME_COUCHE=1,
-                               NIVE_COUCHE='SUP',),);
+                               NIVE_COUCHE='SUP',),)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU,NOM_CHAM='EFGE_ELNO',
                 GROUP_MA=('M1',),))

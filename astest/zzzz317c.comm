@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ FONCT1b=RECU_FONCTION( TABLE=ACCE1b,
 
 RMS1b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1b))
 N1b=INFO_FONCTION(  NOCI_SEISME=_F(FONCTION = FONCT1b,  OPTION = 'MAXI') )
-IMPR_TABLE (TABLE=N1b,  UNITE=8,);
+IMPR_TABLE (TABLE=N1b,  UNITE=8,)
 
 TEST_TABLE(VALE_CALC=2.57627250552,
            NOM_PARA='ACCE_MAX',
@@ -91,7 +91,7 @@ N3=INFO_FONCTION(  NOCI_SEISME=_F(
                              FONCTION = FONCT3,OPTION = ('MAXI'), ))
 
 
-RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3));
+RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
 #
 
 TEST_TABLE(
@@ -118,7 +118,7 @@ N2b=INFO_FONCTION(  NOCI_SEISME=_F(
                              FONCTION = FONCT2b, OPTION = ('MAXI'),
 ) )
 
-IMPR_TABLE (TABLE=N2b,  UNITE=8,);
+IMPR_TABLE (TABLE=N2b,  UNITE=8,)
 TEST_TABLE(VALE_CALC=1.96429209057,
            NOM_PARA='ACCE_MAX',
            TABLE=N2b, )

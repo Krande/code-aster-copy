@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,13 +47,13 @@ MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,CREA_GROUP_MA=(_F(GROUP_MA='GM100',NOM='C1'),
                      _F(GROUP_MA='GM400',NOM='S2R2'),
                      _F(GROUP_MA='GM500',NOM='S2R3'),),
                                    CREA_GROUP_NO=(_F(GROUP_MA='S1R2',NOM='CONT_N_1'),
-                      _F(GROUP_MA='S2R2',NOM='CONT_N_2'),),);
+                      _F(GROUP_MA='S2R2',NOM='CONT_N_2'),),)
 
 MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU=(
             _F(GROUP_MA_PEAU = 'S1R1',),
             _F(GROUP_MA_PEAU = 'S1R2',),
             _F(GROUP_MA_PEAU = 'S2R2',),
-            _F(GROUP_MA_PEAU = 'S2R3',),),);
+            _F(GROUP_MA_PEAU = 'S2R3',),),)
 
 
 
@@ -68,12 +68,12 @@ MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,),ECRO_LINE=_F(D_SIGM_EPSI=1.0,SY=1E1
 MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,),ECRO_LINE=_F(D_SIGM_EPSI=1.0,SY=1E15),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(_F(GROUP_MA = 'C1',MATER = MAT1,),
-                            _F(GROUP_MA = 'C2',MATER = MAT2,),),);
+                            _F(GROUP_MA = 'C2',MATER = MAT2,),),)
 
 
 
 
-MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'));
+MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'))
 
 #+----------------------------------------+
 #|       conditions aux limites           |
@@ -81,25 +81,25 @@ MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISA
 
 # pression externe
 
-p=1.E6;
+p=1.E6
 
 
 
-R1 = 1.0;
-R2 = 0.6;
-R3 = 0.2;
+R1 = 1.0
+R2 = 0.6
+R3 = 0.2
 
 # calcul analytique de la pression de contact
 
-pres_cont = (2*p*R1*R1)/((R2*R2*(1-nu1)+R1*R1*(1+nu1))+((E1/E2)*((R1*R1-R2*R2)/(R2*R2-R3*R3))*(R2*R2*(1-nu2)+R3*R3*(1+nu2))));
+pres_cont = (2*p*R1*R1)/((R2*R2*(1-nu1)+R1*R1*(1+nu1))+((E1/E2)*((R1*R1-R2*R2)/(R2*R2-R3*R3))*(R2*R2*(1-nu2)+R3*R3*(1+nu2))))
 
 
 # couronne externe
 
-a1=(pres_cont*R2*R2-p*R1*R1)/(R1*R1-R2*R2);
-b1=(pres_cont-p)*(R1*R1*R2*R2)/(R1*R1-R2*R2);
+a1=(pres_cont*R2*R2-p*R1*R1)/(R1*R1-R2*R2)
+b1=(pres_cont-p)*(R1*R1*R2*R2)/(R1*R1-R2*R2)
 
-eps_r_1 = (1/E1)*(a1*(1-nu1)*R1+b1*(1+nu1)/R1);
+eps_r_1 = (1/E1)*(a1*(1-nu1)*R1+b1*(1+nu1)/R1)
 
 ux1 = FORMULE(VALE='eps_r_1*cos(atan2(Y,X))',
               eps_r_1=eps_r_1,
@@ -110,14 +110,14 @@ uy1 = FORMULE(VALE='eps_r_1*sin(atan2(Y,X))',
               NOM_PARA=['X', 'Y'],)
 
 
-CH1=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA = 'S1R1', DX=ux1,DY=uy1,),),);
+CH1=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA = 'S1R1', DX=ux1,DY=uy1,),),)
 
 # couronne interne
 
-a2=-pres_cont*R2*R2/(R2*R2-R3*R3);
-b2=-pres_cont*(R2*R2*R3*R3)/(R2*R2-R3*R3);
+a2=-pres_cont*R2*R2/(R2*R2-R3*R3)
+b2=-pres_cont*(R2*R2*R3*R3)/(R2*R2-R3*R3)
 
-eps_r_2 = (1/E2)*(a2*(1-nu2)*R3+b2*(1+nu2)/R3);
+eps_r_2 = (1/E2)*(a2*(1-nu2)*R3+b2*(1+nu2)/R3)
 
 ux2 = FORMULE(VALE='eps_r_2*cos(atan2(Y,X))',
               eps_r_2=eps_r_2,
@@ -127,7 +127,7 @@ uy2 = FORMULE(VALE='eps_r_2*sin(atan2(Y,X))',
               eps_r_2=eps_r_2,
               NOM_PARA=['X', 'Y'],)
 
-CH2=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA='S2R3',DX=ux2,DY=uy2,),),);
+CH2=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA='S2R3',DX=ux2,DY=uy2,),),)
 
 #+----------------------------------------+
 #|               contact                  |
@@ -148,7 +148,7 @@ CONT_N  = DEFI_CONTACT(MODELE = MO,
                               ALGO_CONT     = 'STANDARD',
                               COEF_CONT     = 1.E2,
                               CONTACT_INIT  = 'OUI',
-                              GLISSIERE     = 'NON',),),);
+                              GLISSIERE     = 'NON',),),)
 
 CONT_G  = DEFI_CONTACT(MODELE = MO,
                        FORMULATION    = 'CONTINUE',
@@ -165,7 +165,7 @@ CONT_G  = DEFI_CONTACT(MODELE = MO,
                               ALGO_CONT     = 'STANDARD',
                               COEF_CONT     = 1.E2,
                               CONTACT_INIT  = 'OUI',
-                              GLISSIERE     = 'NON',),),);
+                              GLISSIERE     = 'NON',),),)
 
 #+----------------------------------------+
 #|               calcul                   |
@@ -173,17 +173,17 @@ CONT_G  = DEFI_CONTACT(MODELE = MO,
 
 from math import pow
 
-T=DEFI_LIST_REEL(DEBUT=0.1,INTERVALLE = _F(JUSQU_A = 2.1,NOMBRE=20,),);
+T=DEFI_LIST_REEL(DEBUT=0.1,INTERVALLE = _F(JUSQU_A = 2.1,NOMBRE=20,),)
 EXP = FORMULE(VALE='pow(10,INST-1.1)',
               NOM_PARA='INST',)
 RP_EXP=CALC_FONC_INTERP(FONCTION  = EXP,
          LIST_PARA = T,
          PROL_DROITE='EXCLU',
-         PROL_GAUCHE='EXCLU',);
+         PROL_GAUCHE='EXCLU',)
 
 INSTS=DEFI_LIST_REEL(DEBUT       = 0.0,
                     INTERVALLE  = _F(JUSQU_A = 2.1,
-                                      NOMBRE  = 21,),);
+                                      NOMBRE  = 21,),)
 
 RESU1 =  STAT_NON_LINE(MODELE      = MO,
                        CHAM_MATER  = CHMAT,
@@ -198,7 +198,7 @@ RESU1 =  STAT_NON_LINE(MODELE      = MO,
                        SOLVEUR     = _F(METHODE     = 'MUMPS',
                                         ),
                        ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),
-                       INFO=1,);
+                       INFO=1,)
 
 RESU2 =  STAT_NON_LINE(MODELE      = MO,
                        CHAM_MATER  = CHMAT,
@@ -213,7 +213,7 @@ RESU2 =  STAT_NON_LINE(MODELE      = MO,
                        SOLVEUR     = _F(METHODE     = 'MUMPS',
                                         ),
                        ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),
-                       INFO=1,);
+                       INFO=1,)
 
 # calcul de l'erreur en termes de norme L2 de la pressions de contact
 
@@ -247,7 +247,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=0.006714426497645172,
@@ -255,7 +255,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
 #+----------------------------------------+
 #|          tests de validation           |
@@ -386,4 +386,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=21,
                   PRECISION=0.008,),
           )
 
-FIN();
+FIN()

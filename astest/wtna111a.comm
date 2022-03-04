@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,17 +36,17 @@ ouvm=5.E-3
 ouvini = 1.95E-5
 
 
-VISCOL=DEFI_CONSTANTE(VALE=1.E-3,);
+VISCOL=DEFI_CONSTANTE(VALE=1.E-3,)
 
-RHOL=DEFI_CONSTANTE(VALE=1.E03,);
+RHOL=DEFI_CONSTANTE(VALE=1.E03,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,)
 
-DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,)
 
-PERML=DEFI_CONSTANTE(VALE=1.688E-17,);
+PERML=DEFI_CONSTANTE(VALE=1.688E-17,)
 
-UN=DEFI_CONSTANTE(    VALE=1.,);
+UN=DEFI_CONSTANTE(    VALE=1.,)
 
 ####################################
 #  LISTE DES INSTANTS DE CALCUL
@@ -56,7 +56,7 @@ LISTINST=DEFI_LIST_REEL(DEBUT = 0.,
                         INTERVALLE=(_F(JUSQU_A = tint,
                                       NOMBRE = nbpas1,),
                                    _F(JUSQU_A = tfin,
-                                      NOMBRE = nbpas2,),),);
+                                      NOMBRE = nbpas2,),),)
 
 
 ####################################
@@ -66,9 +66,9 @@ LISTINST=DEFI_LIST_REEL(DEBUT = 0.,
 
 MA0=LIRE_MAILLAGE(FORMAT='MED',
                  VERI_MAIL=_F(APLAT=1.E-9,
-                              VERIF='OUI'),);
+                              VERIF='OUI'),)
 
-MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'));
+MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_NO= (
@@ -95,19 +95,19 @@ MA=DEFI_GROUP(reuse = MA,
           _F(NOM = 'BAS',    UNION = ('BAS_1','BAS_2','BAS_3')),
           _F(NOM = 'DROITE', GROUP_MA='G_1D_20'),
           _F(NOM = 'GAUCHE' , GROUP_MA='G_1D_19'),
-       ),);
+       ),)
 
 
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=_F(GROUP_MA_PEAU=('HAUT','BAS','DROITE','GAUCHE'),),
-                 );
+                 )
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_FISSURE=_F(GROUP_MA='FISSURE'),
-                 );
+                 )
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA=('BOUCHON','ROCHE','GAUCHE','DROITE','BAS_1',
@@ -116,7 +116,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='AXIS_HMS',),
                          _F(GROUP_MA=('FISSURE','BAS_2','HAUT_2'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='AXIS_JHMS',),));
+                            MODELISATION='AXIS_JHMS',),))
 
 ####################################
 #   ORIENTATION FISSURE
@@ -125,7 +125,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                         MASSIF=_F(GROUP_MA='FISSURE',
-                                  ANGL_REP=(180,0,0,),),);
+                                  ANGL_REP=(180,0,0,),),)
 
 ####################################
 #   DEFINITION DU MATERIAU
@@ -148,7 +148,7 @@ MAT_M=DEFI_MATERIAU(ELAS=_F(E=200000000.0,
                                    UN_SUR_K=1/3.E9,
                                    VISC=VISCOL,
                                    D_VISC_TEMP=DVISCOL,),
-                         );
+                         )
 
 MAT_J=DEFI_MATERIAU(JOINT_BANDIS=_F(K=kni,
                                      DMAX=ouvm,
@@ -166,13 +166,13 @@ MAT_J=DEFI_MATERIAU(JOINT_BANDIS=_F(K=kni,
                                    UN_SUR_K=1/3.E9,
                                    VISC=VISCOL,
                                    D_VISC_TEMP=DVISCOL,),
-                         );
+                         )
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(_F(TOUT='OUI',
                          MATER=MAT_M,),
                        _F(GROUP_MA='FISSURE',
-                          MATER=MAT_J,),),);
+                          MATER=MAT_J,),),)
 
 ####################################
 #   DEFINITION DES CHARGEMENTS
@@ -185,23 +185,23 @@ LIAISON=AFFE_CHAR_MECA(
     _F(GROUP_MA='GAUCHE',DX=0,),
     _F(GROUP_MA='HAUT',DY=0),
     ),
-  );
+  )
 
 FLUH=AFFE_CHAR_MECA(MODELE=MO,
                       FLUX_THM_REP=_F(GROUP_MA=('GAUCHE','DROITE','HAUT'),
-                                         FLUN_HYDR1=0.,),);
+                                         FLUN_HYDR1=0.,),)
 
 PWELL=AFFE_CHAR_MECA_F(MODELE=MO,
                           DDL_IMPO=(_F(GROUP_MA=('BAS',),
                                       PRE1=UN,),
-                                   ),);
+                                   ),)
 
 COMP=AFFE_CHAR_MECA(
    MODELE=MO,
    PRES_REP=(
       _F(GROUP_MA=('DROITE'),PRES=12.3E6),
      ),
-   );
+   )
 
 # DEFINITION DE L'EVOLUTION DU CHARGEMENT
 
@@ -209,7 +209,7 @@ FCT_MON = DEFI_FONCTION(
   NOM_PARA = 'INST',
   VALE     = (0,pfin , tfin, pfin ),
   INTERPOL   ='LIN'
-                );
+                )
 
 ####################################
 #   INITIALISATION DES CHAMPS
@@ -226,7 +226,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MA,
                            _F(TOUT='OUI',
                              NOM_CMP='PRE1',
                              VALE=pini,),
-                             ),);
+                             ),)
 
 SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                    OPERATION='AFFE',
@@ -240,7 +240,7 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                                  0.,0.,0.,),),
                          _F(GROUP_MA='FISSURE',
                            NOM_CMP=('SIGN','SITX','SIP','M11','FH11X','LH1P','LH1M','DPRE1P','DPRE1M'),
-                           VALE=(-sigxx,0.0,-pini,ouvini*1000.,0.,0.,0.,0.,0.),),),);
+                           VALE=(-sigxx,0.0,-pini,ouvini*1000.,0.,0.,0.,0.,0.),),),)
 
 
 CH_VARI=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO,
@@ -249,7 +249,7 @@ CH_VARI=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO,
                                      VALE = ( 0 , 0, 0)),
            _F( GROUP_MA = 'FISSURE',   NOM_CMP = ('V1',     'V2',  'V3',),
                                      VALE = ( ouvini**2/12, 0., ouvini)),
-                    ),);
+                    ),)
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -258,7 +258,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
                   SUBD_PAS  = 5,
                   SUBD_PAS_MINI = 1.E-10,
                   SUBD_NIVEAU=12,
-                                 ),);
+                                 ),)
 
 ####################################
 #   STAT_NON_LINE
@@ -291,7 +291,7 @@ U_1=STAT_NON_LINE(
                           REAC_ITER=1,),
   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
   SOLVEUR = _F(METHODE = 'MUMPS', ),
-  );
+  )
 
 ####################################
 #   TESTS DE VALIDATION
@@ -366,4 +366,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   VALE_CALC=4.7863366082016E-04,)
           )
 
-FIN();
+FIN()

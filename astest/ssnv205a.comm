@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ MATE=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                              XM=1,
                              RD_CYC=0.005,
                              RI_CYC=0.001,
-                             DILA  =1.,),);
+                             DILA  =1.,),)
 
 TEMPS1=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=10,
@@ -60,14 +60,14 @@ TEMPS1=DEFI_LIST_REEL(DEBUT=0,
                                   _F(JUSQU_A=30,
                                      NOMBRE=40,),
                                   _F (JUSQU_A=50,
-                                     NOMBRE=40,),),);
+                                     NOMBRE=40,),),)
 TEMPS2=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=10,
                                      NOMBRE=50,),
                                   _F(JUSQU_A=30,
                                      NOMBRE=100,),
                                   _F (JUSQU_A=50,
-                                     NOMBRE=100,),),);
+                                     NOMBRE=100,),),)
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -89,14 +89,14 @@ DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS2),
 COEF1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           10,-0.002,
                           30,0.002,
-                          50,-0.002,),PROL_DROITE='CONSTANT',);
+                          50,-0.002,),PROL_DROITE='CONSTANT',)
 
 COEF2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,P0,
-                          50,P0,),PROL_DROITE='CONSTANT',);
+                          50,P0,),PROL_DROITE='CONSTANT',)
 
 COEF3=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           50,0.,
-                          ),PROL_DROITE='CONSTANT',);
+                          ),PROL_DROITE='CONSTANT',)
 
 
 U1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=-5,
@@ -125,9 +125,9 @@ U1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=-5,
                                EPZZ=0,
                                EPXY=0,
                                EPXZ=0,
-                               EPYZ=0,),);
+                               EPYZ=0,),)
 
-IMPR_TABLE(TABLE=U1,);
+IMPR_TABLE(TABLE=U1,)
 
 #################################################################
 #ESSAI DE CISAILLEMENT CYCLIQUE A 0.02% DE DEFORMATIONS IMPOSEES#
@@ -135,7 +135,7 @@ IMPR_TABLE(TABLE=U1,);
 COEF4=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           10,-0.0002,
                           30,0.0002,
-                          50,-0.0002,),PROL_DROITE='CONSTANT',);
+                          50,-0.0002,),PROL_DROITE='CONSTANT',)
 
 U2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=-5,
                               ALGO_INTE='SPECIFIQUE',
@@ -163,9 +163,9 @@ U2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=-5,
                                EPZZ=0,
                                EPXY=0,
                                EPXZ=0,
-                               EPYZ=0,),);
+                               EPYZ=0,),)
 
-IMPR_TABLE(TABLE=U2,);
+IMPR_TABLE(TABLE=U2,)
 
 ##################################################################
 #ESSAI DE CISAILLEMENT CYCLIQUE A 0.002% DE DEFORMATIONS IMPOSEES#
@@ -173,7 +173,7 @@ IMPR_TABLE(TABLE=U2,);
 COEF5=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           10,-2.E-5,
                           30,2.E-5,
-                          50,-2.E-5,),PROL_DROITE='CONSTANT',);
+                          50,-2.E-5,),PROL_DROITE='CONSTANT',)
 
 U3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=-5,
                               ALGO_INTE='SPECIFIQUE',
@@ -201,9 +201,9 @@ U3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='HUJEUX',ITER_INTE_MAXI=-5,
                                EPZZ=0,
                                EPXY=0,
                                EPXZ=0,
-                               EPYZ=0,),);
+                               EPYZ=0,),)
 
-IMPR_TABLE(TABLE=U3,);
+IMPR_TABLE(TABLE=U3,)
 
 
 ################################################################
@@ -677,4 +677,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=50.0,),
            )
 
-FIN();
+FIN()

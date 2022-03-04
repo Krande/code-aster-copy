@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 import numpy as NP
@@ -49,7 +49,7 @@ PHI_VOIDS=1.e-3
 
 
 
-MAIL = LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MAIL = DEFI_GROUP(reuse = MAIL,
                   MAILLAGE = MAIL,
@@ -60,7 +60,7 @@ MAIL = DEFI_GROUP(reuse = MAIL,
 MAIL = MODI_MAILLAGE(reuse = MAIL,
                      MAILLAGE = MAIL,
                      ORIE_PEAU=_F(GROUP_MA_PEAU=('Z0','Z1',),),
-                     );
+                     )
 
 TROISD = AFFE_MODELE(MAILLAGE = MAIL,
                      AFFE=(_F(TOUT='OUI',
@@ -72,7 +72,7 @@ TROISD = AFFE_MODELE(MAILLAGE = MAIL,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='DIS_T',),
                            ),
-                   );
+                   )
 
 ACIERDD = DEFI_MATERIAU(ELAS=_F(E=E,
                                 NU=NU,
@@ -103,11 +103,11 @@ ACIERDD = DEFI_MATERIAU(ELAS=_F(E=E,
 
 
                                       ),
-                       );
+                       )
 
 MAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIERDD,),);
+                          MATER=ACIERDD,),)
 
 # DD_CFC
 COMPORDD=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERDD,
@@ -116,7 +116,7 @@ COMPORDD=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERDD,
                                      FAMI_SYST_GLIS='OCTAEDRIQUE',
                                     ),
                                  ),
-                     );
+                     )
 
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                     DDL_IMPO=(
@@ -125,12 +125,12 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                               _F(GROUP_MA='Z1', DZ=1.0, ),
                               ),
                     INFO=1,
-                   );
+                   )
 COEF=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',
-                   );
+                   )
 
 t1=0.0005
 t2=0.002
@@ -142,14 +142,14 @@ LINSTDDE=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=t1,
                                       NOMBRE=50,),
                                   ),
-                      );
+                      )
 
 LIS2DDE=DEFI_LIST_INST(INFO=1, METHODE='MANUEL',
                         DEFI_LIST=_F(LIST_INST=LINSTDDE,),
                         ECHEC=_F(SUBD_NIVEAU=10,
                                  SUBD_PAS=10,
                                  ),
-                        );
+                        )
 
 LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
@@ -160,7 +160,7 @@ LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=tmax,
                                       NOMBRE=90,),
                                   ),
-                      );
+                      )
 
 
 LIS2DD=DEFI_LIST_INST(INFO=1, METHODE='MANUEL',
@@ -168,7 +168,7 @@ LIS2DD=DEFI_LIST_INST(INFO=1, METHODE='MANUEL',
                         ECHEC=_F(SUBD_NIVEAU=10,
                                  SUBD_PAS=10,
                                  ),
-                        );
+                        )
 
 # densites de dislocation initiales (cf zzzz130a)
 nb_syst = 12
@@ -188,7 +188,7 @@ VAIN11= CREA_CHAMP(OPERATION = 'AFFE', TYPE_CHAM = 'ELGA_VARI_R', MODELE = TROIS
                    AFFE=(_F(GROUP_MA = 'VOL', NOM_CMP = liste_var, VALE = liste_vale, ),
                          _F(GROUP_MA = 'PX1', NOM_CMP = 'V1', VALE = 0, ),
                         ),
-                   );
+                   )
 
 NORME = FORMULE(VALE='sqrt(DX*DX+DY*DY+DZ*DZ)',
                 NOM_PARA=['DX', 'DY', 'DZ'],)
@@ -210,7 +210,7 @@ ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                      DISCRET=_F(GROUP_MA=('PX1',),
                                 CARA='K_T_D_N',
                                 VALE=(0.,pena,0.,),),
-                     );
+                     )
 
 
 # premiere resolution : explicite. tes de SIMO_MIEHE + MONOCRISTAL + RUNGE_KUTTA
@@ -259,7 +259,7 @@ SOLEXPL=STAT_NON_LINE(MODELE = TROISD,
                                   EVAL_ELGA  ='MAX',
                                   EVAL_CHAM  ='MAX',),
                                  ),
-                    );
+                    )
 
 # deuxieme resolution : implicite. test de SIMO_MIEHE + MONOCRISTAL + NEWTON
 # pas de reprise car les variables internes ne correspondent pas tout a fait :
@@ -308,7 +308,7 @@ SOLIMPN=STAT_NON_LINE(MODELE = TROISD,
                                   EVAL_ELGA  ='MAX',
                                   EVAL_CHAM  ='MAX',),
                                  ),
-                    );
+                    )
 
 # troisieme resolution : implicite. test de SIMO_MIEHE + MONOCRISTAL + NEWTON_PERT
 
@@ -357,7 +357,7 @@ SOLNL=STAT_NON_LINE(
                                   EVAL_ELGA  ='MAX',
                                   EVAL_CHAM  ='MAX',),
                                  ),
-                    );
+                    )
 
 
 SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSG_ELGA'))
@@ -366,9 +366,9 @@ SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSG_ELGA'))
 
 nbnum=100
 pas=20
-ORD_MED = DEFI_LIST_ENTI(VALE = list(range(pas,nbnum+pas,pas)),);
+ORD_MED = DEFI_LIST_ENTI(VALE = list(range(pas,nbnum+pas,pas)),)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(RESULTAT=SOLNL,LIST_ORDRE=ORD_MED,),);
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(RESULTAT=SOLNL,LIST_ORDRE=ORD_MED,),)
 
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=SOLNL))
 
@@ -379,19 +379,19 @@ epsDIR=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CMP='EPZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigDIR=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 nom_cas='traction_cube-1_2_5'
 
 DEFI_FICHIER(UNITE = 28,
-             FICHIER = 'REPE_OUT/epdir_'+ nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/epdir_'+ nom_cas + '.dat')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -400,14 +400,14 @@ IMPR_FONCTION(
                        COULEUR= 0,
                        LEGENDE= 'Edir',),),
             UNITE=28,
-            TITRE='Edir = f(INST)');
+            TITRE='Edir = f(INST)')
 
 DEFI_FICHIER(UNITE = 28,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 DEFI_FICHIER(UNITE = 28,
-                FICHIER = 'REPE_OUT/sigdir_'+ nom_cas + '.dat');
+                FICHIER = 'REPE_OUT/sigdir_'+ nom_cas + '.dat')
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -417,10 +417,10 @@ IMPR_FONCTION(
                         COULEUR= 0,
                         LEGENDE= 'SIGdir',),),
             UNITE=28,
-            TITRE='SIGdir = f(Edir)');
+            TITRE='SIGdir = f(Edir)')
 
 DEFI_FICHIER(UNITE = 28,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 
 
@@ -430,10 +430,10 @@ rho=[None]*13
 system=['', 'B4', 'B2', 'B5', 'D4', 'D1', 'D6', 'A2', 'A6', 'A3', 'C5', 'C3', 'C1']
 
 DEFI_FICHIER(UNITE = 30,
-             FICHIER = 'REPE_OUT/rho_eps_'+  nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/rho_eps_'+  nom_cas + '.dat')
 
 DEFI_FICHIER(UNITE = 31,
-             FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat');
+             FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat')
 
 for i in range(1,13):
 
@@ -443,14 +443,14 @@ for i in range(1,13):
                    GROUP_MA='CUBE',
                    POINT=numpg,
                    NOM_CMP='V'+str(8+3*(i-1)),
-                           INTERPOL='LIN');
+                           INTERPOL='LIN')
 
     rho[i]=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='VARI_ELGA',
                    GROUP_MA='CUBE',
                    POINT=numpg,
                    NOM_CMP='V'+str(7+3*(i-1)),
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
     IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -464,7 +464,7 @@ for i in range(1,13):
                        MARQUEUR = i,
                        FREQ_MARQUEUR = 10,
                        LEGENDE= str(system[i]),),),
-            UNITE=30,);
+            UNITE=30,)
 
     IMPR_FONCTION(
             FORMAT='XMGRACE',
@@ -478,13 +478,13 @@ for i in range(1,13):
                        MARQUEUR = i,
                        FREQ_MARQUEUR = 10,
                        LEGENDE= str(system[i]),),),
-            UNITE=31,);
+            UNITE=31,)
 
 DEFI_FICHIER(UNITE = 30,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 DEFI_FICHIER(UNITE = 31,
-             ACTION = 'LIBERER');
+             ACTION = 'LIBERER')
 
 # Comparaison avec la modelisation C : HPP
 
@@ -721,28 +721,28 @@ sigDIRE=RECU_FONCTION(RESULTAT=SOLEXPL,
                    NOM_CMP='SIZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsDIRE=RECU_FONCTION(RESULTAT=SOLEXPL,
                    NOM_CHAM='EPSG_ELGA',
                    NOM_CMP='EPZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 sigDIRN=RECU_FONCTION(RESULTAT=SOLIMPN,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 epsDIRN=RECU_FONCTION(RESULTAT=SOLIMPN,
                    NOM_CHAM='EPSG_ELGA',
                    NOM_CMP='EPZZ',
                    GROUP_MA='CUBE',
                    POINT=numpg,
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=5.001250000000E-04,
                         VALE_REFE=5.0012500000000003E-4,

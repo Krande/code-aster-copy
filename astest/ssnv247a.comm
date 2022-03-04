@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ import math
 import numpy as np
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-              
+
 #----------------------------------------------
 #                   MAILLAGE
 #----------------------------------------------
 
 
 MAILLAG2=LIRE_MAILLAGE(FORMAT="ASTER",)
-#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MAILLAG2,));
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MAILLAG2,))
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
@@ -64,7 +64,7 @@ MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
-              );
+              )
 
 LS_N = FORMULE(VALE='sqrt(Z**2+X**2+Y**2)-1.5',
                NOM_PARA=['X', 'Y', 'Z'],)
@@ -74,13 +74,13 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LS_N,),
                     INFO=1,
-                   );
+                   )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          INFO=1,
                          DECOUPE_FACETTE='SOUS_ELEMENTS',
-                        );
+                        )
 
 #----------------------------------------------
 #                   MATERIAU
@@ -90,14 +90,14 @@ E=5800.0E6
 SOL  = DEFI_MATERIAU(ELAS      = _F(E           = E,
                                     NU          = 0.,
                                     ALPHA       = 0.0,),
-                    );
+                    )
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
                                MATER=SOL,
                               ),
-                      );
+                      )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -119,14 +119,14 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                            _F(GROUP_NO=('N8','N12','N24','N28','N40','N44'),H1X=0.),
                            ),
                   INFO=2,
-                 );
+                 )
 
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                       PRES_REP=_F(FISSURE=FISS,
                                   PRES=10E5,
-                                 ),                            
-                    );
+                                 ),
+                    )
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -141,7 +141,7 @@ MULT=DEFI_FONCTION(NOM_PARA='INST',
 
 L_INS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=1,),
-                    );
+                    )
 
 UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                     CHAM_MATER  = CHAMPMAT,
@@ -153,39 +153,39 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                                         ITER_INTE_MAXI = 100,
                                        ),
                     NEWTON      = _F(MATRICE   = 'TANGENTE',
-                                     REAC_ITER = 1, 
+                                     REAC_ITER = 1,
                                     ),
                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                                     ITER_GLOB_MAXI = 100,    
+                                     ITER_GLOB_MAXI = 100,
                                     ),
                     INCREMENT   = _F(LIST_INST = L_INS,),
                    )
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_XFEM));
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_XFEM))
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),),
-                    );  
+                    )
 
 RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                       RESULTAT    = UTOT1,
-                     );
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RES_X1,GROUP_NO='NFISSU'));
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1,));
+                     )
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RES_X1,GROUP_NO='NFISSU'))
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1,))
 
 
 
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              GROUP_NO=('NFISSU',),
@@ -195,10 +195,10 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
                             ),
-                  );
+                  )
 
 
-#IMPR_TABLE(TABLE=DEP1,);
+#IMPR_TABLE(TABLE=DEP1,)
 
 DEP1P = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
@@ -207,7 +207,7 @@ DEP1P = CALC_TABLE(TABLE = DEP1,
                                 VALE_K    = '^N[M]',
                                ),
                             ),
-                  );
+                  )
 
 DEP1M = CALC_TABLE(TABLE = DEP1,
                    ACTION = (_F(OPERATION = 'FILTRE',
@@ -216,7 +216,7 @@ DEP1M = CALC_TABLE(TABLE = DEP1,
                                 VALE_K    = '^N[P]',
                                ),
                             ),
-                  );
+                  )
 
 deplr = FORMULE(VALE='(DX*X+DY*Y+DZ*Z)/sqrt(X**2+Y**2+Z**2)',
                 NOM_PARA=['DX', 'DY', 'DZ', 'X', 'Y', 'Z'],)
@@ -236,9 +236,9 @@ DEP1P=CALC_TABLE(reuse = DEP1P,
                               FORMULE = deplr),
                            _F(OPERATION = 'EXTR',
                               NOM_PARA=('NOEUD','INST','DIST')),
-                            ));
+                            ))
 
-IMPR_TABLE(TABLE=DEP1P,);
+IMPR_TABLE(TABLE=DEP1P,)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -272,9 +272,9 @@ DEP1M=CALC_TABLE(reuse = DEP1M,
                               FORMULE = deplr),
                            _F(OPERATION = 'EXTR',
                               NOM_PARA=('NOEUD','INST','DIST')),
-                            ));
+                            ))
 
-IMPR_TABLE(TABLE=DEP1M,);
+IMPR_TABLE(TABLE=DEP1M,)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -296,4 +296,4 @@ TEST_TABLE(CRITERE='RELATIF',
 
 
 
-FIN();
+FIN()

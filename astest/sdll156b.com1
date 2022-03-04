@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ mfy_sismique_dyn = np.array(sismique_dyn_values["MFY"])
 mfz_sismique_dyn = np.array(sismique_dyn_values["MFZ"])
 
 
-mt_sismique_qs  = mt_sismique  - mt_sismique_dyn 
+mt_sismique_qs  = mt_sismique  - mt_sismique_dyn
 mfy_sismique_qs = mfy_sismique - mfy_sismique_dyn
 mfz_sismique_qs = mfz_sismique - mfz_sismique_dyn
 
@@ -703,7 +703,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X16',
                    VALE_CALC=3843835.0666461103,
                    VALE_REFE=post_roche_analytic._sigma_eq_opt[3]),
-                # X17 = indicateur sigmaV <sigmaP 
+                # X17 = indicateur sigmaV <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche,
@@ -736,7 +736,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X18 = indicateur sigmaV_s <sigmaP 
+                # X18 = indicateur sigmaV_s <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche,
@@ -769,7 +769,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X19 = indicateur sigmaV_opt <sigmaP 
+                # X19 = indicateur sigmaV_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche,
@@ -802,7 +802,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X20 = indicateur sigmaV_s_opt <sigmaP 
+                # X20 = indicateur sigmaV_s_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche,
@@ -1619,7 +1619,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X16',
                    VALE_CALC=2443454.3815281983,
                    VALE_REFE=post_roche_analytic_S._sigma_eq_opt[3]),
-                # X17 = indicateur sigmaV <sigmaP 
+                # X17 = indicateur sigmaV <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_S,
@@ -1652,7 +1652,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X18 = indicateur sigmaV_s <sigmaP 
+                # X18 = indicateur sigmaV_s <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_S,
@@ -1685,7 +1685,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X19 = indicateur sigmaV_opt <sigmaP 
+                # X19 = indicateur sigmaV_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_S,
@@ -1718,7 +1718,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X20 = indicateur sigmaV_s_opt <sigmaP 
+                # X20 = indicateur sigmaV_s_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_S,
@@ -2539,7 +2539,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X16',
                    VALE_CALC=2443454.3815281927,
                    VALE_REFE=post_roche_analytic_SP._sigma_eq_opt[3]),
-                # X17 = indicateur sigmaV <sigmaP 
+                # X17 = indicateur sigmaV <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SP,
@@ -2572,7 +2572,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X18 = indicateur sigmaV_s <sigmaP 
+                # X18 = indicateur sigmaV_s <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SP,
@@ -2605,7 +2605,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X19 = indicateur sigmaV_opt <sigmaP 
+                # X19 = indicateur sigmaV_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SP,
@@ -2638,7 +2638,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X20 = indicateur sigmaV_s_opt <sigmaP 
+                # X20 = indicateur sigmaV_s_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SP,
@@ -3459,7 +3459,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X16',
                    VALE_CALC=2443454.3815281894,
                    VALE_REFE=post_roche_analytic_SPG._sigma_eq_opt[3]),
-                # X17 = indicateur sigmaV <sigmaP 
+                # X17 = indicateur sigmaV <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SPG,
@@ -3492,7 +3492,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X18 = indicateur sigmaV_s <sigmaP 
+                # X18 = indicateur sigmaV_s <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SPG,
@@ -3525,7 +3525,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X19 = indicateur sigmaV_opt <sigmaP 
+                # X19 = indicateur sigmaV_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SPG,
@@ -3558,7 +3558,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X20 = indicateur sigmaV_s_opt <sigmaP 
+                # X20 = indicateur sigmaV_s_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SPG,
@@ -4375,7 +4375,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X16',
                    VALE_CALC=4223451.105624179,
                    VALE_REFE=post_roche_analytic_SD._sigma_eq_opt[3]),
-                # X17 = indicateur sigmaV <sigmaP 
+                # X17 = indicateur sigmaV <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SD,
@@ -4408,7 +4408,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X17',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X18 = indicateur sigmaV_s <sigmaP 
+                # X18 = indicateur sigmaV_s <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SD,
@@ -4441,7 +4441,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X18',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X19 = indicateur sigmaV_opt <sigmaP 
+                # X19 = indicateur sigmaV_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SD,
@@ -4474,7 +4474,7 @@ TEST_RESU(RESU=(# X1 = contrainte de référence
                    NOM_CMP='X19',
                         ORDRE_GRANDEUR=1,
                    VALE_CALC=0.0),
-                # X20 = indicateur sigmaV_s_opt <sigmaP 
+                # X20 = indicateur sigmaV_s_opt <sigmaP
                 _F(GROUP_MA='M1',
                    POINT=1,
                    RESULTAT=resuPostRoche_SD,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -415,14 +415,14 @@ TEST_RESU(RESU=_F(NUME_ORDRE=16,
 ####
 
 TAB_OBS=RECU_TABLE(CO=RESU0,
-                   NOM_TABLE='OBSERVATION',);
+                   NOM_TABLE='OBSERVATION',)
 
-IMPR_TABLE(TABLE=TAB_OBS);
+IMPR_TABLE(TABLE=TAB_OBS)
 
 TAB_CAL=RECU_TABLE(CO=RESU0,
-                   NOM_TABLE='PARA_CALC',);
+                   NOM_TABLE='PARA_CALC',)
 
-IMPR_TABLE(TABLE=TAB_CAL);
+IMPR_TABLE(TABLE=TAB_CAL)
 
 TEST_TABLE(
            VALE_CALC=2886.7983561532001,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,25 +25,25 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
-e = 100000.0;
+      DEBUG=_F(SDVERI='OUI',),)
+e = 100000.0
 
-nu = 0.0;
+nu = 0.0
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=e,
                             NU=nu,
-                            RHO=7800.0,),);
-lx = 1.0;
+                            RHO=7800.0,),)
+lx = 1.0
 
-ly = 1.0;
+ly = 1.0
 
 
 # a : profondeur de la fissure
 # h : hauteur du plan de fissure
-a = 0.5;
+a = 0.5
 
-h = 0.5;
+h = 0.5
 
 
 LN = FORMULE(VALE='Y-h',
@@ -59,7 +59,7 @@ R = FORMULE(VALE='sqrt((X-0.5)**2+(Y-0.5)**2)',
 
 T = FORMULE(VALE='atan2(Y-0.5,-X+0.5)',
             NOM_PARA=['X', 'Y'],)
-coef = ((1 + nu) / (e * sqrt(6.28318530718)));
+coef = ((1 + nu) / (e * sqrt(6.28318530718)))
 
 
 # CHAMPS DE DEPLACEMENT
@@ -92,9 +92,9 @@ H1YSUP = FORMULE(VALE='coef*sqrt(R(X,0.5))*(4.-4.*nu)',
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
+                                    NOMBRE=3,),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -112,25 +112,25 @@ MA=DEFI_GROUP(reuse =MA,
                              _F(UNION=('LIGSUP','LIGINF','LIGGAU','LIGDRO',),
                                 NOM='ENVELTOU',),
                              _F(DIFFE=('ENVELTOU','NHSUP','NHINF',),
-                                NOM='ENVELCLA',),),);
+                                NOM='ENVELCLA',),),)
 
 MOD=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=_F(GROUP_MA='SURF',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='C_PLAN',),);
+                        MODELISATION='C_PLAN',),)
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     DEFI_FISS=_F(FONC_LT=LT,
-                                 FONC_LN=LN,),);
+                                 FONC_LN=LN,),)
 
 MODK=MODI_MODELE_XFEM(MODELE_IN=MOD,
-                      FISSURE=FISS,);
+                      FISSURE=FISS,)
 
 
 MAT=AFFE_MATERIAU(MAILLAGE=MA,
                   MODELE=MODK,
                   AFFE=_F(GROUP_MA='SURF',
-                          MATER=ACIER,),);
+                          MATER=ACIER,),)
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MODK,
                      DDL_IMPO=(_F(GROUP_NO='ENVELCLA',
@@ -145,19 +145,19 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MODK,
                                   DX=OUAUX1,
                                   DY=UAUX2,
                                   H1X=UAUX1,
-                                  H1Y=H1YSUP,),),);
+                                  H1Y=H1YSUP,),),)
 
 UTOT=MECA_STATIQUE(MODELE=MODK,
                    CHAM_MATER=MAT,
                    EXCIT=(
                           _F(CHARGE=CH2),
                           ),
-                   );
+                   )
 
 UTOT=CALC_ERREUR(reuse =UTOT,
                  RESULTAT=UTOT,
                  NUME_ORDRE=1,
-                 OPTION='ERME_ELEM',);
+                 OPTION='ERME_ELEM',)
 
 UTOT=CALC_CHAMP(reuse=UTOT,RESULTAT=UTOT,NUME_ORDRE=1,CONTRAINTE=('SIEF_ELNO'))
 
@@ -266,4 +266,4 @@ TEST_RESU(RESU=(_F(INST=0.0,
                 ),
           )
 
-FIN();
+FIN()

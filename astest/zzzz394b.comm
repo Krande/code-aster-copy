@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ MATAF=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA = 'M1',
                              MATER = BETON,)))
 
-LEMOD=AFFE_MODELE(MAILLAGE=MA,     
+LEMOD=AFFE_MODELE(MAILLAGE=MA,
                   AFFE=(_F(GROUP_MA = 'M1',
                            PHENOMENE = 'MECANIQUE',
                            MODELISATION = 'DKTG',)))
@@ -42,14 +42,14 @@ LACAR=AFFE_CARA_ELEM(MODELE=LEMOD,
 
 ZCHM=AFFE_CHAR_MECA(MODELE=LEMOD,
                     DDL_IMPO=(_F(GROUP_NO = ('N1',),
-                                 DX = 0., 
-                                 DY=0., DZ = 0., 
+                                 DX = 0.,
+                                 DY=0., DZ = 0.,
                                  ),
                               _F(GROUP_NO = ('N2','N3',),
-                                 DZ = 0., 
+                                 DZ = 0.,
                                  ),
                               _F(GROUP_NO = ('N4'),
-                                 DX = 0., 
+                                 DX = 0.,
                                  ),
                              ),
                     PRE_EPSI = _F(GROUP_MA = 'M1',
@@ -85,7 +85,7 @@ LEDEP=STAT_NON_LINE(MODELE=LEMOD,
 LEDEP=CALC_CHAMP(reuse =LEDEP,
                  RESULTAT=LEDEP,
                  DEFORMATION=('DEGE_ELGA'),
-                 );
+                 )
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=LEDEP, INST = 1.0, NOM_CHAM=('DEGE_ELGA')))
 

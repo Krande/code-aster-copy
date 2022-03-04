@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@
 #-------------------------------
 
 # contrainte admissible
-Sh=98.7;
+Sh=98.7
 # module d'Young
-EE = 200000. ;
+EE = 200000.
 # coefficient de poisson
-nnu  = 0.3 ;
+nnu  = 0.3
 
 #-------------------------------
-T_FIN = 2.3 ;
+T_FIN = 2.3
 
 #
 # les elements incompressibles ne marchent qu'avec des elements quadratiques
@@ -41,22 +41,22 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('MODELISA4_6',))
 
 
-MAL=LIRE_MAILLAGE(FORMAT='MED');
+MAL=LIRE_MAILLAGE(FORMAT='MED')
 
 MA1=CREA_MAILLAGE(MAILLAGE=MAL,LINE_QUAD=_F(TOUT='OUI'))
 
 MA=CREA_MAILLAGE(MAILLAGE=MA1,
                  CREA_POI1=_F(GROUP_NO='P2',
                               NOM_GROUP_MA='MA_P2',),
-                 );
+                 )
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=_F(GROUP_MA='COUDE',
                                NOM='SOMMETS',
-                               CRIT_NOEUD='SOMMET',),);
+                               CRIT_NOEUD='SOMMET',),)
 
-#MACR_INFO_MAIL(MAILLAGE=MA,QUALITE='OUI',INTERPENETRATION='OUI',CONNEXITE='OUI',TAILLE='OUI');
+#MACR_INFO_MAIL(MAILLAGE=MA,QUALITE='OUI',INTERPENETRATION='OUI',CONNEXITE='OUI',TAILLE='OUI')
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(MODELISATION='3D_INCO_UPG',
@@ -67,23 +67,23 @@ GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV'),
                         GROUP_MA='MA_P2',
                         PHENOMENE='MECANIQUE'),
                     ),
-              );
+              )
 
 MATC=DEFI_MATERIAU(ELAS=_F(E=EE,NU=nnu,),
-                   ECRO_LINE=_F(D_SIGM_EPSI=0,SY=Sh,),);
+                   ECRO_LINE=_F(D_SIGM_EPSI=0,SY=Sh,),)
 
 CHMAT=AFFE_MATERIAU(MODELE=MO,
                     AFFE=(_F(TOUT='OUI',
                              MATER=MATC,),),
                     MAILLAGE=MA,
-                   );
+                   )
 
 CHCAR=AFFE_CARA_ELEM(MODELE=MO,
                      DISCRET=(_F(VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),
                                  CARA='K_TR_D_N',
                                  GROUP_MA='MA_P2')),
                      INFO=1,
-                    );
+                    )
 
 # ----------- CONDITIONS AUX LIMITES -------------------------------
 CH_CL=AFFE_CHAR_MECA(  MODELE=MO,
@@ -95,7 +95,7 @@ CH_CL=AFFE_CHAR_MECA(  MODELE=MO,
                                        ),
                                     ),
                        INFO=1,
-                    );
+                    )
 
 CH_CLC=AFFE_CHAR_CINE(MODELE=MO,
                       MECA_IMPO=(_F(GROUP_NO='P2',
@@ -105,7 +105,7 @@ CH_CLC=AFFE_CHAR_CINE(MODELE=MO,
                                  GONF=0.0,),
                                  ),
                      INFO=1,
-                    );
+                    )
 
 # ----------------- CHARGEMENT PERMANENT -----------------------------
 
@@ -114,7 +114,7 @@ PRES=AFFE_CHAR_MECA(MODELE=MO,
                                 PRES=1.0,),
                     EFFE_FOND=_F(GROUP_MA_INT='BORDTU',
                                  GROUP_MA='EXTUBE',
-                                 PRES=1.0,),);
+                                 PRES=1.0,),)
 
 # --- la convergence devient difficile vers 2.4 :
 # --- la gestion de la liste d'instants n'est pas evidente pour un outil metier
@@ -127,7 +127,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0,
 
 DEFLIST=DEFI_LIST_INST(INFO=1, METHODE='AUTO',
                        DEFI_LIST=_F(LIST_INST=L_INST,),
-                      );
+                      )
 
 #DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
 #                                ECHEC=_F(SUBD_METHODE='UNIFORME',
@@ -150,15 +150,15 @@ COMPORTEMENT=(_F(RELATION='NORTON_HOFF',GROUP_MA=('COUDE','PEAUINT',
                             NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                     PILOTAGE=_F(TYPE='ANA_LIM',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=0.0001,
-                                   ITER_GLOB_MAXI=5,),);
+                                   ITER_GLOB_MAXI=5,),)
 
 ECHL=POST_ELEM(CHAR_LIMITE=_F(CHAR_CSTE='NON',),
                MODELE=MO,
                CHAM_MATER=CHMAT,
                NUME_ORDRE=12,
-               RESULTAT=RESU1,);
+               RESULTAT=RESU1,)
 
-IMPR_TABLE(TABLE=ECHL);
+IMPR_TABLE(TABLE=ECHL)
 
 TEST_TABLE(
            VALE_CALC=11.468876582633,
@@ -168,4 +168,4 @@ TEST_TABLE(
                      VALE=2.2999999999999998,),
            )
 
-FIN();
+FIN()

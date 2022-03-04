@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -161,15 +161,15 @@ CHAR_ROT=AFFE_CHAR_MECA(  MODELE=MO,
                                 CENTRE =(0.,0.,0.,),
                                   ),
 
-                                 );
+                                 )
 
 DEPL_ROT=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=_F(CHARGE=CHAR_ROT,),
                        INST=1.,
-                       INFO=1,);
+                       INFO=1,)
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT));
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT))
 
 G1=CALC_G(RESULTAT=DEPL_ROT,
           THETA=_F(R_INF=RINF,

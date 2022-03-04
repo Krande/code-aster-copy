@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,58 +21,58 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # LECTURE DU MAILLAGE
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA='34',),);
+                CREA_GROUP_NO=_F(GROUP_MA='34',),)
 
 # AFFECTATION DU MODELE SUR LE MAILLAGE
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='D_PLAN',),);
+                         MODELISATION='D_PLAN',),)
 
 # DEFINITION DES PARAMETRES DE LA LOI DE COMPORTEMENT
 MA=DEFI_MATERIAU(ELAS=_F(E=20000.,
                          NU=0.,),
                  BETON_ECRO_LINE=_F(D_SIGM_EPSI=-2000.,
-                              SYT=2.,),);
+                              SYT=2.,),)
 
 # AFFECTATION DU MATERIAU SUR L ENSEMBLE DU MAILLAGE
 MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MA,),);
+                           MATER=MA,),)
 
 # CONDITIONS AUX LIMITES ET CHARGEMENTS
 CHAR=AFFE_CHAR_MECA(MODELE=MODE,
                     DDL_IMPO=(_F(GROUP_MA='12',
                                   DY=0.0,),
                                _F(GROUP_MA='45',
-                                  DX=0.0,),),);
+                                  DX=0.0,),),)
 
 CHAR2=AFFE_CHAR_MECA(MODELE=MODE,
                      DDL_IMPO=_F(GROUP_MA='34',
-                                  DY=0.3,),);
+                                  DY=0.3,),)
 
 F_DEPL=DEFI_FONCTION(NOM_PARA    = 'INST',
                      VALE        = (0,0, 1,1),
-                     PROL_DROITE = 'LINEAIRE',);
+                     PROL_DROITE = 'LINEAIRE',)
 
 # DISCRETISATION EN TEMPS
 TFIN = 0.01
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=TFIN,
-                                    NOMBRE=50,),);
+                                    NOMBRE=50,),)
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),);
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),)
 
 L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=TFIN,
-                                    NOMBRE=200,),);
+                                    NOMBRE=200,),)
 
-DEFLIS2 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),);
+DEFLIS2 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),)
 
 IARCH = DEFI_LIST_REEL(
   DEBUT = 0.,
@@ -93,19 +93,19 @@ RESUNL=STAT_NON_LINE(MODELE=MODE,
                      NEWTON=_F(REAC_ITER=1,
                                MATRICE='TANGENTE',
                                REAC_INCR=1,),
-                     CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=25,),)
 
 # EXTRACTION DE LA COURBE FORCE APPLIQUEE EN FONCTION DU TEMPS
 RESUNL=CALC_CHAMP(reuse =RESUNL,
                RESULTAT=RESUNL,
-               FORCE='FORC_NODA');
+               FORCE='FORC_NODA')
 
 FORC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='FORCE',
                              RESULTAT=RESUNL,
                              NOM_CHAM='FORC_NODA',
                              GROUP_NO='34',
-                             RESULTANTE='DY',),);
+                             RESULTANTE='DY',),)
 FORC=CALC_TABLE(reuse =FORC,
                TABLE=FORC,
                ACTION=(_F(
@@ -113,13 +113,13 @@ FORC=CALC_TABLE(reuse =FORC,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
+                         ),),)
 FX=RECU_FONCTION(TABLE=FORC,
                  PARA_X='INST',
                  PARA_Y='DY',
                  INTERPOL='LIN',
                  PROL_DROITE='CONSTANT',
-                 PROL_GAUCHE='CONSTANT');
+                 PROL_GAUCHE='CONSTANT')
 
 # RESOLUTION AVEC LA METHODE IMPL-EX
 RESUIE=STAT_NON_LINE(MODELE=MODE,
@@ -130,19 +130,19 @@ RESUIE=STAT_NON_LINE(MODELE=MODE,
                      INCREMENT=_F(LIST_INST=DEFLIS2,
                                   INST_FIN=TFIN,),
                      METHODE = 'IMPLEX',
-);
+)
 
 # EXTRACTION DE LA COURBE FORCE APPLIQUEE EN FONCTION DU TEMPS
 RESUIE=CALC_CHAMP(reuse =RESUIE,
                RESULTAT=RESUIE,
-               FORCE='FORC_NODA');
+               FORCE='FORC_NODA')
 
 FORCIE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='FORCE',
                                RESULTAT=RESUIE,
                                NOM_CHAM='FORC_NODA',
                                GROUP_NO='34',
-                               RESULTANTE='DY',),);
+                               RESULTANTE='DY',),)
 
 FORCIE=CALC_TABLE(reuse =FORCIE,
                TABLE=FORCIE,
@@ -151,20 +151,20 @@ FORCIE=CALC_TABLE(reuse =FORCIE,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
+                         ),),)
 
 FXIE=RECU_FONCTION(TABLE=FORCIE,
                    PARA_X='INST',
                    PARA_Y='DY',
                    INTERPOL='LIN',
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='CONSTANT');
+                   PROL_GAUCHE='CONSTANT')
 
 # DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
 DIFF=CALC_FONCTION(COMB=(
                           _F( FONCTION = FX, COEF =  1.),
                           _F( FONCTION = FXIE, COEF = -1.),
-                          ) );
+                          ) )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-2.22044604925e-15,
                          VALE_REFE=0.0,
@@ -243,10 +243,10 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-2.22044604925e-15,
 # ON INTEGRE LA DIFF DES DEUX COURBES ET ON SOMME LES TERMES
 INT=CALC_FONCTION(INTEGRE=(
                           _F( FONCTION = DIFF,),
-                          ) );
+                          ) )
 
 TINT=CREA_TABLE(FONCTION= _F(FONCTION = DIFF,
-                             PARA = ('INST','DY')),);
+                             PARA = ('INST','DY')),)
 
 TEST_TABLE(
            VALE_CALC=117.6284793894,
@@ -255,4 +255,4 @@ TEST_TABLE(
            TABLE=TINT,
            )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,11 @@ RESU=MACRO_ELAS_MULT(MODELE=MO,
                      CAS_CHARGE=_F(MODE_FOURIER = 1,
                                    TYPE_MODE = 'SYME',
                                    CHAR_MECA = CH,
-                                   SOUS_TITRE = 'MODE FOURIER 1 SYME'),);
+                                   SOUS_TITRE = 'MODE FOURIER 1 SYME'),)
 
 RESU=CALC_CHAMP(reuse= RESU,
                 RESULTAT = RESU,
-                CONTRAINTE='SIGM_ELNO',);
+                CONTRAINTE='SIGM_ELNO',)
 
 DEPLA=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 NOM_CHAM='DEPL', RESULTAT=RESU,

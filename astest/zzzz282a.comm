@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          POINT_EXTR =  (4., 1., 0.),
          DTAN = (0., 1., 0.),
          NB_POINT_FOND = 5,
-         );
+         )
 
 MODmai=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(GROUP_MA=('VOL',),
@@ -82,7 +82,7 @@ MODmai=AFFE_MODELE(MAILLAGE=MA,
 FISS[1]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_0',
                                     GROUP_MA_FOND='FOND_0'),
                        MAILLAGE_GRILLE=grille,
-                       MAILLAGE=MA,);
+                       MAILLAGE=MA,)
 
 #--------
 # FISS[2]: DEFINITION PAR FONCTIONS
@@ -96,7 +96,7 @@ fLST = FORMULE(VALE='Y-1.0',
 FISS[2]=DEFI_FISS_XFEM(DEFI_FISS=_F(FONC_LN=fLSN,
                                     FONC_LT=fLST),
                        MAILLAGE_GRILLE=grille,
-                       MAILLAGE=MA,);
+                       MAILLAGE=MA,)
 
 #--------
 # FISS[3]: DEFINITION PAR CATALOGUE DE FORMES
@@ -107,17 +107,17 @@ FISS[3]=DEFI_FISS_XFEM(DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
                                     PFON =  (4., 1., 0.),
                                     DTAN = (0., 1., 0.),),
                        MAILLAGE_GRILLE=grille,
-                       MAILLAGE=MA,);
+                       MAILLAGE=MA,)
 
 LSN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                OPERATION='EXTR',
                NOM_CHAM='LNNO',
-               FISSURE=FISS[3],);
+               FISSURE=FISS[3],)
 
 LST=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                OPERATION='EXTR',
                NOM_CHAM='LTNO',
-               FISSURE=FISS[3],);
+               FISSURE=FISS[3],)
 
 #--------
 # FISS[4]: DEFINITION PAR CHAMP_NO
@@ -126,7 +126,7 @@ LST=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
 FISS[4]=DEFI_FISS_XFEM(DEFI_FISS=_F(CHAM_NO_LSN=LSN,
                                   CHAM_NO_LST=LST),
                      MAILLAGE_GRILLE=grille,
-                     MAILLAGE=MA,);
+                     MAILLAGE=MA,)
 
 #--------
 # FISS[5]: DEFINITION D'UNE INTERFACE PAR GROUPES DES MAILLES
@@ -135,7 +135,7 @@ FISS[4]=DEFI_FISS_XFEM(DEFI_FISS=_F(CHAM_NO_LSN=LSN,
 FISS[5]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_0',),
                        MAILLAGE_GRILLE=grille,
-                       MAILLAGE=MA,);
+                       MAILLAGE=MA,)
 
 #--------
 # FISS[6]: DEFINITION D'UNE INTERFACE PAR UNE FONCTION
@@ -144,7 +144,7 @@ FISS[5]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
 FISS[6]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
                        DEFI_FISS=_F(FONC_LN=fLSN,),
                        MAILLAGE_GRILLE=grille,
-                       MAILLAGE=MA,);
+                       MAILLAGE=MA,)
 
 #--------
 # FISS[7]: DEFINITION D'UNE INTERFACE PAR CATALOGUE DE FORMES
@@ -155,12 +155,12 @@ FISS[7]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
                                     POINT =  (4., 1., 0.),
                                     DTAN = (1., 0., 0.),),
                        MAILLAGE_GRILLE=grille2D,
-                       MAILLAGE=box2D,);
+                       MAILLAGE=box2D,)
 
 LSNint=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   OPERATION='EXTR',
                   NOM_CHAM='LNNO',
-                  FISSURE=FISS[7],);
+                  FISSURE=FISS[7],)
 
 #--------
 # FISS[8]: DEFINITION D'UNE INTERFACE PAR CHAMP_NO
@@ -169,7 +169,7 @@ LSNint=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
 FISS[8]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
                        DEFI_FISS=_F(CHAM_NO_LSN=LSNint,),
                        MAILLAGE_GRILLE=grille2D,
-                       MAILLAGE=box2D,);
+                       MAILLAGE=box2D,)
 
 #----------------------------------------------
 # VERIFICATION LEVEL SETS ET LEUR GRADIENTS
@@ -219,48 +219,48 @@ for i in range(1,8) :
     LSNma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                         OPERATION='EXTR',
                         NOM_CHAM='LNNO',
-                        FISSURE=FISS[i],);
+                        FISSURE=FISS[i],)
 
     if ( i < 5 ) :
        LSTma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                            OPERATION='EXTR',
                            NOM_CHAM='LTNO',
-                           FISSURE=FISS[i],);
+                           FISSURE=FISS[i],)
 
     GLSNma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                          OPERATION='EXTR',
                          NOM_CHAM='GRLNNO',
-                         FISSURE=FISS[i],);
+                         FISSURE=FISS[i],)
 
     if ( i < 5 ) :
        GLSTma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                             OPERATION='EXTR',
                             NOM_CHAM='GRLTNO',
-                            FISSURE=FISS[i],);
+                            FISSURE=FISS[i],)
 
 #   EXTRACTION DES CHAMPS LEVEL SETS DE LA GRILLE
 
     LSNgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                         OPERATION='EXTR',
                         NOM_CHAM='GRI.LNNO',
-                        FISSURE=FISS[i],);
+                        FISSURE=FISS[i],)
 
     if ( i < 5 ) :
        LSTgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                            OPERATION='EXTR',
                            NOM_CHAM='GRI.LTNO',
-                           FISSURE=FISS[i],);
+                           FISSURE=FISS[i],)
 
     GLSNgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                          OPERATION='EXTR',
                          NOM_CHAM='GRI.GRLNNO',
-                         FISSURE=FISS[i],);
+                         FISSURE=FISS[i],)
 
     if ( i < 5 ) :
        GLSTgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                             OPERATION='EXTR',
                             NOM_CHAM='GRI.GRLTNO',
-                            FISSURE=FISS[i],);
+                            FISSURE=FISS[i],)
 
 #   CREATION DES TABLES DES CHAMPS CI-DESSUS POUR LE MAILLAGE
 
@@ -354,7 +354,7 @@ for i in range(1,8) :
                                    NOM_PARA=('NOEUD'),),
                                 _F(OPERATION='OPER',
                                    FORMULE=DIFFER,
-                                   NOM_PARA='DIFF',),),);
+                                   NOM_PARA='DIFF',),),)
 
     if ( i < 5 ) :
        DIFFT[i]=CALC_TABLE(TABLE=Tma[i],
@@ -363,7 +363,7 @@ for i in range(1,8) :
                                       NOM_PARA=('NOEUD'),),
                                    _F(OPERATION='OPER',
                                       FORMULE=DIFFER,
-                                      NOM_PARA='DIFF',),),);
+                                      NOM_PARA='DIFF',),),)
 
     DIFFGN[i]=CALC_TABLE(TABLE=GNma[i],
                          ACTION=(_F(OPERATION='COMB',
@@ -371,7 +371,7 @@ for i in range(1,8) :
                                     NOM_PARA=('NOEUD'),),
                                  _F(OPERATION='OPER',
                                     FORMULE=DIFFER,
-                                    NOM_PARA='DIFF',),),);
+                                    NOM_PARA='DIFF',),),)
 
     if ( i < 5 ) :
        DIFFGT[i]=CALC_TABLE(TABLE=GTma[i],
@@ -380,7 +380,7 @@ for i in range(1,8) :
                                        NOM_PARA=('NOEUD'),),
                                     _F(OPERATION='OPER',
                                        FORMULE=DIFFER,
-                                       NOM_PARA='DIFF',),),);
+                                       NOM_PARA='DIFF',),),)
 
 #   VERIFICATION LEVEL SETS
 

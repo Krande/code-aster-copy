@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 #=======================================================================
 import numpy as N
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -42,7 +42,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
                        _F( GROUP_MA = 'ABSO'),
                        _F( GROUP_MA = 'LIBR'))
                      )
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL))
 
 MAIL = MODI_MAILLAGE(reuse=MAIL,
                        MAILLAGE=MAIL,
@@ -303,7 +303,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                       ),
               )
 
-FIN();
+FIN()
 #
 #     POST-TRAITEMENT
 #
@@ -318,32 +318,32 @@ FIN();
 #   def_co['MARQUEUR'] = mark
 #
 #   try:
-#     courbe.append(def_co);
+#     courbe.append(def_co)
 #   except:
-#     courbe=[def_co,];
+#     courbe=[def_co,]
 #
-#   return courbe;
+#   return courbe
 # # ---
 #
 #
 #
-# Noeud = ['N%d' %(n) for n in range(44,3,-4)];
+# Noeud = ['N%d' %(n) for n in range(44,3,-4)]
 #
-# NB_Noe = len(Noeud);
+# NB_Noe = len(Noeud)
 #
-# co_acce,co_vite,co_depl,=None,None,None,;
+# co_acce,co_vite,co_depl,=None,None,None,
 #
-# Comp = 'DY';
+# Comp = 'DY'
 #
-# RESU =(DYNA,DYNB);
+# RESU =(DYNA,DYNB)
 #
 # for r in RESU:
 #
 #  for i in range(NB_Noe):
 #
-#    cte_acce = i*5.e-1;
-#    cte_vite = i*1.5e-2;
-#    cte_depl = i*5.e-4;
+#    cte_acce = i*5.e-1
+#    cte_vite = i*1.5e-2
+#    cte_depl = i*5.e-4
 #
 #    DEPL=RECU_FONCTION(RESULTAT=r,
 #                       TITRE='ACCE',
@@ -352,7 +352,7 @@ FIN();
 #                       NOEUD=Noeud[i],
 #                       PROL_DROITE='CONSTANT',
 #                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
+#                       INTERPOL='LIN',)
 #
 #    VITE=RECU_FONCTION(RESULTAT=r,
 #                       TITRE='VITE',
@@ -361,7 +361,7 @@ FIN();
 #                       NOEUD=Noeud[i],
 #                       PROL_DROITE='CONSTANT',
 #                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
+#                       INTERPOL='LIN',)
 #
 #    ACCE=RECU_FONCTION(RESULTAT=r,
 #                       TITRE='ACCE',
@@ -370,71 +370,71 @@ FIN();
 #                       NOEUD=Noeud[i],
 #                       PROL_DROITE='CONSTANT',
 #                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
+#                       INTERPOL='LIN',)
 #
 #
 #    # ---- Acceleration
 #    #      ------------------------
-#    time, acce = ACCE.Valeurs();
+#    time, acce = ACCE.Valeurs()
 #
-#    acce =N.array(acce);
+#    acce =N.array(acce)
 #
-#    acce +=cte_acce;
+#    acce +=cte_acce
 #
 #    co_acce =Defi_Xmcourbe(courbe=co_acce,
 #         X=tuple(time),
 #         Y=tuple(acce),
 #         legend=Noeud[i],
-#         color=0,);
+#         color=0,)
 #
 #    # ---- Vitesse
 #    #      ------------------------
 #
-#    time, vite = VITE.Valeurs();
+#    time, vite = VITE.Valeurs()
 #
-#    vite =N.array(vite);
+#    vite =N.array(vite)
 #
-#    vite +=cte_vite;
+#    vite +=cte_vite
 #
 #    co_vite =Defi_Xmcourbe(courbe=co_vite,
 #         X=tuple(time),
 #         Y=tuple(vite),
 #         legend=Noeud[i],
-#         color=0,);
+#         color=0,)
 #
 #    # ---- Deplacement
 #    #      ------------------------
 #
-#    time, depl = DEPL.Valeurs();
+#    time, depl = DEPL.Valeurs()
 #
-#    depl =N.array(depl);
+#    depl =N.array(depl)
 #
-#    depl +=cte_depl;
+#    depl +=cte_depl
 #
 #    co_depl =Defi_Xmcourbe(courbe=co_depl,
 #         X=tuple(time),
 #         Y=tuple(depl),
 #         legend=Noeud[i],
-#         color=0,);
+#         color=0,)
 #
-#    DETRUIRE(NOM=(ACCE,DEPL,VITE,),);
+#    DETRUIRE(NOM=(ACCE,DEPL,VITE,),)
 #
-# Courbes = [co_acce,co_depl,co_vite,];
-# Nom_Fichier= ['co_acce.agr','co_depl.agr','co_vite.agr',];
+# Courbes = [co_acce,co_depl,co_vite,]
+# Nom_Fichier= ['co_acce.agr','co_depl.agr','co_vite.agr',]
 #
 # unit=38
 # for c in range(len(Nom_Fichier)):
 #
 #   DEFI_FICHIER(ACTION='ASSOCIER',
 #                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
-#                UNITE=unit,);
+#                UNITE=unit,)
 #
 #   IMPR_FONCTION(FORMAT='XMGRACE',
 #               UNITE=unit,
-#               COURBE=Courbes[c]);
+#               COURBE=Courbes[c])
 #
 #   DEFI_FICHIER(ACTION='LIBERER',
-#                UNITE=unit,);
-#FIN();
+#                UNITE=unit,)
+#FIN()
 #
 #

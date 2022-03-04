@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ NU=DEFI_FONCTION( NOM_PARA='TEMP',
                   VALE=(0.0,0.2,1.0,0.2,)
                 )
 
-ALPHA=DEFI_CONSTANTE(VALE=0.);
+ALPHA=DEFI_CONSTANTE(VALE=0.)
 
 BETON = DEFI_MATERIAU(ELAS_FO = _F(E = E,
                                    NU = NU,
@@ -83,7 +83,7 @@ BETON = DEFI_MATERIAU(ELAS_FO = _F(E = E,
                                    ETA_RD = 4.08E+11,
                                    ETA_ID = 5.44E+12,
                                    ),
-                       );
+                       )
 
 SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                         AFFE=_F( TOUT = 'OUI',
@@ -101,7 +101,7 @@ TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
 CM=AFFE_MATERIAU(  MAILLAGE=M,
                    AFFE=_F( TOUT = 'OUI',MATER = BETON,),
                    AFFE_VARC=(_F(TOUT='OUI',CHAM_GD=SECH,NOM_VARC='SECH',VALE_REF=1.),
-                             _F(TOUT='OUI',CHAM_GD=TEMP,NOM_VARC='TEMP',VALE_REF=20.),),);
+                             _F(TOUT='OUI',CHAM_GD=TEMP,NOM_VARC='TEMP',VALE_REF=20.),),)
 
 
 CH10=AFFE_CHAR_MECA( MODELE=MO,

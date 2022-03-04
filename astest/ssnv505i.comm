@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI'))
 
-MAILL2=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL2=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILL2=DEFI_GROUP(reuse =MAILL2,
                   MAILLAGE=MAILL2,
@@ -35,12 +35,12 @@ MAILL2=DEFI_GROUP(reuse =MAILL2,
                                     CRIT_NOEUD='SOMMET',),
                                  ),
                   INFO=1
-                  );
+                  )
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL2,
                  AFFE=_F(GROUP_MA='TOUT',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='DKT',),);
+                          MODELISATION='DKT',),)
 
 
 MAILL2=MODI_MAILLAGE(reuse =MAILL2,
@@ -49,43 +49,43 @@ MAILL2=MODI_MAILLAGE(reuse =MAILL2,
                                         VECT_NORM=(0.0,1.0,0.0),
                                         GROUP_NO='A',
                                       ),
-                     );
+                     )
 
 MAILL2=MODI_MAILLAGE(reuse =MAILL2,
                      MAILLAGE=MAILL2,
                      ORIE_NORM_COQUE=_F(GROUP_MA='POUTRE_H',
                                         VECT_NORM=(0.0,-1.0,0.0),
                                         GROUP_NO='B',),
-                     );
+                     )
 
 MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,
-                              NU=0.3333,),);
+                              NU=0.3333,),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MODE,
                     COQUE=_F(GROUP_MA=('POUTRE_B','POUTRE_H'),
                              COQUE_NCOU =1,
                              EPAIS=63.5,
                              COEF_RIGI_DRZ=1.E-3,
-                             ),);
+                             ),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL2,
                  AFFE=_F(GROUP_MA='TOUT',
-                         MATER=MPOUTRE,),);
+                         MATER=MPOUTRE,),)
 
 COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
                         DDL_IMPO=(_F(GROUP_NO='SOMMET',
                                      DZ=0,DRX=0),
                                  _F(GROUP_NO=('COTE_A','COTE_B'),
                                      DX=0.0,DY=0.0,DZ=0.0,DRX=0,DRY=0,DRZ=0,),
-                                  ),);
+                                  ),)
 
 
 CH1=AFFE_CHAR_MECA(MODELE=MODE,
                    DDL_IMPO=_F(GROUP_NO=('COTE_C'),
                                DY=-790.,
-                             ),);
+                             ),)
 
-F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
+F_DIST_M=DEFI_CONSTANTE(VALE=31.75)
 
 
 CH2 = DEFI_CONTACT(MODELE         = MODE,
@@ -109,17 +109,17 @@ CH2 = DEFI_CONTACT(MODELE         = MODE,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=20,),);
+                                   NOMBRE=20,),)
 
 
 LARCH=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=25,),);
+                                   NOMBRE=25,),)
 
 U=STAT_NON_LINE(SOLVEUR=_F(),
                 MODELE=MODE,
@@ -138,27 +138,27 @@ U=STAT_NON_LINE(SOLVEUR=_F(),
                 NEWTON=_F(REAC_ITER=1,
                           ),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
-                INFO=1,);
+                INFO=1,)
 
 U=CALC_CHAMP(reuse =U,
           RESULTAT=U,
           FORCE=('FORC_NODA','REAC_NODA'),
-         );
+         )
 TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  GROUP_NO='COTE_C',
                                  RESULTAT=U,
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 IMPR_TABLE(FORMAT='TABLEAU',
-           TABLE=TAB_DEPL,);
+           TABLE=TAB_DEPL,)
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  GROUP_NO=('COTE_A','COTE_B'),
                                  RESULTAT=U,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 TEST_TABLE(
            VALE_CALC=345.91080663689,
@@ -201,4 +201,4 @@ TEST_TABLE(
            )
 
 
-FIN();
+FIN()

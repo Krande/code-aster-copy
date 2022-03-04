@@ -1,7 +1,7 @@
 # copie du cas test sslv134d
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -137,7 +137,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 #
 # --------------------------------------------------------------------
-# K1, K2, K3 sur tous les noeuds du fond de fissure 
+# K1, K2, K3 sur tous les noeuds du fond de fissure
 #            (noeuds extremités + noeuds milieux)
 # --------------------------------------------------------------------
 

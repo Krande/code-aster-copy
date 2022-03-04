@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # extrait de sdnv138a : avec instants de calcul réduits
 # pour couverture des fonctionnalités dans :
 #   3D_JOINT/AMOR_MECA
-#   DEFI_MATERIAU/JOINT_MECA_FROT/COEF_AMOR  
+#   DEFI_MATERIAU/JOINT_MECA_FROT/COEF_AMOR
 
 # PARAMETRES MECANIQUES DES PLOTS (VALEURS TESTS)
 young = 3.E10
@@ -42,7 +42,7 @@ ecrouissage=k_t*0.1
 
 ##################################
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                       CREA_GROUP_NO= (
@@ -65,7 +65,7 @@ MA=DEFI_GROUP(reuse =MA,
       _F(NOM = 'JOINT_G', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_G'),
       _F(NOM = 'JOINT_D', OPTION = 'NOEUD_ORDO',   GROUP_MA = 'JOINT_D'),
           ),
-    );
+    )
 
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -73,7 +73,7 @@ MA=MODI_MAILLAGE(reuse =MA,
                    ORIE_FISSURE=_F(GROUP_MA='JOINT'),
                    INFO=1)
 
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA));
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA))
 
 
 
@@ -85,7 +85,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='3D',),
                      _F(GROUP_MA='JOINT',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='3D_JOINT',),),);
+                        MODELISATION='3D_JOINT',),),)
 
 
 
@@ -106,40 +106,40 @@ MAT_JF=DEFI_MATERIAU(
                                      MU=mu,
                                      #ADHESION=adhe,
                                      ADHESION=0.,
-                                ),);
+                                ),)
 CM_JF=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(GROUP_MA='BARRAGE',MATER = MATPLO),
                       _F(GROUP_MA='JOINT',  MATER = MAT_JF))
-                 );
+                 )
 
 
 
 # CONDITION AUX LIMITES
 CL_GAUCH=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=_F(GROUP_NO=('ENCAST_G',),DY=0.0, DZ=0.0),);
+                       DDL_IMPO=_F(GROUP_NO=('ENCAST_G',),DY=0.0, DZ=0.0),)
 # CONDITION AUX LIMITES
 CL_DROIT=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=_F(GROUP_NO=('ENCAST_D',),DX=0.0, DY=0.0, DZ=0.0),);
+                       DDL_IMPO=_F(GROUP_NO=('ENCAST_D',),DX=0.0, DY=0.0, DZ=0.0),)
 
 PESAX=AFFE_CHAR_MECA(MODELE=MO,
                    PESANTEUR=_F(GRAVITE=1.0,
-                                DIRECTION=(1.0,0.0,0.0),),);
+                                DIRECTION=(1.0,0.0,0.0),),)
 
 MONOX=AFFE_CHAR_MECA(MODELE=MO,
                    PESANTEUR=_F(GRAVITE=1.0,
-                                DIRECTION=(-1.0,0.0,0.0),),);
+                                DIRECTION=(-1.0,0.0,0.0),),)
 
 LR=DEFI_LIST_REEL(DEBUT=-1,
                   INTERVALLE=(_F(JUSQU_A=0, NOMBRE=1,))
-                  );
+                  )
 
 L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),
                         ECHEC=_F(
                                  SUBD_NIVEAU=6,
                                  SUBD_PAS  = 10,
                                  SUBD_PAS_MINI = 1.E-10,
-                                 ),);
+                                 ),)
 
 # CALCUL JOINT_MECA_FROT
 U_JF=STAT_NON_LINE(MODELE=MO,
@@ -159,6 +159,6 @@ U_JF=STAT_NON_LINE(MODELE=MO,
                   SOLVEUR=_F(METHODE='MUMPS',),
                   INCREMENT=_F(LIST_INST=L_INST,),
                   ARCHIVAGE=_F(LIST_INST=LR,),
-                  );
+                  )
 
-FIN();
+FIN()

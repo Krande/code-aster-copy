@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ COURFATA = FORMULE(VALE='5.E5/SIGM ',
 
 L_INST=DEFI_LIST_REEL(  DEBUT=1.,
                         INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
-                           
+
 FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
                           NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
@@ -39,19 +39,19 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                               SY_02 = 200.)
                                )
 
-#  CONTRAINTES THERMIQUES (SITUATION 1)                 
+#  CONTRAINTES THERMIQUES (SITUATION 1)
 T_THER = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=1,)
 
-#  CONTRAINTES THERMIQUES (SITUATION 2)                 
+#  CONTRAINTES THERMIQUES (SITUATION 2)
 T_THER2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=2,)
 
-#  CONTRAINTES DE PRESSION (SITUATION 1)                 
+#  CONTRAINTES DE PRESSION (SITUATION 1)
 T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=3,)
 
-# CALCULS AVEC LA METHODE DU TRESCA SIGNE         
+# CALCULS AVEC LA METHODE DU TRESCA SIGNE
 # VALIDATION DU CALCUL DE SN SANS CONTRAINTES THERMIQUES NI DE PRESSION
 SN1 = POST_RCCM( MATER=MAT,
                  METHODE='TRESCA',
@@ -77,7 +77,7 @@ SN1 = POST_RCCM( MATER=MAT,
                      MX=21.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=2,
                      NOM_CHAR='ETAT B - SITU1',
-                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=3,
                      NOM_CHAR='ETAT A - SITU2',
                      MX=1.0,  MY=0.0,  MZ=0.0,),
@@ -98,7 +98,7 @@ SN1 = POST_RCCM( MATER=MAT,
                      NUME_GROUPE=1,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=SN1,)
 
@@ -127,7 +127,7 @@ SN1s = POST_RCCM( MATER=MAT,
                      MX=21.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=2,
                      NOM_CHAR='ETAT B - SITU1',
-                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=3,
                      NOM_CHAR='ETAT A - SITU2',
                      MX=1.0,  MY=0.0,  MZ=0.0,),
@@ -153,7 +153,7 @@ SN1s = POST_RCCM( MATER=MAT,
                      NUME_GROUPE=1,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=SN1s,)
 
@@ -182,7 +182,7 @@ SN2 = POST_RCCM( MATER=MAT,
                      MX=21.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=2,
                      NOM_CHAR='ETAT B - SITU1',
-                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=3,
                      NOM_CHAR='ETAT A - SITU2',
                      MX=1.0,  MY=0.0,  MZ=0.0,),
@@ -190,7 +190,7 @@ SN2 = POST_RCCM( MATER=MAT,
                      NOM_CHAR='ETAT B - SITU2',
                      MX=61.0,  MY=0.0,  MZ=0.0,),),
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  SITUATION=(
@@ -209,9 +209,9 @@ SN2 = POST_RCCM( MATER=MAT,
                      NUME_RESU_THER = 2,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
-                        ),),);
+                        ),),)
 
-IMPR_TABLE(    TABLE=SN2,)  
+IMPR_TABLE(    TABLE=SN2,)
 
 # VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES ET DE PRESSION
 SN3 = POST_RCCM( MATER=MAT,
@@ -238,7 +238,7 @@ SN3 = POST_RCCM( MATER=MAT,
                      MX=21.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=2,
                      NOM_CHAR='ETAT B - SITU1',
-                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=3,
                      NOM_CHAR='ETAT A - SITU2',
                      MX=1.0,  MY=0.0,  MZ=0.0,),
@@ -246,7 +246,7 @@ SN3 = POST_RCCM( MATER=MAT,
                      NOM_CHAR='ETAT B - SITU2',
                      MX=61.0,  MY=0.0,  MZ=0.0,),),
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  RESU_PRES= (_F(NUME_RESU_PRES=1,
@@ -268,11 +268,11 @@ SN3 = POST_RCCM( MATER=MAT,
                      NUME_RESU_THER = 2,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=SN3,)
 
-# CALCULS AVEC LA METHODE QUI TESTE TOUS LES INSTANTS     
+# CALCULS AVEC LA METHODE QUI TESTE TOUS LES INSTANTS
 # VALIDATION DU CALCUL DE SN SANS CONTRAINTES THERMIQUES NI DE PRESSION
 SN1b = POST_RCCM( MATER=MAT,
                  METHODE='TOUT_INST',
@@ -298,7 +298,7 @@ SN1b = POST_RCCM( MATER=MAT,
                      MX=21.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=2,
                      NOM_CHAR='ETAT B - SITU1',
-                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=3,
                      NOM_CHAR='ETAT A - SITU2',
                      MX=1.0,  MY=0.0,  MZ=0.0,),
@@ -319,7 +319,7 @@ SN1b = POST_RCCM( MATER=MAT,
                      NUME_GROUPE=1,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=SN1b,)
 
@@ -348,7 +348,7 @@ SN2b = POST_RCCM( MATER=MAT,
                      MX=21.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=2,
                      NOM_CHAR='ETAT B - SITU1',
-                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=3,
                      NOM_CHAR='ETAT A - SITU2',
                      MX=1.0,  MY=0.0,  MZ=0.0,),
@@ -356,7 +356,7 @@ SN2b = POST_RCCM( MATER=MAT,
                      NOM_CHAR='ETAT B - SITU2',
                      MX=61.0,  MY=0.0,  MZ=0.0,),),
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  SITUATION=(
@@ -375,9 +375,9 @@ SN2b = POST_RCCM( MATER=MAT,
                      NUME_RESU_THER = 2,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
-                        ),),);
+                        ),),)
 
-IMPR_TABLE(    TABLE=SN2b,)  
+IMPR_TABLE(    TABLE=SN2b,)
 
 # VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES ET DE PRESSION
 SN3b = POST_RCCM( MATER=MAT,
@@ -404,7 +404,7 @@ SN3b = POST_RCCM( MATER=MAT,
                      MX=21.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=2,
                      NOM_CHAR='ETAT B - SITU1',
-                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
                   _F(NUME_CHAR=3,
                      NOM_CHAR='ETAT A - SITU2',
                      MX=1.0,  MY=0.0,  MZ=0.0,),
@@ -412,7 +412,7 @@ SN3b = POST_RCCM( MATER=MAT,
                      NOM_CHAR='ETAT B - SITU2',
                      MX=61.0,  MY=0.0,  MZ=0.0,),),
                  RESU_THER= (_F(NUME_RESU_THER=1,
-                            TABL_RESU_THER=T_THER, ), 
+                            TABL_RESU_THER=T_THER, ),
                             _F(NUME_RESU_THER=2,
                             TABL_RESU_THER=T_THER2, ), ),
                  RESU_PRES= (_F(NUME_RESU_PRES=1,
@@ -434,7 +434,7 @@ SN3b = POST_RCCM( MATER=MAT,
                      NUME_RESU_THER = 2,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
-                        ),),);
+                        ),),)
 
 IMPR_TABLE(    TABLE=SN3b,)
 
@@ -554,4 +554,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            )
 
-FIN();
+FIN()

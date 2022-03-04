@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 # lecture maillage lineique
-POUT=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',);
+POUT=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',)
 # lecture maillage section1
-MASEC=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',);
+MASEC=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',)
 
 MOPOU=AFFE_MODELE(
    MAILLAGE=POUT,
-   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),);
+   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),)
 
 GF=DEFI_GEOM_FIBRE(
    SECTION = _F(GROUP_FIBRE='SECF', MAILLAGE_SECT = MASEC , TOUT_SECT = 'OUI',COOR_AXE_POUTRE = (0.5, 0.5,)),

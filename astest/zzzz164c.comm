@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ CHD = [None]*ntest
 RES = [None]*ntest
 for i in range (0,ntest):
     MA[i] = COPIER(CONCEPT=MA_INI)
- 
+
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=_F(MAILLAGE=MA_INI, IMPR_COOR = 'OUI',),)
 
@@ -93,7 +93,7 @@ for i in range(0,ntest):
                                      NOM_CMP = ( 'X' , 'Y'  ,'Z'  , ) ,
                                      NOM_CMP_RESU = ('DX' , 'DY' , 'DZ' , )
                                      , ) , )
-    
+
     #
     RES[i] = CREA_RESU ( OPERATION  = 'AFFE' ,
                        TYPE_RESU = 'EVOL_ELAS' ,
@@ -101,7 +101,7 @@ for i in range(0,ntest):
                        AFFE = _F ( INST = 1.0 ,
     #                        NUME_ORDRE_INIT = 1 ,
                                    CHAM_GD = CHD[i] , ) , )
-                                   
+
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P1',
                    REFERENCE='ANALYTIQUE',

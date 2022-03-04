@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
 
 # LECTURE DU MAILLAGE AU FORMAT MED
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 
 # DEFINITION DE LA MODELISATION PLAQUE
@@ -40,7 +40,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='DKT',),
                          _F(GROUP_MA=('VOLUME',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
+                            MODELISATION='3D',),),)
 
 
 # DEFINITION DES MATERIAUX ELASTIQUES (A PROPRIETES CONSTANTES)
@@ -48,19 +48,19 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                             NU=0.3,
                             RHO=7800,
-                            AMOR_HYST=0.002,),);
+                            AMOR_HYST=0.002,),)
 
 ALU=DEFI_MATERIAU(ELAS=_F(E=7.0E10,
                           NU=0.3,
                           RHO=2700,
-                          AMOR_HYST=0.001,),);
+                          AMOR_HYST=0.001,),)
 
 # DEFINITION DU MATERIAU VISCOELASTIQUE A 1 HZ
 
 VISCO0=DEFI_MATERIAU(ELAS=_F(E=23.2E6,
                              NU=0.45,
                              RHO=1200,
-                             AMOR_HYST=1.1,),);
+                             AMOR_HYST=1.1,),)
 
 # AFFECTATION DES MATERIAUX AUX ELEMENTS PLAQUES DU MAILLAGE
 
@@ -70,7 +70,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                           _F(GROUP_MA='DESSUS',
                              MATER=ALU,),
                           _F(GROUP_MA='VOLUME',
-                             MATER=VISCO0,),),);
+                             MATER=VISCO0,),),)
 
 # DEFINITION ET AFFECTATION DES PROPRIETES DES PLAQUES
 
@@ -82,19 +82,19 @@ CARAPLAQ=AFFE_CARA_ELEM(MODELE=MODELE,
                                _F(GROUP_MA='DESSUS',
                                   EPAIS=0.5E-3,
                                   EXCENTREMENT=0.25E-3,
-                                  INER_ROTA='OUI',),),);
+                                  INER_ROTA='OUI',),),)
 
 # DEFINITION DES CONDITIONS D'ENCASTREMENT
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_MA='ENCAS',
-                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),);
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),)
 
 # DEFINITION DU CHARGEMENT
 
 EXCIT=AFFE_CHAR_MECA(MODELE=MODELE,
                      FORCE_NODALE=_F(GROUP_NO='A',
-                                     FZ=1.,),);
+                                     FZ=1.,),)
 
 
 # CALCUL DES MATRICES ASSEMBLEES K ET M ET DU VECTEUR CHARGEMENT ASSEMBLE
@@ -104,37 +104,37 @@ MASSE=CALC_MATR_ELEM(OPTION='MASS_MECA',
                      MODELE=MODELE,
                      CHAM_MATER=CHMAT0,
                      CARA_ELEM=CARAPLAQ,
-                     CHARGE=CONDLIM,);
+                     CHARGE=CONDLIM,)
 
 RIGIDIT0=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHMAT0,
                         CARA_ELEM=CARAPLAQ,
-                        CHARGE=CONDLIM,);
+                        CHARGE=CONDLIM,)
 
 RIGIHYS0=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
                         MODELE=MODELE,
                         CHARGE=CONDLIM,
                         CHAM_MATER=CHMAT0,
                         CARA_ELEM=CARAPLAQ,
-                        RIGI_MECA=RIGIDIT0,);
+                        RIGI_MECA=RIGIDIT0,)
 
 FORCE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                     CHARGE=EXCIT,);
+                     CHARGE=EXCIT,)
 
-NUMEDDL=NUME_DDL(MATR_RIGI=RIGIDIT0,);
+NUMEDDL=NUME_DDL(MATR_RIGI=RIGIDIT0,)
 
 ASSEM=ASSE_MATRICE(MATR_ELEM=MASSE,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
 ASSEK0=ASSE_MATRICE(MATR_ELEM=RIGIDIT0,
-                    NUME_DDL=NUMEDDL,);
+                    NUME_DDL=NUMEDDL,)
 
 ASSEKC0=ASSE_MATRICE(MATR_ELEM=RIGIHYS0,
-                     NUME_DDL=NUMEDDL,);
+                     NUME_DDL=NUMEDDL,)
 
 ASSEF=ASSE_VECTEUR(VECT_ELEM=FORCE,
-                   NUME_DDL=NUMEDDL,);
+                   NUME_DDL=NUMEDDL,)
 
 
 # CALCUL DE LA REPONSE DU SYSTEME A 1 HZ
@@ -146,7 +146,7 @@ DYNA0=DYNA_VIBRA(TYPE_CALCUL='HARM',
                  FREQ=1.,
                  TOUT_CHAM='OUI',
                  EXCIT=_F(VECT_ASSE=ASSEF,
-                          COEF_MULT=1.0,),);
+                          COEF_MULT=1.0,),)
 
 
 ###########################################################
@@ -156,7 +156,7 @@ DYNA0=DYNA_VIBRA(TYPE_CALCUL='HARM',
 VISCO1=DEFI_MATERIAU(ELAS=_F(E=203E6,
                              NU=0.45,
                              RHO=1200,
-                             AMOR_HYST=0.6,),);
+                             AMOR_HYST=0.6,),)
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=(_F(GROUP_MA='DESSOUS',
@@ -164,7 +164,7 @@ CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                            _F(GROUP_MA='DESSUS',
                               MATER=ALU,),
                            _F(GROUP_MA='VOLUME',
-                              MATER=VISCO1,),),);
+                              MATER=VISCO1,),),)
 
 
 # CALCUL DES MATRICES ASSEMBLEES K ET M ET DU VECTEUR CHARGEMENT ASSEMBLE
@@ -174,23 +174,23 @@ RIGIDIT1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHMAT1,
                         CARA_ELEM=CARAPLAQ,
-                        CHARGE=CONDLIM,);
+                        CHARGE=CONDLIM,)
 
 RIGIHYS1=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
                         MODELE=MODELE,
                         CHARGE=CONDLIM,
                         CHAM_MATER=CHMAT1,
                         CARA_ELEM=CARAPLAQ,
-                        RIGI_MECA=RIGIDIT1,);
+                        RIGI_MECA=RIGIDIT1,)
 
 # les conditions aux limites ne changent pas
 # donc la numérotation des DDL non plus
 
 ASSEK1=ASSE_MATRICE(MATR_ELEM=RIGIDIT1,
-                    NUME_DDL=NUMEDDL,);
+                    NUME_DDL=NUMEDDL,)
 
 ASSEKC1=ASSE_MATRICE(MATR_ELEM=RIGIHYS1,
-                     NUME_DDL=NUMEDDL,);
+                     NUME_DDL=NUMEDDL,)
 
 
 # CALCUL DE LA REPONSE DU SYSTEME A 100 HZ
@@ -202,7 +202,7 @@ DYNA1=DYNA_VIBRA(TYPE_CALCUL='HARM',
                  FREQ=100.,
                  TOUT_CHAM='OUI',
                  EXCIT=_F(VECT_ASSE=ASSEF,
-                          COEF_MULT=1.0,),);
+                          COEF_MULT=1.0,),)
 
 
 ###########################################################
@@ -213,7 +213,7 @@ DYNA1=DYNA_VIBRA(TYPE_CALCUL='HARM',
 VISCO2=DEFI_MATERIAU(ELAS=_F(E=348E6,
                              NU=0.45,
                              RHO=1200,
-                             AMOR_HYST=0.4,),);
+                             AMOR_HYST=0.4,),)
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=(_F(GROUP_MA='DESSOUS',
@@ -221,7 +221,7 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
                            _F(GROUP_MA='DESSUS',
                               MATER=ALU,),
                            _F(GROUP_MA='VOLUME',
-                              MATER=VISCO2,),),);
+                              MATER=VISCO2,),),)
 
 # CALCUL DES MATRICES ASSEMBLEES K ET M ET DU VECTEUR CHARGEMENT ASSEMBLE
 # Rq : on ne recalcule pas M car elle est constante
@@ -230,23 +230,23 @@ RIGIDIT2=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MODELE,
                         CHAM_MATER=CHMAT2,
                         CARA_ELEM=CARAPLAQ,
-                        CHARGE=CONDLIM,);
+                        CHARGE=CONDLIM,)
 
 RIGIHYS2=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
                         MODELE=MODELE,
                         CHARGE=CONDLIM,
                         CHAM_MATER=CHMAT2,
                         CARA_ELEM=CARAPLAQ,
-                        RIGI_MECA=RIGIDIT2,);
+                        RIGI_MECA=RIGIDIT2,)
 
 # les conditions aux limites ne changent pas
 # donc la numérotation des DDL non plus
 
 ASSEK2=ASSE_MATRICE(MATR_ELEM=RIGIDIT2,
-                    NUME_DDL=NUMEDDL,);
+                    NUME_DDL=NUMEDDL,)
 
 ASSEKC2=ASSE_MATRICE(MATR_ELEM=RIGIHYS2,
-                     NUME_DDL=NUMEDDL,);
+                     NUME_DDL=NUMEDDL,)
 
 
 # CALCUL DE LA REPONSE DU SYSTEME A 500 HZ
@@ -258,7 +258,7 @@ DYNA2=DYNA_VIBRA(TYPE_CALCUL='HARM',
                  FREQ=500.,
                  TOUT_CHAM='OUI',
                  EXCIT=_F(VECT_ASSE=ASSEF,
-                          COEF_MULT=1.0,),);
+                          COEF_MULT=1.0,),)
 
 ###########################################################
 
@@ -281,7 +281,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DYNA0,
                    GROUP_NO='A',
                    NOM_CMP='DZ',
                    VALE_CALC_C=-1.302768494e-05 - 1.65977932083e-06j ),
-           ),);
+           ),)
 
 
 
@@ -301,16 +301,16 @@ if calcul_complet == True:
 
     # DEFINITION DE LA DEPENDANCE EN FREQUENCE DES PROPRIETES DES MATERIAUX VISCOELASTIQUES
 
-    list_f=DEFI_LIST_REEL(VALE=(1.,10.,50.,100.,500.,1000.,1500.),);
+    list_f=DEFI_LIST_REEL(VALE=(1.,10.,50.,100.,500.,1000.,1500.),)
 
-    list_E=DEFI_LIST_REEL(VALE=(23.2E6,58.E6,145.E6,203.E6,348.E6,435.E6,464.E6),);
+    list_E=DEFI_LIST_REEL(VALE=(23.2E6,58.E6,145.E6,203.E6,348.E6,435.E6,464.E6),)
 
-    list_eta=DEFI_LIST_REEL(VALE=(1.1,0.85,0.7,0.6,0.4,0.35,0.34),);
+    list_eta=DEFI_LIST_REEL(VALE=(1.1,0.85,0.7,0.6,0.4,0.35,0.34),)
 
     # DEFINITION DES FREQUENCES DE CALCUL DE LA REPONSE HARMONIQUE
     listfr=DEFI_LIST_REEL(DEBUT=1.,
                           INTERVALLE=(_F(JUSQU_A=500.,
-                                         PAS=1.,),),);
+                                         PAS=1.,),),)
 
 
     # CALC DE LA REPONSE POUR LA PREMIERE FREQUENCE
@@ -321,7 +321,7 @@ if calcul_complet == True:
                     FREQ=1.,
                     TOUT_CHAM='OUI',
                     EXCIT=_F(VECT_ASSE=ASSEF,
-                             COEF_MULT=1.0,),);
+                             COEF_MULT=1.0,),)
 
     # BOUCLE SUR LES FREQUENCES DEMANDEES (A PARTIR DE LA DEUXIEME)
     for i in range (1,len(listfr.Valeurs())):
@@ -345,7 +345,7 @@ if calcul_complet == True:
         mat_visc=DEFI_MATERIAU(ELAS=_F(E=E,
                                        NU=0.45,
                                        RHO=1200,
-                                       AMOR_HYST=eta,),);
+                                       AMOR_HYST=eta,),)
 
         chmat=AFFE_MATERIAU(MAILLAGE=MAIL,
                              AFFE=(_F(GROUP_MA='DESSOUS',
@@ -353,7 +353,7 @@ if calcul_complet == True:
                                    _F(GROUP_MA='DESSUS',
                                       MATER=ALU,),
                                    _F(GROUP_MA='VOLUME',
-                                      MATER=mat_visc,),),);
+                                      MATER=mat_visc,),),)
 
         # CALCUL DES MATRICES ASSEMBLEES K ET M ET DU VECTEUR CHARGEMENT ASSEMBLE
 
@@ -364,37 +364,37 @@ if calcul_complet == True:
                               MODELE=MODELE,
                               CHAM_MATER=chmat,
                               CARA_ELEM=CARAPLAQ,
-                              CHARGE=CONDLIM,);
+                              CHARGE=CONDLIM,)
 
         K_elem=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                               MODELE=MODELE,
                               CHAM_MATER=chmat,
                               CARA_ELEM=CARAPLAQ,
-                              CHARGE=CONDLIM,);
+                              CHARGE=CONDLIM,)
 
         Kh_elem=CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
                                MODELE=MODELE,
                                CHARGE=CONDLIM,
                                CHAM_MATER=chmat,
                                CARA_ELEM=CARAPLAQ,
-                               RIGI_MECA=K_elem,);
+                               RIGI_MECA=K_elem,)
 
         for_elem=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                                CHARGE=EXCIT,);
+                                CHARGE=EXCIT,)
 
-        num_ddl=NUME_DDL(MATR_RIGI=K_elem,);
+        num_ddl=NUME_DDL(MATR_RIGI=K_elem,)
 
         M_asse=ASSE_MATRICE(MATR_ELEM=M_elem,
-                            NUME_DDL=num_ddl,);
+                            NUME_DDL=num_ddl,)
 
         K_asse=ASSE_MATRICE(MATR_ELEM=K_elem,
-                            NUME_DDL=num_ddl,);
+                            NUME_DDL=num_ddl,)
 
         Kh_asse=ASSE_MATRICE(MATR_ELEM=Kh_elem,
-                             NUME_DDL=num_ddl,);
+                             NUME_DDL=num_ddl,)
 
         for_asse=ASSE_VECTEUR(VECT_ELEM=for_elem,
-                            NUME_DDL=num_ddl,);
+                            NUME_DDL=num_ddl,)
 
 
         # CALCUL DE LA REPONSE DU SYSTEME A LA FREQUENCE f
@@ -408,11 +408,11 @@ if calcul_complet == True:
                         FREQ=f,
                         TOUT_CHAM='OUI',
                         EXCIT=_F(VECT_ASSE=for_asse,
-                                 COEF_MULT=1.0,),);
+                                 COEF_MULT=1.0,),)
 
-        DETRUIRE(NOM=(mat_visc, chmat, M_elem, K_elem, Kh_elem, for_elem, M_asse, K_asse, Kh_asse, for_asse));
+        DETRUIRE(NOM=(mat_visc, chmat, M_elem, K_elem, Kh_elem, for_elem, M_asse, K_asse, Kh_asse, for_asse))
         if i != len(listfr.Valeurs())-1:
-            DETRUIRE(NOM=num_ddl);
+            DETRUIRE(NOM=num_ddl)
 
     TEST_RESU(RESU=(
                     _F(RESULTAT=dyna,
@@ -433,7 +433,7 @@ if calcul_complet == True:
                        GROUP_NO='A',
                        NOM_CMP='DZ',
                        VALE_CALC_C=-1.302768494e-05 - 1.65977932083e-06j ),
-                    ),);
+                    ),)
 
     dz_A=RECU_FONCTION(RESULTAT=dyna,
                        NOM_CHAM='DEPL',
@@ -441,10 +441,10 @@ if calcul_complet == True:
                        GROUP_NO='A')
 
     dz_A_abs=CALC_FONCTION(EXTRACTION=_F(FONCTION=dz_A,
-                                         PARTIE='MODULE'),);
+                                         PARTIE='MODULE'),)
 
     IMPR_FONCTION(FORMAT='XMGRACE',
                   UNITE=29,
                   COURBE=_F(FONCTION=dz_A_abs))
 
-FIN();
+FIN()

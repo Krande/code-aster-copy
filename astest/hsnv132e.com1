@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ LT = FORMULE(VALE='-X+0.5',
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
-                    );
+                    )
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
@@ -58,27 +58,27 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
 MOTH=AFFE_MODELE(MAILLAGE=MAILLAG1,
                  AFFE=_F(GROUP_MA='VOL',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
-MOTHX=MODI_MODELE_XFEM(MODELE_IN=MOTH,FISSURE=FISS,INFO=2,);
+MOTHX=MODI_MODELE_XFEM(MODELE_IN=MOTH,FISSURE=FISS,INFO=2,)
 
 MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
-                           RHO_CP=0.0,),);
+                           RHO_CP=0.0,),)
 
 CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MATH,),);
+                           MATER=MATH,),)
 
 CHTH=AFFE_CHAR_THER(MODELE=MOTHX,
                     TEMP_IMPO=(_F(GROUP_MA='SURFGAU',TEMP=20.0,),
                                _F(GROUP_MA='SURFDRO',TEMP=220.0,),),
                     ECHANGE_PAROI=(_F(FISSURE = FISS,
                                       TEMP_CONTINUE = 'OUI',),),
-                   );
+                   )
 
 THLIX=THER_LINEAIRE(MODELE=MOTHX,
                    CHAM_MATER=CMTH,
-                   EXCIT=_F(CHARGE=CHTH,),);
+                   EXCIT=_F(CHARGE=CHTH,),)
 
 #--------------------------------------------------------------------
 #               FIN DU THERMIQUE                                    #
@@ -89,15 +89,15 @@ THLIX=THER_LINEAIRE(MODELE=MOTHX,
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
                    AFFE=(_F(GROUP_MA='VOL',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
+                            MODELISATION='3D',),),)
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,MODELE_THER=MOTHX);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,MODELE_THER=MOTHX)
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             NU=0.3,
                             RHO=7800.0,
-                            ALPHA=1.282E-05,),);
+                            ALPHA=1.282E-05,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
@@ -106,7 +106,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                                      NOM_VARC='TEMP',
                                      EVOL=THLIX,
                                      VALE_REF=20.0),
-                       );
+                       )
 
 
 #*********************************************************************
@@ -115,11 +115,11 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=_F(GROUP_NO=('SURFINF','SURFSUP' ),DX=0.0,DY=0.0,DZ=0.0),
-                       INFO=1,);
+                       INFO=1,)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
+                                    NOMBRE=3,),)
 
 UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -146,14 +146,14 @@ SIFC1=CALC_G_XFEM(RESULTAT=UTOT,
            THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.2,),
-           INFO=2,);
+           INFO=2,)
 
 TABGC1=CALC_G_XFEM(RESULTAT=UTOT,
            OPTION='CALC_G',
            THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.2,),
-           INFO=2,);
+           INFO=2,)
 
 
 # ces valeurs de reference ont ete obtenues par un calcul classique 3D
@@ -208,7 +208,7 @@ TEST_TABLE(CRITERE='RELATIF',
                    ),
            )
 
-FIN();
+FIN()
 
 # On note que G_IRWIN n'est pas très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions
 # singulières d'un problème thermo-mécanique a entrainé des valuers des K approchées. Cependant, les valeurs de G est juste.

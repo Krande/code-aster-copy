@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,18 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),)
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                    AFFE=_F(GROUP_MA=('VOL',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',
                            ),
-                   );
+                   )
 
 LN = FORMULE(VALE='Z-12.5 ',
              NOM_PARA=['X', 'Y', 'Z'],)
@@ -38,25 +38,25 @@ LN = FORMULE(VALE='Z-12.5 ',
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
-                    INFO=3,);
+                    INFO=3,)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          INFO=2,
-                         );
+                         )
 
 E=205000.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOL',),
                                 MATER=ACIER,
                                 ),
-                             ),);
+                             ),)
 
 
 
@@ -65,7 +65,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_NO=('N1','N2','N3','N4'),
                                 DX=0.,DY=0.,DZ=0.),
                              _F(GROUP_NO=('N5','N6','N7','N8'),
-                                DX=0.,DY=0.,DZ=DEPZ),),);
+                                DX=0.,DY=0.,DZ=DEPZ),),)
 
 UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -73,7 +73,7 @@ UTOT=MECA_STATIQUE(MODELE=MODELEK,
 
                           ),
                    INFO=2,
-                   );
+                   )
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
 # -------------------------------------------------------------
@@ -92,7 +92,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
                         INFO          = 2)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM))
 
 
 # -------------------------------------------------------------
@@ -106,26 +106,26 @@ DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=DEP,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON',)
 
 
 DEPP = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = '^N[M]',),),);
+                               VALE_K    = '^N[M]',),),)
 
 
 DEPM = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = '^N[P]',),),);
+                               VALE_K    = '^N[P]',),),)
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -250,18 +250,18 @@ CHLSN=CREA_CHAMP(INFO=2,OPERATION='EXTR',TABLE=TBLSN,
 
 FISS2=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,INFO=2,
                      TYPE_DISCONTINUITE='INTERFACE',
-                     DEFI_FISS=_F(CHAM_NO_LSN=CHLSN),);
+                     DEFI_FISS=_F(CHAM_NO_LSN=CHLSN),)
 
 CHLSN2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',INFO=2,
               OPERATION='EXTR',
               NOM_CHAM='LNNO',
-              FISSURE=FISS2,);
+              FISSURE=FISS2,)
 
 
 CHLSN0=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',INFO=2,
               OPERATION='EXTR',
               NOM_CHAM='LNNO',
-              FISSURE=FISS,);
+              FISSURE=FISS,)
 
 DEFI_FICHIER(UNITE=81,FICHIER='./fort.81')
 
@@ -284,4 +284,4 @@ TEST_FICHIER(FICHIER="./fort.81",
              EXPR_IGNORE = ('ASTER'),
 )
 
-FIN();
+FIN()

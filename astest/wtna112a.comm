@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ MA = LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA = MODI_MAILLAGE( reuse        = MA,
                     MAILLAGE     = MA,
-                    ORIE_PEAU = _F( GROUP_MA_PEAU = ('DROITE','HAUT','BAS'),));
+                    ORIE_PEAU = _F( GROUP_MA_PEAU = ('DROITE','HAUT','BAS'),))
 
 
-T1= 3600;
+T1= 3600
 
 
 
@@ -44,7 +44,7 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                       _F( JUSQU_A=T1,NOMBRE=NORDRE,),
                              ),
-                     );
+                     )
 
 
 
@@ -54,12 +54,12 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
 MODELE=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_THMS',),);
+                           MODELISATION='AXIS_THMS',),)
 
 
 
-K0 = 4200*1.e6;
-G = 1140*1.e6;
+K0 = 4200*1.e6
+G = 1140*1.e6
 
 E0 = 9.*K0*G /(3.*K0+G)
 NU0    = (3.*K0-2.*G) /(6.*K0+2.*G)
@@ -67,27 +67,27 @@ NU0    = (3.*K0-2.*G) /(6.*K0+2.*G)
 #
 # E0 = 3,14 GPa
 # NU = 0.375
-RHO = 2390;
+RHO = 2390
 
 
-INV_K_EAU = 5.E-10 ;
+INV_K_EAU = 5.E-10
 
-VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );
+VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 )
 
-DVISCOL  = DEFI_CONSTANTE(VALE=0.0   );
+DVISCOL  = DEFI_CONSTANTE(VALE=0.0   )
 
-KINT     = DEFI_CONSTANTE(VALE=1.E-21);
+KINT     = DEFI_CONSTANTE(VALE=1.E-21)
 
 # LAMB1 = PORO * LAMBLIQ = 0.18 * 0.6
-LAMB1=DEFI_CONSTANTE(VALE=0.108,);
+LAMB1=DEFI_CONSTANTE(VALE=0.108,)
 
 # LAMB2 = (1-PORO) * LAMBS = (1-0.18) * 1,83
 
 LAMB2=1.51
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
 # ARGILITE
 BIOTARG = 0.6
@@ -123,14 +123,14 @@ MAT1=DEFI_MATERIAU(ELAS=_F(E=E0,
                                    D_PERM_LIQU_SATU=ZERO,
                                    LAMB_T=LAMB1,
                                    LAMB_CT=LAMB2,
-                                   ),);
+                                   ),)
 
 
 # affectation du materiaux
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT1,),);
+                             MATER=MAT1,),)
 
 
 
@@ -151,7 +151,7 @@ PRHAUT = AFFE_CHAR_MECA(MODELE   = MODELE,
 
 CLFMEC=AFFE_CHAR_CINE(MODELE=MODELE,
                        MECA_IMPO=(_F(GROUP_MA='BAS',  DY=0.0,),
-                                  _F(GROUP_MA='GAUCHE',  DX=0.0,),),);
+                                  _F(GROUP_MA='GAUCHE',  DX=0.0,),),)
 
 
 
@@ -161,7 +161,7 @@ CLFMEC=AFFE_CHAR_CINE(MODELE=MODELE,
 DTEMP = 40.
 CLFT=AFFE_CHAR_CINE(MODELE=MODELE,
                        MECA_IMPO=_F(GROUP_MA=('HAUT','DROITE'),
-                                   TEMP=1.,),);
+                                   TEMP=1.,),)
 
 EV_THER=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
@@ -181,7 +181,7 @@ DDL_INIT= CREA_CHAMP(MAILLAGE = MA,
                      _F(TOUT = 'OUI', NOM_CMP = ('DX','DY'),  VALE = (0.,0.),),
                      _F(TOUT = 'OUI', NOM_CMP = 'PRE1',  VALE = PINI,),
                      _F(TOUT = 'OUI', NOM_CMP = 'TEMP',  VALE = 20.,),
-                     ),);
+                     ),)
 SIPAG0 = -BIOTARG * PINI
 SIEFF0 = -PCONF - SIPAG0
 
@@ -208,7 +208,7 @@ SIGINIT=CREA_CHAMP(     MODELE=MODELE,
                                  ),
                                         ),
                                 ),
-                  );
+                  )
 
 
 # On passe au calcul
@@ -230,7 +230,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                  ARCHIVAGE  = _F( LIST_INST  = INST1,),
-                       );
+                       )
 
 
 
@@ -260,4 +260,4 @@ TEST_RESU(
              REFERENCE='ANALYTIQUE',)
            )
 
-FIN();
+FIN()

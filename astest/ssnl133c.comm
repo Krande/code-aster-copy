@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
 
 MA=LIRE_MAILLAGE(UNITE=17,FORMAT='MED',)
 
@@ -58,7 +58,7 @@ FORCE=AFFE_CHAR_MECA(
    FORCE_NODALE=_F(GROUP_NO='PC', FZ=0.001, FX=1.0,),
 )
 
-FORCE_F=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.,0.,20.0,20.0,),);
+FORCE_F=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.,0.,20.0,20.0,),)
 
 tforc = 0.5
 tsuiv = 5.0

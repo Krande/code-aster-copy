@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,30 +28,30 @@ POURSUITE(CODE='OUI',
 #================================================================================================
 
 
-Mail=LIRE_MAILLAGE(FORMAT='MED',);
+Mail=LIRE_MAILLAGE(FORMAT='MED',)
 
 Mail=MODI_MAILLAGE(reuse=Mail,
                     MAILLAGE=Mail,
                     ORIE_PEAU=(_F(GROUP_MA_PEAU='MAITRE'),
                                   _F(GROUP_MA_PEAU='BAS'),
                                   )
-                            );
+                            )
 
 
 # Definition du materiau isotrope
-Acier=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU,),);
+Acier=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU,),)
 
 # Definition du transitoire
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                                  _F(JUSQU_A=1., NOMBRE=10,),
-                     ),);
+                     ),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0, 0.0,
                           1.,  1.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 
 # Affectation du modele
@@ -59,18 +59,18 @@ Modele=AFFE_MODELE(MAILLAGE=Mail,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='D_PLAN',),
-                 );
+                 )
 # Affectation du materiau
 Chmat=AFFE_MATERIAU(MAILLAGE=Mail,
                     AFFE=_F(TOUT='OUI',
                             MATER=Acier,),
-                   );
+                   )
 
 
 # Affectation des conditions limites
 Dirich=AFFE_CHAR_MECA_F(MODELE=Modele,
                         DDL_IMPO=_F(GROUP_MA='HAUT', DX=FUx, DY=FUy, ),
-                        );
+                        )
 
 Neumann=AFFE_CHAR_MECA_F(MODELE=Modele,
                         FORCE_CONTOUR=(
@@ -78,23 +78,23 @@ Neumann=AFFE_CHAR_MECA_F(MODELE=Modele,
                                        _F(GROUP_MA='GAUCHE', FX=FsurfXG, FY=FsurfYG,),
                                        _F(GROUP_MA='BAS',    FX=FsurfTX, FY=FsurfTY,),
                                       ),
-                          );
+                          )
 
 ForceInt=AFFE_CHAR_MECA_F(MODELE=Modele,
                           FORCE_INTERNE=_F(GROUP_MA='SURFACE', FX=FvolX, FY=FvolY,),
-                         );
+                         )
 
 # Affectation des conditions limites
 Contact=DEFI_CONTACT(MODELE=Modele,
                      FORMULATION='DISCRETE',
                      ZONE=_F(GROUP_MA_MAIT='MAITRE',
                              GROUP_MA_ESCL='BAS',),
-                       );
+                       )
 
 BlocBase=AFFE_CHAR_CINE(MODELE=Modele,
                         MECA_IMPO=_F(GROUP_MA='MAITRE',
                                      DX=0,DY=0),
-                       );
+                       )
 # Phase de resolution proprement dit
 Evol=STAT_NON_LINE(MODELE=Modele,
                    CHAM_MATER=Chmat,
@@ -112,14 +112,14 @@ Evol=STAT_NON_LINE(MODELE=Modele,
                           _F(CHARGE=BlocBase,),
                           ),
                    INFO=1,
-                   );
+                   )
 
 # ========================================================================================
 #          Creation de la solution analytique
 # ========================================================================================
 
 CHXN=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
-                NOM_CHAM='GEOMETRIE', MAILLAGE=Mail, INFO=1);
+                NOM_CHAM='GEOMETRIE', MAILLAGE=Mail, INFO=1)
 
 TEMP1=CREA_CHAMP(OPERATION='AFFE',
                  TYPE_CHAM='NOEU_NEUT_F',
@@ -127,12 +127,12 @@ TEMP1=CREA_CHAMP(OPERATION='AFFE',
                  AFFE=(_F( GROUP_MA='SURFACE', NOM_CMP = 'X1', VALE_F = FUx),
                        _F( GROUP_MA='SURFACE', NOM_CMP = 'X2', VALE_F = FUy),
                       )
-                );
+                )
 
 TEMP2=CREA_CHAMP(OPERATION='EVAL',
                  TYPE_CHAM='NOEU_NEUT_R',
                  CHAM_F=TEMP1,
-                 CHAM_PARA=CHXN);
+                 CHAM_PARA=CHXN)
 
 Uana=CREA_CHAMP(OPERATION='ASSE',
                 TYPE_CHAM='NOEU_DEPL_R',
@@ -146,7 +146,7 @@ Uana=CREA_CHAMP(OPERATION='ASSE',
                          NOM_CMP = 'X2',
                          NOM_CMP_RESU = 'DY',)
                       )
-                );
+                )
 
 # ========================================================================================
 #          Calcul de l'erreur DIFF = Uana - Ucalc
@@ -154,7 +154,7 @@ Uana=CREA_CHAMP(OPERATION='ASSE',
 
 Ucalc=CREA_CHAMP(OPERATION='EXTR', INST=1.0,
                  NOM_CHAM = 'DEPL' , TYPE_CHAM = 'NOEU_DEPL_R',
-                 RESULTAT = Evol ,);
+                 RESULTAT = Evol ,)
 
 
 DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=Modele,
@@ -164,7 +164,7 @@ DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=Modele,
                       _F(GROUP_MA='SURFACE', CHAM_GD=Ucalc,CUMUL='OUI', COEF_R=+1., NOM_CMP='DY', NOM_CMP_RESU='DY',),
                       _F(GROUP_MA='SURFACE', CHAM_GD=Uana, CUMUL='OUI', COEF_R=-1., NOM_CMP='DY', NOM_CMP_RESU='DY',),
                       ),
-                );
+                )
 
 
 # ========================================================================================
@@ -183,7 +183,7 @@ IMPR_RESU(FORMAT='MED',
                 _F(CHAM_GD=Uana,),
                 _F(CHAM_GD=Ucalc,),
                ),
-          );
+          )
 
 
-FIN();
+FIN()

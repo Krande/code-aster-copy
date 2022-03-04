@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 
 INSTERR=DEFI_LIST_REEL(DEBUT=1.,
                        INTERVALLE=_F(JUSQU_A=1.,
-                                     NOMBRE=1,),);
+                                     NOMBRE=1,),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -57,22 +57,22 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                   NOM='HAUT1',),
                                _F(DIFFE=('HAUT1','C',),
                                   NOM='HAUT2',),
-                               _F(GROUP_MA='DOM',),),);
+                               _F(GROUP_MA='DOM',),),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    GRANDEUR_CARA=_F(LONGUEUR=0.2,
                                     PRESSION=40.0,),
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HMD',),);
+                           MODELISATION='D_PLAN_HMD',),)
 
-VISCOLIQ=DEFI_CONSTANTE(VALE=1.,);
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,)
 
-KX=DEFI_CONSTANTE(VALE=1.,);
+KX=DEFI_CONSTANTE(VALE=1.,)
 
-KY=DEFI_CONSTANTE(VALE=0.75,);
+KY=DEFI_CONSTANTE(VALE=0.75,)
 
 MATERDOM=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=1.,E_T=1.,E_N=1.,
                                NU_LT=0.2, NU_LN=0.2, NU_TN=0.2,
@@ -95,48 +95,48 @@ MATERDOM=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=1.,E_T=1.,E_N=1.,
                        THM_LIQU=_F(RHO=1.,
                                    UN_SUR_K=0.,
                                    VISC=VISCOLIQ,
-                                   D_VISC_TEMP=DVISCOL,),);
+                                   D_VISC_TEMP=DVISCOL,),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(GROUP_MA='DOM',
-                             MATER=MATERDOM,),);
+                             MATER=MATERDOM,),)
 
 CALMEC=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=_F(TOUT='OUI',
                                   DX=0.,
-                                  DY=0.,),);
+                                  DY=0.,),)
 
 P_AB=DEFI_FONCTION(NOM_PARA='X',VALE=(-0.1,35.00,
                          0.1,26.00,
-                         ),);
+                         ),)
 
 P_DC=DEFI_FONCTION(NOM_PARA='X',VALE=(-0.1,19.00,
                          0.1,10.00,
-                         ),);
+                         ),)
 
 P_BC=DEFI_FONCTION(NOM_PARA='Y',VALE=(-0.1,26.00,
                          0.1,10.00,
-                         ),);
+                         ),)
 
 P_AD=DEFI_FONCTION(NOM_PARA='Y',VALE=(-0.1,35.00,
                          0.1,19.00,
-                         ),);
+                         ),)
 
 CALHAU=AFFE_CHAR_MECA_F(MODELE=MODELE,
                         DDL_IMPO=_F(GROUP_NO='HAUT2',
-                                    PRE1=P_DC,),);
+                                    PRE1=P_DC,),)
 
 CALBAS=AFFE_CHAR_MECA_F(MODELE=MODELE,
                         DDL_IMPO=_F(GROUP_NO='BAS2',
-                                    PRE1=P_AB,),);
+                                    PRE1=P_AB,),)
 
 CALGAU=AFFE_CHAR_MECA_F(MODELE=MODELE,
                         DDL_IMPO=_F(GROUP_NO='GAUCHES',
-                                    PRE1=P_AD,),);
+                                    PRE1=P_AD,),)
 
 CALDRO=AFFE_CHAR_MECA_F(MODELE=MODELE,
                         DDL_IMPO=_F(GROUP_NO='DROITS',
-                                    PRE1=P_BC,),);
+                                    PRE1=P_BC,),)
 
 PRELIQ = FORMULE(VALE='-45.*X-80.*Y+22.5',
                  NOM_PARA=['X', 'Y'],)
@@ -146,26 +146,26 @@ DEPF=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_F',
                 MODELE=MODELE,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='PRE1',
-                        VALE_F=PRELIQ,),);
+                        VALE_F=PRELIQ,),)
 
 DEPF2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='AFFE',
                  MODELE=MODELE,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP=('DX','DY'),
-                         VALE=(0.,0.),),);
+                         VALE=(0.,0.),),)
 
 PRERES=CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='EVOL_NOLI',
                  NOM_CHAM='DEPL',
                  AFFE=_F(CHAM_GD=DEPF,
-                         INST=0.0,),);
+                         INST=0.0,),)
 
 DEPINI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='EXTR',
                   RESULTAT=PRERES,
                   NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',);
+                  NOM_CHAM='DEPL',)
 
 DEPINI2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='ASSE',
@@ -173,7 +173,7 @@ DEPINI2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    ASSE=(_F(TOUT='OUI',
                             CHAM_GD=DEPINI,),
                          _F(TOUT='OUI',
-                            CHAM_GD=DEPF2,),),);
+                            CHAM_GD=DEPF2,),),)
 
 FHINI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='AFFE',
@@ -181,7 +181,7 @@ FHINI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  PROL_ZERO='OUI',
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP=('FH11X','FH11Y',),
-                         VALE=(45.0,60.0,),),);
+                         VALE=(45.0,60.0,),),)
 
 
 U0=STAT_NON_LINE(MODELE=MODELE,
@@ -200,7 +200,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CRIT_QUALITE = _F(ERRE_TEMPS_THM='OUI',),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=1,),
                  NEWTON=_F(MATRICE='TANGENTE',
-                           REAC_ITER=1,),);
+                           REAC_ITER=1,),)
 
 U0=CALC_CHAMP(reuse=U0,RESULTAT=U0,VARI_INTERNE=('VARI_ELNO'))
 
@@ -208,12 +208,12 @@ U0=CALC_CHAMP(reuse=U0,RESULTAT=U0,VARI_INTERNE=('VARI_ELNO'))
 U0=CALC_ERREUR(reuse =U0,
                RESULTAT=U0,
                LIST_INST=INST1,
-               OPTION=('ERME_ELEM','ERME_ELNO',),);
+               OPTION=('ERME_ELEM','ERME_ELNO',),)
 
 U0=CALC_ERREUR(reuse =U0,
                RESULTAT=U0,
                LIST_INST=INSTERR,
-               OPTION='ERME_NOEU',);
+               OPTION='ERME_NOEU',)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
@@ -262,4 +262,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

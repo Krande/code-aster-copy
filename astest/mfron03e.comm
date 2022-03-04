@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,20 +46,20 @@ reaciter=1
 info=1
 
 
-MU       = 80000. ;
-NU       = 0.3    ;
-E        =  MU*2*(1.+NU)   ;
+MU       = 80000.
+NU       = 0.3
+E        =  MU*2*(1.+NU)
 
-TAU_F  = 105. ;
-RHO_0  = 1.E6;
-RHOREF = 1.E6;
-N      = 5.  ;
-GAMMA0 = 1.E-3;
-ALPHA  = 0.35 ;
-BETA   = 2.54E-7;
-A      = 0.13   ;
-B      = 0.005  ;
-Y      = 2.5E-7 ;
+TAU_F  = 105.
+RHO_0  = 1.E6
+RHOREF = 1.E6
+N      = 5.
+GAMMA0 = 1.E-3
+ALPHA  = 0.35
+BETA   = 2.54E-7
+A      = 0.13
+B      = 0.005
+Y      = 2.5E-7
 
 RHO_0_AS = RHO_0*BETA*BETA
 
@@ -76,13 +76,13 @@ MATER = DEFI_MATERIAU(ELAS=_F(E=E,
                                            RHO_REF= RHOREF,
                                            ALPHA=ALPHA,
                                            BETA=BETA,
-                                           H1      = 0.124,   # AETOIL = 0.124 ;
-                                           H2      = 0.625,   # ACOLIN = 0.625 ;
-                                           H3      = 0.137,   # AGLISS = 0.137 ;
-                                           H4      = 0.122,   # ALOMER = 0.122 ;
-                                           H5      = 0.07,    # AHIRTH = 0.07  ;
+                                           H1      = 0.124,   # AETOIL = 0.124
+                                           H2      = 0.625,   # ACOLIN = 0.625
+                                           H3      = 0.137,   # AGLISS = 0.137
+                                           H4      = 0.122,   # ALOMER = 0.122
+                                           H5      = 0.07,    # AHIRTH = 0.07
                                           ),
-                           );
+                           )
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=MATER,
                                          ELAS='ELAS',
@@ -90,7 +90,7 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=MATER,
                                          FAMI_SYST_GLIS='OCTAEDRIQUE',
                                         ),
                                      ),
-                         );
+                         )
 
 G=E/2./(1.+NU)
 
@@ -133,13 +133,13 @@ LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                                    _F(JUSQU_A=tmax,
                                       NOMBRE=1000,),
                                   ),
-                      );
+                      )
 
 LISTDD=DEFI_LIST_INST(INFO=1,METHODE='MANUEL',
                       DEFI_LIST=_F(LIST_INST=LINSTDD,),
                       ECHEC=_F(SUBD_NIVEAU=10,
                                SUBD_PAS=10,),
-                     );
+                     )
 
 
 
@@ -151,9 +151,9 @@ lvari=list(avari)
 
 # Calcul des angles d'Euler correspondant a
 # une orientation cristallographique (h,k,l) donnee
-h=0.;
-k=0.;
-l=1.;
+h=0.
+k=0.
+l=1.
 
 phi1=0
 
@@ -175,13 +175,13 @@ EPSI0=0.02
 E3=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,tmax,EPSI0),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 SMAX=550.
 
 S3=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,tmax,SMAX),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 
 RES1=SIMU_POINT_MAT(INFO=info,
                       MATER=MATER,
@@ -194,7 +194,7 @@ RES1=SIMU_POINT_MAT(INFO=info,
                       NEWTON=_F(REAC_ITER=reaciter,),
                       VARI_INIT=_F(VALE=lvari,),
                        SIGM_IMPOSE=_F(SIZZ=S3,),
-                       );
+                       )
 
 
 #IMPR_TABLE(TABLE=RES1,UNITE=38)
@@ -203,24 +203,24 @@ RES1=SIMU_POINT_MAT(INFO=info,
 EZZAS=RECU_FONCTION( TABLE=RES1,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 SZZAS=RECU_FONCTION( TABLE=RES1,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 OME1AS=RECU_FONCTION( TABLE=RES1,
                    PARA_X='INST',
                    PARA_Y='V7',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 OME2AS=RECU_FONCTION( TABLE=RES1,
                    PARA_X='INST',
                    PARA_Y='V10',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 
 # densites de dislocation initiales : variables internes de 0 a 44
@@ -242,7 +242,7 @@ RES2=SIMU_POINT_MAT( INFO=info,
                       NEWTON=_F(REAC_ITER=reaciter,PREDICTION='ELASTIQUE'),
                       VARI_INIT=_F(VALE=lvar2,),
                       SIGM_IMPOSE=_F(SIZZ=S3,),
-                       );
+                       )
 
 
 IMPR_TABLE(TABLE=RES2)
@@ -251,41 +251,41 @@ IMPR_TABLE(TABLE=RES2)
 EZZMF=RECU_FONCTION( TABLE=RES2,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 SZZMF=RECU_FONCTION( TABLE=RES2,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 OME1MF=RECU_FONCTION( TABLE=RES2,
                    PARA_X='INST',
                    PARA_Y='V7',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 OME2MF=RECU_FONCTION( TABLE=RES2,
                    PARA_X='INST',
                    PARA_Y='V8',
-                   INTERPOL='LIN');
+                   INTERPOL='LIN')
 
 # DIFF DES COURBES OBTENUES AVEC LES DEUX METHODES
 DIF1=CALC_FONCTION(COMB=(
                           _F( FONCTION = EZZAS, COEF =  1.),
                           _F( FONCTION = EZZMF, COEF = -1.),
-                          ) );
+                          ) )
 
 DIF2=CALC_FONCTION(COMB=(
                           _F( FONCTION = OME1MF, COEF =  1.),
                           _F( FONCTION = OME1AS, COEF = -1.),
-                          ) );
+                          ) )
 
 
-TINT1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
+TINT1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),)
 
-TINT2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),);
+TINT2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),)
 
-TEPS1=CREA_TABLE(FONCTION= _F(FONCTION = EZZAS,PARA = ('INST','EPZZ')),);
+TEPS1=CREA_TABLE(FONCTION= _F(FONCTION = EZZAS,PARA = ('INST','EPZZ')),)
 
-TOME1=CREA_TABLE(FONCTION= _F(FONCTION = OME1AS,PARA = ('INST','V7')),);
+TOME1=CREA_TABLE(FONCTION= _F(FONCTION = OME1AS,PARA = ('INST','V7')),)
 
 
 pilote=''
@@ -294,7 +294,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=42,PILOTE=pilote,
                   COURBE=(
                    _F(FONC_X=EZZAS, FONC_Y=SZZAS),
                    _F(FONC_X=EZZMF, FONC_Y=SZZMF),
-                  ),);
+                  ),)
 
 IMPR_FONCTION(FORMAT='XMGRACE',UNITE=41,PILOTE=pilote,
                   COURBE=(
@@ -302,7 +302,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=41,PILOTE=pilote,
                    _F(FONCTION=OME1MF),
                    _F(FONCTION=OME2AS),
                    _F(FONCTION=OME2MF),
-                  ),);
+                  ),)
 
 
 def ecart_relatif(diff, ref):

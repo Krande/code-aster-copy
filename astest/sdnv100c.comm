@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,13 +62,13 @@ MAILL=DEFI_GROUP(reuse=MAILL,
 MAILL=MODI_MAILLAGE(reuse =MAILL,
                     MAILLAGE=MAILL,
                     ORIE_PEAU=_F(GROUP_MA_PEAU=('SSOL','FACEINF',),),
-                    );
+                    )
 
 # Model
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 # Material
 ACIER=DEFI_MATERIAU(
@@ -77,13 +77,13 @@ ACIER=DEFI_MATERIAU(
 
 ACONTA=DEFI_MATERIAU(ELAS=_F(E=1e+16,
                              NU=0.0,
-                             RHO=0.0,),);
+                             RHO=0.0,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL,
                  AFFE=(_F(GROUP_MA='POUTRE',
                           MATER=ACIER,),
                        _F(GROUP_MA='VSOL',
-                          MATER=ACONTA,),),);
+                          MATER=ACONTA,),),)
 
 # Loads
 CH=AFFE_CHAR_MECA(MODELE=MODE,
@@ -93,7 +93,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODE,
                             _F(GROUP_NO='VSOL',
                                DX=0.0,
                                DY=0.0,
-                               DZ=0.0,),),);
+                               DZ=0.0,),),)
 
 RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
             PROL_GAUCHE='CONSTANT',   PROL_DROITE='CONSTANT',
@@ -135,14 +135,14 @@ MAILLAGE=MAILL,AFFE=(
 # Time step management
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=0.00014,
-                                    PAS=DT,),);
+                                    PAS=DT,),)
 
 # Time step during contact phase
 L_CONT=DEFI_LIST_REEL(   DEBUT=tau0,
              INTERVALLE=_F( JUSQU_A = tau1,  PAS = DT))
 
 # Non-linear dynamic
-U = DYNA_NON_LINE(MODELE       = MODE,  
+U = DYNA_NON_LINE(MODELE       = MODE,
                   CHAM_MATER   = CM,
                   EXCIT        = _F(CHARGE=CH, FONC_MULT=RAMPE,),
                   CONTACT      = CH2,
@@ -170,10 +170,10 @@ VITECONT=RECU_FONCTION(RESULTAT=U,
                        NOM_CMP='DZ',
                        GROUP_NO='N5',
                        LIST_INST=L_CONT,
-                       TITRE='VITE',);
+                       TITRE='VITE',)
 
-VC=CALC_FONCTION(COMB=_F(FONCTION=VITECONT, COEF=12500.,));
+VC=CALC_FONCTION(COMB=_F(FONCTION=VITECONT, COEF=12500.,))
 
 MVC=CALC_FONCTION(INTEGRE=_F(FONCTION=VC,))
 
-FIN();
+FIN()

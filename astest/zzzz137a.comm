@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -236,7 +236,7 @@ vecel     = CALC_VECT_ELEM(CHARGE=CH_ALL, INST=1.0, CHAM_MATER=CHMAT, OPTION='CH
 numeddl   = NUME_DDL(MATR_RIGI = rigiel)
 matass    = ASSE_MATRICE(MATR_ELEM=rigiel , NUME_DDL=numeddl)
 vecas     = ASSE_VECTEUR(VECT_ELEM=vecel, NUME_DDL=numeddl)
-matass    = FACTORISER(reuse=matass, MATR_ASSE=matass);
+matass    = FACTORISER(reuse=matass, MATR_ASSE=matass)
 U6        = RESOUDRE( MATR = matass, CHAM_NO= vecas )
 TEST_RESU(CHAM_NO=_F(
                   REFERENCE='ANALYTIQUE',

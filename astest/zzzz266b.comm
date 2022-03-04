@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ mail=MODI_MAILLAGE(reuse=mail,
                    MAILLAGE=mail,
                    ROTATION=_F(POIN_1=(0,0,0,),
                                DIR=(0,1,0,),
-                               ANGLE=30,),);
+                               ANGLE=30,),)
 coor3d=CALC_CHAM_ELEM(MODELE=model3d, OPTION='COOR_ELGA',)
 coorFluidUPPHI=CALC_CHAM_ELEM(MODELE=modelFluidUPPHI, OPTION='COOR_ELGA',)
 coorFluidUP=CALC_CHAM_ELEM(MODELE=modelFluidUP, OPTION='COOR_ELGA',)

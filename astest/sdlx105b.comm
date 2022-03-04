@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,17 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
-MAIL0 = LIRE_MAILLAGE(FORMAT='ASTER',) ;
+MAIL0 = LIRE_MAILLAGE(FORMAT='ASTER',)
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAIL0,
                    CREA_POI1=(
                               _F(NOM_GROUP_MA='PC',
-                                 GROUP_NO=('PC1','PC2'),),),);
+                                 GROUP_NO=('PC1','PC2'),),),)
 '''
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_NORM_COQUE=_F(GROUP_MA='SLATE',
                                           VECT_NORM=(1.,0,0,),
-                                          GROUP_NO='P2',),);
+                                          GROUP_NO='P2',),)
 '''
 MODELE = AFFE_MODELE( MAILLAGE= MAILLAGE,
           AFFE=(
@@ -46,12 +46,12 @@ MODELE = AFFE_MODELE( MAILLAGE= MAILLAGE,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),
                 ),
-                        ) ;
+                        )
 #
 
 mat1      = DEFI_MATERIAU( ELAS=_F( E= 5.808E+8 , RHO= 2000.,
                                     AMOR_HYST = 0.1,
-                                    NU= 0.3333  )    ) ;
+                                    NU= 0.3333  )    )
 
 
 
@@ -59,7 +59,7 @@ champmat = AFFE_MATERIAU( MAILLAGE= MAILLAGE,
               AFFE=(
               _F( GROUP_MA= 'SBASE' , MATER= mat1 ),
               )
-                           ) ;
+                           )
 #
 # La structure est encastree a l interface
 #-----------------------------------------
@@ -85,7 +85,7 @@ cond_lim = AFFE_CHAR_MECA( MODELE= MODELE,
                                  ),
                        LIAISON_SOLIDE=(_F(GROUP_NO=('PB','SBASE',),),
                                       ),
-                                             ) ;
+                                             )
 
 caraele = AFFE_CARA_ELEM( MODELE=MODELE,
                         COQUE=_F(GROUP_MA='SBASE',
@@ -106,7 +106,7 @@ caraele = AFFE_CARA_ELEM( MODELE=MODELE,
                                  _F(CARA='K_T_D_N',
                                     GROUP_MA='PC',
                                     VALE=(0.,0.,0.,),),
-                                 ),);
+                                 ),)
 
 # FIN DE AFFE_CARA_ELEM  ------------
 #
@@ -115,21 +115,21 @@ caraele = AFFE_CARA_ELEM( MODELE=MODELE,
 rigi_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'RIGI_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
-                             CHARGE= cond_lim                      ) ;
+                             CHARGE= cond_lim                      )
 
 mass_ele = CALC_MATR_ELEM( MODELE= MODELE , OPTION= 'MASS_MECA',
                              CHAM_MATER= champmat ,
                              CARA_ELEM= caraele,
-                             CHARGE= cond_lim                      ) ;
+                             CHARGE= cond_lim                      )
 
-nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele, );
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele, )
 
 #
 # Assemblage des matrices et vecteurs=
 #-------------------------------------
-rigidite = ASSE_MATRICE( MATR_ELEM= rigi_ele , NUME_DDL= nume_ddl ) ;
+rigidite = ASSE_MATRICE( MATR_ELEM= rigi_ele , NUME_DDL= nume_ddl )
 
-masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
+masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl )
 
 #
 # CALCUL DES MODES =
@@ -148,15 +148,15 @@ interdyn = DEFI_INTERF_DYNA( NUME_DDL= nume_ddl,
            INTERFACE=_F(NOM= 'DROITE',
                        TYPE= 'CRAIGB',
                        GROUP_NO= 'PB')
-           );
+           )
 
 bamo = DEFI_BASE_MODALE ( CLASSIQUE=_F (INTERF_DYNA= interdyn,
                                       MODE_MECA= mode,
                                       NMAX_MODE= 999)
-                        );
+                        )
 
 mael = MACR_ELEM_DYNA (BASE_MODALE= bamo,
-                      );
+                      )
 
 # pour reference :
 TABSOL0 = DEFI_SOL_MISS(
@@ -203,7 +203,7 @@ TABSOL = DEFI_SOL_MISS(
                NOMBRE_RECEPTEUR=4,
                GROUP_MA_INTERF='SBASE',
                MAILLAGE=MAILLAGE,
-                ),     
+                ),
     INFO=2,
 )
 
@@ -245,28 +245,28 @@ coekti = -0.1*coektr
 
 
 Kh_r=LIRE_FONCTION(UNITE=25,INDIC_PARA=[1,1],INDIC_RESU=[1,2],
-                   NOM_PARA='FREQ');
+                   NOM_PARA='FREQ')
 
 Kh_i=LIRE_FONCTION(UNITE=25,INDIC_PARA=[1,1],INDIC_RESU=[1,3],
-                   NOM_PARA='FREQ');
+                   NOM_PARA='FREQ')
 
 Kv_r=LIRE_FONCTION(UNITE=25,INDIC_PARA=[15,1],INDIC_RESU=[15,2],
-                   NOM_PARA='FREQ');
+                   NOM_PARA='FREQ')
 
 Kv_i=LIRE_FONCTION(UNITE=25,INDIC_PARA=[15,1],INDIC_RESU=[15,3],
-                   NOM_PARA='FREQ');
+                   NOM_PARA='FREQ')
 
 Kr_r=LIRE_FONCTION(UNITE=25,INDIC_PARA=[22,1],INDIC_RESU=[22,2],
-                   NOM_PARA='FREQ');
+                   NOM_PARA='FREQ')
 
 Kr_i=LIRE_FONCTION(UNITE=25,INDIC_PARA=[22,1],INDIC_RESU=[22,3],
-                   NOM_PARA='FREQ');
+                   NOM_PARA='FREQ')
 
 Kt_r=LIRE_FONCTION(UNITE=25,INDIC_PARA=[36,1],INDIC_RESU=[36,2],
-                   NOM_PARA='FREQ');
+                   NOM_PARA='FREQ')
 
 Kt_i=LIRE_FONCTION(UNITE=25,INDIC_PARA=[36,1],INDIC_RESU=[36,3],
-                   NOM_PARA='FREQ');
+                   NOM_PARA='FREQ')
 
 KH =   CALC_FONCTION(COMB=(
                                 _F(FONCTION=Kh_r,
@@ -274,21 +274,21 @@ KH =   CALC_FONCTION(COMB=(
                                 _F(FONCTION=Kh_i,
                                  COEF=coekhi,),
                              ),
-                                 );
+                                 )
 KV =   CALC_FONCTION(COMB=(
                                 _F(FONCTION=Kv_r,
                                  COEF=coekvr,),
                                 _F(FONCTION=Kv_i,
                                  COEF=coekvi,),
                              ),
-                                 );
+                                 )
 KR =   CALC_FONCTION(COMB=(
                                 _F(FONCTION=Kr_r,
                                  COEF=coekrr,),
                                 _F(FONCTION=Kr_i,
                                  COEF=coekri,),
                              ),
-                                 );
+                                 )
 
 KT =   CALC_FONCTION(COMB=(
                                 _F(FONCTION=Kt_r,
@@ -296,7 +296,7 @@ KT =   CALC_FONCTION(COMB=(
                                 _F(FONCTION=Kt_i,
                                  COEF=coekti,),
                              ),
-                                 );
+                                 )
 
 
 TEST_FONCTION(VALEUR=(
@@ -311,7 +311,7 @@ TEST_FONCTION(VALEUR=(
                          CRITERE='RELATIF',
                          VALE_PARA=35.0,
                          FONCTION=KH,),
-                         
+
                       _F(VALE_CALC=0.75150304780237,
                          VALE_REFE=0.85,
                          CRITERE='RELATIF',
@@ -323,7 +323,7 @@ TEST_FONCTION(VALEUR=(
                          CRITERE='RELATIF',
                          VALE_PARA=35.0,
                          FONCTION=KV,),
-                         
+
                       _F(VALE_CALC=0.85846084098379,
                          VALE_REFE=0.80,
                          CRITERE='RELATIF',
@@ -335,7 +335,7 @@ TEST_FONCTION(VALEUR=(
                          CRITERE='RELATIF',
                          VALE_PARA=35.0,
                          FONCTION=KR,),
-                         
+
                       _F(VALE_CALC=0.82793787214920,
                          VALE_REFE=0.78,
                          CRITERE='RELATIF',
@@ -367,7 +367,7 @@ fonsin = FORMULE(VALE='sin(omega*INST) ',
 accsin=CALC_FONC_INTERP(FONCTION=fonsin,
                         NOM_PARA='INST',
                         NOM_RESU='EVOL',
-                        LIST_PARA=ltps);
+                        LIST_PARA=ltps)
 
 tabctr=CALC_MISS(TYPE_RESU='TABLE_CONTROL',
     TABLE_SOL=TABSOL0,
@@ -438,4 +438,4 @@ TEST_FONCTION(VALEUR=_F(
     VALE_CALC_C=0.62509400-0.01068910j,
 ))
 
-FIN( );
+FIN( )

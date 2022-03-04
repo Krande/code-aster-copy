@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 from code_aster.Commands import *
 from code_aster.MacroCommands.Contrib.post_t_q import POST_T_Q
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MA1=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=CREA_MAILLAGE(MAILLAGE=MA1,LINE_QUAD=_F(TOUT='OUI'))
@@ -91,7 +91,7 @@ RAMPE=DEFI_FONCTION(
                     NOM_PARA='INST',
                     VALE=(0.0,          0.0,
                           1.0,          1.0,
-                          ),);
+                          ),)
 
 
 PRESSION=AFFE_CHAR_MECA(MODELE=MO,
@@ -119,7 +119,7 @@ CHAMDEPL=CALC_CHAMP(reuse=CHAMDEPL,
 #----------------------------------------------------------------------
 
 #IMPR_RESU(FORMAT='MED',
-#          RESU=_F(RESULTAT=CHAMDEPL,),);
+#          RESU=_F(RESULTAT=CHAMDEPL,),)
 
 
 
@@ -163,4 +163,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 IMPR_TABLE(TABLE=T )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 #
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 ###################
 # 1. Initialisation
@@ -42,11 +42,11 @@ CHMAT  = [None]*(nbadap+1)
 CHAR   = [None]*(nbadap+1)
 RESU   = [None]*(nbadap+1)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-KINT=DEFI_CONSTANTE(VALE=1e-08,);
+KINT=DEFI_CONSTANTE(VALE=1e-08,)
 
 ########################################
 # 2. Definition des parametres temporels
@@ -57,17 +57,17 @@ T2_FIN = 500.
 
 LI1=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A= T1_FIN,
-                                 NOMBRE=25,),);
+                                 NOMBRE=25,),)
 
 LI2_BIS=DEFI_LIST_REEL(DEBUT= 275,
                    INTERVALLE=_F(JUSQU_A= T2_FIN,
-                                 NOMBRE=9,),);
+                                 NOMBRE=9,),)
 
 LI=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=(_F(JUSQU_A=T1_FIN,
                                  NOMBRE=25,),
                               _F(JUSQU_A=T2_FIN,
-                                 NOMBRE=10,),),);
+                                 NOMBRE=10,),),)
 
 
 ###########################
@@ -95,18 +95,18 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
                                    UN_SUR_K=0.0,
                                    VISC=UN,
                                    D_VISC_TEMP=ZERO,
-                                   ALPHA=THMALP1,),);
+                                   ALPHA=THMALP1,),)
 
 ########################
 # 4. Lecture du maillage
 ########################
 
 MAIL[1]=LIRE_MAILLAGE(UNITE=20,
-                      FORMAT='MED',);
+                      FORMAT='MED',)
 
 MAIL[1]=MODI_MAILLAGE(reuse =MAIL[1],
                       MAILLAGE=MAIL[1],
-                      ORIE_PEAU=_F(GROUP_MA_PEAU=('HAUT','BAS','GAUCHE','DROIT',),),);
+                      ORIE_PEAU=_F(GROUP_MA_PEAU=('HAUT','BAS','GAUCHE','DROIT',),),)
 
 ####################################################
 # BOUCLE CALCUL /INDICATEUR / ADAPTATION MAILLAGE  #
@@ -119,11 +119,11 @@ for k in range(1,nbadap+1):
                                        PRESSION=1.,),
                       AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_HM_SI',),);
+                              MODELISATION='D_PLAN_HM_SI',),)
 
   CHMAT[k]=AFFE_MATERIAU(MAILLAGE=MAIL[k],
                          AFFE=_F(TOUT='OUI',
-                                 MATER=MATERIAU,),);
+                                 MATER=MATERIAU,),)
 
 ####################################################################
 # Rappel : pour le calcul des indicateurs d'erreur, on est oblige de
@@ -143,7 +143,7 @@ for k in range(1,nbadap+1):
                            PRES_REP=_F(GROUP_MA='HAUT',
                                        PRES=UN,),
                            FLUX_THM_REP=_F(GROUP_MA=('GAUCHE','DROIT','BAS',),
-                                           FLUN_HYDR1=ZERO,),);
+                                           FLUN_HYDR1=ZERO,),)
 
   RESU[k]=STAT_NON_LINE(MODELE=MODE[k],
                         CHAM_MATER=CHMAT[k],
@@ -159,7 +159,7 @@ for k in range(1,nbadap+1):
                         NEWTON=_F(MATRICE='TANGENTE',
                                   REAC_ITER=10,),
                         CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                        SOLVEUR=_F(METHODE='LDLT',),);
+                        SOLVEUR=_F(METHODE='LDLT',),)
 
 ####dico = RESU_00.LIST_PARA()
 
@@ -171,12 +171,12 @@ for k in range(1,nbadap+1):
   RESU[k]=CALC_ERREUR(reuse =RESU[k],
                       RESULTAT=RESU[k],
                       LIST_INST=LI1,
-                      OPTION=('ERME_ELEM','ERME_ELNO',),);
+                      OPTION=('ERME_ELEM','ERME_ELNO',),)
 
   RESU[k]=CALC_ERREUR(reuse =RESU[k],
                       RESULTAT=RESU[k],
                       INST=T1_FIN,
-                      OPTION='ERME_NOEU',);
+                      OPTION='ERME_NOEU',)
 
   if ( k == 1 ) :
     TEST_RESU(RESU=_F(GROUP_NO='NO_TEST',
@@ -209,6 +209,6 @@ for k in range(1,nbadap+1):
                    NOM_CHAM='ERME_ELEM',
                    NOM_CMP='ESTERG1',
                    NUME_ORDRE=25,
-                   CRIT_RAFF_PE=0.05,);
+                   CRIT_RAFF_PE=0.05,)
 
-FIN();
+FIN()

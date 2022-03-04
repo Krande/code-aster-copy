@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ DEFI_GROUP(reuse=M,       MAILLAGE=M,
                   CREA_GROUP_NO=_F( NOM = 'DIRI', GROUP_MA = 'DIRI'))
 
 MO=AFFE_MODELE(            MAILLAGE=M,
-                                   
+
                                   AFFE=_F(  TOUT = 'OUI',
                                          PHENOMENE = 'MECANIQUE',
                                          MODELISATION = '3D'))
@@ -62,7 +62,7 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,DDL_IMPO=(
 nor_DNOR = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
-                      GROUP_MA  = 'DNOR'  );
+                      GROUP_MA  = 'DNOR'  )
 
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
@@ -95,7 +95,7 @@ TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
 nor_PRES = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
-                      GROUP_MA  = 'PRES'  );
+                      GROUP_MA  = 'PRES'  )
 
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',

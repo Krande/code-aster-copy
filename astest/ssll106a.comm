@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 CHAR0=AFFE_CHAR_MECA(   MODELE=MO,
 
-          DDL_IMPO=_F( GROUP_NO = 'A', 
+          DDL_IMPO=_F( GROUP_NO = 'A',
                        BLOCAGE = ('DEPLACEMENT','ROTATION'),)
                       )
 
@@ -203,12 +203,12 @@ RESU=MACRO_ELAS_MULT(MODELE=MO,
                                     SOUS_TITRE = 'GRAVITE',),
                                  _F(NOM_CAS = 'CHARGE NUMERO 9',
                                     CHAR_MECA = CHAR9,
-                                    SOUS_TITRE = 'LINEIQUE',),),);
+                                    SOUS_TITRE = 'LINEIQUE',),),)
 
 RESU=CALC_CHAMP(reuse =RESU,
                 RESULTAT=RESU,
                 CONTRAINTE=('EFGE_ELNO',),
-                DEFORMATION=('EPSI_ELGA','DEGE_ELNO'),);
+                DEFORMATION=('EPSI_ELGA','DEGE_ELNO'),)
 
 RESU=MACRO_ELAS_MULT(reuse =RESU,
                      RESULTAT=RESU,
@@ -218,13 +218,13 @@ RESU=MACRO_ELAS_MULT(reuse =RESU,
                      CHAR_MECA_GLOBAL=CHAR0,
                      CAS_CHARGE=(_F(NOM_CAS = 'CHARGE NUMERO91',
                                     CHAR_MECA = CHAR9B,
-                                    SOUS_TITRE = 'LINEIQUE',),),);
+                                    SOUS_TITRE = 'LINEIQUE',),),)
 
 RESU=CALC_CHAMP(reuse =RESU,
                 RESULTAT=RESU,
                 NOM_CAS = 'CHARGE NUMERO91',
                 CONTRAINTE=('EFGE_ELNO',),
-                DEFORMATION=('EPSI_ELGA','DEGE_ELNO'),);
+                DEFORMATION=('EPSI_ELGA','DEGE_ELNO'),)
 
 TEST_RESU(RESU=(_F(GROUP_NO='B',
                    REFERENCE='ANALYTIQUE',
@@ -905,11 +905,11 @@ REST=MECA_STATIQUE(             MODELE=MO,
 REST=CALC_CHAMP(reuse= REST,
                 RESULTAT= REST ,
                 DEFORMATION=('EPSI_ELGA',),
-                CONTRAINTE=('EFGE_ELNO',),);
+                CONTRAINTE=('EFGE_ELNO',),)
 
 REST=CALC_CHAMP(reuse=REST,
                 FORCE='FORC_NODA',
-                RESULTAT=REST,);
+                RESULTAT=REST,)
 
 TEST_RESU(RESU=(_F(GROUP_NO='B',
                    INST=0.0,

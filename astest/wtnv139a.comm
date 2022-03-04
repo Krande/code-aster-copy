@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import numpy as np
 import numpy.linalg as ln
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),)
 
 from math import *
 
@@ -151,8 +151,8 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
                                              'DERECHA',
                                              'DERRIERE',
                                              'DEVANT',),),
-                  );
-                  
+                  )
+
 MAIL=DEFI_GROUP( reuse=MAIL,
                  MAILLAGE=MAIL,
                  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -188,7 +188,7 @@ MAIL=DEFI_GROUP(reuse=MAIL,
                                _F(NOM='FRONT2',
                                   DIFFE=('BIDON6','GAUCHE','BAS','CAVITE',),),
                                ),
-                 );
+                 )
 
 #***********************************************************************
 #    CARACTERISTIQUES DU MATERIAU
@@ -218,7 +218,7 @@ MAT=DEFI_MATERIAU(
             PERMIN_L=KINT,
             PERMIN_N=KINT,),
          THM_INIT=_F(PRE1 = 0.,
-                     PORO = 0.14,),);
+                     PORO = 0.14,),)
 
 #***********************************************************************
 #    LISTE DES INSTANTS DE CALCUL
@@ -234,7 +234,7 @@ TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A = T3,NOMBRE = 10,),
                                   _F(JUSQU_A = T4,NOMBRE = 5,)
                                 ),
-                     );
+                     )
 
 ##################################################################################################
 #
@@ -245,12 +245,12 @@ TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
 PHASE1=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE = 'MECANIQUE',
-                           MODELISATION ='3D_HMS',),);
+                           MODELISATION ='3D_HMS',),)
 #
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
                              MATER = MAT,),
-                    );
+                    )
 
 #***********************************************************************
 #        CONDITIONS INITIALES POUR LES CHAMPS DE CONTRAINTES ET DE
@@ -267,7 +267,7 @@ SIGINI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
       VALE=(SIEFX,SIEFY,SIEFZ,SIEFXY,SIEFYZ,SIEFXZ,
             SIPXX0,SIPYY0,SIPZZ0,SIPXY0,SIPXZ0,SIPYZ0,
             0.,0.,0.,0.,),),
-                         ), );
+                         ), )
 
 DEPINIT=CREA_CHAMP(MAILLAGE=MAIL,
      OPERATION='AFFE',
@@ -284,7 +284,7 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MAIL,
             _F(TOUT='OUI',
               NOM_CMP = 'PRE1',
               VALE= PLIMP,),),
-                  );
+                  )
 
 #***********************************************************************
 #             CHARGEMENT MECANIQUE (CONDITIONS AUX LIMITES)
@@ -293,27 +293,27 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MAIL,
 # BLOCAGE DES DEPLACEMENT AUX LIMITES DU MODELE
 CH_INF1=AFFE_CHAR_CINE(MODELE=PHASE1,
                       MECA_IMPO=(_F(GROUP_NO='DROITE', PRE1=PLIMP,),),
-                                );
+                                )
 
 CH_INF2=AFFE_CHAR_CINE(MODELE=PHASE1,
                       MECA_IMPO=(_F(GROUP_NO='HAUT', PRE1=PLIMP,),),
-                                );
+                                )
 
 CH_INF3=AFFE_CHAR_CINE(MODELE=PHASE1,
                       MECA_IMPO=(_F(GROUP_NO='FRONT', PRE1=PLIMP,),),
-                                );
+                                )
 
 CH_PREY=AFFE_CHAR_MECA(MODELE=PHASE1,
                       PRES_REP=(_F(GROUP_MA='HAUT', PRES=PRESREPY,),),
-                      );
+                      )
 
 CH_PREX=AFFE_CHAR_MECA(MODELE=PHASE1,
                       PRES_REP=(_F(GROUP_MA='DERECHA', PRES=PRESREPX,),),
-                      );
+                      )
 
 CH_PREZ=AFFE_CHAR_MECA(MODELE=PHASE1,
                       PRES_REP=(_F(GROUP_MA='DERRIERE', PRES=PRESREPZ,),),
-                      );
+                      )
 
 CH_SYM2=AFFE_CHAR_CINE(MODELE=PHASE1,
                       MECA_IMPO=(
@@ -321,16 +321,16 @@ CH_SYM2=AFFE_CHAR_CINE(MODELE=PHASE1,
                                  _F(GROUP_NO='GAUCHE', DX=0.0,),
                                  _F(GROUP_NO='BAS', DY=0.0,),
                                 ),
-                      );
+                      )
 
 # BLOCAGE DES DEPLACEMENT EN PAROI
 # BLOCAGE DES DEPLACEMENT EN PAROI
 CH_PAR=AFFE_CHAR_MECA(MODELE=PHASE1,
                       DDL_IMPO=(_F(GROUP_MA=('CAVITE',), PRE1=12.E6),),
-                      );
+                      )
 CME_PAR=AFFE_CHAR_MECA(MODELE=PHASE1,
                       PRES_REP=(_F(GROUP_MA=('CAVITE',), PRES=12.E6),),
-                      );
+                      )
 
 #*****************************************************************
 #              CALCUL DES EFFORTS EN PAROI
@@ -361,7 +361,7 @@ U0=STAT_NON_LINE(MODELE=PHASE1,
    INCREMENT=_F(LIST_INST = TEMPS1,
          INST_FIN=T1,
          ),
-                );
+                )
 
 #
 # POST TRAITEMENT
@@ -396,14 +396,14 @@ IMPR_TABLE(TABLE=PRES_MAY,
                             VALE=T1,
                             PRECISION=0.0001),),
            TRI=_F(NOM_PARA=('COOR_Y'),ORDRE='CROISSANT'),
-           );
+           )
 IMPR_TABLE(TABLE=SIG_MAY,
            NOM_PARA=('COOR_Y','SIYY'),
            FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,
                             VALE=T1,
            PRECISION=0.0001),),
            TRI=_F(NOM_PARA=('COOR_Y'),ORDRE='CROISSANT'),
-           );
+           )
 
 # PRESSION DE PORE
 TEST_RESU(RESU=_F(INST=T1,
@@ -452,4 +452,4 @@ TEST_RESU(RESU=_F(INST=T1,
                   CRITERE='RELATIF',
                   PRECISION=1.E-1,),
           )
-FIN();
+FIN()

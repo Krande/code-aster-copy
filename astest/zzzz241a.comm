@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,30 +32,30 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #m  = [2 0 0 0
 #      0 1 0 0
 #      0 0 1 0
-#      0 0 0 2];
+#      0 0 0 2]
 #
 #k  =[100  -100     0     0
 #    -100   200  -100     0
 #       0  -100   200  -100
-#       0     0  -100   200]*50;
+#       0     0  -100   200]*50
 #
 #c  =([4  -4   0   0
 #     -4   8  -4   0
 #      0  -4   8  -4
-#      0   0  -4   8]+m))/3;
+#      0   0  -4   8]+m))/3
 #---------------------------------------------------------------------#
 #---------------------------------------------------------------------#
 #
 #-- Definition du systeme :
 #
 # Matrice d'etat :
-# A=[-m\c -m\k ; eye(4) zeros(4)];
+# A=[-m\c -m\k ; eye(4) zeros(4)]
 #
 # Excitation au niveau du deuxieme DDL :
-# B=[0 1 0 0 0 0 0 0]';
+# B=[0 1 0 0 0 0 0 0]'
 #
 # Observation des 4 DDL :
-# C= [zeros(4) eye(4)];
+# C= [zeros(4) eye(4)]
 #
 #Transpose(C*Phi_r) = [
 # -1.8195e-005 -9.9969e-004j  9.8468e-005 +5.4102e-003j -1.0055e-004 -5.5247e-003j  2.2791e-005 +1.2522e-003j

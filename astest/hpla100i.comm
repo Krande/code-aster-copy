@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -303,7 +303,7 @@ DEPLDILT=CALC_CHAMP(reuse=DEPLDILT,RESULTAT=DEPLDILT,CONTRAINTE=('EFGE_ELNO','SI
 DEPLDI2=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMATB,
                       CARA_ELEM=CARE,
-                      EXCIT=_F(CHARGE=CHDIL),);
+                      EXCIT=_F(CHARGE=CHDIL),)
 
 DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,RESULTAT=DEPLDI2,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
 
@@ -311,7 +311,7 @@ DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,RESULTAT=DEPLDI2,CONTRAINTE=('EFGE_ELNO','SIGM_
 DEPLDI2T=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMATHB,
                        CARA_ELEM=CARE,
-                       EXCIT=_F( CHARGE = CHDIL),);
+                       EXCIT=_F( CHARGE = CHDIL),)
 
 DEPLDI2T=CALC_CHAMP(reuse=DEPLDI2T,RESULTAT=DEPLDI2T,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
 

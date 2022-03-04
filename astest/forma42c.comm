@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MA=LIRE_MAILLAGE(FORMAT='MED');
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -35,7 +35,7 @@ MA=DEFI_GROUP(reuse =MA,
                                           'CAB2',
                                           'PP',
                                           'SU3',
-                                          ),),);
+                                          ),),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA='VOLTOT',
@@ -47,7 +47,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                                    'CAB4',
                                    'CAB5',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='BARRE',),),);
+                        MODELISATION='BARRE',),),)
 
 CE=AFFE_CARA_ELEM(MODELE=MO,
                   BARRE=_F(GROUP_MA=('CAB5',
@@ -57,19 +57,19 @@ CE=AFFE_CARA_ELEM(MODELE=MO,
                                       'CAB1',),
                            SECTION='CERCLE',
                            CARA='R',
-                           VALE=2.8209E-2,),);
+                           VALE=2.8209E-2,),)
 
 MBETON=DEFI_MATERIAU(ELAS=_F(E=4.E10,
                              NU=0.2,
                              RHO=2500.,),
-                     BPEL_BETON=_F(PERT_FLUA=0,),);
+                     BPEL_BETON=_F(PERT_FLUA=0,),)
 
 MCABLE=DEFI_MATERIAU(ELAS=_F(E=1.93E11,
                              NU=0.3,
                              RHO=7850.,),
                      BPEL_ACIER=_F(F_PRG=1.94E9,
                                    FROT_COURB=0.0,
-                                   FROT_LINE=1.5E-3,),);
+                                   FROT_LINE=1.5E-3,),)
 
 CMAT=AFFE_MATERIAU(MAILLAGE=MA,
                    AFFE=(_F(GROUP_MA='VOLTOT',
@@ -80,7 +80,7 @@ CMAT=AFFE_MATERIAU(MAILLAGE=MA,
                                        'CAB4',
                                        'CAB5',
                                        ),
-                            MATER=MCABLE,),),);
+                            MATER=MCABLE,),),)
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
                     PESANTEUR=_F(GRAVITE=9.81,
@@ -93,7 +93,7 @@ CLIM=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0.,
                                  DY=0.,),
                               _F(GROUP_NO='SU3',
-                                 DZ=0.,),),);
+                                 DZ=0.,),),)
 
 CAB_BP12=DEFI_CABLE_BP(MODELE=MO,
                       CHAM_MATER=CMAT,
@@ -105,7 +105,7 @@ CAB_BP12=DEFI_CABLE_BP(MODELE=MO,
                                      GROUP_NO_ANCRAGE=('PC2D','PC2F'),),),
                       TYPE_ANCRAGE=('ACTIF','PASSIF',),
                       TENSION_INIT=3.75E6,
-                      RECUL_ANCRAGE=0.001,);
+                      RECUL_ANCRAGE=0.001,)
 CAB_BP34=DEFI_CABLE_BP(MODELE=MO,
                       CHAM_MATER=CMAT,
                       CARA_ELEM=CE,
@@ -116,7 +116,7 @@ CAB_BP34=DEFI_CABLE_BP(MODELE=MO,
                                      GROUP_NO_ANCRAGE=('PC4D','PC4F'),),),
                       TYPE_ANCRAGE=('ACTIF','PASSIF',),
                       TENSION_INIT=3.75E6,
-                      RECUL_ANCRAGE=0.001,);
+                      RECUL_ANCRAGE=0.001,)
 CAB_BP5=DEFI_CABLE_BP(MODELE=MO,
                       CHAM_MATER=CMAT,
                       CARA_ELEM=CE,
@@ -125,22 +125,22 @@ CAB_BP5=DEFI_CABLE_BP(MODELE=MO,
                                      GROUP_NO_ANCRAGE=('PC5D','PC5F'),),),
                       TYPE_ANCRAGE=('ACTIF','PASSIF',),
                       TENSION_INIT=3.75E6,
-                      RECUL_ANCRAGE=0.001,);
+                      RECUL_ANCRAGE=0.001,)
 
 CMCAB12=AFFE_CHAR_MECA(MODELE=MO,
                       RELA_CINE_BP=_F(CABLE_BP=CAB_BP12,
                                       SIGM_BPEL='NON',
-                                      RELA_CINE='OUI',),);
+                                      RELA_CINE='OUI',),)
 
 CMCAB34=AFFE_CHAR_MECA(MODELE=MO,
                       RELA_CINE_BP=_F(CABLE_BP=CAB_BP34,
                                       SIGM_BPEL='NON',
-                                      RELA_CINE='OUI',),);
+                                      RELA_CINE='OUI',),)
 
 CMCAB5=AFFE_CHAR_MECA(MODELE=MO,
                       RELA_CINE_BP=_F(CABLE_BP=CAB_BP5,
                                       SIGM_BPEL='NON',
-                                      RELA_CINE='OUI',),);
+                                      RELA_CINE='OUI',),)
 
 LIST=DEFI_LIST_REEL(DEBUT=0.,
                     INTERVALLE=(_F(JUSQU_A=150.,
@@ -151,7 +151,7 @@ LIST=DEFI_LIST_REEL(DEBUT=0.,
                                    NOMBRE=1,),
                                 _F(JUSQU_A=600.,
                                    NOMBRE=1,),),
-                    INFO=1,);
+                    INFO=1,)
 
 # APPLICATION DE LA PESANTEUR
 #--------------------------------
@@ -168,7 +168,7 @@ RES0=STAT_NON_LINE(MODELE=MO,
                                  GROUP_MA='CABLE',),),
                    INCREMENT=_F(LIST_INST=LIST,
                                 INST_FIN=150.0,),
-                   NEWTON=_F(),);
+                   NEWTON=_F(),)
 # MISE EN TENSION DES CABLES 1 ET 2
 #----------------------------------
 RES0=CALC_PRECONT(reuse = RES0,
@@ -184,7 +184,7 @@ RES0=CALC_PRECONT(reuse = RES0,
                   COMPORTEMENT=(_F(RELATION='ELAS',
                                 GROUP_MA='VOLTOT',),
                              _F(RELATION='ELAS',
-                                GROUP_MA='CABLE',),),);
+                                GROUP_MA='CABLE',),),)
 # MISE EN TENSION DES CABLES 3 ET 4
 #----------------------------------
 RES0=CALC_PRECONT(reuse =RES0,
@@ -201,7 +201,7 @@ RES0=CALC_PRECONT(reuse =RES0,
                   COMPORTEMENT=(_F(RELATION='ELAS',
                                 GROUP_MA='VOLTOT',),
                              _F(RELATION='ELAS',
-                                GROUP_MA='CABLE',),),);
+                                GROUP_MA='CABLE',),),)
 # MISE EN TENSION DU CABLES 5
 #----------------------------------
 RES0=CALC_PRECONT(reuse =RES0,
@@ -218,23 +218,23 @@ RES0=CALC_PRECONT(reuse =RES0,
                   COMPORTEMENT=(_F(RELATION='ELAS',
                                 GROUP_MA='VOLTOT',),
                              _F(RELATION='ELAS',
-                                GROUP_MA='CABLE ',),),);
+                                GROUP_MA='CABLE ',),),)
 
 # ---------------------
 # POST-TRAITEMENT
 # ---------------------
 RES0=CALC_CHAMP(reuse =RES0,
                 RESULTAT=RES0,
-                CONTRAINTE= 'SIEF_ELNO',);
+                CONTRAINTE= 'SIEF_ELNO',)
 #
 #IMPR_RESU(FORMAT='MED',
-#          RESU=_F(RESULTAT=RES0,),);
+#          RESU=_F(RESULTAT=RES0,),)
 #
 # RECUPERATION DE LA TENSION DANS LES CABLES SELON BPEL
 # ----------------------------------------------------
 TAB_1_I=RECU_TABLE(CO=CAB_BP12,
-                 NOM_TABLE='CABLE_BP',);
-IMPR_TABLE(TABLE=TAB_1_I,);
+                 NOM_TABLE='CABLE_BP',)
+IMPR_TABLE(TABLE=TAB_1_I,)
 #
 # RECUPERATION DE LA TENSION APRES MISE EN CHARGE
 #------------------------------------------------
@@ -243,8 +243,8 @@ TAB_1_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             RESULTAT=RES0,
                             NOM_CHAM='SIEF_ELNO',
                             GROUP_NO='CAB1',
-                            NOM_CMP='N',),);
-IMPR_TABLE(TABLE=TAB_1_F,);
+                            NOM_CMP='N',),)
+IMPR_TABLE(TABLE=TAB_1_F,)
 #
 #TRACE DES DIFFERENTS PROFILS DE CONTRAINTE
 #------------------------------------------------
@@ -252,32 +252,32 @@ N1_I=RECU_FONCTION(TABLE=TAB_1_I,
                    PARA_X='ABSC_CURV',
                    PARA_Y='TENSION',
                    FILTRE=_F(NOM_PARA='NOM_CABLE',
-                             VALE_K='CAB1',),);
+                             VALE_K='CAB1',),)
 N1_0=RECU_FONCTION(TABLE=TAB_1_F,
                    PARA_X='ABSC_CURV',
                    PARA_Y='N',
                    FILTRE=_F(NOM_PARA='INST',
-                             VALE=0,),);
+                             VALE=0,),)
 N1_150=RECU_FONCTION(TABLE=TAB_1_F,
                    PARA_X='ABSC_CURV',
                    PARA_Y='N',
                    FILTRE=_F(NOM_PARA='INST',
-                             VALE=150,),);
+                             VALE=150,),)
 N1_300=RECU_FONCTION(TABLE=TAB_1_F,
                    PARA_X='ABSC_CURV',
                    PARA_Y='N',
                    FILTRE=_F(NOM_PARA='INST',
-                             VALE=300,),);
+                             VALE=300,),)
 N1_450=RECU_FONCTION(TABLE=TAB_1_F,
                    PARA_X='ABSC_CURV',
                    PARA_Y='N',
                    FILTRE=_F(NOM_PARA='INST',
-                             VALE=450,),);
+                             VALE=450,),)
 N1_600=RECU_FONCTION(TABLE=TAB_1_F,
                      PARA_X='ABSC_CURV',
                      PARA_Y='N',
                      FILTRE=_F(NOM_PARA='INST',
-                               VALE=600,),);
+                               VALE=600,),)
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=38,
               COURBE=(_F(FONCTION=N1_I),
@@ -285,7 +285,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                       _F(FONCTION=N1_150,),
                       _F(FONCTION=N1_300,),
                       _F(FONCTION=N1_450,),
-                      _F(FONCTION=N1_600,),),);
+                      _F(FONCTION=N1_600,),),)
 
 # TEST_RESU PAR COMPARAISON AVEC RESULTAT CASTEM
 # CF. TEST SSNV164A
@@ -348,4 +348,4 @@ TEST_RESU(RESU=(_F(INST=600.0,
                    GROUP_MA='M5674',),
                 ),)
 
-FIN();
+FIN()

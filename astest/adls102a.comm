@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ MAYA=CREA_MAILLAGE(MAILLAGE=MAYA0,
 )
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAYA,INFO=2,AFFE=(
-                      _F( 
+                      _F(
                             #TOUT='OUI',
                             GROUP_MA=('EFLUIDE','LFL12'),
                              PHENOMENE = 'MECANIQUE',

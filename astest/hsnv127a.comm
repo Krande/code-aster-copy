@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ LR8=DEFI_LIST_REEL(   DEBUT=0.,
                                       )
                        )
 
-DEFLISTT=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       LR8)) 
+DEFLISTT=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       LR8))
 
 PHASINIT=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_VAR2_R',
                   MAILLAGE=MA,
@@ -106,12 +106,12 @@ TEMPE=CALC_META(reuse=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
                 COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),
-                OPTION='META_ELNO',);
+                OPTION='META_ELNO',)
 
 MO=AFFE_MODELE(
 
                MAILLAGE=MA,
-                 
+
 
                 AFFE=_F(
                 TOUT = 'OUI',
@@ -341,7 +341,7 @@ L_INST=DEFI_LIST_REEL(   DEBUT=0.,
                                       )
                        )
 
-DEFLISTM=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       L_INST)) 
+DEFLISTM=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       L_INST))
 
 U=STAT_NON_LINE(
                             MODELE=MO,

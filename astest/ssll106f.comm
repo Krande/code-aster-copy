@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -199,12 +199,12 @@ U1POS1=POST_CHAMP(RESULTAT=U1,
 
                   EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=1,
-                                NIVE_COUCHE='SUP',ANGLE=90));
+                                NIVE_COUCHE='SUP',ANGLE=90))
 U1POS2=POST_CHAMP(RESULTAT=U1,
 
                   EXTR_TUYAU=_F(NOM_CHAM='VARI_ELNO',
                                 NUME_COUCHE=1,
-                                NIVE_COUCHE='SUP',ANGLE=90));
+                                NIVE_COUCHE='SUP',ANGLE=90))
 MODI_MODELE(reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE='CENTRALISE'))
 U2=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
                             MODELE=MO,
@@ -738,9 +738,9 @@ U2=CALC_CHAMP(reuse =U2, RESULTAT=U2,  CONTRAINTE='SIGM_ELGA')
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U2, NOM_CHAM='SIGM_ELGA',NUME_ORDRE=2))
 
 U2B=POST_CHAMP(RESULTAT=U2, NUME_ORDRE=2,
-               EXTR_TUYAU =_F(NOM_CHAM='SIGM_ELGA', NUME_COUCHE=2, NIVE_COUCHE='INF', ANGLE=90 ));
+               EXTR_TUYAU =_F(NOM_CHAM='SIGM_ELGA', NUME_COUCHE=2, NIVE_COUCHE='INF', ANGLE=90 ))
 U2C=POST_CHAMP(RESULTAT=U2, NUME_ORDRE=2, GROUP_MA='M1',
-               EXTR_TUYAU =_F(NOM_CHAM='SIGM_ELGA', NUME_COUCHE=1, NIVE_COUCHE='SUP', ANGLE=90 ));
+               EXTR_TUYAU =_F(NOM_CHAM='SIGM_ELGA', NUME_COUCHE=1, NIVE_COUCHE='SUP', ANGLE=90 ))
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   POINT=2,
                   SOUS_POINT=75,

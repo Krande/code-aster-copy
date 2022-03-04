@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('MODELE1_63'));
-              
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('MODELE1_63'))
+
 n = 11
 MAILLAG1 = LIRE_MAILLAGE(FORMAT='GIBI', UNITE=19)
 
@@ -34,7 +34,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                    _F(NOM='NSINGU',INTERSEC=('NMIL','NTE1')),
                                    _F(GROUP_MA='VOL',),
                                    ),
-                    INFO=2);
+                    INFO=2)
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
@@ -43,30 +43,30 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 MOTH=AFFE_MODELE(MAILLAGE=MAILLAG1,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
-                         MODELISATION='3D',),);
+                         MODELISATION='3D',),)
 
 MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
-                           RHO_CP=0.0,),);
+                           RHO_CP=0.0,),)
 
 CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                    AFFE=_F(TOUT='OUI',
-                           MATER=MATH,),);
+                           MATER=MATH,),)
 
 CHTH=AFFE_CHAR_THER(MODELE=MOTH,
                     TEMP_IMPO=(_F(GROUP_MA='SURFGAU',TEMP=20.0,),
-                               _F(GROUP_MA='SURFDRO',TEMP=220.0,),),);
+                               _F(GROUP_MA='SURFDRO',TEMP=220.0,),),)
 
 THLI=THER_LINEAIRE(MODELE=MOTH,
                    CHAM_MATER=CMTH,
-                   EXCIT=_F(CHARGE=CHTH,),);
+                   EXCIT=_F(CHARGE=CHTH,),)
 
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='EXTR',
                 RESULTAT=THLI,
                 NOM_CHAM='TEMP',
-                INST=0.0,);
+                INST=0.0,)
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(CHAM_GD = TEMP,))   
+#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(CHAM_GD = TEMP,))
 
 #--------------------------------------------------------------------
 #               FIN DU THERMIQUE                                    #
@@ -77,7 +77,7 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
                    AFFE=(_F(GROUP_MA='VOL',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
+                            MODELISATION='3D',),),)
 
 LN = FORMULE(VALE='Y-0.5',
              NOM_PARA=['X', 'Y'],)
@@ -88,7 +88,7 @@ LT = FORMULE(VALE='-X+0.5',
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1, TYPE_ENRI_FOND='TOPOLOGIQUE',
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
-                    );
+                    )
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS)
 
@@ -96,7 +96,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS)
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             NU=0.3,
                             RHO=7800.0,
-                            ALPHA=1.282E-05,),);
+                            ALPHA=1.282E-05,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
@@ -105,7 +105,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                                      NOM_VARC='TEMP',
                                      CHAM_GD=TEMP,
                                      VALE_REF=20.0),
-                       );
+                       )
 
 
 #*********************************************************************
@@ -138,22 +138,22 @@ MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT,
                         INFO          = 2)
 
 
-IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'))   
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'))
 
 TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
                                    GROUP_NO  = 'PTEXTR',
                                    RESULTAT   = UTOT,
                                    NOM_CHAM   = 'DEPL',
                                    NOM_CMP   = ( 'DX','DY','DZ'),
-                                   OPERATION = 'EXTRACTION',),);
-                        
+                                   OPERATION = 'EXTRACTION',),)
+
 IMPR_TABLE(TABLE=TABDEP)
 
 # REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES)
@@ -179,4 +179,4 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE=1.0,),
            )
 
-FIN();
+FIN()

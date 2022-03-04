@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,55 +26,55 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MAYA=LIRE_MAILLAGE(FORMAT='MED',);
+MAYA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAYA=DEFI_GROUP(reuse =MAYA,
                 MAILLAGE=MAYA,
-                CREA_GROUP_NO=_F(GROUP_MA='A4A1',),);
+                CREA_GROUP_NO=_F(GROUP_MA='A4A1',),)
 
 MAYA2=CREA_MAILLAGE(MAILLAGE=MAYA,
                     MODI_MAILLE=_F(GROUP_MA='S1',
-                                   OPTION='QUAD8_9',),);
+                                   OPTION='QUAD8_9',),)
 
 MODEL=AFFE_MODELE(MAILLAGE=MAYA2,
-                  
+
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='C_PLAN',),);
+                          MODELISATION='C_PLAN',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.,
                             NU=0.,
                             ALPHA=1.E-6,),
                     ECRO_LINE=_F(D_SIGM_EPSI=1930.,
-                                 SY=181.,),);
+                                 SY=181.,),)
 
 MATER=AFFE_MATERIAU(MAILLAGE=MAYA2,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 PRES_FO=DEFI_FONCTION(NOM_PARA='Y',VALE=(0.,0.,
                             30.,300.,
-                            ),);
+                            ),)
 
 TRAC_FO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                             1.,1.,
-                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 TRAC_F=AFFE_CHAR_MECA_F(MODELE=MODEL,
                         PRES_REP=_F(GROUP_MA='A2A3',
-                                    PRES=PRES_FO,),);
+                                    PRES=PRES_FO,),)
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MODEL,
                        DDL_IMPO=(_F(GROUP_NO='A4A1',
                                     DX=0.,),
                                  _F(GROUP_NO=('A1','A4',),
-                                    DY=0.,),),);
+                                    DY=0.,),),)
 
 CAT=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1.,
-                                 NOMBRE=10,),);
+                                 NOMBRE=10,),)
 
 CALCNL=STAT_NON_LINE(MODELE=MODEL,
                      CHAM_MATER=MATER,
@@ -88,7 +88,7 @@ CALCNL=STAT_NON_LINE(MODELE=MODEL,
                                MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
-                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-4,),);
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-4,),)
 
 CALCNL=CALC_CHAMP(reuse=CALCNL,RESULTAT=CALCNL,CRITERES=('DERA_ELGA','DERA_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSP_ELGA','EPSP_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
@@ -208,6 +208,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    GROUP_MA='M1',),
                 ))
 
-FIN();
+FIN()
 
 #

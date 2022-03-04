@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-POURSUITE(CODE='OUI',);
+POURSUITE(CODE='OUI',)
 
 #Discretisation du calcul
 Ncal = ncal
@@ -30,14 +30,14 @@ RESU=[None]*Ncal
 #npas_par_cycle1=360
 npas_par_cycle1=48
 
-temps_ca=DEFI_LIST_REEL(DEBUT=0,INTERVALLE=_F(JUSQU_A=tmax,NOMBRE=int(npas_par_cycle1*nbcycle1*nbcycle2)),);
+temps_ca=DEFI_LIST_REEL(DEBUT=0,INTERVALLE=_F(JUSQU_A=tmax,NOMBRE=int(npas_par_cycle1*nbcycle1*nbcycle2)),)
 
 deflist=DEFI_LIST_INST(INFO=1, METHODE='MANUEL',
                          DEFI_LIST=_F(LIST_INST=temps_ca,),
                          ECHEC=_F(SUBD_NIVEAU=3,
                                   SUBD_PAS=6,
                                   SUBD_PAS_MINI=1.E-08,),
-                         );
+                         )
 
 # valeurs de refence
 sxxaref=(398.+413.)/2.
@@ -64,9 +64,9 @@ for i in range(Ncal):
                                   EPXY=eps_xy,
                                    ),
                    NB_VARI_TABLE=2,
-                        );
+                        )
 
-        #IMPR_TABLE(TABLE=RESU[i]);
+        #IMPR_TABLE(TABLE=RESU[i])
 
         # test des valeurs extremes
 
@@ -77,7 +77,7 @@ for i in range(Ncal):
                      PRECISION=0.05,
                      FILTRE=_F(NOM_PARA='SIXX',CRIT_COMP='MAXI'),
                      REFERENCE='SOURCE_EXTERNE',
-                     );
+                     )
 
         TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='SIXX',
@@ -86,7 +86,7 @@ for i in range(Ncal):
                      PRECISION=0.03,
                      FILTRE=_F(NOM_PARA='SIXX',CRIT_COMP='MINI'),
                      REFERENCE='SOURCE_EXTERNE',
-                     );
+                     )
         TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='SIXY',
                      VALE_CALC=246.84487002456,
@@ -94,7 +94,7 @@ for i in range(Ncal):
                      PRECISION=0.06,
                      FILTRE=_F(NOM_PARA='SIXY',CRIT_COMP='MAXI'),
                      REFERENCE='SOURCE_EXTERNE',
-                     );
+                     )
 
         TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='SIXY',
@@ -103,7 +103,7 @@ for i in range(Ncal):
                      PRECISION=0.06,
                      FILTRE=_F(NOM_PARA='SIXY',CRIT_COMP='MINI'),
                      REFERENCE='SOURCE_EXTERNE',
-                     );
+                     )
 # traces des courbes
 courbes=[]
 courbe1=[]
@@ -139,23 +139,23 @@ tmixy=[None]*Ncal
 #resu=[None]*Ncal
 
 for i in range(Ncal):
-   sigxx[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN');
-   sigxy[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN');
+   sigxx[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN')
+   sigxy[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN')
    sixy3[i]=CALC_FONCTION(COMB=_F(FONCTION=sigxy[i],COEF=sqrt(3.0),) )
-   epsxx[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN');
-   epsxy[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='EPXY',INTERPOL='LIN');
+   epsxx[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN')
+   epsxy[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='EPXY',INTERPOL='LIN')
    gamm3[i]=CALC_FONCTION(COMB=_F(FONCTION=epsxy[i],COEF=2./sqrt(3.0),) )
    sixxd[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXX',INTERPOL='LIN',
                              FILTRE=(
                              _F(NOM_PARA='INST',CRIT_COMP='GE',VALE=tdebder),
                              _F(NOM_PARA='INST',CRIT_COMP='LE',VALE=tfinder),
-                             ));
+                             ))
 
    sixyd[i]=RECU_FONCTION(TABLE=RESU[i],PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN',
                              FILTRE=(
                              _F(NOM_PARA='INST',CRIT_COMP='GE',VALE=tdebder),
                              _F(NOM_PARA='INST',CRIT_COMP='LE',VALE=tfinder),
-                             ));
+                             ))
    s3xyd[i]=CALC_FONCTION(COMB=_F(FONCTION=sixyd[i],COEF=sqrt(3.0),) )
    tdern[i] = CALC_TABLE(TABLE=RESU[i],
                   ACTION=(
@@ -241,74 +241,74 @@ for i in range(Ncal):
 
 
 # tau-sigma
-DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-sigmaXX-tout.agr');
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-sigmaXX-tout.agr')
 IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE=pilote,UNITE=39,
                 LEGENDE_X='SigmaXX',
                 LEGENDE_Y='SigmaXY*sqrt(3)',
                 COURBE=courbes,
-                );
-DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+                )
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER')
 
 # sigma
-DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXX-tout.agr');
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXX-tout.agr')
 IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE=pilote,UNITE=39,
                 LEGENDE_X='INST',
                 LEGENDE_Y='SigmaXX',
                 COURBE=courbe1,
-                );
-DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+                )
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER')
 # tau
-DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-tout.agr');
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-tout.agr')
 IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE=pilote,UNITE=39,
                 LEGENDE_X='INST',
                 LEGENDE_Y='SigmaXY',
                 COURBE=courbe2,
-                );
-DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+                )
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER')
 
 #################dernier cycle
 # tau-sigma
-DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-sigmaXX-dernier_cycle.agr');
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-sigmaXX-dernier_cycle.agr')
 IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE=pilote,UNITE=39,
                 LEGENDE_X='SigmaXX',
                 LEGENDE_Y='SigmaXY*sqrt(3)',
                 COURBE=courbeder1,
-                );
-DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+                )
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER')
 # sigma
-DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXX-dernier_cycle.agr');
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXX-dernier_cycle.agr')
 IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE=pilote,UNITE=39,
                 LEGENDE_X='INST',
                 LEGENDE_Y='SigmaXX',
                 COURBE=courbeder2,
-                );
-DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+                )
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER')
 # tau
-DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-dernier_cycle.agr');
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/sigmaXY-dernier_cycle.agr')
 IMPR_FONCTION(
                 FORMAT='XMGRACE',
                 PILOTE=pilote,UNITE=39,
                 LEGENDE_X='INST',
                 LEGENDE_Y='SigmaXY',
                 COURBE=courbeder3,
-                );
-DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
+                )
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER')
 
 
 
 
 # comparaison chargement resultat
-DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/chargement.agr');
+DEFI_FICHIER(UNITE = 39,FICHIER = 'REPE_OUT/chargement.agr')
 
 dic3={}
 dic3['FONCTION']=eps_xx
@@ -327,6 +327,6 @@ IMPR_FONCTION(
                 LEGENDE_X='t',
                 LEGENDE_Y='epsxx',
                 COURBE=courbe3,
-                );
-DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER');
-FIN();
+                )
+DEFI_FICHIER(UNITE = 39,ACTION = 'LIBERER')
+FIN()

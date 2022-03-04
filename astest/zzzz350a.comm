@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,22 +24,22 @@
 #
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-E1 = 450000;
+E1 = 450000
 
-Slave = 'BotF1';
-Master = 'TopF2';
+Slave = 'BotF1'
+Master = 'TopF2'
 
 
 Mesh=LIRE_MAILLAGE(UNITE=20,
-                    FORMAT='MED',);
+                    FORMAT='MED',)
 
 Mesh=MODI_MAILLAGE(reuse =Mesh,
                    MAILLAGE=Mesh,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='BotF1',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='BotF1',),)
 
 Mesh=MODI_MAILLAGE(reuse =Mesh,
                    MAILLAGE=Mesh,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='TopF2',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='TopF2',),)
 
 Mat=DEFI_MATERIAU(ELAS=_F(E=E1,
                           NU=.33,),ECRO_LINE=_F(D_SIGM_EPSI=1.0,SY=1E15),)
@@ -47,19 +47,19 @@ Mat=DEFI_MATERIAU(ELAS=_F(E=E1,
 EleMod=AFFE_MODELE(MAILLAGE=Mesh,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),);
+                           MODELISATION='C_PLAN',),)
 
 Matmod=AFFE_MATERIAU(MAILLAGE=Mesh,
                      MODELE=EleMod,
                      AFFE=_F(TOUT='OUI',
-                             MATER=Mat,),);
+                             MATER=Mat,),)
 
 
 BC=AFFE_CHAR_CINE(MODELE=EleMod,
                   MECA_IMPO=(_F(GROUP_MA=('TopF1','F2',),
                                DX=0,
                                DY=0,),
-                             ),);
+                             ),)
 
 
 FONCC=DEFI_FONCTION(NOM_PARA='INST',
@@ -67,15 +67,15 @@ FONCC=DEFI_FONCTION(NOM_PARA='INST',
                           0.5,0.05,
                           1.0,-0.01),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 FONCC2=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,-0.005,
                           0.5,0.05,
                           1.0,0.015),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
-                    
+                    PROL_GAUCHE='LINEAIRE',)
+
 
 ContactD=DEFI_CONTACT(MODELE=EleMod,
                      FORMULATION='DISCRETE',
@@ -84,8 +84,8 @@ ContactD=DEFI_CONTACT(MODELE=EleMod,
                              GROUP_MA_ESCL=Slave,
                              DIST_MAIT=FONCC,
                              DIST_ESCL=FONCC2,
-                             ALGO_CONT='CONTRAINTE'),);
-                             
+                             ALGO_CONT='CONTRAINTE'),)
+
 ContactC=DEFI_CONTACT(MODELE=EleMod,
                      FORMULATION='CONTINUE',
                      LISSAGE='OUI',
@@ -95,11 +95,11 @@ ContactC=DEFI_CONTACT(MODELE=EleMod,
                              GROUP_MA_ESCL=Slave,
                              DIST_MAIT=FONCC,
                              DIST_ESCL=FONCC2,
-                             ),);
+                             ),)
 
 Time=DEFI_LIST_REEL(DEBUT=0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=10,),);
+                                  NOMBRE=10,),)
 
 ResultsC=STAT_NON_LINE(MODELE=EleMod,
                       CHAM_MATER=Matmod,
@@ -109,7 +109,7 @@ ResultsC=STAT_NON_LINE(MODELE=EleMod,
                                    DEFORMATION='GROT_GDEP',),
                       INCREMENT=_F(LIST_INST=Time,),
                       NEWTON=_F(REAC_INCR=1,
-                                REAC_ITER=1,),);
+                                REAC_ITER=1,),)
 
 ResultsD=STAT_NON_LINE(MODELE=EleMod,
                       CHAM_MATER=Matmod,
@@ -119,7 +119,7 @@ ResultsD=STAT_NON_LINE(MODELE=EleMod,
                                    DEFORMATION='GROT_GDEP',),
                       INCREMENT=_F(LIST_INST=Time,),
                       NEWTON=_F(REAC_INCR=1,
-                                REAC_ITER=1,),);                                
+                                REAC_ITER=1,),)
 
 TEST_RESU(RESU=(_F(GROUP_NO='B',
                    INST=.5,
@@ -158,7 +158,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                    VALE_CALC=0.005,
                    ),
                 ),
-          )                                
+          )
 
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ from math import *
 MESH_LIN = LIRE_MAILLAGE(FORMAT = 'MED')
 
 MESH_QUA = CREA_MAILLAGE(MAILLAGE  = MESH_LIN,
-                         LINE_QUAD = _F(TOUT='OUI'));
+                         LINE_QUAD = _F(TOUT='OUI'))
 
 MESH_Q9  = CREA_MAILLAGE(MAILLAGE=MESH_QUA,
                          MODI_MAILLE=_F(OPTION='QUAD8_9',
@@ -47,7 +47,7 @@ SOURCE = DEFI_FONCTION(NOM_PARA    = 'TEMP',
                        PROL_DROITE = 'LINEAIRE',
                        PROL_GAUCHE = 'LINEAIRE',
                       )
-  
+
 # Usual data setting
 
 LAMBDA = DEFI_CONSTANTE(VALE = 0)
@@ -56,7 +56,7 @@ RHO_CP = DEFI_CONSTANTE(VALE = 2)
 FAKE_MAT = DEFI_MATERIAU(THER_NL = _F(LAMBDA=LAMBDA, RHO_CP=RHO_CP),
                         )
 # Computation
-  
+
 TIME = DEFI_LIST_REEL(DEBUT      =  0.0,
                       INTERVALLE = (_F(JUSQU_A = tmax, NOMBRE = 100),),
                      )
@@ -67,10 +67,10 @@ TIME = DEFI_LIST_REEL(DEBUT      =  0.0,
 MAT_T3 = AFFE_MATERIAU(MAILLAGE = MESH_LIN,
                        AFFE     = _F(GROUP_MA = 'BULK_TRIA', MATER = FAKE_MAT),
                        )
-  
+
 # Initial temperature field
-  
-INI_T_T3 = CREA_CHAMP(OPERATION ='AFFE', 
+
+INI_T_T3 = CREA_CHAMP(OPERATION ='AFFE',
                       TYPE_CHAM ='NOEU_TEMP_R',
                       MAILLAGE  = MESH_LIN,
                       AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
@@ -81,11 +81,11 @@ MODEL_T3 = AFFE_MODELE(MAILLAGE = MESH_LIN,
                                      PHENOMENE    = 'THERMIQUE',
                                      MODELISATION = 'PLAN'),
                       )
-  
+
 # Non linear heating source
 
 HEAT_T3 = AFFE_CHAR_THER_F( MODELE  = MODEL_T3,
-                            SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),    
+                            SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),
                           )
 
 EVOL_T3 = THER_NON_LINE( MODELE      = MODEL_T3,
@@ -115,10 +115,10 @@ TEST_RESU(RESU=_F(GROUP_NO='PROBE',
 MAT_T3D = AFFE_MATERIAU(MAILLAGE = MESH_LIN,
                         AFFE     = _F(GROUP_MA = 'BULK_TRIA', MATER = FAKE_MAT),
                         )
-  
+
 # Initial temperature field
-  
-INI_T3D = CREA_CHAMP(OPERATION ='AFFE', 
+
+INI_T3D = CREA_CHAMP(OPERATION ='AFFE',
                        TYPE_CHAM ='NOEU_TEMP_R',
                        MAILLAGE  = MESH_LIN,
                        AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
@@ -129,11 +129,11 @@ MODL_T3D = AFFE_MODELE(MAILLAGE = MESH_LIN,
                                       PHENOMENE    = 'THERMIQUE',
                                       MODELISATION = 'PLAN_DIAG'),
                        )
-  
+
 # Non linear heating source
 
 HEAT_T3D = AFFE_CHAR_THER_F( MODELE  = MODL_T3D,
-                             SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),    
+                             SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),
                            )
 
 EVOL_T3D = THER_NON_LINE( MODELE      = MODL_T3D,
@@ -164,10 +164,10 @@ TEST_RESU(RESU=_F(GROUP_NO='PROBE',
 MAT_T6 = AFFE_MATERIAU(MAILLAGE = MESH_QUA,
                        AFFE     = _F(GROUP_MA = 'BULK_TRIA', MATER = FAKE_MAT),
                        )
-  
+
 # Initial temperature field
-  
-INI_T_T6 = CREA_CHAMP(OPERATION ='AFFE', 
+
+INI_T_T6 = CREA_CHAMP(OPERATION ='AFFE',
                       TYPE_CHAM ='NOEU_TEMP_R',
                       MAILLAGE  = MESH_QUA,
                       AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
@@ -178,11 +178,11 @@ MODEL_T6 = AFFE_MODELE(MAILLAGE = MESH_QUA,
                                      PHENOMENE    = 'THERMIQUE',
                                      MODELISATION = 'PLAN'),
                       )
-  
+
 # Non linear heating source
 
 HEAT_T6 = AFFE_CHAR_THER_F( MODELE  = MODEL_T6,
-                            SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),    
+                            SOUR_NL = _F(GROUP_MA='BULK_TRIA', SOUR=SOURCE),
                           )
 
 EVOL_T6 = THER_NON_LINE( MODELE      = MODEL_T6,
@@ -213,10 +213,10 @@ TEST_RESU(RESU=_F(GROUP_NO='PROBE',
 MAT_Q4 = AFFE_MATERIAU(MAILLAGE = MESH_LIN,
                        AFFE     = _F(GROUP_MA = 'BULK_QUAD', MATER = FAKE_MAT),
                        )
-  
+
 # Initial temperature field
-  
-INI_T_Q4 = CREA_CHAMP(OPERATION ='AFFE', 
+
+INI_T_Q4 = CREA_CHAMP(OPERATION ='AFFE',
                       TYPE_CHAM ='NOEU_TEMP_R',
                       MAILLAGE  = MESH_LIN,
                       AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
@@ -227,11 +227,11 @@ MODEL_Q4 = AFFE_MODELE(MAILLAGE = MESH_LIN,
                                      PHENOMENE    = 'THERMIQUE',
                                      MODELISATION = 'PLAN'),
                       )
-  
+
 # Non linear heating source
 
 HEAT_Q4 = AFFE_CHAR_THER_F( MODELE  = MODEL_Q4,
-                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),    
+                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),
                           )
 
 EVOL_Q4 = THER_NON_LINE( MODELE      = MODEL_Q4,
@@ -261,10 +261,10 @@ TEST_RESU(RESU=_F(GROUP_NO='PROBE',
 MAT_Q4D = AFFE_MATERIAU(MAILLAGE = MESH_LIN,
                        AFFE     = _F(GROUP_MA = 'BULK_QUAD', MATER = FAKE_MAT),
                        )
-  
+
 # Initial temperature field
-  
-INI_Q4D = CREA_CHAMP(OPERATION ='AFFE', 
+
+INI_Q4D = CREA_CHAMP(OPERATION ='AFFE',
                       TYPE_CHAM ='NOEU_TEMP_R',
                       MAILLAGE  = MESH_LIN,
                       AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
@@ -275,11 +275,11 @@ MODL_Q4D = AFFE_MODELE(MAILLAGE = MESH_LIN,
                                      PHENOMENE    = 'THERMIQUE',
                                      MODELISATION = 'PLAN_DIAG'),
                       )
-  
+
 # Non linear heating source
 
 HEAT_Q4D = AFFE_CHAR_THER_F( MODELE  = MODL_Q4D,
-                             SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),    
+                             SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),
                            )
 
 EVOL_Q4D = THER_NON_LINE( MODELE      = MODL_Q4D,
@@ -309,10 +309,10 @@ TEST_RESU(RESU=_F(GROUP_NO='PROBE',
 MAT_Q8 = AFFE_MATERIAU(MAILLAGE = MESH_QUA,
                        AFFE     = _F(GROUP_MA = 'BULK_QUAD', MATER = FAKE_MAT),
                        )
-  
+
 # Initial temperature field
-  
-INI_T_Q8 = CREA_CHAMP(OPERATION ='AFFE', 
+
+INI_T_Q8 = CREA_CHAMP(OPERATION ='AFFE',
                       TYPE_CHAM ='NOEU_TEMP_R',
                       MAILLAGE  = MESH_QUA,
                       AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
@@ -323,11 +323,11 @@ MODEL_Q8 = AFFE_MODELE(MAILLAGE = MESH_QUA,
                                      PHENOMENE    = 'THERMIQUE',
                                      MODELISATION = 'PLAN'),
                       )
-  
+
 # Non linear heating source
 
 HEAT_Q8 = AFFE_CHAR_THER_F( MODELE  = MODEL_Q8,
-                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),    
+                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),
                           )
 
 EVOL_Q8 = THER_NON_LINE( MODELE      = MODEL_Q8,
@@ -358,10 +358,10 @@ TEST_RESU(RESU=_F(GROUP_NO='PROBE',
 MAT_Q9 = AFFE_MATERIAU(MAILLAGE = MESH_Q9,
                        AFFE     = _F(GROUP_MA = 'BULK_QUAD', MATER = FAKE_MAT),
                        )
-  
+
 # Initial temperature field
-  
-INI_T_Q9 = CREA_CHAMP(OPERATION ='AFFE', 
+
+INI_T_Q9 = CREA_CHAMP(OPERATION ='AFFE',
                       TYPE_CHAM ='NOEU_TEMP_R',
                       MAILLAGE  = MESH_Q9,
                       AFFE      =_F(TOUT='OUI', NOM_CMP='TEMP', VALE=T0)
@@ -372,11 +372,11 @@ MODEL_Q9 = AFFE_MODELE(MAILLAGE = MESH_Q9,
                                      PHENOMENE    = 'THERMIQUE',
                                      MODELISATION = 'PLAN'),
                       )
-  
+
 # Non linear heating source
 
 HEAT_Q9 = AFFE_CHAR_THER_F( MODELE  = MODEL_Q9,
-                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),    
+                            SOUR_NL = _F(GROUP_MA='BULK_QUAD', SOUR=SOURCE),
                           )
 
 EVOL_Q9 = THER_NON_LINE( MODELE      = MODEL_Q9,

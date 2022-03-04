@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 
 POURSUITE(CODE='OUI')
 
-# Tests du problème complet en non-régression 
+# Tests du problème complet en non-régression
 TEST_RESU(RESU=(
                 _F(RESULTAT  = stnl,
                    INST      = 10.,
@@ -71,7 +71,7 @@ TEST_RESU(RESU=(
                    VALE_CALC = -7650.2833581416235,
                    ),
                 ),
-          );
+          )
 
 # Tests du problème reconstruit par recombinaison des modes (POD simple) par rapport au problème complet
 TEST_RESU(CHAM_ELEM=(
@@ -130,7 +130,7 @@ TEST_RESU(CHAM_ELEM=(
                    PRECISION = 3.8E-4,
                    ),
                 ),
-          );
+          )
 
 # Tests du problème reconstruit par recombinaison des modes (POD incrémentale) par rapport au problème complet
 TEST_RESU(CHAM_ELEM=(
@@ -189,6 +189,6 @@ TEST_RESU(CHAM_ELEM=(
                    PRECISION = 7.0E-4,
                    ),
                 ),
-          );
+          )
 
 FIN()

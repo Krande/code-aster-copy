@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -114,10 +114,10 @@ INLBNS20=INFO_FONCTION(    NOCI_SEISME=_F(
                              AMOR_REDUIT = 0.03,),
                        )
 
-IMPR_TABLE (TABLE=INLBNS20,    UNITE=8,);
-IMPR_TABLE (TABLE=INLBNS19,    UNITE=8,);
-IMPR_TABLE (TABLE=INLBNS18,    UNITE=8,);
-IMPR_TABLE (TABLE=INLBNS,    UNITE=8,);
+IMPR_TABLE (TABLE=INLBNS20,    UNITE=8,)
+IMPR_TABLE (TABLE=INLBNS19,    UNITE=8,)
+IMPR_TABLE (TABLE=INLBNS18,    UNITE=8,)
+IMPR_TABLE (TABLE=INLBNS,    UNITE=8,)
 
 #
 SPEC_H=LIRE_FONCTION(  UNITE=18,
@@ -425,9 +425,9 @@ SRO_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LOG',PROL_DROITE='CONSTANT',
 
 
 L_FREQ1 = DEFI_LIST_REEL(DEBUT=35.,
-              INTERVALLE=(_F(JUSQU_A=45, PAS=1.0,),), );
+              INTERVALLE=(_F(JUSQU_A=45, PAS=1.0,),), )
 
-L_FREQ2 = DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=(_F(JUSQU_A=1.0, PAS=0.01,),_F(JUSQU_A=60.0, PAS=0.1,),) );
+L_FREQ2 = DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=(_F(JUSQU_A=1.0, PAS=0.01,),_F(JUSQU_A=60.0, PAS=0.1,),) )
 
 amor=0.05
 TSM=10.00
@@ -464,11 +464,11 @@ FONCT1b=RECU_FONCTION(  TABLE=ACCE1b,
                         NOM_PARA_TABL='FONCTION',)
 
 SRO1a=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONCT1a, LIST_FREQ = L_FREQ1, METHODE='NIGAM',
-                      NORME=9.81, AMOR_REDUIT=(amor,),),);
+                      NORME=9.81, AMOR_REDUIT=(amor,),),)
 SRO1aa=CALC_FONCTION(SPEC_OSCI=_F(TYPE_RESU='FONCTION', FONCTION=FONCT1a, LIST_FREQ = L_FREQ1, METHODE='NIGAM',
-                      NORME=9.81, AMOR_REDUIT=(amor,),),);
+                      NORME=9.81, AMOR_REDUIT=(amor,),),)
 SRO1b=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONCT1b, LIST_FREQ = L_FREQ1, METHODE='NIGAM',
-                      NORME=9.81, AMOR_REDUIT=(amor,),),);
+                      NORME=9.81, AMOR_REDUIT=(amor,),),)
 
 
 F_VITE1a=CALC_FONCTION( INTEGRE=_F(  FONCTION = FONCT1a) )
@@ -483,7 +483,7 @@ FONCT1c=CALC_FONCTION( CORR_ACCE=  _F(FONCTION = FONCT1a, FREQ_FILTRE=fc, METHOD
 F_VITE1c=CALC_FONCTION( INTEGRE=_F(  FONCTION = FONCT1c) )
 F_DEPL1c=CALC_FONCTION( INTEGRE=_F(  FONCTION = F_VITE1c) )
 SRO1c=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONCT1c, LIST_FREQ = L_FREQ1, METHODE='HARMO',
-                      NORME=9.81, AMOR_REDUIT=(amor,),),);
+                      NORME=9.81, AMOR_REDUIT=(amor,),),)
 
 
 TEST_FONCTION(VALEUR=( _F(VALE_CALC=7.244370138625E-03   ,  #signal corrige sans derive ,
@@ -506,7 +506,7 @@ TEST_FONCTION(VALEUR=( _F(VALE_CALC=7.244370138625E-03   ,  #signal corrige sans
                          FONCTION=SRO1b,),
 
 
-),);
+),)
 
 # on verifie que la sd produit est bien une fonction avec TYPE_RESU="FONCTION"
 TA_SRO1a = CREA_TABLE(FONCTION=_F(FONCTION=SRO1aa))
@@ -533,15 +533,15 @@ sro_dsms = np.array(liste_freq)**(-2) * np.array(sro_sms ) / 9.81
 SRO_ACCE  = DEFI_FONCTION ( NOM_RESU  = 'ACCE',  NOM_PARA    = 'FREQ',
             PROL_GAUCHE = 'CONSTANT',  PROL_DROITE  = 'CONSTANT',
             ABSCISSE        = liste_freq,
-            ORDONNEE     = sro_sms);
+            ORDONNEE     = sro_sms)
 
 SRO_DEPL  = DEFI_FONCTION ( NOM_RESU    = 'ACCE',  NOM_PARA    = 'FREQ',
             PROL_GAUCHE = 'CONSTANT',  PROL_DROITE  = 'CONSTANT',
             ABSCISSE        = liste_freq,
-            ORDONNEE     = sro_dsms);
+            ORDONNEE     = sro_dsms)
 
 dmax = 3.4 / 100. # (max  = 3.4cm)
-SRO_CORR = CALC_FONCTION ( PROL_SPEC_OSCI =_F( FONCTION = SRO_ACCE, NORME = 9.81, DEPL_MAX = dmax ),);
+SRO_CORR = CALC_FONCTION ( PROL_SPEC_OSCI =_F( FONCTION = SRO_ACCE, NORME = 9.81, DEPL_MAX = dmax ),)
 
 TEST_FONCTION(VALEUR=( _F(VALE_CALC= 0.00   ,
                          NOM_PARA=('FREQ',), VALE_PARA=(0.0,),FONCTION = SRO_CORR,),
@@ -550,14 +550,14 @@ TEST_FONCTION(VALEUR=( _F(VALE_CALC= 0.00   ,
                       _F(VALE_CALC= 0.02   ,
                          NOM_PARA=('FREQ',), VALE_PARA=(0.25,),FONCTION = SRO_CORR,),
 
-),);
+),)
 
 liste_freq, sro_d = SRO_CORR.Valeurs()
 sro_cd = np.array(liste_freq[1:])**(-2) * np.array(sro_d[1:]) / 9.81
 SRO_DC  = DEFI_FONCTION ( NOM_RESU    = 'ACCE',  NOM_PARA    = 'FREQ',
             PROL_GAUCHE = 'CONSTANT',  PROL_DROITE  = 'CONSTANT',
             ABSCISSE        = liste_freq[1:],
-            ORDONNEE     = sro_cd);
+            ORDONNEE     = sro_cd)
 
 TEST_FONCTION(VALEUR=( _F(VALE_CALC= dmax   ,
                          NOM_PARA=('FREQ',), VALE_PARA=(0.0,),FONCTION = SRO_DC,),
@@ -566,7 +566,7 @@ TEST_FONCTION(VALEUR=( _F(VALE_CALC= dmax   ,
                       _F(VALE_CALC= 0.03261977573904   ,
                          NOM_PARA=('FREQ',), VALE_PARA=(0.25,),FONCTION = SRO_DC,),
 
-),);
+),)
 
 
 
@@ -582,7 +582,7 @@ SRO_7 = [ 0.2, 9.75E-3, 0.51, 6.45E-2, 4.58, 5.74E-1, 14.0, 5.74E-1, 40., 2.5E-1
 SRO_EUR=DEFI_FONCTION(NOM_PARA='FREQ',
                   VALE=SRO_7,
                   #INTERPOL='LOG',
-                  PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                  PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
 amort = 0.07
 
@@ -595,7 +595,7 @@ L_FREQ = DEFI_LIST_REEL(DEBUT=0.1,
               INTERVALLE=(_F(JUSQU_A=5.0, PAS=0.1,), _F(JUSQU_A=10., PAS=0.5,),
                            _F(JUSQU_A=20.0, PAS=1.0,), _F(JUSQU_A=50.0, PAS=2.0,),
                            _F(JUSQU_A=60.0, PAS=2.0,),
-                        ) );
+                        ) )
 
 
 
@@ -642,21 +642,21 @@ F_DSP = CALC_FONCTION(COMB_C=(_F(FONCTION=EUR_DSP,
 DEF_SPEC=DEFI_INTE_SPEC(DIMENSION=1,
                         PAR_FONCTION=_F(NUME_ORDRE_I=1,
                                         NUME_ORDRE_J=1,
-                                        FONCTION=F_DSP,),);
+                                        FONCTION=F_DSP,),)
 
 POST_DSP=POST_DYNA_ALEA(INTERSPECTRE=_F(
                         INTE_SPEC=DEF_SPEC,
-                        OPTION = 'TOUT'), INFO=2,);
+                        OPTION = 'TOUT'), INFO=2,)
 
 TRAJ=GENE_FONC_ALEA(INTE_SPEC=DEF_SPEC,
                     FREQ_INIT=0.0, FREQ_FIN=FCOUP,
-                    NB_POIN=2**12, INFO=2,);
+                    NB_POIN=2**12, INFO=2,)
 
 FTRAJ=RECU_FONCTION(INTE_SPEC=TRAJ,
                       NUME_ORDRE = 1 )
 
-RMS=INFO_FONCTION(RMS=_F(FONCTION=FTRAJ,),INFO=2);
-ECT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FTRAJ,),INFO=2);
+RMS=INFO_FONCTION(RMS=_F(FONCTION=FTRAJ,),INFO=2)
+ECT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FTRAJ,),INFO=2)
 
 #
 #

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,21 +24,21 @@ import math
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(JXVERI='OUI',JEVEUX='OUI'),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'),);
+MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'),)
 
 #+----------------------------------------+
 #| noms des groupes de noeuds et mailles  |
 #+----------------------------------------+
 
 MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
-      CREA_GROUP_MA=_F(UNION=('C1','C2'),NOM='C'));
+      CREA_GROUP_MA=_F(UNION=('C1','C2'),NOM='C'))
 
 MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU=(
             _F(GROUP_MA_PEAU = 'S1R1',),
             _F(GROUP_MA_PEAU = 'S1R2',),
             _F(GROUP_MA_PEAU = 'S2R2',),
             _F(GROUP_MA_PEAU = 'S2R3',),
-                                                    ),);
+                                                    ),)
 
 
 #+----------------------------------------+
@@ -50,16 +50,16 @@ nu1=0.2
 nu2=0.2
 
 
-MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,));
-MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,));
+MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,))
+MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(_F(GROUP_MA = 'C1',MATER = MAT1,),
-                                      _F(GROUP_MA = 'C2',MATER = MAT2,),),);
+                                      _F(GROUP_MA = 'C2',MATER = MAT2,),),)
 #+----------------------------------------+
 #|                modele                  |
 #+----------------------------------------+
 
-MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D'));
+MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D'))
 
 
 #=================================================
@@ -91,15 +91,15 @@ mu2=E2 / ( 2*(1+nu2) )
 # geometrie
 #=================================================
 
-R1 = 1.0;
-R2 = 0.6;
-R3 = 0.2;
+R1 = 1.0
+R2 = 0.6
+R3 = 0.2
 
 #=================================================
 #|       conditions aux limites           |
 #=================================================
-alpha=1.0e5;
-p=1.e7;
+alpha=1.0e5
+p=1.e7
 
 #================================================================================
 #| on notera dans la suite par '_c' la contribution du chargement constant
@@ -548,7 +548,7 @@ CH=AFFE_CHAR_MECA_F(MODELE=MO,
                               _F(GROUP_MA='S2R3',DX=ux2s,DY=uy2s),
                               _F(TOUT='OUI',DZ=zero),
                              ),
-                   );
+                   )
 
 #+----------------------------------------+
 #|               contact                  |
@@ -572,7 +572,7 @@ CONT_S  = DEFI_CONTACT(MODELE = MO,
                               ALGO_CONT     = 'STANDARD',
                               COEF_CONT     = E1,
                               CONTACT_INIT  = 'OUI',
-                              GLISSIERE     = 'NON',),),);
+                              GLISSIERE     = 'NON',),),)
 
 #+----------------------------------------+
 #|               calcul                   |
@@ -580,7 +580,7 @@ CONT_S  = DEFI_CONTACT(MODELE = MO,
 
 INSTS=DEFI_LIST_REEL(DEBUT       = 0.0,
                       INTERVALLE = _F(JUSQU_A = 1.0,
-                                      NOMBRE  = 1,),);
+                                      NOMBRE  = 1,),)
 
 
 RESU=STAT_NON_LINE(MODELE=MO,
@@ -595,12 +595,12 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                      ),
                     SOLVEUR     = _F(METHODE     = 'MUMPS',
                                      PCENT_PIVOT = 250,),
-                    ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),);
+                    ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),)
 
 IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=RESU,),
                ),
-          );
+          )
 
 #+----------------------------------------+
 #|          tests de validation           |
@@ -618,7 +618,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-0.00376627600021,
                   VALE_REFE=-0.00375570512497,
                   PRECISION=0.02,),
-          );
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -631,7 +631,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=-0.00378304772755,
                   PRECISION=0.02,),
 
-          );
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -644,7 +644,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='ABSOLU',
                   VALE_REFE=0.0,
                   PRECISION=1.E-8,),
-          );
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -656,7 +656,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-9233087.16553,
                   VALE_REFE=-9257321.27791,
                   PRECISION=0.02,),
-          );
+          )
 
 ## noeud 285
 
@@ -670,7 +670,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-0.00376627600021,
                   VALE_REFE=-0.00375570512497,
                   PRECISION=0.02,),
-          );
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -682,7 +682,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-0.00379299801484,
                   VALE_REFE=-0.00378304772755,
                   PRECISION=0.02,),
-          );
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -695,7 +695,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='ABSOLU',
                   VALE_REFE=0.0,
                   PRECISION=1.E-8,),
-           );
+           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -707,7 +707,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-9233087.16553,
                   VALE_REFE=-9257321.27791,
                   PRECISION=0.02,),
-          );
+          )
 
 ## noeud 790
 
@@ -721,7 +721,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-0.00376627600021,
                   VALE_REFE=-0.00375570512497,
                   PRECISION=0.02,),
-          );
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -733,7 +733,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-0.00379299801484,
                   VALE_REFE=-0.00378304772755,
                   PRECISION=0.02,),
-          );
+          )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -746,7 +746,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE='ABSOLU',
                   VALE_REFE=0.0,
                   PRECISION=1.E-8,),
-           );
+           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_ABS='NON',
@@ -758,6 +758,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-9233087.16553,
                   VALE_REFE=-9257321.27791,
                   PRECISION=0.02,),
-          );
+          )
 
-FIN();
+FIN()

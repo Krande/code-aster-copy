@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,14 +41,14 @@ for czero in (False, True,) :
          c3=0.
          c4=0.
 # valeur de non-regression
-         vcalc=2.45714285714;
+         vcalc=2.45714285714
       else :
          c1=1.1
          c2=2.2
          c3=3.3
          c4=4.4
 # valeur de non-regression
-         vcalc=2.77142857143;
+         vcalc=2.77142857143
 
 
       CHAR1=AFFE_CHAR_MECA(MODELE=MODEL,
@@ -56,7 +56,7 @@ for czero in (False, True,) :
                                         _F(GROUP_NO='N2',          DY=c3)),
                            LIAISON_DDL= _F(GROUP_NO=('N3','N3'), DDL=('DX','DY',),
                                           COEF_MULT=(1.0,-1.0,), COEF_IMPO=c4),
-                           FORCE_INTERNE=_F(TOUT='OUI',  FX=5.0, FY=7.0,),);
+                           FORCE_INTERNE=_F(TOUT='OUI',  FX=5.0, FY=7.0,),)
 
 
 

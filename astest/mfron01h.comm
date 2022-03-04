@@ -263,7 +263,7 @@ liste_vale = [0.0, 1., 1., 1.] + 9*[0.0]
 VAIN11= CREA_CHAMP(OPERATION = 'AFFE', TYPE_CHAM = 'ELGA_VARI_R', MODELE = MO,
                    AFFE=(_F(TOUT='OUI', NOM_CMP = liste_var, VALE = liste_vale, ),
                         ),
-                   );
+                   )
 
 SMF=STAT_NON_LINE( MODELE=MO,INFO=2,
                     ETAT_INIT = _F(VARI=VAIN11,),

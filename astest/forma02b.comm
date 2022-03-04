@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,26 +24,26 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
                           NU=0.3,
-                          RHO=7800.0,),);
+                          RHO=7800.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_MA='BASE',
                                    DX=0.0,
                                    DY=0.0,
-                                   DZ=0.0,),);
+                                   DZ=0.0,),)
 
 ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -52,7 +52,7 @@ ASSEMBLAGE(MODELE=MODELE,
                 MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  OPTION='PLUS_PETITE',
@@ -64,7 +64,7 @@ MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=MODES,
-                  NOM_CHAM='DEPL',),);
+                  NOM_CHAM='DEPL',),)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
@@ -73,4 +73,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   ),
           )
 
-FIN();
+FIN()

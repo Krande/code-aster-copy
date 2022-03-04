@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ MA_A1=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = M_LLLL,
 MA_A2=DEFI_MATERIAU(ELAS =_F(E  = E_A,
                              NU = NU_A,),)
 
-MAIL=LIRE_MAILLAGE(FORMAT    = 'MED',);
+MAIL=LIRE_MAILLAGE(FORMAT    = 'MED',)
 
 MODE=AFFE_MODELE(MAILLAGE = MAIL,
                  AFFE     = (_F(GROUP_MA    = ('BETON','BOUT'),
@@ -78,13 +78,13 @@ MATE1=AFFE_MATERIAU(MAILLAGE = MAIL,
                    AFFE     = (_F(GROUP_MA = 'MEMBRA',
                                   MATER    = MA_A1,),
                                _F(GROUP_MA = 'BETON',
-                                  MATER    = MA_B,)));
+                                  MATER    = MA_B,)))
 
 MATE2=AFFE_MATERIAU(MAILLAGE = MAIL,
                    AFFE     = (_F(GROUP_MA = 'MEMBRA',
                                   MATER    = MA_A2,),
                                _F(GROUP_MA = 'BETON',
-                                  MATER    = MA_B,)));
+                                  MATER    = MA_B,)))
 
 CL_DEPL=AFFE_CHAR_CINE(MODELE   = MODE,
                        MECA_IMPO =(_F(GROUP_MA = 'ENCAST',
@@ -92,7 +92,7 @@ CL_DEPL=AFFE_CHAR_CINE(MODELE   = MODE,
                                       DY = 0.,
                                       DZ = 0.),
                                    _F(GROUP_MA = 'BORDS',
-                                      DY = 0.)),);
+                                      DY = 0.)),)
 
 # Couple de 400 N.m exerce en bout de plaque
 F_FORCE = FORMULE(VALE='((Z-0.08)/0.08)*937500.',
@@ -106,7 +106,7 @@ ORI_MEMB=AFFE_CARA_ELEM(MODELE = MODE,
                         MEMBRANE =(_F(GROUP_MA     = 'MEMBRA',
                                       ANGL_REP_1   = (0., 0.,),
                                       EPAIS        = ep ,
-                                      N_INIT       = 0.)));
+                                      N_INIT       = 0.)))
 
 #
 # ----------------------------------------------
@@ -115,14 +115,14 @@ ORI_MEMB=AFFE_CARA_ELEM(MODELE = MODE,
 #
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,100.,100.,),
-                    );
+                    )
 CST=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,multMax,100.,multMax,),
-                    );
+                    )
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=multMax,
-                                   NOMBRE =1,),);
+                                   NOMBRE =1,),)
 
 RESU1 = MECA_STATIQUE(MODELE        = MODE,
                      CHAM_MATER    = MATE1,
@@ -262,4 +262,4 @@ TEST_RESU(RESU=(_F(LEGENDE='Depl point 1',
                ),
          )
 
-FIN();
+FIN()

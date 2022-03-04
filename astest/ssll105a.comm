@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ STAT1=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
                    CARA_ELEM=CHAMPCAR,
                    EXCIT=(_F(CHARGE=CHADDL,),
-                          _F(CHARGE=CHARGE1,),),);
+                          _F(CHARGE=CHARGE1,),),)
 
 SIGM1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT1, NUME_ORDRE=1,
@@ -97,7 +97,7 @@ STAT2=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
                    CARA_ELEM=CHAMPCAR,
                    EXCIT=(_F(CHARGE=CHADDL,),
-                          _F(CHARGE=CHARGE2,),),);
+                          _F(CHARGE=CHARGE2,),),)
 
 SIGM2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT2, NUME_ORDRE=1,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,23 +17,23 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=17,);
+MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=17,)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 
-MA_SECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=18,);
+MA_SECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=18,)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA='AB',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_TGM',),);
+                       MODELISATION='POU_D_TGM',),)
 
 MATE=DEFI_MATERIAU(ELAS=_F(E=12.0E+6,
-                           NU=0.3,),);
+                           NU=0.3,),)
 
 GF=DEFI_GEOM_FIBRE(
    SECTION =_F(GROUP_FIBRE='SECF',
@@ -49,7 +49,7 @@ COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MATE,
 CH_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F(TOUT='OUI',MATER=MATE,),
                   AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF),
-                 );
+                 )
 
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
@@ -62,7 +62,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                                    VALE=0.0,),
                       GEOM_FIBRE=GF,
                       MULTIFIBRE=_F(GROUP_MA='AB',
-                                   GROUP_FIBRE='SECF'),);
+                                   GROUP_FIBRE='SECF'),)
 
 CL=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(GROUP_NO='PA',
@@ -72,20 +72,20 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
                                DRY=0.,
                                DRZ=0.,),
                             _F(GROUP_NO='AB',
-                               DZ=0.,),),);
+                               DZ=0.,),),)
 
 MOMENT=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_NODALE=_F(GROUP_NO='PB',
-                                      MZ=100.0,),);
+                                      MZ=100.0,),)
 
 MOMENT_F=DEFI_FONCTION(NOM_PARA='INST',
-                       VALE=(0.0,0.0,10.0,10.0,),);
-tfin = 6.0;
+                       VALE=(0.0,0.0,10.0,10.0,),)
+tfin = 6.0
 
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=tfin,
-                                   NOMBRE=1200,),);
+                                   NOMBRE=1200,),)
 
 RESO=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CH_MAT,
@@ -100,28 +100,28 @@ RESO=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
-                   );
+                   )
 
 U_CALC=RECU_FONCTION(RESULTAT=RESO,
                      TOUT_ORDRE='OUI',
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
-                     GROUP_NO='PB',);
+                     GROUP_NO='PB',)
 
 V_CALC=RECU_FONCTION(RESULTAT=RESO,
                      TOUT_ORDRE='OUI',
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
-                     GROUP_NO='PB',);
+                     GROUP_NO='PB',)
 
 DRZ_CAL=RECU_FONCTION(RESULTAT=RESO,
                       TOUT_ORDRE='OUI',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DRZ',
-                      GROUP_NO='PB',);
+                      GROUP_NO='PB',)
 
 DRZ_CALC=CALC_FONCTION(COMB=_F(FONCTION=DRZ_CAL,
-                               COEF=-1.0,),);
+                               COEF=-1.0,),)
 #Test sur la rotation autour de Z de l'extremite libre
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.300152024531,
@@ -169,7 +169,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-5.9888738428,
 
 TPS_CALC=DEFI_LIST_REEL(DEBUT=0.005,
                         INTERVALLE=_F(JUSQU_A=tfin,
-                                      PAS=0.005,),);
+                                      PAS=0.005,),)
 
 U_REFE = FORMULE(VALE='10*(sin(INST)/INST-1)',
                  NOM_PARA='INST',)
@@ -179,35 +179,35 @@ V_REFE = FORMULE(VALE='10*(1-cos(INST))/INST',
 
 U_REF_FO=CALC_FONC_INTERP(FONCTION=U_REFE,
                           LIST_PARA=TPS_CALC,
-                          PROL_GAUCHE='LINEAIRE',);
+                          PROL_GAUCHE='LINEAIRE',)
 
 V_REF_FO=CALC_FONC_INTERP(FONCTION=V_REFE,
                           LIST_PARA=TPS_CALC,
-                          PROL_GAUCHE='LINEAIRE',);
+                          PROL_GAUCHE='LINEAIRE',)
 #Calcul des valeurs analytiques aux instants choisis
-INST1 = 0.3;
+INST1 = 0.3
 
-U1 = 10*(sin(INST1)/INST1-1);
+U1 = 10*(sin(INST1)/INST1-1)
 
-V1 = 10*(1-cos(INST1))/INST1;
+V1 = 10*(1-cos(INST1))/INST1
 
-INST2 = 0.6;
+INST2 = 0.6
 
-U2 = 10*(sin(INST2)/INST2-1);
+U2 = 10*(sin(INST2)/INST2-1)
 
-V2 = 10*(1-cos(INST2))/INST2;
+V2 = 10*(1-cos(INST2))/INST2
 
-INST3 = 3.0;
+INST3 = 3.0
 
-U3 = 10*(sin(INST3)/INST3-1);
+U3 = 10*(sin(INST3)/INST3-1)
 
-V3 = 10*(1-cos(INST3))/INST3;
+V3 = 10*(1-cos(INST3))/INST3
 
-INST4 = 6.0;
+INST4 = 6.0
 
-U4 = 10*(sin(INST4)/INST4-1);
+U4 = 10*(sin(INST4)/INST4-1)
 
-V4 = 10*(1-cos(INST4))/INST4;
+V4 = 10*(1-cos(INST4))/INST4
 
 #Test sur le deplacement l'extremite libre
 
@@ -310,17 +310,17 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                       _F(FONCTION=U_REF_FO,),
                       _F(FONCTION=V_REF_FO,
                          LIST_PARA=TEMPS,),),
-              TITRE='DX et DY en fonction du pseudo-temps',);
+              TITRE='DX et DY en fonction du pseudo-temps',)
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=30,
               COURBE=_F(FONCTION=DRZ_CALC,),
-              TITRE='DRZ en fonction du pseudo-temps',);
+              TITRE='DRZ en fonction du pseudo-temps',)
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=(_F(FONCTION=U_CALC,),
                       _F(FONCTION=V_CALC,),
                       _F(FONCTION=DRZ_CALC,),),
-              UNITE=8,);
+              UNITE=8,)
 
-FIN();
+FIN()

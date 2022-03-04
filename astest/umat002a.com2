@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ for i in range(Ncal):
                                  _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
 
 #       Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
@@ -72,9 +72,9 @@ for i in range(Ncal):
                  #  THER=_F(INST_IMP= inst_th, TEMP_IMP= temp_th, OPTION = opt_ther,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                      INFO=2,  );
+                      INFO=2,  )
 
-        #IMPR_TABLE(TABLE=RESU[i]);
+        #IMPR_TABLE(TABLE=RESU[i])
 
 # On renomme les composantes en fonction de  l'ordre de discretisation
         N = N_pas[i]
@@ -91,7 +91,7 @@ for i in range(Ncal):
                                             NOM_PARA=('INST',ch,),),
                                               _F(OPERATION='RENOMME',
                                                 NOM_PARA=(ch,chnew,),),
-                                                                ),);
+                                                                ),)
                 else:
                         TMP_S=CALC_TABLE( TABLE=RESU[i],
                                      TITRE = ' ',
@@ -103,14 +103,14 @@ for i in range(Ncal):
                                             NOM_PARA=('INST',ch,),),
                                                 _F(OPERATION='RENOMME',
                                                 NOM_PARA=(ch,chnew,),),
-                                                                ),);
+                                                                ),)
                         R_SI[j]=CALC_TABLE( reuse=R_SI[j], TABLE=R_SI[j],
                                      TITRE = ' ',
                                         ACTION=( _F(OPERATION='COMB',
                                         TABLE=TMP_S,NOM_PARA='INST',),
-                                                ),);
+                                                ),)
                         DETRUIRE(NOM = TMP_S,)
-                #IMPR_TABLE(TABLE=R_SI[j]);
+                #IMPR_TABLE(TABLE=R_SI[j])
         DETRUIRE(NOM = temps,)
 
 # TEST_RESU sur les erreurs relatives
@@ -142,14 +142,14 @@ TEST_TABLE(TABLE=R_SI[1],
            VALE_CALC=1.6120022281101E+09,
            VALE_REFE=1.612E+09,
            FILTRE=_F(NOM_PARA='INST',VALE=6.0*t_0),
-           REFERENCE='NON_DEFINI',);
+           REFERENCE='NON_DEFINI',)
 
 TEST_TABLE(TABLE=R_SI[3],
            NOM_PARA='SIXX_Pa_1',
            VALE_CALC=-1.8475961538462E+09,
            VALE_REFE=-1.848E+09,
            FILTRE=_F(NOM_PARA='INST',VALE=6.0*t_0),
-           REFERENCE='NON_DEFINI',);
+           REFERENCE='NON_DEFINI',)
 
 
 # Test de la matrice tangente sur le calcul le plus fin
@@ -163,7 +163,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
                                  _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
 
 DEBUG(SDVERI='NON')
 
@@ -180,7 +180,7 @@ RESU_TGT=SIMU_POINT_MAT(
                    INCREMENT=_F(LIST_INST=Linst,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                      INFO=1,  );
+                      INFO=1,  )
 
 
 DIFF_MAT=VERI_MATR_TANG()
@@ -192,7 +192,7 @@ TEST_TABLE(TABLE=DIFF_MAT,
            VALE_REFE=0.,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE',)
 
 
 
@@ -200,4 +200,4 @@ TEST_TABLE(TABLE=DIFF_MAT,
 
 #
 IMPR_TABLE(TABLE=DIFF_MAT)
-FIN();
+FIN()

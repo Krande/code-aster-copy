@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,24 +22,24 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 youn1 = 31000.0
 nu1   = 0.2
 
-M = LIRE_MAILLAGE( FORMAT = 'MED',);
+M = LIRE_MAILLAGE( FORMAT = 'MED',)
 
 MO = AFFE_MODELE( MAILLAGE = M,
                   AFFE = _F( TOUT = 'OUI',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = '3D',),);
+                             MODELISATION = '3D',),)
 
 FONC1 = DEFI_FONCTION( NOM_PARA = 'SECH',
                        VALE = (0.0,   0.0,
                                100.0, 1.0,),
                        PROL_DROITE = 'LINEAIRE',
-                       PROL_GAUCHE = 'LINEAIRE',);
+                       PROL_GAUCHE = 'LINEAIRE',)
 
-E = DEFI_CONSTANTE( VALE = youn1,);
+E = DEFI_CONSTANTE( VALE = youn1,)
 
-Nu = DEFI_CONSTANTE( VALE = nu1,);
+Nu = DEFI_CONSTANTE( VALE = nu1,)
 
-ALPHA = DEFI_CONSTANTE( VALE = 0.);
+ALPHA = DEFI_CONSTANTE( VALE = 0.)
 
 BETON = DEFI_MATERIAU( ELAS_FO = _F( E = E,
                                      NU = Nu,
@@ -57,28 +57,28 @@ BETON = DEFI_MATERIAU( ELAS_FO = _F( E = E,
                                           ETA_ID   = 1.64e12,
                                           ETA_FD   = 0.,
                                           QSR_K    = 0.,
-                                          TEMP_0_C = 20.,),);
+                                          TEMP_0_C = 20.,),)
 
 SECH0 = CREA_CHAMP( TYPE_CHAM = 'NOEU_TEMP_R',
                     OPERATION = 'AFFE',
                     MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
-                               VALE = 100.0,),);
+                               VALE = 100.0,),)
 
 SECHI = CREA_CHAMP( TYPE_CHAM = 'NOEU_TEMP_R',
                     OPERATION = 'AFFE',
                     MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
-                               VALE = 100.0,),);
+                               VALE = 100.0,),)
 
 SECHF = CREA_CHAMP( TYPE_CHAM = 'NOEU_TEMP_R',
                     OPERATION = 'AFFE',
                     MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
-                               VALE = 100.0,),);
+                               VALE = 100.0,),)
 
 SECH1 = CREA_RESU( OPERATION = 'AFFE',
                    TYPE_RESU = 'EVOL_THER',
@@ -88,14 +88,14 @@ SECH1 = CREA_RESU( OPERATION = 'AFFE',
                            _F( CHAM_GD = SECHI,
                                INST = 0.0,),
                            _F( CHAM_GD = SECHF,
-                               INST = 64800000.0,),),);
+                               INST = 64800000.0,),),)
 
 TEMP = CREA_CHAMP( TYPE_CHAM = 'NOEU_TEMP_R',
                    OPERATION = 'AFFE',
                    MAILLAGE = M,
                    AFFE = _F( TOUT = 'OUI',
                               NOM_CMP = 'TEMP',
-                              VALE = 20.0,),);
+                              VALE = 20.0,),)
 
 CM = AFFE_MATERIAU( MAILLAGE = M,
                     AFFE = _F( TOUT = 'OUI',
@@ -108,34 +108,34 @@ CM = AFFE_MATERIAU( MAILLAGE = M,
                                   _F( TOUT = 'OUI',
                                       CHAM_GD = TEMP,
                                       NOM_VARC = "TEMP",
-                                      VALE_REF = 20.),),);
+                                      VALE_REF = 20.),),)
 
 FORCE = DEFI_FONCTION( NOM_PARA = 'INST',
                        VALE = (0.0,        0.0,
                                1.0,        10.0,
                                64800000.0, 10.0,),
                        PROL_DROITE = 'LINEAIRE',
-                       PROL_GAUCHE = 'LINEAIRE',);
+                       PROL_GAUCHE = 'LINEAIRE',)
 
 CH10 = AFFE_CHAR_MECA( MODELE = MO,
                        DDL_IMPO = _F( GROUP_NO = ('P1','P2','P3','P4'),
-                                      DX = 0.0, DY = 0.0, DZ = 0.0,),);
+                                      DX = 0.0, DY = 0.0, DZ = 0.0,),)
 
 CH12 = AFFE_CHAR_MECA( MODELE = MO,
                        DDL_IMPO = _F( GROUP_NO = ('P5','P6','P7','P8'),
                                       DY = 0.0, DZ = 0.0,),
                        LIAISON_UNIF = _F( GROUP_NO = ('P5','P6','P7','P8'),
-                                          DDL = 'DX',),);
+                                          DDL = 'DX',),)
 
 CH13 = AFFE_CHAR_MECA_F( MODELE = MO,
-                         FORCE_NODALE = _F( GROUP_NO = 'P8', FX = FORCE),);
+                         FORCE_NODALE = _F( GROUP_NO = 'P8', FX = FORCE),)
 
 L_INST = DEFI_LIST_REEL( DEBUT = -1.0,
                          INTERVALLE = (_F( JUSQU_A = 1.0,        NOMBRE = 2,),
                                        _F( JUSQU_A = 64800.0,    NOMBRE = 2,),
                                        _F( JUSQU_A = 648000.0,   NOMBRE = 2,),
                                        _F( JUSQU_A = 6480000.0,  NOMBRE = 2,),
-                                       _F( JUSQU_A = 64800000.0, NOMBRE = 2,),),);
+                                       _F( JUSQU_A = 64800000.0, NOMBRE = 2,),),)
 
 U = STAT_NON_LINE( MODELE = MO,
                    CHAM_MATER = CM,
@@ -149,11 +149,11 @@ U = STAT_NON_LINE( MODELE = MO,
                                 MATRICE = 'TANGENTE',
                                 REAC_ITER = 1,),
                    CONVERGENCE = _F( RESI_GLOB_MAXI = 1e-08,
-                                     ITER_GLOB_MAXI = 25),);
+                                     ITER_GLOB_MAXI = 25),)
 
 U = CALC_CHAMP( reuse = U,RESULTAT = U,
                 CONTRAINTE = ('SIGM_ELNO'),
-                DEFORMATION = ('EPSI_ELNO'),);
+                DEFORMATION = ('EPSI_ELNO'),)
 
 
 # VALEURS DE NON-REGRESSION
@@ -200,5 +200,5 @@ TEST_RESU(RESU=(_F(INST=6.4800E4,
                 ),
           )
 
-FIN();
+FIN()
 #

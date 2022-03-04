@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,12 +140,12 @@ DDL_IMPO=RESOUDRE(reuse=DDL_IMPO,  MATR=MATASS2,     CHAM_NO=DDL_IMPO )
 #----------------------------------------------------------------------
 # CAS 3:         DILATATION THERMIQUE A 100
 #----------------------------------------------------------------------
-                        
+
 # prise en compte des variables de commande
 
 LIST1=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=1,),);
+                                  NOMBRE=1,),)
 
 CONT1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
             MODELE=MOD,
@@ -155,7 +155,7 @@ CONT1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
                          NUME_ORDRE=1),
             EXCIT=_F(CHARGE=COND_LIM,),
             COMPORTEMENT=_F(RELATION='ELAS',),
-            );
+            )
 
 VEL3=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT1,

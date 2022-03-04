@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,21 +19,21 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_SI',),);
+                       MODELISATION='D_PLAN_SI',),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=_F(GROUP_MA_PEAU=('LBC','LDA',),),
-                 );
+                 )
 
-L = 100.;
+L = 100.
 
-B = 100.;
+B = 100.
 
 
 FSZ = FORMULE(VALE='(1. - 4.*Y**2/B**2)',
@@ -46,11 +46,11 @@ FSX = FORMULE(VALE='8.*L*Y/B**2',
               NOM_PARA='Y',)
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=100.,
-                               NU=0.4999,),);
+                               NU=0.4999,),)
 
 CH_MATER=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATERIAU,),);
+                               MATER=MATERIAU,),)
 
 SYMETRIE=AFFE_CHAR_MECA(MODELE=MO,
                         DDL_IMPO=(_F(GROUP_NO='A',
@@ -58,9 +58,9 @@ SYMETRIE=AFFE_CHAR_MECA(MODELE=MO,
                                   _F(GROUP_NO='D',
                                      DX=0,),),
                         FACE_IMPO=_F(GROUP_MA='LAB',
-                                     DTAN=0,),);
+                                     DTAN=0,),)
 # DTAN=0 <=> DX=0
-#                                     DX=0,),);
+#                                     DX=0,),)
 
 CHARGE=AFFE_CHAR_MECA_F(MODELE=MO,
                         PRES_REP=(_F(GROUP_MA='LBC',
@@ -69,15 +69,15 @@ CHARGE=AFFE_CHAR_MECA_F(MODELE=MO,
                                      CISA_2D=FSZ,
                                      PRES=FSX),
                                  ),
-                           );
+                           )
 
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
-                                      NOMBRE=1,),);
+                                      NOMBRE=1,),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,  0.0,
-                          1.0,  1.0,),);
+                          1.0,  1.0,),)
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CH_MATER,
@@ -87,7 +87,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=INSTANTS,),
                    NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),);
+                   ARCHIVAGE=_F(LIST_INST=INSTANTS,),)
 
 TEST_RESU(RESU=(_F(GROUP_NO='C',
                    INST=1.0,
@@ -110,4 +110,4 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
                 ),
           )
 
-FIN();
+FIN()

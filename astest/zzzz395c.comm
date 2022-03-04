@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # Read the mesh
-mesh=LIRE_MAILLAGE(FORMAT='MED',);
+mesh=LIRE_MAILLAGE(FORMAT='MED',)
 
 # Thermal conductivity depending by the temperature (W.mm-1.K-1)
 Lambda=DEFI_FONCTION(
@@ -40,7 +40,7 @@ Lambda=DEFI_FONCTION(
                            1000.0 ,0.0273 ,
                            1200.0 ,0.0299 ,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 
 # Volumetric heat capacity depending by the temperature (J.mm-3.K-1)
 rho_cp=DEFI_FONCTION(
@@ -58,13 +58,13 @@ rho_cp=DEFI_FONCTION(
                            1000.0 ,0.0049962 ,
                            1200.0 ,0.00504365 ,),
                      PROL_DROITE='LINEAIRE',
-                     PROL_GAUCHE='LINEAIRE',);
+                     PROL_GAUCHE='LINEAIRE',)
 # Heat transfer coefficient with air (W.mm-2.K-1)
-C_echang=DEFI_CONSTANTE(VALE=1.5e-05,);
+C_echang=DEFI_CONSTANTE(VALE=1.5e-05,)
 # Heat transfer coefficient with one face of the cube (W.mm-2.K-1)
-C_echanf=DEFI_CONSTANTE(VALE=1.0,);
+C_echanf=DEFI_CONSTANTE(VALE=1.0,)
 # Ambient temperature
-T_ex=DEFI_CONSTANTE(VALE=20.0,);
+T_ex=DEFI_CONSTANTE(VALE=20.0,)
 # Temperature of one face of the cube
 T_im=DEFI_FONCTION(
                    NOM_PARA='INST',
@@ -79,23 +79,23 @@ T_im=DEFI_FONCTION(
                          8.0 ,800.0 ,
                          9.0 ,1000.0 ,),
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE',)
 # Emissivity
-C_epsi=DEFI_CONSTANTE(VALE=0.75,);
+C_epsi=DEFI_CONSTANTE(VALE=0.75,)
 # Stefan–Boltzmann constant (J.mm-2.s-1.K-4)
-C_sigma=DEFI_CONSTANTE(VALE=5.67e-14,);
+C_sigma=DEFI_CONSTANTE(VALE=5.67e-14,)
 # Define the material
 steel=DEFI_MATERIAU(THER_NL=_F(LAMBDA=Lambda,
-                             RHO_CP=rho_cp,),);
+                             RHO_CP=rho_cp,),)
 # Define the material field
 chmat=AFFE_MATERIAU(MAILLAGE=mesh,
                     AFFE=_F(TOUT='OUI',
-                            MATER=steel,),);
+                            MATER=steel,),)
 # Thermic model
 model=AFFE_MODELE(MAILLAGE=mesh,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='THERMIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 # Limit condition
 chg_th=AFFE_CHAR_THER_F(MODELE=model,
                         RAYONNEMENT=_F(GROUP_MA='S_e',
@@ -107,13 +107,13 @@ chg_th=AFFE_CHAR_THER_F(MODELE=model,
                                     TEMP_EXT=T_ex,),
                                  _F(GROUP_MA='S_f',
                                     COEF_H=C_echanf,
-                                    TEMP_EXT=T_im,),),);
+                                    TEMP_EXT=T_im,),),)
 list_t=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=10.0,
-                                    PAS=1.0,),);
+                                    PAS=1.0,),)
 
 list_i=DEFI_LIST_INST(METHODE='MANUEL',
-                      DEFI_LIST=_F(LIST_INST=list_t,),);
+                      DEFI_LIST=_F(LIST_INST=list_t,),)
 
 thnl=THER_NON_LINE(MODELE=model,
                    CHAM_MATER=chmat,
@@ -122,7 +122,7 @@ thnl=THER_NON_LINE(MODELE=model,
                    ETAT_INIT=_F(VALE=20.0,),
                    NEWTON=_F(REAC_ITER=1,
                              ITER_LINE_MAXI=3,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),)
 
 # Valeurs de référence (calcul complet)
 
@@ -156,7 +156,7 @@ TEST_RESU(RESU=(
                    VALE_CALC=999.349943608,
                    ),
                 ),
-          );
+          )
 
 base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
                  FORMAT     = 'MED',
@@ -164,7 +164,7 @@ base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
                  UNITE      = 70,
                  FORMAT_MED =_F(NOM_CHAM_MED = 'base_p__TEMP',
                                 NOM_CHAM     = 'TEMP',),
-                 TOUT_ORDRE = 'OUI',);
+                 TOUT_ORDRE = 'OUI',)
 
 
 redu=THER_NON_LINE(MODELE=model,
@@ -178,7 +178,7 @@ redu=THER_NON_LINE(MODELE=model,
                     BASE_PRIMAL     = base_p,
                     DOMAINE_REDUIT  = 'NON',
                     ),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),);
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),)
 
 
 # Test du modèle réduit par rapport au modèle complet
@@ -225,5 +225,5 @@ TEST_RESU(RESU=(
                    PRECISION=6.E-6,
                    ),
                 ),
-          );
-FIN();
+          )
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
          DEBUG=_F(SDVERI='OUI'),)
 
-MaiPlate=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MaiPlate=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 plate=AFFE_MODELE(MAILLAGE=MaiPlate,
                    AFFE=(_F(GROUP_MA=('ALL',),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),),);
+                           MODELISATION='3D',),),)
 nbcalc= 3
 nbcalc= nbcalc +2
 rayon = 250.
@@ -60,7 +60,7 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          GROUP_MA_FISS='FISS',
          GROUP_MA_FOND='FOND',
          NB_POINT_FOND = 21,
-         );
+         )
 
 
 #***********************************
@@ -71,7 +71,7 @@ TABK= LIRE_TABLE(UNITE=38, NUME_TABLE = 1 , FORMAT='ASTER')
 E=205000.0E6
 nu=0.3
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
 
 for i in range(0,(nbcalc-1)) :
 
@@ -79,13 +79,13 @@ for i in range(0,(nbcalc-1)) :
  MODEL[i]=AFFE_MODELE(MAILLAGE=MAT[i],
                    AFFE=(_F(GROUP_MA=('ALL',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
+                            MODELISATION='3D',),),)
 
  FF[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                               GROUP_MA_FOND='FOND_'+str(i),),
                    MAILLAGE=MAT[i],
                    INFO=1
-                   );
+                   )
 
  if ( i != nbcalc ) :
    MAX[i+1]=CO('MAX_%d'%(i+1))
@@ -110,7 +110,7 @@ for i in range(0,(nbcalc-1)) :
             MAIL_TOTAL = MAT[i+1],
             DA_MAX=25,
             ITERATION = i+1,
-            INFO=2,);
+            INFO=2,)
 
 
 #****************************
@@ -120,13 +120,13 @@ for i in range(0,(nbcalc-1)) :
 CHLT[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
                 NOM_CHAM='LTNO',
-                FISSURE=FF[i],);
+                FISSURE=FF[i],)
 
 TABLST[i] = POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
                                  GROUP_NO=('A','B','C','D','E','F','G','H',),
                                  CHAM_GD=CHLT[i],
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 
 d1 = 500.*sqrt(2.)- rayon - (nbcalc-2)*avance
@@ -151,4 +151,4 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=TABLST[3],
            )
 
-FIN();
+FIN()

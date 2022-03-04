@@ -111,7 +111,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
                                _F(GROUP_MA='FACE6',
                                   CRIT_NOEUD='TOUS')),
                 MAILLAGE=CUBE,
-               );
+               )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
                 ALARME='OUI',
@@ -140,7 +140,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
                                   GROUP_NO='FACE6',
                                   NOM='FACE6_3D')),
                 MAILLAGE=CUBE,
-               );
+               )
 
 WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                             INTERPOL='LOG',
@@ -212,7 +212,7 @@ ACIER[1]   = DEFI_MATERIAU   ( ELAS           =_F( E         = 200000.,
 
 LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
                            INTERVALLE =_F (JUSQU_A= 4.0, NOMBRE = 8  )
-                                         );
+                                         )
 
 TROISD   = AFFE_MODELE    ( MAILLAGE   =    CUBE,
                             AFFE       =_F ( PHENOMENE    = 'MECANIQUE',
@@ -241,7 +241,7 @@ TR_CS  = AFFE_CHAR_MECA (
            DDL_IMPO     =(_F( GROUP_NO= 'P3' , DZ=0.) ),
            FORCE_FACE   =(_F( GROUP_MA= 'FACE4', FX=1.),
                           _F( GROUP_MA= 'FACE1', FY=-2.) )
-                         );
+                         )
 
 # CALCUL AVEC STAT_NON_LINE
 # -------------------------
@@ -262,7 +262,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
 SOL_NL = CALC_CHAMP(reuse=SOL_NL,
                     RESULTAT=SOL_NL,
                     CONTRAINTE=('SIGM_ELNO',),
-                    DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),);
+                    DEFORMATION=('EPSI_ELGA','EPSI_ELNO',),)
 
 SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,
@@ -723,7 +723,7 @@ SOL_L = MECA_STATIQUE (
 SOL_L = CALC_CHAMP(reuse=SOL_L,
                    RESULTAT=SOL_L,
                    CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
-                   DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSI_NOEU',),);
+                   DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSI_NOEU',),)
 
 # TEST DES CONTRAINTES OBTENUES AUX POINTS DE GAUSS AVEC MECA_STATIQUE
 # -----------------------------------------------------------------

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ from math import *
 MESH_T3 = LIRE_MAILLAGE(FORMAT = 'MED')
 
 MESH_T6 = CREA_MAILLAGE(MAILLAGE  = MESH_T3,
-                        LINE_QUAD = _F(TOUT='OUI'));
+                        LINE_QUAD = _F(TOUT='OUI'))
 
 rho_cp = 2.0
 LAMBDA = DEFI_CONSTANTE(VALE = rho_cp)

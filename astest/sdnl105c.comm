@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -271,21 +271,21 @@ CHS2=[None]*5
 
 for k in range(1,5):
   DS1[k] = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT= MODESTA1, NUME_ORDRE=k, NOM_CHAM = 'DEPL');
+                  RESULTAT= MODESTA1, NUME_ORDRE=k, NOM_CHAM = 'DEPL')
   DS2[k] = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT= MODESTA2, NUME_ORDRE=k, NOM_CHAM = 'DEPL');
+                  RESULTAT= MODESTA2, NUME_ORDRE=k, NOM_CHAM = 'DEPL')
 
   DS3[k] = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT= MODESTA3, NUME_ORDRE=k, NOM_CHAM = 'DEPL');
+                  RESULTAT= MODESTA3, NUME_ORDRE=k, NOM_CHAM = 'DEPL')
   DS4[k] = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                  RESULTAT= MODESTA4, NUME_ORDRE=k, NOM_CHAM = 'DEPL');
+                  RESULTAT= MODESTA4, NUME_ORDRE=k, NOM_CHAM = 'DEPL')
   CHS1[k] = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
                   MAILLAGE=MAYA,
                   ASSE=(
                       _F (TOUT='OUI', CHAM_GD=DS1[k], ),
                       _F (TOUT='OUI', CHAM_GD=DS2[k], ),
                        ),
-                  );
+                  )
 
   CHS2[k] = CREA_CHAMP (OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',
                   MAILLAGE=MAYA,
@@ -293,7 +293,7 @@ for k in range(1,5):
                       _F (TOUT='OUI', CHAM_GD=DS3[k], ),
                       _F (TOUT='OUI', CHAM_GD=DS4[k], ),
                        ),
-                  );
+                  )
   if k==1:
     MODESTAA = CREA_RESU (
                        OPERATION='AFFE',
@@ -301,14 +301,14 @@ for k in range(1,5):
          AFFE=(
               _F( CHAM_GD= CHS1[k], NOM_CAS= 'CAS A {0}'.format(k)),
               ),
-                     );
+                     )
     MODESTAB = CREA_RESU (
                        OPERATION='AFFE',
                        TYPE_RESU= 'MULT_ELAS', NOM_CHAM='DEPL',
          AFFE=(
               _F( CHAM_GD= CHS2[k], NOM_CAS= 'CAS B {0}'.format(k)),
               ),
-                     );
+                     )
   else:
     MODESTAA = CREA_RESU (reuse = MODESTAA,
                          RESULTAT=MODESTAA,
@@ -317,7 +317,7 @@ for k in range(1,5):
          AFFE=(
               _F( CHAM_GD= CHS1[k], NOM_CAS= 'CAS A {0}'.format(k)),
               ),
-                     );
+                     )
     MODESTAB = CREA_RESU (reuse = MODESTAB,
                          RESULTAT=MODESTAB,
                          OPERATION='AFFE',
@@ -325,7 +325,7 @@ for k in range(1,5):
          AFFE=(
               _F( CHAM_GD= CHS2[k], NOM_CAS= 'CAS B {0}'.format(k)),
               ),
-                     );
+                     )
 
 BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES1),
 #                                _F( MODE_MECA = MODES2,
@@ -384,7 +384,7 @@ MATRRIGI=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGIPRO1,
                                  COEF_R=1.0,),
                                  ),
                                  SANS_CMP='LAGR',
-                                 );
+                                 )
 
 MATRMASS=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
@@ -394,7 +394,7 @@ MATRMASS=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MASSPRO1,
                                  COEF_R=1.0,),
                                  ),
                         SANS_CMP='LAGR',
-                        );
+                        )
 
 AMO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATRMASS,
                                  COEF_R=0.0,),),

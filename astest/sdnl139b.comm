@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,48 +19,48 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
-              ),);
+              ),)
 
 
-_OMEGA = 6.4;
-Fx=-100;
+_OMEGA = 6.4
+Fx=-100
 
 #Choix de l'amortissement numerique pour le modeles de reference 1D, 3D et 1D-3D
-alpha=0.25;
+alpha=0.25
 
 FSIN = FORMULE(VALE='sin((INST)*_OMEGA)',
                _OMEGA=_OMEGA,
                NOM_PARA='INST',)
-Ti=0;
-Tf=3.0;
-Tb=2.0;
+Ti=0
+Tf=3.0
+Tb=2.0
 
-dt=0.0015;
+dt=0.0015
 
-Tb_1=Tb-dt;
-Tb_2=Tb+dt;
+Tb_1=Tb-dt
+Tb_2=Tb+dt
 
-ModRef=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,);
+ModRef=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20,)
 
 ModRef=DEFI_GROUP(reuse =ModRef,
                 MAILLAGE=ModRef,
                 CREA_GROUP_MA=_F(NOM='AllNode',
                                  TOUT='OUI',),
-                CREA_GROUP_NO=_F(GROUP_MA='AllNode',),);
+                CREA_GROUP_NO=_F(GROUP_MA='AllNode',),)
 
 
 MOD3D=AFFE_MODELE(MAILLAGE=ModRef,
                    AFFE=(_F(GROUP_MA='AllNode',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),),);
+                            MODELISATION='3D',),),)
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.3,
-                            RHO=7800.,),);
+                            RHO=7800.,),)
 
 RefMAT=AFFE_MATERIAU(MAILLAGE=ModRef,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),);
+                            MATER=MATER,),)
 
 Cond3D=AFFE_CHAR_MECA(MODELE=MOD3D,
                        DDL_IMPO=(_F(GROUP_NO=('A1','A2',),
@@ -69,7 +69,7 @@ Cond3D=AFFE_CHAR_MECA(MODELE=MOD3D,
                                    DZ=0,),
                                 _F(GROUP_NO='BLC',
                                    DY=0,),
-                                        ),);
+                                        ),)
 
 ASSEMBLAGE(MODELE=MOD3D,
                 CHAM_MATER=RefMAT,
@@ -78,17 +78,17 @@ ASSEMBLAGE(MODELE=MOD3D,
                 MATR_ASSE=(_F(MATRICE=CO('K3D'),
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('M3D'),
-                              OPTION='MASS_MECA',),),);
+                              OPTION='MASS_MECA',),),)
 
 Charg3D=AFFE_CHAR_MECA(MODELE=MOD3D,
                       FORCE_NODALE=_F(GROUP_NO='NFR',
-                                      FX=Fx,),);
+                                      FX=Fx,),)
 
 For3D=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                        CHARGE=Charg3D,);
+                        CHARGE=Charg3D,)
 
 F3Dass=ASSE_VECTEUR(VECT_ELEM=For3D,
-                    NUME_DDL=NUME3D,);
+                    NUME_DDL=NUME3D,)
 
 LIST3D=DEFI_LIST_REEL(DEBUT=Ti,
                     INTERVALLE=(_F(JUSQU_A=Tb_1,
@@ -99,7 +99,7 @@ LIST3D=DEFI_LIST_REEL(DEBUT=Ti,
                                    PAS=dt,),
                                 _F(JUSQU_A=Tf,
                                    PAS=10*dt,),
-                                ),);
+                                ),)
 
 Ref3D=DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
                  MODELE=MOD3D,
@@ -111,18 +111,18 @@ Ref3D=DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
                                 BETA=(1+alpha)**2/4,),
                  EXCIT=_F(VECT_ASSE=F3Dass,
                           FONC_MULT=FSIN,),
-                 INCREMENT=_F(LIST_INST=LIST3D,),);
+                 INCREMENT=_F(LIST_INST=LIST3D,),)
 
 T3D=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='NdR',
                             RESULTAT=Ref3D,
                             NOM_CHAM='DEPL',
                             GROUP_NO='NdR',
-                            NOM_CMP=('DX'),),);
+                            NOM_CMP=('DX'),),)
 
 Ux3D=RECU_FONCTION(TABLE=T3D,
                   PARA_X='INST',
-                  PARA_Y='DX',);
+                  PARA_Y='DX',)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.0003234620,
                         VALE_REFE=-0.000326636,
@@ -141,4 +141,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0003232088,
                         ),
               )
 
-FIN();
+FIN()

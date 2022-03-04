@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,40 +29,40 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 # ---------------------  MAILLAGE ----------------
-MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
+MAILL1=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,
                   CREA_GROUP_NO=(_F(GROUP_MA=('POU1',), NOM='GROUP1',),
                                  _F(GROUP_MA=('POU2',), NOM='GROUP2',),
-                                 ));
+                                 ))
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_LIGNE=_F(GROUP_MA=('POU1',),
                                    GROUP_NO='A',
                                    VECT_TANG=(-1.,0.,0.),),
-                     INFO=2);
+                     INFO=2)
 
 
 # ---- MODELE : POUTRE DROITE D'EULER ----
 MODE=AFFE_MODELE(MAILLAGE=MAILL1,
-                 
+
                  AFFE=(_F(GROUP_MA='POU1',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_E',),
                        _F(GROUP_MA='POU2',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='POU_D_E',),
-                       ),);
+                       ),)
 
 
 # ------------- DEFINITON DU MATERIAU -----------
-MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,NU=0.33333,RHO=7800.,),);
+MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,NU=0.33333,RHO=7800.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                  AFFE=_F(GROUP_MA=('POU1','POU2'),
-                         MATER=MPOUTRE,),);
+                         MATER=MPOUTRE,),)
 
 CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,
                         INFO=1,
@@ -74,21 +74,21 @@ CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,
                                    SECTION='RECTANGLE',
                                    CARA=('HY','HZ',),
                                    VALE=(63.5,10.16,),),
-                                ),);
+                                ),)
 
 
 # ------------- DEFINITION D'UN CARA_ELEM POUR LE CONTACT -----------
 MOD2=AFFE_MODELE(MAILLAGE=MAILL1,
                  AFFE=_F(GROUP_MA='POU2',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='POU_D_E',),);
+                         MODELISATION='POU_D_E',),)
 
 DEFI_R=AFFE_CARA_ELEM(MODELE=MOD2,
                       POUTRE=_F(GROUP_MA='POU2',
                                 SECTION='CERCLE',
                                 VARI_SECT='HOMOTHETIQUE',
                                 CARA=('R_DEBUT','R_FIN',),
-                                VALE=(31.75,31.75,),),);
+                                VALE=(31.75,31.75,),),)
 
 
 # ---------- CONDITIONS AUX LIMITES --------------
@@ -98,28 +98,28 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
                                      DRX=0.0,DRY=0.0,DRZ=0.0),
                                   _F(GROUP_NO=('GROUP1','GROUP2'),
                                      DZ=0.0,DRX=0.0,DRY=0.0,),
-                                  ),);
+                                  ),)
 
 CH1=AFFE_CHAR_MECA(MODELE=MODE,
-                   DDL_IMPO=(_F(GROUP_NO=('C'),DY=-790.,),),);
+                   DDL_IMPO=(_F(GROUP_NO=('C'),DY=-790.,),),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
-                                     NOMBRE=50,),),);
+                                     NOMBRE=50,),),)
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
-                                     NOMBRE=25,),),);
+                                     NOMBRE=25,),),)
 
 
 # ---- METHODE PENALISEE ----
-F_DIST_M=DEFI_CONSTANTE(VALE=31.75);
-F_DIST_E=DEFI_CONSTANTE(VALE=31.75);
+F_DIST_M=DEFI_CONSTANTE(VALE=31.75)
+F_DIST_E=DEFI_CONSTANTE(VALE=31.75)
 
 CHDISC= DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION    = 'DISCRETE',
@@ -141,7 +141,7 @@ CHDISC= DEFI_CONTACT(MODELE         = MODE,
                               E_T            = 1.E5,
                              ),
                           ),
-                   );
+                   )
 
 UDISC=STAT_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
@@ -158,7 +158,7 @@ UDISC=STAT_NON_LINE(MODELE=MODE,
                 CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
                 SOLVEUR=_F(),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
-                INFO=1,);
+                INFO=1,)
 
 UDISC=CALC_CHAMP(reuse =UDISC,
           RESULTAT=UDISC,
@@ -166,7 +166,7 @@ UDISC=CALC_CHAMP(reuse =UDISC,
           FORCE='FORC_NODA',
 
 
-         );
+         )
 
 
 # ---- TABLEAUX ----
@@ -175,14 +175,14 @@ T_REA_DI=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  RESULTAT=UDISC,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 T_DEP_DI=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  GROUP_NO=('C','A1','B1'),
                                  RESULTAT=UDISC,
                                  NOM_CHAM='DEPL',
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 
 #
@@ -205,7 +205,7 @@ T_DEP_DI=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                               #DIST_ESCL      = F_DIST_E,
                              #),
                           #),
-                   #);
+                   #)
 
 
 CHCON= DEFI_CONTACT(MODELE         = MODE,
@@ -228,7 +228,7 @@ CHCON= DEFI_CONTACT(MODELE         = MODE,
                               ADAPTATION='NON',
                              ),
                           ),
-                   );
+                   )
 
 
 UCON=STAT_NON_LINE(MODELE=MODE,
@@ -246,7 +246,7 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                 NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
-                INFO=1,);
+                INFO=1,)
 
 UCON=CALC_CHAMP(reuse =UCON,
           RESULTAT=UCON,
@@ -254,7 +254,7 @@ UCON=CALC_CHAMP(reuse =UCON,
           FORCE='FORC_NODA',
 
 
-         );
+         )
 
 
 # ---- TABLEAUX ----
@@ -263,14 +263,14 @@ T_REA_CO=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  RESULTAT=UCON,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 T_DEP_CO=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  GROUP_NO=('C','A1','B1'),
                                  RESULTAT=UCON,
                                  NOM_CHAM='DEPL',
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 
 # ---- VALIDATION ----
@@ -347,4 +347,4 @@ TEST_TABLE(VALE_CALC=6655.9033895,
                      VALE=1.0,),
            )
 
-FIN();
+FIN()

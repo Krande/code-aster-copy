@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,19 +30,19 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='THERMIQUE',
-                       MODELISATION='AXIS_FOURIER',),);
+                       MODELISATION='AXIS_FOURIER',),)
 
 MA=DEFI_MATERIAU(THER=_F(LAMBDA=1.,
-                         RHO_CP=0.,),);
+                         RHO_CP=0.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA,),);
+                         MATER=MA,),)
 
 T0  =DEFI_CONSTANTE (VALE= 0.)
 FL2 =DEFI_CONSTANTE (VALE= 2.)
@@ -55,42 +55,42 @@ CH=AFFE_CHAR_THER_F(MODELE=MO,
                               FLUN=FL2,),
                   ECHANGE=_F(GROUP_MA='GRMA7',
                              COEF_H=CH2,
-                             TEMP_EXT=TE2,),);
+                             TEMP_EXT=TE2,),)
 
 KE=CALC_MATR_ELEM(OPTION='RIGI_THER',
                   MODELE=MO,
                   CHAM_MATER=CM,
                   MODE_FOURIER=2,
-                  CHARGE=CH,);
+                  CHARGE=CH,)
 
 VE=CALC_VECT_ELEM(OPTION='CHAR_THER',
-                  CHARGE=CH,);
+                  CHARGE=CH,)
 
-NU=NUME_DDL(MATR_RIGI=KE,);
+NU=NUME_DDL(MATR_RIGI=KE,)
 
 KAS=ASSE_MATRICE(MATR_ELEM=KE,
-                 NUME_DDL=NU,);
+                 NUME_DDL=NU,)
 
 VAS=ASSE_VECTEUR(VECT_ELEM=VE,
-                 NUME_DDL=NU,);
+                 NUME_DDL=NU,)
 
 KAS=FACTORISER(reuse =KAS,
-              MATR_ASSE=KAS,);
+              MATR_ASSE=KAS,)
 
 TEMP=RESOUDRE(MATR=KAS,
-               CHAM_NO=VAS,);
+               CHAM_NO=VAS,)
 
 FLUXNO=CALC_CHAM_ELEM(MODELE=MO,
                       CHAM_MATER=CM,
                       OPTION='FLUX_ELNO',
                       TEMP=TEMP,
-                      MODE_FOURIER=2,);
+                      MODE_FOURIER=2,)
 
 FLUXGA=CALC_CHAM_ELEM(MODELE=MO,
                       CHAM_MATER=CM,
                       OPTION='FLUX_ELGA',
                       TEMP=TEMP,
-                      MODE_FOURIER=2,);
+                      MODE_FOURIER=2,)
 
 TEST_RESU(CHAM_NO=(_F(GROUP_NO='N76',
                       CRITERE='RELATIF',
@@ -141,7 +141,7 @@ TR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='EXT_FLUX',
                             CHAM_GD=FLUXNO,
                             GROUP_NO=('N151','N152','N153','N76','N78',),
-                            NOM_CMP=('FLUX','FLUY','FLUZ',),),);
+                            NOM_CMP=('FLUX','FLUY','FLUZ',),),)
 #
 
 TEST_TABLE(PRECISION=0.02,
@@ -303,5 +303,5 @@ TEST_TABLE(CRITERE='ABSOLU',
                      VALE_K='N78',),
            )
 
-FIN();
+FIN()
 #

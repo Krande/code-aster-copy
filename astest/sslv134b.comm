@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,13 +36,13 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU=_F(GROUP_MA_PEAU=('SLA2_I','SLA2_S','SAV_I','SAV_S',),),
-                 );
+                 )
 
 #Barsoum
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  MODI_MAILLE=_F(OPTION='NOEUD_QUART',
-                                GROUP_MA_FOND='LFF1'),);
+                                GROUP_MA_FOND='LFF1'),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.E11,
                              NU = 0.3,
@@ -56,11 +56,11 @@ SYMETR1=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_NO='D',
                                    DZ=0.0,),
                        FACE_IMPO=_F(GROUP_MA=('SLA2_I','SLA2_S',),
-                                    DNOR=0.0,),);
+                                    DNOR=0.0,),)
 
 SYMETR2=AFFE_CHAR_MECA(MODELE=MO,
                        FACE_IMPO=_F(GROUP_MA=('SAV_I','SAV_S',),
-                                    DNOR=0.0,),);
+                                    DNOR=0.0,),)
 
 PRESSION=AFFE_CHAR_MECA(    MODELE=MO,FORCE_FACE=(
         _F(  GROUP_MA = 'SINF_S', FZ = 1.E6),
@@ -71,7 +71,7 @@ CHAMDEPL=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=PRESSION,),
                               _F(CHARGE=SYMETR1,),
-                              _F(CHARGE=SYMETR2,),),);
+                              _F(CHARGE=SYMETR2,),),)
 
 CHAMDEPL=CALC_CHAMP(reuse=CHAMDEPL,CONTRAINTE=('SIGM_ELNO'),RESULTAT=CHAMDEPL)
 
@@ -96,7 +96,7 @@ IMPR_TABLE(TABLE=TB2)
 
 TEST_TABLE(
            VALE_CALC=-244010.244875,
-           
+
            NOM_PARA='SIXX',
            TABLE=TB2,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -105,7 +105,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=36775.6852001,
-           
+
            NOM_PARA='SIYY',
            TABLE=TB2,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -114,7 +114,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=357165.944264,
-           
+
            NOM_PARA='SIZZ',
            TABLE=TB2,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -135,7 +135,7 @@ IMPR_TABLE(TABLE=TB2L)
 
 TEST_TABLE(
            VALE_CALC=684614.135805,
-           
+
            NOM_PARA='SIXX',
            TABLE=TB2L,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -144,7 +144,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=-244010.244875,
-           
+
            NOM_PARA='SIYY',
            TABLE=TB2L,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -153,7 +153,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=-290672.506342,
-           
+
            NOM_PARA='SIZZ',
            TABLE=TB2L,
            FILTRE=_F(NOM_PARA='ANGLE',
@@ -244,7 +244,7 @@ TABL_KTO=POST_K1_K2_K3(  FOND_FISS = FISSH,
               PREC_VIS_A_VIS = 0.05,
            )
 
-IMPR_TABLE(TABLE=TABL_KTO,);
+IMPR_TABLE(TABLE=TABL_KTO,)
 
 # ---------------
 
@@ -336,7 +336,7 @@ TABL_KTM=POST_K1_K2_K3(FOND_FISS = FISSM,
                        PREC_VIS_A_VIS = 0.05,
            )
 
-IMPR_TABLE(TABLE=TABL_KTM,);
+IMPR_TABLE(TABLE=TABL_KTM,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
@@ -371,7 +371,7 @@ TABL_KTN=POST_K1_K2_K3(FOND_FISS = FISSN,
                        PREC_VIS_A_VIS = 0.05,
            )
 
-IMPR_TABLE(TABLE=TABL_KTN,);
+IMPR_TABLE(TABLE=TABL_KTN,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
@@ -388,7 +388,7 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
                CREA_GROUP_NO=(_F( GROUP_NO = ('N49','N56',),
                                   NOM = 'NOFF1'),
                               _F( GROUP_NO = ('N1388','N1346'),
-                                 NOM = 'NOFF2'),),);
+                                 NOM = 'NOFF2'),),)
 
 TABL_K4=POST_K1_K2_K3(FOND_FISS = FISSN,
                       RESULTAT = CHAMDEPL,
@@ -416,7 +416,7 @@ TABL_K5=POST_K1_K2_K3(FOND_FISS = FISSN,
                       PREC_VIS_A_VIS = 0.05,
                       )
 
-IMPR_TABLE(TABLE=TABL_K5,);
+IMPR_TABLE(TABLE=TABL_K5,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,

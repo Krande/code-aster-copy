@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -30,7 +30,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                       GROUP_NO_CENTRE='N141',
                                       VECT_NORMALE=(0.,1.),
                                       PRECISION=0.00001)),
-                                     );
+                                     )
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=(_F(GROUP_MA=('SURF'),
@@ -38,7 +38,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='C_PLAN'),
                            _F(GROUP_MA=('LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN')));
+                              MODELISATION='C_PLAN')))
 
 
 LN = FORMULE(VALE='Y-10',
@@ -46,11 +46,11 @@ LN = FORMULE(VALE='Y-10',
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN));
+                    DEFI_FISS=_F(FONC_LN=LN))
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='STANDARD');
+                         CONTACT='STANDARD')
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -69,20 +69,20 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_CONT    = 100.,
                              ),
                          ),
-                   );
+                   )
 
 
 E=100.0E6
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0));
+                            RHO=7800.0))
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3'),
                                 MATER=ACIER,
-                                ));
+                                ))
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIG1',
@@ -91,12 +91,12 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                        _F(GROUP_MA='LIG3',
                                           DX=0.0,
                                           DY=-1.E-6)),
-                    INFO=1);
+                    INFO=1)
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1));
+                                    NOMBRE=1))
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -109,7 +109,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    SOLVEUR=_F(METHODE='MUMPS',
                               ),
                    NEWTON=_F(REAC_ITER=1),
-                   INFO=1);
+                   INFO=1)
 
 
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -119,7 +119,7 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=1,
                              NOM_CMP=('LAGS_C','LAGS_F1'),
-                             OPERATION='EXTRACTION'));
+                             OPERATION='EXTRACTION'))
 
 
 VI=CREA_CHAMP(
@@ -127,7 +127,7 @@ VI=CREA_CHAMP(
                 OPERATION='EXTR',
                 RESULTAT=UTOT1,
                 NUME_ORDRE=1,
-                NOM_CHAM='VARI_ELGA');
+                NOM_CHAM='VARI_ELGA')
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD = VI))
 
@@ -135,7 +135,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD = VI))
 IMPR_TABLE(TABLE=LAG,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
-           IMPR_FONCTION='NON');
+           IMPR_FONCTION='NON')
 
 LAREF=-5.
 LA1REF=0.
@@ -197,7 +197,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         INFO          = 2)
 
-IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
+IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RES_XFEM))
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -218,4 +218,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

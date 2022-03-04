@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ pres=1.5E3
 alpha=0.000159155
 beta=1.608
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse=MAIL,
                 MAILLAGE=MAIL,
@@ -48,26 +48,26 @@ MAIL=DEFI_GROUP(reuse=MAIL,
                                   OPTION='ENV_SPHERE',
                                   POINT=(0.4,0.2,),
                                   RAYON=0.001,
-                                  PRECISION=0.0011,),),);
+                                  PRECISION=0.0011,),),)
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='DALLE',
                                       VECT_NORM=(0.,0.,1.),
-                                      GROUP_NO='A1',),);
+                                      GROUP_NO='A1',),)
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKTG',),);
+                        MODELISATION='DKTG',),)
 
 IMPR_RESU(FORMAT="RESULTAT",MODELE=MOD,
-          RESU=_F(MAILLAGE=MAIL),);
+          RESU=_F(MAILLAGE=MAIL),)
 
-EGM = 3.0E10;
-NU = 0.22;
-EGF = 7.3E10;
-NUF = 0.24;
+EGM = 3.0E10
+NU = 0.22
+EGF = 7.3E10
+NUF = 0.24
 
 MAT=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
                                NU_M=NU,
@@ -82,18 +82,18 @@ MAT=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
                              MYF     = 1.6E4,
                              GAMMA_C= 1.0,
                              NYC = 0.0,
-                             ALPHA_C = 1.0,),);
+                             ALPHA_C = 1.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=(_F(TOUT='OUI',MATER=MAT,),),);
+                    AFFE=(_F(TOUT='OUI',MATER=MAT,),),)
 
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MOD,
                         COQUE=_F(GROUP_MA='MESH',
                                  EPAIS=EP,
                                  INER_ROTA='OUI',
-                                 ANGL_REP=(0.0,0.0),),);
+                                 ANGL_REP=(0.0,0.0),),)
 
-IMPR_CO(CONCEPT=_F(NOM=MAT),);
+IMPR_CO(CONCEPT=_F(NOM=MAT),)
 
 COND_L=AFFE_CHAR_MECA(MODELE=MOD,
                       DDL_IMPO=(_F(GROUP_NO='A1',
@@ -108,9 +108,9 @@ COND_L=AFFE_CHAR_MECA(MODELE=MOD,
                                    DX=0.0,),
                                 _F(GROUP_NO='A2A4',
                                    DZ=0.0,
-                                   DX=0.0,),),);
+                                   DX=0.0,),),)
 
-import math;
+import math
 
 def finst(tim,t1):
  if tim>t1 :
@@ -136,30 +136,30 @@ ASSEMBLAGE(MODELE=MOD,
            MATR_ASSE=(_F(MATRICE=CO('MATRRIGI'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('MATRMASS'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 
 COND_P=AFFE_CHAR_MECA(MODELE=MOD,
                       FORCE_NODALE=_F(GROUP_NO='DALLE',
-                                      FZ=-pres,),);
+                                      FZ=-pres,),)
 
 inst1=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A = t1,PAS = dt),),);
+                     INTERVALLE=(_F(JUSQU_A = t1,PAS = dt),),)
 
 inst2=DEFI_LIST_REEL(DEBUT=t1,
-                     INTERVALLE=(_F(JUSQU_A = tmax,PAS = dt),),);
+                     INTERVALLE=(_F(JUSQU_A = tmax,PAS = dt),),)
 
 listm=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A = t1,PAS = 5*dt),),);
+                     INTERVALLE=(_F(JUSQU_A = t1,PAS = 5*dt),),)
 
 listm2=DEFI_LIST_REEL(DEBUT=t1,
-                     INTERVALLE=(_F(JUSQU_A = tmax,PAS = 5*dt),),);
+                     INTERVALLE=(_F(JUSQU_A = tmax,PAS = 5*dt),),)
 
 chf1=CALC_FONC_INTERP(FONCTION=f_char,
                       LIST_PARA=inst1,
                       NOM_PARA='INST',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      INFO=2,);
+                      INFO=2,)
 
 RESU1=DYNA_NON_LINE(MODELE=MOD,
                     CHAM_MATER=CHMAT,
@@ -183,19 +183,19 @@ RESU1=DYNA_NON_LINE(MODELE=MOD,
                     ARCHIVAGE=_F(LIST_INST=inst1,),
                     MODE_VIBR=_F(NMAX_FREQ =3,
                                  MATR_RIGI='TANGENTE',
-                                 LIST_INST = listm,),);
+                                 LIST_INST = listm,),)
 
 F_DEP=RECU_FONCTION(RESULTAT=RESU1,INTERPOL='LIN',NOM_CHAM='DEPL',
                     NOM_CMP='DZ',GROUP_NO='P04',
-                    LIST_INST=inst1,PRECISION=1.0E-7);
+                    LIST_INST=inst1,PRECISION=1.0E-7)
 
 F_VIT=RECU_FONCTION(RESULTAT=RESU1,INTERPOL='LIN',NOM_CHAM='VITE',
                     NOM_CMP='DZ',GROUP_NO='P04',
-                    LIST_INST=inst1,PRECISION=1.0E-7);
+                    LIST_INST=inst1,PRECISION=1.0E-7)
 
 F_ACC=RECU_FONCTION(RESULTAT=RESU1,INTERPOL='LIN',NOM_CHAM='ACCE',
                     NOM_CMP='DZ',GROUP_NO='P04',
-                    LIST_INST=inst1,PRECISION=1.0E-7);
+                    LIST_INST=inst1,PRECISION=1.0E-7)
 
 RESU2=DYNA_NON_LINE(ETAT_INIT=_F(INST_ETAT_INIT=t1,
                                  EVOL_NOLI=RESU1),
@@ -222,19 +222,19 @@ RESU2=DYNA_NON_LINE(ETAT_INIT=_F(INST_ETAT_INIT=t1,
                     ARCHIVAGE=_F(LIST_INST=inst2,),
                     MODE_VIBR=_F(NMAX_FREQ =3,
                                  MATR_RIGI='TANGENTE',
-                                 LIST_INST = listm2,),);
+                                 LIST_INST = listm2,),)
 
 F_DEP2=RECU_FONCTION(RESULTAT=RESU2,INTERPOL='LIN',NOM_CHAM='DEPL',
                      NOM_CMP='DZ',GROUP_NO='P04',
-                     LIST_INST=inst2,PRECISION=1.0E-7);
+                     LIST_INST=inst2,PRECISION=1.0E-7)
 
 F_VIT2=RECU_FONCTION(RESULTAT=RESU2,INTERPOL='LIN',NOM_CHAM='VITE',
                      NOM_CMP='DZ',GROUP_NO='P04',
-                     LIST_INST=inst2,PRECISION=1.0E-7);
+                     LIST_INST=inst2,PRECISION=1.0E-7)
 
 F_ACC2=RECU_FONCTION(RESULTAT=RESU2,INTERPOL='LIN',NOM_CHAM='ACCE',
                      NOM_CMP='DZ',GROUP_NO='P04',
-                     LIST_INST=inst2,PRECISION=1.0E-7);
+                     LIST_INST=inst2,PRECISION=1.0E-7)
 
 
 dep1 = -3.710312E-04
@@ -289,6 +289,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-3.710311E-4,
                          NOM_PARA='INST',
                          FONCTION=F_ACC2,
                          ),
-                      ),);
+                      ),)
 
-FIN();
+FIN()

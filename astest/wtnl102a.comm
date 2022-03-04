@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-LAMBDA=DEFI_CONSTANTE(VALE=10.0,);
+LAMBDA=DEFI_CONSTANTE(VALE=10.0,)
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -36,17 +36,17 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(NOM='SOM_DROI',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='DROIT',),
-                               ),);
+                               ),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_THMD',),);
+                           MODELISATION='D_PLAN_THMD',),)
 
 CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                 OPERATION='EXTR',
                 MAILLAGE=MAIL,
-                NOM_CHAM='GEOMETRIE',);
+                NOM_CHAM='GEOMETRIE',)
 
 FPRES = FORMULE(VALE='1.-X',
                 NOM_PARA=['X', 'Y', 'Z'],)
@@ -56,19 +56,19 @@ P1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
               MAILLAGE=MAIL,
               AFFE=_F(TOUT='OUI',
                       NOM_CMP='X1',
-                      VALE_F=FPRES,),);
+                      VALE_F=FPRES,),)
 
 P2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
               OPERATION='EVAL',
               CHAM_F=P1,
-              CHAM_PARA=CHXN,);
+              CHAM_PARA=CHXN,)
 
 CHNUL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='AFFE',
                  MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP=('DX','DY','PRE1','TEMP'),
-                         VALE=(0.,0.,0.,0.),),);
+                         VALE=(0.,0.,0.,0.),),)
 
 PINIT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='ASSE',
@@ -78,26 +78,26 @@ PINIT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                        _F(TOUT='OUI',
                           CHAM_GD=P2,
                           NOM_CMP='X1',
-                          NOM_CMP_RESU='PRE1',),),);
+                          NOM_CMP_RESU='PRE1',),),)
 
 LI=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=_F(JUSQU_A=800.0,
-                                NOMBRE=20,),);
+                                NOMBRE=20,),)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
-BIDON=DEFI_CONSTANTE(VALE=0.0,);
+BIDON=DEFI_CONSTANTE(VALE=0.0,)
 
-KINT=DEFI_CONSTANTE(VALE=100.0,);
+KINT=DEFI_CONSTANTE(VALE=100.0,)
 EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,
              VALE = ( 0.   ,  1.E7,
                       500.  ,1.E7, ),
                         PROL_DROITE  ='CONSTANT' ,
-                        PROL_GAUCHE  ='CONSTANT' , );
+                        PROL_GAUCHE  ='CONSTANT' , )
 
-NU=DEFI_CONSTANTE(VALE=0.,);
+NU=DEFI_CONSTANTE(VALE=0.,)
 
 RHOF=DEFI_CONSTANTE(VALE = 1.,)
 
@@ -145,11 +145,11 @@ MATERIAU=DEFI_MATERIAU(
                                     PERM_GAZ=BIDON,
                                     D_PERM_SATU_GAZ=BIDON,
                                     D_PERM_PRES_GAZ=BIDON,
-                                    LAMB_T=LAMBDA,),);
+                                    LAMB_T=LAMBDA,),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI', MATER=MATERIAU,),
-                     );
+                     )
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=(_F(TOUT='OUI',
@@ -160,7 +160,7 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                                  PRE1=1.0,),
                               _F(GROUP_NO='SOM_DROI',
                                  TEMP=1.0,
-                                 PRE1=0.0,),),);
+                                 PRE1=0.0,),),)
 
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
@@ -174,11 +174,11 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=10,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=11,),
-                    INFO=2,);
+                    INFO=2,)
 
 RESU1=CALC_CHAMP(reuse =RESU1,
                  CONTRAINTE=('SIGM_ELNO',),CRITERES=('SIEQ_ELGA',),
-                RESULTAT=RESU1,);
+                RESULTAT=RESU1,)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    REFERENCE='ANALYTIQUE',
@@ -228,4 +228,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 ),
           )
 
-FIN();
+FIN()

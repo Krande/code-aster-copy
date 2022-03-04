@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
                                _F(GROUP_MA='FACE6',
                                   CRIT_NOEUD='TOUS')),
                 MAILLAGE=CUBE,
-               );
+               )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
                 ALARME='OUI',
@@ -139,7 +139,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
                                   GROUP_NO='FACE6',
                                   NOM='FACE6_3D')),
                 MAILLAGE=CUBE,
-               );
+               )
 
 WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                             INTERPOL='LOG',
@@ -192,7 +192,7 @@ ACIER   = DEFI_MATERIAU   ( ELAS           =_F( E         = 200000.,
 
 LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
                            INTERVALLE =_F (JUSQU_A= 5, NOMBRE = 20  )
-                                         );
+                                         )
 
 TROISD   = AFFE_MODELE    ( MAILLAGE   =    CUBE,
                             AFFE       =_F ( PHENOMENE    = 'MECANIQUE',
@@ -215,7 +215,7 @@ TR_CS  = AFFE_CHAR_MECA (
            FORCE_FACE   =(_F( GROUP_MA= 'FACE4', FX=2.),
 #                          _F( GROUP_MA= 'FACE1', FY=-2.)
                           )
-                         );
+                         )
 
 # CALCUL AVEC STAT_NON_LINE
 # -------------------------
@@ -244,13 +244,13 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
 SOL_NL = CALC_CHAMP(reuse=SOL_NL,
                     RESULTAT=SOL_NL,
                     CONTRAINTE=('SIGM_ELNO',),
-                    DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSP_ELGA','EPSP_ELNO',),);
+                    DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSP_ELGA','EPSP_ELNO',),)
 
 SOL_NL = CALC_CHAMP(reuse=SOL_NL,
                     RESULTAT=SOL_NL,
                     GROUP_MA=('FACE1_3D','FACE2_3D','FACE3_3D'),
                     CONTRAINTE='SIGM_NOEU',
-                    DEFORMATION=('EPSI_NOEU','EPSP_NOEU'),);
+                    DEFORMATION=('EPSI_NOEU','EPSP_NOEU'),)
 
 TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
                                 GROUP_NO = 'N1',
@@ -258,8 +258,8 @@ TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM = 'SIGM_NOEU',
-                                OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TABSIGM);
+                                OPERATION='EXTRACTION',),)
+IMPR_TABLE(TABLE=TABSIGM)
 
 TABEPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX',
                                 GROUP_NO = 'N1',
@@ -267,8 +267,8 @@ TABEPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX',
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM='EPSI_NOEU' ,
-                                OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TABEPS);
+                                OPERATION='EXTRACTION',),)
+IMPR_TABLE(TABLE=TABEPS)
 
 TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
                                 GROUP_NO = 'N1',
@@ -276,8 +276,8 @@ TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM='EPSP_NOEU' ,
-                                OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TABEPSP);
+                                OPERATION='EXTRACTION',),)
+IMPR_TABLE(TABLE=TABEPSP)
 
 NBPR = 14
 CRIT= [None]*NBPR

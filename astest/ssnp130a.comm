@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,53 +25,53 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 # DEFINITION DU MATERIAU
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                            NU=0.3,),);
+                            NU=0.3,),)
 
 # DEFINITION DES INSTANTS POUR STAT_NON_LINE
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1,),)
 
 F_INST=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,1.0,1.0,),);
+                     VALE=(0.0,0.0,1.0,1.0,),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('SURF1','SURF2','GMP34',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+                       MODELISATION='C_PLAN',),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU='GMP34',),);
+                 ORIE_PEAU=_F(GROUP_MA_PEAU='GMP34',),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CHP=AFFE_CHAR_MECA(MODELE=MO,
                    PRES_REP=_F(GROUP_MA='GMP34',
-                               PRES=1.0,),);
+                               PRES=1.0,),)
 
 CHCL=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_MA='LIGA',
                                  DY=0.0,),
                               _F(GROUP_NO='GNP2',
-                                 DX=0.0,),),);
+                                 DX=0.0,),),)
 
 DEPLA=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CHP,FONC_MULT=F_INST,),
                            _F(CHARGE=CHCL,),),
                     COMPORTEMENT=_F(RELATION='ELAS',TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,),);
+                    INCREMENT=_F(LIST_INST=L_INST,),)
 
 DEPLA=CALC_CHAMP(reuse=DEPLA,RESULTAT=DEPLA,INST=1.,ENERGIE=('ETOT_ELEM'))
 
@@ -79,25 +79,25 @@ DEPLA=CALC_CHAMP(reuse=DEPLA,RESULTAT=DEPLA,INST=1.,ENERGIE=('ETOT_ELEM'))
 DEPLA=CALC_ERREUR(reuse =DEPLA,
                   RESULTAT=DEPLA,
                   INST=1.,
-                  OPTION=('ERME_ELEM',),);
+                  OPTION=('ERME_ELEM',),)
 
 # DEFINITION DU PROBLEME DUAL
 
 CHDUAL=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_INTERNE=_F(GROUP_MA=('SURF1','SURF2',),
-                                       FX=1.0,),);
+                                       FX=1.0,),)
 
 RESUD=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE=CHDUAL,FONC_MULT=F_INST,),
                            _F(CHARGE=CHCL,),),
                     COMPORTEMENT=_F(RELATION='ELAS',TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,),);
+                    INCREMENT=_F(LIST_INST=L_INST,),)
 
 RESUD=CALC_ERREUR(reuse =RESUD,
                   RESULTAT=RESUD,
                   INST=1.,
-                  OPTION=('ERME_ELEM',),);
+                  OPTION=('ERME_ELEM',),)
 
 # POST-TRAITEMENT AVEC L'ERREUR EN QUANTITE D'INTERET
 
@@ -107,7 +107,7 @@ DEPLA=CALC_ERREUR(reuse =DEPLA,
                   RESU_DUAL=RESUD,
                   PREC_ERR=0.8,
                   TYPE_ESTI='QIRE_ELEM',
-                  OPTION=('QIRE_ELEM','SING_ELEM','SING_ELNO',),);
+                  OPTION=('QIRE_ELEM','SING_ELEM','SING_ELNO',),)
 
 # TEST DE SING_ELEM VALEUR MAX ET MIN DES 2 COMPOSANTES
 
@@ -307,4 +307,4 @@ TEST_RESU(RESU=(_F(INST=1.0,
                 ),
           )
 
-FIN();
+FIN()

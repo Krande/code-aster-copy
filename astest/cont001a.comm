@@ -45,11 +45,11 @@ MODI = AFFE_MODELE(MAILLAGE=Mail,
 MODI=AFFE_MODELE(MAILLAGE=Mail,
                     AFFE=_F(GROUP_MA= ('Haut', 'Bas',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),);
+                            MODELISATION='DKT',),)
 
 CARAMECA=AFFE_CARA_ELEM(MODELE=MODI,
                         COQUE=_F(GROUP_MA=('Haut', 'Bas',),
-                                 EPAIS=0.01,),);
+                                 EPAIS=0.01,),)
 
 DF1=DEFI_FONCTION(NOM_PARA='INST', NOM_RESU='DEPL',
                   VERIF='CROISSANT',  PROL_DROITE='LINEAIRE',
@@ -141,7 +141,7 @@ test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_4')
 test.assertEqual(zone.getMasterGroupOfCells(), 'Group_3')
 
 #zone1 = DEFICO.getContactZone(0)
-#test.assertEqual(zone1.getExcludedSlaveGroupOfCells(), ['Group_0'])  
+#test.assertEqual(zone1.getExcludedSlaveGroupOfCells(), ['Group_0'])
 
 DEFICO.hasFriction(True)
 test.assertTrue(DEFICO.hasFriction())

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,14 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_MA='AB',),
                              _F(GROUP_MA='BC',),
                              _F(GROUP_MA='CD',),
-                             _F(GROUP_MA='DA',),),);
+                             _F(GROUP_MA='DA',),),)
 
 MOD=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=(_F(GROUP_MA='STRIA1',
@@ -49,30 +49,30 @@ MOD=AFFE_MODELE(MAILLAGE=MA,
                          MODELISATION='DKT',),
                       _F(GROUP_MA='SQUA2',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='DKT',),),);
+                         MODELISATION='DKT',),),)
 
 CARA=AFFE_CARA_ELEM(MODELE=MOD,
                     COQUE=_F(GROUP_MA=('STRIA1','STRIA2','SQUA',),
-                             EPAIS=0.01,),);
+                             EPAIS=0.01,),)
 
 TEMP0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=MA,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP=('TEMP_MIL','TEMP_INF','TEMP_SUP',),
-                        VALE=(20.0,20.0,20.0,),),);
+                        VALE=(20.0,20.0,20.0,),),)
 TEMP1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=MA,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP=('TEMP_MIL','TEMP_INF','TEMP_SUP',),
-                        VALE=(50.0,20.0,100.0,),),);
+                        VALE=(50.0,20.0,100.0,),),)
 
 TEMP=CREA_RESU(  OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=TEMP0,
-                         INST=0.0,),);
+                         INST=0.0,),)
 
 TEMP=CREA_RESU(  reuse=TEMP,
                  RESULTAT=TEMP,
@@ -80,7 +80,7 @@ TEMP=CREA_RESU(  reuse=TEMP,
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=TEMP1,
-                         INST=1.0,),);
+                         INST=1.0,),)
 
 TEMPER1=CREA_RESU(OPERATION='PREP_VRC2',
                   TYPE_RESU='EVOL_THER',
@@ -97,11 +97,11 @@ CHAR=AFFE_CHAR_MECA(MODELE=MOD,
                                 DRY=0.0,
                                 DRZ=0.0,),
                     PRES_REP=_F(GROUP_MA='STOT',
-                                PRES=-100,),);
+                                PRES=-100,),)
 
 ZLIST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1,),)
 #====================================================================
 # DEFINITION DU MATERIAU DANS LE FICHIER .COMM AVEC TEMP_DEF_ALPHA
 # E EN FONCTION DE LA TEMPERATURE
@@ -113,14 +113,14 @@ YOUN=DEFI_FONCTION(NOM_PARA='TEMP',
                           400.0,176000000000.0,450.0,171000000000.0,500.0,166000000000.0,550.0,160000000000.0,600.0,
                           155000000000.0,),
                    PROL_DROITE='EXCLU',
-                   PROL_GAUCHE='EXCLU',);
+                   PROL_GAUCHE='EXCLU',)
 #
 # NU EN FONCTION DE LA TEMPERATURE
 
 NU=DEFI_FONCTION(NOM_PARA='TEMP',
                  VALE=(0.0,0.3,),
                  PROL_DROITE='CONSTANT',
-                 PROL_GAUCHE='CONSTANT',);
+                 PROL_GAUCHE='CONSTANT',)
 #
 # ALPHA EN FONCTION DE LA TEMPERATURE
 
@@ -129,12 +129,12 @@ ALPH=DEFI_FONCTION(NOM_PARA='TEMP',
                    (20.0,1.122e-05,50.0,1.145e-05,100.0,1.179e-05,150.0,1.214e-05,200.0,1.247e-05,250.0,
                           1.278e-05,300.0,1.308e-05,350.0,1.34e-05,400.0,1.372e-05,450.0,1.402e-05,),
                    PROL_DROITE='EXCLU',
-                   PROL_GAUCHE='EXCLU',);
+                   PROL_GAUCHE='EXCLU',)
 
 MAT1=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                               NU=NU,
                               TEMP_DEF_ALPHA=20.0,
-                              ALPHA=ALPH,),);
+                              ALPHA=ALPH,),)
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(GROUP_MA=('STRIA1','STRIA2','SQUA',),
@@ -148,12 +148,12 @@ MESTAT1=STAT_NON_LINE(MODELE=MOD,
                       CARA_ELEM=CARA,
                       EXCIT=_F(CHARGE=CHAR,),
                       COMPORTEMENT=_F(RELATION='ELAS',),
-                      INCREMENT=_F(LIST_INST=ZLIST,),);
+                      INCREMENT=_F(LIST_INST=ZLIST,),)
 
 MESTAT1=CALC_CHAMP(reuse =MESTAT1,
                   RESULTAT=MESTAT1,
                    CONTRAINTE=('EFGE_ELNO'),
-                  );
+                  )
 
 #====================================================================
 # DEFINITION DU MATERIAU DANS LE FICHIER .COMM SANS TEMP_DEF_ALPHA
@@ -161,7 +161,7 @@ MESTAT1=CALC_CHAMP(reuse =MESTAT1,
 MAT2=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                               NU=NU,
                               TEMP_DEF_ALPHA=20.0,
-                              ALPHA=ALPH,),);
+                              ALPHA=ALPH,),)
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(GROUP_MA=('STRIA1','STRIA2','SQUA',),
@@ -175,19 +175,19 @@ MESTAT2=STAT_NON_LINE(MODELE=MOD,
                       CARA_ELEM=CARA,
                       EXCIT=_F(CHARGE=CHAR,),
                       COMPORTEMENT=_F(RELATION='ELAS',),
-                      INCREMENT=_F(LIST_INST=ZLIST,),);
+                      INCREMENT=_F(LIST_INST=ZLIST,),)
 
 MESTAT2=CALC_CHAMP(reuse =MESTAT2,
                   RESULTAT=MESTAT2,
                    CONTRAINTE=('EFGE_ELNO'),
-                  );
+                  )
 #====================================================================
 # DEFINITION DU MATERIAU PAR INCLUDE_MATERIAU
 MAT3=INCLUDE_MATERIAU(NOM_AFNOR='18MND5',
                       TYPE_MODELE='REF',
                       VARIANTE='A',
                       TYPE_VALE='NOMI',
-                      INFO=2,);
+                      INFO=2,)
 
 CHMAT3=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(GROUP_MA=('STRIA1','STRIA2','SQUA',),
@@ -201,12 +201,12 @@ MESTAT3=STAT_NON_LINE(MODELE=MOD,
                       CARA_ELEM=CARA,
                       EXCIT=_F(CHARGE=CHAR,),
                       COMPORTEMENT=_F(RELATION='ELAS',),
-                      INCREMENT=_F(LIST_INST=ZLIST,),);
+                      INCREMENT=_F(LIST_INST=ZLIST,),)
 
 MESTAT3=CALC_CHAMP(reuse =MESTAT3,
                   RESULTAT=MESTAT3,
                    CONTRAINTE=('EFGE_ELNO'),
-                  );
+                  )
 #====================================================================
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -274,5 +274,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 #----------------------------------------------------------------
 
-FIN();
+FIN()
 #

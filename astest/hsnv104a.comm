@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ TEMPE=CALC_META(reuse=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
                 COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),
-                OPTION='META_ELNO',);
+                OPTION='META_ELNO',)
 
 FBM1=DEFI_FONCTION(      NOM_PARA='TEMP',
                             PROL_DROITE='CONSTANT',
@@ -196,7 +196,7 @@ CM2=AFFE_MATERIAU(
          )
 
 MO=AFFE_MODELE(
-           MAILLAGE=MAIL,    
+           MAILLAGE=MAIL,
           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'D_PLAN'))
 
@@ -212,7 +212,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
              INTERVALLE=_F( JUSQU_A = 176.,      NOMBRE = 176)
            )
 
-DEFLISTM=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       L_INST)) 
+DEFLISTM=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       L_INST))
 
 U=STAT_NON_LINE(
                             MODELE=MO,

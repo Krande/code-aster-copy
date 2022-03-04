@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,46 +25,46 @@
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
                                       VECT_NORM=(1,0,0,),
-                                      GROUP_NO='AI1',),);
+                                      GROUP_NO='AI1',),)
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
                             NU=0.3,
-                            ALPHA=1.096e-05,),);
+                            ALPHA=1.096e-05,),)
 
 #CALCUL MECANIQUE
 #ENCASTREMENT SUR LA SECTION BASE ET EFOND
 #SYMETRIE PAR RAPPORT AU PLAN XOY
 #CHARGEMENT PRESSION
-EPTUB = 0.02;
+EPTUB = 0.02
 
-REXT = 0.2;
+REXT = 0.2
 
-RMOY = (REXT - (EPTUB / 2));
+RMOY = (REXT - (EPTUB / 2))
 
-RINT = (RMOY - (EPTUB / 2));
+RINT = (RMOY - (EPTUB / 2))
 
-PRES = ((15000000 * RINT) / RMOY);
+PRES = ((15000000 * RINT) / RMOY)
 
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='TUYAU',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DKT',),);
+                            MODELISATION='DKT',),)
 
 CARAMECA=AFFE_CARA_ELEM(MODELE=MODMECA,
                         COQUE=_F(GROUP_MA='TUYAU',
-                                 EPAIS=EPTUB,),);
+                                 EPAIS=EPTUB,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODMECA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),);
+                            MATER=MATER,),)
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MODMECA,
                       DDL_IMPO=(_F(GROUP_MA=('EFOND','BASE',),
@@ -72,19 +72,19 @@ CHMECA=AFFE_CHAR_MECA(MODELE=MODMECA,
                                 _F(GROUP_MA='SYMETRIE',
                                    DZ=0,),),
                       PRES_REP=_F(GROUP_MA='TUYAU',
-                                  PRES=PRES,),);
+                                  PRES=PRES,),)
 
 RESU=MECA_STATIQUE(MODELE=MODMECA,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARAMECA,
-                   EXCIT=_F(CHARGE=CHMECA,),);
+                   EXCIT=_F(CHARGE=CHMECA,),)
 
 
 #IMPRESSION DES RESULTATS
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MAIL,
-                  RESULTAT=RESU,),);
+                  RESULTAT=RESU,),)
 
 #TEST DE NON REGRESSION
 
@@ -97,4 +97,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   ),
           )
 
-FIN();
+FIN()

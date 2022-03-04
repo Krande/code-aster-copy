@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1088,7 +1088,7 @@ def F_FONC() :
                           -0.087080000000000005,29.969999999999999,-0.11217000000000001,29.98,-0.10332,29.989999999999998,
                           -0.093039999999999998),
                    PROL_DROITE='EXCLU',
-                   PROL_GAUCHE='EXCLU',);
+                   PROL_GAUCHE='EXCLU',)
 
 
     LBNS=DEFI_FONCTION(NOM_PARA='INST',
@@ -2165,7 +2165,7 @@ def F_FONC() :
                           -0.028469999999999999,29.960000000000001,-0.023939999999999999,29.969999999999999,
                           -0.023900000000000001,29.98,-0.029929999999999998,29.989999999999998,-0.036200000000000003),
                    PROL_DROITE='EXCLU',
-                   PROL_GAUCHE='EXCLU',);
+                   PROL_GAUCHE='EXCLU',)
 
 
     return LBEW, LBNS

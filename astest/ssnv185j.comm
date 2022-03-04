@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ PT1 = [ 0. ,  0. , 0. ]
 PT2 = [ 0. , 10. , 0. ]
 PT3 = [ 1. , 10. , 0. ]
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,)
 
 MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
                      MAILLAGE=MAILLAG1,
@@ -49,11 +49,11 @@ MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
                                         PRECISION=1.E-6,
                                         RAYON=1.E-6),
                                     ),
-                      INFO=1, );
+                      INFO=1, )
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),)
 
 #----------------------------------------------
 #                   MODELE
@@ -67,12 +67,12 @@ MODELE[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
                                MODELISATION='3D',),
                             _F(GROUP_MA=('SURFINF','SURFSUP',),
                                PHENOMENE='MECANIQUE',
-                               MODELISATION='3D',),),);
+                               MODELISATION='3D',),),)
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
-                       );
+                       )
 
 #----------------------------------------------
 #                   MATERIAU
@@ -81,14 +81,14 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELE[0],
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------
 #                   FISSURE
@@ -108,7 +108,7 @@ FISS = [None]*5
 
 FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                       );
+                       )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -129,36 +129,36 @@ LSN = [None]*5
 LST = [None]*5
 
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),)
 RI = 1.
 RS = 2.
 
 for i in range(1,4) :
 
-   MODELE[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[0],FISSURE=FISS[i-1],INFO=1,);
+   MODELE[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[0],FISSURE=FISS[i-1],INFO=1,)
 
    CH1[i]=AFFE_CHAR_MECA(MODELE=MODELE[i],
                       DDL_IMPO=(_F(GROUP_NO='NOEUD1',DX=0.0,DY=0.0,DZ=0.0,),
                                 _F(GROUP_NO='NOEUD2',DZ=0.0,),
-                                _F(GROUP_NO='NOEUD3',DX=0.0,DZ=0.0,),),);
+                                _F(GROUP_NO='NOEUD3',DX=0.0,DZ=0.0,),),)
 
    CH2[i]=AFFE_CHAR_MECA(MODELE=MODELE[i],
-                      PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
+                      PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),)
 
    RESU[i]=MECA_STATIQUE(MODELE=MODELE[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(
                                 _F(CHARGE=CH1[i],),
                                 _F(CHARGE=CH2[i],),),
-                         INFO=1,);
+                         INFO=1,)
 
    SIF[i]=CALC_G_XFEM        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i-1],),
                          LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
-                                     LISSAGE_G='LAGRANGE',),);
+                                     LISSAGE_G='LAGRANGE',),)
 
-   IMPR_TABLE(TABLE=SIF[i],);
+   IMPR_TABLE(TABLE=SIF[i],)
 
    if ( i != 3 ) :
       FISS[i] = CO('FISS_%d'%(i))
@@ -178,7 +178,7 @@ for i in range(1,4) :
                               C=1.0,
                               M=0.5,
                               MATER=ACIER,),
-                );
+                )
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -206,16 +206,16 @@ for i in range(1,3) :
               TYPE_TEST='MAX',
               VALE_CALC=VAL_CALC[2*i-2], VALE_REFE=K1REF[i],
               CRITERE='RELATIF',
-              PRECISION=0.05,    
-              REFERENCE='ANALYTIQUE',);
+              PRECISION=0.05,
+              REFERENCE='ANALYTIQUE',)
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE_CALC=VAL_CALC[2*i-1], VALE_REFE=K1REF[i],
               CRITERE='RELATIF',
-              PRECISION=0.05,    
-              REFERENCE='ANALYTIQUE',);
+              PRECISION=0.05,
+              REFERENCE='ANALYTIQUE',)
 
 #----------------------------------------------
 #         EDITION DE FICHIERS GMSH
@@ -228,21 +228,21 @@ DEPL = [None]*5
 
 for i in range(1,4) :
    MAXFEM[i]=POST_MAIL_XFEM(MODELE=MODELE[i],
-                             );
+                             )
 
    MOVISU[i]=AFFE_MODELE(MAILLAGE=MAXFEM[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
-                                 MODELISATION='3D',),) 
+                                 MODELISATION='3D',),)
 
    DEPL[i]=POST_CHAM_XFEM(MODELE_VISU   = MOVISU[i],
                           RESULTAT=RESU[i],
-                          );
+                          )
 
-   DEFI_FICHIER(UNITE=30+i,);
+   DEFI_FICHIER(UNITE=30+i,)
    IMPR_RESU(FORMAT='GMSH',
              UNITE=30+i,
-             RESU=_F(RESULTAT=DEPL[i],),);
+             RESU=_F(RESULTAT=DEPL[i],),)
 
 
-FIN();
+FIN()

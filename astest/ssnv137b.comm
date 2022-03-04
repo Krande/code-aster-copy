@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -958,7 +958,7 @@ TEST_TABLE(
 # validation de l'option COOR_ELGA pour les elements CABLE_GAINE :
 #------------------------------------------------------------------
 
-COORELGA=CALC_CHAM_ELEM(MODELE=MODELE, OPTION='COOR_ELGA',CARA_ELEM=CARAELEM);
+COORELGA=CALC_CHAM_ELEM(MODELE=MODELE, OPTION='COOR_ELGA',CARA_ELEM=CARAELEM)
 TEST_RESU(CHAM_ELEM=_F( CHAM_GD=COORELGA, GROUP_MA='SG29', POINT=2, NOM_CMP='X', VALE_CALC=2.82113248654,))
 TEST_RESU(CHAM_ELEM=_F( CHAM_GD=COORELGA, GROUP_MA='SG29', POINT=2, NOM_CMP='Y', VALE_CALC=-0.12        ,))
 TEST_RESU(CHAM_ELEM=_F( CHAM_GD=COORELGA, GROUP_MA='SG29', POINT=2, NOM_CMP='Z', VALE_CALC=-0.16        ,))

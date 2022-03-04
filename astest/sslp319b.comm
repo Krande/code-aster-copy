@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 #***********************************
 
 MaiPlate=LIRE_MAILLAGE(FORMAT='MED',
-                       INFO_MED=1,);
+                       INFO_MED=1,)
 
 MaiPlate=MODI_MAILLAGE(reuse =MaiPlate,
                        MAILLAGE=MaiPlate,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU='force',),);
+                       ORIE_PEAU=_F(GROUP_MA_PEAU='force',),)
 
 plate=AFFE_MODELE(MAILLAGE=MaiPlate,
                    AFFE=(_F(GROUP_MA=('All',),
@@ -40,18 +40,18 @@ plate=AFFE_MODELE(MAILLAGE=MaiPlate,
                            MODELISATION='C_PLAN',),
                         _F(GROUP_MA=('force',),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),),);
+                           MODELISATION='C_PLAN',),),)
 
 #***********************************
 # MATERIAU
 #***********************************
 
 steel=DEFI_MATERIAU(ELAS=_F(E=2.06E11,
-                            NU=0.33,),);
+                            NU=0.33,),)
 
 champma=AFFE_MATERIAU(MAILLAGE=MaiPlate,
                       AFFE=_F(TOUT='OUI',
-                              MATER=steel,),);
+                              MATER=steel,),)
 
 #***********************************
 # DEFINITION DES FISSURES
@@ -83,11 +83,11 @@ FissL = [None]*NPS
 
 FissR[1]=DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
                         DEFI_FISS=_F(FONC_LT=LTR,
-                                     FONC_LN=LNR,),);
+                                     FONC_LN=LNR,),)
 
 FissL[1]=DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
                         DEFI_FISS=_F(FONC_LT=LTL,
-                                     FONC_LN=LNL,),);
+                                     FONC_LN=LNL,),)
 
 #****************************
 # PROPAGATION DES FISSURES
@@ -112,40 +112,40 @@ da_fiss = 30.
 for i in range(1,NPS-1) :
 
     ModX[i]=MODI_MODELE_XFEM(MODELE_IN=plate,
-                         FISSURE=(FissL[i],FissR[i]),);
+                         FISSURE=(FissL[i],FissR[i]),)
 
     vinc[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
                            DDL_IMPO=(_F(GROUP_NO='incastro',
                                         DX=0,
                                         DY=0,),
                                      _F(GROUP_NO='carrello',
-                                        DY=0,),),);
+                                        DY=0,),),)
 
     force[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
                             PRES_REP=_F(GROUP_MA='force',
-                                        PRES=-1E6,),);
+                                        PRES=-1E6,),)
 
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                          CHAM_MATER=champma,
                          EXCIT=(_F(CHARGE=force[i],),
                                 _F(CHARGE=vinc[i],),
                                 ),
-                         INST=1,);
+                         INST=1,)
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A GAUCHE
     SIFL[i]=CALC_G_XFEM(THETA=_F(FISSURE=FissL[i],),
                    RESULTAT=ResX[i],
-                   OPTION='CALC_K_G',);
+                   OPTION='CALC_K_G',)
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A DROITE
     SIFR[i]=CALC_G_XFEM(THETA=_F(FISSURE=FissR[i],),
                    RESULTAT=ResX[i],
-                   OPTION='CALC_K_G',);
+                   OPTION='CALC_K_G',)
 
-    IMPR_TABLE(TABLE=SIFL[i],);
-    IMPR_TABLE(TABLE=SIFR[i],);
+    IMPR_TABLE(TABLE=SIFL[i],)
+    IMPR_TABLE(TABLE=SIFR[i],)
 
     if ( i != NPS-2 ) :
       FissL[i+1]=CO('FissL_%d'%(i+1))
@@ -170,13 +170,13 @@ for i in range(1,NPS-1) :
                               COEF_MULT_MAXI=1.,
                              ),
                  RAYON=RS,
-                 INFO=0,);
+                 INFO=0,)
 
 #----------------------------------------------
 #         VERIFICATION DES RESULTATS
 #----------------------------------------------
 
-W=1000;
+W=1000
 sigma=1E6
 
 KIL_calc  = [
@@ -186,7 +186,7 @@ KIL_calc  = [
 ]
 KIIL_calc = [
  -2136.25434598,
- -1243.8108457986582, 
+ -1243.8108457986582,
  -4798.414392333112,
 ]
 KIR_calc  = [
@@ -201,17 +201,17 @@ KIIR_calc = [
 ]
 
 for i in range(1,NPS-1) :
-   
+
    a=a0+da_fiss*(i-1)
 #  VALEUR ANALYTIQUE DE KI (BROEK)
-   Y=1.99+0.76*a/W-8.48*(a/W)**2+27.36*(a/W)**3;
-   KI_broek=Y*sigma*sqrt(a);
+   Y=1.99+0.76*a/W-8.48*(a/W)**2+27.36*(a/W)**3
+   KI_broek=Y*sigma*sqrt(a)
 
 #  TOLERANCE SUR KII. LA VALEUR ANALYTIQUE EST ZERO CAR LA FISSURE
 #  PROPAGE EN MODE I. CELA N'EST PAS VERIFIER EXACTEMENT POUR LE
 #  MODELE FEM. ON ASSUME QUE LA VALEUR DE KII EST ZERO SI
 #  ELLE EST EGAL A 1% DE LA VALEUR DE KI.
-   TOL_K2=0.01*KI_broek;
+   TOL_K2=0.01*KI_broek
 
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
@@ -220,7 +220,7 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
               VALE_CALC=KIL_calc[i-1]  )
-   IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K1');
+   IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K1')
 
    # TEST DE REFERENCE SUR K2
    TEST_TABLE(TABLE=SIFL[i],
@@ -236,7 +236,7 @@ for i in range(1,NPS-1) :
               NOM_PARA='K2',
               TYPE_TEST='MAX',
               VALE_CALC=KIIL_calc[i-1],)
-   IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K2');
+   IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K2')
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
@@ -245,7 +245,7 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               VALE_REFE=KI_broek,
               VALE_CALC=KIR_calc[i-1]  )
-   IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K1');
+   IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K1')
 
    # TEST DE REFERENCE SUR K2
    TEST_TABLE(TABLE=SIFR[i],
@@ -261,7 +261,7 @@ for i in range(1,NPS-1) :
               NOM_PARA='K2',
               TYPE_TEST='MAX',
               VALE_CALC=KIIR_calc[i-1],)
-   IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K2');
+   IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K2')
 
 #----------------------------------------------
 #         EDITION DE FICHIERS MED
@@ -273,21 +273,21 @@ DEPL = [None]*NPS
 
 
 for i in range(1,NPS-1) :
-   MAXFM[i]=POST_MAIL_XFEM(MODELE=ModX[i]);
+   MAXFM[i]=POST_MAIL_XFEM(MODELE=ModX[i])
 
    MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFM[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
-                                 MODELISATION='C_PLAN',),) 
+                                 MODELISATION='C_PLAN',),)
 
    DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
                           RESULTAT=ResX[i],
-                          );
+                          )
 
-   DEFI_FICHIER(UNITE=31,TYPE = 'BINARY');
+   DEFI_FICHIER(UNITE=31,TYPE = 'BINARY')
    IMPR_RESU(FORMAT='MED',
              UNITE=31,
-             RESU=_F(RESULTAT=DEPL[i],),);
+             RESU=_F(RESULTAT=DEPL[i],),)
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,18 +101,18 @@ TMOYEN   = [None]*nb_calc1
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # DEFINITION DU MATERIAU (ACIER 16MND5)
-ACIER_M=DEFI_MATERIAU(ELAS=_F(E=210.E3,NU=0.2,),);
+ACIER_M=DEFI_MATERIAU(ELAS=_F(E=210.E3,NU=0.2,),)
 ACIER_T=DEFI_MATERIAU(THER=_F(LAMBDA = 33.5,RHO_CP=526.E4))
 
 # LECTURE ET INFO MAILLAGE THERMIQUE
 num_calc=0
-MAT[num_calc]=LIRE_MAILLAGE(FORMAT='MED',INFO=2, );
+MAT[num_calc]=LIRE_MAILLAGE(FORMAT='MED',INFO=2, )
 MACR_INFO_MAIL(MAILLAGE=MAT[num_calc],
         QUALITE='OUI',
         CONNEXITE='OUI',
         TAILLE='OUI')
 
-#FIN();
+#FIN()
 
 # BOUCLE PYTHON INDICATEUR D'ERREUR/REMAILLAGE
 for num_calc in range(0,nb_calc1) :
@@ -120,18 +120,18 @@ for num_calc in range(0,nb_calc1) :
 # PREPARATION DU CALCUL SUR LE NOUVEAU MAILLAGE MA[num_calc]
    MOT[num_calc]=AFFE_MODELE(MAILLAGE=MAT[num_calc],
                   AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN_DIAG',
-                           PHENOMENE = 'THERMIQUE',),);
+                           PHENOMENE = 'THERMIQUE',),)
    CHMATT[num_calc]=AFFE_MATERIAU(MAILLAGE=MAT[num_calc],
                        AFFE=_F(GROUP_MA='GM38',
-                                MATER=ACIER_T,),);
+                                MATER=ACIER_T,),)
 
 # CL FLUX SORTANT  SUR BORD GAUCHE + ECHANGE DANS LES CYLINDRES
    CLIMT[num_calc]=AFFE_CHAR_THER(
              MODELE=MOT[num_calc],
-             FLUX_REP=(_F(GROUP_MA='GM33',FLUN=-400,),));
+             FLUX_REP=(_F(GROUP_MA='GM33',FLUN=-400,),))
    CHT[num_calc]=AFFE_CHAR_THER(MODELE=MOT[num_calc],
            ECHANGE=(_F(GROUP_MA='GM36',COEF_H=1000,TEMP_EXT=350,),
-                    _F(GROUP_MA='GM37',COEF_H=5000,TEMP_EXT=150)));
+                    _F(GROUP_MA='GM37',COEF_H=5000,TEMP_EXT=150)))
 
 # CALCUL THERMIQUE LINEAIRE TRANSITOIRE
    TEMP[num_calc]=THER_LINEAIRE(
@@ -140,7 +140,7 @@ for num_calc in range(0,nb_calc1) :
                      EXCIT=(
                          _F(CHARGE = CHT[num_calc]),
                          _F(CHARGE = CLIMT[num_calc],),)
-                      );
+                      )
 
 # POST_TRAITEMENT POUR OBTENIR LES FLUX AUX NOEUDS ET
 # L'INDICATEUR D'ERREUR EN RESIDU.
@@ -154,7 +154,7 @@ for num_calc in range(0,nb_calc1) :
                   OPTION=(
 # CALCUL DE L'INDICATEUR PAR ELEMENTS ET AUX NOEUDS PAR ELEM
                        'ERTH_ELEM',
-                       'ERTH_ELNO',),);
+                       'ERTH_ELNO',),)
 
 # IMPRESSION FORMAT MED I
    DEFI_FICHIER(FICHIER='IMPR',UNITE=55, TYPE='BINARY')
@@ -163,7 +163,7 @@ for num_calc in range(0,nb_calc1) :
                     RESULTAT=TEMP[num_calc],
                     NOM_CHAM=('TEMP','FLUX_ELNO',
                               'ERTH_ELNO',)
-                     ),);
+                     ),)
    DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
 # IMPRESSION FORMAT MED POUR SALOME
 ###   IMPR_RESU(MODELE=MOT[num_calc],FORMAT='MED',
@@ -171,7 +171,7 @@ for num_calc in range(0,nb_calc1) :
 ###                    RESULTAT=TEMP[num_calc],
 ###                    NOM_CHAM=('TEMP','FLUX_ELNO',
 ###                              'ERTH_ELNO',)
-###                     ),);
+###                     ),)
 
 # AFFICHAGE GIBI INTERACTIF TEMP + FLUX + INDICATEURS EN RESIDU
 #   os.system('sed s/numcalc/'+str(num_calc)+'/g /home/boiteau/ASTER/TP_INDIC/TP21/post1.dgibi > post1.dgibi')
@@ -180,7 +180,7 @@ for num_calc in range(0,nb_calc1) :
 # CALCUL DE L'ENERGIE POTENTIELLE DE DEFORMATION
    ENERT[num_calc]=POST_ELEM(
                      RESULTAT=TEMP[num_calc],
-                     ENER_POT=_F(TOUT='OUI',),);
+                     ENER_POT=_F(TOUT='OUI',),)
 
 # CALCUL DE LA TEMPERATURE MOYENNE SUR LE CARRE INTERNE
 # ATTENTION : TANT QUE LA FICHE 11865 N'EST PAS RESOLUE, ON NE PEUT PAS PRENDRE
@@ -191,7 +191,7 @@ for num_calc in range(0,nb_calc1) :
 #             VERITABLE BORD. IL FAUT DONC CREER LE GROUPE ICI ET LE DETRUIRE APRES USAGE.
    MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
                     MAILLAGE=MAT[num_calc],
-                    CREA_GROUP_NO=_F(GROUP_MA='GM35',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='GM35',),)
 
    TMOYEN[num_calc] = POST_RELEVE_T(
           ACTION=_F(INTITULE='TMOYEN',
@@ -204,7 +204,7 @@ for num_calc in range(0,nb_calc1) :
 
    MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
                     MAILLAGE=MAT[num_calc],
-                    DETR_GROUP_NO=_F(NOM='GM35',),);
+                    DETR_GROUP_NO=_F(NOM='GM35',),)
 
 # IMPRESSION DES TABLES PRECEDENTES DANS LE .RESU
    IMPR_TABLE(TABLE=ENERT[num_calc])
@@ -347,4 +347,4 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.797588205576,
                       ),
               )
 
-FIN();
+FIN()

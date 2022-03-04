@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ tau = 0.01
 t_fin = 0.013
 pas = 2.5E-7
 
-M = LIRE_MAILLAGE(FORMAT='MED',);
+M = LIRE_MAILLAGE(FORMAT='MED',)
 
 M=DEFI_GROUP(reuse=M,
              MAILLAGE=M,
@@ -40,48 +40,48 @@ M=DEFI_GROUP(reuse=M,
                                GROUP_MA = 'LEVINF',),
                             _F(NOM = 'COT_INF',
                                GROUP_MA = 'COT_INF',),),
-            );
+            )
 
 MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=_F(TOUT = 'OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),
-              );
+              )
 
 M = MODI_MAILLAGE(reuse = M,
                   MAILLAGE = M,
                   MODI_MAILLE = _F(OPTION = 'NOEUD_QUART',
                                    GROUP_NO_FOND = 'PF',),
-                 );
+                 )
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200.0E+9,
                          NU=0.3,
                          ALPHA = 0.,
-                         RHO=7800,),);
+                         RHO=7800,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,
-                         ),);
+                         ),)
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_MA='COT_SUP',
                                     DX = 0,),
                                  _F(GROUP_MA='COT_SUP',
                                     DY = 0,),),
-                      );
+                      )
 
 CHAR=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='COT_INF',
                                   FX=-1000,),
-                    );
+                    )
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,
                           tau,1.0,
                           0.2, 1.0,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 #################################
 #  CONSTRUCTION DES MATRICES
@@ -90,37 +90,37 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 MRIGI=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MO,
                      CHAM_MATER=CM,
-                     CHARGE=BLOCAGE);
+                     CHARGE=BLOCAGE)
 
 MMASSE=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=MO,
                       CHAM_MATER=CM,
-                      CHARGE=BLOCAGE,);
+                      CHARGE=BLOCAGE,)
 
 MAMOR=CALC_MATR_ELEM(OPTION='AMOR_MECA',
                      MODELE=MO,
                      RIGI_MECA = MRIGI,
                      MASS_MECA = MMASSE,
                      CHAM_MATER=CM,
-                     CHARGE=BLOCAGE,);
+                     CHARGE=BLOCAGE,)
 
 VCHA=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                    CHARGE =(BLOCAGE,CHAR),);
+                    CHARGE =(BLOCAGE,CHAR),)
 
 NUM=NUME_DDL(MODELE= MO,
-             CHARGE=(BLOCAGE,CHAR),);
+             CHARGE=(BLOCAGE,CHAR),)
 
 RIG_ASS=ASSE_MATRICE(MATR_ELEM=MRIGI,
-                     NUME_DDL=NUM,);
+                     NUME_DDL=NUM,)
 
 MA_ASS=ASSE_MATRICE(MATR_ELEM=MMASSE,
-                    NUME_DDL=NUM,);
+                    NUME_DDL=NUM,)
 
 AMO_ASS=ASSE_MATRICE(MATR_ELEM=MAMOR,
-                    NUME_DDL=NUM,);
+                    NUME_DDL=NUM,)
 
 VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
-                    NUME_DDL=NUM,);
+                    NUME_DDL=NUM,)
 
 
 ##################################
@@ -137,19 +137,19 @@ MODE=CALC_MODES(MATR_RIGI=RIG_ASS,
 MODE=CALC_CHAMP(reuse=MODE,
                    CHAM_MATER=CM,
                    RESULTAT=MODE,
-                   FORCE=('FORC_NODA',),);
+                   FORCE=('FORC_NODA',),)
 
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MODE,))
 
 MODE=NORM_MODE(reuse=MODE,
                MODE=MODE,
-               NORME='MASS_GENE',);
+               NORME='MASS_GENE',)
 
 FF1=DEFI_FOND_FISS(MAILLAGE=M, SYME='NON',
                    FOND_FISS=_F(GROUP_NO = 'PF',),
                    LEVRE_SUP=_F(  GROUP_MA = 'LEVSUP'),
                    LEVRE_INF=_F(  GROUP_MA = 'LEVINF'),
-                  );
+                  )
 
 GLMO1=CALC_G(OPTION='K',
              RESULTAT=MODE,
@@ -159,16 +159,16 @@ GLMO1=CALC_G(OPTION='K',
                       R_SUP=5.E-5,
                     CHAM_THETA=CO('cham_theta_no1'),
                     ),
-                    );
+                    )
 
-IMPR_TABLE(TABLE =GLMO1);
+IMPR_TABLE(TABLE =GLMO1)
 
 
 
 T1_K = POST_K1_K2_K3(INFO = 2,
                            RESULTAT=MODE,
                            FOND_FISS=FF1,
-                           NUME_ORDRE=(1,2,3,4,5),);
+                           NUME_ORDRE=(1,2,3,4,5),)
 IMPR_TABLE(TABLE=T1_K)
 
 
@@ -207,7 +207,7 @@ PROJ_BASE(BASE=MODE,
                                 _F(MATRICE=CO('AMOR_GE'),
                                    MATR_ASSE=AMO_ASS,),),
                 VECT_ASSE_GENE=_F(VECTEUR=CO('CHA_ASS'),
-                                  VECT_ASSE=VE_ASS, TYPE_VECT='FORC'),);
+                                  VECT_ASSE=VE_ASS, TYPE_VECT='FORC'),)
 
 
 
@@ -225,23 +225,23 @@ RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                     EXCIT=_F(VECT_ASSE_GENE=CHA_ASS,
                             FONC_MULT=RAMPE,),
                     ARCHIVAGE=_F(PAS_ARCH = 200,),
-                    IMPRESSION = _F(TOUT='OUI',),);
+                    IMPRESSION = _F(TOUT='OUI',),)
 
 RESUDYNA = REST_GENE_PHYS(RESU_GENE = RES_DYNA,
                           NOM_CHAM=('DEPL','ACCE',)
-                          );
+                          )
 
 RESUDYNA=CALC_CHAMP(reuse =RESUDYNA ,
                     MODELE=MO,
                     CHAM_MATER=CM,
                     CONTRAINTE=('SIEF_ELGA'),
-                    RESULTAT=RESUDYNA ,);
+                    RESULTAT=RESUDYNA ,)
 
 RESUDYNA=CALC_CHAMP(reuse =RESUDYNA ,
                     MODELE=MO,
                     CHAM_MATER=CM,
                     RESULTAT=RESUDYNA ,
-                    FORCE='REAC_NODA',);
+                    FORCE='REAC_NODA',)
 
 #si calcul par POST_GENE_PHYS:
 T_FORC=POST_GENE_PHYS(RESU_GENE=RES_DYNA,
@@ -278,7 +278,7 @@ TEST_TABLE(
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    K_MODAL = _F(TABL_K_MODA =GLMO1,
-                              FOND_FISS=FF1, ),);
+                              FOND_FISS=FF1, ),)
 
 IMPR_TABLE(TABLE=KT1)
 
@@ -298,7 +298,7 @@ GLMO2=CALC_G(NUME_MODE = 1,
              THETA=_F(FISSURE=FF1,
                       R_INF=5.E-6,
                       R_SUP=5.E-5,),
-                    );
+                    )
 
 TEST_TABLE(
            VALE_CALC=-1.9210656530516E+10,
@@ -318,7 +318,7 @@ GLMO3=CALC_G(OPTION='K',
                       R_INF=5.E-6,
                       R_SUP=5.E-5,
                       CHAM_THETA=CO('cham_theta_no3'),
-                      ),);
+                      ),)
 
 TEST_TABLE(
            VALE_CALC=-1.9210656530516E+10,
@@ -329,4 +329,4 @@ TEST_TABLE(
                      VALE_I=1,),
            )
 
-FIN();
+FIN()

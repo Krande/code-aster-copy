@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,11 +83,11 @@ CARA2=AFFE_CARA_ELEM(MODELE=MO1,
                      POUTRE=_F(GROUP_MA='TOUT',
                                SECTION='RECTANGLE',
                                CARA=('HY','HZ',),
-                               VALE=(1.0,0.1,),),);
+                               VALE=(1.0,0.1,),),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=6.5,
-                                    NOMBRE=65,),);
+                                    NOMBRE=65,),)
 
 #
 
@@ -117,11 +117,11 @@ NONLI=STAT_NON_LINE(  MODELE=MO1,
                                 REAC_ITER=1,),
                       CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                      ITER_GLOB_MAXI=20,),
-                      ARCHIVAGE=_F(LIST_INST=L_INST,  ),);
+                      ARCHIVAGE=_F(LIST_INST=L_INST,  ),)
 
 NONLI=CALC_CHAMP(reuse =NONLI,
                  CONTRAINTE=('SIEF_ELNO'),
-                 RESULTAT=NONLI,);
+                 RESULTAT=NONLI,)
 
 
 TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
@@ -129,34 +129,34 @@ TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
                                  RESULTAT=NONLI,
                                  NOM_CHAM='DEPL',
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 U_CALC=RECU_FONCTION(TABLE=TAB_DEPL,
                      PARA_X='INST',
-                     PARA_Y='DX',);
+                     PARA_Y='DX',)
 
 V_CALC=RECU_FONCTION(TABLE=TAB_DEPL,
                      PARA_X='INST',
-                     PARA_Y='DZ',);
+                     PARA_Y='DZ',)
 
 DRY_CALC=RECU_FONCTION(TABLE=TAB_DEPL,
                        PARA_X='INST',
-                       PARA_Y='DRY',);
+                       PARA_Y='DRY',)
 
 
 
 IMPR_TABLE(TABLE=TAB_DEPL,
-           FORMAT='TABLEAU',);
+           FORMAT='TABLEAU',)
 
 TAB_EFFO=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENTS',
                                  GROUP_NO='NO01',
                                  RESULTAT=NONLI,
                                  NOM_CHAM='SIEF_ELNO',
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION',),)
 
 IMPR_TABLE(TABLE=TAB_EFFO,
-           FORMAT='TABLEAU',);
+           FORMAT='TABLEAU',)
 
 
 

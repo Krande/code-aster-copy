@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 
 MA=LIRE_MAILLAGE(FORMAT="ASTER",VERI_MAIL=_F(VERIF='NON'),
-                 INFO = 2, );
+                 INFO = 2, )
 
 
 MO=AFFE_MODELE(
                 MAILLAGE=MA,
-                
+
                 AFFE= (
                 _F(
                         GROUP_MA = ('CUBE','DROITE'),
@@ -42,14 +42,14 @@ MO=AFFE_MODELE(
                    MODELISATION = 'PLAN_JOINT'
                    )
                  )
-              );
+              )
 
 
 ACIER=DEFI_MATERIAU(
      ELAS=_F(
               E =  2.1E+6,
               NU = 0.0),
-            );
+            )
 
 
 BOND=DEFI_MATERIAU(ELAS=_F(E=1.55E+4,
@@ -68,7 +68,7 @@ BOND=DEFI_MATERIAU(ELAS=_F(E=1.55E+4,
                                  EPSTR0 =  0.9,
                                  ADN    =  1.E-9,
                                  BDN    =  1.5,
-                                    ),);
+                                    ),)
 
 
 
@@ -79,7 +79,7 @@ CM=AFFE_MATERIAU(
                        MATER = ACIER),
                      _F(GROUP_MA = 'CUBEDEG',
                         MATER=BOND,),
-                        ),);
+                        ),)
 
 
 
@@ -87,20 +87,20 @@ LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
     _F(GROUP_MA='GAUCHE2', DX=0, DY=0),
-    ),);
+    ),)
 
 TRACTION=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
     _F(GROUP_MA='DROITE', DX=0.5, DY=-0.86602540378444),
-    ),);
+    ),)
 
 
 L_INST=DEFI_LIST_REEL(DEBUT   = 0,
      INTERVALLE=(
       _F( JUSQU_A = 1.0,      NOMBRE =  10 ),
       _F( JUSQU_A = 30.0,     NOMBRE =  290 ),
-      ),);
+      ),)
 
 
 FC1 = DEFI_FONCTION(
@@ -109,7 +109,7 @@ FC1 = DEFI_FONCTION(
               1, 0.1),
   PROL_DROITE = 'LINEAIRE',
   PROL_GAUCHE='LINEAIRE',
-  );
+  )
 
 
 U=STAT_NON_LINE(
@@ -132,7 +132,7 @@ U=STAT_NON_LINE(
   NEWTON     = _F(MATRICE = 'TANGENTE',
                   PAS_MINI_ELAS = 0.0001,
                   REAC_ITER=1),
-  );
+  )
 
 
 U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA'),RESULTAT=U)
@@ -141,7 +141,7 @@ U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA'),RESULTAT
 
 L_CAST=DEFI_LIST_REEL(VALE =( 2., 4., 6., 8.,10.,
                              12.,14.,16.,18.,20.,
-                             22.,24.,26.,28.,30.,),);
+                             22.,24.,26.,28.,30.,),)
 
 # ---------------- Resultats ----------------------
 
@@ -150,7 +150,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U,
                   LIST_INST=L_CAST,
                   FORM_TABL='OUI',
                   GROUP_MA = 'CUBEDEG',
-                  IMPR_COOR='NON',),);
+                  IMPR_COOR='NON',),)
 
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=U,
@@ -160,7 +160,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=U,
                   FORM_TABL='OUI',
                   GROUP_MA = 'CUBEDEG',
                   IMPR_COOR='NON',),
-                  ),);
+                  ),)
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=U,
                   NOM_CHAM='VARI_ELGA',
@@ -169,7 +169,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=U,
                   FORM_TABL='OUI',
                   GROUP_MA = 'CUBEDEG',
                   IMPR_COOR='NON',),
-                  ),);
+                  ),)
 
 # --------- Comparaison des Resultats avec FEAP ----------------
 
@@ -311,7 +311,7 @@ UXP=RECU_FONCTION(RESULTAT=U,
                   NOM_CMP='DX',
                   GROUP_NO='TOUTSEUL',
                   LIST_INST=L_CAST,
-                  );
+                  )
 
 SXYLI1=RECU_FONCTION(RESULTAT=U,
                    NOM_CHAM='SIEF_ELGA',
@@ -319,7 +319,7 @@ SXYLI1=RECU_FONCTION(RESULTAT=U,
                    GROUP_MA ='CUBEDEG',
                    POINT = 1,
                    LIST_INST=L_CAST,
-                   );
+                   )
 
 SXYLI2=RECU_FONCTION(RESULTAT=U,
                    NOM_CHAM='SIEF_ELGA',
@@ -327,7 +327,7 @@ SXYLI2=RECU_FONCTION(RESULTAT=U,
                    GROUP_MA ='CUBEDEG',
                    POINT = 2,
                    LIST_INST=L_CAST,
-                   );
+                   )
 
 
 # ---- f(variables internes)
@@ -338,7 +338,7 @@ V21D=RECU_FONCTION(RESULTAT=U,
                    GROUP_MA ='CUBEDEG',
                    POINT = 1,
                    LIST_INST=L_CAST,
-                   );
+                   )
 
 V22D=RECU_FONCTION(RESULTAT=U,
                    NOM_CHAM='VARI_ELGA',
@@ -346,7 +346,7 @@ V22D=RECU_FONCTION(RESULTAT=U,
                    GROUP_MA ='CUBEDEG',
                    POINT = 2,
                    LIST_INST=L_CAST,
-                   );
+                   )
 
 # ---------- en format AGRAF ----------
 #
@@ -363,7 +363,7 @@ IMPR_FONCTION( UNITE=25,
                        FONC_Y=SXYLI1,),
                     _F(FONC_X=UXP,
                        FONC_Y=SXYLI2,),
-                      ),);
+                      ),)
 
 # COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
 
@@ -377,6 +377,6 @@ IMPR_FONCTION( UNITE=27, UNITE_DIGR=28,
                        FONC_Y=V21D,),
                     _F(FONC_X=UXP,
                        FONC_Y=V22D,),
-                       ),);
+                       ),)
 
-FIN();
+FIN()

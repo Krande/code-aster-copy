@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
 ),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(GROUP_MA='ROTOR',
@@ -32,15 +32,15 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('PALIER_A','PALIER_E','DISQUE1','DISQUE2','DISQUE3',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),);
+                            MODELISATION='DIS_TR',),),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E11,
                             NU=0.3,
-                            RHO=7800.0,),);
+                            RHO=7800.0,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='ROTOR',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=_F(GROUP_MA='ROTOR',
@@ -86,31 +86,31 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                    VALE=(55.134951,1.1716177,0.6023493,0.6023493,0.,0.,0.,0.,0.,0.,),),),
                       ORIENTATION=_F(GROUP_MA=('DISQUE1','DISQUE2','DISQUE3','PALIER_A','PALIER_E'),
                                       CARA='ANGL_NAUT',
-                                      VALE=(0.,-90.,0.,),),);
+                                      VALE=(0.,-90.,0.,),),)
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=(_F(GROUP_NO='PALIER_A',
                                      DZ=0.0,),
                                   _F(GROUP_MA='ROTOR',
-                                     DRZ=0.0,),),);
+                                     DRZ=0.0,),),)
 
-balou = 0.05;
+balou = 0.05
 
 
-FUN=DEFI_CONSTANTE(VALE=1.0,);
-NTRIM = 15000.0;
+FUN=DEFI_CONSTANTE(VALE=1.0,)
+NTRIM = 15000.0
 
-FREQ = (NTRIM / 60.0);
+FREQ = (NTRIM / 60.0)
 
-OM = ((FREQ * 2) * pi);
+OM = ((FREQ * 2) * pi)
 
 bal_FY=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
-                                      FY=(balou * (OM ** 2)),),);
+                                      FY=(balou * (OM ** 2)),),)
 
 bal_FX=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='N_DIS2',
-                                      FX=(balou * (OM ** 2)),),);
+                                      FX=(balou * (OM ** 2)),),)
 ASSEMBLAGE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
@@ -133,14 +133,14 @@ ASSEMBLAGE(MODELE=MODELE,
                               OPTION='CHAR_MECA',
                               CHARGE=bal_FX),
                            ),
-            );
+            )
 
 
 
 AMOGYRO=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYRO,
                                   COEF_R=OM,),
                                _F(MATR_ASSE=AMOR,
-                                  COEF_R=1.0,),),);
+                                  COEF_R=1.0,),),)
 
 MQ_SO=CALC_MODES(INFO=1,
                  MATR_RIGI=RIGIDITE,
@@ -172,29 +172,29 @@ DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                               FONC_MULT=FUN,
                               PHAS_DEG=-90.0,),
                            ),
-                              );
+                              )
 
 DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   GROUP_NO='N_DIS2',);
+                   GROUP_NO='N_DIS2',)
 
 DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   GROUP_NO='N_DIS2',);
+                   GROUP_NO='N_DIS2',)
 
 MOD_X_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DX_DIS2,
-                                     PARTIE='MODULE',),);
+                                     PARTIE='MODULE',),)
 
 MOD_Y_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DY_DIS2,
-                                     PARTIE='MODULE',),);
+                                     PARTIE='MODULE',),)
 
 PHA_X_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DX_DIS2,
-                                     PARTIE='PHASE',),);
+                                     PARTIE='PHASE',),)
 
 PHA_Y_D2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DY_DIS2,
-                                     PARTIE='PHASE',),);
+                                     PARTIE='PHASE',),)
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.000571541171524,
                         VALE_REFE=5.7209999999999997E-4,
@@ -224,4 +224,4 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-173.921320614,
                         FONCTION=PHA_X_D2,),
               )
 
-FIN();
+FIN()

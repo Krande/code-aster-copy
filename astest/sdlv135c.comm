@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ ACCE1 =GENE_ACCE_SEISME( INFO  = 2, INIT_ALEA = alea,
                         FREQ_FILTRE = 0.05,
                         FREQ_CORNER = 0.01, NB_TIRAGE = 2, COEF_CORR = 0.5,
                        DSP = _F(AMOR_REDUIT  = delta,  FREQ_FOND = frr, ),
-                       MODULATION = _F(TYPE=   "JENNINGS_HOUSNER", ACCE_MAX = ZPA),);
+                       MODULATION = _F(TYPE=   "JENNINGS_HOUSNER", ACCE_MAX = ZPA),)
 
 FONC_A11 = RECU_FONCTION(  TABLE=ACCE1,
                         FILTRE= (_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
@@ -129,7 +129,7 @@ ACCE2 =GENE_ACCE_SEISME( INFO  = 2, INIT_ALEA = alea,
                                       MAILLAGE = MAILLAGE,
                                      TYPE = 'MITA_LUCO', VITE_ONDE = Vs , PARA_ALPHA = alpha),
                        DSP = _F(AMOR_REDUIT  = delta,  FREQ_FOND = frr, ),
-                       MODULATION = _F(TYPE=   "CONSTANT", ACCE_MAX = ZPA),);
+                       MODULATION = _F(TYPE=   "CONSTANT", ACCE_MAX = ZPA),)
 
 table_acce = ACCE2.EXTR_TABLE()
 liste_nom_noe = table_acce.NOEUD

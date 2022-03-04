@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
-MA_L  =  LIRE_MAILLAGE(FORMAT='MED');
+MA_L  =  LIRE_MAILLAGE(FORMAT='MED')
 
 
 MA_Q = CREA_MAILLAGE(
@@ -34,7 +34,7 @@ MA_Q = CREA_MAILLAGE(
 L_INST = DEFI_LIST_REEL (
               DEBUT=0.0,
               INTERVALLE=(_F(JUSQU_A=3.00,NOMBRE=30,),
-                          ),);
+                          ),)
 
 
 
@@ -55,7 +55,7 @@ METAL = DEFI_MATERIAU(
 
 U_COMP=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.,0.,2.,3.e-3,3.,6.e-3),
-                     PROL_DROITE='CONSTANT',);
+                     PROL_DROITE='CONSTANT',)
 
 
 MO=[None]*2
@@ -65,11 +65,11 @@ CHP_T=[None]*2
 TEMP=[None]*2
 CHP_M=[None]*2
 
-MA=[MA_Q,MA_L];
+MA=[MA_Q,MA_L]
 
 
-modelisation=['3D_GRAD_VARI','3D'];
-comportement=['ENDO_ISOT_BETON'];
+modelisation=['3D_GRAD_VARI','3D']
+comportement=['ENDO_ISOT_BETON']
 
 
 for i in range(0,len(modelisation)):
@@ -80,14 +80,14 @@ for i in range(0,len(modelisation)):
 
   CHP_M[i]=AFFE_MATERIAU(MAILLAGE=MA[i],
                      AFFE=_F(TOUT='OUI',
-                             MATER=METAL),);
+                             MATER=METAL),)
 
   MO[i]=AFFE_MODELE(MAILLAGE=MA[i],
               AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION=modelisation[i],
                        ),
-                       );
+                       )
 
   C_RIG[i] = AFFE_CHAR_MECA(
                                MODELE = MO[i],
@@ -96,11 +96,11 @@ for i in range(0,len(modelisation)):
                _F(GROUP_MA = 'BLOY',DY = 0),
                _F(GROUP_MA = 'BLOZ',DZ = 0),
                ),
-           );
+           )
 
   CHR_C[i] = AFFE_CHAR_MECA( MODELE = MO[i],
                         DDL_IMPO = _F(GROUP_MA='TIRX', DX= 1.),
-                       );
+                       )
 
 
 DIFF=[None]*len(comportement)
@@ -135,7 +135,7 @@ for j in range(0,len(comportement)):
               CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                              RESI_GLOB_RELA=1.e-6,
                             ),
-         );
+         )
 
 
 # Matrice secante
@@ -162,7 +162,7 @@ for j in range(0,len(comportement)):
                              RESI_GLOB_RELA=1.e-6,
                             ),
               ARCHIVAGE=_F(LIST_INST=L_INST),
-         );
+         )
 
 
 
@@ -196,7 +196,7 @@ for j in range(0,len(comportement)):
                              RESI_GLOB_RELA=1.e-6,
                             ),
               ARCHIVAGE=_F(LIST_INST=L_INST),
-         );
+         )
 
     U[i]=CALC_CHAMP(reuse=U[i],RESULTAT=U[i],CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -208,7 +208,7 @@ for j in range(0,len(comportement)):
 
                 RESULTAT  =U[i],
                 CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',FORCE='FORC_NODA',
-                );
+                )
 
 
 
@@ -217,7 +217,7 @@ for j in range(0,len(comportement)):
                                    NOM_CHAM='SIEF_ELGA',
                                    NOM_CMP='SIXX',
                                 POINT=1,
-                         );
+                         )
 
 
     TAB_E[i]=POST_RELEVE_T(
@@ -227,7 +227,7 @@ for j in range(0,len(comportement)):
                    RESULTAT=U[i],
                    NOM_CHAM='DEPL',
                    NOM_CMP=('DX'),
-                   OPERATION='EXTRACTION',),);
+                   OPERATION='EXTRACTION',),)
 
     TAB_S[i]=POST_RELEVE_T(
              ACTION=
@@ -236,13 +236,13 @@ for j in range(0,len(comportement)):
                    RESULTAT=U[i],
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP=('SIXX'),
-                   OPERATION='EXTRACTION',),);
+                   OPERATION='EXTRACTION',),)
 
     TG_E[i]=RECU_FONCTION(TABLE=TAB_E[i],
                     PARA_X='INST',
                     PARA_Y='DX',
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);
+                    PROL_GAUCHE='CONSTANT',)
 
     if i==1 :
       DIFF[j]=CALC_TABLE(TABLE=TAB_S[i],
@@ -253,12 +253,12 @@ for j in range(0,len(comportement)):
                                  _F(OPERATION='COMB',TABLE=TAB_S[i-1],NOM_PARA='INST'),
                                  _F(OPERATION='OPER',FORMULE=F_DIFF,NOM_PARA='DIFF'),
                                  ),
-                       );
+                       )
 
 
 
 
-  IMPR_TABLE(TABLE=DIFF[j]);
+  IMPR_TABLE(TABLE=DIFF[j])
 
   TEST_TABLE(CRITERE='ABSOLU',
              REFERENCE='NON_DEFINI',
@@ -279,4 +279,4 @@ for j in range(0,len(comportement)):
 
 
 
-FIN();
+FIN()

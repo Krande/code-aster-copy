@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,32 +17,32 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 import numpy
 
-ma=LIRE_MAILLAGE();
+ma=LIRE_MAILLAGE()
 
 
 mo=AFFE_MODELE(MAILLAGE=ma,
                AFFE=_F(GROUP_MA=('PILE',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='POU_D_T',),);
+                        MODELISATION='POU_D_T',),)
 
 bracing=DEFI_MATERIAU(ELAS=_F(E=2.e13,
                               NU=0.3,
                               RHO=780.,
                               AMOR_ALPHA=0.01,
-                              AMOR_BETA=0.01),);
+                              AMOR_BETA=0.01),)
 
 mater=AFFE_MATERIAU(MAILLAGE=ma,
                     AFFE=_F(GROUP_MA='PILE',
-                            MATER=bracing,),);
+                            MATER=bracing,),)
 
 
 #
 rhoeau=1000.
-#FONCTION QUADRATIQUE POUR LES FORCES VISQUEUSES 
+#FONCTION QUADRATIQUE POUR LES FORCES VISQUEUSES
 Cd=0.6
 Ca=1.
 D=6.
@@ -53,7 +53,7 @@ cara=AFFE_CARA_ELEM(MODELE=mo,
                              CARA=('R','EP',),
                              VALE=(3.0,0.10,),
                              ),
-                               );
+                               )
 
 encas14=AFFE_CHAR_MECA(MODELE=mo,
                        DDL_IMPO=_F(GROUP_NO=('N0001','N0050',),
@@ -62,7 +62,7 @@ encas14=AFFE_CHAR_MECA(MODELE=mo,
                                    DZ=0.,
                                    DRX=0.,
                                    DRY=0.,
-                                   DRZ=0.,),);
+                                   DRZ=0.,),)
 
 from sdnl143a import *
 
@@ -126,22 +126,22 @@ dragF=AFFE_CHAR_MECA_F(MODELE=mo,
                                      TYPE_CHARGE='FORCE',
                                      FX=FXP,
                                      FY=FYP,
-                                     FZ=FZP,),);
+                                     FZ=FZP,),)
 
 
 
 
 poids=AFFE_CHAR_MECA(MODELE=mo,
                     PESANTEUR=_F(GRAVITE=9.81,
-                                 DIRECTION=(0.,0.,-1.0,),),);
+                                 DIRECTION=(0.,0.,-1.0,),),)
 
 temps=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=100.,
-                                   PAS=0.1,),);
+                                   PAS=0.1,),)
 
 tempsm=DEFI_LIST_REEL(DEBUT=-1.,
                       INTERVALLE=_F(JUSQU_A=0.,
-                                    PAS=1,),);
+                                    PAS=1,),)
 
 stat=STAT_NON_LINE(MODELE=mo,
                    CHAM_MATER=mater,
@@ -155,14 +155,14 @@ stat=STAT_NON_LINE(MODELE=mo,
                    INCREMENT=_F(LIST_INST=tempsm,),
                    NEWTON=_F(REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
-                   SOLVEUR=_F(),);
+                   SOLVEUR=_F(),)
 
 IMPR_RESU(MODELE=mo,
           FORMAT='RESULTAT',
           RESU=_F(RESULTAT=stat,
                   NOM_CHAM='DEPL',
                   INST=0.0,
-                  GROUP_NO='N0002',),);
+                  GROUP_NO='N0002',),)
 
 
 tfin = 21.8
@@ -183,7 +183,7 @@ dyna=DYNA_NON_LINE(MODELE=mo,
                    CONVERGENCE=_F(RESI_GLOB_RELA=0.0001,
                                   ITER_GLOB_MAXI=100,),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                   FORMULATION='DEPLACEMENT',),);
+                                   FORMULATION='DEPLACEMENT',),)
 
 # Post-traitements
 test=CALC_CHAMP(MODELE=mo,
@@ -191,14 +191,14 @@ test=CALC_CHAMP(MODELE=mo,
                 CARA_ELEM=cara,
                 RESULTAT=dyna,
                 TOUT_ORDRE       ='OUI',
-                FORCE='REAC_NODA',);
+                FORCE='REAC_NODA',)
 
 DYNA01=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='F1_TIME',
                                RESULTAT=test,
                                NOM_CHAM='REAC_NODA',
                                GROUP_NO='N0001',
-                               TOUT_CMP='OUI',),);
+                               TOUT_CMP='OUI',),)
 
 
 # Comparaison avec CALHYPSO à T=21.8
@@ -230,4 +230,4 @@ TEST_TABLE(
            )
 
 
-FIN();
+FIN()

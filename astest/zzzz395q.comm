@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 # --------------------------------------------------------------------
 # person_in_charge: mickael.abbas at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-mesh=LIRE_MAILLAGE(FORMAT='MED',);
+mesh=LIRE_MAILLAGE(FORMAT='MED',)
 
 mesh=MODI_MAILLAGE(reuse =mesh,
                    MAILLAGE=mesh,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),)
 
 # Define the material
 steel=DEFI_MATERIAU(
@@ -34,18 +34,18 @@ steel=DEFI_MATERIAU(
 
 chmat=AFFE_MATERIAU(MAILLAGE=mesh,
                     AFFE=_F(TOUT='OUI',
-                            MATER=steel,),);
+                            MATER=steel,),)
 # Mechanic model
 model=AFFE_MODELE(MAILLAGE=mesh,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 # Boundary condition
 chg_b=AFFE_CHAR_CINE(MODELE=model,
                       MECA_IMPO=_F(GROUP_MA='S_inf',
                                  DX=0,DY=0.0,DZ=0),
-                     );
+                     )
 
 chg_p=AFFE_CHAR_MECA(MODELE=model,
                      PRES_REP=_F(GROUP_MA='S_e',
@@ -55,14 +55,14 @@ chg_p=AFFE_CHAR_MECA(MODELE=model,
 # Time discretization
 list_t=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=10.0,
-                                    PAS=1.0,),);
+                                    PAS=1.0,),)
 
 list_i=DEFI_LIST_INST(METHODE='MANUEL',
-                      DEFI_LIST=_F(LIST_INST=list_t,),);
+                      DEFI_LIST=_F(LIST_INST=list_t,),)
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                                           10.,1.,
-                   ),);
+                   ),)
 
 # Complete computation to create base
 stnl=STAT_NON_LINE(MODELE=model,
@@ -83,14 +83,14 @@ stnl=STAT_NON_LINE(MODELE=model,
 baseSiefElgaPOD=DEFI_BASE_REDUITE(RESULTAT = stnl,
                          INFO     = 2,
                          NOM_CHAM = 'SIEF_ELGA',
-                         TOLE_SVD = 1.E-3,);
+                         TOLE_SVD = 1.E-3,)
 
 
 # Print base (recombSiefPOD_ELGA)
 IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=baseSiefElgaPOD))
 
 # Get table
-coorReduPOD=RECU_TABLE(CO=baseSiefElgaPOD, NOM_TABLE='COOR_REDUIT',);
+coorReduPOD=RECU_TABLE(CO=baseSiefElgaPOD, NOM_TABLE='COOR_REDUIT',)
 
 # Print reduced coordinates (TEMP)
 IMPR_TABLE(TABLE=coorReduPOD, UNITE=6)
@@ -107,7 +107,7 @@ baseSiefElgaPODINCR=DEFI_BASE_REDUITE(OPERATION = 'POD_INCR',
                          RESULTAT  = stnl,
                          INFO      = 2,
                          NOM_CHAM  = 'SIEF_ELGA',
-                         TOLE_SVD  = 1.E-1,);
+                         TOLE_SVD  = 1.E-1,)
 
 # Update base
 baseSiefElgaPODINCR=DEFI_BASE_REDUITE(OPERATION = 'POD_INCR',
@@ -117,13 +117,13 @@ baseSiefElgaPODINCR=DEFI_BASE_REDUITE(OPERATION = 'POD_INCR',
                          RESULTAT  = stnl,
                          INFO      = 2,
                          NOM_CHAM  = 'SIEF_ELGA',
-                         TOLE_SVD  = 1.E-3,);
+                         TOLE_SVD  = 1.E-3,)
 
 # Print base (recombSiefPOD_ELGA)
 IMPR_RESU(FORMAT='MED',UNITE=82,RESU=_F(RESULTAT=baseSiefElgaPODINCR))
 
 # Get table
-coorReduPODINCR=RECU_TABLE(CO=baseSiefElgaPODINCR, NOM_TABLE='COOR_REDUIT',);
+coorReduPODINCR=RECU_TABLE(CO=baseSiefElgaPODINCR, NOM_TABLE='COOR_REDUIT',)
 
 # Print reduced coordinates (TEMP)
 IMPR_TABLE(TABLE=coorReduPODINCR, UNITE=6)
@@ -134,9 +134,9 @@ IMPR_TABLE(TABLE=coorReduPODINCR, UNITE=6)
 #
 ####################################################################################################
 
-modeSiefPOD_1 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPOD, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1);
-modeSiefPOD_2 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPOD, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=2);
-modeSiefPOD_3 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPOD, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=3);
+modeSiefPOD_1 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPOD, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1)
+modeSiefPOD_2 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPOD, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=2)
+modeSiefPOD_3 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPOD, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=3)
 
 coefSiefPOD_1 = -1.31805E+05
 coefSiefPOD_2 = +9.73105E+02
@@ -158,9 +158,9 @@ recombSiefPOD = CREA_CHAMP(OPERATION = 'ASSE',
 #
 ####################################################################################################
 
-modeSiefPODINCR_1 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPODINCR, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1);
-modeSiefPODINCR_2 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPODINCR, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=2);
-modeSiefPODINCR_3 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPODINCR, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=3);
+modeSiefPODINCR_1 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPODINCR, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1)
+modeSiefPODINCR_2 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPODINCR, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=2)
+modeSiefPODINCR_3 = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSiefElgaPODINCR, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=3)
 
 coefSiefPODINCR_1 = 1.31732E+05
 coefSiefPODINCR_2 = 4.46687E+03

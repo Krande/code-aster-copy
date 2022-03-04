@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 #
-POURSUITE(CODE='OUI',);
+POURSUITE(CODE='OUI',)
 
 # recuperation des contraintes et deformations viscoplastiques par phase
 
@@ -35,17 +35,17 @@ NUMCMP=3
 for IP in range (NB_GRAINS):
   VEVPG ='V'+str(NVIE+78*IP+NUMCMP)
   VSIGG ='V'+str(NVIS+ 6*IP+NUMCMP)
-  EVPG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VEVPG,GROUP_MA='MA1',POINT=1);
-  SIGG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VSIGG,GROUP_MA='MA1',POINT=1);
+  EVPG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VEVPG,GROUP_MA='MA1',POINT=1)
+  SIGG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VSIGG,GROUP_MA='MA1',POINT=1)
 
 
 motcles = {}
-motcles['COURBE'] = []                         
+motcles['COURBE'] = []
 for IP in range (NB_GRAINS):
    motcles['COURBE'].append(_F(FONC_X=EVPG1[IP], FONC_Y=SIGG1[IP]))
 
 IMPR_FONCTION(FORMAT ='XMGRACE',
-UNITE = 24, 
-**motcles);
+UNITE = 24,
+**motcles)
 
-FIN () ;
+FIN ()

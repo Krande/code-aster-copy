@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(
-                      JUSQU_A=10000.,NOMBRE=1,),);
+                      JUSQU_A=10000.,NOMBRE=1,),)
 
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -39,7 +39,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='GAUCHE',),
                                _F(GROUP_MA='DROIT',),
                                _F(GROUP_MA='BO',),
-                               ),);
+                               ),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -63,30 +63,30 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(NOM='BOS',
                                   CRIT_NOEUD='SOMMET',
                                   GROUP_MA='BO',),
-                               ),);
+                               ),)
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_THHS',),);
+                           MODELISATION='D_PLAN_THHS',),)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
-UNDEMI=DEFI_CONSTANTE(VALE=0.5,);
-EPSILON=DEFI_CONSTANTE(VALE=-1.E-30,);
+UN=DEFI_CONSTANTE(VALE=1.0,)
+UNDEMI=DEFI_CONSTANTE(VALE=0.5,)
+EPSILON=DEFI_CONSTANTE(VALE=-1.E-30,)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
 
 VISCOLIQ=DEFI_FONCTION(NOM_PARA='TEMP',
                    VALE=(293.0 ,1.002E-3,
                          323.0 ,0.5468E-3,
                          393.0 ,0.2818E-3),
                    PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='CONSTANT',);
+                   PROL_GAUCHE='CONSTANT',)
 
-VISCOGAZ=DEFI_CONSTANTE(VALE=1.8E-05,);
+VISCOGAZ=DEFI_CONSTANTE(VALE=1.8E-05,)
 
-DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,)
 
-DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,)
 
 LI2=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=1.E6,
@@ -96,14 +96,14 @@ LI2=DEFI_LIST_REEL(DEBUT=0,
                                   _F(JUSQU_A=1.E8,
                                      NOMBRE=100,),
                                   _F(JUSQU_A=1.E9,
-                                     NOMBRE=100,),),);
+                                     NOMBRE=100,),),)
 
 LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
                    INTERVALLE=_F(JUSQU_A=0.98999999999999999,
-                                 PAS=1.E-2,),);
+                                 PAS=1.E-2,),)
 
 # LIMITATION DE LA SATURATION MAX (<1)
-#CONSTBO = DEFI_CONSTANTE ( VALE : 0.99);
+#CONSTBO = DEFI_CONSTANTE ( VALE : 0.99)
 
 SLO = FORMULE(VALE='0.5-1.E-12*(PCAP-3700.+1.E5)',
               NOM_PARA='PCAP',)
@@ -113,9 +113,9 @@ SATUBO=CALC_FONC_INTERP(FONCTION=SLO,
 NOM_PARA='PCAP',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
-                        INFO=2,);
+                        INFO=2,)
 
-DSATBO=DEFI_CONSTANTE(VALE=-1.E-12,);
+DSATBO=DEFI_CONSTANTE(VALE=-1.E-12,)
 
 PERMO = FORMULE(VALE="""
              (1.+(0.5*(-1.+SAT**(-16.667))**0.940)**2)**(-0.5)""",
@@ -126,7 +126,7 @@ NOM_PARA='SAT',
                           LIST_PARA=LI1,
                           PROL_GAUCHE='CONSTANT',
                           PROL_DROITE='CONSTANT',
-                          INFO=2,);
+                          INFO=2,)
 
 DPERMO = FORMULE(VALE="""
   -0.5*(1.+ (0.5*(-1.+(SAT)**(-16.667))**0.940)**2)**(-1.5)
@@ -140,7 +140,7 @@ DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMO,
                          NOM_PARA='SAT',
                          PROL_GAUCHE='CONSTANT',
                          PROL_DROITE='CONSTANT',
-                         INFO=2,);
+                         INFO=2,)
 
 # COEF. DE FICK
 #
@@ -148,7 +148,7 @@ DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMO,
 #************************************
 LIPV=DEFI_LIST_REEL(DEBUT=0.1,
                    INTERVALLE=_F(JUSQU_A=1.000001E5,
-                                 PAS=1.E3,),);
+                                 PAS=1.E3,),)
 FVP_PV = FORMULE(VALE='1.+PVAP-PVAP',
                  NOM_PARA='PVAP',)
 
@@ -157,16 +157,16 @@ FVPPV  = CALC_FONC_INTERP ( FONCTION    =  FVP_PV     ,
                             NOM_PARA    = 'PVAP'      ,
                             PROL_GAUCHE = 'CONSTANT' ,
                             PROL_DROITE = 'CONSTANT' ,
-                            INFO        = 2          ,);
+                            INFO        = 2          ,)
 
-DM8=DEFI_CONSTANTE(VALE=5.9000000000000003E-06,);
+DM8=DEFI_CONSTANTE(VALE=5.9000000000000003E-06,)
 
-KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-21,);
+KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-21,)
 #
 # CONDUCTIVITE THERMIQUE
 #
 
-LAMBT=DEFI_CONSTANTE(VALE=8.3300000000000001,);
+LAMBT=DEFI_CONSTANTE(VALE=8.3300000000000001,)
 LS = FORMULE(VALE='(0.3*SAT)',
              NOM_PARA='SAT',)
 
@@ -175,8 +175,8 @@ LAMBS=CALC_FONC_INTERP(FONCTION=LS,
                         NOM_PARA='SAT',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
-                        INFO=2,);
-DLS=DEFI_CONSTANTE(VALE=0.3,);
+                        INFO=2,)
+DLS=DEFI_CONSTANTE(VALE=0.3,)
 
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000000)
@@ -226,12 +226,12 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                    LAMB_T=LAMBT,
                                    LAMB_S=LAMBS,
                                    D_LB_S=DLS,
-                                   LAMB_CT=0.5),);
+                                   LAMB_CT=0.5),)
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=(_F(GROUP_MA='BO',
                               MATER=MATERBO,),
-                              ),);
+                              ),)
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE',
@@ -245,14 +245,14 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                           _F(GROUP_NO='BOS',
                              NOM_CMP='PRE1',
                              VALE=1.E5,),
-                             ),);
+                             ),)
 
 FLUTH=AFFE_CHAR_MECA(MODELE=MODELE,
                        FLUX_THM_REP=_F(GROUP_MA=('GAUCHE','DROIT','BAS','HAUT'),
                                        FLUN=1.E6,
                                        FLUN_HYDR1=0.0,
                                        ),
-                                      );
+                                      )
 
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
@@ -272,7 +272,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                              0.0,0.0,0.0,0.0,0.0,0.0,0.0,
                              0.0,0.0,0.0,0.0,0.0,0.0,
                              0.0,0.0,0.0,0.0,0.0,0.0,),),
-                             ),);
+                             ),)
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INST1),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -306,7 +306,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                             STOP_SINGULIER='NON',),
                  ARCHIVAGE=_F(PAS_ARCH=1,
                               ),
-                 );
+                 )
 
 U0=CALC_CHAMP(reuse=U0,VARI_INTERNE=('VARI_ELNO'),RESULTAT=U0)
 
@@ -314,17 +314,17 @@ U0=CALC_CHAMP(reuse=U0,VARI_INTERNE=('VARI_ELNO'),RESULTAT=U0)
 U0=CALC_CHAMP(reuse =U0,
 
              VARI_INTERNE='VARI_NOEU',
-             RESULTAT=U0,);
+             RESULTAT=U0,)
 
 
 #################################################
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U0,
 #                  NOM_CHAM='DEPL',
-#                  GROUP_NO=('BO',),),);
+#                  GROUP_NO=('BO',),),)
 #
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U0,
 #                  NOM_CHAM='VARI_NOEU',
-#                  GROUP_NO=('BO',),),);
+#                  GROUP_NO=('BO',),),)
 #################################################
 
 
@@ -376,12 +376,12 @@ TEST_RESU(RESU=(_F(INST=1.E4,
 MODELE2=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA=('BO1','HAUT'),
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_THHS',),);
+                           MODELISATION='D_PLAN_THHS',),)
 
 
 INST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(
-                      JUSQU_A=10000.,NOMBRE=2,),);
+                      JUSQU_A=10000.,NOMBRE=2,),)
 
 
 FLUTH2=AFFE_CHAR_MECA(MODELE=MODELE2,
@@ -389,7 +389,7 @@ FLUTH2=AFFE_CHAR_MECA(MODELE=MODELE2,
                                        FLUN=1.E6,
                                        FLUN_HYDR1=0.0,
                                        ),
-                                      );
+                                      )
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INST2),
                         ECHEC=_F(EVENEMENT    = 'ERREUR',
@@ -415,7 +415,7 @@ U2=STAT_NON_LINE(MODELE=MODELE2,
                  CONVERGENCE=_F(
                                 RESI_GLOB_RELA=1.E-6,
                                 ITER_GLOB_MAXI=20),
-                 );
+                 )
 
 U2=STAT_NON_LINE(reuse=U2,
                  MODELE=MODELE,
@@ -438,7 +438,7 @@ U2=STAT_NON_LINE(reuse=U2,
                                 RESI_GLOB_RELA=1.E-6,
                                 ITER_GLOB_MAXI=20),
 
-                 );
+                 )
 
 U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,CONTRAINTE=('SIEF_ELNO'))
 
@@ -455,4 +455,4 @@ TEST_RESU(RESU=_F(INST=1.E4,
                   ),
           )
 
-FIN();
+FIN()

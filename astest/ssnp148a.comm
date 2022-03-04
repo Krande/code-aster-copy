@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 DEBUT( CODE=_F(
         NIV_PUB_WEB='INTERNET',),
-        DEBUG=_F(SDVERI='OUI'));
+        DEBUG=_F(SDVERI='OUI'))
 
 from math import *
 
@@ -32,7 +32,7 @@ from math import *
 INSTEL=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=1,NOMBRE=1),
                                    ),
                       DEBUT=0,
-                      );
+                      )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTEL),
                         ECHEC=_F(ACTION        = 'DECOUPE',
@@ -45,7 +45,7 @@ MAILIN = LIRE_MAILLAGE(FORMAT='GMSH',
                        )
 MAIL=CREA_MAILLAGE(MAILLAGE=MAILIN,
                    LINE_QUAD=_F(TOUT='OUI'),
-                   );
+                   )
 MAIL=DEFI_GROUP(reuse=MAIL,
                 CREA_GROUP_MA=(_F(GROUP_MA='GM41',NOM='gauchem'),
                                _F(GROUP_MA='GM42',NOM='droitem'),
@@ -63,7 +63,7 @@ MAIL=DEFI_GROUP(reuse=MAIL,
                                _F(GROUP_MA='GM71',NOM='sifd'),
                                ),
                 MAILLAGE=MAIL,
-                );
+                )
 
 
 # DEFINITION DU COMPORTEMENT DES MATERIAUX
@@ -83,7 +83,7 @@ ACIER=DEFI_MATERIAU(
 
                NON_LOCAL=_F(
                LONG_CARA = 0.020),
-                 );
+                 )
 
 
 MAT=AFFE_MATERIAU(
@@ -104,7 +104,7 @@ MO_MECA=AFFE_MODELE(
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'D_PLAN_GRAD_SIGM'),
                   ),
-                );
+                )
 
 
 # DEFINITION DU CHARGEMENT
@@ -116,12 +116,12 @@ LIAISON=AFFE_CHAR_MECA(
                       _F(GROUP_NO = 'gauchen',DX=0.0),
                       _F(GROUP_NO = 'pointgn',DY=0.0),
                             ),
-                );
+                )
 
 LIST_PA=DEFI_LIST_REEL(VALE=(0.,1.0),
-                       );
+                       )
 LIST_PR=DEFI_LIST_REEL(VALE=(0.0,-1.0E4),
-                       );
+                       )
 fdx= DEFI_FONCTION(  NOM_PARA = 'INST',
   VALE_PARA=LIST_PA,
   VALE_FONC=LIST_PR,
@@ -132,7 +132,7 @@ fdx= DEFI_FONCTION(  NOM_PARA = 'INST',
 
 TRACTEL=AFFE_CHAR_MECA_F(MODELE=MO_MECA,
                        PRES_REP=(_F(GROUP_MA='droitem',PRES=fdx),),
-                        );
+                        )
 #
 #DEFINITION DES CHAMPS INITIAUX
 #
@@ -187,7 +187,7 @@ VA1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
      MODELE=MO_MECA, INFO=2,PROL_ZERO='OUI',
      AFFE=_F(
       GROUP_MA = 'restm', NOM_CMP = ('X1','X2','X3'),
-              VALE_F = (VARI1,VARI2,VARI3),),);
+              VALE_F = (VARI1,VARI2,VARI3),),)
 
 VA2=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R', INFO=1,
                 CHAM_F=VA1,  CHAM_PARA=( CHXG,)   )
@@ -223,7 +223,7 @@ EVOEL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MULT_FRONT',),
                        CONVERGENCE = (_F(ITER_GLOB_MAXI=30,
                                         RESI_GLOB_RELA=1.E-4,
                                      ),),
-                       );
+                       )
 
 #
 # RECUPERATION DES CONTRAINTES REGULARISEES
@@ -238,7 +238,7 @@ SBARG=POST_RELEVE_T(ACTION=(_F(INTITULE='sbarg',
                                PRECISION=9.99999E-04,
                                ),
                          ),
-                  );
+                  )
 SBARD=POST_RELEVE_T(ACTION=(_F(INTITULE='sbard',
                                GROUP_NO='sifd',
                                RESULTAT=EVOEL,
@@ -249,25 +249,25 @@ SBARD=POST_RELEVE_T(ACTION=(_F(INTITULE='sbard',
                                PRECISION=9.99999E-04,
                                ),
                              ),
-                           );
+                           )
 
 SIGG=CALC_TABLE(TABLE=SBARG,
                          TITRE = ' ',
                          ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('SIXX','SIXX_G'),),
                                  ),
-                       );
+                       )
 
 SIGD=CALC_TABLE(TABLE=SBARD,
                          TITRE = ' ',
                          ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('SIXX','SIXX_D'),),
                                  ),
-                       );
+                       )
 SIGC=CALC_TABLE(TABLE=SIGD,
                          TITRE = ' ',
                          ACTION=(
                                  _F(OPERATION='COMB',TABLE=SIGG,NOM_PARA='INST'),
                                  ),
-                       );
+                       )
 
 #===============================================
 ## Calcul de SIF par la solution analytique
@@ -301,7 +301,7 @@ SIGOFC=CALC_TABLE(TABLE=SIGC,
                   ACTION=(
                   _F(OPERATION='OPER',FORMULE=F_FIC,NOM_PARA=('F_FIC')),
                         ),
-                       );
+                       )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
@@ -314,4 +314,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),
            )
 
-FIN();
+FIN()

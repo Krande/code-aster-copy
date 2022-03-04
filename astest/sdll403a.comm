@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=7.E10,
                             NU=0.3,
-                            RHO=2700.0,),);
+                            RHO=2700.0,),)
 
-MAYA=LIRE_MAILLAGE(FORMAT='MED',);
+MAYA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MATER=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER,),)
 
 STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
                      AFFE=(_F(GROUP_MA='VOLUME',
@@ -37,7 +37,7 @@ STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
                               MODELISATION='3D',),
                            _F(GROUP_MA='FACES',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D',),),)
 # CONDITIONS AUX LIMITES
 
 CHARGE_1=AFFE_CHAR_MECA(MODELE=STRUCTUR, INFO=2,
@@ -54,14 +54,14 @@ CHARGE_1=AFFE_CHAR_MECA(MODELE=STRUCTUR, INFO=2,
                                      DZ=0.0,),
                                   _F(GROUP_NO='NO000001',
                                      DY=0.0,),),
-                        LIAISON_SOLIDE=_F(GROUP_MA='FACES', DIST_MIN=3.e-5),);
+                        LIAISON_SOLIDE=_F(GROUP_MA='FACES', DIST_MIN=3.e-5),)
 #
 # CALCUL STATIQUE
 
 RESU=MECA_STATIQUE(MODELE=STRUCTUR,INFO=2,
                    CHAM_MATER=MATER,
                    SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
-                   EXCIT=_F(CHARGE=CHARGE_1,),);
+                   EXCIT=_F(CHARGE=CHARGE_1,),)
 
 #
 # CALCUL DU CHAMP DE CONTRAINTES
@@ -84,54 +84,54 @@ CHARGE_2=AFFE_CHAR_MECA(MODELE=STRUCTUR,
                                      DY=0.0,),
                                   _F(GROUP_NO='NO000001',
                                      DY=0.0,),),
-                        LIAISON_SOLIDE=_F(GROUP_MA='FACES', DIST_MIN=3.e-5),);
+                        LIAISON_SOLIDE=_F(GROUP_MA='FACES', DIST_MIN=3.e-5),)
 #
 # CALCUL DES MATRICES ELEMENTAIRES POUR LE CALCUL MODAL
 
 KS_ELEM=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                        MODELE=STRUCTUR,
-                       SIEF_ELGA=SIGMA,);
+                       SIEF_ELGA=SIGMA,)
 
 K2_ELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                        MODELE=STRUCTUR,
                        CHAM_MATER=MATER,
-                       CHARGE=CHARGE_2,);
+                       CHARGE=CHARGE_2,)
 
 KR_ELEM=CALC_MATR_ELEM(OPTION='RIGI_ROTA',
                        MODELE=STRUCTUR,
                        CHAM_MATER=MATER,
-                       CHARGE=CHARGE_2,);
+                       CHARGE=CHARGE_2,)
 
 M_ELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=STRUCTUR,
                       CHAM_MATER=MATER,
-                      CHARGE=CHARGE_2,);
+                      CHARGE=CHARGE_2,)
 #
 # NUMEROTATION POUR LE CALCUL MODAL
 
 NUMERO_2=NUME_DDL(MATR_RIGI=(K2_ELEM,KS_ELEM,KR_ELEM),
-                  );
+                  )
 #
 # ASSEMBLAGE DE LA MATRICE DE RAIDEUR STATIQUE KTOT = K + KW
 
 K2_ASSE=ASSE_MATRICE(MATR_ELEM=K2_ELEM,
-                     NUME_DDL=NUMERO_2,);
+                     NUME_DDL=NUMERO_2,)
 
 KS_ASSE=ASSE_MATRICE(MATR_ELEM=KS_ELEM,
-                     NUME_DDL=NUMERO_2,);
+                     NUME_DDL=NUMERO_2,)
 
 KR_ASSE=ASSE_MATRICE(MATR_ELEM=KR_ELEM,
-                     NUME_DDL=NUMERO_2,);
+                     NUME_DDL=NUMERO_2,)
 
 K_MODAL=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=K2_ASSE,
                                   COEF_R=1.0,),
                                _F(MATR_ASSE=KR_ASSE,
                                   COEF_R=1.0,),
                                _F(MATR_ASSE=KS_ASSE,
-                                  COEF_R=1.0,),),);
+                                  COEF_R=1.0,),),)
 
 M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
-                    NUME_DDL=NUMERO_2,);
+                    NUME_DDL=NUMERO_2,)
 
 MODE_1=CALC_MODES(MATR_RIGI=K_MODAL,
                   VERI_MODE=_F(SEUIL=0.0001,
@@ -150,7 +150,7 @@ MODE_1=CALC_MODES(MATR_RIGI=K_MODAL,
 #----------------------------------------------------------------------
 
 IMPR_RESU( FORMAT='IDEAS',UNITE=75,
-           RESU=_F(RESULTAT=MODE_1, ),);
+           RESU=_F(RESULTAT=MODE_1, ),)
 
 MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',
                  FORMAT='IDEAS',
@@ -167,7 +167,7 @@ MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',
                                  POSI_MASS_GENE=(8,2,),
                                  POSI_FREQ=(8,1,),
                                  NOM_CMP=('DX','DY','DZ',),),
-                 TOUT_ORDRE='OUI',);
+                 TOUT_ORDRE='OUI',)
 #----------------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
@@ -221,7 +221,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    CRITERE='RELATIF',
                    PRECISION=0.010999999999999999,),
                 ),
-          );
+          )
 
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,26 +23,26 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',));
+      DEBUG=_F(SDVERI='OUI',))
 
 
-M=LIRE_MAILLAGE(FORMAT='MED',);
+M=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 MA=DEFI_MATERIAU(ELAS=_F(E=1000.,
                          NU=0.3,
                          ALPHA=0.,),
                  THER=_F(LAMBDA=0.,
-                         RHO_CP=1.,),);
+                         RHO_CP=1.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA,),);
+                         MATER=MA,),)
 
 F1 = FORMULE(VALE="""
 1.-(1.5*cos(2.*atan2(Y,4.))+cos(4.*atan2(Y,4.))) /(16.+Y*Y)
@@ -94,7 +94,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_MA='GRMA5',
                                 DZ=0.,),
                              ),
-                 );
+                 )
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                      FORCE_FACE=(_F(GROUP_MA='GRMA3',
@@ -102,23 +102,23 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                                     FY=F2,),
                                  _F(GROUP_MA='GRMA4',
                                     FX=F3,
-                                    FY=F4,),),);
+                                    FY=F4,),),)
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CH2,),),);
+                          _F(CHARGE=CH2,),),)
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
                  TOUT_ORDRE='OUI',
-                 OPTION=('ERZ1_ELEM','ERME_ELEM','ERME_ELNO',),);
+                 OPTION=('ERZ1_ELEM','ERME_ELEM','ERME_ELNO',),)
 
 SIGZZ1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIZ1_NOEU',
-                  NUME_ORDRE=1,);
+                  NUME_ORDRE=1,)
 
 
 TEST_RESU(CHAM_NO=(_F(GROUP_NO='N17',
@@ -251,7 +251,7 @@ IMPR_RESU(FORMAT="RESULTAT",MODELE=MO,
                    NOM_CMP='NUEST',
                    BORNE_INF=10.0,
                    SOUS_TITRE=
-                   ('ESTIMATEUR DERREUR EN RESIDU :LISTE DES MAILLES OU LERREUR RELATIVE EST SUPERIEURE A 10 POUR CENT',),),),);
+                   ('ESTIMATEUR DERREUR EN RESIDU :LISTE DES MAILLES OU LERREUR RELATIVE EST SUPERIEURE A 10 POUR CENT',),),),)
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -312,4 +312,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

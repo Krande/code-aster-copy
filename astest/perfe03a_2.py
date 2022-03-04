@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -622,5 +622,5 @@ def F_DEFI_GROUP(MAIL) :
                                                 MAILLE=('M2630   ','M2669   ','M2709   ','M5834   ','M5871   ','M5961   ','M6243   ','M6278   ','M6446   ','M6481   ','M6516   ','M6602   ','M6803   ','M6839   ','M6876   ','M7250   ','M7800   ','M7839   ',)),
                                              _F(NOM='GRAI300',
                                                 MAILLE=('M2458   ','M2497   ','M2901   ','M2941   ','M2981   ','M3169   ','M3208   ','M3246   ','M5657   ','M5695   ','M5732   ','M6076   ','M6113   ','M6315   ','M6350   ','M6711   ','M7362   ',))),
-                              );
+                              )
         return MAIL

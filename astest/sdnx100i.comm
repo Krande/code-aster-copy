@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
      #IMPR_MACRO='OUI',
-     );
+     )
 
 # Lecture du maillage
 mailcol=LIRE_MAILLAGE(FORMAT='MED',)
@@ -42,10 +42,10 @@ SRO_NGA = DEFI_FONCTION(  PROL_DROITE='CONSTANT',PROL_GAUCHE='EXCLU',
 
 FDSP = CALC_FONCTION ( DSP =_F( FONCTION = SRO_NGA, AMOR_REDUIT = 0.05,
                                FREQ_PAS    = 0.05, FREQ_COUP   = FCOUP,
-                               DUREE = TSM, NORME = 9.81,  NB_ITER=2   ),);
+                               DUREE = TSM, NORME = 9.81,  NB_ITER=2   ),)
 
 DSPX= DEFI_INTE_SPEC( DIMENSION = 1,
-                         PAR_FONCTION = _F(NUME_ORDRE_I = 1, NUME_ORDRE_J = 1, FONCTION =FDSP , ));
+                         PAR_FONCTION = _F(NUME_ORDRE_I = 1, NUME_ORDRE_J = 1, FONCTION =FDSP , ))
 
 #---------- LECTURE TABLE GGmax - D - DONNEE SOL --------#
 
@@ -166,9 +166,9 @@ tabsol= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
                        RESI_RELA=0.05,
                        SURF='OUI',
                        FREQ_COUP=FCOUP,
-                       COEF_AMPL_ACCE=1.);
+                       COEF_AMPL_ACCE=1.)
 
-IMPR_TABLE(TABLE=tabsol);
+IMPR_TABLE(TABLE=tabsol)
 
 
 #----------- TEST CAS-TEST---------------#
@@ -178,7 +178,7 @@ IMPR_TABLE(TABLE=tabsol);
 T_resu=LIRE_TABLE(UNITE=39,
                FORMAT='TABLEAU',
                NUME_TABLE=1,
-               TITRE='',);
+               TITRE='',)
 
 TEST_TABLE(  TABLE=T_resu,
              NOM_PARA='G/Gmax',
@@ -241,7 +241,7 @@ TEST_TABLE(  TABLE=T_resu,
 T_SPEC=LIRE_TABLE(UNITE=41,
                FORMAT='TABLEAU',
                NUME_TABLE=1,
-               TITRE='SPEC',);
+               TITRE='SPEC',)
 
 TEST_TABLE(  TABLE=T_SPEC,
              NOM_PARA='ACCE_0',
@@ -267,13 +267,13 @@ TEST_TABLE(  TABLE=T_SPEC,
 SP_niv10=LIRE_FONCTION(UNITE=41,NOM_PARA='FREQ',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[1,1],INDIC_RESU=[1,13],
-                   );
+                   )
 
 TEST_FONCTION(VALEUR=(
                       _F(VALE_CALC=1.46606E-01,
                          VALE_PARA=(35.5),
                          NOM_PARA=('FREQ'),
                          FONCTION=SP_niv10,),
-                       ));
+                       ))
 
-FIN();
+FIN()

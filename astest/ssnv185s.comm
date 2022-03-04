@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     CREA_GROUP_MA=(_F(NOM='VOL',GROUP_MA='GM254',),
                                    _F(NOM='SURFINF',GROUP_MA='GM251',),
                                    _F(NOM='SURFSUP',GROUP_MA='GM252',),
-                                   _F(NOM='FONDINI',GROUP_MA='GM253',),),);
+                                   _F(NOM='FONDINI',GROUP_MA='GM253',),),)
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=(_F(NOM='PTA',GROUP_MA='GM255',),
                                    _F(NOM='PTB',GROUP_MA='GM256',),
                                    _F(NOM='PTC',GROUP_MA='GM257',),
-                                   _F(GROUP_MA='VOL',),),);
+                                   _F(GROUP_MA='VOL',),),)
 
 
 #----------------------------------------------
@@ -58,19 +58,19 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='3D',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D',),),)
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
-                       );
+                       )
 
 # PARAMETRES DE LA FISSURE : 0 < a < 6.5 -> influt sur le choix Rsup !
 #                            b = 10.
 a=5.
 b=10.
-#LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
-#LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y');
+#LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.')
+#LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y')
 # on introduit une fissure cohesive
 # que l on definit debouchante
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
@@ -80,13 +80,13 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                                  FORM_FISS = 'DEMI_PLAN',
                                  PFON      =(0. , -1. ,15.),
                                  NORMALE   =(0. , 0. , 1.),
-                                 DTAN      =(0. ,-1. , 0.)),);
+                                 DTAN      =(0. ,-1. , 0.)),)
 
 # on met du contact dans le modele
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='MORTAR',
-                         INFO=1,);
+                         INFO=1,)
 
 CTX = DEFI_CONTACT(MODELE         = MODELEK,
                    FORMULATION    = 'XFEM',
@@ -96,7 +96,7 @@ CTX = DEFI_CONTACT(MODELE         = MODELEK,
                             ALGO_CONT='CZM',
                             FISS_MAIT=FISS,
                             RELATION='CZM_LIN_MIX',
-                   )));
+                   )))
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
@@ -112,14 +112,14 @@ Gc=1097.
 Sc=30.E6
 pena_lagr=10.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),
-                    RUPT_FRAG=_F(GC=Gc,SIGM_C=Sc,PENA_LAGR=pena_lagr,),);
+                    RUPT_FRAG=_F(GC=Gc,SIGM_C=Sc,PENA_LAGR=pena_lagr,),)
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
-                             );
+                             )
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -170,23 +170,23 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                      COEF_MULT_1=0.5,
                                      COEF_MULT_2=0.5,
                                      COEF_IMPO=0.0),
-                                 ),);
+                                 ),)
 
 # forces opposees d intensite egales sur les deux bords
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
+                   PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),)
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
 # on definit une liste d instants et une fonction multiplicatrice
-LINST = DEFI_LIST_REEL(VALE=(0., 0.5, 1.),);
+LINST = DEFI_LIST_REEL(VALE=(0., 0.5, 1.),)
 FONC=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_GAUCHE='LINEAIRE',
                    PROL_DROITE='LINEAIRE',
                    VALE=( 0., 0.,
-                          1., 1.));
+                          1., 1.))
 # le MECA_STATIQUE est remplace par un STAT_NON_LINE
 # sans PILOTAGE pour le moment
 RESU=STAT_NON_LINE(MODELE=MODELEK,
@@ -204,7 +204,7 @@ RESU=STAT_NON_LINE(MODELE=MODELEK,
                    SOLVEUR    = _F(METHODE = 'MUMPS',
                                    ),
                    ARCHIVAGE = _F(CHAM_EXCLU=('VARI_ELGA',),INST=1.0),
-                   INFO=1,);
+                   INFO=1,)
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : ON FAIT UN CALCUL PAR LA METHODE COHESIVE
@@ -217,8 +217,8 @@ SIF=CALC_G_XFEM(RESULTAT=RESU,
            INST=1.0,
            THETA=_F(FISSURE=FISS,NUME_FOND=1,NB_POINT_FOND=2,),
            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                      LISSAGE_G='LAGRANGE',),);
-IMPR_TABLE(TABLE=SIF,UNITE=6);
+                      LISSAGE_G='LAGRANGE',),)
+IMPR_TABLE(TABLE=SIF,UNITE=6)
 #
 # fin ajout
 # la soluction analytique
@@ -234,7 +234,7 @@ prec=0.04
 VAL_CALC = [1.1643586672024E+07 ,
             1.1643586672024E+07 ,
             661.33224677535     ,
-            661.33224677535     ];
+            661.33224677535     ]
 
 # on fait des tests sur K1 et GIRWIN
 # on enleve la boucle sur les couronnes
@@ -244,7 +244,7 @@ TEST_TABLE(TABLE=SIF,
            VALE_CALC=11643586.672, VALE_REFE=K1REF,
            CRITERE='RELATIF',
            PRECISION=prec,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=SIF,
            NOM_PARA='K1',
@@ -252,7 +252,7 @@ TEST_TABLE(TABLE=SIF,
            VALE_CALC=11643586.672, VALE_REFE=K1REF,
            CRITERE='RELATIF',
            PRECISION=prec,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE',)
 
 # calcul legendre pas ouvert avec le cohesif
 
@@ -261,9 +261,9 @@ GLAGR=CALC_G_XFEM(RESULTAT=RESU,
              INST=1.0,
              THETA=_F(FISSURE=FISS,NUME_FOND=1,),
              LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                        LISSAGE_G='LAGRANGE',),);
+                        LISSAGE_G='LAGRANGE',),)
 
-IMPR_TABLE(TABLE=SIF,UNITE=6);
+IMPR_TABLE(TABLE=SIF,UNITE=6)
 
 TEST_TABLE(TABLE=GLAGR,
            NOM_PARA='G',
@@ -296,7 +296,7 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='DX',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION',),)
 
 # TESTS DE NON REGRESSION PAR RAPPORT A LA VERSION 8.2.14
 

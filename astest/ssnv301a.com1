@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ THERL=LIRE_RESU(TYPE_RESU='EVOL_THER',
               FORMAT_MED=(_F( NOM_RESU='THERL',
                               NOM_CHAM    ='TEMP' ),
                               ) ,
-              TOUT_ORDRE='OUI',);
+              TOUT_ORDRE='OUI',)
 
 MATER2=AFFE_MATERIAU(   MAILLAGE=MAYA,
                                 AFFE=_F(  TOUT = 'OUI',
@@ -149,7 +149,7 @@ CALCNL=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                           _F( NOM_RESU='CALCNL',
                               NOM_CHAM    ='VARI_ELGA'),
                               ) ,
-              TOUT_ORDRE='OUI',);
+              TOUT_ORDRE='OUI',)
 
 
 CAT2=DEFI_LIST_REEL(    DEBUT=5,INTERVALLE=(

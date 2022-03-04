@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
 MESH=MODI_MAILLAGE(MAILLAGE  = MESH,
                    reuse     = MESH,
                    ORIE_PEAU = _F(GROUP_MA_PEAU='SUEXT',),
-                   );
+                   )
 
 # Material parameters
 MAT=DEFI_MATERIAU(ELAS      = _F(NU = 0.3,
@@ -61,7 +61,7 @@ CHARGT=AFFE_CHAR_MECA(MODELE=model,
                                 _F(GROUP_MA='SUINF',
                                    DZ=0.0,),),
                       PRES_REP=_F(GROUP_MA='SUEXT',
-                                   PRES=1.,),);
+                                   PRES=1.,),)
 
 # Compute initial stresses
 RESU=MECA_STATIQUE(MODELE=model,
@@ -102,11 +102,11 @@ TEST_RESU(RESU=(_F(
           )
 
 # Get initial stresses
-siefElgaInit = CREA_CHAMP(OPERATION  = 'EXTR', 
+siefElgaInit = CREA_CHAMP(OPERATION  = 'EXTR',
                           RESULTAT   = RESU,
                           NUME_ORDRE = 1,
                           TYPE_CHAM  = 'ELGA_SIEF_R',
-                          NOM_CHAM   = 'SIEF_ELGA' 
+                          NOM_CHAM   = 'SIEF_ELGA'
                           ),
 
 # Compute elementary matrices

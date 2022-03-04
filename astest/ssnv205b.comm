@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ G=238.2E6*(P0/PREF)**N
 YOUNG = 9.*K*G /(3.*K+G)
 POISSON = (3.*K-2.*G) /(6.*K+2.*G)
 
-MATE=DEFI_MATERIAU(ELAS=_F(E=YOUNG, 
+MATE=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                               NU=POISSON,),
                    Iwan=_F(YoungModulus = YOUNG ,
                                PoissonRatio = POISSON ,
@@ -48,14 +48,14 @@ TEMPS1=DEFI_LIST_REEL(DEBUT=0,
                                   _F(JUSQU_A=30,
                                      NOMBRE=20,),
                                   _F (JUSQU_A=50,
-                                     NOMBRE=20,),),);
+                                     NOMBRE=20,),),)
 TEMPS2=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=10,
                                      NOMBRE=4,),
                                   _F(JUSQU_A=30,
                                      NOMBRE=8,),
                                   _F (JUSQU_A=50,
-                                     NOMBRE=8,),),);
+                                     NOMBRE=8,),),)
 
 DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -81,14 +81,14 @@ P0=-50e3
 COEF1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           10,-0.002,
                           30,0.002,
-                          50,-0.002,),PROL_DROITE='CONSTANT',);
+                          50,-0.002,),PROL_DROITE='CONSTANT',)
 
 COEF2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,P0,
-                          50,P0,),PROL_DROITE='CONSTANT',);
+                          50,P0,),PROL_DROITE='CONSTANT',)
 
 COEF3=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           50,0.,
-                          ),PROL_DROITE='CONSTANT',);
+                          ),PROL_DROITE='CONSTANT',)
 
 
 
@@ -118,9 +118,9 @@ U1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='Iwan',
                                EPZZ=P0/(3*K),
                                EPXY=0,
                                EPXZ=0,
-                               EPYZ=0,),);
+                               EPYZ=0,),)
 
-IMPR_TABLE(TABLE=U1,UNITE=29);
+IMPR_TABLE(TABLE=U1,UNITE=29)
 
 #################################################################
 #ESSAI DE CISAILLEMENT CYCLIQUE A 0.02% DE DEFORMATIONS IMPOSEES#
@@ -128,7 +128,7 @@ IMPR_TABLE(TABLE=U1,UNITE=29);
 COEF4=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           10,-0.0002,
                           30,0.0002,
-                          50,-0.0002,),PROL_DROITE='CONSTANT',);
+                          50,-0.0002,),PROL_DROITE='CONSTANT',)
 
 U2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='Iwan',
                                RESI_INTE_RELA=1E-12,
@@ -155,9 +155,9 @@ U2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='Iwan',
                                EPZZ=P0/(3*K),
                                EPXY=0,
                                EPXZ=0,
-                               EPYZ=0,),);
+                               EPYZ=0,),)
 
-IMPR_TABLE(TABLE=U2,UNITE=30);
+IMPR_TABLE(TABLE=U2,UNITE=30)
 
 ##################################################################
 #ESSAI DE CISAILLEMENT CYCLIQUE A 0.002% DE DEFORMATIONS IMPOSEES#
@@ -165,7 +165,7 @@ IMPR_TABLE(TABLE=U2,UNITE=30);
 COEF5=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           10,-2.E-5,
                           30,2.E-5,
-                          50,-2.E-5,),PROL_DROITE='CONSTANT',);
+                          50,-2.E-5,),PROL_DROITE='CONSTANT',)
 
 U3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='Iwan',
                                RESI_INTE_RELA=1E-12,
@@ -192,9 +192,9 @@ U3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='Iwan',
                                EPZZ=P0/(3*K),
                                EPXY=0,
                                EPXZ=0,
-                               EPYZ=0,),);
+                               EPYZ=0,),)
 
-IMPR_TABLE(TABLE=U3,UNITE=31);
+IMPR_TABLE(TABLE=U3,UNITE=31)
 
 
 ################################################################
@@ -420,4 +420,4 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 
-FIN();
+FIN()

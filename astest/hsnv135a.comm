@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_INT','FACE_SUP',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_INT','FACE_SUP',),),)
 
 # PARTIES THERMIQUE ET METALLURGIQUE
 # TEMPERATURE VARIABLE AU COURS DU TEMPS DANS LE TUBE
@@ -97,7 +97,7 @@ TEMPE=CALC_META(reuse =TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
                 COMPORTEMENT=_F(RELATION='ZIRC',
                              TOUT='OUI',),
-                OPTION=('META_ELNO','META_NOEU',),);
+                OPTION=('META_ELNO','META_NOEU',),)
 
 IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(RESULTAT=TEMPE, NOM_CHAM='META_NOEU',GROUP_NO='NA',))
 
@@ -148,16 +148,16 @@ MO=AFFE_MODELE(MAILLAGE=MAIL,
 
 CH_L=AFFE_CHAR_MECA(MODELE=MO,
                     FACE_IMPO=_F(GROUP_MA='FACE_INF',DNOR=0.,),
-                    LIAISON_UNIF=_F(GROUP_MA='FACE_SUP',DDL='DY',),);
+                    LIAISON_UNIF=_F(GROUP_MA='FACE_SUP',DDL='DY',),)
 
 # ON MET UNE PRESSION INTERNE ET L EFFET DE FOND
-RINT = 4.118;
-REXT = 4.746;
-COEF = ((RINT * RINT) / ((REXT * REXT) - (RINT * RINT)));
+RINT = 4.118
+REXT = 4.746
+COEF = ((RINT * RINT) / ((REXT * REXT) - (RINT * RINT)))
 
 CHPC=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA='FACE_INT',PRES=1.,),
-                              _F(GROUP_MA='FACE_SUP',PRES=-COEF,),),);
+                              _F(GROUP_MA='FACE_SUP',PRES=-COEF,),),)
 
 FMULT=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(-1.0, 0.0,
@@ -165,7 +165,7 @@ FMULT=DEFI_FONCTION(NOM_PARA='INST',
                           36.1,6.74,
                           49.2,6.74,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);
+                    PROL_GAUCHE='CONSTANT',)
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM2,
@@ -237,7 +237,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=26,
           )
 
 # TEST DE LA PROPORTION DE PHASE BETA
-# REFERENCE : VALEUR CALCULEE PAR CALC_META (V3 DE META_NOEU) 
+# REFERENCE : VALEUR CALCULEE PAR CALC_META (V3 DE META_NOEU)
 
 TEST_RESU(RESU=(
                   _F(
@@ -278,7 +278,7 @@ TEST_RESU(RESU=(
           )
 
 # TEST DE LA DEFORMATION THERMIQUE
-# REFERENCE : VALEUR CALCULEE PAR CALC_META (V3 DE META_NOEU) 
+# REFERENCE : VALEUR CALCULEE PAR CALC_META (V3 DE META_NOEU)
 
 TEST_RESU(RESU=(
                   _F(
@@ -356,7 +356,7 @@ TEST_RESU(RESU=(
           )
 
 # TEST DE LA DATE OU T=TDEQ
-# REFERENCE : VALEUR CALCULEE PAR CALC_META (V5 DE META_NOEU) SI NON NULLE, 0 
+# REFERENCE : VALEUR CALCULEE PAR CALC_META (V5 DE META_NOEU) SI NON NULLE, 0
 # SI CALC_META CALCULE -1
 
 TEST_RESU(RESU=(

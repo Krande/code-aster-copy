@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       IGNORE_ALARM=('CALCULEL4_24'),
-);
+)
 
 # MODELISATIONS LINEIQUES ET DISCRETS
 MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",    UNITE=20 )
@@ -452,7 +452,7 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ABSC_CURV=_F(GROUP_MA='TUY41',
                        GROUP_NO_ORIG=('N017',),),
-                      );
+                      )
 
 CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
                      NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAILLAGE , )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 # --------------------------------------------------------------------
 POURSUITE (CODE='OUI',
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('MODELE1_63',),);
+      IGNORE_ALARM=('MODELE1_63',),)
 #================================================================================================
 # Debut du modele
 #================================================================================================
 
 
-Mail=LIRE_MAILLAGE(FORMAT='MED',);
+Mail=LIRE_MAILLAGE(FORMAT='MED',)
 
 Mail=MODI_MAILLAGE(reuse=Mail,
                     MAILLAGE=Mail,
@@ -34,23 +34,23 @@ Mail=MODI_MAILLAGE(reuse=Mail,
                                   _F(GROUP_MA_PEAU='BORDY'),
                                   _F(GROUP_MA_PEAU='BORDMY'),
                                   )
-                            );
+                            )
 
 
 #Definition du materiau cas isotrope
-acier=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU,),);
+acier=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU,),)
 
 #Definition du transitoire
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                                  _F(JUSQU_A=1., NOMBRE=1,),
-                     ),);
+                     ),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0, 0.0,
                           1.,  1.0,),
                     PROL_DROITE='LINEAIRE',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 
 
@@ -59,19 +59,19 @@ modl=AFFE_MODELE(MAILLAGE=Mail,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),
-                 );
+                 )
 ## Affectation du materiau
 chmat=AFFE_MATERIAU(MAILLAGE=Mail,
                     AFFE=_F(TOUT='OUI',
                             MATER=acier,),
-                   );
+                   )
 
 
 # affectation des conditions limites
 Dirich=AFFE_CHAR_CINE_F(MODELE=modl,
                        MECA_IMPO=_F(GROUP_MA='HAUT', DX=
 FUx, DY=FUy, DZ=FUz,),
-                        );
+                        )
 
 Neumann=AFFE_CHAR_MECA_F(MODELE=modl,
                         FORCE_FACE=(_F(GROUP_MA='BORDX',   FX=FsurfXx,  FY=FsurfXy,  FZ=FsurfXz,),
@@ -80,11 +80,11 @@ Neumann=AFFE_CHAR_MECA_F(MODELE=modl,
                                     _F(GROUP_MA='BORDMY',  FX=FsurfmYx, FY=FsurfmYy, FZ=FsurfmYz,),
                                     _F(GROUP_MA='ESCLAVE', FX=FsurfTx,  FY=FsurfTy,  FZ=FsurfTz,),
                                       ),
-                          );
+                          )
 
 ForceInt=AFFE_CHAR_MECA_F(MODELE=modl,
                           FORCE_INTERNE=_F(GROUP_MA='VOLUME', FX=Fvolx, FY=Fvoly, FZ=Fvolz,),
-                         );
+                         )
 
 # affectation des conditions limites
 Contact=DEFI_CONTACT(MODELE=modl,
@@ -95,12 +95,12 @@ Contact=DEFI_CONTACT(MODELE=modl,
                              GROUP_MA_ESCL=('ESCLAVE',),
                              INTEGRATION='GAUSS',
                              ORDRE_INT=4,                                ),
-                       );
+                       )
 
 BlocEscl=AFFE_CHAR_CINE(MODELE=modl,
                         MECA_IMPO=_F(GROUP_MA='MAITRE',
                                      DX=0,DY=0,DZ=0,),
-                       );
+                       )
 
 EVOLNOLI=STAT_NON_LINE(MODELE=modl,
                        CHAM_MATER=chmat,
@@ -116,14 +116,14 @@ EVOLNOLI=STAT_NON_LINE(MODELE=modl,
                               _F(CHARGE=ForceInt, FONC_MULT=RAMPE),
                               _F(CHARGE=BlocEscl,),
                               ),
-                       );
+                       )
 
 # ========================================================================================
 #          Creation de la solution analytique
 # ========================================================================================
 
 CHXN=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
-                NOM_CHAM='GEOMETRIE', MAILLAGE=Mail, INFO=1);
+                NOM_CHAM='GEOMETRIE', MAILLAGE=Mail, INFO=1)
 
 TEMP1=CREA_CHAMP(OPERATION='AFFE',
                  TYPE_CHAM='NOEU_NEUT_F',
@@ -131,12 +131,12 @@ TEMP1=CREA_CHAMP(OPERATION='AFFE',
                  AFFE=(_F( GROUP_MA='VOLUME', NOM_CMP='X1', VALE_F=FUx),
                        _F( GROUP_MA='VOLUME', NOM_CMP='X2', VALE_F=FUy),
                        _F( GROUP_MA='VOLUME', NOM_CMP='X3', VALE_F=FUz),
-                      ),);
+                      ),)
 
 TEMP2=CREA_CHAMP(OPERATION='EVAL',
                  TYPE_CHAM='NOEU_NEUT_R',
                  CHAM_F=TEMP1,
-                 CHAM_PARA=CHXN);
+                 CHAM_PARA=CHXN)
 
 Uana=CREA_CHAMP(OPERATION='ASSE',
                 TYPE_CHAM='NOEU_DEPL_R',
@@ -153,7 +153,7 @@ Uana=CREA_CHAMP(OPERATION='ASSE',
                          CHAM_GD=TEMP2,
                          NOM_CMP='X3',
                          NOM_CMP_RESU='DZ',)
-                      ));
+                      ))
 
 
 # ========================================================================================
@@ -163,7 +163,7 @@ Uana=CREA_CHAMP(OPERATION='ASSE',
 Ucalc=CREA_CHAMP(OPERATION='EXTR',
                  INST=1.,
                  NOM_CHAM='DEPL' , TYPE_CHAM='NOEU_DEPL_R',
-                 RESULTAT=EVOLNOLI ,);
+                 RESULTAT=EVOLNOLI ,)
 
 
 DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=modl,
@@ -174,7 +174,7 @@ DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=modl,
                       _F(GROUP_MA='VOLUME', CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
                       _F(GROUP_MA='VOLUME', CHAM_GD=Ucalc,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
                       _F(GROUP_MA='VOLUME', CHAM_GD=Uana, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
-                      ),);
+                      ),)
 
 
 
@@ -194,7 +194,7 @@ IMPR_RESU(FORMAT='MED',
                 _F(CHAM_GD=Uana,),
                 _F(CHAM_GD=Ucalc,),
                ),
-          );
+          )
 
 
-FIN();
+FIN()

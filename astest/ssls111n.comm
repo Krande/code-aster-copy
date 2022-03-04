@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 #            Mailles TRIA3
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+      DEBUG=_F(SDVERI='OUI',),)
 
 
 
@@ -36,7 +36,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 EB=2.E11   # module d'Young   (N/m^2)
 
 # Coefficient de poisson vaut 0.22
-NUB = 0.;
+NUB = 0.
 
 # Caracteristiques de l'acier (armatures)
 
@@ -44,7 +44,7 @@ NUB = 0.;
 E=0.E0   # module d'Young   (N/m^2)
 
 # Coefficient de poisson
-NU = 0.;
+NU = 0.
 
 
 # constantes :
@@ -62,17 +62,17 @@ fz=-1000. # force lineique selon z (N/m)
 
 
 # Taux de ferraillage
-AX = 0.00007854;
+AX = 0.00007854
 
 # Taux de ferraillage
-AY = 0.000007854;
+AY = 0.000007854
 
 # Distance grille/surface moyenne de la dalle
-#EZ = 0.038;
-EZ=0.0;
+#EZ = 0.038
+EZ=0.0
 # Distance normalisee du ferraillage par rapport
 # au feuillet moyen
-R0 = (EZ / (0.5 * e));
+R0 = (EZ / (0.5 * e))
 
 
 
@@ -97,34 +97,34 @@ MAIL=DEFI_GROUP(reuse=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='L11',),
                                _F(GROUP_MA='L12',),
                                _F(GROUP_MA='L13',),
-                               _F(GROUP_MA='L14',),),);
+                               _F(GROUP_MA='L14',),),)
 
 MOD=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKTG',),);
+                        MODELISATION='DKTG',),)
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='PLAQ1',
                                       VECT_NORM=(0.0,0.0,1.0,),
-                                      GROUP_NO='A1',),);
-CPRAG = 0.0;
-GAM = 0.0;
-CPRG = CPRAG;
-QP = 0.15;
+                                      GROUP_NO='A1',),)
+CPRAG = 0.0
+GAM = 0.0
+CPRG = CPRAG
+QP = 0.15
 
 MAT_B=DEFI_MATERIAU(ELAS=_F(E=EB,
                             NU=NUB,
                             RHO=2500.0,),
                     BETON_ECRO_LINE=_F(D_SIGM_EPSI=0.0,
                                        SYT=4400000.0,
-                                       SYC=-52500000.0,),);
+                                       SYC=-52500000.0,),)
 
 MAT_A=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=NU,),
                     ECRO_LINE=_F(D_SIGM_EPSI=0.0,
-                                 SY=500000000.0,),);
+                                 SY=500000000.0,),)
 
 MAT=DEFI_GLRC(RELATION='GLRC_DAMAGE',
               BETON=_F(MATER=MAT_B,
@@ -154,17 +154,17 @@ MAT=DEFI_GLRC(RELATION='GLRC_DAMAGE',
                         OMY=AY,
                         RX=-R0,
                         RY=-R0,),),
-              INFO=2,);
+              INFO=2,)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MOD,
                         COQUE=_F(GROUP_MA='PLAQ1',
                                  EPAIS=h,
                                  EXCENTREMENT=e,INER_ROTA='OUI',
-                                 ANGL_REP=(0.0,0.0,),),);
+                                 ANGL_REP=(0.0,0.0,),),)
 
 CL1=AFFE_CHAR_MECA(MODELE=MOD,
                      DDL_IMPO=(_F(GROUP_MA='L14',
@@ -174,16 +174,16 @@ CL1=AFFE_CHAR_MECA(MODELE=MOD,
                                   DRX=0.0,
                                   DRY=0.0,
                                   DRZ=0.0,),),
-                                     );
+                                     )
 # calcul statique :
 #------------------
 CHME1A=AFFE_CHAR_MECA(MODELE=MOD,
-                      FORCE_ARETE=_F(GROUP_MA='L12', FX=fx, FZ=fz),);
+                      FORCE_ARETE=_F(GROUP_MA='L12', FX=fx, FZ=fz),)
 
 
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1));
+                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1))
 
 
 RESU1A=STAT_NON_LINE(MODELE=MOD,
@@ -195,7 +195,7 @@ RESU1A=STAT_NON_LINE(MODELE=MOD,
                               ),),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=45,),
                    COMPORTEMENT=_F(RELATION='GLRC_DAMAGE',),
-                   INCREMENT=_F(LIST_INST=LINST,),);
+                   INCREMENT=_F(LIST_INST=LINST,),)
 
 
 
@@ -248,5 +248,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_MA='M1', GROUP_NO='N11', RESULTAT=RESU1B, 
                   VALE_CALC=8399.99999844,))
 
 
-FIN();
+FIN()
 #CHECKSUM:5d7c4dccb5d5fe9a57718dbc78df0345  -:FIN CHECKSUM

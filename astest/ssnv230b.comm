@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,21 +63,21 @@ LIRR = DEFI_LIST_REEL(DEBUT=0.0,
 YOUNG=CALC_FONC_INTERP(FONCTION=YOUNG1, LIST_PARA=LTEM,
    PROL_GAUCHE='CONSTANT',
    PROL_DROITE='CONSTANT',
-);
+)
 NU   =CALC_FONC_INTERP(FONCTION=NU1,    LIST_PARA=LTEM,
    PROL_GAUCHE='CONSTANT',
    PROL_DROITE='CONSTANT',
-);
+)
 ALPHA=CALC_FONC_INTERP(FONCTION=ALPHA1, LIST_PARA=LTEM,
    PROL_GAUCHE='CONSTANT',
    PROL_DROITE='CONSTANT',
-);
+)
 
 UN    =DEFI_CONSTANTE(VALE = 1.0)
 ZERO  =DEFI_CONSTANTE(VALE = 0.0)
 
 # [][][][][][][][] Maillage et Modele [][][][][][][][]
-mail = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH");
+mail = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
 mode = AFFE_MODELE( MAILLAGE=mail,
    AFFE = ( _F(PHENOMENE='MECANIQUE',MODELISATION='3D', TOUT='OUI' ,), ), )
@@ -164,7 +164,7 @@ ACIERS=DEFI_MATERIAU(
    IRRAD3M=_F(R02=R021, RM=RM1, EPSI_U=EU1, AI0=3.00E-6, ETAI_S=1000.0,
               RG0=0.0020, ZETA_F=UN, ALPHA=1.0, PHI0=45.0, KAPPA=0.80, ZETA_G=UN,
               TOLER_ET=0.1E-02),
-);
+)
 
 materS=AFFE_MATERIAU(
    MAILLAGE=mail,

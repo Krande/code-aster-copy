@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,14 @@ import numpy as NP
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(JXVERI='OUI',JEVEUX='OUI'),)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'),);
+MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'),)
 
 #+----------------------------------------+
 #| noms des groupes de noeuds et mailles  |
 #+----------------------------------------+
 
 MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
-      CREA_GROUP_MA=_F(UNION=('C1','C2'),NOM='C'));
+      CREA_GROUP_MA=_F(UNION=('C1','C2'),NOM='C'))
 
 MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU=(
             _F(GROUP_MA_PEAU = 'S1R1',),
@@ -43,7 +43,7 @@ MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU=(
             _F(GROUP_MA_PEAU = 'S1LY',),
             _F(GROUP_MA_PEAU = 'S2LX',),
             _F(GROUP_MA_PEAU = 'S2LY',),
-                                                    ),);
+                                                    ),)
 
 
 #+----------------------------------------+
@@ -55,16 +55,16 @@ nu1=0.2
 nu2=0.2
 
 
-MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,));
-MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,));
+MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,))
+MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(_F(GROUP_MA = 'C1',MATER = MAT1,),
-                                      _F(GROUP_MA = 'C2',MATER = MAT2,),),);
+                                      _F(GROUP_MA = 'C2',MATER = MAT2,),),)
 #+----------------------------------------+
 #|                modele                  |
 #+----------------------------------------+
 
-MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D'));
+MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D'))
 
 
 #=================================================
@@ -96,15 +96,15 @@ mu2=E2 / ( 2*(1+nu2) )
 # geometrie
 #=================================================
 
-R1 = 1.0;
-R2 = 0.6;
-R3 = 0.2;
+R1 = 1.0
+R2 = 0.6
+R3 = 0.2
 
 #=================================================
 #|       conditions aux limites           |
 #=================================================
-alpha=1.0e5;
-p=1.e7;
+alpha=1.0e5
+p=1.e7
 
 #================================================================================
 #| on notera dans la suite par '_c' la contribution du chargement constant
@@ -557,7 +557,7 @@ CH=AFFE_CHAR_MECA_F(MODELE=MO,
                               _F(GROUP_MA='S2LY',DX=zero),
                               _F(GROUP_MA='up_down',DZ=zero),
                              ),
-                   );
+                   )
 
 #+----------------------------------------+
 #|               contact                  |
@@ -581,7 +581,7 @@ CONT_S  = DEFI_CONTACT(MODELE = MO,
                               ALGO_CONT     = 'STANDARD',
                               COEF_CONT     = E1,
                               CONTACT_INIT  = 'OUI',
-                              GLISSIERE     = 'NON',),),);
+                              GLISSIERE     = 'NON',),),)
 
 #+----------------------------------------+
 #|               calcul                   |
@@ -589,7 +589,7 @@ CONT_S  = DEFI_CONTACT(MODELE = MO,
 
 INSTS=DEFI_LIST_REEL(DEBUT       = 0.0,
                       INTERVALLE = _F(JUSQU_A = 1.0,
-                                      NOMBRE  = 1,),);
+                                      NOMBRE  = 1,),)
 
 
 RESU=STAT_NON_LINE(MODELE=MO,
@@ -604,12 +604,12 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                      ),
                     SOLVEUR     = _F(METHODE     = 'MUMPS',
                                      PCENT_PIVOT = 250,),
-                    ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),);
+                    ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),)
 
 IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=RESU,),
                ),
-          );
+          )
 
 #+----------------------------------------+
 #|          tests de validation           |
@@ -627,7 +627,7 @@ DEP_1 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',
                                 ),
-                      );
+                      )
 
 ##tests
 
@@ -639,7 +639,7 @@ TEST_TABLE(       TABLE=DEP_1,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_1,
                   REFERENCE='ANALYTIQUE',
@@ -649,7 +649,7 @@ TEST_TABLE(       TABLE=DEP_1,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_1,
                   REFERENCE='ANALYTIQUE',
@@ -660,7 +660,7 @@ TEST_TABLE(       TABLE=DEP_1,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-8,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_1,
                   REFERENCE='ANALYTIQUE',
@@ -670,7 +670,7 @@ TEST_TABLE(       TABLE=DEP_1,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_1,
                   REFERENCE='ANALYTIQUE',
@@ -680,7 +680,7 @@ TEST_TABLE(       TABLE=DEP_1,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_1,
                   REFERENCE='ANALYTIQUE',
@@ -690,7 +690,7 @@ TEST_TABLE(       TABLE=DEP_1,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_1,
                   REFERENCE='ANALYTIQUE',
@@ -701,7 +701,7 @@ TEST_TABLE(       TABLE=DEP_1,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-8,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_1,
                   REFERENCE='ANALYTIQUE',
@@ -711,7 +711,7 @@ TEST_TABLE(       TABLE=DEP_1,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 
 ##
@@ -726,7 +726,7 @@ DEP_2 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',
                                 ),
-                      );
+                      )
 
 ##tests
 
@@ -738,7 +738,7 @@ TEST_TABLE(       TABLE=DEP_2,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_2,
                   REFERENCE='ANALYTIQUE',
@@ -748,7 +748,7 @@ TEST_TABLE(       TABLE=DEP_2,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_2,
                   REFERENCE='ANALYTIQUE',
@@ -759,7 +759,7 @@ TEST_TABLE(       TABLE=DEP_2,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-8,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_2,
                   REFERENCE='ANALYTIQUE',
@@ -769,7 +769,7 @@ TEST_TABLE(       TABLE=DEP_2,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_2,
                   REFERENCE='ANALYTIQUE',
@@ -779,7 +779,7 @@ TEST_TABLE(       TABLE=DEP_2,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_2,
                   REFERENCE='ANALYTIQUE',
@@ -789,7 +789,7 @@ TEST_TABLE(       TABLE=DEP_2,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_2,
                   REFERENCE='ANALYTIQUE',
@@ -800,7 +800,7 @@ TEST_TABLE(       TABLE=DEP_2,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-8,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_2,
                   REFERENCE='ANALYTIQUE',
@@ -810,7 +810,7 @@ TEST_TABLE(       TABLE=DEP_2,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 
 ##
@@ -825,7 +825,7 @@ DEP_3 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',
                                 ),
-                      );
+                      )
 
 ##tests
 
@@ -837,7 +837,7 @@ TEST_TABLE(       TABLE=DEP_3,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_3,
                   REFERENCE='ANALYTIQUE',
@@ -847,7 +847,7 @@ TEST_TABLE(       TABLE=DEP_3,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_3,
                   REFERENCE='ANALYTIQUE',
@@ -858,7 +858,7 @@ TEST_TABLE(       TABLE=DEP_3,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-8,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_3,
                   REFERENCE='ANALYTIQUE',
@@ -868,7 +868,7 @@ TEST_TABLE(       TABLE=DEP_3,
                   TYPE_TEST='MIN',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_3,
                   REFERENCE='ANALYTIQUE',
@@ -878,7 +878,7 @@ TEST_TABLE(       TABLE=DEP_3,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_3,
                   REFERENCE='ANALYTIQUE',
@@ -888,7 +888,7 @@ TEST_TABLE(       TABLE=DEP_3,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_3,
                   REFERENCE='ANALYTIQUE',
@@ -899,7 +899,7 @@ TEST_TABLE(       TABLE=DEP_3,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-8,
                   VALE_ABS='OUI',
-           );
+           )
 
 TEST_TABLE(       TABLE=DEP_3,
                   REFERENCE='ANALYTIQUE',
@@ -909,6 +909,6 @@ TEST_TABLE(       TABLE=DEP_3,
                   TYPE_TEST='MAX',
                   PRECISION=0.02,
                   VALE_ABS='OUI',
-           );
+           )
 
-FIN();
+FIN()

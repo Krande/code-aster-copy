@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,12 +49,12 @@ MA=MODI_MAILLAGE(reuse=MA,
                  ORIE_PEAU=(_F(GROUP_MA_PEAU = 'LPRESV',),
                                _F(GROUP_MA_PEAU = 'LPRESH',))
                 )
-                
+
 #
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=_F( NOM='LCONTA',
-                                      GROUP_MA='LCONTA',),);
+                                      GROUP_MA='LCONTA',),)
 #
 MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
                              NU = 0.2,)
@@ -72,7 +72,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=(_F(GROUP_MA = 'LPRESV', PRES = 5.E07,),
                               _F(GROUP_MA = 'LPRESH', PRES = 15.E07,))
                    )
-                  
+
 #
 CHA3=DEFI_CONTACT(MODELE        = MO,
                   FORMULATION   = 'DISCRETE',
@@ -224,8 +224,8 @@ TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               NOM_CHAM='CONT_NOEU',
                               INST=1.0,
                               TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION'));
-IMPR_TABLE(TABLE=TCONT);
+                              OPERATION='EXTRACTION'))
+IMPR_TABLE(TABLE=TCONT)
 #
 TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                    INST=1.0,

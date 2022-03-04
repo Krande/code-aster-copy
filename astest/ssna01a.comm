@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
 M=LIRE_MAILLAGE(FORMAT='MED', )
 
 MO=AFFE_MODELE(
-            MAILLAGE=M,    
+            MAILLAGE=M,
            AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'AXIS')
            )
 
@@ -275,15 +275,15 @@ U=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CM,
                 ARCHIVAGE=_F( INST = 20.),
                 SOLVEUR=_F( METHODE = 'LDLT',),
                 # Pour tester SUIVI_DDL / NOM_VARI
-                SUIVI_DDL=  _F( 
+                SUIVI_DDL=  _F(
                                           # NOM_CMP    ='V7',
                                             NOM_VARI    ='VIDE',
                                             NOM_CHAM   ='VARI_ELGA',
                                             GROUP_MA=('M1','M2'),
                                             EVAL_ELGA  ='MAX',
                                             EVAL_CHAM ='MAX',),
-              
-              
+
+
                 # Pour tester OBSERVATION / NOM_VARI
                 OBSERVATION= _F(
                                            # NOM_CMP    ='V2',
@@ -293,10 +293,10 @@ U=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CM,
                                                    POINT=1,
                                                    EVAL_CHAM='MIN',
                                                    GROUP_MA = ('M1','M2'),
-                                                   ), 
-                          
+                                                   ),
+
               )
-TAB_OBS=RECU_TABLE(CO=U,   NOM_TABLE='OBSERVATION',);
+TAB_OBS=RECU_TABLE(CO=U,   NOM_TABLE='OBSERVATION',)
 IMPR_TABLE(TABLE=TAB_OBS, UNITE=6)
 
 

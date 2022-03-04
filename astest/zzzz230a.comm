@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ CHAR1=AFFE_CHAR_MECA( MODELE=MO1, FACE_IMPO= _F(GROUP_MA = 'AB', DX=0., DY=0.),
                       FORCE_CONTOUR=_F(GROUP_MA='CD', FX=1.E4, FY=2.E4))
 FONC1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., 0., 1., 1.))
 
-LIST1=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2,),);
+LIST1=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2,),)
 RESU1=STAT_NON_LINE(MODELE=MO1, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE = CHAR1,FONC_MULT=FONC1),),
                     COMPORTEMENT=_F(TOUT='OUI',RELATION='ELAS'),INCREMENT=_F(LIST_INST=LIST1,),
                     ARCHIVAGE=_F(LIST_INST=LIST1,),)
@@ -130,7 +130,7 @@ MO2=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA='AEFG', PHENOMENE='MECANIQUE', MOD
 UIMP=PROJ_CHAMP(RESULTAT=RESU1,METHODE='COLLOCATION',  MODELE_1=MO1,MODELE_2=MO2, NOM_CHAM='DEPL',
                 VIS_A_VIS=_F(TOUT_1='OUI',GROUP_MA_2='BORD', CAS_FIGURE='2D'))
 
-LIST2=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=3,),);
+LIST2=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=3,),)
 
 # 2.1 : on valide EVOL_IMPO (sans le mot cle NOM_CMP) :
 #------------------------------------------------------
@@ -238,4 +238,4 @@ TEST_RESU(CHAM_NO=(_F(GROUP_NO='N61',
 #----------------------------------------------------
 MAJ_CATA(TYPE_ELEM=_F())
 
-FIN();
+FIN()

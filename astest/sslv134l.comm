@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,19 +23,19 @@ M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED')
 
 M=MODI_MAILLAGE(reuse=M,
                 MAILLAGE=M,
-                ORIE_PEAU=_F(GROUP_MA_PEAU = ( 'SINF_F','IINF_F' ),),);
+                ORIE_PEAU=_F(GROUP_MA_PEAU = ( 'SINF_F','IINF_F' ),),)
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F( GROUP_MA = ('MA','SINF_F','IINF_F',),
                         PHENOMENE = 'MECANIQUE',
                         MODELISATION = '3D', ))
 
 MA=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
-                         NU = 0.3,),);
+                         NU = 0.3,),)
 
-    
-M=DEFI_GROUP(reuse=M,   
+
+M=DEFI_GROUP(reuse=M,
              MAILLAGE=M,
              CREA_GROUP_NO=(_F(  GROUP_MA = 'SINF_F',),
                             _F(  GROUP_MA = 'IINF_F',),
@@ -48,20 +48,20 @@ M=DEFI_GROUP(reuse=M,
                              OPTION='ENV_SPHERE',
                                 POINT=[0., -10. , 10.],
                                 PRECISION=1e-8,
-                                RAYON=1e-8),                            
+                                RAYON=1e-8),
                          _F( NOM='CLY1',
                              OPTION='ENV_SPHERE',
                                 POINT=[10., 0. , 10.],
                                 PRECISION=1e-8,
-                                RAYON=1e-8),                            
+                                RAYON=1e-8),
                          _F( NOM='CLY2',
                              OPTION='ENV_SPHERE',
                                 POINT=[-10., 0. , 10.],
                                 PRECISION=1e-8,
                                 RAYON=1e-8),
                          ) ,
-                   INFO =2 );
-                                        
+                   INFO =2 )
+
 
 FF=DEFI_FISS_XFEM(MAILLAGE=M,
                   DEFI_FISS=_F(FORM_FISS='ELLIPSE',
@@ -71,14 +71,14 @@ FF=DEFI_FISS_XFEM(MAILLAGE=M,
                                VECT_X=(1,0,0),
                                VECT_Y=(0,1,0),
                               ),
-                 );
-               
-               
+                 )
+
+
 MOX=MODI_MODELE_XFEM(MODELE_IN=MO,FISSURE=FF)
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT = 'OUI',
-                         MATER = MA,),);              
+                         MATER = MA,),)
 
 CH=AFFE_CHAR_MECA(MODELE=MOX,
                   DDL_IMPO=(
@@ -90,9 +90,9 @@ CH=AFFE_CHAR_MECA(MODELE=MOX,
                           ),
                       PRES_REP=(
                          _F(  GROUP_MA = 'IINF_F',   PRES = -1.E6, ),)
-                   );
-                 
-                 
+                   )
+
+
 RESU=MECA_STATIQUE(MODELE=MOX,
                    CHAM_MATER=CM,
                    EXCIT=_F(  CHARGE = CH,   ) )
@@ -105,7 +105,7 @@ GLOC=CALC_G_XFEM(RESULTAT=RESU,
                                 NB_POINT_FOND = 16),
                      LISSAGE=_F(LISSAGE_G='LAGRANGE',
                                 LISSAGE_THETA='LAGRANGE'),
-                     INFO = 2);
+                     INFO = 2)
 
 
 
@@ -167,25 +167,25 @@ TEST_TABLE(VALE_CALC=10.14376437877956,
 #------------------------------------------------------------------------
 #------------------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MOX,INFO=2);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MOX,INFO=2)
 
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                    AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
                           MODELISATION='3D',),
-                          );
+                          )
 
 
 RES_XFEM=POST_CHAM_XFEM(RESULTAT=RESU,
                      MODELE_VISU=MOD_VISU,
                      INFO=2,
-                     );
-                               
+                     )
+
 IMPR_RESU(FORMAT='MED',
              UNITE=80,
-         RESU=_F(RESULTAT=RES_XFEM,),); 
-                  
+         RESU=_F(RESULTAT=RES_XFEM,),)
+
 FIN( )
 #
 #

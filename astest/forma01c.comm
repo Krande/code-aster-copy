@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(
       DEBUG=_F(SDVERI='OUI'))
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                         NU=0.3,),);
+                         NU=0.3,),)
 nbadap = 3
 MAIL=[None]*(nbadap+1)
 MODE=[None]*(nbadap+1)
@@ -33,26 +33,26 @@ MATE=[None]*(nbadap+1)
 CHAR=[None]*(nbadap+1)
 RESU=[None]*(nbadap+1)
 
-MAIL[1]=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL[1]=LIRE_MAILLAGE(FORMAT='MED',)
 
-MAILTR=LIRE_MAILLAGE(FORMAT='MED',UNITE=21,);
+MAILTR=LIRE_MAILLAGE(FORMAT='MED',UNITE=21,)
 
 for k in range(1,nbadap+1):
 
   MODE[k]=AFFE_MODELE(MAILLAGE=MAIL[k],
                       AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),);
+                              MODELISATION='C_PLAN',),)
 
   if k==1:
 
     MAIL[k]=MODI_MAILLAGE(reuse =MAIL[k],
                           MAILLAGE=MAIL[k],
-                          ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),);
+                          ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),)
 
   MATE[k]=AFFE_MATERIAU(MAILLAGE=MAIL[k],
                         AFFE=_F(TOUT='OUI',
-                                MATER=MA,),);
+                                MATER=MA,),)
 
   CHAR[k]=AFFE_CHAR_MECA(MODELE=MODE[k],
                          DDL_IMPO=(_F(GROUP_MA='bas',
@@ -60,33 +60,33 @@ for k in range(1,nbadap+1):
                                    _F(GROUP_MA='gauche',
                                       DX=0.0,),),
                           PRES_REP=_F(GROUP_MA='haut',
-                                      PRES=-100.0,),);
+                                      PRES=-100.0,),)
 
   RESU[k]=MECA_STATIQUE(MODELE=MODE[k],
                         CHAM_MATER=MATE[k],
-                        EXCIT=_F(CHARGE=CHAR[k],),);
+                        EXCIT=_F(CHARGE=CHAR[k],),)
 
   RESU[k]=CALC_CHAMP(reuse =RESU[k],
                      RESULTAT=RESU[k],
                      CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
-                     CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU'),);
+                     CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU'),)
 
   nomfic="REPE_OUT/mesh_%d.med" % k
 
   DEFI_FICHIER (UNITE=80+k,FICHIER=nomfic, TYPE='BINARY'
-                );
+                )
 
   IMPR_RESU(FORMAT='MED',
             UNITE=80+k,
             RESU=_F(MAILLAGE=MAIL[k],
                     RESULTAT=RESU[k],
-                    NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),);
+                    NOM_CHAM=('DEPL','SIGM_NOEU','SIEQ_NOEU','SIEQ_ELGA',),),)
 
   DEFI_FICHIER(ACTION='LIBERER',UNITE=80+k,)
 
   RESU[k]=CALC_ERREUR(reuse =RESU[k],
                       RESULTAT=RESU[k],
-                      OPTION='ERME_ELEM',);
+                      OPTION='ERME_ELEM',)
 
   if k == nbadap :
     break
@@ -101,7 +101,7 @@ for k in range(1,nbadap+1):
                  GROUP_MA_FRONT='trou',
                  NOM_CHAM='ERME_ELEM',
                  NOM_CMP='ERREST',
-                 CRIT_RAFF_PE=0.1,);
+                 CRIT_RAFF_PE=0.1,)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='B',
@@ -175,4 +175,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=0.02,),
           )
 
-FIN();
+FIN()

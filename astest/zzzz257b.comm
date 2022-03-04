@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ from code_aster.Messages import MessageLog
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',), );
+      DEBUG=_F(SDVERI='OUI',), )
 
 
 #####################################
@@ -40,42 +40,42 @@ DEBUT(CODE=_F(
 #####################################
 
 #Equivalent quatre noeuds sur le maillage initial
-Lfiss = 3.5;
-Dmax = Lfiss / 2.;
+Lfiss = 3.5
+Dmax = Lfiss / 2.
 
 # Vect_KI
 #  c'est le vecteur pour avoir l'erreur sur KI
 #
-#vx = 0.0;
+#vx = 0.0
 #
-#vy = 1.0;
+#vy = 1.0
 #
-#vz = 0.0;
+#vz = 0.0
 
 # Vect_KII
 #  c'est le vecteur pour avoir l'erreur sur KII
 
-vx = 1.0;
+vx = 1.0
 
-vy = 0.0;
+vy = 0.0
 
-vz = 0.0;
+vz = 0.0
 
 #Fond de fissure
 
-X0 = 3.5;
+X0 = 3.5
 
-Y0 = 8.0;
+Y0 = 8.0
 
 #####################################
 ###Definition de la fissure en dur###
 #####################################
 
-young = 200000.0;
-nu = 0.3;
+young = 200000.0
+nu = 0.3
 
 #Fonctions necessaires a la definition du chargement pour le probleme dual
-const = ((young * sqrt((2 * pi))) / 8.);
+const = ((young * sqrt((2 * pi))) / 8.)
 
 
 FPLUSX = FORMULE(VALE='const*2/(Dmax)**2*sqrt((X-X0)**2+(Y-Y0)**2)*vx',
@@ -128,41 +128,41 @@ FMOINZ = FORMULE(VALE='-(const/(1+nu))*2/(Dmax)**2*sqrt((X-X0)**2+(Y-Y0)**2)*vz'
                  vz=vz,
                  NOM_PARA=['X', 'Y'],)
 
-MAI=LIRE_MAILLAGE(FORMAT='MED',);
+MAI=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIB=CREA_MAILLAGE(MAILLAGE=MAI,
                    LINE_QUAD=_F(TOUT='OUI',
                                 PREF_NOEUD='QN',
-                                PREF_NUME=1,),);
+                                PREF_NUME=1,),)
 
 MAIB=DEFI_GROUP(reuse =MAIB,
                 MAILLAGE=MAIB,
                 CREA_GROUP_NO=_F(GROUP_MA='FONDFISS',
-                                 NOM='NOEUFOND',),);
+                                 NOM='NOEUFOND',),)
 
 MAIB=MODI_MAILLAGE(reuse =MAIB,
                    MAILLAGE=MAIB,
                    MODI_MAILLE=_F(OPTION='NOEUD_QUART',
-                                  GROUP_NO_FOND='NOEUFOND',),);
+                                  GROUP_NO_FOND='NOEUFOND',),)
 
 
 
 MATE=DEFI_MATERIAU(ELAS=_F(E=young,
-                           NU=nu,),);
+                           NU=nu,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIB,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MATE,),);
+                            MATER=MATE,),)
 
 MODL=AFFE_MODELE(MAILLAGE=MAIB,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),);
+                         MODELISATION='C_PLAN',),)
 
 BLOC=AFFE_CHAR_MECA(MODELE=MODL,
                     DDL_IMPO=(_F(GROUP_MA='BAS',
                                  DX=0.0,
-                                 DY=0.0,),),);
+                                 DY=0.0,),),)
 
 # -----------------------------
 # definition du probleme primal
@@ -170,12 +170,12 @@ BLOC=AFFE_CHAR_MECA(MODELE=MODL,
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODL,
                     FORCE_CONTOUR=(_F(GROUP_MA='HAUT',
-                                      FX=1.0,),),);
+                                      FX=1.0,),),)
 
 RESU=MECA_STATIQUE(MODELE=MODL,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=BLOC,),
-                          _F(CHARGE=CHAR,),),);
+                          _F(CHARGE=CHAR,),),)
 
 MAIB=DEFI_GROUP(reuse =MAIB,
                 MAILLAGE=MAIB,
@@ -186,25 +186,25 @@ MAIB=DEFI_GROUP(reuse =MAIB,
                                _F(NOM='LSUP',
                                   INTERSEC=('LEVSUP','CURVMAX',),),
                                _F(NOM='LINF',
-                                  INTERSEC=('LEVINF','CURVMAX',),),),);
+                                  INTERSEC=('LEVINF','CURVMAX',),),),)
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MAIB, SYME='NON',
                     FOND_FISS=_F(GROUP_NO='NOEUFOND',),
                     LEVRE_SUP=_F(GROUP_MA='LSUP',),
-                    LEVRE_INF=_F(GROUP_MA='LINF',),);
+                    LEVRE_INF=_F(GROUP_MA='LINF',),)
 
 POST_K=POST_K1_K2_K3(FOND_FISS=FISS,
-                     RESULTAT=RESU,);
+                     RESULTAT=RESU,)
 
 IMPR_TABLE(TABLE=POST_K,
-           UNITE=8,);
+           UNITE=8,)
 
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
                  OPTION=('ERME_ELEM',
                          'ERZ1_ELEM',
-                         'ERZ2_ELEM',),);
+                         'ERZ2_ELEM',),)
 
 # ---------------------------
 # definition du probleme dual
@@ -220,7 +220,7 @@ CHARDUAL=AFFE_CHAR_MECA_F(MODELE=MODL,
                                          _F(GROUP_MA='LINF',
                                             FX=FMOINX,
                                             FY=FMOINY,
-                                            FZ=FMOINZ,),),);
+                                            FZ=FMOINZ,),),)
 
 infos = MessageLog.get_info_alarm()
 
@@ -246,13 +246,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 RESUDUAL=MECA_STATIQUE(MODELE=MODL,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=BLOC,),
-                              _F(CHARGE=CHARDUAL,),),);
+                              _F(CHARGE=CHARDUAL,),),)
 
 RESUDUAL=CALC_ERREUR(reuse =RESUDUAL,
                      RESULTAT=RESUDUAL,
                      OPTION=('ERME_ELEM',
                              'ERZ1_ELEM',
-                             'ERZ2_ELEM',),);
+                             'ERZ2_ELEM',),)
 
 # ---------------------------
 # estimation de l'erreur en quantite d'interet
@@ -261,17 +261,17 @@ RESUDUAL=CALC_ERREUR(reuse =RESUDUAL,
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
                  OPTION='QIRE_ELEM',
-                 RESU_DUAL=RESUDUAL,);
+                 RESU_DUAL=RESUDUAL,)
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
                  OPTION='QIZ1_ELEM',
-                 RESU_DUAL=RESUDUAL,);
+                 RESU_DUAL=RESUDUAL,)
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
                  OPTION='QIZ2_ELEM',
-                 RESU_DUAL=RESUDUAL,);
+                 RESU_DUAL=RESUDUAL,)
 
 # ---------------------------
 # tests sur les resultats
@@ -363,4 +363,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   ),
           )
 
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
-ma=LIRE_MAILLAGE();
+ma=LIRE_MAILLAGE()
 
 mo=AFFE_MODELE(MAILLAGE=ma,
                AFFE=(_F(GROUP_MA=('CABLE',),
@@ -27,17 +27,17 @@ mo=AFFE_MODELE(MAILLAGE=ma,
                         MODELISATION='CABLE',),
                      _F(GROUP_MA=('R1','R2',),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DIS_TR',),),);
+                        MODELISATION='DIS_TR',),),)
 
 bracing=DEFI_MATERIAU(ELAS=_F(E=2.e11,
                               NU=0.3,
                               RHO=7800,),
                       CABLE=_F(EC_SUR_E=0.0001,),
-                      );
+                      )
 
 mater=AFFE_MATERIAU(MAILLAGE=ma,
                     AFFE=_F(GROUP_MA='CABLE',
-                            MATER=bracing,),);
+                            MATER=bracing,),)
 
 
 # Caracteristiques cable
@@ -59,7 +59,7 @@ cara=AFFE_CARA_ELEM(MODELE=mo,
                                VALE=(0.,0.,0.,0.),),)
 
 
-                 );
+                 )
 
 encas14=AFFE_CHAR_MECA(MODELE=mo,
                        DDL_IMPO=_F(GROUP_NO=('N0001','N0004',),
@@ -68,7 +68,7 @@ encas14=AFFE_CHAR_MECA(MODELE=mo,
                                    DZ=0.,
                                    DRX=0.,
                                    DRY=0.,
-                                   DRZ=0.,),);
+                                   DRZ=0.,),)
 
 from sdnl142a import *
 
@@ -129,30 +129,30 @@ visqueux=AFFE_CHAR_MECA_F(MODELE=mo,
                                      TYPE_CHARGE='FORCE',
                                      FX=FXP,
                                      FY=FYP,
-                                     FZ=FZP,),);
+                                     FZ=FZP,),)
 
 liaiz=AFFE_CHAR_MECA(MODELE=mo,
                     LIAISON_DDL=_F(GROUP_NO=('N0002','N0003',),
                                    DDL=('DZ','DZ',),
                                    COEF_MULT=(1.0,-1.0,),
-                                   COEF_IMPO=0.,),);
+                                   COEF_IMPO=0.,),)
 liaix=AFFE_CHAR_MECA(MODELE=mo,
                     LIAISON_DDL=_F(GROUP_NO=('N0002','N0003',),
                                    DDL=('DX','DX',),
                                    COEF_MULT=(1.0,-1.0,),
-                                   COEF_IMPO=0.,),);
+                                   COEF_IMPO=0.,),)
 
 poids=AFFE_CHAR_MECA(MODELE=mo,
                     PESANTEUR=_F(GRAVITE=10.,
-                                 DIRECTION=(0.,0.,-1.0,),),);
+                                 DIRECTION=(0.,0.,-1.0,),),)
 
 temps=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=100.,
-                                   PAS=0.05,),);
+                                   PAS=0.05,),)
 
 tempsm=DEFI_LIST_REEL(DEBUT=-1.,
                       INTERVALLE=_F(JUSQU_A=0.,
-                                    PAS=1,),);
+                                    PAS=1,),)
 
 tfin = 2.
 
@@ -180,7 +180,7 @@ dyna=DYNA_NON_LINE(MODELE=mo,
                    NEWTON=_F(REAC_ITER=2,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
                    SOLVEUR    =_F(METHODE='LDLT',),
-                                   );
+                                   )
 
 
 # Comparaison avec CALHYPSO à T=40.4
@@ -237,4 +237,4 @@ TEST_RESU(RESU=_F(RESULTAT=dyna,
                    VALE_CALC=-0.4180604356318712,
                    ),)
 
-FIN();
+FIN()

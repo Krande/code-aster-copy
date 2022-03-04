@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #Maillage mecanique
 MAILMECA=LIRE_MAILLAGE(UNITE=20,
                        FORMAT='MED',
-                        );
+                        )
 
 # Barsoum pour les 2 fonds de fissure
 MAILMECA=MODI_MAILLAGE(reuse =MAILMECA,
@@ -41,7 +41,7 @@ MAILMECA=MODI_MAILLAGE(reuse =MAILMECA,
 TEMPVARX=DEFI_FONCTION(NOM_PARA='X',VALE=(-100,260,
                                            0,130,
                                            22,100,
-                                           100,200),);
+                                           100,200),)
 
 CHP_TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                      MAILLAGE=MAILMECA,
@@ -49,7 +49,7 @@ CHP_TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                      NOM_CMP = 'TEMP',
                      VALE_F = TEMPVARX))
 
-CTE250=DEFI_CONSTANTE(VALE=250.);
+CTE250=DEFI_CONSTANTE(VALE=250.)
 
 CHTEMP0=CREA_CHAMP( OPERATION='AFFE',
                     TYPE_CHAM='NOEU_TEMP_F',
@@ -60,7 +60,7 @@ CHTEMP0=CREA_CHAMP( OPERATION='AFFE',
 
 #Calcul thermique
 LIST1=DEFI_LIST_REEL(DEBUT=0,
-                     INTERVALLE=_F(JUSQU_A=2,NOMBRE=2,),);
+                     INTERVALLE=_F(JUSQU_A=2,NOMBRE=2,),)
 
 RESUTHER=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
@@ -77,7 +77,7 @@ RESUTHER=CREA_RESU(OPERATION='AFFE',
 MO=AFFE_MODELE(MAILLAGE=MAILMECA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),);
+                       MODELISATION='D_PLAN',),)
 
 ##Materiau dependant de la temperature
 E_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0., 210000.0, 1000., 210000.0))
@@ -88,7 +88,7 @@ MAMEC=DEFI_MATERIAU(ELAS_FO=_F(E=E_T,
                             NU=NU_T,
                             ALPHA=ALPHA_T,
                             TEMP_DEF_ALPHA=20.
-                            ),);
+                            ),)
 
 MAMECA=AFFE_MATERIAU(MAILLAGE=MAILMECA,
                      AFFE=_F(TOUT='OUI',
@@ -96,13 +96,13 @@ MAMECA=AFFE_MATERIAU(MAILLAGE=MAILMECA,
                      AFFE_VARC=_F(TOUT='OUI',
                                   NOM_VARC='TEMP',
                                   EVOL = RESUTHER,
-                                  VALE_REF=250,),);
+                                  VALE_REF=250,),)
 
 ##Chargement : encastrement
 ENCASTRE=AFFE_CHAR_MECA(MODELE=MO,
                         DDL_IMPO=_F(GROUP_NO='Contour',
                                     DX=0,
-                                    DY=0,),);
+                                    DY=0,),)
 ##Chargement : fissure fermee
 BLOCFISS=AFFE_CHAR_MECA(MODELE=MO,
                         LIAISON_GROUP=(_F(GROUP_NO_1='lev_sup',
@@ -118,11 +118,11 @@ BLOCFISS=AFFE_CHAR_MECA(MODELE=MO,
                                           COEF_MULT_1=1,
                                           DDL_2='DY',
                                           COEF_MULT_2=-1,
-                                          COEF_IMPO=0,),),);
+                                          COEF_IMPO=0,),),)
 
 INSTMECA=DEFI_LIST_REEL(DEBUT=-1,
                         INTERVALLE=(_F(JUSQU_A=0,PAS=1,),
-                                    _F(JUSQU_A=1,PAS=1,),),);
+                                    _F(JUSQU_A=1,PAS=1,),),)
 
 ##Calcul thermomecanique avec fissure fermee pour extraction des contraintes
 RESUMECA=STAT_NON_LINE(MODELE=MO,
@@ -130,50 +130,50 @@ RESUMECA=STAT_NON_LINE(MODELE=MO,
                        EXCIT=(_F(CHARGE=ENCASTRE,),
                               _F(CHARGE=BLOCFISS,),),
                        COMPORTEMENT=_F(RELATION='ELAS',),
-                       INCREMENT=_F(LIST_INST=INSTMECA,),);
+                       INCREMENT=_F(LIST_INST=INSTMECA,),)
 
 RESUMECA=CALC_CHAMP(reuse=RESUMECA,
                     RESULTAT=RESUMECA,
                     CONTRAINTE=('SIEF_ELNO','SIEF_NOEU',),
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
-                    VARI_INTERNE=('VARI_ELNO',),);
+                    VARI_INTERNE=('VARI_ELNO',),)
 
 ##Extraction des contraintes au noeuds et points de Gauss
 SIEFELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUMECA,
                     NOM_CHAM='SIEF_ELGA',
-                    INST=1,);
+                    INST=1,)
 
 SIEFELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUMECA,
                     NOM_CHAM='SIEF_ELNO',
-                    INST=1,);
+                    INST=1,)
 
 SIEFNOEU=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUMECA,
                     NOM_CHAM='SIEF_NOEU',
-                    INST=1,);
+                    INST=1,)
 
 ##Calcul thermomecanique sans etat init ouverture de la fissure
 RESOUVFI=STAT_NON_LINE(MODELE=MO,
                        CHAM_MATER=MAMECA,
                        EXCIT=(_F(CHARGE=ENCASTRE,),),
                        COMPORTEMENT=_F(RELATION='ELAS',),
-                       INCREMENT=_F(LIST_INST=INSTMECA,),);
+                       INCREMENT=_F(LIST_INST=INSTMECA,),)
 
 RESOUVFI=CALC_CHAMP(reuse=RESOUVFI,
                     RESULTAT=RESOUVFI,
                     CONTRAINTE=('SIEF_ELNO',),
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
-                    VARI_INTERNE=('VARI_ELNO',),);
+                    VARI_INTERNE=('VARI_ELNO',),)
 
 
 ## Affectation du materiau mecanique (sans chargement thermique)
 LIST2=DEFI_LIST_REEL(DEBUT=0,
-                        INTERVALLE=(_F(JUSQU_A=1,PAS=1,),),);
+                        INTERVALLE=(_F(JUSQU_A=1,PAS=1,),),)
 
 RESTHCT=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
@@ -187,7 +187,7 @@ MAMECACT=AFFE_MATERIAU(MAILLAGE=MAILMECA,
                      AFFE_VARC=_F(TOUT='OUI',
                                   NOM_VARC='TEMP',
                                   EVOL = RESTHCT,
-                                  VALE_REF=250,),);
+                                  VALE_REF=250,),)
 
 ## Resolution ouverture de la fissure en presence d'un champ de contrainte residuelle
 
@@ -197,13 +197,13 @@ RESUINI=STAT_NON_LINE(MODELE=MO,
                       COMPORTEMENT=_F(RELATION='ELAS',),
                       ETAT_INIT=_F(SIGM=SIEFELGA,),
                       INCREMENT=_F(LIST_INST=LIST2,),
-                      );
+                      )
 
 ## Calcul postraitement
 RESUINI=CALC_CHAMP(reuse=RESUINI,
                    RESULTAT=RESUINI,
                    DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
-                   VARI_INTERNE=('VARI_ELNO',),);
+                   VARI_INTERNE=('VARI_ELNO',),)
 
 ## Calcul de G en utilisant les couronnes precedemment definies (dans le calcul thermique)
 # et les differentes possibilites de l'etat initial.
@@ -212,7 +212,7 @@ RESUINI=CALC_CHAMP(reuse=RESUINI,
 FISS1=DEFI_FOND_FISS(MAILLAGE=MAILMECA, SYME='NON',
                      FOND_FISS=_F(GROUP_NO='G',),
                      LEVRE_SUP=_F(GROUP_MA='lev_sup',),
-                     LEVRE_INF=_F(GROUP_MA='lev_inf',),);
+                     LEVRE_INF=_F(GROUP_MA='lev_inf',),)
 
 # defintion de 3 couronnes pour le champ theta
 #---------------------------------------------
@@ -435,4 +435,4 @@ TEST_TABLE(VALE_CALC=55.3650585586,
 test = code_aster.TestCase()
 test.assertTrue( True )
 
-FIN();
+FIN()

@@ -33,7 +33,7 @@ mesh = MODI_MAILLAGE(reuse=mesh,
                                          VECT_NORM=(1.0, 0.0, 0.0))
                                       ),
                      )
-                     
+
 meshColle = MODI_MAILLAGE(reuse=meshColle,
                          MAILLAGE=meshColle,
                          ORIE_NORM_COQUE=(_F(GROUP_MA=('IFS1', ),
@@ -163,19 +163,19 @@ freq2Refe = 5.41082E+02
 TEST_RESU(RESU=_F(RESULTAT=modesColle, NUME_MODE=7, PARA='FREQ', VALE_CALC=freq1Refe, ))
 TEST_RESU(RESU=_F(RESULTAT=modesColle, NUME_MODE=8, PARA='FREQ', VALE_CALC=freq2Refe, ))
 
-TEST_RESU(RESU=_F(RESULTAT=modes, 
-                  NUME_MODE=7, 
-                  PARA='FREQ', 
+TEST_RESU(RESU=_F(RESULTAT=modes,
+                  NUME_MODE=7,
+                  PARA='FREQ',
                   REFERENCE='AUTRE_ASTER',
-                  VALE_REFE=freq1Refe, 
+                  VALE_REFE=freq1Refe,
                   VALE_CALC=93.449056119954,
                   PRECISION=1.E-6))
 
-TEST_RESU(RESU=_F(RESULTAT=modes, 
-                  NUME_MODE=8, 
-                  PARA='FREQ', 
+TEST_RESU(RESU=_F(RESULTAT=modes,
+                  NUME_MODE=8,
+                  PARA='FREQ',
                   REFERENCE='AUTRE_ASTER',
-                  VALE_REFE=freq2Refe, 
+                  VALE_REFE=freq2Refe,
                   VALE_CALC=541.0818885140138,
                   PRECISION=1.E-6))
 

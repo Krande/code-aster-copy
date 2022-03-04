@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 
 # sslp114a.para=tps_job 120 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
-import math;
+import math
 
 #facteurs intensite de contrainte
-KI=1.;
-KII=0.;
+KI=1.
+KII=0.
 #
 
 #ANGLE INCLINAISON :: -135 (degres) < alpha0 < 135 (degres)
@@ -34,14 +34,14 @@ alpha0=22.5
 alpha=alpha0*math.pi/180.
 
 # LONGUEUR DE LA FISSURE
-A = 0.5/max(abs(math.cos(alpha)),abs(math.sin(alpha)));
+A = 0.5/max(abs(math.cos(alpha)),abs(math.sin(alpha)))
 
 # DEFINITION DU MATERIAU
-E   = 1.E5;
-nu  = 0.;
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),);
+E   = 1.E5
+nu  = 0.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),)
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'))
 
 #TEST_MA ne doit pas etre coupe par la fissure
 #On prend le coin oppose
@@ -62,7 +62,7 @@ MAILLAGE=DEFI_GROUP( reuse =MAILLAGE,
                      MAILLAGE=MAILLAGE,
                      CREA_GROUP_MA=(_F(NOM='TEST_MA',OPTION='SPHERE',POINT=(Px,Py),RAYON=0.5),),
 #                    INFO=2,
-                   );
+                   )
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE= _F(GROUP_MA=('SURF','LIG1','LIG2','LIG3','LIG4','TEST_MA'),
@@ -70,7 +70,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                               MODELISATION='C_PLAN'
                              ),
 #                    INFO=2,
-                     );
+                     )
 
 #Pour utiliser sereinement la TAN :
 #Diviser quand TAN tend vers l'infini, multiplier quand TAN tend vers 0 !
@@ -94,19 +94,19 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     TYPE_ENRI_FOND='GEOMETRIQUE',
                     RAYON_ENRI=0.2*A,
 #                    TYPE_ENRI_FOND='TOPOLOGIQUE',
-                   );
+                   )
 
-MODELK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS);
+MODELK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS)
 
 CHMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                    MODELE=MODELK,
                    AFFE=_F(TOUT = 'OUI',MATER=ACIER),
-                   );
+                   )
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE, MAILLAGE=MAILLAGE,
                        ORIE_PEAU=(_F(GROUP_MA_PEAU=('LIG1','LIG2','LIG3','LIG4'),),),
                        INFO=2,
-                       );
+                       )
 
 def r(X,Y) :
     return ((X-0.5)**2+(Y-0.5)**2)**0.5
@@ -241,7 +241,7 @@ FYYF = FORMULE(VALE='-SIGMA(X,Y,1)',
 CH2=AFFE_CHAR_MECA_F(MODELE=MODELK,
                      DDL_IMPO=_F(GROUP_MA=('LIG1','LIG2','LIG3'),DX=U1,DY=U2,),
                      FORCE_CONTOUR=(_F(GROUP_MA=('LIG4'),FX=FXXF,FY=FXYF),),
-                     );
+                     )
 
 #Combinaison 2 : Dirichletx1+Neumannx3
 CH2B=AFFE_CHAR_MECA_F(MODELE=MODELK,
@@ -251,7 +251,7 @@ CH2B=AFFE_CHAR_MECA_F(MODELE=MODELK,
                                     _F(GROUP_MA=('LIG4'),FX=FXXF,FY=FXYF),
                                     _F(GROUP_MA=('LIG1'),FX=FYXF,FY=FYYF),
                                    ),
-                     );
+                     )
 
 UTOT=MECA_STATIQUE(MODELE=MODELK,
                    CHAM_MATER=CHMA,
@@ -262,7 +262,7 @@ UTOT=MECA_STATIQUE(MODELE=MODELK,
                               METHODE='MUMPS',
                              ),
                    INFO=2,
-                  );
+                  )
 
 CH_G=CALC_G_XFEM(RESULTAT=UTOT,
             OPTION='CALC_K_G',
@@ -270,15 +270,15 @@ CH_G=CALC_G_XFEM(RESULTAT=UTOT,
             THETA=_F(FISSURE=FISS,
                      R_INF=0.1*A,
                      R_SUP=0.3*A,),
-            INFO=2);
+            INFO=2)
 
 CH_G2=CALC_G_XFEM(RESULTAT=UTOT,
             OPTION='CALC_K_G',
             CHAM_THETA=CO('cham_theta_no2'),
             THETA=_F(FISSURE=FISS,),
-            INFO=2);
+            INFO=2)
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELK);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELK)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(GROUP_MA='SURF',
@@ -291,17 +291,17 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU  = MOD_VISU,
 
 RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,
                     RESULTAT=RES_XFEM,
-                    CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),);
+                    CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),)
 
 RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
                  RESULTAT=RES_XFEM,
-                 CRITERES='SIEQ_NOEU');
+                 CRITERES='SIEQ_NOEU')
 
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM,
                                  NOM_CHAM=('DEPL'),
                                  TYPE_CHAM='VECT_2D',
                                  NOM_CMP=('DX','DY',),),
-                                 ),);
+                                 ),)
 
 #CHAMP DEPL :: calcul ERREUR SUR TEST_NO
 DEPL = CREA_CHAMP (OPERATION='EXTR',
@@ -309,7 +309,7 @@ DEPL = CREA_CHAMP (OPERATION='EXTR',
                    TYPE_CHAM = 'NOEU_DEPL_R',
                    RESULTAT = UTOT,
                    NUME_ORDRE=1,
-                  );
+                  )
 
 CH_AFFE=CREA_CHAMP(OPERATION='AFFE',
                  TYPE_CHAM='NOEU_NEUT_F',
@@ -317,15 +317,15 @@ CH_AFFE=CREA_CHAMP(OPERATION='AFFE',
                  AFFE=(_F( TOUT='OUI', NOM_CMP = 'X1', VALE_F = U1),
                        _F( TOUT='OUI', NOM_CMP = 'X2', VALE_F = U2),
                       )
-                );
+                )
 
 CH_GEO=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
-                NOM_CHAM='GEOMETRIE', MAILLAGE=MAILLAGE, INFO=1);
+                NOM_CHAM='GEOMETRIE', MAILLAGE=MAILLAGE, INFO=1)
 
 CH_EVAL=CREA_CHAMP(OPERATION='EVAL',
                  TYPE_CHAM='NOEU_NEUT_R',
                  CHAM_F=CH_AFFE,
-                 CHAM_PARA=CH_GEO);
+                 CHAM_PARA=CH_GEO)
 
 Uana=CREA_CHAMP(OPERATION='ASSE',
                 TYPE_CHAM='NOEU_DEPL_R',
@@ -340,7 +340,7 @@ Uana=CREA_CHAMP(OPERATION='ASSE',
                          NOM_CMP = 'X2',
                          NOM_CMP_RESU = 'DY',)
                       ),
-                );
+                )
 
 DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELEIN,
 
@@ -350,9 +350,9 @@ DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELEIN,
                       _F(TOUT='OUI', CHAM_GD=DEPL,CUMUL='OUI', COEF_R=+1., NOM_CMP='DY', NOM_CMP_RESU='DY',),
                       _F(TOUT='OUI', CHAM_GD=Uana, CUMUL='OUI', COEF_R=-1., NOM_CMP='DY', NOM_CMP_RESU='DY',),
                       ),
-                );
+                )
 
-tab_du=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_MA',CHAM_GD=DIFF, MODELE=MODELEIN),),INFO=2);
+tab_du=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_MA',CHAM_GD=DIFF, MODELE=MODELEIN),),INFO=2)
 
 # champ de contrainte analytique
 SXX = FORMULE(VALE='SIGMA(X,Y,0)',
@@ -484,7 +484,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabNRJ,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=0.034053694632,
@@ -492,7 +492,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabNRJ,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
@@ -502,7 +502,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC=0.000387847336864,
@@ -510,6 +510,6 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
            TABLE=tabL2,
-           );
+           )
 
-FIN();
+FIN()

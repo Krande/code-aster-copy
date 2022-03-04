@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,17 +38,17 @@ MO=AFFE_MODELE(
                MODELISATION = '3D')
              )
 FC=DEFI_CONSTANTE(NOM_RESU='F_C',
-                  VALE=38.3,);
+                  VALE=38.3,)
 FT1=DEFI_CONSTANTE(NOM_RESU='F_T',
-                   VALE=4.0,);
+                   VALE=4.0,)
 FT2=DEFI_CONSTANTE(NOM_RESU='F_T',
-                   VALE=3.0,);
+                   VALE=3.0,)
 BETA=DEFI_CONSTANTE(NOM_RESU='COEF_BIAX',
-                    VALE=1.16,);
+                    VALE=1.16,)
 GC=DEFI_CONSTANTE(NOM_RESU='ENER_COMP_RUPT',
-                  VALE=2.83E-2,);
+                  VALE=2.83E-2,)
 GT=DEFI_CONSTANTE(NOM_RESU='ENER_TRAC_RUPT',
-                  VALE=2.83E-4,);
+                  VALE=2.83E-4,)
 CALCAIRE=DEFI_MATERIAU(BETON_DOUBLE_DP=_F(COEF_BIAX=BETA,
                                         F_T=FT1,
                                         ENER_TRAC_RUPT=GT,
@@ -59,7 +59,7 @@ CALCAIRE=DEFI_MATERIAU(BETON_DOUBLE_DP=_F(COEF_BIAX=BETA,
                                         F_C=FC,),
                      BPEL_BETON=_F(),
                      ELAS=_F(NU=0.22,
-                             E=3.1000E4,),);
+                             E=3.1000E4,),)
 CAL_FAIB=DEFI_MATERIAU(BETON_DOUBLE_DP=_F(COEF_BIAX=BETA,
                                         F_T=FT2,
                                         ENER_TRAC_RUPT=GT,
@@ -70,7 +70,7 @@ CAL_FAIB=DEFI_MATERIAU(BETON_DOUBLE_DP=_F(COEF_BIAX=BETA,
                                         F_C=FC,),
                      BPEL_BETON=_F(),
                      ELAS=_F(NU=0.22,
-                             E=3.1000E4,),);
+                             E=3.1000E4,),)
 
 CHMAT=AFFE_MATERIAU(
                 MAILLAGE=MA,AFFE=(

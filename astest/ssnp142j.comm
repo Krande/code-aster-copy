@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ h=10.
 length=5.
 
 # NIVEAU D'EAU
-niv_am=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AM',VALE=(0,0, 1,3, 2,6, 3,8, 4,9),);
-niv_av=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AV',VALE=(0,0, 1,0, 2,0, 3,0, 4,0),);
+niv_am=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AM',VALE=(0,0, 1,3, 2,6, 3,8, 4,9),)
+niv_av=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AV',VALE=(0,0, 1,0, 2,0, 3,0, 4,0),)
 
 # PARAMETRES MECANIQUES DES JOINTS
 k_n=1E12
@@ -62,9 +62,9 @@ f_flu = FORMULE(NOM_PARA=('X','Y','INST'),
 
 ##################################
 # LECTURE DU MAILLAGE, OU LE JOINT EST PRESENTE PAR DEUX LEVRES MAILLES IDENTIQUEMENT
-#MA_TMP=LIRE_MAILLAGE(FORMAT='MED');
+#MA_TMP=LIRE_MAILLAGE(FORMAT='MED')
 
-MA_TMP=LIRE_MAILLAGE(FORMAT='MED');
+MA_TMP=LIRE_MAILLAGE(FORMAT='MED')
 
 
 # IL EST IMPORTANT D'ORDONNER LES GROUPES DE NOEUDS, QUI PRESENTE LES LEVRES DU JOINT
@@ -76,7 +76,7 @@ MA_TMP=DEFI_GROUP(reuse =MA_TMP,
                              _F(GROUP_MA='JOINT_B',
                                 OPTION = 'NOEUD_ORDO',
                                 NOM='JB',),
-                               ),);
+                               ),)
 
 # LE NOUVEAU MAILLAGE EST CREE, LA OU LE JOINT EST DEJA MAILLE
 MA0 = CREA_MAILLAGE(
@@ -86,7 +86,7 @@ MA0 = CREA_MAILLAGE(
     GROUP_NO_2 = 'JH',
     GROUP_NO_1 = 'JB',
     PREF_MAILLE = 'MJ',
-    ),);
+    ),)
 
 # PASSAGE DU MAILLAGE EN QUADRATIQUE
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
@@ -97,7 +97,7 @@ MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_NO=(_F(GROUP_MA='JOINT_H',
                                 OPTION = 'NOEUD_ORDO',
                                 NOM='JOINT_H',),
-                               ),);
+                               ),)
 
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
@@ -112,7 +112,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='D_PLAN',),
                      _F(GROUP_MA='JOINT',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='PLAN_JOINT',),),);
+                        MODELISATION='PLAN_JOINT',),),)
 
 # MATERIAU BETON ET TERRE
 MAT_B=DEFI_MATERIAU(ELAS=_F(
@@ -134,7 +134,7 @@ MAT_JF=DEFI_MATERIAU(
                                      MU=mu,
                                      ADHESION=adhe,
                                      PRES_FLUIDE=f_flu,
-                                ),);
+                                ),)
 
 
 CM_F=AFFE_MATERIAU(MAILLAGE=MA,
@@ -142,20 +142,20 @@ CM_F=AFFE_MATERIAU(MAILLAGE=MA,
                       _F(GROUP_MA='BARRAGE',MATER = MAT_B),
                       _F(GROUP_MA='TERRE',  MATER = MAT_T),
                       _F(GROUP_MA='JOINT',  MATER = MAT_JF))
-                 );
+                 )
 
 # CONDITION AUX LIMITES SUR LA TERRE
-TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TERRE_BO',DX=0.0,DY=0.0,),);
+TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TERRE_BO',DX=0.0,DY=0.0,),)
 
 # POIDS
 PESBAR = AFFE_CHAR_MECA(
   MODELE = MO,
   FORCE_INTERNE = (_F(GROUP_MA='BARRAGE',FX=0, FY=-rho_b*ap))
-  );
+  )
 PESTER = AFFE_CHAR_MECA(
   MODELE = MO,
   FORCE_INTERNE = (_F(GROUP_MA='TERRE',  FX=0, FY=-rho_t*ap))
-  );
+  )
 
 # PRESSION D'EAU SUR LE BARRAGE
 p_am = FORMULE(VALE='max(rho_e*ap*(niv_am(INST)-Y),0)',NOM_PARA=('Y','INST',),
@@ -163,11 +163,11 @@ p_am = FORMULE(VALE='max(rho_e*ap*(niv_am(INST)-Y),0)',NOM_PARA=('Y','INST',),
 p_av = FORMULE(VALE='max(rho_e*ap*(niv_av(INST)-Y),0)',NOM_PARA=('Y','INST',),
                rho_e=rho_e, ap=ap, niv_av=niv_av)
 
-PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=p_am,),);
-PAVAL =AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AVAL', ),PRES=p_av,),);
+PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=p_am,),)
+PAVAL =AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AVAL', ),PRES=p_av,),)
 
 # LISTE D'INSTANTS
-LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=3, NOMBRE=3,),_F(JUSQU_A=tfin, NOMBRE=2,)));
+LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=3, NOMBRE=3,),_F(JUSQU_A=tfin, NOMBRE=2,)))
 L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),
                         ECHEC=_F(
                                  SUBD_NIVEAU=6,
@@ -196,7 +196,7 @@ U_F=STAT_NON_LINE(MODELE=MO,
                                  SIGM_REFE=adhe/mu,),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = LR)
-                  );
+                  )
 
 
 ################### POST TRAITEMENT U_F  #######################
@@ -205,18 +205,18 @@ U_F=CALC_CHAMP(reuse =U_F,
 
               RESULTAT=U_F,
                VARI_INTERNE=('VARI_ELNO'),
-              GROUP_MA='JOINT');
+              GROUP_MA='JOINT')
 
 U_F=CALC_CHAMP(reuse =U_F,
 
               RESULTAT=U_F,
                CONTRAINTE=('SIEF_ELNO'),
-              GROUP_MA='JOINT');
+              GROUP_MA='JOINT')
 
 U_F=CALC_CHAMP(reuse =U_F,
             RESULTAT=U_F,
             VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIEF_NOEU',
-            GROUP_MA='JOINT');
+            GROUP_MA='JOINT')
 
 # SAUT NORMAL DANS LE JOINT (via VI)
 SAUT_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -225,7 +225,7 @@ SAUT_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=tfin,
                                GROUP_NO=('JOINT_H',),
-                               NOM_CMP='V7',),);
+                               NOM_CMP='V7',),)
 
 # SAUT TANGENTIEL DANS LE JOINT (via DEPL)
 SAUT_X=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -234,7 +234,7 @@ SAUT_X=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='DEPL',
                                INST=tfin,
                                GROUP_NO = ('JOINT_H'),
-                               NOM_CMP='DX'));
+                               NOM_CMP='DX'))
 
 # CONTRAINTE NORMALE DANS LE JOINT
 SIGN_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -243,7 +243,7 @@ SIGN_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                INST=tfin,
                                GROUP_NO = ('JOINT_H',),
-                               NOM_CMP='SIGN'),);
+                               NOM_CMP='SIGN'),)
 
 # PRESSION DE FLUIDE
 PRE_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -252,7 +252,7 @@ PRE_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='VARI_NOEU',
                                INST=tfin,
                                GROUP_NO=('JOINT_H',),
-                               NOM_CMP='V18',),);
+                               NOM_CMP='V18',),)
 
 ################### TESTS U_F  NON REGRESSION #######################
 

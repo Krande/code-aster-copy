@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 # ======================================================================
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER", );
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER", )
 
 MATER    = DEFI_MATERIAU(  ELAS    = _F(  E  = 5800.0E6,
                                           NU = 0.3  ,),
@@ -32,18 +32,18 @@ MATER    = DEFI_MATERIAU(  ELAS    = _F(  E  = 5800.0E6,
                                           P_ULTM      =    0.01   ,
                                           SY          =    2.57E6 ,
                                           H           =  - 2.00E8 ,),
-                        );
+                        )
 
 CHMAT    = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
                            AFFE     = _F(  TOUT  = 'OUI',
                                            MATER = MATER )
-                        );
+                        )
 
 MODELE   = AFFE_MODELE(    MAILLAGE = MAILLAGE,
                            AFFE     = _F(  TOUT         = 'OUI',
                                            PHENOMENE    = 'MECANIQUE',
                                            MODELISATION = 'D_PLAN'),
-                      );
+                      )
 
 #***********************************************************************
 # *** CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES ********
@@ -53,7 +53,7 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                   MODELE=MODELE,
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','M11','FH11X','FH11Y',),
-                          VALE=(-2.E6,-2.E6,-2.E6,0.0,0.0,0.0,0,0.0,0.0,0.0,),),);
+                          VALE=(-2.E6,-2.E6,-2.E6,0.0,0.0,0.0,0,0.0,0.0,0.0,),),)
 
 CHAR_UM3 = AFFE_CHAR_MECA( MODELE   = MODELE,
                            PRES_REP = _F(  GROUP_MA = 'M3',
@@ -231,4 +231,4 @@ TEST_RESU(RESU=(_F(INST=1.07,
                 ),
           )
 
-FIN();
+FIN()

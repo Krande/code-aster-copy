@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,19 +20,19 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # CORRESPOND A MU=3846154 PA
-mu = 3846154 ;
-E  = 1.E+7  ;
-nu = 0.3    ;
+mu = 3846154
+E  = 1.E+7
+nu = 0.3
 
 # PROPRIETES ANELASTIQUES (CAMCLAY)
 PATM   = 1.E+2 ;  # PRESSION DE REFERENCE
                   # (QUI NE SERT PAS A GRAND-CHOSE EN REALITE)
 M      = 1.02  ;  # CORRESPOND A UN ANGLE DE FROTTEMENT DE 25.85 DEGRES
-pcr    = 500. ;
-pcr    = 0.0   ;
+pcr    = 500.
+pcr    = 0.0
 n      = 0.5   ;  # POROSITE
-kapa   = 0.05  ;
-lambd  = 0.2   ;
+kapa   = 0.05
+lambd  = 0.2
 
 # DEFINITION DES CONSTANTES
 sigma_0 = 1.02E+5 ;        # PRESSION D'APPUI SUR LA SURFACE LIBRE
@@ -48,7 +48,7 @@ K0      = 1.   ;           # COEFFICIENT DE POUSSEE DES TERRES
 H       = 10.  ;           # HAUTEUR DE LA FONDATION
 G       = 9.81 ;           # ACCELERATION DE LA PESANTEUR
 
-#PRE_GIBI();
+#PRE_GIBI()
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED')
 # Pour eviter les "TOLE MACHINE", on perturbe legerement la geometrie du maillage :
@@ -56,19 +56,19 @@ MODI_MAILLAGE(reuse =MAILLAGE, MAILLAGE=MAILLAGE, DEFORME=_F(OPTION='TRAN', ALEA
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'));
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
 
 MODMEC1=AFFE_MODELE(INFO=1,
                     MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN'));
+                            MODELISATION='D_PLAN'))
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU=_F(GROUP_MA_PEAU=('LPATM','APPUI',
                                                  'GAUCHE','DROITE',
-                                                 'BASE')));
+                                                 'BASE')))
 
 # COMPORTEMENT PLASTIQUE DE TYPE CAMCLAY EN MECANIQUE PUR
 SOL=DEFI_MATERIAU(ELAS=_F(E     =E,
@@ -83,10 +83,10 @@ SOL=DEFI_MATERIAU(ELAS=_F(E     =E,
                               PRES_CRIT =pcr,
                               #PA        =PATM,
                               KCAM = 0.,
-                              PTRAC=0.));
+                              PTRAC=0.))
 
 chmat=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(GROUP_MA='SOL', MATER=SOL));
+                    AFFE=_F(GROUP_MA='SOL', MATER=SOL))
 
 TM = -1000000.0
 T0 = 0.
@@ -98,15 +98,15 @@ T3 = 100000000.0
 TEMPS=DEFI_LIST_REEL(DEBUT=T0,
                      INTERVALLE=(_F(JUSQU_A=T1, NOMBRE=10),
                                  _F(JUSQU_A=T2, NOMBRE=10),
-                                 _F(JUSQU_A=T3, NOMBRE=80)));
+                                 _F(JUSQU_A=T3, NOMBRE=80)))
 
 TAN0=DEFI_LIST_REEL(DEBUT=TM,
-                    INTERVALLE=_F(JUSQU_A=T0, NOMBRE=3));
+                    INTERVALLE=_F(JUSQU_A=T0, NOMBRE=3))
 
 TAN=DEFI_LIST_REEL(DEBUT=T0,
                    INTERVALLE=(_F(JUSQU_A=T12, NOMBRE=40),
                                _F(JUSQU_A=T1, NOMBRE=16),
-                               _F(JUSQU_A=T2, NOMBRE=20)));
+                               _F(JUSQU_A=T2, NOMBRE=20)))
 
 DPLY=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(       0.0, 0.0,
@@ -114,7 +114,7 @@ DPLY=DEFI_FONCTION(NOM_PARA='INST',
                          20000000.0, 0.1,
                         100000000.0, 0.5),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE');
+                   PROL_GAUCHE='LINEAIRE')
 
 
 #--------------------------------------------------------------------
@@ -128,19 +128,19 @@ DDLIMP0=AFFE_CHAR_MECA(MODELE=MODMEC1,
                                  _F(GROUP_MA=('GAUCHE','DROITE'),
                                     DX=0.0)),
                        PRES_REP=_F(GROUP_MA='LPATM',
-                                   PRES=sigma_0));
+                                   PRES=sigma_0))
 
 DDLIMP1=AFFE_CHAR_MECA(MODELE=MODMEC1,
                        DDL_IMPO=_F(GROUP_MA='APPUI',
-                                   DY=0.));
+                                   DY=0.))
 
 DDLIMP2=AFFE_CHAR_MECA(MODELE=MODMEC1,
                        DDL_IMPO=_F(GROUP_MA='APPUI',
-                                   DY=-0.05));
+                                   DY=-0.05))
 
 PESE=AFFE_CHAR_MECA(MODELE=MODMEC1,
                     PESANTEUR=_F(GRAVITE=G,
-                                 DIRECTION=(0.0,-1.0,0.0),),);
+                                 DIRECTION=(0.0,-1.0,0.0),),)
 
 fevol = FORMULE(VALE='INST/T1',
                 T1=T1,
@@ -157,12 +157,12 @@ fevol = FORMULE(VALE='INST/T1',
 CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                 OPERATION='EXTR',
                 MAILLAGE=MAILLAGE,
-                NOM_CHAM='GEOMETRIE',);
+                NOM_CHAM='GEOMETRIE',)
 
 CHXG=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R',
                 OPERATION='DISC',
                 MODELE=MODMEC1,
-                CHAM_GD=CHXN);
+                CHAM_GD=CHXN)
 
 # FORMULE DE LA CONTRAINTE EFFECTIVE EN Y (RHO HOMOGENEISE)
 SIEFY = FORMULE(VALE='-rhos*G*(H-Y) - sigma_0',
@@ -190,12 +190,12 @@ SIEF1=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F',
                 PROL_ZERO='OUI',
                 AFFE=_F(GROUP_MA='SOL',
                         NOM_CMP=('X1','X2','X3',),
-                        VALE_F=(SIEFX,SIEFY,SIEFZ)));
+                        VALE_F=(SIEFX,SIEFY,SIEFZ)))
 
 SIEF2=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R',
                  OPERATION='EVAL',
                  CHAM_F=SIEF1,
-                 CHAM_PARA=CHXG,);
+                 CHAM_PARA=CHXG,)
 
 SIEFINI=CREA_CHAMP(INFO=1,
                    TYPE_CHAM='ELGA_SIEF_R',
@@ -205,7 +205,7 @@ SIEFINI=CREA_CHAMP(INFO=1,
                    ASSE=_F(GROUP_MA='SOL',
                            CHAM_GD=SIEF2,
                            NOM_CMP=('X1','X2','X3',),
-                           NOM_CMP_RESU=('SIXX','SIYY','SIZZ')));
+                           NOM_CMP_RESU=('SIXX','SIYY','SIZZ')))
 
 #                          * * *
 
@@ -227,12 +227,12 @@ PCR1=CREA_CHAMP(TYPE_CHAM ='ELGA_NEUT_F',
                         NOM_CMP=('X1','X2','X3','X4',
                                  'X5','X6','X7'),
                         VALE_F=(PCRY,ZERO,ZERO,ZERO,
-                                ZERO,ZERO,ZERO)));
+                                ZERO,ZERO,ZERO)))
 
 PCR2=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R',
                 OPERATION='EVAL',
                 CHAM_F   =PCR1,
-                CHAM_PARA=CHXG,);
+                CHAM_PARA=CHXG,)
 
 # CHAMP DE VARIABLES INTERNES INITIALES DANS LA FONDATION
 VARINI=CREA_CHAMP(INFO=1,
@@ -246,7 +246,7 @@ VARINI=CREA_CHAMP(INFO=1,
                           NOM_CMP=('X1','X2','X3','X4',
                                    'X5','X6','X7'),
                           NOM_CMP_RESU=('V1','V2','V3','V4',
-                                        'V5','V6','V7')));
+                                        'V5','V6','V7')))
 
 
 
@@ -276,7 +276,7 @@ resu1=STAT_NON_LINE(MODELE    =MODMEC1,
                     CONVERGENCE=_F(RESI_GLOB_RELA=1E-06,
                                    ITER_GLOB_MAXI=10,
                                    ARRET         ='OUI'),
-                    );
+                    )
 
 resu1=CALC_CHAMP(reuse=resu1,RESULTAT=resu1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
@@ -301,7 +301,7 @@ resu2=STAT_NON_LINE(MODELE    =MODMEC1,
                               REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1E-06,
                                    ITER_GLOB_MAXI=10,
-                                   ARRET         ='OUI',),);
+                                   ARRET         ='OUI',),)
 
 
 #--------------------------------------------------------------------
@@ -313,7 +313,7 @@ resu2=CALC_CHAMP(reuse=resu2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO')
 
 resu2=CALC_CHAMP(reuse   =resu2,
               VARI_INTERNE='VARI_NOEU',
-              RESULTAT=resu2);
+              RESULTAT=resu2)
 
 
 # Le champ de variables internes est le suivant:
@@ -326,14 +326,14 @@ T_VARI_O=POST_RELEVE_T(ACTION=_F(INTITULE ='VARI_NOEU',
                                  RESULTAT =resu2,
                                  NOM_CHAM ='VARI_NOEU',
                                  NOM_CMP  =('V1','V2','V3','V4','V5','V6','V7'),
-                                 OPERATION='EXTRACTION'));
+                                 OPERATION='EXTRACTION'))
 
 T_VARI_A=POST_RELEVE_T(ACTION=_F(INTITULE ='VARI_NOEU',
                                  GROUP_NO ='A',
                                  RESULTAT =resu2,
                                  NOM_CHAM ='VARI_NOEU',
                                  NOM_CMP  =('V1','V2','V3','V4','V5','V6','V7'),
-                                 OPERATION='EXTRACTION'));
+                                 OPERATION='EXTRACTION'))
 
 
 T_VARI_O=CALC_TABLE(reuse =T_VARI_O,
@@ -343,7 +343,7 @@ T_VARI_O=CALC_TABLE(reuse =T_VARI_O,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
+                         ),),)
 
 
 T_VARI_A=CALC_TABLE(reuse =T_VARI_A,
@@ -353,9 +353,9 @@ T_VARI_A=CALC_TABLE(reuse =T_VARI_A,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
-IMPR_TABLE(TABLE=T_VARI_O);
-IMPR_TABLE(TABLE=T_VARI_A);
+                         ),),)
+IMPR_TABLE(TABLE=T_VARI_O)
+IMPR_TABLE(TABLE=T_VARI_A)
 
 
 # TEST DU TRAJET DE CHARGEMENT DANS LE PLAN P-Q PAR RAPPORT AUX REFERENCES FLAQ
@@ -509,7 +509,7 @@ T_FORCE=CALC_TABLE(reuse =T_FORCE,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);
+                         ),),)
 
 # DY = -0.005
 TEST_TABLE(CRITERE='RELATIF',
@@ -596,4 +596,4 @@ TEST_TABLE(CRITERE='RELATIF',
                    ),
            )
 
-FIN();
+FIN()

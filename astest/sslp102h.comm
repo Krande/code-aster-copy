@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -328,7 +328,7 @@ Gther4_elas= 0.6300259991916937
 #VALEURS EN ELASTO PLASTICITE
 Gther1= 0.43624301954411765
 Gther2= 0.4359888525889633
-Gther3= 0.43596620466516106 
+Gther3= 0.43596620466516106
 Gther4= 0.4359945607557256
 
 

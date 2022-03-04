@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'))
 ################################################################################
 
 # Calcul mecanique
-MA0=LIRE_MAILLAGE(FORMAT='MED');
+MA0=LIRE_MAILLAGE(FORMAT='MED')
 
 MA0=DEFI_GROUP(reuse=MA0, MAILLAGE=MA0,
     CREA_GROUP_MA=_F(
@@ -45,7 +45,7 @@ MA0=DEFI_GROUP(reuse=MA0, MAILLAGE=MA0,
     ),
 )
 
-TREF = 20.0;
+TREF = 20.0
 
 # Création des GROUP_MA pour les DISCRETS
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
@@ -75,7 +75,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA=('N160','N185','N355','N360','N60','N165','N280',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),);
+                            MODELISATION='DIS_T',),),)
 
 R1=0.143/2.
 
@@ -346,7 +346,7 @@ CARA_POU=AFFE_CARA_ELEM(MODELE=MODELE,
                                     CARA='K_T_D_N',
                                     VALE=(0.,0.,0.,)),
                                     ),
-);
+)
 
 CL1=AFFE_CHAR_MECA(MODELE=MODELE,
                    DDL_IMPO=(_F(GROUP_NO='N65',
@@ -371,7 +371,7 @@ CL1=AFFE_CHAR_MECA(MODELE=MODELE,
                                 DZ=0.0,
                                 DRX=0.0,
                                 DRY=0.0,
-                                DRZ=0.0,),),);
+                                DRZ=0.0,),),)
 
 
 TEMP1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
@@ -380,7 +380,7 @@ TEMP1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  AFFE=(
                  _F(TOUT='OUI',
                     NOM_CMP='TEMP',
-                    VALE=20.0,),),);
+                    VALE=20.0,),),)
 
 CL0=AFFE_CHAR_MECA(MODELE=MODELE,
                    ## TEMP_CALCULEE=TEMP1,
@@ -390,7 +390,7 @@ CL0=AFFE_CHAR_MECA(MODELE=MODELE,
                                 DZ=0.0,
                                 DRX=0.0,
                                 DRY=0.0,
-                                DRZ=0.0,),),);
+                                DRZ=0.0,),),)
 
 TEMP24=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='AFFE',
@@ -402,7 +402,7 @@ TEMP24=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   _F(GROUP_MA='PART2',
                      NOM_CMP='TEMP',
                      VALE=40.0,),
-                 ),);
+                 ),)
 CHAR24=AFFE_CHAR_MECA(MODELE=MODELE,
                       #TEMP_CALCULEE=TEMP24,
                       DDL_IMPO=_F(GROUP_NO='N1',
@@ -411,7 +411,7 @@ CHAR24=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DZ=0.010999999999999999,
                                   DRX=0.0,
                                   DRY=0.0,
-                                  DRZ=0.0,),);
+                                  DRZ=0.0,),)
 
 TEMP25=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='AFFE',
@@ -423,7 +423,7 @@ TEMP25=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   _F(GROUP_MA='PART2',
                      NOM_CMP='TEMP',
                      VALE=40.0,),
-                 ),);
+                 ),)
 
 CHAR25=AFFE_CHAR_MECA(MODELE=MODELE,
                       #TEMP_CALCULEE=TEMP25,
@@ -433,7 +433,7 @@ CHAR25=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DZ=0.021000000000000001,
                                   DRX=0.0,
                                   DRY=0.0,
-                                  DRZ=0.0,),);
+                                  DRZ=0.0,),)
 
 
 #Supports POIDS bloqués pour poids propre ?
@@ -449,7 +449,7 @@ YOUNG=DEFI_FONCTION(NOM_PARA='TEMP',
                            600.0,151500000000.0,700.0,142500000000.0,800.0,130000000000.0,1000.0,81500000000.0,1200.0,
                            7400000000.0,1400.0,0.0,),
                     PROL_DROITE='EXCLU',
-                    PROL_GAUCHE='EXCLU',);
+                    PROL_GAUCHE='EXCLU',)
 #
 # NU EN FONCTION DE LA TEMPéRATURE
 #
@@ -457,7 +457,7 @@ YOUNG=DEFI_FONCTION(NOM_PARA='TEMP',
 POISSON=DEFI_FONCTION(NOM_PARA='TEMP',
                       VALE=(0.0,0.29999999999999999,),
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);
+                      PROL_GAUCHE='CONSTANT',)
 #
 # ALPHA EN FONCTION DE LA TEMPéRATURE
 #
@@ -468,14 +468,14 @@ ALPHA=DEFI_FONCTION(NOM_PARA='TEMP',
                            150.0,1.7039999999999999e-05,200.0,1.7200000000000001e-05,250.0,1.7499999999999998e-05,300.0,
                            1.77e-05,350.0,1.7900000000000001e-05,400.0,1.8099999999999999e-05,450.0,1.8240000000000002e-05,),
                     PROL_DROITE='EXCLU',
-                    PROL_GAUCHE='LINEAIRE',);
+                    PROL_GAUCHE='LINEAIRE',)
 
 SMVRAI=DEFI_FONCTION(NOM_PARA='TEMP',
                      VALE=
                      (20.0,115.0E6,50.0,115.0E6,100.0,115.0E6,150.0,115.0E6,200.0,109.0E6,250.0,103.0E6,300.0,96.0E6,
                             340.0,94.0E6,350.0,94.0E6,),
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+                     PROL_GAUCHE='CONSTANT',)
 
 # COURBE DE FATIGUE  de l'inox RCCM annexe Z1
 
@@ -499,15 +499,15 @@ WOHLER=DEFI_FONCTION(NOM_PARA='SIGM',
                      4480.0E6,10.0,),
                      INTERPOL='LOG',
                      PROL_GAUCHE='LINEAIRE',
-                     PROL_DROITE='EXCLU',);
-RHO1 = DEFI_CONSTANTE(VALE=7850.0);
+                     PROL_DROITE='EXCLU',)
+RHO1 = DEFI_CONSTANTE(VALE=7850.0)
 
 
-N_KE=DEFI_CONSTANTE(VALE=0.29999999999999999,);
+N_KE=DEFI_CONSTANTE(VALE=0.29999999999999999,)
 
-M_KE=DEFI_CONSTANTE(VALE=1.7,);
+M_KE=DEFI_CONSTANTE(VALE=1.7,)
 
-#SM=DEFI_CONSTANTE(VALE=94.0E6,);
+#SM=DEFI_CONSTANTE(VALE=94.0E6,)
 
 #N_KE=0.3
 #M_KE=1.7
@@ -525,8 +525,8 @@ MAT1=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                               E_REFE=1.97E11,),
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
-                              M_KE=M_KE,),);
-RHO4 = DEFI_CONSTANTE(VALE=12544.0);
+                              M_KE=M_KE,),)
+RHO4 = DEFI_CONSTANTE(VALE=12544.0)
 
 
 MAT4=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -538,8 +538,8 @@ MAT4=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                               E_REFE=1.97E11,),
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
-                              M_KE=M_KE,),);
-RHO5 = DEFI_CONSTANTE(VALE=11547.0);
+                              M_KE=M_KE,),)
+RHO5 = DEFI_CONSTANTE(VALE=11547.0)
 
 
 MAT5=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -551,8 +551,8 @@ MAT5=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                               E_REFE=1.97E11,),
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
-                              M_KE=M_KE,),);
-RHO7 = DEFI_CONSTANTE(VALE=11543.0);
+                              M_KE=M_KE,),)
+RHO7 = DEFI_CONSTANTE(VALE=11543.0)
 
 
 MAT7=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -564,8 +564,8 @@ MAT7=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                               E_REFE=1.97E11,),
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
-                              M_KE=M_KE,),);
-RHO9 = DEFI_CONSTANTE(VALE=13682.0);
+                              M_KE=M_KE,),)
+RHO9 = DEFI_CONSTANTE(VALE=13682.0)
 
 
 MAT9=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -577,8 +577,8 @@ MAT9=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                               E_REFE=1.97E11,),
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
-                              M_KE=M_KE,),);
-RHO18 = DEFI_CONSTANTE(VALE=8292.8);
+                              M_KE=M_KE,),)
+RHO18 = DEFI_CONSTANTE(VALE=8292.8)
 
 
 MAT18=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -590,8 +590,8 @@ MAT18=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                                E_REFE=1.97E11,),
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
-                              M_KE=M_KE,),);
-RHO0 = DEFI_CONSTANTE(VALE=0.0);
+                              M_KE=M_KE,),)
+RHO0 = DEFI_CONSTANTE(VALE=0.0)
 
 
 MAT0=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
@@ -603,7 +603,7 @@ MAT0=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                               E_REFE=1.97E11,),
                    RCCM_FO=_F(SM=SMVRAI,
                               N_KE=N_KE,
-                              M_KE=M_KE,),);
+                              M_KE=M_KE,),)
 
 MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA, DETR_GROUP_MA=_F(NOM='TOUT'),CREA_GROUP_MA=_F(TOUT='OUI',NOM='TOUT'),)
 DEFI_GROUP(MAILLAGE=MA, reuse=MA, CREA_GROUP_NO=_F(GROUP_MA='TOUT'))
@@ -617,7 +617,7 @@ CHAMPMAV=AFFE_MATERIAU(MAILLAGE=MA,
                              _F(GROUP_MA=('MAT10','MAT11','MAT13','MAT14','MAT19','MAT20',),MATER=MAT0),
                              _F(GROUP_MA='MAT18', MATER=MAT18)
                              ),
-                             );
+                             )
 CM24=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=(_F(TOUT='OUI', MATER=MAT1),
                              _F(GROUP_MA='MAT4', MATER=MAT4),
@@ -628,7 +628,7 @@ CM24=AFFE_MATERIAU(MAILLAGE=MA,
                              _F(GROUP_MA='MAT18', MATER=MAT18)
                              ),
                        AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI',CHAM_GD=TEMP24, VALE_REF=TREF),
-                             );
+                             )
 CM25=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=(_F(TOUT='OUI', MATER=MAT1),
                              _F(GROUP_MA='MAT4', MATER=MAT4),
@@ -639,28 +639,28 @@ CM25=AFFE_MATERIAU(MAILLAGE=MA,
                              _F(GROUP_MA='MAT18', MATER=MAT18)
                              ),
                        AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI',CHAM_GD=TEMP25, VALE_REF=TREF),
-                             );
+                             )
 
-TABL_MAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',), MODELE=MODELE, CHAM_MATER=CM24, CARA_ELEM=CARA_POU,);
+TABL_MAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',), MODELE=MODELE, CHAM_MATER=CM24, CARA_ELEM=CARA_POU,)
 
 
 RESU24=MECA_STATIQUE(MODELE=MODELE, CHAM_MATER=CM24, CARA_ELEM=CARA_POU,
                      EXCIT=(_F(CHARGE=CL1,),
                             _F(CHARGE=CHAR24,),),
-                            );
+                            )
 
-RESU24=CALC_CHAMP(  reuse=RESU24,RESULTAT=RESU24, CONTRAINTE='EFGE_ELNO',);
+RESU24=CALC_CHAMP(  reuse=RESU24,RESULTAT=RESU24, CONTRAINTE='EFGE_ELNO',)
 
 RESU25=MECA_STATIQUE(MODELE=MODELE, CHAM_MATER=CM25, CARA_ELEM=CARA_POU,
                      EXCIT=(_F(CHARGE=CL1,),
                             _F(CHARGE=CHAR25,),),
-                            );
+                            )
 
-RESU25=CALC_CHAMP(  reuse=RESU25,RESULTAT=RESU25, CONTRAINTE='EFGE_ELNO',);
+RESU25=CALC_CHAMP(  reuse=RESU25,RESULTAT=RESU25, CONTRAINTE='EFGE_ELNO',)
 
-KDIS1 = 3.12E6;
+KDIS1 = 3.12E6
 
-#KDIS2 = 100000000.0;
+#KDIS2 = 100000000.0
 
 
 tab24 = POST_RELEVE_T(ACTION = _F(
@@ -679,7 +679,7 @@ tab24 = POST_RELEVE_T(ACTION = _F(
                                     NOM_CHAM = 'EFGE_ELNO',
                                     TOUT_ORDRE = 'OUI',
                                     TOUT_CMP='OUI',
-                                    OPERATION='EXTRACTION',),);
+                                    OPERATION='EXTRACTION',),)
 
 
 # Recuperation des informations d'association maillage/noeud.
@@ -712,7 +712,7 @@ tab25 = POST_RELEVE_T(ACTION = _F(
                                     NOM_CHAM = 'EFGE_ELNO',
                                     TOUT_ORDRE = 'OUI',
                                     TOUT_CMP='OUI',
-                                    OPERATION='EXTRACTION',),);
+                                    OPERATION='EXTRACTION',),)
 
 
 
@@ -730,4 +730,4 @@ TEST_FICHIER(FICHIER='fort.38',
              VALE_CALC_K='c0c37e55437d53e5a3572a4604a165b6',
              TOLE_MACHINE=1.E-3)
 
-FIN();
+FIN()

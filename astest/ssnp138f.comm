@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,16 +30,16 @@ from math import *
 #*********************************************************
 #
 # LARGEUR DE L EPROUVETTE SELON X
-W = 0.2 
+W = 0.2
 #
 # HAUTEUR DE L EPROUVETTE SELON Y
-H = 0.5 
+H = 0.5
 #
 # NOMBRE D ELEMENTS SELON X
-NX = 100. 
+NX = 100.
 #
 # NOMBRE D ELEMENTS SELON Y
-NY = 100. 
+NY = 100.
 #
 # precision
 eps = sqrt((W/NX)**2+(H/NY)**2)
@@ -60,7 +60,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu))
 #*********************************************************
 
 # ANGLES D INCLINAISON DE LA FISSURE (EN DEGRES)
-alphaf = [ 0.] 
+alphaf = [ 0.]
 
 # DEFINITION DES COURONNES POUR LE CALCUL DES SIF
 RI=[0.1*A,   eps]
@@ -83,7 +83,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                    _F(NOM='ND',OPTION='ENV_SPHERE',POINT=(0.,+H/2.),PRECISION=eps/4.,RAYON=eps/4.),
                                    ),
                     INFO=2)
-                    
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3'),
                              PHENOMENE='MECANIQUE',
@@ -128,7 +128,7 @@ VAL_CALC = [
    2.573890404951E+05   ,
    652.39950444567      ,
    2.573890404951E+05   ,
-   -652.39950444678     ,    
+   -652.39950444678     ,
 ]
 ct = -1
 for i in range(nbcalc) :
@@ -190,27 +190,27 @@ for i in range(nbcalc) :
       IMPR_TABLE(TABLE=SIF_1[k])
       IMPR_TABLE(TABLE=SIF_2[k])
       IMPR_TABLE(TABLE=TG_1[k])
-      
+
       ct = ct +1
       TEST_TABLE(TABLE=SIF_1[k],
                  NOM_PARA='K1',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
                  CRITERE='RELATIF',
-                  PRECISION=0.10, 
+                  PRECISION=0.10,
                  REFERENCE='ANALYTIQUE')
       ct = ct +1
       TEST_TABLE(TABLE=SIF_2[k],
                  NOM_PARA='K1',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
                  CRITERE='RELATIF',
-                  PRECISION=0.10, 
+                  PRECISION=0.10,
                  REFERENCE='ANALYTIQUE')
       ct = ct +1
       TEST_TABLE(TABLE=TG_1[k],
                  NOM_PARA='G',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=GREF,
                  CRITERE='RELATIF',
-                 PRECISION=0.09, 
+                 PRECISION=0.09,
                  REFERENCE='ANALYTIQUE')
 
       if K2REF != 0. :
@@ -219,14 +219,14 @@ for i in range(nbcalc) :
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='RELATIF',
-                    PRECISION=0.03, 
+                    PRECISION=0.03,
                     REFERENCE='ANALYTIQUE')
          ct = ct +1
          TEST_TABLE(TABLE=SIF_2[k],
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='RELATIF',
-                     PRECISION=0.03, 
+                     PRECISION=0.03,
                     REFERENCE='ANALYTIQUE')
       else :
          ct = ct +1
@@ -234,14 +234,14 @@ for i in range(nbcalc) :
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/200., 
+                    PRECISION=K1REF/200.,
                     REFERENCE='ANALYTIQUE')
          ct = ct +1
          TEST_TABLE(TABLE=SIF_2[k],
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/200., 
+                    PRECISION=K1REF/200.,
                     REFERENCE='ANALYTIQUE')
 
    # K1 SUR LE 1er FOND
@@ -252,13 +252,13 @@ for i in range(nbcalc) :
                        )
 
    IMPR_TABLE(TABLE = PK1[i])
-   
+
    ct = ct +1
    TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K1',
               VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-               PRECISION=0.10, 
+               PRECISION=0.10,
               REFERENCE='ANALYTIQUE')
 
    if K2REF != 0. :
@@ -267,7 +267,7 @@ for i in range(nbcalc) :
                  NOM_PARA='K2',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                  CRITERE='RELATIF',
-                 PRECISION=0.1, 
+                 PRECISION=0.1,
                  REFERENCE='ANALYTIQUE')
    else :
       ct = ct +1
@@ -275,7 +275,7 @@ for i in range(nbcalc) :
                  NOM_PARA='K2',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                  CRITERE='ABSOLU',
-                 PRECISION=K1REF/200., 
+                 PRECISION=K1REF/200.,
                  REFERENCE='ANALYTIQUE')
 
 
@@ -292,8 +292,8 @@ for i in range(nbcalc) :
               NOM_PARA='K1',
               VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
               CRITERE='RELATIF',
-               PRECISION=0.10, 
-              REFERENCE='ANALYTIQUE');
+               PRECISION=0.10,
+              REFERENCE='ANALYTIQUE')
 
    if K2REF != 0. :
       ct = ct +1
@@ -301,7 +301,7 @@ for i in range(nbcalc) :
                 NOM_PARA='K2',
                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                 CRITERE='RELATIF',
-                 PRECISION=0.10, 
+                 PRECISION=0.10,
                 REFERENCE='ANALYTIQUE')
 
    else :
@@ -310,7 +310,7 @@ for i in range(nbcalc) :
                 NOM_PARA='K2',
                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                 CRITERE='ABSOLU',
-                PRECISION=K1REF/200., 
+                PRECISION=K1REF/200.,
                 REFERENCE='ANALYTIQUE')
 
 

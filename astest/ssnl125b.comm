@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ p  = 1.5
 # calcul de G_INIT pour tester DEFI_MATER_GC
 
 import math
-sc = 1.0045582654870742*ft   # specific to ft=3 and fc=30 
+sc = 1.0045582654870742*ft   # specific to ft=3 and fc=30
 dsigddel = 2.0/(3.0*math.pi)*(2+p)**1.5 * sc**2/Gf
 Ginit = 0.5*sc**2/dsigddel
 
@@ -167,7 +167,7 @@ EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',),
 EVOL=CALC_CHAMP(reuse=EVOL,
                 RESULTAT=EVOL,
                 CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO'),
-                VARI_INTERNE=('VARI_ELNO','VARI_NOEU'));
+                VARI_INTERNE=('VARI_ELNO','VARI_NOEU'))
 
 # -----------------------------------------------------
 #     EXTRACTION EN Y = ytest1 ET Y = ytest2

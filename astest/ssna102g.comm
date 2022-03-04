@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,15 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # --------------------------------------------------------------------
 
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU=('BOTTOM_T','SPH_B_B','SPH_B_T','SPH_T_B','SPH_T_T','TOP_B','ENCAST',),),);
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('BOTTOM_T','SPH_B_B','SPH_B_T','SPH_T_B','SPH_T_T','TOP_B','ENCAST',),),)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA='ENCAST',),);
+              CREA_GROUP_NO=_F(GROUP_MA='ENCAST',),)
 
 #
 # --------------------------------------------------------------------
@@ -41,11 +41,11 @@ MA=DEFI_GROUP(reuse =MA,
 #
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000,
-                          NU=0.3,),);
+                          NU=0.3,),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 #
 # --------------------------------------------------------------------
@@ -56,7 +56,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA=('TOUT',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 #
 # --------------------------------------------------------------------
@@ -74,7 +74,7 @@ CL=AFFE_CHAR_CINE(MODELE=MO,
                             _F(GROUP_MA='SX',
                                DX=0,),
                             _F(GROUP_MA='SY',
-                               DY=0,),),);
+                               DY=0,),),)
 
 #
 # --------------------------------------------------------------------
@@ -84,7 +84,7 @@ CL=AFFE_CHAR_CINE(MODELE=MO,
 
 DEPL=AFFE_CHAR_CINE(MODELE=MO,
                    MECA_IMPO=_F(GROUP_MA='DEPLA',
-                                DZ=-2,),);
+                                DZ=-2,),)
 
 #
 # --------------------------------------------------------------------
@@ -109,7 +109,7 @@ CONT=DEFI_CONTACT(MODELE         = MO,
                   _F(GROUP_MA_MAIT='BOTTOM_T',
                      GROUP_MA_ESCL='SPH_B_B',
                      CONTACT_INIT='INTERPENETRE',
-                     ),),);
+                     ),),)
 
 #
 # --------------------------------------------------------------------
@@ -120,11 +120,11 @@ CONT=DEFI_CONTACT(MODELE         = MO,
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           1,1,
-                          ),);
+                          ),)
 
 TPS=DEFI_LIST_REEL(DEBUT=0,
                    INTERVALLE=_F(JUSQU_A=1,
-                                 NOMBRE=1,),);
+                                 NOMBRE=1,),)
 
 #
 # --------------------------------------------------------------------
@@ -147,7 +147,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                               RESI_RELA=1.0E-12,
                               PRE_COND='LDLT_SP',
                               ),
-                   CONVERGENCE=_F(),);
+                   CONVERGENCE=_F(),)
 
 #
 # --------------------------------------------------------------------
@@ -157,7 +157,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             FORCE='REAC_NODA');
+             FORCE='REAC_NODA')
 
 # --------------------------------------------------------------------
 #                COMPARAISON SOURCE EXTRENE : DEPLACEMENT
@@ -168,9 +168,9 @@ DEPL_PA4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESU,
                                  NOM_CHAM='DEPL',
                                  GROUP_NO='PA4',
-                                 RESULTANTE='DZ',),);
+                                 RESULTANTE='DZ',),)
 
-IMPR_TABLE(TABLE=DEPL_PA4,);
+IMPR_TABLE(TABLE=DEPL_PA4,)
 
 TEST_RESU(RESU=_F(GROUP_NO='PA4',
                   INST=1.0,
@@ -196,9 +196,9 @@ FORC_ENC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  RESULTAT=RESU,
                                  NOM_CHAM='REAC_NODA',
                                  GROUP_NO='ENCAST',
-                                 RESULTANTE='DZ',),);
+                                 RESULTANTE='DZ',),)
 
-IMPR_TABLE(TABLE=FORC_ENC,);
+IMPR_TABLE(TABLE=FORC_ENC,)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
@@ -217,6 +217,6 @@ TEST_TABLE(CRITERE='RELATIF',
 
 
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=RESU,),);
+          RESU=_F(RESULTAT=RESU,),)
 
-FIN();
+FIN()

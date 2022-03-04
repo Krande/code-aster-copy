@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,34 +25,34 @@ DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',
               ),
 #              IMPR_MACRO='OUI',
-              DEBUG=_F(SDVERI='OUI'),);
+              DEBUG=_F(SDVERI='OUI'),)
 
 
-MA1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=22);
+MA1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=22)
 #--------------------------------------------------------------------
 
 MO1=AFFE_MODELE(MAILLAGE=MA1,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='POU_D_T',),);
+                        MODELISATION='POU_D_T',),)
 #--------------------------------------------------------------------
 
 CARELEM1=AFFE_CARA_ELEM(MODELE=MO1,
                         POUTRE=_F(GROUP_MA='MASSIF',
                                   SECTION='CERCLE',
                                   CARA=('R',),
-                                  VALE=(0.4,),),);
+                                  VALE=(0.4,),),)
 #--------------------------------------------------------------------
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                           NU=0.,
                           RHO=7800.,
-                          ),);
+                          ),)
 # ---------------------------------------------------------------------
 
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT1,),);
+                             MATER=MAT1,),)
 
 CH1_CB=AFFE_CHAR_MECA(MODELE=MO1,
                    DDL_IMPO=(_F(GROUP_NO='BLOC',
@@ -70,7 +70,7 @@ CH1_CB=AFFE_CHAR_MECA(MODELE=MO1,
                                DRY=0.0,
                                DRZ=0.0,),
                              ),
-                             );
+                             )
 
 #-------------------------------------------------------------------
 # CALCUL DU MACRO-ELEMENT DYNAMIQUE
@@ -96,7 +96,7 @@ MACR1 = CREA_ELEM_SSD(
 
 #IMPR_CO(CONCEPT=_F(NOM=MACR1))
 
-MA2=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=23);
+MA2=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=23)
 #--------------------------------------------------------------------
 
 MO2=AFFE_MODELE(MAILLAGE=MA2,
@@ -140,19 +140,19 @@ CARELEM2=AFFE_CARA_ELEM(MODELE=MO2,
                                    CARA='A_TR_D_L',
                                    VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
                                 ),
-                        );
+                        )
 #--------------------------------------------------------------------
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                           NU=0.,
                           RHO=7800.,
                                          AMOR_HYST=0.0,
-                          ),);
+                          ),)
 # ---------------------------------------------------------------------
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA2,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT2,),);
+                             MATER=MAT2,),)
 
 CH2=AFFE_CHAR_MECA(MODELE=MO2,
                    DDL_IMPO=(
@@ -168,7 +168,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MO2,
                                DX=0.0,
                                DRX=0.0,),
                              ),
-                             );
+                             )
 #-------------------------------------------------------------------
 # CALCUL DU MACRO-ELEMENT DYNAMIQUE
 #-------------------------------------------------------------------
@@ -307,4 +307,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()

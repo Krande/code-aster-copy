@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
                           AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
 
-MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,
                         AFFE=_F( TOUT = 'OUI',   MODELISATION = 'Q4G',
                               PHENOMENE = 'MECANIQUE') )
 
@@ -82,7 +82,7 @@ DEP=MACRO_ELAS_MULT(MODELE=MODEL,
                                 _F(NOM_CAS='CHARGE2',
                                    CHAR_MECA=CHF3,),
                                 _F(NOM_CAS='CHARGE3',
-                                   CHAR_MECA=CHPE,),),);
+                                   CHAR_MECA=CHPE,),),)
 
 #--------------------------------------------------------------------
 
@@ -283,7 +283,7 @@ RELEVE_1=POST_RELEVE_T(
                             NOM_CMP = ( 'MXX', 'MYY', ),
                             OPERATION = 'EXTRACTION')
                           )
-# Point O 
+# Point O
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
            VALE_CALC=-0.081054228,
@@ -294,7 +294,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N3',),
            )
 
-# Point O 
+# Point O
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
            VALE_CALC=-0.081038371,
@@ -305,7 +305,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N3',),
            )
 
-# Point A 
+# Point A
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.070000000000000007,
            VALE_CALC=0.117620921,
@@ -316,7 +316,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N1',),
            )
 
-# Point A 
+# Point A
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.070000000000000007,
            VALE_CALC=0.035286276,
@@ -327,7 +327,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N1',),
            )
 
-# Point B 
+# Point B
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.080000000000000002,
            VALE_CALC=0.075787110,
@@ -338,7 +338,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N67',),
            )
 
-# Point B 
+# Point B
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.080000000000000002,
            VALE_CALC=0.075791101,
@@ -349,7 +349,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N67',),
            )
 
-# Point C 
+# Point C
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.059999999999999998,
            VALE_CALC=0.035428802,
@@ -360,7 +360,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N2',),
            )
 
-# Point C 
+# Point C
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.065000000000000002,
            VALE_CALC=0.118096008,
@@ -371,7 +371,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N2',),
            )
 
-# Point D 
+# Point D
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
            VALE_CALC=-0.029549353,
@@ -382,7 +382,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N15',),
            )
 
-# Point D 
+# Point D
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
            VALE_CALC=-0.051426407,
@@ -393,7 +393,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N15',),
            )
 
-# Point E 
+# Point E
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
            VALE_CALC=-0.051428297,
@@ -404,7 +404,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N38',),
            )
 
-# Point E 
+# Point E
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
            VALE_CALC=-0.029551097,

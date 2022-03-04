@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ MA=CREA_MAILLAGE(
                             ),
                            )
 
-DEFI_GROUP(reuse=MA, 
-           MAILLAGE=MA, 
+DEFI_GROUP(reuse=MA,
+           MAILLAGE=MA,
            CREA_GROUP_MA=_F(UNION=('G1X', 'G2X', 'G3X'), NOM='GRILLE'),
           )
 
@@ -51,7 +51,7 @@ MATAF=AFFE_MATERIAU(MAILLAGE=MA,
 
 #-----------------------------------------------------------------------
 
-MODX=AFFE_MODELE(MAILLAGE=MA,     
+MODX=AFFE_MODELE(MAILLAGE=MA,
                   AFFE=(_F(GROUP_MA = 'COQ3D',
                            PHENOMENE = 'MECANIQUE',
                            MODELISATION = '3D',),
@@ -87,13 +87,13 @@ def escalier(x):
 EXX_X = FORMULE(VALE='1.E-3*escalier(X)*INST',
                 escalier=escalier,
                 NOM_PARA=['X', 'INST'],)
- 
+
 
 #-----------------------------------------------------------------------
 
 BLOCX=AFFE_CHAR_MECA(MODELE=MODX,
                     DDL_IMPO=(_F(GROUP_NO = ('ENCAST',),
-                                 DX = 0., DY=0., DZ = 0., 
+                                 DX = 0., DY=0., DZ = 0.,
                                  ),
                              ),
             )
