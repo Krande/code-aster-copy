@@ -190,7 +190,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 !
 !              --- ON EFFECTUE LE PRODUIT  MODE_STAT * DIR ---
                 do i = 1, neq
-                    pside(i) = pside(i)+ xd * base((imode-1)*neq+i) 
+                    pside(i) = pside(i)+ xd * base((imode-1)*neq+i)
                 end do
 40          continue
         endif

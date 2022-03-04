@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,19 +61,19 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
     fuseism = 0.d0
 
 ! - CREATION D'UNE MATRICE DES FACTEURS D'USAGE ELEMENTAIRES
-    call jeveuo('&&RC3200.SITU_RESU.'//lieu, 'L', jresu) 
+    call jeveuo('&&RC3200.SITU_RESU.'//lieu, 'L', jresu)
     call jeveuo('&&RC3200.COMB_RESU.'//lieu, 'L', jresucomb)
     call jeveuo('&&RC3200.COMBI', 'L', jcombi)
     call jeveuo('&&RC3200.PARTAGE', 'L', jpartage)
     ndim = nb*nb
-    call wkvect('RC3200.FU', 'V V R', ndim, jfu) 
+    call wkvect('RC3200.FU', 'V V R', ndim, jfu)
     do 10 iocc1 = 1, ndim
         zr(jfu+iocc1-1) = r8vide()
 10 continue
     do 20 iocc1 = 1, nb
         do 30 iocc2 = 1, nb
-! --------- on y rentre les facteurs d'usage pour les combinaisons de situations 
-! --------- si la combinaison n'est pas possible zr(jresucomb) vaut r8vide et la 
+! --------- on y rentre les facteurs d'usage pour les combinaisons de situations
+! --------- si la combinaison n'est pas possible zr(jresucomb) vaut r8vide et la
 ! --------- matrice qui est symétrique n'est remplie que au dessus de la diagonale
             zr(jfu+nb*(iocc1-1)+iocc2-1) = zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)
 30      continue
@@ -82,7 +82,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 20  continue
 !
 ! - CREATION D'UN VECTEUR AVEC LES NOMBRES D'OCCURENCES
-    call wkvect('RC3200.NBOCC', 'V V I', nb, jocc) 
+    call wkvect('RC3200.NBOCC', 'V V I', nb, jocc)
     call jeveuo('&&RC3200.SITU_INFOI', 'L', jinfo)
     do 40 iocc1 = 1, nb
         zi(jocc+iocc1-1) = zi(jinfo+27*(iocc1-1)+21)
@@ -92,7 +92,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 ! - QUI INTERVIENNENT DANS FU_TOTAL (LIGNE FACT DU .RESU)
 ! - NUM1, NUM2, NOCC PRIS
     ndim = 6*200
-    call wkvect('&&RC3200.FACT.'//lieu, 'V V I', ndim, jfact) 
+    call wkvect('&&RC3200.FACT.'//lieu, 'V V I', ndim, jfact)
     do 50 i = 1, ndim
         zi(jfact+i-1) = 0
 50 continue
@@ -103,14 +103,14 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 !
     if(ns .eq. 0) goto 888
 !
-    call jeveuo('&&RC3200.SITUS_RESU.'//lieu, 'L', jresus) 
+    call jeveuo('&&RC3200.SITUS_RESU.'//lieu, 'L', jresus)
     call jeveuo('&&RC3200.COMBS_RESU.'//lieu, 'L', jresucombs)
     call jeveuo('&&RC3200.SEIS_INFOI', 'L', jinfos)
-    noccs = int(zi(jinfos+2)/2) 
+    noccs = int(zi(jinfos+2)/2)
     nbsscyc = 2*zi(jinfos+1)-1
 !
     ndim = nb*nb
-    call wkvect('RC3200.FUS', 'V V R', ndim, jfus) 
+    call wkvect('RC3200.FUS', 'V V R', ndim, jfus)
     do 60 iocc1 = 1, ndim
         zr(jfus+iocc1-1) = r8vide()
 60  continue
@@ -124,7 +124,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
             m0(i) =0.d0
 62      continue
         pres0 = 0.d0
-        call rcZ2s0('SN', m0, m0, pres0, pres0, 1, sns) 
+        call rcZ2s0('SN', m0, m0, pres0, pres0, 1, sns)
         call rcZ2s0('SP', m0, m0, pres0, pres0, 1, sps(1))
     else
         do 65 i = 1, 6
@@ -142,9 +142,9 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 !
     do 70 iocc1 = 1, nb
         do 80 iocc2 = 1, nb
-! --------- on y rentre les facteurs d'usage pour les combinaisons de situations 
+! --------- on y rentre les facteurs d'usage pour les combinaisons de situations
 ! --------- en prenant en compte le séisme
-! --------- si la combinaison n'est pas possible zr(jresucomb) vaut r8vide et la 
+! --------- si la combinaison n'est pas possible zr(jresucomb) vaut r8vide et la
 ! --------- matrice qui est symétrique n'est remplie que au dessus de la diagonale
             zr(jfus+nb*(iocc1-1)+iocc2-1) = zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)&
                                             +fuseism
@@ -152,7 +152,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 ! ------- on y rentre les facteurs d'usage pour les situations seules avec le séisme
         zr(jfus+(nb+1)*(iocc1-1))= zr(jresus+121*(iocc1-1)+15)+fuseism
 70  continue
-!     
+!
 ! -- on cherche le fumaxs avec séisme
 !
 777 continue
@@ -166,7 +166,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
                   num1 = iocc1
                   num2 = iocc2
               endif
-            endif 
+            endif
 100     continue
 90  continue
 !
@@ -212,7 +212,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 !
         k = k+1
         if(k .eq. 200) call utmess('F', 'POSTRCCM_52')
-        if (noccs .le. 0) goto 888 
+        if (noccs .le. 0) goto 888
       endif
 !
       zr(jfus+nb*(num1-1)+num2-1) = r8vide()
@@ -231,7 +231,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
       do 103 i = 1,ndim
 !
         fumaxpass = -1.d0
-        if(zi(jpassage+3*(i-1)) .eq. 0) goto 555 
+        if(zi(jpassage+3*(i-1)) .eq. 0) goto 555
         if(zi(jpassage+3*(i-1)+1) .eq. num1 .and. zi(jpassage+3*(i-1)+2) .eq. num2) then
 !
             num = zi(jpassage+3*(i-1))
@@ -239,12 +239,12 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
               do 104 iocc1 = 1, nb
                 if(zr(jfus+nb*(iocc1-1)+num-1) .ne. r8vide()) then
                   fumaxpass = max(fumaxpass,zr(jfus+nb*(iocc1-1)+num-1))
-                endif 
+                endif
 104           continue
               do 105 iocc1 = 1, nb
                 if(zr(jfus+nb*(num-1)+iocc1-1) .ne. r8vide()) then
                   fumaxpass = max(fumaxpass,zr(jfus+nb*(num-1)+iocc1-1))
-                endif 
+                endif
 105           continue
 !
               if(fumaxpass .lt. fucible) then
@@ -262,12 +262,12 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
               do 106 iocc1 = 1, nb
                 if(zr(jfus+nb*(iocc1-1)+num-1) .ne. r8vide()) then
                   fumaxpass = max(fumaxpass,zr(jfus+nb*(iocc1-1)+num-1))
-                endif 
+                endif
 106           continue
               do 107 iocc1 = 1, nb
                 if(zr(jfus+nb*(num-1)+iocc1-1) .ne. r8vide()) then
                   fumaxpass = max(fumaxpass,zr(jfus+nb*(num-1)+iocc1-1))
-                endif 
+                endif
 107           continue
 !
               if(fumaxpass .lt. fucible) then
@@ -281,7 +281,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 103   continue
 555 continue
 !
-      noccpris =  min(noccpass, zi(jocc+num1-1), zi(jocc+num2-1), noccs) 
+      noccpris =  min(noccpass, zi(jocc+num1-1), zi(jocc+num2-1), noccs)
       if(noccpris .gt. 0) then
         futot=futot+fumaxs*noccpris
         if(num1 .eq. num2) then
@@ -320,7 +320,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 !
         k = k+1
         if(k .eq. 200) call utmess('F', 'POSTRCCM_52')
-        if (noccs .le. 0) goto 888 
+        if (noccs .le. 0) goto 888
         goto 777
       endif
 !
@@ -344,7 +344,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
                   num1 = iocc1
                   num2 = iocc2
                 endif
-            endif 
+            endif
 120     continue
 110 continue
 !
@@ -407,7 +407,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
       do 130 i = 1,ndim
 !
         fumaxpass = -1.d0
-        if(zi(jpassage+3*(i-1)) .eq. 0) goto 666 
+        if(zi(jpassage+3*(i-1)) .eq. 0) goto 666
         if(zi(jpassage+3*(i-1)+1) .eq. num1 .and. zi(jpassage+3*(i-1)+2) .eq. num2) then
 !
             num = zi(jpassage+3*(i-1))
@@ -415,12 +415,12 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
               do 131 iocc1 = 1, nb
                 if(zr(jfu+nb*(iocc1-1)+num-1) .ne. r8vide()) then
                   fumaxpass = max(fumaxpass,zr(jfu+nb*(iocc1-1)+num-1))
-                endif 
+                endif
 131           continue
               do 132 iocc1 = 1, nb
                 if(zr(jfu+nb*(num-1)+iocc1-1) .ne. r8vide()) then
                   fumaxpass = max(fumaxpass,zr(jfu+nb*(num-1)+iocc1-1))
-                endif 
+                endif
 132           continue
 !
               if(fumaxpass .lt. fucible) then
@@ -438,12 +438,12 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
               do 133 iocc1 = 1, nb
                 if(zr(jfu+nb*(iocc1-1)+num-1) .ne. r8vide()) then
                   fumaxpass = max(fumaxpass,zr(jfu+nb*(iocc1-1)+num-1))
-                endif 
+                endif
 133           continue
               do 134 iocc1 = 1, nb
                 if(zr(jfu+nb*(num-1)+iocc1-1) .ne. r8vide()) then
                   fumaxpass = max(fumaxpass,zr(jfu+nb*(num-1)+iocc1-1))
-                endif 
+                endif
 134           continue
 !
               if(fumaxpass .lt. fucible) then
@@ -457,7 +457,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 130   continue
 666 continue
 !
-      noccpris =  min(noccpass, zi(jocc+num1-1), zi(jocc+num2-1)) 
+      noccpris =  min(noccpass, zi(jocc+num1-1), zi(jocc+num2-1))
       if(noccpris .gt. 0) then
         futot=futot+fumax*noccpris
         if(num1 .eq. num2) then
@@ -504,7 +504,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
     endif
 !
 999 continue
-!  
+!
 ! - DESTRUCTION DE LA MATRICE DES FACTEURS D'USAGE ET DU VECTEUR
 ! - DES NOMBRES D'OCCURENCES
     call jedetr('RC3200.FU')
@@ -516,7 +516,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
         write(*,*)'---------------------------------------------------------------------'
         write(*,*)'FU TOTAL (ORIGINE)   =',futot
         write(*,*)'   DONT FU_SOUS_CYCLE  =',futotss
-        if(ns .ne. 0) write(*,*)'   DONT FU_SOUS_CYCLE_SISMIQUE  =', int(zi(jinfos+2)/2)*fuseism 
+        if(ns .ne. 0) write(*,*)'   DONT FU_SOUS_CYCLE_SISMIQUE  =', int(zi(jinfos+2)/2)*fuseism
         write(*,*)'---------------------------------------------------------------------'
     endif
 !
@@ -530,7 +530,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 !---------------------------------------------------------
 ! - CALCUL DU FACTEUR D'USAGE SI FATIGUE ENVIRONNEMENTALE
 !---------------------------------------------------------
-!   
+!
     futotenv = r8vide()
     if(lefat) call rc32env(lieu, futotenv)
 !

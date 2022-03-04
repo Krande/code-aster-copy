@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ use THM_type
 #include "asterfort/thmGetElemInfo.h"
 !
 character(len=16), intent(in) :: option, nomte
-!    
+!
 ! Elementary computation
 !
-! Elements: THM - 3D 
+! Elements: THM - 3D
 !
 ! Options: ECHA_THM_R ECHA_THM_F
 !
@@ -50,7 +50,7 @@ character(len=16), intent(in) :: option, nomte
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), jac
     real(kind=8) :: flu1, flu2, fluth
     real(kind=8) :: c11,c12,c21,c22,p1ext,p2ext,p1m,p2m
-    character(len=8) :: nompar(2), elrefe, elref2   
+    character(len=8) :: nompar(2), elrefe, elref2
 !
     integer :: idepm
 !
@@ -101,7 +101,7 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim+1)
         p2m = zr(idepm+ndim+2)
-!      
+!
 ! Recuperation des info sur le flux
         call jevech('PECHTHM', 'L', iech)
         c11 = zr(iech)
@@ -109,15 +109,15 @@ character(len=16), intent(in) :: option, nomte
         c21 = zr(iech+2)
         c22 = zr(iech+3)
         p1ext = zr(iech+4)
-        p2ext = zr(iech+5)  
+        p2ext = zr(iech+5)
     else if (option .eq. 'CHAR_ECHA_THM_F') then
         iopt = 2
         call jevech('PTEMPSR', 'L', itemps)
-        deltat = zr(itemps+1)  
+        deltat = zr(itemps+1)
         valpar(2) = zr(itemps)
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim+1)
-        p2m = zr(idepm+ndim+2) 
+        p2m = zr(idepm+ndim+2)
         valpar(1) = p1m
         valpar(2) = zr(itemps)
 !

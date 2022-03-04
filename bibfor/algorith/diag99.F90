@@ -215,19 +215,19 @@ subroutine diag99(nomres)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
-        
+
         call rsadpa(meca, 'L', 1, 'MODELE', iorol,&
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'MODELE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-        
+
         call rsadpa(meca, 'L', 1, 'CHAMPMAT', iorol,&
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-        
+
         call rsadpa(meca, 'L', 1, 'CARAELEM', iorol,&
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne,&
@@ -277,19 +277,19 @@ subroutine diag99(nomres)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
-        
+
         call rsadpa(stat, 'L', 1, 'MODELE', iorol,&
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'MODELE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-        
+
         call rsadpa(stat, 'L', 1, 'CHAMPMAT', iorol,&
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-        
+
         call rsadpa(stat, 'L', 1, 'CARAELEM', iorol,&
                     0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne,&

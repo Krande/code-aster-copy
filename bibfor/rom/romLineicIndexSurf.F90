@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ integer, intent(out) :: node_in_slice(nb_node)
 ! For lineic base - Get index in slice for each node in plane orthogonal to given direction
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
 ! In  tole             : tolerance
 ! In  nb_node          : number of nodes
 ! In  coor_node1       : first coordinate of nodes in plane orthogonal to given direction
@@ -51,11 +51,11 @@ integer, intent(out) :: node_in_slice(nb_node)
 ! Out node_in_slice    : for each node, the index of node in slice
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     integer :: i_node, i_node_slice
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     do i_node = 1, nb_node
         do i_node_slice = 1, nb_node_slice
             if (abs(coor_node_s1(i_node_slice)-coor_node1(i_node)).lt.tole .and.&
@@ -65,5 +65,5 @@ integer, intent(out) :: node_in_slice(nb_node)
             endif
         enddo
     enddo
-        
+
 end subroutine

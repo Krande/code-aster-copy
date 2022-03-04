@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine lc0060(fami, kpg, ksp, ndim, imate,&
                   nvi, dsidep, codret)
 
 ! aslint: disable=W1504,W0104
-    use endo_loca_module, only: CONSTITUTIVE_LAW, Init, Integrate 
+    use endo_loca_module, only: CONSTITUTIVE_LAW, Init, Integrate
     implicit none
 
 ! ----------------------------------------------------------------------
@@ -42,12 +42,12 @@ subroutine lc0060(fami, kpg, ksp, ndim, imate,&
     real(kind=8):: sig(2*ndim),dsde(2*ndim,2*ndim),vi(nvi)
     type(CONSTITUTIVE_LAW):: cl
 ! ----------------------------------------------------------------------
-    
+
     ndimsi = 2*ndim
-    
+
     cl = Init(ndimsi, option, fami, kpg, ksp, imate, nint(crit(1)), &
             crit(3), instap-instam)
-            
+
     call Integrate(cl, epsm(1:ndimsi), deps(1:ndimsi), vim(1:nvi), sig, &
             vi, dsde)
 
@@ -62,5 +62,5 @@ subroutine lc0060(fami, kpg, ksp, ndim, imate,&
         dsidep(1:ndimsi,1:ndimsi) = dsde
     end if
 
-                      
+
 end subroutine

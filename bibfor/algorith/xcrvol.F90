@@ -117,7 +117,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !
 !  EN QUADRATIQUE :: MULTIPLICATION PAR UN TERME CORRECTIF CAR L INTEGRATION EST IMPRECISE
 !    ASYMPTOTIQUEMENT DFDI EST PROCHE DE EPS=VSE**1/NDIM
-!    L INTEGRALE DE DFDI**2 VARIE EN EPS**3 
+!    L INTEGRALE DE DFDI**2 VARIE EN EPS**3
         if (.not.iselli(elrefp).and.lfiss) vse = vse*vse**(3/ndim)
 !       DETERMINATION DU SIGNE DU SOUS ELEMENT
         do i = 1, nfiss

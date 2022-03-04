@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ character(len=19), intent(in)      :: mode
 ! - Compute products
 !
     syst_type = ds_multipara%syst_type
-    if (syst_type .eq. 'R') then 
+    if (syst_type .eq. 'R') then
 ! ---- Get acess to mode
        call jeveuo(mode(1:19)//'.VALE', 'L', vr = vr_mode)
 ! ---- Compute Matrix x Mode
@@ -93,7 +93,7 @@ character(len=19), intent(in)      :: mode
                               ds_multipara%vect_type ,&
                               ds_multipara%vect_redu ,&
                               'R' , vr_mode = vr_mode)
-! ---- Compute reduced matrix 
+! ---- Compute reduced matrix
        call romCalcMatrReduit(iMode,  &
                               base ,&
                               ds_multipara%nb_matr   ,&
@@ -125,9 +125,9 @@ character(len=19), intent(in)      :: mode
                               ds_multipara%nb_matr   ,&
                               ds_multipara%prod_matr_mode,&
                               ds_multipara%matr_redu,&
-                              'C') 
-    else 
+                              'C')
+    else
         ASSERT(ASTER_FALSE)
-    end if 
+    end if
 !
 end subroutine

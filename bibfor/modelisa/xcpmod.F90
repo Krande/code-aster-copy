@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,11 +43,11 @@ subroutine xcpmod(modmes, modthx, modmex)
 !
 ! --> traitement particulier realise dans le cas ou le mot-cle
 !     MODELE_THER est present. Le modele mecanique xfem en sortie
-!     d'operateur est cree : 
+!     d'operateur est cree :
 !
 !     1) par copie des objets contenus dans le modele mecanique
 !        sain (mot-cle MODELE_IN)
-!     2) par copie des objets propres a xfem contenus dans le modele 
+!     2) par copie des objets propres a xfem contenus dans le modele
 !        thermique xfem donne par l'utiilsateur (mot-cle MODELE_THER)
 !
 ! ----------------------------------------------------------------------

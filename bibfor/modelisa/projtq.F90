@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -158,7 +158,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
             call analybar(xyzma(1, 3), xyzma(1, 4), xyzma(1, 1), x3dp,&
                     xbar, excent, iproj, inoeu, icote)
             if (iproj.lt.0)then
-                if (.not. (xbar(2).lt.0.d0 .and. xbar(1).ge.0.d0 & 
+                if (.not. (xbar(2).lt.0.d0 .and. xbar(1).ge.0.d0 &
                                            .and. xbar(3).ge.0.d0)) then
                     goto 999
                 endif
@@ -169,10 +169,10 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
                     icote = 3
                 else if (icote .eq. 2)then
                     icote = 4
-                else 
+                else
 !                   on ne doit pas passer par la
                     ASSERT(.false.)
-                endif        
+                endif
             elseif (iproj .eq. 30)then
                 if (inoeu .eq. 1)then
                     inoeu = 3
@@ -180,9 +180,9 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
                     inoeu = 4
                 else if (inoeu .eq. 3)then
                     inoeu = 1
-                else 
+                else
                     ASSERT(.false.)
-                endif    
+                endif
             else
                 ASSERT(.false.)
             endif
@@ -198,7 +198,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
 !.......... REAJUSTEMENT DE IPROJ SI PROJECTION SUR LE TROISIEME COTE
 !.......... DU TRIANGLE 1-2-3
             if (iproj .eq. 13) then
-!           on ne doit normalement pas passer par la ! 
+!           on ne doit normalement pas passer par la !
                 iproj = 0
             else if (iproj.lt.0) then
                 call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp,&
@@ -236,7 +236,7 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
             call analybar(xyzma(1, 1), xyzma(1, 2), xyzma(1, 3), x3dp,&
                     xbar, excent, iproj, inoeu, icote)
             if (iproj.lt.0)then
-                if (.not.(xbar(2).lt.0.d0 .and. xbar(1).ge.0.d0 & 
+                if (.not.(xbar(2).lt.0.d0 .and. xbar(1).ge.0.d0 &
                                           .and. xbar(3).ge.0.d0)) then
                     goto 999
                 endif
@@ -269,9 +269,9 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent,&
                         icote = 3
                     else if (icote .eq. 2)then
                         icote = 4
-                    else 
+                    else
                         ASSERT(.false.)
-                    endif            
+                    endif
                 elseif (iproj .eq. 30)then
                     ASSERT(inoeu.eq.2)
                     inoeu = 4

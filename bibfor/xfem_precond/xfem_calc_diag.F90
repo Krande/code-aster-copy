@@ -85,7 +85,7 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
     jpos=ieq_loc(jcoll)
     do 30 kterm=1,nnz
        if (smdi(jcoll) .lt. kterm) then
-           jcoll=jcoll+1 
+           jcoll=jcoll+1
            nunoj=deeq(2*(jcoll-1)+1)
            jpos=ieq_loc(jcoll)
        endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine refdag(resin)
         call jeveuo(jexnum( resin//refd, ibid), 'E', jrefe)
         do 30 jbid = 1, 5
             zk24(jrefe+jbid-1) = zk24(jrefe2+jbid-1)
-30      continue 
+30      continue
 !
 20  continue
 !

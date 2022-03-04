@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,11 +66,11 @@ subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
     elseif (pref.eq.'SMOOTH') then
       dfkdpo(1:ndim,1:ndim,1)=0.
       if (r.gt.r8prem()) then
-         dfkdpo(1:ndim,1:ndim,2)=dfkdpo(1:ndim,1:ndim,2)/sqrt(r)         
+         dfkdpo(1:ndim,1:ndim,2)=dfkdpo(1:ndim,1:ndim,2)/sqrt(r)
       endif
 !
     elseif (pref.eq.'JUMP') then
-      dfkdpo=2.d0*mu*sqrt(r8depi())*dfkdpo/(kappa+1)    
+      dfkdpo=2.d0*mu*sqrt(r8depi())*dfkdpo/(kappa+1)
       !dfkdpo(1:2,1:2,1:2)=2.d0*mu*sqrt(r8depi())*dfkdpo(1:2,1:2,1:2)/(kappa+1)
     endif
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

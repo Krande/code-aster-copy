@@ -19,7 +19,7 @@
 subroutine b3d_valp33(x33,x3,v33)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
-!   A.Sellier jeu. 02 sept. 2010 18:13:24 CEST 
+!   A.Sellier jeu. 02 sept. 2010 18:13:24 CEST
 !   diagonalisagion 33 a partir de jacobi + quelques controles
 implicit none
 #include "asterf_types.h"
@@ -31,7 +31,7 @@ implicit none
 
       integer k,l
       real(kind=8) :: x33(3,3),x3(3),v33(3,3),y33(3,3)
-!   declarations locales      
+!   declarations locales
       real(kind=8) :: epsv,eps1,xn
       integer i,j
       real(kind=8) :: un
@@ -48,7 +48,7 @@ implicit none
       parameter(un=1.d0,epsv=1.d-6)
       real(kind=8) :: v33t(3,3)
       real(kind=8) :: u33(3,3)
-      aster_logical ::  vpmultiple,erreur,diago,ordre     
+      aster_logical ::  vpmultiple,erreur,diago,ordre
       real(kind=8), dimension(9) :: valr
 
      xn=0.d0
@@ -59,7 +59,7 @@ implicit none
 !   lors du calcul des vecteurs propres
       vpmultiple=.false.
       diago=.false.
-      ordre=.true.  
+      ordre=.true.
 
 !     STOCKAGE de x33 dans y33 pour diagonalisation par jacobi iterative
 !     car cette methode ecrit sur y33
@@ -69,7 +69,7 @@ implicit none
          end do
       end do
       call b3d_jacobi(y33,v33,x3)
-        
+
 !   controle des normes de v33
       do i=1,3
         xn=dsqrt(v33(1,i)**2+v33(2,i)**2+v33(3,i)**2)
@@ -77,22 +77,22 @@ implicit none
           call indice1(i,k,l)
           v33(1,i)=v33(2,k)*v33(3,l)-v33(3,k)*v33(2,l)
           v33(2,i)=v33(3,k)*v33(1,l)-v33(1,k)*v33(3,l)
-          v33(3,i)=v33(1,k)*v33(2,l)-v33(2,k)*v33(1,l) 
+          v33(3,i)=v33(1,k)*v33(2,l)-v33(2,k)*v33(1,l)
           xn=dsqrt(v33(1,i)**2+v33(2,i)**2+v33(3,i)**2)
             do k=1,3
                v33(k,i)=v33(k,i)/xn
             end do
         end if
       end do
-      
-      
+
+
 !   **verif produit scalaire entre v1 et v2*****
       eps1=0.d0
       do i=1,3
        eps1=eps1+v33(i,1)*v33(i,2)
       end do
       if(dabs(eps1).gt.1.d-4) then
-!      test produit scalaire v1 v3         
+!      test produit scalaire v1 v3
          eps1=0.d0
          do i=1,3
            eps1=eps1+v33(i,1)*v33(i,3)
@@ -106,7 +106,7 @@ implicit none
             xn=dsqrt(v33(1,1)**2+v33(2,1)**2+v33(3,1)**2)
             do i=1,3
                v33(i,1)=v33(i,1)/xn
-            end do               
+            end do
          end if
 !      v1 et v3 etant orthogonaux on reconstruit v2 par produit
 !      vectoriel
@@ -118,9 +118,9 @@ implicit none
        eps1=0.d0
        do i=1,3
         eps1=eps1+v33(i,2)*v33(i,3)
-       end do 
+       end do
        if(dabs(eps1).gt.1.d-4) then
-!      test produit scalaire v1 v3         
+!      test produit scalaire v1 v3
          eps1=0.d0
          do i=1,3
            eps1=eps1+v33(i,1)*v33(i,3)
@@ -134,7 +134,7 @@ implicit none
             xn=dsqrt(v33(1,3)**2+v33(2,3)**2+v33(3,3)**2)
             do i=1,3
                v33(i,3)=v33(i,3)/xn
-            end do 
+            end do
          end if
 !      v1 et v3 etant orthogonaux on reconstruit v2 par produit
 !      vectoriel
@@ -146,9 +146,9 @@ implicit none
          eps1=0.d0
          do i=1,3
           eps1=eps1+v33(i,1)*v33(i,3)
-         end do 
+         end do
          if(dabs(eps1).gt.1.d-4) then
-!        test produit scalaire v3 v2         
+!        test produit scalaire v3 v2
            eps1=0.d0
            do i=1,3
              eps1=eps1+v33(i,2)*v33(i,3)
@@ -162,14 +162,14 @@ implicit none
             xn=dsqrt(v33(1,3)**2+v33(2,3)**2+v33(3,3)**2)
             do i=1,3
                v33(i,3)=v33(i,3)/xn
-            end do 
+            end do
 !         v2 et v3 etant orthogonaux on reconstruit v1 par produit
 !         vectoriel
             v33(1,1)=v33(2,2)*v33(3,3)-v33(3,2)*v33(2,3)
             v33(2,1)=v33(3,2)*v33(1,3)-v33(1,2)*v33(3,3)
-            v33(3,1)=v33(1,2)*v33(2,3)-v33(2,2)*v33(1,3)             
-           end if 
-        end if        
+            v33(3,1)=v33(1,2)*v33(2,3)-v33(2,2)*v33(1,3)
+           end if
+        end if
        end if
       end if
 
@@ -177,8 +177,8 @@ implicit none
        do j=1,3
         v33t(i,j)=v33(j,i)
        end do
-      end do 
- 
+      end do
+
 !   verif validite des matrice de passage
 !   (on change de nase une matrice unitaire)
       erreur=.false.
@@ -197,11 +197,11 @@ implicit none
          endif
         end if
        end do
-      end do 
+      end do
 
 
 
-!   affichage des variables en cas de pb de diagonalisation  
+!   affichage des variables en cas de pb de diagonalisation
 10    continue
       if(erreur)then
         valr(1) = v33(1,1)

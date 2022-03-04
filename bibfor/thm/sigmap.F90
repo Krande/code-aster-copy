@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ real(kind=8), intent(out) :: sigmp(6)
             if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
                 sigmp(i) = -tbiot(i)*dpi
 
-            else              
+            else
                 sigmp(i) = tbiot(i)*satur*signe*dp1 - tbiot(i)*dp2
             end if
         else

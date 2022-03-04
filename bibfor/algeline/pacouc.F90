@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -201,7 +201,7 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
                     call utmess('F+', 'ALGELINE_55', ni=1, vali=[j],&
                                                      nr=1, valr=[vgap])
                     call utmess('F' , 'ALGELINE_74')
-                else 
+                else
 !                   SI STOP_ERREUR = 'NON', ALARME ENSUITE STOCKER LES DERNIERS
 !                   PARAMETRES CALCULES (NON CONVERGES)
                     call utmess('A+', 'ALGELINE_55', ni=1, vali=[j],&
@@ -239,7 +239,7 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3,&
                     nzone + 3*(k-1) + 2) = l3
  30             continue
             endif
-            
+
  20     continue
  10 end do
 !

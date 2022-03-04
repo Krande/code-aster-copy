@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ subroutine te0536(option, nomte)
          enddo
        enddo
     endif
-!   PRECAUTION :: ON BLOQUE LE MULTIHEAVISIDE POUR L INSTANT CAR FISNO DOIT ETRE 
+!   PRECAUTION :: ON BLOQUE LE MULTIHEAVISIDE POUR L INSTANT CAR FISNO DOIT ETRE
 !                   PRIS EN COMPTE POUR UTILISER HEAVN => A FAIRE
     ASSERT(nfiss.eq.1)
 !

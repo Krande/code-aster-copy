@@ -168,7 +168,7 @@ type(NL_DS_Print), intent(inout) :: ds_print
     if (l_newt_cont .and. (.not.l_cont_all_verif)) then
         call SetTableColumn(table_cvg, name_ = 'CONT_NEWT', flag_acti_ = ASTER_TRUE)
     endif
-    
+
     if (l_pena_cont) then
         call SetTableColumn(table_cvg, name_ = 'PENE_MAXI', flag_acti_ = ASTER_TRUE)
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -216,7 +216,7 @@ implicit none
 !     &                  COBARY,NORMLO)
                     call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail,&
                                 cobary(1), cobary(2), cobary(3), normlo)
-                    ksi(1) = cobary(1)*crrefe(1, 1) 
+                    ksi(1) = cobary(1)*crrefe(1, 1)
                     ksi(2) = cobary(1)*crrefe(2, 1)
                     do 100 ii = 2, 3
                         ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)

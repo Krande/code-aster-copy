@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -143,7 +143,7 @@ implicit none
 ! - Save temporary objects ADNE et ADLI
 !
     do i_list_ligr = 1, nb_ligr
-        
+
         ligr_name = list_ligr(i_list_ligr)
 !
 ! ----- Only one phenomenon
@@ -160,7 +160,7 @@ implicit none
         call jeveut(ligr_name(1:19)//'.LGRF', 'L', iad)
         new_mesh = zk8(iad)
         if (i_list_ligr .eq. 1) then
-            mesh = new_mesh 
+            mesh = new_mesh
         else
             ASSERT(mesh.eq.new_mesh)
         endif

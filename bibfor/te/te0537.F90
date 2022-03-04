@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -224,7 +224,7 @@ subroutine te0537(option, nomte)
         alfaz = vale_cara(5)
         ey = (vale_cara(6) +vale_cara(8))/2.d0
         ez = (vale_cara(7) +vale_cara(9))/2.d0
-        
+
 !       CARACTERISTIQUES MATERIAUX
         call jevech('PMATERC', 'L', lmater)
         call pmfmats(lmater, nomat)
@@ -236,7 +236,7 @@ subroutine te0537(option, nomte)
         call moytem(fami, npg, 1, '+', temp, iret)
         call matela(zi(lmater), nomat, itemp, temp, e, nu)
 !
-        g = e / ( 2.0d0 * ( 1.0d0 + nu ) )        
+        g = e / ( 2.0d0 * ( 1.0d0 + nu ) )
         phiy = e*xiz*12.d0*alfay/ (xl*xl*g*a)
         phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*a)
 !

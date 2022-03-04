@@ -192,8 +192,8 @@ implicit none
     else if (option .eq. 'ROCH_ELNO') then
         call vrcins(model, chmate , caraElem, time, chvarc(1:19),&
                 chdret)
-        
-        
+
+
         lchin(1)=mateco
         lpain(1)='PMATERC'
         lchin(2)=chcara(6)

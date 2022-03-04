@@ -83,7 +83,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
 !
     ASSERT(ndim.eq.2 .or. ndim .eq. 3)
-!      
+!
     zxain = xxmmvd('ZXAIN')
     minlst = 1*r8maem()
 !
@@ -135,7 +135,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                 do j = 1, 4
                   if (f(i,j).ne.0) lsnabs = lsnabs+abs(zr(jlsn-1+(f(i,j)-1)*nfiss+ifiss))
                 end do
-                if (lsnabs.le.cridist*lonref) arete = .true. 
+                if (lsnabs.le.cridist*lonref) arete = .true.
            end do
        else if (ndim.eq.2) then
            call conare(typma, ar, nbar)
@@ -143,12 +143,12 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                lsnabs = 0.d0
                lsnabs = abs(zr(jlsn-1+(ar(i,1)-1)*nfiss+ifiss))+&
                         abs(zr(jlsn-1+(ar(i,2)-1)*nfiss+ifiss))
-               if (lsnabs.le.cridist*lonref) arete = .true. 
+               if (lsnabs.le.cridist*lonref) arete = .true.
            end do
        endif
        if (.not.arete) goto 999
        if (arete.and.minlsn.ge.0.d0) goto 999
-    endif      
+    endif
 !
 !      INITIALISATION DU SIGNE POUR LA RECHERCHE DANS LES SOUS ELEMENTS
     signe = -1
@@ -212,7 +212,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
            nptf = 3
            typsma = 'TRIA6   '
            call conare(typsma,ar,nbf)
-       else 
+       else
            nnose = 3
            nptf = 2
            typsma = 'TRIA3   '
@@ -444,7 +444,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                   end do
                 endif
               end do
-    else 
+    else
        if (.not. iselli(elp)) then
            nnose = 10
            nptf = 6
@@ -617,7 +617,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                               rainter(1) = 0.d0
                               rainter(2) = zi(jcnset-1+nnose*(i-1)+f(j,k))
                               rainter(3) = 0.d0
-                              rainter(4) = 0.d0 
+                              rainter(4) = 0.d0
                            endif
                            deja = .false.
 !      VERIF SI CE POINT A DEJA ETE STOCKE OU NON

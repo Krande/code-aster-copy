@@ -20,7 +20,7 @@ subroutine xelgano(modele,sigelga,sigseno)
 !
 !     routine utilitaire X-FEM
 !
-!     - FONCTION REALISEE : PASSAGE D'UN CHAMP DE CONTRAINTES AUX POINTS 
+!     - FONCTION REALISEE : PASSAGE D'UN CHAMP DE CONTRAINTES AUX POINTS
 !                           DE GAUSS DES SOUS-ELEMENTS X-FEM A UN CHAMP
 !                           DE CONTRAINTES AUX NOEUDS DES SOUS-ELEMENTS
 !

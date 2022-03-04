@@ -158,12 +158,12 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
 !
     AS_ALLOCATE(vr=nspec,size=neq)
 !
-!     BOUCLE SUR LES NUMEROS D ORDRE    
+!     BOUCLE SUR LES NUMEROS D ORDRE
     do 100 iordr = 1, nbordr
 !   Conversion du numéro d'ordre en chaine de caractère
-    ASSERT( nbordr <=9999 ) 
-    write (kordr,'(I4.4)') iordr 
-    
+    ASSERT( nbordr <=9999 )
+    write (kordr,'(I4.4)') iordr
+
 !-- ATTRIBUTION D UN NOM DE CONCEPT
         call gcncon('_', nomrep)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,25 +54,25 @@ subroutine SolvePosValCst(a, b, l0, etam, etap, vide, nsol, sol, sgn)
     aster_logical:: apos
     real(kind=8) :: bndmin,bndmax,rhs
 ! ---------------------------------------------------------------------
-    
+
     ! Initialisation
     apos = a.ge.0
-    
-    
+
+
     ! Existence de solution dans R
     if (l0.ge.0) then
         nsol = 0
         vide = ASTER_TRUE
         goto 999
     end if
-    
-    
+
+
     ! Definition de rhs et l'intervalle associe
     rhs    = sqrt(-l0)-b
     bndmin = a*merge(etam, etap, apos)
     bndmax = a*merge(etap, etam, apos)
-    
-    
+
+
     ! Calcul de la solution
     if (rhs.ge.bndmin .and. rhs.le.bndmax) then
         nsol = 1
@@ -83,8 +83,8 @@ subroutine SolvePosValCst(a, b, l0, etam, etap, vide, nsol, sol, sgn)
         nsol = 0
         vide = (max(0.d0,a*etam+b)**2 + l0) .ge. 0
     end if
-    
-    
+
+
 999 continue
 end subroutine SolvePosValCst
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -196,9 +196,9 @@ subroutine pjefco(moa1, moa2, corres, base)
             call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc,&
                         3, motcle, tymocl, '&&PJEFCO.LIMANU1', nbma1)
             call jeveuo('&&PJEFCO.LIMANU1', 'L', vi=limanu1)
-            
+
 !
-!           -- SI PRESENT : RECUPERATION DE LA LISTE DE MAILLE LMA2 
+!           -- SI PRESENT : RECUPERATION DE LA LISTE DE MAILLE LMA2
 !              POUR VERIFICATION :
 !           --------------------------------------------------------
             motcle(1) = 'MAILLE_2'
@@ -209,12 +209,12 @@ subroutine pjefco(moa1, moa2, corres, base)
             tymocl(3) = 'TOUT'
             call reliem(' ', noma2, 'NU_MAILLE', 'VIS_A_VIS', iocc,&
                         3, motcle, tymocl, '&&PJEFCO.LIMANU2', nbma2)
-            
+
             nbnoma2 = 0
             if (nbma2 .gt. 0) then
                 call jeveuo('&&PJEFCO.LIMANU2', 'L', vi=limanu2)
                 call pjefca(moa2, '&&PJEFCO.LIMANU2', -iocc, ncas)
-                
+
                 if (ncas .eq. '2D') then
                     dim = '2D'
                 else if (ncas.eq.'3D') then
@@ -241,9 +241,9 @@ subroutine pjefco(moa1, moa2, corres, base)
 
             call reliem(' ', noma2, 'NU_NOEUD', 'VIS_A_VIS', iocc,&
                         2, motcle, tymocl, '&&PJEFCO.LINOTM2', nbnono2)
-            
+
             call wkvect('&&PJEFCO.LINONU2', 'V V I', nbnono2+nbnoma2, vi=linonu2)
-            
+
             if (nbnono2.gt.0 .and. nbnoma2.eq.0) then
                 call jeveuo('&&PJEFCO.LINOTM2', 'L', vi=linotm2)
                 nbno2 = nbnono2
@@ -265,7 +265,7 @@ subroutine pjefco(moa1, moa2, corres, base)
             else
                 ASSERT(.false.)
             endif
-! 
+!
 !
 !           intersection entre les noeuds2 des occurrences precedentes
 !           et de l'occurrence courante
@@ -285,22 +285,22 @@ subroutine pjefco(moa1, moa2, corres, base)
             if (ncas .eq. '2D') then
                 call pj2dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listInterc_ = nameListInterc,& 
+                            l_dmax, dmax, dala, listInterc_ = nameListInterc,&
                             nbInterc_ = nbNodeInterc)
             else if (ncas.eq.'3D') then
                 call pj3dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listInterc_ = nameListInterc,& 
+                            l_dmax, dmax, dala, listInterc_ = nameListInterc,&
                             nbInterc_ = nbNodeInterc)
             else if (ncas.eq.'2.5D') then
                 call pj4dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listInterc_ = nameListInterc,& 
+                            l_dmax, dmax, dala, listInterc_ = nameListInterc,&
                             nbInterc_ = nbNodeInterc)
             else if (ncas.eq.'1.5D') then
                 call pj6dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listInterc_ = nameListInterc,& 
+                            l_dmax, dmax, dala, listInterc_ = nameListInterc,&
                             nbInterc_ = nbNodeInterc)
             else
                 ASSERT(.false.)

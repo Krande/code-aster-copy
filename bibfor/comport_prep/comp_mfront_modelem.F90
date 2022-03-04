@@ -46,7 +46,7 @@ character(len=16), intent(out) :: type_cpla
 ! In  l_mfront_cp      : .true. if plane stress is possible for this MFront behaviour
 ! Out model_dim        : dimension of model 2 or 3
 ! Out model_mfront     : type of modelisation for MFront
-! Out codret           : code for error 
+! Out codret           : code for error
 !                        0 - OK
 !                        1 - Error - Not same finite element
 !                        2 - Error - No MFront modelisation allowed on this element

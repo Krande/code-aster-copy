@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ implicit none
     character(len=19), intent(in) :: sddisc
     integer, intent(in) :: iter_glob_maxi
     integer, intent(in) :: iter_glob_elas
-    real(kind=8), intent(in) :: pas_mini_elas 
+    real(kind=8), intent(in) :: pas_mini_elas
     real(kind=8), intent(in) :: inikry
     real(kind=8), intent(in) :: resi_glob_maxi
     real(kind=8), intent(in) :: resi_glob_rela

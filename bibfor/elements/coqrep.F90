@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine coqrep(pgl, alpha, beta, t2iu, t2ui,&
 !   On vérifie que n = pgl(3,1:3) n'est pas de norme nulle
     norm = sqrt(dot_product(pgl(3,1:3),pgl(3,1:3)))
     ASSERT( norm.gt.r8prem() )
-!   
+!
     ps = dx*pgl(3,1) + dy*pgl(3,2) + dz*pgl(3,3)
     pjdx = dx - ps*pgl(3,1)
     pjdy = dy - ps*pgl(3,2)

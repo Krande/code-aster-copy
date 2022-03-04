@@ -61,7 +61,7 @@ real(kind=8), optional, pointer :: fieldValeR_(:)
 ! In  field            : field to save
 ! Ptr fieldValeC       : pointer for values of field on complete domain
 ! In  nbEquaR          : number of equations on restricted domain
-! Ptr equaCToR         : pointer to convert index of equation from complete domain to 
+! Ptr equaCToR         : pointer to convert index of equation from complete domain to
 !                        restricted domain
 ! Ptr fieldValeR       : pointer for values of field on restricted domain
 !

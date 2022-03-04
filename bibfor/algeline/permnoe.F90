@@ -19,11 +19,11 @@
 subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
     implicit none
 !
-! Permute a given nodal field (deform) according to the increasing 
+! Permute a given nodal field (deform) according to the increasing
 ! order of curvilinear abscissas as defined in the mesh (maillage)
 ! ----------------------------------------------------------------------
 !
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 !
 #include "jeveux.h"
 #include "blas/dcopy.h"
@@ -91,7 +91,7 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
     if (iexi .eq. 0) then
         call utmess('F', 'UTILITAI2_84')
     endif
-    call jeveuo(cooabs, 'L', labs)   
+    call jeveuo(cooabs, 'L', labs)
 
 !     --- LECTURE DES CARACTERISTIQUES DU GROUPE DE MAILLES : ADRESSE
 !                   ET NOMBRE DE MAILLES

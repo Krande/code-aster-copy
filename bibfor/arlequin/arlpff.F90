@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,8 @@ subroutine arlpff(x1, x2, x3, xl,phiy,phiz,B1d,B1dnrj)
 !                             2   UY   I
 !                             3   UZ   I DANS LA SECTION
 !                             4   TX   ROTATIONS SUIVANT OX,OY,OZ
-!                             5   TY   
-!                             6   TZ   
+!                             5   TY
+!                             6   TZ
 ! ----------------------------------------------------------------------
     call jemarq()
 
@@ -75,7 +75,7 @@ subroutine arlpff(x1, x2, x3, xl,phiy,phiz,B1d,B1dnrj)
 ! --- FONCTIONS DE FORME DE FLEXION ET DERIVEES PREMIERES
 ! --- DEPLACEMENTS (XOZ)
 
-    n1  = (2.d0*x0**3-3.d0*x0**2-x0*phiy+1.d0+phiy) 
+    n1  = (2.d0*x0**3-3.d0*x0**2-x0*phiy+1.d0+phiy)
     dn1 = (6.d0*x0**2-6.d0*x0-phiy)
     n2  = (-x0**3+0.5d0*(4.d0+phiy)*x0**2-x0*0.5d0*(2.d0+phiy))*xl
     dn2 = (-3.d0*x0**2+(4.d0+phiy)*x0-0.5d0*(2.d0+phiy))*xl

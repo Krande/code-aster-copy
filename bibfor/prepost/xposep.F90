@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -169,14 +169,14 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot,&
             nsetot = nsetot + nse
 !         AUGMENTATION DU NOMBRE DE NOUVEAUX NOEUDS (NNNTOT)
             nnntot = nnntot + cesv(iad+2)
-!         AUGMENTATION DU NOMBRE DE NOEUDS DANS LA CONNECTIVITE TOT   
+!         AUGMENTATION DU NOMBRE DE NOEUDS DANS LA CONNECTIVITE TOT
             if (ismali(typma)) then
                 ncotot = ncotot + nse * (ndime + 1)
-            else 
+            else
                 if(ndime.eq.1) ncotot = ncotot + nse * 3
                 if(ndime.eq.2) ncotot = ncotot + nse * 6
                 if(ndime.eq.3) ncotot = ncotot + nse * 10
-            endif 
+            endif
 !
 !         AUGMENTATION DE LA TAILLE DES GROUP_MA
             call xpogma(nbgma, nse, listgr, ima, jlogma)

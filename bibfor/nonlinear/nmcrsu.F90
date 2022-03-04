@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -215,7 +215,7 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact_
                     resi_glob_rela, inikry, ds_contact_)
     else
         call nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_glob_maxi,&
-                    resi_glob_rela, inikry) 
+                    resi_glob_rela, inikry)
     endif
 !
 ! --- OBJET POUR PROLONGEMENT DECOUPE

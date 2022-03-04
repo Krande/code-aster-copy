@@ -26,7 +26,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 !
 !        IN     : conceptin (K8)  : objet en entrée de POST_RCCM
 !                 nsymb     (K16) : si RESULTAT en entrée : nom du symbolique du champ
-!                                 : sinon ' '   
+!                                 : sinon ' '
 !                 MODELE   (K8)  : NOM DU MODELE
 !                 MESMAI (K24) : OBJET DES NOMS DE MAILLE
 !                 NBMA  (I)    : NOMBRE DE MAILLES UTILISATEUR
@@ -94,12 +94,12 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    
+
 !   0 - Initialisations
     cbid=(0.d0,0.d0)
-    
+
 !   1 - Création de la table
-    
+
     if(nsymb.eq. ' ')then
         nbpara = 8
         parata(1:8)= parata2(1:8)
@@ -119,9 +119,9 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
         kk = 2
     endif
     call tbcrsv(nomtb, 'G', nbpara, parata, typarata, 0)
-    
+
 !   2 - Liste des mailles
-    
+
     mesmai = '&&RC3600.MES_MAILLES'
     motcle(1) = 'TOUT'
     motcle(2) = 'MAILLE'
@@ -133,11 +133,11 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
     call reliem(modele, noma, 'NU_MAILLE', 'ZONE_ANALYSE', 1,&
                         3, motcle, typmcl, mesmai, nbma)
     call jeveuo(mesmai, 'L', jlma)
-    
-    
-!   3 - Abscisses curvilignes    
 
-    
+
+!   3 - Abscisses curvilignes
+
+
     call jeexin(noma//'.ABSC_CURV .VALE', iexi)
     if (iexi .eq. 0) then
         l_abscurv = .false.
@@ -151,15 +151,15 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
         call jeveuo(chamescurv//'.CESL', 'L', jcesl2)
         call jeveuo(chamescurv//'.CESD', 'L', jcesd2)
     endif
-    
+
 !   4 - Champ à traiter
-    
+
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 
     chames = '&&RC3600.CES       '
     call celces(champ, 'V', chames)
-            
+
     call jeveuo(chames//'.CESV', 'L', vr=cesv)
     call jeveuo(chames//'.CESL', 'L', jcesl)
     call jeveuo(chames//'.CESD', 'L', jcesd)
@@ -177,16 +177,16 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 !       ON POURSUIT, SINON ON VA A LA MAILLE SUIVANTE:
         indma=indiis(zi(jlma),ima,1,nbma)
         if (indma .eq. 0) cycle
-        
+
         call jenuno(jexnum(noma//'.NOMMAI', ima), kma)
         table_valk(kk+1)=kma
-        
+
 !       NOMBRE DE POINTS DE LA MAILLE IMA : NBPT
         nbpt=zi(jcesd+5+4*(ima-1))
 !       NOMBRE DE COMPOSANTES PORTEES PAR LES POINTS DE LA MAILLE IMA
         nbcmpt=zi(jcesd+5+4*(ima-1)+2)
         ASSERT(nbcmpt.eq.nbcmp)
-        
+
 !       ON PARCOURT LES COMPOSANTES DE LA CARTE DES ABSCISSES CURVILIGNES
         if (l_abscurv) then
             nbabsc = 0

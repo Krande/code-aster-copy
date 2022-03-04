@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
     numer2 = ' '
     exnume = .false.
     if (present(champ)) champ2 = champ
-    if (present(numer)) then 
+    if (present(numer)) then
         numer2 = numer
         call jeexin(numer2(1:14)//'.NUME.NEQU', iret)
         if (iret .ne. 0) then
@@ -130,14 +130,14 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
     if (champ2(6:7) .eq. 'EL') chnoeud = .false.
 !
 !   --- RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS RENSEIGNE
-!   --- 1. CHAMP AUX NOEUDS : PAR RAPPORT A L'INFORMATION DANS LE NUME_DDL 
+!   --- 1. CHAMP AUX NOEUDS : PAR RAPPORT A L'INFORMATION DANS LE NUME_DDL
     if (chnoeud) then
         if (exnume) then
             call dismoi('NB_EQUA', numer2, 'NUME_DDL', repi=neq)
             if (present(nequa)) then
                 ASSERT(nequa .eq. neq)
             endif
-        else 
+        else
             call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C',&
                         ier=iret)
             if (iret .eq. 0) then
@@ -206,7 +206,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
     else
         if (exnume) lprchno1 = .true.
     endif
-    
+
     if (exnume) then
         call dismoi('NOM_MAILLA', numer2(1:14), 'NUME_DDL', repk=maill2)
 !       --- ON NE FAIT PAS DE TEST DE COMPATIBILITE SUR LES MAILLAGES

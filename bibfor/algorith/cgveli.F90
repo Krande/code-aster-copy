@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine cgveli(typfis, typdis, ndim, lnoff, liss,&
 !             ('FONDIFSS' OU 'FISSURE')
 !     NDIM   : DIMENSION DU CALCUL
 !     LNOFF  : NOMBRE DE NOEUDS (OU POINTS) DU FOND DE FISSURE
-!     TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM 
+!     TYPDIS : TYPE DE DISCONTINUITE SI FISSURE XFEM
 !              'FISSURE' OU 'COHESIF'
 !  OUT :
 !     LISS   : TYPE DE LISSAGE (NOM CONTRACTE)

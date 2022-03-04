@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,12 +58,12 @@ type(ROM_DS_Solve), intent(in) :: ds_solve
         call utmess('I', 'ROM2_16')
     elseif (syst_2mbr_type .eq. 'R') then
         call utmess('I', 'ROM2_17')
-    endif 
+    endif
     if (syst_type .eq. 'C') then
         call utmess('I', 'ROM2_36')
     elseif (syst_type .eq. 'R') then
         call utmess('I', 'ROM2_37')
-    endif 
+    endif
     call utmess('I', 'ROM2_35', si = ds_solve%syst_size)
 !
 end subroutine

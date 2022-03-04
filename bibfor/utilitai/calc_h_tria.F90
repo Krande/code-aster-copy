@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 subroutine calc_h_tria(ino, x3d1, x3d2, x3d3, h)
     implicit none
-!  DESCRIPTION : 
-!  -----------   
+!  DESCRIPTION :
+!  -----------
 !       CALCUL DE LA HAUTEUR H RELATIVE AU NOEUD INO DU TRIANGLE DEFINI
 !       PAR LES POINTS X3D1, X3D2, X3D3
 !
@@ -31,7 +31,7 @@ subroutine calc_h_tria(ino, x3d1, x3d2, x3d3, h)
 ! ARGUMENTS
 ! ---------
     integer :: ino
-    real(kind=8) :: x3d1(3), x3d2(3), x3d3(3),h 
+    real(kind=8) :: x3d1(3), x3d2(3), x3d3(3),h
 !
 ! VARIABLES LOCALES
 ! -----------------
@@ -53,7 +53,7 @@ subroutine calc_h_tria(ino, x3d1, x3d2, x3d3, h)
     x3d(1,3) = x3d3(1)
     x3d(2,3) = x3d3(2)
     x3d(3,3) = x3d3(3)
-!   
+!
     jno = mod(ino+1,3)
     if (jno.eq.0) jno = 3
     kno = mod(ino+2,3)
@@ -65,17 +65,17 @@ subroutine calc_h_tria(ino, x3d1, x3d2, x3d3, h)
     vect_jk(3) = x3d(3,kno) - x3d(3,jno)
 !
     call normev(vect_jk, norme_jk)
-!   
+!
     vect_ji(1) = x3d(1,ino) - x3d(1,jno)
     vect_ji(2) = x3d(2,ino) - x3d(2,jno)
     vect_ji(3) = x3d(3,ino) - x3d(3,jno)
 !
     proj = (vect_jk(1)*vect_ji(1)+vect_jk(2)*vect_ji(2)+vect_jk(3)*vect_ji(3))
-!    
+!
     vect_ji(1) = vect_ji(1) - proj*vect_jk(1)
     vect_ji(2) = vect_ji(2) - proj*vect_jk(2)
     vect_ji(3) = vect_ji(3) - proj*vect_jk(3)
 !
     call normev(vect_ji, h)
-    
+
 end subroutine

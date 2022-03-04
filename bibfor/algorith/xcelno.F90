@@ -47,7 +47,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 ! ----------------------------------------------------------------------
 ! ROUTINE XFEM (METHODE XFEM - PREPARATION)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! BUT :: AJOUTER À LA SD FISS_XFEM LES IDENTIFIANTS DES DOMAINES VUS 
+! BUT :: AJOUTER À LA SD FISS_XFEM LES IDENTIFIANTS DES DOMAINES VUS
 !           PAR CHAQUE NOEUD X-FEM
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  REMARQUES:
@@ -82,7 +82,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
 !
-    AS_ALLOCATE(vl=is_ma_xfem,size=nbma) 
+    AS_ALLOCATE(vl=is_ma_xfem,size=nbma)
 !
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
@@ -106,7 +106,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
        call jeveuo(ces_stno//'.CESL', 'L', jcesl_stno)
        call jeveuo(ces_stno//'.CESD', 'L', jcesd_stno)
        call jeveuo(ces_stno//'.CESV', 'L', jcesv_stno)
-    endif 
+    endif
 !
     id1=xcalc_code(1,he_inte=[-1])
     id2=xcalc_code(1,he_inte=[+1])
@@ -125,7 +125,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
       nbpt = zi(jcesd-1+5+4* (numa-1)+1)
       ncmp  = zi(jcesd-1+5+4* (numa-1)+3)
       if (ncmp .eq. 0) goto 5
-      is_ma_xfem(numa)=.true. 
+      is_ma_xfem(numa)=.true.
       if (lfno) then
         nfh = zi(jcesd_fno-1+5+4*(numa-1)+2)
       endif
@@ -151,11 +151,11 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 55     continue
 5    continue
 !
-    AS_ALLOCATE(vi=nfh_ref,size=nbno) 
+    AS_ALLOCATE(vi=nfh_ref,size=nbno)
     do nuno=1,nbno
        do cpt=1,nfissmax
          if (is_nfh_no(nfissmax*(nuno-1)+cpt)) then
-           nfh_ref(nuno)=cpt 
+           nfh_ref(nuno)=cpt
            goto 8
          endif
        enddo
@@ -170,10 +170,10 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ncompn=nfissmax+1
     deca=ncompn
-    AS_ALLOCATE(vi=list_sd_no,size=nbno*deca) 
+    AS_ALLOCATE(vi=list_sd_no,size=nbno*deca)
     AS_ALLOCATE(vi=count_sd_no,size=nbno)
     deca_fno=ncompn*nfissmax
-    AS_ALLOCATE(vi=tmp_fno,size=nbno*deca_fno) 
+    AS_ALLOCATE(vi=tmp_fno,size=nbno*deca_fno)
     fisno(1)=1
     fisno(2:nfissmax)=0
     nfh=1
@@ -209,7 +209,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 ! STOCKAGE DU DOMAINE AUQUEL APPARTIENT LE NOEUD
         call cesexi('C', jcesd, jcesl, numa, ino,&
                                 1, ncompn, iad)
-        nusd=zi(jcesv-1+iad)        
+        nusd=zi(jcesv-1+iad)
         if (nusd.le.0) goto 11
         if (list_sd_no(deca*(nuno-1)+ncompn).le.0) then
           list_sd_no(deca*(nuno-1)+ncompn)=nusd
@@ -271,8 +271,8 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 !
     enddo
 !
-! AFFICHAGES: 
-!   
+! AFFICHAGES:
+!
     if (limpr) then
       write(6,*)'KORUPTION : LISTE DES NOEUDS ET DES DOMAINES'
       do nuno=1,nbno
@@ -301,7 +301,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
                          cpt, 1, iad_fno)
             if (iad_fno.le.0) then
                ASSERT(nfh.eq.1)
-               fisno(1)=1               
+               fisno(1)=1
             else
                ifiss=zi(jcesv_fno-1+iad_fno)
                if (ifiss.le.0) then
@@ -316,11 +316,11 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 ! REPOSITIONNEMENT DU DOMAINE AUQUEL APPARTIENT LE NOEUD
         call cesexi('C', jcesd, jcesl, numa, ino,&
                                 1, ncompn, iad5)
-        nusd=zi(jcesv-1+iad5) 
+        nusd=zi(jcesv-1+iad5)
         pos=-1
         if (nusd.le.0) goto 101
         if (xtest_code(nusd, list_sd_no(deca*(nuno-1)+ncompn), lfno, nfh_ref(nuno), nfissmax,&
-                       fisno,& 
+                       fisno,&
                        tmp_fno((deca_fno*(nuno-1)+nfissmax*(ncompn-1)+1):&
                                 (deca_fno*(nuno-1)+nfissmax*(ncompn-1)+nfissmax)))) then
            pos=ncompn
@@ -328,14 +328,14 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
         endif
         do cpt=1,count_sd_no(nuno)
           if (xtest_code(nusd, list_sd_no(deca*(nuno-1)+cpt), lfno, nfh_ref(nuno), nfissmax,&
-                         fisno,& 
+                         fisno,&
                          tmp_fno((deca_fno*(nuno-1)+nfissmax*(cpt-1)+1):&
                                 (deca_fno*(nuno-1)+nfissmax*(cpt-1)+nfissmax)))) then
             pos=cpt
             goto 101
           endif
         enddo
-101     continue 
+101     continue
         if (pos.gt.0.and.pos.ne.ncompn) then
           nbsd=nbsd+1
           tmp_pos(nbsd)=pos
@@ -347,10 +347,10 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
           call cesexi('C', jcesd, jcesl, numa, ino,&
                                 1, ifh, iad)
           nusd=zi(jcesv-1+iad)
-          pos=-1          
+          pos=-1
           if (nusd.le.0) goto 102
           if (xtest_code(nusd, list_sd_no(deca*(nuno-1)+ncompn), lfno, nfh_ref(nuno), nfissmax,&
-                       fisno,& 
+                       fisno,&
                        tmp_fno((deca_fno*(nuno-1)+nfissmax*(ncompn-1)+1):&
                                   (deca_fno*(nuno-1)+nfissmax*(ncompn-1)+nfissmax)))) then
              pos=ncompn
@@ -364,7 +364,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
               pos=cpt
               goto 102
             endif
-          enddo 
+          enddo
 102       continue
           if (pos.gt.0.and.pos.ne.ifh) then
             nbsd=nbsd+1
@@ -380,8 +380,8 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
           zi(jcesv-1+iad2)=tmp_id(i)
         enddo
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   BRICOLAGE POUR LE MONO-HEAVISIDE : 
-!    ON RAJOUTE UN FLAG POUR OBTENIR POUR OBTENIR UN SAUT CONSTANT 
+!   BRICOLAGE POUR LE MONO-HEAVISIDE :
+!    ON RAJOUTE UN FLAG POUR OBTENIR POUR OBTENIR UN SAUT CONSTANT
 !    SI HE=-1  <=> NUSD=ID1 : ON IMPOSE XCALC_HEAV=+2 EN TRANSFORMANT NUSD=>-999
 !    SI HE=+1  <=> NUSD=ID2 : ON IMPOSE XCALC_HEAV=-2 EN TRANSFORMANT NUSD=>+999
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -398,7 +398,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
               zi(jcesv-1+iad5)=999
         endif
 !
-      enddo      
+      enddo
 !
 100 continue
 !
@@ -408,9 +408,9 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     call cescel(ces_hno, modelx//'.MODELE', opt, npa, 'OUI',&
                 nncp, 'G', cel_hno, 'F', ibid)
 !
-    AS_DEALLOCATE(vl=is_ma_xfem) 
+    AS_DEALLOCATE(vl=is_ma_xfem)
     AS_DEALLOCATE(vl=is_nfh_no)
-    AS_DEALLOCATE(vi=list_sd_no) 
+    AS_DEALLOCATE(vi=list_sd_no)
     AS_DEALLOCATE(vi=count_sd_no)
     AS_DEALLOCATE(vi=tmp_fno)
     AS_DEALLOCATE(vi=nfh_ref)

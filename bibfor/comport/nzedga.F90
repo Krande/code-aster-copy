@@ -116,7 +116,7 @@ integer, intent(out) :: iret
     character(len=16) :: metaRela, metaGlob
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     ndimsi          = 2*ndim
     iret            = 0
     resi            = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'

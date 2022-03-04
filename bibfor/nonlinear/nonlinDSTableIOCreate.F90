@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ type(NL_DS_TableIO), intent(in) :: tableio
     resultName = tableio%resultName
 !
 ! - Access to list of tables
-!  
+!
     call jeexin(resultName//'           .LTNT', iret)
     ASSERT(iret .gt. 0)
 !

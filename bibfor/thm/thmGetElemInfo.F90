@@ -60,7 +60,7 @@ integer, optional, intent(out):: npi_, npi2_, npg_
 ! Out jv_dfunc         : JEVEUX adress for derivative of shape functions (linear shape functions)
 ! Out jv_dfunc2        : JEVEUX adress for derivative of shape functions (quadratic shape functions)
 ! In  inte_type        : type of integration - classical, lumped (D), reduced (R)
-! Out npi              : number of Gauss points for linear 
+! Out npi              : number of Gauss points for linear
 ! Out npi2             : number of Gauss points for quadratic
 ! Out npg              : number of Gauss points
 !
@@ -110,7 +110,7 @@ integer, optional, intent(out):: npi_, npi2_, npg_
     if (present(npi2_)) then
         npi2_ = npi2
     endif
-    if (present(npg_)) then 
+    if (present(npg_)) then
         npg_  = npg
     endif
 

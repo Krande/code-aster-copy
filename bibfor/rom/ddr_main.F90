@@ -66,7 +66,7 @@ type(ROM_DS_ParaDDR), intent(in) :: cmdPara
     AS_ALLOCATE(vi = v_equa_dual, size = nbModeDual)
 !
 ! - Application of DEIM
-!    
+!
     call ddr_comp(cmdPara%ds_empi_prim, v_equa_prim)
     call ddr_comp(cmdPara%ds_empi_dual, v_equa_dual)
 !

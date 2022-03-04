@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ integer, intent(out) :: nbModeOut, nbSnapOut
     fieldName    = base%mode%fieldName
     fieldSupp    = base%mode%fieldSupp
 !
-! - Get previous reduced coordinates when reuse 
+! - Get previous reduced coordinates when reuse
 !
     if (lReuse) then
         call romTableRead(paraPod%tablReduCoor)
@@ -322,7 +322,7 @@ integer, intent(out) :: nbModeOut, nbSnapOut
 !
 ! - Compute reduced coordinates G <= B^T G (dim : [nbModeOut x nbSnapOut] )
 !
-    AS_ALLOCATE(vr = v_gamma, size = nbModeOut*nbSnapOut) 
+    AS_ALLOCATE(vr = v_gamma, size = nbModeOut*nbSnapOut)
     call dgemm('T', 'N', nbModeOut, nbSnapOut, iAlgoSnap, 1.d0,&
                b, iAlgoSnap,&
                gt, iAlgoSnap,&

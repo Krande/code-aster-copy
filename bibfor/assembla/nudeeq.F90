@@ -46,7 +46,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Numbering 
+! Numbering
 !
 ! Set DEEQ object (with non-physical nodes)
 ! Set DELG object
@@ -61,7 +61,7 @@ implicit none
 ! In  igds           : index of GRANDEUR used to numbering
 ! In  iddlag         : adresse of DSCLAG object (see nueffe)
 !
-! Object   : PROF_CHNO.DEEQ 
+! Object   : PROF_CHNO.DEEQ
 ! Dimension: vector of size (2*nb_equa)
 ! Contains : for i_equa = 1,nb_equa
 !
@@ -80,7 +80,7 @@ implicit none
 !       SI LE NOEUD SUPPORT DE L'EQUA. i_equa EST UN LAGRANGE DE LIAISON :
 !           0
 !
-! Object   : NUME_EQUA.DELG 
+! Object   : NUME_EQUA.DELG
 ! Dimension: vector of size (nb_equa)
 ! Contains : for i_equa = 1,nb_equa
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine intersect_conic(m, line, nb, point1, point2)
 ! IN  M  : MATRICE DE LA CONIQUE
 ! IN LINE : DROITE EN COORDONNEES HOMOGENES
 ! OUT NB : NOMBRE DE POINTS D INTERSECTION
-! OUT POINT1, POINT2 : POINT D INTERSECTIONS 
+! OUT POINT1, POINT2 : POINT D INTERSECTIONS
 !
       real(kind=8) :: coefA, coefB, coefC, pt1(3), pt2(3)
       real(kind=8) :: prec, mult1(3), mult2(3), ref_coef

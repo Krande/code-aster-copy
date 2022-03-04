@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine dtmprep_arch(sd_dtm_)
 
     call dtmget(sd_dtm, _INST_FIN, rscal=tfin)
 
-    list = [tfin] 
+    list = [tfin]
     nbinst = 0
     inst => list
     iparch = 1
@@ -99,9 +99,9 @@ subroutine dtmprep_arch(sd_dtm_)
 
 
     perarch = real(iparch)*dt
-    if (perarch .gt. (tfin-tinit)) then 
+    if (perarch .gt. (tfin-tinit)) then
         nbsaves = 1
-    else 
+    else
         nbsaves = 1 + nint((tfin-tinit)/perarch)
         nbsaves = 1 + int((tfin+epsi*nbsaves-tinit)/perarch)
     end if
@@ -111,7 +111,7 @@ subroutine dtmprep_arch(sd_dtm_)
             ASSERT(.false.)
         else if (inst(i).gt.(tfin+epsi)) then
             ASSERT(.false.)
-        else 
+        else
             if (abs(inst(i)-tinit).gt.epsi) then
                 nbarch = nbarch + 1
                 archlst(nbarch) = inst(i)
@@ -138,9 +138,9 @@ subroutine dtmprep_arch(sd_dtm_)
         residue = min(residue,abs(tfin-perarch))
         if ((residue.gt.(j*epsi)).and.(abs(residue-perarch).gt.(j*epsi))) then
             nbsaves = nbsaves + 1
-        end if       
+        end if
     end if
-    
+
 !   --- The archived instant list must be monotone, check renforced
     do i =1, nbarch-1
         if (archlst(i).ge.archlst(i+1)) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ character(len=16), intent(in) :: option, nomte
 !           MEMBRANE
 !
 ! Options: RIGI_MECA_PRSU_* (for 3D skin elements only)
-!          CHAR_MECA_PRSU_* 
+!          CHAR_MECA_PRSU_*
 !          RIGI_MECA_EFSU_* (for 3D skin elements only)
 !          CHAR_MECA_EFSU_* (for 3D skin elements only)
 !

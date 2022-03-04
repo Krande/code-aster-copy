@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine nmmaba(icodma, rela_comp, e, dsde, sigy,&
     parameter    (nbval = 12)
     real(kind=8) :: valpar, valres(nbval)
     integer :: codres(nbval)
-    character(len=8) :: nompar, nomela(1) 
+    character(len=8) :: nompar, nomela(1)
     character(len=16) :: nomecl(2), nompim(12)
     character(len=4) :: fami
 !

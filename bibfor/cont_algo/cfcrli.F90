@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ implicit none
     integer :: jv_sdcont_apcoef, jv_sdcont_apcofr
     character(len=24) :: sdcont_ddlco, sdcont_nbddl
     integer, pointer :: v_sdcont_ddlco(:) => null()
-    integer, pointer :: v_sdcont_nbddl(:) => null() 
+    integer, pointer :: v_sdcont_nbddl(:) => null()
     character(len=24) :: sdcont_apddl, sdcont_approj
     integer :: jv_sdcont_apddl, jv_sdcont_approj
     character(len=24) :: sdcont_coco

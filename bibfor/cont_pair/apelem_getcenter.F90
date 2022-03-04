@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,10 +43,10 @@ implicit none
 !
     ksi1_cent = 0.d0
     ksi2_cent = 0.d0
-!    
+!
     if (elem_code .eq. 'SE2'.or.&
         elem_code .eq. 'SE3') then
-        ksi1_cent   = 0.d0 
+        ksi1_cent   = 0.d0
     elseif (elem_code .eq. 'TR3'.or.&
             elem_code .eq. 'TR6') then
         ksi1_cent   = 1.d0/3.d0
@@ -57,7 +57,7 @@ implicit none
         ksi1_cent   = 0.d0
         ksi2_cent   = 0.d0
     else
-        ASSERT(.false.) 
+        ASSERT(.false.)
     end if
 !
 end subroutine

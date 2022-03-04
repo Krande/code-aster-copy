@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,15 +26,15 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
     integer :: ndime, ninter, npts, nptm
     real(kind=8) :: ainter(*)
     integer :: nbpi, ip1(4), ip2(4), pm1a(4), pm1b(4), pm2(4)
-!    BUT: CONSTRUIRE LES FACES DE DECOUPE DU TETRA DE DECOUPE DE REFERENCE 
+!    BUT: CONSTRUIRE LES FACES DE DECOUPE DU TETRA DE DECOUPE DE REFERENCE
 !         CALCULE LES POINTS D INTERSECTION ET POINTS MILIEUX PRESENTS PAR FACE
-!          
+!
 !     ENTREE
 !       NINTER  : NOMBRE DE POINTS D'INTERSECTION
-!       NPTS    : NOMBRE DE POINTS D'INTERSECTION CONFONDU AVEC UN NOEUD SOMMET 
-!       NPTM    : NOMBRE DE POINTS D'INTERSECTION CONFONDU AVEC UN NOEUD MILIEU 
+!       NPTS    : NOMBRE DE POINTS D'INTERSECTION CONFONDU AVEC UN NOEUD SOMMET
+!       NPTM    : NOMBRE DE POINTS D'INTERSECTION CONFONDU AVEC UN NOEUD MILIEU
 !       FPM1    : NUMRO DU POINT D'INTERSECTION CORRESPONDANT AU NOEUD MILIEU A NE PAS CONSIDERER
-!                 DANS LE CAS NINTER=4, NPTS=2, NPTM=1 
+!                 DANS LE CAS NINTER=4, NPTS=2, NPTM=1
 !     SORTIE
 !       NBPI    : NOMBRE DE FACE INTERSECTE
 !       IP1     : PREMIER IP DANS DANS UN FACE
@@ -51,8 +51,8 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
 !               SI LE CALCUL DE XMILFA CALCULE LE MILIEU D UNE ARETE DE DECOUPE
 !               AU LIEU D APPELER XNEWTO POUR RETROUVER LE CENTRE DU QUAD8
 !               L ORDRE PROPOSE ICI DEVIENT CORRELE AU SOUS DECOUPAGE XPENTE DANS XDECQV
-!              
-    integer :: zxain 
+!
+    integer :: zxain
 
 
     zxain=xxmmvd('ZXAIN')
@@ -60,7 +60,7 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
     if (ninter .eq. 1) then
         nbpi=0
     else if (ninter.eq.2 .and. ndime.eq.2) then
-        if (npts.eq.0) then    
+        if (npts.eq.0) then
         nbpi=1
 !       MILIEU DE I1-I2
         ip1(1)=1
@@ -73,8 +73,8 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
 !       MILIEU DE I1-I2
         ip1(1)=1
         ip2(1)=2
-        endif     
-    else if (ninter.eq.3 .and. ndime.eq.2) then       
+        endif
+    else if (ninter.eq.3 .and. ndime.eq.2) then
         nbpi=1
 !       MILIEU DE I1-I2
         ip1(1)=2

@@ -44,29 +44,29 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
 ! ===================================================================================
 
     implicit none
-    
+
 #include "asterfort/srlnvi.h"
 #include "asterfort/rcvala.h"
 
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: ndt,ndi,nvi,imat,nbmat
     real(kind=8) :: materd(nbmat,2),materf(nbmat,2),tempd,tempf,tempr
     character(len=3) :: matcst
     character(len=8) :: mod
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: ii,indal
     real(kind=8) :: e,nu,mu,k
     real(kind=8) :: dtempm,dtempp,dtemp
     integer :: cerr(31)
     character(len=13) :: nomc(31)
-    
+
     !!!
     !!! Recuperation du nombre de composantes et de variables internes
     !!!
@@ -76,7 +76,7 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
     !!!
     !!! Definition du nom des parametres materiau
     !!!
-    
+
     nomc(1)  = 'E            '
     nomc(2)  = 'NU           '
     nomc(3)  = 'ALPHA        '
@@ -108,23 +108,23 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
     nomc(29) = 'R_X5         '
     nomc(30) = 'Z            '
     nomc(31) = 'COUPLAGE_P_VP'
-    
+
     !!!
     !!! Recuperation des parametres materiau
     !!!
-    
+
     materd(:,:) = 0.d0
-    
+
     !!! parametres elastiques
     call rcvala(imat,' ','ELAS',3,'TEMP',[tempd,tempf,tempr],&
                 3,nomc(1),materd(1,1),cerr(1),0)
     indal=1
     if (cerr(3).ne.0) indal=0
-    
+
     !!! parametres lkr
     call rcvala(imat,' ','LKR',3,'TEMP',[tempd,tempf,tempr],&
                 28,nomc(4),materd(1,2),cerr(4),0)
-    
+
     !!!
     !!! Calcul des modules de cisaillement et de compressibilite et stockage
     !!!
@@ -133,40 +133,40 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd,&
     nu=materd(2,1)
     mu=e/(2.d0*(1.d0+nu))
     k=e/(3.d0*(1.d0-2.d0*nu))
-    
+
     materd(4,1)=mu
     materd(5,1)=k
-    
+
     !!!
     !!! Stockage des temperatures et increments comme parametres materiau
     !!!
-    
+
     materd(6,1)=tempd
     materd(7,1)=tempf
     materd(8,1)=tempr
-    
+
     if ((tempf-tempr).ge.0.d0) then
         dtempp=tempf-tempr
     else
         dtempp = 0.d0
     endif
-    
+
     if ((tempd-tempr).ge.0.d0) then
         dtempm=tempd-tempr
     else
         dtempm=0.d0
     endif
-    
+
     dtemp=tempf-tempd
-    
+
     materd(9,1)=dtempm
     materd(10,1)=dtempp
     materd(11,1)=dtemp
-    
+
     !!!
     !!! Definition d'un materiau final
     !!!
-    
+
     do ii=1,nbmat
         materf(ii,1)=materd(ii,1)
         materf(ii,2)=materd(ii,2)

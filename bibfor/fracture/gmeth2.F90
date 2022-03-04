@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ implicit none
 !   VALEURS DES POLYNOMES DE LEGENDRE POUR LES NOEUDS DU FOND DE FISSURE
     call wkvect('&&METHO2.THETA', 'V V R8', (ndeg+1)*nnoff, iadrt3)
     call glegen(ndeg, nnoff, xl, objcur, zr(iadrt3))
-!    
+!
 !   CALCUL DE LA MATRICE DU SYSTEME LINÉAIRE [A] {GI} = {GTHI}
     matr = '&&METHO2.MATRIC'
     call gmatr2(nnoff, ndeg, objcur, xl, matr, norfon)

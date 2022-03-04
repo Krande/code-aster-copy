@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
 ! Decalage negatif
 !
     if(deklag.lt.zero) then
-       trans = - prodef/deux 
+       trans = - prodef/deux
 !  --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE REVETEMENT --
        call calc_fact_int_cont(norev, zr(jsigmr), zr(jabsrv), prodef, trans, &
                                k1a, k1b)
@@ -110,7 +110,7 @@ subroutine calck1(norev, nomdb, sigmrv, sigmdb, tbscrv,&
 ! Decalage positif
     else if(deklag.ge.zero) then
 
-       trans = - prodef/deux 
+       trans = - prodef/deux
 !  --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE REVETEMENT --
 !       call calc_fact_int_cont(norev, zr(jsigmr), zr(jabsrv), prodef, trans, &
 !                               k1a, k1b)

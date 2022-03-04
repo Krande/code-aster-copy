@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ character(len=8), intent(in) :: meshIn, meshOut
     elseif (typ_dec_lac == "HEXA") then
         typ_dec = 0
     endif
-! 
+!
     call copisd('MAILLAGE', 'V', meshIn, meshAux)
 !
     do iSlavCellGroup = 1,nbSlavCellGroup
@@ -128,7 +128,7 @@ character(len=8), intent(in) :: meshIn, meshOut
 ! ----- NETTOYAGE
         AS_DEALLOCATE(vi=li_trav)
     enddo
-! - CREATION DU POINTEUR VERS LES NOMS 
+! - CREATION DU POINTEUR VERS LES NOMS
     call wkvect(meshOut//'.PTRNOMPAT', 'G V K24', nbSlavCellGroup, vk24 = ptrPatchName)
     do iSlavCellGroup = 1, nbSlavCellGroup
        ptrPatchName(iSlavCellGroup) = slavCellGroup(iSlavCellGroup)

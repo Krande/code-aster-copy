@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -815,7 +815,7 @@ subroutine compMassMatrHexa(elemProp, cellGeom, matePara, matrMass)
 
 ! - Loop on Gauss points
     do kpg = 1, nbIntePoint
-        XI(1) = zr(jvCoor+3*(kpg-1)-1+1) 
+        XI(1) = zr(jvCoor+3*(kpg-1)-1+1)
         XI(2) = zr(jvCoor+3*(kpg-1)-1+2)
         XI(3) = zr(jvCoor+3*(kpg-1)-1+3)
         poids = zr(jvWeight-1+kpg)

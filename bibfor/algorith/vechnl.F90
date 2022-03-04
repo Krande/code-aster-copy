@@ -44,7 +44,7 @@ character(len=1), intent(in) :: base
 ! --------------------------------------------------------------------------------------------------
 !
 ! Thermic - Residuals
-! 
+!
 ! Non-linear neumann loads elementary vectors
 !
 ! --------------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ character(len=1), intent(in) :: base
 !
 ! - Init fields
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)    
+    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
 !
 ! - Loads
 !

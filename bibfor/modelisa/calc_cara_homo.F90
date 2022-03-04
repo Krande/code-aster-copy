@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,12 @@ subroutine calc_cara_homo(noma, nomgrma, listma, nbma, ncarac,&
     real(kind=8), intent(in) :: vale(*)
     character(len=8) , intent(out) :: caram(4)
     real(kind=8), intent(out) :: valem(*)
-    
+
 !
 !   AFFE_CARA_ELEM
 !   Calcul à partir des caractéristiques R_DEBUT, R_FIN, EP_DEBUT et EP_FIN
-!   du groupe de mailles ordonnée, les valeurs des caractéristiques 
-!   R1, R2  
+!   du groupe de mailles ordonnée, les valeurs des caractéristiques
+!   R1, R2
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -97,7 +97,7 @@ subroutine calc_cara_homo(noma, nomgrma, listma, nbma, ncarac,&
         endif
         no1 = zi(jcxma)
         no2 = zi(jcxma+1)
-!       longueur de l'élément 
+!       longueur de l'élément
         l = sqrt( (zr(jcoor+3*(no2-1)  )-zr(jcoor+3*(no1-1)  ))**2&
                  +(zr(jcoor+3*(no2-1)+1)-zr(jcoor+3*(no1-1)+1))**2&
                  +(zr(jcoor+3*(no2-1)+2)-zr(jcoor+3*(no1-1)+2))**2)

@@ -71,7 +71,7 @@ integer, intent(in) :: i_mode
     ds_solve  = ds_algoGreedy%solveDOM
     nume_pres = ds_algoGreedy%nume_pres
     nume_phi  = ds_algoGreedy%nume_phi
-!    
+!
 ! - Prepre 3 champs noeuds pour la base
 !
     base_1   = '&&&OP0053.BASE_U'
@@ -80,18 +80,18 @@ integer, intent(in) :: i_mode
     call copisd('CHAMP_GD', 'V', ds_solve%vect_zero, base_1)
     call copisd('CHAMP_GD', 'V', ds_solve%vect_zero, base_2)
     call copisd('CHAMP_GD', 'V', ds_solve%vect_zero, base_3)
-!    
+!
 ! - Remplir les .VALE
 !
     syst_type = ds_solve%syst_type
     nb_equa   = ds_solve%syst_size
-    if (syst_type .eq. 'R') then 
-        call jeveuo(ds_solve%syst_solu//'.VALE', 'L', vr = vr_syst_solu) 
-        call jeveuo(base_1(1:19)//'.VALE',       'E', vr = vr_base_1) 
-        call jeveuo(base_2(1:19)//'.VALE',       'E', vr = vr_base_2) 
+    if (syst_type .eq. 'R') then
+        call jeveuo(ds_solve%syst_solu//'.VALE', 'L', vr = vr_syst_solu)
+        call jeveuo(base_1(1:19)//'.VALE',       'E', vr = vr_base_1)
+        call jeveuo(base_2(1:19)//'.VALE',       'E', vr = vr_base_2)
         call jeveuo(base_3(1:19)//'.VALE',       'E', vr = vr_base_3)
-        vr_base_1(:) = 0.d0 
-        vr_base_2(:) = 0.d0 
+        vr_base_1(:) = 0.d0
+        vr_base_2(:) = 0.d0
         vr_base_3(:) = 0.d0
         do i_equa = 1, nb_equa
             if (field%equaCmpName(i_equa) .eq. nume_pres) then
@@ -103,11 +103,11 @@ integer, intent(in) :: i_mode
             else
                 ASSERT(ASTER_FALSE)
             endif
-        end do 
-    else if (syst_type .eq. 'C') then 
-        call jeveuo(ds_solve%syst_solu//'.VALE', 'L', vc = vc_syst_solu) 
-        call jeveuo(base_1(1:19)//'.VALE',       'E', vc = vc_base_1) 
-        call jeveuo(base_2(1:19)//'.VALE',       'E', vc = vc_base_2) 
+        end do
+    else if (syst_type .eq. 'C') then
+        call jeveuo(ds_solve%syst_solu//'.VALE', 'L', vc = vc_syst_solu)
+        call jeveuo(base_1(1:19)//'.VALE',       'E', vc = vc_base_1)
+        call jeveuo(base_2(1:19)//'.VALE',       'E', vc = vc_base_2)
         call jeveuo(base_3(1:19)//'.VALE',       'E', vc = vc_base_3)
         vc_base_1(:) = dcmplx(0.d0,0.d0)
         vc_base_2(:) = dcmplx(0.d0,0.d0)
@@ -122,8 +122,8 @@ integer, intent(in) :: i_mode
             else
                 ASSERT(ASTER_FALSE)
             endif
-        end do 
-    else 
+        end do
+    else
         ASSERT(ASTER_FALSE)
     end if
 !

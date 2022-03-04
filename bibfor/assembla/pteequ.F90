@@ -54,7 +54,7 @@ implicit none
 ! In  nb_cmp_field   : number of components in field
 ! In  field_to_cata  : pointer to converter from local components (field) to global (catalog)
 !
-! Object   : PROF_CHNO.DEEQ 
+! Object   : PROF_CHNO.DEEQ
 ! Dimension: vector of size (2*neq)
 ! Contains : for ieq = 1,neq
 !

@@ -39,7 +39,7 @@ real(kind=8), optional, intent(out) :: dfdi(nnop, ndim)
 !
 ! TROUVER LES COORDONNEES DANS L'ELEMENT DE REFERENCE D'UN
 ! POINT DONNE DANS L'ELEMENT REEL PAR LA METHODE NEWTON
-! ET CALCUL DES FONCTIONS DE FORME CLASSIQUES ET DE LEURS 
+! ET CALCUL DES FONCTIONS DE FORME CLASSIQUES ET DE LEURS
 ! DERIVEES EN XE
 !
 ! ----------------------------------------------------------------------
@@ -95,6 +95,6 @@ real(kind=8), optional, intent(out) :: dfdi(nnop, ndim)
                 end do
             end do
         end do
-    end if 
+    end if
 !
 end subroutine

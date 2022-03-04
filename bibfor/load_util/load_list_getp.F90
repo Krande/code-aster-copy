@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ character(len=16), optional, intent(out) :: load_apply_
         if (load_pheno.ne.'MECANIQUE') then
             call utmess('F', 'CHARGES_22', sk=load_name)
         endif
-    elseif (phenom.eq.'THER') then        
+    elseif (phenom.eq.'THER') then
         if (load_pheno.ne.'THERMIQUE') then
             call utmess('F', 'CHARGES_21', sk=load_name)
         endif
@@ -159,7 +159,7 @@ character(len=16), optional, intent(out) :: load_apply_
     if (phenom.eq.'MECA') then
         ASSERT(present(load_apply_))
         if (l_load_user) then
-            if (getexm(load_keyword,'TYPE_CHARGE') .eq. 1) then            
+            if (getexm(load_keyword,'TYPE_CHARGE') .eq. 1) then
                 call getvtx(load_keyword, 'TYPE_CHARGE', iocc=i_excit, scal=load_apply)
             else
                 load_apply = 'FIXE_CSTE'
@@ -182,7 +182,7 @@ character(len=16), optional, intent(out) :: load_apply_
             endif
         endif
     elseif (phenom.eq.'THER') then
-        ASSERT(.not.present(load_apply_))        
+        ASSERT(.not.present(load_apply_))
     else
         ASSERT(.false.)
     endif

@@ -36,7 +36,7 @@ character(len=19), intent(in) :: hval_veasse(*), cnffdo, cndfdo
 !
 ! MECA_NON_LINE - Algorithm
 !
-! Get Neumann and Dirichlet loads for initial acceleration 
+! Get Neumann and Dirichlet loads for initial acceleration
 !
 ! --------------------------------------------------------------------------------------------------
 !

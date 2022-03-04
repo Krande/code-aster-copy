@@ -54,7 +54,7 @@ subroutine op0017()
 !
     nivo = 0
     call getvis(' ', 'NIVEAU', scal=nivo, nbret=n3)
-    perm = '' 
+    perm = ''
     if (nivo .eq. -1) call getvtx(' ', 'PERMUTATION', scal=perm)
 !
     call getvtx(' ', 'ATTRIBUT', scal=chaine, nbret=n3)

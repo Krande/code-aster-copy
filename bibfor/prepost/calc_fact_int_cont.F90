@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine calc_fact_int_cont(nbnoe, sigma, abscr, prodef, trans, &
     a = prodef/deux
     pi = r8pi()
 ! ====================================================
-! --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES 
+! --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES
 ! ====================================================
     do 20 ific = 1, nbnoe-1
         alpha = ( sigma(ific+1) - sigma(ific) ) / ( abscr(ific+1) - abscr(ific))

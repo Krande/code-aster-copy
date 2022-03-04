@@ -62,7 +62,7 @@ real(kind=8), optional, intent(out) :: angl_naut_(3)
     integer :: nangmx, i
     integer :: ntran, ncent, nangl, vali(2)
     aster_logical :: l_tran, l_cent, l_angl_naut
-    real(kind=8) :: tran(3), cent(3), angl_naut(3) 
+    real(kind=8) :: tran(3), cent(3), angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -23,7 +23,7 @@ subroutine thmCpl003(ds_thm,&
                      j_mater,&
                      ndim  , nbvari   ,&
                      dimdef, dimcon   ,&
-                     adcote, adcp11   , adcp12, & 
+                     adcote, adcp11   , adcp12, &
                      addete, addep1   , &
                      temp  , p1       ,&
                      dtemp , dp1      ,&
@@ -31,8 +31,8 @@ subroutine thmCpl003(ds_thm,&
                      tbiot ,&
                      phi   , rho11    , satur ,&
                      pvp   , h11      , h12   ,&
-                     congem, congep   ,&       
-                     vintm , vintp    , dsde  ,& 
+                     congem, congep   ,&
+                     vintm , vintp    , dsde  ,&
                      retcom)
 !
 use THM_type
@@ -255,14 +255,14 @@ integer, intent(out)  :: retcom
         if (ds_thm%ds_elem%l_dof_ther) then
             call virhol(nbvari, vintm , vintp ,&
                         advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,& 
+                        dtemp , dp1   , dp2   , dpad,&
                         cliq  , alpliq, signe ,&
                         rho110, rho11 , rho11m,&
                         retcom)
         else
             call virhol(nbvari, vintm , vintp ,&
                         advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,& 
+                        dtemp , dp1   , dp2   , dpad,&
                         cliq  , 0.d0  , signe ,&
                         rho110, rho11 , rho11m,&
                         retcom)

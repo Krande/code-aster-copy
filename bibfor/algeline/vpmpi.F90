@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine vpmpi(option, eigsol, icom1_, icom2_, lcomod_,&
     integer :: l1, l2, l3, nbvect, nbproc, nfreq, rang, typeco, vali(5)
     real(kind=8) :: rbid
     character(len=24) :: k24bid, valk(5)
-    
+
     integer :: icom1, icom2, nbvecg, nfreqg
     mpi_int :: mpicou, mpicow
     integer :: rangl
@@ -75,7 +75,7 @@ subroutine vpmpi(option, eigsol, icom1_, icom2_, lcomod_,&
     if (option.ne.2)then
         ASSERT(.not.present(eigsol))
     endif
-    
+
     if (present(mpicou_))mpicou = mpicou_
     if (present(mpicow_))mpicow = mpicow_
     if (present(rangl_))rangl = rangl_
@@ -84,7 +84,7 @@ subroutine vpmpi(option, eigsol, icom1_, icom2_, lcomod_,&
     if (present(omemin_))omemin = omemin_
     if (present(vpinf_))vpinf = vpinf_
     if (present(vpmax_))vpmax = vpmax_
-    
+
     select case (option)
     case (1)
 ! ---  STEP 1: RECUPERATION DES PARAMETRES MPI + TESTS
@@ -214,9 +214,9 @@ subroutine vpmpi(option, eigsol, icom1_, icom2_, lcomod_,&
     case default
         ASSERT(.false.)
     end select
-    
+
 !   traitement des arguments optionnels en sortie
-    
+
     if (present(mpicou_))mpicou_ = mpicou
     if (present(mpicow_))mpicow_ = mpicow
     if (present(rangl_))rangl_ = rangl
@@ -225,7 +225,7 @@ subroutine vpmpi(option, eigsol, icom1_, icom2_, lcomod_,&
     if (present(omemin_))omemin_ = omemin
     if (present(vpinf_))vpinf_ = vpinf
     if (present(vpmax_))vpmax_ = vpmax
-    
+
     if (present(icom1_))icom1_ = icom1
     if (present(icom2_))icom2_ = icom2
     if (present(nbvecg_))nbvecg_ = nbvecg

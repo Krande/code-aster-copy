@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -148,15 +148,14 @@ subroutine dgplas(ea, sya, eb, nub, ftj,fcj,&
                     nnap, rx, ry, mp, drp,&
                     w)
         pendf=(mp-syf)/(drp-drd)
-    else     
+    else
         ya = rx(1)*h
         efm = 1./12.*ef*h**3-2*ea(1)*omx*(ya**2)
         efm = efm*12/(h**3)
-        call calc_myf_gf(efm, ftj, fcj, h, ea(1), omx,& 
+        call calc_myf_gf(efm, ftj, fcj, h, ea(1), omx,&
                        ya, sya(1), ipenteflex, emaxf,&
                        syf, pendf)
-        
+
     endif
 !
 end subroutine
-

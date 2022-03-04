@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,8 +65,8 @@ real(kind=8),parameter::accel=0.5d0
 ! ------------------------------------------------------------------------------
 
     ASSERT(ite.ge.1)
-    
-    
+
+
 !   Premier appel : initialisation
     if (ite.eq.1) then
         mem%eximin = present(xmin)
@@ -101,7 +101,7 @@ real(kind=8),parameter::accel=0.5d0
 
         mem%fn = 0.d0
     end if
-    
+
 !     ! Debug
 !     mem%valx(ite) = x
 !     mem%valf(ite) = f
@@ -121,7 +121,7 @@ real(kind=8),parameter::accel=0.5d0
     if (.not. (mem%eximin .and. mem%eximax)) then
         ASSERT(df.gt.0)
     end if
-    if (mem%ismin) then 
+    if (mem%ismin) then
         ASSERT (f.le.0)
     end if
     if (mem%ismax) then
@@ -194,7 +194,7 @@ real(kind=8),parameter::accel=0.5d0
     end if
 
 end function utnewt
-        
 
-       
+
+
 end module scalar_newton_module

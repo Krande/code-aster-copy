@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -229,7 +229,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 
 ! ---     OPTIONS AVANCEES (ACCELERATIONS)
 ! ------     TEST DE COMPATIBILITE ACCELERATION/VERSIONS
-      
+
         if (redmpi>1) then
 ! version non compatible avec option REDUCTION_MPI
           if (kvers(1:15).ne.'5.4.1consortium') then
@@ -237,7 +237,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
              redmpi=-9999
           endif
         endif
- 
+
         if (kvers(6:15).eq.'consortium') then
             select case(kacmum)
             case('FR','FR+','FR++','LR','LR+','LR++')
@@ -271,7 +271,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
           icntl(15) = 1
         else
           icntl(15) = 0
-        endif     
+        endif
 !
 ! ---    REDISTRIBUTION DE PARALLELISME: MPI_TO_OPENMP FEATURE
 ! ---    IMPACT SUR //ISME OPENMP L0 POTENTIEL

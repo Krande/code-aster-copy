@@ -231,8 +231,8 @@ character(len=*), intent(in) :: macr
      call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vali)
     end if
     call jelira(macrel//'.MAEL_RAID_VALE','NMAXOC',ntriar)
-    call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale) 
-    if (ntriar.gt.1) then 
+    call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale)
+    if (ntriar.gt.1) then
      call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 2), 'L', vr=mael_raid_vali)
     else
      call jeveuo(jexnum(macrel//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vali)

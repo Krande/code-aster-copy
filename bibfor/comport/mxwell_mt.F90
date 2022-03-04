@@ -22,7 +22,7 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
 !
 !     REALISE LA LOI DE MAXWELL ISOTROPE : VISC_MAXWELL_MT
 !     avec les loies d'homogénéisation de MORI-TANAKA
-!     i.e. les paramètres meca (E, nu, eta_d et eta_v) 
+!     i.e. les paramètres meca (E, nu, eta_d et eta_v)
 !     dépendent de la porosité eulérienne
 !
 ! IN  NDIM    : DIMENSION DE L'ESPACE (3D=3,2D=2,1D=1)
@@ -35,7 +35,7 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
 !               SI C_PLAN DEPS(3) EST EN FAIT INCONNU (ICI:0)
 !                 =>  ATTENTION LA PLACE DE DEPS(3) EST ALORS UTILISEE.
 ! IN  SIGM    : CONTRAINTES A T
-! IN  VIM     : VARIABLES INTERNES A T 
+! IN  VIM     : VARIABLES INTERNES A T
 ! IN  OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
 ! OUT SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 ! OUT VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
@@ -55,7 +55,7 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     aster_logical :: cplan
     integer :: ndim, imate, iret, ndimsi
     integer :: k, l, icodre(3)
-!       
+!
     real(kind=8) :: instam, instap, dt ,nl
     real(kind=8) :: valres(5)
     real(kind=8) :: esk, nusk, Gsk, bulkmodulussk
@@ -65,7 +65,7 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     real(kind=8) :: depsmo, deps(6), depsdv(6), kron(6)
     real(kind=8) :: sigmmo, sigm(6), sigmdv(6), sigpmo, sigpdv(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)
-!   
+!
     character(len=8) :: typmod(*)
     character(len=16) :: nomres(5), option
 !-----------------------------------------------------------------------
@@ -77,7 +77,7 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
 !
     cplan = typmod(1) .eq. 'C_PLAN'
 !
-    ndimsi = 2*ndim            
+    ndimsi = 2*ndim
     dt = instap - instam
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES du squelette (sk)
@@ -88,20 +88,20 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     nomres(3)='ALPHA'
     nomres(4)='ETA_D'
     nomres(5)='ETA_V'
-!    
+!
     call rcvala(imate, ' ', 'ELAS', 0, ' ', [0.d0],&
                 3, nomres(1), valres(1), icodre(1), 2)
-! 
+!
 !
     call rcvala(imate, ' ', 'VISC_MAXWELL_MT', 0, ' ', [0.d0],&
                 2, nomres(4), valres(4), icodre(1), 2)
-!    
+!
     esk    = valres(1)
     nusk   = valres(2)
     alpha  = valres(3)
     etadsk = valres(4)
     etavsk = valres(5)
-!    
+!
     Gsk = esk/((1.d0+nusk)*2)
     bulkmodulussk = esk/(3.d0*(1.d0-2.d0*nusk))
 !
@@ -109,16 +109,16 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
 !        Application de la méthode de MORI-TANAKA
 !     --------------------------------------------------------
 !
-!    
+!
     bulkmodulus = bulkmodulussk * 4 * (1-nl) * Gsk    / (3*nl*bulkmodulussk + 4*Gsk) ;
     G_mt        = Gsk    * (1-nl) * (9*bulkmodulussk + 8*Gsk)   /  &
          (9 * bulkmodulussk * (1+2*nl/3) + 8 * Gsk    * (1+3*nl/2) );
     deuxG = 2*G_mt
-!    
+!
     etav        = etavsk        * 4 * (1-nl) * etadsk / (3*nl*etavsk        + 4*etadsk) ;
     etad        = etadsk * (1-nl) * (9*etavsk        + 8*etadsk) /  &
          (9 * etavsk        * (1+2*nl/3) + 8 * etadsk * (1+3*nl/2) );
-! 
+!
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :   (deformation moyenne et deviateur des deformations)
 !     --------------------------------
 ! - Get temperatures
@@ -154,11 +154,11 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     sigmmo = sigmmo /3.d0
      do k = 1, ndimsi
         sigmdv(k) = sigm(k) - sigmmo * kron(k)
-    end do   
+    end do
 !
-!     -- 7 CALCUL DE SIGPMO, SIGPDV, SIGP 
+!     -- 7 CALCUL DE SIGPMO, SIGPDV, SIGP
 !     -------------------------------------
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:16)&  
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:16)&
         .eq. 'RIGI_MECA_IMPLEX') then
 !
         sigpmo = 0.d0
@@ -176,7 +176,7 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
 !        ! SIGP
         do k = 1, ndimsi
             sigp(k) = sigpdv(k) + sigpmo*kron(k)
-        end do   
+        end do
 !
         vip(1) = 0.d0
     endif
@@ -186,18 +186,18 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         dsidep(:,:)=0.d0
-!        ! Les 9 premiers termes 
-        do k = 1, 3            
-            do l = 1, 3    
+!        ! Les 9 premiers termes
+        do k = 1, 3
+            do l = 1, 3
                 dsidep(k,l) = dsidep(k,l) + bulkmodulus/(1.d0+bulkmodulus*dt/etav)&
                                  - (1.d0/3.d0)*deuxG/(1.d0+deuxG*dt/etad)
             end do
         end do
         ! Les termes diagonaux
         do k = 1, ndimsi
-            dsidep(k,k) = dsidep(k,k) + deuxG/(1.d0+deuxG*dt/etad)            
+            dsidep(k,k) = dsidep(k,k) + deuxG/(1.d0+deuxG*dt/etad)
         end do
-!       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES : 
+!       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
             do k = 1, ndimsi
                 if (k .ne. 3) then

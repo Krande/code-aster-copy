@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! 
+!
 ! - Get all parameters for current element - Finite volume version
 !
     call thmGetElemPara_vf(ds_thm   , l_axi , l_steady , l_vf  ,&
@@ -130,10 +130,10 @@ character(len=16), intent(in) :: option, nomte
                         zk16(icompo), zr(icarcr),&
                         zr(igeom)   ,&
                         zr(ideplm)  , zr(ideplm),&
-                        defgem      , defgep    ,& 
+                        defgem      , defgep    ,&
                         zr(icontm)  , zr(icontm),&
                         zr(ivarim)  , zr(ivarim),&
-                        zr(iinstm)  , zr(iinstp),& 
+                        zr(iinstm)  , zr(iinstp),&
                         zr(imatuu)  , zr(ivectu))
         else
             do li = 1, dimuel
@@ -151,10 +151,10 @@ character(len=16), intent(in) :: option, nomte
                         zk16(icompo), zr(icarcr),&
                         zr(igeom)   ,&
                         zr(ideplm)  , zr(ideplp),&
-                        defgem      , defgep    ,& 
+                        defgem      , defgep    ,&
                         zr(icontm)  , zr(icontp),&
                         zr(ivarim)  , zr(ivarip),&
-                        zr(iinstm)  , zr(iinstp),& 
+                        zr(iinstm)  , zr(iinstp),&
                         zr(imatuu)  , zr(ivectu))
 
         endif

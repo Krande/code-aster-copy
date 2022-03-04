@@ -144,7 +144,7 @@ implicit none
            nptf = 3
            typsma = 'TRIA6   '
            call conare(typsma ,ar,nbf)
-       else 
+       else
            nnose = 3
            nptf = 2
            typsma = 'TRIA3   '
@@ -228,7 +228,7 @@ implicit none
                               rainter(k,3) = 0.d0
                               rainter(k,4) = 0.d0
                            endif
-                           call reeref(elp, nno, zr(igeom), ptree, ndim, ptref, ff) 
+                           call reeref(elp, nno, zr(igeom), ptree, ndim, ptref, ff)
                            do ii = 1, ndim
                               cooref(k,ii) = ptref(ii)
                            end do
@@ -550,7 +550,7 @@ implicit none
                   end do
                endif
             end do
-    else 
+    else
        if (.not. iselli(elp)) then
            nnose = 10
            nptf = 6
@@ -576,7 +576,7 @@ implicit none
                            h = h+1
                         else if (zr(jlsn-1+zi(jcnset-1+nnose*(i-1)+f(j,k))).eq.0.d0) then
                            h = h+1
-                        else 
+                        else
                            goto 99
                         endif
                      end do

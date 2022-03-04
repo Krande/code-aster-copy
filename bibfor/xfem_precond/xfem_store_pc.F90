@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,13 +72,13 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
     ASSERT(pc(1:11) .eq. pc)
     nu_pc=pc(1:11)//'_NU'
 !
-!    - PREMIERE PASSE : CALCUL DE L ESPACE <DENSE> NECESSAIRE 
+!    - PREMIERE PASSE : CALCUL DE L ESPACE <DENSE> NECESSAIRE
 !                          POUR STOCKER LES MATRICES LOCALES TRIANFULAIRES SUPERIEURES
 !
     if (kstruct.eq.'D_P_B') then
       cumul_ilig=0
-      do jcoll=1,neq  
-        if (ieq_loc(jcoll) .eq. 0) then 
+      do jcoll=1,neq
+        if (ieq_loc(jcoll) .eq. 0) then
           cumul_ilig=cumul_ilig+1
          else
           cumul_ilig=cumul_ilig+ieq_loc(jcoll)
@@ -113,7 +113,7 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
 !
     call jeexin(nu_pc, iexi)
     if ( iexi .gt. 0) call detrsd('NUME_DDL', nu_pc)
-    call copisd('NUME_DDL', base, nonu, nu_pc)  
+    call copisd('NUME_DDL', base, nonu, nu_pc)
     refa_pc(2)=nu_pc
     call jedetr(nu_pc//'.SMOS.SMDI')
     call wkvect(nu_pc//'.SMOS.SMDI', base//' V I', neq, jsmdi_pc)
@@ -132,8 +132,8 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
     call wkvect(nu_pc//'.SMOS.SMHC', base//' V S', cumul_ilig, jsmhc_pc)
 !
     decaj=0
-    do jcoll=1,neq  
-       if (ieq_loc(jcoll) .eq. 0) then 
+    do jcoll=1,neq
+       if (ieq_loc(jcoll) .eq. 0) then
           decaj=decaj+1
           zi4(jsmhc_pc-1+decaj)=int(jcoll,4)
           zr(jvale_sup-1+decaj)=1.d0

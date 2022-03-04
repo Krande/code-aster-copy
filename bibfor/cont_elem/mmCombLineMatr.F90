@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ real(kind=8), intent(inout) :: matr(81,81)
 !
 ! In  alpha_cont       : ratio for linear combination of matrix (contact)
 ! In  matr_prev        : matrix at previous Newton iteration
-! IO  matr             : matrix 
+! IO  matr             : matrix
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,11 +51,11 @@ real(kind=8), intent(inout) :: matr(81,81)
     coef        = 0.5*(alpha_cont+1.0)
     matr_tmp    = coef*matr+(1.0-coef)*matr_prev
     if (norm2(matr_tmp-matr) &
-        .gt. 1.d-6*norm2(matr) .and. count_consi .le. 15) then 
+        .gt. 1.d-6*norm2(matr) .and. count_consi .le. 15) then
        goto 51
-    elseif ( norm2(matr_tmp-matr) .lt. 1.d-6*norm2(matr)) then 
+    elseif ( norm2(matr_tmp-matr) .lt. 1.d-6*norm2(matr)) then
        matr = matr_tmp
-    else 
+    else
        matr = 0.9999d0*matr + 0.0001d0*matr_tmp
     endif
 !

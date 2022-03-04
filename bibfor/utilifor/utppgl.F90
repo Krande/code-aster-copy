@@ -28,7 +28,7 @@ subroutine utppgl(nn, nc, p, sg, sl)
     integer, intent(in) :: nn, nc
     real(kind=8), intent(in) :: p(3, 3), sg(*)
     real(kind=8), intent(out) :: sl(*)
-!    
+!
     integer :: n, n1, nddl
     real(kind=8), dimension(nn*nc, nn*nc) :: matsy1, matsy2, matas2
     real(kind=8), dimension(nn*nc, nn*nc) :: matsym, matasy

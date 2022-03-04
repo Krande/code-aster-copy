@@ -21,7 +21,7 @@ module kichenin_nl_module
     use scalar_newton_module,       only: &
             newton_state, &
             utnewt
-    
+
     use  tenseur_dime_module,       only: &
             proten, &
             kron, &
@@ -55,7 +55,7 @@ module kichenin_nl_module
         real(kind=8) :: troiskv,deuxmuv,vsc,nud,ga
     end type MATERIAL
 
-    
+
     ! VMIS_ISOT_NL class
     type CONSTITUTIVE_LAW
         integer       :: exception = 0
@@ -65,9 +65,9 @@ module kichenin_nl_module
         type(MATERIAL):: mat
     end type CONSTITUTIVE_LAW
 
-    
-    
-    
+
+
+
 contains
 
 
@@ -77,9 +77,9 @@ contains
 
 function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg, deltat) &
     result(self)
-        
+
     implicit none
-    
+
     integer,intent(in)          :: kpg, ksp, imate, itemax, ndimsi
     real(kind=8), intent(in)    :: precvg, deltat
     character(len=16),intent(in):: option
@@ -112,7 +112,7 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg, deltat) &
     self%cvuser = precvg
     self%small  = 1.d0/r8gaem()
 
-    
+
     ! Options de calcul
     self%elas   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'FULL_MECA_ELAS'
     self%rigi   = option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA_ELAS' &
@@ -122,10 +122,10 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg, deltat) &
     self%vari   = option.eq.'FULL_MECA_ELAS' .or. option.eq.'FULL_MECA'      &
              .or. option.eq.'RAPH_MECA'
     self%pred   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'RIGI_MECA_TANG'
-    
+
     ASSERT (self%pred .or. self%resi)
-    
-    
+
+
     ! Elasticity material parameters for the plastic branch
     call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS',0,' ',[0.d0],nbel,nomel,valel,okel,2)
     self%mat%deuxmup = valel(1)/(1+valel(2))
@@ -141,10 +141,10 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg, deltat) &
     self%mat%nud     = valki(5)
     self%mat%ga      = 1.d0/valki(6)
     self%mat%vsc     = deltat/(valki(7)**self%mat%ga)
-    
+
     ! Viscosite lineaire ou non
     self%visc_lin = (valki(6).eq.1.d0 .or. self%mat%ga.eq.1.d0)
-    
+
     ! Controle des parametres
     ASSERT(self%mat%sc .gt. 0)
     ASSERT(self%mat%sc .ge. 0)
@@ -153,7 +153,7 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg, deltat) &
     ASSERT(self%mat%nud .ge. -1.d0 .and. self%mat%nud .le. 0.5d0)
     ASSERT(self%mat%ga .ge. 1.d0)
     ASSERT(self%mat%vsc .ge. 0.d0)
-    
+
 end function Init
 
 
@@ -162,7 +162,7 @@ end function Init
 !  INTEGRATION OF THE CONSTITUTIVE LAW (MAIN ROUTINE)
 ! =====================================================================
 
-subroutine Integrate(self, eps, vim, sig, vip, deps_sig) 
+subroutine Integrate(self, eps, vim, sig, vip, deps_sig)
 
     implicit none
 
@@ -192,17 +192,17 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig)
 ! Plasticity integration
     call ComputePlasticity(self, eps, kapl, ep, sip, deps_sip)
     if (self%exception .ne. 0) goto 999
-    
-! Viscoelasticity integration 
+
+! Viscoelasticity integration
     call ComputeViscoElasticity(self, eps, kavs, ev, siv, deps_siv)
     if (self%exception .ne. 0) goto 999
-    
+
 ! Combination
     sig = sip + siv
     if (self%rigi) deps_sig = deps_sip + deps_siv
 
 
-! pack internal variables 
+! pack internal variables
     if (self%vari) then
         vip = 0.d0
         vip(1) = kapl
@@ -211,7 +211,7 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig)
         vip(9:8+self%ndimsi) = ev/rac2
     end if
 
-999 continue    
+999 continue
 end subroutine Integrate
 
 
@@ -220,7 +220,7 @@ end subroutine Integrate
 !  PLASTICITY COMPUTATION AND TANGENT OPERATORS
 ! =====================================================================
 
-subroutine ComputePlasticity(self, eps, ka, ep, sig, deps_sig) 
+subroutine ComputePlasticity(self, eps, ka, ep, sig, deps_sig)
 
     implicit none
 
@@ -255,7 +255,7 @@ subroutine ComputePlasticity(self, eps, ka, ep, sig, deps_sig)
     ! Contrainte elastique
     sige = self%mat%troiskp*sph_norm(eps)*krn + self%mat%deuxmup*deviator(eps-ep)
     ne   = deviator(sige) - self%mat%prag*ep
-    neq  = sqrt(1.5d0*dot_product(ne,ne))    
+    neq  = sqrt(1.5d0*dot_product(ne,ne))
 ! --------------------------------------------------------------------------------------------------
 
 !  CALCUL DES CONTRAINTES
@@ -264,7 +264,7 @@ subroutine ComputePlasticity(self, eps, ka, ep, sig, deps_sig)
     if (neq.le.self%mat%sc) then
         state = ELAS
         sig = sige
-        
+
     ! Plasticite
     else
         state = PLAS
@@ -274,7 +274,7 @@ subroutine ComputePlasticity(self, eps, ka, ep, sig, deps_sig)
         ep  = ep + dep
         ka  = ka + sqrt(2.d0/3.d0*dot_product(dep,dep))
     end if
-    
+
 ! --------------------------------------------------------------------------------------------------
 
 !  MATRICES TANGENTES
@@ -290,14 +290,14 @@ subroutine ComputePlasticity(self, eps, ka, ep, sig, deps_sig)
     else
         matr = state
     end if
-    
-   
+
+
     ! Matrice elastique
     if (matr .eq. ELAS) then
         deps_sig = self%mat%troiskp*proten(krn,krn) + self%mat%deuxmup*pdev
     end if
-    
-    
+
+
     ! Matrice plastique
     if (matr .eq. PLAS) then
         coef = self%mat%deuxmup/(self%mat%deuxmup+self%mat%prag)
@@ -318,7 +318,7 @@ subroutine ComputePlasticity(self, eps, ka, ep, sig, deps_sig)
 !  VISCOELASTICITY COMPUTATION AND TANGENT OPERATOR
 ! =====================================================================
 
-subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig) 
+subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig)
 
     implicit none
 
@@ -348,7 +348,7 @@ subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig)
     real(kind=8)      :: dev(self%ndimsi)
     real(kind=8)      :: xmin, xmax, x, xg, equ, xm, xp, xgm, xgp, equm, equp
     real(kind=8)      :: dx_xg, dxg_equ, dx_equ
-    integer           :: ite 
+    integer           :: ite
     type(newton_state):: mem
     integer           :: matr
     real(kind=8)      :: c_v_sign(self%ndimsi), h(self%ndimsi), ca1(self%ndimsi), ca2(self%ndimsi)
@@ -364,15 +364,15 @@ subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig)
     v_d = 1+self%mat%nud
     c_h = self%mat%troiskv
     c_d = self%mat%deuxmuv
-    
-    
+
+
 !   Contrainte instantanee
     sigi_h  = c_h*sph_norm(eps-ev)
     sigi_d  = c_d*deviator(eps-ev)
     sigi    = sigi_h*krn + sigi_d
     nori    = sqrt(v_h*sigi_h**2 + v_d*dot_product(sigi_d,sigi_d))
 
-    
+
 !   Cas a traiter parmi lineaire, non lineaire singulier et non lineaire regulier
     if (self%visc_lin) then
         state = LINE
@@ -381,8 +381,8 @@ subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig)
     else
         state = REGU
     end if
-    
-    
+
+
     ! Cas lineaire
     if (state .eq. LINE) then
         b0  = self%mat%vsc
@@ -392,38 +392,38 @@ subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig)
         dev = b0*(v_h*sph_norm(sig)*krn + v_d*deviator(sig))
         ev  = ev + dev
     end if
-    
-    
+
+
     ! Cas non lineaire singulier
     if (state .eq. SING) then
         sig   = 0
         dev   = 0
     end if
-    
-    
+
+
 !   Cas non lineaire regulier
     if (state .eq. REGU) then
-    
+
         ! Coefficients du probleme scalaire
         sign_h = sigi_h/nori
         sign_d = sigi_d/nori
-        
+
         a1  = v_h*sign_h**2
         a2  = v_d*dot_product(sign_d,sign_d)
         b0  = self%mat%vsc*nori**(self%mat%ga-1)
         b1  = c_h*v_h*b0
         b2  = c_d*v_d*b0
-        
+
 
     !   Resolution de l'equation scalaire
         xmin = sqrt(a1/(1+b1)**2 + a2/(1+b2)**2)
         xmax = 1.d0
         x    = merge(xmin, xmax, self%mat%ga .lt. 2)
-        
+
         do ite = 1, self%itemax
             xg = x**(self%mat%ga-1)
             equ = a1/(1+b1*xg)**2 + a2/(1+b2*xg)**2 - x**2
-            
+
             ! Test de convergence
             if (equ.ge.0) then
                 xm=x
@@ -438,18 +438,18 @@ subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig)
                 xgm = xm**(self%mat%ga-1)
                 equm = a1/(1+b1*xgm)**2 + a2/(1+b2*xgm)**2 - xm**2
             end if
-            
+
             ! Convergence
             if (equm*equp .le. 0) then
                 x = (xm*equp-xp*equm)/(equp-equm)
                 goto 100
             end if
-            
+
             ! Calcul de la derivee
             dx_xg = (self%mat%ga-1) * x**(self%mat%ga-2)
             dxg_equ = -2*a1*b1/(1+b1*xg)**3 - 2*a2*b2/(1+b2*xg)**3
             dx_equ = dx_xg*dxg_equ - 2*x
-            
+
             ! Update
             x = utnewt(x,-equ,-dx_equ,ite,mem,xmin=xmin,xmax=xmax)
         end do
@@ -462,18 +462,18 @@ subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig)
         dev = b0*xg*(v_h*sph_norm(sig)*krn + v_d*deviator(sig))
         ev  = ev + dev
     end if
-    
+
     ! Deformation visqueuse cumulee
      ka  = ka + sqrt(2.d0/3.d0*dot_product(dev,dev))
 
-    
+
 !   Calcul de la matrice tangente
     if (.not. self%rigi) goto 999
 
     ! Selection de la matrice (elastique ou plastique)
     if (self%elas .or. state .eq. SING) then
         matr = ELAS
-    else 
+    else
         matr = merge(LINE,NONLIN,state.eq.LINE)
     end if
 
@@ -487,25 +487,25 @@ subroutine ComputeViscoElasticity(self, eps, ka, ev, sig, deps_sig)
     if (matr .eq. ELAS) then
         deps_sig = c_h*proten(krn,krn) + c_d*pdev
     end if
-    
+
     ! Cas non lineaire regulier
     if (matr .eq. NONLIN) then
         c_v_sign = c_h*v_h*sign_h*krn + c_d*v_d*sign_d
-        
+
         h = c_h*v_h/(1+b1*xg)**2*sign_h*krn + c_d*v_d/(1+b2*xg)**2*sign_d
-          
+
         ca1 = 2*v_h*(c_h*sign_h*krn - sign_h**2*c_v_sign)
         ca2 = 2*v_d*(c_d*sign_d - dot_product(sign_d,sign_d)*c_v_sign)
         cb0 = (self%mat%ga-1)*self%mat%vsc * nori**(self%mat%ga-1) * c_v_sign
         cb1 = c_h*v_h*cb0
         cb2 = c_d*v_d*cb0
-        
+
         coef0 = (2*a1*(1+b1*self%mat%ga*xg)/(1+b1*xg)**3 + 2*a2*(1+b2*self%mat%ga*xg)/(1+b2*xg)**3)
         coef1 = ((1+b1*xg)*ca1 - 2*a1*xg*cb1)/(1+b1*xg)**3 &
               + ((1+b2*xg)*ca2 - 2*a2*xg*cb2)/(1+b2*xg)**3
         cx    = coef1/coef0
-        
-        
+
+
         deps_sig = c_h/(1+b1*xg)*proten(krn,krn) + c_d/(1+b2*xg)*pdev &
                  - xg*proten(h,cb0) &
                  - (self%mat%ga-1)*xg*b0*proten(h,cx)

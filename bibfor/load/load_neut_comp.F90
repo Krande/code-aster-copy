@@ -52,7 +52,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! Neumann loads computation - Thermic
-! 
+!
 ! Elementary (on one load)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ implicit none
 !
     integer :: i_type_neum, nb_in_add
     character(len=16) :: load_option
-    character(len=24) :: load_ligrel  
+    character(len=24) :: load_ligrel
     integer :: nbout, nbin
     character(len=8) :: lpaout, newnom
 !

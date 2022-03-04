@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine calcfh_vf(ds_thm,&
                      option, j_mater, ifa,&
                      t     , p1     , p2     , pvp, pad ,&
                      rho11 , h11    , h12    ,&
-                     satur , dsatur , & 
+                     satur , dsatur , &
                      valfac, valcen)
 !
 use THM_type
@@ -76,14 +76,14 @@ real(kind=8), intent(inout) :: valfac(6, 14, 6)
         call thmFlhVF009(ds_thm, option, j_mater, ifa, &
                          t     , p1    , p2     , pvp, pad,&
                          rho11 , h11   , h12    ,&
-                         satur , dsatur, & 
+                         satur , dsatur, &
                          valfac, valcen)
 
     case (LIQU_AD_GAZ)
         call thmFlhVF010(ds_thm, option, j_mater, ifa, &
                          t     , p1    , p2     , pvp, pad,&
                          rho11 , h11   , h12    ,&
-                         satur , dsatur, & 
+                         satur , dsatur, &
                          valfac, valcen)
 
     case default

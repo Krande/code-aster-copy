@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ character(len=14), intent(in) :: nume_dof
 character(len=19), intent(in) :: matr_asse
 character(len=19), intent(in) :: disp_iter
 character(len=19), intent(in) :: disp_cumu_inst
-type(NL_DS_Contact), intent(inout) :: ds_contact 
-integer, intent(out) :: ctccvg 
+type(NL_DS_Contact), intent(inout) :: ds_contact
+integer, intent(out) :: ctccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -102,7 +102,7 @@ integer, intent(out) :: ctccvg
     l_gliss    = cfdisl(ds_contact%sdcont_defi, 'CONT_DISC_GLIS')
 !
 ! - First geometric loop
-!    
+!
     l_first_geom = ds_contact%l_first_geom
 !
 ! - Preparation of contact solving

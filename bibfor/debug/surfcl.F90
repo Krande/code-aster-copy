@@ -233,9 +233,9 @@ implicit none
 ! ----- Tolerances
 !
         write (unit_msg,171) 'TOLE_PROJ_EXT   ',tole_proj_ext
-        if (algo_cont .eq. 5) then 
+        if (algo_cont .eq. 5) then
             write (unit_msg,171) 'RESI_APPA       ',resi_appa
-        else 
+        else
             write (unit_msg,171) 'DIST_APPA       ',dist_appa
         endif
 !

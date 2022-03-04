@@ -147,7 +147,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
     endif
 !
     epflag=.false.
-    
+
 !    write(6,*)
 !     write(6,'(A,6(I2))')'! * NDI,NDT =',ndi,ndt
 !
@@ -434,7 +434,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
     dgama=drvab*phia-drvbb*(phib+phic)
     dgamb=drvab*phib-drvbb*(phia+phic)
     dgamc=drvab*phic-drvbb*(phib+phia)
-!     
+!
 !     if (epflag) then
 !         write(6, '(A)') '!'
 !         write(6, '(A)') '!!! RETURN TO APEX !!!'
@@ -446,7 +446,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 !         write(6, '(4(A,E15.8))')&
 !         '! * PHIA =',phia,' PHIB =',phib,' PHIC =',phic
 !     endif
-! Compute new residual   
+! Compute new residual
     phia  =smcta-consta*dgama-constb*(dgamb+dgamc)-cohe
     phib  =smctb-consta*dgamb-constb*(dgama+dgamc)-cohe
     phic  =smctc-consta*dgamc-constb*(dgamb+dgama)-cohe

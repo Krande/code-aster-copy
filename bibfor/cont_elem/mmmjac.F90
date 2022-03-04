@@ -47,7 +47,7 @@ aster_logical, intent(out), optional :: l_axis_warn_
 !
 ! In  l_axis           : .true. for axisymmetric element
 ! In  elem_dime        : dimension of elements
-! In  nb_node          : number of nodes 
+! In  nb_node          : number of nodes
 ! In  elem_code        : code of element
 ! In  elem_coor        : updated coordinates of element
 ! In  ff               : shape functions at integration point

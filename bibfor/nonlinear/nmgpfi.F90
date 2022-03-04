@@ -113,7 +113,7 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    
+
 
     grand      = ASTER_TRUE
     axi        = typmod(1) .eq. 'AXIS'
@@ -192,7 +192,7 @@ integer, intent(out) :: codret
                     fami       , kpg        , 1     , 3     , typmod      ,&
                     imate      , compor     , carcri, instm , instp       ,&
                     9          , fPrev      , fIncr , 6     , sigmPrevComp,&
-                    vim(1, kpg), option     , angmas, & 
+                    vim(1, kpg), option     , angmas, &
                     tauCurr    , vip(1, kpg), 54    , dsidep,&
                     cod(kpg)   , mult_comp)
         if (cod(kpg) .eq. 1) then

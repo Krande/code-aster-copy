@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine eval_erc(baseno,dynam1,vecterc,nommes,matobs,obsdim,ifreq,omega,alpha
 ! IN  : I_FREQ        : NUMERO D'ORDRE DE LA MESURE ASSOCIE A LA FREQ EN COURS
 ! IN  : OMEGA         : PULSATION ASSOCIEE A LA FREQUENCE EN COURS
 ! IN  : ALPHA         : PARAMETRE ALPHA DE LA FONCTIONNELLE D'ERC
-! OUT : COUT_FON      : VALEUR DE LA FONCTION COUT 
-! OUT : TERME_UV      : PART DE LA VALEUR DE LA FONCTION COUT ASSOCIE AUX CHAMPS D'ERR 
+! OUT : COUT_FON      : VALEUR DE LA FONCTION COUT
+! OUT : TERME_UV      : PART DE LA VALEUR DE LA FONCTION COUT ASSOCIE AUX CHAMPS D'ERR
 ! ----------------------------------------------------------------------!
 ! ----------------------------------------------------------------------
 !
@@ -75,7 +75,7 @@ subroutine eval_erc(baseno,dynam1,vecterc,nommes,matobs,obsdim,ifreq,omega,alpha
     integer :: iobsval,ii,n_fil,n_col,idesc,nvect_mes,nvale_norme,ivale_norm,lmat
     real(kind=8) :: coef_mes,coef_alpha,terme_obs
     aster_logical :: isdiag
-!    
+!
     bl11 = '           '
 
 ! --- CALCUL DU PRODUIT (H*u-\tilde{u})
@@ -87,7 +87,7 @@ subroutine eval_erc(baseno,dynam1,vecterc,nommes,matobs,obsdim,ifreq,omega,alpha
     else if (type_mes.eq.'VITE') then
        occ=2
        coef_mes=1.0d0/omega
-    else 
+    else
        occ=3
        coef_mes=-1.0d0/(omega*omega)
     end if
@@ -126,17 +126,17 @@ subroutine eval_erc(baseno,dynam1,vecterc,nommes,matobs,obsdim,ifreq,omega,alpha
     endif
 !
     call jeveuo(jexnum(mnorme//bl11//'.VALM', 1), 'L', ivale_norm)
-! 
+!
 ! --- PRODUIT  (alpha/(1-alpha))*(H*u-\tilde{u})^T*G*(H*u-\tilde{u})
 
-! --- on cree un deuxieme vecteur de travail  iaux2                 
+! --- on cree un deuxieme vecteur de travail  iaux2
     call wkvect(baseno//'.EVALF_AUX2.VAL', 'V V R', nvect_mes, iaux2)
     call r8inir(nvect_mes,0.d0,zr(iaux2),1)
- 
+
 ! --- premier produit matrice vecteur   coef_alpha*G*(H*u-\tilde{u})
     coef_alpha=alpha/(1.0d0-alpha)
     if (isdiag) then
-        
+
            do ii=1,nvect_mes
                zr(iaux2-1+ii)=zr(ivale_norm-1+ii)*zr(iaux1-1+ii)*coef_alpha
            end do

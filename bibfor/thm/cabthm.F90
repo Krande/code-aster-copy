@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -184,7 +184,7 @@ real(kind=8), intent(out) :: b(dimdef, dimuel)
                         zr(jv_func+i_node+kk-1)/r
                 endif
             endif
-! --------- EPSXY 
+! --------- EPSXY
             b(addeme+ndim+3,(i_node-1)*nddls+1) = &
                 b(addeme+ndim+3,(i_node-1)*nddls+1)+dfdi(i_node,2)/rac
             b(addeme+ndim+3,(i_node-1)*nddls+2) =&

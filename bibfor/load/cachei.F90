@@ -125,10 +125,10 @@ character(len=*), intent(in) :: keywordFactZ
 !
     do iocc = 1, nchei
         if (valeType .eq. 'REEL') then
-            
+
             call getvid(keywordFact, 'EPSI', iocc=iocc, scal=chepsi, nbret=nepsi)
             if (nepsi .ne. 0) call utmess('F', 'CHARGES_5')
-            
+
             call getvr8(keywordFact, 'EPXX', iocc=iocc, scal=epxx, nbret=nxx)
             call getvr8(keywordFact, 'EPYY', iocc=iocc, scal=epyy, nbret=nyy)
             call getvr8(keywordFact, 'EPZZ', iocc=iocc, scal=epzz, nbret=nzz)
@@ -190,10 +190,10 @@ character(len=*), intent(in) :: keywordFactZ
             if (nxy .ne. 0) zk8(jvalv-1+4) = kepxy
             if (nxz .ne. 0) zk8(jvalv-1+5) = kepxz
             if (nyz .ne. 0) zk8(jvalv-1+6) = kepyz
-            
-            if (nex  .ne. 0) zk8(jvalv-1+7)  = kepx 
-            if (nky  .ne. 0) zk8(jvalv-1+8)  = kxky 
-            if (nkz  .ne. 0) zk8(jvalv-1+9)  = kxkz 
+
+            if (nex  .ne. 0) zk8(jvalv-1+7)  = kepx
+            if (nky  .ne. 0) zk8(jvalv-1+8)  = kxky
+            if (nkz  .ne. 0) zk8(jvalv-1+9)  = kxkz
             if (nexx .ne. 0) zk8(jvalv-1+10) = kxexx
             if (neyy .ne. 0) zk8(jvalv-1+11) = kxeyy
             if (nexy .ne. 0) zk8(jvalv-1+12) = kxexy

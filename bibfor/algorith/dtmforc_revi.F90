@@ -22,7 +22,7 @@ subroutine dtmforc_revi(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     implicit none
 !
 !
-! dtmforc_revi : Calculates the force/velocity localized force at 
+! dtmforc_revi : Calculates the force/velocity localized force at
 !                the current step (t)
 !
 !       nl_ind           : nonlinearity index (for sd_nl access)
@@ -52,7 +52,7 @@ subroutine dtmforc_revi(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 !   -0.2- Local variables
     character(len=8)  :: sd_dtm, sd_nl, fonc, comp
     integer           :: im, ier, icomp, nbmode, sarevi
-    integer           :: start, finish   
+    integer           :: start, finish
     real(kind=8)      :: vitesse, force
 !
     integer         , pointer :: vindx(:) => null()

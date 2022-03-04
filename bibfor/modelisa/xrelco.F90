@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -133,11 +133,11 @@ implicit none
     value_cplx_dumm=cmplx(0.d0,0.d0)
     coef_cplx_dumm=cmplx(0.d0,0.d0)
 !
-    do i = 1, 100 
+    do i = 1, 100
        fonact(i) = 0
     end do
 !
-! - Get access 
+! - Get access
 !
 ! --- TYPE DE CONTACT ET NOMBRE DE MULTIPLICATEURS
 !
@@ -162,12 +162,12 @@ implicit none
             call jeveuo(sdline_crack(1:14)//'_LAGR', 'L', vi = v_rela_cmp)
         endif
     endif
-    
+
 ! --- MODELE HM-XFEM ?
 !
     call dismoi('EXI_THM', model, 'MODELE', repk=repk)
     if (repk .eq. 'OUI') fonact(37) = 1
-    
+
     lxthm = isfonc(fonact,'THM')
 !
     if (lxthm.and.l_mult_crack) then

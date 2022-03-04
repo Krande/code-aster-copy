@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
 ! IN  : ID     : LA DIRECTION DE CALCUL
 ! IN  : VECMOD : VECTEUR DES DEFORMEES MODALES
 ! IN  : MOMEC  : MODES MECANIQUES
-! IN  : GAMMA0 : TABLEAU DES CORRECTIONS STATIQUES (PAR SUPPORT ET DIRECTION) 
+! IN  : GAMMA0 : TABLEAU DES CORRECTIONS STATIQUES (PAR SUPPORT ET DIRECTION)
 ! IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 ! IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 ! OUT : RECMOP : VECTEUR DES COMBINAISONS DES REPONSES PERIO DES MODES
@@ -102,7 +102,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
             call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, acces(id),&
                         cbid, r8b, k8b, tordr, 1,&
                         nbtrou)
-            iordr=tordr(1)            
+            iordr=tordr(1)
             call rsexch('F', psmo, nomsy, iordr, chextr,&
                         iret)
             call jeexin(chextr//'.VALE', ibid)
@@ -127,7 +127,7 @@ subroutine astron(nomsy, psmo, monoap, muapde, nbsup,&
                 call rsorac(psmo, 'NOEUD_CMP', ibid, r8b, monacc,&
                             cbid, r8b, k8b, tordr, 1,&
                             nbtrou)
-                iordr=tordr(1)            
+                iordr=tordr(1)
                 call rsexch('F', psmo, nomsy, iordr, chextr,&
                             iret)
                 call jeexin(chextr//'.VALE', ibid)

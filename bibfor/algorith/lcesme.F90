@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine lcesme(tns,eig,para,fct,prec,val,drv)
     real(kind=8),dimension(6,6):: x2tx2,x2tx,x2t,xtx,xt
 ! --------------------------------------------------------------------------------------------------
     real(kind=8),dimension(6),parameter  :: kr=(/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
-    real(kind=8),dimension(6,6)          :: id 
+    real(kind=8),dimension(6,6)          :: id
     integer,dimension(5),parameter       :: perm=(/1,2,3,1,2/)
 ! --------------------------------------------------------------------------------------------------
 
@@ -150,5 +150,5 @@ subroutine lcesme(tns,eig,para,fct,prec,val,drv)
 
     end select
 
-        
+
 end subroutine lcesme

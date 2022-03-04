@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 subroutine analybar(x3d1, x3d2, x3d3, x3dp,&
                     xbar, excent, iproj, inoeu, icote)
     implicit none
-!  DESCRIPTION : 
-!  -----------   
+!  DESCRIPTION :
+!  -----------
 !       APRES ECHEC DE TSTBAR SUR UNE FACE, ANALYSE A PARTIR D'UN
 !       EXCENTREMENT DONNE SI LE POINT PROJETE EST SUFFISAMMENT PRES DE
 !       LA FACE POUR POUVOIR TENTER UNE PROJECTION SUR COTE OU SUR NOEUD
 !       DANS LE CADRE DE LA LIAISON CABLE/COQUE DE DEFI_CABLE_BP
 !
 !       LA VALEUR DE ALPHA_MAX EST FIXEE A 45°, CELA EXPRIME LE FAIT
-!       QUE L'ON CONSIDERE QUE DEUX MAILLES ADJACENTES NE DOIVENT PAS 
+!       QUE L'ON CONSIDERE QUE DEUX MAILLES ADJACENTES NE DOIVENT PAS
 !       AVOIR UN ANGLE DE PLUS DE 45° ENTRE ELLES (LE PLAT ETANT 0°)
 !
 !       OUT : IPROJ = -1 si noeud trop loin de la maille
@@ -125,6 +125,6 @@ subroutine analybar(x3d1, x3d2, x3d3, x3dp,&
             endif
         endif
     endif
-77      continue         
-    
+77      continue
+
 end subroutine

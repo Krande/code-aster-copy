@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,12 +58,12 @@ subroutine rc3600_momeq()
     integer :: ifm, niv
     integer :: n0, n1, iret
     integer :: nbordr, i, iadin, iadou, j, jordr, nuordr
-    
+
     real(kind=8) :: prec
     character(len=3) :: type
     character(len=16) :: crit, typesd, nomsym
     character(len=19) ::resuTmp19
-    
+
     integer ::ibid, nbac, nbpa, nbpara, jnompa
     character(len=8) :: modele, resuTmp, nomtab, conceptin
     character(len=8) :: modeav, lpain(1), lpaout(1), typmax, typresu
@@ -74,9 +74,9 @@ subroutine rc3600_momeq()
     character(len=19) :: noch19, tychlu, mcf
     integer :: iexi
     aster_logical :: lnoeu, ldetli, lvide
-    
 
-    
+
+
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -84,16 +84,16 @@ subroutine rc3600_momeq()
 !
     call infmaj()
     call infniv(ifm, niv)
-    
+
     call getres(nomtab, concep, nomcmd)
-    
+
     mcf = 'RESU_MECA'
     call getvid(mcf, 'RESULTAT', iocc=1, scal=resu, nbret=n0)
     call getvid(mcf, 'CHAM_GD', iocc=1,  scal=champ, nbret=n1)
-    
+
     lpain(1)='PEFFONR'
     lpaout(1)='PEFFOENR'
-    
+
     if (n0.ge.1) then
         lvide=.true.
         conceptin = resu
@@ -123,7 +123,7 @@ subroutine rc3600_momeq()
 !
 !        -- 2. : BOUCLE SUR LES NUMERO D ORDRE
 !        --------------------------------------------------
-        
+
         modeav=' '
         ldetli=.false.
         do  i = 1, nbordr
@@ -172,7 +172,7 @@ subroutine rc3600_momeq()
                 call utmess('F','CALCULEL2_26', sk=nomsym, si=nuordr)
             endif
         end do
-        
+
 
 !
 !       -- 3. RECOPIE DES PARAMETRES DE RESU VERS resuTmp :
@@ -212,7 +212,7 @@ subroutine rc3600_momeq()
                 endif
             enddo
         enddo
-        call jedetr(nompar)        
+        call jedetr(nompar)
 !
         call jedetr('&&RC3600.NUME_ORDRE')
         ASSERT(.not. lvide)
@@ -224,10 +224,10 @@ subroutine rc3600_momeq()
         tychlu = 'ELNO_SIEF_R'
         noch19 = '&&RC3600_CHMAXI'
         typresu = 'VALE_ABS'
-        
+
         call chmima(resuTmp, nomsym, tychlu, typmax, noch19,&
                     typresu=typresu, mcfz = mcf)
-        
+
     else
         nomsym = ' '
         conceptin = champ

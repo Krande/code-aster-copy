@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para_vgm = 6 
+    integer, parameter :: nb_para_vgm = 6
     real(kind=8) :: para_vale_vgm(nb_para_vgm)
     integer :: icodre_vgm(nb_para_vgm)
     character(len=16), parameter :: para_name_vgm(nb_para_vgm) =(/'VG_N    ',&
@@ -53,7 +53,7 @@ type(THM_DS), intent(inout) :: ds_thm
                                                                   'VG_SMAX ',&
                                                                   'VG_SATUR',&
                                                                   'VG_PENTR'/)
-    integer, parameter :: nb_para = 1 
+    integer, parameter :: nb_para = 1
     real(kind=8) :: para_vale(nb_para)
     integer :: icodre(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'EMMAG'/)

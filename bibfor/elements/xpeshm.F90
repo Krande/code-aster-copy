@@ -114,7 +114,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                     coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-&
                     1)+j)
                 endif
-            end do 
+            end do
         end do
 !
 !     DEFINITION DE LA FONCTION HEAVISIDE POUR CHAQUE SS-ELT

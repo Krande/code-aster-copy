@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -122,26 +122,26 @@ subroutine prcymn(nomres, soumat, repmat)
 !--   Si on a 2 ou 4 secteurs, le changement de variable introduit une singularité
 !--
 !-- Compte tenu de la faible utilisation de cette option, on s'arrête en erreur fatale
-!-- dans ces deux cas, et on propose d'utiliser la méthode "CRAIG BAMPTON" à la place. 
+!-- dans ces deux cas, et on propose d'utiliser la méthode "CRAIG BAMPTON" à la place.
 
      if (nbdax .gt.0 ) then
        call utmess('F', 'ALGORITH14_90')
      endif
-   
+
 !
 ! --- RECUPERATION DU NOMBRE DE SECTEURS
 !
     call jeveuo(nomres//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
     nbsec=cycl_nbsc(1)
     call jelibe(nomres//'.CYCL_NBSC')
-    
+
     if (nbsec .eq. 2) then
       call utmess('F', 'ALGORITH14_92')
     endif
     if (nbsec .eq. 4) then
       call utmess('F', 'ALGORITH14_92')
     endif
-    
+
     if (nbdax .gt. 0) then
         nbsma=13
     else
@@ -267,7 +267,7 @@ subroutine prcymn(nomres, soumat, repmat)
         call jelira(jexnum(noeint, numa), 'LONMAX', nbnoa)
         call jeveuo(jexnum(noeint, numa), 'L', llnoa)
     endif
-    
+
 !
 ! --- RECUPERATION RANGS DDL INTERFACE DANS VECTEUR ASSEMBLE
 !

@@ -37,26 +37,26 @@ subroutine cpte10(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 !
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: inc 
+    integer, intent(in) :: inc
     integer, intent(in) :: jcoor
     integer, intent(in) :: jcnnpa
     character(len=24), intent(in) :: conloc
     character(len=24), intent(in) :: limane
     character(len=24), intent(in) :: nomnoe
-    integer, intent(in) :: nbno 
+    integer, intent(in) :: nbno
     integer, intent(in) :: jmacou
     integer, intent(in) :: jmacsu
     integer, intent(in) :: macou
     integer, intent(in) :: macsu
-    integer, intent(out) :: ind 
-    integer, intent(out) :: ind1   
+    integer, intent(out) :: ind
+    integer, intent(out) :: ind1
 ! -------------------------------------------------------------------------------------------------
 !        CREATION DES NOUVEAUS NOUEDS ET NOUVELLE MAILLE CAS TETRA 10
 ! -------------------------------------------------------------------------------------------------
 ! -------------------------------------------------------------------------------------------------
     integer :: patch
     integer :: jlimane, jconloc
-    integer :: jconneo    
+    integer :: jconneo
     character(len=24) :: conneo
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
@@ -69,7 +69,7 @@ subroutine cpte10(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 ! --- DDL INTERNE
     zi(patch-1+2)=nbno+ind1+3
     zi(jcnnpa+nbno+ind1+3-1) = inc
-! --- CREATION DES NOEUDS DDL INTERNE      
+! --- CREATION DES NOEUDS DDL INTERNE
     call cpnoq(main,macou,zr(jcoor),nbno+ind1,nomnoe)
 ! --- NOUVEAUX ELEMENTS DE PEAU
     call jeecra(jexnum(conloc,ind), 'LONMAX', ival=6)
@@ -117,7 +117,7 @@ subroutine cpte10(main  , maout , inc   , jcoor , jcnnpa, conloc,&
         zi(jconloc+7-1)=zi(jmacsu+7-1)
         zi(jconloc+8-1)=nbno+ind1+4
         zi(jconloc+9-1)=nbno+ind1+zi(jconneo+2-1)-1
-        zi(jconloc+10-1)=nbno+ind1+zi(jconneo+3-1)-1     
+        zi(jconloc+10-1)=nbno+ind1+zi(jconneo+3-1)-1
         call jeecra(jexnum(conloc,ind+4), 'LONMAX', ival=10)
         call jeecra(jexnum(conloc,ind+4), 'LONUTI', ival=10)
         call jeveuo(jexnum(conloc,ind+4), 'E', jconloc)
@@ -156,8 +156,8 @@ subroutine cpte10(main  , maout , inc   , jcoor , jcnnpa, conloc,&
         zi(jconloc+6-1)=zi(jmacsu+7-1)
         zi(jconloc+7-1)=zi(jmacsu+5-1)
         zi(jconloc+8-1)=nbno+ind1+4
-        zi(jconloc+9-1)=nbno+ind1+zi(jconneo+3-1)-1 
-        zi(jconloc+10-1)=nbno+ind1+zi(jconneo+1-1)-1    
+        zi(jconloc+9-1)=nbno+ind1+zi(jconneo+3-1)-1
+        zi(jconloc+10-1)=nbno+ind1+zi(jconneo+1-1)-1
         call jeecra(jexnum(conloc,ind+4), 'LONMAX', ival=10)
         call jeecra(jexnum(conloc,ind+4), 'LONUTI', ival=10)
         call jeveuo(jexnum(conloc,ind+4), 'E', jconloc)
@@ -197,7 +197,7 @@ subroutine cpte10(main  , maout , inc   , jcoor , jcnnpa, conloc,&
         zi(jconloc+7-1)=zi(jmacsu+6-1)
         zi(jconloc+8-1)=nbno+ind1+4
         zi(jconloc+9-1)=nbno+ind1+zi(jconneo+1-1)-1
-        zi(jconloc+10-1)=nbno+ind1+zi(jconneo+2-1)-1     
+        zi(jconloc+10-1)=nbno+ind1+zi(jconneo+2-1)-1
         call jeecra(jexnum(conloc,ind+4), 'LONMAX', ival=10)
         call jeecra(jexnum(conloc,ind+4), 'LONUTI', ival=10)
         call jeveuo(jexnum(conloc,ind+4), 'E', jconloc)
@@ -235,9 +235,9 @@ subroutine cpte10(main  , maout , inc   , jcoor , jcnnpa, conloc,&
         zi(jconloc+5-1)=zi(jmacsu+8-1)
         zi(jconloc+6-1)=zi(jmacsu+7-1)
         zi(jconloc+7-1)=zi(jmacsu+10-1)
-        zi(jconloc+8-1)=nbno+ind1+4 
-        zi(jconloc+9-1)=nbno+ind1+zi(jconneo+1-1)-1 
-        zi(jconloc+10-1)=nbno+ind1+zi(jconneo+3-1)-1   
+        zi(jconloc+8-1)=nbno+ind1+4
+        zi(jconloc+9-1)=nbno+ind1+zi(jconneo+1-1)-1
+        zi(jconloc+10-1)=nbno+ind1+zi(jconneo+3-1)-1
         call jeecra(jexnum(conloc,ind+4), 'LONMAX', ival=10)
         call jeecra(jexnum(conloc,ind+4), 'LONUTI', ival=10)
         call jeveuo(jexnum(conloc,ind+4), 'E', jconloc)
@@ -282,6 +282,6 @@ subroutine cpte10(main  , maout , inc   , jcoor , jcnnpa, conloc,&
         ind=ind+6
         ind1=ind1+5
         call jedetr(conneo)
-!   
+!
         call jedema()
 end subroutine

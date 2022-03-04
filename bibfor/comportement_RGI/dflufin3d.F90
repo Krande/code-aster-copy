@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,34 +20,34 @@ subroutine dflufin3d(sige6,bw,pw,bg,pg,dsw6,delta,rc,&
                      xflu,dfin,cmp1,dfmx2)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
-   
+
 !   endommagement par fluage
       implicit none
-  
+
       real(kind=8) :: xflu,taueq, tauflu0,xdenom
       real(kind=8) :: dfmx,cmp1
       real(kind=8) :: dfin,rc,dfmx2
       real(kind=8) :: sige6(6),bw,pw,bg,pg,delta,dsw6(6)
-      
+
       real(kind=8) :: tauflu1,sigs,sig0,sigd6(6),sigeq,sigs3,taulim
       integer i
       real(kind=8) :: xmax
-!     multiplicateur non lineaire maxi de potentiel de fluage      
+!     multiplicateur non lineaire maxi de potentiel de fluage
       parameter (xmax=25.d0)
 
 !     initialisation
       taueq=0.d0
       dfmx=0.d0
-!***********************************************************************      
-!     la non linearite est estimee avec le deviateur de la contrainte
-!     macroscopique  
 !***********************************************************************
-    
+!     la non linearite est estimee avec le deviateur de la contrainte
+!     macroscopique
+!***********************************************************************
+
 !     calcul du deviateur des contraintes macroscopiques
-      sigs=0.d0 
-!     deduction des pressions intra poreuse      
-      sig0=bw*pw+bg*pg  
-!     deduction de la surpression par fluage de dessiccation (dsw6=s/sfld*d(bwpw))      
+      sigs=0.d0
+!     deduction des pressions intra poreuse
+      sig0=bw*pw+bg*pg
+!     deduction de la surpression par fluage de dessiccation (dsw6=s/sfld*d(bwpw))
       do i=1,3
          sigs=sigs+sige6(i)+dsw6(i)-sig0
       end do
@@ -61,21 +61,21 @@ subroutine dflufin3d(sige6,bw,pw,bg,pg,dsw6,delta,rc,&
          sigeq=sigeq+2.d0*((sige6(i)+dsw6(i))**2.d0)
       end do
       sigeq=dsqrt(sigeq/2.d0)
-      taulim=rc*(1.d0/dsqrt(3.d0)-delta/3.d0)      
+      taulim=rc*(1.d0/dsqrt(3.d0)-delta/3.d0)
       taueq=dmin1(sigeq+delta*sigs3,taulim)
-      tauflu0=(taueq/taulim)     
-      tauflu1=dmax1(tauflu0,0.d0)  
+      tauflu0=(taueq/taulim)
+      tauflu1=dmax1(tauflu0,0.d0)
 
 !     calcul du coeff de fluage non lineaire
       if(xflu.gt.1.d0) then
-!         le 1.5 suivant provient du taux de charge caracteristique pour 
-!         caracteriser l amplification non lineaire      
+!         le 1.5 suivant provient du taux de charge caracteristique pour
+!         caracteriser l amplification non lineaire
           dfmx=1.5d0*(1.d0-1.d0/xflu)
           if(taueq.gt.0.d0) then
              xdenom=taulim-dfmx*taueq
              if(xdenom.gt.(taulim/xmax)) then
-                cmp1=taulim/xdenom 
-!               calcul de l'endommagement asymptotique avec le taux de charge actuel            
+                cmp1=taulim/xdenom
+!               calcul de l'endommagement asymptotique avec le taux de charge actuel
                 dfin=dmin1(tauflu1*dfmx2,0.9999d0)
              else
                 cmp1=xmax
@@ -88,5 +88,5 @@ subroutine dflufin3d(sige6,bw,pw,bg,pg,dsw6,delta,rc,&
       else
          cmp1=1.d0
          dfin=0.d0
-      end if        
+      end if
 end subroutine

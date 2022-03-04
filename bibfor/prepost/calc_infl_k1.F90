@@ -120,7 +120,7 @@ subroutine calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
        call jeveuo(coeinf, 'E', jcoein)
     else
        call wkvect(coeinf, 'V V R8', 15, jcoein)
-    endif 
+    endif
        call coef_infl(prodef, londef, lrev, matrev, matmdb, &
                       tempa, tempb, zr(jcoein))
 ! ======================================================================
@@ -140,7 +140,7 @@ subroutine calc_infl_k1(nomdb, sigmdb, tbscmb, prodef, londef, &
 !
     call coef_poly(lrev,lmdb,zr(jabsmb),sigma)
 !
-    asxl=(prodef+lrev)/(lrev+lmdb)  
+    asxl=(prodef+lrev)/(lrev+lmdb)
 
 ! ======================================================================
 ! --- CALCUL DU FACTEUR INTENSITE DE CONTRAINTE ------------------------

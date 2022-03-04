@@ -84,7 +84,7 @@ real(kind=8) :: dsde(dimcon, dimenr)
     aster_logical :: emmag
     integer :: advico, advihy, vicphi, vihrho
     real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi
-    
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -160,14 +160,14 @@ real(kind=8) :: dsde(dimcon, dimenr)
         if (ds_thm%ds_elem%l_dof_ther) then
             call virhol(nbvari, vintm , vintp ,&
                         advihy, vihrho,&
-                        dt    , dp1   , dp2   , dpad,& 
+                        dt    , dp1   , dp2   , dpad,&
                         cliq  , alpliq, signe ,&
                         rho110, rho11 , rho11m,&
                         retcom)
         else
             call virhol(nbvari, vintm , vintp ,&
                         advihy, vihrho,&
-                        dt    , dp1   , dp2   , dpad,& 
+                        dt    , dp1   , dp2   , dpad,&
                         cliq  , 0.d0  , signe ,&
                         rho110, rho11 , rho11m,&
                         retcom)

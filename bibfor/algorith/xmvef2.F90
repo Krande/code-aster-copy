@@ -98,7 +98,7 @@ real(kind=8) :: fk(27,3,3)
     do ino = 1, nno
         call indent(ino, ddls, ddlm, nnos, in)
         do j = 1, ndim
-            do ig = 1, nfh          
+            do ig = 1, nfh
                 saut(j) = saut(j) - coefj * ffp(ino) * zr(idepl-1+in+ndim*(1+ig-1)+ j)
             enddo
         end do
@@ -141,7 +141,7 @@ real(kind=8) :: fk(27,3,3)
     do i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
         do j = 1, ndim
-            do ig = 1, nfh        
+            do ig = 1, nfh
                 vtmp(in+ndim*(1+ig-1)+j) = vtmp(in+ndim*(1+ig-1)+j) +&
                                            coefj*mu*seuil*ptpb(j)*ffp(i)*jac
             enddo

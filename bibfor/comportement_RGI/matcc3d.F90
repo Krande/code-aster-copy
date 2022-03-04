@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,27 +25,27 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/chrep6.h"
 #include "asterfort/indice0.h"
-      
+
       real(kind=8) :: cc3(3),vcc33(3,3),vcc33t(3,3),v33(3,3),v33t(3,3),cc6(6)
-      
+
       real(kind=8) :: eps6(6),epsp6(6)
       integer i,j,k,l
       aster_logical ::  faux
       faux=.false.
 
       do i=1,6
-!         on adopte une deformation virtuelle unitaire dans la base 
+!         on adopte une deformation virtuelle unitaire dans la base
 !         principale  actulle (v33) pour estimer chaque coeff independament
           do j=1,6
              if(j.eq.i) then
                  eps6(j)=1.d0
-             else 
+             else
                  eps6(j)=0.d0
              end if
-          end do 
+          end do
 !         passage de la deformation virtuelle dans la base prin des cc
-          call chrep6(eps6,v33t,faux,epsp6) 
-          call chrep6(epsp6,vcc33,faux,eps6) 
+          call chrep6(eps6,v33t,faux,epsp6)
+          call chrep6(epsp6,vcc33,faux,eps6)
 !         on affecte les consolidations
           do j=1,3
               eps6(j)=eps6(j)/cc3(j)
@@ -55,7 +55,7 @@ implicit none
              eps6(j)=eps6(j)/dmin1(cc3(k),cc3(l))
           end do
 !         retour en base principale actuelle
-          call chrep6(eps6,vcc33t,faux,epsp6) 
+          call chrep6(eps6,vcc33t,faux,epsp6)
           call chrep6(epsp6,v33,faux,eps6)
 !         recuperation du coeff de consolidation pour la composante i
           cc6(i)=1.d0/eps6(i)

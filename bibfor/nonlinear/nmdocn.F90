@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -157,7 +157,7 @@ type(NL_DS_Conv), intent(inout) :: ds_conv
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv   , type_ = 'LAGR_REFE', &
                              user_para_ = para_real, l_refe_test_ = .true._1)
-        endif        
+        endif
         call getvr8(keywf, 'PI_REFE', iocc=1, scal=para_real, nbret=iret)
         if (iret .eq. 1) then
             call SetResiRefe(ds_conv   , type_ = 'PI_REFE', &

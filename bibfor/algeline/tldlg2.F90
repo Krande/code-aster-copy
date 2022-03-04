@@ -112,7 +112,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 !
 !     -- MONITORING ET VERIFICATIONS :
     if (niv .ge. 2) then
-        call utmess('I', 'FACTOR3_1', sk = noma19) 
+        call utmess('I', 'FACTOR3_1', sk = noma19)
         if (typsym .eq. 1) then
             call utmess('I', 'FACTOR3_2')
         else

@@ -65,7 +65,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
     real(kind=8) :: prinmax, e, nume(2), deno(2), epset, set, oet, tet
     real(kind=8) :: a, b, c, epsisup, epsiinf, temp, tmoy, tsup, tinf
     real(kind=8) :: valtinf, valtsup, valtmoynum, valtmoyden, epsiet
-    real(kind=8) :: critepsi, tempmin, tempmax, tempii, emin, emax 
+    real(kind=8) :: critepsi, tempmin, tempmax, tempii, emin, emax
     character(len=24) :: instan, abscur, instany, valk(4)
     complex(kind=8) :: cbid
 !
@@ -74,7 +74,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 !
 !  ------ POUR LES DEUX SITUATION iocc1 ET iocc2
 !  ------ ON STOCKE LE TRANSITOIRE ASSOCIE
-!    
+!
     motclf = 'RESU_THER'
     motclf2 = 'RESU_PRES'
     motclf3 = 'RESU_MECA'
@@ -136,7 +136,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
     call getvid(motclf5, 'TABL_YOUNG', iocc=1,scal=table5, nbret=n5(14))
 !
     do 200 i = 1,14
-        if(n5(i) .eq. 0) call utmess('F', 'POSTRCCM_54')  
+        if(n5(i) .eq. 0) call utmess('F', 'POSTRCCM_54')
 200 continue
 !
     instany = '&&RC32.INSTANTYOUNG'
@@ -159,7 +159,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
         call getvis(motclf4, 'NUME_RESU_PRES', iocc=itrouve, scal=nume2, nbret=n2)
         call getvis(motclf4, 'NUME_RESU_MECA', iocc=itrouve, scal=nume3, nbret=n3)
 !
-        if (n1 .ne. 0) then 
+        if (n1 .ne. 0) then
             do 20 ither =1, nbther, 1
                 call getvis(motclf, 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n4)
                 if (numether .eq. nume1) then
@@ -168,7 +168,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 20          continue
         endif
 !
-        if (n2 .ne. 0) then 
+        if (n2 .ne. 0) then
             do 30 ipres =1, nbpres, 1
                 call getvis(motclf2, 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n4)
                 if (numepres .eq. nume2) then
@@ -177,7 +177,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 30          continue
         endif
 !
-        if (n3 .ne. 0) then 
+        if (n3 .ne. 0) then
             do 40 imeca =1, nbmeca, 1
                 call getvis(motclf3, 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n4)
                 if (numemeca .eq. nume3) then
@@ -201,7 +201,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 ! --------- on verifie l'ordre des noeuds de la table
 !
         call rcveri(tableok)
-! 
+!
 ! --------- on recupere les instants de la table
 !
         instan = '&&RC32.INSTANT'
@@ -234,7 +234,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
         do 12 j = 1, nbinst
             vale(1) = zr(jinst+j-1)
 !
-! --------- on recupere la temperature a l 'instant i 
+! --------- on recupere la temperature a l 'instant i
 !
             call tbliva(table4, 2, valek, [ibid], vale,&
                         [cbid], k8b, crit, prec, 'TEMP',&
@@ -253,7 +253,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
             do 14 m = 1, ncmp
 !
 ! --------- on recupere les contraintes(t) a l 'instant i
-! 
+!
                 if (n1 .ne. 0) then
                     call tbliva(table1, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(m),&
@@ -299,19 +299,19 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                             else
                                 tresca = max ( abs(equi(1)-equi(2)),&
                             & abs(equi(1)-equi(3)), abs(equi(2)-equi(3)) )
-                            endif                             
+                            endif
                         endif
 ! --------- calcul de e
                         tempmin = zr(jtempy)
                         tempmax = zr(jtempy)
-                        ii = 0 
+                        ii = 0
 120                     continue
                         ii=ii+1
                             tempii = zr(jtempy+ii)
                             if(tmoy .ge. tempii) then
                                 tempmin = tempii
-                                goto 120 
-                            endif            
+                                goto 120
+                            endif
                         if (abs(tmoy-tempmin) .lt. 1e-6) then
                             tempmax = tmoy
                         else
@@ -334,7 +334,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                             e = emin
                         else
                             e = ((emin-emax)/(tempmin-tempmax))*(tmoy-tempmin) + emin
-                        endif 
+                        endif
 ! --------- calcul de delta_epsilon
                         zr(jdepsi+j-2) = ke*tresca /e
 ! --------- calcul de epsilon_point puis epsilon_point*
@@ -359,7 +359,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                     endif
                 endif
  14         continue
- 12     continue        
+ 12     continue
 !
         nume(i)= 0.d0
         deno(i)= 0.d0
@@ -383,7 +383,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
         fen = 1
     else
         fen = (nume(1)+nume(2))/(deno(1)+deno(2))
-    endif 
+    endif
 !
     call jedema()
 end subroutine

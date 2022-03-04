@@ -146,7 +146,7 @@ character(len=4), intent(in) :: valeType
         if (nbtou .ne. 0) then
 !
             call nocart(carte, 1, ncmp)
-        else 
+        else
             if (nfiss.ne.0) then
 !           LES FLUX POUR LA DEUXIEME PRESSION PRE2 ET POUR LA THERMIQUE
 !           NE SONT PAS AUTORISES EN HM-XFEM

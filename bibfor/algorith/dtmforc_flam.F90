@@ -174,7 +174,7 @@ subroutine dtmforc_flam(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
             call tophys_ms(dplmod, psidel, coevit, vite, vitglo)
         else
             call tophys(dplmod, depl, depglo)
-            call tophys(dplmod, vite, vitglo)        
+            call tophys(dplmod, vite, vitglo)
         endif
 
         nullify(coor_no)
@@ -192,7 +192,7 @@ subroutine dtmforc_flam(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
         do i = 1, 3
             dvitlo(i) = vitloc(i) - vitloc(3+i)
         end do
-    else 
+    else
         do i = 1, 3
             dvitlo(i) = vitloc(i)
         end do
@@ -238,7 +238,7 @@ subroutine dtmforc_flam(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
         call locglo(flocal, sina, cosa, sinb, cosb,&
                     sing, cosg, fgloba)
 
-!       --- Generalized force on the first node  
+!       --- Generalized force on the first node
         call togene(dplmod1, fgloba, fext)
 !       --- Generalized force on the second node
         if (nbno.eq.2) then

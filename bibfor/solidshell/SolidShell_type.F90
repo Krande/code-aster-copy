@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -295,7 +295,7 @@ type SSH_BEHA_PARA
     aster_logical         :: lLarge    = ASTER_FALSE
 ! - Type of non-linear relation
     character(len=16)     :: relaComp  = ' '
-! - Type of strain model 
+! - Type of strain model
     character(len=16)     :: defoComp  = ' '
 ! - Type of integration scheme (COMP_ELAS/COMP_INCR)
     character(len=16)     :: typeComp  = ' '

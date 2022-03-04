@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ subroutine jesvos(clas)
 #include "asterfort/jjlide.h"
     character(len=*) :: clas
 ! ----------------------------------------------------------------------
-! SAUVEGARDE AVEC ECRITURE DISQUE DES OBJETS (OBJETS SIMPLES OU OBJETS 
+! SAUVEGARDE AVEC ECRITURE DISQUE DES OBJETS (OBJETS SIMPLES OU OBJETS
 ! SYSTEME DE COLLECTION) AVANT OPERATION DE RETASSAGE
-! ON POURRAIT SE LIMITER AUX OBJETS SIMPLES SYSTEME POSSEDANT $$IADD 
+! ON POURRAIT SE LIMITER AUX OBJETS SIMPLES SYSTEME POSSEDANT $$IADD
 ! DANS LEUR NOM, MAIS DE TOUTE FACON IL SERA NECESSAIRE DE TOUS LES
 ! DECHARGER
 !
@@ -78,7 +78,7 @@ subroutine jesvos(clas)
                    call jjlide ('JETASS', crnom , 1 )
                 endif
  5              continue
-            end do 
+            end do
         endif
     end do
 ! FIN ------------------------------------------------------------------

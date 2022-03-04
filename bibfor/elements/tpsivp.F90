@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,17 +24,17 @@ subroutine tpsivp(p, sigmav)
     real(kind=8), dimension(:, :), intent(in) :: p
     real(kind=8), dimension(:), intent(inout) :: sigmav
 !     ------------------------------------------------------------------
-!     Appliquer un Changement de Base à un tenseur Sigma (contraintes ou 
-!                                                         déformation) 
-!     SIGMA <- P^T * SIGMA * P        
+!     Appliquer un Changement de Base à un tenseur Sigma (contraintes ou
+!                                                         déformation)
+!     SIGMA <- P^T * SIGMA * P
 !     ------------------------------------------------------------------
-!     IN     P(3,3)     R   Matrice de passage de la base 1 à la base 2 
+!     IN     P(3,3)     R   Matrice de passage de la base 1 à la base 2
 !     INOUT  SIGMAV(6)  R   Tenseur de contraintes ou de déformations
-!                           6 composantes : XX  YY  ZZ  XY  XZ  YZ 
+!                           6 composantes : XX  YY  ZZ  XY  XZ  YZ
 !                           en entrée: sigmav est exprimé dans la base 1
 !                           en sortie: sigmav est exprimé dans la base 2
     !
-!     Routine in place  
+!     Routine in place
 !     ------------------------------------------------------------------
     integer :: ld
     real(kind=8) :: alpha, beta
@@ -42,7 +42,7 @@ subroutine tpsivp(p, sigmav)
 !     ------------------------------------------------------------------
     ASSERT(size(p,1)==3)
 !      ASSERT(size(sigmav)==6)
-!     On décompacte le tenseur pour le stocker comme une matrice pleine symétrique 'L'  
+!     On décompacte le tenseur pour le stocker comme une matrice pleine symétrique 'L'
     sigma(:,:) = 0.d0
     sigma(1,1) = sigmav(1)
     sigma(2,2) = sigmav(2)

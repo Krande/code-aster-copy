@@ -54,24 +54,24 @@ use matrasse_module
     call jemarq()
 !
 !   L'élimination des Lagrange est elle licite ?
-!   Y a t il des Lagrange dans la matrice ? 
-!   Y a t il moins de Lagrange que de degrés de liberté "physiques" ?  
-!   A-t-on bien des double Lagrange ? 
+!   Y a t il des Lagrange dans la matrice ?
+!   Y a t il moins de Lagrange que de degrés de liberté "physiques" ?
+!   A-t-on bien des double Lagrange ?
     nlag1 = get_num_of_dofs( lagrange1_dof, matas1 )
     nlag2 = get_num_of_dofs( lagrange2_dof, matas1 )
     nphys = get_num_of_dofs( physical_dof, matas1 )
     elg_is_ok = (nlag1 == nlag2).and.(nlag1 > 0 ).and.( nlag1 < nphys)
 !
-    if ( elg_is_ok ) then 
+    if ( elg_is_ok ) then
 !
 !   -- ON CREE LA MATRICE (REDUITE) MATAS2
-!   Si elle existe déjà, on la détruit 
+!   Si elle existe déjà, on la détruit
     matas2="ELG_"//matas1(5:19)
     call jeexin(matas2//'.REFA', iexi)
     if (iexi .gt. 0) then
          call dismoi('METH_RESO', matas2, 'MATR_ASSE', repk=metres)
     endif
-    call detrsd( "MATR_ASSE", matas2) 
+    call detrsd( "MATR_ASSE", matas2)
     call elg_gest_data('NOTE', matas1, matas2, ' ')
     call elg_calc_matk_red(matas1, solve1, matas2, 'V')
 !
@@ -87,11 +87,11 @@ use matrasse_module
     call prere1(' ', base, iret, matpre, matas2,&
                 npvneg, istop)
 !
-    else 
-!    -- ON APPELLE PRERE1 AVEC MATAS1 ET SOLVE1 
+    else
+!    -- ON APPELLE PRERE1 AVEC MATAS1 ET SOLVE1
 !       EN AYANT REMIS ELIM_LAGR A 'NON'
        call jeveuo(solve1//'.SLVK', 'E', vk24=slvk)
-       slvk(13)='NON' 
+       slvk(13)='NON'
        call prere1(solve1, base, iret, matpre, matas1,&
                 npvneg, istop)
     endif

@@ -46,7 +46,7 @@ subroutine op0048()
 !
 !     Operateur cache POST_K_VARC, appele depuis la macro POST_K1_K2_K3
 !
-!     Produit le cham_no de variables de commande pour une sd_resultat 
+!     Produit le cham_no de variables de commande pour une sd_resultat
 !     donnee a l'instant considere. Le champ est type de la maniere
 !     suivante, en fonction du nom de la variable de commande :
 !         TEMP  -> TEMP_R
@@ -84,7 +84,7 @@ subroutine op0048()
     character(len=16), pointer :: cesv(:) => null()
     aster_logical, pointer :: cnsvrc_l(:) => null()
     aster_logical, pointer :: cnsvr2_l(:) => null()
- 
+
 !-----------------------------------------------------------------------
 !
     call jemarq()

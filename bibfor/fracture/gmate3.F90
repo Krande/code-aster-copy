@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ implicit none
 !
 ! ENTREE
 !   CONN     --> CONNECTIVITÉ DES NOEUDS
-!   ELREFE   --> TYPE DE SEGMENT (LINEAIRE OU QUADRATIQUE)   
+!   ELREFE   --> TYPE DE SEGMENT (LINEAIRE OU QUADRATIQUE)
 !   ABSCUR   --> ABSCISSES CURVILIGNES S
 !
 ! SORTIE
@@ -105,11 +105,11 @@ implicit none
         ksi(1)=xpg(ipg)
         call elrfvf(elrefe, ksi, ff, nno)
         call elrfdf(elrefe, ksi, dff)
-        
+
 !       CALCUL DU JACOBIEN (SEGM DE REFERENCE --> SEGM REEL)
         jac = 0.5d0*(zr(js-1+conn(2)) - zr(js-1+conn(1)))
 
-!       CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE   
+!       CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE
         do i = 1, nno
             do j = 1, nno
                mele(i, j) = mele(i, j) + ff(i)*ff(j)*jac*wpg(ipg)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,11 +66,11 @@ function xtest_code(id1, id2, lfno, nfh, nfissmax, fno1, fno2)
       n2_red=count(fno2(1:n2).gt.0)
       ASSERT((n1_red.ge.nfh).and.(n2_red.ge.nfh))
       up1(1:n1_red)=up1(pack(fno1(1:n1_red),fno1(1:n1).gt.0))
-      up2(1:n2_red)=up2(pack(fno2(1:n2_red),fno2(1:n2).gt.0)) 
+      up2(1:n2_red)=up2(pack(fno2(1:n2_red),fno2(1:n2).gt.0))
       do idigi=1,nfh
         if (up1(idigi).ne.up2(idigi)) xtest_code=.false.
      enddo
-! 
+!
     endif
 !
 99  continue

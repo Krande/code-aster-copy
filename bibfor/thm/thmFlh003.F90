@@ -82,7 +82,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k 
+    integer :: i, j, k
     real(kind=8) :: rgaz
     real(kind=8) :: krel2, dkr2s, dkr2p
     real(kind=8) :: permli, dperml, permgz, dperms, dpermp

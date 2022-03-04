@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ character(len=16), intent(in) :: option, nomte
     nddl = itab(2)
     if (.not.refe) then
         call jevech('PCONTMR', 'L', icont)
-        call jevech('PDEPLMR', 'L', idepl) 
+        call jevech('PDEPLMR', 'L', idepl)
     else
         allocate(sref(neps))
         ! En attendant de lire le deplacement dans l'option REFE_FORC_NODA
@@ -115,8 +115,8 @@ character(len=16), intent(in) :: option, nomte
 ! -------------------------!
 
     if (inco .and. grand) then
-         
-        if (refe) then 
+
+        if (refe) then
             call terefe('SIGM_REFE', 'MECA_GRADVARI', sigref)
             call terefe('VARI_REFE', 'MECA_GRADVARI', varref)
             call terefe('LAGR_REFE', 'MECA_GRADVARI', lagref)
@@ -140,7 +140,7 @@ character(len=16), intent(in) :: option, nomte
             call lgicfc(refe,ndim, nnoQ, nnoL, npg, nddl, axi, &
                         zr(igeom),zr(idepl), zr(jv_vfQ),zr(jv_vfL), jv_dfdeQ, jv_dfdeL,&
                         jv_poids,zr(icont),zr(ivectu))
-        
+
         endif
 
 
@@ -149,8 +149,8 @@ character(len=16), intent(in) :: option, nomte
 !   GRAD_VARI + GDEF_LOG   !
 ! -------------------------!
 
-    else if (.not.inco .and. grand) then  
-         
+    else if (.not.inco .and. grand) then
+
         if (refe) then
             call terefe('SIGM_REFE', 'MECA_GRADVARI', sigref)
             call terefe('VARI_REFE', 'MECA_GRADVARI', varref)
@@ -173,16 +173,16 @@ character(len=16), intent(in) :: option, nomte
             call lggvfc(refe,ndim, nnoQ, nnoL, npg, nddl, axi, &
                         zr(igeom),zr(idepl), zr(jv_vfQ),zr(jv_vfL), jv_dfdeQ, jv_dfdeL,&
                         jv_poids,zr(icont),zr(ivectu))
-       
+
         endif
-    
+
 
 
 ! -------------------------!
 !   GRAD_VARI + PETIT      !
 ! -------------------------!
 
-    else if (.not.inco .and. .not.grand) then  
+    else if (.not.inco .and. .not.grand) then
         call nmgvmb(ndim, nnoQ, nnoL, npg, axi,&
                     zr(igeom), zr(jv_vfQ), zr(jv_vfL), jv_dfdeQ, jv_dfdeL,&
                     jv_poids, nddl, neps, b, w,ni2ldc)
@@ -191,7 +191,7 @@ character(len=16), intent(in) :: option, nomte
             call terefe('SIGM_REFE', 'MECA_GRADVARI', sigref)
             call terefe('VARI_REFE', 'MECA_GRADVARI', varref)
             call terefe('LAGR_REFE', 'MECA_GRADVARI', lagref)
-            
+
             if (ndim .eq. 2) then
                 sref(1:neps) = [sigref,sigref,sigref,sigref,lagref, &
                             varref,0.d0,0.d0]

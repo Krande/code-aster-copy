@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
 !      METHODES ANALYTIQUES DE CALCUL DES FACTEURS
 !      D'INTENSITE DE CONTRAINTE ET DE L'INTEGRALE J
 !
-! Les coefficients d'influence tabulees sont extraites du  
+! Les coefficients d'influence tabulees sont extraites du
 ! Tableau VII.5.3.2a : PLA-DSR - coefficients d'influence pour Er/E = 1
 !                      points A et C
 !
@@ -61,7 +61,7 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
 !    defaut semi-elliptique
 !
 !       ----------2c---------
-!       $$$$$$$$$$$$$$$$$$$$$   <- revetement 
+!       $$$$$$$$$$$$$$$$$$$$$   <- revetement
 !    ^  ----------B--------C-
 !         \               /
 !    a     \             /      <- metal de base
@@ -69,7 +69,7 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
 !    v        ----A----
 !
 !  ou Er : module d'young du revetement
-!     E  : module d'young du metal de base 
+!     E  : module d'young du metal de base
 !     a  : hauteur de la fissure
 !    2c  : largeur de la fissure
 ! ======================================================================
@@ -77,7 +77,7 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
     integer :: k
 !
 ! a/c = 1 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(1,1,k),k=1,5) / 0.263d0, 0.263d0, 0.263d0, 0.263d0, 0.263d0 /
     data (coef(1,2,k),k=1,5) / 0.264d0, 0.238d0, 0.214d0, 0.193d0, 0.174d0 /
     data (coef(1,3,k),k=1,5) / 0.264d0, 0.217d0, 0.178d0, 0.147d0, 0.121d0 /
@@ -89,7 +89,7 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
     data (coef(1,9,k),k=1,5) / 0.281d0, 0.083d0, 2.90d-2, 1.27d-2, 6.91d-3 /
 !
 ! a/c = 1/2 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(2,1,k),k=1,5) / 0.244d0, 0.244d0, 0.244d0, 0.244d0, 0.244d0 /
     data (coef(2,2,k),k=1,5) / 0.245d0, 0.220d0, 0.197d0, 0.177d0, 0.160d0 /
     data (coef(2,3,k),k=1,5) / 0.245d0, 0.200d0, 0.164d0, 0.134d0, 0.110d0 /
@@ -102,7 +102,7 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
 
 !
 ! a/c = 1/4 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(3,1,k),k=1,5) / 0.215d0, 0.215d0, 0.215d0, 0.215d0, 0.215d0 /
     data (coef(3,2,k),k=1,5) / 0.216d0, 0.193d0, 0.173d0, 0.155d0, 0.139d0 /
     data (coef(3,3,k),k=1,5) / 0.216d0, 0.176d0, 0.143d0, 0.116d0, 9.45d-2 /
@@ -114,7 +114,7 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
     data (coef(3,9,k),k=1,5) / 0.227d0, 5.87d-2, 1.69d-2, 5.71d-3, 2.40d-3 /
 !
 ! a/c = 1/8 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(4,1,k),k=1,5) / 0.185d0, 0.185d0, 0.185d0, 0.185d0, 0.185d0 /
     data (coef(4,2,k),k=1,5) / 0.185d0, 0.165d0, 0.147d0, 0.132d0, 0.118d0 /
     data (coef(4,3,k),k=1,5) / 0.185d0, 0.150d0, 0.121d0, 9.79d-2, 7.92d-2 /
@@ -126,7 +126,7 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
     data (coef(4,9,k),k=1,5) / 0.191d0, 4.61d-2, 1.18d-2, 3.37d-3, 1.16d-3 /
 !
 ! a/c = 1/16 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(5,1,k),k=1,5) / 0.156d0, 0.156d0, 0.156d0, 0.156d0, 0.156d0 /
     data (coef(5,2,k),k=1,5) / 0.156d0, 0.139d0, 0.124d0, 0.111d0, 9.91d-2 /
     data (coef(5,3,k),k=1,5) / 0.156d0, 0.126d0, 0.102d0, 8.20d-2, 6.62d-2 /
@@ -138,9 +138,9 @@ subroutine coef_infl_c1(ix1,ix2,iy1,iy2,i,&
     data (coef(5,9,k),k=1,5) / 0.160d0, 3.68d-2, 8.74d-3, 2.23d-3, 6.65d-4 /
 !
 ! a/c = 0. ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
-! ATTENTION comme le tableau de l'annexe 5.4 ne contient aucune valeur, 
-! on a mis -9999.D0 comme valeur 
+!
+! ATTENTION comme le tableau de l'annexe 5.4 ne contient aucune valeur,
+! on a mis -9999.D0 comme valeur
 
     data (coef(6,1,k),k=1,5) / -9999.d0, -9999.d0, -9999.d0, -9999.d0, -9999.d0 /
     data (coef(6,2,k),k=1,5) / -9999.d0, -9999.d0, -9999.d0, -9999.d0, -9999.d0 /

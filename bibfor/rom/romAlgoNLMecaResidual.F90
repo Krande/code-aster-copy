@@ -109,7 +109,7 @@ real(kind=8), intent(out) :: resi
     enddo
 !
 ! - Cleaning
-!    
+!
     AS_DEALLOCATE(vr=v_resi)
 !
 end subroutine

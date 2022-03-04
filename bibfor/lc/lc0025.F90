@@ -139,7 +139,7 @@ implicit none
     dsidep(:,:) = r0
 !
     if (option(1:14) .eq. 'RIGI_MECA_TANG') then
-    
+
 !       write(6,'(A)')
 !       write(6,'(A)')'> LC0101 :: entering MCTGEL'
 !       write(6,'(A,6(1X,E15.8))')'! * DEPS =',(deps(i),i=1,6)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -216,12 +216,12 @@ subroutine strmag(nugene, typrof)
     do ieq = 1, neq
         hcol = zi(jschc+ieq-1)
         nterm=nterm+hcol
-        zi(jsmdi-1+ieq)=nterm    
+        zi(jsmdi-1+ieq)=nterm
     end do
-! 
+!
     write(ifimes,*)'+++ NOMBRE DE BLOCS DU STOCKAGE: ',nbloc
     write(ifimes,*)'+++ NOMBRE DE TERMES DU STOCKAGE: ',nterm
-!   
+!
     call wkvect(stomor//'.SMHC', 'G V S', nterm, jsmhc)
     kterm=0
     do ieq = 1, neq
@@ -230,7 +230,7 @@ subroutine strmag(nugene, typrof)
         do ilig=ieq-hcol+1,ieq
            kterm=kterm+1
            zi4(jsmhc-1+kterm)=ilig
-        end do 
+        end do
     end do
 !
 !     -- .SMDE

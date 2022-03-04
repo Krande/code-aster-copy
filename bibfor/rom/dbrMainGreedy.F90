@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,14 +110,14 @@ type(ROM_DS_Empi), intent(inout) :: baseOut
 !
     call romSolveDOMSystSolve(paraGreedy%solver, solveDOM)
 !
-! - Normalization of basis and save it 
+! - Normalization of basis and save it
 !
     if (lStabFSI) then
         call romSaveBaseStableIFS(lOrthoBase, multiPara, algoGreedy, baseOut, iMode)
     else
         call romNormalize(systType, systSolu, nbEqua)
         call romGreedyModeSave(multiPara, baseOut, iMode, systSolu)
-    end if 
+    end if
 !
 ! - Loop on modes
 !
@@ -161,13 +161,13 @@ type(ROM_DS_Empi), intent(inout) :: baseOut
         call romSolveDOMSystSolve(paraGreedy%solver, solveDOM)
 
 ! ----- Normalization of basis and save it
-        if (lStabFSI) then 
+        if (lStabFSI) then
             call romSaveBaseStableIFS(lOrthoBase, multiPara, algoGreedy, baseOut, iMode)
         else
             call romNormalize(systType, systSolu, nbEqua)
-            if (lOrthoBase) then 
+            if (lOrthoBase) then
                 call romOrthoBasis(multiPara, baseOut, systSolu)
-            endif 
+            endif
             call romGreedyModeSave(multiPara, baseOut, iMode, systSolu)
         endif
 !

@@ -46,14 +46,14 @@ implicit none
 !
 ! Non-linear algorithm - Initializations
 !
-! Get position of large rotation dof 
+! Get position of large rotation dof
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  modelz   : name of model
 ! In  nume_ddl : name of numbering (NUME_DDL)
 ! In  compor   : name of comportment CARTE
-! In  sdnuro   : name of datastructure to save position of large rotation dof 
+! In  sdnuro   : name of datastructure to save position of large rotation dof
 !
 ! --------------------------------------------------------------------------------------------------
 !

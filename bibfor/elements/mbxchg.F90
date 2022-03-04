@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,10 +69,10 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
 ! IN  DFF          DERIVEE DES F. DE FORME
 ! IN  ALPHA, BETA  ANGLES NAUTIQUES ORIENTANT LE COMPORTEMENT
 !                        ORTHOTROPE DE LA MEMBRANE (EN RADIAN)
-!     
+!
 ! OUT ***          ***
 ! ----------------------------------------------------------------------
-!  
+!
     integer :: i, n, c, cc, ier
     integer :: codres(2)
     real(kind=8) :: b(3, 3, 9), jac
@@ -81,7 +81,7 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
     character(len=8) :: nompar(4)
     real(kind=8) :: valpar(4)
     real(kind=8) :: xgau, ygau, zgau, epsinif(3)
-    
+
 !
 ! - CALCUL DE LA MATRICE "B" :
 !   DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
@@ -119,7 +119,7 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
             call mbrigi(fami, kpg, imate, rig)
 !
             call r8inir(3, 0.d0, sig, 1)
-            
+
             nompar(1) = 'X'
             nompar(2) = 'Y'
             nompar(3) = 'Z'
@@ -148,7 +148,7 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
                     sig(c) = sig(c) + epsinif(cc)*rig(cc,c)
                 end do
             end do
-            
+
 !
 ! ---   CHAR_MECA_TEMP_R : SIG = RIG*EPSTHE
 !
@@ -213,5 +213,5 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
             end do
         end do
     endif
-            
+
 end subroutine

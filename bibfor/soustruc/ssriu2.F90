@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -133,9 +133,9 @@ subroutine ssriu2(nomu)
     call jecrec(nomu//'.PHI_IE', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nblph)
     call jeecra(nomu//'.PHI_IE', 'LONMAX', lgblph)
-!  
-    call jecrec(nomu//'.MAEL_RAID_VALE', 'G V R', 'NU', 'DISPERSE', & 
-                   'CONSTANT',1)   
+!
+    call jecrec(nomu//'.MAEL_RAID_VALE', 'G V R', 'NU', 'DISPERSE', &
+                   'CONSTANT',1)
     call jeecra(nomu//'.MAEL_RAID_VALE', 'LONMAX', (nddle*(nddle+1)/2))
     call jecroc(jexnum(nomu//'.MAEL_RAID_VALE', 1))
     call jeveuo(jexnum(nomu//'.MAEL_RAID_VALE', 1), 'E', iakpee)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine b3d_d66(nu,sn3,d66,prog1,&
       real(kind=8) :: d66(6,6),sn3(3)
       real(kind=8) :: nu
       aster_logical :: prog1,comp
-!    declarations locales      
+!    declarations locales
       integer i,j,k,l
       real(kind=8) :: s33(3,3)
       real(kind=8) :: d1,d2,d3,sdmax,smax
@@ -44,13 +44,13 @@ subroutine b3d_d66(nu,sn3,d66,prog1,&
        do i=1,3
         sn3(i)=min(sn3(i),smax)
        end do
-      end if     
+      end if
 !    initialisation de la matrice d endommagement dt66
       do i=1,6
        do j=1,6
         d66(i,j)=0.d0
        end do
-      end do     
+      end do
       if(comp) then
 !     endommagement simplifie  (pas de couplage directionnel)
        do i=1,3
@@ -61,8 +61,8 @@ subroutine b3d_d66(nu,sn3,d66,prog1,&
           s33(i,j)=0.d0
          end if
         end do
-       end do 
-      else      
+       end do
+      else
 !     endommagement complet (othotrope avec endo de E et Nu)
        d1=1.d0-1.d0/sn3(1)
        d2=1.d0-1.d0/sn3(2)
@@ -111,11 +111,11 @@ subroutine b3d_d66(nu,sn3,d66,prog1,&
         end if
        end do
       end do
-!    calcul des termes de cisaillement 
+!    calcul des termes de cisaillement
       do i=4,6
        call indice0(i,k,l)
-!     endommagement effectif       
-       sdmax=max(sn3(k),sn3(l))       
+!     endommagement effectif
+       sdmax=max(sn3(k),sn3(l))
        d66(i,i)=1.d0-1.d0/sdmax
       end do
 end subroutine

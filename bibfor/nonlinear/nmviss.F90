@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -173,7 +173,7 @@ implicit none
     if ((nmsto-1) .lt. nummax) then
         nummax = (nmsto-1)
     endif
-! 
+!
     AS_ALLOCATE(vr=trav, size=nbmode)
     AS_ALLOCATE(vr=travd, size=nbmode)
     AS_ALLOCATE(vr=travv, size=nbmode)

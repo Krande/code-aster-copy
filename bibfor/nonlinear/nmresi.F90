@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -320,7 +320,7 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
         if (l_resi_refe) then
             if (v_deeq(2*i_equa) .gt. 0) then
                 ! in HPC, the ghost entries of v_cnrefe  are set to 0
-                if (v_cnrefe(i_equa).gt.0.d0) then 
+                if (v_cnrefe(i_equa).gt.0.d0) then
                     vale_refe = abs(v_cnequi(i_equa))/v_cnrefe(i_equa)
                 else
                     vale_refe = 0.d0

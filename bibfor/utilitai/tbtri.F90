@@ -74,15 +74,15 @@ subroutine tbtri(ndim, tabint, tabchi, tabchr, tabchk)
 !        -- RECHERCHE DU PLUS PETIT ELEMENT NON MASQUE --
         j0 = j1
         imin = j1
-        if (present(tabchi)) then 
+        if (present(tabchi)) then
             do j = j0+1, ndim
                 if (masq(j) .eq. 0 .and. tabchi(j) .lt. tabchi(imin)) imin = j
             end do
-        else if (present(tabchr)) then 
+        else if (present(tabchr)) then
             do j = j0+1, ndim
                 if (masq(j) .eq. 0 .and. tabchr(j) .lt. tabchr(imin)) imin = j
             end do
-        else if (present(tabchk)) then 
+        else if (present(tabchk)) then
             do j = j0+1, ndim
                 if (masq(j) .eq. 0 .and. tabchk(j) .lt. tabchk(imin)) imin = j
             end do

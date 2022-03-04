@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,24 +21,24 @@ SUBROUTINE b3d_degre3(as0,as1,as2,xr1,xi1,&
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !   passage test en double precision A.Sellier dim. 29 août 2010 07:48:35
-                       
+
 implicit none
       real (kind=8) :: TR,Q,R,D,SOM,DIF,SD,S1,S2
       real (kind=8) :: as1,as2,as0,xr1,xi1,xr2,xi2,xr3
       real (kind=8) :: xi3,ARG,RO
-!-INC CCOPTIO                                                           
-!                                                                       
-!                                                                       
-!        POLYNOME DE DEGRE 3 SOUS LA FORME                              
-!        X3 + as2*X2 + as1*X + as0 = 0                                  
-!                                                                       
-!                                                                       
-!                                                                       
+!-INC CCOPTIO
+!
+!
+!        POLYNOME DE DEGRE 3 SOUS LA FORME
+!        X3 + as2*X2 + as1*X + as0 = 0
+!
+!
+!
     TR=dSQRT(3.D0)
     Q=as1/3.D0-as2*as2/9.D0
     R=(as1*as2-3.D0*as0)/6.D0-as2*as2*as2/27.D0
-    D=Q*Q*Q+R*R                                                         
-    
+    D=Q*Q*Q+R*R
+
     if (D.gt.0) then
         SD=dSQRT(D)
         S1=dSIGN(1.D0,R+SD)*((dABS(R+SD))**(1.D0/3.D0))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ function lcdpdt(a,b)
         lcdpdt(1,5) =  a(1)*b(5) + a(5)*b(1)
         lcdpdt(1,6) = (a(4)*b(5) + a(5)*b(4))*unsrac
 
-        lcdpdt(2,4) =  a(2)*b(4) + a(4)*b(2)  
+        lcdpdt(2,4) =  a(2)*b(4) + a(4)*b(2)
         lcdpdt(2,5) = (a(4)*b(6) + a(6)*b(4))*unsrac
         lcdpdt(2,6) =  a(2)*b(6) + a(6)*b(2)
 
@@ -76,15 +76,15 @@ function lcdpdt(a,b)
 
         lcdpdt(4,4) = a(1)*b(2) + a(4)*b(4) + a(2)*b(1)
         lcdpdt(4,5) = (a(1)*b(6) + a(6)*b(1))*unsrac + (a(5)*b(4) + a(4)*b(5))*0.5d0
-        lcdpdt(4,6) = (a(5)*b(2) + a(2)*b(5))*unsrac + (a(4)*b(6) + a(6)*b(4))*0.5d0 
+        lcdpdt(4,6) = (a(5)*b(2) + a(2)*b(5))*unsrac + (a(4)*b(6) + a(6)*b(4))*0.5d0
 
         lcdpdt(5,4) = (a(1)*b(6) + a(6)*b(1))*unsrac + (a(4)*b(5)+a(5)*b(4))*0.5d0
         lcdpdt(5,5) = a(1)*b(3) + a(3)*b(1) + a(5)*b(5)
-        lcdpdt(5,6) = (a(4)*b(3) + a(3)*b(4))*unsrac + (a(5)*b(6) + a(6)*b(5))*0.5d0 
+        lcdpdt(5,6) = (a(4)*b(3) + a(3)*b(4))*unsrac + (a(5)*b(6) + a(6)*b(5))*0.5d0
 
         lcdpdt(6,4) = (a(2)*b(5) + a(5)*b(2))*unsrac + (a(4)*b(6)+a(6)*b(4))*0.5d0
         lcdpdt(6,5) = (a(3)*b(4) + a(4)*b(3))*unsrac + (a(6)*b(5) + a(5)*b(6))*0.5d0
-        lcdpdt(6,6) = a(2)*b(3) + a(3)*b(2) + a(6)*b(6) 
+        lcdpdt(6,6) = a(2)*b(3) + a(3)*b(2) + a(6)*b(6)
 
 
     else if (size(a).eq.4) then
@@ -102,7 +102,7 @@ function lcdpdt(a,b)
         lcdpdt(3,3) = a(3)*b(3)*2
 
         lcdpdt(1,4) =  a(1)*b(4) + a(4)*b(1)
-        lcdpdt(2,4) =  a(2)*b(4) + a(4)*b(2)  
+        lcdpdt(2,4) =  a(2)*b(4) + a(4)*b(2)
         lcdpdt(3,4) =  0
 
         lcdpdt(4,1) =  a(1)*b(4) + a(4)*b(1)

@@ -68,14 +68,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! Compute Neumann loads
-! 
+!
 ! EVOL_CHAR - Undead loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model          : name of model
 ! In  cara_elem      : name of elementary characteristics (field)
-! In  ligrel_calc    : LIGREL to compute 
+! In  ligrel_calc    : LIGREL to compute
 ! In  vite_curr      : speed at current of current time
 ! In  disp_prev      : displacement at beginning of current time
 ! In  strx_prev      : fibers information at beginning of current time
@@ -211,13 +211,13 @@ implicit none
         p_field_refe(1) = mesh_2
 !
 ! ----- Relative speed field
-! 
+!
         call jeexin(vite_curr(1:19)//'.VALE', ier)
         if (ier .gt. 0) then
             call gcncon('.', field_no_refe1)
             call copisd('CHAMP_GD', 'V', field_no_refe, field_no_refe1)
             call barych(field_no_refe1, vite_curr(1:19), 1.0d0, -1.0d0, field_no_refe,&
-                        'V')  
+                        'V')
         endif
 !
 ! ----- Input fields
@@ -252,7 +252,7 @@ implicit none
         resu_elem(10:16) = newnom(2:8)
         call corich('E', resu_elem, ichin_ = i_load)
 !
-! ----- Compute 
+! ----- Compute
 !
         call calcul('S', option, ligrel_calc, 8, lchin,&
                     lpain, 1, resu_elem, lpaout, base,&

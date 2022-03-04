@@ -33,7 +33,7 @@ subroutine cphe27(maout , inc   , jcnnpa, conloc,&
 
 !
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: inc 
+    integer, intent(in) :: inc
     integer, intent(in) :: jcnnpa
     character(len=24), intent(in) :: conloc
     character(len=24), intent(in) :: limane
@@ -41,8 +41,8 @@ subroutine cphe27(maout , inc   , jcnnpa, conloc,&
     integer, intent(in) :: jmacsu
     integer, intent(in) :: macou
     integer, intent(in) :: macsu
-    integer, intent(out) :: ind 
-    integer, intent(out) :: ind1    
+    integer, intent(out) :: ind
+    integer, intent(out) :: ind1
 ! -------------------------------------------------------------------------------------------------
 !        CREATION DES NOUVEAUS NOUEDS ET NOUVELLE MAILLE CAS HEXA27/QUAD9
 ! -------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ subroutine cphe27(maout , inc   , jcnnpa, conloc,&
     call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONMAX', ival=2)
     call jeecra(jexnum(maout//'.PATCH',inc+1), 'LONUTI', ival=2)
     call jeveuo(jexnum(maout//'.PATCH',inc+1), 'E', patch)
-! ----- Type de maille du patch ------------------------------------------------------------------ 
+! ----- Type de maille du patch ------------------------------------------------------------------
     zi(patch-1+1) = 27
 ! ----- DDL interne ------------------------------------------------------------------------------
     zi(patch-1+2) = zi(jmacou-1+9)
@@ -68,15 +68,15 @@ subroutine cphe27(maout , inc   , jcnnpa, conloc,&
     call jeveuo(jexnum(conloc,ind), 'E', jconloc)
     do ino = 1, 9
         zi(jconloc+ino-1)=zi(jmacou+ino-1)
-    end do 
-    
+    end do
+
 ! --- NOUVEAUX ELEMENTS DE CORPS
     call jeecra(jexnum(conloc,ind+1), 'LONMAX', ival=27)
     call jeecra(jexnum(conloc,ind+1), 'LONUTI', ival=27)
     call jeveuo(jexnum(conloc,ind+1), 'E', jconloc)
     do ino = 1, 27
         zi(jconloc+ino-1)=zi(jmacsu+ino-1)
-    end do  
+    end do
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Peau)
 
     call jeveuo(jexnum(limane, macou), 'E', jlimane)

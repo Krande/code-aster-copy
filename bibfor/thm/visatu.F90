@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ real(kind=8), intent(in) :: satur
 !
 ! In  nbvari           : total number of internal state variables
 ! IO  vintp            : internal state variables at end of time step
-! In  advico           : index of first internal state variable for coupling law 
+! In  advico           : index of first internal state variable for coupling law
 ! In  vicsat           : index of internal state variable for saturation
 ! In  satur            : value of saturation
 !

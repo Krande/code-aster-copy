@@ -304,7 +304,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
         freq = uns2pi * omega
         valpu(1) = amor
         valpu(2) = freq
-        if (corfre) then 
+        if (corfre) then
             correc = sqrt( un - amor*amor )
         else
             correc =1.
@@ -358,10 +358,10 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                 coef = dirspe(id,is)*echspe(id,is)
                 valpu(1) = amort(nbmode)
                 valpu(2) = fcoup
-                if (corfre) then 
+                if (corfre) then
                     correc = sqrt( un - amor*amor )
                 else
-                    correc = 1. 
+                    correc = 1.
                 endif
                 omega = deuxpi * fcoup
                 call fointe('F ', nomspe(id, is), 2, nompu, valpu,&
@@ -374,7 +374,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                 if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                     if (iii .eq. 0) then
                         iii = 1
-                        call utmess('I', 'SEISME_63', nk=2,& 
+                        call utmess('I', 'SEISME_63', nk=2,&
                                     valk=[dir(id),nomsup(id,is)],sr=resu)
                     else
                         call utmess('I', 'SEISME_64',&

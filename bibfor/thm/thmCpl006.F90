@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ implicit none
 #include "asterfort/virhol.h"
 #include "asterfort/visatu.h"
 #include "asterfort/thmEvalSatuInit.h"
-#include "asterfort/thmGetParaBJH.h" 
+#include "asterfort/thmGetParaBJH.h"
 #include "asterfort/varpi.h"
 #include "asterfort/viporol.h"
 #include "asterfort/appmasl.h"
@@ -149,7 +149,7 @@ integer, intent(out)  :: retcom
     integer :: advihy, advico
     integer :: vihrho, vicphi, vicsat
     real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi
-    real(kind=8) :: sbjhm,wbjhm,epm       
+    real(kind=8) :: sbjhm,wbjhm,epm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -170,7 +170,7 @@ integer, intent(out)  :: retcom
     surf   = 0.d0
     shut   = 0.d0
     sbjh   = 0.d0
-    wbjh   = 0.d0    
+    wbjh   = 0.d0
 !
 ! - Get storage parameters for behaviours
 !
@@ -239,18 +239,18 @@ integer, intent(out)  :: retcom
             if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
 !
 !--------------Get BJH parameters
-! 
+!
                 call thmGetParaBJH(ds_thm,j_mater,p1)
 !
 !--------------Evaluate the variation of hydraulic pressure
-!              
+!
                 ep   =  ds_thm%ds_material%bjh%epai
                 surf   =  ds_thm%ds_material%bjh%A0
                 shut   =  ds_thm%ds_material%bjh%shuttle
                 sbjh =  ds_thm%ds_material%bjh%SBJH
                 wbjh =  ds_thm%ds_material%bjh%WBJH
-               
-                
+
+
                 call varpi (ds_thm,j_mater,p1 , p1m , dp1,dp2 ,&
                              ep , surf, shut ,&
                              phi0 , dpi,sbjhm,&
@@ -258,7 +258,7 @@ integer, intent(out)  :: retcom
 
 !
 !--------------Evaluate the Lagrangian porosity
-! 
+!
                 call viporol(ds_thm,nbvari,&
                             advico, vicphi,&
                             dtemp , dpi   ,&
@@ -268,7 +268,7 @@ integer, intent(out)  :: retcom
                             alpha0, alphfi,&
                             vintm , vintp ,&
                             phi   , phim  , retcom)
-            else 
+            else
                 call viporo(ds_thm,nbvari,&
                             advico, vicphi,&
                             dtemp , dp1   , dp2   ,&
@@ -278,10 +278,10 @@ integer, intent(out)  :: retcom
                             alpha0, alphfi,&
                             vintm , vintp ,&
                             phi   , phim  , retcom)
-                            
-                            
-                            
-                            
+
+
+
+
             end if
         endif
 ! ----- Compute porosity with storage coefficient
@@ -295,14 +295,14 @@ integer, intent(out)  :: retcom
         if (ds_thm%ds_elem%l_dof_ther) then
             call virhol(nbvari, vintm , vintp ,&
                         advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,& 
+                        dtemp , dp1   , dp2   , dpad,&
                         cliq  , alpliq, signe ,&
                         rho110, rho11 , rho11m,&
                         retcom)
         else
             call virhol(nbvari, vintm , vintp ,&
                         advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,& 
+                        dtemp , dp1   , dp2   , dpad,&
                         cliq  , 0.d0  , signe ,&
                         rho110, rho11 , rho11m,&
                         retcom)
@@ -379,11 +379,11 @@ integer, intent(out)  :: retcom
 ! - Update quantity of mass
 !
     if (lSigm) then
-        if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then 
+        if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
             congep(adcp11) = appmasl(ds_thm,m11m ,&
                                     phi  , phim  ,&
                                     satur, saturm,&
-                                    rho11, rho11m)    
+                                    rho11, rho11m)
         else
             congep(adcp11) = appmas(m11m ,&
                                     phi  , phim  ,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xveri0(ndime, elrefp, ksi, iret) 
+subroutine xveri0(ndime, elrefp, ksi, iret)
     implicit none
     character(len=8) :: elrefp
     integer :: iret, ndime
     real(kind=8) :: ksi(*)
 !
-!     BUT: VERIFIER SI LES COORDONNEES DE REFERENCE CALCULEES 
+!     BUT: VERIFIER SI LES COORDONNEES DE REFERENCE CALCULEES
 !             SONT DANS LE DOMAINE DE L ELEMENT PARENT DE REFERENCE
 !
 !     ENTREE
@@ -49,24 +49,24 @@ subroutine xveri0(ndime, elrefp, ksi, iret)
            do  j=1,ndime
               if(ksi(j) .lt. zero) iret=iret+1
               plan=plan-ksi(j)
-           enddo        
-           if(plan .lt. zero) iret=iret+1  
+           enddo
+           if(plan .lt. zero) iret=iret+1
      elseif((elrefp .eq. 'PE6') .or. (elrefp .eq. 'P15') .or.&
             (elrefp .eq. 'P18')) then
            if (abs(ksi(1)) .gt. one) iret=iret+1
            if ((ksi(2) .gt. one) .or. (ksi(3) .gt. one)) iret=iret+1
            plan=1.d0-ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1 
+           if(plan .lt. zero) iret=iret+1
      elseif((elrefp .eq. 'PY5') .or. (elrefp .eq. 'P13')) then
            if (ksi(3) .lt. zero) iret=iret+1
            plan=1.d0-ksi(1)-ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1 
+           if(plan .lt. zero) iret=iret+1
            plan=1.d0-ksi(1)+ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1 
+           if(plan .lt. zero) iret=iret+1
            plan=1.d0+ksi(1)-ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1 
+           if(plan .lt. zero) iret=iret+1
            plan=1.d0+ksi(1)+ksi(2)-ksi(3)
-           if(plan .lt. zero) iret=iret+1 
+           if(plan .lt. zero) iret=iret+1
      else
         do  j=1,ndime
            if(abs(ksi(j)) .gt. one)  iret=iret+1

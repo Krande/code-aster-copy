@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@ subroutine lc0076(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, neps, &
                     epsm, deps, nsig, sigm, nvi, vim, &
                     option, angmas, sigp, vip, typmod, icomp,&
-                    ndsde, dsidep, codret) 
+                    ndsde, dsidep, codret)
 
 
- 
+
 ! aslint: disable=W1504,W0104
-    use vmis_isot_nl_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate 
+    use vmis_isot_nl_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
@@ -53,7 +53,7 @@ subroutine lc0076(fami, kpg, ksp, ndim, imate,&
     ASSERT (neps .eq. nsig)
     ASSERT (neps .ge. 2*ndim)
 ! --------------------------------------------------------------------------------------------------
-    
+
     ndimsi = 2*ndim
     eps    = epsm(1:ndimsi) + deps(1:ndimsi)
 
@@ -66,10 +66,10 @@ subroutine lc0076(fami, kpg, ksp, ndim, imate,&
             carcri(3))
     ASSERT(.not. lMatr .or. cl%rigi)
     ASSERT(.not. lVari .or. cl%resi)
-    
+
     if (compor(1)(1:4) .eq. 'VISC') &
         call InitViscoPlasticity(cl,fami,kpg,ksp,imate,instap-instam)
-        
+
     call Integrate(cl, eps, vim(1:nvi), sig, vi, dsde)
 
     codret = cl%exception
@@ -79,5 +79,5 @@ subroutine lc0076(fami, kpg, ksp, ndim, imate,&
     if (lVari) vip(1:nvi) = vi
     if (lMatr) dsidep(1:ndimsi,1:ndimsi) = dsde
 
-999 continue                      
+999 continue
 end subroutine

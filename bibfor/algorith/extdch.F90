@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -111,8 +111,8 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 !
     if (typext .eq. 'MAX') dval = r8miem()
     if (typext .eq. 'MAX_ABS') dval = 0.d0
-       
-    
+
+
 !
 !     ON APPELLERA MEMAX QUAND CETTE ROUTINE SERA MIEUX PROGRAMMEE
     if (typch(1:7) .eq. 'CHAM_EL') then
@@ -122,9 +122,9 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 
         call celces(chmoi,'V',chmois)
         call cesred(chmois, 0, [0], 1, nocmp,'V',chmois)
-        call celces(chplu,'V',chplus)  
+        call celces(chplu,'V',chplus)
         call cesred(chplus, 0, [0], 1, nocmp,'V',chplus)
-        
+
         call jeveuo(chmois//'.CESD', 'L', jmoid)
         call jeveuo(chplus//'.CESD', 'L', jplud)
         call jeveuo(chmois//'.CESL', 'L', jmoil)
@@ -132,32 +132,32 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
         call jeveuo(chmois//'.CESV', 'L', jmoiv)
         call jeveuo(chplus//'.CESV', 'L', jpluv)
 
-        nbma = zi(jmoid-1+1)  
-        ASSERT(zi(jplud-1+1).eq.nbma)        
-        
+        nbma = zi(jmoid-1+1)
+        ASSERT(zi(jplud-1+1).eq.nbma)
+
         do 40,ima = 1,nbma
         nbpt  = zi(jmoid-1+5+4*(ima-1)+1)
         nbsp  = zi(jmoid-1+5+4*(ima-1)+2)
         nbcmp = zi(jmoid-1+5+4*(ima-1)+3)
-        
+
         ASSERT(zi(jplud-1+5+4*(ima-1)+1) .eq. nbpt)
         ASSERT(zi(jplud-1+5+4*(ima-1)+2) .eq. nbsp)
         ASSERT(zi(jplud-1+5+4*(ima-1)+3) .eq. nbcmp)
-        
+
         do 30,ipt = 1,nbpt
         do 20,isp = 1,nbsp
         do 10,icmp = 1,nbcmp
         call cesexi('C',jmoid,jmoil,ima,ipt,isp,1,imoiad)
         call cesexi('C',jplud,jplul,ima,ipt,isp,1,ipluad)
-                    
+
         if (imoiad.gt.0 .or. ipluad.gt.0) then
 
             ASSERT(imoiad.gt.0 .and. ipluad.gt.0)
-           
+
             vmoi = zr(jmoiv-1+imoiad)
-            vplu = zr(jpluv-1+ipluad)    
-            valeur = vplu-vmoi   
-            
+            vplu = zr(jpluv-1+ipluad)
+            valeur = vplu-vmoi
+
             if (typext(5:7) .eq. 'ABS') valeur = abs( valeur)
             if (typext(5:7) .eq. 'VAR') then
                 if (abs(valeur) .gt. r8prem()) then
@@ -187,7 +187,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval)
 !       CALCUL DE L'INCREMENT DU CHAMP
 !       DCH = CHPLU - CHMOI
         dch    = '&&'//nompro//'.DELTACH   '
-        dchs   = '&&'//nompro//'.DELTACHS  '        
+        dchs   = '&&'//nompro//'.DELTACHS  '
         call barych(chplu, chmoi, 1.d0, -1.d0, dch,'V')
 
         call cnocns(dch, 'V', dchs)

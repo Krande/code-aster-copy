@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 ! --- INITIALISATIONS
 !
 !  CETTE ROUTINE N AUTORISE QU UNE FACETTE MONOFISSUREE
-!  ON DIMENSIONNE LES CHAMPS DE SIGNES SELON CETTE HYPOTHESE 
+!  ON DIMENSIONNE LES CHAMPS DE SIGNES SELON CETTE HYPOTHESE
     iescl(1) = 1.d0
     iescl(2) = -1.d0
     imait(1) = 1.d0

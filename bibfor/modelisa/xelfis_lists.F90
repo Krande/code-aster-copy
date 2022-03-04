@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,12 +44,12 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav,&
 !   - fiss '.MAILFISS.HEAV';
 !   - fiss '.MAILFISS.CTIP';
 !   - fiss '.MAILFISS.HECT'.
-!  Dans chaque liste , les mailles retenues sont celles qui 
+!  Dans chaque liste , les mailles retenues sont celles qui
 !  portent des elements finis dans modele.
 !
 !  ATTENTION : les vecteurs jeveux elfiss_heav, elfiss_ctip et elfiss_hect
-!              sont alloues dans cette routine (dans la base volatile), 
-!              ils doivent etre nommes dans la routine appelante puis 
+!              sont alloues dans cette routine (dans la base volatile),
+!              ils doivent etre nommes dans la routine appelante puis
 !              detruits dans la routine appelante
 ! ----------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav,&
 !
     call jeveuo(modele//'.MAILLE', 'L', vi=p_mail_affe)
 !
-! - boucle sur les 3 types possibles de liste de mailles 
+! - boucle sur les 3 types possibles de liste de mailles
 !
     mafiss(1) = fiss//'.MAILFISS.HEAV'
     mafiss(2) = fiss//'.MAILFISS.CTIP'
@@ -123,7 +123,7 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav,&
 !
         endif
 !
-! - fin boucle sur les 3 types possibles de liste de mailles 
+! - fin boucle sur les 3 types possibles de liste de mailles
 !
     enddo
 !

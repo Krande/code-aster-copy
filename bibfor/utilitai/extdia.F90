@@ -102,7 +102,7 @@ subroutine extdia(matr, numddl, icode, diag)
                 diag(l)=0.d0
             endif
         end do
-    else 
+    else
         do j = 1, neq
             k = k + 1
             if (vtypddl(k) .ne. 0) then

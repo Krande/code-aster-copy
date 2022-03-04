@@ -101,8 +101,8 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
         mcf = ' '
         iocc = 0
     endif
-    
-    
+
+
     call getvr8(mcf, 'PRECISION', iocc=iocc, scal=epsi, nbret=np)
     call getvtx(mcf, 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
 !
@@ -117,7 +117,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
 !
     call rsexch('F', nomsd, noms2, zi(jordr), chextr,&
                 iret)
-        
+
     if (typcha(1:4).eq.'NOEU' .and. typma.ne.'NORM_TRA')then
         call cnocns(chextr, 'V', chs1)
         sufv= '.CNSV'
@@ -166,16 +166,16 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
 !
             call jeveuo(chs2//sufv, 'L', ivale)
             call jeexin(chs2//sufsl,iret)
-            if (iret.eq.0) then 
+            if (iret.eq.0) then
                 verif=.false.
-            else 
+            else
                 verif=.true.
                 call jeveuo(chs2//sufsl,'L', icsl)
             endif
 !
-            if ( verif ) then 
+            if ( verif ) then
               do j = 1, neq
-                if ( zl(icsl+j-1) ) then 
+                if ( zl(icsl+j-1) ) then
                   if (zr(ivale+j-1) .gt. zr(nvale+j-1)) then
                     zr(nvale+j-1) = zr(ivale+j-1)
                     zi(inumer+j-1) = zi(jordr+i-1)
@@ -190,7 +190,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
                   endif
               end do
             endif
-            
+
             if (typcha(1:4).eq.'NOEU') call detrsd('CHAM_NO_S', chs2)
 !
         end do
@@ -219,9 +219,9 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
 !
             call jeveuo(chs2//sufv, 'L', ivale)
             call jeexin(chs2//sufsl,iret)
-            if (iret.eq.0) then 
+            if (iret.eq.0) then
                 verif=.false.
-            else 
+            else
                 verif=.true.
                 call jeveuo(chs2//sufsl,'L', icsl)
             endif
@@ -229,10 +229,10 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
 !         - L'OBJET .CNSL EST UTILISE POUR EVITER DE TESTER DES VALEURS NaN
 !
             if (valeur.eq.'VALE_ABS') then
-                if (verif) then                
+                if (verif) then
                   do j = 1, neq
                     if (i.eq.2) zr(nvale+j-1) = abs(zr(nvale+j-1))
-                      if ( zl(icsl+j-1) ) then   
+                      if ( zl(icsl+j-1) ) then
                         if (abs(zr(ivale+j-1)) .gt. zr(nvale+j-1)) then
                           zr(nvale+j-1) = abs(zr(ivale+j-1))
                           zi(inumer+j-1) = zi(jordr+i-1)
@@ -251,7 +251,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
             else
                 if (verif) then
                   do j = 1, neq
-                    if ( zl(icsl+j-1) ) then   
+                    if ( zl(icsl+j-1) ) then
                       if (abs(zr(ivale+j-1)) .gt. abs(zr(nvale+j-1))) then
                         zr(nvale+j-1) = zr(ivale+j-1)
                         zi(inumer+j-1) = zi(jordr+i-1)
@@ -264,7 +264,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
                         zr(nvale+j-1) = zr(ivale+j-1)
                         zi(inumer+j-1) = zi(jordr+i-1)
                       endif
-                  end do               
+                  end do
                 endif
             endif
 
@@ -296,16 +296,16 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
 !
             call jeveuo(chs2//sufv, 'L', ivale)
             call jeexin(chs2//sufsl,iret)
-            if (iret.eq.0) then 
+            if (iret.eq.0) then
                 verif=.false.
-            else 
+            else
                 verif=.true.
                 call jeveuo(chs2//sufsl,'L', icsl)
             endif
 !
-            if ( verif ) then 
-              do j = 1, neq                             
-                if (zl(icsl+j-1) ) then  
+            if ( verif ) then
+              do j = 1, neq
+                if (zl(icsl+j-1) ) then
                   if (zr(ivale+j-1) .lt. zr(nvale+j-1)) then
                      zr(nvale+j-1) = zr(ivale+j-1)
                      zi(inumer+j-1) = zi(jordr+i-1)
@@ -313,13 +313,13 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
                 endif
               end do
             else
-              do j = 1, neq                             
+              do j = 1, neq
                   if (zr(ivale+j-1) .lt. zr(nvale+j-1)) then
                      zr(nvale+j-1) = zr(ivale+j-1)
                      zi(inumer+j-1) = zi(jordr+i-1)
                   endif
               end do
-            endif                    
+            endif
             if (typcha(1:4).eq.'NOEU') call detrsd('CHAM_NO_S', chs2)
 !
         end do
@@ -348,9 +348,9 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
 !
             call jeveuo(chs2//sufv, 'L', ivale)
             call jeexin(chs2//sufsl,iret)
-            if (iret.eq.0) then 
+            if (iret.eq.0) then
                 verif=.false.
-            else 
+            else
                 verif=.true.
                 call jeveuo(chs2//sufsl,'L', icsl)
             endif
@@ -394,7 +394,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
                   end do
                 endif
             endif
-                   
+
             if (typcha(1:4).eq.'NOEU') call detrsd('CHAM_NO_S', chs2)
 !
         end do
@@ -542,7 +542,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
 !
     call jedetr('&&CHMIMA.INST')
     call jedetr(knum)
-    
+
     if (typcha(1:4).eq.'NOEU' .and. typma.ne.'NORM_TRA')then
         call cnscno(chs1, ' ', 'NON', 'G', nocha2,&
                     'F', iret)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     character(len=24), intent(in) :: conloc
 !
 ! -------------------------------------------------------------------------------------------------
-!         CREATION DES MAILLES DES NOUVELLES MAILLES DE PEAU 
+!         CREATION DES MAILLES DES NOUVELLES MAILLES DE PEAU
 !         SUR LA FACE DE LA ZONE DE CONTACT ESCLAVE
 !         CAS QUAD 8
 ! -------------------------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(13)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(20)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(16)-1)
-    zi(jconloc+10-1) = indno + conneo(lino(4)) 
+    zi(jconloc+10-1) = indno + conneo(lino(4))
     zi(jconloc+11-1) = indno + conneo(lino(1))
     zi(jconloc+12-1) = indno + 4 +conneo(lino(1))
     zi(jconloc+13-1) = indno + 4 +conneo(lino(4))
@@ -232,7 +232,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(14)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(17)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(13)-1)
-    zi(jconloc+10-1) = indno + conneo(lino(1)) 
+    zi(jconloc+10-1) = indno + conneo(lino(1))
     zi(jconloc+11-1) = indno + conneo(lino(2))
     zi(jconloc+12-1) = indno + 4 +conneo(lino(2))
     zi(jconloc+13-1) = indno + 4 +conneo(lino(1))
@@ -249,7 +249,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(15)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(18)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(14)-1)
-    zi(jconloc+10-1) = indno + conneo(lino(2)) 
+    zi(jconloc+10-1) = indno + conneo(lino(2))
     zi(jconloc+11-1) = indno + conneo(lino(3))
     zi(jconloc+12-1) = indno + 4 + conneo(lino(3))
     zi(jconloc+13-1) = indno + 4 + conneo(lino(2))
@@ -266,7 +266,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(16)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(19)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(15)-1)
-    zi(jconloc+10-1) = indno + conneo(lino(3)) 
+    zi(jconloc+10-1) = indno + conneo(lino(3))
     zi(jconloc+11-1) = indno + conneo(lino(4))
     zi(jconloc+12-1) = indno + 4 +conneo(lino(4))
     zi(jconloc+13-1) = indno + 4 +conneo(lino(3))
@@ -283,7 +283,7 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = zi(jmacsu+lino(18)-1)
     zi(jconloc+8-1) = zi(jmacsu+lino(19)-1)
     zi(jconloc+9-1) = zi(jmacsu+lino(20)-1)
-    zi(jconloc+10-1) = indno + 4 +conneo(lino(1)) 
+    zi(jconloc+10-1) = indno + 4 +conneo(lino(1))
     zi(jconloc+11-1) = indno + 4 +conneo(lino(2))
     zi(jconloc+12-1) = indno + 4 +conneo(lino(3))
     zi(jconloc+13-1) = indno + 4 +conneo(lino(4))

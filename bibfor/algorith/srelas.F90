@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,29 +47,29 @@ subroutine srelas(ndi,ndt,nmat,mater,sigd,de,k,mu)
 
     integer :: ndi,ndt,nmat
     real(kind=8) :: mater(nmat,2),sigd(6),de(6,6),mu,k
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: i,j
     real(kind=8) :: mue,ke,pa,nelas,invar1
-    
+
     !!!
     !!! Recuperation des parametres materiaux
     !!!
-    
+
     mue=mater(4,1)
     ke=mater(5,1)
     pa=mater(1,2)
     nelas=mater(2,2)
-    
+
     !!!
     !!! calcul des parametres a t -
     !!!
-    
+
     invar1=trace(ndi,sigd)
-        
+
     if (invar1/3.d0.le.pa) then
         k=ke
         mu=mue
@@ -77,23 +77,23 @@ subroutine srelas(ndi,ndt,nmat,mater,sigd,de,k,mu)
         k=ke*(invar1/3.d0/pa)**nelas
         mu=mue*(invar1/3.d0/pa)**nelas
     endif
-    
+
     !!! stockage
     mater(12,1)=k
     mater(13,1)=mu
-    
+
     !!!
     !!! Definitin de la matrice hypoelastique
     !!!
-    
+
     call r8inir(6*6,0.d0,de,1)
-    
+
     do i=1,ndi
         do j=1,ndi
             de(i,j)=k-2.d0*mu/3.d0
         end do
     end do
-    
+
     do i=1,ndt
         de(i,i)=de(i,i)+2.d0*mu
     end do

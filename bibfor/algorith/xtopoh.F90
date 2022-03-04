@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine xtopoh(noma, modele)
 ! ROUTINE XFEM (METHODE XFEM - PREPARATION)
 !
 ! AJOUTER À LA SD FISS_XFEM LES IDENTIFIANTS DES DOMAINES PAR NOEUD/FACETTE/SOUS-EL.
-! C EST A DIRE LE CODAGE ASSOCIE 
+! C EST A DIRE LE CODAGE ASSOCIE
 !   * A L INTERSECTION ENTRE LES DOMAINES DE DISCONTINUITE ET LE SUPPORT DU NOEUD X-FEM
 !   * A CHAQUE DOMAINE MAITRE/ESCL.VU PAR CHAQUE FACETTE
 !   * A CHAQUE  DOMAINE DE DISCONINUITE AUQUEL APPARTIENT LE SOUS-ELEMENT
@@ -165,12 +165,12 @@ subroutine xtopoh(noma, modele)
                     nbout, lpaout, lchout)
     endif
 !
-! --- CONCATENATION DU CHAMP ELNO 
+! --- CONCATENATION DU CHAMP ELNO
 !        CONSTRUCTION DE LA LISTE DE DOMAINES VU PAR UN NOEU XFEM
 !    call imprsd('CHAMP',modele(1:8)//'.TOPONO.HNO',29,'CHAMP HEAVISIDE PAR NOEUD')
 !    call imprsd('CHAMP',modele(1:8)//'.FISSNO',28,'FISSNO')
-!  
-    call xcelno(noma, modele, lchout(1), option, lpaout(1)) 
+!
+    call xcelno(noma, modele, lchout(1), option, lpaout(1))
 !
 !    call imprsd('CHAMP',modele(1:8)//'.TOPONO.HNO',30,'CHAMP HEAVISIDE PAR NOEUD')
 !    call imprsd('CHAMP',modele(1:8)//'.TOPONO.HSE',31,'CHAMP HEAVISIDE PAR SSE')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  crack          : name of crack 
+! In  crack          : name of crack
 ! In  nb_dim         : dimension of space
 ! In  nb_node_mesh   : number of (physical) nodes in mesh
 ! In  nb_edge        : number of cut edges

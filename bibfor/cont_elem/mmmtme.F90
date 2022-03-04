@@ -136,7 +136,7 @@ real(kind=8), intent(out) :: matrme(27, 27)
             end do
         end do
     endif
-    
+
     if (phase .eq. 'ADHE') then
         do i = 1, nnm
             do j = 1, nne

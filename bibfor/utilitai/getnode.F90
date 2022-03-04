@@ -169,7 +169,7 @@ aster_logical, intent(in), optional :: elem_excl
                     nb_mocl, moclm, typmcl, list_excl, nb_excl)
     endif
 !
-! - Access to list of nodes 
+! - Access to list of nodes
 !
     if (nb_lect .ne. 0) then
         call jeveuo(list_lect, 'E', vi = p_list_lect)

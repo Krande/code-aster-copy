@@ -87,7 +87,7 @@ do nl_ind  = idx_start, idx_end
 !
 !
         case(NL_CHOC)
-        
+
             call dtmforc_choc(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
                                               time, depl, vite, fext_nl, fext_tgt)
 
@@ -130,19 +130,19 @@ do nl_ind  = idx_start, idx_end
     case(NL_YACS)
         ! we will deal with it later
         continue
-! 
+!
     case(NL_FX_RELATIONSHIP)
         call dtmforc_rede(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
                           depl, fext)
-! ! 
+! !
     case(NL_FV_RELATIONSHIP)
         call dtmforc_revi(nl_ind, sd_dtm, sd_nl, buffdtm, buffnl,&
                           vite, fext)
-    
+
     !
     case default
         ASSERT(.false.)
-        
+
     end select
 end do
 

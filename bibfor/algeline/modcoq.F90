@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -131,12 +131,12 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 ! --- 2.1.MATERIAU CONSTITUTIF DE LA COQUE INTERNE
 !
     call rccome(mater1, 'ELAS', iret, k11_ind_nomrc=k11)
-    if ( iret .eq. 0 ) then 
+    if ( iret .eq. 0 ) then
        rcvalk = mater1//k11//'.VALK'
-       rcvalr = mater1//k11//'.VALR'  
+       rcvalr = mater1//k11//'.VALR'
     else
-       rcvalk = ' '   
-    endif       
+       rcvalk = ' '
+    endif
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_92')
@@ -169,12 +169,12 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 ! --- 2.2.MATERIAU CONSTITUTIF DE LA COQUE EXTERNE
 !
     call rccome(mater2, 'ELAS', iret, k11_ind_nomrc=k11)
-    if ( iret .eq. 0 ) then  
+    if ( iret .eq. 0 ) then
        rcvalk = mater2//k11//'.VALK'
-       rcvalr = mater2//k11//'.VALR'  
+       rcvalr = mater2//k11//'.VALR'
     else
-       rcvalk = ' '   
-    endif       
+       rcvalk = ' '
+    endif
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_95')

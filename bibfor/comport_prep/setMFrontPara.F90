@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ integer, intent(in) :: i_comp
     paraExte       = v_crit(i_comp)%paraExte
     l_mfront_offi  = paraExte%l_mfront_offi
     l_mfront_proto = paraExte%l_mfront_proto
-    libr_name      = paraExte%libr_name 
+    libr_name      = paraExte%libr_name
     subr_name      = paraExte%subr_name
     model_mfront   = paraExte%model_mfront
 !

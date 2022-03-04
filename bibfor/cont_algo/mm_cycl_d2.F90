@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -130,49 +130,49 @@ implicit none
             call mm_cycl_laugf(pres_frot_curr, dist_frot_curr, coef_frot_prev, nrese_curr)
             call mm_cycl_zonf(nrese_prev, 0.98D0, 1.02D0, zone_frot_prev)
             call mm_cycl_zonf(nrese_curr, 0.98D0, 1.02D0, zone_frot_curr)
-            
+
             !
             ! - Sub-cycling 1 : grazing adherence
             !
             if (((zone_frot_prev.eq.-1).and.(zone_frot_curr.eq. 1)).or. &
                 ((zone_frot_prev.eq.1) .and.(zone_frot_curr.eq.-1))) then
                 cycl_stat = 11
-                if (zone_frot_prev.eq.3) then 
-                    alpha_frot_matr = 0.9
-                    alpha_frot_vect = 0.9
-                else
-                    alpha_frot_matr = 0.1 
-                    alpha_frot_vect = 0.1
-                endif
-            
-        !
-        ! - Sub-cycling 2
-        !
-            elseif (((zone_frot_prev.eq.-2).and.(zone_frot_curr.eq.1)).or. &
-                ((zone_frot_prev.eq.1).and.(zone_frot_curr.eq.-2))) then
-                cycl_stat = 12
-                if (zone_frot_prev.eq.4) then 
-                    alpha_frot_matr = 1.d-1
-                    alpha_frot_vect = 1.d-1
-                else
-                    alpha_frot_matr = 9.d-1
-                    alpha_frot_vect = 9.d-1
-                endif
-            
-        !
-        ! - Sub-cycling 3
-        !
-            elseif (((zone_frot_prev.eq.-1).and.(zone_frot_curr.eq.2)).or. &
-                ((zone_frot_prev.eq.2).and.(zone_frot_curr.eq.-1))) then
-                cycl_stat = 13
-                if (zone_frot_prev.eq.3) then 
+                if (zone_frot_prev.eq.3) then
                     alpha_frot_matr = 0.9
                     alpha_frot_vect = 0.9
                 else
                     alpha_frot_matr = 0.1
                     alpha_frot_vect = 0.1
                 endif
-            
+
+        !
+        ! - Sub-cycling 2
+        !
+            elseif (((zone_frot_prev.eq.-2).and.(zone_frot_curr.eq.1)).or. &
+                ((zone_frot_prev.eq.1).and.(zone_frot_curr.eq.-2))) then
+                cycl_stat = 12
+                if (zone_frot_prev.eq.4) then
+                    alpha_frot_matr = 1.d-1
+                    alpha_frot_vect = 1.d-1
+                else
+                    alpha_frot_matr = 9.d-1
+                    alpha_frot_vect = 9.d-1
+                endif
+
+        !
+        ! - Sub-cycling 3
+        !
+            elseif (((zone_frot_prev.eq.-1).and.(zone_frot_curr.eq.2)).or. &
+                ((zone_frot_prev.eq.2).and.(zone_frot_curr.eq.-1))) then
+                cycl_stat = 13
+                if (zone_frot_prev.eq.3) then
+                    alpha_frot_matr = 0.9
+                    alpha_frot_vect = 0.9
+                else
+                    alpha_frot_matr = 0.1
+                    alpha_frot_vect = 0.1
+                endif
+
         !
         ! - Sub-cycling 4
         !
@@ -181,10 +181,10 @@ implicit none
                 cycl_stat = 14
                 alpha_frot_matr = 5.d-1
                 alpha_frot_vect = 5.d-1
-            
-            else 
+
+            else
 !                call utmess('A',CONTACT5_2)
-            endif 
+            endif
         endif
     endif
 !

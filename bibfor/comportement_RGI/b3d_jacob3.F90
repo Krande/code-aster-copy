@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,32 +20,32 @@ subroutine b3d_jacob3(a,idim1,d,x,control,&
                        epsv)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
-!   version modifiee par A.Sellier le sam. 28 août 2010 18:16:10 CEST 
-!   pour corriger le pb (rencontre sous linux)  de non detection de 
+!   version modifiee par A.Sellier le sam. 28 août 2010 18:16:10 CEST
+!   pour corriger le pb (rencontre sous linux)  de non detection de
 !   deux valeurs propres petites considerees a tort comme non double :
 !   1)on definit deps en valeur absolue pour eviter les pb liees aux vp
 !   negative
-!   2)dans le cas ou les deux valeur propre sont egales et de 
+!   2)dans le cas ou les deux valeur propre sont egales et de
 !   signes opposes, la difference est superieure au test ce qui est correct
 !   mais difficile a traiter numeriquement lorsque les valeurs sont toutes deux
 !   petites par rapport à la troisieme ( elle pourrait alors etre toute
 !   deux considerees comme nulle), il faut donc tester si la somme des
-!   valeurs absolue peut etre considere comme negligeable par rapport 
+!   valeurs absolue peut etre considere comme negligeable par rapport
 !   à la troisieme, si c est le cas on impose a ces deux valeurs considere
 !   d etre egales a leur moyenne...
-      
-!======================================================================         
-!     OBJET                                                                     
-!     -----                                                                     
-!     DIAGONALISATION D UNE MATRICE 3*3 SYMETRIQUE                              
-!                                                                               
-!     ENTREES                                                                   
-!     -------                                                                   
-!     A(3,3) = MATRICE SYMETRIQUE                                               
-!     idim1   = 2 OU 3  SI 2 ON NE S OCCUPE QUE DE A(2,2)                        
-!                      SI 3                    DE A(3,3)                        
-!     SORTIES                                                                   
-!     -------                                                                   
+
+!======================================================================
+!     OBJET
+!     -----
+!     DIAGONALISATION D UNE MATRICE 3*3 SYMETRIQUE
+!
+!     ENTREES
+!     -------
+!     A(3,3) = MATRICE SYMETRIQUE
+!     idim1   = 2 OU 3  SI 2 ON NE S OCCUPE QUE DE A(2,2)
+!                      SI 3                    DE A(3,3)
+!     SORTIES
+!     -------
 !     D(3)   = VALEURS PROPRES ORDONNEES D(1)>D(2)>D(3)
 !
 !     S(3,3) = VECTEURS PROPRES ( S(IP,2) EST LE VECTEUR
@@ -59,8 +59,8 @@ subroutine b3d_jacob3(a,idim1,d,x,control,&
 
       integer idim1
       real(kind=8) :: a(3,3),d(3),x(3,3),xmaxi
-!   variables supplémentaires...      
-      aster_logical ::  control   
+!   variables supplémentaires...
+      aster_logical ::  control
       real(kind=8) :: ad(3),epsv,aux,c0,c1,c2,d1,XI1,d2,XI2,d3,XI3,deps
 
 
@@ -82,8 +82,8 @@ subroutine b3d_jacob3(a,idim1,d,x,control,&
 !   on impose aux petites valeurs propres d etres exactement egale
 !   pour eviter les pb de test de valeurs double
       ad(1)=dabs(d(1))
-      ad(2)=dabs(d(2))  
-      ad(3)=dabs(d(3)) 
+      ad(2)=dabs(d(2))
+      ad(3)=dabs(d(3))
       xmaxi=dmax1(ad(1),ad(2),ad(3))
       deps=xmaxi*epsv
       if((ad(2)+ad(3)).le.deps)then
@@ -106,13 +106,13 @@ subroutine b3d_jacob3(a,idim1,d,x,control,&
         end if
        end if
       end if
-!   on reclasse les valeurs propres      
+!   on reclasse les valeurs propres
       d(1)=dmax1(d1,d2,d3)
       d(3)=dmin1(d1,d2,d3)
-      d(2)=d1+d2+d3-d(1)-d(3)       
-       
-                    
-!   rajout du dabs ds le deps     
+      d(2)=d1+d2+d3-d(1)-d(3)
+
+
+!   rajout du dabs ds le deps
          deps=dabs(d(1)*epsv)
       if (d(1)-d(2).le.deps) then
 !     valeur propre double

@@ -113,16 +113,16 @@ implicit none
     if (l_newt_cont) then
         call mmbclc(mesh  , model , iter_newt, nume_inst, ds_measure,&
                     sddisc, sddyna, hval_incr, hval_algo, ds_contact)
-        
+
         call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_ = loop_cont_conv)
-        
+
         if (loop_cont_conv) then
             call nmcrel(sderro, 'DIVE_CTCC', .false._1)
         else
             call nmcrel(sderro, 'DIVE_CTCC', .true._1)
         endif
 
-        if (.not. l_all_verif) then 
+        if (.not. l_all_verif) then
             call mmbouc(ds_contact, 'Cont', 'Get_Vale', loop_vale_  = loop_cont_vale)
             loop_cont_vali = nint(loop_cont_vale)
             call nmimci(ds_print, 'CONT_NEWT', loop_cont_vali, .true._1)

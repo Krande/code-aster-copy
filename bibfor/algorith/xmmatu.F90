@@ -22,7 +22,7 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
                   jheafa, ncomph)
 
     implicit none
- 
+
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/hmdeca.h"
@@ -49,7 +49,7 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
     real(kind=8) :: r, p(3,3), ffp(27), jac, ffj, ffc(16), ffi, nd(3)
     real(kind=8) :: mmat(560,560), dside3(3,3), coefi, coefj
     aster_logical :: lmultc
-! 
+!
 !   INITIALISATION
     lmultc = nfiss.gt.1
     unity(:,:) = 0.d0
@@ -76,7 +76,7 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
           dside3(i,j) = -dsidep(i,j)
           alocal(i,j) = -unity(i,j) + r*dside2(i,j)
        end do
-    end do 
+    end do
 !
 !   MATRICE [P]T[ALOCAL]
 !
@@ -142,9 +142,9 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
                    mmat(jn+(ndim+dec)*ifh+l,pli+2+k) =&
                    mmat(jn+(ndim+dec)*ifh+l,pli+2+k) -&
                    coefj*ffp(j)*pdotal(l,k)*ffi*jac
-                end do 
-             end do 
-          end do 
+                end do
+             end do
+          end do
        end do
     end do
 !
@@ -172,7 +172,7 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
              end do
           end do
        end do
-    end do 
+    end do
 !
     do i = 1, nnop
        call hmdeca(i, ddls, ddlm, nnops, in, dec)
@@ -187,7 +187,7 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
                 ffj=ffc(j)
                 mmat(in+(ndim+dec)*ifh+k,plj) =&
                 mmat(in+(ndim+dec)*ifh+k,plj) + coefi*r*ffp(i)*knd(k)*ffj*jac
-             end do 
+             end do
           end do
        end do
     end do
@@ -201,9 +201,9 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
              ffj=ffc(j)
              do l = 1, ndim
                 mmat(pli+2+k,plj+2+l) =&
-                mmat(pli+2+k,plj+2+l) - ffi*dside2(k,l)*ffj*jac 
-             end do 
-          end do 
+                mmat(pli+2+k,plj+2+l) - ffi*dside2(k,l)*ffj*jac
+             end do
+          end do
        end do
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -159,19 +159,19 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
     epsg = 1.0d+08 * r8prem()
     nbmaok = 0
     nbmaok1 = 0
-!    
+!
     lnuma = '&&PROJKM.NUMA_NOEBE'
     call jecreo(lnuma, 'V V I')
     call jeecra(lnuma, 'LONMAX', nbmabe)
-! 
+!
     liproj = '&&PROJKM.IPROJ_NOEBE'
     call jecreo(liproj, 'V V I')
     call jeecra(liproj, 'LONMAX', nbmabe)
-! 
+!
     linoma = '&&PROJKM.DOUBNO_NOEBE'
     call jecreo(linoma, 'V V I')
     call jeecra(linoma, 'LONMAX', 3*nbmabe)
-    
+
 !   calcul de l'excentrement max
     xbetp(1) = zr(jcoor+3*(noebe-1) )
     xbetp(2) = zr(jcoor+3*(noebe-1)+1)
@@ -207,7 +207,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
 !
     call jeveuo(jexatr(mailla//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
-88  continue   
+88  continue
 !
     do 10 imail = 1, nbmabe
 !
@@ -229,7 +229,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
 !.......... TEST DE PROJECTION DU NOEUD CABLE SUR LA MAILLE COURANTE
 !
           do inob = 1, nblinobet1
-            
+
             if (zi(jconx1-1+zi(jconx2+numail-1)+icnx-1) .eq. zi(jlinob1-1+inob)) then
 !
 !............. ON NOTE LE NUMERO DE LA MAILLE ET L'INDICE DU NOEUD
@@ -294,8 +294,8 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
 !
                 excent = normal(1)*(x3dca(1)-xyzma(1,1)) + normal(2)*( x3dca(2)-xyzma(2,1)) + nor&
                          &mal(3)*(x3dca(3)-xyzma(3,1))
-!               l'excentrement ne peut pas etre plus grand que la distance 
-!               au noeud de beton le plus proche 
+!               l'excentrement ne peut pas etre plus grand que la distance
+!               au noeud de beton le plus proche
                 if (abs(excent).gt.exc_max)then
                     zi(jliproj+nbmaok-1) = -1
                     call jelibe(lnuma)
@@ -304,7 +304,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
                     goto 10
                 endif
 !               verif de la compatibilité avec épaisseur et excentrement de la maille
-!               
+!
                 call recu_cara_ma(mailla, carte, numail, 'EP      ', ep_ma)
                 call recu_cara_ma(mailla, carte, numail, 'EXCENT  ', exc_ma)
 !
@@ -326,7 +326,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
                 enddo
                 if (dmax .eq. 0.0d0) dmax = 1.0d0
                 if (dble(abs(excent))/dmax .lt. epsg) excent = 0.0d0
-                call dcopy(3, x3dca(1), 1, x3dp(1), 1)  
+                call dcopy(3, x3dca(1), 1, x3dp(1), 1)
                 if (excent .ne. 0.0d0) then
                     call daxpy(3, -excent, normal(1), 1, x3dp(1),&
                                1)
@@ -342,15 +342,15 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
                 call projtq(nbcnx, xyzma(1, 1), icnx, x3dp(1), excent, &
                             itria, inoeu, icote, xbar(1), iproj)
                 if (iproj .ge. 0 .and. iproj .lt. 20) then
-                    goto 999 
+                    goto 999
                 elseif (iproj .ge. 20)then
                     if (lrechelarg) then
                         nbmaok = nbmaok + 1
                         call jeecra(lnuma, 'LONUTI', nbmaok)
-                        call jeveuo(lnuma, 'E', jlnuma)                
+                        call jeveuo(lnuma, 'E', jlnuma)
 !
                         call jeecra(liproj, 'LONUTI', nbmaok)
-                        call jeveuo(liproj, 'E', jliproj)    
+                        call jeveuo(liproj, 'E', jliproj)
 !
                         call jeecra(linoma, 'LONUTI', 3*nbmaok)
                         call jeveuo(linoma, 'E', jlinoma)
@@ -358,7 +358,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
 !
                     zi(jlnuma+nbmaok-1) = numail
                     zi(jliproj+nbmaok-1) = iproj
-                    if (iproj.eq.20)then    
+                    if (iproj.eq.20)then
                         zi(jlinoma+3*nbmaok-3) = cxma(icote)
                         icote = icote +1
                         if (icote.gt.nbcnx) icote = 1
@@ -409,7 +409,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
     endif
 !
 !   analyse des projections possibles sur segments et noeuds
-!   
+!
     call jeveuo(lnuma, 'E', jlnuma)
     call jeveuo(liproj, 'E', jliproj)
     call jeveuo(linoma, 'E', jlinoma)
@@ -442,7 +442,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
             ASSERT(cxma(jno).eq. n2)
         endif
         iproj = 10 + jno
-        if (nbcnx .eq. 3) then 
+        if (nbcnx .eq. 3) then
             itria = 1
         else
             if (jno .eq. 1 .or. jno .eq. 2) itria = 1
@@ -529,7 +529,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, dmax_cable, &
     call jedetr(lnuma)
     call jedetr(liproj)
     call jedetr(linoma)
-    
+
     call jedema()
 !
 ! --- FIN DE PROJKM.

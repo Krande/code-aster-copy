@@ -76,16 +76,16 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: val, dum, nbmat, retcom, nvi
     real(kind=8) :: dt, invar, s(6), sel(6), mater(nbmat,2), vinm(nvi)
     real(kind=8) :: dside(6,6), de(6,6)
     real(kind=8) :: ucrpm, ucrvm, ucriv, seuilv
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: ndi, ndt, i, k
     real(kind=8) :: paraep(3), varpl(4), derpar(3)
     real(kind=8) :: paravi(3), varvi(4)
@@ -102,126 +102,126 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     real(kind=8) :: bidon, vintr, tmm, tpp, paravit(3), varvit(4)
     real(kind=8) :: aat(6,6), cct(6,6)
     common /tdim/   ndt, ndi
-    
-    
+
+
     !!!
     !!! Recuperation des temperatures et des increments
     !!!
-    
+
     tmm=mater(6,1)
     tpp=mater(7,1)
     vintr=vinm(3)
-    
+
     !!!
     !!! Recuperation des parametres d'ecrouissage a t- et v-
     !!!
-    
+
     call srvarp(vinm, nvi, nbmat, mater, tmm, paraep)
     call srvacp(nbmat, mater, paraep, varpl)
     call srdepp(vinm, nvi, nbmat, mater, paraep, derpar)
     call srvarv(vintr, nbmat, mater, tmm, paravi)
     call srvacv(nbmat, mater, paravi, varvi)
-    
+
     !!!
     !!! Recuperation des parametres d'ecrouissage a t+ v-
     !!!
-    
+
     call srvarv(vintr, nbmat, mater, tpp, paravit)
     call srvacv(nbmat, mater, paravit, varvit)
-    
+
     !!!
     !!! Recuperation de dfp/dsigm(-)
     !!!
-    
+
     call srdhds(nbmat, mater, s, dhds, retcom)
     call srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
     call srdfds(nbmat, mater, paraep, varpl, ds2hds, ucrpm, dfdsp)
-    
+
     !!!
     !!! Recuperation de dfvp/dsigm(-)
-    !!!    
-    
+    !!!
+
     call srdhds(nbmat, mater, s, dhdsv, retcom)
     call srds2h(nbmat, mater, s, dhdsv, ds2hdv, retcom)
     call srdfds(nbmat, mater, paravi, varvi, ds2hdv, ucrvm, dfdsv)
-    
+
     !!!
     !!! Recuperation de dfvp/dsigm(e)
     !!!
-    
+
     call srdhds(nbmat, mater, sel, dhdsve, retcom)
     call srds2h(nbmat, mater, sel, dhdsve, ds2hde, retcom)
     call srdfds(nbmat, mater, paravit, varvit, ds2hde, ucriv, dfdsve)
-    
+
     !!!
     !!! Recuperation de gp-
     !!!
-    
+
     bprimp=srbpri(val, vinm, nvi, nbmat, mater, paraep, invar, s, tmm)
-    
+
     call srcaln(s, bprimp, vecnp, retcom)
     call srcalg(dfdsp, vecnp, gp, devgii)
-    
+
     !!!
     !!! Recuperation de gvp-
     !!!
-    
+
     val=0
     bprimv=srbpri(val, vinm, nvi, nbmat, mater, paravi, invar, s, tmm)
-    
+
     call srcaln(s, bprimv, vecnv, retcom)
     call srcalg(dfdsv, vecnv, gv, bidon)
-    
+
     !!!
     !!! Recuperation de dphi/deps et sa multiplication par gvp
     !!!
-    
+
     call srdphi(nbmat, mater, de, seuilv, dfdsve, dphi)
     call lcprmv(de, gv, degv)
     call lcprte(degv, dphi, dphigv)
-    
+
     do i=1, ndt
         do k=1, ndt
             aa(i,k)=de(i,k)-dphigv(i,k)*dt
         end do
     end do
-    
+
     !!!
     !!! Produit de dfp/dsig par aa
     !!!
-    
+
     aat(1:ndt,1:ndt) = transpose(aa(1:ndt,1:ndt))
     call lcprmv(aat, dfdsp, nume)
-    
+
     !!!
     !!! Recuperation de dfp/dxip(-)
     !!!
 
     call srdfdx(nbmat, mater, ucrpm, invar, s, paraep, varpl, derpar, dfdxip)
-    
+
     !!!
     !!! Produit de de par gp
     !!!
-    
+
     call r8inir(6, 0.d0, degp, 1)
     call lcprmv(de, gp, degp)
-    
+
     !!!
     !!! Produit de dfp/dsig par de:gp
     !!!
 
     call lcprsc(dfdsp, degp, dfdegp)
-    
+
     !!!
     !!! Calcul de dgamv/deps
     !!!
-    
+
     call srdepv(depsv, ddepsv, dgamv, ddgamv)
-    
+
     !!!
     !!! Calcul de depsv/dsig
     !!!
-    
+
     call r8inir(6*6, 0.d0, dvds, 1)
     call r8inir(6*6, 0.d0, cc, 1)
     call r8inir(6, 0.d0, dd, 1)
@@ -229,13 +229,13 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     cc(1:ndt,1:ndt) = matmul(dvds(1:ndt,1:ndt), de(1:ndt,1:ndt))
     cct(1:ndt,1:ndt) = transpose(cc(1:ndt,1:ndt))
     call lcprmv(cct, ddgamv, dd)
-    
+
     !!!
     !!! Calcul de dlambda
     !!!
-    
+
     coupl=mater(28,2)
-    
+
     do i=1, ndt
         if ((dum.eq.1).and.(coupl.ge.1.d0/2.d0)) then
             ddlam(i)=(nume(i)+dfdxip*dd(i))/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
@@ -243,18 +243,18 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
             ddlam(i)=nume(i)/(dfdegp-dfdxip*sqrt(2.d0/3.d0)*devgii)
         endif
     end do
-    
+
     !!!
     !!! Calcul de l'operateur tangent
     !!!
-    
+
     call r8inir(6*6, 0.d0, dgp, 1)
     call r8inir(6*6, 0.d0, dgv, 1)
     call r8inir(6*6, 0.d0, dedgp, 1)
     call r8inir(6*6, 0.d0, dedgv, 1)
     call lcprte(degp, ddlam, dedgp)
     call r8inir(6*6, 0.d0, dside, 1)
-    
+
     do i=1, ndt
         do k=1, ndt
             dside(i,k)=de(i,k)-dedgp(i,k)-dphigv(i,k)*dt

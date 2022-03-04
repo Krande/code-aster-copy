@@ -109,7 +109,7 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
         do 155 j = 1, ndim
           do ig = 1, nfh
             saut(j) = saut(j) - coefj * ffp(ino) * zr(idepd-1+in+ndim*(1+ig-1)+j)
-          enddo 
+          enddo
 155     continue
         do 156 j = 1, ndim*singu
           do alpi = 1, ndim

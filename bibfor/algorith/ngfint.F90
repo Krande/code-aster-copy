@@ -128,7 +128,7 @@ integer,intent(out)            :: codret
     end do
 !
 !    FORMAT RESULTAT DES CONTRAINTES (SANS RAC2)
-    if (lSigm) sigmap = sigp/ni2ldc 
+    if (lSigm) sigmap = sigp/ni2ldc
 !
 ! - FORCE INTERIEURE
 !

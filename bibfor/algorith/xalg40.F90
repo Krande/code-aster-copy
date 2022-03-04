@@ -102,7 +102,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
                 nbpi, ip1, ip2, pm1a, pm1b,&
                 pm2)
 !
-!    RECHERCHE DES NOEUDS B ET C 
+!    RECHERCHE DES NOEUDS B ET C
     a1=nint(ainter(zxain*(1-1)+1))
     a2=nint(ainter(zxain*(2-1)+1))
     noeub=0
@@ -121,7 +121,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     do 300 r = 1, ninter
         a2=nint(ainter(zxain*(r-1)+1))
-        ASSERT(a2 .ne. 0) 
+        ASSERT(a2 .ne. 0)
         ip = ip+1
         nm=ar(a2,3)
         ia=0
@@ -133,7 +133,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
                 ib=cnset(nnose*(it-1)+ar(a2,i))
                 im=cnset(nnose*(it-1)+ar(a2,3))
             endif
-320     continue 
+320     continue
         milara(:) = 0.d0
         milarb(:) = 0.d0
 !           INTERPOLATION DES COORDONNEES DES POINTS MILIEUX MA ET MB

@@ -41,7 +41,7 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 !
 !     BUT:  CALCUL DES COORDONNEES CYLINDRIQUES EN FOND DE FISSURE
 !            * MUTUALISATION DE LA DEFINITION DES BASES LOCALES AU PT DE GAUSS
-!            * EN S APPUYANT SEULEMENT SUR L INFORMATION GEOMETRIQUE 
+!            * EN S APPUYANT SEULEMENT SUR L INFORMATION GEOMETRIQUE
 !                 SUR LA PROJECTION SUR LE FRONT DE FISSURE FOURNIE DANS BASLO
 !
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE (3*NDIM*NNOP)
@@ -73,7 +73,7 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
     call xbasgl(ndim, baslog, 1, p_g, invp_g)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   * SI ON DISPOSAIT DU PROJETE DU POINT DE GAUSS SUR LE FOND 
+!   * SI ON DISPOSAIT DU PROJETE DU POINT DE GAUSS SUR LE FOND
 !       LE CALCUL SERAIT TRIVIAL / ON BRICOLE POUR LE MOMENT
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     pt(:)= 0.d0

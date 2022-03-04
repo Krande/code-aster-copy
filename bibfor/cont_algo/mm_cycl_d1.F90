@@ -43,7 +43,7 @@ implicit none
     integer, intent(in) :: indi_cont_eval,indi_cont_prev
     real(kind=8), intent(in) :: dist_cont
     real(kind=8), intent(in) :: pres_cont
-    real(kind=8), intent(out) :: alpha_cont_matr, alpha_cont_vect 
+    real(kind=8), intent(out) :: alpha_cont_matr, alpha_cont_vect
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,7 +114,7 @@ implicit none
     cycl_long    = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
     cycl_ecod    = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
     cycl_ecod    = cycl_ecod + (2**cycl_long)*indi_cont_eval
-    
+
 !
 ! - Cycling detection
 !
@@ -142,7 +142,7 @@ implicit none
     cycl_long = cycl_long + 1
     p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
-    if (cycl_long .eq. cycl_long_acti)  then 
+    if (cycl_long .eq. cycl_long_acti)  then
         cycl_long = 0
         cycl_ecod = 0
     endif

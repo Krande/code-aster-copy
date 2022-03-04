@@ -25,7 +25,7 @@ implicit none
 public  :: orieHexa9, setValueOnFace
 private :: isThisQuad
 ! ==================================================================================================
-private 
+private
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"

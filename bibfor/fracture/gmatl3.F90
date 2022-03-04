@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ implicit none
 !
 !       CALCUL DE LA MATRICE DU SYSTEME LINEAIRE [A] {GS} = {GTHI}
 !       POUR LA METHODE THETA-LAGRANGE ET G-LAGRANGE
-!       MATRICE LUMPEE    
+!       MATRICE LUMPEE
 !
 ! ENTREE
 !
@@ -65,9 +65,9 @@ implicit none
         nseg = (nnoff-1)/2
         elrefe = 'SE3'
     else
-        nseg = nnoff-1    
+        nseg = nnoff-1
         elrefe = 'SE2'
-    endif       
+    endif
 
     conn(1:3) = 0
 
@@ -75,7 +75,7 @@ implicit none
     call wkvect(vect, 'V V R8', nnoff, ivect)
 
 !   BOUCLE SUR LES SEGMENTS
-    do iseg = 1, nseg      
+    do iseg = 1, nseg
 
         if (milieu) then
             conn(1) = 2*iseg-1
@@ -89,7 +89,7 @@ implicit none
 !       CALCUL DE LA MATRICE ELEMENTAIRE POUR L'ELEMENT COURANT
         call gmate3(abscur, elrefe, conn, nno, mele)
 !
-!       LUMP DE LA MATRICE DE MASSE ELEMENTAIRE     
+!       LUMP DE LA MATRICE DE MASSE ELEMENTAIRE
         mlump = 0.d0
         do i=1, nno
             mlump(i) = 0.d0

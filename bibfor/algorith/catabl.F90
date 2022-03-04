@@ -92,7 +92,7 @@ character(len=24), intent(in) :: obje_sdname(nb_obje)
     real(kind=8) :: r8bid
     complex(kind=8) :: c16bid
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()    
+    integer, pointer :: tbnp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

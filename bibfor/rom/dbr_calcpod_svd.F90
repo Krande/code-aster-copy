@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ integer, intent(out) :: nb_sing
 ! In  m                : first dimension of snapshot matrix
 ! In  n                : second dimension of snapshot matrix
 ! In  q                : pointer to [q] matrix
-! Out s                : singular values 
+! Out s                : singular values
 ! Out v                : singular vectors
 ! Out nb_sing          : total number of singular values
 !

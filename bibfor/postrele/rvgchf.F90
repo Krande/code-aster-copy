@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces,&
         call rsorac(nomsd, 'LONUTI', ibid, rbid, k8bid,&
                     cbid, rbid, k8bid, tord, 1,&
                     nbtrou)
-        nbordr=tord(1)            
+        nbordr=tord(1)
         call wkvect(nvalac, 'V V I', nbordr, avalac)
         call rsorac(nomsd, 'TOUT_ORDRE', ibid, rbid, k8bid,&
                     cbid, rbid, k8bid, zi(avalac), nbordr,&

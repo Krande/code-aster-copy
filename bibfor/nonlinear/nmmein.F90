@@ -53,7 +53,7 @@ implicit none
 !
 ! In  mesh           : name of mesh
 ! In  model          : name of model
-! In  crack          : name of crack 
+! In  crack          : name of crack
 ! In  nb_dim         : dimension of space
 ! In  nb_node        : number of nodes in list_node
 ! In  list_node      : list of nodes to apply continuation
@@ -61,7 +61,7 @@ implicit none
 ! In  list_node_1    : name of list for first node of edges
 ! In  list_node_2    : name of list for second node of edges
 ! Out cmp_name       : name of component to apply continuation
-! Out nb_node_sele   : final number of nodes to use in continuation 
+! Out nb_node_sele   : final number of nodes to use in continuation
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +92,7 @@ implicit none
     call jelira(sdline_crack, 'LONMAX', ival=nb_edge)
     nb_edge=nb_edge/2
     call nmaret(nb_edge  , nb_node    , nb_dim     , sdline_crack, nb_node_sele,&
-                list_node, list_node_1, list_node_2) 
+                list_node, list_node_1, list_node_2)
 !
 ! - Modification of list of components
 !

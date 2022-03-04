@@ -762,7 +762,7 @@ subroutine kineLoadGetPhysQuanInfo(physQuanNameZ, nbEc, dofDZIndx_)
         physQuanDofName(iQuanDof) = zk8(jvPhysQuanDofName - 1 + iQuanDof)
     end do
 
-! - Index of dof DZ in physical quantity 
+! - Index of dof DZ in physical quantity
     dofDZIndx = indik8(physQuanDofName, 'DZ', 1, physQuanNbDof)
 
     if (present(dofDZIndx_)) then
@@ -971,7 +971,7 @@ end subroutine
 ! In  nodeSlavNume     : index of slave node where to compute normal
 ! In  nbCellSlav       : number of slave cells
 ! Ptr cellSlav         : pointer to slave cells
-! Out inoma            
+! Out inoma
 ! Out normMast         : normal for master side
 ! Out normSlav         : normal for slave side
 !

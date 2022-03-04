@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,35 +60,35 @@ subroutine dplegen(degre, s, l, dlegen)
 !
     select case(degre)
 !
-        case(0) 
+        case(0)
             coef = (2.d0/l)*sqrt(1.d0/l)
             dlegen = 0.d0
 !
-        case(1) 
+        case(1)
             coef = (2.d0/l)*sqrt(3.d0/l)
             dlegen = coef
 !
-        case(2) 
+        case(2)
             coef = (2.d0/l)*sqrt(5.d0/l)
             dlegen = coef*dpleg2(ksi)
 !
-        case(3) 
+        case(3)
             coef = (2.d0/l)*sqrt(7.d0/l)
             dlegen = coef*dpleg3(ksi)
 !
-        case(4) 
+        case(4)
             coef = (2.d0/l)*sqrt(9.d0/l)
             dlegen = coef*dpleg4(ksi)
 !
-        case(5) 
+        case(5)
             coef = (2.d0/l)*sqrt(11.d0/l)
             dlegen = coef*dpleg5(ksi)
 !
-        case(6) 
+        case(6)
             coef = (2.d0/l)*sqrt(13.d0/l)
             dlegen = coef*dpleg6(ksi)
 !
-        case(7) 
+        case(7)
             coef = (2.d0/l)*sqrt(15.d0/l)
             dlegen = coef*dpleg7(ksi)
 !

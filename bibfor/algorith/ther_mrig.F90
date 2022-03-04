@@ -38,13 +38,13 @@ character(len=24), intent(in) :: cara_elem
 character(len=19), intent(in) :: varc_curr
 integer, intent(in) :: nh
 character(len=1), intent(in) :: base
-character(len=19), intent(in) :: resu_elem   
+character(len=19), intent(in) :: resu_elem
 character(len=24), intent(in) :: matr_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Thermic
-! 
+!
 ! Rigidity matrix (volumic terms)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ character(len=24), intent(in) :: matr_elem
 ! - Init fields
 !
     call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
-                lchout    )    
+                lchout    )
 !
 ! - Geometry field
 !

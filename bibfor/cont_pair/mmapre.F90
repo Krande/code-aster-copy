@@ -175,7 +175,7 @@ implicit none
                 endif
 !
 ! ------------- Excluded nodes
-!       
+!
                 call mmexcl(typint     , typapp, iptm, ndexfr,&
                             l_node_excl, l_excl_frot)
                 zr(jtabf+ztabf*(iptc-1)+18) = 0.d0

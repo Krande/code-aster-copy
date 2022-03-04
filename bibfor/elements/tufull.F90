@@ -122,7 +122,7 @@ character(len=16) :: option
 !
     angmas = r8nnem()
 !
-!   Angle du mot clef MASSIF de AFFE_CARA_ELEM, initialisé à 0, nécessaire pour les LdC 
+!   Angle du mot clef MASSIF de AFFE_CARA_ELEM, initialisé à 0, nécessaire pour les LdC
 ! - LEMAITRE_IRRA et VIS_IRRA_LOG (voir ssnl121c)
 !
     angmas = 0.d0

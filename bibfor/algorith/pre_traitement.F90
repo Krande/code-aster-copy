@@ -65,30 +65,30 @@ subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
     call dismoi('NB_POINT_FOND', fiss, 'FISS_XFEM', repi=nbptff)
 !
 !     RETRIEVE THE LOCAL REFERENCE SYSTEM FOR EACH NODE ON THE FRONT
-    call jeveuo(fiss//'.BASEFOND', 'E', jbasef)    
+    call jeveuo(fiss//'.BASEFOND', 'E', jbasef)
 !
 !     RETRIEVE THE DIMENSION OF THE PROBLEM (2D AND 3D ARE SUPPORTED)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-!    
+!
 !     RETRIEVE THE CRACK'S SPEED AND PROPAGATION ANGLE FOR EACH NODE ON
 !     THE FRONT
     call jeveuo(nbeta, 'E', jbeta)
-    call jeveuo(ngamma, 'E', jgamma) 
-!    
+    call jeveuo(ngamma, 'E', jgamma)
+!
 !----------------------------------------------------------------------
 !
-!   
+!
 !  CAS 2D
     if (ndim.eq.2) then
       if (nbptff.gt.2) then
           call utmess('F', 'XFEM_11')
-      endif        
+      endif
 !       ***************************************************************
 !        RECALCULATE THE LOCAL REFERENCE SYSTEM IN THE ACTUAL CRACK
 !        FRONT POINT IN ORDER TO BE SURE THAT THE THREE AXES ARE
 !        ORTHOGONAL EACH OTHER
-!        ***************************************************************  
-      do i=1,nbptff  
+!        ***************************************************************
+      do i=1,nbptff
 !       NORMAL AXIS
           n2d(1) = zr(jbasef-1+2*ndim*(i-1)+1)
           n2d(2) = zr(jbasef-1+2*ndim*(i-1)+2)
@@ -98,37 +98,37 @@ subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
 !         CALCULATE SINUS AND COSINUS OF THE ROTATION ANGLES BETA AND GAMMA
           cbeta = cos(zr(jbeta-1+i))
           sbeta = sin(zr(jbeta-1+i))
-          
+
 !         CALCULATE THE TILT (BETA) ROTATION OF THE LOCAL BASE
           n2d1(1) = cbeta*n2d(1)-sbeta*t2d(1)
           n2d1(2) = cbeta*n2d(2)-sbeta*t2d(2)
-          
+
           t2d1(1) = cbeta*t2d(1)+sbeta*n2d(1)
-          t2d1(2) = cbeta*t2d(2)+sbeta*n2d(2)  
-          
+          t2d1(2) = cbeta*t2d(2)+sbeta*n2d(2)
+
 !         SET TO UNIT VECTOR
           mt2 = sqrt(t2d1(1)**2 + t2d1(2)**2)
-          t2d1(1)= t2d1(1)/mt2                          
+          t2d1(1)= t2d1(1)/mt2
           t2d1(2)= t2d1(2)/mt2
-          
+
           mn2=sqrt(n2d1(1)**2 + n2d1(2)**2)
           n2d1(1) =n2d1(1)/mn2
           n2d1(2) =n2d1(2)/mn2
-!         STROE THE NEW BASIS          
+!         STROE THE NEW BASIS
           zr(jbasef-1+2*ndim*(i-1)+1)=n2d1(1)
           zr(jbasef-1+2*ndim*(i-1)+2)=n2d1(2)
           zr(jbasef-1+2*ndim*(i-1)+3)=t2d1(1)
-          zr(jbasef-1+2*ndim*(i-1)+4)=t2d1(2)             
+          zr(jbasef-1+2*ndim*(i-1)+4)=t2d1(2)
           zr(jbeta-1+i)=0.d0
       enddo
-!   CAS 3D      
+!   CAS 3D
     else
       do i = 1, nbptff
 !        ***************************************************************
 !        RECALCULATE THE LOCAL REFERENCE SYSTEM IN THE ACTUAL CRACK
 !        FRONT POINT IN ORDER TO BE SURE THAT THE THREE AXES ARE
 !        ORTHOGONAL EACH OTHER
-!        ***************************************************************  
+!        ***************************************************************
 !       NORMAL AXIS
           n(1) = zr(jbasef-1+2*ndim*(i-1)+1)
           n(2) = zr(jbasef-1+2*ndim*(i-1)+2)
@@ -158,12 +158,12 @@ subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
         cbeta = cos(zr(jbeta-1+i))
         sbeta = sin(zr(jbeta-1+i))
         cgamma = cos(zr(jgamma-1+i))
-        sgamma = sin(zr(jgamma-1+i))        
+        sgamma = sin(zr(jgamma-1+i))
 !
 !         CALCULATE THE TILT (BETA) ROTATION OF THE LOCAL BASE
         n1(1) = cbeta*n(1)-sbeta*tast(1)
         n1(2) = cbeta*n(2)-sbeta*tast(2)
-        n1(3) = cbeta*n(3)-sbeta*tast(3)       
+        n1(3) = cbeta*n(3)-sbeta*tast(3)
 !
         t2(1) = cbeta*tast(1)+sbeta*n(1)
         t2(2) = cbeta*tast(2)+sbeta*n(2)
@@ -179,18 +179,18 @@ subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
         b2(3) = cgamma*bast(3)+sgamma*n1(3)
 !
 !        CALCULATE THE MODULE OF THE NEW TANGENTIAL AXIS
-        mt2 = (t2(1)**2.d0+t2(2)**2.d0+t2(3)**2.d0)**0.5d0 
+        mt2 = (t2(1)**2.d0+t2(2)**2.d0+t2(3)**2.d0)**0.5d0
 !        CALCULATE THE UNIT VECTOR FOR THE NEW TENGENTIAL AXIS
         t2(1) = t2(1)/mt2
         t2(2) = t2(2)/mt2
-        t2(3) = t2(3)/mt2   
+        t2(3) = t2(3)/mt2
 !
 !        CALCULATE THE MODULE OF THE NEW NORMAL AXIS
-        mn2 = (n2(1)**2.d0+n2(2)**2.d0+n2(3)**2.d0)**0.5d0     
+        mn2 = (n2(1)**2.d0+n2(2)**2.d0+n2(3)**2.d0)**0.5d0
 !        CALCULATE THE UNIT VECTOR FOR THE NEW TENGENTIAL AXIS
         n2(1) = n2(1)/mn2
-        n2(2) = n2(2)/mn2 
-        n2(3) = n2(3)/mn2 
+        n2(2) = n2(2)/mn2
+        n2(3) = n2(3)/mn2
 !
 !        STORE THE NEW LOCAL BASE
 !        NORMAL AXIS
@@ -200,7 +200,7 @@ subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
 !        TANGENTIAL AXIS
           zr(jbasef-1+2*ndim*(i-1)+4)=t2(1)
           zr(jbasef-1+2*ndim*(i-1)+5)=t2(2)
-          zr(jbasef-1+2*ndim*(i-1)+6)=t2(3)  
+          zr(jbasef-1+2*ndim*(i-1)+6)=t2(3)
 
           zr(jbeta-1+i)=0.d0
       end do

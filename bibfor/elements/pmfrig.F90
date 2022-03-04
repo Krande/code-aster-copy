@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,11 +60,11 @@ subroutine pmfrig(nomte, icdmat, klv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbasspou, maxfipoutre, jacf    
+    integer :: nbasspou, maxfipoutre, jacf
     integer :: i, ii, pos, posfib, ig, codres(4), icp, icompo, isdcom
     real(kind=8) :: g, xjx, gxjx, xl, casect(6), vs(6), val(4)
     real(kind=8) :: cars1(6), a, alfay, alfaz, ey, ez, xjg, skt(78)
-    character(len=16) :: ch16        
+    character(len=16) :: ch16
     character(len=32) :: materi
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
@@ -121,12 +121,12 @@ subroutine pmfrig(nomte, icdmat, klv)
         call pmfasseinfo(tygrfi,nbfibr,nbcarm,zr(jacf),maxfipoutre,nbfipoutre, gxjxpou)
         AS_ALLOCATE(vr=yj, size=nbasspou)
         AS_ALLOCATE(vr=zj, size=nbasspou)
-        AS_ALLOCATE(vr=vev, size=maxfipoutre) 
-        allocate(skp(78,nbasspou)) 
+        AS_ALLOCATE(vr=vev, size=maxfipoutre)
+        allocate(skp(78,nbasspou))
         allocate(vfv(7,maxfipoutre))
         call r8inir(nbasspou*78, 0.d0, skp, 1)
         call jevech('PCOMPOR', 'L', icompo)
-        call jeveuo(zk16(icompo-1+7), 'L', isdcom)       
+        call jeveuo(zk16(icompo-1+7), 'L', isdcom)
         !   6 caractéristiques utiles par fibre : y z aire yp zp numgr
         !   Boucle sur les poutres
         pos=1
@@ -166,8 +166,8 @@ subroutine pmfrig(nomte, icdmat, klv)
         !   Matrice de rigidite de l element
         call pmpbkbsq(skp, nbasspou, yj, zj, klv)
 !
-        deallocate(vfv)    
-        deallocate(skp) 
+        deallocate(vfv)
+        deallocate(skp)
         AS_DEALLOCATE(vi=nbfipoutre)
         AS_DEALLOCATE(vr=gxjxpou)
         AS_DEALLOCATE(vr=vev)

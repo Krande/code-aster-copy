@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine lcelem(nomte         , elem_dime     ,&
 !
 implicit none
 !
-#include "asterf_types.h" 
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lteatt.h"
 !
@@ -87,7 +87,7 @@ integer, intent(out) :: nb_node_mast
         nb_node_mast   = 2
         nb_lagr        = 1
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
-        indi_lagc(3)   = 1    
+        indi_lagc(3)   = 1
         elga_fami_slav = 'FPG3'
         elga_fami_mast = 'FPG3'
     elseif (nomte(1:7) .eq. 'LCS2S3C') then
@@ -98,7 +98,7 @@ integer, intent(out) :: nb_node_mast
         nb_node_mast   = 3
         nb_lagr        = 1
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
-        indi_lagc(3)   = 1    
+        indi_lagc(3)   = 1
         elga_fami_slav = 'FPG3'
         elga_fami_mast = 'FPG3'
     else if (nomte(1:7) .eq. 'LCS2S2D') then
@@ -109,7 +109,7 @@ integer, intent(out) :: nb_node_mast
         nb_node_mast   = 2
         nb_lagr        = 1
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
-        indi_lagc(2)   = 1  
+        indi_lagc(2)   = 1
         elga_fami_slav = 'FPG3'
         elga_fami_mast = 'FPG3'
     else if (nomte(1:7) .eq. 'LCS2S3D') then
@@ -120,9 +120,9 @@ integer, intent(out) :: nb_node_mast
         nb_node_mast   = 3
         nb_lagr        = 1
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
-        indi_lagc(2)   = 1  
+        indi_lagc(2)   = 1
         elga_fami_slav = 'FPG3'
-        elga_fami_mast = 'FPG3' 
+        elga_fami_mast = 'FPG3'
     else if (nomte(1:7) .eq. 'LCS2S2E') then
         elem_dime      = 2
         elem_slav_code = 'SE2'
@@ -132,9 +132,9 @@ integer, intent(out) :: nb_node_mast
         nb_lagr        = 2
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
         indi_lagc(2)   = 1
-        indi_lagc(3)   = 1    
+        indi_lagc(3)   = 1
         elga_fami_slav = 'FPG3'
-        elga_fami_mast = 'FPG3' 
+        elga_fami_mast = 'FPG3'
     else if (nomte(1:7) .eq. 'LCS2S3E') then
         elem_dime      = 2
         elem_slav_code = 'SE2'
@@ -144,7 +144,7 @@ integer, intent(out) :: nb_node_mast
         nb_lagr        = 2
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
         indi_lagc(2)   = 1
-        indi_lagc(3)   = 1    
+        indi_lagc(3)   = 1
         elga_fami_slav = 'FPG3'
         elga_fami_mast = 'FPG3'
 !
@@ -158,7 +158,7 @@ integer, intent(out) :: nb_node_mast
         nb_node_mast   = 2
         nb_lagr        = 1
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
-        indi_lagc(4)   = 1    
+        indi_lagc(4)   = 1
         elga_fami_slav = 'FPG4'
         elga_fami_mast = 'FPG4'
     else if (nomte(1:7) .eq. 'LCS3S3C') then
@@ -169,7 +169,7 @@ integer, intent(out) :: nb_node_mast
         nb_node_mast   = 3
         nb_lagr        = 1
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
-        indi_lagc(4)   = 1    
+        indi_lagc(4)   = 1
         elga_fami_slav = 'FPG4'
         elga_fami_mast = 'FPG4'
 !

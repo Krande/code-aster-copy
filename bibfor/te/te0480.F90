@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,7 @@ character(len=16), intent(in) :: option, nomte
         p1m = zr(idepm+ndim+1)
         p2m = zr(idepm+ndim+2)
 !        tm = zr(idepm+ndim+3)
-!      
+!
 ! Recuperation des informations sur le flux
         call jevech('PECHTHM', 'L', iech)
         c11 = zr(iech)
@@ -121,17 +121,17 @@ character(len=16), intent(in) :: option, nomte
         c21 = zr(iech+2)
         c22 = zr(iech+3)
         p1ext = zr(iech+4)
-        p2ext = zr(iech+5)  
+        p2ext = zr(iech+5)
     else if (option .eq. 'CHAR_ECHA_THM_F') then
         iopt = 2
         call jevech('PTEMPSR', 'L', itemps)
         deltat = zr(itemps+1)
         call jevech('PDEPLMR', 'L', idepm)
         p1m = zr(idepm+ndim+1)
-        p2m = zr(idepm+ndim+2)   
+        p2m = zr(idepm+ndim+2)
         valpar(1) = p1m
         valpar(2) = zr(itemps)
-! Recuperation des informations sur le flux 
+! Recuperation des informations sur le flux
         call jevech('PCHTHMF', 'L', iechf)
         call fointe('FM', zk8(iechf), 1, nompar(1), valpar(1), c11 , iret)
         call fointe('FM', zk8(iechf+1), 1, nompar(1), valpar(1), c12 , iret)
@@ -174,7 +174,7 @@ character(len=16), intent(in) :: option, nomte
             poids = poids*r
         endif
 ! ======================================================================
-! --- OPTION ECHA_THM_R 
+! --- OPTION ECHA_THM_R
 ! ======================================================================
 
 ! ======================================================================
@@ -221,7 +221,7 @@ character(len=16), intent(in) :: option, nomte
                      l = 2* (i-1) - 1
                      zr(ires+l+1) = zr(ires+l+1) - poids*deltat* flu1*zr(jv_func2+kk+i-1)
                      zr(ires+l+2) = zr(ires+l+2) - poids*deltat* flu2*zr(jv_func2+kk+i-1)
-                end do                         
+                end do
             endif
 !
 ! --------- Meca-Hydr1(2)-Hydr2(1,2)
@@ -235,7 +235,7 @@ character(len=16), intent(in) :: option, nomte
                     l = 4* (i-1) - 1
                     zr(ires+l+3) = zr(ires+l+3) - poids*deltat*flu1* zr(jv_func2+kk+i-1)
                     zr(ires+l+4) = zr(ires+l+4) - poids*deltat*flu2* zr(jv_func2+kk+i-1)
-                end do                                  
+                end do
             endif
 !
         endif

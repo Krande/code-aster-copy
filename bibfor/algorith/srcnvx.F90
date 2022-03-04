@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine srcnvx(sigd,sigf,nvi,vind,nmat,mater,seuil,vinf)
 !          SI SEUILV OU SEUILP > 0 -> SEUIL = 1.D0 (NEWTON LOCAL ENCLENCHE)
 !          VINF(7) : 0 OU 1 POUR PRISE EN COMPTE PLASTICITE DANS LCPLAS
 ! ===================================================================================
-    
+
     implicit none
 
 #include "asterc/r8prem.h"
@@ -47,41 +47,41 @@ subroutine srcnvx(sigd,sigf,nvi,vind,nmat,mater,seuil,vinf)
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nmat, nvi
     real(kind=8) :: mater(nmat,2),seuil,sigd(6),sigf(6),vind(nvi),vinf(nvi)
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: ndt,ndi,i
     real(kind=8) :: i1,devsig(6),ubid,sigt(6),sigu(6),xit,seuilp,seuilv,somme
     real(kind=8) :: tmm,tpp
     common /tdim/ ndt,ndi
-    
+
     !!!
     !!! Recuperation des temperatures
     !!!
 
     tmm=mater(6,1)
     tpp=mater(7,1)
-    
+
     !!!
     !!! Passage en convention mecanique des sols
     !!!
-    
+
     do i=1,ndt
         sigt(i)=-sigf(i)
         sigu(i)=-sigd(i)
     end do
-    
+
     !!!
     !!! Verification d'un etat initial plastiquement admissible
     !!!
-    
+
     somme = sum(vind(1:nvi))
-    
+
     if (abs(somme).lt.r8prem()) then
         i1=sigu(1)+sigu(2)+sigu(3)
         call lcdevi(sigu,devsig)
@@ -90,14 +90,14 @@ subroutine srcnvx(sigd,sigf,nvi,vind,nmat,mater,seuil,vinf)
             call utmess('F','ALGORITH2_81')
         endif
     endif
-    
+
     !!!
     !!! Invariants du tenseur des contraintes
     !!!
 
     call lcdevi(sigt,devsig)
     i1=sigt(1)+sigt(2)+sigt(3)
-    
+
     !!!
     !!! Calcul fonction seuil plastique en sigf
     !!!
@@ -109,19 +109,19 @@ subroutine srcnvx(sigd,sigf,nvi,vind,nmat,mater,seuil,vinf)
     else
         vinf(7)=0.d0
     endif
-    
+
     !!!
     !!! Calcul fonction seuil visco. en sigf
     !!!
-    
+
     xit=vind(3)
-    
+
     call srcriv(xit,i1,devsig,nmat,mater,tpp,ubid,seuilv)
-    
+
     !!!
     !!! Valeur de renvoi
     !!!
-    
+
     if ((seuilv.ge.0.d0).or.(seuilp.ge.0.d0)) then
         seuil=1.d0
     else

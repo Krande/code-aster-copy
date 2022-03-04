@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -265,14 +265,14 @@ subroutine op0153()
     if (iret .ne. 0) goto 999
 !
     if (indic .eq. 0) then
-        
+
         call getvr8(' ', 'ANGL_ISTHME', scal=haut, nbret=n1)
         if (n1.ne.0) call utmess('A', 'PREPOST4_3', sk='ANGL_ISTHME')
         call getvr8(' ', 'ANGL_INCLI', scal=haut, nbret=n1)
         if (n1.ne.0) call utmess('A', 'PREPOST4_3', sk='ANGL_INCLI')
         call getvr8(' ', 'ANGL_IMPACT', scal=haut, nbret=n1)
         if (n1.ne.0) call utmess('A', 'PREPOST4_3', sk='ANGL_IMPACT')
-        
+
         call getvr8(' ', 'LARGEUR_OBST', scal=haut, nbret=n1)
         if (n1 .le. 0) then
             haut=0.011d0
@@ -288,7 +288,7 @@ subroutine op0153()
                    (haut*(zr( idangt+i)-zr(idangt+i-1))).lt. 0.d0) then
                     call utmess('F', 'PREPOST4_4')
                 endif
-                
+
                 zr(iprfut+(k-1)*nbsect+i-1) = rayot - sqrt(&
                                               rayot* rayot-2.d0*zr(&
                                               ivustu+(k-1)*nbsect+i-1)/ (haut*(zr( idangt+i)-zr(i&

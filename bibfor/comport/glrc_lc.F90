@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
     real(kind=8) :: sig(6), dsidep(6, 6), vip(*), vecp(2,2), valp(2)
     character(len=16) :: option
     aster_logical :: is_param_opt(*), l_calc(2)
-    real(kind=8) :: val_param_opt(*), ep, t2iu(4) 
+    real(kind=8) :: val_param_opt(*), ep, t2iu(4)
 ! ----------------------------------------------------------------------
 !
 !      LOI GLOBALE POUR LES PLAQUES/COQUES DKT - GLRC_DM
@@ -190,23 +190,23 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
         vip(5)=1.d0-0.5d0*((1.d0+gmt*da1)/(1.d0+da1) +(1.d0+gmt*da2)/(1.d0+da2))
         vip(6)=1.d0-0.5d0*((1.d0+gmc*da1)/(1.d0+da1) +(1.d0+gmc*da2)/(1.d0+da2))
         vip(7)=1.d0-max((1.d0+gf*da1)/(1.d0+da1), (1.d0+gf*da2)/(1.d0+da2))
-        
+
 
         if (is_param_opt(1))then
-            
+
 !           passage des deformation dans le repere utilisateur
             eps8(1:6) = eps(1:6)
             eps8(7:8) = 0.d0
             call dxefro(1, t2iu, eps8, eps8out)
             epsu(1:6) = eps8out(1:6)
-            
+
             rx = val_param_opt(1)
-            
+
             maxabs = max( abs(epsu(1) - 0.5d0*ep*rx *epsu(4)),&
                           abs(epsu(1) + 0.5d0*ep*rx *epsu(4)))
             vip(8) = maxabs /epsiels
             vip(9) = maxabs /epsilim
-            
+
             maxabs = max( abs(epsu(2) - 0.5d0*ep*rx *epsu(5)),&
                           abs(epsu(2) + 0.5d0*ep*rx *epsu(5)))
             vip(10) = maxabs /epsiels
@@ -227,27 +227,27 @@ subroutine glrc_lc(epsm, deps, vim, option, sig,&
             vip(14) = max(vim(14), epsu(1),epsu(2),0.d0)
             vip(15) = max(vim(15), -epsu(1),-epsu(2),0.d0)
             vip(16) = max(vim(16), abs(epsu(4)),abs(epsu(5)))
-            
+
             if (is_param_opt(2))then
-                
+
                 if (vip(15) .gt.vim(15))then
                     l_calc(1) = .true.
                 else
                     l_calc(1) = .false.
                     vip(17) = vim(17)
                 endif
-                
+
                 if (vip(16) .gt.vim(16))then
                     l_calc(2) = .true.
                 else
                     l_calc(2) = .false.
                     vip(18) = vim(18)
                 endif
-                
+
                 call calc_glrcdm_err(l_calc, vip(15), vip(16), gf,&
                            gmc, epsic, ep, val_param_opt,&
                            vip(17), vip(18))
-                
+
             else
                 vip(17:18) = 0.d0
             endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ type(META_SteelParameters), intent(out) :: metaSteelPara
 !
     integer :: kpg, spt
     character(len=8) :: fami, poum
-    integer, parameter :: nb_para_steel = 7 
+    integer, parameter :: nb_para_steel = 7
     real(kind=8) :: para_steel_vale(nb_para_steel)
     integer :: icodre_steel(nb_para_steel)
     character(len=16), parameter :: para_steel_name(nb_para_steel) =(/'AR3   ',&
@@ -62,7 +62,7 @@ type(META_SteelParameters), intent(out) :: metaSteelPara
                                                                       'QSR_K  ',&
                                                                       'D10    ',&
                                                                       'WSR_K  '/)
-!            
+!
 ! --------------------------------------------------------------------------------------------------
 !
     fami = 'FPG1'

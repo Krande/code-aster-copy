@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ real(kind=8), intent(in)  :: phi0,ep,surf,sbjh,wbjh
 ! In  satur            : value of saturation
 ! Out dsdp1            : derivative of pressure part of stress by capillary pressure
 ! In  phi0             : initial porosity (THM_INIT)
-! In  ep               : thickness of the adsorbed water layer 
+! In  ep               : thickness of the adsorbed water layer
 ! In  surf             : specific surface of the material
 ! In  sbjh             : saturated pores volume fraction from BJH - At end of current step
 ! In  wbjh             : unsaturatred pores surface fraction from BJH - At end of current step
@@ -57,8 +57,8 @@ real(kind=8), intent(in)  :: phi0,ep,surf,sbjh,wbjh
         if (ds_thm%ds_behaviour%l_stress_bishop) then
             if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
                 dsdp1(i) = -tbiot(i)*(-sbjh-((2./3.)*(surf/phi0)*wbjh*ep))
-                
-            else       
+
+            else
                 dsdp1(i) = signe*tbiot(i)*satur
             endif
         else

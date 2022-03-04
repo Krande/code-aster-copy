@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -453,7 +453,7 @@ subroutine te0490(option, nomte)
 !
 
             trepstraction = epsel(1) + epsel(2) + epsel(3)
-            if (trepstraction .le. zero) then 
+            if (trepstraction .le. zero) then
                      trepstraction = zero
             endif
 
@@ -463,15 +463,15 @@ subroutine te0490(option, nomte)
 ! --- CALCUL DES DEFORMATIONS ELASTIQUES PRINCIPALES POSITIVES OU NULLES:
             call diago3(epsel,vecp,epm)
 
-            if (epm(1) .le. zero) then 
+            if (epm(1) .le. zero) then
                   epm(1) = zero
             endif
-            if (epm(2) .le. zero) then 
+            if (epm(2) .le. zero) then
                   epm(2) = zero
             endif
-            if (epm(3) .le. zero) then 
+            if (epm(3) .le. zero) then
                   epm(3) = zero
-            endif 
+            endif
 
 !
 ! --- PARTIE DE L'ENERGIE DE DEFORMATION ELASTIQUE (DIRECTIONS PRINCIPALES) POSITIVE OU NULLE:

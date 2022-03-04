@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
 !  OUT    : QUAD   : VRAI SI MAILLAGE QUADRATIQUE (SEG3)
 !           SENS   : ORIENTATION DES MAILLES
 !  IN     : EVALZ  : LOGICAL, OPTIONAL
-!                    MODE D'APPEL DE LA ROUTINE. SI VRAI ON RETOURNE 
+!                    MODE D'APPEL DE LA ROUTINE. SI VRAI ON RETOURNE
 !                    UNIQUEMENT NBF0, NBNOCA ET QUAD
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 #include "asterf_types.h"
@@ -114,9 +114,9 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
     call jemarq()
     cbid=(0.d0,0.d0)
     rbid=0.d0
-!   Par défaut, la routine calcule tout et remplit tous ses arguments de 
-!   sortie. Si eval = .true., on ne remplit que nbnoca et quad. 
-    eval=.false. 
+!   Par défaut, la routine calcule tout et remplit tous ses arguments de
+!   sortie. Si eval = .true., on ne remplit que nbnoca et quad.
+    eval=.false.
     if (present(evalz)) then
         eval=evalz
     endif
@@ -448,7 +448,7 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
                 nbnoca(icabl) = nbno1
             endif
 !
-          if (.not. eval) then     
+          if (.not. eval) then
             if (icabl .eq. 1) then
                 call jeecra(numaca, 'LONUTI', nbno1-1)
                 call jeveuo(numaca, 'E', jnumac)

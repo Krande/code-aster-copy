@@ -48,7 +48,7 @@ real(kind=8), pointer, optional :: vr_mode(:)
 ! In  nb_matr          : number of elementary matrixes
 ! In  l_matr_name      : list of names of elementary matrixes
 ! In  l_matr_type      : list of types (R or C) of elementary matrixes
-! In  mode_type        : type of mode  (R or C) 
+! In  mode_type        : type of mode  (R or C)
 ! In  vr_mode          : pointeur vers le mode réel
 ! In  vc_mode          : pointeur vers le mode complexe
 !
@@ -77,7 +77,7 @@ real(kind=8), pointer, optional :: vr_mode(:)
                             vc = vc_matr_mode_c)
                 call mcmult('ZERO', jv_desc_matr, vc_mode, vc_matr_mode_c, 1, .true._1)
                 call jeveuo(prod_matr_mode(i_matr), 'E', vc = vc_matr_mode)
-                do i_equa = 1, nb_equa 
+                do i_equa = 1, nb_equa
                    vc_matr_mode((i_mode-1)*nb_equa+i_equa) = vc_matr_mode_c(i_equa)
                 end do
             else
@@ -89,7 +89,7 @@ real(kind=8), pointer, optional :: vr_mode(:)
                             vc = vc_matr_mode_c)
                 call mcmult('ZERO', jv_desc_matr, vc_mode, vc_matr_mode_c, 1, .true._1)
                 call jeveuo(prod_matr_mode(i_matr), 'E', vc = vc_matr_mode)
-                do i_equa = 1, nb_equa 
+                do i_equa = 1, nb_equa
                    vc_matr_mode((i_mode-1)*nb_equa+i_equa) = vc_matr_mode_c(i_equa)
                 end do
             elseif (mode_type .eq. 'R') then
@@ -97,7 +97,7 @@ real(kind=8), pointer, optional :: vr_mode(:)
                             vr = vr_matr_mode_c)
                 call mrmult('ZERO', jv_desc_matr, vr_mode, vr_matr_mode_c, 1, .true._1)
                 call jeveuo(prod_matr_mode(i_matr), 'E', vr = vr_matr_mode)
-                do i_equa = 1, nb_equa 
+                do i_equa = 1, nb_equa
                    vr_matr_mode((i_mode-1)*nb_equa+i_equa) = vr_matr_mode_c(i_equa)
                 end do
             else

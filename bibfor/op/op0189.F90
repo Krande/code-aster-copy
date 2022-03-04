@@ -103,7 +103,7 @@ subroutine op0189()
 !
     call jemarq()
 !
-! --- 
+! ---
 !
     k5blan = '     '
     do i = 1,nmodmas
@@ -154,7 +154,7 @@ subroutine op0189()
         codvoi='F3'
     else
         ASSERT(.false.)
-    endif    
+    endif
 !
 ! --- creation du cham_elem_s dans lequel on va ecrire par maille cohesive
 ! --- la triaxialite (moyennee) des elements massifs voisins
@@ -200,7 +200,7 @@ subroutine op0189()
 
             call teattr('S', 'PRINCIPAL', k8prin, iret, typel=k16tyel)
             if (k8prin(1:3) .eq. 'OUI') then
-            
+
                 call jeveuo(jexnum(ligrmo//'.LIEL', igrel), 'L', vi=tab_numa)
                 do iel=1,nbelem(ligrmo,igrel)
                     numa = tab_numa(iel)
@@ -212,7 +212,7 @@ subroutine op0189()
             endif
 
         endif
-    
+
     enddo
 !
     if ( nbelco.eq.0 ) call utmess('F', 'PREPOST6_46', sk=modele)
@@ -243,10 +243,10 @@ subroutine op0189()
                 tab_maco(cpt+1:cpt+nbel) = tab_numa(1:nbel)
 
                 cpt = cpt + nbel
-                
+
             endif
         endif
- 
+
     enddo
 !
 ! -------------------------------------------------------------------

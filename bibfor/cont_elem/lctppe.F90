@@ -41,10 +41,10 @@ aster_logical, intent(in) :: l_axis, l_upda_jaco
 integer, intent(in) :: nb_node
 real(kind=8), intent(in) :: elem_init(nb_node, elem_dime)
 real(kind=8), intent(in) :: elem_coor(nb_node, elem_dime)
-character(len=8), intent(in) :: elem_code   
+character(len=8), intent(in) :: elem_code
 real(kind=8), intent(in) :: gauss_coor(2)
 real(kind=8), intent(out) :: shape_func(9)
-real(kind=8), intent(out) :: jacobian 
+real(kind=8), intent(out) :: jacobian
 real(kind=8), intent(out) :: norm_g(3)
 !
 ! --------------------------------------------------------------------------------------------------

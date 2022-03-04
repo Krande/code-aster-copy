@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,19 +21,19 @@ subroutine xvechb(nnops, ddls, ddlm, ndim,&
                   q2, q2m, vect, ncompn, jheavn, ifiss,&
                   nfiss, nfh, ifa, jheafa, ncomph)
 !
-    implicit none 
+    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/hmdeca.h"
 #include "asterfort/xcalc_code.h"
-#include "asterfort/xcalc_heav.h" 
+#include "asterfort/xcalc_heav.h"
 !
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
 !
 ! ROUTINE MODELE HM-XFEM
-! 
+!
 ! CALCUL DES SECONDS MEMBRES VECT (CONSERVATION DE LA MASSE FLUIDE MASSIF)
 !
 ! ----------------------------------------------------------------------

@@ -54,7 +54,7 @@ integer, intent(out) :: retcom
 ! In  temp             : temperature
 ! In  dalal            : product <alpha> [Elas] {alpha} - Thermic dilatation for solid
 ! Out coeps            : specific heat capacity
-! Out retcom           : error code 
+! Out retcom           : error code
 !                         0 - everything is OK
 !
 ! --------------------------------------------------------------------------------------------------

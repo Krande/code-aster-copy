@@ -102,7 +102,7 @@ implicit none
     call cescar(chs3, compor, 'V')
 !
 ! - Compress COMPOR <CARTE>
-!    
+!
     call tecart(compor)
 !
 !     MENAGE

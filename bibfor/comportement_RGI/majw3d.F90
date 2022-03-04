@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ implicit none
 !     mise a jour du tenseur des ouvertures: Sellier mai 2015
 
       integer i
-     
+
 !     variables externes
       real(kind=8) :: epspt60(6),epspt6(6)
       real(kind=8) :: t33(3,3),dim3
@@ -42,7 +42,7 @@ implicit none
       real(kind=8) :: wpl3(3),vwpl33(3,3),vwpl33t(3,3)
       real(kind=8) :: wplx3(3),vwplx33(3,3),vwplx33t(3,3)
       aster_logical ::  local,vrai
-      
+
 !     variables locales
       real(kind=8) :: depspt6(6),depspt33(3,3),depspt3(3)
       real(kind=8) :: vdepspt33(3,3),vdepspt33t(3,3)
@@ -52,7 +52,7 @@ implicit none
       real(kind=8) :: wpltx33(3,3),wplt61(6),aux6(6),aux3(3)
 
       vrai=.true.
-!     *** actualisation ouvertures de fissures actuelles  ************** 
+!     *** actualisation ouvertures de fissures actuelles  **************
       do i=1,6
         depspt6(i)=epspt6(i)-epspt60(i)
       end do
@@ -60,13 +60,13 @@ implicit none
       do i=4,6
          depspt6(i)=depspt6(i)/2.d0
       end do
-!     passage 33      
-      call x6x33(depspt6,depspt33)      
-!     diagonalisation  
+!     passage 33
+      call x6x33(depspt6,depspt33)
+!     diagonalisation
       call b3d_valp33(depspt33,depspt3,vdepspt33)
-!     construction matrice de passage inverse         
+!     construction matrice de passage inverse
       call transpos1(vdepspt33t,vdepspt33,3)
-!     calcul des tailles dans les directions principales 
+!     calcul des tailles dans les directions principales
       if(local)then
          call tail_reel(long3, vdepspt33, dim3, ndim, ifour)
       else
@@ -81,7 +81,7 @@ implicit none
       do i=4,6
          dwp6(i)=0.d0
       end do
-!     passage des increments en base fixe 
+!     passage des increments en base fixe
       call chrep6(dwp6,vdepspt33t,vrai,dw6)
 !     actualisation de l ouverture actuelle (stockage en gamma)
       do i=1,6
@@ -95,16 +95,16 @@ implicit none
       do i=4,6
           aux6(i)=0.5d0*wplt6(i)
       end do
-!     passage 33      
-      call x6x33(aux6,wplt33)      
-!     diagonalisation     
+!     passage 33
+      call x6x33(aux6,wplt33)
+!     diagonalisation
       call b3d_valp33(wplt33,wpl3,vwpl33)
       do i=1,3
-!        utilisation variable auxiliaire pour erreur sur systeme 32b(?)      
+!        utilisation variable auxiliaire pour erreur sur systeme 32b(?)
          aux3(i)=wpl3(i)
       end do
-!     construction matrice de passage inverse         
-      call transpos1(vwpl33t,vwpl33,3)  
+!     construction matrice de passage inverse
+      call transpos1(vwpl33t,vwpl33,3)
 !     on s assure que les valeurs propres sont positives
       do i=1,3
         wpl3(i)=dmax1(wpl3(i),0.d0)
@@ -113,15 +113,15 @@ implicit none
       do i=4,6
         wplt61(i)=0.d0
       end do
-      call chrep6(wplt61,vwpl33t,vrai,wplt6)      
+      call chrep6(wplt61,vwpl33t,vrai,wplt6)
 !     ***** ouvertures maximales ***************************************
-!     passage des ouvertures maximale dans la base prin actuelle 
+!     passage des ouvertures maximale dans la base prin actuelle
       call chrep6(wpltx06,vwpl33,vrai,wpltx061)
 !     comparaison des valeurs normales maxi
       do i=1,3
-        wpltx61(i)=dmax1(wpltx061(i),wpl3(i))        
+        wpltx61(i)=dmax1(wpltx061(i),wpl3(i))
       end do
-!     completion      
+!     completion
       do i=4,6
         wpltx61(i)=wpltx061(i)
       end do
@@ -135,11 +135,11 @@ implicit none
       end do
       do i=4,6
           aux6(i)=0.5d0*wpltx6(i)
-      end do     
-      call x6x33(aux6,wpltx33)      
-!     diagonalisation   
+      end do
+      call x6x33(aux6,wpltx33)
+!     diagonalisation
       call b3d_valp33(wpltx33,wplx3,vwplx33)
-!     construction matrice de passage inverse 
+!     construction matrice de passage inverse
       call transpos1(vwplx33t,vwplx33,3)
       do i=1,3
          wpl3(i)=aux3(i)

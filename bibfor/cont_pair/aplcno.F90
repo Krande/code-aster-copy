@@ -56,13 +56,13 @@ implicit none
     integer :: iter_maxi
     integer :: i_zone
     integer :: jdecnm, jdecmm, jdecne, jdecme
-    character(len=4) :: zone_type 
+    character(len=4) :: zone_type
     real(kind=8) :: norm_vect(3), epsi_maxi
     integer :: norm_type
     character(len=16), pointer :: valk(:)=>null()
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     epsi_maxi = 1.d-12
     iter_maxi = 100
 !
@@ -96,14 +96,14 @@ implicit none
         valk(1)='MPI_INCOMPLET'
         call jeveuo(sdappa(1:19)//'.MPIC', 'E', vk16=valk)
         valk(1)='MPI_INCOMPLET'
-! 
+!
 ! ----- Compute tangents at each node for each master element
 !
         zone_type = 'MAIT'
         call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
                     i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecmm    ,&
                     nb_elem_mast)
-! 
+!
 ! ----- Compute tangents at each node for each slave element
 !
         zone_type = 'ESCL'
@@ -118,10 +118,10 @@ implicit none
                     nb_node_mast, norm_type, norm_vect  )
         call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecne,&
                     nb_node_slav, norm_type, norm_vect  )
-        call sdmpic('SD_APPA_TGNO',sdappa) 
+        call sdmpic('SD_APPA_TGNO',sdappa)
 !
 ! ----- Compute normals at nodes
-!   
+!
         call aptnol(sdappa, model_ndim, nt_node)
 !
     end do

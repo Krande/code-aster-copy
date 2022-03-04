@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
 !            IFON = IPI+LMAT-1+LFCT*(IK-1)
 !            CALL FOINTA (IFON,NBPAR,NOMPAR,VALPAR,VALRES(IRES))
 !
-!            ET IPI=ZI(IMAT+2+ZI(IMAT+1)-1) 
+!            ET IPI=ZI(IMAT+2+ZI(IMAT+1)-1)
 !            IK=(1..NBF) OU NBF=ZI(IPI+2)
 !            (NBF EST LE NOMBRE DE PARAMETRES MAIS ON PREND IK=NBF CAR
 !             C'EST LE COEFF NBMATK_D (LE DERNIER) QUI EST SUCEPTIBLE

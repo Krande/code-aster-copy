@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,7 +123,7 @@ subroutine arlten(coorc1,coorc2,npgs  , ndim , poijcs, &
         40 end do
 
 ! --- APPEL AU CHAMP DES FONCTIONS DE FORME POUTRE
-    
+
         xl = 0.d0
         xl = sqrt((coorc2(4)-coorc2(1))**2+(coorc2(5)-coorc2(2))**2 &
                 + (coorc2(6)-coorc2(3))**2)

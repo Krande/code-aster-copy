@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -144,7 +144,7 @@ implicit none
         character(len=24)       :: lineicSect = ' '
 ! ----- Number of modes in base
         integer                 :: nbMode     = 0
-! ----- Number of modes max 
+! ----- Number of modes max
         integer                 :: nbModeMaxi = 0
 ! ----- Number of snapshots when created base
         integer                 :: nbSnap     = 0
@@ -186,7 +186,7 @@ implicit none
         integer                    :: nbEquaRIDTotal        = 0
         integer, pointer           :: equaRIDTotal(:)       => null()
 
-! ----- Access to equation in truncated RID 
+! ----- Access to equation in truncated RID
         integer                    :: nbEquaRIDTrunc        = 0
         integer, pointer           :: equaRIDTrunc(:)       => null()
 
@@ -397,7 +397,7 @@ implicit none
 ! ----- Maximum number of modes
         integer                 :: nbModeMaxi = 0
 
-! ----- Flag to orthogonalize the basis 
+! ----- Flag to orthogonalize the basis
         aster_logical           :: lOrthoBase = ASTER_FALSE
 
 ! ----- Flag to stabilize the basis for FSI transient problem

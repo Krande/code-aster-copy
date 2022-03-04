@@ -50,7 +50,7 @@ subroutine te0048(option, nomte)
 #include "asterfort/xdeffk.h"
 !
 !
-! Calcul du taux de restitution d'energie elementaire et des facteurs 
+! Calcul du taux de restitution d'energie elementaire et des facteurs
 ! d'intensite des contraintes K1 K2 K3 sur les elements de bord 3D XFEM
 !
 ! option : 'CALC_K_G' (charges reelles)
@@ -245,7 +245,7 @@ subroutine te0048(option, nomte)
            td2(j) = zr(igeom+ndim*(3-1)+j-1)- zr(igeom+ndim*(1-1)+j-1)
        enddo
 !
-! - calcul d'une base orthomormee 'Bprime' = (td1, td2, nd) 
+! - calcul d'une base orthomormee 'Bprime' = (td1, td2, nd)
 !   rq : on norme td1 et td2 avant de faire les produits vectoriels
 !        pour eviter les pb si on a des "petites" mailles
        call xnormv(ndim, td1, norme)
@@ -264,7 +264,7 @@ subroutine te0048(option, nomte)
            oprim(j) = zr(igeom+ndim*(1-1)+j-1)
        enddo
 !
-! - coordonnees des noeuds de l'element parent dans le 
+! - coordonnees des noeuds de l'element parent dans le
 ! - repere 2D local (oprim, (td1, td2))
        geoloc(:) = 0.d0
        do inop = 1, nnop
@@ -286,7 +286,7 @@ subroutine te0048(option, nomte)
        nomres(2) = 'NU'
        nomres(3) = 'ALPHA'
 !
-! - attention : le materiau est suppose constant en espace, on le 
+! - attention : le materiau est suppose constant en espace, on le
 ! - recupere donc sur le premier pg de la famille (bidon) RIGI
        call rcvad2('RIGI', 1, 1, '+', zi(imate), 'ELAS', 3, nomres,&
                    valres, devres, icodre)
@@ -307,7 +307,7 @@ subroutine te0048(option, nomte)
        coeff3 = 2.d0 * mu
 !
 ! ----------------------------------------------------------------------
-! - Boucle d'integration sur les nse sous-elements 
+! - Boucle d'integration sur les nse sous-elements
 ! ----------------------------------------------------------------------
 !
 ! - recuperation de la subdivision des elements en nse sous-elements
@@ -357,7 +357,7 @@ subroutine te0048(option, nomte)
         hea_se = xcalc_code(nfiss, he_real=[he])
 !
 ! ----------------------------------------------------------------------
-! ----- Boucle sur les points de Gauss du sous-element 
+! ----- Boucle sur les points de Gauss du sous-element
 ! ----------------------------------------------------------------------
 !
            do kpg = 1, npg
@@ -374,7 +374,7 @@ subroutine te0048(option, nomte)
                    enddo
                enddo
 !
-! --------- coordonnees du point de Gauss dans le repere 
+! --------- coordonnees du point de Gauss dans le repere
 ! --------- 2D local (oprim, (td1, td2)) : xg_loc
                xg_loc(:) = 0.d0
                do j = 1, ndim
@@ -446,7 +446,7 @@ subroutine te0048(option, nomte)
                end do
 !
 ! --------- calcul de la pression
-               pres = 0.d0 
+               pres = 0.d0
                do inop = 1, nnop
                    pres = pres + zr(ipres-1+inop) * ff(inop)
                enddo
@@ -488,13 +488,13 @@ subroutine te0048(option, nomte)
                enddo
 !
 ! ----------------------------------------------------------------------
-! ----- Fin boucle sur les points de Gauss du sous-element 
+! ----- Fin boucle sur les points de Gauss du sous-element
 ! ----------------------------------------------------------------------
 !
            enddo
 !
 ! ----------------------------------------------------------------------
-! - Fin boucle d'integration sur les nse sous-elements 
+! - Fin boucle d'integration sur les nse sous-elements
 ! ----------------------------------------------------------------------
 !
        enddo

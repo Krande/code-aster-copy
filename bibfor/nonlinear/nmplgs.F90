@@ -454,7 +454,7 @@ implicit none
         endif
     endif
 !
-    if (nini .eq. 1) goto 100 
+    if (nini .eq. 1) goto 100
 ! IL FAUDRA PREVOIR DE POUVOIR SORTIR DU DOMAINE GEOMETRIQUE ADMIS
 !  AVEC UN CODRET = 2
 !
@@ -647,7 +647,7 @@ implicit none
                 end do
             end do
         endif
-    end do   
+    end do
 !
 ! - SYNTHESE DES CODES RETOUR
 !

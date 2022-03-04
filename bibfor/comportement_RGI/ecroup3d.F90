@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine ecroup3d(rp1,drp1_depl,rpic0,s11,epic0,epl0,epp1,&
       real(kind=8) :: precision1,rp1,drp1_depl,rpic0,s11,epic0,epl0,ekdc,beta
       real(kind=8) :: gama,r0,eps0,rmin,epp1,alpha,rpiceff,epeqpc
       aster_logical ::  end3dpp
-        
+
       real(kind=8) :: t1,t2,t3,t4,t5,t7,t8,t9
       real(kind=8) :: t10,t12,t14,t15,t17
       real(kind=8) :: t23,t28,t29
@@ -58,53 +58,53 @@ subroutine ecroup3d(rp1,drp1_depl,rpic0,s11,epic0,epl0,epp1,&
       real(kind=8) :: t260
       real(kind=8) :: t293
       real(kind=8) :: t302
-    
-            
-!     precision      
+
+
+!     precision
 !     ecrouissage relatif maxi 95% gam=1/95% > 1
-      parameter(precision1=1.0d-6,gama=1.05d0)       
-      
+      parameter(precision1=1.0d-6,gama=1.05d0)
+
 !     le module utilise est par defaut celui de la direction 1
       E0=1.d0/s11
 !     seuil de plasticité en deformation totale uniax equivalente
       x0=rpic0/E0
-!     coeff 1.05 permet d avoir 95%E0 en module tangent à rmin      
+!     coeff 1.05 permet d avoir 95%E0 en module tangent à rmin
       eps0=dmax1((epic0-2.d0*gama*x0)/(1.d0-2.d0*gama),rmin/E0)
-!     contrainte seuil de plasticite      
+!     contrainte seuil de plasticite
       r0=E0*eps0
 !     resistance reduite a la partie plastique
       rp=rpic0-r0
 !     deformation plastique de fin d ecrouissage si pas d endo
-      epp1=dmax1(epic0-x0,0.d0)      
+      epp1=dmax1(epic0-x0,0.d0)
 !     notation maple
       ep=epl0
-      E=E0 
+      E=E0
 !     coeff de passage  de ep axial a la def plast volumique
-      alpha=-3.d0*beta/(beta-dsqrt(3.d0)) 
+      alpha=-3.d0*beta/(beta-dsqrt(3.d0))
 !     def equivalente au pic de compression servant de seuil
 !     pour amorcer l endommagement
-      epeqpc=epp1*alpha 
+      epeqpc=epp1*alpha
 
 
-!     ******************************************************************      
-!     CAS endo prepic autorise      
+!     ******************************************************************
+!     CAS endo prepic autorise
 !      end3dpp=end3d
-!     CAS ou on interdit l'endo pre pic en compression pour ameliorer la convergence      
+!     CAS ou on interdit l'endo pre pic en compression pour ameliorer la convergence
       end3dpp=.false.
-!     ******************************************************************      
-      
-       if(end3dpp) then
-!       ****************************************************************      
-!       ecrouissage et endommagement
-!       ****************************************************************  
+!     ******************************************************************
 
-            ep=dmax1(precision1,epl0)           
+       if(end3dpp) then
+!       ****************************************************************
+!       ecrouissage et endommagement
+!       ****************************************************************
+
+            ep=dmax1(precision1,epl0)
            epp1 = ekdc*(E0 * epic0 - rpic0)/(E0 * ekdc + alpha * rpic0)
 !          def seuil d'endo de comp prise à 0, car l'endo commence avec
-!          la plasticité 
-           epeqpc=0.d0            
+!          la plasticité
+           epeqpc=0.d0
            if(ep.le.epp1) then
-           
+
 !       ******* resistance en presence d endommagement *****************
 
                 t2 = ep * alpha
@@ -144,7 +144,7 @@ t44 * t30
                 t110 = t102 * t12
                 t113 = rpic0 * t88
 t119 = -0.4D1 * rpic0 * t15 * t87 * t47 + 0.8D1 * t107 * epic0 * &
-t97 + 0.4D1 * r0 * t73 * t47 - 0.4D1 * rpic0 * t73 * t47 + 0.4D1 *& 
+t97 + 0.4D1 * r0 * t73 * t47 - 0.4D1 * rpic0 * t73 * t47 + 0.4D1 *&
 t102 * t10 * t97 + 0.4D1 * t102 * t15 * t97 - 0.8D1 * t57 * t80 * &
 t47 + 0.8D1 * t61 * t80 * t47 + 0.4D1 * t88 * t87 * t47 - 0.8D1 * &
 t110 * t97 - 0.4D1 * t113 * t97 - 0.4D1 * t99 * t97
@@ -153,7 +153,7 @@ t110 * t97 - 0.4D1 * t113 * t97 - 0.4D1 * t99 * t97
                 t135 = t15 * ep
                 t148 = eps0 * t10
                 t155 = t15 * epic0
-t162 = 0.8D1 * r0 * t12 * t128 - 0.4D1 * r0 * t135 * t121 - 0.8D1*& 
+t162 = 0.8D1 * r0 * t12 * t128 - 0.4D1 * r0 * t135 * t121 - 0.8D1*&
 r0 * t148 * t121 + 0.4D1 * r0 * t155 * t121 + 0.4D1 * r0 * t33 *&
 t121 - 0.4D1 * r0 * t80 * t121 - 0.8D1 * rpic0 * t12 * t128 +&
 0.4D1 * rpic0 * t135 * t121 + 0.8D1 * rpic0 * t148 * t121 - 0.4D1 *&
@@ -165,9 +165,9 @@ t80 * t121
                 t181 = t10 * t29
                 t186 = epic0 * t29
                 t192 = t15 * t29
-t197 = -0.8D1 * t102 * eps0 * t186 + 0.8D1 * t102 * t135 * t163 +& 
+t197 = -0.8D1 * t102 * eps0 * t186 + 0.8D1 * t102 * t135 * t163 +&
 0.8D1 * t102 * t80 * t163 + 0.16D2 * t170 * t12 * t164 + 0.4D1 *&
-t102 * t181 + 0.4D1 * t102 * t192 + 0.8D1 * t107 * t186 - 0.16D2 *& 
+t102 * t181 + 0.4D1 * t102 * t192 + 0.8D1 * t107 * t186 - 0.16D2 *&
 t110 * t164 - 0.8D1 * t113 * t164 - 0.8D1 * t99 * t164 - 0.4D1 * &
 t170 * t181 - 0.4D1 * t170 * t192
                 t200 = sqrt(t72 + t119 + t162 + t197)
@@ -178,10 +178,10 @@ ekdc * rpic0 + r0 * t2 - rpic0 * t2) / 0.2D1 - eps0)) ** 2
 t216 = 0.1D1 / ekdc * (t2 + ekdc) * (r0 + (0.1D1 - t209) * (rpic0 -&
 r0))
                  rp1=t216
-                 rpiceff=rpic0*(ekdc+alpha*epp1)/ekdc               
+                 rpiceff=rpic0*(ekdc+alpha*epp1)/ekdc
 !    *********** derivee de la resistance en presence dendommagement ***
-     
-                ep=dmax1(epl0,precision1)  
+
+                ep=dmax1(epl0,precision1)
                 t7 = ekdc * r0 - ekdc * rpic0 + r0 * t2 - rpic0 * t2
                 t8 = 0.1D1 / t7
                 t92 = rpic0 * t15
@@ -208,7 +208,7 @@ t15 * t9 - t200
                   t252 = ep * t96
 t260 = 0.16D2 * t107 * epic0 * t252 + 0.4D1 * r0 * t237 * t46 - &
 0.4D1 * rpic0 * t237 * t46 + 0.16D2 * t57 * t87 * t47 - 0.16D2 * &
-t61* t87 * t47 + 0.8D1 * t103 * t252 - 0.8D1 * t122 * t47 + 0.8D1*& 
+t61* t87 * t47 + 0.8D1 * t103 * t252 - 0.8D1 * t122 * t47 + 0.8D1*&
 t125 * t47 - 0.8D1 * t136 * t47 + 0.8D1 * t139 * t47 - 0.8D1 * t149*&
 t47 + 0.8D1 * t152 * t47 + 0.4D1 * t156 * t47 - 0.4D1 * t159 *&
 t47 - 0.8D1 * t99 * t252
@@ -216,11 +216,11 @@ t293 = 0.16D2 * t107 * epic0 * t163 + 0.4D1 * rpic0 * t10 * t121 +&
 0.8D1 * t103 * t163 - 0.16D2 * t110 * t163 - 0.16D2 * t110 * t252-&
 0.8D1 * t113 * t163 - 0.8D1 * t113 * t252 + 0.8D1 * t116 * t163+&
 0.8D1 * t116 * t252 + 0.8D1 * t129 * t121 - 0.8D1 * t132 * t121-&
-0.4D1 * t88 * t121 + 0.4D1 * t92 * t121 - 0.4D1 * t98 * t121 -& 
+0.4D1 * t88 * t121 + 0.4D1 * t92 * t121 - 0.4D1 * t98 * t121 -&
 0.8D1 * t99 * t163
 t302 = t206 * (-(alpha * r0 - alpha * rpic0) * t201 / t210 + (0.2D1*&
 r0 * t217 - 0.2D1 * rpic0 * t217 - (t260 + t293) / t200 / 0.2D1)*&
-t8) * (0.1D1 - t206 * (t201 * t8 / 0.2D1 - eps0)) * (rpic0 -& 
+t8) * (0.1D1 - t206 * (t201 * t8 / 0.2D1 - eps0)) * (rpic0 -&
 r0)
                 drp1_depl=dmax1(t302,hpla*E0)
             else
@@ -229,20 +229,20 @@ r0)
                 rpiceff=rpic0*(ekdc+alpha*epp1)/ekdc
                 rp1=rpiceff+drp1_depl*(ep-epp1)
             end if
-!        end if                
+!        end if
 
-        
+
       else
-      
-!     ******************************************************************      
-!       ecrouissage seul       
-!     ******************************************************************    
+
+!     ******************************************************************
+!       ecrouissage seul
+!     ******************************************************************
 
             ep=dmax1(precision1,epl0)
             if(ep.le.epp1) then
 !               on est avant le pic
- 
-!       *******  resistance de la partie plastique  ******************** 
+
+!       *******  resistance de la partie plastique  ********************
                   t1 = rpic0 - r0
                   t3 = epic0 ** 2
                   t4 = t3 * E0
@@ -257,7 +257,7 @@ r0)
                   t37 = epic0 * eps0
                   t44 = r0 * t8
                   t47 = rpic0 * t8
-      t50 = -0.4D1 * t8 * eps0 * epic0 * t14 - 0.4D1 * eps0 * t17 * t14+& 
+      t50 = -0.4D1 * t8 * eps0 * epic0 * t14 - 0.4D1 * eps0 * t17 * t14+&
       0.8D1 * r0 * t37 * t30 + 0.4D1 * rpic0 * t3 * t30 - 0.8D1 * rpic0*&
       t37 * t30 + 0.6D1 * t8 * t3 * t14 + t15 * t14 + t28 * t14 - 0.4D1*&
       t31 * t30 - 0.4D1 * t44 * t30 + 0.4D1 * t47 * t30
@@ -271,27 +271,27 @@ r0)
       t91 = (0.1D1 - 0.1D1 / (epic0 - eps0) * (-(t8 * E0 + 0.2D1 * epic0*&
       r0 - 0.2D1 * epic0 * rpic0 - 0.2D1 * eps0 * t5 + t4 - t82) / t1/&
       0.2D1 - eps0)) ** 2
-      
-!                 resistance pres pic      
+
+!                 resistance pres pic
                   rp1 = r0 + (0.1D1 - t91) * t1
                   rpiceff=rpic0
 
 !   ********** calcul de la derivee de la resistance  / def plastique **
-        
-                  ep=dmax1(epl0,precision1)    
+
+                  ep=dmax1(epl0,precision1)
                   t2 = -0.1D1 / t1
                   t9 = t8 * E0
                   t31 = r0 * t3
                   t56 = eps0 * r0
                   t59 = eps0 * rpic0
                   t88 = 0.1D1 / (epic0 - eps0)
-      t111 = -t88 * (-0.4D1 * r0 * t4 - 0.4D1 * r0 * t9 + 0.4D1 * rpic0*& 
+      t111 = -t88 * (-0.4D1 * r0 * t4 - 0.4D1 * r0 * t9 + 0.4D1 * rpic0*&
       t4 + 0.4D1 * rpic0 * t9 + 0.8D1 * t56 * t5 - 0.8D1 * t59 * t5) /&
-      t82 * t2 * (0.1D1 - t88 * ((0.2D1 * epic0 * r0 - 0.2D1 * epic0 *& 
+      t82 * t2 * (0.1D1 - t88 * ((0.2D1 * epic0 * r0 - 0.2D1 * epic0 *&
       rpic0 - 0.2D1 * eps0 * t5 + t4 - t82 + t9) * t2 / 0.2D1 - eps0)) *&
       t1 / 0.2D1
-     
-!               derivee de la resistance en pre-pic     
+
+!               derivee de la resistance en pre-pic
                 drp1_depl=dmax1(t111,hpla*E0)
             else
 !               on est apres le pic
@@ -301,5 +301,5 @@ r0)
             end if
 !        end if
       end if
-              
+
 end subroutine

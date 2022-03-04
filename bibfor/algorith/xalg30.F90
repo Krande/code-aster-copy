@@ -100,7 +100,7 @@ subroutine xalg30(ndim, elrefp, it, nnose,&
     call xstudo(ndime, ninter, npts, nptm, ainter,&
                 nbpi, ip1, ip2, pm1a, pm1b,&
                 pm2)
-!    RECHERCHE DU NOEUD A 
+!    RECHERCHE DU NOEUD A
     noeua=0
     a2=nint(ainter(zxain*(2-1)+1))
     a3=nint(ainter(zxain*(3-1)+1))
@@ -115,7 +115,7 @@ subroutine xalg30(ndim, elrefp, it, nnose,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     do 300 r = 1, ninter
         a2=nint(ainter(zxain*(r-1)+1))
-        ASSERT(a2 .ne. 0) 
+        ASSERT(a2 .ne. 0)
         ip = ip+1
         nm=ar(a2,3)
         ia=0
@@ -127,7 +127,7 @@ subroutine xalg30(ndim, elrefp, it, nnose,&
                 ib=cnset(nnose*(it-1)+ar(a2,i))
                 im=cnset(nnose*(it-1)+ar(a2,3))
             endif
-320     continue 
+320     continue
         ASSERT((ia*ib) .gt. 0)
         milara(:) = 0.d0
         milarb(:) = 0.d0

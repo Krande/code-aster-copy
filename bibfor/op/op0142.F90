@@ -118,7 +118,7 @@ subroutine op0142()
     if (iexi .eq. 0) then
         call utmess('F', 'UTILITAI2_84')
     endif
-    call jeveuo(cooabs, 'L', labs)   
+    call jeveuo(cooabs, 'L', labs)
 !
     call getvtx(' ', 'INTERPOL', nbval=2, vect=interp, nbret=n3)
     if (n3 .eq. 1) interp(2) = interp(1 )

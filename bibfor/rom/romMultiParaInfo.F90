@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,13 +94,13 @@ type(ROM_DS_MultiPara), intent(in) :: ds_multipara
     endif
 !
 ! - Pour la variation des coefficients
-! 
+!
     call utmess('I', 'ROM3_45')
     call utmess('I', 'ROM3_46', sk = ds_multipara%type_vari_coef)
     call utmess('I', 'ROM3_47', si = ds_multipara%nb_vari_coef)
     call utmess('I', 'ROM3_48', si = nb_vari_para)
     do i_vari_para = 1, nb_vari_para
         call romVariParaInfo(ds_multipara%vari_para(i_vari_para))
-    end do  
+    end do
 !
 end subroutine

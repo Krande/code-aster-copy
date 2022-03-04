@@ -154,7 +154,7 @@ integer,intent(out)            :: codret
     neu = 2*ndim
     neg = 2+ndim
     tbid = 0.d0
-    
+
 
     call gdlog_init(gdlm,ndu,nnu,axi,lMatr)
     call gdlog_init(gdlp,ndu,nnu,axi,lMatr)
@@ -162,7 +162,7 @@ integer,intent(out)            :: codret
     if (lMatr) matr = 0
     cod = 0
     silcp = 0
-    
+
     ! tableaux de reference bloc (depl,inco,grad) -> numero du ddl
     forall (i=1:ndg,n=1:nng) xg(i,n) = (n-1)*(ndu+ndg) + ndu + i
     forall (i=1:ndu,n=1:nng) xu(i,n) = (n-1)*(ndu+ndg) + i

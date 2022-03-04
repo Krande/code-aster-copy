@@ -383,7 +383,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             if (lsna .ne. 0 .and. lsnb .ne. 0 .and. lsnm .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
                 call xinter(ndim, ndime, elrefp, geom, lsnelp, na, nb,&
-                            nm, pintt, pmitt, lsna, lsnb, lsnm, cref, c) 
+                            nm, pintt, pmitt, lsna, lsnb, lsnm, cref, c)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
@@ -496,8 +496,8 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 220     continue
     endif
 !
-!       LA CONFIG 3D / NINTER=4,NPTS=2 / NE RESSEMBLE PAS AUTRES 
-!       CONFIG IMPLEMENTEES POUR CETTE CONFIG LE NOEUD MILIEU M EST CONSIDERE COMME UN 
+!       LA CONFIG 3D / NINTER=4,NPTS=2 / NE RESSEMBLE PAS AUTRES
+!       CONFIG IMPLEMENTEES POUR CETTE CONFIG LE NOEUD MILIEU M EST CONSIDERE COMME UN
 !       POINT D INTERSECTION SANS QUE L ARETE NE SOIT COUPEE "TRANSVERSALEMENT" EN M
 !       L ALGO NE DOIT PAS LE TRAITER COMME UN POINT D INTERSECTION CLASSIQUE
 !             ==> C EST UN CAS DEGENERE TRES ENNUYEUX

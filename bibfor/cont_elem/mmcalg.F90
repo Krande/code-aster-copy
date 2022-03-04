@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -140,7 +140,7 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2
     long_mmait(:) = 0.d0
 
     if (l_large_slip .and. .false.) then
-        ! this quantity compute the contribution from the 1st derivative of master displ 
+        ! this quantity compute the contribution from the 1st derivative of master displ
         ! it is very likely that it can cause convergence issue
         ! we then to shut it down until further investigations:  ".and. .false." in the if
         do idim = 1, ndim

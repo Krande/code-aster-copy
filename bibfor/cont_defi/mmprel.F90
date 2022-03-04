@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ implicit none
     if (.not.l_verif_all) then
 !
 ! ----- Create list of slave elements
-!       
+!
         call wkvect(list_elem, 'V V I', nt_elem_slav, vi = v_list_elem)
 !
 ! ----- Set list of slave elements

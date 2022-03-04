@@ -39,26 +39,26 @@ subroutine cphe20_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 !
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: inc 
+    integer, intent(in) :: inc
     integer, intent(in) :: jcoor
     integer, intent(in) :: jcnnpa
     character(len=24), intent(in) :: conloc
     character(len=24), intent(in) :: limane
     character(len=24), intent(in) :: nomnoe
-    integer, intent(in) :: nbno 
+    integer, intent(in) :: nbno
     integer, intent(in) :: jmacou
     integer, intent(in) :: jmacsu
     integer, intent(in) :: macou
     integer, intent(in) :: macsu
-    integer, intent(out) :: ind 
-    integer, intent(out) :: ind1     
+    integer, intent(out) :: ind
+    integer, intent(out) :: ind1
 ! -------------------------------------------------------------------------------------------------
 !        CREATION DES NOUVEAUS NOUEDS ET NOUVELLE MAILLE CAS TETRA 10
 ! -------------------------------------------------------------------------------------------------
 ! -------------------------------------------------------------------------------------------------
     integer :: patch
     integer :: jlimane
-    integer :: jconneo    
+    integer :: jconneo
     character(len=24) :: conneo
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
@@ -72,7 +72,7 @@ subroutine cphe20_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 ! --- DDL INTERNE
     zi(patch-1+2)=nbno+ind1
     zi(jcnnpa+nbno+ind1-1) = inc
-! --- CREATION DES NOEUDS DDL INTERNE      
+! --- CREATION DES NOEUDS DDL INTERNE
     call cpnph20_2(main,macou,zr(jcoor),nbno+ind1,nomnoe)
 ! --- NOUVEAUX ELEMENTS DE PEAU
     call cpmph20_2(conloc, jmacou, nbno+ind1, ind)
@@ -82,7 +82,7 @@ subroutine cphe20_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
     call jeveuo(conneo,'L',jconneo)
     call cpnch20_2(main, macsu, zr(jcoor), nbno+ind1+5, nomnoe, zi(jconneo))
 ! --- NOUVEAUX ELEMENTS DE CORPS
-    call cpmch20_2(conloc, jmacsu, nbno+ind1, ind+4, zi(jconneo))        
+    call cpmch20_2(conloc, jmacsu, nbno+ind1, ind+4, zi(jconneo))
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Peau)
     call jeveuo(jexnum(limane, macou), 'E', jlimane)
     zi(jlimane+1-1)=ind
@@ -101,7 +101,7 @@ subroutine cphe20_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 ! --- Nettoyage / mis à jour
     ind=ind+9
     ind1=ind1+9
-    call jedetr(conneo)  
+    call jedetr(conneo)
 !
     call jedema()
 end subroutine

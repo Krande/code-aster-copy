@@ -148,7 +148,7 @@ implicit none
                     nomo, nocara, nochmat, storeNb, storeIndx, paraNb, paraName,&
                     nbarch, archi, nbexcl, zk16(jexcl), nbnosy)
     endif
-    
+
 
     AS_DEALLOCATE(vi = storeIndx)
 !

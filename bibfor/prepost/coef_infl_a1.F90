@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
 !      METHODES ANALYTIQUES DE CALCUL DES FACTEURS
 !      D'INTENSITE DE CONTRAINTE ET DE L'INTEGRALE J
 !
-! Les coefficients d'influence tabulees sont extraites du  
+! Les coefficients d'influence tabulees sont extraites du
 ! Tableau VII.5.3.2b : PLA-DSR - coefficients d'influence pour Er/E = 1
 !                      point B (note A pour EDF)
 !
@@ -60,7 +60,7 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
 !    defaut semi-elliptique (notation EDF)
 !
 !       ---------2c----------
-!       $$$$$$$$$$$$$$$$$$$$$   <- revetement 
+!       $$$$$$$$$$$$$$$$$$$$$   <- revetement
 !    ^  ----------A--------C-
 !         \               /
 !    a     \             /      <- metal de base
@@ -68,7 +68,7 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
 !    v        ----B----
 !
 !  ou Er : module d'young du revetement
-!     E  : module d'young du metal de base 
+!     E  : module d'young du metal de base
 !     a  : hauteur de la fissure
 !    2c  : largeur de la fissure
 ! ======================================================================
@@ -76,11 +76,11 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
     integer :: k
 !
 ! a/c = 1 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
-    data (coef(1,1,k),k=1,5) / 0.580d0, 0.580d0, 0.580d0, 0.580d0, 0.580d0 / 
-    data (coef(1,2,k),k=1,5) / 0.582d0, 0.530d0, 0.484d0, 0.442d0, 0.404d0 / 
-    data (coef(1,3,k),k=1,5) / 0.582d0, 0.490d0, 0.414d0, 0.350d0, 0.297d0 / 
-    data (coef(1,4,k),k=1,5) / 0.584d0, 0.430d0, 0.320d0, 0.240d0, 0.182d0 / 
+!
+    data (coef(1,1,k),k=1,5) / 0.580d0, 0.580d0, 0.580d0, 0.580d0, 0.580d0 /
+    data (coef(1,2,k),k=1,5) / 0.582d0, 0.530d0, 0.484d0, 0.442d0, 0.404d0 /
+    data (coef(1,3,k),k=1,5) / 0.582d0, 0.490d0, 0.414d0, 0.350d0, 0.297d0 /
+    data (coef(1,4,k),k=1,5) / 0.584d0, 0.430d0, 0.320d0, 0.240d0, 0.182d0 /
     data (coef(1,5,k),k=1,5) / 0.593d0, 0.359d0, 0.225d0, 0.145d0, 9.74d-2 /
     data (coef(1,6,k),k=1,5) / 0.602d0, 0.318d0, 0.178d0, 0.106d0, 6.76d-2 /
     data (coef(1,7,k),k=1,5) / 0.611d0, 0.292d0, 0.152d0, 8.70d-2, 5.43d-2 /
@@ -88,9 +88,9 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
     data (coef(1,9,k),k=1,5) / 0.655d0, 0.249d0, 0.115d0, 6.29d-2, 3.92d-2 /
 !
 ! a/c = 1/2 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
-    data (coef(2,1,k),k=1,5) / 0.635d0, 0.635d0, 0.635d0, 0.635d0, 0.635d0 / 
-    data (coef(2,2,k),k=1,5) / 0.639d0, 0.584d0, 0.535d0, 0.490d0, 0.450d0 / 
+!
+    data (coef(2,1,k),k=1,5) / 0.635d0, 0.635d0, 0.635d0, 0.635d0, 0.635d0 /
+    data (coef(2,2,k),k=1,5) / 0.639d0, 0.584d0, 0.535d0, 0.490d0, 0.450d0 /
     data (coef(2,3,k),k=1,5) / 0.640d0, 0.542d0, 0.461d0, 0.393d0, 0.336d0 /
     data (coef(2,4,k),k=1,5) / 0.644d0, 0.480d0, 0.361d0, 0.276d0, 0.213d0 /
     data (coef(2,5,k),k=1,5) / 0.658d0, 0.408d0, 0.262d0, 0.174d0, 0.121d0 /
@@ -100,7 +100,7 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
     data (coef(2,9,k),k=1,5) / 0.751d0, 0.305d0, 0.151d0, 0.088d0, 5.77d-2 /
 !
 ! a/c = 1/4 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(3,1,k),k=1,5) / 0.657d0, 0.657d0, 0.657d0, 0.657d0, 0.657d0 /
     data (coef(3,2,k),k=1,5) / 0.661d0, 0.606d0, 0.556d0, 0.510d0, 0.469d0 /
     data (coef(3,3,k),k=1,5) / 0.664d0, 0.564d0, 0.481d0, 0.411d0, 0.353d0 /
@@ -112,7 +112,7 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
     data (coef(3,9,k),k=1,5) / 0.799d0, 0.335d0, 0.172d0, 0.104d0, 7.01d-2 /
 !
 ! a/c = 1/8 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(4,1,k),k=1,5) / 0.665d0, 0.665d0, 0.665d0, 0.665d0, 0.665d0 /
     data (coef(4,2,k),k=1,5) / 0.670d0, 0.614d0, 0.564d0, 0.518d0, 0.476d0 /
     data (coef(4,3,k),k=1,5) / 0.674d0, 0.573d0, 0.489d0, 0.419d0, 0.360d0 /
@@ -125,7 +125,7 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
 
 !
 ! a/c = 1/16 ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(5,1,k),k=1,5) / 0.667d0, 0.667d0, 0.667d0, 0.667d0, 0.667d0 /
     data (coef(5,2,k),k=1,5) / 0.672d0, 0.616d0, 0.566d0, 0.520d0, 0.478d0 /
     data (coef(5,3,k),k=1,5) / 0.676d0, 0.576d0, 0.492d0, 0.421d0, 0.362d0 /
@@ -137,7 +137,7 @@ subroutine coef_infl_a1(ix1,ix2,iy1,iy2,i,&
     data (coef(5,9,k),k=1,5) / 0.831d0, 0.356d0, 0.187d0, 0.116d0, 7.96d-2 /
 !
 ! a/c = 0. ; a/r = 0 1/8 1/4 1/2 1 3/2 2 3 4 ; i0 i1 i2 i3 i4
-! 
+!
     data (coef(6,1,k),k=1,5) / 0.680d0, 0.680d0, 0.680d0, 0.680d0, 0.680d0 /
     data (coef(6,2,k),k=1,5) / 0.681d0, 0.625d0, 0.574d0, 0.528d0, 0.486d0 /
     data (coef(6,3,k),k=1,5) / 0.683d0, 0.582d0, 0.498d0, 0.427d0, 0.368d0 /

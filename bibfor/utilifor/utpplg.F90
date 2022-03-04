@@ -28,12 +28,12 @@ subroutine utpplg(nn, nc, p, sl, sg)
     integer, intent(in) :: nn, nc
     real(kind=8), intent(in) :: p(3, 3), sl(*)
     real(kind=8), intent(out) :: sg(*)
-!    
+!
     integer :: n, n1, nddl
     real(kind=8), dimension(nn*nc, nn*nc) :: matsy1, matsy2, matas2
     real(kind=8), dimension(nn*nc, nn*nc) :: matsym, matasy
     real(kind=8), dimension(nn*nc, nn*nc) :: parsmg, parayg, matril, matrig
-    real(kind=8), dimension(78) :: parsym, parasy, vecsym, vecasy   
+    real(kind=8), dimension(78) :: parsym, parasy, vecsym, vecasy
 !     ------------------------------------------------------------------
 !     PASSAGE D'UNE MATRICE TRIANGULAIRE ANTISYMETRIQUE DE NN*NC LIGNES
 !     DU REPERE LOCAL AU REPERE GLOBAL (3D)

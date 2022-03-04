@@ -266,10 +266,10 @@ character(len=4), intent(in) :: valeType
             call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm- 1+(ino-1)*nbec+1), nbcomp,&
                         valeType, zk8(jno-1+jj), ino, nsurch, forimp,&
                         valfor, valfof, motcle, verif, nbec)
-            
+
             if (desgi(ino) .ne. 0) l_occu_void = .false.
         end do
-        
+
         if (l_occu_void) then
             do ii =1, 6
                 if (forimp(ii) .ne. 0) then

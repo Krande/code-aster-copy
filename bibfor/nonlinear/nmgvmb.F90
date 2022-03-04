@@ -67,7 +67,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
 # define ia(n)    (n-1)*(ndim+2) + ndim + 1
 # define il(n)    (n-1)*(ndim+2) + ndim + 2
 ! ----------------------------------------------------------------------
-    
+
     nddl = nno1*ndim + nno2*2
     neps = 3*ndim + 2
     allocate(b(neps,npg,nddl),w(neps,npg),ni2ldc(neps,npg))
@@ -80,12 +80,12 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
 !
     b = 0.d0
     do g = 1, npg
-    
+
 !       Derivee des fonctions de forme no 2 (r et w non utilise)
         call dfdmip(ndim, nno2, axi, geoi, g,&
                     iw, vff2(1, g), idfde2, r, w0,&
                     dff2)
-                    
+
 !       Derivee des fonctions de forme no 1, rayon et poids
         call dfdmip(ndim, nno1, axi, geoi, g,&
                     iw, vff1(1, g), idfde1, r, w0,&

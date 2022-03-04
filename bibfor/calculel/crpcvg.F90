@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,12 +108,12 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !       numero et type de la maille courante de GROUP_MA_INIT
         ima1 = zi(jgma1+ima-1)
         nutyp1 = zi(jtyma1-1+ima1)
-                
+
 !       boucle sur les mailles de GROUP_MA_FINAL
         do 100 jma = 1, nbma2
-                      
+
             ima2 = zi(jgma2+jma-1)
-            nutyp2 = zi(jtyma2-1+ima2)   
+            nutyp2 = zi(jtyma2-1+ima2)
 
             do 20 ino = 1, nbnoma(ima1)
                 ino1 = numgl1(ima1,ino)
@@ -131,9 +131,9 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
                 if (v1 .gt. prec) erreur = .true.
                 if (v2 .gt. prec) erreur = .true.
                 if (v3 .gt. prec) erreur = .true.
-                
+
 !               en cas d'erreur, on passe a la maille suivante de
-!               GROUP_MA_FINAL (iteration suivante de la boucle 100)                
+!               GROUP_MA_FINAL (iteration suivante de la boucle 100)
                 if (erreur) then
                     goto 100
                 endif
@@ -142,7 +142,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
 !
  20         continue
 !
-!           a ce niveau, on a trouve la maille ima2 en 
+!           a ce niveau, on a trouve la maille ima2 en
 !           correspondance avec la maille ima1
 !           on verifie leur type
             if (nutyp1 .ne. nutyp2) then
@@ -151,21 +151,21 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
                 call utmess('F', 'CALCULEL5_68', nk=2, valk=valk)
             endif
 !
-!           on stocke ima1 et ima2 
-!           et on passe a la maille suivante dans GROUP_MA_INIT 
+!           on stocke ima1 et ima2
+!           et on passe a la maille suivante dans GROUP_MA_INIT
             zi(jnum1+ima-1) = ima1
             zi(jnum2+ima-1) = ima2
             goto 10
-            
+
 100     continue
 
-!       si on passe ici, c'est que l'on n'a trouve aucune maille de 
+!       si on passe ici, c'est que l'on n'a trouve aucune maille de
 !       GROUP_MA_FINAL en correspondance avec la maille ima1 de GROUP_MA_INIT
-        call getvtx('PERM_CHAM','GROUP_MA_INIT' ,iocc=1,nbval=1,vect=nom_gr1,nbret=ibid)     
+        call getvtx('PERM_CHAM','GROUP_MA_INIT' ,iocc=1,nbval=1,vect=nom_gr1,nbret=ibid)
         call getvtx('PERM_CHAM','GROUP_MA_FINAL',iocc=1,nbval=1,vect=nom_gr2,nbret=ibid)
         call jenuno(jexnum(ma1//'.NOMMAI', ima1 ), noma1)
         valk(1) = nom_gr1
-        valk(2) = nom_gr2 
+        valk(2) = nom_gr2
         valk(3) = noma1
         valk(4) = ma1
         valk(5) = ma2

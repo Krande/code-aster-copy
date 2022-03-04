@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -370,10 +370,10 @@ if(contac.eq.1.or.contac.eq.3) nlag = 1
                     if (.not.l_rela_find) then
                         i_rela = i_rela + 1
                         list_rela(2*nb_term_maxi*(i_rela-1)+1) = node_name(1)
-                        list_rela(2*nb_term_maxi*(i_rela-1)+2) = cmp_name(1)    
+                        list_rela(2*nb_term_maxi*(i_rela-1)+2) = cmp_name(1)
                         list_rela(2*nb_term_maxi*(i_rela-1)+3) = node_name(2)
                         list_rela(2*nb_term_maxi*(i_rela-1)+4) = cmp_name(2)
-                        nb_iden_term = nb_iden_term + 2            
+                        nb_iden_term = nb_iden_term + 2
                     endif
                 end do
             endif

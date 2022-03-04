@@ -260,11 +260,11 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                                 lfvolu, lf1d2d, lf2d3d, lfpres, lfepsi,&
                                 lfpesa, lfrota, carteo, lpchar,&
                                 lccomb)
-                                
+
 !
 !------------------ Interdiction d'un chargement PRE_EPSI avec l'option G de CALC_G
 !                   (sans re-calcul de contraintes, le résultat est faux)
-!                   
+!
                     if (lepsi.or.lfepsi) then
                         call getvtx(' ', 'OPTION', nbret=ier)
                         if(ier == 1) then

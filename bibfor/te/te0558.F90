@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ use THM_type
 !
 implicit none
 !
-#include "asterf_types.h"  
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/assert.h"
@@ -70,7 +70,7 @@ character(len=16) :: option, nomte
     parameter    (nfimax=10)
     integer :: fisc(2*nfimax), fisco(2*nfimax)
     type(THM_DS) :: ds_thm
-! 
+!
 !......................................................................
 !
 
@@ -86,15 +86,15 @@ character(len=16) :: option, nomte
     incoca=0
 !
 !   INTIALISATION JMATE POUR DETECTER EVENTUELLES ERREURS JEVEUX
-    jmate=1    
+    jmate=1
 !
 !   INITIALISATION DU NOMBRE DE DDL PAR NEOUD, DU TYPE DE CONTACT ET
 !   DES ADRESSES POUR LES DIFFERENTS TERMES DE L'OPERATEUR TANGENT
-!   (CAS DE LA FRACTURE UNIQUEMENT) 
+!   (CAS DE LA FRACTURE UNIQUEMENT)
 !
     call xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
 !
-!   INITIALISATION DE LA DIMENSION DE L'ELEMENT PRINCIPAL, DU NOMBRE DE 
+!   INITIALISATION DE LA DIMENSION DE L'ELEMENT PRINCIPAL, DU NOMBRE DE
 !   NOEUDS PARENTS (SOMMET + MILIEU)
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnops)
@@ -154,7 +154,7 @@ character(len=16) :: option, nomte
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PBASECO', 'L', jbasec)
     call jevech('PCOMPOR', 'L', icompo)
-    call jevech('PINCOCA', 'E', jout1)  
+    call jevech('PINCOCA', 'E', jout1)
     call jevech('PHEA_NO', 'L', jheavn)
     call jevech('PSTANO', 'L', jstano)
 !
@@ -192,23 +192,23 @@ character(len=16) :: option, nomte
     endif
 !
     do ifiss = 1, nfiss
-!                                                         
-       do i = 1, 2*nfiss                                  
-            fisc(i)=0                                     
-       end do                                             
-       ifisc = ifiss                                      
-       nfisc = 0                                          
- 80    continue                                           
-       if (fisco(2*ifisc-1) .gt. 0) then                  
-!   STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE 
-          nfisc = nfisc+1                                 
-          fisc(2*(nfisc-1)+2) = fisco(2*ifisc)            
-          ifisc = fisco(2*ifisc-1)                        
-          fisc(2*(nfisc-1)+1) = ifisc                     
-          goto 80                                         
-       endif                                              
-!                                                         
-       nfisc2 = 0                                         
+!
+       do i = 1, 2*nfiss
+            fisc(i)=0
+       end do
+       ifisc = ifiss
+       nfisc = 0
+ 80    continue
+       if (fisco(2*ifisc-1) .gt. 0) then
+!   STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
+          nfisc = nfisc+1
+          fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+          ifisc = fisco(2*ifisc-1)
+          fisc(2*(nfisc-1)+1) = ifisc
+          goto 80
+       endif
+!
+       nfisc2 = 0
        do jfiss = ifiss+1, nfiss
 !   STOCKAGE DES FISSURES QUI SE BRANCHENT SUR IFISS
           kfiss = fisco(2*jfiss-1)
@@ -239,7 +239,7 @@ character(len=16) :: option, nomte
           pla(i) = 0
        end do
 !
-!   DEFINITION DU NOMBRE DE POINTS D'INTERSECTION, DU NOMBRE FACETTE ET 
+!   DEFINITION DU NOMBRE DE POINTS D'INTERSECTION, DU NOMBRE FACETTE ET
 !   DU NOMBRE DE POINT PAR FACETTE
        ninter=zi(jlonch+3*(ifiss-1)-1+1)
        nface=zi(jlonch+3*(ifiss-1)-1+2)
@@ -252,12 +252,12 @@ character(len=16) :: option, nomte
                    nfh, nfiss, ninter, nlact, nnop,&
                    nnol, nnopm, nnops, pla, pos, typma, jstano)
 !
-!   SI IL N'Y A PAS DE FACETTES INTERSECTEES PAR LA FRACTURE ON SORT 
+!   SI IL N'Y A PAS DE FACETTES INTERSECTEES PAR LA FRACTURE ON SORT
        if (ninter.eq.0) goto 200
 !
-!   RECUPERATION DU TYPE D'ELEMENT POUR LA FACETTE DE CONTACT ET 
+!   RECUPERATION DU TYPE D'ELEMENT POUR LA FACETTE DE CONTACT ET
 !   DE LA FAMILLE DE POINT D'INTEGRATION (P2P1 UNIQUEMENT)
-       if ((ndim.eq.2).and.(contac.ge.2)) then 
+       if ((ndim.eq.2).and.(contac.ge.2)) then
           elc='SE3'
           ninteg = nint(zr(jdonco-1+(ifiss-1)*ncompd+4))
           call xminte(ndim, ninteg, fpg)
@@ -291,11 +291,11 @@ character(len=16) :: option, nomte
           ASSERT(.false.)
        endif
 !
-!   RECUPERATION DES DIFFERENTES ADRESSES POUR L'INTEGRATION SUR LES 
+!   RECUPERATION DES DIFFERENTES ADRESSES POUR L'INTEGRATION SUR LES
 !   FACETTES DE CONTACT
 !
        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-                        npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)  
+                        npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 !   DEFINTION DE LA CONNECTIVITE DES FACTETTES DE CONTACT
 !
@@ -326,7 +326,7 @@ character(len=16) :: option, nomte
 !
        nbspg = nbspg + npgf*nface
 !
-200    continue 
+200    continue
        jbasec = jbasec + ncompb
        jptint = jptint + ncompp
        jaint = jaint + ncompa

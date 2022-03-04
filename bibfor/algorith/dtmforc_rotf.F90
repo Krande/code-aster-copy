@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine dtmforc_rotf(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
 !
 !   -0.2- Local variables
     integer           :: i, ier, nbno, nbmode, start
-    integer           :: finish    
+    integer           :: finish
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, depglo1(3), depglo2(3), drl(3), drg(3)
     real(kind=8)      :: origob(3), eps, ml(3), mg(3), angini
@@ -145,7 +145,7 @@ subroutine dtmforc_rotf(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
     call locglo(ml, sina, cosa, sinb, cosb,&
                 sing, cosg, mg)
 !
-!       --- Generalized force on the first node  
+!       --- Generalized force on the first node
     call togene(dplmod1, mg, fext)
 !       --- Generalized force on the second node
     call togene(dplmod2, mg, fext, coef=-1.d0)

@@ -133,7 +133,7 @@ implicit none
         else if (load_nume .eq. 2) then
             l_fonct_0  = .true.
         else if (load_nume .eq. 3) then
-            l_fonct_t  = .true.               
+            l_fonct_t  = .true.
         else
             ASSERT(.false.)
         endif
@@ -249,7 +249,7 @@ implicit none
 !
         nb_in_add = i_field_in - nb_in_prep
         ASSERT(i_field_in.le.nb_in_maxi)
-        
+
     endif
 !
 end subroutine

@@ -146,11 +146,11 @@ type(THM_DS), intent(inout) :: ds_thm
 !   CALCUL DES FONCTIONS DE FORME DE CONTACT
     call xmofhm(lact, nlact, nnops, ffpc, ffc)
 !   CALCUL DU GRADIENT DES FONCTIONS DE FORME DE CONTACT
-!          
-    call xmodfc(lact, nlact, nnops, dfdic, dffc, ndim)  
+!
+    call xmodfc(lact, nlact, nnops, dfdic, dffc, ndim)
 !
     if (algocr.eq.3) then
-       if ((nint(rela) .eq. 3) .or. (nint(rela) .eq. 4)) then 
+       if ((nint(rela) .eq. 3) .or. (nint(rela) .eq. 4)) then
 !
            nvec=2
            job='MATRICE'
@@ -172,7 +172,7 @@ type(THM_DS), intent(inout) :: ds_thm
               am(i) = -am(i)
            end do
 !
-!          CALCUL DE LA VARIABLE INTERNE (MASSE VOLUMIQUE DU LIQUIDE 
+!          CALCUL DE LA VARIABLE INTERNE (MASSE VOLUMIQUE DU LIQUIDE
 !          CIRCULANT DANS LA FRACTURE)
 !
            job='MATRICE'
@@ -286,4 +286,4 @@ type(THM_DS), intent(inout) :: ds_thm
        endif
     endif
 !
-end subroutine 
+end subroutine

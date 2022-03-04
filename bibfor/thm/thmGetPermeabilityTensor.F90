@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,10 +77,10 @@ real(kind=8), intent(out) :: tperm(ndim, ndim)
          (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_VGM')  .or.&
          (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_VGC') .or.&
          (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_TABBAL')) then
-        
+
 !~         write (6,*) 'gerpermea',ds_thm%ds_behaviour%rela_hydr
 
-        
+
         call rcvala(j_mater, ' '      , 'THM_DIFFU',&
                     1      , 'PORO'   , [phi]      ,&
                     1      , para_name, para_vale  ,&

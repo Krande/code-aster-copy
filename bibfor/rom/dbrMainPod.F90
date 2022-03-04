@@ -56,7 +56,7 @@ type(ROM_DS_Empi), intent(in) :: baseOut
     integer :: nbSing, nbMode, nbSnap, iSnap, nbModeMaxi, m, n
     real(kind=8), pointer :: q(:) => null()
     real(kind=8), pointer :: v(:) => null()
-    real(kind=8), pointer :: s(:) => null() 
+    real(kind=8), pointer :: s(:) => null()
     real(kind=8), pointer :: v_gamma(:) => null()
     real(kind=8) :: toleSVD, rate
 !
@@ -95,7 +95,7 @@ type(ROM_DS_Empi), intent(in) :: baseOut
     call dbr_calcpod_sele(nbModeMaxi, toleSVD, s, nbSing, nbMode)
 !
 ! - Save base
-! 
+!
     call dbr_calcpod_save(baseOut, nbMode, nbSnap, s, v)
 !
 ! - Compute reduced coordinates

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 subroutine lcmfdr(sig, vp, chi, precvg, dchids)
     implicit none
 #include "asterfort/lcexpo.h"
-    real(kind=8),intent(in) :: sig(6)    
-    real(kind=8),intent(in) :: vp(3)     
-    real(kind=8),intent(in) :: chi       
-    real(kind=8),intent(in) :: precvg    
-    real(kind=8),intent(out):: dchids(6) 
+    real(kind=8),intent(in) :: sig(6)
+    real(kind=8),intent(in) :: vp(3)
+    real(kind=8),intent(in) :: chi
+    real(kind=8),intent(in) :: precvg
+    real(kind=8),intent(out):: dchids(6)
 ! --------------------------------------------------------------------------------------------------
 !  CRITERE ENDO_FISS_EXP: DERIVEE DU FACTEUR D'ECHELLE SEUIL (CHI)
 ! sig(6)    contraintes

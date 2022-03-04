@@ -111,26 +111,26 @@ subroutine arlmol(nomo,mailar,modarl,tabcor)
     call jeecra(ligarl//'.LIEL','LONT',2*nbma,k8bid)
 
     do 90 ima = 1,nbma
-    
+
     ! --- CREATION OBJET DE LA COLLECTION
-    
+
         call jecroc(jexnum(ligarl//'.LIEL',ima))
         call jeecra(jexnum(ligarl//'.LIEL',ima),'LONMAX',2,k8bid)
         call jeveuo(jexnum(ligarl//'.LIEL',ima),'E',jad)
-    
+
     ! --- NUMERO DANS LE MAILLAGE ORIGINAL
-    
+
         numori = zi(jtabco+ima-1)
-    
+
     ! --- TYPE DE LA MAILLE DANS LE PSEUDO-MODELE
-    
+
         if (numori < 0) then
             numori = abs(numori)
         endif
         ityel = zi(jtyel-1+numori)
-    
+
     ! --- PAS D'EF AFFECTE SUR LA MAILLE !
-    
+
         if (ityel == 0) then
             ASSERT(.false.)
         else

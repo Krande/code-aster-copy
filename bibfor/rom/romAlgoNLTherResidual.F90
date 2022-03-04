@@ -91,7 +91,7 @@ real(kind=8)     , intent(out):: resi_rela, resi_maxi
     call jeveuo(cn2mbr(1:19)//'.VALE', 'E', vr = v_cn2mbr)
     call jeveuo(vec2nd(1:19)//'.VALE', 'L', vr = v_vec2nd)
     call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr = v_cnvabt)
-    call jeveuo(cnresi(1:19)//'.VALE', 'L', vr = v_cnresi)  
+    call jeveuo(cnresi(1:19)//'.VALE', 'L', vr = v_cnresi)
 !
 ! - Create residual
 !
@@ -100,14 +100,14 @@ real(kind=8)     , intent(out):: resi_rela, resi_maxi
     enddo
 !
 ! - Truncation of residual
-!    
+!
     if (l_hrom) then
         do iEqua = 1, nbEqua
             if (ds_algorom%v_equa_int(iEqua) .eq. 1) then
                 v_vec2nd(iEqua) = 0.d0
                 v_cnvabt(iEqua) = 0.d0
                 v_cnresi(iEqua) = 0.d0
-            endif    
+            endif
         enddo
     endif
 !
@@ -141,7 +141,7 @@ real(kind=8)     , intent(out):: resi_rela, resi_maxi
     endif
 !
 ! - Cleaning
-!    
+!
     AS_DEALLOCATE(vr=v_cn2mbrr)
     AS_DEALLOCATE(vr=v_vec2ndr)
     AS_DEALLOCATE(vr=v_cnresir)

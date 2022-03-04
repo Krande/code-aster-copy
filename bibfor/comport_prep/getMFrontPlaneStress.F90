@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ aster_logical, intent(out) :: l_mfront_cp
 !
     if (rela_comp .eq. 'MFRONT') then
         call getvtx(keywf, 'ALGO_CPLAN', iocc = i_comp, scal = answer)
-        l_mfront_cp = answer .eq. 'ANALYTIQUE'  
+        l_mfront_cp = answer .eq. 'ANALYTIQUE'
     else
         call lccree(1, rela_comp, rela_comp_py)
         call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', iret)

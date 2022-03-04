@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -199,7 +199,7 @@ subroutine op0024()
             xpdt = zr(jpas-1+i)
 
             do 40 j = 1, zi(jnbp-1+i) - 1
-            
+
                 ico = ico + 1
                 newval = zr(jval+ico-1) + xpdt
                 if (abs(newval) .le. r8prem()) newval = 0.d0

@@ -67,7 +67,7 @@ integer, intent(out) :: nno, nnos, nface
 !                    (1) - Flag if physic exists (1 if exists)
 !                    (2) - Number of phases
 !                    (3) - Adress of first component in generalized strain vector
-!                    (4) - Adress of first component in vector of gen. stress for first phase 
+!                    (4) - Adress of first component in vector of gen. stress for first phase
 !                    (5) - Adress of first component in vector of gen. stress for second phase
 !                    (6) - Number of components for strains
 !                    (7) - Number of components for stresses (for each phase)
@@ -75,7 +75,7 @@ integer, intent(out) :: nno, nnos, nface
 !                    (1) - Flag if physic exists (1 if exists)
 !                    (2) - Number of phases
 !                    (3) - Adress of first component in generalized strain vector
-!                    (4) - Adress of first component in vector of gen. stress for first phase 
+!                    (4) - Adress of first component in vector of gen. stress for first phase
 !                    (5) - Adress of first component in vector of gen. stress for second phase
 !                    (6) - Number of components for strains
 !                    (7) - Number of components for stresses (for each phase)

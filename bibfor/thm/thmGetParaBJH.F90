@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmGetParaBJH(ds_thm,j_mater, p1) 
+subroutine thmGetParaBJH(ds_thm,j_mater, p1)
 !
 use THM_type
 !
@@ -30,7 +30,7 @@ implicit none
 !
 type(THM_DS), intent(inout) :: ds_thm
 integer, intent(in) :: j_mater
-real(kind=8), intent(in) :: p1  
+real(kind=8), intent(in) :: p1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,60 +53,60 @@ real(kind=8), intent(in) :: p1
                                                                   'EPAI   ',&
                                                                   'S_BJH  ',&
                                                                   'W_BJH  '/)
-                                                                  
+
     real(kind=8) :: ep,surf,sbjh,wbjh
 !
 ! --------------------------------------------------------------------------------------------------
     para_vale_bjh(:) = 0.d0
     ep = 0.d0
     surf = 0.d0
-    
-       
+
+
     if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
-    
+
         call rcvala(j_mater    , ' '          , 'THM_DIFFU'  ,&
-                    1      , 'PCAP'   , [p1]      ,&        
-                    nb_para_bjh, para_name_bjh, para_vale_bjh, icodre_bjh,& 
+                    1      , 'PCAP'   , [p1]      ,&
+                    nb_para_bjh, para_name_bjh, para_vale_bjh, icodre_bjh,&
                     1)
-        
+
         surf = para_vale_bjh(1)
-        ds_thm%ds_material%bjh%shuttle  = para_vale_bjh(2) 
-                  
+        ds_thm%ds_material%bjh%shuttle  = para_vale_bjh(2)
+
         ep   = para_vale_bjh(3)
         sbjh = para_vale_bjh(4)
         wbjh = para_vale_bjh(5)
 !~         write (6,*) 'thmgetBJH1',ds_thm%ds_behaviour%rela_hydr
 
-                      
+
         if (surf .lt. 0.d0) then
-        
-            call utmess('F', 'THM1_95') 
-                    
-        else 
-        
+
+            call utmess('F', 'THM1_95')
+
+        else
+
             ds_thm%ds_material%bjh%A0        = surf
 
-        end if 
-            
+        end if
+
         if (ep .lt. 0.d0) then
-        
-            call utmess('F', 'THM1_96') 
-        
+
+            call utmess('F', 'THM1_96')
+
         else
             ds_thm%ds_material%bjh%epai        = ep
-        
-        end if
-                            
-        if (sbjh .lt. 0.d0 .or. sbjh .gt. 1.d0 .or. wbjh .lt. 0.d0 .or. wbjh .gt. 1.d0) then
-        
-            call utmess('F', 'THM1_97') 
-            
-        else 
 
-            ds_thm%ds_material%bjh%SBJH      = sbjh 
+        end if
+
+        if (sbjh .lt. 0.d0 .or. sbjh .gt. 1.d0 .or. wbjh .lt. 0.d0 .or. wbjh .gt. 1.d0) then
+
+            call utmess('F', 'THM1_97')
+
+        else
+
+            ds_thm%ds_material%bjh%SBJH      = sbjh
             ds_thm%ds_material%bjh%wBJH      = wbjh
-                    
-        end if      
+
+        end if
 
 
     endif

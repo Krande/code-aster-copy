@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ real(kind=8), intent(out) :: a(6, 6), b(6)
         a(6,j) = un
     end do
 !
-! - Second member 
+! - Second member
 !
     do i = 1, 3
         b(i)= x(i)

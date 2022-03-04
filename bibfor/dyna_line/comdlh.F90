@@ -263,7 +263,7 @@ implicit none
         if (calgen) then
             call utmess('F', 'DYNALINE2_12')
         endif
-    endif 
+    endif
 
 ! - CALCUL ET PRE-ASSEMBLAGE DU CHARGEMENT
     call dylach(nomo, mate, mateco, carele, listLoad, numddl,&

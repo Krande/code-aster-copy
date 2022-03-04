@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ character(len=19), intent(in) :: compor_info
     call etenca(compor_cart, ligrmo, iret)
     call jeveuo(compor_cart//'.PTMA', 'L', vi = v_compor_ptma)
 !
-! - Create list of zones: for each zone (in CARTE), how many elements 
+! - Create list of zones: for each zone (in CARTE), how many elements
 !
     call wkvect(compor_info(1:19)//'.ZONE', 'V V I', nb_zone, vi = v_zone)
 !
@@ -154,7 +154,7 @@ character(len=19), intent(in) :: compor_info
     do i_zone = 1, nb_zone
         call jecroc(jexnum(compor_info(1:19)//'.VARI', i_zone))
     end do
-! 
+!
     do i_elem = 1, nb_elem_mesh
 ! ----- Get current zone
         i_zone = v_compor_ptma(i_elem)

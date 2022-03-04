@@ -111,8 +111,8 @@ integer, intent(out) :: retcom
 !
     dsdeme(:, :)   = 0.d0
     dsidp1(:)      = 0.d0
-    dsidp2(:)      = 0.d0 
-    dspdp1         = 0.d0 
+    dsidp2(:)      = 0.d0
+    dspdp1         = 0.d0
     dspdp2         = 0.d0
     ther_meca(:)   = 0.d0
     retcom         = 0
@@ -147,7 +147,7 @@ integer, intent(out) :: retcom
                                 dsde(adcome-1+i,addeme+ndim-1+2)+&
                                 dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
             end do
-        endif   
+        endif
     elseif (meca .eq. 'GONF_ELAS') then
 ! ----- Compute behaviour
         sipm = congem(adcome+6)

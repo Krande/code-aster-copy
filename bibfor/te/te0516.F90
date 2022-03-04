@@ -194,7 +194,7 @@ character(len=16) :: option, nomte
 !
 !   verification que c'est bien des multifibres
 !
-    
+
     call jeexin(mult_comp, iret)
     if (iret .eq. 0) then
         call utmess('F', 'POUTRE0_14', sk=nomte)

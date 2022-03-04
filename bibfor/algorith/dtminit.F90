@@ -48,7 +48,7 @@ subroutine dtminit(sd_dtm_, sd_int_)
 !
 !   -0.1- Input/output arguments
     character(len=*)          , intent(in) :: sd_dtm_
-    character(len=*)          , intent(in) :: sd_int_    
+    character(len=*)          , intent(in) :: sd_int_
 !
 !   -0.2- Local variables
     aster_logical     :: reuse
@@ -68,12 +68,12 @@ subroutine dtminit(sd_dtm_, sd_int_)
     real(kind=8)    , pointer :: acce(:)    => null()
     real(kind=8)    , pointer :: fext(:)    => null()
     integer         , pointer :: buffdtm(:) => null()
-    integer         , pointer :: buffint(:) => null()    
+    integer         , pointer :: buffint(:) => null()
 !
 !   0 - Initializations
     call jemarq()
     sd_dtm = sd_dtm_
-    sd_int = sd_int_    
+    sd_int = sd_int_
 !
 !   1 - Retrieval of the necessary information
 
@@ -126,7 +126,7 @@ subroutine dtminit(sd_dtm_, sd_int_)
 !       --- Copy the factorized mass matrix
         call intinivec(sd_int, MASS_FAC, nbmode*nbmode, iocc=1, address=jmass)
         call dtmget(sd_dtm, _MASS_FAC,rvect=zr(jmass))
-    end if 
+    end if
     call intinivec(sd_int, MASS_DIA, nbmode, iocc=1, address=jmass)
     call dtmget(sd_dtm, _MASS_DIA,rvect=zr(jmass))
 !
@@ -172,10 +172,10 @@ subroutine dtminit(sd_dtm_, sd_int_)
     endif
 
 !   Calculate the initial acceleration
-    
-!   --- If no reuse, then acce0 must be calculated based on depl0, vite0, and the 
+
+!   --- If no reuse, then acce0 must be calculated based on depl0, vite0, and the
 !       forces equilibrium equation (using dtmacce). To do so, delete acce0 for now.
-    call dtminivec(sd_dtm, _ACC_WORK, nbmode, address=iret)   
+    call dtminivec(sd_dtm, _ACC_WORK, nbmode, address=iret)
     nullify(buffdtm)
     nullify(buffint)
     call dtmbuff(sd_dtm, buffdtm)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ module lub_module
          character(len=24) :: type
          character(len=24) :: name
          integer :: num
-         real(kind=8) :: omega 
+         real(kind=8) :: omega
          real(kind=8) :: dtsto
          real(kind=8) :: tfin
 
@@ -113,8 +113,8 @@ module lub_module
             precedent => first_bearing
 
 
-            if( are_bearings_equals(mbearing, first_bearing ) ) then                           
-                first_bearing => first_bearing % next              
+            if( are_bearings_equals(mbearing, first_bearing ) ) then
+                first_bearing => first_bearing % next
                 call clean_bearing(precedent)
             else
 
@@ -130,9 +130,9 @@ module lub_module
         subroutine get_previous_element(element, backele)
             ! return the element before
             type(bearing), pointer  :: element
-            type(bearing), pointer :: backele 
+            type(bearing), pointer :: backele
             type(bearing), pointer              :: current => null()
-            
+
             backele => null()
             current => first_bearing
 
@@ -154,9 +154,9 @@ module lub_module
             integer, intent(in) :: num
             character(len=*), intent(in) :: typ
             ! omega
-            real(kind=8), intent(in) :: om 
+            real(kind=8), intent(in) :: om
             ! storage time that will be used by edyos
-            real(kind=8), intent(in) :: dtstoc 
+            real(kind=8), intent(in) :: dtstoc
             real(kind=8), pointer :: mdefmod(:)
             integer,      pointer :: list_ddl(:)
 
@@ -212,7 +212,7 @@ module lub_module
             call generate_name('REPRISEASTER_', num, port_name)
             ! each bearing have a maximum of 24 pads and each pad need to send 6 component
             !144 = 6 * 24 (nombre max de patins)
-            call add_port( trim(port_name), PORT_IN, 144, 'R8') 
+            call add_port( trim(port_name), PORT_IN, 144, 'R8')
             call get_port_by_name(trim(port_name), mybearing%reprise_port)
 
 
@@ -251,8 +251,8 @@ module lub_module
         subroutine is_bearing_exist(num, exist, current)
             integer , intent(in) :: num
             logical , intent(out) :: exist
-            type(bearing), pointer, optional :: current 
-           
+            type(bearing), pointer, optional :: current
+
             current => null()
             exist = .false.
 
@@ -282,7 +282,7 @@ module lub_module
 
         subroutine get_bearing_by_num(num, fbearing)
            integer, intent(in) :: num
-           type(bearing), pointer :: fbearing 
+           type(bearing), pointer :: fbearing
            logical :: exist
            fbearing => null()
            call is_bearing_exist(num, exist, fbearing)
@@ -302,7 +302,7 @@ module lub_module
 
             do while( associated( current ))
 
-                current%depvit_port%vr(1) = time               
+                current%depvit_port%vr(1) = time
 
                 !if( current%tfin - time-dt .lt. 0.0) then
                 !    current%depvit_port%vr(2) = current%tfin - time
@@ -343,7 +343,7 @@ module lub_module
 
 !                do i=1,3
 !                   print *, "received value =", current%force_port%vr(i), " @", i , itime
-!               end do 
+!               end do
 
                 if( current%force_port%vr(1).le. 0.d0) then
                     call utmess('F', 'EDYOS_45')
@@ -367,7 +367,7 @@ module lub_module
 
             type(bearing), pointer :: current => null()
 
-        
+
             current => first_bearing
 
             do while( associated (current) )
@@ -387,7 +387,7 @@ module lub_module
 
 !                print *, "this is what i received :", current%type_ana_port%vk8(1) , "@@"
 
-                ! forget it we don't want the type of bearing anyway ! 
+                ! forget it we don't want the type of bearing anyway !
 
                 ! now send some informations about time and time step
 
@@ -405,13 +405,13 @@ module lub_module
 
                 current%parami_port%vi4(1) = int(nbpas + 1,4)
                 ! pas de reprise
-                current%parami_port%vi4(2) = 0 
+                current%parami_port%vi4(2) = 0
                 current%tfin = tfin
 
 !                print *, "send parami"
 
                 call com_port(current%parami_port, 1, tinit)
-                
+
 
                 ! send first data
                 current%depvit_port%vr(1) = 0.0
@@ -456,7 +456,7 @@ module lub_module
               write(numstr, "(I2)") num
            endif
 
-           
+
 
            gene_name = trim(prefix) // trim(numstr)
 
@@ -468,14 +468,14 @@ module lub_module
         subroutine clean_bearing(mbearing)
             type(bearing), pointer :: mbearing
 
-            if(.not.associated( mbearing )) return 
+            if(.not.associated( mbearing )) return
 
 !            print *, "cleaning bearing num #" , mbearing%num
 
             call delete_port(mbearing%depvit_port)
 
             call delete_port(mbearing%force_port)
-            
+
             call delete_port(mbearing%paramr_port)
             call delete_port(mbearing%parami_port)
 

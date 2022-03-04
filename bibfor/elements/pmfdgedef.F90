@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine pmfdgedef(typfib, b, gg, depl, alicom, nbfibr, nbcarm, &
 !
 ! -------------------------------------------------------------------------------------------------
 !
-!         DEFORMATION GENERALISEE PMF ET DEFORMATION AXIALE DES FIBRES 
+!         DEFORMATION GENERALISEE PMF ET DEFORMATION AXIALE DES FIBRES
 !
 ! -------------------------------------------------------------------------------------------------
 !
@@ -68,7 +68,7 @@ subroutine pmfdgedef(typfib, b, gg, depl, alicom, nbfibr, nbcarm, &
 
     integer :: typfib, nbfibr, nbcarm, nbassepou, nbfipoutre(*), maxfipoutre
     real(kind=8) :: vf(nbcarm, nbfibr), dege(6), b(4), gg, depl(*)
-    real(kind=8) :: alicom, deffib(nbfibr) 
+    real(kind=8) :: alicom, deffib(nbfibr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,14 +111,14 @@ subroutine pmfdgedef(typfib, b, gg, depl, alicom, nbfibr, nbcarm, &
                depl2(12)=depl(12)
            else
                depl2(1)=depl(1) + depl(8) * zj(i) -depl(9)*yj(i)
-               depl2(2)=depl(2) - depl(7) * zj(i) 
-               depl2(3)=depl(3) + depl(7) * yj(i) 
+               depl2(2)=depl(2) - depl(7) * zj(i)
+               depl2(3)=depl(3) + depl(7) * yj(i)
                depl2(4)=depl(4)
                depl2(5)=depl(5)
                depl2(6)=depl(6)
                depl2(7)=depl(10) + depl(17) * zj(i) -depl(18)*yj(i)
-               depl2(8)=depl(11) - depl(16) * zj(i) 
-               depl2(9)=depl(12) + depl(16) * yj(i) 
+               depl2(8)=depl(11) - depl(16) * zj(i)
+               depl2(9)=depl(12) + depl(16) * yj(i)
                depl2(10)=depl(13)
                depl2(11)=depl(14)
                depl2(12)=depl(15)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
 !
 !       TVALE : TABLE DES VALEURS DES CMP DE TOUT LE CHAMP_NO
 !
-!       TNUEQ : TABLE D'INDIRECTION (JACOT) 
+!       TNUEQ : TABLE D'INDIRECTION (JACOT)
 !
 !       B     : .TRUE. LE CHAMP EST PROF_CHNO (FALSE SINON).
 !

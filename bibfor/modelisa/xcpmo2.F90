@@ -47,7 +47,7 @@ subroutine xcpmo2(modx1, modx2)
 ! routine xfem : MODI_MODELE_XFEM
 !
 ! --> traitement particulier realise dans le cas ou le mot-cle
-!     MODELE_THER est present. Copier les champs out de TOPOSE 
+!     MODELE_THER est present. Copier les champs out de TOPOSE
 !     et TOPOFA de modx1 dans modx2 :
 !
 !       '.TOPOSE.PIN'
@@ -64,12 +64,12 @@ subroutine xcpmo2(modx1, modx2)
 !       '.TOPOFAC.OE'
 !
 ! --> il ne suffit pas simplement de copier ces CHAM_ELEM / CHAM_ELNO
-!     car les ligrels modx1//'.MODELE' et modx2//'.MODELE' peuvent 
+!     car les ligrels modx1//'.MODELE' et modx2//'.MODELE' peuvent
 !     etre differents. On procede alors de la maniere suivante :
 !
 !     - les .CELK et .CELD pour modx2 sont crees et remplis par alchml()
 !     - le .CELV pour modx2 est ensuite rempli element par element,
-!       en recherchant pour chaque element de modx2//'.MODELE' sa 
+!       en recherchant pour chaque element de modx2//'.MODELE' sa
 !       position dans modx1//'.MODELE'
 !
 ! ----------------------------------------------------------------------
@@ -240,9 +240,9 @@ subroutine xcpmo2(modx1, modx2)
         call jeveuo(chele1//'.CELD', 'L', vi=celd1)
         call jeveuo(chele1//'.CELV', 'L', jcelv1)
         call jeveuo(ligr1//'.REPE', 'L', vi=repe)
-        
+
         call jelira(chele2//'.CELV', 'TYPELONG', cval=k4typ2)
-        
+
 ! ----------------------------------------------------------------------
 !       boucle sur les grels de ligr2
 ! ----------------------------------------------------------------------
@@ -298,8 +298,8 @@ subroutine xcpmo2(modx1, modx2)
                     enddo
 
 !                   verification longueur locale du champ dans chele2 et chele1
-                    lgel2 = celd2(debgr2+4+4*(iel2-1)+3) 
-                    lgel1 = celd1(debgr1+4+4*(iel1-1)+3) 
+                    lgel2 = celd2(debgr2+4+4*(iel2-1)+3)
+                    lgel1 = celd1(debgr1+4+4*(iel1-1)+3)
                     ASSERT( lgel2 .eq. lgel1)
 
 !                   verification permettant d'exclure les sous-points et VARI_R

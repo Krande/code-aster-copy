@@ -105,22 +105,22 @@ type(THM_DS), intent(inout) :: ds_thm
     nd(:) = 0.d0
     tau1(:) = 0.d0
     tau2(:) = 0.d0
-!   BOUCLE SUR LES FACETTES DE CONTACT 
+!   BOUCLE SUR LES FACETTES DE CONTACT
     do ifa = 1 ,nface
 !      BOUCLE SUR LES POINTS D'INTEGRATION DE LA FACETTE DE CONTACT COURANTE IFA
        do ipgf = 1, npgf
-!         DECALAGE POUR ACCEDER AU POINT DE GAUSS IPGF DE LA FACETTE DE CONTACT 
+!         DECALAGE POUR ACCEDER AU POINT DE GAUSS IPGF DE LA FACETTE DE CONTACT
 !         COURANTE IFA
 !
           isspg = npgf*(ifa-1)+ipgf
 !
-!         CALCUL DU PRODUIT DU JACOBIEN AVEC LE jac D'INTEGRATION, DES FONCTIONS 
-!         DE FORME POUR L'ELEMENT PARENT QUADRATIQUE ET DE LA NORMALE A LA FACETTE 
+!         CALCUL DU PRODUIT DU JACOBIEN AVEC LE jac D'INTEGRATION, DES FONCTIONS
+!         DE FORME POUR L'ELEMENT PARENT QUADRATIQUE ET DE LA NORMALE A LA FACETTE
           if (ndim.eq.2) then
              call xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                          jptint, ifa, cface, nptf, ipgf,&
                          nnop, nnops, igeom, jbasec, g, jac,&
-                         ffp, ffpc, dfbid, nd, tau1, dfdic) 
+                         ffp, ffpc, dfbid, nd, tau1, dfdic)
           elseif (ndim.eq.3) then
              call xjacff(elrefp, elrefc, elc, ndim, fpg,&
                          jptint, ifa, cface, ipgf, nnop,&
@@ -136,7 +136,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 !         CALCUL DU GRADIENT DES FONCTIONS DE FORME DE CONTACT
 !
-          call xmodfc(lact, nlact, nnops, dfdic, dffc, ndim)          
+          call xmodfc(lact, nlact, nnops, dfdic, dffc, ndim)
 !
           if (algocr.eq.3) then
              if ((nint(rela).eq.3).or.(nint(rela).eq.4)) then
@@ -158,17 +158,17 @@ type(THM_DS), intent(inout) :: ds_thm
                              ifiss, nfiss, nfh, ifa, jheafa,&
                              ncomph, contac)
 !
-!                CALCUL DU CHANGEMENT DE BASE POUR LE SAUT DE DEPLACEMENT 
+!                CALCUL DU CHANGEMENT DE BASE POUR LE SAUT DE DEPLACEMENT
 !
-                 call xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad) 
+                 call xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
 !
                  do i = 1, ndim
                     am(i) = -am(i)
                  end do
 !
-!                CALCUL DE LA VARIABLE INTERNE (MASSE VOLUMIQUE DU LIQUIDE 
+!                CALCUL DE LA VARIABLE INTERNE (MASSE VOLUMIQUE DU LIQUIDE
 !                CIRCULANT DANS LA FRACTURE)
-                 job='ACTU_VI'                    
+                 job='ACTU_VI'
                  call xvinhm(ds_thm, zi(jmate), ndim,&
                              cohes, dpf, saut, sautm, nd, lamb,&
                              w11m, rho11m, alpha, job, pf,&
@@ -211,11 +211,11 @@ type(THM_DS), intent(inout) :: ds_thm
                    eps = r8prem()
                    ASSERT((alpha(1)+eps).ge.cohes(1))
                 end do
-             endif                
+             endif
           endif
 !         CHAMPS LIES AU CONTACT INUTILES POUR LE COHESIF
           incoca = 0
-       end do 
-    end do 
-    
-end subroutine 
+       end do
+    end do
+
+end subroutine

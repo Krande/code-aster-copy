@@ -243,7 +243,7 @@ subroutine te0498(option, nomte)
           cosg = 1.d0
           sing = 0.d0
 
-        else 
+        else
 
           cosa = dirz
           sina = sin(acos(cosa))
@@ -252,7 +252,7 @@ subroutine te0498(option, nomte)
 
         endif
 
-! Cette condition est nécéssaire pour DEFI_SOL_EQUI 
+! Cette condition est nécéssaire pour DEFI_SOL_EQUI
 ! qui opère avec l'axe vertical identifié comme l'axe Y
 
         if (dirz .gt. 0) then
@@ -314,7 +314,7 @@ subroutine te0498(option, nomte)
                 ysv=y0+((sina/cosa)*(z1-z0)-sinb2*(z1-z0)*rc1c2/cosa)*sing
               endif
               dist2=xsv*sinb2*cosg+ysv*sinb2*sing+zsv*(-cosb2)
-            endif 
+            endif
           endif
         endif
 !
@@ -500,7 +500,7 @@ subroutine te0498(option, nomte)
           endif
 !
           grad(3,1) = 0.d0
-          grad(3,2) = 0.d0 
+          grad(3,2) = 0.d0
           grad(3,3) = 0.d0
 !
         endif

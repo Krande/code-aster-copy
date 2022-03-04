@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ character(len=19), intent(in) :: cnsper
 ! In  ds_contact       : datastructure for contact management
 ! In  disp_cumu_inst   : displacement increment from beginning of current time
 ! In  disp_iter        : displacement iteration
-! In  cnsinr           : nodal field (CHAM_NO_S) for CONT_NOEU 
+! In  cnsinr           : nodal field (CHAM_NO_S) for CONT_NOEU
 ! In  cnsper           : nodal field (CHAM_NO_S) to save percussions
 !
 ! --------------------------------------------------------------------------------------------------
@@ -338,8 +338,8 @@ character(len=19), intent(in) :: cnsper
             impy = v_cnsper_cnsv(zperc*(node_slav_nume-1)+3) + ry*time_incr
             impz = v_cnsper_cnsv(zperc*(node_slav_nume-1)+4) + rz*time_incr
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+1) = imp
-            v_cnsper_cnsv(zperc*(node_slav_nume-1)+2) = impx        
-            v_cnsper_cnsv(zperc*(node_slav_nume-1)+3) = impy       
+            v_cnsper_cnsv(zperc*(node_slav_nume-1)+2) = impx
+            v_cnsper_cnsv(zperc*(node_slav_nume-1)+3) = impy
             v_cnsper_cnsv(zperc*(node_slav_nume-1)+4) = impz
         endif
 !

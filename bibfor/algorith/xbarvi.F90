@@ -57,7 +57,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
 ! IN  FISS      : NOM DE LA FISSURE EN COURS
 ! IN FACLON     : TOPOFAC.LO SIMPLIFIÉ
 ! IN/OUT AINTER : TOPOFAC.AI SIMPLIFIÉ
-! IN TABAI      : 
+! IN TABAI      :
 !
 !
 !
@@ -71,7 +71,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
     integer :: zxain, ier
     aster_logical :: lmulti
     integer :: igrp, jgrp, ienr, nmaenr, iar
-    integer, pointer :: vtabai(:) => null()    
+    integer, pointer :: vtabai(:) => null()
     integer, pointer :: connex(:) => null()
     integer, pointer :: typmail(:) => null()
     integer, pointer :: nbsp(:) => null()
@@ -104,7 +104,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
         call jeveuo(tabai, 'L', vi=vtabai)
         call jelira(tabai, 'LONMAX', dimai)
         nbedge=dimai/3
-    else 
+    else
         nbedge=0
     endif
 !
@@ -198,11 +198,11 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
                             (vtabai(3*(iar-1) + 1).eq.nglo(2) .and. &
                              vtabai(3*(iar-1) + 2).eq.nglo(1))) then
 !                           'iar' est l'indice de l'arête recherchée. On copie les informations
-                            csv2(iad) = vtabai(3*(iar-1) + 3)  
+                            csv2(iad) = vtabai(3*(iar-1) + 3)
                         endif
                     enddo
 !
-                endif 
+                endif
             enddo
         enddo
     enddo
@@ -211,7 +211,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
 !
     do igrp = 1, 3
         call jeexin(grp(igrp), iret)
-        if (iret .ne. 0) call jedetr(grp(igrp)) 
+        if (iret .ne. 0) call jedetr(grp(igrp))
     enddo
 !
     call jedetr(tabai)

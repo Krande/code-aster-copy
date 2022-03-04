@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ type(Behaviour_ParaExte), pointer :: v_paraExte(:)
         nb_elem_mesh = 1
     endif
 !
-! - Create list of zones: for each zone (in CARTE), how many elements 
+! - Create list of zones: for each zone (in CARTE), how many elements
 !
     call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi = v_zone)
 !
@@ -162,7 +162,7 @@ type(Behaviour_ParaExte), pointer :: v_paraExte(:)
             type_affe = 0
             nb_elem   = 1
             ASSERT(i_zone .eq. 1)
-        endif 
+        endif
         do i_elem = 1, nb_elem
             if (type_affe .eq. 3) then
                 elem_nume = v_compor_lima(posit+i_elem-1)

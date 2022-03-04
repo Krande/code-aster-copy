@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 subroutine dtmprep_noli_rede(sd_dtm_, sd_nl_, icomp)
     implicit none
 ! dtmprep_noli_rede : prepare the calculations for a localized nonlinearity
-!                     of type : RELA_EFFO_DEPL. This routine adds one or more 
+!                     of type : RELA_EFFO_DEPL. This routine adds one or more
 !                     occurences to sd_nl and increments NB_NOLI in sd_dtm
 !
-!             icomp : an integer giving the index of occurence of the 
+!             icomp : an integer giving the index of occurence of the
 !                     nonlinearity to be treated under the factor kw
 !                     COMPORTEMENT of the command DYNA_VIBRA.
 !
@@ -82,7 +82,7 @@ subroutine dtmprep_noli_rede(sd_dtm_, sd_nl_, icomp)
     call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
     i = mxlevel + 1
 !
-!   --- 1 - Basic information about the mesh and numbering 
+!   --- 1 - Basic information about the mesh and numbering
 !
     call dtmget(sd_dtm, _NUM_DDL, kscal=nume)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)

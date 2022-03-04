@@ -18,7 +18,7 @@
 
 subroutine gtvois(v_connex  , v_connex_lcum, list_elem, nb_elem   , elem_nume, elem_code,&
                   v_conx_inv, v_inv_lcum   , nb_neigh , list_neigh)
-                 
+
 !
 implicit none
 !
@@ -67,13 +67,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    list_neigh(1:4) = 0   
+    list_neigh(1:4) = 0
 !
 ! - Get list of nodes of current element
 !
     if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3') then
         nb_node = 2
-        nb_dime = 1 
+        nb_dime = 1
     elseif (elem_code .eq. 'TR3' .or. elem_code .eq. 'TR6') then
         nb_node = 3
         nb_dime = 2
@@ -82,7 +82,7 @@ implicit none
         nb_dime = 2
     else
         ASSERT(.false.)
-    end if   
+    end if
     do i_node = 1, nb_node
         list_node(i_node) = v_connex(v_connex_lcum(elem_nume)-1+i_node)
     end do
@@ -118,21 +118,21 @@ implicit none
                     list_neigh(i_neigh) = list_elem(elem_find(2))
                 else
                     list_neigh(i_neigh) = list_elem(elem_find(1))
-                end if    
+                end if
             end if
         end do
     elseif (nb_dime .eq. 1) then
         do i_neigh = 1,nb_neigh
             nb_find = 0
             node_1  = list_node(i_neigh)
-            node_nbelem_1=v_inv_lcum(node_1+1) - v_inv_lcum(node_1)          
+            node_nbelem_1=v_inv_lcum(node_1+1) - v_inv_lcum(node_1)
             ASSERT(node_nbelem_1 .le. 2)
             if (node_nbelem_1 .eq. 2) then
                 if (list_elem(v_conx_inv(v_inv_lcum(node_1))) .eq. elem_nume) then
                     list_neigh(i_neigh) = list_elem(v_conx_inv(v_inv_lcum(node_1)+1))
                 else
                     list_neigh(i_neigh) = list_elem(v_conx_inv(v_inv_lcum(node_1)))
-                end if    
+                end if
             end if
         end do
     else

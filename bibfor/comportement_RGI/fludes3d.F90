@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ subroutine fludes3d(bw0,pw0,bw,pw,sfld,&
 #include "asterfort/x6x33.h"
 #include "asterfort/b3d_valp33.h"
 #include "asterfort/transpos1.h"
-#include "asterfort/chrep6.h"    
+#include "asterfort/chrep6.h"
 
-      
+
 
 !   surcharge capillaire en fluage de dessication
 
@@ -38,8 +38,8 @@ subroutine fludes3d(bw0,pw0,bw,pw,sfld,&
 
 !     variables locales
       real(kind=8) :: sig133(3,3),sig13(3),vsig133(3,3),vsig133t(3,3),dsw6p(6)
-      integer i 
-      real(kind=8) :: dbwpw 
+      integer i
+      real(kind=8) :: dbwpw
 
       dbwpw=0.d0
 
@@ -47,7 +47,7 @@ subroutine fludes3d(bw0,pw0,bw,pw,sfld,&
       dbwpw=(bw*pw-bw0*pw0)
       if (abs(dbwpw).ge.r8prem()) then
 
-!     complement vecteur des contraintes init si nstrs ne 6      
+!     complement vecteur des contraintes init si nstrs ne 6
       do i=1,nstrs
         sig16(i)=sig0(i)
       end do
@@ -55,12 +55,12 @@ subroutine fludes3d(bw0,pw0,bw,pw,sfld,&
         do i=(nstrs+1),6
             sig16(i)=0.d0
         end do
-      end if      
+      end if
 !     diagonalisationdes contraintes totales
-      call x6x33(sig16,sig133)         
+      call x6x33(sig16,sig133)
 !     call valp3d(sig133,sig13,vsig133)
       call b3d_valp33(sig133,sig13,vsig133)
-!     construction matrice de passage inverse         
+!     construction matrice de passage inverse
       call transpos1(vsig133t,vsig133,3)
 !     passage de la surcharge capillaire dans la base prin actuelle
       call chrep6(dsw6,vsig133,.false._1,dsw6p)
@@ -68,11 +68,10 @@ subroutine fludes3d(bw0,pw0,bw,pw,sfld,&
         dsw6p(i)=dsw6p(i)-dbwpw*dabs(sig13(i)/sfld)
       end do
 !     retour en base fixe
-      call chrep6(dsw6p,vsig133t,.false._1,dsw6)      
+      call chrep6(dsw6p,vsig133t,.false._1,dsw6)
       end if
 end subroutine
 
- 
 
- 
- 
+
+

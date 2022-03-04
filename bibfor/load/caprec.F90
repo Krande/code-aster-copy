@@ -114,7 +114,7 @@ character(len=4), intent(in) :: valeType
     integer, pointer :: rlpo(:) => null()
     character(len=8), pointer :: rltc(:) => null(), rltv(:) => null()
     integer :: nbteli, nbteli_total
-    integer :: pass 
+    integer :: pass
     character(len=4) :: typval, typcoe
     integer :: nbcmp, numa, iivale, nma, icmp, ima, nbma, nbval
     integer :: jsief, nsief
@@ -127,7 +127,7 @@ character(len=4), intent(in) :: valeType
     integer :: jlima0,jlimac,lontav,gd, nedit
     character(len=8) :: ctype
     cbid = dcmplx(0.d0, 0.d0)
-   
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -206,21 +206,21 @@ character(len=4), intent(in) :: valeType
     ASSERT(nbec_sief.le.10)
 !
 !
-! - On procède en deux passes : 
-!       - évaluation de la place nécessaire pour les cartes CMULT et CIMPO 
+! - On procède en deux passes :
+!       - évaluation de la place nécessaire pour les cartes CMULT et CIMPO
 !         et allocation des cartes
-!       - remplissage (appel de aflrch) 
+!       - remplissage (appel de aflrch)
 !
     do pass = 1, 2
 !
-       if ( pass == 1 ) then 
-! Nombre total de termes dans les relations linéaires 
+       if ( pass == 1 ) then
+! Nombre total de termes dans les relations linéaires
        nbteli_total = 0
-! Type des coefficients et du second membre des relations linéaires 
+! Type des coefficients et du second membre des relations linéaires
        typcoe=''
        typval=''
-       else if (pass == 2 ) then 
-          if ( nbteli_total > 0 ) then 
+       else if (pass == 2 ) then
+          if ( nbteli_total > 0 ) then
 ! --- VERIFICATION DE L'ADEQUATION DE LA TAILLE DU LIGREL DE
 ! --- CHARGE A SON AFFECTATION PAR LES MAILLES TARDIVES DUES
 ! --- AUX RELATIONS LINEAIRES
@@ -234,7 +234,7 @@ character(len=4), intent(in) :: valeType
 ! --- LES CREE
               call cragch(nbteli_total, typcoe, typval, loadLigrel)
           endif
-       endif 
+       endif
 !
       do iocc = 1, nliai
 !
@@ -269,7 +269,7 @@ character(len=4), intent(in) :: valeType
                 nbrela = rlnr(1)
                 call jelibe(list_rela_old//'.RLNR')
                 if (nbrela .gt. 0) then
-                    if ( pass == 1 ) then 
+                    if ( pass == 1 ) then
 !
 ! --- NOMBRE TOTAL DE TERMES IMPLIQUES DANS LES RELATIONS
 ! --- DE LA LISTE DE RELATIONS (SERT AU REDIMENSIONNEMENT
@@ -279,24 +279,24 @@ character(len=4), intent(in) :: valeType
                         nbteli=rlpo(nbrela)
                         nbteli_total=nbteli_total+nbteli
                         call jeveuo(list_rela_old//'.RLTC', 'L', vk8=rltc)
-                        if (typcoe == '') then 
+                        if (typcoe == '') then
                             typcoe=rltc(1)(1:4)
-                        else 
+                        else
                             ASSERT(typcoe == rltc(1)(1:4))
                         endif
 !
 ! --- TYPE DES VALEURS AU SECOND MEMBRE DES RELATIONS
                        call jeveuo(list_rela_old//'.RLTV', 'L', vk8=rltv)
-                       if (typval == '') then 
+                       if (typval == '') then
                           typval=rltv(1)(1:4)
                        else
                           ASSERT( typval == rltv(1)(1:4))
-                       endif 
-                    else if ( pass == 2 ) then  
+                       endif
+                    else if ( pass == 2 ) then
                         call copisd(' ', 'V', list_rela_old, list_rela_tmp)
                         l_prealloc=.true.
                         call aflrch(list_rela_tmp, load, 'NLIN', &
-                                    l_preallocz = l_prealloc)                        
+                                    l_preallocz = l_prealloc)
                     endif
                 endif
 !
@@ -401,7 +401,7 @@ character(len=4), intent(in) :: valeType
                                                     cmp_index_drx, cmp_index_dry, cmp_index_drz,&
                                                     list_rela, nom_noeuds_tmp)
                                     else
-                                        
+
                                         call solide_tran('3D',mesh, valeType, dist_mini, nb_node,&
                                                          list_node, list_rela, nom_noeuds_tmp, dim)
                                     endif
@@ -409,7 +409,7 @@ character(len=4), intent(in) :: valeType
                                     ASSERT(.false.)
                                 endif
                                 call jedetr(list_node)
-                                if ( pass == 1 ) then 
+                                if ( pass == 1 ) then
 !
 ! --- NOMBRE TOTAL DE TERMES IMPLIQUES DANS LES RELATIONS
 ! --- DE LA LISTE DE RELATIONS (SERT AU REDIMENSIONNEMENT
@@ -423,30 +423,30 @@ character(len=4), intent(in) :: valeType
                                    call jelibe(list_rela//'.RLPO')
                                    nbteli_total=nbteli_total+nbteli
                                    call jeveuo(list_rela//'.RLTC', 'L', vk8=rltc)
-                                   if (typcoe == '') then 
+                                   if (typcoe == '') then
                                       typcoe=rltc(1)(1:4)
-                                   else 
+                                   else
                                       ASSERT(typcoe == rltc(1)(1:4))
                                    endif
                                    call jelibe(list_rela//'.RLTC')
 !
 ! --- TYPE DES VALEURS AU SECOND MEMBRE DES RELATIONS
                                    call jeveuo(list_rela//'.RLTV', 'L', vk8=rltv)
-                                   if (typval == '') then 
+                                   if (typval == '') then
                                        typval=rltv(1)(1:4)
                                    else
                                        ASSERT( typval == rltv(1)(1:4))
-                                   endif 
+                                   endif
                                    call jelibe(list_rela//'.RLTV')
 !  Destruction de list_rela, à nouveau créée à la seconde passe
                                    call detrsd('LISTE_RELA', list_rela)
 !
-                                else if ( pass == 2 ) then  
+                                else if ( pass == 2 ) then
                                    l_prealloc=.true.
                                    call aflrch(list_rela, load, 'NLIN', elim='NON', &
                                             l_preallocz=l_prealloc)
                                 endif
-                            endif 
+                            endif
 140                         continue
                         enddo
                     endif
@@ -458,16 +458,16 @@ character(len=4), intent(in) :: valeType
         endif
       enddo
 !  Fin de la boucle sur les passes
-    enddo  
+    enddo
 !
-!  Get and combine stresses 
+!  Get and combine stresses
 !
-    do pass = 1, 2 
-      if ( pass == 1) then 
+    do pass = 1, 2
+      if ( pass == 1) then
         sigmcmp(1:3)=  (/ '', '', ''/)
       endif
-!  
-      nma = 0 
+!
+      nma = 0
 !
       do iocc = 1, nliai
 !
@@ -479,29 +479,29 @@ character(len=4), intent(in) :: valeType
               call getvid(keywordFact, 'CABLE_BP', iocc=iocc, scal=cabl_prec, nbret=ibid)
 !
 ! --------- Get and combine stresses
-!         
+!
               call jeveuo( cabl_prec//'.SIGMACABLE.VALE', 'L', vr=sigmvale )
-              call jelira( cabl_prec//'.SIGMACABLE.VALE', 'LONUTI', nbval ) 
+              call jelira( cabl_prec//'.SIGMACABLE.VALE', 'LONUTI', nbval )
               call jeveuo( cabl_prec//'.SIGMACABLE.NUMA', 'L', vi=sigmnuma )
-              call jelira( cabl_prec//'.SIGMACABLE.NUMA', 'LONUTI', nbma ) 
+              call jelira( cabl_prec//'.SIGMACABLE.NUMA', 'LONUTI', nbma )
 
               if ( pass == 1 ) then
                   call jeveuo( cabl_prec//'.SIGMACABLE.NCMP', 'L', vk8=ncmp )
-                  call jelira( cabl_prec//'.SIGMACABLE.NCMP', 'LONUTI', nbcmp ) 
-                  ASSERT(nbcmp==3)  
-                  if ( ALL(sigmcmp == '')) then 
+                  call jelira( cabl_prec//'.SIGMACABLE.NCMP', 'LONUTI', nbcmp )
+                  ASSERT(nbcmp==3)
+                  if ( ALL(sigmcmp == '')) then
                      sigmcmp (1:3) = ncmp(1:3)
                    else
                      ASSERT( ALL(sigmcmp == ncmp) )
                   endif
               endif
-!        
+!
               do ima = 1, nbma
-                  if ( sigmnuma( ima ) == 0 ) then 
+                  if ( sigmnuma( ima ) == 0 ) then
                      exit
                   else
                      nma = nma + 1
-                     if ( pass == 2 ) then 
+                     if ( pass == 2 ) then
                          numa=sigmnuma(ima)
                          iivale = (ima-1)*nbcmp+1
                          do icmp = 1, nbcmp
@@ -519,12 +519,12 @@ character(len=4), intent(in) :: valeType
               enddo
         endif
       enddo
-      if ( pass == 1 ) then 
+      if ( pass == 1 ) then
           if (nma > 0 ) then
       !
-      ! Création de la carte cabl_sigm 
-           
-           call alcart('G', cabl_sigm, mesh , 'SIEF_R') 
+      ! Création de la carte cabl_sigm
+
+           call alcart('G', cabl_sigm, mesh , 'SIEF_R')
            call jelira(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'LONMAX', nsief)
            call jeveuo(jexnom('&CATA.GD.NOMCMP', 'SIEF_R'), 'L', jsief)
            call jeveuo(cabl_sigm//'.NCMP', 'E', jncmp)
@@ -552,14 +552,14 @@ character(len=4), intent(in) :: valeType
            nec = nbec(gd)
 !
           endif
-      else if ( pass == 2 ) then 
+      else if ( pass == 2 ) then
 !  Finalisation de la carte cabl_sigm
-          if ( nma > 0 ) then 
+          if ( nma > 0 ) then
             nedit = zi(jdesc-1+3)
             call jeecra(cabl_sigm//'.LIMA','NUTIOC',ival= nedit)
             call tecart( cabl_sigm )
-          endif 
-      endif 
+          endif
+      endif
       !
    enddo
       !

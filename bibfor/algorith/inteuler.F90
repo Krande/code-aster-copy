@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine inteuler(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 ! inteuler : Integrate from t_i to t_i+1 the differential equations of motion
 !            using EULER integration method.
-! 
+!
 #include "jeveux.h"
 #include "asterfort/dtmacce.h"
 #include "asterfort/intget.h"

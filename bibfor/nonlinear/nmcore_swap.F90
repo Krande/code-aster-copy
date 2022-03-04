@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ implicit none
                  l_resi_test_ = l_maxi)
     call SetResi(ds_conv, type_ = 'RESI_COMP_RELA' , l_resi_test_ = l_comp)
 !
-! - Save events 
+! - Save events
 !
     call nmcrel(sderro, 'RESI_MAXR', l_swap_rela_maxi)
     call nmcrel(sderro, 'RESI_MAXN', l_swap_comp_rela)

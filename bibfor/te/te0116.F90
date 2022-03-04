@@ -55,40 +55,40 @@ implicit none
 !
 ! - Get input fields
 !
-    call jevech('PMATERC', 'L', jmate) 
-    call jevech('PCOMPOR', 'L', jcompo) 
+    call jevech('PMATERC', 'L', jmate)
+    call jevech('PCOMPOR', 'L', jcompo)
     call jevech('PVARIMR', 'L', j_vari_in)
     call jevech('PTEMPSR', 'L', jtime)
-    call jevech('PCARCRI', 'L', jcarcri) 
+    call jevech('PCARCRI', 'L', jcarcri)
 !
     rela_comp = zk16(jcompo-1+1)
     read (zk16(jcompo-1+2),'(I16)') nb_vari
 !
 ! - Get output field
 !
-    call jevech('PVARIPR', 'E', j_vari_out) 
+    call jevech('PVARIPR', 'E', j_vari_out)
 !
     check_rest = zr(jcarcri-1+21)
 !
-    if (check_rest .gt. 0.1) then  
+    if (check_rest .gt. 0.1) then
 !
 !     - Modify internal variables
 !
         ispg    = 1
         vvalres = zr(jtime)
-!   
+!
 !
         if ((rela_comp.eq.'VMIS_ISOT_LINE').or.(rela_comp.eq.'VMIS_ISOT_TRAC'))  then
             do ipg = 1, npg
 !
 !             - Evaluate annealing function
-!             
+!
                 call rcvalb('RIGI', ipg, ispg, '+', zi(jmate),&
                             ' '   , 'REST_ECRO', 1, 'INST', [vvalres],&
                             nb_res_mx, 'FONC_MULT', valres, codret, 2)
-!             
+!
 !             - Annealing function bound's checking
-!             
+!
                 if ((valres(1).gt. 1.d0) .or. (valres(1).lt. 0.d0)) then
                     call utmess('F', 'COMPOR1_91', nr=2,valr=valres(1))
                 endif
@@ -100,13 +100,13 @@ implicit none
             do ipg = 1, npg
 !
 !             - Evaluate annealing function
-!                                   
+!
                 call rcvalb('RIGI', ipg, ispg, '+', zi(jmate),&
                             ' '   , 'REST_ECRO', 1, 'INST', [vvalres],&
                             nb_res_mx, 'FONC_MULT', valres, codret, 2)
-!             
+!
 !             - Annealing function bound's checking
-!             
+!
                 if ((valres(1).gt. 1.d0) .or. (valres(1).lt. 0.d0)) then
                     call utmess('F', 'COMPOR1_91', nr=2,valr=valres(1))
                 endif
@@ -121,13 +121,13 @@ implicit none
             do ipg = 1, npg
 !
 !             - Evaluate annealing function
-!                                   
+!
                 call rcvalb('RIGI', ipg, ispg, '+', zi(jmate),&
                             ' '   , 'REST_ECRO', 1, 'INST', [vvalres],&
                             nb_res_mx, 'FONC_MULT', valres, codret, 2)
-!             
+!
 !             - Annealing function bound's checking
-!             
+!
                 if ((valres(1).gt. 1.d0) .or. (valres(1).lt. 0.d0)) then
                     call utmess('F', 'COMPOR1_91', nr=2,valr=valres(1))
                 endif
@@ -143,13 +143,13 @@ implicit none
             do ipg = 1, npg
 !
 !             - Evaluate annealing function
-!                                   
+!
                 call rcvalb('RIGI', ipg, ispg, '+', zi(jmate),&
                             ' '   , 'REST_ECRO', 1, 'INST', [vvalres],&
                             nb_res_mx, 'FONC_MULT', valres, codret, 2)
-!             
+!
 !             - Annealing function bound's checking
-!             
+!
                 if ((valres(1).gt. 1.d0) .or. (valres(1).lt. 0.d0)) then
                     call utmess('F', 'COMPOR1_91', nr=2,valr=valres(1))
                 endif

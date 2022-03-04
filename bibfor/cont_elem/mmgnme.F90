@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,8 +108,8 @@ real(kind=8), intent(inout) :: matrme(27, 27)
     g(3,3) = h(2,1)*vech2(3)*vech2(3)
 !
     f(1,1) = h(2,2)*vech2(1)*vech2(1)
-    f(1,2) = h(2,2)*vech2(1)*vech2(2) 
-    f(1,3) = h(2,2)*vech2(1)*vech2(3) 
+    f(1,2) = h(2,2)*vech2(1)*vech2(2)
+    f(1,3) = h(2,2)*vech2(1)*vech2(3)
     f(2,1) = h(2,2)*vech2(2)*vech2(1)
     f(2,2) = h(2,2)*vech2(2)*vech2(2)
     f(2,3) = h(2,2)*vech2(2)*vech2(3)
@@ -133,7 +133,7 @@ real(kind=8), intent(inout) :: matrme(27, 27)
         end do
     end do
 !
-    if (supkap .le. (alpha*supmat)) then 
+    if (supkap .le. (alpha*supmat)) then
 ! ----- CONTRIBUTION 1 :
 ! ----- -NORM{[d(delta YPR)/delta XI)*DELTA XI]+[(D(DELTA YPR)/DELTA XI)*delta XI]}
         do i = 1, nnm

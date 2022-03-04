@@ -219,7 +219,7 @@ subroutine behaviourInitPoint(carcri, rela_comp, BEHinteg)
 !
     call getListUserESVA(carcri, BEHinteg%tabcod)
 !
-! - Real zero 
+! - Real zero
 !
     BEHinteg%elem%coor_elga = 0.d0
 !
@@ -664,7 +664,7 @@ subroutine getESVA(fami, kpg, ksp, imate, neps, BEHesva)
         if (iret .ne. 0) then
             BEHesva%anel_curr(k) = 0.d0
         else
-            BEHesva%l_anel       = ASTER_TRUE 
+            BEHesva%l_anel       = ASTER_TRUE
         endif
         BEHesva%anel_incr(k) = BEHesva%anel_curr(k) - BEHesva%anel_prev(k)
     enddo

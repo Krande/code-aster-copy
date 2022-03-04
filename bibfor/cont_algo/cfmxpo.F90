@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ character(len=19), intent(in) :: hval_incr(*)
     l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
     l_cont_lac  = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF') 
+    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! - Time step cut management
 !
@@ -80,7 +80,7 @@ character(len=19), intent(in) :: hval_incr(*)
         else if (l_cont_cont) then
             call mmdeco(ds_contact)
         else if (l_cont_lac) then
-            call mldeco(ds_contact)    
+            call mldeco(ds_contact)
         else if (l_cont_xfem) then
             call xmdeco(ds_contact)
         endif

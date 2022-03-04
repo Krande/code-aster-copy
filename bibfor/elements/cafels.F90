@@ -64,7 +64,7 @@ subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
 !       BRAS DE LEVIER PAR RAPPORT A LA FIBRE SUPERIEURE
     real(kind=8) :: d
 !       HAUTEUR UTILE (H/2 - C)
-    real(kind=8) :: hu 
+    real(kind=8) :: hu
 !       MOMENTS REDUITS
     real(kind=8) :: m_inf, mu
 !       MOMENT REDUIT DU PASSAGE PIVOT A PIVOT B
@@ -120,10 +120,10 @@ subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
 !       PIVOT A : SECTION ENTIEREMENT TENDUE
         dnssup = (m_inf+effn*(d-enrob))/(sigaci*(d-enrob))*unite_m
         dnsinf = (-m_inf)/(sigaci*(d-enrob))*unite_m
-    else 
+    else
         if (mu.lt.mu_ab) then
 !           PIVOT A : SECTION PARTIELLEMENT TENDUE
-            pi = 2.d0*asin(1.d0) 
+            pi = 2.d0*asin(1.d0)
             phi = acos(-1.d0/(1.d0+2.d0*cequi*mu*sigbet/sigaci)**(1.5))
             alpha = 1.d0+2.d0*(1.d0+2.d0*cequi*mu*sigbet/sigaci)**(0.5)*&
                     cos(pi/3.d0+phi/3.d0)
@@ -160,7 +160,7 @@ subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
                 goto 996
             endif
         endif
-        if (effm.ge.0.d0) then 
+        if (effm.ge.0.d0) then
             dnssup = dns
         else
             dnsinf = dns

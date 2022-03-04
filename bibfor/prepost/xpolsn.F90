@@ -146,7 +146,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
 !
 35      continue
 !
-    endif   
+    endif
 !
     call jedema()
 !

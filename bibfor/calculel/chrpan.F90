@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine chrpan(modele, carte, option, chelem)
 !     ------------------------------------------------------------------
 ! IN  : MODELE : MODELE
 ! IN  : CARTE  : CARTE A TRANSFORMER EN CHAM ELEM
-! IN  : OPTION : REPE_TENS ou REPE_GENE 
+! IN  : OPTION : REPE_TENS ou REPE_GENE
 ! OUT : CHELEM : CHAM ELEM AVEC ANGLES EVENTUELLEMENT VARIABLES
 !     ------------------------------------------------------------------
 !
@@ -103,30 +103,30 @@ subroutine chrpan(modele, carte, option, chelem)
             ltout = .true.
             nbma = nbmail
         else
-! Création de l'objet jeveux "mesmai" contenant la liste des numéros 
-! des nbma mailles concernés 
+! Création de l'objet jeveux "mesmai" contenant la liste des numéros
+! des nbma mailles concernés
             call reliem(' ', noma, 'NU_MAILLE', 'AFFE', ioc,&
                         2, motcls, typmcl, mesmai, nbma)
             if (nbma .ne. 0) call jeveuo(mesmai, 'L', jmail)
             ltout = .false.
         endif
 !
-!       Lecture des deux angles nautiques définissant le nouveau repère utilisateur 
+!       Lecture des deux angles nautiques définissant le nouveau repère utilisateur
         ang(1) = 0.d0
         ang(2) = 0.d0
         call getvr8('AFFE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang,&
                     nbret=na)
-!        ou bien d' un vecteur 
+!        ou bien d' un vecteur
         call getvr8('AFFE', 'VECTEUR', iocc=ioc, nbval=3, vect=vect,&
                     nbret=nvec)
         if (nvec .ne. 0) then
-!       à partir duquel on calcule les deux angles nautiques 
+!       à partir duquel on calcule les deux angles nautiques
             call angvx(vect, ang(1), ang(2))
             ang(1)= ang(1) * 180.d0/r8pi()
-            ang(2)= ang(2) * 180.d0/r8pi() 
+            ang(2)= ang(2) * 180.d0/r8pi()
         endif
 !
-!      Lecture de l'axe et de l'origine du repère cylindrique 
+!      Lecture de l'axe et de l'origine du repère cylindrique
 !
         orig(:) = 0.d0
         axez(:) = 0.d0
@@ -146,7 +146,7 @@ subroutine chrpan(modele, carte, option, chelem)
             if (iad1 .lt. 0) then
                 iad1 = -iad1
                 zl(icesl-1+iad1) = .true.
-            endif 
+            endif
             cesv(iad1) = ang(1)
 ! BETA
             call cesexi('C', icesd, icesl, numma, 1,&
@@ -154,7 +154,7 @@ subroutine chrpan(modele, carte, option, chelem)
             if (iad2 .lt. 0) then
                 iad2 = -iad2
                 zl(icesl-1+iad2) = .true.
-            endif 
+            endif
             cesv(iad2) = ang(2)
 ! AXE (3 coordonnées)
             do ii = 1, 3
@@ -163,7 +163,7 @@ subroutine chrpan(modele, carte, option, chelem)
                 if (iad(ii) .lt. 0) then
                     iad(ii) = -iad(ii)
                     zl(icesl-1+iad(ii)) = .true.
-                endif 
+                endif
                 cesv(iad(ii)) = axez(ii)
             enddo
 ! ORIG (3 coordonnées)
@@ -173,7 +173,7 @@ subroutine chrpan(modele, carte, option, chelem)
                 if (iad(ii) .lt. 0) then
                     iad(ii) = -iad(ii)
                     zl( icesl-1+iad(ii) ) = .true.
-                endif 
+                endif
                 cesv(iad(ii)) = orig(ii)
             enddo
 !
@@ -184,9 +184,9 @@ subroutine chrpan(modele, carte, option, chelem)
     end do
 !
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
-! Création d'un cham_elem à partir du champ simple 
-! Attention les modes locaux de CAORIE dans les catalogues de REPE_TENS et 
-! REPE_GENE sont différents 
+! Création d'un cham_elem à partir du champ simple
+! Attention les modes locaux de CAORIE dans les catalogues de REPE_TENS et
+! REPE_GENE sont différents
     call cescel(chelms, ligrmo, option, 'PANGREP', 'NON',&
                 nncp, 'V', chelem, 'F', ibid)
 !

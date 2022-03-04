@@ -101,7 +101,7 @@ subroutine xalg31(ndim, elrefp, it, nnose,&
     a2=nint(ainter(zxain*(2-1)+1))
     a3=nint(ainter(zxain*(3-1)+1))
     noeua=0
-!    RECHERCHE DU NOEUD A 
+!    RECHERCHE DU NOEUD A
     do 205 i = 1, 2
         do 206 j = 1, 2
             if (ar(a2,i) .eq. ar(a3,j)) noeua=ar(a2,i)
@@ -123,7 +123,7 @@ subroutine xalg31(ndim, elrefp, it, nnose,&
                 ib=cnset(nnose*(it-1)+ar(a2,i))
                 im=cnset(nnose*(it-1)+ar(a2,3))
             endif
-320     continue 
+320     continue
         ASSERT((ia*ib) .gt. 0)
         milara(:) = 0.d0
         milarb(:) = 0.d0

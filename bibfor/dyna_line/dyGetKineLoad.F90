@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -115,25 +115,25 @@ integer, optional, intent(in) :: integScheme_
     lKineLoadInDamp = ASTER_FALSE
     matrDampMesh    = ' '
     matrDampNbEqua  = 0
-    call dismoi('EXIS_CINE', matrRigi, 'MATR_ASSE', repk = answer)    
+    call dismoi('EXIS_CINE', matrRigi, 'MATR_ASSE', repk = answer)
     lKineLoadInRigi = answer .eq. 'OUI'
-    call dismoi('NOM_MAILLA', matrRigi, 'MATR_ASSE', repk = matrRigiMesh)    
+    call dismoi('NOM_MAILLA', matrRigi, 'MATR_ASSE', repk = matrRigiMesh)
     call dismoi('NB_EQUA', matrRigi, 'MATR_ASSE', repi = matrRigiNbEqua)
     call dismoi('EXIS_CINE', matrMass, 'MATR_ASSE', repk = answer)
-    lKineLoadInMass = answer .eq. 'OUI' 
-    call dismoi('NOM_MAILLA', matrMass, 'MATR_ASSE', repk = matrMassMesh)    
+    lKineLoadInMass = answer .eq. 'OUI'
+    call dismoi('NOM_MAILLA', matrMass, 'MATR_ASSE', repk = matrMassMesh)
     call dismoi('NB_EQUA', matrMass, 'MATR_ASSE', repi = matrMassNbEqua)
     if (lDamp) then
         call dismoi('EXIS_CINE', matrDamp, 'MATR_ASSE', repk = answer)
         lKineLoadInDamp = answer .eq. 'OUI'
-        call dismoi('NOM_MAILLA', matrDamp, 'MATR_ASSE', repk = matrDampMesh)    
+        call dismoi('NOM_MAILLA', matrDamp, 'MATR_ASSE', repk = matrDampMesh)
         call dismoi('NB_EQUA', matrDamp, 'MATR_ASSE', repi = matrDampNbEqua)
     endif
 
 ! - Some parameters from kineLoad
     kineLoadMesh   = ' '
     if (lKineLoad) then
-        call dismoi('NOM_MAILLA', kineLoadName, 'CHARGE', repk = kineLoadMesh)  
+        call dismoi('NOM_MAILLA', kineLoadName, 'CHARGE', repk = kineLoadMesh)
     endif
 
 ! - Only for Newmark
@@ -150,7 +150,7 @@ integer, optional, intent(in) :: integScheme_
     endif
     if (matrRigiNbEqua .ne. matrMassNbEqua) then
         call utmess('F', 'DYNALINE2_3')
-    endif 
+    endif
     if (lDamp) then
         if (matrRigiMesh .ne. matrDampMesh) then
             call utmess('F', 'DYNALINE2_2')
@@ -202,7 +202,7 @@ integer, optional, intent(in) :: integScheme_
     else
         if (lKineLoad) then
             call utmess('F', 'DYNALINE2_10')
-        endif        
+        endif
     endif
 
 ! - Convert in nodal field

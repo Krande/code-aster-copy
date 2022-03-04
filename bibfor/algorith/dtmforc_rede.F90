@@ -22,7 +22,7 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     implicit none
 !
 !
-! dtmforc_rede : Calculates the force/displacement localized force at 
+! dtmforc_rede : Calculates the force/displacement localized force at
 !                the current step (t)
 !
 !       nl_ind           : nonlinearity index (for sd_nl access)

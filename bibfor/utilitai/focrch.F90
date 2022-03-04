@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -140,17 +140,17 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     if (parax(1:4) .eq. 'INST') then
         jvalx = jinst
         goto 20
-    else if (parax(1:2).eq.'FN' ) then 
+    else if (parax(1:2).eq.'FN' ) then
         jparx = jvint + start
-    else if (parax(1:3).eq.'FT1') then 
+    else if (parax(1:3).eq.'FT1') then
         jparx = jvint + start + 1
-    else if (parax(1:3).eq.'FT2') then 
+    else if (parax(1:3).eq.'FT2') then
         jparx = jvint + start + 2
-    else if (parax(1:2).eq.'VN' ) then 
+    else if (parax(1:2).eq.'VN' ) then
         jparx = jvint + start + 3
-    else if (parax(1:3).eq.'VT1') then 
+    else if (parax(1:3).eq.'VT1') then
         jparx = jvint + start + 4
-    else if (parax(1:3).eq.'VT2') then 
+    else if (parax(1:3).eq.'VT2') then
         jparx = jvint + start + 5
     else if (parax(1:5).eq.'DXLOC') then
         if (ic .eq. 1) then
@@ -173,7 +173,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     else if (parax(1:4).eq.'VINT') then
         read(parax(5:7),'(I2)') iparax
         jparx = jvint + start + iparax - 1
-    else 
+    else
         lg = max(1,lxlgut(parax(1:8)))
         call utmess('A', 'UTILITAI_91', sk=parax(1:lg))
         goto 999
@@ -218,7 +218,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     else if (paray(1:4).eq.'VINT') then
         read(paray(5:7),'(I3)') iparay
         jpary = jvint + start + iparay - 1
-    else 
+    else
         lg = max(1,lxlgut(paray(1:8)))
         call utmess('A', 'UTILITAI_91', sk=paray(1:lg))
         goto 999

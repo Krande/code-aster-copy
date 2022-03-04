@@ -186,7 +186,7 @@ integer, intent(out) :: retcom
                                 dsde(adcome-1+i,addeme+ndim-1+2)+&
                                 dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
             end do
-        endif     
+        endif
     endif
 !
 ! - Add mechanical matrix

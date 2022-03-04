@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -287,7 +287,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     if (iretbb .eq. 0) then
 !       ON TESTE SI ETCC_BETON EST RENSEIGNE
         regl='ETCC'
-        call rccome(beton, 'ETCC_BETON', icodn, k11_ind_nomrc=k11b)    
+        call rccome(beton, 'ETCC_BETON', icodn, k11_ind_nomrc=k11b)
         if (icodn .eq. 0) then
             rcvalk = beton//k11b//'.VALK'
             call jeexin(rcvalk, ireteb)
@@ -333,7 +333,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                             1, 1, iad)
                 beton=cesv(iad)
                 call rccome(beton, 'BPEL_BETON', iret, k11_ind_nomrc=k11a)
-                ASSERT(iret.eq.0)  
+                ASSERT(iret.eq.0)
                 rcvalk = beton//k11a//'.VALK'
                 rcvalr = beton//k11a//'.VALR'
                 call jeveuo(rcvalk, 'L', jvalk)

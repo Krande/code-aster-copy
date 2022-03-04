@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ implicit none
 #include "asterfort/subaco.h"
 #include "asterfort/mmdonf.h"
 #include "asterfort/sumetr.h"
-#include "asterfort/assert.h" 
+#include "asterfort/assert.h"
 !
 integer, intent(in) :: elem_dime
 character(len=8), intent(in) :: elem_code
@@ -50,7 +50,7 @@ real(kind=8), intent(out) :: elem_weight
 !
     integer :: i_gauss, nb_gauss, ino, ndim
     character(len=8) :: gauss_family
-    real(kind=8) :: gauss_weight(12), gauss_coor(12*2) 
+    real(kind=8) :: gauss_weight(12), gauss_coor(12*2)
     real(kind=8) :: dff(2, 9), dxdk, dydk, dzdk
     real(kind=8) :: coptg1, coptg2
     real(kind=8) :: cova(3, 3), metr(2, 2), jacobi
@@ -69,11 +69,11 @@ real(kind=8), intent(out) :: elem_weight
         gauss_family = 'FPG3'
     elseif (elem_code.eq. 'TR6') then
         gauss_family = 'FPG6'
-    elseif (elem_code.eq. 'QU4') then 
-        gauss_family = 'FPG9'  
-    elseif (elem_code.eq. 'QU8') then 
-        gauss_family = 'FPG9'  
-    elseif (elem_code.eq. 'QU9') then 
+    elseif (elem_code.eq. 'QU4') then
+        gauss_family = 'FPG9'
+    elseif (elem_code.eq. 'QU8') then
+        gauss_family = 'FPG9'
+    elseif (elem_code.eq. 'QU9') then
         gauss_family = 'FPG9'
     else
         ASSERT(.false.)

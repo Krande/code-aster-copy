@@ -56,7 +56,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 ! IN  : COMDIR : =.TRUE.  , COMBINAISON DES DIRECTIONS
 !                =.FALSE. , PAS DE COMBINAISON DES DIRECTIONS
 ! IN  : TYPCDI : TYPE DE COMBINAISON DES DIRECTIONS
-! IN  : IORDINIT : NUMERO D'ORDRE AUQUEL ON COMMENCE LE STOCKAGE 
+! IN  : IORDINIT : NUMERO D'ORDRE AUQUEL ON COMMENCE LE STOCKAGE
 !     ------------------------------------------------------------------
     integer :: ibid, i, id, ieq, ier, in, iordr, jdef, jdir, jval, lvale, nbmode
     integer :: nbtrou, jdrr, jdor, jmod, jcar, jchm, tordr(1), icole
@@ -89,14 +89,14 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
         if (comdir) nbmode = nbmode + 3
         call rscrsd('G', resu, concep, nbmode)
     endif
-    
+
     noms2 = nomsy
     if (nomsy(1:4) .eq. 'VITE') noms2 = 'DEPL'
     if (nomsy(1:4) .eq. 'ACCE') noms2 = 'DEPL'
     call rsorac(mome, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 c16b, r8b, k8b, tordr, 1,&
                 nbtrou)
-    iordr=tordr(1)         
+    iordr=tordr(1)
     call rsexch('F', mome, noms2, iordr, moncha,&
                 ier)
 !
@@ -145,7 +145,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
             else if (iordInit .eq. 21) then
                 combi = 'DIR_QS '
             endif
-            
+
             call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
                         0, sjv=jdir, styp=k8b)
             zk16(jdir) = combi//comp(id)
@@ -244,7 +244,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 !        --- PARAMETRE ---
         call rsadpa(resu, 'E', 1, 'NOEUD_CMP', iordr,&
                     0, sjv=jdir, styp=k8b)
-        
+
         if (iordInit .eq. 1) then
             combi = 'COMBI   '
         else if (iordInit .eq. 11) then
@@ -252,13 +252,13 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
         else if (iordInit .eq. 21) then
             combi = 'COMBIQS '
         endif
-        
+
         if (typcdi(1:4) .eq. 'QUAD') then
             zk16(jdir) = combi//comp(4)
         else if (typcdi(1:4).eq.'NEWM') then
             zk16(jdir) = combi//comp(5)
         endif
-        
+
         call rsadpa(resu, 'E', 1, 'TYPE_DEFO', iordr,&
                     0, sjv=jdef, styp=k8b)
         zk16(jdef) = def

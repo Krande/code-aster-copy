@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,29 +51,29 @@ subroutine srimat(mod,imat,nmat,tempd,tempf,tref,materd,materf,&
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: imat,nmat,ndt,ndi,nr,nvi
     real(kind=8) :: materd(nmat,2),materf(nmat,2),tempd,tempf,tref
     character(len=8) :: mod
     character(len=3) :: matcst
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: indal
-    
+
     !!!
     !!! Appel a srlmat pour recup de mater., ndt, ndi, nvi
     !!!
-    
+
     call srlmat(mod,imat,nmat,tempd,tempf,tref,materd,&
                 materf,matcst,ndt,ndi,nvi,indal)
-    
+
     !!!
     !!! L'inconnue du systeme nl est compose des contraintes, dlambda, xip et xivp
     !!!
-    
+
     nr=ndt+3
 
 end subroutine

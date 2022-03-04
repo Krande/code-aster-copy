@@ -140,7 +140,7 @@ character(len=*) :: questi, repkz, nomobz
         repk = 'NON'
         call jeexin(nomob//'.LIEL', iexi)
         if (questi .eq. 'EXI_ELEM') then
-            if (iexi .gt. 0) then 
+            if (iexi .gt. 0) then
                 repk = 'OUI'
                 goto 99
             endif
@@ -184,7 +184,7 @@ character(len=*) :: questi, repkz, nomobz
                     call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', lielSize)
                     elemTypeNume = liel(lielSize)
                     call jenuno(jexnum('&CATA.TE.NOMTE', elemTypeNume), elemTypeName)
-                    
+
                     if (questi .eq. 'EXI_RDM') then
                         if (lteatt('COQUE', 'OUI', typel=elemTypeName)) repk='OUI'
                         if (lteatt('POUTRE', 'OUI', typel=elemTypeName)) repk='OUI'
@@ -308,7 +308,7 @@ character(len=*) :: questi, repkz, nomobz
 
                     else
                         ASSERT(ASTER_FALSE)
-                        
+
                     endif
                 end do
             endif
@@ -331,7 +331,7 @@ character(len=*) :: questi, repkz, nomobz
             end do
             if (ico .eq. nbgrel) repk='OUI'
         endif
-        
+
     elseif ((questi.eq.'NB_SM_MAILLA') .or.&
             (questi.eq.'NB_SS_ACTI') .or.&
             (questi.eq.'NB_NL_MAILLA')) then

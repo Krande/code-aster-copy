@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,10 +62,10 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
 !                        ORTHOTROPE DE LA MEMBRANE (EN RADIAN)
 ! IN  VECTEU       BOOL: 1 SI FULL_MECA OU RAPH_MECA
 ! IN  MATRIC       BOOL: 1 SI FULL_MECA OU RIGI_MECA
-!     
+!
 ! OUT ***          ***
 ! ----------------------------------------------------------------------
-!  
+!
     integer :: i, j, j1, n, m, c, cc, kk, kkd
     real(kind=8) :: b(3, 3, 9), jac
     real(kind=8) :: epsm(3), deps(3), epsth(3), epsthe, sigp(3), tmp, rig(3, 3)
@@ -113,7 +113,7 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
                 sigp(c) = sigp(c) + (epsm(cc)+deps(cc)-epsth(cc)) *rig(cc,c)
             end do
         end do
-        
+
 !
         if ((option .eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
             do c = 1, ncomp
@@ -166,8 +166,8 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
                     end do
                 end do
             end do
-        end do        
+        end do
     endif
-    
-        
+
+
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -142,10 +142,10 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PVARIPR', 'E', ivarip)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
     endif
-! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX    
+! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX
     if (option .eq. 'RIGI_MECA_IMPLEX') then
         call jevech('PCONTXR', 'E', icontx)
-! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM 
+! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM
         call dcopy(npg, zr(icontm), 1, zr(icontx), 1)
     endif
     if (lMatr) then

@@ -21,13 +21,13 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
                   ncompn, jheavn, ifiss, nfiss, nfh,&
                   ifa, jheafa, ncomph)
 !
-    implicit none  
+    implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/hmdeca.h" 
-#include "asterfort/transp.h"   
-#include "asterfort/prmave.h" 
+#include "asterfort/hmdeca.h"
+#include "asterfort/transp.h"
+#include "asterfort/prmave.h"
 #include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
 !
@@ -36,7 +36,7 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
 !
 !
 ! ROUTINE MODELE HM-XFEM
-! 
+!
 ! CALCUL DES SECONDS MEMBRES VECT (EQUILIBRE MECANIQUE + LOI INTERFACE)
 !
 ! ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
     real(kind=8) :: r, p(3,3), ffp(27), jac, ffc(16), ffi
     real(kind=8) :: vect(560), coefi
     aster_logical :: lmultc
-! 
+!
 !   INITIALISATIONS
     lmultc = nfiss.gt.1
     h(:) = 0.d0
@@ -66,7 +66,7 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
       hea_fa(1) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+1)
       hea_fa(2) = zi(jheafa-1+ncomph*(ifiss-1)+2*(ifa-1)+2)
     endif
-! 
+!
 !   CONVERSION DE H EN BASE FIXE : {HFIX} = [P]T {H}
 !
     call transp(p, 3, ndim, ndim, ptr, 3)
@@ -87,7 +87,7 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
                                          - coefi*ffp(i)*hfix(j)*jac
           end do
        end do
-    end do 
+    end do
 !
     do i = 1, nnops
        pli=pla(i)

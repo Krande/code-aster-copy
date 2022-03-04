@@ -67,7 +67,7 @@ subroutine matrix_factor(solveu, base, iret, matpre, matass,&
     character(len=3) :: kxfem
 !----------------------------------------------------------------------
 !
-!    VERIFICATION SI XFEM : 
+!    VERIFICATION SI XFEM :
 !   -------------------------------------
     call xfem_ksolv(solveu, kxfem)
 !

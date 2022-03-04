@@ -45,7 +45,7 @@ type(META_ZircParameters), intent(out) :: metaZircPara
 !
     integer :: kpg, spt
     character(len=8) :: fami, poum
-    integer, parameter :: nb_para_zirc = 12 
+    integer, parameter :: nb_para_zirc = 12
     real(kind=8) :: para_zirc_vale(nb_para_zirc)
     integer :: icodre_zirc(nb_para_zirc)
     character(len=16), parameter :: para_zirc_name(nb_para_zirc) =(/'TDEQ ',&
@@ -60,7 +60,7 @@ type(META_ZircParameters), intent(out) :: metaZircPara
                                                                     'T2R  ',&
                                                                     'AR   ',&
                                                                     'BR   '/)
-!            
+!
 ! --------------------------------------------------------------------------------------------------
 !
     fami = 'FPG1'

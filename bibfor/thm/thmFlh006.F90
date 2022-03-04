@@ -23,7 +23,7 @@ subroutine thmFlh006(ds_thm, lMatr , lSigm , perman, ndim  , j_mater,&
                      addep1, adcp11,&
                      addeme, addete,&
                      t     , p2    ,&
-                     grap1 , & 
+                     grap1 , &
                      rho11 , &
                      satur , dsatur, gravity, tperm,&
                      congep, dsde)
@@ -89,7 +89,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dr11p1    = 0.d0 
+    dr11p1    = 0.d0
     dr11t     = 0.d0
     lambd1(:) = 0.d0
 !

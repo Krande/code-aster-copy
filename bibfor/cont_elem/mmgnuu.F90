@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ real(kind=8), intent(inout) :: matree(27,27), matrmm(27,27)
 ![(D(DELTA YPR)/DELTA XI)*delta XI]}
 !  CONTRIBUTION 2 :  DELTA XI*H*delta XI
 !  CONTRIBUTION 3 : JEU*{[(delta XI*H)+&
-!(NORM.d(delta YPR)/delta XI)]A[(delta XI*H)+(NORM.d(delta YPR)/delta XI)] 
+!(NORM.d(delta YPR)/delta XI)]A[(delta XI*H)+(NORM.d(delta YPR)/delta XI)]
 !
 ! --------------------------------------------------------------------------------------------------
 !

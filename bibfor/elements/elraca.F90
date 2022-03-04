@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
 !
 ! Finite elements management
 !
-! Get list of integration schemes of geometric support 
+! Get list of integration schemes of geometric support
 !
 ! --------------------------------------------------------------------------------------------------
 !

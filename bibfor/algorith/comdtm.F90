@@ -39,7 +39,7 @@ subroutine comdtm()
     sd_dtm = '&&DTM&&&'
 
 !   Verifies and reads all input data about the transient calculation in generalized
-!   coordinates, with possible punctual nonlinearities. All information is saved in 
+!   coordinates, with possible punctual nonlinearities. All information is saved in
 !   the temoporary work data structure : sd_dtm
     call dtmprep(sd_dtm)
 
@@ -48,7 +48,7 @@ subroutine comdtm()
     call dtminfo(sd_dtm)
     ! call utimsd(6, 2, .false._1, .true._1, sd_dtm, 1, 'V')
 
-!   Initializes the calculation, by reading the initial state and calculating 
+!   Initializes the calculation, by reading the initial state and calculating
 !   an initial acceleration if needed
     sd_int = '&&INTEGR'
     call dtminit(sd_dtm, sd_int)

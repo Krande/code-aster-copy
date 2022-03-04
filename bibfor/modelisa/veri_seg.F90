@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno,&
                     nbmaok, x3dca, iproj, n1, n2, numail)
     implicit none
-!  DESCRIPTION : 
-!  -----------   
+!  DESCRIPTION :
+!  -----------
 !       DEFI_CABLE_BP/RELA_CINE/CABLE-COQUE
-!       ANALYSE LA LISTE DES SEGMENTS CANDIDATS A UNE PROJECTION DU 
+!       ANALYSE LA LISTE DES SEGMENTS CANDIDATS A UNE PROJECTION DU
 !       NOEUD DE CABLE
 !
 !       POUR QUE LA PROJECTION SOIT POSSIBLE IL FAUT QU'IL EXISTE UNE
@@ -73,7 +73,7 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno,&
     AS_ALLOCATE(vi=liseg, size=nbmaok)
     nb_seg=0
     iproj = -1
-    
+
     conxma = mailla//'.CONNEX'
     call jeveuo(conxma, 'L', jconx1)
     coorno = mailla//'.COORDO    .VALE'
@@ -138,7 +138,7 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno,&
                 endif
             enddo
 !           le segment est un bord du maillage, on garde les infos en mémoire
-            nb_seg = nb_seg + 1 
+            nb_seg = nb_seg + 1
             liseg(nb_seg) = numail
         endif
     enddo
@@ -149,7 +149,7 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno,&
     do jseg = 1, nb_seg
         numail = liseg(jseg)
         nbcnx = zi(jconx2+numail)-zi(jconx2-1+numail)
-        
+
         do inoma = 1, nbcnx
             noe = zi(jconx1-1+zi(jconx2+numail-1)+inoma-1)
             xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
@@ -162,11 +162,11 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno,&
 !
         excent = normal(1)*(x3dca(1)-xyzma(1,1)) + normal(2)*( x3dca(2)-xyzma(2,1)) &
                          + normal(3)*(x3dca(3)-xyzma(3,1))
-        call dcopy(3, x3dca, 1, x3dp, 1)  
+        call dcopy(3, x3dca, 1, x3dp, 1)
         call daxpy(3, -excent, normal, 1, x3dp, 1)
 !
         call projtq(nbcnx, xyzma, 1, x3dp, abs(excent), &
-                    itria, inoeu, icote, xbar, iproj2)  
+                    itria, inoeu, icote, xbar, iproj2)
         ASSERT(iproj2 .eq.20)
         do i =1,3
             if(xbar(i).lt.0.d0 .and. abs(xbar(i)).le. quart)then
@@ -183,7 +183,7 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno,&
                 endif
             endif
         enddo
-    enddo    
+    enddo
 !
 999 continue
     AS_DEALLOCATE(vi=liseg)

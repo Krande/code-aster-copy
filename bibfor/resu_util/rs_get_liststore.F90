@@ -43,7 +43,7 @@ integer, pointer, optional :: v_list_store_(:)
 ! Warning : if v_list_store is required, don't forget to allocate object before use it
 ! First call: get nb_store
 ! Second call: get list_store
-! 
+!
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result

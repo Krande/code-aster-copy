@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/wkvect.h"
 
     integer           :: ndeg, nnoff, iadrgk, iadgks, iadgki
-    character(len=24) :: chfond, abscur 
+    character(len=24) :: chfond, abscur
 
 !
 ! ......................................................................
@@ -75,7 +75,7 @@ implicit none
     do i = 1, nnoff
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
     end do
-    
+
     xl=zr(iadabs-1+(nnoff-1)+1)
 
 !   CALCUL DE LA MATRICE DU SYSTEME LINÉAIRE [A] {GS} = {GTHI}

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef
 ! In  i_mode_coef      : index of mode to compute coefficients
 !
 ! --------------------------------------------------------------------------------------------------
-!    
+!
     integer :: ifm, niv
     integer :: i_coef
     integer :: nb_mode, nb_coef, nb_matr, nb_equa

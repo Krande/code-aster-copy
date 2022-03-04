@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine te0133(option, nomte)
 !
     interf = lteatt('INTERFACE','OUI')
     if (interf) ndim = ndim + 1
-    
+
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PREPLO1', 'E', jrepl1)
     call jevech('PREPLO2', 'E', jrepl2)

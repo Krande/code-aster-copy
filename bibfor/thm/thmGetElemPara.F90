@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ integer, intent(out) :: nno, nnos
 integer, intent(out) :: npi, npg
 integer, intent(out) :: jv_func, jv_dfunc, jv_poids
 integer, intent(out) :: jv_func2, jv_dfunc2, jv_poids2
-integer, intent(out) :: jv_gano 
+integer, intent(out) :: jv_gano
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,7 +80,7 @@ integer, intent(out) :: jv_gano
 !                    (1) - Flag if physic exists (1 if exists)
 !                    (2) - Number of phases
 !                    (3) - Adress of first component in generalized strain vector
-!                    (4) - Adress of first component in vector of gen. stress for first phase 
+!                    (4) - Adress of first component in vector of gen. stress for first phase
 !                    (5) - Adress of first component in vector of gen. stress for second phase
 !                    (6) - Number of components for strains
 !                    (7) - Number of components for stresses (for each phase)
@@ -88,7 +88,7 @@ integer, intent(out) :: jv_gano
 !                    (1) - Flag if physic exists (1 if exists)
 !                    (2) - Number of phases
 !                    (3) - Adress of first component in generalized strain vector
-!                    (4) - Adress of first component in vector of gen. stress for first phase 
+!                    (4) - Adress of first component in vector of gen. stress for first phase
 !                    (5) - Adress of first component in vector of gen. stress for second phase
 !                    (6) - Number of components for strains
 !                    (7) - Number of components for stresses (for each phase)

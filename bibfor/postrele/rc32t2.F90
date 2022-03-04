@@ -104,14 +104,14 @@ subroutine rc32t2()
     prec(1) = 1.0d-06
     prec(2) = 1.0d-06
     crit(1) = 'RELATIF'
-    crit(2) = 'RELATIF'    
+    crit(2) = 'RELATIF'
 !
     l = 0
 !
     do 10 iocc = 1, nbsitu, 1
 !
-!------ on récupère les numéros des tables sous le mot clé situation 
-!------ puis les tables associées sous RESU_THER, RESU_PRES et RESU_MECA 
+!------ on récupère les numéros des tables sous le mot clé situation
+!------ puis les tables associées sous RESU_THER, RESU_PRES et RESU_MECA
         call getvis('SITUATION', 'NUME_RESU_THER', iocc=iocc, scal=nume1, nbret=n1)
         call getvis('SITUATION', 'NUME_RESU_PRES', iocc=iocc, scal=nume2, nbret=n2)
         call getvis('SITUATION', 'NUME_RESU_MECA', iocc=iocc, scal=nume3, nbret=n3)
@@ -119,7 +119,7 @@ subroutine rc32t2()
         nn= n1+n2+n3
         if((nn+n4) .eq. 0) goto 888
 !
-        if (n1 .ne. 0) then 
+        if (n1 .ne. 0) then
             do 20 ither =1, nbther, 1
                 call getvis('RESU_THER', 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n5)
                 if (numether .eq. nume1) then
@@ -128,7 +128,7 @@ subroutine rc32t2()
 20          continue
         endif
 !
-        if (n2 .ne. 0) then 
+        if (n2 .ne. 0) then
             do 30 ipres =1, nbpres, 1
                 call getvis('RESU_PRES', 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n5)
                 if (numepres .eq. nume2) then
@@ -137,7 +137,7 @@ subroutine rc32t2()
 30          continue
         endif
 !
-        if (n3 .ne. 0) then 
+        if (n3 .ne. 0) then
             do 40 imeca =1, nbmeca, 1
                 call getvis('RESU_MECA', 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n5)
                 if (numemeca .eq. nume3) then
@@ -158,10 +158,10 @@ subroutine rc32t2()
         else
             tableok = tabtemp
         endif
-!  
+!
 ! --------- on verifie l'ordre des noeuds de la table
         call rcveri(tableok)
-! 
+!
 ! --------- on recupere les instants de la table
         call tbexip(tableok, valek(1), exist, k8b)
         if (.not. exist) then
@@ -320,14 +320,14 @@ subroutine rc32t2()
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
             zr(jorig+50*(i-1)+1+12+j) = momen0 - 0.5d0*momen1
-            zr(jorig+50*(i-1)+1+18+j) = momen0pres 
+            zr(jorig+50*(i-1)+1+18+j) = momen0pres
             zr(jorig+50*(i-1)+1+24+j) = momen0ther - 0.5d0*momen1ther
             zr(jorig+50*(i-1)+1+30+j) = momen0pres - 0.5d0*momen1pres
             zr(jorig+50*(i-1)+1+36+j) = momen0mec - 0.5d0*momen1mec
             zr(jorig+50*(i-1)+1+42+j) = - 0.5d0*momen1ther
 !
             zr(jextr+50*(i-1)+1+12+j) = momen0 + 0.5d0*momen1
-            zr(jextr+50*(i-1)+1+18+j) = momen0pres 
+            zr(jextr+50*(i-1)+1+18+j) = momen0pres
             zr(jextr+50*(i-1)+1+24+j) = momen0ther + 0.5d0*momen1ther
             zr(jextr+50*(i-1)+1+30+j) = momen0pres + 0.5d0*momen1pres
             zr(jextr+50*(i-1)+1+36+j) = momen0mec + 0.5d0*momen1mec

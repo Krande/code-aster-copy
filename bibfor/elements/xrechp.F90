@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -250,7 +250,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                                 if (lddl .le. iddlma) then
 !                     ON ECRIT PROPREMENT LES TERMES DE COUPLAGE COMPTE TENU
 !                      * DU SAUT DE DEPLACEMENT SUR LES TERMES HEAVISIDES
-!                      * DE LA CONVENTION D ECRITURE DU SAUT SUR CHAQUE FRONTIERE 
+!                      * DE LA CONVENTION D ECRITURE DU SAUT SUR CHAQUE FRONTIERE
 !                               - FRONTIERE 1 : 1-->2
 !                               - FRONTIERE 2 : 2-->1
                                       if (ilev .eq. 1) then

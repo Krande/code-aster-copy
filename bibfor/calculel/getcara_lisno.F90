@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -140,7 +140,7 @@ subroutine getcara_lisno(noma,nno,lisno,dist_mini,dim,linocara)
     call provec(y2, x3(1:3)-x1(1:3), y3)
     d2=ddot(3,y3,1,y3,1)
     y3(1:3)=y3(1:3)/sqrt(d2)
-    
+
     if (d3_12.lt.1.d-2*d2_1) then
     endif
 !   -- si d3_12 est petit / d2_1, on alarme :
@@ -175,7 +175,7 @@ subroutine getcara_lisno(noma,nno,lisno,dist_mini,dim,linocara)
     nuno=linocara(4)
     x4(1:3)=coor(3*(nuno-1)+1:3*(nuno-1)+3)
     d4_123=sqrt(d21)
-    
+
 !   -- si d4_123 est petit / d2_1, on alarme :
     ratio=d4_123/d2_1
     if (ratio.lt.1.d-2) then

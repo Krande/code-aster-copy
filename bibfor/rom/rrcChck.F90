@@ -84,7 +84,7 @@ type(ROM_DS_ParaRRC), intent(in) :: cmdPara
     mode       = fieldBuild%base%mode
     call romModeChck(mode)
     if (modelDom .ne. mode%model) then
-        call utmess('F', 'ROM16_22') 
+        call utmess('F', 'ROM16_22')
     endif
     modelRefe = mode%model
     do iFieldBuild = 2, nbFieldBuild

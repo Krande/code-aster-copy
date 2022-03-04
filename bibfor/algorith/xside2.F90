@@ -94,7 +94,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3)
     real(kind=8) :: grad(3, 3)
     real(kind=8) :: zero, s, sth, d(4, 4), r, epsth(6)
-    real(kind=8) :: ka, mu 
+    real(kind=8) :: ka, mu
     integer :: nnops
 !
     data    zero / 0d0 /
@@ -169,7 +169,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                          lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl)
         endif
 !
-!       CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE) ET DU DEPLACEMENT 
+!       CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE) ET DU DEPLACEMENT
 !       RADIAL SI AXI (NECESSAIRE POUR LE CALCUL DES DEFORMATIONS EPS)
         r = 0.d0
         if (axi) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -185,7 +185,7 @@ type(NL_DS_InOut), intent(in) :: ds_inout
         call nmcha0('VEASSE', 'CNSSTF', cnsstf, hval_veasse)
         call nmcha0('VEASSE', 'CNSSTR', cnsstr, hval_veasse)
 
-        
+
 ! ----- Set in the datastructure ds_system
         ds_system%veinte   = vefint
         ds_system%cnfint   = cnfint

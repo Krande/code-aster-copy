@@ -27,10 +27,10 @@ subroutine xvinhm(ds_thm, jmate, ndim,&
 use THM_type
 !
 implicit none
-!    
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterc/r8prem.h" 
+#include "asterc/r8prem.h"
 #include "asterfort/lceitc.h"
 #include "asterfort/lceiou.h"
 !
@@ -72,7 +72,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
     rho11 = vim(1) + rho110
     rho11m = vim(1) + rho110
-! 
+!
     w11 = vim(2)
     w11m = vim(2)
 !
@@ -102,9 +102,9 @@ type(THM_DS), intent(inout) :: ds_thm
     endif
 !
     if (option.eq.'FULL_MECA') then
-!   CALCUL DE LA VARIABLE INTERNE : MASSE VOLUMIQUE 
+!   CALCUL DE LA VARIABLE INTERNE : MASSE VOLUMIQUE
        varbio = dpf*cliq
-       if (varbio.gt.5.d0) then 
+       if (varbio.gt.5.d0) then
           ASSERT(.false.)
        endif
 !
@@ -112,15 +112,15 @@ type(THM_DS), intent(inout) :: ds_thm
        rho11 = vip(1) + rho110
        rho11m = vim(1) + rho110
 !
-!   CALCUL DE LA VARIABLE INTERNE : APPORTS MASSIQUES 
+!   CALCUL DE LA VARIABLE INTERNE : APPORTS MASSIQUES
 !   (SEULEMENT UTILE POUR LE CAS DU SECOND-MEMBRE)
 !
-       psp = 0.d0 
+       psp = 0.d0
        psm = 0.d0
        do i = 1, ndim
           psp = psp - saut(i)*nd(i)
           psm = psm - sautm(i)*nd(i)
-       end do 
+       end do
 !
        vip(2) = rho11*psp - rho11m*psm
        w11 = vip(2) + w11m
@@ -133,7 +133,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
     if (job.eq.'ACTU_VI') then
        alpha(3) = 1.d0
-    else if (job.eq.'MATRICE') then 
+    else if (job.eq.'MATRICE') then
        alpha(3) = 2.d0
-    endif        
+    endif
 end subroutine

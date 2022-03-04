@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,13 +44,13 @@ subroutine mbvfie(nno,kpg,dff,sigpk2,ipoids,h,covadef,vecfie)
 ! ----------------------------------------------------------------------
 !
     integer :: a, p, i, alpha, gamma
-    
+
     call r8inir(3*nno, 0.d0, vecfie, 1)
-    
+
     do a = 1, nno
         do p = 1, 3
             i = 3*(a-1) + p
-            
+
             do alpha = 1, 2
                 do gamma = 1, 2
                     vecfie(i) = vecfie(i) + dff(alpha,a)*covadef(p,gamma)*&
@@ -59,5 +59,5 @@ subroutine mbvfie(nno,kpg,dff,sigpk2,ipoids,h,covadef,vecfie)
             end do
         end do
     end do
-    
+
 end subroutine

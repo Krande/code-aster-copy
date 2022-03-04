@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: hval_algo(*)
-    type(NL_DS_Contact), intent(inout) :: ds_contact   
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -121,7 +121,7 @@ implicit none
 ! - Find maximas
 !
     call cnomax(sdcont_rea1, nb_cmp_disp, list_cmp_disp, rea1_maxi, rea1_node)
-    call cnomax(sdcont_rea2, nb_cmp_disp, list_cmp_disp, rea2_maxi, rea2_node) 
+    call cnomax(sdcont_rea2, nb_cmp_disp, list_cmp_disp, rea2_maxi, rea2_node)
 !
 ! - Update maximum
 !
@@ -147,7 +147,7 @@ implicit none
     else
         loop_geom_vale = rea1_maxi/rea2_maxi
     endif
-    
+
 !
 ! - Get name of node
 !
@@ -188,7 +188,7 @@ implicit none
     endif
 !
 ! - For REAC_GEOM = 'AUTO'
-!    
+!
     if (l_geom_auto) then
         if (loop_geom_vale .lt. geom_epsi_maxi) then
             call mmbouc(ds_contact, 'Geom', 'Set_Convergence')
@@ -197,7 +197,7 @@ implicit none
             if (loop_geom_count .eq. iter_geom_maxi) then
                 call cfverl(ds_contact)
                 call mmbouc(ds_contact, 'Geom', 'Set_Error')
-            endif  
+            endif
         endif
     endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -130,42 +130,42 @@ implicit none
 ! ----- CALCUL RESIDU DE GEOMETRIE
 !
         call mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
-        if (l_cont_cont) then 
+        if (l_cont_cont) then
             ngeom = ds_contact%crit_geom_noeu
             vgeom = ds_contact%critere_geom
         endif
     endif
-    
-    if (l_exis_pena) then 
+
+    if (l_exis_pena) then
         call mm_pene_loop(ds_contact)
         vpene = ds_contact%calculated_penetration
         if (lnewtc) then
         !   Cas de newton generalise pour le contact
         !   Cas de point fixe pour la géométrie
         !   on remet a jour vpene a chaque iteration mais Pas de verif de conv pene
-            if (.not. lnewtg) then 
+            if (.not. lnewtg) then
                 call mmbouc(ds_contact, 'Geom', 'Is_Divergence',loop_state_=loop_cont_diveg)
-                if (loop_cont_diveg) then 
+                if (loop_cont_diveg) then
                     ds_contact%continue_pene = 4.0
-                endif 
-            else 
-                ds_contact%continue_pene = 0.0            
+                endif
+            else
+                ds_contact%continue_pene = 0.0
             endif
-        else 
+        else
         !   Cas de point fixe pour le contact
         !   on remet a jour vpene a chaque iteration mais Pas de verif de conv pene
             call mmbouc(ds_contact, 'Cont', 'Is_Divergence',loop_state_=loop_cont_divec)
-            if (loop_cont_divec) then 
+            if (loop_cont_divec) then
                 ds_contact%continue_pene = 3.0
             else
                 call mmbouc(ds_contact, 'Geom', 'Is_Divergence',loop_state_=loop_cont_diveg)
-                if (loop_cont_diveg) then 
+                if (loop_cont_diveg) then
                     ds_contact%continue_pene = 4.0
-                else 
+                else
                     ds_contact%continue_pene = 0.0
-                endif                            
+                endif
             endif
-            
+
         endif
     endif
 

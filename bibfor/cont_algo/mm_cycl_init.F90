@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,13 +114,13 @@ implicit none
 ! --------- Loop on points
 !
             do slave_pt_index = 1, slave_pt_nb
-                do i_cyc =1,60 
+                do i_cyc =1,60
                     p_sdcont_cychis(n_cychis*(i_cont_poin-1) + i_cyc) = 0
                 enddo
-                coef_init = p_sdcont_cyccoe(6*(zone_index-1)+1) 
+                coef_init = p_sdcont_cyccoe(6*(zone_index-1)+1)
                 if (nint(ds_contact%update_init_coefficient) .eq. 1) &
                     coef_init = ds_contact%estimated_coefficient
-                do i_cyc =1,4 
+                do i_cyc =1,4
                     p_sdcont_cyceta(4*(i_cont_poin-1) + i_cyc) = -1
                 enddo
                 p_sdcont_cychis(n_cychis*(i_cont_poin-1)+2) = coef_init

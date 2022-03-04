@@ -34,7 +34,7 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
 ! OUT : D2SHDS(6,6)    :  DERIVEE 2NDE SII*H PAR RAPPORT A SIGMA (NDT X NDT)
 !     : IRET           :  CODE RETOUR
 ! ===================================================================================
-    
+
     implicit   none
 
 #include "asterfort/lcprte.h"
@@ -43,53 +43,53 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nmat
     real(kind=8) :: materf(nmat,2),varh(2),d2shds(6,6),dhds(6),devsig(6),rcos3t
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: ndi,ndt,i,j
     real(kind=8) :: sii,dikdjl(6,6),dijdkl(6,6)
     real(kind=8) :: dsiids(6),dsdsig(6,6),mat1(6,6),d2hds2(6,6)
     real(kind=8) :: mat2(6,6),mat3(6,6),dhtds(6),mat4(6,6),mat5(6,6)
     real(kind=8) :: d2hdsi(6,6)
     common /tdim/ ndt,ndi
-    
+
     !!!
     !!! Construction de sii
     !!!
-    
+
     sii=sqrt(dot_product(devsig(1:ndt), devsig(1:ndt)))
-    
+
     !!!
     !!! initialisation matrice d_ik x d_jl
     !!!
-    
+
     dikdjl(:,:) = 0.d0
-    
+
     do i=1,ndt
         dikdjl(i,i)=1.d0
     end do
-    
+
     !!!
     !!! initialisation matrice d_ij x d_kl
     !!!
-    
+
     dijdkl(:,:) = 0.d0
-    
+
     do i=1,ndi
         do j=1,ndi
             dijdkl(i,j)=1.d0/3.d0
         end do
     end do
-    
+
     !!!
     !!! Calcul de d(sii)/d(sigma)
     !!!
-    
+
     do i=1,ndt
         dsiids(i)=0.d0
         do j=1,ndt
@@ -97,22 +97,22 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
             dsiids(i)=dsiids(i)+devsig(j)*dsdsig(j,i)/sii
         end do
     end do
-    
+
     !!! Calcul de dh/ds*dsii/dsig = mat1
     call lcprte(dhds,dsiids,mat1)
-    
+
     !!! Calcul de d2h/ds2
     call srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
-    
+
     !!! Calcul de d2h/ds2
     d2hdsi(1:ndt,1:ndt) = matmul(d2hds2(1:ndt,1:ndt), dsdsig(1:ndt,1:ndt))
-    
+
     !!! Construction de sii*d2h/dsigma = mat2
     mat2(1:ndt,1:ndt) = sii * d2hdsi(1:ndt,1:ndt)
-    
+
     !!! mat2 + mat1 = mat3
     mat3(1:ndt,1:ndt) = mat1(1:ndt,1:ndt) + mat2(1:ndt,1:ndt)
-    
+
     !!! mat2 = coefh*mat3
     mat2(1:ndt,1:ndt) =mat3(1:ndt,1:ndt)
     
@@ -125,24 +125,24 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
             dhtds(i)=dhtds(i)+dhds(j)*mat1(j,i)/sii
         end do
     end do
-    
+
     !!! Construction de mat1 = s x dh/dsigma
     call lcprte(devsig,dhtds,mat1)
-    
+
     !!! Calcul de mat3 ) h/sii*(ds/dsig)
     mat3(1:ndt,1:ndt) = (varh(2)/sii) * dsdsig(1:ndt,1:ndt)
-    
+
     !!! Calcul de mat5 = h*s*(dsii/ds)/sii**2
     call lcprte(devsig,dsiids,mat4)
     mat5(1:ndt,1:ndt) = (varh(2)/sii**2.d0) * mat4(1:ndt,1:ndt)
-    
+
     !!! mat4 = mat2+mat1+mat3-mat5
     do i=1,ndt
         do j=1,ndt
             mat4(i,j)=mat2(i,j)+mat1(i,j)+mat3(i,j)-mat5(i,j)
         end do
     end do
-    
+
     !!! d2sh/ds = ds/dsig * mat4
     d2shds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), mat4(1:ndt,1:ndt))
 

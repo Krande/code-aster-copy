@@ -123,27 +123,27 @@ type(THM_DS), intent(inout) :: ds_thm
     ffc(:) = 0.d0
     ffp2(:) = 0.d0
     vihydr(:) = 0.d0
-!    
-!   BOUCLE SUR LES FACETTES DE CONTACT 
+!
+!   BOUCLE SUR LES FACETTES DE CONTACT
     do ifa = 1 ,nface
-    
+
 !      BOUCLE SUR LES POINTS D'INTEGRATION DE LA FACETTE DE CONTACT COURANTE IFA
        do ipgf = 1, npgf
-       
-!         DECALAGE POUR ACCEDER AU POINT DE GAUSS IPGF DE LA FACETTE DE CONTACT 
+
+!         DECALAGE POUR ACCEDER AU POINT DE GAUSS IPGF DE LA FACETTE DE CONTACT
 !         COURANTE IFA
-        
+
           isspg = npgf*(ifa-1)+ipgf
-          
+
 !          POUR L'ACTUALISATION DES VARIABLES INTERNES
-          if (contac.ne.2) then 
+          if (contac.ne.2) then
              do i = 1, ncompv
                 cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
              end do
           endif
 !
-!         CALCUL DU PRODUIT DU JACOBIEN AVEC LE jac D'INTEGRATION, DES FONCTIONS 
-!         DE FORME POUR L'ELEMENT PARENT QUADRATIQUE ET DE LA NORMALE A LA FACETTE 
+!         CALCUL DU PRODUIT DU JACOBIEN AVEC LE jac D'INTEGRATION, DES FONCTIONS
+!         DE FORME POUR L'ELEMENT PARENT QUADRATIQUE ET DE LA NORMALE A LA FACETTE
           if (ndim.eq.2) then
              call xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                          jptint, ifa, cface, nptf, ipgf,&
@@ -163,10 +163,10 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 !         CALCUL DU GRADIENT DES FONCTIONS DE FORME DE CONTACT
 !
-          call xmodfc(lact, nlact, nnops, dfdic, dffc, ndim)          
+          call xmodfc(lact, nlact, nnops, dfdic, dffc, ndim)
 !
           if (algocr.eq.3) then
-             if ((nint(rela) .eq. 3).or.(nint(rela) .eq. 4)) then 
+             if ((nint(rela) .eq. 3).or.(nint(rela) .eq. 4)) then
 !
                   nvec=2
                   job='VECTEUR'
@@ -180,15 +180,15 @@ type(THM_DS), intent(inout) :: ds_thm
                               ifiss, nfiss, nfh, ifa, jheafa,&
                               ncomph, contac)
 !
-!                CALCUL DU CHANGEMENT DE BASE POUR LE SAUT DE DEPLACEMENT 
+!                CALCUL DU CHANGEMENT DE BASE POUR LE SAUT DE DEPLACEMENT
 !
-                 call xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad) 
+                 call xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
 !
                  do i = 1, ndim
                     am(i) = -am(i)
                  end do
 !
-!                CALCUL DE LA VARIABLE INTERNE (MASSE VOLUMIQUE DU LIQUIDE 
+!                CALCUL DE LA VARIABLE INTERNE (MASSE VOLUMIQUE DU LIQUIDE
 !                CIRCULANT DANS LA FRACTURE)
 !
                  job='VECTEUR'
@@ -276,7 +276,7 @@ type(THM_DS), intent(inout) :: ds_thm
                 end do
 !
 ! --- CALCUL DES MATRICES HYDROS
-!              
+!
 !
                 call xvecha(ds_thm, ndim, pla, nnops, saut,&
                             sautm, nd, ffc, w11, w11m, jac,&
@@ -292,8 +292,8 @@ type(THM_DS), intent(inout) :: ds_thm
                 call xvechc(nnops, pla, ffc, pinf,&
                             pf, psup, jac, vect)
 !
-             endif   
+             endif
           endif
-       end do 
-    end do 
-end subroutine 
+       end do
+    end do
+end subroutine

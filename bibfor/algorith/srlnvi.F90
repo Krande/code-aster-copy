@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,46 +38,46 @@ subroutine srlnvi(mod, ndt, ndi, nvi)
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: ndt, ndi, nvi
     character(len=8) :: mod
-    
+
     !!!
     !!! Modelisation 3d
     !!!
-    
+
     if (mod(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-    
+
     !!!
     !!! Modelisation d_plan, axi ou c_plan
     !!!
-    
+
     else if (mod(1:6).eq.'D_PLAN'.or. mod(1:4).eq.'AXIS' .or.&
              mod(1:6).eq.'C_PLAN' ) then
         ndt = 4
         ndi = 3
-    
+
     !!!
     !!! Modelisation 1d non autorisee
     !!!
-    
+
     else if (mod(1:2).eq.'1D') then
         call utmess('F', 'ALGORITH4_45')
-    
+
     !!!
     !!! Modelisation inconnue
     !!!
-    
+
     else
         call utmess('F', 'ALGORITH2_20')
     endif
-    
+
     !!!
     !!! Nombre de variables internes
     !!!
-    
+
     nvi = 12
 
 end subroutine

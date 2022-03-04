@@ -95,7 +95,7 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if ((loop_exte .ge. 1) .and. (loop_exte .le. 3)) then   
+    if ((loop_exte .ge. 1) .and. (loop_exte .le. 3)) then
 !
 ! ----- State of Newton loop
 !
@@ -185,10 +185,10 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         if (.not.loop_cont_conv .and. loop_exte .eq. 1) then
             call mmbouc(ds_contact, 'Cont', 'Incr_Counter')
         endif
-        if (.not.loop_fric_conv .and. loop_exte .eq. 2) then 
+        if (.not.loop_fric_conv .and. loop_exte .eq. 2) then
             call mmbouc(ds_contact, 'Fric', 'Incr_Counter')
         endif
-        if (.not.loop_geom_conv .and. loop_exte .eq. 3) then 
+        if (.not.loop_geom_conv .and. loop_exte .eq. 3) then
             call mmbouc(ds_contact, 'Geom', 'Incr_Counter')
         endif
 !

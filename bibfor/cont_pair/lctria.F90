@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ implicit none
 !
 ! - Cut
 !
-    if (nb_tria.eq.1) then    
+    if (nb_tria.eq.1) then
         tria_node(1,1) =1
         tria_node(1,2) =2
         tria_node(1,3) =3
@@ -110,7 +110,7 @@ implicit none
         tria_node(2,3) =5
         tria_node(3,1) =5
         tria_node(3,2) =6
-        tria_node(3,3) =7  
+        tria_node(3,3) =7
         tria_node(4,1) =7
         tria_node(4,2) =8
         tria_node(4,3) =1

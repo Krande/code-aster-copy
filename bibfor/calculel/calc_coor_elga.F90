@@ -30,14 +30,14 @@ character(len=19), intent(in) :: chgaus
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Compute <CARTE> with informations on Gauss points 
+! Compute <CARTE> with informations on Gauss points
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model      : model
 ! In  ligrel     : list of elements where computing
 ! In  chgeom     : name of <CARTE> for geometry
-! In  chgaus     : name of <CARTE> with informations on Gauss points 
+! In  chgaus     : name of <CARTE> with informations on Gauss points
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@ character(len=19), intent(in) :: chgaus
     lpaout(1) = 'PCOORPG'
     lchout(1) = chgaus
     option    = 'COOR_ELGA'
- 
+
     call calcul('S', option, ligrel, nbchin, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')

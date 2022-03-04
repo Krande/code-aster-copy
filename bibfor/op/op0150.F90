@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -180,7 +180,7 @@ implicit none
 !
     call resuReadCheckFields(resultName, resultType, fieldNb, fieldList)
 !
-! - Read 
+! - Read
 !
     if (fileFormat .eq. 'IDEAS') then
         call lridea(fileUnit   ,&
@@ -227,7 +227,7 @@ implicit none
     if (resultType .eq. 'EVOL_NOLI') then
         call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu)
     endif
-! 
+!
 ! - Debug
 !
     if (niv .ge. 2) then

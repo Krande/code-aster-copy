@@ -73,7 +73,7 @@ integer, intent(out) :: istrainexte
             else
                 ASSERT(ASTER_FALSE)
             endif
-        endif  
+        endif
     endif
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ implicit none
     endif
 !
 ! - Access to objects
-!  
+!
     call jelira(result_k19//'.LTNT', 'LONMAX', nb_table_maxi)
     call jelira(result_k19//'.LTNT', 'LONUTI', nb_table_curr)
     call jeveuo(result_k19//'.LTNT', 'L', vk16 = v_tabl_ltnt)

@@ -72,7 +72,7 @@ character(len=19), intent(in) :: compor_info
 
     c_pmf = 0
     do i_zone = 1, nb_zone
-        
+
         nb_elem_zone = v_zone(i_zone)
 !
         if (nb_elem_zone .ne. 0) then
@@ -122,7 +122,7 @@ character(len=19), intent(in) :: compor_info
                     call utmess('I', 'COMPOR4_9', si = nb_vari)
                     call utmess('I', 'COMPOR4_16')
                 else if (vari_excl.eq.'&&MULT_PMF') then
-                    c_pmf = c_pmf + 1 
+                    c_pmf = c_pmf + 1
                 else
                     ASSERT(ASTER_FALSE)
                 endif

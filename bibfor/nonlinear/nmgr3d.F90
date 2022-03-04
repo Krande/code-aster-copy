@@ -117,7 +117,7 @@ integer, intent(inout) :: codret
     real(kind=8) :: r, sigmPost(6), sigmPrep(6), poids, maxeps
     real(kind=8) :: angl_naut(3)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    real(kind=8) :: dfdi(nno, 3), pff(6,nno,nno), def(6,nno,3) 
+    real(kind=8) :: dfdi(nno, 3), pff(6,nno,nno), def(6,nno,3)
     character(len=16) :: rela_comp
     type(Behaviour_Integ) :: BEHinteg
 !

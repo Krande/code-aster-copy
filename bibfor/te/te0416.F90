@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,11 +47,11 @@ subroutine te0416(option, nomte)
         call fornpd(option, nomte)
         goto 9999
     else
-    
+
         call jevech('PCOMPOR', 'L', icompo)
-        
+
         if (zk16 ( icompo + 2 ) .eq. 'GROT_GDEP') then
-        
+
 !           DEFORMATION DE GREEN
 
             call forngr(option, nomte)

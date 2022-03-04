@@ -29,7 +29,7 @@ subroutine comthm_vf(ds_thm   ,&
                      adcome   , adcote   , adcp11, adcp12, adcp21, adcp22,&
                      addeme   , addete   , addep1, addep2,&
                      carcri   ,&
-                     defgem   , defgep   ,& 
+                     defgem   , defgep   ,&
                      congem   , congep   ,&
                      vintm    , vintp    ,&
                      time_prev, time_curr,&
@@ -205,7 +205,7 @@ real(kind=8), intent(inout) :: valfac(maxfa, 14, 6)
                 phi     , rho11    , satur , nl,&
                 pad     , pvp      , h11   , h12   ,&
                 congem  , congep   ,&
-                vintm   , vintp    , dsde  ,& 
+                vintm   , vintp    , dsde  ,&
                 retcom)
     if (retcom .ne. 0) then
         goto 99
@@ -299,7 +299,7 @@ real(kind=8), intent(inout) :: valfac(maxfa, 14, 6)
                        option, j_mater, ifa,&
                        temp  , p1     , p2 , pvp, pad,&
                        rho11 , h11    , h12,&
-                       satur , dsatur , & 
+                       satur , dsatur , &
                        valfac, valcen)
         if (retcom .ne. 0) then
             goto 99

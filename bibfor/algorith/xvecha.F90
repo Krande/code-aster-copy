@@ -35,7 +35,7 @@ implicit none
 !
 !
 ! ROUTINE MODELE HM-XFEM
-! 
+!
 ! CALCUL DES SECONDS MEMBRES VECT (CONSERVATION DE LA MASSE FLUIDE FRACTURE)
 !
 ! ----------------------------------------------------------------------
@@ -54,10 +54,10 @@ type(THM_DS), intent(inout) :: ds_thm
     mu     = ds_thm%ds_material%liquid%visc
     ps = 0.d0
     psm = 0.d0
-    do k = 1, ndim 
+    do k = 1, ndim
        ps = ps - saut(k)*nd(k)
        psm = psm - sautm(k)*nd(k)
-    end do 
+    end do
 !
     do i = 1, nnops
        ffi = ffc(i)
@@ -71,7 +71,7 @@ type(THM_DS), intent(inout) :: ds_thm
        vect(pli) = vect(pli) - ffi*q2*dt*ta*jac -&
                                ffi*q2m*dt*ta1*jac
 !
-    end do  
+    end do
 !
     do i = 1, nnops
        pli = pla(i)

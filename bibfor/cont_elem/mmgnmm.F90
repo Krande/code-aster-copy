@@ -150,12 +150,12 @@ real(kind=8), intent(inout) :: matrmm(27, 27)
   (dlagrc-coefac*jeu)*wpg*jacobi*mprojn(l,k)*jeu * &
                   ((2.d0*dffm(1,i)*kappa(1,1)*dffm(1,j))  + &
                   (1.d0*dffm(2,i)*kappa(2,1)*dffm(1,j))   + &
-                  (1.d0*dffm(1,i)*kappa(1,2)*dffm(2,j))   + &      
+                  (1.d0*dffm(1,i)*kappa(1,2)*dffm(2,j))   + &
                   (2.d0*dffm(2,i)*kappa(2,2)*dffm(2,j)))  + &
   (dlagrc-coefac*jeu)*wpg*jacobi*ffm(i) * &
   (mprnt1(l,k)*(kappa(1,1)*dffm(1,j)+kappa(1,2)*dffm(2,j))   + &
   mprnt2(l,k)*(kappa(2,1)*dffm(1,j)+kappa(2,2)*dffm(2,j))   + &
-  mprt1n(l,k)*(kappa(1,1)*dffm(1,j)+kappa(1,2)*dffm(2,j))   + &                   
+  mprt1n(l,k)*(kappa(1,1)*dffm(1,j)+kappa(1,2)*dffm(2,j))   + &
   mprt2n(l,k)*(kappa(2,1)*dffm(1,j)+kappa(2,2)*dffm(2,j)))
                     end do
                 end do

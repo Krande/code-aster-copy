@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ type(Behaviour_PrepPara), intent(out) :: ds_compor_prep
 !
     ds_compor_prep%nb_comp = nbocc_compor
 !
-! - Allocate comportment informations objects 
+! - Allocate comportment informations objects
 !
     allocate(ds_compor_prep%v_para(nb_info_comp))
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ implicit none
 !
 ! In  newgeo           : name of field for geometry update from initial coordinates of nodes
 ! In  node_nume        : index of node in mesh datastructure
-! Out node_coor        : coordinates of node 
+! Out node_coor        : coordinates of node
 !
 ! --------------------------------------------------------------------------------------------------
 !

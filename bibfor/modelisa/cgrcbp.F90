@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
 !
 !      CETTE FONCTIONNALITE PERMET DE CREER POUR CHAQUE TRIPLET DE
 !      LIAISONS (3 DIRECTIONS DE L'ESPACE) UN GROUP_NO CONSTITUE DES
-!      NOEUDS IMPLIQUES DANS CE DERNIER. CELA EST FAIT A PARTIR DE LA 
+!      NOEUDS IMPLIQUES DANS CE DERNIER. CELA EST FAIT A PARTIR DE LA
 !      LISTE DE RELATION CONSTRUITE PAR DEFI_CABLE_BP
 !
 ! -------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine op0161()
     call rsorac(resuin, 'LONUTI', ibid, rbid, k8b,&
                 cbid, rbid, k8b, tord, 1,&
                 nbtrou)
-    nbordr=tord(1)           
+    nbordr=tord(1)
     call wkvect('&&OP0161.NUME_ORDRE', 'V V I', nbordr, jordr)
     call rsorac(resuin, 'TOUT_ORDRE', 0, rbid, k8b,&
                 cbid, rbid, k8b, zi(jordr), nbordr,&

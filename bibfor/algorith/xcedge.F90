@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
 #include "asterfort/xnormv.h"
 #include "blas/ddot.h"
 !
-    real(kind=8) :: pinref(*), pmiref(*), crit 
+    real(kind=8) :: pinref(*), pmiref(*), crit
     integer :: pi1, pi2, m12, ndime
 !
 !
-! FONCTION REALISEE:  CALCUL D UN CRITERE DE COURBURE SUR UNE ARETE DANS 
+! FONCTION REALISEE:  CALCUL D UN CRITERE DE COURBURE SUR UNE ARETE DANS
 !                          L ELEMENT DE REFERENCE
 !   CRIT=0 SI ARETE DROITE
 !       >0 SI ARETE COURBE

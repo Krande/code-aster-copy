@@ -99,17 +99,17 @@ implicit none
             nb_iden_rela = nb_iden_rela + 1
         elseif (v_mesh_patch(1) .eq. 12) then
             nb_iden_term = nb_iden_term + 2
-            nb_iden_rela = nb_iden_rela + 1                  
+            nb_iden_rela = nb_iden_rela + 1
         else
             nb_iden_rela = nb_iden_rela + 0
-        end if 
+        end if
     end do
 !
 ! - End of treatment if no relations found
 !
     if (nb_iden_rela .eq. 0) then
         go to 999
-    end if 
+    end if
 !
 ! - Create object for identity relations - Informations
 !
@@ -134,10 +134,10 @@ implicit none
         if (v_mesh_patch(1) .eq. 25 .or. v_mesh_patch(1) .eq. 26) then
             nb_node = 4
         elseif (v_mesh_patch(1) .eq. 12) then
-            nb_node = 2      
+            nb_node = 2
         else
             nb_node = 0
-        end if 
+        end if
 !
 ! ----- Get nodes of linear relation
 !
@@ -160,7 +160,7 @@ implicit none
 ! --------- Set object in collection
 !
             v_sdiden_dime(i_rela)=nb_node
-            do i_node= 1, nb_node                    
+            do i_node= 1, nb_node
                 v_sdiden_term((i_node-1)*2+1) = node_name(i_node)
                 v_sdiden_term((i_node-1)*2+2) = cmp_name
             end do

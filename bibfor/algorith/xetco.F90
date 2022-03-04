@@ -76,7 +76,7 @@ subroutine xetco(champ, nomcha, nomch0)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
-!   TRANSFO EN CHAM_NO_S 
+!   TRANSFO EN CHAM_NO_S
     cnscoi = '&&NMETL1.CNSCO0'
     call cescns(cescoi, ' ', 'V', cnscoi, ' ',&
                 ibid)

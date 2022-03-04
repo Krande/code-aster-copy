@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,8 +60,8 @@ implicit none
 !
 ! In  field_in_s   : name of <CHAM_NO_S> input field FROM which extract values
 ! In  field_out_s  : name of <CHAM_NO_S> output field IN which compute values
-! In  nb_node      : number of nodes 
-! In  list_node    : list of nodes  
+! In  nb_node      : number of nodes
+! In  list_node    : list of nodes
 ! In  nb_cmp       : number of components in input field
 ! In  type_comp    : type of computation (CRITERE or FORMULE)
 ! In  crit         : type of criterion
@@ -120,9 +120,9 @@ implicit none
     if (i_list_node .ne. 0) then
         call jeveuo(list_node, 'L', j_nodein)
     endif
-    
+
     do iel = 1, nb_node
-    
+
         if (i_list_node .ne.0)then
             ino = zi(j_nodein-1+iel)
         else
@@ -161,7 +161,7 @@ implicit none
         endif
 !
 ! ----- Copy to output field
-! 
+!
         if (ichk_node.eq.0) then
             ichk = 0
             nb_node_out = nb_node_out + 1

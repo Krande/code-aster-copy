@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ function distfo(zimat, kfonc, xx, yy, normx,&
     call rcvalb(fami, kpg, spt, poum, zimat,&
                 ' ', phenom, 1, 'X ', [xi],&
                 1, kfonc, val, codres, 1)
-    yi=val(1)            
+    yi=val(1)
     call cdnfon(zimat, kfonc, xi, 1, dyi,&
                 ier)
     yi = yi/ normy
@@ -91,7 +91,7 @@ function distfo(zimat, kfonc, xx, yy, normx,&
     call rcvalb(fami, kpg, spt, poum, zimat,&
                 ' ', phenom, 1, 'X ', [xi],&
                 1, kfonc, val, codres, 1)
-    yi=val(1)                 
+    yi=val(1)
     call cdnfon(zimat, kfonc, xi, 1, dyi,&
                 ier)
 !

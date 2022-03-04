@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ integer, intent(out) :: codret
 ! VARIABLES INTERNES DU MODELE :
 !         1.  RXIP      : VARIABLE D ECROUISSAGE MECA. PLASTIQUE
 !         2.  RGAMMAP   : DISTORSION PLASTIQUE
-!         3.  RXIVP     : VARIABLE D ECROUISSAGE DU MECANISME 
+!         3.  RXIVP     : VARIABLE D ECROUISSAGE DU MECANISME
 !                         VISCOPLASTIQUE
 !         4.  RGAMMAVP  : DISTORSION VISCOPLASTIQUE
 !         5.  RINDICDIL : INDICATEUR DE DILATANCE : 1 SI DIL    0 SINON
@@ -91,7 +91,7 @@ integer, intent(out) :: codret
     character(len=16) :: algo_inte
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     call utlcal('VALE_NOM', algo_inte, carcri(6))
     if ((algo_inte(1:10).eq.'SPECIFIQUE') .or. (option(1:14).eq.'RIGI_MECA_TANG')) then
         call srcomp(typmod, imate, instam, instap, deps, sigm, vim,&

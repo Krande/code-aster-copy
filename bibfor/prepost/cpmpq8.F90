@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine cpmpq8(conloc, numa, indno, indma)
 !
 !
 ! ----------------------------------------------------------------------
-!         CREATION DES MAILLES DES NOUVELLES MAILLES DE PEAU 
+!         CREATION DES MAILLES DES NOUVELLES MAILLES DE PEAU
 !         SUR LA FACE DE LA ZONE DE CONTACT ESCLAVE
 !         CAS QUAD 8
 ! ----------------------------------------------------------------------
@@ -85,5 +85,5 @@ subroutine cpmpq8(conloc, numa, indno, indma)
     zi(jconloc+3-1) = indno+2
     zi(jconloc+4-1) = indno+3
 ! ----------------------------------------------------------------------
-    call jedema()    
+    call jedema()
 end subroutine

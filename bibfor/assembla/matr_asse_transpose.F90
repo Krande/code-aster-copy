@@ -57,7 +57,7 @@ subroutine matr_asse_transpose(matas)
 
     call jelira(jexnum(matas1//'.VALM',1),'LONMAX',neq)
     call wkvect('&&matr_transpose.VALM', 'V V '//tysca, neq, jvaltmp)
-    
+
     call jeveuo(jexnum(matas1//'.VALM', 1),'E',jvalm1)
     call jeveuo(jexnum(matas1//'.VALM', 2),'E',jvalm2)
     if (tysca.eq.'R') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine xmmatc(ndim, nnops, ddls, ddlm, ffc,&
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 !
-! ROUTINE MODELE HM-XFEM 
+! ROUTINE MODELE HM-XFEM
 !
 ! CALCUL DE LA MATRICE MMAT (CONTINUITE DE LA PRESSION)
 !
@@ -59,7 +59,7 @@ subroutine xmmatc(ndim, nnops, ddls, ddlm, ffc,&
       enddo
     enddo
 !
-    do i = 1, nnops 
+    do i = 1, nnops
        ffi = ffc(i)
        pli = pla(i)
 !
@@ -67,7 +67,7 @@ subroutine xmmatc(ndim, nnops, ddls, ddlm, ffc,&
           ffj = ffc(j)
           plj = pla(j)
 !
-          call hmdeca(j, ddls, ddlm, nnops, in, dec)  
+          call hmdeca(j, ddls, ddlm, nnops, in, dec)
 !
           mmat(pli+1, in+ndim+1) = mmat(pli+1, in+ndim+1) + ffi*ffp2(j)*jac
 !
@@ -83,7 +83,7 @@ subroutine xmmatc(ndim, nnops, ddls, ddlm, ffc,&
           mmat(pli+1, plj) = mmat(pli+1, plj) - ffi*ffj*jac
 !
           mmat(pli+2, plj) = mmat(pli+2, plj) - ffi*ffj*jac
-       end do 
-    end do 
+       end do
+    end do
 !
 end subroutine

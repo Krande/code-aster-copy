@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ implicit none
 !
 ! In  mesh           : name of the mesh
 ! In  i_equa         : index of equation
-! In  type_equa      : type of dof 
+! In  type_equa      : type of dof
 !                 / 'A' : physical dof (node+component)
 !                 / 'B' : Lagrange dof (boundary condition) simple given boundary condition
 !                 / 'C' : Lagrange dof (boundary condition) linear relation

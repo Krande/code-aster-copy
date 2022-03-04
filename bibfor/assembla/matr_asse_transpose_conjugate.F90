@@ -53,10 +53,10 @@ subroutine matr_asse_transpose_conjugate(matas)
     call jelira(jexnum(matas1//'.VALM',1),'LONMAX',neq)
     ! matrice symetrique
     ! ------------------
-    if (n1.eq.1) then 
-        if (tysca.eq.'R') then 
+    if (n1.eq.1) then
+        if (tysca.eq.'R') then
             goto 999
-        else if (tysca.eq.'C') then 
+        else if (tysca.eq.'C') then
             call jeveuo(jexnum(matas1//'.VALM', 1),'E',jvalm1)
             do i=1, neq
                 zc(jvalm1-1+i)=dconjg(zc(jvalm1-1+i))

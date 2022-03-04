@@ -73,5 +73,5 @@ subroutine ut3mlg(nno, nnc, pgl, matl, matg)
     endif
 
     matg = as_matmul( transpose(MatPassGL) , as_matmul( Matl , MatPassGL ) )
-    
+
 end subroutine

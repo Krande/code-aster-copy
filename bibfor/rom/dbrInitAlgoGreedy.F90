@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
 !
     if (lStabFSI) then
         nbModeMaxi = 3*nbModeMaxi
-    end if 
+    end if
 !
 ! - Evaluate type of system
 !
@@ -97,7 +97,7 @@ type(ROM_DS_ParaDBR_Greedy), intent(inout) :: paraGreedy
 !
 ! - Create numbering of nodes for FSI
 !
-    if (lStabFSI) then 
+    if (lStabFSI) then
         call romFSINumberingInit(paraGreedy%multiPara%field, paraGreedy%algoGreedy)
     endif
 !

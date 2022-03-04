@@ -122,7 +122,7 @@ integer, intent(out) :: codret
 ! - Initialisation of behaviour datastructure
 !
     call behaviourInit(BEHinteg)
-! 
+!
 ! - CALCUL DES COORDONNEES DES POINTS DE GAUSS
 !
     call gedisc(ndim, nno2, npg, vff2, geom, coopg)

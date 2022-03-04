@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
     nomfct = zk24(jalifc+ichar-1)(1:8)
     if (nomfct(1:8).ne.'&&NMDOME'.and.nomfct.ne.' ') then
         typfct = 'FONCT_REEL'
-    endif    
+    endif
 !
     call jedema()
 end subroutine

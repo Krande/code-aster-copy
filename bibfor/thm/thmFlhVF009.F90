@@ -20,7 +20,7 @@
 subroutine thmFlhVF009(ds_thm, option, j_mater, ifa, &
                        t     , p1     , p2 , pvp, pad ,&
                        rho11 , h11    , h12,&
-                       satur , dsatur , & 
+                       satur , dsatur , &
                        valfac, valcen)
 !
 use THM_type
@@ -133,29 +133,29 @@ real(kind=8), intent(inout) :: valfac(6, 14, 6)
     dp11p1    = 0.d0
     dp11p2    = 0.d0
     dp11t     = 0.d0
-    dp21p1    = 0.d0 
-    dp21p2    = 0.d0 
+    dp21p1    = 0.d0
+    dp21p2    = 0.d0
     dp21t     = 0.d0
-    dp22p1    = 0.d0 
-    dp22p2    = 0.d0 
+    dp22p1    = 0.d0
+    dp22p2    = 0.d0
     dp22t     = 0.d0
-    dp12p1    = 0.d0 
-    dp12p2    = 0.d0 
+    dp12p1    = 0.d0
+    dp12p2    = 0.d0
     dp12t     = 0.d0
     dcvp1     = 0.d0
-    dcvp2     = 0.d0 
+    dcvp2     = 0.d0
     dcvt      = 0.d0
-    dr11p1    = 0.d0 
+    dr11p1    = 0.d0
     dr11p2    = 0.d0
     dr11t     = 0.d0
     dr12p1    = 0.d0
-    dr12p2    = 0.d0 
+    dr12p2    = 0.d0
     dr12t     = 0.d0
-    dr22p1    = 0.d0 
-    dr22p2    = 0.d0 
+    dr22p1    = 0.d0
+    dr22p2    = 0.d0
     dr22t     = 0.d0
-    dr21p1    = 0.d0 
-    dr21p2    = 0.d0 
+    dr21p1    = 0.d0
+    dr21p2    = 0.d0
     dr21t     = 0.d0
     dgpvp1(:) = 0.d0
     dgpvp2(:) = 0.d0
@@ -191,13 +191,13 @@ real(kind=8), intent(inout) :: valfac(6, 14, 6)
                             j_mater, satur , p2, t,&
                             permli , dperml,&
                             permgz , dperms, dpermp)
-! 
+!
 ! - Evaluate Fick coefficients for steam in gaz
 !
     call thmEvalFickSteam(j_mater,&
                           satur  , p2    , pvp   , t,&
                           fick   , dfickt, dfickg)
-! 
+!
 ! - Evaluate Fick coefficients for air in liquid
 !
     call thmEvalFickAir(j_mater,&

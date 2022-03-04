@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine pmfpti(num,poids,vff, xl, xi,&
 !           WI POIDS DE CE POINT
 !           B MATRICE B (4 VALEURS DIFFERENTES NON NULLES)
 ! -----------------------------------------------------------
-    
+
     integer :: ino
     real(kind=8) :: un, deux, quatre, six, douze
     parameter (un=1.d0,deux=2.d0,quatre=4.d0,six=6.d0,douze=12.d0)

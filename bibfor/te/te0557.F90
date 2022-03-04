@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,21 +89,21 @@ character(len=16) :: option, nomte
     endif
     rela = 0.d0
     nbspg= 0
-    
+
 !   INTIALISATION JMATE POUR DETECTER EVENTUELLES ERREURS JEVEUX
-    jmate=1    
+    jmate=1
 !
 !   INITIALISATION DU NOMBRE DE DDL PAR NEOUD, DU TYPE DE CONTACT ET
 !   DES ADRESSES POUR LES DIFFERENTS TERMES DE L'OPERATEUR TANGENT
-!   (CAS DE LA FRACTURE UNIQUEMENT) 
+!   (CAS DE LA FRACTURE UNIQUEMENT)
     vcont(:) = 0.d0
     call xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
 !
-!   INITIALISATION DE LA DIMENSION DE L'ELEMENT PRINCIPAL, DU NOMBRE DE 
+!   INITIALISATION DE LA DIMENSION DE L'ELEMENT PRINCIPAL, DU NOMBRE DE
 !   NOEUDS PARENTS (SOMMET + MILIEU)
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnops)
-!                
+!
     nddls = ddld + ddlp + ddlc
     nddlm = ddlm
     nnopm = nnop - nnops
@@ -192,8 +192,8 @@ character(len=16) :: option, nomte
        vstnc(i) = 1
     end do
 !
-!   LOGICAL POUR L'ELIMINATION DES LAGRANGES EN TROP 
-    lelim=.false. 
+!   LOGICAL POUR L'ELIMINATION DES LAGRANGES EN TROP
+    lelim=.false.
 !
     do ifiss = 1, nfiss
 !
@@ -243,7 +243,7 @@ character(len=16) :: option, nomte
           pla(i) = 0
        end do
 !
-!   DEFINITION DU NOMBRE DE POINTS D'INTERSECTION, DU NOMBRE FACETTE ET 
+!   DEFINITION DU NOMBRE DE POINTS D'INTERSECTION, DU NOMBRE FACETTE ET
 !   DU NOMBRE DE POINT PAR FACETTE
        ninter=zi(jlonch+3*(ifiss-1)-1+1)
        nface=zi(jlonch+3*(ifiss-1)-1+2)
@@ -256,12 +256,12 @@ character(len=16) :: option, nomte
                    nfh, nfiss, ninter, nlact, nnop,&
                    nnol, nnopm, nnops, pla, pos, typma, jstno)
 !
-!   SI IL N'Y A PAS DE FACETTES POUR LA FRACTURE ON SORT 
+!   SI IL N'Y A PAS DE FACETTES POUR LA FRACTURE ON SORT
        if (ninter.eq.0) goto 200
-! 
-!   RECUPERATION DU TYPE D'ELEMENT POUR LA FACETTE DE CONTACT ET 
+!
+!   RECUPERATION DU TYPE D'ELEMENT POUR LA FACETTE DE CONTACT ET
 !   DE LA FAMILLE DE POINT D'INTEGRATION (P2P1 UNIQUEMENT)
-       if ((ndim.eq.2).and.(contac.ge.2)) then 
+       if ((ndim.eq.2).and.(contac.ge.2)) then
           elc='SE3'
           ninteg = nint(zr(jdonco-1+(ifiss-1)*ncompd+4))
           call xminte(ndim, ninteg, fpg)
@@ -270,7 +270,7 @@ character(len=16) :: option, nomte
           ninteg = nint(zr(jdonco-1+(ifiss-1)*ncompd+4))
           call xminte(ndim, ninteg, fpg)
        endif
-! 
+!
 !   RECUPERATION DES DONNEES RELATIVES AU CONTACT AVEC LOI COHESIVE
 !
        algocr = nint(zr(jdonco-1+(ifiss-1)*ncompd+6))
@@ -294,12 +294,12 @@ character(len=16) :: option, nomte
           ASSERT(.false.)
        endif
 
-!   RECUPERATION DES DIFFERENTES ADRESSES POUR L'INTEGRATION SUR LES 
+!   RECUPERATION DES DIFFERENTES ADRESSES POUR L'INTEGRATION SUR LES
 !   FACETTES DE CONTACT
-  
+
        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-                        npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)  
-                
+                        npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+
 !   DEFINTION DE LA CONNECTIVITE DES FACETTES DE CONTACT
 !
        do i= 1,30
@@ -315,7 +315,7 @@ character(len=16) :: option, nomte
        end do
 !
 !   CALCUL DES SECONDS MEMBRES POUR LA FRACTURE
-! 
+!
        call xasshv_frac(ds_thm,&
                         nddls, nddlm, nnop, nnops,&
                         lact, elrefp, elrefc, elc, contac,&
@@ -329,7 +329,7 @@ character(len=16) :: option, nomte
 !
        nbspg = nbspg + npgf*nface
 !
-200    continue 
+200    continue
        jbasec = jbasec + ncompb
        jptint = jptint + ncompp
        jaint = jaint + ncompa
@@ -347,11 +347,11 @@ character(len=16) :: option, nomte
        call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                    zi(jstno), .false._1, option, nomte,&
                    mat, zr(jv_cont), nddlm, nfiss, jfisno, .false._1, contac)
-    endif 
-    
+    endif
+
 !   SUPPRESSION DES DDLS DE CONTACT
-    
-    if (lelim) then 
+
+    if (lelim) then
        call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                    vstnc, .false._1, option, nomte,&
                    mat, zr(jv_cont), nddlm, nfiss, jfisno, .true._1, contac)

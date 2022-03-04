@@ -34,7 +34,7 @@ real(kind=8), intent(in) :: temp
 !
 ! THM
 !
-! Get coupling parameters 
+! Get coupling parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,23 +44,23 @@ real(kind=8), intent(in) :: temp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para_l1 = 4 
+    integer, parameter :: nb_para_l1 = 4
     real(kind=8) :: para_vale_l1(nb_para_l1)
     integer :: icodre_l1(nb_para_l1)
     character(len=16), parameter :: para_name_l1(nb_para_l1) =(/'RHO        ', 'UN_SUR_K   ',&
                                                                 'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_l2 = 6 
+    integer, parameter :: nb_para_l2 = 6
     real(kind=8) :: para_vale_l2(nb_para_l2)
     integer :: icodre_l2(nb_para_l2)
     character(len=16), parameter :: para_name_l2(nb_para_l2) =(/'RHO        ', 'UN_SUR_K   ',&
                                                                 'ALPHA      ', 'CP         ',&
                                                                 'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_g1 = 3 
+    integer, parameter :: nb_para_g1 = 3
     real(kind=8) :: para_vale_g1(nb_para_g1)
     integer :: icodre_g1(nb_para_g1)
     character(len=16), parameter :: para_name_g1(nb_para_g1) =(/'MASS_MOL   ',&
                                                                 'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_g2 = 4 
+    integer, parameter :: nb_para_g2 = 4
     real(kind=8) :: para_vale_g2(nb_para_g2)
     integer :: icodre_g2(nb_para_g2)
     character(len=16), parameter :: para_name_g2(nb_para_g2) =(/'MASS_MOL   ', 'CP         ',&
@@ -70,7 +70,7 @@ real(kind=8), intent(in) :: temp
     integer :: icodre_s(nb_para_s)
     character(len=16), parameter :: para_name_s(nb_para_s)   =(/'MASS_MOL   ', 'CP         ',&
                                                                 'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_ad = 2 
+    integer, parameter :: nb_para_ad = 2
     real(kind=8) :: para_vale_ad(nb_para_ad)
     integer :: icodre_ad(nb_para_ad)
     character(len=16), parameter :: para_name_ad(nb_para_ad) =(/'COEF_HENRY ', 'CP         '/)

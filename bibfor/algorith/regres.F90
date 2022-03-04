@@ -152,7 +152,7 @@ subroutine regres(nomres, mailsk, result, pfchn2)
         endif
     end do
 !
-    
+
     ndeeq = 0
     do i = 1, nnodes
         ncmp = zi(lprnew-1+(i-1)*ndi+2)

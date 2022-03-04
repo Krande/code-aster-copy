@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -158,8 +158,8 @@ aster_logical, optional, intent(in) :: l_epsi_varc_
     endif
 !
 !     RECUP NUMLC
-    read (compor(6),'(I16)') numlc    
-    
+    read (compor(6),'(I16)') numlc
+
 !
 !     BOUCLE POUR ETABLIR LES CONTRAINTES PLANES
     do icp = 1, ncpmax

@@ -337,7 +337,7 @@ subroutine abscur(ma)
             if (nbnoseg .eq. 3) then
                 valv(3) = stot+s32
             else if (nbnoseg.eq.4) then
-                
+
                 valv(4) = stot+s42
                 valv(3) = stot+s42+s34
             endif

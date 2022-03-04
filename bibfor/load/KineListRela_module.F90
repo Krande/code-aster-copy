@@ -70,7 +70,7 @@ subroutine kineListRelaCreate(relaTypeZ, nbTermMaxi, listLineRela, kineListRela,
     kineListRela%relaType = relaTypeZ
     kineListRela%listLineRela = listLineRela
     kineListRela%nbTermMaxi = nbTermMaxi
-    
+
     if (relaType .eq. 'Implicit') then
 ! ----- Only real !
         kineListRela%coefImpoType = 'REEL'

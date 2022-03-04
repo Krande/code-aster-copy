@@ -303,7 +303,7 @@ implicit none
                 zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+24) = nb_poin_facet
                 zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+14) = ninter
 !
-! ------------- Index of slave facet 
+! ------------- Index of slave facet
 !
                 zr(jtabf+ztabf* nt_cont_poin+ztabf*(i_cont_poin-1)+25) = i_facet
 !

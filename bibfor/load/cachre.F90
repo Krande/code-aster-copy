@@ -108,7 +108,7 @@ character(len=*), intent(in) :: keywordFactZ
     vncmp(9) = 'MGX'
     vncmp(10) = 'MGY'
     vncmp(11) = 'MGZ'
-! 
+!
     if (valeType(1:4) .eq. 'REEL') then
         do i = 1, 11
             zr(jvalv-1+i) = 0.d0

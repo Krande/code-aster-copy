@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
 !        FONOEU : NOMS DES NOEUDS DU FOND DE FISSURE
 !
 ! SORTIE:
-!        ABSFON : VECTEUR .ABSFON CONTENANT LES ABSCISSES 
+!        ABSFON : VECTEUR .ABSFON CONTENANT LES ABSCISSES
 !                 CURVILIGNES DES NOEUDS DU FOND
 !       COORFOND : COORDONNEE DES NOEUDS DU FOND DE FISSURE
 

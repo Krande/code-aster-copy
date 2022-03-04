@@ -37,7 +37,7 @@ module czm_elas_module
         aster_logical:: an,at,cn
     end type MATERIAL
 
-    
+
     ! CZM_ELAS class
     type CONSTITUTIVE_LAW
         integer       :: exception = 0
@@ -47,9 +47,9 @@ module czm_elas_module
         type(MATERIAL):: mat
     end type CONSTITUTIVE_LAW
 
-    
-    
-    
+
+
+
 contains
 
 
@@ -59,9 +59,9 @@ contains
 
 function Init(ndim, fami, kpg, ksp, imate, t, su) &
     result(self)
-        
+
     implicit none
-    
+
     integer,intent(in)          :: kpg, ksp, imate, ndim
     real(kind=8),intent(in)     :: t(:), su(:)
     character(len=*),intent(in) :: fami
@@ -89,11 +89,11 @@ function Init(ndim, fami, kpg, ksp, imate, t, su) &
     ASSERT(size(t).eq.ndim)
     ASSERT(size(su).eq.ndim)
 
-    
+
     ! Parametres generaux
     self%ndim = ndim
 
-    
+
     ! Material parameters
     call rcvalb(fami,kpg,ksp,'+',imate,' ','CZM_ELAS',0,' ',[0.d0],nbel,nomel,valel,iok,2)
     self%mat%kn  = valel(1)
@@ -112,7 +112,7 @@ function Init(ndim, fami, kpg, ksp, imate, t, su) &
         case default
             ASSERT(ASTER_FALSE)
     end select
-        
+
     select case (nint(valel(4)))
         case (0)
             self%mat%at = ASTER_FALSE
@@ -121,19 +121,19 @@ function Init(ndim, fami, kpg, ksp, imate, t, su) &
         case default
             ASSERT(ASTER_FALSE)
     end select
-        
+
 
     ! Augmentation coefficient
     call rcvalb(fami,kpg,ksp,'+',imate,' ','CZM_ELAS',0,' ',[0.d0],nblg,nomlg,vallg,iok,2)
     self%r = vallg(1)
     ASSERT(self%r .gt. 0)
-    
-    
+
+
     ! Constitutive input phi = tau + r*su
     allocate(self%phi(ndim))
     self%phi = t + self%r*su
-    
-    
+
+
 end function Init
 
 
@@ -143,7 +143,7 @@ end function Init
 ! =====================================================================
 
 
-subroutine Integrate(self, delta, dphi_delta, vi) 
+subroutine Integrate(self, delta, dphi_delta, vi)
 
     implicit none
 
@@ -160,20 +160,20 @@ subroutine Integrate(self, delta, dphi_delta, vi)
     delta      = 0
     dphi_delta = 0
     vi         = 0
- 
- 
+
+
     ! Normal displacement
     if (.not. self%mat%an .and. .not. self%mat%cn) then
         delta(1)        = self%phi(1) / (self%mat%kn + self%r)
         dphi_delta(1,1) = 1 / (self%mat%kn + self%r)
-        
+
     else if (.not. self%mat%an .and. self%mat%cn) then
         delta(1)        = max(0.d0,self%phi(1)) / (self%mat%kn + self%r)
         dphi_delta(1,1) = merge(1.d0,0.d0,self%phi(1).ge.0) / (self%mat%kn + self%r)
 
     end if
-    
-    
+
+
     ! Tangential displacement
     if (.not. self%mat%at) then
         do i = 2, self%ndim
@@ -181,11 +181,11 @@ subroutine Integrate(self, delta, dphi_delta, vi)
             dphi_delta(i,i) = 1 / (self%mat%kt + self%r)
         end do
     end if
-    
-    
+
+
     ! Internal variables storage
     vi(1:self%ndim) = delta
-     
+
 
 end subroutine Integrate
 

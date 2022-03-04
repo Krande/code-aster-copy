@@ -87,7 +87,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
           end do
        end do
     end do
-    
+
     do i = 1, 3
        do j = 1, 3
           do k = 1, 3

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,21 +134,21 @@ character(len=8), intent(out) :: calcElemModel
     endif
     call getvid(' ', 'CHAM_MATER', scal=mate, nbret=nocc)
 
-    if (nocc .eq. 0) then 
+    if (nocc .eq. 0) then
         mate = ' '
         if (option.eq.'RIGI_GEOM')  then
-            ! necessaire seulement pour CABLE 
+            ! necessaire seulement pour CABLE
             call dismoi('EXI_CABLE', model, 'MODELE', repk=answer)
             if (answer .eq. 'OUI') then
                 call utmess('A', 'MECHANICS1_40')
             endif
         elseif ((option .ne. 'RIGI_ACOU') .and. (option.ne.'RIGI_GEOM') ) then
-            ! mater pas besoin pour RIGI_ACOU, 
+            ! mater pas besoin pour RIGI_ACOU,
             ! mater peu besoin pour DIS_/2D_DIS_ pour d'autres options
             call dismoi('BESOIN_MATER', model, 'MODELE', repk=answer)
             if (answer .eq. 'OUI') then
                 call utmess('A', 'MECHANICS1_40')
-            endif            
+            endif
         endif
     endif
 

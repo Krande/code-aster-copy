@@ -52,7 +52,7 @@ implicit none
 ! In  model          : name of model
 ! In  mesh           : name of mesh
 ! In  nb_dim         : dimension of space
-! In  sdcont         : name of contact datastructure 
+! In  sdcont         : name of contact datastructure
 ! In  sdline         : name of datastructure  for linear relations
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -189,7 +189,7 @@ subroutine vpinis(eigsol)
     else
         omecor = fcorig
     endif
- 
+
 ! --  PARAMETRES DES SOLVEURS MODAUX
     appr=''
     call getvtx('CALC_'//typevp, 'APPROCHE', iocc=1, scal=appr, nbret=iret)
@@ -255,7 +255,7 @@ subroutine vpinis(eigsol)
     call vpcres(eigsol, typres, raide, masse, amor, optiof, method, modrig, arret, tabmod,&
                   stoper, sturm, typcal, appr, typeqz, nfreq, nbvect, nbvec2, nbrss, nbborn,&
                   nborto, nitv, itemax, nperm, maxitr, vectf, precsh, omecor, precdc, seuil,&
-                  prorto, prsudg, tol, toldyn, tolsor, alpha)    
+                  prorto, prsudg, tol, toldyn, tolsor, alpha)
     call jedema()
 !
 !     FIN DE VPINIS

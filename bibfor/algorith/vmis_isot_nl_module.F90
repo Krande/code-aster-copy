@@ -21,7 +21,7 @@ module vmis_isot_nl_module
     use scalar_newton_module,       only: &
             newton_state, &
             utnewt
-    
+
     use  tenseur_dime_module,       only: &
             proten, &
             kron, &
@@ -57,7 +57,7 @@ module vmis_isot_nl_module
         real(kind=8) :: q  = 2.d0
     end type MATERIAL
 
-    
+
     ! VMIS_ISOT_NL class
     type CONSTITUTIVE_LAW
         integer       :: exception = 0
@@ -67,14 +67,14 @@ module vmis_isot_nl_module
         integer       :: ndimsi,itemax
         real(kind=8)  :: cvuser
         real(kind=8)  :: phi = 0.d0
-        real(kind=8)  :: telq 
-        real(kind=8)  :: kam  
+        real(kind=8)  :: telq
+        real(kind=8)  :: kam
         type(MATERIAL):: mat
     end type CONSTITUTIVE_LAW
 
-    
-    
-    
+
+
+
 contains
 
 
@@ -84,9 +84,9 @@ contains
 
 function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     result(self)
-        
+
     implicit none
-    
+
     integer,intent(in)          :: kpg, ksp, imate, itemax, ndimsi
     real(kind=8), intent(in)    :: precvg
     character(len=16),intent(in):: option
@@ -113,7 +113,7 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     data nomec /'R0','RH','R1','GAMMA_1','R2','GAMMA_2','RK','P0','GAMMA_M'/
 ! --------------------------------------------------------------------------------------------------
 
-    ! Variables non initialisees            
+    ! Variables non initialisees
     r8nan     = r8nnem()
     self%telq = r8nan
     self%kam  = r8nan
@@ -124,7 +124,7 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     self%itemax = itemax
     self%cvuser = precvg
 
-    
+
     ! Options de calcul
     self%elas   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'FULL_MECA_ELAS'
     self%rigi   = option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA_ELAS' &
@@ -134,10 +134,10 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     self%vari   = option.eq.'FULL_MECA_ELAS' .or. option.eq.'FULL_MECA'      &
              .or. option.eq.'RAPH_MECA'
     self%pred   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'RIGI_MECA_TANG'
-    
+
     ASSERT (self%rigi .or. self%resi)
-    
-    
+
+
     ! Elasticity material parameters
     call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS',0,' ',[0.d0],nbel,nomel,valel,iok,2)
     self%mat%lambda  = valel(1)*valel(2)/((1+valel(2))*(1-2*valel(2)))
@@ -157,7 +157,7 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     self%mat%rk = valec(7)
     self%mat%p0 = valec(8)
     self%mat%gk = valec(9)
-    
+
 end function Init
 
 
@@ -165,10 +165,10 @@ end function Init
 !  COMPLEMENTARY INITIALISATION FOR GRAD_VARI
 ! =====================================================================
 
-subroutine InitGradVari(self,fami,kpg,ksp,imate,lag,apg) 
-        
+subroutine InitGradVari(self,fami,kpg,ksp,imate,lag,apg)
+
     implicit none
-    
+
     integer,intent(in)          :: kpg, ksp, imate
     real(kind=8),intent(in)     :: lag,apg
     character(len=*),intent(in) :: fami
@@ -196,7 +196,7 @@ subroutine InitGradVari(self,fami,kpg,ksp,imate,lag,apg)
     self%mat%c = vale(1)
     self%mat%r = vale(2)
     self%phi   = lag + self%mat%r*apg
-            
+
 end subroutine InitGradVari
 
 
@@ -205,10 +205,10 @@ end subroutine InitGradVari
 !  COMPLEMENTARY INITIALISATION FOR VISCOPLASTICITY
 ! =====================================================================
 
-subroutine InitViscoPlasticity(self,fami,kpg,ksp,imate,deltat) 
-        
+subroutine InitViscoPlasticity(self,fami,kpg,ksp,imate,deltat)
+
     implicit none
-    
+
     integer,intent(in)                  :: kpg, ksp, imate
     real(kind=8),intent(in)             :: deltat
     character(len=*),intent(in)         :: fami
@@ -234,7 +234,7 @@ subroutine InitViscoPlasticity(self,fami,kpg,ksp,imate,deltat)
     call rcvalb(fami,kpg,ksp,'+',imate,' ','NORTON',0,' ',[0.d0],nb,nom,vale,iok,2)
     self%mat%q  = 1.d0/vale(1)
     self%mat%v0 = vale(2)/deltat**self%mat%q
-            
+
 end subroutine InitViscoPlasticity
 
 
@@ -244,7 +244,7 @@ end subroutine InitViscoPlasticity
 ! =====================================================================
 
 
-subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi_vi) 
+subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi_vi)
 
     implicit none
 
@@ -271,7 +271,7 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi
     ASSERT (present(deps_vi)  .eqv. self%grvi)
     ASSERT (present(dphi_sig) .eqv. self%grvi)
 
-    
+
 ! unpack internal variables
     rac2  = voigt(self%ndimsi)
     ka    = vim(1)
@@ -288,7 +288,7 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi
     if (self%exception .ne. 0) goto 999
 
 
-! pack internal variables 
+! pack internal variables
     if (self%vari) then
         vip(1) = ka
         vip(2) = state
@@ -297,7 +297,7 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi
     end if
 
 
-999 continue    
+999 continue
 end subroutine Integrate
 
 
@@ -307,7 +307,7 @@ end subroutine Integrate
 ! =====================================================================
 
 subroutine ComputePlasticity(self, eps, ka, state, ep, &
-                  t, deps_t, dphi_t,deps_ka,dphi_ka) 
+                  t, deps_t, dphi_t,deps_ka,dphi_ka)
 
     implicit none
 
@@ -358,7 +358,7 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
     kae = kam
     kas = kam + telq/self%mat%troismu
     mve = f_m_hat(self,kae)
-    rks = f_ecro(self,kas) 
+    rks = f_ecro(self,kas)
     rvs = f_visco(self,kas)
     mvs = -(rks+rvs)
 
@@ -391,34 +391,34 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
 ! --------------------------------------------------------------------------------------------------
 
     if (mvs .le. 0) goto 200
-    
+
     ka   = kas
     kax  = kas - (rks+rvs)/(self%mat%r+self%mat%rh)
     visc = ASTER_FALSE
-    
+
     do ite = 1,self%itemax
 
         ! Evaluation du terme plastique et du terme visqueux
-        rk  = f_ecro(self,ka) 
+        rk  = f_ecro(self,ka)
         rv  = f_visco(self,ka)
-        
+
         ! Test de convergence
         res = rk + rv
         if (abs(res) .le. presig) exit
-        
+
         ! Borne max discriminante plas / visc identifiee
         if (res.gt.0 .and. rk.le.presig) then
             visc = ASTER_TRUE
             rvx  = rv
             itev = ite-1
         end if
-        
+
         ! Resolution de la plasticite seule (sans viscosite)
-        if (.not. visc) then    
+        if (.not. visc) then
             equ     = rk
-            dka_equ = dka_ecro(self,ka) 
+            dka_equ = dka_ecro(self,ka)
             ka      = utnewt(ka,equ,dka_equ,ite,mem,xmin=kas,xmax=kax)
-         
+
         ! Resolution de la viscoplasticite (avec changement de variable)
         else
             equ    = rk + rv
@@ -426,34 +426,34 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
             rv     = utnewt(rv,equ,dv_equ,ite-itev,mem,xmin=rvs,xmax=rvx)
             ka     = inv_visco(self,rv)
         end if
-        
+
     end do
     if (ite.gt.self%itemax) then
         self%exception = 1
         goto 999
     end if
-    
+
     state = 2
     ep    = ep  + teld/self%mat%deuxmu
     t     = telh*kr
     goto 800
-    
-    
-    
+
+
+
 ! --------------------------------------------------------------------------------------------------
 !  REGIME ECOULEMENT REGULIER
 ! --------------------------------------------------------------------------------------------------
 
-200 continue 
+200 continue
     ka   = kae
     visc = ASTER_FALSE
-    
+
     do ite = 1,self%itemax
-    
+
         ! Evaluation du terme plastique et du terme visqueux
-        mh  = f_m_hat(self,ka) 
+        mh  = f_m_hat(self,ka)
         rv  = f_visco(self,ka)
-            
+
         ! Test de convergence
         res = -mh + rv
         if (abs(res) .le. presig) exit
@@ -466,11 +466,11 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
         end if
 
         ! Resolution de la plasticite seule (sans viscosite)
-        if (.not. visc) then    
+        if (.not. visc) then
             equ     = -mh
-            dka_equ = -dka_m_hat(self,ka) 
+            dka_equ = -dka_m_hat(self,ka)
             ka      = utnewt(ka,equ,dka_equ,ite,mem,xmin=kae,xmax=kas)
-         
+
         ! Resolution de la viscoplasticite (avec changement de variable)
         else
             equ    = -mh + rv
@@ -478,12 +478,12 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
             rv     = utnewt(rv,equ,dv_equ,ite-itev,mem,xmin=0.d0,xmax=rvx)
             ka     = inv_visco(self,rv)
         end if
-   
+
     end do
     if (ite.gt.self%itemax) then
         self%exception = 1
         goto 999
-    end if  
+    end if
 
     state = 1
     dep   = 1.5d0*(ka-kam)*teld/telq
@@ -504,14 +504,14 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
     dphi_t  = 0
     deps_ka = 0
     dphi_ka = 0
-    
+
     ! Contrainte sans correction de plasticite en phase de prediction
     if (self%pred) t = tel
 
 
     ! Etat pour choisir l'operateur tangent en phase de prediction
     if (self%pred) then
-        
+
         ! En regime de frontiere, le choix de la matrice est guide par le pas precedent
         ! Sinon, on evalue par rapport a mve et mvs
         if (abs(mve).gt.presig .and. abs(mvs).gt.presig) then
@@ -523,32 +523,32 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
                 state = 1
             end if
         end if
-        
+
     end if
-    
-        
-    ! Regime elastique 
+
+
+    ! Regime elastique
     if (state.eq.0 .or. self%elas) then
         deps_t = self%mat%lambda*proten(kr,kr) + self%mat%deuxmu*identity(self%ndimsi)
 
 
-    ! Regime plastique regulier 
+    ! Regime plastique regulier
     else if (state .eq. 1) then
 
         ! Projecteur deviatorique
         pdev = identity(self%ndimsi) - proten(kr,kr)/3.d0
-        
-        ! Quantites liees a la contrainte elastique 
+
+        ! Quantites liees a la contrainte elastique
         n         = teld/telq
         deps_telq = self%mat%troismu*n
         deps_n    = (self%mat%deuxmu*pdev - proten(n,deps_telq))/telq
-                
+
         ! Variations de kappa
         dka_mv   = dka_m_hat(self,ka) - dka_visco(self,ka)
         dtelq_ka = - dtelq_m_hat(self,ka)/dka_mv
         deps_ka  = dtelq_ka*deps_telq
         dphi_ka  = - dphi_m_hat(self,ka)/dka_mv
-        
+
         ! Operateurs tangents
         deps_t = self%mat%lambda*proten(kr,kr) + self%mat%deuxmu*identity(self%ndimsi) &
                - self%mat%troismu*(ka-kam)*deps_n &
@@ -559,7 +559,7 @@ subroutine ComputePlasticity(self, eps, ka, state, ep, &
 
     ! Regime singulier (dphi_t et deps_ka sont nulles)
     else if (state.eq.2) then
-        deps_t  = self%mat%troisk/3.d0 * proten(kr,kr)      
+        deps_t  = self%mat%troisk/3.d0 * proten(kr,kr)
         dphi_ka = - dphi_ecro(self,ka) / (dka_ecro(self,ka)+dka_visco(self,ka))
 
     else
@@ -592,15 +592,15 @@ function dka_visco(self,ka) result(res)
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
     real(kind=8),intent(in)::ka
-    
+
     if (self%visc .and. self%pred) then
         ! infini -> on renvoie une valeur tres grande
         ! (ok car utilise uniquement pour l'operateur tangent)
-        res = r8gaem()      
+        res = r8gaem()
     else
         res = self%mat%v0 * self%mat%q * (ka-self%kam)**(self%mat%q-1)
     end if
-    
+
 end function dka_visco
 
 
@@ -640,13 +640,13 @@ function dka_ecro(self,ka) result(res)
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
     real(kind=8),intent(in)::ka
-    
+
     res = self%mat%rh + &
           self%mat%r1*self%mat%g1*exp(-self%mat%g1*ka) + &
           self%mat%r2*self%mat%g2*exp(-self%mat%g2*ka) + &
           self%mat%rk*self%mat%gk*(ka+self%mat%p0)**(self%mat%gk-1) + &
           self%mat%r
-    
+
 end function dka_ecro
 
 
@@ -664,7 +664,7 @@ function f_m_hat(self,ka) result(res)
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
     real(kind=8),intent(in)::ka
-    res = self%telq - self%mat%troismu*(ka-self%kam)-f_ecro(self,ka)   
+    res = self%telq - self%mat%troismu*(ka-self%kam)-f_ecro(self,ka)
 end function f_m_hat
 
 
@@ -673,7 +673,7 @@ function dka_m_hat(self,ka) result(res)
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
     real(kind=8),intent(in)::ka
-    res = - self%mat%troismu - dka_ecro(self,ka)  
+    res = - self%mat%troismu - dka_ecro(self,ka)
 end function dka_m_hat
 
 

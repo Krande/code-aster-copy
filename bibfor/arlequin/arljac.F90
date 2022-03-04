@@ -77,7 +77,7 @@ subroutine arljac(nno   ,ndim  ,dff   ,coor  ,invjac)
     do 300 i=1,ndim
         do 310 j=1, ndim
             invjac(i,j) = temp(i,j)
-        310 end do 
+        310 end do
     300 end do
 
     call jedema()

@@ -121,7 +121,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
     if (jpena.ne.0) then
         call jeveuo(penacu, 'L', jpena)
     endif
-    
+
 !
 ! --- CALCUL DU NOMBRE TOTAL DE GRANDEURS A GAUCHE
 !
@@ -191,7 +191,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu,&
                     call utmess('I', 'UNILATER_75', nk=2, valk=valk)
                 endif
 !
-            enddo 
+            enddo
 !
             zi(jnoeu-1+cptnd) = numnd
             coefd(cptd) = zk8(jcoef+izone-1)

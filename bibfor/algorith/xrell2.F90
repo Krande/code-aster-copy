@@ -311,7 +311,7 @@ implicit none
             nunob=noeud(tabdir(ir,2))
             nreleq=nreleq+1
             liseqt(nreleq,1)=nunoa
-            liseqt(nreleq,2)=nunob 
+            liseqt(nreleq,2)=nunob
 !           Recherche de l'arête correspondante dans 'liaison' pour mettre son statut à 1
             do i=1, nb_edgez
                 if (((nunoa.eq.liaison(i,1)).and.(nunob.eq.liaison(i,2))) .or.&
@@ -325,9 +325,9 @@ implicit none
 ! --- Stockage du tableau temporaire: liaison dans tabai (5ème composante de TOPOFAC.AI)
 !
     if (l_ainter) then
-        call jeexin(tabai,ier) 
+        call jeexin(tabai,ier)
         ASSERT(ier.eq.0)
-        if(nb_edgez.ne.0) then 
+        if(nb_edgez.ne.0) then
             call wkvect(tabai, 'V V I', nb_edgez*3, jtabai)
             do i = 1, nb_edgez
                 zi(jtabai-1+3*(i-1)+1) = liaison(i,1)

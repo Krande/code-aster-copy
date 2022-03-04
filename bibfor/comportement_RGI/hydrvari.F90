@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,30 +23,30 @@ subroutine hydrvari(vari0,vari1,hydra0,hydra1,hydras)
 !   declaration externes
     implicit none
       real(kind=8) :: vari0,vari1,hydra0,hydra1,hydras
-      integer erreur   
+      integer erreur
 !   varibles locales
       real(kind=8) :: yymin
       parameter (yymin=1.d-3)
-!   initialisation controle d erreur      
+!   initialisation controle d erreur
       erreur=0
       if (hydra1.lt. yymin) then
 !    le materiau est non coherent les varibles internes
-!    sont conservees inchangées         
+!    sont conservees inchangées
        vari1=0.d0
       else
        hydra1=dmin1(hydra1,1.d0)
        if ((hydra1.ge.hydra0).and.(hydra0.gt.hydras)) then
-!      apres le seuil on conserve les vari ou on les attenue          
+!      apres le seuil on conserve les vari ou on les attenue
          vari1=vari0*(hydra0-hydras)/(hydra1-hydras)
        else
          if (hydra1.le.hydras) then
-!       avant le seuil on et les vari  a zero         
+!       avant le seuil on et les vari  a zero
           vari1=0.d0
          else
 !       la fin de pas a passé le seuil mais pas le debut de pas
-!       ou bien l hydratation diminue         
+!       ou bien l hydratation diminue
           vari1=vari0
-         end if          
+         end if
        end if
       end if
 end subroutine

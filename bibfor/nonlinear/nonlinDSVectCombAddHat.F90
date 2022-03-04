@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ type(NL_DS_VectComb), intent(inout) :: ds_vectcomb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  hval_veasse      : hat-variable for vectors => to get field to add from hat variable 
+! In  hval_veasse      : hat-variable for vectors => to get field to add from hat variable
 ! In  vect_type        : type of vector
 ! In  vect_coef        : coefficient to combine vector
 ! IO  ds_vectcomb      : datastructure for combination of vectors

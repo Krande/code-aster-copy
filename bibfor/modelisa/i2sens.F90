@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine i2sens(chemin, nbrma2, limail, nbrma, connex,&
                     njd)
 !
         if ((nid .eq. njd) .or. (nig .eq. njg)) then
-            mj = -mj*mi/abs(mi) 
+            mj = -mj*mi/abs(mi)
         endif
 !
         mi = mj

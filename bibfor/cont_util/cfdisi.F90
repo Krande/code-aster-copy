@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ character(len=*), intent(in) :: question_
     else if (question.eq.'ITER_CONT_MULT') then
         call jeveuo(sdcont_paraci, 'L', vi = v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(5)
-    else if (question.eq.'ITER_GEOM_MAXI') then   
+    else if (question.eq.'ITER_GEOM_MAXI') then
         call jeveuo(sdcont_paraci, 'L', vi = v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(6)
     else if (question.eq.'ITER_FROT_MAXI') then
@@ -134,7 +134,7 @@ character(len=*), intent(in) :: question_
     else if (question.eq.'ALL_INTEG_NOEUD') then
         call jeveuo(sdcont_paraci, 'L', vi = v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(24)
-    else if (question.eq.'STOP_INTERP') then  
+    else if (question.eq.'STOP_INTERP') then
         call jeveuo(sdcont_paraci, 'L', vi = v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(25)
     else if (question.eq.'EXIS_GLISSIERE') then

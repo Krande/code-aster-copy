@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ implicit none
 !
     criterion   = ds_inout%criterion
     precision   = ds_inout%precision
-    user_time   = ds_inout%user_time 
+    user_time   = ds_inout%user_time
     l_user_time = ds_inout%l_user_time
     user_nume   = ds_inout%user_nume
     l_user_nume = ds_inout%l_user_nume

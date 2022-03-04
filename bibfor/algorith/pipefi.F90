@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
         else if (compor .eq. 'CZM_TURON') then
             call pipetu(2, mate, sup, sud, vim(1, kpg),&
                         dtau, copilo(1, kpg))
-        else 
+        else
             call utmess('F', 'MECANONLINE_59')
         endif
 !

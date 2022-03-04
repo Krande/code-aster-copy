@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -151,7 +151,7 @@ subroutine pechli(resu, modele, mateco)
         inst = zr(jinst)
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
                     ncmp=1, nomcmp='INST', sr=inst)
-                    
+
 !     CALCUL DES VALEUR DE M EN FONCTION DE L'INSTANT
         m = 1 + 10** (1-inst)
 !

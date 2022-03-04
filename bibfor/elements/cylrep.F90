@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,14 +31,14 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
     integer, intent(inout), optional :: ipaxe
 !   ---------------------------------------------------------------------
 !         CALCUL DE LA MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE CYLINDRIQUE
-!         AU POINT X 
+!         AU POINT X
 !   ------------------------------------------------------------------
-!     IN    NDIM                I  dimension du problème (2 ou 3)     
-!     IN    X(3)                R  coordonnées du point X 
+!     IN    NDIM                I  dimension du problème (2 ou 3)
+!     IN    X(3)                R  coordonnées du point X
 !     IN    AXE_Z(3), ORIG(3)   R  axe z et origine du repère cylindrique
-!     INOUT PGCYL(3,3)          R  matrice de passage du repère global 
-!                                  au repère cylindrique 
-!     INOUT IPAXE              I  compteur (pt sur l'axe z => ipaxe = ipaxe + 1) 
+!     INOUT PGCYL(3,3)          R  matrice de passage du repère global
+!                                  au repère cylindrique
+!     INOUT IPAXE              I  compteur (pt sur l'axe z => ipaxe = ipaxe + 1)
 !
 !     PGCYL est telle que V_{global} = PGCYL * V_{cyl}
 !   -------------------------------------------------------------------
@@ -47,31 +47,31 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
 !
     pgcyl(:,:) = 0.d0
 !
-!   Calcul du premier vecteur axe_r du repère cylindrique 
+!   Calcul du premier vecteur axe_r du repère cylindrique
 !
     axe_r(:) = x(:)-orig(:)
-!   Pour être conforme à chrpel 
+!   Pour être conforme à chrpel
     if (ndim == 2) then
         axe_r(3) = 0.0d0
     endif
     axe_r(:) = axe_r(:)-dot_product(axe_r,axe_z)*axe_z(:)
-!   Pour être conforme à chrpel 
+!   Pour être conforme à chrpel
     if (ndim == 2) then
         axe_r(3) = 0.0d0
     endif
     call normev(axe_r, xnorm)
 !
     if (xnorm .lt. r8prem()) then
-!   si le point x appartient à l'axe z, alors l'axe r n'est pas défini par 
+!   si le point x appartient à l'axe z, alors l'axe r n'est pas défini par
 !   le calcul précédent
-!   on prend un axe arbitraire orthogonal 
-!   à l'axe z 
+!   on prend un axe arbitraire orthogonal
+!   à l'axe z
         if (axe_z(1) .ne. 0.d0 .or. axe_z(2) .ne. 0.d0) then
             axe_r(1) = axe_z(2)
             axe_r(2) = -axe_z(1)
             axe_r(3) = 0.0d0
         else
-!   si axe_z = ez, axe_r = ex  
+!   si axe_z = ez, axe_r = ex
             axe_r(1) = 1.0d0
             axe_r(2) = 0.0d0
             axe_r(3) = 0.0d0
@@ -80,7 +80,7 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
             ipaxe = ipaxe + 1
         endif
     endif
-!  Calcul du second vecteur axe_t du repère cylindrique     
+!  Calcul du second vecteur axe_t du repère cylindrique
 !  axe_t = axe_z x axe_r
     call provec(axe_z, axe_r, axe_t)
     call normev(axe_t, xnorm)
@@ -88,7 +88,7 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
     pgcyl(:,1) = axe_r
     pgcyl(:,2) = axe_z
     pgcyl(:,3) = axe_t
-!  pour tests 
+!  pour tests
 ! pgcyl(:,1) = axe_z
 ! pgcyl(:,2) = axe_t
 ! pgcyl(:,3) = -axe_r

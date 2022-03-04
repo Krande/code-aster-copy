@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,7 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
         call rcvalb(fami, kpg, spt, poum, mate,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, 'NU', valres, icodre, 2)
-        nu=valres(1)            
+        nu=valres(1)
         call rctrac(mate, 1, 'SIGM', 0.d0, jprol,&
                     jvale, nbvale, young)
         call rcfonc('V', 1, jprol, jvale, nbvale,&

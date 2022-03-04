@@ -195,7 +195,7 @@ subroutine crkucv()
 !     0. MATRICE :
 !     -------------
     call getvid('KUCV', 'MATR_AMOR', iocc=iocc, scal=mamor, nbret=n1)
- 
+
     call mtdscr(mamor)
     call jeveuo(mamor(1:19)//'.&INT', 'E', lmat)
     call dismoi('NOM_NUME_DDL', mamor, 'MATR_ASSE', repk=numem)
@@ -278,7 +278,7 @@ subroutine crkucv()
                 matric(1) = matr
             endif
             call refdaj('F', resu19, (nbordr2-nbordr1), numem, 'DYNAMIQUE',&
-                            matric, ier)                  
+                            matric, ier)
         end if
     endif
 !

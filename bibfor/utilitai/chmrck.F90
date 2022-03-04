@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
             do k=1,nbrc
                if ( zk32(arc+k-1) .eq. nomrc) then
                   ipos=k
-               endif   
+               endif
             end do
             if (ipos .gt. 0) then
                 nbmtrc = nbmtrc + 1

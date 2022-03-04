@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -158,7 +158,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
         ui(3)=zr(ibas-1+6*(ni-1)+6)
         uf(1)=zr(ibas-1+6*(nf-1)+4)
         uf(2)=zr(ibas-1+6*(nf-1)+5)
-        uf(3)=zr(ibas-1+6*(nf-1)+6) 
+        uf(3)=zr(ibas-1+6*(nf-1)+6)
         cosi=ddot(3,ui,1,uf,1)/(sqrt(ddot(3,ui,1,ui,1))*&
                                 sqrt(ddot(3,uf,1,uf,1)))
         theta=trigom('ACOS', cosi)
@@ -194,11 +194,11 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
                 yn = zr(ifon-1+4*(j-1)+2)
                 zn = 0.d0
 !           BASE AU PT N
-                un(1)=zr(ibas-1+4*(j-1)+1) 
-                un(2)=zr(ibas-1+4*(j-1)+2) 
+                un(1)=zr(ibas-1+4*(j-1)+1)
+                un(2)=zr(ibas-1+4*(j-1)+2)
                 un(3)=0.d0
-                vn(1)=zr(ibas-1+4*(j-1)+3) 
-                vn(2)=zr(ibas-1+4*(j-1)+4) 
+                vn(1)=zr(ibas-1+4*(j-1)+3)
+                vn(2)=zr(ibas-1+4*(j-1)+4)
                 vn(3)=0.d0
 !           DISTANCE MN
                 d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,8 +73,8 @@ implicit none
             endif
         endif
     endif
-    
-    
+
+
 !    if (present(cycling_type)) then
 !       if (cycling_type .eq. -4)  indi_cont_eval = 0
 !       if (cycling_type .eq. -5)  indi_cont_eval = 0
@@ -82,5 +82,5 @@ implicit none
 !       if (cycling_type .eq. -7)  indi_cont_eval = 0
 !       if (cycling_type .eq. -8)  indi_cont_eval = 0
 !    endif
-    
+
 end subroutine

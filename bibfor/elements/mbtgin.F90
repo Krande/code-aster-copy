@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine mbtgin(nno,kpg,dff,sigpk2,dsigpk2,ipoids,h,covadef,ktgt)
     real(kind=8) :: ktgt(3*nno,3*nno)
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DE LA MATRICE TANGENTE ELEMENTAIRE DUE
-!                          AUX EFFORTS INTERNES POUR LES MEMBRANES EN 
+!                          AUX EFFORTS INTERNES POUR LES MEMBRANES EN
 !                          GRANDES DEFORMATIONS
 ! ----------------------------------------------------------------------
 ! IN  NNO          NOMBRE DE NOEUDS
@@ -47,27 +47,27 @@ subroutine mbtgin(nno,kpg,dff,sigpk2,dsigpk2,ipoids,h,covadef,ktgt)
 ! ----------------------------------------------------------------------
 !
     integer :: a, b, p, q, i, j, alpha, beta, gamma, delta, kron
-    
+
     call r8inir(3*nno*3*nno, 0.d0, ktgt, 1)
-    
+
     do a= 1, nno
         do b = 1, nno
             do p = 1, 3
                 do q = 1, 3
                     i = 3*(a-1) + p
                     j = 3*(b-1) + q
-                    
+
                     if (p .eq. q) then
                         kron = 1
                     else
                         kron = 0
                     endif
-                    
+
                     do alpha = 1, 2
                         do beta = 1, 2
                             do gamma = 1, 2
                                 do delta = 1, 2
-                                    
+
                                     ktgt(i,j) = ktgt(i,j) +                             &
                                                 dff(alpha,a)*dff(beta,b)*(              &
                                                 kron*sigpk2(beta,alpha) +               &
@@ -75,7 +75,7 @@ subroutine mbtgin(nno,kpg,dff,sigpk2,dsigpk2,ipoids,h,covadef,ktgt)
                                                 dsigpk2(gamma,alpha,beta,delta) +       &
                                                 dsigpk2(gamma,alpha,delta,beta)))*      &
                                                 h*zr(ipoids+kpg-1)
-                                    
+
                                 end do
                             end do
                         end do
@@ -85,5 +85,5 @@ subroutine mbtgin(nno,kpg,dff,sigpk2,dsigpk2,ipoids,h,covadef,ktgt)
             end do
         end do
     end do
-      
+
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
         end do
         tabcrz(i)=i
     end do
-    
+
 !
     if (nb_node .ge. 1 .and. iret .ne. 0) then
         do i = 1, nb_node

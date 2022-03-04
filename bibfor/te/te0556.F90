@@ -56,7 +56,7 @@ character(len=16) :: option, nomte
     integer :: i, ifa, ipgf, isspg, j
     integer :: nfh, ddld, ddlm, ddlp, ddlc, nddls, nddlm
     integer :: nnop, nnops, nnopm, dimuel, jheavn, ncompn
-    integer :: lact(16), vstnc(32), jstno, nlact(2), algocr  
+    integer :: lact(16), vstnc(32), jstno, nlact(2), algocr
     integer :: ndim, nbspg, contac, ibid, iadzi, iazk24, pos(16)
     integer :: igeom, idepm, idepd, jheafa, ncomph, jfisco
     integer :: jptint, jaint, jcface, jlonch, jbasec, jdonco
@@ -76,7 +76,7 @@ character(len=16) :: option, nomte
     parameter    (nfimax=10)
     integer :: fisc(2*nfimax), fisco(2*nfimax)
     type(THM_DS) :: ds_thm
-!  
+!
 !......................................................................
 !
 
@@ -89,17 +89,17 @@ character(len=16) :: option, nomte
     endif
     rela = 0.d0
     nbspg= 0
-    
+
 !   INTIALISATION JMATE POUR DETECTER EVENTUELLES ERREURS JEVEUX
-    jmate=1    
+    jmate=1
 !
 !   INITIALISATION DU NOMBRE DE DDL PAR NEOUD, DU TYPE DE CONTACT ET
 !   DES ADRESSES POUR LES DIFFERENTS TERMES DE L'OPERATEUR TANGENT
-!   (CAS DE LA FRACTURE UNIQUEMENT) 
+!   (CAS DE LA FRACTURE UNIQUEMENT)
     matri(:,:) = 0.d0
     call xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
 !
-!   INITIALISATION DE LA DIMENSION DE L'ELEMENT PRINCIPAL, DU NOMBRE DE 
+!   INITIALISATION DE LA DIMENSION DE L'ELEMENT PRINCIPAL, DU NOMBRE DE
 !   NOEUDS PARENTS (SOMMET + MILIEU)
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop, nnos=nnops)
@@ -117,7 +117,7 @@ character(len=16) :: option, nomte
         call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)
         ncompn = jtab(2)/jtab(3)
-    endif 
+    endif
     jfisno = 1
     jheano = 1
     jfisco = 1
@@ -157,7 +157,7 @@ character(len=16) :: option, nomte
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PCOMPOR', 'L', icompo)
-    call jevech('PCARCRI', 'L', icarcr)      
+    call jevech('PCARCRI', 'L', icarcr)
     call jevech('PMATUNS', 'E', imatt)
     call jevech('PSTANO', 'L', jstno)
 !
@@ -189,7 +189,7 @@ character(len=16) :: option, nomte
        vstnc(i) = 1
     end do
 !
-!   LOGICAL POUR L'ELIMINATION DES LAGRANGES EN TROP 
+!   LOGICAL POUR L'ELIMINATION DES LAGRANGES EN TROP
     lelim=.false.
 !
     do ifiss = 1, nfiss
@@ -240,7 +240,7 @@ character(len=16) :: option, nomte
           pla(i) = 0
        end do
 !
-!   DEFINITION DU NOMBRE DE POINTS D'INTERSECTION, DU NOMBRE FACETTE ET 
+!   DEFINITION DU NOMBRE DE POINTS D'INTERSECTION, DU NOMBRE FACETTE ET
 !   DU NOMBRE DE POINT PAR FACETTE
        ninter=zi(jlonch+3*(ifiss-1)-1+1)
        nface=zi(jlonch+3*(ifiss-1)-1+2)
@@ -253,11 +253,11 @@ character(len=16) :: option, nomte
                    nfh, nfiss, ninter, nlact, nnop,&
                    nnol, nnopm, nnops, pla, pos, typma, jstno)
 !
-!   SI IL N'Y A PAS DE FACETTES POUR LA FRACTURE ON SORT 
+!   SI IL N'Y A PAS DE FACETTES POUR LA FRACTURE ON SORT
        if (ninter.eq.0) goto 200
-!   RECUPERATION DU TYPE D'ELEMENT POUR LA FACETTE DE CONTACT ET 
+!   RECUPERATION DU TYPE D'ELEMENT POUR LA FACETTE DE CONTACT ET
 !   DE LA FAMILLE DE POINT D'INTEGRATION (P2P1 UNIQUEMENT)
-       if ((ndim.eq.2).and.(contac.ge.2)) then 
+       if ((ndim.eq.2).and.(contac.ge.2)) then
           elc='SE3'
           ninteg = nint(zr(jdonco-1+(ifiss-1)*ncompd+4))
           call xminte(ndim, ninteg, fpg)
@@ -288,12 +288,12 @@ character(len=16) :: option, nomte
        else
           ASSERT(.false.)
        endif
-!    
-!   RECUPERATION DES DIFFERENTES ADRESSES POUR L'INTEGRATION SUR LES 
+!
+!   RECUPERATION DES DIFFERENTES ADRESSES POUR L'INTEGRATION SUR LES
 !   FACETTES DE CONTACT
 !
        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
-                        npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef) 
+                        npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 !   DEFINTION DE LA CONNECTIVITE DES FACTETTES DE CONTACT
 !
@@ -310,7 +310,7 @@ character(len=16) :: option, nomte
        end do
 !
 !   CALCUL DES MATRICES POUR LA FRACTURE
-! 
+!
        do ifa = 1, nface
           do ipgf = 1, npgf
 !
@@ -364,11 +364,11 @@ character(len=16) :: option, nomte
        call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                    zi(jstno), .false._1, option, nomte,&
                    zr(imatt), vect, nddlm, nfiss, jfisno, .false._1, contac)
-    endif 
+    endif
 !
 !   SUPPRESSION DES DDLS DE CONTACT
 !
-    if (lelim) then 
+    if (lelim) then
        call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                    vstnc, .false._1, option, nomte,&
                    zr(imatt), vect, nddlm, nfiss, jfisno, .true._1, contac)

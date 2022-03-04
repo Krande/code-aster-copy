@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ implicit none
 !                           repere(2:4) : ANGL_AXE
 !                           repere(5:7) : ORIG_AXE
 ! Out irep             : 0 if matrix is trivial (identity), 1 otherwise
-! Out matr_tran        : transition matrix 
+! Out matr_tran        : transition matrix
 ! In  xyzgau           : coordinates of Gauss point (for ANGL_AXE case)
 !
 ! --------------------------------------------------------------------------------------------------

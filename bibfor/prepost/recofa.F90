@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'MATAKE_B', v(1), icodre(1), 0)
-        valb=v(1)            
+        valb=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_65')
         endif
@@ -110,7 +110,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_B ', v(1), icodre(1), 0)
-        valb=v(1) 
+        valb=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_68')
         endif
@@ -160,7 +160,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         endif
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'D_VAN_B ', v(1), icodre(1), 0)
-        valb=v(1)            
+        valb=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_74')
         endif
@@ -179,7 +179,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
     if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
                     1, 'FATSOC_A', v(1), icodre(1), 0)
-        vala=v(1)            
+        vala=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_75')
         endif

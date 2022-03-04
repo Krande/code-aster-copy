@@ -21,7 +21,7 @@ subroutine pmpitp(typfib,flp, nbpout, yj, zj, fl)
 ! -----------------------------------------------------------
 ! ---  INTEGRATION DES CONTRAINTES SUR LA SECTION MULTIPOUTRE
 !      (CALCUL DES FORCES INTERIEURES)
-! --- IN 
+! --- IN
 !       flp(12,*) : tableau de forces elementaires sur sous-poutres
 !       nbpout    : nombre d assemblages de fibres
 !       yi(*)     : position Y des sous-poutres
@@ -34,7 +34,7 @@ subroutine pmpitp(typfib,flp, nbpout, yj, zj, fl)
     integer :: i, nbpout, typfib
     real(kind=8) :: fl(*), flp(12,*), yj(*), zj(*)
 !
-    if (typfib.eq.2) then        
+    if (typfib.eq.2) then
       call r8inir(12, 0.d0, fl, 1)
       do  i = 1, nbpout
         fl(1)=fl(1)+flp(1,i)
@@ -50,7 +50,7 @@ subroutine pmpitp(typfib,flp, nbpout, yj, zj, fl)
         fl(11)=fl(11)+flp(11,i)+flp(7,i)*zj(i)
         fl(12)=fl(12)+flp(12,i)-flp(7,i)*yj(i)
       enddo
-   else if (typfib .eq. 3) then     
+   else if (typfib .eq. 3) then
       call r8inir(18, 0.d0, fl, 1)
       do  i = 1, nbpout
         fl(1)=fl(1)+flp(1,i)
@@ -72,6 +72,6 @@ subroutine pmpitp(typfib,flp, nbpout, yj, zj, fl)
         fl(17)=fl(17)+flp(7,i)*zj(i)
         fl(18)=fl(18)-flp(7,i)*yj(i)
       enddo
-   end if 
+   end if
 !
 end subroutine

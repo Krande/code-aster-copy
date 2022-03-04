@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -124,7 +124,7 @@ subroutine te0020(nomopt, nomte)
         xiz = carsec(4)
     endif
 !
-    
+
     if (nomopt(15:16).eq.'_R')then
         call jevech('PEPSINR', 'L', idefi)
         epx(1) = zr(idefi)
@@ -146,7 +146,7 @@ subroutine te0020(nomopt, nomte)
             valpar(1) = zr(igeom+(ino-1)*3-1+1)
             valpar(2) = zr(igeom+(ino-1)*3-1+2)
             valpar(3) = zr(igeom+(ino-1)*3-1+3)
-            
+
             call fointe('FM', zk8(idefi), 4, nompar, valpar,&
                         epx(ino), ier)
             call fointe('FM', zk8(idefi+1), 4, nompar, valpar,&

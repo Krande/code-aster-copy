@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,23 +34,23 @@ subroutine partition3d(sige6,sige3,vsige33,vsige33t,siget6,&
 !   declaration des varibles locales
       real(kind=8) :: sige33(3,3)
       real(kind=8) :: x33(3,3),siget33(3,3),sigec33(3,3),sige33p(3,3),sige6p(6)
-      integer i   
-   
+      integer i
+
       sige33(:,:)=0.d0
       x33(:,:)=0.d0
       siget33(:,:)=0.d0
       sigec33(:,:)=0.d0
       sige33p(:,:)=0.d0
       sige6p(:)=0.d0
-     
+
 
 !   rangement des contraintes effectives en tableau 3*3
       call x6x33(sige6,sige33)
 !   diagonalisation contraintes effectives actuelles et valeurs propres par la methode de jacobi
       call b3d_valp33(sige33,sige3,vsige33)
-!   creation de la matrice de passage inverse    
+!   creation de la matrice de passage inverse
       call transpos1(vsige33t,vsige33,3)
-!   decomposition des contraintes principales en partie positive et négative dans 
+!   decomposition des contraintes principales en partie positive et négative dans
 !   la base principale (avec prise en compte des erreurs numeriques de diagonalisation)
 !   on suppose sige33p pas tout a fait diagonale par defaut et on utilise
 !   que les contraintes normales positves pour faire la partition

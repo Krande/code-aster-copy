@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ subroutine rc32s0b(seis, sig, trescamax)
 !
                         st(j) =  sig(j)+e0(i1)*seis(j)+e0(i2)*seis(6+j)+&
                                         e0(i3)*seis(2*6+j)  +e0(i4)*seis(3*6+j)+&
-                                        e0(i5)*seis(4*6+j)  +e0(i6)*seis(5*6+j)  
+                                        e0(i5)*seis(4*6+j)  +e0(i6)*seis(5*6+j)
 !
 213                 continue
                     call rctres(st, tresca)

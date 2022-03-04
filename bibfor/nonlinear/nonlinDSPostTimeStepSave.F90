@@ -122,7 +122,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
         else if (mod45 .eq. 'FLAM') then
             if (nb_dof_stab .eq. 0) then
                 mode_type = 'MODE_FLAMB'
-                if (l_savefield) then 
+                if (l_savefield) then
                     call rsadpa(sdmode, 'L', 1, 'CHAR_CRIT', i_freq, 0, sjv=jv_para)
                     call rsexch('F', sdmode, 'DEPL', i_freq, field, iret)
                     call gcncon('_', ds_name)
@@ -163,7 +163,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
     if (mod45 .eq. 'FLAM') then
         if (nb_dof_stab .ne. 0) then
             mode_type = 'MODE_STAB'
-            if (l_savefield) then 
+            if (l_savefield) then
                 call rsadpa(sdstab, 'L', 1, 'CHAR_STAB', i_freq, 0, sjv=jv_para)
                 call rsexch('F', sdstab, 'DEPL', i_freq, field, iret)
                 call gcncon('_', ds_name)

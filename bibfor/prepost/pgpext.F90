@@ -24,7 +24,7 @@ subroutine pgpext(sd_pgp)
 ! - MULT_APPUI : multiple pinning (seismic studies)
 ! - ACCE_MONO_APPUI : entraining acceleration
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -113,7 +113,7 @@ subroutine pgpext(sd_pgp)
             .and.(icorrst.ne.0) ) then
 
 !           Find the ddl id's for all (node,component) couples for the observation 'iobs'
-!           and from the dyna_gene extract .IPSD for all required ddl's 
+!           and from the dyna_gene extract .IPSD for all required ddl's
 !           size = [nbexcit x nbddl ]   (note : nbddl = physlen)
 
             call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=nume, arret='F')
@@ -162,7 +162,7 @@ subroutine pgpext(sd_pgp)
                 end if
             end do
 
-!           Sum up, for all excitations, .IPSD(iddl,iexcit) * .F***(iexcit,iinst) 
+!           Sum up, for all excitations, .IPSD(iddl,iexcit) * .F***(iexcit,iinst)
 !           add up to the table result for the given field at (iinst, iddl)
 
             do iinst = 1, nbinst
@@ -218,7 +218,7 @@ subroutine pgpext(sd_pgp)
                                 acce, ier)
                     facce(iinst) = acce
                 end do
-    
+
 !               Add up, in the result table for the accelerations of the requested nodes,
 !               the value of coef_dir(icomp)*facce(iinst) for component icomp and instant iinst
                 do iinst = 1, nbinst

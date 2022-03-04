@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine insema(elem_nbnode , elem_dime, elem_coor  , pair_tole,&
 !
 implicit none
 !
-#include "asterfort/assert.h"  
+#include "asterfort/assert.h"
 !
 ! aslint: disable=W1306
 !
@@ -80,7 +80,7 @@ implicit none
     do i_node=2, elem_nbnode
         list_node_next(i_node-1) = i_node
     end do
-    list_node_next(elem_nbnode) = 1   
+    list_node_next(elem_nbnode) = 1
 !
 ! - Loop on edges of element
 !
@@ -98,13 +98,13 @@ implicit none
         det=b*c-a*d
         if (sqrt(det**2) .gt. pair_tole) then
             t1     = 1/det*(d*(x1-x2)-c*(y1-y2))
-            t2     = 1/det*(b*(x1-x2)-a*(y1-y2)) 
+            t2     = 1/det*(b*(x1-x2)-a*(y1-y2))
             aux(1) = (-t1*a-t2*c)-(x1-x2)
             aux(2) = ( t1*b+t2*d)-(y1-y2)
             norm   = sqrt(aux(1)**2+aux(2)**2)
         else
             t1     = -1.d0
-            t2     = -1.d0    
+            t2     = -1.d0
         endif
 !
 ! ----- Test intersection

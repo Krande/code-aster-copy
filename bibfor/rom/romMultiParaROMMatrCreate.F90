@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,19 +74,19 @@ character(len=19), intent(in) :: syst_matr
     nbModeMaxi = base%nbModeMaxi
     nbMatr     = ds_multipara%nb_matr
 !
-    if(ds_multipara%syst_type .eq.'R') then 
+    if(ds_multipara%syst_type .eq.'R') then
        call jeveuo(syst_matr, 'E', vr = vr_syst_matr)
        vr_syst_matr(:) = 0.d0
-    else if(ds_multipara%syst_type .eq.'C') then 
+    else if(ds_multipara%syst_type .eq.'C') then
        call jeveuo(syst_matr, 'E', vc = vc_syst_matr)
-       vc_syst_matr(:) = dcmplx(0.d0,0.d0)  
-    else 
+       vc_syst_matr(:) = dcmplx(0.d0,0.d0)
+    else
        ASSERT(ASTER_FALSE)
-    end if 
+    end if
 !
 ! - Compute matrix
-! 
-    if (ds_multipara%syst_type .eq.'R') then 
+!
+    if (ds_multipara%syst_type .eq.'R') then
         do iMatr = 1, nbMatr
            l_coef_cplx = ds_multipara%matr_coef(iMatr)%l_cplx
            l_coef_real = ds_multipara%matr_coef(iMatr)%l_real
@@ -97,13 +97,13 @@ character(len=19), intent(in) :: syst_matr
            endif
            call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vr = vr_matr_red)
            do iMode = 1, nbMode
-              do jMode = 1, nbMode 
+              do jMode = 1, nbMode
                  vr_syst_matr(nbMode*(iMode-1)+jMode) = vr_syst_matr(nbMode*(iMode-1)+jMode)+&
-                                          vr_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_r 
-              end do 
+                                          vr_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_r
+              end do
             end do
          end do
-    else if (ds_multipara%syst_type .eq.'C') then 
+    else if (ds_multipara%syst_type .eq.'C') then
         do iMatr = 1, nbMatr
            l_coef_cplx = ds_multipara%matr_coef(iMatr)%l_cplx
            l_coef_real = ds_multipara%matr_coef(iMatr)%l_real
@@ -116,13 +116,13 @@ character(len=19), intent(in) :: syst_matr
            endif
            call jeveuo(ds_multipara%matr_redu(iMatr), 'L', vc = vc_matr_red)
            do iMode = 1, nbMode
-              do jMode = 1, nbMode 
+              do jMode = 1, nbMode
                  vc_syst_matr(nbMode*(iMode-1)+jMode) = vc_syst_matr(nbMode*(iMode-1)+jMode)+&
-                                          vc_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_cplx 
-              end do 
+                                          vc_matr_red(nbModeMaxi*(iMode-1)+jMode)*coef_cplx
+              end do
             end do
          end do
-    else 
+    else
        ASSERT(ASTER_FALSE)
     end if
 !

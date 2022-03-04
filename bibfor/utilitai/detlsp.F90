@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine detlsp(matasz, solvez)
             blrepsbd = -123.d0
             precbd = 'S'
             rankbd='F'
-            renumbd='XXXXX' 
+            renumbd='XXXXX'
             call crsvfm(solvbd, matass, precbd, rankbd,pcpivbd, usersmbd, blrepsbd, renumbd, ibid)
             call amumph('DETR_MAT', solvbd, matass, [r8bid], [c16bid],&
                         ' ', 0, iret, .true._1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ function xfem_cmps(nocmp, phys)
         goto 99
 ! ON RAJOUTE LES CPMS DE CONT/FROT
     elseif (nocmp .eq. 'LAGS_C' .or. nocmp .eq. 'LAGS_F1' .or. nocmp .eq. 'LAGS_F2' .or.  &
-            nocmp .eq. 'LAG2_C' .or. nocmp .eq. 'LAG2_F1' .or. nocmp .eq. 'LAG2_F2' .or. & 
-            nocmp .eq. 'LAG3_C' .or. nocmp .eq. 'LAG3_F1' .or. nocmp .eq. 'LAG3_F2' .or. & 
+            nocmp .eq. 'LAG2_C' .or. nocmp .eq. 'LAG2_F1' .or. nocmp .eq. 'LAG2_F2' .or. &
+            nocmp .eq. 'LAG3_C' .or. nocmp .eq. 'LAG3_F1' .or. nocmp .eq. 'LAG3_F2' .or. &
             nocmp .eq. 'LAG4_C' .or. nocmp .eq. 'LAG4_F1' .or. nocmp .eq. 'LAG4_F2' .or. &
             nocmp .eq. 'PRE_FLU' .or. nocmp .eq. 'LAG_FLI' .or. nocmp .eq. 'LAG_FLS' .or. &
             nocmp .eq. 'PR2_FLU' .or. nocmp .eq. 'LA2_FLI' .or. nocmp .eq. 'LA2_FLS' .or. &
@@ -75,8 +75,8 @@ function xfem_cmps(nocmp, phys)
 ! ON RAJOUTE LES CPMS DE HM-XFEM
     elseif (nocmp .eq. 'H1PRE1' .or. nocmp .eq. 'H2PRE1' .or. nocmp .eq. 'H3PRE1') then
         goto 99
-! ON TESTE LES DDLS DE PHYSIQUES 
-    elseif( present(phys)) then 
+! ON TESTE LES DDLS DE PHYSIQUES
+    elseif( present(phys)) then
        if (phys .eq. 'OUI' .and. &
         (nocmp .eq. 'TEMP'.or. nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ' .or. &
          nocmp .eq. 'PRE1'))&

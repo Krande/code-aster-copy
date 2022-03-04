@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -149,7 +149,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                 else
                         imait(2)=xcalc_heav(heavn(nne+i),&
                                             hea_fa(2),&
-                                            heavn((1+nfhe)*nne+nfhm*nnm+i))  
+                                            heavn((1+nfhe)*nne+nfhm*nnm+i))
                 endif
                 do 45 iddl = 1, 1+nfhm
                     ii = iin + (iddl-1)*ndim + j

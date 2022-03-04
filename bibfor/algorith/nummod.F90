@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine nummod(nugene, modmec)
     call rsorac(modmec, 'LONUTI', ibid, rbid, k8b,&
                 cbid, rbid, k8b, tmod, 1,&
                 n1)
-    nbmode=tmod(1)            
+    nbmode=tmod(1)
 !
 !-----TEST NBVECT A UTILISER / NBMODE
 !

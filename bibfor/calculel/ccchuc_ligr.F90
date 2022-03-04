@@ -67,7 +67,7 @@ character(len=19), intent(out) :: ligrel_new
     same = .true.
     call jeveuo(list_elem_new, 'L', jelem)
     noojb = '12345678.LIGR000000.NBNO'
-    
+
     if (nb_elem_old < 0)then
         nb_elem = -nb_elem_old
         force_new_ligrel = .true.

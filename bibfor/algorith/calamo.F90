@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,8 +96,8 @@ subroutine calamo(nomres, classe, basmod)
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
     ntail = nbdef* (nbdef+1)/2
-    call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', & 
-                   'CONSTANT',1)   
+    call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
+                   'CONSTANT',1)
     call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
     call jeveuo(jexnum(nomres(1:18)//'_VALE', 1), 'E', ldres)

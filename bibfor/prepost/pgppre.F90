@@ -23,7 +23,7 @@ subroutine pgppre(sd_pgp)
 ! 2 - Establish a list of *observations* to be calculated, to be saved
 !     in a dedicated developper data structure (sd_pgp)
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -207,7 +207,7 @@ subroutine pgppre(sd_pgp)
         call jeveuo(sd_pgp//'.INDI_SUPP.TEMP','L',ivsup)
         if (typch.eq.'NOEU') then
             call pgpsav(sd_pgp, 'NUM_NOEU' , nbsupp, iobs=iobs, ivect=zi(ivsup))
-        else 
+        else
             call pgpsav(sd_pgp, 'NUM_MAIL' , nbsupp, iobs=iobs, ivect=zi(ivsup))
         end if
         call jedetr(sd_pgp//'.INDI_SUPP.TEMP')
@@ -251,7 +251,7 @@ subroutine pgppre(sd_pgp)
 !       Note that icorrst identifier can be = 1, in one of two cases:
 !       1 - relative fields when a static correction was provided by the user during the
 !           transient calculation
-!       2 - absolute fields in the case of multiply pinned systems  
+!       2 - absolute fields in the case of multiply pinned systems
 
         if (multap.eq.0) then
             if (champ.eq.'ACCE_ABSOLU') then
@@ -261,12 +261,12 @@ subroutine pgppre(sd_pgp)
 !               by the keyword ACCE_MONO_APPUI
                 call getvid('OBSERVATION', 'ACCE_MONO_APPUI', iocc=iobs, nbret=iret)
                 if (iret.eq.0) then
-!                   ACCE_ABSOLU required but nothing to add to the relative field 
+!                   ACCE_ABSOLU required but nothing to add to the relative field
                     call utmess('A', 'PREPOST_43', si=iobs, &
                                                    nk=3, valk=[resin, champ, champ(1:4)])
                 end if
             else if (champ(5:11).eq.'_ABSOLU') then
-!                   ****_ABSOLU required but nothing to add to the relative field 
+!                   ****_ABSOLU required but nothing to add to the relative field
                 call utmess('A', 'PREPOST_44', si=iobs, &
                                                nk=3, valk=[resin, champ, champ(1:4)])
             end if

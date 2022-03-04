@@ -20,12 +20,12 @@ subroutine dtmprep_noli_yacs(sd_dtm_, sd_nl_, icomp)
     use yacsnl_module , only:  add_trandata
     implicit none
 ! dtmprep_noli_yacs : prepare the calculations for a localized nonlinearity
-!                     introduced using another code (ex. lubrication code). 
+!                     introduced using another code (ex. lubrication code).
 !                     The communication is ensured by YACS.
-!                     This routine adds one or more 
+!                     This routine adds one or more
 !                     occurences to sd_nl and increments NB_NOLI in sd_dtm
 !
-!             icomp : an integer giving the index of occurence of the 
+!             icomp : an integer giving the index of occurence of the
 !                     nonlinearity to be treated under the factor kw
 !                     COMPORTEMENT of the command DYNA_VIBRA.
 !person_in_charge: mohamed-amine.hassini at edf.fr
@@ -57,7 +57,7 @@ subroutine dtmprep_noli_yacs(sd_dtm_, sd_nl_, icomp)
     integer          , intent(in) :: icomp
 
 !   -0.2  Variables locales
-    
+
     integer            :: inod, gno, mxlevel, ilevel
     integer            :: i, j, iret
     integer            :: ncmp , neq
@@ -84,17 +84,17 @@ subroutine dtmprep_noli_yacs(sd_dtm_, sd_nl_, icomp)
 
 !      print *, "We are preparing data"
 
-  
+
       sd_dtm = sd_dtm_
       sd_nl = sd_nl_
 
-   
+
       ! data are stored at position i
       call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
       ilevel = mxlevel + 1
 
 
-!   --- 1 - Basic information about the mesh and numbering 
+!   --- 1 - Basic information about the mesh and numbering
 !
       call dtmget(sd_dtm, _NUM_DDL, kscal=nume)
       call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
@@ -165,7 +165,7 @@ subroutine dtmprep_noli_yacs(sd_dtm_, sd_nl_, icomp)
       !call posddl('NUME_DDL', nume, nomno, cmpno, nn1, nddl1)
       !print *, "position ddl", nddl1
 
-    
+
     ! stockage de la deformee modale
       do j = 1, nbmode
           do i=1, ncmp
@@ -194,7 +194,7 @@ subroutine dtmprep_noli_yacs(sd_dtm_, sd_nl_, icomp)
 !      print *, "fin de prep_yacs"
 
       AS_DEALLOCATE(vi = iddl)
-!      
+!
       call jedema()
 
 

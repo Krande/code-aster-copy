@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ character(len=16), intent(in) :: option, nomte
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt, jheavn
     integer :: jtab(7), nnos, idim, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
-    aster_logical :: matsym, l_nonlin, l_line 
+    aster_logical :: matsym, l_nonlin, l_line
     real(kind=8) :: angmas(7), bary(3), crit(1), sig(1), vi(1)
     character(len=16) :: defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred

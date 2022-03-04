@@ -49,56 +49,56 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nvi,nbmat
     real(kind=8) :: invar,s(6),vin(nvi),mater(nbmat,2),ucrip,seuil,tmp
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     real(kind=8) :: sii,sigc,pref
     real(kind=8) :: rcos3t,r0c,rtheta
     real(kind=8) :: paraep(3),varpl(4)
-    
+
     !!!
     !!! Recuperation de sparametres materiau
     !!!
-    
+
     sigc=mater(3,2)
     pref=mater(1,2)
-    
+
     !!!
     !!! Calcul de la norme de s
     !!!
-    
+
     call lcprsc(s,s,sii)
     sii=sqrt(sii)
-    
+
     !!!
     !!! Appel a h0c et h(theta)
     !!!
-    
+
     rcos3t=cos3t(s,pref,1.d-8)
     call srhtet(nbmat,mater,rcos3t,r0c,rtheta)
-    
+
     !!!
     !!! Recuperation des parametres d'ecrouissage
     !!!
-    
+
     call srvarp(vin,nvi,nbmat,mater,tmp,paraep)
     call srvacp(nbmat, mater, paraep, varpl)
-    
+
     !!!
     !!! Calcul de fp
     !!!
-    
+
     ucrip=varpl(1)*sii*rtheta+varpl(2)*invar+varpl(3)
-    
+
     if (ucrip.lt.0.d0) goto 100
-    
+
     seuil=sii*rtheta-sigc*r0c*(ucrip**paraep(1))
-    
+
 100  continue
 
 end subroutine

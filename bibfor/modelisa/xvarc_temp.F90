@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,& 
+subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
                       nboccv, carte)
     implicit none
 #include "asterf_types.h"
@@ -45,7 +45,7 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
 ! person_in_charge: sam.cuvilliez at edf.fr
 ! ----------------------------------------------------------------------
 !
-!     AFFE_MATERIAU / AFFE_VARC 
+!     AFFE_MATERIAU / AFFE_VARC
 !
 !     -> cas particulier du chainage thermo-mecanique avec X-FEM
 !
@@ -113,14 +113,14 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
     if (icode_ini .ne. 0) goto 999
 !
 ! ----------------------------------------------------------------------
-! --- TEMP_ELGA est present -> on s'est assure que l'utilisateur veut 
+! --- TEMP_ELGA est present -> on s'est assure que l'utilisateur veut
 ! --- faire du chainage thermo-mecanique avec un resultat thermique xfem.
 ! --- Il faut faire des verifications supplementaires
 ! ----------------------------------------------------------------------
 !
 !   evol doit faire reference a une et une seule sd_modele "modevo"
 !   (pb par ex. si on a fait une mauvaise utilisation de CREA_RESU)
-!   -> on recupere modevo via le ligrel de definition des cham_elem 
+!   -> on recupere modevo via le ligrel de definition des cham_elem
 !      TEMP_ELGA, ligrel qui doit lui aussi etre unique
     AS_ALLOCATE(vk24=vligr, size=nbord)
     do iord=1,nbord
@@ -177,7 +177,7 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
     call jeveuo(lismai, 'L', jadr=jmax)
 !
 ! ----------------------------------------------------------------------
-! --- modification dans la carte du nom symbolique du champ de 
+! --- modification dans la carte du nom symbolique du champ de
 ! --- temperature pour ces mailles : 'TEMP' -> 'TEMP_ELGA'
 ! ----------------------------------------------------------------------
 !

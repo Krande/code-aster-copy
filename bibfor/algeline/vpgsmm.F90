@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -136,7 +136,7 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
             else
                 zi(ireor1+i)  =zi(ireor1+i-1)
             endif
-        endif 
+        endif
  67 continue
     i=1
     compt1=0
@@ -162,7 +162,7 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb,&
     else
         i=i+1
         if (i .lt. nconv) goto 68
-    endif 
+    endif
 !
     compt3=nconv
     iauxj=1

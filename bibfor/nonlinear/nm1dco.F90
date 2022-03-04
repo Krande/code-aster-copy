@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,23 +79,23 @@ subroutine nm1dco(fami, kpg, ksp, option, imate,&
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 materi, 'CORR_ACIER', 0, ' ', [0.d0],&
                 1, 'D_CORR', val, codres, 1)
-    dc=val(1)            
+    dc=val(1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 materi, 'CORR_ACIER', 0, ' ', [0.d0],&
                 1, 'ECRO_K', val, codres, 1)
-    k=val(1)            
+    k=val(1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 materi, 'CORR_ACIER', 0, ' ', [0.d0],&
                 1, 'ECRO_M', val, codres, 1)
-    m=val(1)           
+    m=val(1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 materi, 'CORR_ACIER', 0, ' ', [0.d0],&
                 1, 'SY', val, codres, 1)
-    sy=val(1)            
+    sy=val(1)
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 materi, 'ELAS', 0, ' ', [0.d0],&
                 1, 'NU', val, codres, 1)
-    v=val(1)            
+    v=val(1)
 !
 ! --- PARAMETRES DE CONVERGENCE
     resi = crildc(3)

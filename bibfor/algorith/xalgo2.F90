@@ -98,7 +98,7 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
     call xstudo(ndime, ninter, npts, nptm, ainter,&
                 nbpi, ip1, ip2, pm1a, pm1b,&
                 pm2)
-!    RECHERCHE DU NOEUD A 
+!    RECHERCHE DU NOEUD A
     noeua=0
     if (ninter .eq. 2 .and. npts .eq. 0) then
         a1=nint(ainter(zxain*(1-1)+1))
@@ -121,7 +121,7 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
         noeua=ar(a2,1)
     else if (ndime .eq. 1) then
         a1=nint(ainter(zxain*(1-1)+1))
-        noeua=ar(a1,1)  
+        noeua=ar(a1,1)
     else
         ASSERT(.false.)
     endif

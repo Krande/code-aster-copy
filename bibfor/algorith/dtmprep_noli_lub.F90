@@ -20,12 +20,12 @@ subroutine dtmprep_noli_lub(sd_dtm_, sd_nl_, icomp)
     use lub_module, only : add_bearing
     implicit none
 ! dtmprep_noli_yacs : prepare the calculations for a localized nonlinearity
-!                     introduced using another code (ex. lubrication code). 
+!                     introduced using another code (ex. lubrication code).
 !                     The communication is ensured by YACS.
-!                     This routine adds one or more 
+!                     This routine adds one or more
 !                     occurences to sd_nl and increments NB_NOLI in sd_dtm
 !
-!             icomp : an integer giving the index of occurence of the 
+!             icomp : an integer giving the index of occurence of the
 !                     nonlinearity to be treated under the factor kw
 !                     COMPORTEMENT of the command DYNA_VIBRA.
 !person_in_charge: mohamed-amine.hassini at edf.fr
@@ -57,7 +57,7 @@ subroutine dtmprep_noli_lub(sd_dtm_, sd_nl_, icomp)
     integer          , intent(in) :: icomp
 
 !   -0.2  Variables locales
-    
+
     integer            :: inod, mxlevel, ilevel
     integer            :: i, j
     integer            :: ncmp , neq
@@ -81,11 +81,11 @@ subroutine dtmprep_noli_lub(sd_dtm_, sd_nl_, icomp)
       call jemarq()
 
 !      print *, "preparing data"
-  
+
       sd_dtm = sd_dtm_
       sd_nl = sd_nl_
 
-   
+
       ! data are stored at position i
       call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
       ilevel = mxlevel + 1
@@ -101,7 +101,7 @@ subroutine dtmprep_noli_lub(sd_dtm_, sd_nl_, icomp)
       end if
 
 
-!   --- 1 - Basic information about the mesh and numbering 
+!   --- 1 - Basic information about the mesh and numbering
 !
       call dtmget(sd_dtm, _NUM_DDL, kscal=nume)
       call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
@@ -126,12 +126,12 @@ subroutine dtmprep_noli_lub(sd_dtm_, sd_nl_, icomp)
       call getvtx(motfac, 'NOEUD', iocc=icomp, scal=nomno, nbret=inod)
       call nlsav(sd_nl, _NO1_NAME, 1, iocc=ilevel, kscal=nomno)
 
-!--   
+!--
 
       !print *, "retrieve component..."
 
       ! two components DX and DY
-      ncmp = 2 
+      ncmp = 2
       AS_ALLOCATE( vi = iddl, size= ncmp )
       !call nlinivec(sd_nl, _YACS_IDDL, ncmp , iocc=ilevel, vi=iddl)
       call posddl('NUME_DDL', nume, nomno, 'DX      ', nn1, iddl(1))
@@ -151,7 +151,7 @@ subroutine dtmprep_noli_lub(sd_dtm_, sd_nl_, icomp)
       call dtmget(sd_dtm, _NB_PHYEQ, iscal=neq)
       call nlinivec(sd_nl, _MODAL_DEPL_NO1, ncmp*nbmode, iocc=ilevel, vr=defmod)
 
-    
+
     ! stockage de la deformee modale
       do j = 1, nbmode
           do i=1, ncmp
@@ -186,12 +186,12 @@ subroutine dtmprep_noli_lub(sd_dtm_, sd_nl_, icomp)
 
 !      print *, "fin prepa donne"
 
-      
 
 
 
-      
-!     
+
+
+!
       call jedema()
 
 

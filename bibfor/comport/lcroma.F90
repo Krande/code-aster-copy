@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
     call rcvalb(fami, kpg, ksp, poum, mate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 1, 'NU', val, icodre(1), 2)
-    nu=val(1)            
+    nu=val(1)
     call rcvarc(' ', 'TEMP', poum, fami, kpg, ksp, temp, iret)
     call rctype(mate, 1, 'TEMP', [temp], para_vale, para_type)
     if ((para_type.eq.'TEMP') .and. (iret.eq.1)) then

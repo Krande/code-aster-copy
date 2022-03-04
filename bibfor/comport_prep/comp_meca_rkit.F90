@@ -122,7 +122,7 @@ aster_logical, optional, intent(in) :: l_etat_init_
                           rela_flua  , rela_plas, rela_cpla, rela_coup)
         kit_comp(1) = rela_flua
         kit_comp(2) = rela_plas
-        kit_comp(3) = rela_coup 
+        kit_comp(3) = rela_coup
         kit_comp(4) = rela_cpla
 
     else if (rela_comp .eq. 'KIT_CG') then

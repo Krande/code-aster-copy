@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,12 @@
 subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
                       instam, instap, deps, vim, option, &
                       sigp, vip, dsidep)
-                      
+
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
-    
+
     character(len=*),intent(in) :: fami
     integer,intent(in)          :: kpg
     integer,intent(in)          :: ksp
@@ -59,7 +59,7 @@ subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
     ASSERT(size(sigp).eq.2*ndim)
     ASSERT(size(dsidep,1).eq. 2*ndim)
     ASSERT(size(dsidep,2).eq. 2*ndim)
-    
+
 !   Initialisation
     nd   = 2*ndim
     dt   = instap - instam
@@ -72,21 +72,21 @@ subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
     call rcvalb(fami,kpg,ksp,'+',imate,' ','VISC_ELAS',0,' ',[0.d0],2,nomev,valev,iok,2)
     k   = valev(1)
     tau = valev(2)
-    
-    
+
+
 !   Integration scheme parameters
     a = exp(-dt/tau)
     b = k*tau/dt*(1-a)
-    
-    
+
+
 !   Viscous stress update
     siv = a*sivm + b*deps
-    
+
 !   Post-treatment
     sivi         = 0.5d0*(sivm+siv)
     enerElas     = dot_product(siv,siv)/(2*k)
     incrEnerDiss = dot_product(sivi,sivi)/(k*tau)*dt
-    
+
 !   Storage
     if (resi) then
         sigp      = sigp + siv
@@ -95,7 +95,7 @@ subroutine lcvisc(fami, kpg, ksp, ndim, imate,&
         vip(7)    = enerElas
         vip(8)    = vim(8) + incrEnerDiss
     end if
-    
+
     if (rigi) then
         do i =1,nd
             dsidep(i,i) = dsidep(i,i) + b

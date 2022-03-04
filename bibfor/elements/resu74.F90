@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine resu74(tran, nomres)
     call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
     if (nc.eq.0) crit = 'RELATIF'
     if (np.eq.0) prec = 1.d-6
-   
+
 !
 !      --- RECHERCHE DU NUMERO D'ORDRE DE L'INSTANT DE REPRISE
 !
@@ -121,9 +121,9 @@ subroutine resu74(tran, nomres)
 202 continue
 !
 !     --- Retrieval of DEPL, VITE, and ACCE fields ---
-!     Note : fortran pointers are not used for nomres and resu fields since the 
+!     Note : fortran pointers are not used for nomres and resu fields since the
 !            blas function dcopy is used to copy part of the corresponding variables
-!            jeveux pointers referrals with zr(*+....) in dcopy are possible 
+!            jeveux pointers referrals with zr(*+....) in dcopy are possible
 !
     call jeveuo(tran//'           .DEPL', 'E', vr=depl1)
     call jelira(nomres//'           .DEPL', 'LONUTI', nbsto2)
@@ -138,7 +138,7 @@ subroutine resu74(tran, nomres)
     call wkvect(resu//'           .DEPL', 'G V R', nbstoc, jdepl)
     call jeveuo(resu//'           .DEPL', 'E', vr=deplf)
     call dcopy(nbsto3, depl1, 1, zr(jdepl), 1)
-    call jedetr(tran//'           .DEPL')  
+    call jedetr(tran//'           .DEPL')
 
     call jeveuo(nomres//'           .DEPL', 'E', jdepl2)
     call dcopy(nbsto2-nbmode, zr(jdepl2+nbmode), 1, zr(jdepl+nbsto3), 1)
@@ -184,7 +184,7 @@ subroutine resu74(tran, nomres)
     call wkvect(resu//'           .DISC', 'G V R', nbsauv, jinst)
     call dcopy(nbinst, inst1, 1, zr(jinst), 1)
     call jedetr(tran//'           .DISC')
-    
+
     call jeveuo(nomres//'           .DISC', 'E', jinst2)
     call dcopy(nbsau2-1, zr(jinst2+1), 1, zr(jinst+nbinst), 1)
     call jedetr(nomres//'           .DISC')
@@ -195,7 +195,7 @@ subroutine resu74(tran, nomres)
     call wkvect(resu//'           .PTEM', 'G V R', nbsauv, jpas)
     call dcopy(nbinst, pas1, 1, zr(jpas), 1)
     call jedetr(tran//'           .PTEM')
-    
+
     call jeveuo(nomres//'           .PTEM', 'E', jpas2)
     call dcopy(nbsau2-1, zr(jpas2+1), 1, zr(jpas+nbinst), 1)
     call jedetr(nomres//'           .PTEM')

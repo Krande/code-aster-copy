@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -234,7 +234,7 @@ subroutine op0077()
             call jeveuo(resin(1:8)//'           .ORDR','L',ibid)
             call dcapno(resin, depl, zi(ibid), chamol)
             call dismoi('TYPE_SCA', chamol(1:19), 'CHAM_NO', repk=typesca)
-            
+
             if (isk .eq. 0) then
                 call getvtx(' ', 'SOUS_STRUC', scal=nomsst, nbret=ibid)
                 !-- les routines REGEEC et REGE2C font la meme chose, une en reel,
@@ -247,10 +247,10 @@ subroutine op0077()
                 else
                     ASSERT(.false.)
                 endif
-                
+
             else
                 call getvid(' ', 'SQUELETTE', scal=mailsk, nbret=ibid)
-                
+
                 !-- les routines REGEGL et REGEGC font la meme chose, une en reel,
                 !-- l'autre en complexe. En cas de modification d'une des routines,
                 !-- ne pas oublier de reporter le changement dans l'autre.

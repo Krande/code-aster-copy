@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,15 +80,15 @@ implicit none
         call sdmpic('SD_APPA_TGEL',sdappa)
     endif
 !
-! - Compute 
+! - Compute
 !
     call aptgno(sdappa, mesh, ds_contact%sdcont_defi)
 !
 ! - All-reduce for tangents at each node field
 !
     if (.not. one_proc) then
-        call sdmpic('SD_APPA_TGNO',sdappa)   
-    endif 
+        call sdmpic('SD_APPA_TGNO',sdappa)
+    endif
 !
 ! - Check normals discontinuity
 !

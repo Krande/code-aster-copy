@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !   CAS CLASSIQUE (N1 NON NUL) OU CAS X-FEM (N2 NON NUL)
     call getvid('THETA', 'FOND_FISS', iocc=1, scal=fonfis, nbret=n1)
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=n2)
-    
+
 !   TEST DU TYPE DE FISSURE ET RECUPERATION DU NUMERO DE NOEUD DU FOND DE FISSURE FEM
     estfem=.true.
     if (n1 .ne. 0 .or. l_new_fissure) then

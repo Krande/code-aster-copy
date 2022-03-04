@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -148,7 +148,7 @@ subroutine op0037()
         do i = 1, nbpara
             nopara(i) = noparm(i)
         end do
-    else if (typcon(1:9) .eq. 'MODE_MECA') then 
+    else if (typcon(1:9) .eq. 'MODE_MECA') then
         nomsy = 'DEPL'
 !        --- VERIFIER SI TOUS LES PARAMETRES MODAUX EXISTENT DANS LA SD
 !          - OU BIEN ILS SERONT CALCULES DANS NORM_MODE
@@ -654,14 +654,14 @@ subroutine op0037()
 !       FIX ISSUE 30730 POUR LE CALCUL DES PARAMETRES GENERALISES
         if (normini .eq. 'MASS_GENE') then
             call jeexin (masse(1:19)//'.&INT', exmasse)
-            if (exmasse.ne. 0) then 
+            if (exmasse.ne. 0) then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmasse)
                 call mtdscr(raide)
                 call jeveuo(raide(1:19)//'.&INT', 'E', lraide)
 !
-                call jeveuo(kvec, 'L', lmod)  
-!  
+                call jeveuo(kvec, 'L', lmod)
+!
 !               CALCUL DES PARAMETRES GENERALISES
                 call wkvect('&&OP0037.POSI.DDL', 'V V I', neq, lddl2)
                 call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)

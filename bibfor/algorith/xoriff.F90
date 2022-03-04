@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
 !  SORTIES :
 !     JFON  :  ADRESSE DES POINTS DU FOND DE FISSURE ORDONNÉS
-!     JNOFAF:  ADRESSE DES NUMERO DES NOEUDS DES FACES DES ELEMENTS 
+!     JNOFAF:  ADRESSE DES NUMERO DES NOEUDS DES FACES DES ELEMENTS
 !              PARENTS QUI CONTIENNENT LES POINTS DU FOND DE FISSURE
 !              ORDONNES
 !     JBAS  :  ADRESSE DES DIRECTIONS DE PROPAGATION ORDONNÉES
@@ -211,7 +211,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
     call utmess('I', 'XFEM_34', si=nbfond)
 !
-!     ORDONNANCEMENT DE FONDFISS, DE NOFACPTFON, DE BASEFOND 
+!     ORDONNANCEMENT DE FONDFISS, DE NOFACPTFON, DE BASEFOND
 !     ET DE FOND.TAILLE_R
     call xffcr(nfon, jfono, jbaso, jtailo, jtabpt,&
                typfon, jfon, jnofaf, jbas, jtail)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine mdflam(dnorm, vitloc, knorm, cnorm, cost, sint,&
 !    COST,SINT      <--   DIRECTION NORMALE A L'OBSTACLE
 !    KNORM          <--   RAIDEUR NORMALE DE CHOC
 !    CNORM          <--   AMORTISSEMENT NORMAL DE CHOC
-!    FLIM           <--   EFFORT MAXIMAL DE CHOC 
+!    FLIM           <--   EFFORT MAXIMAL DE CHOC
 !    FSEUIL         <--   EFFORT MAXIMAL DE CHOC POST FLAMBAGE
 !    RIGIFL         <--   RAIDEUR NORMALE DE CHOC POST FLAMBAGE
 !    CFL            <--   AMORTISSEMENT NORMAL POST FLAMBAGE
@@ -62,15 +62,15 @@ subroutine mdflam(dnorm, vitloc, knorm, cnorm, cost, sint,&
     real(kind=8) :: alpha, cfl2, cnorm2
     integer :: j, critamor
 
-    real(kind=8)     , pointer  :: def(:)                
+    real(kind=8)     , pointer  :: def(:)
     real(kind=8)     , pointer  :: deft(:)
-    real(kind=8)     , pointer  :: amor(:)           
+    real(kind=8)     , pointer  :: amor(:)
 
 
 !-----------------------------------------------------------------------
     vnorm = vitloc(2)*cost + vitloc(3)*sint
 
-    if (critamor .eq. 0) then  
+    if (critamor .eq. 0) then
 ! --- Amortissement exclus au critere ---
         cnorm2 = 0.0d0
         cfl2 = 0.0d0
@@ -79,7 +79,7 @@ subroutine mdflam(dnorm, vitloc, knorm, cnorm, cost, sint,&
         cnorm2 = cnorm
         cfl2 = cfl
     endif
-    
+
     if (defpla .le. 0.d0) then
 !     --- FLAMBAGE NON ENCORE RENCONTRE ---
         if (-dnorm .lt. 0.d0) then
@@ -87,7 +87,7 @@ subroutine mdflam(dnorm, vitloc, knorm, cnorm, cost, sint,&
             rigifl = knorm
             cfl = cnorm
         else
-            if (-dnorm .lt. (flim+cnorm2*vnorm)/knorm) then 
+            if (-dnorm .lt. (flim+cnorm2*vnorm)/knorm) then
                 fnorma = -knorm*dnorm  - cnorm2*vnorm
                 rigifl = knorm
                 cfl = cnorm
@@ -108,15 +108,15 @@ subroutine mdflam(dnorm, vitloc, knorm, cnorm, cost, sint,&
         else
 !     --- Si decharge ou charge inferieure a la limite
             if ( vnorm .gt. 0.d0 .or. -dnorm .le. defmax) then
-                  fnorma = -rigifl*(dnorm+defpla) - cfl2*vnorm 
+                  fnorma = -rigifl*(dnorm+defpla) - cfl2*vnorm
                   if (critamor .eq. 1) then
                     if ((-dnorm .lt. deft0) .and.(fnorma .ge. flim))  then
-                            fnorma=flim 
-                    else if ((fnorma .ge. flim+((fseuil-flim)/enfo_fl)*(-dnorm-deft0)) &  
-                        .and.(-dnorm .lt. deft(1))) then             
-                            fnorma = flim+((fseuil-flim)/enfo_fl)*(-dnorm-deft0)          
-                    else if ((fnorma .ge. fseuil) .and. (-dnorm .ge. deft(1))) then   
-                            fnorma=fseuil 
+                            fnorma=flim
+                    else if ((fnorma .ge. flim+((fseuil-flim)/enfo_fl)*(-dnorm-deft0)) &
+                        .and.(-dnorm .lt. deft(1))) then
+                            fnorma = flim+((fseuil-flim)/enfo_fl)*(-dnorm-deft0)
+                    else if ((fnorma .ge. fseuil) .and. (-dnorm .ge. deft(1))) then
+                            fnorma=fseuil
                     endif
                     if (fnorma .lt. 0.d0) fnorma = 0.d0
                   endif
@@ -129,7 +129,7 @@ subroutine mdflam(dnorm, vitloc, knorm, cnorm, cost, sint,&
 !     --- Deformation pendant le flambage
                 if ((-dnorm.ge.deft0).and.(-dnorm.lt.deft(1))) then
                   fnorma = flim-((fseuil-flim)/enfo_fl)*(dnorm+deft0)
-                  rigifl = fnorma/(-dnorm-defpla)   
+                  rigifl = fnorma/(-dnorm-defpla)
                   defpla = def(1)
                   cfl = cnorm-((amor(1)-cnorm)/enfo_fl)*(dnorm+deft0)
                 endif
@@ -142,7 +142,7 @@ subroutine mdflam(dnorm, vitloc, knorm, cnorm, cost, sint,&
                 else
                   do j= 1,(size(def)-1)
                      if (-dnorm .ge. deft(j) .and. -dnorm .lt. deft(j+1)) then
-                       fnorma = fseuil  
+                       fnorma = fseuil
                        alpha  = (-dnorm-deft(j))/(deft(j+1)-deft(j))
                        defpla = def(j)+alpha*(def(j+1)-def(j))
                        cfl = amor(j)+alpha*(amor(j+1)-amor(j))
@@ -170,7 +170,7 @@ subroutine mdflam(dnorm, vitloc, knorm, cnorm, cost, sint,&
       if (fnorma .lt. 0.d0) fnorma = 0.d0
       if (-dnorm .lt. defpla) fnorma = 0.0d0
     endif
- 
+
 
     flocal(1)=0.d0
     flocal(2)=fnorma*cost

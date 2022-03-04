@@ -49,7 +49,7 @@ implicit none
 !                         2 - Cara_elem from results datastructure
 !                         3 - Cara_elem from results datastructure and command file (the same)
 !                         4 - Cara_elem from command file is different from results datastructure
-!                        
+!
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result, cara_elem_resu, cara_elem_comm

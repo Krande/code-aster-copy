@@ -40,7 +40,7 @@ subroutine op0058()
     sd_pgp = '&&OP0058'
 
 !   Verifies all input data, searches for node or elements number and field components
-!   Extracts a reduced modal basis corresponding to the user's request 
+!   Extracts a reduced modal basis corresponding to the user's request
     call pgppre(sd_pgp)
 !   call utimsd(6, 2, .false._1, .true._1, sd_pgp, 1, 'V')
 

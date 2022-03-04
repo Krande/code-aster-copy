@@ -139,7 +139,7 @@ aster_logical   , intent(in), optional :: l_preallocz
             l_lag1=.true.
         endif
     endif
-    
+
     if (typcha(1:4) .eq. 'MECA') then
         ligrch=charge//'.CHME.LIGRE'
         nomgd='DEPL_R'
@@ -192,7 +192,7 @@ aster_logical   , intent(in), optional :: l_preallocz
 !
     l_prealloc = .false.
     if ( present( l_preallocz ) ) then
-        l_prealloc =  l_preallocz 
+        l_prealloc =  l_preallocz
     endif
 !
     if (ligrch(12:13) .eq. 'TH') then
@@ -225,9 +225,9 @@ aster_logical   , intent(in), optional :: l_preallocz
 ! --- DE LA CHARGE)
     call jeveuo(lisrel//'.RLPO', 'L', jrlpo)
     nbteli=zi(jrlpo+nbrela-1)
-! --- SI ON N'A PAS AU PREALABLE ALLOUE LE LIGREL DE CHARGE 
-!     ET LES CARTES CMULT ET CIMPO C'EST LE MOMENT DE LE FAIRE    
-    if ( .not. l_prealloc ) then 
+! --- SI ON N'A PAS AU PREALABLE ALLOUE LE LIGREL DE CHARGE
+!     ET LES CARTES CMULT ET CIMPO C'EST LE MOMENT DE LE FAIRE
+    if ( .not. l_prealloc ) then
 !
 ! --- VERIFICATION DE L'ADEQUATION DE LA TAILLE DU LIGREL DE
 ! --- CHARGE A SON AFFECTATION PAR LES MAILLES TARDIVES DUES

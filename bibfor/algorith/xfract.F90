@@ -34,7 +34,7 @@ implicit none
 !
 #include "asterfort/assert.h"
 #include "jeveux.h"
-#include "asterfort/hmdeca.h"   
+#include "asterfort/hmdeca.h"
 #include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
@@ -73,7 +73,7 @@ type(THM_DS), intent(inout) :: ds_thm
     call thmGetParaInit(jmate, ds_thm)
     t=ds_thm%ds_parainit%temp_init
 !
-!   ========================================================================    
+!   ========================================================================
 !   CALCUL DES GRANDEURS (DEPMOINS + INCREMENT)
 !   ========================================================================
 !
@@ -85,13 +85,13 @@ type(THM_DS), intent(inout) :: ds_thm
     gradpfm(:) = 0.d0
 !
     q1m = 0.d0
-    q2m = 0.d0 
+    q2m = 0.d0
     q1 = 0.d0
     q2 = 0.d0
-    dpf = 0.d0 
-    pf = 0.d0 
+    dpf = 0.d0
+    pf = 0.d0
     pinf = 0.d0
-    psup = 0.d0  
+    psup = 0.d0
 !
 !     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
     do in = 1, nnop
@@ -122,10 +122,10 @@ type(THM_DS), intent(inout) :: ds_thm
                              zi(jheavn-1+ncompn*(i-1)+ncompn))
           do j = 1, ndim
              saut(j) = saut(j) - coefi*ffp(i)*deplp(in+(ndim+dec)*ifh+j)
-             if (nvec.ge.2) then 
+             if (nvec.ge.2) then
                 saut(j) = saut(j) - coefi*ffp(i)*deplm(in+(ndim+dec)*ifh+j)
              endif
-             if (present(depl0).and.nvec.ge.3) then 
+             if (present(depl0).and.nvec.ge.3) then
                 saut(j) = saut(j) - coefi*ffp(i)*depl0(in+(ndim+dec)*ifh+j)
              endif
           end do
@@ -140,34 +140,34 @@ type(THM_DS), intent(inout) :: ds_thm
        if (nvec.ge.2) then
           pf = pf + ffi*deplm(pli)
        endif
-       if (present(depl0).and.nvec.ge.3) then 
+       if (present(depl0).and.nvec.ge.3) then
           pf = pf + ffi*depl0(pli)
        endif
 1   continue
 !   CALCUL DU GRADIENT DE PRE_FLU, DES MULTIPLICATEURS DE LAGRANGE
 !   ET DE DPRE_FLU (UTILE POUR LE CALCUL DE LA MASSE VOLUMIQUE) EN +
 !
-    if (job.ne.'SAUT_LOC') then 
+    if (job.ne.'SAUT_LOC') then
        do 2 i = 1, nnops
           pli = pla(i)
           ffi = ffc(i)
           do j = 1, ndim
              dffi(j)=dffc(i,j)
-          end do 
+          end do
           do j = 1, ndim
              gradpf(j) = gradpf(j) + dffi(j)*deplp(pli)
-             if (nvec.ge.2) then 
+             if (nvec.ge.2) then
                 gradpf(j) = gradpf(j) + dffi(j)*deplm(pli)
              endif
-          end do 
-! 
+          end do
+!
           q1 = q1 + ffi*deplp(pli+1)
           q2 = q2 + ffi*deplp(pli+2)
-          if (nvec.ge.2) then 
+          if (nvec.ge.2) then
              q1 = q1 + ffi*deplm(pli+1)
              q2 = q2 + ffi*deplm(pli+2)
           endif
-! 
+!
           dpf = dpf + ffi*deplp(pli)
           if (job.eq.'ACTU_VI') then
              dpf = dpf - ffi*deplm(pli)
@@ -175,7 +175,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 2      continue
     endif
-! 
+!
     if (contac.eq.3) then
        do 3 i = 1, nnops
           pli = pla(i)
@@ -185,17 +185,17 @@ type(THM_DS), intent(inout) :: ds_thm
              if (nvec.ge.2) then
                 lamb(j) = lamb(j) + ffi*deplm(pli+2+j)
              endif
-             if (present(depl0).and.nvec.ge.3) then 
+             if (present(depl0).and.nvec.ge.3) then
                 lamb(j) = lamb(j) + ffi*depl0(pli+2+j)
              endif
           end do
 3      continue
     endif
 !
-!   CALCUL DE LA PRESSION DANS LE MASSIF POUR LA CONDITION DE CONTINUITE 
+!   CALCUL DE LA PRESSION DANS LE MASSIF POUR LA CONDITION DE CONTINUITE
 !   DE LA PRESSION MASSIF-FRACTURE (SECOND-MEMBRES UNIQUEMENT)
 !
-    if (job.eq.'VECTEUR') then 
+    if (job.eq.'VECTEUR') then
        do i = 1, nnops
           call hmdeca(i, nddls, nddlm, nnops, in, dec)
 !
@@ -220,13 +220,13 @@ type(THM_DS), intent(inout) :: ds_thm
           end do
        end do
     endif
-!   ========================================================================    
+!   ========================================================================
 !   CALCUL DES GRANDEURS DEPMOINS SEULEMENT
 !   ========================================================================
 !
 !   CALCUL DU SAUT DE DEPLACEMENT ET LAMBDA -
     if (nvec.eq.3) then
-       if (present(depl1)) then 
+       if (present(depl1)) then
           do i = 1, nnop
              do ifh = 1, nfh
                 coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
@@ -253,8 +253,8 @@ type(THM_DS), intent(inout) :: ds_thm
              endif
              pfm = pfm + ffi*depl1(pli)
 4         continue
-       endif 
-    else if (nvec.eq.2 .or. nvec.eq.1) then 
+       endif
+    else if (nvec.eq.2 .or. nvec.eq.1) then
        do i = 1, nnop
           do ifh = 1, nfh
              coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
@@ -278,10 +278,10 @@ type(THM_DS), intent(inout) :: ds_thm
           ffi = ffc(i)
           do j = 1, ndim
              dffi(j)=dffc(i,j)
-          end do 
+          end do
           do j = 1, ndim
              gradpfm(j) = gradpfm(j) + dffi(j)*deplm(pli)
-          end do 
+          end do
           q1m = q1m + ffi*deplm(pli+1)
           q2m = q2m + ffi*deplm(pli+2)
 5      continue

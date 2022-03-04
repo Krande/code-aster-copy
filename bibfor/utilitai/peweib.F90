@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -188,7 +188,7 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
         np = 0
         if (.not.opti) then
             call getvr8(motcl2, 'PRECISION', scal=prec, nbret=np)
-        else 
+        else
             call getvr8(motcl2, 'PRECISION', iocc=iresu, scal=prec, nbret=np)
         endif
         nc = 0
@@ -213,9 +213,9 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
         call jenonu(jexnom(resul//'           .NOVA', 'INST'), iret)
         if (iret .ne. 0) then
             do iord = 1, nbordr
-                numord = zi(jord+iord-1) 
+                numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
-                            0, sjv=iainst, styp=k8b)         
+                            0, sjv=iainst, styp=k8b)
                 zr(jins+iord-1) = zr(iainst)
             end do
         endif

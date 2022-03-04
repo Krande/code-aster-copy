@@ -182,19 +182,19 @@ integer, intent(out) :: codret
 ! - Get parameters for behaviour
 !
     call thmGetBehaviour(compor, ds_thm)
- 
-    
+
+
 !
 ! - Get parameters for internal variables
 !
     call thmGetBehaviourVari(ds_thm)
-    
+
 !
 ! - Some checks between behaviour and model
 !
     call thmGetBehaviourChck(ds_thm)
-    
-    
+
+
 !
 ! - Get storage parameters for behaviours
 !

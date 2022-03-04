@@ -781,7 +781,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
                         geom(j) = pinter(ndim*(inh-101)+j)
                         bary(j) = bary(j)+geom(j)/nnose
                     end do
-                else 
+                else
                    ASSERT(.false.)
                 endif
                 if (in.le.ndime+1) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ real(kind=8), intent(out) :: d_curr
 !
     real(kind=8) :: lambda, unsurl, d_limi
     real(kind=8) :: a, b, c, delta
-!            
+!
 ! --------------------------------------------------------------------------------------------------
 !
     if (metaSteelPara%l_grain_size) then

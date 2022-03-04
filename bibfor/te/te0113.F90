@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine te0113(option, nomte)
     integer, parameter :: nbparaPR = 6
     integer :: icodre(nbparaPR), iret
     integer :: imate, nno, nbcmp, ino, ival, ndim, ino2
-    
+
 !
     real(kind=8) :: valres(nbparaPR), young, k, nexpo, rp02_min, rm_min
     real(kind=8) :: rp02_moy, coef
@@ -51,10 +51,10 @@ subroutine te0113(option, nomte)
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno)
     ASSERT(nno.eq.2)
-    
+
     call jevech('PMATERC', 'L', imate)
     call jevech('PROCHRR', 'E', ival)
-    
+
     nbcmp = 1+nbparaPR+7
 
 !   parametres elastique
@@ -79,7 +79,7 @@ subroutine te0113(option, nomte)
     if (k.lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(1), sr=k)
     nexpo = valres(2)
     if (nexpo.lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(2), sr=nexpo)
-    
+
 !   pour les paramètres facultatifs, on les mets à une valeur négative si absent
 !   afin d'émettre les messages d'erreur dans POST_ROCHE s'ils étaient nécessaires
 !   voir issue30703
@@ -95,7 +95,7 @@ subroutine te0113(option, nomte)
         if (valres(4).lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(4), sr=valres(4))
         rm_min = valres(4)
     endif
-    
+
     if (icodre(3).eq.0 .and. icodre(5).ne.0)then
         rp02_moy = 1.25d0*rp02_min
     elseif (icodre(5).ne.0)then
@@ -104,15 +104,15 @@ subroutine te0113(option, nomte)
         if (valres(5).lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(5), sr=valres(5))
         rp02_moy = valres(5)
     endif
-    
+
     coef = valres(6)
-    
+
 !   caractéristiques de poutre
     valp = ['A1 ','IY1','A2 ','IY2']
     call get_value_mode_local('PCAGNPO', valp, caragene, iret)
     valp = ['R1 ','EP1','R2 ','EP2']
     call get_value_mode_local('PCAGEPO', valp, carageo, iret)
-    
+
     do ino = 1, nno
         if (ino.eq.1) then
             ino2 = 2
@@ -139,7 +139,7 @@ subroutine te0113(option, nomte)
         zr(ival+(ino-1)*nbcmp-1+nbparaPR+6) = caragene(2*(ino2-1)+2)
 !       R2
         zr(ival+(ino-1)*nbcmp-1+nbparaPR+7) = carageo(2*(ino2-1)+1)
-!       EP        
+!       EP
         zr(ival+(ino-1)*nbcmp-1+nbparaPR+8) = carageo(2*(ino2-1)+2)
     enddo
 ! ----------------------------------------------------------------------

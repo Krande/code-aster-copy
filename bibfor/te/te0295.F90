@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine te0295(option, nomte)
 !
 ! ----------------------------------------------------------------------
 !
-    
+
 !
     rac2 = sqrt(2.d0)
     fami = 'RIGI'
@@ -420,7 +420,7 @@ subroutine te0295(option, nomte)
                     dsigin(i,j) = dsigin(i,j)*rac2
 480              continue
 490          continue
-         
+
 
 !
 ! CALCUL DE LA DEFORMATION DE REFERENCE
@@ -450,7 +450,7 @@ subroutine te0295(option, nomte)
         call coor_cyl(ndim, nno, zr(ibalo), zr(igeom), ffp,&
                       p, invp, rg, phig,&
                       l_not_zero)
-!        
+!
 !       PRISE EN COMPTE DE LA COURBURE : OUI
 !
         lcour=.true.

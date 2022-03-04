@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ subroutine recupe(noma, ndim, nk1d, lrev, lmdb, &
 ! ======================================================================
     if(profil(1:7).eq.'ELLIPSE') then
        call getvr8('FISSURE', 'DECALAGE', iocc=1, scal=deklag, nbret=ibid)
-    else 
+    else
        deklag=0.d0
     endif
     call getvr8('FISSURE', 'PROFONDEUR', iocc=1, scal=prodef, nbret=ibid)

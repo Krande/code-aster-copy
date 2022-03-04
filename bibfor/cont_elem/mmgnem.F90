@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -133,7 +133,7 @@ real(kind=8), intent(inout) :: matrem(27, 27)
         end do
     end do
 !
-    if (supkap .le. (alpha*supmat)) then 
+    if (supkap .le. (alpha*supmat)) then
 ! ----- CONTRIBUTION 1 :
 ! ----- -NORM{[d(delta YPR)/delta XI)*DELTA XI]+[(D(DELTA YPR)/DELTA XI)*delta XI]}
         do i = 1, nne

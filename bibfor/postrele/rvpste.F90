@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine rvpste(lieu, ssch19, nomsd, typaff)
 !        . TYPE : SOUS_CHAM_GD
 !        . LE LIEU JOUE LE ROLE D' UN MAILLAGE
 !             NOEUD  : POINT DE POST
-!             MAILLE :  TYPE POI1 
+!             MAILLE :  TYPE POI1
 !
 !    REPRESENTATION SOUS_CHAM_GD :
 !        'CHNO' : STANDARD

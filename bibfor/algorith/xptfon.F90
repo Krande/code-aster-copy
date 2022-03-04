@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -373,7 +373,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
             if(operation.ne.'FRONT_COHE_BRUT') then
                 call xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
                             fabord)
-!    
+!
 !               SI LA FACE EST UNE FACE DE BORD ON PREND SA NORMALE
                 if (fabord) then
                     if (.not. ptbord(indipt)) then

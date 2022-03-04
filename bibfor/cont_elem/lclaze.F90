@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,11 @@ implicit none
     shift     = 0
     r_nb_lagr = real(nb_lagr,kind=8)
     do i_node_slav = 1, nb_node_slav
-        shift=shift+indi_lagc(i_node_slav)     
+        shift=shift+indi_lagc(i_node_slav)
         if (indi_lagc(i_node_slav+1) .eq. 1) then
             indlgc=(i_node_slav-1)*elem_dime+shift+elem_dime+1
             mmat(indlgc,indlgc) = 1.d0/(r_nb_lagr)
         end if
     end do
-! 
+!
 end subroutine

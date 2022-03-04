@@ -90,7 +90,7 @@ character(len=8), intent(in) :: load, mesh, model
     do iocc = 1, nflux
 !
         call getvid(keywordFact, 'FLUN', iocc=iocc, scal=zk8(jvalv), nbret=nf)
-        
+
         prol = zk8(jvalv)//'           .PROL'
         call jeveuo(prol, 'L', lprol)
         nompar = zk24(lprol+2)

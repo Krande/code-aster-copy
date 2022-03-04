@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ implicit none
 !
 type(THM_DS), intent(in) :: ds_thm
 real(kind=8), intent(in) :: pc
-real(kind=8), intent(out) :: satur 
+real(kind=8), intent(out) :: satur
 real(kind=8), optional, intent(out) :: dsatur_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,17 +66,17 @@ real(kind=8), optional, intent(out) :: dsatur_
 ! - Compute capillary pressure (and its derivative)
 !
     call pcapvg(sr   , pr, pentree, usm, usn, s1max,&
-                pcmax, dpcmax)  
+                pcmax, dpcmax)
 !
 ! - Regularization by first order hyperbola
 !
     call reguh1(pcmax, smax, 1.d0/dpcmax, b1, c1)
-! 
+!
 ! - Compute saturation (and its derivative)
 !
     if ((pc .gt. pcmax)) then
         call satfvg(sr , pr, n, m,pentree, pc,&
-                    satur, dsatur)  
+                    satur, dsatur)
     else
         satur  = 1.d0-b1/(c1-pc)
         dsatur = -b1/((c1-pc)**2.d0)

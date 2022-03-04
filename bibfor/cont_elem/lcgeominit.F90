@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,9 +56,9 @@ real(kind=8), intent(out) :: elem_mast_init(nb_node_mast, elem_dime)
 ! - Slave nodes
 !
     do i_node_slav = 1, nb_node_slav
-        do i_dime = 1, elem_dime          
+        do i_dime = 1, elem_dime
             elem_slav_init(i_node_slav, i_dime) =&
-                zr(jv_geom+(i_node_slav-1)*elem_dime+i_dime-1) 
+                zr(jv_geom+(i_node_slav-1)*elem_dime+i_dime-1)
         end do
     end do
 !
@@ -71,4 +71,4 @@ real(kind=8), intent(out) :: elem_mast_init(nb_node_mast, elem_dime)
         end do
     end do
 !
-end subroutine  
+end subroutine

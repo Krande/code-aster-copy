@@ -186,11 +186,11 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 
 !   Recuperation de la contrainte initiale aux noeuds des sous-elts
     call tecach('ONO', 'PSIGISE', 'L', iret, iad=jsigse)
-    
+
 !   Indicateur de contrainte initiale
     isigi=0
     if (jsigse.ne.0) isigi=1
-    
+
     if (isigi.ne.0) then
 !       Passage de la contrainte initiale aux noeuds des sous-elts
 !       dans un tableau local au sous-elt
@@ -511,11 +511,11 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 510     continue
 !
 !       --------------------------------------------------
-!       6) CALCUL DES TERMES LIEES A LA CONTRAINTE INITIALE 
+!       6) CALCUL DES TERMES LIEES A LA CONTRAINTE INITIALE
 !       --------------------------------------------------
 !
         if (isigi.ne.0) then
-            
+
 !           Calcul de la contrainte initiale (somme sur les noeuds du ss-elt)
             do 430 i = 1, nno
                 do 440 j = 1, ncmp
@@ -523,7 +523,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                          sigse(ncmp*(i-1)+j) * zr(ivf-1+nno*(kpg-1)+i)
 440             continue
 430         continue
-                        
+
 !           Calcul du gradient de sigma initial (somme sur les noeuds du ss-elt)
             do 460 i = 1, nno
                 do 455 j = 1, ncmp
@@ -545,7 +545,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             epsref(1)=-(1.d0/e)*(sigin(1)-(nu*(sigin(2)+sigin(3))))
             epsref(2)=-(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
             epsref(3)=-(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
-            epsref(4)=-(1.d0/mu)*sigin(4)  
+            epsref(4)=-(1.d0/mu)*sigin(4)
             if (ndim .eq. 3) then
                 epsref(5)=-(1.d0/mu)*sigin(5)
                 epsref(6)=-(1.d0/mu)*sigin(6)

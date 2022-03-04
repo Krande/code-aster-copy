@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine mdchan(nlcase, ioc, iliai, mdgene, typnum,&
         call getvr8('COMPORTEMENT', 'NORM_OBST', iocc=ioc, nbval=3, vect=txloc,&
                     nbret=n1)
         call getvr8('COMPORTEMENT', 'ANGL_VRIL', iocc=ioc, scal=angl, nbret=n1)
-        call nlget(sd_nl, _OBST_TYP, iocc=iliai, kscal=obst_typ)       
+        call nlget(sd_nl, _OBST_TYP, iocc=iliai, kscal=obst_typ)
 !
         if (n1 .ne. 0) then
             if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then

@@ -110,7 +110,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon,&
             call jeexin(basein, ier)
             ASSERT(ier.ne.0)
         endif
-        
+
 !       4) CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
 !       EN PRENANT EN COMPTE LES MOTS-CLES NUME_FOND ET NB_POINT_FOND
         call xrecff(nomfis, typfis, chfond, basfon, fonoeu, lnoff, conf)

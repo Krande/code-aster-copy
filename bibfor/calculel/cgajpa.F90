@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,14 +46,14 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, nxpara)
     integer :: i
 !
 ! ----------------------------------------------------------------------
-!     
+!
 
     ASSERT(para .ne. ' ')
-      
+
 !   1. RECHERCHE SI LE PARAMETRE EXISTE DEJA :
 !   ------------------------------------------
 
-    if (nbpara.ne.0) then 
+    if (nbpara.ne.0) then
         do 10 i = 1, nbpara
             if (linopa(i) .eq. para) goto 9999
 10      enddo
@@ -61,7 +61,7 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, nxpara)
 
 !    2. IL S'AGIT D'UN NOUVEAU PARAMETRE ON L'AJOUTE :
 !    -------------------------------------------------
-     nbpara = nbpara+1  
+     nbpara = nbpara+1
      ASSERT(nbpara .le. nxpara)
      linopa(nbpara) = para
      litypa(nbpara) = notype

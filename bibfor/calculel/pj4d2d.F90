@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,11 @@ subroutine pj4d2d(tria3, itr, geom1, coorno, nbno, nunos, cooele, xg)
     ac(1)=v(2)*ab(3)-v(3)*ab(2)
     ac(2)=v(3)*ab(1)-v(1)*ab(3)
     ac(3)=v(1)*ab(2)-v(2)*ab(1)
-    
+
 !   changement de repère
     xg(1) = ddot(3,coorno,1,ab,1)
     xg(2) = ddot(3,coorno,1,ac,1)
-    
+
     do ino = 1, nbno
         nuno = nunos(ino)
         cooele(2*(ino-1)+1) = ddot(3,geom1(3*(nuno-1)+1),1,ab,1)

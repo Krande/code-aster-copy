@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Input fields
 !
-    call jevech('PMATERC', 'L', imate) 
+    call jevech('PMATERC', 'L', imate)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PPHASIN', 'L', iphasi)
     call jevech('PCOMPOR', 'L', jv_compo)

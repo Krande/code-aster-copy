@@ -416,7 +416,7 @@ implicit none
 ! =======================================================
 !
         if (incr) then
-! BESOIN GARDER APPEL NMPLRU POUR LE CALCUL DE L'ENERGIE EN PRESENCE 
+! BESOIN GARDER APPEL NMPLRU POUR LE CALCUL DE L'ENERGIE EN PRESENCE
 ! D'ETAT INITIAL MAIS NETTOYAGE A COMPLETER
             call nmplru(fami, kp, 1, '+', ndim,&
                         typmod, matcod, compor, rbid, eps,&
@@ -655,7 +655,7 @@ implicit none
 999 continue
 !
 ! ASSEMBLAGE FINAL DES TERMES DE G OU DG
-    
+
     zr(igthet) = tthe + tcla + tfor + tini
 !
 end subroutine

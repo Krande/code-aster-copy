@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -406,7 +406,7 @@ subroutine op0172()
 !
     call getvtx(' ', 'CORR_AMOR_NEGATIF', scal=amo_neg, nbret=ibid)
     call getvr8(' ', 'COEF_CORR_AMOR', scal=coef_corr_amor, nbret=ibid)
-!    
+!
     call wkvect('&&OP0172.AMOMOD', 'V V R', nbmode, iamomo)
 !
     valek(1) = 'NUME_ORDRE'
@@ -461,10 +461,10 @@ subroutine op0172()
 !
         if (amomo .le. 0.d0) then
             vali = imod
-            if (amo_neg .eq. 'OUI') then 
+            if (amo_neg .eq. 'OUI') then
                 zr(iamomo+imod-1) = coef_corr_amor
                 valrr (1) = amomo
-                valrr (2) = zr(iamomo+imod-1)               
+                valrr (2) = zr(iamomo+imod-1)
                 call utmess('I', 'PREPOST5_51', si=vali, nr=2,valr=valrr)
             elseif (amo_neg .eq. 'NON') then
                 call utmess('F', 'PREPOST5_52', si=vali, sr=amomo)
@@ -474,7 +474,7 @@ subroutine op0172()
                 ASSERT(.false.)
             endif
         endif
-!    
+!
     enddo
 !
     write(ifr,1002)

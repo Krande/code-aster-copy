@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine umdt3d(souplesse66,dt3,umdt66,a,b,&
 #include "asterfort/utmess.h"
 
       integer i,j,k,l
-      
+
       real(kind=8) :: souplesse66(6,6)
       real(kind=8) :: souplesse66d(6,6),raideur66d(6,6)
       real(kind=8) :: dt3(3)
@@ -37,7 +37,7 @@ subroutine umdt3d(souplesse66,dt3,umdt66,a,b,&
       real(kind=8) :: x(ngf),b(ngf),a(ngf,(ngf+1))
       integer errg,ipzero(ngf)
       real(kind=8) :: umdt66(6,6)
-      aster_logical ::  iso      
+      aster_logical ::  iso
       real(kind=8) :: dx
       real(kind=8) :: sn3(3),d66(6,6)
       real(kind=8) :: nu,E0
@@ -48,7 +48,7 @@ subroutine umdt3d(souplesse66,dt3,umdt66,a,b,&
          E0=1.d0/souplesse66(1,1)
          nu=-souplesse66(1,2)*E0
 !      cas de la loi elastique isotrope
-!      determination via solution type      
+!      determination via solution type
          do i=1,3
              sn3(i)=1.d0/(1.d0-dt3(i))
          end do
@@ -65,7 +65,7 @@ subroutine umdt3d(souplesse66,dt3,umdt66,a,b,&
 !      call affiche66(umdt66)
       else
         call utmess('A', 'COMPOR3_39')
-!    cas general : 1-d=(sd^-1)(s)       
+!    cas general : 1-d=(sd^-1)(s)
 !    matrice de souplesse endommagee
 !    seuls les termes de la diaginale sont affectes
        do i=1,3
@@ -94,30 +94,30 @@ subroutine umdt3d(souplesse66,dt3,umdt66,a,b,&
             end if
          end do
        end do
-!    matrice de la raideur endommagee 
+!    matrice de la raideur endommagee
 !    obtenue par inversion de souplesse66d
        do i=1,6
-!     chaque colonne est solution de ax=b        
+!     chaque colonne est solution de ax=b
         do j=1,6
-          do k=1,6 
-            a(j,k)=souplesse66d(j,k)  
+          do k=1,6
+            a(j,k)=souplesse66d(j,k)
           end do
           if(j.eq.i) then
-              b(j)=1.d0 
+              b(j)=1.d0
           else
-              b(j)=0.d0  
+              b(j)=0.d0
           end if
         end do
         call gauss3d(6,a,x,b,ngf,errg,ipzero)
         do j=1,6
             raideur66d(j,i)=x(j)
         end do
-       end do  
+       end do
 !    construction du tenseur umdt66
        do i=1,6
         do j=1,6
             umdt66(i,j)=0.d0
-            do k=1,6            
+            do k=1,6
                umdt66(i,j)=umdt66(i,j)+raideur66d(i,k)*souplesse66(k,j)
             end do
         end do

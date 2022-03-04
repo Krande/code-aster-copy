@@ -68,7 +68,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     real(kind=8)     , pointer :: vint  (:) => null()
 !-----------------------------------------------------------------------
     integer, pointer :: chindx(:) => null()
-    integer, pointer :: flindx(:) => null()    
+    integer, pointer :: flindx(:) => null()
     real(kind=8), pointer :: vcho(:) => null()
     real(kind=8), pointer :: fcho(:) => null()
     real(kind=8), pointer :: dloc(:) => null()

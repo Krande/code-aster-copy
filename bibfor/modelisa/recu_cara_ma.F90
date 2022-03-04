@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine recu_cara_ma(mailla, carte, numa, cara, vale)
     character(len= 8) :: ngrand
     character(len=24) :: k24bid
     integer :: igrand, iasmax, iasedi, nbcmp, inomcp, nbec, irep
-    integer :: iasbon, ii, icode, izone, ilnuma, nbmaza 
+    integer :: iasbon, ii, icode, izone, ilnuma, nbmaza
     integer :: irvep, jj
     real(kind=8), pointer :: v_vale(:) => null()
     integer, pointer :: desc(:) => null()

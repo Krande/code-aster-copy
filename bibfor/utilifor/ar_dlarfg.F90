@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 ! --------------------------------------------------------------------
 
 ! ===============================================================
-! THIS LAPACK 2.0 ROUTINE IS DEPRECATED  
+! THIS LAPACK 2.0 ROUTINE IS DEPRECATED
 ! DO NOT USE IT : YOU SHOULD PREFER UP-TO-DATE LAPACK ROUTINE
 !
 ! BUT DO NOT REMOVE IT :
 ! THE PRESENT ROUTINE IS MANDATORY FOR ARPACK LIBRARY
-! WHICH STICKS TO LAPACK 2.0 VERSION 
+! WHICH STICKS TO LAPACK 2.0 VERSION
 ! ==============================================================
 subroutine ar_dlarfg(n, alpha, x, incx, tau)
 !

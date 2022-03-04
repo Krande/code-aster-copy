@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,13 +78,13 @@ character(len=19), intent(in) :: syst_2mbrROM
 !
     if (ds_multipara%syst_type .eq.'R') then
        call jeveuo(syst_2mbrROM, 'E', vr = vr_syst_2mbp)
-       vr_syst_2mbp(:) = 0.d0 
+       vr_syst_2mbp(:) = 0.d0
     else if (ds_multipara%syst_type .eq.'C') then
        call jeveuo(syst_2mbrROM, 'E', vc = vc_syst_2mbp)
-       vc_syst_2mbp(:) = dcmplx(0.d0,0.d0) 
-    else 
+       vc_syst_2mbp(:) = dcmplx(0.d0,0.d0)
+    else
        ASSERT(ASTER_FALSE)
-    end if 
+    end if
 !
 ! - Compute second member
 !
@@ -109,13 +109,13 @@ character(len=19), intent(in) :: syst_2mbrROM
             else
                 coef_r    = ds_multipara%vect_coef(iVect)%coef_real(i_coef)
                 coef_cplx = dcmplx(coef_r)
-            endif 
+            endif
             call jeveuo(ds_multipara%vect_redu(iVect), 'L', vc = vc_vect_redu)
             do iMode = 1, nbMode
                 vc_syst_2mbp(iMode)=vc_syst_2mbp(iMode)+vc_vect_redu(iMode)*coef_cplx
             end do
         end do
-    else 
+    else
        ASSERT(ASTER_FALSE)
     end if
 !

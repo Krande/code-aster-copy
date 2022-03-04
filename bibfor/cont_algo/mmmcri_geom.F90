@@ -98,7 +98,7 @@ implicit none
 ! - Find maximas
 !
     call cnomax(geom_diff_1, nb_cmp_disp, list_cmp_disp, geom_dif1_maxi, geom_dif1_node)
-    call cnomax(geom_diff_2, nb_cmp_disp, list_cmp_disp, geom_dif2_maxi, geom_dif2_node)      
+    call cnomax(geom_diff_2, nb_cmp_disp, list_cmp_disp, geom_dif2_maxi, geom_dif2_node)
 !
 ! - Update maximum
 !
@@ -130,7 +130,7 @@ implicit none
         loop_geom_conv = .true.
     else
         loop_geom_conv = .false.
-    endif  
+    endif
 !
 ! - Get name of node
 !

@@ -89,7 +89,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
     call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=noma)
     obj1 = noma//'.GROUPENO'
     obj2 = noma//'.NOMNOE'
-    
+
 !
     motfac ='DEPL_MULT_APPUI'
     call getvtx('DEPL_MULT_APPUI', 'NOM_CAS', iocc=1, nbval=0, nbret=ns)
@@ -99,7 +99,7 @@ subroutine asefen(muapde, nomsy, id, stat, neq,&
 
             l_norefe = .false.
             call utreno(motfac, 'REFE', ioc, noma, noeref, ok_noeud=l_norefe)
-            
+
             call getvtx(motfac, 'NOEUD', iocc=ioc, nbval=0, nbret=nn)
             if (nn .ne. 0) then
                 nno = -nn

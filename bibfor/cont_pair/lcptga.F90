@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine lcptga(elem_dime, tria_coor , gauss_family,&
                   nb_gauss , gauss_coor, gauss_weight)
 !
 implicit none
-! 
+!
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
 #include "asterfort/reerel.h"
@@ -31,7 +31,7 @@ implicit none
     character(len=8) :: gauss_family
     integer, intent(out) :: nb_gauss
     real(kind=8), intent(out) :: gauss_coor(2,12)
-    real(kind=8), intent(out) :: gauss_weight(12) 
+    real(kind=8), intent(out) :: gauss_weight(12)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,7 +87,7 @@ implicit none
                 gauxx_weight)
 !
 ! - Surface of real element
-!           
+!
     if (model_ndim.eq. 2) then
         area = (tria_coor(1,1)*tria_coor(2,2)-tria_coor(1,2)*tria_coor(2,1)+&
                 tria_coor(1,2)*tria_coor(2,3)-tria_coor(1,3)*tria_coor(2,2)+&
@@ -104,7 +104,7 @@ implicit none
         do i_dime = 1,model_ndim
             xpgpa(i_dime)=gauxx_coor(model_ndim*(i_gauss-1)+i_dime)
         end do
-        if (model_ndim .eq. 2) then       
+        if (model_ndim .eq. 2) then
             call reerel(eleref, nb_node, 2, tria_coor, xpgpa,&
                         xpgpr)
         else
@@ -114,7 +114,7 @@ implicit none
         do i_dime=1,model_ndim
             gauss_coor(i_dime,i_gauss)=xpgpr(i_dime)
         end do
-        if (eleref  .eq. 'TR3') then   
+        if (eleref  .eq. 'TR3') then
             gauss_weight(i_gauss)=2*area*gauxx_weight(i_gauss)
         elseif (eleref .eq. 'SE2') then
             gauss_weight(i_gauss)=1/2.d0*area*gauxx_weight(i_gauss)

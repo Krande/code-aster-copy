@@ -44,7 +44,7 @@ implicit none
     real(kind=8), intent(in) :: time_curr
     real(kind=8), intent(in) :: resi_glob_rela
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    type(NL_DS_Contact), intent(inout) :: ds_contact 
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(out) :: ctccvg
 !
 ! --------------------------------------------------------------------------------------------------

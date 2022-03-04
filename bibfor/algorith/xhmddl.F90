@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
 ! IN   NOMTE  : NOM DU TYPE ELEMENT
 ! IN   NFISS  : NOMBRE DE FISSURES "VUES" PAR L'ELEMENT
 ! IN   JFISNO : POINTEUR DE CONNECTIVITE FISSURE/HEAVISIDE
-! IN   LCONTX : INDIQUE SI IL Y A DU CONTACT OU PAS 
+! IN   LCONTX : INDIQUE SI IL Y A DU CONTACT OU PAS
 ! IN   CONTAC : TYPE DE CONTACT
 !
 ! IN/OUT :   MAT   : MATRICE DE RIGIDITÉ
@@ -114,13 +114,13 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
                    lelim=.true.
                endif
             end do
-        else if (ielim .eq. 2) then 
-!           ON SUPPRIME LES DDLS PRE_FLU, LAG_FLI, LAG_FLS, LAG1_HM ET 
+        else if (ielim .eq. 2) then
+!           ON SUPPRIME LES DDLS PRE_FLU, LAG_FLI, LAG_FLS, LAG1_HM ET
 !           LAG2_HM AUX NOEUDS SOMMETS
             do ifh = 1, nfh
-               if (ino.le.nnos) then 
+               if (ino.le.nnos) then
                    istatu = stano((ino-1)*max(1,nfh)+ifh)
-                   if (istatu.eq.0) then 
+                   if (istatu.eq.0) then
                        if (contac.eq.3) then
                           do k = 1, 3+ndim
                               posddl(in+(ndim+dec)*(nfh+1)+(ifh-1)*(ndim+3)+k)=1
@@ -142,9 +142,9 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
 !     POUR LES OPTIONS CONCERNANT DES MATRICES :
 !        CALCUL DU COEFFICIENT DIAGONAL POUR
 !        L'ELIMINATION DES DDLS HEAVISIDE
-        if (option(1:10) .eq. 'RIGI_MECA_'& 
-            .or. option .eq. 'RIGI_MECA'& 
-            .or. option .eq. 'FULL_MECA'& 
+        if (option(1:10) .eq. 'RIGI_MECA_'&
+            .or. option .eq. 'RIGI_MECA'&
+            .or. option .eq. 'FULL_MECA'&
             .or. option(1:9) .eq. 'RIGI_CONT') then
             dmin=r8maem()
             dmax=-r8maem()

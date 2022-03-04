@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,9 +103,9 @@ character(len=16), intent(in) :: option, nomte
                    do jdim = 1, 2
                        ind1 = 3*(ino1-1)+jdim
                        ind2 = 3*(ino2-1)+3
-                       if (celer .eq. 0.d0) then 
+                       if (celer .eq. 0.d0) then
                            mmat(ind1,ind2) = 0.d0
-                       else 
+                       else
                            mmat(ind1,ind2) = mmat(ind1,ind2) -&
                                              poids*norm(jdim)*&
                                              zr(ivf+ldec+ino1-1)* zr(ivf+ldec+ino2-1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -145,7 +145,7 @@ character(len=*), optional, intent(in) :: varc_curr
         call jeveuo(extr_comp , 'L' , vk24 = v_extr_comp)
         do i_field_comp = 1, nb_field_comp
             field_comp = v_extr_comp(4*(i_field_comp-1)+1)(1:19)
-            field_disc = v_extr_comp(4*(i_field_comp-1)+2)(1:4) 
+            field_disc = v_extr_comp(4*(i_field_comp-1)+2)(1:4)
             field_type = v_extr_comp(4*(i_field_comp-1)+3)
             ligrel     = v_extr_comp(4*(i_field_comp-1)+4)(1:19)
             call nmextr_comp(field_comp, field_disc , field_type     , meshz    , modelz   ,&

@@ -299,7 +299,7 @@ subroutine crcore()
             dist = dist + (vale(3*(inoe-1)+in)-coorre(in))*dire(in)
           end do
           if (dist .lt. 0.d0) then
-            call utmess('A', 'SEISME_78')  
+            call utmess('A', 'SEISME_78')
           end if
           zr(jdist+ino-1) = dist
         end do
@@ -427,27 +427,27 @@ subroutine crcore()
                   zr(jchin-1+iddl+icmp-1) = zr(jchi1-1+iddl+icmp-1)
                   nomcmp = zk8(iad2-1+vicmp(ncmpmx*(inoe-1)+icmp))
 !  write(6,*) 'icmp nomcmp vicmp =',icmp, nomcmp, vicmp(ncmpmx*(inoe-1)+icmp)
-                  if (vicmp(ncmpmx*(inoe-1)+icmp).eq.1) then 
+                  if (vicmp(ncmpmx*(inoe-1)+icmp).eq.1) then
                     call fointe('F ', fonx, 7, nompar, valpar, &
                                  zr(jchin-1+iddl+icmp-1), iret)
                   endif
-                  if (nfy.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.2) then 
+                  if (nfy.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.2) then
                     call fointe('F ', fony, 7, nompar, valpar, &
                                  zr(jchin-1+iddl+icmp-1), iret)
                   endif
-                  if (nfz.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.3) then 
+                  if (nfz.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.3) then
                     call fointe('F ', fonz, 7, nompar, valpar, &
                                  zr(jchin-1+iddl+icmp-1), iret)
                   endif
-                  if (nfrx.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.4) then 
+                  if (nfrx.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.4) then
                     call fointe('F ', fonrx, 7, nompar, valpar, &
                                  zr(jchin-1+iddl+icmp-1), iret)
                   endif
-                  if (nfry.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.5) then 
+                  if (nfry.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.5) then
                     call fointe('F ', fonry, 7, nompar, valpar, &
                                  zr(jchin-1+iddl+icmp-1), iret)
                   endif
-                  if (nfrz.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.6) then 
+                  if (nfrz.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.6) then
                     call fointe('F ', fonrz, 7, nompar, valpar, &
                                  zr(jchin-1+iddl+icmp-1), iret)
                   endif
@@ -492,7 +492,7 @@ subroutine crcore()
             matric(2) = ' '
             matric(3) = ' '
             call refdaj('F', resu19, (nbordr2-nbordr1), numedd, 'DYNAMIQUE',&
-                            matric, ier)                  
+                            matric, ier)
         end if
     endif
 !    AS_DEALLOCATE(vi=vicmp)

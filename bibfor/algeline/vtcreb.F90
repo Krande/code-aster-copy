@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ implicit none
 !
 ! - Get parameters from NUME_DDL
 !
-    if (present(nume_ddlz)) then       
+    if (present(nume_ddlz)) then
         call dismoi('NUM_GD_SI' , nume_ddlz, 'NUME_DDL', repi=idx_gd)
         call dismoi('NB_EQUA'   , nume_ddlz, 'NUME_DDL', repi=nb_equa)
         call dismoi('NOM_MAILLA', nume_ddlz, 'NUME_DDL', repk=mesh)
@@ -109,7 +109,7 @@ implicit none
         prof_chno = prof_chnoz
         mesh      = meshz
     endif
- 
+
     if (ideb.eq.ifin) then
       obj_refe = field_node(1:19)//'.REFE'
       obj_vale = field_node(1:19)//'.VALE'
@@ -171,7 +171,7 @@ implicit none
 ! DIVERS MUTUALISE
       if (present(nb_equa_outz)) then
         nb_equa_outz = nb_equa
-      endif            
+      endif
     endif
 !
 end subroutine

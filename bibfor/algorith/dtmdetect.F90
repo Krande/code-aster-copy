@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
 ! dtmdetect : Detects a change in the state of non-linearities between between
 !             instants i and i-1 by analyzing the saved internal variables and
 !             NL_SAVE1
-! 
+!
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dtmeigen.h"
@@ -66,7 +66,7 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
     reinteg = 0
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli, buffer=buffdtm)
     if (nbnoli.gt.0) then
-        
+
         call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
         call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
         call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
@@ -91,7 +91,7 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
 !       1 - Did we detect a change in the system's state ?
         if (nlcase2.ne.nlcase1) then
             call intget(sd_int, TIME, iocc=1, rscal=time, buffer=buffint)
-    
+
             call dtmupmat(sd_dtm, sd_int, buffdtm, buffint, nlcase2,&
                           reinteg)
 
@@ -106,7 +106,7 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
                     if (info.eq.2) then
                         call intget(sd_int, TIME, iocc=1, rscal=time, buffer=buffint)
                         call utmess('I', 'DYNAMIQUE_93', sr=time)
-                    end if                   
+                    end if
                 end if
                 call dtmproj (sd_dtm, sd_int, nlcase1, buffdtm, buffint)
             end if

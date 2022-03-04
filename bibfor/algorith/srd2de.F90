@@ -35,27 +35,27 @@ subroutine srd2de(devsig, d2dets)
     !!!
     !!! Variables globales
     !!!
-    
+
     real(kind=8) :: devsig(6), d2dets(6, 6)
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: ndi, ndt
     real(kind=8) :: r2
     common /tdim/   ndt,ndi
-    
+
     !!!
     !!! Calcul de d2dets
     !!!
-    
+
     d2dets(:,:) = 0.d0
-    
+
     r2 = sqrt(2.d0)
-    
+
     if (ndt .eq. 6) then
-        
+
         d2dets(1,2)=devsig(3)
         d2dets(1,3)=devsig(2)
         d2dets(1,6)=-devsig(6)
@@ -77,9 +77,9 @@ subroutine srd2de(devsig, d2dets)
         d2dets(6,4)=devsig(5)/r2
         d2dets(6,5)=devsig(4)/r2
         d2dets(6,6)=-devsig(1)
-        
+
     else if (ndt.eq.4) then
-        
+
         d2dets(1,2)=devsig(3)
         d2dets(2,1)=devsig(3)
         d2dets(1,3)=devsig(2)
@@ -89,7 +89,7 @@ subroutine srd2de(devsig, d2dets)
         d2dets(4,4)=-devsig(3)
         d2dets(4,3)=-devsig(4)
         d2dets(3,4)=-devsig(4)
-        
+
     endif
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine pmfitsbts(typfib, nf, ncarf, vf, vsig, b, wi, nbassepou, yj, zj, maxf
 !
     vs(:)=0.0d0
 !
-    if ( typfib .eq. 1 ) then          
+    if ( typfib .eq. 1 ) then
         call r8inir(12, 0.d0, ve, 1)
 !       3 caractéristiques utiles par fibre : y z aire
         call pmfits(typfib, nf, ncarf, vf, vsig, vs)
@@ -108,7 +108,7 @@ subroutine pmfitsbts(typfib, nf, ncarf, vf, vsig, b, wi, nbassepou, yj, zj, maxf
 !         Integration des efforts de la sous-poutre sur la section
           call pmfits(typfib, maxfipoutre, ncarf, vfv, vsigv, vs)
 !         Transfert aux noeuds
-          call pmfbts(b, wi, vs, vet) 
+          call pmfbts(b, wi, vs, vet)
           do  ii = 1, 12
               flp(ii,i) = vet(ii)
           enddo

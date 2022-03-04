@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ real(kind=8) :: appmas
 ! In  rhom             : volumic mass at beginning of current time step
 ! In  epsv             : mechanical volumic strain at end of current time step
 ! In  epsvm            : mechanical volumic strain at beginning of current time step
-! Out appmas           : quantity of mass at end of current time step 
+! Out appmas           : quantity of mass at end of current time step
 !
 ! --------------------------------------------------------------------------------------------------
 !

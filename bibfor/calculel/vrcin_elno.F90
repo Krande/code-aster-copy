@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine vrcin_elno(nomch, cesmod, chs)
 ! person_in_charge: sam.cuvilliez at edf.fr
 !-----------------------------------------------------------------------
 !
-!   Sous-routine de vrcin1. Cas particulier ou l'on souhaite produire 
+!   Sous-routine de vrcin1. Cas particulier ou l'on souhaite produire
 !   un champ de varc ELNO.
 !
 !   in nomch  : nom du champ dont le support doit etre modifie
@@ -46,7 +46,7 @@ subroutine vrcin_elno(nomch, cesmod, chs)
 !
     call jemarq()
 !
-!   seuls les cham_no sont autorises 
+!   seuls les cham_no sont autorises
     call dismoi('TYPE_CHAMP', nomch, 'CHAMP', repk=tych)
     if(tych .ne. 'NOEU')then
         valk(1)=nomch

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ use petsc_data_module
     real(kind=8) :: vsmb(*)
 !-----------------------------------------------------------------------
 ! BUT : ON MET A ZERO LES TERMES DU SECOND MEMBRE QUI N'APPARTIENNENT PAS
-!       DE FACON EXCLUSIVE (AU SENS PETSC) AU PROCESSEUR COURANT. 
+!       DE FACON EXCLUSIVE (AU SENS PETSC) AU PROCESSEUR COURANT.
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
@@ -81,16 +81,16 @@ use petsc_data_module
 !
         do ieql = 1, neql
             ieqg=nulg(ieql)
-! Le dl courant est-il fixé par une charge cinématique ? 
+! Le dl courant est-il fixé par une charge cinématique ?
             if (iccid == 0) then
-! Il n'y a pas de charge cinématique sur le modèle  
+! Il n'y a pas de charge cinématique sur le modèle
                 is_ddl_cine=.false.
-            else 
+            else
 ! Il existe au moins une charge cinématique. On vérifie si
-! le numéro global de dl est concerné 
+! le numéro global de dl est concerné
                 is_ddl_cine=ccid(ieqg).eq.1
             endif
-! Suis-je le proriétaire exclusif (PETSc) de ce ddl ? 
+! Suis-je le proriétaire exclusif (PETSc) de ce ddl ?
             iam_sole_owner= zi(jpddl-1+ieql) .eq. rang
             if ((.not.is_ddl_cine) .and. (.not.iam_sole_owner)) then
                 vsmb(ieqg) = 0.d0

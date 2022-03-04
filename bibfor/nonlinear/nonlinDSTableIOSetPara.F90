@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ character(len=8), optional :: paraType_(:)
             endif
         end do
         AS_ALLOCATE(vk24 = table_%table_io%paraName, size = nb_cols_acti)
-        AS_ALLOCATE(vk8  = table_%table_io%paraType, size = nb_cols_acti) 
+        AS_ALLOCATE(vk8  = table_%table_io%paraType, size = nb_cols_acti)
         do i_all_col = 1, nb_cols
             l_acti   = table_%l_cols_acti(i_all_col)
             col_name = table_%cols(i_all_col)%name
@@ -102,7 +102,7 @@ character(len=8), optional :: paraType_(:)
         table_%table_io%nbParaStrg = nbPara_strg
     else
         AS_ALLOCATE(vk24 = tableio_%paraName, size = nbPara_)
-        AS_ALLOCATE(vk8  = tableio_%paraType, size = nbPara_) 
+        AS_ALLOCATE(vk8  = tableio_%paraType, size = nbPara_)
         do i_para = 1, nbPara_
             tableio_%paraName(i_para) = paraName_(i_para)
             tableio_%paraType(i_para) = paraType_(i_para)
@@ -111,7 +111,7 @@ character(len=8), optional :: paraType_(:)
                 nbPara_inte     = nbPara_inte + 1
             elseif (paraType_(i_para) .eq. 'R') then
                 nb_para          = nb_para + 1
-                nbPara_real     = nbPara_real + 1           
+                nbPara_real     = nbPara_real + 1
             elseif (paraType_(i_para)(1:1) .eq. 'K') then
                 nb_para          = nb_para + 1
                 nbPara_strg     = nbPara_strg + 1
@@ -127,4 +127,3 @@ character(len=8), optional :: paraType_(:)
     endif
 !
 end subroutine
-    

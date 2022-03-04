@@ -24,7 +24,7 @@ subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
 !
 ! -----------------------------------------------------------
 ! --- IN :
-!       typgrfi    : type des fibres : 1 2 ou 3      
+!       typgrfi    : type des fibres : 1 2 ou 3
 !       nbpou      : nombre de sous-poutres
 !       gxjx       : module de torsion multifibre
 !       gxjxpou(*) : Module de torsion pour multipoutres
@@ -32,7 +32,7 @@ subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
 !       deplp      : champs de deplacement au temps +
 !       xl         : longueur de l'element
 
-! --- OUT 
+! --- OUT
 !       fl         : efforts nodaux corriges pour torsion
 
 
@@ -47,12 +47,12 @@ subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
       fl(10) = gxjx*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
       fl(4) = -fl(10)
     elseif (tygrfi .eq. 2 ) then
-      do ii =1, nbpout 
+      do ii =1, nbpout
         fl(10) = fl(10) + gxjxpout(ii)*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
         fl(4) = fl(4) - gxjxpout(ii)*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
-      enddo    
+      enddo
     elseif (tygrfi .eq. 3 ) then
-      do ii =1, nbpout 
+      do ii =1, nbpout
          fl(13) = fl(13) + gxjxpout(ii)*(deplm(13)+deplp(13)-deplm(4)-deplp(4))/xl
          fl(4) = fl(4) - gxjxpout(ii)*(deplm(13)+deplp(13)-deplm(4)-deplp(4))/xl
      enddo

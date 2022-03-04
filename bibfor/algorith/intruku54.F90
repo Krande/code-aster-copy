@@ -23,7 +23,7 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 ! intruku54 : Integrate from t_i to t_i+1 the differential equations of motion
 !             using a Runge-Kutta type order 5/4 scheme.
-! 
+!
 #include "jeveux.h"
 #include "blas/dcopy.h"
 #include "asterc/r8prem.h"
@@ -137,26 +137,26 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
         cdp(5)=8.d0/9.d0
         cdp(6)=1.d0
         cdp(7)=1.d0
-!    
+!
         adp(1,1)=  0.2d0
         adp(2,1)=  3.d0/40.d0
         adp(2,2)=  9.d0/40.d0
-!    
+!
         adp(3,1)=  44.d0/45.d0
         adp(3,2)= -56.d0/15.d0
         adp(3,3)=  32.d0/9.d0
-!    
+!
         adp(4,1)=  19372.d0/6561.d0
         adp(4,2)= -25360.d0/2187.d0
         adp(4,3)=  64448.d0/6561.d0
         adp(4,4)= -212.d0/729.d0
-!    
+!
         adp(5,1)=  9017.d0/3168.d0
         adp(5,2)= -355.d0/33.d0
         adp(5,3)=  46732.d0/5247.d0
         adp(5,4)=  49.d0/176.d0
         adp(5,5)= -5103.d0/18656.d0
-!    
+!
         adp(6,1)=  35.d0/384.d0
         adp(6,2)=  0.d0
         adp(6,3)=  500.d0/1113.d0
@@ -292,7 +292,7 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
         seuil1 = (0.9d0/5.0d0)**(6.d0)
         seuil2 = (0.9d0/0.2d0)**(6.d0)
 
-!       --- Refining the time step is not helping, the system is probably badly 
+!       --- Refining the time step is not helping, the system is probably badly
 !           initialized (not in dynamic equilibrium) and the integration can proceed
 !           as is toward an equilibrium state
         if ((errt*1.01d0).gt.errt0) then
@@ -307,7 +307,7 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
             coeff = 0.9d0*(errt)**(-1.d0/6.d0)
         endif
         dt2 = min(dtmax, dt*coeff)
-!       
+!
         if ((errt.ge.1.d0) .and. (dt2.ge.dtmin)) then
             dt = dt2
             errt0 = errt

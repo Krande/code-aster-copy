@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,15 +105,15 @@ subroutine calpro(nomres, classe, basmod, nommat)
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
     call jeveuo(nommat(1:19)//'.REFA', 'L', jrefa)
-    ntail = nbdef* (nbdef+1)/2    
+    ntail = nbdef* (nbdef+1)/2
     if (zk24(jrefa-1+9) .eq. 'MS') then
        lsym = .true.
-       call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', & 
-                   'CONSTANT',1)   
+       call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
+                   'CONSTANT',1)
     else
        lsym = .false.
-       call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', & 
-                   'CONSTANT',2)   
+       call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', &
+                   'CONSTANT',2)
     endif
     call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
@@ -166,24 +166,24 @@ subroutine calpro(nomres, classe, basmod, nommat)
          iad = i*(i+1)/2
          zr(ldres+iad-1) = xprod
          if (.not.lsym) zr(ldres2+iad-1) = xprod
-         if (lsym) then 
+         if (lsym) then
           jdeb = i+1
-         else 
+         else
           jdeb=1
          endif
 !
 ! ----- PRODUIT AVEC DEFORMEES D'ORDRE SUPERIEURE
 !
 !       if (i .lt. nbdef) then
-            do j = jdeb, nbdef               
+            do j = jdeb, nbdef
                 xprod= ddot(neq,zr(ltvec1),1,zr(idbase+(j-1)*neq),1)
                 if (j.gt.i) then
-                  iad = i+(j-1)*j/2                   
+                  iad = i+(j-1)*j/2
                   zr(ldres+iad-1) = xprod
                 else
-                  iad = j+(i-1)*i/2                                     
-                  zr(ldres2+iad-1) = xprod  
-                end if                   
+                  iad = j+(i-1)*i/2
+                  zr(ldres2+iad-1) = xprod
+                end if
             end do
 !       endif
 !

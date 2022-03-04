@@ -56,8 +56,8 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 !
 ! ----------------------------------------------------------------------
 !
-! X-FEM : CALCUL DES ELEMENTS CINEMATIQUES F, EPS ET GRAD CONNAISSANT 
-!         FF ET DFDI (VALEURS DES FF CLASSIQUES ET DE LEUR DERIVEES DANS 
+! X-FEM : CALCUL DES ELEMENTS CINEMATIQUES F, EPS ET GRAD CONNAISSANT
+!         FF ET DFDI (VALEURS DES FF CLASSIQUES ET DE LEUR DERIVEES DANS
 !         LE REPERE DE REFERENCE PREALABLEMENT CALCULEES AVEC REEREF)
 !
 ! ----------------------------------------------------------------------

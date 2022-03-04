@@ -36,9 +36,9 @@ character(len=24), intent(in) :: time
 character(len=24), intent(in) :: mate
 character(len=24), intent(in) :: temp_prev
 character(len=24), intent(in) :: temp_iter
-character(len=24), intent(in) :: hydr_prev   
+character(len=24), intent(in) :: hydr_prev
 character(len=24), intent(in) :: hydr_curr
-character(len=24), intent(in) :: dry_prev   
+character(len=24), intent(in) :: dry_prev
 character(len=24), intent(in) :: dry_curr
 character(len=24), intent(in) :: compor
 character(len=19), intent(in) :: varc_curr
@@ -49,8 +49,8 @@ character(len=1), intent(in) :: base
 ! --------------------------------------------------------------------------------------------------
 !
 ! Thermic
-! 
-! Residuals from non-linear laws 
+!
+! Residuals from non-linear laws
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +91,7 @@ character(len=1), intent(in) :: base
 ! - Init fields
 !
     call inical(nbin  , lpain, lchin, nbout, lpaout,&
-                lchout)    
+                lchout)
 !
 ! - Geometry field
 !

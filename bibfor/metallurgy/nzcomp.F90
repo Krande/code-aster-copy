@@ -44,7 +44,7 @@ real(kind=8), intent(out) :: meta_curr(*)
 !
 ! METALLURGY - Compute phases
 !
-! General 
+! General
 !
 ! --------------------------------------------------------------------------------------------------
 !

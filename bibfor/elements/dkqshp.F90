@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine dkqshp(qsi, eta, caraq4, jacob, shpN, shpr1, shpr2)
 
 !
 !     ------------------------------------------------------------------
-!     MATRICE SHP(3,4) DES FONCTIONS DE BASE 
+!     MATRICE SHP(3,4) DES FONCTIONS DE BASE
 !     AU POINT QSI ETA POUR ELEMENTS DKQ ET DSQ
 !     ------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ subroutine dkqshp(qsi, eta, caraq4, jacob, shpN, shpr1, shpr2)
     vj21 = jacob(3)
     vj22 = jacob(4)
 !
-!   Form bilinear shape functions Ni 
+!   Form bilinear shape functions Ni
 !
 
 !
@@ -72,7 +72,7 @@ subroutine dkqshp(qsi, eta, caraq4, jacob, shpN, shpr1, shpr2)
       temp       = shpN(1,i) * vj11 + shpN(2,i) * vj12
       shpN(2,i)  = shpN(1,i) * vj21 + shpN(2,i) * vj22
       shpN(1,i)  = temp
-    end do 
+    end do
 
 
 !
@@ -81,7 +81,7 @@ subroutine dkqshp(qsi, eta, caraq4, jacob, shpN, shpr1, shpr2)
     s2 = (1.d0 - qsi*qsi) / 2.0d0
     t2 = (1.d0 - eta*eta) / 2.0d0
 !
-!   Si 
+!   Si
 !
     shp(3,1) =   s2*(1.d0 - eta)
     shp(3,2) =   t2*(1.d0 + qsi)
@@ -90,7 +90,7 @@ subroutine dkqshp(qsi, eta, caraq4, jacob, shpN, shpr1, shpr2)
 !
 !   dSi/d_qsi
 !
-    shp(1,1) = -qsi*(1.d0 - eta) 
+    shp(1,1) = -qsi*(1.d0 - eta)
     shp(1,2) =  t2
     shp(1,3) = -qsi*(1.d0 + eta)
     shp(1,4) = -t2
@@ -108,10 +108,10 @@ subroutine dkqshp(qsi, eta, caraq4, jacob, shpN, shpr1, shpr2)
       temp      = shp(1,i) * vj11 + shp(2,i) * vj12
       shp(2,i)  = shp(1,i) * vj21 + shp(2,i) * vj22
       shp(1,i)  = temp
-    end do 
+    end do
 
 !
-!   Form rotational shape functions 
+!   Form rotational shape functions
 !
 !
 

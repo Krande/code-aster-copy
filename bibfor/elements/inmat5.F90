@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -283,11 +283,11 @@ real(kind=8), intent(out) :: mgano2(MT_NBPGMX, MT_NNOMAX)
         nosom(4,1) = 1.d0/3.d0
         nosom(4,2) = 2.d0/3.d0
 !
-    elseif (elrefa .eq. 'HE9') then 
+    elseif (elrefa .eq. 'HE9') then
 !    Pas besoin de faire un passage 9eme noeud --> Noeud SOMMET
 !    Le neuvieme noeud sert uniquement au calcul du pincement
 
-    elseif (elrefa .eq. 'PE7') then 
+    elseif (elrefa .eq. 'PE7') then
 !    Pas besoin de faire un passage 7eme noeud --> Noeud SOMMET
 !    Le septième noeud sert uniquement au calcul du pincement
 

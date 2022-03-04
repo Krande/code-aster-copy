@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -247,7 +247,7 @@ subroutine op0143()
             call getvtx(nommcf, 'GRAPPE_2', iocc=1, scal=grappe, nbret=ibid)
             call getvid(nommcf, 'CARA_ELEM', iocc=1, scal=carael, nbret=ibid)
             call getvid(nommcf, 'MODELE', iocc=1, scal=modele, nbret=ibid)
-            
+
             iocc = 1
             lisno = '&&OP0143.LISTE_NOEUD'
             call dismoi('NOM_MAILLA', modele, 'MODELE', repk=maillage)
@@ -255,7 +255,7 @@ subroutine op0143()
                         2, motcle, typmcl, lisno, nbno)
             ASSERT(nbno.eq.1)
             call jeveuo(lisno, 'L', jno)
-!            
+!
             zk8(lfsvk  )=grappe
             zk8(lfsvk+1)=zk8(jno-1+1)
             zk8(lfsvk+2)=carael

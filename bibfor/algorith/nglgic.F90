@@ -232,7 +232,7 @@ integer,intent(out)            :: codret
         call rcvalb(fami,g,1,'-',mate,' ','NON_LOCAL',0,' ',[0.d0],&
                     1,'PENA_LAGR_INCO',valinco,iok,2)
         rinco = valinco(1)
-        
+
         ! Calcul des matrices BU, BG et BQ
         call gdlog_matb(gdlp,r,vff(:,g),dff,bu)
         bg = 0

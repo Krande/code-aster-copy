@@ -36,8 +36,8 @@ subroutine sigmca(tablca, icabl, nbnoca, numaca,&
 !
 !  IN     : SIGMCABL : NOM DE LA STRUCTURE PERMETTANT DE STOCKER LES VALEURS
 !                      DE LA CONTRAINTE
-!  IN     : PREM   : INTEGER INDICE DE LA PREMIERE PLACE LIBRE DANS LE VECTEUR 
-!                    NUMA 
+!  IN     : PREM   : INTEGER INDICE DE LA PREMIERE PLACE LIBRE DANS LE VECTEUR
+!                    NUMA
 !
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
@@ -110,7 +110,7 @@ subroutine sigmca(tablca, icabl, nbnoca, numaca,&
     endif
     idecma = nbmaca - nbma
 !
-! 1.3 STOCKAGE DU RESULTAT 
+! 1.3 STOCKAGE DU RESULTAT
 ! ---
    call jeveuo( sigmcabl//'.NUMA', 'E', vi=sigmnuma )
    call jeveuo( sigmcabl//'.VALE', 'E', vr=sigmvale )
@@ -139,7 +139,7 @@ subroutine sigmca(tablca, icabl, nbnoca, numaca,&
         sigmvale(iivale-1+2)=0.d0
         sigmvale(iivale-1+3)=0.d0
         iinuma = iinuma + 1
-        iivale = iivale + nbcmp 
+        iivale = iivale + nbcmp
     end do
     prem=iinuma
 !

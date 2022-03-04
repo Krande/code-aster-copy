@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ real(kind=8), intent(out) :: vectu(dimuel)
 ! In  tempe            : parameters for thermic
 ! In  nno              : number of nodes (all)
 ! In  nnos             : number of nodes (not middle ones)
-! In  npi              : number of Gauss points for linear 
+! In  npi              : number of Gauss points for linear
 ! In  npg              : number of Gauss points
 ! In  elem_coor        : coordinates of nodes for current element
 ! In  deltat           : time increment
@@ -148,12 +148,12 @@ real(kind=8), intent(out) :: vectu(dimuel)
                     dfdi     , dfdi2    ,&
                     poids    , poids2   ,&
                     b        )
-! ----- Compute stress vector {R} 
+! ----- Compute stress vector {R}
         call fonoda(ds_thm, jv_mater, ndim  , l_steady, fnoevo,&
                     mecani, press1  , press2, tempe,&
                     dimdef, dimcon  , dt    , congem((kpi-1)*dimcon+1),&
                     r)
-! ----- Compute residual = [B]^T.{R} 
+! ----- Compute residual = [B]^T.{R}
         do i = 1, dimuel
             do n = 1, dimdef
                 vectu(i)=vectu(i)+b(n,i)*r(n)*poids

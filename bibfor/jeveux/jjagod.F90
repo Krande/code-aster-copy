@@ -32,7 +32,7 @@ subroutine jjagod(iclas, nblnew)
 !     ADRESSE DISQUE ($$IUSADI) ET NOMBRE D'ACCES ($$ACCE)
 !
 !     IN    ICLAS  : CLASSE ASSOCIEE AU REPERTOIRE
-!     IN    NBLNEW : NOUVELLE TAILLE DES OBJETS 
+!     IN    NBLNEW : NOUVELLE TAILLE DES OBJETS
 !
 ! ----------------------------------------------------------------------
     integer :: n
@@ -72,7 +72,7 @@ subroutine jjagod(iclas, nblnew)
     common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,  lgp,lgputi
     integer :: indiq_jjagod, indiq_jjldyn
     common /idagod/ indiq_jjagod, indiq_jjldyn
-    
+
 ! ----------------------------------------------------------------------
     integer :: iad14, kat14, kdy14, iad15, kat15, kdy15, l, lonoi_av
     integer :: lon, irt, iadmi, iadyn, imq(2)
@@ -84,7 +84,7 @@ subroutine jjagod(iclas, nblnew)
     irt = 0
     indiq_jjagod = 1
 !
-! --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEL OBJET USADI (14) ET 
+! --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEL OBJET USADI (14) ET
 ! --- RECOPIE DU CONTENU DE L'ANCIEN OBJET
 ! --- LA VARIABLE indiq_jjagod PERMET DE FORCER L'ALLOCATION MEME SI ON
 ! --- DEPASSE LA VALEUR vmxdyn
@@ -104,7 +104,7 @@ subroutine jjagod(iclas, nblnew)
     iadyn=iadm(jiadm(ic)+2*14)
     lonoi_av=lono(jlono(ic)+14)*ltyp(jltyp(ic)+14)
     call jjecrs(kat14, ic, 14, 0, 'E', imq)
-    jusadi(ic) = iad14 - 1 
+    jusadi(ic) = iad14 - 1
     long(jlong(ic)+14) = 3*nblnew
     lono(jlono(ic)+14) = 3*nblnew
     iadm(jiadm(ic)+2*14-1) = kat14
@@ -122,7 +122,7 @@ subroutine jjagod(iclas, nblnew)
 !
     call jjlidy(iadyn,iadmi)
 !
-! --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEL OBJET IACCE (15) ET 
+! --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEL OBJET IACCE (15) ET
 ! --- RECOPIE DU CONTENU DE L'ANCIEN OBJET
 !
     lon = nblnew*lois
@@ -157,6 +157,6 @@ subroutine jjagod(iclas, nblnew)
     nblmax(ic)=nblnew
 !
     ipgc = ipgca
-    indiq_jjagod = 0 
+    indiq_jjagod = 0
 ! FIN ------------------------------------------------------------------
 end subroutine

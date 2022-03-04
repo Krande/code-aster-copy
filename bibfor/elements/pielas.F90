@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@ subroutine pielas(BEHinteg,&
                   mate, lgpg, vim, epsm,&
                   epsp, epsd, sigma, etamin, etamax,&
                   tau, copilo)
-                  
+
 use Behaviour_type
 
 use endo_loca_module, only: &
     ELE_law             => CONSTITUTIVE_LAW, &
     ELE_Init            => Init, &
     ELE_PathFollowing   => PathFollowing
-    
+
 !
 implicit none
 !
@@ -116,15 +116,15 @@ real(kind=8) :: sigma(6)
 
 
     else if (compor(1).eq.'ENDO_LOCA_EXP') then
-    
+
         eps0 = epsm(1:ndimsi) + epsp(1:ndimsi)
         eps1 = epsd(1:ndimsi)
-        
+
         ELE_ldc = ELE_Init(ndimsi, option, 'NONE', kpg, 1, mate, 100, 0.d0, 0.d0)
         call ELE_PathFollowing(ELE_ldc, vim(1,kpg)+tau, eps0, eps1, etamin, etamax, &
                                1.d-6, nsol, sol, sgn)
         if (ELE_ldc%exception .ne. 0) call utmess('F', 'PILOTAGE_83')
-        
+
         if (nsol .eq. 0) then
             copilo(5,kpg) = 0.d0
         else if (nsol .eq. 1) then

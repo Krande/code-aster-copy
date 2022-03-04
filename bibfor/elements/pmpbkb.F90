@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine pmpbkb(skp, nbpout, yi, zi, sk)
     data ip/0,1,3,6,10,15,21,28,36,45,55,66/
 
     do i =1 , nbpout
- 
+
 sk(ip(1)+1) = sk(ip(1)+1) + skp(ip(1)+ 1, i)
 sk(ip(2)+1) = sk(ip(2)+1) + skp(ip(2)+ 1,i)
 sk(ip(2)+2) = sk(ip(2)+2) + skp(ip(2)+ 2,i)

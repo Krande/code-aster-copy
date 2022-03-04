@@ -44,7 +44,7 @@ subroutine xchkgp(model)
 ! ------------------------------------------------------------------
 ! BUT: VERIFIER QUE LE CHAMP ELGA (OPTION/PARAM), UTILISE UNE FAMILLE
 !      XFEM CONTENANT SUFFISAMENT DE POINTS POUR STOCKER LES DONNÉES
-!      DES TOUS LES SOUS-ELEMENTS 
+!      DES TOUS LES SOUS-ELEMENTS
 ! ------------------------------------------------------------------
 !     ARGUMENTS:
 !     ----------
@@ -95,7 +95,7 @@ subroutine xchkgp(model)
     call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typma)
 !
 !   définition de l'option et du paramètre permettant d'identifier
-!   un champ porté par la famille XFEM de l'élément 
+!   un champ porté par la famille XFEM de l'élément
     option='TOU_INI_ELGA'
     param='PSIEF_R'
     if (pheno.eq.'THERMIQUE') then

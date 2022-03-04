@@ -188,10 +188,10 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
         freq = uns2pi * omega
         valpu(1) = amor
         valpu(2) = freq
-        if (corfre) then 
+        if (corfre) then
             correc = sqrt( un - amor*amor )
         else
-            correc = 1. 
+            correc = 1.
         endif
         do id = 1, 3
             if (ndir(id) .eq. 1) then
@@ -228,7 +228,7 @@ subroutine asexc1(motfac, nbocc, nbmode, momec, amort,&
             valpu(1) = amor
             valpu(2) = fcoup
             omega = deuxpi * fcoup
-            if (corfre) then 
+            if (corfre) then
                 correc = sqrt( un - amor*amor )
             else
                 correc = 1.

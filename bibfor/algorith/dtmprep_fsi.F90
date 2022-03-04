@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine dtmprep_fsi(sd_dtm_)
 !               configuration if needed for the dynamic integration.
 !               This is verified by the presence of BASE_ELAS_FLUI
 !
-!   Note : Information about IFS configuration is read using mdconf and saved directly 
+!   Note : Information about IFS configuration is read using mdconf and saved directly
 !          is sd_dtm
 !
 #include "jeveux.h"
@@ -154,8 +154,8 @@ subroutine dtmprep_fsi(sd_dtm_)
         icoupled(i) = 0
     end do
 
-!   --- TODO : HERE WE CAN CHECK IF THE INPUT ZETA0 CORRESPONDS TO THAT GIVEN IN 
-!              BASE_ELAS_FLUI AND DO THE CORRECTION TO THE COUPLING COEFFICIENTS 
+!   --- TODO : HERE WE CAN CHECK IF THE INPUT ZETA0 CORRESPONDS TO THAT GIVEN IN
+!              BASE_ELAS_FLUI AND DO THE CORRECTION TO THE COUPLING COEFFICIENTS
 !              IF REQUIRED SUCH AS FOR THE REDUCED DAMPING
     do j = 1, nbmcfc
         im = zi(jnumo+j-1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ implicit none
         call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
     typmod(2) = '        '
-! 
+!
 ! - Get index of dof
 !
     call niinit(typmod, ndim, nno1, 0,&

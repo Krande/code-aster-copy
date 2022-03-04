@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,34 +40,34 @@ subroutine srcalg(dfdsig, vecn, g, devgii)
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: ndi,ndt,i
     real(kind=8) :: dfdsig(6),vecn(6),g(6),devgii
     common /tdim/ ndt,ndi
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     real(kind=8) :: devg(6),fact1
-    
+
     !!!
     !!! Calcul de g
     !!!
     call r8inir(6,0.d0,g,1)
     call lcprsc(dfdsig,vecn,fact1)
-    
+
     do i=1,ndt
         g(i)=dfdsig(i)-fact1*vecn(i)
     end do
-    
+
     !!!
     !!! Calcul du deviateur de g et de sa norme
     !!!
-    
+
     call lcdevi(g,devg)
     call lcprsc(devg,devg,devgii)
-    
+
     devgii=sqrt(devgii)
 
 end subroutine

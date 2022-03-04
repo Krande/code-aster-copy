@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ implicit none
             bary(1) = bary(1) + poin_inte(1, i_poin_inte)/real(nb_poin_inte)
             bary(2) = bary(2) + poin_inte(2, i_poin_inte)/real(nb_poin_inte)
         end do
-!   
+!
 ! ----- Compute angles
 !
         do i_poin_inte = 1, nb_poin_inte
@@ -81,7 +81,7 @@ implicit none
         do i_poin_inte = 2, nb_poin_inte
             list_poin_next(i_poin_inte-1) = i_poin_inte
         end do
-        list_poin_next(nb_poin_inte) = 1    
+        list_poin_next(nb_poin_inte) = 1
 !
 ! ----- Sort
 !
@@ -92,7 +92,7 @@ implicit none
             if (norm .gt. 10*pair_tole) then
                 nb_inte_new = nb_inte_new+1
                 poin_inte_sort(1,nb_inte_new) = poin_inte(1,angle_sorted(i_poin_inte))
-                poin_inte_sort(2,nb_inte_new) = poin_inte(2,angle_sorted(i_poin_inte))     
+                poin_inte_sort(2,nb_inte_new) = poin_inte(2,angle_sorted(i_poin_inte))
             endif
         end do
         nb_poin_inte = nb_inte_new
@@ -107,7 +107,7 @@ implicit none
                     poin_inte(1,i_poin_inte) .le. 1.d0) then
                 poin_inte_sort(1,2) =  poin_inte(1,i_poin_inte)
             end if
-        end do        
+        end do
         nb_poin_inte = 2
     else
         ASSERT(.false.)

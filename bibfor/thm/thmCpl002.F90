@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine thmCpl002(ds_thm,&
                      lMatr, lSigm, lVari, angl_naut,&
                      ndim  , nbvari, &
                      dimdef, dimcon,&
-                     adcome, adcote, adcp11,& 
+                     adcome, adcote, adcp11,&
                      addeme, addete, addep1,&
                      temp  , p1    ,&
                      dtemp , dp1   ,&
@@ -65,7 +65,7 @@ aster_logical, intent(in) :: lMatr, lSigm, lVari
 real(kind=8), intent(in) :: angl_naut(3)
 integer, intent(in) :: ndim, nbvari
 integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: adcome, adcote, adcp11 
+integer, intent(in) :: adcome, adcote, adcp11
 integer, intent(in) :: addeme, addete, addep1
 real(kind=8), intent(in) :: temp, p1
 real(kind=8), intent(in) :: dtemp, dp1
@@ -138,7 +138,7 @@ integer, intent(out) :: retcom
     real(kind=8) :: dp1_, dp2, p2, signe
     real(kind=8) :: dmdeps(6), sigmp(6), dsdp2(6)
     real(kind=8) :: dqeps(6)
-    integer      :: advico, vicphi   
+    integer      :: advico, vicphi
     real(kind=8) ::dpi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ integer, intent(out) :: retcom
     phi    = 0.d0
     satur  = 0.d0
     saturm = 0.d0
-    dpi    = 0.d0   
+    dpi    = 0.d0
 !
 ! - Pressures: invert DP2 <= 0 and P2 <= P1
 !
@@ -212,13 +212,13 @@ integer, intent(out) :: retcom
                 epsv     , depsv ,&
                 epsvm    , cs    , mdal , dalal,&
                 alpha0   , alphfi, cbiot, unsks)
-! 
+!
 ! ==================================================================================================
 !
 ! Internal state variables
 !
 ! ==================================================================================================
-! 
+!
 ! - Evaluation of porosity and save it in internal variables
 !
     if (lVari) then

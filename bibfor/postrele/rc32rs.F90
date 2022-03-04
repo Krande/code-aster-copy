@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -324,7 +324,7 @@ subroutine rc32rs(lfat, lefat)
                   valer(14) = zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 ! --------------- on crée la ligne avec le transitoires fictifs uniquement
-                  valek(4) = 'FICTIF1' 
+                  valek(4) = 'FICTIF1'
                   valek(5) = 'FICTIF1'
 !
                   do 207 k = 1,10
@@ -337,7 +337,7 @@ subroutine rc32rs(lfat, lefat)
 !
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 !
-                  valek(4) = 'FICTIF2' 
+                  valek(4) = 'FICTIF2'
                   valek(5) = 'FICTIF2'
 !
                   valer(11) = zr(jresucomb+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)
@@ -384,7 +384,7 @@ subroutine rc32rs(lfat, lefat)
                   valer(14) = zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+17)
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 ! --------------- on crée la ligne avec le transitoires fictifs uniquement
-                  valek(4) = 'FICTIF1' 
+                  valek(4) = 'FICTIF1'
                   valek(5) = 'FICTIF1'
 !
                   do 307 k = 1,10
@@ -397,7 +397,7 @@ subroutine rc32rs(lfat, lefat)
 !
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 !
-                  valek(4) = 'FICTIF2' 
+                  valek(4) = 'FICTIF2'
                   valek(5) = 'FICTIF2'
 !
                   valer(11) = zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+14)
@@ -415,7 +415,7 @@ subroutine rc32rs(lfat, lefat)
 !     ----------------------------------------------------------------
 ! --- AFFICHAGE DES GRANDEURS QUI INTERVIENNENT DANS FU_TOTAL
 ! --- SN,'INST_SN_1','INST_SN_2', 'SN*', 'INST_SN*_1', 'INST_SN*_2',
-! --- 'INST_SALT_1', 'INST_SALT_2','SALT', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL' 
+! --- 'INST_SALT_1', 'INST_SALT_2','SALT', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL'
 !     ----------------------------------------------------------------
 !
     valek(1) = 'FACT'
@@ -467,7 +467,7 @@ subroutine rc32rs(lfat, lefat)
       valei(6) = zi(jval+27*(num2-1)+1)
 !
       valei(7) = noccpris
-! 
+!
 !---- une situation seule a le plus grand fu unitaire
       if(num1 .eq. num2) then
           valer(1) = zr(ind1+121*(num1-1)+3)

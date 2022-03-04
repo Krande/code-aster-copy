@@ -130,7 +130,7 @@ subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
                                               (zr(jdepde-1+pl)+zr(jdepm- 1+pl))
  41             continue
             else
-              do alp = 1,ndim*nsinge          
+              do alp = 1,ndim*nsinge
                 pl = in + alp
                 pose(idim) = pose(idim) - fk_escl(inoes,alp,idim)*&
                                           (zr( jdepde-1+pl)+zr(jdepm-1+pl))
@@ -162,7 +162,7 @@ subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
                 pos = pos + imait(iddl)*(zr(jdepde-1+pl)+zr(jdepm-1+ pl))
  80         continue
             posm(idim) = posm(idim) + pos*ffm(inom)
-            do alp = 1,ndim*nsingm          
+            do alp = 1,ndim*nsingm
                 pl = in + (1+nfhm+nsingm-1)*ndim + alp
                 posm(idim) = posm(idim) + fk_mait(inom,alp,idim)*&
                                         (zr( jdepde-1+pl)+zr(jdepm-1+pl))

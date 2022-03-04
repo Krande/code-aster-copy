@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -121,15 +121,15 @@ subroutine ssmau2(nomu, option)
     end do
 !
     if (optio2(1:9) .eq. 'MASS_MECA') then
-        call jecrec(nomu//'.MAEL_MASS_VALE', 'G V R', 'NU', 'DISPERSE', & 
-                   'CONSTANT',1)   
+        call jecrec(nomu//'.MAEL_MASS_VALE', 'G V R', 'NU', 'DISPERSE', &
+                   'CONSTANT',1)
         call jeecra(nomu//'.MAEL_MASS_VALE', 'LONMAX', (nddle*(nddle+1)/2))
         call jecroc(jexnum(nomu//'.MAEL_MASS_VALE', 1))
         call jeveuo(jexnum(nomu//'.MAEL_MASS_VALE', 1), 'E', iampee)
 !       call wkvect(nomu//'.MAEL_MASS_VALE', 'G V R', (nddle*(nddle+1)/ 2), iampee)
     else if ((optio2(1:9).eq.'AMOR_MECA').and.(mostru)) then
-        call jecrec(nomu//'.MAEL_AMOR_VALE', 'G V R', 'NU', 'DISPERSE', & 
-                   'CONSTANT',1)   
+        call jecrec(nomu//'.MAEL_AMOR_VALE', 'G V R', 'NU', 'DISPERSE', &
+                   'CONSTANT',1)
         call jeecra(nomu//'.MAEL_AMOR_VALE', 'LONMAX', (nddle*(nddle+1)/2))
         call jecroc(jexnum(nomu//'.MAEL_AMOR_VALE', 1))
         call jeveuo(jexnum(nomu//'.MAEL_AMOR_VALE', 1), 'E', iampee)

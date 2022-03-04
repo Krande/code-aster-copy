@@ -224,7 +224,7 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
         !
         call fointe('F', forcri, np, nompf, valpu,&
                     gcmax, ibid)
-!            
+!
         if (gcmax .gt. epsilo) then
             if ((gcmax-grcrma(1)) .gt. epsilo) then
                 grcrma(2) = grcrma(1)

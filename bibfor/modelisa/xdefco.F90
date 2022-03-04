@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,11 +45,11 @@ implicit none
 !
 ! In  model          : name of model
 ! In  mesh           : name of mesh
-! In  crack          : name of crack 
+! In  crack          : name of crack
 ! In  algo_lagr      : type of Lagrange multiplier space selection
 ! In  nb_dim         : dimension of space
 ! In  sdline_crack   : name of datastructure of linear relations for crack
-! In/Out tabai       : (table) The 5th cmp of TOPOFAC.AI 
+! In/Out tabai       : (table) The 5th cmp of TOPOFAC.AI
 !
 ! --------------------------------------------------------------------------------------------------
 !

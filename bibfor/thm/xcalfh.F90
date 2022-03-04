@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,7 +123,7 @@ character(len=16) :: option
                 end do
                 if (ds_thm%ds_elem%l_dof_meca) then
                     do j=1, 3
-                        do k = 1, ndim 
+                        do k = 1, ndim
                             dsde(adcp11+i,addeme+ndim-1+i) = dsde(adcp11+i,addeme+ndim-1+i)+&
                                          rho11*lambd1(2)*tperm(i,k)*(-grap1(k)+rho11*gravity(k))
                         end do

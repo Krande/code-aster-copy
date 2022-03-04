@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine cfnodb(sdcont)
 
     contno = defico(1:16)//'.NOEUCO'
     call jeveuo(contno, 'L', jnoco)
-    if (iform .ne. 5) then 
+    if (iform .ne. 5) then
         sansno = defico(1:16)//'.SSNOCO'
         call jeveuo(sansno, 'L', jsans)
         psans = defico(1:16)//'.PSSNOCO'
@@ -100,7 +100,7 @@ subroutine cfnodb(sdcont)
 !
 ! --- PREMIER CAS : NOEUDS COMMUNS DANS UNE MEME ZONE DE CONTACT
 !
-    if (iform .ne. 5) then 
+    if (iform .ne. 5) then
         do 100 izone = 1, nzoco
             nbnoe = mminfi(defico,'NBNOE' ,izone )
             nbnom = mminfi(defico,'NBNOM' ,izone )
@@ -182,7 +182,7 @@ subroutine cfnodb(sdcont)
                         vali(1) = izonea
                         vali(2) = izoneb
                         vali(3) = abs(ndoubl)
-                        if ( (iform .eq. 5 .and. lliss)  .or. (iform .eq. 2) )  then 
+                        if ( (iform .eq. 5 .and. lliss)  .or. (iform .eq. 2) )  then
                             call utmess('F', 'CONTACT2_16', ni=3, vali=vali)
                         endif
                     else

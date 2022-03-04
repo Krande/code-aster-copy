@@ -81,7 +81,7 @@ integer, intent(out) :: codret
 ! - Add input fields
 !
     nbin     = 1
-    
+
     if (l_temp) then
         lpain(1) = 'PTEMPER'
         lchin(1) = chtemp

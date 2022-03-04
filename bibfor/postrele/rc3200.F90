@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine rc3200()
     call rc32ma()
 !
 !     ------------------------------------------------------------------
-!              RECUPERATION DES INDICES DE CONTRAINTES 
+!              RECUPERATION DES INDICES DE CONTRAINTES
 !              ET DES CARACTERISTIQUES DE LA TUYAUTERIE
 !     ------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ subroutine rc3200()
 !     ------------------------------------------------------------------
 !              RECUPERATION DES TENSEURS UNITAIRES SI PRESENTS
 !                 ET DES TORSEURS EFFORTS ET MOMENTS
-!                  (SOUS RESU_MECA_UNIT et CHAR_MECA) 
+!                  (SOUS RESU_MECA_UNIT et CHAR_MECA)
 !     ------------------------------------------------------------------
 !
     call rc32mu()

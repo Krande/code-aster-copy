@@ -84,15 +84,15 @@ subroutine calprc(nomres, classe, basmod, nommat)
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
     call jeveuo(nommat(1:19)//'.REFA', 'L', jrefa)
-    ntail = nbdef* (nbdef+1)/2    
+    ntail = nbdef* (nbdef+1)/2
     if (zk24(jrefa-1+9) .eq. 'MS') then
        lsym = .true.
-       call jecrec(nomres(1:18)//'_VALE', classe//' V C', 'NU', 'DISPERSE', & 
-                   'CONSTANT',1)   
+       call jecrec(nomres(1:18)//'_VALE', classe//' V C', 'NU', 'DISPERSE', &
+                   'CONSTANT',1)
     else
        lsym = .false.
-       call jecrec(nomres(1:18)//'_VALE', classe//' V C', 'NU', 'DISPERSE', & 
-                   'CONSTANT',2)   
+       call jecrec(nomres(1:18)//'_VALE', classe//' V C', 'NU', 'DISPERSE', &
+                   'CONSTANT',2)
     endif
     call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
@@ -156,9 +156,9 @@ subroutine calprc(nomres, classe, basmod, nommat)
         iad = i*(i+1)/2
         zc(ldres+iad-1) = xprod
          if (.not.lsym) zc(ldres2+iad-1) = xprod
-         if (lsym) then 
+         if (lsym) then
           jdeb = i+1
-         else 
+         else
           jdeb=1
          endif
 !
@@ -172,12 +172,12 @@ subroutine calprc(nomres, classe, basmod, nommat)
                     *neq-1+k),0.d0)
                 end do
                 if (j.gt.i) then
-                  iad = i+(j-1)*j/2                   
+                  iad = i+(j-1)*j/2
                   zc(ldres+iad-1) = xprod
                 else
-                  iad = j+(i-1)*i/2                                     
-                  zc(ldres2+iad-1) = xprod  
-                end if                   
+                  iad = j+(i-1)*i/2
+                  zc(ldres2+iad-1) = xprod
+                end if
             end do
 !        endif
 !

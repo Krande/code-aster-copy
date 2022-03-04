@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cpmch20(conloc, jmacsu, indno, indma, conneo)
     character(len=24), intent(in) :: conloc
 !
 ! -------------------------------------------------------------------------------------------------
-!         CREATION DES MAILLES DES NOUVELLES MAILLES VOLUMIQUE 
+!         CREATION DES MAILLES DES NOUVELLES MAILLES VOLUMIQUE
 !         ASSOCIEE A LA ZONE DE CONTACT ESCLAVE
 !         CAS QUAD 20
 ! -------------------------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ subroutine cpmch20(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+7-1) = indno+13
     zi(jconloc+6-1) = indno+14
     zi(jconloc+5-1) = indno+15
-    zi(jconloc+11-1) = indno+4 
+    zi(jconloc+11-1) = indno+4
     zi(jconloc+10-1) = indno+5
     zi(jconloc+9-1) = indno+6
     zi(jconloc+12-1) = indno+7

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -285,7 +285,7 @@ aster_logical :: lpenaf
                             ii = ii + ndim
                             mmat(ii,jj) = mmat(ii,jj)-iescl(2)*mb*ffe(i)*fk_escl(j,alpj,k)
                             mmat(jj,ii) = mmat(jj,ii)-iescl(2)*mbt*ffe(i)*fk_escl(j,alpj,k)
-                            do alpi = 1, nsinge*ndim 
+                            do alpi = 1, nsinge*ndim
                                 ii = iin + (1+nfhe+1-1)*ndim + alpi
                                 mmat(ii,jj) = mmat(ii,jj)+mb*fk_escl(i,alpi,l)*fk_escl(j,alpj,k)
                             enddo
@@ -345,7 +345,7 @@ aster_logical :: lpenaf
                 do i = 1, nnm
                     imait(2)=xcalc_heav(heavn(nne+i),&
                                         hea_fa(2),&
-                                        heavn((1+nfhe)*nne+nfhm*nnm+i))  
+                                        heavn((1+nfhe)*nne+nfhm*nnm+i))
                     do j = 1, nnm
                         jmait(2)=xcalc_heav(heavn(nne+j),&
                                             hea_fa(2),&
@@ -371,7 +371,7 @@ aster_logical :: lpenaf
                             ii = ii + ndim
                             mmat(ii,jj) = mmat(ii,jj)+imait(2)*mb*ffm(i)*fk_mait(j,alpj,k)
                             mmat(jj,ii) = mmat(jj,ii)+imait(2)*mbt*ffm(i)*fk_mait(j,alpj,k)
-                            do alpi = 1, nsingm*ndim 
+                            do alpi = 1, nsingm*ndim
                                 ii = ddle + iin + (1+nfhm+1-1)*ndim + alpi
                                 mmat(ii,jj) = mmat(ii,jj)+mb*fk_mait(i,alpi,l)*fk_mait(j,alpj,k)
                             enddo

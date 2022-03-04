@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !
     else
         nomphe = phen
-        call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)  
+        call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)
         call jeexin(nommat//k11//'.VALR', iret)
         if (iret .eq. 0) then
             do 113 ires = 1, nbres

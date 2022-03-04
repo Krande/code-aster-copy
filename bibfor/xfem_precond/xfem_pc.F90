@@ -83,7 +83,7 @@ subroutine xfem_pc(matass, base)
 !
     lmd=.false.
     if (refa(11) .eq. 'MATR_DISTR') lmd=.true.
-    if (lmd) then 
+    if (lmd) then
        goto 999
     endif
 !

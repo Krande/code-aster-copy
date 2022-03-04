@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ real(kind=8), intent(inout) :: mmat(55,55)
     jj        = 0
     r_nb_lagr = real(nb_lagr,kind=8)
 !
-    if (l_norm_smooth) then   
+    if (l_norm_smooth) then
         call jevech('PSNO', 'L', jv_norm)
         do i_node_lagc = 1, nb_node_slav
             shift = shift+indi_lagc(i_node_lagc)
@@ -110,5 +110,5 @@ real(kind=8), intent(inout) :: mmat(55,55)
             end if
         end do
     end if
-! 
+!
 end subroutine

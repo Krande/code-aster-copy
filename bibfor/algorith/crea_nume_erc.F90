@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,14 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 !
 !  ROUTINE LIEE A L'OPERATEUR CALC_ERC_DYN
 !
-!  CREATION D'UN NOVEAU NUME_DDL_GENE ASSOCIE A LA MATRICE D'ERC 
+!  CREATION D'UN NOVEAU NUME_DDL_GENE ASSOCIE A LA MATRICE D'ERC
 !  EN RESOLUTION MODALE (CONSTRUCTION D'UN PROBLEME DE TAILLE 2*N)
 ! ----------------------------------------------------------------------
 ! IN  : BASENO        : NOM COMMUN POUR LES OBJETS JEVEUX A CREER
 ! IN  : MATRIG        : NOM DE LA MATRICE DE RIGIDITE
 ! IN  : NUMNU         : NOM DU NUMEDDL DU MODELE M,C,K
 ! IN  : MATPROD       : LISTE DES NOMS DES OBJETS JEVEUX OU EST STOCKE LE SOUS-
-!                       BLOC CALCULE. LE STOCKAGE EST EN MORSE SELON LA 
+!                       BLOC CALCULE. LE STOCKAGE EST EN MORSE SELON LA
 !                       SD_NUME_DDL. (.SMDE,.SMHC,.SMDI,.VALM)
 ! OUT : NOM_NUME_ERC  : NOM DE L'OBJET JEVEUX DU NUME_DDL CREE ASSOCIE
 !                       AU PB MATRICIEL D'ERC
@@ -68,14 +68,14 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
     integer :: hd_matprod,nz_colncour,ii,jj,kk,tt,lddesc,ldnequ,k,jrefn
     integer :: lddeeq,lddelg,ldnueq,ibid,ldprno,ldorig,mrefa,mdesc,vdesc,mvale,vvale,ll
 !
-! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 !
     nom_nume_erc=baseno//'N.NUME'
 ! --- RECUPERATION DES INFOS NECESSAIRES A LA CREATION DU NUME_DDL_GENE
    call jeveuo(numnu//'      .SMOS.SMDE', 'L', ismde)
    call jeveuo(numnu//'      .SMOS.SMDI', 'L', ismdi)
    call jeveuo(numnu//'      .SMOS.SMHC', 'L', ismhc)
-!  
+!
    call jeveuo(matprod(1), 'L', improdsmde)
    call jeveuo(matprod(2), 'L', improdsmhc)
    call jeveuo(matprod(3), 'L', improdsmdi)
@@ -149,10 +149,10 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
    zi(inewsmde+1)= nozero
    zi(inewsmde+2)= 1
    call wkvect(nom_nume_erc//'.SMOS.SMDI','G V I', 2*neq, inewsmdi)
-   call wkvect(nom_nume_erc//'.SMOS.SMHC','G V S', nozero, inewsmhc)   
+   call wkvect(nom_nume_erc//'.SMOS.SMHC','G V S', nozero, inewsmhc)
 !
 ! ----- LE PREMIER BLOC DE LA MATRICE EST IDENTIQUE A CELUI DE LA MATRICE DE RIGIDITE (OU IMPEDANCE)
-! ----- ON LES RECOPIE 
+! ----- ON LES RECOPIE
 ! ----- DEBUT SMDI
    do ii=1,neq
     zi(inewsmdi+ii-1)=zi(ismdi+ii-1)
@@ -168,11 +168,11 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
    cumul_non_zero=0
    non_zero_impe=0
    non_zero_matprod=0
-!   
+!
    do    jj=1,neq
      hors_diag_impe=zi(ismdi+jj-1)-non_zero_impe-1
      hd_matprod=zi(improdsmdi+jj-1)-non_zero_matprod-1
-! --- --- BLOC TRIANGULAIRE SUP IMPEDANCE 
+! --- --- BLOC TRIANGULAIRE SUP IMPEDANCE
      nz_colncour=0
      do tt=1,hors_diag_impe+1
       zi4(inewsmhc+zi(ismde+1)+cumul_non_zero+tt-1)=zi4(ismhc+zi(ismdi+jj-1)-1-hors_diag_impe+tt-1)
@@ -183,14 +183,14 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 ! --- --- BLOC TRIANGULAIRE INF IMPEDANCE
 
       ! boucle sur les colonnes superieures
-      do kk=jj+1,neq 
+      do kk=jj+1,neq
       if (jj.ne.neq) then
          ! boucle sur les elements non nuls de la colonne superieure en cours
-         do ll=zi(ismdi+kk-2)+1,zi(ismdi+kk-1) 
-                                               
+         do ll=zi(ismdi+kk-2)+1,zi(ismdi+kk-1)
+
             if (zi4(ismhc+ll-1).gt.jj) goto 111
             ! on evalue si on tombe sur le numero de file correspondant a la colonne reelle en cours
-            if (zi4(ismhc+ll-1).eq.jj) then 
+            if (zi4(ismhc+ll-1).eq.jj) then
               nz_colncour=nz_colncour+1
               zi4(inewsmhc-1+zi(ismde+1)+cumul_non_zero+nz_colncour)=int(kk,4)
               goto 111
@@ -198,7 +198,7 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
          end do
          ! boucle sur les elements non nuls de la colonne superieure en cours
 111     continue
-      end if       
+      end if
       end do
       ! boucle sur les colonnes superieures
 
@@ -214,9 +214,9 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
 ! --- --- FINALISATION SMDI
       zi(inewsmdi+neq+jj-1)=zi(inewsmdi+neq+jj-2)+nz_colncour
 
-    end do   
-! 
-! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+    end do
+!
+! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 !
 ! --- CREATION DU MATR_ASSE_GENE ASSOCIEE A LA MATRICE ERC
 !
@@ -244,7 +244,7 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
     call jecrec(nom_matr_erc//'.VALM', 'G V R', 'NU', 'DISPERSE', 'VARIABLE',1)
     call jeecra(jexnum(nom_matr_erc//'.VALM', 1), 'LONMAX', nozero, ' ')
     call jeveuo(jexnum(nom_matr_erc//'.VALM', 1), 'E', mvale)
-! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- 
+! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 !
 ! --- CREATION DU VECT_ASSE_GENE ASSOCIEE A LA RESOLUTION DE L'ERC
     nom_vect_erc=baseno//'.BB.ASS.ERC'
@@ -253,7 +253,7 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
     zi(vdesc-1+1)=1
     zi(vdesc-1+2)=2*neq
     zi(vdesc-1+3)=2
-! --- VALE (INITIALISE MAIS REMPLI DANS asse_vect_erc)       
+! --- VALE (INITIALISE MAIS REMPLI DANS asse_vect_erc)
 
     call wkvect(nom_vect_erc//'.VALE', 'G V R', 2*neq, vvale)
     call r8inir(neq,0.d0,zr(vvale),1)
@@ -262,6 +262,6 @@ subroutine crea_nume_erc(baseno, numnu,matprod,nom_nume_erc,nom_matr_erc,nom_vec
     valei(3)=non_zero_impe
     valei(6)=non_zero_matprod
     valei(7)=2*neq
-    valei(8)=nozero 
+    valei(8)=nozero
 !
 end subroutine

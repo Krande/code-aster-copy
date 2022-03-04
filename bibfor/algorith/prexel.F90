@@ -187,7 +187,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 100  end do
 !
     if (imamax .eq. 0) call utmess('F', 'POSTRELE_19')
-    
+
     call jenuno(jexnum(ma//'.NOMMAI', imamax), mamax)
     call jenuno(jexnum(ma//'.NOMMAI', imamin), mamin)
     call jenuno(jexnum(ma//'.NOMNOE', iptmax), nomax)

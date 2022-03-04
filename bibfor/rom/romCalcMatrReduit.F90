@@ -49,7 +49,7 @@ character(len=1), intent(in) :: modeType
 !
 ! In  modeNume         : mode number
 ! In  nbMatr           : number of elementary matrix
-! In  modeType         : type of mode  (R or C) 
+! In  modeType         : type of mode  (R or C)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,12 +79,12 @@ character(len=1), intent(in) :: modeType
 !
     fieldIden = 'DEPL'
     call rsexch(' ', resultName, fieldIden, modeNume, mode, iret)
-    
-    if (modeType .eq. 'R') then 
+
+    if (modeType .eq. 'R') then
         call jeveuo(mode(1:19)//'.VALE', 'L', vr = vr_mode)
-    else if (modeType .eq. 'C') then 
+    else if (modeType .eq. 'C') then
         call jeveuo(mode(1:19)//'.VALE', 'L', vc = vc_mode)
-    else 
+    else
         ASSERT(ASTER_FALSE)
     end if
 !
@@ -104,7 +104,7 @@ character(len=1), intent(in) :: modeType
               vr_matr_red(nbModeMaxi*(iMode-1)+modeNume) = termr
               AS_DEALLOCATE(vr = vr_matr_jmode)
            end do
-        end do 
+        end do
     else if (modeType .eq. 'C') then
         do iMatr = 1, nbMatr
            call jeveuo(matr_redu(iMatr), 'E', vc = vc_matr_red)
@@ -119,7 +119,7 @@ character(len=1), intent(in) :: modeType
               vc_matr_red(nbModeMaxi*(iMode-1)+modeNume) = dconjg(termc)
               AS_DEALLOCATE(vc = vc_matr_jmode)
            end do
-        end do 
+        end do
     else
         ASSERT(ASTER_FALSE)
     end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
 !   on récupère les renseignements dans la sd_group_fibre
 !       noms de tous les groupes, nb maxi de groupes, nb de fibres par groupe
     nbVariMax=0
-    
+
 !
     call getvid(' ', 'GEOM_FIBRE', scal=sdgf, nbret=ibid)
     vnbfig = sdgf//'.NB_FIBRE_GROUPE'

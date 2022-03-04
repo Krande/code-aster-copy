@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     call rsorac(basemo, 'LONUTI', 0, rbid, k8bid,&
                 cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
-    nbmtot=tmod(1)            
+    nbmtot=tmod(1)
 !
 ! RECUPERATION DES OBJETS LIES A LA MESURE
 !
@@ -119,7 +119,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham,&
     call rsorac(nommes, 'LONUTI', 0, rbid, k8bid,&
                 cbid, rbid, 'ABSOLU', tmod, 1,&
                 ibid)
-    nbord=tmod(1)            
+    nbord=tmod(1)
 !
     chs = '&&MESURE.CHS'
     nbmesu = 0

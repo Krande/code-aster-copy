@@ -60,7 +60,7 @@ character(len=16), intent(out) :: comp_code_py
     nb_comp_elem    = 0
     comp_elem(1:20) = 'VIDE'
 
-! - Create composite behaviour 
+! - Create composite behaviour
     nb_comp_elem = nb_comp_elem + 1
     comp_elem(nb_comp_elem) = rela_comp
     nb_comp_elem = nb_comp_elem + 1

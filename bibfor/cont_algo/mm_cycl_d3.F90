@@ -106,7 +106,7 @@ implicit none
     cycl_long    = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
     cycl_ecod    = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
     cycl_ecod    = cycl_ecod + (2**cycl_long)*indi_cont_eval
-    if (cycl_long .eq. cycl_long_acti)  then 
+    if (cycl_long .eq. cycl_long_acti)  then
         cycl_long = 0
         cycl_ecod = 0
     endif
@@ -139,12 +139,12 @@ implicit none
     if ((abs(angle) .ge. 180.-tole_angl) .and. (abs(angle) .le. 180.d0+tole_angl))  then
         cycl_stat = 10
         if (module_curr  .lt. 1.d-6  .and. module_prev .lt. 1.d-6) cycl_stat = 11
-        
+
         if ( (module_curr .lt. 1.d-6 .and. module_prev .gt. 1.d-6)        .or.  &
              (module_curr .gt. 1.d-6 .and. module_prev .lt. 1.d-6) ) cycl_stat = 12
-             
+
         if (module_curr  .gt. 1.d-6  .and. module_prev .gt. 1.d-6) cycl_stat = 13
-             
+
     endif
 
 !
@@ -155,7 +155,7 @@ implicit none
 !        write (6,*) "cyclage avant-arrière de type ", cycl_stat
     p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
-    if (cycl_long .eq. cycl_long_acti)  then 
+    if (cycl_long .eq. cycl_long_acti)  then
         cycl_long = 0
         cycl_ecod = 0
     endif

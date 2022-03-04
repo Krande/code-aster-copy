@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                   amoc, carac, lnoe, nbm, vite, &
                   rho, abscur, mailla)
 !
-! aslint: disable=W1306 
+! aslint: disable=W1306
     implicit none
 !
 !  CALCUL DES VITESSES EFFICACES ET CRITIQUES PAR LA METHODE DE CONNORS
@@ -323,7 +323,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                 do izone = 1, nbzex
                     denomi = denomi + ki(izone)**(-2)
                 end do
-                vcr_1d(im,i) = sqrt((nbzex*1.d0)/denomi)*coef(im) 
+                vcr_1d(im,i) = sqrt((nbzex*1.d0)/denomi)*coef(im)
             else
                 vcr_1d(im,i) = sqrt(numera(im)/denomi)*coef(im)
             end if
@@ -364,7 +364,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
 !
         if (numera(im) .lt. epsi) then
             ven_1d(im) = 0.d0
-        else 
+        else
             ven_1d(im) = sqrt((numera(im)*mastub) / (mphi2(im)*rhos))
         end if
         do i = 1, nbval
@@ -485,7 +485,7 @@ subroutine connor(melflu, typflu, freq, base, nuor,&
                 do izone = 1, nbzex
                     denomi = denomi + ki(izone)**(-2)
                 end do
-                vcr_3d(im,i) = sqrt(nbzex*1.d0/denomi)*coef(im) 
+                vcr_3d(im,i) = sqrt(nbzex*1.d0/denomi)*coef(im)
             else
                 vcr_3d(im,i) = sqrt(numera(im)/denomi)*coef(im)
             end if

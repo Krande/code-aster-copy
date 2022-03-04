@@ -75,7 +75,7 @@ integer, intent(in) :: nume_inst
     call mmbouc(ds_contact, 'Geom', 'Init_Counter')
 !
 ! - First geometric loop counter
-!    
+!
     call mmbouc(ds_contact, 'Geom', 'Incr_Counter')
 !
 ! - Vector initialization for REAC_GEOM

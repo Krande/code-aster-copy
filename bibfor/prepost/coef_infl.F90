@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,8 +65,8 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
     character(len=16) :: nomres(2)
     character(len=32) :: phenom
 !
-!   asc <=> a/c 
-!   asr <=> a/r 
+!   asc <=> a/c
+!   asr <=> a/r
 !      a : profondeur du defaut
 !      c : demi longueur du defaut
 !      r : epaisseur du revetement
@@ -88,9 +88,9 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
    x  = prodef/londef*2.d0
    y  = prodef/lrev
 !
-!=========================================================================== 
+!===========================================================================
 ! --- recherche des bornes x1 et x2 encadrant (x=a/c) ----------------------
-!=========================================================================== 
+!===========================================================================
    do i=2,6
       if(x.ge.asc(i)) then
          x1  = asc(i-1)
@@ -101,9 +101,9 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
       endif
    end do
 10 continue
-!=========================================================================== 
+!===========================================================================
 ! --- recherche des bornes y1 et y2 encadrant (y=a/r) ----------------------
-!=========================================================================== 
+!===========================================================================
    do i=2,9
       if(y.le.asr(i)) then
          y1=asr(i-1)
@@ -115,7 +115,7 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
    end do
 20 continue
 !===========================================================================
-! --- Bornes en z : z1 et z2 
+! --- Bornes en z : z1 et z2
 !===========================================================================
   z1 = 1.0d0
   z2 = 0.7d0
@@ -123,8 +123,8 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
   nompar(1) = 'TEMP'
   nomres(1) = 'E'
 
-! --- calcul au point B du rapport : 
-!             z = module d'young revetement / module d'young metal de base  
+! --- calcul au point B du rapport :
+!             z = module d'young revetement / module d'young metal de base
 !
   valpar = tempb
   call rcvale(matrev,phenom,1,nompar,valpar,&
@@ -135,7 +135,7 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
   emdb=valres(1)
   ztempb = erev/emdb
 !
-! --- calcul au point c du rapport: 
+! --- calcul au point c du rapport:
 !             z = module d'young revetement / module d'younf metal de base
 !
   valpar = tempa
@@ -146,10 +146,10 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
               1,nomres,valres,icodre,1)
   emdb=valres(1)
   ztempc=erev/emdb
-!=========================================================================== 
+!===========================================================================
 ! Point A (pour EDF) : Calcul des coefficients d'influence -----------------
 ! Interpolation sur valeurs tabulees : tableau dependant de deux variables -
-!=========================================================================== 
+!===========================================================================
    do i=1,5
       call coef_infl_a1(ix1,ix2,iy1,iy2,i, &
                         v111,v211,v121,v221)
@@ -159,12 +159,12 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
                    (x2 - x ) * (y - y1) * v121 +&
                    (x  - x1) * (y2 - y) * v211 +&
                    (x  - x1) * (y - y1) * v221)
-    end do 
+    end do
 
-!=========================================================================== 
+!===========================================================================
 ! Point B et C  : Calcul des coefficients d'influence ----------------------
 ! Interpolation sur valeurs tabulees : tableau dependant de trois variables-
-!=========================================================================== 
+!===========================================================================
       do i=6,15
          if(i.le.10) then
            z = ztempb
@@ -178,7 +178,7 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
                              v111,v211,v121,v221)
            call coef_infl_c2(ix1,ix2,iy1,iy2,(i-10), &
                              v112,v212,v122,v222)
-         end if      
+         end if
 !
            coeinf(i) = 1.d0/((x2 - x1) * (y2 - y1) * (z2 - z1))*&
                        ((x2 - x ) * (y2 - y) * (z2 - z ) * v111  +&

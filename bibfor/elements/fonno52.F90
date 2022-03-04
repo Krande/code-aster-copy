@@ -26,7 +26,7 @@ subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
     character(len=8) :: noma
     integer :: na, nb, ndim
     real(kind=8) :: vnor(2, 3), vdir(2, 3)
-    
+
 !
 !
 !     ------------------------------------------------------------------
@@ -64,7 +64,7 @@ subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
 
 !     RECUPERATION DE L'ADRESSE DES COORDONNEES DES NOEUD DU FOND DE FISSURE
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
-    
+
     nx = vnor(1,1)
     ny = vnor(1,2)
     nz = vnor(1,3)
@@ -86,9 +86,9 @@ subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
         vdir(1,1) = x21 - (x21*nx+y21*ny+z21*nz)*nx
         vdir(1,2) = y21 - (x21*nx+y21*ny+z21*nz)*ny
         vdir(1,3) = z21 - (x21*nx+y21*ny+z21*nz)*nz
-        
+
     else if(ndim.eq.3) then
-    
+
 !       CALCUL DU VECTEUR ALLANT DE B VERS A
         x1 = vale( (na-1)*3 + 1 )
         y1 = vale( (na-1)*3 + 2 )
@@ -119,7 +119,7 @@ subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
         vdir(1,2) = vdir(1,2)/norme
         vdir(1,3) = vdir(1,3)/norme
 !
-!    ON RECOPIE DANS VDIR(2,*) QUI EST IDENTIQUE DANS CE CAS   
+!    ON RECOPIE DANS VDIR(2,*) QUI EST IDENTIQUE DANS CE CAS
         vdir(2,1) = vdir(1,1)
         vdir(2,2) = vdir(1,2)
         vdir(2,3) = vdir(1,3)

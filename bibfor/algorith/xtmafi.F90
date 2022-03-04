@@ -66,13 +66,13 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
 ! IN (o) model   : optionnel / nom du modele
 ! IN (o) typ_enr : optionnel / parmi 'HEAV', 'CTIP', 'HECT'
 !
-! regles sur les arguments optionnels : 
+! regles sur les arguments optionnels :
 ! -------------------------------------
 ! - mesh ou model doit etre present (ou exclusif)
 ! - si mesh est present  -> on prend toutes les mailles sachant ndim
-! - si model est present -> on prend toutes les mailles affectees dans 
+! - si model est present -> on prend toutes les mailles affectees dans
 !                           model sachant ndim
-! - si typ_enr present (parmi 'HEAV', 'CTIP', 'HECT'), on ne garde que 
+! - si typ_enr present (parmi 'HEAV', 'CTIP', 'HECT'), on ne garde que
 !   les mailles de types typ_enr
 !
     integer :: ifiss, kk, jgrp, nmaenr, i, ima,  cpt, iret
@@ -133,7 +133,7 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai,&
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
-! - Si model present, recuperation de l'objet '.MAILLE' pour filtrer 
+! - Si model present, recuperation de l'objet '.MAILLE' pour filtrer
 !   sur les mailles affectees
 !
     if ( present(model) ) then

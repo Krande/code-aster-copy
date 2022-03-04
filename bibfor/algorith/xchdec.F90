@@ -48,7 +48,7 @@ subroutine xchdec(modelx, decou, chdec)
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NBMA   : NOMBRE DE MAILLES
 ! IN/OUT  TRAV   : TABLE TO BE FILLED ON FINDING EPSI
-! OUT CHAM_ELEM : 
+! OUT CHAM_ELEM :
 !
     integer :: nncp,ibid
     character(len=19) :: ligrel, cham_elem_s
@@ -74,7 +74,7 @@ subroutine xchdec(modelx, decou, chdec)
     call jeveuo(cham_elem_s//'.CESD','L',jcesd)
     call jeveuo(cham_elem_s//'.CESL','E',jcesl)
     call jeveuo(cham_elem_s//'.CESV','E',vk8=cesv)
- 
+
 !   1. RECUPERATION DE TYPE DE FACETTES A GENERER
 !     ------------------------------------------------------------------
     do igr = 1, nbgrel

@@ -22,7 +22,7 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 !
 ! person_in_charge: hassan.berro at edf.fr
 !
-! dtmforc_ants : Calculates the anti-sismic device force at the current 
+! dtmforc_ants : Calculates the anti-sismic device force at the current
 !                step (t)
 !
 !       nl_ind           : nonlinearity index (for sd_nl access)
@@ -103,7 +103,7 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx, buffer=buffnl)
     start  = vindx(nl_ind)
 !
-    deploc(1:6) = 0.d0   
+    deploc(1:6) = 0.d0
 !
     call dtmget(sd_dtm, _MULTI_AP, kscal=monmot, buffer=buffdtm)
     multi_support = monmot(1:3) .eq. 'OUI'
@@ -169,7 +169,7 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
             call tophys_ms(dplmod, psidel, coevit, vite, vitglo)
         else
             call tophys(dplmod, depl, depglo)
-            call tophys(dplmod, vite, vitglo)        
+            call tophys(dplmod, vite, vitglo)
         endif
 
         nullify(coor_no)
@@ -187,7 +187,7 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
         do i = 1, 3
             dvitlo(i) = vitloc(i) - vitloc(3+i)
         end do
-    else 
+    else
         do i = 1, 3
             dvitlo(i) = vitloc(i)
         end do
@@ -218,7 +218,7 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     call locglo(flocal, sina, cosa, sinb, cosb,&
                 sing, cosg, fgloba)
 
-!   --- Generalized force on the first node  
+!   --- Generalized force on the first node
     call togene(dplmod1, fgloba, fext)
 !       --- Generalized force on the second node
     if (nbno.eq.2) then

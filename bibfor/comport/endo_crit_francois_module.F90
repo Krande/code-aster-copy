@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ module endo_crit_francois_module
 
     use tenseur_dime_module,  only: rs, kron
     use pilotage_util_module, only: SolvePosValCst
-    
+
     implicit none
     private
     public:: CRITERION, MATERIAL, Init, SetQuad, ComputeQuad, DerivateQuad, &
@@ -44,7 +44,7 @@ module endo_crit_francois_module
     end type MATERIAL
 
 
-    ! attribute state: 0=not defined, 1=allocated, 2=argument set, 3=computed    
+    ! attribute state: 0=not defined, 1=allocated, 2=argument set, 3=computed
     type CRITERION
         integer                              :: stateQuad = 0
         integer                              :: statePath = 0
@@ -60,7 +60,7 @@ module endo_crit_francois_module
         real(kind=8),dimension(3)            :: vp
         real(kind=8)                         :: chi
     end type CRITERION
-    
+
 
 
 contains
@@ -77,7 +77,7 @@ function Init(ndimsi,mat,itemax,cvquad) result(self)
     integer,intent(in)        :: itemax
     real(kind=8),intent(in)   :: cvquad
     type(CRITERION)         :: self
-! ---------------------------------------------------------------------    
+! ---------------------------------------------------------------------
 !  ndimsi  size of the strain and stress vectors (2*ndim)
 !  mat     material characteristics
 !  itemax  maximal number of iterations for the solver
@@ -90,12 +90,12 @@ function Init(ndimsi,mat,itemax,cvquad) result(self)
     self%mat        = mat
     self%cvquad     = cvquad
     self%itemax     = itemax
-        
+
     allocate(self%sig(ndimsi))
     allocate(self%eps0(ndimsi))
     allocate(self%eps1(ndimsi))
 
-    
+
 end function Init
 
 
@@ -104,20 +104,20 @@ end function Init
 !  SET STRAIN VALUE FOR THE COMPUTATION OF THE QUAD FUNCTION Q
 ! =====================================================================
 
-subroutine SetQuad(self,eps) 
+subroutine SetQuad(self,eps)
     implicit none
     type(CRITERION),intent(inout)       :: self
     real(kind=8),dimension(:),intent(in):: eps
-! ---------------------------------------------------------------------    
+! ---------------------------------------------------------------------
 !  eps     valeur de l'argument eps(1:ndimsi)
 ! ---------------------------------------------------------------------
     real(kind=8):: treps
     real(kind=8),dimension(self%ndimsi):: kr
-! ---------------------------------------------------------------------    
+! ---------------------------------------------------------------------
     ASSERT(self%stateQuad .ge. 1)
     self%stateQuad  = 2
 
-    kr       = kron(self%ndimsi) 
+    kr       = kron(self%ndimsi)
     treps    = sum(eps(1:3))
     self%sig = self%mat%lambda*treps*kr + self%mat%deuxmu*eps
 
@@ -138,10 +138,10 @@ function ComputeQuad(self) result(quad)
 ! ---------------------------------------------------------------------
     ASSERT(self%stateQuad .ge. 2)
     self%stateQuad = 3
-    
+
 
 !  PRECISION RECHERCHEE SUR CHI * DCHI
-    precx1 = 0.5d0*self%cvquad    
+    precx1 = 0.5d0*self%cvquad
 
     call lcvalp(rs(6,self%sig), self%vp)
 
@@ -150,10 +150,10 @@ function ComputeQuad(self) result(quad)
         self%stateQuad = 2
         goto 999
     end if
-    
+
     quad = self%chi**2
-    
-    
+
+
 999 continue
 end function ComputeQuad
 
@@ -172,14 +172,14 @@ function DerivateQuad(self) result (deps_quad)
     real(kind=8),dimension(self%ndimsi):: kr
 ! ---------------------------------------------------------------------
     ASSERT(self%stateQuad .ge. 2)
-    
-    kr = kron(self%ndimsi) 
-    
-    if (self%stateQuad .eq. 2) then 
+
+    kr = kron(self%ndimsi)
+
+    if (self%stateQuad .eq. 2) then
         r8bid = ComputeQuad(self)
         ASSERT(self%exception .eq. 0)
     end if
-    
+
     if (self%chi .ne. 0) then
         dchids     = DerivateChi(self)
         coef       = 2 * self%chi
@@ -207,7 +207,7 @@ function IsQuadLarger(self,bnd) result(larger)
 ! ---------------------------------------------------------------------
     ASSERT(self%stateQuad .ge. 2)
     call lcvalp(rs(6,self%sig), self%vp)
-    
+
     larger = IsCriterionLarger(self,sqrt(bnd))
 
 end function IsQuadLarger
@@ -227,7 +227,7 @@ function ComputeChi(self,precx1) result(chi)
 ! in  precx1  required accuracy : chi*dchi < precx1
 ! ---------------------------------------------------------------------
     integer      :: iter
-    real(kind=8) :: norsig, n(3), clin, ymax, y, expo(3), norexp, f, df 
+    real(kind=8) :: norsig, n(3), clin, ymax, y, expo(3), norexp, f, df
     real(kind=8) :: coefbe, prectr, precy3, yt, ft
 ! ---------------------------------------------------------------------
 
@@ -262,7 +262,7 @@ function ComputeChi(self,precx1) result(chi)
 ! ---------------------------------------------------------------------
 !  Solve by Newton method
 ! ---------------------------------------------------------------------
-    
+
     do iter = 1, self%itemax
         expo   = exp(2*y*n)
         norexp = sqrt(sum(expo))
@@ -313,14 +313,14 @@ function DerivateChi(self) result(dchids)
     real(kind=8),dimension(self%ndimsi):: kr
 ! ---------------------------------------------------------------------
 
-    
+
 !  initialisation
     preexp = self%cvquad*1.d-1
     coefbe = 3*self%mat%bet0**2-1.d0/3.d0
     sb     = self%sig/self%mat%sig0
     sbnor  = sqrt(dot_product(sb,sb))
     u      = self%sig/self%chi/self%mat%sig0
-    kr     = kron(self%ndimsi) 
+    kr     = kron(self%ndimsi)
 
 
 !  Compute n tilde
@@ -336,7 +336,7 @@ function DerivateChi(self) result(dchids)
     enor = sqrt(dot_product(e,e))
 
 
-!  negligible exponential 
+!  negligible exponential
     if (enor*sbnor .le. sbtnor*preexp*1.d-3) then
         dchids = self%chi/sbtnor**2/self%mat%sig0 * (sb+coefbe*sbtr*kr)
         goto 999
@@ -348,7 +348,7 @@ function DerivateChi(self) result(dchids)
     e2(2) = 0.5d0*e(4)*e(4) + e(2)*e(2) + 0.5d0*e(6)*e(6)
     e2(3) = 0.5d0*e(5)*e(5) + 0.5d0*e(6)*e(6) + e(3)*e(3)
     e2(4) = e(1)*e(4) + e(4)*e(2) + srac2*e(5)*e(6)
-    
+
     if (size(e2).eq.6) then
         e2(5) = e(1)*e(5) + srac2*e(4)*e(6) + e(5)*e(3)
         e2(6) = srac2*e(4)*e(5) + e(2)*e(6) + e(6)*e(3)
@@ -384,24 +384,24 @@ function IsCriterionLarger(self,star) result(larger)
     smax    = maxval(sig_nor)
     sig_qua = sig_nor + (self%mat%bet0-1.d0/3.d0)*sum(sig_nor)
     f_qua   = sqrt(dot_product(sig_qua,sig_qua)) - self%mat%gam0
-    
+
     ! Avoid the computation of the exponential (when too large)
     if (f_qua .ge. 0) then
         larger = ASTER_TRUE
         goto 999
     end if
-    
+
     ! Avoid the computation of the exponential (when too large)
     if (smax.ge.log(-f_qua)) then
         larger = ASTER_TRUE
         goto 999
     end if
-    
+
     ! Compute the criterion
     sig_exp = exp(sig_nor)
     f_sig   = f_qua + sqrt(dot_product(sig_exp,sig_exp))
     larger  = f_sig.ge.0
-    
+
 999 continue
 end function IsCriterionLarger
 
@@ -411,12 +411,12 @@ end function IsCriterionLarger
 !  SET STRAIN VALUES FOR PATH FOLLOWING
 ! =====================================================================
 
-subroutine SetPathFollowing(self,eps0,eps1,lcst) 
+subroutine SetPathFollowing(self,eps0,eps1,lcst)
     implicit none
     type(CRITERION),intent(inout)       :: self
     real(kind=8),intent(in)             :: lcst
     real(kind=8),dimension(:),intent(in):: eps0,eps1
-! ---------------------------------------------------------------------    
+! ---------------------------------------------------------------------
 !  eps0    constant term for the strain (eps = eps0 + eta*eps1)
 !  eps1    linear term for the strain   (eps = eps0 + eta*eps1)
 !  lcst    constant rhs term ( path foll. equ. Q(eps) + lcst = 0)
@@ -424,7 +424,7 @@ subroutine SetPathFollowing(self,eps0,eps1,lcst)
 
     ASSERT(self%statePath .ge. 1)
     self%statePath = 2
-    
+
     self%eps0 = eps0
     self%eps1 = eps1
     self%lcst = lcst
@@ -434,7 +434,7 @@ end subroutine SetPathFollowing
 
 
 ! =====================================================================
-!  COMPUTE PATH_FOLLOWING(ETA) AND ITS DERIVATIVE 
+!  COMPUTE PATH_FOLLOWING(ETA) AND ITS DERIVATIVE
 ! =====================================================================
 
 subroutine ComputePathFollowing(self, eta, pff, deta_pff)
@@ -445,18 +445,18 @@ subroutine ComputePathFollowing(self, eta, pff, deta_pff)
 ! ---------------------------------------------------------------------
 ! eta       argument of the path-following function
 ! pff       path-following function Q(eps) + lcst
-! deta_pff  derivative of the path-following function 
+! deta_pff  derivative of the path-following function
 ! ---------------------------------------------------------------------
     real(kind=8):: quad,deps_quad(self%ndimsi)
 ! ---------------------------------------------------------------------
-    
+
     ASSERT(self%statePath .ge. 2)
-    
-    call SetQuad(self, self%eps0 + eta*self%eps1) 
+
+    call SetQuad(self, self%eps0 + eta*self%eps1)
     quad = ComputeQuad(self)
     if (self%exception .ne. 0) goto 999
-    deps_quad = DerivateQuad(self)   
-    
+    deps_quad = DerivateQuad(self)
+
     pff      = quad + self%lcst
     deta_pff = dot_product(deps_quad,self%eps1)
 
@@ -491,11 +491,11 @@ subroutine BoundsCstPathFollowing(self, etamin, etamax, empty, etam, etap)
 ! ---------------------------------------------------------------------
 
     ASSERT(self%statePath .ge. 2)
-    
-    
+
+
     ! initialisation
-    
-    kr     = kron(self%ndimsi) 
+
+    kr     = kron(self%ndimsi)
     etam   = etamin
     etap   = etamax
     coefbe = 3*self%mat%bet0**2-1.d0/3.d0
@@ -518,7 +518,7 @@ subroutine BoundsCstPathFollowing(self, etamin, etamax, empty, etam, etap)
     ! bornes issues de la partie quadratique du critere
 
     q2 = (s1s1 + coefbe*trs1*trs1)/self%mat%gam0**2
-    q1 = 2*(s0s1 + coefbe*trs0*trs1)/self%mat%gam0**2 
+    q1 = 2*(s0s1 + coefbe*trs0*trs1)/self%mat%gam0**2
     q0 = (s0s0 + coefbe*trs0*trs0)/self%mat%gam0**2 + self%lcst
 
     call lcvpbo(sqrt(q2), 0.d0, q0, q1, etam,&
@@ -559,7 +559,7 @@ subroutine BoundsCstPathFollowing(self, etamin, etamax, empty, etam, etap)
     else
         call SolvePosValCst(am, b, self%lcst, etam, 0.d0, empty1, nsol1, sol1, sgn1)
         call SolvePosValCst(ap, b, self%lcst, 0.d0, etap, empty2, nsol2, sol2, sgn2)
-                    
+
         nsol = nsol1+nsol2
         empty = empty1 .and. empty2
         if (empty) goto 999

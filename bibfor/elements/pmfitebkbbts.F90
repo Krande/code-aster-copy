@@ -182,7 +182,7 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
 !         Matrice de rigidite de la poutre
 !
           skt(:)=0.d0
-          call pmfbkb(vs, b, wi, gxjxpou(i), skt)          
+          call pmfbkb(vs, b, wi, gxjxpou(i), skt)
           do  ii = 1, 78
               skp(ii,i) = skt(ii)
           enddo

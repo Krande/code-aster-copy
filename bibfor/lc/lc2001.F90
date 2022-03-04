@@ -70,7 +70,7 @@ integer, intent(out) :: codret
                     fami, kpg, ksp, ndim, typmod,&
                     imate, deps, sigm, option, sigp,&
                     vip, dsidep, codret)
-    else 
+    else
         ASSERT(.false.)
     endif
 !

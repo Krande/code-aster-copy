@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,13 +70,13 @@ subroutine rcdiff(imate, comp, temp, c, diff)
         call rcvalb(fami, kpg, spt, poum, imate,&
                     ' ', phenom, nbpar, nompar, valpar,&
                     4, nomres, valres, icodre, 1)
-        
+
         val_non_physique = max(valres(2)*c , -valres(3) *(1.d&
                &0/(temp+tz0)-1.d0/(valres(4)+tz0)))
-        if (val_non_physique .gt. 1.d10) then 
+        if (val_non_physique .gt. 1.d10) then
              call utmess('F', 'ALGORITH10_91', sk=phenom, sr = val_non_physique)
-        endif 
-        
+        endif
+
         diff = valres(1) * exp(valres(2)*c) *((temp+tz0)/(valres(4)+ tz0)) * exp(-valres(3) *(1.d&
                &0/(temp+tz0)-1.d0/(valres(4)+tz0)) )
 !

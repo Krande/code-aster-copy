@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -115,14 +115,14 @@ subroutine rc32t()
 !
     do 5 i=1,8
         temp(i)=0.d0
-5   continue  
+5   continue
 !
-    l = 0  
+    l = 0
 !
     do 10 iocc = 1, nbsitu, 1
 !
-!------ on récupère les numéros des tables sous le mot clé situation 
-!------ puis les tables associées sous RESU_THER, RESU_PRES et RESU_MECA 
+!------ on récupère les numéros des tables sous le mot clé situation
+!------ puis les tables associées sous RESU_THER, RESU_PRES et RESU_MECA
         call getvis('SITUATION', 'NUME_RESU_THER', iocc=iocc, scal=nume1, nbret=n1)
         call getvis('SITUATION', 'NUME_RESU_PRES', iocc=iocc, scal=nume2, nbret=n2)
         call getvis('SITUATION', 'NUME_RESU_MECA', iocc=iocc, scal=nume3, nbret=n3)
@@ -130,7 +130,7 @@ subroutine rc32t()
         nn= n1+n2+n3
         if((nn+n4) .eq. 0) goto 888
 !
-        if (n1 .ne. 0) then 
+        if (n1 .ne. 0) then
             do 20 ither =1, nbther, 1
                 call getvis('RESU_THER', 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n5)
                 if (numether .eq. nume1) then
@@ -139,7 +139,7 @@ subroutine rc32t()
 20          continue
         endif
 !
-        if (n2 .ne. 0) then 
+        if (n2 .ne. 0) then
             do 30 ipres =1, nbpres, 1
                 call getvis('RESU_PRES', 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n5)
                 if (numepres .eq. nume2) then
@@ -148,7 +148,7 @@ subroutine rc32t()
 30          continue
         endif
 !
-        if (n3 .ne. 0) then 
+        if (n3 .ne. 0) then
             do 40 imeca =1, nbmeca, 1
                 call getvis('RESU_MECA', 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n5)
                 if (numemeca .eq. nume3) then
@@ -169,10 +169,10 @@ subroutine rc32t()
         else
             tableok = tabtemp
         endif
-!  
+!
 ! --------- on verifie l'ordre des noeuds de la table
         call rcveri(tableok)
-! 
+!
 ! --------- on recupere les instants de la table
         call tbexip(tableok, valek(1), exist, k8b)
         if (.not. exist) then
@@ -368,11 +368,11 @@ subroutine rc32t()
                     tminsp(kk) = vale(1)
                     tmaxsp(kk) = vale(1)
                 else
-                    if (compr8(r3(kk),'LT',tremin(kk),prec(1),1)) then 
+                    if (compr8(r3(kk),'LT',tremin(kk),prec(1),1)) then
                         tremin(kk) = r3(kk)
                         tminsp(kk) = vale(1)
                     endif
-                    if (compr8(r3(kk),'GT',tremax(kk),prec(1),1)) then 
+                    if (compr8(r3(kk),'GT',tremax(kk),prec(1),1)) then
                         tremax(kk) = r3(kk)
                         tmaxsp(kk) = vale(1)
                     endif
@@ -398,7 +398,7 @@ subroutine rc32t()
                     tminsn(kk) = vale(1)
                     tmaxsn(kk) = vale(1)
                 else
-                    if (compr8(r3b(kk),'LT',treminb(kk),prec(1),1)) then 
+                    if (compr8(r3b(kk),'LT',treminb(kk),prec(1),1)) then
                         treminb(kk) = r3b(kk)
                         tminsn(kk) = vale(1)
                     endif
@@ -412,9 +412,9 @@ subroutine rc32t()
  12     continue
 !
 !------------------------------------------------------------------
-!                 ETAPE 2 : Remplir les vecteurs 
+!                 ETAPE 2 : Remplir les vecteurs
 !------------------------------------------------------------------
-! --------- pour tminsp a l'origine    
+! --------- pour tminsp a l'origine
         do 66 j = 1, ncmp
             vale(1) = tminsp(1)
             vale(2) = zr(jabsc)
@@ -457,7 +457,7 @@ subroutine rc32t()
             zr(jorig-1+72+j) = contraintesm(1)
             zr(jorig+90) = temp(1)
 !
-! --------- pour tmaxsp a l'origine 
+! --------- pour tmaxsp a l'origine
             vale(1) = tmaxsp(1)
             vale(2) = zr(jabsc)
             if (n1 .ne. 0) then
@@ -553,7 +553,7 @@ subroutine rc32t()
             zr(jorig-1+60+j) = momen0mec - 0.5d0*momen1mec
             zr(jorig-1+92+j) = - 0.5d0*momen1ther
 !
-! --------- pour tmaxsn a l'origine 
+! --------- pour tmaxsn a l'origine
             vale(1) = tmaxsn(1)
             do 367 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
@@ -612,7 +612,7 @@ subroutine rc32t()
             zr(jorig+87)     = tmaxsp(1)
             zr(jorig-1+98+j) = -0.5d0*momen1ther
 !
-! --------- pour tminsp a l'extremite 
+! --------- pour tminsp a l'extremite
             vale(1) = tminsp(2)
             vale(2) = zr(jabsc+nbabsc-1)
             if (n1 .ne. 0) then
@@ -663,7 +663,7 @@ subroutine rc32t()
                             [cbid], k8b, crit, prec, nocmp(j),&
                             k8b, ibid, contraintesth(nbabsc), cbid, k8b,&
                             iret)
-            endif 
+            endif
             if (n2 .ne. 0) then
                 call tbliva(tabpres, 2, valek, [ibid], vale,&
                             [cbid], k8b, crit, prec, nocmp(j),&
@@ -698,7 +698,7 @@ subroutine rc32t()
             zr(jextr-1+78+j) = contraintesm(nbabsc)
             zr(jextr+91) = temp(6)
 
-! --------- pour tminsn a l'extremite 
+! --------- pour tminsn a l'extremite
             vale(1) = tminsn(2)
             do 267 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
@@ -760,7 +760,7 @@ subroutine rc32t()
                                 [cbid], k8b, crit, prec, nocmp(j),&
                                 k8b, ibid, contraintesth(k), cbid, k8b,&
                                 iret)
-                endif 
+                endif
                 if (n2 .ne. 0) then
                     call tbliva(tabpres, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(j),&

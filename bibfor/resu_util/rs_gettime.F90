@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ implicit none
 ! In  result           : name of results datastructure
 ! In  nume             : index to find in results datastructure
 ! Out inst             : time found in results datastructure
-!                        
+!
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result

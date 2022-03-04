@@ -98,9 +98,9 @@ subroutine nugeel(nugene, modgen)
 !
     call jelira(defli, 'NMAXOC', nblia)
     call jelira(nomsst, 'NOMMAX', nbsst)
-   
+
 !  ON REMPLIT LE NUME_DDL COMME S'IL N'Y AVAIT QU'UNE SEULE SOUS
-!  STRUCTURE. 
+!  STRUCTURE.
     nb_sstr = 1
 
 !
@@ -121,7 +121,7 @@ subroutine nugeel(nugene, modgen)
                 sizlia)
 !
 ! - Create PROF_GENE
-!   
+!
     prof_gene=nugene//'.NUME'
     call profgene_crsd(prof_gene, 'G', nindep, nb_sstr = nb_sstr, nb_link = 0,&
                        model_genez = modgen, gran_namez = 'DEPL_R')

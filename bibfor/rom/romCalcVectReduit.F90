@@ -48,7 +48,7 @@ real(kind=8), pointer, optional :: vr_mode(:)
 ! In  nb_vect          : number of elementary vector
 ! In  l_vect_name      : list of names of elementary vector
 ! In  l_vect_type      : list of types (R or C) of elementary vectors
-! In  mode_type        : type of mode  (R or C) 
+! In  mode_type        : type of mode  (R or C)
 ! In  vr_mode          : pointeur vers le mode réel
 ! In  vc_mode          : pointeur vers le mode complexe
 !
@@ -63,7 +63,7 @@ real(kind=8), pointer, optional :: vr_mode(:)
     character(len=8) :: vect_name
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     if (mode_type .eq. 'R') then
         do i_vect = 1, nb_vect
             call jeveuo(l_vect_redu(i_vect), 'E', vr = vr_vect_redu)
@@ -85,8 +85,8 @@ real(kind=8), pointer, optional :: vr_mode(:)
                 call jeveuo(vect_name(1:8)//'           .VALE', 'L', vr=jv_vect_r)
                 do i_equa = 1, nb_equa
                     vc_vect_redu(i_mode) = vc_vect_redu(i_mode)+&
-                        dcmplx(jv_vect_r(i_equa))*dconjg(vc_mode(i_equa)) 
-                end do           
+                        dcmplx(jv_vect_r(i_equa))*dconjg(vc_mode(i_equa))
+                end do
             else if (vect_type .eq. 'C') then
                 call jeveuo(vect_name(1:8)//'           .VALE', 'L', vc=jv_vect_c)
                 vc_vect_redu(i_mode) = zdotc(nb_equa, vc_mode, 1, jv_vect_c, 1)
@@ -94,8 +94,8 @@ real(kind=8), pointer, optional :: vr_mode(:)
                 ASSERT(ASTER_FALSE)
             endif
         end do
-    else 
+    else
         ASSERT(ASTER_FALSE)
-    end if 
+    end if
 !
 end subroutine

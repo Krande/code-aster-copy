@@ -22,7 +22,7 @@ subroutine dtmprep_damp(sd_dtm_)
 ! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmprep_damp : Creation of a pseudo damping matrix from a list of damping coefficients
-!                given by the user under the keywords LIST_AMOR and AMOR_MODAL in the 
+!                given by the user under the keywords LIST_AMOR and AMOR_MODAL in the
 !                command DYNA_TRAN_MODAL
 !
 !                The only parameter added/modified in the sd_dtm is : AMOR_DIA
@@ -138,10 +138,10 @@ subroutine dtmprep_damp(sd_dtm_)
                                 0, sjv=lamre)
                     amogen(im) = zr(lamre)
                 end do
-            else 
+            else
                 call r8inir(nbmode, 0.d0, amogen, 1)
             end if
-        else 
+        else
             call r8inir(nbmode, 0.d0, amogen, 1)
         end if
     endif
@@ -149,7 +149,7 @@ subroutine dtmprep_damp(sd_dtm_)
     do im = 1, nbmode
 !       --- Static modes : critical damping to avoid artifical dynamics
 !           Note : dynamics of static modes are set as follows
-!       M = k/omega^2    K = k   C = 2*sqrt(k*M) = Cc   M-1*C = 2*omega 
+!       M = k/omega^2    K = k   C = 2*sqrt(k*M) = Cc   M-1*C = 2*omega
         if (abs(masgen(im)).lt.epsi) amogen(im)= 1.d0
         amogen(im) = 2.0d0*puls(im)*amogen(im)
     enddo

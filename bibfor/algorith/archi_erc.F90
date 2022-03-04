@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ subroutine archi_erc(result,ifreq,matmas,obsdim,vecterc,freq,eval,cout_fon,cout_
 ! IN  : FREQ       : FREQUENCE DU PAS COURANT
 ! IN  : EVAL       : FLAG DETERMINANT SI ON A CALCULE LA FONCTIONNELLE
 ! IN  : OMEGA      : PULSATION ASSOCIEE A LA FREQUENCE EN COURS
-! IN : COUT_FON    : VALEUR DE LA FONCTION COUT 
-! IN : TERME_UV    : PART DE LA VALEUR DE LA FONCTION COUT ASSOCIE AUX CHAMPS D'ERR 
+! IN : COUT_FON    : VALEUR DE LA FONCTION COUT
+! IN : TERME_UV    : PART DE LA VALEUR DE LA FONCTION COUT ASSOCIE AUX CHAMPS D'ERR
 ! ----------------------------------------------------------------------!
 ! ----------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ subroutine archi_erc(result,ifreq,matmas,obsdim,vecterc,freq,eval,cout_fon,cout_
     real(kind=8),intent(in) :: vecterc(*),freq,cout_fon,cout_uv
     real(kind=8) :: deuxpi
     aster_logical,intent(in) :: eval
-!    
+!
     deuxpi = r8depi()
 
        call rsexch(' ', result, 'DEPL', 2*(ifreq-1)+1, chamno,iret)
@@ -123,7 +123,7 @@ subroutine archi_erc(result,ifreq,matmas,obsdim,vecterc,freq,eval,cout_fon,cout_
            zr(lfonct) = cout_fon
            call rsadpa(result, 'E', 1, 'ERC_EVAL_FONC', 2*(ifreq-1)+2,0, sjv=lfonct)
            zr(lfonct) = cout_uv
-        else 
+        else
            call rsadpa(result, 'E', 1, 'ERC_EVAL_FONC', 2*(ifreq-1)+1,0, sjv=lfonct)
            zr(lfonct) = 0.d0
            call rsadpa(result, 'E', 1, 'ERC_EVAL_FONC', 2*(ifreq-1)+2,0, sjv=lfonct)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -118,13 +118,13 @@ subroutine te0095(option, nomte)
                 nz = nz + zr(idfdx+kdec+idec) *zr(idfdy+kdec+jdec) * sz(i,j)
             end do
         end do
-    
+
 !
 !   CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
-        
+
         jac = sqrt(nx*nx + ny*ny + nz*nz)
-        
+
 !
 !       PROJECTION SUR LA NORMALE
 !
@@ -132,7 +132,7 @@ subroutine te0095(option, nomte)
         ny=ny/jac
         nz=nz/jac
         flun = nx*fluxx + ny*fluxy + nz*fluxz
-        
+
         do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + jac * zr(ipoids+ipg-1) * flun * zr(ivf+ldec+i-1)
         end do

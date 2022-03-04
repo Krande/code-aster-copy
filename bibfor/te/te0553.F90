@@ -127,7 +127,7 @@ character(len=16), intent(in) :: option, nomte
         rho = valres(3)
         coef_amor = valres(4)
 !
-        usl0 = 0.d0    
+        usl0 = 0.d0
         if (icodre(5) .eq. 0) then
             l0 = valres(5)
             usl0=1.d0/l0

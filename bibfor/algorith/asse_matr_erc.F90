@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ subroutine asse_matr_erc(nom_matr_erc,nom_nume_erc,dynam1,dynam2,matprod)
 !                       DYNAMIQUE DU BLOC DIAGONAL DE LA MATRICE D'ERC
 ! IN  : DYNAM2        : NOM DE L'OBJET JEVEUX CONTENANT LA DEUXIEME MATRICE
 !                       DYNAMIQUE DU BLOC HORS-DIAGONAL DE LA MATRICE D'ERC
-! IN  : MATPROD       : LISTE DES NOMS DES OBJETS JEVEUX OU EST STOCKE LE 
-!                       SOUS-BLOC CALCULE. LE STOCKAGE EST EN MORSE SELON LA 
+! IN  : MATPROD       : LISTE DES NOMS DES OBJETS JEVEUX OU EST STOCKE LE
+!                       SOUS-BLOC CALCULE. LE STOCKAGE EST EN MORSE SELON LA
 !                       SD_NUME_DDL. (.SMDE,.SMHC,.SMDI,.VALM)
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
@@ -79,9 +79,9 @@ subroutine asse_matr_erc(nom_matr_erc,nom_nume_erc,dynam1,dynam2,matprod)
     call jeveuo(nom_matr_erc//'.REFA', 'E', mrefa)
     zk24(mrefa-1+8)=''
 
-! 
+!
 ! --- RECOPIE DES VALEURS DU PREMIER BLOC
-!     
+!
    call dcopy(nzfirstblk,zr(i_dynam1_valm),1,zr(i_materc_valm),1)
 !
 !
@@ -94,7 +94,7 @@ subroutine asse_matr_erc(nom_matr_erc,nom_nume_erc,dynam1,dynam2,matprod)
    do jj=1,neq_bloc
      hors_diag_impe=zi(i_nume_smdi+jj-1)-non_zero_impe-1
      hd_matpro=zi(i_mprod_smdi+jj-1)-non_zero_matprod-1
-! --- --- BLOC TRIANGULAIRE SUP IMPEDANCE 
+! --- --- BLOC TRIANGULAIRE SUP IMPEDANCE
      nz_colncour=0
      do tt=1,hors_diag_impe+1
       zr(i_materc_valm+nzfirstblk+cumul_non_zero+tt-1)= &
@@ -105,14 +105,14 @@ subroutine asse_matr_erc(nom_matr_erc,nom_nume_erc,dynam1,dynam2,matprod)
 
 ! --- --- BLOC TRIANGULAIRE INF IMPEDANCE
       ! boucle sur les colonnes superieures
-      do kk=jj+1,neq_bloc 
+      do kk=jj+1,neq_bloc
       if (jj.ne.neq_bloc) then
          ! boucle sur les elements non nuls de la colonne superieure en cours
-         do ll=zi(i_nume_smdi+kk-2)+1,zi(i_nume_smdi+kk-1) 
-            
+         do ll=zi(i_nume_smdi+kk-2)+1,zi(i_nume_smdi+kk-1)
+
             if (zi4(i_nume_smhc+ll-1).gt.jj) goto 111
             ! on test si on tombe sur le numero de file correspondant a la colonne reelle en cours
-            if (zi4(i_nume_smhc+ll-1).eq.jj) then  
+            if (zi4(i_nume_smhc+ll-1).eq.jj) then
               nz_colncour=nz_colncour+1
               zr(i_materc_valm-1+nzfirstblk+cumul_non_zero+nz_colncour)= &
                                                                               zr(i_dynam2_valm+ll-1)
@@ -122,7 +122,7 @@ subroutine asse_matr_erc(nom_matr_erc,nom_nume_erc,dynam1,dynam2,matprod)
          end do
          ! boucle sur les elements non nuls de la colonne superieure en cours
 111     continue
-      end if       
+      end if
       end do
       ! boucle sur les colonnes superieures
 
@@ -136,6 +136,6 @@ subroutine asse_matr_erc(nom_matr_erc,nom_nume_erc,dynam1,dynam2,matprod)
       end do
       cumul_non_zero=cumul_non_zero+nz_colncour
 
-    end do  
+    end do
 
 end subroutine

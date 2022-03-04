@@ -23,7 +23,7 @@ subroutine thmFlh004(ds_thm, lMatr , lSigm , perman, ndim  , j_mater,&
                      addep1, addep2, adcp11, adcp12, adcp21 ,&
                      addeme, addete, &
                      t     , p2    , pvp    ,&
-                     grat  , grap1 , grap2  ,& 
+                     grat  , grap1 , grap2  ,&
                      rho11 , h11   , h12    ,&
                      satur , dsatur, gravity, tperm,&
                      congep, dsde)
@@ -120,7 +120,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
     lambd2(:) = 0.d0
     fv(:)     = 0.d0
     cvp       = 0.d0
-    gp(:)     = 0.d0 
+    gp(:)     = 0.d0
     gc(:)     = 0.d0
     dp12p1    = 0.d0
     dp12p2    = 0.d0
@@ -168,7 +168,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                             j_mater, satur, p2, t,&
                             permli , dperml ,&
                             permgz , dperms , dpermp)
-! 
+!
 ! - Evaluate Fick coefficients for steam in gaz
 !
     call thmEvalFickSteam(j_mater,&
@@ -312,7 +312,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                     rho21*lambd2(1)*tperm(i,j)*(-grap2(j)+(rho12+rho21)*gravity(j))+&
                     rho21*cvp*fv(1)*gc(i)
             end do
-        end do  
+        end do
     endif
 !
 ! - Update matrix
@@ -401,7 +401,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                 dsde(adcp21+i,addep2) = dsde(adcp21+i,addep2)+&
                     rho21*lambd2(1)*tperm(i,j)*((dr12p2+dr21p2)*gravity(j))
             end do
-            dsde(adcp21+i,addep2)   = dsde(adcp21+i,addep2)+ &   
+            dsde(adcp21+i,addep2)   = dsde(adcp21+i,addep2)+ &
                 dr21p2*cvp*fv(1)*gc(i)
             dsde(adcp21+i,addep2)   = dsde(adcp21+i,addep2)+&
                 rho21*dcvp2*fv(1)*gc(i)
@@ -416,7 +416,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                     rho21*lambd2(1)*tperm(i,j)
             end do
             dsde(adcp21+i,addep2+i) = dsde(adcp21+i,addep2+i)+&
-                rho21*cvp*fv(1)*dgcgp2(1)          
+                rho21*cvp*fv(1)*dgcgp2(1)
             if (ds_thm%ds_elem%l_dof_meca) then
                 do j = 1, 3
                     do k = 1, ndim
@@ -437,7 +437,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                     end do
                     dsde(adcp21+i,addeme+ndim-1+j) = &
                         dsde(adcp21+i,addeme+ndim-1+j)+&
-                        rho21*cvp*fv(2)*gc(i)   
+                        rho21*cvp*fv(2)*gc(i)
                 end do
             endif
             if (ds_thm%ds_elem%l_dof_ther) then
@@ -482,7 +482,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                 dsde(adcp21+i,addete)   = dsde(adcp21+i,addete)+&
                     rho21*cvp*fv(1)*dgcvt(i)
                 dsde(adcp21+i,addete+i) = dsde(adcp21+i,addete+i)+&
-                    rho21*cvp*fv(1)*dgcgt(1)            
+                    rho21*cvp*fv(1)*dgcgt(1)
             endif
         end do
     endif

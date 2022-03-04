@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
     ddld = 0
     ddlp = 0
     ddlc = 0
-    contac=0 
+    contac=0
     nfiss = 1
 !
     call teattr('S', 'XFEM', enr, ier, typel=nomte)
@@ -79,11 +79,11 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
                     itab=jtab)
         nfiss = jtab(7)
     endif
-    
-! --- NOMBRE DE DDL POUR LE CONTACT: PRE_FLU, LAG_FLI, LAG_FLS 
-!     LAG1_HM ET LAG2_HM ET INDICATION DU CONTACT: P2P1 
-!     
-    if (enr(3:3).eq.'C' .or. enr(4:4).eq.'C') then 
+
+! --- NOMBRE DE DDL POUR LE CONTACT: PRE_FLU, LAG_FLI, LAG_FLS
+!     LAG1_HM ET LAG2_HM ET INDICATION DU CONTACT: P2P1
+!
+    if (enr(3:3).eq.'C' .or. enr(4:4).eq.'C') then
 ! --- CONTACT MORTAR
        if (enr(4:4).eq.'3'.or.enr(5:5).eq.'3') then
           ddlc = (1+1+1+3*ndim)*nfh
@@ -93,7 +93,7 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
           ddlc = (1+1+1+ndim)*nfh
           contac=3
        endif
-    endif  
+    endif
 !
 ! --- NOMBRE DE DDL AUX NOEUDS SOMMETS (MECANIQUES)
 !

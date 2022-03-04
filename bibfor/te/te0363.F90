@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -180,7 +180,7 @@ subroutine te0363(option, nomte)
                    zr(jlsn), zr(jlsn), zr(jgeom), ka, mu, ffe, fk_escl, face='ESCL')
     endif
 !
-! --- BRICOLAGES POUR RESPECTER LES ANCIENNES CONVENTIONS DE SIGNE 
+! --- BRICOLAGES POUR RESPECTER LES ANCIENNES CONVENTIONS DE SIGNE
     fk_escl=-1.d0*fk_escl
     if (nnm(1) .eq. 0) fk_escl=2.d0*fk_escl
     if (nsingm.eq.1 .and. nnm(1).gt.0) then

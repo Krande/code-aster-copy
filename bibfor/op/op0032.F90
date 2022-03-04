@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -321,7 +321,7 @@ subroutine op0032()
             if (l .ne. nbmod) then
                 ASSERT(.false.)
             endif
-            
+
             do k = 1, nbmod-1
                 zi(jstu+k-1)=izero
                 zr(jlmoe+k-1)=rzero
@@ -601,7 +601,7 @@ subroutine op0032()
             ASSERT(.false.)
         endif
         if (lfirst) then
-        
+
             call vpfopr(kopt1, typmod, lmasse, lraide, ldynam,&
                         omin, omax, rbid, zi(jstu), npivot,&
                         omecor, precsh, nbrss, nblagr, solveu,&
@@ -624,7 +624,7 @@ subroutine op0032()
                 omin=-zr(jlmod+k)
                 omax=-zr(jlmod+k-1)
             endif
-            
+
             if (koptn.eq.'STURMLNS' .or. koptn.eq.'STURMLNQ') then
                 npivot(2)=npivot(1)
                 npivot(1)=k
@@ -632,12 +632,12 @@ subroutine op0032()
                 npivot(1)=npivot(2)
                 npivot(2)=k
             endif
-            
+
             call vpfopr(koptn, typmod, lmasse, lraide, ldynam,&
                         omin, omax, rbid, zi(jstu+k-1), npivot,&
                         omecor, precsh, nbrss, nblagr, solveu,&
                         det, idet)
-            
+
             if (ldyna) then
                 zr(jlmoe+k)=freqom(omax)
             else

@@ -24,7 +24,7 @@ subroutine pgpcal(sd_pgp)
 ! Saves the results into a standard Code_Aster table structure
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -108,7 +108,7 @@ subroutine pgpcal(sd_pgp)
             call pgpget(sd_pgp,'VEC_PR_R ',iobs=iobs, lonvec=length)
             AS_ALLOCATE(vr=vectr , size=length)
             call pgpget(sd_pgp,'VEC_PR_R ',iobs=iobs, rvect=vectr)
-        
+
             if (typres(1:4).eq.'TRAN') then
                 do iord = 1, nord
                     dec1 = lc + (iord-1)*physlen

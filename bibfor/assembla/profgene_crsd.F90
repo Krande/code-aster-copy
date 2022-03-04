@@ -43,7 +43,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! PROF_GENE 
+! PROF_GENE
 !
 ! Create object
 !
@@ -54,8 +54,8 @@ implicit none
 ! In  nb_equa     : number of equations
 ! In  nb_sstr     : number of sub_structures
 ! In  nb_link     : number of links
-! In  model_gene  : name of model 
-! In  gran_name   : name of GRANDEUR 
+! In  model_gene  : name of model
+! In  gran_name   : name of GRANDEUR
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,7 +119,7 @@ implicit none
     ASSERT(nb_ligr.le.2)
 !
 ! - Create object LILI
-! 
+!
     call jecreo(prof_gene//'.LILI', base//' N K8')
     call jeecra(prof_gene//'.LILI', 'NOMMAX', nb_ligr)
     if (l_ligr_sstr) then
@@ -160,10 +160,10 @@ implicit none
 ! - Create object DESC
 !
     call wkvect(prof_gene//'.DESC', base//' V I', 1, vi = prgene_desc)
-    prgene_desc(1) = 2 
+    prgene_desc(1) = 2
 !
 ! - Create object REFN
-! 
+!
     call wkvect(prof_gene//'.REFN', base//' V K24', 4, vk24 = prgene_refn)
     prgene_refn(1) = model_gene
     prgene_refn(2) = gran_name

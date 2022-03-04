@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
         call fointe('F ', nomfon(iex), 1, [nompar], [temps],&
                     coef, ier)
         rep = rep + psidel(iddl,iex)*coef
-        
+
 10  end do
 
     if (cntr.eq.0) then

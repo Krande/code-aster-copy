@@ -300,11 +300,11 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         nbborn=1
 ! DIM_SOUS_ESPACE EN DUR
         nbvect=0
-! COEF_SOUS_ESPACE EN DUR 
+! COEF_SOUS_ESPACE EN DUR
         nbvec2=2
 ! NMAX_ITER_SHIFT EN DUR
         nbrss = 5
-! PARA_ORTHO_SOREN EN DUR       
+! PARA_ORTHO_SOREN EN DUR
         alpha = 0.717d0
 ! NMAX_ITER_SOREN EN DUR
         maxitr = 200
@@ -331,7 +331,7 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
                     stoper,sturm,typcal, k1bid,k16bid,nbmode,nbvect,nbvec2,nbrss,nbborn,&
                     ibid, ibid, ibid, ibid, maxitr, bande, precsh, omecor, precdc,r8bid,&
                     r8bid, r8bid, r8bid, r8bid, tolsor, alpha)
-        
+
 !       2.1 - Mode calculation
         l_hpp = ASTER_TRUE
         mod45='VIBR'

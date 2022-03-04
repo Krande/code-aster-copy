@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine rc32si()
 !       FORMAT MECA, CHAR_ETAT_A, CHAR_ETAT_B, FORMAT THERMIQUE)
 !
     ndim = 27*nb
-    call wkvect('&&RC3200.SITU_INFOI', 'V V I', ndim, jinfo) 
+    call wkvect('&&RC3200.SITU_INFOI', 'V V I', ndim, jinfo)
 !
     do 10 iocc = 1, nb , 1
 !
@@ -95,13 +95,13 @@ subroutine rc32si()
         call getvis('SITUATION', 'NUME_RESU_PRES', iocc=iocc, scal=ibid, nbret=n1)
         if (n1 .ne. 0) zi(jinfo+27*(iocc-1)+22) = 2
 !
-!------ on regarde si la méca est sous forme unitaire ou transitoire 
+!------ on regarde si la méca est sous forme unitaire ou transitoire
 !------ ou moments interpolés sur la température
         zi(jinfo+27*(iocc-1)+23) = 0
         zi(jinfo+27*(iocc-1)+24) = 0
         zi(jinfo+27*(iocc-1)+25) = 0
         call getvis('SITUATION', 'CHAR_ETAT_A', iocc=iocc, scal=chara, nbret=n1)
-        if (n1 .ne. 0) then 
+        if (n1 .ne. 0) then
             zi(jinfo+27*(iocc-1)+23) = 1
             zi(jinfo+27*(iocc-1)+24) = chara
             call getvis('SITUATION', 'CHAR_ETAT_B', iocc=iocc, scal=charb, nbret=n1)
@@ -123,17 +123,17 @@ subroutine rc32si()
 !                             SITUATION (NOM)
 !
     ndim = nb
-    call wkvect('&&RC3200.SITU_NOM', 'V V K16', ndim, jnom) 
+    call wkvect('&&RC3200.SITU_NOM', 'V V K16', ndim, jnom)
 !
     do 30 iocc = 1, nb , 1
 !
 !------ on récupère le nom de situation
         call getvtx('SITUATION', 'NOM_SITU', iocc=iocc, scal=nom, nbret=n1)
-        if (n1 .ne. 0) then      
+        if (n1 .ne. 0) then
             zk16(jnom+iocc-1) = nom
         else
             zk16(jnom+iocc-1) = 'PAS DE NOM'
-        endif         
+        endif
 !
 30  continue
 !
@@ -141,7 +141,7 @@ subroutine rc32si()
 !            SITUATION (PRES_A, PRES_B, TEMP_A, TEMP_B)
 !
     ndim = nb*4
-    call wkvect('&&RC3200.SITU_INFOR', 'V V R', ndim, jinfor) 
+    call wkvect('&&RC3200.SITU_INFOR', 'V V R', ndim, jinfor)
 !
     do 40 iocc = 1, nb , 1
 !
@@ -149,18 +149,18 @@ subroutine rc32si()
         zr(jinfor+4*(iocc-1)) = 0.d0
         zr(jinfor+4*(iocc-1)+1) = 0.d0
         call getvr8('SITUATION', 'PRES_A', iocc=iocc, scal=presa, nbret=n1)
-        if (n1 .ne. 0) zr(jinfor+4*(iocc-1)) = presa         
+        if (n1 .ne. 0) zr(jinfor+4*(iocc-1)) = presa
         call getvr8('SITUATION', 'PRES_B', iocc=iocc, scal=presb, nbret=n1)
-        if (n1 .ne. 0) zr(jinfor+4*(iocc-1)+1) = presb  
+        if (n1 .ne. 0) zr(jinfor+4*(iocc-1)+1) = presb
         zr(jinfor+4*(iocc-1)+2) = 0.d0
         zr(jinfor+4*(iocc-1)+3) = 0.d0
         call getvr8('SITUATION', 'TEMP_A', iocc=iocc, scal=tempa, nbret=n1)
-        if (n1 .ne. 0) zr(jinfor+4*(iocc-1)+2) = tempa         
+        if (n1 .ne. 0) zr(jinfor+4*(iocc-1)+2) = tempa
         call getvr8('SITUATION', 'TEMP_B', iocc=iocc, scal=tempb, nbret=n2)
         if (n2 .ne. 0) zr(jinfor+4*(iocc-1)+3) = tempb
         if(n1 .ne. 0 .and. n2 .ne. 0) then
          if (abs(tempa-tempb) .lt. 1.0d-08) call utmess('F', 'POSTRCCM_47')
-        endif         
+        endif
 !
 40  continue
 !----------------------------------------------------------------------
@@ -173,7 +173,7 @@ subroutine rc32si()
 !          (NUMERO, NBCYCL, NBOCCUR, FORMAT MECA, CHAR_ETAT)
 !
     ndim = 5
-    call wkvect('&&RC3200.SEIS_INFOI', 'V V I', ndim, jinfos) 
+    call wkvect('&&RC3200.SEIS_INFOI', 'V V I', ndim, jinfos)
 !
 !-- on récupère le numéro de situation du séisme
     call getvis('SEISME', 'NUME_SITU', iocc=1, scal=nume, nbret=n1)
@@ -196,7 +196,7 @@ subroutine rc32si()
     zi(jinfos+3) = 0
     zi(jinfos+4) = 0
     call getvis('SEISME', 'CHAR_ETAT', iocc=1, scal=chara, nbret=n1)
-    if (n1 .ne. 0) then 
+    if (n1 .ne. 0) then
         zi(jinfos+3) = 1
         zi(jinfos+4) = chara
     endif
@@ -205,14 +205,14 @@ subroutine rc32si()
 !
 ! CREATION D'UN TABLEAU QUI CONTIENT LES INFOS TYPE CARACTERE DU SEISME (NOM)
 !
-    call wkvect('&&RC3200.SEIS_NOM', 'V V K16', 1, jnoms) 
+    call wkvect('&&RC3200.SEIS_NOM', 'V V K16', 1, jnoms)
 !
     call getvtx('SEISME', 'NOM_SITU', iocc=1, scal=nom, nbret=n1)
-    if (n1 .ne. 0) then      
+    if (n1 .ne. 0) then
         zk16(jnoms) = nom
     else
         zk16(jnoms) = 'PAS DE NOM'
-    endif         
+    endif
 !
 999 continue
 !
@@ -220,12 +220,12 @@ subroutine rc32si()
 !--------------------SITUATIONS COMBINABLES ENTRE ELLES----------------
 !----------------------------------------------------------------------
 !
-! CREATION D'UN TABLEAU DE DIMENSION NBSITU*NBSITU QUI CONTIENT UN ENTIER 
+! CREATION D'UN TABLEAU DE DIMENSION NBSITU*NBSITU QUI CONTIENT UN ENTIER
 ! CET ENTIER EST NUL SI LES SITUATIONS NE SONT PAS COMBINABLES ENTRE ELLES
 ! IL VAUT 1 SI LES DEUX SITUATIONS SONT DANS LE MEME GROUPE OU BIEN RELIEES
 ! PAR UNE SITUATION DE PASSAGE
     ndim = nb*nb
-    call wkvect('&&RC3200.COMBI', 'V V I', ndim, jcombi) 
+    call wkvect('&&RC3200.COMBI', 'V V I', ndim, jcombi)
     do 50 k = 1, ndim
         zi(jcombi-1+k) = 0
 50  continue
@@ -242,7 +242,7 @@ subroutine rc32si()
 71          continue
             do 72 i1 = 1, 20
                 do 73 i2 = 1,20
-                    if(numgr1(i1) .ne. 0 .and. numgr2(i2) .ne. 0) then    
+                    if(numgr1(i1) .ne. 0 .and. numgr2(i2) .ne. 0) then
                         if (numgr2(i2) .eq. numgr1(i1)) zi(jcombi+nb*(iocc1-1)+iocc2-1) = 1
                     endif
 73              continue
@@ -252,7 +252,7 @@ subroutine rc32si()
 !
 ! -- on traite les situations de passage
     ndim = 3*nb*nb*nb
-    call wkvect('&&RC3200.PASSAGE', 'V V I', ndim, jpassage) 
+    call wkvect('&&RC3200.PASSAGE', 'V V I', ndim, jpassage)
     do 92 i = 1,ndim
         zi(jpassage-1+i) = 0
 92  continue
@@ -277,7 +277,7 @@ subroutine rc32si()
           if (.not. passok) call utmess('F', 'POSTRCCM_34')
 97      continue
         do 101 i1 = 1, nbgrpass-1
-          numgr1p = grpass(i1) 
+          numgr1p = grpass(i1)
           do 102 i2 = i1+1, nbgrpass
             numgr2p = grpass(i2)
             if(numgr1p .eq. numgr2p) call utmess('F', 'POSTRCCM_34')
@@ -292,8 +292,8 @@ subroutine rc32si()
                   numgr2(i4) = zi(jinfo+27*(iocc2-1)+i4)
 106             continue
                 do 107 i3 = 1, 20
-                  do 108 i4 = 1,20                   
-                    if(numgr1(i3) .ne. 0 .and. numgr2(i4) .ne. 0) then    
+                  do 108 i4 = 1,20
+                    if(numgr1(i3) .ne. 0 .and. numgr2(i4) .ne. 0) then
                       if (numgr1(i3) .eq. numgr1p .and. numgr2(i4) .eq. numgr2p &
                         .and. zi(jcombi+nb*(iocc1-1)+iocc2-1) .ne. 1 .and. .not. dejapass) then
                         dejapass = .true.
@@ -344,7 +344,7 @@ subroutine rc32si()
 !----------------------------------------------------------------------
 !
     ndim = 1*nb
-    call wkvect('&&RC3200.PARTAGE', 'V V I', ndim, jpartage) 
+    call wkvect('&&RC3200.PARTAGE', 'V V I', ndim, jpartage)
     do 110 k = 1, ndim
         zi(jpartage-1+k) = 0
 110  continue
@@ -358,7 +358,7 @@ subroutine rc32si()
             zi(jpartage-1+iocc) = nume
             nbocc1 = zi(jinfo+27*(iocc-1)+21)
 !
-!------ verif : deux situations du même groupe de partage doivent appartenir au 
+!------ verif : deux situations du même groupe de partage doivent appartenir au
 !------ même groupe de fonctionnement et avoir le même nombre d'occurence initial
             do 130 i = 1, iocc-1
                 if (nume .eq. zi(jpartage-1+i)) then

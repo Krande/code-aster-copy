@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ implicit none
     integer :: nbfpg, nbpg(MT_NBFAMX), jvr, decal, ifam, lonfam
     integer :: nufpg, nufgpg, nuflpg, jdfd2l, jganol
     integer :: ndiml, nnosl, nnol, npgl, jpoidl, jcoopl, jvfl, jdfdel
-    
+
 
 !   -- pour faire des "save" et gagner du temps CPU :
     integer :: maxsav

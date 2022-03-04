@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ implicit none
 #include "asterc/r8vide.h"
 !
 character(len=24), intent(in) :: model
-character(len=19), intent(in) :: temp_prev, incr_temp 
+character(len=19), intent(in) :: temp_prev, incr_temp
 real(kind=8), intent(in) :: time_curr, deltat, theta, khi
 character(len=24), intent(out) :: time
 character(len=19), intent(out) :: temp_curr
@@ -54,7 +54,7 @@ character(len=*), intent(out) :: ve_dirichlet
 ! In  model            : name of model
 ! In  temp_prev        : temperature at beginning of step
 ! In  incr_temp        : increment of temperature
-! In  time_curr        : current time  
+! In  time_curr        : current time
 ! In  deltat           : increment of time
 ! In  theta            : parameter for theta-scheme
 ! In  khi              : parameter
@@ -98,7 +98,7 @@ character(len=*), intent(out) :: ve_dirichlet
     call gcncon('_', ve_resither)
 !
 ! - Create CARTE for time
-! 
+!
     tpsthe(1) = time_curr
     tpsthe(2) = deltat
     tpsthe(3) = theta

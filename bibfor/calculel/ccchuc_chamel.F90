@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -130,16 +130,16 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, ty
     if (i_list_elem .ne. 0) then
         call jeveuo(list_elem, 'L', j_elemin)
     endif
-    
-    
+
+
     do iel = 1, nb_elem
-        
+
         if (i_list_elem .ne.0)then
             ima = zi(j_elemin-1+iel)
         else
             ima = iel
         endif
-        
+
         ichk_elem = -1
         nbpt = zi(jchsd-1+5+4*(ima-1)+1)
         nbsp = zi(jchsd-1+5+4*(ima-1)+2)
@@ -162,7 +162,7 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, ty
                         nb_val_in = nb_val_in + 1
                         zr(j_val-1+nb_val_in) = chsv(iad)
                         zk8(j_cmp-1+nb_val_in) = cesc(icmp)
-                    endif 
+                    endif
                 enddo
 !
 ! ------------- Compute result
@@ -200,7 +200,7 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, ty
             ichk = 0
             nb_elem_out = nb_elem_out + 1
             zi(j_elem-1+nb_elem_out) = ima
-        endif 
+        endif
     enddo
 !
     call jedetr(work_val)

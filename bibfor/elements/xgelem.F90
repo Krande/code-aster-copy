@@ -137,7 +137,7 @@ implicit none
     else
         irese=0
     endif
-!    
+!
     typmod = ' '
     sigl=0.d0
     cp = .false.
@@ -198,14 +198,14 @@ implicit none
     if (incr) then
         call jevech('PCONTRR', 'L', isigm)
     endif
-    
+
 !   Recuperation de la contrainte initiale aux noeuds des sous-elts
     call tecach('ONO', 'PSIGISE', 'L', iret, iad=jsigse)
-    
+
 !   Indicateur de contrainte initiale
     isigi=0
     if (jsigse.ne.0) isigi=1
-    
+
     if (isigi.ne.0) then
 !       Passage de la contrainte initiale aux noeuds des sous-elts
 !       dans un tableau local au sous-elt
@@ -474,7 +474,7 @@ implicit none
             call nmplru('XFEM', kpg+idecpg, 1, '+', ndim,&
                         typmod, matcod, compor, ppg, eps,&
                         epsp, rp, energi)
-                        
+
             do i = 1, 3
                 sigl(i)= zr(isigm+idebs-1 + ncmp*(kpg-1) + i)
             enddo
@@ -494,13 +494,13 @@ implicit none
             call nmelnl(BEHinteg,&
                         'XFEM', kpg+idecpg, 1, '+', ndim,&
                         typmod, matcod, compor, crit, oprupt,&
-                        eps, sigl, rbid, dsidep, energi) 
+                        eps, sigl, rbid, dsidep, energi)
 
         endif
 
 !
 !       --------------------------------------------------
-!       6)   CORRECTIONS LIEES A LA CONTRAINTE INITIALE 
+!       6)   CORRECTIONS LIEES A LA CONTRAINTE INITIALE
 !       --------------------------------------------------
 !
         if (isigi .ne. 0) then
@@ -512,7 +512,7 @@ implicit none
                          sigse(ncmp*(i-1)+j) * zr(ivf-1+nno*(kpg-1)+i)
 440             continue
 430         continue
-                        
+
 !           Calcul du gradient de sigma initial (somme sur les noeuds du ss-elt)
             do 460 i = 1, nno
                 do 455 j = 1, ncmp

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine cntdif(ivect, dimen, diff, valdif, maxdim)
 ! IN : IVECT  : POINTEUR DU PREMIER ELEMENT DE L'ARRAY D'ENTIERS
 ! IN : DIMEN  : DIMENSION DE L'ARRAY SUR LEQUEL ON EFFECTUE LE COMPTAGE
 ! OUT: DIFF   : NOMBRE D'ELEMENTS DIFFERENTS DANS L'ARRAY
-! OUT: VALDIF : ARRAY CONTENANT LES VALEURS DIFFERENTES DANS L'ARRAY 
+! OUT: VALDIF : ARRAY CONTENANT LES VALEURS DIFFERENTES DANS L'ARRAY
 ! IN : MAXDIM : DIMENSION MAXI DE L'ARRAY DE SORTIE VALDIF
 ! ----------------------------------------------------------------------
     AS_ALLOCATE(vi=vaux, size=dimen)

@@ -80,7 +80,7 @@ real(kind=8), intent(out) :: vectu(dimuel)
 ! In  tempe            : parameters for thermic
 ! In  nno              : number of nodes (all)
 ! In  nnos             : number of nodes (not middle ones)
-! In  npi              : number of Gauss points for linear 
+! In  npi              : number of Gauss points for linear
 ! In  npg              : number of Gauss points
 ! In  elem_coor        : coordinates of nodes for current element
 ! In  dt               : time increment
@@ -105,9 +105,9 @@ real(kind=8), intent(out) :: vectu(dimuel)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: indx_vale_refe, kpi, i_dim, k
-    integer, parameter :: parsig = 27*36 
-    integer, parameter :: partmp = 27*6 
-    integer, parameter :: parbsi = 27*6 
+    integer, parameter :: parsig = 27*36
+    integer, parameter :: partmp = 27*6
+    integer, parameter :: parbsi = 27*6
     real(kind=8) :: sigtm(parsig), ftemp(partmp), bsigm(parbsi)
     real(kind=8) :: vale_refe, list_vale_refe(4)
 !
@@ -120,7 +120,7 @@ real(kind=8), intent(out) :: vectu(dimuel)
     ASSERT(npi .le. 27)
     ASSERT(dimcon .le. 31 + 5)
 !
-! - Check which *_REFE exist 
+! - Check which *_REFE exist
 !
     if (ds_thm%ds_elem%l_dof_meca) then
         call terefe('SIGM_REFE', 'THM', vale_refe)

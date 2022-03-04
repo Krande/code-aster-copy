@@ -158,7 +158,7 @@ subroutine te0481(option, nomte)
 !
             do i=1,ndim
                 zr(jcopg+(ndim+1)*(ipg-1)-1+i)=xg(i)
-            enddo    
+            enddo
             zr(jcopg+(ndim+1)*(ipg-1)-1+ndim+1)=jac
 !
         enddo

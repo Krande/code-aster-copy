@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
 
     ok_noeud2 = .false.
     noeud = '        '
-    
+
     if (mcs(1:4) .eq. 'ORIG') then
         mcnoeu = 'NOEUD_ORIG'
         mcgrno = 'GROUP_NO_ORIG'
@@ -78,7 +78,7 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
         endif
         ok_noeud2 = .true.
     endif
-    
+
     if (present(ok_noeud)) ok_noeud=ok_noeud2
 !
 end subroutine

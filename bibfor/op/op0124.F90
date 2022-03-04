@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,9 +57,9 @@ subroutine op0124()
         if ( typres .ne. 'EVOL_ELAS' .and. &
              typres .ne. 'EVOL_NOLI' .and. &
              typres .ne. 'EVOL_THER' ) then
-           valk(2)='ECLA_PG'        
+           valk(2)='ECLA_PG'
            call utmess ('F', 'ALGORITH17_41', nk=2, valk=valk)
-        endif      
+        endif
         call eclpgr()
         goto 9999
     endif
@@ -71,9 +71,9 @@ subroutine op0124()
     call getfac('PERM_CHAM', nbfac)
     if (nbfac .gt. 0) then
         if ( typres .ne. 'EVOL_NOLI' ) then
-           valk(2)='PERM_CHAM' 
+           valk(2)='PERM_CHAM'
            call utmess ('F', 'ALGORITH17_41', nk=2, valk=valk )
-        endif   
+        endif
         call crperm()
         goto 9999
     endif
@@ -85,7 +85,7 @@ subroutine op0124()
     call getfac('PROL_RTZ', nbfac)
     if (nbfac .gt. 0) then
         if ( typres .ne. 'EVOL_THER' ) then
-           valk(2)='EVOL_THER' 
+           valk(2)='EVOL_THER'
            call utmess ('F', 'ALGORITH17_41', nk=2, valk=valk )
         endif
         call crprol()
@@ -109,7 +109,7 @@ subroutine op0124()
     call getfac('ASSE', nbfac)
     if (nbfac .gt. 0) then
         if ( typres .ne. 'EVOL_THER' ) then
-           valk(2)='ASSE' 
+           valk(2)='ASSE'
            call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
         endif
         call crasse()
@@ -123,7 +123,7 @@ subroutine op0124()
     call getfac('PREP_VRC1', nbfac)
     if (nbfac .gt. 0) then
         if ( typres .ne. 'EVOL_THER' ) then
-           valk(2)='PREP_VRC1' 
+           valk(2)='PREP_VRC1'
            call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
         endif
         call crvrc1()
@@ -137,7 +137,7 @@ subroutine op0124()
     call getfac('PREP_VRC2', nbfac)
     if (nbfac .gt. 0) then
         if ( typres .ne. 'EVOL_THER' ) then
-             valk(2)='PREP_VRC2' 
+             valk(2)='PREP_VRC2'
              call utmess ( 'F', 'ALGORITH17_41', nk=2, valk=valk )
         endif
         call crvrc2()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
 ! IN  ilag      : Abs_cur s0, s1 et s2 pour la fonction de lagrange k
 ! IN  ITHET     : zr(ithet) est tel que, pour le noeud i
 !                   - zr(ithet-1+6*(i-1)+1): theta_0 évalué au noeud i
-!                   - zr(ithet-1+6*(i-1)+2:ithet-1+6*(i-1)+4): la 
+!                   - zr(ithet-1+6*(i-1)+2:ithet-1+6*(i-1)+4): la
 !                        direction de propagation t évaluée au noeud i
 !                   - zr(ithet-1+6*(i-1)+5): l'abscisse curviligne s
 !                        évaluée au noeud i
@@ -90,7 +90,7 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
     end do
 !
 ! ===========================================
-!          CAS 3D : discrétisation 
+!          CAS 3D : discrétisation
 ! ===========================================
 !
     if (discr == "LEGENDRE") then
@@ -135,14 +135,14 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
                 eval = 1.d0 - ((sno - s1) / (s2 - s1))
 !---------- Cas fond fermé
             elseif (s0 .gt. s1 .and. sno .ge. s0 ) then
-                eval = (sno - s0) / (xl - s0)  
+                eval = (sno - s0) / (xl - s0)
             else
                 eval = 0.d0
-            endif 
+            endif
 !
 !---------  Calcul de grad(theta) au point de Gauss
 !---------- Stockage de theta dans la 4ème colonne
-            do j = 1 , ndim 
+            do j = 1 , ndim
                 dtdm(j,4) = dtdm(j,4) + ff(i)*(eval*zr(ithet-1+6*(i-1)+1)* &
                                                     zr(ithet-1+6*(i-1)+j+1))
                 do k = 1, ndim
@@ -162,7 +162,7 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
                 dtdm(i,j) = t(i)*gradth0(j) + th0*gradt(i,j)
             enddo
         enddo
-! 
+!
     else
 !
         ASSERT(ASTER_FALSE)

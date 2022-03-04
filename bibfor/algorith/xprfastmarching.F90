@@ -46,7 +46,7 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 
     character(len=8)  :: cmnd, noma
     character(len=19) :: cnsln, grln, cnslt, grlt, noesom, isozro
-    character(len=19) :: nodtor, eletor, liggrd, cnxinv  
+    character(len=19) :: nodtor, eletor, liggrd, cnxinv
     character(len=19) :: cnsbl ,cnsbet ,listp , vpoint
     real(kind=8)      :: lcmin
 !
@@ -110,13 +110,13 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
     integer      :: ifm, niv, jnodto, ibid
     integer      :: inar, jconx1, jconx2
     integer      :: jzero, jcopiels, jvtemp, jcalculs
-    
+
 !     EVALUATION OF THE GRADIENT OF THE LEVEL SET
     character(len=8)  :: lpain(4), lpaout(2)
     character(len=19) :: cnols, celgls, chams
     character(len=24) :: lchin(4), lchout(2)
     real(kind=8), pointer       :: vale(:) => null()
-    
+
 !-----------------------------------------------------------------------
 !     DEBUT
 !-----------------------------------------------------------------------
@@ -167,12 +167,12 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 
 !     RETRIEVE THE COORDINATES OF THE NODES
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
-        
+
 !----------------------------------------------------------------------
 !   CALCUL DES VRAIES DISTANCES SIGNEES SUR LES NOEUDS PROCHES DE LS=0
 !   PERMET DE REPERER LES IZOZEROS DE LSN ET LST POUR LA FMM
 !----------------------------------------------------------------------
-    
+
     call wkvect(isozro, 'V V L', nbnoma, jzero)
 
     call xprls0(noma, noesom, lcmin, cnsln,&
@@ -193,7 +193,7 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 !creation d'un vecteur calculs qui modifira les valeurs de la ls
     calculs = '&&XPRFAST.CALCULS'
     call wkvect(calculs, 'V V R', nbnoma, jcalculs)
-    
+
 !multiplie par -1 pour calculer les valeurs negatives de ls
     zr(jcnsls:jcnsls+nbnoma-1) = -1 * zr(jcnsls:jcnsls+nbnoma-1)
 
@@ -202,7 +202,7 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 
 !-----------------------------------------------------------------------
 !            INITIALISATION AUTOUR DU FOND DE FISURE
-!-----------------------------------------------------------------------    
+!-----------------------------------------------------------------------
     do inar = 1 , nbnoma
         zl(jvtemp-1+inar) = .false.
         zr(jcalculs-1+inar)= r8gaem()
@@ -212,13 +212,13 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
         node = zi(jnodto-1+inar)
         if ( zr(jcopiels-1+node) .ge. 0 ) then
             zl(jvtemp-1+node) = .true.
-            if (zl(jzero-1+node)) then            
+            if (zl(jzero-1+node)) then
                 zr(jcalculs-1+node) = zr(jcopiels-1+node)
             endif
         endif
     end do
 
-!  Propagation des valeurs a tout le domaine 
+!  Propagation des valeurs a tout le domaine
    call xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
                       cnxinv, jconx1, jconx2, ndim, jcopiels, noma)
 
@@ -230,7 +230,7 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
 !   On inverse les valeurs pour calculer l'autre cote de l'iso zero!
     zr(jcnsls:jcnsls+nbnoma-1)     = -1 * zr(jcnsls:jcnsls+nbnoma-1)
     zr(jcopiels:jcopiels+nbnoma-1) = -1 * zr(jcopiels:jcopiels+nbnoma-1)
-    
+
 !-----------------------------------------------------------------------
 !              INITIALISATION AUTOUR DU FOND DE FISURE
 !-----------------------------------------------------------------------
@@ -243,13 +243,13 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom,&
         node = zi(jnodto-1+inar)
         if ( zr(jcopiels-1+node) .ge. 0 ) then
             zl(jvtemp-1+node) = .true.
-            if (zl(jzero-1+node)) then            
+            if (zl(jzero-1+node)) then
                 zr(jcalculs-1+node) = zr(jcopiels-1+node)
             endif
         endif
     end do
-    
-!  Propagation des valeurs a tout le domaine    
+
+!  Propagation des valeurs a tout le domaine
    call xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
                       cnxinv, jconx1, jconx2, ndim, jcopiels, noma)
 

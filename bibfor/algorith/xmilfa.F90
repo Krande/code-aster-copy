@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -154,7 +154,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     cosv = ddot(ndime, t3, 1, t2, 1)
     cosw = ddot(ndime, t3, 1, t1, 1)
     if (cosv.gt.cosw) sinu = -sinu
-! 
+!
 !   ON RAJOUTE UNE TOLE POUR EVITER DES DECOUPES TROP POURRIES
     if (sinu.lt.1.d-3) courbe = .true.
 !

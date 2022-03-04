@@ -137,7 +137,7 @@ subroutine te0554(nomopt, nomte)
      &   -vno(1)*vt2(2)*vt1(3)-vt1(1)*vno(2)*vt2(3)-vt2(1)*vt1(2)*vno(3)
     ASSERT(abs(det).gt.prec)
 !
-    
+
     mgl(1,1) = vno(1)
     mgl(2,1) = vt1(1)
     mgl(3,1) = vt2(1)

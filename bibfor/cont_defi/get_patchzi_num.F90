@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,19 +38,19 @@ implicit none
 !
 ! DEFI_CONTACT
 !
-! Get Patch zone number in DECOUPE_LAC 
+! Get Patch zone number in DECOUPE_LAC
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  nmgrma           : name of izone GROUP_MA_ESCL 
+! In  nmgrma           : name of izone GROUP_MA_ESCL
 ! In  num              : corresponding Patch zone number in DECOUPE_LAC
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_patchzi, nb_patchzi
     aster_logical :: find
-    character(len=24), pointer:: nm_patchzi(:) => null() 
+    character(len=24), pointer:: nm_patchzi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,11 +61,11 @@ implicit none
     do i_patchzi=1, nb_patchzi
         if (nm_patchzi(i_patchzi).eq. nmgrma) then
             num = i_patchzi
-            find=.true.                
+            find=.true.
         endif
     enddo
-    if ( .not. find ) then 
-        call utmess('F', 'CONTACT2_18',valk=nm_patchzi(i_patchzi))   
+    if ( .not. find ) then
+        call utmess('F', 'CONTACT2_18',valk=nm_patchzi(i_patchzi))
     endif
 !
 end subroutine

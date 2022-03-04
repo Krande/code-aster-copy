@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine virhol(nbvari, vintm , vintp ,&
                   advihy, vihrho,&
-                  dtemp , dp1   , dp2   , dpad,& 
+                  dtemp , dp1   , dp2   , dpad,&
                   cliq  , alpliq, signe ,&
                   rho110, rho11 , rho11m,&
                   retcom)
@@ -49,7 +49,7 @@ integer, intent(out) :: retcom
 ! In  nbvari           : total number of internal state variables
 ! In  vintm            : internal state variables at beginning of time step
 ! IO  vintp            : internal state variables at end of time step
-! In  advihy           : index of internal state variable for hydraulic law 
+! In  advihy           : index of internal state variable for hydraulic law
 ! In  vihrho           : index of internal state variable for volumic mass of liquid
 ! In  dtemp            : increment of temperature
 ! In  dp1              : increment of capillary pressure
@@ -61,7 +61,7 @@ integer, intent(out) :: retcom
 ! In  rho110           : initial volumic mass for liquid
 ! Out rho11m           : volumic mass for liquid at beginning of current time step
 ! Out rho11            : volumic mass for liquid at end of current time step
-! Out retcom           : error code 
+! Out retcom           : error code
 !                         0 - everything is OK
 !
 ! --------------------------------------------------------------------------------------------------

@@ -55,7 +55,7 @@ type(NL_DS_InOut), optional, intent(in) :: ds_inout
 !
     character(len=24) :: field_type
     character(len=19) :: field
-    integer :: i_keyw_fact, nb_keyw_fact, i_field 
+    integer :: i_keyw_fact, nb_keyw_fact, i_field
     character(len=14) :: sdextr_obsv
     character(len=24) :: extr_info, extr_field
     integer, pointer :: v_extr_info(:) => null()

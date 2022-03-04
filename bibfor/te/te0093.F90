@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ character(len=16), intent(in) :: option, nomte
             fy = fy + zr(jvShape+kdec+iNode-1) * zr(jvForc+jdec+1)
         end do
 
-! ----- Compute force 
+! ----- Compute force
         do iNode = 1, nno
             zr(jvVect+ndimSpace*(iNode-1))   = zr(jvVect+ndimSpace*(iNode-1)) +&
                                                jacWeight * fx * zr(jvShape+kdec+iNode-1)

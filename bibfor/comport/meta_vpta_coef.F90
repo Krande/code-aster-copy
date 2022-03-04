@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 !
 character(len=16), intent(in) :: metaRela, metaGlob
-integer, intent(in) :: lgpg 
+integer, intent(in) :: lgpg
 character(len=4), intent(in) :: fami
 integer, intent(in) :: kpg
 integer, intent(in) :: j_mater

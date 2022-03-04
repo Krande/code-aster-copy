@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ implicit none
 ! In  nb_type_neumz    : maximum number of Neumann load type
 ! Out nb_load_exist    : number of loads existing in load datastructure
 ! Out list_load_keyw   : list of loads existing in load datastructure (AFFE_CHAR_THER keyword)
-!                         
+!
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! - Behaviour - Integration - External state variables
-! 
+!
     type Behaviour_ESVA
 ! ----- Flags
         aster_logical :: l_anel = ASTER_FALSE
@@ -90,7 +90,7 @@ implicit none
     end type Behaviour_Elga
 !
 ! - Behaviour - Integration - Parameters for external solver (UMAT, MFRONT)
-! 
+!
     type Behaviour_Exte
 ! ----- Number of external state variables used in external solver
         integer            :: nb_pred = 0
@@ -169,7 +169,7 @@ implicit none
         character(len=16) :: post_iter = ' '
 ! ----- Type of strain transmitted to the behaviour law : 'OLD', 'MECANIQUE' or 'TOTALE'
         character(len=16) :: defo_ldc = ' '
-! ----- Index of law 
+! ----- Index of law
         integer           :: numeLaw = 0
 ! ----- Total number of internal state variables
         integer           :: nbVari = 0

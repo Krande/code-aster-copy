@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -218,8 +218,8 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     s1th = s1th - 3*k3a*alpha*ttrgu*ttrgv
 
-    
-    
+
+
     s2th1v = dvdm(1,1) * dtdm(1,1) + dvdm(1,2) * dtdm(2,1) + dvdm(1,3) * dtdm(3,1)
     s2th2v = dvdm(2,1) * dtdm(1,2) + dvdm(2,2) * dtdm(2,2) + dvdm(2,3) * dtdm(3,2)
     s2th3v = dvdm(3,1) * dtdm(1,3) + dvdm(3,2) * dtdm(2,3) + dvdm(3,3) * dtdm(3,3)
@@ -282,7 +282,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
 
 ! AJOUTER LE TERME CONSTANT POUR COMPARER AVEC CALC_G
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!! ATTENTION AUX FACTEUR 0.5 DANS tttlu   
+!! ATTENTION AUX FACTEUR 0.5 DANS tttlu
     tther = tther -3.d0*k3a*alpha*(ttrgv*ttt1u*coef)*poids
 !  - TERME DYNAMIQUE
 !
@@ -313,7 +313,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
 601 continue
 
     if (coef.gt.1.9) then
-       
+
        do 501 i=1,3
           tini1 =tini1-(epsu(i)-epsthe-epsref(i))*temp1(i)
 501    continue
@@ -357,13 +357,13 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
 
         temp2(5)=0.5d0*(dvdm(1,1)*dtdm(1,3)+dvdm(1,2)*dtdm(2,3)+dvdm(1,3)*dtdm(3,3)+&
         dvdm(3,1)*dtdm(1,1)+dvdm(3,2)*dtdm(2,1)+dvdm(3,3)*dtdm(3,1))/rac2
-       
+
         temp2(6)=0.5d0*(dvdm(2,1)*dtdm(1,3)+dvdm(2,2)*dtdm(2,3)+dvdm(2,3)*dtdm(3,3)+&
-        dvdm(3,1)*dtdm(1,2)+dvdm(3,2)*dtdm(2,2)+dvdm(3,3)*dtdm(3,2))/rac2 
+        dvdm(3,1)*dtdm(1,2)+dvdm(3,2)*dtdm(2,2)+dvdm(3,3)*dtdm(3,2))/rac2
 
        do 504 i=1,6
         tini2=tini2+sigin(i)*temp2(i)
-504    continue 
+504    continue
 !        do 552 i = 1, 3
 !            do 542 j = 1, 3
 !                do 532 k = 1, 3
@@ -372,7 +372,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
 !522                  continue
 !532              continue
 !542          continue
-!552      continue  
+!552      continue
 
 
     endif
@@ -384,18 +384,18 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
     if (coef.gt.1.9) then
        do 505 i=1,3
              tini3=tini3-(epsu(i)-epsthe-0.5d0*epsref(i))*sigin(i)*divt
-505    continue   
+505    continue
        tini3=tini3-(epsu(4)-0.5d0*epsref(4))*sigin(4)*divt
        tini3=tini3-(epsu(5)-0.5d0*epsref(5))*sigin(5)*divt
        tini3=tini3-(epsu(6)-0.5d0*epsref(6))*sigin(6)*divt
-       
+
     else if (coef.lt.1.1)  then
        do 506 i=1,6
              tini3=tini3-0.5d0*epsv(i)*sigin(i)*divt
-506    continue   
+506    continue
     endif
-    tini3=tini3*poids 
-    
-!   SOMME FINALE DE CALCUL DE G  
+    tini3=tini3*poids
+
+!   SOMME FINALE DE CALCUL DE G
     g = gcla + tfor + tther + tdyn + tini1 + tini2 + tini3
 end subroutine

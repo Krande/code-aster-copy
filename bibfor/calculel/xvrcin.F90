@@ -50,15 +50,15 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !     gestion dans vrcin1 du champ de température variable de commande
 !     qui est ELGA sur les elements enrichis
 !
-!     but : determiner si on se trouve dans le cas du chainage 
+!     but : determiner si on se trouve dans le cas du chainage
 !           thermo-mecanique avec X-FEM, et redefinir le champ de
 !           temperature TEMP_ELGA, initialement defini sur le ligrel
-!           du modele thermique enrichi, sur le ligrel du modele 
+!           du modele thermique enrichi, sur le ligrel du modele
 !           mecanique enrichi
 !
 !     in    ligmex : nom du ligrel '.MODELE' du modele
 !     in    celthx : nom du cham_elem defini sur le ligrel thermique
-!     in    evol   : nom du resultat qui contient les champs de 
+!     in    evol   : nom du resultat qui contient les champs de
 !                    température variable de commande
 !     in    nomsym : nom symbolique du champ
 !     "out" celmex : nom du cham_elem defini sur le ligrel mecanique
@@ -127,14 +127,14 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
     if (icode_ini .ne. 0) goto 999
 !
 ! ----------------------------------------------------------------------
-! --- TEMP_ELGA est present -> on s'est assure que l'utilisateur veut 
+! --- TEMP_ELGA est present -> on s'est assure que l'utilisateur veut
 ! --- faire du chainage thermo-mecanique avec un resultat thermique xfem.
 ! --- Il faut faire des verifications supplementaires
 ! ----------------------------------------------------------------------
 !
 !   evol doit faire reference a une et une seule sd_modele "modevo"
 !   (pb par ex. si on a fait une mauvaise utilisation de CREA_RESU)
-!   -> on recupere modevo via le ligrel de definition des cham_elem 
+!   -> on recupere modevo via le ligrel de definition des cham_elem
 !      TEMP_ELGA, ligrel qui doit lui aussi etre unique
     AS_ALLOCATE(vk24=vligr, size=nbord)
     do iord=1,nbord
@@ -174,7 +174,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 ! - (initialement defini sur le ligrel ligthx)
 ! ----------------------------------------------------------------------
 !
-!   recuperation du nom ligthx, du nom du maillage associe 
+!   recuperation du nom ligthx, du nom du maillage associe
 !   et du nombre de maille
     call dismoi('NOM_LIGREL', celthx, 'CHAM_ELEM', repk=ligthx)
     call dismoi('NOM_MAILLA', ligthx, 'LIGREL', repk=noma)
@@ -249,7 +249,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !   ces deux cham_elem doivent etre definis sur les memes mailles
      do ima = 1, nbma
         ASSERT(vecma_me(ima) .eq. vecma_th(ima))
-    enddo   
+    enddo
 !
     AS_DEALLOCATE(vi=vecma_me)
     AS_DEALLOCATE(vi=vecma_th)
@@ -332,7 +332,7 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !
                 ima = zi(alielm-1+ielm)
 !
-!               position dans ligthx de l'element porte par ima 
+!               position dans ligthx de l'element porte par ima
                 igrt = repet(2*(ima-1)+1)
                 ielt = repet(2*(ima-1)+2)
                 debgrt = celdt(4+igrt)

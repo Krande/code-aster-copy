@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -132,11 +132,11 @@ subroutine xtopoc(modele, decou)
         nomfis = zk8(jmofis-1+ifiss)
         if(ifiss.gt.1) memtyp = typdis
         call dismoi('TYPE_DISCONTINUITE', nomfis, 'FISS_XFEM', repk=typdis)
-!    
+!
 !       SI TYPE DE DISCONTINUITE DIFFERENTES, CELA DOIT ETRE DETECTE
 !       EN AMONT DANS DEFI_FISS_XFEM
         if(ifiss.gt.1) then
-            if(memtyp.eq.'FISSURE') typdis = 'FISSURE' 
+            if(memtyp.eq.'FISSURE') typdis = 'FISSURE'
         endif
     enddo
     typenr = '&&XTOPOC.TYPENR'

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,& 
+subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,&
                    chg,matr,effg,                   &
                    nbcou,npgsn,npgsr,npge,nso,npgt)
 !     CALCUL DE EFGE_ELNO
@@ -102,7 +102,7 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,&
 ! !
 ! !--- EXTRAPOLATION VERS LES NOEUDS SOMMETS
 ! !
-! 
+!
 !
     do 130 icou = 1, nbcou
         do 120 ic = 1, ncmp
@@ -145,9 +145,9 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,&
 ! ! --- PASSAGE DU VECTEUR DES EFFORTS GENERALISES DEFINI AUX NOEUDS
 ! ! --- DE L'ELEMENT DU REPERE INTRINSEQUE AU REPERE UTILISATEUR :
 ! !     --------------------------------------------------------
-! 
+!
      call vdefro(nb2, matevn, effgt, effg)
-! 
+!
 
 
 end subroutine

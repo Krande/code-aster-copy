@@ -98,7 +98,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     integer :: ntail, ntprno, nusst, ntria
     real(kind=8) :: ssmax
     integer, pointer :: nueq(:) => null()
-    integer, pointer :: smdi(:) => null() 
+    integer, pointer :: smdi(:) => null()
 !-----------------------------------------------------------------------
     data rigopt,ricopt,masopt,amoopt/'RIGI_GENE','RIGI_GENE_C',&
      &                                 'MASS_GENE','AMOR_GENE'/

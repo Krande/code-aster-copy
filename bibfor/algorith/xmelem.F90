@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,11 +70,11 @@ implicit none
     if (niv .ge. 2) then
         write (ifm,*) '<XFEM  > CREATION DES CHAM_ELEM'
     endif
-    
+
 ! --- MODELE HM-XFEM ?
 
     lxthm=isfonc(list_func_acti,'THM')
-    
+
 !
 ! --- INITIALISATIONS
 !
@@ -108,7 +108,7 @@ implicit none
 !
 ! ---
 !
-    if (lxthm) then 
+    if (lxthm) then
        if(contac.eq.3) then
            call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
                        xindco, 'PINDCOI', 'RIGI_CONT', list_func_acti)

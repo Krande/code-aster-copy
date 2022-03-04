@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine calcfh(ds_thm   ,&
                   adcp11   , adcp12 , adcp21  , adcp22,&
                   addeme   , addete  , &
                   temp     , p1     , p2      , pvp   , pad,&
-                  grad_temp, grad_p1, grad_p2 ,& 
+                  grad_temp, grad_p1, grad_p2 ,&
                   rho11    , h11    , h12     ,&
                   satur    , dsatur , gravity , tperm ,&
                   congep   , dsde)
@@ -130,7 +130,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                        addep1   , addep2 , adcp11 , adcp12 , adcp21,&
                        addeme   , addete ,&
                        temp     , p2     , pvp    ,&
-                       grad_temp, grad_p1, grad_p2,& 
+                       grad_temp, grad_p1, grad_p2,&
                        rho11    , h11    , h12    ,&
                        satur    , dsatur , gravity, tperm,&
                        congep   , dsde)
@@ -140,7 +140,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                        addep1 , addep2 , adcp11 , adcp21 ,&
                        addeme , addete ,&
                        temp   , p2     ,&
-                       grad_p1, grad_p2,& 
+                       grad_p1, grad_p2,&
                        rho11  , &
                        satur  , dsatur , gravity, tperm,&
                        congep , dsde)
@@ -150,7 +150,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                        addep1 , adcp11  ,&
                        addeme , addete  ,&
                        temp   , p2      ,&
-                       grad_p1, & 
+                       grad_p1, &
                        rho11  , &
                        satur  , dsatur  , gravity, tperm ,&
                        congep , dsde)
@@ -160,7 +160,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                        addep1   , addep2  , adcp11 , adcp12 , adcp21, adcp22,&
                        addeme   , addete  , &
                        temp     , p1      , p2     , pvp    , pad,&
-                       grad_temp, grad_p1 , grad_p2,& 
+                       grad_temp, grad_p1 , grad_p2,&
                        rho11    , h11     , h12    ,&
                        satur    , dsatur  , gravity, tperm,&
                        congep   , dsde)
@@ -170,7 +170,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                        addep1   , addep2  , adcp11 , adcp12, adcp21, adcp22,&
                        addeme   , addete  , &
                        temp     , p1      , p2     , pvp   , pad,&
-                       grad_temp, grad_p1 , grad_p2,& 
+                       grad_temp, grad_p1 , grad_p2,&
                        rho11    , h11     , h12    ,&
                        satur    , dsatur  , gravity, tperm,&
                        congep   , dsde)

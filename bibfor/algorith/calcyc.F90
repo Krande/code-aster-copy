@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -241,7 +241,7 @@ subroutine calcyc(nomres)
             call axacti(basmod, numa, 1, zi(ltlax1), nbdax1,&
                         ibid)
         endif
-        
+
         write(6,*) ' -- Gestion des DDL d''axe --'
         write(6,*) ' '
         write(6,*) ' nbdax0=',nbdax0
@@ -252,13 +252,13 @@ subroutine calcyc(nomres)
         end do
         write(6,*) ' '
         write(6,*) ' '
-          
+
         do i = 1, nbdax1
           write(6,*) ' axe1(',i,')=',zi(ltlax1+i-1)
         end do
-        
-        
-        
+
+
+
         ntt=max(nbmos,nbddr)
         call wkvect('&&'//pgc//'.LISTE.BIDON', 'V V I', ntt, ltlbid)
         do 5 i = 1, ntt
@@ -397,7 +397,7 @@ subroutine calcyc(nomres)
                         rlome2(1), rlome2( 2), precse)
 !
         endif
-        
+
         if (typint .eq. 'CRAIGB   ' .or. typint .eq. 'CB_HARMO') then
         !-- correction "brutale" du mouvement des noeuds de l'axe
         !-- moins chiant que de modifier la restitution complète

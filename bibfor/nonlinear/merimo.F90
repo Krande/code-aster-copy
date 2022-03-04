@@ -217,7 +217,7 @@ character(len=*), optional, intent(in) :: sddynz_
     lpaout(2) = 'PCACO3D'
     lchout(2) = caco3d(1:19)
     lpaout(3) = 'PSTRXPR'
-    lchout(3) = strx_curr(1:19) 
+    lchout(3) = strx_curr(1:19)
     nbout = 3
     if (l_merigi) then
         nbout = nbout+1

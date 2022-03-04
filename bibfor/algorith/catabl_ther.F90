@@ -90,7 +90,7 @@ character(len=24), intent(in) :: obje_sdname(nb_obje)
     real(kind=8) :: r8bid
     complex(kind=8) :: c16bid
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()    
+    integer, pointer :: tbnp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -102,7 +102,7 @@ character(len=24), intent(in) :: obje_sdname(nb_obje)
     nboldp           = 0
     nblign           = 0
     l_new_table      = .false.
-    prepar(1:nbpara) = 0   
+    prepar(1:nbpara) = 0
 !
 ! - New table or not ?
 !

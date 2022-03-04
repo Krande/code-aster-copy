@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,12 +113,12 @@ implicit none
 !
     newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
-! - Coordinates of the contact point 
+! - Coordinates of the contact point
 !
     call mmvalp(model_ndim, elem_slav_type, elem_slav_nbno, 3, ksipc1,&
                 ksipc2    , elem_slav_coor, poin_slav_coor)
 !
-! - Coordinates of the projection of contact point 
+! - Coordinates of the projection of contact point
 !
     call mcopco(mesh  , newgeo        , model_ndim, elem_mast_nume, ksipr1,&
                 ksipr2, poin_proj_coor)

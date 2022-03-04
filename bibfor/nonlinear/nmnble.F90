@@ -81,7 +81,7 @@ integer, intent(in) :: nume_inst
 !
 ! - Active functionnalities
 !
-    l_cont_elem = isfonc(list_func_acti,'ELT_CONTACT')   
+    l_cont_elem = isfonc(list_func_acti,'ELT_CONTACT')
     l_dyna      = ndynlo(sddyna,'DYNAMIQUE')
 !
     if (l_cont_elem) then

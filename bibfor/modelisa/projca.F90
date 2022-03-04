@@ -178,7 +178,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !       - les deux ancrages (cas des cables verticaux
 !       - le premier noeud et le noeud milieu (cables horizontaux)
     dmax_cable = 0.d0
-    inoca = 1 
+    inoca = 1
     x3dca(1) = zr(jxca+ideca+inoca-1)
     x3dca(2) = zr(jyca+ideca+inoca-1)
     x3dca(3) = zr(jzca+ideca+inoca-1)

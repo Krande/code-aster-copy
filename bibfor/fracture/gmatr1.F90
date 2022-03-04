@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ implicit none
     conn(1:3) = 0
 
 !   NOMBRE DE SEGMENT DU FOND DE FISSURE
-    nseg = nnoff-1    
+    nseg = nnoff-1
     elrefe = 'SE2'
 !
 !   ABSCISSES CURVILIGNES S
@@ -116,7 +116,7 @@ implicit none
 !
     call wkvect('&&METHO1.VALPOL', 'V V R8', npg*(ndeg+1), iadpol)
 !
-!   INITIALISATION DE LA MATRICE 
+!   INITIALISATION DE LA MATRICE
     do i = 1, ndeg+1
         do j = 1, ndeg+1
             a(i,j) = 0.d0
@@ -124,7 +124,7 @@ implicit none
     end do
 !
 !   BOUCLE SUR LES SEGMENTS
-    do iseg = 1, nseg      
+    do iseg = 1, nseg
 
         conn(1) = iseg
         conn(2) = iseg+1
@@ -158,7 +158,7 @@ implicit none
                jac = jac + zr(js-1+conn(ino))*dff(1, ino)
             end do
 
-!           CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE  
+!           CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE
             do i = 1, ndeg+1
 
                 g1 = zr(iadpol+(i-1)*npg+ipg-1)

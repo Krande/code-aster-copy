@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
 !        NBNOFF : NOMBRE DE NOEUDS AU FOND DE FISSURE
 !        TYPM   : TYPE DE FOND DE FISSURE : LIN OU QUAD
 !        ABSFON : ABSCISSE CURVILGNE DE CHAQUE NOEUD DU FOND DE FISSURE
-!        COORFOND : COORDONNE DES NOEUDS DU FOND 
+!        COORFOND : COORDONNE DES NOEUDS DU FOND
 !     SORTIES:
 !        BASLOC : BASE LOCALE EN CHAQUE NOEUD DU MAILLAGE
 !        ABSCUR : ABSCISSE CURVILIGNE DU PROJETE SUR LE FOND DE FISSURE

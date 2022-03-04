@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -180,7 +180,7 @@ implicit none
     l_lambda0 = (lambda .lt. r8prem())
 !
     if (.not. l_lambda0) then
-! TAUX DE MIXITE A T+ (BETA A PARTIR DES SAUTS, B A PARTIR DES TAUX DE RESTIT G) 
+! TAUX DE MIXITE A T+ (BETA A PARTIR DES SAUTS, B A PARTIR DES TAUX DE RESTIT G)
         beta = delta_T / (delta_T + delta_N_pos)
         b = beta**2/(1-2*beta+2*beta**2)
 ! SEUILS D'INITIATION DE L'ENDOMMAGEMENT A T+
@@ -192,7 +192,7 @@ implicit none
         elseif (crit .eq. 1) then
             if (delta_N_pos .lt. r8prem()) then
                 t = pi/2
-            else 
+            else
                 t = atan(delta_N_0/delta_T_0*delta_T/delta_N_pos)
             endif
             delta_0 = sqrt((delta_N_0*cos(t))**2+(delta_T_0*sin(t))**2)
@@ -281,7 +281,7 @@ implicit none
             sigp(1) = sigm(1) &
                         - (d*k*max(0.d0, - delta(1))*delta(1) - &
                             vim(3)*k*max(0.d0, - (delta(1)-ddelta(1)))*(delta(1)-ddelta(1))) &
-                        + (1-d)*k*delta(1) - (1-vim(3))*k*(delta(1)-ddelta(1))     
+                        + (1-d)*k*delta(1) - (1-vim(3))*k*(delta(1)-ddelta(1))
             do i = 2, ndim
                 sigp(i) = sigm(i) &
                            + (1-d)*k*delta(i) - (1-vim(3))*k*(delta(i)-ddelta(i))
@@ -315,8 +315,8 @@ implicit none
 ! V12 : VALEUR DE L'ENERGIE DISSIPEE
 ! V13 : TAUX DE MIXITE BETA A T+ (CALCULE PAR LES SAUTS)
 ! V14 : TAUX DE MIXITE B A T+ (CALCULE PAR LES TAUX DE RESTITUTION D'ENERGIE)
-! V15 : SEUIL D'INITIATION DE L'ENDOMMAGEMENT EN MODE MIXTE A T+ 
-! V16 : SEUIL DE PROPAGATION DE LA FISSURE EN MODE MIXTE A T+ 
+! V15 : SEUIL D'INITIATION DE L'ENDOMMAGEMENT EN MODE MIXTE A T+
+! V16 : SEUIL DE PROPAGATION DE LA FISSURE EN MODE MIXTE A T+
 !
         vip(1) = max(lambda, vim(1))
         vip(2) = r
@@ -345,7 +345,7 @@ implicit none
 ! ON LA PROLONGE PAR SA VALEUR A GAUCHE.
     if (rigi) then
 !
-!   * RIGIDITE ARTIFICIELLE POST-RUPTURE 
+!   * RIGIDITE ARTIFICIELLE POST-RUPTURE
         if (cass .eq. 2) then
             if (delta(1) .gt. r8prem()) then
                 dsidep(1,1) = c*val(2)/delta_N_f
@@ -360,7 +360,7 @@ implicit none
             if (abs(delta(1)) .gt. r8prem()) then
                 quot = max(0.d0, - delta(1))/abs(delta(1))
 !   * VAUT 1 si delta(1) < 0 et 0 si delta(1) > 0
-            else 
+            else
                 quot = 1.d0
 !   * VAUT 1 si delta(1) = 0 (prolongement à gauche)
             endif

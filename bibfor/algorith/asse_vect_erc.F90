@@ -70,7 +70,7 @@ subroutine asse_vect_erc(baseno,nom_vect_erc,nommes,matobs, obsdim, alpha,n_ordr
     real(kind=8) :: coeff_alpha,coef_mes
     character(len=24),intent(in) :: matobs(3)
     logical :: isdiag
-!    
+!
     bl11 = '           '
 
 ! --- RECUPERATION DE LA MESURE
@@ -81,7 +81,7 @@ subroutine asse_vect_erc(baseno,nom_vect_erc,nommes,matobs, obsdim, alpha,n_ordr
     else if (type_mes.eq.'VITE') then
        occ=2
        coef_mes=1.0d0/omega
-    else 
+    else
        occ=3
        coef_mes=1.0d0/(-omega*omega)
     end if
@@ -105,20 +105,20 @@ subroutine asse_vect_erc(baseno,nom_vect_erc,nommes,matobs, obsdim, alpha,n_ordr
     endif
 !
     call jeveuo(jexnum(mnorme//bl11//'.VALM', 1), 'L', ivale_norm)
-! 
+!
 ! --- PRODUIT   coef_alpha*G*tilde(u)
     coeff_alpha=-2.0d0*alpha/(1.0d0-alpha)*coef_mes
 ! --- ON RECOPIE LA MESURE DANS UN VECTEUR DE TRAVAIL iaux1
     call wkvect(baseno//'.VECAUX1ERC.VAL', 'V V R', nvect_mes, iaux1)
     call dcopy(nvect_mes,zr(i_mes),1,zr(iaux1),1)
-! --- ON CREE UN (PETIT) VECTEUR DE TRAVAIL  iaux2                 
+! --- ON CREE UN (PETIT) VECTEUR DE TRAVAIL  iaux2
     call wkvect(baseno//'.VECAUX2ERC.VAL', 'V V R', nvect_mes, iaux2)
     call r8inir(nvect_mes,0.d0,zr(iaux2),1)
- 
+
 ! --- PREMIER PRODUIT MATRICE VECTEUR   coef_alpha*G*tilde(u)
 
     if (isdiag) then
-        
+
            do ii=1,nvect_mes
                zr(iaux2-1+ii)=coeff_alpha*zr(ivale_norm-1+ii)*zr(iaux1-1+ii)
            end do
@@ -131,7 +131,7 @@ subroutine asse_vect_erc(baseno,nom_vect_erc,nommes,matobs, obsdim, alpha,n_ordr
     call jeveuo(matobs(2), 'L', iobscol)
     call jeveuo(matobs(3), 'L', iobsval)
 !   --- RECUPERATION ET PRECONDITIONNEMENT DU VECTEUR ERC
-    call jeveuo(nom_vect_erc//'.VALE','L',ivecterc) 
+    call jeveuo(nom_vect_erc//'.VALE','L',ivecterc)
     call r8inir(2*obsdim(2),0.d0,zr(ivecterc),1)
 
 ! --- FINALISATION DU PRODUIT   H^T* VECT_AUX_2 (coef_alpha*G*tilde(u))

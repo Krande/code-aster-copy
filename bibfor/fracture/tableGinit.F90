@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,32 +57,32 @@ subroutine tableGinit(table, option, ndim, nxpara,&
 ! ----------------------------------------------
 !
     integer :: i
-    
+
     aster_logical :: debug
     nbpara = 0
     debug = .false.
 !
-!   --------------------    
+!   --------------------
 !   1.2 TEMPOREL/CHARGEMENT
-!   ---------------------           
+!   ---------------------
     if (lmoda) then
-        call cgajpa('NUME_MODE', 'I', nbpara, linopa, litypa, nxpara)   
+        call cgajpa('NUME_MODE', 'I', nbpara, linopa, litypa, nxpara)
     else
         call cgajpa('NUME_ORDRE', 'I', nbpara, linopa, litypa, nxpara)
-        call cgajpa('INST', 'R', nbpara, linopa, litypa, nxpara)    
+        call cgajpa('INST', 'R', nbpara, linopa, litypa, nxpara)
     endif
 !
     call cgajpa('TEMP', 'R', nbpara, linopa, litypa, nxpara)
     call cgajpa('COMPORTEMENT', 'K8', nbpara, linopa, litypa, nxpara)
 !
-!   --------------------    
+!   --------------------
 !   1.3 POINT DU FOND DE FISSURE
-!   ---------------------    
+!   ---------------------
 
     call cgajpa('COOR_X', 'R', nbpara, linopa, litypa, nxpara)
-    call cgajpa('COOR_Y', 'R', nbpara, linopa, litypa, nxpara)  
+    call cgajpa('COOR_Y', 'R', nbpara, linopa, litypa, nxpara)
     if (ndim.eq.3) then
-        call cgajpa('COOR_Z', 'R', nbpara, linopa, litypa, nxpara)       
+        call cgajpa('COOR_Z', 'R', nbpara, linopa, litypa, nxpara)
         call cgajpa('ABSC_CURV_NORM', 'R', nbpara, linopa, litypa, nxpara)
     endif
 !
@@ -93,7 +93,7 @@ subroutine tableGinit(table, option, ndim, nxpara,&
 !   2.1 G COMMUN OPTION 'G' ET 'K' pour l'instant
 !   ---------------------
     call cgajpa('G', 'R', nbpara, linopa, litypa, nxpara)
-    
+
     if (option.eq.'G_EPSI') then
         call cgajpa('G_EPSI', 'R', nbpara, linopa, litypa, nxpara)
     endif

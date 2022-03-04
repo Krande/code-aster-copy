@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine rc32ac(lfat, lefat)
     lfat = .false.
     lefat = .false.
     lieu(1) = 'ORIG'
-    lieu(2) = 'EXTR' 
+    lieu(2) = 'EXTR'
 !
 !-- fait-on du calcul de pmpb, sn ou fatigue
     call getvtx(' ', 'OPTION', iocc=1, scal=option, nbret=n1)
@@ -86,9 +86,9 @@ subroutine rc32ac(lfat, lefat)
 !
 !-- les grandeurs sont calculées à l'origine et à l'extrémité du segment
     do 10 im = 1,2
-! 
+!
 ! ---------------------------------------------------------------------------------
-! - POUR TOUT LE CALCUL (SITUATION, COMBINAISON, SEISME) STOCKAGE DES 9 GRANDEURS 
+! - POUR TOUT LE CALCUL (SITUATION, COMBINAISON, SEISME) STOCKAGE DES 9 GRANDEURS
 ! - MAXIMALES A L'ORIGINE ET A L'EXTREMITE (&&RC3200.MAX_RESU)
 ! ---------------------------------------------------------------------------------
       pmmax = 0.d0
@@ -106,36 +106,36 @@ subroutine rc32ac(lfat, lefat)
       call wkvect('&&RC3200.MAX_RESU.'//lieu(im), 'V V R', 13, jmax)
       do 20 i = 1, 13
           zr(jmax+i-1) = r8vide()
-20    continue 
+20    continue
 ! ---------------------------------------------------------------------------------
 ! - POUR CHAQUE SITUATION, STOCKAGE DE 121 GRANDEURS A L'ORIGINE ET A L'EXTREMITE
 ! - (&&RC3200.SITU_RESU SANS SEISME et &&RC3200.SITUS_RESU AVEC SEISME)
 ! - PM, PB, PMPB, SN, INST_SN_1, INST_SN_2, SN*, INST_SN*_1, INST_SN*_2
-! - SIGMOYPRES, SN_THER, SP1, INST_SALT1_1, INST_SALT1_2, SALT, FUEL, SP_THER, SPMECA, 
+! - SIGMOYPRES, SN_THER, SP1, INST_SALT1_1, INST_SALT1_2, SALT, FUEL, SP_THER, SPMECA,
 ! - KE POUR EFAT, SPSS(100), NBSSCYC, FUSS
 ! ---------------------------------------------------------------------------------
       ndim = nb*121
-      call wkvect('&&RC3200.SITU_RESU.'//lieu(im), 'V V R', ndim, jresu) 
+      call wkvect('&&RC3200.SITU_RESU.'//lieu(im), 'V V R', ndim, jresu)
       do 25 i = 1, ndim
           zr(jresu+i-1) = r8vide()
-25    continue 
+25    continue
       if(ns .ne. 0) then
           call wkvect('&&RC3200.SITUS_RESU.'//lieu(im), 'V V R', ndim, jresus)
           do 26 i = 1, ndim
               zr(jresus+i-1) = r8vide()
-26        continue 
+26        continue
       endif
 !
 !---- Calcul du séisme (contraintes linéarisées et totales) une seule fois
 !
       if(ns .ne. 0 .and. .not. ze200) then
-          call wkvect('&&RC3200.SNSEISME.'//lieu(im), 'V V R', 72, jsnseis)   
-          call rc32s0('SNSN', lieu(im), zr(jsnseis)) 
+          call wkvect('&&RC3200.SNSEISME.'//lieu(im), 'V V R', 72, jsnseis)
+          call rc32s0('SNSN', lieu(im), zr(jsnseis))
       endif
       if(option .eq. 'FATIGUE' .or. option .eq. 'EFAT') then
         if(ns .ne. 0 .and. .not. ze200) then
-          call wkvect('&&RC3200.SPSEISME.'//lieu(im), 'V V R', 72, jspseis)   
-          call rc32s0('SPSP', lieu(im), zr(jspseis)) 
+          call wkvect('&&RC3200.SPSEISME.'//lieu(im), 'V V R', 72, jspseis)
+          call rc32s0('SPSP', lieu(im), zr(jspseis))
         endif
       endif
 !
@@ -178,7 +178,7 @@ subroutine rc32ac(lfat, lefat)
         if(option .eq. 'SN' .or. option .eq. 'FATIGUE' .or. option .eq. 'EFAT') then
             call jeveuo('&&RC3200.INDI', 'L', jvalin)
             ktsn = zr(jvalin+9)
-            ktsp = zr(jvalin+10) 
+            ktsp = zr(jvalin+10)
             sn = 0.d0
             sns = 0.d0
             snet = 0.d0
@@ -328,7 +328,7 @@ subroutine rc32ac(lfat, lefat)
 !
               samax=max(samax, salts(1))
               spthmax = max(spthmax, zr(jresus+121*(iocc-1)+16))
-!              
+!
             endif
         endif
 !
@@ -344,15 +344,15 @@ subroutine rc32ac(lfat, lefat)
 ! ---------------------------------------------------------------------------------
 !
       ndim = nb*nb*20
-      call wkvect('&&RC3200.COMB_RESU.'//lieu(im), 'V V R', ndim, jresucomb) 
+      call wkvect('&&RC3200.COMB_RESU.'//lieu(im), 'V V R', ndim, jresucomb)
       do 35 i = 1, ndim
           zr(jresucomb+i-1) = r8vide()
-35    continue 
+35    continue
       if(ns .ne. 0) then
           call wkvect('&&RC3200.COMBS_RESU.'//lieu(im), 'V V R', ndim, jresucombs)
           do 36 i = 1, ndim
               zr(jresucombs+i-1) = r8vide()
-36        continue 
+36        continue
       endif
 !
 !-- on consulte le tableau qui indique si la combinaison des deux situations P et Q
@@ -374,7 +374,7 @@ subroutine rc32ac(lfat, lefat)
                   if (im .eq. 1) write(*,110) numsit1, numsit2
                   if (im .eq. 2) write(*,111) numsit1, numsit2
                   call rc32sn(ze200, lieu(im), iocc1, iocc2, 0, sn, instsn,&
-                              snet, sbid, snther, sp3, spmeca3) 
+                              snet, sbid, snther, sp3, spmeca3)
                   sn = ktsn*sn
                   write(*,*)'SN=',sn
                   snet = ktsn*snet
@@ -434,7 +434,7 @@ subroutine rc32ac(lfat, lefat)
                                   snets, sbid, snthers, sp3s, spmeca3s)
                     sns = ktsn*sns
                     write(*,*)'SNS=',sns
-                    snets = ktsn*snets    
+                    snets = ktsn*snets
                     zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+1)=sns
                     zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+2)=instsns(1)
                     zr(jresucombs+20*nb*(iocc1-1)+20*(iocc2-1)-1+3)=instsns(2)
@@ -553,14 +553,14 @@ subroutine rc32ac(lfat, lefat)
                   if(sscyc .eq. 'OUI') then
                     fusstot=0.d0
                     nbsscyc = int(zr(jresu+121*(iocc1-1)+119))
-                    do 51 kk = 1, nbsscyc     
+                    do 51 kk = 1, nbsscyc
                         spss2(1) = keequi*zr(jresu+121*(iocc1-1)+19-1+kk)
                         spss2(2) = 0.d0
                         call rc32sa('SITU', 1.d-12, spss2, spss2, kemeca, kether, saltss, fuss)
                         fusstot = fusstot+fuss(1)
 51                  continue
                     nbsscyc = int(zr(jresu+121*(iocc2-1)+119))
-                    do 52 kk = 1, nbsscyc     
+                    do 52 kk = 1, nbsscyc
                         spss2(1) = keequi*zr(jresu+121*(iocc2-1)+19-1+kk)
                         spss2(2) = 0.d0
                         call rc32sa('SITU', 1.d-12, spss2, spss2, kemeca, kether, saltss, fuss)
@@ -650,14 +650,14 @@ subroutine rc32ac(lfat, lefat)
                     if(sscyc .eq. 'OUI') then
                       fusstot=0.d0
                       nbsscyc = int(zr(jresu+121*(iocc1-1)+119))
-                      do 53 kk = 1, nbsscyc     
+                      do 53 kk = 1, nbsscyc
                         spss2(1) = keequi*zr(jresu+121*(iocc1-1)+19-1+kk)
                         spss2(2) = 0.d0
                         call rc32sa('SITU', 1.d-12, spss2, spss2, kemeca, kether, saltss, fuss)
                         fusstot = fusstot+fuss(1)
 53                    continue
                       nbsscyc = int(zr(jresu+121*(iocc2-1)+119))
-                      do 54 kk = 1, nbsscyc     
+                      do 54 kk = 1, nbsscyc
                         spss2(1) = keequi*zr(jresu+121*(iocc2-1)+19-1+kk)
                         spss2(2) = 0.d0
                         call rc32sa('SITU', 1.d-12, spss2, spss2, kemeca, kether, saltss, fuss)

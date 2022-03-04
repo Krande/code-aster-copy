@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact
         call utmess('A', 'MECANONLINE5_21')
     endif
 !
-! - ARRET=NON: alarm ! 
+! - ARRET=NON: alarm !
 !
     if (.not.ds_conv%l_stop) then
         call utmess('A', 'MECANONLINE5_37')
@@ -130,9 +130,9 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact
             call SetResi(ds_conv   , type_ = 'RESI_GEOM', user_para_ = resi_geom,&
                          l_resi_test_ = ASTER_TRUE)
         endif
-        if (l_pena_cont) then 
+        if (l_pena_cont) then
             pene_maxi_user = cfdisr(sdcont_defi, 'PENE_MAXI')
-            ! Attention ce parametre est multiplie par la plus petite maille de la zone maitre 
+            ! Attention ce parametre est multiplie par la plus petite maille de la zone maitre
             !courante
             ! dans mmalgo
             call SetResi(ds_conv   , type_ = 'RESI_PENE', user_para_ = pene_maxi_user,&

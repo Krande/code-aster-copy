@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,31 +56,31 @@ subroutine xfem_pc_detr(matass)
 !
     if (refa(17) .ne. 'XFEM_PRECOND') goto 999
 !
-    if (refa(18) .ne. ' ') then 
+    if (refa(18) .ne. ' ') then
        pc_1=refa(18)(1:19)
        refa(18)=' '
        call jeexin(pc_1//'.REFA', iret_1)
-       if (iret_1 .gt. 0) then 
+       if (iret_1 .gt. 0) then
           call jeveuo(pc_1//'.REFA', 'E', vk24=refa_pc_1)
           nu_pc_1=refa_pc_1(2)(1:14)
           call detrsd('MATR_ASSE', pc_1)
-          if (nu_pc_1 .ne. ' ') then 
+          if (nu_pc_1 .ne. ' ') then
              call detrsd('NUME_DDL', nu_pc_1)
           endif
        endif
     endif
 !
-    if (refa(16) .ne. ' ') then 
+    if (refa(16) .ne. ' ') then
        pc_0=refa(16)(1:19)
        refa(16)=' '
        call jeexin(pc_0//'.REFA', iret_0)
-       if (iret_0 .gt. 0) then 
+       if (iret_0 .gt. 0) then
           call jeveuo(pc_0//'.REFA', 'E', vk24=refa_pc_0)
           nu_pc_0=refa_pc_0(2)(1:14)
           call detrsd('MATR_ASSE', pc_0)
           if (nu_pc_0 .ne. ' ') then
              call detrsd('NUME_DDL', nu_pc_0)
-          endif  
+          endif
        endif
     endif
 !

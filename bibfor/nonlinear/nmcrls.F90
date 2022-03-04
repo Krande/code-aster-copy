@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ implicit none
 ! - Final number of time steps
 !
     nb_inst_new = (nume_end-nume_ini) + 1
-    ASSERT(nb_inst_new.le.nb_inst)  
+    ASSERT(nb_inst_new.le.nb_inst)
 !
 ! - Acces to list of times
 !

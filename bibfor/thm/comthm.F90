@@ -29,9 +29,9 @@ subroutine comthm(ds_thm   , l_steady ,&
                   addeme   , addete   , addep1  , addep2,&
                   kpi      , npg      ,&
                   carcri   ,&
-                  defgem   , defgep   ,& 
-                  congem   , congep   ,& 
-                  vintm    , vintp    ,& 
+                  defgem   , defgep   ,&
+                  congem   , congep   ,&
+                  vintm    , vintp    ,&
                   time_prev, time_curr,&
                   dsde     , gravity  , retcom)
 !
@@ -148,7 +148,7 @@ integer, intent(out) :: retcom
                 p1    , dp1    , grad_p1  ,&
                 p2    , dp2    , grad_p2  ,&
                 retcom)
-                
+
     if (retcom .ne. 0) then
         goto 99
     endif
@@ -193,9 +193,9 @@ integer, intent(out) :: retcom
                 phi      , rho11    , satur , nl,&
                 pad      , pvp      , h11   , h12   ,&
                 congem   , congep   ,&
-                vintm    , vintp    , dsde  ,& 
+                vintm    , vintp    , dsde  ,&
                 retcom)
-                
+
 
     if (retcom .ne. 0) then
         goto 99
@@ -256,7 +256,7 @@ integer, intent(out) :: retcom
                     adcp11   , adcp12  , adcp21 , adcp22,&
                     addeme   , addete  , &
                     temp     , p1      , p2     , pvp   , pad,&
-                    grad_temp, grad_p1 , grad_p2  ,& 
+                    grad_temp, grad_p1 , grad_p2  ,&
                     rho11    , h11     , h12    ,&
                     satur    , dsatur  , gravity, tperm,&
                     congep   , dsde)

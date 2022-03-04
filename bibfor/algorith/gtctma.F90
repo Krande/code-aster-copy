@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ implicit none
 !
 ! Contact - Pairing segment to segment
 !
-! Get center of a given contact element 
+! Get center of a given contact element
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,14 +51,14 @@ implicit none
 !
   real(kind=8) :: rfcoor(3), elem_cort(27)
   integer      :: i_dime, i_node
-  
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
 
 !
 ! - Initialisation
-!   
+!
     ctcoor(1:3) = 0.d0
     select case (elem_code)
         case('SE2')
@@ -82,7 +82,7 @@ implicit none
             rfcoor(2) = 0.d0
             rfcoor(3) = 0.d0
         case('QU8')
-            rfcoor(1) = 0.d0 
+            rfcoor(1) = 0.d0
             rfcoor(2) = 0.d0
             rfcoor(3) = 0.d0
         case('QU9')
@@ -102,7 +102,7 @@ implicit none
     end do
 !
 !
-! - Compute center 
+! - Compute center
 !
    call reerel(elem_code, elem_nbnode, elem_dime, elem_cort, rfcoor,&
                ctcoor)
@@ -111,4 +111,4 @@ implicit none
 !
     !write(*,*)ctcoor(:)
 !
-end subroutine    
+end subroutine

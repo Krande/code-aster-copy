@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -145,7 +145,7 @@ type(NL_DS_Print), intent(out) :: ds_print
     end do
 !
 ! - Checks
-! 
+!
     table_cvg%nb_cols = nb_cols_dof_defi+nb_cols_defi
     ASSERT(table_cvg%nb_cols.le.table_cvg%nb_cols_maxi)
 !

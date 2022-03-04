@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ implicit none
         kit_comp(2)  = v_info_valk(16*(iocc-1)+ 6)
         kit_comp(3)  = v_info_valk(16*(iocc-1)+ 7)
         kit_comp(4)  = v_info_valk(16*(iocc-1)+ 8)
-        mult_comp    = v_info_valk(16*(iocc-1)+ 14) 
+        mult_comp    = v_info_valk(16*(iocc-1)+ 14)
         post_iter    = v_info_valk(16*(iocc-1)+ 16)
 !
 ! ----- Set options in COMPOR <CARTE>

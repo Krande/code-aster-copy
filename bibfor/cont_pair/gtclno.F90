@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,13 +31,13 @@ implicit none
     integer, intent(in) :: nb_node
     real(kind=8), intent(in) :: testnode(3)
     integer, intent(out) :: nume_node_cl
-    
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Pairing segment to segment
 !
-! Get center of a given contact element 
+! Get center of a given contact element
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ implicit none
 !
   integer      :: i_dime, i_node, node_nume
   real(kind=8) :: vect_pm(3), dist_min, dist
-  
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ implicit none
 ! - Initialisation
 !
     dist_min = 0.d0
-    
+
     do i_node=1, nb_node
         node_nume = list_node(i_node)
 !
@@ -74,15 +74,15 @@ implicit none
         dist = sqrt(vect_pm(1)**2+vect_pm(2)**2+vect_pm(3)**2)
 !
 ! ----- Check distance
-!     
+!
         if (dist.lt. dist_min .or. i_node .eq. 1)then
             dist_min     = dist
             nume_node_cl = node_nume
-        end if       
+        end if
     end do
 !
 ! - Print check
 !
     !write(*,*)"CLOSEST NODE: ",nume_node_cl
 !
-end subroutine       
+end subroutine

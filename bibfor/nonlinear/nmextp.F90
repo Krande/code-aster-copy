@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities
 !
 ! Get topology (point and subpoints) and type of extraction for element
 !
@@ -85,7 +85,7 @@ implicit none
     nb_spoi = 0
 !
 ! - Conversion to reduced field (CHAM_ELEM_S)
-! 
+!
     call exisd('CHAM_ELEM', field, iret)
     if (iret.ne.1) call utmess('F','EXTRACTION_1', sk=field_type)
     call exisd('CHAM_ELEM_S', field_s, iret)
@@ -93,7 +93,7 @@ implicit none
         call sdmpic('CHAM_ELEM', field)
         call celces(field, 'V', field_s)
     endif
-    
+
     call jeveuo(field_s(1:19)//'.CESD', 'L', vi=cesd)
 !
 ! - Type of extraction on element

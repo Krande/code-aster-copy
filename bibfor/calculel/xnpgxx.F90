@@ -99,7 +99,7 @@ subroutine xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=mesh)
 
     exixfm='NON'
-    
+
 !   le modele comporte-t-il des elements X-FEM ?
     call dismoi('EXI_XFEM', ligrel, 'LIGREL', repk=exixfm)
     if (exixfm.eq.'NON') then

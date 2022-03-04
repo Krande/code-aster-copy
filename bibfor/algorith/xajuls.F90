@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
     r8pre=r8prem()
     d2=999.d0
-    if (present(critlst)) then 
+    if (present(critlst)) then
       crilst=critlst
     else
       crilst=crlst
@@ -285,7 +285,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         endif
                         clsm=clsm+1
                         ajust = .true.
-                    endif 
+                    endif
                 endif
 !
 !!!!!!!!!!!!! TRAITEMENT DE LST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -293,7 +293,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !            REAJUSTEMENT DES CONFIGURATIONS RENTRANTES
                 if (lsta.eq.0.d0.and.lstb.eq.0.d0.and.lstm.ne.0.d0) then
 !                   dans le cas ou lstmax est nul, on court-circuite
-!                   (sous certaines conditions tres particulieres) 
+!                   (sous certaines conditions tres particulieres)
 !                   l'iteration de la boucle sur les aretes pour eviter
 !                   une division par zero
                     if (abs(lstmax) .lt. r8pre) then
@@ -368,7 +368,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
 200     continue
     end do
-! 
+!
 !     TANT QUE DES AJUSTEMENTS SONT EFFECTUES POUR LES LEVEL SET QUADRATIQUES,
 !     ON REITERE LA PROCEDURE AFIN DE N'AVOIR AUCUN PROBLEME DE COHERENCE SUITE
 !     AUX AJUSTEMENTS

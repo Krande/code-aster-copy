@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
 !   fissure XFEM cohésive (TYPE_DISCONTINUITE='COHESIF')
 !
 !   In/out jbas => adresse base en fond de fissure
-!   In jconx1, jconx2 => adresse pour 
+!   In jconx1, jconx2 => adresse pour
 !                        tables de connectivité noeuds/mailles
 !   In jcoor => adresse coordonnées des noeuds du maillages
 !   In/out jfon => adresse coordonnées points du fond
@@ -56,7 +56,7 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
 !   Out nxptff => nombre max de points du fond
 !   Out orient => peut-on orienter le fond?
 !   Out nbmai => nombre de mailles renseugnées par l'utilisateur
-!   
+!
     real(kind=8) :: a(3), b(3), gln(2,3), glt(2,3), glna(3)
     real(kind=8) :: glnb(3), glta(3), gltb(3), beta
     integer ::  ima, indipt, ino, ipt, itypma

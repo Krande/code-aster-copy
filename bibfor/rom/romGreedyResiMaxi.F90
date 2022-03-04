@@ -44,7 +44,7 @@ integer, intent(out) :: i_coef_maxi
 ! Out i_coef_maxi         : index where residual is maximum
 !
 ! --------------------------------------------------------------------------------------------------
-!    
+!
     integer :: i_coef, nb_coef
     real(kind=8) :: vale_maxi
 !

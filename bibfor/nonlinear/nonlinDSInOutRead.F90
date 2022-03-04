@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -159,18 +159,18 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
     else
         ds_inout%criterion = criterion
     endif
-    
+
     call getvis(keywf, 'NUME_ORDRE'    , iocc=1, scal=user_nume, nbret = nocc)
     ds_inout%user_nume   = user_nume
     ds_inout%l_user_nume = nocc.gt.0
-    
+
     if (phenom.eq.'VIBR') then
         call getvr8(keywf, 'INST_INIT' , iocc=1, scal=user_time, nbret = nocc)
         ds_inout%user_time   = user_time
         ds_inout%l_user_time = nocc.gt.0
         ds_inout%stin_time   = user_time
         ds_inout%l_stin_time = nocc.gt.0
-    else    
+    else
         ! MECA or THER
         call getvr8(keywf, 'INST'          , iocc=1, scal=user_time, nbret = nocc)
         ds_inout%user_time   = user_time

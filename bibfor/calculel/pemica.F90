@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
     real(kind=8), pointer :: celv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
-    
+
     champ2 = champ
     rddg = r8rddg()
     epsi = 1.d-12
@@ -193,7 +193,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
         pgz = vr(4) - orig(3)
     endif
 !
-!       --- INERTIES DE LA STRUCTURE --- 
+!       --- INERTIES DE LA STRUCTURE ---
 !           ixx = celv(idecgr+(k-1)*longt+4)
 !           Iyy = celv(idecgr+(k-1)*longt+5)
 !           Izz = celv(idecgr+(k-1)*longt+6)
@@ -214,14 +214,14 @@ subroutine pemica(champ, long, vr, nbmail, nummai,&
                 dx = celv(idecgr+(k-1)*longt+1) - vr(2)
                 dy = celv(idecgr+(k-1)*longt+2) - vr(3)
                 dz = celv(idecgr+(k-1)*longt+3) - vr(4)
-!                
+!
                 vr(5) = vr(5)   + celv(idecgr+(k-1)*longt+4) + masse*(dy*dy + dz*dz)
                 vr(6) = vr(6)   + celv(idecgr+(k-1)*longt+5) + masse*(dx*dx + dz*dz)
                 vr(7) = vr(7)   + celv(idecgr+(k-1)*longt+6) + masse*(dx*dx + dy*dy)
                 vr(8) = vr(8)   + celv(idecgr+(k-1)*longt+7) + masse*dx*dy
                 vr(9) = vr(9)   + celv(idecgr+(k-1)*longt+8) + masse*dx*dz
                 vr(10) = vr(10) + celv(idecgr+(k-1)*longt+9) + masse*dy*dz
-                
+
                 if (icage .ne. 0) then
                     ixpr2 = celv(idecgr+(k-1)*longt+10)
                     iypr2 = celv(idecgr+(k-1)*longt+11)

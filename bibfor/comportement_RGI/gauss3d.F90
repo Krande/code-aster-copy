@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine gauss3d(n,a,x,b,ngf,&
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !    resolution d une systeme lineaire
-!    n taille du syteme a resoudre 
+!    n taille du syteme a resoudre
 !    ngf taille fixe de la matrice
 
 ! ************************************************************************
@@ -29,20 +29,20 @@ subroutine gauss3d(n,a,x,b,ngf,&
 #include "asterfort/utmess.h"
        integer ngf,n,err1
        real(kind=8) :: a(ngf,ngf+1),b(ngf),x(ngf)
-       integer ipzero(ngf)        
-      
+       integer ipzero(ngf)
+
        integer i,j,k,ipmax
        real(kind=8) :: aux,s
        real(kind=8) :: pmax
-       real(kind=8) :: epsilon1  
-       real(kind=8), dimension(1) :: valr  
+       real(kind=8) :: epsilon1
+       real(kind=8), dimension(1) :: valr
        integer, dimension(2) :: vali
-       real(kind=8) :: aa(22,22),bb(22)       
-        
+       real(kind=8) :: aa(22,22),bb(22)
+
        pmax=0.d0
-       
-      
-       
+
+
+
 !------sauvegarde de la matrice initiale---------
 !    indispensable en cas de mise a zero de multiplicateurs
 !    plastiques dans fluendo3d
@@ -51,9 +51,9 @@ subroutine gauss3d(n,a,x,b,ngf,&
          aa(i,j)=a(i,j)
         end do
         bb(i)=b(i)
-       end do 
+       end do
 !------------------------------------------------
- 
+
 
 !    test taille du pb
        if (n.gt.ngf) then
@@ -61,28 +61,28 @@ subroutine gauss3d(n,a,x,b,ngf,&
             vali(2) = ngf
             call utmess('E', 'COMPOR3_35', ni=2, vali=vali)
             err1=1
-            go to 999   
-       end if            
-       
+            go to 999
+       end if
+
 !    precision pivot nul
-       epsilon1=1.d-16       
-       
+       epsilon1=1.d-16
+
        do i=1,n
          a(i,n+1)=b(i)
        end do
-       
+
        do i=1,n
-!      recherche du pivot dmax1       
+!      recherche du pivot dmax1
          pmax=0.d0
          ipmax=i
          do j=i,n
-            if (dabs(a(j,i)).gt.pmax) then 
+            if (dabs(a(j,i)).gt.pmax) then
                 pmax=dabs(a(j,i))
                 ipmax=j
             end if
         end do
         if(pmax.lt.epsilon1) then
-!         test pivot nul            
+!         test pivot nul
             call utmess('E', 'COMPOR3_36', ni=1, vali=vali, nr=1, valr=valr)
             ipzero(i)=1
             ipmax=i
@@ -91,8 +91,8 @@ subroutine gauss3d(n,a,x,b,ngf,&
             err1=0
             ipzero(i)=0
         end if
-        
-!     intervertion des lignes si necessaire        
+
+!     intervertion des lignes si necessaire
         if(ipmax.ne.i) then
             do j=1,n+1
                 aux=a(i,j)
@@ -100,14 +100,14 @@ subroutine gauss3d(n,a,x,b,ngf,&
                 a(ipmax,j)=aux
             end do
         end if
-        
+
         if(ipzero(i).ne.1) then
 !      calcul ligne i utile si pmax ne 1, si non on fait rien et on mettra l inconnue a zero
 !      lors de la resolution
          do j=i+1,n+1
              a(i,j)=a(i,j)/a(i,i)
          end do
-        
+
 !      calcul des autres lignes
          do k=(i+1),n
             do j=(i+1),(n+1)
@@ -115,8 +115,8 @@ subroutine gauss3d(n,a,x,b,ngf,&
             end do
          end do
         end if
-        
-!     fin de la boucle sur les lignes        
+
+!     fin de la boucle sur les lignes
         end do
 
 !    sortie des inconnues
@@ -125,7 +125,7 @@ subroutine gauss3d(n,a,x,b,ngf,&
        else
          x(n)=0.d0
        end if
-       
+
        do i=(n-1),1,-1
         if(ipzero(i).ne.1) then
          s=a(i,n+1)
@@ -138,14 +138,14 @@ subroutine gauss3d(n,a,x,b,ngf,&
          x(i)=0.d0
         end if
        end do
-       
+
 !------recuperation de la matrice initiale---------
        do i=1,n
         do j=1,n
          a(i,j)=aa(i,j)
         end do
         b(i)=bb(i)
-       end do 
+       end do
 !--------------------------------------------------
 999   continue
 end subroutine

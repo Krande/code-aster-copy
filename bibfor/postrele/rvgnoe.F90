@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
-                  linoeu)            
+                  linoeu)
     implicit none
 #include "jeveux.h"
 #include "asterfort/getvem.h"
@@ -75,7 +75,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     nrepgn = nmaila//'.GROUPENO'
     nrepnd = nmaila//'.NOMNOE'
     libre = 1
-!   INDICATEUR DE COMMANDE POUR OREINO: 2-POST_RELEVE_T/PRECISION 
+!   INDICATEUR DE COMMANDE POUR OREINO: 2-POST_RELEVE_T/PRECISION
     iera = 2
 !
 ! --- RECUPERATION DES ENTITES
@@ -128,7 +128,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     endif
 
     AS_ALLOCATE(vi=list_n,size=libre-1)
-    
+
     nbtnd = 0
     if (nbtrou .eq. 0) then
         list_n(1)=zi(alndtp)
@@ -136,8 +136,8 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
         do 250, i = 1, libre-2, 1
             do 251, j = 1, nbtnd, 1
                 if (zi(alndtp+i) .eq. list_n(j) ) goto 250
-251         continue     
-            nbtnd = nbtnd +1 
+251         continue
+            nbtnd = nbtnd +1
             list_n(nbtnd) = zi(alndtp+i)
 250     continue
         libre = nbtnd + 1
@@ -156,11 +156,11 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
         call utmess('F', 'POSTRELE_64')
     endif
     call wkvect(nlstnd, 'V V I', nbtnd, alstnd)
-    
+
     if (nbtrou .eq. 0) then
         do 300, i = 1, nbtnd, 1
             zi(alstnd + i -1) = list_n(i)
-300     continue        
+300     continue
     else
         nbtnd = libre - 1
         libre = 1

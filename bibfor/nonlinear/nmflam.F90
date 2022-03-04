@@ -22,8 +22,8 @@ subroutine nmflam(option         ,&
                   model          , ds_material  , cara_elem  , list_load  , list_func_acti,&
                   nume_dof       , nume_dof_inva, ds_system ,&
                   ds_constitutive, &
-                  sddisc         , nume_inst    ,& 
-                  sddyna         , sderro       , ds_algopara,& 
+                  sddisc         , nume_inst    ,&
+                  sddyna         , sderro       , ds_algopara,&
                   ds_measure     ,&
                   hval_incr      , hval_algo    ,&
                   hval_meelem    , hval_measse  ,&
@@ -160,7 +160,7 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !  QUI EST LE NB DE FREQ TROUVEES PAR L'ALGO DANS NMOP45
 !
     nfreqc = nfreq
-    
+
 !
 ! --- CREATION DE LA SD EIGENSOLVER PARAMETRANT LE CALCUL MODAL
 ! --- UN GEP SYM REEL RESOLU VIA SORENSEN

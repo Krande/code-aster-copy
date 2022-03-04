@@ -70,7 +70,7 @@ subroutine te0297(option, nomte)
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
     data    nomres /'E','NU','ALPHA'/
 !
-    
+
     call elref1(elrefp)
     call jevech('PTHETAR', 'L', ithet)
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop)

@@ -67,20 +67,20 @@ type(THM_DS), intent(inout) :: ds_thm
     endif
 !
     ps = 0.d0
-    do k = 1, ndim 
+    do k = 1, ndim
        ps = ps - saut(k)*nd(k)
-    end do 
+    end do
 !
     do i = 1, nnops
        pli = pla(i)
        ffi = ffc(i)
        do k = 1, ndim
           dffi(k) = dffc(i,k)
-       end do 
+       end do
 !
        do j = 1, nnop
           call hmdeca(j, ddls, ddlm, nnops, in, dec)
-! 
+!
           do ifh = 1, nfh
              coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+ifh),&
                                 hea_fa(1), &
@@ -93,11 +93,11 @@ type(THM_DS), intent(inout) :: ds_thm
 !
                 mmat(pli,in+(ndim+dec)*ifh+k) = mmat(pli,in+(ndim+dec)*ifh+k) -&
                                        rho11*coefj*ffp(j)*ffi*nd(k)*jac
-             end do 
-          end do 
+             end do
+          end do
        end do
     end do
-! 
+!
     do i = 1, nnops
        pli = pla(i)
        ffi = ffc(i)
@@ -109,14 +109,14 @@ type(THM_DS), intent(inout) :: ds_thm
 !
           mmat(pli, plj+1) = mmat(pli, plj+1) - ffi*&
                                                ffj*dt*ta*jac
-! 
+!
           mmat(pli, plj+2) = mmat(pli, plj+2) - ffi*&
                                                ffj*dt*ta*jac
 !
           mmat(pli, plj) = mmat(pli,plj) - rho11*(ps*cliq)*ffi*ffj*jac
 !
-       end do 
-    end do  
+       end do
+    end do
 !
     do i = 1, nnops
        pli = pla(i)

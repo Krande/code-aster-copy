@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -170,7 +170,7 @@ subroutine te0430(option, nomte)
                 call rcvalb(fami, kpg, 1, '+', zi(imate),&
                             ' ', 'ELAS', 0, ' ', [0.d0],&
                             1, nomres, valres, codres, 1)
-                
+
                 nompar(1) = 'X'
                 nompar(2) = 'Y'
                 nompar(3) = 'Z'
@@ -189,9 +189,9 @@ subroutine te0430(option, nomte)
                 valpar(1) = xgau
                 valpar(2) = ygau
                 valpar(3) = zgau
-                
+
                 call fointe('FM', zk8(iepsin), 4, nompar, valpar, exx, ier)
-                
+
                 sig=valres(1)*exx
 !
 ! - CHAR_MECA_TEMP_R : SIG = E*EPSTHE

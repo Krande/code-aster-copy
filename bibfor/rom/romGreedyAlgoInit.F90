@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 integer, intent(in) :: nb_mode, nb_vari_coef
-character(len=19), intent(in) :: vect_refe 
+character(len=19), intent(in) :: vect_refe
 type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
 !
 ! --------------------------------------------------------------------------------------------------

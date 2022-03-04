@@ -115,7 +115,7 @@ subroutine ualfva(mataz, basz)
         ibloav=0+nbloc*(kblocm-1)
         ismdi0=0
         do 1 ieq = 1, neq
-            iscdi=smdi(ieq)         
+            iscdi=smdi(ieq)
             ibloc=1+nbloc*(kblocm-1)
 
 !          -- on ramene le bloc en memoire si necessaire:

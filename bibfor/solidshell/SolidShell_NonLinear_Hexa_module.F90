@@ -337,7 +337,7 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
             call prodBTDB(dsidep, SSH_SIZE_TENS, elemProp%nbDof, kineHexa%B, matrMate)
         endif
 
-! ----- Update tangent matrix 
+! ----- Update tangent matrix
         if (behaPara%lMatr) then
             ASSERT(behaPara%lMatrSyme)
             call updateMatrSyme(nbDof, matrMate, matr, jacob)

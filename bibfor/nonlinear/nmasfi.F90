@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,14 +57,14 @@ character(len=19), optional, intent(in) :: sddyna_
     type(NL_DS_VectComb) :: ds_vectcomb
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     l_lapl      = isfonc(list_func_acti,'LAPLACE')
     l_sstf      = isfonc(list_func_acti,'SOUS_STRUC')
     l_dyna      = ASTER_FALSE
     l_mult_step = ASTER_FALSE
     l_viss      = ASTER_FALSE
     l_wave      = ASTER_FALSE
-    if (present(sddyna_)) then  
+    if (present(sddyna_)) then
         l_mult_step = ndynlo(sddyna_,'MULTI_PAS')
         l_dyna      = ndynlo(sddyna_,'DYNAMIQUE')
         l_viss      = ndynlo(sddyna_,'VECT_ISS')

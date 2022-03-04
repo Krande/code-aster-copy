@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -190,7 +190,7 @@ subroutine te0331(option, nomte)
             tmoy = tmoy/volume
             call rcvalb(fami, 1, 1, '+', zi(imate),&
                         ' ', phenom, 1, 'TEMP', [tmoy],&
-                        1, nomres(4), valres(4), icodre(4), 1)           
+                        1, nomres(4), valres(4), icodre(4), 1)
             sref = valres(4)
             sigi = sigi/sref
         endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,16 +108,16 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, idos)
     lpetit = ( lso2 .lt. lgbl-nde*lois )
     if (iaddi(1) .eq. 0) then
 !
-!   ON TESTE LE TAUX DE REMPLISSAGE DE LA BASE ET ON DOUBLE LE NOMBRE 
+!   ON TESTE LE TAUX DE REMPLISSAGE DE LA BASE ET ON DOUBLE LE NOMBRE
 !   MAXIMUM D'ENREGISTREMENTS SI CE TAUX EST SUPÉRIEUR À 50%
 !
-!   L'ACTION N'EST ENGAGEE QUE SI ON NE PROVIENT 
+!   L'ACTION N'EST ENGAGEE QUE SI ON NE PROVIENT
 !   NI DE jjagod POUR EVITER LA RECURSIVITE,
-!   NI DE jjldyn POUR EVITER D'ALLOUER DE LA MEMOIRE PENDANT L'ACTION 
+!   NI DE jjldyn POUR EVITER D'ALLOUER DE LA MEMOIRE PENDANT L'ACTION
 !   QUI CONSISTE A EN LIBERER
 !
-        if ((100*nbluti(ic))/nblmax(ic) .gt. 50 ) then 
-          if (indiq_jjagod .eq. 0 .and. indiq_jjldyn .eq. 0) then 
+        if ((100*nbluti(ic))/nblmax(ic) .gt. 50 ) then
+          if (indiq_jjagod .eq. 0 .and. indiq_jjldyn .eq. 0) then
              ibc = index ( classe , 'G')
              call jjagod (ibc, 2*nblmax(ibc) )
              ibc = index ( classe , 'V')

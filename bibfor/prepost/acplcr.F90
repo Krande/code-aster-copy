@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
 !                     D'ORDRE DE CHAQUE VECTEUR NORMAL.
 !     jnorma  : IN  : ADRESS DU VECTEUR NORMAL
 !     rayon   : IN : LOGICAL POUR VOIR SI LA METHODE CIRCONSCRITE EST
-!                     NECESSAIR  
+!                     NECESSAIR
 !     jresun  : IN:  POUR RAYCIR
 !     jdtaum  : OUT: ADRESSS D_TAU OU D_GAMMA POUR TOUTE ORIETATION
 !     jtauma  : OUT: ADRESSS TAU_MAX OUGAMMA_MAX POUR TOUTE ORIETATION
@@ -112,7 +112,7 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
  10 end do
 !
 !
-!! AMPLITUDE NORMAL MAX    
+!! AMPLITUDE NORMAL MAX
     do 12 ivect = 1, nbvec
         dnomin = zr(jnorma)
         dnomax = zr(jnorma)
@@ -123,7 +123,7 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr,&
             endif
             if ((dnomax - norm) .lt. epsilo) then
                 dnomax = norm
-            endif 
+            endif
  22     continue
 !
         zr(jdsgma+ivect-1) = (dnomax - dnomin)/2

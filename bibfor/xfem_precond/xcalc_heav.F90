@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,17 +48,17 @@ function xcalc_heav(id_no, hea_se, iflag)
       xcalc_heav=0.d0
     endif
 !  ASTUCE POUR OBTENIR UN SAUT DE DEPLACEMENT = (+2) * H1X POUR UNE  FISSURE
-!    REMARQUE: ON RAJOUTE CETTE CONVENTION PARCE QUE LA DEFINITION DE LA 
-!        TOPOLOGIE SIGNE HEAVISIDE PAR FACETTE EST DIFFERENTE DU SIMPLE AU MULTI HEAVISIDE       
+!    REMARQUE: ON RAJOUTE CETTE CONVENTION PARCE QUE LA DEFINITION DE LA
+!        TOPOLOGIE SIGNE HEAVISIDE PAR FACETTE EST DIFFERENTE DU SIMPLE AU MULTI HEAVISIDE
 !    * NFISS=1 : ON A SIGNE(ESCLAVE)=-1, AVEC L ENRICHISSEMENT STANDARD XFEM
 !                => MAIS CETTE INFORMATION INDIPENSABLE POUR CALCULER LE SAUT DE DEPLACEMENT,
 !                   N EST PAS CONSTRUITE EXPLICITEMENT,
 !                   DU COUP, L INFO EST REDEFINIE A CHAQUE FOIS DANS LE CODE ...
 !                   => ON FIXE LE SAUT A +2 POUR NE PAS GERER DIRECTEMENT CE PROBLEME
 !    * NFISS>1 : LA TOPOLOGIE EST CONSTRUITE EXPLICITEMENT ET STOCKEE DANS TOPOFAC.HEA
-!                => CETTE INFO EST CODEE ENSUITE DANS TOPONO.HFA 
+!                => CETTE INFO EST CODEE ENSUITE DANS TOPONO.HFA
 !                   => ET TRANSPORTEE DE MANIERE TRANSPARENTE
-     if (iflag.eq.-999) xcalc_heav=1.d0*xcalc_heav      
-     if (iflag.eq.999) xcalc_heav=-1.d0*xcalc_heav      
+     if (iflag.eq.-999) xcalc_heav=1.d0*xcalc_heav
+     if (iflag.eq.999) xcalc_heav=-1.d0*xcalc_heav
 !
 end function

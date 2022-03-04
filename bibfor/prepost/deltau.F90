@@ -79,7 +79,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
     integer :: iret, imap, icesd, icesl, icesv, ibid
     integer :: ipg
     integer :: nbpg, sompgw, nbpgp, l
-    integer :: icmp 
+    integer :: icmp
     real(kind=8) :: vala, valb, coefpa, vresu2(24), valpar(35)
     integer :: icodwo
     character(len=8) :: chmat1, nommat

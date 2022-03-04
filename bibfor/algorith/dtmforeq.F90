@@ -91,7 +91,7 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
     call intget(sd_int, FORCE_EX, iocc=index, lonvec=iret)
     if (iret.eq.0) then
         call intinivec(sd_int, FORCE_EX, nbmode, iocc=index, vr=fext)
-    else 
+    else
         call intget(sd_int, FORCE_EX, iocc=index, vr=fext, buffer=buffint)
     end if
 
@@ -135,7 +135,7 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
             call pmavec('ZERO', nbmode, masgen, vite, fext)
             do i = 1, nbmode
                 fext(i) = amogen(i)*fext(i)
-            end do    
+            end do
         else
             call pmavec('ZERO', nbmode, amogen, vite, fext)
         endif
@@ -147,7 +147,7 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
         if (kdiag) then
             do i = 1, nbmode
                 fext(i) = fext(i) + riggen(i)*depl(i)
-            end do     
+            end do
         else
             call pmavec('CUMU', nbmode, riggen, depl, fext)
         end if

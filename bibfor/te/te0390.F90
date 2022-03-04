@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -177,7 +177,7 @@ character(len=16), intent(in) :: option, nomte
     nu  = valres(2)
     rho = valres(3)
     g   = e/ (deux* (un+nu))
-! 
+!
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !     --- LA SECTION EST SUPPOSEE CONSTANTE ---
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)

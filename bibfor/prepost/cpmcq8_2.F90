@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cpmcq8_2(conloc, jmacsu, indno, indma, conneo)
     character(len=24), intent(in) :: conloc
 !
 ! -------------------------------------------------------------------------------------------------
-!         CREATION DES MAILLES DES NOUVELLES MAILLES DE PEAU 
+!         CREATION DES MAILLES DES NOUVELLES MAILLES DE PEAU
 !         SUR LA FACE DE LA ZONE DE CONTACT ESCLAVE
 !         CAS QUAD 8
 ! -------------------------------------------------------------------------------------------------

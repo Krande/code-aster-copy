@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,7 @@ implicit none
 !
         nb_node_mast = mminfi(sdcont_defi, 'NBNOM'    , i_zone)
         jdecnm       = mminfi(sdcont_defi, 'JDECNM'   , i_zone)
-        apcald       = cfcald(sdcont_defi, i_zone, 'MAIT')  
+        apcald       = cfcald(sdcont_defi, i_zone, 'MAIT')
         if (apcald) then
 !
 ! --------- Loop on nodes
@@ -128,7 +128,7 @@ implicit none
 !
 ! ------------- Current node
 !
-                node_mast_indx(1) = i_node_mast+jdecnm 
+                node_mast_indx(1) = i_node_mast+jdecnm
                 call cfnumn(sdcont_defi, 1, node_mast_indx(1), node_mast_nume(1))
                 call jenuno(jexnum(mesh//'.NOMNOE', node_mast_nume(1)), node_mast_name)
 !
@@ -154,7 +154,7 @@ implicit none
                 do i_elem = 1, node_nbelem
 !
 ! ----------------- Current element
-!   
+!
                     call cfinvm(sdcont_defi, jdeciv, i_elem, elem_mast_indx)
                     call cfnumm(sdcont_defi, elem_mast_indx, elem_mast_nume)
                     call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
@@ -162,7 +162,7 @@ implicit none
 !
 ! ----------------- Access to connectivity
 !
-                    call jeveuo(jexnum(mesh//'.CONNEX', elem_mast_nume), 'L', vi = v_mesh_connex) 
+                    call jeveuo(jexnum(mesh//'.CONNEX', elem_mast_nume), 'L', vi = v_mesh_connex)
 !
 ! ----------------- Get current index of node
 !

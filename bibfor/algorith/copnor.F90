@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ implicit none
 !
 !
 !
-    real(kind=8), parameter :: zero =  0.d0 
+    real(kind=8), parameter :: zero =  0.d0
     character(len=24) :: nomaco
     integer :: jnoma
     character(len=19) :: sdappa

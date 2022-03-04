@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ character(len=16) :: option, nomte
     endif
     ASSERT(nbNodeGonf .le. nbNodeMax)
 
-! - Modelling 
+! - Modelling
     typmod = ' '
     if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS'
@@ -174,7 +174,7 @@ character(len=16) :: option, nomte
         sigmTrac(kpg) = 0.d0
         do isig = 1, 3
             sigmTrac(kpg) = sigmTrac(kpg) + sigmDisp(nbsig*(kpg-1)+isig)
-        end do 
+        end do
     end do
 
 ! - Output field

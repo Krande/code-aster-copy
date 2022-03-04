@@ -327,12 +327,12 @@ type(HHO_Field), intent(inout) :: hhoField
 
 !! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
     call verins(sddisc, ds_posttimestep)
-    
+
 ! - Initial time
 !
     numins = 0
     instin = diinst(sddisc,numins)
-    
+
 !
 ! - Initializations for material parameters management
 !

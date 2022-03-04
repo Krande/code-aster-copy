@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -180,13 +180,13 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
  20 continue
 !
  30 continue
-!    
+!
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-! 3   VERIFICATION DE LA DONNEE DE LA TENSION POUR 
+! 3   VERIFICATION DE LA DONNEE DE LA TENSION POUR
 !                  MODI_CABLE_ETCC et MODI_CABLE_RUPT
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     call wkvect('&&TENSCA.F', 'V V R', nbnoca, jf)
-!    
+!
     if ((analy.eq.'RUPT') .or. (analy.eq.'ETCC')) then
         call getvid('DEFI_CABLE', 'TENSION', iocc=icabl, scal=ntable, nbret=n1)
         if (n1 .eq. 0) then
@@ -226,17 +226,17 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
             endif
  50     continue
     endif
-    
+
 
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 4   CALCUL DE LA TENSION LE LONG DU CABLE
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-    if (analy .ne. 'RUPT') then 
+    if (analy .ne. 'RUPT') then
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-!    4.1  CAS GENERAL 
+!    4.1  CAS GENERAL
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+
 ! 4.1.1 CALCUL DE LA TENSION LE LONG DU CABLE EN PRENANT EN COMPTE LES
 ! --- PERTES PAR FROTTEMENT ET PAR RECUL DU(DES) ANCRAGE(S)
 !    PAS DE DIFFERENCE ENTRE ETCC ET BPEL
@@ -255,13 +255,13 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 ! 4.1.2 PRISE EN COMPTE LE CAS ECHEANT DES PERTES DE TENSION PAR
 ! --- RELAXATION DE L'ACIER
 !
-!    Verification que le parametre de relaxation n'est pas nul 
+!    Verification que le parametre de relaxation n'est pas nul
       if ((typrel .ne. 'SANS') .or. (analy.eq.'ETCC')) then
           if (rh1000 .le. r8prem()) then
               call utmess('A', 'CABLE0_12')
           endif
       endif
-!      
+!
       if (typrel .eq. 'BPEL') then
 !----------------------------------
 !     4.1.2.1 CAS DU BPEL
@@ -278,7 +278,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 !----------------------------------
 !     4.1.2.2   CAS ETCC_DIRECT
 !----------------------------------
-        flim = fprg * sa    
+        flim = fprg * sa
         do 45 ino = 1, nbnoca
             fi = zr(jf+ino-1)
             zr(jf+ino-1) = fi - 0.8d0 * fi * 0.66d-05 *rh1000*exp( 9.1d0*fi/flim)* &
@@ -328,7 +328,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0,&
 
         call jedetr(tabx)
         call jedetr(taby)
- 
+
     endif
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 5   MISE A JOUR DES OBJETS DE SORTIE

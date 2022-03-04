@@ -23,7 +23,7 @@ subroutine intruku32(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 ! intruku32 : Integrate from t_i to t_i+1 the differential equations of motion
 !             using a Runge-Kutta type order 3/2 scheme.
-! 
+!
 #include "jeveux.h"
 #include "blas/dcopy.h"
 #include "asterc/r8prem.h"
@@ -268,7 +268,7 @@ subroutine intruku32(sd_dtm_, sd_int_, buffdtm, buffint)
         seuil1 = (0.9d0/5.0d0)**(4.d0)
         seuil2 = (0.9d0/0.2d0)**(4.d0)
 
-!       --- Refining the time step is not helping, the system is probably badly 
+!       --- Refining the time step is not helping, the system is probably badly
 !           initialized (not in dynamic equilibrium) and the integration can proceed
 !           as is toward an equilibrium state
         if ((errt*1.01d0).gt.errt0) then
@@ -283,7 +283,7 @@ subroutine intruku32(sd_dtm_, sd_int_, buffdtm, buffint)
             coeff = 0.9d0*(errt)**(-1.d0/4.d0)
         endif
         dt2 = min(dtmax, dt*coeff)
-!       
+!
         if ((errt.ge.1.d0) .and. (dt2.ge.dtmin)) then
             dt = dt2
             errt0 = errt

@@ -195,7 +195,7 @@ implicit none
                         val2r = v_work_poin(1+nb_poin*nb_spoi*(i_vale-1) +&
                                           nb_spoi*(i_poin_r-1)+&
                                           (i_spoi_r-1))
-                                          
+
                         if (type_extr_elem .eq. 'VALE') then
                             v_work_poin(1+nb_poin*nb_spoi*(i_vale-1) +&
                                           nb_spoi*(i_poin_r-1)+&
@@ -248,7 +248,7 @@ implicit none
                         valr  = v_work_poin(1+nb_poin*nb_spoi*(i_vale-1)+&
                                               nb_spoi*(i_poin_r-1)+&
                                               (i_spoi_r-1))
-                                              
+
                         val2r = v_work_elem(1+nb_cmp*nb_poin*nb_spoi*(i_elem_r-1)+&
                                               nb_poin*nb_spoi*(i_vale-1)+&
                                               nb_spoi*(i_poin_r-1)+&
@@ -290,7 +290,7 @@ implicit none
                 end do
             end do
     end do
-    
+
     AS_DEALLOCATE(vr=v_init_poin)
 !
 ! - For mean value

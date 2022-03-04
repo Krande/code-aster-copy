@@ -77,7 +77,7 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
 !
     cmd = ' '
     if (present(command)) cmd = command
-    
+
     call jemarq()
     if (nbmail .eq. 0) goto 9999
 !
@@ -139,11 +139,11 @@ subroutine ornorm(noma, listma, nbmail, reorie, norien, command)
             call utmess('F', 'MODELISA5_98')
         endif
  10 end do
-    
+
     if (dime2 .and. cmd(1:10).eq.'ORIE_LIGNE')then
         call utmess('F','MODELISA5_92')
     endif
-    
+
 !
 ! --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 !     ---------------------------------------------

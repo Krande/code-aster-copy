@@ -26,12 +26,12 @@ subroutine blkobs(matobs, obsdim,alpha,matprod)
 !
 !  ROUTINE LIEE A L'OPERATEUR CALC_ERC_DYN
 !
-!  ON RECUPERE LA MATRICE NORME 'G' ET ON CONSTRUIT LE SOUS-BLOC : 
+!  ON RECUPERE LA MATRICE NORME 'G' ET ON CONSTRUIT LE SOUS-BLOC :
 !
 !                   coeff_alpha*H^T*G*H
 !
 !  ASSOCIE LA MATRICE D'OBSERVATION
-!  
+!
 ! ----------------------------------------------------------------------
 !
 ! IN : MATOBS   : LISTE DES NOMS DES OBJETS JEVEUX DEFINISSANT LA MATRICE
@@ -42,7 +42,7 @@ subroutine blkobs(matobs, obsdim,alpha,matprod)
 !                 VALEURS_NONNULLES)
 ! IN : ALPHA    : PARAMETRE ALPHA DE LA FONCTIONNELLE D'ERC
 ! OUT : MATPROD : LISTE DES NOMS DES OBJETS JEVEUX OU EST STOCKE LE SOUS-
-!                 BLOC CALCULE. LE STOCKAGE EST EN MORSE SELON LA 
+!                 BLOC CALCULE. LE STOCKAGE EST EN MORSE SELON LA
 !                 SD_NUME_DDL. (.SMDE,.SMHC,.SMDI,.VALM)
 ! ----------------------------------------------------------------------
 !
@@ -237,7 +237,7 @@ subroutine blkobs(matobs, obsdim,alpha,matprod)
     end do
 !
 ! --- CREATION VECTEURS DE LA BONNE TAILLE POUR STOCKAGE MORSE NUME_DDL
-    
+
     matprod(1)=baseno//'NU.HTGH.ERC.SMDE'
     matprod(2)=baseno//'NU.HTGH.ERC.SMHC'
     matprod(3)=baseno//'NU.HTGH.ERC.SMDI'

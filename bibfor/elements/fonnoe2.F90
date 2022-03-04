@@ -65,7 +65,7 @@ subroutine fonnoe2(resu, noma, nomobj, nbnoff, typmp)
 !   INFORMATION SUR LE NOEUD DU FOND DE FISSURE
     call wkvect(resu//'.FOND.NOEU', 'G V K8', nbnoff, jnoe1)
     obtrav = '&&'//nomobj//'.GROUP_NO'
-! 
+!
     call jeveuo(obtrav, 'L', jjj)
     call jeveuo(jexnom(noma//'.GROUPENO', zk24(jjj)), 'L', jadr)
     call jenuno(jexnum(noma//'.NOMNOE', zi(jadr)), noeud)

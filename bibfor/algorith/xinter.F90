@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
-                  im, pintt, pmitt, lsna, lsnb, lsnm, inref, inter) 
+                  im, pintt, pmitt, lsna, lsnb, lsnm, inref, inter)
     implicit none
 !
 #include "jeveux.h"
@@ -115,7 +115,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
     ASSERT(b**2.ge.(4*a*c))
     if (abs(a).lt.1.d-8) then
        ksi(1) = lsna/(lsna-lsnb)
-    else 
+    else
        ksi(1) = (-b-sqrt(b**2-4*a*c))/(2.d0*a)
        if (abs(ksi(1)).gt.1) ksi(1) = (-b+sqrt(b**2-4*a*c))/(2.d0*a)
        ASSERT(abs(ksi(1)).le.1)
@@ -133,7 +133,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
                  ptxx(j+2*ndime)+2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(j+ndime)
     enddo
 !
-    call xveri0(ndime, elrefp, inref, iret)  
+    call xveri0(ndime, elrefp, inref, iret)
     ASSERT(iret .eq. 0)
 !
     call reerel(elrefp, nno, ndim, geom, inref,&

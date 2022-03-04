@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -133,8 +133,8 @@ subroutine impe81(nomres, impe, basemo)
       if (ntail .ne. ntail1) call utmess('F','ALGORITH_52')
       goto 11
     endif
-    call jecrec(nomres//'.MAEL_RAID_VALE', 'G V R', 'NU', 'DISPERSE', & 
-                'CONSTANT',1)   
+    call jecrec(nomres//'.MAEL_RAID_VALE', 'G V R', 'NU', 'DISPERSE', &
+                'CONSTANT',1)
     call jeecra(nomres//'.MAEL_RAID_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres//'.MAEL_RAID_VALE', 1))
  11 continue
@@ -145,8 +145,8 @@ subroutine impe81(nomres, impe, basemo)
       if (ntail .ne. ntail2) call utmess('F','ALGORITH_52')
       goto 12
     endif
-    call jecrec(nomres//'.MAEL_MASS_VALE', 'G V R', 'NU', 'DISPERSE', & 
-                'CONSTANT',1)   
+    call jecrec(nomres//'.MAEL_MASS_VALE', 'G V R', 'NU', 'DISPERSE', &
+                'CONSTANT',1)
     call jeecra(nomres//'.MAEL_MASS_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres//'.MAEL_MASS_VALE', 1))
  12 continue
@@ -157,8 +157,8 @@ subroutine impe81(nomres, impe, basemo)
       if (ntail .ne. ntail3) call utmess('F','ALGORITH_52')
       goto 13
     endif
-    call jecrec(nomres//'.MAEL_AMOR_VALE', 'G V R', 'NU', 'DISPERSE', & 
-                'CONSTANT',1)   
+    call jecrec(nomres//'.MAEL_AMOR_VALE', 'G V R', 'NU', 'DISPERSE', &
+                'CONSTANT',1)
     call jeecra(nomres//'.MAEL_AMOR_VALE', 'LONMAX', ntail)
     call jecroc(jexnum(nomres//'.MAEL_AMOR_VALE', 1))
  13 continue

@@ -100,7 +100,7 @@ subroutine op0155()
 !
 !
 !     -- 5. RECOPIE DES PARAMETRES DE RESU VERS NOMRES :
-!           ET DE LA CARTE DE COMPORTEMENT 
+!           ET DE LA CARTE DE COMPORTEMENT
 !     --------------------------------------------------
     nompar='&&OP0155'//'.NOMS_PARA'
     call rsnopa(resu, 2, nompar, nbac, nbpa)
@@ -112,7 +112,7 @@ subroutine op0155()
 !
     do 20 i = 1, nbordr
         nuordr=zi(jordr-1+i)
-!            COPIE DE LA CARTE DE COMPORTEMENT 
+!            COPIE DE LA CARTE DE COMPORTEMENT
 !            --UTILE SI ON RÉCUPÈRE LES NOMS DES VARIABLES INTERNES
 !     --------------------------------------------------
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -387,7 +387,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
             call jenonu(jexnom(nomres//'.LICA', nomcas), icas)
             call jeveuo(jexnum(nomres//'.LICA', icas), 'E', ialica)
             call jeveuo(jexnum(nomres//'.LICH', icas), 'E', ialich)
-            if (vectas .ne. ' ') then  
+            if (vectas .ne. ' ') then
                 call jeveuo(vectas//'           .VALE', 'L', vr=vale)
                 do ie = 1, nbmtot
                     zr(ialica+ie-1) = vale(ie)

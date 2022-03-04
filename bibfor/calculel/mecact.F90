@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,12 +42,12 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
     character(len=8) :: nomgd
     character(len=6) :: mocle
     integer, intent(in) :: ncmp
-    character(len=*), intent(in), optional :: nomcmp, sk, lnomcmp(ncmp), vk(ncmp)   
-    integer, intent(in), optional :: si, vi(ncmp) 
-    real(kind=8), intent(in), optional :: sr, vr(ncmp) 
-    complex(kind=8), intent(in), optional :: sc, vc(ncmp)   
-!     
-!   Liste des variables locales utilisées pour récuperer les arguments 
+    character(len=*), intent(in), optional :: nomcmp, sk, lnomcmp(ncmp), vk(ncmp)
+    integer, intent(in), optional :: si, vi(ncmp)
+    real(kind=8), intent(in), optional :: sr, vr(ncmp)
+    complex(kind=8), intent(in), optional :: sc, vc(ncmp)
+!
+!   Liste des variables locales utilisées pour récuperer les arguments
     character(len=24) :: licmp(ncmp), kcmp(ncmp)
     integer :: icmp(ncmp)
     real(kind=8) :: rcmp(ncmp)
@@ -88,8 +88,8 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
 !
 !-----------------------------------------------------------------------
     call jemarq()
-! 
-!   DETERMINATION DU TYPE DE CARTE A AFFECTER 
+!
+!   DETERMINATION DU TYPE DE CARTE A AFFECTER
     ASSERT(EXCLUS2(si,vi))
     ASSERT(EXCLUS2(sr,vr))
     ASSERT(EXCLUS2(sc,vc))
@@ -98,41 +98,41 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
         j=1
     else if (UN_PARMI2(sr,vr)) then
         j=2
-    else if (UN_PARMI2(sc,vc)) then   
+    else if (UN_PARMI2(sc,vc)) then
         j=3
     else
         ASSERT(UN_PARMI2(sk,vk))
         j=4
-    endif    
+    endif
 !
-!   AFFECTATION DES VARIABLES LOCALES EN FONCTION DES ARGUMENTS  
+!   AFFECTATION DES VARIABLES LOCALES EN FONCTION DES ARGUMENTS
     if ( ncmp .gt. 1 ) then
         ASSERT(UN_PARMI4(vi,vr,vc,vk))
-        do i=1,ncmp 
+        do i=1,ncmp
             licmp(i)=lnomcmp(i)
-        end do       
-        select case (j) 
+        end do
+        select case (j)
         case (1)
              do i=1,ncmp
                  icmp(i)=vi(i)
-             end do    
+             end do
         case (2)
              do i=1,ncmp
                  rcmp(i)=vr(i)
-             end do               
+             end do
         case (3)
              do i=1,ncmp
                  ccmp(i)=vc(i)
-             end do               
+             end do
         case (4)
              do i=1,ncmp
                  kcmp(i)=vk(i)
-             end do               
-        end select       
+             end do
+        end select
     else
         ASSERT(UN_PARMI4(si,sr,sc,sk))
         licmp(1) = nomcmp
-        select case (j) 
+        select case (j)
         case (1)
              icmp(1)=si
         case (2)
@@ -140,11 +140,11 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz,&
         case (3)
              ccmp(1)=sc
         case (4)
-             kcmp(1)=sk               
+             kcmp(1)=sk
         end select
     endif
-!   
-!   
+!
+!
     mocle = moclez
     nomgd = nomgdz
 !

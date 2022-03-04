@@ -49,7 +49,7 @@ real(kind=8), intent(out) :: fick, dfickt
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: ficka_t, ficka_pa, ficka_pl, ficka_s, dficka_dt 
+    real(kind=8) :: ficka_t, ficka_pa, ficka_pl, ficka_s, dficka_dt
     integer, parameter :: nb_para = 4
     real(kind=8) :: para_vale(nb_para)
     character(len=4), parameter :: para_name(nb_para)  = (/'TEMP', 'PAD ',&

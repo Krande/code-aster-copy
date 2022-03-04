@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -168,7 +168,7 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod,&
     call r8inir(2*nmat, 0.d0, materd, 1)
     call r8inir(2*nmat, 0.d0, materf, 1)
 !
-    
+
 !
 !     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
     nr=nvi+ndt-1

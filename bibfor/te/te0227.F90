@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine te0227(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 !                          COQUE 1D
 !                          OPTION : 'MASS_INER       '
-!                          ELEMENT: MECXSE3 
+!                          ELEMENT: MECXSE3
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -119,7 +119,7 @@ subroutine te0227(option, nomte)
             matine(1) = matine(1) + poids*yyi
             matine(2) = matine(2) + poids*xyi
             matine(3) = matine(3) + poids*xxi
-      end do 
+      end do
   end do
 !
     yg = zr(lcastr+2)/volume

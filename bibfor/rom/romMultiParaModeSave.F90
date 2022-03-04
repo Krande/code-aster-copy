@@ -81,7 +81,7 @@ character(len=19), intent(in) :: modeName
     elseif (syst_type .eq. 'R') then
         call jeveuo(modeName(1:19)//'.VALE', 'E', vr = modeValeR)
         normr = ddot(nbEqua, modeValeR, 1, modeValeR, 1)
-        modeValeR(:) = modeValeR(:)/sqrt(normr) 
+        modeValeR(:) = modeValeR(:)/sqrt(normr)
         call romModeSave(resultName, numeMode ,&
                          fieldName , mode     ,&
                          modeValeR_ = modeValeR)

@@ -34,18 +34,18 @@ implicit none
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: temp_iter
-    character(len=24), intent(in) :: dry_prev   
+    character(len=24), intent(in) :: dry_prev
     character(len=24), intent(in) :: dry_curr
     character(len=24), intent(in) :: compor
     character(len=19), intent(in) :: varc_curr
-    character(len=19), intent(in) :: resu_elem   
+    character(len=19), intent(in) :: resu_elem
     character(len=24), intent(in) :: matr_elem
     character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Thermic
-! 
+!
 ! Tangent matrix (volumic terms)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ implicit none
 ! - Init fields
 !
     call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
-                lchout    )    
+                lchout    )
 !
 ! - Geometry field
 !

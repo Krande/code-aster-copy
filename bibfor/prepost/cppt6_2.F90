@@ -38,19 +38,19 @@ subroutine cppt6_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 !
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: inc 
+    integer, intent(in) :: inc
     integer, intent(in) :: jcoor
     integer, intent(in) :: jcnnpa
     character(len=24), intent(in) :: conloc
     character(len=24), intent(in) :: limane
     character(len=24), intent(in) :: nomnoe
-    integer, intent(in) :: nbno 
+    integer, intent(in) :: nbno
     integer, intent(in) :: jmacou
     integer, intent(in) :: jmacsu
     integer, intent(in) :: macou
     integer, intent(in) :: macsu
-    integer, intent(out) :: ind 
-    integer, intent(out) :: ind1     
+    integer, intent(out) :: ind
+    integer, intent(out) :: ind1
 ! -------------------------------------------------------------------------------------------------
 !        CREATION DES NOUVEAUX NOEUDS ET NOUVELLES MAILLES CAS PENTA5 BASE TRIA3
 ! -------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ subroutine cppt6_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 ! --- DDL INTERNE
     zi(patch-1+2)=nbno+ind1
     zi(jcnnpa+nbno+ind1-1) = inc
-! --- CREATION DES NOEUDS DDL INTERNE      
+! --- CREATION DES NOEUDS DDL INTERNE
     call cpnpq8_2(main,macou,zr(jcoor),nbno+ind1,nomnoe)
 ! --- NOUVEAUX ELEMENTS DE PEAU
     call cpmpq8_2(conloc, jmacou, nbno+ind1, ind)
@@ -80,7 +80,7 @@ subroutine cppt6_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
     call cnpc(main, macou, macsu, conneo)
     call jeveuo(conneo,'L',jconneo)
 ! --- NOUVEAUX ELEMENTS DE CORPS
-    call cpmcpt6_2(conloc, jmacsu, nbno+ind1, ind+4, zi(jconneo))        
+    call cpmcpt6_2(conloc, jmacsu, nbno+ind1, ind+4, zi(jconneo))
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Peau)??
 
     call jeveuo(jexnum(limane, macou), 'E', jlimane)
@@ -101,6 +101,6 @@ subroutine cppt6_2(main  , maout , inc   , jcoor , jcnnpa, conloc,&
     ind=ind+8
     ind1=ind1+1
     call jedetr(conneo)
-!   
+!
     call jedema()
 end subroutine

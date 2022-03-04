@@ -54,7 +54,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 ! In  mesh             : name of mesh
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
-! In  cnsinr           : nodal field (CHAM_NO_S) for CONT_NOEU 
+! In  cnsinr           : nodal field (CHAM_NO_S) for CONT_NOEU
 !
 ! --------------------------------------------------------------------------------------------------
 !

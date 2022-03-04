@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ subroutine te0120(nomopt, nomte)
     call tecach('OOO', 'PHEAVTO', 'L', iret, nval=7,&
                 itab=jtab)
     ncomph = jtab(2)
-    nfiss = jtab(7)  
+    nfiss = jtab(7)
 !
     call elref1(elrefp)
     if (.not.iselli(elrefp)) then
@@ -113,14 +113,14 @@ subroutine te0120(nomopt, nomte)
     nse=zi(jlonch-1+1)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! CALCUL D UN NUMERO DE DOMAINE PAR NOEUD 
+! CALCUL D UN NUMERO DE DOMAINE PAR NOEUD
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     id_no(1:nnomax)=0
     if (nfiss.gt.1) call jevech('PFISCO', 'L', jfisco)
 !
-!        write(6,*)'  ' 
-!        write(6,*)' *********************************' 
-!        write(6,*)' KORUPTION : VOICI LE CODAGE FISCO' 
+!        write(6,*)'  '
+!        write(6,*)' *********************************'
+!        write(6,*)' KORUPTION : VOICI LE CODAGE FISCO'
     do ino = 1, nnop
         call xlsjon(ino, jlsn, nfiss, jfisco, heav_no(1:nfiss))
         id_no(ino)=xcalc_code(nfiss, he_real=heav_no(1:nfiss))
@@ -169,7 +169,7 @@ subroutine te0120(nomopt, nomte)
       cpt=0
       zi(jheano-1+ncompn*(ino-1)+ncompn)=id_no(ino)
       do isd = 1, nbsd
-        if(list_sd(isd).ne.id_no(ino)) then 
+        if(list_sd(isd).ne.id_no(ino)) then
           cpt=cpt+1
           zi(jheano-1+ncompn*(ino-1)+cpt)=list_sd(isd)
         endif
@@ -183,7 +183,7 @@ subroutine te0120(nomopt, nomte)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (multi_contact) then
         call jevech('PHEAVFA', 'L', jheavf)
-        call jevech('PLONGCO', 'L', jlonco)  
+        call jevech('PLONGCO', 'L', jlonco)
         call jevech('PHEA_FA', 'E', jheafa)
         call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
                     itab=jtab)
@@ -205,7 +205,7 @@ subroutine te0120(nomopt, nomte)
              enddo
              zi(jheafa-1+ncmpfa2*(ifiss-1)+2*ifac)=xcalc_code(nfiss, he)
            enddo
-        enddo        
+        enddo
     endif
 !
 !

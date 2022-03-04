@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,10 +74,10 @@ subroutine te0517(option, nomte)
 !
     nno = 2
     ncomp = 18
-! 
+!
     if (nomte .eq. 'MECA_POU_D_EM') then
         nc = 6
-        npg = 2   
+        npg = 2
     else if (nomte.eq.'MECA_POU_D_SQUE') then
         nc = 9
         npg = 2
@@ -119,7 +119,7 @@ subroutine te0517(option, nomte)
            reactu = (zk16(icompo+2).eq.'GROT_GDEP')
            rigige = (zk16(icompo-1+RIGI_GEOM).eq.'OUI')
         endif
-           
+
         call jevech('PVECTUR', 'E', ivectu)
         call r8inir(2*nc, 0.d0, fl, 1)
 !       Calcul de la matrice de passage global/local

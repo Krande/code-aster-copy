@@ -228,7 +228,7 @@ integer, optional, intent(in)  :: nbInterc_
         endif
         xr1(1) = ksi
         xr1(2) = eta
-        
+
 !       -- on essaye d'ameliorer la precision de xr1(*) en utilisant reereg :
         if (spacedim ==3) then
 !           -- en 3d on se place dans le plan de la maille

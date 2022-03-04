@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -253,7 +253,7 @@ subroutine te0531(option,nomte)
                             c1 = 1.d0/e
 !
                             icomp3 = idsig+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
-                            
+
 !                           soustraction des deformations elastiques
                             zr(icomp + 1) = zr(icomp + 1) - c1* zr(icomp3 + 1)
                         endif

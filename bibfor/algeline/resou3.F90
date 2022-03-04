@@ -104,7 +104,7 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
 !
     call dismoi('XFEM', matass, 'MATR_ASSE', repk=kxfem)
     ASSERT(kxfem .eq. 'XFEM_PRECOND')
-! 
+!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   MISE A L ECHELLE DU SECOND MEMBRE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -125,7 +125,7 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
     call resou2(matass, matpre, solveu, chcine, nsecm,&
                   chtrav, chsolu, base, rsolu, csolu,&
                   criter, prepos, istop, iret)
-! 
+!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   MISE A L ECHELLE DE LA SOLUTION
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -141,7 +141,7 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
 !   NETTOYAGES
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    call xfem_precond('FIN', matas1, base)
-    if (chtrav .ne. ' ') call jedetr(chtrav)  
+    if (chtrav .ne. ' ') call jedetr(chtrav)
 !
     call jedema()
 end subroutine

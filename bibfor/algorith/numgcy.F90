@@ -117,7 +117,7 @@ subroutine numgcy(nugene, modgen)
     write (ifimes,*)'+++ DONT NOMBRE D''EQUATIONS STRUCTURE: ',icomps
     write (ifimes,*)'+++ DONT NOMBRE D''EQUATIONS LIAISON: ',icompl
 !  ON REMPLIT LE NUME_DDL COMME S'IL N'Y AVAIT QU'UNE SEULE SOUS
-!  STRUCTURE. 
+!  STRUCTURE.
     nb_sstr = 1
     nb_link = 1
 !

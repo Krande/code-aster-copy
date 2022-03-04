@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ character(len=1), intent(out) :: syst_type
     end do
 !
 ! - To be consistent
-!  
+!
     if (syst_matr_type .eq. 'C' .or. syst_2mbr_type .eq. 'C') then
         syst_type = 'C'
     endif

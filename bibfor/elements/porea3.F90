@@ -73,7 +73,7 @@ real(kind=8) :: pgl(3, 3), xl1, angp(3)
 !
     call normev(xd0,xl1)
 
-!   calcul des deux premiers angles nautiques 
+!   calcul des deux premiers angles nautiques
     call angvx(xd0, alfa1, beta1)
 
 !   Sauvegarde des angles nautiques

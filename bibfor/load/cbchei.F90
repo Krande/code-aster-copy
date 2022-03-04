@@ -74,24 +74,24 @@ character(len=4), intent(in) :: valeType
 !
     if (nbfac .ne. 0) then
         para = 'EPSIN'
-        
+
         iepsi = 0
         if (valeType .eq. 'REEL') then
             call getvid(keywordFact, 'EPSI', iocc=1, scal=chepsi, nbret=iepsi)
         endif
-        
+
         if (iepsi .eq. 0) then
             call cachei(load, model, mesh, valeType, para, keywordFact)
         else
             if (nbfac.gt.1) call utmess('F', 'CHARGES_5')
-            
+
 !
 ! ---       verification des composantes
 !
             chames = '&&CHCHEI.CES'
-            
+
             call dismoi('TYPE_CHAMP', chepsi, 'CHAMP', repk=typch)
-            
+
             if (typch .eq. 'CART') then
                 call carces(chepsi, 'ELEM', ' ', 'V', chames,&
                             ' ', cret)
@@ -103,11 +103,11 @@ character(len=4), intent(in) :: valeType
 
             call jeveuo(chames//'.CESD', 'L', jcesd)
             call jeveuo(chames//'.CESC', 'L', jcesc)
-            
+
             nbcmpch = zi(jcesd+1)
             do i=1, nbcmpch
                 compok = ASTER_FALSE
-                do j=1, nbcmpdisp 
+                do j=1, nbcmpdisp
                     if(zk8(jcesc-1+i).eq.nomcmpdisp(j))then
                         compok = ASTER_TRUE
                         exit
@@ -117,7 +117,7 @@ character(len=4), intent(in) :: valeType
                     call utmess('F', 'CHARGES_6', sk=zk8(jcesc-1+i))
                 endif
             enddo
-            
+
             call jedetr(chames)
 !
             carte = load//'.CHME.'//para

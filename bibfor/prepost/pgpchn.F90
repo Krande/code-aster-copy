@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 subroutine pgpchn(sd_pgp, iobs)
     implicit none
 ! Extract a node field from the modal basis, reduced to the requested
-! degrees of freedom (node,component) 
+! degrees of freedom (node,component)
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -92,12 +92,12 @@ subroutine pgpchn(sd_pgp, iobs)
 !   -1.3- Get the scalar type of the needed field, and allocate the work vector
 !         with the correct type (real or complex) and initialize to undef (+ undef j)
     call pgpget(sd_pgp, 'TYP_SCAL' , iobs=iobs, kscal=typsc)
-    if (typsc(1:1).eq.'R') then 
+    if (typsc(1:1).eq.'R') then
         AS_ALLOCATE(vr=vectr, size=nbsupp*nbcmp*nbmodes)
         do ibid=1,nbsupp*nbcmp*nbmodes
             vectr(ibid) = undef
         end do
-    else if (typsc(1:1).eq.'C') then 
+    else if (typsc(1:1).eq.'C') then
         AS_ALLOCATE(vc=vectc, size=nbsupp*nbcmp*nbmodes)
         do ibid=1,nbsupp*nbcmp*nbmodes
             vectc(ibid) = dcmplx(undef,undef)
@@ -114,7 +114,7 @@ subroutine pgpchn(sd_pgp, iobs)
         dec1 = (imod-1)*nbcmp*nbsupp
 !       Transform the point(node) field to a simple node field
         call cnocns(nomcha, 'V', sd_pgp//'.CHAM_NO_S ')
-!       Reduce the simple field to the nodes and components of interest      
+!       Reduce the simple field to the nodes and components of interest
         call cnsred(sd_pgp//'.CHAM_NO_S ', nbsupp, lnoe, nbcmp, lcmp,&
                     'V', sd_pgp//'.CHAM_NO_SR')
         call jeveuo(sd_pgp//'.CHAM_NO_SR.CNSD','L',jcsd)
@@ -125,7 +125,7 @@ subroutine pgpchn(sd_pgp, iobs)
             do ino = 1,nbsupp
                 inod = lnoe(ino)
                 if (zl(jcsl+(inod-1)*nbcmp + icmp - 1)) then
-                    if (typsc(1:1).eq.'R') then 
+                    if (typsc(1:1).eq.'R') then
                         vectr(dec1+dec2+ino) = zr(jcsv+(inod-1)*nbcmp + icmp - 1)
                     else if (typsc(1:1).eq.'C') then
                         vectc(dec1+dec2+ino) = zc(jcsv+(inod-1)*nbcmp + icmp - 1)
@@ -148,7 +148,7 @@ subroutine pgpchn(sd_pgp, iobs)
     call pgpsav(sd_pgp, 'REF_COMP', nbsupp*nbcmp, iobs=iobs, kvect=rcomp)
     call pgpsav(sd_pgp, 'REF_INDI', nbsupp*nbcmp, iobs=iobs, ivect=indic)
 
-    if (typsc(1:1).eq.'R') then 
+    if (typsc(1:1).eq.'R') then
         call pgpsav(sd_pgp, 'VEC_PR_R', nbsupp*nbcmp*nbmodes, iobs=iobs, rvect=vectr)
         AS_DEALLOCATE(vr=vectr)
     else if (typsc(1:1).eq.'C') then

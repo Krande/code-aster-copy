@@ -37,7 +37,7 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! Contact - Solve
 !
-! LAC and continue methods - Geometric loop: geometry update and pairing 
+! LAC and continue methods - Geometric loop: geometry update and pairing
 !
 ! --------------------------------------------------------------------------------------------------
 !

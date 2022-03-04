@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -190,7 +190,7 @@ subroutine assgen(nomres, option, nugene)
     nbloc=smde(3)
     call jelibe(stomor//'.SMDE')
 !
-    if (lsym) then 
+    if (lsym) then
        ntualf = nbloc
     else
        ntualf = 2*nbloc
@@ -431,7 +431,7 @@ subroutine assgen(nomres, option, nugene)
         call jelibe(jexnum(nomres//'           .UALF', iblo))
 !
     end do
-!        
+!
     call ualfva(nomres, 'G')
 !
     call jedetr(tmadbl)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ integer, intent(out) :: retcom
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  nbvari           : total number of internal state variables
-! In  advico           : index of first internal state variable for coupling law 
+! In  advico           : index of first internal state variable for coupling law
 ! In  vicphi           : index of internal state variable for porosity
 ! In  dtemp            : increment of temperature
 ! In  dpi              : variation of the hydraulic pressure at end of current time
@@ -75,7 +75,7 @@ integer, intent(out) :: retcom
 ! IO  vintp            : internal state variables at end of time step
 ! Out phi              : porosity at end of current time step
 ! Out phim             : porosity at beginning of current time step
-! Out retcom           : error code 
+! Out retcom           : error code
 !                         0 - everything is OK
 !
 ! --------------------------------------------------------------------------------------------------

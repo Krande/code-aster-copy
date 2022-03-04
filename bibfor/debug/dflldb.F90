@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -150,7 +150,7 @@ character(len=8), intent(in) :: sdlist
                 call utmess('I', 'DISCRETISATION3_32')
                 if (nint(v_sdlist_esubdr(SIZE_LESUR*(i_fail-1)+1)) .eq. 0) then
                     call utmess('I', 'DISCRETISATION3_41', sr = pcent_iter_plus)
-                else 
+                else
                     call utmess('I', 'DISCRETISATION3_42', sr = pcent_iter_plus)
                     call dflld2(sdlist, i_fail)
                 endif
@@ -186,7 +186,7 @@ character(len=8), intent(in) :: sdlist
             if (event_type .eq. ADAP_EVT_NONE) then
                 call utmess('I', 'DISCRETISATION3_50', si = i_adap)
             else if (event_type .eq. ADAP_EVT_ALLSTEPS) then
-                call utmess('I', 'DISCRETISATION3_51', si = i_adap)  
+                call utmess('I', 'DISCRETISATION3_51', si = i_adap)
                 call dflld3(sdlist, i_adap)
             else if (event_type .eq. ADAP_EVT_TRIGGER) then
                 call utmess('I', 'DISCRETISATION3_52', si = i_adap)

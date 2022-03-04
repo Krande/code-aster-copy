@@ -74,7 +74,7 @@ subroutine checkNormals(model, slave, master)
 !
     grmama = mesh//'.GROUPEMA       '
     mailma = mesh//'.NOMMAI'
-    call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)  
+    call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)
 !
 ! ---     RECUPERATION DE LA DIMENSION DU PROBLEME
 !
@@ -87,9 +87,9 @@ subroutine checkNormals(model, slave, master)
         ! check si GROUP_MA existe
         call existGrpMa(mesh, nogr, l_exi, l_exi_p)
 
-        if ((.not. l_exi) .and. (l_exi_p)) then 
+        if ((.not. l_exi) .and. (l_exi_p)) then
             goto 211
-        endif    
+        endif
 
         call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
         call jeveuo(jexnom(grmama, nogr), 'L', jgro)

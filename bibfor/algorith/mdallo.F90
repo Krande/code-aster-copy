@@ -115,7 +115,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (present(amor)) amogen = amor
     if (present(method)) method2 = method
     if (present(dt)) dt2 = dt
-    if (present(nbnli )) nbnoli = nbnli 
+    if (present(nbnli )) nbnoli = nbnli
     if (present(sauve)) sauve2 = sauve
     if (present(checkarg)) checkargs = checkarg
     if (present(nbsym) .and. present(nomsym)) then
@@ -125,7 +125,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         end do
     endif
 !
-!   --- Initialize all output jeveux pointers to 1 
+!   --- Initialize all output jeveux pointers to 1
     if (present(jdepl)) jdepl = 1
     if (present(jvite)) jvite = 1
     if (present(jacce)) jacce = 1
@@ -134,7 +134,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (present(jdisc)) jdisc = 1
     if (present(jvint)) jvint = 1
 !
-!   --- If checkarg is .true. then verify the coherence of all optional arguments, 
+!   --- If checkarg is .true. then verify the coherence of all optional arguments,
     if (checkargs) then
 !       --- 1 - Coherence between the modal basis and the number of modes
         ASSERT(AU_MOINS_UN2(base,nbmodes))
@@ -157,7 +157,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
             if (typcal .eq. 'TRAN') then
                 ASSERT(absent(nbsym))
             endif
-!           --- 3.2 - Verify according to nomsym if it possible to retrieve the 
+!           --- 3.2 - Verify according to nomsym if it possible to retrieve the
 !                     displacement, velocity, and acceleration vectors.
             saved = .false.
             do inom = 1, nbsym2
@@ -245,7 +245,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         do i = 1, 5
             zi(jdesc+i-1) = 0
         end do
-    else 
+    else
         call jeveuo(nomres//'           .DESC', 'E', jdesc)
     end if
     zi(jdesc) = 1
@@ -341,7 +341,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         if (iret .eq. 0) then
             call crevec(nomres//'        .NL.TYPE', typsau//' I', nbnoli, jnltyp)
             do i = 1, nbnoli
-                call nlget(sd_nl, _NL_TYPE, iocc=i, iscal=zi(jnltyp-1+i))                
+                call nlget(sd_nl, _NL_TYPE, iocc=i, iscal=zi(jnltyp-1+i))
             end do
         endif
 
@@ -354,7 +354,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
             do i = 1, nbnoli
                 call nlget(sd_nl, _NL_TITLE, iocc=i, lonvec=iret)
                 if (iret.ne.0) call nlget(sd_nl, _NL_TITLE, iocc=i, kscal=zk24(jinti-1+(i-1)*5+1))
-                
+
                 call nlget(sd_nl, _NO1_NAME, iocc=i, lonvec=iret)
                 if (iret.ne.0) call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+2))
 

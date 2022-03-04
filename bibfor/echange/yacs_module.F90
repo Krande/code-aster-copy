@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ module yacs_module
 ! person_in_charge: mohamed-amine.hassini@edf.fr
 !
 !---------------------------------------------------------------------------
-! This module is in charge of all kind of communication between 
+! This module is in charge of all kind of communication between
 ! aster and yacs
 !---------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@ module yacs_module
 
     type port
         character(len=144) :: name
-        integer            :: direction 
+        integer            :: direction
         type(port), pointer :: next => null()
         real(kind=8), pointer :: vr(:) => null()
         integer(kind=4), pointer :: vi4(:) => null()
@@ -77,7 +77,7 @@ module yacs_module
     integer, parameter :: PORT_OUT = 1
 
 
-    
+
 
 
     contains
@@ -122,7 +122,7 @@ module yacs_module
           type(port), pointer :: fport
           logical :: exist
           call is_port_exist(port_name, exist, fport)
-          ASSERT( exist )          
+          ASSERT( exist )
       end subroutine
 
 
@@ -139,12 +139,12 @@ module yacs_module
             real(kind=4) :: time4
 
             call initialize_compo()
-            
+
             itime4=itime
             time4=time
 
             if( fport%direction .eq. PORT_OUT) then
-               
+
                if (associated(fport%vr)) then
                   nele4 = size(fport%vr)
                   call cpedb(icompo, cpiter, time, itime4,&
@@ -164,8 +164,8 @@ module yacs_module
                   call cpech(icompo, cpiter, time4, itime4, &
                             fport%name, nele4, fport%vk8(1) , info4 )
                   call errcou('Writing ', itime4, fport%name, info4, nele4, nele4)
-               endif 
-              
+               endif
+
 
             else
 
@@ -173,7 +173,7 @@ module yacs_module
                     nele4 = size(fport%vr)
                     call cpldb(icompo, cpiter, time, time, itime4,&
                               fport%name, nele4, nlu, fport%vr, info4)
-                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu) 
+                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
                endif
 
                if(associated(fport%vi4)) then
@@ -181,7 +181,7 @@ module yacs_module
                     time4 = time
                     call cplen(icompo, cpiter, time4, time4, itime4,&
                               fport%name, nele4, nlu, fport%vi4, info4)
-                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu) 
+                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
                endif
 
                if(associated(fport%vi4)) then
@@ -189,7 +189,7 @@ module yacs_module
                     time4 = time
                     call cplch(icompo, cpiter, time4, time4, itime4, &
                               fport%name, nele4, nlu, fport%vk8(1), info4)
-                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu) 
+                    call errcou('Reading ', itime4, fport%name, info4, nele4, nlu)
                endif
 
             endif
@@ -203,10 +203,10 @@ module yacs_module
            integer, intent(in) :: direction
            integer, intent(in) :: nvalues
            character(len=*), intent(in), optional :: typ
-           logical exist 
+           logical exist
 
            ! for foundport
-           type(port), pointer :: fport => null() 
+           type(port), pointer :: fport => null()
 
            if( .not. associated(first_port) ) then
               allocate(first_port)
@@ -217,7 +217,7 @@ module yacs_module
               call is_port_exist(name, exist, fport )
               ASSERT(.not. exist)
               allocate(fport%next)
-              fport => fport%next                        
+              fport => fport%next
            endif
 
            fport%name =name
@@ -243,7 +243,7 @@ module yacs_module
        subroutine is_port_exist(  name, exist, current )
            character(len=*), intent(in) :: name
            logical , intent(out) :: exist
-           type(port), pointer, optional :: current 
+           type(port), pointer, optional :: current
            current =>null()
            exist = .false.
 
@@ -263,7 +263,7 @@ module yacs_module
                     endif
 
                     current => current%next
-                    
+
                end do
            endif
 
@@ -298,7 +298,7 @@ module yacs_module
 
 
 
-        end subroutine 
+        end subroutine
 
 
 !--
@@ -306,7 +306,7 @@ module yacs_module
         subroutine get_previous_element(element, backele)
             ! return the element before
             type(port), pointer  :: element
-            type(port), pointer :: backele 
+            type(port), pointer :: backele
             type(port), pointer              :: current => null()
             backele => null()
             current => first_port

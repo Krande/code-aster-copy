@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff,&
     do n = 1, nno
         pres = pres + zr(i_pres+n-1) * vff(n,kpg)
     end do
-    
+
 !
 ! - Initializations
 !
@@ -109,10 +109,10 @@ subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff,&
                 do q = 1, 3
                     i = 3*(a-1) + p
                     j = 3*(b-1) + q
-                    
+
                     xpq1 = 0.0
                     xpq2 = 0.0
-                   
+
                     if (p.eq.1) then
                        if (q.eq.2) then
                            xpq1 = cova(3,1)
@@ -138,8 +138,8 @@ subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff,&
                            xpq2 = -cova(1,2)
                        endif
                     endif
-                   
-                   
+
+
                     matc(i,j) = matc(i,j) + poidsg*pres*vff(a,kpg)*( &
                                         dff(1,b)*xpq2-dff(2,b)*xpq1)
                 enddo
@@ -155,5 +155,5 @@ subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff,&
             zr(imatun-1+k) = zr(imatun-1+k) + matc(i,j)
         end do
     end do
-    
+
 end subroutine

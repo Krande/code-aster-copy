@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ integer, intent(out) :: retcom
         call satuvg(ds_thm, p1, satur, dsatur)
         ASSERT(ds_thm%ds_behaviour%satur_type .ne. SATURATED)
 !
-    else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO'.or. hydr.eq.'HYDR_TABBAL') then        
+    else if (hydr.eq.'HYDR_UTIL' .or. hydr.eq.'HYDR_ENDO'.or. hydr.eq.'HYDR_TABBAL') then
         if (ds_thm%ds_behaviour%satur_type .eq. SATURATED) then
             satur  = 1.d0
             dsatur = 0.d0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ integer, intent(out) :: variExteCode(2)
         call utmess('I', 'COMPOR4_21', si = nb_exte, sk = rela_comp)
         do i_exte = 1, nb_exte
             call utmess('I', 'COMPOR4_22', si = i_exte, sk = name_exte(i_exte))
-        end do 
+        end do
     endif
 
 ! - Coding
@@ -124,7 +124,7 @@ integer, intent(out) :: variExteCode(2)
                 endif
             endif
         end do
-    end do 
+    end do
     call iscode(tabcod, variextecode, 60)
 !
 end subroutine

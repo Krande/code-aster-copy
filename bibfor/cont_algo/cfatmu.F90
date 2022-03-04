@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ implicit none
     do kk = 1, neq
         zr(jatmu+kk-1) = 0.0d0
     end do
-    do iliac = 1, nbliac 
+    do iliac = 1, nbliac
         lliac = zi(jliac +iliac-1)
         jdecal = zi(japptr+lliac-1)
         nbddl = zi(japptr+lliac ) - zi(japptr+lliac-1)

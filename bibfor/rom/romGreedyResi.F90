@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
 ! In  i_coef           : index of coefficient
 !
 ! --------------------------------------------------------------------------------------------------
-!    
+!
     integer :: i_mode, i_matr, i_equa
     integer :: nb_mode, nb_coef, nb_matr, nb_equa
     aster_logical :: l_coef_cplx, l_coef_real
@@ -94,7 +94,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
                      i_mode_coef_ = i_mode_coef, i_coef_ = i_coef)
 !
 ! - Matrix contribution
-!    
+!
     if (ds_algoGreedy%solveROM%syst_2mbr_type .eq. 'R') then
         do i_mode = 1, i_mode_until
             do i_matr = 1, nb_matr
@@ -106,7 +106,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
                     vr_resi_vect(i_equa) = vr_resi_vect(i_equa) -&
                                           vr_coef_redu(nb_coef*(i_mode-1)+i_coef)*&
                                           coef_r*vr_matr_mode(i_equa+(i_mode-1)*nb_equa)
-                end do  
+                end do
             end do
         end do
     else if (ds_algoGreedy%solveROM%syst_2mbr_type .eq. 'C') then
@@ -126,11 +126,11 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
                     vc_resi_vect(i_equa) = vc_resi_vect(i_equa) -&
                                           vc_coef_redu(nb_coef*(i_mode-1)+i_coef)*&
                                           coef_cplx*vc_matr_mode(i_equa+(i_mode-1)*nb_equa)
-                end do  
+                end do
             end do
         end do
-     else 
+     else
         ASSERT(ASTER_FALSE)
-     end if 
+     end if
 !
 end subroutine

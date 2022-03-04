@@ -29,7 +29,7 @@ subroutine srcaln(s,b,vecn,retcom)
 !     : BPRIME  : PARAMETRE BPRIME
 ! OUT : VECN(6) : N = (BPRIME*S/SII-KRON)/SQRT(BPRIME**2+3)
 ! ===================================================================================
-    
+
     implicit none
 #include "asterc/r8miem.h"
 #include "asterfort/lcprsc.h"
@@ -40,21 +40,21 @@ subroutine srcaln(s,b,vecn,retcom)
 
     integer :: retcom
     real(kind=8) :: b,s(6),vecn(6)
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: i,ndt,ndi
     real(kind=8) :: sii,racine,kron(6),ptit
     common /tdim/ ndt, ndi
-    
+
     data kron /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    
+
     !!!
     !!! Calcul de sii et verif. qu'il n'est pas nul
     !!!
-    
+
     retcom=0
     ptit=r8miem()
 
@@ -65,17 +65,17 @@ subroutine srcaln(s,b,vecn,retcom)
         retcom=1
         goto 100
     endif
-    
+
     !!!
     !!! Calcul de n
     !!!
-    
+
     racine=sqrt(b*b+3.d0)
-    
+
     do i=1,ndt
         vecn(i)=(b*s(i)/sii-kron(i))/racine
     end do
-    
+
 100  continue
 
 end subroutine

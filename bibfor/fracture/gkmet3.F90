@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,12 +98,12 @@ implicit none
     end do
 
 !   CHOIX DU LISSAGE
-    call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ibid)  
+    call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ibid)
 
     if (lissg .eq. 'LAGRANGE_NO_NO') then
         num = 4
 
-!       CALCUL DE LA MATRICE DU SYTEME LINAIRE : MATRICE LUMPEE  
+!       CALCUL DE LA MATRICE DU SYTEME LINAIRE : MATRICE LUMPEE
         vect = '&&METHO3.VECT'
         call gmatl3(nnoff, milieu, connex, &
                     abscur, vect)
@@ -117,7 +117,7 @@ implicit none
             k2s(i) = k2th(i)/zr(ivect+i-1 )
             k3s(i) = k3th(i)/zr(ivect+i-1 )
             gis(i) = gith(i)/(zr(ivect+i-1 ) * zr(ivect+i-1 ))
-        enddo     
+        enddo
 
         if (.not.connex) then
 !       CORRECTION DES VALEURS ASSOCIEES AU 1ER ET DERNIER CHAMPS THETA
@@ -128,7 +128,7 @@ implicit none
                 sn2 = zr(iadabs-1+nnoff-2)
                 sn1 = zr(iadabs-1+nnoff-1)
                 sn = zr(iadabs-1+nnoff)
-            
+
                 gs(1) = gs(2)+(s1-s2)*(gs(3)-gs(2))/(s3-s2)
                 k1s(1) = k1s(2) + (s1-s2)*(k1s(3)-k1s(2))/(s3-s2)
                 k2s(1) = k2s(2) + (s1-s2)*(k2s(3)-k2s(2))/(s3-s2)
@@ -139,14 +139,14 @@ implicit none
                 k2s(nnoff) = k2s(nnoff-1) + (sn-sn1)*(k2s(nnoff-2)-k2s(nnoff-1))/(sn2-sn1)
                 k3s(nnoff) = k3s(nnoff-1) + (sn-sn1)*(k3s(nnoff-2)-k3s(nnoff-1))/(sn2-sn1)
                 gis(nnoff) = gis(nnoff-1) + (sn-sn1)*(gis(nnoff-2)-gis(nnoff-1))/(sn2-sn1)
-            
+
             endif
-        endif            
+        endif
 
     else if (lissg .eq. 'LAGRANGE') then
         num = 3
 
-!       CALCUL DE LA MATRICE DU SYTEME LINAIRE 
+!       CALCUL DE LA MATRICE DU SYTEME LINAIRE
         matr = '&&METHO3.MATRI'
         call  gmatc3(nnoff, milieu, connex, &
                      abscur, matr)
@@ -190,7 +190,7 @@ implicit none
                  endif
 
              endif
-        endif   
+        endif
 !       SYSTEME LINEAIRE:  MATR*GS = GTHI
         call gsyste(matr, nnoff, nnoff, gthi, gs)
 
@@ -239,7 +239,7 @@ implicit none
             zr(iadgks-1+(i-1)*5+5)=gs(i)
         end do
     endif
-        
+
     do i = 1, nnoff
         zr(iadgki-1+(i-1)*5+1) = zr(iadrgk-1+(i-1)*8+1)
         zr(iadgki-1+(i-1)*5+2) = zr(iadrgk-1+(i-1)*8+5)

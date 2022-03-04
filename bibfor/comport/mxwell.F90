@@ -53,7 +53,7 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
     aster_logical :: cplan
     integer :: ndim, imate, kpg, ksp, iret, ndimsi
     integer :: k, l, icodre(3)
-!       
+!
     real(kind=8) :: instam, instap, dt
     real(kind=8) :: rac2, valres(3)
     real(kind=8) :: em, num, e, nu, deuxGm, deuxG, bulkmodulusm, bulkmodulus
@@ -62,7 +62,7 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: depsmo, deps(6), depsdv(6), kron(6)
     real(kind=8) :: sigmmo, sigm(6), sigmdv(6), sigpmo, sigpdv(6), sigp(6), vip(*)
     real(kind=8) :: dsidep(6, 6)
-!   
+!
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: nomres(4), option
@@ -78,7 +78,7 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
 !
     cplan = typmod(1) .eq. 'C_PLAN'
 !
-    ndimsi = 2*ndim                    
+    ndimsi = 2*ndim
 !
     dt = instap - instam
     rac2 = sqrt(2.d0)
@@ -95,15 +95,15 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
 !
 
 ! Recuperation des parametres elastiques E et NU aux instants - et +
-    call rcvalb(fami, kpg, ksp, '-', imate,&            
+    call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
                 3, nomres(1), valres(1), icodre(1), 2)
     em = valres(1)
-    num = valres(2)    
+    num = valres(2)
     alpha=valres(3)
 !
     deuxGm = em/(1.d0+num)
-    bulkmodulusm = em/(3.d0*(1.d0-2.d0*num)) 
+    bulkmodulusm = em/(3.d0*(1.d0-2.d0*num))
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
@@ -117,11 +117,11 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
 !
     nomres(1)='ETA_D'
     nomres(2)='ETA_V'
-    call rcvalb(fami, kpg, ksp, '-', imate,&            
+    call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'VISC_MAXWELL', 0, ' ', [0.d0],&
                 2, nomres(1), valres(1), icodre(1), 2)
     etadm = valres(1)
-    etavm = valres(2)   
+    etavm = valres(2)
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
                 ' ', 'VISC_MAXWELL', 0, ' ', [0.d0],&
@@ -163,11 +163,11 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
     sigmmo = sigmmo /3.d0
      do k = 1, ndimsi
         sigmdv(k) = sigm(k) - sigmmo * kron(k)
-    end do   
+    end do
 !
 !    CALCUL DE SIGPMO, SIGPDV, SIGP .... ):
 !     -------------------------------------
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:16)&  
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:16)&
         .eq. 'RIGI_MECA_IMPLEX') then
 !
         sigpmo = 0.d0
@@ -185,7 +185,7 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
 !        ! SIGP
         do k = 1, ndimsi
             sigp(k) = sigpdv(k) + sigpmo*kron(k)
-        end do   
+        end do
 
         vip(1) = 0.d0
     endif
@@ -195,18 +195,18 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
 !
         dsidep(:,:)=0.d0
-!        ! Les 9 premiers termes 
-        do k = 1, 3            
-            do l = 1, 3    
+!        ! Les 9 premiers termes
+        do k = 1, 3
+            do l = 1, 3
                 dsidep(k,l) = dsidep(k,l) + bulkmodulus/(1.d0+bulkmodulus*dt/etav)&
                                  - (1.d0/3.d0)*deuxG/(1.d0+deuxG*dt/etad)
             end do
         end do
         ! Les termes diagonaux
         do k = 1, ndimsi
-            dsidep(k,k) = dsidep(k,k) + deuxG/(1.d0+deuxG*dt/etad)            
+            dsidep(k,k) = dsidep(k,k) + deuxG/(1.d0+deuxG*dt/etad)
         end do
-!       --  CORRECTION POUR LES CONTRAINTES PLANES 
+!       --  CORRECTION POUR LES CONTRAINTES PLANES
         if (cplan) then
             do k = 1, ndimsi
                 if (k .ne. 3) then

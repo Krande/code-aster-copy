@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine hydravar3d(hyd0,hydr,hyds,phi00,phi0,dth00,dth0,&
       implicit none
 #include "asterfort/hydrvari.h"
 
-      
+
 !     actualisation des variables internes en fonction du degre
 !     d hydratation
 
@@ -42,26 +42,26 @@ subroutine hydravar3d(hyd0,hydr,hyds,phi00,phi0,dth00,dth0,&
       integer j
       real(kind=8) :: wplt006(6),wplt06(6),wpltx006(6),wpltx06(6)
       real(kind=8) :: dth00,dth0,epleq00,epleq0
-   
-      
-!     reinitialisation dissipation visqeuse      
+
+
+!     reinitialisation dissipation visqeuse
       call hydrvari(phi00,phi0,hyd0,hydr,hyds)
-!     en dommagement thermique      
-      call hydrvari(dth00,dth0,hyd0,hydr,hyds)        
+!     en dommagement thermique
+      call hydrvari(dth00,dth0,hyd0,hydr,hyds)
 !     deformation plastique equivalente de cisaillement
-      call hydrvari(epleq00,epleq0,hyd0,hydr,hyds) 
+      call hydrvari(epleq00,epleq0,hyd0,hydr,hyds)
 !     endommagement effectif de fluage
-      call hydrvari(dfl00,dfl0,hyd0,hydr,hyds)       
+      call hydrvari(dfl00,dfl0,hyd0,hydr,hyds)
 !     deformation plastique
       do j=1,6
          call hydrvari(epspt600(j),epspt60(j),hyd0,hydr,hyds)
          call hydrvari(epspg600(j),epspg60(j),hyd0,hydr,hyds)
-         call hydrvari(epspc600(j),epspc60(j),hyd0,hydr,hyds)  
-         call hydrvari(epsk006(j),epsk06(j),hyd0,hydr,hyds) 
+         call hydrvari(epspc600(j),epspc60(j),hyd0,hydr,hyds)
+         call hydrvari(epsk006(j),epsk06(j),hyd0,hydr,hyds)
          call hydrvari(epsm006(j),epsm06(j),hyd0,hydr,hyds)
          call hydrvari(ett600(j),ett60(j),hyd0,hydr,hyds)
          call hydrvari(wplt006(j),wplt06(j),hyd0,hydr,hyds)
          call hydrvari(wpltx006(j),wpltx06(j),hyd0,hydr,hyds)
-      end do 
-      
+      end do
+
 end subroutine

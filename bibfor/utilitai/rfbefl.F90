@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ subroutine rfbefl(base)
         pas = (zr(ifsvr+4)-zr(ifsvr+3)) /(nbconn-1)
 
 !       --- CAS D'UN NOMBRE DE CONNORS UNIQUE (PAS DE DISCRETISATION EN X)
-!       --- FORCER UNE VALEUR MINIMUM DU PAS EN NOMBRE DE CONNORS 
+!       --- FORCER UNE VALEUR MINIMUM DU PAS EN NOMBRE DE CONNORS
         if (abs(pas).lt.epsi) then
             pas = epsi*1.d3
         end if
@@ -119,7 +119,7 @@ subroutine rfbefl(base)
             call jeveuo(basefl//'.VEN', 'L', iven)
             dec = 0
 !           ---- POUR LA METHODE TOUTES COMPOSANTS, DECALER DE NBMODES DANS .VEN
-            if (paray(1:15).eq.'INSTAB_TOUT_CMP') then 
+            if (paray(1:15).eq.'INSTAB_TOUT_CMP') then
                 call jelira(basefl//'.VEN', 'LONMAX', dec)
                 dec = dec/2
             end if
@@ -136,10 +136,10 @@ subroutine rfbefl(base)
                 write(*,*) "i=", i, "vc=", zr(ivcn+nbconn*(nummod-1)+i-1)
                 zr(lfon + i - 1) = zr(ivcn+nbconn*(nummod-1)+i-1)
             end do
-        else 
+        else
             ASSERT(.false.)
         end if
-    else 
+    else
         ASSERT(parax(1:8).eq.'VITE_FLU')
 
         call getvtx(' ', 'TOUT_ORDRE', scal=ttordr, nbret=n3)

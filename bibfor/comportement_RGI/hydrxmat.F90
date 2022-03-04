@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,18 +27,18 @@ subroutine hydrxmat(xmat0,xmat1,hydra1,hydras,n,&
 #include "asterfort/utmess.h"
       real(kind=8) :: xmat0,xmat1,hydra1,hydras,n
       integer erreur
-!   declaration locale      
+!   declaration locale
       real(kind=8) :: yy,zzmin,hydra
-!   avant le seuil d hydratation on a 1e-3 des cracateristiques       
+!   avant le seuil d hydratation on a 1e-3 des cracateristiques
       parameter (zzmin=1.0d-3)
-!   initialisation controle d erreur      
+!   initialisation controle d erreur
       erreur=0
       if((hydras.le.0.).or.(hydras.gt.(1.d0-zzmin))) then
              call utmess('E', 'COMPOR3_38')
              print*,xmat0,xmat1,hydra1,hydras,n
              xmat1=xmat0
              erreur=1
-      end if      
+      end if
       if (hydra1.le.(hydras+zzmin))then
          hydra=hydras+zzmin
       else

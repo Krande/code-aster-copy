@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine trvocz(ndim, nbvmas, livmas, jrepmo,&
 !       adresse dans l'objet '.CELD' des infos concernant ce grel
         iainfo = zi(jcelds-1+4+jgrel)
 !
-!       adresse dans l'objet '.CELV' de la premiere valeur du champ 
+!       adresse dans l'objet '.CELV' de la premiere valeur du champ
 !       de contrainte pour l'element porte par numavo
         iaval = zi(jcelds-1+iainfo+4+4*(jelem-1)+4)
 !

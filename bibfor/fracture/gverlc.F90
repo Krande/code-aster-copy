@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine gverlc(resu, compor, iord0)
 !
 ! In  resu   : name of result
 ! In  compor : name of COMPOR <CARTE>
-! In  iord0  : first NUME_ORDRE in result 
+! In  iord0  : first NUME_ORDRE in result
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -209,14 +209,14 @@ subroutine gverlc(resu, compor, iord0)
                         if (calv(1+iadc-1+1) .eq.'PETIT') then
 !---------------deformation set to PETIT in order to compute G
 !---------------could be licite -> Alarm
-                            if (cdefdifal .eq. 0) then 
+                            if (cdefdifal .eq. 0) then
                                 call utmess('A', 'RUPTURE1_45', nk=3, valk=valk)
                                 cdefdifal = 1
                             endif
                         else
 !----------------deformation set to another value
 !----------------no sense ! -> Fatal error
-                            if (cdefdiffat .eq. 0) then  
+                            if (cdefdiffat .eq. 0) then
                                 call utmess('F', 'RUPTURE1_2', nk=3, valk=valk)
                                 cdefdiffat=1
                             endif
@@ -248,7 +248,7 @@ subroutine gverlc(resu, compor, iord0)
                               call  utmess('F', 'RUPTURE1_3', nk=2, valk=valk)
                               cdefnook=1
                            endif
-                         endif                    
+                         endif
                     else
 ! ----------Non same deformation -> Check validity
                       call jenuno(jexnum(noma//'.NOMMAI', ima), nomail)
@@ -258,7 +258,7 @@ subroutine gverlc(resu, compor, iord0)
                       if (calv(1+iadc-1+1) .eq.'PETIT') then
 !----------Deformation set to PETIT in order to compute G
 !----------Could be licite -> Alarm
-                        if (cdefdifal .eq. 0) then 
+                        if (cdefdifal .eq. 0) then
                          call utmess('A', 'RUPTURE1_45', nk=3, valk=valk)
                          cdefdifal=1
                         endif
@@ -271,7 +271,7 @@ subroutine gverlc(resu, compor, iord0)
                         endif
                       endif
                       goto 999
-                    endif   
+                    endif
                     goto 999
                 endif
             endif

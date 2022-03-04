@@ -139,7 +139,7 @@ aster_logical    :: debug, redec, cnmhuj
 ! et on sauvegarde un indicateur d'erreur dans V34 (realise dans nmhuj)
 ! -------------------------------------------------------------------
        if (codret.eq.1) then
-       
+
           if (vip(34).gt.crit) then
              sigp(1:ndt) = sigm(1:ndt)
              codret = 2

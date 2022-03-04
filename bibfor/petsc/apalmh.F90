@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -234,8 +234,8 @@ use petsc_data_module
 !           ne tombe pas juste à cause des 2 termes diagonaux +1 et -1 qui sont là pour fixer
 !           l'égalité des 2 Lagrange
 !           Dans le cas des simples Lagrange, elle tombe juste
-!           Le "+1" est là dans le cas de double Lagrange qui vivent chacun sur 2 processus 
-!           différents (il y a alors un terme de couplage dans le bloc hors-diagonal) 
+!           Le "+1" est là dans le cas de double Lagrange qui vivent chacun sur 2 processus
+!           différents (il y a alors un terme de couplage dans le bloc hors-diagonal)
 !           (voir issue31132)
             !ibid = (v_idxd(iligg - low +1)/imults)*(imult) + 1
             ibid = imult * 6

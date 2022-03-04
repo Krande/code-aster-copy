@@ -135,18 +135,18 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
         endif
         ndim = 3
     endif
-    
+
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
 !
 !
 !
-!  -- Le mot-clé AFFE définit les caractéristiques du nouveau repère 
+!  -- Le mot-clé AFFE définit les caractéristiques du nouveau repère
 !     On peut définir un repère variable en définissant ces paramètres
-!     par mailles/groupes de mailles  
+!     par mailles/groupes de mailles
     call getfac('AFFE', nocc)
     do iocc = 1, nocc
 ! Construction de la liste des numéros de noeuds
-! sélectionnées par les mots-clés GROUP_NO et NOEUD 
+! sélectionnées par les mots-clés GROUP_NO et NOEUD
     call reliem(' ', ma, 'NU_NOEUD', 'AFFE', iocc,&
                 4, motcle, typmcl, mesnoe, nbn)
 !
@@ -672,7 +672,7 @@ subroutine chrpno(champ1, repere, nbcmp, icham, type)
                 'F', ibid)
     call detrsd('CHAM_NO_S', chams1)
     AS_DEALLOCATE(vk8=nom_cmp)
-   
+
     call jedema()
 !
 end subroutine

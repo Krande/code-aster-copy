@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,13 +28,13 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: matr_type_
-    character(len=*), intent(in) :: calc_opti_    
+    character(len=*), intent(in) :: calc_opti_
     character(len=*), intent(in) :: asse_opti_
     aster_logical, intent(in) :: l_calc
     aster_logical, intent(in) :: l_asse
     integer, intent(inout) :: nb_matr
     character(len=6), intent(inout)  :: list_matr_type(20)
-    character(len=16), intent(inout) :: list_calc_opti(20) 
+    character(len=16), intent(inout) :: list_calc_opti(20)
     character(len=16), intent(inout) :: list_asse_opti(20)
     aster_logical, intent(inout) :: list_l_asse(20)
     aster_logical, intent(inout) :: list_l_calc(20)

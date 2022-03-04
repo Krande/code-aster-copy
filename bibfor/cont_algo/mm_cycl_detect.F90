@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine mm_cycl_detect(ds_contact    , &
                           l_frot_zone   , i_cont_poin   ,&
-                           coef_cont, coef_frot,&                          
+                           coef_cont, coef_frot,&
                           pres_cont_prev, dist_cont_prev,&
                           pres_frot_curr,pres_frot_prev ,&
                           indi_frot_prev, dist_frot_prev,&

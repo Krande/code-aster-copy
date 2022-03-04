@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ implicit none
 !
 ! Contact - Solve
 !
-! LAC method - Define late elements for contact 
+! LAC method - Define late elements for contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -173,7 +173,7 @@ implicit none
 !
     if (present(nb_cont_type_)) then
         nb_cont_type_ = nb_cont_solv
-    endif  
+    endif
 !
 ! - Set index for contact/friction element
 !

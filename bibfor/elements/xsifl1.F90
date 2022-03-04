@@ -197,9 +197,9 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
 201          continue
 !         DDLS HEAVISIDE
             do 202 i = 1, ndim
-              do ig = 1, nfh              
+              do ig = 1, nfh
                 cpt=cpt+1
-                depla(i) = depla(i) + xcalc_heav(heavn(ino,ig),hea_fa(ilev),heavn(ino,5))& 
+                depla(i) = depla(i) + xcalc_heav(heavn(ino,ig),hea_fa(ilev),heavn(ino,5))&
                                     * ff(ino) * zr(idepl-1+ indi+cpt)
               enddo
 202          continue
@@ -240,7 +240,7 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
         dfor(:) = 0.d0
 !
 !       D(PRES)/DI n'etait pas correctement calcule dans cette routine.
-!       issue24174 supprime le calcul de cette quantite (DFOR reste nul) 
+!       issue24174 supprime le calcul de cette quantite (DFOR reste nul)
 !       et interdit toute autre chose qu'un chargement constant.
         if ( (option.eq.'CALC_K_G_XFEM') .or.&
              (option.eq.'CALC_G_XFEM') ) then

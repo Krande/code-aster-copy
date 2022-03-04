@@ -56,7 +56,7 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, typm)
 !        IOCC   : OCCURENCE COURANTE DE MOTFAC
 !     SORTIES:
 !        NBNOFF : NOMBRE DE NOEUDS EN FOND DE FISSURE
-!        TYPM   : FOND LINEAIRE OU QUADRATIQUE : SEG2 OU SEG3 
+!        TYPM   : FOND LINEAIRE OU QUADRATIQUE : SEG2 OU SEG3
 !
 !-----------------------------------------------------------------------
 !

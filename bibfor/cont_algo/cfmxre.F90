@@ -86,7 +86,7 @@ character(len=19), intent(in) :: hval_incr(*)
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
     l_cont_lac  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
     l_cont_exiv = cfdisl(ds_contact%sdcont_defi,'EXIS_VERIF')
-    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF') 
+    l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
     l_cont_node = ds_contact%l_cont_node
 !
 ! - Get fields name
@@ -124,7 +124,7 @@ character(len=19), intent(in) :: hval_incr(*)
         else if (l_cont_disc) then
             call cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter,&
                         cnsinr   , cnsper)
-        else if (l_cont_lac) then   
+        else if (l_cont_lac) then
             call cfmxr0_lac(mesh, ds_contact, ds_measure)
         else
             ASSERT(ASTER_FALSE)

@@ -46,7 +46,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! PROF_CHNO 
+! PROF_CHNO
 !
 ! Create object
 !
@@ -55,7 +55,7 @@ implicit none
 ! In  prof_chno    : name of PROF_CHNO
 ! In  base         : JEVEUX base to create PROF_CHNO
 ! In  nb_equa      : number of equations
-! In  nb_ligr      : number of LIGREL in .LILI object 
+! In  nb_ligr      : number of LIGREL in .LILI object
 !                   if not present => only mesh (nb_ligr=1)
 ! In  mesh         : name of mesh
 ! In  gran_name    : name of GRANDEUR
@@ -126,7 +126,7 @@ implicit none
         prno_length = (2+nb_ec)*nb_node_mesh
     else
         prno_length = prno_lengthz
-    endif   
+    endif
 !
 ! - Create object PRNO (collection)
 !

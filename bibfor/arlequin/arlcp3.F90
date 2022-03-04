@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine arlcp3(nbma1 ,nbma2 ,numno1,numno2,m3dea , &
              do 84 m=1,2
                 if (numno2(m,k) == numn2t(i)) then
                    do 85 n=1,2
-                      if (numno2(n,k) == numn2t(j)) then  
+                      if (numno2(n,k) == numn2t(j)) then
                          do 86 p=1,6
                             do 87 q=1,6
                                m1dass(6*(i-1)+p,6*(j-1)+q)= m1dass(6*(i-1)+p,6*(j-1)+q) &

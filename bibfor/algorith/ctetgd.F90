@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -195,7 +195,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !    VERIFICATION SUR COHERENCE DES DDL INTERFACES
 !
         do j = 1, 6
-        
+
             if (xtd(j) .gt. 0.d0 .and. xg(j) .eq. 0.d0) then
                 noer=zi(lldesc+inog-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
@@ -221,7 +221,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
         if (nook) then
             call utmess('F', 'ALGORITH15_7')
         endif
-        
+
         do j = 7, nbcmp
             if (idecd(j).eq. 1.d0) then
                 noer=zi(lldesc+inod-1)

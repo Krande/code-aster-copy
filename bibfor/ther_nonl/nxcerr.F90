@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmlerr.h"
-#include "asterfort/nxdocn.h" 
+#include "asterfort/nxdocn.h"
 #include "asterfort/wkvect.h"
 !
 !

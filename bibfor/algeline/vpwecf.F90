@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
     if (nfreq .eq. 0) then
         ASSERT(.false.)
     endif
-    
+
     if (typres .eq. 'DYNAMIQUE') then
         ideb = 1
         ifin = nfreq
@@ -139,7 +139,7 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
                 call utmess('I', 'ALGELINE6_71')
             endif
         endif
-        
+
         do ifreq = ideb, ifin, ipas
             counter = counter + 1
             if ((lamor.eq.0) .and. (ktyp.eq.'R') .and. (.not.lns)) then

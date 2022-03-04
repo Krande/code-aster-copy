@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -195,7 +195,7 @@ character(len=19) :: lischa
     call dismoi('EXI_AMOR_ALPHA', mate, 'CHAM_MATER', repk=rep1)
     call dismoi('EXI_AMOR_BETA', mate, 'CHAM_MATER', repk=rep2)
     call dismoi('EXI_AMOR_NOR', mate, 'CHAM_MATER', repk=rep3)
-    call dismoi('EXI_AMOR_TAN', mate, 'CHAM_MATER', repk=rep4) 
+    call dismoi('EXI_AMOR_TAN', mate, 'CHAM_MATER', repk=rep4)
     if ((rep1(1:3).eq.'OUI') .or. (rep2(1:3).eq.'OUI') .or. (rep3(1:3).eq.'OUI') .or.&
         (rep4(1:3).eq.'OUI')) then
         lamor = .true.

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine nomil(typma, nm, nbar)
     integer, intent(out) :: nm(12), nbar
 !
 !-----------------------------------------------------------------------
-!     BUT: RETOURNE UN TABLEAU DONNANT LE NUMÉRO LOCAL D'UN NOEUD 
+!     BUT: RETOURNE UN TABLEAU DONNANT LE NUMÉRO LOCAL D'UN NOEUD
 !           MILIEU PORTÉ SUR CHAQUE ARETE D'UNE MAILLE QUADRATIQUE
 !
 ! ARGUMENTS D'ENTRÉE:

@@ -25,9 +25,9 @@ module tenseur_dime_module
     implicit none
     private
     public:: rs, kron, voigt, proten, identity, sph_norm, deviator
-    
+
 #include "asterfort/assert.h"
-    
+
     real(kind=8),parameter,dimension(6)::KRONECKER=[1.d0,1.d0,1.d0,0.d0,0.d0,0.d0]
     real(kind=8),parameter,dimension(6)::RACINE_2=[1.d0,1.d0,1.d0,sqrt(2.d0),sqrt(2.d0),sqrt(2.d0)]
     real(kind=8),parameter             ::RAC3 = sqrt(3.d0)
@@ -64,7 +64,7 @@ end function rs
 ! =====================================================================
 
 function kron(ndimsi) result(kr)
-    
+
     implicit none
     integer,intent(in)            ::ndimsi
     real(kind=8),dimension(ndimsi):: kr
@@ -72,16 +72,16 @@ function kron(ndimsi) result(kr)
     ASSERT(ndimsi.eq.4 .or. ndimsi.eq.6)
     kr = KRONECKER(1:ndimsi)
 
-end function kron    
+end function kron
 
 
-    
+
 ! =====================================================================
 !  Vecteur de transformation pour representation de Voigt (*rac2 sur cis)
 ! =====================================================================
 
 function voigt(ndimsi) result(rac2)
-    
+
     implicit none
     integer,intent(in)            ::ndimsi
     real(kind=8),dimension(ndimsi):: rac2
@@ -89,14 +89,14 @@ function voigt(ndimsi) result(rac2)
     ASSERT(ndimsi.eq.4 .or. ndimsi.eq.6)
     rac2 = RACINE_2(1:ndimsi)
 
-end function voigt    
+end function voigt
 
 
-    
+
 ! =====================================================================
 !  matrice identite de taille n
 ! =====================================================================
-    
+
 function identity(n) result(idm)
     implicit none
     integer,intent(in) :: n
@@ -111,13 +111,13 @@ function identity(n) result(idm)
 
 
  end function identity
-    
+
 
 
 ! =====================================================================
 !  Deviateur d'un tenseur en representation de Voigt
 ! =====================================================================
-    
+
 function deviator(u) result(w)
     implicit none
     real(kind=8),dimension(:),intent(in) :: u
@@ -126,13 +126,13 @@ function deviator(u) result(w)
     w = u - sum(u(1:3))*kron(size(u))/3.d0
 
  end function deviator
-    
-    
-    
+
+
+
 ! =====================================================================
 !  Partie spherique normee d'un tenseur en representation de Voigt
 ! =====================================================================
-    
+
 function sph_norm(u) result(y)
     implicit none
     real(kind=8),dimension(:),intent(in) :: u
@@ -141,13 +141,13 @@ function sph_norm(u) result(y)
     y = sum(u(1:3))/RAC3
 
  end function sph_norm
-    
-    
-    
+
+
+
 ! =====================================================================
 !  Produit tensoriel de deux vecteurs de dimension quelconque
 ! =====================================================================
-    
+
 function proten(u,v) result(w)
     implicit none
     real(kind=8),dimension(:),intent(in) :: u,v
@@ -162,6 +162,6 @@ function proten(u,v) result(w)
     end do
 
  end function proten
-    
+
 
 end module tenseur_dime_module

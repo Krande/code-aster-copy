@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ real(kind=8), intent(out) :: dfgrd0(3, 3), dfgrd1(3, 3)
         call dcopy(neps, deps, 1, dstran, 1)
         call dcopy(neps, epsm, 1, stran, 1)
 ! TRAITEMENT DES COMPOSANTES 4,5,6 : DANS UMAT, GAMMAXY,XZ,YZ
-        call dscal(3, rac2, dstran(4), 1) 
+        call dscal(3, rac2, dstran(4), 1)
         call dscal(3, rac2, stran(4), 1)
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+ -> non traité
         call r8inir(9, 0.d0, dfgrd0, 1)
@@ -68,4 +68,3 @@ real(kind=8), intent(out) :: dfgrd0(3, 3), dfgrd1(3, 3)
     endif
 !
 end subroutine
-

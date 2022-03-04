@@ -98,8 +98,6 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     character(len=1) :: poum
     data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
 
-    ! print*, 'resi_inte_rela=', carcri(3)
-    ! print*, 'iter_inte_maxi=', carcri(1)
     iter_inte_maxi=abs(carcri(1))
     resi_inte_rela=carcri(3)
 !
@@ -188,11 +186,11 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !     1 - DETERMINATION DE BORNES BMIN ET BMAX POUR NEWTON, AINSI
 !         QUE D UN POINT D INITIALISATION JUDICIEUX  (solution de la bi-lineaire)
 !         0.22 - approximation de 2/9 qui correspond au point de changement de pente
-!         dans la loi bi-linéaire par Petersson     
-        dc1=dc*0.22 
+!         dans la loi bi-linéaire par Petersson
+        dc1=dc*0.22
         dn = (tn-sc)/(r-(sc*3)/(3.2*dc))
         if (dn >= dc1) then
-            dn=(tn-(3.0/7.0)*sc)/(r-(sc*3)/(7*3.2*(dc)))
+            dn=(tn-(3.d0/7.d0)*sc)/(r-(sc*3.d0)/(7.d0*3.2d0*(dc)))
             if (dn >= dc) then
                 dn=0.999*dc
             endif
@@ -204,7 +202,6 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 !     3 - BOUCLE DE CONVERGENCE DE L ALGORITHME DE NEWTON
         i = 0
-
 200     continue
 !         TEST DU CRITERE
         res = sc*exp(-sc*dn/gc) + r*dn-tn

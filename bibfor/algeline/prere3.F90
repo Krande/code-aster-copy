@@ -85,7 +85,7 @@ subroutine prere3(solveu, base, iret, matpre, matass,&
     ASSERT(kprecond(1:3) .eq. 'OUI')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   CALCUL DU PRE CONDITIONNEUR XFEM :: 
+!   CALCUL DU PRE CONDITIONNEUR XFEM ::
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (kprecond.eq.'OUI_DPB') then
 !
@@ -98,7 +98,7 @@ subroutine prere3(solveu, base, iret, matpre, matass,&
     endif
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   POURSUITE DE LA FACTORISATION ASTER :: 
+!   POURSUITE DE LA FACTORISATION ASTER ::
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     call prere2(solveu, base, iret, matpre, matass,&
                 npvneg, istop)

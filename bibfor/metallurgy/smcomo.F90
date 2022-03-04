@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,19 +43,19 @@ real(kind=8), intent(out) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
 ! In  nb_hist             : number of graph in TRC diagram
 ! Out trc                 : values of functions for TRC diagram
 !                          At T
-!                           trc(1=>nb_hist,1) : phase 1 
+!                           trc(1=>nb_hist,1) : phase 1
 !                           trc(1=>nb_hist,2) : phase 2
 !                           trc(1=>nb_hist,3) : phase 3
 !                           trc(1=>nb_hist,4) : derivative (by time) of temperature
 !                           trc(1=>nb_hist,5) : temperature
 !                          At T+5
-!                           trc(nb_hist=>2*nb_hist,1) : phase 1 
+!                           trc(nb_hist=>2*nb_hist,1) : phase 1
 !                           trc(nb_hist=>2*nb_hist,2) : phase 2
 !                           trc(nb_hist=>2*nb_hist,3) : phase 3
 !                           trc(nb_hist=>2*nb_hist,4) : derivative (by time) of temperature
 !                           trc(nb_hist=>2*nb_hist,5) : temperature
 !                          At T-5
-!                           trc(2*nb_hist=>3*nb_hist,1) : phase 1 
+!                           trc(2*nb_hist=>3*nb_hist,1) : phase 1
 !                           trc(2*nb_hist=>3*nb_hist,2) : phase 2
 !                           trc(2*nb_hist=>3*nb_hist,3) : phase 3
 !                           trc(2*nb_hist=>3*nb_hist,4) : derivative (by time) of temperature

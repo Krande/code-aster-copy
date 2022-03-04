@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -161,7 +161,7 @@ subroutine vpcres(eigsol, typres, raide, masse, amor, optiof, method, modrig, ar
     case default
         ASSERT(.false.)
     end select
-    
+
     call jedema()
 !
 end subroutine

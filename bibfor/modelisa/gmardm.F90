@@ -61,7 +61,7 @@ subroutine gmardm(nomgrm, modele, ier)
 
     ! nombre de mailles dans le groupe : nma
     call jelira(jexnom(noma//'.GROUPEMA', karg), 'LONUTI', nma)
-    
+
     ! -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
     call jelira(jexnom(noma//'.GROUPEMA', karg), 'LONMAX', ibid)
     if (ibid .eq. 1) then
@@ -70,7 +70,7 @@ subroutine gmardm(nomgrm, modele, ier)
         ASSERT(nma.eq.ibid)
     endif
 
-    ! verifier chaque maille 
+    ! verifier chaque maille
     call jeveuo(jexnom(noma//'.GROUPEMA', karg), 'L', kma)
     do jma = 1, nma
         ima = zi(kma-1+jma)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr, lcmin)
 !                                           -                     -
 !
 !    DANS LE CADRE DE LA PROPAGATION DE FISSURE XFEM AVEC LA METHODE
-!    FAST MARCHING UPWIND, ON CALCULE LA BASE LOCALE DE LA GRILLE 
+!    FAST MARCHING UPWIND, ON CALCULE LA BASE LOCALE DE LA GRILLE
 !    UTILISEE ET ON ARRANGE LES NOEUDS SELON LA DIRECTION DES AXES DE CETTE BASE
 !
 !    ENTREE

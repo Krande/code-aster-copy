@@ -191,7 +191,7 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
             call tophys_ms(dplmod, psidel, coevit, vite, vitglo)
         else
             call tophys(dplmod, depl, depglo)
-            call tophys(dplmod, vite, vitglo)        
+            call tophys(dplmod, vite, vitglo)
         endif
 
         nullify(coor_no)
@@ -210,7 +210,7 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
             ddeplo(i) = deploc(i) - deploc(3+i)
             dvitlo(i) = vitloc(i) - vitloc(3+i)
         end do
-    else 
+    else
         do i = 1, 3
             ddeplo(i) = deploc(i)
             dvitlo(i) = vitloc(i)
@@ -244,7 +244,7 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
         call locglo(flocal, sina, cosa, sinb, cosb,&
                     sing, cosg, fgloba)
 
-!       --- Generalized force on the first node  
+!       --- Generalized force on the first node
         call togene(dplmod1, fgloba, fext_nl)
 !       --- Generalized force on the second node
         if (nbno.eq.2) then
@@ -259,7 +259,7 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
                 call utmess('F', 'ALGORITH17_1', sr=time)
             end if
 
-!           --- Internal variables, retrieval           
+!           --- Internal variables, retrieval
             adherance = nint(vint(start+12))
             oldft(1)  =      vint(start+13)
             oldft(2)  =      vint(start+14)

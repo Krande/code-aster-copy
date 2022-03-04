@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -359,7 +359,7 @@ character(len=19), intent(in) :: sdpilo
         call jelira(liscmp, 'LONMAX', ival=nddl)
 !
         do iddl = 1, nddl
-            nomcmp = zk8(jlicmp-1+iddl) 
+            nomcmp = zk8(jlicmp-1+iddl)
             do ino = 1, nbno
                 if (selxfe) then
                     nume_node_1 = zi(jlino1-1+ino)
@@ -412,7 +412,7 @@ character(len=19), intent(in) :: sdpilo
         zk8(jlicmp-1+2) = 'DY'
         zk8(jlicmp-1+3) = 'DZ'
         do iddl = 1, nddl
-            nomcmp = zk8(jlicmp-1+iddl) 
+            nomcmp = zk8(jlicmp-1+iddl)
             do ino = 1, nb_node_mesh
                 nume_node = ino
                 call nueqch(' ', selpil, nume_node, nomcmp, numequ)

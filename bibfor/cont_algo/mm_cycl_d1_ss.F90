@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ implicit none
     call mm_cycl_zonc(pres_near, laug_cont_curr, zone_cont_curr)
 !
 ! - Sub-cycling 1 : grazing cycling
-! 
+!
 !   alpha_cont_matr = 0.3
 !   alpha_cont_vect = 0.9
     if (((zone_cont_prev.eq.3).and.(zone_cont_curr.eq.2)).or. &
@@ -72,28 +72,28 @@ implicit none
         cycl_sub_type = 1
 !        alpha_cont_matr = 0.5
 !        alpha_cont_vect = 1.0
-        if (zone_cont_prev.eq.3) then 
+        if (zone_cont_prev.eq.3) then
             alpha_cont_matr = 0.95
             alpha_cont_vect = 0.95
         else
             alpha_cont_matr = 0.05
             alpha_cont_vect = 0.05
         endif
-    
+
 !
 ! - Sub-cycling 2
 !
     elseif (((zone_cont_prev.eq.2).and.(zone_cont_curr.eq.4)).or. &
         ((zone_cont_prev.eq.4).and.(zone_cont_curr.eq.2))) then
         cycl_sub_type = 2
-        if (zone_cont_prev.eq.4) then 
+        if (zone_cont_prev.eq.4) then
             alpha_cont_matr = 1.0
             alpha_cont_vect = 1.0
         else
             alpha_cont_matr = 0.05
             alpha_cont_vect = 0.05
         endif
-    
+
 !
 ! - Sub-cycling 3
 !
@@ -102,7 +102,7 @@ implicit none
         cycl_sub_type = 3
         alpha_cont_matr = 1.0
         alpha_cont_vect = 1.0
-    
+
 !
 ! - Sub-cycling 4
 !
@@ -111,8 +111,8 @@ implicit none
         cycl_sub_type = 4
         alpha_cont_matr = 0.95
         alpha_cont_vect = 1.0
-    
-    else 
+
+    else
         cycl_sub_type = 5
         alpha_cont_matr = 0.5
         alpha_cont_vect = 0.5

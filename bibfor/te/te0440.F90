@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ character(len=16), intent(in) :: option, nomte
     endif
     call teattr('S', 'XFEM', enr, ibid)
 !     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
-    if (nfh.gt.0) then 
+    if (nfh.gt.0) then
       call jevech('PHEA_NO', 'L', jheavn)
       call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)

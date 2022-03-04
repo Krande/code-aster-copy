@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,16 +43,16 @@ real(kind=8), intent(out) :: sbjhm,wbjhm,epm
 !
 ! THM
 !
-! Compute the variation of the hydraulic pressure 
+! Compute the variation of the hydraulic pressure
 !
 ! --------------------------------------------------------------------------------------------------
 ! In  j_mater          : coded material address
 ! In  p1m              : capillary pressure - At beginning of step
-! In  p1               : capillary pressure - At end of current step! 
+! In  p1               : capillary pressure - At end of current step!
 ! In  dp1              : increment of capillary pressure
 ! In  dp2              : increment of gaz pressure
 ! In  phi0             : initial porosity (THM_INIT)
-! In  ep               : thickness of the adsorbed water layer 
+! In  ep               : thickness of the adsorbed water layer
 ! In  surf             : specific surface of the material
 ! In  shut             : shuttleworth parameter
 ! In  sbjh             : saturated pores volume fraction from BJH - At end of current step
@@ -73,16 +73,16 @@ real(kind=8), intent(out) :: sbjhm,wbjhm,epm
 ! --------------------------------------------------------------------------------------------------
 
     dpi = 0.d0
-    
+
 ! Value of sBJH and wbjh at beginning of step
     call rcvala(j_mater    , ' '          , 'THM_DIFFU'  ,&
-                    1      , 'PCAP'   , [p1m]      ,&       
-                    nb_para_bjh, para_name_bjh, para_vale_bjh, icodre_bjh,& 
+                    1      , 'PCAP'   , [p1m]      ,&
+                    nb_para_bjh, para_name_bjh, para_vale_bjh, icodre_bjh,&
                     1)
     sbjhm = para_vale_bjh(4)
     wbjhm = para_vale_bjh(5)
     epm   = para_vale_bjh(3)
-           
+
 
     dpi =dp2-(sbjh*p1)+(sbjhm*p1m)+((2./3.)*(0.5*(p1+p1m)*(sbjh-sbjhm)))&
     +((2./3.)*(surf/phi0)*(((wbjh*ep)+(wbjhm*epm))*0.5)*(-dp1))&

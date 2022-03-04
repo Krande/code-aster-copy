@@ -53,7 +53,7 @@ integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
 !                    (1) - Flag if physic exists (1 if exists)
 !                    (2) - Number of phases
 !                    (3) - Adress of first component in generalized strain vector
-!                    (4) - Adress of first component in vector of gen. stress for first phase 
+!                    (4) - Adress of first component in vector of gen. stress for first phase
 !                    (5) - Adress of first component in vector of gen. stress for second phase
 !                    (6) - Number of components for strains
 !                    (7) - Number of components for stresses (for each phase)
@@ -61,7 +61,7 @@ integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
 !                    (1) - Flag if physic exists (1 if exists)
 !                    (2) - Number of phases
 !                    (3) - Adress of first component in generalized strain vector
-!                    (4) - Adress of first component in vector of gen. stress for first phase 
+!                    (4) - Adress of first component in vector of gen. stress for first phase
 !                    (5) - Adress of first component in vector of gen. stress for second phase
 !                    (6) - Number of components for strains
 !                    (7) - Number of components for stresses (for each phase)
@@ -82,10 +82,10 @@ integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
 ! - Main parameters: mechanic, thermic, hydraulic
 !
     if (ds_thm%ds_elem%l_dof_meca) then
-        mecani(1) = 1 
+        mecani(1) = 1
     endif
     if (ds_thm%ds_elem%l_dof_ther) then
-        tempe(1)  = 1 
+        tempe(1)  = 1
     endif
     if (ds_thm%ds_elem%l_dof_pre1) then
         press1(1) = 1

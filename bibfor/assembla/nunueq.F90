@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Numbering 
+! Numbering
 !
 ! Set NUEQ object
 !
@@ -106,7 +106,7 @@ implicit none
     if (present(sd_iden_relaz)) then
         sd_iden_rela = sd_iden_relaz
         if (sd_iden_rela.ne.' ') then
-            call jeveuo(sd_iden_rela(1:19)//'.COLL', 'L', vk8 = v_sdiden_term)     
+            call jeveuo(sd_iden_rela(1:19)//'.COLL', 'L', vk8 = v_sdiden_term)
             call jeveuo(sd_iden_rela(1:19)//'.INFO', 'L', vi  = v_sdiden_info)
             call jeveuo(sd_iden_rela(1:19)//'.DIME', 'L', vi  = v_sdiden_dime)
             nb_iden_rela = v_sdiden_info(1)
@@ -127,10 +127,10 @@ implicit none
                             end if
                         end do
                         call jenonu(jexnom(mesh(1:8)//'.NOMNOE', node_name_term), i_node)
-                        v_rela_aux((i_node-1)*ncmpmx+i_cmp) = i_rela 
+                        v_rela_aux((i_node-1)*ncmpmx+i_cmp) = i_rela
                     end do
                     istart = istart+nb_term*2
-                end do    
+                end do
             else
                 call jeveuo(sd_iden_rela(1:19)//'.ISET', 'L', vi  = v_sdiden_iset)
                 if (v_sdiden_iset(1) .eq. 1) then
@@ -138,7 +138,7 @@ implicit none
                     v_nueq(:) = v_sdiden_nueq(:)
                     go to 100
                 end if
-            endif 
+            endif
         endif
     endif
 !
@@ -185,14 +185,14 @@ implicit none
                             else
 !
 ! ----------------------------- Find this dof in identity relation
-!                               
+!
                                 i_in_rela  = v_rela_aux((i_node-1)*ncmpmx+i_cmp_glob)
                                 if(i_in_rela .gt. 0) then
                                     l_in_rela = .true.
                                 else
                                     l_in_rela = .false.
                                 endif
-!                                
+!
 ! ----------------------------- This dof in identity relation
 !
                                 if (l_in_rela) then
@@ -217,7 +217,7 @@ implicit none
                                     v_rela_dof(i_in_rela) = i_equ
                                 endif
                             else
-                                i_equ = i_equ_old          
+                                i_equ = i_equ_old
                             endif
                             v_nueq(i_dof) = i_equ
                             if(.not.l_new_equa) then
@@ -245,5 +245,5 @@ implicit none
     end if
 100 continue
     call jedema()
-!    
+!
 end subroutine

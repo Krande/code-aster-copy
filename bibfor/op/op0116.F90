@@ -134,8 +134,8 @@ implicit none
 ! - Read parameters for input/output management
 !
     call nonlinDSInOutRead('THER', nomres, ds_inout)
-    
-    vect2 = '&&OP0116.2ND.MEMBRE'    
+
+    vect2 = '&&OP0116.2ND.MEMBRE'
     call chflch(rigthe,vect2,infcha)
     ds_inout%list_load_resu=infcha
 

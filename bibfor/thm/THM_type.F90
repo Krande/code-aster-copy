@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! THM - Define types 
+! THM - Define types
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -197,12 +197,12 @@ implicit none
 ! - Calcul BJH pour la loi 'HYDR_TABBAL'
 
     type THM_BJH
-        real(kind=8) :: epai  
-        real(kind=8) :: A0 
-        real(kind=8) :: shuttle 
-        real(kind=8) :: SBJH 
+        real(kind=8) :: epai
+        real(kind=8) :: A0
+        real(kind=8) :: shuttle
+        real(kind=8) :: SBJH
         real(kind=8) :: wBJH
-                       
+
     end type THM_BJH
 
 
@@ -231,11 +231,11 @@ implicit none
 ! ----- For solid
         aster_logical     :: l_r_gaz  = ASTER_FALSE
         type(THM_Solid)   :: solid
-        
+
 ! ----- For BJH approach
         aster_logical     :: l_bjh
-        type(THM_BJH)     :: bjh        
-        
+        type(THM_BJH)     :: bjh
+
     end type THM_Material
 ! - All parameters
     type THM_DS

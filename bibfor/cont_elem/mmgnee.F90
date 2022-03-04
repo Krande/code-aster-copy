@@ -161,7 +161,7 @@ real(kind=8), intent(inout) :: matree(27, 27)
         end do
 ! ----- CONTRIBUTION 3 :
 ! ----- JEU*{[(delta XI*H)+(NORM.d(delta YPR)/delta XI)]A[(delta XI*H)+(NORM.d(delta YPR)/delta XI)]
-        if (ndim .eq.3) then 
+        if (ndim .eq.3) then
             do inoe1 = 1, nne
                 do inoe2 = 1, nne
                     do idim2 = 1, ndim
@@ -180,12 +180,12 @@ real(kind=8), intent(inout) :: matree(27, 27)
     kappa(1,2)*kappa(2,2)*hah(2,2))*ffe(inoe2)                     + &
     (dlagrc-coefac*jeu)* wpg*jacobi*jeu*ffe(inoe1)                   * &
   mprt22(idim1,idim2)*(kappa(2,1)**2*hah(1,1)+2.d0*kappa(1,2)*kappa(2,2)*hah(1,2)     + &
-    kappa(2,2)**2*hah(2,2))*ffe(inoe2)  
+    kappa(2,2)**2*hah(2,2))*ffe(inoe2)
                         end do
                     end do
                 end do
             end do
-        else if (ndim .eq. 2) then 
+        else if (ndim .eq. 2) then
             do inoe1 = 1, nne
                 do inoe2 = 1, nne
                     do idim2 = 1, ndim

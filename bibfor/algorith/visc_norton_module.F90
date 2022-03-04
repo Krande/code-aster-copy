@@ -19,7 +19,7 @@
 module visc_norton_module
 
 ! ----------------------------------------------------------------------
-! VISCOSITE DE NORTON: 
+! VISCOSITE DE NORTON:
 !   Gestion du terme de viscosite et derivee
 !   Gestion du changement de variable dka <-> vsc
 ! ----------------------------------------------------------------------
@@ -41,8 +41,8 @@ module visc_norton_module
         real(kind=8) :: v0 = 0.d0
         real(kind=8) :: q  = 2.d0
     end type VISCO
-       
-    
+
+
 contains
 
 
@@ -51,9 +51,9 @@ contains
 ! =====================================================================
 
 function Init(visc,fami,kpg,ksp,imate,deltat)  result(self)
-        
+
     implicit none
-    
+
     aster_logical,intent(in)            :: visc
     integer,intent(in)                  :: kpg, ksp, imate
     real(kind=8),intent(in)             :: deltat
@@ -76,17 +76,17 @@ function Init(visc,fami,kpg,ksp,imate,deltat)  result(self)
 ! --------------------------------------------------------------------------------------------------
 
     self%visc = visc
-    
+
     if (visc) then
         call rcvalb(fami,kpg,ksp,'+',imate,' ','NORTON',0,' ',[0.d0],nb,nom,vale,iok,2)
         self%q  = 1.d0/vale(1)
         self%v0 = vale(2)/deltat**self%q
     end if
-            
+
     if (self%v0 .ne. 0.d0) then
         ASSERT(self%q .gt. 0 .and. self%q.lt.1.d0)
     end if
-    
+
 end function Init
 
 
@@ -136,7 +136,7 @@ function ddka_vsc(self,dka) result(drv)
         else
             ! infini -> on renvoie une valeur tres grande
             ! (ok car a priori utilise uniquement pour l'operateur tangent)
-            drv = r8gaem() 
+            drv = r8gaem()
         end if
     else
         drv = (self%v0*self%q) * dka**(self%q-1)
@@ -216,7 +216,7 @@ function f_vsc(self,dka,kv) result(vsc)
 
     ! one and one only among dka and kv is given
     ASSERT(present(dka) .eqv. .not.present(kv))
-    
+
     ! Selection of the appropriate variable
     if (present(dka)) then
         vsc = dka_to_vsc(self,dka)
@@ -225,7 +225,7 @@ function f_vsc(self,dka,kv) result(vsc)
     else
         vsc = dka_to_vsc(self,kv)
     end if
-    
+
 end function f_vsc
 
 
@@ -246,7 +246,7 @@ function dkv_vsc(self,kv) result (drv)
     else
         drv = ddka_vsc(self,kv)
     end if
-    
+
 end function dkv_vsc
 
 

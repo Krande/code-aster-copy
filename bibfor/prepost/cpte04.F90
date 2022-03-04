@@ -35,19 +35,19 @@ subroutine cpte04(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 !
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: inc 
+    integer, intent(in) :: inc
     integer, intent(in) :: jcoor
     integer, intent(in) :: jcnnpa
     character(len=24), intent(in) :: conloc
     character(len=24), intent(in) :: limane
     character(len=24), intent(in) :: nomnoe
-    integer, intent(in) :: nbno 
+    integer, intent(in) :: nbno
     integer, intent(in) :: jmacou
     integer, intent(in) :: jmacsu
     integer, intent(in) :: macou
     integer, intent(in) :: macsu
-    integer, intent(out) :: ind 
-    integer, intent(out) :: ind1      
+    integer, intent(out) :: ind
+    integer, intent(out) :: ind1
 ! -------------------------------------------------------------------------------------------------
 !        CREATION DES NOUVEAUX NOEUDS ET NOUVELLES MAILLES CAS TETRA 04
 ! -------------------------------------------------------------------------------------------------
@@ -65,8 +65,8 @@ subroutine cpte04(main  , maout , inc   , jcoor , jcnnpa, conloc,&
     zi(patch-1+1) = 18
 ! --- DDL INTERNE
     zi(patch-1+2)=nbno+ind1
-    zi(jcnnpa+nbno+ind1-1) = inc 
-! --- CREATION DU NOEUD DDL INTERNE      
+    zi(jcnnpa+nbno+ind1-1) = inc
+! --- CREATION DU NOEUD DDL INTERNE
     call cpnno(main,macou,zr(jcoor),ind1,nbno,nomnoe)
 ! --- NOUVEAUX ELEMENTS DE PEAU
     call jeecra(jexnum(conloc,ind), 'LONMAX', ival=3)
@@ -128,7 +128,7 @@ subroutine cpte04(main  , maout , inc   , jcoor , jcnnpa, conloc,&
     zi(jlimane+1-1)=ind+3
     zi(jlimane+2-1)=ind+4
     zi(jlimane+3-1)=ind+5
-    
+
     ind=ind+6
     ind1=ind1+1
 !

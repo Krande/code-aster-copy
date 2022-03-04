@@ -61,7 +61,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 3 
+    integer, parameter :: nbin = 3
     integer, parameter :: nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
@@ -119,7 +119,7 @@ implicit none
     call megeom(model, chgeom)
 !
 ! - Time field
-! 
+!
     call mecact('V', chtime, 'MODELE', model, 'INST_R  ',&
                 ncmp=1, nomcmp='INST', sr=time)
 !
@@ -142,7 +142,7 @@ implicit none
 !
     do i_load = 1, nb_load
         load_name = v_load_name(i_load)(1:8)
-        load_nume = v_load_info(i_load+1)  
+        load_nume = v_load_info(i_load+1)
         if ((load_nume.gt.0) .and. (load_nume.le.4)) then
             ligrch   = load_name//'.CHME.LIGRE'
 !

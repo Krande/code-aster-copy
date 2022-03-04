@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine xcesrd(ces, chsnpg)
 !  BUT : reduire un champ elementaire simple (CHAM_ELEM_S), de type ELGA,
 !        defini sur la famille "XFEM", de sorte que parmis l'ensemble des
 !        points de Gauss possibles, seuls les oints de Gauss des sous-
-!        elements portent une valeur non "nulle"  
+!        elements portent une valeur non "nulle"
 ! -----------------------------------------------------------------
 !
 ! CES INOUT     K19 :  NOM DU CHAMP A CHANGER
@@ -85,7 +85,7 @@ subroutine xcesrd(ces, chsnpg)
         ASSERT(abs(iadnpg).gt.0)
         if (iadnpg.le.0) cycle
 !
-!       recuperation du nombre de point de Gauss de l'element 
+!       recuperation du nombre de point de Gauss de l'element
         npg=cesvnpg(iadnpg)
 !
         nbpt = zi(jcesd-1+5+4*(ima-1)+1)
@@ -95,7 +95,7 @@ subroutine xcesrd(ces, chsnpg)
 !       on met a 0 les points dont on n'a pas besoin
         do ipt=npg+1, nbpt
             do isp=1, nbsp
-                do icmp=1, nbcmp 
+                do icmp=1, nbcmp
                     call cesexi('C', jcesd, jcesl, ima, ipt, isp, icmp, iad)
                     if (iad.le.0) cycle
                     if (lreal) zr(jcesv-1+iad)  = 0.d0

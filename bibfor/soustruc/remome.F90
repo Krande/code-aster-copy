@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ subroutine remome(promes, modmes, nommac)
     call rsorac(modmes, 'LONUTI', 0, rbid, k8bid,&
                 cbid, rbid, 'ABSOLU', tord, 1,&
                 ibid)
-    nbmtot=tord(1)            
+    nbmtot=tord(1)
 !
 !
 ! BOUCLE SUR LES NUMEROS ORDRE

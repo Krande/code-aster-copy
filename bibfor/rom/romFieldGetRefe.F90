@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ type(ROM_DS_Field), intent(inout) :: field
 ! Ptr resultField      : pointer to type of active fields in results datastructure
 ! Ptr resultFieldNume  : pointer to a storing index which is valid for active field
 ! In  fieldName        : name of field (NOM_CHAM)
-! IO  field            : representative field 
+! IO  field            : representative field
 !
 ! --------------------------------------------------------------------------------------------------
 !

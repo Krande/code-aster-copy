@@ -263,7 +263,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !         ON ZAPPE LA POSITION DES DDLS HEAVISIDE DE PRESSION QUELQUE SOIT LA
 !         NATURE DU NOEUD
                 ipos=ipos+1
-!                
+!
  85         continue
 !
  70     continue
@@ -325,7 +325,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 140         continue
 100     continue
     endif
-    if (pre1) then 
+    if (pre1) then
 !
 !      CALCUL DES LAGRANGES DE CONTACT HM-XFEM
 !      SEULEMENT POUR LES POINTS D'INTERSECTION
@@ -340,7 +340,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                call elelin(contac, elrefp, elrefc, ibid, nnol)
                call xpoffo(ndim, ndime, elrefc, nnol, igeom,&
                            co, ff)
-           else 
+           else
                ASSERT(.false.)
            endif
 ! ---  FONCTIONS DE FORMES MODIFIÉES
@@ -362,7 +362,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                       laghm(i)=laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
                       +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j,fiss)-1)+i))*ffc(j)
 330               continue
-310           continue 
+310           continue
 !
               do 311 i = 1, ndim
 ! ---  CALCUL DE LAGS_C, LAGS_F1 ET LAGS_F2 (DDLS LIES A LA PARTIE COHESIVE)
@@ -405,7 +405,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 315           continue
            endif
        endif
-    else 
+    else
 !
 !     CALCUL DES LAGRANGES DE CONTACT FROTTEMENT
 !     SEULEMENT POUR LES POINTS D'INTERSECTION
@@ -454,7 +454,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !       ADRESSAGE DANS LE TABLEAU ZR DES DDLS DE PRESSIONS
         zr(idecv2+ndimc+1)=press
         zl(idecl2+ndimc+1)=.true.
-        if (lpint.and.lcont) then 
+        if (lpint.and.lcont) then
 !       ADRESSAGE POUR LES LAGRANGES DE CONTACT HM-XFEM
            do 360 i = 1, 3
               zr(idecv2+ndimc+1+i)=laghm(i)

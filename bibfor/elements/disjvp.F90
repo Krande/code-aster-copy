@@ -118,11 +118,11 @@ integer, intent(out)          :: iret
     real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
     integer                 :: nbdecp
 !   Variables internes
-    integer,parameter       :: nbvari=9, nbcorr=6, idebut=nbvari, iddp=7, iddm=8 
+    integer,parameter       :: nbvari=9, nbcorr=6, idebut=nbvari, iddp=7, iddm=8
     integer                 :: Correspond(nbcorr)
     real(kind=8)            :: varmo(nbvari), varpl(nbvari)
 !
-!   système d'équations : 
+!   système d'équations :
 !   integer :: imoment, itheta, ithetap, idp, idm, ixm, idiss
 !   parameter (imoment=1,itheta=2,ithetap=3,idp=4,idm=5,ixm=6,idiss=7)
     integer, parameter      :: imoment=1,itheta=2,ithetap=3,idp=4,idm=5,ixm=6,idiss=7
@@ -191,8 +191,8 @@ integer, intent(out)          :: iret
         varmo(ii) = zr(ivarim+ii-1)
         varpl(ii) = varmo(ii)
     enddo
-!   
-!   
+!
+!
 !   loi de comportement non-linéaire : récupération du temps + et - , calcul de dt
     call jevech('PINSTPR', 'L', jtp)
     call jevech('PINSTMR', 'L', jtm)
@@ -205,10 +205,10 @@ integer, intent(out)          :: iret
     nbdecp = abs( int(zr(icarcr)))
 !   tolérance de convergence (RESI_INTE_RELA=1.0E-06 par défaut)
     errmax = zr(icarcr+2)
-!   
+!
 ! --------------------------------------------------------------------------------------------------
-!   Relation de comportement 
-!   
+!   Relation de comportement
+!
 !   Coordonnees du discret dans le repère local
     xl(:) = 0.0
     if (for_discret%ndim .eq. 3) then
@@ -216,7 +216,7 @@ integer, intent(out)          :: iret
     else if (for_discret%ndim .eq. 2) then
         call ut2vgl(for_discret%nno, 2, for_discret%pgl, zr(igeom), xl)
     endif
-!   
+!
 !   Caractéristiques du matériau
 !    1    2    3      4    5     6      7     8
 !   'KE','KP','KDP','KDM','RDP','RDM','MYP','MYM'
@@ -232,7 +232,7 @@ integer, intent(out)          :: iret
 !
 !   comportement non-linéaire suivant le RZ local
 !   équations du système :
-!              1      2       3    4   5   6   7 
+!              1      2       3    4   5   6   7
 !       yy   : M, theta, theta_p,  dp, dm, Xm, Diss
 !       vari :        1       2    3   4   5    6
     Correspond(:) = [2, 3, 4, 5, 6, 7]
@@ -284,7 +284,7 @@ integer, intent(out)          :: iret
     deplac = resu(itheta) - y0(itheta)
     raide(6) = ldcpar(ike)
     if ( abs(deplac) > r8prem() ) then
-        raide(6) = abs((resu(imoment) - y0(imoment))/deplac) 
+        raide(6) = abs((resu(imoment) - y0(imoment))/deplac)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   Actualisation de la matrice tangente : klv(i,i) = raide(i)
@@ -297,7 +297,7 @@ integer, intent(out)          :: iret
             call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imatsym))
         endif
     endif
-!    
+!
     if ( for_discret%lVect .or. for_discret%lSigm ) then
         ! Demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, neq)

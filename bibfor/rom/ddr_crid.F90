@@ -124,7 +124,7 @@ integer, intent(in)           :: v_node_rid(nb_node_rid)
 !
 ! - Add GROUP_MA in mesh
 !
-    call addGroupElem(mesh, 1) 
+    call addGroupElem(mesh, 1)
 !
 ! - Add GROUP_NO in mesh
 !
@@ -133,7 +133,7 @@ integer, intent(in)           :: v_node_rid(nb_node_rid)
     else
         nb_group_add = 1
     endif
-    call addGroupNode(mesh, nb_group_add) 
+    call addGroupNode(mesh, nb_group_add)
 !
 ! - Set list of which nodes from mesh are in RID
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     real(kind=8) :: mm, xm, sim, my, fp, re, dre, hrem, hrep, hdrp, hdrm, kplus, kmoins, lamb
     real(kind=8) :: factp, factm, fact,dm1, dm2, dd1, dd2
 !
-!   système d'équations : 
+!   système d'équations :
     integer :: imoment, itheta, ithetap, idp, idm, ixm, idiss
     parameter (imoment=1,itheta=2,ithetap=3,idp=4,idm=5,ixm=6,idiss=7)
 !   paramètres du modèle : KE, KP, KDP, KDM, RDP, RDM, MYP, MYM
@@ -111,7 +111,7 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
         factm=ppr(ikdm)+(ppr(ike)-ppr(ikdm))*(abs(ppr(irdm))/yy0(idm))*(1.-re*hdrm/yy0(idm))
         fact= hrep*factp+hrem*factm
         if ((ppr(ikp)+fact)> r8prem() ) then
-            lamb=sim*dyy(itheta)*fact/(ppr(ikp)+fact) 
+            lamb=sim*dyy(itheta)*fact/(ppr(ikp)+fact)
             if (lamb > 0.) then
                 dyy(ithetap)=sim*lamb
             endif

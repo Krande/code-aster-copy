@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 module endo_rigi_unil_module
 
     use tenseur_dime_module, only: kron, rs
-    
+
     implicit none
     private
     public:: MATERIAL, ComputeStress, ComputeEnergy
@@ -42,7 +42,7 @@ module endo_rigi_unil_module
 contains
 
 ! =====================================================================
-!  CONTRAINTES ET RIGIDITE AVEC RESTAURATION DE RIGIDITE 
+!  CONTRAINTES ET RIGIDITE AVEC RESTAURATION DE RIGIDITE
 ! =====================================================================
 
 subroutine ComputeStress(mat,eps,rigi,elas,prece,sigpos,signeg,de_spos,de_sneg)
@@ -89,7 +89,7 @@ subroutine ComputeStress(mat,eps,rigi,elas,prece,sigpos,signeg,de_spos,de_sneg)
     call lcesme(rs(6,eps),eigeps,para,NegPart,prece/safe,unieps_6,dereps_66)
     unieps = unieps_6(1:size(eps))
     dereps = dereps_66(1:size(eps),1:size(eps))
-    
+
 
 !   Stress
     sigall = mat%lambda*treps*kr + mat%deuxmu*eps
@@ -119,7 +119,7 @@ end subroutine ComputeStress
 
 
 ! =====================================================================
-!  ENERGIE AVEC RESTAURATION DE RIGIDITE 
+!  ENERGIE AVEC RESTAURATION DE RIGIDITE
 ! =====================================================================
 
 subroutine ComputeEnergy(mat,eps,wpos,wneg)
@@ -144,7 +144,7 @@ subroutine ComputeEnergy(mat,eps,wpos,wneg)
 !   Initialisation
     para(1) = mat%regam
     para(2) = 0.d0
-    
+
 !   Strain characteristics and total energy
     treps = sum(eps(1:3))
     call lcvalp(rs(6,eps),eigeps)
@@ -164,7 +164,7 @@ end subroutine ComputeEnergy
 
 
 ! =====================================================================
-!   SMOOTHED NEGATIVE HALF SQUARE FUNCTION 
+!   SMOOTHED NEGATIVE HALF SQUARE FUNCTION
 !   f(x) approximate 0.5 * <-x>**2
 !     f(x) = 0.5 * x**2 * exp(1/(gamma*x)) if x<0
 !     f(x) = 0                             if x>0
@@ -184,7 +184,7 @@ function NegHalfSquare(x,p) result(nhs)
     real(kind=8) :: ga
 ! ---------------------------------------------------------------------
 
-    ASSERT(size(p).eq.2)   
+    ASSERT(size(p).eq.2)
     ga  = p(1)
     if (ga*x .ge. -1.d-3) then
         nhs = 0.d0
@@ -215,13 +215,13 @@ subroutine NegPart(x,p,val,der)
 !        p(1) = gamma (smoothing parameter)
 !        p(2) = 0 si secant, 1 si tangent
 ! val: f(x)
-! der: f'(x) ou f(x)/x si secant 
+! der: f'(x) ou f(x)/x si secant
 ! ---------------------------------------------------------------------
     aster_logical:: elas
     real(kind=8) :: regam
 ! ---------------------------------------------------------------------
 
-    ASSERT(size(p).eq.2)   
+    ASSERT(size(p).eq.2)
     regam = p(1)
     elas  = p(2).gt.0.5d0
 

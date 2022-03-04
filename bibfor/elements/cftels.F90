@@ -152,7 +152,7 @@ subroutine cftels(typco, effn, effm, efft, ht, fbeton, sigbet,&
         Xmin = cotheta_0/(1.d0+(cotheta_0**2))
         if (X.le.Xmin) then
 !           PARTICIPATION DU BETON AU CISAILLEMENT
-            if (sigma_cp.gt.0.d0) then 
+            if (sigma_cp.gt.0.d0) then
                 Vfd = 0.068*z*(1.d0-(cotheta_0/4.d0))*sigbet
             else
                 Vfd = 0.068*z*(1.d0-(0.36/cotheta_0))*sigbet

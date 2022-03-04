@@ -63,7 +63,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !     VECTEURS INTERMEDIAIRE ET ORIENTATION DES MAILLES
     call wkvect('&&XINILS.LIMFISO', 'V V I', nbmaf, jmafit)
     call wkvect('&&XINILS.ORIENT', 'V V I', nbmaf, jmaori)
-    AS_ALLOCATE(vl=is_pt_fond,size=nbno) 
+    AS_ALLOCATE(vl=is_pt_fond,size=nbno)
     is_pt_fond(1:nbno)=.false.
     do isefis = 1, nbsef
       nseabs=zi(jdlise-1+(isefis-1)+1)
@@ -286,7 +286,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
  11 continue
 !
-    AS_DEALLOCATE(vl=is_pt_fond) 
+    AS_DEALLOCATE(vl=is_pt_fond)
     call jedema()
 !
 end subroutine

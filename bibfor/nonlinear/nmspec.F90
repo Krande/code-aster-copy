@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmspec(model          , ds_material  , cara_elem  , list_load  , list_func_acti,& 
+subroutine nmspec(model          , ds_material  , cara_elem  , list_load  , list_func_acti,&
                   nume_dof       , nume_dof_inva, ds_system ,&
                   ds_constitutive,&
                   sddisc         , nume_inst    ,&
@@ -121,8 +121,8 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
                         model          , ds_material  , cara_elem , list_load  , list_func_acti,&
                         nume_dof       , nume_dof_inva, ds_system ,&
                         ds_constitutive,&
-                        sddisc         , nume_inst    ,& 
-                        sddyna         , sderro       , ds_algopara,& 
+                        sddisc         , nume_inst    ,&
+                        sddyna         , sderro       , ds_algopara,&
                         ds_measure     ,&
                         hval_incr      , hval_algo    ,&
                         hval_meelem    , hval_measse  ,&
@@ -143,8 +143,8 @@ type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
                         model          , ds_material  , cara_elem , list_load  , list_func_acti,&
                         nume_dof       , nume_dof_inva, ds_system ,&
                         ds_constitutive,&
-                        sddisc         , nume_inst    ,& 
-                        sddyna         , sderro       , ds_algopara,& 
+                        sddisc         , nume_inst    ,&
+                        sddyna         , sderro       , ds_algopara,&
                         ds_measure     ,&
                         hval_incr      , hval_algo    ,&
                         hval_meelem    , hval_measse  ,&

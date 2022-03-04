@@ -23,7 +23,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 ! intnewm : Integrate from t_i to t_i+1 the differential equations of motion
 !           using an integral method.
-! 
+!
 #include "jeveux.h"
 #include "blas/dcopy.h"
 #include "asterc/r8prem.h"
@@ -118,7 +118,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
     call intget(sd_int, DEPL, iocc=2, lonvec=iret, buffer=buffint)
     if (iret.eq.0) then
 !
-!       2.1 - Algorithm initialization : 
+!       2.1 - Algorithm initialization :
 !       --- Parameters
         call intinivec(sd_int, PARAMS, 1, vr=par)
 !
@@ -127,11 +127,11 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
         call intinivec(sd_int, WORK2, nbequ, vr=s0_r)
 
 !       --- za* [>---real part ---<,>---imag part ---<]
-        call intinivec(sd_int, WORK3, 2*nbequ, vr=za1_ri) 
-        call intinivec(sd_int, WORK4, 2*nbequ, vr=za2_ri) 
+        call intinivec(sd_int, WORK3, 2*nbequ, vr=za1_ri)
+        call intinivec(sd_int, WORK4, 2*nbequ, vr=za2_ri)
 
 !       --- trans [>--- velocity ---<,>--- displacement ---<]
-        call intinivec(sd_int, WORK5, 4*nbequ, vr=trans_vd) 
+        call intinivec(sd_int, WORK5, 4*nbequ, vr=trans_vd)
 
 !       --- Allocate work vectors for NL_SAVES
         call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli)
@@ -163,7 +163,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
             call intget(sd_int, RIGI_DIA, iocc=1, vr=kgen,buffer=buffint)
             kdiag = .true.
         end if
-        
+
         if (.not.(mdiag.and.kdiag)) then
             call utmess('F', 'DYNAMIQUE_83')
         end if
@@ -217,9 +217,9 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, PARAMS, vr=par     , buffer=buffint)
         call intget(sd_int, WORK1 , vr=omegas  , buffer=buffint)
         call intget(sd_int, WORK2 , vr=s0_r    , buffer=buffint)
-        call intget(sd_int, WORK3 , vr=za1_ri  , buffer=buffint) 
-        call intget(sd_int, WORK4 , vr=za2_ri  , buffer=buffint) 
-        call intget(sd_int, WORK5 , vr=trans_vd, buffer=buffint) 
+        call intget(sd_int, WORK3 , vr=za1_ri  , buffer=buffint)
+        call intget(sd_int, WORK4 , vr=za2_ri  , buffer=buffint)
+        call intget(sd_int, WORK5 , vr=trans_vd, buffer=buffint)
         if (nbsavnl.gt.0) call intget(sd_int, WORK6, vr=nlsav0, buffer=buffint)
 
 !       --- Retrieval of already allocated DEPL/VITE/ACCE/2 (t_i+1)
@@ -302,12 +302,12 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 !       and then calculating the force at (t_i+1) with this estimation
     do i = 1, nbequ
         vite2(i) = vite1(i) + ( dt * acce1(i) )
-        depl2(i) = depl1(i) + ( dt * vite2(i) )        
+        depl2(i) = depl1(i) + ( dt * vite2(i) )
     enddo
     call intsav(sd_int, TIME , 1, iocc=2, rscal=t1+dt, buffer=buffint)
     call intsav(sd_int, STEP , 1, iocc=2, rscal=dt, buffer=buffint)
     call intsav(sd_int, INDEX, 1, iocc=2, iscal=ind1+1, buffer=buffint)
-    
+
     call dtmforc(sd_dtm, sd_int, 2, buffdtm, buffint)
     if (nbsavnl.gt.0) call dcopy(nbsavnl, nlsav0, 1, nlsav1, 1)
 
@@ -319,7 +319,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
         call dcopy(nbequ, fext2, 1, fext1, 1)
     end if
 
-    
+
     do i = 1, nbequ
         zin = za1(i) * ( za2(i)*fext2(i) + za3(i)*fext1(i) )
         vite2(i) = trans_v(1,i)*vite1(i) + trans_v(2,i)*depl1(i) + &

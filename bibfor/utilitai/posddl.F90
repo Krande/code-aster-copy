@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ implicit none
 !
 ! In  typesd    : type of datastructure (chamno/nume_ddl)
 ! In  resu      : name of datastructure (chamno/nume_ddl)
-! In  node_name : name of (physical) node to find 
+! In  node_name : name of (physical) node to find
 ! In  cmp_name  : name of component to find
 ! Out node_nume : index of node (in mesh)
 !                 0 if node doesn't exist
@@ -61,7 +61,7 @@ implicit none
     character(len=8), pointer :: list_cmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     dof_nume = 0
     if (typesd .eq. 'NUME_DDL') then
         call dismoi('NOM_MAILLA', resu, 'NUME_DDL', repk=mesh)

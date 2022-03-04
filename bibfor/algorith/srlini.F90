@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,31 +30,31 @@ subroutine srlini(sigf,nr,yd,dy)
 !     : YD(NDT+3)  : VALEUR DES INCONNUES A T
 ! OUT : DY(NDT+3)  : SOLUTION ESSAI  = ( DSIG DLAMBDA DXIP DXIVP )
 ! ===================================================================================
-    
+
     implicit   none
-    
+
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nr
     real(kind=8) :: sigf(6),yd(nr),dy(nr)
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: ndi,ndt,i
     common /tdim/ ndt,ndi
-    
+
     !!!
     !!! Initialisation de dy
     !!!
-    
+
     do i=1,ndt
         dy(i)=0.d0
     end do
-    
+
     do i=1,ndt
         dy(i)=sigf(i)-yd(i)
     end do

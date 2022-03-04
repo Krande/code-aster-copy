@@ -55,7 +55,7 @@ character(len=*), intent(in) :: pchn1, pchn2
                 l_same_ligr = ASTER_TRUE
             endif
         end do
-! ----- LIGREL Not found but no dof 
+! ----- LIGREL Not found but no dof
         if (.not. l_same_ligr) then
             call jelira(jexnum(prno1, i_lili1), 'LONMAX', prno_length)
             if (prno_length .eq. 0) then

@@ -150,7 +150,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
     nomnoe(1) = nnoeca
     nomddl(1) = 'DEPL'
     coemur(1) = 1.0d0
-    
+
     l_excent = .true.
     if (excent .eq. 0.0d0) l_excent = .false.
 
@@ -199,7 +199,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
             ff(1) = ff(4)
             ff(4) = ff(3)
             ff(3) = ff(2)
-            ff(2) = ffel2d 
+            ff(2) = ffel2d
             if (nbcnx.ge.8) then
                 ffel2d = ff(5)
                 ff(5) = ff(8)
@@ -215,7 +215,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
             i1 = iproj - 10
             i2 = i1 + 1
             if (i2 .gt. nbsom) i2 = 1
-            if (l_excent) then 
+            if (l_excent) then
                 ind = 3
             else
                 ind = 2
@@ -228,7 +228,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
             coemur(1+1) = -ff(i1)
             coemur(1+ind) = -ff(i2)
 !
-            if (l_excent)then          
+            if (l_excent)then
                 nbterm = 5
                 nomnoe(1+2) = nomnoe(1+1)
                 nomnoe(1+4) = nomnoe(1+ind)

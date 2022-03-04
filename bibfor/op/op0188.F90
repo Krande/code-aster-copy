@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ subroutine op0188()
     call nocart(carte, 1, ncmp)
 !
 !     CREATION DE LA LISTE DES MAILLES QUI AURONT LA VALEUR 1
-!     on surdimensionne a 2 fois NBMA car au pire on a NMAFOND = NBMA 
+!     on surdimensionne a 2 fois NBMA car au pire on a NMAFOND = NBMA
 !     et NBMAZO = NBMA
     listma = '&&OP0188.LISTMA'
     call wkvect(listma, 'V V I', 2*nbma, jma)

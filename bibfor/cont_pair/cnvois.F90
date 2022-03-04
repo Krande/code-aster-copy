@@ -23,7 +23,7 @@ implicit none
 !
 #include "jeveux.h"
 #include "asterfort/jecrec.h"
-#include "asterfort/jenuno.h"  
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
@@ -89,7 +89,7 @@ implicit none
 ! - Create object (collection)
 !
     call jecrec(elem_neigh,'V V I', 'NU', 'CONTIG', 'VARIABLE', elem_indx_maxi+1-elem_indx_mini)
-    call jeecra(elem_neigh, 'LONT', nb_elem*4+(elem_indx_maxi+1-elem_indx_mini-nb_elem)*4) 
+    call jeecra(elem_neigh, 'LONT', nb_elem*4+(elem_indx_maxi+1-elem_indx_mini-nb_elem)*4)
     do i_elem = 1, elem_indx_maxi+1-elem_indx_mini
         elem_nume = i_elem-1+elem_indx_mini
         nb_find   = 0
@@ -121,7 +121,7 @@ implicit none
             call jecroc(jexnum(elem_neigh,i_elem))
             call jeecra(jexnum(elem_neigh,i_elem), 'LONMAX', ival=4)
         else
-            ASSERT(.false.)      
+            ASSERT(.false.)
         end if
     end do
 !
@@ -160,7 +160,7 @@ implicit none
         call gtvois(v_connex  , v_connex_lcum, list_elem, nb_elem   , elem_nume, elem_code,&
                     v_conx_inv, v_inv_lcum   , nb_neigh , list_neigh)
         do i_neigh=1, 4
-            v_elem_neigh(i_neigh) = list_neigh(i_neigh) 
+            v_elem_neigh(i_neigh) = list_neigh(i_neigh)
         end do
     end do
 end subroutine

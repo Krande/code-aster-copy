@@ -104,7 +104,7 @@ implicit none
         loop_fric_conv = .true.
     else
         loop_fric_conv = .false.
-    endif  
+    endif
 !
 ! - Get name of node
 !

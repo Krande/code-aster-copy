@@ -39,26 +39,26 @@ subroutine cphe08(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 !
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: inc 
+    integer, intent(in) :: inc
     integer, intent(in) :: jcoor
     integer, intent(in) :: jcnnpa
     character(len=24), intent(in) :: conloc
     character(len=24), intent(in) :: limane
     character(len=24), intent(in) :: nomnoe
-    integer, intent(in) :: nbno 
+    integer, intent(in) :: nbno
     integer, intent(in) :: jmacou
     integer, intent(in) :: jmacsu
     integer, intent(in) :: macou
     integer, intent(in) :: macsu
-    integer, intent(out) :: ind 
-    integer, intent(out) :: ind1     
+    integer, intent(out) :: ind
+    integer, intent(out) :: ind1
 ! -------------------------------------------------------------------------------------------------
 !        CREATION DES NOUVEAUX NOEUDS ET NOUVELLES MAILLES CAS HEXA 08
 ! -------------------------------------------------------------------------------------------------
 ! -------------------------------------------------------------------------------------------------
     integer :: patch
     integer :: jlimane
-    integer :: jconneo    
+    integer :: jconneo
     character(len=24) :: conneo
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
@@ -72,14 +72,14 @@ subroutine cphe08(main  , maout , inc   , jcoor , jcnnpa, conloc,&
 ! --- DDL INTERNE
     zi(patch-1+2)=nbno+ind1
     zi(jcnnpa+nbno+ind1-1) = inc
-! --- DDLs SUPPLEMENTAIRES 
+! --- DDLs SUPPLEMENTAIRES
     zi(patch-1+3)=nbno+ind1+1
     zi(jcnnpa+nbno+ind1+1-1) = inc
     zi(patch-1+4)=nbno+ind1+2
     zi(jcnnpa+nbno+ind1+2-1) = inc
     zi(patch-1+5)=nbno+ind1+3
     zi(jcnnpa+nbno+ind1+3-1) = inc
-! --- CREATION DES NOEUDS DDL INTERNE      
+! --- CREATION DES NOEUDS DDL INTERNE
     call cpnpq8(main,macou,zr(jcoor),nbno+ind1,nomnoe)
 ! --- NOUVEAUX ELEMENTS DE PEAU
     call cpmpq8(conloc, jmacou, nbno+ind1, ind)
@@ -89,7 +89,7 @@ subroutine cphe08(main  , maout , inc   , jcoor , jcnnpa, conloc,&
     call jeveuo(conneo,'L',jconneo)
     call cpncq8(main, macsu, zr(jcoor), nbno+ind1+4, nomnoe, zi(jconneo))
 ! --- NOUVEAUX ELEMENTS DE CORPS
-    call cpmcq8(conloc, jmacsu, nbno+ind1, ind+5, zi(jconneo))        
+    call cpmcq8(conloc, jmacsu, nbno+ind1, ind+5, zi(jconneo))
 ! --- CONNECTIVITE ANCIENS NOUVEAUX ELEMENTS (Peau)
 
     call jeveuo(jexnum(limane, macou), 'E', jlimane)
@@ -113,6 +113,6 @@ subroutine cphe08(main  , maout , inc   , jcoor , jcnnpa, conloc,&
     ind=ind+11
     ind1=ind1+8
     call jedetr(conneo)
-!   
+!
     call jedema()
 end subroutine

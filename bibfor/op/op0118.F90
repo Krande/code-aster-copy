@@ -106,7 +106,7 @@ subroutine op0118()
     call jeveuo(nominf//'.NUOR', 'L', lnuor)
 ! celui-ci est discrétisé sur nbfreq
     nbfreq = desc(1)
-! 
+!
     dim = desc(2)
     nbfc = desc(3)
 !                        => NBFC = (DIM*(DIM+1))/2
@@ -177,7 +177,7 @@ subroutine op0118()
 !
             ifft = -1
             call fft(zc(lvalc), ln2, ifft)
-! 
+!
             ifo = ly + ln2* (it-1) + 1 + (kf-1)*ln4
             if (it .eq. 1) zr(ifo-1)=0.d0
             do inum = 1, ln2

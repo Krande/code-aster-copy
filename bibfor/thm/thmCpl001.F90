@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine thmCpl001(ds_thm,&
                      perman, lMatr, lSigm, lVari, angl_naut,&
                      ndim  , nbvari, &
                      dimdef, dimcon,&
-                     adcome, adcote, adcp11,& 
+                     adcome, adcote, adcp11,&
                      addeme, addete, addep1,&
                      temp  ,&
                      dtemp , dp1   ,&
@@ -67,7 +67,7 @@ aster_logical, intent(in) :: perman, lMatr, lSigm, lVari
 real(kind=8), intent(in) :: angl_naut(3)
 integer, intent(in) :: ndim, nbvari
 integer, intent(in) :: dimdef, dimcon
-integer, intent(in) :: adcome, adcote, adcp11 
+integer, intent(in) :: adcome, adcote, adcp11
 integer, intent(in) :: addeme, addete, addep1
 real(kind=8), intent(in) :: temp
 real(kind=8), intent(in) :: dtemp, dp1
@@ -141,7 +141,7 @@ integer, intent(out) :: retcom
     real(kind=8) :: dmdeps(6), sigmp(6), dsdp1(6)
     real(kind=8) :: dqeps(6)
     integer      :: advico, advihy, vihrho, vicphi
-    real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi 
+    real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,7 +165,7 @@ integer, intent(out) :: retcom
     surf   = 0.d0
     shut   = 0.d0
     sbjh   = 0.d0
-    wbjh   = 0.d0   
+    wbjh   = 0.d0
 !
 ! - Get storage parameters for behaviours
 !
@@ -196,7 +196,7 @@ integer, intent(out) :: retcom
 !
     ASSERT(ds_thm%ds_behaviour%satur_type .eq. SATURATED)
     saturm = 1.d0
-    satur  = 1.d0 
+    satur  = 1.d0
     dsatur = 0.d0
 !
 ! - Evaluation of initial porosity
@@ -262,14 +262,14 @@ integer, intent(out) :: retcom
         if (ds_thm%ds_elem%l_dof_ther) then
             call virhol(nbvari, vintm , vintp ,&
                         advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,& 
+                        dtemp , dp1   , dp2   , dpad,&
                         cliq  , alpliq, signe ,&
                         rho110, rho11 , rho11m,&
                         retcom)
         else
             call virhol(nbvari, vintm , vintp ,&
                         advihy, vihrho,&
-                        dtemp , dp1   , dp2   , dpad,& 
+                        dtemp , dp1   , dp2   , dpad,&
                         cliq  , 0.d0  , signe ,&
                         rho110, rho11 , rho11m,&
                         retcom)

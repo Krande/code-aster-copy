@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ implicit none
 ! IN : EPSM - SAUT INSTANT MOINS ET GRAD PRESSION ET PRES FLUIDE SI HYME
 ! IN : DEPS - INC DE SAUT  ET INC GRAD PRESSION ET INC PRES FLUIDE SI HYME
 ! IN : MATE, OPTION, VIM, COOROT, INSTAM, INSTAP
-! IN : SIGMO - SIGMA INSTANT MOINS ET FLUX HYDRO SI HYME 
+! IN : SIGMO - SIGMA INSTANT MOINS ET FLUX HYDRO SI HYME
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
     integer :: nbpa
@@ -122,7 +122,7 @@ implicit none
     nom(9) = 'RHO_FLUIDE'
     nom(10) ='VISC_FLUIDE'
     nom(11) ='OUV_MIN'
-    nom(12) ='SCIAGE'   
+    nom(12) ='SCIAGE'
 !
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
@@ -289,7 +289,7 @@ implicit none
 ! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
     do  i = 1, ndim
        delta(i) = delta(i) - offset(i)
-    end do    
+    end do
 
 !
 ! CALCUL DES PENTES
@@ -356,12 +356,12 @@ implicit none
         if (rt .gt. 0.d0) then
 !           sigma(i) = sigmo(i) + rt*ddelta(i) ! version incrementale
 !          ligne de code inutile pour eviter dummy input de sigmo
-           sigma(i) = sigmo(i) 
+           sigma(i) = sigmo(i)
            sigma(i) = rt*delta(i)
         else
            sigma(i) = 0.d0
 !          glissement de joint de la valeur de delta
-           offset(i) = delta(i) + offset(i) 
+           offset(i) = delta(i) + offset(i)
         endif
     end do
 !

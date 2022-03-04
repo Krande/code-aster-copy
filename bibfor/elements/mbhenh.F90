@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,16 +69,16 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
         nbv=2
         nomres(1)='E'
         nomres(2)='NU'
-        
+
         call rcvalb(fami, kpg, 1, '+', zi(imate),' ', phenom, 0, '', &
                     [0.d0],nbv, nomres, valres, icodre, 1)
-                    
+
         young = valres(1)
         nu = valres(2)
     else
         call utmess('F', 'MEMBRANE_4')
     endif
-    
+
 ! - COEFFICIENTS DE LAME
     lambda=young*nu/((1+nu)*(1-2*nu))
     mu=young/(2*(1+nu))
@@ -90,16 +90,16 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
 !
 ! la base A1,A2,A3 etant direct le determinant est >0, on peut mettre au carre
     q = (jacdef**2)/(jacini**2)
-!    
+!
 ! - FONCTION DE LAMBERT
 !
     xfctlam = (2*mu/(lambda*q))*exp(2*mu/lambda)
     call fctlam(xfctlam,wfctlam)
-        
+
     c33 = lambda*wfctlam*0.5/mu
     detc = q*c33
     factor0 = lambda*0.5*log(detc)
-    
+
     do alpha = 1, 2
         do beta = 1, 2
             sigpk2(alpha,beta) = mu*(aini(alpha,beta)-adef(alpha,beta)) &
@@ -113,7 +113,7 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
 !
     factor1 = mu*c33/(1 + 2*mu*c33 / lambda)
     factor2 = 0.5*(mu - factor0)
-    
+
     do alpha = 1, 2
         do beta = 1, 2
             do gamma = 1, 2
@@ -126,5 +126,5 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
             end do
         end do
     end do
-    
+
 end subroutine

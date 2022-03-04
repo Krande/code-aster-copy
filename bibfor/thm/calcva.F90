@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -160,7 +160,7 @@ integer, intent(out) :: retcom
             retcom = 1
         endif
         ca_ctempr_ = ds_thm%ds_parainit%temp_init
-        ca_ctempm_ = temp-dtemp 
+        ca_ctempm_ = temp-dtemp
         ca_ctempp_ = temp
     else
         ca_ctempr_ = 0.d0

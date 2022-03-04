@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine prccm3(nommat, para, sm, sn, sp,&
     else
         call rcvale(nommat, 'FATIGUE', 1, 'SIGM    ', [salt],&
                     1, 'WOHLER  ', tnadm(1), icodre(1), 2)
-        nadm=tnadm(1)           
+        nadm=tnadm(1)
         if (nadm .lt. 0) then
             valr (1) = salt
             valr (2) = nadm

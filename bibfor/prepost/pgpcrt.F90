@@ -21,7 +21,7 @@ subroutine pgpcrt(sd_pgp)
 ! Initialzes a table data structure as a result of the POST_GENE_PHYS
 ! command
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -69,7 +69,7 @@ subroutine pgpcrt(sd_pgp)
                 'K8','K8','K8','R','C' /
 
 !   ------------------------------------------------------------------------------------
-!   Definition of statement functions 
+!   Definition of statement functions
 #define disc(i) zr(jdsc+i-1)
 
     call jemarq()
@@ -106,7 +106,7 @@ subroutine pgpcrt(sd_pgp)
         call juveca(nomjv, nblines)
         call jeecra(nomjv, 'LONUTI', nblines)
         call jelibe(nomjv)
-        nomlgs(ipar) = nomjv      
+        nomlgs(ipar) = nomjv
     end do
 
 !   Memory optimisation, for params 4 and 5 (CHAMP, COMP) refer to the logicals of
@@ -131,7 +131,7 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomlgs(3))
 
 !       In the transient case, it might still be possible that the fields of the basis
-!       themselves are complex, the result of the modal combination would thus be 
+!       themselves are complex, the result of the modal combination would thus be
 !       complex, it is thus important to do a further check of the TYP_SCAL saved for
 !       each observation
         exist_complex = .false.
@@ -239,7 +239,7 @@ subroutine pgpcrt(sd_pgp)
             lgnoeu = 1
             lgmail = 1
             lgpoin = 0
-        else 
+        else
             AS_ALLOCATE(vk8=nommail , size=physlen)
             call pgpget(sd_pgp,'REF_SUP1',iobs=iobs, kvect=nommail)
             AS_ALLOCATE(vk8=nompoin , size=physlen)
@@ -253,7 +253,7 @@ subroutine pgpcrt(sd_pgp)
             lgnoeu = 0
             lgmail = 1
             lgpoin = 1
-        end if           
+        end if
 !
 !       Memory optimisation, treatment of each parameter separately
 !
@@ -275,7 +275,7 @@ subroutine pgpcrt(sd_pgp)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
-                zr(jvec+dec1+i-1) = disc(iord)           
+                zr(jvec+dec1+i-1) = disc(iord)
             end do
         end do
         call jelibe(nomjvs(2))
@@ -384,7 +384,7 @@ subroutine pgpcrt(sd_pgp)
 
     call jeveuo(result//'           .TBNP', 'E', jtab)
 
-!   Finally update the number of lines saved 
+!   Finally update the number of lines saved
     zi(jtab+1) = nblines
 
     call jedema()

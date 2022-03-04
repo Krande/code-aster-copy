@@ -131,7 +131,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
  41             continue
 
             else
-              do alp = 1,ndim*nsinge          
+              do alp = 1,ndim*nsinge
                 pl = in + alp
                 pose(idim) = pose(idim) - fk_escl(inoes,alp,idim)*&
                                           zr( jdepde-1+pl)
@@ -155,7 +155,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
             else
                     imait(2)=xcalc_heav(heavn(nne+inom),&
                                         hea_fa(2),&
-                                        heavn((1+nfhe)*nne+nfhm*nnm+inom))  
+                                        heavn((1+nfhe)*nne+nfhm*nnm+inom))
             endif
             pos = zr(jgeom-1+nne*ndim+(inom-1)*ndim+idim)
             do 80 iddl = 1, 1+nfhm
@@ -163,7 +163,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
                 pos = pos + imait(iddl)*zr(jdepde-1+pl)
  80         continue
             posm(idim) = posm(idim) + pos*ffm(inom)
-            do alp = 1,ndim*nsingm          
+            do alp = 1,ndim*nsingm
                 pl = in + (1+nfhm+nsingm-1)*ndim + alp
               posm(idim) = posm(idim) + fk_mait(inom,alp,idim)*&
                                         zr( jdepde-1+pl)

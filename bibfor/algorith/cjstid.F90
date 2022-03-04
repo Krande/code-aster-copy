@@ -130,7 +130,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
              if (i .eq. j) hook(i,j) = deux* mu
           end do
        end do
-           
+
 ! ======================================================================
 ! --- CP/1D ------------------------------------------------------------
 ! ======================================================================
@@ -227,7 +227,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
     call lcprsc(dfdds, norm, truc)
     do i = 1, ndt
        gd(i) = dfdds(i) - truc * norm(i)
-    end do     
+    end do
 !
     trgd = zero
     do i = 1, ndi

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -196,10 +196,10 @@ implicit none
 !   DE DEPLACEMENT
 ! - RECUPERATION DE LA MATRICE DE RIGIDITE POUR OBTENIR LES LAGRANGES
 ! --------------------------------------------------------------------
-        call jeexin( rigid//'.&INT', ier) 
-        if ( ier == 0 ) then 
+        call jeexin( rigid//'.&INT', ier)
+        if ( ier == 0 ) then
             call mtdscr(rigid)
-        endif 
+        endif
         call jeveuo(rigid//'.&INT', 'L', irigid)
         neq=zi(irigid+2)
         call wkvect('&&ENERCA.DESC', 'V V K8', neq, idesc)
@@ -357,7 +357,7 @@ implicit none
     call GetEnergy(ds_energy, 'ENER_CIN' , ecin_t)
     call GetEnergy(ds_energy, 'TRAV_AMOR', amor_t)
     call GetEnergy(ds_energy, 'TRAV_LIAI', liai_t)
- 
+
 ! --------------------------------------------------------------------
 ! AFFICHAGE DU BILAN
 ! MINIMUM : 4 COLONNES (TITRE, WEXT, WINT, WSCH)

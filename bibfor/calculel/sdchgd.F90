@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ implicit none
 !
     call jeexin(field//'.DESC', i_exi)
     if (i_exi .gt. 0) then
-        call jeveuo(field//'.DESC', 'E', vi = p_desc)  
+        call jeveuo(field//'.DESC', 'E', vi = p_desc)
     else
         call jeveuo(field//'.CELD', 'E', vi = p_desc)
     endif

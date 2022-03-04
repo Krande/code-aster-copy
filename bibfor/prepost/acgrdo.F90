@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -653,7 +653,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !
 ! ----------------------------------------------------------
 ! POUR LES GRANDEURS DES CRITERERS "PLAN CRITIQUE"
-! CALCULE LES 8 PREMIER GRANDEURS ET CEUX DE 13-20! 
+! CALCULE LES 8 PREMIER GRANDEURS ET CEUX DE 13-20!
 !-----------------------------------------------------------------
 ! --  EVALUER LES CRITERES EXISTANTS
 ! -----------------------------------------------------------------
@@ -700,7 +700,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
     endif
 !
 !
-!!!!!!EVALUER DES CRITERS 
+!!!!!!EVALUER DES CRITERS
     do k = 1, 2
 !
         if (nomcri(1:7) .ne. 'FORMULE') then

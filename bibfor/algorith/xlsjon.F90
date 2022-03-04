@@ -46,9 +46,9 @@ subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
 !
       if (zr(jlsn-1+ino) .lt. 0.d0) then
          jonc_no(1) = -1.d0
-      else 
+      else
          jonc_no(1) = +1.d0
-      endif   
+      endif
 !
     else
 !

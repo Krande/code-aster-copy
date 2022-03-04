@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine xerfis(ndime, ninter, npts, nptm)
 ! --- POUR LES TETRA10
 !
     if (ndime .eq. 3) then
-! 
+!
        if (ninter.eq.3 .and. npts.eq.2) then
             call utmess('F', 'XFEM_64')
        endif

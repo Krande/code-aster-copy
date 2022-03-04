@@ -73,10 +73,10 @@ implicit none
     epsmax=1.d-9
     name='XCENFI'
     if (present(num)) then
-       pi1 = num(1) 
-       pi2 = num(2) 
-       pi3 = num(3) 
-       pi4 = num(4) 
+       pi1 = num(1)
+       pi2 = num(2)
+       pi3 = num(3)
+       pi4 = num(4)
        m12 = num(5)
        m13 = num(6)
        m34 = num(7)

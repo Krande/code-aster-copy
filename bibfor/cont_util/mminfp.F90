@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,14 +61,14 @@ implicit none
     integer, pointer :: v_sdcont_methco(:) => null()
     real(kind=8), pointer :: v_sdcont_caracf(:) => null()
     real(kind=8), pointer :: v_sdcont_caradf(:) => null()
-    real(kind=8), pointer :: v_sdcont_caraxf(:) => null()  
+    real(kind=8), pointer :: v_sdcont_caraxf(:) => null()
     character(len=24) :: sdcont_toleco, sdcont_dirapp, sdcont_exclfr
     real(kind=8), pointer :: v_sdcont_toleco(:) => null()
     real(kind=8), pointer :: v_sdcont_dirapp(:) => null()
     real(kind=8), pointer :: v_sdcont_exclfr(:) => null()
     character(len=24) :: sdcont_jeufo1, sdcont_jeufo2
     character(len=8), pointer :: v_sdcont_jeufo1(:) => null()
-    character(len=8), pointer :: v_sdcont_jeufo2(:) => null()    
+    character(len=8), pointer :: v_sdcont_jeufo2(:) => null()
     character(len=8) :: jeuf1, jeuf2
     character(len=24) :: question
     real(kind=8) :: vale_r

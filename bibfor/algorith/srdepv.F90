@@ -41,60 +41,60 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
     !!!
     !!! Variables globales
     !!!
-    
+
     real(kind=8) :: depsv(6), ddepsv(6)
     real(kind=8) :: dgamv, ddgamv(6)
-    
+
     !!!
-    !!! Variables locales 
+    !!! Variables locales
     !!!
-    
+
     integer :: i, k, ndi, ndt
     real(kind=8) :: devia(6,6), deviat(6,6)
     common /tdim/   ndt , ndi
-    
+
     !!!
     !!! Deviateur du tenseur des def. visco.
     !!!
-    
+
     call lcdevi(depsv, ddepsv)
 
     !!!
     !!! Calcul de dgamv
     !!!
-    
+
     dgamv=0.d0
-    
+
     do i=1, ndt
         dgamv=dgamv+ddepsv(i)**2
     end do
-    
+
     dgamv=sqrt(2.d0/3.d0*dgamv)
-    
+
     !!!
     !!! Matrice de projection dev.
     !!!
-    
+
     call r8inir(6*6, 0.d0, devia, 1)
-    
+
     do i=1, 3
         do k=1, 3
             devia(i,k)=-1.d0/3.d0
         end do
     end do
-    
+
     do i=1, ndt
         devia(i,i)=devia(i,i)+1.d0
     end do
-    
+
     deviat(1:ndt,1:ndt) = transpose(devia(1:ndt,1:ndt))
-    
+
     !!!
     !!! Calcul de dgamv/deps
     !!!
-    
+
     call r8inir(6, 0.d0, ddgamv, 1)
-    
+
     if (dgamv.le.0.d0) then
         do i=1, ndt
             ddgamv(i)=0.d0

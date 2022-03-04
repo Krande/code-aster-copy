@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ character(len=8), pointer, optional :: listCmpToSelect_(:)
 !                       for iEqua =  [1:nbEqua]
 !                           listEqua[iEqua] = 0 if node+component not present
 !                           listEqua[iEqua] = 1 if node+component is present
-! Ptr tablEqua             : pointer to all equations and all components 
+! Ptr tablEqua             : pointer to all equations and all components
 !                            [1:nbEqua, 1:nbCmpToSelect] with
 !                       for iEqua = [1:nbEqua]
 !                           for iCmp = [1:nbCmpToSelect]

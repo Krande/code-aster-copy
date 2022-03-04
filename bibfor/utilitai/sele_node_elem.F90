@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,7 +123,7 @@ implicit none
     do nume_node = 1, nb_node_mesh
         if (list_node_all(nume_node).eq.1) then
             i_node    = i_node+1
-            list_node(i_node) = nume_node         
+            list_node(i_node) = nume_node
         endif
     end do
     nb_node_found = i_node

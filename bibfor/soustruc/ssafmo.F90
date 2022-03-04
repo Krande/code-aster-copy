@@ -93,7 +93,7 @@ subroutine ssafmo(model)
     call getvtx(keywordfact, 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n1)
     nb_ss_acti = -n1
     AS_ALLOCATE(vk8 = p_list_elem, size = nb_ss_acti)
-    call getvtx(keywordfact, 'SUPER_MAILLE', iocc=ioc, nbval=nb_ss_acti, vect=p_list_elem) 
+    call getvtx(keywordfact, 'SUPER_MAILLE', iocc=ioc, nbval=nb_ss_acti, vect=p_list_elem)
     do isuperelem = 1, nb_ss_acti
         name_super_elem = p_list_elem(isuperelem)
         call jenonu(jexnom(mesh//'.SUPMAIL', name_super_elem), nume_super_elem)

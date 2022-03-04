@@ -135,7 +135,7 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
 !     ----------------------------
     AS_ALLOCATE(vi=lima_check, size=nbma)
     lima_check(:)=0
-    
+
 !    les mailles ne doivent pas necessairement etre portées par un élément fini
 
     call jeveuo(ma//'.TYPMAIL', 'L', iad)
@@ -164,12 +164,12 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
             linoma(nuno)=1
         end do
     end do
-    
+
     AS_DEALLOCATE(vi=lima_check)
-    
+
 !   construction de la liste des noeuds
     call wkvect(klino, 'V V I', nbnoOut, ialin1)
-    
+
     kk = 0
     do ino = 1,nno
         if (linoma(ino).eq.1) then

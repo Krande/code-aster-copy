@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ aster_logical, intent(in), optional :: lLireResu_
 !
     lKeywfactCompor = ASTER_FALSE
     call getfac('COMPORTEMENT', nbOcc)
-    if (nbOcc .gt. 0) then 
+    if (nbOcc .gt. 0) then
         lKeywfactCompor = ASTER_TRUE
     endif
 !
@@ -132,7 +132,7 @@ aster_logical, intent(in), optional :: lLireResu_
                         call copisd('CHAMP_GD', 'G', fieldPrevious, fieldToSave)
                     endif
                     call rsnoch(resultName, 'COMPORTEMENT', storeNume)
-                endif 
+                endif
             else
 ! ------------- Autres cas (sans reuse, reuse avec compor), ou lire_resu
                 if (iret .le. 100) then
@@ -144,7 +144,7 @@ aster_logical, intent(in), optional :: lLireResu_
         end do
     endif
 !
-! - Check comportment 
+! - Check comportment
 !
     do iStore = 1, storeNb
         storeNume = storeList(iStore)
@@ -156,7 +156,7 @@ aster_logical, intent(in), optional :: lLireResu_
             endif
             call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
             if (lReuse .and. (.not. lKeywfactCompor)) then
-                ! pour le cas reuse sans COMPORTEMENT 
+                ! pour le cas reuse sans COMPORTEMENT
                 ! vérifier entre VARI_ELGA existant et carte de comportement du resu
                 call rsexch(' ', resultName, 'COMPORTEMENT', storeNume, compor, iret)
             endif

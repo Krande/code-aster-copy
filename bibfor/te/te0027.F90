@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -364,7 +364,7 @@ implicit none
 ! =======================================================
 !
         if (incr) then
-! BESOIN GARDER APPEL NMPLRU POUR LE CALCUL DE L'ENERGIE EN PRESENCE 
+! BESOIN GARDER APPEL NMPLRU POUR LE CALCUL DE L'ENERGIE EN PRESENCE
 ! D'ETAT INITIAL MAIS NETTOYAGE A COMPLETER
             call nmplru(fami, kp, 1, '+', ndim,&
                         typmod, matcod, compor, rbid, eps,&

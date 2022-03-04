@@ -46,28 +46,28 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
 !
 ! ---------------------------------------------------------------------
 !
-!   But : Dans xajuls, les criteres de reajustement quadratiques 
-!         peuvent conduire a une division par zero. Dans ce cas, on 
+!   But : Dans xajuls, les criteres de reajustement quadratiques
+!         peuvent conduire a une division par zero. Dans ce cas, on
 !         autorise le court-circuit d'iteration de la boucle sur les
 !         aretes de la maille courante ima sous certaines conditions
 !         tres particulieres :
 !         1. tous les noeuds sommets de ima doivent verifier abs(lst)
 !            < r8prem
-!         2. les level-sets doivent avoir ete calculees depuis le 
+!         2. les level-sets doivent avoir ete calculees depuis le
 !            catalogue de formes geometriques de DEFI_FISS_XFEM dans
 !            le cas 2D FORM_FISS='SEGMENT'
 !         3. pour chaque arete de la maille courante ima, on compare
 !            la longueur de son projete orthogonal sur le segment
 !            (qui constitue la fissure) a la longueur de ce segment.
-!            Au moins un de ces projetes doit avoir une longueur 
-!            comparable (critere relatif) a celle du segment. De 
-!            cette maniere on s'assure que la maille se trouve 
+!            Au moins un de ces projetes doit avoir une longueur
+!            comparable (critere relatif) a celle du segment. De
+!            cette maniere on s'assure que la maille se trouve
 !            "loin" de la fissure (a moins que le maillage ne soit
 !            extrement grossier)
 !
 ! ---------------------------------------------------------------------
 !
-!   in / noma   : nom du maillage 
+!   in / noma   : nom du maillage
 !   in / cnslt  : nom du cham_no_s de lst
 !   in / jconx1 : adresse connectivite du maillage noma
 !   in / jconx2 : adresse LONCUM(connectivite) du maillage noma
@@ -88,7 +88,7 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     real(kind=8), pointer :: vr_coo(:) => null()
 !
 !   rq : crit est le critere relatif en deca duquel on considere que
-!   norm_p == norm_s (cf "verif 3" plus bas). Le choix de la valeur 
+!   norm_p == norm_s (cf "verif 3" plus bas). Le choix de la valeur
 !   de crit n'est base sur aucun argument geometrique et est discutable
     parameter (crit=1.d-1)
 !
@@ -143,9 +143,9 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
     endif
 !
 ! --
-!   verif 3 : pour chaque arete de la maille ima, on compare la longueur de son 
-!             projete orthogonal sur le segment qui constitue la fissure a la 
-!             longueur de ce segment. Au moins un de ces projetes doit avoir 
+!   verif 3 : pour chaque arete de la maille ima, on compare la longueur de son
+!             projete orthogonal sur le segment qui constitue la fissure a la
+!             longueur de ce segment. Au moins un de ces projetes doit avoir
 !             une longueur comparable (critere relatif) a celle du segment.
 ! --
 !

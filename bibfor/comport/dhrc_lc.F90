@@ -287,7 +287,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                     seuact(nbact)=seuils(k)
                 endif
             end do
-!            
+!
             if (debug) then
                 write(6,*) 'seuact :', seuact
             end if
@@ -535,7 +535,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !     ECRITURE DES VALEURS PROPRES
 !
     do k = 1, 6
-        if (wr(k) .lt. 0.0d0) then 
+        if (wr(k) .lt. 0.0d0) then
             call utmess('A', 'COMPOR4_71', si=k, sr=wr(k))
         end if
     end do

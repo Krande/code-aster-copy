@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer ::i_node_slav, jj, shift
-    real(kind=8) :: r_nb_lagr 
+    real(kind=8) :: r_nb_lagr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,9 +58,9 @@ implicit none
     r_nb_lagr = real(nb_lagr,kind=8)
 !
     do i_node_slav=1, nb_node_slav
-        shift=shift+indi_lagc(i_node_slav)   
+        shift=shift+indi_lagc(i_node_slav)
         if (indi_lagc(i_node_slav+1).eq. 1) then
-            jj=elem_dime*(i_node_slav-1)+shift+elem_dime+1          
+            jj=elem_dime*(i_node_slav-1)+shift+elem_dime+1
             vtmp(jj)=lagrc/r_nb_lagr
         end if
     end do

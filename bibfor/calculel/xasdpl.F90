@@ -160,7 +160,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
     do ifiss = 1,nfiss
         nomfis = zk8(jmofis-1+ifiss)
         call dismoi('TYPE_DISCONTINUITE', nomfis, 'FISS_XFEM', repk=typdis)
-!       
+!
         if(typdis.eq.'FISSURE') then
             lfiss=.true.
             exit
@@ -172,7 +172,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
        !   -- recuperation du champ de matériau
        call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=iret)
        ! Assertion : si on a une fissure, le champ de matériau est fourni
-       if (iret.eq.0) then 
+       if (iret.eq.0) then
          call utmess('F', 'XFEM_100')
        else
          call rcmfmc(chmat, mate, l_ther_ = l_ther)
@@ -213,17 +213,17 @@ subroutine xasdpl(model, celmod, prol0, chou)
 
     call detrsd('CHAM_NO_S', cns)
     call detrsd('CHAM_ELEM_S', mnoga)
-    
+
 !   ouverture du CHAM_ELEM_S ou lire les champs de deplacement passes en entree
     call jeveuo(cesdpl//'.CESD', 'L', jcesddpl)
     call jeveuo(cesdpl//'.CESL', 'L', jcesldpl)
     call jeveuo(cesdpl//'.CESV', 'L', vr=cesvdpl)
 
 !   calcul du nombre de point de Gauss dans la famille XFEM,
-!   pour chaque element XFEM 
+!   pour chaque element XFEM
     chsnpg='&&XASDPL.CHSNPG'
     call xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
-!   
+!
 !   verification paranoiaque
     ASSERT(exixfm.eq.'OUI')
 !
@@ -358,8 +358,8 @@ subroutine xasdpl(model, celmod, prol0, chou)
            do iel = 1, nel
                ima=zi(jliel-1+iel)
                if (ima .lt. 0) cycle
-!              
-!              recuperation du nombre de point de Gauss de l'element 
+!
+!              recuperation du nombre de point de Gauss de l'element
                call cesexi('C', jcesdnpg, jceslnpg, ima, 1, 1, 1, iadnpg)
                ASSERT(iadnpg.gt.0)
                npg=cesvnpg(iadnpg)
@@ -393,7 +393,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
 !              sur lesquels le champ ELGA est defini)
                npg=zi(jcesddpl-1+5+4*(ima-1)+1)
 !
-!              boucle sur les points de Gauss de l'element            
+!              boucle sur les points de Gauss de l'element
                do kpg=1, npg
 !                 recopie du champ de deplacement recompose au point de Gauss courant
 !                 dans le champ de sortie

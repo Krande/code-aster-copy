@@ -125,7 +125,7 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
 ! --- Nombre de noeuds
 !
     nbno = cpt
-! 
+!
 ! --- Variables de détection des arêtes hyperstatiques et des relations d'églalité
 !
     nbarhy = 0
@@ -193,7 +193,7 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
     do iar = 1, nbar
         if(tabreleq(iar)) cycle
         if(tabpaq(iar)) cycle
-!       Ici l'arête 'iar' est la première d'un paquet qui porte pas d'égalité    
+!       Ici l'arête 'iar' est la première d'un paquet qui porte pas d'égalité
         nreleq = nreleq + 1
         liseqt(nreleq,1) = noeud(tabdir(iar,1))
         liseqt(nreleq,2) = noeud(tabdir(iar,2))
@@ -210,7 +210,7 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
 !
 !   Nombre de paquets
 !
-    npaq = nreleq 
+    npaq = nreleq
 !
 !   Attention: nreleq risque d'évoluer dans la suite de la routine, mais pas npaq
 !
@@ -238,7 +238,7 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
 !               ici, scorar(iar) = maxi
 !               tabcr(ia) est-il egal a tabcr(bestar) ?
                 near = abs(tabcr(iar)-tabcr(bestar)) .le. (atol + tabcr(bestar)*rtol)
-! 
+!
                 if (tabcr(iar) .gt. tabcr(bestar) .and. .not. near) then
                     bestar = iar
                 endif
@@ -252,7 +252,7 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
         endif
 ! --- Il s'agit d'une arête hyperstatique
         nbarhy = nbarhy + 1
-        tabhyp(bestar) = .true. 
+        tabhyp(bestar) = .true.
         scorno(tabdir(bestar,1)) = scorno(tabdir(bestar,1)) - 1
         scorno(tabdir(bestar,2)) = scorno(tabdir(bestar,2)) - 1
     end do
@@ -288,14 +288,14 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
             lonB = abs(zr(jlnsv-1+nunoB))
             if ((lonA+lonB) .gt. 0.d0) lon = lonA/(lonA+lonB)
             if ((lonA+lonB) .le. 0.d0) lon = 1.d0
-            if (lon .lt. lon_min) lon_min = lon        
+            if (lon .lt. lon_min) lon_min = lon
         enddo
 !       Si on est proche du sommet connectant: relations d'égalité sur tout le paquet
         if (lon_min .lt. seuil) then
 !           Marquer le sommet du paquet afin de modifier les statuts des arêtes
 !           hyperstatiques qu'il lie
             do iino = 1, nbno
-                if (noeud(iino) .eq. nunoA) marqno(iino) = .true. 
+                if (noeud(iino) .eq. nunoA) marqno(iino) = .true.
             enddo
             do jno = 1, ncte
                 nunoB = zi(jcntes-1 + jcnte2 + jno)
@@ -313,13 +313,13 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
                         liseqt(nreleq,2) = nunoB
                         tabreleq(iar) = .true.
 !                       Mettre à 0 le statut (.AI) des arêtes du paquet sauf la première
-                        if (jno .ne. 1) tabait(iar) = 0 
+                        if (jno .ne. 1) tabait(iar) = 0
                     endif
                 enddo
 !               Marquer également tous les noeuds du paquets
                 do iino = 1, nbno
-                    if (noeud(iino) .eq. nunoB) marqno(iino) = .true. 
-                enddo              
+                    if (noeud(iino) .eq. nunoB) marqno(iino) = .true.
+                enddo
             enddo
         endif
     enddo
@@ -354,7 +354,7 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
     do iar = 1, nbar
         if (.not. tabhyp(iar)) cycle
 !       Vérifier qu'on est pas sur un noeud. Un noeud intersecté est forcément "vital"
-        ASSERT(tabdir(iar,1).ne.tabdir(iar,2))         
+        ASSERT(tabdir(iar,1).ne.tabdir(iar,2))
         if (marqno(tabdir(iar,1)) .and. marqno(tabdir(iar,1))) then
 !           Les deux noeuds de l'arête sont "marqués". Le statut change à 0
             tabait(iar) = 0
@@ -375,7 +375,7 @@ subroutine xrell3(tabnoz, nbarz, crack, sdline_crack,&
 !******************************************************************************************
 !
     if (l_ainter) then
-        call jeexin(tabai,ier) 
+        call jeexin(tabai,ier)
         ASSERT(ier.eq.0)
         if (nbar.ne.0) then
             call wkvect(tabai, 'V V I', nbar*3, jtabai)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ type(THM_DS), intent(inout) :: ds_thm
     read (compor(MECA_NUME),'(I16)') ds_thm%ds_behaviour%nume_meca
     read (compor(THER_NUME),'(I16)') ds_thm%ds_behaviour%nume_ther
     read (compor(HYDR_NUME),'(I16)') ds_thm%ds_behaviour%nume_hydr
-    
+
     read (compor(NVAR),'(I16)')      ds_thm%ds_behaviour%nb_vari
 !
 ! - For coupling law
@@ -88,7 +88,7 @@ type(THM_DS), intent(inout) :: ds_thm
                 ds_thm%ds_behaviour%nume_thmc .eq. LIQU_AD_GAZ) then
                 ds_thm%ds_behaviour%nb_phase(2) = 2
             endif
-        endif  
+        endif
     endif
 !
     if (ds_thm%ds_behaviour%nume_thmc .eq. LIQU_SATU.or. &
@@ -98,7 +98,7 @@ type(THM_DS), intent(inout) :: ds_thm
         ds_thm%ds_behaviour%satur_type = SATURATED_SPEC
     elseif (ds_thm%ds_behaviour%nume_thmc .eq. LIQU_GAZ .or. &
             ds_thm%ds_behaviour%nume_thmc .eq. LIQU_VAPE_GAZ .or. &
-            ds_thm%ds_behaviour%nume_thmc .eq. LIQU_GAZ_ATM .or. & 
+            ds_thm%ds_behaviour%nume_thmc .eq. LIQU_GAZ_ATM .or. &
             ds_thm%ds_behaviour%nume_thmc .eq. LIQU_AD_GAZ_VAPE .or. &
             ds_thm%ds_behaviour%nume_thmc .eq. LIQU_AD_GAZ) then
         ds_thm%ds_behaviour%satur_type = UNSATURATED
@@ -113,7 +113,7 @@ type(THM_DS), intent(inout) :: ds_thm
     if (ds_thm%ds_behaviour%nume_thmc .eq. LIQU_GAZ .or. &
         ds_thm%ds_behaviour%nume_thmc .eq. GAZ .or. &
         ds_thm%ds_behaviour%nume_thmc .eq. LIQU_VAPE_GAZ .or. &
-        ds_thm%ds_behaviour%nume_thmc .eq. LIQU_GAZ_ATM .or. & 
+        ds_thm%ds_behaviour%nume_thmc .eq. LIQU_GAZ_ATM .or. &
         ds_thm%ds_behaviour%nume_thmc .eq. LIQU_AD_GAZ_VAPE .or. &
         ds_thm%ds_behaviour%nume_thmc .eq. LIQU_AD_GAZ) then
         ds_thm%ds_material%l_gaz = ASTER_TRUE

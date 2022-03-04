@@ -147,7 +147,7 @@ subroutine te0214(nomopt, nomte)
             call jevech('PVARIPG', 'L', ivari)
             if (irigi .ne. 0) then
                 if (ins .ne. 0 .and. irns .ne. 0) then
-                    do i3 = 1, 2   
+                    do i3 = 1, 2
                         do j = 1, 2
                             i=2*(i3-1)+j
                             i2=i+10-4*i3

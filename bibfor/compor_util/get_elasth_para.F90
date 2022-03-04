@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ implicit none
 ! Out z_h_r        : characterizes the reference metallurgical phase :
 !                    z_h_r = 1 --> reference phasis = hot phase
 !                    z_h_r = 0 --> reference phasis = cold phase
-! Out deps_ch_tref : Compactness difference between the hot phase and the cold phase 
+! Out deps_ch_tref : Compactness difference between the hot phase and the cold phase
 !                    at the reference temperature
 !
 ! --------------------------------------------------------------------------------------------------

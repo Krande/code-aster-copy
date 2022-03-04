@@ -121,7 +121,7 @@ character(len=19), intent(in) :: list_load
 !
 ! - Check: fields have been defined in rscrsd.F90 ?
 !
-    call rscrsd('V', result, 'EVOL_NOLI', 1) 
+    call rscrsd('V', result, 'EVOL_NOLI', 1)
     call jelira(result(1:8)//'           .DESC', 'NOMMAX', nb_field_resu)
     do i_field = 1, nb_field
         field_type = ds_inout%field(i_field)%type

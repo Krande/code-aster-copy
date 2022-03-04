@@ -124,11 +124,11 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
         call jedupo(maili//'.COORDO    .VALE', 'V', geomi, ASTER_FALSE )
     endif
 
- 
+
 !   Si INFO=2, on imprime au format MED les maillages utilisés lors de la projection
 !   si ceux-ci ne sont pas connus de l'utilisateur, c'est à dire si :
 !     METHODE='SOUS_POINT' (pour le maillage "2")
-!     et/ou si l'utilisateur a demandé TRANSF_GEOM_1/_2   
+!     et/ou si l'utilisateur a demandé TRANSF_GEOM_1/_2
     call infniv(ibid, niveau)
     if (niveau.le.1) goto 999
 

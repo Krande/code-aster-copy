@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine te0564(option, nomte)
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
-  
+
     laxi = .false.
     if (lteatt('AXIS','OUI')) laxi = .true.
 !
@@ -139,7 +139,7 @@ subroutine te0564(option, nomte)
             endif
 !
 !           dans le cas AXIS la prise en compte du rayon ne doit pas intervenir
-!           a cette etape            
+!           a cette etape
             jacpoi = jac*zr(ipoids+ipg-1)
 !
 ! ---   CALCUL DE AX, AY = SOMME(X.DS, Y.DS) :
@@ -215,7 +215,7 @@ subroutine te0564(option, nomte)
             if (jac .le. r8prem()) then
                 call utmess('F', 'ELEMENTS4_34')
             endif
-            
+
             if (laxi) then
                 r = 0.d0
                 do ino = 1, nno

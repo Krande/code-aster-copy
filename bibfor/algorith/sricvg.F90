@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,16 +42,16 @@ subroutine sricvg(nr,itmax,toler,iter,r,nvi,vinf,dy,irtet)
 !     : VINF(7)   :  SI ETAT PLASTIQUE NON VERIFIE - VINF(7)=0
 !     : DY(NDT+1) :  SI ETAT PLASTIQUE NON VERIFIE - DY(NDT+1)=0
 ! ===================================================================================
-    
+
     implicit none
 
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nr,itmax,iter,irtet,ndt,ndi,nvi
     real(kind=8) :: toler,r(nr),vinf(nvi),dy(nr)
-    
+
     !!!
     !!! Variables locales
     !!!
@@ -59,19 +59,19 @@ subroutine sricvg(nr,itmax,toler,iter,r,nvi,vinf,dy,irtet)
     integer :: i
     real(kind=8) :: er
     common /tdim/ ndt,ndi
-    
+
     !!!
     !!! Calcul de la norme de rini et dy
     !!!
-    
+
     er=0.d0
-    
+
     do i=1,nr
         er=er+r(i)*r(i)
     end do
-    
+
     er=sqrt(er)
-    
+
     !!!
     !!! Tets de la convergence par rapport a toler
     !!!
@@ -90,11 +90,11 @@ subroutine sricvg(nr,itmax,toler,iter,r,nvi,vinf,dy,irtet)
         endif
         goto 9999
     endif
-    
+
     !!!
     !!! Si non convergence, test du num. d'iteration
     !!!
-    
+
     if (iter.lt.itmax) then
         irtet=1
     else

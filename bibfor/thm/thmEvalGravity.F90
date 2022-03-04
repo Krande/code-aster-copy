@@ -58,7 +58,7 @@ real(kind=8), intent(out) :: grav(3)
     call rcvala(j_mater, ' '      , 'THM_DIFFU',&
                 0      , ' '      , [0.0d0]    ,&
                 nb_resu, resu_name, resu_vale  ,&
-                icodre , 0        , nan='NON') 
+                icodre , 0        , nan='NON')
 !
 ! - Get function
 !

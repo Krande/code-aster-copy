@@ -87,7 +87,7 @@ subroutine te0559(option, nomte)
     call teattr('C', 'HYDR1', enr2, iret)
     pre1 = (enr2.eq.'1' .or. enr2.eq.'2' )
     ASSERT(pre1)
-! 
+!
     ASSERT(option(1:16).eq.'CHAR_MECA_FLUX_F')
 !
     if (enr(3:3).ne.'C' .and. enr(4:4).ne.'C') go to 100

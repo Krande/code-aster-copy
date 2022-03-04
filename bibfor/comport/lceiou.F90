@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,10 +98,10 @@ subroutine lceiou(fami, kpg, ksp, mat, option,&
     sk = max(0.d0,sc - h*ka)
 !
 !    FORCE COHESIVE AUGMENTEE : LAMBDA + R.[U] + PF
-!    ON RAJOUTE PF DANS LE CALCUL DE LA CONTRAINTE (EFFECTIVE) POUR 
+!    ON RAJOUTE PF DANS LE CALCUL DE LA CONTRAINTE (EFFECTIVE) POUR
 !    LE MODELE HM-XFEM
 !
-    if (present(pfluide)) then 
+    if (present(pfluide)) then
        t(1) = mu(1) + r*su(1) + pfluide
        t(2) = mu(2) + r*su(2)
        t(3) = mu(3) + r*su(3)

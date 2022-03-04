@@ -50,17 +50,17 @@ real(kind=8), intent(out) :: norm(3)
     tmp = norm_line(1)*norm_g(1)+&
           norm_line(2)*norm_g(2)+&
           norm_line(3)*norm_g(3)
-    
+
     if (tmp .gt. 0.d0) then
         signe =  1.d0
     else
         signe = -1.d0
-    end if 
+    end if
 
 !        norm(1) = signe * norm_line(1)
 !        norm(2) = signe * norm_line(2)
-!        norm(3) = signe * norm_line(3) 
-       norm(1) = norm_g(1)              
+!        norm(3) = signe * norm_line(3)
+       norm(1) = norm_g(1)
        norm(2) = norm_g(2)
        norm(3) = norm_g(3)
 !

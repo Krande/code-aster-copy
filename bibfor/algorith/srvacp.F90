@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,47 +35,47 @@ subroutine srvacp(nbmat, mater, paraep, varpl)
 ! ===================================================================================
 
     implicit      none
-    
+
 #include "asterc/r8pi.h"
 
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nbmat
     real(kind=8) :: paraep(3),mater(nbmat,2),varpl(4)
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     real(kind=8) :: sigc,gamma,beta,r0c,pi
     real(kind=8) :: adxip,bdxip,ddxip,kdxip
-    
+
     !!!
     !!! Recuperation de parametres materiaux
     !!!
-    
+
     sigc=mater(3,2)
     beta=mater(4,2)
     gamma=mater(5,2)
     pi=r8pi()
-    
+
     !!!
     !!! Calcul de k, a, b et d
     !!!
-    
+
     r0c=cos(beta*pi/6.d0-1.d0/3.d0*acos(gamma))
-    
+
     kdxip=(2.d0/3.d0)**(1.d0/2.d0/paraep(1))
     adxip=-paraep(3)*kdxip/sqrt(6.d0)/sigc/r0c
     bdxip=paraep(3)*kdxip/3.d0/sigc
     ddxip=paraep(2)*kdxip
-    
+
     !!!
     !!! Stockage
     !!!
-    
+
     varpl(1)=adxip
     varpl(2)=bdxip
     varpl(3)=ddxip

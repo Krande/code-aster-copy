@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,8 +123,8 @@ subroutine jjalls(lonoi, ic, genri, typei, lty,&
     ildyna = ildyna+1
 !
 !   ON TESTE SI LE CUMUL DES ALLOCATIONS RESTE INFERIEUR A LA LIMITE
-!   UNE EXCEPTION EST FAITE LORSQUE L'APPELANT EST jjagod  MAIS DANS 
-!   CE CAS PRECIS ON EVITE DE FAIRE APPEL A jjldyn 
+!   UNE EXCEPTION EST FAITE LORSQUE L'APPELANT EST jjagod  MAIS DANS
+!   CE CAS PRECIS ON EVITE DE FAIRE APPEL A jjldyn
 !
     if (mcdyn+lsic .gt. vmxdyn) then
         if (ildyna .gt. 1) then

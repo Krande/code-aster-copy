@@ -123,7 +123,7 @@ implicit none
                     ksi2_mini      = ksi2
                     call dcopy(3, tau1, 1, tau1_mini, 1)
                     call dcopy(3, tau2, 1, tau2_mini, 1)
-                    call dcopy(3, vect_pm, 1, vect_pm_mini, 1)  
+                    call dcopy(3, vect_pm, 1, vect_pm_mini, 1)
                 endif
             endif
         else

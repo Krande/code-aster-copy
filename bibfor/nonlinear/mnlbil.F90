@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ subroutine mnlbil(x, omega, alpha, eta, h,&
 !
     call mnlfft(1, sort(1), zr(iif), hf, nt, 1)
 !
-    call jedetr('&&mnlbil.t')    
+    call jedetr('&&mnlbil.t')
     call jedetr('&&mnlbil.xt')
     call jedetr('&&mnlbil.f')
 !

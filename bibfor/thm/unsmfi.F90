@@ -67,7 +67,7 @@ real(kind=8), intent(out) :: cs
         nus    = ds_thm%ds_material%elas%nu
         k0     = youngs / 3.d0 / (1.d0-2.d0*nus)
         cs     = (tbiot(1)-phi)*(1.0d0-tbiot(1)) / k0
-    else 
+    else
         if (ds_thm%ds_material%biot%type .eq. BIOT_TYPE_ISTR) then
             young1 = ds_thm%ds_material%elas%e_l
             young3 = ds_thm%ds_material%elas%e_n

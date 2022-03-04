@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,11 +59,11 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 !
 !    in     : mesh   -> nom du maillage
 !
-!    in/out : ligrel -> ligrel cree uniquement a partir des mailles 
+!    in/out : ligrel -> ligrel cree uniquement a partir des mailles
 !                       principales de "mesh"
 !
-!    optionnel, in : list_cells   -> nom d'un vecteur jeveux contenant 
-!                                    liste de numero de mailles 
+!    optionnel, in : list_cells   -> nom d'un vecteur jeveux contenant
+!                                    liste de numero de mailles
 !
 !    optionnel, in : n_list_cells -> longueur du vecteur "list_cells"
 !
@@ -171,7 +171,7 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
     ASSERT(ncells .gt. 0)
 !
 ! - Set modelisation type acording to dimension "ndim"
-!                
+!
     phenom    = 'PRESENTATION    '
     modeli(1) = '                '
     modeli(2) = '2D_GEOM         '
@@ -209,7 +209,7 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
         if (nu_typ_el1 .ne. nu_typ_el2) then
             nu_typ_el2 = nu_typ_el1
             nb_grel    = nb_grel+1
-        endif 
+        endif
     enddo
 !
 ! - Create LIEL

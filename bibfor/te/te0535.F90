@@ -198,7 +198,7 @@ character(len=16) :: option, nomte
 !
 !   verification que c'est bien des multifibres
 !
-    
+
     call jeexin(mult_comp, iret)
     if (iret .eq. 0) then
         call utmess('F', 'POUTRE0_14', sk=nomte)
@@ -324,7 +324,7 @@ character(len=16) :: option, nomte
                            zr(jacf), nbasspou, maxfipoutre, nbfipoutre, yj, zj, &
                            deffibasse, vfv, defpfib)
 !
-            iposig=jsigfb + nbfibr*(kp-1) 
+            iposig=jsigfb + nbfibr*(kp-1)
             ipomod=jmodfb + nbfibr*(kp-1)
             call pmfmcf(kp, nbgrfi, nbfibr, nug, zk24(isdcom), &
                         zr(icarcr), option, zr(iinstm), zr(iinstp), zi(imate), &

@@ -76,7 +76,7 @@ implicit none
 ! - Get name of result datastructure in ETAT_INIT
 !
     l_stin_evol  = ds_inout%l_stin_evol
-    stin_evol    = ds_inout%stin_evol 
+    stin_evol    = ds_inout%stin_evol
 !
 ! - Initial state: get time if possible
 !
@@ -92,7 +92,7 @@ implicit none
             else
                 call rsadpa(stin_evol, 'L', 1, 'INST_PREC', nume_prev_step,&
                             0, sjv=jv_para, istop = 0)
-                time_prev_step = zr(jv_para) 
+                time_prev_step = zr(jv_para)
                 if (time_prev_step .eq. r8vide()) then
                     call utmess('I','DYNAMIQUE_51')
                 else
@@ -110,7 +110,7 @@ implicit none
         call rs_getlast(result, nume_last)
         call rsadpa(result, 'L', 1, 'INST_PREC', nume_last,&
                     0, sjv=jv_para, istop = 0)
-        time_prev_step = zr(jv_para) 
+        time_prev_step = zr(jv_para)
         if (time_prev_step .eq. r8vide()) then
             call utmess('I','DYNAMIQUE_51')
         else

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine fun1(area, a1, a2, n)
 ! OUT  R8  ! AREA   !     -     ! VALEUR EQUIVALENTE
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: xm, xm1, xm2,x
+    real(kind=8) :: xm1, xm2,x
     integer i
     real(kind=8) iflt
 !
@@ -47,7 +47,7 @@ subroutine fun1(area, a1, a2, n)
         if (n .lt. 2) then
            !           area = (a2-a1) / (log(a2)-log(a1))
 ! Refomulation pour éviter des instabilites numeriques
-           x=a2/a1           
+           x=a2/a1
            area =a1* (x-1) / ( log(x))
         else if (n .eq.2) then
 !           VARIATION HOMOTHETIQUE.
@@ -57,10 +57,10 @@ subroutine fun1(area, a1, a2, n)
 !            xm1 = a1 ** xm
 !            xm2 = a2 ** xm
 !            area = 2 * (xm1*a2 - a1*xm2 ) / (xm2-xm1)
-! Refomulation pour éviter des instabilites numeriques 
+! Refomulation pour éviter des instabilites numeriques
            xm1= a1**(1.D0/3.D0)
            xm2= a2**(1.D0/3.D0)
-           area= 2*(xm1*xm1 * xm2*xm2) / (xm1+xm2)           
+           area= 2*(xm1*xm1 * xm2*xm2) / (xm1+xm2)
         else
 !            xm = 1.d0 / n
 !            area = (n-1)*((a2**xm)-a1**xm)
@@ -70,7 +70,7 @@ subroutine fun1(area, a1, a2, n)
            x=0.D0
            do i= 1, n-1
               iflt=i
-              x= x +  a1 **((iflt-n) /n) * a2**(-iflt / n) 
+              x= x +  a1 **((iflt-n) /n) * a2**(-iflt / n)
            end do
            area=(n-1.D0)/x
         endif

@@ -21,13 +21,13 @@ module lcgtn_module
     use scalar_newton_module,       only: &
             newton_state, &
             utnewt
-    
+
     use  tenseur_dime_module,       only: &
             proten, &
             kron, &
             voigt, &
             identity
-            
+
     use visc_norton_module,         only: &
             VISCO, &
             ViscoInit => Init, &
@@ -37,7 +37,7 @@ module lcgtn_module
             dkv_vsc, &
             ddka_vsc, &
             solve_slope_dka
-             
+
     implicit none
     private
     public:: CONSTITUTIVE_LAW, Init, InitGradVari, InitViscoPlasticity, Integrate
@@ -72,11 +72,11 @@ module lcgtn_module
         integer       :: ndimsi,itemax
         real(kind=8)  :: cvuser
         real(kind=8)  :: phi = 0.d0
-        real(kind=8)  :: telh 
-        real(kind=8)  :: telq 
-        real(kind=8)  :: q1f 
-        real(kind=8)  :: jac 
-        real(kind=8)  :: kam  
+        real(kind=8)  :: telh
+        real(kind=8)  :: telq
+        real(kind=8)  :: q1f
+        real(kind=8)  :: jac
+        real(kind=8)  :: kam
         real(kind=8)  :: visc_dka = 0.d0
         real(kind=8)  :: visc_ts  = 0.d0
         real(kind=8)  :: visc_vsc = 0.d0
@@ -84,10 +84,10 @@ module lcgtn_module
         type(VISCO)   :: visco
     end type CONSTITUTIVE_LAW
 
-       
+
     aster_logical:: DBG = ASTER_FALSE
     real(kind=8) :: dbg_tmp1, dbg_tmp2, dbg_tmp3, dbg_tmp4
-    
+
 contains
 
 
@@ -97,9 +97,9 @@ contains
 
 function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     result(self)
-        
+
     implicit none
-    
+
     integer,intent(in)          :: kpg, ksp, imate, itemax, ndimsi
     real(kind=8), intent(in)    :: precvg
     character(len=16),intent(in):: option
@@ -130,7 +130,7 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
                 'NUCL_EPSI_PENTE','NUCL_EPSI_INIT'/
 ! --------------------------------------------------------------------------------------------------
 
-    ! Variables non initialisees            
+    ! Variables non initialisees
     r8nan     = r8nnem()
     self%telh = r8nan
     self%telq = r8nan
@@ -144,7 +144,7 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     self%itemax = itemax
     self%cvuser = precvg
 
-    
+
     ! Options de calcul
     self%elas   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'FULL_MECA_ELAS'
     self%rigi   = option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA_ELAS' &
@@ -154,10 +154,10 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     self%vari   = option.eq.'FULL_MECA_ELAS' .or. option.eq.'FULL_MECA'      &
              .or. option.eq.'RAPH_MECA'
     self%pred   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'RIGI_MECA_TANG'
-    
+
 !    ASSERT (self%rigi .or. self%resi)
-    
-    
+
+
     ! Elasticity material parameters
     call rcvalb(fami,kpg,ksp,'+',imate,' ','ELAS',0,' ',[0.d0],nbel,nomel,valel,iok,2)
     self%mat%young   = valel(1)
@@ -203,10 +203,10 @@ end function Init
 !  COMPLEMENTARY INITIALISATION FOR GRAD_VARI
 ! =====================================================================
 
-subroutine InitGradVari(self,fami,kpg,ksp,imate,lag,apg) 
-        
+subroutine InitGradVari(self,fami,kpg,ksp,imate,lag,apg)
+
     implicit none
-    
+
     integer,intent(in)          :: kpg, ksp, imate
     real(kind=8),intent(in)     :: lag,apg
     character(len=*),intent(in) :: fami
@@ -234,8 +234,8 @@ subroutine InitGradVari(self,fami,kpg,ksp,imate,lag,apg)
     self%mat%c = vale(1)
     self%mat%r = vale(2)
     self%phi   = lag + self%mat%r*apg
-                      
-            
+
+
 end subroutine InitGradVari
 
 
@@ -245,8 +245,8 @@ end subroutine InitGradVari
 !  COMPLEMENTARY INITIALISATION FOR VISCOPLASTICITY
 ! =====================================================================
 
-subroutine InitViscoPlasticity(self,visc,fami,kpg,ksp,imate,deltat) 
-        
+subroutine InitViscoPlasticity(self,visc,fami,kpg,ksp,imate,deltat)
+
     implicit none
     aster_logical,intent(in)            :: visc
     integer,intent(in)                  :: kpg, ksp, imate
@@ -274,7 +274,7 @@ end subroutine InitViscoPlasticity
 ! =====================================================================
 
 
-subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi_vi) 
+subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi_vi)
 
     implicit none
 
@@ -301,13 +301,13 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi
     if (DBG) write(6,*) 'START Integrate'
     if (DBG) write(6,*) 'eps = ',eps
     if (DBG) write(6,*) 'vim = ',vim
-    
-    
+
+
     ASSERT (present(dphi_sig) .eqv. self%grvi)
     ASSERT (present(deps_vi)  .eqv. self%grvi)
     ASSERT (present(dphi_sig) .eqv. self%grvi)
 
-    
+
 ! unpack internal variables
     rac2  = voigt(self%ndimsi)
     ka    = vim(1)
@@ -331,9 +331,9 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi
 
 ! Post-treatment
     poro_log = log(f)-log(self%mat%f0)
-    
 
-! pack internal variables 
+
+! pack internal variables
     if (self%vari) then
         vip(1) = ka
         vip(2) = f
@@ -346,7 +346,7 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi
     end if
 
 
-999 continue    
+999 continue
     if (DBG) write(6,*) 'END Integrate'
 end subroutine Integrate
 
@@ -354,12 +354,12 @@ end subroutine Integrate
 
 
 ! =====================================================================
-!  PLASTICITY AND DAMAGE COMPUTATION 
+!  PLASTICITY AND DAMAGE COMPUTATION
 ! =====================================================================
 
 
 subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
-                  epcum, fnuc, t, deps_t, dphi_t,deps_ka,dphi_ka) 
+                  epcum, fnuc, t, deps_t, dphi_t,deps_ka,dphi_ka)
 
     implicit none
 
@@ -422,7 +422,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 
 !   Calcul de la porosite effective (coalescence)
     if (f.le.self%mat%fc) then
-        q1f = self%mat%q1 * f 
+        q1f = self%mat%q1 * f
     else
         q1f = self%mat%q1*self%mat%fc + (1-self%mat%q1*self%mat%fc) &
                 /(self%mat%fr-self%mat%fc)*(f-self%mat%fc)
@@ -439,7 +439,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 
 !   Precision sur la fonction G
     cv_g = (1-q1f)*self%cvuser
-    
+
 !   Contrainte elastique
     tel  = self%mat%lambda*sum(eps(1:3)-ep(1:3))*kr + self%mat%deuxmu*(eps-ep)
     telh = sum(tel(1:3)) / 3.d0
@@ -472,15 +472,15 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     dkas = jac*pin
     tsm  = f_ts_hat(self,dka=0.d0)
     tss  = f_ts_hat(self,dka=dkas)
-    
+
     if (DBG) write (6,*) 'telh  = ',telh
     if (DBG) write (6,*) 'telq  = ',telq
     if (DBG) write (6,*) 'jac   = ',jac
     if (DBG) write (6,*) 'dkas  = ',dkas
     if (DBG) write (6,*) 'tsm   = ',tsm
     if (DBG) write (6,*) 'tss   = ',tss
-    
-    
+
+
     ! Valeurs de transition entre viscosite dominante et viscosite faible
     if (self%visco%visc) then
         dka_r0        = dka_ecro(self,0.d0)
@@ -488,15 +488,15 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         self%visc_vsc = f_vsc(self%visco,dka=self%visc_dka)
         self%visc_ts  = f_ts_hat(self,dka=self%visc_dka)
     end if
-    
-    
+
+
 
     if (DBG) write(6,*) 'INTEGRATION'
     if (DBG) write(6,*) 'rigi = ',self%rigi
     if (DBG) write(6,*) 'vari = ',self%vari
-    
-    
-    
+
+
+
 ! --------------------------------------------------------------------------------------------------
 !               INTEGRATION DE LA LOI DE COMPORTEMENT
 ! --------------------------------------------------------------------------------------------------
@@ -515,7 +515,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     end if
 
 
-    
+
 ! ----------------------------------------------------------------------
 !  REGIME ELASTIQUE
 ! ----------------------------------------------------------------------
@@ -528,11 +528,11 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     end if
 
 
-    
+
 ! ----------------------------------------------------------------------
 !  REGIME PLASTIQUE SINGULIER
 ! ----------------------------------------------------------------------
-   
+
     ! Cas singulier standard (tss < 0) ou si T* petit (tels<cvsigm)
     if (tss.le.cvsigm .or. is_tels_less_than(self,cvsigm)) then
 
@@ -561,22 +561,22 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 ! ----------------------------------------------------------------------
 
     ! 1. Calcul d'une borne min dkamin = max(0.d0 , dkaz) avec tolerance
-    
+
     if (tsm.ge.cv_fine) then
         dkamin = 0.d0
         typmin = 1
         tshmin = tsm
     else
-        call Solve_ts_hat(self,2*cv_fine,cv_fine,0.d0,dkaz)        
+        call Solve_ts_hat(self,2*cv_fine,cv_fine,0.d0,dkaz)
         if (self%exception .eq. 1) goto 999
         dkamin = dkaz
         typmin = 2
-        tshmin = f_ts_hat(self,dka=dkamin)        
+        tshmin = f_ts_hat(self,dka=dkamin)
     end if
 
 
     ! Test si la borne min conduit a une solution facile
-    ! precision numerique pour garantir dkamin < lbd 
+    ! precision numerique pour garantir dkamin < lbd
     if (typmin .eq. 2) then
         p = Solve_g_hat(self,tshmin,cv_g,0.d0)
         if (self%exception .eq. 1) goto 999
@@ -592,7 +592,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     end if
 
     ! 2. Calcul d'une borne max dkamax = min(dkas, dkael) ou T_hat(dkael)=tels
-    
+
     tels = Compute_Star(self,1.d0,1.d0,cv_fine)
     if (self%exception .eq. 1) goto 999
 
@@ -604,9 +604,9 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         call Solve_ts_hat(self,tels-1.5d0*cv_fine, 0.5d0*cv_fine,0.d0,dkamax)
         if (self%exception .eq. 1) goto 999
         typmax = 2
-        tshmax = f_ts_hat(self,dka=dkamax) 
+        tshmax = f_ts_hat(self,dka=dkamax)
     end if
-    
+
     ASSERT(dkamin .le. dkamax)
     ASSERT(tshmin .le. tshmax)
     ASSERT(tshmin .le. tels)
@@ -615,7 +615,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 
 
     ! Test si la borne max conduit a une solution facile
-    ! precision numerique pour garantir lbd < dkamax 
+    ! precision numerique pour garantir lbd < dkamax
     if (typmax .eq. 2) then
         p = Solve_g_hat(self,tshmax,cv_g,0.d0)
         lbd = f_lbd_hat(self,p,tshmax)
@@ -628,31 +628,31 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
             goto 400
         end if
     end if
-    
-    
+
+
 
     ! 3. Estimation initiale par resolution du probleme de von Mises
 
     call Solve_Mises(self,cv_fine,dkaz,flow_type,dkaini)
     if (self%exception .eq. 1) goto 999
 
-    ! Si Mises ne fournit pas une initialisation pertinente 
+    ! Si Mises ne fournit pas une initialisation pertinente
     !   -> initialisation par une methode de corde
     if (flow_type.eq.0 .or. flow_type.eq.2 .or. &
         (flow_type.eq.1 .and. (dkaini.le.dkamin .or. dkaini.ge.dkamax))) then
         if (DBG) write(6,*) 'tels     =',tels
         coef = (tels-tshmin)/(tels-tshmin+tshmax)
         dkaini = dkamin + coef*(dkamax-dkamin)
-    end if  
-    
+    end if
+
     ASSERT(dkaini.ge.dkamin .and. dkaini.le.dkamax)
     if (DBG) write(6,*) 'flow_type=',flow_type
     if (DBG) write(6,*) 'kam      = ',kam
     if (DBG) write(6,*) 'dkaini   =',dkaini
     if (DBG) write(6,*) 'dkamin   =',dkamin,'  tshmin = ',tshmin
     if (DBG) write(6,*) 'dkamax   =',dkamax,'  tshmax = ',tshmax
-    
-        
+
+
 
     ! 4. Preparation du changement de variable en presence de viscoplasticite
 
@@ -669,8 +669,8 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     else
         self%visco%active = ASTER_FALSE
     end if
-    
-    
+
+
     ! Correction des bornes si viscoplasticite dominante ou non
     if (self%visco%visc) then
         if (self%visco%active) then
@@ -681,30 +681,30 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
             kvmin = max(self%visc_dka,dkamin)
             kvmax = dkamax
             kv    = max(self%visc_dka,dkaini)
-        end if  
+        end if
     else
         kvmin = dkamin
         kvmax = dkamax
         kv    = dkaini
     end if
     ASSERT (kvmin.le.kv .and. kv.le.kvmax)
-    
-    
-    
+
+
+
     ! 5. Resolution du systeme non lineaire de deux equations
     ! Resolution par rapport a kv de : kml := dka - lbd(p,Ts) == 0
-    
+
     do iteext = 1,self%itemax
-    
+
 
         ! 3.1 Calcul de Ts(ka)
         if (DBG) write(6,*) '3.1'
         dka = f_dka(self%visco,kv)
         ts = f_ts_hat(self,kv=kv)
         if (DBG) write(6,*) 'kv = ',kv,'  dka = ',dka,'  ts = ',ts
-        
-        
-        ! 3.2 Resolution de G_hat(p,ts) == -prec/2 par rapport a p 
+
+
+        ! 3.2 Resolution de G_hat(p,ts) == -prec/2 par rapport a p
         !     --> borne min de l'encadrement de la solution exacte
         !     (Rappel: G croissant par rapport a p)
         p1 = Solve_g_hat(self,ts,0.5d0*cv_g,-0.5d0*cv_g)
@@ -713,18 +713,18 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         lbd1 = f_lbd_hat(self,p1,ts)
         kml1 = dka - lbd1
         if (DBG) write (6,*) 'p1=',p1,'  lbd1=',lbd1,' kml1=',kml1,'  fg1=',fg1
-        
+
         ! Test si convergence de la boucle exterieure
         if (abs(ts - f_ts_hat(self,dka=lbd1)) .le. cvsigm) then
             if (DBG) write(6,*) 'CVG-1.SIGM'
             p   = p1
             dka = lbd1
-            exit        
+            exit
         end if
         if (abs(dka-lbd1) .le. cveps) then
             if (DBG) write(6,*) 'CVG-1.EPSI'
             p   = p1
-            exit        
+            exit
         end if
 
 
@@ -735,7 +735,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         p2 = Solve_g_hat(self,ts,0.5d0*cv_g,0.5d0*cv_g,p_ini=p1)
         if (self%exception .eq. 1) goto 999
         fg2 = f_g_hat(self,p2,ts)
-        
+
         lbd2 = f_lbd_hat(self,p2,ts)
         kml2 = dka - lbd2
         if (DBG) then
@@ -750,12 +750,12 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
             if (DBG) write(6,*) 'CVG-2.SIGM'
             p   = p2
             dka = lbd2
-            exit        
+            exit
         end if
         if (abs(dka-lbd2) .le. cveps) then
             if (DBG) write(6,*) 'CVG-2.EPSI'
             p   = p2
-            exit        
+            exit
         end if
 
 
@@ -765,7 +765,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         p = merge(p1,p2,abs(dka-lbd1).le.abs(dka-lbd2))
 
 
-        ! 3.4 Si l'intervalle (p1,p2) permet de trouver une solution KML(p,ts,ka)==0 
+        ! 3.4 Si l'intervalle (p1,p2) permet de trouver une solution KML(p,ts,ka)==0
         !   -> recherche de p
         if (DBG) write(6,*) '3.4'
         if (kml1*kml2.lt.0) then
@@ -783,7 +783,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
                 write (6,*) 'p2=',p2,' kml2=',kml2,'=',dka-lbd2,'  fg2=',&
                                     fg2,'=',dbg_tmp2
             end if
-            
+
             ! croissance ou decroissance de KML(p,ts,ka) par rapport a p dans l'intervalle (p1,p2)
             sgn = sign(1.d0,kml2-kml1)
 
@@ -810,20 +810,20 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
             if (iteint.gt.self%itemax) then
                 self%exception = 1
                 goto 999
-            end if   
+            end if
             exit
         end if
-        
+
 
         ! 3.5 Sinon KML(p,ts,ka) <> 0 dans l'intervalle (p1,p2) -> nouvel itere pour dka
         equext = dka - f_lbd_hat(self,p,ts)
-        
+
         dts_p  = -dts_g_hat(self,p,ts)/dp_g_hat(self,p,ts)
         dkv_ts = dkv_ts_hat(self,kv)
         d_equext = dkv_dka(self%visco,kv) - (dp_lbd_hat(self,p,ts)*dts_p &
                     + dts_lbd_hat(self,p,ts))*dkv_ts
         if (DBG) write (6,*) 'iteext=',iteext,'  kv=',kv,'  equext=',equext,'  d_equext=',d_equext
-        if (DBG) then 
+        if (DBG) then
             dbg_tmp1 = f_lbd_hat(self,p,ts)
             write (6,*) 'dka=',dka,'  lambda=',dbg_tmp1,'  p=',p,'  ts=',ts
         end if
@@ -836,7 +836,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     if (iteext.gt.self%itemax) then
         self%exception = 1
         goto 999
-    end if        
+    end if
     if (DBG) write (6,*) 'Calcul de q'
     q = f_q_hat(self,p,ts)
     state = 1
@@ -851,14 +851,14 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     t     = p*telh*kr + q*teld
 
 
-    
+
 ! ----------------------------------------------------------------------
-!   Actualisation de la porosite (sans impact sur les matrices tangentes car q1f inchange)   
+!   Actualisation de la porosite (sans impact sur les matrices tangentes car q1f inchange)
 ! ----------------------------------------------------------------------
 
 500 continue
     if (self%vari .and. (state.eq.1 .or. state.eq.2)) then
-        call Update_porosity(self,epm,ep,ka,epcum,f,fnuc)      
+        call Update_porosity(self,epm,ep,ka,epcum,f,fnuc)
     end if
 
     if (DBG) write(6,*) 'ka=',ka,'  dka=',dka
@@ -868,7 +868,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     if (DBG) write(6,*) 'depd=',depd
     if (DBG) write(6,*) 'ep=',ep
     if (DBG) write(6,*) 'tsm=',tsm
-    
+
 
 
 
@@ -884,10 +884,10 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     deps_ka = 0
     dphi_ka = 0
 
-    
+
     ! Correction eventuelle pour choisir l'operateur tangent en phase de prediction
     ! Si elastique mais presque plastique -> plastique
-    
+
     if (self%pred .and. state.eq.0 .and. .not. self%elas) then
         if (.not. is_tels_less_than(self,tsm-cvsigm)) then
             if (DBG) write(6,*) 'Matrice tangente plastique forcee'
@@ -910,7 +910,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 
     ! Regime plastique regulier
     else if (state.eq.1) then
-        
+
         ! Variations des inconnues principales (p,ka)
         mat(1,1) =  dts_m_hat(self,p,ts,dka)
         mat(1,2) = -dts_g_hat(self,p,ts)
@@ -921,19 +921,19 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         vec = -matmul(mat,[dteh_g_hat(self,p,ts),dteh_m_hat(self,p,ts,dka)])
         dteh_p  = vec(1)
         dteh_ts = vec(2)
-        
+
         vec = -matmul(mat,[dteq_g_hat(self,p,ts),dteq_m_hat(self,p,ts,dka)])
         dteq_p  = vec(1)
         dteq_ts = vec(2)
-        
+
         vec = -matmul(mat,[0.d0,djac_m_hat(self,p,ts,dka)])
         djac_p  = vec(1)
         djac_ts = vec(2)
-        
+
         vec = -matmul(mat,[0.d0,dphi_m_hat(self,p,ts,dka)])
         dphi_p  = vec(1)
         dphi_ts = vec(2)
-        
+
         ! Variations de q
         dp_q   = dp_q_hat(self,p,ts)
         dts_q  = dts_q_hat(self,p,ts)
@@ -949,7 +949,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         djac_ka = (djac_ts - djac_ts_hat(self,dka)) / dka_ts
         dphi_ka = (dphi_ts - dphi_ts_hat(self,dka)) / dka_ts
 
- 
+
         ! Variations des invariants par rapport a epsilon
         deps_teh = self%mat%troisk/3.d0 * kr
         deps_teq = self%mat%troismu*teld/telq
@@ -968,13 +968,13 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 
         ! dka/deps
         deps_ka = djac_ka*deps_jac + dteh_ka*deps_teh + dteq_ka*deps_teq
-        
+
         ! dt/dphi
         dphi_t = dphi_p*telh*kr + dphi_q*teld
 
         ! dka/dphi -> deja calcule ci-dessus
-        
-        
+
+
     ! Regime singulier (deps_t et dphi_t sont nulles)
     else if (state.eq.2) then
         deps_jac = jac*kr
@@ -1003,10 +1003,10 @@ end subroutine ComputePlasticity
 
 
 ! =====================================================================
-!  Is Tel_star less than a value ? 
+!  Is Tel_star less than a value ?
 ! =====================================================================
 
-aster_logical function is_tels_less_than(self,thre) 
+aster_logical function is_tels_less_than(self,thre)
 
     implicit none
 
@@ -1018,7 +1018,7 @@ aster_logical function is_tels_less_than(self,thre)
 
     if (DBG) write(6,*) 'BEGIN is_tels_less_than'
     is_tels_less_than = ASTER_FALSE
-    
+
     ! Precaution pour le calcul numerique de G
     if (thre.le.0) goto 100
     if (self%telq.gt.thre*sqrt(1+self%q1f**2)) goto 100
@@ -1058,7 +1058,7 @@ subroutine Solve_ts_hat(self,ts_target,cv_ts,dkamin,dka)
 ! --------------------------------------------------------------------------------------------------
     if (DBG) write(6,*) 'BEGIN Solve_ts_hat'
     buffer = self%visco%active
-    
+
     ! Lower bound
     ts_min = f_ts_hat(self,dka=dkamin)
     if ( abs(ts_min - ts_target) .le. cv_ts) then
@@ -1067,8 +1067,8 @@ subroutine Solve_ts_hat(self,ts_target,cv_ts,dkamin,dka)
     end if
 
     ! Existence
-    ASSERT (ts_min - ts_target .le. 0) 
-    
+    ASSERT (ts_min - ts_target .le. 0)
+
     ! Zone de viscosite dominante (chgt de variable) ou non
     if (.not. self%visco%visc) then
         self%visco%active = ASTER_FALSE
@@ -1081,7 +1081,7 @@ subroutine Solve_ts_hat(self,ts_target,cv_ts,dkamin,dka)
         kv = max(0.d0,f_vsc(self%visco,dka=dkamin))
     end if
     kvmin = kv
-    
+
     ! Newton method
     do ite = 1,self%itemax
         equ   = f_ts_hat(self,kv=kv) - ts_target
@@ -1097,7 +1097,7 @@ subroutine Solve_ts_hat(self,ts_target,cv_ts,dkamin,dka)
         goto 999
     end if
     dka = f_dka(self%visco,kv)
-    
+
 999 continue
     self%visco%active = buffer
     if (DBG) write(6,*) 'END Solve_ts_hat'
@@ -1128,27 +1128,27 @@ function Solve_g_hat(self,ts,cvg,g0,p_ini) result(p)
     type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
     if (DBG) write(6,*) 'BEGIN Solve_g_hat ',ts,g0
-    
+
     ! Test des valeurs aux bornes
     pmax    = bnd_pmax(self,ts,g0)
     p       = pmax
     equ_max = f_g_hat(self,pmax,ts)-g0
     if (abs(equ_max) .le. cvg) goto 999
     ASSERT (equ_max.ge.0)
-    
+
     pmin    = bnd_pmin(self,ts,g0)
     p       = pmin
     equ_min = f_g_hat(self,pmin,ts)-g0
     if (abs(equ_min) .le. cvg) goto 999
     ASSERT (equ_min.le.0)
-    
+
     ASSERT(pmin.le.pmax)
-    
+
     if (DBG) then
         write (6,*) 'pmin = ',pmin,'  pmax = ',pmax
         write (6,*) 'gmin-g0=',equ_min,  'gmax-g0=',equ_max
     end if
-    
+
     ! Point initial
     if (present(p_ini)) then
         p = max(p_ini,pmin)
@@ -1156,7 +1156,7 @@ function Solve_g_hat(self,ts,cvg,g0,p_ini) result(p)
     else
         p   = pmax
     end if
-    
+
     if (DBG) write (6,*) 'utnewt 1B'
     do ite = 1,self%itemax
         equ   = f_g_hat(self,p,ts)-g0
@@ -1169,7 +1169,7 @@ function Solve_g_hat(self,ts,cvg,g0,p_ini) result(p)
     if (ite.gt.self%itemax) then
         self%exception = 1
         goto 999
-    end if     
+    end if
 999 continue
     if (DBG) write(6,*) 'END Solve_g_hat'
 end function Solve_g_hat
@@ -1200,7 +1200,7 @@ function bnd_pmin(self,ts,g0) result(pmin)
     l0  = 0.5d0*self%mat%q2*self%q1f
     b   = 1.5d0*self%mat%q2*re
     c0  = (4*al)/(3*self%mat%q2**2*self%q1f)
-    
+
     if (DBG) then
         write (6,*) 'ts   = ',ts
         write (6,*) 'g0   = ',g0
@@ -1211,7 +1211,7 @@ function bnd_pmin(self,ts,g0) result(pmin)
         write( 6,*) 'b    = ',b
         write (6,*) 'c0   = ',c0
     end if
-    
+
     ! Denominateur minimal
     if (c0.le.1) then
         fmin = 0.d0
@@ -1222,9 +1222,9 @@ function bnd_pmin(self,ts,g0) result(pmin)
         fmin = l0*sinh(b*p0)-a*p0
     end if
     if (DBG) write (6,*) 'fmin = ',fmin
-    
+
     dmin = a + fmin
-        
+
     coef = ((0.5d0*self%telq*self%mat%q2*self%q1f)/(ts*dmin))**2 + self%q1f
     sh   = sqrt((g0+(1-self%q1f)**2)/coef)
     pmin = asinh(sh)/b
@@ -1234,13 +1234,13 @@ function bnd_pmin(self,ts,g0) result(pmin)
         dbg_tmp1 = f_g_hat(self,0.99999999d0,ts)
         write (6,*) 'g(1)=',dbg_tmp1
     end if
-    
+
     ASSERT (pmin.lt.1.d0)
     gmin = f_g_hat(self,pmin,ts)
     if (DBG) write (6,*) 'gmin=',gmin
-    
+
     ASSERT (gmin.le.g0)
-    
+
     if (DBG) write (6,*) 'END bnd_pmin'
 end function bnd_pmin
 
@@ -1277,7 +1277,7 @@ function bnd_pmax(self,ts,g0) result(pmax)
         write (6,*) 'gapp-g0 = ',dbg_tmp1-g0
         write (6,*) 'gmax-g0 = ',dbg_tmp2-g0
     end if
-    
+
     if (DBG) write (6,*) 'END bnd_pmax'
 end function bnd_pmax
 
@@ -1300,7 +1300,7 @@ subroutine Solve_Mises(self,cv_ts,dkaz,flow_type,dka)
 ! cv_ts         precision souhaitee sur T(ka) + c0 + c1*ka = 0
 ! dkaz          plastic increment such as T(dkaz)=0
 ! flow_type     0 = elastic, 1 = regular flow, 2 = singular flow
-! dka           solution: increment of the hardening variable 
+! dka           solution: increment of the hardening variable
 ! --------------------------------------------------------------------------------------------------
     aster_logical:: buffer
     integer     :: ite
@@ -1310,9 +1310,9 @@ subroutine Solve_Mises(self,cv_ts,dkaz,flow_type,dka)
     if (DBG) write(6,*) 'BEGIN Solve_Mises'
 
     ! Initialisation
-    buffer = self%visco%active 
-    
-    
+    buffer = self%visco%active
+
+
     ! Elastic solution
     tsm = f_ts_hat(self,dka=0.d0)
     if (self%telq/(1-self%q1f) .le. tsm + cv_ts) then
@@ -1320,13 +1320,13 @@ subroutine Solve_Mises(self,cv_ts,dkaz,flow_type,dka)
         flow_type = 0
         goto 999
     end if
-    
-    
-    ! Coefficient du terme affine 
+
+
+    ! Coefficient du terme affine
     c1 = self%mat%troismu/self%jac/(1-self%q1f)**2
-    c0 = - self%telq/(1-self%q1f) 
-    
-    
+    c0 = - self%telq/(1-self%q1f)
+
+
     ! Valeur de transition regulier / singulier pour von Mises
     dkasvm = -c0/c1
     tss    = f_ts_hat(self,dka=dkasvm)
@@ -1337,11 +1337,11 @@ subroutine Solve_Mises(self,cv_ts,dkaz,flow_type,dka)
         dka = dkaz
         goto 999
     end if
-    
+
 
     ! Regime d'ecoulement regulier
     flow_type = 1
-    
+
     ! Viscosite active (chgt de variable) ou non
     if (self%visco%visc .and. (self%visc_ts+c0+c1*self%visc_dka).gt.0) then
         self%visco%active = ASTER_TRUE
@@ -1357,12 +1357,12 @@ subroutine Solve_Mises(self,cv_ts,dkaz,flow_type,dka)
         self%visco%active = ASTER_FALSE
         kv    = -(tsm+c0)/(tss-tsm-c0)*dkasvm
         kvmin = 0.d0
-        kvmax = dkasvm  
+        kvmax = dkasvm
     end if
     if (DBG) write(6,*) 'kvmin=',kvmin,'  kv=',kv,'  kvmax=',kvmax,'  v_active=',self%visco%active
     ASSERT(kvmin.le.kv .and. kv.le.kvmax)
-    
-    
+
+
     do ite = 1,self%itemax
         dka   = f_dka(self%visco,kv)
         equ   = f_ts_hat(self,kv=kv) + c0 + c1*dka
@@ -1412,14 +1412,14 @@ function Compute_Star(self,p,q,cv_ts) result(ts)
 ! --------------------------------------------------------------------------------------------------
     if (DBG) write(6,*) 'BEGIN Compute_Star'
     if (DBG) write(6,*) 'th=',p*self%telh,'  tq=',q*self%telq,'  cv_ts=',cv_ts
-    
+
 
     ! Cas d'un tenseur nul
     if (p*self%telh .eq. 0.d0 .and. q*self%telq .eq. 0.d0) then
         ts = 0.d0
         goto 999
     end if
-    
+
     ! Borne min sur ts ---> G(tsmin) > 0  (rappel: G(0)=+inf)
     ts1   = sqrt((q*self%telq)**2 + self%q1f*(1.5d0*self%mat%q2*p*self%telh)**2)/(1-self%q1f)
     ts2   = 1.5d0*self%mat%q2*abs(p*self%telh)/acosh(1+0.5d0*(1-self%q1f)**2/self%q1f)
@@ -1436,13 +1436,13 @@ function Compute_Star(self,p,q,cv_ts) result(ts)
     ! Correction de la borne min pour des raisons d'arrondis si G(tsmin) < 0
     equ = f_g(self,p,q,tsmin)
     if (equ.le.0) then
-    
+
         ! Essai d'un encadrement simple
         ts_p = tsmin
         ts_m = max(tsmin-cv_ts,0.5d0*tsmin)
         equ2 = f_g(self,p,q,ts_m)
         if (equ2.ge.0) goto 500
-        
+
         ! Recherche de la borne min sur ts par dichotomie (car G(0)=+inf)
         do ite = 1,self%itemax
             ts_m = 0.5d0*ts_m
@@ -1452,24 +1452,24 @@ function Compute_Star(self,p,q,cv_ts) result(ts)
         if (ite.gt.self%itemax) then
             self%exception = 1
             goto 999
-        end if     
-        
+        end if
+
         ! Est-ce un intervalle satisfaisant ?
         if (ts_p-ts_m .le. cv_ts) goto 500
-        
+
         ! Sinon c'est simplement une borne min sur ts
         tsmin = ts_m
     end if
-    
-    
-    
+
+
+
     ! Resolution G(p,q,1/x)=0 pour tirer profit de la convexite de G par rapport a x
     x = 1.d0 / tsmin
     do ite = 1,self%itemax
         ts  = 1.d0/x
         equ = f_g(self,p,q,ts)
         if (DBG) write(6,*) 'ite = ',ite,'   x = ',x,'   ts = ',ts,'   equ = ',equ
-        
+
         ! Construction de l'encadrement et test (monotonie de la fonction)
         if (equ.ge.0) then
             ts_m = ts
@@ -1494,9 +1494,9 @@ function Compute_Star(self,p,q,cv_ts) result(ts)
     if (ite.gt.self%itemax) then
         self%exception = 1
         goto 999
-    end if     
-    
-    ! On fournit la borne inferieure de l'encadrement (inferieure a la valeur reelle)   
+    end if
+
+    ! On fournit la borne inferieure de l'encadrement (inferieure a la valeur reelle)
 500 continue
     ts = ts_m
 
@@ -1508,7 +1508,7 @@ end function Compute_Star
 
 
 ! =====================================================================
-!  COMPUTATION OF NUCLEATION POROSITY 
+!  COMPUTATION OF NUCLEATION POROSITY
 ! =====================================================================
 
 real(kind=8) function Nucleation(self,ka,ep)
@@ -1566,30 +1566,30 @@ subroutine Update_porosity(self,epm,ep,ka,epcum,f,fnuc)
     fgrom = fm-fnucm
     dep   = ep-epm
     deph  = sum(dep(1:3)) / 3.d0
-    
+
     epcum = epcum + sqrt(2.d0/3.d0 * dot_product(dep,dep))
     fnuc  = Nucleation(self,ka,epcum)
     fgro  = max( ((1-fnuc)*3*deph + fgrom) / (1+3*deph), self%mat%f0)
     f     = fnuc + fgro
-    
+
     ! If porosity goes over fracture porosity :
     ! proporitional correction of fnuc and fgro to reach exactly fr
     if (f .gt. self%mat%fr) then
         coef = (self%mat%fr - fm)/(f-fm)
         fnuc = fnucm + coef*(fnuc-fnucm)
         f    = self%mat%fr
-    end if    
+    end if
 end subroutine Update_porosity
-    
 
 
-    
+
+
 ! =====================================================================
-!  RESPONSE OF A BROKEN POINT 
+!  RESPONSE OF A BROKEN POINT
 ! =====================================================================
 
 subroutine Broken_Point(self, eps, ka, f, state, ep, &
-                  epcum, fnuc, t, deps_t, dphi_t,deps_ka,dphi_ka) 
+                  epcum, fnuc, t, deps_t, dphi_t,deps_ka,dphi_ka)
 
     implicit none
 
@@ -1646,7 +1646,7 @@ real(kind=8) function dq_g(self,q,p,ts)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::q,p,ts
-    dq_g = 2*self%telq**2*q/ts**2 
+    dq_g = 2*self%telq**2*q/ts**2
 end function dq_g
 
 real(kind=8) function dp_g(self,q,p,ts)
@@ -1712,10 +1712,10 @@ real(kind=8) function f_ts_hat(self,dka,kv)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8),intent(in),optional::dka,kv
     real(kind=8):: vsc,ka
-    
+
     ! one and one only among dka and kv is given
     ASSERT(present(dka) .eqv. .not.present(kv))
-    
+
     if (present(dka)) then
         vsc = f_vsc(self%visco,dka=dka)
         ka  = self%kam + dka
@@ -1723,7 +1723,7 @@ real(kind=8) function f_ts_hat(self,dka,kv)
         vsc = f_vsc(self%visco,kv=kv)
         ka  = self%kam + f_dka(self%visco,kv)
     end if
-    
+
     f_ts_hat = self%jac*(f_ecro(self,ka) + self%mat%r*ka - self%phi + vsc)
 end function f_ts_hat
 
@@ -1733,8 +1733,8 @@ real(kind=8) function dkv_ts_hat(self,kv)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::kv
     real(kind=8):: ka
-    
-    ka  = self%kam + f_dka(self%visco,kv)   
+
+    ka  = self%kam + f_dka(self%visco,kv)
     dkv_ts_hat = self%jac*( (dka_ecro(self,ka) + self%mat%r)*dkv_dka(self%visco,kv) &
                             + dkv_vsc(self%visco,kv) )
 end function dkv_ts_hat
@@ -1744,7 +1744,7 @@ real(kind=8) function dka_ts_hat(self,dka)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::dka
-    
+
     dka_ts_hat = self%jac*(dka_ecro(self,self%kam+dka) + self%mat%r + ddka_vsc(self%visco,dka))
 end function dka_ts_hat
 
@@ -1774,7 +1774,7 @@ real(kind=8) function f_lambda(self,x)
     real(kind=8)::x
     if (DBG) write (6,*) 'f_lambda: ',x
     f_lambda = 0.5d0*self%q1f*self%mat%q2*sinh(1.5d0*self%mat%q2*x)
-    if (DBG) write (6,*) 'f_lambda ok'    
+    if (DBG) write (6,*) 'f_lambda ok'
 end function f_lambda
 
 real(kind=8) function dx_lambda(self,x)
@@ -1851,7 +1851,7 @@ real(kind=8) function dts_q_hat(self,p,ts)
     num = ts*lbd
     den = num + muk*self%telh*(1-p)
     d_num = lbd - dx_lambda(self,self%telh*p/ts)*(self%telh*p/ts)
-    d_den = d_num 
+    d_den = d_num
     dts_q_hat = (d_num*den-num*d_den)/den**2
 end function dts_q_hat
 
@@ -1868,7 +1868,7 @@ real(kind=8) function dteh_q_hat(self,p,ts)
         ! Precision numerique quand telh petit (dvp limite de lambda ordre 4)
         lbd0 = 0.5d0*self%q1f*self%mat%q2
         a0p  = 1.5d0*self%mat%q2*p
-        dteh_q_hat = (12*(a0p)**3*lbd0*muk*(1-p)*ts**2*self%telh) & 
+        dteh_q_hat = (12*(a0p)**3*lbd0*muk*(1-p)*ts**2*self%telh) &
                    / (lbd0*a0p*(6*ts**2+(a0p*self%telh)**2) + 6*muk*ts**2*(1-p))**2
     else
         ! Derivee normale de lambda avec le sinh
@@ -2070,7 +2070,7 @@ real(kind=8) function dphi_m_hat(self,p,ts,dka)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts,dka
-    dphi_m_hat = -dphi_ts_hat(self,dka)/dka_ts_hat(self,dka) 
+    dphi_m_hat = -dphi_ts_hat(self,dka)/dka_ts_hat(self,dka)
 end function dphi_m_hat
 
 real(kind=8) function dteh_m_hat(self,p,ts,dka)

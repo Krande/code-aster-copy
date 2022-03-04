@@ -186,7 +186,7 @@ subroutine op0180()
     do icabl = 1, nbcabl
 !
         call getvtx('DEFI_CABLE', 'GROUP_NO_ANCRAGE', iocc=icabl, nbval=0, nbret=n1)
-        nbancr = n1 
+        nbancr = n1
         if (abs(nbancr) .ne. 2) then
             write(k3b,'(I3)') icabl
             call utmess('F', 'CABLE0_15', sk=k3b)

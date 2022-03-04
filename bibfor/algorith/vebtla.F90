@@ -122,7 +122,7 @@ implicit none
 !
     do i_load = 1, nb_load
         load_name = v_load_name(i_load)(1:8)
-        load_nume = v_load_info(i_load+1)  
+        load_nume = v_load_info(i_load+1)
         if (load_nume.gt.0) then
             ligrch = load_name // '.CHME.LIGRE'
 !

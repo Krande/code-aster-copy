@@ -115,7 +115,7 @@ character(len=4), intent(in) :: valeType
 ! - Initializations
 !
     typblc(1) = 'DEPLACEMENT'
-    typblc(2) = 'ROTATION' 
+    typblc(2) = 'ROTATION'
     typblc(3) = 'TUYAU_FOURIER'
     list_rela = '&&CADDLI.RLLISTE'
 
@@ -198,16 +198,16 @@ character(len=4), intent(in) :: valeType
 ! --------- Counting components
             do itypblc = 1, nb_typ_bloc
                 lec_typ_blc = val_t_bloc(itypblc)(1:lxlgut(val_t_bloc(itypblc)))
-                if (typblc(1) .eq. lec_typ_blc) then 
+                if (typblc(1) .eq. lec_typ_blc) then
                     istypblc(1) = .true.
                 else if(lec_typ_blc .eq. typblc(2)) then
                     istypblc(2) = .true.
                 else if(lec_typ_blc .eq. typblc(3)) then
-                    istypblc(3) = .true.     
+                    istypblc(3) = .true.
                 endif
             enddo
 !
-! --------- Data preparation for BLOCAGE 
+! --------- Data preparation for BLOCAGE
 !
 !            ASSERT(nb_typ_bloc.eq.1)
             call char_impo_bloc(nomg, istypblc, bloc_cmp_nb, bloc_cmp_name, bloc_cmp_index,&
@@ -252,13 +252,13 @@ character(len=4), intent(in) :: valeType
                             vale_cplx(cmp_nb) = bloc_vale_cplx
                             vale_func(cmp_nb) = bloc_vale_fonc
                         endif
-                    enddo                
+                    enddo
                     pointer = pointer + 3
                 endif
 
 ! ---------------- Components of TUYAU_FOURIER of the node to be blocked
 
-                if (istypblc(3)) then 
+                if (istypblc(3)) then
                     do icmp = pointer+1, bloc_cmp_nb
                         if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),bloc_cmp_index(icmp))) then
                             cmp_nb = cmp_nb + 1
@@ -273,10 +273,10 @@ character(len=4), intent(in) :: valeType
 !!!---------------- Check if the node has ddl of TUYAU_FOURIER
                     if (cmp_nb_fourier .eq. 0) then
                         call utmess('F', 'CHARGES2_92', sk=typblc(3))
-                    endif  
+                    endif
                 endif
 
-                            
+
                 call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
                             coef_type, cmp_nb, cmp_name, cmp_acti, valeType,&

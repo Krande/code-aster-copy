@@ -102,7 +102,7 @@ subroutine xalg20(ndim, elrefp, it, nnose,&
     call xstudo(ndime, ninter, npts, nptm, ainter,&
                 nbpi, ip1, ip2, pm1a, pm1b,&
                 pm2)
-!    RECHERCHE DU NOEUD A 
+!    RECHERCHE DU NOEUD A
     noeua=0
     if (ninter .eq. 2 .and. npts .eq. 0) then
         a1=nint(ainter(zxain*(1-1)+1))
@@ -144,7 +144,7 @@ subroutine xalg20(ndim, elrefp, it, nnose,&
                 ib=cnset(nnose*(it-1)+ar(a2,i))
                 im=cnset(nnose*(it-1)+ar(a2,3))
             endif
-320     continue 
+320     continue
         ASSERT((ia*ib) .gt. 0)
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
                     ia, ib, im, r, ksia, ksib,&

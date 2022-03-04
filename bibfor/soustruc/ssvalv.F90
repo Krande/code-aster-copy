@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -178,12 +178,12 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma,&
                     do i = nddli+1, nddlt
                         zr(idresl-1+i)= zr(jresu-1+(nbinst-1)*nddle+i)
                     end do
-                endif 
+                endif
             else
 !         RECOPIE DU VECTEUR DEJA CONDENSE :
                 do i = nddli+1, nddlt
                     zr(idresl-1+i)= zr(ialica-1+nddlt+i)
-                end do          
+                end do
             endif
 !
         else if (rota(1:3).eq.'OUI') then

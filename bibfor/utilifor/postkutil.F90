@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,13 +62,13 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !
 ! ------------------------------------------------------------------
 !
-! but : recuperer un nom de modélisation (parmi '3D', 'AXIS', 'D_PLAN', 
+! but : recuperer un nom de modélisation (parmi '3D', 'AXIS', 'D_PLAN',
 ! ---   'C_PLAN') et le nom d'une sd_mater dans la sd_resultat resu,
 !       connaissant nomfis (sd_fond_fiss en fem ou sd_fiss_xfem en xfem)
 !
 !       On recupere la liste des mailles "voisines" du fond de fissure
-!       (pour fem les mailles connectees aux noeuds du fond de fissure, 
-!       et pour xfem les mailles CTIP). On s'assure que la meme sd_mater 
+!       (pour fem les mailles connectees aux noeuds du fond de fissure,
+!       et pour xfem les mailles CTIP). On s'assure que la meme sd_mater
 !       et la meme modelisation ont ete affectees sur ces mailles.
 !
 !       On renvoie le nom de cette sd_mater et le nom de cette modelisation.
@@ -175,7 +175,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
         call jedetr(mesmai)
 !
 !   --------------------------------------------------------------------
-!   recup de la liste vmafon des mailles principales connectees aux noeuds 
+!   recup de la liste vmafon des mailles principales connectees aux noeuds
 !   du fond dans le cas fem
 !   --------------------------------------------------------------------
 !
@@ -296,7 +296,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
     endif
 !
 !   --------------------------------------------------------------------
-!   recup du nom du materiau et de la modelisation sur les mailles 
+!   recup du nom du materiau et de la modelisation sur les mailles
 !   principales situees "au voisinage du fond de la fissure" (fem ou xfem)
 !   --------------------------------------------------------------------
 !

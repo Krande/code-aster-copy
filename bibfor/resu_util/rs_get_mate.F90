@@ -49,7 +49,7 @@ implicit none
 !                         2 - Material from results datastructure
 !                         3 - Material from results datastructure and command file (the same)
 !                         4 - Material from command file is different from results datastructure
-!                        
+!
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result, chmate_resu, chmate_comm

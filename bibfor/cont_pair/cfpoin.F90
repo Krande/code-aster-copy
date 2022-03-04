@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: sdappa, newgeo
     character(len=24) :: sdappa_poin, sdappa_infp, sdappa_noms
     character(len=24) :: sdappa_tau1, sdappa_tau2, sdappa_proj
-    character(len=24) :: sdappa_dist, sdappa_appa, sdappa_tgno, sdappa_tgel    
+    character(len=24) :: sdappa_dist, sdappa_appa, sdappa_tgno, sdappa_tgel
     character(len=24) :: sdappa_mpia, sdappa_mpib, sdappa_mpic
     real(kind=8), pointer :: v_sdappa_poin(:) => null()
     integer, pointer :: v_sdappa_infp(:) => null()
@@ -172,7 +172,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
         valk(1)='MPI_INCOMPLET'
         call wkvect(sdappa_mpic,'V V K16',1,vk16=valk)
         valk(1)='MPI_INCOMPLET'
-    else 
+    else
         call jeveuo(sdappa_mpia, 'E',vk16=valk)
         valk(1)='MPI_INCOMPLET'
         call jeveuo(sdappa_mpib, 'E',vk16=valk)

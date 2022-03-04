@@ -115,15 +115,15 @@ integer, intent(in) :: list_func_acti(*)
     call nmchex(hval_algo, 'SOLALG', 'DEPDEL', disp_cumu_inst)
 !
 ! - Compute convergence criterion
-! 
+!
     !on laisse ITER_CONT_MULT pour XFEM
-    if (l_cont_xfem .or. l_cont_xfem_gg) then 
+    if (l_cont_xfem .or. l_cont_xfem_gg) then
         if (iter_cont_mult .eq. -1) then
             iter_cont_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MAXI')
         else
             iter_cont_maxi = iter_cont_mult*nb_cont_poin
         endif
-    else 
+    else
         iter_cont_maxi = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MAXI')
     endif
 !

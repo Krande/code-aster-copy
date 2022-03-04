@@ -19,7 +19,7 @@
 subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     implicit none
 !
-!     DYNA_ VIBRA : Calculation and priniting out of the restitution rates 
+!     DYNA_ VIBRA : Calculation and priniting out of the restitution rates
 !                    for stop/choc -type localized non linearities
 ! ----------------------------------------------------------------------
 !
@@ -270,7 +270,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
 !               --- Save the restitution ratio for this node
                 restit((i-1)*2+jj) = ct
 
-!               --- Print out the flexibilities (souplesses) in increasing order 
+!               --- Print out the flexibilities (souplesses) in increasing order
                 if (info .ge. 2) then
                     call mdtrib(indic, soupl, nbmode)
                     do j = 1, nbmode

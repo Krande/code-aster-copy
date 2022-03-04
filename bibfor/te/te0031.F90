@@ -125,7 +125,7 @@ character(len=16), intent(in) :: option, nomte
     lcqhom   = ASTER_FALSE
     call plateChckHomo(l_nonlin, option, lcqhom)
 !
-! - Compute matrix for local basis 
+! - Compute matrix for local basis
 !
     call jevech('PGEOMER', 'L', jgeom)
     if (nno .eq. 3) then

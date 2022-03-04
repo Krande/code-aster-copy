@@ -74,7 +74,7 @@ character(len=19), intent(in) :: compor_info
 !          => total number of zone in CARTE
 !         v_info(3) = nb_vari_maxi
 !          => maximum number of internal variables
-!         v_info(4) = nt_vari    
+!         v_info(4) = nt_vari
 !          => total number of internal variables
 !       INFO.VARI = Collection of nb_zone (from CARTE) x Vecteur_Info
 !       For each zone   : Vector_Info is list of nbVari name of internal variables (K16)
@@ -142,7 +142,7 @@ character(len=19), intent(in) :: compor_info
         ASSERT(.false.)
     endif
 !
-! - Create list of zones: for each zone (in CARTE), how many elements 
+! - Create list of zones: for each zone (in CARTE), how many elements
 !
     call wkvect(compor_info(1:19)//'.ZONE', 'V V I', nb_zone, vi = v_zone)
 !
@@ -191,7 +191,7 @@ character(len=19), intent(in) :: compor_info
     do i_zone = 1, nb_zone
         call jecroc(jexnum(compor_info(1:19)//'.VARI', i_zone))
     end do
-! 
+!
     do i_elem = 1, nb_elem_mesh
 ! ----- Get current zone
         if (present(compor_cart_)) then

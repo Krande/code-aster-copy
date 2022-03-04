@@ -171,7 +171,7 @@ subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
 ! --- CREATION DE LA MAILLE DANS LE PSEUDO-MAILLAGE
 
     do 30 icpl = 1 , nmain1
-    
+
     ! ----- MAILLAGE 1
 
         imail = imail + 1
@@ -181,7 +181,7 @@ subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
         zi(jtabco+imail-1) = numma1
     30 end do
     do 31 icpl = 1 , nmain2
-    
+
     ! ----- MAILLAGE 2
 
         imail = imail + 1

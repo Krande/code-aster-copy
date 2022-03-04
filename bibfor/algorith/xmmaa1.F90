@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -323,10 +323,10 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         else
                             imait(2)=xcalc_heav(heavn(nne+i),&
                                                 hea_fa(2),&
-                                                heavn((1+nfhe)*nne+nfhm*nnm+i))  
+                                                heavn((1+nfhe)*nne+nfhm*nnm+i))
                             jmait(2)=xcalc_heav(heavn(nne+j),&
                                                 hea_fa(2),&
-                                                heavn((1+nfhe)*nne+nfhm*nnm+j))  
+                                                heavn((1+nfhe)*nne+nfhm*nnm+j))
                         endif
                         do iddl = 1, 1+nfhm
                             ii = iin + (iddl-1)*ndim + l

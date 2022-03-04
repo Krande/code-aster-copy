@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ implicit none
     nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
     nb_cont_zone  = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
 !
-! - Pentration saving 
+! - Pentration saving
 !
     sdcont_pene = ds_contact%sdcont_solv(1:14)//'.PENETR'
 
@@ -64,7 +64,7 @@ implicit none
 ! - Creating penetration management objects
 !
 !   p_sdcont_pene_zone : 1 --> store the computed penetration (=0. if standard methods)
-!   p_sdcont_pene_zone : 2 --> store the current zone for print in 
+!   p_sdcont_pene_zone : 2 --> store the current zone for print in
 !   convergence table (=0 if standard)
 !   see mmopti for initialization
     call wkvect(sdcont_pene, 'V V R', nb_cont_poin, vr = p_sdcont_pene)

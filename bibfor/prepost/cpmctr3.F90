@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cpmctr3(conloc, jmacsu, indno, indma, conneo)
     character(len=24), intent(in) :: conloc
 !
 ! -------------------------------------------------------------------------------------------------
-!         CREATION DES MAILLES DES NOUVELLES MAILLES VOLUMIQUE 
+!         CREATION DES MAILLES DES NOUVELLES MAILLES VOLUMIQUE
 !         ASSOCIEE A LA ZONE DE CONTACT ESCLAVE
 !         CAS QUAD 20
 ! -------------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ subroutine cpmctr3(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+1-1) = zi(jmacsu+lino(1)-1)
     zi(jconloc+2-1) = indno
     zi(jconloc+3-1) = zi(jmacsu+lino(3)-1)
-   
+
 ! =================================================================================================
     call jeecra(jexnum(conloc,indma+1), 'LONMAX', ival=3)
     call jeecra(jexnum(conloc,indma+1), 'LONUTI', ival=3)
@@ -90,7 +90,7 @@ subroutine cpmctr3(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+1-1) = indno
     zi(jconloc+2-1) = zi(jmacsu+lino(2)-1)
     zi(jconloc+3-1) = zi(jmacsu+lino(3)-1)
-   
+
 
 ! -------------------------------------------------------------------------------------------------
     call jedema()

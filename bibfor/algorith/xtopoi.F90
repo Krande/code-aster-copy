@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -164,7 +164,7 @@ subroutine xtopoi(noma, modele)
 !   vérification de la cohérence entre le nombre de points de Gauss générés
 !   par la découpe en sous-éléments et le nombre maximal de points de Gauss
 !   défini par la famille XFEM de l'élément parent
-    call xchkgp(modele) 
+    call xchkgp(modele)
 !
     call jedema()
 end subroutine

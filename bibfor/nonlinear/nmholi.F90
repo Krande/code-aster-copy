@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids,&
     call rcvalb(fami, kpg, spt, poum, imate,&
                 ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 1, 'SY', val, cod, 2)
-    sy=val(1)            
+    sy=val(1)
     m = 1 + 10**(1-inst)
     am = sy * rac23**m
 !

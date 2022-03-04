@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ implicit none
     integer :: nb_cont_zone, model_ndim, nb_cont_elem, nt_elem_slav, nb_dcl_zi
     integer :: i_elem_slav, elem_slav_indx, elem_slav_nume, nb_elem_slav
     integer :: jdecpa, nb_patch, i_patch, patch_type, jngrma, nupatch_zi
-    integer :: nt_sub_elem, nb_sub_elem, nb_list_elem, nb_grma, n1b  
+    integer :: nt_sub_elem, nb_sub_elem, nb_list_elem, nb_grma, n1b
     character(len=24) :: list_elem
     integer, pointer :: v_list_elem(:) => null()
     integer, pointer :: v_mesh_lpatch(:) => null()
@@ -87,7 +87,7 @@ implicit none
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
     sdcont_ptrdclac = sdcont_defi(1:16)//'.PTRDCLC'
     call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
-    
+
 !
 ! - Access to mesh (patches)
 !
@@ -101,14 +101,14 @@ implicit none
     nt_elem_slav = cfdisi(sdcont_defi,'NTMAE')
     nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
 !
-! - Check compatiblity DECOUPE_LAC<=>DEFI_CONTACT 
+! - Check compatiblity DECOUPE_LAC<=>DEFI_CONTACT
 !
     call jelira(mesh//'.PTRNOMPAT', 'LONMAX', nb_dcl_zi)
-    if (nb_dcl_zi .ne. nb_cont_zone) then 
-        call utmess('F', 'CONTACT2_17')   
+    if (nb_dcl_zi .ne. nb_cont_zone) then
+        call utmess('F', 'CONTACT2_17')
     endif
 !
-! - Create pointer index DECOUPE_LAC<=>DEFI_CONTACT 
+! - Create pointer index DECOUPE_LAC<=>DEFI_CONTACT
 !
     call wkvect(sdcont_ptrdclac, 'G V I', nb_cont_zone, vi = vi_ptrdclac)
 !
@@ -125,14 +125,14 @@ implicit none
 ! ----- Get current patches
 !
         call getvtx('ZONE', 'GROUP_MA_ESCL' , iocc=1, nbval=0, nbret=nb_grma)
-        ASSERT(nb_grma.eq.-1) 
+        ASSERT(nb_grma.eq.-1)
         call wkvect(nmgrma, 'V V K24', -nb_grma, jngrma)
         call getvtx('ZONE','GROUP_MA_ESCL',iocc=i_zone,nbval=-nb_grma,vect=zk24(jngrma),nbret=n1b)
         ASSERT(n1b.eq.-nb_grma)
-           
+
         call get_patchzi_num(mesh,zk24(jngrma),nupatch_zi)
         vi_ptrdclac(i_zone)=nupatch_zi
-        
+
         nb_patch = v_mesh_lpatch(2*(nupatch_zi-1)+2)
         jdecpa   = v_mesh_lpatch(2*(nupatch_zi-1)+1)
 !

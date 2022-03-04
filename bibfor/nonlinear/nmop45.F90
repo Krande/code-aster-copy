@@ -57,7 +57,7 @@ integer, optional, intent(out) :: nfreq_calibr_
 !   IN : EIGSOL : SD EIGENSOLVER CONTENANT LES PARAMETRES DU PB MODAL
 !   IN : L_HPP  : TYPE DE DEFORMATIONS
 !                .TRUE.         PETITES DEFORMATIONS (MATR. GEOM.)
-!                .FALSE.        GRANDES DEFORMATIONS (PAS DE MATR. GEOM.)                  
+!                .FALSE.        GRANDES DEFORMATIONS (PAS DE MATR. GEOM.)
 !   IN : MOD45  : TYPE DE CALCUL AU SENS NMOP45: VIBR OU FLAM
 !   IN : MODES  : NOM UTILISATEUR DU CONCEPT MODAL PRODUIT
 !   IN : MODES2 : NOM UTILISATEUR D'UN SECOND CONCEPT MODAL PRODUIT (SI
@@ -86,7 +86,7 @@ integer, optional, intent(out) :: nfreq_calibr_
 ! DIVERS
     call jemarq()
     cbid=(0.d0,0.d0)
-    nconv=0 
+    nconv=0
     nsta  = 0
     nddle = 0
     if (present(ds_posttimestep_)) then
@@ -109,11 +109,11 @@ integer, optional, intent(out) :: nfreq_calibr_
 !
 ! --- VERIFICATION FR LA COHERENCE DE LA SD EIGSOL ET DES OBJETS SOUS-JACENTS
 !
-    checksd=.true. 
+    checksd=.true.
     call vpvers(eigsol, modes, checksd)
     call vpvers(eigsol, modes2, checksd)
 
-! ---  TRAITEMENTS NUMERIQUES (SOLVEUR LINEAIRE, LAGRANGE, MODES RIGIDES, 
+! ---  TRAITEMENTS NUMERIQUES (SOLVEUR LINEAIRE, LAGRANGE, MODES RIGIDES,
 ! ---  BORNES DE TRAVAIL EFFECTIVES, CALCUL DU NOMBRE DE MODES, FACTO. MATRICE SHIFTEE
 ! ---  DETERMINATION TAILLE DE L'ESPACE DE PROJECTION)
     if (mod45(1:4) .eq. 'VIBR') then
@@ -133,7 +133,7 @@ integer, optional, intent(out) :: nfreq_calibr_
 
 
     if (iret.ne.0) goto 80
-    
+
 !
 ! --- CREATION ET INITIALISATION DES SDS RESULTATS
 !
@@ -151,7 +151,7 @@ integer, optional, intent(out) :: nfreq_calibr_
     if (((mod45(1:4).eq.'FLAM').and.l_hpp).or.(mod45(1:4).ne.'FLAM')) then
 ! ========================================================================
 ! --- FLAMBEMENT AVEC MATRICE GEOMETRIQUE OU DYNAMIQUE TOUT CAS DE FIGURE
-! ======================================================================== 
+! ========================================================================
 !
 ! ------ CALCUL MODAL STANDARD
 !
@@ -269,7 +269,7 @@ integer, optional, intent(out) :: nfreq_calibr_
         call jedetr(vecrei)
         call jedetr(vecrek)
         call jedetr(vecvp)
-    endif      
+    endif
 !
     call jedema()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ implicit none
 !
     aster_logical :: l_dyna, l_cont_xfem_gg, l_step_first
     character(len=19) :: sdcont_depgeo, sdcont_deplam
-    character(len=19) :: disp_prev    
+    character(len=19) :: disp_prev
     character(len=19) :: xseuco, xseucp
     character(len=19) :: xindco, xmemco, xindcp, xmemcp, xcohes, xcohep
 !
@@ -121,7 +121,7 @@ implicit none
     call mmbouc(ds_contact, 'Geom', 'Init_Counter')
 !
 ! - First geometric loop counter
-!    
+!
     call mmbouc(ds_contact, 'Geom', 'Incr_Counter')
 !
 ! - Initial pairing

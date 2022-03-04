@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ implicit none
     list_load = list_load0
 !
 ! - Check unicity
-!             
+!
     do i_store = 2, nb_store
         nume_store = v_list_store(i_store)
         call rslesd(result   , nume_store, model, chmate, cara_elem,&

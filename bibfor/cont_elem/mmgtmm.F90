@@ -158,10 +158,10 @@ real(kind=8), intent(inout) :: matrmm(27, 27)
                                        (dffm(1,i)*(kappa(1,1)*dffm(1,j)+kappa(1,2)*dffm(2,j))) + &
                                        (dffm(2,i)*(kappa(2,1)*dffm(1,j)+kappa(2,2)*dffm(2,j))))) +&
                         kappa(1,2)*(mprt2n(l,k)*jeu*(&
-                                        dffm(1,i)*((kappa(1,1)*dffm(1,j)+kappa(1,2)*dffm(2,j))) + & 
-                                       (dffm(2,i)*(kappa(2,1)*dffm(1,j)+kappa(2,2)*dffm(2,j)))) + & 
+                                        dffm(1,i)*((kappa(1,1)*dffm(1,j)+kappa(1,2)*dffm(2,j))) + &
+                                       (dffm(2,i)*(kappa(2,1)*dffm(1,j)+kappa(2,2)*dffm(2,j)))) + &
                                     mprnt2(l,k)*jeu*(&
-                                        dffm(1,i)*(kappa(1,1)*dffm(1,j)+kappa(1,2)*dffm(2,j)) + & 
+                                        dffm(1,i)*(kappa(1,1)*dffm(1,j)+kappa(1,2)*dffm(2,j)) + &
                                         dffm(2,i)*(kappa(2,1)*dffm(1,j)+kappa(2,2)*dffm(2,j)))))
 ! ----------------- terme  pour xi2
                     matrmm(ii,jj) = matrmm(ii,jj) + &
@@ -222,7 +222,7 @@ real(kind=8), intent(inout) :: matrmm(27, 27)
                           kappa(1,2)*kappa(2,1))*dffm(1,j)*(ddffm(2,i)+ddffm(3,i)) - &
                           mprnt2(l,k)*jeu*(kappa(1,2)*kappa(1,1)+&
                           kappa(2,2)*kappa(1,2))*dffm(2,j)*(ddffm(2,i)+ddffm(3,i)))
-! ----------------- terme pour xi2 
+! ----------------- terme pour xi2
                     matrmm(ii,jj) = matrmm(ii,jj) - &
                         (dlagrc-coefac*jeu)*wpg*jacobi*(&
                           mprt11(l,k)*ffm(j)*(kappa(2,1)*kappa(1,1)+&
@@ -241,7 +241,7 @@ real(kind=8), intent(inout) :: matrmm(27, 27)
                           kappa(2,2)*kappa(2,1))*dffm(1,j)*(ddffm(2,i)+ddffm(3,i)) - &
                           mprnt2(l,k)*jeu*(kappa(1,2)*kappa(2,1)+&
                           kappa(2,2)*kappa(2,2))*dffm(2,j)*(ddffm(2,i)+ddffm(3,i)))
-                enddo 
+                enddo
             enddo
         enddo
     enddo

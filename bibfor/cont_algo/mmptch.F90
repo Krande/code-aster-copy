@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: sdappa
-    character(len=24) :: sdappa_tgno, sdappa_tgel    
+    character(len=24) :: sdappa_tgno, sdappa_tgel
     character(len=24) :: sdappa_mpib, sdappa_mpic
     integer :: iret, length
     character(len=16), pointer :: valk(:) => null()
@@ -69,7 +69,7 @@ implicit none
         valk(1)='MPI_INCOMPLET'
         call wkvect(sdappa_mpic,'V V K16',1,vk16=valk)
         valk(1)='MPI_INCOMPLET'
-    else 
+    else
         call jeveuo(sdappa_mpib, 'E',vk16=valk)
         valk(1)='MPI_INCOMPLET'
         call jeveuo(sdappa_mpic, 'E',vk16=valk)

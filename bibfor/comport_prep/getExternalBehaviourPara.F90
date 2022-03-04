@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ character(len=16), optional, intent(out) :: type_cpla_out_
     endif
     elem_type      = 0
     if (present(elem_type_)) then
-        elem_type = elem_type_ 
+        elem_type = elem_type_
     endif
     strain_model   = 0
 !
@@ -105,7 +105,7 @@ character(len=16), optional, intent(out) :: type_cpla_out_
     if (present(keywf_)) then
         keywf       = keywf_
         i_comp      = i_comp_
-    endif  
+    endif
 
 ! - Get mechanical part of behaviour (required for KIT_THM)
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
@@ -158,7 +158,7 @@ character(len=16), optional, intent(out) :: type_cpla_out_
     if (present(type_cpla_out_)) then
         type_cpla_out_ = type_cpla_out
     endif
-    comp_exte%libr_name      = libr_name 
+    comp_exte%libr_name      = libr_name
     comp_exte%subr_name      = subr_name
     comp_exte%model_mfront   = model_mfront
     comp_exte%model_dim      = model_dim

@@ -70,15 +70,15 @@ implicit none
 !
     call infmue()
     call dismoi('MPI_COMPLET', matass, 'MATR_ASSE', repk=kmpic1)
-    if (kmpic1 .eq. 'NON') then 
+    if (kmpic1 .eq. 'NON') then
         call sdmpic('MATR_ASSE', matass)
     endif
-    
+
     call dismoi('MPI_COMPLET', matr, 'MATR_ASSE', repk=kmpic1)
-    if (kmpic1 .eq. 'NON') then 
+    if (kmpic1 .eq. 'NON') then
         call sdmpic('MATR_ASSE', matr)
     endif
-    
+
     call mtcmbl(2, typcst, coefmu, limat, matass,&
                 ' ', nume_ddl, 'ELIM1')
     call infbav()

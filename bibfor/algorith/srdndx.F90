@@ -48,16 +48,16 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nmat,val
     real(kind=8) :: i1,devsig(6),dndxi(6),bprime,mater(nmat,2)
     real(kind=8) :: para(3),dpardx(3),xi,tmp
-    
+
     !!!
     !!! Variables locales
     !!!
-    
-    integer :: i, ndt,ndi    
+
+    integer :: i, ndt,ndi
     real(kind=8) :: pref,sigc,m1,a2,a5,m5,s5
     real(kind=8) :: s1,qi,fi,m3,xi1,xi2,fp
     real(kind=8) :: rho_1,rho_2,rho_4
@@ -70,36 +70,36 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     real(kind=8) :: m10,qi0,xi10,xi20,rq,rm,trr,dtmp,m00,m0,s0,a0
     real(kind=8) :: rs,rx1,rx2,spre,spos,f3p,phip,cp,sigtilp,ffp
     common /tdim/   ndt,ndi
-    
+
     !!!
     !!! Construction de variables tmp
     !!!
-    
+
     vident(:) = 0.d0
-    
+
     do i=1,ndi
         vident(i)=1.d0
     end do
-    
+
     !!!
     !!! Recuperation des derivees et fonctions d'ecrouissage
     !!!
-    
+
     daxdxi=dpardx(1)
     dsxdxi=dpardx(2)
     dmxdxi=dpardx(3)
     ax=para(1)
     sx=para(2)
     mx=para(3)
-    
+
     !!! Calcul de sii
     call lcprsc(devsig,devsig,sii)
     sii=sqrt(sii)
-    
+
     !!!
     !!! Recuperation de parametres du modele
     !!!
-    
+
     !!! a T0
     pi=r8pi()
     pref=mater(1,2)
@@ -120,10 +120,10 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     rs=mater(23,2)
     rx1=mater(24,2)
     rx2=mater(25,2)
-    
+
     !!! temperatures
     trr=mater(8,1)
-    
+
     !!! a T
     if ((tmp.ge.trr).and.(trr.gt.0.d0)) then
         qi=qi0*(1.d0-rq*log(tmp/trr))
@@ -132,7 +132,7 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
         qi=qi0
         dtmp=0.d0
     endif
-    
+
     m0=m00*exp(-rm*(dtmp**2.d0))
     m1=m10*exp(-rm*(dtmp**2.d0))
     s0=(m0*1.d-1/(1.d0-1.d-1**2.d0))**2.d0
@@ -141,7 +141,7 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     xi1=xi10*exp(rx1*dtmp)
     fi=qi/sigc
     m3=m1*fi/(fi**2.d0-s1)
-    
+
     if (fp.le.0.d0) then
         s5=s0
         m5=m0
@@ -155,39 +155,39 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
         m5=s5/ffp
         a5=a2
     endif
-    
+
     !!! Parametres d'ecrouissage
     sp=para(2)
-    
+
     !!! Calcul de h(theta)
     rcos3t=cos3t(devsig, pref, 1.d-8)
     call srhtet(nmat, mater, rcos3t, r0c, rtheta)
-    
+
     !!! Calcul de alpha_res
     alres=1.d0+m3
-    
+
     !!! Calcul de sii
     call lcprsc(devsig, devsig, sii)
     sii=sqrt(sii)
-    
+
     !!! Calculs de sigma_min et sigma_max
     tiers=1.d0/3.d0
     sigmin=i1*tiers-sii*rtheta/sqrt(6.d0)/r0c
     sigmax=i1*tiers+sqrt(2.d0/3.d0)*sii*rtheta/r0c
-    
+
     if (sigmax.le.r8prem()) sigmax=r8prem()
     if (sigmin.le.r8prem()) sigmin=r8prem()
-    
+
     !!! Calcul de sigma_car
     fact4=sigmin*m5/sigc+s5
-    
+
     if (fact4.ge.0.d0) then
         sigcar=sigmin+sigc*fact4**a5
         if (sigcar.le.r8prem()) sigcar=r8prem()
     else
         sigcar=r8prem()
     endif
-    
+
     !!! Calcul de sigma_tilde et alpha
     if ((xi1.le.xi).and.(xi.lt.xi2)) then
         fact3=1.d0+para(1)*para(3)*para(2)**(para(1)-1.d0)
@@ -199,7 +199,7 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
         else
             alpha=(sigmax+sigtil)/r8prem()
         endif
-    else if (xi.ge.xi2) then 
+    else if (xi.ge.xi2) then
         sigtil=0.d0
         if (sigmin+sigtil.ge.r8prem()) then
             alpha=(sigmax+sigtil)/(sigmin+sigtil)
@@ -207,21 +207,21 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
             alpha=(sigmax+sigtil)/r8prem()
         endif
     endif
-    
+
     !!! Calcul de sigma_tilde au pic de resistance
     f3p=1.d0+m1/2.d0/s1**(1.d0/2.d0)
     cp=sigc*(s1**(1.d0/2.d0))/2.d0/sqrt(f3p)
     phip=2.d0*atan(sqrt(f3p))-pi/2.d0
     sigtilp=cp/tan(phip)
-    
+
     if (sigtilp.le.r8prem()) then
         sigtilp=r8prem()
     endif
-    
+
     !!! Calcul de sin(psi)
     if (val.eq.0) then
         sinpsi=rho_1*(sigmax-sigcar)/(rho_2*sigmax+sigcar)
-    else 
+    else
         if (sigtil.gt.0.d0) then
             if (sigmax-sigcar.gt.0.d0) then
                 spre=rho_1*(sigmax-sigcar)/(rho_2*sigmax+sigcar)
@@ -242,13 +242,13 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
             sinpsi=spre+spos
         endif
     endif
-    
+
     if (sinpsi.le.-1.d0) then
         sinpsi=-1.d0
     else if (sinpsi.ge.1.d0) then
         sinpsi=1.d0
     endif
-    
+
     !!! Calcul de d(sin)/d(xi)
     if (val.eq.1) then
         if (sp.gt.0.d0) then
@@ -266,10 +266,10 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     else
         dsindx=0.d0
     endif
-    
+
     !!! Calcul de d(beta')/dxi
     dbpdxi=-6.d0*sqrt(6.d0)/(3.d0-sinpsi)**2.d0*dsindx
-    
+
     !!! Assemblage
     do i=1, ndt
         dndxi(i)=((3.d0*devsig(i)+bprime*sii*vident(i))/sii/&

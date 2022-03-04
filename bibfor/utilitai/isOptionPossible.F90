@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ implicit none
     ngrel     = nbgrel(ligrel)
     do igrel = 1, ngrel
         te    = typele(ligrel, igrel)
-        mode  = modat2(indx_option, te, para_name) 
+        mode  = modat2(indx_option, te, para_name)
         call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', vi = v_liel)
         call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', nel)
         call jenuno(jexnum('&CATA.TE.NOMTE', v_liel(nel)), nomte)

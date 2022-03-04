@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine ftang_rail(fn, xlocal, vitloc, cfrotd, cfrots,&
 !***********************************************************************
 ! 01/01/91    G.JACQUART AMV/P61 47 65 49 41
 !***********************************************************************
-!     FONCTION  : CALCULE LA FORCE TANGENTIELLE DE CHOC 
-!                 DANS LE CAS UNIDIRECTIONNEL 
+!     FONCTION  : CALCULE LA FORCE TANGENTIELLE DE CHOC
+!                 DANS LE CAS UNIDIRECTIONNEL
 !-----------------------------------------------------------------------
 !                             ARGUMENTS
 ! .________________.____.______________________________________________.
@@ -68,7 +68,7 @@ subroutine ftang_rail(fn, xlocal, vitloc, cfrotd, cfrots,&
 !     TESTE CHANGEMENT DE SIGNE VITESSE TANGENTIELLE
 !
     xscal=vt(1)*oldvt(1)+vt(2)*oldvt(2)
-    xnorvt=abs(vt(1)) 
+    xnorvt=abs(vt(1))
     if (((xscal).ge.0.d0) .and. (iadher.eq.0) .and. (xnorvt.gt.1.d-6)) then
 !
 !       CAS DU GLISSEMENT

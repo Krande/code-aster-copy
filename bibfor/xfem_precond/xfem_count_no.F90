@@ -19,7 +19,7 @@
 subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, nbnoxfem)
 !
 !-----------------------------------------------------------------------
-! BUT : 
+! BUT :
 ! * MARQUAGE DES NOEUDS XFEM : IS_XFEM(NBNOMAX)
 ! * BASCULEMENT VERS UN STOCKAGE LOCAL DES NOEUDS XFEM : INO_XFEM(NBNOMAX)
 
@@ -29,11 +29,11 @@ subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, nbnoxfem)
 !------------
 !
 ! SORTIES :
-!     - IS_XFEM  :: RETOURNE .TRUE. SI ON A TROUVE UN NOEUD XFEM 
+!     - IS_XFEM  :: RETOURNE .TRUE. SI ON A TROUVE UN NOEUD XFEM
 !     - INO_XFEM :: RETOURNE LA NUMEROTATION LOCALE DES NOEUDS XFEM
 !         SI INO_XFEM(I)>0 : LE NOEUD A ETE MARQUE => NUMERO DE NOEUD LOCAL
 !         SI INO_XFEM(I)=0 : LE NOEUD N A PAS ETE MARQUE
-!     - NBNOXFEM :: NOMBRE DE NOEUDS MARQUES  
+!     - NBNOXFEM :: NOMBRE DE NOEUDS MARQUES
 !-----------------------------------------------------------------------
     implicit none
 !
@@ -70,7 +70,7 @@ subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, nbnoxfem)
           nbnoxfem=nbnoxfem+1
           ino_xfem(nuno)=nbnoxfem
           is_xfem(nuno)=.true.
-       endif        
+       endif
 10  enddo
     ASSERT(nbnoxfem .gt. 0)
 !

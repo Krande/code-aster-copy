@@ -68,7 +68,7 @@ character(len=19), intent(in) :: compor_info
     call jeveuo(compor_info(1:19)//'.RELA', 'L', vk16 = v_rela)
     call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi = v_zone)
 
-    do i_zone = 1, nb_zone    
+    do i_zone = 1, nb_zone
         nb_elem_zone = v_zone(i_zone)
         if (nb_elem_zone .ne. 0) then
 ! --------- Acces to list of name of internal variables

@@ -70,7 +70,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
     integer :: jv_liel
     integer :: i_elem, i_cont_poin, i_cont_type, i_node, i_zone, i_cont_pair
     integer :: elem_mast_nume, elem_slav_nume, elem_indx
-    integer :: ligrcf_liel_lont, typf_cont_nume, typg_cont_nume, typf_frot_nume  
+    integer :: ligrcf_liel_lont, typf_cont_nume, typg_cont_nume, typf_frot_nume
     aster_logical :: l_cont_cont, l_cont_lac
     character(len=19) :: ligrcf, sdappa
     integer, pointer :: v_list_pair(:) => null()
@@ -171,7 +171,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
             elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
         else
             elem_slav_nume = v_sdappa_apli(3*(i_cont_pair-1)+1)
-            elem_mast_nume = v_sdappa_apli(3*(i_cont_pair-1)+2)   
+            elem_mast_nume = v_sdappa_apli(3*(i_cont_pair-1)+2)
         endif
 !
 ! ----- Get parameters for current contact element
@@ -250,7 +250,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
                         i_zone      = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
                         l_frot      = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     else
-                        l_frot      = .false._1 
+                        l_frot      = .false._1
                     endif
                     if (.not. l_frot) then
                         jv_liel                = jv_liel + 1
@@ -280,7 +280,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
                         i_zone      = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
                         l_frot      = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     else
-                        l_frot      = .false._1 
+                        l_frot      = .false._1
                     endif
                     if (l_frot) then
                         jv_liel                = jv_liel + 1

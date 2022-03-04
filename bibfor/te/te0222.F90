@@ -110,7 +110,7 @@ implicit none
     real(kind=8), pointer :: epsino(:) => null()
     real(kind=8), pointer :: dfdi(:) => null()
     real(kind=8), pointer :: ffp(:) => null()
-    
+
     data epsa/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/
 !
 ! =====================================================================
@@ -332,7 +332,7 @@ implicit none
 !-- A vérifier si c'est suffisant)
     call rcvarc(' ', epsa(1), '+', 'NOEU', 1,1, rbid, iret)
     if (iret .eq. 0) epsaini=.true.
-!                    
+!
 !-- On ne peut avoir simultanement pre-deformations/déformations init et contraintes init
     if ((isigi.ne.0) .and. (epsini.or.epsaini)) then
         call utmess('F', 'RUPTURE1_20')

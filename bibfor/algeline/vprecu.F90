@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         call rsorac(modes, 'LONUTI', ibid, rbid(1), k8b,&
                     c16b, 0.0d0, k8b, tmod, 1,&
                     nbtrou)
-        nbmode=tmod(1)            
+        nbmode=tmod(1)
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmode, lnumor)
         call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b,&
                     c16b, 0.0d0, k8b, zi(lnumor), nbmode,&
@@ -122,7 +122,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         call rsorac(modes, 'LONUTI', ibid, rbid(1), k8b,&
                     c16b, 0.0d0, k8b, tmod, 1,&
                     nbtrou)
-        nbmodt=tmod(1)           
+        nbmodt=tmod(1)
         call wkvect('&&VPRECU.NUMERO.ORDRE', 'V V I', nbmodt, lnumor)
         call rsorac(modes, 'TOUT_ORDRE', ibid, rbid(1), k8b,&
                     c16b, 0.0d0, k8b, zi(lnumor), nbmodt,&

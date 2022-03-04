@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine xmmatb(ndim, nnops, ddls, ddlm, ffc,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/hmdeca.h"   
+#include "asterfort/hmdeca.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
 ! person_in_charge: daniele.colombo at ifpen.fr
@@ -73,10 +73,10 @@ subroutine xmmatb(ndim, nnops, ddls, ddlm, ffc,&
           do ifh = 1, nfh
              mmat(in+(ndim+1)*(ifh+1), plj+1) = mmat(in+(ndim+1)*(ifh+1), plj+1) + ffp2(i)*&
                                       xcalc_heav(heavn(i,ifh),hea_fa(2),heavn(i,5))*ffj*dt*ta*jac
-! 
+!
              mmat(in+(ndim+1)*(ifh+1), plj+2) = mmat(in+(ndim+1)*(ifh+1), plj+2) + ffp2(i)*&
                                       xcalc_heav(heavn(i,ifh),hea_fa(1),heavn(i,5))*ffj*dt*ta*jac
-          end do 
-       end do 
-    end do                                                     
+          end do
+       end do
+    end do
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ function cgvtem(resu, iord0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! CALC_G / verifications : 
+! CALC_G / verifications :
 !
 ! 1. savoir si la VARC TEMP est presente dans la sd cham_mater du RESULTAT
 ! 2. arreter le code en erreur <F> si une autre VARC que TEMP est presente

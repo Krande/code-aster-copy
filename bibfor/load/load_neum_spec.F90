@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -150,7 +150,7 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
                    'PFFCO2D','PEPSINF','PFLUXF' ,'       ',&
                    '       ','PEFOND', 'PCHTHMF'/
 !
-! - Name of option for dead load (function coefficient) 
+! - Name of option for dead load (function coefficient)
 !
     data option_f /'CHAR_MECA_FORC_F','CHAR_MECA_FF3D3D','CHAR_MECA_FF2D3D','CHAR_MECA_FF1D3D',&
                    'CHAR_MECA_FF2D2D','CHAR_MECA_FF1D2D','CHAR_MECA_FF1D1D','CHAR_MECA_PESA_R',&
@@ -242,7 +242,7 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
         else if (load_nume .eq. 2) then
             l_fonct_0  = .true.
         else if (load_nume .eq. 3) then
-            l_fonct_t  = .true.               
+            l_fonct_t  = .true.
         else if (load_nume .eq. 55) then
             l_sigm_int = .true.
         endif
@@ -304,7 +304,7 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
                     lchin(i_field_in) = p_vale_sigm(1)
                 endif
             endif
-            
+
             if (load_option .eq. 'CHAR_MECA_EFON_R') then
                 i_field_in = i_field_in+1
                 lpain(i_field_in) = 'PPREFFR'

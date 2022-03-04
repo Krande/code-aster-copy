@@ -70,7 +70,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
 ! --- POINT DE DEPART
 !
-!  ATTENTION: ON SUPPOSE QUE LA FONCTION APPELANTE A DEJA 
+!  ATTENTION: ON SUPPOSE QUE LA FONCTION APPELANTE A DEJA
 !  INITIALISE LE NEWTON EN AMONT
     do i = 1, ndime
         ksi2(i)=ksi(i)

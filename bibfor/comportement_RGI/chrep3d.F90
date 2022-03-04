@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine chrep3d(M,A,P)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
  implicit none
-#include "asterfort/matmat3d.h"      
+#include "asterfort/matmat3d.h"
 
 
       real(kind=8) :: M(3,3),A(3,3),P(3,3)
@@ -38,7 +38,7 @@ subroutine chrep3d(M,A,P)
           TP(i,j)=P(j,i)
           M(i,j)=0.D0
         enddo
-      enddo                                          
+      enddo
       call matmat3d(A,P,3,3,3,R)
       call matmat3d(TP,R,3,3,3,M)
 end subroutine

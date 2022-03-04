@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -156,7 +156,7 @@ implicit none
 !
     if (present(nb_cont_type_)) then
         nb_cont_type_ = nb_cont_solv
-    endif 
+    endif
 !
 ! - Set index for contact/friction element
 !
@@ -193,7 +193,7 @@ implicit none
 ! - Number of nodes of contact/friction element
 !
     if (present(nb_node_elem_)) then
-        ASSERT(elem_indx .ne. 0) 
+        ASSERT(elem_indx .ne. 0)
         nb_node_elem_ = nb_node(elem_indx)
     endif
 !

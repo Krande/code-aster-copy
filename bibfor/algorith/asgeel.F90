@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine asgeel(nomres, option, nugene)
     integer, pointer :: pointeurs_macro(:) => null()
     integer, pointer :: pointeurs_macroi(:) => null()
     aster_logical :: lsym
-    aster_logical, pointer ::  syme_macro(:) => null() 
+    aster_logical, pointer ::  syme_macro(:) => null()
     data rigopt,masopt,amoopt/'RIGI_GENE',&
      &                        'MASS_GENE','AMOR_GENE'/
 !-----------C
@@ -218,13 +218,13 @@ subroutine asgeel(nomres, option, nugene)
     AS_ALLOCATE(vi=pointeurs_macroi, size=nbmacr)
     do i1 = 1, nbmacr
           call jeveuo(jexnum(noms_macro(i1)//adnom//'_VALE', 1), 'L', lmacr)
-          pointeurs_macro(i1)=lmacr          
-          if (syme_macro(i1)) then           
+          pointeurs_macro(i1)=lmacr
+          if (syme_macro(i1)) then
            pointeurs_macroi(i1)=lmacr
           else
            call jeveuo(jexnum(noms_macro(i1)//adnom//'_VALE', 2), 'L', lmacri)
            pointeurs_macroi(i1)=lmacri
-          end if                     
+          end if
     end do
 !
 ! ----------- CREATION ET REMPLISSAGE DU .DESC ---------------
@@ -296,14 +296,14 @@ subroutine asgeel(nomres, option, nugene)
                 if (.not.lsym) then
                   zr(lresi+ind)=zr(lresi+ind)+ddot(nbddl, zr(lproj+(i1-1)*&
                   nbddl),1, zr(lselia+(j1-1)*nlt+decal),1)
-                end if                  
+                end if
             end do
         end do
 !
     end do
 !
     AS_DEALLOCATE(vi=pointeurs_macro)
-    AS_DEALLOCATE(vi=pointeurs_macroi) 
+    AS_DEALLOCATE(vi=pointeurs_macroi)
     AS_DEALLOCATE(vk8=noms_macro)
     AS_DEALLOCATE(vi=indices_macro)
     AS_DEALLOCATE(vl=syme_macro)

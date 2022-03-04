@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -186,8 +186,8 @@ character(len=16), intent(in) :: option, nomte
         elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
             do j = 1, nno
                 do i = 1, j
-                    ij = (j-1)*j/2 + i 
-                    zc(jv_matr+ij-1) = dcmplx(mmat(i,j),0.d0) 
+                    ij = (j-1)*j/2 + i
+                    zc(jv_matr+ij-1) = dcmplx(mmat(i,j),0.d0)
                 end do
             end do
         else
@@ -211,8 +211,8 @@ character(len=16), intent(in) :: option, nomte
         elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
             do j = 1, nno
                do i = 1, j
-                  ij = (j-1)*j/2 + i 
-                  zr(jv_matr+ij-1) = mmat(i,j) 
+                  ij = (j-1)*j/2 + i
+                  zr(jv_matr+ij-1) = mmat(i,j)
                end do
             end do
         else

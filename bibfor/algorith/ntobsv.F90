@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ implicit none
 !
     call lobs(sd_obsv, nume_time, time, l_obsv)
 !
-! - Make observation 
+! - Make observation
 !
     if (l_obsv) then
         call nmobse(meshz, sd_obsv, time)

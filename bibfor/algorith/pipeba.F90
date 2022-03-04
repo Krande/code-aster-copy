@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
     real(kind=8) :: p0, p1, p2, rac(2), eta(4), a0(4), a1(4), tmp
     real(kind=8) :: lc, k0, ka, kref, c, val(3), etasol(4), xn
     integer :: cod(3), kpg, spt
-    character(len=16) :: nom(3) 
+    character(len=16) :: nom(3)
     character(len=8) :: fami, poum
 !
 !-----------------------------------------------------------------------

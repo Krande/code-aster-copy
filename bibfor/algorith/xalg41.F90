@@ -100,7 +100,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 204  continue
     call xstudo(ndime, ninter, npts, nptm, ainter,&
                   nbpi, ip1, ip2, pm1a,pm1b, pm2)
-!    RECHERCHE DU NOEUD A 
+!    RECHERCHE DU NOEUD A
     noeua=0
     a2=nint(ainter(zxain*(2-1)+1))
     a3=nint(ainter(zxain*(3-1)+1))
@@ -109,7 +109,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
           if (ar(a2,i) .eq. ar(a3,j)) noeua = ar(a2,i)
        end do
     end do
-!    RECHERCHE DU NOEUD B 
+!    RECHERCHE DU NOEUD B
     noeub=0
     a3=nint(ainter(zxain*(3-1)+1))
     a4=nint(ainter(zxain*(4-1)+1))
@@ -118,7 +118,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
           if (ar(a3,i) .eq. ar(a4,j)) noeub = ar(a3,i)
        end do
     end do
-!    RECHERCHE DU NOEUD C 
+!    RECHERCHE DU NOEUD C
     noeuc=0
     a2=nint(ainter(zxain*(4-1)+1))
     noeuc = ar(a2,1)
@@ -132,24 +132,24 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     do 300 r = 1, ninter
        a2=nint(ainter(zxain*(r-1)+1))
        if (a2.eq.0) goto 300
-       ASSERT(a2 .ne. 0) 
+       ASSERT(a2 .ne. 0)
        ip = ip+1
        ia=0
        ib=0
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD A SUR L ARETE A2
        do i = 1, 2
-          if (ar(a2,i) .eq. noeua) then 
+          if (ar(a2,i) .eq. noeua) then
              ia=cnset(nnose*(it-1)+ar(a2,3-i))
              ib=cnset(nnose*(it-1)+ar(a2,i))
              im=cnset(nnose*(it-1)+ar(a2,3))
              goto 320
-          elseif (ar(a2,i) .eq. noeub) then 
+          elseif (ar(a2,i) .eq. noeub) then
              ia=cnset(nnose*(it-1)+ar(a2,3-i))
              ib=cnset(nnose*(it-1)+ar(a2,i))
              im=cnset(nnose*(it-1)+ar(a2,3))
           endif
        end do
-320    continue 
+320    continue
        ASSERT((ia*ib) .gt. 0)
        milara(:) = 0.d0
        milarb(:) = 0.d0
@@ -158,14 +158,14 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !         STOCKAGE PMILIE
        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milara,&
                         lonref, ajout)
-       if (ajout) then 
+       if (ajout) then
           do j=1,ndime
              pmiref(ndime*(ipm-1)+j)=ksia(j)
           enddo
        endif
        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milarb,&
                        lonref, ajout)
-       if (ajout) then 
+       if (ajout) then
           do j=1,ndime
              pmiref(ndime*(ipm-1)+j)=ksib(j)
           enddo
@@ -191,7 +191,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !        STOCKAGE PMILIE
        call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfi,&
                    lonref, ajout)
-       if (ajout) then 
+       if (ajout) then
           do j=1,ndime
              pmiref(ndime*(ipm-1)+j)=ksia(j)
           enddo
@@ -250,7 +250,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 !
           call xajpmi(ndim, pmilie, pmmax, ipm, inm, milfa,&
                       lonref, ajout)
-          if (ajout) then 
+          if (ajout) then
              do j=1,ndime
                 pmiref(ndime*(ipm-1)+j)=ksia(j)
              enddo

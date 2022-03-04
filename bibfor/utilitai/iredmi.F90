@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine iredmi(macr)
     integer :: nbamor, nbmode, nbmods, nbmodt, ntriam, ntriar
     real(kind=8) :: petir8, pi
     real(kind=8), pointer :: mael_raid_vale(:) => null()
-    real(kind=8), pointer :: mael_raid_vali(:) => null() 
+    real(kind=8), pointer :: mael_raid_vali(:) => null()
     real(kind=8), pointer :: mael_mass_vale(:) => null()
     real(kind=8), pointer :: mael_mass_vali(:) => null()
 !-----------------------------------------------------------------------
@@ -120,8 +120,8 @@ subroutine iredmi(macr)
     end if
 !
     call jelira(mael//'.MAEL_RAID_VALE','NMAXOC',ntriar)
-    call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale) 
-    if (ntriar.gt.1) then 
+    call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale)
+    if (ntriar.gt.1) then
      call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 2), 'L', vr=mael_raid_vali)
     else
      call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vali)

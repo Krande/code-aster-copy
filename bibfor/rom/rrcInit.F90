@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ type(ROM_DS_ParaRRC), intent(inout) :: cmdPara
 ! - Prepare vector of list of nodes for selection
 !
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi = nbNodeMesh)
-    AS_ALLOCATE(vi = listNode, size = nbNodeMesh) 
+    AS_ALLOCATE(vi = listNode, size = nbNodeMesh)
 !
 ! - Initializations of build fields
 !

@@ -90,7 +90,7 @@ subroutine te0579(option, nomte)
 !     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 !     NDIM EST LA DIMENSION DU MAILLAGE
 !     NDIME EST DIMENSION DE L'ELEMENT FINI
-!     
+!
 !     SOUS-ELEMENT DE REFERENCE EN HM-XFEM
     if (ndime.eq.1) then
        elref='SE3'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ real(kind=8), intent(out) :: dalal
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: al(6), tal(3, 3), talg(3, 3), work(6, 6), pass(3, 3)
-    integer :: i,j 
+    integer :: i,j
 !
 ! --------------------------------------------------------------------------------------------------
 !

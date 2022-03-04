@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ implicit none
 ! In  nb_dim           : dimension of element
 ! In  elem_type        : type of element
 ! In  elem_nbno        : number of nodes
-! In  ksi1             : first parametric coordinate of the point 
-! In  ksi2             : second parametric coordinate of the point 
+! In  ksi1             : first parametric coordinate of the point
+! In  ksi2             : second parametric coordinate of the point
 ! In  vale_node        : value of components at nodes
 ! Out vale_poin        : value of components at point
 !

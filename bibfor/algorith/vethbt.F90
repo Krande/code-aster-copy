@@ -59,7 +59,7 @@ character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer , parameter :: nbin = 2 
+    integer , parameter :: nbin = 2
     integer , parameter :: nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
@@ -81,7 +81,7 @@ character(len=1), intent(in) :: base
 !
 ! - Init fields
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)    
+    call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
 !
 ! - Loads
 !
@@ -108,7 +108,7 @@ character(len=1), intent(in) :: base
     if (nb_load .gt. 0) then
         do i_load = 1, nb_load
             load_name = v_load_name(i_load)(1:8)
-            load_nume = v_load_info(i_load+1)         
+            load_nume = v_load_info(i_load+1)
             if (load_nume .gt. 0) then
                 ligrch   = load_name//'.CHTH.LIGRE'
 ! ------------- Input field

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -257,7 +257,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
             ASSERT(zl(jcnl+ino-1))
             if (callst) then
                 ASSERT(zl(jctl+ino-1))
-            endif 
+            endif
             zr(jlnsv-1+(ino-1)+1)=cnv(ino)
             zl(jlnsl-1+(ino-1)+1)=.true.
             if (callst) zr(jltsv-1+(ino-1)+1)=ctv(ino)

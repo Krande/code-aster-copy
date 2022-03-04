@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -159,12 +159,12 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                     if (grdvie .eq. 'MANSON_COFFIN') then
                         nomgrd = 'EPSI    '
                         call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs),&
-                                    1, grdvie, zr(jnrupt+adrs), icodre(1), 1)                   
+                                    1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
 !
                     endif
 !
                     if (grdvie .eq. 'FORM_VIE') then
-                        call renrfa(forvie, zr(jgdeq+adrs), zr(jnrupt+adrs), icodre(1))            
+                        call renrfa(forvie, zr(jgdeq+adrs), zr(jnrupt+adrs), icodre(1))
                     endif
 !
                     zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -468,7 +468,7 @@ subroutine prcycb(nomres, soumat, repmat)
     endif
 !
     ktrian = 0
-!    
+!
     do i = 1, nbddr
 !
 ! ----- CALCUL PRODUIT MATRICE DEFORMEE DROITE
@@ -545,7 +545,7 @@ subroutine prcycb(nomres, soumat, repmat)
           zr(ldm0aj + i-1)=0.D0
         end do
 
-                   
+
     endif
 !
 ! --- PRODUIT MATRICE DEFORMEES GAUCHES
@@ -738,14 +738,14 @@ subroutine prcycb(nomres, soumat, repmat)
                    nbddr, 1, 1)
 !
         call jedetr('&&'//pgc//'.MAG')
-        
+
         !-- reinitialiser Kpaj et Mpaj
         ntail=nbddr*nbdax
         do i = 1, ntail
           zr(ldkpaj + i-1)=0.D0
           zr(ldmpaj + i-1)=0.D0
         end do
-        
+
 !
     endif
 !
@@ -872,13 +872,13 @@ subroutine prcycb(nomres, soumat, repmat)
                    nbdax, 1, 1)
 !
         call jedetr('&&'//pgc//'.MAA')
-        
+
         !-- reinitialiser Kpaa et Mpaa
         do i = 1, nbdax**2
           zr(ldkpaa + i-1) = 0.D0
           zr(ldmpaa + i-1) = 0.D0
         end do
-        
+
 !
     endif
 !

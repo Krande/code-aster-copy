@@ -571,7 +571,7 @@ implicit none
               end do
 !       ON NOTE LE NUMERO DE LA PREMIERE FISSURE BRANCHEE SUR IFISS EN CAS DE
 !       JONCTION
-              ASSERT(nfisc2.le.2) 
+              ASSERT(nfisc2.le.2)
               if (nfisc2.gt.0) then
                  nfijon(1) = ifiss
                  do kfiss = 1, nfisc2

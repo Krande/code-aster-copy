@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ implicit none
 !
 !
 ! ROUTINE MODELE HM-XFEM
-! 
+!
 ! CALCUL DES SECONDS MEMBRES VECT
 !
 ! ----------------------------------------------------------------------
@@ -75,4 +75,4 @@ type(THM_DS), intent(inout) :: ds_thm
                 ncompn, jheavn, ifiss, nfiss,&
                 nfh, ifa, jheafa, ncomph)
 !
-end subroutine                                      
+end subroutine

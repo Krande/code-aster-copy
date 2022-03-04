@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,5 +50,5 @@ subroutine deffk(kappa, mu, r, theta, ndim, fkpo)
       fkpo(3,1:2) = 0.d0
       fkpo(3,3) = 4.d0*rr * sin(theta/2.d0)
     endif
-! 
+!
 end subroutine

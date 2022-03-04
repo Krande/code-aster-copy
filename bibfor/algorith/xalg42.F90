@@ -101,7 +101,7 @@ subroutine xalg42(ndim, elrefp, it, nnose,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     do 300 r = 1, ninter
         a2=nint(ainter(zxain*(r-1)+1))
-! POUR EMPECHER L ALGO DE CALCULER TROP DE POINTS MILIEUX 
+! POUR EMPECHER L ALGO DE CALCULER TROP DE POINTS MILIEUX
 ! COMME LE NOEUD MILIEU EST EN 4EME POSITION QUAND NINTER=4,NPTS=2
         if (r .eq. 4) goto 300
         if (a2 .eq. 0) goto 300

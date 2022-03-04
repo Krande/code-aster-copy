@@ -376,9 +376,9 @@ subroutine te0037(option, nomte)
                                                zi(jheavn-1+ncompn*(ino-1)+ncompn))&
                                                *forrep(j,ilev)*jac*ff(ino)
                            end do
-!               ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON 
+!               ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON
 !               EST SUR UN NOEUD SOMMET
-                           if (ino.le.nnos) pos=pos+1 
+                           if (ino.le.nnos) pos=pos+1
                         end do
 !               ON ZAPPE LES TERMES DE CONTACT DU MODELE HM-XFEM
                         if (contac .ge. 2) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     if (phenom.eq.'ELAS_ISTR' .and. ndim.eq.2)then
         call utmess('F', 'ELEMENTS3_2')
     endif
-    
+
     rac2=sqrt(2.d0)
     nbsigm=ndim*2
     call r8inir(36, 0.d0, dsidep, 1)
@@ -104,7 +104,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
     repere(2)=angmas(1)
 !
 ! - VERIFICATION DE L'ELEMENT
-! 
+!
     vrai = .false.
     if (fami .eq. 'PMAT') then
 !        ON VIENT DE OP0033
@@ -226,9 +226,9 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
 !   DEFORMATIONS ANELASTIQUES EPSAXX, EPSAYY, EPSAZZ, EPSAXY, EPSAXZ, EPSAYZ
 !       DEFINIES DANS LE REPERE GLOBAL
-!       
+!
         call verifepsa(fami, kpg, ksp, poum, depgepsa)
-                     
+
 !
 ! CALCUL DES DEFORMATIONS MECANIQUES
 !

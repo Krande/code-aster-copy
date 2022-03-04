@@ -76,7 +76,7 @@ subroutine modirepcham(resuou, resuin )
     endif
 !
 !   Définition du repère utilisé
-    call getvtx(' ', 'REPERE', scal=repere, nbret=nret)    
+    call getvtx(' ', 'REPERE', scal=repere, nbret=nret)
     if (nret .eq. 0 .and. .not. lreuse) then
         call utmess('F', 'MODELISA3_2')
     else if ( repere .ne. 'GLOBAL_UTIL' .and. .not. lreuse) then

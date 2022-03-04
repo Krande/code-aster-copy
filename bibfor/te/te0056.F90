@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,8 +87,8 @@ subroutine te0056(option, nomte)
         valpar(2) = yy
         valpar(3) = zz
         valpar(4) = zr(itemps)
-        
-!       EC : je voulais mettre fami = RIGI et kpg = kp 
+
+!       EC : je voulais mettre fami = RIGI et kpg = kp
 !       mais il n'y a que FPG1 dans MATER pour cet élément
         call fointe_varc('FM', 'FPG1', 1, 1, '+',&
                          zk8(isour), 4, nompar, valpar,&

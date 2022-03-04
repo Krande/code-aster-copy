@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ implicit none
     conn(1:3) = 0
 
 !   NOMBRE DE SEGMENT DU FOND DE FISSURE
-    nseg = nnoff-1    
+    nseg = nnoff-1
     elrefe = 'SE2'
 
 !   ABSCISSES CURVILIGNES S
@@ -126,8 +126,8 @@ implicit none
     ff   = 0.d0
     dff  = 0.d0
 
-    do iseg = 1, nseg      
-  
+    do iseg = 1, nseg
+
          conn(1) = iseg
          conn(2) = iseg+1
 
@@ -145,7 +145,7 @@ implicit none
 !
 !       EVALUATION DES POLYNOMES DE LEGENDRE AUX POINTS DE GAUSS DU SEGMENT
          call glegen(ndeg, npg, xl, stemp, zr(iadpol))
-! 
+!
 !       BOUCLE SUR LES POINTS DE GAUSS DU SEGMENT
          mele = 0.d0
          do ipg = 1,npg
@@ -161,14 +161,14 @@ implicit none
                   jac = jac + zr(js-1+conn(ino))*dff(1, ino)
               end do
 
-!             RECUPERATION DES NORMALES AUX NOEUDS EXTREMITE      
+!             RECUPERATION DES NORMALES AUX NOEUDS EXTREMITE
               nor(1, :) = zr(jtabm-1+(conn(1)-1)*3+1:jtabm-1+(conn(1)-1)*3+3)
               nor(2, :) = zr(jtabm-1+(conn(2)-1)*3+1:jtabm-1+(conn(2)-1)*3+3)
 !
 !             CALCUL DE LA NORMALE MOYENNE
               normoy = 0.5d0*(nor(1, :) + nor(2, :))
 !
-!           CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE  
+!           CONTRIBUTION DU POINT DE GAUSS A LA MATRICE ELEMENTAIRE
               do i = 1, nno
                    do j = 1, ndeg+1
 !

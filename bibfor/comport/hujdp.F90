@@ -258,25 +258,25 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
         call hujprj(i, sigd, taud, pd, qd)
 !
         if ((vin(23+i).eq.un) .or. (vin(23+i).eq.zero)) then
-        
+
             call hujddd('DFDS  ', i, mater, indi, yf,&
                         vin, dfds, mat, iret)
-                        
+
             if (iret.eq.1) then
                goto 500
             endif
-            
+
             fr = -m*(pd-ptrac)*(un-b*log((pd-ptrac)/ (pco*exp(-beta* epsvp))))*vin(i)
 !
         else if (vin(27+i).eq.un) then
-        
+
             call hujddd('DFDS  ', i+4, mater, indi, yf,&
                         vin, dfds, mat, iret)
-                        
+
             if (iret.eq.1) then
                goto 500
             endif
-            
+
             fr = -m*(pd-ptrac)*(un-b*log((pd-ptrac)/ (pco*exp(-beta* epsvp))))*vin(i+4)
 !
         endif

@@ -120,7 +120,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
         call getvid(' ', 'RAIDE', scal=raide, nbret=ier)
         if (ier .ne. 0) then
             call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)
-        else 
+        else
             call dismoi('REF_RIGI_PREM', modes, 'RESU_DYNA', repk=raide, arret='C')
             call dismoi('NUME_DDL', modes, 'RESU_DYNA', repk=nume, arret='C')
         endif
@@ -272,7 +272,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
             kmode = nbmode - imode + 1
             jmode = kmode
         endif
-        
+
         nordr = iprec + imode
 !
 !        --- VECTEUR PROPRE ---
@@ -284,7 +284,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
             call vtcreb(chamno, 'G', typ(1:1),&
                         nume_ddlz = nume,&
                         nb_equa_outz = neq)
-        else 
+        else
             vali (1) = kmode
             vali (2) = jmode
             vali (3) = ier

@@ -71,7 +71,7 @@ subroutine acgrpc(nbordr, kwork,&
     integer :: i, j, k, n
     integer :: nbvec, dim, jvpg2
     integer :: jvecn2, jvecu2, jvecv2
-    integer :: ideb, ngam 
+    integer :: ideb, ngam
     integer :: tneces, tdisp(1), jvecno, jnorm2
     integer :: tab2(18),jvectn, jvectu, jvectv
     integer :: vali(2), tnecno, jnorma

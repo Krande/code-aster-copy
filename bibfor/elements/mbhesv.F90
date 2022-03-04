@@ -68,16 +68,16 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
         nbv=2
         nomres(1)='E'
         nomres(2)='NU'
-        
+
         call rcvalb(fami, kpg, 1, '+', zi(imate),' ', phenom, 0, '', &
                     [0.d0],nbv, nomres, valres, icodre, 1)
-                    
+
         young = valres(1)
         nu = valres(2)
     else
         call utmess('F', 'MEMBRANE_4')
     endif
-    
+
 ! - COEFFICIENTS DE LAME
     lambda=young*nu/((1+nu)*(1-2*nu))
     mu=young/(2*(1+nu))
@@ -88,13 +88,13 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
 ! -----------------------------------------------------------------
 !
     factor0 = young/(1-nu*nu)
-    
+
     call r8inir(2*2, 0.d0, sigpk2, 1)
-    
+
     do alpha = 1, 2
         do beta = 1, 2
             do gamma = 1, 2
-                do delta = 1, 2 
+                do delta = 1, 2
                     sigpk2(alpha,beta) = sigpk2(alpha,beta) +     &
                            factor0*(0.5*(1-nu)*(                  &
                            aini(alpha,gamma)*aini(beta,delta)  +  &
@@ -111,7 +111,7 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
 ! -----------------------------------------------------------------
 !
     factor1 = 2*lambda*mu/(lambda+2*mu)
-    
+
     do alpha = 1, 2
         do beta = 1, 2
             do gamma = 1, 2
@@ -124,5 +124,5 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
             end do
         end do
     end do
-    
+
 end subroutine

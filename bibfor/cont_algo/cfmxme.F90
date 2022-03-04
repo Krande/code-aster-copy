@@ -111,7 +111,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! - Create datastructure for penetration management detection and treatment
 !
-    if (l_pena_cont) then 
+    if (l_pena_cont) then
         call mm_pene_crsd(ds_contact)
     endif
 !

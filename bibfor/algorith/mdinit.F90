@@ -54,7 +54,7 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen,&
 ! IN  : NBNOLI : NOMBRE DE NON LINEARITES
 ! OUT : DEPGEN : DEPLACEMENTS GENERALISES
 ! OUT : VITGEN : VITESSES GENERALISEES
-! OUT : VINT   : VARIABLES INTERNES 
+! OUT : VINT   : VARIABLES INTERNES
 !                (ON RETOURNE UNE VALEUR UNIQUEMENT SI nbnoli>0 ET QU'ON
 !                 EST DANS UN CAS DE REPRISE)
 ! OUT : IER    : CODE RETOUR
@@ -167,7 +167,7 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen,&
         call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
         if (nc.eq.0) crit = 'RELATIF'
         if (np.eq.0) prec = 1.d-6
-        
+
         call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=tinit, nbret=ni)
         call jeveuo(tran//'           .DISC', 'E', vr=disc)
         call jelira(tran//'           .DISC', 'LONUTI', nbinst)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
  26        continue
              if (lagf) goto 1
         endif
-        
+
         do 29 j = 1, n
             if (.not.exist(j,i)) goto 21
  29     continue
@@ -177,22 +177,22 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
             ipos = ipos +1
             cmp(ipos)=i
         endif
-        if (.not.pre1) then 
+        if (.not.pre1) then
            if (nomcmp(1:3) .eq. 'LAG') then
               ipos=ipos+1
               ddlc=ddlc+1
               cmp(ipos)=i
            endif
         endif
-        if (pre1) then 
+        if (pre1) then
            if (nomcmp(1:7).eq.'PRE_FLU' .or. nomcmp(1:7).eq.'PR2_FLU'&
-               .or. nomcmp(1:7).eq.'PR3_FLU') then 
+               .or. nomcmp(1:7).eq.'PR3_FLU') then
              ipos=ipos+1
              ddlc=ddlc+1
              cmp(ipos)=i
            endif
            if (nomcmp(1:6).eq.'LAG_FL' .or. nomcmp(1:6).eq.'LA2_FL'&
-               .or. nomcmp(1:6).eq.'LA3_FL') then 
+               .or. nomcmp(1:6).eq.'LA3_FL') then
              ipos=ipos+1
              ddlc=ddlc+1
              cmp(ipos)=i
@@ -213,7 +213,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
               ddlc=ddlc+1
               cmp(ipos)=i
            endif
-        endif    
+        endif
 !
  21 continue
 !

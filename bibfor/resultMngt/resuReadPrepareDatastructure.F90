@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ character(len=4), intent(out) :: storePara
 !
 ! In  resultName       : name of results datastructure
 ! In  resultType       : type of results datastructure (EVOL_NOLI, EVOL_THER, )
-! In  lReuse           : flag if reuse 
+! In  lReuse           : flag if reuse
 ! In  storeIndxNb      : number of storage slots given by index (integer)
 ! In  storeTimeNb      : number of storage slots given by time/freq (real)
 ! In  storeIndx        : name of JEVEUX object to access storage slots given by index (integer)

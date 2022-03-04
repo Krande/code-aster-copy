@@ -122,7 +122,7 @@ implicit none
 !
         AS_ALLOCATE(vi = list_equa, size = neq)
         call getnode(mesh   , keywordfact, iocc, ' ', list_node, &
-                     nb_node, elem_excl = .true._1) 
+                     nb_node, elem_excl = .true._1)
         if (nb_node.eq.0) then
             call utmess('F', 'MODESTAT1_1')
         endif
@@ -186,7 +186,7 @@ implicit none
         endif
 !
 ! ----- If TOUT = 'OUI', deselect nodes
-!        
+!
         call getvtx(keywordfact, 'TOUT', iocc=iocc, nbval=0, nbret=nt)
         if (nt.ne.0) then
             do ieq = 1, neq

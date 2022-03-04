@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,7 @@ integer, intent(in) :: list_func_acti(*)
 ! - Parameters
 !
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
-    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM') 
+    model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM')
     l_reuse = isfonc(list_func_acti,'REUSE')
 !
 ! - Datastructure for contact solving
@@ -213,39 +213,39 @@ integer, intent(in) :: list_func_acti(*)
                     call mcomce(mesh          , newgeo, elem_mast_nume, elem_mast_coor, &
                                 elem_mast_type, elem_mast_nbno)
                     call mcomce(mesh          , newgeo, elem_slav_nume, elem_slav_coor, &
-                                elem_slav_type, elem_slav_nbno)             
+                                elem_slav_type, elem_slav_nbno)
                 else
                     call mcomce(mesh          , oldgeo, elem_mast_nume, elem_mast_coor, &
                                 elem_mast_type, elem_mast_nbno)
                     call mcomce(mesh          , oldgeo, elem_slav_nume, elem_slav_coor, &
-                                elem_slav_type, elem_slav_nbno)  
-                endif    
+                                elem_slav_type, elem_slav_nbno)
+                endif
     ! Compute the minima lenght of the master element in the current zone
 !                 write (6,*) "elem_mast_type",elem_mast_type
-                 
-                 if ((elem_mast_type(1:2) .eq. 'SE') ) then   
-                 ! On calcule la distance des noeuds sommets                      
-                    lenght_master_elem      = 0.0                
+
+                 if ((elem_mast_type(1:2) .eq. 'SE') ) then
+                 ! On calcule la distance des noeuds sommets
+                    lenght_master_elem      = 0.0
                     lenght_master_elem = sqrt(                                            &
                                 abs((elem_mast_coor(4)-elem_mast_coor(1)))**2.d0 +&
                                 abs((elem_mast_coor(5)-elem_mast_coor(2)))**2.d0 +&
                                 abs((elem_mast_coor(6)-elem_mast_coor(3)))**2.d0 &
                                  )
-                 elseif  ((elem_mast_type(1:2) .eq. 'TR')) then                      
-                     lenght_master_elem      = 0.0 
+                 elseif  ((elem_mast_type(1:2) .eq. 'TR')) then
+                     lenght_master_elem      = 0.0
                  ! On calcule la mediane
                     milieu(1) =  (elem_mast_coor(1)+elem_mast_coor(4))*0.5
                     milieu(2) =  (elem_mast_coor(2)+elem_mast_coor(5))*0.5
-                    milieu(3) =  (elem_mast_coor(3)+elem_mast_coor(6))*0.5               
+                    milieu(3) =  (elem_mast_coor(3)+elem_mast_coor(6))*0.5
                     lenght_master_elem = sqrt(                                            &
                                 abs((elem_mast_coor(7)-milieu(1)))**2.d0 +&
                                 abs((elem_mast_coor(8)-milieu(2)))**2.d0 +&
                                 abs((elem_mast_coor(9)-milieu(3)))**2.d0 &
-                                 )   
-                    
-                 elseif  ((elem_mast_type(1:2) .eq. 'QU')) then                   
-                    lenght_master_elem      = 0.0  
-                 ! On calcule la moyenne des diagonale            
+                                 )
+
+                 elseif  ((elem_mast_type(1:2) .eq. 'QU')) then
+                    lenght_master_elem      = 0.0
+                 ! On calcule la moyenne des diagonale
                     lenght_master_elem = sqrt(                                            &
                                 abs((elem_mast_coor(7)-elem_mast_coor(1)))**2.d0 +&
                                 abs((elem_mast_coor(8)-elem_mast_coor(2)))**2.d0 +&
@@ -255,33 +255,33 @@ integer, intent(in) :: list_func_acti(*)
                                 abs((elem_mast_coor(10)-elem_mast_coor(4)))**2.d0 +&
                                 abs((elem_mast_coor(11)-elem_mast_coor(5)))**2.d0 +&
                                 abs((elem_mast_coor(12)-elem_mast_coor(6)))**2.d0 &
-                                 )  
+                                 )
                  endif
-                 
+
                 ! On cherche a initialiser lenght_master_elem_init,ds_contact%arete_min,max
                 ! avec la premiere arete non nulle de la zone maitre
-                ! La valeur initiale est la longueur de la premiere maille maitre de longueur 
-                ! non nulle.                
+                ! La valeur initiale est la longueur de la premiere maille maitre de longueur
+                ! non nulle.
                 if (lenght_master_elem_init .eq. -1) then
                     lenght_master_elem_init = lenght_master_elem
                     ds_contact%arete_min = lenght_master_elem_init
                     ds_contact%arete_max = lenght_master_elem_init
                 endif
-                    
-                if ( (lenght_master_elem_init .le. 0.0d0 )) then 
+
+                if ( (lenght_master_elem_init .le. 0.0d0 )) then
                     lenght_master_elem_init = -1
-                elseif (i_poin_elem .ge. 2 .and. lenght_master_elem_init .ne. -1) then 
+                elseif (i_poin_elem .ge. 2 .and. lenght_master_elem_init .ne. -1) then
                     if ( (lenght_master_elem .lt. ds_contact%arete_min)  ) then
-                        ds_contact%arete_min = lenght_master_elem 
+                        ds_contact%arete_min = lenght_master_elem
                     endif
                     if ( (lenght_master_elem .gt. ds_contact%arete_max)  ) then
-                        ds_contact%arete_max = lenght_master_elem 
+                        ds_contact%arete_max = lenght_master_elem
                     endif
-                 
+
                 endif
-                
+
 !                write (6,*) "armin,armax",ds_contact%arete_min,ds_contact%arete_max
-                 
+
 !
 ! ------------- Get pairing info
 !
@@ -293,7 +293,7 @@ integer, intent(in) :: list_func_acti(*)
                     call apinfr(sdappa, 'APPARI_PROJ_KSI2', i_poin_appa, ksipr2)
                 endif
                 call apinfi(sdappa, 'APPARI_TYPE'     , i_poin_appa, pair_type)
-                call apvect(sdappa, 'APPARI_VECTPM'   , i_poin_appa, vectpm)   
+                call apvect(sdappa, 'APPARI_VECTPM'   , i_poin_appa, vectpm)
 !
 ! ------------- No nodal pairing !
 !
@@ -360,10 +360,10 @@ integer, intent(in) :: list_func_acti(*)
 !
                 if (l_gliss) then
                     if (cont_init .eq. 1) then
-                        v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18) = 1.d0          
+                        v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18) = 1.d0
                     endif
                     if (cont_init .eq. 2 .and. (jeusgn .le. epsint)) then
-                        v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18) = 1.d0        
+                        v_sdcont_tabfin(ztabf*(i_cont_poin-1)+18) = 1.d0
                     endif
                 endif
 !
@@ -375,7 +375,7 @@ integer, intent(in) :: list_func_acti(*)
                 endif
 !
 ! ------------- Save initial contact
-!    
+!
                 v_sdcont_tabfin(ztabf*(i_cont_poin-1)+23) = flag_cont
 !
 ! ------------- Next contact point

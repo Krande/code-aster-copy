@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -248,14 +248,14 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
         else
             do 45 im = 1, nbm
                 write(nomcha(14:16),'(I3.3)') nuor(im)
-                call jeveuo(nomcha, 'L', icha)              
+                call jeveuo(nomcha, 'L', icha)
                 do 35 ip = 1, nbp
                     zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+icmp- 1)
  35             continue
                 call permnoe(maillage, zr(idefm+nbp*(im-1)), 1, nbp, 1)
                 call jelibe(nomcha)
  45         continue
-        endif 
+        endif
 !
         do 90 jm = imodi, imodf
             ideb = jm

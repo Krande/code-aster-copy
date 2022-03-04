@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  table            : datastructure for table
-! In  name             : name of column 
+! In  name             : name of column
 !                        If .not. present => all columns
 ! In  flag_acti        : flag for activation of column
 ! In  valer            : value (real) for column
@@ -87,7 +87,7 @@ implicit none
         do i_col = 1, nb_cols
             if (table%cols(i_col)%name .eq. name_) then
                 ASSERT(i_col_name.eq.0)
-                i_col_name = i_col   
+                i_col_name = i_col
             endif
         end do
         ASSERT(i_col_name.ne.0)

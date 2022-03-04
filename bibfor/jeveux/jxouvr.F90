@@ -49,7 +49,7 @@ subroutine jxouvr(iclas, idn, mode)
     mode_ = 1
     if ( present(mode) ) then
         mode_ = mode
-    else 
+    else
       if ( kstout(iclas) == 'LIBERE' .and. kstini(iclas) == 'POURSUIT' ) then
         mode_ = 0
       endif

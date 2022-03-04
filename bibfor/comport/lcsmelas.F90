@@ -77,7 +77,7 @@ implicit none
 ! - Material properties
 !
     if (present(materd_)) then
-        young  = materd_(1,1) 
+        young  = materd_(1,1)
         nu     = materd_(2,1)
     else
         young  = young_
@@ -93,7 +93,7 @@ implicit none
 !
     do ij = 1, 6
         do kl = 1, 6
-            dvbbtr(ij,kl)= (id(ij,kl)-kr(ij)*kr(kl)/3.d0) 
+            dvbbtr(ij,kl)= (id(ij,kl)-kr(ij)*kr(kl)/3.d0)
         end do
     end do
     do ij = 1, 6
@@ -115,6 +115,6 @@ implicit none
             end do
         end do
     end do
-    
+
 !
 end subroutine

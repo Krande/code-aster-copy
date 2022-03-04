@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -360,7 +360,7 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
                         ipg, 1, repere, xg, nbsig, d)
 !
 !           Calcul du tenseur de comportement tangent [D']
-!              {sxx, syy, szz, sqrt(2)*sxy, sqrt(2)*sxz, sqrt(2)*syz}^T = 
+!              {sxx, syy, szz, sqrt(2)*sxy, sqrt(2)*sxz, sqrt(2)*syz}^T =
 !                  [D']{exx, eyy, ezz, sqrt(2)*exy, sqrt(2)*exz, sqrt(2)*eyz}^T
             do j=1, nbsig
                do i=1, nbsig

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -149,7 +149,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
     call gettco(resin, typres)
     call jelira(resin//'.ORDR', 'LONUTI', nbordr)
     call rsorac(resin,'LONUTI',0,r8b,k8b,c16b,r8b,k8b,tord,1,ibid)
-    nbordr=tord(1)            
+    nbordr=tord(1)
     knume='KNUME'
     call wkvect(knume, 'V V I', nbordr, jordr)
     call rsorac(resin,'TOUT_ORDRE',0,r8b,k8b,c16b,r8b,k8b,zi(jordr),nbordr,ibid)
@@ -192,7 +192,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
       write(ifm,*)'<PREFFT> NEQ/NBPROC/RANG/LDIST=',neq,nbproc,rang,ldist
       write(ifm,*)'<PREFFT> TYPRES=',typres
     endif
-!    
+!
 ! GARDE-FOU: AU MOINS UN CALCUL FFT (BOUCLE IDDL=2,NEQ) PAR MPI
     if (ndist1.lt.nbproc) then
       ldist=.false.
@@ -215,7 +215,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
         zi(jkdist+i)=impi
         if ((iaux==nbloc).and.(impi<(nbproc-1))) then
           iaux=0
-          impi=impi+1 
+          impi=impi+1
         endif
       enddo
     else
@@ -316,7 +316,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !
 !
 ! TOUS LES PROCESSUS MPI FONT LE CALCUL
-!       
+!
 !        --- CALCUL DE LA FFT DE LA FONCTION PREFFT DEFINIE PRECEDEMNT
         call spdfft(lvar, nbva, nsens, ltra, nbpts1, nbpts, nout, nbpts2, sym)
 !

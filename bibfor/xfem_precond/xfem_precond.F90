@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,14 +49,14 @@ subroutine xfem_precond(action, matass, base)
     ASSERT((action .eq. 'PRE_COND').or.(action .eq. 'FIN'))
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if (action .eq. 'PRE_COND') then 
+    if (action .eq. 'PRE_COND') then
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
        ASSERT(present(base))
 !    PRE_CONDITIONNEMENT DE LA MATRICE
        call xfem_pc(matass, base)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    elseif (action .eq. 'FIN') then 
+    elseif (action .eq. 'FIN') then
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    DESTRUCTION DU PRECONDITIONNEUR ET RETOUR A L ETAT INITIAL
        call xfem_pc_detr(matass)

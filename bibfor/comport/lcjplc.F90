@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine lcjplc(rela_comp, mod, angmas, imat, nmat,&
     real(kind=8) :: dsde(6, 6), epsd(*), deps(*), toler, angmas(3)
     real(kind=8) :: mater(nmat, 2)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
-    character(len=*) :: fami    
+    character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: option
     common /tdim/   ndt  , ndi

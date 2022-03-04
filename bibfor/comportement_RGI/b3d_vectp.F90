@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 subroutine b3d_vectp(aa,vp,x,n)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
-!   A.Sellier dim. 29 août 2010 08:00:41 CEST 
-!   passage en double precision des constantes des vecteurs      
+!   A.Sellier dim. 29 août 2010 08:00:41 CEST
+!   passage en double precision des constantes des vecteurs
 !    recherche vecteur propre associe a une valeur propre (matrice 3x3)
 !    n : multiplicite de la valeur propre
- implicit none    
+ implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 
@@ -55,7 +55,7 @@ subroutine b3d_vectp(aa,vp,x,n)
        x(2)=det2
        x(3)=(b*c-a*e)
       endif
-!    normalisation du vecteur      
+!    normalisation du vecteur
       xn=dsqrt(x(1)**2+x(2)**2+x(3)**2)
       if (xn.ge.r8prem()) then
        x(1)=x(1)/xn
@@ -96,7 +96,7 @@ subroutine b3d_vectp(aa,vp,x,n)
        x(5)=1.d0
        x(6)=-e/f
        endif
-!     normalisations       
+!     normalisations
        xn=dsqrt(x(1)**2+x(2)**2+x(3)**2)
        x(1)=x(1)/xn
        x(2)=x(2)/xn
@@ -105,7 +105,7 @@ subroutine b3d_vectp(aa,vp,x,n)
        x(4)=x(4)/xn
        x(5)=x(5)/xn
        x(6)=x(6)/xn
-!     verif produit scalaire       
+!     verif produit scalaire
        xsc=x(1)*x(4)+x(2)*x(5)+x(3)*x(6)
        if(dabs(xsc).gt.1.d-4) then
          x(4)=x(4)-xsc*x(1)

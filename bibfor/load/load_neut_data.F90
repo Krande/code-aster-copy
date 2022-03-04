@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,13 +54,13 @@ implicit none
 !                        'MRIG' for rigidity (matrix)
 !                        'MTAN' for tangent matrix
 ! Out load_type_ligr   : type of LIGREL for current load
-! Out load_opti_r      : option for real parameter 
-! Out load_opti_f      : option for function parameter 
+! Out load_opti_r      : option for real parameter
+! Out load_opti_f      : option for function parameter
 ! Out load_para_r      : name of parameterS (real)
 ! Out load_para_f      : name of parameterS (function)
 ! Out load_keyw        : keyword in AFFE_CHAR_THER for this load
 ! Out load_obje        : name of objectS (cart in AFFE_CHAR_THER)
-! Out nb_obje          : number of objects 
+! Out nb_obje          : number of objects
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@ implicit none
     character(len=10) :: object1(nb_type_neum)
     character(len=10) :: object2(nb_type_neum)
     character(len=6) :: ligrel(nb_type_neum)
-    character(len=24) :: keyw(nb_type_neum) 
+    character(len=24) :: keyw(nb_type_neum)
     character(len=8) :: para_2mbr_r1(nb_type_neum), para_2mbr_f1(nb_type_neum)
     character(len=8) :: para_2mbr_r2(nb_type_neum), para_2mbr_f2(nb_type_neum)
     character(len=16) :: opti_2mbr_f(nb_type_neum), opti_2mbr_r(nb_type_neum)

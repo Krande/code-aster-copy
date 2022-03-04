@@ -217,7 +217,7 @@ subroutine dtmacce(sd_dtm_, sd_int_, index, buffdtm, buffint, calcf)
 !       --- Calculate the term C[nxn] * V[nx1] = Zeta[nxn] * M [nxn] * V [nx1]
         if (cdiag) then
             if (matdesc(1).ne.0) then
-                call mrmult('ZERO', matdesc(1), vite, work, 1, .false._1) 
+                call mrmult('ZERO', matdesc(1), vite, work, 1, .false._1)
             else
                 call pmavec('ZERO', nbmode, masgen, vite, work)
             end if
@@ -225,7 +225,7 @@ subroutine dtmacce(sd_dtm_, sd_int_, index, buffdtm, buffint, calcf)
                 work(i) = amogen(i)*work(i)
             end do
         else if (matdesc(3).ne.0) then
-            call mrmult('ZERO', matdesc(3), vite, work, 1, .false._1)        
+            call mrmult('ZERO', matdesc(3), vite, work, 1, .false._1)
         else
             call pmavec('ZERO', nbmode, amogen, vite, work)
         endif
@@ -235,7 +235,7 @@ subroutine dtmacce(sd_dtm_, sd_int_, index, buffdtm, buffint, calcf)
                 work(i) = work(i) + riggen(i)*depl(i)
             end do
         else if (matdesc(2).ne.0) then
-            call mrmult('CUMU', matdesc(2), depl, work, 1, .false._1)        
+            call mrmult('CUMU', matdesc(2), depl, work, 1, .false._1)
         else
             call pmavec('CUMU', nbmode, riggen, depl, work)
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine vplecs(eigsol, itemax_, maxitr_, nbborn_, nitv_,&
 !
 ! --- OUTPUT
 !
-    integer, optional, intent(out) :: itemax_, maxitr_, nbborn_, nitv_, nborto_ 
+    integer, optional, intent(out) :: itemax_, maxitr_, nbborn_, nitv_, nborto_
     integer, optional, intent(out) :: nbvec2_, nbvect_, nbrss_, nfreq_, nperm_
     real(kind=8), optional, intent(out) :: alpha_, omecor_, freq1_, freq2_, precdc_
     real(kind=8), optional, intent(out) :: precsh_, prorto_, prsudg_
@@ -76,7 +76,7 @@ subroutine vplecs(eigsol, itemax_, maxitr_, nbborn_, nitv_,&
     character(len=1) :: ktyp
     aster_logical :: lnsc, lnsk, lnsm
 !
-    integer :: itemax, maxitr, nbborn, nitv, nborto 
+    integer :: itemax, maxitr, nbborn, nitv, nborto
     integer :: nbvec2, nbvect, nbrss, nfreq, nperm
     real(kind=8) :: alpha, omecor, freq1, freq2, precdc
     real(kind=8) :: precsh, prorto, prsudg
@@ -265,7 +265,7 @@ subroutine vplecs(eigsol, itemax_, maxitr_, nbborn_, nitv_,&
         lnsk=.true.
     else
         ASSERT(.false.)
-    endif 
+    endif
     call jeveuo(mass2//'.REFA', 'L', jrefa)
     if (trim(zk24(jrefa-1+9)) .eq. 'MS') then
         lnsm=.false.

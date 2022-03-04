@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ type(META_MaterialParameters), intent(out) :: metaPara
     if (phase_type .eq. 'ACIER') then
 ! ----- Get material parameters for steel
         call metaSteelGetParameters(jv_mater, metaSteelPara)
-! ----- Get material parameters for TRC curve   
+! ----- Get material parameters for TRC curve
         call metaSteelTRCGetParameters(jv_mater, metaSteelPara)
     elseif (phase_type .eq. 'ZIRC') then
 ! ----- Depending on temperature: too early here !

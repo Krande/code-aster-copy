@@ -21,12 +21,12 @@ subroutine lc0077(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, neps, &
                     epsm, deps, nsig, sigm, nvi, vim, &
                     option, angmas, sigp, vip, typmod, icomp,&
-                    ndsde, dsidep, codret) 
+                    ndsde, dsidep, codret)
 
 
- 
+
 ! aslint: disable=W1504,W0104
-    use kichenin_nl_module, only: CONSTITUTIVE_LAW, Init, Integrate 
+    use kichenin_nl_module, only: CONSTITUTIVE_LAW, Init, Integrate
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
@@ -53,7 +53,7 @@ subroutine lc0077(fami, kpg, ksp, ndim, imate,&
     ASSERT (neps .eq. nsig)
     ASSERT (neps .ge. 2*ndim)
 ! --------------------------------------------------------------------------------------------------
-    
+
     ndimsi = 2*ndim
     eps    = epsm(1:ndimsi) + deps(1:ndimsi)
 
@@ -75,5 +75,5 @@ subroutine lc0077(fami, kpg, ksp, ndim, imate,&
     if (lVari) vip(1:nvi) = vi
     if (lMatr) dsidep(1:ndimsi,1:ndimsi) = dsde
 
-999 continue                      
+999 continue
 end subroutine

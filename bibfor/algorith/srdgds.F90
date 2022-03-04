@@ -44,7 +44,7 @@ subroutine srdgds(nmat,materf,para,vara,devsig,&
 ! OUT ::: DGDS(6,6)      : DERIVEE DU POTENTIEL G PAR RAPPORT A SIGMA (NDTXNDT)
 !     ::: IRET           : CODE RETOUR
 ! ===================================================================================
-    
+
     implicit   none
 
 #include "asterfort/cos3t.h"
@@ -58,92 +58,92 @@ subroutine srdgds(nmat,materf,para,vara,devsig,&
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nmat,nvi,val
     real(kind=8) :: materf(nmat,2),dgds(6,6),vecn(6),dfds(6),vint(nvi)
     real(kind=8) :: para(3),vara(4),ds2hds(6),devsig(6),i1,bprimp
     real(kind=8) :: dhds(6),tmp
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: i,j,ndi,ndt
     real(kind=8) :: d2fds2(6,6),d2fdsn(6)
     real(kind=8) :: dfdnpn(6,6),dfpndn(6,6)
     real(kind=8) :: dfdsdn(6),dfdsvn,d2shds(6,6),varh(2)
     real(kind=8) :: r0c,rtheta,rcos3t,patm
     real(kind=8) :: dndsig(6,6),d2fn2(6,6)
-    
+
     common /tdim/ ndt,ndi
-    
-    !!! Recup. de patm    
+
+    !!! Recup. de patm
     patm=materf(1,2)
-    
+
     !!!
     !!! Recup. de h0c et h(theta)
     !!!
-    
+
     rcos3t=cos3t(devsig,patm,1.d-8)
     call srhtet(nmat,materf,rcos3t,r0c,rtheta)
-    
+
     varh(1)=r0c
     varh(2)=rtheta
-    
+
     !!!
     !!! Construction de d2f/ds2
     !!!
-    
+
     call srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     call srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
-    
+
     !!!
     !!! Construction de d(n)/d(sig)
     !!!
-    
+
     call srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
-    
+
     !!!
     !!! Construction de (d2(f)/ds(2):n)n
     !!!
-    
+
     do i=1, ndt
         d2fdsn(i)=0.d0
         do j=1,ndt
             d2fdsn(i)=d2fdsn(i)+vecn(j)*d2fds2(j,i)
         end do
     end do
-    
+
     call lcprte(vecn,d2fdsn, d2fn2)
-    
+
     !!!
     !!! Construction de (d(f)/d(s)d(n)/d(sig))n
     !!!
-    
+
     do i=1,ndt
         dfdsdn(i)=0.d0
         do j=1,ndt
             dfdsdn(i)=dfdsdn(i)+dfds(j)*dndsig(j,i)
         end do
     end do
-    
+
     call lcprte(vecn,dfdsdn,dfdnpn)
-    
+
     !!!
     !!! Construction de (d(f)/d(s):n)d(n)/d(sig)
     !!!
-    
+
     call lcprsc(dfds,vecn,dfdsvn)
     dfpndn(1:ndt,1:ndt) = dfdsvn * dndsig(1:ndt,1:ndt)
-    
+
     !!!
     !!! Assemblage
     !!!
-    
+
     do i=1,ndt
         do j=1,ndt
             dgds(i,j)=d2fds2(i,j)-d2fn2(i,j)-dfdnpn(i,j)-dfpndn(i,j)
         end do
     end do
-    
+
 end subroutine

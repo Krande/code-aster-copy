@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -129,7 +129,7 @@ implicit none
             actnew = 3
         else if  (nint(ds_contact%continue_pene) .eq. 2) then
 !
-! ------- CONVERGENCE PENE_MAXI 
+! ------- CONVERGENCE PENE_MAXI
 !
             call utmess('A', 'MECANONLINE2_39', nr=4,valr=[&
                         ds_contact%calculated_penetration/ds_contact%arete_min,&
@@ -138,7 +138,7 @@ implicit none
 ! ------- ARRET DU CALCUL
 !
             actnew = 3
-        
+
         else
 !
 ! ------- ARRET DU CALCUL

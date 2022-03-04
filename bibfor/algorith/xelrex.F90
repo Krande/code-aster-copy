@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ character(len=8):: elrefp
 integer :: nno
 integer, optional :: ndime
 real(kind=8) :: xref(81)
-!   BUT: INTERFACE VERS ELRACA : 
-!         RETOURNE LES COORDONNEES DE REFERENCE DE 
+!   BUT: INTERFACE VERS ELRACA :
+!         RETOURNE LES COORDONNEES DE REFERENCE DE
 !             L ELEMENT PARENT COMPLET
     integer :: ndim
     character(len=8) :: elp
@@ -43,7 +43,7 @@ real(kind=8) :: xref(81)
         transfert=.true.
     else if ((elrefp .eq. 'QU8')) then
         elp='QU9'
-        transfert=.true.       
+        transfert=.true.
     else
         elp=elrefp
     endif

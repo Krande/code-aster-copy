@@ -23,7 +23,7 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 ! intadapt2 : Integrate from t_i to t_i+1 the differential equations of motion
 !             using the ADAPT order-2 formulation.
-! 
+!
 #include "jeveux.h"
 #include "blas/dcopy.h"
 #include "asterc/r8prem.h"
@@ -123,7 +123,7 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
 
         call getvr8('SCHEMA_TEMPS', 'COEF_MULT_PAS'  , iocc=1, scal=cmult)
         call getvr8('SCHEMA_TEMPS', 'COEF_DIVI_PAS'  , iocc=1, scal=cdivi)
-    
+
         call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=dtmax, nbret=iret1)
         if (iret1.ne.1) dtmax = 1.d6*dt
         call getvr8('SCHEMA_TEMPS', 'PAS_MINI', iocc=1, scal=dtmin, nbret=iret2)
@@ -178,8 +178,8 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
 !       --- Retrieve algorithm parameters
         call intget(sd_int, PARAMS, vr=par, buffer=buffint)
 !       --- Retrieve work vectors vmin, and vinter
-        call intget(sd_int, WORK1, vr=vmin, buffer=buffint) 
-        call intget(sd_int, WORK2, vr=velint, buffer=buffint) 
+        call intget(sd_int, WORK1, vr=vmin, buffer=buffint)
+        call intget(sd_int, WORK2, vr=velint, buffer=buffint)
 !       --- Retrieve choc parameters save container
         if (nbsavnl.gt.0) call intget(sd_int, WORK3, vr=nlsav0, buffer=buffint)
     end if
@@ -227,15 +227,15 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
         if (err .ge. 1.d0) then
             coeff = 1.d0/cdivi
         else if (stabstep.gt.4.5d0) then
-            if (err .lt. 0.75d0) then 
+            if (err .lt. 0.75d0) then
                 coeff = cmult
                 stabstep = 1.d0
-            end if               
-        else 
+            end if
+        else
             stabstep = stabstep + 1.d0
         end if
 
-!       4.2 - Determine the time step for the next iteration or integration step  
+!       4.2 - Determine the time step for the next iteration or integration step
         dt2 = min(dtmax, dt1*coeff)
 
         if ((err.ge.1.d0) .and. (dt2.ge.dtmin) .and. (nr.lt.nint(nrmax_r))) then

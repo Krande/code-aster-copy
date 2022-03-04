@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine hydracomp3d(we0,we0s,epse06,souplesse66,sig06,&
 !   avec le materiau ayant subi un increment d hydratation
 !   pour eviter la surevaluation de la deformation de fluage
 
-!   tables de dimension fixe pour resolution des sytemes lineaires 
+!   tables de dimension fixe pour resolution des sytemes lineaires
       implicit none
 #include "asterf_types.h"
       integer i,j
@@ -44,8 +44,8 @@ subroutine hydracomp3d(we0,we0s,epse06,souplesse66,sig06,&
         epsk06(i)=0.d0
         do j=1,6
 !          deformation elastique actualisee pour rester
-!          coherente avec le niveau de contrainte de 
-!          l etage elastique   apres increment d hydratation         
+!          coherente avec le niveau de contrainte de
+!          l etage elastique   apres increment d hydratation
              epse06(i)=epse06(i)+souplesse66(i,j)*sig06(j)
              if(fl3d) then
                  epsk06(i)=epsk06(i)+souplesse66(i,j)*sigke06(j)/psik
@@ -54,17 +54,17 @@ subroutine hydracomp3d(we0,we0s,epse06,souplesse66,sig06,&
         if(i.le.3) then
             sigs0=sigs0+sig06(i)
             epss0=epss0+epse06(i)
-        end if        
-!     actualisation du potentiel elastique            
-        we0=we0+0.5d0*(sig06(i)*epse06(i))       
-!     deduction de la deformation de solidification 
+        end if
+!     actualisation du potentiel elastique
+        we0=we0+0.5d0*(sig06(i)*epse06(i))
+!     deduction de la deformation de solidification
 !     de l etage elastique (creation d une deformation permanente)
 !     et contribution de l etage de Kelvin si pas le premier pas
 
              deps6r2(i)=deps6r(i)
-       end do 
-!    energie elestique spherique        
+       end do
+!    energie elestique spherique
        we0s=(sigs0/6.d0)*epss0
-!    energie elastique deviatorique        
-       we0d=we0-we0s 
+!    energie elastique deviatorique
+       we0d=we0-we0s
 end subroutine

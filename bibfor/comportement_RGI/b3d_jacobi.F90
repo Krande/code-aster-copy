@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,13 +91,13 @@ subroutine b3d_jacobi(a,q,w)
         w(x) = a(x, x)
    20 continue
 
-!     calculate sqr(tr(a))  
+!     calculate sqr(tr(a))
       sd = 0.0d0
       do 30 x = 1, n
         sd = sd + abs(w(x))
    30 continue
       sd = sd**2
- 
+
 !     main iteration loop
       do 40 i = 1, 50
 !       test for convergence
@@ -142,7 +142,7 @@ subroutine b3d_jacobi(a,q,w)
               c = 1.0d0 / sqrt( 1.0d0 + t**2 )
               s = t * c
               z = t * a(x, y)
-              
+
 !             apply jacobi transformation
               a(x, y) = 0.0d0
               w(x)    = w(x) - z
@@ -175,6 +175,6 @@ subroutine b3d_jacobi(a,q,w)
    60   continue
    40 continue
 !      print *, "b3d_jacobi: no convergence."
- 999 continue      
-      end 
+ 999 continue
+      end
 ! end of subroutine dsyevj3

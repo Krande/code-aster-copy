@@ -25,9 +25,9 @@ subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 !
 ! person_in_charge: mohamed-amine.hassini@edf.fr
 !
-! dtmforc_lub : send displacemets, velocity to the bearing program through 
+! dtmforc_lub : send displacemets, velocity to the bearing program through
 !               yacs and receive force using yacs at the current step (t)
-!             -> A special module lub_module is used to perform the task of 
+!             -> A special module lub_module is used to perform the task of
 !                cummunication
 !
 !       sd_dtm_, buffdtm : dtm data structure and its buffer
@@ -62,9 +62,9 @@ subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 
 
 !     2. Local variable
-      real(kind=8), pointer               :: dplmod   (:)   => null()      
+      real(kind=8), pointer               :: dplmod   (:)   => null()
       character(len=8)                    :: sd_dtm, sd_nl
-      integer                             :: i,j, nbmodes 
+      integer                             :: i,j, nbmodes
 
 
       type(bearing), pointer              :: cb => null()
@@ -90,7 +90,7 @@ subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 
       sd_dtm = sd_dtm_
       sd_nl = sd_nl_
-      
+
 
       ! this call should be performed from dtmprep_noli_lub not from here !
       ! but i can't do it since time step is not set when dtmprep_noli_xxx are called
@@ -109,9 +109,9 @@ subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl,&
       endif
 
 
-      ! in order to have parallel computing it is better 
+      ! in order to have parallel computing it is better
       ! to send all information regarding all bearing and then receive
-      ! all responses that's why there is two while loops 
+      ! all responses that's why there is two while loops
 
       cb => first_bearing
 
@@ -148,7 +148,7 @@ subroutine dtmforc_lub(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 
             dplmod => cb%defmod
             nbmodes = cb%nbmodes
-            
+
 
             ! now transform force from the physical to modal coordinates
 

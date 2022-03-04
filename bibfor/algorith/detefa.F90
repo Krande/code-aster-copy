@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine detefa(nnose, pi1, pi2, it, typma,&
 !
     do 1 i=1,3
        n(i)=0
-1   continue     
-    found=.false. 
+1   continue
+    found=.false.
 !
 !     CAS UN DES DEUX POINTS D'INTERSECTION EST CONFONDU AVEC UN NOEUD
 !     SOMMET, CALCULE LES 3 INDICES DANS L'ELEMENT ENFANT

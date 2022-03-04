@@ -29,10 +29,10 @@ subroutine assesu(ds_thm   ,&
                   compor   , carcri   ,&
                   elem_coor,&
                   dispm    , dispp    ,&
-                  defgem   , defgep   ,& 
+                  defgem   , defgep   ,&
                   congem   , congep   ,&
                   vintm    , vintp    ,&
-                  time_prev, time_curr,& 
+                  time_prev, time_curr,&
                   matuu    , vectu)
 !
 use THM_type
@@ -77,7 +77,7 @@ real(kind=8), intent(in) :: congem(dimcon, maxfa+1)
 real(kind=8), intent(inout) :: congep(dimcon, maxfa+1)
 real(kind=8), intent(in) :: vintm(nbvari, maxfa+1)
 real(kind=8), intent(inout) :: vintp(nbvari, maxfa+1)
-real(kind=8), intent(in) :: time_curr, time_prev 
+real(kind=8), intent(in) :: time_curr, time_prev
 real(kind=8), intent(inout) :: matuu(dimuel*dimuel)
 real(kind=8), intent(inout) :: vectu(dimuel)
 !
@@ -266,7 +266,7 @@ real(kind=8), intent(inout) :: vectu(dimuel)
     integer :: iadp1k, iadp2k
     integer :: adcm1, adcm2
     integer :: nume_thmc, advico, vicpr1, vicpr2
-    
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -447,9 +447,9 @@ real(kind=8), intent(inout) :: vectu(dimuel)
                    adcome     , adcote     , adcp11, adcp12, adcp21, adcp22,&
                    addeme     , addete     , addep1, addep2,&
                    carcri     ,&
-                   defgem     , defgep     ,& 
-                   congem     , congep     ,& 
-                   vintm(1, 1), vintp(1, 1),& 
+                   defgem     , defgep     ,&
+                   congem     , congep     ,&
+                   vintm(1, 1), vintp(1, 1),&
                    time_prev  , time_curr  ,&
                    dsde       , gravity    , retcom)
     if (retcom .ne. 0) then
@@ -491,9 +491,9 @@ real(kind=8), intent(inout) :: vectu(dimuel)
                        adcome        , adcote        , adcp11, adcp12, adcp21, adcp22,&
                        addeme        , addete        , addep1, addep2,&
                        carcri        ,&
-                       defgem        , defgep        ,& 
-                       congem        , congep        ,& 
-                       vintm(1, fa+1), vintp(1, fa+1),& 
+                       defgem        , defgep        ,&
+                       congem        , congep        ,&
+                       vintm(1, fa+1), vintp(1, fa+1),&
                        time_prev     , time_curr     ,&
                        dsde          , gravity       , retcom)
         if (retcom .ne. 0) then
@@ -501,7 +501,7 @@ real(kind=8), intent(inout) :: vectu(dimuel)
         endif
     end do
 !
-! - Set 
+! - Set
 !
     if (lVect) then
         vectu(adcm1) = valcen(masse, eau)*vol

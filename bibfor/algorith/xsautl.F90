@@ -21,20 +21,20 @@ subroutine xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
     implicit none
 
 #include "asterfort/prmave.h"
-   
+
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 !
 ! ROUTINE MODELE HM-XFEM (CAS DE LA FRACTURE)
 !
-! CALCUL DU CHANGEMENT DE BASE POUR LE SAUT DE DEPLACEMENT 
+! CALCUL DU CHANGEMENT DE BASE POUR LE SAUT DE DEPLACEMENT
 !
 ! ----------------------------------------------------------------------
 
     integer :: i, ndim, ier1, ier2
     real(kind=8) :: p(3,3), nd(3), tau1(3), tau2(3)
     real(kind=8) :: saut(3), sautm(3), am(3), ad(3)
-    
+
     p(:,:) = 0.d0
     am(:) = 0.d0
     ad(:) = 0.d0
@@ -51,7 +51,7 @@ subroutine xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
        do i = 1, ndim
             p(3,i) = tau2(i)
        end do
-    endif    
+    endif
 !
 ! --- CALCUL SAUT DE DEPLACEMENT + EN BASE LOCALE {AM}=[P]{SAUT+}
 !

@@ -74,7 +74,7 @@ subroutine dxqloe_NV( coupmf, matloc, depl, ener)
           &  183, 184, 185, 189, 190, 191, 192, 196, 197, 198,&
           &  202, 203, 204, 208, 209, 210, 277, 278, 282, 283,&
           &  284, 288, 289, 290, 294, 295, 296, 300/
-          
+
 
 !  MATRICES DIAGONALES DE FLEXION ET DE MEBRANE  -> use jmemb(78)
     do k = 1, 78
@@ -82,18 +82,18 @@ subroutine dxqloe_NV( coupmf, matloc, depl, ener)
         matm(k) = matloc(jm4(k))
     end do
 
-! ------------------------------------------------------------------  
+! ------------------------------------------------------------------
 
 
  !    ------------------------------------------------------------------
  !-> computes product Eu*u = 2*Energy
-    call utvtsv('ZERO', 24, matloc, depl, ener(1)) 
-    
+    call utvtsv('ZERO', 24, matloc, depl, ener(1))
+
     if (coupmf) then
-    
+
         ener(2) = 0.d0
         ener(3) = 0.d0
-        
+
     else
 ! - ENER EN MEMBRANE ----------
         do  k = 1, 12
@@ -101,27 +101,27 @@ subroutine dxqloe_NV( coupmf, matloc, depl, ener)
       enddo
  ! -> computes product Em um*um (membrane part only)
         call utvtsv('ZERO', 12, matm, deplm, ener(2))
-        
+
 !  ENER EN FLEXION ----------
         do  k = 1, 12
             deplf(k) = depl(kf(k))
       enddo
  ! -> computes product Ef uf*uf (bending part only)
         call utvtsv('ZERO', 12, matf, deplf, ener(3))
-        
+
     endif
-    
-    ener(1) = 0.5d0*ener(1)     
+
+    ener(1) = 0.5d0*ener(1)
 !! 1/2 Eu*u  (TOTAL ENERGY)
 !    ener(1) = ener(1) + ener_dri(1)
 !    ener(2) = ener(2) + ener_dri(2)
 !    ener(3) = ener(3) + ener_dri(3)
-    
+
     if (abs(ener(1)) .gt. 1.d-6) then
 ! ->  Em um*um / Eu*u      (Membrane - RELATIVE)
-        ener(2) = 0.5d0*ener(2)/ener(1)    
+        ener(2) = 0.5d0*ener(2)/ener(1)
 ! ->  Ef uf*uf / Eu*u      (Bending  - RELATIVE)
-        ener(3) = 0.5d0*ener(3)/ener(1)    
+        ener(3) = 0.5d0*ener(3)/ener(1)
     else
         ener(2) = 0.d0
         ener(3) = 0.d0

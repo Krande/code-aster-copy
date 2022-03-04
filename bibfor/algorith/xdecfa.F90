@@ -368,7 +368,7 @@ implicit none
           endif
        endif
     end do
-!   ON DETERMINE MAINTENANT DANS LE CAS QUADRATIQUE LE NOEUD MILIEU 
+!   ON DETERMINE MAINTENANT DANS LE CAS QUADRATIQUE LE NOEUD MILIEU
 !   ENTRE LES DEUX POINTS DU FOND DE FISSURE
 !
     if (.not. iselli(elp)) then
@@ -461,7 +461,7 @@ implicit none
              num(7) = noeud(8)
              num(8) = noeud(5)
           else
-             num(1) = noeud(1) 
+             num(1) = noeud(1)
              num(2) = noeud(2)
              num(3) = noeud(3)
              num(4) = noeud(4)
@@ -481,7 +481,7 @@ implicit none
              pinter(ndim*(npi-1)+j) = cenfi(j)
              pinref(ndim*(npi-1)+j) = cenref(j)
           end do
-          noeud(9) = npi 
+          noeud(9) = npi
           do j = 1, zxain-1
              ainter(zxain*(npi-1)+j) = 0.d0
           end do

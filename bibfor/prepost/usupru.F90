@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
     angl = zero
 !
     call getvtx(' ', 'CONTACT', scal=type, nbret=n0)
-    
+
     if (n0 .ne. 0) then
         call getvr8(' ', 'RAYON_MOBILE', scal=para_cont(1), nbret=n1)
         call getvr8(' ', 'RAYON_OBST',   scal=para_cont(2), nbret=n2)
@@ -76,7 +76,7 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         call getvr8(' ', 'ANGL_ISTHME',  scal=para_cont(5), nbret=n5)
         call getvr8(' ', 'ANGL_IMPACT',  scal=para_cont(6), nbret=n6)
     endif
-    
+
 !
 !     --- TUBE - BARRE ANTI VIBRATOIRE ---
     if (type(1:8) .eq. 'TUBE_BAV') then
@@ -84,10 +84,10 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         if (n3.eq.0) call utmess('F','PREPOST4_1',nk=2, valk=[type, 'LARGEUR_OBST'])
         if (n2 .ne. 0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'RAYON_OBST'])
         if (n5 .ne. 0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_ISTHME'])
-        
+
         rayt = para_cont(1)
         lsup = para_cont(3)
-        
+
         if (n6 .ne. 0) then
             aimp = para_cont(6)
             rapp = cos ( aimp * r8dgrd() )
@@ -142,18 +142,18 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
         if (n3.eq.0) call utmess('F','PREPOST4_1',nk=2, valk=[type, 'LARGEUR_OBST'])
         if (n5.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_ISTHME'])
         if (n6.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_IMPACT'])
-        
+
         rayt = para_cont(1)
         rayo = para_cont(2)
         lsup = para_cont(3)
         angl = para_cont(4)
-        
+
         para(1) = para_cont(1)
         para(2) = para_cont(2)
         para(3) = para_cont(3)
         if (n4 .ne. 0) angl = para_cont(4) * r8dgrd()
         para(4) = angl
-        
+
         if (n2 .eq. 0) then
             do 20 i = 1, nbinst
                 prust(i) = vusurt(i) / ( depi * lsup * rayt )
@@ -217,12 +217,12 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !     --- TUBE - TROU QUADRIFOLIE OU TRIFOLIE ---
         elseif ( type(1:11) .eq. 'TUBE_4_ENCO' .or. type(1:11) .eq.&
     'TUBE_3_ENCO' ) then
-        
+
         if (n1.eq.0) call utmess('F','PREPOST4_1',nk=2, valk=[type, 'RAYON_MOBILE'])
         if (n2.eq.0) call utmess('F','PREPOST4_1',nk=2, valk=[type, 'RAYON_OBST'])
         if (n3.eq.0) call utmess('F','PREPOST4_1',nk=2, valk=[type, 'LARGEUR_OBST'])
         if (n6.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_IMPACT'])
-        
+
         para(1) = para_cont(1)
         para(2) = para_cont(2)
         para(3) = para_cont(3)
@@ -295,16 +295,16 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !
 !     --- TUBE - TUBE ---
     else if (type(1:9) .eq. 'TUBE_TUBE') then
-        
+
         if (n1.eq.0) call utmess('F','PREPOST4_1',nk=2, valk=[type, 'RAYON_MOBILE'])
         if (n2.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'RAYON_OBST'])
         if (n3.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'LARGEUR_OBST'])
         if (n5.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_ISTHME'])
         if (n6.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_IMPACT'])
-        
+
         rayt = para_cont(1)
         if (n4 .ne. 0) angl = para_cont(4)
-        
+
         cst1 = ( un / ( de * rayt ) ) ** uns5
         cst2 = 15.d0 * angl * r8dgrd() / 8.d0
         do 40 i = 1, nbinst
@@ -313,17 +313,17 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !
 !     --- GRAPPE - ALESAGE ---
     else if (type(1:14) .eq. 'GRAPPE_ALESAGE') then
-        
+
         if (n1.eq.0) call utmess('F','PREPOST4_1',nk=2, valk=[type, 'RAYON_MOBILE'])
         if (n2.eq.0) call utmess('F','PREPOST4_1',nk=2, valk=[type, 'RAYON_OBST'])
         if (n3.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'LARGEUR_OBST'])
         if (n4.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_INCLI'])
         if (n5.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_ISTHME'])
         if (n6.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_IMPACT'])
-        
+
         para(1) = para_cont(1)
         para(2) = para_cont(2)
-        
+
         x11 = zero
         x2 = para(2)
         do 50 i = 1, nbinst
@@ -345,14 +345,14 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
 !     --- GRAPPE - 2 ENCOCHE ---
         elseif ( type(1:13) .eq. 'GRAPPE_1_ENCO' .or. type(1:13) .eq.&
     'GRAPPE_2_ENCO' ) then
-        
+
         if (n1.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'RAYON_MOBILE'])
         if (n2.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'RAYON_OBST'])
         if (n3.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'LARGEUR_OBST'])
         if (n4.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_INCLI'])
         if (n5.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_ISTHME'])
         if (n6.ne.0) call utmess('A','PREPOST4_2',nk=2, valk=[type, 'ANGL_IMPACT'])
-        
+
         if (type(1:13) .eq. 'GRAPPE_2_ENCO') then
             para(1) = -48.89d+03 / 11.d0
             para(2) = 106.03d0 / 11.d0

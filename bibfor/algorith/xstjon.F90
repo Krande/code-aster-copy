@@ -40,7 +40,7 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
 ! person_in_charge: daniele.colombo at ifpen.fr
 !             DETERMINER LES NOEUDS SOMMETS DE L'ELEMENT PARENT
 !             QUI VOIENT UNE JONCTION (POUR LE CONTACT MULTI)
-!                      
+!
 !     ENTREE  N     : NUMERO DU NOEUD DANS L'ELEMENT PARENT SI LE POINT
 !                     D'INTERSECTION EST CONFONDU AVEC UN NOEUD
 !             C     : COORDONNES DE REFERENCE DU POINT D'INTERSECTION

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ module endo_loca_module
     use scalar_newton_module,       only: &
             newton_state, &
             utnewt
-    
+
     use  tenseur_dime_module,       only: &
-            proten 
-            
+            proten
+
     use endo_crit_francois_module,  only: &
             CRITERION, &
             CRIT_MAT                    => MATERIAL, &
@@ -36,12 +36,12 @@ module endo_loca_module
             SetPathFollowing, &
             BoundsCstPathFollowing, &
             ComputePathFollowing
-             
+
     use endo_rigi_unil_module,      only: &
             UNIL_MAT => MATERIAL, &
             ComputeStress, &
             ComputeEnergy
-            
+
     implicit none
     private
     public:: CONSTITUTIVE_LAW, Init, Integrate, PathFollowing
@@ -65,7 +65,7 @@ module endo_loca_module
         type(UNIL_MAT) :: unil
     end type MATERIAL
 
-    
+
     ! Shared attibutes through the global variable self
     type CONSTITUTIVE_LAW
         integer       :: exception = 0
@@ -74,7 +74,7 @@ module endo_loca_module
         real(kind=8)  :: cvuser,deltat
         type(MATERIAL):: mat
     end type CONSTITUTIVE_LAW
-       
+
 
     ! Post-treatment results
     type POST_TREATMENT
@@ -82,9 +82,9 @@ module endo_loca_module
         real(kind=8)  :: welas
         real(kind=8)  :: wdiss
     end type POST_TREATMENT
-    
-    
-    
+
+
+
 contains
 
 
@@ -94,9 +94,9 @@ contains
 
 function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg, deltat) &
     result(self)
-        
+
     implicit none
-    
+
     integer,intent(in)          :: kpg, ksp, imate, itemax, ndimsi
     real(kind=8), intent(in)    :: precvg, deltat
     character(len=16),intent(in):: option
@@ -113,29 +113,29 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg, deltat) &
 ! precvg    required accuracy (with respect to stress level))
 ! deltat    time increment (instap - instam)
 ! ---------------------------------------------------------------------
-            
+
     self%elas   = option.eq.'RIGI_MECA_ELAS' .or. option.eq.'FULL_MECA_ELAS'
     self%rigi   = option.eq.'RIGI_MECA_TANG' .or. option.eq.'RIGI_MECA_ELAS' &
              .or. option.eq.'FULL_MECA' .or. option.eq.'FULL_MECA_ELAS'
     self%resi   = option.eq.'FULL_MECA_ELAS' .or. option.eq.'FULL_MECA'      &
              .or. option.eq.'RAPH_MECA'
     self%pilo   = option.eq.'PILO_PRED_ELAS'
-    
+
     ASSERT (self%rigi .or. self%resi .or. self%pilo)
-    
+
     ! On force la matrice secante en prediction
     if (self%rigi .and. .not. self%resi) self%elas=ASTER_TRUE
-    
+
     self%ndimsi = ndimsi
     self%itemax = itemax
     self%cvuser = precvg
     self%deltat = deltat
     self%mat    = GetMaterial(self,fami,kpg,ksp,imate)
-                
+
 end function Init
 
 
-    
+
 ! =====================================================================
 !  INTEGRATION OF ENDO_LOCA_EXP (MAIN ROUTINE)
 ! =====================================================================
@@ -182,9 +182,9 @@ subroutine Integrate(self, epsm, deps, vim, sig, vip, dsde)
 
 ! Post-treatments
     if (self%resi) post = PostTreatment(self, eps, deps, be, postm)
-    
 
-! pack internal variables 
+
+! pack internal variables
     if (self%resi) then
         vip(1) = be
         vip(2) = state
@@ -194,7 +194,7 @@ subroutine Integrate(self, epsm, deps, vim, sig, vip, dsde)
     end if
 
 
-999 continue    
+999 continue
 end subroutine Integrate
 
 
@@ -204,7 +204,7 @@ end subroutine Integrate
 ! =====================================================================
 
 function GetMaterial(self,fami,kpg,ksp,imate) result(mat)
-    
+
     implicit none
 
     type(CONSTITUTIVE_LAW), intent(inout):: self
@@ -241,7 +241,7 @@ function GetMaterial(self,fami,kpg,ksp,imate) result(mat)
     call rcvalb(fami,kpg,ksp,'+',imate,' ','ENDO_LOCA_EXP',0,' ',[0.d0],nben,nomen,valen,iok,2)
 
     sc = valen(3)
-    
+
     s0 = valen(4)
     b0 = valen(5)
     cf = lambda/ec
@@ -249,7 +249,7 @@ function GetMaterial(self,fami,kpg,ksp,imate) result(mat)
     ty = (cf + (b0-1.d0/3.d0)*(1+2*cf))*sc/s0
     ex = exp(sc/s0)
     ey = exp(cf*sc/s0)
-    g0 = sqrt(tx**2+2*ty**2) + sqrt(ex**2+2*ey**2) 
+    g0 = sqrt(tx**2+2*ty**2) + sqrt(ex**2+2*ey**2)
 
     p  = valen(2)
     pi = r8pi()
@@ -262,7 +262,7 @@ function GetMaterial(self,fami,kpg,ksp,imate) result(mat)
     mat%unil%lambda = lambda
     mat%unil%deuxmu = deuxmu
     mat%unil%regam  = valen(6)
-    
+
     mat%cmat%lambda = lambda
     mat%cmat%deuxmu = deuxmu
     mat%cmat%gam0   = g0
@@ -277,7 +277,7 @@ function GetMaterial(self,fami,kpg,ksp,imate) result(mat)
 
     if (mat%kappa * mat%m0 .lt. 2) &
         call utmess('F', 'COMPOR1_98', sr=mat%m0)
-    
+
 end function GetMaterial
 
 
@@ -287,13 +287,13 @@ end function GetMaterial
 ! =====================================================================
 
 subroutine ComputeDamage(self, eps, be, state, sig, dsde)
-    
+
     implicit none
 
     type(CONSTITUTIVE_LAW), intent(inout):: self
     real(kind=8), intent(in)             :: eps(:)
-    integer,intent(inout)                :: state  
-    real(kind=8),intent(inout)           :: be  
+    integer,intent(inout)                :: state
+    real(kind=8),intent(inout)           :: be
     real(kind=8),intent(out)             :: sig(:), dsde(:,:)
 ! ---------------------------------------------------------------------
 ! eps   strain at the end of the time step
@@ -302,7 +302,7 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
 ! sig   stress at the end of the time step
 ! dsde  tangent matrix (ndimsi,ndimsi)
 ! ---------------------------------------------------------------------
-    real(kind=8),parameter:: cvtole=1.d-3      
+    real(kind=8),parameter:: cvtole=1.d-3
     integer     :: iter
     real(kind=8),dimension(self%ndimsi):: sigpos, signeg, deps_quad
     real(kind=8),dimension(self%ndimsi,self%ndimsi):: deps_sigpos, deps_signeg
@@ -322,23 +322,23 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
     call ComputeStress(self%mat%unil, eps, self%rigi, self%elas, cveps, &
             sigpos, signeg, deps_sigpos, deps_signeg)
 
-    
+
     ! Convergence thresholds
     norpos  = sqrt(dot_product(sigpos,sigpos))
     hn      = Fh(self,be)
     db_hn   = Db_Fh(self,be)
     db_hu   = Db_Fh(self,1.d0)
     db_phin = Db_Fphi(self,be)
-    
+
     majB    = 1/hn + (1-be)*db_hu/hn**2
     majQ    = 0.5d0*db_phin
-    
+
     if (norpos .gt. cvsig/majB/cvtole) then
         cvbe = cvsig/majB/norpos
     else
         cvbe = cvtole
     end if
-    
+
     cvquad = min(majQ*cvbe, cvtole)
     cvequ  = min(majQ*cvbe, cvtole)
 
@@ -346,11 +346,11 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
     ! Strain driving force and its derivative if required
     crit = CritInit(self%ndimsi,self%mat%cmat,self%itemax,cvquad)
     call SetQuad(crit,eps)
-    
-    
+
+
     ! Damage computation (if required)
     if (self%resi) then
-    
+
         ! Already saturated point
         if (state.eq.2) then
             goto 200
@@ -362,26 +362,26 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
             be    = 1.d0
             goto 200
         end if
-        
-        quad = ComputeQuad(crit)    
+
+        quad = ComputeQuad(crit)
         if (crit%exception .ne. 0) then
             self%exception = crit%exception
             goto 999
         end if
-        
+
         ! Elastic regime
         if (quad-Fphi(self,be) .le. cvequ) then
             state = 0
             goto 200
         end if
-        
+
         ! Saturated point
         if (quad-Fphi(self,1.d0) .ge. -cvequ) then
             state = 2
             be    = 1.d0
             goto 200
         end if
-        
+
         ! Damage regime
         state = 1
         do iter = 1,self%itemax
@@ -394,8 +394,8 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
         if (iter.gt.self%itemax) then
             self%exception = 1
             goto 999
-        end if        
-        
+        end if
+
 
 200     continue
 
@@ -405,14 +405,14 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
     ! Stress computation (even if not resi)
     stiff = FB(self,be)
     sig   = stiff*sigpos + signeg
-        
 
-    
+
+
     if (self%rigi) then
 
         ! Contribution elastique a endommagement fixe
         dsde = stiff*deps_sigpos + deps_signeg
-        
+
         ! Contribution liee a la variation d'endommagement
         if ( (.not. self%elas) .and. (state.eq.1) ) then
             db_B      = db_FB(self,be)
@@ -420,9 +420,9 @@ subroutine ComputeDamage(self, eps, be, state, sig, dsde)
             deps_quad = DerivateQuad(crit)
             dsde      = dsde + db_B/db_phi * proten(sigpos,deps_quad)
         end if
-        
+
     end if
-    
+
 999 continue
 end subroutine ComputeDamage
 
@@ -473,12 +473,12 @@ subroutine PathFollowing(self,targetDamage,eps0,eps1,etamin,etamax,cvb, &
     cvequ  = Db_Fphi(self,targetDamage) * cvb
     cvquad = red*cvequ
 
-    ! Criterion Functor    
+    ! Criterion Functor
     crit = CritInit(self%ndimsi,self%mat%cmat,self%itemax,cvquad)
     call SetPathFollowing(crit,eps0,eps1,lcst)
-    
+
     ! Refined bounds
-    call BoundsCstPathFollowing(crit, etamin, etamax, empty, etam, etap)    
+    call BoundsCstPathFollowing(crit, etamin, etamax, empty, etam, etap)
 
     ! No solution
     if (empty) then
@@ -488,13 +488,13 @@ subroutine PathFollowing(self,targetDamage,eps0,eps1,etamin,etamax,cvb, &
 
 
     ! Solution of the scalar equation
-    
+
     call ComputePathFollowing(crit,etam, gm, dgm)
     if (crit%exception .ne. 0) then
         self%exception = 1
         goto 999
     end if
-    
+
     call ComputePathFollowing(crit,etap, gp, dgp)
     if (crit%exception .ne. 0) then
         self%exception = 1
@@ -545,7 +545,7 @@ subroutine PathFollowing(self,targetDamage,eps0,eps1,etamin,etamax,cvb, &
                     goto 999
                 end if
             end if
-            
+
             if (.not.droite) then
                 call ComputePathFollowing(crit,etap, gp, dgp)
                 if (crit%exception .ne. 0) then
@@ -553,7 +553,7 @@ subroutine PathFollowing(self,targetDamage,eps0,eps1,etamin,etamax,cvb, &
                     goto 999
                 end if
             end if
-            
+
         end do
 
         ! echec de la resolution avec le nombre d'iterations requis
@@ -633,14 +633,14 @@ function PostTreatment(self, eps, deps, be, postm) result(post)
 ! ---------------------------------------------------------------------
     real(kind=8):: wpos, wneg, wpos12, wneg12
 ! ---------------------------------------------------------------------
-    
+
     ! stiffness damage
     post%damsti = 1-FB(self,be)
-    
+
     ! elastic energy
     call ComputeEnergy(self%mat%unil,eps,wpos,wneg)
     post%welas = wneg + (1-post%damsti)*wpos
-    
+
     ! dissipated energy
     call ComputeEnergy(self%mat%unil,eps - 0.5d0*deps, wpos12, wneg12)
     post%wdiss = postm%wdiss + (post%damsti - postm%damsti)*wpos12
@@ -653,7 +653,7 @@ end function PostTreatment
 ! =====================================================================
 
 function Fh(self,b) result(res)
-    
+
     implicit none
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
@@ -661,7 +661,7 @@ function Fh(self,b) result(res)
 ! ---------------------------------------------------------------------
     real(kind=8):: c1,cr
 ! ---------------------------------------------------------------------
-    
+
     c1  = 0.5d0*self%mat%kappa*self%mat%m0 - 1
     cr  = 0.5d0*self%mat%kappa*(self%mat%d1-self%mat%m0)
     res = 1 + c1*b + cr*b**self%mat%r
@@ -671,7 +671,7 @@ end function Fh
 
 
 function Db_Fh(self,b) result(res)
-    
+
     implicit none
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
@@ -679,11 +679,11 @@ function Db_Fh(self,b) result(res)
 ! ---------------------------------------------------------------------
     real(kind=8):: c1,cr
 ! ---------------------------------------------------------------------
-    
+
     c1  = 0.5d0*self%mat%kappa*self%mat%m0 - 1
     cr  = 0.5d0*self%mat%kappa*(self%mat%d1-self%mat%m0)
     res = c1 + cr*self%mat%r * b**(self%mat%r-1)
-    
+
 end function Db_Fh
 
 
@@ -693,7 +693,7 @@ end function Db_Fh
 ! =====================================================================
 
 function FB(self,b) result(res)
-    
+
     implicit none
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
@@ -707,7 +707,7 @@ end function FB
 
 
 function Db_FB(self,b) result(res)
-    
+
     implicit none
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
@@ -715,11 +715,11 @@ function Db_FB(self,b) result(res)
 ! ---------------------------------------------------------------------
     real(kind=8):: h,db_h
 ! ---------------------------------------------------------------------
-    
+
     h    = Fh(self,b)
     db_h = Db_Fh(self,b)
     res  = - (h + (1-b)*db_h) / h**2
-    
+
 end function Db_FB
 
 
@@ -729,7 +729,7 @@ end function Db_FB
 ! =====================================================================
 
 function Fphi(self,b) result(res)
-    
+
     implicit none
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
@@ -741,7 +741,7 @@ end function Fphi
 
 
 function Db_Fphi(self,b) result(res)
-    
+
     implicit none
     type(CONSTITUTIVE_LAW), intent(in):: self
     real(kind=8):: res
@@ -751,6 +751,6 @@ function Db_Fphi(self,b) result(res)
 
 end function Db_Fphi
 
-    
+
 
 end module endo_loca_module

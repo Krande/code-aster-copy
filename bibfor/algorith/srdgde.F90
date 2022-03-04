@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,39 +61,39 @@ subroutine srdgde(val, vintr, dt, seuive, ucrim,&
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nbmat,retcom,val,nvi
     real(kind=8) :: seuive,ucrim,im,sm(6),vintr
     real(kind=8) :: mater(nbmat,2),vinm(nvi),depsv(6),dgamv,dt,tmp
-    
+
     !!!
     !!! Variable locales
     !!!
-    
+
     integer :: i, ndi,ndt
     real(kind=8) :: a,n,pa,bidon,paravi(3),varvi(4)
     real(kind=8) :: dhds(6),ds2hds(6),dfdsv(6),bprime,vecnv(6),gv(6),ddepsv(6)
     real(kind=8) :: tpp,trr,av0,r,z
     common /tdim/ ndt,ndi
-    
+
     !!!
     !!! Recuperation des temperatures
     !!!
-    
+
     tpp=mater(7,1)
     trr=mater(8,1)
-    
+
     !!!
     !!! Recuperation des parametres materiaux
     !!!
-    
+
     !!! parametres a T0
     pa=mater(1,2)
     av0=mater(16,2)
     n=mater(17,2)
     r=8.3144621d0
     z=mater(27,2)
-    
+
     !!! parametres a T
     !!! if obligatoire car en meca. pure Tp et Tref sont nulles sonc / 0
     if ((tpp.ge.trr).and.(trr.gt.0.d0)) then
@@ -101,34 +101,34 @@ subroutine srdgde(val, vintr, dt, seuive, ucrim,&
     else
         a=av0
     endif
-    
+
     !!!
     !!! Calcul de dfvp/dsig
     !!!
-    
+
     call srdhds(nbmat,mater,sm,dhds,retcom)
     call srds2h(nbmat,mater,sm,dhds,ds2hds,retcom)
     call srvarv(vintr,nbmat,mater,tmp,paravi)
     call srvacv(nbmat,mater,paravi,varvi)
     call srdfds(nbmat,mater,paravi,varvi,ds2hds,ucrim,dfdsv)
-    
+
     !!!
     !!! Calcul de n
     !!!
-    
+
     bprime=srbpri(val,vinm,nvi,nbmat,mater,paravi,im,sm,tmp)
     call srcaln(sm,bprime,vecnv,retcom)
-    
+
     !!!
     !!! Calcul de gvp
     !!!
-    
+
     call srcalg(dfdsv,vecnv,gv,bidon)
-    
+
     !!!
     !!! Calcul de dgamv
     !!!
-    
+
     do i=1,ndt
         if (seuive.le.0.d0) then
             depsv(i)=0.d0
@@ -136,15 +136,15 @@ subroutine srdgde(val, vintr, dt, seuive, ucrim,&
             depsv(i)=a*((seuive/pa)**n)*gv(i)*dt
         endif
     end do
-    
+
     call lcdevi(depsv,ddepsv)
-    
+
     dgamv=0.d0
-    
+
     do i = 1, ndt
         dgamv=dgamv+ddepsv(i)**2.d0
     end do
-    
+
     dgamv=sqrt(2.d0/3.d0*dgamv)
 
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,7 @@ subroutine op0174()
         call wkvect('&&OP0174.NOM_PARA', 'V V K16', nbpara+1, inom)
         zk16(inom) = 'NUME_ORDRE'
 
-! -- -- sélection des types i, r et c uniquement 
+! -- -- sélection des types i, r et c uniquement
         call wkvect('&&OP0174.TYPE_PARA', 'V V K8 ', nbpara+1, ityp)
         zk8(ityp) = 'I'
         numord = zi(iord)

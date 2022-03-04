@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ integer, intent(out) :: node_to_slice(nb_node)
     integer :: i_node, i_slice
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
     do i_node = 1, nb_node
         do i_slice = 1, nb_slice
             if (abs(coor_slice(i_slice)-coor_node(i_node)) .lt. tole) then
@@ -59,6 +59,6 @@ integer, intent(out) :: node_to_slice(nb_node)
                 exit
             endif
         enddo
-    enddo    
+    enddo
 !
 end subroutine

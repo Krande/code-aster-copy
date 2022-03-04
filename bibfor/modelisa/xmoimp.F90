@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -192,7 +192,7 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
                          nte10(5), nte10(6), nte10(8), nte10(9), nte10(10), nte10(11), nte10(12),&
                          nte10(13), nte10(14), nte10(15), nte10(16), nte10(17)
     if (ntem10(7) .ne. 0) write(ifm, 810)'HM3D TETRA10M', ntem10(1), ntem10(2), ntem10(3),&
-                          ntem10(4), ntem10(5), ntem10(6), 0, 0, 0, 0, 0, 0, 0, 0, 0 
+                          ntem10(4), ntem10(5), ntem10(6), 0, 0, 0, 0, 0, 0, 0, 0, 0
     if (ntes10(7) .ne. 0) write(ifm, 810)'HM3D TETRA10S', ntes10(1), ntes10(2), ntes10(3),&
                           ntes10(4), ntes10(5), ntes10(6), 0, 0, 0, 0, 0, 0, 0, 0, 0
     if (nted10(7) .ne. 0) write(ifm, 810)'HM3D TETRA10D', nted10(1), nted10(2), nted10(3),&

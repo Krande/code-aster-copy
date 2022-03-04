@@ -172,11 +172,11 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
                 call rcvalb(fami, kpg, ksp, poum, imat,&
                             ' ', 'ELAS', 0, ' ', [0.d0],&
                             1, 'E', val, icodre, 1)
-                e=val(1)            
+                e=val(1)
                 call rcvalb(fami, kpg, ksp, poum, imat,&
                             ' ', 'ELAS', 0, ' ', [0.d0],&
                             1, 'NU', val, icodre, 1)
-                nu=val(1)            
+                nu=val(1)
                 mu=e/(2.0d0+2.0d0*nu)
             else
                 call utmess('F', 'COMPOR1_88', sk=necoul)
@@ -247,7 +247,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     1, nomres, val, icodre, 0)
-        h=val(1)            
+        h=val(1)
         if (icodre(1) .eq. 0) then
             nbcoef=1
             valh(1)=h

@@ -49,7 +49,7 @@ implicit none
 !                         2 - Model from results datastructure
 !                         3 - Model from results datastructure and command file (the same)
 !                         4 - Model from command file is different from results datastructure
-!                        
+!
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result, model_resu, model_comm

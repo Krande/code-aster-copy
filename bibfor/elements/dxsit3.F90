@@ -81,7 +81,7 @@ subroutine dxsit3(nomte, mater, pgl, sigma)
             call utmess('F', 'ELEMENTS_46')
         endif
     endif
-    
+
 !   ----- CARACTERISTIQUES DES MATERIAUX --------
     call dxmate(fami, df, dm, dmf, dc,&
                 dci, dmc, dfc, nnoel, pgl,&
@@ -98,7 +98,7 @@ subroutine dxsit3(nomte, mater, pgl, sigma)
     else
         ASSERT(.false.)
     endif
-    
+
 !   ---- passage a la matrice de hooke complete
     d(:,:) = 0.d0
     d(1:2,1:2) = h(1:2,1:2)

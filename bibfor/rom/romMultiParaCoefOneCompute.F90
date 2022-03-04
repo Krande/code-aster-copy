@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
                 vali(2) = i_coef
                 call utmess('I', 'ROM2_52', ni = 2, vali = vali, nr = 2, valr = valr)
             end do
-        else 
+        else
             ASSERT(ASTER_FALSE)
         end if
     endif

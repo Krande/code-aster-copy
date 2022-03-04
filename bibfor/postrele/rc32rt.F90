@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine rc32rt(pi, pj, simpij)
 ! --- CONTRAINTE MOYENNE DUE A LA PRESSION : partie ze200a
 !
     call jeveuo('&&RC3200.INDI', 'L', jvalin)
-    rayon = zr(jvalin+6) 
-    ep = zr(jvalin+7) 
+    rayon = zr(jvalin+6)
+    ep = zr(jvalin+7)
     s1 = rayon*abs(pi)/ep
     s2 = rayon*abs(pj)/ep
     simpij = max(s1,s2)

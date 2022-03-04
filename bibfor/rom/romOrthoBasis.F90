@@ -41,13 +41,13 @@ character(len=19), intent(in) :: new_basis
 ! Greedy algorithm
 !
 ! Orthonormalization the basis with algorithme << Iterative Modified Gram-Schmidt >>
-! (version KAHAN-PARLETT) 
+! (version KAHAN-PARLETT)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_multipara        : datastructure for multiparametric problems
 ! In  base                : base
-! In  new_basis           : new basis to be orthogonalized 
+! In  new_basis           : new basis to be orthogonalized
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,7 +75,7 @@ character(len=19), intent(in) :: new_basis
 !
 ! - Orthogonalization the basis
 !
-    if (syst_type .eq. 'R') then 
+    if (syst_type .eq. 'R') then
         call jeveuo(new_basis(1:19)//'.VALE', 'E', vr = vr_new_mode)
         AS_ALLOCATE(vr = vr_new_mode1, size=nbEqua)
         call romAlgoMGS(nbMode, nbEqua, 'R', fieldIden, resultName,&
@@ -86,7 +86,7 @@ character(len=19), intent(in) :: new_basis
         if (normr_new_mode1 .gt. 0.717*normr_new_mode) then
             vr_new_mode(1:nbEqua) = vr_new_mode1(1:nbEqua)/normr_new_mode1
             AS_DEALLOCATE(vr = vr_new_mode1)
-        else  
+        else
             AS_ALLOCATE(vr = vr_new_mode2, size=nbEqua)
             call romAlgoMGS(nbMode, nbEqua, 'R', fieldIden, resultName,&
                             vr_mode_in  = vr_new_mode1,&
@@ -96,13 +96,13 @@ character(len=19), intent(in) :: new_basis
                 vr_new_mode(1:nbEqua) = vr_new_mode2(1:nbEqua)/normr_new_mode2
                 AS_DEALLOCATE(vr = vr_new_mode1)
                 AS_DEALLOCATE(vr = vr_new_mode2)
-            else 
+            else
                 AS_DEALLOCATE(vr = vr_new_mode1)
                 AS_DEALLOCATE(vr = vr_new_mode2)
                 call utmess('F', 'ROM5_14')
             end if
-        end if  
-    else if (syst_type .eq. 'C') then  
+        end if
+    else if (syst_type .eq. 'C') then
         call jeveuo(new_basis(1:19)//'.VALE', 'E', vc = vc_new_mode)
         AS_ALLOCATE(vc = vc_new_mode1, size=nbEqua)
         call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName,&
@@ -113,7 +113,7 @@ character(len=19), intent(in) :: new_basis
         if (real(normc_new_mode1) .gt. 0.717*real(normc_new_mode)) then
             vc_new_mode(1:nbEqua) = vc_new_mode1(1:nbEqua)/normc_new_mode1
             AS_DEALLOCATE(vc = vc_new_mode1)
-        else  
+        else
             AS_ALLOCATE(vc = vc_new_mode2, size=nbEqua)
             call romAlgoMGS(nbMode, nbEqua, 'C', fieldIden, resultName,&
                             vc_mode_in = vc_new_mode1,&
@@ -123,7 +123,7 @@ character(len=19), intent(in) :: new_basis
                 vc_new_mode(1:nbEqua) = vc_new_mode2(1:nbEqua)/normc_new_mode2
                 AS_DEALLOCATE(vc = vc_new_mode1)
                 AS_DEALLOCATE(vc = vc_new_mode2)
-            else 
+            else
                 call utmess('F', 'ROM5_14')
             end if
         end if

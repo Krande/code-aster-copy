@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/jexnum.h"
 !
 integer, pointer :: v_connex(:)
-integer, pointer :: v_connex_lcum(:) 
+integer, pointer :: v_connex_lcum(:)
 integer, intent(in) :: jv_geom, elem_nume, elem_nbnode, elem_dime
 real(kind=8), intent(out) :: elem_coor(27)
 !

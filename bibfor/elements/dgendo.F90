@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,11 +72,11 @@ subroutine dgendo(em, h, ea, sya, fcj, epsi_c, &
 ! ----------------------------------------------------------------------
 ! PARAMETRES INTERMEDIAIRES
     real(kind=8) :: sytxy, dxd
-    
+
     alpha_c = 1.d0
 
     gt=pendt/pelast
-    
+
     call dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num,&
                    gt, gc, syc, alpha_c)
 !

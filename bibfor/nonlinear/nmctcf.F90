@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ implicit none
     call mmbouc(ds_contact, 'Fric', 'Is_Convergence', loop_state_ = loop_fric_conv)
     call mmbouc(ds_contact, 'Fric', 'Get_Locus'     , loop_locus_ = loop_fric_node)
     call mmbouc(ds_contact, 'Fric', 'Get_Vale'      , loop_vale_  = loop_fric_vale)
-    call mmbouc(ds_contact, 'Fric', 'Read_Counter'  , loop_fric_count) 
+    call mmbouc(ds_contact, 'Fric', 'Read_Counter'  , loop_fric_count)
 !
 ! - Too many iterations ?
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine lcesun(x,p,val,der)
 ! x:   argument
 ! p:   dummy argument
 ! val: f(x)
-! der: f'(x)  
+! der: f'(x)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
     common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth

@@ -66,7 +66,7 @@ implicit none
     integer :: i_cont_poin, i_zone, i_elem_slav, i_poin_elem, i_node
     integer :: nb_poin_elem, nb_elem_slav, nb_cont_zone, model_ndim, nt_cont_poin
     integer :: node_slav_nume, elem_slav_nume
-    integer :: node_mast_nume, elem_mast_nume 
+    integer :: node_mast_nume, elem_mast_nume
     integer :: elem_slav_nbnode, elem_mast_nbnode
     integer :: elem_slav_indx, jdecme
     real(kind=8) :: ksipc1, ksipc2, ksipr1, ksipr2

@@ -23,7 +23,7 @@ subroutine thmFlh005(ds_thm, lMatr , lSigm , ndim  , j_mater,&
                      addep1, addep2, adcp11, adcp21 ,&
                      addeme, addete,&
                      t     , p2    ,&
-                     grap1 , grap2 ,& 
+                     grap1 , grap2 ,&
                      rho11 , &
                      satur , dsatur, gravity, tperm,&
                      congep, dsde)
@@ -95,8 +95,8 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    dr11p1    = 0.d0 
-    dr11p2    = 0.d0 
+    dr11p1    = 0.d0
+    dr11p2    = 0.d0
     dr11t     = 0.d0
     dr21p2    = 0.d0
     dr21t     = 0.d0
@@ -210,7 +210,7 @@ real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
                     do k = 1, ndim
                         dsde(adcp21+i,addeme+ndim-1+j) = dsde(adcp21+i,addeme+ndim-1+j)+&
                             rho21*lambd2(2)*tperm(i,k)*(-grap2(k)+rho21*gravity(k))
-                    end do                     
+                    end do
                 end do
             endif
             if (ds_thm%ds_elem%l_dof_ther) then

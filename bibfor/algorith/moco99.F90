@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,16 +182,16 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
         call rsadpa(resul, 'L', 1, 'TYPE_MODE', iorol,&
                     0, sjv=lltmo, styp=k8bid, istop=0)
         typmo=zk16(lltmo)
-        
+
 !       RECUPERATION ET ECRITURE DES MODELES, CHAMPMAT ET CARA_ELEM
-        
+
         call rsadpa(resul, 'L', 3, param, iorol,&
                     0, tjv=lpain, styp=k8bid, istop=0)
-        
+
         call rsadpa(nomres, 'E', 3, param, iorol,&
                     0, tjv=lpaou, styp=k8bid, istop=0)
-        zk8(lpaou(1)) = zk8(lpain(1)) 
-        zk8(lpaou(2)) = zk8(lpain(2)) 
+        zk8(lpaou(1)) = zk8(lpain(1))
+        zk8(lpaou(2)) = zk8(lpain(2))
         zk8(lpaou(3)) = zk8(lpain(3))
 !
  11     continue

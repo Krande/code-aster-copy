@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ subroutine xgecfi(modele, depgeo)
     newgem = modele//'.TOPOFAC.GM'
     hea_no = modele//'.TOPONO.HNO'
     hea_fa = modele//'.TOPONO.HFA'
-!  AJOUT DES CHAMPS NECESSAIRES POUR L ASSEMBLAGE DU CHAMP SINGULIER  
+!  AJOUT DES CHAMPS NECESSAIRES POUR L ASSEMBLAGE DU CHAMP SINGULIER
     call megeom(modele, chgeom)
     lnno = modele(1:8)//'.LNNO'
     stano = modele(1:8)//'.STNO'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -183,7 +183,7 @@ subroutine te0382(option, nomte)
     call jevech('PCONTSER', 'L', jsigse)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if (ibid .eq. 0 .and. ltequa(elrefe, enr))& 
+    if (ibid .eq. 0 .and. ltequa(elrefe, enr))&
        call jevech('PPMILTO', 'L', jpmilt)
 !
 ! ----------------------------------------------------------------------

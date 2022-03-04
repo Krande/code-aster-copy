@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -222,7 +222,7 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp,&
                 zr(jgdreq+ad1)= zr(jgdreq+ad1)*coefpa
             endif
 !
-!  Pour le critère de FATEMI_SOCIE? il faut utiliser le tenseur de déformation du 
+!  Pour le critère de FATEMI_SOCIE? il faut utiliser le tenseur de déformation du
 !  type d'ingéneire gamma_ij = 2*eps_ij avec i #j
 !
             if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then

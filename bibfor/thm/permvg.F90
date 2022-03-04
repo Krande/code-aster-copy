@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ real(kind=8), intent(out) :: krg, dkrg_dsatur
     s1max      = (satur_max-sr)/(1.d0-sr)
     s1min      = 1.d0-satur_max
     satur_min  = sr+(1.d0-sr)*s1min
-! 
+!
     if ((satur .lt. satur_max) .and. (satur .gt. satur_min)) then
         call kfomvg(sr , m  , usm        , s1         ,&
                     krl, krg, dkrl_dsatur, dkrg_dsatur)

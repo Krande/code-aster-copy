@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,13 +62,13 @@ implicit none
     integer :: iad, ima, nbma
     integer :: jcesl,  jcesd
     integer, pointer :: cesd2(:) => null()
-    integer, pointer :: cesv(:) => null()   
+    integer, pointer :: cesv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    
-    
+
+
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE

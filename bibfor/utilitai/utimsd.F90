@@ -60,8 +60,8 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !   IPOS   : / DEBUT DE LA CHAINE DE CARACTERES A CHERCHER (1,...,24)
 !            / 0 : ON NE REGARDE PAS SCH1, ON IMPRIME TOUS LES OBJETS
 !   BASE   : 'G','V','L',OU ' '(TOUTES)
-!   PERM   : , VAUT 'OUI' ou 'NON'. 
-!   PERM   : K3 : /OUI/NON. 
+!   PERM   : , VAUT 'OUI' ou 'NON'.
+!   PERM   : K3 : /OUI/NON.
 !            OPTIONNEL -> PRESENCE OBLIGATOIRE SI NIVEAU == -1
 !            NON : ON FAIT LA SOMME BETE DES ELEMENTS DU VECTEUR
 !                  => UNE PERMUTATION DU VECTEUR NE SE VOIT PAS !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ implicit none
 ! - Variable (JEVEUX name) for field (#H# for hat variable)
     character(len=24), parameter :: algo_name(nb_field_defi) = &
             (/'#H#VALINC#TEMP  ','XXXXXXXXXXXXXXXX','XXXXXXXXXXXXXXXX'/)
-! - Variable (JEVEUX name) for init field 
+! - Variable (JEVEUX name) for init field
     character(len=24), parameter :: init_name(nb_field_defi) = &
             (/'&&NTETCR.TEMP0  ','XXXXXXXXXXXXXXXX','XXXXXXXXXXXXXXXX'/)
 !
@@ -93,7 +93,7 @@ implicit none
     ASSERT(ds_inout%nb_field.le.ds_inout%nb_field_maxi)
 !
 ! - Set list of fields
-!                                                        
+!
     do i_field = 1, nb_field_defi
         ds_inout%field(i_field)%type            = field_type(i_field)
         ds_inout%field(i_field)%field_read      = ' '

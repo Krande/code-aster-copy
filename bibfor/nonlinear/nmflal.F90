@@ -106,7 +106,7 @@ character(len=16), intent(out) :: typcal
             typcal = 'CALIBRATION'
         endif
         mod45  = 'VIBR'
-        
+
     else if (option(1:5) .eq. 'FLAMB') then
         nfreq  = ds_posttimestep%crit_stab%nb_eigen
         cdsp   = ds_posttimestep%crit_stab%coef_dim_espace
