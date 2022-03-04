@@ -62,7 +62,7 @@ subroutine srdfdt(nbmat,mater,ucrip,invar,s,paraep,varpl,dpdt,dfdt)
 
     real(kind=8) :: pref,sigc,rcos3t,r0c,rtheta,sii
     real(kind=8) :: dfdad,dfdsd,dfdmd,fact1,fact3,fact4,fact5
-    integer :: ndi,ndt
+    integer :: ndi, ndt
     common /tdim/ ndt, ndi
 
     !!!
@@ -75,7 +75,8 @@ subroutine srdfdt(nbmat,mater,ucrip,invar,s,paraep,varpl,dpdt,dfdt)
     !!!
     !!! Calcul de sii et recuperation de h(theta) et h0c
     !!!
-    sii=sqrt(dot_product(s(1:ndt), s(1:ndt)))
+
+    sii = norm2(s(1:ndt))
 
     rcos3t=cos3t(s,pref,1.d-8)
     call srhtet(nbmat,mater,rcos3t,r0c,rtheta)

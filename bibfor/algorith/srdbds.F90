@@ -77,8 +77,7 @@ subroutine srdbds(nmat,mater,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)
 
     alpha = 0.d0
 
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 
     !!!
     !!! Recup. de para. du modele
@@ -158,8 +157,7 @@ subroutine srdbds(nmat,mater,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)
     !!! Calcul de sii
     !!!
 
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 
     !!!
     !!! Calcul de sigma_min et sigma_max

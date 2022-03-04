@@ -56,8 +56,7 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
     coefh = (varh(2)-h0ext)/(varh(2)-varh(1))
 !
 ! --- CONSTRUCTION DE SII
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii = sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 !
 ! --- INITIALISATION MATRICE D_IK X D_JL
     dikdjl(:,:) = zero

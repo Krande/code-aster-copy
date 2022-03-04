@@ -25,11 +25,10 @@ function lcnrts(d)
 !       OUT LCNRTS :  NORME DE    D = (3/2 D D)
 !       ----------------------------------------------------------------
     integer :: n, nd
-    real(kind=8) :: d(6), p, lcnrts
+    real(kind=8) :: d(6), lcnrts
     common /tdim/   n , nd
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    p = dot_product(d(1:n), d(1:n))
-    lcnrts = sqrt ( 1.5d0 * p )
+    lcnrts = sqrt ( 1.5d0 * dot_product(d(1:n), d(1:n)) )
 end function

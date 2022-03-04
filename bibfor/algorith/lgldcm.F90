@@ -94,8 +94,7 @@ subroutine lgldcm(nbmat, mater, sig, vin)
 ! =================================================================
 ! --- CALCUL DE G(S) ----------------------------------------------
 ! =================================================================
-        sii = dot_product(dev(1:ndt), dev(1:ndt))
-        sii = sqrt (sii)
+        sii = norm2(dev(1:ndt))
         rcos3t = cos3t (dev, pref, lgleps)
         rhlode = hlode (gamcjs, rcos3t)
         rgdev = gdev (sii , rhlode)

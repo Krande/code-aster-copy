@@ -195,8 +195,7 @@ subroutine srcomp(mod, imate, instam, instap, &
 
     i1ml=trace(ndi,sigml)
     call lcdevi(sigml,sml)
-    siim = dot_product(sml(1:ndt), sml(1:ndt))
-    siim=sqrt(siim)
+    siim = norm2(sml(1:ndt))
 
     !!!
     !!! Prise en compte de la dilatation thermique

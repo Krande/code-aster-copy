@@ -114,8 +114,7 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
  10 end do
 !
 ! --- NORME DU DEVIATEUR DES CONTRAINTES
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii = sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 !
 ! --------------------------------------
 ! --- CALCUL DE DAMDX, DSDX ET DMDX

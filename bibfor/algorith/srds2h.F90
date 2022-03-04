@@ -80,9 +80,7 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
     retcom=0
     ptit=r8miem()
 
-    sii = dot_product(s(1:ndt), s(1:ndt))
-
-    sii=sqrt (sii)
+    sii = norm2(s(1:ndt))
 
     if (sii.lt.ptit) then
         retcom=1

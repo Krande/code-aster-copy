@@ -59,7 +59,7 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     real(kind=8) :: r0c, rtheta
     real(kind=8) :: rcos3t
     real(kind=8) :: paravi(3), varvi(4)
-    integer :: ndi,ndt
+    integer :: ndi, ndt
     common /tdim/ ndt, ndi
 
     !!!
@@ -73,7 +73,7 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     !!! Calcul du deviateur des contraintes
     !!!
 
-    sii=sqrt(dot_product(s(1:ndt), s(1:ndt)))
+    sii = norm2(s(1:ndt))
 
     !!!
     !!! Recuperation de h0c et h(theta) (r0c et r(theta))

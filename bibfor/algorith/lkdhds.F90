@@ -66,8 +66,7 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds,&
 ! =================================================================
     retcom = 0
     ptit = r8miem()
-    sii = dot_product(s(1:ndt), s(1:ndt))
-    sii = sqrt (sii)
+    sii = norm2(s(1:ndt))
     if (sii .lt. ptit) then
         call utmess('A', 'COMPOR1_29')
         retcom = 1

@@ -92,8 +92,7 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     mx=para(3)
 
     !!! Calcul de sii
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 
     !!!
     !!! Recuperation de parametres du modele
@@ -166,8 +165,7 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     alres=1.d0+m3
 
     !!! Calcul de sii
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 
     !!! Calculs de sigma_min et sigma_max
     tiers=1.d0/3.d0

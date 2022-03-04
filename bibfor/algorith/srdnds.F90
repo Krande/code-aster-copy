@@ -69,8 +69,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     !!!
 
     !!! Construction de sii
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 
     !!! Construction de kronecker
     kron(:) = 0.d0

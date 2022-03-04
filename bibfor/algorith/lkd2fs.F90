@@ -54,8 +54,7 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
     sigc = materf(3,2)
 !
 ! --- CONSTRUCTION DE SII
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii = sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 !
 ! --- CONSTRUCTION COEF1 = A*SIGC*H0C*(A-1)(AD*SII*H+B*I1+D)^(A-2)
     ucri = vara(1)*sii*varh(3)+vara(2)*i1+vara(3)

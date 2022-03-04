@@ -159,8 +159,7 @@ subroutine srfsxi(nmat, materf, i1, devsig, dshds,&
     !!! sii
     !!!
 
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 
     !!!
     !!! Calcul de d(a)/d(x), d(m)/d(x) et d(s)/d(x)

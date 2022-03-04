@@ -65,8 +65,8 @@ function srbpri(val,vin,nvi,nbmat,mater,para,invar,s,tmp)
     real(kind=8) :: c,phi,alres,sigtil,sigmin,sigmax,sigcar,alpha
     real(kind=8) :: sinpsi,m1,s1,spre,spos,xi20,rm,rq,rs,xi1,fact1
     real(kind=8) :: m10,qi0,rx2,trr,qi,dtmp,tiers,fact3,fact4,xi10,rx1
-    integer :: ndi,ndt
-    common /tdim/ ndt, ndi
+    integer ndt , ndi
+    common /tdim/ ndt , ndi
 
     !!!
     !!! Recuperation de parametres du modele
@@ -146,7 +146,7 @@ function srbpri(val,vin,nvi,nbmat,mater,para,invar,s,tmp)
     !!! Calcul de sii
     !!!
 
-    sii=sqrt(dot_product(s(1:ndt), s(1:ndt)))
+    sii = norm2(s(1:ndt))
 
     !!!
     !!! Calcul de sigma_min et sigma_max

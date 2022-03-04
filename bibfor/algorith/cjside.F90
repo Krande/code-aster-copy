@@ -189,11 +189,9 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
         call calcq(q, gamma, pref, epssig, qq,&
                    codret)
     endif
-    qqii = dot_product(qq(1:ndt), qq(1:ndt))
-    qqii = sqrt(qqii)
+    qqii = norm2(qq(1:ndt))
 !
-    xii = dot_product(xd(1:ndt), xd(1:ndt))
-    xii = sqrt(xii)
+    xii = norm2(xd(1:ndt))
 !
     epsv = zero
     do 50 i = 1, ndi
@@ -230,8 +228,7 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- LOI D ECOULEMENT : GD --------------------------------------------
 ! ======================================================================
-    truc = dot_product(qq(1:ndt), xd(1:ndt))
-    truc = truc - rd
+    truc = dot_product(qq(1:ndt), xd(1:ndt)) - rd
 !
     do 70 i = 1, ndt
         dfdds(i) = qq(i) - truc*kron(i)

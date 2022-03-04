@@ -97,8 +97,7 @@ implicit none
 ! --- CONTRAINTE EQUIVALENTE
 !
     call lcdevi(sig, dev)
-    p = dot_product(dev(1:ndt), dev(1:ndt))
-    sigeq = sqrt (1.5d0 * p)
+    sigeq = sqrt (1.5d0 * dot_product(dev(1:ndt), dev(1:ndt)))
     if (sigeq .eq. zero) then
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3)(1:8)

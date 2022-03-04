@@ -57,8 +57,7 @@ subroutine srcaln(s,b,vecn,retcom)
     retcom=0
     ptit=r8miem()
 
-    sii = dot_product(s(1:ndt), s(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(s(1:ndt))
 
     if (sii.lt.ptit) then
         retcom=1

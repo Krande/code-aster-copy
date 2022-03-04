@@ -25,13 +25,12 @@ function lcnrte(d)
 !       OUT LCNRTE :  NORME DE    D = (2/3 D D)
 !       ----------------------------------------------------------------
     integer :: n, nd
-    real(kind=8) :: d(6), p, lcnrte, d23
+    real(kind=8) :: d(6), lcnrte, d23
     common /tdim/   n , nd
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    data d23        /.66666666666666d0/
+    d23 = .66666666666666d0
 !
-    p = dot_product(d(1:n), d(1:n))
-    lcnrte = sqrt ( d23 * p )
+    lcnrte = sqrt ( d23 * dot_product(d(1:n), d(1:n)) )
 end function

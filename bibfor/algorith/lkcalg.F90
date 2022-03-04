@@ -49,7 +49,6 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
 ! --- CALCUL DU DEVIATEUR DE G ET DE SA NORME ---------------------
 ! =================================================================
     call lcdevi(g, devg)
-    devgii = dot_product(devg(1:ndt), devg(1:ndt))
-    devgii = sqrt(devgii)
+    devgii = norm2(devg(1:ndt))
 ! =================================================================
 end subroutine

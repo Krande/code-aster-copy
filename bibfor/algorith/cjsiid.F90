@@ -205,11 +205,9 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
         call calcq(q, gamma, pref, epssig, qq,&
                    codret)
     endif
-    qqii = dot_product(qq(1:ndt), qq(1:ndt))
-    qqii = sqrt(qqii)
+    qqii = norm2(qq(1:ndt))
 !
-    xii = dot_product(xd(1:ndt), xd(1:ndt))
-    xii = sqrt(xii)
+    xii = norm2(xd(1:ndt))
 !
     epsv = zero
     do i = 1, ndi

@@ -72,8 +72,7 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
 ! =================================================================
     retcom = 0
     ptit = r8miem()
-    sii = dot_product(s(1:ndt), s(1:ndt))
-    sii = sqrt (sii)
+    sii = norm2(s(1:ndt))
     if (sii .lt. ptit) then
         call utmess('A', 'COMPOR1_30')
         retcom = 1

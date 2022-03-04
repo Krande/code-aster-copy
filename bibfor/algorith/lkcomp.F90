@@ -167,9 +167,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !
     call lcdevi(sigml, sml)
 !
-    siim = dot_product(sml(1:ndt), sml(1:ndt))
-!
-    siim = sqrt(siim)
+    siim = norm2(sml(1:ndt))
 !
 ! =================================================================
 ! ---PRISE EN COMPTE DE LA DILATATION THERMIQUE--------------------

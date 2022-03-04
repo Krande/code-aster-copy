@@ -121,8 +121,7 @@ implicit none
 ! ---   TRAITEMENT DE LA CONTRAINTE ELASTIQUE
 !
     call lcdevi(sige, dev)
-    p = dot_product(dev(1:ndt), dev(1:ndt))
-    sigeq = sqrt (1.5d0 * p)
+    sigeq = sqrt (1.5d0 * dot_product(dev(1:ndt), dev(1:ndt)))
 !
     call lchydr(sige, sigh)
 !
@@ -169,8 +168,7 @@ implicit none
 ! ---   TRAITEMENT DE LA CONTRAINTE (NON ELASTIQUE) A L'INSTANT MOINS
 !
     call lcdevi(sigd, dev)
-    p = dot_product(dev(1:ndt), dev(1:ndt))
-    sigeq = sqrt (1.5d0 * p)
+    sigeq = sqrt (1.5d0 * dot_product(dev(1:ndt), dev(1:ndt)))
 !
     call lchydr(sigd, sigh)
 !
@@ -182,8 +180,7 @@ implicit none
 ! ---   TRAITEMENT DE LA CONTRAINTE ELASTO PLASTIQUE
 !
     call lcdevi(sig, dev)
-    p = dot_product(dev(1:ndt), dev(1:ndt))
-    sigeq = sqrt (1.5d0 * p)
+    sigeq = sqrt (1.5d0 * dot_product(dev(1:ndt), dev(1:ndt)))
 !
     call lchydr(sig, sigh)
 !

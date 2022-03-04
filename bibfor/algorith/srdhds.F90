@@ -74,8 +74,7 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
 
     retcom=0
     ptit=r8miem()
-    sii = dot_product(s(1:ndt), s(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(s(1:ndt))
 
     !!! on verifie si sii n'est pas nul car division par sii dans la routine
     if (sii.lt.ptit) then

@@ -233,11 +233,9 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 !
   call calcq(q, gamma, pref, epssig, qq,&
        codret)
-  truc = dot_product(qq(1:ndt), qq(1:ndt))
-  qqii = sqrt(truc)
+  qqii = norm2(qq(1:ndt))
 !
-  truc = dot_product(xf(1:ndt), xf(1:ndt))
-  xii = sqrt(truc)
+  xii = norm2(xf(1:ndt))
 !
   epsv = zero
   do  i = 1, ndi
@@ -277,8 +275,7 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 ! --- LOI D ECOULEMENT -------------------------------------------------
 ! ======================================================================
 !
-  truc = dot_product(qq(1:ndt), xf(1:ndt))
-  truc = truc - rf
+  truc = dot_product(qq(1:ndt), xf(1:ndt)) - rf
 !
   do  i = 1, ndt
      dfdds(i) = qq(i) - truc*kron(i)

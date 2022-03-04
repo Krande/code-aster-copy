@@ -103,8 +103,8 @@ subroutine lkpost(imate, sigf, nvi, vip)
 ! ---           : SEUIL DE VISCOSITE MAXIMAL
 ! =================================================================
     call lcdevi(sigf, devsig)
+    sii = norm2(devsig(1:ndt))
     i1 = -sigf(1)-sigf(2)-sigf(3)
-    sii = sqrt(dot_product(devsig(1:ndt), devsig(1:ndt)))
     rcos3t = -cos3t(devsig, mater(11), lgleps)
 !
     crit0 = lkcrit(mater(4), mater(5), mater(6), mater(10), mater(9), mater(12), rcos3t, i1, sii)

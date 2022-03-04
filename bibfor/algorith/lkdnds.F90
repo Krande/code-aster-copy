@@ -58,8 +58,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 ! --- 1) CALCUL TERMES COMMUNS
 ! ----------------------------
 ! --- CONSTRUCTION DE SII
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii = sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 !
 ! --- CONSTRUCTION DE KRONECKER
     kron(:) = zero

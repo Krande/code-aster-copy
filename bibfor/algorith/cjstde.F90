@@ -142,15 +142,13 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! --- ECROUISSAGE CINEMATIQUE ------------------------------------------
 ! ======================================================================
     call lcdevi(sig, s)
-    truc = dot_product(s(1:ndt), s(1:ndt))
-    sii = sqrt(truc)
+    sii = norm2(s(1:ndt))
     siirel = sii/pref
     cos3ts = cos3t(s, pref, epssig)
     hts = hlode(gamma,cos3ts)
 !
     call cjsqij(s, i1, x, q)
-    truc = dot_product(q(1:ndt), q(1:ndt))
-    qii = sqrt(truc)
+    qii = norm2(q(1:ndt))
     cos3tq = cos3t(q, pref, epssig)
     htq = hlode(gamma,cos3tq)
 ! ======================================================================
@@ -161,10 +159,8 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- CALCUL DE PC (CONTRAINTE MOYENNE CRITIQUE) -----------------------
 ! ======================================================================
-    truc = dot_product(qq(1:ndt), qq(1:ndt))
-    qqii = sqrt(truc)
-    truc = dot_product(x(1:ndt), x(1:ndt))
-    xii = sqrt(truc)
+    qqii = norm2(qq(1:ndt))
+    xii = norm2(x(1:ndt))
     epsv = trace(ndi,eps)
     pc = pco*exp(-c*epsv)
 ! ======================================================================
@@ -198,8 +194,7 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- LOI D'ECOULEMENT DU MECANISME DEVIATOIRE -------------------------
 ! ======================================================================
-    truc = dot_product(qq(1:ndt), x(1:ndt))
-    truc = truc - r
+    truc = dot_product(qq(1:ndt), x(1:ndt)) - r
     do  i = 1, ndi
        dfdds(i) = qq(i) - truc
     end do

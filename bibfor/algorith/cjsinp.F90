@@ -124,8 +124,7 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
                 hts, dets, q, qii, qiirel,&
                 cos3tq, htq, detq)
 ! ======================================================================
-    xii = dot_product(xf(1:ndt), xf(1:ndt))
-    xii = sqrt(xii)
+    xii = norm2(xf(1:ndt))
 !
     epsv = zero
     do 30 i = 1, ndi

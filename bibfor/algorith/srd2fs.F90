@@ -66,8 +66,7 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
     !!! Construction de sii
     !!!
 
-    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
-    sii=sqrt(sii)
+    sii = norm2(devsig(1:ndt))
 
     !!!
     !!! Construction coef1 = a*sigc*h0c*(a-1)*(ad*sii*h + b*i1 + d)**(a-2)

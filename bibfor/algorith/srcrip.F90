@@ -59,7 +59,7 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
     real(kind=8) :: sii,sigc,pref
     real(kind=8) :: rcos3t,r0c,rtheta
     real(kind=8) :: paraep(3),varpl(4)
-    integer :: ndi,ndt
+    integer :: ndi, ndt
     common /tdim/ ndt, ndi
 
     !!!
@@ -73,7 +73,7 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
     !!! Calcul de la norme de s
     !!!
 
-    sii=sqrt(dot_product(s(1:ndt), s(1:ndt)))
+    sii = norm2(s(1:ndt))
 
     !!!
     !!! Appel a h0c et h(theta)

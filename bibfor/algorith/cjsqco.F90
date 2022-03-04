@@ -62,15 +62,13 @@ subroutine cjsqco(gamma, sig, x, pref, epssig,&
 ! ======================================================================
     call lcdevi(sig, s)
     call lcdete(s, dets)
-    sii = dot_product(s(1:ndt), s(1:ndt))
-    sii = sqrt(sii)
+    sii = norm2(s(1:ndt))
     siirel = sii / pref
     cos3ts = cos3t(s, pref, epssig)
 !
     call cjsqij(s, i1, x, q)
     call lcdete(q, detq)
-    qii = dot_product(q(1:ndt), q(1:ndt))
-    qii = sqrt(qii)
+    qii = norm2(q(1:ndt))
     qiirel = qii / pref
     cos3tq = cos3t(q, pref, epssig)
 ! ======================================================================
