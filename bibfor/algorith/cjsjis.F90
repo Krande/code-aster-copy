@@ -41,7 +41,6 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !     ------------------------------------------------------------------
 !
 #include "asterfort/lcicma.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nmod
     parameter     (nmod = 8 )
@@ -166,7 +165,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
        depse(i) = deps(i) + dlambi*kron(i)/trois
     end do
 !
-    call lcprmv(hooknl, depse, dsignl)
+    dsignl(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
 !
     do  i = 1, ndt
        le(i) = yf(i) - yd(i) - dsignl(i)
@@ -177,7 +176,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !++++++++++++++++++++++++++
 !
     coef2 = n/trois/pa * (trois*pa/(i1f +qinit))**(un-n)
-    call lcprmv(hook, depse, dsigl)
+    dsigl(1:ndt) = matmul(hook(1:ndt,1:ndt), depse(1:ndt))
     dleds(:,:) = zero
 !
     do  i = 1, ndt

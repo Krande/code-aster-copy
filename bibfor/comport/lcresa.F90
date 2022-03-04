@@ -49,7 +49,6 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/calsig.h"
 #include "asterfort/lcdvin.h"
 #include "asterfort/lcopil.h"
-#include "asterfort/lcprmv.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
@@ -113,8 +112,8 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
     call dcopy(ndt, yf, 1, sigf, 1)
-    call lcprmv(fkooh, sigi, epsef)
-    call lcprmv(fkooh, sigf, h1sigf)
+    epsef(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigi(1:ndt))
+    h1sigf(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
     r(1:ndt) = epsef(1:ndt) - h1sigf(1:ndt)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT

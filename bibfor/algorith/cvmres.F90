@@ -47,7 +47,6 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 #include "asterfort/cvmcvx.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
     integer :: ndt, ndi, nmat
     integer :: ioptio, idnr, nopt
@@ -146,10 +145,10 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 ! - GF  (T+DT)
 !
     call lcprsv(dp, dfds, depsp)
-    call lcprmv(dkooh, sigd, epsed)
+    epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
     depse(1:ndt) = deps(1:ndt) - depsp(1:ndt)
     epsef(1:ndt) = epsed(1:ndt) + depse(1:ndt)
-    call lcprmv(hookf, epsef, gf)
+    gf(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsef(1:ndt))
     gf(1:ndt) = gf(1:ndt) - sigf(1:ndt)
 !
 ! - LF (T+DT)
@@ -230,7 +229,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 ! - EPSP
 !
         call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
-        call lcprmv(fkooh, sigf, vtmp1)
+        vtmp1(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
         epsp(1:ndt) = epsd(1:ndt) + deps(1:ndt)
         epsp(1:ndt) = epsp(1:ndt) - vtmp1(1:ndt)
 !

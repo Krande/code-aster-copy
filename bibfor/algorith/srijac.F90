@@ -48,7 +48,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srbpri.h"
@@ -345,7 +344,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     end do
 
     !!! contrainte elastique
-    call lcprmv(hook, depse, dsige)
+    dsige(1:ndt) = matmul(hook(1:ndt,1:ndt), depse(1:ndt))
 
     !!! produit tensoriel d(sige) x vident
     patm=materf(1,2)
@@ -397,7 +396,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     dphiv=av*nv/patm*(seuilv/patm)**(nv-1.d0)
 
     call lcprsv(dphiv,dfvdsi,dphvds)
-    call lcprmv(dsdenl,gv,hnlgv)
+    hnlgv(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), gv(1:ndt))
     call lcprte(hnlgv,dphvds,hnldfg)
 
     !!! assemblage
@@ -415,7 +414,7 @@ subroutine srijac(nmat,materf,timed,timef,&
             drdy(i,ndt+1)=0.d0
         end do
     else
-        call lcprmv(dsdenl,gp,vetemp)
+        vetemp(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), gp(1:ndt))
         do i=1, ndt
             drdy(i,ndt+1)=vetemp(i)/mu
         end do
@@ -433,7 +432,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     end do
 
     !!! assemblage final
-    call lcprmv(dsdenl,dgpdxi,dr1dy3)
+    dr1dy3(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dgpdxi(1:ndt))
     call lcprsv(dlambd,dr1dy3,dr1dy4)
 
     do i=1,ndt
@@ -473,7 +472,7 @@ subroutine srijac(nmat,materf,timed,timef,&
         call lcprsv(dphidx,gv,dphdxg)
         call lcprsv(phiv,dgvdxi,phdgdx)
         vetemp(1:ndt) = dphdxg(1:ndt) + phdgdx(1:ndt)
-        call lcprmv(dsdenl,vetemp,dr1dy4)
+        dr1dy4(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), vetemp(1:ndt))
 
         do i=1,ndt
             drdy(i,ndt+3)=dr1dy4(i)/mu*dt
@@ -594,7 +593,7 @@ subroutine srijac(nmat,materf,timed,timef,&
 
     !!! Calcul de d(r3)/d(y3) - y3 == xip
 
-    call lcprmv(dsdsig,dgpdxi,dgtpdx)
+    dgtpdx(1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgpdxi(1:ndt))
     dgipdx = dot_product(devgp(1:ndt), dgtpdx(1:ndt))
 
     if (vinf(7).gt.0.d0) then
@@ -605,7 +604,7 @@ subroutine srijac(nmat,materf,timed,timef,&
 
     !!! Calcul de d(r3)/d(y4) - y4 == xivp
 
-    call lcprmv(dsdsig,dgvdxi,dgtvdx)
+    dgtvdx(1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgvdxi(1:ndt))
     dgivdx = dot_product(devgv(1:ndt), dgtvdx(1:ndt))
 
     if (abs(dxiv-dgamv).lt.r8prem()) then

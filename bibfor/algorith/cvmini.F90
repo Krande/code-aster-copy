@@ -50,7 +50,6 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 #include "asterfort/cvmcvx.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
     integer :: ndt, ndi, typess, nmat
     integer :: ioptio, idnr, nopt
@@ -137,7 +136,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
     else if (typess .eq. 1) then
         dy(1:4*ndt+4) = 0.d0
-        call lcprmv(hook, deps, dsig)
+        dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), deps(1:ndt))
         dy(1:ndt) = dsig(1:ndt)
 !
 ! - SOLUTION INITIALE = EXPLICITE
@@ -164,7 +163,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 ! - DSIG
         call lcprsv(-dp, dfds, vtmp)
         vtmp(1:ndt) = deps(1:ndt) + vtmp(1:ndt)
-        call lcprmv(hook, vtmp, dsig)
+        dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), vtmp(1:ndt))
 !
 ! - DX1
         zz = dot_product(x1(1:ndt), dfds(1:ndt))
@@ -244,7 +243,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 ! - EPSP
             call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
             vtmp(1:ndt) = sig(1:ndt) + dsig(1:ndt)
-            call lcprmv(fkooh, vtmp, vtmp1)
+            vtmp1(1:ndt) = matmul(fkooh(1:ndt,1:ndt), vtmp(1:ndt))
             epsp(1:ndt) = epsd(1:ndt) + deps(1:ndt)
             epsp(1:ndt) = epsp(1:ndt) - vtmp1(1:ndt)
 !

@@ -22,7 +22,6 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
                   varpl, dfdsp, dlam)
 !
     implicit   none
-#include "asterfort/lcprmv.h"
 #include "asterfort/lkdepp.h"
 #include "asterfort/lkdfdx.h"
 #include "asterfort/r8inir.h"
@@ -66,11 +65,11 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 ! =================================================================
 ! --- CONTRAINTES INTERMEDIARES -----------------------------------
 ! =================================================================
-    call lcprmv(de, deps, sigt)
+    sigt(1:ndt) = matmul(de(1:ndt,1:ndt), deps(1:ndt))
 ! =================================================================
     call r8inir(6, 0.d0, sigint, 1)
 !
-    call lcprmv(de, depsv, sigv)
+    sigv(1:ndt) = matmul(de(1:ndt,1:ndt), depsv(1:ndt))
 !
     do 20 i = 1, ndt
         sigint(i) = sigt(i) - sigv(i)
@@ -88,7 +87,7 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 ! =================================================================
 !
     call r8inir(6, 0.d0, degp, 1)
-    call lcprmv(de, gp, degp)
+    degp(1:ndt) = matmul(de(1:ndt,1:ndt), gp(1:ndt))
 !
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR DEGP----------------------------------

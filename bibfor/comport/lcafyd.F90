@@ -50,7 +50,6 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 #include "asterfort/lcgrla.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/Behaviour_type.h"
 #include "blas/daxpy.h"
@@ -122,7 +121,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
             endif
 ! Y contient H*(FeT.Fe-Id)/2, ce ne sont pas exactement les PK2
 ! Y contient ensuite les ns alpha_s ou gamma_s suivant la rela_comp
-            call lcprmv(hookf, epsegl, yd)
+            yd(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsegl(1:ndt))
         endif
 !
 !
@@ -158,7 +157,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
     else if (rela_comp .eq. 'HAYHURST') then
         call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
 !        DEFORMATION ELASTIQUE INSTANT PRECEDENT
-        call lcprmv(dkooh, sigd, yd)
+        yd(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
         dtot=1.d0/(1.d0-vind(11))
         call lcprsv(dtot, yd, yd)
 !

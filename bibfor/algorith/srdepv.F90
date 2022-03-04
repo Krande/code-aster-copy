@@ -35,7 +35,6 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
     implicit    none
 
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/r8inir.h"
 
     !!!
@@ -100,7 +99,7 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
             ddgamv(i)=0.d0
         end do
     else
-        call lcprmv(deviat, ddepsv, ddgamv)
+        ddgamv(1:ndt) = matmul(deviat(1:ndt,1:ndt), ddepsv(1:ndt))
         do i = 1, ndt
             ddgamv(i)=2.d0/3.d0*ddgamv(i)/dgamv
         end do

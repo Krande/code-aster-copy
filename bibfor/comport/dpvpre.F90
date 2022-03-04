@@ -32,7 +32,6 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/trace.h"
     integer :: iret, nvi, nbmat
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)
@@ -98,7 +97,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 ! =====================================================================
 !
 !
-    call lcprmv(hookf, deps, inte)
+    inte(1:ndt) = matmul(hookf(1:ndt,1:ndt), deps(1:ndt))
     sige(1:ndt) = sigm(1:ndt) + inte(1:ndt)
 !
     call lcdevi(sige, se)

@@ -32,7 +32,6 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 #include "asterfort/hujddd.h"
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, ndec, iret, indi(7), nbmeca, ni
     real(kind=8) :: di1d, i1d, n, pref, k0
@@ -202,7 +201,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 !
     endif
 !
-    call lcprmv(hooknl, deps, dsig)
+    dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), deps(1:ndt))
 !
 ! ====================================================================
 ! -------------- 2.2 CALCUL DE FIDSIG = DFDS*DSIG --------------------

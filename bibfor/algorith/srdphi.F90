@@ -39,7 +39,6 @@ subroutine srdphi(nbmat, mater, de, seuilv, dfdsv, dphi)
 
     implicit    none
 
-#include "asterfort/lcprmv.h"
 #include "asterfort/r8inir.h"
 
     !!!
@@ -90,7 +89,7 @@ subroutine srdphi(nbmat, mater, de, seuilv, dfdsv, dphi)
     !!!
 
     call r8inir(6, 0.d0, aa, 1)
-    call lcprmv(de, dfdsv, aa)
+    aa(1:ndt) = matmul(de(1:ndt,1:ndt), dfdsv(1:ndt))
 
     !!!
     !!! Calcul de dphi/deps

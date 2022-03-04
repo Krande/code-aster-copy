@@ -62,7 +62,6 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 #include "asterfort/hujpxd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
@@ -354,7 +353,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
     do i = 1, ndt
         depse(i) = deps(i) - depsp(i)
     enddo
-    call lcprmv(dhokds, depse, ctild)
+    ctild(1:ndt) = matmul(dhokds(1:ndt,1:ndt), depse(1:ndt))
 ! ------------ FIN I.1.
 ! ---> I.2. CALCUL DE CD2FDS = HOOK * DEPSDS
 !                     (6X6)    (6X6)  (6X6)
@@ -491,7 +490,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 !
         endif
 !
-        call lcprmv(hooknl, delta, dledr1)
+        dledr1(1:ndt) = matmul(hooknl(1:ndt,1:ndt), delta(1:ndt))
         do i = 1, ndt
             dledr(i,k) = dledr1(i) /abs(pref)
         enddo
@@ -518,7 +517,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 !
     do k = 1, nbmect
         kk = (k-1)*ndt+1
-        call lcprmv(hooknl, psi(kk), dlek)
+        dlek(1:ndt) = matmul(hooknl(1:ndt,1:ndt), psi(kk:kk-1+ndt))
         do i = 1, ndt
             dledla(i,k) = dlek(i) /ccond
         enddo
@@ -1040,7 +1039,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 ! ---- XVII.1. CALCUL DE CDE = C*DEPSE
 !                        6X1
 ! REMARQUE: ON A DEJA DEPSE CALCULE AU I.1.
-    call lcprmv(hooknl, depse, cde)
+    cde(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
     do i = 1, ndt
         le(i) = yf(i) - yd(i) - cde(i)
     enddo

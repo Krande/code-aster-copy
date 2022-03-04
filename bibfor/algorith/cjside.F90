@@ -42,7 +42,6 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 #include "asterfort/cos3t.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, codret
@@ -166,7 +165,7 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- ON CALCULE DE TOUTES FACONS UNE PREDICTION ELASTIQUE -------------
 ! ======================================================================
-    call lcprmv(hooknl, deps, dsig)
+    dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), deps(1:ndt))
     sige(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
     i1e = trace(ndi, sige)
     if ((i1e +qinit) .eq. zero) then
@@ -277,7 +276,7 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
     trdeps = trace(ndi,deps)
     di1dl = - trois*ke*trgd
     drdl = gr
-    call lcprmv(hooknl, gd, dqdl)
+    dqdl(1:ndt) = matmul(hooknl(1:ndt,1:ndt), gd(1:ndt))
     do 110 i = 1, ndt
         dqdl(i) = - dqdl(i) + ke*trgd*( kron(i) + trois*xd(i) ) - gx(i) * ( i1d + trois*ke*trdeps&
                   & )
@@ -330,7 +329,7 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- CALCUL INCREMENT DE CONTRAINTES  DSIG = HOOKNL.DEPSE -------------
 ! ======================================================================
-    call lcprmv(hooknl, depse, dsig)
+    dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
 ! ======================================================================
 ! --- CALCUL INCREMENT DE LA VARIABLE INTERNE R ------------------------
 ! ======================================================================

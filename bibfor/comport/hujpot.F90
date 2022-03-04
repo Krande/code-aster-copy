@@ -48,7 +48,6 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 #include "asterfort/hujmei.h"
 #include "asterfort/hujpxd.h"
 #include "asterfort/hujpxs.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, elas, jj, iret
     integer :: i, indi(7), j, mono(7), hist(4, 2)
@@ -200,7 +199,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 ! ====================================================================
 ! -------------- CALCUL DE DSIGMA = C*DEPSILON -----------------------
 ! ====================================================================
-    call lcprmv(hooknl, deps, dsig)
+    dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), deps(1:ndt))
 !
 !
 ! ====================================================================

@@ -53,7 +53,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 #include "asterfort/lcmmsg.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
 #include "asterfort/utmess.h"
@@ -96,7 +95,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
     else if (materf(nmat,1).eq.1) then
         call lcopil('ORTHOTRO', mod, materf(1, 1), dkooh)
     endif
-    call lcprmv(dkooh, sigd, epsed)
+    epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
     epstr(1:ndt) = epsed(1:ndt) + deps(1:ndt)
 !
     if (typess .eq. 0) then
@@ -125,7 +124,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
             call tnsvec(3, 3, fetfe, dy, 1.d0)
         else
             hook(1:ndt,1:ndt) = transpose(hook(1:ndt,1:ndt))
-            call lcprmv(hook, deps, dsig)
+            dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), deps(1:ndt))
             dy(1:ndt) = dsig(1:ndt)
         endif
 !

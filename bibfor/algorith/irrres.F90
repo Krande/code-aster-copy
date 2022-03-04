@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
     character(len=8) :: mod
     character(len=*) :: fami
@@ -101,8 +100,8 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
     else
         call lcprsv(1.5d0/seqf, dev, dfds)
     endif
-    call lcprmv(fkooh, sigf, epsef)
-    call lcprmv(dkooh, sigd, epsed)
+    epsef(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
+    epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
     call lcprsv((dp+dpi), dfds, depsa)
     call lcprsv(dg, id3d, depsg)
 !

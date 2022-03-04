@@ -61,7 +61,6 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
 #include "asterfort/lcmmlc.h"
 #include "asterfort/lcmmsg.h"
 #include "asterfort/lcopil.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -178,15 +177,15 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
             goto 999
         endif
         call lcgrla(fe, epsgl)
-        call lcprmv(fkooh, sigf, h1sigf)
+        h1sigf(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
         r(1:ndt) = epsgl(1:ndt) - h1sigf(1:ndt)
     else
         sigd(1:ndt) = yd(1:ndt)
-        call lcprmv(dkooh, sigd, epsed)
+        epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
         depse(1:ndt) = deps(1:ndt) - devi(1:ndt)
         epsef(1:ndt) = epsed(1:ndt) + depse(1:ndt)
 ! LA PREMIERE EQUATION EST  (HF-1)SIGF -(HD-1)SIGD -(DEPS-DEPSP)=0
-        call lcprmv(fkooh, sigf, h1sigf)
+        h1sigf(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
         r(1:ndt) = epsef(1:ndt) - h1sigf(1:ndt)
     endif
 !

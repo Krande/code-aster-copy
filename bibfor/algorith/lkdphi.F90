@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
                   dphi)
 !
     implicit    none
-#include "asterfort/lcprmv.h"
 #include "asterfort/r8inir.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), de(6, 6)
@@ -59,7 +58,7 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv,&
 ! =================================================================
     call r8inir(6, 0.d0, aa, 1)
 !
-    call lcprmv(de, dfdsv, aa)
+    aa(1:ndt) = matmul(de(1:ndt,1:ndt), dfdsv(1:ndt))
 !
 ! =================================================================
 ! --- CALCUL DE DPHI/DDEPS ------------------------------------

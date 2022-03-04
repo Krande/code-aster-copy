@@ -32,7 +32,6 @@ subroutine caltau(ifa, is, sigf, fkooh,&
 !     OUT  MUS   :  sym(MS * NS)
 !     OUT  MSNS  :  MS * NS
 !
-#include "asterfort/lcprmv.h"
 #include "asterfort/tnsvec.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
@@ -63,7 +62,7 @@ subroutine caltau(ifa, is, sigf, fkooh,&
 !
 !        CONTRAINTES PK2
 ! Y contient : SIGF=PK2 (sans les SQRT(2) !), puis les alpha_s
-        call lcprmv(fkooh, sigf, fetfe6)
+        fetfe6 = matmul(fkooh, sigf)
         call dscal(6, 2.d0, fetfe6, 1)
         call daxpy(6, 1.d0, id6, 1, fetfe6,&
                    1)

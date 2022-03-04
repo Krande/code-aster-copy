@@ -108,7 +108,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/hujres.h"
 #include "asterfort/hujtel.h"
 #include "asterfort/hujtid.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/utmess.h"
@@ -604,7 +603,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                    call hujtel(mod, materf, sigd, dsde)
                 endif
 ! debut ---new dvp 23/01/2019---
-                call lcprmv(dsde, deps0, dsig)
+                dsig(1:ndt) = matmul(dsde(1:ndt,1:ndt), deps0(1:ndt))
 !
 ! on limite la variation de dsig a 2% par rapport a piso
                 piso =trace(3,sigd0)

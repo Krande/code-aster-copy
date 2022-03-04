@@ -33,7 +33,6 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
 !     ----------------------------------------------------------------
 #include "asterfort/lcgrla.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/matinv.h"
 #include "blas/dcopy.h"
     character(len=8) :: mod
@@ -42,8 +41,9 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
     real(kind=8) :: hook(6, 6), sigi(6), fd(9), df(9), coefl(nmat)
     real(kind=8) :: vinf(*), fp(3, 3), fpm(3, 3), fe(3, 3), detp, f(3, 3)
     real(kind=8) :: epsgl(6)
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer :: irr, decirr, nbsyst, decal, gdef, ndi,ndt
     common/polycr/irr,decirr,nbsyst,decal,gdef
+    common /tdim/ ndt, ndi
 !     ----------------------------------------------------------------
 !
 !     PAS DE CONTRAINTES PLANES NI DE 1D. 3D = D_PLAN = AXIS
@@ -66,7 +66,7 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
             f = matmul(reshape(df, (/3, 3/)), reshape(fd, (/3, 3/)))
             fe = matmul(f,fpm)
             call lcgrla(fe, epsgl)
-            call lcprmv(hook, epsgl, sigi)
+            sigi(1:ndt) = matmul(hook(1:ndt,1:ndt), epsgl(1:ndt))
 !
         endif
     endif

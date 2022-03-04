@@ -24,7 +24,6 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/rcvarc.h"
 #include "blas/ddot.h"
@@ -92,7 +91,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !
         if (typess .eq. 1) then
             call lcopli('ISOTROPE', mod, materf(1, 1), hook)
-            call lcprmv(hook, deps, dy)
+            dy(1:ndt) = matmul(hook(1:ndt,1:ndt), deps(1:ndt))
         endif
 !
 !     SOLUTION EXPLICITE
@@ -137,7 +136,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
             vtmp1(1:ndt) = deps(1:ndt) - vtmp1(1:ndt)
             call lcprsv(dg, id3d, vtmp2)
             vtmp1(1:ndt) = vtmp1(1:ndt) - vtmp2(1:ndt)
-            call lcprmv(hook, vtmp1, vtmp1)
+            vtmp1(1:ndt) = matmul(hook(1:ndt,1:ndt), vtmp1(1:ndt))
             yy = dot_product(dfds(1:ndt), vtmp1(1:ndt))
 !
             if (p .lt. pk) then
@@ -147,7 +146,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
             else
                 zz = n*k*(p+p0)**(n-1.0d0)
             endif
-            call lcprmv(hook, dfds, vtmp1)
+            vtmp1(1:ndt) = matmul(hook(1:ndt,1:ndt), dfds(1:ndt))
             xx = dot_product(dfds(1:ndt), vtmp1(1:ndt))
 !
             xx=xx+zz
@@ -166,7 +165,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
         vtmp1(1:ndt) = deps(1:ndt) - vtmp1(1:ndt)
         call lcprsv(dg, id3d, vtmp2)
         vtmp1(1:ndt) = vtmp1(1:ndt) - vtmp2(1:ndt)
-        call lcprmv(hook, vtmp1, dsig)
+        dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), vtmp1(1:ndt))
 !        DY
         dy(1:ndt) = dsig(1:ndt)
         dy(ndt+1)=dp

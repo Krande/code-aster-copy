@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine lcelin(mod, nmat, materd, materf, deps,&
 ! ----------------------------------------------------------------
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
     integer :: nmat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: sigd(6), sigf(6)
@@ -58,7 +57,7 @@ subroutine lcelin(mod, nmat, materd, materf, deps,&
 !                                                        -1
 ! --  DEFORMATION ELASTIQUE A T ET T+DT : EPSEF = HOOKD  SIGD + DEPS
 !
-    call lcprmv(dkooh, sigd, epsed)
+    epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
     epsef(1:ndt) = epsed(1:ndt) + deps(1:ndt)
 !
 ! --  CONTRAINTES PLANES
@@ -75,6 +74,6 @@ subroutine lcelin(mod, nmat, materd, materf, deps,&
 !
 ! --  INTEGRATION ELASTIQUE : SIGF = HOOKF EPSEF (EPSEF MODIFIE EN CP)
 !
-    call lcprmv(hookf, epsef, sigf)
+    sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsef(1:ndt))
 !
 end subroutine

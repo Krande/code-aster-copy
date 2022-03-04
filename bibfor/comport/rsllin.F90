@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
 !       ----------------------------------------------------------------
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
     integer :: nmat
 !
@@ -65,7 +64,7 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
 ! --INTEGRATION ELASTIQUE : SIGF = SIGD+ RHO HOOKF DEPS
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
         call lcprsv(theta, deps, thde)
-        call lcprmv(hookf, thde, sigf)
+        sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), thde(1:ndt))
         call lcprsv(rho, sigf, sigf)
         sigf(1:ndt) = sigd(1:ndt) + sigf(1:ndt)
     else
@@ -75,9 +74,9 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
         call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
         ident(1:ndt,1:ndt) = matmul(dkooh(1:ndt,1:ndt), hookf(1:ndt,1:ndt))
-        call lcprmv(ident, sigd, sigf)
+        sigf(1:ndt) = matmul(ident(1:ndt,1:ndt), sigd(1:ndt))
         call lcprsv(theta, deps, thde)
-        call lcprmv(hookf, thde, dsig)
+        dsig(1:ndt) = matmul(hookf(1:ndt,1:ndt), thde(1:ndt))
         call lcprsv(rho, dsig, dsig)
         sigf(1:ndt) = sigf(1:ndt) + dsig(1:ndt)
     endif

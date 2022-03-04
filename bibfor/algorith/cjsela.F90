@@ -32,7 +32,6 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !       ---------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/cjsci1.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, iret
     real(kind=8) :: coef, e, nu, al, la, mu, hook(6, 6), i1
@@ -116,7 +115,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !
 !--->   INCREMENTATION DES CONTRAINTES  SIGF = SIGD + HOOK DEPS
 !
-    call lcprmv(hook, deps, dsig)
+    dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), deps(1:ndt))
     sigf(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
 !
 !

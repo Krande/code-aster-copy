@@ -46,7 +46,6 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/hujpxd.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: indi(7), nr, nvi, iret, nmat
@@ -310,7 +309,7 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
         depse(i) = deps(i) - depsp(i)
     end do
 !
-    call lcprmv(hooknl, depse, cde)
+    cde(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
 ! ====================================================================
 ! --- CALCUL DE LE (6) -----------------------------------------------
 ! ====================================================================

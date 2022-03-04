@@ -45,7 +45,6 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
 
     implicit   none
 
-#include "asterfort/lcprmv.h"
 #include "asterfort/srdepp.h"
 #include "asterfort/srdfdx.h"
 #include "asterfort/srdpdt.h"
@@ -76,9 +75,9 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
     !!! Cotnrainte intermediaire
     !!!
 
-    call lcprmv(de,deps,sigt)
+    sigt(1:ndt) = matmul(de(1:ndt,1:ndt), deps(1:ndt))
     call r8inir(6,0.d0,sigint,1)
-    call lcprmv(de,depsv,sigv)
+    sigv(1:ndt) = matmul(de(1:ndt,1:ndt), depsv(1:ndt))
 
     do i=1,ndt
         sigint(i)=sigt(i)-sigv(i)
@@ -96,7 +95,7 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
     !!!
 
     call r8inir(6,0.d0,degp,1)
-    call lcprmv(de,gp,degp)
+    degp(1:ndt) = matmul(de(1:ndt,1:ndt), gp(1:ndt))
 
     !!!
     !!! Produit (dfp/dsig):(de:gp)

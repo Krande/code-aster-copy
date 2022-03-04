@@ -37,7 +37,6 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
 
 #include "asterc/r8miem.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/srhtet.h"
 #include "asterfort/r8inir.h"
 
@@ -124,7 +123,7 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
 
     call r8inir(6,0.d0,ds2hds,1)
     bt(1:ndt,1:ndt) = transpose(b(1:ndt,1:ndt))
-    call lcprmv(bt,a,ds2hds)
+    ds2hds(1:ndt) = matmul(bt(1:ndt,1:ndt), a(1:ndt))
 
 1000  continue
 

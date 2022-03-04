@@ -22,7 +22,6 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
     implicit none
 #include "asterc/r8miem.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lkhtet.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
@@ -114,7 +113,7 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
     call r8inir(6, 0.d0, ds2hds, 1)
 !
     bt(1:ndt,1:ndt) = transpose(b(1:ndt,1:ndt))
-    call lcprmv(bt, a, ds2hds)
+    ds2hds(1:ndt) = matmul(bt(1:ndt,1:ndt), a(1:ndt))
 !
 ! =================================================================
 1000  continue

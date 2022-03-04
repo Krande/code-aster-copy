@@ -29,7 +29,6 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopil.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lglcov.h"
 #include "asterfort/lgldom.h"
 #include "asterfort/lglini.h"
@@ -121,7 +120,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
             sigf(ii) = invars / trois
 20      continue
         call lcopil('ISOTROPE', mod, mater(1, 1), dkooh)
-        call lcprmv(dkooh, sigf, epsf)
+        epsf(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigf(1:ndt))
         if (mod .eq. 'C_PLAN') then
             sigf(3) = 0.0d0
             epsf(3) = dkooh(3,1) * sigf(1) + dkooh(3,2) * sigf(2) + dkooh(3,4) * sigf(4)
@@ -197,7 +196,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                 sigf(ii) = sigf(ii) + i1/trois
 40          continue
             call lcopil('ISOTROPE', mod, mater(1, 1), dkooh)
-            call lcprmv(dkooh, sigf, epsf)
+            epsf(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigf(1:ndt))
             if (mod .eq. 'C_PLAN') then
                 sigf(3) = 0.0d0
                 epsf(3) = dkooh(3,1) * sigf(1) + dkooh(3,2) * sigf(2) + dkooh(3,4) * sigf(4)
@@ -257,7 +256,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
                         sigf(ii) = invars/trois
 60                  continue
                     call lcopil('ISOTROPE', mod, mater(1, 1), dkooh)
-                    call lcprmv(dkooh, sigf, epsf)
+                    epsf(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigf(1:ndt))
                     if (mod .eq. 'C_PLAN') then
                         sigf(3) = 0.0d0
                         epsf(3) = dkooh(3,1) * sigf(1) + dkooh(3,2) * sigf(2) + dkooh(3,4) * sigf&

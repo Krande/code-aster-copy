@@ -21,7 +21,6 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
 !
     implicit    none
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/r8inir.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), depsv(6), ddepsv(6)
@@ -101,7 +100,7 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
             ddgamv(i) = zero
 60      end do
     else
-        call lcprmv(deviat, ddepsv, ddgamv)
+        ddgamv(1:ndt) = matmul(deviat(1:ndt,1:ndt), ddepsv(1:ndt))
         do 70 i = 1, ndt
             ddgamv(i) = deux/trois*ddgamv(i)/dgamv
 70      end do

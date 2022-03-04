@@ -55,7 +55,6 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
@@ -211,7 +210,9 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! --- ON CALCULE DE TOUTES FACONS UNE PREDICTION ---------------------
 ! --- ELASTIQUE EN TANT QUE DE BESOIN --------------------------------
 ! ====================================================================
-    if (.not. loop) call lcprmv(hooknl, deps, dsig)
+    if (.not. loop) then
+       dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), deps(1:ndt))
+    end if
     ye(1:ndt) = yd(1:ndt) + dsig(1:ndt)
 !      LOOP = .FALSE.
 ! ====================================================================
@@ -221,7 +222,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 !     L'ETAT DE CONTRAINTES CONVERGES PRECEDENT
 ! ====================================================================
     if (loop) then
-        call lcprmv(hooknl, deps, dsigt)
+        dsigt(1:ndt) = matmul(hooknl(1:ndt,1:ndt), deps(1:ndt))
     else
         dsigt(1:ndt) = dsig(1:ndt)
     endif
@@ -717,7 +718,9 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! ====================================================================
 ! --- CALCUL INCREMENT DE CONTRAINTES  DSIG = HOOKNL-.DEPSE ----------
 ! ====================================================================
-    if (.not. loop) call lcprmv(hooknl, depse, dsig)
+    if (.not. loop) then
+       dsig(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
+    end if
     ye(1:ndt) = yd(1:ndt) + dsig(1:ndt)
 !
     maxi = un

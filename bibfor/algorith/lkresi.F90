@@ -40,7 +40,6 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
 !       OUT R      :  SYSTEME NL A T+DT
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lkbpri.h"
 #include "asterfort/lkcalg.h"
 #include "asterfort/lkcaln.h"
@@ -198,7 +197,7 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
             depse(i) = depst(i)-depsv(i)-yf(ndt+1)*gp(i)
         end do
 !
-        call lcprmv(dsdenl, depse, dsige)
+        dsige(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), depse(1:ndt))
 !
         do i = 1, ndt
             r(i) = dsige(i)+sigdt(i)-sigft(i)
@@ -208,7 +207,7 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
             depse(i) = depst(i)-depsv(i)
         end do
 !
-        call lcprmv(dsdenl, depse, dsige)
+        dsige(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), depse(1:ndt))
 !
         do i = 1, ndt
             r(i) = dsige(i)+sigdt(i)-sigft(i)

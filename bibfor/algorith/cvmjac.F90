@@ -66,7 +66,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/lcicma.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
     integer :: ndt, ndi, nmat, nmod
@@ -211,7 +210,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     if (seuil .lt. 0.d0) then
         dgdp(:) = 0.d0
     else
-        call lcprmv(hook, dfds, dgdp)
+        dgdp(1:ndt) = matmul(hook(1:ndt,1:ndt), dfds(1:ndt))
     endif
 !
 ! - DGDR(T+DT)
@@ -233,7 +232,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         zz = 1.d0 + dp * g10 * ccin * d1 + dt * gx1 * jx1**(m1-1.d0)
         ww = gx1 * dt * (m1-1.d0) * jx1**(m1-3.d0) * 3.d0/2.d0
     endif
-    call lcprmv(ddfdds, x1, vtmp)
+    vtmp(1:ndt) = matmul(ddfdds(1:ndt,1:ndt), x1(1:ndt))
     call lcprte(vtmp, dfds, mtmp)
     x1df = dot_product(x1(1:ndt), dfds(1:ndt))
     mtmp1(1:ndt,1:ndt) = x1df * ddfdds(1:ndt,1:ndt)
@@ -243,7 +242,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     dlds(1:ndt,1:ndt) = dlds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DLDX1(T+DT)
-    call lcprmv(ddfdsx, x1, vtmp)
+    vtmp(1:ndt) = matmul(ddfdsx(1:ndt,1:ndt), x1(1:ndt))
     call lcprte(vtmp, dfds, mtmp1)
     mtmp(1:ndt,1:ndt) = x1df * ddfdsx(1:ndt,1:ndt)
     mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
@@ -301,7 +300,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         zz = 1.d0 + dp * g20 * ccin * d2 + dt * gx2 * jx2**(m2-1.d0)
         ww = gx2 * dt * (m2-1.d0) * jx2**(m2-3.d0) * 3.d0/2.d0
     endif
-    call lcprmv(ddfdds, x2, vtmp)
+    vtmp(1:ndt) = matmul(ddfdds(1:ndt,1:ndt), x2(1:ndt))
     call lcprte(vtmp, dfds, mtmp)
     x2df = dot_product(x2(1:ndt), dfds(1:ndt))
     mtmp1(1:ndt,1:ndt) = x2df * ddfdds(1:ndt,1:ndt)
@@ -311,7 +310,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     djds(1:ndt,1:ndt) = djds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DJDX2(T+DT)
-    call lcprmv(ddfdsx, x2, vtmp)
+    vtmp(1:ndt) = matmul(ddfdsx(1:ndt,1:ndt), x2(1:ndt))
     call lcprte(vtmp, dfds, mtmp1)
     mtmp(1:ndt,1:ndt) = x2df * ddfdsx(1:ndt,1:ndt)
     mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
@@ -413,7 +412,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     if (mod(1:6) .eq. 'C_PLAN') then
 !
 ! - DGDE3(T+DT)
-        call lcprmv(hook, dede3, dgde3)
+        dgde3(1:ndt) = matmul(hook(1:ndt,1:ndt), dede3(1:ndt))
 !
 ! - DLDE3(T+DT)
         dlde3(:) = 0.d0
@@ -669,7 +668,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 ! ---- EPSP
         call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
-        call lcprmv(fkooh, sig, vtmp)
+        vtmp(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sig(1:ndt))
         epsp(1:ndt) = epsd(1:ndt) + deps(1:ndt)
         epsp(1:ndt) = epsp(1:ndt) - vtmp(1:ndt)
 ! ---- JEPXI
@@ -705,10 +704,10 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 ! - DTDS(T+DT)
 !
-            call lcprmv(ddfdds, vtmp1, dtds)
+            dtds(1:ndt) = matmul(ddfdds(1:ndt,1:ndt), vtmp1(1:ndt))
 !
 ! - DTDX1(T+DT)
-            call lcprmv(ddfdsx, vtmp1, dtdx1)
+            dtdx1(1:ndt) = matmul(ddfdsx(1:ndt,1:ndt), vtmp1(1:ndt))
 !
 ! - DTDX2(T+DT)
             dtdx2(1:ndt) = dtdx1(1:ndt)
@@ -731,13 +730,13 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             call lcprsv(-zz*dp, epxi, vtmp)
             call lcprsv(-xx*dp, dfds, vtmp1)
             vtmp(1:ndt) = vtmp(1:ndt) + vtmp1(1:ndt)
-            call lcprmv(ddfdds, vtmp, vtmp1)
+            vtmp1(1:ndt) = matmul(ddfdds(1:ndt,1:ndt), vtmp(1:ndt))
             call lcprte(vtmp1, epxi, mtmp)
             mtmp1(1:ndt,1:ndt) = (-xx*dp*nnet) * ddfdds(1:ndt,1:ndt)
             dxids(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
 !
 ! - DXIDX1(T+DT)
-            call lcprmv(ddfdsx, vtmp, vtmp1)
+            vtmp1(1:ndt) = matmul(ddfdsx(1:ndt,1:ndt), vtmp(1:ndt))
             call lcprte(vtmp1, epxi, mtmp)
             mtmp1(1:ndt,1:ndt) = (-xx*dp*nnet) * ddfdsx(1:ndt,1:ndt)
             dxidx1(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)

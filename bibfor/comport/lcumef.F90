@@ -22,7 +22,6 @@ subroutine lcumef(rela_plas, dep, depm, an, bn,&
 !
 implicit none
 !
-#include "asterfort/lcprmv.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
 !
@@ -141,13 +140,13 @@ implicit none
             depsr(i) = kron(i)*(epsrp-epsrm)
         end do
 ! --- CALCUL DE BN:SIGI = BNSIGI -> TENSEUR ORDRE 2
-        call lcprmv(bn, sigi, bnsigi)
+        bnsigi(1:ndt) = matmul(bn(1:ndt,1:ndt), sigi(1:ndt))
 ! --- CALCUL DE SIGT
         do i = 1, nstrs
             depsc(i) = depsi(i)-an(i)-bnsigi(i)-depsr(i)
         end do
 ! --- PRODUIT MATRICE*VECTEUR : (E(T+))*DEPSC
-        call lcprmv(dep, depsc, epsm2)
+        epsm2(1:ndt) = matmul(dep(1:ndt,1:ndt), depsc(1:ndt))
 !
 ! --- PRODUIT MATRICE*VECTEUR : (E(T+))*(E(T-))^(-1)*SIGI
         do i = 1, nstrs
@@ -164,12 +163,12 @@ implicit none
 !
         temp(1:ndt,1:ndt) = matmul(temp2(1:ndt,1:ndt), dep(1:ndt,1:ndt))
 !
-        call lcprmv(temp, sigi, rtemp)
+        rtemp(1:ndt) = matmul(temp(1:ndt,1:ndt), sigi(1:ndt))
 !
         do i = 1, nstrs
             epsm2(i) = epsm2(i) + rtemp(i)
         end do
-        call lcprmv(temp3, epsm2, sigt)
+        sigt(1:ndt) = matmul(temp3(1:ndt,1:ndt), epsm2(1:ndt))
     endif
 !
 end subroutine

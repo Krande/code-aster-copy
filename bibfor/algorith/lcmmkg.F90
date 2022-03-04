@@ -21,7 +21,6 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
     implicit none
 !
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/matinv.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
@@ -136,7 +135,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
 !
 !      CONTRAINTES PK2
     call tnsvec(3, 3, fetfe, eel, 1.d0)
-    call lcprmv(hooke, eel, s6)
+    s6(1:ndt) = matmul(hooke(1:ndt,1:ndt), eel(1:ndt))
     call tnsvec(6, 3, s, s6, 1.d0)
 !
 ! CALCUL DE DTAU/DF EN UTILISANT LES SYMETRIES

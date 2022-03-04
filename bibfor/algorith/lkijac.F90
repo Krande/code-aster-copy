@@ -43,7 +43,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkbpri.h"
@@ -264,7 +263,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         hook(i,i) = hook(i,i) + deux*mue
     end do
 ! --- INCREMENT CONTRAINTE "ELASTIQUE"
-    call lcprmv(hook, depse, dsige)
+    dsige(1:ndt) = matmul(hook(1:ndt,1:ndt), depse(1:ndt))
 ! --- PRODUIT TENSORIEL DSIGE X VECTEUR(IDENTITE) (=1 1 1 0 0 0)
     patm = materf(1,2)
     nelas = materf(2,2)
@@ -296,7 +295,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- PRODUIT MATRICIEL HOOK_NL*DPHIV/DSIG*GV
     dphiv = av*nv/patm*(seuilv/patm)**(nv-un)
     call lcprsv(dphiv, dfvdsi, dphvds)
-    call lcprmv(dsdenl, gv, hnlgv)
+    hnlgv(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), gv(1:ndt))
     call lcprte(hnlgv, dphvds, hnldfg)
 ! --- ASSEMBLAGE FINAL
     do i = 1, ndt
@@ -312,7 +311,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
             drdy(i,ndt+1) = zero
         end do
     else
-        call lcprmv(dsdenl, gp, vetemp)
+        vetemp(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), gp(1:ndt))
         do i = 1, ndt
             drdy(i,ndt+1) = vetemp(i)/mu
         end do
@@ -329,7 +328,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         dgpdxi(i) = dfsdxp(i)-term1*vecnp(i)-term2*vecnp(i) -term3* dndxip(i)
     end do
 ! --- ASSEMBLAGE FINAL --- DR1DY3 = DSDENL*DLAMBD*DGPDXI
-    call lcprmv(dsdenl, dgpdxi, dr1dy3)
+    dr1dy3(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dgpdxi(1:ndt))
     call lcprsv(dlambd, dr1dy3, dr1dy4)
     do i = 1, ndt
         drdy(i,ndt+2) = dr1dy4(i)/mu
@@ -362,7 +361,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         call lcprsv(dphidx, gv, dphdxg)
         call lcprsv(phiv, dgvdxi, phdgdx)
         vetemp(1:ndt) = dphdxg(1:ndt) + phdgdx(1:ndt)
-        call lcprmv(dsdenl, vetemp, dr1dy4)
+        dr1dy4(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), vetemp(1:ndt))
         do i = 1, ndt
             drdy(i,ndt+3)= dr1dy4(i)/mu*dt
         end do
@@ -473,7 +472,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- III.3 CALCUL DE DR3DY3 -> Y3 = XIP
 ! ------------------------------------------------------------------
-    call lcprmv(dsdsig, dgpdxi, dgtpdx)
+    dgtpdx(1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgpdxi(1:ndt))
     dgipdx = dot_product(devgp(1:ndt), dgtpdx(1:ndt))
     if (vinf(7) .gt. zero) then
         drdy(ndt+2,ndt+2)= un - dlambd*sqrt(deux/trois) *dgipdx/&
@@ -485,7 +484,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- III.4 CALCUL DE DR3DY4 -> Y4 = XIVP
 ! ------------------------------------------------------------------
 ! --- TEST POUR SAVOIR SI ON EST EN BUTEE SUR XIVP
-    call lcprmv(dsdsig, dgvdxi, dgtvdx)
+    dgtvdx(1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgvdxi(1:ndt))
     dgivdx = dot_product(devgv(1:ndt), dgtvdx(1:ndt))
     if (abs(dxiv-dgamv) .lt. r8prem()) then
         drdy(ndt+2,ndt+3)= -(dphidx*devgiv+phiv*dgivdx/devgiv)&

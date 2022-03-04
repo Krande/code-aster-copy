@@ -33,7 +33,6 @@ implicit none
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcopil.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
@@ -241,7 +240,7 @@ character(len=8) :: typmod(*)
             enddo
         enddo
         call lcopil('ISOTROPE', elem_model, materd, kooh)
-        call lcprmv(kooh, espi_creep, epsfld)
+        epsfld(1:ndt) = matmul(kooh(1:ndt,1:ndt), espi_creep(1:ndt))
 !
 ! ----- Creep strains - At end of step
 !
@@ -252,7 +251,7 @@ character(len=8) :: typmod(*)
             enddo
         enddo
         call lcopil('ISOTROPE', elem_model, materf, kooh)
-        call lcprmv(kooh, espi_creep, epsflf)
+        epsflf(1:ndt) = matmul(kooh(1:ndt,1:ndt), espi_creep(1:ndt))
 !
 ! ----- Creep strain increment
 !
@@ -321,9 +320,9 @@ character(len=8) :: typmod(*)
 ! ----- Elastic strain increment
 !
         call lcopil('ISOTROPE', elem_model, materd, kooh)
-        call lcprmv(kooh, sigd, epseld)
+        epseld(1:ndt) = matmul(kooh(1:ndt,1:ndt), sigd(1:ndt))
         call lcopil('ISOTROPE', elem_model, materf, kooh)
-        call lcprmv(kooh, sigf, epself)
+        epself(1:ndt) = matmul(kooh(1:ndt,1:ndt), sigf(1:ndt))
         do k = 1, ndt_local
             depsel(k) = epself(k) - epseld(k)
         enddo

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,6 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 #include "asterfort/lcmmsg.h"
 #include "asterfort/lcnrte.h"
 #include "asterfort/lcopil.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/pk2sig.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
@@ -126,7 +125,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
         else if (materf(nmat).eq.1) then
             call lcopil('ORTHOTRO', mod, materf(1), fkooh)
         endif
-        call lcprmv(fkooh, sigf, fetfe6)
+        fetfe6(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
         call dscal(6, 2.d0, fetfe6, 1)
         call daxpy(6, 1.d0, id6, 1, fetfe6,&
                    1)

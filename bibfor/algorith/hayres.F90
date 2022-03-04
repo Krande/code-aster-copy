@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
 #include "asterc/r8prem.h"
 #include "asterfort/fgequi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "blas/dscal.h"
     character(len=8) :: mod
@@ -104,7 +103,7 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
 !----------------------------------------------------------------
     dtot=(1.d0-dmg)
     call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
-    call lcprmv(hookf, epsef, sigf)
+    sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsef(1:ndt))
     call lcprsv(dtot, sigf, sigf)
 !
 !------------CALCUL DES INVARIANTS DE CONTRAINTE  -------

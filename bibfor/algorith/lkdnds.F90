@@ -34,7 +34,6 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !
 !     OUT DNDISG :  DERIVEE DE N PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkdbds.h"
@@ -108,7 +107,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
     call lcprte(devsig, dbdsig, devbds)
 !
 ! --- CALCUL DE DEVSIG*DSII/DSIGMA
-    call lcprmv(dsdsig, dsiids, dsidsi)
+    dsidsi(1:ndt, 1) = matmul(dsdsig(1:ndt,1:ndt), dsiids(1:ndt, 1))
     call lcprte(devsig, dsidsi, sdsids)
 !
 ! --- PRODUIT TENSORIEL DE KRON*DBPRIME/DSIGMA

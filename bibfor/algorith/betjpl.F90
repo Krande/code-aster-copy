@@ -41,7 +41,6 @@ implicit none
 #include "asterfort/betfpp.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/tecael.h"
@@ -152,8 +151,8 @@ implicit none
 ! --- MATRICE DE COMPORTEMENT TANGENT
 !
     if (nseuil .eq. 3 .or. nseuil .eq. 33) then
-        call lcprmv(hook, dfcds, hdfcds)
-        call lcprmv(hook, dftds, hdftds)
+        hdfcds(1:ndt) = matmul(hook(1:ndt,1:ndt), dfcds(1:ndt))
+        hdftds(1:ndt) = matmul(hook(1:ndt,1:ndt), dftds(1:ndt))
         cc = dot_product(dfcds(1:ndt), hdfcds(1:ndt))
         tc = dot_product(dftds(1:ndt), hdfcds(1:ndt))
         ct = dot_product(dfcds(1:ndt), hdftds(1:ndt))
@@ -176,7 +175,7 @@ implicit none
     endif
 !
     if (nseuil .eq. 2 .or. nseuil .eq. 22) then
-        call lcprmv(hook, dftds, hdftds)
+        hdftds(1:ndt) = matmul(hook(1:ndt,1:ndt), dftds(1:ndt))
         tt = dot_product(dftds(1:ndt), hdftds(1:ndt))
         ttt = tt + dftdlt
         discr = -un / ttt
@@ -186,7 +185,7 @@ implicit none
     endif
 !
     if (nseuil .eq. 1 .or. nseuil .eq. 11) then
-        call lcprmv(hook, dfcds, hdfcds)
+        hdfcds(1:ndt) = matmul(hook(1:ndt,1:ndt), dfcds(1:ndt))
         cc = dot_product(dfcds(1:ndt), hdfcds(1:ndt))
         ccc = cc + dfcdlc
         discr = -un / ccc

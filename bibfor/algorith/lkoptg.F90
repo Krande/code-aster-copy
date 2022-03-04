@@ -22,7 +22,6 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
                   depsv, dside, retcom)
 !
     implicit   none
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkbpri.h"
 #include "asterfort/lkcalg.h"
@@ -159,7 +158,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
     call lkdphi(nbmat, mater, de, seuilv, dfdsve,&
                 dphi)
 !
-    call lcprmv(de, gv, degv)
+    degv(1:ndt) = matmul(de(1:ndt,1:ndt), gv(1:ndt))
 !
     call lcprte(degv, dphi, dphigv)
 !
@@ -173,7 +172,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! --- PRODUIT DE DF/DSIG PAR AA -----------------------------------
 ! =================================================================
     aat(1:ndt,1:ndt) = transpose(aa(1:ndt,1:ndt))
-    call lcprmv(aat, dfdsp, nume)
+    nume(1:ndt) = matmul(aat(1:ndt,1:ndt), dfdsp(1:ndt))
 !
 ! =================================================================
 ! --- RECUPERATION DE DF/DXIP -------------------------------------
@@ -184,7 +183,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! --- PRODUIT DE DE PAR G -----------------------------------------
 ! =================================================================
     call r8inir(6, 0.d0, degp, 1)
-    call lcprmv(de, gp, degp)
+    degp(1:ndt) = matmul(de(1:ndt,1:ndt), gp(1:ndt))
 !
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR DEGP----------------------------------
@@ -208,7 +207,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 !
     cc(1:ndt,1:ndt) = matmul(dvds(1:ndt,1:ndt), de(1:ndt,1:ndt))
     cct(1:ndt,1:ndt) = transpose(cc(1:ndt,1:ndt))
-    call lcprmv(cct, ddgamv, dd)
+    dd(1:ndt) = matmul(cct(1:ndt,1:ndt), ddgamv(1:ndt))
 ! =================================================================
 ! --- CALCUL DE DLAM ----------------------------------------------
 ! =================================================================

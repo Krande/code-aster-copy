@@ -24,7 +24,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/trace.h"
@@ -185,7 +184,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 !
         scal1 = trois/deux/seq
 !
-        call lcprmv(dsdsig, s, dqdsig)
+        dqdsig(1:ndt) = matmul(dsdsig(1:ndt,1:ndt), s(1:ndt))
         call lcprsv(scal1, dqdsig, dqdsig)
 ! =====================================================================
 ! --- CALCUL DE ALPHA * DI1/ DSIG -------------------------------------
@@ -243,7 +242,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- CALCUL DE d deltap/dEPS -----------------------------------------
 ! =====================================================================
-        call lcprmv(dsede, dpdsig, dpdeps)
+        dpdeps(1:ndt) = matmul(dsede(1:ndt,1:ndt), dpdsig(1:ndt))
 ! =====================================================================
 ! --- CALCUL DE 3GDT/SEQ *se * deltap/dEPS ----------------------------
 ! =====================================================================

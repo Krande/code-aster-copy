@@ -43,7 +43,6 @@ subroutine hujpre(fami, kpg, ksp, etat, mod,&
 #include "asterfort/hujela.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/hujtid.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
     integer :: ndt, ndi, imat, iret, iadzi, iazk24, i, kpg, ksp
@@ -77,7 +76,7 @@ subroutine hujpre(fami, kpg, ksp, etat, mod,&
         call hujtid(fami, kpg, ksp, mod, imat,&
                     sigd, vind, dsde, iret)
         if (iret .eq. 0) then
-            call lcprmv(dsde, deps, dsig)
+            dsig(1:ndt) = matmul(dsde(1:ndt,1:ndt), deps(1:ndt))
             sigf(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
             i1 =d13*trace(ndi,sigf)
         else

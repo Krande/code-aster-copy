@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine calsig(fami, kpg, ksp, ein, mod,&
 implicit none
 !
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/rcvarc.h"
 !
 !     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
@@ -128,6 +127,6 @@ implicit none
         eel(4) = epsd(4)+detot(4)*xsdt-ein(4)
         eel(5) = epsd(5)+detot(5)*xsdt-ein(5)
         eel(6) = epsd(6)+detot(6)*xsdt-ein(6)
-        call lcprmv(hook, eel, sigi)
+        sigi = matmul(hook, eel)
     endif
 end subroutine

@@ -30,7 +30,6 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/majsig.h"
 #include "asterfort/redpna.h"
 #include "asterfort/resdp2.h"
@@ -95,12 +94,12 @@ subroutine lcdppa(mod, nvi, option, materf, compor,&
 ! =====================================================================
     call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
     call lcopil('ISOTROPE', mod, materf(1, 1), dkooh)
-    call lcprmv(dkooh, sigm, epsm2)
+    epsm2(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigm(1:ndt))
     epsp(1:ndt) = epsm2(1:ndt) + deps(1:ndt)
 ! =====================================================================
 ! --- INTEGRATION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
 ! =====================================================================
-    call lcprmv(hookf, epsp, sige)
+    sige(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsp(1:ndt))
     call lcdevi(sige, se)
     siie=ddot(ndt,se,1,se,1)
     seq = sqrt (trois*siie/deux)

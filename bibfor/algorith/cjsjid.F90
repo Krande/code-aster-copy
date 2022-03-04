@@ -54,7 +54,6 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nmod, i, j, k, codret
@@ -648,7 +647,7 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
     do i = 1, ndt
        depse(i) = deps(i) + dlambi/trois*kron(i) - dlambd*gd(i)
     end do
-    call lcprmv(hooknl, depse, dsignl)
+    dsignl(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
     do i = 1, ndt
        le(i) = yf(i) - yd(i) - dsignl(i)
     end do
@@ -656,7 +655,7 @@ subroutine cjsjid(mod, mater, epsd, deps, yd,&
 ! --- DERIVEE DE LA LOI D ETAT -----------------------------------------
 ! ======================================================================
     coef16 = n/trois/pa * (trois*pa/(i1f+qinit))**(un-n)
-    call lcprmv(hook, depse, dsigl)
+    dsigl(1:ndt) = matmul(hook(1:ndt,1:ndt), depse(1:ndt))
     dleds(:,:) = zero
     do i = 1, ndt
        do j = 1, ndt

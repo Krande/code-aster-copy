@@ -42,7 +42,6 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 #include "asterc/r8prem.h"
 #include "asterfort/fgequi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/r8inir.h"
@@ -131,7 +130,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
        epsef(itens)=yd(itens)+theta*dy(itens)
     end do
     call lcopli('ISOTROPE', mod, coefel, hookf)
-    call lcprmv(hookf, epsef, sigf)
+    sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsef(1:ndt))
     call lcprsv(dm1, sigf, sigf)
 !
     call dscal(3, 1.d0/sqrt(2.d0), sigf(4), 1)

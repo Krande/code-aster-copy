@@ -39,7 +39,6 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
 
     implicit   none
 
-#include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srdbds.h"
@@ -124,7 +123,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     call lcprte(devsig, dbdsig, devbds)
 
     !!! s x d(sii)/d(sigma)
-    call lcprmv(dsdsig, dsiids, dsidsi)
+    dsidsi(1:ndt,1) = matmul(dsdsig(1:ndt,1:ndt), dsiids(1:ndt,1))
     call lcprte(devsig, dsidsi, sdsids)
 
     !!! kron x d(beta')/d(sigma)

@@ -52,7 +52,6 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
   integer :: ndt, ndi, nmod, i, j, k, codret
@@ -638,7 +637,7 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
      depse(i) = deps(i) - dlambd*gd(i)
   end do
 !
-  call lcprmv(hooknl, depse, dsignl)
+  dsignl(1:ndt) = matmul(hooknl(1:ndt,1:ndt), depse(1:ndt))
 !
   do  i = 1, ndt
      le(i) = yf(i) - yd(i) - dsignl(i)
@@ -647,7 +646,7 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 ! --- DERIVEE DE LA LOI D ETAT -----------------------------------------
 ! ======================================================================
   coef16 = n/trois/pa * (trois*pa/(i1f+qinit))**(un-n)
-  call lcprmv(hook, depse, dsigl)
+  dsigl(1:ndt) = matmul(hook(1:ndt,1:ndt), depse(1:ndt))
 !
   dleds(:,:) = zero
 !
@@ -669,7 +668,7 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
      end do
      dledr(i) = dlambd * terme3
   end do
-  call lcprmv(hooknl, gd, dledl)
+  dledl(1:ndt) = matmul(hooknl(1:ndt,1:ndt), gd(1:ndt))
 ! ======================================================================
 ! - LOI D ECROUISSAGE DE R : LCR ---------------------------------------
 ! - ET DERIVEE DE LA LOI D ECROUISSAGE DE R: DLRDS, DLRDR, DLRDX, DLRDL-

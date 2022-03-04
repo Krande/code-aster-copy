@@ -26,7 +26,6 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/lkcrip.h"
 #include "asterfort/lkcriv.h"
 #include "asterfort/Behaviour_type.h"
@@ -455,7 +454,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !
             vecd(1:ndt) = depsth(1:ndt) - irrev(1:ndt)
 !
-            call lcprmv(de, vecd, dsig)
+            dsig(1:ndt) = matmul(de(1:ndt,1:ndt), vecd(1:ndt))
 !
             do i = 1, ndt
                 sigpl(i) = sigml(i) + dsig(i)

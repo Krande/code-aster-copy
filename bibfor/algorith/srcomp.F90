@@ -61,7 +61,6 @@ subroutine srcomp(mod, imate, instam, instap, &
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmv.h"
 #include "asterfort/srcrip.h"
 #include "asterfort/srcriv.h"
 #include "asterfort/srdgde.h"
@@ -355,7 +354,7 @@ subroutine srcomp(mod, imate, instam, instap, &
             !!! maj des contraintes
             irrev(1:ndt) = depsv(1:ndt) + depsp(1:ndt)
             vecd(1:ndt) = depsth(1:ndt) - irrev(1:ndt)
-            call lcprmv(de,vecd,dsig)
+            dsig(1:ndt) = matmul(de(1:ndt,1:ndt), vecd(1:ndt))
 
             do i=1,ndt
                 sigpl(i)=sigml(i)+dsig(i)
@@ -398,7 +397,7 @@ subroutine srcomp(mod, imate, instam, instap, &
             !!!maj des contraintes
             irrev(1:ndt) = depsv(1:ndt) + depsp(1:ndt)
             vecd(1:ndt) = depsth(1:ndt) - irrev(1:ndt)
-            call lcprmv(de,vecd,dsig)
+            dsig(1:ndt) = matmul(de(1:ndt,1:ndt), vecd(1:ndt))
 
             do i=1,ndt
                 sigpl(i)=sigml(i)+dsig(i)
