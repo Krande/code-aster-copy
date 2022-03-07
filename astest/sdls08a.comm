@@ -385,10 +385,10 @@ IMPR_GENE(UNITE=39,
 
 TEST_FICHIER(FICHIER="fort.39",
              NB_VALE_I=3511,
-             VALE_CALC_I=100452,
+             VALE_CALC_I=103937,
              NB_VALE=2250,
              VALE_CALC=1.88787191129,
-             VALE_CALC_K="01a99e69f931e81aebbaf08eb681a5aa",
+             VALE_CALC_K="bfbccd403170a43d8fdabe3ff7536d7b",
              EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
 )
 

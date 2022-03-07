@@ -120,7 +120,7 @@ test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.appendElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
-matrAsse.build()
+matrAsse.assemble()
 
 x = matrAsse.EXTR_MATR(sparse=True)
 test.assertTrue('numpy' in str(type(x[0])))

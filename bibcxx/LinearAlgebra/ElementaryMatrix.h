@@ -27,167 +27,7 @@
 #include "astercxx.h"
 
 #include "DataFields/ElementaryTerm.h"
-#include "DataStructures/DataStructure.h"
-#include "Discretization/ElementaryCharacteristics.h"
-#include "Discretization/ElementaryCompute.h"
-#include "Loads/MechanicalLoad.h"
-#include "Loads/PhysicalQuantity.h"
-#include "Materials/MaterialField.h"
-#include "MemoryManager/JeveuxVector.h"
-#include "Modeling/FiniteElementDescriptor.h"
-#include "Modeling/Model.h"
-#include "Supervis/ResultNaming.h"
-
-/**
- * @class BaseElementaryMatrix
- * @brief Generic class for sd_matr_elem
- */
-class BaseElementaryMatrix : public DataStructure {
-  protected:
-    /** @brief Option to compute */
-    std::string _option;
-
-    /** @brief Flag for empty datastructure */
-    bool _isEmpty;
-
-    /** @brief Model */
-    ModelPtr _model;
-
-    /** @brief Field of material parameters */
-    MaterialFieldPtr _materialField;
-
-    /** @brief Elementary characteristics */
-    ElementaryCharacteristicsPtr _elemChara;
-
-    /** @brief Vectors of FiniteElementDescriptor */
-    std::vector< FiniteElementDescriptorPtr > _FEDVector;
-    std::set< std::string > _FEDNames;
-
-    /** @brief Elementary compute */
-    ElementaryComputePtr _elemComp;
-
-    /**
-     * @brief Set the option
-     * @param currOption option
-     */
-    void setOption( const std::string option ) { _option = option; };
-
-  public:
-    /** @brief Constructor with a name */
-    BaseElementaryMatrix( const std::string name, const std::string type = "MATR_ELEM" )
-        : DataStructure( name, 19, type ),
-          _isEmpty( true ),
-          _model( nullptr ),
-          _materialField( nullptr ),
-          _elemChara( nullptr ),
-          _elemComp( nullptr ),
-          _option( " " ){};
-
-    /** @brief Constructor with automatic name */
-    BaseElementaryMatrix( const std::string type = "MATR_ELEM" )
-        : BaseElementaryMatrix( ResultNaming::getNewResultName(), type ){};
-
-    /**
-     * @brief Add a FiniteElementDescriptor to elementary matrix
-     * @param FiniteElementDescriptorPtr FiniteElementDescriptor
-     */
-    bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &modelFED ) {
-        const auto name = trim( modelFED->getName() );
-        if ( _FEDNames.find( name ) == _FEDNames.end() ) {
-            _FEDVector.push_back( _model->getFiniteElementDescriptor() );
-            _FEDNames.insert( name );
-            return true;
-        }
-        return false;
-    };
-
-    /**
-     * @brief Get all FiniteElementDescriptors
-     * @return vector of all FiniteElementDescriptors
-     */
-    std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() { return _FEDVector; };
-
-    /** @brief Get the field of material parameters */
-    MaterialFieldPtr getMaterialField() const {
-        if ( _materialField == nullptr )
-            throw std::runtime_error( "MaterialField is not set" );
-        return _materialField;
-    };
-
-    /** @brief Get the model */
-    ModelPtr getModel() const { return _model; };
-
-    /** @brief Get the mesh */
-    BaseMeshPtr getMesh( void ) const;
-
-    /** @brief Get option */
-    std::string getOption() const { return _option; };
-
-    /**
-     * @brief Detect state of datastructure
-     * @return true if empty datastructure
-     */
-    bool isEmpty() { return _isEmpty; };
-
-    /**
-     * @brief Set state of datastructure
-     * @param bEmpty flag for state of datastructure
-     */
-    void isEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
-
-    /**
-     * @brief Set the field of material parameters
-     * @param currMaterialField pointer to material field
-     */
-    void setMaterialField( const MaterialFieldPtr &currMaterialField ) {
-        _materialField = currMaterialField;
-    };
-
-    /**
-     * @brief Set elementary characteristics
-     * @param currElemChara pointer to elementary characteristics
-     */
-    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &currElemChara ) {
-        _elemChara = currElemChara;
-    };
-
-    /**
-     * @brief Set the model
-     * @param currModel pointer to model
-     */
-    void setModel( const ModelPtr &currModel ) {
-        _model = currModel;
-        auto modelFED = _model->getFiniteElementDescriptor();
-        const auto name = trim( modelFED->getName() );
-        if ( _FEDNames.find( name ) == _FEDNames.end() ) {
-            _FEDVector.push_back( modelFED );
-            _FEDNames.insert( name );
-        }
-    };
-
-    /** @brief  Prepare compute */
-    void prepareCompute( const std::string option ) {
-        setOption( option );
-        _elemComp = boost::make_shared< ElementaryCompute >( this->getName(), _option );
-        if ( _option != "WRAP_FORTRAN" ) {
-            _elemComp->createDescriptor( _model, _materialField, _elemChara );
-            _elemComp->createListOfElementaryTerms();
-        }
-    };
-
-    /** @brief Genearate names of elementary terms */
-    std::string generateNameOfElementaryTerm() const {
-        std::string elemTermName( " " );
-        std::ostringstream numString;
-        numString << std::setw( 7 ) << std::setfill( '0' ) << _elemComp->getIndexName();
-        _elemComp->nextIndexName();
-        elemTermName = this->getName().substr( 0, 8 ) + "." + numString.str();
-        return elemTermName;
-    }
-};
-
-/** @typedef BaseElementaryMatrixPtr */
-typedef boost::shared_ptr< BaseElementaryMatrix > BaseElementaryMatrixPtr;
+#include "LinearAlgebra/BaseElementaryMatrix.h"
 
 /**
  * @class ElementaryMatrix
@@ -219,15 +59,17 @@ class ElementaryMatrix : public BaseElementaryMatrix {
      * @brief Function to update ElementaryTerm
      */
     bool build() {
-        _elemComp = boost::make_shared< ElementaryCompute >( this->getName() );
         if ( _elemComp->hasElementaryTerm() ) {
             std::vector< JeveuxChar24 > elemTermNames = _elemComp->getNameOfElementaryTerms();
-            for ( int pos = 0; pos < elemTermNames.size(); ++pos ) {
-                const std::string name = elemTermNames[pos].toString();
-                if ( trim( name ) != "" ) {
-                    boost::shared_ptr< ElementaryTerm< ValueType > > toPush(
-                        new ElementaryTerm< ValueType >( name ) );
-                    _elemTerm.push_back( toPush );
+            SetString elemSave;
+            for ( auto &elemTerm : _elemTerm ) {
+                elemSave.insert( trim( elemTerm->getName() ) );
+            }
+            for ( auto &elemTerm : elemTermNames ) {
+                const std::string name = trim( elemTerm.toString() );
+                if ( name != " " && elemSave.count( name ) == 0 ) {
+                    _elemTerm.push_back(
+                        boost::make_shared< ElementaryTerm< ValueType > >( name ) );
                 }
             }
         }
@@ -242,7 +84,27 @@ class ElementaryMatrix : public BaseElementaryMatrix {
         _elemTerm.push_back( elemTerm );
     };
 
-    friend class DiscreteComputation;
+    std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > getElementaryTerms() const {
+        return _elemTerm;
+    }
+
+    /**
+     * @brief Get all FiniteElementDescriptors
+     * @return vector of all FiniteElementDescriptors
+     */
+    std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() {
+        std::vector< FiniteElementDescriptorPtr > FEDs;
+        FEDs.reserve( _elemTerm.size() );
+
+        for ( auto &elemTerm : _elemTerm ) {
+            auto FED = elemTerm->getFiniteElementDescriptor();
+            if ( FED ) {
+                FEDs.push_back( FED );
+            }
+        }
+
+        return FEDs;
+    };
 };
 
 /** @typedef Elementary matrix for displacement-double */

@@ -268,19 +268,18 @@ FieldOnNodesRealPtr DiscreteComputation::externalStateVariables( const ASTERDOUB
     return varCom->computeExternalStateVariablesLoad( _study->getDOFNumbering() );
 };
 
-ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix_(
+    const ASTERDOUBLE &time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells ) {
 
     auto elemMatr = boost::make_shared< ElementaryMatrixDisplacementReal >();
 
     // Get main parameters
     const std::string option( "RIGI_MECA" );
-    ASTERINTEGER nh = 0;
-    ModelPtr currModel = _study->getModel();
-    MaterialFieldPtr currMater = _study->getMaterialField();
-    CodedMaterialPtr currCodedMater = _study->getCodedMaterial();
-    ElementaryCharacteristicsPtr currElemChara = _study->getElementaryCharacteristics();
-    ExternalStateVariablesBuilderPtr currExteVari = _study->getExternalStateVariables();
+    auto currModel = _study->getModel();
+    auto currMater = _study->getMaterialField();
+    auto currCodedMater = _study->getCodedMaterial();
+    auto currElemChara = _study->getElementaryCharacteristics();
+    auto currExteVari = _study->getExternalStateVariables();
 
     // Compute external state variables
     if ( currMater && ( currExteVari->hasExternalStateVariables() ||
@@ -302,7 +301,11 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
 
     // Prepare computing
     CalculPtr _calcul = std::make_unique< Calcul >( option );
-    _calcul->setModel( currModel );
+    if ( groupOfCells.empty() ) {
+        _calcul->setModel( currModel );
+    } else {
+        _calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
     elemMatr->prepareCompute( option );
 
     // Add input fields
@@ -312,23 +315,22 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
         _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
     }
+
     if ( currElemChara ) {
         _calcul->addElementaryCharacteristicsField( currElemChara );
     }
-    _calcul->addFourierModeField( nh );
+
+    _calcul->addFourierModeField( modeFourier );
     _calcul->addTimeField( time );
+
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         _calcul->addXFEMField( currXfemModel );
     }
 
     // Add output elementary terms
-    auto resuElemSyme =
-        boost::make_shared< ElementaryTermReal >( elemMatr->generateNameOfElementaryTerm() );
-    _calcul->addOutputElementaryTerm( "PMATUUR", resuElemSyme );
-    auto resuElemNSym =
-        boost::make_shared< ElementaryTermReal >( elemMatr->generateNameOfElementaryTerm() );
-    _calcul->addOutputElementaryTerm( "PMATUNS", resuElemNSym );
+    _calcul->addOutputElementaryTerm( "PMATUUR", boost::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PMATUNS", boost::make_shared< ElementaryTermReal >() );
 
     // Compute elementary matrices for rigidity
     if ( currModel->existsFiniteElement() ) {
@@ -351,21 +353,18 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
 
     // Prepare loads
     const auto &_listOfLoads = _study->getListOfLoads();
-    ListMecaLoadReal mecaLoadReal = _listOfLoads->getMechanicalLoadsReal();
 
     // Select option
     calcul->setOption( "MECA_DDLM_R" );
     calcul->clearInputs();
     calcul->clearOutputs();
 
+    auto mecaLoadReal = _listOfLoads->getMechanicalLoadsReal();
     for ( const auto &curIter : mecaLoadReal ) {
-        FiniteElementDescriptorPtr FEDesc = curIter->getFiniteElementDescriptor();
-        ConstantFieldOnCellsRealPtr field =
-            curIter->getMechanicalLoadDescription()->getMultiplicativeField();
+        auto FEDesc = curIter->getFiniteElementDescriptor();
+        auto field = curIter->getMechanicalLoadDescription()->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            std::string elemTermName = elemMatr->generateNameOfElementaryTerm();
-            ElementaryTermRealPtr resuElem =
-                boost::make_shared< ElementaryTermReal >( elemTermName );
+            auto resuElem = boost::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -376,15 +375,12 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         }
     }
 
-    ListMecaLoadFunction mecaLoadFunc = _listOfLoads->getMechanicalLoadsFunction();
+    auto mecaLoadFunc = _listOfLoads->getMechanicalLoadsFunction();
     for ( const auto &curIter : mecaLoadFunc ) {
-        FiniteElementDescriptorPtr FEDesc = curIter->getFiniteElementDescriptor();
-        ConstantFieldOnCellsRealPtr field =
-            curIter->getMechanicalLoadDescription()->getMultiplicativeField();
+        auto FEDesc = curIter->getFiniteElementDescriptor();
+        auto field = curIter->getMechanicalLoadDescription()->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            std::string elemTermName = elemMatr->generateNameOfElementaryTerm();
-            ElementaryTermRealPtr resuElem =
-                boost::make_shared< ElementaryTermReal >( elemTermName );
+            auto resuElem = boost::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -396,14 +392,12 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
     }
 
 #ifdef ASTER_HAVE_MPI
-    ListParaMecaLoadReal mecaParaLoadReal = _listOfLoads->getParallelMechanicalLoadsReal();
+    auto mecaParaLoadReal = _listOfLoads->getParallelMechanicalLoadsReal();
     for ( const auto &curIter : mecaParaLoadReal ) {
-        FiniteElementDescriptorPtr FEDesc = curIter->getFiniteElementDescriptor();
-        ConstantFieldOnCellsRealPtr field = curIter->getMultiplicativeField();
+        auto FEDesc = curIter->getFiniteElementDescriptor();
+        auto field = curIter->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            std::string elemTermName = elemMatr->generateNameOfElementaryTerm();
-            ElementaryTermRealPtr resuElem =
-                boost::make_shared< ElementaryTermReal >( elemTermName );
+            auto resuElem = boost::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -414,14 +408,12 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         }
     }
 
-    ListParaMecaLoadFunction mecaParaLoadFunc = _listOfLoads->getParallelMechanicalLoadsFunction();
+    auto mecaParaLoadFunc = _listOfLoads->getParallelMechanicalLoadsFunction();
     for ( const auto &curIter : mecaParaLoadFunc ) {
-        FiniteElementDescriptorPtr FEDesc = curIter->getFiniteElementDescriptor();
-        ConstantFieldOnCellsRealPtr field = curIter->getMultiplicativeField();
+        auto FEDesc = curIter->getFiniteElementDescriptor();
+        auto field = curIter->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            std::string elemTermName = elemMatr->generateNameOfElementaryTerm();
-            ElementaryTermRealPtr resuElem =
-                boost::make_shared< ElementaryTermReal >( elemTermName );
+            auto resuElem = boost::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );

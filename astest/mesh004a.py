@@ -88,7 +88,7 @@ matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.appendElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
-matrAsse.build()
+matrAsse.assemble()
 matrAsse.debugPrint(rank+30)
 
 retour = matrAsse.getDOFNumbering()

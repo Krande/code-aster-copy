@@ -36,17 +36,12 @@ void exportElementaryMatrixToPython() {
         "ElementaryMatrixDisplacementReal", py::no_init )
         // fake initFactoryPtr: not buildable
         // fake initFactoryPtr: not buildable
-        .def( "addFiniteElementDescriptor",
-              &ElementaryMatrixDisplacementReal::addFiniteElementDescriptor )
-        .def( "getFiniteElementDescriptors",
-              &ElementaryMatrixDisplacementReal::getFiniteElementDescriptors )
-        .def( "getMaterialField", &ElementaryMatrixDisplacementReal::getMaterialField )
-        .def( "getModel", &ElementaryMatrixDisplacementReal::getModel )
-        .def( "getMesh", &ElementaryMatrixDisplacementReal::getMesh )
-        .def( "setMaterialField", &ElementaryMatrixDisplacementReal::setMaterialField )
-        .def( "setElementaryCharacteristics",
-              &ElementaryMatrixDisplacementReal::setElementaryCharacteristics )
-        .def( "setModel", &ElementaryMatrixDisplacementReal::setModel );
+        .def( "getMaterialField", &BaseElementaryMatrix::getMaterialField )
+        .def( "getModel", &BaseElementaryMatrix::getModel )
+        .def( "getMesh", &BaseElementaryMatrix::getMesh )
+        .def( "setMaterialField", &BaseElementaryMatrix::setMaterialField )
+        .def( "setElementaryCharacteristics", &BaseElementaryMatrix::setElementaryCharacteristics )
+        .def( "setModel", &BaseElementaryMatrix::setModel );
 
     py::class_< ElementaryMatrixDisplacementReal,
                 ElementaryMatrixDisplacementReal::ElementaryMatrixPtr,
@@ -56,7 +51,10 @@ void exportElementaryMatrixToPython() {
               py::make_constructor( &initFactoryPtr< ElementaryMatrixDisplacementReal > ) )
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< ElementaryMatrixDisplacementReal, std::string > ) )
-        .def( "build", &ElementaryMatrixDisplacementReal::build );
+        .def( "build", &ElementaryMatrixDisplacementReal::build )
+        .def( "getFiniteElementDescriptors",
+              &ElementaryMatrixDisplacementReal::getFiniteElementDescriptors )
+        .def( "getElementaryTerms", &ElementaryMatrixDisplacementReal::getElementaryTerms );
 
     py::class_< ElementaryMatrixDisplacementComplex,
                 ElementaryMatrixDisplacementComplex::ElementaryMatrixPtr,
@@ -67,7 +65,10 @@ void exportElementaryMatrixToPython() {
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< ElementaryMatrixDisplacementComplex, std::string > ) )
-        .def( "build", &ElementaryMatrixDisplacementComplex::build );
+        .def( "build", &ElementaryMatrixDisplacementComplex::build )
+        .def( "getFiniteElementDescriptors",
+              &ElementaryMatrixDisplacementComplex::getFiniteElementDescriptors )
+        .def( "getElementaryTerms", &ElementaryMatrixDisplacementComplex::getElementaryTerms );
 
     py::class_< ElementaryMatrixTemperatureReal,
                 ElementaryMatrixTemperatureReal::ElementaryMatrixPtr,
@@ -77,7 +78,10 @@ void exportElementaryMatrixToPython() {
               py::make_constructor( &initFactoryPtr< ElementaryMatrixTemperatureReal > ) )
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< ElementaryMatrixTemperatureReal, std::string > ) )
-        .def( "build", &ElementaryMatrixTemperatureReal::build );
+        .def( "build", &ElementaryMatrixTemperatureReal::build )
+        .def( "getFiniteElementDescriptors",
+              &ElementaryMatrixTemperatureReal::getFiniteElementDescriptors )
+        .def( "getElementaryTerms", &ElementaryMatrixTemperatureReal::getElementaryTerms );
 
     py::class_< ElementaryMatrixPressureComplex,
                 ElementaryMatrixPressureComplex::ElementaryMatrixPtr,
@@ -87,5 +91,8 @@ void exportElementaryMatrixToPython() {
               py::make_constructor( &initFactoryPtr< ElementaryMatrixPressureComplex > ) )
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< ElementaryMatrixPressureComplex, std::string > ) )
-        .def( "build", &ElementaryMatrixPressureComplex::build );
+        .def( "build", &ElementaryMatrixPressureComplex::build )
+        .def( "getFiniteElementDescriptors",
+              &ElementaryMatrixPressureComplex::getFiniteElementDescriptors )
+        .def( "getElementaryTerms", &ElementaryMatrixPressureComplex::getElementaryTerms );
 };

@@ -47,7 +47,7 @@ void exportAssemblyMatrixToPython() {
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixDisplacementReal::build )
+        .def( "assemble", &AssemblyMatrixDisplacementReal::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixDisplacementReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixDisplacementComplex::build )
+        .def( "assemble", &AssemblyMatrixDisplacementComplex::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixDisplacementComplex::transposeConjugate )
         // -----------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixTemperatureReal::build )
+        .def( "assemble", &AssemblyMatrixTemperatureReal::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixTemperatureReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixTemperatureComplex::build )
+        .def( "assemble", &AssemblyMatrixTemperatureComplex::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixTemperatureComplex::getMaterialField )
         // -----------------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixPressureReal::build )
+        .def( "assemble", &AssemblyMatrixPressureReal::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixPressureReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixPressureComplex::build )
+        .def( "assemble", &AssemblyMatrixPressureComplex::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixPressureComplex::getMaterialField )
         // -----------------------------------------------------------------------------------------

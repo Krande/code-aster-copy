@@ -32,9 +32,6 @@ namespace py = boost::python;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDualizedDirichlet_overloads, dualDisplacement, 1, 2 )
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeElasticStiffnessMatrix_overloads,
-                                        elasticStiffnessMatrix, 0, 1 )
-
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeMassMatrix_overloads, massMatrix, 0, 1 )
 
 void exportDiscreteComputationToPython() {
@@ -116,8 +113,21 @@ void exportDiscreteComputationToPython() {
             FieldOnNodes: incremental imposed displacement vector
         )",
               ( py::arg( "self" ), py::arg( "time" ), py::arg( "disp" ) ) )
-        .def( "elasticStiffnessMatrix", &DiscreteComputation::elasticStiffnessMatrix,
-              computeElasticStiffnessMatrix_overloads() )
+        .def( "elasticStiffnessMatrix_", &DiscreteComputation::elasticStiffnessMatrix_,
+              R"(
+      Return the elementary matices for elastic Stiffness matrix
+
+      Arguments:
+            time (float): current time
+            fourierMode (int): Fourier mode (>=0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+            If it empty, the full model is used
+
+      Returns:
+            ElementaryMatrix: elementary elastic Stiffness matrices
+        )",
+              ( py::arg( "self" ), py::arg( "time" ), py::arg( "fourierMode" ),
+                py::arg( "groupOfCells" ) ) )
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem )
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(

@@ -63,6 +63,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     character(len=8), pointer :: vec(:) => null()
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: lime(:) => null()
+    character(len=24), pointer :: resu(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -80,7 +81,8 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                         iret)
             call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matas)
             call jeveuo(matas//'.LIME', 'L', vk24=lime)
-            call jeveuo(lime(1)(1:8)//'.0000000   .NOLI', 'L', vk24=noli)
+            call jeveuo(lime(1)(1:8)//'           .RELR', 'L', vk24=resu)
+            call jeveuo(resu(1)(1:19)//'.NOLI', 'L', vk24=noli)
             modele = noli(1) (1:8)
         else
 !         --- DEFORMEES MODALES PAR DES CHAM_NO MAIS AUCUNE INFORMATION

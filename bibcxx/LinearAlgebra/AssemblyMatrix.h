@@ -118,7 +118,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     /**
      * @brief Assemblage de la matrice
      */
-    bool build();
+    bool assemble();
 
     /**
      * @brief Clear all ElementaryMatrixPtr
@@ -214,7 +214,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const PhysicalPro
 };
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
-bool AssemblyMatrix< ValueType, PhysicalQuantity >::build() {
+bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble() {
     if ( _dofNum->isEmpty() )
         throw std::runtime_error( "Numbering is empty" );
 

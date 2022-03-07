@@ -45,9 +45,6 @@
  */
 class BaseElementaryVector : public DataStructure {
   protected:
-    /** @brief Option to compute */
-    std::string _option;
-
     /** @brief Flag for empty datastructure */
     bool _isEmpty;
 
@@ -70,7 +67,7 @@ class BaseElementaryVector : public DataStructure {
      * @brief Set the option
      * @param currOption option
      */
-    void setOption( const std::string option ) { _option = option; };
+    void setOption( const std::string option ) { _elemComp->setOption( option ); };
 
   public:
     /** @brief Constructor with a name */
@@ -80,8 +77,7 @@ class BaseElementaryVector : public DataStructure {
           _model( nullptr ),
           _materialField( nullptr ),
           _elemChara( nullptr ),
-          _elemComp( nullptr ),
-          _option( " " ),
+          _elemComp( boost::make_shared< ElementaryCompute >( getName() ) ),
           _listOfLoads( new ListOfLoads() ){};
 
     /** @brief Constructor with automatic name */
@@ -125,7 +121,7 @@ class BaseElementaryVector : public DataStructure {
     BaseMeshPtr getMesh( void ) const;
 
     /** @brief Get option */
-    std::string getOption() const { return _option; };
+    std::string getOption() const { return _elemComp->getOption(); };
 
     /**
      * @brief Assembly with dofNume and mask on cells
@@ -180,21 +176,11 @@ class BaseElementaryVector : public DataStructure {
     /** @brief  Prepare compute */
     void prepareCompute( const std::string option ) {
         setOption( option );
-        _elemComp = boost::make_shared< ElementaryCompute >( this->getName(), _option );
-        if ( _option != "WRAP_FORTRAN" ) {
+        _elemComp->setOption( option );
+        if ( option != "WRAP_FORTRAN" ) {
             _elemComp->createDescriptor( _model, _materialField, _elemChara );
-            _elemComp->createListOfElementaryTerms();
         }
     };
-
-    std::string generateNameOfElementaryTerm() const {
-        std::string elemTermName( " " );
-        std::ostringstream numString;
-        numString << std::setw( 7 ) << std::setfill( '0' ) << _elemComp->getIndexName();
-        _elemComp->nextIndexName();
-        elemTermName = this->getName().substr( 0, 8 ) + "." + numString.str();
-        return elemTermName;
-    }
 };
 
 /** @typedef BaseElementaryVectorPtr */
@@ -230,15 +216,13 @@ class ElementaryVector : public BaseElementaryVector {
      * @brief Function to update ElementaryTerm
      */
     bool build() {
-        _elemComp = boost::make_shared< ElementaryCompute >( this->getName() );
         if ( _elemComp->hasElementaryTerm() ) {
             std::vector< JeveuxChar24 > elemTermNames = _elemComp->getNameOfElementaryTerms();
             for ( int pos = 0; pos < elemTermNames.size(); ++pos ) {
                 const std::string name = elemTermNames[pos].toString();
                 if ( trim( name ) != "" ) {
-                    boost::shared_ptr< ElementaryTerm< ValueType > > toPush(
-                        new ElementaryTerm< ValueType >( name ) );
-                    _elemTerm.push_back( toPush );
+                    _elemTerm.push_back(
+                        boost::make_shared< ElementaryTerm< ValueType > >( name ) );
                 }
             }
         }

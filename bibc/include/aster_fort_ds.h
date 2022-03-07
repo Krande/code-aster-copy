@@ -80,6 +80,16 @@ void DEFSSSSPP( POSDDL, posddl, const char *, STRING_SIZE, const char *, STRING_
                                 const char *, STRING_SIZE, const char *, STRING_SIZE, \
                                 const ASTERINTEGER *, const ASTERINTEGER *);
 
+#define CALL_EXLIM1( a, b, c, d, e) CALLPPOOO( EXLIM1, exlim1, a, b, c, d, e)
+void DEFPPSSS( EXLIM1, exlim1, const ASTERINTEGER *, const ASTERINTEGER *,
+              const char *, STRING_SIZE, \
+              const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALL_EXLIM2( a, b, c, d, e) CALLPPOOO( EXLIM2, exlim2, a, b, c, d, e)
+void DEFPPSSS( EXLIM2, exlim2, const ASTERINTEGER *, const ASTERINTEGER *,
+              const char *, STRING_SIZE, \
+              const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_DETRSD( a, b ) CALLOO( DETRSD, detrsd, a, b )
 extern void DEFSS( DETRSD, detrsd, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
@@ -174,8 +184,8 @@ void DEFSSP( RSNOCH_FORWARD, rsnoch_forward, const char *, STRING_SIZE, const ch
 extern void DEFSP( RSINFO, rsinfo, const char *, STRING_SIZE, ASTERINTEGER * );
 
 #define CALLO_VTGPLD( a, b, c, d, e, f ) CALLOPOOOO( VTGPLD, vtgpld, a, b, c, d, e, f )
-extern void DEFSPSSSS( VTGPLD, vtgpld, const char *, STRING_SIZE, ASTERDOUBLE *, const char *, 
-            STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, 
+extern void DEFSPSSSS( VTGPLD, vtgpld, const char *, STRING_SIZE, ASTERDOUBLE *, const char *,
+            STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                     STRING_SIZE);
 
 #ifdef __cplusplus

@@ -46,16 +46,8 @@ class ComputeElementaryMatrix(ExecuteCommand):
         if myOption not in ("RIGI_MECA",):
             return False
 
-        group_ma = keywords.get("GROUP_MA")
-        if group_ma is not None:
-            return False
-
         maille = keywords.get("MAILLE")
         if maille is not None:
-            return False
-
-        fourier = keywords.get("MODE_FOURIER")
-        if fourier is not None and fourier != 0:
             return False
 
         macro = keywords.get("CALC_ELEM_MODELE")
@@ -112,8 +104,12 @@ class ComputeElementaryMatrix(ExecuteCommand):
             time = keywords["INST"]
             myOption = keywords["OPTION"]
 
+            fourier = keywords.get("MODE_FOURIER")
+
+            group_ma = keywords.get("GROUP_MA")
+
             if myOption == "RIGI_MECA":
-                self._result = disr_comp.elasticStiffnessMatrix(time)
+                self._result = disr_comp.elasticStiffnessMatrix(time, fourier, group_ma)
             elif myOption == "MASS_MECA":
                 self._result = disr_comp.massMatrix(time)
             else:
@@ -131,12 +127,6 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
         if not self.use_cpp(keywords):
             self._result.setModel(keywords['MODELE'])
-
-            charge = keywords.get("CHARGE")
-            if charge is not None:
-                for curLoad in charge:
-                    curFED = curLoad.getFiniteElementDescriptor()
-                    self._result.addFiniteElementDescriptor(curFED)
 
             chamMater = keywords.get("CHAM_MATER")
             if chamMater is not None:

@@ -30,16 +30,17 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
     : _model( curModel ),
       _mesh( curModel->getMesh() ),
       _materialField( curMat ),
-      _listOfLoads( boost::make_shared< ListOfLoads >( _model ) ),
       _elemChara( cara ),
-      _codedMater( boost::make_shared< CodedMaterial >( _materialField, _model ) ),
-      _varCom( boost::make_shared< ExternalStateVariablesBuilder >( _model, _materialField,
-                                                                    _elemChara, _codedMater ) ),
-      _behavProp( boost::make_shared< BehaviourProperty >( _model, _materialField ) ) {
+      _listOfLoads( boost::make_shared< ListOfLoads >( _model ) ),
+      _dofNume( nullptr ),
+      _codedMater( nullptr ),
+      _varCom( nullptr ),
+      _behavProp( nullptr ) {
+
     // Add checks
     if ( _elemChara ) {
         if ( _model != _elemChara->getModel() ) {
-            const std::string msg = "Inconsistent model: " + _model->getName() + " vs " +
+            const std::string msg = "Inconsistent models: " + _model->getName() + " vs " +
                                     _elemChara->getModel()->getName();
             raiseAsterError( msg );
         }
@@ -47,13 +48,44 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
 
     if ( _materialField ) {
         if ( _mesh != _materialField->getMesh() ) {
-            const std::string msg = "Inconsistent mesh: " + _mesh->getName() + " vs " +
+            const std::string msg = "Inconsistent meshes: " + _mesh->getName() + " vs " +
                                     _materialField->getMesh()->getName();
             raiseAsterError( msg );
         }
+
+        _codedMater = boost::make_shared< CodedMaterial >( _materialField, _model );
+        _codedMater->allocate( true );
+        _varCom = boost::make_shared< ExternalStateVariablesBuilder >( _model, _materialField,
+                                                                       _elemChara, _codedMater );
+    }
+};
+
+void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
+    if ( dofNume->getMesh() != _mesh ) {
+        const std::string msg =
+            "Inconsistent mesh: " + _mesh->getName() + " vs " + dofNume->getMesh()->getName();
+        raiseAsterError( msg );
     }
 
-// create dofNume
+    auto model = dofNume->getModel();
+    if ( model && model != _model ) {
+        const std::string msg =
+            "Inconsistent models: " + _model->getName() + " vs " + model->getName();
+        raiseAsterError( msg );
+    }
+
+    auto listOfLoads = dofNume->getListOfLoads();
+    if ( listOfLoads && !listOfLoads->isEmpty() && listOfLoads != _listOfLoads ) {
+        const std::string msg = "Inconsistent list of loads: " + _listOfLoads->getName() + " vs " +
+                                listOfLoads->getName();
+        raiseAsterError( msg );
+    }
+
+    _dofNume = dofNume;
+};
+
+bool PhysicalProblem::computeDOFNumbering() {
+    // create dofNume
 #ifdef ASTER_HAVE_MPI
     if ( _mesh->isParallel() )
         _dofNume = boost::make_shared< ParallelDOFNumbering >();
@@ -64,32 +96,14 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
     _dofNume->setModel( _model );
     _dofNume->setListOfLoads( _listOfLoads );
 
-    if ( _materialField )
-        _codedMater->allocate( true );
+    return _dofNume->computeNumbering();
 };
-
-void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
-    if ( dofNume->getMesh()->getName() != _mesh->getName() )
-        raiseAsterError( "Incompatible meshes" );
-
-    auto model = dofNume->getModel();
-    if ( model && model->getName() != _model->getName() )
-        raiseAsterError( "Incompatible models" );
-
-    auto listOfLoads = dofNume->getListOfLoads();
-    if ( listOfLoads && !listOfLoads->isEmpty() &&
-         listOfLoads->getName() != _listOfLoads->getName() )
-        raiseAsterError( "Incompatible list of loads" );
-
-    _dofNume = dofNume;
-};
-
-bool PhysicalProblem::computeDOFNumbering() { return _dofNume->computeNumbering(); };
 
 void PhysicalProblem::computeBehaviourProperty( PyObject *keywords, const std::string &initialState,
                                                 const std::string &implex,
                                                 const ASTERINTEGER verbosity ) {
     // Create object for behaviour
+    _behavProp = boost::make_shared< BehaviourProperty >( _model, _materialField );
     _behavProp->setInitialState( initialState == "OUI" );
     _behavProp->setImplex( implex == "OUI" );
     _behavProp->setVerbosity( verbosity > 1 );

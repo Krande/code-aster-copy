@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,11 +25,12 @@
  */
 
 #include "astercxx.h"
+
 #include "DataStructures/DataStructure.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
-#include "Meshes/MeshExplorer.h"
+#include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
+#include "Meshes/MeshExplorer.h"
 
 class FiniteElementDescriptor;
 
@@ -44,52 +45,54 @@ typedef boost::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
  * @brief Class which describes the finite elements
  * @author Nicolas Sellenet
  */
-class FiniteElementDescriptor: public DataStructure
-{
-public:
-    typedef MeshExplorer< CellsIteratorFromFiniteElementDescriptor,
-                          const JeveuxCollectionLong& > ConnectivityVirtualCellsExplorer;
+class FiniteElementDescriptor : public DataStructure {
+  public:
+    typedef MeshExplorer< CellsIteratorFromFiniteElementDescriptor, const JeveuxCollectionLong & >
+        ConnectivityVirtualCellsExplorer;
 
-protected:
+  protected:
     /** @brief Vecteur Jeveux '.NBNO' */
-    JeveuxVectorLong                          _numberOfDelayedNumberedConstraintNodes;
+    JeveuxVectorLong _numberOfDelayedNumberedConstraintNodes;
     /** @brief Vecteur Jeveux '.LGRF' */
-    JeveuxVectorChar8                         _parameters;
+    JeveuxVectorChar8 _parameters;
     /** @brief Vecteur Jeveux '.PRNM' */
-    JeveuxVectorLong                          _dofDescriptor;
+    JeveuxVectorLong _dofDescriptor;
     /** @brief Collection '.LIEL' */
-    JeveuxCollectionLong                      _listOfGroupOfCells;
+    JeveuxCollectionLong _listOfGroupOfCells;
     /** @brief Vecteur Jeveux '.REPE' */
-    JeveuxVectorLong                          _groupsOfCellsNumberByElement;
+    JeveuxVectorLong _groupsOfCellsNumberByElement;
     /** @brief Collection '.NEMA' */
-    JeveuxCollectionLong                      _delayedNumberedConstraintElementsDescriptor;
+    JeveuxCollectionLong _delayedNumberedConstraintElementsDescriptor;
     /** @brief Vecteur Jeveux '.PRNS' */
-    JeveuxVectorLong                          _dofOfDelayedNumberedConstraintNodes;
+    JeveuxVectorLong _dofOfDelayedNumberedConstraintNodes;
     /** @brief Vecteur Jeveux '.LGNS' */
-    JeveuxVectorLong                          _virtualNodesNumbering;
+    JeveuxVectorLong _virtualNodesNumbering;
     /** @brief Vecteur Jeveux '.SSSA' */
-    JeveuxVectorLong                          _superElementsDescriptor;
+    JeveuxVectorLong _superElementsDescriptor;
     /** @brief Vecteur Jeveux '.NVGE' */
-    JeveuxVectorChar16                        _nameOfNeighborhoodStructure;
+    JeveuxVectorChar16 _nameOfNeighborhoodStructure;
     /** @brief Base mesh */
-    BaseMeshPtr                               _mesh;
+    BaseMeshPtr _mesh;
     /** @brief Object to loop over connectivity of delayed numbered cells */
     const ConnectivityVirtualCellsExplorer _explorer;
     /** @brief Object to loop over list of group of cells */
     const ConnectivityVirtualCellsExplorer _explorer2;
 
-public:
+  public:
     /**
      * @brief Constructeur
      */
-    FiniteElementDescriptor( const std::string& name,
-                             const BaseMeshPtr mesh );
+    FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh );
+
+    FiniteElementDescriptor( const BaseMeshPtr mesh );
+
+    FiniteElementDescriptor( const FiniteElementDescriptor &FEDesc,
+                             const VectorString &groupOfCells );
 
     /**
      * @brief Destructor
      */
-    ~FiniteElementDescriptor()
-    {};
+    ~FiniteElementDescriptor(){};
 
     /**
      * @typedef FiniteElementDescriptorPtr
@@ -97,69 +100,54 @@ public:
      */
     typedef boost::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
 
-    const ConnectivityVirtualCellsExplorer& getVirtualCellsExplorer() const
-    {
+    const ConnectivityVirtualCellsExplorer &getVirtualCellsExplorer() const {
         _delayedNumberedConstraintElementsDescriptor->build();
         return _explorer;
     };
 
-    const JeveuxVectorLong& getVirtualNodesComponentDescriptor() const
-    {
+    const JeveuxVectorLong &getVirtualNodesComponentDescriptor() const {
         _dofOfDelayedNumberedConstraintNodes->updateValuePointer();
         return _dofOfDelayedNumberedConstraintNodes;
     };
 
-    const JeveuxVectorLong& getVirtualNodesNumbering() const
-    {
+    const JeveuxVectorLong &getVirtualNodesNumbering() const {
         _virtualNodesNumbering->updateValuePointer();
         return _virtualNodesNumbering;
     };
 
-    const ConnectivityVirtualCellsExplorer& getListOfGroupOfCellsExplorer() const
-    {
+    const ConnectivityVirtualCellsExplorer &getListOfGroupOfCellsExplorer() const {
         _listOfGroupOfCells->build();
         return _explorer2;
     };
 
-    const JeveuxCollectionLong& getListOfGroupOfCells() const
-    {
+    const JeveuxCollectionLong &getListOfGroupOfCells() const {
         _listOfGroupOfCells->build();
         return _listOfGroupOfCells;
     };
 
-    ASTERINTEGER getNumberOfVirtualNodes() const
-    {
+    ASTERINTEGER getNumberOfVirtualNodes() const {
         _numberOfDelayedNumberedConstraintNodes->updateValuePointer();
-        return (*_numberOfDelayedNumberedConstraintNodes)[0];
+        return ( *_numberOfDelayedNumberedConstraintNodes )[0];
     };
 
-    JeveuxVectorChar8 getParameters() const
-    {
+    JeveuxVectorChar8 getParameters() const {
         _parameters->updateValuePointer();
         return _parameters;
     };
 
-    const JeveuxVectorLong& getPhysicalNodesComponentDescriptor() const
-    {
+    const JeveuxVectorLong &getPhysicalNodesComponentDescriptor() const {
         _dofDescriptor->updateValuePointer();
         return _dofDescriptor;
     };
 
-    const JeveuxVectorLong& getListOfGroupOfCellsbyCell() const
-    {
+    const JeveuxVectorLong &getListOfGroupOfCellsbyCell() const {
         _groupsOfCellsNumberByElement->updateValuePointer();
         return _groupsOfCellsNumberByElement;
     };
 
-    const BaseMeshPtr getMesh() const
-    {
-        return _mesh;
-    };
+    const BaseMeshPtr getMesh() const { return _mesh; };
 
-    void setMesh( const BaseMeshPtr& currentMesh )
-    {
-        _mesh = currentMesh;
-    };
+    void setMesh( const BaseMeshPtr &currentMesh ) { _mesh = currentMesh; };
 
     int getPhysics( void ) const;
 
@@ -167,11 +155,11 @@ public:
     /** @brief Transert .PRNM from other FiniteElementDescriptor.
      * this should be associated to a ConnectionMesh,
      * other should be associated to the parallelMesh of the ConnectionMesh */
-    void transferDofDescriptorFrom( FiniteElementDescriptorPtr& );
+    void transferDofDescriptorFrom( FiniteElementDescriptorPtr & );
 
-    void setFrom( FiniteElementDescriptorPtr& );
+    void setFrom( FiniteElementDescriptorPtr & );
 
-    void transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr& );
+    void transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr & );
 
 #endif /* ASTER_HAVE_MPI */
 };

@@ -103,7 +103,9 @@ class DiscreteComputation {
      * @param time Time
      * @return Elementary matrices for mechanical stiffness (RIGI_MECA)
      */
-    ElementaryMatrixDisplacementRealPtr elasticStiffnessMatrix( ASTERDOUBLE time = 0. );
+    ElementaryMatrixDisplacementRealPtr elasticStiffnessMatrix_( const ASTERDOUBLE &time,
+                                                                const ASTERINTEGER &modeFourier,
+                                                                const VectorString &groupOfCells );
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_MECA)

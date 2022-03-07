@@ -45,13 +45,9 @@ class ElementaryCompute {
     /** @brief Option to compute */
     std::string _option;
 
-    /** @brief Index of elementary term */
-    int _indexName;
-
   public:
     /** @brief Constructor by predefined name */
-    ElementaryCompute( const std::string elemName, const std::string option )
-        : _option( option ), _indexName( 0 ) {
+    ElementaryCompute( const std::string elemName, const std::string option ) : _option( option ) {
         std ::string baseName( elemName, 0, 19 );
         _rerr = JeveuxVectorChar24( baseName + ".RERR" );
         _relr = JeveuxVectorChar24( baseName + ".RELR" );
@@ -59,20 +55,16 @@ class ElementaryCompute {
 
     /** @brief Constructor by predefined name with calls to Fortran */
     ElementaryCompute( const std::string baseName )
-        : _option( "WRAP_FORTRAN" ),
-          _indexName( 0 ),
-          _rerr( JeveuxVectorChar24( baseName + ".RERR" ) ),
-          _relr( JeveuxVectorChar24( baseName + ".RELR" ) ){};
+        : ElementaryCompute( baseName, "WRAP_FORTRAN" ){};
 
     /** @brief Create descriptor */
     void createDescriptor( const ModelPtr &currentModel, const MaterialFieldPtr &currMaterialField,
                            const ElementaryCharacteristicsPtr &currElemChara );
 
-    /** @brief Create list of elementary terms */
-    void createListOfElementaryTerms();
-
     /** @brief Get option */
     std::string getOption() const { return _option; }
+
+    void setOption( const std::string &option ) { _option = option; };
 
     /** @brief Get list of elementary terms */
     std::vector< JeveuxChar24 > getNameOfElementaryTerms() { return _relr->toVector(); };
@@ -80,25 +72,23 @@ class ElementaryCompute {
     /** @brief Get descriptor */
     std::vector< JeveuxChar24 > getDescriptor() { return _rerr->toVector(); };
 
-    /** @brief Get index of elementary term */
-    int getIndexName() const { return _indexName; };
-
-    /** @brief Update index of elementary term */
-    void nextIndexName() { _indexName++; };
-
-    /** @brief Set index of elementary term */
-    void setIndexName( const int currIndex ) { _indexName = currIndex; };
-
     /** @brief Add elementary term */
     void addElementaryTerm( const std::string elemTermName ) {
+        if ( !hasElementaryTerm() ) {
+            _relr->reserve( 10 );
+        }
+
         _relr->updateValuePointer();
         _relr->push_back( elemTermName );
     };
 
     /** @brief Has elementary term ? */
-    bool hasElementaryTerm() { return _relr->exists(); }
+    bool hasElementaryTerm() { return _relr->exists(); };
+
+    /** @brief Get number of elementary term  */
+    ASTERINTEGER getNumberOfElementaryTerms() const { return _relr->size(); };
 };
 
-typedef boost::shared_ptr< ElementaryCompute > ElementaryComputePtr;
+using ElementaryComputePtr = boost::shared_ptr< ElementaryCompute >;
 
 #endif /* ELEMENTARYCOMPUTE_H_ */

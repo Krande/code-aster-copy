@@ -97,6 +97,9 @@ class Calcul {
     /** @brief Set computation on model */
     void setModel( const ModelPtr &model );
 
+    /** @brief Set computation on group of Cells */
+    void setGroupsOfCells( const ModelPtr &model, const VectorString& groupOfCells );
+
     /** @brief Add input field */
     void addInputField( const std::string &parameterName, const DataFieldPtr field );
 

@@ -76,7 +76,7 @@ matrAsse = code_aster.AssemblyMatrixTemperatureReal()
 matrAsse.appendElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
-matrAsse.build()
+matrAsse.assemble()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_TEMP_R")
 # matrAsse.debugPrint()
 

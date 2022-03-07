@@ -216,7 +216,7 @@ class IncrementalSolver:
         # Assembly matrix - does not work
         jacobian = AssemblyMatrixDisplacementReal(self.phys_pb)
         jacobian.appendElementaryMatrix(matr_elem)
-        jacobian.build()
+        jacobian.assemble()
         jacobian.clearElementaryMatrix()
 
         # clean temporary memory - too many objects are not destroyed in fortran

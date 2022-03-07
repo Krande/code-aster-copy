@@ -132,15 +132,15 @@ TEST_RESU(OBJET=_F(VALE_CALC=4146.0,
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=6.7916566666667E+05,
-                   NOM=MATRUPG.getName()[:8] + '.0000000   .RESL',),
+                   NOM=MATRUPG.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=291666.66662166663,
-                   NOM=MATRUPQ.getName()[:8] + '.0000000   .RESL',),
+                   NOM=MATRUPQ.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=58333.33329238746,
-                   NOM=MATRUPL.getName()[:8] + '.0000000   .RESL',),
+                   NOM=MATRUPL.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 FIN()

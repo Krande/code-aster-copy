@@ -126,15 +126,15 @@ TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
 #Test de non regression sur la matrice de rigidite (pour INCO_UPG, INCO_UPG et INCO_UP)
 
 TEST_RESU(OBJET=_F(VALE_CALC=2.6950725246896E+06,
-                   NOM=MATRUPG.getName()[:8] + '.0000000   .RESL',),
+                   NOM=MATRUPG.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=2.6950725246896E+06,
-                   NOM=MATRUPQ.getName()[:8] + '.0000000   .RESL',),
+                   NOM=MATRUPQ.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=958359.5921090409,
-                   NOM=MATRUPL.getName()[:8] + '.0000000   .RESL',),
+                   NOM=MATRUPL.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 FIN()

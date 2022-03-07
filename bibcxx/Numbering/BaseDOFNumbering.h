@@ -71,23 +71,25 @@ class BaseDOFNumbering : public DataStructure {
 
     class ElementaryMatrixGetModel : public boost::static_visitor< ModelPtr > {
       public:
-        template < typename T > ModelPtr operator()( const T &operand ) const {
+        template < typename T >
+        ModelPtr operator()( const T &operand ) const {
             return operand->getModel();
         };
     };
 
     class ElementaryMatrixGetName : public boost::static_visitor< std::string > {
       public:
-        template < typename T > std::string operator()( const T &operand ) const {
+        template < typename T >
+        std::string operator()( const T &operand ) const {
             return operand->getName();
         };
     };
 
-    class ElementaryMatrixGetFEDescrp : public boost::static_visitor<
-                std::vector< FiniteElementDescriptorPtr > > {
+    class ElementaryMatrixGetFEDescrp
+        : public boost::static_visitor< std::vector< FiniteElementDescriptorPtr > > {
       public:
-        template < typename T > std::vector< FiniteElementDescriptorPtr >
-            operator()( const T &operand ) const {
+        template < typename T >
+        std::vector< FiniteElementDescriptorPtr > operator()( const T &operand ) const {
             return operand->getFiniteElementDescriptors();
         };
     };
@@ -144,18 +146,30 @@ class BaseDOFNumbering : public DataStructure {
         JeveuxVectorLong _supn;
 
         MultFrontGarbage( const std::string &DOFNumName )
-            : _adnt( DOFNumName + ".ADNT" ), _glob( DOFNumName + ".GLOB" ),
-              _locl( DOFNumName + ".LOCL" ), _pnti( DOFNumName + ".PNTI" ),
-              _renu( DOFNumName + ".RENU" ), _adpi( DOFNumName + ".ADPI" ),
-              _adre( DOFNumName + ".ADRE" ), _anci( DOFNumName + ".ANCI" ),
-              _debf( DOFNumName + ".LFRN" ), _deca( DOFNumName + ".DECA" ),
-              _defs( DOFNumName + ".DEFS" ), _desc( DOFNumName + ".DESC" ),
-              _diag( DOFNumName + ".DIAG" ), _fils( DOFNumName + ".FILS" ),
-              _frer( DOFNumName + ".FRER" ), _lgbl( DOFNumName + ".LGBL" ),
-              _lgsn( DOFNumName + ".LGSN" ), _nbas( DOFNumName + ".NBAS" ),
-              _nbli( DOFNumName + ".NBLI" ), _nbcl( DOFNumName + ".NCBL" ),
-              _nouv( DOFNumName + ".NOUV" ), _pare( DOFNumName + ".PARE" ),
-              _sequ( DOFNumName + ".SEQU" ), _supn( DOFNumName + ".SUPN" ){};
+            : _adnt( DOFNumName + ".ADNT" ),
+              _glob( DOFNumName + ".GLOB" ),
+              _locl( DOFNumName + ".LOCL" ),
+              _pnti( DOFNumName + ".PNTI" ),
+              _renu( DOFNumName + ".RENU" ),
+              _adpi( DOFNumName + ".ADPI" ),
+              _adre( DOFNumName + ".ADRE" ),
+              _anci( DOFNumName + ".ANCI" ),
+              _debf( DOFNumName + ".LFRN" ),
+              _deca( DOFNumName + ".DECA" ),
+              _defs( DOFNumName + ".DEFS" ),
+              _desc( DOFNumName + ".DESC" ),
+              _diag( DOFNumName + ".DIAG" ),
+              _fils( DOFNumName + ".FILS" ),
+              _frer( DOFNumName + ".FRER" ),
+              _lgbl( DOFNumName + ".LGBL" ),
+              _lgsn( DOFNumName + ".LGSN" ),
+              _nbas( DOFNumName + ".NBAS" ),
+              _nbli( DOFNumName + ".NBLI" ),
+              _nbcl( DOFNumName + ".NCBL" ),
+              _nouv( DOFNumName + ".NOUV" ),
+              _pare( DOFNumName + ".PARE" ),
+              _sequ( DOFNumName + ".SEQU" ),
+              _supn( DOFNumName + ".SUPN" ){};
         friend class BaseDOFNumbering;
     };
     typedef boost::shared_ptr< MultFrontGarbage > MultFrontGarbagePtr;
@@ -169,22 +183,19 @@ class BaseDOFNumbering : public DataStructure {
         JeveuxVectorLong _lagrangianInformations;
 
         GlobalEquationNumbering( const std::string &DOFNumName )
-            : _numberOfEquations( DOFNumName + ".NEQU" ), _informations( DOFNumName + ".REFN" ),
+            : _numberOfEquations( DOFNumName + ".NEQU" ),
+              _informations( DOFNumName + ".REFN" ),
               _lagrangianInformations( DOFNumName + ".DELG" ){};
 
-        public:
-            /**
-             * @brief Returns a vector of information of the Lagrange multipliers
-             */
-            const JeveuxVectorLong getLagrangianInformations() const {
-                return _lagrangianInformations;
-            }
-            /**
-             * @brief Returns a vector of information on the numer of equations
-             */
-            const JeveuxVectorLong getNumberOfEquations() const {
-                return _numberOfEquations;
-            }
+      public:
+        /**
+         * @brief Returns a vector of information of the Lagrange multipliers
+         */
+        const JeveuxVectorLong getLagrangianInformations() const { return _lagrangianInformations; }
+        /**
+         * @brief Returns a vector of information on the numer of equations
+         */
+        const JeveuxVectorLong getNumberOfEquations() const { return _numberOfEquations; }
 
         friend class BaseDOFNumbering;
     };
@@ -209,23 +220,21 @@ class BaseDOFNumbering : public DataStructure {
         LocalEquationNumbering( const std::string &DOFNumName )
             : _numberOfEquations( DOFNumName + ".NEQU" ),
               _lagrangianInformations( DOFNumName + ".DELG" ),
-              _componentsOnNodes( DOFNumName + ".PRNO" ), _indexationVector( DOFNumName + ".NUEQ" ),
-              _localToGlobal( DOFNumName + ".NULG" ), _globalToLocal( DOFNumName + ".NUGL" ),
+              _componentsOnNodes( DOFNumName + ".PRNO" ),
+              _indexationVector( DOFNumName + ".NUEQ" ),
+              _localToGlobal( DOFNumName + ".NULG" ),
+              _globalToLocal( DOFNumName + ".NUGL" ),
               _localToRank( DOFNumName + ".PDDL" ){};
 
-        public:
-            /**
-             * @brief Returns the vector of local to global numbering
-             */
-            const JeveuxVectorLong getLocalToGlobal() const {
-                return _localToGlobal;
-            }
-            /**
-             * @brief Returns the vector of global to local numbering
-             */
-            const JeveuxVectorLong getGlobalToLocal() const {
-                return _globalToLocal;
-            }
+      public:
+        /**
+         * @brief Returns the vector of local to global numbering
+         */
+        const JeveuxVectorLong getLocalToGlobal() const { return _localToGlobal; }
+        /**
+         * @brief Returns the vector of global to local numbering
+         */
+        const JeveuxVectorLong getGlobalToLocal() const { return _globalToLocal; }
         friend class BaseDOFNumbering;
     };
     typedef boost::shared_ptr< LocalEquationNumbering > LocalEquationNumberingPtr;
@@ -259,18 +268,17 @@ class BaseDOFNumbering : public DataStructure {
     std::set< std::string > _FEDNames;
 
   protected:
-
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    BaseDOFNumbering( const std::string name, const std::string &type);
+    BaseDOFNumbering( const std::string name, const std::string &type );
 
     /**
      * @brief Constructeur
      */
-    BaseDOFNumbering( const std::string &type ) :
-     BaseDOFNumbering( ResultNaming::getNewResultName(), type){};
+    BaseDOFNumbering( const std::string &type )
+        : BaseDOFNumbering( ResultNaming::getNewResultName(), type ){};
 
   public:
     /**
@@ -284,11 +292,13 @@ class BaseDOFNumbering : public DataStructure {
      * @param FiniteElementDescriptorPtr FiniteElementDescriptor
      */
     bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
-        const auto name = trim( curFED->getName() );
-        if ( _FEDNames.find( name ) == _FEDNames.end() ) {
-            _FEDVector.push_back( curFED );
-            _FEDNames.insert( name );
-            return true;
+        if ( curFED ) {
+            const auto name = trim( curFED->getName() );
+            if ( _FEDNames.find( name ) == _FEDNames.end() ) {
+                _FEDVector.push_back( curFED );
+                _FEDNames.insert( name );
+                return true;
+            }
         }
         return false;
     };
@@ -297,11 +307,10 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Add a FiniteElementDescriptor to elementary matrix
      * @param FiniteElementDescriptorPtr FiniteElementDescriptor
      */
-    bool addFiniteElementDescriptors( const std::vector<FiniteElementDescriptorPtr> &curFEDs ) {
-        for( auto& curFED : curFEDs)
-        {
+    bool addFiniteElementDescriptors( const std::vector< FiniteElementDescriptorPtr > &curFEDs ) {
+        for ( auto &curFED : curFEDs ) {
             const bool ret = this->addFiniteElementDescriptor( curFED );
-            if( !ret )
+            if ( !ret )
                 return false;
         }
 
@@ -312,23 +321,20 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Function d'ajout d'un chargement
      * @param Args... Liste d'arguments template
      */
-    template < typename... Args > void addLoad( const Args &... a ) {
+    template < typename... Args >
+    void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */
-    const GlobalEquationNumberingPtr getGlobalNumbering() const {
-        return _globalNumbering;
-    }
+    const GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; }
 
     /**
      * @brief Returns the LocalEquationNumberingPtr
      */
-    const LocalEquationNumberingPtr  getLocalNumbering() const {
-        return _localNumbering;
-    }
+    const LocalEquationNumberingPtr getLocalNumbering() const { return _localNumbering; }
 
     /**
      * @brief Build the Numbering of DOFs
@@ -349,25 +355,29 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Are Single Lagrange Multipliers used for BC or MPC
      */
     virtual bool useSingleLagrangeMultipliers() const {
-        throw std::runtime_error( "Not allowed" ); };
+        throw std::runtime_error( "Not allowed" );
+    };
 
     /**
      * @brief Get The Component Associated To A Given Row
      */
-    virtual std::string getComponentAssociatedToRow(const ASTERINTEGER row) const {
-        throw std::runtime_error( "Not allowed" ); };
+    virtual std::string getComponentAssociatedToRow( const ASTERINTEGER row ) const {
+        throw std::runtime_error( "Not allowed" );
+    };
 
     /**
      * @brief Get The Components Associated To A Given Node
      */
-    virtual VectorString getComponentsAssociatedToNode(const ASTERINTEGER node) const {
-        throw std::runtime_error( "Not allowed" ); };
+    virtual VectorString getComponentsAssociatedToNode( const ASTERINTEGER node ) const {
+        throw std::runtime_error( "Not allowed" );
+    };
 
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
-    virtual ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row) const {
-        throw std::runtime_error( "Not allowed" ); };
+    virtual ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row ) const {
+        throw std::runtime_error( "Not allowed" );
+    };
 
     /**
      * @brief Get The total number of Dofs
@@ -377,8 +387,8 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief get the Row index Associated To the Component of a Node
      */
-    virtual ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node,
-                                                         const std::string comp) const {
+    virtual ASTERINTEGER getRowAssociatedToNodeComponent( const ASTERINTEGER node,
+                                                          const std::string comp ) const {
         throw std::runtime_error( "Not allowed" );
     }
 
@@ -399,9 +409,7 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Get Assigned Components
      */
-    virtual VectorString getComponents() const {
-        throw std::runtime_error( "Not allowed" );
-    }
+    virtual VectorString getComponents() const { throw std::runtime_error( "Not allowed" ); }
 
     /**
      * @brief Get FieldOnNodesDescription
@@ -511,7 +519,7 @@ class BaseDOFNumbering : public DataStructure {
 
     ListOfLoadsPtr getListOfLoads( void ) const { return _listOfLoads; };
 
-    VectorLong getDirichletBCDOFs (void ) const;
+    VectorLong getDirichletBCDOFs( void ) const;
 
     /**
      * @brief Methode permettant de definir le modele
@@ -522,15 +530,11 @@ class BaseDOFNumbering : public DataStructure {
             throw std::runtime_error(
                 "It is not allowed to defined Model and ElementaryMatrix together" );
         _model = currentModel;
-        this->addFiniteElementDescriptor(_model->getFiniteElementDescriptor());
+        this->addFiniteElementDescriptor( _model->getFiniteElementDescriptor() );
     };
 
-    bool hasDirichletBC() const
-    {
-        return _listOfLoads->hasDirichletBC();
-    }
+    bool hasDirichletBC() const { return _listOfLoads->hasDirichletBC(); }
 };
-
 
 /**
  * @typedef BaseDOFNumberingPtr

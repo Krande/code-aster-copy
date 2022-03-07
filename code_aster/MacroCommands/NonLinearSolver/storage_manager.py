@@ -67,7 +67,9 @@ class StorageManager:
         slot.elem_char = phys_pb.getElementaryCharacteristics()
         slot.load = phys_pb.getListOfLoads()
         slot.fields = phys_state.as_dict()
-        slot.fields["COMPORTEMENT"] = phys_pb.getBehaviourProperty().getBehaviourField()
+        behav = phys_pb.getBehaviourProperty()
+        if behav is not None:
+            slot.fields["COMPORTEMENT"] = behav.getBehaviourField()
         self.buffer.append(slot)
 
         self.store()

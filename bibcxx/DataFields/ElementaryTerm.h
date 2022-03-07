@@ -24,16 +24,19 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_fort_utils.h"
+
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Modeling/FiniteElementDescriptor.h"
 
 /**
  * @class ElementaryTerm
  * @brief Class which describe a RESUELEM (which is part of MATR_ELEM and VECT_ELEM )
  */
 template < typename ValueType >
-class ElementaryTerm : public DataStructure {
+class ElementaryTerm : public DataField {
   private:
     /** @brief Objet Jeveux '.NOLI' */
     JeveuxVectorChar24 _noli;
@@ -41,6 +44,8 @@ class ElementaryTerm : public DataStructure {
     JeveuxVectorLong _desc;
     /** @brief Objet Jeveux '.RESL' */
     JeveuxCollection< ValueType > _resl;
+    /** @brief Ligel */
+    FiniteElementDescriptorPtr _FEDesc;
 
   public:
     /**
@@ -48,18 +53,48 @@ class ElementaryTerm : public DataStructure {
      * @param name predefined name
      */
     ElementaryTerm( const std::string name )
-        : DataStructure( name, 19, "RESUELEM" ),
+        : DataField( name, "RESUELEM" ),
           _noli( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _resl( JeveuxCollection< ValueType >( getName() + ".RESL" ) ){};
+
+    ElementaryTerm() : ElementaryTerm( DataStructureNaming::getNewName() ){};
+
+    void setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc ) {
+        _FEDesc = FEDesc;
+    };
+
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
+
+    std::string getOption() {
+        _noli->updateValuePointer();
+        return trim( ( *_noli )[1].toString() );
+    };
+
+    BaseMeshPtr getMesh() const {
+        if ( _FEDesc ) {
+            return _FEDesc->getMesh();
+        }
+        return nullptr;
+    }
+
+    std::string getPhysicalQuantity() {
+        const std::string typeco( "RESUELEM" );
+        ASTERINTEGER repi = 0, ier = 0;
+        JeveuxChar32 repk( " " );
+        const std::string arret( "F" );
+        const std::string questi( "NOM_GD" );
+        CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+        return trim( repk.toString() );
+    }
 };
 
 /** @typedef ElementaryTermRealPtr */
-typedef ElementaryTerm< ASTERDOUBLE > ElementaryTermReal;
-typedef boost::shared_ptr< ElementaryTerm< ASTERDOUBLE > > ElementaryTermRealPtr;
+using ElementaryTermReal = ElementaryTerm< ASTERDOUBLE >;
+using ElementaryTermRealPtr = boost::shared_ptr< ElementaryTermReal >;
 
 /** @typedef ElementaryTermComplexPtr */
-typedef ElementaryTerm< ASTERCOMPLEX > ElementaryTermComplex;
-typedef boost::shared_ptr< ElementaryTerm< ASTERCOMPLEX > > ElementaryTermComplexPtr;
+using ElementaryTermComplex = ElementaryTerm< ASTERCOMPLEX >;
+using ElementaryTermComplexPtr = boost::shared_ptr< ElementaryTermComplex >;
 
 #endif /* ELEMENTARYTERM_H_ */

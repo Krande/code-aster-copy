@@ -21,6 +21,10 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "PythonBindings/ConvertersInterface.h"
+
+#include "Contact/ContactZone.h"
+#include "DataFields/ElementaryTerm.h"
 #include "DataStructures/DataStructure.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "Functions/Function.h"
@@ -29,10 +33,8 @@
 #include "Materials/Material.h"
 #include "Materials/MaterialField.h"
 #include "Materials/MaterialProperty.h"
-#include "Modeling/Model.h"
 #include "Modeling/FiniteElementDescriptor.h"
-#include "Contact/ContactZone.h"
-#include "PythonBindings/ConvertersInterface.h"
+#include "Modeling/Model.h"
 
 void exportConverters() {
 
@@ -56,6 +58,8 @@ void exportConverters() {
     exportVectorConverter< MechanicalLoadRealPtr >();
     exportVectorConverter< MechanicalLoadFunctionPtr >();
     exportVectorConverter< ContactZonePtr >();
+    exportVectorConverter< ElementaryTermRealPtr >();
+    exportVectorConverter< ElementaryTermComplexPtr >();
 #ifdef ASTER_HAVE_MPI
     exportVectorConverter< ParallelMechanicalLoadRealPtr >();
     exportVectorConverter< ParallelMechanicalLoadFunctionPtr >();

@@ -73,6 +73,7 @@
 #include "PythonBindings/ElasticResultInterface.h"
 #include "PythonBindings/ElementaryCharacteristicsInterface.h"
 #include "PythonBindings/ElementaryMatrixInterface.h"
+#include "PythonBindings/ElementaryTermInterface.h"
 #include "PythonBindings/ElementaryVectorInterface.h"
 #include "PythonBindings/EmpiricalModeResultInterface.h"
 #include "PythonBindings/ExternalStateVariablesBuilderInterface.h"
@@ -250,6 +251,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportContactZoneToPython();
     exportBaseAssemblyMatrixToPython();
     exportAssemblyMatrixToPython();
+    exportElementaryTermToPython();
     exportElementaryMatrixToPython();
     exportElementaryVectorToPython();
     exportGeneralizedAssemblyMatrixToPython();

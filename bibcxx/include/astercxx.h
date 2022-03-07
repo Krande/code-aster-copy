@@ -31,6 +31,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/variant.hpp>
 
+#include <algorithm>
 #include <complex>
 #include <iostream>
 #include <list>

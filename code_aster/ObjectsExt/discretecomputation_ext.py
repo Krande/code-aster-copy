@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,3 +36,21 @@ class ExtendedDiscreteComputation:
         object during unpickling.
         """
         return (self.getPhysicalProblem(), )
+
+    def elasticStiffnessMatrix(self, time=0.0, fourierMode=0, groupsOfCells=None):
+        """Return the elementary matices for elastic Stiffness matrix
+
+      Arguments:
+            time (float): current time (default = 0.0)
+            fourierMode (int): Fourier mode (default = 0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it is None, the full model is used (default = None)
+
+      Returns:
+            ElementaryMatrix: elementary elastic Stiffness matrices
+        """
+        groups = groupsOfCells
+        if groups is None:
+            groups = []
+
+        return self.elasticStiffnessMatrix_(time, fourierMode, groups)

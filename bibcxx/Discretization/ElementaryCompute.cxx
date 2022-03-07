@@ -26,7 +26,9 @@ void ElementaryCompute::createDescriptor( const ModelPtr &currModel,
                                           const MaterialFieldPtr &currMaterialField,
                                           const ElementaryCharacteristicsPtr &currElemChara ) {
     _rerr->allocate( 5 );
-    ( *_rerr )[0] = currModel->getName();
+    if ( currModel ) {
+        ( *_rerr )[0] = currModel->getName();
+    }
     ( *_rerr )[1] = _option;
     if ( currModel->nbSuperElement() == 0 ) {
         ( *_rerr )[2] = "NON_SOUS_STRUC";
@@ -40,5 +42,3 @@ void ElementaryCompute::createDescriptor( const ModelPtr &currModel,
         ( *_rerr )[4] = currElemChara->getName();
     }
 };
-
-void ElementaryCompute::createListOfElementaryTerms() { _relr->reserve( 10 ); }

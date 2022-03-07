@@ -1,6 +1,9 @@
+#ifndef ELEMENTARYTERMINTERFACE_H_
+#define ELEMENTARYTERMINTERFACE_H_
+
 /**
- * @file ElementaryMatrix.cxx
- * @brief Implementation de ElementaryMatrix
+ * @file ElementaryMatrixInterface.h
+ * @brief Fichier entete de la classe ElementaryMatrixInterface
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
@@ -21,4 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "LinearAlgebra/ElementaryMatrix.h"
+#include "astercxx.h"
+#include "DataFields/ElementaryTerm.h"
+
+void exportElementaryTermToPython();
+
+#endif /* ELEMENTARYTERMINTERFACE_H_ */

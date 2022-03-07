@@ -54,6 +54,16 @@ void Calcul::setModel( const ModelPtr &model ) {
     }
 }
 
+/** @brief Compute on a part of the model */
+void Calcul::setGroupsOfCells( const ModelPtr &model, const VectorString &groupOfCells ) {
+    _mesh = model->getMesh();
+    _FEDesc = boost::make_shared< FiniteElementDescriptor >(
+        *( model->getFiniteElementDescriptor() ), groupOfCells );
+    if ( _mesh->isParallel() ) {
+        _completeField = false;
+    }
+}
+
 /** @brief Add input field */
 void Calcul::addInputField( const std::string &parameterName, const DataFieldPtr field ) {
     _inputFields.insert( listFields::value_type( parameterName, field ) );
@@ -232,6 +242,7 @@ void Calcul::postCompute() {
         std::string fieldType( trim( repk.toString() ) );
         if ( fieldType == "RESL" ) {
             _outputElemTermsExist.at( parameterName ) = true;
+            elemTerm->setFiniteElementDescriptor( _FEDesc );
         } else {
             _outputElemTermsExist.at( parameterName ) = false;
         }
