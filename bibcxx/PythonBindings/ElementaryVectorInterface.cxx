@@ -49,12 +49,14 @@ void exportElementaryVectorToPython() {
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< BaseElementaryVector, std::string > ) )
         .def( "addLoad", c3 )
-        .def( "assemble", &BaseElementaryVector::assemble )
         .def( "assembleWithLoadFunctions", c10 )
         .def( "assembleWithLoadFunctions", c11 )
         .def( "assembleWithMask", c12 )
         .def( "setType", &BaseElementaryVector::setType )
         .def( "setListOfLoads", &BaseElementaryVector::setListOfLoads )
+        .def( "setMaterialField", &BaseElementaryVector::setMaterialField )
+        .def( "setModel", &BaseElementaryVector::setModel )
+        .def( "setElementaryCharacteristics", &BaseElementaryVector::setElementaryCharacteristics )
         .def( "build", &BaseElementaryVector::build );
 
     py::class_< ElementaryVectorDisplacementReal, ElementaryVectorDisplacementRealPtr,
@@ -63,7 +65,8 @@ void exportElementaryVectorToPython() {
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< ElementaryVectorDisplacementReal > ) )
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) );
+                              &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) )
+        .def( "assemble", &ElementaryVectorDisplacementReal::assemble );
 
     py::class_< ElementaryVectorTemperatureReal, ElementaryVectorTemperatureRealPtr,
                 py::bases< BaseElementaryVector > >( "ElementaryVectorTemperatureReal",
@@ -71,7 +74,8 @@ void exportElementaryVectorToPython() {
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< ElementaryVectorTemperatureReal > ) )
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) );
+                              &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) )
+        .def( "assemble", &ElementaryVectorTemperatureReal::assemble );
 
     py::class_< ElementaryVectorPressureComplex, ElementaryVectorPressureComplexPtr,
                 py::bases< BaseElementaryVector > >( "ElementaryVectorPressureComplex",
@@ -79,5 +83,6 @@ void exportElementaryVectorToPython() {
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< ElementaryVectorPressureComplex > ) )
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) );
+                              &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) )
+        .def( "assemble", &ElementaryVectorPressureComplex::assemble );
 };

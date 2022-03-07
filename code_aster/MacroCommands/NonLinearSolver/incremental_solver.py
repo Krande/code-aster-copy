@@ -215,7 +215,7 @@ class IncrementalSolver:
 
         # Assembly matrix - does not work
         jacobian = AssemblyMatrixDisplacementReal(self.phys_pb)
-        jacobian.appendElementaryMatrix(matr_elem)
+        jacobian.addElementaryMatrix(matr_elem)
         jacobian.assemble()
         jacobian.clearElementaryMatrix()
 

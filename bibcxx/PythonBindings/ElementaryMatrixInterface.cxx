@@ -37,6 +37,7 @@ void exportElementaryMatrixToPython() {
         // fake initFactoryPtr: not buildable
         // fake initFactoryPtr: not buildable
         .def( "getMaterialField", &BaseElementaryMatrix::getMaterialField )
+        .def( "getElementaryCharacteristics", &BaseElementaryMatrix::getElementaryCharacteristics )
         .def( "getModel", &BaseElementaryMatrix::getModel )
         .def( "getMesh", &BaseElementaryMatrix::getMesh )
         .def( "setMaterialField", &BaseElementaryMatrix::setMaterialField )

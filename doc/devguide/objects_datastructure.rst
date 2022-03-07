@@ -380,6 +380,24 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.ElementaryTermComplex` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ElementaryTermComplex
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.ElementaryTermReal` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ElementaryTermReal
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.ElementaryVectorDisplacementReal` object
 ================================================================================
 

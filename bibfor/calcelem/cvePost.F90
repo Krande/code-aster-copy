@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ character(len=*), intent(in) :: vectElemz
     vectElem = vectElemz
 
 ! - Get mesh
-    call dismoi('NOM_MAILLA', vectElem, 'MATR_ELEM', repk = mesh)
+    call dismoi('NOM_MAILLA', vectElem, 'VECT_ELEM', repk = mesh)
 
 ! - Complete for MPI
     call jeexin(vectElem//'.RELR', iexi)

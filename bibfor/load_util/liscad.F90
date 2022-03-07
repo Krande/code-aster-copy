@@ -195,6 +195,28 @@ integer, optional, intent(in) :: i_neum_laplz
                 ASSERT(ASTER_FALSE)
             endif
         end do
+    elseif (phenom.eq.'ACOU') then
+        do i_info_type = 1, nb_info_type
+            if (present(info_typez)) then
+                info_type = info_typez
+            else
+                info_type = list_info_typez(i_info_type)
+            endif
+            if (info_type .eq. 'CINE_CSTE') then
+                v_load_info(i_load+1) = -1
+            else if (info_type.eq.'CINE_FO') then
+                v_load_info(i_load+1) = -2
+            else if (info_type.eq.'CINE_FT') then
+                v_load_info(i_load+1) = -3
+            else if (info_type(1:9).eq.'DIRI_CSTE') then
+                v_load_info(i_load+1) = 1
+            else if (info_type.eq.'NEUM_CSTE') then
+                v_load_info(nb_load+i_load+1) = 1
+            else
+                write(6,*) 'LISCAD: ',info_type
+                ASSERT(ASTER_FALSE)
+            endif
+        end do
     else
         ASSERT(ASTER_FALSE)
     endif

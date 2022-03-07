@@ -110,7 +110,7 @@ def _computeMatrix(disr_comp, matrix, time):
 
     matrix.clearElementaryMatrix()
     matr_elem = disr_comp.elasticStiffnessMatrix(time)
-    matrix.appendElementaryMatrix(matr_elem)
+    matrix.addElementaryMatrix(matr_elem)
     matrix.assemble()
     matrix.clearElementaryMatrix()
 

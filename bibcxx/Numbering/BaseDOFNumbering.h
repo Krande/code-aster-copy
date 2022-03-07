@@ -326,6 +326,8 @@ class BaseDOFNumbering : public DataStructure {
         _listOfLoads->addLoad( a... );
     };
 
+    void setEmpty( const bool &empty ) { _isEmpty = empty; };
+
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */

@@ -16,8 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine op0012()
-    implicit none
-#include "asterfort/utmess.h"
-    call utmess('F', 'FERMETUR_5')
-end subroutine
+!
+!
+#include "asterf_types.h"
+!
+interface
+    subroutine acdoch(list_load, l_load_user_, list_load_resu, basez)
+        character(len=19), intent(in) :: list_load
+        aster_logical, optional, intent(in) :: l_load_user_
+        character(len=19), optional, intent(in) :: list_load_resu
+        character(len=1), optional, intent(in) :: basez
+    end subroutine acdoch
+end interface

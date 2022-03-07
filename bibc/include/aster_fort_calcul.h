@@ -105,6 +105,9 @@ void DEFSSPSSPP( MATRIX_FACTOR, matrix_factor, const char *, STRING_SIZE, const 
                  ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE,
                  ASTERINTEGER *, ASTERINTEGER * );
 
+#define CALL_MATR_ASSE_SYME( a)  CALLO( MATR_ASSE_SYME, matr_asse_syme, a )
+void DEFS( MATR_ASSE_SYME, matr_asse_syme, const char *, STRING_SIZE );
+
 #define CALLO_NMDOCH_WRAP( a, b, c, d, e ) CALLOPPOO( NMDOCH_WRAP, nmdoch_wrap, a, b, c, d, e )
 void DEFSPPSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
               const char *,
@@ -112,6 +115,10 @@ void DEFSPPSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER
 
 #define CALLO_NTDOCH_WRAP( a, b, c, d ) CALLOPOO( NTDOCH_WRAP, ntdoch_wrap, a, b, c, d )
 void DEFSPSS( NTDOCH_WRAP, ntdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
+              STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALLO_ACDOCH_WRAP( a, b, c, d ) CALLOPOO( ACDOCH_WRAP, acdoch_wrap, a, b, c, d )
+void DEFSPSS( ACDOCH_WRAP, acdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
               STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_NUMCIMA( a, b, c, d )                                                      \
@@ -129,6 +136,9 @@ void DEFSSSSSS( NUMERO_WRAP, numero_wrap, const char *, STRING_SIZE, const char 
 void DEFSSP( NUME_DDL_MATR, nume_ddl_matr, const char *, STRING_SIZE, const char *, STRING_SIZE,
              ASTERINTEGER * );
 
+#define CALL_REDETR( a)  CALLO( REDETR, redetr, a )
+void DEFS( REDETR, redetr, const char *, STRING_SIZE );
+
 #define CALLO_RESOUD( a, b, c, d, e, f, g, h, i, j, k, l, m, n )                                   \
     CALLOOOOPOOOPPOPPP( RESOUD, resoud, a, b, c, d, e, f, g, h, i, j, k, l, m, n )
 void DEFSSSSPSSSPPSPPP( RESOUD, resoud, const char *, STRING_SIZE, const char *, STRING_SIZE,
@@ -136,6 +146,9 @@ void DEFSSSSPSSSPPSPPP( RESOUD, resoud, const char *, STRING_SIZE, const char *,
                         const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                         STRING_SIZE, ASTERDOUBLE *, ASTERDOUBLE *, const char *, STRING_SIZE,
                         ASTERLOGICAL *, ASTERINTEGER *, ASTERINTEGER * );
+
+#define CALLO_SDMPIC( a, b ) CALLOO( SDMPIC, sdmpic, a, b )
+void DEFSS( SDMPIC, sdmpic, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_VECHME_WRAP( a, b, c, d, e, f, g, h, i, l )                                          \
     CALLOOOOPOOOOO( VECHME_WRAP, vechme_wrap, a, b, c, d, e, f, g, h, i, l )

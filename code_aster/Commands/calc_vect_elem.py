@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,6 +23,7 @@ from ..Objects import (ElementaryVectorDisplacementReal,
                        ElementaryVectorPressureComplex,
                        ElementaryVectorTemperatureReal)
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
 
 
 class ComputeElementaryVector(ExecuteCommand):
@@ -48,6 +49,19 @@ class ComputeElementaryVector(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        if "MODELE" in keywords:
+            self._result.setModel(keywords["MODELE"])
+
+        if "CARA_ELEM" in keywords:
+            self._result.setElementaryCharacteristics(keywords["CARA_ELEM"])
+
+        if "CHAM_MATER" in keywords:
+            self._result.setMaterialField(keywords["CHAM_MATER"])
+
+        if "CHARGE" in keywords:
+            loads = force_list(keywords["CHARGE"])
+            self._result.setModel(loads[0].getModel())
+
         self._result.build()
 
 CALC_VECT_ELEM = ComputeElementaryVector.run

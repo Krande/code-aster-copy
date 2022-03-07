@@ -118,7 +118,7 @@ test.assertEqual(sum(ccid), 0)
 test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
-matrAsse.appendElementaryMatrix(matr_elem)
+matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.assemble()
 

@@ -26,18 +26,18 @@
 
 namespace py = boost::python;
 #include "PythonBindings/BaseAssemblyMatrixInterface.h"
+
 #include <PythonBindings/factory.h>
 
 void exportBaseAssemblyMatrixToPython() {
 
     void ( BaseAssemblyMatrix::*c1 )( const DirichletBCPtr &currentLoad ) =
         &BaseAssemblyMatrix::addLoad;
-    void ( BaseAssemblyMatrix::*c2 )( const DirichletBCPtr &currentLoad,
-                                                  const FunctionPtr &func ) =
+    void ( BaseAssemblyMatrix::*c2 )( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) =
         &BaseAssemblyMatrix::addLoad;
 
-    py::class_< BaseAssemblyMatrix, BaseAssemblyMatrixPtr,
-                py::bases< DataStructure > >( "BaseAssemblyMatrix", py::no_init )
+    py::class_< BaseAssemblyMatrix, BaseAssemblyMatrixPtr, py::bases< DataStructure > >(
+        "BaseAssemblyMatrix", py::no_init )
         // -----------------------------------------------------------------------------------------
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< BaseAssemblyMatrix, std::string > ) )
@@ -120,8 +120,7 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "setSolverName", &BaseAssemblyMatrix::setSolverName )
         // -----------------------------------------------------------------------------------------
-        .def( "hasDirichletEliminationDOFs",
-              &BaseAssemblyMatrix::hasDirichletEliminationDOFs, R"(
+        .def( "hasDirichletEliminationDOFs", &BaseAssemblyMatrix::hasDirichletEliminationDOFs, R"(
 Tell if matrix has some DOFs eliminated by Dirichlet boundaries conditions.
 
 Returns:
@@ -147,8 +146,7 @@ Returns:
         )" )
         // -----------------------------------------------------------------------------------------
         .def( "print",
-              static_cast< void ( BaseAssemblyMatrix::* )() const >(
-                  &BaseAssemblyMatrix::print ),
+              static_cast< void ( BaseAssemblyMatrix::* )() const >( &BaseAssemblyMatrix::print ),
               R"(
 Print the matrix in code_aster format (with information on the DOF).
         )",
@@ -167,9 +165,8 @@ Arguments:
               ( py::arg( "self" ), py::arg( "format" ) ) )
         // -----------------------------------------------------------------------------------------
         .def( "print",
-              static_cast< void ( BaseAssemblyMatrix::* )( const ASTERINTEGER,
-                                                                       const std::string ) const >(
-                  &BaseAssemblyMatrix::print ),
+              static_cast< void ( BaseAssemblyMatrix::* )( const ASTERINTEGER, const std::string )
+                               const >( &BaseAssemblyMatrix::print ),
               R"(
 Print the matrix in the given format format and in the given logical unit.
 
@@ -179,6 +176,12 @@ Arguments:
 
         )",
               ( py::arg( "self" ), py::args( "unit", "format" ) ) )
+        // -----------------------------------------------------------------------------------------
+        .def( "symmetrize", &BaseAssemblyMatrix::symmetrize,
+              R"(
+Make the assembly matrix symmetric in place
+        )",
+              ( py::arg( "self" ) ) )
         // -----------------------------------------------------------------------------------------
         .def( "transpose", &BaseAssemblyMatrix::transpose );
 };

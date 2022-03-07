@@ -73,7 +73,7 @@ test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 # numeDDL.debugPrint()
 
 matrAsse = code_aster.AssemblyMatrixTemperatureReal()
-matrAsse.appendElementaryMatrix(matr_elem)
+matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
 matrAsse.assemble()

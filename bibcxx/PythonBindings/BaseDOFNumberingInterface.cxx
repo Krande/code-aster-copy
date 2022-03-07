@@ -3,7 +3,7 @@
  * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,6 +55,7 @@ void exportBaseDOFNumberingToPython() {
     c1.def( "getDescription", &BaseDOFNumbering::getDescription );
     c1.def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors );
     c1.def( "getListOfLoads", &BaseDOFNumbering::getListOfLoads );
+    c1.def( "setEmpty", &BaseDOFNumbering::setEmpty );
     c1.def( "getPhysicalQuantity", &BaseDOFNumbering::getPhysicalQuantity, R"(
 Returns the name of the physical quantity that is numbered.
 

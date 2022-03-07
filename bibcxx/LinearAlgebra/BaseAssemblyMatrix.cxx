@@ -19,8 +19,11 @@
 
 #include "LinearAlgebra/BaseAssemblyMatrix.h"
 
+#include "aster_fort_calcul.h"
+
 BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::string &type )
-    : DataStructure( name, 19, type ), _description( JeveuxVectorChar24( getName() + ".REFA" ) ),
+    : DataStructure( name, 19, type ),
+      _description( JeveuxVectorChar24( getName() + ".REFA" ) ),
       _scaleFactorLagrangian( JeveuxVectorReal( getName() + ".CONL" ) ),
       _listOfElementaryMatrix( JeveuxVectorChar24( getName() + ".LIME" ) ),
       _perm( JeveuxVectorLong( getName() + ".PERM" ) ),
@@ -37,4 +40,11 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const PhysicalProblemPtr phys_prob,
     : BaseAssemblyMatrix( type ) {
     _dofNum = phys_prob->getDOFNumbering();
     _listOfLoads = phys_prob->getListOfLoads();
+};
+
+void BaseAssemblyMatrix::symmetrize() { CALL_MATR_ASSE_SYME( getName() ); };
+
+bool BaseAssemblyMatrix::isMPIFull() {
+    _description->updateValuePointer();
+    return trim( ( *_description )[10].toString() ) == "OUI";
 };

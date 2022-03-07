@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,6 +73,10 @@ implicit none
         call wkvect(lload_info, base//' V IS' , 4*nb_load+7, vi   = v_load_info)
         call wkvect(lload_func, base//' V K24', nb_load    , vk24 = v_load_func)
     elseif (phenom.eq.'THER') then
+        call wkvect(lload_name, base//' V K24', nb_load    , vk24 = v_load_name)
+        call wkvect(lload_info, base//' V IS' , 2*nb_load+1, vi   = v_load_info)
+        call wkvect(lload_func, base//' V K24', nb_load    , vk24 = v_load_func)
+    elseif (phenom.eq.'ACOU') then
         call wkvect(lload_name, base//' V K24', nb_load    , vk24 = v_load_name)
         call wkvect(lload_info, base//' V IS' , 2*nb_load+1, vi   = v_load_info)
         call wkvect(lload_func, base//' V K24', nb_load    , vk24 = v_load_func)

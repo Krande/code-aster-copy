@@ -43,7 +43,7 @@ void exportAssemblyMatrixToPython() {
               py::make_constructor(
                   &initFactoryPtr< AssemblyMatrixDisplacementReal, PhysicalProblemPtr > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "appendElementaryMatrix", &AssemblyMatrixDisplacementReal::appendElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixDisplacementReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ Arguments:
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixDisplacementComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "appendElementaryMatrix", &AssemblyMatrixDisplacementComplex::appendElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixDisplacementComplex::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ Arguments:
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixTemperatureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "appendElementaryMatrix", &AssemblyMatrixTemperatureReal::appendElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixTemperatureReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ Arguments:
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixTemperatureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "appendElementaryMatrix", &AssemblyMatrixTemperatureComplex::appendElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixTemperatureComplex::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ Arguments:
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< AssemblyMatrixPressureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "appendElementaryMatrix", &AssemblyMatrixPressureReal::appendElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixPressureReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ Arguments:
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixPressureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "appendElementaryMatrix", &AssemblyMatrixPressureComplex::appendElementaryMatrix )
+        .def( "addElementaryMatrix", &AssemblyMatrixPressureComplex::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------

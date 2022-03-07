@@ -62,9 +62,9 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTi
     CALLO_VEDIME( modelName, nameLcha, nameInfc, &currTime, typres, vectElemName );
 
     // Construct vect_elem object
-    elemVect->build();
-    elemVect->isEmpty( false );
     elemVect->setListOfLoads( listOfLoads );
+    elemVect->setModel(_study->getModel());
+    elemVect->build();
 
     // Assemble
     return elemVect->assembleWithLoadFunctions( _study->getDOFNumbering(), currTime );
@@ -99,9 +99,9 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
     CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, vectElemName );
 
     // Construct vect_elem object
-    elemVect->build();
-    elemVect->isEmpty( false );
     elemVect->setListOfLoads( listOfLoads );
+    elemVect->setModel(_study->getModel());
+    elemVect->build();
 
     // Assemble
     return elemVect->assemble( _study->getDOFNumbering() );
@@ -132,9 +132,9 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     CALLO_VEBUME( modelName, dispName, listLoadsName, vectElemName, &const_scaling, base );
 
     // Construct vect_elem object
-    elemVect->build();
-    elemVect->isEmpty( false );
     elemVect->setListOfLoads( listOfLoads );
+    elemVect->setModel(_study->getModel());
+    elemVect->build();
 
     // Assemble
     FieldOnNodesRealPtr bume = elemVect->assemble( _study->getDOFNumbering() );
@@ -177,7 +177,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
     caraName.resize( 24, ' ' );
     std::string varcName( " " );
     auto varCom = _study->getExternalStateVariables();
-    if ( varCom != nullptr ) {
+    if ( varCom  ) {
         varCom->build( currTime );
         varcName = varCom->getName() + ".TOUT";
     }
@@ -190,9 +190,9 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
                        codmaName, vectElemName, varcName );
 
     // Construct vect_elem object
+    elemVect->setListOfLoads( listOfLoads );
+    elemVect->setModel(_study->getModel());
     elemVect->build();
-    elemVect->isEmpty( false );
-    elemVect->setListOfLoads( _study->getListOfLoads() );
 
     // Assemble
     return elemVect->assembleWithLoadFunctions( _study->getDOFNumbering(),
@@ -344,7 +344,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix_
     // Compute elementary matrices for dual BC
     DiscreteComputation::baseDualStiffnessMatrix( _calcul, elemMatr );
 
-    elemMatr->isEmpty( false );
+    elemMatr->build();
     return elemMatr;
 };
 
@@ -449,7 +449,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
     // Compute elementary matrices
     DiscreteComputation::baseDualStiffnessMatrix( _calcul, elemMatr );
 
-    elemMatr->isEmpty( false );
+    elemMatr->build();
     return elemMatr;
 };
 

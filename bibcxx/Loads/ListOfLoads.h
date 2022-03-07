@@ -587,6 +587,14 @@ class ListOfLoads : public DataStructure {
     bool setModel( const ModelPtr &model );
 
     ModelPtr getModel( void ) const { return _model; };
+
+    BaseMeshPtr getMesh() const {
+        if ( _model ) {
+            return _model->getMesh();
+        }
+
+        return nullptr;
+    }
 };
 
 /**

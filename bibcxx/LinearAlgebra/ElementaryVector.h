@@ -108,17 +108,29 @@ class BaseElementaryVector : public DataStructure {
         return assembleWithLoadFunctions( dofNume, 0. );
     };
 
-    /**
-     * @brief Assembly with dofNume
-     * @param dofNume object DOFNumbering
-     */
-    FieldOnNodesRealPtr assemble( const BaseDOFNumberingPtr dofNume ) const;
-
     /** @brief Get the model */
     ModelPtr getModel() const { return _model; };
 
     /** @brief Get the mesh */
-    BaseMeshPtr getMesh( void ) const;
+    BaseMeshPtr getMesh( void ) const {
+        if ( _model ) {
+            return _model->getMesh();
+        }
+
+        if ( _elemChara ) {
+            return _elemChara->getMesh();
+        }
+
+        if ( _materialField ) {
+            return _materialField->getMesh();
+        }
+
+        if ( _listOfLoads ) {
+            return _listOfLoads->getMesh();
+        }
+
+        return nullptr;
+    };
 
     /** @brief Get option */
     std::string getOption() const { return _elemComp->getOption(); };
@@ -196,6 +208,9 @@ class ElementaryVector : public BaseElementaryVector {
     /** @brief Vectors of RESUELEM */
     std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > _elemTerm;
 
+    /** @typedef FieldOnNodesPtr */
+    typedef boost::shared_ptr< FieldOnNodes< ValueType > > FieldOnNodesPtr;
+
   public:
     /** @typedef ElementaryVectorPtr */
     typedef boost::shared_ptr< ElementaryVector< ValueType, PhysicalQuantity > >
@@ -205,9 +220,7 @@ class ElementaryVector : public BaseElementaryVector {
     ElementaryVector( const std::string name )
         : BaseElementaryVector(
               name, "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ) {
-        _elemTerm.clear();
-    };
+                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ){};
 
     /** @brief Constructor with automatic name */
     ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ){};
@@ -217,15 +230,55 @@ class ElementaryVector : public BaseElementaryVector {
      */
     bool build() {
         if ( _elemComp->hasElementaryTerm() ) {
-            std::vector< JeveuxChar24 > elemTermNames = _elemComp->getNameOfElementaryTerms();
-            for ( int pos = 0; pos < elemTermNames.size(); ++pos ) {
-                const std::string name = elemTermNames[pos].toString();
-                if ( trim( name ) != "" ) {
+
+            SetString elemSave;
+            for ( auto &elemTerm : _elemTerm ) {
+                elemSave.insert( trim( elemTerm->getName() ) );
+            }
+
+            auto elemTermNames = _elemComp->getNameOfElementaryTerms();
+            SetString elemKeep;
+            for ( auto &elemTerm : elemTermNames ) {
+                const std::string name = trim( elemTerm.toString() );
+                elemKeep.insert( name );
+                if ( name != " " && elemSave.count( name ) == 0 ) {
                     _elemTerm.push_back(
                         boost::make_shared< ElementaryTerm< ValueType > >( name ) );
                 }
             }
+
+            // clean ElementaryTerm
+            std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > elemTermNew;
+            elemTermNew.reserve( _elemTerm.size() );
+            for ( auto &elemTerm : _elemTerm ) {
+                auto name = trim( elemTerm->getName() );
+                if ( elemKeep.count( name ) > 0 ) {
+                    elemTermNew.push_back( elemTerm );
+                }
+            }
+            _elemTerm = std::move( elemTermNew );
+
+            if ( !getMesh()->isParallel() && !isMPIFull() ) {
+                std::string type = "VECT_ELEM";
+                CALLO_SDMPIC( type, getName() );
+            }
         }
+        _isEmpty = false;
+        return true;
+    };
+
+    /**
+     * @brief is MPI_COMPLET ?
+     */
+    bool isMPIFull() {
+#ifdef ASTER_HAVE_MPI
+        for ( auto &elemTerm : _elemTerm ) {
+            if ( !elemTerm->isEmpty() && !elemTerm->isMPIFull() ) {
+                return false;
+            }
+        }
+#endif
+
         return true;
     };
 
@@ -237,7 +290,38 @@ class ElementaryVector : public BaseElementaryVector {
         _elemTerm.push_back( elemTerm );
     };
 
-    friend class DiscreteComputation;
+    /**
+     * @brief Assembly with dofNume
+     * @param dofNume object DOFNumbering
+     */
+    FieldOnNodesPtr assemble( const BaseDOFNumberingPtr dofNume ) const {
+        if ( _isEmpty )
+            raiseAsterError( "The ElementaryVector is empty. Call build before" );
+
+        if ( ( !dofNume ) || dofNume->isEmpty() )
+            raiseAsterError( "Numerotation is empty" );
+
+        // Create field
+        auto field = boost::make_shared< FieldOnNodes< ValueType > >( dofNume );
+
+        // Elementary vector names
+        std::string vectElemName = getName();
+        VectorString vectElemVect( 1, vectElemName );
+        char *tabNames = vectorStringAsFStrArray( vectElemVect, 19 );
+
+        // Assembling
+        ASTERDOUBLE list_coef = 1.0;
+        ASTERINTEGER typscal = typeid( ValueType ) == typeid( ASTERDOUBLE ) ? 1 : 2;
+        ASTERINTEGER nbElem = 1;
+        std::string base( "G" );
+
+        CALL_ASSVEC( base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
+                     dofNume->getName().c_str(), &typscal );
+
+        FreeStr( tabNames );
+
+        return field;
+    };
 };
 
 /** @typedef Elementary vector for displacement-double */

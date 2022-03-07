@@ -79,14 +79,23 @@ class BaseElementaryMatrix : public DataStructure {
     /** @brief Get the model */
     ModelPtr getModel() const { return _model; };
 
+    ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _elemChara; };
+
     /** @brief Get the mesh */
     BaseMeshPtr getMesh( void ) const {
-    if ( _model )
-        return _model->getMesh();
+        if ( _model )
+            return _model->getMesh();
 
-    return nullptr;
-};
+        if ( _elemChara ) {
+            return _elemChara->getMesh();
+        }
 
+        if ( _materialField ) {
+            return _materialField->getMesh();
+        }
+
+        return nullptr;
+    };
 
     /** @brief Get option */
     std::string getOption() const { return _elemComp->getOption(); };

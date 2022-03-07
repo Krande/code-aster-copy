@@ -41,9 +41,7 @@ from .affe_char_ther_f import AFFE_CHAR_THER_F
 from .affe_modele import AFFE_MODELE
 from .asse_maillage import ASSE_MAILLAGE
 from .asse_matr_gene import ASSE_MATR_GENE
-from .asse_matrice import ASSE_MATRICE
 from .asse_vect_gene import ASSE_VECT_GENE
-from .asse_vecteur import ASSE_VECTEUR
 from .calc_amor_modal import CALC_AMOR_MODAL
 from .calc_cham_elem import CALC_CHAM_ELEM
 from .calc_cham_flui import CALC_CHAM_FLUI

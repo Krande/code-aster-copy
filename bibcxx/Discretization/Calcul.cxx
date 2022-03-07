@@ -226,7 +226,7 @@ void Calcul::postCompute() {
             } else if ( fieldScalar == "C" ) {
                 field = fieldBuilder.buildFieldOnCells< ASTERCOMPLEX >( fieldName, _mesh );
             } else {
-                AS_ASSERT( false );
+                AS_ABORT( "Field no supported" );
             }
 
             _outputFieldsExist.at( parameterName ) = true;

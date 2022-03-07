@@ -114,7 +114,8 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Function d'ajout d'un chargement
      * @param Args... Liste d'arguments template
      */
-    template < typename... Args > void addLoad( const Args &...a ) {
+    template < typename... Args >
+    void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 
@@ -122,6 +123,16 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Assemblage de la matrice
      */
     virtual bool build() { throw std::runtime_error( "Not allowed" ); };
+
+    /**
+     * @brief Make the matrix symmetric
+     */
+    void symmetrize();
+
+    /**
+     * @brief Make the matrix symmetric
+     */
+    bool isMPIFull();
 
     /**
      * @brief Get the internal DOFNumbering
@@ -262,7 +273,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @todo delete this function and the attribute _solverName
      */
     bool deleteFactorizedMatrix( void ) {
-        if ( _description->exists()  && get_sh_jeveux_status() == 1 ) {
+        if ( _description->exists() && get_sh_jeveux_status() == 1 ) {
             CALLO_DELETE_MATRIX( getName(), _solverName );
         }
 

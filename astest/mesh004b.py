@@ -89,7 +89,7 @@ retour = dComputation.neumann([0,0,0])
 
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
-matrAsse.appendElementaryMatrix(matr_elem)
+matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
 matrAsse.assemble()

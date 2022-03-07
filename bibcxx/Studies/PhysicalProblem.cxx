@@ -42,7 +42,7 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
         if ( _model != _elemChara->getModel() ) {
             const std::string msg = "Inconsistent models: " + _model->getName() + " vs " +
                                     _elemChara->getModel()->getName();
-            raiseAsterError( msg );
+            AS_ABORT( msg );
         }
     }
 
@@ -50,7 +50,7 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
         if ( _mesh != _materialField->getMesh() ) {
             const std::string msg = "Inconsistent meshes: " + _mesh->getName() + " vs " +
                                     _materialField->getMesh()->getName();
-            raiseAsterError( msg );
+            AS_ABORT( msg );
         }
 
         _codedMater = boost::make_shared< CodedMaterial >( _materialField, _model );
@@ -64,21 +64,21 @@ void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
     if ( dofNume->getMesh() != _mesh ) {
         const std::string msg =
             "Inconsistent mesh: " + _mesh->getName() + " vs " + dofNume->getMesh()->getName();
-        raiseAsterError( msg );
+        AS_ABORT( msg );
     }
 
     auto model = dofNume->getModel();
     if ( model && model != _model ) {
         const std::string msg =
             "Inconsistent models: " + _model->getName() + " vs " + model->getName();
-        raiseAsterError( msg );
+        AS_ABORT( msg );
     }
 
     auto listOfLoads = dofNume->getListOfLoads();
     if ( listOfLoads && !listOfLoads->isEmpty() && listOfLoads != _listOfLoads ) {
         const std::string msg = "Inconsistent list of loads: " + _listOfLoads->getName() + " vs " +
                                 listOfLoads->getName();
-        raiseAsterError( msg );
+        AS_ABORT( msg );
     }
 
     _dofNume = dofNume;

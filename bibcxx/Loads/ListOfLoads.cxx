@@ -47,16 +47,23 @@ ListOfLoads::ListOfLoads() : ListOfLoads( DataStructureNaming::getNewName( 8 ) +
 
 bool ListOfLoads::checkModelConsistency( const ModelPtr &model ) const {
     if ( _model ) {
-        if ( _model->getName() != model->getName() )
+        if ( !model ) {
             return false;
+        }
+        if ( _model != model ) {
+            return false;
+        }
     }
     return true;
 };
 
 bool ListOfLoads::setModel( const ModelPtr &model ) {
     if ( _model ) {
-        if ( !this->checkModelConsistency( model ) )
-            throw std::runtime_error( "Inconsistent model" );
+        if ( !this->checkModelConsistency( model ) ) {
+            std::string msg =
+                "Inconsistent model: " + _model->getName() + " vs " + model->getName();
+            AS_ABORT( msg );
+        }
     } else
         _model = model;
 
@@ -95,27 +102,27 @@ bool ListOfLoads::build( ModelPtr model ) {
         CommandSyntax cmdSt( "MECA_STATIQUE" );
 
         int pos = 0;
-        for ( const auto &curIter : _listOfMechanicalLoadsReal ) {
+        for ( const auto &load : _listOfMechanicalLoadsReal ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfMechaFuncReal[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfMechaFuncReal[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
         pos = 0;
-        for ( const auto &curIter : _listOfMechanicalLoadsComplex ) {
+        for ( const auto &load : _listOfMechanicalLoadsComplex ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfMechaFuncComplex[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfMechaFuncComplex[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
         pos = 0;
-        for ( const auto &curIter : _listOfMechanicalLoadsFunction ) {
+        for ( const auto &load : _listOfMechanicalLoadsFunction ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfMechaFuncFunction[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfMechaFuncFunction[pos]->getName();
             ++pos;
@@ -123,18 +130,18 @@ bool ListOfLoads::build( ModelPtr model ) {
         }
 #ifdef ASTER_HAVE_MPI
         pos = 0;
-        for ( const auto &curIter : _listOfParallelMechanicalLoadsReal ) {
+        for ( const auto &load : _listOfParallelMechanicalLoadsReal ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfParaMechaFuncReal[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfParaMechaFuncReal[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
         pos = 0;
-        for ( const auto &curIter : _listOfParallelMechanicalLoadsFunction ) {
+        for ( const auto &load : _listOfParallelMechanicalLoadsFunction ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfParaMechaFuncFunction[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfParaMechaFuncFunction[pos]->getName();
             ++pos;
@@ -143,9 +150,9 @@ bool ListOfLoads::build( ModelPtr model ) {
 #endif /* ASTER_HAVE_MPI */
 
         pos = 0;
-        for ( const auto &curIter : _listOfDirichletBCs ) {
+        for ( const auto &load : _listOfDirichletBCs ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfDiriFun[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfDiriFun[pos]->getName();
             ++pos;
@@ -159,9 +166,9 @@ bool ListOfLoads::build( ModelPtr model ) {
         CommandSyntax cmdSt( "THER_NON_LINE" );
 
         int pos = 0;
-        for ( const auto &curIter : _listOfThermalLoadsReal ) {
+        for ( const auto &load : _listOfThermalLoadsReal ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfTherFuncReal[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfTherFuncReal[pos]->getName();
             ++pos;
@@ -169,9 +176,9 @@ bool ListOfLoads::build( ModelPtr model ) {
         }
 
         pos = 0;
-        for ( const auto &curIter : _listOfThermalLoadsFunction ) {
+        for ( const auto &load : _listOfThermalLoadsFunction ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfTherFuncFunction[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfTherFuncFunction[pos]->getName();
             ++pos;
@@ -179,9 +186,9 @@ bool ListOfLoads::build( ModelPtr model ) {
         }
 
         pos = 0;
-        for ( const auto &curIter : _listOfDirichletBCs ) {
+        for ( const auto &load : _listOfDirichletBCs ) {
             SyntaxMapContainer dict2;
-            dict2.container["CHARGE"] = curIter->getName();
+            dict2.container["CHARGE"] = load->getName();
             if ( _listOfDiriFun[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfDiriFun[pos]->getName();
             ++pos;
@@ -193,9 +200,33 @@ bool ListOfLoads::build( ModelPtr model ) {
 
         CALLO_NTDOCH_WRAP( name, &iexcit, blank, base );
     } else if ( physic == Physics::Acoustic ) {
-        throw std::runtime_error( "Not Implemented AcousticLoad" );
+            CommandSyntax cmdSt( "THER_NON_LINE" );
+
+        int pos = 0;
+        for ( const auto &load : _listOfAcousticLoadsComplex ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = load->getName();
+            if ( _listOfAcouFuncComplex[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfAcouFuncComplex[pos]->getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+
+        for ( const auto &load : _listOfDirichletBCs ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = load->getName();
+            if ( _listOfDiriFun[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfDiriFun[pos]->getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+
+        dict.container["EXCIT"] = listeExcit;
+        cmdSt.define( dict );
+
+        CALLO_ACDOCH_WRAP( name, &iexcit, blank, base );
     } else {
-        throw std::runtime_error( "Should not be here" );
+        AS_ABORT( "Should not be here" );
     }
 
     _isEmpty = false;
@@ -208,33 +239,33 @@ std::vector< FiniteElementDescriptorPtr > ListOfLoads::getFiniteElementDescripto
     const int physic = this->getPhysics();
 
     if ( physic == Physics::Mechanics ) {
-        for ( const auto &curIter : _listOfMechanicalLoadsReal ) {
-            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        for ( const auto &load : _listOfMechanicalLoadsReal ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
-        for ( const auto &curIter : _listOfMechanicalLoadsComplex ) {
-            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        for ( const auto &load : _listOfMechanicalLoadsComplex ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
-        for ( const auto &curIter : _listOfMechanicalLoadsFunction ) {
-            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        for ( const auto &load : _listOfMechanicalLoadsFunction ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
 #ifdef ASTER_HAVE_MPI
-        for ( const auto &curIter : _listOfParallelMechanicalLoadsReal ) {
-            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        for ( const auto &load : _listOfParallelMechanicalLoadsReal ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
-        for ( const auto &curIter : _listOfParallelMechanicalLoadsFunction ) {
-            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        for ( const auto &load : _listOfParallelMechanicalLoadsFunction ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
 #endif /* ASTER_HAVE_MPI */
     } else if ( physic == Physics::Thermal ) {
-        for ( const auto &curIter : _listOfThermalLoadsReal ) {
-            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        for ( const auto &load : _listOfThermalLoadsReal ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
-        for ( const auto &curIter : _listOfThermalLoadsFunction ) {
-            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        for ( const auto &load : _listOfThermalLoadsFunction ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
     } else if ( physic == Physics::Acoustic ) {
-        for ( const auto &curIter : _listOfAcousticLoadsComplex ) {
-            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        for ( const auto &load : _listOfAcousticLoadsComplex ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
     }
 

@@ -24,6 +24,7 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_fort_calcul.h"
 #include "astercxx.h"
 
 #include "DataFields/ElementaryTerm.h"
@@ -60,19 +61,55 @@ class ElementaryMatrix : public BaseElementaryMatrix {
      */
     bool build() {
         if ( _elemComp->hasElementaryTerm() ) {
-            std::vector< JeveuxChar24 > elemTermNames = _elemComp->getNameOfElementaryTerms();
+            CALL_REDETR( getName() );
+
             SetString elemSave;
             for ( auto &elemTerm : _elemTerm ) {
                 elemSave.insert( trim( elemTerm->getName() ) );
             }
+
+            auto elemTermNames = _elemComp->getNameOfElementaryTerms();
+
+            SetString elemKeep;
             for ( auto &elemTerm : elemTermNames ) {
                 const std::string name = trim( elemTerm.toString() );
+                elemKeep.insert( name );
                 if ( name != " " && elemSave.count( name ) == 0 ) {
                     _elemTerm.push_back(
                         boost::make_shared< ElementaryTerm< ValueType > >( name ) );
                 }
             }
+
+            // clean ElementaryTerm
+            std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > elemTermNew;
+            elemTermNew.reserve( _elemTerm.size() );
+            for ( auto &elemTerm : _elemTerm ) {
+                auto name = trim( elemTerm->getName() );
+                if ( elemKeep.count( name ) > 0 ) {
+                    elemTermNew.push_back( elemTerm );
+                }
+            }
+            _elemTerm = std::move( elemTermNew );
+
+            if ( _elemTerm.size() > 0 && !isMPIFull() && !getMesh()->isParallel() ) {
+                std::string type = "MATR_ELEM";
+                CALLO_SDMPIC( type, getName() );
+            }
         }
+        _isEmpty = false;
+        return true;
+    };
+
+    /**
+     * @brief is MPI_COMPLET ?
+     */
+    bool isMPIFull() {
+        for ( auto &elemTerm : _elemTerm ) {
+            if ( !elemTerm->isMPIFull() ) {
+                return false;
+            }
+        }
+
         return true;
     };
 

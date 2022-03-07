@@ -87,6 +87,16 @@ class ElementaryTerm : public DataField {
         CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
         return trim( repk.toString() );
     }
+
+    bool isMPIFull() {
+        AS_ASSERT(_noli->exists());
+        _noli->updateValuePointer();
+        return trim( ( *_noli )[2].toString() ) == "OUI";
+    }
+
+    bool isEmpty() {
+        return !(_noli->exists() && _desc->exists());
+    }
 };
 
 /** @typedef ElementaryTermRealPtr */

@@ -30,18 +30,17 @@
 #include "aster_fort_ds.h"
 #include "astercxx.h"
 
+#include "LinearAlgebra/BaseAssemblyMatrix.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
+#include "Loads/PhysicalQuantity.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
-#include "Studies/PhysicalProblem.h"
-#include "Supervis/Exceptions.h"
-#include "Utilities/Tools.h"
-
-#include "LinearAlgebra/BaseAssemblyMatrix.h"
-#include "Loads/PhysicalQuantity.h"
 #include "Modeling/Model.h"
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
+#include "Studies/PhysicalProblem.h"
+#include "Supervis/Exceptions.h"
+#include "Utilities/Tools.h"
 
 /**
  * @class AssemblyMatrix
@@ -111,7 +110,10 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      * @brief Methode permettant de definir les matrices elementaires
      * @param currentElemMatrix objet ElementaryMatrix
      */
-    void appendElementaryMatrix( const ElementaryMatrixPtr &currentElemMatrix ) {
+    void addElementaryMatrix( const ElementaryMatrixPtr &currentElemMatrix ) {
+        if ( !currentElemMatrix || currentElemMatrix->isEmpty() ) {
+            raiseAsterError( "Elementary matrix added is empty" );
+        }
         _elemMatrix.push_back( currentElemMatrix );
     };
 
@@ -237,7 +239,6 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble() {
     std::string blanc( " " );
     std::string cumul( "ZERO" );
 
-    _listOfLoads->isEmpty();
     if ( _listOfLoads->isEmpty() && _listOfLoads->getNumberOfLoads() != 0 )
         _listOfLoads->build();
 
@@ -248,6 +249,11 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble() {
 
     // free matr_elem string
     FreeStr( tabNames );
+
+    if ( !isMPIFull() && !getMesh()->isParallel() ) {
+        std::string type = "MATR_ASSE";
+        CALLO_SDMPIC( type, getName() );
+    }
 
     return true;
 };

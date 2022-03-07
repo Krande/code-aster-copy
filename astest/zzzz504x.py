@@ -82,7 +82,7 @@ numeDDL.computeNumbering()
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
-matrAsse.appendElementaryMatrix(matr_elem)
+matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
 matrAsse.build()

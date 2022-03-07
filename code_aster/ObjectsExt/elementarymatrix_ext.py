@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,23 +30,61 @@ from libaster import (ElementaryMatrixDisplacementComplex,
                       ElementaryMatrixTemperatureReal)
 
 from ..Utilities import injector
+from ..Objects.Serialization import InternalStateBuilder
+
+
+class ElementaryMatrixStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *ElementaryMatrix*."""
+
+    def save(self, matr):
+        """Return the internal state of a *ElementaryMatrix* to be pickled.
+
+        Arguments:
+            matr (*ElementaryMatrix*): The *ElementaryMatrix* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(matr)
+        self._st["model"] = matr.getModel()
+        self._st["mater"] = matr.getMaterialField()
+        self._st["cara"] = matr.getElementaryCharacteristics()
+
+        return self
+
+    def restore(self, matr):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            matr (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(matr)
+        matr.setModel(self._st["model"])
+        matr.setMaterialField(self._st["mater"])
+        matr.setElementaryCharacteristics(self._st["cara"])
+        matr.build()
 
 
 @injector(ElementaryMatrixDisplacementReal)
 class ExtendedElementaryMatrixDisplacementReal:
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
+    internalStateBuilder = ElementaryMatrixStateBuilder
 
 
 @injector(ElementaryMatrixDisplacementComplex)
 class ExtendedElementaryMatrixDisplacementComplex:
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
+    internalStateBuilder = ElementaryMatrixStateBuilder
 
 
 @injector(ElementaryMatrixTemperatureReal)
 class ExtendedElementaryMatrixTemperatureReal:
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
+    internalStateBuilder = ElementaryMatrixStateBuilder
 
 
 @injector(ElementaryMatrixPressureComplex)
 class ExtendedElementaryMatrixPressureComplex:
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
+    internalStateBuilder = ElementaryMatrixStateBuilder

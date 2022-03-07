@@ -131,6 +131,8 @@ character(len=16), optional, intent(out) :: load_apply_
         ligrch = load_name//'.CHME.LIGRE'
     elseif (phenom.eq.'THER') then
         ligrch = load_name//'.CHTH.LIGRE'
+    elseif (phenom.eq.'ACOU') then
+            ligrch = load_name//'.CHAC.LIGRE'
     else
         ASSERT(.false.)
     endif
@@ -148,6 +150,10 @@ character(len=16), optional, intent(out) :: load_apply_
         endif
     elseif (phenom.eq.'THER') then
         if (load_pheno.ne.'THERMIQUE') then
+            call utmess('F', 'CHARGES_21', sk=load_name)
+        endif
+    elseif (phenom.eq.'ACOU') then
+        if (load_pheno.ne.'ACOUSTIQUE') then
             call utmess('F', 'CHARGES_21', sk=load_name)
         endif
     else
@@ -182,6 +188,8 @@ character(len=16), optional, intent(out) :: load_apply_
             endif
         endif
     elseif (phenom.eq.'THER') then
+        ASSERT(.not.present(load_apply_))
+    elseif (phenom.eq.'ACOU') then
         ASSERT(.not.present(load_apply_))
     else
         ASSERT(.false.)
