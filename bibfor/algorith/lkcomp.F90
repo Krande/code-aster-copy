@@ -122,16 +122,76 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! - Flag to modify internal state variable
     lVari = L_VARI(option)
 
-    dt = instap - instam
+! =================================================================
+! --- INITIALISATION LOCALES
+! =================================================================
+
+    dt = 0.d0
     retcom = 0
     variTmp = 0.d0
-    call r8inir(6, 0.d0, depsp, 1)
-    call r8inir(6, 0.d0, depsv, 1)
-    dgamp = zero
-    dgamv = zero
-    dxip = zero
-    dxiv = zero
-    seuivm= zero
+
+    materd = 0.d0
+    materf = 0.d0
+    alpha = 0.d0
+    coef = 0.d0
+
+    sigml = 0.d0
+    sigpl = 0.d0
+    depml = 0.d0
+    depsth = 0.d0
+
+    i1ml = 0.d0
+    siim = 0.d0
+    sml = 0.d0
+
+    iel = 0.d0
+    i1el = 0.d0
+    sel1  = 0.d0
+
+    dvml = 0.d0
+    devml = 0.d0
+    tm = 0.d0
+    tp = 0.d0
+    tref = 0.d0
+
+    dvml1 = 0.d0
+    devml1 = 0.d0
+    sel = 0.d0
+    sigel = 0.d0
+    seuilv = 0.d0
+    seuilp = 0.d0
+    ucrvm = 0.d0
+    seuvm = 0.d0
+    ucrpm = 0.d0
+    seupm = 0.d0
+
+    depsv = 0.d0
+    dgamv = 0.d0
+    dxivm = 0.d0
+    xipic = 0.d0
+    depsp = 0.d0
+    dgamp = 0.d0
+    xivm = 0.d0
+    dxip = 0.d0
+    dxiv = 0.d0
+
+    seuivm = 0.d0
+    ucrivm = 0.d0
+    ucrip = 0.d0
+    ucriv = 0.d0
+    irrev = 0.d0
+    dsig = 0.d0
+    vecd = 0.d0
+    de = 0.d0
+    kk = 0.d0
+    mu = 0.d0
+    vintr = 0.d0
+    somme = 0.d0
+
+!
+!
+    dt = instap - instam
+
 !
 ! - Get temperatures
 !
@@ -200,10 +260,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! =================================================================
 ! --- VERIFICATION D'UN ETAT INITIAL PLASTIQUEMENT ADMISSIBLE -----
 ! =================================================================
-    somme = zero
-    do i = 1, nvi
-        somme = somme + vinm(i)
-    end do
+    somme = sum(vinm(1:nvi))
     if (abs(somme) .lt. r8prem()) then
         call lkcrip(i1ml, sml, vinm, nbmat, materd,&
                     ucrpm, seupm)

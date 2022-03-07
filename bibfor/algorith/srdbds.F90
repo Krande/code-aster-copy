@@ -72,10 +72,87 @@ subroutine srdbds(nmat,mater,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)
     common /tdim/ ndt,ndi
 
     !!!
-    !!! Calcul de sii
+    !!! Init
     !!!
 
     alpha = 0.d0
+    pi = 0.d0
+    pref = 0.d0
+    sigc = 0.d0
+    m3 = 0.d0
+    xi2 = 0.d0
+    m1 = 0.d0
+    a2 = 0.d0
+    s1 = 0.d0
+    qi = 0.d0
+    fi = 0.d0
+    a5 = 0.d0
+    m5 = 0.d0
+    s5 = 0.d0
+    ffp = 0.d0
+    xi1 = 0.d0
+    fp = 0.d0
+    ucar = 0.d0
+    fact6 = 0.d0
+    fact7 = 0.d0
+    rho_1 = 0.d0
+    rho_2 = 0.d0
+    alres = 0.d0
+    rcos3t = 0.d0
+    rtheta = 0.d0
+    c = 0.d0
+    phi = 0.d0
+    xip = 0.d0
+    tiers = 0.d0
+    a0 = 0.d0
+    m00 = 0.d0
+    s0 = 0.d0
+    m0 = 0.d0
+    sigmin = 0.d0
+    sigmax = 0.d0
+    sii = 0.d0
+    sigcar = 0.d0
+    sigtil = 0.d0
+    sinpsi = 0.d0
+    dsinds = 0.d0
+    dsmids = 0.d0
+    dsmads = 0.d0
+    r0c = 0.d0
+    dhds = 0.d0
+    dscardi = 0.d0
+    dsmidi = 0.d0
+    dsmadi = 0.d0
+    dsindi = 0.d0
+    rho_4 = 0.d0
+    dbdsin = 0.d0
+    fact3 = 0.d0
+    fact4 = 0.d0
+    fact5 = 0.d0
+    m10 = 0.d0
+    qi0 = 0.d0
+    xi10 = 0.d0
+    xi20 = 0.d0
+    rq = 0.d0
+    rm = 0.d0
+    f3p = 0.d0
+    cp = 0.d0
+    phip = 0.d0
+    sigtilp = 0.d0
+    dscards = 0.d0
+    rx1 = 0.d0
+    rx2 = 0.d0
+    rs = 0.d0
+    trr = 0.d0
+    dtmp = 0.d0
+    spre = 0.d0
+    spos = 0.d0
+    temp = 0.d0
+    fact1 = 0.d0
+    fact2 = 0.d0
+
+    !!!
+    !!! Calcul de sii
+    !!!
 
     sii = norm2(devsig(1:ndt))
 

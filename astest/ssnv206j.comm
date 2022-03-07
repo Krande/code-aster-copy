@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -284,7 +284,7 @@ TEST_RESU(RESU = (_F(INST = 7000.0,
                      NOM_CHAM = 'DEPL',
                      GROUP_NO = 'N4',
                      NOM_CMP = 'DX',
-                     VALE_CALC = 0.0285176269586,),),)
+                     VALE_CALC = 0.028517674045424338,),),)
 
 TEST_RESU(RESU = (_F(INST = 7000.0,
                      RESULTAT = U1,
@@ -297,6 +297,6 @@ TEST_RESU(RESU = (_F(INST = 7000.0,
                    NOM_CHAM = 'SIGM_NOEU',
                    GROUP_NO = 'N4',
                    NOM_CMP = 'SIYY',
-                   VALE_CALC = -14.186828743,),),)
+                   VALE_CALC = -14.18684131567159,),),)
 
 FIN()

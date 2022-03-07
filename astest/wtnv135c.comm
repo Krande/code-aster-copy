@@ -326,7 +326,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='DEPL',
                   GROUP_NO='NO8',
                   NOM_CMP='DX',
-                  VALE_CALC=0.030264876240581,
+                  VALE_CALC=0.03026487624057893,
                   ),
           )
 
@@ -335,8 +335,8 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='SIGM_NOEU',
                   GROUP_NO='NO8',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-1.1944653423043E7,
+                  VALE_CALC=-11944653.423042754,
                   ),
           )
 
-FIN () ;
+FIN ()

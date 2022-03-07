@@ -80,6 +80,45 @@ subroutine srilnf(nvi,vind,nmat,materf,dt,nr,yf,deps,vinf)
     common /tdim/ ndt,ndi
 
     !!!
+    !!! Init
+    !!!
+
+    devsig = 0.d0
+    i1 = 0.d0
+    xi1 = 0.d0
+    ucriv = 0.d0
+    seuilv = 0.d0
+    depsv = 0.d0
+    dgamv = 0.d0
+    seuilp = 0.d0
+    ucrip = 0.d0
+    varv = 0.d0
+    seuivm = 0.d0
+    dhds = 0.d0
+    ds2hds = 0.d0
+    paraep = 0.d0
+    varpl = 0.d0
+    dfdsp = 0.d0
+    bprimp = 0.d0
+    sigt = 0.d0
+    xi50 = 0.d0
+    xi5 = 0.d0
+    rx5 = 0.d0
+    vecnp = 0.d0
+    gp = 0.d0
+    devgii = 0.d0
+    xi10 = 0.d0
+    rx1 = 0.d0
+    xi20 = 0.d0
+    xi2 = 0.d0
+    rx2 = 0.d0
+    alpha = 0.d0
+    tpp = 0.d0
+    trr = 0.d0
+    dtmp = 0.d0
+    tmm = 0.d0
+
+    !!!
     !!! Remplissage direct de vinf(1) et vinf(3)
     !!!
 

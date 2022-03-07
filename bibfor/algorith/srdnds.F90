@@ -65,6 +65,27 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     common /tdim/ ndt,ndi
 
     !!!
+    !!! Init
+    !!!
+
+    dsdsig = 0.d0
+    di1dsi = 0.d0
+    sii = 0.d0
+    dbetds = 0.d0
+    dbetdi = 0.d0
+    mident = 0.d0
+    dsiids = 0.d0
+    kron2 = 0.d0
+    unstro = 0.d0
+    unssii = 0.d0
+    kron = 0.d0
+    dbdsig = 0.d0
+    devbds = 0.d0
+    dsidsi = 0.d0
+    sdsids = 0.d0
+    didbds = 0.d0
+
+    !!!
     !!! 1) Calcul des termes communs
     !!!
 

@@ -76,6 +76,25 @@ subroutine srdgds(nmat,materf,para,vara,devsig,&
 
     common /tdim/ ndt,ndi
 
+    !!!
+    !!! Init
+    !!!
+
+    d2fds2 = 0.d0
+    d2fdsn = 0.d0
+    dfdnpn = 0.d0
+    dfpndn = 0.d0
+    dfdsdn = 0.d0
+    dfdsvn = 0.d0
+    d2shds = 0.d0
+    varh = 0.d0
+    r0c = 0.d0
+    rtheta = 0.d0
+    rcos3t = 0.d0
+    patm = 0.d0
+    dndsig = 0.d0
+    d2fn2 = 0.d0
+
     !!! Recup. de patm
     patm=materf(1,2)
 
