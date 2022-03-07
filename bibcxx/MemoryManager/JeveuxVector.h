@@ -358,16 +358,26 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     /** @brief Convert to std::vector */
-    std::vector< ValueType > toVector() {
+    std::vector< ValueType > toVector() { return segment( 0, size() ); };
+
+    /** @brief Vector containing the first n elements */
+    std::vector< ValueType > head( const ASTERINTEGER &n ) { return segment( 0, n ); };
+
+    /** @brief Vector containing n elements, starting at position i */
+    std::vector< ValueType > segment( const ASTERINTEGER &first, const ASTERINTEGER &n ) {
         CALL_JEMARQ();
-        std::vector< ValueType > toReturn;
+
         updateValuePointer();
 
-        ASTERINTEGER size = this->size();
-        toReturn.reserve( size );
+        std::vector< ValueType > toReturn;
+        toReturn.reserve( n );
 
-        for ( ASTERINTEGER i = 0; i < size; ++i )
-            toReturn.push_back( _valuePtr[i] );
+        const ASTERINTEGER total = first + n;
+
+        for ( ASTERINTEGER i = first; i < total; ++i ) {
+            toReturn.push_back( this->operator[]( i ) );
+        }
+
         CALL_JEDEMA();
 
         return toReturn;
@@ -594,7 +604,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         this->updateValuePointer();
         const auto size = this->size();
 
-        AsterBLAS::scal(size, scal, getDataPtr(), ASTERINTEGER(1));
+        AsterBLAS::scal( size, scal, getDataPtr(), ASTERINTEGER( 1 ) );
 
         CALL_JEDEMA();
 
