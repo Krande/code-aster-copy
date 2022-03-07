@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ implicit none
 #include "asterfort/metaGetParaAnneal.h"
 #include "asterfort/metaGetParaElas.h"
 #include "asterfort/Metallurgy_type.h"
+#include "asterfort/Behaviour_type.h"
 !
 character(len=*), intent(in) :: fami
 integer, intent(in) :: kpg
@@ -119,6 +120,7 @@ integer, intent(out) :: iret
     real(kind=8), parameter :: pdtsca(6) = (/1.d0,1.d0,1.d0,2.d0,2.d0,2.d0/)
     aster_logical :: resi, rigi, l_temp
     aster_logical :: l_visc, l_anneal, l_plas_tran, l_hard_isotline, l_hard_isotnlin
+    aster_logical :: lMatr, lVari, lSigm
 !
     data ind   /1,4,5,&
                 4,2,6,&
@@ -137,15 +139,22 @@ integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    do i = 1, 2*ndim
-        sigp(i) = 0.d0
-    end do
-    vip(1:9)            = 0.d0
-    dsigdf(1:6,1:3,1:3) = 0.d0
-    iret                = 0
-    resi                = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    rigi                = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
-    dt                  = instap-instam
+    iret = 0
+    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
+    rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
+    dt = instap-instam
+    lVari = L_VARI(option)
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
+    if (lVari) then
+        vip(1:9) = 0.d0
+    endif
+    if (lMatr) then
+        dsigdf(1:6,1:3,1:3) = 0.d0
+    endif
+    if (lSigm) then
+        sigp(1:2*ndim) = 0.d0
+    endif
 !
 ! - Get metallurgy type
 !
@@ -298,36 +307,36 @@ integer, intent(out) :: iret
 !
 ! 2.9 - CALCUL DE HMOY ET RMOY (ON INCLUE LE SIGY)
 !
-        if (l_hard_isotline) then
-! --------- Get hardening slope (linear)
-            coef_hard = (1.d0)
-            call metaGetParaHardLine(poum     , fami    , kpg, ksp, imat,&
-                                     meta_type, nb_phase,&
-                                     e        , coef_hard, h)
-            do k = 1, nb_phase
-                r(k) = h(k)*vi(k)+sy(k)
-            end do
-        endif
-        if (l_hard_isotnlin) then
-! --------- Get hardening slope (non-linear)
-            call metaGetParaHardTrac(imat   , meta_type, nb_phase,&
-                                     l_temp , temp     ,&
-                                     vi     , h       , r , maxval)
-            do k = 1, nb_phase
-                r(k) = r(k) + sy(k)
-            end do
-        endif
-        if (zalpha .gt. 0.d0) then
-            rmoy=phase(1)*r(1)+phase(2)*r(2)+phase(3)*r(3)+phase(4)*r(4)
-            rmoy = rmoy/zalpha
-            hmoy=phase(1)*h(1)+phase(2)*h(2)+phase(3)*h(3)+phase(4)*h(4)
-            hmoy = hmoy/zalpha
-        else
-            rmoy = 0.d0
-            hmoy = 0.d0
-        endif
-        rmoy =(1.d0-fmel)*r(nb_phase)+fmel*rmoy
-        hmoy = (1.d0-fmel)*h(nb_phase)+fmel*hmoy
+    if (l_hard_isotline) then
+! ----- Get hardening slope (linear)
+        coef_hard = (1.d0)
+        call metaGetParaHardLine(poum     , fami    , kpg, ksp, imat,&
+                                    meta_type, nb_phase,&
+                                    e        , coef_hard, h)
+        do k = 1, nb_phase
+            r(k) = h(k)*vi(k)+sy(k)
+        end do
+    endif
+    if (l_hard_isotnlin) then
+! ----- Get hardening slope (non-linear)
+        call metaGetParaHardTrac(imat   , meta_type, nb_phase,&
+                                    l_temp , temp     ,&
+                                    vi     , h       , r , maxval)
+        do k = 1, nb_phase
+            r(k) = r(k) + sy(k)
+        end do
+    endif
+    if (zalpha .gt. 0.d0) then
+        rmoy=phase(1)*r(1)+phase(2)*r(2)+phase(3)*r(3)+phase(4)*r(4)
+        rmoy = rmoy/zalpha
+        hmoy=phase(1)*h(1)+phase(2)*h(2)+phase(3)*h(3)+phase(4)*h(4)
+        hmoy = hmoy/zalpha
+    else
+        rmoy = 0.d0
+        hmoy = 0.d0
+    endif
+    rmoy =(1.d0-fmel)*r(nb_phase)+fmel*rmoy
+    hmoy = (1.d0-fmel)*h(nb_phase)+fmel*hmoy
 !
 ! ********************************
 ! 3 - DEBUT DE L ALGORITHME
@@ -425,13 +434,13 @@ integer, intent(out) :: iret
 !
 ! 4.2.1 - CALCUL DE DP
 !
-        seuil=eqtel-(1.d0+mu*trans*trbel)*rmoy
+        seuil = eqtel-(1.d0+mu*trans*trbel)*rmoy
         if (seuil .lt. 0.d0) then
             vip(8)=0.d0
             dp=0.d0
         else
-            vip(8)=1.d0
-            mutild=2.d0*mu*trbel/3.d0
+            vip(8) = 1.d0
+            mutild = 2.d0*mu*trbel/3.d0
             call nzcalc(carcri, nb_phase, phase, zalpha,&
                         fmel  , seuil   , dt   , trans ,&
                         hmoy  , mutild  , eta  , unsurn,&
