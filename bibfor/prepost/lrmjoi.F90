@@ -34,6 +34,7 @@ use sort_module
 #include "asterfort/as_msdjni.h"
 #include "asterfort/as_msdnjn.h"
 #include "asterfort/as_msdszi.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codlet.h"
@@ -69,7 +70,7 @@ use sort_module
     integer :: rang, nbproc, nbjoin, domdis, nstep, ncorre
     integer :: icor, entlcl, geolcl, entdst, geodst, ncorr2
     integer :: jnlogl, codret, i_join, ino, numno, deca
-    integer :: ima, nbma, node_id, nbnoma, dom1, dom2, incr
+    integer :: ima, nbma, node_id, nbnoma, dom1, dom2, incr, nbjoin_max
     mpi_int :: mrank, msize
     integer, pointer :: v_noext(:) => null()
     integer, pointer :: v_nojoin(:) => null()
@@ -122,6 +123,12 @@ use sort_module
 !     et qui est un noeud joint. C'est l'objet .NOEX qui l'indique mais il faut faire
 !     des comm pour le savoir
 !
+        nbjoin_max = nbjoin
+        call asmpi_comm_vect("MPI_MAX", "I", sci=nbjoin_max)
+        if(nbjoin_max == 0) then
+            call utmess('A', 'MAILLAGE1_5', sk=nomam2)
+        end if
+
         if(nbjoin > 0) then
             call wkvect(mesh//'.DOMJOINTS', 'G V I', nbjoin/2, vi=v_dom)
 !
@@ -173,13 +180,11 @@ use sort_module
             enddo
 !
             call sort_i8(v_dom, nbjoin/2)
+        end if
 !
 ! --- On nettoie les joints des noeuds en trop
 !
-            call lrm_clean_joint(mesh, v_noext)
-        else
-            call utmess('A', 'MAILLAGE1_5', sk=nomam2)
-        end if
+        call lrm_clean_joint(mesh, v_noext)
 !
 ! --- Verification NOEX
 !

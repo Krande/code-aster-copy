@@ -111,6 +111,12 @@ class AsterMPI {
     template < typename T >
     static void bcast( std::vector< T > &value, int root,
                        aster_comm_t *_commCurrent = aster_get_current_comm() );
+
+
+    /// Barrier
+    static void barrier( aster_comm_t *_commCurrent = aster_get_current_comm() ){
+        aster_set_mpi_barrier(_commCurrent);
+    };
 };
 
 //---------------------------------------------------------------------------
@@ -126,8 +132,8 @@ template <> inline MPI_Datatype AsterMPI::mpi_type< unsigned long int >() {
 }
 template <> inline MPI_Datatype AsterMPI::mpi_type< long long >() { return MPI_LONG_LONG; }
 template <> inline MPI_Datatype AsterMPI::mpi_type< bool >() { return MPI_CXX_BOOL; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< ASTERCOMPLEX >() { 
-    return MPI_C_DOUBLE_COMPLEX ; 
+template <> inline MPI_Datatype AsterMPI::mpi_type< ASTERCOMPLEX >() {
+    return MPI_C_DOUBLE_COMPLEX ;
 }
 //---------------------------------------------------------------------------
 inline void AsterMPI::all_gather( const std::string &in_values, VectorString &out_values,

@@ -40,6 +40,7 @@ bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
 
     AS_ASSERT( updateGlobalGroupOfNodes() );
     AS_ASSERT( updateGlobalGroupOfCells() );
+    AS_ASSERT( build() );
 
     return ret;
 };

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,11 @@ nb_mesh_converted = 0
 for mesh_file in meshes:
     MPI.COMM_WORLD.Barrier()
     mesh_name = osp.basename(mesh_file)
+    nb_mesh += 1
     if mesh_name in failure:
         print("SKIP:", mesh_name)
         continue
 
-    nb_mesh += 1
     mesh_vers = mc.MEDFileVersionOfFileStr(mesh_name)
     vers_num = int(mesh_vers.replace(".", ""))
 
@@ -134,8 +134,8 @@ for mesh_file in meshes:
     MPI.COMM_WORLD.Barrier()
 
 
-list_nb_mesh = [525, 494, 494]
-list_nb_mesh_conv = [525, 494, 494]
+list_nb_mesh = [526, 497, 495]
+list_nb_mesh_conv = [525, 492, 494]
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)
