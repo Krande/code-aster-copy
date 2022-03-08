@@ -236,7 +236,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         do i = 1, nbpark
            j=1+(i-1)*mxresf
            k24b=resuk(j)
-           resuk(j:j+nconvg) = k24b
+           resuk(j:j-1+nconvg) = k24b
         end do
 !       ----------------------------------------------------------------
 !       --- STEP 6: MENAGE.
