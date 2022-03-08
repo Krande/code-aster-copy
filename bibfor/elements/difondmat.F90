@@ -91,6 +91,7 @@ implicit none
 !   fsInverse       : les deltas(finaux)
 !   dfOrdo          : récupération des dérivés des critères uniquement utiles au calcul
     real(kind=8), allocatable :: MatAinverser(:,:),fsInverse(:,:),dfOrdo(:,:)
+    integer, allocatable :: assoddl(:)
     real(kind=8) :: etatCP,etatG
 !   numérotation pour savoir quels critères sont concernés H et H- pour le
 !   transfert à la matrice de raideur
@@ -391,63 +392,39 @@ implicit none
     if (nbDDL .EQ. 0) then
         goto 999
     endif
-    allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5))
-    !
+    allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5), assoddl(nbDDL))
+    ! matrice identite
+    forall (ii=1:nbDDL, jj=1:nbDDL) fsInverse(ii,jj) = (ii/jj)*(jj/ii)
+
     nbDDLii=0
     do ii=1,8
        if (criteres(ii)) then
           nbDDLii=nbDDLii+1
+          assoddl(nbDDLii) = ii
           dfOrdo(nbDDLii,:)=dfdF(ii,:)
-          nbDDLjj=0
-          do jj=1,8
-             if (criteres(jj)) then
-                nbDDLjj=nbDDLjj+1
-                ! réalisation d'une matrice unité pour l'inversion'
-                if (nbDDLii .EQ. nbDDLjj) then
-                   fsInverse(nbDDLii,nbDDLjj)=1.0
-                else
-                   fsInverse(nbDDLii,nbDDLjj)=0.0
-                endif
-                MatAinverser(nbDDLii,nbDDLjj)= sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:))
-             endif
-          enddo
-       endif
-    enddo
+       end if
+    end do
 
-    nbDDLii=0
-    do ii=1,4
-       if (criteres(ii)) then
-          nbDDLii=nbDDLii+1
-          nbDDLjj=0
-          do jj=1,4
-             if (criteres(jj)) then
-                nbDDLjj=nbDDLjj+1
-                MatAinverser(nbDDLii,nbDDLjj)=MatAinverser(nbDDLii,nbDDLjj) - &
-                     dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1)-dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
+    do nbDDLii=1,nbDDL
+       ii = assoddl(nbDDLii)
+       do nbDDLjj=1,nbDDL
+          jj = assoddl(nbDDLjj)
+          if ((ii.le.4).and.(jj.le.4)) then
+             MatAinverser(nbDDLii,nbDDLjj) = sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:)) - &
+                  dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1)-dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
+          else if ((ii.ge.5).and.(jj.ge.5)) then
+             if(dfdF(ii,3).gt.r8prem()) then
+                signeHHCP3(3)=+1.0
+             else
+                signeHHCP3(3)=-1.0
              endif
-          enddo
-       endif
-    enddo
-
-    nbDDLii=0
-    do ii=5,8
-       if (criteres(ii)) then
-          nbDDLii=nbDDLii+1
-          nbDDLjj=0
-          do jj=5,8
-             if (criteres(jj)) then
-                nbDDLjj=nbDDLjj+1
-                if(dfdF(ii,3).GT.r8prem()) then
-                   signeHHCP3(3)=+1.0
-                else
-                   signeHHCP3(3)=-1.0
-                endif
-                MatAinverser(nbDDLii,nbDDLjj)= MatAinverser(nbDDLii,nbDDLjj) - &
-                     sum(dfdQCP(ii-4,:)*HHCP(:)*signeHHCP3(:)*dfdF(jj,:))
-             endif
-          enddo
-       endif
-    enddo
+             MatAinverser(nbDDLii,nbDDLjj) = sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:)) - &
+                  sum(dfdQCP(ii-4,:)*HHCP(:)*signeHHCP3(:)*dfdF(jj,:))
+          else
+             MatAinverser(nbDDLii,nbDDLjj) = sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:))
+          end if
+       end do
+    end do
 
     !
     ! on inverse la matrice entièrement
@@ -477,6 +454,9 @@ implicit none
     endif
     if (allocated(dfOrdo)) then
         deallocate(dfOrdo)
+    endif
+    if (allocated(assoddl)) then
+       deallocate(assoddl)
     endif
     !
 contains

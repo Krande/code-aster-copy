@@ -92,6 +92,7 @@ implicit none
 !   fsInverse       : les deltas(finaux)
 !   dfOrdo          : récupération des dérivés des critères uniquement utiles au calcul
     real(kind =8), allocatable :: MatAinverser(:,:),fsInverse(:,:),dfOrdo(:,:)
+    integer, allocatable :: assoddl(:)
 !   La partie plastique de la raideur
     real(kind = 8) :: Kplastique(5,5)
 !   factor  de linéarisation,reste dans des division euclidienne
@@ -584,60 +585,35 @@ implicit none
     Hslid(2)=vpara(5)*exp(-1.0*vpara(6)*vloc(20))
     !
     ! création de la matrice A inverser par la suite
-    allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5))
+    allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5), assoddl(nbDDL))
+    ! matrice identite
+    forall (ii=1:nbDDL, jj=1:nbDDL) fsInverse(ii,jj) = (ii/jj)*(jj/ii)
+
     nbDDLii=0
     do ii=1,16
        if (criteres(ii)) then
           nbDDLii=nbDDLii+1
+          assoddl(nbDDLii) = ii
           dfOrdo(nbDDLii,:)=dfdF(ii,:)
-          nbDDLjj=0
-          do jj=1,16
-             if (criteres(jj)) then
-                nbDDLjj=nbDDLjj+1
-                !réalisation d'une matrice unité pour l'inversion'
-                if (nbDDLii .EQ. nbDDLjj) then
-                   fsInverse(nbDDLii,nbDDLjj)=1.0
-                else
-                   fsInverse(nbDDLii,nbDDLjj)=0.0
-                endif
-                MatAinverser(nbDDLii,nbDDLjj)=sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:))
-             endif
-          enddo
-       endif
-    enddo
+       end if
+    end do
 
-    nbDDLii=0
-    do ii=1,4
-       if (criteres(ii)) then
-          nbDDLii=nbDDLii+1
-          nbDDLjj=0
-          do jj=1,4
-             if (criteres(jj)) then
-                nbDDLjj=nbDDLjj+1
-                MatAinverser(nbDDLii,nbDDLjj) =MatAinverser(nbDDLii,nbDDLjj)- &
-                     dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1)-dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
-             endif
-          enddo
-       endif
-    enddo
+    do nbDDLii=1,nbDDL
+       ii = assoddl(nbDDLii)
+       do nbDDLjj=1,nbDDL
+          jj = assoddl(nbDDLjj)
+          if ((ii.le.4).and.(jj.le.4)) then
+             MatAinverser(nbDDLii,nbDDLjj) = sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:)) - &
+                  dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1)-dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
+          else if ((ii.ge.5).and.(jj.ge.5)) then
+             MatAinverser(nbDDLii,nbDDLjj) = sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:)) - &
+                  sum(dfdQCP(ii-4,:)*HHCP(:)*dfdF(jj,:))
+          else
+             MatAinverser(nbDDLii,nbDDLjj) = sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:))
+          end if
+       end do
+    end do
 
-    nbDDLii=0
-    do ii=5,16
-       if (criteres(ii)) then
-          nbDDLii=nbDDLii+1
-          nbDDLjj=0
-          do jj=5,16
-             if (criteres(jj)) then
-                nbDDLjj=nbDDLjj+1
-                MatAinverser(nbDDLii,nbDDLjj)=MatAinverser(nbDDLii,nbDDLjj)- &
-                     sum(dfdQCP(ii-4,:)*HHCP(:)*dfdF(jj,:))
-             endif
-          enddo
-       endif
-    enddo
-
-    !
-    !
     ! on inverse la matrice entièrement
     call mgauss('NCVP', MatAinverser, fsInverse, nbDDL, nbDDL,nbDDL, det, iret)
     if (iret .NE. 0) then
@@ -664,6 +640,9 @@ implicit none
     endif
     if (allocated(dfOrdo)) then
         deallocate(dfOrdo)
+    endif
+    if (allocated(assoddl)) then
+       deallocate(assoddl)
     endif
     !
 contains
