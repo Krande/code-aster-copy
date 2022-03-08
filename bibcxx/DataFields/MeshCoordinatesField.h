@@ -31,6 +31,10 @@
 #include "DataFields/DataField.h"
 #include "MemoryManager/JeveuxVector.h"
 
+
+
+template <typename> class FieldOnNodes;
+
 /**
  * @class MeshCoordinatesField
  * @brief Cette classe template permet de definir un champ aux noeuds Aster
@@ -44,6 +48,8 @@ class MeshCoordinatesField : public DataField {
     JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.VALE' */
     JeveuxVectorReal _valuesList;
+
+    using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;
 
   public:
     /**
@@ -74,6 +80,12 @@ class MeshCoordinatesField : public DataField {
     };
 
     /**
+     * @brief Shorthand + operator assignement
+     * @return Updated field
+     */
+    MeshCoordinatesField &operator+=( const FieldOnNodesReal &rhs );
+
+    /**
      * @brief Assignement operator
      * @param coordField MeshCoordinatesField
      */
@@ -98,6 +110,7 @@ class MeshCoordinatesField : public DataField {
      * @brief Get _valuesList
      */
     const JeveuxVectorReal getValues() const { return _valuesList; };
+
 
     /**
      * @brief Surcharge de l'operateur []

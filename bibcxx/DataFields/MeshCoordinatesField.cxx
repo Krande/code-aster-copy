@@ -3,7 +3,7 @@
  * @brief Implementation de MeshCoordinatesField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,5 +22,21 @@
  */
 
 #include "DataFields/MeshCoordinatesField.h"
+#include "DataFields/FieldOnNodes.h"
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
+
+
+MeshCoordinatesField& MeshCoordinatesField::operator+=( const FieldOnNodesReal &rhs ){
+
+    std::string base("V"), cumul("CUMU");
+    ASTERDOUBLE alpha = 1.;
+    MeshCoordinatesField oldCoord =  this->duplicate();
+
+    CALLO_VTGPLD(cumul, &alpha, oldCoord.getName(), rhs.getName(), 
+                                        base, getName());
+    
+    updateValuePointers();
+
+    return *this;
+}

@@ -38,7 +38,7 @@ void exportContactPairingToPython() {
     .def( "__init__", py::make_constructor(
                     &initFactoryPtr< ContactPairing, std::string, 
                             std::vector< ContactZonePtr >, BaseMeshPtr >))
-    .def( "getNewCoordinates", &ContactPairing::getNewCoordinates, R"(
+    .def( "getCoordinates", &ContactPairing::getCoordinates, R"(
 Compute the new coordinates 
 Returns:
     MeshCoordinatesFieldPtr: the new MeshCoordinatesField object

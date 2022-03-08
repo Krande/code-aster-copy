@@ -37,11 +37,11 @@ class ContactPairing : public DataStructure {
     private:
     
     /** @brief new coordinates */
-    MeshCoordinatesFieldPtr _newCoordinates = nullptr;
+    MeshCoordinatesFieldPtr _newCoordinates;
     /** @brief vector of zones  */
     std::vector< ContactZonePtr > _zones;
     /** @brief Mesh */
-    BaseMeshPtr _mesh = nullptr;
+    BaseMeshPtr _mesh ;
     /** @brief Vector of number of pairs */
     VectorLong _nbPairs;
     /** @brief Vector of pairs */
@@ -53,9 +53,11 @@ class ContactPairing : public DataStructure {
     /** @brief Vector of master intersection points */
     std::vector<VectorReal>  _masterIntersectionPoints;
     /** @brief Gauss points */
-    std::vector<VectorReal> _gaussPoints;
+    std::vector<VectorReal> _quadraturePoints;
 
     public:
+
+    typedef std::vector<std::pair<ASTERINTEGER,ASTERINTEGER>> VectorLongPairs;
     
     /** @brief Mesh constructor */ 
     ContactPairing( const std::string name, const std::vector< ContactZonePtr > zones,
@@ -66,13 +68,13 @@ class ContactPairing : public DataStructure {
                 ContactPairing( ResultNaming::getNewResultName(), zones, mesh ) {};
 
     /** @brief Mesh getter */    
-    MeshCoordinatesFieldPtr getNewCoordinates() const { return _newCoordinates; }
+    MeshCoordinatesFieldPtr getCoordinates() const { return _newCoordinates; }
 
     /** @brief zones  getter */  
     std::vector< ContactZonePtr > getContactZones() const { return _zones;}
 
     /** @brief Update coordinates */  
-    void updateCoordinates(FieldOnNodesRealPtr& disp);
+    void updateCoordinates(FieldOnNodesRealPtr& disp) { *_newCoordinates += *disp; };
     
     /** @brief compute pairing quantities of zone i */  
     ASTERBOOL computePairingQuantities(ASTERINTEGER i);
@@ -100,8 +102,8 @@ class ContactPairing : public DataStructure {
     }
 
     /** @brief get gauss points of zone i */  
-    VectorReal getGaussPoints( ASTERINTEGER i ) const { 
-            return _gaussPoints[i]; 
+    VectorReal getQuadraturePoints( ASTERINTEGER i ) const { 
+            return _quadraturePoints[i]; 
     }
 
 };

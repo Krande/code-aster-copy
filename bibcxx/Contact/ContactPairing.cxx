@@ -27,11 +27,13 @@
 
 ContactPairing::ContactPairing( const std::string name, const std::vector< ContactZonePtr > zones,
      const BaseMeshPtr mesh): DataStructure( name, 8, "PAIRING_SD" ), _zones(zones), _mesh(mesh)
-    {
+    {  
+     if (!_mesh || _mesh->isParallel() ) raiseAsterError( "Mesh is empty or is parallel " );
+     
       _newCoordinates = boost::make_shared<MeshCoordinatesField>(*(_mesh->getCoordinates()));
 
      // be sure that zones is not empty and get size of zones and resize
-     if(_zones.empty()) throw std::runtime_error(" Vector of ContactZone objects is empty ");
+     if(_zones.empty()) raiseAsterError("ContactZone vector is empty ");
      int size_zones = zones.size();
 
       // resize pairing quantities
@@ -40,29 +42,9 @@ ContactPairing::ContactPairing( const std::string name, const std::vector< Conta
       _nbIntersectionPoints.resize(size_zones);
       _slaveIntersectionPoints.resize(size_zones);
       _masterIntersectionPoints.resize(size_zones);
-      _gaussPoints.resize(size_zones);
+      _quadraturePoints.resize(size_zones);
 
     };
-
-
- void ContactPairing::updateCoordinates(FieldOnNodesRealPtr& disp){
-
-      std::string base("V"), cumul("CUMU");
-      ASTERDOUBLE alpha = 1.;
-
-      MeshCoordinatesFieldPtr oldCoord =  _mesh->getCoordinates();
-
-
-      CALLO_VTGPLD(cumul, &alpha, oldCoord->getName(), disp->getName(), 
-                                        base, _newCoordinates->getName());
-
-      try{
-          _newCoordinates->updateValuePointers();
-      }catch(const std::exception& e){
-           std::cout << e.what() << std::endl;
-      }
-      
- }
 
 
 ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
@@ -105,14 +87,12 @@ ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
      ASTERDOUBLE  *InterMasterPoints = NULL;
      ASTERDOUBLE  *gaussPoints = NULL;
      
-     try{
-          CALLO_APLCPGN(_mesh->getName(), _newCoordinates->getName(), _zones[i]->getName(),
-                       pair_method, &pair_tole, &nbCellMaster, eleMaster.data(), &nbCellSlave, 
-                       eleSlave.data(), NodesMaster.data(), &nbNodeMaster, &nb_pairs, &pairs, 
-                       &nbInterPoints, &InterSlavePoints, &InterMasterPoints, &gaussPoints);
-     } catch( const std::exception& e ){
-           std::cout << e.what() << std::endl;
-     }
+
+     CALLO_APLCPGN(_mesh->getName(), _newCoordinates->getName(), _zones[i]->getName(),
+                    pair_method, &pair_tole, &nbCellMaster, eleMaster.data(), &nbCellSlave, 
+                    eleSlave.data(), NodesMaster.data(), &nbNodeMaster, &nb_pairs, &pairs, 
+                    &nbInterPoints, &InterSlavePoints, &InterMasterPoints, &gaussPoints);
+
      
      // clear 
      this->clear(i);
@@ -123,7 +103,12 @@ ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
      _nbIntersectionPoints[i] = VectorLong(nbInterPoints, nbInterPoints + nb_pairs );
      _slaveIntersectionPoints[i] = VectorReal(InterSlavePoints, InterSlavePoints + 16*nb_pairs);
      _masterIntersectionPoints[i] = VectorReal(InterMasterPoints, InterMasterPoints + 16*nb_pairs);
-     _gaussPoints[i]  =  VectorReal(gaussPoints, gaussPoints + 72*nb_pairs);
+     _quadraturePoints[i]  =  VectorReal(gaussPoints, gaussPoints + 72*nb_pairs);
+
+     // update numerotation 
+
+     std::transform(_listOfPairs[i].begin(), _listOfPairs[i].end(), _listOfPairs[i].begin(),
+                    [](ASTERINTEGER& i) -> ASTERINTEGER {return --i;});
 
      // free temporary quantities
      free(pairs);
@@ -142,7 +127,7 @@ ASTERBOOL ContactPairing::clear( ASTERINTEGER i ){
      _nbIntersectionPoints[i].clear();
      _slaveIntersectionPoints[i].clear();
      _masterIntersectionPoints[i].clear();
-     _gaussPoints[i].clear();
+     _quadraturePoints[i].clear();
 
      return true;
 }
