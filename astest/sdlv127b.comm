@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,9 +90,11 @@ from math import *
 
 # Coordonnées du point de départ de l'onde.
 z0=-200.;
-x0=0;
-x01=-1. ;
-x02=-601.;
+x0=100.;
+
+
+z1=0.;
+x1=100.;
 
 # Angle d'incidence par rapport à la verticale de propagation de l'onde (0=vertical)
 a=21;
@@ -120,7 +122,7 @@ RA13=2*k*sin(2*a2)*cos(2*b2)/N
 
 # Calcul des bons paramètres dist à insérer dans le calcul.
 dist=x0*sina+z0*cosa;
-dist2=x0*sina+(-z0)*(-cosa);
+distr=x1*sina+z1*cosa;
 
 zsv=cosb2*(-z0)/Rc1c2/cosa;
 xsv=(sina/cosa)*(-z0)-sinb2*(-z0)/Rc1c2/cosa;
@@ -230,7 +232,8 @@ ONDEP=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                      TYPE_ONDE='P',
                                      FONC_SIGNAL=vite_1,
                                      DIST=dist,
-                                     DIST_REFLECHI=0.0,
+                                     DIST_REFLECHI=distr,
+                                     COOR_REFE=100.,
                                      DEPL_IMPO=depl_1,
                                      GROUP_MA=('LITOT'), 
                                      ),
@@ -241,7 +244,8 @@ ONDES=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                      TYPE_ONDE='S',
                                      FONC_SIGNAL=vite_1,
                                      DIST=dist,
-                                     DIST_REFLECHI=0.0,
+                                     DIST_REFLECHI=distr,
+                                     COOR_REFE=100.,
                                      DEPL_IMPO=depl_1,
                                      GROUP_MA=('LITOT',),
                                      ),

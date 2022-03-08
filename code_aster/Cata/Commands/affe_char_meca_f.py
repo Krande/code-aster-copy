@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -490,7 +490,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            DEPL_IMPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           COOR_REFE      = SIMP(statut='f', typ='R', defaut= 0.0 , fr=tr("coord de reference pour les phases") ),
+           COOR_REFE      = SIMP(statut='f', typ='R', defaut= (0.0,0.0) ,min=1, max=2,fr=tr("coord de reference pour les phases") ),
          ),
 
 

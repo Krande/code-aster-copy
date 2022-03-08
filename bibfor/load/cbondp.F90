@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,11 @@ character(len=4), intent(in) :: valeType
     real(kind=8) :: r8dummy
     character(len=8) :: k8dummy
     character(len=16) :: k16dummy
-    real(kind=8) :: wave_dire(3), wave_type_r, dist
+    real(kind=8) :: wave_dire(3), coor_vect(2),wave_type_r, dist
     character(len=8) :: signal, signde
     character(len=16) :: wave_type
     integer :: jvalv
-    integer :: iocc, ndir, val_nb, nondp
+    integer :: iocc, ndir, val_nb, nondp, ncoor
     integer :: jvCell
     integer :: nbCell
     character(len=19) :: map(LOAD_MAP_NBMAX)
@@ -179,8 +179,16 @@ character(len=4), intent(in) :: valeType
                            scal=dist)
                zr(jvalv-1+6) = dist
             endif
-            call getvr8(keywordfact, 'COOR_REFE', iocc=iocc, scal=dist)
-            zr(jvalv-1+7) = dist
+            coor_vect(1) = r8vide()
+            coor_vect(2) = r8vide()
+            call getvr8(keywordfact, 'COOR_REFE', iocc=iocc, nbval=0, nbret=ncoor)
+            ncoor = - ncoor
+            if (ncoor .ne. 0) then
+                call getvr8(keywordfact, 'COOR_REFE', iocc=iocc, nbval=ncoor, vect=coor_vect)
+            endif
+            zr(jvalv-1+7) = coor_vect(1)
+            zr(jvalv-1+8) = coor_vect(2)
+
             call nocart(map(2), 3, nbCmp(2), mode='NUM', nma=nbCell,&
                         limanu=zi(jvCell))
         endif
