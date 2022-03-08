@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utpnlg(nno, ndim, pgl, matl,mate)
+subroutine utpnlg(nno, nnc, pgl, matl,mate)
     implicit none
+!
+#include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
-    integer      :: nno, ndim
-    real(kind=8) :: mate(1), pgl(ndim, ndim), matl(nno*ndim,nno*ndim)
+!
+    integer      :: nno, nnc
+    real(kind=8) :: mate(1), pgl(3, 3), matl(nno*nnc,nno*nnc)
 ! .....................................................................C
 ! .....................................................................C
 !    - FONCTION REALISEE:  TRANSFORMATION DES MATRICES ELEMENTAIRES    C
@@ -34,23 +37,24 @@ subroutine utpnlg(nno, ndim, pgl, matl,mate)
 ! .....................................................................C
 ! .....................................................................
     integer :: i, j, k, ii,nj
-    real(kind=8) :: mt(nno*ndim, nno*ndim), matg(nno*ndim, nno*ndim)
+    real(kind=8) :: mt(nno*nnc, nno*nnc), matg(nno*nnc, nno*nnc)
 ! .....................................................................
-    nj=nno*ndim
+    ASSERT( nnc.eq.3 )
+    nj=nno*nnc
 ! --- MATRICE DE TRANSFERT
-    call r8inir(nno*nno*ndim*ndim,0.d0,mt,1)
-    do 10 i = 1, ndim
-        do 20 j = 1, ndim
+    call r8inir(nno*nno*nnc*nnc,0.d0,mt,1)
+    do 10 i = 1, 3
+        do 20 j = 1, 3
            do 30 k = 0, nno-1
-             mt(i ,j ) = pgl(i,j)
-             mt(i+k*ndim,j+k*ndim) = pgl(i,j)
+             mt(i ,j )       = pgl(i,j)
+             mt(i+k*3,j+k*3) = pgl(i,j)
 30         continue
 20      continue
 10  continue
 !
 ! --- ON EFFECTUE : MATG() = MATE() * MT()
-    do 40 k = 1, nno*ndim
-        do 50 i = 1, nno*ndim
+    do 40 k = 1, nno*nnc
+        do 50 i = 1, nno*nnc
             matg(i,k) = 0.d0
             do 60 j = 1, nj
                 matg(i,k) = matg(i,k) + matl(i,j) * mt(j,k)
@@ -59,9 +63,9 @@ subroutine utpnlg(nno, ndim, pgl, matl,mate)
 40  continue
 ! --- MULTIPLICATION PAR LA MATRICE TRANSPOSEE DE "MT" LORSQUE
 !           "MATE" EST RECTANGULAIRE DE DIMENSIONS 7X7
-      do 70 i = 1, nno*ndim
+      do 70 i = 1, nno*nnc
           ii = nj * (i-1)
-          do 80 k = 1, nno*ndim
+          do 80 k = 1, nno*nnc
               mate(ii+k) = 0.d0
               do 90 j = 1, nj
                   mate(ii+k) = mate(ii+k) + mt(j,i)*matg(j,k)
