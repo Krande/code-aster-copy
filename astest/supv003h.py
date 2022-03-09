@@ -26,50 +26,19 @@ from code_aster.Utilities import ExecutionParameter, Options
 code_aster.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION"))
 test = code_aster.TestCase()
 
-MAIL = LIRE_MAILLAGE(
-    FORMAT="MED",
-)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MODELE = AFFE_MODELE(
-    MAILLAGE=MAIL,
-    AFFE=_F(
-        TOUT="OUI",
-        PHENOMENE="MECANIQUE",
-        MODELISATION="3D",
-    ),
-)
+MODELE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-MAT = DEFI_MATERIAU(
-    ELAS=_F(
-        E=204000000000.0,
-        NU=0.3,
-        RHO=7800.0,
-    ),
-)
+MAT = DEFI_MATERIAU(ELAS=_F(E=204000000000.0, NU=0.3, RHO=7800.0))
 
-CHMAT = AFFE_MATERIAU(
-    MAILLAGE=MAIL,
-    AFFE=_F(
-        TOUT="OUI",
-        MATER=MAT,
-    ),
-)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-BLOCAGE = AFFE_CHAR_MECA(
-    MODELE=MODELE,
-    DDL_IMPO=_F(
-        GROUP_MA="BASE",
-        DX=0.0,
-        DY=0.0,
-        DZ=0.0,
-    ),
-)
+BLOCAGE = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=_F(GROUP_MA="BASE", DX=0.0, DY=0.0, DZ=0.0))
 
 list_vect = []
 for i in range(300):
-    list_vect.append(
-        {"VECTEUR": CO("tmp%s" % i), "OPTION": "CHAR_MECA", "CHARGE": BLOCAGE}
-    )
+    list_vect.append({"VECTEUR": CO("tmp%s" % i), "OPTION": "CHAR_MECA", "CHARGE": BLOCAGE})
 
 
 ASSEMBLAGE(
@@ -78,14 +47,8 @@ ASSEMBLAGE(
     CHARGE=BLOCAGE,
     NUME_DDL=CO("NUMEDDL"),
     MATR_ASSE=(
-        _F(
-            MATRICE=CO("RIGIDITE"),
-            OPTION="RIGI_MECA",
-        ),
-        _F(
-            MATRICE=CO("MASSE"),
-            OPTION="MASS_MECA",
-        ),
+        _F(MATRICE=CO("RIGIDITE"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASSE"), OPTION="MASS_MECA"),
     ),
     VECT_ASSE=list_vect,
 )
@@ -102,14 +65,8 @@ try:
         CHARGE=BLOCAGE,
         NUME_DDL=CO("NUMEDDL"),
         MATR_ASSE=(
-            _F(
-                MATRICE=CO("RIGIDITE"),
-                OPTION="RIGI_MECA",
-            ),
-            _F(
-                MATRICE=CO("MASSE"),
-                OPTION="MASS_MECA",
-            ),
+            _F(MATRICE=CO("RIGIDITE"), OPTION="RIGI_MECA"),
+            _F(MATRICE=CO("MASSE"), OPTION="MASS_MECA"),
         ),
         VECT_ASSE=list_vect,
     )
@@ -117,7 +74,9 @@ except code_aster.AsterError as exc:
     test.assertEqual(exc.id_message, "SUPERVIS2_90")
     test.assertTrue(sys.version_info < (3, 7))
 else:
-    test.assertEqual(len(result), 3 + 300)
+    # main (None) + NUMEDDL + RIGIDITE + MASSE + 300 tmp
+    test.assertEqual(len(result), 1 + 3 + 300)
+    assert result.main is None, result.main
 
 code_aster.close()
 

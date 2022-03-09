@@ -39,12 +39,12 @@ void exportModelToPython( py::module_ &mod ) {
         .export_values();
 
     py::class_< Model, Model::ModelPtr, DataStructure >( mod, "Model" )
-        .def( py::init( &initFactoryPtr< Model, BaseMeshPtr > ) )
-        .def( py::init( &initFactoryPtr< Model, std::string, BaseMeshPtr > ) )
 #ifdef ASTER_HAVE_MPI
         .def( py::init( &initFactoryPtr< Model, ConnectionMeshPtr > ) )
         .def( py::init( &initFactoryPtr< Model, std::string, ConnectionMeshPtr > ) )
 #endif /* ASTER_HAVE_MPI */
+        .def( py::init( &initFactoryPtr< Model, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< Model, std::string, BaseMeshPtr > ) )
         .def( "addModelingOnMesh", &Model::addModelingOnMesh )
         .def( "addModelingOnGroupOfCells", &Model::addModelingOnGroupOfCells )
         .def( "addModelingOnGroupOfNodes", &Model::addModelingOnGroupOfNodes )
@@ -53,41 +53,41 @@ void exportModelToPython( py::module_ &mod ) {
         .def( "existsMultiFiberBeam", &Model::existsMultiFiberBeam )
         .def( "getSaneModel", &Model::getSaneModel )
         .def( "getMesh", &Model::getMesh, R"(
-Return the mesh
+            Return the mesh
 
-Returns:
-    MeshPtr: a pointer to the mesh
-        )" )
+            Returns:
+                Mesh: a pointer to the mesh
+            )" )
         .def( "isMechanical", &Model::isMechanical, R"(
-To know if the model is mechanical or not
+            To know if the model is mechanical or not
 
-Returns:
-    Bool: True - if the model is mechanical
-        )" )
+            Returns:
+                bool: True - if the model is mechanical
+            )" )
         .def( "isThermal", &Model::isThermal, R"(
-To know if the model is thermal or not
+            To know if the model is thermal or not
 
-Returns:
-    Bool: True - if the model is thermal
-        )" )
+            Returns:
+                bool: True - if the model is thermal
+            )" )
         .def( "isAcoustic", &Model::isAcoustic, R"(
-To know if the model is acoustic or not
+            To know if the model is acoustic or not
 
-Returns:
-    Bool: True - if the model is acoustic
-        )" )
+            Returns:
+                bool: True - if the model is acoustic
+            )" )
         .def( "getPhysics", &Model::getPhysics, R"(
-To know the physics supported by the model
+            To know the physics supported by the model
 
-Returns:
-    str: Mechanics or Thermal or Acoustic
-        )" )
+            Returns:
+                str: Mechanics or Thermal or Acoustic
+            )" )
         .def( "getGeometricDimension", &Model::getGeometricDimension, R"(
-To know the geometric dimension supported by the model
+            To know the geometric dimension supported by the model
 
-Returns:
-    int: geometric dimension
-        )" )
+            Returns:
+                int: geometric dimension
+            )" )
         .def( "getSplittingMethod", &Model::getSplittingMethod )
         .def( "getGraphPartitioner", &Model::getGraphPartitioner )
         .def( "setSaneModel", &Model::setSaneModel )
@@ -100,22 +100,21 @@ Returns:
         .def( "getFiniteElementDescriptor", &Model::getFiniteElementDescriptor )
 #ifdef ASTER_HAVE_MPI
         .def( "setFrom", &Model::setFrom, R"(
-Set a model defined on a ConnectionMesh from an other model
+            Set a model defined on a ConnectionMesh from an other model
 
-Arguments:
-    model (Model): Table identifier.
-
-        )",
+            Arguments:
+                model (Model): Table identifier.
+            )",
               py::arg( "model" ) )
 #endif
         .def( "getTable", &ListOfTables::getTable, R"(
-Extract a Table from the datastructure.
+            Extract a Table from the datastructure.
 
-Arguments:
-    identifier (str): Table identifier.
+            Arguments:
+                identifier (str): Table identifier.
 
-Returns:
-    Table: Table stored with the given identifier.
-        )",
+            Returns:
+                Table: Table stored with the given identifier.
+            )",
               py::arg( "identifier" ) );
 };

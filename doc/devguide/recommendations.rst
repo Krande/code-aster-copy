@@ -43,15 +43,15 @@ See as example :meth:`Mesh.getNodes` and its interface in
                 py::overload_cast< const std::string, const bool, const bool >( &Mesh::getNodes,
                                                                                 py::const_ ),
                 R"(
-    ... docstring ...
+                ... docstring ...
 
-    Arguments:
-        group_name (str): Description
-        ...
+                Arguments:
+                    group_name (str): Description
+                    ...
 
-    Returns:
-        type: Description.
-            )",
+                Returns:
+                    type: Description.
+                )",
                 py::arg( "group_name" ) = "", py::arg( "localNumbering" ) = true,
                 py::arg( "same_rank" ) = true )
             .def( "getNodes",

@@ -40,6 +40,7 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Blas.h"
+
 #include <typeinfo>
 
 /**
@@ -183,10 +184,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    const ValueType &operator[]( ASTERINTEGER i ) const { 
+    const ValueType &operator[]( ASTERINTEGER i ) const {
         return const_cast< ValueType & >(
-            const_cast< FieldOnNodes< ValueType > * >( this )->operator[]( i ) ); };
-
+            const_cast< FieldOnNodes< ValueType > * >( this )->operator[]( i ) );
+    };
 
     /**
      * @brief Check if fields are OK for +, +=, ...
@@ -253,7 +254,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return tmp;
     };
 
-    // NOTE ON FOLLOWING OPERATOR OVERLAODING
+    // NOTE ON FOLLOWING OPERATOR OVERLOADING
     // friends methods defined inside class body are inline and are hidden from non-ADL lookup
     // passing lhs by value helps optimize chained a+b+c
     // otherwise, both parameters may be const references
@@ -388,11 +389,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     ASTERDOUBLE norm( const std::string normType ) const {
 
-        if constexpr( !std::is_same_v< ValueType, ASTERDOUBLE > &&
-             !std::is_same_v< ValueType, ASTERINTEGER > &&  
-             !std::is_same_v< ValueType, ASTERCOMPLEX >){
-                  raiseAsterError(" norm method not defined for type " + 
-                                    std::string( typeid(ValueType).name() ) );
+        if constexpr ( !std::is_same_v< ValueType, ASTERDOUBLE > &&
+                       !std::is_same_v< ValueType, ASTERINTEGER > &&
+                       !std::is_same_v< ValueType, ASTERCOMPLEX > ) {
+            raiseAsterError( " norm method not defined for type " +
+                             std::string( typeid( ValueType ).name() ) );
         }
         CALL_JEMARQ();
         ASTERDOUBLE norme = 0.0;
@@ -407,7 +408,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( !_dofDescription )
             raiseAsterError( "Description is empty" );
         const VectorLong nodesId = _dofDescription->getNodesFromDOF();
-         
+
         if ( normType == "NORM_1" ) {
             for ( auto pos = 0; pos < taille; ++pos ) {
                 const auto node_id = std::abs( nodesId[pos] );
@@ -418,7 +419,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             for ( auto pos = 0; pos < taille; ++pos ) {
                 const auto node_id = std::abs( nodesId[pos] );
                 if ( ( *nodesRank )[node_id - 1] == rank )
-                    norme += std::pow( std::abs(( *this )[pos]), 2 );
+                    norme += std::pow( std::abs( ( *this )[pos] ), 2 );
             }
         } else if ( normType == "NORM_INFINITY" ) {
             for ( auto pos = 0; pos < taille; ++pos ) {
@@ -470,26 +471,25 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         const auto rank = getMPIRank();
 
         ValueType ret;
-        if constexpr( std::is_same_v< ValueType, ASTERDOUBLE > || 
-             std::is_same_v< ValueType, ASTERINTEGER > ){
-                ret = (ValueType)0.0;
-                for ( auto pos = 0; pos < taille; ++pos ) {
-                    const auto node_id = std::abs( nodesId[pos] );
-                    if ( ( *nodesRank )[node_id - 1] == rank )
-                        ret += ( *this )[pos] * ( *tmp )[pos];
-                }
-        }else if constexpr( std::is_same_v< ValueType, ASTERCOMPLEX > ){
-                ret = (ValueType)0.0;
-                for ( auto pos = 0; pos < taille; ++pos ) {
-                    const auto node_id = std::abs( nodesId[pos] );
-                    if ( ( *nodesRank )[node_id - 1] == rank )
-                        ret += ( *this )[pos] * std::conj( ( *tmp )[pos] );
-                }
+        if constexpr ( std::is_same_v< ValueType, ASTERDOUBLE > ||
+                       std::is_same_v< ValueType, ASTERINTEGER > ) {
+            ret = (ValueType)0.0;
+            for ( auto pos = 0; pos < taille; ++pos ) {
+                const auto node_id = std::abs( nodesId[pos] );
+                if ( ( *nodesRank )[node_id - 1] == rank )
+                    ret += ( *this )[pos] * ( *tmp )[pos];
+            }
+        } else if constexpr ( std::is_same_v< ValueType, ASTERCOMPLEX > ) {
+            ret = (ValueType)0.0;
+            for ( auto pos = 0; pos < taille; ++pos ) {
+                const auto node_id = std::abs( nodesId[pos] );
+                if ( ( *nodesRank )[node_id - 1] == rank )
+                    ret += ( *this )[pos] * std::conj( ( *tmp )[pos] );
+            }
         } else {
-            raiseAsterError(" dot method not defined for type " + 
-                                        std::string( typeid(ValueType).name() ) );
+            raiseAsterError( " dot method not defined for type " +
+                             std::string( typeid( ValueType ).name() ) );
         }
-
 
 #ifdef ASTER_HAVE_MPI
         if ( _mesh->isParallel() ) {

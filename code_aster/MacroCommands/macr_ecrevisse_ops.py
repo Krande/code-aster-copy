@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,14 @@
 import copy
 
 from ..Cata.Syntax import _F
-from ..Commands import (AFFE_MATERIAU, CREA_TABLE, DEFI_LIST_REEL,
-                        PROJ_CHAMP, STAT_NON_LINE, THER_LINEAIRE)
+from ..Commands import (
+    AFFE_MATERIAU,
+    CREA_TABLE,
+    DEFI_LIST_REEL,
+    PROJ_CHAMP,
+    STAT_NON_LINE,
+    THER_LINEAIRE,
+)
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Objects import EntityType
 from ..Objects.table_py import merge
@@ -36,9 +42,9 @@ def macr_ecrevisse_ops(self, **args):
     Découpage/Génération par Aster du fichier de données d'Ecrevisse et lancement d'Ecrevisse.
     """
 
-    #import warnings
-    #warnings.warn("MACR_ECREVISSE must be refactored!", RuntimeWarning)
-    #return
+    # import warnings
+    # warnings.warn("MACR_ECREVISSE must be refactored!", RuntimeWarning)
+    # return
 
     CONV_CRITERE = args.get("CONV_CRITERE")
     TABLE = args.get("TABLE")
@@ -74,25 +80,24 @@ def macr_ecrevisse_ops(self, **args):
 
     # Info
     InfoAster = 1
-    info2 = (INFO == 2)
+    info2 = INFO == 2
     if debug:
         info2 = True
 
     # IMPORTATION DE COMMANDES ASTER
 
-
     # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes
     # a tort
-    MasquerAlarme('COMPOR4_70')
+    MasquerAlarme("COMPOR4_70")
 
     IsPoursuite = False
     IsInit = True
     # Traitement de l'etat initial en cas de poursuite
     if ETAT_INIT:
         dEtatInit = ETAT_INIT[0].cree_dict_toutes_valeurs()
-        EVINIT = dEtatInit['EVOL_NOLI']
-        _THINIT = dEtatInit['EVOL_THER']
-        nume_ordre = dEtatInit['NUME_ORDRE']
+        EVINIT = dEtatInit["EVOL_NOLI"]
+        _THINIT = dEtatInit["EVOL_THER"]
+        nume_ordre = dEtatInit["NUME_ORDRE"]
         IsPoursuite = True
     else:
         dEtatInit = None
@@ -107,8 +112,7 @@ def macr_ecrevisse_ops(self, **args):
     dECOULEMENT = ECOULEMENT[0].cree_dict_toutes_valeurs()
     # on ne supprime pas les valeurs None
     dMODELE_ECRE = MODELE_ECRE[0].cree_dict_valeurs(MODELE_ECRE[0].mc_liste)
-    dCONVERGENCE_ECREVISSE = CONVERGENCE_ECREVISSE[
-        0].cree_dict_toutes_valeurs()
+    dCONVERGENCE_ECREVISSE = CONVERGENCE_ECREVISSE[0].cree_dict_toutes_valeurs()
     dCOMPORTEMENT = COMPORTEMENT[0].cree_dict_toutes_valeurs()
     dNEWTON = NEWTON[0].cree_dict_toutes_valeurs()
     dCONVERGENCE = CONVERGENCE[0].cree_dict_toutes_valeurs()
@@ -116,15 +120,15 @@ def macr_ecrevisse_ops(self, **args):
     # Recuperation des infos pour la convergence de la macro
     dMacr_Conv = CONV_CRITERE[0].cree_dict_toutes_valeurs()
     motclefsCALC_ECREVISSE = {}
-    motclefsCALC_ECREVISSE['COURBES'] = COURBES,
+    motclefsCALC_ECREVISSE["COURBES"] = (COURBES,)
 
     # --------------------------------------------------------------------------
     # Debut de la macro
 
     # Si LIST_INST est un DEFI_LIST_REEL :
     liste_inst = LIST_INST.getValues()
-    if (debug):
-        print('liste des instants liste_inst = ', liste_inst)
+    if debug:
+        print("liste des instants liste_inst = ", liste_inst)
 
     # Drapeaux pour les 1ers calculs et les 1eres definitions
     # si l'execution d'Ecrevisse n'a pas plantee ou a ete realisee
@@ -136,26 +140,26 @@ def macr_ecrevisse_ops(self, **args):
     # Precision demandee pour converger sur le critere de la macro
     # Nombre de decoupages succesifs d'un pas de temps
     # Pas de temps en dessous duquel on ne decoupe plus
-    if 'SUBD_NIVEAU' in dMacr_Conv:
-        MacrNbDecoupage = dMacr_Conv['SUBD_NIVEAU']
-    if 'SUBD_PAS_MINI' in dMacr_Conv:
-        MacrPasMini = dMacr_Conv['SUBD_PAS_MINI']
-    MacrTempRef = dMacr_Conv['TEMP_REF']
-    MacrPresRef = dMacr_Conv['PRES_REF']
-    MacrCritere = dMacr_Conv['CRITERE']
-    if 'PREC_CRIT' in dMacr_Conv:
-        MacrPrecisCritere = dMacr_Conv['PREC_CRIT']
+    if "SUBD_NIVEAU" in dMacr_Conv:
+        MacrNbDecoupage = dMacr_Conv["SUBD_NIVEAU"]
+    if "SUBD_PAS_MINI" in dMacr_Conv:
+        MacrPasMini = dMacr_Conv["SUBD_PAS_MINI"]
+    MacrTempRef = dMacr_Conv["TEMP_REF"]
+    MacrPresRef = dMacr_Conv["PRES_REF"]
+    MacrCritere = dMacr_Conv["CRITERE"]
+    if "PREC_CRIT" in dMacr_Conv:
+        MacrPrecisCritere = dMacr_Conv["PREC_CRIT"]
     else:
         MacrPrecisCritere = None
-    if 'NUME_ORDRE_MIN' in dMacr_Conv:
-        MacrNumeOrdre = dMacr_Conv['NUME_ORDRE_MIN']
+    if "NUME_ORDRE_MIN" in dMacr_Conv:
+        MacrNumeOrdre = dMacr_Conv["NUME_ORDRE_MIN"]
 
     #
     # il faut 2 pas au minimum dans la liste
-    if (len(liste_inst) < 2):
-        UTMESS('F', 'ECREVISSE0_20', vali=[2])
+    if len(liste_inst) < 2:
+        UTMESS("F", "ECREVISSE0_20", vali=[2])
 
-    if (not IsPoursuite):
+    if not IsPoursuite:
         nume_ordre = 0
     else:
         # Dans le cas d'une poursuite :
@@ -164,15 +168,15 @@ def macr_ecrevisse_ops(self, **args):
         # ainsi le nume_ordre de la nouvelle liste correspond au nume_ordre de
         # l'ancienne
         __dico1 = _THINIT.LIST_VARI_ACCES()
-        _list_precedente = __dico1['INST']
-        _list_numordre_prec = __dico1['NUME_ORDRE']
+        _list_precedente = __dico1["INST"]
+        _list_numordre_prec = __dico1["NUME_ORDRE"]
         try:
             idx_last = _list_numordre_prec.index(nume_ordre)
         except:
-            UTMESS('F', 'ECREVISSE0_25', vali=nume_ordre)
+            UTMESS("F", "ECREVISSE0_25", vali=nume_ordre)
 
         _inst_init = _list_precedente[idx_last]
-        new_list = _list_precedente[0:idx_last + 1]
+        new_list = _list_precedente[0 : idx_last + 1]
 
         try:
             # si l'instant est dans la liste, on recupere l'index
@@ -182,8 +186,7 @@ def macr_ecrevisse_ops(self, **args):
             # on cherche le plus proche
             _idx = 0
             if _inst_init >= liste_inst[-1]:
-                UTMESS('F', 'ECREVISSE0_26', valr=[
-                       liste_inst[-1], _inst_init])
+                UTMESS("F", "ECREVISSE0_26", valr=[liste_inst[-1], _inst_init])
 
             for t in liste_inst:
                 if t > _inst_init:
@@ -201,26 +204,26 @@ def macr_ecrevisse_ops(self, **args):
     #
     RTHERM = None
     FinBoucle = False
-    while (not FinBoucle):
+    while not FinBoucle:
         inst = liste_inst[nume_ordre]
-        if (debug):
-            print('Instant debut boucle', inst)
+        if debug:
+            print("Instant debut boucle", inst)
         # On boucle jusqu'a convergence
         NbIter = 0
         while True:
-            if ((not IsPoursuite) or EcrevisseExe):
-            # Le temps que l'on traite
+            if (not IsPoursuite) or EcrevisseExe:
+                # Le temps que l'on traite
                 inst_p_un = liste_inst[nume_ordre + 1]
                 IsInitEcre = False
                 # Construction de la liste des pas
-                __pas = DEFI_LIST_REEL(VALE=liste_inst, )
-                if (debug):
-                    print('=====> ===== ===== ===== <====')
-                    print('Iteration numero : ', NbIter)
-                    print('Instant          : ', inst)
-                    print('Instant+1        : ', inst_p_un)
-                    print('nume_ordre       : ', nume_ordre + 1)
-                    print('Donnee Ecrevisse : ', EcrevisseExe)
+                __pas = DEFI_LIST_REEL(VALE=liste_inst)
+                if debug:
+                    print("=====> ===== ===== ===== <====")
+                    print("Iteration numero : ", NbIter)
+                    print("Instant          : ", inst)
+                    print("Instant+1        : ", inst_p_un)
+                    print("nume_ordre       : ", nume_ordre + 1)
+                    print("Donnee Ecrevisse : ", EcrevisseExe)
 
                 # ---------------------
                 #        THERMIQUE
@@ -233,35 +236,32 @@ def macr_ecrevisse_ops(self, **args):
                         _dEXCIT_THER.append(dEXCIT_THER_i)
 
                 # Definition des chargements thermiques venant d Ecrevisse
-                if (EcrevisseExe):
+                if EcrevisseExe:
                     _dEXCIT_THER.append(_F(CHARGE=FLU1ECR0))
                     _dEXCIT_THER.append(_F(CHARGE=FLU2ECR0))
 
                 # Definition de l'etat initial
                 motclefs = {}
-                if (nume_ordre == 0):
-                    motclefs['ETAT_INIT'] = [
-                        _F(VALE=TEMP_INIT, NUME_ORDRE=nume_ordre)]
-                    if (debug):
-                        print('thermique initialise avec tref')
+                if nume_ordre == 0:
+                    motclefs["ETAT_INIT"] = [_F(VALE=TEMP_INIT, NUME_ORDRE=nume_ordre)]
+                    if debug:
+                        print("thermique initialise avec tref")
                 else:
-                    if (IsInit):
-                    # if (IsPoursuite) :
-                        motclefs['reuse'] = _THINIT
-                        motclefs['ETAT_INIT'] = [
-                            _F(EVOL_THER=_THINIT, NUME_ORDRE=nume_ordre)]
-                        if (debug):
-                            print('thermique initialise avec etat_initial')
+                    if IsInit:
+                        # if (IsPoursuite) :
+                        motclefs["reuse"] = _THINIT
+                        motclefs["ETAT_INIT"] = [_F(EVOL_THER=_THINIT, NUME_ORDRE=nume_ordre)]
+                        if debug:
+                            print("thermique initialise avec etat_initial")
                     else:
-                        motclefs['reuse'] = RTHERM
-                        motclefs['ETAT_INIT'] = [
-                            _F(EVOL_THER=RTHERM, NUME_ORDRE=nume_ordre)]
-                        if (debug):
-                            print('thermique initialise avec instant precedent')
+                        motclefs["reuse"] = RTHERM
+                        motclefs["ETAT_INIT"] = [_F(EVOL_THER=RTHERM, NUME_ORDRE=nume_ordre)]
+                        if debug:
+                            print("thermique initialise avec instant precedent")
 
-                if (debug):
-                    print('====> THER_LINEAIRE <====')
-                    print('   Les charges thermiques')
+                if debug:
+                    print("====> THER_LINEAIRE <====")
+                    print("   Les charges thermiques")
                     print(EXCIT_THER)
 
                 if IsPoursuite:
@@ -269,69 +269,71 @@ def macr_ecrevisse_ops(self, **args):
                         MODELE=MODELE_THER,
                         CHAM_MATER=CHAM_MATER,
                         EXCIT=_dEXCIT_THER,
-                        INCREMENT=_F(LIST_INST=__pas,
-                                     NUME_INST_INIT=nume_ordre,
-                                     NUME_INST_FIN=nume_ordre + 1,),
+                        INCREMENT=_F(
+                            LIST_INST=__pas, NUME_INST_INIT=nume_ordre, NUME_INST_FIN=nume_ordre + 1
+                        ),
                         INFO=InfoAster,
-                        **motclefs)
+                        **motclefs
+                    )
 
-                    _RTHMPJ = PROJ_CHAMP(RESULTAT=_THINIT,
-                                         MODELE_1=MODELE_THER,
-                                         MODELE_2=MODELE_MECA,
-                                         METHODE='COLLOCATION',
-                                         VIS_A_VIS=_F(TOUT_1='OUI',
-                                                      TOUT_2='OUI',),
-                                         INFO=2,)
+                    _RTHMPJ = PROJ_CHAMP(
+                        RESULTAT=_THINIT,
+                        MODELE_1=MODELE_THER,
+                        MODELE_2=MODELE_MECA,
+                        METHODE="COLLOCATION",
+                        VIS_A_VIS=_F(TOUT_1="OUI", TOUT_2="OUI"),
+                        INFO=2,
+                    )
                     RTHERM = _THINIT
                 else:
                     RTHERM = THER_LINEAIRE(
                         MODELE=MODELE_THER,
                         CHAM_MATER=CHAM_MATER,
                         EXCIT=_dEXCIT_THER,
-                        INCREMENT=_F(LIST_INST=__pas,
-                                     NUME_INST_INIT=nume_ordre,
-                                     NUME_INST_FIN=nume_ordre + 1,),
+                        INCREMENT=_F(
+                            LIST_INST=__pas, NUME_INST_INIT=nume_ordre, NUME_INST_FIN=nume_ordre + 1
+                        ),
                         INFO=InfoAster,
-                        **motclefs)
+                        **motclefs
+                    )
 
                     # Projection du champ thermique, a tous les instants
                     # sinon pas de deformations thermiques
-                    _RTHMPJ = PROJ_CHAMP(RESULTAT=RTHERM,
-                                         MODELE_1=MODELE_THER,
-                                         MODELE_2=MODELE_MECA,
-                                         METHODE='COLLOCATION',
-                                         VIS_A_VIS=_F(TOUT_1='OUI',
-                                                      TOUT_2='OUI',),
-                                         INFO=2,)
+                    _RTHMPJ = PROJ_CHAMP(
+                        RESULTAT=RTHERM,
+                        MODELE_1=MODELE_THER,
+                        MODELE_2=MODELE_MECA,
+                        METHODE="COLLOCATION",
+                        VIS_A_VIS=_F(TOUT_1="OUI", TOUT_2="OUI"),
+                        INFO=2,
+                    )
                 # Definition du materiau pour la mecanique
                 # note : on doit le faire a chaque fois car le nom de concept _RTHMPJ
                 #        est different a chaque passage
                 motclefmater = {}
                 vecTmp = CHAM_MATER.getVectorOfPartOfMaterialField()
-                motclefmater['AFFE'] = []
+                motclefmater["AFFE"] = []
                 for item in vecTmp:
                     dictToAdd = {}
                     meshEntity = item.getMeshEntity()
                     entityType = meshEntity.getType()
-                    if entityType is EntityType.GroupOfCellsType:
+                    if entityType == EntityType.GroupOfCellsType:
                         dictToAdd["GROUP_MA"] = meshEntity.getNames()
-                    elif entityType is EntityType.CellType:
+                    elif entityType == EntityType.CellType:
                         dictToAdd["MAILLE"] = meshEntity.getNames()
-                    elif entityType is EntityType.AllMeshEntitiesType:
+                    elif entityType == EntityType.AllMeshEntitiesType:
                         dictToAdd["TOUT"] = "OUI"
                     else:
                         raise TypeError("Unexpected type for mesh entity: {0}".format(meshEntity))
                     dictToAdd["MATER"] = item.getVectorOfMaterial()
-                    motclefmater['AFFE'].append(dictToAdd)
-                motclefmater['MAILLAGE'] = CHAM_MATER.getMesh()
+                    motclefmater["AFFE"].append(dictToAdd)
+                motclefmater["MAILLAGE"] = CHAM_MATER.getMesh()
 
                 # Set external state variables
-                motclefmater['AFFE_VARC'] = []
-                motclefmater['AFFE_VARC'] = [_F(NOM_VARC = 'TEMP', VALE_REF = TEMP_INIT, EVOL = _RTHMPJ)]
+                motclefmater["AFFE_VARC"] = []
+                motclefmater["AFFE_VARC"] = [_F(NOM_VARC="TEMP", VALE_REF=TEMP_INIT, EVOL=_RTHMPJ)]
 
-                __MATMEC = AFFE_MATERIAU(
-                    **motclefmater
-                )
+                __MATMEC = AFFE_MATERIAU(**motclefmater)
 
                 # ---------------------
                 #        MECANIQUE
@@ -344,35 +346,32 @@ def macr_ecrevisse_ops(self, **args):
                         _dEXCIT_MECA.append(dEXCIT_MECA_i)
 
                 # Definition des chargements venant d'Ecrevisse
-                if (EcrevisseExe):
+                if EcrevisseExe:
                     _dEXCIT_MECA.append(_F(CHARGE=MECAECR0))
 
                 motclefs = {}
-                if (not IsPoursuite):
-                    if (nume_ordre != 0):
-                        motclefs['reuse'] = MECANIC
-                        motclefs['ETAT_INIT'] = [
-                            _F(EVOL_NOLI=MECANIC, NUME_ORDRE=nume_ordre)]
-                        if (debug):
-                            print('etat meca initial = pas precedent')
+                if not IsPoursuite:
+                    if nume_ordre != 0:
+                        motclefs["reuse"] = MECANIC
+                        motclefs["ETAT_INIT"] = [_F(EVOL_NOLI=MECANIC, NUME_ORDRE=nume_ordre)]
+                        if debug:
+                            print("etat meca initial = pas precedent")
                     else:
-                        if (debug):
-                            print('etat meca initial : vierge')
+                        if debug:
+                            print("etat meca initial : vierge")
                 else:
-                    motclefs['reuse'] = EVINIT
-                    motclefs['ETAT_INIT'] = [
-                        _F(EVOL_NOLI=EVINIT, NUME_ORDRE=nume_ordre)]
-                    if (debug):
-                        print('etat meca initial dReuseM', motclefs)
+                    motclefs["reuse"] = EVINIT
+                    motclefs["ETAT_INIT"] = [_F(EVOL_NOLI=EVINIT, NUME_ORDRE=nume_ordre)]
+                    if debug:
+                        print("etat meca initial dReuseM", motclefs)
 
                 if ENERGIE:
-                    motclefs['ENERGIE'] = ENERGIE[
-                        0].cree_dict_valeurs(ENERGIE[0].mc_liste)
+                    motclefs["ENERGIE"] = ENERGIE[0].cree_dict_valeurs(ENERGIE[0].mc_liste)
 
-                if (debug):
-                    print('====> STAT_NON_LINE <====')
-                if (debug):
-                    print('   Les charges mecaniques')
+                if debug:
+                    print("====> STAT_NON_LINE <====")
+                if debug:
+                    print("   Les charges mecaniques")
                     print(_dEXCIT_MECA)
 
                 MECANIC = STAT_NON_LINE(
@@ -382,9 +381,9 @@ def macr_ecrevisse_ops(self, **args):
                     CONTACT=CONTACT,
                     EXCIT=_dEXCIT_MECA,
                     COMPORTEMENT=_F(**dCOMPORTEMENT),
-                    INCREMENT=_F(LIST_INST=__pas,
-                                 NUME_INST_INIT=nume_ordre,
-                                 NUME_INST_FIN=nume_ordre + 1,),
+                    INCREMENT=_F(
+                        LIST_INST=__pas, NUME_INST_INIT=nume_ordre, NUME_INST_FIN=nume_ordre + 1
+                    ),
                     NEWTON=_F(**dNEWTON),
                     CONVERGENCE=_F(**dCONVERGENCE),
                     INFO=InfoAster,
@@ -405,31 +404,33 @@ def macr_ecrevisse_ops(self, **args):
             # inst_p_un
             dECOULEMENT_ecrevisse = copy.copy(dECOULEMENT)
             for fonc_name in [
-                "PRES_ENTREE_FO", "PRES_SORTIE_FO", "PRES_PART_FO",
-                    "TITR_MASS_FO", "TEMP_ENTREE_FO"]:
+                "PRES_ENTREE_FO",
+                "PRES_SORTIE_FO",
+                "PRES_PART_FO",
+                "TITR_MASS_FO",
+                "TEMP_ENTREE_FO",
+            ]:
                 if fonc_name in dECOULEMENT:
                     fonc = dECOULEMENT_ecrevisse.pop(fonc_name)
-                    vale_name = fonc_name.replace('_FO', '')
+                    vale_name = fonc_name.replace("_FO", "")
                     dECOULEMENT_ecrevisse[vale_name] = fonc(inst_p_un)
 
-            if (debug):
-                print('====> ECREVISSE entree dans CALC_ECREVISSE <====')
+            if debug:
+                print("====> ECREVISSE entree dans CALC_ECREVISSE <====")
 
-            if (not IsPoursuite):
+            if not IsPoursuite:
                 CALC_ECREVISSE(
-                    CHARGE_MECA=CO('MECAECR1'),
-                    CHARGE_THER1=CO('FLU1ECR1'),
-                    CHARGE_THER2=CO('FLU2ECR1'),
-                    TABLE=CO('TABLECR1'),
-                    DEBIT=CO('DEBIECR1'),
+                    CHARGE_MECA=CO("MECAECR1"),
+                    CHARGE_THER1=CO("FLU1ECR1"),
+                    CHARGE_THER2=CO("FLU2ECR1"),
+                    TABLE=CO("TABLECR1"),
+                    DEBIT=CO("DEBIECR1"),
                     MODELE_MECA=MODELE_MECA,
                     MODELE_THER=MODELE_THER,
                     ENTETE=ENTETE,
                     IMPRESSION=IMPRESSION,
                     INFO=INFO,
-                    RESULTAT=_F(THERMIQUE=RTHERM,
-                                MECANIQUE=MECANIC,
-                                INST=inst_p_un, ),
+                    RESULTAT=_F(THERMIQUE=RTHERM, MECANIQUE=MECANIC, INST=inst_p_un),
                     # chemin d acces a Ecrevisse
                     LOGICIEL=LOGICIEL,
                     VERSION=VERSION,
@@ -440,25 +441,22 @@ def macr_ecrevisse_ops(self, **args):
                     FISSURE=l_dFISSURE,
                     ECOULEMENT=_F(**dECOULEMENT_ecrevisse),
                     MODELE_ECRE=_F(**dMODELE_ECRE),
-
                     CONVERGENCE=_F(**dCONVERGENCE_ECREVISSE),
                     **motclefsCALC_ECREVISSE
                 )
             else:
                 CALC_ECREVISSE(
-                    CHARGE_MECA=CO('MECAECR1'),
-                    CHARGE_THER1=CO('FLU1ECR1'),
-                    CHARGE_THER2=CO('FLU2ECR1'),
-                    TABLE=CO('TABLECR1'),
-                    DEBIT=CO('DEBIECR1'),
+                    CHARGE_MECA=CO("MECAECR1"),
+                    CHARGE_THER1=CO("FLU1ECR1"),
+                    CHARGE_THER2=CO("FLU2ECR1"),
+                    TABLE=CO("TABLECR1"),
+                    DEBIT=CO("DEBIECR1"),
                     MODELE_MECA=MODELE_MECA,
                     MODELE_THER=MODELE_THER,
                     ENTETE=ENTETE,
                     IMPRESSION=IMPRESSION,
                     INFO=INFO,
-                    RESULTAT=_F(THERMIQUE=_THINIT,
-                                MECANIQUE=EVINIT,
-                                INST=inst_p_un, ),
+                    RESULTAT=_F(THERMIQUE=_THINIT, MECANIQUE=EVINIT, INST=inst_p_un),
                     # chemin d acces a Ecrevisse
                     LOGICIEL=LOGICIEL,
                     VERSION=VERSION,
@@ -469,26 +467,25 @@ def macr_ecrevisse_ops(self, **args):
                     FISSURE=l_dFISSURE,
                     ECOULEMENT=_F(**dECOULEMENT_ecrevisse),
                     MODELE_ECRE=_F(**dMODELE_ECRE),
-
                     CONVERGENCE=_F(**dCONVERGENCE_ECREVISSE),
                     **motclefsCALC_ECREVISSE
                 )
 
-            if (debug):
-                print('====> ECREVISSE sortie de CALC_ECREVISSE <====')
+            if debug:
+                print("====> ECREVISSE sortie de CALC_ECREVISSE <====")
 
             # Recuperation des infos de la table resultat Ecrevisse
             T_TABL_TMP1 = TABLECR1.EXTR_TABLE()
             T_DEB_TMP1 = DEBIECR1.EXTR_TABLE()
-# On ajoute deux colonnes supplementaires
-#         _nb_ligne = len(T_DEB_TMP1["DEBTOT"])
-#         T_DEB_TMP1["NUME_ORDRE"] = [nume_ordre+1]*_nb_ligne
-#         T_DEB_TMP1["INST"]       = [inst_p_un]*_nb_ligne
+            # On ajoute deux colonnes supplementaires
+            #         _nb_ligne = len(T_DEB_TMP1["DEBTOT"])
+            #         T_DEB_TMP1["NUME_ORDRE"] = [nume_ordre+1]*_nb_ligne
+            #         T_DEB_TMP1["INST"]       = [inst_p_un]*_nb_ligne
 
             # Le calcul Ecrevisse c'est bien passe ?
-            EcrevisseExe = (T_TABL_TMP1.values()['COTES'][0] != -1)
+            EcrevisseExe = T_TABL_TMP1.values()["COTES"][0] != -1
             #
-            if (not EcrevisseExe):
+            if not EcrevisseExe:
                 FinBoucle = True
                 break
             #
@@ -497,10 +494,10 @@ def macr_ecrevisse_ops(self, **args):
             #  TABLECR1 table Ecrevisse a inst_p_un
             # --------------------
 
-            if (not IsInit):
+            if not IsInit:
                 # On recupere la liste des temperatures a t et t+1
-                lst_T_0 = T_TABL_TMP0.values()['TEMP']
-                lst_T_1 = T_TABL_TMP1.values()['TEMP']
+                lst_T_0 = T_TABL_TMP0.values()["TEMP"]
+                lst_T_1 = T_TABL_TMP1.values()["TEMP"]
                 # Le maximum des ecarts
                 lst_T_diff_01 = []
                 for v1, v2 in zip(lst_T_0, lst_T_1):
@@ -508,8 +505,8 @@ def macr_ecrevisse_ops(self, **args):
                 max_T_diff_01 = max(lst_T_diff_01)
 
                 # On recupere la liste des pressions a t et t+1
-                lst_P_0 = T_TABL_TMP0.values()['PRESSION']
-                lst_P_1 = T_TABL_TMP1.values()['PRESSION']
+                lst_P_0 = T_TABL_TMP0.values()["PRESSION"]
+                lst_P_1 = T_TABL_TMP1.values()["PRESSION"]
                 # Le maximum des ecarts
                 lst_P_diff_01 = []
                 for v1, v2 in zip(lst_P_0, lst_P_1):
@@ -517,43 +514,44 @@ def macr_ecrevisse_ops(self, **args):
                 max_P_diff_01 = max(lst_P_diff_01)
                 #
                 # "TEMP_PRESS","EXPLICITE","TEMP","PRESS"
-                ErreurT = (max_T_diff_01 / MacrTempRef)
-                ErreurP = (max_P_diff_01 / MacrPresRef)
+                ErreurT = max_T_diff_01 / MacrTempRef
+                ErreurP = max_P_diff_01 / MacrPresRef
                 ErreurG = (ErreurT ** 2 + ErreurP ** 2) ** 0.5
-                if (MacrCritere == 'TEMP'):
+                if MacrCritere == "TEMP":
                     Erreur = ErreurT
-                elif (MacrCritere == 'PRESS'):
+                elif MacrCritere == "PRESS":
                     Erreur = ErreurP
                 else:
                     Erreur = ErreurG
 
-                if (MacrCritere != 'EXPLICITE'):
-                    Convergence = (Erreur <= MacrPrecisCritere)
+                if MacrCritere != "EXPLICITE":
+                    Convergence = Erreur <= MacrPrecisCritere
                 #
                 if info2:
-                        # Info Critere
-                    UTMESS('I', 'ECREVISSE0_35', valr=inst_p_un,
-                           valk=[MacrCritere, MacrPrecisCritere, Convergence])
+                    # Info Critere
+                    valk = [MacrCritere, MacrPrecisCritere, Convergence]
+                    UTMESS("I", "ECREVISSE0_35", valr=inst_p_un, valk=valk)
                     # Info Convergence
-                    UTMESS('I', 'ECREVISSE0_34',
-                           valr=[inst_p_un, ErreurT, max_T_diff_01, ErreurP, max_P_diff_01, ErreurG])
+                    valr = [inst_p_un, ErreurT, max_T_diff_01, ErreurP, max_P_diff_01, ErreurG]
+                    UTMESS("I", "ECREVISSE0_34", valr=valr)
 
             else:
                 Convergence = True
                 if info2:
-                    UTMESS('I', 'ECREVISSE0_36', valr=[inst_p_un])
+                    UTMESS("I", "ECREVISSE0_36", valr=[inst_p_un])
             # --------------------
             #
 
-            if (MacrCritere == 'EXPLICITE'):
+            if MacrCritere == "EXPLICITE":
                 Convergence = True
             else:
-                if ((nume_ordre != 0) and (nume_ordre + 1 <= MacrNumeOrdre)):
-                    UTMESS('A', 'ECREVISSE0_33',
-                           vali=[nume_ordre + 1, MacrNumeOrdre], valr=inst_p_un)
+                if (nume_ordre != 0) and (nume_ordre + 1 <= MacrNumeOrdre):
+                    UTMESS(
+                        "A", "ECREVISSE0_33", vali=[nume_ordre + 1, MacrNumeOrdre], valr=inst_p_un
+                    )
                     Convergence = True
 
-            if (Convergence):
+            if Convergence:
                 nb_lignes_t1 = len(T_TABL_TMP1["COTES"])
                 # Ajout de deux colonnes supplementaires
                 # POUR LA TABLE ECREVISSE
@@ -566,14 +564,14 @@ def macr_ecrevisse_ops(self, **args):
                 T_DEB_TMP1["INST"] = [inst_p_un] * nb_ligne_t2
 
                 # Ajout des infos dans la table finale
-                if (IsInit):
+                if IsInit:
                     T_TABL_RES = T_TABL_TMP1
                     T_DEB_RES = T_DEB_TMP1
                 else:
                     T_TABL_RES = merge(T_TABL_RES, T_TABL_TMP1)
                     T_DEB_RES = merge(T_DEB_RES, T_DEB_TMP1)
-                    T_TABL_RES.titr = 'TABLE_SDASTER CHARGEMENT ECREVISSE'
-                    T_DEB_RES.titr = 'TABLE_SDASTER DEBIT ECREVISSE'
+                    T_TABL_RES.titr = "TABLE_SDASTER CHARGEMENT ECREVISSE"
+                    T_DEB_RES.titr = "TABLE_SDASTER DEBIT ECREVISSE"
                 #
                 # RAZ des compteurs de division
                 NbIter = 0
@@ -585,35 +583,32 @@ def macr_ecrevisse_ops(self, **args):
                 DEBIECR0 = DEBIECR1
                 #
                 T_TABL_TMP0 = T_TABL_TMP1
-                if (not IsInitEcre):
+                if not IsInitEcre:
                     IsInit = False
-                if (info2):
-                    UTMESS('I', 'ECREVISSE0_37', valr=[inst_p_un])
+                if info2:
+                    UTMESS("I", "ECREVISSE0_37", valr=[inst_p_un])
                 break
 
             else:
                 NbIter += 1
                 # A t'on le droit de decouper, par rapport au nombre de
                 # division
-                if (NbIter > MacrNbDecoupage):
+                if NbIter > MacrNbDecoupage:
                     FinBoucle = True
-                    UTMESS('A', 'ECREVISSE0_30', valr=[inst, inst_p_un],
-                           vali=[MacrNbDecoupage])
+                    UTMESS("A", "ECREVISSE0_30", valr=[inst, inst_p_un], vali=[MacrNbDecoupage])
                     break
                 #
                 # on divise le pas de temps par 2
                 tmp = (inst + inst_p_un) * 0.5
                 # A t'on le droit de continuer, par rapport au pas de temps
                 # minimum
-                if ((tmp - inst) <= MacrPasMini):
+                if (tmp - inst) <= MacrPasMini:
                     FinBoucle = True
-                    UTMESS('A', 'ECREVISSE0_31', valr=[
-                           inst, inst_p_un, tmp, MacrPasMini])
+                    UTMESS("A", "ECREVISSE0_31", valr=[inst, inst_p_un, tmp, MacrPasMini])
                     break
                 #
-                if (info2):
-                    UTMESS('A', 'ECREVISSE0_32', valr=[
-                           inst, inst_p_un, tmp], vali=[NbIter])
+                if info2:
+                    UTMESS("A", "ECREVISSE0_32", valr=[inst, inst_p_un, tmp], vali=[NbIter])
                 # on insere le nouveau temps dans la liste des instants avant
                 # "inst_p_un"
                 liste_inst.insert(nume_ordre + 1, tmp)
@@ -621,7 +616,7 @@ def macr_ecrevisse_ops(self, **args):
         # Convergence atteinte, on passe au pas de temps suivant, s'il en reste
         if IsInitEcre:
             continue
-        elif (nume_ordre + 2 < len(liste_inst)):
+        elif nume_ordre + 2 < len(liste_inst):
             nume_ordre += 1
         else:
             # On a fait tous les pas de temps
@@ -634,14 +629,14 @@ def macr_ecrevisse_ops(self, **args):
         self.register_result(RTHERM, TEMPER)
 
     # Creation du concept de la table en sortie
-    if (T_TABL_RES is not None):
+    if T_TABL_RES is not None:
         dprod = T_TABL_RES.dict_CREA_TABLE()
         TABL_RES = CREA_TABLE(**dprod)
         self.register_result(TABL_RES, TABLE)
-    if (T_DEB_RES is not None):
+    if T_DEB_RES is not None:
         debprod = T_DEB_RES.dict_CREA_TABLE()
         DEB_RES = CREA_TABLE(**debprod)
         self.register_result(DEB_RES, DEBIT)
 
-    RetablirAlarme('COMPOR4_70')
+    RetablirAlarme("COMPOR4_70")
     return MECANIC

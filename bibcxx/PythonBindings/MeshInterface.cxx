@@ -101,13 +101,10 @@ Returns:
         )",
               py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
               py::arg( "same_rank" ) = true )
-        .def( "getNodes", py::overload_cast<>( &Mesh::getNodes, py::const_ ),
-              R"(
-Return the list of the indexes of the nodes that belong to a group of nodes.
-
-Returns:
-    list[int]: Indexes of the nodes of the group.
-        )" )
+        .def( "getNodes",
+              py::overload_cast< const bool, const bool >( &Mesh::getNodes, py::const_ ),
+              py::arg( "localNumbering" ), py::arg( "same_rank" ) = true )
+        .def( "getNodes", py::overload_cast<>( &Mesh::getNodes, py::const_ ) )
         .def( "getInnerNodes", &Mesh::getInnerNodes, R"(
 Return the list of the indexes of the nodes in the mesh
 

@@ -37,23 +37,26 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr, std::string > ) )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr,
                                          std::string, ElementaryCharacteristicsPtr > ) )
-        .def( py::init< const FieldOnCellsReal & >() )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, const FieldOnCellsReal & > ) )
         .def( "duplicate", &FieldOnCellsReal::duplicate, R"(
-                  Return a duplicated FieldOnCellsReal as a copy
-                  Returns:
-                  FieldOnCellsReal
-                  )" )
+            Return a duplicated FieldOnCellsReal as a copy
+
+            Returns:
+                FieldOnCellsReal
+            )" )
         .def( "exportToSimpleFieldOnCells", &FieldOnCellsReal::exportToSimpleFieldOnCells )
         .def( "getModel", &FieldOnCellsReal::getModel, R"(
-                  Return the model associated with the FieldOnCellsReal object
-                  Returns:
-                  Model: Model Object
-                  )" )
+            Return the model associated with the FieldOnCellsReal object
+
+            Returns:
+                Model: Model Object
+            )" )
         .def( "getMesh", &FieldOnCellsReal::getMesh, R"(
-                  Return the Mesh associated with the FieldOnCellsReal object
-                  Returns:
-                  BaseMesh: Mesh object
-                  )" )
+            Return the Mesh associated with the FieldOnCellsReal object
+
+            Returns:
+                BaseMesh: Mesh object
+            )" )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
         .def( "build", &FieldOnCellsReal::build )
@@ -64,72 +67,72 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             +[]( FieldOnCellsReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i ) = f; } )
         .def(
             "__len__", +[]( const FieldOnCellsReal &v ) { return v.size(); } )
-        .def( py::self + py::self )
-        .def( py::self - py::self )
         .def( py::self += py::self )
         .def( py::self -= py::self )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
         .def( py::self * float() )
         .def( float() * py::self )
         .def( -py::self )
-        .def( "setValues", &FieldOnCellsReal::setValues,
-              R"(
-Set values of the field
+        .def( "setValues", &FieldOnCellsReal::setValues, R"(
+            Set values of the field
 
-Arguments:
-    float: value to set
-                  )",
+            Arguments:
+                float: value to set
+            )",
               py::arg( "value" ) )
         .def( "getValues", &FieldOnCellsReal::getValues, R"(
-Return a list of values as (x1, y1, z1, x2, y2, z2...)
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
-Returns:
-    list[float]: List of values.
-                  )" )
+            Returns:
+                list[float]: List of values.
+            )" )
         .def( "size", &FieldOnCellsReal::size, R"(
-Return the size of the field
+            Return the size of the field
 
-Returns:
-    int: number of element in the field
-                        )" )
+            Returns:
+                int: number of element in the field
+            )" )
         .def( "transform", &FieldOnCellsReal::transform< ASTERDOUBLE >, R"(
-Apply Function to each value of _ValuesList of the FieldOnCells object.
+            Apply Function to each value of _ValuesList of the FieldOnCells object.
 
-Arguments:
-    func (Function): Callable Python object
+            Arguments:
+                func (Function): Callable Python object
 
-Returns:
-    FieldOnCellsReal: New FieldOnCells object with the trasformed values
-                        )",
+            Returns:
+                FieldOnCellsReal: New FieldOnCells object with the trasformed values
+            )",
               py::arg( "func" ) )
         .def( "printMedFile", &FieldOnCellsReal::printMedFile, R"(
-Print the field in MED format.
+            Print the field in MED format.
 
-Arguments:
-    filename (str): Path to the file to be printed.
-    local (bool): Print local values only (relevant for ParallelMesh only, default: *True*)
+            Arguments:
+                filename (str): Path to the file to be printed.
+                local (bool): Print local values only (relevant for ParallelMesh only,
+                    default: *True*)
 
-Returns:
-    bool: *True* if succeeds, *False* otherwise.
-                        )",
+            Returns:
+                bool: *True* if succeeds, *False* otherwise.
+            )",
               py::arg( "filename" ), py::arg( "local" ) = true )
         .def( "norm", &FieldOnCellsReal::norm< ASTERDOUBLE >, R"(
-Return the euclidean norm of the field
+            Return the euclidean norm of the field
 
-Arguments:
-    normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+            Arguments:
+                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
 
-Returns:
-    float: euclidean norm
-                        )" )
+            Returns:
+                float: euclidean norm
+            )" )
         .def( "dot", &FieldOnCellsReal::dot< ASTERDOUBLE >, R"(
-Return the dot product of two fields
+            Return the dot product of two fields
 
-Arguments:
-    field (FieldOnNodes): other field
+            Arguments:
+                field (FieldOnCells): other field
 
-Returns:
-    float: dot product
-                              )",
+            Returns:
+                float: dot product
+            )",
               py::arg( "other" ) );
 
     py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr, DataField >( mod,
@@ -143,11 +146,11 @@ Returns:
         .def( "setModel", &FieldOnCellsComplex::setModel )
         .def( "build", &FieldOnCellsComplex::build )
         .def( "getValues", &FieldOnCellsComplex::getValues, R"(
-Return a list of values as (x1, y1, z1, x2, y2, z2...)
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
-Returns:
-    list[complex]: List of values.
-                  )" )
+            Returns:
+                list[complex]: List of values.
+            )" )
         .def(
             "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
         .def(
@@ -162,30 +165,30 @@ Returns:
         .def( py::self * float() )
         .def( float() * py::self )
         .def( "size", &FieldOnCellsComplex::size, R"(
-Return the size of the field
+            Return the size of the field
 
-Returns:
-    int: number of element in the field
-                        )" )
+            Returns:
+                int: number of element in the field
+            )" )
         .def( "transform", &FieldOnCellsComplex::transform< ASTERCOMPLEX >, R"(
-Apply Function to each value of _ValuesList of the FieldOnCells object.
+            Apply Function to each value of _ValuesList of the FieldOnCells object.
 
-Arguments:
-    func (Function): Callable Python object
+            Arguments:
+                func (Function): Callable Python object
 
-Returns:
-    bool: New FieldOnCells object with the trasformed values
-                        )",
+            Returns:
+                bool: New FieldOnCells object with the trasformed values
+            )",
               py::arg( "func" ) )
         .def( "printMedFile", &FieldOnCellsComplex::printMedFile, R"(
-Print the field in MED format.
+            Print the field in MED format.
 
-Arguments:
-    filename (str): Path to the file to be printed.
+            Arguments:
+                filename (str): Path to the file to be printed.
 
-Returns:
-    bool: *True* if succeeds, *False* otherwise.
-                        )",
+            Returns:
+                bool: *True* if succeeds, *False* otherwise.
+            )",
               py::arg( "filename" ), py::arg( "local" ) = true );
 
     py::class_< FieldOnCellsLong, FieldOnCellsLongPtr, DataField >( mod, "FieldOnCellsLong" )
@@ -198,11 +201,11 @@ Returns:
         .def( "setModel", &FieldOnCellsLong::setModel )
         .def( "build", &FieldOnCellsLong::build )
         .def( "getValues", &FieldOnCellsLong::getValues, R"(
-Return a list of values as (x1, y1, z1, x2, y2, z2...)
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
-Returns:
-    list[int]: List of values.
-                  )" )
+            Returns:
+                list[int]: List of values.
+            )" )
         .def(
             "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
         .def(
@@ -217,20 +220,20 @@ Returns:
         .def( py::self * float() )
         .def( float() * py::self )
         .def( "size", &FieldOnCellsLong::size, R"(
-Return the size of the field
+            Return the size of the field
 
-Returns:
-    int: number of element in the field
-                        )" )
+            Returns:
+                int: number of element in the field
+            )" )
         .def( "printMedFile", &FieldOnCellsLong::printMedFile, R"(
-Print the field in MED format.
+            Print the field in MED format.
 
-Arguments:
-    filename (str): Path to the file to be printed.
+            Arguments:
+                filename (str): Path to the file to be printed.
 
-Returns:
-    bool: *True* if succeeds, *False* otherwise.
-                        )",
+            Returns:
+                bool: *True* if succeeds, *False* otherwise.
+            )",
               py::arg( "filename" ), py::arg( "local" ) = true );
     /**
      * Object FieldOnCellsChar8
@@ -242,13 +245,15 @@ Returns:
         .def( "setDescription", &FieldOnCellsChar8::setDescription )
         .def( "setModel", &FieldOnCellsChar8::setModel )
         .def( "getModel", &FieldOnCellsChar8::getModel, R"(
-                  Return the model associated with the FieldOnCellsChar8 object
-                  Returns:
-                  Model: Model Object
-                  )" )
+            Return the model associated with the FieldOnCellsChar8 object
+
+            Returns:
+                Model: Model Object
+            )" )
         .def( "getMesh", &FieldOnCellsChar8::getMesh, R"(
-                  Return the Mesh associated with the FieldOnCellsChar8 object
-                  Returns:
-                  BaseMesh: Mesh object
-                  )" );
+            Return the Mesh associated with the FieldOnCellsChar8 object
+
+            Returns:
+                BaseMesh: Mesh object
+            )" );
 };

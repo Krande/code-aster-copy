@@ -37,7 +37,7 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
     py::class_< FieldOnNodesReal, FieldOnNodesRealPtr, DataField >( mod, "FieldOnNodesReal" )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, std::string > ) )
-        .def( py::init< const FieldOnNodesReal & >() )
+        .def( py::init( &initFactoryPtr< FieldOnNodesReal, const FieldOnNodesReal & > ) )
         .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
         .def( "duplicate", &FieldOnNodesReal::duplicate )
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesReal::exportToSimpleFieldOnNodes )
@@ -48,8 +48,6 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def(
             "__setitem__",
             +[]( FieldOnNodesReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i ) = f; } )
-        .def(
-            "__add__", +[]( FieldOnNodesReal &v1, FieldOnNodesReal &v2 ) { return ( v1 + v2 ); } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -66,48 +64,44 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
-        .def( "norm", &FieldOnNodesReal::norm,
-              R"(
-Return the euclidean norm of the field
+        .def( "norm", &FieldOnNodesReal::norm, R"(
+            Return the euclidean norm of the field
 
-Arguments:
-    normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+            Arguments:
+                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
 
-Returns:
-    float: euclidean norm
-        )" )
-        .def( "dot", &FieldOnNodesReal::dot,
-              R"(
-Return the dot product of two fields
+            Returns:
+                float: euclidean norm
+            )" )
+        .def( "dot", &FieldOnNodesReal::dot, R"(
+            Return the dot product of two fields
 
-Arguments:
-    other (FieldOnNodes): other field
+            Arguments:
+                other (FieldOnNodes): other field
 
-Returns:
-    float: dot product
-        )",
+            Returns:
+                float: dot product
+            )",
               py::arg( "other" ) )
-        .def( "size", &FieldOnNodesReal::size,
-              R"(
-Return the size of the field
+        .def( "size", &FieldOnNodesReal::size, R"(
+            Return the size of the field
 
-Returns:
-    int: number of element in the field
-        )" )
-        .def( "setValues", &FieldOnNodesReal::setValues,
-              R"(
-Set values of the field
+            Returns:
+                int: number of element in the field
+            )" )
+        .def( "setValues", &FieldOnNodesReal::setValues, R"(
+            Set values of the field
 
-Arguments:
-    value (float): value to set
-        )",
+            Arguments:
+                value (float): value to set
+            )",
               py::arg( "value" ) )
         .def( "getValues", &FieldOnNodesReal::getValues, py::return_value_policy::reference, R"(
-Return a list of values as (x1, y1, z1, x2, y2, z2...)
+            Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
-Returns:
-    list[float]: List of values.
-        )" );
+            Returns:
+                list[float]: List of values.
+            )" );
     /**
      * Object FieldOnNodesComplex
      */
@@ -132,39 +126,37 @@ Returns:
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
         .def( "getValues", &FieldOnNodesComplex::getValues, py::return_value_policy::reference, R"(
-Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...]
-(m is the total number of componenets)
+            Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...]
+            (m is the total number of componenets)
 
-Returns:
-    list[complex]: List of values.
-        )" )
-        .def( "dot", &FieldOnNodesComplex::dot,
-              R"(
-Return the dot product of two complex fields
+            Returns:
+                list[complex]: List of values.
+            )" )
+        .def( "dot", &FieldOnNodesComplex::dot, R"(
+            Return the dot product of two complex fields
 
-Arguments:
-    other (FieldOnNodes): other field
+            Arguments:
+                other (FieldOnNodes): other field
 
-Returns:
-    complex: dot product
-        )",
+            Returns:
+                complex: dot product
+            )",
               py::arg( "other" ) )
-        .def( "norm", &FieldOnNodesComplex::norm,
-              R"(
-Return the euclidean norm of the field
+        .def( "norm", &FieldOnNodesComplex::norm, R"(
+            Return the euclidean norm of the field
 
-Arguments:
-    normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+            Arguments:
+                normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
 
-Returns:
-    float: euclidean norm
-        )" )
+            Returns:
+                float: euclidean norm
+            )" )
         .def( "setValues", &FieldOnNodesComplex::setValues, R"(
-Set values of the field
+            Set values of the field
 
-Argument:
-    complex: value to set
-        )",
+            Argument:
+                complex: value to set
+            )",
               py::arg( "value" ) )
         .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );
 

@@ -144,13 +144,13 @@ class FieldOnCells : public DataField {
     }
 
     /** @brief Move constructor */
-    FieldOnCells( FieldOnCells &&toCopy ) : FieldOnCells() {
-        _descriptor = toCopy._descriptor;
-        _reference = toCopy._reference;
-        _valuesList = toCopy._valuesList;
-        _title = toCopy._title;
-        _dofDescription = toCopy._dofDescription;
-        _model = toCopy._model;
+    FieldOnCells( FieldOnCells &&other ) : DataField{ std::move( other ) } {
+        _descriptor = other._descriptor;
+        _reference = other._reference;
+        _valuesList = other._valuesList;
+        _title = other._title;
+        _dofDescription = other._dofDescription;
+        _model = other._model;
         updateValuePointers();
     }
 
@@ -351,12 +351,9 @@ class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > &operator+=( const FieldOnCells< ValueType > &rhs ) {
-        if ( !this->isSimilarTo( rhs ) ) {
+        if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-        }
-
         ( *_valuesList ) += ( *rhs._valuesList );
-
         return *this;
     };
 
@@ -365,12 +362,9 @@ class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > &operator-=( const FieldOnCells< ValueType > &rhs ) {
-        if ( !this->isSimilarTo( rhs ) ) {
+        if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-        }
-
         ( *_valuesList ) -= ( *rhs._valuesList );
-
         return *this;
     };
 
@@ -390,40 +384,25 @@ class FieldOnCells : public DataField {
      * @brief Plus overloading
      * @return New field
      */
-    FieldOnCells< ValueType > operator+( const FieldOnCells< ValueType > &rhs ) const {
-        FieldOnCells< ValueType > tmp( *this );
-        _valuesList->updateValuePointer();
-        rhs.updateValuePointers();
-
-        if ( !tmp.isSimilarTo( rhs ) )
+    friend FieldOnCells< ValueType > operator+( FieldOnCells< ValueType > lhs,
+                                                const FieldOnCells< ValueType > &rhs ) {
+        if ( !lhs.isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-
-        ASTERINTEGER size = rhs._valuesList->size();
-        for ( auto i = 0; i < size; i++ ) {
-            ( *tmp._valuesList )[i] = ( *_valuesList )[i] + ( *rhs._valuesList )[i];
-        }
-
-        return tmp;
+        lhs += rhs;
+        return lhs;
     };
 
     /**
      * @brief Minus overloading
      * @return New field
      */
-    FieldOnCells< ValueType > operator-( const FieldOnCells< ValueType > &rhs ) const {
-        FieldOnCells< ValueType > tmp( *this );
-        _valuesList->updateValuePointer();
-        rhs.updateValuePointers();
-        ASTERINTEGER size = rhs._valuesList->size();
-
-        if ( !tmp.isSimilarTo( rhs ) )
+    friend FieldOnCells< ValueType > operator-( FieldOnCells< ValueType > lhs,
+                                                const FieldOnCells< ValueType > &rhs ) {
+        std::cout << "DEBUG: operator- lhs " << lhs.getName() << std::endl;
+        if ( !lhs.isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-
-        for ( auto i = 0; i < size; i++ ) {
-            ( *tmp._valuesList )[i] = ( *_valuesList )[i] - ( *rhs._valuesList )[i];
-        }
-
-        return tmp;
+        lhs -= rhs;
+        return lhs;
     };
 
     /**
@@ -431,11 +410,10 @@ class FieldOnCells : public DataField {
      * @return New field
      */
 
-    friend FieldOnCells< ValueType > operator*( const FieldOnCells< ValueType > &lhs,
+    friend FieldOnCells< ValueType > operator*( const FieldOnCells< ValueType > lhs,
                                                 const ASTERDOUBLE &scal ) {
-        FieldOnCells< ValueType > tmp( lhs );
-        ( *tmp._valuesList ) *= scal;
-        return tmp;
+        ( *lhs._valuesList ) *= scal;
+        return lhs;
     };
 
     /**

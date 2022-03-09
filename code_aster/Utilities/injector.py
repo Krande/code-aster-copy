@@ -25,16 +25,26 @@
 """
 
 
-def injector(boost_class):
-    """Decorator to inject methods into boost objects.
+def injector(pybind_class):
+    """Decorator to inject methods into pybind11 objects.
 
     Private methods are not injected, except a sublist:
-    ``__call__``, ``__getattr__``, ``__getinitargs__``, ``__getitem__``,
-    ``__getstate__``, ``__getstate_manages_dict__``, ``__len__``,
+    ``__add__``,
+    ``__call__``,
+    ``__eq__``,
+    ``__getattr__``,
+    ``__getinitargs__``,
+    ``__getitem__``,
+    ``__getstate__``,
+    ``__getstate_manages_dict__``,
+    ``__iadd__``,
+    ``__init__``,
+    ``__len__``,
+    ``__mult__``,
     ``__setstate__``.
 
     Arguments:
-        boost_class (*boost-python class*): Boost-Python class to enrich.
+        pybind_class (*pybind11 class*): pybind11 class to enrich.
 
     Returns:
         class: Decorated class.
@@ -62,6 +72,6 @@ def injector(boost_class):
                         "__setstate__",
                     ):
                         continue
-                setattr(boost_class, name, attr)
+                setattr(pybind_class, name, attr)
 
     return decorated

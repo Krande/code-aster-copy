@@ -79,6 +79,10 @@ class Mesh : public BaseMesh {
     VectorLong getNodes( const std::string name, const bool localNumbering = true,
                          const bool same_rank = true ) const;
 
+    VectorLong getNodes( const bool localNumbering, const bool same_rank = true ) const {
+        return getNodes( std::string(), localNumbering, same_rank );
+    };
+
     VectorLong getNodes() const { return getNodes( std::string() ); };
 
     /**
