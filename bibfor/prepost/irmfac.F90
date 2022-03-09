@@ -70,9 +70,9 @@ aster_logical :: lfichUniq
     real(kind=8) :: borsup, borinf
     character(len=1) :: paraFormat
     character(len=8) :: cplxFormat
-    character(len=8) :: answer, modelMesh, model, caraElem
-    character(len=8) :: dsName, resultName, fieldName, meshName
+    character(len=8) :: modelMesh, model, caraElem, meshName
     character(len=8) :: fieldGsmh, fieldQuantity
+    character(len=19) :: dsName, resultName, fieldName, answer
     character(len=16) :: realFormat, resultType
     character(len=80) :: title
     integer :: fieldListNb, storeListNb, paraListNb, cmpListNb, nodeListNb, cellListNb

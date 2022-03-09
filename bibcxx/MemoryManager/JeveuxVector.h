@@ -358,13 +358,13 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     /** @brief Convert to std::vector */
-    std::vector< ValueType > toVector() { return segment( 0, size() ); };
+    std::vector< ValueType > toVector() { return slice( 0, size() ); };
 
     /** @brief Vector containing the first n elements */
-    std::vector< ValueType > head( const ASTERINTEGER &n ) { return segment( 0, n ); };
+    std::vector< ValueType > head( const ASTERINTEGER &n ) { return slice( 0, n ); };
 
     /** @brief Vector containing n elements, starting at position i */
-    std::vector< ValueType > segment( const ASTERINTEGER &first, const ASTERINTEGER &n ) {
+    std::vector< ValueType > slice( const ASTERINTEGER &first, const ASTERINTEGER &n ) {
         CALL_JEMARQ();
 
         updateValuePointer();

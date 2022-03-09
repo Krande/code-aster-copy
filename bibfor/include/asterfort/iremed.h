@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ interface
                       cplxFormat , lVariName    , caraElem,&
                       lfichUniq)
         integer, intent(in) :: fileUnit
-        character(len=8), intent(in) :: dsNameZ
+        character(len=19), intent(in) :: dsNameZ
         aster_logical, intent(in) :: lResu
         integer, intent(in) :: fieldListNb
         character(len=16), pointer :: fieldListType(:)

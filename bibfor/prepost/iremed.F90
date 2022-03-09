@@ -50,7 +50,7 @@ implicit none
 #include "asterfort/bool_to_int.h"
 !
 integer, intent(in) :: fileUnit
-character(len=8), intent(in) :: dsNameZ
+character(len=19), intent(in) :: dsNameZ
 aster_logical, intent(in) :: lResu
 integer, intent(in) :: fieldListNb
 character(len=16), pointer :: fieldListType(:)

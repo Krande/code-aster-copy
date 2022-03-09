@@ -85,7 +85,6 @@ test.assertSequenceEqual(sorted(SOLUT.getFieldsNames()), fields )
 
 nbRank = SOLUT.getNumberOfRanks()
 
-
 # New result
 SOLUN = code_aster.NonLinearResult()
 
@@ -283,5 +282,13 @@ sig = SOLUN.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
 test.assertAlmostEqual(sig.norm("NORM_2"), 24162.483694014656, 8)
 test.assertAlmostEqual(sig.norm("NORM_1"), 640625.2493377978, 8)
 test.assertAlmostEqual(sig.norm("NORM_INFINITY"), 1317.268981963458, 8)
+
+
+# Fix 31780
+depl = SOLUT.getField("DEPL", 0)
+depl.printMedFile("depl.med")
+
+chvga = SOLUT.getField("VARI_ELGA", 0)
+chvga.printMedFile("vari_elga.med")
 
 FIN()

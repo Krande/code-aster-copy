@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,8 @@ implicit none
     integer :: nn, rank
     real(kind=8) :: fileVersionR
     real(kind=8), parameter :: eps = 1.0d-6
-    character(len=8) :: model, mesh, resultMesh, proc0, result, ispar
+    character(len=8) :: model, mesh, resultMesh, proc0, ispar
+    character(len=19) :: result
     aster_logical :: lResu, lMesh, lfichUniq
 !
 ! ------------------------------------------------------------------------------
