@@ -220,7 +220,7 @@ RESUSECH=THER_NON_LINE(          MODELE=MOTH,
                                             TOUT = 'OUI',            ),
                             CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                             EVOL_THER_SECH=RESUTHER,
-                             TITRE=( ' CAS TEST &CODE &RL COMMANDE &COMMANDE', )
+                             TITRE=( 'CAS TEST THER_NON_LINE', )
                          )
 
 RESUSECH=THER_NON_LINE(reuse=RESUSECH,
@@ -237,7 +237,7 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,
                                             TOUT = 'OUI',            ),
                             CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                             EVOL_THER_SECH=RESUTHER,
-                             TITRE=( ' CAS TEST &CODE &RL COMMANDE &COMMANDE', )
+                             TITRE=( 'CAS TEST THER_NON_LINE', )
                          )
 
 

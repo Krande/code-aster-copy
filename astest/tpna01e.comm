@@ -170,7 +170,7 @@ TEMPE=THER_NON_LINE(MODELE=MOTH,
                            _F(CHARGE=CHTHB,),),
                     ETAT_INIT=_F(STATIONNAIRE='OUI',),
                     NEWTON=_F(REAC_ITER=1,),
-                    TITRE=(' CAS TEST &CODE &RL COMMANDE &COMMANDE',),)
+                    TITRE=('',),)
 
 TEMPE=CALC_CHAMP(reuse=TEMPE,
                  RESULTAT=TEMPE,

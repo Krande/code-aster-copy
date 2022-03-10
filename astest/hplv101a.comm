@@ -143,7 +143,7 @@ PM = POST_ELEM(CHAM_GD=DEM_KI11,
                CHAM_MATER=CHMAT,
                ENER_POT=_F(TOUT='OUI'),
                MODELE=MODME,
-               TITRE=(' CAS TEST &CODE &RL COMMANDE &COMMANDE', ))
+               TITRE=('TEST POST_ELEM', ))
 
 TEST_RESU(RESU=_F(GROUP_MA='M1',
                   NOM_CHAM='ETHE_ELEM',

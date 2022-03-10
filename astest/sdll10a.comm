@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1161,7 +1161,7 @@ MODE=CALC_MODES(MATR_RIGI=MATASSR,
                 OPTION='PLUS_PETITE',
                 CALC_FREQ=_F(NMAX_FREQ=4,
                              ),
-                TITRE=' CAS TEST &CODE   COMMANDE &COMMANDE SANS L-TX !!',
+                TITRE='',
                 MATR_MASS=MATASSM,
                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
                                  ),

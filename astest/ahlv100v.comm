@@ -100,7 +100,7 @@ DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                             FREQ=F,
                             EXCIT=_F( VECT_ASSE = VECTASS,  COEF_MULT = 1.,
                                       PUIS_PULS = 0,  PHAS_DEG = 0.),
-             TITRE=( 'CAS TEST &CODE &RL   COMMANDE &COMMANDE', )
+             TITRE=( '', )
                                     )
 
 # EN HARMONIQUE : PRES = -RHO_F*I*OMEGA*PSI => PSI = PRES/(-1.0j*2*pi*freq*RHO_F)

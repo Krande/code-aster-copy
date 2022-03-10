@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -230,7 +230,7 @@ SPECT=DEFI_NAPPE(  NOM_PARA='AMOR',
                          INTERPOL=( 'LIN',  'LOG', ),
                        PARA=(     0.005,  0.05,  ),
                        FONCTION=( A_0_5,  A_5_0, ),
-                         TITRE='CAS TEST &CODE   COMMANDE &COMMANDE'
+                         TITRE='CAS TEST COMMANDE DEFI_NAPPE'
                      )
 
 #
@@ -248,7 +248,7 @@ SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
                                     NATURE = 'ACCE'),
                             COMB_MODE=_F(  TYPE = 'SRSS'),
                             OPTION=( 'ACCE_ABSOLU',),
-                            TITRE=( 'CAS TEST &CODE &RL DATE &DATE',)
+                            TITRE=( 'CAS TEST COMB_SISM_MODAL',)
                      )
 
 ###--->> REFERENCE : FICHE DE VALIDATION (DYNAM S&M)

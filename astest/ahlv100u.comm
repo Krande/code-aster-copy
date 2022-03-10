@@ -85,7 +85,7 @@ DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                             FREQ=F,
                             EXCIT=_F( VECT_ASSE = VECTASS,  COEF_MULT = 1.,
                                       PUIS_PULS = 1,  PHAS_DEG = 90.),
-             TITRE=( 'CAS TEST &CODE &RL   COMMANDE &COMMANDE', )
+             TITRE=( '', )
                                     )
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

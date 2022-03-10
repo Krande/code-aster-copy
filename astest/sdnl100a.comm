@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ L_INST2=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                          )
 
 RESU=DYNA_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
-   TITRE=( ' CAS TEST &CODE &RL COMMANDE &COMMANDE', ),EXCIT=(
+   TITRE=( '', ),EXCIT=(
                      _F(  CHARGE = CHA1),
                            _F(  CHARGE = CHA2)),
                     INCREMENT=_F( INST_INIT = 0., LIST_INST = L_INST1),

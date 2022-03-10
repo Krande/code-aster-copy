@@ -109,6 +109,9 @@ implicit none
                     nbret=l)
         call getltx(motfac, motcle, iocc, 80, nbtitr,&
                     zi(llon), l)
+!       on passe en négatif pour savoir que c'est un titre utilisateur
+!       et ainsi ne pas traiter les démons
+        nbtitr = - nbtitr
     endif
     call titre1(st, nomobj, base, nbtitr, zk80(ldon),&
                 zi(llon), formr, nomsym, iordr)

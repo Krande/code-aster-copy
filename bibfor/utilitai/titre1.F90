@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
                   lgdon, formr, nomsym, iordr)
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -39,14 +40,22 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
 !-----------------------------------------------------------------------
     integer :: i, icold, icols, ideb, ierx, ilig, iligd, vali(2)
     integer :: iligs, ldons, ldons1, lonmax, lsort, mxcold, mxligs
+    aster_logical :: lDefault
 !
 !-----------------------------------------------------------------------
     parameter            (mxligs=50 )
     character(len=1) :: kavant, kcoura
+    
 !     ------------------------------------------------------------------
     call jemarq()
     call wkvect('&&TITRE1.TAMPON.SORTIE', 'V V K80', mxligs, ldons)
     ldons1 = ldons
+    
+    lDefault = ASTER_TRUE
+    if (nbtitr.lt.0)then
+        lDefault = ASTER_FALSE
+        nbtitr = -nbtitr
+    endif
 !
 ! -------------------------
 !     ICOLS  = INDICE DE LA DERNIERE COLONNE REMPLIE DANS LA SORTIE
@@ -58,6 +67,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
 !     --- TANT QU'IL Y A DES LIGNES FAIRE ---
     icols = 0
     iligd = 1
+    
     if (nbtitr .gt. mxligs) then
         vali(1) = mxligs
         vali(2) = nbtitr
@@ -72,9 +82,10 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
         mxcold = lgdon(iligd)
 1100      continue
         if (icold .le. mxcold) then
-            if (titdon(iligd)(icold:icold) .eq. '&') then
+            if (titdon(iligd)(icold:icold) .eq. '&' .and. lDefault) then
 !
 !              --- ON A TROUVE UN "&",  ATTENTION DEMON ---
+!               uniquement pour les titres par défaut
                 call titreb(titdon, iligd, icold, nbtitr, zk80(1),&
                             ldons1, icols, formr, nomsym, iordr)
 !

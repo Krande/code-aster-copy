@@ -152,7 +152,7 @@ L_RECU=DEFI_LIST_REEL(  DEBUT=0.02,INTERVALLE=(
 
 L_ARCH=DEFI_LIST_ENTI(  DEBUT=10,
                            INTERVALLE=_F(  JUSQU_A = 100,  PAS = 10),
-              TITRE=( 'CAS TEST: &CODE - COMMANDE: &COMMANDE', )
+              TITRE=( 'CAS TEST: COMMANDE: DEFI_LIST_ENTI', )
                             )
 
 #-----------------------------------------------------------------------

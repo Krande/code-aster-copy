@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ MODE_MEC=CALC_MODES(MATR_RIGI=RIGIDITE,
                     OPTION='PROCHE', SOLVEUR=_F(METHODE='MULT_FRONT'),
                     CALC_FREQ=_F(FREQ=( 4.77,),
                                  ),
-                    TITRE='CAS TEST &CODE   COMMANDE &COMMANDE SANS L_TX !!',
+                    TITRE='',
                     MATR_MASS=MASSE,
                     )
 
@@ -95,7 +95,7 @@ ACCELERO=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='ACCE',
 
 #
 MONO_X=CALC_CHAR_SEISME(   MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
-                  TITRE=( 'CAS TEST &CODE &RL COMMANDE &COMMANDE', ),
+                  TITRE=( '', ),
                  MONO_APPUI='OUI'                     )
 
 #
@@ -116,7 +116,7 @@ PROJ_BASE( BASE=MODE_MEC,
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                     SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
-             TITRE=( ' CAS TEST &CODE &RL COMMANDE &COMMANDE', ),
+             TITRE=( '', ),
                      EXCIT=_F(VECT_ASSE_GENE = VECT_X,  FONC_MULT = ACCELERO),
                      INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 0.15,
                                  PAS = 0.0005)  )
