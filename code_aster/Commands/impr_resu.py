@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -75,6 +75,10 @@ class ImprResu(ExecuteCommand):
             keywords["RESU"] = force_list(keywords["RESU"])
             for resu in keywords["RESU"]:
                 self.add_result_name(resu)
+
+        # For Mesh is always "OUI"
+        if "FICHIER_UNIQUE" in keywords and not ExecutionParameter().option & Options.HPCMode:
+            keywords["FICHIER_UNIQUE"] = "OUI"
 
 
 IMPR_RESU = ImprResu.run
