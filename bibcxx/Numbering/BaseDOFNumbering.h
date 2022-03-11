@@ -350,67 +350,67 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
      */
-    virtual bool useLagrangeMultipliers() const { throw std::runtime_error( "Not allowed" ); };
+    virtual bool useLagrangeMultipliers() const { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief Are Single Lagrange Multipliers used for BC or MPC
      */
     virtual bool useSingleLagrangeMultipliers() const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Get The Component Associated To A Given Row
      */
     virtual std::string getComponentAssociatedToRow( const ASTERINTEGER row ) const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Get The Components Associated To A Given Node
      */
     virtual VectorString getComponentsAssociatedToNode( const ASTERINTEGER node ) const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
     virtual ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row ) const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     };
 
     /**
      * @brief Get The total number of Dofs
      */
-    virtual ASTERINTEGER getNumberOfDofs() const { throw std::runtime_error( "Not allowed" ); };
+    virtual ASTERINTEGER getNumberOfDofs() const { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief get the Row index Associated To the Component of a Node
      */
     virtual ASTERINTEGER getRowAssociatedToNodeComponent( const ASTERINTEGER node,
                                                           const std::string comp ) const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     }
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
     virtual VectorLong getRowsAssociatedToPhysicalDofs() const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     }
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
     virtual VectorLong getRowsAssociatedToLagrangeMultipliers() const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     }
 
     /**
      * @brief Get Assigned Components
      */
-    virtual VectorString getComponents() const { throw std::runtime_error( "Not allowed" ); }
+    virtual VectorString getComponents() const { AS_ABORT( "Not allowed" ); }
 
     /**
      * @brief Get FieldOnNodesDescription

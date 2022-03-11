@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -793,7 +793,7 @@ def macr_lign_coupe_ops(self, LIGN_COUPE, RESULTAT=None, CHAM_GD=None,
         # création d'un concept résultat à partir du champ CHAM_GD
         __resuch = CREA_RESU(OPERATION='AFFE',
                              NOM_CHAM=NOM_CHAM, TYPE_RESU=TYPE_RESU,
-                             AFFE=_F(CHAM_GD=CHAM_GD, INST=0.),)
+                             AFFE=_F(CHAM_GD=CHAM_GD, INST=0., MODELE=Model),)
         RESULTAT = __resuch
 
     # Maillage sur lequel s'appuie le résultat à projeter

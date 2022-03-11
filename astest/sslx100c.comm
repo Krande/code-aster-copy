@@ -291,7 +291,7 @@ efgeElno = CREA_CHAMP (OPERATION = 'EXTR',
 dynaTransResu=CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='DYNA_TRANS',
                  NOM_CHAM='EFGE_ELNO',
-                 AFFE=(_F(CHAM_GD=efgeElno,INST=0.0,),),)
+                 AFFE=(_F(CHAM_GD=efgeElno,INST=0.0,MODELE=MO,),),)
 
 dynaTransResu=CALC_FERRAILLAGE(reuse =dynaTransResu,
                     RESULTAT=dynaTransResu,

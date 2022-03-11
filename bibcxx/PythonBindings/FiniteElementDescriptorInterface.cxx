@@ -31,9 +31,10 @@ void exportFiniteElementDescriptorToPython( py::module_ &mod ) {
 
     py::class_< FiniteElementDescriptor, FiniteElementDescriptor::FiniteElementDescriptorPtr,
                 DataStructure >( mod, "FiniteElementDescriptor" )
-        // fake initFactoryPtr: not directly created by user
-        // fake initFactoryPtr: not directly created by user
+        .def( py::init( &initFactoryPtr< FiniteElementDescriptor, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< FiniteElementDescriptor, std::string, BaseMeshPtr > ) )
         .def( "getPhysics", &FiniteElementDescriptor::getPhysics )
+        .def( "getMesh", &FiniteElementDescriptor::getMesh )
 #ifdef ASTER_HAVE_MPI
         .def( "transferDofDescriptorFrom", &FiniteElementDescriptor::transferDofDescriptorFrom )
 #endif /* ASTER_HAVE_MPI */

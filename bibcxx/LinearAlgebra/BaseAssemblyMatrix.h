@@ -122,7 +122,7 @@ class BaseAssemblyMatrix : public DataStructure {
     /**
      * @brief Assemblage de la matrice
      */
-    virtual bool build() { throw std::runtime_error( "Not allowed" ); };
+    virtual bool assemble(bool clean = true) { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief Make the matrix symmetric
@@ -192,7 +192,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @return MaterialField of the first ElementaryMatrix (all others must be the same)
      */
     virtual MaterialFieldPtr getMaterialField() const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     };
 
     /**
@@ -200,7 +200,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @return size of vector containing ElementaryMatrix
      */
     virtual ASTERINTEGER getNumberOfElementaryMatrix() const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     };
 
 #ifdef ASTER_HAVE_PETSC4PY
@@ -307,7 +307,7 @@ class BaseAssemblyMatrix : public DataStructure {
     }
 
     virtual BaseAssemblyMatrixPtr getEmptyMatrix( const std::string &name ) const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     }
 };
 

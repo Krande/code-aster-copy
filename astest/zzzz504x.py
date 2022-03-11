@@ -85,7 +85,7 @@ matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
-matrAsse.build()
+matrAsse.assemble()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
 

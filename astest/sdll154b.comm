@@ -175,10 +175,6 @@ sismique_qs_1 = CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                             NOM_CHAM='EFGE_ELNO',
                             NUME_ORDRE=24)
 
-# contournement car le résultat de COMB_SIMS_MODAL ne contient pas le modele
-sismique_qs_1.setModel(modele)
-sismique_dyn_1.setModel(modele)
-
 sismique_dyn_2 = CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                             OPERATION='ASSE',
                             MODELE=modele,

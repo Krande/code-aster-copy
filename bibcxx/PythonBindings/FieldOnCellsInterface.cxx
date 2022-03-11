@@ -45,11 +45,11 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
                 FieldOnCellsReal
             )" )
         .def( "exportToSimpleFieldOnCells", &FieldOnCellsReal::exportToSimpleFieldOnCells )
-        .def( "getModel", &FieldOnCellsReal::getModel, R"(
-            Return the model associated with the FieldOnCellsReal object
+        .def( "getDescription", &FieldOnCellsReal::getDescription, R"(
+            Return the descriptor associated with the FieldOnCellsReal object
 
             Returns:
-                Model: Model Object
+                FiniteElementDescriptor: FiniteElementDescriptor Object
             )" )
         .def( "getMesh", &FieldOnCellsReal::getMesh, R"(
             Return the Mesh associated with the FieldOnCellsReal object
@@ -58,7 +58,7 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
                 BaseMesh: Mesh object
             )" )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
-        .def( "setModel", &FieldOnCellsReal::setModel )
+        .def( "getDescription", &FieldOnCellsReal::getDescription )
         .def( "build", &FieldOnCellsReal::build )
         .def(
             "__getitem__", +[]( const FieldOnCellsReal &v, ASTERINTEGER i ) { return v[i]; } )
@@ -141,9 +141,8 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnCellsComplex, std::string > ) )
         .def( py::init< const FieldOnCellsComplex & >() )
         .def( "duplicate", &FieldOnCellsComplex::duplicate )
-        .def( "getModel", &FieldOnCellsComplex::getModel )
         .def( "setDescription", &FieldOnCellsComplex::setDescription )
-        .def( "setModel", &FieldOnCellsComplex::setModel )
+        .def( "getDescription", &FieldOnCellsComplex::getDescription )
         .def( "build", &FieldOnCellsComplex::build )
         .def( "getValues", &FieldOnCellsComplex::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
@@ -196,9 +195,8 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnCellsLong, std::string > ) )
         .def( py::init< const FieldOnCellsLong & >() )
         .def( "duplicate", &FieldOnCellsLong::duplicate )
-        .def( "getModel", &FieldOnCellsLong::getModel )
         .def( "setDescription", &FieldOnCellsLong::setDescription )
-        .def( "setModel", &FieldOnCellsLong::setModel )
+        .def( "getDescription", &FieldOnCellsLong::getDescription )
         .def( "build", &FieldOnCellsLong::build )
         .def( "getValues", &FieldOnCellsLong::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
@@ -243,12 +241,11 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FieldOnCellsChar8, std::string > ) )
         .def( py::init< const FieldOnCellsChar8 & >() )
         .def( "setDescription", &FieldOnCellsChar8::setDescription )
-        .def( "setModel", &FieldOnCellsChar8::setModel )
-        .def( "getModel", &FieldOnCellsChar8::getModel, R"(
-            Return the model associated with the FieldOnCellsChar8 object
+        .def( "getDescription", &FieldOnCellsChar8::getDescription, R"(
+            Return the description associated with the FieldOnCellsChar8 object
 
             Returns:
-                Model: Model Object
+                FiniteElementDescriptor: FiniteElementDescriptor Object
             )" )
         .def( "getMesh", &FieldOnCellsChar8::getMesh, R"(
             Return the Mesh associated with the FieldOnCellsChar8 object

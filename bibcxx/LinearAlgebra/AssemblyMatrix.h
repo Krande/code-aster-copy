@@ -52,8 +52,7 @@
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 class AssemblyMatrix : public BaseAssemblyMatrix {
   private:
-    typedef std::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > >
-        ElementaryMatrixPtr;
+    typedef std::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > > ElementaryMatrixPtr;
 
     /** @brief Collection '.VALM' */
     JeveuxCollection< ValueType > _matrixValues;
@@ -120,7 +119,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     /**
      * @brief Assemblage de la matrice
      */
-    bool assemble();
+    bool assemble( bool clean = true );
 
     /**
      * @brief Clear all ElementaryMatrixPtr
@@ -216,7 +215,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const PhysicalPro
 };
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
-bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble() {
+bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
     if ( _dofNum->isEmpty() )
         throw std::runtime_error( "Numbering is empty" );
 
@@ -253,6 +252,10 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble() {
     if ( !isMPIFull() && !getMesh()->isParallel() ) {
         std::string type = "MATR_ASSE";
         CALLO_SDMPIC( type, getName() );
+    }
+
+    if ( clean ) {
+        clearElementaryMatrix();
     }
 
     return true;

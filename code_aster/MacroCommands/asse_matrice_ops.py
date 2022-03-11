@@ -74,7 +74,7 @@ def asse_matrice_ops(self, **args):
             matr.addDirichletBC(cine)
 
     # Assemble
-    matr.assemble()
+    matr.assemble(False)
 
     if args.get("SYME") == "OUI":
         matr.symmetrize()

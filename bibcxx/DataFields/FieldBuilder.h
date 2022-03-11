@@ -74,7 +74,7 @@ class FieldBuilder {
      */
     template < typename ValueType >
     std::shared_ptr< FieldOnCells< ValueType > > buildFieldOnCells( const std::string &name,
-                                                                      const BaseMeshPtr mesh ) {
+                                                                    const BaseMeshPtr mesh ) {
         typedef FiniteElementDescriptor FEDDesc;
         typedef FiniteElementDescriptorPtr FEDDescP;
 
@@ -90,8 +90,9 @@ class FieldBuilder {
             curDesc = curIter->second;
         } else {
             curDesc = std::make_shared< FEDDesc >( ligrel, mesh );
-            _mapLigrel[ligrel] = curDesc;
+            addFiniteElementDescriptor( curDesc );
         }
+
         field->setDescription( curDesc );
 
         return field;
@@ -131,7 +132,7 @@ class FieldBuilder {
             curDesc = curIter->second;
         else {
             curDesc = std::make_shared< FONDesc >( profchno );
-            _mapProfChno[profchno] = curDesc;
+            addFieldOnNodesDescription( curDesc );
         }
         field->setDescription( curDesc );
 

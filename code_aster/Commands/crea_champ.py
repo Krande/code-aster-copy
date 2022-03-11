@@ -75,7 +75,8 @@ class FieldCreator(ExecuteCommand):
 
         if location == "CART":
             if mesh is None:
-                raise NotImplementedError("Must have Mesh, Model or ElementaryCharacteristics")
+                raise NotImplementedError(
+                    "Must have Mesh, Model or ElementaryCharacteristics")
             self._result = ConstantFieldOnCellsReal(mesh)
         elif location == "NOEU":
             if typ == "R":
@@ -106,29 +107,34 @@ class FieldCreator(ExecuteCommand):
 
         if location[:2] == "EL":
             chamF = keywords.get("CHAM_F")
-            if model is not None:
-                self._result.setModel(model)
-            elif resultat is not None:
-                if isinstance(resultat, (FullResult, ModeResult)):
-                    try:
-                        dofNum = resultat.getDOFNumbering()
-                        if dofNum is not None:
-                            self._result.setDescription(dofNum.getFiniteElementDescriptors()[0])
-                    except:
-                        pass
-                    if self._result.getModel() is None:
+
+            if model is None:
+                if resultat is not None:
+                    if isinstance(resultat, (FullResult, ModeResult)):
                         try:
                             dofNum = resultat.getDOFNumbering()
-                            if (dofNum is not None) and (dofNum.getModel() is not None):
-                                self._result.setModel(dofNum.getModel())
+                            if dofNum is not None:
+                                self._result.setDescription(
+                                    dofNum.getFiniteElementDescriptors()[0])
                         except:
                             pass
-                if resultat.getModel() is not None:
-                    self._result.setModel(resultat.getModel())
-            elif caraElem is not None:
-                self._result.setModel(caraElem.getModel())
+                        if self._result.getDescription() is None:
+                            try:
+                                dofNum = resultat.getDOFNumbering()
+                                if (dofNum is not None) and (dofNum.getModel() is not None):
+                                    model = dofNum.getModel()
+                            except:
+                                pass
+
+                    if resultat.getModel() is not None:
+                        model = resultat.getModel()
+                elif caraElem is not None:
+                    model = caraElem.getModel()
+
+            if model is not None:
+                self._result.setDescription(model.getFiniteElementDescriptor())
             elif chamF is not None:
-                self._result.setModel(chamF.getModel())
+                self._result.setDescription(chamF.getDescription())
 
     def post_exec(self, keywords):
         """Execute the command.

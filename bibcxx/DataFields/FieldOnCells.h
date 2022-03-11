@@ -55,8 +55,6 @@ class FieldOnCells : public DataField {
     JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.CELV' */
     JeveuxVector< ValueType > _valuesList;
-    /** @brief Modele */
-    ModelPtr _model;
     /** @brief Finite element description */
     FiniteElementDescriptorPtr _dofDescription;
 
@@ -73,7 +71,7 @@ class FieldOnCells : public DataField {
           _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
-          _model( nullptr ){};
+          _dofDescription( nullptr ){};
 
     /** @brief Constructor with automatic name */
     FieldOnCells() : FieldOnCells( ResultNaming::getNewResultName() ){};
@@ -117,9 +115,7 @@ class FieldOnCells : public DataField {
 
         ASTERINTEGER iret = 0;
         auto fed = model->getFiniteElementDescriptor();
-
-        _model = model;
-        _dofDescription = fed;
+        setDescription( fed );
         auto dcel = std::make_shared< SimpleFieldOnCellsValueType >();
         auto compor = behaviour->getBehaviourField();
         CALLO_CESVAR( carele, compor->getName(), fed->getName(), dcel->getName() );
@@ -138,8 +134,7 @@ class FieldOnCells : public DataField {
         *( _valuesList ) = *( toCopy._valuesList );
         *( _title ) = *( toCopy._title );
         // Pointers to be copied
-        _dofDescription = toCopy._dofDescription;
-        _model = toCopy._model;
+        setDescription( toCopy._dofDescription );
         updateValuePointers();
     }
 
@@ -149,8 +144,7 @@ class FieldOnCells : public DataField {
         _reference = other._reference;
         _valuesList = other._valuesList;
         _title = other._title;
-        _dofDescription = other._dofDescription;
-        _model = other._model;
+        setDescription( other._dofDescription );
         updateValuePointers();
     }
 
@@ -173,6 +167,7 @@ class FieldOnCells : public DataField {
         _descriptor->deallocate();
         _reference->deallocate();
         _valuesList->deallocate();
+        _dofDescription = nullptr;
     };
 
     /**
@@ -201,58 +196,53 @@ class FieldOnCells : public DataField {
     }
 
     /**
-     * @brief Get the model
-     */
-    ModelPtr getModel() const {
-        if ( _model != nullptr && _model->isEmpty() )
-            raiseAsterError( "Model is empty" );
-
-        return _model;
-    };
-
-    /**
      * @brief Get the mesh
      */
-    BaseMeshPtr getMesh() const { return _model->getMesh(); };
+    BaseMeshPtr getMesh() const {
+        if ( _dofDescription ) {
+            return _dofDescription->getMesh();
+        }
+
+        return nullptr;
+    };
 
     /**
      * @brief Set the description of finite elements
      * @param curDesc object FiniteElementDescriptorPtr
      */
-    void setDescription( FiniteElementDescriptorPtr &curDesc ) {
-        if ( _dofDescription )
-            raiseAsterError( "FiniteElementDescriptor already set" );
+    void setDescription( const FiniteElementDescriptorPtr &curDesc ) {
+        if ( !curDesc && _dofDescription ) {
+            AS_ABORT( "FiniteElementDescriptor is empty" );
+        }
+
+        if ( _dofDescription && curDesc && _dofDescription != curDesc ) {
+            std::string msg =
+                "FiniteElementDescriptor inconsistents: " + _dofDescription->getName() + " vs " +
+                curDesc->getName();
+            AS_ABORT( msg );
+        }
 
         _dofDescription = curDesc;
     };
 
     /**
-     * @brief Definition du modele
-     * @param currentMesh objet Model sur lequel la charge reposera
+     * @brief Get the description of finite elements
      */
-    ASTERBOOL setModel( ModelPtr &currentModel ) {
-        if ( currentModel->isEmpty() || currentModel == nullptr )
-            raiseAsterError( "Model is empty" );
-
-        _model = currentModel;
-        return true;
-    };
+    FiniteElementDescriptorPtr getDescription() const { return _dofDescription; };
 
     /**
      * @brief Update field and build FiniteElementDescriptor if necessary
      */
     ASTERBOOL build() {
-        if ( _dofDescription == nullptr ) {
-            if ( _model == nullptr )
-                raiseAsterError( "Model is empty" );
-
+        if ( !_dofDescription ) {
+            CALL_JEMARQ();
             _reference->updateValuePointer();
             const std::string ligrel = trim( ( *_reference )[0].toString() );
+            CALL_JEDEMA();
 
             if ( ligrel.substr( 0, 8 ) == getName().substr( 0, 8 ) ) {
-                _dofDescription = std::make_shared< FiniteElementDescriptor >( ligrel, getMesh() );
-            } else {
-                _dofDescription = _model->getFiniteElementDescriptor();
+                setDescription(
+                    std::make_shared< FiniteElementDescriptor >( ligrel, getMesh() ) );
             }
         }
         return true;
@@ -398,7 +388,6 @@ class FieldOnCells : public DataField {
      */
     friend FieldOnCells< ValueType > operator-( FieldOnCells< ValueType > lhs,
                                                 const FieldOnCells< ValueType > &rhs ) {
-        std::cout << "DEBUG: operator- lhs " << lhs.getName() << std::endl;
         if ( !lhs.isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
         lhs -= rhs;
@@ -410,7 +399,7 @@ class FieldOnCells : public DataField {
      * @return New field
      */
 
-    friend FieldOnCells< ValueType > operator*( const FieldOnCells< ValueType > lhs,
+    friend FieldOnCells< ValueType > operator*( FieldOnCells< ValueType > lhs,
                                                 const ASTERDOUBLE &scal ) {
         ( *lhs._valuesList ) *= scal;
         return lhs;
@@ -469,11 +458,7 @@ class FieldOnCells : public DataField {
         JeveuxVectorLong CellsRank = getMesh()->getCellsRank();
         CellsRank->updateValuePointer();
 
-        if ( !_model || _model->isEmpty() ) {
-            raiseAsterError( "Model not assigned to the FieldOnCells or empty" );
-        }
-
-        JeveuxCollectionLong collec = _model->getFiniteElementDescriptor()->getListOfGroupOfCells();
+        JeveuxCollectionLong collec = _dofDescription->getListOfGroupOfCells();
         JeveuxVectorLong descr = _descriptor;
         nbgrp = ( *descr )[1];
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ X7=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='ELNO_PRES_R',
 #  ----------------------------------------------------------------------------------------
 
 XXX2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_CHAR', NOM_CHAM='PRES',
-                   AFFE=(_F( CHAM_GD=X6, INST=1., )))
+                   AFFE=(_F( CHAM_GD=X6, INST=1., MODELE=MO2)))
 
 XXX3=POST_ELEM(MODELE=MO2, INST=1., RESULTAT=XXX2,
                 INTEGRALE=_F(NOM_CHAM='PRES',  NOM_CMP=('PRES'), TOUT='OUI', TYPE_MAILLE='2D'),)
@@ -110,7 +110,7 @@ DETRUIRE(NOM=(XXX3),)
 #  ----------------------------------------------------------------------------------------
 
 XXX2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_CHAR', NOM_CHAM='PRES',
-                   AFFE=(_F( CHAM_GD=X4, INST=1., )))
+                   AFFE=(_F( CHAM_GD=X4, INST=1., MODELE=MO2,)))
 
 XXX3=POST_ELEM(MODELE=MO2, INST=1., RESULTAT=XXX2,
                 INTEGRALE=_F(NOM_CHAM='PRES',  NOM_CMP=('PRES'), TOUT='OUI', TYPE_MAILLE='2D'),)
@@ -138,7 +138,7 @@ DETRUIRE(NOM=(XXX3),)
 #  ----------------------------------------------------------------------------------------
 
 XXX2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_CHAR', NOM_CHAM='PRES',
-                   AFFE=(_F( CHAM_GD=X5, INST=1., )))
+                   AFFE=(_F( CHAM_GD=X5, INST=1., MODELE=MO2,)))
 
 XXX3=POST_ELEM(MODELE=MO2, INST=1., RESULTAT=XXX2,
                 INTEGRALE=_F(NOM_CHAM='PRES', DEJA_INTEGRE='NON', NOM_CMP=('PRES'), TOUT='OUI', TYPE_MAILLE='2D'),)
@@ -166,7 +166,7 @@ DETRUIRE(NOM=(XXX3),)
 #  ----------------------------------------------------------------------------------------
 
 XXX2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_CHAR', NOM_CHAM='PRES',
-                   AFFE=(_F( CHAM_GD=X5, INST=1., )))
+                   AFFE=(_F( CHAM_GD=X5, INST=1., MODELE=MO2)))
 
 XXX3=POST_ELEM(MODELE=MO2, INST=1., RESULTAT=XXX2,
                 INTEGRALE=_F(NOM_CHAM='PRES', DEJA_INTEGRE='OUI', NOM_CMP=('PRES'), TOUT='OUI', TYPE_MAILLE='2D'),)

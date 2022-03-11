@@ -41,8 +41,6 @@ void exportAssemblyMatrixToPython( py::module_ &mod ) {
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "assemble", &AssemblyMatrixDisplacementReal::assemble )
-        // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixDisplacementReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
@@ -72,8 +70,6 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "assemble", &AssemblyMatrixDisplacementComplex::assemble )
-        // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixDisplacementComplex::transposeConjugate )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixDisplacementComplex::getMaterialField )
@@ -92,8 +88,6 @@ Arguments:
         .def( "addElementaryMatrix", &AssemblyMatrixTemperatureReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureReal::clearElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "assemble", &AssemblyMatrixTemperatureReal::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixTemperatureReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
@@ -125,8 +119,6 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "assemble", &AssemblyMatrixTemperatureComplex::assemble )
-        // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixTemperatureComplex::getMaterialField )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
@@ -144,8 +136,6 @@ Arguments:
         .def( "addElementaryMatrix", &AssemblyMatrixPressureReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureReal::clearElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "assemble", &AssemblyMatrixPressureReal::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixPressureReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
@@ -176,8 +166,6 @@ Arguments:
         .def( "addElementaryMatrix", &AssemblyMatrixPressureComplex::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixPressureComplex::clearElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "assemble", &AssemblyMatrixPressureComplex::assemble )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixPressureComplex::getMaterialField )
         // -----------------------------------------------------------------------------------------

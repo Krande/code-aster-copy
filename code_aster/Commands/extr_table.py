@@ -113,6 +113,12 @@ class ExtrTable(ExecuteCommand):
             model = [i for i in keywords["TABLE"].getDependencies() if isinstance(i, Model)]
             if model:
                 self._result.setModel(model[0])
+
+        if isinstance(self._result, FieldOnCellsReal):
+            model = [i for i in keywords["TABLE"].getDependencies() if isinstance(i, Model)]
+            if model:
+                self._result.setDescription(model[0].getFiniteElementDescriptor())
+
         # not available for int/float
         # + not consistent when created by TableContainer::build
         supported = (

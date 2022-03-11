@@ -46,6 +46,7 @@ from .elementarymatrix_ext import (
 )
 from .fieldoncells_ext import FieldOnCellsReal
 from .fieldonnodes_ext import FieldOnNodesReal
+from .finiteelementdescriptor_ext import FiniteElementDescriptor
 from .formula_ext import Formula
 from .function2d_ext import Function2D
 from .function_ext import Function

@@ -94,7 +94,7 @@ class DirichletBC : public DataStructure {
     }
 
     virtual int getPhysics( void ) const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
     };
 
   private:

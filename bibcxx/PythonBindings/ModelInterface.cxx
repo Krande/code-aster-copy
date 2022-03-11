@@ -44,7 +44,7 @@ void exportModelToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< Model, std::string, ConnectionMeshPtr > ) )
 #endif /* ASTER_HAVE_MPI */
         .def( py::init( &initFactoryPtr< Model, BaseMeshPtr > ) )
-        .def( py::init( &initFactoryPtr< Model, std::string, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< Model, std::string, FiniteElementDescriptorPtr > ) )
         .def( "addModelingOnMesh", &Model::addModelingOnMesh )
         .def( "addModelingOnGroupOfCells", &Model::addModelingOnGroupOfCells )
         .def( "addModelingOnGroupOfNodes", &Model::addModelingOnGroupOfNodes )

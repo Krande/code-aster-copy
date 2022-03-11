@@ -49,7 +49,7 @@ class FieldOnCellsStateBuilder(InternalStateBuilder):
             *InternalStateBuilder*: The internal state itself.
         """
         super().save(field)
-        self._st["model"] = field.getModel()
+        self._st["fed"] = field.getDescription()
         return self
 
     def restore(self, field):
@@ -60,8 +60,8 @@ class FieldOnCellsStateBuilder(InternalStateBuilder):
             field (*DataStructure*): The *DataStructure* object to be pickled.
         """
         super().restore(field)
-        if self._st["model"]:
-            field.setModel(self._st["model"])
+        if self._st["fed"]:
+            field.setDescription(self._st["fed"])
 
 
 @injector(FieldOnCellsReal)

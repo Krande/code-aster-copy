@@ -220,7 +220,7 @@ class BaseExternalStateVariable {
      * @brief Get the name of the variable
      */
     virtual std::string getVariableName() const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ABORT( "Not allowed" );
         return std::string( "NOTHING" );
     };
 

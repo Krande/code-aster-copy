@@ -142,16 +142,9 @@ class ResultCreator(ExecuteCommand):
                 if mesh is not None:
                     self._result.setMesh(mesh)
             elif chamGd is not None:
-                try:
-                    model = chamGd.getModel()
-                    self._result.setModel(model)
-                except:
-                    pass
-                try:
-                    mesh = chamGd.getMesh()
+                mesh = chamGd.getMesh()
+                if mesh is not None:
                     self._result.setMesh(mesh)
-                except:
-                    pass
 
         self._result.build()
 

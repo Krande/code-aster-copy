@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -42,7 +42,7 @@ class CalcChamElem(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.setModel(keywords["MODELE"])
+        self._result.setDescription(keywords["MODELE"].getFiniteElementDescriptor())
         self._result.build()
 
 CALC_CHAM_ELEM = CalcChamElem.run

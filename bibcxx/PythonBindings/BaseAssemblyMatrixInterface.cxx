@@ -130,5 +130,13 @@ Returns:
             Make the assembly matrix symmetric in place
             )" )
         // -----------------------------------------------------------------------------------------
-        .def( "transpose", &BaseAssemblyMatrix::transpose );
+        .def( "transpose", &BaseAssemblyMatrix::transpose )
+        // -----------------------------------------------------------------------------------------
+        .def( "assemble", &BaseAssemblyMatrix::assemble, R"(
+                Assembly matrix from elementar matrices added.
+
+                Arguments:
+                    clean (bool) : Clean elementary matrices after building (default = true)
+            )",
+              py::arg( "clean" ) = true  );
 };

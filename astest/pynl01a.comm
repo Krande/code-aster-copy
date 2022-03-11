@@ -184,8 +184,6 @@ VARI=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
                            VALE_K='VARI_ELGA'),)
 
 test.assertIsNotNone(MATR.getModel(), msg="MATR")
-test.assertIsNotNone(SIGM.getModel(), msg="SIGM")
-test.assertIsNotNone(VARI.getModel(), msg="VARI")
 
 F_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT,
@@ -224,8 +222,6 @@ res = CALCUL(__use_namedtuple__=True,
              INFO=2,)
 
 test.assertIsNotNone(res.MATR_TANG_ELEM.getModel(), msg="MATR_TANG_ELEM")
-test.assertIsNotNone(res.SIEF_ELGA.getModel(), msg="SIEF_ELGA")
-test.assertIsNotNone(res.VARI_ELGA.getModel(), msg="VARI_ELGA")
 
 
 FORCAS=ASSE_VECTEUR(VECT_ELEM=FORC,

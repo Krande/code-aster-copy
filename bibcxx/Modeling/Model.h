@@ -24,6 +24,7 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_fort_utils.h"
 #include "astercxx.h"
 
 #include "DataFields/ListOfTables.h"
@@ -38,7 +39,6 @@
 #include "Modeling/XfemModel.h"
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
-#include "aster_fort_utils.h"
 
 /**
  * @enum ModelSplitingMethod
@@ -129,48 +129,53 @@ class Model : public DataStructure, public ListOfTables {
     bool buildWithSyntax( SyntaxMapContainer & );
 
   public:
-    /**
-     * @brief Constructor: a mesh is mandatory
-     */
-    Model( void ) = delete;
-
-    Model( const std::string name, const BaseMeshPtr mesh )
+    Model( const std::string name )
         : DataStructure( name, 8, "MODELE" ),
           ListOfTables( name ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
           _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
-          _baseMesh( mesh ),
+          _baseMesh( nullptr ),
           _splitMethod( SubDomain ),
           _graphPartitioner( MetisPartitioner ),
-          _ligrel(
-              std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ),
+          _ligrel( nullptr ),
           _xfemModel( nullptr ) {
-        if ( _baseMesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
 #ifdef ASTER_HAVE_MPI
         _connectionMesh = nullptr;
 #endif
     };
 
-    Model( const BaseMeshPtr mesh ) : Model( ResultNaming::getNewResultName(), mesh ){};
+    /**
+     * @brief Constructor: a mesh is mandatory
+     */
+    Model( void ) = delete;
+
+    Model( const std::string name, const FiniteElementDescriptorPtr fed ) : Model( name ) {
+        _baseMesh = fed->getMesh();
+        _ligrel = fed;
+
+        AS_ASSERT( !_baseMesh->isEmpty() );
+    };
+
+    Model( const BaseMeshPtr mesh ) : Model( DataStructureNaming::getNewName() ) {
+        _baseMesh = mesh;
+        _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh );
+
+        AS_ASSERT( !_baseMesh->isEmpty() );
+    };
 
 #ifdef ASTER_HAVE_MPI
-    Model( const std::string name, const ConnectionMeshPtr mesh )
-        : DataStructure( name, 8, "MODELE" ),
-          _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
-          _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
-          _baseMesh( mesh ),
-          _connectionMesh( mesh ),
-          _splitMethod( Centralized ),
-          _graphPartitioner( MetisPartitioner ),
-          _ligrel(
-              std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ) {
+    Model( const std::string name, const ConnectionMeshPtr mesh ) : Model( name ) {
+        _baseMesh = mesh;
+        _connectionMesh = mesh;
+        _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh );
+
         AS_ASSERT( !_baseMesh->isEmpty() );
         AS_ASSERT( !_connectionMesh->isEmpty() );
     };
 
-    Model( const ConnectionMeshPtr mesh ) : Model( ResultNaming::getNewResultName(), mesh ){};
+    Model( const ConnectionMeshPtr mesh ) : Model( DataStructureNaming::getNewName(), mesh ){};
 #endif /* ASTER_HAVE_MPI */
+
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur tout le maillage
@@ -331,13 +336,13 @@ class Model : public DataStructure, public ListOfTables {
 
     int getPhysics( void ) const { return _ligrel->getPhysics(); }
 
-    int getGeometricDimension( void ) const { 
+    int getGeometricDimension( void ) const {
         ASTERINTEGER nb_dim_;
         ASTERINTEGER ier;
         std::string repk;
-        CALL_DISMOI( "DIM_GEOM", this->getName().c_str(), "MODELE", &nb_dim_, 
-                  repk.c_str(), "F", &ier );
-        return nb_dim_; 
+        CALL_DISMOI( "DIM_GEOM", this->getName().c_str(), "MODELE", &nb_dim_, repk.c_str(), "F",
+                     &ier );
+        return nb_dim_;
     }
 
 #ifdef ASTER_HAVE_MPI

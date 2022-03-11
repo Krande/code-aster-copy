@@ -17,23 +17,22 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`Model` --- Modeling definition
+:py:class:`FiniteElementDescriptor` --- Finite Element definition
 *****************************************
 """
 
-from libaster import Model
+from libaster import FiniteElementDescriptor
 
 from ..Utilities import injector
 
 
-@injector(Model)
-class ExtendedModel:
-    cata_sdj = "SD.sd_modele.sd_modele"
+@injector(FiniteElementDescriptor)
+class ExtendedFiniteElementDescriptor:
+    cata_sdj = "SD.sd_ligrel.sd_ligrel"
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a
-        Model object during unpickling.
+        FiniteElementDescriptor object during unpickling.
         """
-        return (self.getName(), self.getFiniteElementDescriptor())
+        return (self.getName(), self.getMesh())

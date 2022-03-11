@@ -836,17 +836,8 @@ bool Result::build() {
 
                         if ( _dictOfMapOfFieldOnCellsReal[nomSymb].count( rank ) == 0 ) {
                             AS_ASSERT( _mesh != nullptr );
-                            FieldOnCellsRealPtr result =
+                            auto result =
                                 _fieldBuidler.buildFieldOnCells< ASTERDOUBLE >( name, _mesh );
-                            auto iterModel = _mapModel.find( rank );
-                            if ( iterModel != _mapModel.end() ) {
-                                if ( !( ( *iterModel ).second )->isEmpty() )
-                                    result->setModel( ( *iterModel ).second );
-                            } else if ( !hasMultipleModel() ) {
-                                ModelPtr curModel = getModel();
-                                if ( curModel && !curModel->isEmpty() )
-                                    result->setModel( curModel );
-                            }
                             _dictOfMapOfFieldOnCellsReal[nomSymb][rank] = result;
                         }
                     } else if ( scalaire == "C" ) {
@@ -856,17 +847,8 @@ bool Result::build() {
 
                         if ( _dictOfMapOfFieldOnCellsComplex[nomSymb].count( rank ) == 0 ) {
                             AS_ASSERT( _mesh != nullptr );
-                            FieldOnCellsComplexPtr result =
+                            auto result =
                                 _fieldBuidler.buildFieldOnCells< ASTERCOMPLEX >( name, _mesh );
-                            auto iterModel = _mapModel.find( rank );
-                            if ( iterModel != _mapModel.end() ) {
-                                if ( !( ( *iterModel ).second )->isEmpty() )
-                                    result->setModel( ( *iterModel ).second );
-                            } else if ( !hasMultipleModel() ) {
-                                ModelPtr curModel = getModel();
-                                if ( curModel && !curModel->isEmpty() )
-                                    result->setModel( curModel );
-                            }
                             _dictOfMapOfFieldOnCellsComplex[nomSymb][rank] = result;
                         }
                     } else if ( scalaire == "I" ) {
@@ -876,17 +858,8 @@ bool Result::build() {
 
                         if ( _dictOfMapOfFieldOnCellsLong[nomSymb].count( rank ) == 0 ) {
                             AS_ASSERT( _mesh != nullptr );
-                            FieldOnCellsLongPtr result =
+                            auto result =
                                 _fieldBuidler.buildFieldOnCells< ASTERINTEGER >( name, _mesh );
-                            auto iterModel = _mapModel.find( rank );
-                            if ( iterModel != _mapModel.end() ) {
-                                if ( !( ( *iterModel ).second )->isEmpty() )
-                                    result->setModel( ( *iterModel ).second );
-                            } else if ( !hasMultipleModel() ) {
-                                ModelPtr curModel = getModel();
-                                if ( curModel && !curModel->isEmpty() )
-                                    result->setModel( curModel );
-                            }
                             _dictOfMapOfFieldOnCellsLong[nomSymb][rank] = result;
                         }
                     } else {
@@ -901,9 +874,8 @@ bool Result::build() {
 
                         if ( _dictOfMapOfConstantFieldOnCellsChar16[nomSymb].count( rank ) == 0 ) {
                             AS_ASSERT( _mesh != nullptr );
-                            ConstantFieldOnCellsChar16Ptr result =
-                                _fieldBuidler.buildConstantFieldOnCells< JeveuxChar16 >( name,
-                                                                                         _mesh );
+                            auto result = _fieldBuidler.buildConstantFieldOnCells< JeveuxChar16 >(
+                                name, _mesh );
                             _dictOfMapOfConstantFieldOnCellsChar16[nomSymb][rank] = result;
                         }
                     } else if ( scalaire == "R" ) {
@@ -914,9 +886,8 @@ bool Result::build() {
 
                         if ( _dictOfMapOfConstantFieldOnCellsReal[nomSymb].count( rank ) == 0 ) {
                             AS_ASSERT( _mesh != nullptr );
-                            ConstantFieldOnCellsRealPtr result =
-                                _fieldBuidler.buildConstantFieldOnCells< ASTERDOUBLE >( name,
-                                                                                        _mesh );
+                            auto result = _fieldBuidler.buildConstantFieldOnCells< ASTERDOUBLE >(
+                                name, _mesh );
                             _dictOfMapOfConstantFieldOnCellsReal[nomSymb][rank] = result;
                         }
                     } else {
