@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -154,29 +154,37 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     lVari = L_VARI(opt)
 !
     variTmp = 0.d0
-    materf(:,:) = 0.d0
-    vind0(:) = 0.d0
-    depsth(:) = 0.d0
-    alpha(:)= 0.d0
-    tempm= 0.d0
-    tempf= 0.d0
-    tref= 0.d0
-    crit=0.d0
-    seuil=0.d0
-    dsig(:)=0.d0
-    pc0=0.d0
-    sigd0(6)=0.d0
-    hill=0.d0
-    piso=0.d0
-    depsr(:)=0.d0
-    depsq(:)=0.d0
-    tin(:)=0.d0
-    d=0.d0
-    q=0.d0
-    m=0.d0
-    phi=0.d0
-    b=0.d0
-    dsde(:,:) = 0.d0
+    deps0 = 0.d0
+    seuil = 0.d0
+    piso = 0.d0
+    depsr = 0.d0
+    depsq = 0.d0
+    tin = 0.d0
+    d = 0.d0
+    q = 0.d0
+    m = 0.d0
+    phi = 0.d0
+    b = 0.d0
+    pc0 = 0.d0
+    sigd0 = 0.d0
+    hill = 0.d0
+    dsig = 0.d0
+    depsth = 0.d0
+    alpha = 0.d0
+    tempm = 0.d0
+    tempf = 0.d0
+    tref = 0.d0
+    det = 0.d0
+    bid16 = 0.d0
+    bid66 = 0.d0
+    materf = 0.d0
+    neps = 0.d0
+    nsig = 0.d0
+    ptrac = 0.d0
+    rtrac = 0.d0
+    crit = 0.d0
+    dpiso = 0.d0
+    dsde = 0.d0
 !
     if (debug) then
        write(6,*)

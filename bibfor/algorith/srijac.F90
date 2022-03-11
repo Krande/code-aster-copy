@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -126,6 +126,121 @@ subroutine srijac(nmat,materf,timed,timef,&
     
     common /tdim/ ndt, ndi
     
+    !!!
+    !!! Init
+    !!!
+
+    sigft = 0.d0
+    depst = 0.d0
+    devgii = 0.d0
+    vint = 0.d0
+    dt = 0.d0
+    devsig = 0.d0
+    i1 = 0.d0
+    xi5 = 0.d0
+    xi1 = 0.d0
+    dsdenl = 0.d0
+    kk = 0.d0
+    mu = 0.d0
+    ucriv = 0.d0
+    seuilv = 0.d0
+    depsv = 0.d0
+    dgamv = 0.d0
+    seuilp = 0.d0
+    ucrip = 0.d0
+    seuivm = 0.d0
+    dhds = 0.d0
+    ds2hds = 0.d0
+    paraep = 0.d0
+    varpl = 0.d0
+    dfdsp = 0.d0
+    bprimp = 0.d0
+    vecnp = 0.d0
+    gp = 0.d0
+    vetemp = 0.d0
+    derpar = 0.d0
+    dfdxip = 0.d0
+    depse = 0.d0
+    hook = 0.d0
+    mue = 0.d0
+    ke = 0.d0
+    dsige = 0.d0
+    vident = 0.d0
+    dhokds = 0.d0
+    patm = 0.d0
+    nelas = 0.d0
+    paravi = 0.d0
+    varavi = 0.d0
+    dfvdsi = 0.d0
+    dgpds = 0.d0
+    dgvds = 0.d0
+    dldgds = 0.d0
+    dlambd = 0.d0
+    hnldgp = 0.d0
+    dsgvds = 0.d0
+    hnldgv = 0.d0
+    bprimv = 0.d0
+    vecnv = 0.d0
+    ucrim = 0.d0
+    devgiv = 0.d0
+    gv = 0.d0
+    hnlgv = 0.d0
+    hnldfg = 0.d0
+    phiv = 0.d0
+    av = 0.d0
+    nv = 0.d0
+    dphiv = 0.d0
+    dphvds = 0.d0
+    dr1dy3 = 0.d0
+    dgpdxi = 0.d0
+    dfsdxp = 0.d0
+    term1 = 0.d0
+    term2 = 0.d0
+    term3 = 0.d0
+    coupl = 0.d0
+    dndxip = 0.d0
+    dfsdxv = 0.d0
+    dpadxp = 0.d0
+    dndxiv = 0.d0
+    dfdxiv = 0.d0
+    dpadxv = 0.d0
+    dphidx = 0.d0
+    dphdxg = 0.d0
+    dgvdxi = 0.d0
+    phdgdx = 0.d0
+    dr1dy4 = 0.d0
+    dgipds = 0.d0
+    dgivds = 0.d0
+    dgipdx = 0.d0
+    dgivdx = 0.d0
+    mident = 0.d0
+    kron = 0.d0
+    kron2 = 0.d0
+    unstro = 0.d0
+    dsdsig = 0.d0
+    dgtvds = 0.d0
+    dgtpds = 0.d0
+    kron3 = 0.d0
+    devgp = 0.d0
+    devgv = 0.d0
+    dgtpdx = 0.d0
+    dgtvdx = 0.d0
+    dxiv = 0.d0
+    z = 0.d0
+    r = 0.d0
+    a0 = 0.d0
+    tpp = 0.d0
+    trr = 0.d0
+    dtmp = 0.d0
+    xi2 = 0.d0
+    xi20 = 0.d0
+    rx2 = 0.d0
+    xi10 = 0.d0
+    xi50 = 0.d0
+    rx1 = 0.d0
+    rx5 = 0.d0
+    plas = .false.
+
     !!!
     !!! Recup. des temperatures
     !!!
