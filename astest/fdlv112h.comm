@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,8 @@ mail0         = LIRE_MAILLAGE(FORMAT="ASTER", )
 
 mail1=CREA_MAILLAGE(MAILLAGE=mail0,
                    CREA_MAILLE=_F(NOM='REFLEX',GROUP_MA='IFLUSOL',
-                                  PREF_MAILLE='N'),
+                                  # PREF_MAILLE='N'
+                                  ),
                    )
 
 mail = CREA_MAILLAGE(MAILLAGE=mail1,

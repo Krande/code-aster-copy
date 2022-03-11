@@ -83,7 +83,7 @@ MA_TMP1 = CREA_MAILLAGE(INFO=2,
     NOM = 'JOINT',
     GROUP_NO_2 = 'JOINT_H',
     GROUP_NO_1 = 'JOINT_B',
-    PREF_MAILLE = 'MJ',
+    # PREF_MAILLE = 'MJ',
     ),)
 
 groupma=["BARRAGE", "TERRE","BAR_AVAL", "BAR_AMON",

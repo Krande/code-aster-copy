@@ -86,7 +86,7 @@ CREA_MAILLAGE = OPER(
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        PREF_MAILLE=SIMP(statut="o", typ="TXM"),
+        PREF_MAILLE=SIMP(statut="f", typ="TXM",defaut="MS"),
         PREF_NUME=SIMP(statut="f", typ="I"),
     ),
     RESTREINT=FACT(
@@ -154,7 +154,7 @@ CREA_MAILLAGE = OPER(
         NOM=SIMP(statut="o", typ="TXM"),
         GROUP_NO_1=SIMP(statut="o", typ=grno),
         GROUP_NO_2=SIMP(statut="o", typ=grno),
-        PREF_MAILLE=SIMP(statut="o", typ="TXM"),
+        PREF_MAILLE=SIMP(statut="f", typ="TXM", defaut="MS"),
         PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
     ),
     LINE_QUAD=FACT(
