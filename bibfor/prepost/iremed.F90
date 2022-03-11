@@ -121,7 +121,7 @@ aster_logical, intent(in) :: lfichUniq
     sdcarm = ' '
     if (caraElem .ne. ' ') then
         if (lResu) then
-            call dismoi('CARA_ELEM', dsNameZ, 'RESULTAT', repk=carel2, arret='C',&
+            call dismoi('CARA_ELEM', dsName, 'RESULTAT', repk=carel2, arret='C',&
                         ier=ierd)
             if (carel2 .ne. caraElem) then
                 valk2(1) = caraElem
@@ -158,7 +158,7 @@ aster_logical, intent(in) :: lfichUniq
 ! - Create parameters in MED file
 !
     if (paraListNb .gt. 0) then
-        call irmpar(dsNameZ, fileUnit, paraListNb, paraListName)
+        call irmpar(dsName, fileUnit, paraListNb, paraListName)
     endif
 !
 ! - Loop on fields
@@ -177,7 +177,7 @@ aster_logical, intent(in) :: lfichUniq
 !             UTILISATEUR ORDR(IORDR) ET NUMERO DE RANGEMENT IRET
 ! AU CAS OU ON NE PASSE PAS EN DESSOUS ON INITIALISE LORDR A FALSE
             if (lResu) then
-                call rsutrg(dsNameZ, storeIndx, iret, ibid)
+                call rsutrg(dsName, storeIndx, iret, ibid)
                 if (iret .eq. 0) then
 !             - MESSAGE NUMERO D'ORDRE NON LICITE
                     if (lfirst) then
@@ -189,7 +189,7 @@ aster_logical, intent(in) :: lfichUniq
             endif
 ! --------- Get name of field
             if (lResu) then
-                call rsexch(' ', dsNameZ, fieldType, storeIndx, fieldName, iret)
+                call rsexch(' ', dsName, fieldType, storeIndx, fieldName, iret)
                 if (iret .ne. 0) goto 21
             else
                 fieldName = dsNameZ
