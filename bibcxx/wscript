@@ -26,7 +26,6 @@ from waflib import Configure, Errors, Utils
 
 def options(self):
     self.load("compiler_cxx")
-    self.load("boost")
 
 
 def configure(self):
@@ -35,7 +34,6 @@ def configure(self):
     if "icc" not in self.env.CC_NAME:
         self.check_bibcxx_depends()
     self.check_cxx_types()
-    self.check_boost_aster()
 
     cxxpath = self.path.get_src().abspath()
     self.env.append_value("INCLUDES_BIBCXX", cxxpath)
@@ -61,7 +59,7 @@ def build(self):
             name="astermfront",
             source=get_srcs("mfront/*.cxx"),
             env=env.derive(),
-            use=["BIBCXX", "MFRONT", "BOOST", "PYBIND11", "PYEXT", "CXX"],
+            use=["BIBCXX", "MFRONT", "PYBIND11", "PYEXT", "CXX"],
         )
 
     self(
@@ -69,7 +67,7 @@ def build(self):
         name="asterbibcxx",
         source=get_srcs("**/*.cxx", excl="mfront/*.cxx"),
         target="bibcxx",
-        use=["BIBCXX", "PETSC", "BOOST", "PYBIND11", "PYEXT", "NUMPY", "CXX"],
+        use=["BIBCXX", "PETSC", "PYBIND11", "PYEXT", "NUMPY", "CXX"],
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
     )
@@ -88,6 +86,12 @@ def check_cxx_compiler_flags(self):
     # this option is compiler independent (ifort & g++)
     self.check_cxx(cxxflags="-std=c++17", uselib_store="CXX", mandatory=False)
 
+    # FIXME: should globally add -fvisibility-hidden
+    self.start_msg("Adding C++ flag")
+    flags = ["-Wno-attributes"]
+    self.env.append_unique("CXXFLAGS", flags)
+    self.end_msg(flags)
+
 
 @Configure.conf
 def check_optimization_cxxflags(self):
@@ -102,26 +106,6 @@ def check_optimization_cxxflags(self):
     self.setenv("release")
     flags = ["-O2"]
     self.start_msg("Setting C++ optimization flags")
-    self.env.append_unique("CXXFLAGS", flags)
-    self.end_msg(flags)
-
-
-@Configure.conf
-def check_boost_aster(self):
-    self.load("boost")
-    self.check_boost(
-        includes=self.env.INCLUDES_BOOST, libs=self.env.LIBPATH_BOOST, lib="python", toolset="cxx"
-    )
-    if self.env.BOOST_VERSION_NUMBER < 106000:
-        self.start_msg("Adding C++ flags (old boost version)")
-        flags = ["-Wno-deprecated-declarations", "-Wno-return-type", "-Wplacement-new=0"]
-        self.env.append_unique("CXXFLAGS", flags)
-        self.end_msg(flags)
-    self.env["STLIBPATH_BOOST"] = []
-
-    # FIXME: should globally add -fvisibility-hidden
-    self.start_msg("Adding C++ flag")
-    flags = ["-Wno-attributes"]
     self.env.append_unique("CXXFLAGS", flags)
     self.end_msg(flags)
 

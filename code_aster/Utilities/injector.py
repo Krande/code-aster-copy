@@ -20,8 +20,8 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-:py:mod:`injector` --- Methods injection in Boost Objects
-*********************************************************
+:py:mod:`injector` --- Methods injection in pybind11 Objects
+************************************************************
 """
 
 

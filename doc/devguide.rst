@@ -90,7 +90,7 @@ Contents
     devguide/exec_commands
     devguide/commands_implementation
     devguide/messages
-    devguide/boost
+    devguide/pybind
     devguide/helpers
     devguide/utilities
     devguide/naming-conventions

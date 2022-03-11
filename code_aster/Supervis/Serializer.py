@@ -65,19 +65,26 @@ import libaster
 import numpy
 
 from .. import Objects
-from ..Objects import (DataStructure, InternalStateBuilder, ResultNaming,
-                       WithEmbeddedObjects)
-from ..Utilities import (DEBUG, MPI, ExecutionParameter, Options,
-                         get_caller_context, logger, no_new_attributes)
+from ..Objects import DataStructure, InternalStateBuilder, ResultNaming, WithEmbeddedObjects
+from ..Utilities import (
+    DEBUG,
+    MPI,
+    ExecutionParameter,
+    Options,
+    get_caller_context,
+    logger,
+    no_new_attributes,
+)
 
-ARGS = '_MARK_DS_ARGS_'
-STATE = '_MARK_DS_STATE_'
-LIST = '_MARK_LIST_'
-DICT = '_MARK_DICT_'
+ARGS = "_MARK_DS_ARGS_"
+STATE = "_MARK_DS_STATE_"
+LIST = "_MARK_LIST_"
+DICT = "_MARK_DICT_"
 
 # same values in op9999
 class FinalizeOptions:
     """Options for closure."""
+
     SaveBase = 1
     InfoResu = 2
     Repack = 4
@@ -123,8 +130,7 @@ class Serializer(object):
         Returns:
             bool: *True* if the previous execution can be continued.
         """
-        for fname in (cls._base, cls._pick_filename, cls._info_filename,
-                      cls._sha_filename):
+        for fname in (cls._base, cls._pick_filename, cls._info_filename, cls._sha_filename):
             if not osp.exists(fname):
                 logger.error(f"Can not restart, no such file: {fname}")
                 return False
@@ -138,16 +144,14 @@ class Serializer(object):
         if sign_pick != ref_pick:
             logger.error(f"Current pickled file: {sign_pick}")
             logger.error(f"Expected signature  : {ref_pick}")
-            logger.error(f"The '{cls._pick_filename}' file is not "
-                         f"the expected one.")
+            logger.error(f"The '{cls._pick_filename}' file is not " f"the expected one.")
             return False
 
         sign_info = file_signature(cls._info_filename)
         if sign_info != ref_info:
             logger.error(f"Current info file : {sign_info}")
             logger.error(f"Expected signature: {ref_info}")
-            logger.error(f"The '{cls._info_filename}' file is not "
-                         f"the expected one.")
+            logger.error(f"The '{cls._info_filename}' file is not " f"the expected one.")
             return False
 
         sign_base = file_signature(cls._base, 0, 8000000)
@@ -250,8 +254,7 @@ class Serializer(object):
 
         not_read = set(objList).difference(names)
         if not_read:
-            logger.warning(f"These objects have not been reloaded: "
-                           f"{tuple(not_read)}")
+            logger.warning(f"These objects have not been reloaded: " f"{tuple(not_read)}")
         logger.info("Restored objects:")
         for name, obj in zip(names, objects):
             logger.debug(f"restoring {name}...")
@@ -384,9 +387,9 @@ class AsterPickler(pickle.Pickler):
     """Adapt pickling of DataStructure objects.
 
     In the Python namespace, DataStructures are wrappers on *shared_ptr* through
-    *Boost* instances. So there are several *pointers* for the same instance.
+    *pybind11* instances. So there are several *pointers* for the same instance.
     Standard pickling creates new objects for each *pointers* and during
-    unpickling this creates new *Boost* instance for each Python wrapper.
+    unpickling this creates new *pybind11* instance for each Python wrapper.
     To avoid that, the pickling step only saves arguments (returned by
     :py:meth:`__getinitargs__`), a state (created by :py:meth:`__getstate__`
     as an instance of
@@ -572,8 +575,7 @@ class AsterUnpickler(pickle.Unpickler):
             if self._inst is None:
                 logger.debug(f"building {self._name!r} of type {self._class}")
                 # DataStructure must be in args (not in sub-objects)
-                args = [i.instance if isinstance(i, type(self)) else i
-                        for i in self.args]
+                args = [i.instance if isinstance(i, type(self)) else i for i in self.args]
                 logger.debug(f"initargs: {args}")
                 self._inst = getattr(Objects, self.classname)(*args)
                 logger.debug(f"new object: {self._inst}")
@@ -707,14 +709,19 @@ def _filteringContext(context):
     for name, obj in list(context.items()):
         if not name or name in ignored or re_system.search(name):
             continue
-        if getattr(numpy, name, None) is obj: # see issue29282
+        if getattr(numpy, name, None) is obj:  # see issue29282
             continue
         # check attr needed for python<=3.6
         if hasattr(obj, "__class__") and isinstance(obj, IOBase):
             continue
-        if type(obj) in (types.ModuleType, type,
-                         types.MethodType, types.FunctionType,
-                         types.BuiltinMethodType, types.BuiltinFunctionType):
+        if type(obj) in (
+            types.ModuleType,
+            type,
+            types.MethodType,
+            types.FunctionType,
+            types.BuiltinMethodType,
+            types.BuiltinFunctionType,
+        ):
             continue
         # aster-legacy try 'dumps' before keeping the object
         ctxt[name] = obj
@@ -756,7 +763,7 @@ def file_signature(filename, offset=0, bufsize=-1):
         str: Signature as SHA256 string to identify the file.
     """
     try:
-        with open(filename, 'rb') as fobj:
+        with open(filename, "rb") as fobj:
             fobj.seek(offset, 0)
             sign = sha256(fobj.read(bufsize)).hexdigest()
     except Exception:

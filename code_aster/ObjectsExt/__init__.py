@@ -20,7 +20,7 @@
 # person_in_charge: mathieu.courtois@edf.fr
 
 """
-This module provides extensions to BoostPython objects with pure
+This module provides extensions to pybind11 objects with pure
 Python functions.
 """
 

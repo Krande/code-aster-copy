@@ -4,7 +4,7 @@
 Objects / DataStructures
 ########################
 
-DataStructures are managed in C++ and wrapped using Boost-Python.
+DataStructures are managed in C++ and wrapped using pybind11.
 Pure-python methods may be injected into the DataStructure by adding a module
 named :file:`xxx_ext.py` in :py:mod:`code_aster.ObjectsExt`.
 

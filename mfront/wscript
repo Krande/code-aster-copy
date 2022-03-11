@@ -44,6 +44,7 @@ def options(self):
         help="force the MFRONT support. The TFELHOME environment "
         "variable can be used to choose a prefered version.",
     )
+    self.load("boost")
 
 
 def configure(self):
@@ -51,6 +52,7 @@ def configure(self):
     try:
         self.env.stash()
         self.check_mfront()
+        self.check_boost_aster()
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
@@ -79,7 +81,7 @@ def build(self):
             target=env["ASTER_BEHAVIOUR_LIB"],
             install_path=env.ASTERLIBDIR,
             env=env.derive(),
-            use=["MFRONT", "MFRONT_ONLY", "CXX"],
+            use=["MFRONT", "MFRONT_ONLY", "BOOST", "CXX"],
         )
 
         self.add_group()
@@ -426,3 +428,18 @@ def C_MFRONT_OFFICIAL():
 capy_footer = """    }
     return keywords
 """
+
+
+###############################################################################
+@Configure.conf
+def check_boost_aster(self):
+    self.load("boost")
+    self.check_boost(
+        includes=self.env.INCLUDES_BOOST, libs=self.env.LIBPATH_BOOST, lib="python", toolset="cxx"
+    )
+    if self.env.BOOST_VERSION_NUMBER < 106000:
+        self.start_msg("Adding C++ flags (old boost version)")
+        flags = ["-Wno-deprecated-declarations", "-Wno-return-type", "-Wplacement-new=0"]
+        self.env.append_unique("CXXFLAGS_MFRONT_ONLY", flags)
+        self.end_msg(flags)
+    self.env["STLIBPATH_BOOST"] = []

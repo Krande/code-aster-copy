@@ -1,8 +1,8 @@
-.. _devguide-boost:
+.. _devguide-pybind:
 
-*********************************
-Boost wrapping of *DataStructure*
-*********************************
+**********************************
+Python wrapping of *DataStructure*
+**********************************
 
 
 Files structures

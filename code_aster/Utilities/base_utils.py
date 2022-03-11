@@ -1,6 +1,6 @@
 # coding: utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,20 +37,22 @@ import numpy
 
 
 def no_new_attributes(wrapped_setattr):
-    """ Raise an error on attempts to add a new attribute, while
-        allowing existing attributes to be set to new values.
+    """Raise an error on attempts to add a new attribute, while
+    allowing existing attributes to be set to new values.
 
-        Taken from ?
-        'Python Cookbook' by Alex Martelli, Anna Ravenscroft, David Ascher,
-        ?6.3. 'Restricting Attribute Setting'
+    Taken from ?
+    'Python Cookbook' by Alex Martelli, Anna Ravenscroft, David Ascher,
+    ?6.3. 'Restricting Attribute Setting'
     """
+
     def __setattr__(self, name, value):
-        if hasattr(self, name): # not a new attribute, allow setting
+        if hasattr(self, name):  # not a new attribute, allow setting
             wrapped_setattr(self, name, value)
         else:
             raise AttributeError(f"Can't add attribute {name!r} to {self}")
 
     return __setattr__
+
 
 def import_object(uri):
     """Load and return a python object (class, function...).
@@ -64,25 +66,26 @@ def import_object(uri):
     Returns:
         object: Imported object.
     """
-    path = uri.split('.')
-    modname = '.'.join(path[:-1])
+    path = uri.split(".")
+    modname = ".".join(path[:-1])
     if len(modname) == 0:
         raise ImportError("invalid uri: {0}".format(uri))
-    mod = obj = '?'
+    mod = obj = "?"
     objname = path[-1]
     try:
         __import__(modname)
         mod = sys.modules[modname]
     except ImportError as err:
-        raise ImportError("can not import module : {0} ({1})"
-                          .format(modname, str(err)))
+        raise ImportError("can not import module : {0} ({1})".format(modname, str(err)))
     try:
         obj = getattr(mod, objname)
     except AttributeError as err:
-        raise AttributeError("object ({0}) not found in module {1!r}. "
-                             "Module content is: {2}"
-                             .format(objname, modname, tuple(dir(mod))))
+        raise AttributeError(
+            "object ({0}) not found in module {1!r}. "
+            "Module content is: {2}".format(objname, modname, tuple(dir(mod)))
+        )
     return obj
+
 
 def get_caller_context(level):
     """Return the context some levels upper.
@@ -103,6 +106,7 @@ def get_caller_context(level):
         del caller
     return context
 
+
 def force_list(values):
     """Ensure `values` is iterable (list, tuple, array...) and return it as
     a list."""
@@ -110,15 +114,18 @@ def force_list(values):
         values = [values]
     return list(values)
 
+
 def force_tuple(values):
     """Ensure `values` is iterable (list, tuple, array...) and return it as
     a tuple.
     """
     return tuple(force_list(values))
 
+
 def value_is_sequence(value):
     """Tell if *value* is a valid object if max > 1."""
     return isinstance(value, (list, tuple, array, numpy.ndarray))
+
 
 def is_int(obj, onvalue=False):
     """Tell if an object is an integer.
@@ -129,36 +136,46 @@ def is_int(obj, onvalue=False):
             that is equal to its integer part. If *False*, acceptance is
             only based on the object type.
     """
-    return (isinstance(obj, (int, numpy.integer))
-            or (onvalue and is_float(obj) and obj == int(obj)))
+    return isinstance(obj, (int, numpy.integer)) or (onvalue and is_float(obj) and obj == int(obj))
+
 
 def is_float(obj):
     """Tell if an object is a float number."""
     return isinstance(obj, (float, Decimal, numpy.float))
 
+
 def is_float_or_int(obj):
     """Tell if an object is a float or an integer."""
     return is_float(obj) or is_int(obj)
 
+
 def is_complex(obj):
     """Tell if an object is a complex number."""
-    if isinstance(obj, (list, tuple)) and len(obj) == 3 \
-        and obj[0] in ('RI', 'MP') and is_float_or_int(obj[1]) \
-        and is_float_or_int(obj[2]):
+    if (
+        isinstance(obj, (list, tuple))
+        and len(obj) == 3
+        and obj[0] in ("RI", "MP")
+        and is_float_or_int(obj[1])
+        and is_float_or_int(obj[2])
+    ):
         return True
     return isinstance(obj, complex)
+
 
 def is_number(obj):
     """Tell if an object is a number."""
     return is_float_or_int(obj) or is_complex(obj)
 
+
 def is_str(obj):
     """Tell if an object is a string."""
     return isinstance(obj, str)
 
+
 def is_sequence(obj):
     """Is a sequence (allow iteration, not a string)?"""
     return isinstance(obj, (list, tuple, numpy.ndarray))
+
 
 def array_to_list(obj):
     """Convert an object to a list if possible (using `tolist()`) or keep it
@@ -175,27 +192,31 @@ def array_to_list(obj):
     except AttributeError:
         return obj
 
+
 def accept_array(func):
     """Decorator that automatically converts numpy arrays to lists.
 
-    Needed to pass an array as argument to a boost method.
+    Needed to pass an array as argument to a Python/C++ method.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         """Wrapper"""
         args = [array_to_list(i) for i in args]
         return func(*args, **kwargs)
+
     return wrapper
 
 
 class Singleton(type):
     """Singleton implementation in python (Metaclass)."""
+
     # add _singleton_id attribute to the subclasses to be independant of import
     # path used
     __inst = {}
 
     def __call__(cls, *args, **kws):
-        cls_id = getattr(cls, '_singleton_id', cls)
+        cls_id = getattr(cls, "_singleton_id", cls)
         if cls_id not in cls.__inst:
             cls.__inst[cls_id] = super(Singleton, cls).__call__(*args, **kws)
         return cls.__inst[cls_id]

@@ -22,7 +22,7 @@ Default arguments and overloaded methods in Python Interface
 
 When a C++ method has default arguments, the default values must also be explicitly
 defined in the Python interface (because they are not part of the function’s type
-information).
+information). Do not use overloading just for default arguments.
 
 Overloaded methods have to be described in the Python interface using
 ``py::overload_cast< types... >( method )``.
@@ -60,76 +60,62 @@ See as example :meth:`Mesh.getNodes` and its interface in
 
 Note:
     - The docstring should not be repeated, or only if the arguments are very different
-      between overloaded methods.
+      between overloaded methods because all docstrings will be exported in Sphinx pages.
     - Default values must be consistent with those of the class header.
-    - ``const`` methods must the additional argumment ``py::const_``.
-
-**NEW**
-
-Voir :
-
-- remplacer les import par ``py::module_::import``
-- évaluation dans Function + autres usages de pybind11 hors PythonBindings
-- ajouter trim dans ``type_caster<JeveuxString>``
-- le C++ ne doit pas créer de py::object mais des map, vector...
+    - ``const`` methods must use the additional argument ``py::const_``.
+    - C++ methods should not create ``PyObject`` but ``std::map``, ``std::vector``...
 
 
-How to return different types from a single boost ``function::python``
-======================================================================
+How to return different types from a unique Python interface
+============================================================
 
-The situation is as follows: we want to return different types from a single
-``pybind11`` function.
-
-On the C++ side, we have 2 member functions of the class ``MechanicalModeContainerInstance``
+The situation is as follows:
+On the C++ side, we have 2 member functions of the class ``ModeResult``
 with different names and which return different types:
 
 .. code-block:: c++
 
-    AssemblyMatrixDisplacementDoublePtr getDisplacementStiffnessMatrix()
-    AssemblyMatrixTemperatureDoublePtr getTemperatureStiffnessMatrix()
+    AssemblyMatrixDisplacementRealPtr getDisplacementRealStiffnessMatrix();
+    AssemblyMatrixTemperatureRealPtr getTemperatureRealStiffnessMatrix();
 
 
 We want to interface these 2 functions by only one ``getStiffnessMatrix`` on the
-python side but which returns the 2 different types according to the case.
+Python side but which returns the 2 different types according to the case.
 
-To do this, we use the ``boost::variant`` type to store both types returned by the 2 functions.
+To do this, we use the ``std::variant`` type to store both types returned by the 2 functions.
 
 .. code-block:: c++
 
-    typedef boost::variant< AssemblyMatrixDisplacementDoublePtr,
-                            AssemblyMatrixTemperatureDoublePtr > MatrixVariant;
+    using MatrixVariant = std::variant< AssemblyMatrixDisplacementRealPtr,
+                                        AssemblyMatrixTemperatureRealPtr >;
 
 
 Then, we have to write a ``getStiffnessMatrix`` function that returns one or the
-other type depending on the case but storing it in a ``boost::variant``.
-This function will become a member function of the python class :py:class:`code_aster.Objects.MechanicalModeContainer` so the C++ function
-must take as argument a ``MechanicalModeContainerPtr``.
+other type depending on the case but storing it in a ``std::variant``.
+This function will become a member function of the python class
+:py:class:`code_aster.Objects.ModeResult` so the C++ function
+must take as argument a ``ModeResultPtr``.
 
 .. code-block:: c++
 
-    MatrixVariant getStiffnessMatrix( const MechanicalModeContainerPtr self )
+    MatrixVariant getStiffnessMatrix( const ModeResultPtr self )
     {
-        auto mat1 = self->getDisplacementStiffnessMatrix();
+        auto mat1 = self->getDisplacementRealStiffnessMatrix();
         if( mat1 != nullptr )
             return MatrixVariant( mat1 );
-        auto mat2 = self->getTemperatureStiffnessMatrix();
+        auto mat2 = self->getTemperatureRealStiffnessMatrix();
         return MatrixVariant( mat2 );
     };
 
 
-In the pybind11 interface of the ``MechanicalModeContainer`` class, we must add the function:
+In the pybind11 interface of the ``ModeResult`` class, we must add the function:
 
 .. code-block:: c++
 
     .def( "getStiffnessMatrix", &getStiffnessMatrix )
 
-Finally, we add the following 3 lines that allow ``pybind11`` to perform type conversions between the variant and the underlying types:
 
-.. code-block:: c++
-
-    to_python_converter< MatrixVariant, VariantToObject< MatrixVariant > >();
-    implicitly_convertible< AssemblyMatrixDisplacementDoublePtr, MatrixVariant >();
-    implicitly_convertible< AssemblyMatrixTemperatureDoublePtr, MatrixVariant >();
+NB: In the real life, ``getStiffnessMatrix`` is a template function.
 
 
 Macro-Commands

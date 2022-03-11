@@ -72,20 +72,20 @@ def all_objects(destdir):
     """Generate sphinx blocks for all libaster objects."""
     import code_aster.Objects as OBJ
 
-    boost_instance = OBJ.DataStructure.mro()[1]
-    boost_enum = OBJ.Physics.mro()[1]
+    pyb_instance = OBJ.DataStructure.mro()[1]
+    pyb_enum = OBJ.Physics.mro()[1]
 
-    # sections: directly derivated from Boost.Python.instance
+    # sections: directly derivated from pybind11 instance
     sections = [OBJ.DataStructure, OBJ.GenericMaterialProperty]
     addsect = []
     for name, obj in list(OBJ.__dict__.items()):
         if not isinstance(obj, type):
             continue
-        if obj.mro()[1] is boost_instance:
+        if obj.mro()[1] is pyb_instance:
             addsect.append((name, obj))
     for _, obj in sorted(addsect):
         sections.append(obj)
-    sections.append(boost_enum)
+    sections.append(pyb_enum)
     sections.append(Exception)
     # print(len(sections), "sections")
 
@@ -95,8 +95,7 @@ def all_objects(destdir):
         # if obj is not OBJ.Material:
         #     continue
         if not isinstance(obj, type) or issubclass(
-            obj, (OBJ.OnlyParallelObject, OBJ.InternalStateBuilder,
-                  OBJ.WithEmbeddedObjects)
+            obj, (OBJ.OnlyParallelObject, OBJ.InternalStateBuilder, OBJ.WithEmbeddedObjects)
         ):
             continue
         found = False
@@ -107,7 +106,7 @@ def all_objects(destdir):
                 # print("Found:", name ,">>>", subtyp)
                 break
         if not found and not issubclass(obj, OBJ.PyDataStructure):
-            raise KeyError("Boost class not found: {0}".format(obj.mro()))
+            raise KeyError("pybind11 class not found: {0}".format(obj.mro()))
 
     dicttext = OrderedDict()
     for subtyp, objs in list(dictobj.items()):
@@ -117,11 +116,11 @@ def all_objects(destdir):
         try:
             objs.remove(typename)
         except ValueError:
-            if subtyp not in (boost_enum, Exception):
+            if subtyp not in (pyb_enum, Exception):
                 print(subtyp)
                 raise
         objs.sort()
-        if subtyp not in (boost_enum, Exception):
+        if subtyp not in (pyb_enum, Exception):
             objs.insert(0, typename)
 
         if len(objs) > 1:
@@ -137,16 +136,12 @@ def all_objects(destdir):
 
     # generate a page for each of the first two classes
     with open(osp.join(destdir, "objects_datastructure.rst"), "w") as fobj:
-        params = dict(
-            link="objects_datastructure", content=dicttext["DataStructure"], intro=""
-        )
+        params = dict(link="objects_datastructure", content=dicttext["DataStructure"], intro="")
         fobj.write(auto_documentation(**params))
 
     with open(osp.join(destdir, "objects_materialbehaviour.rst"), "w") as fobj:
         params = dict(
-            link="objects_materialbehaviour",
-            content=dicttext["GenericMaterialProperty"],
-            intro="",
+            link="objects_materialbehaviour", content=dicttext["GenericMaterialProperty"], intro=""
         )
         fobj.write(auto_documentation(**params))
 
@@ -169,14 +164,10 @@ Documentation of all other types.
 def main():
     default_dest = osp.join(osp.dirname(__file__), "devguide")
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        epilog=EPILOG,
-        formatter_class=argparse.RawTextHelpFormatter,
+        description=__doc__, epilog=EPILOG, formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument(
-        "--objects",
-        action="store_true",
-        help="for C++ only objects (needs to import libaster)",
+        "--objects", action="store_true", help="for C++ only objects (needs to import libaster)"
     )
     parser.add_argument(
         "-d",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,16 +20,19 @@
 # person_in_charge: mathieu.courtois@edf.fr
 
 """
-This module provides BoostPython DataStructures and low level objects.
+This module provides pybind11 DataStructures and low level objects.
 """
 
 from libaster import *
 
-from .datastructure_py import (AsFloat, AsInteger, OnlyParallelObject,
-                               PyDataStructure)
-from .parallel_py import (ConnectionMesh, ParallelDOFNumbering,
-                          ParallelFiniteElementDescriptor,
-                          ParallelMechanicalLoadFunction,
-                          ParallelMechanicalLoadReal, ParallelMesh)
+from .datastructure_py import AsFloat, AsInteger, OnlyParallelObject, PyDataStructure
+from .parallel_py import (
+    ConnectionMesh,
+    ParallelDOFNumbering,
+    ParallelFiniteElementDescriptor,
+    ParallelMechanicalLoadFunction,
+    ParallelMechanicalLoadReal,
+    ParallelMesh,
+)
 from .Serialization import InternalStateBuilder
 from .user_extensions import WithEmbeddedObjects

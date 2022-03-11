@@ -37,7 +37,7 @@ Helper functions
   objects. It prints the content of all its *Jeveux* objects.
 
 - :py:func:`~code_aster.Objects.DataStructure.use_count`:
-  This method is a wrapping to ``boost::shared_ptr< T >`` ``use_count()``
+  This method is a wrapping to ``std::shared_ptr< T >`` ``use_count()``
   member. It is available for only some
   :py:class:`~code_aster.Objects.DataStructure`.
 
