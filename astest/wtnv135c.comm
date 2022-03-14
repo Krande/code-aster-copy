@@ -335,7 +335,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='SIGM_NOEU',
                   GROUP_NO='NO8',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-11944653.423042754,
+                  VALE_CALC=-11944653.423042916,
                   ),
           )
 

@@ -450,7 +450,7 @@ subroutine srdbds(nmat,mater,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)
     !!! Calcul de d(beta')/d(s)
     !!!
 
-    dbetds(1:ndt*ndt) = dbdsin * dsinds(1:ndt*ndt)
+    dbetds(1:ndt) = dbdsin * dsinds(1:ndt)
 
     !!!
     !!! Calcul de d(beta')/d(i1)

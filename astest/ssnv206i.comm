@@ -297,6 +297,6 @@ TEST_RESU(RESU = (_F(INST = 7000.0,
                    NOM_CHAM = 'SIGM_NOEU',
                    GROUP_NO = 'N4',
                    NOM_CMP = 'SIYY',
-                   VALE_CALC = -14.185409169133436,),),)
+                   VALE_CALC = -14.185409169133443,),),)
 
 FIN()

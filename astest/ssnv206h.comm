@@ -255,7 +255,7 @@ TEST_RESU(RESU = (_F(INST = 7000.0,
                      NOM_CHAM = 'DEPL',
                      GROUP_NO = 'N4',
                      NOM_CMP = 'DX',
-                     VALE_CALC = 0.02896266125177752,),),)
+                     VALE_CALC = 0.028962643377033186,),),)
 
 TEST_RESU(RESU = (_F(INST = 7000.0,
                      RESULTAT = U1,
@@ -268,6 +268,6 @@ TEST_RESU(RESU = (_F(INST = 7000.0,
                    NOM_CHAM = 'SIGM_NOEU',
                    GROUP_NO = 'N4',
                    NOM_CMP = 'SIYY',
-                   VALE_CALC = -14.02455857226703,),),)
+                   VALE_CALC = -14.024566153291794,),),)
 
 FIN()
