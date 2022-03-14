@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -467,6 +467,12 @@ class MUAXQU8(Element):
 
         OP.INIT_VARC(te=99,
             para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), ),
+        ),
+        
+        OP.MASS_INER(te=285,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (OP.MASS_INER.PVARCPR, LC.ZVARCPG), ),
+            para_out=((SP.PMASSINE, LC.EMASSINE), ),
         ),
 
         OP.MASS_MECA(te=82,

@@ -41,6 +41,10 @@ DEFI_GROUP( reuse=MA, MAILLAGE=MA,
                         _F(  NOM = 'TOUT', TOUT = 'OUI'),
                         _F(  NOM = 'GMX1', MAILLE = 'M95'),
                         _F(  NOM = 'CHEM1', MAILLE = ('M99', 'M147', 'M148', 'M100',)),
+                        _F(  NOM = 'STRIA3',TOUT='OUI', TYPE_MAILLE='TRIA3'),
+                        _F(  NOM = 'STRIA6',TOUT='OUI', TYPE_MAILLE='TRIA6'),
+                        _F(  NOM = 'SQUAD4',TOUT='OUI', TYPE_MAILLE='QUAD4'),
+                        _F(  NOM = 'SQUAD8',TOUT='OUI', TYPE_MAILLE='QUAD8'),
                    ),
                    CREA_GROUP_NO=(
                         _F(  NOM = 'GNX1',   NOEUD = 'N198'),
@@ -51,6 +55,22 @@ MO=AFFE_MODELE(    MAILLAGE=MA,INFO=2,
                          AFFE=_F(  TOUT = 'OUI',
                                 PHENOMENE = 'MECANIQUE',
                                 MODELISATION = 'D_PLAN') )
+
+# pour validation de MASS_INER sur éléments INCO_UP*
+
+MO_UP=AFFE_MODELE(    MAILLAGE=MA,
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'D_PLAN_INCO_UP') )
+MO_UPG=AFFE_MODELE(    MAILLAGE=MA,
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'D_PLAN_INCO_UPG') )
+MO_UPO=AFFE_MODELE(    MAILLAGE=MA,
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'D_PLAN_INCO_UPO') )
+
 
 MOTH=AFFE_MODELE(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
@@ -1733,6 +1753,142 @@ TEST_TABLE(
            FILTRE=_F(NOM_PARA='QUANTITE',
                      VALE_K='MAXIMUM',),
            )
+
+# test MASS_INER pour INCO_UP*
+
+
+
+TABLE1_UP_REF=POST_ELEM( MODELE=MO,
+                         CHAM_MATER=CHMAT2,
+                         MASS_INER=(_F( GROUP_MA = ('SQUAD8','STRIA3',
+                                                    'STRIA6',)),
+                        ))
+
+TABLE1_UP=POST_ELEM( MODELE=MO_UP,
+                         CHAM_MATER=CHMAT2,
+                         MASS_INER=(_F( GROUP_MA = ('SQUAD8','STRIA3',
+                                                    'STRIA6',)),
+                        ))
+
+TEST_TABLE(
+           VALE_CALC=480809.4924129919,
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UP_REF,
+           )
+TEST_TABLE(
+           VALE_CALC=480809.4924129919,
+           VALE_REFE=480809.4924129919,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UP,
+           )
+
+TEST_TABLE(
+           VALE_CALC=1146828.3478027529,
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UP_REF,
+           )
+
+TEST_TABLE(
+           VALE_CALC=1146828.3478027529,
+           VALE_REFE=1146828.3478027529,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UP,
+           )
+
+
+TABLE1_UPG_REF=POST_ELEM( MODELE=MO,
+                         CHAM_MATER=CHMAT2,
+                         MASS_INER=(_F( GROUP_MA = ('SQUAD8',
+                                                    'STRIA6',)),
+                        ))
+
+TABLE1_UPG=POST_ELEM( MODELE=MO_UPG,
+                         CHAM_MATER=CHMAT2,
+                         MASS_INER=(_F( GROUP_MA = ('SQUAD8',
+                                                    'STRIA6',)),
+                        ))
+
+TEST_TABLE(
+           VALE_CALC=328958.2006587831,
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPG_REF,
+           )
+TEST_TABLE(
+           VALE_CALC=328958.2006587831,
+           VALE_REFE=328958.2006587831,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPG,
+           )
+
+TEST_TABLE(
+           VALE_CALC=398264.964212382,
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPG_REF,
+           )
+
+TEST_TABLE(
+           VALE_CALC=398264.964212382,
+           VALE_REFE=398264.964212382,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPG,
+           )
+
+
+TABLE1_UPO_REF=POST_ELEM( MODELE=MO,
+                         CHAM_MATER=CHMAT2,
+                         MASS_INER=(_F( GROUP_MA = ('SQUAD4','STRIA3',)),
+                        ))
+
+TABLE1_UPO=POST_ELEM( MODELE=MO_UPO,
+                         CHAM_MATER=CHMAT2,
+                         MASS_INER=(_F( GROUP_MA = ('SQUAD4','STRIA3',)),
+                        ))
+
+TEST_TABLE(
+           VALE_CALC=381150.27327020484,
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPO_REF,
+           )
+TEST_TABLE(
+           VALE_CALC=381150.27327020484,
+           VALE_REFE=381150.27327020484,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPO,
+           )
+
+TEST_TABLE(
+           VALE_CALC=268273.67107551196,
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPO_REF,
+           )
+
+TEST_TABLE(
+           VALE_CALC=268273.6710755121,
+           VALE_REFE=268273.67107551196,
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.015,
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPO,
+           )
+
+
 
 FIN( )
 #

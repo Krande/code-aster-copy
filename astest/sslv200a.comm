@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,21 @@ MO=AFFE_MODELE(    MAILLAGE=MA,  VERI_JACOBIEN='OUI',
                          AFFE=_F(  TOUT = 'OUI',
                                 PHENOMENE = 'MECANIQUE',
                                 MODELISATION = '3D') )
+# pour validation de MASS_INER sur élements INCO_UP*
+MO_UP=AFFE_MODELE(    MAILLAGE=MA,  VERI_JACOBIEN='OUI',
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D_INCO_UP') )
+
+MO_UPG=AFFE_MODELE(    MAILLAGE=MA,  VERI_JACOBIEN='OUI',
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D_INCO_UPG') )
+MO_UPO=AFFE_MODELE(    MAILLAGE=MA,  VERI_JACOBIEN='OUI',
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D_INCO_UPO') )
+
 
 MOTH=AFFE_MODELE(    MAILLAGE=MA,  VERI_JACOBIEN='OUI',
                            AFFE=_F(  TOUT = 'OUI',
@@ -1120,6 +1135,7 @@ TABLE2=POST_ELEM(     RESULTAT=MSLIN,
                                     _F(GROUP_MA = 'GMA21',),
                                     _F(GROUP_MA = ('M44', 'M99',)) ))
 
+
 #ENGENDRE_TEST (  CO=(TABLE1,TABLE2), )
 
 TEST_TABLE(
@@ -1324,5 +1340,141 @@ MATELEM2=CALC_MATR_ELEM(        OPTION='MASS_MECA',
                                 CARA_ELEM=CARA1,
                                   CHARGE=(CHMEC, CHMECF, ),
                                      INST=2.9 )
+
+# test MASS_INER pour INCO_UP*
+
+
+
+TABLE1_UP_REF=POST_ELEM( MODELE=MO,
+                         CHAM_MATER=CMT,
+                         MASS_INER=(_F( GROUP_MA = ('VCUB20','VPENTA15',
+                                                    'VTETRA10', 'VTETRA4')),
+                        ))
+
+TABLE1_UP=POST_ELEM( MODELE=MO_UP,
+                         CHAM_MATER=CMT,
+                         MASS_INER=(_F( GROUP_MA = ('VCUB20','VPENTA15',
+                                                    'VTETRA10', 'VTETRA4')),
+                        ))
+
+TEST_TABLE(
+           VALE_CALC=594326.366163941,
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UP_REF,
+           )
+TEST_TABLE(
+           VALE_CALC=594318.3542511615,
+           VALE_REFE=594326.366163941,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UP,
+           )
+
+TEST_TABLE(
+           VALE_CALC=4238366.873362973,
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UP_REF,
+           )
+
+TEST_TABLE(
+           VALE_CALC=4238302.179928893,
+           VALE_REFE=4238366.873362973,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UP,
+           )
+
+TABLE1_UPG_REF=POST_ELEM( MODELE=MO,
+                         CHAM_MATER=CMT,
+                         MASS_INER=(_F( GROUP_MA = ('VCUB20','VPENTA15',
+                                                    'VTETRA10',)),
+                        ))
+
+TABLE1_UPG=POST_ELEM( MODELE=MO_UPG,
+                         CHAM_MATER=CMT,
+                         MASS_INER=(_F( GROUP_MA = ('VCUB20','VPENTA15',
+                                                    'VTETRA10',)),
+                        ))
+
+TEST_TABLE(
+           VALE_CALC=471606.3622801512,
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPG_REF,
+           )
+TEST_TABLE(
+           VALE_CALC=471598.3503673717,
+           VALE_REFE=471606.3622801512,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPG,
+           )
+
+TEST_TABLE(
+           VALE_CALC=478684.5949739147,
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPG_REF,
+           )
+
+TEST_TABLE(
+           VALE_CALC=478650.6787754784,
+           VALE_REFE=478684.5949739147,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPG,
+           )
+
+
+TABLE1_UPO_REF=POST_ELEM( MODELE=MO,
+                         CHAM_MATER=CMT,
+                         MASS_INER=(_F( GROUP_MA = ('VCUB8','VPENTA6',
+                                                    'VPYRAM5', 'VTETRA4')),
+                        ))
+
+TABLE1_UPO=POST_ELEM( MODELE=MO_UPO,
+                         CHAM_MATER=CMT,
+                         MASS_INER=(_F( GROUP_MA = ('VCUB8','VPENTA6',
+                                                    'VPYRAM5', 'VTETRA4')),
+                        ))
+
+TEST_TABLE(
+           VALE_CALC=593613.281668148,
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPO_REF,
+           )
+TEST_TABLE(
+           VALE_CALC=593613.281668148,
+           VALE_REFE=593613.281668148,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='MASSE',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPO,
+           )
+
+TEST_TABLE(
+           VALE_CALC=765460.464365581,
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPO_REF,
+           )
+
+TEST_TABLE(
+           VALE_CALC=775264.8898259893,
+           VALE_REFE=765460.464365581,
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.015,
+           NOM_PARA='IY_G',
+           TYPE_TEST='SOMM_ABS',
+           TABLE=TABLE1_UPO,
+           )
+
 
 FIN( )
