@@ -1,0 +1,500 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import os
+import numpy as np
+import json
+import tempfile
+import os.path as osp
+
+import code_aster
+from code_aster.Commands import *
+from code_aster.Utilities import ExecutionParameter
+from code_aster.MacroCommands.MateHomo import mate_homo_massif
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'))
+
+testname = 'hplv107a'
+reference_testname = 'hplv105c'
+
+datadir = osp.join(ExecutionParameter().get_option('rcdir'), 'tests_data')
+meshfile = osp.join(datadir, '%s.med'%testname)
+with open(osp.join(datadir, '%s.json'%testname)) as f:
+    testresu = json.load(f)
+
+with open(osp.join(datadir, '%s.json'%reference_testname)) as f:
+    referesu = json.load(f)
+
+MA = code_aster.Mesh()
+MA.readMedFile(meshfile)
+
+TEMP = 20
+
+MA = DEFI_GROUP(reuse=MA,
+                MAILLAGE=MA,
+                CREA_GROUP_NO=(
+                    _F(TOUT_GROUP_MA='OUI'),
+                    _F(NOM='plan_xoy',
+                       OPTION='PLAN',
+                       POINT=(0., 0., 0.),
+                       VECT_NORMALE=(0.,0.,1.),
+                       PRECISION=1E-6),
+                    _F(NOM='plan_yoz',
+                       OPTION='PLAN',
+                       POINT=(0., 0., 0.),
+                       VECT_NORMALE=(1.,0.,0.),
+                       PRECISION=1E-6),
+                    _F(NOM='plan_xoz',
+                       OPTION='PLAN',
+                       POINT=(0., 0., 0.),
+                       VECT_NORMALE=(0.,1.,0.),
+                       PRECISION=1E-6),
+                    _F(NOM='LOCK_RIGI', INTERSEC=('peau_int_tube_cent', 'plan_xoy', 'plan_yoz')),
+                ))
+
+pitch = 27.43
+volume_ver = 3/2*np.sqrt(3)*pitch**2
+
+INCONEL = INCLUDE_MATERIAU(NOM_AFNOR='NC15FE',
+                           TYPE_MODELE='REF',
+                           VARIANTE='A',
+                           TYPE_VALE='NOMI',
+                           UNITE_LONGUEUR='MM',
+                           EXTRACTION=_F(COMPOR=('ELAS', 'THER'),
+                                         TEMP_EVAL=20))
+
+ACIER = INCLUDE_MATERIAU(NOM_AFNOR='16MND5',
+                         TYPE_MODELE='REF',
+                         VARIANTE='A',
+                         TYPE_VALE='NOMI',
+                         UNITE_LONGUEUR='MM',
+                         EXTRACTION=_F(COMPOR=('ELAS', 'THER'),
+                                       TEMP_EVAL=20))
+
+CHAMVARC = CREA_CHAMP(TYPE_CHAM = 'NOEU_TEMP_R',
+                      OPERATION = 'AFFE',
+                      MAILLAGE = MA,
+                      AFFE = _F(GROUP_MA=('plaque', 'tubes'),
+                                NOM_CMP = 'TEMP',
+                                VALE = TEMP)),
+
+MODTH = AFFE_MODELE(MAILLAGE=MA,
+                    AFFE=_F(GROUP_MA=('plaque', 'tubes'),
+                            MODELISATION='3D',
+                            PHENOMENE='THERMIQUE'))
+
+MODME = AFFE_MODELE(MAILLAGE=MA,
+                    AFFE=_F(GROUP_MA=('plaque', 'tubes'),
+                            MODELISATION='3D',
+                            PHENOMENE='MECANIQUE'))
+
+CHMATME = AFFE_MATERIAU(MODELE=MODME,
+                        AFFE= (
+                            _F(GROUP_MA='plaque', MATER=ACIER),
+                            _F(GROUP_MA='tubes', MATER=INCONEL)),
+                        AFFE_VARC=_F(GROUP_MA=('plaque', 'tubes'),
+                                     NOM_VARC='TEMP',
+                                     VALE_REF=20,
+                                     CHAM_GD=CHAMVARC))
+
+CHMATTH = AFFE_MATERIAU(MODELE=MODTH,
+                        AFFE= (
+                        _F(GROUP_MA='plaque', MATER=ACIER),
+                            _F(GROUP_MA='tubes', MATER=INCONEL)),
+                        AFFE_VARC=_F(GROUP_MA=('plaque', 'tubes'),
+                                     NOM_VARC='TEMP',
+                                     VALE_REF=20,
+                                     CHAM_GD=CHAMVARC))
+
+
+# Chargements pour calcul des correcteurs MECANIQUES
+#=======================================================================
+
+LIAISONS_TEMP = AFFE_CHAR_THER(MODELE=MODTH,
+                               TEMP_IMPO=(
+                                   _F(GROUP_NO='LOCK_RIGI',
+                                      TEMP=0.0)),
+                               LIAISON_GROUP=(
+                                   ###FACES X
+                                   _F(GROUP_MA_1 = ('face_1',),
+                                      GROUP_MA_2 = ('face_4',),
+                                      DDL_1 = 'TEMP',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'TEMP',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_2',),
+                                      GROUP_MA_2 = ('face_5',),
+                                      DDL_1 = 'TEMP',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'TEMP',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_3',),
+                                      GROUP_MA_2 = ('face_6',),
+                                      DDL_1 = 'TEMP',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'TEMP',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_zm1',),
+                                      GROUP_MA_2 = ('face_zp1',),
+                                      SANS_GROUP_NO = (['bords_zm1_%d'%i for i in range(1,7)]+['bords_zp1_%d'%i for i in range(1,7)]),
+                                      DDL_1 = 'TEMP',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'TEMP',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_1',
+                                      GROUP_MA_2 = 'bords_zm1_1',
+                                      DDL_1 = 'TEMP',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'TEMP',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_2',
+                                      GROUP_MA_2 = 'bords_zm1_2',
+                                      DDL_1 = 'TEMP',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'TEMP',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_3',
+                                      GROUP_MA_2 = 'bords_zm1_3',
+                                      DDL_1 = 'TEMP',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'TEMP',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                               ))
+
+LOCK_DEPL = AFFE_CHAR_MECA(MODELE=MODME,
+                           DDL_IMPO=(
+                               _F(GROUP_MA=('plaque', 'tubes'),
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0)))
+
+LIAISONS_DEPL = AFFE_CHAR_MECA(MODELE=MODME,
+                               DDL_IMPO=(
+                                   _F(GROUP_NO='LOCK_RIGI',
+                                      DX=0.0,
+                                      DY=0.0,
+                                      DZ=0.0
+                                   )),
+                               LIAISON_GROUP=(
+
+                                   _F(GROUP_MA_1 = ('face_1',),
+                                      GROUP_MA_2 = ('face_4',),
+                                      DDL_1 = 'DX',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DX',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_1',),
+                                      GROUP_MA_2 = ('face_4',),
+                                      DDL_1 = 'DY',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DY',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_1',),
+                                      GROUP_MA_2 = ('face_4',),
+                                      DDL_1 = 'DZ',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DZ',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+
+                                   _F(GROUP_MA_1 = ('face_2',),
+                                      GROUP_MA_2 = ('face_5',),
+                                      DDL_1 = 'DX',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DX',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_2',),
+                                      GROUP_MA_2 = ('face_5',),
+                                      DDL_1 = 'DY',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DY',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_2',),
+                                      GROUP_MA_2 = ('face_5',),
+                                      DDL_1 = 'DZ',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DZ',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+
+                                   _F(GROUP_MA_1 = ('face_3',),
+                                      GROUP_MA_2 = ('face_6',),
+                                      DDL_1 = 'DX',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DX',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_3',),
+                                      GROUP_MA_2 = ('face_6',),
+                                      DDL_1 = 'DY',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DY',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_3',),
+                                      GROUP_MA_2 = ('face_6',),
+                                      DDL_1 = 'DZ',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DZ',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+
+                                  #FACES Z
+                                  _F(GROUP_MA_1 = ('face_zm1',),
+                                     GROUP_MA_2 = ('face_zp1',),
+                                     SANS_GROUP_NO = (['bords_zm1_%d'%i for i in range(1,7)]+['bords_zp1_%d'%i for i in range(1,7)]),
+                                     DDL_1 = 'DX',
+                                     COEF_MULT_1 = 1,
+                                     DDL_2 = 'DX',
+                                     COEF_MULT_2 = -1,
+                                     COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_zm1',),
+                                      GROUP_MA_2 = ('face_zp1',),
+                                      SANS_GROUP_NO = (['bords_zm1_%d'%i for i in range(1,7)]+['bords_zp1_%d'%i for i in range(1,7)]),
+                                      DDL_1 = 'DY',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DY',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = ('face_zm1',),
+                                      GROUP_MA_2 = ('face_zp1',),
+                                      SANS_GROUP_NO = (['bords_zm1_%d'%i for i in range(1,7)]+['bords_zp1_%d'%i for i in range(1,7)]),
+                                      DDL_1 = 'DZ',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DZ',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+
+                                   ## ARRETES
+                                   _F(GROUP_MA_1 = 'bords_zp1_1',
+                                      GROUP_MA_2 = 'bords_zm1_1',
+                                      DDL_1 = 'DX',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DX',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_1',
+                                      GROUP_MA_2 = 'bords_zm1_1',
+                                      DDL_1 = 'DY',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DY',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_1',
+                                      GROUP_MA_2 = 'bords_zm1_1',
+                                      DDL_1 = 'DZ',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DZ',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+
+                                   _F(GROUP_MA_1 = 'bords_zp1_2',
+                                      GROUP_MA_2 = 'bords_zm1_2',
+                                      DDL_1 = 'DX',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DX',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_2',
+                                      GROUP_MA_2 = 'bords_zm1_2',
+                                      DDL_1 = 'DY',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DY',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_2',
+                                      GROUP_MA_2 = 'bords_zm1_2',
+                                      DDL_1 = 'DZ',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DZ',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+
+                                   _F(GROUP_MA_1 = 'bords_zp1_3',
+                                      GROUP_MA_2 = 'bords_zm1_3',
+                                      DDL_1 = 'DX',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DX',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_3',
+                                      GROUP_MA_2 = 'bords_zm1_3',
+                                      DDL_1 = 'DY',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DY',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0),
+                                   _F(GROUP_MA_1 = 'bords_zp1_3',
+                                      GROUP_MA_2 = 'bords_zm1_3',
+                                      DDL_1 = 'DZ',
+                                      COEF_MULT_1 = 1,
+                                      DDL_2 = 'DZ',
+                                      COEF_MULT_2 = -1,
+                                      COEF_IMPO = 0)))
+
+CHAR11 = AFFE_CHAR_MECA(MODELE=MODME,
+                      PRE_EPSI=_F(GROUP_MA=('plaque', 'tubes'), EPXX=-1.0))
+
+CHAR22 = AFFE_CHAR_MECA(MODELE=MODME,
+                        PRE_EPSI=_F(GROUP_MA=('plaque', 'tubes'), EPYY=-1.0))
+
+CHAR12 = AFFE_CHAR_MECA(MODELE=MODME,
+                        PRE_EPSI=_F(GROUP_MA=('plaque', 'tubes'), EPXY=-1.0))
+
+CHAR33 = AFFE_CHAR_MECA(MODELE=MODME,
+                        PRE_EPSI=_F(GROUP_MA=('plaque', 'tubes'), EPZZ=-1.0))
+
+CHAR31 = AFFE_CHAR_MECA(MODELE=MODME,
+                        PRE_EPSI=_F(GROUP_MA=('plaque', 'tubes'), EPXZ=-1.0))
+
+CHAR23 = AFFE_CHAR_MECA(MODELE=MODME,
+                        PRE_EPSI=_F(GROUP_MA=('plaque', 'tubes'), EPYZ=-1.0))
+
+alpha_acier = [i for i in ACIER.getVectorOfMaterialProperties()
+               if i.getName() == "ELAS"][0].getValueReal('Alpha')
+
+alpha_inconel = [i for i in INCONEL.getVectorOfMaterialProperties()
+                 if i.getName() == "ELAS"][0].getValueReal('Alpha')
+
+CHARDIL = AFFE_CHAR_MECA(MODELE=MODME,
+                         PRE_EPSI=(
+                             _F(GROUP_MA=('plaque',), EPXX=alpha_acier, EPYY=alpha_acier, EPZZ=alpha_acier),
+                             _F(GROUP_MA=('tubes',), EPXX=alpha_inconel, EPYY=alpha_inconel, EPZZ=alpha_inconel)))
+
+# Chargements pour calcul des correcteurs THERMIQUES
+#=======================================================================
+
+CHAR1=AFFE_CHAR_THER(MODELE=MODTH,
+                     PRE_GRAD_TEMP=_F(GROUP_MA=('plaque', 'tubes'), FLUX_X=-1.0))
+
+CHAR2=AFFE_CHAR_THER(MODELE=MODTH,
+                     PRE_GRAD_TEMP=_F(GROUP_MA=('plaque', 'tubes'), FLUX_Y=-1.0))
+
+CHAR3=AFFE_CHAR_THER(MODELE=MODTH,
+                     PRE_GRAD_TEMP=_F(GROUP_MA=('plaque', 'tubes'), FLUX_Z=-1.0))
+
+# Calcul des correcteurs MECANIQUES
+#======================================================================
+DEPLDIL = MECA_STATIQUE(MODELE=MODME,
+                        CHAM_MATER=CHMATME,
+                        EXCIT=(_F(CHARGE=CHARDIL),
+                               _F(CHARGE=LIAISONS_DEPL),
+                        ))
+
+DEPL11 = MECA_STATIQUE(MODELE=MODME,
+                       CHAM_MATER=CHMATME,
+                       EXCIT=(_F(CHARGE=CHAR11),
+                              _F(CHARGE=LIAISONS_DEPL),
+                       ))
+
+DEPL22 = MECA_STATIQUE(MODELE=MODME,
+                       CHAM_MATER=CHMATME,
+                       EXCIT=(_F(CHARGE=CHAR22),
+                              _F(CHARGE=LIAISONS_DEPL),
+                       ))
+
+DEPL12 = MECA_STATIQUE(MODELE=MODME,
+                       CHAM_MATER=CHMATME,
+                       EXCIT=(_F(CHARGE=CHAR12),
+                              _F(CHARGE=LIAISONS_DEPL),
+                       ))
+
+DEPL33 = MECA_STATIQUE(MODELE=MODME,
+                       CHAM_MATER=CHMATME,
+                       EXCIT=(_F(CHARGE=CHAR33),
+                              _F(CHARGE=LIAISONS_DEPL),
+                       ))
+
+DEPL31 = MECA_STATIQUE(MODELE=MODME,
+                       CHAM_MATER=CHMATME,
+                       EXCIT=(_F(CHARGE=CHAR31),
+                              _F(CHARGE=LIAISONS_DEPL),
+                       ))
+
+DEPL23 = MECA_STATIQUE(MODELE=MODME,
+                       CHAM_MATER=CHMATME,
+                       EXCIT=(_F(CHARGE=CHAR23),
+                              _F(CHARGE=LIAISONS_DEPL),
+                       ))
+
+# Calcul des correcteurs THERMIQUES
+#======================================================================
+TEMP1 = THER_LINEAIRE(MODELE=MODTH,
+                      CHAM_MATER=CHMATTH,
+                      EXCIT=(_F(CHARGE=CHAR1),
+                             _F(CHARGE=LIAISONS_TEMP),
+                      ))
+
+TEMP2 = THER_LINEAIRE(MODELE=MODTH,
+                      CHAM_MATER=CHMATTH,
+                      EXCIT=(_F(CHARGE=CHAR2),
+                             _F(CHARGE=LIAISONS_TEMP),
+                      ))
+
+TEMP3 = THER_LINEAIRE(MODELE=MODTH,
+                      CHAM_MATER=CHMATTH,
+                      EXCIT=(_F(CHARGE=CHAR3),
+                             _F(CHARGE=LIAISONS_TEMP),
+                      ))
+
+DEPLMATE = MECA_STATIQUE(MODELE=MODME,
+                         CHAM_MATER=CHMATME,
+                         EXCIT=(_F(CHARGE=LOCK_DEPL)))
+
+
+A_hom, K_hom, TAB_HOMO = mate_homo_massif.calc_tabpara_massif(DEPLMATE,
+                                                              volume_ver, ('plaque', 'tubes'), 'TEMP', [20],
+                                                              DEPL11, DEPL22, DEPL33, DEPL12, DEPL31, DEPL23,
+                                                              DEPLDIL,
+                                                              TEMP1, TEMP2, TEMP3,)
+
+for temp, data in testresu.items():
+    for para, value in data.items():
+        TEST_TABLE(TABLE=TAB_HOMO,
+                   NOM_PARA=para,
+                   VALE_CALC=value,
+                   VALE_REFE=referesu[temp][para],
+                   CRITERE="ABSOLU" if para == "ISOTRANS" else "RELATIF",
+                   REFERENCE="AUTRE_ASTER",
+                   FILTRE=_F(NOM_PARA='TEMP',
+                             VALE=float(temp)))
+
+tab_values = {para : items for para, items in TAB_HOMO.EXTR_TABLE().values().items()
+              if all(abs(i)>1.E-12 for i in items)}
+
+vale_calc = {temp : {para : item[i]
+                     for para, item in tab_values.items()}
+             for i, temp in enumerate(tab_values['TEMP'])}
+
+tmpdir = tempfile.mkdtemp()
+with open(osp.join(tmpdir, '%s.json'%testname), 'w') as f:
+    json.dump(vale_calc, f, indent=1, sort_keys=True)
+
+FIN()

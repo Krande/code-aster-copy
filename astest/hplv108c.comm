@@ -1,0 +1,110 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import os
+import json
+import tempfile
+import os.path as osp
+
+import code_aster
+from code_aster.Commands import *
+from code_aster.Utilities import ExecutionParameter
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'))
+
+testname = 'hplv108c'
+
+datadir = osp.join(ExecutionParameter().get_option('rcdir'), 'tests_data')
+meshfile = osp.join(datadir, 'hplv108a.med')
+with open(osp.join(datadir, '%s.json'%testname)) as f:
+    testresu = json.load(f)
+
+MA = code_aster.Mesh()
+MA.readMedFile(meshfile)
+
+UN = DEFI_CONSTANTE(VALE=1.0)
+POISSON = DEFI_CONSTANTE(VALE=0.3)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+MATEUNI = DEFI_MATERIAU(ELAS_FO=_F(E=UN,
+                                   NU=POISSON),
+                        THER_FO=_F(LAMBDA=UN))
+
+TAB_HOMO = CALC_MATE_HOMO(MAILLAGE=MA,
+                          AFFE=_F(TOUT='OUI',
+                                  MATER=MATEUNI),
+                          VARC=_F(NOM_VARC='TEMP',
+                                  VALE=(20,)),
+                          TYPE_HOMO='PLAQUE',
+                          VECT_NORM='Z',
+                          UNITE=80)
+
+testrefe = {
+    "FLEX_G_LT": 0.76923,
+    "FLEX_L": 1.09890,
+    "FLEX_LT": 0.32967,
+    "FLEX_T": 1.09890,
+    "MEMB_G_LT": 0.76923,
+    "MEMB_L": 1.09890,
+    "MEMB_LT": 0.32967,
+    "MEMB_T": 1.09890,
+}
+
+def update_refe(para, value):
+    h = 534
+    E = 1
+    c_flex = E*(h**3)/12
+    c_memb = E*h
+    upvalue = value
+    if "FLEX" in para:
+        upvalue *= c_flex
+    elif "MEMB" in para:
+        upvalue *= c_memb
+    else:
+        pass
+
+    if "G_LT" in para:
+        upvalue /= 2
+
+    return upvalue
+
+temp = "20.0"
+for para, value in testrefe.items():
+    vale_calc = testresu[temp][para]
+    vale_refe = update_refe(para, value)
+    TEST_TABLE(TABLE=TAB_HOMO,
+               NOM_PARA=para,
+               VALE_REFE=vale_refe,
+               REFERENCE="SOURCE_EXTERNE",
+               VALE_CALC=vale_calc,
+               FILTRE=_F(NOM_PARA='TEMP',
+                         VALE=float(temp)))
+
+tab_values = {para : items for para, items in TAB_HOMO.EXTR_TABLE().values().items()
+              if all(abs(i)>1.E-12 for i in items)}
+
+vale_calc = {temp : {para : item[i]
+                     for para, item in tab_values.items()}
+             for i, temp in enumerate(tab_values['TEMP'])}
+
+tmpdir = tempfile.mkdtemp()
+with open(osp.join(tmpdir, '%s.json'%testname), 'w') as f:
+    json.dump(vale_calc, f, indent=1, sort_keys=True)
+
+FIN()
