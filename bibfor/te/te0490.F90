@@ -129,6 +129,7 @@ subroutine te0490(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
@@ -199,7 +200,7 @@ subroutine te0490(option, nomte)
     welas = zero
     welastr = zero
     wtotal = zero
-    instan = zero
+    instan = r8vide()
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION

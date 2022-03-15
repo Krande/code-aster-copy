@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ use Behaviour_type
 !
 implicit none
 !
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/hypmat.h"
 #include "asterfort/rcvalb.h"
@@ -137,9 +138,11 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
     para_name  = ' '
     para_vale  = 0.d0
     if (present(time)) then
-        nb_para   = nb_para + 1
-        para_name(nb_para) = 'INST'
-        para_vale(nb_para) = time
+        if (time.ne.r8vide())then
+            nb_para   = nb_para + 1
+            para_name(nb_para) = 'INST'
+            para_vale(nb_para) = time
+        endif
     endif
     if (present(temp)) then
         nb_para   = nb_para + 1

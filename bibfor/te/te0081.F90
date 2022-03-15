@@ -21,6 +21,7 @@ subroutine te0081(option, nomte)
 implicit none
 !
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/bmatmc.h"
 #include "asterfort/btdbmc.h"
 #include "asterfort/dmatmc.h"
@@ -64,7 +65,7 @@ implicit none
 ! - Initializations
 !
     ndim      = 2
-    instan    = 0.d0
+    instan    = r8vide()
     nbinco    = ndim*nno
     nharm     = 0.d0
     btdb(:,:) = 0.d0

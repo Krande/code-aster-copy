@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine sigimc(fami, nno, ndim, nbsig, npg,&
 !                                   DE L'ELEMENT
 !    NI(1)          IN     R        FONCTIONS DE FORME
 !    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
-!    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
+!    INSTAN         IN     R        INSTANT DE CALCUL
 !    MATER          IN     I        MATERIAU
 !    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE

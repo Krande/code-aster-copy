@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
+#include "asterc/r8vide.h"
 #include "asterfort/epstmc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
@@ -49,7 +50,7 @@ character(len=16) :: option, compor
 ! OUT TREPST  : TRACE DU TENSEUR DES DEFORMATIONS THERMIQUES
 !-----------------------------------------------------------------------
 !
-    integer :: k
+    integer :: k, nbpar
     integer :: icodre(2), itemps, iret, iepsv
     real(kind=8) :: e, nu, valres(2), valpar
     real(kind=8) :: xyzgau(3), repere(7), epsth(6)
@@ -79,9 +80,11 @@ character(len=16) :: option, compor
 ! - RECUPERATION DE L INSTANT
     call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
+        nbpar = 1
         valpar = zr(itemps)
     else
-        valpar = 0.d0
+        valpar = r8vide()
+        nbpar = 0
     endif
 !
 ! - RECUPERATION DE E ET NU DANS LE FICHIER PYTHON
@@ -89,7 +92,7 @@ character(len=16) :: option, compor
     nomres(2)='NU'
 !
     call rcvalb('RIGI', g, 1, '+', mate,&
-                ' ', 'ELAS', 1, nompar, [valpar],&
+                ' ', 'ELAS', nbpar, nompar, [valpar],&
                 2, nomres, valres, icodre, 1)
 !
     e = valres(1)

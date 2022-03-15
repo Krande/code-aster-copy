@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 subroutine te0529(option, nomte)
     implicit none
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/epstmc.h"
 #include "asterfort/jevech.h"
@@ -91,6 +92,8 @@ subroutine te0529(option, nomte)
     call tecach('NNO', 'PTEMPSR', 'L', iret, iad=itemps)
     if (itemps .ne. 0) then
         instan = zr(itemps)
+    else
+        instan = r8vide()
     endif
 !
 !     -----------------

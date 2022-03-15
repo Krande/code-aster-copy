@@ -74,6 +74,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 ! --------------------------------------------------------------------
 !
     k2bid = '  '
+    rbid = r8vide()
 !
     if (phenom.eq.'ELAS_ISTR' .and. ndim.eq.2)then
         call utmess('F', 'ELEMENTS3_2')

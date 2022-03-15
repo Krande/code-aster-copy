@@ -125,6 +125,7 @@ subroutine te0491(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/enelpg.h"
@@ -191,7 +192,7 @@ subroutine te0491(option, nomte)
     psi = zero
     volume = zero
     indigl = zero
-    instan = zero
+    instan = r8vide()
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION

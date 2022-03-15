@@ -23,6 +23,7 @@ implicit none
 character(len=16) :: option, nomte
 !
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
@@ -61,7 +62,7 @@ character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    instan = 0.d0
+    instan = r8vide()
     nharm  = 0
 
 ! - Some unknonws

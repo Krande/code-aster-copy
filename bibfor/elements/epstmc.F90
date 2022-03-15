@@ -23,6 +23,7 @@ subroutine epstmc(fami     , ndim  , instan, poum   , kpg   ,&
 implicit none
 !
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
@@ -74,7 +75,7 @@ implicit none
     character(len=16) :: nomres(nbres)
     real(kind=8) :: valres(nbres)
 !
-    integer :: nbv, elas_id
+    integer :: nbv, elas_id, nbpar
     real(kind=8) :: biot, e
     character(len=8) :: nompar
     character(len=32) :: phenom
@@ -87,8 +88,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nompar         = 'INST'
-    valpar         = instan
+    if (instan.eq.r8vide()) then
+        nbpar = 0
+    else
+        nbpar = 1
+        nompar         = 'INST'
+        valpar         = instan
+    endif
     epsi_varc(1:6) = 0.d0
     biot           = 0.d0
     bendog         = 0.d0
@@ -118,7 +124,7 @@ implicit none
             nomres(1) = 'B_ENDOGE'
             nbv = 1
             call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                        ' ', elas_keyword, 1, nompar, [valpar],&
+                        ' ', elas_keyword, nbpar, nompar, [valpar],&
                         nbv, nomres, valres, icodre, 0)
             if (icodre(1) .eq. 0) then
                 bendog = valres(1)
@@ -138,7 +144,7 @@ implicit none
             nomres(1) = 'BIOT_COEF'
             nbv = 1
             call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                        ' ', phenom, 1, nompar, [valpar],&
+                        ' ', phenom, nbpar, nompar, [valpar],&
                         nbv, nomres, valres, icodre, 0)
             if (icodre(1) .eq. 0) then
                 biot = valres(1)
@@ -164,7 +170,7 @@ implicit none
         nomres(1) = 'K_DESSIC'
         nbv = 1
         call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                    ' ', elas_keyword, 1, nompar, [valpar],&
+                    ' ', elas_keyword, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 0)
         if (icodre(1) .eq. 0) then
             kdessi = valres(1)

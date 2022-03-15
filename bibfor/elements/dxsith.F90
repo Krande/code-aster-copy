@@ -20,6 +20,7 @@ subroutine dxsith(nomte, mater, sigma)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/dmatcp.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -79,7 +80,7 @@ subroutine dxsith(nomte, mater, sigma)
     if (iret .eq. 0) then
         inst = zr(ibid)
     else
-        inst = zero
+        inst = r8vide()
     endif
 !
 ! --- RECUPERATION DU NOMBRE DE COUCHE ET DE SOUS-POINT

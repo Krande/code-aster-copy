@@ -26,6 +26,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
@@ -107,7 +108,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     ASSERT(iret.eq.0 .and. phenom.eq.'ELAS')
 !
 !     INITIALISATIONS
-    instan = 0.d0
+    instan = r8vide()
     r8bi7(:) = 0.d0
     r8bi3(:) = 0.d0
 !

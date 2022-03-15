@@ -34,6 +34,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/iselli.h"
 #include "asterfort/dfdm2d.h"
@@ -353,7 +354,7 @@ aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
 !           Calcul du tenseur de Hooke [D]
 !              {sxx, syy, szz, sxy, sxz, syz}^T = [Ð]{exx, eyy, ezz, 2*exy, 2*exz, 2*eyz}^T
             ipg= idecpg + kpg
-            instan = 0.d0
+            instan = r8vide()
             nbsig = 2*ndim
 !
             call dmatmc('XFEM', imate, instan, '+',&

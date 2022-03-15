@@ -23,6 +23,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
     implicit none
 #include "jeveux.h"
 !
+#include "asterc/r8vide.h"
 #include "asterfort/bmatmc.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/nbsigm.h"
@@ -70,7 +71,7 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
     real(kind=8) :: dddev(2*ndim, 2*ndim)
     real(kind=8) :: iddid, devdi(2*ndim), iddev(2*ndim)
     real(kind=8) :: xyzgau(3), bary(3), repere(7)
-    real(kind=8) :: t1, rac2
+    real(kind=8) :: t1, rac2, notime
     real(kind=8) :: idev(6, 6), idev2(4, 4), kr(6), kd(6)
 !
     data         kr   / 1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
@@ -144,7 +145,8 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
 !
 ! - CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 ! - ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
-        call dmatmc('RIGI', mate, 0.d0, '+', g, 1, repere, xyzgau, nbsig, dsidep)
+        notime = r8vide()
+        call dmatmc('RIGI', mate, notime, '+', g, 1, repere, xyzgau, nbsig, dsidep)
 !
         call dscal(2*ndim-3, rac2, dsidep(4,1), 1)
         call dscal(2*ndim-3, rac2, dsidep(4,2), 1)

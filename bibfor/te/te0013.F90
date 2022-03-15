@@ -22,6 +22,7 @@ subroutine te0013(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/bsigmc.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -57,7 +58,7 @@ subroutine te0013(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     zero = 0.d0
-    time = zero
+    time = r8vide()
     nharm = zero
     ndim = 2
     fami = 'RIGI'

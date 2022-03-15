@@ -22,6 +22,7 @@ subroutine te0392(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/caatdb.h"
 #include "asterfort/cast3d.h"
@@ -82,7 +83,7 @@ subroutine te0392(option, nomte)
 !
 ! - Initializations
 !
-    instan = 0.d0
+    instan = r8vide()
     b(:,:) = 0.d0
     bary(:) = 0.d0
 !
