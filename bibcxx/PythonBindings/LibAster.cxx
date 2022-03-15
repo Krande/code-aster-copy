@@ -94,6 +94,7 @@
 #include "PythonBindings/GeneralizedModeResultInterface.h"
 #include "PythonBindings/GeneralizedModelInterface.h"
 #include "PythonBindings/GeneralizedResultInterface.h"
+#include "PythonBindings/GenericEnumInterface.h"
 #include "PythonBindings/GenericFunctionInterface.h"
 #include "PythonBindings/GridInterface.h"
 #include "PythonBindings/InterspectralMatrixInterface.h"
@@ -170,6 +171,7 @@ PYBIND11_MODULE( libaster, mod ) {
     mod.def( "raiseAsterError", &raiseAsterError, py::arg( "idmess" ) = "VIDE_1" );
 
     // do not sort (compilation error)
+    exportGenericEnumToPython( mod );
     exportDataStructureToPython( mod );
     exportDebugToPython( mod );
     exportMeshEntitiesToPython( mod );

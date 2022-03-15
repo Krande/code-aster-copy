@@ -164,36 +164,8 @@ VectorLong ParallelMesh::getCells( const std::string name ) const {
     return _groupsOfCells->getObjectFromName( name ).toVector();
 }
 
-VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbering ) const {
-    CALL_JEMARQ();
-    VectorLong listOfNodes;
-    if ( name.empty() ) {
-        listOfNodes = irange( long( 1 ), long( getNumberOfNodes() ) );
-    } else if ( !hasGroupOfNodes( name, true ) ) {
-        CALL_JEDEMA();
-        return VectorLong();
-    } else {
-        listOfNodes = _groupsOfNodes->getObjectFromName( name ).toVector();
-    }
-
-    if ( localNumbering ) {
-        CALL_JEDEMA();
-        return listOfNodes;
-    }
-
-    VectorLong newNumbering;
-    newNumbering.reserve( listOfNodes.size() );
-    _globalNumbering->updateValuePointer();
-
-    for ( auto &nodeId : listOfNodes )
-        newNumbering.push_back( ( *_globalNumbering )[nodeId - 1] );
-    CALL_JEDEMA();
-
-    return newNumbering;
-}
-
 VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbering,
-                                   const bool same_rank ) const {
+                                   const ASTERINTEGER same_rank ) const {
     CALL_JEMARQ();
     VectorLong listOfNodes;
     if ( name.empty() ) {
@@ -207,24 +179,30 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
 
     const int rank = getMPIRank();
     VectorLong newRank;
-    newRank.reserve( listOfNodes.size() );
 
-    int size = 0;
-    _outerNodes->updateValuePointer();
-    for ( int nodeId : listOfNodes ) {
-        if ( same_rank ) {
-            if ( rank == ( *_outerNodes )[nodeId - 1] ) {
-                newRank.push_back( nodeId );
-                size++;
-            }
-        } else {
-            if ( rank != ( *_outerNodes )[nodeId - 1] ) {
-                newRank.push_back( nodeId );
-                size++;
+    if ( same_rank == PythonBool::None ) {
+        newRank = listOfNodes;
+    } else {
+        newRank.reserve( listOfNodes.size() );
+        ASTERINTEGER size = 0;
+        _outerNodes->updateValuePointer();
+        for ( auto &nodeId : listOfNodes ) {
+            if ( same_rank ) {
+                if ( rank == ( *_outerNodes )[nodeId - 1] ) {
+                    newRank.push_back( nodeId );
+                    size++;
+                }
+            } else {
+                if ( rank != ( *_outerNodes )[nodeId - 1] ) {
+                    newRank.push_back( nodeId );
+                    size++;
+                }
             }
         }
+        newRank.resize( size );
     }
-    newRank.resize( size );
+
+    listOfNodes.clear();
 
     if ( localNumbering ) {
         CALL_JEDEMA();
@@ -234,16 +212,16 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     VectorLong newNumbering;
     newNumbering.reserve( newRank.size() );
     _globalNumbering->updateValuePointer();
+
     for ( auto &nodeId : newRank )
         newNumbering.push_back( ( *_globalNumbering )[nodeId - 1] );
-
     CALL_JEDEMA();
 
     return newNumbering;
-};
+}
 
 VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool localNumbering,
-                                            const bool same_rank ) const {
+                                            const ASTERINTEGER same_rank ) const {
     CALL_JEMARQ();
     const auto cellsId = getCells( name );
 
@@ -262,14 +240,19 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
             nodes.insert( node );
     }
 
-    if ( same_rank ) {
+    if ( same_rank != PythonBool::None ) {
         _outerNodes->updateValuePointer();
         const int rank = getMPIRank();
 
         SetLong loopnodes = nodes;
         for ( auto &node : loopnodes ) {
-            if ( rank != ( *_outerNodes )[node - 1] )
-                nodes.erase( node );
+            if ( same_rank ) {
+                if ( rank != ( *_outerNodes )[node - 1] )
+                    nodes.erase( node );
+            } else {
+                if ( rank == ( *_outerNodes )[node - 1] )
+                    nodes.erase( node );
+            }
         }
     }
 

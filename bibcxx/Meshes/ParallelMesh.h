@@ -119,30 +119,24 @@ class ParallelMesh : public BaseMesh {
      * @return list of Nodes
      */
 
-    VectorLong getNodes( const std::string name, const bool localNumbering,
-                         const bool same_rank ) const;
-
-    VectorLong getNodes( const bool localNumbering, const bool same_rank ) const {
-        return getNodes( std::string(), localNumbering, same_rank );
-    };
-
-    VectorLong getNodes( const std::string name, const bool localNumbering = true ) const;
-
-    VectorLong getNodes( const bool localNumbering = true ) const {
-        return getNodes( std::string(), localNumbering );
-    }
+    VectorLong getNodes( const std::string name = std::string(), const bool localNumbering = true,
+                         const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
      * @brief Get inner nodes
      * @return list of node ids
      */
-    VectorLong getInnerNodes() const { return this->getNodes( std::string(), true, true ); };
+    VectorLong getInnerNodes() const {
+        return this->getNodes( std::string(), true, PythonBool::True );
+    };
 
     /**
      * @brief Get outer nodes
      * @return list of node ids
      */
-    VectorLong getOuterNodes() const { return this->getNodes( std::string(), true, false ); };
+    VectorLong getOuterNodes() const {
+        return this->getNodes( std::string(), true, PythonBool::False );
+    };
 
     /**
      * @brief Returns the nodes indexes of a group of cells
@@ -151,8 +145,9 @@ class ParallelMesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
-    VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
-                                  const bool same_rank ) const;
+    VectorLong getNodesFromCells( const std::string name,
+                                  const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
      * @brief Fonction permettant de savoir si un maillage est parallel

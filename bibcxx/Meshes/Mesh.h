@@ -76,14 +76,8 @@ class Mesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
-    VectorLong getNodes( const std::string name, const bool localNumbering = true,
-                         const bool same_rank = true ) const;
-
-    VectorLong getNodes( const bool localNumbering, const bool same_rank = true ) const {
-        return getNodes( std::string(), localNumbering, same_rank );
-    };
-
-    VectorLong getNodes() const { return getNodes( std::string() ); };
+    VectorLong getNodes( const std::string name = std::string(), const bool localNumbering = true,
+                         const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
      * @brief Returns the nodes indexes of a group of cells
@@ -92,8 +86,9 @@ class Mesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of nodes indexes
      */
-    VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
-                                  const bool same_rank = true ) const;
+    VectorLong getNodesFromCells( const std::string,
+                                  const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
      * @brief Get inner nodes

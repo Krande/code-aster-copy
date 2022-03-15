@@ -26,7 +26,7 @@
 import aster
 
 from ..Commands import CREA_MAILLAGE
-from ..Objects import Mesh
+from ..Objects import Mesh, PythonBool
 from ..Supervis import CO
 from ..Utilities import injector
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
@@ -41,7 +41,8 @@ class ExtendedMesh:
     buildDisk = classmethod(mesh_builder.buildDisk)
     buildCube = classmethod(mesh_builder.buildCube)
     buildCylinder = classmethod(mesh_builder.buildCylinder)
-    createFromMedCouplingMesh = classmethod(mesh_builder.createFromMedCouplingMesh)
+    createFromMedCouplingMesh = classmethod(
+        mesh_builder.createFromMedCouplingMesh)
 
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :
@@ -92,3 +93,39 @@ class ExtendedMesh:
         """
 
         return convertMesh2MedCoupling(self)
+
+    def getNodes(self, group_name="", localNumbering=True, same_rank=None):
+        """ Return the list of the indexes of the nodes that belong to a group of nodes.
+
+            Arguments:
+                group_name (str): Name of the group (default: "").
+                localNumbering (bool): not used (for compatibilty with ParallelMesh)
+                same_rank (bool): not used (for compatibilty with ParallelMesh)
+
+            Returns:
+                list[int]: Indexes of the nodes of the group.
+        """
+
+        val = {None: PythonBool.NONE,
+               True: PythonBool.TRUE,
+               False: PythonBool.FALSE}
+
+        return self._getNodes(group_name, localNumbering, val[same_rank])
+
+    def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
+        """ Returns the nodes indexes of a group of cells.
+
+            Arguments:
+                group_name (str): Name of the group.
+                localNumbering (bool): not used (for compatibilty with ParallelMesh)
+                same_rank (bool): not used (for compatibilty with ParallelMesh)
+
+            Returns:
+                list[int]: Indexes of the nodes of the group.
+        """
+
+        val = {None: PythonBool.NONE,
+               True: PythonBool.TRUE,
+               False: PythonBool.FALSE}
+
+        return self._getNodesFromCells(group_name, localNumbering, val[same_rank])

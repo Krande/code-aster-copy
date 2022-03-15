@@ -101,7 +101,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* Update the jeveux pointer to access the Fortran Jeveux pointer */
     rankOfNodes->updateValuePointer();
     /* Global numbering of proc nodes (to link outer nodes on all procs) */
-    const VectorLong globalNodeIds = mesh->getNodes( false );
+    const VectorLong globalNodeIds = mesh->getNodes( std::string(), false, PythonBool::None );
     ASTERINTEGER numberOfNodesToSend = 0;
     /* The proc Nodes that are part of the ConnectionMesh we are building */
     VectorLong nodesToSend;

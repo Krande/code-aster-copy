@@ -85,26 +85,19 @@ Returns:
     bool: *True* if exists, *False* otherwise.
         )",
               py::arg( "group_name" ), py::arg( "local" ) = false )
-        .def( "getNodes",
-              py::overload_cast< const std::string, const bool, const bool >( &Mesh::getNodes,
-                                                                              py::const_ ),
-              R"(
+        .def( "_getNodes", &Mesh::getNodes, R"(
 Return the list of the indexes of the nodes that belong to a group of nodes.
 
 Arguments:
-    group_name (str): Name of the group.
-    localNumbering=false (bool): not used (for compatibilty with ParallelMesh)
-    same_rank=false (bool): not used (for compatibilty with ParallelMesh)
+    group_name (str): Name of the group (default: "").
+    localNumbering (bool): not used (for compatibilty with ParallelMesh)
+    same_rank (bool): not used (for compatibilty with ParallelMesh)
 
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
-              py::arg( "same_rank" ) = true )
-        .def( "getNodes",
-              py::overload_cast< const bool, const bool >( &Mesh::getNodes, py::const_ ),
-              py::arg( "localNumbering" ), py::arg( "same_rank" ) = true )
-        .def( "getNodes", py::overload_cast<>( &Mesh::getNodes, py::const_ ) )
+              py::arg( "group_name" ) = std::string(), py::arg( "localNumbering" ) = true,
+              py::arg( "same_rank" ) = PythonBool::None )
         .def( "getInnerNodes", &Mesh::getInnerNodes, R"(
 Return the list of the indexes of the nodes in the mesh
 
@@ -157,16 +150,17 @@ To know if the mesh contains quadratic cells
 Returns:
     bool: *True* if the mesh contains quadratic cells, *False* otherwise.
         )" )
-        .def( "getNodesFromCells", &Mesh::getNodesFromCells, R"(
+        .def( "_getNodesFromCells", &Mesh::getNodesFromCells, R"(
 Returns the nodes indexes of a group of cells.
 
 Arguments:
-    name (str): name of the group of cells.
-    local (bool): node id in local or global numbering
-    same_rank (bool): keep or not the nodes owned by the current domain
+    group_name (str): name of the group of cells.
+    localNumbering (bool): not used (for compatibilty with ParallelMesh)
+    same_rank (bool): not used (for compatibilty with ParallelMesh)
 
 Returns:
     list[int]: indexes of the nodes.
         )",
-              py::arg( "name" ), py::arg( "local" ) = true, py::arg( "same_rank" ) = true );
+              py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
+              py::arg( "same_rank" ) = PythonBool::None );
 };

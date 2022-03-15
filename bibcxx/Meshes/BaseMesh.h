@@ -30,6 +30,7 @@
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/NamesMap.h"
 #include "Meshes/MeshExplorer.h"
+#include "Utilities/GenericEnum.h"
 
 /**
  * @class BaseMesh
@@ -219,8 +220,9 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the nodes indexes of a group of nodes
      * @return VectorLong
      */
-    virtual VectorLong getNodes( const std::string name, const bool localNumbering = true,
-                                 const bool same_rank = true ) const {
+    virtual VectorLong getNodes( const std::string name = std::string(),
+                                 const bool localNumbering = true,
+                                 const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};
     }
@@ -229,8 +231,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the nodes indexes of a group of cells
      * @return VectorLong
      */
-    virtual VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
-                                          const bool same_rank ) const {
+    virtual VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
+                                          const ASTERINTEGER same_rank = PythonBool::None ) const {
         AS_ASSERT( false );
         return {};
     }

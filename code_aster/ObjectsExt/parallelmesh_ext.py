@@ -27,7 +27,7 @@ from collections import Counter
 
 from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
-from ..Objects import ConnectionMesh, Mesh, ParallelMesh, ResultNaming
+from ..Objects import ConnectionMesh, Mesh, ParallelMesh, ResultNaming, PythonBool
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, injector, logger, shared_tmpdir
 
@@ -261,6 +261,46 @@ class ExtendedParallelMesh:
             mesh_p = ParallelMesh()
             mesh_p.readMedFile(filename, verbose=info - 1)
             return mesh_p
+
+    def getNodes(self, group_name="", localNumbering=True, same_rank=None):
+        """ Return the list of the indexes of the nodes that belong to a group of nodes.
+
+            Arguments:
+                group_name (str): Name of the group (default: "" = all nodes).
+                localNumbering (bool) : use local or global numbering (default: True)
+                same_rank : - None: keep all nodes (default: None)
+                            - True: keep the nodes which are owned by the current MPI-rank
+                            - False: keep the nodes which are not owned by the current MPI-rank
+
+            Returns:
+                list[int]: Indexes of the nodes of the group.
+        """
+
+        val = {None: PythonBool.NONE,
+               True: PythonBool.TRUE,
+               False: PythonBool.FALSE}
+
+        return self._getNodes(group_name, localNumbering, val[same_rank])
+
+    def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
+        """ Returns the nodes indexes of a group of cells.
+
+            Arguments:
+                group_name (str): Name of the group.
+                localNumbering (bool) : use local or global numbering (default: True)
+                same_rank : - None: keep all nodes (default: None)
+                            - True keep the nodes which are owned by the current MPI-rank
+                            - False: keep the nodes which are not owned by the current MPI-rank
+
+            Returns:
+                list[int]: Indexes of the nodes of the group.
+        """
+
+        val = {None: PythonBool.NONE,
+               True: PythonBool.TRUE,
+               False: PythonBool.FALSE}
+
+        return self._getNodesFromCells(group_name, localNumbering, val[same_rank])
 
 
 @injector(ConnectionMesh)

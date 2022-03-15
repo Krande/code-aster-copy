@@ -86,65 +86,23 @@ Returns:
     bool: *True* if exists, *False* otherwise.
         )",
               py::arg( "group_name" ), py::arg( "local" ) = false )
-        .def( "getNodes",
-              py::overload_cast< const std::string, const bool, const bool >(
-                  &ParallelMesh::getNodes, py::const_ ),
+        .def( "_getNodes", &ParallelMesh::getNodes,
               R"(
 Return the list of the indexes of the nodes that belong to a group of nodes
 with (local or global) indexing and a restriction to MPI-rank.
 
 Arguments:
-    group_name (str): Name of the group.
-    localNumbering (bool) : use local or global numbering
-    same_rank : keep or not the nodes which are owned by the current MPI-rank
+    group_name (str): Name of the group (default: "" = all nodes).
+    localNumbering (bool) : use local or global numbering (default: True)
+    same_rank : - None: keep all nodes (default: None)
+                - True: keep the nodes which are owned by the current MPI-rank
+                - False: keep the nodes which are not owned by the current MPI-rank
 
 Returns:
-    list[int]: Indexes of the nodes of the group with (local or global) indexing.
+    list[int]: Indexes of the nodes of the group.
         )",
-              py::arg( "group_name" ), py::arg( "localNumbering" ), py::arg( "same_rank" ) )
-        .def( "getNodes",
-              py::overload_cast< const bool, const bool >( &ParallelMesh::getNodes, py::const_ ),
-              R"(
-Return the list of the indexes of the nodes that belong to a group of nodes
-with (local or global) indexing and a restriction to MPI-rank.
-
-Arguments:
-    localNumbering (bool) : use local or global numbering
-    same_rank : keep or not the nodes which are owned by the current MPI-rank
-
-Returns:
-    list[int]: Indexes of the nodes of the group with (local or global) indexing.
-        )",
-              py::arg( "localNumbering" ), py::arg( "same_rank" ) )
-        .def( "getNodes",
-              py::overload_cast< const std::string, const bool >( &ParallelMesh::getNodes,
-                                                                  py::const_ ),
-              R"(
-Return the list of the indexes of the nodes in the mesh with (local or global) indexing
-and a restriction to MPI-rank
-
-Arguments:
-    group_name (str): Name of the group.
-    localNumbering (bool) : use local or global numbering
-
-Returns:
-    list[int]: Indexes of the nodes of the group with (local or global) indexing
-        and a restriction to MPI-rank.
-        )",
-              py::arg( "group_name" ), py::arg( "localNumbering" ) = true )
-        .def( "getNodes", py::overload_cast< const bool >( &ParallelMesh::getNodes, py::const_ ),
-              R"(
-Return the list of the indexes of the nodes in the mesh with (local or global) indexing
-and a restriction to MPI-rank
-
-Arguments:
-    localNumbering (bool) : use local or global numbering
-
-Returns:
-    list[int]: Indexes of the nodes of the group with (local or global) indexing
-        and a restriction to MPI-rank.
-        )",
-              py::arg( "localNumbering" ) = true )
+              py::arg( "group_name" ) = std::string(), py::arg( "localNumbering" ) = true,
+              py::arg( "same_rank" ) = PythonBool::None )
         .def( "getInnerNodes", &ParallelMesh::getInnerNodes, R"(
 Return the list of the indexes of the inner nodes in the mesh
 
@@ -207,18 +165,21 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               py::arg( "filename" ) )
-        .def( "getNodesFromCells", &ParallelMesh::getNodesFromCells, R"(
+        .def( "_getNodesFromCells", &ParallelMesh::getNodesFromCells, R"(
 Returns the nodes indexes of a group of cells.
 
 Arguments:
-    name (str): name of the group of cells.
-    local (bool): node id in local or global numbering
-    same_rank (bool): keep or not the nodes owned by the current domain
+    group_name (str): Name of the group.
+    localNumbering (bool) : use local or global numbering (default: True)
+    same_rank : - None: keep all nodes (default: None)
+                - True keep the nodes which are owned by the current MPI-rank
+                - False: keep the nodes which are not owned by the current MPI-rank
 
 Returns:
-    list[int]: indexes of the nodes.
+    list[int]: Indexes of the nodes of the group.
         )",
-              py::arg( "name" ), py::arg( "local" ) = true, py::arg( "same_rank" ) = true );
+              py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
+              py::arg( "same_rank" ) = PythonBool::None );
 };
 
 #endif /* ASTER_HAVE_MPI */

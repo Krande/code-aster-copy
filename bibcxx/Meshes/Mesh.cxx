@@ -87,7 +87,7 @@ VectorLong Mesh::getCells( const std::string name ) const {
     return _groupsOfCells->getObjectFromName( name ).toVector();
 }
 
-VectorLong Mesh::getNodes( const std::string name, const bool, const bool ) const {
+VectorLong Mesh::getNodes( const std::string name, const bool, const ASTERINTEGER ) const {
     if ( name.empty() ) {
         return irange( long( 1 ), long( getNumberOfNodes() ) );
     } else if ( !hasGroupOfNodes( name ) ) {
@@ -96,7 +96,7 @@ VectorLong Mesh::getNodes( const std::string name, const bool, const bool ) cons
     return _groupsOfNodes->getObjectFromName( name ).toVector();
 }
 
-VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const bool ) const {
+VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const ASTERINTEGER ) const {
     CALL_JEMARQ();
     const auto cellsId = getCells( name );
 
