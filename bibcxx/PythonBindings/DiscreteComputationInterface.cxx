@@ -114,19 +114,20 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: incremental imposed displacement vector
         )",
               py::arg( "time" ), py::arg( "disp" ) )
-        .def( "elasticStiffnessMatrix_", &DiscreteComputation::elasticStiffnessMatrix_, R"(
+        .def( "elasticStiffnessMatrix", &DiscreteComputation::elasticStiffnessMatrix, R"(
             Return the elementary matices for elastic Stiffness matrix
 
             Arguments:
-                  time (float): current time
-                  fourierMode (int): Fourier mode (>=0)
+                  time (float): current time (default: 0.0)
+                  fourierMode (int): Fourier mode (default: 0)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
-                  If it empty, the full model is used
+                  If it empty, the full model is used (default: [])
 
             Returns:
                   ElementaryMatrix: elementary elastic Stiffness matrices
             )",
-              py::arg( "time" ), py::arg( "fourierMode" ), py::arg( "groupOfCells" ) )
+              py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = 0,
+              py::arg( "groupOfCells" ) = VectorString() )
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem )
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(

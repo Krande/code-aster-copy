@@ -268,7 +268,7 @@ FieldOnNodesRealPtr DiscreteComputation::externalStateVariables( const ASTERDOUB
     return varCom->computeExternalStateVariablesLoad( _study->getDOFNumbering() );
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix_(
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     const ASTERDOUBLE &time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells ) {
 
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
