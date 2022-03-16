@@ -40,7 +40,7 @@
 class Calcul {
   private:
     typedef std::map< std::string, DataFieldPtr > listFields;
-    typedef std::map< std::string, ElementaryTermRealPtr > listElemTerms;
+    typedef std::map< std::string, DataFieldPtr > listElemTerms;
     typedef std::map< std::string, bool > listExists;
 
     /** @brief Option to compute */
@@ -92,13 +92,13 @@ class Calcul {
     void setStopCompute( const bool flag ) { _stopCompute = flag; };
 
     /** @brief Set computation on finite element descriptor */
-    void setFiniteElementDescriptor( const FiniteElementDescriptorPtr &FEDesc );
+    void setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc );
 
     /** @brief Set computation on model */
     void setModel( const ModelPtr &model );
 
     /** @brief Set computation on group of Cells */
-    void setGroupsOfCells( const ModelPtr &model, const VectorString& groupOfCells );
+    void setGroupsOfCells( const ModelPtr &model, const VectorString &groupOfCells );
 
     /** @brief Add input field */
     void addInputField( const std::string &parameterName, const DataFieldPtr field );
@@ -107,11 +107,19 @@ class Calcul {
     void addOutputField( const std::string &parameterName, const DataFieldPtr field );
 
     /** @brief Add input elementary term */
-    void addInputElementaryTerm( const std::string &parameterName, const DataStructurePtr field );
+    template < typename ValueType >
+    void addInputElementaryTerm( const std::string &parameterName,
+                                 const std::shared_ptr< ElementaryTerm< ValueType > > elemTerm ) {
+        _inputElemTerms.insert( listElemTerms::value_type( parameterName, elemTerm ) );
+    };
 
     /** @brief Add output elementary term */
+    template < typename ValueType >
     void addOutputElementaryTerm( const std::string &parameterName,
-                                  const ElementaryTermRealPtr field );
+                                  const std::shared_ptr< ElementaryTerm< ValueType > > elemTerm ) {
+        _outputElemTerms.insert( listElemTerms::value_type( parameterName, elemTerm ) );
+        _outputElemTermsExist.insert( listExists::value_type( parameterName, false ) );
+    }
 
     /** @brief Clear all input fields */
     void clearInputFields() { _inputFields.clear(); };

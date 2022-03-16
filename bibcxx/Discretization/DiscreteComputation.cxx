@@ -63,7 +63,7 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTi
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel(_study->getModel());
+    elemVect->setModel( _study->getModel() );
     elemVect->build();
 
     // Assemble
@@ -100,7 +100,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel(_study->getModel());
+    elemVect->setModel( _study->getModel() );
     elemVect->build();
 
     // Assemble
@@ -133,7 +133,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel(_study->getModel());
+    elemVect->setModel( _study->getModel() );
     elemVect->build();
 
     // Assemble
@@ -177,7 +177,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
     caraName.resize( 24, ' ' );
     std::string varcName( " " );
     auto varCom = _study->getExternalStateVariables();
-    if ( varCom  ) {
+    if ( varCom ) {
         varCom->build( currTime );
         varcName = varCom->getName() + ".TOUT";
     }
@@ -191,7 +191,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel(_study->getModel());
+    elemVect->setModel( _study->getModel() );
     elemVect->build();
 
     // Assemble
@@ -364,14 +364,15 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getMechanicalLoadDescription()->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
             calcul->addInputField( "PDDLMUR", field );
-            calcul->addOutputElementaryTerm( "PMATUUR", resuElem );
+            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
-            elemMatr->addElementaryTerm( resuElem );
+            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            }
         }
     }
 
@@ -380,14 +381,15 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getMechanicalLoadDescription()->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
             calcul->addInputField( "PDDLMUR", field );
-            calcul->addOutputElementaryTerm( "PMATUUR", resuElem );
+            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
-            elemMatr->addElementaryTerm( resuElem );
+            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            }
         }
     }
 
@@ -397,14 +399,15 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
             calcul->addInputField( "PDDLMUR", field );
-            calcul->addOutputElementaryTerm( "PMATUUR", resuElem );
+            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
-            elemMatr->addElementaryTerm( resuElem );
+            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            }
         }
     }
 
@@ -413,14 +416,15 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
             calcul->addInputField( "PDDLMUR", field );
-            calcul->addOutputElementaryTerm( "PMATUUR", resuElem );
+            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
-            elemMatr->addElementaryTerm( resuElem );
+            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+            }
         }
     }
 

@@ -37,7 +37,7 @@ Calcul::Calcul( const std::string &option )
       _mesh( nullptr ){};
 
 /** @brief Compute on partial model */
-void Calcul::setFiniteElementDescriptor( const FiniteElementDescriptorPtr &FEDesc ) {
+void Calcul::setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc ) {
     _FEDesc = FEDesc;
     _mesh = _FEDesc->getMesh();
     if ( _mesh->isParallel() ) {
@@ -73,13 +73,6 @@ void Calcul::addInputField( const std::string &parameterName, const DataFieldPtr
 void Calcul::addOutputField( const std::string &parameterName, const DataFieldPtr field ) {
     _outputFields.insert( listFields::value_type( parameterName, field ) );
     _outputFieldsExist.insert( listExists::value_type( parameterName, false ) );
-}
-
-/** @brief Add output elementary term */
-void Calcul::addOutputElementaryTerm( const std::string &parameterName,
-                                      const ElementaryTermRealPtr elemTerm ) {
-    _outputElemTerms.insert( listElemTerms::value_type( parameterName, elemTerm ) );
-    _outputElemTermsExist.insert( listExists::value_type( parameterName, false ) );
 }
 
 /** @brief Add input fields for elementary characteristics */
@@ -242,7 +235,8 @@ void Calcul::postCompute() {
         std::string fieldType( trim( repk.toString() ) );
         if ( fieldType == "RESL" ) {
             _outputElemTermsExist.at( parameterName ) = true;
-            elemTerm->setFiniteElementDescriptor( _FEDesc );
+            std::static_pointer_cast< ElementaryTermReal >( elemTerm )
+                ->setFiniteElementDescriptor( _FEDesc );
         } else {
             _outputElemTermsExist.at( parameterName ) = false;
         }
@@ -257,5 +251,5 @@ bool Calcul::hasOutputElementaryTerm( const std::string &parameterName ) const {
 /** @brief Get output if is elementary term */
 ElementaryTermRealPtr Calcul::getOutputElementaryTerm( const std::string &parameterName ) const {
     AS_ASSERT( hasOutputElementaryTerm( parameterName ) );
-    return _outputElemTerms.at( parameterName );
+    return std::static_pointer_cast< ElementaryTermReal >( _outputElemTerms.at( parameterName ) );
 };
