@@ -76,7 +76,7 @@ typedef struct PyPetscKSPObject PyPetscKSPObject;
 template < class T >
 py::object assemblyMatrixToPetsc( const T matr ) {
 #ifdef ASTER_HAVE_PETSC4PY
-    py::object petsc_matr = py::module_::import( "petsc4py.PETSC" ).attr( "Mat" )();
+    py::object petsc_matr = py::module_::import( "petsc4py.PETSc" ).attr( "Mat" )();
 
     Mat conv;
     PetscErrorCode ier;
