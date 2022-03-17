@@ -105,6 +105,10 @@ class ComputeElementaryMatrix(ExecuteCommand):
             fourier = keywords.get("MODE_FOURIER")
 
             group_ma = keywords.get("GROUP_MA")
+            if group_ma is None:
+                group_ma = []
+            else:
+                group_ma = force_list(group_ma)
 
             if myOption == "RIGI_MECA":
                 self._result = disr_comp.elasticStiffnessMatrix(time, fourier, group_ma)
