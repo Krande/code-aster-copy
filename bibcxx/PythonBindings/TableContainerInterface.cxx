@@ -50,8 +50,6 @@ void exportTableContainerToPython( py::module_ &mod ) {
                                &TableContainer::addObject ) )
         .def( "addObject", py::overload_cast< const std::string &, FieldOnNodesRealPtr >(
                                &TableContainer::addObject ) )
-        .def( "addObject",
-              py::overload_cast< const std::string &, FunctionPtr >( &TableContainer::addObject ) )
         .def( "addObject", py::overload_cast< const std::string &, FunctionComplexPtr >(
                                &TableContainer::addObject ) )
         .def( "addObject",
@@ -67,6 +65,16 @@ void exportTableContainerToPython( py::module_ &mod ) {
                                &TableContainer::addObject ) )
         .def( "addObject",
               py::overload_cast< const std::string &, TablePtr >( &TableContainer::addObject ) )
+        .def( "addObject",
+              py::overload_cast< const std::string &, FunctionPtr >( &TableContainer::addObject ),
+              R"(
+            Store a *DataStructure* in the table.
+
+            Arguments:
+                name (str): String to identify the object in the table.
+                object (misc): Object to be inserted, can be a Function, Mesh, Fields...
+            )",
+              py::arg( "name" ), py::arg( "object" ) )
         .def( "getElementaryMatrixDisplacementReal",
               &TableContainer::getElementaryMatrixDisplacementReal )
         .def( "getElementaryMatrixTemperatureReal",

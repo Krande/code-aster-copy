@@ -78,7 +78,6 @@ void Formula::setExpression( const std::string expression ) {
     PyObject *pcode;
     pcode = Py_CompileStringFlags( _expression.c_str(), name.c_str(), Py_eval_input, &flags );
     _code = py::reinterpret_steal< py::object >( pcode );
-    _code.inc_ref();
 
     _pointers->updateValuePointer();
     ( *_pointers )[0] = (ASTERINTEGER)_code.ptr();
@@ -93,7 +92,6 @@ void Formula::setContext( py::object context ) {
         throw std::runtime_error( "Formula: 'dict' object is expected." );
     }
     _context = context;
-    _context.inc_ref();
     _pointers->updateValuePointer();
     ( *_pointers )[1] = (ASTERINTEGER)_context.ptr();
 }
