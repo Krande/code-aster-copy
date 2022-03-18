@@ -29,39 +29,38 @@ code_aster.init("--test")
 
 # modeling = "D_PLAN_INCO_UPG"
 modeling = "D_PLAN_INCO_UP"
-part = "PTSCOTCH" #'SANS'
+part = "PTSCOTCH"  #'SANS'
 
 # -----------------------------------------------------------------------------
 # ----------------------------------- Modèle  ---------------------------------
 # -----------------------------------------------------------------------------
 
-Mesh = LIRE_MAILLAGE(UNITE=20, FORMAT='MED', PARTITIONNEUR=part,)
+Mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR=part)
 
-Model = AFFE_MODELE(MAILLAGE = Mesh,
-                    AFFE = _F(MODELISATION = modeling,
-                              PHENOMENE = "MECANIQUE",
-                              TOUT = "OUI",),
-                    DISTRIBUTION=_F(METHODE='CENTRALISE',))
+Model = AFFE_MODELE(
+    MAILLAGE=Mesh,
+    AFFE=_F(MODELISATION=modeling, PHENOMENE="MECANIQUE", TOUT="OUI"),
+    DISTRIBUTION=_F(METHODE="CENTRALISE"),
+)
 
-CharCin = AFFE_CHAR_CINE(MODELE=Model,
-                          MECA_IMPO=(_F(GROUP_NO="N2",
-                                        DX=0.,DY=0.,DZ=0.,),
-                                     _F(GROUP_NO="N4",
-                                        DX=0.,DY=0.,DZ=0.,),),)
+CharCin = AFFE_CHAR_CINE(
+    MODELE=Model,
+    MECA_IMPO=(
+        _F(GROUP_NO="N2", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="N4", DX=0.0, DY=0.0, DZ=0.0),
+    ),
+)
 
-CharMeca = AFFE_CHAR_MECA(MODELE=Model,
-                           LIAISON_DDL=_F(GROUP_NO=("N1", "N3"),
-                                          DDL=('PRES','PRES'),
-                                          COEF_MULT=(1.0,1.0),
-                                          COEF_IMPO=0,),
-                           DDL_IMPO=(_F(GROUP_NO="N1",PRES=200000.0),), INFO=2,)
+CharMeca = AFFE_CHAR_MECA(
+    MODELE=Model,
+    LIAISON_DDL=_F(GROUP_NO=("N1", "N3"), DDL=("PRES", "PRES"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0),
+    DDL_IMPO=(_F(GROUP_NO="N1", PRES=200000.0),),
+    INFO=2,
+)
 
-MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                               NU=0.499999,),)
+MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.499999))
 
-AffMat = AFFE_MATERIAU(MAILLAGE=Mesh,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=MATER1,),)
+AffMat = AFFE_MATERIAU(MAILLAGE=Mesh, AFFE=_F(TOUT="OUI", MATER=MATER1))
 
 # -----------------------------------------------------------------------------
 # --------------------------------- Assemblage --------------------------------
@@ -69,20 +68,22 @@ AffMat = AFFE_MATERIAU(MAILLAGE=Mesh,
 
 ExecutionParameter().disable(Options.UseLegacyMode)
 
-AssemblyObj = ASSEMBLAGE(MODELE=Model,
-           CHAM_MATER=AffMat,
-           CHARGE=CharMeca,
-           CHAR_CINE=CharCin,
-           NUME_DDL=CO("asterNume"),
-           MATR_ASSE=(_F(  MATRICE = CO("asterRigi"),  OPTION = 'RIGI_MECA'),),
-        )
+AssemblyObj = ASSEMBLAGE(
+    MODELE=Model,
+    CHAM_MATER=AffMat,
+    CHARGE=CharMeca,
+    CHAR_CINE=CharCin,
+    NUME_DDL=CO("asterNume"),
+    MATR_ASSE=(_F(MATRICE=CO("asterRigi"), OPTION="RIGI_MECA"),),
+)
 
 petscMat = AssemblyObj.asterRigi.toPetsc()
 print("Norm: ", petscMat.getSizes())
-test.assertAlmostEqual(petscMat.norm(), 1823496.3881425157)
+ref = 1823496.3881588143
+test.assertAlmostEqual(petscMat.norm(), ref, delta=ref * 1.0e-6)
 test.assertSequenceEqual(petscMat.getSizes(), ((24, 48), (24, 48)))
 
-#petscMat.view()
+# petscMat.view()
 
 # -----------------------------------------------------------------------------
 # --------------------------------- Fin Aster ---------------------------------
