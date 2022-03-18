@@ -138,12 +138,10 @@ class DiscreteComputation {
     PhysicalProblemPtr getPhysicalProblem() const { return _phys_problem; };
 
     /** @brief Create field for external state variables */
-    FieldOnCellsRealPtr createExternalStateVariablesField( const std::string fieldName,
-                                                           const ASTERDOUBLE time );
+    FieldOnCellsRealPtr createExternalStateVariablesField( const ASTERDOUBLE time );
 
     /** @brief Create field for time */
-    ConstantFieldOnCellsRealPtr createTimeField( const std::string fieldName,
-                                                 const ASTERDOUBLE time );
+    ConstantFieldOnCellsRealPtr createTimeField( const ASTERDOUBLE time );
 
     /** @brief Compute nodal field for external state variables RHS */
     FieldOnNodesRealPtr
@@ -152,7 +150,7 @@ class DiscreteComputation {
                                        const FieldOnCellsRealPtr _externVarField ) const;
 
     /** @brief Compute field for external state variables reference values */
-    FieldOnCellsRealPtr computeExternalStateVariablesReference( const std::string fieldName ) const;
+    FieldOnCellsRealPtr computeExternalStateVariablesReference() const;
 };
 
 using DiscreteComputationPtr = std::shared_ptr< DiscreteComputation >;

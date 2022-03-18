@@ -457,14 +457,13 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::massMatrix( ASTERDOUBLE
     return elemMatr;
 };
 
-ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField( const std::string fieldName,
-                                                                  const ASTERDOUBLE time ) {
+ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField( const ASTERDOUBLE time ) {
 
     // Get mesh
     auto mesh = _phys_problem->getMesh();
 
     // Create field
-    auto field = std::make_shared< ConstantFieldOnCellsReal >( fieldName, mesh );
+    auto field = std::make_shared< ConstantFieldOnCellsReal >( mesh );
 
     // Get JEVEUX names of objects to call Fortran
     const std::string physicalName( "INST_R" );
@@ -477,11 +476,10 @@ ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField( const std::str
 }
 
 FieldOnCellsRealPtr
-DiscreteComputation::createExternalStateVariablesField( const std::string fieldName,
-                                                        const ASTERDOUBLE time ) {
+DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time ) {
 
     // Create field
-    auto field = std::make_shared< FieldOnCellsReal >( fieldName );
+    auto field = std::make_shared< FieldOnCellsReal >();
 
     // Get JEVEUX names of objects to call Fortran
     std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
@@ -491,6 +489,7 @@ DiscreteComputation::createExternalStateVariablesField( const std::string fieldN
     if ( currElemChara )
         elemCharaName = currElemChara->getName();
     elemCharaName.resize( 24, ' ' );
+    std::string fieldName = ljust( field->getName(), 19 );
 
     // Output
     std::string out( ' ', 2 );
@@ -581,11 +580,10 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
 
-FieldOnCellsRealPtr
-DiscreteComputation::computeExternalStateVariablesReference( const std::string fieldName ) const {
+FieldOnCellsRealPtr DiscreteComputation::computeExternalStateVariablesReference() const {
 
     // Create field
-    auto field = std::make_shared< FieldOnCellsReal >( fieldName );
+    auto field = std::make_shared< FieldOnCellsReal >();
 
     // Get JEVEUX names of objects to call Fortran
     std::string modelName = ljust( _phys_problem->getModel()->getName(), 8 );
@@ -594,6 +592,7 @@ DiscreteComputation::computeExternalStateVariablesReference( const std::string f
     std::string elemCharaName( " ", 8 );
     if ( currElemChara )
         elemCharaName = std::string( currElemChara->getName(), 0, 8 );
+    std::string fieldName = ljust( field->getName(), 19 );
 
     // Call Fortran WRAPPER
     CALLO_VRCREF( modelName, materialFieldName, elemCharaName, fieldName );

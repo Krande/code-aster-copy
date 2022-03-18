@@ -80,18 +80,16 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Create external state variable field
 
             Arguments:
-                  fieldName (str) : name of field
                   time (float): current time
             )",
-              py::arg( "fieldName" ), py::arg( "time" ) )
+              py::arg( "time" ) )
         .def( "createTimeField", &DiscreteComputation::createTimeField, R"(
             Create time field
 
             Arguments:
-                  fieldName (str) : name of field
                   time (float): current time
             )",
-              py::arg( "fieldName" ), py::arg( "time" ) )
+              py::arg( "time" ) )
         .def( "computeExternalStateVariablesLoad",
               &DiscreteComputation::computeExternalStateVariablesLoad, R"(
             Compute load from external state variables
@@ -110,13 +108,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               &DiscreteComputation::computeExternalStateVariablesReference, R"(
             Compute field for external state variables reference value
 
-            Arguments:
-                  fieldName (str) : name of field
-
             Returns:
                   FieldOnCells: field for external state variables reference values
-            )",
-              py::arg( "fieldName" ) )
+            )" )
         .def( "dirichletBC", &DiscreteComputation::dirichletBC,
               R"(
       Return the imposed displacement vector used to remove imposed DDL

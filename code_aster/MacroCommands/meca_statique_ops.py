@@ -225,18 +225,13 @@ def meca_statique_ops(self, **args):
     isConst = phys_pb.getCodedMaterial().constant()
     isFirst = True
 
-    # Les noms des champs sont "en dur" à cause de nmvcex/vectme => à supprimer après 31903
-    externVarName = phys_pb.getMaterialField().getName() + "      .TOUT"
-    timeFieldName = phys_pb.getMaterialField().getName() + "      .INST"
-    externVarRefeName = phys_pb.getModel().getName()[0:8] + ".CHVCREF   "
-
     # Detect external state variables
     hasExternalStateVariable = phys_pb.getMaterialField().hasExternalStateVariable()
 
     # Compute reference value vector for external state variables
     externVarRefe = None
     if phys_pb.getMaterialField().hasExternalStateVariableWithReference():
-        externVarRefe = disc_comp.computeExternalStateVariablesReference(externVarRefeName)
+        externVarRefe = disc_comp.computeExternalStateVariablesReference()
         phys_pb.setExternalStateVariablesReference(externVarRefe)
 
     # first rank to use
@@ -249,12 +244,10 @@ def meca_statique_ops(self, **args):
 
         # Update external state variable if required
         if hasExternalStateVariable:
-            phys_state.externVar = disc_comp.createExternalStateVariablesField(
-                externVarName, phys_state.time
-            )
+            phys_state.externVar = disc_comp.createExternalStateVariablesField(phys_state.time)
 
         # Update time field
-        timeField = disc_comp.createTimeField(timeFieldName, phys_state.time)
+        timeField = disc_comp.createTimeField(phys_state.time)
 
         # compute matrix and factorize it
         if not isConst or isFirst:
@@ -274,10 +267,6 @@ def meca_statique_ops(self, **args):
         timeStepper.completed()
         rank += 1
         isFirst = False
-
-        # Suppression obligatoire car nom en "dur" => à supprimer après 31903
-        del timeField
-        phys_state.externVar = None
 
     # delete factorized matrix - free memory
     linear_solver.deleteFactorizedMatrix()
