@@ -76,7 +76,7 @@ struct type_caster< JeveuxCollection< T > > {
     static handle cast( const JeveuxCollection< T > &coll, return_value_policy /* policy */,
                         handle /* parent */ ) {
         py::list pylist;
-        if ( coll->size() < 0 && !coll->build() ) {
+        if ( !coll->build() || coll->size() < 0 ) {
             return pylist.inc_ref();
         }
         for ( int i = 0; i < coll->size(); ++i ) {
