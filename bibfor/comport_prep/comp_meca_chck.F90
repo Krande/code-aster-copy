@@ -70,6 +70,7 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
     character(len=24) :: ligrmo
     mpi_int :: nbCPU, mpiCurr
     aster_logical :: lElasByDefault, lNeedDeborst, lMfront, lDistParallel
+    aster_logical :: lIncoUpo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,7 +115,9 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
         call compMecaChckModel(iComp       ,&
                                model       , fullElemField ,&
                                lAllCellAffe, cellAffe      , nbCellAffe  ,&
-                               relaCompPY  , lElasByDefault, lNeedDeborst)
+                               relaCompPY  , lElasByDefault, lNeedDeborst,&
+                               lIncoUpo)
+        print*,'lIncoUpo ',lIncoUpo
 
 ! ----- Select plane stress algorithm
         typeCpla = behaviourPrep%v_para(iComp)%type_cpla
@@ -143,6 +146,11 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
         endif
         if (lNeedDeborst .and. defoComp .eq. 'SIMO_MIEHE') then
             call utmess('F', 'COMPOR1_13')
+        endif
+
+! ----- No INCO_UPO modelization with GDEF_LOG
+        if (lIncoUpo .and. defoComp .eq. 'GDEF_LOG') then
+            call utmess('F', 'COMPOR1_16')
         endif
 
 ! ----- No ENDO_HETEROGENE whith distributed parallelism

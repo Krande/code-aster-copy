@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,6 +101,10 @@ Seules quelques lois de comportement qui ne nécessitent pas la méthode Deborst
 
     15: _("""On ne peut pas utiliser les contraintes planes en élasticité avec une déformation de type GROT_GDEP.
     Conseil: utilisez une loi élastoplastique sur laquelle vous aurez mis une limite d'élasticité très grande.
+"""),
+
+    16: _("""Les modélisations de type INCO_UPO sont interdites avec le type de
+déformation GDEF_LOG.
 """),
 
     17 : _("""

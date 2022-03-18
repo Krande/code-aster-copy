@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,8 @@
 subroutine compMecaChckModel(iComp       ,&
                              model       , fullElemField ,&
                              lAllCellAffe, cellAffe      , nbCellAffe   ,&
-                             relaCompPY  , lElasByDefault, lNeedDeborst)
+                             relaCompPY  , lElasByDefault, lNeedDeborst ,&
+                             lIncoUpo)
 !
 implicit none
 !
@@ -43,7 +44,7 @@ aster_logical, intent(in) :: lAllCellAffe
 character(len=24), intent(in) :: cellAffe
 integer, intent(in) :: nbCellAffe
 character(len=16), intent(in) :: relaCompPY
-aster_logical, intent(out) :: lElasByDefault, lNeedDeborst
+aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,10 +66,10 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: elemTypeName, modelType
+    character(len=16) :: elemTypeName, modelType, incoType
     integer :: elemTypeNume, cellNume, nbCmpAffected
     integer :: jvCesd, jvCesl, jvVale
-    integer :: modelTypeIret, lctestIret, iCell
+    integer :: modelTypeIret, lctestIret, iCell, incoTypeIret
     integer :: nbCellMesh, nbCell
     character(len=16), pointer :: cesv(:) => null()
     integer, pointer :: cellAffectedByModel(:) => null()
@@ -85,6 +86,7 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst
     lNeedDeborst     = ASTER_FALSE
     lAtOneCellAffect = ASTER_FALSE
     lAllCellAreBound = ASTER_FALSE
+    lIncoUpo         = ASTER_FALSE
 !
 ! - Access to model
 !
@@ -158,6 +160,13 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst
                 else
                     call lctest(relaCompPY, 'MODELISATION', modelType, lctestIret)
 
+                endif
+            endif
+! --------- Check presence of modelization INCO_UPO
+            call teattr('C', 'INCO' , incoType , incoTypeIret, typel = elemTypeName)
+            if (incoTypeIret .eq. 0) then
+                if (incoType.eq.'C2O')then
+                    lIncoUpo = ASTER_TRUE
                 endif
             endif
         endif
