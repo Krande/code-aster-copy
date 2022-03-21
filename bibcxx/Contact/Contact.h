@@ -43,7 +43,109 @@ class Contact : public DataStructure {
     ModelPtr _model;
     /** @brief Ligel ".CHME.LIGRE" */
     FiniteElementDescriptorPtr _FEDesc;
+    // all formulations
+    /** @brief V K8 ".CHME.MODEL.NOMO" */
+    JeveuxVectorChar8 _model_name;
+    /** @brief V I  ".PARACI         " */
+    JeveuxVectorLong _integer_params;
+    /** @brief V R  ".PARACR         " */
+    JeveuxVectorReal _real_params;
+    /** @brief V K8 ".TYPE           " */
+    JeveuxVectorChar8 _contact_type;
+    // liaison_unil formulation
+    /** @brief V I  ".UNILATE.NDIMCU " */
+    JeveuxVectorLong _ndim_unilate;
+    /** @brief V K8 ".UNILATE.CMPGCU " */
+    JeveuxVectorChar8 _cmpg_unilate;
+    /** @brief V K8 ".UNILATE.COED   " */
+    JeveuxVectorChar8 _coed_unilate;
+    /** @brief V K8 ".UNILATE.COEG   " */
+    JeveuxVectorChar8 _coeg_unilate;
+    /** @brief V I  ".UNILATE.LISNOE " */
+    JeveuxVectorLong _lisnoe_unilate;
+    /** @brief V I  ".UNILATE.POINOE " */
+    JeveuxVectorLong _poinoe_unilate;
+    /** @brief V R  ".UNILATE.COEFPE " */
+    JeveuxVectorReal _coefpe_unilate;
+    // unilateral formulation
+    /** @brief  V I  ".CONTACT.NDIMCO " */
+    JeveuxVectorLong _ndimco;
+    // continious and discrete formulation
+    /** @brief V I  ".CONTACT.METHCO " */
+    JeveuxVectorLong _methco;
+    /** @brief V K8 ".CONTACT.DIRAPP " */
+    JeveuxVectorChar8 _dirapp;
+    /** @brief V K8 ".CONTACT.DIRNOR " */
+    JeveuxVectorChar8 _dirnor;
+    /** @brief V K8 ".CONTACT.JFO1CO " */
+    JeveuxVectorChar8 _jfo1co;
+    /** @brief V K8 ".CONTACT.JFO2CO " */
+    JeveuxVectorChar8 _jfo2co;
+    /** @brief V R  ".CONTACT.TOLECO " */
+    JeveuxVectorReal _toleco;
+    /** @brief V R  ".CONTACT.JEUCOQ " */
+    JeveuxVectorReal _jeucoq;
+    /** @brief V R  ".CONTACT.JEUPOU " */
+    JeveuxVectorReal _jeupou;
 
+    /** @brief V I  ".CONTACT.PZONECO" */
+    JeveuxVectorLong _pzoneco;
+    /** @brief V I  ".CONTACT.PSUMACO" */
+    JeveuxVectorLong _psumaco;
+    /** @brief V I  ".CONTACT.PSUNOCO" */
+    JeveuxVectorLong _psunoco;
+    /** @brief V I  ".CONTACT.MAILCO " */
+    JeveuxVectorLong _mailco;
+    /** @brief V I  ".CONTACT.NOEUCO " */
+    JeveuxVectorLong _noeuco;
+    /** @brief V I  ".CONTACT.MANOCO " */
+    JeveuxVectorLong _manoco;
+    /** @brief V I  ".CONTACT.PMANOCO" */
+    JeveuxVectorLong _pmanoco;
+    /** @brief V I  ".CONTACT.NOMACO " */
+    JeveuxVectorLong _nomaco;
+    /** @brief V I  ".CONTACT.PNOMACO" */
+    JeveuxVectorLong _pnomaco;
+
+    /** @brief V I  ".CONTACT.PSSNOCO" */
+    JeveuxVectorLong _pssnoco;
+    /** @brief V I  ".CONTACT.SSNOCO " */
+    JeveuxVectorLong _ssnoco;
+
+    /** @brief V I  ".CONTACT.TYPENO " */
+    JeveuxVectorLong _typeno;
+    /** @brief V I  ".CONTACT.TYPEMA " */
+    JeveuxVectorLong _typema;
+    /** @brief V I  ".CONTACT.MAESCL " */
+    JeveuxVectorLong _maescl;
+
+    // discrete formulation
+    /** @brief V R  ".CONTACT.CARADF " */
+    JeveuxVectorReal _caradf;
+
+    // continious formulation
+    /** @brief V R  ".CONTACT.CARACF " */
+    JeveuxVectorReal _caracf;
+    /** @brief V I  ".CONTACT.PSANOFR" */
+    JeveuxVectorLong _psanofr;
+    /** @brief V I  ".CONTACT.SANOFR " */
+    JeveuxVectorLong _sanofr;
+    /** @brief V I  ".CONTACT.EXCLFR " */
+    JeveuxVectorLong _exclfr;
+
+    // xfem formulation
+    /** @brief V R  ".CONTACT.CARAXF " */
+    JeveuxVectorReal _caraxf;
+    /** @brief V K8 ".CONTACT.XFIMAI " */
+    JeveuxVectorChar8 _xfimai;
+    /** @brief V K24 ".CONTACT.XNRELL " */
+    JeveuxVectorChar24 _xnrell;
+    /** @brief V I  ".CONTACT.MAESCX " */
+    JeveuxVectorLong _maescx;
+
+    // lac contact
+    /** @brief V I  ".CONTACT.PTRDCLC" */
+    JeveuxVectorLong _ptrdclc;
   public:
     /**
     * @typedef ContactPt
@@ -58,27 +160,14 @@ class Contact : public DataStructure {
     /**
      * @brief Constructeur
      */
-    Contact( const std::string name, const ModelPtr model )
-        : DataStructure( name, 8, "CHAR_CONTACT" ), _model( model ),
-            _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
-                                                                _model->getMesh() ) ),
-            _isEmpty( false ){};
-
+    Contact( const std::string name, const ModelPtr model );
     /**
      * @brief Constructeur
      */
-    Contact( const ModelPtr model )
-        : Contact( ResultNaming::getNewResultName(),  model ){};
+    Contact( const ModelPtr model );
 
-    ModelPtr getModel( ) const
-    {
-        return _model;
-    }
-
-    FiniteElementDescriptorPtr getFiniteElementDescriptor() const
-    {
-        return _FEDesc;
-    }
+    ModelPtr getModel( ) const;
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const;
 };
 
 /**
