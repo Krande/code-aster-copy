@@ -27,10 +27,9 @@ from collections import Counter
 
 from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
-from ..Objects import ConnectionMesh, Mesh, ParallelMesh
+from ..Objects import ConnectionMesh, Mesh, ParallelMesh, ResultNaming
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import (MPI, ExecutionParameter, Options, injector, logger,
-                         shared_tmpdir)
+from ..Utilities import MPI, ExecutionParameter, Options, injector, logger, shared_tmpdir
 
 try:
     from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
@@ -114,12 +113,12 @@ class ExtendedParallelMesh:
 
         # tests
         group_no_std = mesh.getGroupsOfNodes(local=False)
-        group_no_gl  = self.getGroupsOfNodes(local=False)
+        group_no_gl = self.getGroupsOfNodes(local=False)
         if sorted(group_no_std) != sorted(group_no_gl):
             return False
 
         group_ma_std = mesh.getGroupsOfCells(local=False)
-        group_ma_gl  = self.getGroupsOfCells(local=False)
+        group_ma_gl = self.getGroupsOfCells(local=False)
         if sorted(group_ma_std) != sorted(group_ma_gl):
             return False
 
@@ -150,12 +149,10 @@ class ExtendedParallelMesh:
             ParallelMesh: the refined mesh.
         """
 
-        return CREA_MAILLAGE(MAILLAGE=self,
-                             RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes),
-                             INFO=info)
+        return CREA_MAILLAGE(MAILLAGE=self, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes), INFO=info)
 
     @classmethod
-    def buildSquare(self, lx=1., ly=1., refine=0, info=1):
+    def buildSquare(self, lx=1.0, ly=1.0, refine=0, info=1):
         """Build the quadrilateral mesh of a square.
 
         Arguments:
@@ -173,21 +170,20 @@ class ExtendedParallelMesh:
             if MPI.COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildSquare(lx=lx, ly=ly, refine=nrefine, info=info)
                 mesh.printMedFile(filename)
-            MPI.COMM_WORLD.Barrier()
+            ResultNaming.syncCounter()
 
             # Mesh creation
             mesh_p = ParallelMesh()
-            mesh_p.readMedFile(filename, verbose=info-1)
+            mesh_p.readMedFile(filename, verbose=info - 1)
 
             # Mesh refinement
-            nrefinep = refine-nrefine
-            return CREA_MAILLAGE(MAILLAGE=mesh_p,
-                                RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep),
-                                INFO=info)
-
+            nrefinep = refine - nrefine
+            return CREA_MAILLAGE(
+                MAILLAGE=mesh_p, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep), INFO=info
+            )
 
     @classmethod
-    def buildCube(self, lx=1., ly=1., lz=1., refine=0, info=1):
+    def buildCube(self, lx=1.0, ly=1.0, lz=1.0, refine=0, info=1):
         """Build the hexaedral mesh of a cube.
 
         Arguments:
@@ -209,17 +205,17 @@ class ExtendedParallelMesh:
             if MPI.COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildCube(lx=lx, ly=ly, lz=lz, refine=nrefine, info=info)
                 mesh.printMedFile(filename)
-            MPI.COMM_WORLD.Barrier()
+            ResultNaming.syncCounter()
 
             # Mesh creation
             mesh_p = ParallelMesh()
-            mesh_p.readMedFile(filename, verbose=info-1)
+            mesh_p.readMedFile(filename, verbose=info - 1)
 
             # Mesh refinement
-            nrefinep = refine-nrefine
-            return CREA_MAILLAGE(MAILLAGE=mesh_p,
-                                RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep),
-                                INFO=info)
+            nrefinep = refine - nrefine
+            return CREA_MAILLAGE(
+                MAILLAGE=mesh_p, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep), INFO=info
+            )
 
     @classmethod
     def buildDisk(self, radius=1, refine=0, info=1):
@@ -236,11 +232,11 @@ class ExtendedParallelMesh:
             if MPI.COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildDisk(radius, refine, info)
                 mesh.printMedFile(filename)
-            MPI.COMM_WORLD.Barrier()
+            ResultNaming.syncCounter()
 
             # Mesh creation
             mesh_p = ParallelMesh()
-            mesh_p.readMedFile(filename, verbose=info-1)
+            mesh_p.readMedFile(filename, verbose=info - 1)
             return mesh_p
 
     @classmethod
@@ -259,12 +255,13 @@ class ExtendedParallelMesh:
             if MPI.COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildCylinder(height, radius, refine, info)
                 mesh.printMedFile(filename)
-            MPI.COMM_WORLD.Barrier()
+            ResultNaming.syncCounter()
 
             # Mesh creation
             mesh_p = ParallelMesh()
-            mesh_p.readMedFile(filename, verbose=info-1)
+            mesh_p.readMedFile(filename, verbose=info - 1)
             return mesh_p
+
 
 @injector(ConnectionMesh)
 class ExtendedConnectionMesh:

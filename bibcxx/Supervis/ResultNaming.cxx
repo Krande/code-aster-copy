@@ -2,7 +2,7 @@
  * @file ResultNaming.cxx
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,13 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
-#include <sstream>
-#include <iomanip>
-
 #include "ResultNaming.h"
+
 #include "MemoryManager/JeveuxObject.h"
+#include "ParallelUtilities/AsterMPI.h"
+
+#include <iomanip>
+#include <sstream>
 
 unsigned long int ResultNaming::_number = 0;
 
@@ -36,6 +38,13 @@ void ResultNaming::initCounter( const unsigned long int initValue ) {
     }
 }
 
+void ResultNaming::syncCounter() {
+#ifdef ASTER_HAVE_MPI
+    unsigned long int current = _number;
+    AsterMPI::all_reduce( current, _number, MPI_MAX );
+#endif
+}
+
 std::string ResultNaming::getCurrentName() {
     std::stringstream sstream;
     sstream << std::setfill( '0' ) << std::setw( 8 ) << std::hex << ResultNaming::_number;
@@ -43,7 +52,7 @@ std::string ResultNaming::getCurrentName() {
 }
 
 std::string ResultNaming::getNewResultName() {
-    assert( _number <= maxNumberOfObjects);
+    assert( _number <= maxNumberOfObjects );
     ++_number;
     return getCurrentName();
 }

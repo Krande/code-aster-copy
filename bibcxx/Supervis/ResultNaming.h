@@ -5,7 +5,7 @@
  * @file ResultNaming.h
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,11 @@ class ResultNaming {
      * @brief Initialize the counter.
      */
     static void initCounter( const unsigned long int );
+
+    /**
+     * @brief Synchronize the counter between MPI processes.
+     */
+    static void syncCounter();
 
     /**
      * @brief Static member that returns the current result name.

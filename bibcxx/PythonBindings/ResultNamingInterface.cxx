@@ -33,7 +33,17 @@ void exportResultNamingToPython( py::module_ &mod ) {
     py::class_< ResultNaming >( mod, "ResultNaming" )
         // fake initFactoryPtr: not a DataStructure
         // fake initFactoryPtr: not a DataStructure
-        .def_static( "initCounter", &ResultNaming::initCounter, py::arg( "initValue" ) )
-        .def_static( "getNewResultName", &ResultNaming::getNewResultName )
-        .def_static( "getCurrentName", &ResultNaming::getCurrentName );
+        .def_static( "initCounter", &ResultNaming::initCounter, R"(
+Initialize automatic objects naming (*internally used for pickling*).
+        )",
+                     py::arg( "initValue" ) )
+        .def_static( "syncCounter", &ResultNaming::syncCounter, R"(
+Synchronize automatic objects naming between MPI processes (*use with care*).
+        )" )
+        .def_static( "getCurrentName", &ResultNaming::getCurrentName, R"(
+Returns the current object name (i.e. last created).
+
+Returns:
+    str: Last object name used.
+        )" );
 }
