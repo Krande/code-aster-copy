@@ -47,12 +47,6 @@ MODT = AFFE_MODELE(MAILLAGE=MAIL,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='D_PLAN', ), )
 
-# Ne fonctionne à voir pourquoi ?
-# CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
-#                      PESANTEUR=_F(GROUP_MA='Bas1', GRAVITE=1.0,
-#                                   DIRECTION=(0.0, -1.0, 0.0),),
-#                      INFO=1,
-#                      VERI_NORM='NON',)
 
 CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
                       PRES_REP=_F(TOUT='OUI',
@@ -76,23 +70,68 @@ matr_elem = dComputation.elasticStiffnessMatrix()
 
 monSolver = code_aster.MumpsSolver()
 
-numeDDL = code_aster.ParallelDOFNumbering()
-numeDDL.setElementaryMatrix(matr_elem)
-numeDDL.computeNumbering()
+numeDDL = study.getDOFNumbering()
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
-matrAsse = code_aster.AssemblyMatrixDisplacementReal()
+matrAsse = code_aster.AssemblyMatrixDisplacementReal(study)
 matrAsse.addElementaryMatrix(matr_elem)
-matrAsse.setDOFNumbering(numeDDL)
-matrAsse.addDirichletBC(charCine)
 matrAsse.assemble()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
+matrAsse *= 2.0
+matrAsse *= 0.5
+
+matrAsse2 = matrAsse.duplicate()
+
+test.assertNotEqual(matrAsse.getName(), matrAsse2.getName())
+test.assertEqual(matrAsse.isEmpty(), matrAsse2.isEmpty())
+test.assertEqual(matrAsse.getDOFNumbering(), matrAsse2.getDOFNumbering())
+test.assertEqual(matrAsse.getListOfLoads(), matrAsse2.getListOfLoads())
+test.assertAlmostEqual(matrAsse.getLagrangeScaling(),
+                       matrAsse2.getLagrangeScaling())
+petscMat2 = matrAsse2.toPetsc()
+ref_matr = 108726.49458749207
+test.assertAlmostEqual(ref_matr, petscMat2.norm(), delta=ref_matr*1.e-6)
+
+matrAsse3 = -(-1.0 * matrAsse)
+test.assertNotEqual(matrAsse.getName(), matrAsse3.getName())
+test.assertEqual(matrAsse.isEmpty(), matrAsse3.isEmpty())
+test.assertEqual(matrAsse.getDOFNumbering(), matrAsse3.getDOFNumbering())
+test.assertEqual(matrAsse.getListOfLoads(), matrAsse3.getListOfLoads())
+test.assertAlmostEqual(matrAsse.getLagrangeScaling(),
+                       matrAsse3.getLagrangeScaling())
+petscMat3 = matrAsse3.toPetsc()
+test.assertAlmostEqual(ref_matr, petscMat3.norm(), delta=ref_matr*1.e-6)
+
+matrAsse4 = 3.*matrAsse + 2.0*matrAsse2 - 4.0*matrAsse3
+test.assertNotEqual(matrAsse.getName(), matrAsse4.getName())
+test.assertEqual(matrAsse.isEmpty(), matrAsse4.isEmpty())
+test.assertEqual(matrAsse.getDOFNumbering(), matrAsse4.getDOFNumbering())
+test.assertEqual(matrAsse.getListOfLoads(), matrAsse4.getListOfLoads())
+test.assertAlmostEqual(matrAsse.getLagrangeScaling(),
+                       matrAsse4.getLagrangeScaling())
+petscMat4 = matrAsse4.toPetsc()
+test.assertAlmostEqual(ref_matr, petscMat4.norm(), delta=ref_matr*1.e-6)
+
+matrAsse5 = matrAsse.duplicate()
+matrAsse5 += matrAsse
+matrAsse5 -= matrAsse
+test.assertNotEqual(matrAsse.getName(), matrAsse5.getName())
+test.assertEqual(matrAsse.isEmpty(), matrAsse5.isEmpty())
+test.assertEqual(matrAsse.getDOFNumbering(), matrAsse5.getDOFNumbering())
+test.assertEqual(matrAsse.getListOfLoads(), matrAsse5.getListOfLoads())
+test.assertAlmostEqual(matrAsse.getLagrangeScaling(),
+                       matrAsse5.getLagrangeScaling())
+petscMat5 = matrAsse5.toPetsc()
+test.assertAlmostEqual(ref_matr, petscMat5.norm(), delta=ref_matr*1.e-6)
 
 monSolver.factorize(matrAsse)
 
 vcine = CALC_CHAR_CINE(NUME_DDL=numeDDL, CHAR_CINE=charCine, )
 resu = monSolver.solve(retour, vcine)
+
+ref = 11.55955851173471
+test.assertAlmostEqual(ref, resu.norm("NORM_2"), delta=ref*1.e-6)
 
 TEST_RESU(
     CHAM_NO=_F(

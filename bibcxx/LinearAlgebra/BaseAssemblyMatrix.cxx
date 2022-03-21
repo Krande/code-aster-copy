@@ -42,6 +42,41 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const PhysicalProblemPtr phys_prob,
     _listOfLoads = phys_prob->getListOfLoads();
 };
 
+BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::string &type,
+                                        const BaseAssemblyMatrix &toCopy )
+    : BaseAssemblyMatrix( name, type ) {
+    // Jeveux Pointer
+    ( *_description ) = ( *toCopy._description );
+    ( *_scaleFactorLagrangian ) = ( *toCopy._scaleFactorLagrangian );
+    ( *_listOfElementaryMatrix ) = ( *toCopy._listOfElementaryMatrix );
+    ( *_perm ) = ( *toCopy._perm );
+    ( *_ccid ) = ( *toCopy._ccid );
+    ( *_ccll ) = ( *toCopy._ccll );
+    ( *_ccii ) = ( *toCopy._ccii );
+    // Objects
+    _dofNum = toCopy._dofNum;
+    _listOfLoads = toCopy._listOfLoads;
+    _isEmpty = toCopy._isEmpty;
+    _isFactorized = toCopy._isFactorized;
+}
+
+BaseAssemblyMatrix::BaseAssemblyMatrix( BaseAssemblyMatrix &&other )
+    : DataStructure{ std::move( other ) } {
+    // Jeveux Pointer
+    _description = other._description;
+    _scaleFactorLagrangian = other._scaleFactorLagrangian;
+    _listOfElementaryMatrix = other._listOfElementaryMatrix;
+    _perm = other._perm;
+    _ccid = other._ccid;
+    _ccll = other._ccll;
+    _ccii = other._ccii;
+    // Objects
+    _dofNum = other._dofNum;
+    _listOfLoads = other._listOfLoads;
+    _isEmpty = other._isEmpty;
+    _isFactorized = other._isFactorized;
+}
+
 void BaseAssemblyMatrix::symmetrize() { CALL_MATR_ASSE_SYME( getName() ); };
 
 bool BaseAssemblyMatrix::isMPIFull() {

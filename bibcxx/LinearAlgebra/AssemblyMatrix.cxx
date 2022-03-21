@@ -22,59 +22,69 @@
  */
 
 #include "LinearAlgebra/AssemblyMatrix.h"
+
 #include "Solvers/LinearSolver.h"
 
 // Specialization for <double, Displacement>
-template <> void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues(const VectorLong idx,
-        const VectorLong jdx, const VectorReal values) {
-        if (get_sh_jeveux_status() == 1 ) {
-            const ASTERINTEGER dim = idx.size();
-            if (idx.size() != jdx.size() || idx.size() != values.size()){
-                throw std::runtime_error( "All lists must have same length" );
-            }
-            CALLO_MATR_ASSE_SET_VALUES(getName(), &dim, idx.data(), jdx.data(), values.data());
-            _isFactorized = false;
-       }
-    };
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong idx,
+                                                             const VectorLong jdx,
+                                                             const VectorReal values ) {
+    if ( get_sh_jeveux_status() == 1 ) {
+        const ASTERINTEGER dim = idx.size();
+        if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
+            throw std::runtime_error( "All lists must have same length" );
+        }
+        CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
+        _isFactorized = false;
+    }
+};
 
-template <> void AssemblyMatrix< ASTERDOUBLE, Displacement >::defineSolver() {
-    _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::defineSolver() {
+    _solver = std::make_shared< LinearSolver >( ljust( getName(), 8 ) + ".SOLVEUR   " );
 }
 
-template <> void AssemblyMatrix< ASTERCOMPLEX, Displacement >::defineSolver() {
-    _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
+template <>
+void AssemblyMatrix< ASTERCOMPLEX, Displacement >::defineSolver() {
+    _solver = std::make_shared< LinearSolver >( ljust( getName(), 8 ) + ".SOLVEUR   " );
 }
 
 // Specialization for <double, Temperature>
-template <> void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues(const VectorLong idx,
-        const VectorLong jdx, const VectorReal values) {
-        if (get_sh_jeveux_status() == 1 ) {
-            const ASTERINTEGER dim = idx.size();
-            if (idx.size() != jdx.size() || idx.size() != values.size()){
-                throw std::runtime_error( "All lists must have same length" );
-            }
-            CALLO_MATR_ASSE_SET_VALUES(getName(), &dim, idx.data(), jdx.data(), values.data());
-            _isFactorized = false;
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong idx,
+                                                            const VectorLong jdx,
+                                                            const VectorReal values ) {
+    if ( get_sh_jeveux_status() == 1 ) {
+        const ASTERINTEGER dim = idx.size();
+        if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
+            throw std::runtime_error( "All lists must have same length" );
         }
-    };
+        CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
+        _isFactorized = false;
+    }
+};
 
-template <> void AssemblyMatrix< ASTERDOUBLE, Temperature >::defineSolver() {
-    _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::defineSolver() {
+    _solver = std::make_shared< LinearSolver >( ljust( getName(), 8 ) + ".SOLVEUR   " );
 }
 
 // Specialization for <double, Pressure>
-template <> void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues(const VectorLong idx,
-        const VectorLong jdx, const VectorReal values) {
-        if (get_sh_jeveux_status() == 1 ) {
-            const ASTERINTEGER dim = idx.size();
-            if (idx.size() != jdx.size() || idx.size() != values.size()){
-                throw std::runtime_error( "All lists must have same length" );
-            }
-            CALLO_MATR_ASSE_SET_VALUES(getName(), &dim, idx.data(), jdx.data(), values.data());
-            _isFactorized = false;
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong idx, const VectorLong jdx,
+                                                         const VectorReal values ) {
+    if ( get_sh_jeveux_status() == 1 ) {
+        const ASTERINTEGER dim = idx.size();
+        if ( idx.size() != jdx.size() || idx.size() != values.size() ) {
+            throw std::runtime_error( "All lists must have same length" );
         }
-    };
+        CALLO_MATR_ASSE_SET_VALUES( getName(), &dim, idx.data(), jdx.data(), values.data() );
+        _isFactorized = false;
+    }
+};
 
-template <> void AssemblyMatrix< ASTERCOMPLEX, Pressure >::defineSolver() {
-    _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
+template <>
+void AssemblyMatrix< ASTERCOMPLEX, Pressure >::defineSolver() {
+    _solver = std::make_shared< LinearSolver >( ljust( getName(), 8 ) + ".SOLVEUR   " );
 }

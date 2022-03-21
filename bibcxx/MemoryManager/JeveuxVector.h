@@ -493,12 +493,14 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
         const auto size = toPrint.size();
         os << "List of values: \n";
-        os << "( ";
-        for ( auto i = 0; i < size - 1; i++ ) {
-            os << toPrint[i] << ", ";
+        if ( size > 0 ) {
+            os << "( ";
+            for ( auto i = 0; i < size - 1; i++ ) {
+                os << toPrint[i] << ", ";
+            }
+            os << toPrint[size - 1] << " )"
+               << "\n";
         }
-        os << toPrint[size - 1] << " )"
-           << "\n";
 
         return os;
     }

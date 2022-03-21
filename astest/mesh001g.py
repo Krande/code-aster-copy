@@ -130,8 +130,7 @@ def computation(mesh, solv):
                                NOM_CMP_RESU='DY',),
                             ))
 
-    MDEP = PROD_MATR_CHAM(MATR_ASSE=MATK,
-                          CHAM_NO=Uana)
+    MDEP = MATK*Uana
 
     CHAR = AFFE_CHAR_MECA(MODELE=MODE,
                           VECT_ASSE=MDEP,)

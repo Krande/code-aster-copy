@@ -48,6 +48,7 @@ void Calcul::setFiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc
 /** @brief Compute on all model */
 void Calcul::setModel( const ModelPtr &model ) {
     _FEDesc = model->getFiniteElementDescriptor();
+    _FEDesc->setModel( model );
     _mesh = model->getMesh();
     if ( _mesh->isParallel() ) {
         _completeField = false;
@@ -57,8 +58,7 @@ void Calcul::setModel( const ModelPtr &model ) {
 /** @brief Compute on a part of the model */
 void Calcul::setGroupsOfCells( const ModelPtr &model, const VectorString &groupOfCells ) {
     _mesh = model->getMesh();
-    _FEDesc = std::make_shared< FiniteElementDescriptor >( *( model->getFiniteElementDescriptor() ),
-                                                           groupOfCells );
+    _FEDesc = std::make_shared< FiniteElementDescriptor >( model, groupOfCells );
     if ( _mesh->isParallel() ) {
         _completeField = false;
     }

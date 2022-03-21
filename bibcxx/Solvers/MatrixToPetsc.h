@@ -78,9 +78,7 @@ py::object assemblyMatrixToPetsc( const T matr ) {
 #ifdef ASTER_HAVE_PETSC4PY
     py::object petsc_matr = py::module_::import( "petsc4py.PETSc" ).attr( "Mat" )();
 
-    Mat conv;
-    PetscErrorCode ier;
-    CALLO_MATASS2PETSC( matr->getName(), &conv, &ier );
+    Mat conv = matr->toPetsc();
 
     struct PyPetscMatObject *pyx_mat = (struct PyPetscMatObject *)( petsc_matr.ptr() );
     pyx_mat->mat = conv;

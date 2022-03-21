@@ -37,6 +37,9 @@ void exportAssemblyMatrixToPython( py::module_ &mod ) {
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementReal, PhysicalProblemPtr > ) )
         // -----------------------------------------------------------------------------------------
+        .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementReal,
+                                         const AssemblyMatrixDisplacementReal & > ) )
+        // -----------------------------------------------------------------------------------------
         .def( "addElementaryMatrix", &AssemblyMatrixDisplacementReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementReal::clearElementaryMatrix )
@@ -46,9 +49,6 @@ void exportAssemblyMatrixToPython( py::module_ &mod ) {
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixDisplacementReal::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "defineSolver", &AssemblyMatrixDisplacementReal::defineSolver )
-// -------------------------------------------------------------------------------------------------
-
         .def( "setValues", &AssemblyMatrixDisplacementReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
 
@@ -60,7 +60,23 @@ Arguments:
     idx (list[int]): List of the row indices.
     jdx (list[int]): List of the column indices.
     values (list[float]): List of the values.
-        )" );
+        )" )
+        // -----------------------------------------------------------------------------------------
+        .def( "defineSolver", &AssemblyMatrixDisplacementReal::defineSolver )
+        // -----------------------------------------------------------------------------------------
+        .def( "duplicate", &AssemblyMatrixDisplacementReal::duplicate )
+        // -----------------------------------------------------------------------------------------
+        .def( float() * py::self )
+        .def( py::self *= float() )
+        .def( py::self -= py::self )
+        .def( py::self += py::self )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
+        .def( -py::self )
+        .def(
+            "__mul__", +[]( const AssemblyMatrixDisplacementReal &M, const FieldOnNodesReal &v ) {
+                return M * v;
+            } );
 
     py::class_< AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementComplexPtr,
                 BaseAssemblyMatrix >( mod, "AssemblyMatrixDisplacementComplex" )
@@ -80,7 +96,29 @@ Arguments:
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixDisplacementComplex::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "defineSolver", &AssemblyMatrixDisplacementComplex::defineSolver );
+        // -----------------------------------------------------------------------------------------
+        .def( "setValues", &AssemblyMatrixDisplacementComplex::setValues, R"(
+Erase the assembly matrix and set new values in it.
+
+The new values are in coordinate format (i, j, aij). The matrix  must be stored in CSR format.
+There is no rule for the indices - they can be in arbitrary order and can be repeated. Repeated
+indices are sumed according to an assembly process.
+
+Arguments:
+    idx (list[int]): List of the row indices.
+    jdx (list[int]): List of the column indices.
+    values (list[float]): List of the values.
+        )" )
+        .def( "defineSolver", &AssemblyMatrixDisplacementComplex::defineSolver )
+        // -----------------------------------------------------------------------------------------
+        .def( "duplicate", &AssemblyMatrixDisplacementComplex::duplicate )
+        // -----------------------------------------------------------------------------------------
+        .def( float() * py::self )
+        .def( py::self *= float() )
+        .def( -py::self )
+        .def(
+            "__mul__", +[]( const AssemblyMatrixDisplacementComplex &M,
+                            const FieldOnNodesComplex &v ) { return M * v; } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureReal, AssemblyMatrixTemperatureRealPtr,
@@ -99,8 +137,6 @@ Arguments:
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixTemperatureReal::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "defineSolver", &AssemblyMatrixTemperatureReal::defineSolver )
-        // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixTemperatureReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
 
@@ -112,7 +148,23 @@ Arguments:
     idx (list[int]): List of the row indices.
     jdx (list[int]): List of the column indices.
     values (list[float]): List of the values.
-        )" );
+        )" )
+        // -----------------------------------------------------------------------------------------
+        .def( "defineSolver", &AssemblyMatrixTemperatureReal::defineSolver )
+        // -----------------------------------------------------------------------------------------
+        .def( "duplicate", &AssemblyMatrixTemperatureReal::duplicate )
+        // -----------------------------------------------------------------------------------------
+        .def( float() * py::self )
+        .def( py::self *= float() )
+        .def( py::self -= py::self )
+        .def( py::self += py::self )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
+        .def( -py::self )
+        .def(
+            "__mul__", +[]( const AssemblyMatrixTemperatureReal &M, const FieldOnNodesReal &v ) {
+                return M * v;
+            } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureComplex, AssemblyMatrixTemperatureComplexPtr,
@@ -160,7 +212,20 @@ Arguments:
     idx (list[int]): List of the row indices.
     jdx (list[int]): List of the column indices.
     values (list[float]): List of the values.
-        )" );
+        )" )
+        .def( "duplicate", &AssemblyMatrixPressureReal::duplicate )
+        // -----------------------------------------------------------------------------------------
+        .def( float() * py::self )
+        .def( py::self *= float() )
+        .def( py::self -= py::self )
+        .def( py::self += py::self )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
+        .def( -py::self )
+        .def(
+            "__mul__", +[]( const AssemblyMatrixPressureReal &M, const FieldOnNodesReal &v ) {
+                return M * v;
+            } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixPressureComplex, AssemblyMatrixPressureComplexPtr,
@@ -181,5 +246,19 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixPressureComplex::transposeConjugate )
         // -----------------------------------------------------------------------------------------
-        .def( "defineSolver", &AssemblyMatrixPressureComplex::defineSolver );
+        .def( "defineSolver", &AssemblyMatrixPressureComplex::defineSolver )
+        // -----------------------------------------------------------------------------------------
+        .def( "duplicate", &AssemblyMatrixPressureComplex::duplicate )
+        // -----------------------------------------------------------------------------------------
+        .def( float() * py::self )
+        .def( py::self *= float() )
+        .def( py::self -= py::self )
+        .def( py::self += py::self )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
+        .def( -py::self )
+        .def(
+            "__mul__", +[]( const AssemblyMatrixPressureComplex &M, const FieldOnNodesComplex &v ) {
+                return M * v;
+            } );
 };

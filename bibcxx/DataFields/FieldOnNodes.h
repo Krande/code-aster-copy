@@ -267,7 +267,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     friend FieldOnNodes< ValueType > operator*( FieldOnNodes< ValueType > lhs,
                                                 const ASTERDOUBLE &scal ) {
 
-        ( *lhs._valuesList ) *= scal;
+        lhs *= scal;
         return lhs;
     };
 
@@ -517,7 +517,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Get FieldOnNodesDescription
      */
-    FieldOnNodesDescriptionPtr getDescription( void ) { return _dofDescription; };
+    FieldOnNodesDescriptionPtr getDescription( void ) const { return _dofDescription; };
 
     /**
      * @brief Update field and build FieldOnNodesDescription if necessary

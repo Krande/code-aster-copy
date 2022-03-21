@@ -117,12 +117,12 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
 # print single file
 with shared_tmpdir("zzzz504a_") as tmpdir:
     medfile = osp.join(tmpdir, "resu_new.med")
-    resu.printMedFile(medfile, False)
+    resu.printMedFile(medfile, local=False)
 
 # print multiple files
 with shared_tmpdir("zzzz504a_") as tmpdir:
     medfile = osp.join(tmpdir, f"resu_new_{rank}.med")
-    resu.printMedFile(medfile, True)
+    resu.printMedFile(medfile, local=True)
 
 # if (parallel):
    #rank = MPI.COMM_WORLD.Get_rank()

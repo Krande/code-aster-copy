@@ -46,6 +46,10 @@ class ModelAssignment(ExecuteCommand):
         """
         self._result = Model(keywords["MAILLAGE"])
 
+        # set model in FED (because of circular reference)
+        FED = self._result.getFiniteElementDescriptor()
+        FED.setModel(self._result)
+
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
 

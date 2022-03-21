@@ -79,6 +79,7 @@ DataStructure::DataStructure( DataStructure &&other ) {
     _tco = other._tco;
     _title = other._title;
     _depsVector = other._depsVector;
+    _sdj = other._sdj;
 }
 
 // Assignment operator
@@ -91,6 +92,7 @@ DataStructure &DataStructure::operator=( DataStructure &&other ) {
         _tco = other._tco;
         _title = other._title;
         _depsVector = other._depsVector;
+        _sdj = other._sdj;
     }
     return *this;
 }

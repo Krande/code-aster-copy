@@ -33,9 +33,13 @@ void exportFiniteElementDescriptorToPython( py::module_ &mod ) {
                 DataStructure >( mod, "FiniteElementDescriptor" )
         .def( py::init( &initFactoryPtr< FiniteElementDescriptor, BaseMeshPtr > ) )
         .def( py::init( &initFactoryPtr< FiniteElementDescriptor, std::string, BaseMeshPtr > ) )
+        .def( py::init(
+            &initFactoryPtr< FiniteElementDescriptor, FiniteElementDescriptorPtr, VectorString > ) )
+        .def( py::init( &initFactoryPtr< FiniteElementDescriptor, ModelPtr, VectorString > ) )
         .def( "getPhysics", &FiniteElementDescriptor::getPhysics )
         .def( "getMesh", &FiniteElementDescriptor::getMesh )
         .def( "getModel", &FiniteElementDescriptor::getModel )
+        .def( "setModel", &FiniteElementDescriptor::setModel )
 #ifdef ASTER_HAVE_MPI
         .def( "transferDofDescriptorFrom", &FiniteElementDescriptor::transferDofDescriptorFrom )
 #endif /* ASTER_HAVE_MPI */

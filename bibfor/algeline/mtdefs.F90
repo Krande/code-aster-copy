@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,7 @@ subroutine mtdefs(matout, matin, base, typc)
     refa = nomout//'.REFA'
     call jecreo(refa, classe//' V K24')
     call jeecra(refa, 'LONMAX', nbval)
+    call jeecra(refa, 'LONUTI', nbval)
     call jeveuo(refa, 'E', jrefao)
     do 10 ival = 0, nbval-1
         zk24(jrefao+ival) = zk24(jrefai+ival)
@@ -95,6 +96,7 @@ subroutine mtdefs(matout, matin, base, typc)
         lime = nomout//'.LIME'
         call jecreo(lime, classe//' V K24')
         call jeecra(lime, 'LONMAX', nbval)
+        call jeecra(lime, 'LONUTI', nbval)
         call jeveuo(lime, 'E', jrefao)
         do 15 ival = 0, nbval-1
             zk24(jrefao+ival) = zk24(jrefai+ival)

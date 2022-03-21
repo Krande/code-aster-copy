@@ -6,7 +6,7 @@
  * @brief Definition d'une chaine a la maniere Fortran (sans \0 a la fin)
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,20 +24,21 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
-#include <string>
-#include <stdexcept>
-
 #include "astercxx.h"
 
+#include <stdexcept>
+#include <string>
+
 #include <assert.h>
+#include <string.h>
 
 /**
  * @class JeveuxString
  * @brief Cette classe template permet de definir une chaine fortran rapidement manipulable
  * @author Nicolas Sellenet
  */
-template < int lengthT > class JeveuxString {
+template < int lengthT >
+class JeveuxString {
   private:
     /** @brief Pointeur vers la chaine de caractere */
     char currentValue[lengthT];
@@ -174,14 +175,22 @@ template < int lengthT > class JeveuxString {
      * @brief Unsafe fast copy from a char*
      * @param chaine String to copy
      */
-    inline void unsafeFastCopy( const char *chaine )
-    {
+    inline void unsafeFastCopy( const char *chaine ) {
 #ifndef NDEBUG
         if ( strlen( chaine ) < lengthT )
             throw std::runtime_error( "String size error" );
 #endif
         memcpy( &currentValue, chaine, sizeof( char ) * lengthT );
     };
+
+    inline operator std::string() const { return toString(); };
+
+    /** @brief overload << operator */
+    friend std::ostream &operator<<( std::ostream &os, const JeveuxString< lengthT > &toPrint ) {
+        os << toPrint.toString();
+
+        return os;
+    }
 };
 
 /** @typedef Definition d'une chaine Jeveux de longueur 8 */

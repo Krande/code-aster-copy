@@ -56,9 +56,9 @@ FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
 FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model )
     : FiniteElementDescriptor( model->getMesh() ){};
 
-FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptor &FEDesc,
+FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc,
                                                   const VectorString &groupOfCells )
-    : FiniteElementDescriptor( FEDesc.getMesh() ) {
+    : FiniteElementDescriptor( FEDesc->getMesh() ) {
 
     VectorLong commonCells;
 
@@ -72,8 +72,14 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptor 
 
     std::string base( "G" );
     ASTERINTEGER nbCells = listOfCells.size();
-    CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc.getName(), base, getName() );
+    CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
 };
+
+FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
+                                                  const VectorString &groupOfCells )
+    : FiniteElementDescriptor( model->getFiniteElementDescriptor() , groupOfCells ) {
+    setModel( model );
+}
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
 FiniteElementDescriptor::getVirtualCellsExplorer() const {

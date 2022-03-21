@@ -31,6 +31,12 @@
 extern "C" {
 #endif
 
+#define CALL_ADDMATRASSE( a, b, c, d, e)                                                   \
+    CALLOOPPO( ADDMATRASSE, addmatrasse, a, b, c, d, e)
+void DEFSSPPS( ADDMATRASSE, addmatrasse, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 const ASTERDOUBLE *, const ASTERDOUBLE *,
+                 const char *, STRING_SIZE);
+
 #define CALLO_ASASVE( a, b, c, d ) CALLOOOO( ASASVE, asasve, a, b, c, d )
 void DEFSSSS( ASASVE, asasve, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
               STRING_SIZE, const char *, STRING_SIZE );
@@ -135,6 +141,10 @@ void DEFSSSSSS( NUMERO_WRAP, numero_wrap, const char *, STRING_SIZE, const char 
 #define CALLO_NUME_DDL_MATR( a, b, c ) CALLOOP( NUME_DDL_MATR, nume_ddl_matr, a, b, c )
 void DEFSSP( NUME_DDL_MATR, nume_ddl_matr, const char *, STRING_SIZE, const char *, STRING_SIZE,
              ASTERINTEGER * );
+
+#define CALL_MVMULT( a, b, c ) CALLOOO( MVMULT, mvmult, a, b, c )
+void DEFSSS( MVMULT, mvmult, const char *, STRING_SIZE, const char *, STRING_SIZE,
+             const char *, STRING_SIZE );
 
 #define CALL_REDETR( a)  CALLO( REDETR, redetr, a )
 void DEFS( REDETR, redetr, const char *, STRING_SIZE );

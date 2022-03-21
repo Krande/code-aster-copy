@@ -102,27 +102,23 @@ monSolver.factorize( matrAsse )
 resu = monSolver.solve( retour )
     #resu.debugPrint(6)
 
-try:
-    import petsc4py
-    A = matrAsse.toPetsc()
-except (ImportError, NotImplementedError):
-    pass
-else:
-    v = petsc4py.PETSc.Viewer().createASCII("mesh004b.out")
-    v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_DENSE)
-    A.view(v)
+import petsc4py
+A = matrAsse.toPetsc()
+v = petsc4py.PETSc.Viewer().createASCII("mesh004b.out")
+v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_DENSE)
+A.view(v)
 
-    rank=A.getComm().getRank()
-    print('rank=',rank)
-    rs, re = A.getOwnershipRange()
-    ce,_ = A.getSize()
-    rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
-    cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
-    rows = petsc4py.PETSc.IS().createGeneral(rows, comm=A.getComm())
-    cols = petsc4py.PETSc.IS().createGeneral(cols, comm=A.getComm())
-    (S,) = A.createSubMatrices(rows, cols)
-    v = petsc4py.PETSc.Viewer().createASCII("mesh004b_rank"+str(rank)+".out",comm=S.getComm())
-    S.view(v)
+rank=A.getComm().getRank()
+print('rank=',rank)
+rs, re = A.getOwnershipRange()
+ce,_ = A.getSize()
+rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
+cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
+rows = petsc4py.PETSc.IS().createGeneral(rows, comm=A.getComm())
+cols = petsc4py.PETSc.IS().createGeneral(cols, comm=A.getComm())
+(S,) = A.createSubMatrices(rows, cols)
+v = petsc4py.PETSc.Viewer().createASCII("mesh004b_rank"+str(rank)+".out",comm=S.getComm())
+S.view(v)
 
 test.printSummary()
 

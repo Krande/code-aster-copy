@@ -117,7 +117,6 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
                                lAllCellAffe, cellAffe      , nbCellAffe  ,&
                                relaCompPY  , lElasByDefault, lNeedDeborst,&
                                lIncoUpo)
-        print*,'lIncoUpo ',lIncoUpo
 
 ! ----- Select plane stress algorithm
         typeCpla = behaviourPrep%v_para(iComp)%type_cpla

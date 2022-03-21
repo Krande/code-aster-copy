@@ -42,7 +42,9 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
+// Forward Declaration
 class LinearSolver;
+using LinearSolverPtr = std::shared_ptr< LinearSolver >;
 
 /**
  * @class AssemblyMatrix
@@ -73,7 +75,15 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     std::vector< ElementaryMatrixPtr > _elemMatrix;
 
     /** @brief Objet Jeveux '.SOLVEUR' */
-    std::shared_ptr<LinearSolver> _solver;
+    LinearSolverPtr _solver;
+
+    bool isSimilarTo( const AssemblyMatrix &mat ) {
+        if ( _dofNum != mat.getDOFNumbering() ) {
+            return false;
+        }
+
+        return true;
+    }
 
     friend class LinearSolver;
 
@@ -87,7 +97,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     /**
      * @brief Constructeur
      */
-    AssemblyMatrix() : AssemblyMatrix( ResultNaming::getNewResultName() ){};
+    AssemblyMatrix() : AssemblyMatrix( DataStructureNaming::getNewName() ){};
 
     /**
      * @brief Constructeur
@@ -98,6 +108,16 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      * @brief Constructeur
      */
     AssemblyMatrix( const PhysicalProblemPtr phys_prob );
+
+    /**
+     * @brief Constructeur
+     */
+    AssemblyMatrix( const std::string &name, const AssemblyMatrix &toCopy );
+
+    AssemblyMatrix( const AssemblyMatrix &toCopy )
+        : AssemblyMatrix( DataStructureNaming::getNewName(), toCopy ){};
+
+    AssemblyMatrix( AssemblyMatrix &&other );
 
     /**
      * @brief Destructeur
@@ -161,12 +181,128 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     BaseAssemblyMatrixPtr getEmptyMatrix( const std::string &name ) const {
         return std::make_shared< AssemblyMatrix< ValueType, PhysicalQuantity > >( name );
     }
-    
+
+    /**
+     * @brief Unary Minus overloading
+     */
+    AssemblyMatrix< ValueType, PhysicalQuantity > operator-() const {
+        AssemblyMatrix< ValueType, PhysicalQuantity > tmp( *this );
+        tmp *= ASTERDOUBLE( -1 );
+        return tmp;
+    };
+
+    /**
+     * @brief TimesEqual overloading
+     * @return Updated field
+     */
+    AssemblyMatrix< ValueType, PhysicalQuantity > &operator*=( const ASTERDOUBLE &scal ) {
+
+        ( *_matrixValues ) *= scal;
+
+        return *this;
+    };
+
+    /**
+     * @brief PlusEqual overloading
+     * @return Updated field
+     */
+    AssemblyMatrix< ValueType, PhysicalQuantity > &
+    operator+=( const AssemblyMatrix< ValueType, PhysicalQuantity > &mat ) {
+        AS_ASSERT( isSimilarTo( mat ) );
+        const ASTERDOUBLE c1 = 1.0, c2 = 1.0;
+        CALL_ADDMATRASSE( getName(), mat.getName(), &c1, &c2, getName() );
+
+        return *this;
+    };
+
+    /**
+     * @brief MinusEqual overloading
+     * @return Updated field
+     */
+    AssemblyMatrix< ValueType, PhysicalQuantity > &
+    operator-=( const AssemblyMatrix< ValueType, PhysicalQuantity > &mat ) {
+        AS_ASSERT( isSimilarTo( mat ) );
+        const ASTERDOUBLE c1 = 1.0, c2 = -1.0;
+        CALL_ADDMATRASSE( getName(), mat.getName(), &c1, &c2, getName() );
+
+        return *this;
+    };
+
+    /**
+     * @brief Adding two matrix
+     * @return New matrix
+     */
+    friend AssemblyMatrix< ValueType, PhysicalQuantity >
+    operator+( const AssemblyMatrix< ValueType, PhysicalQuantity > &mat1,
+               const AssemblyMatrix< ValueType, PhysicalQuantity > &mat2 ) {
+
+        AssemblyMatrix< ValueType, PhysicalQuantity > mat;
+        mat.setDOFNumbering( mat1.getDOFNumbering() );
+        mat.setListOfLoads( mat1.getListOfLoads() );
+        AS_ASSERT( mat.isSimilarTo( mat2 ) );
+        const ASTERDOUBLE c1 = 1.0, c2 = 1.0;
+        CALL_ADDMATRASSE( mat1.getName(), mat2.getName(), &c1, &c2, mat.getName() );
+        mat._isEmpty = false;
+        return mat;
+    };
+
+    /**
+     * @brief Adding two matrix
+     * @return New matrix
+     */
+    friend AssemblyMatrix< ValueType, PhysicalQuantity >
+    operator-( const AssemblyMatrix< ValueType, PhysicalQuantity > &mat1,
+               const AssemblyMatrix< ValueType, PhysicalQuantity > &mat2 ) {
+        AssemblyMatrix< ValueType, PhysicalQuantity > mat;
+        mat.setDOFNumbering( mat1.getDOFNumbering() );
+        mat.setListOfLoads( mat1.getListOfLoads() );
+        AS_ASSERT( mat.isSimilarTo( mat2 ) );
+        const ASTERDOUBLE c1 = 1.0, c2 = -1.0;
+        CALL_ADDMATRASSE( mat1.getName(), mat2.getName(), &c1, &c2, mat.getName() );
+        mat._isEmpty = false;
+        return mat;
+    };
+
+    /**
+     * @brief Multiply by a scalar on left overloading
+     * @return New matrix
+     */
+    friend AssemblyMatrix< ValueType, PhysicalQuantity >
+    operator*( const ASTERDOUBLE &scal, AssemblyMatrix< ValueType, PhysicalQuantity > mat ) {
+
+        mat *= scal;
+
+        return mat;
+    };
+
+    /**
+     * @brief Multiply by a matrix by a vector
+     * @return New field
+     */
+    friend FieldOnNodes< ValueType >
+    operator*( const AssemblyMatrix< ValueType, PhysicalQuantity > &mat,
+               const FieldOnNodes< ValueType > &lhs ) {
+
+        auto matDesc = mat.getDOFNumbering()->getDescription();
+        auto vecDesc = lhs.getDescription();
+        if ( matDesc != vecDesc ) {
+            if ( *matDesc != *vecDesc ) {
+                AS_ABORT( "Incompatible numbering" );
+            }
+        }
+        FieldOnNodes< ValueType > result( mat.getDOFNumbering() );
+
+        CALL_MVMULT( mat.getName(), lhs.getName(), result.getName() );
+
+        return result;
+    };
+
+    AssemblyMatrix duplicate() { return *this; };
+
     /**
      * @brief Methode permettant de definir si un solveur est attribué à la matrice
      */
     void defineSolver();
-
 };
 
 /** @typedef Definition d'une matrice assemblee de double */
@@ -226,6 +362,44 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const PhysicalPro
     _dofNum = phys_prob->getDOFNumbering();
     _listOfLoads = phys_prob->getListOfLoads();
 };
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string &name,
+                                                               const AssemblyMatrix &toCopy )
+    : BaseAssemblyMatrix( name,
+                          "MATR_ASSE_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
+                              ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ),
+                          toCopy ),
+      _matrixValues( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
+      _valf( JeveuxVector< ValueType >( getName() + ".VALF" ) ),
+      _walf( JeveuxVector< ValueType >( getName() + ".WALF" ) ),
+      _ualf( JeveuxVector< ValueType >( getName() + ".UALF" ) ),
+      _digs( JeveuxVector< ValueType >( getName() + ".DIGS" ) ),
+      _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ) {
+
+    ( *_matrixValues ) = ( *toCopy._matrixValues );
+    ( *_valf ) = ( *toCopy._valf );
+    ( *_walf ) = ( *toCopy._walf );
+    ( *_ualf ) = ( *toCopy._ualf );
+    ( *_digs ) = ( *toCopy._digs );
+    ( *_ccva ) = ( *toCopy._ccva );
+
+    _elemMatrix = toCopy._elemMatrix;
+}
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( AssemblyMatrix &&other )
+    : BaseAssemblyMatrix( std::move( other ) ) {
+
+    _matrixValues = other._matrixValues;
+    _valf = other._valf;
+    _walf = other._walf;
+    _ualf = other._ualf;
+    _digs = other._digs;
+    _ccva = other._ccva;
+
+    _elemMatrix = std::move( other._elemMatrix );
+}
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {

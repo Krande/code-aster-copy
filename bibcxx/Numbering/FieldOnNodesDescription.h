@@ -73,6 +73,8 @@ class FieldOnNodesDescription : public DataStructure {
      */
     bool operator==( FieldOnNodesDescription &toCompare );
 
+    bool operator!=( FieldOnNodesDescription &toCompare ) { return !( *this == toCompare ); }
+
     /**
      * @brief Returns a vector of information of the numbering
      */

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,11 @@ class BaseAssemblyMatrix:
         Returns:
             PetscMat: PETSc matrix.
         """
-        return assemblyMatrixToPetsc(self)
+
+        if isinstance(self, AssemblyMatrixDisplacementReal):
+            return assemblyMatrixToPetsc(self)
+        else:
+            raise NotImplementedError("Type not supported by Petsc")
 
 class BaseAssemblyMatrixReal(BaseAssemblyMatrix):
     """Base object for real AssemblyMatrix."""
@@ -328,18 +332,7 @@ _orig_DisplReal_getType = AssemblyMatrixDisplacementReal.getType
 
 @injector(AssemblyMatrixDisplacementReal)
 class ExtendedAssemblyMatrixDisplacementReal(BaseAssemblyMatrixReal):
-    def getType(self):
-        """Returns the type of the matrix object.
-
-        .. todo:: This is a workaround to pass the case where the native
-            implementation returns ``MATR_ASSE_DEPL_R_DEPL_R``.
-
-        Returns:
-            str: Type name of the matrix.
-        """
-        typ = _orig_DisplReal_getType(self).replace("_DEPL_R_DEPL_R", "_DEPL_R")
-        return typ
-
+    pass
 
 
 @injector(AssemblyMatrixDisplacementComplex)

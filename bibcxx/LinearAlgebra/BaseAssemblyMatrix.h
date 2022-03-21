@@ -102,6 +102,12 @@ class BaseAssemblyMatrix : public DataStructure {
     /**
      * @brief Constructeur
      */
+    BaseAssemblyMatrix( const std::string &name, const std::string &type,
+                        const BaseAssemblyMatrix &toCopy );
+
+    /**
+     * @brief Constructeur
+     */
     BaseAssemblyMatrix( const std::string &type )
         : BaseAssemblyMatrix( ResultNaming::getNewResultName(), type ){};
 
@@ -109,6 +115,12 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Constructeur
      */
     BaseAssemblyMatrix( const PhysicalProblemPtr phys_prob, const std::string &type );
+
+    /**
+     * @brief Constructeur
+     */
+
+    BaseAssemblyMatrix( BaseAssemblyMatrix &&other );
 
     /**
      * @brief Function d'ajout d'un chargement
@@ -122,7 +134,7 @@ class BaseAssemblyMatrix : public DataStructure {
     /**
      * @brief Assemblage de la matrice
      */
-    virtual bool assemble(bool clean = true) { AS_ABORT( "Not allowed" ); };
+    virtual bool assemble( bool clean = true ) { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief Make the matrix symmetric
@@ -191,24 +203,20 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Get MaterialField
      * @return MaterialField of the first ElementaryMatrix (all others must be the same)
      */
-    virtual MaterialFieldPtr getMaterialField() const {
-        AS_ABORT( "Not allowed" );
-    };
+    virtual MaterialFieldPtr getMaterialField() const { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief Get the number of defined ElementaryMatrix
      * @return size of vector containing ElementaryMatrix
      */
-    virtual ASTERINTEGER getNumberOfElementaryMatrix() const {
-        AS_ABORT( "Not allowed" );
-    };
+    virtual ASTERINTEGER getNumberOfElementaryMatrix() const { AS_ABORT( "Not allowed" ); };
 
 #ifdef ASTER_HAVE_PETSC4PY
     /**
      * @brief Conversion to petsc4py
      * @return converted matrix
      */
-    Mat toPetsc4py() {
+    Mat toPetsc() {
         Mat myMat;
         PetscErrorCode ierr;
 

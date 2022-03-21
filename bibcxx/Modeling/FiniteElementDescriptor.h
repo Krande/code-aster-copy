@@ -33,8 +33,8 @@
 #include "Meshes/MeshExplorer.h"
 #include "Modeling/Model.h"
 
+// Forward declaration
 class Model;
-
 using ModelPtr = std::shared_ptr< Model >;
 
 /**
@@ -80,6 +80,12 @@ class FiniteElementDescriptor : public DataStructure {
 
   public:
     /**
+     * @typedef FiniteElementDescriptorPtr
+     * @brief Pointeur intelligent vers un FiniteElementDescriptor
+     */
+    using FiniteElementDescriptorPtr = std::shared_ptr< FiniteElementDescriptor >;
+
+    /**
      * @brief Constructeur
      */
     FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh );
@@ -88,19 +94,15 @@ class FiniteElementDescriptor : public DataStructure {
 
     FiniteElementDescriptor( const ModelPtr model );
 
-    FiniteElementDescriptor( const FiniteElementDescriptor &FEDesc,
+    FiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc,
                              const VectorString &groupOfCells );
+
+    FiniteElementDescriptor( const ModelPtr model, const VectorString &groupOfCells );
 
     /**
      * @brief Destructor
      */
     ~FiniteElementDescriptor(){};
-
-    /**
-     * @typedef FiniteElementDescriptorPtr
-     * @brief Pointeur intelligent vers un FiniteElementDescriptor
-     */
-    using FiniteElementDescriptorPtr = std::shared_ptr< FiniteElementDescriptor >;
 
     const ConnectivityVirtualCellsExplorer &getVirtualCellsExplorer() const;
 
