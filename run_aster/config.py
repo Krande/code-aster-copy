@@ -228,14 +228,14 @@ class Config:
             main (bool): *True* for the configuration file installed for this
                 version, *False* for user configuration file.
         """
-        logger.debug(f"reading configuration file {jsfile}")
+        logger.debug("reading configuration file %s", jsfile)
         try:
             with open(jsfile, "rb") as jsfile:
                 content = json.load(jsfile)
         except FileNotFoundError:
             if main:
-                logger.error(f"file not found: {jsfile}")
-            logger.debug(f"file not found: {jsfile}")
+                logger.error("file not found: %s", jsfile)
+            logger.debug("file not found: %s", jsfile)
             return
         self.import_dict(content, with_sections=not main)
 
@@ -273,13 +273,13 @@ class Config:
             candidates = [candidates]
         for cfg in candidates:
             if not isinstance(cfg, dict):
-                logger.warning(f"dict expected for '{section}', not: {cfg}")
+                logger.warning("dict expected for %r, not: %s", section, cfg)
                 continue
             if not fnmatchcase(filter_value, cfg.get(filter_key, "")):
                 continue
             config = cfg.get("config", {})
             if not isinstance(config, dict):
-                logger.warning(f"dict expected for 'config', not: {config}")
+                logger.warning("dict expected for 'config', not: %s", config)
                 continue
             params.update(config)
         return params

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,11 +57,12 @@ from ..Supervis import ExecuteCommandOps
 from ..Utilities.logger import logger
 
 # Units 6 and 9 can not be released/associated.
-RESERVED_UNIT = (8, )
+RESERVED_UNIT = (8,)
 
 
 class FileType(object):
     """Enumeration for file type."""
+
     Ascii = 0
     Binary = 1
     Free = 2
@@ -69,24 +70,17 @@ class FileType(object):
     @staticmethod
     def name(value):
         """Return type as string."""
-        return {
-            0: "ASCII",
-            1: "BINARY",
-            2: "LIBRE",
-        }[value]
+        return {0: "ASCII", 1: "BINARY", 2: "LIBRE"}[value]
 
     @staticmethod
     def value(name):
         """Return type as string."""
-        return {
-            "ASCII": 0,
-            "BINARY": 1,
-            "LIBRE": 2,
-        }[name]
+        return {"ASCII": 0, "BINARY": 1, "LIBRE": 2}[name]
 
 
 class FileAccess(object):
     """Enumeration for file access."""
+
     New = 0
     Append = 1
     Old = 2
@@ -94,24 +88,17 @@ class FileAccess(object):
     @staticmethod
     def name(value):
         """Return type as string."""
-        return {
-            0: "NEW",
-            1: "APPEND",
-            2: "OLD",
-        }[value]
+        return {0: "NEW", 1: "APPEND", 2: "OLD"}[value]
 
     @staticmethod
     def value(name):
         """Return type as string."""
-        return {
-            "NEW": 0,
-            "APPEND": 1,
-            "OLD": 2,
-        }[name]
+        return {"NEW": 0, "APPEND": 1, "OLD": 2}[name]
 
 
 class Action(object):
     """Enumeration for action."""
+
     Open = 0
     Register = 1
     Close = 2
@@ -119,20 +106,12 @@ class Action(object):
     @staticmethod
     def name(value):
         """Return type as string."""
-        return {
-            0: "ASSOCIER",
-            1: "RESERVER",
-            2: "LIBERER",
-        }[value]
+        return {0: "ASSOCIER", 1: "RESERVER", 2: "LIBERER"}[value]
 
     @staticmethod
     def value(name):
         """Return type as string."""
-        return {
-            "ASSOCIER": 0,
-            "RESERVER": 1,
-            "LIBERER": 2,
-        }[name]
+        return {"ASSOCIER": 0, "RESERVER": 1, "LIBERER": 2}[name]
 
 
 class LogicalUnitFile(object):
@@ -142,8 +121,7 @@ class LogicalUnitFile(object):
     # keep in memory: {unit_number: LogicalUnitFile objects}
     _used_unit = {}
 
-    def __init__(self, unit, filename, action, typ, access,
-                 to_register=True):
+    def __init__(self, unit, filename, action, typ, access, to_register=True):
         self._unit = unit
         self._filename = filename
         self._register(self)
@@ -183,8 +161,7 @@ class LogicalUnitFile(object):
         return cls(unit, filename, Action.Open, typ, access)
 
     @staticmethod
-    def register(unit, filename, action,
-                 typ=FileType.Ascii, access=FileAccess.New):
+    def register(unit, filename, action, typ=FileType.Ascii, access=FileAccess.New):
         """Register a logical unit to the fortran manager.
 
         Arguments:
@@ -195,19 +172,17 @@ class LogicalUnitFile(object):
             typ (FileType): Type of the file.
             access (FileAccess): Type of access.
         """
-        kwargs = _F(ACTION=Action.name(action),
-                    UNITE=unit)
+        kwargs = _F(ACTION=Action.name(action), UNITE=unit)
         if action == Action.Open:
             if filename:
-                kwargs['FICHIER'] = filename
+                kwargs["FICHIER"] = filename
                 if access == FileAccess.New and osp.exists(filename):
-                    logger.warning(f"remove existing file '{filename}'")
+                    logger.warning("remove existing file %r", filename)
                     os.remove(filename)
-            kwargs['TYPE'] = FileType.name(typ)
-            kwargs['ACCES'] = FileAccess.name(access)
+            kwargs["TYPE"] = FileType.name(typ)
+            kwargs["ACCES"] = FileAccess.name(access)
             if typ != FileType.Ascii and access == FileAccess.Append:
-                raise ValueError("'Append' access is only valid with "
-                                 "type 'Ascii'.")
+                raise ValueError("'Append' access is only valid with " "type 'Ascii'.")
         # call the fortran operator
         DefineUnitFile.run(**kwargs)
 
@@ -263,19 +238,18 @@ class LogicalUnitFile(object):
     @classmethod
     def _register(cls, fileobj):
         """Register a logical unit."""
-        logger.debug(f"LogicalUnit: register unit {fileobj._unit}, "
-                     f"name {fileobj._filename!r}")
+        logger.debug("LogicalUnit: register unit %d, name %r", fileobj._unit, fileobj._filename)
         cls._used_unit[fileobj._unit] = fileobj
 
     @classmethod
-    def release_from_number(cls, unit, to_register = True):
+    def release_from_number(cls, unit, to_register=True):
         """Release a logical unit from its number.
 
         Arguments:
             unit (int): Number of logical unit to release.
             to_register (bool): Boolean to avoid calling of register.
         """
-        logger.debug(f"LogicalUnit: release unit {unit}")
+        logger.debug("LogicalUnit: release unit %d", unit)
         fileobj = cls.from_number(unit)
         if not fileobj:
             # RESERVED_UNIT or not registered
@@ -315,12 +289,12 @@ class ReservedUnitUsed(object):
 
     def __exit__(self, exc_type, exc_value, traceback):
         for unit in self._units:
-            LogicalUnitFile.register(unit, None, Action.Open,
-                                     FileType.Ascii, FileAccess.Append)
+            LogicalUnitFile.register(unit, None, Action.Open, FileType.Ascii, FileAccess.Append)
 
 
 class DefineUnitFile(ExecuteCommandOps):
     """Execute legacy operator DEFI_FICHIER."""
+
     command_name = "DEFI_FICHIER"
     command_op = 26
 
@@ -330,12 +304,11 @@ class DefineUnitFile(ExecuteCommandOps):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        if (keywords["ACTION"] in ("ASSOCIER", "RESERVER") and
-                keywords.get("UNITE") is None):
+        if keywords["ACTION"] in ("ASSOCIER", "RESERVER") and keywords.get("UNITE") is None:
             # ask for a free unit
             filename = keywords.get("FICHIER")
-            typ    = FileType.value( keywords.get("TYPE") )
-            access = FileAccess.value( keywords.get("ACCES") )
+            typ = FileType.value(keywords.get("TYPE"))
+            access = FileAccess.value(keywords.get("ACCES"))
             fileobj = LogicalUnitFile.new_free(filename, typ, access)
             self._result = fileobj.unit
         else:
@@ -357,14 +330,12 @@ class DefineUnitFile(ExecuteCommandOps):
         Arguments:
             keywords (dict): User's keywords.
         """
-        if (keywords["ACTION"] in ("ASSOCIER", "RESERVER") and
-                keywords.get("UNITE") is not None):
+        if keywords["ACTION"] in ("ASSOCIER", "RESERVER") and keywords.get("UNITE") is not None:
             action = Action.value(keywords["ACTION"])
             typ = FileType.value(keywords["TYPE"])
             access = FileAccess.value(keywords["ACCES"])
             file_name = keywords.get("FICHIER")
-            LogicalUnitFile(keywords["UNITE"], file_name, action, typ,
-                            access, False)
+            LogicalUnitFile(keywords["UNITE"], file_name, action, typ, access, False)
 
         if keywords["ACTION"] == "LIBERER":
             LogicalUnitFile.release_from_number(keywords["UNITE"], False)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,6 @@ debug messages that may be interesting for the user (equivalent to
 ``INFO=2``)...
 It might be necessary to refactor it in C++ for better performance and a
 global access (no C interface currently)...
-
-.. todo:: Not used anymore, remove ?
-    A :file:`trace.log` file is also opened for detailed traceback.
 """
 
 import logging
@@ -134,7 +131,7 @@ def build_logger(level=INFO, raise_exception=True):
 
         def _error(self, *args, **kwargs):
             logger._error_orig(self, *args, **kwargs)
-            raise AsterError('SUPERVIS_99')
+            raise AsterError("SUPERVIS_99")
 
         logger.error = _error
 
@@ -143,37 +140,15 @@ def build_logger(level=INFO, raise_exception=True):
 
 logger = build_logger()
 
-_logfile = None
-
-
-def tracelog(dir=None):
-    """Open the log file for detailed output"""
-    global _logfile
-    if _logfile is None:
-        fname = tempfile.NamedTemporaryFile(dir=dir, prefix='code_aster_trace_',
-                                            suffix='.log').name
-        _logfile = open(fname, 'wb')
-    return _logfile
-
-
-def close_tracelog(write=None):
-    """Close (and remove) the log file"""
-    global _logfile
-    if _logfile:
-        _logfile.close()
-        if write:
-            write(open(_logfile.name, 'rb').read())
-        _logfile = None
-
 COLOR = {
-    'red': r'\033[1;31m',
-    'green': r'\033[1;32m',
-    'blue': r'\033[1;34m',
-    'grey': r'\033[1;30m',
-    'magenta': r'\033[1;35m',
-    'cyan': r'\033[1;36m',
-    'yellow': r'\033[1;33m',
-    'endc': r'\033[1;m',
+    "red": r"\033[1;31m",
+    "green": r"\033[1;32m",
+    "blue": r"\033[1;34m",
+    "grey": r"\033[1;30m",
+    "magenta": r"\033[1;35m",
+    "cyan": r"\033[1;36m",
+    "yellow": r"\033[1;33m",
+    "endc": r"\033[1;m",
 }
 
 try:
@@ -186,12 +161,13 @@ def _colorize(color, string):
     """Return the colored `string`"""
     if not _colored or not string.strip():
         return string
-    return COLOR[color] + string + COLOR['endc']
+    return COLOR[color] + string + COLOR["endc"]
 
-red = partial(_colorize, 'red')
-green = partial(_colorize, 'green')
-blue = partial(_colorize, 'blue')
-magenta = partial(_colorize, 'magenta')
-cyan = partial(_colorize, 'cyan')
-yellow = partial(_colorize, 'yellow')
-grey = partial(_colorize, 'grey')
+
+red = partial(_colorize, "red")
+green = partial(_colorize, "green")
+blue = partial(_colorize, "blue")
+magenta = partial(_colorize, "magenta")
+cyan = partial(_colorize, "cyan")
+yellow = partial(_colorize, "yellow")
+grey = partial(_colorize, "grey")

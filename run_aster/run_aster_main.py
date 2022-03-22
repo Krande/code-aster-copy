@@ -266,7 +266,7 @@ def parse_args(argv):
     if args.version:
         tag = CFG.get("version_tag")
         sha1 = CFG.get("version_sha1")[:12]
-        logger.info(f"code_aster {tag} ({sha1})")
+        logger.info("code_aster %s ({%s})", tag, sha1)
         parser.exit(0)
     if args.env and not args.wrkdir:
         parser.error("Argument '--wrkdir' is required if '--env' is enabled")

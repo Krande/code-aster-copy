@@ -50,7 +50,7 @@ class FormulaStateBuilder(InternalStateBuilder):
         for key, val in form.getContext().items():
             # objects defined in *main* could not be restored/reimported
             if getattr(val, "__module__", "") == "__main__":
-                logger.warning(f"can not pickle object: {key} {type(val)}")
+                logger.warning("can not pickle object: %s %s", key, type(val))
                 continue
             if val is not init.get(key):
                 user_ctxt[key] = val
@@ -70,11 +70,11 @@ class FormulaStateBuilder(InternalStateBuilder):
         # try to load the context
         try:
             ctxt = initial_context()
-            logger.debug(f"restoring formula context: {self._st['ctxt']}")
+            logger.debug("restoring formula context: %s", self._st["ctxt"])
             ctxt.update(self._st["ctxt"])
             form.setContext(ctxt)
         except:
-            logger.warning(f"can not restore context of formula '{form.getName()}'")
+            logger.warning("can not restore context of formula %r", form.getName())
             logger.debug(traceback.format_exc())
 
 

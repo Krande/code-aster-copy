@@ -36,8 +36,15 @@ from .config import CFG
 from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
 from .timer import Timer
-from .utils import (RUNASTER_ROOT, cmd_abspath, compress, copy, make_writable,
-                    run_command, uncompress)
+from .utils import (
+    RUNASTER_ROOT,
+    cmd_abspath,
+    compress,
+    copy,
+    make_writable,
+    run_command,
+    uncompress,
+)
 
 EXITCODE_FILE = "_exit_code_"
 TMPMESS = "fort.6"
@@ -64,11 +71,11 @@ class RunAster:
     Arguments:
         export (Export): Export object defining the calculation.
     """
+
     _show_comm = True
 
     @classmethod
-    def factory(cls, export, test=False, env=False, tee=False,
-                interactive=False, exectool=None):
+    def factory(cls, export, test=False, env=False, tee=False, interactive=False, exectool=None):
         """Return a *RunAster* object from an *Export* object.
 
         Arguments:
@@ -85,12 +92,11 @@ class RunAster:
             class_ = RunOnlyEnv
         return class_(export, test, tee, interactive, exectool)
 
-    def __init__(self, export, test=False, tee=False, interactive=False,
-                 exectool=None):
+    def __init__(self, export, test=False, tee=False, interactive=False, exectool=None):
         self.export = export
         self.jobnum = str(os.getpid())
-        logger.debug(f"Export content: {self.export.filename}")
-        logger.debug("\n" + repr(self.export))
+        logger.debug("Export content: %s", self.export.filename)
+        logger.debug("\n%s", self.export)
         self._parallel = CFG.get("parallel", 0)
         self._test = test
         self._tee = tee
@@ -153,7 +159,7 @@ class RunAster:
 
     def prepare_current_directory(self):
         """Prepare the working directory."""
-        logger.info(f"TITLE Prepare environment in {os.getcwd()}")
+        logger.info("TITLE Prepare environment in %s", os.getcwd())
         self.export.write_to(self.jobnum + ".export")
         os.makedirs("REPE_IN", exist_ok=True)
         os.makedirs("REPE_OUT", exist_ok=True)
@@ -170,14 +176,15 @@ class RunAster:
         if self.export.get("nbsteps") > 1:
             os.makedirs("BASE_PREC", exist_ok=True)
 
-        timeout = (self.export.get("time_limit", 86400) * 1.25 *
-                   self.export.get("ncpus", 1))
+        timeout = self.export.get("time_limit", 86400) * 1.25 * self.export.get("ncpus", 1)
         status = Status()
         comm = commfiles[0]
-        logger.info("TITLE Command file #{0} / {1}".format(
-            self.export.get("step") + 1, self.export.get("nbsteps")))
-        comm = change_comm_file(comm, interact=self._interact,
-                                show=self._show_comm)
+        logger.info(
+            "TITLE Command file #{0} / {1}".format(
+                self.export.get("step") + 1, self.export.get("nbsteps")
+            )
+        )
+        comm = change_comm_file(comm, interact=self._interact, show=self._show_comm)
         status.update(self._exec_one(comm, timeout - status.times[-1]))
         self._coredump_analysis()
         return status
@@ -193,10 +200,10 @@ class RunAster:
             Status: Status object.
         """
         idx = self.export.get("step")
-        logger.info(f"TITLE Command line #{idx + 1}:")
+        logger.info("TITLE Command line #%d:", idx + 1)
         timeout = int(max(1, timeout))
         cmd = self._get_cmdline(idx, comm, timeout)
-        logger.info(f"    {' '.join(cmd)}")
+        logger.info("    %s", " ".join(cmd))
 
         exitcode = run_command(cmd, exitcode_file=EXITCODE_FILE)
         msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={exitcode}\n\n"
@@ -300,10 +307,7 @@ class RunAster:
             pass
         elif self._tee:
             orig = " ".join(cmd)
-            cmd = [
-                f"( {orig} ; echo $? > {EXITCODE_FILE} )",
-                "2>&1", "|", "tee", "-a", TMPMESS
-            ]
+            cmd = [f"( {orig} ; echo $? > {EXITCODE_FILE} )", "2>&1", "|", "tee", "-a", TMPMESS]
         else:
             cmd.extend([">>", TMPMESS, "2>&1"])
         cmd.insert(0, f"ulimit -c unlimited ; ulimit -t {timeout:.0f} ;")
@@ -332,7 +336,7 @@ class RunAster:
             is_completed (bool): *True* if execution succeeded,
                 *False* otherwise.
         """
-        logger.info(f"TITLE Content of {os.getcwd()} after execution:")
+        logger.info("TITLE Content of %s after execution:", os.getcwd())
         logger.info(_ls(".", "REPE_OUT"))
         if self._procid != 0:
             return
@@ -349,6 +353,7 @@ class RunOnlyEnv(RunAster):
     Arguments:
         export (Export): Export object defining the calculation.
     """
+
     _show_comm = False
 
     def __init__(self, *args, **kwargs):
@@ -372,12 +377,12 @@ class RunOnlyEnv(RunAster):
             profile = osp.join(RUNASTER_ROOT, "share", "aster", "profile.sh")
             timeout = self.export.get("time_limit", 0) * 1.25
             if not self._parallel:
-                logger.info(f"    cd {os.getcwd()}")
+                logger.info("    cd %s", os.getcwd())
             else:
-                logger.info(f"    cd {osp.dirname(os.getcwd())}")
-            logger.info(f"    . {profile}")
+                logger.info("    cd %s", osp.dirname(os.getcwd()))
+            logger.info("    . %s", profile)
             logger.info("    ulimit -c unlimited")
-            logger.info(f"    ulimit -t {timeout:.0f}")
+            logger.info("    ulimit -t %.0f", timeout)
         return super().execute_study()
 
     def _exec_one(self, comm, timeout):
@@ -401,8 +406,7 @@ class RunOnlyEnv(RunAster):
         if not self._parallel:
             logger.info(cmd[0])
         elif self._procid == 0:
-            args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1),
-                            program="proc.0/" + shell)
+            args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1), program="proc.0/" + shell)
             cmd = CFG.get("mpiexec").format(**args_cmd)
             logger.info(cmd)
         return Status(StateOptions.Ok, exitcode=0)
@@ -417,8 +421,7 @@ def get_procid():
     Returns:
         int: Process ID, -1 if a parallel version is not run under *mpiexec*.
     """
-    proc = run(CFG.get("mpi_get_rank"), shell=True, stdout=PIPE,
-               universal_newlines=True)
+    proc = run(CFG.get("mpi_get_rank"), shell=True, stdout=PIPE, universal_newlines=True)
     try:
         procid = int(proc.stdout.strip())
     except ValueError:
@@ -432,7 +435,7 @@ def get_nbcores():
     Returns:
         int: Number of cores.
     """
-    proc = run(['nproc'], stdout=PIPE, universal_newlines=True)
+    proc = run(["nproc"], stdout=PIPE, universal_newlines=True)
     try:
         value = int(proc.stdout.strip())
     except ValueError:
@@ -453,7 +456,7 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
         str: Name of the file to be executed (== *comm* if nothing changed)
     """
     with open(comm, "rb") as fobj:
-        text_init = fobj.read().decode(errors='replace')
+        text_init = fobj.read().decode(errors="replace")
     text = add_import_commands(text_init)
     if interact:
         text = stop_at_end(text)
@@ -461,12 +464,12 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
     if changed:
         text = file_changed(text, comm)
     if show:
-        logger.info(f"\nContent of the file to execute:\n{text}\n")
+        logger.info("\nContent of the file to execute:\n%s\n", text)
     if not changed:
         return comm
 
     filename = osp.join(wrkdir or ".", osp.basename(comm) + ".changed.py")
-    with open(filename, 'w') as fobj:
+    with open(filename, "w") as fobj:
         fobj.write(text)
     return filename
 
@@ -482,31 +485,32 @@ def copy_datafiles(files):
         # fort.*
         if obj.unit != 0 or obj.filetype == "nom":
             if obj.unit in (6, 15):
-                raise IndexError("Files fort.6 and fort.15 are reserved.\n"
-                                 "Please change unit number for: {}"
-                                 .format(obj.path))
+                raise IndexError(
+                    "Files fort.6 and fort.15 are reserved.\n"
+                    "Please change unit number for: {}".format(obj.path)
+                )
             dest = "fort." + str(obj.unit)
             if obj.filetype == "nom":
                 dest = osp.basename(obj.path)
             # warning if file already exists
             if osp.exists(dest):
-                logger.warning(f"'{obj.path}' overwrites '{dest}'")
+                logger.warning("%r overwrites %r", obj.path, dest)
             if obj.compr:
-                dest += '.gz'
+                dest += ".gz"
         # for directories
         else:
-            if obj.filetype in ('base', 'bhdf'):
+            if obj.filetype in ("base", "bhdf"):
                 dest = osp.basename(obj.path)
-            elif obj.filetype == 'repe':
-                dest = 'REPE_IN'
+            elif obj.filetype == "repe":
+                dest = "REPE_IN"
 
         if dest is not None:
             copy(obj.path, dest, verbose=True)
             if obj.compr:
                 dest = uncompress(dest)
             # move the bases in main directory
-            if obj.filetype in ('base', 'bhdf'):
-                for fname in glob(osp.join(dest, '*')):
+            if obj.filetype in ("base", "bhdf"):
+                for fname in glob(osp.join(dest, "*")):
                     os.rename(fname, osp.basename(fname))
             # force the file to be writable
             make_writable(dest)
@@ -542,7 +546,7 @@ def copy_resultfiles(files, copybase, test=False):
 
         for filename in lsrc:
             if not osp.exists(filename):
-                logger.warning(f"file not found: {filename}")
+                logger.warning("file not found: %s", filename)
             else:
                 if obj.compr:
                     filename = compress(filename)
@@ -554,6 +558,7 @@ def copy_resultfiles(files, copybase, test=False):
 def _ls(*paths):
     proc = run(["ls", "-l"] + list(paths), stdout=PIPE, universal_newlines=True)
     return proc.stdout
+
 
 def _log_mess(msg):
     """Log a message into the *message* file."""

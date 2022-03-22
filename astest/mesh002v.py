@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,14 +34,14 @@ test = code_aster.TestCase()
 rank = code_aster.MPI.COMM_WORLD.Get_rank()
 
 with shared_tmpdir("mesh002v_") as tmpdir:
-    logger.info(f"\n--- Common temporary directory for the testcase: {tmpdir}")
+    logger.info("\n--- Common temporary directory for the testcase: %s", tmpdir)
 
     logger.info("splitting the mesh...")
     ms = MEDPartitioner("sdlx400b.mmed")
     ms.partitionMesh(verbose=True)
 
     # write the mesh in tmpdir
-    logger.info(f"writing mesh...")
+    logger.info("writing mesh...")
     ms.writeMesh(tmpdir)
 
     # add PO1 (need to load sequential mesh)
@@ -57,8 +57,8 @@ mesh = code_aster.Mesh()
 mesh.readMedFile("sdlx400b.mmed")
 
 
-nbNodes = [682,672]
-nbCells = [93,160]
+nbNodes = [682, 672]
+nbCells = [93, 160]
 
 test.assertEqual(pMesh2.getNumberOfNodes(), nbNodes[rank])
 test.assertEqual(pMesh2.getNumberOfCells(), nbCells[rank])
@@ -66,11 +66,11 @@ test.assertEqual(pMesh2.getNumberOfCells(), nbCells[rank])
 
 # tests
 group_no_std = mesh.getGroupsOfNodes(local=False)
-group_no_gl  = pMesh2.getGroupsOfNodes(local=False)
+group_no_gl = pMesh2.getGroupsOfNodes(local=False)
 test.assertSequenceEqual(sorted(group_no_std), sorted(group_no_gl))
 
 group_ma_std = mesh.getGroupsOfCells(local=False)
-group_ma_gl  = pMesh2.getGroupsOfCells(local=False)
+group_ma_gl = pMesh2.getGroupsOfCells(local=False)
 test.assertSequenceEqual(sorted(group_ma_std), sorted(group_ma_gl))
 
 nb_nodes_std = mesh.getNumberOfNodes()

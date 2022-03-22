@@ -439,7 +439,7 @@ class ExecuteCommand(object):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        logger.debug(f"checking syntax of {self.name}...")
+        logger.debug("checking syntax of %s...", self.name)
         max_check = ExecutionParameter().get_option("max_check")
         checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
 

@@ -132,33 +132,33 @@ class Serializer(object):
         """
         for fname in (cls._base, cls._pick_filename, cls._info_filename, cls._sha_filename):
             if not osp.exists(fname):
-                logger.error(f"Can not restart, no such file: {fname}")
+                logger.error("Can not restart, no such file: %s", fname)
                 return False
 
         sign = read_signature(cls._sha_filename)
         if len(sign) != 3:
-            logger.error(f"Invalid sha file: '{cls._sha_filename}'")
+            logger.error("Invalid sha file: %r", cls._sha_filename)
             return False
         ref_pick, ref_info, ref_base = sign
         sign_pick = file_signature(cls._pick_filename)
         if sign_pick != ref_pick:
-            logger.error(f"Current pickled file: {sign_pick}")
-            logger.error(f"Expected signature  : {ref_pick}")
-            logger.error(f"The '{cls._pick_filename}' file is not " f"the expected one.")
+            logger.error("Current pickled file: %s", sign_pick)
+            logger.error("Expected signature  : %s", ref_pick)
+            logger.error("The %r file is not the expected one.", cls._pick_filename)
             return False
 
         sign_info = file_signature(cls._info_filename)
         if sign_info != ref_info:
-            logger.error(f"Current info file : {sign_info}")
-            logger.error(f"Expected signature: {ref_info}")
-            logger.error(f"The '{cls._info_filename}' file is not " f"the expected one.")
+            logger.error("Current info file : %s", sign_info)
+            logger.error("Expected signature: %s", ref_info)
+            logger.error("The %r file is not the expected one.", cls._info_filename)
             return False
 
         sign_base = file_signature(cls._base, 0, 8000000)
         if sign_base != ref_base:
-            logger.error(f"Current base file : {sign_base}")
-            logger.error(f"Expected signature: {ref_base}")
-            logger.error(f"The '{cls._base}' file is not the expected one.")
+            logger.error("Current base file : %s", sign_base)
+            logger.error("Expected signature: %s", ref_base)
+            logger.error("The %r file is not the expected one.", cls._base)
             return False
         return True
 
@@ -181,17 +181,17 @@ class Serializer(object):
                 if name == "CO" or obj is logger:
                     continue
                 try:
-                    logger.info(f"{name:<24s} {type(obj)}")
+                    logger.info("%-24s %s", name, type(obj))
                     pickler.save_one(obj)
                     objList.append(name)
                 except Exception:
-                    logger.warning(f"object can not be pickled: {name}")
+                    logger.warning("object can not be pickled: %s", name)
                     logger.debug(traceback.format_exc())
                     continue
                 if isinstance(obj, DataStructure):
                     saved.append(name)
 
-        logger.debug(f"Objects saved: {objList}")
+        logger.debug("Objects saved: %s", objList)
         with open(self._info_filename, "wb") as pick:
             # add management objects on the stack
             pickle.dump(objList, pick)
@@ -204,11 +204,11 @@ class Serializer(object):
             pickler = pickle.Pickler(pick)
 
             sign_pick = file_signature(self._pick_filename)
-            logger.info(f"Signature of pickled file   : {sign_pick}")
+            logger.info("Signature of pickled file   : %s", sign_pick)
             sign_info = file_signature(self._info_filename)
-            logger.info(f"Signature of info file      : {sign_info}")
+            logger.info("Signature of info file      : %s", sign_info)
             sign_base = file_signature(self._base, 0, 8000000)
-            logger.info(f"Signature of Jeveux database: {sign_base}")
+            logger.info("Signature of Jeveux database: %s", sign_base)
 
             pickler.dump(sign_pick)
             pickler.dump(sign_info)
@@ -226,7 +226,7 @@ class Serializer(object):
 
         should_fail = ExecutionParameter().option & Options.StrictUnpickling
         pool = objList[:]
-        logger.debug(f"Objects pool: {pool}")
+        logger.debug("Objects pool: %s", pool)
         with open(self._pick_filename, "rb") as pick:
             unpickler = AsterUnpickler(pick)
             # load all the objects
@@ -235,15 +235,15 @@ class Serializer(object):
             try:
                 while True:
                     name = pool.pop(0) if pool else None
-                    logger.debug(f"loading: {name}...")
+                    logger.debug("loading: %s...", name)
                     try:
                         obj = unpickler.load_one()
-                        logger.debug(f"object restored: {name} {type(obj)}...")
+                        logger.debug("object restored: %s %s...", name, type(obj))
                     except Exception as exc:
                         if isinstance(exc, EOFError):
                             raise
                         logger.info(traceback.format_exc())
-                        logger.info(f"can not restore object: {name}")
+                        logger.info("can not restore object: %s", name)
                         if should_fail:
                             raise
                         continue
@@ -254,25 +254,25 @@ class Serializer(object):
 
         not_read = set(objList).difference(names)
         if not_read:
-            logger.warning(f"These objects have not been reloaded: " f"{tuple(not_read)}")
+            logger.warning("These objects have not been reloaded: %s", tuple(not_read))
         logger.info("Restored objects:")
         for name, obj in zip(names, objects):
-            logger.debug(f"restoring {name}...")
+            logger.debug("restoring %s...", name)
             try:
                 obj = _restore(name, obj)
             except Exception:
                 if should_fail:
                     raise
                 logger.warning(traceback.format_exc())
-                logger.error(f"can not restore object: {name} <{obj}>")
+                logger.error("can not restore object: %s <%s>", name, obj)
                 continue
             self._ctxt[name] = obj
             if not name:
-                logger.warning(f"restoring {type(obj)} with name 'None'!")
+                logger.warning("restoring %s with name 'None'!", type(obj))
                 continue
             if isinstance(obj, DataStructure):
                 obj.userName = name
-            logger.info(f"{name:<24s} {type(obj)}")
+            logger.info("%-24s %s", name, type(obj))
             assert not isinstance(obj, AsterUnpickler.BufferObject)
 
 
@@ -298,11 +298,11 @@ def _restore(name, obj):
     if isinstance(obj, AsterUnpickler.BufferObject):
         return obj.instance
     if isinstance(obj, WithEmbeddedObjects):
-        logger.info(f"restoring user object {name}, attrs: {obj.aster_embedded}")
+        logger.info("restoring user object %s, attrs: %s", name, obj.aster_embedded)
         for attr in obj.aster_embedded:
-            logger.debug(f"attr: {attr}, was: {getattr(obj, attr)}")
+            logger.debug("attr: %s, was: %s", attr, getattr(obj, attr))
             setattr(obj, attr, _restore(name, getattr(obj, attr)))
-            logger.debug(f"new: {getattr(obj, attr)}")
+            logger.debug("new: %s", getattr(obj, attr))
         return obj
     return obj
 
@@ -414,7 +414,7 @@ class AsterPickler(pickle.Pickler):
             obj (*misc*): Object to save.
         """
         self._depth += 1
-        logger.debug(f"save_one: {self._depth} / {obj}")
+        logger.debug("save_one: %s / %s", self._depth, obj)
         if isinstance(obj, (list, tuple)):
             if obj and contains_datastructure(obj):
                 self.save_one(LIST)
@@ -446,17 +446,17 @@ class AsterPickler(pickle.Pickler):
                     init_args = ()
                 self.save_one(ARGS)
                 self.save_one(len(init_args))
-                logger.debug(f"saved initargs: len {len(init_args)}: {init_args}")
+                logger.debug("saved initargs: len %d: %s", len(init_args), init_args)
                 self.save_one(name)
                 for item in init_args:
                     self.save_one(item)
                 # save state
                 state = obj.__getstate__()
                 assert isinstance(state, InternalStateBuilder), state
-                logger.debug(f"saved state: {state}")
+                logger.debug("saved state: %s", state)
                 self.save_one(state)
             else:
-                logger.debug(f"skip object {ds_id}")
+                logger.debug("skip object %s", ds_id)
 
         self.dump(obj)
         self._depth -= 1
@@ -469,7 +469,7 @@ class AsterPickler(pickle.Pickler):
         """
         if isinstance(obj, DataStructure):
             pers_id = unique_id(obj)
-            logger.debug(f"persistent id: {pers_id}")
+            logger.debug("persistent id: %s", pers_id)
             return pers_id
 
         # other objects, pickled as usual
@@ -573,13 +573,13 @@ class AsterUnpickler(pickle.Unpickler):
                 misc: DataStructure object.
             """
             if self._inst is None:
-                logger.debug(f"building {self._name!r} of type {self._class}")
+                logger.debug("building %r of type %s", self._name, self._class)
                 # DataStructure must be in args (not in sub-objects)
                 args = [i.instance if isinstance(i, type(self)) else i for i in self.args]
-                logger.debug(f"initargs: {args}")
+                logger.debug("initargs: %s", args)
                 self._inst = getattr(Objects, self.classname)(*args)
-                logger.debug(f"new object: {self._inst}")
-                logger.debug(f"setting state: {self.state}")
+                logger.debug("new object: %s", self._inst)
+                logger.debug("setting state: %s", self.state)
                 _restore(f"{self._name} .state", self.state)
                 getattr(self._inst, "__setstate__")(self.state)
             return self._inst
@@ -614,7 +614,7 @@ class AsterUnpickler(pickle.Unpickler):
         """
         obj = self.load()
         self._depth += 1
-        logger.debug(f"load_one: {self._depth} / {obj}")
+        logger.debug("load_one: %s / %s", self._depth, obj)
         if not isinstance(obj, str):
             self._depth -= 1
             return obj
@@ -622,13 +622,13 @@ class AsterUnpickler(pickle.Unpickler):
             size = self.load_one()
             for _ in range(size):
                 self.load_one()
-            logger.debug(f"list: {self._depth} / {obj}")
+            logger.debug("list: %s / %s", self._depth, obj)
             obj = self.load_one()
         if obj == DICT:
             size = self.load_one()
             for _ in range(size):
                 self.load_one()
-            logger.debug(f"dict: {self._depth} / {obj}")
+            logger.debug("dict: %s / %s", self._depth, obj)
             obj = self.load_one()
         if obj == ARGS:
             nbobj = self.load_one()
@@ -638,7 +638,7 @@ class AsterUnpickler(pickle.Unpickler):
                 init_args.append(self.load_one())
             buffer = self._stack.buffer(name)
             buffer.args = init_args
-            logger.debug(f"loaded initargs: {init_args}")
+            logger.debug("loaded initargs: %s", init_args)
             # expecting the STATE mark
             mark = self.load_one()
             assert mark == STATE, mark
@@ -654,7 +654,7 @@ class AsterUnpickler(pickle.Unpickler):
                 raise pickle.PicklingError("internal state can not be loaded")
             # 'load' will call 'persistent_load'
             obj = self.load_one()
-            logger.debug(f"loaded DataStructure '{obj}'")
+            logger.debug("loaded DataStructure %r", obj)
         self._depth -= 1
         return obj
 
@@ -682,7 +682,7 @@ class AsterUnpickler(pickle.Unpickler):
             *BufferObject*: New object to store DataStructure informations.
         """
         decoded_id = eval(pers_id)
-        logger.debug(f"persistent id loaded: {decoded_id}")
+        logger.debug("persistent id loaded: %s", decoded_id)
         type_tag, class_id, key_id = decoded_id
         if type_tag == "DataStructure":
             return self.recover_ds(class_id, key_id)
@@ -746,7 +746,7 @@ def read_signature(sha_file):
             sign.append(pickle.Unpickler(pick).load())
     except Exception:
         traceback.print_exc()
-    logger.debug(f"pickled signatures: {sign}")
+    logger.debug("pickled signatures: %s", sign)
     return sign
 
 

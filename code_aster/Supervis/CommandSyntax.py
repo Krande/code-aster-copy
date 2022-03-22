@@ -59,13 +59,22 @@ import random
 
 from ..Cata import Commands
 from ..Objects import DataStructure
-from ..Utilities import (force_list, import_object, is_complex, is_float,
-                         is_int, is_str, logger, value_is_sequence)
+from ..Utilities import (
+    force_list,
+    import_object,
+    is_complex,
+    is_float,
+    is_int,
+    is_str,
+    logger,
+    value_is_sequence,
+)
 from .typeaster import typeaster
 
 # WARNING:
 #   user keywords dict may be very big, uncomment 'logger.debug' lines
 #   only during debugging
+
 
 class CommandSyntax(object):
     """This class describes the syntax of command for compatibility
@@ -95,7 +104,6 @@ class CommandSyntax(object):
         """
         return cls._currentCommand
 
-
     def __init__(self, name="unNamed", cata=None):
         """Create a new command or part of syntax.
 
@@ -109,14 +117,15 @@ class CommandSyntax(object):
         self._resultType = " "
         self._resultValue = None
         self._definition = None
-        logger.debug(f"Syntax: new command is {name!r}")
+        logger.debug("Syntax: new command is %r", name)
         currentCommand = self.getCurrentCommand()
         # only FIN is allowed to free the current "in failure" command
         if self._name == "FIN" and currentCommand is not None:
             currentCommand.free()
             currentCommand = self.getCurrentCommand()
-        assert currentCommand is None, \
-            "CommandSyntax {} must be freed".format( currentCommand.getName() )
+        assert currentCommand is None, "CommandSyntax {} must be freed".format(
+            currentCommand.getName()
+        )
         self.setCurrentCommand(self)
         if not cata:
             if "." not in name:
@@ -124,26 +133,26 @@ class CommandSyntax(object):
             else:
                 cata = import_object(name)
             if not cata:
-                logger.debug(f"CommandSyntax: catalog not found for {name!r}")
+                logger.debug("CommandSyntax: catalog not found for %r", name)
         self._commandCata = cata
 
-    def free( self ):
+    def free(self):
         """Reset the current command pointer as soon as possible"""
         # `currentCommand` must be reset before the garbage collector will do it
-        # logger.debug(f"Syntax: del command {self._name!r}")
+        # logger.debug("Syntax: del command %r", name)
         self.setCurrentCommand(None)
 
-    def __repr__( self ):
+    def __repr__(self):
         """Representation of the command"""
-        return ("Command {!r}, returns {!r} <{!r}>\n` syntax: {}"
-            .format(self._name, self._resultName, self._resultType,
-                    self._definition))
+        return "Command {!r}, returns {!r} <{!r}>\n` syntax: {}".format(
+            self._name, self._resultName, self._resultType, self._definition
+        )
 
-    def debugPrint( self ):
+    def debugPrint(self):
         """Representation of the command"""
-        logger.debug( repr(self) )
+        logger.debug("%r", self)
 
-    def setResult( self, sdName, sdType ):
+    def setResult(self, sdName, sdType):
         """Register the result of the command: name and type.
 
         Arguments:
@@ -153,7 +162,7 @@ class CommandSyntax(object):
         self._resultName = sdName
         self._resultType = sdType
 
-    def define( self, dictSyntax, add_default=True ):
+    def define(self, dictSyntax, add_default=True):
         """Register the keywords values.
 
         Arguments:
@@ -162,12 +171,12 @@ class CommandSyntax(object):
                 added or not.
         """
         if self._commandCata != None and add_default:
-            # logger.debug(f"define0 {self._name!r}: {dictSyntax!r}")
-            self._commandCata.addDefaultKeywords( dictSyntax )
+            # logger.debug("define0 %r: %r", self._name, dictSyntax)
+            self._commandCata.addDefaultKeywords(dictSyntax)
         self._definition = dictSyntax
-        # logger.debug(f"define1 {self._name!r}: {self._definition!r}")
+        # logger.debug("define1 %r: %r", self._name, self._definition)
 
-    def getName( self ):
+    def getName(self):
         """Return the command name.
 
         Returns:
@@ -175,7 +184,7 @@ class CommandSyntax(object):
         """
         return self._name
 
-    def getResultName( self ):
+    def getResultName(self):
         """Return the name of the result of the Command.
 
         Returns:
@@ -183,7 +192,7 @@ class CommandSyntax(object):
         """
         return self._resultName
 
-    def getResultType( self ):
+    def getResultType(self):
         """Return the type of the result of the command.
 
         Returns:
@@ -191,7 +200,7 @@ class CommandSyntax(object):
         """
         return self._resultType
 
-    def getResultValue( self ):
+    def getResultValue(self):
         """Return the value of the result of the Command.
 
         Returns:
@@ -199,7 +208,7 @@ class CommandSyntax(object):
         """
         return self._resultValue
 
-    def _getFactorKeyword( self, factName ):
+    def _getFactorKeyword(self, factName):
         """Return the occurrences of a factor keyword.
 
         Arguments:
@@ -210,15 +219,15 @@ class CommandSyntax(object):
                 provided by the user.
         """
         # a factor keyword may be empty: {} (None means 'does not exist')
-        dictDef = self._definition.get( factName, None )
-        # logger.debug(f"factor keyword {factName!r}: {dictDef!r}")
+        dictDef = self._definition.get(factName, None)
+        # logger.debug("factor keyword %r: %r", factName, dictDef)
         if dictDef is None:
             return None
         if isinstance(dictDef, dict):
-            dictDef = [dictDef, ]
+            dictDef = [dictDef]
         return dictDef
 
-    def _getFactorKeywordOccurrence( self, factName, occurrence ):
+    def _getFactorKeywordOccurrence(self, factName, occurrence):
         """Return the definition of an occurrence of a factor keyword.
 
         Arguments:
@@ -228,7 +237,7 @@ class CommandSyntax(object):
         Returns:
             dict: Occurrence of a factor keyword, *None* if it is not
                 provided by the user."""
-        dictDef = self._getFactorKeyword( factName )
+        dictDef = self._getFactorKeyword(factName)
         if dictDef is None:
             return None
         try:
@@ -236,7 +245,7 @@ class CommandSyntax(object):
         except:
             return None
 
-    def _getDefinition( self, factName, occurrence ):
+    def _getDefinition(self, factName, occurrence):
         """Return the definition of a factor keyword or of the top-level
         if `factName` is blank.
 
@@ -250,13 +259,13 @@ class CommandSyntax(object):
         if not factName.strip():
             dictDef = self._definition
         else:
-            dictDef = self._getFactorKeywordOccurrence( factName, occurrence )
+            dictDef = self._getFactorKeywordOccurrence(factName, occurrence)
             if not dictDef:
                 dictDef = {}
         assert isinstance(dictDef, dict), "syntax not defined"
         return dictDef
 
-    def _getCataDefinition( self, factName ):
+    def _getCataDefinition(self, factName):
         """Return the definition of a factor keyword in the catalog or of the
         top-level if `factName` is blank.
 
@@ -278,7 +287,7 @@ class CommandSyntax(object):
             return None
         return keywords.definition
 
-    def getFactorKeywordNbOcc( self, factName ):
+    def getFactorKeywordNbOcc(self, factName):
         """Return the number of occurrences of a factor keyword in the
         user's keywords.
 
@@ -288,17 +297,16 @@ class CommandSyntax(object):
         Returns:
             int: Number of occurrences of a factor keyword.
         """
-        dictDef = self._getFactorKeyword( factName )
-        # logger.debug(f"_getFactorKeyword {factName!r}: {dictDef!r}")
+        dictDef = self._getFactorKeyword(factName)
+        # logger.debug("_getFactorKeyword %r: %r", factName, dictDef)
         if dictDef is None:
             return 0
-        # logger.debug(f"getFactorKeywordNbOcc: len(dictDef) = {len(dictDef)}")
+        # logger.debug("getFactorKeywordNbOcc: len(dictDef) = %d", len(dictDef))
         return len(dictDef)
 
     getfac = getFactorKeywordNbOcc
 
-    def existsFactorAndSimpleKeyword( self, factName, occurrence,
-                                      simpName ):
+    def existsFactorAndSimpleKeyword(self, factName, occurrence, simpName):
         """Tell if the couple ( factor keyword, simple keyword ) exists in the
         user keywords.
 
@@ -310,13 +318,13 @@ class CommandSyntax(object):
         Returns:
             int: 1 if the keyword exists, else 0.
         """
-        dictDef = self._getDefinition( factName, occurrence )
-        value = dictDef.get( simpName, None )
+        dictDef = self._getDefinition(factName, occurrence)
+        value = dictDef.get(simpName, None)
         if value is None or isinstance(value, dict):
             return 0
         return 1
 
-    def getValue( self, factName, occurrence, simpName ):
+    def getValue(self, factName, occurrence, simpName):
         """Return the values of a (simple) keyword.
 
         Arguments:
@@ -327,11 +335,11 @@ class CommandSyntax(object):
         Returns:
             list[misc]: List of the values provided by the user.
         """
-        if not self.existsFactorAndSimpleKeyword( factName, occurrence, simpName ):
+        if not self.existsFactorAndSimpleKeyword(factName, occurrence, simpName):
             return []
-        value = self._getDefinition( factName, occurrence )[simpName]
+        value = self._getDefinition(factName, occurrence)[simpName]
         value = force_list(value)
-        # logger.debug(f"getValue: {value!r}")
+        # logger.debug("getValue: %", value)
         return value
 
     def getltx(self, factName, simpName, occurrence, maxval, lenmax):
@@ -347,7 +355,7 @@ class CommandSyntax(object):
         Returns:
             list[misc]: List of the values provided by the user.
         """
-        value = self.getValue( factName, occurrence, simpName )
+        value = self.getValue(factName, occurrence, simpName)
         value = _check_strings(factName, simpName, value)
         size = len(value)
         if size > maxval:
@@ -370,8 +378,8 @@ class CommandSyntax(object):
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of result names.
         """
-        value = self.getValue( factName, occurrence, simpName )
-        value = [i.getName() if hasattr(i, 'getName') else i for i in value]
+        value = self.getValue(factName, occurrence, simpName)
+        value = [i.getName() if hasattr(i, "getName") else i for i in value]
         size = len(value)
         if size > maxval:
             size = -size
@@ -392,7 +400,7 @@ class CommandSyntax(object):
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of strings.
         """
-        value = self.getValue( factName, occurrence, simpName )
+        value = self.getValue(factName, occurrence, simpName)
         value = _check_strings(factName, simpName, value)
         size = len(value)
         if size > maxval:
@@ -414,9 +422,9 @@ class CommandSyntax(object):
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of integers.
         """
-        value = self.getValue( factName, occurrence, simpName )
-        if len( value ) > 0 and not is_int(value[0], onvalue=True):
-            raise TypeError( "integer expected, got %s" % type( value[0] ) )
+        value = self.getValue(factName, occurrence, simpName)
+        if len(value) > 0 and not is_int(value[0], onvalue=True):
+            raise TypeError("integer expected, got %s" % type(value[0]))
         size = len(value)
         if size > maxval:
             size = -size
@@ -437,12 +445,12 @@ class CommandSyntax(object):
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of floats.
         """
-        value = self.getValue( factName, occurrence, simpName )
-        if len( value ) > 0:
+        value = self.getValue(factName, occurrence, simpName)
+        if len(value) > 0:
             try:
-                float( value[0] )
+                float(value[0])
             except TypeError:
-                raise TypeError( "float expected, got %s" % type( value[0] ) )
+                raise TypeError("float expected, got %s" % type(value[0]))
         size = len(value)
         if size > maxval:
             size = -size
@@ -463,14 +471,14 @@ class CommandSyntax(object):
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of complex numbers.
         """
-        values = self.getValue( factName, occurrence, simpName )
-        if len( values ) > 0:
+        values = self.getValue(factName, occurrence, simpName)
+        if len(values) > 0:
             if type(values[0]) is str:
-                values = values,
+                values = (values,)
             toReturn = []
             for value in values:
                 if type(value) in (list, tuple):
-                    assert value[0] in ('RI', 'MP')
+                    assert value[0] in ("RI", "MP")
                     toReturn.append(tuple(value))
                 else:
                     toReturn.append(value)
@@ -496,7 +504,7 @@ class CommandSyntax(object):
             list: Tuple containing the objects provided by the user.
         """
         try:
-            values = tuple(self.getValue( factName, occurrence, simpName ))
+            values = tuple(self.getValue(factName, occurrence, simpName))
         except Exception as exc:
             print("DEBUG: exception:", str(exc))
             values = ()
@@ -511,7 +519,7 @@ class CommandSyntax(object):
             str: Command name.
         """
         jev, typ, cmd = self.getResultName(), self.getResultType(), self.getName()
-        logger.debug(f"Command {cmd}: result name {jev!r}, type {typ!r}")
+        logger.debug("Command %s: result name %r, type %r", cmd, jev, typ)
         return jev, typ, cmd
 
     def setres(self, value):
@@ -535,13 +543,13 @@ class CommandSyntax(object):
             int: 1 if the keyword exists, else 0.
         """
         catadef = self._getCataDefinition(factName)
-        logger.debug(f"getexm: {factName} / {simpName}")
+        logger.debug("getexm: %s / %s", factName, simpName)
         if not catadef:
             return 0
         if not simpName.strip():
             return 1
         keywords = catadef.simple_keywords
-        # logger.debug(f"getexm: simple keywords: {list(keywords.keys())}")
+        # logger.debug("getexm: simple keywords: %s", list(keywords.keys()))
         return int(keywords.get(simpName) is not None)
 
     def getmjm(self, factName, occurrence, maxval):
@@ -561,7 +569,7 @@ class CommandSyntax(object):
         userkw = self._getDefinition(factName, occurrence)
         if not userkw:
             return (), ()
-        # logger.debug(f"getmjm: user keywords: {userkw}")
+        # logger.debug("getmjm: user keywords: %s", userkw)
         catadef = self._getCataDefinition(factName).simple_keywords
         lkeywords = sorted(userkw.keys())
         kws, types = [], []
@@ -573,24 +581,23 @@ class CommandSyntax(object):
             if kw not in catadef:
                 continue
             kws.append(kw)
-            typ = typeaster(catadef[kw].definition['typ'])
+            typ = typeaster(catadef[kw].definition["typ"])
             if value_is_sequence(obj) and not is_complex(obj):
                 obj = obj[0]
-            if is_complex(obj) and typ == 'C8':
+            if is_complex(obj) and typ == "C8":
                 pass
-            elif is_float(obj) and typ in ('R8', 'C8'):
+            elif is_float(obj) and typ in ("R8", "C8"):
                 pass
-            elif is_int(obj, onvalue=True) and typ in ('IS', 'R8', 'C8'):
+            elif is_int(obj, onvalue=True) and typ in ("IS", "R8", "C8"):
                 pass
-            elif is_str(obj) and typ == 'TX':
+            elif is_str(obj) and typ == "TX":
                 pass
-            elif is_str(obj) and 'FORMULE' in typ:
+            elif is_str(obj) and "FORMULE" in typ:
                 typ = typ[0]
             elif isinstance(obj, DataStructure):
                 typ = obj.getType()
             else:
-                raise TypeError("unsupported type: {0!r} {1}"
-                                .format(obj, type(obj)))
+                raise TypeError("unsupported type: {0!r} {1}".format(obj, type(obj)))
             types.append(typ)
         return kws, types
 
@@ -615,7 +622,7 @@ class CommandSyntax(object):
         """
         if not cls._random:
             cls.iniran()
-        return (cls._random.random(), )
+        return (cls._random.random(),)
 
     def getmat(self):
         raise NotImplementedError("'getmat' is not yet supported.")
@@ -626,7 +633,7 @@ class CommandSyntax(object):
         Returns:
             int: Number of the fortran operator subroutine.
         """
-        return self._commandCata.definition['op']
+        return self._commandCata.definition["op"]
 
 
 def _check_strings(factName, simpName, value):
@@ -645,6 +652,7 @@ def _check_strings(factName, simpName, value):
                 value2.append(value[i].getName())
             value = value2
         except AttributeError:
-            raise TypeError("string expected for {0}/{1}, got {2}"
-                            .format(factName, simpName, type(value[0])))
+            raise TypeError(
+                "string expected for {0}/{1}, got {2}".format(factName, simpName, type(value[0]))
+            )
     return value

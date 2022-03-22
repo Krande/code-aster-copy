@@ -35,11 +35,11 @@ class InternalStateBuilder:
         self._st = {"deps": []}
 
     def __getstate__(self):
-        logger.debug(f"saving state: {self._st}")
+        logger.debug("saving state: %s", self._st)
         return self._st
 
     def __setstate__(self, state):
-        logger.debug(f"reloaded state: {state}")
+        logger.debug("reloaded state: %s", state)
         self._st = state
 
     def save(self, obj):
@@ -53,7 +53,7 @@ class InternalStateBuilder:
         """
         assert hasattr(obj, "getType"), f"not a DataStructure: {obj}"
         self._st["deps"] = obj.getDependencies()
-        logger.debug(f"saving dependencies of {obj}: {self._st['deps']}")
+        logger.debug("saving dependencies of %s: %s", obj, self._st["deps"])
         return self
 
     def restore(self, obj):
@@ -63,7 +63,7 @@ class InternalStateBuilder:
         Arguments:
             obj (*DataStructure*): The *DataStructure* object to be pickled.
         """
-        logger.debug(f"restoring dependencies for {obj}: {self._st['deps']}")
+        logger.debug("restoring dependencies for %s: %s", obj, self._st["deps"])
         for ref in self._st["deps"]:
             obj.addDependency(ref)
 

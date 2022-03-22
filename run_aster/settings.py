@@ -62,7 +62,7 @@ class AbstractParameter:
         try:
             return self._convert(value)
         except (TypeError, ValueError) as exc:
-            logger.error(f"Parameter '{self.name}': {exc}", exception=exc)
+            logger.error("Parameter %r: %s", self.name, exc, exception=exc)
 
     def _convert(self, value):
         raise NotImplementedError("must be subclassed!")
@@ -86,7 +86,7 @@ class AbstractParameter:
         """
         typ = store_typed_params.get(name)
         if typ is None:
-            logger.warning(f"unknown parameter: '{name}'")
+            logger.warning("unknown parameter: %r", name)
             return None
         if typ == DEPRECATED:
             return None
@@ -152,7 +152,7 @@ class ParameterFloat(AbstractParameter):
         if isinstance(value, (list, tuple)):
             value = " ".join([str(i) for i in value])
         if value == "":
-            value = 0.
+            value = 0.0
         return float(value)
 
 

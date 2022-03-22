@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,8 +63,10 @@ except ImportError:
 DEFAULT_MEMORY_LIMIT = 2047 if "32" in platform.architecture()[0] else 4096
 DEFAULT_TIME_LIMIT = 86400
 DEFAULT_BASE_SIZE_LIMIT = 48000
-RCDIR = osp.abspath(osp.join(osp.dirname(__file__), os.pardir, os.pardir,
-                    os.pardir, os.pardir, 'share', 'aster'))
+RCDIR = osp.abspath(
+    osp.join(osp.dirname(__file__), os.pardir, os.pardir, os.pardir, os.pardir, "share", "aster")
+)
+
 
 class ExecutionParameter(metaclass=Singleton):
     """This class stores and provides the execution parameters.
@@ -81,7 +83,8 @@ class ExecutionParameter(metaclass=Singleton):
         _syntax (*CommandSyntax*): Class that passes user keywords up to
             Fortran operator.
     """
-    _singleton_id = 'Utilities.ExecutionParameter'
+
+    _singleton_id = "Utilities.ExecutionParameter"
     _argv = _args = _bool = None
     _timer = _export = _command_counter = None
     _catalc = _unit = _syntax = None
@@ -94,58 +97,57 @@ class ExecutionParameter(metaclass=Singleton):
         self._argv = None
         self._args = {}
         # options also used in F90
-        self._args['dbgjeveux'] = 0
-        self._args['jxveri'] = 0
-        self._args['sdveri'] = 0
+        self._args["dbgjeveux"] = 0
+        self._args["jxveri"] = 0
+        self._args["sdveri"] = 0
 
-        self._args['memory'] = 0.
-        self._args['tpmax'] = 0.
-        self._args['maxbase'] = 0.
-        self._args['numthreads'] = 0
+        self._args["memory"] = 0.0
+        self._args["tpmax"] = 0.0
+        self._args["maxbase"] = 0.0
+        self._args["numthreads"] = 0
 
-        self._args['stage_number'] = 0
-        self._args['max_check'] = 0
-        self._args['max_print'] = 0
+        self._args["stage_number"] = 0
+        self._args["max_check"] = 0
+        self._args["max_print"] = 0
 
         # boolean (on/off) options
         self._bool = Options.Null
         # Export object and input/output files
         self._export = None
-        self._args['link'] = []
+        self._args["link"] = []
 
-        self._args['rcdir'] = RCDIR
+        self._args["rcdir"] = RCDIR
         # TODO probably to be removed?
-        self._args['repmat'] = '.'
-        self._args['repdex'] = '.'
+        self._args["repmat"] = "."
+        self._args["repdex"] = "."
 
-        self._args['hook_post_exec'] = None
+        self._args["hook_post_exec"] = None
 
         self._computed()
 
     def _computed(self):
         """Fill some "computed" values"""
         # hostname
-        self._args['hostname'] = platform.node()
+        self._args["hostname"] = platform.node()
         # ex. i686/x86_64
-        self._args['processor'] = platform.machine()
+        self._args["processor"] = platform.machine()
         # ex. Linux
-        self._args['system'] = platform.system()
+        self._args["system"] = platform.system()
         # ex. 32bit/64bit
-        self._args['architecture'] = platform.architecture()[0]
+        self._args["architecture"] = platform.architecture()[0]
         # ex. 2.6.32...
-        self._args['osrelease'] = platform.release()
-        self._args['osname'] = platform.platform()
+        self._args["osrelease"] = platform.release()
+        self._args["osname"] = platform.platform()
         version = version_info.version
-        keys = ('parentid', 'branch', 'date',
-                'from_branch', 'changes', 'uncommitted')
+        keys = ("parentid", "branch", "date", "from_branch", "changes", "uncommitted")
         self._args.update(list(zip(keys, version_info[1:])))
-        self._args['version'] = '.'.join(str(i) for i in version)
-        self._args['versMAJ'] = version[0]
-        self._args['versMIN'] = version[1]
-        self._args['versSUB'] = version[2]
-        self._args['exploit'] = version_info.branch.startswith('v')
-        self._args['versionD0'] = '%d.%02d.%02d' % version
-        self._args['versLabel'] = get_version_desc()
+        self._args["version"] = ".".join(str(i) for i in version)
+        self._args["versMAJ"] = version[0]
+        self._args["versMIN"] = version[1]
+        self._args["versSUB"] = version[2]
+        self._args["exploit"] = version_info.branch.startswith("v")
+        self._args["versionD0"] = "%d.%02d.%02d" % version
+        self._args["versLabel"] = get_version_desc()
 
         self._timer = None
         self._command_counter = 0
@@ -191,9 +193,9 @@ class ExecutionParameter(metaclass=Singleton):
         Returns:
             misc: Parameter value.
         """
-        logger.debug(f"get_option {option!r}")
+        logger.debug("get_option %r", option)
         if option.startswith("prog:"):
-            value = get_program_path(re.sub('^prog:', '', option))
+            value = get_program_path(re.sub("^prog:", "", option))
         elif option in self._args:
             value = self._args[option]
         else:
@@ -203,7 +205,7 @@ class ExecutionParameter(metaclass=Singleton):
                 value = None
         if isinstance(value, str):
             value = convert(value)
-        logger.debug(f"return for {option!r}: {value} {type(value)}")
+        logger.debug("return for %r: %s %s", option, value, type(value))
         return value
 
     def enable(self, option):
@@ -219,7 +221,7 @@ class ExecutionParameter(metaclass=Singleton):
             logger.setLevel(DEBUG)
         if option & Options.ShowDeprecated:
             # disabled by default in python>=2.7
-            warnings.simplefilter('default')
+            warnings.simplefilter("default")
 
     def disable(self, option):
         """Disable a boolean option.
@@ -266,115 +268,203 @@ class ExecutionParameter(metaclass=Singleton):
                 `set_argv()` or `sys.argv`.
         """
         # command arguments parser
-        parser = ArgumentParser(description='execute a Code_Aster study',
-                                prog="Code_Aster{called by Python}")
-        parser.add_argument('-g', '--debug', dest='Debug',
-            action='store_const', const=1, default=0,
-            help="add debug informations")
+        parser = ArgumentParser(
+            description="execute a Code_Aster study", prog="Code_Aster{called by Python}"
+        )
+        parser.add_argument(
+            "-g",
+            "--debug",
+            dest="Debug",
+            action="store_const",
+            const=1,
+            default=0,
+            help="add debug informations",
+        )
 
-        parser.add_argument('--abort', dest='Abort',
-            action='store_const', const=1, default=0,
+        parser.add_argument(
+            "--abort",
+            dest="Abort",
+            action="store_const",
+            const=1,
+            default=0,
             help="abort execution in case of error (testcase mode, by default "
-                 "raise an exception)")
-        parser.add_argument('--test', dest='TestMode',
-            action='store_const', const=1, default=0,
-            help="set execution in testcase mode")
-        parser.add_argument('--slave', dest='SlaveMode',
-            action='store_const', const=1, default=0,
-            help="slave mode, try not to exit in case of error")
+            "raise an exception)",
+        )
+        parser.add_argument(
+            "--test",
+            dest="TestMode",
+            action="store_const",
+            const=1,
+            default=0,
+            help="set execution in testcase mode",
+        )
+        parser.add_argument(
+            "--slave",
+            dest="SlaveMode",
+            action="store_const",
+            const=1,
+            default=0,
+            help="slave mode, try not to exit in case of error",
+        )
 
-        parser.add_argument('--hook_post_exec',
-            action='store', default=None,
-            help="[for debugging only] path to a function called by 'post_exec'")
+        parser.add_argument(
+            "--hook_post_exec",
+            action="store",
+            default=None,
+            help="[for debugging only] path to a function called by 'post_exec'",
+        )
 
-        parser.add_argument('--dbgjeveux',
-            action='store_const', const=1, default=0,
-            help="turn on some additional checkings in the memory management")
+        parser.add_argument(
+            "--dbgjeveux",
+            action="store_const",
+            const=1,
+            default=0,
+            help="turn on some additional checkings in the memory management",
+        )
 
-        parser.add_argument('--jxveri',
-            action='store_const', const=1, default=0,
-            help="")
-        parser.add_argument('--sdveri',
-            action='store_const', const=1, default=0,
-            help="")
-        parser.add_argument('--impr_macro', dest='ShowChildCmd',
-            action='store_const', const=1, default=0,
-            help="show syntax of commands called by macro-commands")
+        parser.add_argument("--jxveri", action="store_const", const=1, default=0, help="")
+        parser.add_argument("--sdveri", action="store_const", const=1, default=0, help="")
+        parser.add_argument(
+            "--impr_macro",
+            dest="ShowChildCmd",
+            action="store_const",
+            const=1,
+            default=0,
+            help="show syntax of commands called by macro-commands",
+        )
 
-        parser.add_argument('--memory',
-            action=MemoryAction, type=float, default=DEFAULT_MEMORY_LIMIT,
+        parser.add_argument(
+            "--memory",
+            action=MemoryAction,
+            type=float,
+            default=DEFAULT_MEMORY_LIMIT,
             help="memory limit in MB used for code_aster objects "
-                 "(default: {0} MB)".format(DEFAULT_MEMORY_LIMIT))
-        parser.add_argument('--memjeveux', dest="memory",
-            action=MemoryAction, type=float,
-            help=SUPPRESS)
+            "(default: {0} MB)".format(DEFAULT_MEMORY_LIMIT),
+        )
+        parser.add_argument(
+            "--memjeveux", dest="memory", action=MemoryAction, type=float, help=SUPPRESS
+        )
 
-        parser.add_argument('--tpmax',
-            action='store', type=float, default=DEFAULT_TIME_LIMIT,
+        parser.add_argument(
+            "--tpmax",
+            action="store",
+            type=float,
+            default=DEFAULT_TIME_LIMIT,
             help="time limit of the execution in seconds "
-                 "(default: {0} s)".format(DEFAULT_TIME_LIMIT))
-        parser.add_argument('--maxbase',
-            action='store', type=float, default=DEFAULT_BASE_SIZE_LIMIT,
-            help="size limit in MB for code_aster out-of-core files (glob.*, "
-              "default: 48 GB)")
-        parser.add_argument('--max_base', dest='maxbase',
-            action='store', type=float, default=DEFAULT_BASE_SIZE_LIMIT,
-            help=SUPPRESS)
-        parser.add_argument('--numthreads',
-            action='store', type=int, default=1,
-            help="maximum number of threads")
+            "(default: {0} s)".format(DEFAULT_TIME_LIMIT),
+        )
+        parser.add_argument(
+            "--maxbase",
+            action="store",
+            type=float,
+            default=DEFAULT_BASE_SIZE_LIMIT,
+            help="size limit in MB for code_aster out-of-core files (glob.*, " "default: 48 GB)",
+        )
+        parser.add_argument(
+            "--max_base",
+            dest="maxbase",
+            action="store",
+            type=float,
+            default=DEFAULT_BASE_SIZE_LIMIT,
+            help=SUPPRESS,
+        )
+        parser.add_argument(
+            "--numthreads", action="store", type=int, default=1, help="maximum number of threads"
+        )
 
-        parser.add_argument('--rcdir', dest='rcdir',
-            action='store', type=str, metavar='DIR', default=RCDIR,
+        parser.add_argument(
+            "--rcdir",
+            dest="rcdir",
+            action="store",
+            type=str,
+            metavar="DIR",
+            default=RCDIR,
             help="directory containing resources (material properties, "
-                 "additional data files...). Defaults to {0}".format(RCDIR))
-        parser.add_argument('--rep_mat', dest='repmat',
-            action='store', metavar='DIR', default='.',
-            help=SUPPRESS)
-        parser.add_argument('--rep_dex', dest='repdex',
-            action='store', metavar='DIR', default='.',
-            help=SUPPRESS)
+            "additional data files...). Defaults to {0}".format(RCDIR),
+        )
+        parser.add_argument(
+            "--rep_mat", dest="repmat", action="store", metavar="DIR", default=".", help=SUPPRESS
+        )
+        parser.add_argument(
+            "--rep_dex", dest="repdex", action="store", metavar="DIR", default=".", help=SUPPRESS
+        )
 
-        parser.add_argument('--stage_number',
-            action='store', type=int, default=1, metavar='NUM',
-            help="Stage number in the Study")
-        parser.add_argument('--continue', dest='Continue',
-            action='store_const', const=1, default=0,
-            help="turn on to continue a previous execution")
-        parser.add_argument('--last', dest='LastStep',
-            action='store_const', const=1, default=0,
-            help="to be used for the last step of a study")
-        parser.add_argument('--use_legacy_mode', dest='UseLegacyMode',
-            action='store', default=1,
-            help="use (=1) or not (=0) the legacy mode for macro-commands "
-                 "results. (default: 1)")
+        parser.add_argument(
+            "--stage_number",
+            action="store",
+            type=int,
+            default=1,
+            metavar="NUM",
+            help="Stage number in the Study",
+        )
+        parser.add_argument(
+            "--continue",
+            dest="Continue",
+            action="store_const",
+            const=1,
+            default=0,
+            help="turn on to continue a previous execution",
+        )
+        parser.add_argument(
+            "--last",
+            dest="LastStep",
+            action="store_const",
+            const=1,
+            default=0,
+            help="to be used for the last step of a study",
+        )
+        parser.add_argument(
+            "--use_legacy_mode",
+            dest="UseLegacyMode",
+            action="store",
+            default=1,
+            help="use (=1) or not (=0) the legacy mode for macro-commands " "results. (default: 1)",
+        )
 
-        parser.add_argument('--deprecated', dest='ShowDeprecated',
-            action='store_const', const=1, default=1,
-            help="turn on deprecation warnings")
-        parser.add_argument('--no-deprecated', dest='ShowDeprecated',
-            action='store_const', const=0,
-            help="turn off deprecation warnings (default: on)")
+        parser.add_argument(
+            "--deprecated",
+            dest="ShowDeprecated",
+            action="store_const",
+            const=1,
+            default=1,
+            help="turn on deprecation warnings",
+        )
+        parser.add_argument(
+            "--no-deprecated",
+            dest="ShowDeprecated",
+            action="store_const",
+            const=0,
+            help="turn off deprecation warnings (default: on)",
+        )
 
-        parser.add_argument('--max_check',
-            action='store', type=int, default=500,
-            help="maximum number of occurrences to be checked, "
-                 "next are ignored")
-        parser.add_argument('--max_print',
-            action='store', type=int, default=500,
-            help="maximum number of keywords or values printed in "
-                 "commands echo")
+        parser.add_argument(
+            "--max_check",
+            action="store",
+            type=int,
+            default=500,
+            help="maximum number of occurrences to be checked, " "next are ignored",
+        )
+        parser.add_argument(
+            "--max_print",
+            action="store",
+            type=int,
+            default=500,
+            help="maximum number of keywords or values printed in " "commands echo",
+        )
 
-        parser.add_argument('--link',
-            action='append', default=[],
-            help="define a new link to an input or output file")
+        parser.add_argument(
+            "--link",
+            action="append",
+            default=[],
+            help="define a new link to an input or output file",
+        )
 
         if not self._argv:
             self.set_argv(sys.argv)
         args, ignored = parser.parse_known_args(list(argv or []) + self._argv)
 
-        logger.debug(f"Ignored arguments: {ignored!r}")
-        logger.debug(f"Read options: {vars(args)!r}")
+        logger.debug("Ignored arguments: %r", ignored)
+        logger.debug("Read options: %r", vars(args))
         if "-max_base" in " ".join(ignored):
             deprecate("-max_base", case=4, help="Use '--max_base' instead.")
 
@@ -382,7 +472,7 @@ class ExecutionParameter(metaclass=Singleton):
         for opt, value in list(vars(args).items()):
             self.set_option(opt, value)
 
-        self._timer = ASTER_TIMER(format="aster", limit=self._args['max_print'])
+        self._timer = ASTER_TIMER(format="aster", limit=self._args["max_print"])
 
         # store Export object
         # TODO may be passed directly as argument
@@ -396,7 +486,7 @@ class ExecutionParameter(metaclass=Singleton):
 
     def sub_tpmax(self, tsub):
         """Reduce the cpu time limit of `tsub`."""
-        self.set_option('tpmax', self.get_option('tpmax') - tsub)
+        self.set_option("tpmax", self.get_option("tpmax") - tsub)
 
     def incr_command_counter(self):
         """Increment the counter of Commands.
