@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function nopar2(nomopt, nomgd, statut)
+subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
     implicit none
-    character(len=8) :: nopar2
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -28,15 +27,21 @@ function nopar2(nomopt, nomgd, statut)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    character(len=*) :: nomopt, nomgd, statut
+    character(len=*), intent(in)   :: nomopt, nomgd, statut
+    character(len=8), intent(out)  :: nompar
+    integer, intent(in), optional  :: istop
+    integer, intent(out), optional :: iret
+    
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !     NOMOPT   : NOM D'1 OPTION
 !     NOMGD    : NOM D'1 GRANDEUR
 !     STATUT : 'IN'/'OUT'/'INOUT'
+!     ISTOP : si absent, on émet les messages d'erreurs le cas échéant
+!             si 0, on sort sans erreur (mais avec un code retour)
 !
 !     SORTIES:
-!     NOPAR2 : NOM DU PARAMETRE DE L'OPTION NOMOPT
+!     NOMPAR : NOM DU PARAMETRE DE L'OPTION NOMOPT
 !              QUI CORRESPOND A LA GRANDEUR NOMGD ET AU STATUT STATUT
 !              RQUE : ERREUR <F> SI ON EN TROUVE : 0,2,3,...
 !              RQUE : SI INOUT, ON CHERCHE D'ABORD DANS OUT ET SI ON NE
@@ -45,6 +50,8 @@ function nopar2(nomopt, nomgd, statut)
 !     SI NOMGD=' ' ET SI STATUT='OUT' :
 !         - SI L'OPTION N'A QU'UN PARAMETRE 'OUT', ON LE REND
 !         - SI L'OPTION A PLUSIEURS PARAMETRES 'OUT' => ERREUR <F>
+!     
+!     IRET : 0 si paramètre trouvé, 1 sinon
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,6 +59,7 @@ function nopar2(nomopt, nomgd, statut)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: opt, nbin, nbout, nbtrou, itrou, gd, gd2, iadesc, iaoppa, kk
+    integer :: istop2
     character(len=16) :: nomop2
     character(len=8) :: nomgd2
     character(len=8) :: statu2, outrou
@@ -61,6 +69,10 @@ function nopar2(nomopt, nomgd, statut)
     nomop2=nomopt
     nomgd2=nomgd
     statu2=statut
+    istop2 = 1
+    if (present(istop))then
+        istop2 = istop
+    endif
 !
     call jenonu(jexnom('&CATA.OP.NOMOPT', nomop2), opt)
     if (nomgd2 .ne. ' ') call jenonu(jexnom('&CATA.GD.NOMGD', nomgd2), gd)
@@ -68,6 +80,7 @@ function nopar2(nomopt, nomgd, statut)
     call jeveuo(jexnum('&CATA.OP.OPTPARA', opt), 'L', iaoppa)
     nbin = zi(iadesc-1+2)
     nbout = zi(iadesc-1+3)
+
     nbtrou=0
     outrou=' '
 !
@@ -124,26 +137,37 @@ function nopar2(nomopt, nomgd, statut)
         ASSERT(.false.)
     endif
 !
-    if (nbtrou .eq. 0) then
-        valk(1) = statu2
-        valk(2) = nomgd2
-        valk(3) = nomop2
-        call utmess('F', 'CALCULEL3_84', nk=3, valk=valk)
-    endif
-    if (nbtrou .gt. 1) then
-        valk(1) = statu2
-        valk(2) = nomgd2
-        valk(3) = nomop2
-        call utmess('F', 'CALCULEL3_85', nk=3, valk=valk)
-    endif
-    if (outrou .eq. 'OUT') then
-        nopar2=zk8(iaoppa-1+nbin+itrou)
+    if (nbtrou.eq.1)then
+        if (outrou .eq. 'OUT') then
+            nompar=zk8(iaoppa-1+nbin+itrou)
 !
-    else if (outrou.eq.'IN') then
-        nopar2=zk8(iaoppa-1+itrou)
+        else if (outrou.eq.'IN') then
+            nompar=zk8(iaoppa-1+itrou)
 !
+        else
+            ASSERT(.false.)
+        endif
+!
+    elseif(istop2.eq.1)then
+        if (nbtrou .eq. 0) then
+            valk(1) = statu2
+            valk(2) = nomgd2
+            valk(3) = nomop2
+            call utmess('F', 'CALCULEL3_84', nk=3, valk=valk)
+        endif
+        if (nbtrou .gt. 1) then
+            valk(1) = statu2
+            valk(2) = nomgd2
+            valk(3) = nomop2
+            call utmess('F', 'CALCULEL3_85', nk=3, valk=valk)
+        endif
+    endif
+
+    if (present(iret))then
+        iret = 0
+        if (nbtrou.ne.1) iret = 1
     else
-        ASSERT(.false.)
+        ASSERT(istop2.eq.1)
     endif
 !
-end function
+end subroutine

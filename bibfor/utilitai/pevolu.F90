@@ -364,7 +364,7 @@ subroutine pevolu(resu, modele, carele, nbocc)
                 optio2 ='TOU_INI_ELGA'
                 call dismoi('NOM_GD', cham3, 'CHAMP', repk=nomgd, arret='C',&
                             ier=iret)
-                nopar = nopar2(optio2,nomgd,'OUT')
+                call nopar2(optio2,nomgd,'OUT', nopar)
                 celmod = '&&PEVOLU.CELMOD'
                 call alchml(ligrel, optio2, nopar, 'V', celmod,&
                             ib, ' ')

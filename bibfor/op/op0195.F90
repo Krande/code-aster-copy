@@ -179,7 +179,10 @@ implicit none
             else
                 optio2 = option
             endif
-            nompar = nopar2(optio2,nomgd,'INOUT')
+            call nopar2(optio2,nomgd,'INOUT', nompar, 0, iret)
+            if (iret.ne. 0)then
+                call utmess('F', 'CALCULEL3_86', sk=tychr1)
+            endif
             celmod = '&&OP0195.CELMOD'
             call alchml(modelLigrel, optio2, nompar, 'V', celmod,&
                         iret, ' ')
@@ -187,7 +190,8 @@ implicit none
                 valk(1)=modelLigrel
                 valk(2)=nompar
                 valk(3)=optio2
-                call utmess('F', 'UTILITAI3_23', nk=3, valk=valk)
+                call utmess('E', 'UTILITAI3_23', nk=3, valk=valk)
+                call utmess('F', 'CALCULEL3_87', sk=tychr1)
             endif
 !
 !         VERIFICATION DU TYPE DE CELMOD : ELGA/ELNO/ELEM :

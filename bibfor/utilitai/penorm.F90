@@ -440,13 +440,13 @@ subroutine penorm(resu, modele)
             call detrsd('CHAM_NO_S', chamtm)
         else if (tych(1:4).eq.'ELNO') then
             optio2 ='TOU_INI_ELNO'
-            nopar = nopar2(optio2,'NEUT_R','OUT')
+            call nopar2(optio2,'NEUT_R','OUT', nopar)
             call cescel(chamtm, ligrel, optio2, nopar, 'OUI',&
                         nncp, 'V', cham2, 'F', ibid)
             call detrsd('CHAM_ELEM_S', chamtm)
         else if (tych(1:4).eq.'ELGA') then
             optio2 ='TOU_INI_ELGA'
-            nopar = nopar2(optio2,'NEUT_R','OUT')
+            call nopar2(optio2,'NEUT_R','OUT', nopar)
             call cescel(chamtm, ligrel, optio2, nopar, 'OUI',&
                         nncp, 'V', cham1, 'F', ibid)
             call detrsd('CHAM_ELEM_S', chamtm)

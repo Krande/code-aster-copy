@@ -145,7 +145,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     else
         ASSERT(.false.)
     endif
-    nopar = nopar2(option,'NEUT_R','OUT')
+    call nopar2(option,'NEUT_R','OUT', nopar)
     call cescel(field_neut_s, modelLigrel, option, nopar, 'OUI',&
                 nncp, 'V', field_neut, 'F', iret)
     ASSERT(iret.eq.0)

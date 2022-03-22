@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ implicit none
     ligrel = ligrel_
     option = option_
     nompar = nompar_
-    if (nompar .eq. ' ') nompar=nopar2(option,' ','OUT')
+    if (nompar .eq. ' ') call nopar2(option,' ','OUT', nompar)
     base = base_
 
 

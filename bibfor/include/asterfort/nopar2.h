@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,12 @@
 !
 !
 interface
-    function nopar2(nomopt, nomgd, statut)
-        character(len=*) :: nomopt
-        character(len=*) :: nomgd
-        character(len=*) :: statut
-        character(len=8) :: nopar2
-    end function nopar2
+    subroutine nopar2(nomopt, nomgd, statut, nompar, istop, iret)
+        character(len=*), intent(in)   :: nomopt
+        character(len=*), intent(in)   :: nomgd
+        character(len=*), intent(in)   :: statut
+        character(len=8), intent(out)  :: nompar
+        integer, intent(in), optional  :: istop
+        integer, intent(out), optional :: iret
+    end subroutine nopar2
 end interface

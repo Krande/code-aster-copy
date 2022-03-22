@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ subroutine assach(preel2, pimag2, base2, chout2, parout)
     if (present(parout)) then
         param=parout
     else
-        param=nopar2(option,nomcpx,'OUT')
+        call nopar2(option,nomcpx,'OUT', param)
     endif
 
     call exisd('CHAM_ELEM_S', preel, iret)

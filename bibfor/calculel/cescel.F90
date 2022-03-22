@@ -282,7 +282,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz,&
 !
 !     2.2 DETERMINATION DE NOMPAR SI NECESSAIRE :
 !     -------------------------------------------
-    if (nompar .eq. ' ') nompar = nopar2(option,nomgd,'INOUT')
+    if (nompar .eq. ' ') call nopar2(option,nomgd,'INOUT', nompar)
 !
 !
 !     2.3 CREATION DE DCEL :

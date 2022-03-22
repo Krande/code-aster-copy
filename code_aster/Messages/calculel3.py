@@ -322,6 +322,14 @@ Risque et conseils :
  il y a plusieurs paramètres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s
 """),
 
+    86 : _("""
+ CREA_CHAMP ne sait pas créer de champ de type %(k1)s.
+"""),
+
+    87 : _("""
+ CREA_CHAMP ne sait créer de champ de type %(k1)s pour aucun des éléments fournis.
+"""),
+
     88: _("""
  Les charges ne s'appuie pas sur le MODELE fourni.
 """),

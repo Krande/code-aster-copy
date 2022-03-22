@@ -84,7 +84,7 @@ character(len=8), pointer :: cmpNameNode(:), cmpNameNeut(:)
 ! - Create new field on cell
 !
     call dismoi('NOM_GD', fieldNodeNeut, 'CHAMP', repk = physName, arret='C', ier=iret)
-    paraName = nopar2(option, physName, 'OUT')
+    call nopar2(option, physName, 'OUT', paraName)
     call alchml(ligrel, option, paraName, 'V', fieldElemRefe, iret, ' ')
     if (iret .ne. 0) then
         call utmess('F', 'UTILITAI3_23', nk=3, valk=[ligrel, paraName, option])

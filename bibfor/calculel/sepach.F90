@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -159,7 +159,7 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
         ligrel=celk(1)
         option=celk(2)
 !
-        param=nopar2(option,nomre,'OUT')
+        call nopar2(option,nomre,'OUT', param)
 !
 !       -- SI LE CHIN A DES SOUS-POINTS, IL FAUT ALLOUER CHREEL
 !          ET CHIMAG AVEC DES SOUS-POINTS :
