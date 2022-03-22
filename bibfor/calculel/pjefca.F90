@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,9 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !         MAIS LE MAILLAGE EST 3D (X,Y,Z)
 !  "1.5D" : ON UTILISE LES MAILLES LINEIQUES : SEG
 !         LE MAILLAGE PEUT ETRE 2D (X,Y) OU 3D (X,Y,Z)
+!  "0D" : ON UTILISE LES MAILLES PONCTUELLES : POI1
+!         LE MAILLAGE PEUT ETRE 2D (X,Y) OU 3D (X,Y,Z)
+!         UNIQUEMENT SOUS VIS_A_VIS
 !
 ! ON ESSAIE DE DETERMINER LE CAS DE FIGURE EN FONCTION
 ! DES MAILLES DE MOA1.
@@ -43,7 +46,7 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 !             POUR NE PAS PRENDRE EN COMPTE CAS_FIGURE
 !  IN LIMA1 : NOM DE OBJET JEVEUX CONTENANT LA LISTE DES NUMEROS DE
 !             MAILLES A PROJETER (OU ' ' SI IOCC=0).
-!  OUT NCAS : CAS DE FIGURE : 3D/2D/2.5D/1.5D
+!  OUT NCAS : CAS DE FIGURE : 3D/2D/2.5D/1.5D/0D
 !---------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
@@ -91,6 +94,10 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
         if (n1 .eq. 1) goto 30
     else
         iocc = -iocc
+        call getvtx('VIS_A_VIS', 'CAS_FIGURE', iocc=iocc, scal=ncas, nbret=n1)
+        if (n1 .eq. 1)then
+            if (ncas.eq.'0D') goto 30
+        endif
     endif
 !
 !

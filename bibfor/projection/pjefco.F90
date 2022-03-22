@@ -41,6 +41,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/pj0dco.h"
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
 #include "asterfort/pj4dco.h"
@@ -74,7 +75,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer :: iexi, nbNodeInterc, nbnoma2, nbnono2
 !
     aster_logical :: l_dmax, dbg, final_occ
-    real(kind=8) :: dmax, dala
+    real(kind=8) :: dmax, dala, dmax0d
     integer, pointer :: limanu1(:) => null()
     integer, pointer :: linonu2(:) => null()
     integer, pointer :: limanu2(:) => null()
@@ -223,6 +224,8 @@ subroutine pjefco(moa1, moa2, corres, base)
                     dim='2D'
                 else if (ncas.eq.'1.5D') then
                     dim='1D'
+                else if (ncas.eq.'0D') then
+                    dim='0D'
                 else
                     ASSERT(.false.)
                 endif
@@ -302,6 +305,11 @@ subroutine pjefco(moa1, moa2, corres, base)
                             nbno2, linonu2, geom1, geom2, corre1,&
                             l_dmax, dmax, dala, listInterc_ = nameListInterc,&
                             nbInterc_ = nbNodeInterc)
+            else if (ncas.eq.'0D') then
+                call getvr8('VIS_A_VIS', 'DISTANCE_0D',iocc=iocc, scal=dmax0d, nbret=n1)
+                call pj0dco('PARTIE', moa1, moa2, nbma1, limanu1,&
+                            nbno2, linonu2, geom1, geom2, corre1,&
+                            dmax0d)
             else
                 ASSERT(.false.)
             endif

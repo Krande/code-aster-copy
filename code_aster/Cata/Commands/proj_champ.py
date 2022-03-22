@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -168,13 +168,17 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,
            NOEUD_2         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
 
            # les mots clés suivants ne sont actifs que si METHODE='COLLOCATION' mais on ne peut pas le vérifier:
-               CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
+               CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D","0D") ),
                TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
                     fr=tr("2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"
                        " aux noeuds du MODELE_1 avant la projection.")),
                TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
                     fr=tr("2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"
                        " aux noeuds du MODELE_2 avant la projection.")),
+               b_0D         =BLOC(condition="""equal_to("CAS_FIGURE",'0D')""",
+                 DISTANCE_0D   =SIMP(statut='o',typ='R',val_min=0,
+                  fr=tr("Distance maximale entre un noeud et le noeud sur lequel il est projeté.")),
+               ),
          ),
      ), # fin bloc b_1_et_2
 
@@ -233,7 +237,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,
            NOEUD_2         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
 
            # les mots clés suivants ne sont actifs que si METHODE='COLLOCATION' mais on ne peut pas le vérifier:
-               CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
+               CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D","0D") ),
                TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
                     fr=tr("2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"
                        " aux noeuds du MODELE_1 avant la projection.")),
@@ -246,7 +250,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,
 
 
      #-----------------------------------------------------------------------------------------------------------
-     # 3eme cas : on projette les champs avec une sd_corresp_2_mailla déjé calculée
+     # 3eme cas : on projette les champs avec une sd_corresp_2_mailla déjà calculée
      #-----------------------------------------------------------------------------------------------
      b_2   =BLOC(condition="""exists("MATR_PROJECTION")""",
          regles=(UN_PARMI('RESULTAT','CHAM_GD'),),

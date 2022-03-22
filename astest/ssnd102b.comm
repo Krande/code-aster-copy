@@ -165,7 +165,6 @@ RESU=STAT_NON_LINE(
    NEWTON=(_F(REAC_INCR=1, MATRICE='TANGENTE',)),
 )
 
-
 # IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU),)
 
 # ==========================================================
@@ -265,5 +264,228 @@ for LeDiscret in ListeDiscrets:
       motclefs['CONCEPT'].append(_F(NOM=LaF[ii]))
       motclefs['CONCEPT'].append(_F(NOM=LeD[ii]))
    DETRUIRE(INFO=1,**motclefs)
+
+
+# VALIDATION EN 2D DE PROJ_CHAMP/CAS_FIGURE='0D'
+
+DEPL= CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR', RESULTAT=RESU,
+                 NOM_CHAM='DEPL', INST=30.,)
+
+RESU=CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE='EFGE_ELNO')
+
+EFGE= CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R', OPERATION='EXTR', RESULTAT=RESU,
+                 NOM_CHAM='EFGE_ELNO', INST=30.,)
+
+
+
+PROJ_D = PROJ_CHAMP(CHAM_GD=DEPL,
+                    MAILLAGE_1=MAIL,
+                    MAILLAGE_2=MAIL,
+                    VIS_A_VIS=(_F(#TOUT_1='OUI',
+                                  # TOUT_2='OUI',
+                                  GROUP_MA_1=('DL_T', ),
+                                  GROUP_MA_2=('DL_T', ),
+                                 ),
+                               _F(#TOUT_1='OUI',
+                                  # TOUT_2='OUI',
+                                  GROUP_MA_1=('DL_TR', ),
+                                  GROUP_MA_2=('DL_TR', ),
+                                 ),
+                               _F(
+                                 # TOUT_1='OUI',
+                                 # TOUT_2='OUI',
+                                 GROUP_MA_1=('DN_T', ),
+                                 # GROUP_MA_2=('DN_T', ),
+                                 NOEUD_2='N4',
+                                 CAS_FIGURE='0D',
+                                 DISTANCE_0D = 1E-8,
+                                 ),
+                               _F(
+                                 # TOUT_1='OUI',
+                                 # TOUT_2='OUI',
+                                 GROUP_MA_1=('DN_TR' ),
+                                 GROUP_MA_2=('DN_TR' ),
+                                 CAS_FIGURE='0D',
+                                 DISTANCE_0D = 1E-8,
+                                 ),
+                              )
+                    )
+
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=DEPL))
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=PROJ_D))
+
+PROJ_E = PROJ_CHAMP(CHAM_GD=EFGE,
+                    MODELE_1=MODE,
+                    MODELE_2=MODE,
+                    VIS_A_VIS=(_F(#TOUT_1='OUI',
+                                  # TOUT_2='OUI',
+                                  GROUP_MA_1=('DL_T', ),
+                                  GROUP_MA_2=('DL_T', ),
+                                 ),
+                               _F(#TOUT_1='OUI',
+                                  # TOUT_2='OUI',
+                                  GROUP_MA_1=('DL_TR', ),
+                                  GROUP_MA_2=('DL_TR', ),
+                                 ),
+                               _F(
+                                 # TOUT_1='OUI',
+                                 # TOUT_2='OUI',
+                                 GROUP_MA_1=('DN_T', ),
+                                 GROUP_MA_2=('DN_T', ),
+                                 CAS_FIGURE='0D',
+                                 DISTANCE_0D = 1E-8,
+                                 ),
+                               _F(
+                                 # TOUT_1='OUI',
+                                 # TOUT_2='OUI',
+                                 GROUP_MA_1=('DN_TR' ),
+                                 GROUP_MA_2=('DN_TR' ),
+                                 CAS_FIGURE='0D',
+                                 DISTANCE_0D = 1E-8,
+                                 ),
+                              )
+                    )
+
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=EFGE))
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=PROJ_E))
+
+TEST_RESU(CHAM_NO=(
+                _F(NOEUD='N4',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DX',
+                   VALE_CALC=1.47058823529412E-03,
+                   ),
+                _F(NOEUD='N4',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DY',
+                   VALE_CALC=3.75000000000000E-03,
+                   ),
+                _F(NOEUD='N5',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DX',
+                   VALE_CALC=1.47058823529412E-03,
+                   ),
+                _F(NOEUD='N5',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DY',
+                   VALE_CALC=3.75000000000000E-03,
+                   ),
+                _F(NOEUD='N5',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DRZ',
+                   VALE_CALC=3.90625000000000E-03,
+                   ),
+                ),
+          )
+
+TEST_RESU(CHAM_NO=(
+                _F(NOEUD='N4',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DX',
+                   VALE_CALC=1.47058823529412E-03,
+                   VALE_REFE=1.47058823529412E-03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                _F(NOEUD='N4',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DY',
+                   VALE_CALC=3.75000000000000E-03,
+                   VALE_REFE=3.75000000000000E-03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                _F(NOEUD='N5',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DX',
+                   VALE_CALC=1.47058823529412E-03,
+                   VALE_REFE=1.47058823529412E-03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                _F(NOEUD='N5',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DY',
+                   VALE_CALC=3.75000000000000E-03,
+                   VALE_REFE=3.75000000000000E-03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                _F(NOEUD='N5',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DRZ',
+                   VALE_CALC=3.90625000000000E-03,
+                   VALE_REFE=3.90625000000000E-03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                ),
+          )
+
+
+TEST_RESU(CHAM_ELEM=(
+                _F(GROUP_MA='DN_T',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='N',
+                   VALE_CALC=1.63570725286110E+03,
+                   ),
+                _F(GROUP_MA='DN_T',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='VY',
+                   VALE_CALC=2.22409887498901E+03,
+                   ),
+                _F(GROUP_MA='DN_TR',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='N',
+                   VALE_CALC=1.63570725286110E+03,
+                   ),
+                _F(GROUP_MA='DN_TR',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='VY',
+                   VALE_CALC=2.22409887498901E+03,
+                   ),
+                _F(GROUP_MA='DN_TR',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='MFZ',
+                   VALE_CALC=3.77386368015155E+03,
+                   ),
+                ),
+          )
+
+TEST_RESU(CHAM_ELEM=(
+                _F(GROUP_MA='DN_T',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='N',
+                   VALE_CALC=1.63570725286110E+03,
+                   VALE_REFE=1.63570725286110E+03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                _F(GROUP_MA='DN_T',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='VY',
+                   VALE_CALC=2.22409887498901E+03,
+                   VALE_REFE=2.22409887498901E+03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                _F(GROUP_MA='DN_TR',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='N',
+                   VALE_CALC=1.63570725286110E+03,
+                   VALE_REFE=1.63570725286110E+03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                _F(GROUP_MA='DN_TR',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='VY',
+                   VALE_CALC=2.22409887498901E+03,
+                   VALE_REFE=2.22409887498901E+03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                _F(GROUP_MA='DN_TR',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='MFZ',
+                   VALE_CALC=3.77386368015155E+03,
+                   VALE_REFE=3.77386368015155E+03,
+                   REFERENCE='ANALYTIQUE'
+                   ),
+                ),
+          )
+
+
 
 FIN()

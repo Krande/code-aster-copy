@@ -61,6 +61,8 @@ MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                                         _F( NOM = 'N10', NOEUD = 'N10'),
                                         _F( NOM = 'N160', NOEUD = 'N160'),
                                         _F( NOM = 'N1', NOEUD = 'N1'),
+                                        _F( GROUP_MA='CDGVAN'),
+                                        _F( GROUP_MA='PATBIELB'),
                                      ),
          )
 
@@ -320,7 +322,7 @@ TABM64NS64 = CALC_TABLE(TABLE=TABMO,
                                 VALE_K ='NS64'),
                             )
                     )
-# IMPR_TABLE(UNITE=6, TABLE=TABM64NS64)
+IMPR_TABLE(UNITE=6, TABLE=TABM64NS64)
 
 
 MOMEQ_FO = FORMULE(VALE='sqrt(MT*MT+MFY*MFY+MFZ*MFZ)',
@@ -491,5 +493,285 @@ TEST_RESU(RESU=(_F(GROUP_NO='L',
                    ),
                 ),
           )
+
+# VALIDATION EN 3D DE PROJ_CHAMP/CAS_FIGURE='0D'
+
+DEPL= CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR', RESULTAT=RESULT,
+                 NOM_CHAM='DEPL', INST=TFIN,)
+
+EFGE= CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R', OPERATION='EXTR', RESULTAT=RESULT,
+                 NOM_CHAM='EFGE_ELNO', INST=TFIN,)
+
+# avec cette projection les noeuds portant les DIS_T*_N prennent les
+# ddls supplémentaires des tuyaux  
+# PROJ_D1 = PROJ_CHAMP(CHAM_GD=DEPL,
+                    # MAILLAGE_1=MA,
+                    # MAILLAGE_2=MA,
+                    # )
+# avec cette projection, on a seulement les ddl des DIS_T*_N
+PROJ_D = PROJ_CHAMP(CHAM_GD=DEPL,
+                    MAILLAGE_1=MA,
+                    MAILLAGE_2=MA,
+                    VIS_A_VIS=(_F(TOUT_1='OUI',
+                                  TOUT_2='OUI',
+                                 ),
+                               _F(
+                                 GROUP_MA_1=('CDGVAN', 'PATBIELB'),
+                                 GROUP_MA_2=('CDGVAN', 'PATBIELB'),
+                                 CAS_FIGURE='0D',
+                                 DISTANCE_0D = 1E-8,
+                                 ),
+                              )
+                    )
+
+PROJ_D2 = PROJ_CHAMP(CHAM_GD=DEPL,
+                    MAILLAGE_1=MA,
+                    MAILLAGE_2=MA,
+                    VIS_A_VIS=(_F(TOUT_1='OUI',
+                                  TOUT_2='OUI',
+                                 ),
+                               _F(
+                                 GROUP_MA_1=('CDGVAN', 'PATBIELB'),
+                                 GROUP_NO_2=('CDGVAN', 'PATBIELB'),
+                                 CAS_FIGURE='0D',
+                                 DISTANCE_0D = 1E-8,
+                                 ),
+                              )
+                    )
+
+
+
+
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=DEPL, GROUP_MA=('CDGVAN', 'PATBIELB'),))
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=PROJ_D1, GROUP_MA=('CDGVAN', 'PATBIELB'),))
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=PROJ_D, GROUP_MA=('CDGVAN', 'PATBIELB'),))
+
+
+# avec cette projection, les POI1 prennent la valeur des noeuds de poutres
+# PROJ_E1 = PROJ_CHAMP(CHAM_GD=EFGE,
+                     # MODELE_1=MO,
+                     # MODELE_2=MO,
+                    # )
+
+# avec cette projection, les POI1 gardent leurs valeurs (0), et les noeuds
+# de poutre communs aux POI1 prennent les valeurs des POI1
+PROJ_E = PROJ_CHAMP(CHAM_GD=EFGE,
+                    MODELE_1=MO,
+                    MODELE_2=MO,
+                    PROL_ZERO ='OUI',
+                    VIS_A_VIS=(_F(TOUT_1='OUI',TOUT_2='OUI',
+                                 ),
+                               _F(
+                                 GROUP_MA_1=('CDGVAN','PATBIELB'),
+                                 GROUP_MA_2=('CDGVAN','PATBIELB'),
+                                 CAS_FIGURE='0D',
+                                 DISTANCE_0D = 1E-8,
+                                 ),
+                              )
+                    )
+
+
+
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=EFGE, GROUP_MA=('CDGVAN', 'PATBIELB'),))
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=PROJ_E, GROUP_MA=('CDGVAN', 'PATBIELB'),))
+
+
+
+TEST_RESU(CHAM_NO=(
+                _F(NOEUD='N155',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DX',
+                   VALE_CALC=-3.24044250030696E-04,
+                   ),
+                _F(NOEUD='N155',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.67087139352263E-04,
+                   ),
+                _F(NOEUD='N155',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DRZ',
+                   VALE_CALC=-4.07003475345353E-04,
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DX',
+                   VALE_CALC=-5.79308689944468E-04,
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.80549819560532E-04,
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=DEPL,
+                   NOM_CMP='DRZ',
+                   VALE_CALC=-3.85337603546452E-04,
+                   ),
+                ),
+          )
+
+TEST_RESU(CHAM_NO=(
+                _F(NOEUD='N155',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DX',
+                   VALE_CALC=-3.24044250030696E-04,
+                   VALE_REFE=-3.24044250030696E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N155',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.67087139352263E-04,
+                   VALE_REFE=-4.67087139352263E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N155',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DRZ',
+                   VALE_CALC=-4.07003475345353E-04,
+                   VALE_REFE=-4.07003475345353E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DX',
+                   VALE_CALC=-5.79308689944468E-04,
+                   VALE_REFE=-5.79308689944468E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.80549819560532E-04,
+                   VALE_REFE=-4.80549819560532E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=PROJ_D,
+                   NOM_CMP='DRZ',
+                   VALE_CALC=-3.85337603546452E-04,
+                   VALE_REFE=-3.85337603546452E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                ),
+          )
+
+TEST_RESU(CHAM_NO=(
+                _F(NOEUD='N155',
+                   CHAM_GD=PROJ_D2,
+                   NOM_CMP='DX',
+                   VALE_CALC=-3.24044250030696E-04,
+                   VALE_REFE=-3.24044250030696E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N155',
+                   CHAM_GD=PROJ_D2,
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.67087139352263E-04,
+                   VALE_REFE=-4.67087139352263E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N155',
+                   CHAM_GD=PROJ_D2,
+                   NOM_CMP='DRZ',
+                   VALE_CALC=-4.07003475345353E-04,
+                   VALE_REFE=-4.07003475345353E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=PROJ_D2,
+                   NOM_CMP='DX',
+                   VALE_CALC=-5.79308689944468E-04,
+                   VALE_REFE=-5.79308689944468E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=PROJ_D2,
+                   NOM_CMP='DY',
+                   VALE_CALC=-4.80549819560532E-04,
+                   VALE_REFE=-4.80549819560532E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(NOEUD='N157',
+                   CHAM_GD=PROJ_D2,
+                   NOM_CMP='DRZ',
+                   VALE_CALC=-3.85337603546452E-04,
+                   VALE_REFE=-3.85337603546452E-04,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                ),
+          )
+
+
+TEST_RESU(CHAM_ELEM=(
+                _F(GROUP_MA='CDGVAN',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='N',
+                   VALE_CALC=0.,
+                   ),
+                _F(GROUP_MA='CDGVAN',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='VY',
+                   VALE_CALC=0.,
+                   ),
+                _F(GROUP_MA='CDGVAN',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='MFZ',
+                   VALE_CALC=0.,
+                   ),
+                _F(GROUP_MA='PATBIELB',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='N',
+                   VALE_CALC=0.,
+                   ),
+                _F(GROUP_MA='PATBIELB',
+                   CHAM_GD=EFGE,
+                   NOM_CMP='VZ',
+                   VALE_CALC=0.,
+                   ),
+                ),
+          )
+
+TEST_RESU(CHAM_ELEM=(
+                _F(GROUP_MA='CDGVAN',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='N',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(GROUP_MA='CDGVAN',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='VY',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(GROUP_MA='CDGVAN',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='MFZ',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(GROUP_MA='PATBIELB',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='N',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                _F(GROUP_MA='PATBIELB',
+                   CHAM_GD=PROJ_E,
+                   NOM_CMP='VZ',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   REFERENCE='ANALYTIQUE',
+                   ),
+                ),
+          )
+
+
 
 FIN()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  projDime         : dimension of projection 1D 2D 3D
+! In  projDime         : dimension of projection 0D 1D 2D 3D
 ! In  typeSelect       : type of selection (all or restricted) TOUT or PARTIE
 ! In  entity1          : name of first entity (model or mesh)
 ! In  entity2          : name of second entity (model or mesh)
@@ -149,7 +149,11 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
     call dismoi('NB_MA_MAILLA', mesh2, 'MAILLAGE', repi = nbCell2)
 
 ! - List of type of cells with this dimension
-    if (projDime .eq. '1D') then
+    if (projDime .eq. '0D') then
+        nbCellType = 1
+        cellTypeName(1) = 'POI1'
+        cellListCode(1) = 'PO1'
+    else if (projDime .eq. '1D') then
         nbCellType = 3
         cellTypeName(1) = 'SEG2'
         cellTypeName(2) = 'SEG3'
@@ -200,7 +204,6 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
 
     else
         ASSERT(ASTER_FALSE)
-
     endif
 
     do iCellType = 1, nbCellType

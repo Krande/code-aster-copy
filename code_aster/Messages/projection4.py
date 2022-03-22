@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,13 @@ cata_msg = {
 
      1 : _("""Type de maille non-supporté dans la projection. Il faut demander un développement."""),
 
+     2 : _("""Dans le cadre de la projection ponctuelle, on n'a pas trouvé de maille POI1
+suffisamment proche du noeud %(k1)s.
+
+Distance à la maille POI1 la plus proche  : %(r1)f
+Distance maximale autorisée (DISTANCE_0D) : %(r2)f
+
+"""),
     54 : _("""Il n'y a aucun noeud sur lesquels projeter."""),
 
     55 : _("""Il n'y a pas de mailles à projeter ou en correspondance.

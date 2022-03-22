@@ -92,7 +92,11 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
 !
 !     1 : TYPE_MAILLES UTILES DE MOA :
 !     -------------------------------
-    if (dim .eq. '1D') then
+    if (dim .eq. '0D') then
+        nbtm=1
+        notm(1)='POI1'
+
+    else if (dim .eq. '1D') then
         nbtm=4
         notm(1)='SEG2'
         notm(2)='SEG3'
