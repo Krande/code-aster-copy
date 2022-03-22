@@ -34,7 +34,7 @@
 
 /**
  * @class ListOfIntegers
- * @brief Cette classe correspond a une listr8
+ * @brief Cette classe correspond a une listis
  * @author Nicolas Sellenet
  */
 class ListOfIntegers : public DataStructure {
@@ -69,6 +69,12 @@ class ListOfIntegers : public DataStructure {
           _lpas( JeveuxVectorReal( getName() + ".LPAS" ) ),
           _nbPa( JeveuxVectorLong( getName() + ".NBPA" ) ),
           _vale( JeveuxVectorLong( getName() + ".VALE" ) ){};
+          
+    VectorLong getValues() const ;
+
+    void setVectorValues( const VectorLong & ) ;
+
+    int size();
 };
 
 /**

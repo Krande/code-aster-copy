@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -176,7 +176,7 @@ class PostRocheCommon():
 
         # Autres paramètres
         self.l_mc_inst  = ['NUME_ORDRE', 'INST', 'PRECISION', 'CRITERE']
-        self.l_mc_inst2 = ['TOUT_ORDRE','NUME_ORDRE', 'INST']
+        self.l_mc_inst2 = ['TOUT_ORDRE','NUME_ORDRE', 'INST','LIST_ORDRE','LIST_INST']
         self.l_mc_inst3 = ['PRECISION', 'CRITERE']
         self.dirDisp    = ['X' , 'Y' , 'Z' , 'COMBI']
         self.listCmp    = ['MT', 'MFY', 'MFZ']
@@ -773,10 +773,16 @@ class PostRocheCommon():
                             listNumeTranCorr = resCorr.getRanks()
                             if listNumeTranCorr != listNumeTran:
                                 UTMESS('F','POSTROCHE_7',vali=iocc)
+                    elif mc=='LIST_ORDRE':
+                        kwNumeTran   = 'NUME_ORDRE'
+                        listNumeTran = charg.get(mc).getValues()
+                    elif mc=='LIST_INST':
+                        kwNumeTran   = 'INST'
+                        listNumeTran = charg.get(mc).getValues()
                     else:
                         kwNumeTran   = mc
                         listNumeTran = charg.get(mc)
-                    if mc =='INST':
+                    if kwNumeTran == 'INST':
                         for keyw in self.l_mc_inst3:
                             dicInst[keyw] = charg.get(keyw)
                     break

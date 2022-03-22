@@ -233,7 +233,10 @@ resu_corr=CREA_RESU(OPERATION='AFFE',
 # appel à POST_ROCHE
 
 
-resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
+linst = DEFI_LIST_REEL(VALE=(1,2))
+lordr = DEFI_LIST_ENTI(VALE=(1,2))
+
+resuPostRoche = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -245,7 +248,7 @@ resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
                                  RESU_CORR=resu_corr,
-                                 INST=(1,2),
+                                 LIST_INST=linst,
                                  #NUME_ORDRE=(1,2),
                                  #TOUT_ORDRE='OUI',
                                  ),
@@ -290,8 +293,8 @@ resuPostRoche_S = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
                                  RESU_CORR=resu_corr,
-                                 INST=(1,2),
-                                 #NUME_ORDRE=(1,2),
+                                 LIST_ORDRE=lordr,
+                                 # NUME_ORDRE=(1,2),
                                  #TOUT_ORDRE='OUI',
                                  ),
                                 ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,14 +93,16 @@ POST_ROCHE=MACRO(nom="POST_ROCHE",
                                                           "DEPLACEMENT","DILAT_THERM","POIDS"),),
             
             b_sism_iner_tran =BLOC(condition = """equal_to("TYPE_CHAR", 'SISM_INER_TRAN') """,
-                                   regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','INST'),),
+                                   regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','INST', 'LIST_ORDRE', 'LIST_INST'),),
                 RESULTAT        =SIMP(statut='o',typ=(dyna_trans)),
                 RESU_CORR       =SIMP(statut='f',typ=(dyna_trans)),
                 TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
                 NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
                 INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+                LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
+                LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ),
                 
-                b_inst =BLOC(condition = """exists("INST") """,
+                b_inst =BLOC(condition = """exists("INST") or  exists("LIST_INST")""",
                     CRITERE         =SIMP(statut='f',typ='TXM',into=("RELATIF","ABSOLU",), defaut=("RELATIF") ),
                     PRECISION       =SIMP(statut='f',typ='R',defaut=1e-6),
                 ),

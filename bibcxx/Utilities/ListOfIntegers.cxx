@@ -3,7 +3,7 @@
  * @brief Implementation de ListOfIntegers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,3 +24,24 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Utilities/ListOfIntegers.h"
+
+VectorLong ListOfIntegers::getValues() const {
+    if ( !_vale->exists() )
+        throw std::runtime_error( "No list of values in ListOfIntegers" );
+
+    _vale->updateValuePointer();
+    VectorLong toReturn;
+    auto size = _vale->size();
+    for ( int pos = 0; pos < size; ++pos )
+        toReturn.push_back( ( *_vale )[pos] );
+    return toReturn;
+};
+
+void ListOfIntegers::setVectorValues( const VectorLong &vec ) {
+    ( *_vale ) = vec;
+};
+
+int ListOfIntegers::size() {
+    _vale->updateValuePointer();
+    return _vale->size();
+};

@@ -32,5 +32,8 @@ void exportListOfIntegersToPython( py::module_ &mod ) {
     py::class_< ListOfIntegers, ListOfIntegers::ListOfIntegersPtr, DataStructure >(
         mod, "ListOfIntegers" )
         .def( py::init( &initFactoryPtr< ListOfIntegers > ) )
-        .def( py::init( &initFactoryPtr< ListOfIntegers, std::string > ) );
+        .def( py::init( &initFactoryPtr< ListOfIntegers, std::string > ) )
+        .def( "getValues", &ListOfIntegers::getValues )
+        .def( "setVectorValues", &ListOfIntegers::setVectorValues )
+        .def_property_readonly( "size", &ListOfIntegers::size );
 };
