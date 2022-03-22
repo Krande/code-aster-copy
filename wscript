@@ -175,7 +175,6 @@ def all_components(self):
         "PETSC4PY",
         "MATH",
         "NUMPY",
-        "BOOST",
         "PYBIND11",
         "OPENMP",
         "MPI",

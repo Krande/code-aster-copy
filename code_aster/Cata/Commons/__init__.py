@@ -17,13 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# c_mfront_official will only be available after installation
-try:
-    from .c_mfront_official import C_MFRONT_OFFICIAL # pragma pylint: disable=import-error
-except ImportError:
-    def C_MFRONT_OFFICIAL():
-        return {}
-
 
 from .c_affichage import C_AFFICHAGE
 from .c_archivage import C_ARCHIVAGE

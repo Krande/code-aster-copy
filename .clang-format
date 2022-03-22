@@ -12,15 +12,12 @@ IncludeCategories:
   # Headers in "" with extension and with /.
   - Regex:           '"([a-z0-9\./\-_])+"'
     Priority:        2
-  # Headers in <> from specific external libraries.
-  - Regex:           '<((boost))/([a-z0-9\./\-_])+>'
-    Priority:        3
   # Headers in <> without extension.
   - Regex:           '<([a-z0-9/\-_])+>'
-    Priority:        4
+    Priority:        3
   # Headers in <> with extension.
   - Regex:           '<([a-z0-9\./\-_])+>'
-    Priority:        5
+    Priority:        4
 IndentWidth: 4
 Language: Cpp
 SpacesInAngles: true
