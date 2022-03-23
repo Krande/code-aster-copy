@@ -1,0 +1,157 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster import MPI
+from code_aster.Utilities import shared_tmpdir
+import os.path as osp
+
+rank = MPI.COMM_WORLD.Get_rank()
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+MAIL = code_aster.ParallelMesh()
+MAIL.readMedFile('zzzz144b/{}.med'.format(rank), True)
+
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
+                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),
+                  )
+
+MATER = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3,),)
+
+MODM = AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='3D',),
+                         _F(GROUP_MA='PO',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='DIS_TR'))
+                   )
+
+CARA = AFFE_CARA_ELEM(MODELE=MODM,
+                      DISCRET=(_F(REPERE='GLOBAL',
+                                  CARA='K_TR_D_N',
+                                  GROUP_MA='PO',
+                                  VALE=(0., 0., 0., 0., 0., 0.,),),),
+                      )
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,),)
+
+CH1 = AFFE_CHAR_MECA(MODELE=MODM,
+                     PRES_REP=_F(GROUP_MA='Press',
+                                 PRES=0.1,),)
+
+CH2 = AFFE_CHAR_CINE(MODELE=MODM,
+                     MECA_IMPO=_F(GROUP_MA='Encast',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),)
+
+CH3 = AFFE_CHAR_MECA(MODELE=MODM,
+                     LIAISON_SOLIDE=_F(GROUP_MA='Rigide',),)
+
+CH4 = AFFE_CHAR_MECA(MODELE=MODM,
+                     LIAISON_RBE3=_F(GROUP_NO_MAIT='PO',
+                                     GROUP_NO_ESCL='Moment',
+                                     DDL_MAIT=('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ',),
+                                     DDL_ESCL='DX-DY-DZ',
+                                     COEF_ESCL=1.,)
+                     )
+
+CH5 = AFFE_CHAR_MECA(MODELE=MODM,
+                     FORCE_NODALE=_F(GROUP_NO='PO',
+                                     MZ=1.e5,),)
+
+LISTE = DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=1.0,
+                                      NOMBRE=1,),)
+
+RAMPE = DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.,  0.,
+                            1.,  1.,),)
+
+RESU = STAT_NON_LINE(MODELE=MODM,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CARA,
+                     SOLVEUR=_F(METHODE='PETSC', OPTION_PETSC='-ksp_monitor_true_residual',),
+                     EXCIT=(_F(CHARGE=CH1,),
+                            _F(CHARGE=CH2,),
+                            _F(CHARGE=CH3,),
+                            _F(CHARGE=CH4,),
+                            _F(CHARGE=CH5, FONC_MULT=RAMPE),
+                            ),
+                     INCREMENT=_F(LIST_INST=LISTE,),
+                     )
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-112.7918400513989,
+                   VALE_REFE=-112.7918400513989,
+                   GROUP_NO='PO',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-112.79184005139643,
+                   VALE_REFE=-112.79184005139643,
+                   GROUP_NO='PO',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-1.8081225863704677,
+                   VALE_REFE=-1.8081225863704677,
+                   GROUP_NO='PO',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   VALE_CALC=-0.3748665010125342,
+                   VALE_REFE=-0.3748665010125342,
+                   GROUP_NO='PO',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   VALE_CALC=0.3748665010125426,
+                   VALE_REFE=0.3748665010125426,
+                   GROUP_NO='PO',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   VALE_CALC=0.4405581361500649,
+                   VALE_REFE=0.4405581361500649,
+                   GROUP_NO='PO',),
+                )
+          )
+with shared_tmpdir('foo') as tmpdir:
+    RESU.printMedFile(osp.join(tmpdir,'resu_{}.med'.format(rank)))
+
+FIN()
