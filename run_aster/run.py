@@ -205,6 +205,8 @@ class RunAster:
         cmd = self._get_cmdline(idx, comm, timeout)
         logger.info("    %s", " ".join(cmd))
 
+        # use environment variable to make it works with ipython
+        os.environ["PYTHONFAULTHANDLER"] = "1"
         exitcode = run_command(cmd, exitcode_file=EXITCODE_FILE)
         msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={exitcode}\n\n"
         logger.info(msg)
@@ -255,7 +257,6 @@ class RunAster:
         # ign = [sys.prefix, sys.exec_prefix, "$HOME/.local", os.getenv("PYTHONPATH")]
         # cmd.extend(["-m", "trace", "--trace",
         #             "--ignore-dir=" + ":".join(ign)])
-        cmd.extend(["-X", "faulthandler"])
         # remaining arguments are treated by code_aster script
         cmd.append("--")
         cmd.append(commfile)

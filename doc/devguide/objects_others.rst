@@ -414,6 +414,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.PythonBool` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PythonBool
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ResultNaming` object
 ********************************************************************************
 
