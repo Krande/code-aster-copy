@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,16 +32,18 @@ subroutine te0021(option, nomte)
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
     integer :: icodre(1)
     character(len=8) :: fami, poum
-    character(len=16) :: nomte, option
+    character(len=16) :: nomte, option, elas_keyword
     real(kind=8) :: a(3, 3, 27, 27)
     real(kind=8) :: poids
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jgano, nno, kp, i, j, imatuu, kpg, spt
+    integer :: elas_id
 !
 !
 !-----------------------------------------------------------------------
@@ -60,8 +62,9 @@ subroutine te0021(option, nomte)
     kpg=1
     spt=1
     poum='+'
+    call get_elas_id(zi(imate), elas_id, elas_keyword)
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+                ' ', elas_keyword, 0, ' ', [0.d0],&
                 1, 'RHO', rho(1), icodre, 1)
     omega1 = zr(irota+1)*zr(irota)
     omega2 = zr(irota+2)*zr(irota)

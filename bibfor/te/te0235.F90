@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine te0235(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/lonele.h"
 #include "asterfort/masstg.h"
 #include "asterfort/matrot.h"
@@ -65,7 +66,8 @@ subroutine te0235(option, nomte)
     parameter (nbres=6)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
-    character(len=16) :: nomres(nbres)
+    character(len=16) :: nomres(nbres), elas_keyword
+    integer :: elas_id
     data nomres/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
@@ -98,7 +100,8 @@ subroutine te0235(option, nomte)
         kpg=1
         spt=1
         poum='+'
-        call rcvalb(fami, kpg, spt, poum, zi(lmater), ' ', 'ELAS', 0, ' ', [0.0d0],&
+        call get_elas_id(zi(lmater), elas_id, elas_keyword)
+        call rcvalb(fami, kpg, spt, poum, zi(lmater), ' ', elas_keyword, 0, ' ', [0.0d0],&
                     3, nomres, valres, codres, 1)
         e   = valres(1)
         xnu = valres(2)
