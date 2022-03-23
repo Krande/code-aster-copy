@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -178,7 +178,19 @@ Solveur PETSc :
    Il faut utiliser la version MPI avec un seul processeur.
 """),
 
+21 : _("""
+Solveur PETSc :
+  Le solveur linéaire n'a pas convergé. La phase de correction a été lancée. Elle a convergé en '%(i1)d' itérations.
 
+  Conseils :
+  - pour accélérer le calcul, la prochaine fois, rendez votre préconditionneur plus robuste:  'LDLT_DP' au lieu de'LDLT_SP'
+    ou augmenter LOW_RANK_SEUIL.
+  - utiliser le solveur linéaire par défaut.
+"""),
+22 : _("""
+Solveur PETSc :
+  Le solveur linéaire  a convergé en '%(i1)d' itérations sans avoir besoin de la procédure de correction.
+"""),
 24 : _("""
 Solveur PETSc :
   La résolution du système linéaire précédent s'est effectuée en %(i1)d itérations.

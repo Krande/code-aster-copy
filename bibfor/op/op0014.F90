@@ -177,9 +177,9 @@ subroutine op0014()
             call getvtx(' ', 'GESTION_MEMOIRE', scal=usersm, nbret=ibid)
             call getvr8(' ', 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
             if ( abs(blreps) < r8prem()) then
-               kacmum='FR+'
+               kacmum='AUTO'
             else
-               kacmum='LR+'
+               kacmum='LR'
             endif
             zi(jslvi-1+1) = -9999
             zi(jslvi-1+5) = 0
@@ -271,9 +271,9 @@ subroutine op0014()
             call getvr8(' ', 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
             ASSERT(ibid.eq.1)
             if ( abs(blreps) < r8prem()) then
-               kacmum='FR+'
+               kacmum='AUTO'
             else
-               kacmum='LR+'
+               kacmum='LR'
             endif
             zi(jslvi-1+1) = -9999
             zi(jslvi-1+5) = 0

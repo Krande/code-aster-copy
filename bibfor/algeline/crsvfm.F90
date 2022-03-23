@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,9 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz, re
     renum = renumz
 !
     call jeexin(solvbd, iret)
-    if (iret .eq. 0) call detrsd('SOLVEUR', solvbd)
+    if (iret .eq. 0) then
+      call detrsd('SOLVEUR', solvbd)
+    endif
 !
 !     LA MATRICE EST-ELLE NON SYMETRIQUE ?
     call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=symk)
@@ -81,8 +83,9 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz, re
     if ( rank == 'F' ) then
         kacmum = 'AUTO'
     elseif ( rank == 'L') then
-        kacmum = 'LR+'
+        kacmum = 'LR'
     endif
+
     if ( prec == 'S' ) then
         mixpre = 'OUI'
     elseif ( prec == 'D') then

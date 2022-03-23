@@ -57,6 +57,9 @@ implicit none
   !     VARIABLES LOCALES
   integer, dimension(:), pointer :: slvi => null()
   character(len=24), dimension(:), pointer :: slvk => null()
+  character(len=24) :: sk2_old
+  real(kind=8), pointer      :: slvr(:) => null()
+  real(kind=8) :: sr4_old
   PetscErrorCode ::  ierr
   KSP :: ksp
   PC :: pc_lmp
@@ -77,6 +80,7 @@ implicit none
     spmat=' '
     spsolv=' '
     call KSPDestroy(kp(kptsc), ierr)
+!
     call KSPCreate(mpicou, kp(kptsc), ierr)
     ksp=kp(kptsc)
     ASSERT(ierr.eq.0)
@@ -92,8 +96,9 @@ implicit none
   !
   call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
   slvi(5) = 0
+  
   ! Attention ! s'il y avait un LMP actif, on le détruit
-  call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+  call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
   lmp_is_active = slvk(6)=='GMRES_LMP'
   if ( lmp_is_active ) then
      call lmp_destroy( pc_lmp, ierr )
@@ -105,6 +110,12 @@ implicit none
   !
   !   -- calcul du nouveau preconditionneur :
   !   ---------------------------------------
+  !   -- afin de "robustifier" ponctuellement le preconditionneur
+  sk2_old=slvk(2)
+  slvk(2)='LDLT_DP'
+  call jeveuo(nosolv//'.SLVR', 'E', vr=slvr)
+  sr4_old = slvr(4)
+  slvr(4)=0.D0
   call appcpr(kptsc)
   !
   !   -- 2eme resolution :
@@ -118,14 +129,20 @@ implicit none
   call VecScatterDestroy(xscatt, ierr)
   ASSERT( ierr == 0 )
   xscatt = PETSC_NULL_VECSCATTER
+
   call apksp(kptsc)
   call appcrs(kptsc, lmd)
   call KSPSolve(ksp, b, x, ierr)
+
   ASSERT(ierr.eq.0)
   call KSPGetConvergedReason(ksp, indic, ierr)
   ASSERT(ierr.eq.0)
   call KSPGetIterationNumber(ksp, its, ierr)
+
   ASSERT(ierr.eq.0)
+  !   -- on remet le parametrage sd_solveur initial avant "robustification du preconditionneur"
+  slvk(2)=sk2_old
+  slvr(4)=sr4_old
   !
   !
   !   -- bascule pour la mesure du temps CPU : PRERES -> RESOUD :

@@ -250,8 +250,8 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=0,
-           VALE_CALC_I=0,
+           VALE_REFE_I=1,
+           VALE_CALC_I=1,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='Count_Factor',
            TABLE=STATIS,
@@ -434,8 +434,8 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=0,
-           VALE_CALC_I=0,
+           VALE_REFE_I=1,
+           VALE_CALC_I=1,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='Count_Factor',
            TABLE=STATIS,

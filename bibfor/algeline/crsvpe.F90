@@ -112,9 +112,9 @@ subroutine crsvpe(motfac, solveu,  kellag )
             call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
             ASSERT(ibid.eq.1)
             if ( abs(blreps) < r8prem() ) then
-               kacmum = 'FR+'
+               kacmum = 'AUTO'
             else
-               kacmum='LR+'
+               kacmum='LR'
             endif
         endif
 !

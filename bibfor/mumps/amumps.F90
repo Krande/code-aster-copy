@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 #include "asterf_mumps.h"
     type(smumps_struc), pointer :: smpsk => null()
     integer :: rang, nbproc, niv, ifm, ibid, ietdeb, ifactm, nbfact
-    integer :: ietrat, nprec, ifact, iaux, iaux1, vali(4), pcpi
+    integer :: ietrat, nprec, ifact, iaux, vali(4), pcpi
     character(len=1) :: rouc, type, prec
     character(len=3) :: matd, mathpc
     character(len=5) :: etam, klag2
@@ -199,6 +199,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
 !       ------------------------------------------------
         call amumpi(0, lquali, ldist, kxmps, type, lmhpc, lbid)
         call smumps(smpsk)
+
         rang=smpsk%myid
         nbproc=smpsk%nprocs
 !
@@ -337,10 +338,9 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
             do ifact = 1, ifactm
                 call smumps(smpsk)
                 iaux=smpsk%infog(1)
-                iaux1=smpsk%icntl(23)
 !
 ! --- TRAITEMENT CORRECTIF ICNTL(14)
-                if ((iaux.eq.-8) .or. ((iaux.eq.-9).and.(iaux1.eq.0)) .or. (iaux.eq.-14)&
+                if ((iaux.eq.-8) .or. (iaux.eq.-9) .or. (iaux.eq.-14)&
                     .or. (iaux.eq.-15) .or. (iaux.eq.-17) .or. (iaux.eq.-20)) then
                     if (ifact .eq. ifactm) then
 ! ---  ICNTL(14): PLUS DE NOUVELLE TENTATIVE POSSIBLE
@@ -366,14 +366,19 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                             vali(4)=ifactm
                             call utmess('I', 'FACTOR_58', ni=4, vali=vali)
                         endif
+! --- DERNIERE CHANCE: ON RAJOUTE L'OOC
+                        if (ifact.eq.(ifactm-1)) then
+                          lpb13=.true.
+                          smpsk%icntl(23)=0
+                          smpsk%icntl(22)=1
+                        endif
                         ifactm=max(ifactm-ifact,1)
                         goto 10
                     endif
 !
 ! --- TRAITEMENT CORRECTIF ICNTL(23)
 ! --- CE N'EST UTILE QU' UNE FOIS D'OU LE CONTROLE DE LPB13
-                else if (((iaux.eq.-13).or.((iaux.eq.-9).and.(iaux1.ne.0)).or.(iaux.eq.-19))&
-                           .and.(.not.lpb13)) then
+                else if (((iaux.eq.-13).or.(iaux.eq.-19)).and.(.not.lpb13)) then
 ! ---  ICNTL(23): ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE ET ON REVIENT A L'ANALYSE
                     if ((niv.ge.2) .and. (.not.lpreco)) then
                         vali(1)=smpsk%icntl(23)
@@ -490,6 +495,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                     rctdeb, ldist)
         smpsk%job = 3
         if (lresol) call smumps(smpsk)
+
         call amumpt(10, kmonit, temps, rang, nbproc,&
                     kxmps, lquali, type, ietdeb, ietrat,&
                     rctdeb, ldist)

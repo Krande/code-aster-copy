@@ -290,7 +290,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 # --------------------------------------------------------------------
 
     _BlocMU['PCENT_PIVOT'] = SIMP(
-        statut='f', typ='I', defaut=20, val_min=1, )
+        statut='f', typ='I', defaut=35, val_min=1, )
 
 # --------------------------------------------------------------------
 

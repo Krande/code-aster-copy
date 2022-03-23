@@ -93,7 +93,7 @@ use lmp_module, only : lmp_update
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: ifm, niv, ierd, ibid, nmaxit, ptserr, jnequ
+    integer :: ifm, niv, ierd, ibid, nmaxit, ptserr, jnequ, iaux
     integer :: lmat, idvalc, jslvi, jslvk, jslvr, jcoll, icode
     integer :: jnugll, jprddl, nloc, tbloc, jvaleu, ndprop
     mpi_int :: mrank, msize
@@ -113,7 +113,7 @@ use lmp_module, only : lmp_update
     real(kind=8), dimension(:), pointer :: slvr => null()
     complex(kind=8) :: cbid
 !
-    aster_logical :: lmd, lmhpc
+    aster_logical :: lmd, lmhpc, lap2foi
     aster_logical, parameter :: dbg=.false.
 !
 !----------------------------------------------------------------
@@ -335,6 +335,9 @@ use lmp_module, only : lmp_update
             call ap2foi(kptsc, mpicomm, nosolv, lmd, indic,its)
 !           -- ksp a ete modifie par ap2foi :
             ksp = kp(kptsc)
+            lap2foi=.true.
+        else
+            lap2foi=.false.
         endif
 !
 !
@@ -530,6 +533,16 @@ use lmp_module, only : lmp_update
 !           ON STOCKE LE NOMBRE D'ITERATIONS DU KSP
             call KSPGetIterationNumber(ksp, maxits, ierr)
             ASSERT(ierr.eq.0)
+            iaux=maxits
+            if (lap2foi) then
+              if (niv.ge.2) call utmess('I', 'PETSC_21', si=iaux)
+!             ON REMET A ZERO POUR RELANCER LE CALCUL DU PRECONDITIONNEUR
+!             SUR LA NOUVELLE MATRICE ET AVEC LE PARAMETRAGE INITIAL AU
+!             PROCHAIN PAS DE NEWTON
+              maxits=0
+            else
+              if (niv.ge.2) call utmess('I', 'PETSC_22', si=iaux)
+            endif
             nmaxit = maxits
             call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
             slvi(5) = nmaxit

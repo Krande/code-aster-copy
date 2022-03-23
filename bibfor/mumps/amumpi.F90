@@ -311,7 +311,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
           k268=-2
           k370=1
           k371=1
-          if (nbomp>1) then
+          if ((kacmum(3:4).eq.'++').and.(nbomp>1)) then
             k401=1
           else
             k401=0
@@ -335,7 +335,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
           k268=-2
           k370=1
           k371=1
-          if (nbomp>1) then
+          if ((kacmum(3:4).eq.'++').and.(nbomp>1)) then
             k401=1
           else
             k401=0
