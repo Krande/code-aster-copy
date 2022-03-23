@@ -208,7 +208,7 @@ aster_logical    :: debug, redec, cnmhuj
 ! stockage du numero d'increment si on n'est pas au dernier pas
 !
        if (vip(34).gt.crit) then
-          sigp = sigm
+          sigp(1:ndt) = sigm(1:ndt)
           codret = 2
 !          codret = 1
        endif

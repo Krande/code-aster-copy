@@ -381,7 +381,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             goto 9999
         endif
     end do
-    err = norm2(r)
+    err = norm2(r(1:nr))
     if (debug) write(6,*) 'ERREUR =',err
 !
     if (iter .le. nitimp) then
