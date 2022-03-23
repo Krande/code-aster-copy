@@ -30,7 +30,7 @@ Build some data files (dest: share/aster)
 - 'profile.sh': environment script.
 - 'reca_main.py': script to call MACR_RECAL from Python.
 - 'run_aster': script that executes code_aster.
-- 'un_ctest': script that executes a list of testcases using 'ctest'.
+- 'run_ctest': script that executes a list of testcases using 'ctest'.
 """
 
 import getpass
@@ -295,7 +295,8 @@ set(TEST_NAME ${{COMPONENT_NAME}}_{testname})
 add_test(${{TEST_NAME}} {BINDIR}/run_aster --ctest {ASTERDATADIR}/tests/{testname}.export)
 set_tests_properties(${{TEST_NAME}} PROPERTIES
                      LABELS "${{COMPONENT_NAME}} {labels}"
-                     PROCESSORS {processors})
+                     PROCESSORS {processors}
+                     WORKING_DIRECTORY ${{ASTER_RESULTS_DIR}})
 """
 
 TEST_FILES_INTEGR = """
