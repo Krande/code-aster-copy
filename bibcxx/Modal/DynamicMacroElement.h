@@ -44,6 +44,8 @@
  */
 class DynamicMacroElement : public DataStructure {
   private:
+    /** @brief Objet NUME_DDL */
+    DOFNumberingPtr _numeDdl;
     /** @brief Objet Jeveux '.DESM' */
     JeveuxVectorLong _desm;
     /** @brief Objet Jeveux '.REFM' */
@@ -82,8 +84,6 @@ class DynamicMacroElement : public DataStructure {
     JeveuxVectorChar24 _maelInerRefe;
     /** @brief Objet Jeveux '.MAEL_INER_VALE' */
     JeveuxVectorReal _maelInterVale;
-    /** @brief Objet NUME_DDL */
-    DOFNumberingPtr _numeDdl;
     /** @brief Mode Meca sur lequel repose le macro emement */
     ModeResultPtr _mechanicalMode;
     /** @brief double rigidity matrix */
@@ -118,6 +118,7 @@ class DynamicMacroElement : public DataStructure {
 
     DynamicMacroElement( const std::string name )
         : DataStructure( name, 8, "MACR_ELEM_DYNA"),
+          _numeDdl( new DOFNumbering(getName() + "      .NUME"  ) ),
           _desm( JeveuxVectorLong( getName() + ".DESM" ) ),
           _refm( JeveuxVectorChar8( getName() + ".REFM" ) ),
           _conx( JeveuxVectorLong( getName() + ".CONX" ) ),
@@ -137,7 +138,6 @@ class DynamicMacroElement : public DataStructure {
           _maelAmorVale( JeveuxVectorReal( getName() + ".MAEL_AMOR_VALE" ) ),
           _maelInerRefe( JeveuxVectorChar24( getName() + ".MAEL_INER_REFE" ) ),
           _maelInterVale( JeveuxVectorReal( getName() + ".MAEL_INER_VALE" ) ),
-          _numeDdl( nullptr ),
           _mechanicalMode( ModeResultPtr() ), _rigidityDMatrix( nullptr ),
           _rigidityCMatrix( nullptr ), _massMatrix( nullptr ), _dampingMatrix( nullptr ),
           _impeMatrix( nullptr ), _impeRigiMatrix( nullptr ), _impeMassMatrix( nullptr ),
@@ -204,7 +204,7 @@ class DynamicMacroElement : public DataStructure {
 
     bool setDOFNumbering( const DOFNumberingPtr &dofNum )
     {
-        _numeDdl = dofNum;
+        _numeDdl->setModel(dofNum->getModel());
         return true;
     };
 
