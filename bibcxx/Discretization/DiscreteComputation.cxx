@@ -143,12 +143,20 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     return bume;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameters ) {
+FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameters,
+                                                  const FieldOnCellsRealPtr _externVarField ) {
 
     ElementaryVectorDisplacementRealPtr elemVect =
         std::make_shared< ElementaryVectorDisplacementReal >();
 
-    if ( _study->getModel()->isThermal() ) {
+    // Get main parameters
+    auto currModel = _study->getModel();
+    auto currMater = _study->getMaterialField();
+    auto currCodedMater = _study->getCodedMaterial();
+    auto currElemChara = _study->getElementaryCharacteristics();
+    auto listOfLoads = _study->getListOfLoads();
+
+    if ( currModel->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
     };
 
@@ -157,30 +165,32 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
     const ASTERDOUBLE &currTime = timeParameters[0];
 
     // Prepare loads
-    auto listOfLoads = _study->getListOfLoads();
     JeveuxVectorChar24 listOfLoadsList = listOfLoads->getListVector();
     JeveuxVectorLong listOfLoadsInfo = listOfLoads->getInformationVector();
     std::string nameLcha = ljust( listOfLoadsList->getName(), 24 );
     std::string nameInfc = ljust( listOfLoadsInfo->getName(), 24 );
 
     // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _study->getModel()->getName(), 24 );
-    std::string materName = ljust( _study->getMaterialField()->getName(), 24 );
-    std::string codmaName =
-        ljust( _study->getCodedMaterial()->getCodedMaterialField()->getName(), 24 );
-    auto currElemChara = _study->getElementaryCharacteristics();
-    std::string caraName( " " );
+    std::string modelName = ljust( currModel->getName(), 24 );
+    std::string materName = ljust( currMater->getName(), 24 );
+    std::string currCodedMaterName = ljust( currCodedMater->getName(), 24 );
+    std::string currElemCharaName( " " );
     if ( currElemChara )
-        caraName = currElemChara->getName();
-    caraName.resize( 24, ' ' );
-    std::string varcName( " " );
-    varcName.resize( 24, ' ' );
+        currElemCharaName = currElemChara->getName();
+    currElemCharaName.resize( 24, ' ' );
     std::string vectElemName = ljust( elemVect->getName(), 24 );
     std::string stop( "S" );
 
+    // Get external state variables
+    std::string externVarName( " " );
+    if ( _externVarField ) {
+        externVarName = _externVarField->getName();
+    }
+    externVarName.resize( 24, ' ' );
+
     // Wrapper FORTRAN
-    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &currTime, caraName, materName,
-                       codmaName, vectElemName, varcName );
+    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &currTime, currElemCharaName, materName,
+                       currCodedMaterName, vectElemName, externVarName );
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );

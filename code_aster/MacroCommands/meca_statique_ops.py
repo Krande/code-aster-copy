@@ -118,13 +118,14 @@ def _computeMatrix(disr_comp, matrix, time, externVar):
 
 
 @profile
-def _computeRhs(phys_pb, disr_comp, time):
+def _computeRhs(phys_pb, disr_comp, time, externVarField):
     """Compute and assemble the right hand side
 
     Arguments:
          phys_pb (PhysicalProblem): physical problem
          disr_comp (DiscreteComputation): to compute discrete quantities
          time (float): current time
+         externVarField (fieldOnCellsReal): external state variable at current time
 
      Returns:
          FieldOnNodesReal: vector of load
@@ -134,7 +135,7 @@ def _computeRhs(phys_pb, disr_comp, time):
     rhs = disr_comp.imposedDisplacement(time)
 
     # compute neumann forces
-    rhs += disr_comp.neumann([time, 0.0, 0.0])
+    rhs += disr_comp.neumann([time, 0.0, 0.0], externVarField=externVarField)
 
     if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
         rhs += disr_comp.computeExternalStateVariablesLoad()
@@ -260,7 +261,7 @@ def meca_statique_ops(self, **args):
             profile(linear_solver.factorize)(matrix)
 
         # compute rhs
-        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time)
+        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time, phys_state.externVar)
 
         # solve linear system
         diriBCs = profile(disc_comp.dirichletBC)(phys_state.time)

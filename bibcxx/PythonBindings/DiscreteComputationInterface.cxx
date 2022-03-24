@@ -68,12 +68,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Return the Neumann load vector
 
       Arguments:
-            time (list): Vector of times of length 3 (current time, delta_time, parameter)
+            time_list (list): Vector of times of length 3 (current time, delta_time, parameter)
+            externVarField (fieldOnCellsReal): external state variable at current time
 
       Returns:
             FieldOnNodes: Neumann load vector
         )",
-              py::arg( "time" ) )
+              py::arg( "time_list" ), py::arg( "externVarField" ) = nullptr )
         .def( "createExternalStateVariablesField",
               &DiscreteComputation::createExternalStateVariablesField, R"(
             Create external state variable field
@@ -149,7 +150,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   ElementaryMatrix: elementary elastic Stiffness matrices
             )",
               py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = 0,
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem )
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(

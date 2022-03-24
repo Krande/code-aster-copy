@@ -88,7 +88,8 @@ class DiscreteComputation {
      * @param TimeParameters Parameters for time
      * @return Nodal field for Neumann loads
      */
-    FieldOnNodesRealPtr neumann( const VectorReal timeParameters );
+    FieldOnNodesRealPtr neumann( const VectorReal timeParameters,
+                                 const FieldOnCellsRealPtr _externVarField = nullptr );
 
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
