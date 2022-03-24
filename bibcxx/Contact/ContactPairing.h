@@ -109,6 +109,6 @@ class ContactPairing : public DataStructure {
 };
 
 
-typedef boost::shared_ptr< ContactPairing > ContactPairingPtr;
+typedef std::shared_ptr< ContactPairing > ContactPairingPtr;
 
 #endif /* PAIRING_H_ */

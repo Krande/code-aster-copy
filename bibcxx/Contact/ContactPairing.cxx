@@ -30,7 +30,7 @@ ContactPairing::ContactPairing( const std::string name, const std::vector< Conta
     {  
      if (!_mesh || _mesh->isParallel() ) raiseAsterError( "Mesh is empty or is parallel " );
      
-      _newCoordinates = boost::make_shared<MeshCoordinatesField>(*(_mesh->getCoordinates()));
+      _newCoordinates = std::make_shared<MeshCoordinatesField>(*(_mesh->getCoordinates()));
 
      // be sure that zones is not empty and get size of zones and resize
      if(_zones.empty()) raiseAsterError("ContactZone vector is empty ");

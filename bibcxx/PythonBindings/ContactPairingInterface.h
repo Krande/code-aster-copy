@@ -27,6 +27,6 @@
 #include "astercxx.h"
 #include "Contact/ContactPairing.h"
 
-void exportContactPairingToPython();
+void exportContactPairingToPython( py::module_ &mod );
 
 #endif /* PairingINTERFACE_H_ */
