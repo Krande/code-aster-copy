@@ -31,13 +31,17 @@
 #include "Behaviours/BehaviourProperty.h"
 #include "DataFields/DataField.h"
 #include "DataFields/SimpleFieldOnCells.h"
-#include "Discretization/ElementaryCharacteristics.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
+
+/** @brief Forward declaration of ElementaryCharacteristics */
+class ElementaryCharacteristics;
+typedef std::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
+
 
 /**
  * @class FieldOnCells
@@ -66,7 +70,7 @@ class FieldOnCells : public DataField {
      * @brief Constructor
      * @param name Jeveux name of the field
      */
-    FieldOnCells( const std::string name )
+    FieldOnCells( const std::string name)
         : DataField( name, "CHAM_ELEM" ),
           _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
@@ -84,47 +88,8 @@ class FieldOnCells : public DataField {
      * VARI_ELGA)
      * @param typcham Type de champ à calculer
      */
-    FieldOnCells( const ModelPtr &model, const BehaviourPropertyPtr behaviour,
-                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr )
-        : FieldOnCells() {
-        std::string inName = getName();
-        std::string carele = " ";
-        std::string test;
-        std::string option;
-        std::string nompar;
-        test = typcham;
-        test.resize( 4 );
-
-        if ( test == "ELGA" ) {
-            option = "TOU_INI_ELGA";
-        } else if ( test == "ELNO" ) {
-            option = "TOU_INI_ELNO";
-        } else {
-            AS_ASSERT( false )
-        };
-        if ( typcham == test + "_SIEF_R" ) {
-            nompar = "PSIEF_R";
-        } else if ( typcham == test + "_VARI_R" ) {
-            nompar = "PVARI_R";
-        } else {
-            AS_ASSERT( false )
-        };
-
-        if ( carael )
-            carele = carael->getName();
-
-        ASTERINTEGER iret = 0;
-        auto fed = model->getFiniteElementDescriptor();
-        setDescription( fed );
-        auto dcel = std::make_shared< SimpleFieldOnCellsValueType >();
-        auto compor = behaviour->getBehaviourField();
-        CALLO_CESVAR( carele, compor->getName(), fed->getName(), dcel->getName() );
-        CALLO_ALCHML( fed->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent], getName(),
-                      &iret, dcel->getName() );
-        AS_ASSERT( iret == 0 );
-
-        updateValuePointers();
-    }
+    FieldOnCells(const ModelPtr &model, const BehaviourPropertyPtr behaviour,
+                 const std::string& typcham,const ElementaryCharacteristicsPtr carael = nullptr);
 
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {

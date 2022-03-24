@@ -26,6 +26,7 @@
 
 #include "astercxx.h"
 
+#include "DataFields/FieldOnCells.h"
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Meshes/BaseMesh.h"
@@ -67,11 +68,17 @@ class ElementaryCharacteristics : public DataStructure {
     /** @brief Objet Jeveux '.CARPOUFL' for properties of fluid beam elements */
     ConstantFieldOnCellsRealPtr _CARPOUFL;
     /** @brief Objet Jeveux '.CANBSP' for number of subpoints */
-    ConstantFieldOnCellsLongPtr _CANBSP;
+    FieldOnCellsLongPtr _CANBSP;
     /** @brief Objet Jeveux '.CAFIBR' for fibers */
-    ConstantFieldOnCellsRealPtr _CAFIBR;
+    FieldOnCellsRealPtr _CAFIBR;
     /** @brief Objet Jeveux '.CARDINFO' for general parameters for DIS_* elements */
     ConstantFieldOnCellsRealPtr _CARDINFO;
+    /** @brief V K8 '.MODELE' */
+    JeveuxVectorChar8 _model_name;
+    /** @brief Objet Jeveux '.CVENTCXF' */
+    ConstantFieldOnCellsChar8Ptr _lineic;
+    /** @brief Objet Jeveux '.CARDINFO' */
+    ConstantFieldOnCellsRealPtr _infos;
     /** @brief Flag for empty datastructure */
     bool _isEmpty;
 
@@ -114,8 +121,8 @@ class ElementaryCharacteristics : public DataStructure {
     ConstantFieldOnCellsRealPtr getBarParameters() { return _CARGENBA; };
     ConstantFieldOnCellsRealPtr getMaterialBase() { return _CARMASSI; };
     ConstantFieldOnCellsRealPtr getFluidBeamParameters() { return _CARPOUFL; };
-    ConstantFieldOnCellsLongPtr getNumberOfSubpoints() { return _CANBSP; };
-    ConstantFieldOnCellsRealPtr getFibers() { return _CAFIBR; };
+    FieldOnCellsLongPtr getNumberOfSubpoints() { return _CANBSP; };
+    FieldOnCellsRealPtr getFibers() { return _CAFIBR; };
     ConstantFieldOnCellsRealPtr getDiscreteParameters() { return _CARDINFO; };
 };
 

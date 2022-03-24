@@ -29,6 +29,8 @@
 
 #include "PythonBindings/DataStructureInterface.h"
 
+#include "Discretization/ElementaryCharacteristics.h"
+
 void exportFieldOnCellsToPython( py::module_ &mod ) {
     py::class_< FieldOnCellsReal, FieldOnCellsRealPtr, DataField >( mod, "FieldOnCellsReal" )
         .def( py::init( &initFactoryPtr< FieldOnCellsReal > ) )

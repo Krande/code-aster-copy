@@ -181,12 +181,12 @@ IMPR_CO(CONCEPT=_F(NOM=POUCA), ATTRIBUT='OUI', NIVEAU=2, UNITE=unite)
 DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/POUCA.concept",
-             NB_VALE_I=1513,
+             NB_VALE_I=1518,
              # VALE_CALC_I: on ne teste pas les entiers car on y trouve des
              # décalages dans l'objet CELD
-             NB_VALE=3072,
-             VALE_CALC=4900.697154760002,
-             VALE_CALC_K="e2bd995c14559e4f86bdc9d068526169",
+             NB_VALE=3074,
+             VALE_CALC=4912.697154760003,
+             VALE_CALC_K="c800dff355aa0a63566d27ffb438f2d1",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 

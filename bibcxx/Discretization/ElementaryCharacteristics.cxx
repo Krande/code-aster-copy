@@ -44,9 +44,12 @@ ElementaryCharacteristics::ElementaryCharacteristics( const std::string name,
       _CARGENBA( new ConstantFieldOnCellsReal( getName() + ".CARGENBA", _mesh ) ),
       _CARMASSI( new ConstantFieldOnCellsReal( getName() + ".CARMASSI", _mesh ) ),
       _CARPOUFL( new ConstantFieldOnCellsReal( getName() + ".CARPOUFL", _mesh ) ),
-      _CANBSP( new ConstantFieldOnCellsLong( getName() + ".CANBSP", _mesh ) ),
-      _CAFIBR( new ConstantFieldOnCellsReal( getName() + ".CAFIBR", _mesh ) ),
+      _CANBSP( new FieldOnCellsLong( getName() + ".CANBSP" ) ),
+      _CAFIBR( new FieldOnCellsReal( getName() + ".CAFIBR" ) ),
       _CARDINFO( new ConstantFieldOnCellsReal( getName() + ".CARDINFO", _mesh ) ),
+      _model_name( JeveuxVectorChar8( getName() + ".MODELE" ) ),
+      _lineic( new ConstantFieldOnCellsChar8( getName() + ".CVENTCXF", _mesh ) ),
+      _infos( new ConstantFieldOnCellsReal( getName() + ".CARDINFO", _mesh ) ),
       _isEmpty( true ){};
 
 ModelPtr ElementaryCharacteristics::getModel() const {
