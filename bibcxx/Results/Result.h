@@ -177,7 +177,7 @@ class Result : public DataStructure, public ListOfTables {
      * @param nbRanks nombre de numéro d'ordre
      * @return true si l'allocation s'est bien passée
      */
-    bool allocate( ASTERINTEGER nbRanks );
+    void allocate( ASTERINTEGER nbRanks );
 
     /**
      * @brief Add elementary characteristics to container
@@ -361,13 +361,13 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
-    bool setField( const FieldOnCellsRealPtr field, const std::string &name,
+    void setField( const FieldOnCellsRealPtr field, const std::string &name,
                    const ASTERINTEGER rank );
 
-    bool setField( const FieldOnCellsComplexPtr field, const std::string &name,
+    void setField( const FieldOnCellsComplexPtr field, const std::string &name,
                    const ASTERINTEGER rank );
 
-    bool setField( const FieldOnCellsLongPtr field, const std::string &name,
+    void setField( const FieldOnCellsLongPtr field, const std::string &name,
                    const ASTERINTEGER rank );
 
     /**
@@ -376,10 +376,10 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
-    bool setField( const ConstantFieldOnCellsRealPtr field, const std::string &name,
+    void setField( const ConstantFieldOnCellsRealPtr field, const std::string &name,
                    const ASTERINTEGER rank );
 
-    bool setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
+    void setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
                    const ASTERINTEGER rank );
 
     /**
@@ -432,10 +432,10 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank numéro d'ordre
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
-    bool setField( const FieldOnNodesRealPtr field, const std::string &name,
+    void setField( const FieldOnNodesRealPtr field, const std::string &name,
                    const ASTERINTEGER rank );
 
-    bool setField( const FieldOnNodesComplexPtr field, const std::string &name,
+    void setField( const FieldOnNodesComplexPtr field, const std::string &name,
                    const ASTERINTEGER rank );
 
     /**
@@ -445,11 +445,8 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir la gestion des mot-clés par défaut (ex : TOUT_ORDRE)
      * @todo revoir la gestion des unités logiques (notamment si fort.20 existe déjà)
      */
-    bool printMedFile( const std::string fileName, std::string medName, bool local = true ) const;
-
-    bool printMedFile( const std::string fileName, bool local = true ) const {
-        return printMedFile( fileName, "", local );
-    };
+    void printMedFile( const std::string fileName, std::string medName = std::string(),
+                       bool local = true ) const;
 
     /**
      * @brief Get the number of steps stored in the Result
@@ -486,12 +483,21 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir l'agrandissement de dictOfMapOfFieldOnNodesReal et
      *  dictOfMapOfFieldOnCellsReal
      */
-    bool build();
+    bool build( const std::vector< FiniteElementDescriptorPtr > feds =
+                    std::vector< FiniteElementDescriptorPtr >(),
+                const std::vector< FieldOnNodesDescriptionPtr > fnds =
+                    std::vector< FieldOnNodesDescriptionPtr >() );
 
     /**
      * @brief Update the  Result's size
      */
-    ASTERBOOL resize( ASTERINTEGER nbRanks );
+    void resize( ASTERINTEGER nbRanks );
+
+
+    std::vector<FiniteElementDescriptorPtr> getFiniteElementDescriptors() const;
+
+    std::vector<FieldOnNodesDescriptionPtr> getFieldOnNodesDescriptions() const;
+
 };
 
 /**

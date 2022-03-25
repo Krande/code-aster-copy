@@ -526,12 +526,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( !_dofDescription ) {
             CALL_JEMARQ();
 
-            typedef FieldOnNodesDescription FONDesc;
-            typedef FieldOnNodesDescriptionPtr FONDescP;
-
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
-            _dofDescription = std::make_shared< FONDesc >( name2 );
+            if ( !name2.empty() ) {
+                _dofDescription = std::make_shared< FieldOnNodesDescription >( name2 );
+            }
             CALL_JEDEMA();
         }
         return true;

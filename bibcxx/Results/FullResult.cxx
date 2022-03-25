@@ -1,7 +1,7 @@
 /**
  * @file FullResult.cxx
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,24 +21,10 @@
 
 #include "Results/FullResult.h"
 
-
-bool FullResult::_setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
-    if ( dofNum != nullptr ) {
+void FullResult::setDOFNumbering( const BaseDOFNumberingPtr dofNum ) {
+    if ( dofNum ) {
         _dofNum = dofNum;
-        setMesh( _dofNum->getMesh());
+        setMesh( _dofNum->getMesh() );
         _fieldBuidler.addFieldOnNodesDescription( _dofNum->getDescription() );
-        return true;
     }
-    return false;
 }
-
-bool FullResult::setDOFNumbering( const DOFNumberingPtr &dofNum ) {
-   return FullResult::_setDOFNumbering( dofNum );
-}
-
-#ifdef ASTER_HAVE_MPI
-bool FullResult::setParallelDOFNumbering(
-        const ParallelDOFNumberingPtr &dofNum ) {
-    return FullResult::_setDOFNumbering( dofNum );
-}
-#endif

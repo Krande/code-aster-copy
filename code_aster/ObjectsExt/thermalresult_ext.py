@@ -17,24 +17,19 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`DOFNumbering` --- DOFNumbering definition
-*****************************************
+:py:class:`ThermalResult` --- results result
+****************************************************
 """
 
-from libaster import DOFNumbering
+from libaster import ThermalResult
 
 from ..Utilities import injector
+from ..ObjectsExt.result_ext import ResultStateBuilder
 
 
-@injector(DOFNumbering)
-class ExtendedDOFNumbering:
-    cata_sdj = "SD.sd_nume_ddl.sd_nume_ddl"
-
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a
-        DOFNumbering object during unpickling.
-        """
-        return (self.getName(), self.getModel(),
-                self.getListOfLoads(), self.getDescription())
+@injector(ThermalResult)
+class ExtentedThermalResult:
+    """Object for ThermalResult."""
+    cata_sdj = "SD.sd_resultat.sd_resultat"
+    internalStateBuilder = ResultStateBuilder

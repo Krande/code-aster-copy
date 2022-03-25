@@ -52,7 +52,7 @@ void Result::_checkMesh( const BaseMeshPtr mesh ) const {
         raiseAsterError( "ValueError: Mesh is empty" );
 
     if ( _mesh ) {
-        if ( _mesh->getName() != mesh->getName() )
+        if ( _mesh != mesh )
             raiseAsterError( "Incompatible meshes" );
     }
 }
@@ -146,7 +146,7 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
     return 0.0;
 };
 
-bool Result::allocate( ASTERINTEGER nbRanks ) {
+void Result::allocate( ASTERINTEGER nbRanks ) {
 
     std::string base( JeveuxMemoryTypesNames[Permanent] );
     ASTERINTEGER nbordr = nbRanks;
@@ -154,8 +154,6 @@ bool Result::allocate( ASTERINTEGER nbRanks ) {
 
     AS_ASSERT( _calculationParameter->build( true ) );
     AS_ASSERT( _namesOfFields->build( true ) );
-
-    return true;
 };
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
@@ -490,7 +488,7 @@ FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
     return _dictOfMapOfFieldOnNodesComplex.at( name ).at( rank );
 };
 
-bool Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
+void Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
@@ -517,10 +515,9 @@ bool Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
     _dictOfMapOfFieldOnNodesReal[trim_name][rank] = result;
 
     CALL_JEDEMA();
-    return true;
 };
 
-bool Result::setField( const FieldOnNodesComplexPtr field, const std::string &name,
+void Result::setField( const FieldOnNodesComplexPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
@@ -547,10 +544,9 @@ bool Result::setField( const FieldOnNodesComplexPtr field, const std::string &na
     _dictOfMapOfFieldOnNodesComplex[trim_name][rank] = result;
 
     CALL_JEDEMA();
-    return true;
 };
 
-bool Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
+void Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
@@ -568,6 +564,8 @@ bool Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
     std::string internalName( rschex.second.c_str(), 19 );
     FieldOnCellsRealPtr result = std::make_shared< FieldOnCellsReal >( internalName, *field );
 
+    _fieldBuidler.addFiniteElementDescriptor( result->getDescription() );
+
     if ( _dictOfMapOfFieldOnCellsReal.count( trim_name ) == 0 ) {
         _dictOfMapOfFieldOnCellsReal[trim_name] = MapOfFieldOnCellsReal();
     }
@@ -575,10 +573,9 @@ bool Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
     _dictOfMapOfFieldOnCellsReal[trim_name][rank] = result;
 
     CALL_JEDEMA();
-    return true;
 };
 
-bool Result::setField( const FieldOnCellsComplexPtr field, const std::string &name,
+void Result::setField( const FieldOnCellsComplexPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
@@ -596,6 +593,8 @@ bool Result::setField( const FieldOnCellsComplexPtr field, const std::string &na
     std::string internalName( rschex.second.c_str(), 19 );
     FieldOnCellsComplexPtr result = std::make_shared< FieldOnCellsComplex >( internalName, *field );
 
+    _fieldBuidler.addFiniteElementDescriptor( result->getDescription() );
+
     if ( _dictOfMapOfFieldOnCellsComplex.count( trim_name ) == 0 ) {
         _dictOfMapOfFieldOnCellsComplex[trim_name] = MapOfFieldOnCellsComplex();
     }
@@ -603,10 +602,9 @@ bool Result::setField( const FieldOnCellsComplexPtr field, const std::string &na
     _dictOfMapOfFieldOnCellsComplex[trim_name][rank] = result;
 
     CALL_JEDEMA();
-    return true;
 };
 
-bool Result::setField( const FieldOnCellsLongPtr field, const std::string &name,
+void Result::setField( const FieldOnCellsLongPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
@@ -624,6 +622,8 @@ bool Result::setField( const FieldOnCellsLongPtr field, const std::string &name,
     std::string internalName( rschex.second.c_str(), 19 );
     FieldOnCellsLongPtr result = std::make_shared< FieldOnCellsLong >( internalName, *field );
 
+    _fieldBuidler.addFiniteElementDescriptor( result->getDescription() );
+
     if ( _dictOfMapOfFieldOnCellsLong.count( trim_name ) == 0 ) {
         _dictOfMapOfFieldOnCellsLong[trim_name] = MapOfFieldOnCellsLong();
     }
@@ -631,10 +631,9 @@ bool Result::setField( const FieldOnCellsLongPtr field, const std::string &name,
     _dictOfMapOfFieldOnCellsLong[trim_name][rank] = result;
 
     CALL_JEDEMA();
-    return true;
 };
 
-bool Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
+void Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
                        const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
@@ -659,10 +658,9 @@ bool Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::str
     _dictOfMapOfConstantFieldOnCellsChar16[trim_name][rank] = result;
 
     CALL_JEDEMA();
-    return true;
 };
 
-bool Result::setField( const ConstantFieldOnCellsRealPtr field, const std::string &name,
+void Result::setField( const ConstantFieldOnCellsRealPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
@@ -687,7 +685,6 @@ bool Result::setField( const ConstantFieldOnCellsRealPtr field, const std::strin
     _dictOfMapOfConstantFieldOnCellsReal[trim_name][rank] = result;
 
     CALL_JEDEMA();
-    return true;
 };
 
 VectorString Result::getFieldsNames() const {
@@ -730,7 +727,7 @@ void Result::printInfo() const {
     CALLO_RSINFO( getName(), &umess );
 }
 
-bool Result::printMedFile( const std::string fileName, std::string medName, bool local ) const {
+void Result::printMedFile( const std::string fileName, std::string medName, bool local ) const {
     LogicalUnitFile a( fileName, Binary, New );
     ASTERINTEGER retour = a.getLogicalUnit();
     CommandSyntax cmdSt( "IMPR_RESU" );
@@ -757,17 +754,12 @@ bool Result::printMedFile( const std::string fileName, std::string medName, bool
 
     cmdSt.define( dict );
 
-    try {
-        ASTERINTEGER op = 39;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        AS_ASSERT( false );
-    }
-
-    return true;
+    ASTERINTEGER op = 39;
+    CALL_EXECOP( &op );
 };
 
-bool Result::build() {
+bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
+                    const std::vector< FieldOnNodesDescriptionPtr > fnds ) {
     CALL_JEMARQ();
     _serialNumber->updateValuePointer();
 
@@ -775,6 +767,14 @@ bool Result::build() {
     AS_ASSERT( _namesOfFields->build( true ) );
 
     const auto nbRanks = getNumberOfRanks();
+
+    for ( auto &fed : feds ) {
+        _fieldBuidler.addFiniteElementDescriptor( fed );
+    }
+
+    for ( auto &fnd : fnds ) {
+        _fieldBuidler.addFieldOnNodesDescription( fnd );
+    }
 
     ASTERINTEGER cmpt = 1;
     for ( const auto &curIter : _namesOfFields->getVectorOfObjects() ) {
@@ -907,13 +907,18 @@ bool Result::build() {
     return update_tables();
 };
 
-ASTERBOOL Result::resize( ASTERINTEGER nbRanks ) {
+void Result::resize( ASTERINTEGER nbRanks ) {
     if ( getNumberOfRanks() == 0 ) {
-        return allocate( nbRanks );
+        allocate( nbRanks );
     } else {
         CALLO_RSAGSD( getName(), &nbRanks );
-        return true;
     }
-
-    return true;
 }
+
+std::vector< FiniteElementDescriptorPtr > Result::getFiniteElementDescriptors() const {
+    return _fieldBuidler.getFiniteElementDescriptors();
+};
+
+std::vector< FieldOnNodesDescriptionPtr > Result::getFieldOnNodesDescriptions() const {
+    return _fieldBuidler.getFieldOnNodesDescriptions();
+};

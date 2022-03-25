@@ -43,6 +43,8 @@ class ResultStateBuilder(InternalStateBuilder):
             *InternalStateBuilder*: The internal state itself.
         """
         super().save(result)
+        # mesh
+        self._st["mesh"] = result.getMesh()
         # list of ranks
         self._st["rank"] = result.getRanks()
         # list of Model objects
@@ -53,6 +55,10 @@ class ResultStateBuilder(InternalStateBuilder):
         self._st["cara_elem"] = []
         # list of list of loads
         self._st["loads"] = []
+        # list of ligrel
+        self._st["feds"] = result.getFiniteElementDescriptors()
+        # list of prof_chno
+        self._st["fnds"] = result.getFieldOnNodesDescriptions()
         for i in self._st["rank"]:
             if result.hasModel(i):
                 self._st["model"].append(result.getModel(i))
@@ -98,6 +104,7 @@ class ResultStateBuilder(InternalStateBuilder):
             result (*DataStructure*): The *DataStructure* object to be pickled.
         """
         super().restore(result)
+        result.setMesh(self._st["mesh"])
         for i, rank in enumerate(self._st["rank"]):
             if self._st["model"]:
                 result.setModel(self._st["model"][i], rank)
@@ -108,8 +115,9 @@ class ResultStateBuilder(InternalStateBuilder):
                     self._st["cara_elem"][i], rank)
             if len(self._st["loads"]) > 0 and self._st["loads"]:
                 result.setListOfLoads(self._st["loads"][i], rank)
-        if self._st["model"]:
-            result.build()
+
+        if result.getMesh():
+            result.build(self._st["feds"],  self._st["fnds"])
 
 
 @injector(Result)

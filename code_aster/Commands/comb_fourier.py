@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -46,7 +46,9 @@ class CombFourier(ExecuteCommand):
             self._result.setModel(model)
         else:
             self._result.setMesh(keywords["RESULTAT"].getMesh())
-        self._result.build()
+
+        self._result.build(keywords["RESULTAT"].getFiniteElementDescriptors(
+        ), keywords["RESULTAT"].getFieldOnNodesDescriptions())
 
 
 COMB_FOURIER = CombFourier.run

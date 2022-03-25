@@ -42,6 +42,7 @@ void exportBaseDOFNumberingToPython( py::module_ &mod ) {
     c1.def( "addFiniteElementDescriptor", &BaseDOFNumbering::addFiniteElementDescriptor );
     c1.def( "computeNumbering", &BaseDOFNumbering::computeNumbering );
     c1.def( "getDescription", &BaseDOFNumbering::getDescription );
+    c1.def( "setDescription", &BaseDOFNumbering::setDescription );
     c1.def( "getFiniteElementDescriptors", &BaseDOFNumbering::getFiniteElementDescriptors );
     c1.def( "getListOfLoads", &BaseDOFNumbering::getListOfLoads );
     c1.def( "setEmpty", &BaseDOFNumbering::setEmpty );

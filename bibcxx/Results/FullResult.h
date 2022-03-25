@@ -26,9 +26,9 @@
 
 #include "astercxx.h"
 
+#include "Numbering/DOFNumbering.h"
 #include "Results/DynamicResultsIndexing.h"
 #include "Results/Result.h"
-#include "Numbering/DOFNumbering.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -50,21 +50,15 @@ class FullResult : public Result {
      */
     FullResult( const std::string &name, const std::string &resuTyp )
         : Result( name, resuTyp ),
-          _index( new DynamicResultsIndexing( name, resuTyp ) ), _dofNum( nullptr ){};
+          _index( new DynamicResultsIndexing( name, resuTyp ) ),
+          _dofNum( nullptr ){};
 
     FullResult( const std::string &resuTyp )
         : FullResult( ResultNaming::getNewResultName(), resuTyp ){};
 
-    BaseDOFNumberingPtr getDOFNumbering() const
-    {
-        return _dofNum;
-    };
+    BaseDOFNumberingPtr getDOFNumbering() const { return _dofNum; };
 
-    bool _setDOFNumbering( const BaseDOFNumberingPtr & );
-    bool setDOFNumbering( const DOFNumberingPtr & );
-#ifdef ASTER_HAVE_MPI
-    bool setParallelDOFNumbering( const ParallelDOFNumberingPtr & );
-#endif
+    void setDOFNumbering( const BaseDOFNumberingPtr );
 };
 
 /**

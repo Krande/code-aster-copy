@@ -271,6 +271,9 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
+    BaseDOFNumbering( const std::string name, const std::string &type, const ModelPtr model,
+                      const ListOfLoadsPtr loads, const FieldOnNodesDescriptionPtr fdof );
+
     BaseDOFNumbering( const std::string name, const std::string &type );
 
     /**
@@ -330,12 +333,12 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Returns the GlobalEquationNumberingPtr
      */
-    const GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; }
+    GlobalEquationNumberingPtr getGlobalNumbering() const { return _globalNumbering; }
 
     /**
      * @brief Returns the LocalEquationNumberingPtr
      */
-    const LocalEquationNumberingPtr getLocalNumbering() const { return _localNumbering; }
+    LocalEquationNumberingPtr getLocalNumbering() const { return _localNumbering; }
 
     /**
      * @brief Build the Numbering of DOFs
@@ -355,9 +358,7 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Are Single Lagrange Multipliers used for BC or MPC
      */
-    virtual bool useSingleLagrangeMultipliers() const {
-        AS_ABORT( "Not allowed" );
-    };
+    virtual bool useSingleLagrangeMultipliers() const { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief Get The Component Associated To A Given Row
@@ -396,16 +397,12 @@ class BaseDOFNumbering : public DataStructure {
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    virtual VectorLong getRowsAssociatedToPhysicalDofs() const {
-        AS_ABORT( "Not allowed" );
-    }
+    virtual VectorLong getRowsAssociatedToPhysicalDofs() const { AS_ABORT( "Not allowed" ); }
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    virtual VectorLong getRowsAssociatedToLagrangeMultipliers() const {
-        AS_ABORT( "Not allowed" );
-    }
+    virtual VectorLong getRowsAssociatedToLagrangeMultipliers() const { AS_ABORT( "Not allowed" ); }
 
     /**
      * @brief Get Assigned Components
@@ -416,6 +413,11 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Get FieldOnNodesDescription
      */
     FieldOnNodesDescriptionPtr getDescription() const { return _dofDescription; };
+
+    /**
+     * @brief Get FieldOnNodesDescription
+     */
+    void setDescription( const FieldOnNodesDescriptionPtr dofd ) { _dofDescription = dofd; };
 
     /**
      * @brief Get all FiniteElementDescriptors

@@ -31,9 +31,5 @@ void exportFullResultToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FullResult, std::string, std::string > ) )
         .def( py::init( &initFactoryPtr< FullResult, std::string > ) )
         .def( "getDOFNumbering", &FullResult::getDOFNumbering )
-        .def( "setDOFNumbering", &FullResult::setDOFNumbering )
-#ifdef ASTER_HAVE_MPI
-        .def( "setDOFNumbering", &FullResult::setParallelDOFNumbering )
-#endif
-        ;
+        .def( "setDOFNumbering", &FullResult::setDOFNumbering );
 };

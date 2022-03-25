@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,6 +202,7 @@ def dyna_visco_harm(self, EXCIT, list_FREQ, modes,
 
         __dynphys=REST_GENE_PHYS(RESU_GENE=__dyngene,
                                  MODE_MECA=__modrs,
+                                 NUME_DDL=__num,
                                  NOM_CHAM=NOM_CHAM)
 
 

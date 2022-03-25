@@ -48,6 +48,7 @@ from .fieldoncells_ext import FieldOnCellsReal
 from .fieldonnodes_ext import FieldOnNodesReal
 from .finiteelementdescriptor_ext import FiniteElementDescriptor
 from .formula_ext import Formula
+from .fulltransientresult_ext import FullTransientResult
 from .function2d_ext import Function2D
 from .function_ext import Function
 from .generalizedassemblymatrix_ext import (
@@ -76,6 +77,7 @@ from .mechanicalload_ext import MechanicalLoadReal, MechanicalLoadFunction, Mech
 from .mesh_ext import Mesh
 from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .model_ext import Model
+from .moderesult_ext import ModeResult
 from .parallelmechanicalload_ext import ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable
@@ -83,5 +85,6 @@ from .physicalproblem_ext import PhysicalProblem
 from .result_ext import Result
 from .table_ext import Table
 from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
+from .thermalresult_ext import ThermalResult
 from .transientgeneralizedresultscontainer_ext import TransientGeneralizedResult
 from .xfemcrack_ext import XfemCrack

@@ -27,6 +27,21 @@
 
 #include "Supervis/ResultNaming.h"
 
+BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type,
+                                    const ModelPtr model, const ListOfLoadsPtr loads,
+                                    const FieldOnNodesDescriptionPtr fdof )
+    : DataStructure( name, 14, type ),
+      _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
+      _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
+      _dofDescription( fdof ),
+      _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
+      _model( model ),
+      _listOfLoads( loads ),
+      _smos( new MorseStorage( getName() + ".SMOS" ) ),
+      _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
+      _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
+      _isEmpty( false ){};
+
 BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type )
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),

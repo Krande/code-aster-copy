@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import NonLinearResult
+from ..Objects import NonLinearResult, FieldOnCellsReal, FieldOnCellsComplex
 from ..Supervis import ExecuteCommand
 
 
@@ -57,7 +57,29 @@ class NonLinearStaticAnalysis(ExecuteCommand):
 
         if self.exception and self.exception.id_message in ("MECANONLINE5_2", ):
             return
-        self._result.build()
+
+        feds = []
+        fnds = []
+        if "ETAT_INIT" in keywords:
+            etat = keywords["ETAT_INIT"]
+            fields = ["DEPL", 'VITE', "ACCE"]
+            for field in fields:
+                if field in etat:
+                    if etat[field].getDescription() is not None:
+                        fnds.append(etat[field].getDescription())
+
+            fields = ["COHE", "SIGM", "VARI", "STRX"]
+            for field in fields:
+                if field in etat:
+                    if isinstance(etat[field], (FieldOnCellsReal, FieldOnCellsComplex)):
+                        if etat[field].getDescription() is not None:
+                            feds.append(etat[field].getDescription())
+
+            if "EVOL_NOLI" in etat:
+                feds += etat["EVOL_NOLI"].getFiniteElementDescriptors()
+                fnds += etat["EVOL_NOLI"].getFieldOnNodesDescriptions()
+
+        self._result.build(feds, fnds)
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

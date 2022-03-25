@@ -26,11 +26,11 @@
 
 #include "astercxx.h"
 
-#include "Results/FullResult.h"
 #include "Interfaces/StructureInterface.h"
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
 #include "Numbering/DOFNumbering.h"
+#include "Results/FullResult.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -38,8 +38,7 @@
  * @brief Cette classe correspond a un mode_meca
  * @author Nicolas Sellenet
  */
-class ModeResult : public FullResult
-{
+class ModeResult : public FullResult {
   private:
     StructureInterfacePtr _structureInterface;
     /** @brief Stiffness double displacement matrix */
@@ -71,36 +70,31 @@ class ModeResult : public FullResult
     /**
      * @brief Constructeur
      */
-    ModeResult():
-        ModeResult( ResultNaming::getNewResultName(), "MODE_MECA" )
-    {};
+    ModeResult() : ModeResult( ResultNaming::getNewResultName(), "MODE_MECA" ){};
 
     /**
      * @brief Constructeur
      */
-    ModeResult( const std::string &name,
-                                     const std::string type = "MODE_MECA" ):
-        FullResult( name, type ),
-        _structureInterface( StructureInterfacePtr() ),
-        _rigidityDispDMatrix( nullptr ),
-        _rigidityDispCMatrix( nullptr ),
-        _rigidityTempDMatrix( nullptr ),
-        _rigidityPressDMatrix( nullptr ),
-        _rigidityGDMatrix( nullptr ),
-        _rigidityGCMatrix( nullptr ),
-        _massDispDMatrix( nullptr ),
-        _massDispCMatrix( nullptr ),
-        _massTempDMatrix( nullptr ),
-        _massPressDMatrix( nullptr ),
-        _massGDMatrix( nullptr ),
-        _massGCMatrix( nullptr )
-    {};
+    ModeResult( const std::string &name, const std::string type = "MODE_MECA" )
+        : FullResult( name, type ),
+          _structureInterface( StructureInterfacePtr() ),
+          _rigidityDispDMatrix( nullptr ),
+          _rigidityDispCMatrix( nullptr ),
+          _rigidityTempDMatrix( nullptr ),
+          _rigidityPressDMatrix( nullptr ),
+          _rigidityGDMatrix( nullptr ),
+          _rigidityGCMatrix( nullptr ),
+          _massDispDMatrix( nullptr ),
+          _massDispCMatrix( nullptr ),
+          _massTempDMatrix( nullptr ),
+          _massPressDMatrix( nullptr ),
+          _massGDMatrix( nullptr ),
+          _massGCMatrix( nullptr ){};
 
-     /**
+    /**
      * @brief Get the DOFNumbering
      */
-    BaseDOFNumberingPtr getDOFNumbering() const
-    {
+    BaseDOFNumberingPtr getDOFNumbering() const {
         if ( _dofNum != nullptr )
             return _dofNum;
         if ( _rigidityDispDMatrix != nullptr )
@@ -113,33 +107,28 @@ class ModeResult : public FullResult
     /**
      * @brief Get the rigidity matrix
      */
-    AssemblyMatrixDisplacementComplexPtr getDisplacementComplexStiffnessMatrix() const
-    {
+    AssemblyMatrixDisplacementComplexPtr getDisplacementComplexStiffnessMatrix() const {
         return _rigidityDispCMatrix;
     };
 
     /**
      * @brief Get the rigidity matrix
      */
-    AssemblyMatrixDisplacementRealPtr getDisplacementRealStiffnessMatrix() const
-    {
+    AssemblyMatrixDisplacementRealPtr getDisplacementRealStiffnessMatrix() const {
         return _rigidityDispDMatrix;
     };
-
 
     /**
      * @brief Get the rigidity matrix
      */
-    AssemblyMatrixPressureRealPtr getPressureRealStiffnessMatrix() const
-    {
+    AssemblyMatrixPressureRealPtr getPressureRealStiffnessMatrix() const {
         return _rigidityPressDMatrix;
     };
 
     /**
      * @brief Get the rigidity matrix
      */
-    AssemblyMatrixTemperatureRealPtr getTemperatureRealStiffnessMatrix() const
-    {
+    AssemblyMatrixTemperatureRealPtr getTemperatureRealStiffnessMatrix() const {
         return _rigidityTempDMatrix;
     };
 
@@ -147,121 +136,102 @@ class ModeResult : public FullResult
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixDisplacementRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixDisplacementRealPtr &matr )
-    {
+    void setStiffnessMatrix( const AssemblyMatrixDisplacementRealPtr &matr ) {
         _rigidityDispDMatrix = matr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
         _rigidityPressDMatrix = nullptr;
         _rigidityGDMatrix = nullptr;
         _rigidityGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixDisplacementComplexPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixDisplacementComplexPtr &matr )
-    {
+    void setStiffnessMatrix( const AssemblyMatrixDisplacementComplexPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = matr;
         _rigidityTempDMatrix = nullptr;
         _rigidityPressDMatrix = nullptr;
         _rigidityGDMatrix = nullptr;
         _rigidityGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixTemperatureRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixTemperatureRealPtr &matr )
-    {
+    void setStiffnessMatrix( const AssemblyMatrixTemperatureRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = matr;
         _rigidityPressDMatrix = nullptr;
         _rigidityGDMatrix = nullptr;
         _rigidityGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixPressureRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixPressureRealPtr &matr )
-    {
+    void setStiffnessMatrix( const AssemblyMatrixPressureRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
         _rigidityPressDMatrix = matr;
         _rigidityGDMatrix = nullptr;
         _rigidityGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the rigidity matrix
      * @param matr GeneralizedAssemblyMatrixRealPtr
      */
-    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixRealPtr &matr )
-    {
+    void setStiffnessMatrix( const GeneralizedAssemblyMatrixRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
         _rigidityPressDMatrix = nullptr;
         _rigidityGDMatrix = matr;
         _rigidityGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the rigidity matrix
      * @param matr GeneralizedAssemblyMatrixComplexPtr
      */
-    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixComplexPtr &matr )
-    {
+    void setStiffnessMatrix( const GeneralizedAssemblyMatrixComplexPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
         _rigidityPressDMatrix = nullptr;
         _rigidityGDMatrix = nullptr;
         _rigidityGCMatrix = matr;
-        return true;
     };
     /**
      * @brief Get the mass matrix
      */
-    AssemblyMatrixDisplacementComplexPtr getDisplacementComplexMassMatrix() const
-    {
+    AssemblyMatrixDisplacementComplexPtr getDisplacementComplexMassMatrix() const {
         return _massDispCMatrix;
     };
 
     /**
      * @brief Get the mass matrix
      */
-    AssemblyMatrixDisplacementRealPtr getDisplacementRealMassMatrix() const
-    {
+    AssemblyMatrixDisplacementRealPtr getDisplacementRealMassMatrix() const {
         return _massDispDMatrix;
     };
 
+    /**
+     * @brief Get the mass matrix
+     */
+    AssemblyMatrixPressureRealPtr getPressureRealMassMatrix() const { return _massPressDMatrix; };
 
     /**
      * @brief Get the mass matrix
      */
-    AssemblyMatrixPressureRealPtr getPressureRealMassMatrix() const
-    {
-        return _massPressDMatrix;
-    };
-
-    /**
-     * @brief Get the mass matrix
-     */
-    AssemblyMatrixTemperatureRealPtr getTemperatureRealMassMatrix() const
-    {
+    AssemblyMatrixTemperatureRealPtr getTemperatureRealMassMatrix() const {
         return _massTempDMatrix;
     };
 
@@ -269,98 +239,85 @@ class ModeResult : public FullResult
      * @brief Set the mass matrix
      * @param matr AssemblyMatrixDisplacementRealPtr
      */
-    bool setMassMatrix( const AssemblyMatrixDisplacementRealPtr &matr )
-    {
+    void setMassMatrix( const AssemblyMatrixDisplacementRealPtr &matr ) {
         _massDispDMatrix = matr;
         _massDispCMatrix = nullptr;
         _massTempDMatrix = nullptr;
         _massPressDMatrix = nullptr;
         _massGDMatrix = nullptr;
         _massGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the mass matrix
      * @param matr AssemblyMatrixDisplacementComplexPtr
      */
-    bool setMassMatrix( const AssemblyMatrixDisplacementComplexPtr &matr )
-    {
+    void setMassMatrix( const AssemblyMatrixDisplacementComplexPtr &matr ) {
         _massDispDMatrix = nullptr;
         _massDispCMatrix = matr;
         _massTempDMatrix = nullptr;
         _massPressDMatrix = nullptr;
         _massGDMatrix = nullptr;
         _massGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the mass matrix
      * @param matr AssemblyMatrixTemperatureRealPtr
      */
-    bool setMassMatrix( const AssemblyMatrixTemperatureRealPtr &matr )
-    {
+    void setMassMatrix( const AssemblyMatrixTemperatureRealPtr &matr ) {
         _massDispDMatrix = nullptr;
         _massDispCMatrix = nullptr;
         _massTempDMatrix = matr;
         _massPressDMatrix = nullptr;
         _massGDMatrix = nullptr;
         _massGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the mass matrix
      * @param matr AssemblyMatrixPressureRealPtr
      */
-    bool setMassMatrix( const AssemblyMatrixPressureRealPtr &matr )
-    {
+    void setMassMatrix( const AssemblyMatrixPressureRealPtr &matr ) {
         _massDispDMatrix = nullptr;
         _massDispCMatrix = nullptr;
         _massTempDMatrix = nullptr;
         _massPressDMatrix = matr;
         _massGDMatrix = nullptr;
         _massGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the mass matrix
      * @param matr GeneralizedAssemblyMatrixRealPtr
      */
-    bool setMassMatrix( const GeneralizedAssemblyMatrixRealPtr &matr )
-    {
+    void setMassMatrix( const GeneralizedAssemblyMatrixRealPtr &matr ) {
         _massDispDMatrix = nullptr;
         _massDispCMatrix = nullptr;
         _massTempDMatrix = nullptr;
         _massPressDMatrix = nullptr;
         _massGDMatrix = matr;
         _massGCMatrix = nullptr;
-        return true;
     };
 
     /**
      * @brief Set the mass matrix
      * @param matr GeneralizedAssemblyMatrixComplexPtr
      */
-    bool setMassMatrix( const GeneralizedAssemblyMatrixComplexPtr &matr )
-    {
+    void setMassMatrix( const GeneralizedAssemblyMatrixComplexPtr &matr ) {
         _massDispDMatrix = nullptr;
         _massDispCMatrix = nullptr;
         _massTempDMatrix = nullptr;
         _massPressDMatrix = nullptr;
         _massGDMatrix = nullptr;
         _massGCMatrix = matr;
-        return true;
     };
     /**
      * @brief set interf_dyna
      * @param structureInterface objet StructureInterfacePtr
      */
-    bool setStructureInterface( StructureInterfacePtr &structureInterface ) {
+    void setStructureInterface( StructureInterfacePtr &structureInterface ) {
         _structureInterface = structureInterface;
-        return true;
     };
 
     bool build() {
@@ -374,11 +331,10 @@ class ModeResult : public FullResult
         if ( _rigidityPressDMatrix != nullptr )
             numeDdl = _rigidityPressDMatrix->getDOFNumbering();
 
-        if ( numeDdl != nullptr )
-        {
+        if ( numeDdl ) {
             const auto model = numeDdl->getModel();
-            if ( model != nullptr )
-                _mesh = model->getMesh();
+            if ( model )
+                setMesh( model->getMesh() );
         }
         return Result::build();
     };

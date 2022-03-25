@@ -73,6 +73,10 @@ class DOFNumbering : public BaseDOFNumbering {
      */
     DOFNumbering() : BaseDOFNumbering( "NUME_DDL" ){};
 
+    DOFNumbering( const std::string name, const ModelPtr model, const ListOfLoadsPtr loads,
+                  const FieldOnNodesDescriptionPtr fdof )
+        : BaseDOFNumbering( name, "NUME_DDL", model, loads, fdof ){};
+
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)

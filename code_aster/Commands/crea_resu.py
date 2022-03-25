@@ -25,6 +25,9 @@ from ..Objects import (
     FieldOnNodesComplex,
     FieldOnNodesReal,
     FieldOnNodesChar8,
+    FieldOnCellsComplex,
+    FieldOnCellsReal,
+    FieldOnCellsLong,
     ElasticFourierResult,
     ThermalFourierResult,
     FullHarmonicResult,
@@ -80,7 +83,8 @@ class ResultCreator(ExecuteCommand):
             elif typ == "DYNA_HARMO":
                 self._result = FullHarmonicResult()
             else:
-                raise NotImplementedError("Type of result {0!r} not yet " "implemented".format(typ))
+                raise NotImplementedError(
+                    "Type of result {0!r} not yet " "implemented".format(typ))
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -89,6 +93,7 @@ class ResultCreator(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         fkw = force_list(keywords.get("AFFE", []))
+
         for occ in fkw:
             if occ.get("MODELE"):
                 self._result.setModel(occ["MODELE"])
@@ -101,15 +106,32 @@ class ResultCreator(ExecuteCommand):
                         self._result.setMesh(mesh)
                         break
 
+        # find ligrel and prof_chno
+        feds = []
+        fnds = []
+        for occ in fkw:
+            chamGd = occ.get("CHAM_GD")
+            if chamGd is not None:
+                if isinstance(chamGd, (FieldOnNodesReal, FieldOnNodesComplex, FieldOnNodesChar8)):
+                    fnd = chamGd.getDescription()
+                    if fnd is not None:
+                        fnds.append(fnd)
+                elif isinstance(chamGd, (FieldOnCellsReal, FieldOnCellsComplex, FieldOnCellsLong)):
+                    fed = chamGd.getDescription()
+                    if fed is not None:
+                        feds.append(fed)
+
         if keywords.get("MATR_RIGI"):
             self._result.setModel(keywords["MATR_RIGI"].getModel())
 
         if keywords.get("ECLA_PG"):
             self._result.setModel(keywords["ECLA_PG"]["MODELE_INIT"])
         if keywords.get("CONV_CHAR"):
-            self._result.setModel(keywords["CONV_CHAR"]["MATR_RIGI"].getModel())
+            self._result.setModel(
+                keywords["CONV_CHAR"]["MATR_RIGI"].getModel())
         if keywords.get("CONV_RESU"):
-            self._result.setModel(keywords["CONV_RESU"]["RESU_INIT"].getModel())
+            self._result.setModel(
+                keywords["CONV_RESU"]["RESU_INIT"].getModel())
         if keywords.get("KUCV"):
             self._result.setModel(keywords["KUCV"]["RESU_INIT"].getModel())
         if keywords.get("PROL_RTZ"):
@@ -146,7 +168,7 @@ class ResultCreator(ExecuteCommand):
                 if mesh is not None:
                     self._result.setMesh(mesh)
 
-        self._result.build()
+        self._result.build(feds, fnds)
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

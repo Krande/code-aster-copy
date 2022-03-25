@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -67,24 +67,58 @@ class RestSousStrucOper(ExecuteCommand):
 
         if sousStruc is not None:
             if resuGene is not None:
-                dofNum = resuGene.getGeneralizedDOFNumbering()
-                modeleGene = dofNum.getGeneralizedModel()
+                geneDofNum = resuGene.getGeneralizedDOFNumbering()
+                modeleGene = geneDofNum.getGeneralizedModel()
+                mesh = None
                 if modeleGene is not None:
-                    macroElem = modeleGene.getDynamicMacroElementFromName(sousStruc)
+                    macroElem = modeleGene.getDynamicMacroElementFromName(
+                        sousStruc)
                     mat = macroElem.getDampingMatrix()
-                    if mat is None: mat = macroElem.getImpedanceDampingMatrix()
-                    if mat is None: mat = macroElem.getImpedanceMatrix()
-                    if mat is None: mat = macroElem.getImpedanceMassMatrix()
-                    if mat is None: mat = macroElem.getImpedanceStiffnessMatrix()
-                    if mat is None: mat = macroElem.getMassMatrix()
-                    if mat is None: mat = macroElem.getStiffnessMatrixComplex()
-                    if mat is None: mat = macroElem.getStiffnessMatrixReal()
+                    if mat is None:
+                        mat = macroElem.getImpedanceDampingMatrix()
+                    if mat is None:
+                        mat = macroElem.getImpedanceMatrix()
+                    if mat is None:
+                        mat = macroElem.getImpedanceMassMatrix()
+                    if mat is None:
+                        mat = macroElem.getImpedanceStiffnessMatrix()
+                    if mat is None:
+                        mat = macroElem.getMassMatrix()
+                    if mat is None:
+                        mat = macroElem.getStiffnessMatrixComplex()
+                    if mat is None:
+                        mat = macroElem.getStiffnessMatrixReal()
                     if mat is not None:
                         modele = mat.getModel()
-                        self._result.setModel(modele)
+                        if modele is not None:
+                            mesh = modele.getMesh()
+                            self._result.setModel(modele)
+                        else:
+                            mesh = mat.getMesh()
+                            self._result.setMesh(mat.getMesh())
+
+                if mesh is None:
+                    if geneDofNum is not None:
+                        basis = geneDofNum.getModalBasis()
+                        if basis is not None:
+                            dofNum = basis.getDOFNumbering()
+                            mesh = basis.getMesh()
+                            if dofNum is not None:
+                                self._result.setDOFNumbering(dofNum)
+                                modele = dofNum.getModel()
+                                if modele is not None:
+                                    self._result.setModel(modele)
+                                elif mesh is None:
+                                    mesh = dofNum.getMesh()
+
+                    if mesh is not None:
+                        self._result.setMesh(mesh)
+
         elif squelette is not None:
             self._result.setMesh(squelette)
 
+        if self._result.getMesh():
+            self._result.build()
 
 
 REST_SOUS_STRUC = RestSousStrucOper.run

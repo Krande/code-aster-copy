@@ -35,9 +35,6 @@ Allocate result
 
 Arguments:
     nb_rank (int):  number of rank to allocate
-
-Returns:
-    bool: True if allocation is ok
         )",
               py::arg( "nb_rank" ) )
         .def( "setTimeValue", &Result::setTimeValue, R"(
@@ -386,21 +383,16 @@ Returns:
     ConstantFieldOnCellsReal: field to get
         )",
               py::arg( "name" ), py::arg( "rank" ) )
-        .def( "printMedFile",
-              py::overload_cast< const std::string, std::string, bool >( &Result::printMedFile,
-                                                                         py::const_ ),
+        .def( "printMedFile", &Result::printMedFile,
               R"(
 Print the result in a MED file.
 
 Args:
     filename (str): Path to the output file.
-    medname (str): Name of the result in the MED file.
-    local (bool): Print only the local domain if *True*.
+    medname (str): Name of the result in the MED file. (default: "")
+    local (bool): Print only the local domain if *True*. (default: True)
               )",
-              py::arg( "filename" ), py::arg( "medname" ), py::arg( "local" ) = true )
-        .def( "printMedFile",
-              py::overload_cast< const std::string, bool >( &Result::printMedFile, py::const_ ),
-              py::arg( "filename" ), py::arg( "local" ) = true )
+              py::arg( "filename" ), py::arg( "medname" ) = "", py::arg( "local" ) = true )
         .def( "setMesh", &Result::setMesh, R"(
 Set the mesh used by the result.
 
@@ -413,9 +405,17 @@ Arguments:
 Build the result from the name of the result. It stores fields which are setted in c++ or
 created in fortran
 
+Arguments:
+    feds (list[FiniteElementDescriptor]) : list of additional finite element descriptor used to
+        build FieldOnCells
+    fnds (list[FieldOnNodesDescriptionPtr]) : list of additional field description used to
+        build FieldOnNodes
+
 Returns:
-    bool: List of names of stored fields.
-        )" )
+    bool: *True* if ok.
+        )",
+              py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >(),
+              py::arg( "fnds" ) = std::vector< FieldOnNodesDescriptionPtr >() )
         .def( "printInfo", &Result::printInfo )
         .def( "getFieldsNames", &Result::getFieldsNames, R"(
 Return the list of names of stored fields
@@ -429,9 +429,6 @@ Resize the object.
 Arguments:
     nbRanks (int): new expected size. Should be greater than the current size,
         otherwise the size is unchanged.
-
-Returns:
-    bool: True if ok else False.
         )",
               py::arg( "nbRanks" ) )
         .def(
@@ -445,9 +442,6 @@ Arguments:
     field (FieldOnNodesReal): field to set
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     rank (int): rank to set the field
-
-Returns:
-    bool: True if ok else False.
         )",
             py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
         .def( "setField",
@@ -460,9 +454,6 @@ Arguments:
     field (FieldOnNodesComplex): field to set
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     rank (int): rank to set the field
-
-Returns:
-    bool: True if ok else False.
         )",
               py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
         .def(
@@ -476,9 +467,6 @@ Arguments:
     field (FieldOnCellsReal): field to set
     name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
     rank (int): rank to set the field
-
-Returns:
-    bool: True if ok else False.
         )",
             py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
         .def( "setField",
@@ -491,9 +479,6 @@ Arguments:
     field (FieldOnCellsComplex): field to set
     name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
     rank (int): rank to set the field
-
-Returns:
-    bool: True if ok else False.
         )",
               py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
         .def(
@@ -507,9 +492,6 @@ Arguments:
     field (FieldOnCellsLong): field to set
     name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
     rank (int): rank to set the field
-
-Returns:
-    bool: True if ok else False.
         )",
             py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
         .def( "setField",
@@ -522,9 +504,6 @@ Arguments:
     field (ConstantFieldOnCellsChar16): field to set
     name (str): symbolic name of the field in the result (ex: 'COMPOR', ...)
     rank (int): rank to set the field
-
-Returns:
-    bool: True if ok else False.
         )",
               py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
         .def( "setField",
@@ -537,9 +516,6 @@ Arguments:
     field (ConstantFieldOnCellsReal): field to set
     name (str): symbolic name of the field in the result (ex: 'COMPOR', ...)
     rank (int): rank to set the field
-
-Returns:
-    bool: True if ok else False.
         )",
               py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
         .def( "getTable", &ListOfTables::getTable, R"(
@@ -552,6 +528,22 @@ Returns:
     Table: Table stored with the given identifier.
         )",
               py::arg( "identifier" ) )
+        .def( "getFieldsNames", &Result::getFieldsNames, R"(
+Return the list of names of stored fields
 
-        ;
+Returns:
+    list[str]: List of names of stored fields.
+        )" )
+        .def( "getFiniteElementDescriptors", &Result::getFiniteElementDescriptors, R"(
+Get list of finite element descriptor to build internal FieldOnCells
+
+Returns:
+    list[FiniteElementDescriptor]: list of finite element descriptor
+        )" )
+        .def( "getFieldOnNodesDescriptions", &Result::getFieldOnNodesDescriptions, R"(
+Get list of field's description to build internal FieldOnNodes
+
+Returns:
+    list[FieldOnNodesDescription]: list of field's description
+        )" );
 };

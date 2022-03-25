@@ -425,6 +425,7 @@ class SubStructure(WithEmbeddedObjects):
                                  NOM_CHAM='DEPL',
                                  AFFE=_F(CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
                                  )
+                Resu.setDOFNumbering(dofNumbering)
             else:
                 Resu = CREA_RESU(reuse=Resu,
                                  OPERATION='AFFE',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,9 +53,20 @@ class RestGenePhys(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+
+        feds = []
+        fnds = []
+
+        if "NUME_DDL" in keywords:
+            self._result.setDOFNumbering(keywords["NUME_DDL"])
+
+        if "MODE_MECA" in keywords:
+            feds += keywords["MODE_MECA"].getFiniteElementDescriptors()
+            fnds += keywords["MODE_MECA"].getFieldOnNodesDescriptions()
+
         resu_gene = keywords["RESU_GENE"]
         if isinstance(resu_gene, (TransientGeneralizedResult,
-                                    HarmoGeneralizedResult)):
+                                  HarmoGeneralizedResult)):
             dofNum = resu_gene.getDOFNumbering()
 
             if dofNum is not None:
@@ -63,7 +74,6 @@ class RestGenePhys(ExecuteCommand):
                 modele = dofNum.getModel()
                 if modele is not None:
                     self._result.setModel(modele)
-                    self._result.build()
             else:
                 geneDofNum = resu_gene.getGeneralizedDOFNumbering()
                 mesh = None
@@ -74,10 +84,10 @@ class RestGenePhys(ExecuteCommand):
                         if mesh is None:
                             mesh = basis.getMesh()
                         if dofNum is not None:
+                            self._result.setDOFNumbering(dofNum)
                             modele = dofNum.getModel()
                             if modele is not None:
                                 self._result.setModel(modele)
-                                self._result.build()
                             elif mesh is None:
                                 mesh = dofNum.getMesh()
 
@@ -99,6 +109,13 @@ class RestGenePhys(ExecuteCommand):
                         self._result.setDOFNumbering(dofNum)
         else:
             raise Exception("Unknown result type")
+
+        if self._result.getMesh() is None:
+            for fed in feds:
+                self._result.setMesh(fed.getMesh())
+
+        if self._result.getMesh():
+            self._result.build(feds, fnds)
 
 
 REST_GENE_PHYS = RestGenePhys.run
