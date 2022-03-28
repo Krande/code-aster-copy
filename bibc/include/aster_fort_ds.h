@@ -162,10 +162,11 @@ extern void DEFSPSS( RSADPA_ZK8_WRAP, rsadpa_zk8_wrap, const char *, STRING_SIZE
 extern void DEFSPPS( RSADPA_ZR_WRAP, rsadpa_zr_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
                      ASTERDOUBLE *, const char *, STRING_SIZE );
 
-#define CALLO_RSADPA_ZK24_WRAP( a, b, c, d )                                                       \
-    CALLOPOO( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, a, b, c, d )
-extern void DEFSPSS( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
-                     const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_RSADPA_ZK24_WRAP( a, b, c, d, e )                                                    \
+    CALLPOOOO( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, a, b, c, d, e )
+extern void DEFPSSSS( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, ASTERINTEGER *, const char *, STRING_SIZE,
+                     const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                     STRING_SIZE );
 
 #define CALLO_RSCRSD( a, b, c, d ) CALLOOOP( RSCRSD, rscrsd, a, b, c, d )
 void DEFSSSP( RSCRSD, rscrsd, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,

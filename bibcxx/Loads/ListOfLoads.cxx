@@ -30,6 +30,9 @@
 
 #include <typeinfo>
 
+ListOfLoads::ListOfLoads( )
+    : ListOfLoads(ModelPtr(NULL)) {};
+
 ListOfLoads::ListOfLoads( const std::string &name, const ModelPtr model )
     : DataStructure( name, 19, "L_CHARGES" ),
       _loadInformations( JeveuxVectorLong( getName() + ".INFC" ) ),
@@ -42,8 +45,6 @@ ListOfLoads::ListOfLoads( const ModelPtr model )
     : ListOfLoads( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD", model ){};
 
 ListOfLoads::ListOfLoads( const std::string &name ) : ListOfLoads( name, nullptr ){};
-
-ListOfLoads::ListOfLoads() : ListOfLoads( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD" ){};
 
 bool ListOfLoads::checkModelConsistency( const ModelPtr &model ) const {
     if ( _model ) {

@@ -42,3 +42,31 @@ void NonLinearResult::setContact( const ContactPtr contact ) {
             setContact( contact, iordr );
     }
 };
+
+bool NonLinearResult::build(){
+    bool result = Result::build();
+    // add of listofloads
+    ASTERINTEGER nbRanks = _serialNumber->size();
+    std::string type = "EXCIT";
+    for ( ASTERINTEGER index = 0; index < nbRanks; ++index ) {
+        ASTERINTEGER rank = ( *_serialNumber )[index];
+        std::string value(24, ' ');
+        std::string cel( "L" );
+        CALLO_RSADPA_ZK24_WRAP( &rank, getName(), value, type, cel );
+        std::string name = value.substr(0, 19);
+        // only if created by command
+        if (name.substr(0, 8)!=getName().substr(0, 8))
+            continue;
+        mapRankLoads::iterator it;
+        for (it=_mapLoads.begin(); it!=_mapLoads.end(); it++){
+            if (name==it->second->getName())
+                break;
+        }
+        if (it==_mapLoads.end()){
+            _mapLoads[rank] = std::make_shared< ListOfLoads >( name );
+        }
+        else
+            _mapLoads[rank] = it->second;
+    }
+    return result;
+};

@@ -17,10 +17,11 @@
 ! --------------------------------------------------------------------
 
 interface
-    subroutine rsadpa_zk24_wrap(nomsd, nuordr, modele, typesd)
+    subroutine rsadpa_zk24_wrap(nuordr, nomsd, value, typesd, cel)
         integer, intent(in) :: nuordr
         character(len=8), intent(in) :: nomsd
-        character(len=*), intent(in) :: modele
+        character(len=*), intent(inout) :: value
         character(len=*), intent(in) :: typesd
+        character(len=1), intent(in) :: cel
     end subroutine rsadpa_zk24_wrap
 end interface

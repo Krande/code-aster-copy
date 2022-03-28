@@ -77,7 +77,8 @@ void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
 void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER rank ) {
     _mapLoads[rank] = load;
     std::string type( "EXCIT" );
-    CALLO_RSADPA_ZK24_WRAP( getName(), &rank, load->getName(), type );
+    std::string cel( "E" );
+    CALLO_RSADPA_ZK24_WRAP( &rank, getName(), load->getName(), type, cel );
 };
 
 void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER rank ) {
