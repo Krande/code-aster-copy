@@ -40,6 +40,7 @@
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
 
+
 /**
  * @enum ModelSplitingMethod
  * @brief Types of partition for model
@@ -127,9 +128,8 @@ class Model : public DataStructure, public ListOfTables {
      * @return booleen indiquant que la construction s'est bien deroulee
      */
     bool buildWithSyntax( SyntaxMapContainer & );
-
   public:
-    Model( const std::string name )
+    Model( const std::string name, const bool is_xfem = false  )
         : DataStructure( name, 8, "MODELE" ),
           ListOfTables( name ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
@@ -139,6 +139,8 @@ class Model : public DataStructure, public ListOfTables {
           _graphPartitioner( MetisPartitioner ),
           _ligrel( nullptr ),
           _xfemModel( nullptr ) {
+        if (is_xfem)
+            _xfemModel = std::make_shared< XfemModel >( getName() );
 #ifdef ASTER_HAVE_MPI
         _connectionMesh = nullptr;
 #endif
@@ -149,22 +151,26 @@ class Model : public DataStructure, public ListOfTables {
      */
     Model( void ) = delete;
 
-    Model( const std::string name, const FiniteElementDescriptorPtr fed ) : Model( name ) {
+    Model( const std::string name, const FiniteElementDescriptorPtr fed, 
+                                                      const bool is_xfem = false ) : Model( name ) {
         _baseMesh = fed->getMesh();
         _ligrel = fed;
-
+        if (is_xfem)
+            _xfemModel = std::make_shared< XfemModel >( getName() );
         AS_ASSERT( !_baseMesh->isEmpty() );
     };
 
-    Model( const BaseMeshPtr mesh ) : Model( DataStructureNaming::getNewName() ) {
+    Model( const BaseMeshPtr mesh, const bool is_xfem = false ) : 
+                                                        Model( DataStructureNaming::getNewName() ) {
         _baseMesh = mesh;
         _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh );
-
+        if (is_xfem)
+            _xfemModel = std::make_shared< XfemModel >( getName() );
         AS_ASSERT( !_baseMesh->isEmpty() );
     };
 
 #ifdef ASTER_HAVE_MPI
-    Model( const std::string name, const ConnectionMeshPtr mesh ) : Model( name ) {
+    Model( const std::string name, const ConnectionMeshPtr mesh) : Model( name ) {
         _baseMesh = mesh;
         _connectionMesh = mesh;
         _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh );
@@ -229,6 +235,12 @@ class Model : public DataStructure, public ListOfTables {
 
     /** @brief Has finite element in model ? */
     bool existsFiniteElement();
+
+    /**
+     * @brief Is an xfem  model ?
+     * @return true if xfem model
+     */
+    bool isXfem();
 
     /**
      * @brief function to know if XFEM Preconditioning is enable in model

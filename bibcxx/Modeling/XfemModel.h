@@ -28,82 +28,63 @@
 
 #include "DataFields/DataField.h"
 
-/** @class XfemField */
-class XfemField : public DataField {
-  private:
-    /** @brief Vecteur Jeveux '.CELD' */
-    JeveuxVectorLong _celd;
-    /** @brief Vecteur Jeveux '.CELK' */
-    JeveuxVectorChar24 _celk;
-    /** @brief Vecteur Jeveux '.CELV' */
-    JeveuxVector< ASTERDOUBLE > _celv;
+/** @brief Forward declaration of FieldOnNodes */
+template < class ValueType > class FieldOnNodes;
+typedef FieldOnNodes< ASTERINTEGER > FieldOnNodesLong;
+typedef std::shared_ptr< FieldOnNodesLong > FieldOnNodesLongPtr;
 
-  public:
-    /** @typedef XfemFieldOnCellsPtr */
-    typedef std::shared_ptr< XfemField > XfemFieldPtr;
-
-    /** @brief Constructor */
-    XfemField( const std::string name )
-        : DataField( name, "CHAM_ELEM" ),
-          _celd( JeveuxVectorLong( getName() + ".CELD" ) ),
-          _celk( JeveuxVectorChar24( getName() + ".CELK" ) ),
-          _celv( JeveuxVector< ASTERDOUBLE >( getName() + ".CELV" ) ){};
-
-    /** @brief Constructor */
-    XfemField() : XfemField( ResultNaming::getNewResultName() ){};
-
-    /** @brief Deallocate JEVEUX pointers */
-    void deallocate() {
-        _celd->deallocate();
-        _celk->deallocate();
-        _celv->deallocate();
-    };
-};
-
-typedef std::shared_ptr< XfemField > XfemFieldPtr;
+/** @brief Forward declaration of FieldOnCells */
+template < class ValueType > class FieldOnCells;
+typedef FieldOnCells< ASTERDOUBLE > FieldOnCellsReal;
+typedef std::shared_ptr< FieldOnCellsReal > FieldOnCellsRealPtr;
+typedef FieldOnCells< ASTERINTEGER > FieldOnCellsLong;
+typedef std::shared_ptr< FieldOnCellsLong > FieldOnCellsLongPtr;
 
 /**
  * @class XfemModel
- * @brief Datastructure for XfemModel (AFFE_MODELE)
+ * @brief Datastructure for XfemModel (MODI_MODELE_XFEM)
  */
 class XfemModel {
   private:
-    typedef std::shared_ptr< XfemField > XfemFieldPtr;
-    typedef std::map< std::string, XfemFieldPtr > listFields;
     /** Fields for XFEM */
-    listFields _listfields;
+    std::map< std::string, DataFieldPtr > _listfields;
+
+    class SubElementTopology {
+        const std::string _name;
+        const std::string getName() const { return _name; };
+      public:
+        FieldOnCellsRealPtr pin, pai, pmi;
+        FieldOnCellsLongPtr cns, hea, lon;
+        SubElementTopology( const std::string );
+    };
+    class FacetTopology {
+        const std::string _name;
+        FieldOnCellsRealPtr _intersection_pt, _intersection_edge, _base, _intersection_pt2;
+        FieldOnCellsLongPtr _connectivity, _length, _heaviside;
+        const std::string getName() const { return _name; };
+      public:
+        FacetTopology( const std::string );
+    };
+    class NodalTopology {
+        const std::string _name;
+        const std::string getName() const { return _name; };
+      public:
+        FieldOnCellsLongPtr hno, hfa, hse;
+        NodalTopology( const std::string );
+    };
+    SubElementTopology _topose;
+    FacetTopology _topofac;
+    NodalTopology _topono;
+    FieldOnCellsRealPtr _normal_levelset, _tangent_levelset, _local_basis;
+    FieldOnCellsLongPtr _nodal_status, _crack_nodes, _crack_conn, _heaviside, _cracked_cells;
+    FieldOnNodesLongPtr _xfem_nodes;
+    JeveuxVectorLong _contact, _crack_number;
+    JeveuxVectorChar8 _crack_names, _pre_cond, _thermic;
 
   public:
-    XfemModel( const std::string modelName ) { createFields( modelName ); };
+    XfemModel( const std::string modelName );
 
-    void createFields( const std::string modelName ) {
-        XfemFieldPtr pinttoPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.PIN" );
-        _listfields.insert( listFields::value_type( "PINTTO", pinttoPtr ) );
-        XfemFieldPtr cnsetoPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.CNS" );
-        _listfields.insert( listFields::value_type( "CNSETO", cnsetoPtr ) );
-        XfemFieldPtr heavtoPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.HEA" );
-        _listfields.insert( listFields::value_type( "HEAVTO", heavtoPtr ) );
-        XfemFieldPtr lonchaPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.LON" );
-        _listfields.insert( listFields::value_type( "LONCHA", lonchaPtr ) );
-        XfemFieldPtr baslocPtr = std::make_shared< XfemField >( modelName + ".BASLOC" );
-        _listfields.insert( listFields::value_type( "BASLOC", baslocPtr ) );
-        XfemFieldPtr lsnPtr = std::make_shared< XfemField >( modelName + ".LNNO" );
-        _listfields.insert( listFields::value_type( "LSN", lsnPtr ) );
-        XfemFieldPtr lstPtr = std::make_shared< XfemField >( modelName + ".LTNO" );
-        _listfields.insert( listFields::value_type( "LST", lstPtr ) );
-        XfemFieldPtr stanoPtr = std::make_shared< XfemField >( modelName + ".STNO" );
-        _listfields.insert( listFields::value_type( "STANO", stanoPtr ) );
-        XfemFieldPtr pmiltoPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.PMI" );
-        _listfields.insert( listFields::value_type( "PMILT", pmiltoPtr ) );
-        XfemFieldPtr fissnoPtr = std::make_shared< XfemField >( modelName + ".FISSNO" );
-        _listfields.insert( listFields::value_type( "FISSNO", fissnoPtr ) );
-        XfemFieldPtr heavnoPtr = std::make_shared< XfemField >( modelName + ".TOPONO.HNO" );
-        _listfields.insert( listFields::value_type( "HEAVNO", heavnoPtr ) );
-        XfemFieldPtr heavfaPtr = std::make_shared< XfemField >( modelName + ".TOPONO.HFA" );
-        _listfields.insert( listFields::value_type( "HEAVFA", heavfaPtr ) );
-    };
-
-    XfemFieldPtr getField( const std::string fieldType ) const {
+    DataFieldPtr getField( const std::string fieldType) const{
         return _listfields.at( fieldType );
     };
 };

@@ -44,12 +44,15 @@ void exportModelToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< Model, std::string, ConnectionMeshPtr > ) )
 #endif /* ASTER_HAVE_MPI */
         .def( py::init( &initFactoryPtr< Model, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< Model, BaseMeshPtr, bool > ) )
         .def( py::init( &initFactoryPtr< Model, std::string, FiniteElementDescriptorPtr > ) )
+        .def( py::init( &initFactoryPtr< Model, std::string, FiniteElementDescriptorPtr, bool > ) )
         .def( "addModelingOnMesh", &Model::addModelingOnMesh )
         .def( "addModelingOnGroupOfCells", &Model::addModelingOnGroupOfCells )
         .def( "addModelingOnGroupOfNodes", &Model::addModelingOnGroupOfNodes )
         .def( "build", &Model::build )
         .def( "existsThm", &Model::existsThm )
+        .def( "isXfem", &Model::isXfem )
         .def( "existsMultiFiberBeam", &Model::existsMultiFiberBeam )
         .def( "getSaneModel", &Model::getSaneModel )
         .def( "getMesh", &Model::getMesh, R"(
@@ -91,7 +94,6 @@ void exportModelToPython( py::module_ &mod ) {
         .def( "getSplittingMethod", &Model::getSplittingMethod )
         .def( "getGraphPartitioner", &Model::getGraphPartitioner )
         .def( "setSaneModel", &Model::setSaneModel )
-        .def( "setXfemModel", &Model::setXfemModel )
         .def( "xfemPreconditioningEnable", &Model::xfemPreconditioningEnable )
         .def( "setSplittingMethod", py::overload_cast< ModelSplitingMethod, GraphPartitioner >(
                                         &Model::setSplittingMethod ) )

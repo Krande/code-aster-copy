@@ -31,12 +31,16 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
+#include "DataFields/FieldOnNodes.h"
+#include "DataFields/FieldOnCells.h"
+
 #include <stdexcept>
 #include <typeinfo>
 
 const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = { "CENTRALISE", "SOUS_DOMAINE",
                                                                       "GROUP_ELEM" };
 const char *const GraphPartitionerNames[nbGraphPartitioner] = { "SCOTCH", "METIS" };
+
 
 SyntaxMapContainer Model::buildModelingsSyntaxMapContainer() const {
     SyntaxMapContainer dict;
@@ -159,6 +163,10 @@ bool Model::existsXfem() {
     if ( retour == "OUI" )
         return true;
     return false;
+};
+
+bool Model::isXfem() {
+    return !(_xfemModel == NULL);
 };
 
 ASTERINTEGER Model::nbSuperElement() {

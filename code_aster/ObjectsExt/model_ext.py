@@ -36,4 +36,4 @@ class ExtendedModel:
         """Returns the argument required to reinitialize a
         Model object during unpickling.
         """
-        return (self.getName(), self.getFiniteElementDescriptor())
+        return (self.getName(), self.getFiniteElementDescriptor(), self.isXfem())
