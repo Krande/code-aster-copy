@@ -37,6 +37,7 @@ class Factoriser(ExecuteCommand):
             self._result = keywords["reuse"]
         else:
             self._result = type(keywords["MATR_ASSE"])()
+        self._result.defineSolver()
 
     def post_exec(self, keywords):
         """Execute the command.

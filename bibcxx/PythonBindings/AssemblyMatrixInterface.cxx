@@ -46,6 +46,9 @@ void exportAssemblyMatrixToPython( py::module_ &mod ) {
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixDisplacementReal::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
+        .def( "defineSolver", &AssemblyMatrixDisplacementReal::defineSolver )
+// -------------------------------------------------------------------------------------------------
+
         .def( "setValues", &AssemblyMatrixDisplacementReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
 
@@ -75,7 +78,9 @@ Arguments:
         .def( "getMaterialField", &AssemblyMatrixDisplacementComplex::getMaterialField )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
-              &AssemblyMatrixDisplacementComplex::getNumberOfElementaryMatrix );
+              &AssemblyMatrixDisplacementComplex::getNumberOfElementaryMatrix )
+        // -----------------------------------------------------------------------------------------
+        .def( "defineSolver", &AssemblyMatrixDisplacementComplex::defineSolver );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureReal, AssemblyMatrixTemperatureRealPtr,
@@ -93,6 +98,8 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixTemperatureReal::getNumberOfElementaryMatrix )
+        // -----------------------------------------------------------------------------------------
+        .def( "defineSolver", &AssemblyMatrixTemperatureReal::defineSolver )
         // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixTemperatureReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
@@ -172,5 +179,7 @@ Arguments:
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixPressureComplex::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "transposeConjugate", &AssemblyMatrixPressureComplex::transposeConjugate );
+        .def( "transposeConjugate", &AssemblyMatrixPressureComplex::transposeConjugate )
+        // -----------------------------------------------------------------------------------------
+        .def( "defineSolver", &AssemblyMatrixPressureComplex::defineSolver );
 };

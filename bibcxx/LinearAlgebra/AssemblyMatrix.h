@@ -42,6 +42,8 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
+class LinearSolver;
+
 /**
  * @class AssemblyMatrix
  * @brief Classe template definissant une sd_matr_asse.
@@ -69,6 +71,11 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
 
     /** @brief ElementaryMatrix sur lesquelles sera construit la matrice */
     std::vector< ElementaryMatrixPtr > _elemMatrix;
+
+    /** @brief Objet Jeveux '.SOLVEUR' */
+    std::shared_ptr<LinearSolver> _solver;
+
+    friend class LinearSolver;
 
   public:
     /**
@@ -154,6 +161,12 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     BaseAssemblyMatrixPtr getEmptyMatrix( const std::string &name ) const {
         return std::make_shared< AssemblyMatrix< ValueType, PhysicalQuantity > >( name );
     }
+    
+    /**
+     * @brief Methode permettant de definir si un solveur est attribué à la matrice
+     */
+    void defineSolver();
+
 };
 
 /** @typedef Definition d'une matrice assemblee de double */

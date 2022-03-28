@@ -22,6 +22,7 @@
  */
 
 #include "LinearAlgebra/AssemblyMatrix.h"
+#include "Solvers/LinearSolver.h"
 
 // Specialization for <double, Displacement>
 template <> void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues(const VectorLong idx,
@@ -36,6 +37,14 @@ template <> void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues(const Ve
        }
     };
 
+template <> void AssemblyMatrix< ASTERDOUBLE, Displacement >::defineSolver() {
+    _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
+}
+
+template <> void AssemblyMatrix< ASTERCOMPLEX, Displacement >::defineSolver() {
+    _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
+}
+
 // Specialization for <double, Temperature>
 template <> void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues(const VectorLong idx,
         const VectorLong jdx, const VectorReal values) {
@@ -49,6 +58,10 @@ template <> void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues(const Vec
         }
     };
 
+template <> void AssemblyMatrix< ASTERDOUBLE, Temperature >::defineSolver() {
+    _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
+}
+
 // Specialization for <double, Pressure>
 template <> void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues(const VectorLong idx,
         const VectorLong jdx, const VectorReal values) {
@@ -61,3 +74,8 @@ template <> void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues(const Vector
             _isFactorized = false;
         }
     };
+
+template <> void AssemblyMatrix< ASTERCOMPLEX, Pressure >::defineSolver() {
+    _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
+}
+
