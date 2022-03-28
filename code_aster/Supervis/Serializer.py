@@ -582,6 +582,8 @@ class AsterUnpickler(pickle.Unpickler):
                 logger.debug("setting state: %s", self.state)
                 _restore(f"{self._name} .state", self.state)
                 getattr(self._inst, "__setstate__")(self.state)
+                if hasattr(self._inst, "update"):
+                    self._inst.update()
             return self._inst
 
     class BufferStack(object):

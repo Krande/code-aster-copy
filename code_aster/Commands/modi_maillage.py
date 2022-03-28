@@ -44,4 +44,12 @@ class MeshModification(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        self._result.build()
+
 MODI_MAILLAGE = MeshModification.run

@@ -35,5 +35,12 @@ class MeshDefinition(ExecuteCommand):
         """
         self._result = Mesh()
 
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        self._result.build()
 
 DEFI_MAILLAGE = MeshDefinition.run

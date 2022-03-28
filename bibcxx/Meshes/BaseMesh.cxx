@@ -37,6 +37,39 @@
 #include "Utilities/CapyConvertibleValue.h"
 #include "Utilities/Tools.h"
 
+#include "DataFields/ConstantFieldOnCells.h"
+
+BaseMesh::BaseMesh( const std::string &name, const std::string &type )
+        : DataStructure( name, 8, type ),
+          ListOfTables( name ),
+          _dimensionInformations( JeveuxVectorLong( getName() + ".DIME      " ) ),
+          _nameOfNodes( NamesMapChar8( getName() + ".NOMNOE    " ) ),
+          _coordinates( new MeshCoordinatesField( getName() + ".COORDO    " ) ),
+          _nameOfGrpNodes( NamesMapChar24( getName() + ".PTRNOMNOE " ) ),
+          _groupsOfNodes(
+              JeveuxCollectionLongNamePtr( getName() + ".GROUPENO  ", _nameOfGrpNodes ) ),
+          _connectivity( JeveuxCollectionLong( getName() + ".CONNEX    " ) ),
+          _nameOfCells( NamesMapChar8( getName() + ".NOMMAI    " ) ),
+          _cellsType( JeveuxVectorLong( getName() + ".TYPMAIL   " ) ),
+          _nameOfGrpCells( NamesMapChar24( getName() + ".PTRNOMMAI " ) ),
+          _groupsOfCells(
+              JeveuxCollectionLongNamePtr( getName() + ".GROUPEMA  ", _nameOfGrpCells ) ),
+          _adapt( JeveuxVectorLong( getName() + ".ADAPTATION" ) ),
+          _oriMeshName( JeveuxVectorChar8( getName() + ".MAOR" ) ),
+          _oriMeshCells( JeveuxVectorLong( getName() + ".CRMA" ) ),
+          _oriMeshNodes( JeveuxVectorLong( getName() + ".CRNO" ) ),
+          _patch( JeveuxCollectionLong( getName() + ".PATCH" ) ),
+          _nodePatchConnectivity( JeveuxVectorLong( getName() + ".CONOPA" ) ),
+          _cellPatchConnectivity( JeveuxVectorLong( getName() + ".COMAPA" ) ),
+          _namePatch( JeveuxVectorChar24( getName() + ".PTRNOMPAT" ) ),
+          _superElementName( JeveuxVectorLong( getName() + ".NOMACR" ) ),
+          _superElementPara( JeveuxVectorReal( getName() + ".PARA_R" ) ),
+          _superElements( JeveuxCollectionLong( getName() + ".SUPMAIL" ) ),
+          // use BaseMeshPtr(NULL) instead of this to avoid cross destruction
+          _curvAbsc( new ConstantFieldOnCellsReal( getName().substr(0, 8) + ".ABSC_CURV ",
+                                                                               BaseMeshPtr(NULL)) ),
+          _explorer( ConnectivityMeshExplorer( _connectivity, _cellsType ) ){};
+
 ASTERINTEGER BaseMesh::getNumberOfNodes() const {
     if ( isEmpty() )
         return 0;

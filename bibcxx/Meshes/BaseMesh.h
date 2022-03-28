@@ -32,6 +32,11 @@
 #include "Meshes/MeshExplorer.h"
 #include "Utilities/GenericEnum.h"
 
+/** @brief Forward declaration of ConstantFieldOnCells */
+template < class ValueType > class ConstantFieldOnCells;
+typedef ConstantFieldOnCells< ASTERDOUBLE > ConstantFieldOnCellsReal;
+typedef std::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
+
 /**
  * @class BaseMesh
  * @brief This object is the base class for all meshes variants
@@ -66,6 +71,28 @@ class BaseMesh : public DataStructure, public ListOfTables {
     JeveuxCollectionLongNamePtr _groupsOfCells;
     /** @brief jeveux vector '.ADAPTATION' */
     JeveuxVectorLong _adapt;
+    /** @brief jeveux vector '.MAOR' */
+    JeveuxVectorChar8 _oriMeshName;
+    /** @brief jeveux vector '.CRMA' */
+    JeveuxVectorLong _oriMeshCells;
+    /** @brief jeveux vector '.CRNO' */
+    JeveuxVectorLong _oriMeshNodes;
+    /** @brief Collection jeveux '.PATCH' */
+    JeveuxCollectionLong _patch;
+    /** @brief jeveux vector '.CONOPA' */
+    JeveuxVectorLong _nodePatchConnectivity;
+    /** @brief jeveux vector '.COMAPA' */
+    JeveuxVectorLong _cellPatchConnectivity;
+    /** @brief jeveux vector '.PTRNOMPAT' */
+    JeveuxVectorChar24 _namePatch;
+    /** @brief jeveux vector '.NOMACR' */
+    JeveuxVectorLong _superElementName;
+    /** @brief jeveux vector '.PARA_R' */
+    JeveuxVectorReal _superElementPara;
+    /** @brief jeveux vector '.SUPMAIL' */
+    JeveuxCollectionLong _superElements;
+    /** @brief card '.ABSC_CURV' */
+    ConstantFieldOnCellsRealPtr _curvAbsc;
     /** @brief Object to allow loop over connectivity */
     const ConnectivityMeshExplorer _explorer;
 
@@ -74,23 +101,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @param name nom jeveux de l'objet
      * @param type jeveux de l'objet
      */
-    BaseMesh( const std::string &name, const std::string &type )
-        : DataStructure( name, 8, type ),
-          ListOfTables( name ),
-          _dimensionInformations( JeveuxVectorLong( getName() + ".DIME      " ) ),
-          _nameOfNodes( NamesMapChar8( getName() + ".NOMNOE    " ) ),
-          _coordinates( new MeshCoordinatesField( getName() + ".COORDO    " ) ),
-          _nameOfGrpNodes( NamesMapChar24( getName() + ".PTRNOMNOE " ) ),
-          _groupsOfNodes(
-              JeveuxCollectionLongNamePtr( getName() + ".GROUPENO  ", _nameOfGrpNodes ) ),
-          _connectivity( JeveuxCollectionLong( getName() + ".CONNEX    " ) ),
-          _nameOfCells( NamesMapChar8( getName() + ".NOMMAI    " ) ),
-          _cellsType( JeveuxVectorLong( getName() + ".TYPMAIL   " ) ),
-          _nameOfGrpCells( NamesMapChar24( getName() + ".PTRNOMMAI " ) ),
-          _groupsOfCells(
-              JeveuxCollectionLongNamePtr( getName() + ".GROUPEMA  ", _nameOfGrpCells ) ),
-          _adapt( JeveuxVectorLong( getName() + ".ADAPTATION" ) ),
-          _explorer( ConnectivityMeshExplorer( _connectivity, _cellsType ) ){};
+    BaseMesh( const std::string &name, const std::string &type );
 
     /**
      * @brief Read a Mesh file
