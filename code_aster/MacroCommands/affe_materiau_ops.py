@@ -91,6 +91,8 @@ def affe_materiau_ops(self, **args):
                 "Unexpected type: {0!r} {1}".format(fkw, type(fkw)))
 
     material = MaterialFieldBuilder.build(material, externalVarOnMesh)
+    material.update()
+
 
     resetFortranLoggingLevel()
     deleteTemporaryObjects()

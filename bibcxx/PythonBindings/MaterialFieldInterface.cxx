@@ -76,5 +76,6 @@ Add external state variables of material field
 Arguments:
     AFFE_VARC (list[dict]): keywords as provided to AFFE_MATERIAU/AFFE_VARC
         )",
-              py::arg( "AFFE_VARC" ) );
+              py::arg( "AFFE_VARC" ) )
+        .def( "update", &MaterialField::update );;
 };

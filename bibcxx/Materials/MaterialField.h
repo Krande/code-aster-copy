@@ -126,6 +126,10 @@ class MaterialField : public DataStructure {
     JeveuxVectorChar8 _cvrcVarc;
     /** @brief Jeveux vector '.CVRCCMP' */
     JeveuxVectorChar8 _cvrcCmp;
+    /** @brief Cartes R '.xxxx    .1' */
+    std::map < std::string, ConstantFieldOnCellsRealPtr > _mapCvrcCard1;
+    /** @brief Cartes K16 '.xxxx    .2' */
+    std::map < std::string, ConstantFieldOnCellsChar16Ptr > _mapCvrcCard2;
 
   public:
     /**
@@ -258,6 +262,11 @@ class MaterialField : public DataStructure {
 
     /** @brief Add external state variables */
     void addExternalStateVariables( py::object &keywords );
+
+    void updateStateVariables();
+
+    bool update();
+
 };
 
 /**

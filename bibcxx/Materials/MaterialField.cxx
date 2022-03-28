@@ -119,6 +119,27 @@ bool MaterialField::hasExternalStateVariables( const std::string &name ) {
     return false;
 };
 
+void MaterialField::updateStateVariables(){
+    if ( _cvrcVarc->exists() ) {
+        _cvrcVarc->updateValuePointer();
+        ASTERINTEGER size = _cvrcVarc->size();
+        for ( ASTERINTEGER i = 0; i < size; ++i ) {
+            std::string varc_name = ( *_cvrcVarc )[i].toString();
+            if ( _mapCvrcCard1.find( varc_name ) == _mapCvrcCard1.end() ){
+                _mapCvrcCard1[varc_name] = std::make_shared< ConstantFieldOnCellsReal > (
+                                                        getName() + '.' + varc_name + ".1", _mesh );
+                _mapCvrcCard2[varc_name] = std::make_shared< ConstantFieldOnCellsChar16 > (
+                                                        getName() + '.' + varc_name + ".2", _mesh );
+            }
+        }
+    }
+};
+
+bool MaterialField::update(){
+    updateStateVariables();
+    return true;
+}
+
 void MaterialField::addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav ) {
     _behaviours.push_back(
         listOfBehavAndGrpsValue( curBehav, MeshEntityPtr( new AllMeshEntities() ) ) );
