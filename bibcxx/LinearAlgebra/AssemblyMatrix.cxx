@@ -3,7 +3,7 @@
  * @brief Implementation de AssemblyMatrix vide car AssemblyMatrix est un template
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -78,4 +78,3 @@ template <> void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues(const Vector
 template <> void AssemblyMatrix< ASTERCOMPLEX, Pressure >::defineSolver() {
     _solver = std::make_shared< LinearSolver >( ljust(getName(), 8) + ".SOLVEUR   " );
 }
-
