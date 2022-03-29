@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,22 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
+    subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
                       pgmmil, spmmil, ntypel, npgmax, indpg,&
                       numpt, numord, option, param)
         integer :: npgmax
         integer :: ntypel
-        integer :: nbma
-        integer :: nrofic
+        integer :: nbCell
+        integer :: fileUnit
         character(len=19) :: ligrel
-        character(len=*) :: nochmd
-        integer :: pgmail(nbma)
-        integer :: pgmmil(nbma)
-        integer :: spmmil(nbma)
+        character(len=*) :: MEDFieldName
+        integer :: pgmail(nbCell)
+        integer :: pgmmil(nbCell)
+        integer :: spmmil(nbCell)
         integer :: indpg(ntypel, npgmax)
         integer :: numpt
         integer :: numord

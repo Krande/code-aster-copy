@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
+subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
                   pgmmil, spmmil, ntypel, npgmax, indpg,&
                   numpt, numord, option, param)
 !
@@ -27,7 +27,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !     IN :
 !       NROFIC : UNITE LOGIQUE DU FICHIER MED
 !       LIGREL : NOM DU LIGREL
-!       NOCHMD : NOM DU CHAMP MED
+!       MEDFieldName : NOM DU CHAMP MED
 !       NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 !       NTYPEL : NOMBRE TOTAL DE TYPES DE MAILLE (=27)
 !       NPGMAX : NOMBRE DE PG MAX (=27)
@@ -81,69 +81,65 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nrofic, nbma, ntypel, npgmax, numpt, numord
-    integer :: pgmail(nbma), pgmmil(nbma), spmmil(nbma), indpg(ntypel, npgmax)
+    integer :: fileUnit, nbCell, ntypel, npgmax, numpt, numord
+    integer :: pgmail(nbCell), pgmmil(nbCell), spmmil(nbCell), indpg(ntypel, npgmax)
     character(len=8) :: param
     character(len=19) :: ligrel
     character(len=24) :: option
-    character(len=*) :: nochmd
+    character(len=*) :: MEDFieldName
 !
     character(len=6) :: nompro
     parameter ( nompro = 'LRMPGA' )
 !
-    integer :: ntygeo
-    parameter (ntygeo=19)
-    integer :: edlect
-    parameter (edlect=0)
-    integer :: edmail
-    parameter (edmail=0)
-    integer :: edcomp
-    parameter (edcomp=2)
+    integer, parameter :: nbCellType = 19
+    integer, parameter :: MED_ACC_RDONLY = 0
+    integer, parameter :: MED_CELL = 0
+    integer, parameter :: MED_COMPACT_STMODE = 2
 !
-    integer :: ifm, nivinf, ncmp, nbprof, jnopro
-    med_idt :: idfimd
-    integer :: codret, nloc, iret, igrel, jtyelm
-    integer :: j, nbgrel, jtypge, jnonpg, iprof, lgproa, codre2
-    integer :: numte, i, ityg, ngaulu, npdt, jprof, ima2
-    integer :: tygeo(ntygeo), nbpg, nbpgm
+    integer :: ifm, nivinf, nbCmp, nbProfile, jnopro
+    med_idt :: MEDFileIden
+    integer :: codret, nbLocalizations, iret, igrel
+    integer :: iTypeCellInField, nbgrel, jnonpg, iProfile, lgproa, codre2
+    integer :: typeElemNume, i, iCellType, nbStep
+    integer :: AsterNbPg, MEDNbPg, nbElem, lonmax
     integer :: nufgpg, jnoloc
-    integer :: dime, jtymed
-    integer :: nbtyel, nbmag, igr, ima
+    integer :: modelDime, jvGrel
+    integer :: nbTypeCellInField, iElem
     integer :: jngaok
-    integer :: nutyma, ipg, ipgm, jperm
-    integer :: npr, n, l_iprof, l_fapg
-    integer :: iopt, imod, jmod, igrd, iadgd, nec, nbsp
-    integer :: iterma, tymasv, typv
-    parameter (iterma=1)
+    integer :: ipg, ipgm, jperm
+    integer :: npr, nbValues, l_iprof, l_fapg
+    integer :: iopt, imod, jvModeLoc, igrd, jvDescrigd, nec, nbsp
+    integer :: typeCellNume
+    integer, parameter :: MEDIterMesh=1
 !
-    character(len=1) :: saux01
-    character(len=8) :: saux08, fapg, elref, nomtm, tyele(ntygeo)
-    character(len=8) :: typma(ntygeo)
-    character(len=16) :: nomte, nofgpg
+    character(len=1) :: fileState
+    character(len=8) :: cellTypeIden, fapg, elref, typeCellName
+    character(len=16) :: typeElemName, nofgpg
     character(len=24) :: liel, nolipr, nlnbpg
-    character(len=64) :: nomprf, nomloc, nomam2
-    character(len=200) :: nofimd
-    character(len=255) :: kfic
+    character(len=64) :: profileName, localizationName, MEDMeshName
+    character(len=64) :: k24Dummy1, k24Dummy2
+    character(len=200) :: MEDFileName
+    character(len=255) :: fileName
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
     character(len=8), pointer :: typema(:) => null()
+    character(len=8), pointer :: asterCellType(:) => null()
+    integer, pointer :: MEDCellType(:) => null()
+    !character(len=8), pointer :: asterElemType(:) => null()
     integer, pointer :: tmfpg(:) => null()
 !
-    data tygeo /    1,          102,        103,        104,&
-     &                203,        204,        206,        207,&
-     &                208,        209,        304,        305,&
-     &                306,        308,        310,        313,&
-     &                315,        320,        327/
-    data tyele /   'PO1',      'SE2',      'SE3',      'SE4',&
-     &               'TR3',      'QU4',      'TR6',      'TR7',&
-     &               'QU8',      'QU9',      'TE4',      'PY5',&
-     &               'PE6',      'HE8',      'T10',      'P13',&
-     &               'P15',      'H20',      'H27'/
-    data typma /   'POI1    ', 'SEG2    ', 'SEG3    ', 'SEG4    ',&
-     &               'TRIA3   ', 'QUAD4   ', 'TRIA6   ', 'TRIA7   ',&
-     &               'QUAD8   ', 'QUAD9   ', 'TETRA4  ', 'PYRAM5  ',&
-     &               'PENTA6  ', 'HEXA8   ', 'TETRA10 ', 'PYRAM13 ',&
-     &               'PENTA15 ', 'HEXA20  ', 'HEXA27  '/
+    integer, parameter :: MED_GEOMETRY_TYPE(nbCellType) = &
+        (/  1, 102, 103, 104,&
+          203, 204, 206, 207,&
+          208, 209, 304, 305,&
+          306, 308, 310, 313,&
+          315, 320, 327/)
+    character(len=8), parameter :: AsterAllCellType(nbCellType)  = &
+        (/  'POI1    ', 'SEG2    ', 'SEG3    ', 'SEG4    ',&
+            'TRIA3   ', 'QUAD4   ', 'TRIA6   ', 'TRIA7   ',&
+            'QUAD8   ', 'QUAD9   ', 'TETRA4  ', 'PYRAM5  ',&
+            'PENTA6  ', 'HEXA8   ', 'TETRA10 ', 'PYRAM13 ',&
+            'PENTA15 ', 'HEXA20  ', 'HEXA27  '/)
 !
 !-----------------------------------------------------------------------
 !
@@ -152,7 +148,12 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
-        write (ifm,1001) 'DEBUT DE '//nompro
+        write (ifm,101) 'DEBUT DE '//nompro
+    endif
+
+    call dismoi('DIM_GEOM', ligrel(1:8), 'MODELE', repi=modelDime)
+    if (.not.(modelDime.eq.2.or.modelDime.eq.3)) then
+        call utmess('F', 'MODELISA2_6')
     endif
 !
 !  ======================================
@@ -160,21 +161,27 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !  ======================================
 !
 !  == 1.1. INITIALISATIONS
-    do i=1,nbma
+    do i=1,nbCell
         pgmail(i)=0
     end do
-!
-!  == 1.2. NOM DU FICHIER MED
-    call ulisog(nrofic, kfic, saux01)
-    if (kfic(1:1) .eq. ' ') then
-        call codent(nrofic, 'G', saux08)
-        nofimd = 'fort.'//saux08
+
+! - Get name of file from logical unit
+    call ulisog(fileUnit, fileName, fileState)
+
+! - Get name of MED file
+    if (fileName(1:1) .eq. ' ') then
+        call codent(fileUnit, 'G', cellTypeIden)
+        MEDFileName = 'fort.'//cellTypeIden
     else
-        nofimd = kfic(1:200)
+        MEDFileName = fileName(1:200)
     endif
-!
-!     OUVERTURE DU FICHIER MED
-    call as_med_open(idfimd, nofimd, edlect, codret)
+
+! - Open MED file
+    call as_med_open(MEDFileIden, MEDFileName, MED_ACC_RDONLY, codret)
+
+! - Nombre de localisations dans le fichier MED
+    nbLocalizations=0
+    call as_mlcnlc(MEDFileIden, nbLocalizations, iret)
 !
 !  == 1.3. A PARTIR DU NOM DU CHAMP MED ET DE L'INDICE DU PAS DE TEMPS,
 !      ON RECUPERE POUR CHAQUE TYPE DE MAILLE PRESENT:
@@ -182,73 +189,85 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !      - UN MARQUEUR DE CORRESPONDANCE : ZI(JNGAOK)
 !      REMARQUE: L'INDICE DU PAS DE TEMPS EST OBTENU EN PARCOURANT
 !      LA LISTE DES PAS DE TEMPS (BOUCLE 39)
-    call wkvect('&&LRMPGA_TYPGEO_TYPG_MED', 'V V K8', ntygeo, jtymed)
-    call wkvect('&&LRMPGA_TYPGEO_TYEL_MED', 'V V K8', ntygeo, jtyelm)
-    call wkvect('&&LRMPGA_TYPGEO_OKPG_MED', 'V V I', ntygeo, jngaok)
-    call wkvect('&&LRMPGA_TYPGEO_TYPGEO', 'V V I', ntygeo, jtypge)
-    call wkvect('&&LRMPGA_TYPGEO_NOMLOC', 'V V K80', 2*ntygeo, jnoloc)
-    nbtyel=0
+    AS_ALLOCATE(vk8 = asterCellType, size = nbCellType)
+    AS_ALLOCATE(vi = MEDCellType, size = nbCellType)
+    call wkvect('&&LRMPGA_TYPGEO_OKPG_MED', 'V V I', nbCellType, jngaok)
+    call wkvect('&&LRMPGA_TYPGEO_NOMLOC', 'V V K80', 2*nbCellType, jnoloc)
+    nbTypeCellInField = 0
     if (nivinf .gt. 1) then
-        write(ifm, 2001) nochmd
+        write(ifm, 201) MEDFieldName
     endif
-!
-    call as_mfdncn(idfimd, nochmd, ncmp, iret)
-    AS_ALLOCATE(vk16=cname, size=ncmp)
-    AS_ALLOCATE(vk16=cunit, size=ncmp)
-    call as_mfdfin(idfimd, nochmd, nomam2, npdt, cunit(1),&
-                   cname(1), iret)
-    if (npdt .gt. 0) then
-!
-        do ityg = 1,ntygeo
-            call as_mfdonp(idfimd, nochmd, numpt, numord, edmail,&
-                           tygeo(ityg), iterma, nomam2, nomprf, nomloc,&
-                           nbprof, codret)
-            call codent(ityg, 'G', saux08)
-            if ( nbprof.ne.0 ) then
-                nolipr = '&&'//nompro//saux08//'PR'
-                call wkvect(nolipr, 'V V K80', 2*nbprof, jnopro)
-                nlnbpg = '&&'//nompro//saux08//'PG'
-                call wkvect(nlnbpg, 'V V I', nbprof, jnonpg)
-                do iprof = 1, nbprof
-                    call as_mfdonv(idfimd, nochmd, edmail, tygeo(ityg), nomam2,&
-                                   numpt, numord, iprof, nomprf, edcomp,&
-                                   npr, nomloc, ngaulu, n, iret)
-                    zk80(jnopro+2*iprof-2) = nomprf
-                    zk80(jnopro+2*iprof-1) = nomloc
-                    zi(jnonpg+iprof-1) = ngaulu
+
+! - Get number of components in field
+    call as_mfdncn(MEDFileIden, MEDFieldName, nbCmp, iret)
+
+! - Get parameters about field
+    AS_ALLOCATE(vk16=cname, size=nbCmp)
+    AS_ALLOCATE(vk16=cunit, size=nbCmp)
+    call as_mfdfin(MEDFileIden, MEDFieldName, MEDMeshName, nbStep, cname(1),&
+                   cunit(1), iret)
+    AS_DEALLOCATE(vk16=cname)
+    AS_DEALLOCATE(vk16=cunit)
+
+! - Get profiles
+    if (nbStep .gt. 0) then
+        do iCellType = 1, nbCellType
+
+! --------- Current cell
+            call codent(iCellType, 'G', cellTypeIden)
+
+! --------- Get number of profiles
+            call as_mfdonp(MEDFileIden, &
+                           MEDFieldName, numpt, numord, &
+                           MED_CELL, MED_GEOMETRY_TYPE(iCellType),&
+                           MEDIterMesh, MEDMeshName,&
+                           k24Dummy1, k24Dummy2,&
+                           nbProfile, codret)
+
+! --------- Get profiles
+            if ( nbProfile .ne. 0 ) then
+                nolipr = '&&LRMPGA'//cellTypeIden//'PR'
+                nlnbpg = '&&LRMPGA'//cellTypeIden//'PG'
+                call wkvect(nolipr, 'V V K80', 2*nbProfile, jnopro)
+                call wkvect(nlnbpg, 'V V I', nbProfile, jnonpg)
+
+                do iProfile = 1, nbProfile
+                    call as_mfdonv(MEDFileIden, MEDFieldName,&
+                                   MED_CELL, MED_GEOMETRY_TYPE(iCellType), MEDMeshName,&
+                                   numpt, numord, iProfile, profileName, MED_COMPACT_STMODE,&
+                                   npr, localizationName, MEDNbPg, nbValues, iret)
+                    ASSERT(iret .eq. 0)
+                    zk80(jnopro+2*iProfile-2) = profileName
+                    zk80(jnopro+2*iProfile-1) = localizationName
+                    zi(jnonpg+iProfile-1) = MEDNbPg
                 enddo
             else
-                call as_mfdonv(idfimd, nochmd, edmail, tygeo(ityg), nomam2,&
-                               numpt, numord, 1, nomprf, edcomp,&
-                               npr, nomloc, ngaulu, n, iret)
-                nolipr = '&&'//nompro//saux08//'PR'
+                call as_mfdonv(MEDFileIden, MEDFieldName,&
+                               MED_CELL, MED_GEOMETRY_TYPE(iCellType), MEDMeshName,&
+                               numpt, numord, 1, profileName, MED_COMPACT_STMODE,&
+                               npr, localizationName, MEDNbPg, nbValues, iret)
+                ASSERT(iret .eq. 0)
+                nolipr = '&&LRMPGA'//cellTypeIden//'PR'
+                nlnbpg = '&&LRMPGA'//cellTypeIden//'PG'
                 call wkvect(nolipr, 'V V K80', 2, jnopro)
-                nlnbpg = '&&'//nompro//saux08//'PG'
                 call wkvect(nlnbpg, 'V V I', 1, jnonpg)
                 zk80(jnopro) = ' '
-                zk80(jnopro+1) = nomloc
+                zk80(jnopro+1) = localizationName
                 zi(jnonpg) = -1
             endif
-            ASSERT(iret.eq.0)
-            if (n .gt. 0) then
-                nbtyel=nbtyel+1
-                zk8(jtymed+nbtyel-1)=typma(ityg)
-                zk8(jtyelm+nbtyel-1)=tyele(ityg)
-                zk80(jnoloc+2*nbtyel-2)=nolipr
-                zk80(jnoloc+2*nbtyel-1)=nlnbpg
-                zi(jngaok+nbtyel-1)=0
-                zi(jtypge+nbtyel-1)=tygeo(ityg)
+
+            if (nbValues .gt. 0) then
+                nbTypeCellInField = nbTypeCellInField + 1
+                asterCellType(nbTypeCellInField) = AsterAllCellType(iCellType)
+                !asterElemType(nbTypeCellInField) = AsterAllElemType(iCellType)
+                zk80(jnoloc+2*nbTypeCellInField-2) = nolipr
+                zk80(jnoloc+2*nbTypeCellInField-1) = nlnbpg
+                zi(jngaok+nbTypeCellInField-1) = 0
+                MEDCellType(nbTypeCellInField) = MED_GEOMETRY_TYPE(iCellType)
             else
                 call jedetr(nolipr)
                 call jedetr(nlnbpg)
-                ngaulu = 0
-            endif
-!
-            if (nivinf .gt. 1) then
-                if (ngaulu .gt. 0) then
-                    write (ifm,2002) tygeo(ityg),ngaulu,tyele(ityg),&
-                                     nomloc
-                endif
+                MEDNbPg = 0
             endif
 !
         end do
@@ -257,27 +276,11 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
         write(ifm,*) ' '
     endif
 !
-    AS_DEALLOCATE(vk16=cname)
-    AS_DEALLOCATE(vk16=cunit)
-!
-    if (nbtyel .eq. 0) then
-        call utmess('F', 'MED_77', sk=nochmd, si=nrofic)
+    if (nbTypeCellInField .eq. 0) then
+        call utmess('F', 'MED_77', sk=MEDFieldName, si=fileUnit)
     endif
 !
-!
-!  == 1.4. LECTURE DU NOMBRE DE LOCALISATIONS PRESENTES DANS LE FICHIER
-!     NOMBRE DE LOCALISATION(S) : NLOC
-    nloc=0
-    call as_mlcnlc(idfimd, nloc, iret)
-    if (nivinf .gt. 1) then
-        write(ifm,*) 'NOMBRE DE LOCALISATIONS DANS LE FICHIER MED =',&
-        nloc
-    endif
-!
-    call dismoi('DIM_GEOM', ligrel(1:8), 'MODELE', repi=dime)
-    if (.not.(dime.eq.2.or.dime.eq.3)) then
-        call utmess('F', 'MODELISA2_6')
-    endif
+
     liel=ligrel//'.LIEL'
     call jelira(liel, 'NMAXOC', nbgrel)
 !
@@ -287,94 +290,104 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !
     call jenonu(jexnom('&CATA.OP.NOMOPT', option), iopt)
     call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typema)
-!
-!     ON PARCOURT LES GROUPES D'ELEMENTS PRESENTS DANS LE MODELE
-    do igrel=1,nbgrel
-!
-!       NOM DU TYPE D'ELEMENT
-        numte=typele(ligrel,igrel)
-        call jenuno(jexnum('&CATA.TE.NOMTE', numte), nomte)
-!
-!       NOMBRE D'ELEMENTS DU GREL : NBMAG-1
-        call jeveuo(jexnum(liel, igrel), 'L', igr)
-        call jelira(jexnum(liel, igrel), 'LONMAX', nbmag)
+
+!   ON PARCOURT LES GROUPES D'ELEMENTS PRESENTS DANS LE MODELE
+    do igrel = 1,nbgrel
+
+! ----- Type of finite element on current GREL
+        typeElemNume = typele(ligrel, igrel)
+        call jenuno(jexnum('&CATA.TE.NOMTE', typeElemNume), typeElemName)
+
+! ----- Geometric support for this GREL
+        typeCellName = typema(typeElemNume)
+
+! ----- Access to GREL
+        call jeveuo(jexnum(liel, igrel), 'L', jvGrel)
+        call jelira(jexnum(liel, igrel), 'LONMAX', lonmax)
+        nbElem = lonmax - 1
 !
 !       MODE LOCAL ASSOCIE AU PARAMETRE PARAM DE L'OPTION OPTION
-        imod = modat2(iopt, numte, param)
+        imod = modat2(iopt, typeElemNume, param)
+
         if (imod .eq. 0) then
-            nbpg = 0
+            AsterNbPg = 0
         else
-            call jeveuo(jexnum('&CATA.TE.MODELOC', imod), 'L', jmod)
+            call jeveuo(jexnum('&CATA.TE.MODELOC', imod), 'L', jvModeLoc)
 !           CHAMP ELGA
-            ASSERT(zi(jmod-1+1).eq.3)
+            ASSERT(zi(jvModeLoc-1+1).eq.3)
 !
-            igrd = zi(jmod-1+2)
-            call jeveuo(jexnum('&CATA.GD.DESCRIGD', igrd), 'L', iadgd)
-            nec = zi(iadgd-1+3)
+            igrd = zi(jvModeLoc-1+2)
+            call jeveuo(jexnum('&CATA.GD.DESCRIGD', igrd), 'L', jvDescrigd)
+            nec = zi(jvDescrigd-1+3)
+
 !           NUMERO ET NOM DE LA FAMILLE GLOBALE DE PTS GAUSS
-            nufgpg = zi(jmod-1+4+nec+1)
+            nufgpg = zi(jvModeLoc-1+4+nec+1)
             call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofgpg)
             elref= nofgpg(1:8)
             fapg = nofgpg(9:16)
+
 !           NOMBRE DE PG : NBPG
             call jeveuo('&CATA.TM.TMFPG', 'L', vi=tmfpg)
-            nbpg=tmfpg(nufgpg)
-!
-            nomtm=typema(numte)
-            call jenonu(jexnom('&CATA.TM.NOMTM', nomtm), typv)
-!
-            if (nivinf .gt. 1) then
-                write(ifm,2003) nomte, fapg
-            endif
-            l_fapg= len(trim(adjustl(fapg)))
-!
-!           ON PARCOURT LES ELEMENTS DE REFERENCE MED
-            do j=1,nbtyel
-!
-!               SI LES ELEMENTS DE REFERENCE ASTER/MED CORRESPONDENT :
-                if (zk8(jtymed+j-1) .eq. nomtm) then
+            AsterNbPg = tmfpg(nufgpg)
+
+            l_fapg = len(trim(adjustl(fapg)))
+
+! --------- Looking for MED cell
+            do iTypeCellInField = 1, nbTypeCellInField
+                if (asterCellType(iTypeCellInField) .eq. typeCellName) then
 !
 !                   VERIFICATION DU NOMBRE DE PG ASTER/MED
 !                   COMPARAISON DES COORDONNEES DES PG ASTER/MED
-                    call wkvect('&&LRMPGA_PERMUT', 'V V I', nbpg, jperm)
-                    nolipr = zk80(jnoloc+2*j-2)
+                    call wkvect('&&LRMPGA_PERMUT', 'V V I', AsterNbPg, jperm)
+
+! ----------------- Get number of profiles on this MED cell
+                    nolipr = zk80(jnoloc+2*iTypeCellInField-2)(1:24)
                     call jeveuo(nolipr, 'L', jnopro)
-                    call jelira(nolipr, 'LONMAX', nbprof)
-                    nbprof = nbprof/2
-                    nlnbpg = zk80(jnoloc+2*j-1)
+                    call jelira(nolipr, 'LONMAX', lonmax)
+                    nbProfile = lonmax/2
+
+! ----------------- Acces to number of integration points for these profiles
+                    nlnbpg = zk80(jnoloc+2*iTypeCellInField-1)(1:24)
                     call jeveuo(nlnbpg, 'L', jnonpg)
 
                     ! initialiser le cumul des mailles du meme type d'element
                     l_iprof = 0
-                    do iprof = 1, nbprof
-                        nomprf = zk80(jnopro + 2*iprof - 2)
-                        nomloc = zk80(jnopro + 2*iprof - 1)
-                        nbpgm = zi(jnonpg + iprof - 1)
+
+                    do iProfile = 1, nbProfile
+! --------------------- Acces to number of integration points for these profiles
+                        profileName = zk80(jnopro + 2*iProfile - 2)(1:64)
+                        localizationName = zk80(jnopro + 2*iProfile - 1)(1:64)
+                        MEDNbPg = zi(jnonpg + iProfile - 1)
 
                         ! on ne compare que le meme profile du meme type element
-                        if ((fapg(1:l_fapg) .ne. nomloc(9:8+l_fapg) ) .and. &
-                           (nomloc .ne. ' ')) goto 999
+                        if ((fapg(1:l_fapg) .ne. localizationName(9:8+l_fapg) ) .and. &
+                           (localizationName .ne. ' ')) then
+                            if (localizationName(1:17) .ne. "NOM_LOC_GAUSS_001") goto 999
+                        endif
 
-                        call lrvcpg(idfimd, nbpgm, nbpg, nomtm, zi(jtypge+j-1),&
-                                    elref, fapg, nloc, nomloc, zi(jperm),&
-                                    nutyma, nbsp, codret)
-                        if ( codret.ne.4 ) then
-                            if ( nomprf.ne.' ' ) then
-                                call lrcmpr(idfimd, nomprf, '&&LRMPGA.TMP', lgproa, codre2)
+! --------------------- Check consistency of integration points between Aster and MED
+                        call lrvcpg(MEDFileIden, MEDNbPg, AsterNbPg,&
+                                    typeCellName, MEDCellType(iTypeCellInField),&
+                                    elref, fapg, nbLocalizations, localizationName, zi(jperm),&
+                                    typeCellNume, nbsp, codret)
 
-                                do ima = 1, lgproa
-                                    pgmail(zi(igr+ima-1+l_iprof))=nbpg
-                                    pgmmil(zi(igr+ima-1+l_iprof))=nbpgm
-                                    spmmil(zi(igr+ima-1+l_iprof))=nbsp
+                        if ( codret .ne. 4 ) then
+                            if ( profileName .ne. ' ' ) then
+                                call lrcmpr(MEDFileIden, profileName,'&&LRMPGA.TMP', lgproa, codre2)
+                                do iElem = 1, min(lgproa,nbElem)
+                                    ASSERT(zi(jvGrel+iElem-1+l_iprof).le.nbCell)
+                                    pgmail(zi(jvGrel+iElem-1+l_iprof)) = AsterNbPg
+                                    pgmmil(zi(jvGrel+iElem-1+l_iprof)) = MEDNbPg
+                                    spmmil(zi(jvGrel+iElem-1+l_iprof)) = nbsp
                                 end do
                                 ! mettre à jour le cumul
-                                l_iprof = l_iprof + lgproa
+                                l_iprof = l_iprof + min(lgproa,nbElem)
                                 call jedetr('&&LRMPGA.TMP')
                             else
-                                do ima = 1, nbmag-1
-                                    pgmail(zi(igr+ima-1))=nbpg
-                                    pgmmil(zi(igr+ima-1))=nbpgm
-                                    spmmil(zi(igr+ima-1))=nbsp
+                                do iElem = 1, nbElem
+                                    pgmail(zi(jvGrel+iElem-1+l_iprof)) = AsterNbPg
+                                    pgmmil(zi(jvGrel+iElem-1+l_iprof)) = MEDNbPg
+                                    spmmil(zi(jvGrel+iElem-1+l_iprof)) = nbsp
                                 end do
                             endif
                         else
@@ -384,80 +397,69 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !                       SI LE NBRE PT GAUSS INCORRECT ET PAS DE <F>,
 !                       NBPG=0 : RIEN A ECRIRE DANS LRCMVE
                         if (codret .eq. 4) then
-                            nbpg = 0
+                            AsterNbPg = 0
 !                           SI PERMUTATIONS AU NIVEAU DES PG ASTER/MED :
                         else if (codret.eq.1) then
 !  ===>                     REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A
 !                           UNE PERMUTATION DANS LES PG MED/ASTER
-                            if (zi(jngaok+j-1) .eq. 0) then
-                                do ipgm = 1, nbpg
-                                    indpg(nutyma,ipgm)=zi(jperm+ipgm-1)
+                            if (zi(jngaok+iTypeCellInField-1) .eq. 0) then
+                                do ipgm = 1, AsterNbPg
+                                    indpg(typeCellNume,ipgm)=zi(jperm+ipgm-1)
                                 end do
                             else
-                                do ipgm = 1, nbpg
-                                    ASSERT(indpg(nutyma,ipgm).eq.zi(jperm+ipgm-1))
+                                do ipgm = 1, AsterNbPg
+                                    ASSERT(indpg(typeCellNume,ipgm).eq.zi(jperm+ipgm-1))
                                 end do
                             endif
-                            zi(jngaok+j-1) = 1
+                            zi(jngaok+iTypeCellInField-1) = 1
                         else
 !  ===>                     SINON REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A :
 !                            - ABSENCE DE LOCALISATION
 !                            - L UN DES PG MED N A PAS ETE IDENTIFIE A UN PG ASTER
 !                            - LES PG ASTER/MED CORRESPONDENT
-                            if (zi(jngaok+j-1) .eq. 0) then
-                                do ipg = 1, nbpg
-                                    indpg(nutyma,ipg)=ipg
+                            if (zi(jngaok+iTypeCellInField-1) .eq. 0) then
+                                do ipg = 1, AsterNbPg
+                                    indpg(typeCellNume,ipg)=ipg
                                 end do
                             else
-                                do ipg = 1, nbpg
-                                    if (indpg(nutyma,ipg) .ne. 0 ) then
-                                        ASSERT(indpg(nutyma,ipg).eq.ipg)
+                                do ipg = 1, AsterNbPg
+                                    if (indpg(typeCellNume,ipg) .ne. 0 ) then
+                                        ASSERT(indpg(typeCellNume,ipg).eq.ipg)
                                     else
-                                        indpg(nutyma,ipg)=ipg
+                                        indpg(typeCellNume,ipg)=ipg
                                     endif
                                 end do
                             endif
-                            zi(jngaok+j-1) = 1
+                            zi(jngaok+iTypeCellInField-1) = 1
                         endif
                         999 continue
                     enddo
-!
-!                   DESTRUCTION DU TABLEAU TEMPORAIRE
                     call jedetr('&&LRMPGA_PERMUT')
-!
                 endif
-                
-!
             enddo
-!
         endif
-!
     enddo
 !
 !   DESTRUCTION DES TABLEAUX TEMPORAIRES
-    do ityg = 1, 2*nbtyel
-        call jedetr(zk80(jnoloc+ityg-1))
+    do iCellType = 1, 2*nbTypeCellInField
+        call jedetr(zk80(jnoloc+iCellType-1))
     enddo
+    AS_DEALLOCATE(vk8 = asterCellType)
+    AS_DEALLOCATE(vi = MEDCellType)
     call jedetr('&&LRMPGA_TYPGEO_NBPG_MED')
-    call jedetr('&&LRMPGA_TYPGEO_TYPG_MED')
-    call jedetr('&&LRMPGA_TYPGEO_TYEL_MED')
     call jedetr('&&LRMPGA_TYPGEO_OKPG_MED')
-    call jedetr('&&LRMPGA_TYPGEO_TYPGEO')
     call jedetr('&&LRMPGA_TYPGEO_NOMLOC')
-    ! call jedetr('&&LRMPGA.NUM_MIN_TM')
 !
     call jedema()
 !
     if (nivinf .gt. 1) then
-        write (ifm,1001) 'FIN DE '//nompro
+        write (ifm,101) 'FIN DE '//nompro
     endif
 !
-    1001 format(/,10('='),a,10('='),/)
-    2001 format('POUR LE CHAMP MED ', a,&
-     &     /,'MAILLE ! NBRE DE PTS DE GAUSS',&
-     &       ' ! ELREFE ASTER ASSOCIE ! NOM LOCALISATION',&
-     &     /,72('-'))
-    2002 format(i6, ' !', i10,12x,'! ', 6x, a6, 9x,'! ',  a)
-    2003 format(  '  NOM DE L''ELEMENT FINI : ',a8,&
-     &       /,'  FAMILLE DE PT GAUSS    : ',a8)
+101 format(/,10('='),a,10('='),/)
+201 format('POUR LE CHAMP MED ', a,&
+    &     /,'MAILLE ! NBRE DE PTS DE GAUSS',&
+    &       ' ! ELREFE ASTER ASSOCIE ! NOM LOCALISATION',&
+    &     /,72('-'))
+!
 end subroutine
