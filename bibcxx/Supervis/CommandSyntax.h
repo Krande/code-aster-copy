@@ -39,7 +39,7 @@ extern "C" PyObject *GetJdcAttr( _IN char * );
 class CommandSyntax {
   private:
     /** @brief The command name. */
-    const std::string _commandName;
+    const std::string _cataPath;
     /** @brief CommandSyntax Python object handling the command syntax. */
     PyObject *_pySyntax;
 
@@ -80,7 +80,7 @@ class CommandSyntax {
      * @brief Fonction permettant de definir la syntaxe
      * @param syntax Objet de type pointeur sur PyObject
      */
-    void define( py::object keywords );
+    void define( py::object keywords, bool check_syntax = true );
 
     /**
      * @brief Fonction permettant de definir la syntax

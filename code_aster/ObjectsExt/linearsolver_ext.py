@@ -38,10 +38,11 @@ from ..Utilities import injector, logger
 @injector(LinearSolver)
 class ExtendedLinearSolver:
     @classmethod
-    def factory(cls, mcf=None, **kwargs):
+    def factory(cls, cmd, mcf=None, **kwargs):
         """Create the solver object from the SOLVEUR factor keyword.
 
         Arguments:
+            cmd (str): Command Name.
             mcf (list|tuple|dict): Convenient option to pass `(kwargs,)`, the value
                 returned for a factor keyword.
             kwargs (dict): Valid SOLVEUR keywords (syntax checked, with defaults).
@@ -55,6 +56,7 @@ class ExtendedLinearSolver:
                 mcf = mcf[0]
             if isinstance(mcf, dict):
                 kwargs = mcf
+        kwargs["command"] = cmd
         name = kwargs.get("METHODE")
         klass = None
         for sub in cls.__subclasses__():
@@ -75,12 +77,14 @@ class LinearSolverExt:
     def __init__(self, *args, **kwargs):
         assert len(args) <= 1, "at most one argument is expected"
         self._init(*args)
-        mcf = C_SOLVEUR("MECA_STATIQUE")
+        cmd = kwargs.pop("command", "MECA_STATIQUE")
+        mcf = C_SOLVEUR(cmd)
         keywords = dict(METHODE=self._name)
-        mcf.addDefaultKeywords(keywords)
         keywords.update(kwargs)
-        logger.debug("solver init with:", keywords)
+        mcf.addDefaultKeywords(keywords)
+        logger.debug("solver init with: %s", keywords)
         self.setKeywords(keywords)
+        self.setCataPath("code_aster.Cata.Commons.c_solveur.C_SOLVEUR_" + cmd)
 
     @classmethod
     def solverName(cls):
@@ -90,6 +94,7 @@ class LinearSolverExt:
             str: Solver name, matching METHODE value.
         """
         return cls._name
+
 
 @injector(GcpcSolver)
 class ExtendedGcpcSolver(LinearSolverExt):

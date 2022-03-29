@@ -90,7 +90,7 @@ def _createTimeStepper(args):
             timeValues = listInst.getValues()
             inst_fin = args.get("INST_FIN")
             if inst_fin is not None:
-                timeValues = [time for time in timeValues if time <= (inst_fin + 1.e-6)]
+                timeValues = [time for time in timeValues if time <= (inst_fin + 1.0e-6)]
 
     return TimeStepper(timeValues)
 
@@ -197,8 +197,7 @@ def meca_statique_ops(self, **args):
     phys_pb.computeDOFNumbering()
 
     # Create linear solver
-    linear_solver = LinearSolver.factory(args["SOLVEUR"])
-    linear_solver.setCommandName("MECA_STATIQUE")
+    linear_solver = LinearSolver.factory("MECA_STATIQUE", args["SOLVEUR"])
     if (model.getMesh().isParallel()) and (not linear_solver.supportParallelMesh()):
         raise RuntimeError("ParallelMesh not allowed with this linear solver")
 

@@ -40,7 +40,7 @@ LinearSolver::LinearSolver( const std::string name )
       _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ),
       _matrix( nullptr ),
       _matrixPrec( nullptr ),
-      _commandName( "SOLVEUR" ),
+      _cataPath( std::string() ),
       _xfem( false ),
       _keywords( py::none() ){
 
@@ -74,7 +74,7 @@ bool LinearSolver::build() {
     newName.resize( 19, ' ' );
 
     // Definition du bout de fichier de commande pour SOLVEUR
-    CommandSyntax cmdSt( _commandName );
+    CommandSyntax cmdSt( _cataPath );
     cmdSt.setResult( getName(), getType() );
 
     cmdSt.define( getKeywords() );
@@ -124,7 +124,7 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
     const std::string matass( _matrix->getName() );
 
     // Definition du bout de fichier de commande pour SOLVEUR
-    CommandSyntax cmdSt( _commandName );
+    CommandSyntax cmdSt( _cataPath );
     cmdSt.setResult( getName(), getType() );
 
     cmdSt.define( getKeywords() );

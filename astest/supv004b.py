@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@
 Unittest for CommandSyntax.
 """
 
-import platform
 
 import code_aster
 from code_aster.Cata.Commands import DEBUT
@@ -36,16 +35,18 @@ syntax = CommandSyntax("code_aster.Cata.Commands.DEBUT")
 test.assertEqual(syntax.getName(), "DEBUT")
 
 catadef = DEBUT.definition
-test.assertIn('INFO', catadef.simple_keywords)
-test.assertNotIn('INFO', catadef.factor_keywords)
-test.assertIn('CODE', catadef.factor_keywords)
-test.assertNotIn('CODE', catadef.simple_keywords)
+test.assertIn("INFO", catadef.simple_keywords)
+test.assertNotIn("INFO", catadef.factor_keywords)
+test.assertIn("CODE", catadef.factor_keywords)
+test.assertNotIn("CODE", catadef.simple_keywords)
 
-userkw = _F(IMPR_MACRO='OUI',
-            ERREUR=_F(ERREUR_F='EXCEPTION'),
-            RESERVE_CPU=_F(POURCENTAGE=0.20),
-            IGNORE_ALARM=("alarm1", "alarm22", "alarm333", "alarm4444"),
-            INFO=2)
+userkw = _F(
+    IMPR_MACRO="OUI",
+    ERREUR=_F(ERREUR_F="EXCEPTION"),
+    RESERVE_CPU=_F(POURCENTAGE=0.20),
+    IGNORE_ALARM=("alarm1", "alarm22", "alarm333", "alarm4444"),
+    INFO=2,
+)
 
 syntax.setResult("result", "type")
 test.assertEqual(syntax.getResultName(), "result")
@@ -101,8 +102,8 @@ test.assertSequenceEqual(kws, ["IGNORE_ALARM", "IMPR_MACRO", "INFO"])
 test.assertSequenceEqual(types, ["TX", "TX", "IS"])
 
 rand = syntax.getran()
-test.assertGreaterEqual(rand[0], 0.)
-test.assertLessEqual(rand[0], 1.)
+test.assertGreaterEqual(rand[0], 0.0)
+test.assertLessEqual(rand[0], 1.0)
 
 syntax.free()
 

@@ -53,8 +53,8 @@ For example for the displacement field and a Newton solver.
 
 
 class NonLinearSolver:
-    """Main object to solve a non linear problem.
-    """
+    """Main object to solve a non linear problem."""
+
     step_rank = stepper = param = phys_state = None
     phys_pb = None
     linear_solver = None
@@ -110,10 +110,9 @@ class NonLinearSolver:
         if solver:
             self.linear_solver = solver
         elif keywords is not None:
-            self.linear_solver = LinearSolver.factory(keywords)
+            self.linear_solver = LinearSolver.factory("STAT_NON_LINE", keywords)
         else:
-            raise KeyError(
-                "At least one argument is expected: solver or keywords")
+            raise KeyError("At least one argument is expected: solver or keywords")
 
     def getStepSolver(self, step_rank):
         """Return a solver for the next step.
@@ -175,8 +174,7 @@ class NonLinearSolver:
             rank (int): rank index for storing
             time (float): current (pseudo)-time.
         """
-        self.storage_manager.storeState(
-            rank, time, self.phys_pb, self.phys_state)
+        self.storage_manager.storeState(rank, time, self.phys_pb, self.phys_state)
 
     @profile
     def _initializeRun(self):
@@ -203,14 +201,14 @@ class NonLinearSolver:
             solv.setPhysicalProblem(self.phys_pb)
             solv.setPhysicalState(self.phys_state)
             solv.setLinearSolver(self.linear_solver)
-            solv.setParameters(epsilon_maxi=self._get("CONVERGENCE", "RESI_GLOB_MAXI"),
-                               epsilon_rela=self._get(
-                                   "CONVERGENCE", "RESI_GLOB_RELA"),
-                               max_iter=self._get("CONVERGENCE", "ITER_GLOB_MAXI"))
+            solv.setParameters(
+                epsilon_maxi=self._get("CONVERGENCE", "RESI_GLOB_MAXI"),
+                epsilon_rela=self._get("CONVERGENCE", "RESI_GLOB_RELA"),
+                max_iter=self._get("CONVERGENCE", "ITER_GLOB_MAXI"),
+            )
             # get Newton parameters
             solv.setPrediction(self._get("NEWTON", "PREDICTION"))
-            reac_params = {k: self._get("NEWTON", k, 1)
-                           for k in ("REAC_ITER", "REAC_INCR")}
+            reac_params = {k: self._get("NEWTON", k, 1) for k in ("REAC_ITER", "REAC_INCR")}
             solv.setUpdateParameters(**reac_params)
             solv.current_matrix = self.current_matrix
 
@@ -230,7 +228,7 @@ class NonLinearSolver:
         deleteTemporaryObjects()
 
     def _get(self, keyword, parameter=None, default=None):
-        """"Return a keyword value"""
+        """ "Return a keyword value"""
         if parameter is not None:
             assert keyword in self.param
             return self.param.get(keyword).get(parameter, default)

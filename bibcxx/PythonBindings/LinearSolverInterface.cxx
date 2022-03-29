@@ -46,14 +46,14 @@ Returns:
      bool: True if the solver support ParallelMesh, else False
         )" )
         .def( "setKeywords", &LinearSolver::setKeywords )
-        .def( "setCommandName", &LinearSolver::setCommandName, R"(
-Set the name of command where the solver is used internally. The behavior of the solver
-can change between Aster's commds. It will be fixe in the future
+        .def( "setCataPath", &LinearSolver::setCataPath, R"(
+Set the path of the catalog that defines the solver keywords.
+It can be command name or a path as *code_aster.Cata.Commons.xxxx*.
 
 Arguments:
-     command [str]: name of the command
+     path (str): command name or path of the catalog.
         )",
-              py::arg( "command" ) )
+              py::arg( "path" ) )
         .def( "enableXfem", &LinearSolver::enableXfem, R"(
 Enable preconditionning for XFEM modeling.
         )" )

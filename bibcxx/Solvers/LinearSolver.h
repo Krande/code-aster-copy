@@ -47,7 +47,7 @@ class LinearSolver : public DataStructure {
 
     BaseAssemblyMatrixPtr _matrix;
     BaseAssemblyMatrixPtr _matrixPrec;
-    std::string _commandName;
+    std::string _cataPath;
     bool _xfem;
     py::object _keywords;
 
@@ -109,7 +109,7 @@ class LinearSolver : public DataStructure {
     /**
      * @brief Set command name.
      */
-    void setCommandName( const std::string &commandName ) { _commandName = commandName; };
+    void setCataPath( const std::string &cataPath ) { _cataPath = cataPath; };
 
     /**
      * @brief Returns a dict containing the SOLVEUR keyword.

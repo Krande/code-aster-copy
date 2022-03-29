@@ -58,6 +58,7 @@ operator using the functions:
 import random
 
 from ..Cata import Commands
+from ..Cata.SyntaxChecker import CheckerError, SyntaxCheckerVisitor
 from ..Objects import DataStructure
 from ..Utilities import (
     force_list,
@@ -69,6 +70,7 @@ from ..Utilities import (
     logger,
     value_is_sequence,
 )
+from ..Utilities.outputs import command_text
 from .typeaster import typeaster
 
 # WARNING:
@@ -162,17 +164,26 @@ class CommandSyntax(object):
         self._resultName = sdName
         self._resultType = sdType
 
-    def define(self, dictSyntax, add_default=True):
+    def define(self, dictSyntax, add_default=True, check_syntax=False):
         """Register the keywords values.
 
         Arguments:
             dictSyntax (dict): User keywords.
             add_default (bool, optional): Tell if default keywords have to be
                 added or not.
+            check_syntax (bool, optional): Check that the keywords validity.
+                Only when it has not already been checked by ExecuteCommand object.
         """
-        if self._commandCata != None and add_default:
+        if self._commandCata is not None and add_default:
             # logger.debug("define0 %r: %r", self._name, dictSyntax)
             self._commandCata.addDefaultKeywords(dictSyntax)
+        if check_syntax:
+            checker = SyntaxCheckerVisitor()
+            try:
+                self._commandCata.accept(checker, dictSyntax)
+            except (CheckerError, KeyError, TypeError, ValueError) as exc:
+                text = command_text(self._name, dictSyntax)
+                logger.error("Invalid keywords:\n  Error: %s\n  Keywords:\n%s", exc, text)
         self._definition = dictSyntax
         # logger.debug("define1 %r: %r", self._name, self._definition)
 

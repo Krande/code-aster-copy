@@ -38,7 +38,7 @@ void _check_py() {
     }
 }
 
-CommandSyntax::CommandSyntax( const std::string name ) : _commandName( name ) {
+CommandSyntax::CommandSyntax( const std::string name ) : _cataPath( name ) {
     _check_py();
 
     std::string format( "s" );
@@ -76,22 +76,28 @@ void CommandSyntax::debugPrint() const {
     Py_DECREF( res );
 }
 
-void CommandSyntax::define( SyntaxMapContainer &syntax ) {
-    PyObject *keywords = syntax.convertToPythonDictionnary();
-    PyObject *res = PyObject_CallMethod( _pySyntax, (char *)"define", (char *)"O", keywords );
-    if ( res == NULL ) {
-        throw std::runtime_error( "Error calling `CommandSyntax.define`." );
+// Syntax checking must be disabled using CapyConvertibleSyntax/SyntaxMapContainer objects,
+// because DataStructures are passed as string.
+// Using Python keywords arguments, syntax checking should be enabled (defauls to 'true').
+void CommandSyntax::define( py::object keywords, bool check_syntax ) {
+    // TODO: store _pySyntax as a py::object
+    const py::object syntax = py::reinterpret_borrow< py::object >( _pySyntax );
+    py::object definePy = syntax.attr( "define" );
+    try {
+        py::object res = definePy( keywords, py::arg( "check_syntax" ) = check_syntax );
+    } catch ( py::error_already_set & ) {
+#ifdef ASTER_DEBUG_CXX
+        std::abort();
+#else
+        throw;
+#endif
     }
-    Py_DECREF( res );
-    Py_DECREF( keywords );
 }
 
-void CommandSyntax::define( py::object keywords ) {
-    PyObject *res = PyObject_CallMethod( _pySyntax, (char *)"define", (char *)"O", keywords.ptr() );
-    if ( res == NULL ) {
-        throw std::runtime_error( "Error calling `CommandSyntax.define`." );
-    }
-    Py_DECREF( res );
+void CommandSyntax::define( SyntaxMapContainer &syntax ) {
+    const py::object keywords =
+        py::reinterpret_steal< py::object >( syntax.convertToPythonDictionnary() );
+    define( keywords, false );
 }
 
 void CommandSyntax::define( const CapyConvertibleSyntax &syntax ) {
