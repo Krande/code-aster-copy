@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu_)
+subroutine lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu_, lVeriVari_)
 !
 implicit none
 !
@@ -32,6 +32,7 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/vrcomp.h"
+#include "asterfort/vrcom2.h"
 #include "asterfort/comp_info.h"
 #include "asterfort/rs_get_liststore.h"
 #include "asterfort/utmess.h"
@@ -41,7 +42,7 @@ implicit none
 aster_logical, intent(in) :: lReuse
 character(len=8), intent(in) :: resultName
 character(len=8), intent(in):: model, fieldMate, caraElem
-aster_logical, intent(in), optional :: lLireResu_
+aster_logical, intent(in), optional :: lLireResu_, lVeriVari_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,15 +58,17 @@ aster_logical, intent(in), optional :: lLireResu_
 ! In  caraElem         : name of elementary characteristics field
 ! In  fieldMate        : name of material field
 ! In  lLireResu        : flag for LIRE_RESU command
+! In  lVeriVari        : flag to check consistency of VARI_ELGA fields with COMPORTEMENT
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret, nbOcc
     integer :: ifm, niv
-    character(len=19) :: ligrmo
+    character(len=1) :: typeStop
+    character(len=19) :: modelLigrel
     character(len=19) :: fieldToSave, fieldPrevious
     character(len=24) :: compor, carcri, variElga
-    aster_logical :: lInitialState, lKeywfactCompor, lLireResu
+    aster_logical :: lInitialState, lKeywfactCompor, lLireResu, verbose, lVeriVari, lModiVari
     integer :: storeNb, iStore, storeNume
     integer, pointer :: storeList(:) => null()
 !
@@ -73,13 +76,18 @@ aster_logical, intent(in), optional :: lLireResu_
 !
     call jemarq()
     call infniv(ifm, niv)
+    verbose = niv .ge. 2
 !
 ! - Initializations
 !
     lInitialState = ASTER_FALSE
-    lLireResu     = ASTER_FALSE
+    lLireResu = ASTER_FALSE
     if (present(lLireResu_)) then
         lLireResu = lLireResu_
+    endif
+    lVeriVari = ASTER_TRUE
+    if (present(lVeriVari_)) then
+        lVeriVari = lVeriVari_
     endif
 !
 ! - Name of constant fields
@@ -154,17 +162,25 @@ aster_logical, intent(in), optional :: lLireResu_
             if (model .eq. ' ') then
                 call utmess('F','RESULT2_17')
             endif
-            call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
             if (lReuse .and. (.not. lKeywfactCompor)) then
                 ! pour le cas reuse sans COMPORTEMENT
                 ! vérifier entre VARI_ELGA existant et carte de comportement du resu
                 call rsexch(' ', resultName, 'COMPORTEMENT', storeNume, compor, iret)
             endif
             call nmdoco(model, caraElem, compor)
-            call vrcomp(compor, variElga, ligrmo, iret, type_stop = 'A',&
-                        from_lire_resu = lLireResu)
-            if (iret .eq. 1) then
-                call utmess('A', 'RESULT1_1')
+            if (lVeriVari) then
+! ------------- Check consistency of internal state variables with behaviour
+                typeStop = 'A'
+                call vrcomp(compor, variElga, modelLigrel, iret, typeStop_ = typeStop,&
+                            verbose_ = verbose, lModiVari_ = lModiVari)
+                if (iret .eq. 1) then
+                    call utmess(typeStop, 'RESULT1_1')
+                endif
+! ------------- Change internal variable field
+                if (lModiVari) then
+                    call vrcom2(compor, variElga, modelLigrel, lLireResu)
+                endif
             endif
         endif
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vrcomp_chck_rela(mesh, nb_elem, compor_curr_r, compor_prev_r, ligrel_curr,&
-                            ligrel_prev, comp_comb_1, comp_comb_2, no_same_pg, no_same_rela,&
+subroutine vrcomp_chck_rela(mesh, nbCell, &
+                            comporCurr, comporPrev, &
+                            ligrelCurr, ligrelPrev,&
+                            comp_comb_1, comp_comb_2, verbose,&
+                            newBehaviourOnCell, inconsistentBehaviour,&
                             l_modif_vari)
 !
-    implicit none
+use mesh_module, only : getGroupsFromCell
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,18 +36,14 @@ subroutine vrcomp_chck_rela(mesh, nb_elem, compor_curr_r, compor_prev_r, ligrel_
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-!
-    character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_elem
-    character(len=19), intent(in) :: compor_curr_r
-    character(len=19), intent(in) :: compor_prev_r
-    character(len=19), intent(in) :: ligrel_curr
-    character(len=19), intent(in) :: ligrel_prev
-    character(len=48), intent(in) :: comp_comb_1
-    character(len=48), intent(in) :: comp_comb_2
-    aster_logical, intent(out) :: no_same_pg
-    aster_logical, intent(out) :: no_same_rela
-    aster_logical, intent(out) :: l_modif_vari
+character(len=8), intent(in) :: mesh
+integer, intent(in) :: nbCell
+character(len=19), intent(in) :: comporCurr, comporPrev
+character(len=19), intent(in) :: ligrelCurr, ligrelPrev
+character(len=48), intent(in) :: comp_comb_1, comp_comb_2
+aster_logical, intent(in) :: verbose
+aster_logical, intent(out) :: newBehaviourOnCell, inconsistentBehaviour, l_modif_vari
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,109 +54,110 @@ subroutine vrcomp_chck_rela(mesh, nb_elem, compor_curr_r, compor_prev_r, ligrel_
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh          : name of mesh
-! In  nb_elem       : number of elements for current comportment
-! In  compor_curr_r : reduced field for current comportment
-! In  compor_prev_r : reduced field for previous comportment
-! In  ligrel_curr   : current LIGREL
-! In  ligrel_prev   : previous LIGREL
+! In  nbCell       : number of elements for current comportment
+! In  comporCurr : reduced field for current comportment
+! In  comporPrev : reduced field for previous comportment
+! In  ligrelCurr   : current LIGREL
+! In  ligrelPrev   : previous LIGREL
 ! In  comp_comb_1   : list of comportments can been mixed with each other
 ! In  comp_comb_2   : list of comportments can been mixed with all other ones
-! Out no_same_pg    : .true. if not the same number of Gauss points
-! Out no_same_rela  : .true. if not the same relation
+! Out newBehaviourOnCell    : .true. if not the same number of Gauss points
+! Out inconsistentBehaviour  : .true. if not the same relation
 ! Out l_modif_vari  : .true. to change the structure of internal variables field
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_elem, k_elem
-    aster_logical :: elem_in_curr, elem_in_prev
+    integer :: iCell
+    aster_logical :: lCellCurr, lCellPrev
     integer :: iadp, iadm
-    integer :: idx_comb_prev, idx_comb_curr
-    character(len=16) :: rela_comp_prev, rela_comp_curr, valk(3)
-    character(len=8) :: name_elem
-    integer, pointer :: repm(:) => null()
-    integer, pointer :: repp(:) => null()
-    integer :: jcopml, jcopmd
-    character(len=16), pointer :: copmv(:) => null()
-    integer :: jcoppl, jcoppd
-    character(len=16), pointer :: coppv(:) => null()
-    character(len=8), pointer :: coppk(:) => null()
+    integer :: idxPrev, idxCurr
+    character(len=16) :: relaCompPrev, relaCompCurr
+    character(len=8) :: cellName
+    integer, pointer :: repePrev(:) => null()
+    integer, pointer :: repeCurr(:) => null()
+    integer :: jvCeslPrev, jvCesdPrev
+    character(len=16), pointer :: cesvPrev(:) => null()
+    integer :: jvCeslCurr, jvCesdCurr
+    character(len=24) :: valk(7)
+    character(len=16), pointer :: cesvCurr(:) => null()
+    character(len=24) :: groupCell(4)
+    integer :: nbGroupCell
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_modif_vari = .false.
-    k_elem = 0
-    no_same_pg = .false.
-    no_same_rela = .false.
-!
+    l_modif_vari = ASTER_FALSE
+    newBehaviourOnCell = ASTER_FALSE
+    inconsistentBehaviour = ASTER_FALSE
+
 ! - Access to LIGREL
-!
-    call jeveuo(ligrel_curr//'.REPE', 'L', vi=repp)
-    call jeveuo(ligrel_prev//'.REPE', 'L', vi=repm)
-!
+    call jeveuo(ligrelCurr//'.REPE', 'L', vi=repeCurr)
+    call jeveuo(ligrelPrev//'.REPE', 'L', vi=repePrev)
+
 ! - Acces to reduced CARTE on current comportement
-!
-    call jeveuo(compor_curr_r//'.CESD', 'L', jcoppd)
-    call jeveuo(compor_curr_r//'.CESV', 'L', vk16=coppv)
-    call jeveuo(compor_curr_r//'.CESL', 'L', jcoppl)
-    call jeveuo(compor_curr_r//'.CESK', 'L', vk8=coppk)
-!
+    call jeveuo(comporCurr//'.CESD', 'L', jvCesdCurr)
+    call jeveuo(comporCurr//'.CESV', 'L', vk16=cesvCurr)
+    call jeveuo(comporCurr//'.CESL', 'L', jvCeslCurr)
+
 ! - Acces to reduced CARTE on previous comportement
-!
-    call jeveuo(compor_prev_r//'.CESD', 'L', jcopmd)
-    call jeveuo(compor_prev_r//'.CESV', 'L', vk16=copmv)
-    call jeveuo(compor_prev_r//'.CESL', 'L', jcopml)
-!
+    call jeveuo(comporPrev//'.CESD', 'L', jvCesdPrev)
+    call jeveuo(comporPrev//'.CESV', 'L', vk16=cesvPrev)
+    call jeveuo(comporPrev//'.CESL', 'L', jvCeslPrev)
+
 ! - Check on mesh
-!
-    do i_elem = 1, nb_elem
-        elem_in_prev = repm(2*(i_elem-1)+1).gt.0
-        elem_in_curr = repp(2*(i_elem-1)+1).gt.0
-        k_elem = k_elem+1
-        call cesexi('C', jcopmd, jcopml, i_elem, 1,&
-                    1, 1, iadm)
-        call cesexi('C', jcoppd, jcoppl, i_elem, 1,&
-                    1, 1, iadp)
+    do iCell = 1, nbCell
+        lCellPrev = repePrev(2*(iCell-1)+1).gt.0
+        lCellCurr = repeCurr(2*(iCell-1)+1).gt.0
+        call cesexi('C', jvCesdPrev, jvCeslPrev, iCell, 1, 1, 1, iadm)
+        call cesexi('C', jvCesdCurr, jvCeslCurr, iCell, 1, 1, 1, iadp)
         if (iadp .gt. 0) then
-            rela_comp_curr = coppv(iadp)
+            relaCompCurr = cesvCurr(iadp)
             if (iadm .le. 0) then
-                call jenuno(jexnum(mesh//'.NOMMAI', i_elem), name_elem)
-                call utmess('I', 'COMPOR2_50', sk=name_elem)
-                no_same_pg = .true.
+                if (verbose) then
+                    call jenuno(jexnum(mesh//'.NOMMAI', iCell), cellName)
+                    valk = ' '
+                    valk(1) = cellName
+                    call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
+                    valk(1:nbGroupCell) = groupCell(1:nbGroupCell)
+                    call utmess('I', 'COMPOR6_10', nk=6, valk=valk)
+                endif
+                newBehaviourOnCell = ASTER_TRUE
             else
-                rela_comp_prev = copmv(iadm)
-!
+                relaCompPrev = cesvPrev(iadm)
+
 ! ------------- Same comportement
-!
-                if (rela_comp_prev .eq. rela_comp_curr) then
+                if (relaCompPrev .eq. relaCompCurr) then
                     goto 10
                 else
-!
-! ----------------- Comportements can been mixed
-!
-                    idx_comb_prev = index(comp_comb_1, rela_comp_prev)
-                    idx_comb_curr = index(comp_comb_1, rela_comp_curr)
-                    if ((idx_comb_prev.gt.0) .and. (idx_comb_curr.gt.0)) then
+
+! ----------------- These behaviours can been mixed ?
+                    idxPrev = index(comp_comb_1, relaCompPrev)
+                    idxCurr = index(comp_comb_1, relaCompCurr)
+                    if ((idxPrev .gt. 0) .and. (idxCurr .gt. 0)) then
                         goto 10
                     endif
-!
+
 ! ----------------- Comportements can been always mixed
-!
-                    idx_comb_prev = index(comp_comb_2, rela_comp_prev)
-                    idx_comb_curr = index(comp_comb_2, rela_comp_curr)
-                    if ((idx_comb_prev.gt.0) .or. (idx_comb_curr.gt.0)) then
-                        l_modif_vari = .true.
+                    idxPrev = index(comp_comb_2, relaCompPrev)
+                    idxCurr = index(comp_comb_2, relaCompCurr)
+                    if ((idxPrev .gt. 0) .or. (idxCurr .gt. 0)) then
+                        l_modif_vari = ASTER_TRUE
                         goto 10
                     endif
-!
+
 ! ----------------- Comportements cannot been mixed
-!
-                    if (elem_in_curr .and. elem_in_prev) then
-                        call jenuno(jexnum(mesh//'.NOMMAI', i_elem), name_elem)
-                        valk(1) = name_elem
-                        valk(2) = rela_comp_prev
-                        valk(3) = rela_comp_curr
-                        call utmess('I', 'COMPOR2_51', nk=3, valk=valk)
-                        no_same_rela = .true.
+                    if (lCellCurr .and. lCellPrev) then
+                        if (verbose) then
+                            call jenuno(jexnum(mesh//'.NOMMAI', iCell), cellName)
+                            valk = ' '
+                            valk(1) = cellName
+                            call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
+                            valk(1:nbGroupCell) = groupCell(1:nbGroupCell)
+                            call utmess('I', 'COMPOR6_10', nk=6, valk=valk)
+                            valk = ' '
+                            call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
+                            call utmess('I', 'COMPOR6_11', nk=2, valk=[relaCompPrev, relaCompCurr])
+                        endif
+                        inconsistentBehaviour = ASTER_TRUE
                     endif
                 endif
             endif

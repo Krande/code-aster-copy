@@ -25,7 +25,8 @@ public  :: getPropertiesOfListOfCells, getPropertiesOfCell,&
            getSkinCellSupport,&
            checkNormalOnSkinCell, checkInclude,&
            getCellOptionForName, createNameOfCell,&
-           getNodeOptionForName, createNameOfNode
+           getNodeOptionForName, createNameOfNode,&
+           getGroupsFromCell
 ! ==================================================================================================
 private
 #include "asterf_types.h"
@@ -36,10 +37,12 @@ private
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
@@ -741,6 +744,55 @@ subroutine createNameOfNode(nodeName     ,&
     else
         ASSERT(ASTER_FALSE)
     endif
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getGroupsFromCell
+!
+! Get some groups where cells are
+!
+! In  mesh             : mesh
+! In  cellNume         : index of current cell
+! Out groupCell        : name of groups of cells
+! Out nbGroupCell      : number of group
+!
+! --------------------------------------------------------------------------------------------------
+subroutine getGroupsFromCell(meshZ, cellNume, groupCell, nbGroupCell)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=*), intent(in) :: meshZ
+    integer, intent(in) :: cellNume
+    character(len=24), intent(out) :: groupCell(4)
+    integer, intent(out) :: nbGroupCell
+! - Local
+    character(len=8) :: mesh
+    integer :: iexi, nbGroup, iGroup, iCell, nbCell
+    character(len=24) :: groupName
+    integer, pointer :: cellList(:) => null()
+!   ------------------------------------------------------------------------------------------------
+    mesh = meshZ
+    nbGroupCell = 0
+    groupCell  = " "
+    call jeexin(mesh//'.GROUPEMA', iexi)
+    if (iexi .gt. 0) then
+        call jelira(mesh//'.GROUPEMA', 'NMAXOC', nbGroup)
+        do iGroup = 1, nbGroup
+            call jeexin(jexnum(mesh//'.GROUPEMA', iGroup), iexi)
+            if (iexi.eq.0) cycle
+            call jenuno(jexnum(mesh//'.GROUPEMA', iGroup), groupName)
+            call jelira(jexnum(mesh//'.GROUPEMA', iGroup), 'LONUTI', nbCell)
+            call jeveuo(jexnum(mesh//'.GROUPEMA', iGroup), 'L', vi = cellList)
+            do iCell = 1, nbCell
+                if (cellList(iCell) .eq. cellNume) then
+                    nbGroupCell = nbGroupCell + 1
+                    groupCell(nbGroupCell) = groupName
+                    if (nbGroupCell .eq. 4) goto 100
+                endif
+            enddo
+        enddo
+    endif
+100 continue
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 !

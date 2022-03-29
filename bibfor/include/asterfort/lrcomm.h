@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu_)
+    subroutine lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu_, lVeriVari_)
         aster_logical, intent(in) :: lReuse
         character(len=8), intent(in) :: resultName
         character(len=8), intent(in):: model, fieldMate, caraElem
-        aster_logical, intent(in), optional :: lLireResu_
+        aster_logical, intent(in), optional :: lLireResu_, lVeriVari_
     end subroutine lrcomm
 end interface

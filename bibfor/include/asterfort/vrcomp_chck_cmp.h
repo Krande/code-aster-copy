@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,28 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 #include "asterf_types.h"
 !
 interface
-    subroutine vrcomp_chck_cmp(mesh, nb_elem,&
-                               compor_curr, compor_curr_r, compor_prev_r, &
-                               vari_r, comp_comb_2,&
-                               ligrel_curr, ligrel_prev,&
-                               no_same_spg, no_same_cmp, l_modif_vari)
+    subroutine vrcomp_chck_cmp(mesh, nbCell,&
+                               comporCurrZ,&
+                               comporCurr, comporPrev,&
+                               variRedu, comp_comb_2,&
+                               ligrelCurr, ligrelPrev,&
+                               verbose,&
+                               nbSpgDifferent, nbVariDifferent, l_modif_vari)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_elem
-        character(len=*), intent(in)  :: compor_curr
-        character(len=19), intent(in) :: compor_curr_r
-        character(len=19), intent(in) :: compor_prev_r
-        character(len=19), intent(in) :: vari_r
+        integer, intent(in) :: nbCell
+        character(len=*), intent(in) :: comporCurrZ
+        character(len=19), intent(in) :: comporCurr, comporPrev
+        character(len=19), intent(in) :: variRedu
         character(len=48), intent(in) :: comp_comb_2
-        character(len=19), intent(in) :: ligrel_curr
-        character(len=19), intent(in) :: ligrel_prev
-        aster_logical, intent(out) :: no_same_spg
-        aster_logical, intent(out) :: no_same_cmp
-        aster_logical, intent(out) :: l_modif_vari
+        character(len=19), intent(in) :: ligrelCurr, ligrelPrev
+        aster_logical, intent(in) :: verbose
+        aster_logical, intent(out) :: nbSpgDifferent, nbVariDifferent, l_modif_vari
     end subroutine vrcomp_chck_cmp
 end interface

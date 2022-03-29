@@ -71,10 +71,11 @@ implicit none
     character(len=8) :: meshAst, model, caraElem, fieldMate
     character(len=8) :: matrRigi, matrMass
     character(len=16) :: nomcmd, resultType2, resultType
-    integer :: fileUnit
+    integer :: fileUnit, nbret
     character(len=16) :: fileFormat
     character(len=19) :: listLoad
-    aster_logical:: lReuse, lLireResu
+    aster_logical:: lReuse, lLireResu, lVeriVari
+    character(len=8) :: answer
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -225,7 +226,9 @@ implicit none
 ! - Non-linear behaviour management
 !
     if (resultType .eq. 'EVOL_NOLI') then
-        call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu)
+        call getvtx(' ', 'VERI_VARI', scal=answer, nbret=nbret)
+        lVeriVari = answer .eq. 'OUI'
+        call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu, lVeriVari)
     endif
 !
 ! - Debug

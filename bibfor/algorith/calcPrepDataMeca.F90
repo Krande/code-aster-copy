@@ -40,6 +40,7 @@ implicit none
 #include "asterfort/nmvcle.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/vrcomp.h"
+#include "asterfort/vrcom2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/nmvcre.h"
@@ -86,9 +87,10 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret
-    character(len=19) :: disp_curr, varc_prev, varc_curr, sigm_curr, vari_curr, ligrmo
+    character(len=19) :: disp_curr, varc_prev, varc_curr, sigm_curr, vari_curr, modelLigrel
     character(len=19) :: merigi, veinte
     character(len=24) :: varc_refe
+    aster_logical :: lModiVari
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,7 +103,7 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
 !
 ! - Get LIGREL
 !
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 !
 ! - Put displacements in "hat-variables"
 !
@@ -118,7 +120,7 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
 ! - Check and put stress in "hat-variables"
 !
     if (sigm_prev .ne. ' ') then
-        call sgcomp(ds_constitutive%compor, sigm_prev, ligrmo, iret)
+        call sgcomp(ds_constitutive%compor, sigm_prev, modelLigrel, iret)
         if (iret .eq. 1) then
             call utmess('F', 'CALCUL1_6')
         endif
@@ -148,9 +150,12 @@ character(len=19), intent(out) :: vevarc_prev, vevarc_curr
 !
     call jeexin(ds_constitutive%compor(1:19)//'.CESD', iret)
     if (iret .gt. 0 .and. vari_prev .ne. ' ') then
-        call vrcomp(ds_constitutive%compor, vari_prev, ligrmo, iret)
+        call vrcomp(ds_constitutive%compor, vari_prev, modelLigrel, iret, lModiVari_= lModiVari)
         if (iret .eq. 1) then
             call utmess('F', 'CALCUL1_5')
+        endif
+        if (lModiVari) then
+            call vrcom2(ds_constitutive%compor, vari_prev, modelLigrel, ASTER_FALSE)
         endif
     endif
 !

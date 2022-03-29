@@ -90,7 +90,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
     integer :: jv_para
     aster_logical :: l_pilo, lpiarc, l_cont_cont
     aster_logical :: l_expl_gene, l_reuse, l_erre_thm
-    aster_logical :: l_zero, l_acti, l_ener
+    aster_logical :: l_zero, l_acti, l_ener, verbose
     real(kind=8) :: coefav, init_time
     real(kind=8), pointer :: plir(:) => null()
     character(len=24), pointer :: pltk(:) => null()
@@ -105,6 +105,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_26')
     endif
+    verbose = niv .ge. 2
 !
 ! - Initializations
 !
@@ -222,7 +223,7 @@ type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! ----- Read field for ETAT_INIT - Some checks
 !
-        call nmetl3(model, compor, i_field, ds_inout)
+        call nmetl3(model, compor, i_field, ds_inout, verbose)
     end do
 !
 ! - VERIFICATION COMPATIBILITE PILOTAGE

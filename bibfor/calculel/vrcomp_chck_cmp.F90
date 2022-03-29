@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vrcomp_chck_cmp(mesh, nb_elem, compor_curr, compor_curr_r, compor_prev_r,&
-                           vari_r, comp_comb_2, ligrel_curr, ligrel_prev, no_same_spg,&
-                           no_same_cmp, l_modif_vari)
 !
-    implicit none
+subroutine vrcomp_chck_cmp(mesh, nbCell,&
+                           comporCurrZ,&
+                           comporCurr, comporPrev,&
+                           variRedu, comp_comb_2,&
+                           ligrelCurr, ligrelPrev,&
+                           verbose,&
+                           nbSpgDifferent, nbVariDifferent, l_modif_vari)
+!
+use mesh_module, only : getGroupsFromCell
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,19 +37,15 @@ subroutine vrcomp_chck_cmp(mesh, nb_elem, compor_curr, compor_curr_r, compor_pre
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-!
-    character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_elem
-    character(len=*), intent(in) :: compor_curr
-    character(len=19), intent(in) :: compor_curr_r
-    character(len=19), intent(in) :: compor_prev_r
-    character(len=19), intent(in) :: vari_r
-    character(len=48), intent(in) :: comp_comb_2
-    character(len=19), intent(in) :: ligrel_curr
-    character(len=19), intent(in) :: ligrel_prev
-    aster_logical, intent(out) :: no_same_spg
-    aster_logical, intent(out) :: no_same_cmp
-    aster_logical, intent(out) :: l_modif_vari
+character(len=8), intent(in) :: mesh
+integer, intent(in) :: nbCell
+character(len=*), intent(in) :: comporCurrZ
+character(len=19), intent(in) :: comporCurr, comporPrev
+character(len=19), intent(in) :: variRedu
+character(len=48), intent(in) :: comp_comb_2
+character(len=19), intent(in) :: ligrelCurr, ligrelPrev
+aster_logical, intent(in) :: verbose
+aster_logical, intent(out) :: nbSpgDifferent, nbVariDifferent, l_modif_vari
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,193 +56,181 @@ subroutine vrcomp_chck_cmp(mesh, nb_elem, compor_curr, compor_curr_r, compor_pre
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh          : name of mesh
-! In  nb_elem       : number of elements for current comportment
-! In  compor_curr   : current comportment
-! In  compor_curr_r : reduced field for current comportment
-! In  compor_prev_r : reduced field for previous comportment
-! In  vari_r        : reduced field for internal variable
+! In  nbCell        : number of elements for current comportment
+! In  comporCurr    : current comportment
+! In  comporCurr    : reduced field for current comportment
+! In  comporPrev    : reduced field for previous comportment
+! In  variRedu      : reduced field for internal variable
 ! In  comp_comb_2   : list of comportments can been mixed with all other ones
-! In  ligrel_curr   : current LIGREL
-! In  ligrel_prev   : previous LIGREL
-! Out no_same_spg   : .true. if note the same number of Gauss-subpoints
-! Out no_same_cmp   : .true. if note the same number of components
+! In  ligrelCurr    : current LIGREL
+! In  ligrelPrev    : previous LIGREL
+! Out nbSpgDifferent   : .true. if not the same number of Gauss-subpoints
+! Out nbVariDifferent   : .true. if not the same number of components
 ! Out l_modif_vari  : .true. to change the structure of internal variables field
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iad1, iad2, iadp, iadm
-    integer :: i_elem, k, vali(3)
-    aster_logical :: elem_in_curr, elem_in_prev
-    integer :: idx_comb_prev, idx_comb_curr
+    integer :: iCell, k, vali(3)
+    aster_logical :: lCellCurr, lCellPrev
+    integer :: idxPrev, idxCurr
     aster_logical :: all_is_zero
-    integer :: nb_pg_prev, nb_spg_prev, nb_cmp_prev
-    integer :: nb_spg_curr, nb_cmp_curr
-    character(len=16) :: rela_comp_prev, rela_comp_curr
-    character(len=8) :: name_elem
+    integer :: nbPgPrev, nbSpgPrev, nbVariPrev
+    integer :: nbSpgCurr, nbVariCurr
+    character(len=16) :: relaCompPrev, relaCompCurr
+    character(len=8) :: cellName
     character(len=19) :: dcel
-    integer, pointer :: repm(:) => null()
-    integer, pointer :: repp(:) => null()
-    integer :: jdceld, jdcell
-    integer, pointer :: dcelv(:) => null()
-    character(len=8), pointer :: dcelk(:) => null()
-    integer :: jcoppl, jcoppd
-    character(len=16), pointer :: coppv(:) => null()
-    character(len=8), pointer :: coppk(:) => null()
-    integer :: jcopmd, jcopml
-    character(len=16), pointer :: copmv(:) => null()
-    integer :: jce2d, jce2l
-    real(kind=8), pointer :: ce2v(:) => null()
+    integer, pointer :: repePrev(:) => null()
+    integer, pointer :: repeCurr(:) => null()
+    integer :: jvDcelCesd, jvDcelCesl
+    integer, pointer :: dcelCesv(:) => null()
+    integer :: jvCompCurrCesl, jvCompCurrCesd
+    character(len=16), pointer :: compCurrCesv(:) => null()
+    integer :: jvCompPrevCesd, jvCompPrevCesl
+    character(len=16), pointer :: compPrevCesv(:) => null()
+    integer :: jvVariCesd, jvVariCesl
+    real(kind=8), pointer :: variCesv(:) => null()
+    character(len=24) :: groupCell(4), valk(7)
+    integer :: nbGroupCell
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_modif_vari = .false.
-    no_same_cmp = .false.
-    no_same_spg = .false.
-!
+    l_modif_vari = ASTER_FALSE
+    nbVariDifferent = ASTER_FALSE
+    nbSpgDifferent = ASTER_FALSE
+
 ! - Access to LIGREL
-!
-    call jeveuo(ligrel_curr//'.REPE', 'L', vi=repp)
-    call jeveuo(ligrel_prev//'.REPE', 'L', vi=repm)
-!
+    call jeveuo(ligrelCurr//'.REPE', 'L', vi=repeCurr)
+    call jeveuo(ligrelPrev//'.REPE', 'L', vi=repePrev)
+
 ! - Acces to reduced field on internal variables
-!
-    call jeveuo(vari_r//'.CESD', 'L', jce2d)
-    call jeveuo(vari_r//'.CESV', 'L', vr=ce2v)
-    call jeveuo(vari_r//'.CESL', 'L', jce2l)
-!
-! - Acces to reduced CARTE DCEL_I (see CESVAR) on current comportement
-!
-    dcel = compor_curr
-    call jeveuo(dcel//'.CESD', 'L', jdceld)
-    call jeveuo(dcel//'.CESV', 'L', vi=dcelv)
-    call jeveuo(dcel//'.CESL', 'L', jdcell)
-    call jeveuo(dcel//'.CESK', 'L', vk8=dcelk)
-!
-! - Acces to reduced CARTE on current comportement
-!
-    call jeveuo(compor_curr_r//'.CESD', 'L', jcoppd)
-    call jeveuo(compor_curr_r//'.CESV', 'L', vk16=coppv)
-    call jeveuo(compor_curr_r//'.CESL', 'L', jcoppl)
-    call jeveuo(compor_curr_r//'.CESK', 'L', vk8=coppk)
-!
-! - Acces to reduced CARTE on previous comportement
-!
-    if (compor_prev_r .ne. ' ') then
-        call jeveuo(compor_prev_r//'.CESD', 'L', jcopmd)
-        call jeveuo(compor_prev_r//'.CESV', 'L', vk16=copmv)
-        call jeveuo(compor_prev_r//'.CESL', 'L', jcopml)
+    call jeveuo(variRedu//'.CESD', 'L', jvVariCesd)
+    call jeveuo(variRedu//'.CESV', 'L', vr=variCesv)
+    call jeveuo(variRedu//'.CESL', 'L', jvVariCesl)
+
+! - Access to reduced CARTE DCEL_I (see CESVAR) on current behaviour
+    dcel = comporCurrZ
+    call jeveuo(dcel//'.CESD', 'L', jvDcelCesd)
+    call jeveuo(dcel//'.CESV', 'L', vi=dcelCesv)
+    call jeveuo(dcel//'.CESL', 'L', jvDcelCesl)
+
+! - Acces to reduced CARTE on current behaviour
+    call jeveuo(comporCurr//'.CESD', 'L', jvCompCurrCesd)
+    call jeveuo(comporCurr//'.CESV', 'L', vk16=compCurrCesv)
+    call jeveuo(comporCurr//'.CESL', 'L', jvCompCurrCesl)
+
+! - Acces to reduced CARTE on previous behaviour
+    if (comporPrev .ne. ' ') then
+        call jeveuo(comporPrev//'.CESD', 'L', jvCompPrevCesd)
+        call jeveuo(comporPrev//'.CESV', 'L', vk16=compPrevCesv)
+        call jeveuo(comporPrev//'.CESL', 'L', jvCompPrevCesl)
     endif
-!
+
 ! - Check on mesh
-!
-    do i_elem = 1, nb_elem
-        elem_in_prev = repm(2*(i_elem-1)+1).gt.0
-        elem_in_curr = repp(2*(i_elem-1)+1).gt.0
-        call cesexi('C', jdceld, jdcell, i_elem, 1,&
-                    1, 1, iad1)
-        call cesexi('C', jdceld, jdcell, i_elem, 1,&
-                    1, 2, iad2)
-        call cesexi('C', jcoppd, jcoppl, i_elem, 1,&
-                    1, 1, iadp)
-!
-! ----- No comportment on this element -> next element
-!
+    do iCell = 1, nbCell
+        lCellPrev = repePrev(2*(iCell-1)+1).gt.0
+        lCellCurr = repeCurr(2*(iCell-1)+1).gt.0
+
+! ----- Access to number of "sub-points"
+        call cesexi('C', jvDcelCesd, jvDcelCesl, iCell, 1, 1, 1, iad1)
+! ----- Access to number of internal state variables
+        call cesexi('C', jvDcelCesd, jvDcelCesl, iCell, 1, 1, 2, iad2)
+! ----- Access to current behaviour
+        call cesexi('C', jvCompCurrCesd, jvCompCurrCesl, iCell, 1, 1, 1, iadp)
+
+! ----- No behaviour on this element -> next element
         if (iad1 .le. 0) then
-            goto 40
+            cycle
         endif
-!
+
 ! ----- Number of Gauss points/components
-!
         ASSERT(iad2.gt.0)
-        nb_spg_curr = dcelv(iad1)
-        nb_cmp_curr = dcelv(iad2)
-        nb_pg_prev = zi(jce2d-1+5+4*(i_elem-1)+1)
-        nb_spg_prev = zi(jce2d-1+5+4*(i_elem-1)+2)
-        nb_cmp_prev = zi(jce2d-1+5+4*(i_elem-1)+3)
-!
+        nbSpgCurr = dcelCesv(iad1)
+        nbVariCurr = dcelCesv(iad2)
+        nbPgPrev = zi(jvVariCesd-1+5+4*(iCell-1)+1)
+        nbSpgPrev = zi(jvVariCesd-1+5+4*(iCell-1)+2)
+        nbVariPrev = zi(jvVariCesd-1+5+4*(iCell-1)+3)
+
 ! ----- Check number of Gauss sub-points
-!
-        if (nb_spg_curr .ne. 0 .and. nb_spg_prev .ne. 0) then
-            if (nb_spg_curr .ne. nb_spg_prev) then
-                call jenuno(jexnum(mesh//'.NOMMAI', i_elem), name_elem)
-                vali(1) = nb_spg_prev
-                vali(2) = nb_spg_curr
-                call utmess('I', 'COMPOR2_52', sk=name_elem, ni=2, vali=vali)
-                no_same_spg = .true.
-                goto 40
+        if (nbSpgCurr .ne. 0 .and. nbSpgPrev .ne. 0) then
+            if (nbSpgCurr .ne. nbSpgPrev) then
+                if (verbose) then
+                    call jenuno(jexnum(mesh//'.NOMMAI', iCell), cellName)
+                    valk = ' '
+                    valk(1) = cellName
+                    call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
+                    valk(1:nbGroupCell) = groupCell(1:nbGroupCell)
+                    call utmess('I', 'COMPOR6_10', nk=6, valk=valk)
+                    vali(1) = nbSpgPrev
+                    vali(2) = nbSpgCurr
+                    call utmess('I', 'COMPOR6_12', sk=cellName, ni=2, vali=vali)
+                endif
+                nbSpgDifferent = ASTER_TRUE
             endif
         endif
-!
-! ----- Check number of components
-!
-        if (nb_cmp_curr .ne. nb_cmp_prev) then
-!
+
+! ----- Check number of internal state variables
+        if (nbVariCurr .ne. nbVariPrev) then
+
 ! --------- This element appears or disappears -> no problem
-!
-            if ((nb_cmp_prev.eq.0) .or. (nb_cmp_curr.eq.0)) then
-                l_modif_vari = .true.
-                goto 40
+            if ((nbVariPrev.eq.0) .or. (nbVariCurr.eq.0)) then
+                l_modif_vari = ASTER_TRUE
+                cycle
             endif
-!
+
 ! --------- Current comportement can been mixed -> no problem
-!
             ASSERT(iadp.gt.0)
-            rela_comp_curr = coppv(iadp)
-            idx_comb_curr = index(comp_comb_2, rela_comp_curr)
-            if (idx_comb_curr .gt. 0) then
-                l_modif_vari = .true.
-                goto 40
+            relaCompCurr = compCurrCesv(iadp)
+            idxCurr = index(comp_comb_2, relaCompCurr)
+            if (idxCurr .gt. 0) then
+                l_modif_vari = ASTER_TRUE
+                cycle
             endif
-!
+
 ! --------- Previous comportement can been mixed -> no problem
-!
-            if (compor_prev_r .ne. ' ') then
-!
-! ------------- Easy to check
-!
-                call cesexi('C', jcopmd, jcopml, i_elem, 1,&
-                            1, 1, iadm)
+            if (comporPrev .ne. ' ') then
+                call cesexi('C', jvCompPrevCesd, jvCompPrevCesl, iCell, 1, 1, 1, iadm)
                 ASSERT(iadm.gt.0)
-                rela_comp_prev = copmv(iadm)
-                idx_comb_prev = index(comp_comb_2, rela_comp_prev)
-                if (idx_comb_prev .gt. 0) then
-                    l_modif_vari = .true.
-                    goto 40
+                relaCompPrev = compPrevCesv(iadm)
+                idxPrev = index(comp_comb_2, relaCompPrev)
+                if (idxPrev .gt. 0) then
+                    l_modif_vari = ASTER_TRUE
+                    cycle
                 endif
             else
-!
-! ------------- Not easy to check: only one component and all is zero
-!
-                if (nb_cmp_prev .eq. 1) then
-                    call cesexi('C', jce2d, jce2l, i_elem, 1,&
-                                1, 1, iad2)
+                if (nbVariPrev .eq. 1) then
+                    call cesexi('C', jvVariCesd, jvVariCesl, iCell, 1, 1, 1, iad2)
                     ASSERT(iad2.gt.0)
-                    all_is_zero = .true.
-                    do k = 1, nb_pg_prev*nb_spg_curr
-                        if (ce2v(iad2+k-1) .ne. 0.d0) then
-                            all_is_zero = .false.
+                    all_is_zero = ASTER_TRUE
+                    do k = 1, nbPgPrev*nbSpgCurr
+                        if (variCesv(iad2+k-1) .ne. 0.d0) then
+                            all_is_zero = ASTER_FALSE
                         endif
                     end do
                     if (all_is_zero) then
-                        l_modif_vari = .true.
-                        goto 40
+                        l_modif_vari = ASTER_TRUE
+                        cycle
                     endif
                 endif
             endif
         endif
-!
-! ----- Not the same number of components
-!
-        if (nb_cmp_curr .ne. nb_cmp_prev) then
-            l_modif_vari = .true.
-            no_same_cmp = .true.
-            call jenuno(jexnum(mesh//'.NOMMAI', i_elem), name_elem)
-            vali(1) = nb_cmp_prev
-            vali(2) = nb_cmp_curr
-            call utmess('I', 'COMPOR2_53', sk=name_elem, ni=2, vali=vali)
+
+! ----- Not the same number of internal state variables
+        if (nbVariCurr .ne. nbVariPrev) then
+            l_modif_vari = ASTER_TRUE
+            nbVariDifferent = ASTER_TRUE
+            if (verbose) then
+                call jenuno(jexnum(mesh//'.NOMMAI', iCell), cellName)
+                valk = ' '
+                valk(1) = cellName
+                call getGroupsFromCell(mesh, iCell, groupCell, nbGroupCell)
+                valk(1:nbGroupCell) = groupCell(1:nbGroupCell)
+                call utmess('I', 'COMPOR6_10', nk=6, valk=valk)
+                vali(1) = nbVariPrev
+                vali(2) = nbVariCurr
+                call utmess('I', 'COMPOR6_13', sk=cellName, ni=2, vali=vali)
+            endif
         endif
-!
- 40     continue
     end do
 !
 end subroutine

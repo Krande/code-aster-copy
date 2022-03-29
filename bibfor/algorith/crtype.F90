@@ -110,6 +110,8 @@ subroutine crtype()
     integer, pointer :: deeq(:) => null()
     character(len=24), pointer :: lcha(:) => null()
     character(len=24), pointer :: prol(:) => null()
+    character(len=8) :: answer
+    aster_logical :: lAlarm
 !
     data linst,listr8,lcpt/'&&CRTYPE_LINST','&&CRTYPE_LISR8',&
      &     '&&CPT_CRTYPE'/
@@ -758,7 +760,9 @@ subroutine crtype()
 ! - Non-linear behaviour management
 !
     if (resultType .eq. 'EVOL_NOLI') then
-        call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu)
+        call getvtx(' ', 'ALARME', scal=answer, nbret=n1)
+        lAlarm = answer .eq. 'OUI'
+        call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu, lAlarm)
     endif
 !
     AS_DEALLOCATE(vk8=champs)

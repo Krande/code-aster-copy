@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmetl3(model, compor, i_field, ds_inout)
+! person_in_charge: mickael.abbas at edf.fr
+!
+subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
 !
 use NonLin_Datastructure_type
 !
@@ -31,15 +32,14 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcomp.h"
+#include "asterfort/vrcom2.h"
 #include "asterfort/sgcomp.h"
-
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: compor
-    type(NL_DS_InOut), intent(in) :: ds_inout
-    integer, intent(in) :: i_field
+character(len=24), intent(in) :: model
+character(len=24), intent(in) :: compor
+type(NL_DS_InOut), intent(in) :: ds_inout
+integer, intent(in) :: i_field
+aster_logical, intent(in) :: verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,15 +62,15 @@ implicit none
     character(len=8) :: gran_name
     character(len=24) :: valk(2)
     character(len=24) :: field_algo
-    character(len=24) :: ligrmo, compom
+    character(len=24) :: modelLigrel, compom
     character(len=4) :: init_type
-    aster_logical :: l_state_init, l_stin_evol, l_acti
+    aster_logical :: l_state_init, l_stin_evol, l_acti, lModiVari
     character(len=8) :: stin_evol
     integer :: init_nume
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 !
 ! - Get parameters
 !
@@ -141,10 +141,10 @@ implicit none
 ! --------- For pre-stressed load
 !
             if (field_type .eq. 'SIEF_ELGA') then
-                call nmsigi(ligrmo, compor, field_algo(1:19))
+                call nmsigi(modelLigrel, compor, field_algo(1:19))
                 ! VERIFICATION DU NOMBRE DES SOUS POINTS
                 if (l_state_init) then
-                    call sgcomp(compor, field_algo, ligrmo, iret)
+                    call sgcomp(compor, field_algo, modelLigrel, iret)
                     if (iret .eq. 1) then
                         call utmess('F', 'MECANONLINE5_58')
                     endif
@@ -162,12 +162,18 @@ implicit none
                         if (iret .ne. 0) compom = ' '
                     endif
                     if (compom .eq. ' ') then
-                        call vrcomp(compor, field_algo, ligrmo, iret)
+                        call vrcomp(compor, field_algo, modelLigrel, iret, verbose_ = verbose,&
+                                    lModiVari_= lModiVari)
                     else
-                        call vrcomp(compor, field_algo, ligrmo, iret, compor_prev = compom)
+                        call vrcomp(compor, field_algo, modelLigrel, iret,&
+                                    comporPrevz_ = compom, verbose_ = verbose,&
+                                    lModiVari_= lModiVari)
                     endif
                     if (iret .eq. 1) then
                         call utmess('F', 'MECANONLINE5_2')
+                    endif
+                    if (lModiVari) then
+                        call vrcom2(compor, field_algo, modelLigrel, ASTER_FALSE)
                     endif
                 endif
             endif

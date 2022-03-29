@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vrcomp_prep(vari, vari_r,&
-                           compor_curr, compor_curr_r,&
-                           compor_prev, compor_prev_r)
-        character(len=*), intent(in) :: vari
-        character(len=19), intent(out) :: vari_r
-        character(len=*), intent(in)  :: compor_curr
-        character(len=19), intent(out) :: compor_curr_r
-        character(len=*), intent(in)  :: compor_prev
-        character(len=19), intent(out) :: compor_prev_r
+    subroutine vrcomp_prep(variZ, variRedu,&
+                           comporCurrZ, comporCurrRedu,&
+                           comporPrevZ_, comporPrevRedu_)
+        character(len=*), intent(in) :: variZ
+        character(len=19), intent(out) :: variRedu
+        character(len=*), intent(in)  :: comporCurrZ
+        character(len=19), intent(out) :: comporCurrRedu
+        character(len=*), optional, intent(in)  :: comporPrevZ_
+        character(len=19), optional, intent(out) :: comporPrevRedu_
     end subroutine vrcomp_prep
 end interface

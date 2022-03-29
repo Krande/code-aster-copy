@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
-                  type_stop, from_lire_resu)
 !
-    implicit none
+subroutine vrcomp(comporCurrZ, variZ, ligrelCurrZ, iret,&
+                  comporPrevZ_, typeStop_,  verbose_,&
+                  lModiVari_)
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,15 +36,12 @@ subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
 #include "asterfort/vrcomp_chck_rela.h"
 #include "asterfort/vrcomp_prep.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=*), intent(in) :: compor_curr
-    character(len=*), intent(in) :: vari
-    character(len=*), intent(in) :: ligrel_currz
-    integer, intent(out) :: iret
-    character(len=*), optional, intent(in) :: compor_prev
-    character(len=1), optional, intent(in) :: type_stop
-    aster_logical, intent(in), optional :: from_lire_resu
+character(len=*), intent(in) :: comporCurrZ, variZ, ligrelCurrZ
+integer, intent(out) :: iret
+character(len=*), optional, intent(in) :: comporPrevZ_
+character(len=1), optional, intent(in) :: typeStop_
+aster_logical, intent(in), optional :: verbose_
+aster_logical, intent(out), optional :: lModiVari_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,9 +52,9 @@ subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  vari          : internal variable field
-! In  compor_curr   : current comportment
-! In  ligrel_curr   : current LIGREL
-! In  compor_prev   : previous comportment
+! In  comporCurr   : current comportment
+! In  ligrelCurr   : current LIGREL
+! In  comporPrev   : previous comportment
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,46 +102,24 @@ subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
 !
 !-----------------------------------------------------------------------
 !
-!   character(len=24) :: valk(3)
-!     ------------------------------------------------------------------
-!    integer ::   jdcell
-!    integer :: jce2d,  jce2l, jce2k
-!    integer :: iad1, iad2, nbma, nbspp, nbspm, ncmpp, ncmpm
-!    integer :: ima, kma
-!    integer :: iadp, jcoppl, jcoppd,   ip
-!    integer :: iadm, jcopml, jcopmd,   im
-!    integer :: vali(5), tounul, k, nbpgm, n1
-!    character(len=8) :: noma, nomail
-!    character(len=16) :: relcop, relcom
-! !   , lig19p, lig19m
-!    character(len=19) :: compor_prev_r, compor_curr_r
-!    character(len=48) :: comp1, comp2
-!
-!    aster_logical :: modif, exip, exim
-!    integer, pointer :: repm(:) => null()
-!    integer, pointer :: repp(:) => null()
-!    real(kind=8), pointer :: ce2v(:) => null()
-!    character(len=16), pointer :: copmv(:) => null()
-!    character(len=16), pointer :: coppv(:) => null()
-!    integer, pointer :: dcelv(:) => null()
-!    character(len=8), pointer :: copmk(:) => null()
-!    character(len=8), pointer :: coppk(:) => null()
-!
-    aster_logical :: l_modif_vari
-    character(len=1) :: stop_erre
-    character(len=19) :: vari_r
-    character(len=19) :: compor_curr_r
-    character(len=19) :: compor_prev_r
-    character(len=8) :: mesh_1, mesh_2
-    character(len=48) :: comp_comb_1
-    character(len=48) :: comp_comb_2
-    aster_logical :: no_same_pg, no_same_spg
-    aster_logical :: no_same_rela, no_same_cmp
-    character(len=19) :: ligrel_curr, ligrel_prev
-    character(len=19) :: dcel
-    character(len=8), pointer :: dcelk(:) => null()
-    character(len=8) :: mesh
-    integer :: nb_elem
+    aster_logical :: lModiVari
+    character(len=1) :: typeStop
+    character(len=19) :: variRedu, vari
+    character(len=19) :: comporCurr, comporPrev
+    character(len=19) :: comporCurrRedu, comporPrevRedu
+! - Beahviours can been mixed with each other
+    character(len=48), parameter :: comp_comb_1 =&
+        'LEMAITRE        VMIS_ISOT_LINE  VMIS_ISOT_TRAC'
+! - Beahviours can been mixed with all other ones
+    character(len=48), parameter :: comp_comb_2 =&
+        'ELAS            SANS            KIT_CG'
+    aster_logical :: newBehaviourOnCell, nbSpgDifferent
+    aster_logical :: inconsistentBehaviour, nbVariDifferent
+    character(len=19) :: ligrelCurr, ligrelPrev
+    aster_logical :: verbose
+    character(len=8) :: meshCompor, meshField, mesh
+    integer :: nbCell
+    character(len=8), pointer :: cesk(:) => null()
     integer, pointer :: cesd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -153,105 +129,103 @@ subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
 !     -- MODIF : .TRUE. => IL FAUT MODIFIER VARMOI CAR CERTAINES
 !        MAILLES ONT DISPARU OU SONT NOUVELLES OU ONT CHANGE DE
 !        COMPORTEMENT
-    l_modif_vari = .false.
-    no_same_cmp = .false.
-    no_same_spg = .false.
-    no_same_pg = .false.
-    no_same_rela = .false.
-!
+    lModiVari = ASTER_FALSE
+    nbVariDifferent = ASTER_FALSE
+    nbSpgDifferent = ASTER_FALSE
+    newBehaviourOnCell = ASTER_FALSE
+    inconsistentBehaviour = ASTER_FALSE
+    verbose = ASTER_FALSE
+    if (present(verbose_)) then
+        verbose = verbose_
+    endif
+    comporPrev = ' '
+    if (present(comporPrevZ_)) then
+        comporPrev = comporPrevZ_
+    endif
+    comporCurr = comporCurrZ
+    ligrelCurr = ligrelCurrZ
+    vari = variZ
+
 ! - Error management
-!
     iret = 0
-    if (present(type_stop)) then
-        stop_erre = type_stop
+    if (present(typeStop_)) then
+        typeStop = typeStop_
     else
-        stop_erre = 'E'
+        typeStop = 'E'
     endif
-!
+
 ! - Acces to reduced CARTE DCEL_I (see CESVAR) on current comportement
-!
-    dcel = compor_curr
-    call jeveuo(dcel//'.CESD', 'L', vi=cesd)
-    call jeveuo(dcel//'.CESK', 'L', vk8=dcelk)
-    mesh = dcelk(1)
-    nb_elem = cesd(1)
-!
-! - LIGREL
-!
-    ligrel_curr = ligrel_currz
-    call dismoi('NOM_LIGREL', vari, 'CHAM_ELEM', repk=ligrel_prev)
-!
-! - Comportments can been mixed with each other
-!
-    comp_comb_1 = 'LEMAITRE        VMIS_ISOT_LINE  VMIS_ISOT_TRAC'
-!
-! - Comportments can been mixed with all other ones
-!
-    comp_comb_2 = 'ELAS            SANS            KIT_CG'
-!
-! - Chesk meshes
-!
-    call dismoi('NOM_MAILLA', compor_curr, 'CHAMP', repk=mesh_1)
-    call dismoi('NOM_MAILLA', vari, 'CHAMP', repk=mesh_2)
-    if (mesh_1 .ne. mesh_2) then
-        call utmess('F', 'COMPOR2_24')
+    call jeveuo(comporCurr//'.CESD', 'L', vi=cesd)
+    call jeveuo(comporCurr//'.CESK', 'L', vk8=cesk)
+    meshCompor = cesk(1)
+    nbCell = cesd(1)
+
+! - Get LIGREL from VARI_ELGA field
+    call dismoi('NOM_LIGREL', vari, 'CHAM_ELEM', repk = ligrelPrev)
+
+! - Check meshes
+    call dismoi('NOM_MAILLA', vari, 'CHAMP', repk = meshField)
+    if (meshCompor .ne. meshField) then
+        call utmess('F', 'COMPOR6_1')
     endif
-!
+    mesh = meshCompor
+
 ! - Prepare fields
-!
-    if (present(compor_prev)) then
-        call vrcomp_prep(vari, vari_r, compor_curr, compor_curr_r, compor_prev,&
-                         compor_prev_r)
+    if (present(comporPrevZ_)) then
+        call vrcomp_prep(vari, variRedu,&
+                         comporCurr, comporCurrRedu,&
+                         comporPrev, comporPrevRedu)
     else
-        call vrcomp_prep(vari, vari_r, compor_curr, compor_curr_r, ' ',&
-                         compor_prev_r)
+        call vrcomp_prep(vari, variRedu,&
+                         comporCurr, comporCurrRedu)
+        comporPrevRedu = ' '
     endif
-!
+
 ! - Check if comportments are the same (or compatible)
-!
-    if (present(compor_prev)) then
-        call vrcomp_chck_rela(mesh, nb_elem, compor_curr_r, compor_prev_r, ligrel_curr,&
-                              ligrel_prev, comp_comb_1, comp_comb_2, no_same_pg, no_same_rela,&
-                              l_modif_vari)
+    if (present(comporPrevZ_)) then
+        call vrcomp_chck_rela(mesh, nbCell,&
+                              comporCurrRedu, comporPrevRedu,&
+                              ligrelCurr, ligrelPrev,&
+                              comp_comb_1, comp_comb_2, verbose,&
+                              newBehaviourOnCell, inconsistentBehaviour,&
+                              lModiVari)
     endif
-    if (no_same_pg) then
+    if (newBehaviourOnCell) then
         iret = 1
-        call utmess(stop_erre, 'COMPOR2_28')
+        call utmess(typeStop, 'COMPOR6_2')
     endif
-    if (no_same_rela) then
+    if (inconsistentBehaviour) then
         iret = 1
-        call utmess(stop_erre, 'COMPOR2_30')
+        call utmess(typeStop, 'COMPOR6_3')
     endif
-!
+
 ! - Check if elements have the same number of internal variables and Gauss-subpoints
-!
-    call vrcomp_chck_cmp(mesh, nb_elem, compor_curr, compor_curr_r, compor_prev_r,&
-                         vari_r, comp_comb_2, ligrel_curr, ligrel_prev, no_same_spg,&
-                         no_same_cmp, l_modif_vari)
-    if (no_same_spg) then
+    call vrcomp_chck_cmp(mesh, nbCell,&
+                         comporCurr, comporCurrRedu, comporPrevRedu,&
+                         variRedu, comp_comb_2,&
+                         ligrelCurr, ligrelPrev,&
+                         verbose,&
+                         nbSpgDifferent, nbVariDifferent, lModiVari)
+    if (nbSpgDifferent) then
         iret = 1
-        call utmess(stop_erre, 'COMPOR2_27')
+        call utmess(typeStop, 'COMPOR6_4')
     endif
-    if (no_same_cmp) then
+    if (nbVariDifferent) then
         iret = 1
-        call utmess(stop_erre, 'COMPOR2_29')
+        call utmess(typeStop, 'COMPOR6_5')
     endif
-!
-! - Have to change internal variable field
-!
-    if (l_modif_vari) then
-        if (present(from_lire_resu)) then
-           call vrcom2(compor_curr, vari, ligrel_curr, from_lire_resu)
-        else
-           call vrcom2(compor_curr, vari, ligrel_curr, .false._1)
-        endif
-    endif
-!
+
 ! - Clean
-!
-    call detrsd('CHAM_ELEM_S', vari_r)
-    call detrsd('CHAM_ELEM_S', compor_prev_r)
-    call detrsd('CHAM_ELEM_S', compor_curr_r)
+    call detrsd('CHAM_ELEM_S', variRedu)
+    if (present(comporPrevZ_)) then
+        call detrsd('CHAM_ELEM_S', comporPrevRedu)
+    endif
+    call detrsd('CHAM_ELEM_S', comporCurrRedu)
+
+! - Output
+    if (present(lModiVari_)) then
+        lModiVari_ = lModiVari
+    endif
 !
     call jedema()
 !

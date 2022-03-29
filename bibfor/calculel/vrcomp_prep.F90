@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vrcomp_prep(vari, vari_r,&
-                       compor_curr, compor_curr_r,&
-                       compor_prev, compor_prev_r)
+!
+subroutine vrcomp_prep(variZ, variRedu,&
+                       comporCurrZ, comporCurrRedu,&
+                       comporPrevZ_, comporPrevRedu_)
 !
 implicit none
 !
@@ -29,12 +29,12 @@ implicit none
 #include "asterfort/detrsd.h"
 !
 !
-    character(len=*), intent(in) :: vari
-    character(len=19), intent(out) :: vari_r
-    character(len=*), intent(in)  :: compor_curr
-    character(len=19), intent(out) :: compor_curr_r
-    character(len=*), intent(in)  :: compor_prev
-    character(len=19), intent(out) :: compor_prev_r
+character(len=*), intent(in) :: variZ
+character(len=19), intent(out) :: variRedu
+character(len=*), intent(in)  :: comporCurrZ
+character(len=19), intent(out) :: comporCurrRedu
+character(len=*), optional, intent(in)  :: comporPrevZ_
+character(len=19), optional, intent(out) :: comporPrevRedu_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,48 +44,40 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  vari          : internal variable
-! Out vari_r        : reduced field for internal variable
-! In  compor_curr   : current comportment
-! Out compor_curr_r : reduced field for current comportment
-! In  compor_prev   : previous comportment
-! Out compor_prev_r : reduced field for previous comportment
+! In  vari           : internal variable
+! Out variRedu       : reduced field for internal variable
+! In  comporCurr     : current comportment
+! Out comporCurrRedu : reduced field for current comportment
+! In  comporPrev     : previous comportment
+! Out comporPrevRedu : reduced field for previous comportment
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: coto
+    character(len=19), parameter :: coto = '&&VRCOMP.COTO'
     integer :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    coto          = '&&VRCOMP.COTO'
-    vari_r        = '&&VRCOMP.VARI_R'
-    compor_curr_r = '&&VRCOMP.COPP'
-!
+
+
 ! - Create reduced CARTE on current comportement
-!
-    call carces(compor_curr, 'ELEM', ' ', 'V', coto,&
-                'A', iret)
-    call cesred(coto, 0, [0], 1, 'RELCOM',&
-                'V', compor_curr_r)
+    comporCurrRedu = '&&VRCOMP.COPP'
+    call carces(comporCurrZ, 'ELEM', ' ', 'V', coto, 'A', iret)
+    call cesred(coto, 0, [0], 1, 'RELCOM', 'V', comporCurrRedu)
     call detrsd('CHAM_ELEM_S', coto)
-!
-! - Create reduced field for internal variables
-!
-    call celces(vari, 'V', vari_r)
-    call cestas(vari_r)
-!
+
+! - Create reduced field for internal state variables
+    variRedu = '&&VRCOMP.VARI_R'
+    call celces(variZ, 'V', variRedu)
+    call cestas(variRedu)
+
 ! - Create reduced CARTE on previous comportement
-!
-    if (compor_prev.eq.' ') then
-        compor_prev_r = ' '
-    else
-        compor_prev_r = '&&VRCOMP.COPM'
-        call carces(compor_prev, 'ELEM', ' ', 'V', coto,&
-                    'A', iret)
-        call cesred(coto, 0, [0], 1, 'RELCOM',&
-                    'V', compor_prev_r)
-        call detrsd('CHAM_ELEM_S', coto)
+    if (present(comporPrevZ_)) then
+        comporPrevRedu_ = '&&VRCOMP.COPM'
+        call carces(comporPrevZ_, 'ELEM', ' ', 'V', coto, 'A', iret)
+        call cesred(coto, 0, [0], 1, 'RELCOM', 'V', comporPrevRedu_)
     endif
+
+    call detrsd('CHAM_ELEM_S', coto)
 !
 end subroutine

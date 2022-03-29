@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nmetl3(model, compor, i_field, ds_inout)
+    subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: compor
         type(NL_DS_InOut), intent(in) :: ds_inout
         integer, intent(in) :: i_field
+        aster_logical, intent(in) :: verbose
     end subroutine nmetl3
 end interface
