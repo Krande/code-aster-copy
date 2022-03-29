@@ -22,21 +22,23 @@
  */
 
 #include "PythonBindings/ResultInterface.h"
+
 #include "PythonBindings/factory.h"
+
 #include <boost/python.hpp>
 
 namespace py = boost::python;
 
 void exportResultToPython() {
 
-    MaterialFieldPtr ( Result::*c1 )() = &Result::getMaterialField;
-    MaterialFieldPtr ( Result::*c2 )( int ) = &Result::getMaterialField;
+    MaterialFieldPtr ( Result::*c1 )() const= &Result::getMaterialField;
+    MaterialFieldPtr ( Result::*c2 )( ASTERINTEGER ) const= &Result::getMaterialField;
 
-    ModelPtr ( Result::*c3 )()  = &Result::getModel;
-    ModelPtr ( Result::*c4 )( int )  = &Result::getModel;
+    ModelPtr ( Result::*c3 )()  const= &Result::getModel;
+    ModelPtr ( Result::*c4 )( ASTERINTEGER ) const = &Result::getModel;
 
-    ElementaryCharacteristicsPtr ( Result::*c5 )()  = &Result::getElementaryCharacteristics;
-    ElementaryCharacteristicsPtr ( Result::*c6 )( int )  =
+    ElementaryCharacteristicsPtr ( Result::*c5 )() const = &Result::getElementaryCharacteristics;
+    ElementaryCharacteristicsPtr ( Result::*c6 )( ASTERINTEGER ) const =
         &Result::getElementaryCharacteristics;
 
     bool ( Result::*c71 )( const std::string ) const = &Result::printMedFile;
@@ -62,6 +64,9 @@ void exportResultToPython() {
 
     bool ( Result::*c17 )() const = &Result::hasElementaryCharacteristics;
     bool ( Result::*c18 )( ASTERINTEGER ) const = &Result::hasElementaryCharacteristics;
+
+    bool ( Result::*c25 )() const = &Result::hasListOfLoads;
+    bool ( Result::*c26 )( const ASTERINTEGER & ) const = &Result::hasListOfLoads;
 
     py::class_< Result, Result::ResultPtr, py::bases< DataStructure > >( "Result", py::no_init )
         .def( "__init__", py::make_constructor( &initFactoryPtr< Result, std::string > ) )
@@ -169,7 +174,7 @@ Returns:
         )",
               ( py::arg( "self" ), py::arg( "rank" ) ) )
         .def( "hasElementaryCharacteristics", c17, R"(
-Test if at least one elementary characterictics used
+Test if at least one elementary characterictics is used
 
 Returns:
     bool: *True* if at least one elementary characterictics used else *False*.
@@ -182,7 +187,24 @@ Arguments:
     rank (int): rank
 
 Returns:
-    bool: *True* if at a elementary characterictics used else *False*.
+    ElementaryCharacteristics: elementary characterictics used .
+        )",
+              ( py::arg( "self" ), py::arg( "rank" ) ) )
+        .def( "hasListOfLoads", c25, R"(
+Test if at least one list of loads is used
+
+Returns:
+    bool: *True* if at least one list of loads is used else *False*.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "hasListOfLoads", c26, R"(
+Test if a list of loads is used at the specfied rank
+
+Arguments:
+    rank (int): rank
+
+Returns:
+    ListOfLoads: list of loads used.
         )",
               ( py::arg( "self" ), py::arg( "rank" ) ) )
         .def( "hasModel", &Result::hasModel, R"(

@@ -6,7 +6,7 @@
  * @brief Fichier entete des outils
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -65,12 +65,12 @@ unique(const std::vector<T>& vec)
 }
 
 // Get unique list of Aster Concept in a map (indexed by rank)
-template<typename T>
+template<typename T, typename T2>
 std::vector<T>
-unique(const std::map< int, T >& _map)
+unique(const std::map< T2, T >& _map)
 {
     std::map< std::string, T> unique_map;
-    for(auto it : _map)
+    for(auto& it : _map)
     {
         unique_map[it.second->getName()] = it.second;
     }

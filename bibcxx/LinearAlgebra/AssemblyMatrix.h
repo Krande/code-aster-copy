@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -397,7 +397,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix(
       _ccll( JeveuxVectorLong( getName() + ".CCLL" ) ),
       _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ),
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ), _isEmpty( true ), _isFactorized( false ),
-      _listOfLoads( ListOfLoadsPtr( new ListOfLoads( memType ) ) ){};
+      _listOfLoads( ListOfLoadsPtr( new ListOfLoads(  ) ) ){};
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string &name )

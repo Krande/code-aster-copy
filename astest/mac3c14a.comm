@@ -244,8 +244,8 @@ U_GLIS = CALC_CHAMP(reuse=U_GLIS,
                     CARA_ELEM=CAREL,
                     FORCE=('FORC_NODA','REAC_NODA'))
 
-depl_glis = U_GLIS.getFieldOnNodesReal('DEPL', 2)
-depl_adh = U_ADH.getFieldOnNodesReal('DEPL', 2)
+depl_glis = U_GLIS.getFieldOnNodesReal('DEPL', 1)
+depl_adh = U_ADH.getFieldOnNodesReal('DEPL', 1)
 
 depl_glis_v = depl_glis.EXTR_COMP('DY').valeurs
 depl_adh_v = depl_adh.EXTR_COMP('DY').valeurs

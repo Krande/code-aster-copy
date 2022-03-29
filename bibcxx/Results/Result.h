@@ -26,26 +26,25 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Python.h"
 #include "astercxx.h"
 
+#include "DataFields/FieldBuilder.h"
+#include "DataFields/FieldOnCells.h"
+#include "DataFields/FieldOnNodes.h"
+#include "DataFields/ListOfTables.h"
 #include "DataStructures/DataStructure.h"
+#include "Discretization/ElementaryCharacteristics.h"
+#include "Loads/ListOfLoads.h"
+#include "Materials/MaterialField.h"
+#include "MemoryManager/JeveuxCollection.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "MemoryManager/NamesMap.h"
 #include "Meshes/Mesh.h"
 #include "Modeling/Model.h"
-#include "Materials/MaterialField.h"
-#include "MemoryManager/JeveuxVector.h"
-#include "MemoryManager/JeveuxCollection.h"
-#include "MemoryManager/NamesMap.h"
-#include "DataFields/FieldOnNodes.h"
-#include "DataFields/FieldOnCells.h"
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
 #include "Supervis/ResultNaming.h"
-#include "Discretization/ElementaryCharacteristics.h"
-#include "Loads/ListOfLoads.h"
-#include "DataFields/FieldBuilder.h"
-#include "DataFields/ListOfTables.h"
-
-#include "Python.h"
 
 /**
  * @class Result
@@ -78,13 +77,13 @@ class Result : public DataStructure, public ListOfTables {
     typedef std::map< std::string, MapOfConstantFieldOnCellsChar16 > mapStrMoCFCK16;
 
     /** @typedef std::map du rang et des pointers vers ElementaryCharacteristicsPtr */
-    typedef std::map< int, ElementaryCharacteristicsPtr > mapRankCaraElem;
+    typedef std::map< ASTERINTEGER, ElementaryCharacteristicsPtr > mapRankCaraElem;
     /** @typedef std::map du rang et des pointers vers ListOfLoadsPtr */
-    typedef std::map< int, ListOfLoadsPtr > mapRankLoads;
+    typedef std::map< ASTERINTEGER, ListOfLoadsPtr > mapRankLoads;
     /** @typedef std::map du rang et des pointers vers MaterialFieldPtr */
-    typedef std::map< int, MaterialFieldPtr > mapRankMaterial;
+    typedef std::map< ASTERINTEGER, MaterialFieldPtr > mapRankMaterial;
     /** @typedef std::map du rang et des pointers vers ModelPtr */
-    typedef std::map< int, ModelPtr > mapRankModel;
+    typedef std::map< ASTERINTEGER, ModelPtr > mapRankModel;
 
     /** @brief Pointeur de nom Jeveux '.DESC' */
     NamesMapChar16 _symbolicNamesOfFields;
@@ -141,7 +140,7 @@ class Result : public DataStructure, public ListOfTables {
     std::pair< ASTERINTEGER, std::string > _getNewFieldName( const std::string &name,
                                                              const ASTERINTEGER &rank ) const;
 
-    void _checkMesh( const BaseMeshPtr mesh) const;
+    void _checkMesh( const BaseMeshPtr mesh ) const;
 
   public:
     /**
@@ -153,15 +152,13 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Constructeur
      */
-    Result( const std::string &resuTyp )
-        : Result( ResultNaming::getNewResultName(), resuTyp ){};
+    Result( const std::string &resuTyp ) : Result( ResultNaming::getNewResultName(), resuTyp ){};
 
     /**
      * @brief Constructeur
      */
     Result( const std::string &name, const std::string &resuTyp )
-        : DataStructure( name, 19, resuTyp ),
-          ListOfTables( name ),
+        : DataStructure( name, 19, resuTyp ), ListOfTables( name ),
           _symbolicNamesOfFields( NamesMapChar16( getName() + ".DESC" ) ),
           _namesOfFields( JeveuxCollectionChar24( getName() + ".TACH" ) ),
           _accessVariables( NamesMapChar16( getName() + ".NOVA" ) ),
@@ -171,8 +168,7 @@ class Result : public DataStructure, public ListOfTables {
           _rspr( JeveuxVectorReal( getName() + ".RSPR" ) ),
           _rsp8( JeveuxVectorChar8( getName() + ".RSP8" ) ),
           _rs16( JeveuxVectorChar16( getName() + ".RS16" ) ),
-          _rs24( JeveuxVectorChar24( getName() + ".RS24" ) ),
-          _mesh( nullptr ),
+          _rs24( JeveuxVectorChar24( getName() + ".RS24" ) ), _mesh( nullptr ),
           _fieldBuidler( FieldBuilder() ){};
 
     /**
@@ -180,20 +176,18 @@ class Result : public DataStructure, public ListOfTables {
      * @param nbRanks nombre de numéro d'ordre
      * @return true si l'allocation s'est bien passée
      */
-    bool allocate( int nbRanks ) ;
+    bool allocate( ASTERINTEGER nbRanks );
 
     /**
      * @brief Add elementary characteristics to container
      * @param rank
      */
-    void addElementaryCharacteristics( const ElementaryCharacteristicsPtr &,
-                                       int rank ) ;
+    void addElementaryCharacteristics( const ElementaryCharacteristicsPtr &, ASTERINTEGER rank );
 
     /**
      * @brief Add a existing FieldOnNodesDescription in _fieldBuidler
      */
-    void addFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &fond )
-    {
+    void addFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &fond ) {
         _fieldBuidler.addFieldOnNodesDescription( fond );
     };
 
@@ -201,19 +195,19 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Set list of loads at rank
      * @param ListOfLoadsPtr, rank
      */
-    void addListOfLoads( const ListOfLoadsPtr &, int rank ) ;
+    void addListOfLoads( const ListOfLoadsPtr &, ASTERINTEGER rank );
 
     /**
      * @brief Add material definition
      * @param rank
      */
-    void addMaterialField( const MaterialFieldPtr &, int rank ) ;
+    void addMaterialField( const MaterialFieldPtr &, ASTERINTEGER rank );
 
     /**
      * @brief Add model
      * @param rank
      */
-    void addModel( const ModelPtr &, int rank ) ;
+    void addModel( const ModelPtr &, ASTERINTEGER rank );
 
     /**
      * @brief Set model
@@ -224,13 +218,13 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add time value for one rank
      * @param rank
      */
-    void addTimeValue( ASTERDOUBLE, int rank );
+    void addTimeValue( ASTERDOUBLE, ASTERINTEGER rank );
 
     /**
      * @brief Append a elementary characteristics on all rank of Result
      * @param ElementaryCharacteristicsPtr
      */
-    void appendElementaryCharacteristicsOnAllRanks( const ElementaryCharacteristicsPtr& );
+    void appendElementaryCharacteristicsOnAllRanks( const ElementaryCharacteristicsPtr & );
 
     /**
      * @brief Append a material on all rank of Result
@@ -270,19 +264,21 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Get list of loads at rank
      * @param rank
      */
-    ListOfLoadsPtr getListOfLoads( int rank ) const;
+    ListOfLoadsPtr getListOfLoads( ASTERINTEGER rank ) const;
+
+    bool hasListOfLoads( const ASTERINTEGER &rank ) const;
+
+    bool hasListOfLoads() const;
 
     /**
      * @brief Get elementary characteristics
      */
-    ElementaryCharacteristicsPtr
-    getElementaryCharacteristics() ;
+    ElementaryCharacteristicsPtr getElementaryCharacteristics() const;
 
     /**
      * @brief Get elementary characteristics
      */
-    std::vector< ElementaryCharacteristicsPtr >
-    getAllElementaryCharacteristics() const;
+    std::vector< ElementaryCharacteristicsPtr > getAllElementaryCharacteristics() const;
 
     bool hasElementaryCharacteristics() const;
 
@@ -290,8 +286,7 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Get elementary characteristics
      * @param rank
      */
-    ElementaryCharacteristicsPtr
-    getElementaryCharacteristics( int rank ) ;
+    ElementaryCharacteristicsPtr getElementaryCharacteristics( ASTERINTEGER rank ) const;
 
     /**
      * @brief Get elementary characteristics
@@ -307,7 +302,7 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Get material
      */
-    MaterialFieldPtr getMaterialField() ;
+    MaterialFieldPtr getMaterialField() const;
 
     /**
      * @brief Get material
@@ -319,17 +314,17 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Get material
      * @param rank
      */
-    MaterialFieldPtr getMaterialField( int rank ) ;
+    MaterialFieldPtr getMaterialField( ASTERINTEGER rank ) const;
 
     /**
      * @brief Get mesh
      */
-    BaseMeshPtr getMesh();
+    BaseMeshPtr getMesh() const;
 
     /**
      * @brief check for multiple models
      */
-    bool hasMultipleModel() ;
+    bool hasMultipleModel() const;
 
     /**
      * @brief check for multiple models
@@ -344,13 +339,13 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Get model
      */
-    ModelPtr getModel() ;
+    ModelPtr getModel() const;
 
     /**
      * @brief Get model
      * @param rank
      */
-    ModelPtr getModel( int rank ) ;
+    ModelPtr getModel( ASTERINTEGER rank ) const;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
@@ -407,9 +402,9 @@ class Result : public DataStructure, public ListOfTables {
                    const ASTERINTEGER rank );
 
     /**
-    * @brief Get dict of access variables and their values
-    * @return PyObject
-    */
+     * @brief Get dict of access variables and their values
+     * @return PyObject
+     */
     PyObject *getAccessParameters() const;
 
     /**
@@ -469,22 +464,22 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir la gestion des mot-clés par défaut (ex : TOUT_ORDRE)
      * @todo revoir la gestion des unités logiques (notamment si fort.20 existe déjà)
      */
-    bool printMedFile( const std::string fileName, std::string medName ) const ;
+    bool printMedFile( const std::string fileName, std::string medName ) const;
 
-    bool printMedFile( const std::string fileName ) const
-    { return printMedFile(fileName, std::string());} ;
-
-
-    /**
-    * @brief Get the number of steps stored in the Result
-    * @return nbRanks
-    */
-    int getNumberOfRanks() const;
+    bool printMedFile( const std::string fileName ) const {
+        return printMedFile( fileName, std::string() );
+    };
 
     /**
-    * @brief Get the number of steps stored in the Result
-    * @return nbRanks
-    */
+     * @brief Get the number of steps stored in the Result
+     * @return nbRanks
+     */
+    ASTERINTEGER getNumberOfRanks() const;
+
+    /**
+     * @brief Get the number of steps stored in the Result
+     * @return nbRanks
+     */
     VectorLong getRanks() const;
 
     /**
@@ -494,14 +489,14 @@ class Result : public DataStructure, public ListOfTables {
     VectorString getFieldsNames() const;
 
     /**
-    * @brief Print all the fields stored in the Result
-    * @return nbRanks
-    */
+     * @brief Print all the fields stored in the Result
+     * @return nbRanks
+     */
     void listFields() const;
 
     /**
-    * @brief Print informations about the Result content
-    */
+     * @brief Print informations about the Result content
+     */
     void printInfo() const;
 
     /**
@@ -509,7 +504,7 @@ class Result : public DataStructure, public ListOfTables {
      * @return true si l'allocation s'est bien passée
      * @todo revoir l'agrandissement de dictOfVectorOfFieldsNodes et dictOfVectorOfFieldsCells
      */
-    bool build() ;
+    bool build();
 
     /**
      * @brief Update the  Result's size

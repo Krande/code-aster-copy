@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -319,7 +319,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         bool ret = updateValuePointer();
 
         if ( ret ) {
-            ASTERINTEGER size = this->size();
+            ASTERINTEGER size = this->usedSize();
             toReturn.reserve( size );
 
             for ( ASTERINTEGER i = 0; i < size; ++i )

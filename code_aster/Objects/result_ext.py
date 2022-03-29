@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,13 +51,18 @@ class ResultStateBuilder(InternalStateBuilder):
         self._st["mater"] = []
         # list of ElementaryCharacteristics
         self._st["cara_elem"] = []
+        # list of list of loads
+        self._st["loads"] = []
         for i in self._st["rank"]:
             if result.hasModel(i):
                 self._st["model"].append(result.getModel(i))
             if result.hasMaterialField(i):
                 self._st["mater"].append(result.getMaterialField(i))
             if result.hasElementaryCharacteristics(i):
-                self._st["cara_elem"].append(result.getElementaryCharacteristics(i))
+                self._st["cara_elem"].append(
+                    result.getElementaryCharacteristics(i))
+            if result.hasListOfLoads(i):
+                self._st["loads"].append(result.getListOfLoads(i))
 
         if len(self._st["rank"]) != len(self._st["model"]):
             logger.debug(
@@ -77,6 +82,12 @@ class ResultStateBuilder(InternalStateBuilder):
                 f"{len(self._st['rank'])} ranks, {len(self._st['cara_elem'])} elementary characteristics"
             )
             self._st["cara_elem"] = []
+        if len(self._st["loads"]) > 0 and len(self._st["rank"]) != len(self._st["loads"]):
+            logger.debug(
+                f"Inconsistent definition of list of loads: "
+                f"{len(self._st['rank'])} ranks, {len(self._st['loads'])} list of loads"
+            )
+            self._st["loads"] = []
         return self
 
     def restore(self, result):
@@ -93,7 +104,10 @@ class ResultStateBuilder(InternalStateBuilder):
             if self._st["mater"]:
                 result.addMaterialField(self._st["mater"][i], rank)
             if len(self._st["cara_elem"]) > 0 and self._st["cara_elem"]:
-                result.addElementaryCharacteristics(self._st["cara_elem"][i], rank)
+                result.addElementaryCharacteristics(
+                    self._st["cara_elem"][i], rank)
+            if len(self._st["loads"]) > 0 and self._st["loads"]:
+                result.addListOfLoads(self._st["loads"][i], rank)
         if self._st["model"]:
             result.build()
 
