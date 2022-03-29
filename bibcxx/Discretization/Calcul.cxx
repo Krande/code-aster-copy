@@ -25,7 +25,7 @@
 #include "aster_fort_utils.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
-#include "DataFields/FieldBuilder.h"
+#include "DataFields/FieldOnCells.h"
 #include "DataStructures/TemporaryDataStructureNaming.h"
 
 /** @brief Constructor */
@@ -108,7 +108,7 @@ void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
 }
 
 /** @brief Create and add input field for current time */
-void Calcul::addTimeField( const ASTERDOUBLE &time ) {
+void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE time ) {
     auto _timeField = std::make_shared< ConstantFieldOnCellsReal >(
         TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
     const std::string physicalName( "INST_R" );
@@ -116,7 +116,7 @@ void Calcul::addTimeField( const ASTERDOUBLE &time ) {
     ConstantFieldOnZone a( _mesh );
     ConstantFieldValues< ASTERDOUBLE > b( { "INST" }, { time } );
     _timeField->setValueOnZone( a, b );
-    addInputField( "PTEMPSR", _timeField );
+    addInputField( parameterName, _timeField );
 }
 
 /** @brief Create and add input fields for XFEM */
@@ -196,14 +196,12 @@ void Calcul::compute() {
 }
 
 void Calcul::postCompute() {
+
     const std::string questi1( "TYPE_CHAMP" ), questi2( "TYPE_SCA" );
     const std::string typeco( "CHAMP" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
     const std::string arret( "C" );
-
-    FieldBuilder fieldBuilder;
-    fieldBuilder.addFiniteElementDescriptor( _FEDesc );
 
     for ( auto &[parameterName, field] : _outputFields ) {
         std::string fieldName = field->getName();
@@ -212,16 +210,16 @@ void Calcul::postCompute() {
         std::string fieldType( trim( repk.toString() ) );
         if ( fieldType == "ELEM" || fieldType == "ELNO" || fieldType == "ELGA" ) {
             CALLO_DISMOI( questi2, fieldName, typeco, &repi, repk, arret, &ier );
-
             std::string fieldScalar( trim( repk.toString() ) );
             if ( fieldScalar == "R" ) {
-                field = fieldBuilder.buildFieldOnCells< ASTERDOUBLE >( fieldName, _mesh );
+                std::static_pointer_cast< FieldOnCellsReal >( field )->setDescription( _FEDesc );
             } else if ( fieldScalar == "C" ) {
-                field = fieldBuilder.buildFieldOnCells< ASTERCOMPLEX >( fieldName, _mesh );
+                std::static_pointer_cast< FieldOnCellsComplex >( field )->setDescription( _FEDesc );
+            } else if ( fieldScalar == "I" ) {
+                std::static_pointer_cast< FieldOnCellsLong >( field )->setDescription( _FEDesc );
             } else {
                 AS_ABORT( "Field no supported" );
             }
-
             _outputFieldsExist.at( parameterName ) = true;
         } else {
             _outputFieldsExist.at( parameterName ) = false;

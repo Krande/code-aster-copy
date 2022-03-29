@@ -316,7 +316,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
         _calcul->addElementaryCharacteristicsField( currElemChara );
     }
     _calcul->addFourierModeField( modeFourier );
-    _calcul->addTimeField( time );
+    _calcul->addTimeField( "PTEMPSR", time );
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         _calcul->addXFEMField( currXfemModel );

@@ -167,7 +167,7 @@ class Calcul {
     void addFourierModeField( const ASTERINTEGER &nh );
 
     /** @brief Create and add input field for current time */
-    void addTimeField( const ASTERDOUBLE &time );
+    void addTimeField( const std::string &parameterName, const ASTERDOUBLE time );
 
     /** @brief Create and add input fields for XFEM */
     void addXFEMField( const XfemModelPtr xfemModel );
