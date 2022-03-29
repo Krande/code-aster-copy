@@ -74,36 +74,74 @@ class ContactPairing : public DataStructure {
     std::vector< ContactZonePtr > getContactZones() const { return _zones;}
 
     /** @brief Update coordinates */  
-    void updateCoordinates(FieldOnNodesRealPtr& disp) { *_newCoordinates += *disp; };
+    void updateCoordinates(FieldOnNodesRealPtr& disp) { 
+            *_newCoordinates = *( _mesh->getCoordinates() ) +  *disp; };
     
     /** @brief compute pairing quantities of zone i */  
-    ASTERBOOL computePairingQuantities(ASTERINTEGER i);
+    ASTERBOOL compute( ASTERINTEGER i );
 
-   /** @brief get zone i */  
-    ContactZonePtr getContactZone( ASTERINTEGER i ) { return _zones[i]; }
+   /** @brief get zone of index zone_index */  
+    ContactZonePtr getContactZone( ASTERINTEGER zone_index ) { return _zones[ zone_index ]; }
 
-    /** @brief clear all pairing quantities of zone i */  
-    ASTERBOOL clear( ASTERINTEGER i);
+    /** @brief clearZone all pairing quantities of zone i */  
+    ASTERBOOL clearZone( ASTERINTEGER i);
 
-    /** @brief get number of pairs of zone i */  
-    ASTERINTEGER getNumberOfPairs( ASTERINTEGER i ) const { return _nbPairs[i]; }
+    /** @brief clearZone all pairing quantities for all zones */  
+    ASTERBOOL clear( ){
+            for( auto i=0; i < _zones.size(); i++){
+                    clearZone(i);
+            }
+            return true;
+    };
 
-    /** @brief get list of pairs of zone i */  
-    VectorLong getListOfPairs( ASTERINTEGER i)  const { return _listOfPairs[i]; }
+    /** @brief get number of all pairs  */  
+    ASTERINTEGER getNumberOfPairs( ) const {
+            
+            return std::accumulate(_nbPairs.begin(), _nbPairs.end(), 0);
+     };
 
-    /** @brief get slave intersection points of zone i */  
-    VectorReal getSlaveIntersectionPoints( ASTERINTEGER i ) const { 
-            return _slaveIntersectionPoints[i]; 
+    /** @brief get number of pairs of zone zone_index  */  
+    ASTERINTEGER getNumberOfPairsOfZone( ASTERINTEGER zone_index ) const {
+                                 return _nbPairs[ zone_index ]; }
+
+    /** @brief get list of pairs of zone associated with zone zone_index 
+     *  @return vector of pairs of type std::pair
+    */  
+    VectorLongPairs getListOfPairsOfZone( ASTERINTEGER zone_index)  const {
+
+            if ( _listOfPairs[zone_index].size() == 0 ||  _listOfPairs[zone_index].size() % 2 != 0){
+                    raiseAsterError( " List of pairs is empty or has an odd size " );
+            }
+
+            VectorLongPairs  tmp;
+            ASTERINTEGER nbPairs = getNumberOfPairsOfZone(zone_index);
+
+            for( auto i = 0; i < nbPairs; i++){
+                tmp.push_back( std::make_pair( _listOfPairs[zone_index][ 2*i ],
+                                                 _listOfPairs[zone_index][ 2*i + 1 ] ) );
+            }
+             return tmp;
     }
 
-    /** @brief get master intersection points of zone i */  
-    VectorReal getMasterIntersectionPoints( ASTERINTEGER i ) const { 
-            return _masterIntersectionPoints[i]; 
+    /** @brief get slave intersection points of zone zone_index 
+     *   @return vector of slave intersection points of size 16*number of pairs 
+     **/
+    VectorReal getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const { 
+            return _slaveIntersectionPoints[ zone_index ]; 
     }
 
-    /** @brief get gauss points of zone i */  
-    VectorReal getQuadraturePoints( ASTERINTEGER i ) const { 
-            return _quadraturePoints[i]; 
+    /** @brief get master intersection points of zone zone_index
+     *  @return vector of master intersection points of size 16*number of pairs 
+     **/
+    VectorReal getMasterIntersectionPoints( ASTERINTEGER zone_index ) const { 
+            return _masterIntersectionPoints[ zone_index ]; 
+    }
+
+    /** @brief get gauss points of zone zone_index 
+     * @return vector Gauss quadrature points of size 72*number of pairs 
+     **/
+    VectorReal getQuadraturePoints( ASTERINTEGER zone_index ) const { 
+            return _quadraturePoints[ zone_index ]; 
     }
 
 };

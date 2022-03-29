@@ -30,7 +30,6 @@ DEBUT(
 
 test = code_aster.TestCase()
 
-
 Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 Mail = MODI_MAILLAGE(
@@ -115,13 +114,12 @@ DEFICO = DEFI_CONT(
     ),
 )
 
-
 # some checks for the  first zone :
 zone = DEFICO.getContactZone(0)
 test.assertEqual(zone.getMasterCellsFromNode(19), [12, 13])
 test.assertEqual(zone.getSlaveCellsFromNode(64), [61, 62])
-# FIXME test.assertEqual(zone.getMasterCellNeighbors(14), [13, 15])
-# FIXME test.assertEqual(zone.getSlaveCellNeighbors(54), [55, 53])
+test.assertEqual(zone.getMasterCellNeighbors(14), [13, 15])
+test.assertEqual(zone.getSlaveCellNeighbors(54), [55, 53])
 
 test.assertEqual(DEFICO.getNumberOfContactZones(), 2)
 test.assertEqual(DEFICO.getVerbosity(), 2)
@@ -146,12 +144,40 @@ test.assertEqual(pair.getCoordinates().getValues()[:10], [54.0, 54.0, 4.0,
 
 nb_zones = DEFICO.getNumberOfContactZones()
 for i in range(nb_zones):
-    pair.computePairingQuantities(i)
+    pair.compute(i)
 
-test.assertEqual(pair.getListOfPairs(1), [77, 30, 78, 31, 79, 32, 80, 33, 81, 34, 82,
-                                          35, 83, 36, 84, 37, 85, 38, 86, 39])
+test.assertEqual(pair.getListOfPairsOfZone(1), [(77, 30), (78, 31), (79, 32), (80, 33),
+                                                (81, 34), (82, 35), (83, 36), (84, 37), (85, 38), (86, 39)])
 
-test.assertEqual([pair.getNumberOfPairs(i) for i in range(nb_zones)], [26, 10])
+test.assertEqual([pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)], [26, 10])
+
+slavePts = [pair.getSlaveIntersectionPoints(0)[p] for p in
+            range(len(pair.getSlaveIntersectionPoints(0))) if p % 16 == 0 or p % 16 == 1]
+test.assertEqual(slavePts[:15], [-1.0, 1.0, -0.4131433160641172, 1.0, -1.0, -0.4131433160641172, -1.0, 1.0,
+                                 0.18650150764805537, 1.0, -1.0, 0.18650150764805537, -1.0, 1.0, 0.7994438044998181])
+
+MasterPts = [pair.getMasterIntersectionPoints(0)[p] for p in
+             range(len(pair.getMasterIntersectionPoints(0))) if p % 16 == 0 or p % 16 == 1]
+test.assertEqual(MasterPts[:15], [0.16628239347945617, -1.0, 1.0, 0.16628239347945617, -0.6537699012267695,
+                                  -1.0, 0.5264740287465393, -0.6537699012267695, 1.0, 0.5264740287465393,
+                                  -0.3093542470147898, -1.0000000000000007, 0.8846376989281748,
+                                  -0.3093542470147898, 0.9999999999999979])
+
+QuadraturePts = [pair.getQuadraturePoints(0)[p] for p in
+                 range(len(pair.getMasterIntersectionPoints(0))) if p % 72 == 0 or p % 72 == 1]
+test.assertEqual(QuadraturePts[:15], [0.03484042543181441, -0.41685880326027175, 0.9060386372891253,
+                                      0.5831411967397283, -0.6927906099629374, -0.8268849506133847, 0.3934585722847868,
+                                      -0.06364793624011512, 0.9466328344394045, 0.7632370143732696, -0.3871911735633347,
+                                      -0.6546771235073953])
+
+nbPairs = pair.getNumberOfPairs()
+test.assertEqual(nbPairs, sum(pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)))
+# Testing AsterErrorMessage
+pair.clear()
+try:
+    pair.getListOfPairsOfZone(0)
+except Exception as e:
+    test.assertIn("List of pairs is empty or has an odd size", e.message)
 
 algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
 vari_cont = [code_aster.ContactVariant.Robust, code_aster.ContactVariant.Rapide]
@@ -229,7 +255,6 @@ DEFICO2 = DEFI_CONT(
     ),
 )
 
-
 test.assertEqual(DEFICO2.getNumberOfContactZones(), 1)
 test.assertEqual(DEFICO2.getVerbosity(), 2)
 test.assertEqual(DEFICO2.getModel().getName(), MODI.getName())
@@ -275,7 +300,6 @@ test.assertEqual(fricParam.getCoulomb(), -1.0)
 fricParam.setCoulomb(100.0)
 test.assertEqual(fricParam.getCoulomb(), 100.0)
 
-
 # zone 1 :
 fricParam = zone1.getFrictionParameter()  # setFrictionParameter ??
 fricParam.hasFriction = True
@@ -294,7 +318,6 @@ test.assertEqual(fricParam.getCoefficient(), 1000.0)
 test.assertEqual(fricParam.getTresca(), -1.0)
 fricParam.setTresca(100.0)
 test.assertEqual(fricParam.getTresca(), 100.0)
-
 
 # test la catalogue : pairing parameters
 DEFICO3 = DEFI_CONT(
@@ -317,7 +340,6 @@ DEFICO3 = DEFI_CONT(
         # COULOMB=100.,
     ),
 )
-
 
 test.assertEqual(DEFICO3.getNumberOfContactZones(), 1)
 test.assertEqual(DEFICO3.getVerbosity(), 2)
@@ -348,7 +370,6 @@ for i in range(DEFICO3.getNumberOfContactZones()):
 
     test.assertEqual(pairParam.getInitialState(), code_aster.InitialState.Interpenetrated)
     pairParam.setInitialState(code_aster.InitialState.Yes)
-
 
 DEFICO4 = DEFI_CONT(
     MODELE=MODI,
@@ -398,6 +419,5 @@ for i in range(DEFICO4.getNumberOfContactZones()):
     test.assertTrue(pairParam.hasShellDistance)
 
     test.assertEqual(pairParam.getElementaryCharacteristics().getName(), CARAMECA.getName())
-
 
 FIN()

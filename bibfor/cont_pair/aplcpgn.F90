@@ -113,7 +113,7 @@ integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
 character(len=8) :: elem_mast_code, elem_slav_code
 character(len=8) :: elem_slav_type, elem_mast_type
 real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
-integer :: nb_pair, nb_poin_inte, i_zone, idx_start, idx_end
+integer :: nb_pair, nb_poin_inte, i_zone
 integer :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
 integer :: i_slav_neigh
 integer ::  nb_next_alloc
@@ -125,7 +125,7 @@ real(kind=8) :: poin_inte_ma(32)
 real(kind=8) :: poin_gauss_ma(74)
 integer ::  elin_mast_nbnode(1)
 integer ::  elin_slav_nbnode(1)
-character(len=8) :: elin_mast_code, elin_slav_code, elem_slav_name, elem_mast_name, elem_name
+character(len=8) :: elin_mast_code, elin_slav_code, elem_slav_name, elem_name
 integer :: nb_slav_start, nb_find_mast, nb_mast_start
 integer :: list_find_mast(nb_elem_mast)
 integer :: elem_start, elem_slav_start(nb_elem_slav), elem_mast_start(nb_elem_slav), elem_nume
@@ -134,7 +134,6 @@ integer :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
 aster_logical :: l_recup, debug, pair_exist
 integer, pointer :: mast_find_flag(:) => null()
 integer, pointer :: elem_slav_flag(:) => null()
-character(len=8) :: knuzo
 character(len=24) :: sdappa_slne, sdappa_mane
 integer, pointer :: v_sdappa_slne(:) => null()
 integer, pointer :: v_sdappa_mane(:) => null()
@@ -143,7 +142,6 @@ integer :: nb_mast_neigh, nb_slav_neigh
 integer :: inte_neigh(4)
 integer :: jv_geom, elem_type_nume
 real(kind=8) :: list_slav_weight(4), weight_test, tole_weight
-integer, pointer :: v_mesh_comapa(:) => null()
 integer, pointer :: v_mesh_typmail(:) => null()
 integer, pointer :: v_mesh_connex(:)  => null()
 integer, pointer :: v_connex_lcum(:)  => null()
@@ -195,10 +193,6 @@ real(kind=8), pointer :: li_ptgausma_ztmp(:) => null()
 !
 ! - Object for neighbours (inverse connectivity)
 !
-    !ASSERT(i_zone .le. 100)
-    !call codent(i_zone-1, 'G', knuzo)
-    !sdappa_mane = sdappa(1:19)//'.MN'//knuzo(1:2)
-    !sdappa_slne = sdappa(1:19)//'.EN'//knuzo(1:2)
     sdappa_mane = zone(1:8)//'.MN'
     sdappa_slne = zone(1:8)//'.SN'
     call jeveuo(sdappa_mane, 'L', vi = v_sdappa_mane)

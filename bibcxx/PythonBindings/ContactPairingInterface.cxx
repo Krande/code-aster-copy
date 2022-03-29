@@ -31,6 +31,8 @@ void exportContactPairingToPython( py::module_ &mod ) {
     py::class_< ContactPairing, ContactPairingPtr, DataStructure  >( mod, "ContactPairing" )
     .def( py::init( &initFactoryPtr< ContactPairing, 
                             std::vector< ContactZonePtr >, BaseMeshPtr >))
+    .def( py::init( &initFactoryPtr< ContactPairing, std::string,
+                            std::vector< ContactZonePtr >, BaseMeshPtr >))
     .def( "getCoordinates", &ContactPairing::getCoordinates, R"(
 Compute the new coordinates 
 Returns:
@@ -39,20 +41,61 @@ Returns:
     .def( "updateCoordinates", &ContactPairing::updateCoordinates, R"(
 Update the mesh coordinates given a displacement field
 )", ( py::arg( "disp" ) ) )
-    .def( "computePairingQuantities", &ContactPairing::computePairingQuantities, R"(
+    .def( "compute", &ContactPairing::compute, R"(
 Compute the pairing quantities associated with the zone izone
+Arguments:
+    zone_index(int)
 Returns:
     bool: True if the pairing quantities are updated appropriately
-)", ( py::arg( "izone" ) ) )
-   .def( "getListOfPairs", &ContactPairing::getListOfPairs,  R"(
+)", ( py::arg( "zone_index" ) ) )
+   .def( "getListOfPairsOfZone", &ContactPairing::getListOfPairsOfZone,  R"(
 return list of pairs associated with the zone izone
+Arguments:
+    zone_index(int)
 Returns:
     List[int]: List of pairs
-)", ( py::arg( "izone" ) ) )
-   .def( "getNumberOfPairs", &ContactPairing::getNumberOfPairs,  R"(
-return number of  pairs associated with the zone izone
+)", ( py::arg( "zone_index" ) ) )
+   .def( "getNumberOfPairsOfZone", &ContactPairing::getNumberOfPairsOfZone,  R"(
+return number of  pairs associated with the zone zone_index
+Arguments:
+    zone_index(int)
 Returns:
     int: number of pairs
-)", ( py::arg( "izone" ) ) );
+)", ( py::arg( "zone_index" ) ) )
+   .def( "getNumberOfPairs", &ContactPairing::getNumberOfPairs,  R"(
+return the total number of pairs
+Returns:
+    int: Total number of pairs
+)" )
+    .def( "clearZone", &ContactPairing::clearZone,  R"(
+clean all the paring quantities of zone zonde_index
+Arguments:
+    zone_index(int)
+Returns:
+    bool: true if the pairing quantities are cleared
+)", ( py::arg( "zone_index" ) ) )
+    .def( "clear", &ContactPairing::clear,  R"(
+clean all the paring quantities of all zones
+Returns:
+    bool: true if the pairing quantities are cleared
+)" )
+    .def( "getSlaveIntersectionPoints", &ContactPairing::getSlaveIntersectionPoints,  R"(
+Arguments:
+    zone_index(int)
+Returns:
+    List[ float ]: get List of of salve intersection points
+)", ( py::arg( "zone_index" ) ) )
+    .def( "getMasterIntersectionPoints", &ContactPairing::getMasterIntersectionPoints,  R"(
+Arguments:
+    zone_index(int)
+Returns:
+    List[ float ]: get List of of master intersection points
+)", ( py::arg( "zone_index" ) ) )
+.def( "getQuadraturePoints", &ContactPairing::getQuadraturePoints, R"(
+Arguments:
+    zone_index(int)
+Returns:
+    List[ float ]: get List of of Gauss quadrature points
+)", ( py::arg( "zone_index" ) ) );
 
 };

@@ -47,7 +47,7 @@ ContactPairing::ContactPairing( const std::string name, const std::vector< Conta
     };
 
 
-ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
+ASTERBOOL ContactPairing::compute( ASTERINTEGER i ){
 
      if(i < 0 || i >= _zones.size()) {
           throw std::out_of_range( "The zone index should be between 0  and " 
@@ -56,13 +56,18 @@ ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
 
 
      // get and define some input parameters
-     VectorLong&  eleMaster    =  _zones[i]->getMasterCells();
-     VectorLong&  NodesMaster  =  _zones[i]->getMasterNodes();
-     VectorLong&  eleSlave     =  _zones[i]->getSlaveCells();
+     VectorLong  eleMaster    =  _zones[i]->getMasterCells();
+     VectorLong  NodesMaster  =  _zones[i]->getMasterNodes();
+     VectorLong  eleSlave     =  _zones[i]->getSlaveCells();
      ASTERINTEGER nbCellMaster =  eleMaster.size();
      ASTERINTEGER nbNodeMaster =  NodesMaster.size();
      ASTERINTEGER nbCellSlave  =  eleSlave.size();
      std::string pair_method;
+
+     // update the numbering
+     std::for_each(eleMaster.begin(), eleMaster.end(), [](ASTERINTEGER& d) { d+=1;});
+     std::for_each(NodesMaster.begin(), NodesMaster.end(), [](ASTERINTEGER& d) { d+=1;});
+     std::for_each(eleSlave.begin(), eleSlave.end(), [](ASTERINTEGER& d) { d+=1;});
 
      // get pairing method
      ContactVariant variant = _zones[i]->getContactParameter()->getVariant();
@@ -94,8 +99,8 @@ ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
                     &nbInterPoints, &InterSlavePoints, &InterMasterPoints, &gaussPoints);
 
      
-     // clear 
-     this->clear(i);
+     // clearZone 
+     this->clearZone(i);
 
      // fill the pairing quantities 
      _nbPairs[i] = nb_pairs;
@@ -121,13 +126,16 @@ ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
 }
 
 
-ASTERBOOL ContactPairing::clear( ASTERINTEGER i ){
+ASTERBOOL ContactPairing::clearZone( ASTERINTEGER i ){
+    
+     // swap is recommended to release memory 
+     VectorLong().swap( _listOfPairs[i] );
+     VectorLong().swap( _nbIntersectionPoints[i] );
+     VectorReal().swap( _slaveIntersectionPoints[i] );
+     VectorReal().swap( _masterIntersectionPoints[i] );
+     VectorReal().swap( _quadraturePoints[i] );
 
-     _listOfPairs[i].clear();
-     _nbIntersectionPoints[i].clear();
-     _slaveIntersectionPoints[i].clear();
-     _masterIntersectionPoints[i].clear();
-     _quadraturePoints[i].clear();
+     _nbPairs.at(i) = 0;
 
      return true;
 }

@@ -40,3 +40,18 @@ MeshCoordinatesField& MeshCoordinatesField::operator+=( const FieldOnNodesReal &
 
     return *this;
 }
+
+
+ MeshCoordinatesField MeshCoordinatesField::operator+(const FieldOnNodesReal &rhs){
+
+    std::string base("V"), cumul("CUMU");
+    ASTERDOUBLE alpha = 1.;
+    MeshCoordinatesField newCoord =  this->duplicate();
+
+    CALLO_VTGPLD(cumul, &alpha, getName(), rhs.getName(), 
+                                        base, newCoord.getName());
+    
+    newCoord.updateValuePointers();
+
+    return newCoord;
+ }
