@@ -66,6 +66,10 @@ EDEFOPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
     components=('EXX','EYY','EXY',))
 
 
+CPRESSF  = LocatedComponents(phys=PHY.PRES_F, type='ELEM', 
+   components=('PRES',))
+ 
+   
 EPRESNO = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
                             components=('PRES',))
 
@@ -405,6 +409,21 @@ class MEMBTR3(Element):
                      ),
             para_out=((SP.PMATUNS, MMATUNS), ),
         ),
+        
+        OP.RIGI_MECA_PRSU_F(te=435,
+            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF),
+                     (SP.PTEMPSR, CTEMPSR),),
+            para_out=((SP.PMATUNS, MMATUNS), ),
+        ),
+
+        OP.CHAR_MECA_PRSU_F(te=435,
+            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PPRESSF, CPRESSF),
+                     (SP.PTEMPSR, CTEMPSR),),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+
 
         OP.RIGI_MECA_TANG(te=435,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PCARCRI, LC.CCARCRI),

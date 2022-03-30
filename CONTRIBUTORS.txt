@@ -254,9 +254,10 @@
     Daniele Colombo <daniele.colombo .at. ifpen.fr>
     Laurent Duhem <laurent.duhem .at. intel.com>
     Peter Halverson <halverson .at. byu.edu>
-    Pierre Juillard <pierre.juillard@gmail.com>
+    Pierre Juillard <pierre.juillard .at. gmail.com>
     Joachim Kopp
     Denis Laxalde <denis.laxalde .at. logilab.fr>
+    Anthony McDonald <anthony.mcdonald .at. wave-venture.com>
     Stephane Multon <multon .at. insa-toulouse.fr>
     Alain Leufroy <alain.leufroy .at. logilab.fr>
     Luigi Luis Paone

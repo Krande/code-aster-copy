@@ -1,5 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 2022 - Anthony McDonald - anthony.mcdonald .at. wave-venture.com
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +29,13 @@ implicit none
 #include "asterc/r8dgrd.h"
 #include "asterfort/codere.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/mbxnlr.h"
 #include "asterfort/mbgnlr.h"
+#include "asterfort/nmpr3d_vect.h"
+#include "asterfort/nmpr3d_matr.h"
 #include "asterfort/nmprmb_matr.h"
 #include "asterc/r8prem.h"
 #include "asterfort/tecach.h"
@@ -50,6 +54,8 @@ character(len=16), intent(in) :: option, nomte
 ! Options: FULL_MECA_*, RIGI_MECA_*, RAPH_MECA
 !          RIGI_MECA
 !          RIGI_MECA_PRSU_R
+!          RIGI_MECA_PRSU_F
+!          CHAR_MECA_PRSU_R
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,6 +64,16 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: mxnpg, mxvect, mxmatr
+    parameter     (mxnpg=27,mxvect=3*9,mxmatr=3*9*3*9)
+    integer :: mxpara
+    parameter     (mxpara=7)
+!
+    character(len=8) :: nompar(mxpara)
+    real(kind=8) :: valpar(mxpara)
+    integer :: ier
+    real(kind=8) :: x, y, z, xf, yf, zf
+!
     character(len=4) :: fami
     integer :: nddl, nno, nnos, npg, ndim, ncomp, nvari
     integer :: n, kpg, iret, cod(9)
@@ -65,6 +81,9 @@ character(len=16), intent(in) :: option, nomte
     integer :: igeom, icacoq, imate, icompo, icarcr
     integer :: iinstm, iinstp, icontm, ideplm, ideplp, ivarim, ivarix
     integer :: ivectu, icontp, ivarip, jcret, imatuu, imatun, icontx, i_pres
+    integer :: i_temp, kdec, i, j, k, iddl, ino, ndofbynode
+    real(kind=8) :: pres, pres_point(mxnpg)
+    real(kind=8) :: matr(mxmatr), geom_reac(mxvect)
     real(kind=8) :: dff(2, 9), alpha, beta, h, preten
     aster_logical :: lNonLine, lLine
     aster_logical :: pttdef, grddef
@@ -75,7 +94,8 @@ character(len=16), intent(in) :: option, nomte
 !
     lNonLine = (option(1:9).eq.'FULL_MECA').or.&
                (option.eq.'RAPH_MECA').or.&
-               (option(1:10).eq.'RIGI_MECA_') .and. option .ne. 'RIGI_MECA_PRSU_R'
+               (option(1:10).eq.'RIGI_MECA_') .and. &
+               (option(1:15) .ne. 'RIGI_MECA_PRSU_')
     lLine    = option .eq. 'RIGI_MECA'
     cod      = 0
 !
@@ -89,6 +109,7 @@ character(len=16), intent(in) :: option, nomte
     fami = 'RIGI'
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    ndofbynode = ndim + 1
 !
 ! - Get input fields
 !
@@ -97,7 +118,8 @@ character(len=16), intent(in) :: option, nomte
     lSigm = ASTER_FALSE
     lMatr = ASTER_FALSE
     call jevech('PGEOMER', 'L', igeom)
-    if (option .ne. 'RIGI_MECA_PRSU_R') then
+    if ((option(1:15) .ne. 'RIGI_MECA_PRSU_') .and. &
+       (option .ne. 'CHAR_MECA_PRSU_F')) then
         call jevech('PCACOQU', 'L', icacoq)
         call jevech('PMATERC', 'L', imate)
     endif
@@ -142,6 +164,22 @@ character(len=16), intent(in) :: option, nomte
     if (option.eq.'RIGI_MECA_PRSU_R') then
         call jevecd('PPRESSR', i_pres, 0.d0)
     endif
+
+    if (option(10:16).eq.'_PRSU_F') then
+        call jevech('PPRESSF', 'L', i_pres)
+        call jevech('PTEMPSR', 'L', i_temp)
+        valpar(4) = zr(i_temp)
+        nompar(4) = 'INST'
+        nompar(1) = 'X'
+        nompar(2) = 'Y'
+        nompar(3) = 'Z'
+        nompar(5) = 'XF'
+        nompar(6) = 'YF'
+        nompar(7) = 'ZF'
+        do iddl = 1, nddl*nno
+            geom_reac(iddl) = zr(igeom+iddl-1) + zr(ideplm+iddl-1) + zr(ideplp+iddl-1)
+        end do
+    endif
 !
 ! - Get output fields
 !
@@ -159,7 +197,7 @@ character(len=16), intent(in) :: option, nomte
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
     endif
-    if (option .eq. 'RIGI_MECA_PRSU_R') then
+    if (option(1:15) .eq. 'RIGI_MECA_PRSU_') then
         call jevech('PMATUNS', 'E', imatun)
     endif
     if (option .eq. 'RIGI_MECA_IMPLEX') then
@@ -176,7 +214,8 @@ character(len=16), intent(in) :: option, nomte
 ! - EPAISSEUR
 ! - PRECONTRAINTES
 !
-    if (option .ne. 'RIGI_MECA_PRSU_R') then
+    if ((option(1:15) .ne. 'RIGI_MECA_PRSU_') .and. &
+       (option .ne. 'CHAR_MECA_PRSU_F')) then
         alpha = zr(icacoq+1) * r8dgrd()
         beta = zr(icacoq+2) * r8dgrd()
         h = zr(icacoq)
@@ -195,6 +234,32 @@ character(len=16), intent(in) :: option, nomte
         if (option .eq. 'RIGI_MECA_PRSU_R') then
             call nmprmb_matr(nno, npg, kpg, zr(ipoids+kpg), zr(ivf), dff,&
                              igeom,ideplm,ideplp,i_pres, imatun)
+        elseif ((option .eq. 'RIGI_MECA_PRSU_F').or.&
+                (option .eq. 'CHAR_MECA_PRSU_F'))then
+                kdec = (kpg-1) * nno
+                x = 0.d0
+                y = 0.d0
+                z = 0.d0
+                xf = 0.d0
+                yf = 0.d0
+                zf = 0.d0
+                do ino = 1, nno
+                    x = x + zr(igeom+3*(ino-1)+1-1) * zr(ivf+kdec+ino-1)
+                    y = y + zr(igeom+3*(ino-1)+2-1) * zr(ivf+kdec+ino-1)
+                    z = z + zr(igeom+3*(ino-1)+3-1) * zr(ivf+kdec+ino-1)
+                    xf = xf + geom_reac(3*(ino-1)+1) * zr(ivf+kdec+ino-1)
+                    yf = yf + geom_reac(3*(ino-1)+2) * zr(ivf+kdec+ino-1)
+                    zf = zf + geom_reac(3*(ino-1)+3) * zr(ivf+kdec+ino-1)
+                end do
+                valpar(1) = x
+                valpar(2) = y
+                valpar(3) = z
+                valpar(5) = xf
+                valpar(6) = yf
+                valpar(7) = zf
+                call fointe('FM', zk8(i_pres), mxpara, nompar, valpar,&
+                            pres, ier)
+                pres_point(kpg) = pres
         else
             if (pttdef) then
                 call mbxnlr(option, fami  ,&
@@ -221,6 +286,31 @@ character(len=16), intent(in) :: option, nomte
         endif
     end do
 !
+
+! - Second member
+!
+    if (option .eq. 'CHAR_MECA_PRSU_F') then
+        call jevech('PVECTUR', 'E', ivectu)
+        call nmpr3d_vect(nno, npg, ndofbynode,&
+                         zr(ipoids), zr(ivf), zr(idfde),&
+                         geom_reac, pres_point, zr(ivectu))
+!
+! - Tangent matrix
+!
+    else if (option.eq.'RIGI_MECA_PRSU_F') then
+        call nmpr3d_matr(nno, npg, zr(ipoids), zr(ivf), zr(idfde), &
+                        geom_reac, pres_point, matr)
+        call jevech('PMATUNS', 'E', imatun)
+        k = 0
+        do i = 1, nddl*nno
+            do j = 1, nddl*nno
+                k = k + 1
+                zr(imatun-1+k) = matr((j-1)*nddl*nno+i)
+             end do
+        end do
+        ASSERT(k.eq.nddl*nno*nddl*nno)
+    endif
+
     if (lSigm) then
         call codere(cod, npg, zi(jcret))
     endif
