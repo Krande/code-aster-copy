@@ -35,6 +35,7 @@ void exportFiniteElementDescriptorToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FiniteElementDescriptor, std::string, BaseMeshPtr > ) )
         .def( "getPhysics", &FiniteElementDescriptor::getPhysics )
         .def( "getMesh", &FiniteElementDescriptor::getMesh )
+        .def( "getModel", &FiniteElementDescriptor::getModel )
 #ifdef ASTER_HAVE_MPI
         .def( "transferDofDescriptorFrom", &FiniteElementDescriptor::transferDofDescriptorFrom )
 #endif /* ASTER_HAVE_MPI */

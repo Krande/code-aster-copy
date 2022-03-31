@@ -45,11 +45,16 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _superElementsDescriptor( getName() + ".SSSA" ),
       _nameOfNeighborhoodStructure( getName() + ".NVGE" ),
       _mesh( mesh ),
-      _explorer( ConnectivityVirtualCellsExplorer( _delayedNumberedConstraintElementsDescriptor ) ),
-      _explorer2( ConnectivityVirtualCellsExplorer( _listOfGroupOfCells ) ){};
+      _explorer( FiniteElementDescriptor::ConnectivityVirtualCellsExplorer(
+          _delayedNumberedConstraintElementsDescriptor ) ),
+      _explorer2(
+          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupOfCells ) ){};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
     : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ){};
+
+FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model )
+    : FiniteElementDescriptor( model->getMesh() ){};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptor &FEDesc,
                                                   const VectorString &groupOfCells )
@@ -70,6 +75,57 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptor 
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc.getName(), base, getName() );
 };
 
+const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
+FiniteElementDescriptor::getVirtualCellsExplorer() const {
+    _delayedNumberedConstraintElementsDescriptor->build();
+    return _explorer;
+};
+
+const JeveuxVectorLong &FiniteElementDescriptor::getVirtualNodesComponentDescriptor() const {
+    _dofOfDelayedNumberedConstraintNodes->updateValuePointer();
+    return _dofOfDelayedNumberedConstraintNodes;
+};
+
+const JeveuxVectorLong &FiniteElementDescriptor::getVirtualNodesNumbering() const {
+    _virtualNodesNumbering->updateValuePointer();
+    return _virtualNodesNumbering;
+};
+
+const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
+FiniteElementDescriptor::getListOfGroupOfCellsExplorer() const {
+    _listOfGroupOfCells->build();
+    return _explorer2;
+};
+
+const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfCells() const {
+    _listOfGroupOfCells->build();
+    return _listOfGroupOfCells;
+};
+
+ASTERINTEGER FiniteElementDescriptor::getNumberOfVirtualNodes() const {
+    _numberOfDelayedNumberedConstraintNodes->updateValuePointer();
+    return ( *_numberOfDelayedNumberedConstraintNodes )[0];
+};
+
+JeveuxVectorChar8 FiniteElementDescriptor::getParameters() const {
+    _parameters->updateValuePointer();
+    return _parameters;
+};
+
+const JeveuxVectorLong &FiniteElementDescriptor::getPhysicalNodesComponentDescriptor() const {
+    _dofDescriptor->updateValuePointer();
+    return _dofDescriptor;
+};
+
+const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupOfCellsbyCell() const {
+    _groupsOfCellsNumberByElement->updateValuePointer();
+    return _groupsOfCellsNumberByElement;
+};
+
+const BaseMeshPtr FiniteElementDescriptor::getMesh() const { return _mesh; };
+
+void FiniteElementDescriptor::setMesh( const BaseMeshPtr &currentMesh ) { _mesh = currentMesh; };
+
 int FiniteElementDescriptor::getPhysics( void ) const {
     const std::string docu = trim( _parameters->getInformationParameter() );
 
@@ -84,6 +140,10 @@ int FiniteElementDescriptor::getPhysics( void ) const {
 
     return -1;
 };
+
+void FiniteElementDescriptor::setModel( const ModelPtr model ) { _model = model; };
+
+ModelPtr FiniteElementDescriptor::getModel() { return _model.lock(); }
 
 #ifdef ASTER_HAVE_MPI
 void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
@@ -256,4 +316,5 @@ void FiniteElementDescriptor::setFrom( FiniteElementDescriptorPtr &other ) {
     // Fill 'LIEL'
     transferListOfGroupOfCellFrom( other );
 }
+
 #endif /* ASTER_HAVE_MPI */

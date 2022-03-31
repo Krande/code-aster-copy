@@ -31,14 +31,11 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
 #include "Meshes/MeshExplorer.h"
+#include "Modeling/Model.h"
 
-class FiniteElementDescriptor;
+class Model;
 
-/**
- * @typedef FiniteElementDescriptor
- * @brief Pointeur intelligent vers un FiniteElementDescriptor
- */
-typedef std::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
+using ModelPtr = std::shared_ptr< Model >;
 
 /**
  * @class FiniteElementDescriptor
@@ -47,8 +44,8 @@ typedef std::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
  */
 class FiniteElementDescriptor : public DataStructure {
   public:
-    typedef MeshExplorer< CellsIteratorFromFiniteElementDescriptor, const JeveuxCollectionLong & >
-        ConnectivityVirtualCellsExplorer;
+    using ConnectivityVirtualCellsExplorer =
+        MeshExplorer< CellsIteratorFromFiniteElementDescriptor, const JeveuxCollectionLong & >;
 
   protected:
     /** @brief Vecteur Jeveux '.NBNO' */
@@ -77,6 +74,9 @@ class FiniteElementDescriptor : public DataStructure {
     const ConnectivityVirtualCellsExplorer _explorer;
     /** @brief Object to loop over list of group of cells */
     const ConnectivityVirtualCellsExplorer _explorer2;
+    /** @brief Model if known */
+    // We use a weak_ptr to avoid circular reference
+    std::weak_ptr< Model > _model;
 
   public:
     /**
@@ -85,6 +85,8 @@ class FiniteElementDescriptor : public DataStructure {
     FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh );
 
     FiniteElementDescriptor( const BaseMeshPtr mesh );
+
+    FiniteElementDescriptor( const ModelPtr model );
 
     FiniteElementDescriptor( const FiniteElementDescriptor &FEDesc,
                              const VectorString &groupOfCells );
@@ -98,56 +100,33 @@ class FiniteElementDescriptor : public DataStructure {
      * @typedef FiniteElementDescriptorPtr
      * @brief Pointeur intelligent vers un FiniteElementDescriptor
      */
-    typedef std::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
+    using FiniteElementDescriptorPtr = std::shared_ptr< FiniteElementDescriptor >;
 
-    const ConnectivityVirtualCellsExplorer &getVirtualCellsExplorer() const {
-        _delayedNumberedConstraintElementsDescriptor->build();
-        return _explorer;
-    };
+    const ConnectivityVirtualCellsExplorer &getVirtualCellsExplorer() const;
 
-    const JeveuxVectorLong &getVirtualNodesComponentDescriptor() const {
-        _dofOfDelayedNumberedConstraintNodes->updateValuePointer();
-        return _dofOfDelayedNumberedConstraintNodes;
-    };
+    const JeveuxVectorLong &getVirtualNodesComponentDescriptor() const;
 
-    const JeveuxVectorLong &getVirtualNodesNumbering() const {
-        _virtualNodesNumbering->updateValuePointer();
-        return _virtualNodesNumbering;
-    };
+    const JeveuxVectorLong &getVirtualNodesNumbering() const;
 
-    const ConnectivityVirtualCellsExplorer &getListOfGroupOfCellsExplorer() const {
-        _listOfGroupOfCells->build();
-        return _explorer2;
-    };
+    const ConnectivityVirtualCellsExplorer &getListOfGroupOfCellsExplorer() const;
 
-    const JeveuxCollectionLong &getListOfGroupOfCells() const {
-        _listOfGroupOfCells->build();
-        return _listOfGroupOfCells;
-    };
+    const JeveuxCollectionLong &getListOfGroupOfCells() const;
 
-    ASTERINTEGER getNumberOfVirtualNodes() const {
-        _numberOfDelayedNumberedConstraintNodes->updateValuePointer();
-        return ( *_numberOfDelayedNumberedConstraintNodes )[0];
-    };
+    ASTERINTEGER getNumberOfVirtualNodes() const;
 
-    JeveuxVectorChar8 getParameters() const {
-        _parameters->updateValuePointer();
-        return _parameters;
-    };
+    JeveuxVectorChar8 getParameters() const;
 
-    const JeveuxVectorLong &getPhysicalNodesComponentDescriptor() const {
-        _dofDescriptor->updateValuePointer();
-        return _dofDescriptor;
-    };
+    const JeveuxVectorLong &getPhysicalNodesComponentDescriptor() const;
 
-    const JeveuxVectorLong &getListOfGroupOfCellsbyCell() const {
-        _groupsOfCellsNumberByElement->updateValuePointer();
-        return _groupsOfCellsNumberByElement;
-    };
+    const JeveuxVectorLong &getListOfGroupOfCellsbyCell() const;
 
-    const BaseMeshPtr getMesh() const { return _mesh; };
+    const BaseMeshPtr getMesh() const;
 
-    void setMesh( const BaseMeshPtr &currentMesh ) { _mesh = currentMesh; };
+    void setMesh( const BaseMeshPtr &currentMesh );
+
+    void setModel( const ModelPtr model );
+
+    ModelPtr getModel();
 
     int getPhysics( void ) const;
 
@@ -163,5 +142,11 @@ class FiniteElementDescriptor : public DataStructure {
 
 #endif /* ASTER_HAVE_MPI */
 };
+
+/**
+ * @typedef FiniteElementDescriptor
+ * @brief Pointeur intelligent vers un FiniteElementDescriptor
+ */
+using FiniteElementDescriptorPtr = std::shared_ptr< FiniteElementDescriptor >;
 
 #endif /* FINITEELEMENTDESCRIPTOR_H_ */

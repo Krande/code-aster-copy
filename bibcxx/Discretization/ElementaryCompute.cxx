@@ -30,7 +30,7 @@ void ElementaryCompute::createDescriptor( const ModelPtr &currModel,
         ( *_rerr )[0] = currModel->getName();
     }
     ( *_rerr )[1] = _option;
-    if ( currModel->nbSuperElement() == 0 ) {
+    if ( currModel->numberOfSuperElement() == 0 ) {
         ( *_rerr )[2] = "NON_SOUS_STRUC";
     } else {
         ( *_rerr )[2] = "OUI_SOUS_STRUC";

@@ -37,10 +37,9 @@
 #include "Meshes/Mesh.h"
 #include "Meshes/ParallelMesh.h"
 #include "Meshes/Skeleton.h"
+#include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
-
-#include <stdexcept>
 
 class MaterialFieldBuilder;
 

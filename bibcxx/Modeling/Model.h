@@ -40,6 +40,9 @@
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
 
+class FiniteElementDescriptor;
+
+using FiniteElementDescriptorPtr = std::shared_ptr< FiniteElementDescriptor >;
 
 /**
  * @enum ModelSplitingMethod
@@ -128,70 +131,32 @@ class Model : public DataStructure, public ListOfTables {
      * @return booleen indiquant que la construction s'est bien deroulee
      */
     bool buildWithSyntax( SyntaxMapContainer & );
+
   public:
-    Model( const std::string name, const bool is_xfem = false  )
-        : DataStructure( name, 8, "MODELE" ),
-          ListOfTables( name ),
-          _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
-          _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
-          _baseMesh( nullptr ),
-          _splitMethod( SubDomain ),
-          _graphPartitioner( MetisPartitioner ),
-          _ligrel( nullptr ),
-          _xfemModel( nullptr ) {
-        if (is_xfem)
-            _xfemModel = std::make_shared< XfemModel >( getName() );
-#ifdef ASTER_HAVE_MPI
-        _connectionMesh = nullptr;
-#endif
-    };
+    Model( const std::string name, const bool is_xfem = false );
 
     /**
      * @brief Constructor: a mesh is mandatory
      */
     Model( void ) = delete;
 
-    Model( const std::string name, const FiniteElementDescriptorPtr fed, 
-                                                      const bool is_xfem = false ) : Model( name ) {
-        _baseMesh = fed->getMesh();
-        _ligrel = fed;
-        if (is_xfem)
-            _xfemModel = std::make_shared< XfemModel >( getName() );
-        AS_ASSERT( !_baseMesh->isEmpty() );
-    };
+    Model( const std::string name, const FiniteElementDescriptorPtr fed,
+           const bool is_xfem = false );
 
-    Model( const BaseMeshPtr mesh, const bool is_xfem = false ) : 
-                                                        Model( DataStructureNaming::getNewName() ) {
-        _baseMesh = mesh;
-        _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh );
-        if (is_xfem)
-            _xfemModel = std::make_shared< XfemModel >( getName() );
-        AS_ASSERT( !_baseMesh->isEmpty() );
-    };
+    Model( const BaseMeshPtr mesh, const bool is_xfem = false );
 
 #ifdef ASTER_HAVE_MPI
-    Model( const std::string name, const ConnectionMeshPtr mesh) : Model( name ) {
-        _baseMesh = mesh;
-        _connectionMesh = mesh;
-        _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh );
+    Model( const std::string name, const ConnectionMeshPtr mesh );
 
-        AS_ASSERT( !_baseMesh->isEmpty() );
-        AS_ASSERT( !_connectionMesh->isEmpty() );
-    };
-
-    Model( const ConnectionMeshPtr mesh ) : Model( DataStructureNaming::getNewName(), mesh ){};
+    Model( const ConnectionMeshPtr mesh );
 #endif /* ASTER_HAVE_MPI */
-
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur tout le maillage
      * @param phys Physique a ajouters
      * @param mod Modelisation a ajouter
      */
-    void addModelingOnMesh( Physics phys, Modelings mod ) {
-        _modelisations.push_back( listOfModsAndGrpsValue(
-            ElementaryModeling( phys, mod ), MeshEntityPtr( new AllMeshEntities() ) ) );
-    };
+    void addModelingOnMesh( Physics phys, Modelings mod );
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur une entite du maillage
@@ -228,19 +193,13 @@ class Model : public DataStructure, public ListOfTables {
      * @brief Number of super-elements in model
      * @return Number of super elements in model
      */
-    ASTERINTEGER nbSuperElement();
+    ASTERINTEGER numberOfSuperElement();
 
     /**@brief Has super elements in model ? */
-    bool existsSuperElement() { return ( nbSuperElement() > 0 ); }
+    bool existsSuperElement();
 
     /** @brief Has finite element in model ? */
     bool existsFiniteElement();
-
-    /**
-     * @brief Is an xfem  model ?
-     * @return true if xfem model
-     */
-    bool isXfem();
 
     /**
      * @brief function to know if XFEM Preconditioning is enable in model
@@ -251,54 +210,46 @@ class Model : public DataStructure, public ListOfTables {
     /**
      * @brief Get FiniteElementDescriptor
      */
-    FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _ligrel; };
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const;
 
     /**
      * @brief Obtention de la methode du partitioner
      */
-    GraphPartitioner getGraphPartitioner() const { return _graphPartitioner; };
+    GraphPartitioner getGraphPartitioner() const;
 
 #ifdef ASTER_HAVE_MPI
-    ConnectionMeshPtr getConnectionMesh() const {
-        if ( ( !_connectionMesh ) || _connectionMesh->isEmpty() )
-            throw std::runtime_error( "ConnectionMesh of model is empty" );
-        return _connectionMesh;
-    };
+    ConnectionMeshPtr getConnectionMesh() const;
 #endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Get the sane base model
      */
-    ModelPtr getSaneModel() const { return _saneModel; };
+    ModelPtr getSaneModel() const;
 
     /**
      * @brief Get the Xfem model
      */
-    XfemModelPtr getXfemModel() const { return _xfemModel; };
+    XfemModelPtr getXfemModel() const;
 
     /**
      * @brief Obtention de la methode de partition
      */
-    ModelSplitingMethod getSplittingMethod() const { return _splitMethod; };
+    ModelSplitingMethod getSplittingMethod() const;
 
-    BaseMeshPtr getMesh() const {
-        if ( ( !_baseMesh ) || _baseMesh->isEmpty() )
-            throw std::runtime_error( "Mesh of model is empty" );
-        return _baseMesh;
-    };
+    BaseMeshPtr getMesh() const;
 
-    JeveuxVectorLong getTypeOfCells() const { return _typeOfCells; }
+    JeveuxVectorLong getTypeOfCells() const;
 
     /**
      * @brief Methode permettant de savoir si le modele est vide
      * @return true si le modele est vide
      */
-    bool isEmpty() const { return !_typeOfCells->exists(); };
+    bool isEmpty() const;
 
     /**
      * @brief Set the sane base model
      */
-    void setSaneModel( ModelPtr saneModel ) { _saneModel = saneModel; };
+    void setSaneModel( ModelPtr saneModel );
 
     /**
      * @brief Set XFEM model
@@ -308,54 +259,43 @@ class Model : public DataStructure, public ListOfTables {
     /**
      * @brief Definition de la methode de partition
      */
-    void setSplittingMethod( ModelSplitingMethod split, GraphPartitioner partitioner ) {
-        setSplittingMethod( split );
-        _graphPartitioner = partitioner;
-    };
+    void setSplittingMethod( ModelSplitingMethod split, GraphPartitioner partitioner );
 
     /**
      * @brief Definition de la methode de partition
      */
-    void setSplittingMethod( ModelSplitingMethod split ) {
-#ifdef ASTER_HAVE_MPI
-        if ( _connectionMesh && !_connectionMesh->isEmpty() && split != Centralized )
-            throw std::runtime_error( "For Parallel mesh, Centralized splitting is mandatory" );
-#endif /* ASTER_HAVE_MPI */
-
-        _splitMethod = split;
-    };
+    void setSplittingMethod( ModelSplitingMethod split );
 
     /**
      * @brief To known if the the model is mechanical or not
      *
      * @return true The phenomen is  mechanical
      */
-    bool isMechanical( void ) const { return this->getPhysics() == Physics::Mechanics; };
+    bool isMechanical( void ) const;
 
     /**
      * @brief To known if the the model is thermal or not
      *
      * @return true The phenomen is therman
      */
-    bool isThermal( void ) const { return this->getPhysics() == Physics::Thermal; };
+    bool isThermal( void ) const;
 
     /**
      * @brief To known if the the model is acoustic or not
      *
      * @return true The phenomen is acoustic
      */
-    bool isAcoustic( void ) const { return this->getPhysics() == Physics::Acoustic; };
+    bool isAcoustic( void ) const;
 
-    int getPhysics( void ) const { return _ligrel->getPhysics(); }
+    int getPhysics( void ) const;
 
-    int getGeometricDimension( void ) const {
-        ASTERINTEGER nb_dim_;
-        ASTERINTEGER ier;
-        std::string repk;
-        CALL_DISMOI( "DIM_GEOM", this->getName().c_str(), "MODELE", &nb_dim_, repk.c_str(), "F",
-                     &ier );
-        return nb_dim_;
-    }
+    int getGeometricDimension( void ) const;
+
+    /**
+     * @brief Is an xfem  model ?
+     * @return true if xfem model
+     */
+    bool isXfem() const;
 
 #ifdef ASTER_HAVE_MPI
     bool setFrom( const ModelPtr model );

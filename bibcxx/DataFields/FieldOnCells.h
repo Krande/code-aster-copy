@@ -170,6 +170,14 @@ class FieldOnCells : public DataField {
         return nullptr;
     };
 
+    ModelPtr getModel() const {
+        if ( _dofDescription ) {
+            return _dofDescription->getModel();
+        }
+
+        return nullptr;
+    }
+
     /**
      * @brief Set the description of finite elements
      * @param curDesc object FiniteElementDescriptorPtr

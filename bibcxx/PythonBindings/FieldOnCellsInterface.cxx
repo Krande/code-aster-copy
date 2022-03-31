@@ -59,6 +59,12 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 BaseMesh: Mesh object
             )" )
+        .def( "getModel", &FieldOnCellsReal::getModel, R"(
+            Return the Model associated with the FieldOnCellsReal object
+
+            Returns:
+                Model: Model object
+            )" )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "getDescription", &FieldOnCellsReal::getDescription )
         .def( "build", &FieldOnCellsReal::build )
@@ -145,6 +151,18 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( "duplicate", &FieldOnCellsComplex::duplicate )
         .def( "setDescription", &FieldOnCellsComplex::setDescription )
         .def( "getDescription", &FieldOnCellsComplex::getDescription )
+        .def( "getMesh", &FieldOnCellsComplex::getMesh, R"(
+            Return the Mesh associated with the FieldOnCellsReal object
+
+            Returns:
+                BaseMesh: Mesh object
+            )" )
+        .def( "getModel", &FieldOnCellsComplex::getModel, R"(
+            Return the Model associated with the FieldOnCellsReal object
+
+            Returns:
+                Model: Model object
+            )" )
         .def( "build", &FieldOnCellsComplex::build )
         .def( "getValues", &FieldOnCellsComplex::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
@@ -199,6 +217,18 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( "duplicate", &FieldOnCellsLong::duplicate )
         .def( "setDescription", &FieldOnCellsLong::setDescription )
         .def( "getDescription", &FieldOnCellsLong::getDescription )
+        .def( "getMesh", &FieldOnCellsLong::getMesh, R"(
+            Return the Mesh associated with the FieldOnCellsReal object
+
+            Returns:
+                BaseMesh: Mesh object
+            )" )
+        .def( "getModel", &FieldOnCellsLong::getModel, R"(
+            Return the Model associated with the FieldOnCellsReal object
+
+            Returns:
+                Model: Model object
+            )" )
         .def( "build", &FieldOnCellsLong::build )
         .def( "getValues", &FieldOnCellsLong::getValues, R"(
             Return a list of values as (x1, y1, z1, x2, y2, z2...)
@@ -254,5 +284,11 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
 
             Returns:
                 BaseMesh: Mesh object
+            )" )
+        .def( "getModel", &FieldOnCellsChar8::getModel, R"(
+            Return the Model associated with the FieldOnCellsReal object
+
+            Returns:
+                Model: Model object
             )" );
 };
