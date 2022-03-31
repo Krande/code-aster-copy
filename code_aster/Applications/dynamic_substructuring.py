@@ -153,11 +153,13 @@ class Interface(WithEmbeddedObjects):
         # since the indices are for a sub-list, we must shift them for use in the common list
         ind_no2 += len(self.sub1.nodes)
         ind_no = np.hstack((ind_no1, ind_no2))
+        debugPrint(ind_no=ind_no)
 
         # evaluate the mean plane
         Coord_t = coords[ind_no, :]
         for i1 in range(3):
             Coord_t[:, i1] -= np.mean(Coord_t[:, i1])
+        debugPrint(Coord_t=Coord_t)
 
         # if there is an ovious mean plane, we use it. Otherwise we compute it with a SVD
         CoordMax = np.abs(Coord_t).max(axis=0)
@@ -167,9 +169,11 @@ class Interface(WithEmbeddedObjects):
             U[:,[2, indx]] = U[:,[indx,2]]  # swap the columns
         else:
             U, _, _ = np.linalg.svd(Coord_t.T)
+        debugPrint(U=U)
 
         # project onto the mean plane
         NewCoord = np.matmul(U.T, Coord_t.T)
+        debugPrint(NewCoord=NewCoord)
 
         # place the centre in [0,0,0]
         Xmax = np.max(NewCoord[0, :])
@@ -196,6 +200,7 @@ class Interface(WithEmbeddedObjects):
             * quadratic field - 1 at the center / 0 on edges
 
             """
+            nPress = 3
             Pres = np.zeros((nInterfaceNodes, 3))
             Pres[:, 0] = np.ones(nInterfaceNodes)  #  constant pressure
             Pres[:, 1] = NewCoord[0, :] / Rmax  # linear pressure
@@ -204,7 +209,7 @@ class Interface(WithEmbeddedObjects):
 
             Pres *= 1.e5  #  Normalize
 
-            for i1 in range(3):
+            for i1 in range(nPress):
                 Interf.append(np.zeros((nInterfaceNodes, 4)))
                 Interf[-1][:, 3] += Pres[:, i1]
 
@@ -218,7 +223,8 @@ class Interface(WithEmbeddedObjects):
 
             """
 
-            for i1 in range(11):
+            nStru = 9
+            for i1 in range(nStru):
                 Interf.append(np.zeros((nInterfaceNodes, 4)))
                 Disp = np.zeros((nInterfaceNodes, 3))
 
@@ -237,7 +243,7 @@ class Interface(WithEmbeddedObjects):
                     Disp[:, 0] = np.cos(Th)
                     Disp[:, 1] = np.sin(Th)
 
-                elif (i1 < 11):  # -- ovalisation
+                elif (i1 < 9):  # -- ovalisation
                     Disp[:, 0] = np.cos(Th)*np.sin(2*Th + (i1-7)*np.pi/2)
                     Disp[:, 1] = np.sin(Th)*np.sin(2*Th + (i1-7)*np.pi/2)
                 # elif (i1 == 7):  # -- ovalisation1
@@ -251,7 +257,7 @@ class Interface(WithEmbeddedObjects):
                     print('not done yet...')
 
                 Disp = np.matmul(Disp, U.T)
-                for k1 in range(3):
+                for k1 in range(3):  # loop on displacement dofs
                     Interf[-1][:, k1] += Disp[:, k1]
 
         # transfer the interface data to the specific substructure
@@ -473,37 +479,42 @@ class Structure(WithEmbeddedObjects):
         Kred, Mred, allModes = self._computeReducedOperators(
             lNumberOfPhysicalEqs, lIndexOfInterfModes, lNumberOfInterfModes)
         totalNumberOfModes = allModes.shape[1]
+        debugPrint(Kred=Kred)
+        debugPrint(Mred=Mred)
 
         # Kernel of the constraint matrix
         T = self._computeKernelBasis(
             lNumberOfInterfModes, totalNumberOfModes, lIndexOfInterfModes)
+        debugPrint(T=T)
 
         # Projection on the kernel
         Kredred = T.T.dot(Kred.dot(T))
         Mredred = T.T.dot(Mred.dot(T))
+        debugPrint(Kredred=Kredred)
+        debugPrint(Mredred=Mredred)
 
         if False:
             im = plt.imshow(Kredred)
             plt.colorbar(im)
             plt.show()
 
-        # Definition of the global modal problem
-        rightVP = NonSymEVP([Kredred, Mredred])
-
-        # Solve
+        if DEBUG:
+            with open('/tmp/matrices.npy', 'wb') as f:
+                np.save(f, Kredred)
+                np.save(f, Mredred)
+        # Solve of the global modal problem
         nmodes = nmodes or rightVP.shape[0] - 2
         # initial vector - mandatory to get same results on different platforms
-        v0 = rightVP.Kfact(np.random.rand(Kredred.shape[0]) - 0.5)
-        omredred, evredred = scipy.sparse.linalg.eigs(rightVP, k=nmodes, which='LR', v0=v0,
-                                                      maxiter=1000*nmodes)
+        v0 = scipy.sparse.linalg.splu(Kredred).solve(np.random.rand(Kredred.shape[0]) - 0.5)
+        # we use the shift and invert strategy of arpack in order to get the lowest eigenvalues
+        omredred, evredred = scipy.sparse.linalg.eigs(Kredred, M=Mredred, which='LM', k=nmodes,
+                                                      v0=v0, sigma=0, maxiter=1000*nmodes)
 
-        # tri des valeurs propres
-        omredred = np.sqrt(1. / omredred) / 2. / np.pi
+        # sort the eigenvalues
+        omredred = np.sqrt(omredred) / 2. / np.pi
         tri = np.real(omredred).argsort()
-        # print(omredred.shape,evredred.shape)
         omredred = omredred[tri]
         evredred = evredred[:, tri]
-        # print(omredred.shape,evredred.shape)
 
         # Switch back to physical space
         evred = T.dot(evredred)
@@ -640,31 +651,6 @@ class Structure(WithEmbeddedObjects):
         Kred = scipy.sparse.block_diag(Kred)
         Mred = scipy.sparse.block_diag(Mred)
         return Kred, Mred, allModes
-
-
-class NonSymEVP(scipy.sparse.linalg.LinearOperator):
-
-    def __init__(self, lMatrices, side='Right'):
-
-        self.K = scipy.sparse.csc_matrix(lMatrices[0])
-        self.M = lMatrices[1]
-        self.shape = self.K.shape
-        self.Kfact = scipy.sparse.linalg.factorized(self.K)
-
-        if side[0].lower() == 'r':
-            print('\nFactorizing - Looking for right eigenvectors \n')
-        elif side[0].lower() == 'l':
-            print('\nFactorizing - Looking for left eigenvectors \n')
-
-    def _matvec(self, x):
-        Mx = np.real(self.M.dot(x))
-        sol = self.Kfact(Mx)
-        return np.real(sol)
-
-    def _rmatvec(self, x):
-        Mx = np.real(self.M.dot(x))
-        sol = self.Kfact(Mx)
-        return np.real(sol)
 
 
 def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=True,
