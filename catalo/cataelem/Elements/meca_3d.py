@@ -1011,6 +1011,7 @@ class MECA_HEXA20(Element):
         OP.RIGI_MECA(te=11,
             para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                      (SP.PMATERC, LC.CMATERC), (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
+                     (SP.PTEMPSR, CTEMPSR),
                      ),
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),

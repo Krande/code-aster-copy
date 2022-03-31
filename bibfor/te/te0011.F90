@@ -30,6 +30,7 @@ implicit none
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/get_elas_id.h"
+#include "asterfort/tecach.h"
 !
     character(len=16), intent(in) :: option
     character(len=16), intent(in) :: nomte
@@ -51,7 +52,7 @@ implicit none
     real(kind=8) :: bary(3)
     integer :: igeom, ipoids, ivf, idfde, idim
     character(len=4) :: fami
-    integer :: elas_id
+    integer :: elas_id, iret, itemps
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,6 +83,13 @@ implicit none
 ! - Material parameters
 !
     call jevech('PMATERC', 'L', imate)
+!
+! - Time
+!
+    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemps)
+    if (itemps .ne. 0) then
+        instan = zr(itemps)
+    endif
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
 !
