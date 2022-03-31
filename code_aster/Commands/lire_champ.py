@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,8 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (FieldOnCellsReal, FieldOnNodesReal,
-                       ConstantFieldOnCellsReal)
+from ..Objects import FieldOnCellsReal, FieldOnNodesReal, ConstantFieldOnCellsReal
 from ..Supervis import ExecuteCommand
 
 
@@ -29,6 +28,7 @@ class FieldReader(ExecuteCommand):
     :class:`~code_aster.Objects.FieldOnCellsReal` or
     :class:`~code_aster.Objects.FieldOnNodesReal` or
     :class:`~code_aster.Objects.ConstantFieldOnCellsReal`."""
+
     command_name = "LIRE_CHAMP"
 
     def create_result(self, keywords):
@@ -37,19 +37,31 @@ class FieldReader(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        location = keywords["TYPE_CHAM"][:5]
+        # Analysis of type of field
+        location, quantity, typ = keywords["TYPE_CHAM"].split("_")
 
-        if location == "CART_":
+        if location == "CART":
             if "MAILLAGE" in keywords:
                 mesh = keywords["MAILLAGE"]
             else:
                 mesh = keywords["MODELE"].getMesh()
-            self._result = ConstantFieldOnCellsReal(mesh)
-        elif location == "NOEU_":
-            self._result = FieldOnNodesReal()
+
+            if typ == "R":
+                self._result = ConstantFieldOnCellsReal(mesh)
+            else:
+                raise NotImplementedError("Output for LIRE_CHAMP not defined")
+
+        elif location == "NOEU":
+            if typ == "R":
+                self._result = FieldOnNodesReal()
+            else:
+                raise NotImplementedError("Output for LIRE_CHAMP not defined")
+
         else:
-            # ELGA_
-            self._result = FieldOnCellsReal()
+            if typ == "R":
+                self._result = FieldOnCellsReal()
+            else:
+                raise NotImplementedError("Output for LIRE_CHAMP not defined")
 
     def post_exec(self, keywords):
         """Set member.
@@ -57,12 +69,12 @@ class FieldReader(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        location = keywords["TYPE_CHAM"][:5]
+        # Analysis of type of field
+        location, quantity, typ = keywords["TYPE_CHAM"].split("_")
 
-        if location == "NOEU_":
+        if location == "NOEU":
             self._result.setMesh(keywords["MAILLAGE"])
             self._result.build()
-
 
 
 LIRE_CHAMP = FieldReader.run
