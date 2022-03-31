@@ -26,8 +26,8 @@
 
 #include "astercxx.h"
 
-#include "DataFields/FieldOnCells.h"
 #include "DataFields/ConstantFieldOnCells.h"
+#include "DataFields/FieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Meshes/BaseMesh.h"
 #include "Modeling/Model.h"

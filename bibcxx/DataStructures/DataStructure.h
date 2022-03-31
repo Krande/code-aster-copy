@@ -139,6 +139,8 @@ class DataStructure {
 
     void setTitle( const std::string );
 
+    std::string getTitle();
+
     /**
      * @brief Function membre getType
      * @return le type de la sd

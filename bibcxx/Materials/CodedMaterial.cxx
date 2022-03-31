@@ -61,8 +61,7 @@ bool CodedMaterial::allocate( bool force ) {
     materName.resize( 24, ' ' );
     std::string mate = blanc;
     bool thm( _model->existsThm() );
-    // TODO existsTher ?
-    bool ther( false );
+    bool ther = _model->isThermal();
     std::string strJeveuxBase( "G" );
     CALLO_RCMFMC( materName, mate, (ASTERLOGICAL *)&thm, (ASTERLOGICAL *)&ther, getName(),
                   strJeveuxBase );

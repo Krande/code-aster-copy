@@ -24,16 +24,18 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Utilities/CapyConvertibleValue.h"
-#include <stdexcept>
-#include <list>
-#include <string>
 #include "astercxx.h"
-#include "Modeling/Model.h"
-#include "MemoryManager/JeveuxVector.h"
+
 #include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "Modeling/Model.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
+#include "Utilities/CapyConvertibleValue.h"
+
+#include <list>
+#include <stdexcept>
+#include <string>
 
 class Contact : public DataStructure {
   private:
@@ -146,11 +148,12 @@ class Contact : public DataStructure {
     // lac contact
     /** @brief V I  ".CONTACT.PTRDCLC" */
     JeveuxVectorLong _ptrdclc;
+
   public:
     /**
-    * @typedef ContactPt
-    * @brief Pointeur intelligent vers un Contact
-    */
+     * @typedef ContactPt
+     * @brief Pointeur intelligent vers un Contact
+     */
     typedef std::shared_ptr< Contact > ContactPtr;
     /**
      * @brief Constructeur
@@ -166,14 +169,14 @@ class Contact : public DataStructure {
      */
     Contact( const ModelPtr model );
 
-    ModelPtr getModel( ) const;
+    ModelPtr getModel() const;
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const;
 };
 
 /**
-* @typedef ContactPt
-* @brief Pointeur intelligent vers un Contact
-*/
+ * @typedef ContactPt
+ * @brief Pointeur intelligent vers un Contact
+ */
 typedef std::shared_ptr< Contact > ContactPtr;
 
 #endif /* CONTACT_H_ */

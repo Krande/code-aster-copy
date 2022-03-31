@@ -210,3 +210,18 @@ void DataStructure::setTitle( const std::string title ) {
     ( *_title )[0] = title;
     CALL_JEDEMA();
 }
+
+
+std::string DataStructure::getTitle( ) {
+    if(!_title->exists()){
+        return std::string();
+    }
+
+    CALL_JEMARQ();
+    _title->updateValuePointer();
+
+    std::string title = ( *_title )[0].toString();
+    CALL_JEDEMA();
+
+    return title;
+}

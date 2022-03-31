@@ -42,7 +42,6 @@
 class ElementaryCharacteristics;
 typedef std::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
 
-
 /**
  * @class FieldOnCells
  * @brief Template class for FieldOnCells
@@ -70,7 +69,7 @@ class FieldOnCells : public DataField {
      * @brief Constructor
      * @param name Jeveux name of the field
      */
-    FieldOnCells( const std::string name)
+    FieldOnCells( const std::string name )
         : DataField( name, "CHAM_ELEM" ),
           _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
@@ -88,8 +87,8 @@ class FieldOnCells : public DataField {
      * VARI_ELGA)
      * @param typcham Type de champ à calculer
      */
-    FieldOnCells(const ModelPtr &model, const BehaviourPropertyPtr behaviour,
-                 const std::string& typcham,const ElementaryCharacteristicsPtr carael = nullptr);
+    FieldOnCells( const ModelPtr &model, const BehaviourPropertyPtr behaviour,
+                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr );
 
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {
@@ -206,8 +205,7 @@ class FieldOnCells : public DataField {
             CALL_JEDEMA();
 
             if ( ligrel.substr( 0, 8 ) == getName().substr( 0, 8 ) ) {
-                setDescription(
-                    std::make_shared< FiniteElementDescriptor >( ligrel, getMesh() ) );
+                setDescription( std::make_shared< FiniteElementDescriptor >( ligrel, getMesh() ) );
             }
         }
         return true;

@@ -35,7 +35,7 @@
  * @brief Classe definissant une charge thermique sd_char_chth
  * @author Jean-Pierre Lefebvre
  */
-template< typename ConstantFieldOnCellsType>
+template < typename ConstantFieldOnCellsType >
 class ThermalLoadDescription : public DataStructure {
 
   public:
@@ -72,32 +72,35 @@ class ThermalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _tExt;
 
   public:
-
     ThermalLoadDescription( void ) = delete;
 
-        /** @brief Constructeur */
-    ThermalLoadDescription( const std::string &name, const ModelPtr &currentModel ):
-        DataStructure( name, 13, "CHAR_CHTH" ),
-        _model( currentModel ),
-        _modelName( getName() + ".MODEL.NOMO" ), _convection( getName() + ".CONVE.VALE" ),
-        _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
-                                                                    _model->getMesh() ) ),
-        _cimpo( std::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
-        _cmult( std::make_shared< ConstantFieldOnCellsReal >(
-                                                                getName() + ".CMULT", _FEDesc ) ),
-        _coefh( std::make_shared< ConstantFieldOnCellsType >( getName() + ".COEFH", _FEDesc ) ),
-        _flunl( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUNL", _FEDesc ) ),
-        _flure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLURE", _FEDesc ) ),
-        _flur2( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUR2", _FEDesc ) ),
-        _grain( std::make_shared< ConstantFieldOnCellsType >( getName() + ".GRAIN", _FEDesc ) ),
-        _hechp( std::make_shared< ConstantFieldOnCellsType >( getName() + ".HECHP", _FEDesc ) ),
-        _soure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SOURE", _FEDesc ) ),
-        _tExt( std::make_shared< ConstantFieldOnCellsType >( getName() + ".T_EXT", _FEDesc ) ){};
+    /** @brief Constructeur */
+    ThermalLoadDescription( const std::string &name, const ModelPtr &currentModel )
+        : DataStructure( name, 13, "CHAR_CHTH" ),
+          _model( currentModel ),
+          _modelName( getName() + ".MODEL.NOMO" ),
+          _convection( getName() + ".CONVE.VALE" ),
+          _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
+                                                                _model->getMesh() ) ),
+          _cimpo( std::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
+          _cmult( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CMULT", _FEDesc ) ),
+          _coefh( std::make_shared< ConstantFieldOnCellsType >( getName() + ".COEFH", _FEDesc ) ),
+          _flunl( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUNL", _FEDesc ) ),
+          _flure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLURE", _FEDesc ) ),
+          _flur2( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUR2", _FEDesc ) ),
+          _grain( std::make_shared< ConstantFieldOnCellsType >( getName() + ".GRAIN", _FEDesc ) ),
+          _hechp( std::make_shared< ConstantFieldOnCellsType >( getName() + ".HECHP", _FEDesc ) ),
+          _soure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SOURE", _FEDesc ) ),
+          _tExt( std::make_shared< ConstantFieldOnCellsType >( getName() + ".T_EXT", _FEDesc ) ){};
 
     /**
      * @brief Get the finite element descriptor
      */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
+
+    ConstantFieldOnCellsTypePtr getImpositionField() const { return _cimpo; }
+
+    ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; }
 
     /**
      * @brief Get the model
@@ -110,20 +113,16 @@ class ThermalLoadDescription : public DataStructure {
     BaseMeshPtr getMesh() const { return _model->getMesh(); };
 };
 
-
 /**********************************************************/
 /*  Explicit instantiation of template classes
 /**********************************************************/
 
 /** @typedef ThermalLoadDescriptionReal Class d'une charge mécanique réelle */
-typedef ThermalLoadDescription< ConstantFieldOnCellsReal >
-    ThermalLoadDescriptionReal;
+typedef ThermalLoadDescription< ConstantFieldOnCellsReal > ThermalLoadDescriptionReal;
 /** @typedef ThermalLoadDescriptionFunc Class d'une charge mécanique de fonctions */
-typedef ThermalLoadDescription< ConstantFieldOnCellsChar24 >
-    ThermalLoadDescriptionFunction;
+typedef ThermalLoadDescription< ConstantFieldOnCellsChar24 > ThermalLoadDescriptionFunction;
 
-
-template< typename ConstantFieldOnCellsType >
+template < typename ConstantFieldOnCellsType >
 using ThermalLoadDescriptionPtr =
     std::shared_ptr< ThermalLoadDescription< ConstantFieldOnCellsType > >;
 

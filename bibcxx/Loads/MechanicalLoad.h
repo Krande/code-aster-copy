@@ -102,7 +102,7 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
     /**
      * @brief Get the model
      */
-    const MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType > &
+    MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType >
     getMechanicalLoadDescription() const {
         return _mecaLoadDesc;
     };

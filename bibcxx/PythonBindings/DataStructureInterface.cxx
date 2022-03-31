@@ -104,6 +104,13 @@ Arguments:
     title [str]: Title of the *DataStructure*.
         )",
               py::arg( "title" ) )
+        .def( "getTitle", &DataStructure::getTitle,
+              R"(
+Return the tile of the *DataStructure* .
+
+Returns:
+    str: Title of the *DataStructure*.
+        )" )
         .def( "debugPrint", &DataStructure::debugPrint, R"(
 Print the raw content of a *DataStructure* on the selected file.
 

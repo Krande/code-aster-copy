@@ -32,34 +32,26 @@ ElementaryCharacteristics::ElementaryCharacteristics( const std::string name,
     : DataStructure( name, 8, "CARA_ELEM" ),
       _model( model ),
       _mesh( model->getMesh() ),
-      _CARORIEN( new ConstantFieldOnCellsReal( getName() + ".CARORIEN", _mesh ) ),
-      _CARDISCK( new ConstantFieldOnCellsReal( getName() + ".CARDISCK", _mesh ) ),
-      _CARDISCM( new ConstantFieldOnCellsReal( getName() + ".CARDISCM", _mesh ) ),
-      _CARDISCA( new ConstantFieldOnCellsReal( getName() + ".CARDISCA", _mesh ) ),
-      _CARGEOPO( new ConstantFieldOnCellsReal( getName() + ".CARGEOPO", _mesh ) ),
-      _CARGENPO( new ConstantFieldOnCellsReal( getName() + ".CARGENPO", _mesh ) ),
-      _CARCOQUE( new ConstantFieldOnCellsReal( getName() + ".CARCOQUE", _mesh ) ),
-      _CARARCPO( new ConstantFieldOnCellsReal( getName() + ".CARARCPO", _mesh ) ),
-      _CARCABLE( new ConstantFieldOnCellsReal( getName() + ".CARCABLE", _mesh ) ),
-      _CARGENBA( new ConstantFieldOnCellsReal( getName() + ".CARGENBA", _mesh ) ),
-      _CARMASSI( new ConstantFieldOnCellsReal( getName() + ".CARMASSI", _mesh ) ),
-      _CARPOUFL( new ConstantFieldOnCellsReal( getName() + ".CARPOUFL", _mesh ) ),
-      _CANBSP( new FieldOnCellsLong( getName() + ".CANBSP" ) ),
-      _CAFIBR( new FieldOnCellsReal( getName() + ".CAFIBR" ) ),
-      _CARDINFO( new ConstantFieldOnCellsReal( getName() + ".CARDINFO", _mesh ) ),
+      _CARORIEN( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARORIEN", _mesh ) ),
+      _CARDISCK( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARDISCK", _mesh ) ),
+      _CARDISCM( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARDISCM", _mesh ) ),
+      _CARDISCA( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARDISCA", _mesh ) ),
+      _CARGEOPO( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARGEOPO", _mesh ) ),
+      _CARGENPO( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARGENPO", _mesh ) ),
+      _CARCOQUE( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARCOQUE", _mesh ) ),
+      _CARARCPO( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARARCPO", _mesh ) ),
+      _CARCABLE( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARCABLE", _mesh ) ),
+      _CARGENBA( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARGENBA", _mesh ) ),
+      _CARMASSI( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARMASSI", _mesh ) ),
+      _CARPOUFL( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARPOUFL", _mesh ) ),
+      _CANBSP( std::make_shared< FieldOnCellsLong >( getName() + ".CANBSP" ) ),
+      _CAFIBR( std::make_shared< FieldOnCellsReal >( getName() + ".CAFIBR" ) ),
+      _CARDINFO( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARDINFO", _mesh ) ),
       _model_name( JeveuxVectorChar8( getName() + ".MODELE" ) ),
-      _lineic( new ConstantFieldOnCellsChar8( getName() + ".CVENTCXF", _mesh ) ),
-      _infos( new ConstantFieldOnCellsReal( getName() + ".CARDINFO", _mesh ) ),
+      _lineic( std::make_shared< ConstantFieldOnCellsChar8 >( getName() + ".CVENTCXF", _mesh ) ),
+      _infos( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARDINFO", _mesh ) ),
       _isEmpty( true ){};
 
-ModelPtr ElementaryCharacteristics::getModel() const {
-    if ( !_model )
-        throw std::runtime_error( "Model is empty" );
-    return _model;
-};
+ModelPtr ElementaryCharacteristics::getModel() const { return _model; };
 
-BaseMeshPtr ElementaryCharacteristics::getMesh() const {
-    AS_ASSERT( _mesh );
-
-    return _mesh;
-};
+BaseMeshPtr ElementaryCharacteristics::getMesh() const { return _mesh; };

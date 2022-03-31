@@ -24,12 +24,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "Loads/ThermalLoadDescription.h"
+#include "MemoryManager/JeveuxVector.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
@@ -39,7 +38,7 @@
  * @brief Classe definissant une charge thermique (issue d'AFFE_CHAR_THER)
  * @author Jean-Pierre Lefebvre
  */
-template< class ConstantFieldOnCellsType>
+template < class ConstantFieldOnCellsType >
 class ThermalLoad : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.TYPE' */
@@ -70,17 +69,20 @@ class ThermalLoad : public DataStructure {
      */
     ThermalLoad( const std::string name, const ModelPtr &currentModel )
         : DataStructure( name, 8, "CHAR_THER" ),
-        _therLoadDesc( std::make_shared<
-            ThermalLoadDescription< ConstantFieldOnCellsType > >(getName() + ".CHTH",
-                                                                            currentModel )),
+          _therLoadDesc( std::make_shared< ThermalLoadDescription< ConstantFieldOnCellsType > >(
+              getName() + ".CHTH", currentModel ) ),
           _type( getName() + ".TYPE" ){};
 
+    ThermalLoadDescription< ConstantFieldOnCellsType > getThermalLoadDescription() const {
+        return _therLoadDesc;
+    };
 
     /**
      * @brief Get the finite element descriptor
      */
-    FiniteElementDescriptorPtr getFiniteElementDescriptor() const
-    { return _therLoadDesc->getFiniteElementDescriptor(); };
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const {
+        return _therLoadDesc->getFiniteElementDescriptor();
+    };
 
     /**
      * @brief Get the model
@@ -103,13 +105,11 @@ typedef ThermalLoad< ConstantFieldOnCellsReal > ThermalLoadReal;
 typedef ThermalLoad< ConstantFieldOnCellsChar24 > ThermalLoadFunction;
 
 /** @typedef ThermalLoad  */
-template< class ConstantFieldOnCellsType>
-using ThermalLoadPtr =
-    std::shared_ptr< ThermalLoad< ConstantFieldOnCellsType > >;
+template < class ConstantFieldOnCellsType >
+using ThermalLoadPtr = std::shared_ptr< ThermalLoad< ConstantFieldOnCellsType > >;
 
 typedef std::shared_ptr< ThermalLoadReal > ThermalLoadRealPtr;
 typedef std::shared_ptr< ThermalLoadFunction > ThermalLoadFunctionPtr;
-
 
 /** @typedef std::list de ThermalLoad */
 typedef std::list< ThermalLoadRealPtr > ListTherLoadReal;
