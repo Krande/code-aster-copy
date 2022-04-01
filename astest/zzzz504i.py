@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
 # else:
 #     resu.printMedFile('/tmp/seq.resu.med')
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 2)
+MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 
 test.assertAlmostEqual(sfon.getValue(0, 0), 0.0)

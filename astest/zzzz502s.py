@@ -111,7 +111,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         INFO=2,
                         )
 
-DEPL = DYNA.getFieldOnNodesReal("DEPL", 3)
+DEPL = DYNA.getFieldOnNodesReal("DEPL", 2)
 DEPL.setMesh(MA)
 
 # sequantial comparaison
