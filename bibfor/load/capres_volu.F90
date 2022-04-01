@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ use SolidShell_Mesh_module, only : setValueOnFace
 !
 implicit none
 !
+#include "MeshTypes_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -64,24 +65,22 @@ integer, intent(in) :: nbOccPresRep
     real(kind=8), pointer :: mapCmpValeR(:) => null()
     character(len=8), pointer :: mapCmpValeK(:) => null()
     real(kind=8) :: presUserR
-    character(len=8) :: presUserK, cellTypeName
+    character(len=8) :: presUserK
     integer, pointer :: meshTypmail(:) => null()
     character(len=19) :: carte
     character(len=24), parameter :: cellSkinJv = '&&LIST_ELEM'
-    integer, pointer :: cellVoluHexa9(:) => null(), cellSkin(:) => null()
+    integer, pointer :: cellSkin(:) => null()
     integer, pointer :: presCell(:) => null()
     real(kind=8), pointer :: presFaceR(:) => null()
     character(len=8), pointer :: presFaceK(:) => null()
     integer :: nbCellSkin, nbCrack, nbCellHexa9, nbCellMesh
-    integer :: iocc, iCell, iCellVoluHexa9
-    integer :: cellVoluNume, cellTypeNume
+    integer :: iocc, iCell, iCellSkin, cellVoluNume
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Name of CARTE
-!
     carte = load//'.CHME.PRESS'
 !
 ! - Pre-allocation of CARTE
@@ -89,47 +88,37 @@ integer, intent(in) :: nbOccPresRep
 !   NOTHING => already done in capres_skin
 !
 ! - Set name of components
-!
     call jeveuo(carte//'.NCMP', 'E', vk8 = mapCmpName)
     mapCmpName(1) = cmpName(1)
     mapCmpName(2) = cmpName(2)
-!
+
 ! - Access to values
-!
     if (valeType .eq. 'REEL') then
         call jeveuo(carte//'.VALV', 'E', vr = mapCmpValeR)
     else
         call jeveuo(carte//'.VALV', 'E', vk8 = mapCmpValeK)
     endif
-!
+
 ! - Access to mesh
-!
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', nbCellMesh)
     call jeveuo(mesh//'.TYPMAIL', 'L', vi = meshTypmail)
-!
-! - Create list of all volumes
-!
+
+! - Number of HEXA9 cells
     nbCellHexa9 = 0
-    AS_ALLOCATE(vi = cellVoluHexa9, size = nbCellMesh)
     do iCell = 1 , nbCellMesh
-        cellTypeNume = meshTypmail(iCell)
-        call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
-        if (cellTypeName .eq. 'HEXA9') then
+        if (meshTypmail(iCell) .eq. MT_HEXA9) then
             nbCellHexa9 = nbCellHexa9 + 1
-            cellVoluHexa9(nbCellHexa9) = iCell
         endif
     end do
     ASSERT(nbCellHexa9 .gt. 0)
-!
+
 ! - Prepare vector
-!
     AS_ALLOCATE(vi = presCell, size = nbCellHexa9)
     AS_ALLOCATE(vr = presFaceR, size = 2*nbCellHexa9)
     AS_ALLOCATE(vk8 = presFaceK, size = 2*nbCellHexa9)
     presFaceK = '&FOZERO'
-!
+
 ! - Set values in CARTE
-!
     do iocc = 1, nbOccPresRep
 
 ! ----- Get value from user
@@ -154,36 +143,32 @@ integer, intent(in) :: nbOccPresRep
 ! ----- Get volume elements from list of faces
         call setValueOnFace(mesh      ,&
                             presUserR , presUserK,&
-                            nbCellHexa9, cellVoluHexa9 ,&
                             nbCellSkin, cellSkin ,&
                             presCell  , presFaceR, presFaceK)
 !
         call jedetr(cellSkinJv)
     end do
-!
+
 ! - Set values
-!
-    do iCellVoluHexa9 = 1, nbCellHexa9
-        cellVoluNume = presCell(iCellVoluHexa9)
+    do iCellSkin = 1, nbCellSkin
+        cellVoluNume = presCell(iCellSkin)
         if (valeType .eq. 'REEL') then
-            mapCmpValeR(1) = presFaceR(2*(iCellVoluHexa9-1)+1)
-            mapCmpValeR(2) = presFaceR(2*(iCellVoluHexa9-1)+2)
+            mapCmpValeR(1) = presFaceR(2*(iCellSkin-1)+1)
+            mapCmpValeR(2) = presFaceR(2*(iCellSkin-1)+2)
         else
-            mapCmpValeK(1) = presFaceK(2*(iCellVoluHexa9-1)+1)
-            mapCmpValeK(2) = presFaceK(2*(iCellVoluHexa9-1)+2)
+            mapCmpValeK(1) = presFaceK(2*(iCellSkin-1)+1)
+            mapCmpValeK(2) = presFaceK(2*(iCellSkin-1)+2)
         endif
         if (cellVoluNume .ne. 0) then
             call nocart(carte, 3, nbCmp, mode='NUM', nma=1,&
                         limanu=[cellVoluNume])
         endif
     end do
-!
+
 ! - Clean
-!
     AS_DEALLOCATE(vi = presCell)
     AS_DEALLOCATE(vr = presFaceR)
     AS_DEALLOCATE(vk8 = presFaceK)
-    AS_DEALLOCATE(vi = cellVoluHexa9)
 !
     call jedema()
 end subroutine
