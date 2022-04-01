@@ -23,7 +23,7 @@ use crea_maillage_module
 implicit none
 ! ==================================================================================================
 public  :: orieHexa9, setValueOnFace
-private :: isThisQuad
+private :: isThisQuad, getVolumeLinkedToSurface
 ! ==================================================================================================
 private
 #include "asterf_types.h"
@@ -44,6 +44,72 @@ contains
 ! ==================================================================================================
 ! --------------------------------------------------------------------------------------------------
 !
+! getVolumeLinkedToSurface
+!
+! Get volumic cell (give by voluCellType) linked to surface cell (always QUAD4)
+!
+! --------------------------------------------------------------------------------------------------
+subroutine getVolumeLinkedToSurface(typmail, cnxinvLoncum, cnxinvCell,&
+    cellSkinNode, voluCellType,&
+    cellVoluNume)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    integer, pointer :: typmail(:)
+    integer, pointer :: cnxinvLoncum(:), cnxinvCell(:)
+    integer, pointer :: cellSkinNode(:)
+    integer, intent(in) :: voluCellType
+    integer, intent(out) :: cellVoluNume
+! - Local
+    integer :: nbVoluLinkedToSurf, iVoluLinked
+    integer :: nbCellLinkedToNode, iCellLinked, cellLinkedNume
+    integer :: iNodeSkin, nodeSkinCurr
+    integer :: cellLinkedType
+    integer, parameter :: nbMaxConnected = 15
+    integer :: voluLinkedToNode(nbMaxConnected, 2)
+    aster_logical :: lVoluFind
+!   ------------------------------------------------------------------------------------------------
+!
+    nbVoluLinkedToSurf = 0
+    voluLinkedToNode = 0
+    cellVoluNume = 0
+
+    do iNodeSkin = 1, 4
+        nodeSkinCurr = cellSkinNode(iNodeSkin)
+        nbCellLinkedToNode = &
+          cnxinvLoncum(nodeSkinCurr+1) - cnxinvLoncum(nodeSkinCurr)
+        do iCellLinked = 1, nbCellLinkedToNode
+            cellLinkedNume = cnxinvCell(cnxinvLoncum(nodeSkinCurr)-1+iCellLinked)
+            cellLinkedType = typmail(cellLinkedNume)
+            if (cellLinkedType .eq. voluCellType) then
+                lVoluFind = ASTER_FALSE
+                do iVoluLinked = 1, nbVoluLinkedToSurf
+                    if (voluLinkedToNode(iVoluLinked, 1) .eq. cellLinkedNume) then
+                        voluLinkedToNode(iVoluLinked, 2) = &
+                            voluLinkedToNode(iVoluLinked, 2) + 1
+                        lVoluFind = ASTER_TRUE
+                    endif
+                end do
+                if (.not. lVoluFInd) then
+                    nbVoluLinkedToSurf = nbVoluLinkedToSurf + 1
+                    ASSERT(nbVoluLinkedToSurf .le. nbMaxConnected)
+                    voluLinkedToNode(nbVoluLinkedToSurf, 1) = cellLinkedNume
+                    voluLinkedToNode(nbVoluLinkedToSurf, 2) = 1
+                endif
+            endif
+        end do
+    end do
+
+! - Find the volume cell with all nodes belong to surface cell
+    do iVoluLinked = 1, nbVoluLinkedToSurf
+        if (voluLinkedToNode(iVoluLinked, 2) .eq. 4) then
+            cellVoluNume = voluLinkedToNode(iVoluLinked, 1)
+        endif
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
 ! orieHexa9
 !
 ! Orientation of Hexa9 cells for solid shell
@@ -59,23 +125,19 @@ subroutine orieHexa9(iOcc, mesh)
     character(len=8), intent(in) :: mesh
 ! - Local
     character(len=16), parameter :: keywfact  = 'COQUE_SOLIDE'
-    integer :: iVoluNode, iSurfCell, iSurfNode
-    integer :: voluCellNume, surfCellNume
-    integer :: nbSurfCell, surfCellType, surfNodeCurr
-    integer :: voluNodeHexa(8), surfNodeQuad(4)
-    integer :: voluLinkedToNode(15, 2), nbVoluLinkedToSurf, iVoluLinked
-    integer :: nbCellLinkedToNode
-    integer :: iCellLinked, cellLinkedNume, cellLinkedType, iExist
+    integer :: iCellSkin
+    integer :: cellVoluNume, cellSkinNume
+    integer :: nbCellSkin, cellSkinType
+    integer :: iExist, iDUmmy
     character(len=16) :: suffix, answer
     character(len=19), parameter :: cnxinv = '&&ORIHEXA9.INV'
-    character(len=24), parameter :: jvSurfCell = '&&ORIHEXA9.SURF'
-    integer :: fp(24), iter, aux, iDummy
+    character(len=24), parameter :: jvCellSkin = '&&ORIHEXA9.SURF'
+    integer :: fp(24), iter, aux
     integer, pointer :: typmail(:) => null()
     integer, pointer :: surfCell(:) => null()
-    integer, pointer :: surfNode(:) => null()
-    integer, pointer :: voluNode(:) => null()
+    integer, pointer :: cellVoluNode(:) => null(), cellSkinNode(:) => null()
     integer, pointer :: cnxinvLoncum(:) => null(), cnxinvCell(:) => null()
-    aster_logical :: lFace1, lFace2, lHexaInMesh, lPentaInMesh, lVoluFind
+    aster_logical :: lCellSkin1, lCellSkin2, lHexaInMesh, lPentaInMesh
 !   ------------------------------------------------------------------------------------------------
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
@@ -93,11 +155,11 @@ subroutine orieHexa9(iOcc, mesh)
     call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', vi = cnxinvLoncum)
     call jeveuo(jexnum(cnxinv, 1), 'L', vi = cnxinvCell)
 
-! - Get list of surfacic cells
-    suffix    = '_SURF'
-    call getelem(mesh      , keywfact, iocc, ' ', jvSurfCell,&
-                 nbSurfCell, suffix)
-    if (nbSurfCell .eq. 0) then
+! - Get list of skin cells
+    suffix = '_SURF'
+    call getelem(mesh, keywfact, iocc, ' ', jvCellSkin,&
+                 nbCellSkin, suffix)
+    if (nbCellSkin .eq. 0) then
         if (lHexaInMesh) then
             call utmess('F', 'SOLIDSHELL1_2')
         endif
@@ -107,103 +169,69 @@ subroutine orieHexa9(iOcc, mesh)
         call utmess('A', 'SOLIDSHELL1_3')
     endif
 
-! - Loop on surfacic cells
-    call jeveuo(jvSurfCell, 'L', vi = surfCell)
-    do iSurfCell = 1, nbSurfCell
-        surfCellNume = surfCell(iSurfCell)
-        surfCellType = typmail(surfCellNume)
-        if (surfCellType .ne. MT_QUAD4) then
+! - Loop on skin cells
+    call jeveuo(jvCellSkin, 'L', vi = surfCell)
+    do iCellSkin = 1, nbCellSkin
+        cellSkinNume = surfCell(iCellSkin)
+        cellSkinType = typmail(cellSkinNume)
+        if (cellSkinType .ne. MT_QUAD4) then
             call utmess('F', 'SOLIDSHELL1_1')
         endif
-        ASSERT(surfCellNume .ne. 0)
+        ASSERT(cellSkinNume .ne. 0)
+
 ! ----- Look for volumic cells attached to current surfacic cell
-        nbVoluLinkedToSurf = 0
-        voluLinkedToNode   = 0
-        call jeveuo(jexnum(mesh//'.CONNEX', surfCellNume), 'L', vi = surfNode)
-        do iSurfNode = 1, 4
-            surfNodeQuad(iSurfNode) = surfNode(iSurfNode)
-            surfNodeCurr = surfNodeQuad(iSurfNode)
-            nbCellLinkedToNode = &
-              cnxinvLoncum(surfNodeCurr+1) - cnxinvLoncum(surfNodeCurr)
-            do iCellLinked = 1, nbCellLinkedToNode
-                cellLinkedNume = cnxinvCell(cnxinvLoncum(surfNodeCurr)+iCellLinked)
-                cellLinkedType = typmail(cellLinkedNume)
-                if (cellLinkedType .eq. MT_HEXA8) then
-                    lVoluFind = ASTER_FALSE
-                    do iVoluLinked = 1, nbVoluLinkedToSurf
-                        if (voluLinkedToNode(iVoluLinked, 1) .eq. cellLinkedNume) then
-                            voluLinkedToNode(iVoluLinked, 2) = &
-                                voluLinkedToNode(iVoluLinked, 2) + 1
-                            lVoluFind = ASTER_TRUE
-                        endif
-                    end do
-                    if (.not. lVoluFInd) then
-                        nbVoluLinkedToSurf = nbVoluLinkedToSurf + 1
-                        ASSERT(nbVoluLinkedToSurf .le. 15)
-                        voluLinkedToNode(nbVoluLinkedToSurf, 1) = cellLinkedNume
-                        voluLinkedToNode(nbVoluLinkedToSurf, 2) = 1
-                    endif
-                endif
-            end do
-        end do
-        voluCellNume = 0
-        do iVoluLinked = 1, nbVoluLinkedToSurf
-            if (voluLinkedToNode(iVoluLinked, 2) .eq. 4) then
-                voluCellNume = voluLinkedToNode(iVoluLinked, 1)
-            endif
-        end do
-        ASSERT(voluCellNume .ne. 0)
+        call jeveuo(jexnum(mesh//'.CONNEX', cellSkinNume), 'L', vi = cellSkinNode)
+        call getVolumeLinkedToSurface(typmail, cnxinvLoncum, cnxinvCell,&
+                                      cellSkinNode, MT_HEXA8,&
+                                      cellVoluNume)
+        ASSERT(cellVoluNume .ne. 0)
 
 ! ----- Access to volumic cell
-        call jeveuo(jexnum(mesh//'.CONNEX', voluCellNume), 'E', vi = voluNode)
-        do iVoluNode = 1, 8
-            voluNodeHexa(iVoluNode) = voluNode(iVoluNode)
-        end do
-
-        fp(1)  = voluNodeHexa(1)
-        fp(2)  = voluNodeHexa(2)
-        fp(3)  = voluNodeHexa(3)
-        fp(4)  = voluNodeHexa(4)
-        fp(5)  = voluNodeHexa(5)
-        fp(6)  = voluNodeHexa(6)
-        fp(7)  = voluNodeHexa(7)
-        fp(8)  = voluNodeHexa(8)
-        fp(9)  = voluNodeHexa(5)
-        fp(10) = voluNodeHexa(1)
-        fp(11) = voluNodeHexa(4)
-        fp(12) = voluNodeHexa(8)
-        fp(13) = voluNodeHexa(6)
-        fp(14) = voluNodeHexa(2)
-        fp(15) = voluNodeHexa(3)
-        fp(16) = voluNodeHexa(7)
-        fp(17) = voluNodeHexa(5)
-        fp(18) = voluNodeHexa(1)
-        fp(19) = voluNodeHexa(2)
-        fp(20) = voluNodeHexa(6)
-        fp(21) = voluNodeHexa(8)
-        fp(22) = voluNodeHexa(4)
-        fp(23) = voluNodeHexa(3)
-        fp(24) = voluNodeHexa(7)
+        call jeveuo(jexnum(mesh//'.CONNEX', cellVoluNume), 'E', vi = cellVoluNode)
+        fp(1)  = cellVoluNode(1)
+        fp(2)  = cellVoluNode(2)
+        fp(3)  = cellVoluNode(3)
+        fp(4)  = cellVoluNode(4)
+        fp(5)  = cellVoluNode(5)
+        fp(6)  = cellVoluNode(6)
+        fp(7)  = cellVoluNode(7)
+        fp(8)  = cellVoluNode(8)
+        fp(9)  = cellVoluNode(5)
+        fp(10) = cellVoluNode(1)
+        fp(11) = cellVoluNode(4)
+        fp(12) = cellVoluNode(8)
+        fp(13) = cellVoluNode(6)
+        fp(14) = cellVoluNode(2)
+        fp(15) = cellVoluNode(3)
+        fp(16) = cellVoluNode(7)
+        fp(17) = cellVoluNode(5)
+        fp(18) = cellVoluNode(1)
+        fp(19) = cellVoluNode(2)
+        fp(20) = cellVoluNode(6)
+        fp(21) = cellVoluNode(8)
+        fp(22) = cellVoluNode(4)
+        fp(23) = cellVoluNode(3)
+        fp(24) = cellVoluNode(7)
         do iter = 1, 3
             aux = 8*(iter-1)
-            lFace1 = isThisQuad(fp(1+aux:4+aux), surfNodeQuad(:))
-            lFace2 = isThisQuad(fp(5+aux:8+aux), surfNodeQuad(:))
-            if (lFace1 .or. lFace2) then
-                voluNode(1) = fp(1+aux)
-                voluNode(2) = fp(2+aux)
-                voluNode(3) = fp(3+aux)
-                voluNode(4) = fp(4+aux)
-                voluNode(5) = fp(5+aux)
-                voluNode(6) = fp(6+aux)
-                voluNode(7) = fp(7+aux)
-                voluNode(8) = fp(8+aux)
+            lCellSkin1 = isThisQuad(fp(1+aux:4+aux), cellSkinNode(:))
+            lCellSkin2 = isThisQuad(fp(5+aux:8+aux), cellSkinNode(:))
+            if (lCellSkin1 .or. lCellSkin2) then
+                cellVoluNode(1) = fp(1+aux)
+                cellVoluNode(2) = fp(2+aux)
+                cellVoluNode(3) = fp(3+aux)
+                cellVoluNode(4) = fp(4+aux)
+                cellVoluNode(5) = fp(5+aux)
+                cellVoluNode(6) = fp(6+aux)
+                cellVoluNode(7) = fp(7+aux)
+                cellVoluNode(8) = fp(8+aux)
             end if
         end do
     end do
 !
 99  continue
 !
-    call jedetr(jvSurfCell)
+    call jedetr(jvCellSkin)
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
@@ -250,8 +278,6 @@ end function
 ! In  mesh             : mesh
 ! In  valeR            : value to set on face (real)
 ! In  valeK            : value to set on face (string)
-! In  nbCellVolu       : total number of volumic cells
-! Ptr cellVolu         : pointer to volumic cells
 ! In  nbCellSkin       : total number of skin cells
 ! Ptr cellSkin         : pointer to skin cells
 ! Ptr valeCell         : pointer to index of volumic cell where value is affected
@@ -261,7 +287,6 @@ end function
 ! --------------------------------------------------------------------------------------------------
 subroutine setValueOnFace(mesh      ,&
                           valeR     , valeK   ,&
-                          nbCellVolu, cellVolu,&
                           nbCellSkin, cellSkin,&
                           valeCell  , valeFaceR , valeFaceK)
 !   ------------------------------------------------------------------------------------------------
@@ -269,71 +294,80 @@ subroutine setValueOnFace(mesh      ,&
     character(len=8), intent(in) :: mesh
     real(kind=8)    , intent(in) :: valeR
     character(len=8), intent(in) :: valeK
-    integer, intent(in)          :: nbCellVolu
-    integer, pointer             :: cellVolu(:)
     integer, intent(in)          :: nbCellSkin
     integer, pointer             :: cellSkin(:)
     integer, pointer             :: valeCell(:)
     real(kind=8), pointer        :: valeFaceR(:)
     character(len=8), pointer    :: valeFaceK(:)
 ! - Local
-    integer :: iCellSkin, iNode, iCellVolu
-    integer :: cellSkinNume, cellVoluNume, cellTypeNume
-    character(len=8) :: cellTypeName, cellSkinName
-    integer :: nodeSkin(4), nodeFaceInf(4), nodeFaceSup(4)
-    integer, pointer :: meshConnex(:) => null(), meshTypmail(:) => null()
-    aster_logical :: lFaceInf, lFaceSup
+    integer :: iCellSkin, iCellVolu
+    integer :: cellSkinNume, cellVoluNume, cellSkinType
+    character(len=8) :: cellSkinName
+    integer :: voluSkinNodeInf(4), voluSkinNodeSup(4)
+    integer, pointer :: cellSkinNode(:) => null(), meshTypmail(:) => null()
+    integer, pointer :: cellVoluNode(:) => null()
+    aster_logical :: lVoluSkinInf, lVoluSkinSup
+    character(len=19), parameter :: cnxinv = '&&ORIHEXA9.INV'
+    integer :: iExist, iDummy
+
+    integer, pointer :: cnxinvLoncum(:) => null(), cnxinvCell(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi = meshTypmail)
+
+! - Prepare reverse connectivity
+    call jeexin(cnxinv, iExist)
+    if (iExist .eq. 0) then
+        iDummy = 0
+        call cncinv(mesh, [iDummy], 0, 'V', cnxinv)
+    endif
+    call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', vi = cnxinvLoncum)
+    call jeveuo(jexnum(cnxinv, 1), 'L', vi = cnxinvCell)
 !
+    iCellVolu = 0
     do iCellSkin = 1, nbCellSkin
 
-! ----- Get current face
+! ----- Get current skin cell
         cellSkinNume = cellSkin(iCellSkin)
         ASSERT(cellSkinNume .gt. 0)
-        cellTypeNume = meshTypmail(cellSkinNume)
-        call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
-        if (cellTypeName .ne. 'QUAD4') then
+        cellSkinType = meshTypmail(cellSkinNume)
+        if (cellSkinType .ne. MT_QUAD4) then
             call jenuno(jexnum(mesh//'.NOMMAI', cellSkinNume), cellSkinName)
-            call utmess('F', 'CHARGES_9', sk = cellSkinName)
+            call utmess('F', 'SOLIDSHELL1_7', sk = cellSkinName)
         endif
 
-! ----- Get nodes
-        call jeveuo(jexnum(mesh//'.CONNEX', cellSkinNume), 'E', vi = meshConnex)
-        do iNode = 1, 4
-            nodeSkin(iNode) = meshConnex(iNode)
-        end do
+! ----- Get nodes of this skin cell
+        call jeveuo(jexnum(mesh//'.CONNEX', cellSkinNume), 'E', vi = cellSkinNode)
 
-! ----- Search volume and set to faces of this volume
-        lFaceInf = ASTER_FALSE
-        lFaceSup = ASTER_FALSE
-        do iCellVolu = 1, nbCellVolu
-            cellVoluNume = cellVolu(iCellVolu)
-            call jeveuo(jexnum(mesh//'.CONNEX', cellVoluNume), 'E', vi = meshConnex)
-            do iNode = 1, 4
-                nodeFaceInf(iNode) = meshConnex(iNode)
-                nodeFaceSup(iNode) = meshConnex(iNode+4)
-            end do
-            lFaceInf = isThisQuad(nodeSkin, nodeFaceInf)
-            valeCell(iCellVolu) = cellVoluNume
-            if (lFaceInf) then
-                valeFaceR(2*(iCellVolu-1)+1) = valeR
-                valeFaceK(2*(iCellVolu-1)+1) = valeK
-            endif
-            lFaceSup = isThisQuad(nodeSkin, nodeFaceSup)
-            if (lFaceSup) then
-                valeFaceR(2*(iCellVolu-1)+2) = valeR
-                valeFaceK(2*(iCellVolu-1)+2) = valeK
-            endif
-            if (lFaceInf .or. lFaceSup) then
-                exit
-            endif
-        end do
-        if (.not. lFaceInf .and. .not. lFaceSup) then
+! ----- Look for volumic cells attached to current surfacic cell
+        call getVolumeLinkedToSurface(meshTypmail, cnxinvLoncum, cnxinvCell,&
+                                      cellSkinNode, MT_HEXA9,&
+                                      cellVoluNume)
+        if (cellVoluNume .eq. 0) then
+            call utmess('F', 'SOLIDSHELL1_6')
+        endif
+
+! ----- Get nodes of this volume
+        call jeveuo(jexnum(mesh//'.CONNEX', cellVoluNume), 'E', vi = cellVoluNode)
+
+! ----- Search superior or inferior face
+        voluSkinNodeInf(1:4) = cellVoluNode(1:4)
+        voluSkinNodeSup(1:4) = cellVoluNode(5:8)
+        lVoluSkinInf = isThisQuad(cellSkinNode, voluSkinNodeInf)
+        valeCell(iCellSkin) = cellVoluNume
+        if (lVoluSkinInf) then
+            valeFaceR(2*(iCellSkin-1)+1) = valeR
+            valeFaceK(2*(iCellSkin-1)+1) = valeK
+        endif
+        lVoluSkinSup = isThisQuad(cellSkinNode, voluSkinNodeSup)
+        if (lVoluSkinSup) then
+            valeFaceR(2*(iCellSkin-1)+2) = valeR
+            valeFaceK(2*(iCellSkin-1)+2) = valeK
+        endif
+        if (.not. lVoluSkinInf .and. .not. lVoluSkinSup) then
             call utmess('F', 'CHARGES_10')
         endif
-        if (lFaceInf .and. lFaceSup) then
+        if (lVoluSkinInf .and. lVoluSkinSup) then
             ASSERT(ASTER_FALSE)
         endif
     end do
