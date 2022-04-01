@@ -309,6 +309,7 @@ _F(INST=0.1,
                    VALE_CALC=0.04051064431282782,
                    VALE_REFE=0.04763,
                    REFERENCE='SOURCE_EXTERNE',
+                   #REFERENCE='NON_DEFINI',
                    CRITERE='RELATIF',
                    PRECISION=0.1494735,),
                    
