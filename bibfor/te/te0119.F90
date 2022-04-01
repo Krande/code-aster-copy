@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,36 +25,40 @@ subroutine te0119(option, nomte)
 #include "asterfort/utmess.h"
 !
     character(len=16) :: option, nomte
-! ======================================================================
-!  BUT:  CALCUL DE L'OPTION VERI_CARA_ELEM
-! ......................................................................
 !
-    character(len=8) :: alias8
-    character(len=24) :: valk(3)
+! --------------------------------------------------------------------------------------------------
+!
+!                                   OPTION VERI_CARA_ELEM
+!
+!
+!   Vérification du contenu des cartes sur les éléments
+!
+!
+!   Remarque : Si la vérification est faite içi, il est inutile de la faire dans "veri_affe_carte"
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: j1, ibid, iadzi, iazk24
-    real(kind=8) :: excent
-    character(len=3) :: cmod
-!     ------------------------------------------------------------------
+    real(kind=8)        :: excent
+    character(len=3)    :: cmod
+    character(len=8)    :: alias8
+    character(len=24)   :: valk(3)
 !
+! --------------------------------------------------------------------------------------------------
 !
-!     1. RECUPERATION DU CODE DE LA MODELISATION (CMOD) :
-!     ---------------------------------------------------
+!   Récupération du code de la modélisation
     call teattr('S', 'ALIAS8', alias8, ibid)
     cmod=alias8(3:5)
 !
-!
-!     2. VERIFICATION QUE L'EXCENTREMENT EST NUL POUR
-!        CERTAINES MODELISATIONS: COQUE_3D
-!     --------------------------------------------------
+!   Vérification que l'excentrement est nul pour COQUE_3D
     if ( cmod .eq. 'CQ3') then
         call jevech('PCACOQU', 'L', j1)
-            excent=zr(j1-1+6)
+        excent = zr(j1-1+6)
         if (nint(excent) .ne. 0) then
             call tecael(iadzi, iazk24)
             valk(1)=zk24(iazk24-1+3)(1:8)
             call utmess('F', 'CALCULEL2_31', sk=valk(1))
         endif
     endif
-!
 !
 end subroutine

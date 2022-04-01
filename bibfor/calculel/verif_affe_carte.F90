@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
     character(len=24) :: lgrma(4)
     character(len=16) :: nomte
     character(len=80) :: valk(5)
-    integer :: nbgrel,igrel,kcmp,nbcmp,nbop,nbte,k1,iexi,ient,deb1,iad1
+    integer :: nbgrel,igrel,kcmp,nbcmp,nbop,nbte,k1,iexi,ient,iad1
     integer :: jnocmp,numgd,joptte,jligrmo,n1,kop,ioptte,joptmod,jvale
     integer :: jmodeloc,nbin,kin,moloc,nbma,ima,iret,te,nbmapb,nbgrma
     integer :: nucalc,k,kma,nec,nbma_verif,nbgdmx,code,decal,ico,kcmp2
@@ -77,21 +77,19 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
     integer, pointer :: ptma(:) => null()
     integer, pointer :: dg(:) => null()
     integer, pointer :: typmail(:) => null()
-    integer :: list_ma_pb(5),typq4,typt3,typq9,typt7
-    aster_logical    :: verif_coef_drz, verif_excent_cq3
+    integer          :: list_ma_pb(5),typq4,typt3
+    aster_logical    :: verif_coef_drz
     aster_logical    :: exiq4_drz_nook,exiq4_coef_drz
-    aster_logical    :: exit3_coef_drz,exi_excent_cq3
+    aster_logical    :: exiq3_coef_drz
 
 !-----------------------------------------------------------------------
 !
     call jemarq()
 
     verif_coef_drz = ASTER_FALSE
-    verif_excent_cq3 = ASTER_FALSE
     exiq4_drz_nook = ASTER_FALSE
     exiq4_coef_drz = ASTER_FALSE
-    exit3_coef_drz = ASTER_FALSE
-    exi_excent_cq3 = ASTER_FALSE
+    exiq3_coef_drz = ASTER_FALSE
 
     call dismoi('NOM_GD', carte, 'CARTE', repk=nomgd)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
@@ -115,7 +113,7 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
 
 
 !   -- 2. On calcule 2 tableaux :
-!         A_UN_SENS(igrel,kcmp)  -> 0 : non , 1 : oui
+!         A_UN_SENS(igrel,kcmp)  : si 0=non , si 1=oui
 !         NUM_GREL(2*(ima-1)+1)  : igrel associe a la maille ima
 !         NUM_GREL(2*(ima-1)+2)  : te    associe a la maille ima
 !   --------------------------------------------------------------------
@@ -160,131 +158,111 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
             endif
         enddo
     enddo
-
-
-
-!   -- 3. On parcourt les CMPS affectees volontairement dans la carte :
-!         (hors : TOUT='OUI')
-!   -------------------------------------------------------------------
-
-
-!   3.1 : on repere les mailles a verifier (numa_verif(*)) :
-!   --------------------------------------------------------
+!
+!   3. On parcourt les CMPS affectees volontairement dans la carte (sauf TOUT='OUI')
+!
+!   3.1 : on repère les mailles a vérifier (numa_verif(*)) :
     call jeveuo(carte//'.DESC','L',vi=desc)
     call jeveuo(carte//'.VALE', 'L', jvale)
     nbgdmx=desc(2)
-!   -- si la carte est constante (TOUT='OUI'), on ne verifie pas
+!   si la carte est constante (TOUT='OUI'), on ne vérifie pas
     if (nbgdmx.eq.1.and.desc(3+1).eq.1) goto 999
-
+!
     call etenca(carte, ligrmo, iret)
     if (iret .gt. 0) goto 999
     call jeexin(carte//'.PTMA', iexi)
     if (iexi .eq. 0) goto 999
-
+!
     nbma_verif=0
     AS_ALLOCATE(vi=numa_verif, size=nbma)
     call jeveuo(carte//'.PTMA','L',vi=ptma)
     do ima=1,nbma
         ient = ptma(ima)
-
-!       -- si la maille n'est pas affectee :
+        ! si la maille n'est pas affectee :
         if (ient.eq.0) cycle
-
-!       -- si la maille est affectee par TOUT='OUI' :
+        ! si la maille est affectee par TOUT='OUI' :
         code=desc(3+2*(ient-1)+1)
         if (code.eq.1) cycle
-
-!       -- on ne verifie pas les mailles qui ne sont pas affectees dans le modele
-!          (on ne saurait pas remplir le champ nomte du message)
+        ! on ne vérifie pas les mailles qui ne sont pas affectées dans le modèle
+        ! (on ne saurait pas remplir le champ nomte du message)
         igrel=num_grel(2*(ima-1)+1)
         if (igrel.eq.0) cycle
-
+        !
         nbma_verif=nbma_verif+1
         numa_verif(nbma_verif)=ima
     enddo
-
-
+    !
+    call jeveuo(mailla//'.TYPMAIL', 'L', vi=typmail)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), typq4)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), typt3)
+!
 !   3.2 : on verifie les mailles a verifier (cmp par cmp) :
-!   -------------------------------------------------------
     do kcmp=1,nbcmp
-        nocmp=zk8(jnocmp-1+kcmp)
-         verif_coef_drz = ASTER_FALSE
-
-!       -- Exceptions :
-!       ----------------------------------------------------------------
-!       E1) PESA_R / ROTA_R sont en general utilises sans preciser les mailles
+        nocmp = zk8(jnocmp-1+kcmp)
+        verif_coef_drz   = ASTER_FALSE
+        ! Exceptions :
+        ! E1) PESA_R / ROTA_R sont en général utilisés sans préciser les mailles
         if (nomgd.eq.'PESA_R') cycle
         if (nomgd.eq.'ROTA_R') cycle
         if (nomgd.eq.'CAGNPO') cycle
-
-!       E2) Valeurs fournies par le code d'AFFE_CHAR_MECA
-        if (nomgd(1:5).eq.'FORC_' .and. nocmp.eq.'REP') cycle
-        if (nomgd(1:5).eq.'FORC_' .and. nocmp.eq.'PLAN') cycle
-        if (nomgd.eq.'VENTCX_F' .and. nocmp.eq.'FCXP') cycle
-
-!       E3) Valeurs fournies en loucede par le code d'AFFE_CARA_ELEM
-        if (nomgd.eq.'CAMASS' .and. nocmp.eq.'C') cycle
-        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'KAPPA') cycle
-!        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR') cycle
-        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR') verif_coef_drz = ASTER_TRUE
-        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'EXCENT') verif_excent_cq3 = ASTER_TRUE
-        if (nomgd.eq.'CAORIE' .and. nocmp.eq.'ALPHA') cycle
-
-
-        if (nomgd.eq.'CINFDI' .and. nocmp(1:3).eq.'REP') cycle
-        if (nomgd.eq.'CINFDI' .and. nocmp(1:3).eq.'SYM') cycle
-
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'TSEC') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HY1') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HZ1') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HY2') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HZ2') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPY1') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPY2') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPZ1') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPZ2') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EP1') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EP2') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'R1') cycle
-        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'R2') cycle
-
-
+        !
+        ! E2) Valeurs fournies par le code d'AFFE_CHAR_MECA
+        if (nomgd(1:5).eq.'FORC_'    .and. nocmp.eq.'REP')  cycle
+        if (nomgd(1:5).eq.'FORC_'    .and. nocmp.eq.'PLAN') cycle
+        if (nomgd     .eq.'VENTCX_F' .and. nocmp.eq.'FCXP') cycle
+        !
+        ! E3) Valeurs fournies en loucede par le code d'AFFE_CARA_ELEM
+        if (nomgd.eq.'CAMASS'   .and. nocmp.eq.'C')         cycle
+        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'KAPPA')     cycle
+        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR')      verif_coef_drz   = ASTER_TRUE
+        if (nomgd.eq.'CAORIE'   .and. nocmp.eq.'ALPHA')     cycle
+        !
+        if (nomgd.eq.'CINFDI' .and. nocmp(1:3).eq.'REP')    cycle
+        if (nomgd.eq.'CINFDI' .and. nocmp(1:3).eq.'SYM')    cycle
+        !
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'TSEC')        cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HY1')         cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HZ1')         cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HY2')         cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'HZ2')         cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPY1')        cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPY2')        cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPZ1')        cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EPZ2')        cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EP1')         cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'EP2')         cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'R1')          cycle
+        if (nomgd.eq.'CAGEPO' .and. nocmp.eq.'R2')          cycle
+        !
         nbmapb=0
         do kma=1,nbma_verif
             ima=numa_verif(kma)
             igrel=num_grel(2*(ima-1)+1)
-            if (a_un_sens((igrel-1)*nbcmp+kcmp).eq.1 .and. .not. verif_coef_drz) cycle
-
-            ient=ptma(ima)
-            decal=3+2*nbgdmx+nec*(ient-1)
-            dg=>desc(decal+1:decal+nec)
-            if (.not.exisdg(dg, kcmp) .and. .not. verif_excent_cq3) cycle
-
-
-!           -- si la cmp est nulle, on n'alarme pas :
-!           ------------------------------------------
-
-!           -- on compte les cmps presentes pour pouvoir acceder a la valeur
+            if ((a_un_sens((igrel-1)*nbcmp+kcmp).eq.1).and.(.not. verif_coef_drz)) cycle
+            !
+            ient = ptma(ima)
+            decal= 3+2*nbgdmx+nec*(ient-1)
+            dg => desc(decal+1:decal+nec)
+            if (.not.exisdg(dg, kcmp)) cycle
+            ! si la cmp est nulle, on n'alarme pas :
+            !   comptage des cmps presentes pour pouvoir acceder a la valeur
             ico = 0
             do kcmp2 = 1, kcmp
                 if (.not. (exisdg(dg,kcmp2))) cycle
                 ico = ico + 1
             enddo
-            deb1 = (ient-1)*nbcmp + 1
-            iad1 = deb1 - 1 + ico
-
+            iad1 = (ient-1)*nbcmp + ico
+            !
             if (tsca .eq. 'R') then
                 if (verif_coef_drz) then
                     if (zr(jvale-1+iad1).lt.0.d0) then
-                        call jeveuo(mailla//'.TYPMAIL', 'L', vi=typmail)
-                        call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), typq4)
-                        call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), typt3)
-                        if (typmail(ima) .eq. typt3) exit3_coef_drz = exit3_coef_drz .or. ASTER_TRUE
-                        if (typmail(ima) .eq. typq4)  then
-                              exiq4_coef_drz   = (exiq4_coef_drz .or. ASTER_TRUE)
-                              exiq4_drz_nook = (exiq4_coef_drz) .and. &
-                                               (zr(jvale-1+iad1).gt.-1.d12) .and. &
-                                               (zr(jvale-1+iad1).lt.-1.d2 )
+                        if (typmail(ima) .eq. typt3) then
+                            exiq3_coef_drz = exiq3_coef_drz .or. ASTER_TRUE
+                        else if (typmail(ima) .eq. typq4)  then
+                            exiq4_coef_drz   = (exiq4_coef_drz .or. ASTER_TRUE)
+                            exiq4_drz_nook = (exiq4_coef_drz) .and. &
+                                             (zr(jvale-1+iad1).gt.-1.0d12) .and. &
+                                             (zr(jvale-1+iad1).lt.-1.0d2 )
                         endif
                     else
                         cycle
@@ -292,53 +270,37 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
                 else
                     if (zr(jvale-1+iad1).eq.0.d0) cycle
                 endif
-
-                if (verif_excent_cq3) then
-                    if (abs(zr(jvale-1+iad1-1)).le.r8prem()) cycle
-                    call jeveuo(mailla//'.TYPMAIL', 'L', vi=typmail)
-                    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD9'), typq9)
-                    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA7'), typt7)
-                    call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-                    if (nomte(1:4) .eq. 'MEC3') then
-!                     if (typmail(ima) .eq. typt7 .or. typmail(ima) .eq. typq9)&
-                        if (zr(jvale-1+iad1).eq.0.d0) cycle
-                        exi_excent_cq3 = ASTER_TRUE
-                    endif
-                    if (.not. exi_excent_cq3) cycle
-                endif
             else if (tsca.eq.'C') then
-                if (abs(zc(jvale-1+iad1)).eq.0.d0) cycle
+                if (abs(zc(jvale-1+iad1)).eq.0.d0)      cycle
             else if (tsca.eq.'I') then
-                if (zi(jvale-1+iad1).eq.0) cycle
+                if (zi(jvale-1+iad1).eq.0)              cycle
             else if (tsca.eq.'L') then
-                if (.not.zl(jvale-1+iad1)) cycle
+                if (.not.zl(jvale-1+iad1))              cycle
             else if (tsca(1:2).eq.'K8') then
-                if (zk8(jvale-1+iad1).eq.' ') cycle
-                if (zk8(jvale-1+iad1).eq.'&FOZERO') cycle
-                if (zk8(jvale-1+iad1).eq.'GLOBAL') cycle
-                if (zk8(jvale-1+iad1).eq.'LOCAL') cycle
-                if (zk8(jvale-1+iad1).eq.'VENT') cycle
-                if (zk8(jvale-1+iad1).eq.'LOCAL_PR') cycle
+                if (zk8(jvale-1+iad1).eq.' ')           cycle
+                if (zk8(jvale-1+iad1).eq.'&FOZERO')     cycle
+                if (zk8(jvale-1+iad1).eq.'GLOBAL')      cycle
+                if (zk8(jvale-1+iad1).eq.'LOCAL')       cycle
+                if (zk8(jvale-1+iad1).eq.'VENT')        cycle
+                if (zk8(jvale-1+iad1).eq.'LOCAL_PR')    cycle
             else if (tsca(1:3).eq.'K16') then
-                if (zk16(jvale-1+iad1).eq.' ') cycle
-                if (zk16(jvale-1+iad1).eq.'&FOZERO') cycle
+                if (zk16(jvale-1+iad1).eq.' ')          cycle
+                if (zk16(jvale-1+iad1).eq.'&FOZERO')    cycle
             else if (tsca(1:3).eq.'K24') then
-                if (zk24(jvale-1+iad1).eq.' ') cycle
-                if (zk24(jvale-1+iad1).eq.'&FOZERO') cycle
+                if (zk24(jvale-1+iad1).eq.' ')          cycle
+                if (zk24(jvale-1+iad1).eq.'&FOZERO')    cycle
             else
                 ASSERT(ASTER_FALSE)
             endif
-
-!           -- si il y a un probleme :
-            nbmapb=nbmapb+1
-            te=num_grel(2*(ima-1)+2)
+            !
+            ! s'il y a un problème
+            nbmapb = nbmapb+1
+            te = num_grel(2*(ima-1)+2)
             if (nbmapb.eq.1) call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
             if (nbmapb.le.5) list_ma_pb(nbmapb)=ima
         enddo
-
-
-!       -- message d'alarme en cas de probleme :
-!       -----------------------------------------
+        !
+        ! Message d'alarme en cas de probleme :
         if (nbmapb.gt.0) then
             valk(1)=carte
             valk(2)=comment
@@ -346,21 +308,19 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
             valk(4)=nocmp
             valk(5)=nomte
             if (present(non_lin)) then
-                if (exit3_coef_drz .or. exiq4_coef_drz) &
+                if (exiq3_coef_drz .or. exiq4_coef_drz) then
                     call utmess('F','CALCULEL_45',nk=5,valk=valk,si=nbmapb)
-            elseif (exit3_coef_drz .and. exiq4_coef_drz) then
+                endif
+            else if (exiq3_coef_drz .and. exiq4_coef_drz) then
                 call utmess('A','CALCULEL_42',nk=5,valk=valk,si=nbmapb)
                 cycle
-            elseif (exi_excent_cq3) then
-                call utmess('F','CALCULEL_46',nk=5,valk=valk,si=nbmapb)
-                cycle
-            elseif (exit3_coef_drz .and. .not. exiq4_coef_drz) then
+            else if (exiq3_coef_drz .and. .not. exiq4_coef_drz) then
                 call utmess('F','CALCULEL_43',nk=5,valk=valk,si=nbmapb)
-            elseif (.not. exit3_coef_drz .and.  exiq4_drz_nook) then
+            else if (.not. exiq3_coef_drz .and.  exiq4_drz_nook) then
                 call utmess('A','CALCULEL_44',nk=5,valk=valk,si=nbmapb)
                 cycle
             else
-                if (exit3_coef_drz .or. exiq4_coef_drz) cycle
+                if (exiq3_coef_drz .or. exiq4_coef_drz)   cycle
                 if (a_un_sens((igrel-1)*nbcmp+kcmp).eq.1) cycle
                 call utmess('A','CALCULEL_40',nk=5,valk=valk,si=nbmapb)
             endif
@@ -380,10 +340,10 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
         endif
     enddo
     AS_DEALLOCATE(vi=numa_verif)
-
+    !
 999 continue
     AS_DEALLOCATE(vi=a_un_sens)
     AS_DEALLOCATE(vi=num_grel)
-
+    !
     call jedema()
 end subroutine

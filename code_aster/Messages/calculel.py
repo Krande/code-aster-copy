@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -336,10 +336,6 @@ Conseil :
  Ce problème concerne %(i1)d mailles
  Les premières mailles concernées sont imprimées ci-dessous.
  Type de l'élément affecté sur la première maille imprimée : %(k5)s
-"""),
-
-    46 : _("""
-  EXCENTREMENT NON POSSIBLE POUR LES COQUE_3D:  %(k1)s.
 """),
 
     47 : _("""
