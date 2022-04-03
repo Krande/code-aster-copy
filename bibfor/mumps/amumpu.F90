@@ -105,7 +105,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     character(len=2) :: fstring
     character(len=8) :: k8tab(3)
     character(len=10) :: strpid
-    character(len=19) :: valk(4)
+    character(len=19) :: valk(5)
     character(len=24) :: kpiv, ksizemu
     character(len=80) :: nvers
 !
@@ -596,19 +596,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! ---   NUMERO DE VERSION DE MUMPS (DETECTION ET CONTROLE)
 !       ------------------------------------------------
     else if ((option.eq.3).or.(option.eq.31)) then
-!
-        kvers=''
-        kvers=trim(adjustl(nvers))
-        valk(1)=vmump1
-        valk(2)=vmump2
-        valk(3)=vmump3
-        valk(4)=vmump4
-        select case (kvers)
-        case(vmump1,vmump2,vmump3,vmump4)
-! OK bonne version
-        case default
-          call utmess('F', 'FACTOR_72', sk=kvers, valk=valk)
-        end select
+!       already checked during configure!
 !
 !       ------------------------------------------------
 ! ---   CALCUL DE DETERMINANT (APRES FACTO)

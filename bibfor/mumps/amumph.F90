@@ -247,17 +247,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                 else
 ! --- ON TESTE JUSTE LE CARACTERE LICITE DU NUMERO DE VERSION DEJA
 ! --- STOCKE DANS LA SD_SOLVEUR
-                    kvers=trim(adjustl(slvk(12)))
-                    valk(1)=vmump1
-                    valk(2)=vmump2
-                    valk(3)=vmump3
-                    valk(4)=vmump4
-                    select case (kvers)
-                    case(vmump1,vmump2,vmump3,vmump4)
-! OK bonne version
-                    case default
-                      call utmess('F', 'FACTOR_72', sk=kvers, valk=valk)
-                    end select
+!                   already checked during configure!
                 endif
                 goto 999
             endif

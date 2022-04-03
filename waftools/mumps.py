@@ -66,7 +66,7 @@ def check_mumps(self):
 @Configure.conf
 def check_mumps_libs(self):
     opts = self.options
-    check_mumps = partial(self.check_cc, uselib_store='MUMPS', use='MUMPS MPI',
+    check_mumps = partial(self.check_cc, uselib_store='MUMPS', use='MUMPS MPI OPENMP',
                           mandatory=True)
     if opts.embed_all or opts.embed_mumps:
         check = lambda lib: check_mumps(stlib=lib)
@@ -119,7 +119,7 @@ int main(void){
                             mandatory=True, execute=True, define_ret=True)
         self.env['MUMPS_VERSION'] = ret
         vers = ret.replace("consortium", "")
-        if vers not in ("5.4.1", ):
+        if vers not in ("5.4.1", "5.4.0"):
             raise Errors.ConfigurationError("expected versions: {0}"
                                             .format('5.4.1(consortium)'))
     except:

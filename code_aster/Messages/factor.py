@@ -371,18 +371,6 @@ Solveur MUMPS :
   Vous pouvez le récupérer (sur le processeur 0) via ASTK.
 """),
 
-    72: _("""
-Solveur MUMPS :
-  Votre exécutable Aster embarque la version de MUMPS: %(k1)s
-  Les seules versions de MUMPS supportée dans Code_Aster sont:
-     %(k1)s, %(k2)s, %(k3)s et %(k4)s.
-
-Conseils :
-  Télécharger, installer et relier à Code_Aster une version de MUMPS adéquate.
-  Utiliser un autre solveur linéaire (mot-clé SOLVEUR/METHODE, par exemple "MULT_FRONT" ou "PETSC")
-  Sinon, contactez l'équipe de développement.
-"""),
-
     73: _("""
 Solveur MUMPS :
    Lors de son étape de factorisation, MUMPS a rencontré un nombre anormalement élevé de difficultés
