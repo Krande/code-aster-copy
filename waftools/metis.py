@@ -86,6 +86,18 @@ def check_metis_headers(self):
         raise
     else:
         self.end_msg('yes')
+    # GKlib
+    self.start_msg('Checking for header GKlib.h')
+    try:
+        known_dirs = [osp.join(i, "GKlib") for i in self.env.INCLUDES_METIS]
+        self.check_cc(header_name='GKlib.h', uselib_store='METIS', use='METIS',
+                      includes=known_dirs,
+                      mandatory=True)
+    except:
+        self.end_msg('no', 'YELLOW')
+        raise
+    else:
+        self.end_msg('yes')
 
 @Configure.conf
 def check_metis_version(self):
