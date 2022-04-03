@@ -34,8 +34,8 @@ waf_main()
         host=$(detect_host)
         if [ ! -z "${host}" ]; then
             export WAFBUILD_ENV="$(get_wafbuild_env ${host})"
-            if [ -e ${WAFBUILD_ENV} ]; then
-                . ${WAFBUILD_ENV}
+            if [ -e "${WAFBUILD_ENV}" ]; then
+                . "${WAFBUILD_ENV}"
                 echo "loading ${WAFBUILD_ENV}"
             else
                 echo "no found"
@@ -46,7 +46,7 @@ waf_main()
         if [ -z "${WAFBUILD_ENV}" ]; then
             export WAFBUILD_ENV="$(get_wafbuild_env ${DEVTOOLS_COMPUTER_ID})"
         fi
-        if [ -e ${WAFBUILD_ENV} ]; then
+        if [ -e "${WAFBUILD_ENV}" ]; then
             echo "already set: ${WAFBUILD_ENV}"
         else
             echo "no found: ${WAFBUILD_ENV}"
@@ -57,7 +57,7 @@ waf_main()
     # really execute waf
     engine=$(echo ${0} | sed -e 's/\main$/engine/g')
     echo "executing: ${engine} ${@}"
-    ${engine} "${@}"
+    "${engine}" "${@}"
     return $?
 }
 

@@ -59,7 +59,7 @@ def build(self):
             name="astermfront",
             source=get_srcs("mfront/*.cxx"),
             env=env.derive(),
-            use=["BIBCXX", "MFRONT", "PYBIND11", "PYEXT", "CXX"],
+            use=["BIBCXX", "PYBIND11", "MFRONT", "PYEXT", "CXX"],
         )
 
     self(
@@ -67,7 +67,7 @@ def build(self):
         name="asterbibcxx",
         source=get_srcs("**/*.cxx", excl="mfront/*.cxx"),
         target="bibcxx",
-        use=["BIBCXX", "PETSC", "PYBIND11", "PYEXT", "NUMPY", "CXX"],
+        use=["BIBCXX", "PYBIND11", "PETSC", "PYEXT", "NUMPY", "CXX"],
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
     )
