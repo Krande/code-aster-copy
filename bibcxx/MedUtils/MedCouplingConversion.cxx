@@ -96,21 +96,21 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
 
         // Passage entre numerotation globale aster et par dimension medcoupling
         auto sz = corresponding_cells[dim].size();
-        corresponding_cells[dim][aster_index] = sz;
+        corresponding_cells[dim][aster_index-1] = sz;
     }
 
     // Tri des groupes d'éléments tojours par dimension
     for ( const auto &group_name : mesh->getGroupsOfCells() ) {
-        for ( const auto &aster_cell : mesh->getCells( group_name ) ) {
-            int dim = med_to_mc[( *cells_types )[aster_cell - 1]][1];
-            groups_c[dim][group_name].push_back( corresponding_cells[dim][aster_cell] );
+        for ( const auto &cell : mesh->getCells( group_name ) ) {
+            int dim = med_to_mc[( *cells_types )[cell]][1];
+            groups_c[dim][group_name].push_back( corresponding_cells[dim][cell] );
         }
     }
 
     // Tri des groupes de noeuds avec shift sur l'indexe des noeuds
     for ( const auto &group_name : mesh->getGroupsOfNodes() ) {
         for ( const auto &aster_node : mesh->getNodes( group_name ) ) {
-            groups_n[group_name].push_back( aster_node - 1 );
+            groups_n[group_name].push_back( aster_node );
         }
     }
 

@@ -130,22 +130,22 @@ class Interface(WithEmbeddedObjects):
         coords = np.vstack((self.sub1.coords, self.sub2.coords))
         if not self.sub1.mesh.hasGroupOfNodes(self.name):
             connect = self.sub1.mesh.getConnectivity()
-            lCells = np.array(self.sub1.mesh.getCells(self.name)) - 1
+            lCells = np.array(self.sub1.mesh.getCells(self.name))
             lINodes = []
             for cell in lCells:
                 lINodes += connect[cell]
-            interfaceNodes1 = list(np.unique(np.array(lINodes)))
+            interfaceNodes1 = list(np.unique(np.array(lINodes)-1))
         else:
-            interfaceNodes1 = self.sub1.mesh.getNodes(self.name)
+            interfaceNodes1 = list(np.array(self.sub1.mesh.getNodes(self.name)))
         if not self.sub2.mesh.hasGroupOfNodes(self.name):
             connect = self.sub2.mesh.getConnectivity()
-            lCells = np.array(self.sub2.mesh.getCells(self.name)) - 1
+            lCells = np.array(self.sub2.mesh.getCells(self.name))
             lINodes = []
             for cell in lCells:
                 lINodes += connect[cell]
-            interfaceNodes2 = list(np.unique(np.array(lINodes)))
+            interfaceNodes2 = list(np.unique(np.array(lINodes)-1))
         else:
-            interfaceNodes2 = self.sub2.mesh.getNodes(self.name)
+            interfaceNodes2 = list(np.array(self.sub2.mesh.getNodes(self.name)))
         interfaceNodes = np.array(interfaceNodes1 + interfaceNodes2)
         nInterfaceNodes = len(interfaceNodes)
 
@@ -352,13 +352,13 @@ class SubStructure(WithEmbeddedObjects):
 
                 for i1, no in enumerate(iNodes):
                     dictDofValues = {}
-                    dictDofValues['NOEUD'] = int(no)
+                    dictDofValues['NOEUD'] = int(no)+1
                     for j1, comp in enumerate(['DX', 'DY', 'DZ', 'PRES']):
                         dictDofValues[comp] = displ[i1, j1]
                     try:
                         Cham.setDirichletBC(**dictDofValues)
                     except Exception as e:
-                        print("Erreur avec noeud {} comp {} et valeur {}".format(no, comp,
+                        print("Erreur avec noeud {} comp {} et valeur {}".format(no+1, comp,
                                                                                  displ[i1, j1]))
                         print(e)
                         pass

@@ -107,14 +107,22 @@ ASTERBOOL ContactZone::buildInverseConnectivity() {
     ASTERINTEGER nbMaster = getMasterCells().size();
     std::string base( "G" );
 
-    CALL_CNCINV( getMesh()->getName().c_str(), _masterCells.data(), &nbMaster, base.c_str(),
+    VectorLong masterCells;
+    masterCells.reserve(_masterCells.size());
+    for (auto cell: _masterCells)
+        masterCells.push_back( cell + 1 );
+    CALL_CNCINV( getMesh()->getName().c_str(), masterCells.data(), &nbMaster, base.c_str(),
                  _masterInverseConnectivity->getName().c_str() );
     _masterInverseConnectivity->build();
 
     // create slave inverse connectivity
     ASTERINTEGER nbSlave = getSlaveCells().size();
 
-    CALL_CNCINV( getMesh()->getName().c_str(), _slaveCells.data(), &nbSlave, base.c_str(),
+    VectorLong slaveCells;
+    slaveCells.reserve(_slaveCells.size());
+    for (auto cell: _slaveCells)
+        slaveCells.push_back( cell + 1 );
+    CALL_CNCINV( getMesh()->getName().c_str(), slaveCells.data(), &nbSlave, base.c_str(),
                  _slaveInverseConnectivity->getName().c_str() );
     _slaveInverseConnectivity->build();
     return true;
@@ -126,13 +134,17 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
     // get master neighbors
     ASTERINTEGER nbMaster = getMasterCells().size();
     if ( nbMaster > 0 ) {
-        ind_max = *std::max_element( _masterCells.begin(), _masterCells.end() );
-        ind_min = *std::min_element( _masterCells.begin(), _masterCells.end() );
+        ind_max = *std::max_element( _masterCells.begin(), _masterCells.end() ) + 1;
+        ind_min = *std::min_element( _masterCells.begin(), _masterCells.end() ) + 1;
 
         std::string invmcn_name = ljust( _masterInverseConnectivity->getName(), 24, ' ' );
         std::string mn_name = ljust( _masterNeighbors->getName(), 24, ' ' );
 
-        CALL_CNVOIS( getMesh()->getName(), _masterCells.data(), invmcn_name, &nbMaster, &ind_min,
+        VectorLong masterCells;
+        masterCells.reserve(_masterCells.size());
+        for (auto cell: _masterCells)
+            masterCells.push_back( cell + 1 );
+        CALL_CNVOIS( getMesh()->getName(), masterCells.data(), invmcn_name, &nbMaster, &ind_min,
                      &ind_max, mn_name );
 
         _masterNeighbors->build();
@@ -142,13 +154,17 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
 
     ASTERINTEGER nbSlave = getSlaveCells().size();
     if ( nbSlave > 0 ) {
-        ind_max = *std::max_element( _slaveCells.begin(), _slaveCells.end() );
-        ind_min = *std::min_element( _slaveCells.begin(), _slaveCells.end() );
+        ind_max = *std::max_element( _slaveCells.begin(), _slaveCells.end() ) + 1;
+        ind_min = *std::min_element( _slaveCells.begin(), _slaveCells.end() ) + 1;
 
         std::string invscn_name = ljust( _slaveInverseConnectivity->getName(), 24, ' ' );
         std::string sn_name = ljust( _slaveNeighbors->getName(), 24, ' ' );
 
-        CALL_CNVOIS( getMesh()->getName(), _slaveCells.data(), invscn_name, &nbSlave, &ind_min,
+        VectorLong slaveCells;
+        slaveCells.reserve(_slaveCells.size());
+        for (auto cell: _slaveCells)
+            slaveCells.push_back( cell + 1 );
+        CALL_CNVOIS( getMesh()->getName(), slaveCells.data(), invscn_name, &nbSlave, &ind_min,
                      &ind_max, sn_name );
 
         _slaveNeighbors->build();

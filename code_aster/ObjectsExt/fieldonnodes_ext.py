@@ -173,7 +173,7 @@ class ExtendedFieldOnNodesReal:
                     nodes = mesh.getNodes(grMa)
                     lNodes += nodes
                 elif mesh.hasGroupOfCells(grMa):
-                    nodes = [node for cell in mesh.getCells(grMa) for node in connec[cell - 1]]
+                    nodes = [node for cell in mesh.getCells(grMa) for node in connec[cell]]
                     lNodes += nodes
                 else:
                     raise ValueError("no {} group of cells".format(grMa))

@@ -160,19 +160,19 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
                 VectorLong cellsOfTheGroupToSend;
                 cellsOfTheGroupToSend.reserve( numberOfCellsToFind );
                 for ( auto i = 0; i < numberOfCellsToFind; ++i ) {
-                    const auto cellId = cellsToFind[i] - 1;
+                    const auto cellId = cellsToFind[i];
 
                     if ( !boolCellsToSend[cellId] ) {
-                        const auto cell = connecExp[cellsToFind[i]];
+                        const auto cell = connecExp[cellsToFind[i]+1];
                         for ( const auto vertex : cell ) {
                             const auto nodeId = vertex - 1;
                             if ( !boolNodesToSend[nodeId] ) {
                                 /*  Split the proc nodes (toSend) from outer ones (toCheck) */
                                 if ( ( *rankOfNodes )[nodeId] == rank ) {
-                                    nodesToSend.push_back( vertex );
+                                    nodesToSend.push_back( nodeId );
                                     ++numberOfNodesToSend;
                                 } else {
-                                    nodesToCheck.push_back( vertex );
+                                    nodesToCheck.push_back( nodeId );
                                     ++numberOfNodesToCheck;
                                 }
                                 boolNodesToSend[nodeId] = true;
@@ -216,13 +216,13 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
                 VectorLong nodesOfTheGroupToSend;
                 nodesOfTheGroupToSend.reserve( numberOfNodesToFind );
                 for ( auto i = 0; i < numberOfNodesToFind; ++i ) {
-                    const auto nodeId = nodesToFind[i] - 1;
+                    const auto nodeId = nodesToFind[i];
                     if ( !boolNodesToSend[nodeId] ) {
                         if ( ( *rankOfNodes )[nodeId] == rank ) {
-                            nodesToSend.push_back( nodesToFind[i] );
+                            nodesToSend.push_back( nodeId );
                             ++numberOfNodesToSend;
                         } else {
-                            nodesToCheck.push_back( nodesToFind[i] );
+                            nodesToCheck.push_back( nodeId );
                             ++numberOfNodesToCheck;
                         }
                         boolNodesToSend[nodeId] = true;
@@ -244,17 +244,17 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     /* Get cells lying on nodes */
     for ( auto i = 0; i < numberOfNodesToSend; i++ ) {
-        const auto nodeId = nodesToSend[i] - 1;
+        const auto nodeId = nodesToSend[i];
         const auto listCells = connecInv->getObject( nodeId + 1 ).toVector();
 
         for ( const auto cell : listCells ) {
             const auto cellId = cell - 1;
             if ( !boolCellsToSend[cellId] ) {
                 if ( ( *rankOfCells )[cellId] == rank ) {
-                    cellsToSend.push_back( cell );
+                    cellsToSend.push_back( cellId );
                     ++numberOfCellsToSend;
                 } else {
-                    cellsToCheck.push_back( cell );
+                    cellsToCheck.push_back( cellId );
                     ++numberOfCellsToCheck;
                 }
                 boolCellsToSend[cellId] = true;
@@ -263,17 +263,17 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     }
 
     for ( auto i = 0; i < numberOfNodesToCheck; i++ ) {
-        const auto nodeId = nodesToCheck[i] - 1;
+        const auto nodeId = nodesToCheck[i];
         const auto listCells = connecInv->getObject( nodeId + 1 ).toVector();
 
         for ( const auto cell : listCells ) {
             const auto cellId = cell - 1;
             if ( !boolCellsToSend[cellId] ) {
                 if ( ( *rankOfCells )[cellId] == rank ) {
-                    cellsToSend.push_back( cell );
+                    cellsToSend.push_back( cellId );
                     ++numberOfCellsToSend;
                 } else {
-                    cellsToCheck.push_back( cell );
+                    cellsToCheck.push_back( cellId );
                     ++numberOfCellsToCheck;
                 }
                 boolCellsToSend[cellId] = true;
@@ -284,12 +284,12 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     /* Get nodes lying on cell */
     for ( auto i = 0; i < numberOfCellsToSend; i++ ) {
-        const auto cell = connecExp[cellsToSend[i]];
+        const auto cell = connecExp[cellsToSend[i]+1];
         for ( const auto vertex : cell ) {
             const auto nodeId = vertex - 1;
             if ( !boolNodesToSend[nodeId] ) {
                 if ( ( *rankOfNodes )[nodeId] == rank ) {
-                    nodesToSend.push_back( vertex );
+                    nodesToSend.push_back( nodeId );
                     ++numberOfNodesToSend;
                 } else {
                     outerNodesToSend.push_back( globalNodeIds[nodeId] );
@@ -301,11 +301,11 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     }
 
     for ( auto i = 0; i < numberOfCellsToCheck; i++ ) {
-        const auto cell = connecExp[cellsToCheck[i]];
+        const auto cell = connecExp[cellsToCheck[i]+1];
         for ( const auto vertex : cell ) {
             const auto nodeId = vertex - 1;
             if ( !boolNodesToSend[nodeId] && ( *rankOfNodes )[nodeId] == rank ) {
-                nodesToSend.push_back( vertex );
+                nodesToSend.push_back( nodeId );
                 ++numberOfNodesToSend;
             }
             boolNodesToSend[nodeId] = true;
@@ -335,7 +335,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         if ( rank == ownerRank ) {
             const auto localNodeId = inverseGlobalNodeIds[globalNodeId];
             if ( !boolNodesToSend[localNodeId] ) {
-                nodesToSend.push_back( localNodeId + 1 );
+                nodesToSend.push_back( localNodeId );
                 ++numberOfNodesToSend;
                 boolNodesToSend[localNodeId] = true;
             }
@@ -358,7 +358,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     coordinatesToSend.reserve( 3 * nodesToSend.size() );
     numNodesToSend.reserve( 3 * nodesToSend.size() );
     for ( const auto &node : nodesToSend ) {
-        const auto nodeId = node - 1;
+        const auto nodeId = node;
         coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3] );
         coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3 + 1] );
         coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3 + 2] );
@@ -380,10 +380,10 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         the list of nodes in global numbering */
     connectivitiesToSend.reserve( cellsToSend.size() * ( 1 + 1 + 1 + 27 ) );
     for ( const auto &cellId : cellsToSend ) {
-        const auto cell = connecExp[cellId];
+        const auto cell = connecExp[cellId+1];
         connectivitiesToSend.push_back( cell.getType() );
         connectivitiesToSend.push_back( cellId );
-        connectivitiesToSend.push_back( globalCellIds[cellId - 1] );
+        connectivitiesToSend.push_back( globalCellIds[cellId] );
         connectivitiesToSend.push_back( rank );
         connectivitiesToSend.push_back( cell.getNumberOfNodes() );
         for ( const auto vertex : cell ) {
@@ -441,10 +441,10 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     _nodesOwner->allocate( totalNumberOfNodes );
 
     for ( auto i = 0; i < totalNumberOfNodes; ++i ) {
-        ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i];
+        ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i] + 1;
         ( *_nodesGlobalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 1];
         ( *_nodesOwner )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 2];
-        numNodesGloLoc[( *_nodesGlobalNumbering )[renumNodesLocNew[i]]] = renumNodesLocNew[i] + 1;
+        numNodesGloLoc[numNodesGathered[3 * i + 1]] = renumNodesLocNew[i];
     }
 
     /* Add coordinates */
@@ -464,8 +464,8 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     _nameOfNodes->allocate( totalNumberOfNodes );
     for ( auto i = 0; i < totalNumberOfNodes; ++i ) {
         std::stringstream sstream;
-        const ASTERINTEGER newNum = renumNodesLocNew[i] + 1;
-        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << newNum;
+        const ASTERINTEGER newNum = renumNodesLocNew[i];
+        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << newNum + 1;
         _nameOfNodes->add( newNum, std::string( "N" + sstream.str() ) );
     }
 
@@ -482,7 +482,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
                 if ( it == numNodesGloLoc.end() )
                     throw std::runtime_error( "Not finding nodes" );
 
-                nodesOfGrp[i] = it->second;
+                nodesOfGrp[i] = it->second + 1;
             }
 
             _groupsOfNodes->allocateObjectByName( nameOfTheGroup, nbNodes );
@@ -500,15 +500,15 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
                                        Numbered );
 
     ASTERINTEGER offset = 0;
-    for ( auto i = 1; i <= totalNumberOfCells; ++i ) {
+    for ( auto i = 0; i < totalNumberOfCells; ++i ) {
         std::stringstream sstream;
-        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i;
+        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i+1;
         _nameOfCells->add( i, std::string( "M" + sstream.str() ) );
-        ( *_cellsType )[i - 1] = connectivitiesGathered[offset++];
-        ( *_cellsLocalNumbering )[i - 1] = connectivitiesGathered[offset++];
+        ( *_cellsType )[i] = connectivitiesGathered[offset++];
+        ( *_cellsLocalNumbering )[i] = connectivitiesGathered[offset++] + 1;
         const auto globCellId = connectivitiesGathered[offset++];
         numCellsGloLoc[globCellId] = i;
-        ( *_cellsOwner )[i - 1] = connectivitiesGathered[offset++];
+        ( *_cellsOwner )[i] = connectivitiesGathered[offset++];
 
         const auto nbNodes = connectivitiesGathered[offset++];
         VectorLong listNodes( nbNodes );
@@ -518,11 +518,11 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
             if ( it == numNodesGloLoc.end() )
                 throw std::runtime_error( "Not finding nodes" );
 
-            listNodes[iNode] = it->second;
+            listNodes[iNode] = it->second + 1;
         }
 
         _connectivity->allocateObject( nbNodes );
-        _connectivity->getObject( i ).setValues( listNodes );
+        _connectivity->getObject( i+1 ).setValues( listNodes );
     }
     connectivitiesGathered.clear();
 
@@ -542,7 +542,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
                 if ( it->second < 0 )
                     throw std::runtime_error( "Wrong cell index" );
 
-                cellsOfGrp[i] = it->second;
+                cellsOfGrp[i] = it->second + 1;
             }
 
             _groupsOfCells->allocateObjectByName( nameOfTheGroup, nbCells );
@@ -636,12 +636,15 @@ bool ConnectionMesh::hasGroupOfNodes( const std::string &name, const bool ) cons
 VectorLong ConnectionMesh::getCells( const std::string name ) const {
 
     if ( name.empty() ) {
-        return irange( ASTERINTEGER( 1 ), ASTERINTEGER( getNumberOfCells() ) );
+        return irange( ASTERINTEGER( 0 ), ASTERINTEGER( getNumberOfCells() - 1 ) );
     } else if ( !hasGroupOfCells( name ) ) {
         return VectorLong();
     }
 
-    return _groupsOfCells->getObjectFromName( name ).toVector();
+    VectorLong cells = _groupsOfCells->getObjectFromName( name ).toVector();
+    for ( auto &cell : cells )
+        cell -= 1;
+    return cells;
 };
 
 #endif /* ASTER_HAVE_MPI */

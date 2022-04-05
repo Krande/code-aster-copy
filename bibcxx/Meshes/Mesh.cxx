@@ -79,21 +79,26 @@ VectorString Mesh::getGroupsOfNodes( const bool ) const {
 VectorLong Mesh::getCells( const std::string name ) const {
 
     if ( name.empty() ) {
-        return irange( long( 1 ), long( getNumberOfCells() ) );
+        return irange( long( 0 ), long( getNumberOfCells() - 1 ) );
     } else if ( !hasGroupOfCells( name ) ) {
         return VectorLong();
     }
-
-    return _groupsOfCells->getObjectFromName( name ).toVector();
+    VectorLong cells = _groupsOfCells->getObjectFromName( name ).toVector();
+    for ( auto &cell : cells )
+        cell -= 1;
+    return cells;
 }
 
 VectorLong Mesh::getNodes( const std::string name, const bool, const ASTERINTEGER ) const {
     if ( name.empty() ) {
-        return irange( long( 1 ), long( getNumberOfNodes() ) );
+        return irange( long( 0 ), long( getNumberOfNodes() - 1 ) );
     } else if ( !hasGroupOfNodes( name ) ) {
         return VectorLong();
     }
-    return _groupsOfNodes->getObjectFromName( name ).toVector();
+    VectorLong nodes = _groupsOfNodes->getObjectFromName( name ).toVector();
+    for ( auto &node : nodes )
+        node -= 1;
+    return nodes;
 }
 
 VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const ASTERINTEGER ) const {
@@ -111,9 +116,9 @@ VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const AS
     SetLong nodes;
 
     for ( auto &cellId : cellsId ) {
-        const auto cell = connecExp[cellId];
+        const auto cell = connecExp[cellId+1];
         for ( auto &node : cell )
-            auto ret = nodes.insert( node );
+            auto ret = nodes.insert( node-1 );
     }
 
     CALL_JEDEMA();

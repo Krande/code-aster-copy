@@ -156,12 +156,15 @@ VectorString ParallelMesh::getGroupsOfNodes( const bool local ) const {
 VectorLong ParallelMesh::getCells( const std::string name ) const {
 
     if ( name.empty() ) {
-        return irange( long( 1 ), long( getNumberOfCells() ) );
+        return irange( long( 0 ), long( getNumberOfCells() - 1 ) );
     } else if ( !hasGroupOfCells( name, true ) ) {
         return VectorLong();
     }
 
-    return _groupsOfCells->getObjectFromName( name ).toVector();
+    VectorLong cells = _groupsOfCells->getObjectFromName( name ).toVector();
+    for ( auto &cell : cells )
+        cell -= 1;
+    return cells;
 }
 
 VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbering,
@@ -169,12 +172,14 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     CALL_JEMARQ();
     VectorLong listOfNodes;
     if ( name.empty() ) {
-        listOfNodes = irange( long( 1 ), long( getNumberOfNodes() ) );
+        listOfNodes = irange( long( 0 ), long( getNumberOfNodes() - 1 ) );
     } else if ( !hasGroupOfNodes( name, true ) ) {
         CALL_JEDEMA();
         return VectorLong();
     } else {
         listOfNodes = _groupsOfNodes->getObjectFromName( name ).toVector();
+        for ( auto &node : listOfNodes )
+            node -= 1;
     }
 
     const int rank = getMPIRank();
@@ -188,12 +193,12 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
         _outerNodes->updateValuePointer();
         for ( auto &nodeId : listOfNodes ) {
             if ( same_rank ) {
-                if ( rank == ( *_outerNodes )[nodeId - 1] ) {
+                if ( rank == ( *_outerNodes )[nodeId] ) {
                     newRank.push_back( nodeId );
                     size++;
                 }
             } else {
-                if ( rank != ( *_outerNodes )[nodeId - 1] ) {
+                if ( rank != ( *_outerNodes )[nodeId] ) {
                     newRank.push_back( nodeId );
                     size++;
                 }
@@ -214,7 +219,7 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     _globalNumbering->updateValuePointer();
 
     for ( auto &nodeId : newRank )
-        newNumbering.push_back( ( *_globalNumbering )[nodeId - 1] );
+        newNumbering.push_back( ( *_globalNumbering )[nodeId] );
     CALL_JEDEMA();
 
     return newNumbering;
@@ -235,9 +240,9 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
     SetLong nodes;
 
     for ( auto &cellId : cellsId ) {
-        const auto cell = connecExp[cellId];
+        const auto cell = connecExp[cellId+1];
         for ( auto &node : cell )
-            nodes.insert( node );
+            nodes.insert( node-1 );
     }
 
     if ( same_rank != PythonBool::None ) {
@@ -247,10 +252,10 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
         SetLong loopnodes = nodes;
         for ( auto &node : loopnodes ) {
             if ( same_rank ) {
-                if ( rank != ( *_outerNodes )[node - 1] )
+                if ( rank != ( *_outerNodes )[node] )
                     nodes.erase( node );
             } else {
-                if ( rank == ( *_outerNodes )[node - 1] )
+                if ( rank == ( *_outerNodes )[node] )
                     nodes.erase( node );
             }
         }
@@ -262,7 +267,7 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
 
         _globalNumbering->updateValuePointer();
         for ( auto &node : nodes )
-            v_nodes.push_back( ( *_globalNumbering )[node - 1] );
+            v_nodes.push_back( ( *_globalNumbering )[node] );
 
         CALL_JEDEMA();
         return v_nodes;

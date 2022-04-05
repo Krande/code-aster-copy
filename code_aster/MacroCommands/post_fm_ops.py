@@ -71,7 +71,7 @@ class PostFM(object):
         for cell_group in cell_groups:
             cells = mesh.getCells(cell_group)
             for cell in cells:
-                if node in connectivity[cell - 1]:
+                if node+1 in connectivity[cell]:
                     return True
         return False
 

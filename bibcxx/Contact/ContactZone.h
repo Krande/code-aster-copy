@@ -149,7 +149,7 @@ class ContactZone : public DataStructure {
     /**
      * @brief get master nodes
      */
-    const VectorLong &getMasterNodes() const { return _masterCells; };
+    const VectorLong &getMasterNodes() const { return _masterNodes; };
 
     VectorLong &getMasterNodes() {
         return const_cast< VectorLong & >( std::as_const( *this ).getMasterNodes() );
@@ -190,7 +190,7 @@ class ContactZone : public DataStructure {
     }
 
     VectorLong getMasterCellsFromNode( const int &i ) const {
-        auto vct = _masterInverseConnectivity->getObject( i ).toVector();
+        auto vct = _masterInverseConnectivity->getObject( i+1 ).toVector();
         std::transform(
             vct.begin(), vct.end(), vct.begin(),
             [this]( ASTERINTEGER k ) -> ASTERINTEGER { return k > 0 ? _masterCells[k - 1] : 0; } );
@@ -198,7 +198,7 @@ class ContactZone : public DataStructure {
     }
 
     VectorLong getSlaveCellsFromNode( const int &i ) const {
-        auto vct = _slaveInverseConnectivity->getObject( i ).toVector();
+        auto vct = _slaveInverseConnectivity->getObject( i+1 ).toVector();
         std::transform(
             vct.begin(), vct.end(), vct.begin(),
             [this]( ASTERINTEGER k ) -> ASTERINTEGER { return k > 0 ? _slaveCells[k - 1] : 0; } );
@@ -219,6 +219,9 @@ class ContactZone : public DataStructure {
         vct.erase(
             std::remove_if( vct.begin(), vct.end(), []( ASTERINTEGER &i ) { return i == 0; } ),
             vct.end() );
+        std::transform(
+            vct.begin(), vct.end(), vct.begin(),
+            []( ASTERINTEGER k ) -> ASTERINTEGER { return k-1; } );
         return vct;
     }
 
@@ -237,6 +240,9 @@ class ContactZone : public DataStructure {
         vct.erase(
             std::remove_if( vct.begin(), vct.end(), []( ASTERINTEGER &i ) { return i == 0; } ),
             vct.end() );
+        std::transform(
+            vct.begin(), vct.end(), vct.begin(),
+            []( ASTERINTEGER k ) -> ASTERINTEGER { return k-1; } );
         return vct;
     }
 

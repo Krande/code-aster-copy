@@ -72,6 +72,8 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
 
     std::string base( "G" );
     ASTERINTEGER nbCells = listOfCells.size();
+    for ( auto &cell : listOfCells)
+        cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
 };
 
