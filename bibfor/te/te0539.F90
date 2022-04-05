@@ -37,7 +37,6 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xnmel.h"
-#include "asterfort/xnmgr.h"
 #include "asterfort/xnmpl.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
@@ -216,10 +215,7 @@ character(len=16), intent(in) :: option, nomte
     rela_comp = zk16(icompo-1+RELA_NAME)
     defo_comp = zk16(icompo-1+DEFO)
     type_comp = zk16(icompo-1+INCRELAS)
-    if ((rela_comp.eq. 'ELAS') .and. (defo_comp.eq.'GROT_GDEP')) then
-        type_comp = 'COMP_INCR'
-        zk16(icompo-1+INCRELAS) = type_comp
-    endif
+    if (defo_comp .ne. 'PETIT') call utmess('F', 'XFEM_50', sk=defo_comp)
 !
 ! - Get output fields
 !
@@ -265,10 +261,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - HYPO-ELASTICITE
 !
-        if (defo_comp(1:5) .eq. 'PETIT') then
-            if (defo_comp(6:10) .eq. '_REAC') then
-                call utmess('F', 'XFEM_50')
-            endif
+        if (defo_comp .eq. 'PETIT') then
             call xnmpl(nno, nfh, nfe, ddlc, ddlm,&
                        igeom, zr(iinstm), zr( iinstp), ideplp, zr(icontm),&
                        zr(ivarip), typmod, option, zi( imate), zk16(icompo),&
@@ -277,20 +270,8 @@ character(len=16), intent(in) :: option, nomte
                        zr(icontp), zr(ivarim), zr(imatuu), ivectu, codret,&
                        jpmilt, nfiss, jheavn, jstno,&
                        lMatr, lVect, lSigm)
-        else if (defo_comp .eq. 'GROT_GDEP') then
-            do i = 1, nddl
-                zr(ideplp+i-1) = zr(ideplm+i-1) + zr(ideplp+i-1)
-            end do
-            call xnmgr(nno, nfh, nfe, ddlc, ddlm,&
-                       igeom, zr(iinstm), zr( iinstp), ideplp, zr(icontm),&
-                       zr(ivarip), typmod, option, zi( imate), zk16(icompo),&
-                       lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt),&
-                       zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst),&
-                       nfiss, jheavn, zr(icontp), zr(ivarim), zr(imatuu),&
-                       ivectu, codret, jpmilt, jstno,&
-                       lMatr, lVect, lSigm)
         else
-            ASSERT(ASTER_FALSE)
+            ASSERT(.false.)
         endif
     endif
 !

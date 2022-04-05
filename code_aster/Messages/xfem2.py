@@ -32,8 +32,6 @@ cata_msg = {
 Nombre d'arêtes vitales : %(i1)d
 """),
 
-    5 : _("""Avec GROT_GDEP, la modélisation axisymétrique n'est pas disponible."""),
-
     6 : _("""Le nombre de fissures est limité à %(i1)d, or vous en avez définies %(i2)d."""),
     
     7 : _("""La fissure %(k1)s est de type CZM. On ne peut pas appliquer de chargement de pression ou de condition d'échange thermique sur ses lèvres."""),
