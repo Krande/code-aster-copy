@@ -440,6 +440,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _BlocPE_FIELD["NOM_CMP"] = SIMP(statut="f", typ="TXM", max="**")
 
     _BlocPE_UTIL["KSP_UTIL"] = SIMP(statut="f", typ=not_checked)
+    _BlocPE_UTIL["RENUM"] = SIMP(statut="f", typ="TXM", defaut="SANS", into=("SANS",))
     # --------------------------------------------------------------------
     #
     # PREPARATION DU MOT-CLE FACTEUR

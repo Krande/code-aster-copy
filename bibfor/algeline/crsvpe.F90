@@ -41,7 +41,7 @@ subroutine crsvpe(motfac, solveu,  kellag )
 ! IN  K3 KELLAG  : ELIM_LAGR
 ! ----------------------------------------------------------
 !
-    integer :: ibid, niremp, nmaxit, reacpr, pcpiv
+    integer :: iret, niremp, nmaxit, reacpr, pcpiv
     integer :: lch, i, lslvo, redmpi
     real(kind=8) :: fillin, epsmax, resipc, blreps
     character(len=8) :: kacmum
@@ -59,23 +59,23 @@ subroutine crsvpe(motfac, solveu,  kellag )
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
 !     PARAMETRES FORCEMENT PRESENTS
-    call getvtx(motfac, 'ALGORITHME', iocc=1, scal=kalgo, nbret=ibid)
-    ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'PRE_COND', iocc=1, scal=kprec, nbret=ibid)
-    ASSERT(ibid.eq.1)
-    call getvtx(motfac, 'RENUM', iocc=1, scal=renum, nbret=ibid)
-    ASSERT(ibid.eq.1)
-    call getvr8(motfac, 'RESI_RELA', iocc=1, scal=epsmax, nbret=ibid)
-    ASSERT(ibid.eq.1)
-    call getvis(motfac, 'NMAX_ITER', iocc=1, scal=nmaxit, nbret=ibid)
-    ASSERT(ibid.eq.1)
-    call getvr8(motfac, 'RESI_RELA_PC', iocc=1, scal=resipc, nbret=ibid)
-    ASSERT(ibid.eq.1)
-    call getvtx('SOLVEUR', 'OPTION_PETSC', iocc=1, nbval=1, scal=myopt, nbret=ibid)
-    ASSERT(ibid.eq.1)
+    call getvtx(motfac, 'ALGORITHME', iocc=1, scal=kalgo, nbret=iret)
+    ASSERT(iret.eq.1)
+    call getvtx(motfac, 'PRE_COND', iocc=1, scal=kprec, nbret=iret)
+    ASSERT(iret.eq.1)
+    call getvtx(motfac, 'RENUM', iocc=1, scal=renum, nbret=iret)
+    ASSERT(iret.eq.1)
+    call getvr8(motfac, 'RESI_RELA', iocc=1, scal=epsmax, nbret=iret)
+    ASSERT(iret.eq.1)
+    call getvis(motfac, 'NMAX_ITER', iocc=1, scal=nmaxit, nbret=iret)
+    ASSERT(iret.eq.1)
+    call getvr8(motfac, 'RESI_RELA_PC', iocc=1, scal=resipc, nbret=iret)
+    ASSERT(iret.eq.1)
+    call getvtx('SOLVEUR', 'OPTION_PETSC', iocc=1, nbval=1, scal=myopt, nbret=iret)
+    ASSERT(iret.eq.1)
     redmpi=-9999
 ! a finir de tester avant restitution
-!    call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=ibid)
+!    call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=iret)
 !
 !     INITIALISATION DES PARAMETRES OPTIONNELS
     niremp = 0
@@ -89,19 +89,19 @@ subroutine crsvpe(motfac, solveu,  kellag )
 !
     select case (kprec)
     case('LDLT_INC')
-        call getvis(motfac, 'NIVE_REMPLISSAGE', iocc=1, scal=niremp, nbret=ibid)
-        ASSERT(ibid.eq.1)
-        call getvr8(motfac, 'REMPLISSAGE', iocc=1, scal=fillin, nbret=ibid)
-        ASSERT(ibid.eq.1)
+        call getvis(motfac, 'NIVE_REMPLISSAGE', iocc=1, scal=niremp, nbret=iret)
+        ASSERT(iret.eq.1)
+        call getvr8(motfac, 'REMPLISSAGE', iocc=1, scal=fillin, nbret=iret)
+        ASSERT(iret.eq.1)
 
 !   PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR LDLT_SP/LDLT_DP
     case ('LDLT_SP','LDLT_DP')
-        call getvis(motfac, 'REAC_PRECOND', iocc=1, scal=reacpr, nbret=ibid)
-        ASSERT(ibid.eq.1)
-        call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=ibid)
-        ASSERT(ibid.eq.1)
-        call getvtx(motfac, 'GESTION_MEMOIRE', iocc=1, scal=usersm, nbret=ibid)
-        ASSERT(ibid.eq.1)
+        call getvis(motfac, 'REAC_PRECOND', iocc=1, scal=reacpr, nbret=iret)
+        ASSERT(iret.eq.1)
+        call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=iret)
+        ASSERT(iret.eq.1)
+        call getvtx(motfac, 'GESTION_MEMOIRE', iocc=1, scal=usersm, nbret=iret)
+        ASSERT(iret.eq.1)
 
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
@@ -109,8 +109,8 @@ subroutine crsvpe(motfac, solveu,  kellag )
 !
         if (nmaxit==0) nmaxit=100
         if (( kprec.eq.'LDLT_SP' ).or.( kprec .eq. 'LDLT_DP')) then
-            call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
-            ASSERT(ibid.eq.1)
+            call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=iret)
+            ASSERT(iret.eq.1)
             if ( abs(blreps) < r8prem() ) then
                kacmum = 'AUTO'
             else
