@@ -88,7 +88,7 @@ type(NL_DS_Print), intent(out) :: ds_print
               '    AU POINT    ',' RESI_GLOB_MAXI ','    AU POINT    ',&
               ' RESI_REFE_RELA ','    AU POINT    ',' RESI_COMP_RELA ',&
               '    AU POINT    ','                ','      RHO       ',&
-              '      ETA       ','                ','                ',&
+              '      ETA       ','(+ TYPE MATRICE)','                ',&
               '    NB. ITER    ','   VARI. CONT.  ','   CRIT. FROT.  ',&
               '   CRIT. GEOM.  ','    ERROR       ','    VALEUR      ',&
               '    MAX. LIEU   ',' LIEU MAX FROT. ',' LIEU MAX GEOM. ',&

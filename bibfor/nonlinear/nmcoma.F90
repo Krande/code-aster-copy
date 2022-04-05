@@ -43,6 +43,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmelcm.h"
@@ -138,6 +139,7 @@ integer :: faccvg, ldccvg
     integer :: nb_matr, reac_iter
     integer :: condcvg
     character(len=6) :: list_matr_type(20)
+    character(len=8) :: ksym
     character(len=16) :: list_calc_opti(20), list_asse_opti(20)
     aster_logical :: list_l_asse(20), list_l_calc(20)
 !
@@ -293,6 +295,15 @@ integer :: faccvg, ldccvg
         endif
 ! ----- Set matrix type in convergence table
         if (l_update_matr) then
+            call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=ksym)
+            select case( ksym(1:7) )
+            case( 'SYMETRI' )
+                corrMatrType(12:16) = '(SYM)'
+            case( 'NON_SYM' )
+                corrMatrType(10:16) = '(NOSYM)'
+            case default
+                ASSERT(.false.)
+            end select
             call nmimck(ds_print, 'MATR_ASSE', corrMatrType, ASTER_TRUE)
         else
             call nmimck(ds_print, 'MATR_ASSE', corrMatrType, ASTER_FALSE)

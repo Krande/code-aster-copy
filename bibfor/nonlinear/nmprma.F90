@@ -138,6 +138,7 @@ integer :: faccvg, ldccvg, condcvg
     integer :: iter_newt
     integer :: nb_matr, reac_incr
     character(len=6) :: list_matr_type(20)
+    character(len=8) :: ksym
     character(len=16) :: list_calc_opti(20), list_asse_opti(20)
     aster_logical :: list_l_asse(20), list_l_calc(20)
     aster_logical :: l_contact_adapt,l_cont_cont
@@ -291,6 +292,15 @@ integer :: faccvg, ldccvg, condcvg
     if (l_update_matr) then
         call nmmatr('PREDICTION', list_func_acti    , lischa, numedd, sddyna,&
                     nume_inst      , ds_contact, meelem, measse, matass)
+        call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=ksym)
+        select case( ksym(1:7) )
+            case( 'SYMETRI' )
+                predMatrType(12:16) = '(SYM)'
+            case( 'NON_SYM' )
+                predMatrType(10:16) = '(NOSYM)'
+            case default
+                ASSERT(.false.)
+        end select
         call nmimck(ds_print, 'MATR_ASSE', predMatrType, ASTER_TRUE)
     else
         call nmimck(ds_print, 'MATR_ASSE', ' '   , ASTER_FALSE)
