@@ -169,6 +169,11 @@ class DOFNumbering : public BaseDOFNumbering {
     ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row, const bool local = false ) const;
 
     /**
+     * @brief Return true if a physical dof is Associated To A Given Row
+     */
+    bool isRowAssociatedToPhysical( const ASTERINTEGER row, const bool local = false ) const;
+
+    /**
      * @brief Get The total number of Dofs
      */
     ASTERINTEGER getNumberOfDofs( const bool local = false ) const;

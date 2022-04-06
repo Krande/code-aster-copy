@@ -631,8 +631,7 @@ class Structure(WithEmbeddedObjects):
             lNumberOfPhysicalEqs.append(neq)
 
             numb = sub.dofNumbering
-            # the method is 1-index based
-            lag = np.array(numb.getRowsAssociatedToLagrangeMultipliers()) - 1
+            lag = np.array(numb.getRowsAssociatedToLagrangeMultipliers())
 
             modes = sub.modes
             em = [modes.getField('DEPL', r).getValues() for r in modes.getRanks()]
@@ -727,15 +726,13 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         res2 = lres2[istru]
         # selection of the dofs
         lPhysical = (
-            np.array(mass.getDOFNumbering().getRowsAssociatedToPhysicalDofs()) - 1
-        )  # 0-based index
+            np.array(mass.getDOFNumbering().getRowsAssociatedToPhysicalDofs())
+        )
         lDOF = lPhysical
         if dof:
             dict_dof = {}
             for row in lPhysical:
-                dd = mass.getDOFNumbering().getComponentAssociatedToRow(
-                    int(row) + 1
-                )  # 1-based index
+                dd = mass.getDOFNumbering().getComponentAssociatedToRow(int(row))
                 dict_dof.setdefault(dd, []).append(row)
             lDOF = sum([dict_dof[d] for d in dof], [])
         # extract mass matrix in the form a 3 arrays

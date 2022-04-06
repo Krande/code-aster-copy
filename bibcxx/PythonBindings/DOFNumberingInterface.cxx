@@ -53,16 +53,21 @@ Returns:
               R"(
 Returns the node index associated to a dof index.
 
-- If the row is associated to a physical DOF, the *positive* id of the node
-  handling this DOF is returned.
+Arguments:
+    row (int): Index of the dof.
+    local (bool, optional): not used (default: false).
 
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
-  condition, the name of the *negative* id of the node which is constrained by
-  the multiplier is returned.
+Returns:
+    int: index of the dof.
+        )",
+        // ----------------------------------------------------------------------
+              py::arg( "row" ), py::arg( "local" ) = false )
+        .def( "isRowAssociatedToPhysical", &DOFNumbering::isRowAssociatedToPhysical,
+              R"(
+If the row is associated to a physical DOF, return True
 
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
-  implying several DOF, a blank string ' ' is returned (since no component can be
-  identified).
+If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+  condition, return False
 
 Arguments:
     row (int): Index of the dof.
@@ -134,7 +139,7 @@ Returns the component name associated to a dof index.
   identified).
 
 Arguments:
-    row (int): Index of the dof (1-based index).
+    row (int): Index of the dof.
     local (bool, optional): not used (default: false).
 
 Returns:
@@ -147,7 +152,7 @@ Returns:
 Returns the components name associated to a node index.
 
 Arguments:
-    node (int): Index of the node (1-based index).
+    node (int): Index of the node.
     local (bool, optional): not used (default: false).
 
 Returns:

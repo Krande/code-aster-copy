@@ -382,6 +382,13 @@ class BaseDOFNumbering : public DataStructure {
     };
 
     /**
+     * @brief Return true if a physical dof is Associated To A Given Row
+     */
+    virtual bool isRowAssociatedToPhysical( const ASTERINTEGER row ) const {
+        AS_ABORT( "Not allowed" );
+    };
+
+    /**
      * @brief Get The total number of Dofs
      */
     virtual ASTERINTEGER getNumberOfDofs() const { AS_ABORT( "Not allowed" ); };

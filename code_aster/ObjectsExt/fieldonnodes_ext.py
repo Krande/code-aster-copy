@@ -128,14 +128,12 @@ class ExtendedFieldOnNodesReal:
         # build the indirection table between (nodeid, dof) and row
         indir = {}
         for row in dofNumbering.getRowsAssociatedToLagrangeMultipliers():
-            dof = dofNumbering.getComponentAssociatedToRow(row)
-            node = -1 * int(
-                dofNumbering.getNodeAssociatedToRow(row)
-            )  # constrained nodes have id < 0
-            if node > 0 and dof != "":
-                indir.setdefault((node, dof), []).append(
-                    row
-                )  # there may be 2 Lagrange multipliers per constraint
+            if not dofNumbering.isRowAssociatedToPhysical(row):
+                dof = dofNumbering.getComponentAssociatedToRow(row)
+                if dof != "":
+                    node = dofNumbering.getNodeAssociatedToRow(row)
+                    # there may be 2 Lagrange multipliers per constraint
+                    indir.setdefault((node, dof), []).append(row)
         return indir
 
     def setDirichletBC(self, **kwargs):
@@ -173,7 +171,7 @@ class ExtendedFieldOnNodesReal:
                     nodes = mesh.getNodes(grMa)
                     lNodes += nodes
                 elif mesh.hasGroupOfCells(grMa):
-                    nodes = [node for cell in mesh.getCells(grMa) for node in connec[cell]]
+                    nodes = [node-1 for cell in mesh.getCells(grMa) for node in connec[cell]]
                     lNodes += nodes
                 else:
                     raise ValueError("no {} group of cells".format(grMa))
@@ -188,7 +186,7 @@ class ExtendedFieldOnNodesReal:
                     raise ValueError("no {} group of nodes".format(grNo))
         if "NOEUD" in kwargs.keys():
             lNo = kwargs["NOEUD"]
-            lNo = [lNo] if isinstance(lNo, int) else lNo
+            lNo = [lNo-1] if isinstance(lNo, int) else [no-1 for no in lNo]
             lNodes += lNo
         # keep unique node id
         lNodes = list(set(lNodes))
@@ -202,7 +200,7 @@ class ExtendedFieldOnNodesReal:
                 if (node, dof) in self.__NodeDOF2Row.keys():
                     assignedDOF += 1
                     for row in self.__NodeDOF2Row[(node, dof)]:
-                        self[row - 1] = val  # row are 1-based
+                        self[row] = val
         if assignedDOF == 0:
             raise ValueError(
                 "No bounday condition has been set - no entity handle the given degree of freedom"
