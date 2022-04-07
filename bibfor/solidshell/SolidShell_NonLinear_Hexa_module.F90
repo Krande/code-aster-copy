@@ -110,9 +110,7 @@ subroutine compNonLinearHexa(option, elemProp, cellGeom, matePara, behaPara)
         if (behaPara%lMatrSyme) then
             call jevech('PMATUUR', 'E', jvMatr)
         else
-! --------- Matrices non symétriques pas prises en charge
-            ASSERT(ASTER_FALSE)
-            !call jevech('PMATUNS', 'E', jvMatr)
+            call jevech('PMATUNS', 'E', jvMatr)
         endif
     endif
     jvVect = isnnem()
@@ -209,7 +207,7 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
     real(kind=8), intent(in) :: dispPrev(SSH_NBDOF_HEXA), dispIncr(SSH_NBDOF_HEXA)
     real(kind=8), intent(in) :: sigm(SSH_SIZE_TENS, nbIntePoint), vim(nbVari, nbIntePoint)
     real(kind=8), intent(out) :: sigp(SSH_SIZE_TENS, nbIntePoint), vip(nbVari, nbIntePoint)
-    real(kind=8), intent(out) :: matr(SSH_SIZE_MATR_HEXA), vect(SSH_NBDOF_HEXA)
+    real(kind=8), intent(out) :: matr(*), vect(SSH_NBDOF_HEXA)
     integer, intent(out) :: codret
 ! - Local
     integer, parameter :: ksp = 1
@@ -218,12 +216,13 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
     integer :: jvCoor, jvWeight
     type(SSH_KINE_HEXA) :: kineHexa
     type(SSH_STAB_HEXA) :: stabHexa
+    integer :: i, j, ij
     real(kind=8) :: zeta, poids, jacob
     real(kind=8) :: UeffKpg, Ueff
     real(kind=8) :: dispCurr(SSH_NBDOF_HEXA)
     real(kind=8) :: epsiPrev(SSH_SIZE_TENS), epsiIncr(SSH_SIZE_TENS)
     real(kind=8) :: sigmPost(SSH_SIZE_TENS), sigmPrep(SSH_SIZE_TENS)
-    real(kind=8), dimension(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) :: matrMate
+    real(kind=8), dimension(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) :: matrMate, matrTang
     real(kind=8), dimension(SSH_SIZE_TENS, SSH_SIZE_TENS) :: dsidep
 !   ------------------------------------------------------------------------------------------------
 !
@@ -233,10 +232,6 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
     endif
     if (behaPara%lVect) then
         vect = 0.d0
-    endif
-    if (behaPara%lMatr) then
-        ASSERT(behaPara%lMatrSyme)
-        matr = 0.d0
     endif
 
 ! - Properties of finite element
@@ -264,6 +259,7 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
 
 ! - Loop on Gauss points
     Ueff = 0.d0
+    matrTang = 0.d0
     do kpg = 1, nbIntePoint
         zeta  = zr(jvCoor-1+3*kpg)
         poids = zr(jvWeight-1+kpg)
@@ -339,8 +335,7 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
 
 ! ----- Update tangent matrix
         if (behaPara%lMatr) then
-            ASSERT(behaPara%lMatrSyme)
-            call updateMatrSyme(nbDof, matrMate, matr, jacob)
+            matrTang = matrTang + jacob*matrMate
         endif
 
 ! ----- Update internal force at current Gauss point
@@ -371,7 +366,8 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
 
 ! - Save matrix and vector
     if (behaPara%lMatr) then
-        call updateMatrSyme(nbDofGeom, stabHexa%matrStabMate, matr)
+        matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom) +&
+                                             stabHexa%matrStabMate
     endif
     if (behaPara%lVect) then
         vect(1:SSH_NBDOFG_HEXA) =&
@@ -383,6 +379,25 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
 ! - Return code summary
     if (behaPara%lSigm) then
         call codere(cod, nbIntePoint, codret)
+    endif
+
+! - Write matrix
+    if (behaPara%lMatr) then
+        if (behaPara%lMatrSyme) then
+            do i = 1, SSH_NBDOF_HEXA
+                do j = 1, i
+                    ij = (i-1)*i/2+j
+                    matr(ij) = matrTang(i,j)
+                end do
+            end do
+        else
+            do j = 1, SSH_NBDOF_HEXA
+                do i = 1, SSH_NBDOF_HEXA
+                    ij = j + (i - 1) * SSH_NBDOF_HEXA
+                    matr(ij) = matrTang(i,j)
+                end do
+            end do
+        endif
     endif
 !
 !   ------------------------------------------------------------------------------------------------
@@ -436,7 +451,7 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
     real(kind=8), intent(in) :: dispPrev(SSH_NBDOF_HEXA), dispIncr(SSH_NBDOF_HEXA)
     real(kind=8), intent(in) :: sigm(SSH_SIZE_TENS, nbIntePoint), vim(nbVari, nbIntePoint)
     real(kind=8), intent(out) :: sigp(SSH_SIZE_TENS, nbIntePoint), vip(nbVari, nbIntePoint)
-    real(kind=8), intent(out) :: matr(SSH_SIZE_MATR_HEXA), vect(SSH_NBDOF_HEXA)
+    real(kind=8), intent(out) :: matr(*), vect(SSH_NBDOF_HEXA)
     integer, intent(out) :: codret
 ! - Local
     integer, parameter :: ksp = 1
@@ -445,13 +460,14 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
     aster_logical :: lVect, lMatr, lSigm, lVari, lMatrPred
     type(SSH_KINE_HEXA) :: kineHexa
     type(SSH_STAB_HEXA) :: stabHexa
+    integer :: i, j, ij
     real(kind=8) :: zeta, poids, jacob
     real(kind=8) :: UeffKpg, Ueff
     real(kind=8) :: dispCurr(SSH_NBDOF_HEXA)
     real(kind=8) :: epslIncr(SSH_SIZE_TENS)
     real(kind=8) :: sigmPrep(SSH_SIZE_TENS), pk2(SSH_SIZE_TENS)
     real(kind=8) :: tPrev(SSH_SIZE_TENS), tCurr(SSH_SIZE_TENS)
-    real(kind=8), dimension(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) :: matrMate, matrGeom
+    real(kind=8), dimension(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) :: matrMate, matrGeom, matrTang
     real(kind=8), dimension(SSH_SIZE_TENS, SSH_SIZE_TENS) :: dtde, dsidep
 !   ------------------------------------------------------------------------------------------------
 !
@@ -461,10 +477,6 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
     endif
     if (behaPara%lVect) then
         vect = 0.d0
-    endif
-    if (behaPara%lMatr) then
-        ASSERT(behaPara%lMatrSyme)
-        matr = 0.d0
     endif
     lSigm     = L_SIGM(option)
     lVect     = L_VECT(option)
@@ -497,6 +509,7 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
 
 ! - Loop on Gauss points
     Ueff = 0.d0
+    matrTang = 0.d0
     do kpg = 1, nbIntePoint
         cod(kpg) = 0
         zeta     = zr(jvCoor-1+3*kpg)
@@ -599,9 +612,8 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
 
 ! ----- Update tangent matrix
         if (behaPara%lMatr) then
-            ASSERT(behaPara%lMatrSyme)
-            call updateMatrSyme(nbDof, matrMate, matr, jacob)
-            call updateMatrSyme(nbDof, matrGeom, matr, jacob)
+            matrTang = matrTang + jacob * matrMate
+            matrTang = matrTang + jacob * matrGeom
         endif
 
 ! ----- Update internal force at current Gauss point
@@ -633,8 +645,10 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
 
 ! - Save matrix and vector
     if (behaPara%lMatr) then
-        call updateMatrSyme(nbDofGeom, stabHexa%matrStabMate, matr)
-        call updateMatrSyme(nbDofGeom, stabHexa%matrStabGeom, matr)
+        matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom)+&
+                                             stabHexa%matrStabMate
+        matrTang(1:nbDofGeom, 1:nbDofGeom) = matrTang(1:nbDofGeom, 1:nbDofGeom)+&
+                                             stabHexa%matrStabGeom
     endif
 
     if (behaPara%lVect) then
@@ -647,6 +661,26 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
 ! - Return code summary
 !
     call codere(cod, nbIntePoint, codret)
+
+! - Write matrix
+    if (behaPara%lMatr) then
+        if (behaPara%lMatrSyme) then
+            do i = 1, SSH_NBDOF_HEXA
+                do j = 1, i
+                    ij = (i-1)*i/2+j
+                    matr(ij) = matrTang(i,j)
+                end do
+            end do
+        else
+            do j = 1, SSH_NBDOF_HEXA
+                do i = 1, SSH_NBDOF_HEXA
+                    ij = j + (i - 1) * SSH_NBDOF_HEXA
+                    matr(ij) = matrTang(i,j)
+                end do
+            end do
+            ASSERT(ij .le. SSH_NBDOF_HEXA*SSH_NBDOF_HEXA)
+        endif
+    endif
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

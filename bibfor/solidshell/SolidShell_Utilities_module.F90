@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ module SolidShell_Utilities_module
 ! ==================================================================================================
 implicit none
 ! ==================================================================================================
-public  :: prodBTDB, updateMatrSyme
+public  :: prodBTDB
 ! ==================================================================================================
 private
 #include "asterf_types.h"
@@ -72,44 +72,6 @@ subroutine prodBTDB(matrD, nls, ncb, matrB, tBDB)
             end do
         end do
     end do
-!
-!   ------------------------------------------------------------------------------------------------
-end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! updateMatrSyme
-!
-! Update symmetric matrix
-!
-! In  nbDof            : size of matrix
-! In  matrToAdd        : matrix to add (with coefficient)
-! IO  matr             : matrix to update
-! In  coef             : coefficient
-!
-! --------------------------------------------------------------------------------------------------
-subroutine updateMatrSyme(nbDof, matrToAdd, matr, coef_)
-!   ------------------------------------------------------------------------------------------------
-! - Parameters
-    integer, intent(in)                :: nbDof
-    real(kind=8), intent(in)           :: matrToAdd(nbDof, nbDof)
-    real(kind=8), intent(inout)        :: matr(*)
-    real(kind=8), optional, intent(in) :: coef_
-! - Local
-    integer :: i, j, k
-    real(kind=8) :: coef
-!   ------------------------------------------------------------------------------------------------
-!
-    coef = 1.d0
-    if (present(coef_)) then
-        coef = coef_
-    endif
-    k = 0
-    do i = 1, nbDof
-        do j = 1, i
-            k = k + 1
-            matr(k) = matr(k) + coef*matrToAdd(i, j)
-        enddo
-    enddo
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
