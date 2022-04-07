@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine te0300(option, nomte)
 !      BORDS ELEMENTS ISOPARAMETRIQUES 2D AVEC CHARGEMENT DE BORD
 !      PRESSION-CISAILLEMENT ET FORCE REPARTIE
 !
-!      OPTION : 'CALC_K_G'  (CHARGES REELLES)
-!               'CALC_K_G_F' (CHARGES FONCTIONS)
+!      OPTION : 'CALC_K_G_XFEM'  (CHARGES REELLES)
+!               'CALC_K_G_XFEM_F' (CHARGES FONCTIONS)
 !
 ! ENTREES  ---> OPTION : OPTION DE CALCUL
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -108,7 +108,7 @@ subroutine te0300(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PFISSR', 'L', ifond)
-    if ((option.eq.'CALC_K_G_F') .or. (option.eq.'G_MODA_F')) then
+    if ((option.eq.'CALC_K_G_XFEM_F') .or. (option.eq.'G_MODA_F')) then
         fonc = .true.
         call jevech('PFF1D2D', 'L', iforf)
         call jevech('PPRESSF', 'L', ipref)
