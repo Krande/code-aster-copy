@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -207,7 +207,7 @@ class MEAXTR3_XHT(Element):
                      (SP.PROTATR, LC.CROTATR), (SP.PSIGISE, ECONTSE),
                      (SP.PTEMPSR, CTEMPSR), (SP.PTHETAR, DDL_MECC),
                      (OP.CALC_G_XFEM_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     ),
+                     (OP.CALC_G_XFEM_F.PSTANO, STANO_I),),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
