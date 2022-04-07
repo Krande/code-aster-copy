@@ -362,7 +362,7 @@ subroutine compRigiGeomHexaKpg(geomHexa, zeta, sigm, matrGeom)
     integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
     integer :: iNodeGeom, jNodeGeom
     real(kind=8) :: const(SSH_SIZE_TENS)
-    real(kind=8) :: GCart0(SSH_SIZE_TENS), GCartZETA(SSH_SIZE_TENS), GCartZETAZETA(SSH_SIZE_TENS)
+    real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS), GCovaZETAZETA(SSH_SIZE_TENS)
     real(kind=8) :: GPinchZETA(SSH_SIZE_TENS), GPinchZZETA(SSH_SIZE_TENS), GPinchZZ(SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -373,23 +373,14 @@ subroutine compRigiGeomHexaKpg(geomHexa, zeta, sigm, matrGeom)
         do jNodeGeom = 1, nbNodeGeom
 
 ! --------- Compute gradients for geometric matrix
-            call compGCartMatrHexa(iNodeGeom, jNodeGeom, GCart0, GCartZETA)
-
-! --------- Compute GCartZETAZETA
-            GCartZETAZETA(1) = hexaVectH3(iNodeGeom)*hexaVectH3(jNodeGeom)
-            GCartZETAZETA(2) = hexaVectH2(iNodeGeom)*hexaVectH2(jNodeGeom)
-            GCartZETAZETA(3) = 0.d0
-            GCartZETAZETA(4) = hexaVectH2(iNodeGeom)*hexaVectH3(jNodeGeom)+&
-                               hexaVectH2(jNodeGeom)*hexaVectH3(iNodeGeom)
-            GCartZETAZETA(5) = 0.d0
-            GCartZETAZETA(6) = 0.d0
+            call compGCovaMatrHexa(iNodeGeom, jNodeGeom, GCova0, GCovaZETA, GCovaZETAZETA)
 
 ! --------- Compute matrix
-            const = matmul(geomHexa%T, GCart0)+&
-                    zeta*(matmul(geomHexa%T, GCartZETA) + &
-                          matmul(geomHexa%TZETA, GCart0))+ &
-                    zeta*zeta*(matmul(geomHexa%T, GCartZETAZETA) + &
-                               matmul(geomHexa%TZETA, GCartZETA))
+            const = matmul(geomHexa%T0, GCova0)+&
+                    zeta*(matmul(geomHexa%T0, GCovaZETA) + &
+                          matmul(geomHexa%TZETA, GCova0))+ &
+                    zeta*zeta*(matmul(geomHexa%T0, GCovaZETAZETA) + &
+                               matmul(geomHexa%TZETA, GCovaZETA))
             matrGeom(3*(iNodeGeom-1)+1: 3*(iNodeGeom-1)+3, 3*(jNodeGeom-1)+1: 3*(jNodeGeom-1)+3) =&
                     sum(const*sigm)*matr3Iden
         enddo
@@ -405,13 +396,13 @@ subroutine compRigiGeomHexaKpg(geomHexa, zeta, sigm, matrGeom)
         GPinchZETA(6)  = -2.d0*hexaVectG2(iNodeGeom)
         GPinchZZETA(5) = -2.d0*hexaVectH3(iNodeGeom)
         GPinchZZETA(6) = -2.d0*hexaVectH2(iNodeGeom)
-        const = zeta*matmul(geomHexa%T, GPinchZETA)+&
-                zeta*zeta*(matmul(geomHexa%T, GPinchZZETA) + matmul(geomHexa%TZETA, GPinchZETA))
+        const = zeta*matmul(geomHexa%T0, GPinchZETA)+&
+                zeta*zeta*(matmul(geomHexa%T0, GPinchZZETA) + matmul(geomHexa%TZETA, GPinchZETA))
         matrGeom(25, 3*(iNodeGeom-1)+3) = sum(const*sigm)
         matrGeom(3*(iNodeGeom-1)+3, 25) = sum(const*sigm)
     enddo
     GPinchZZ(3) = 4.d0
-    const = matmul(geomHexa%T, GPinchZZ)*zeta*zeta
+    const = matmul(geomHexa%T0, GPinchZZ)*zeta*zeta
     matrGeom(25, 25) = sum(const*sigm)
 !
 !   ------------------------------------------------------------------------------------------------

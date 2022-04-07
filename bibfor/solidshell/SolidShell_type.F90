@@ -179,10 +179,10 @@ type SSH_GEOM_HEXA
 ! - Base properties of cell
     type(SSH_CELL_GEOM) :: cellGeom
 ! - T matrix relating the covariant and cartesian frames
-    real(kind=8) :: T(6, 6)              = 0.d0
-    real(kind=8) :: TXI(6, 6)            = 0.d0
-    real(kind=8) :: TETA(6, 6)           = 0.d0
-    real(kind=8) :: TZETA(6, 6)          = 0.d0
+    real(kind=8) :: T0(6, 6) = 0.d0
+    real(kind=8) :: TXI(6, 6) = 0.d0
+    real(kind=8) :: TETA(6, 6) = 0.d0
+    real(kind=8) :: TZETA(6, 6) = 0.d0
 end type SSH_GEOM_HEXA
 
 ! ==================================================================================================

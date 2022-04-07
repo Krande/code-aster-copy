@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,9 @@ use SolidShell_Geometry_Hexa_module
 implicit none
 ! ==================================================================================================
 public :: compBCovaMatrHexa, compBCartMatrHexa, compBCartEASMatrHexa, compBMatrHexa, compEpsiHexa,&
-          compECovaMatrHexa, compEpsgHexa, compGCartMatrHexa, compGCartSMatrHexa,&
+          compECovaMatrHexa, compEpsgHexa,&
           compEpslHexa, setCurrConfToInit, setCurrConfWithDisp
+public :: compGCovaMatrHexa, compGCovaSMatrHexa
 ! ==================================================================================================
 private
 #include "asterf_types.h"
@@ -430,19 +431,19 @@ subroutine compBCartMatrHexa(geomHexa, kineHexa)
     kineHexa%BCartETAZETA  = 0.d0
     kineHexa%BCartXIZETA   = 0.d0
 
-    kineHexa%BCart0        = matmul(geomHexa%T, kineHexa%BCova0)
-    kineHexa%BCartZETA     = matmul(geomHexa%T, kineHexa%BCovaZETA) + &
+    kineHexa%BCart0        = matmul(geomHexa%T0, kineHexa%BCova0)
+    kineHexa%BCartZETA     = matmul(geomHexa%T0, kineHexa%BCovaZETA) + &
                              matmul(geomHexa%TZETA, kineHexa%BCova0)
-    kineHexa%BCartZETAZETA = matmul(geomHexa%T, kineHexa%BCovaZETAZETA) + &
+    kineHexa%BCartZETAZETA = matmul(geomHexa%T0, kineHexa%BCovaZETAZETA) + &
                              matmul(geomHexa%TZETA, kineHexa%BCovaZETA)
-    kineHexa%BCartXI       = matmul(geomHexa%T, kineHexa%BCovaXI) + &
+    kineHexa%BCartXI       = matmul(geomHexa%T0, kineHexa%BCovaXI) + &
                              matmul(geomHexa%TXI, kineHexa%BCova0)
-    kineHexa%BCartETA      = matmul(geomHexa%T, kineHexa%BCovaETA) + &
+    kineHexa%BCartETA      = matmul(geomHexa%T0, kineHexa%BCovaETA) + &
                              matmul(geomHexa%TETA, kineHexa%BCova0)
-    kineHexa%BCartETAZETA  = matmul(geomHexa%T, kineHexa%BCovaETAZETA) + &
+    kineHexa%BCartETAZETA  = matmul(geomHexa%T0, kineHexa%BCovaETAZETA) + &
                              matmul(geomHexa%TETA, kineHexa%BCovaZETA) + &
                              matmul(geomHexa%TZETA, kineHexa%BCovaETA)
-    kineHexa%BCartXIZETA   = matmul(geomHexa%T, kineHexa%BCovaXIZETA) + &
+    kineHexa%BCartXIZETA   = matmul(geomHexa%T0, kineHexa%BCovaXIZETA) + &
                              matmul(geomHexa%TXI, kineHexa%BCovaZETA) + &
                              matmul(geomHexa%TZETA, kineHexa%BCovaXI)
 !
@@ -469,7 +470,7 @@ subroutine compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
 !
     kineHexa%BCartEAS  = 0.d0
     kineHexa%BCovaEAS = (/0.d0, 0.d0,-2.d0*zeta, 0.d0, 0.d0, 0.d0/)
-    kineHexa%BCartEAS = matmul(geomHexa%T, kineHexa%BCovaEAS)
+    kineHexa%BCartEAS = matmul(geomHexa%T0, kineHexa%BCovaEAS)
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
@@ -540,43 +541,47 @@ subroutine compEpsgHexa(zeta, geomHexa, epsg)
 !   ------------------------------------------------------------------------------------------------
 !
     epsg%vale = 0.d0
-    epsg%vale = matmul(geomHexa%T, epsg%ECova0)+&
-                (matmul(geomHexa%T, epsg%ECovaZETA)+&
+    epsg%vale = matmul(geomHexa%T0, epsg%ECova0)+&
+                (matmul(geomHexa%T0, epsg%ECovaZETA)+&
                  matmul(geomHexa%TZETA, epsg%ECova0))*zeta+&
-                (matmul(geomHexa%T, epsg%ECovaZETAZETA)+&
+                (matmul(geomHexa%T0, epsg%ECovaZETAZETA)+&
                  matmul(geomHexa%TZETA, epsg%ECovaZETA))*zeta*zeta
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! compGCartMatrHexa
+! compGCovaMatrHexa
 !
-! Compute gradients for geometric matrix
+! Compute gradients for geometric matrix in covariant frame
 !
 ! In  iNodeGeom        : first node of current geometric matrix
 ! In  jNodeGeom        : second node of current geometric matrix
-! Out GCart0           : gradient for current geometric matrix
-! Out GCartZETA        : gradient for current geometric matrix
+! Out GCova0           : gradient for current geometric matrix (constant part)
+! Out GCovaZETA        : gradient for current geometric matrix (ZETA part)
+! Out GCovaZETAZETA    : gradient for current geometric matrix (ZETAZETA part)
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compGCartMatrHexa(iNodeGeom, jNodeGeom, GCart0, GCartZETA)
+subroutine compGCovaMatrHexa(iNodeGeom, jNodeGeom, GCova0, GCovaZETA, GCovaZETAZETA_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     integer, intent(in)       :: iNodeGeom, jNodeGeom
-    real(kind=8), intent(out) :: GCart0(SSH_SIZE_TENS)
-    real(kind=8), intent(out) :: GCartZETA(SSH_SIZE_TENS)
+    real(kind=8), intent(out) :: GCova0(SSH_SIZE_TENS)
+    real(kind=8), intent(out) :: GCovaZETA(SSH_SIZE_TENS)
+    real(kind=8), optional, intent(out) :: GCovaZETAZETA_(SSH_SIZE_TENS)
 ! - Local
     integer :: AD, EH, JM
     real(kind=8) :: aux13, aux23, aux33, auxz12, auxz13, auxz23
     real(kind=8) :: XI(3)
     real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA), dN_dZeta(SSH_NBNODEG_HEXA)
+    real(kind=8) :: GCovaZETAZETA(SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
 !
-    GCart0        = 0.d0
-    GCartZETA     = 0.d0
+    GCova0 = 0.d0
+    GCovaZETA = 0.d0
+    GCovaZETAZETA = 0.d0
 
-! - Compute GCart0
+! - Compute GCova0
     aux33  = 0.d0
     aux23  = 0.d0
     aux13  = 0.d0
@@ -599,15 +604,15 @@ subroutine compGCartMatrHexa(iNodeGeom, jNodeGeom, GCart0, GCartZETA)
                  (dN_dXsi(iNodeGeom)*dN_dZEta(jNodeGeom)+&
                   dN_dZeta(iNodeGeom)*dN_dXsi(jNodeGeom))/4.d0
     end do
-    GCart0(1) = hexaVectG1(iNodeGeom)*hexaVectG1(jNodeGeom)
-    GCart0(2) = hexaVectG2(iNodeGeom)*hexaVectG2(jNodeGeom)
-    GCart0(3) = aux33
-    GCart0(4) = hexaVectG1(iNodeGeom)*hexaVectG2(jNodeGeom) +&
+    GCova0(1) = hexaVectG1(iNodeGeom)*hexaVectG1(jNodeGeom)
+    GCova0(2) = hexaVectG2(iNodeGeom)*hexaVectG2(jNodeGeom)
+    GCova0(3) = aux33
+    GCova0(4) = hexaVectG1(iNodeGeom)*hexaVectG2(jNodeGeom) +&
                 hexaVectG2(iNodeGeom)*hexaVectG1(jNodeGeom)
-    GCart0(5) = aux13
-    GCart0(6) = aux23
+    GCova0(5) = aux13
+    GCova0(6) = aux23
 
-! - Compute GCartZETA
+! - Compute GCovaZETA
     auxz23 = 0.d0
     auxz13 = 0.d0
     do AD = 1, 4
@@ -628,40 +633,54 @@ subroutine compGCartMatrHexa(iNodeGeom, jNodeGeom, GCart0, GCartZETA)
              hexaVectH3(iNodeGeom)*hexaVectG2(jNodeGeom)+&
              hexaVectG2(iNodeGeom)*hexaVectH3(jNodeGeom)+&
              hexaVectG1(iNodeGeom)*hexaVectH2(jNodeGeom)
-    GCartZETA(1) = hexaVectH3(iNodeGeom)*hexaVectG1(jNodeGeom)+&
+    GCovaZETA(1) = hexaVectH3(iNodeGeom)*hexaVectG1(jNodeGeom)+&
                    hexaVectG1(iNodeGeom)*hexaVectH3(jNodeGeom)
-    GCartZETA(2) = hexaVectH2(iNodeGeom)*hexaVectG2(jNodeGeom)+&
+    GCovaZETA(2) = hexaVectH2(iNodeGeom)*hexaVectG2(jNodeGeom)+&
                    hexaVectG2(iNodeGeom)*hexaVectH2(jNodeGeom)
-    GCartZETA(3) = 0.d0
-    GCartZETA(4) = auxz12
-    GCartZETA(5) = auxz13
-    GCartZETA(6) = auxz23
+    GCovaZETA(3) = 0.d0
+    GCovaZETA(4) = auxz12
+    GCovaZETA(5) = auxz13
+    GCovaZETA(6) = auxz23
+
+! - Compute GCovaZETAZETA
+    GCovaZETAZETA(1) = hexaVectH3(iNodeGeom)*hexaVectH3(jNodeGeom)
+    GCovaZETAZETA(2) = hexaVectH2(iNodeGeom)*hexaVectH2(jNodeGeom)
+    GCovaZETAZETA(3) = 0.d0
+    GCovaZETAZETA(4) = hexaVectH2(iNodeGeom)*hexaVectH3(jNodeGeom)+&
+                       hexaVectH2(jNodeGeom)*hexaVectH3(iNodeGeom)
+    GCovaZETAZETA(5) = 0.d0
+    GCovaZETAZETA(6) = 0.d0
+
+    if (present(GCovaZETAZETA_)) then
+        GCovaZETAZETA_ = GCovaZETAZETA
+    endif
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
-! compGCartSMatrHexa
+! compGCovaSMatrHexa
 !
-! Compute gradients for geometric matrix of stabilization
+! Compute gradients for geometric matrix of stabilization in covariant frame
 !
 ! In  iNodeGeom        : first node of current geometric matrix
 ! In  jNodeGeom        : second node of current geometric matrix
-! Out GCart0           : gradient for current geometric matrix
-! Out GCartZETA        : gradient for current geometric matrix
-! Out GCartZETAZETA    : gradient for current geometric matrix
+! Out GCovaXI          : gradient for current geometric matrix (XI part)
+! Out GCovaETA         : gradient for current geometric matrix (ETA part)
+! Out GCovaETAZETA     : gradient for current geometric matrix (ETA/ZETA part)
+! Out GCovaXIZETA      : gradient for current geometric matrix (XI/ZETA part)
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compGCartSMatrHexa(iNodeGeom   , jNodeGeom  ,&
-                              GCartXI     , GCartETA   ,&
-                              GCartETAZETA, GCartXIZETA)
+subroutine compGCovaSMatrHexa(iNodeGeom   , jNodeGeom  ,&
+                              GCovaXI     , GCovaETA   ,&
+                              GCovaETAZETA, GCovaXIZETA)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     integer, intent(in)       :: iNodeGeom, jNodeGeom
-    real(kind=8), intent(out) :: GCartXI(SSH_SIZE_TENS)
-    real(kind=8), intent(out) :: GCartETA(SSH_SIZE_TENS)
-    real(kind=8), intent(out) :: GCartETAZETA(SSH_SIZE_TENS)
-    real(kind=8), intent(out) :: GCartXIZETA(SSH_SIZE_TENS)
+    real(kind=8), intent(out) :: GCovaXI(SSH_SIZE_TENS)
+    real(kind=8), intent(out) :: GCovaETA(SSH_SIZE_TENS)
+    real(kind=8), intent(out) :: GCovaETAZETA(SSH_SIZE_TENS)
+    real(kind=8), intent(out) :: GCovaXIZETA(SSH_SIZE_TENS)
 ! - Local
     integer :: AD, EH, JM
     real(kind=8) :: aux13, aux23, aux33, aux11, aux12, aux22
@@ -669,12 +688,12 @@ subroutine compGCartSMatrHexa(iNodeGeom   , jNodeGeom  ,&
     real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA), dN_dZeta(SSH_NBNODEG_HEXA)
 !   ------------------------------------------------------------------------------------------------
 !
-    GCartXI      = 0.d0
-    GCartETA     = 0.d0
-    GCartETAZETA = 0.d0
-    GCartXIZETA  = 0.d0
+    GCovaXI = 0.d0
+    GCovaETA = 0.d0
+    GCovaETAZETA = 0.d0
+    GCovaXIZETA = 0.d0
 
-! - Compute GCartXI
+! - Compute GCovaXI
     aux33 = 0.d0
     aux23  =0.d0
     do AD = 1, 4
@@ -690,16 +709,16 @@ subroutine compGCartSMatrHexa(iNodeGeom   , jNodeGeom  ,&
                 XI(1)*(dN_dEta(iNodeGeom)*dN_dZeta(jNodeGeom)+&
                        dN_dZeta(iNodeGeom)*dN_dEta(jNodeGeom))/4.d0
     end do
-    GCartXI(1) = 0.d0
-    GCartXI(2) = hexaVectH1(iNodeGeom)*hexaVectG2(jNodeGeom)+&
+    GCovaXI(1) = 0.d0
+    GCovaXI(2) = hexaVectH1(iNodeGeom)*hexaVectG2(jNodeGeom)+&
                  hexaVectG2(iNodeGeom)*hexaVectH1(jNodeGeom)
-    GCartXI(3) = aux33
-    GCartXI(4) = hexaVectH1(iNodeGeom)*hexaVectG1(jNodeGeom)+&
+    GCovaXI(3) = aux33
+    GCovaXI(4) = hexaVectH1(iNodeGeom)*hexaVectG1(jNodeGeom)+&
                  hexaVectG1(iNodeGeom)*hexaVectH1(jNodeGeom)
-    GCartXI(5) = 0.d0
-    GCartXI(6) = aux23
+    GCovaXI(5) = 0.d0
+    GCovaXI(6) = aux23
 
-! - Compute GCartETA
+! - Compute GCovaETA
     aux33 = 0.d0
     aux13 = 0.d0
     do AD = 1, 4
@@ -715,16 +734,16 @@ subroutine compGCartSMatrHexa(iNodeGeom   , jNodeGeom  ,&
                 XI(2)*(dN_dXsi(iNodeGeom)*dN_dZeta(jNodeGeom)+&
                        dN_dZeta(iNodeGeom)*dN_dXsi(jNodeGeom))/4.d0
     end do
-    GCartETA(1) = hexaVectH1(iNodeGeom)*hexaVectG1(jNodeGeom)+&
+    GCovaETA(1) = hexaVectH1(iNodeGeom)*hexaVectG1(jNodeGeom)+&
                   hexaVectG1(iNodeGeom)*hexaVectH1(jNodeGeom)
-    GCartETA(2) = 0.d0
-    GCartETA(3) = aux33
-    GCartETA(4) = hexaVectH1(iNodeGeom)*hexaVectG2(jNodeGeom)+&
+    GCovaETA(2) = 0.d0
+    GCovaETA(3) = aux33
+    GCovaETA(4) = hexaVectH1(iNodeGeom)*hexaVectG2(jNodeGeom)+&
                   hexaVectG2(iNodeGeom)*hexaVectH1(jNodeGeom)
-    GCartETA(5) = aux13
-    GCartETA(6) = 0.d0
+    GCovaETA(5) = aux13
+    GCovaETA(6) = 0.d0
 
-! - Compute GCartETAZETA
+! - Compute GCovaETAZETA
     aux11 = hexaVectH4(iNodeGeom)*hexaVectG1(jNodeGeom)+&
             hexaVectH3(iNodeGeom)*hexaVectH1(jNodeGeom)+&
             hexaVectH1(iNodeGeom)*hexaVectH3(jNodeGeom)+&
@@ -741,14 +760,14 @@ subroutine compGCartSMatrHexa(iNodeGeom   , jNodeGeom  ,&
                 XI(2)*XI(3)*(dN_dXsi(iNodeGeom)*dN_dZeta(jNodeGeom)+&
                              dN_dXsi(jNodeGeom)*dN_dZeta(iNodeGeom))/4.d0
     end do
-    GCartETAZETA(1) = aux11
-    GCartETAZETA(2) = 0.d0
-    GCartETAZETA(3) = 0.d0
-    GCartETAZETA(4) = aux12
-    GCartETAZETA(5) = aux13
-    GCartETAZETA(6) = 0.d0
+    GCovaETAZETA(1) = aux11
+    GCovaETAZETA(2) = 0.d0
+    GCovaETAZETA(3) = 0.d0
+    GCovaETAZETA(4) = aux12
+    GCovaETAZETA(5) = aux13
+    GCovaETAZETA(6) = 0.d0
 
-! - Compute GCartXIZETA
+! - Compute GCovaXIZETA
     aux22 = hexaVectH4(iNodeGeom)*hexaVectG2(jNodeGeom)+&
             hexaVectH2(iNodeGeom)*hexaVectH1(jNodeGeom)+&
             hexaVectH1(iNodeGeom)*hexaVectH2(jNodeGeom)+&
@@ -765,12 +784,12 @@ subroutine compGCartSMatrHexa(iNodeGeom   , jNodeGeom  ,&
                 XI(1)*XI(3)*(dN_dEta(iNodeGeom)*dN_dZeta(jNodeGeom)+&
                              dN_dEta(jNodeGeom)*dN_dZeta(iNodeGeom))/4.d0
     end do
-    GCartXIZETA(1) = 0.d0
-    GCartXIZETA(2) = aux22
-    GCartXIZETA(3) = 0.d0
-    GCartXIZETA(4) = aux12
-    GCartXIZETA(5) = 0.d0
-    GCartXIZETA(6) = aux23
+    GCovaXIZETA(1) = 0.d0
+    GCovaXIZETA(2) = aux22
+    GCovaXIZETA(3) = 0.d0
+    GCovaXIZETA(4) = aux12
+    GCovaXIZETA(5) = 0.d0
+    GCovaXIZETA(6) = aux23
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

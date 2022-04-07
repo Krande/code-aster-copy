@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -177,14 +177,14 @@ subroutine compStabSigmHexa(geomHexa, kineHexa, Ueff, disp, stabHexa, epsg_)
 
 ! - Compute the deformation in cartesian frame
     if (kineHexa%lLarge) then
-        EH1  = matmul(geomHexa%T    , epsg_%ECovaXI) +&
+        EH1  = matmul(geomHexa%T0   , epsg_%ECovaXI) +&
                matmul(geomHexa%TXI  , epsg_%ECova0)
-        EH2  = matmul(geomHexa%T    , epsg_%ECovaETA) +&
+        EH2  = matmul(geomHexa%T0   , epsg_%ECovaETA) +&
                matmul(geomHexa%TETA , epsg_%ECova0)
-        EH23 = matmul(geomHexa%T    , epsg_%ECovaETAZETA) +&
+        EH23 = matmul(geomHexa%T0   , epsg_%ECovaETAZETA) +&
                matmul(geomHexa%TETA , epsg_%ECovaZETA) +&
                matmul(geomHexa%TZETA, epsg_%ECovaETA)
-        EH13 = matmul(geomHexa%T    , epsg_%ECovaXIZETA) +&
+        EH13 = matmul(geomHexa%T0   , epsg_%ECovaXIZETA) +&
                matmul(geomHexa%TXI  , epsg_%ECovaZETA) +&
                matmul(geomHexa%TZETA, epsg_%ECovaXI)
     else
@@ -252,7 +252,7 @@ subroutine compStabMatrGeomHexa(geomHexa, kineHexa, stabHexa)
     integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
     integer :: iNodeGeom, jNodeGeom
     real(kind=8) :: const, coef1, coef2
-    real(kind=8) :: GCart0(SSH_SIZE_TENS), GCartZETA(SSH_SIZE_TENS)
+    real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS)
     real(kind=8) :: GCartXI(SSH_SIZE_TENS), GCartETA(SSH_SIZE_TENS)
     real(kind=8) :: GCartETAZETA(SSH_SIZE_TENS), GCartXIZETA(SSH_SIZE_TENS)
     real(kind=8) :: GCovaXI(SSH_SIZE_TENS), GCovaETA(SSH_SIZE_TENS)
@@ -270,30 +270,30 @@ subroutine compStabMatrGeomHexa(geomHexa, kineHexa, stabHexa)
     do iNodeGeom = 1, nbNodeGeom
         do jNodeGeom = 1, nbNodeGeom
 
-! --------- Compute gradients (cartesian) for geometric matrix
-            call compGCartMatrHexa(iNodeGeom  , jNodeGeom,&
-                                   GCart0     , GCartZETA)
-            call compGCartSMatrHexa(iNodeGeom   , jNodeGeom  ,&
-                                    GCartXI     , GCartETA   ,&
-                                    GCartETAZETA, GCartXIZETA)
+! --------- Compute gradients (covariant) for geometric matrix
+            call compGCovaMatrHexa(iNodeGeom, jNodeGeom,&
+                                   GCova0, GCovaZETA)
+            call compGCovaSMatrHexa(iNodeGeom   , jNodeGeom  ,&
+                                    GCovaXI     , GCovaETA   ,&
+                                    GCovaETAZETA, GCovaXIZETA)
 
-! --------- Project gradients in covariant frame
-            GCovaXi      = matmul(geomHexa%T, GCartXI)+&
-                           matmul(geomHexa%TXI, GCart0)
-            GCovaETA     = matmul(geomHexa%T, GCartETA)+&
-                           matmul(geomHexa%TETA, GCart0)
-            GCovaETAZETA = matmul(geomHexa%T, GCartETAZETA)+&
-                           matmul(geomHexa%TETA, GCartZETA)+&
-                           matmul(geomHexa%TZETA, GCartETA)
-            GCovaXIZETA  = matmul(geomHexa%T, GCartXIZETA)+&
-                           matmul(geomHexa%TXI, GCartZETA)+&
-                           matmul(geomHexa%TZETA, GCartXI)
+! --------- Project gradients in cartesian frame
+            GCartXi      = matmul(geomHexa%T0, GCovaXI)+&
+                           matmul(geomHexa%TXI, GCova0)
+            GCartETA     = matmul(geomHexa%T0, GCovaETA)+&
+                           matmul(geomHexa%TETA, GCova0)
+            GCartETAZETA = matmul(geomHexa%T0, GCovaETAZETA)+&
+                           matmul(geomHexa%TETA, GCovaZETA)+&
+                           matmul(geomHexa%TZETA, GCovaETA)
+            GCartXIZETA  = matmul(geomHexa%T0, GCovaXIZETA)+&
+                           matmul(geomHexa%TXI, GCovaZETA)+&
+                           matmul(geomHexa%TZETA, GCovaXI)
 
 ! --------- Compute matrix
-            const =  coef1*sum(stabHexa%sigmStabXI*GCovaXi) + &
-                     coef1*sum(stabHexa%sigmStabETA*GCovaETA) + &
-                     coef2*(sum(stabHexa%sigmStabETAZETA*GCovaETAZETA) + &
-                            sum(stabHexa%sigmStabXIZETA*GCovaXIZETA))
+            const =  coef1*sum(stabHexa%sigmStabXI*GCartXi) + &
+                     coef1*sum(stabHexa%sigmStabETA*GCartETA) + &
+                     coef2*(sum(stabHexa%sigmStabETAZETA*GCartETAZETA) + &
+                            sum(stabHexa%sigmStabXIZETA*GCartXIZETA))
             stabHexa%matrStabGeom(3*(iNodeGeom-1)+1: 3*(iNodeGeom-1)+3, &
                                   3*(jNodeGeom-1)+1: 3*(jNodeGeom-1)+3) = const*matr3Iden
         end do
