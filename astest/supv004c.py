@@ -19,7 +19,7 @@
 
 import code_aster
 from code_aster.Commands import *
-from code_aster.Utilities import WARNING, logger
+from code_aster.Utilities import ExecutionParameter, Options
 
 code_aster.init("--test")
 
@@ -27,38 +27,34 @@ code_aster.init("--test")
 class MyCalc(object):
 
     """Example where commands calls are encapsulated in a Python objet."""
+
     _list = _formula = None
 
     def __init__(self, nb_step, val_max, formula):
         """Store command result as attribute."""
-        self._list = DEFI_LIST_REEL(DEBUT=0.,
-                                    INTERVALLE=_F(JUSQU_A=val_max,
-                                                  NOMBRE=nb_step))
+        self._list = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=val_max, NOMBRE=nb_step))
         self._formula = formula
 
     def get_formula(self):
         """Direct as returned value."""
-        return FORMULE(VALE=self._formula, NOM_PARA='X')
+        return FORMULE(VALE=self._formula, NOM_PARA="X")
 
     def create_table(self):
         """In method."""
-        tabx = CREA_TABLE(LISTE=_F(LISTE_R=self._list.getValuesAsArray(),
-                                   PARA='X'))
+        tabx = CREA_TABLE(LISTE=_F(LISTE_R=self._list.getValuesAsArray(), PARA="X"))
 
-        result = CALC_TABLE(TABLE=tabx,
-                            ACTION=_F(OPERATION='OPER',
-                                      FORMULE=self.get_formula(),
-                                      NOM_PARA='X2'))
+        result = CALC_TABLE(
+            TABLE=tabx, ACTION=_F(OPERATION="OPER", FORMULE=self.get_formula(), NOM_PARA="X2")
+        )
         return result
 
 
 test = code_aster.TestCase()
 
-mycalc = MyCalc(10, 100., 'X * 2')
+mycalc = MyCalc(10, 100.0, "X * 2")
 
-# example to hide command syntax
-prev = logger.getEffectiveLevel()
-logger.setLevel(WARNING)
+# example to hide commands syntax
+ExecutionParameter().disable(Options.ShowSyntax)
 
 tab = mycalc.create_table()
 
@@ -66,8 +62,8 @@ tab = mycalc.create_table()
 deps = tab.getDependencies()
 test.assertEqual(len(deps), 0, msg="tab dependencies")
 
-# restore previous level
-logger.setLevel(prev)
+# restore printing of commands syntax
+ExecutionParameter().enable(Options.ShowSyntax)
 
 test.assertEqual(tab.userName, "result", msg="check name")
 

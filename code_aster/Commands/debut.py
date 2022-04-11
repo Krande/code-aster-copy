@@ -48,7 +48,7 @@ from ..Supervis import CommandSyntax, ExecuteCommand, Serializer, loadObjects
 from ..Supervis.code_file import track_coverage
 from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
-from ..Utilities import MPI, ExecutionParameter, Options, import_object, logger
+from ..Utilities import ExecutionParameter, Options, import_object, logger
 from ..Utilities.i18n import localization
 
 try:
@@ -190,6 +190,7 @@ class Starter(ExecuteCommand):
             hook = import_object(path)
             self.register_hook(hook)
 
+        ExecutionParameter().enable(Options.ShowSyntax)
         if keywords.get("IMPR_MACRO") == "OUI":
             ExecutionParameter().enable(Options.ShowChildCmd)
 

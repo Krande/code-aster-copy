@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,25 +20,27 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 # Note: "--hide-command" is used in the '.export' file.
-import sys
 import unittest
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 
 ldr = unittest.defaultTestLoader
 suite = unittest.TestSuite()
 
-if hasattr(ldr, 'discover'):    # only python >= 2.7
+if hasattr(ldr, "discover"):  # only python >= 2.7
     count = suite.countTestCases()
-    suite.addTests(ldr.discover('code_aster.MacroCommands.Miss', pattern='*.py'))
-    suite.addTests(ldr.discover('code_aster.MacroCommands.Contrib', pattern='*.py'))
+    suite.addTests(ldr.discover("code_aster.MacroCommands.Miss", pattern="*.py"))
+    suite.addTests(ldr.discover("code_aster.MacroCommands.Contrib", pattern="*.py"))
 else:
     TESTLIST = [
-        'Miss.miss_fichier_cmde', 'Miss.miss_resu_aster', 'Miss.miss_resu_miss',
-        'Utilitai.calc_fonction_utils',
-        'Utilitai.TensorModule', 'Utilitai.HookeTensor',
+        "Miss.miss_fichier_cmde",
+        "Miss.miss_resu_aster",
+        "Miss.miss_resu_miss",
+        "Utilitai.calc_fonction_utils",
+        "Utilitai.TensorModule",
+        "Utilitai.HookeTensor",
     ]
     suite.addTest(ldr.loadTestsFromNames(TESTLIST))
 
@@ -50,57 +52,54 @@ if info < 2:
 else:
     result = None
     suite.debug()
-    raise AssertionError('only for debug purpose')
+    raise AssertionError("only for debug purpose")
 
 # add TEST_TABLE: True=1, False=0
-keys = ['GLOBAL', 'NBRUN', 'ERROR', 'FAILURE']
-values = [
-    int(result.wasSuccessful()),
-    result.testsRun,
-    len(result.errors),
-    len(result.failures),
-]
+keys = ["GLOBAL", "NBRUN", "ERROR", "FAILURE"]
+values = [int(result.wasSuccessful()), result.testsRun, len(result.errors), len(result.failures)]
 
-tab1 = CREA_TABLE(LISTE=(_F(PARA='TEST',
-                            TYPE_K='K8',
-                            LISTE_K=keys,),
-                         _F(PARA='RESULT',
-                            LISTE_I=values,),),)
+tab1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K=keys), _F(PARA="RESULT", LISTE_I=values))
+)
 
 # all tests ended with success
-TEST_TABLE(TABLE=tab1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='GLOBAL',),
-           NOM_PARA='RESULT',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,)
+TEST_TABLE(
+    TABLE=tab1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="GLOBAL"),
+    NOM_PARA="RESULT",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+)
 
 # number of unittests expected to run
-TEST_TABLE(TABLE=tab1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='NBRUN',),
-           NOM_PARA='RESULT',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=21,
-           VALE_REFE_I=21,)
+TEST_TABLE(
+    TABLE=tab1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="NBRUN"),
+    NOM_PARA="RESULT",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=21,
+    VALE_REFE_I=21,
+)
 
 # number of errors
-TEST_TABLE(TABLE=tab1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='ERROR',),
-           NOM_PARA='RESULT',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=0,
-           VALE_REFE_I=0,)
+TEST_TABLE(
+    TABLE=tab1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="ERROR"),
+    NOM_PARA="RESULT",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=0,
+    VALE_REFE_I=0,
+)
 
 # number of failures
-TEST_TABLE(TABLE=tab1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='FAILURE',),
-           NOM_PARA='RESULT',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=0,
-           VALE_REFE_I=0,)
+TEST_TABLE(
+    TABLE=tab1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="FAILURE"),
+    NOM_PARA="RESULT",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=0,
+    VALE_REFE_I=0,
+)
 
 FIN()

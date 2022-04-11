@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 Definition of options/flags for execution.
 """
 
+
 class Options(object):
     """Enumerator for execution options.
 
@@ -35,6 +36,7 @@ class Options(object):
     - *StrictUnpickling*: Fail when an object can not be unpickled.
     - *UseLegacyMode*: Create 'CO' objects instead of namedtuple.
     - *ShowDeprecated*: Show deprecation warnings.
+    - *ShowSyntax*: Show syntax of commands.
     - *ShowChildCmd*: Show children commands called in depth.
     - *TestMode*: Testcase mode.
     - *SlaveMode*: Execution embedded by another program (do not abort, do not
@@ -44,6 +46,7 @@ class Options(object):
     - *HPCMode*: High Performance Computing mode, parallel computing using
       domain decomposition.
     """
+
     Null = 0x0000
     Debug = 0x0001
     Abort = 0x0002
@@ -51,11 +54,12 @@ class Options(object):
     StrictUnpickling = 0x0008
     UseLegacyMode = 0x0010
     ShowDeprecated = 0x0020
-    ShowChildCmd = 0x0040
-    TestMode = 0x0080
-    SlaveMode = 0x0100
-    LastStep = 0x0200
-    HPCMode = 0x0400
+    ShowSyntax = 0x0040
+    ShowChildCmd = 0x0080
+    TestMode = 0x0100
+    SlaveMode = 0x0200
+    LastStep = 0x0400
+    HPCMode = 0x0800
     # do not forget to document each new option
 
     @classmethod
