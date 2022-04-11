@@ -33,12 +33,12 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
+#include "asterf_config.h"
 #include "asterf_types.h"
 #include "threading_interfaces.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/r4maem.h"
-#include "asterfort/amumpu.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -59,14 +59,13 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: ifm, niv, i, isymm, isymv, isym, nbproc, i1, i2
-    integer :: nprec, ibid, nbomp
+    integer :: nprec, nbomp
     integer :: k370, k371, k401, k268, iaux, redmpi
     mumps_int :: i4, icntl(nicntl)
     real(kind=8) :: cntl(ncntl), rr4max, blreps
-    aster_logical :: lbid, lverbose
+    aster_logical :: lverbose
     character(len=4) :: typm, etam
     character(len=8) :: kacmum
-    character(len=12) :: k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: kvers
@@ -223,10 +222,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         enddo
 
 !
-! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
-        call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
-        kvers=trim(adjustl(kvers))
-
+        kvers = ASTER_MUMPS_VERSION
+!       Ce genre de test devrait être fait au moment du configure !
+!
 ! ---     OPTIONS AVANCEES (ACCELERATIONS)
 ! ------     TEST DE COMPATIBILITE ACCELERATION/VERSIONS
 
@@ -597,10 +595,6 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         if (mpimum .ne. mpicou) then
             ASSERT(.false.)
         endif
-!
-! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
-        call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
-        kvers=trim(adjustl(kvers))
 !
 ! ---     MESSAGE/ALERTES MUMPS
         icntl(1) = to_mumps_int(ifm)

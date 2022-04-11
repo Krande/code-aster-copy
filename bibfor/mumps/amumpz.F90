@@ -90,7 +90,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
     character(len=12) :: usersm, k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat
-    character(len=24) :: kmonit(12), k24aux, kvers, k24bid, posttrait
+    character(len=24) :: kmonit(12), k24aux, posttrait
     real(kind=8) :: epsmax, valr(2), rctdeb, rbid(1), temps(6), epsmat
     aster_logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
     aster_logical :: lopfac, lmhpc, lbloc
@@ -209,14 +209,6 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !       --------------------------------------------------------------
         call amumpi(2, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !
-!       ----------------------------------------------------------
-!        ON RECUPERE ET STOCKE DS SD_SOLVEUR LE NUMERO DE VERSION
-!        LICITE
-!       ----------------------------------------------------------
-        call amumpu(3, type, kxmps, k12bid, ibid,&
-                    lbid, kvers, ibid)
-        slvk(12)=kvers
-!
 !       -----------------------------------------------------
 !       CALCUL DU DETERMINANT PART I ?
 !       -----------------------------------------------------
@@ -307,7 +299,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
 !       -----------------------------------------------------
         if (.not.lpb13) call amumpu(1, 'Z', kxmps, usersm, ibid,&
-                                    lbid, k24bid, nbfact)
+                                    lbid, nbfact)
 !
 ! ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
 ! ---   ASSOCIEE
@@ -443,13 +435,13 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !        DETECTION DE SINGULARITE SI NECESSAIRE:
 !       ------------------------------------------------
         call amumpu(2, 'Z', kxmps, k12bid, nprec,&
-                    lresol, k24bid, ibid)
+                    lresol, ibid)
 !
 !       ------------------------------------------------
 !        RECUPERATION DU DETERMINANT SI NECESSAIRE:
 !       ------------------------------------------------
         call amumpu(4, 'Z', kxmps, k12bid, ibid,&
-                    lbid, k24bid, ibid)
+                    lbid, ibid)
 !
 !       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
 !       INUTILES

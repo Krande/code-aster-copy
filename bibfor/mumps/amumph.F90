@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,6 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 #include "asterfort/amumpc.h"
 #include "asterfort/amumpd.h"
 #include "asterfort/amumps.h"
-#include "asterfort/amumpu.h"
 #include "asterfort/amumpz.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -108,14 +107,13 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: k, ibid, kxmps, jrefa, n, nsmdi, ifm, niv, ifmump, imd
     integer :: nprec, iretz, pcentp(2), ipiv, iretp
-    aster_logical :: lbid, lpreco, limpr_matsing
+    aster_logical :: lpreco, limpr_matsing
     character(len=1) :: rouc, prec
     character(len=3) :: mathpc
     character(len=4) :: etam
-    character(len=12) :: k12bid
     character(len=14) :: nonu, nu, impr
-    character(len=19) :: matas, vcine, nomat, nosolv, solveu, valk(4)
-    character(len=24) :: kvers, kpiv
+    character(len=19) :: matas, vcine, nomat, nosolv, solveu
+    character(len=24) :: kpiv
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
     integer, pointer :: nequ(:) => null()
@@ -240,15 +238,6 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             lpreco = slvk(8)(1:3).eq.'OUI'
 ! --- ON RECUPERE UNIQUEMENT UN NUMERO DE VERSION LICITE
             if (action(1:7) .eq. 'VERSION') then
-                if (slvk(12)(1:4) .eq. 'XXXX') then
-                    call amumpu(31, rouc, ibid, k12bid, ibid,&
-                                lbid, kvers, ibid)
-                    slvk(12)=kvers
-                else
-! --- ON TESTE JUSTE LE CARACTERE LICITE DU NUMERO DE VERSION DEJA
-! --- STOCKE DANS LA SD_SOLVEUR
-!                   already checked during configure!
-                endif
                 goto 999
             endif
             if (slvk(7)(1:3) .eq. 'OUI') then

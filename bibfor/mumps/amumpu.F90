@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine amumpu(option, type, kxmps, usersm, nprec,&
-                  lresol, kvers, nbfact)
+                  lresol, nbfact)
 !
 !
     implicit none
@@ -31,11 +31,8 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! OPTION=2 DETECTION DES SINGULARITES (APRES FACTO) ET STOCKAGE DE CES
 !          INFOS DS L'OBJET JEVEUX '&&AMUMP.PIVNUL' (V V I DIM=N+2)
 !
-! OPTION=3 RECUPERE LE NUMERO DE VERSION (OCCURENCE MUMPS EXISTE DEJA)
 ! OPTION=31 IDEM MAIS ON CREE UNE OCCURENCE MUMPS TEMPORAIRE. OPERATION
 !    UN PEU COUTEUSE A NE FAIRE QU'UNE FOIS PAR OPERATEUR(SD_SOLVEUR).
-! DANS CES DEUX MODES, ON CONTROLE LE CARACTERE LICITE DU NUMERO DE
-! VERSIONS: CF. VERSIONS PERMISES DANS ASTERF_MUMPS SINON UTMESS_F.
 !
 ! OPTION=4 RECUPERE LE DETERMINANT ET ON LE STOCKE DS L'OBJET JEVEUX
 !          '&&AMUMP.DETERMINANT' (V V R DIM=3)
@@ -51,9 +48,6 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! SI OPTION=2
 ! IN  NPREC  :   IN   : NBRE DE DIGITS POUR DETECTION DE SINGULARITE
 ! IN LRESOL  :  LOG   : .TRUE. SI ON FAIT LE SOLVE, .FALSE. SINON
-!
-! SI OPTION=3 OU 31
-! OUT KVERS  :  K24   : NUMERO DE VERSION DE MUMPS LICITE
 !
 ! SI OPTION=4
 ! RAS
@@ -82,7 +76,6 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     integer :: option, kxmps, nprec, nbfact
     character(len=1) :: type
     character(len=12) :: usersm
-    character(len=24) :: kvers
     aster_logical :: lresol
 !
 #ifdef ASTER_HAVE_MUMPS
@@ -105,7 +98,6 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     character(len=2) :: fstring
     character(len=8) :: k8tab(3)
     character(len=10) :: strpid
-    character(len=19) :: valk(5)
     character(len=24) :: kpiv, ksizemu
     character(len=80) :: nvers
 !
@@ -592,17 +584,10 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !
         endif
 !
-!       ------------------------------------------------
-! ---   NUMERO DE VERSION DE MUMPS (DETECTION ET CONTROLE)
-!       ------------------------------------------------
-    else if ((option.eq.3).or.(option.eq.31)) then
-!       already checked during configure!
-!
-!       ------------------------------------------------
-! ---   CALCUL DE DETERMINANT (APRES FACTO)
-!       ------------------------------------------------
+    else if (option.eq.31) then
+!       already done during configure!
     else if (option.eq.4) then
-!
+        !
 ! ---   INITS. PROPRE A L'OPTION
         select case (type)
             case ('S')
