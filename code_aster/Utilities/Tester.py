@@ -60,6 +60,30 @@ def addSuccess(method):
     return wrapper
 
 
+def where(level=3):
+    """Return the filename/line number where the test is called.
+
+    Arguments:
+        level (Optional[int]): Number of frames to rewind to find the
+            caller. Defaults to 3 (1: *here*, 2: *write_xxx*, 3: *assertXxx*).
+
+    Returns:
+        (str, int): Filename and line number.
+    """
+    filename, line_no = "not_found", 0
+    caller = inspect.currentframe()
+    try:
+        for _ in range(level):
+            if not caller.f_back:
+                break
+            caller = caller.f_back
+        filename = caller.f_code.co_filename
+        line_no = caller.f_lineno
+    finally:
+        pass
+    return f"{filename}#{line_no}"
+
+
 class AssertRaisesContext(case._AssertRaisesContext):
     """Wrap Context of TestCase object"""
 
@@ -68,12 +92,12 @@ class AssertRaisesContext(case._AssertRaisesContext):
         # these two lines already exist in __exit__ in python >= 2.7.9
         if isinstance(expected_regexp, str):
             expected_regexp = re.compile(expected_regexp)
-        super(AssertRaisesContext, self).__init__(expected, test_case, expected_regexp)
+        super().__init__(expected, test_case, expected_regexp)
 
     def __exit__(self, exc_type, exc_value, tb):
         comment = ""
         try:
-            ret = super(AssertRaisesContext, self).__exit__(exc_type, exc_value, tb)
+            ret = super().__exit__(exc_type, exc_value, tb)
             if not ret:
                 try:
                     exc_name = exc_type.__name__
@@ -97,7 +121,7 @@ class TestCase(unittest.TestCase):
         self._silent = silent
         self._passed = 0
         self._failure = 0
-        super(TestCase, self).__init__("runTest")
+        super().__init__("runTest")
 
     def runTest(self):
         """does nothing"""
@@ -123,13 +147,14 @@ class TestCase(unittest.TestCase):
         msg = msg or ""
         s1 = " : " if exc else ""
         s2 = " : " if msg else ""
+        here = where()
         if ok:
             self._passed += 1
             fmt = " OK  {func:>16} passed{s2}{msg}"
         else:
             self._failure += 1
-            fmt = "NOOK {func:>16} failed{s1}{exc}"
-        print(fmt.format(func=funcTest, msg=msg, exc=exc, s1=s1, s2=s2))
+            fmt = "NOOK {func:>16} failed{s1}{exc} - {here}"
+        print(fmt.format(func=funcTest, msg=msg, exc=exc, s1=s1, s2=s2, here=here))
 
     # just use a derivated context class
     def assertRaises(self, excClass, callableObj=None, *args, **kwargs):

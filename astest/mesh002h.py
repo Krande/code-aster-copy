@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,20 +28,19 @@ test = code_aster.TestCase()
 
 pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
-model = AFFE_MODELE(MAILLAGE=pMesh,
-                    AFFE=_F(MODELISATION='3D', PHENOMENE='MECANIQUE', TOUT='OUI'),)
+model = AFFE_MODELE(MAILLAGE=pMesh, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 
 rank = MPI.COMM_WORLD.Get_rank()
 nbproc = MPI.COMM_WORLD.Get_size()
 
 if nbproc == 2:
-    nbNodes = [1740,1682]
-    nbCells = [1179,1146]
+    nbNodes = [1740, 1682]
+    nbCells = [1179, 1146]
 elif nbproc == 3:
-    nbNodes = [1292,1376,1475]
-    nbCells = [857,869,904]
+    nbNodes = [1291, 1483, 1302]
+    nbCells = [860, 914, 828]
 elif nbproc == 4:
-    nbNodes = [1100,1058,1004,1159]
+    nbNodes = [1100, 1058, 1004, 1159]
     nbCells = [684, 674, 636, 714]
 
 test.assertEqual(pMesh.getDimension(), 3)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,7 @@ test = code_aster.TestCase()
 
 pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
-model = AFFE_MODELE(MAILLAGE=pMesh,
-                    AFFE=_F(MODELISATION='3D', PHENOMENE='MECANIQUE', TOUT='OUI'),)
+model = AFFE_MODELE(MAILLAGE=pMesh, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 
 rank = MPI.COMM_WORLD.Get_rank()
 nbproc = MPI.COMM_WORLD.Get_size()
@@ -38,14 +37,14 @@ if nbproc == 1:
     nbNodes = [778]
     nbCells = [647]
 elif nbproc == 2:
-    nbNodes = [454,498]
-    nbCells = [350,388]
+    nbNodes = [454, 498]
+    nbCells = [350, 388]
 elif nbproc == 3:
-    nbNodes = [340,439,358]
-    nbCells = [263,298,276]
+    nbNodes = [340, 446, 344]
+    nbCells = [263, 305, 266]
 elif nbproc == 4:
-    nbNodes = [307,314,331,365]
-    nbCells = [213,222,236,254]
+    nbNodes = [307, 314, 328, 364]
+    nbCells = [213, 222, 236, 253]
 
 test.assertEqual(pMesh.getDimension(), 3)
 test.assertEqual(pMesh.getNumberOfNodes(), nbNodes[rank])

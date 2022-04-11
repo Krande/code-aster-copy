@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,9 +47,9 @@ test.assertEqual(cMesh1.getNumberOfNodes(), 50193)
 test.assertEqual(cMesh1.getNumberOfCells(), 25047)
 test.assertSequenceEqual(sorted(cMesh1.getGroupsOfNodes()), [])
 test.assertSequenceEqual(sorted(cMesh1.getGroupsOfCells()), ["COMPLET"])
-test.assertFalse( cMesh1.hasGroupOfNodes("COMPLET") )
-test.assertFalse( cMesh1.hasGroupOfCells("AFCE") )
-test.assertTrue( cMesh1.hasGroupOfCells("COMPLET") )
+test.assertFalse(cMesh1.hasGroupOfNodes("COMPLET"))
+test.assertFalse(cMesh1.hasGroupOfCells("AFCE"))
+test.assertTrue(cMesh1.hasGroupOfCells("COMPLET"))
 
 
 # Test ConnectionMesh - The full mesh
@@ -57,12 +57,12 @@ print("cMesh2", flush=True)
 cMesh2 = ConnectionMesh(pMesh, [], ["PIPEFISS"])
 test.assertEqual(cMesh2.getDimension(), 3)
 test.assertEqual(cMesh2.getNumberOfNodes(), 23731)
-test.assertEqual(cMesh2.getNumberOfCells(), 9938)
+test.assertEqual(cMesh2.getNumberOfCells(), 9936)
 test.assertSequenceEqual(sorted(cMesh2.getGroupsOfCells()), ["PIPEFISS"])
 test.assertSequenceEqual(sorted(cMesh2.getGroupsOfNodes()), [])
-test.assertTrue( cMesh2.hasGroupOfCells("PIPEFISS") )
-test.assertFalse( cMesh2.hasGroupOfCells("AFCE") )
-test.assertFalse( cMesh2.hasGroupOfNodes("FACE") )
+test.assertTrue(cMesh2.hasGroupOfCells("PIPEFISS"))
+test.assertFalse(cMesh2.hasGroupOfCells("AFCE"))
+test.assertFalse(cMesh2.hasGroupOfNodes("FACE"))
 
 # Test ConnectionMesh - a part mesh
 print("cMesh3", flush=True)
@@ -89,7 +89,9 @@ test.assertEqual(cMesh5.getDimension(), 3)
 test.assertEqual(cMesh5.getNumberOfNodes(), 426)
 test.assertEqual(cMesh5.getNumberOfCells(), 192)
 test.assertSequenceEqual(sorted(cMesh5.getGroupsOfCells()), ["bords"])
-test.assertSequenceEqual(sorted(cMesh5.getCells("bords")), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+test.assertSequenceEqual(
+    sorted(cMesh5.getCells("bords")), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 153, 154, 155, 156]
+)
 
 
 # Test ConnectionMesh - Isolated node
@@ -99,20 +101,23 @@ test.assertEqual(cMesh6.getDimension(), 3)
 test.assertEqual(cMesh6.getNumberOfNodes(), 8928)
 test.assertEqual(cMesh6.getNumberOfCells(), 3486)
 test.assertSequenceEqual(sorted(cMesh6.getGroupsOfNodes()), ["nfondfis"])
-test.assertSequenceEqual(sorted(cMesh6.getGroupsOfCells()), sorted(["bas", "haut", "bords", "affVols"]))
+test.assertSequenceEqual(
+    sorted(cMesh6.getGroupsOfCells()), sorted(["bas", "haut", "bords", "affVols"])
+)
 test.assertEqual(sum(list(cMesh6.getNodesGlobalNumbering())), 192089986)
-test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 52960885)
+test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 53032075)
 
 
 # Test model
-cModel = AFFE_MODELE(MAILLAGE=cMesh6,
-                    AFFE=(_F(TOUT='OUI', PHENOMENE='MECANIQUE',
-                                         MODELISATION="D_PLAN",),
-                          _F(TOUT='OUI', PHENOMENE='MECANIQUE',
-                                         MODELISATION='DIS_T',),
-                        ),
-                    VERI_JACOBIEN='NON',
-                    DISTRIBUTION=_F(METHODE='CENTRALISE',),)
+cModel = AFFE_MODELE(
+    MAILLAGE=cMesh6,
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+    VERI_JACOBIEN="NON",
+    DISTRIBUTION=_F(METHODE="CENTRALISE"),
+)
 
 test.assertEqual(cMesh6.getName(), cModel.getMesh().getName())
 
