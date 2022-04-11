@@ -31,9 +31,6 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! OPTION=2 DETECTION DES SINGULARITES (APRES FACTO) ET STOCKAGE DE CES
 !          INFOS DS L'OBJET JEVEUX '&&AMUMP.PIVNUL' (V V I DIM=N+2)
 !
-! OPTION=31 IDEM MAIS ON CREE UNE OCCURENCE MUMPS TEMPORAIRE. OPERATION
-!    UN PEU COUTEUSE A NE FAIRE QU'UNE FOIS PAR OPERATEUR(SD_SOLVEUR).
-!
 ! OPTION=4 RECUPERE LE DETERMINANT ET ON LE STOCKE DS L'OBJET JEVEUX
 !          '&&AMUMP.DETERMINANT' (V V R DIM=3)
 !
@@ -110,31 +107,30 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! ---   INITS
 !       ------------------------------------------------
     nvers(1:80)=''
-    if (option .ne. 31) then
 ! --- OCCURENCE DE MUMPS EXISTE DEJA DS UN VECTEUR XMPS
-        select case (type)
-            case ('S')
+    select case (type)
+        case ('S')
             smpsk=>smps(kxmps)
             lpara=(smpsk%nprocs.gt.1)
             nbproc=smpsk%nprocs
             rang=smpsk%myid
             nvers=smpsk%version_number
             n=smpsk%n
-            case ('C')
+        case ('C')
             cmpsk=>cmps(kxmps)
             lpara=(cmpsk%nprocs.gt.1)
             nbproc=cmpsk%nprocs
             rang=cmpsk%myid
             nvers=cmpsk%version_number
             n=cmpsk%n
-            case ('D')
+        case ('D')
             dmpsk=>dmps(kxmps)
             lpara=(dmpsk%nprocs.gt.1)
             nbproc=dmpsk%nprocs
             rang=dmpsk%myid
             nvers=dmpsk%version_number
             n=dmpsk%n
-            case ('Z')
+        case ('Z')
             zmpsk=>zmps(kxmps)
             lpara=(zmpsk%nprocs.gt.1)
             nbproc=zmpsk%nprocs
@@ -143,55 +139,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
             n=zmpsk%n
         case default
             ASSERT(.false.)
-        end select
-    else
-! ---- ON CREE PUIS DETRUIT UNE OCCURENCE MUMPS TEMPORAIRE
-        kxmps=1
-        select case (type)
-            case ('S')
-            smpsk=>smps(kxmps)
-            smpsk%comm=mpicou
-            smpsk%sym=0
-            smpsk%par=1
-            smpsk%job=-1
-            call smumps(smpsk)
-            nvers=smpsk%version_number
-            smpsk%job=-2
-            call smumps(smpsk)
-            case ('C')
-            cmpsk=>cmps(kxmps)
-            cmpsk%comm=mpicou
-            cmpsk%sym=0
-            cmpsk%par=1
-            cmpsk%job=-1
-            call cmumps(cmpsk)
-            nvers=cmpsk%version_number
-            cmpsk%job=-2
-            call cmumps(cmpsk)
-            case ('D')
-            dmpsk=>dmps(kxmps)
-            dmpsk%comm=mpicou
-            dmpsk%sym=0
-            dmpsk%par=1
-            dmpsk%job=-1
-            call dmumps(dmpsk)
-            nvers=dmpsk%version_number
-            dmpsk%job=-2
-            call dmumps(dmpsk)
-            case ('Z')
-            zmpsk=>zmps(kxmps)
-            zmpsk%comm=mpicou
-            zmpsk%sym=0
-            zmpsk%par=1
-            zmpsk%job=-1
-            call zmumps(zmpsk)
-            nvers=zmpsk%version_number
-            zmpsk%job=-2
-            call zmumps(zmpsk)
-        case default
-            ASSERT(.false.)
-        end select
-    endif
+    end select
 !
 !       ------------------------------------------------
 ! ---   GESTION STRATEGIE MEMOIRE MUMPS (APRES ANALYSE)
@@ -584,8 +532,6 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 !
         endif
 !
-    else if (option.eq.31) then
-!       already done during configure!
     else if (option.eq.4) then
         !
 ! ---   INITS. PROPRE A L'OPTION
