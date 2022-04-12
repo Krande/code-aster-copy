@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 ! --------------------------------------------------------------------
 
 subroutine calipj(chargz)
-!
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,7 +62,7 @@ subroutine calipj(chargz)
 !
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: zeror, coenul
-    parameter     (zeror=0.0d0,coenul=1.0d-6)
+    parameter (zeror=0.0d0, coenul=1.0d-6)
 !
     integer :: k, nuno1, ino1, ino2, iret, nocc, iocc
     integer :: ibid, jnoma, nnomx, idmax, igeom
@@ -71,20 +70,20 @@ subroutine calipj(chargz)
     integer :: jcom1, idecal, ima1, nddls, jcok1, jprnm, jtyma0
     integer :: inomg, nbcmpg, icmpg, nbec, ityp0
     integer :: jcoord, kddl, iexc
-    logical :: excent, lbid
-    real(kind=8) :: xyzom(3), coeffi
-    complex(kind=8) :: zeroc
-    character(len=1) :: k1bid
-    character(len=3) :: ddlrot(3)
-    character(len=4) :: fonree, typcoe
-    character(len=8) :: noma0, noma1, noma2, model, k8bid, relats, kbeta, nomg
-    character(len=8) :: nono1, nono2, charge, cmp, nomtyp, cmpddl
-    character(len=16) :: motfac, nomcmd, corres, k16bid
-    character(len=19) :: ligrmo, lisrel
+    aster_logical :: excent, lbid
+    real(kind=8)        :: xyzom(3), coeffi
+    complex(kind=8)     :: zeroc
+    character(len=1)    :: k1bid
+    character(len=4)    :: fonree, typcoe
+    character(len=8)    :: noma0, noma1, noma2, model, k8bid, relats, kbeta, nomg
+    character(len=8)    :: nono1, nono2, charge, cmp, nomtyp, cmpddl
+    character(len=16)   :: motfac, nomcmd, corres, k16bid
+    character(len=19)   :: ligrmo, lisrel
 !
-    character(len=30) :: valmk(4)
+    character(len=30)   :: valmk(4)
 !
-    data ddlrot /'DRX','DRY','DRZ'/
+    aster_logical               :: okddlrot(3)
+    character(len=3), parameter :: ddlrot(3)=['DRX','DRY','DRZ']
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,14 +126,14 @@ subroutine calipj(chargz)
     call jeveuo(noma0//'.TYPMAIL', 'L', jtyma0)
 !
     call dismoi('DIM_GEOM', model, 'MODELE', igeom, k8bid)
-    if (igeom .ne. 2 .and. igeom .ne. 3) then
+    if ( (igeom.ne.2) .and. (igeom.ne.3) ) then
         call utmess('F', 'MODELISA2_75')
     endif
 !
     call dismoi('NB_NO_MAILLA', noma0, 'MAILLAGE', nnomx, k1bid)
-!       idmax : nombre max de termes d'une relation linéaire
-!              = au maximum 27 noeuds dans un élément
-!             U1 = UI2 + DRI2 VECT O2M
+    ! idmax : nombre max de termes d'une relation linéaire
+    !   = au maximum 27 noeuds dans un élément
+    !   U1 = UI2 + DRI2 ^ O2M
     idmax = 1 + 3*27
     AS_ALLOCATE(size=idmax,   vi=idimen)
     AS_ALLOCATE(size=idmax*3, vr=idirec)
@@ -142,38 +141,38 @@ subroutine calipj(chargz)
     AS_ALLOCATE(size=idmax,   vk8=idnomn)
     AS_ALLOCATE(size=idmax,   vk8=idnomd)
 !
-!   récupération dans les catalogues des composantes de la grandeur
+!   Récupération dans les catalogues des composantes de la grandeur
     nomg='DEPL_R'
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inomg)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmpg)
     call dismoi('NB_EC', nomg, 'GRANDEUR', nbec, k8bid)
 !
     do iocc = 1, nocc
-!       il faut remettre à zéro ces 2 objets entre 2 occurrences
+        ! il faut remettre à zéro ces 2 objets entre 2 occurrences
         idimen(:) = 0
         idirec(:) = 0.0d0
-!       Récupération des ddls
+        ! Récupération des ddls
         call getvtx(motfac, 'DDL', iocc=iocc, nbval=0, nbret=nddls)
         nddls = -nddls
         AS_ALLOCATE(size=nddls,   vk8=jddls)
         call getvtx(motfac, 'DDL', iocc=iocc, nbval=nddls, vect=jddls)
-!       Récupération du concept "corresp_2_mailla"
+        ! Récupération du concept "corresp_2_mailla"
         call getvid(motfac, 'MATR_PROJECTION', iocc=iocc, scal=relats)
         corres = relats
-!       Récupération du type de relation
-!           TYPE = IDENTITE         par défaut
-!           TYPE = EXCENTREMENT
+        ! Récupération du type de relation
+        !   TYPE = IDENTITE         par défaut
+        !   TYPE = EXCENTREMENT
         call getvtx(motfac, 'TYPE', iocc=iocc, scal=k16bid, nbret=iret)
-        excent = .false.
+        excent = ASTER_FALSE
         if (iret .ne. 0) then
             excent = k16bid .eq. 'EXCENTREMENT'
         endif
-!
+        !
         call jeveuo(corres//'.PJEF_NB', 'L', jconb)
         call jeveuo(corres//'.PJEF_M1', 'L', jcom1)
         call jeveuo(corres//'.PJEF_NU', 'L', jconu)
         call jeveuo(corres//'.PJEF_CF', 'L', jcocf)
-!       vérification que les maillages sont tous les mêmes
+        ! Vérification que les maillages sont tous les mêmes
         call jeveuo(corres//'.PJXX_K1', 'L', jcok1)
         noma1 = zk24(jcok1)(1:8)
         noma2 = zk24(jcok1+1)(1:8)
@@ -184,17 +183,17 @@ subroutine calipj(chargz)
             valmk(4) = noma2
             call utmess('F', 'MODELISA2_74', nk=4, valk=valmk)
         endif
-!       nombre de noeuds du maillage M2
+        ! Nombre de noeuds du maillage M2
         call jelira(corres//'.PJEF_NB', 'LONMAX', nbno2t)
-        idecal=0
-!       on boucle sur tous les noeuds du maillage M2
+        idecal = 0
+        ! On boucle sur tous les noeuds du maillage M2
         cino2: do ino2 = 1, nbno2t
-!           IMA1: maille à connecter à ino2
+            ! IMA1: maille à connecter à ino2
             ima1 = zi(jcom1-1+ino2)
-!           si ima1=0, c'est que ino2 n'est dans aucune maille
+            ! Si ima1=0, c'est que ino2 n'est dans aucune maille
             if (ima1 .eq. 0) cycle cino2
             if (excent) then
-!               le type de la maille de ma0
+                ! Le type de la maille de ma0
                 ityp0 = zi(jtyma0-1+ima1)
                 call jenuno(jexnum('&CATA.TM.NOMTM', ityp0), nomtyp)
                 lbid = (nomtyp(1:5).eq.'QUAD4') .or. (nomtyp(1:5) .eq.'TRIA3')
@@ -203,10 +202,10 @@ subroutine calipj(chargz)
                     call utmess('F', 'MODELISA2_73', nk=1, valk=valmk)
                 endif
             endif
-!           nbno1: nb noeuds de ima1 dans la relation
+            ! Nbno1: nb noeuds de ima1 dans la relation
             nbno1 = zi(jconb-1+ino2)
             call jenuno(jexnum(noma0//'.NOMNOE', ino2), nono2)
-!           Est ce que les composantes existent sur le noeud
+            ! Est-ce que les composantes données par l'utilisateur existent sur le noeud ?
             ibid = jprnm-1+ (ino2-1)*nbec+1
             do kddl = 1, nddls
                 cmpddl= jddls(kddl)
@@ -217,32 +216,43 @@ subroutine calipj(chargz)
                     call utmess('F', 'MODELISA2_71', nk=2, valk=valmk)
                 endif
             enddo
+            ! Équations à écrire sur les DDL de nono2
+            !   Sans excentrement
+            !       U1 = UI2                ==> -UI2 + U1*al(i)
+            !   Avec excentrement
+            !       U1 = UI2 + DRI2^O2M     ==> -UI2 + U1*al(i) - DRI2^O2M*al(i)
             idnomn(1) = nono2
             idcoef(1) = -1.d0
             do ino1 = 1, nbno1
                 nuno1 = zi(jconu+idecal-1+ino1)
-                call jenuno(jexnum(noma0//'.NOMNOE', nuno1), nono1)
-!               Est ce que les composantes existent sur le noeud
-                ibid = jprnm-1+ (nuno1-1)*nbec+1
-                do kddl = 1, nddls
-                    cmpddl= jddls(kddl)
-                    icmpg = indik8(zk8(inomg),cmpddl,1,nbcmpg)
-                    if (.not.exisdg(zi(ibid),icmpg)) then
-                        valmk(1) = nono1
-                        valmk(2) = cmpddl
-                        call utmess('F', 'MODELISA2_71', nk=2, valk=valmk)
-                    endif
-                enddo
-!               Si la relation est une tautologie, on ne l'écrit pas
+                ! Si la relation est une tautologie, on ne l'écrit pas
                 if (nuno1 .eq. ino2) then
                     call utmess('A', 'MODELISA2_72', sk=nono1)
                     goto 130
                 endif
+                !
+                call jenuno(jexnum(noma0//'.NOMNOE', nuno1), nono1)
+                ! Est-ce que les composantes existent sur le noeud du maillage en face ?
+                ! Si le coefficient est <= coenul , la relation sera éliminée. Il n'y a donc pas
+                ! besoin de vérifier si les ddl existent.
+                coeffi = zr(jcocf+idecal-1+ino1)
+                if ( abs(coeffi) .gt. coenul ) then
+                    ibid = jprnm-1+ (nuno1-1)*nbec+1
+                    do kddl = 1, nddls
+                        cmpddl= jddls(kddl)
+                        icmpg = indik8(zk8(inomg),cmpddl,1,nbcmpg)
+                        if (.not.exisdg(zi(ibid),icmpg)) then
+                            valmk(1) = nono1
+                            valmk(2) = cmpddl
+                            call utmess('F', 'MODELISA2_71', nk=2, valk=valmk)
+                        endif
+                    enddo
+                endif
                 idnomn(1+ino1) = nono1
-                idcoef(1+ino1) = zr(jcocf+idecal-1+ino1)
+                idcoef(1+ino1) = coeffi
             enddo
-!
-!           Relations concernant les ddls
+            !
+            ! Relations concernant les ddls
             do k = 1, nddls
                 cmp = jddls(k)
                 idnomd(1) = cmp
@@ -251,60 +261,40 @@ subroutine calipj(chargz)
                 enddo
                 iexc = 0
                 if (excent) then
-                    iexc = 1
                     do ino1 = 1, nbno1
                         nuno1 = zi(jconu+idecal-1+ino1)
                         call jenuno(jexnum(noma0//'.NOMNOE', nuno1), nono1)
-!                       est ce que les composantes de rotation existent
+                        ! Coefficients intervenant dans la relation
+                        coeffi   = zr(jcocf+idecal-1+ino1)
+                        xyzom(1) = zr(jcoord+3*(ino2-1))     - zr(jcoord+3*(nuno1-1))
+                        xyzom(2) = zr(jcoord+3*(ino2-1) + 1) - zr(jcoord+3*(nuno1-1) + 1)
+                        xyzom(3) = zr(jcoord+3*(ino2-1) + 2) - zr(jcoord+3*(nuno1-1) + 2)
+                        ! Est-ce que les ddl de rotation existent sur le noeud d'en face ?
+                        okddlrot(:) = ASTER_TRUE
                         ibid = jprnm-1+ (nuno1-1)*nbec+1
                         do kddl = 1, 3
                             cmpddl= ddlrot(kddl)
                             icmpg = indik8(zk8(inomg),cmpddl,1,nbcmpg)
                             if (.not.exisdg(zi(ibid),icmpg)) then
-                                valmk(1) = nono1
-                                valmk(2) = cmpddl
-                                call utmess('F', 'MODELISA2_71', nk=2, valk=valmk)
+                                okddlrot(kddl) = ASTER_FALSE
                             endif
                         enddo
-                        xyzom(1) = zr(jcoord+3*(ino2-1))     - zr(jcoord+3*(nuno1-1))
-                        xyzom(2) = zr(jcoord+3*(ino2-1) + 1) - zr(jcoord+3*(nuno1-1) + 1)
-                        xyzom(3) = zr(jcoord+3*(ino2-1) + 2) - zr(jcoord+3*(nuno1-1) + 2)
-                        coeffi = zr(jcocf+idecal-1+ino1)
                         if (cmp .eq. 'DX') then
-                            idnomn(1+nbno1+iexc) = nono1
-                            idnomd(1+nbno1+iexc) = 'DRY'
-                            idcoef(1+nbno1+iexc) =  coeffi*xyzom(3)
-                            if (abs(idcoef(1+nbno1+iexc)) .gt. coenul) iexc= iexc+1
-                            idnomn(1+nbno1+iexc) = nono1
-                            idnomd(1+nbno1+iexc) = 'DRZ'
-                            idcoef(1+nbno1+iexc) = -coeffi*xyzom(2)
-                            if (abs(idcoef(1+nbno1+iexc)) .gt. coenul) iexc= iexc+1
+                            call TestDDL(2, 3,  coeffi, iexc)
+                            call TestDDL(3, 2, -coeffi, iexc)
                         else if (cmp.eq.'DY') then
-                            idnomn(1+nbno1+iexc) = nono1
-                            idnomd(1+nbno1+iexc) = 'DRX'
-                            idcoef(1+nbno1+iexc) = -coeffi*xyzom(3)
-                            if (abs(idcoef(1+nbno1+iexc)) .gt. coenul) iexc= iexc+1
-                            idnomn(1+nbno1+iexc) = nono1
-                            idnomd(1+nbno1+iexc) = 'DRZ'
-                            idcoef(1+nbno1+iexc) =  coeffi*xyzom(1)
-                            if (abs(idcoef(1+nbno1+iexc)) .gt. coenul) iexc= iexc+1
+                            call TestDDL(1, 3, -coeffi, iexc)
+                            call TestDDL(3, 1,  coeffi, iexc)
                         else if (cmp.eq.'DZ') then
-                            idnomn(1+nbno1+iexc) = nono1
-                            idnomd(1+nbno1+iexc) = 'DRX'
-                            idcoef(1+nbno1+iexc) =  coeffi*xyzom(2)
-                            if (abs(idcoef(1+nbno1+iexc)) .gt. coenul) iexc= iexc+1
-                            idnomn(1+nbno1+iexc) = nono1
-                            idnomd(1+nbno1+iexc) = 'DRY'
-                            idcoef(1+nbno1+iexc) = -coeffi*xyzom(1)
-                            if (abs(idcoef(1+nbno1+iexc)) .gt. coenul) iexc= iexc+1
+                            call TestDDL(1, 2,  coeffi, iexc)
+                            call TestDDL(2, 1, -coeffi, iexc)
                         endif
                     enddo
-                    iexc = iexc-1
                 endif
-                call afrela(idcoef, [zeroc], idnomd, idnomn, idimen,&
-                            idirec, nbno1+1+iexc, zeror, zeroc, kbeta,&
-                            typcoe, fonree, coenul, lisrel)
-                call imprel(motfac, nbno1+1+iexc, idcoef, idnomd, idnomn, zeror)
+                call afrela(idcoef, [zeroc],      idnomd, idnomn, idimen, &
+                            idirec, nbno1+1+iexc, zeror,  zeroc,  kbeta,  &
+                            typcoe, fonree,       coenul, lisrel)
+                call imprel(motfac, nbno1+1+iexc, idcoef, idnomd, idnomn, zeror, epsi=coenul)
             enddo
 130         continue
             idecal=idecal+nbno1
@@ -323,4 +313,32 @@ subroutine calipj(chargz)
 !
 999 continue
     call jedema()
-end subroutine
+!
+! ==================================================================================================
+!
+contains
+! Variables globales : évite de passer par un common !!! NE PAS MODIFIER LES NOMS !!!
+!   idnomn, idnomd, idcoef, nbno1, ddlrot, xyzom, nono1, coenul, okddlrot
+    subroutine TestDDL(kd, ig, xc, incr)
+        integer       :: ig, kd, incr
+        real(kind=8)  :: xc
+!
+#include "asterfort/utmess.h"
+!
+        if ( abs(xc*xyzom(ig)) .gt. coenul) then
+            if ( okddlrot(kd) ) then
+                incr= incr+1
+                idnomn(1+nbno1+incr) = nono1
+                idnomd(1+nbno1+incr) = ddlrot(kd)
+                idcoef(1+nbno1+incr) = xc*xyzom(ig)
+            else
+                valmk(1) = nono1
+                valmk(2) = ddlrot(kd)
+                call utmess('F', 'MODELISA2_71', nk=2, valk=valmk)
+            endif
+        endif
+!
+    end subroutine TestDDL
+
+
+end subroutine calipj
