@@ -24,153 +24,187 @@ from waflib import Options, Configure, Errors, Logs, Utils
 
 
 def options(self):
-    self.load('compiler_c')
-    self.load('compiler_cxx')
-    self.load('compiler_fc')
+    self.load("compiler_c")
+    self.load("compiler_cxx")
+    self.load("compiler_fc")
 
     group = self.get_option_group("code_aster options")
-    group.add_option('--enable-mpi', dest='parallel',
-                     action='store_true', default=os.environ.get('ENABLE_MPI'),
-                     help='Build a parallel version with mpi (same as '
-                          'ENABLE_MPI environment variable)')
-    group.add_option('--enable-openmp', dest='openmp', action='store_true',
-                     help='Build a parallel version supporting OpenMP')
-    group.add_option('--disable-openmp', dest='openmp', action='store_false',
-                     help='Disable OpenMP')
-    group.add_option('--enable-proc-status', dest='procstatus', action='store_true',
-                     help='force control of used memory with VmSize')
-    group.add_option('--disable-proc-status', dest='procstatus', action='store_false',
-                     help='disable control of used memory with VmSize')
+    group.add_option(
+        "--enable-mpi",
+        dest="parallel",
+        action="store_true",
+        default=os.environ.get("ENABLE_MPI"),
+        help="Build a parallel version with mpi (same as " "ENABLE_MPI environment variable)",
+    )
+    group.add_option(
+        "--enable-openmp",
+        dest="openmp",
+        action="store_true",
+        help="Build a parallel version supporting OpenMP",
+    )
+    group.add_option("--disable-openmp", dest="openmp", action="store_false", help="Disable OpenMP")
+    group.add_option(
+        "--enable-proc-status",
+        dest="procstatus",
+        action="store_true",
+        help="force control of used memory with VmSize",
+    )
+    group.add_option(
+        "--disable-proc-status",
+        dest="procstatus",
+        action="store_false",
+        help="disable control of used memory with VmSize",
+    )
+
 
 def configure(self):
     opts = self.options
     if opts.parallel:
         # Configure.find_program uses first self.environ, then os.environ
-        self.environ.setdefault('CC', 'mpicc')
-        self.environ.setdefault('CXX', 'mpicxx')
-        self.environ.setdefault('FC', 'mpif90')
+        self.environ.setdefault("CC", "mpicc")
+        self.environ.setdefault("CXX", "mpicxx")
+        self.environ.setdefault("FC", "mpif90")
     self.load_compilers()
     self.check_compilers_version()
     self.check_fortran_verbose_flag()
     self.check_openmp()
     # self.check_vmsize() is executed after mpiexec checking
 
+
 ###############################################################################
+
 
 @Configure.conf
 def check_compilers_version(self):
-    self.start_msg('Checking for C compiler version')
-    self.end_msg(self.env.CC_NAME.lower() + ' ' + \
-                 '.'.join(Utils.to_list(self.env.CC_VERSION)))
+    self.start_msg("Checking for C compiler version")
+    self.end_msg(self.env.CC_NAME.lower() + " " + ".".join(Utils.to_list(self.env.CC_VERSION)))
     # CXX_VERSION does not exist, c++ == c
-    self.start_msg('Checking for Fortran compiler version')
-    self.end_msg(self.env.FC_NAME.lower() + ' ' + \
-                 '.'.join(Utils.to_list(self.env.FC_VERSION)))
+    self.start_msg("Checking for Fortran compiler version")
+    self.end_msg(self.env.FC_NAME.lower() + " " + ".".join(Utils.to_list(self.env.FC_VERSION)))
+
 
 @Configure.conf
 def load_compilers(self):
-    self.load('compiler_c')
-    self.load('compiler_cxx')
-    self.load('compiler_fc')
+    self.load("compiler_c")
+    self.load("compiler_cxx")
+    self.load("compiler_fc")
     if self.options.parallel:
         self.load_compilers_mpi()
 
+
 @Configure.conf
 def load_compilers_mpi(self):
-    check = partial(self.check_cfg, args='--showme:compile --showme:link -show',
-                    package='', uselib_store='MPI', mandatory=False)
+    check = partial(
+        self.check_cfg,
+        args="--showme:compile --showme:link -show",
+        package="",
+        uselib_store="MPI",
+        mandatory=False,
+    )
 
     fc = self.env.FC[0]
     cc = self.env.CC[0]
-    ifort = fc == 'mpiifort'
-    icc = cc == 'mpiicc'
+    ifort = fc == "mpiifort"
+    icc = cc == "mpiicc"
 
     # We won't alter environment if Intel compiler is detected...
     if not icc:
-        msg='Checking ' + cc + ' package (collect configuration flags)'
-        if not check(path=cc,msg=msg):
+        msg = "Checking " + cc + " package (collect configuration flags)"
+        if not check(path=cc, msg=msg):
             self.fatal("Unable to configure the parallel environment for C compiler")
-        self.env['CCLINKFLAGS_MPI'] = self.env['LINKFLAGS_MPI']
-        del self.env['LINKFLAGS_MPI']
-
+        self.env["CCLINKFLAGS_MPI"] = self.env["LINKFLAGS_MPI"]
+        del self.env["LINKFLAGS_MPI"]
 
     # We won't alter environment if Intel compiler is detected...
     if not ifort:
-        msg='Checking ' + fc + ' package (collect configuration flags)'
-        if not check(path=fc,msg=msg):
+        msg = "Checking " + fc + " package (collect configuration flags)"
+        if not check(path=fc, msg=msg):
             self.fatal("Unable to configure the parallel environment for FORTRAN compiler")
-        self.env['FCLINKFLAGS_MPI'] = self.env['LINKFLAGS_MPI']
-        del self.env['LINKFLAGS_MPI']
+        self.env["FCLINKFLAGS_MPI"] = self.env["LINKFLAGS_MPI"]
+        del self.env["LINKFLAGS_MPI"]
 
     if not icc:
-        self.check_cc(header_name='mpi.h', use='MPI')
+        self.check_cc(header_name="mpi.h", use="MPI")
 
-    self.define('ASTER_HAVE_MPI', 1)
+    self.define("ASTER_HAVE_MPI", 1)
     self.env.BUILD_MPI = 1
     self.env.ASTER_HAVE_MPI = 1
+
 
 @Configure.conf
 def check_openmp(self):
     opts = self.options
     if opts.openmp is False:
-        self.msg('Checking for OpenMP flag', 'no', color='YELLOW')
+        self.msg("Checking for OpenMP flag", "no", color="YELLOW")
         return
     # OpenMP interoperability is not secure
     # we consider both compiler should be from same vendor
-    ifort = 'ifort' in self.env.FC_NAME.lower()
-    icc = 'icc' in self.env.CC_NAME.lower()
+    # Define CFLAGS_x and CCFLAGS_x to avoid ambiguous behaviour
+    ifort = "ifort" in self.env.FC_NAME.lower()
+    icc = "icc" in self.env.CC_NAME.lower()
     if ifort and icc:
-        self.env['FCFLAGS_OPENMP'] = ['-qopenmp']
-        self.env['FCLINKFLAGS_OPENMP'] = ['-qopenmp']
-        self.env['CCFLAGS_OPENMP'] = self.env['FCFLAGS_OPENMP']
-        self.env['CCLINKFLAGS_OPENMP'] = self.env['FCLINKFLAGS_OPENMP']
-        self.env['CXXFLAGS_OPENMP'] = self.env['FCFLAGS_OPENMP']
-        self.env['CXXLINKFLAGS_OPENMP'] = self.env['FCLINKFLAGS_OPENMP']
+        self.env["FCFLAGS_OPENMP"] = ["-qopenmp"]
+        self.env["FCLINKFLAGS_OPENMP"] = ["-qopenmp"]
+        self.env["CFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]
+        self.env["CCFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]
+        self.env["CCLINKFLAGS_OPENMP"] = self.env["FCLINKFLAGS_OPENMP"]
+        self.env["CXXFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]
+        self.env["CXXLINKFLAGS_OPENMP"] = self.env["FCLINKFLAGS_OPENMP"]
         self.env.ASTER_HAVE_OPENMP = 1
-        self.msg('Checking for OpenMP flag -qopenmp for Intel compilers', 'yes', color='GREEN')
+        self.msg("Checking for OpenMP flag -qopenmp for Intel compilers", "yes", color="GREEN")
     elif not (ifort or icc):
-        for x in ('-fopenmp', '-openmp', '-mp', '-xopenmp', '-omp', '-qsmp=omp'):
+        for x in ("-fopenmp", "-openmp", "-mp", "-xopenmp", "-omp", "-qsmp=omp"):
             try:
                 self.check_fc(
-                    msg          = 'Checking for OpenMP flag %s' % x,
-                    fragment     = 'program main\n  call omp_get_num_threads()\nend program main',
-                    fcflags      = x,
-                    fclinkflags  = x,
-                    uselib_store = 'OPENMP'
+                    msg="Checking for OpenMP flag %s" % x,
+                    fragment="program main\n  call omp_get_num_threads()\nend program main",
+                    fcflags=x,
+                    fclinkflags=x,
+                    uselib_store="OPENMP",
                 )
             except self.errors.ConfigurationError:
                 pass
             else:
-                self.env['CCFLAGS_OPENMP'] = self.env['FCFLAGS_OPENMP']
-                self.env['CCLINKFLAGS_OPENMP'] = self.env['FCLINKFLAGS_OPENMP']
-                self.env['CXXFLAGS_OPENMP'] = self.env['FCFLAGS_OPENMP']
-                self.env['CXXLINKFLAGS_OPENMP'] = self.env['FCLINKFLAGS_OPENMP']
+                self.env["CFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]
+                self.env["CCFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]
+                self.env["CCLINKFLAGS_OPENMP"] = self.env["FCLINKFLAGS_OPENMP"]
+                self.env["CXXFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]
+                self.env["CXXLINKFLAGS_OPENMP"] = self.env["FCLINKFLAGS_OPENMP"]
                 break
         else:
-            self.fatal('Could not set OpenMP')
+            self.fatal("Could not set OpenMP")
     else:
-        self.fatal('Could not set OpenMP due to incompatible compilers...')
-    self.define('ASTER_HAVE_OPENMP', 1)
+        self.fatal("Could not set OpenMP due to incompatible compilers...")
+    self.define("ASTER_HAVE_OPENMP", 1)
     self.env.BUILD_OPENMP = 1
 
 
 @Configure.conf
 def check_sizeof_mpi_int(self):
     """Check size of MPI_Fint"""
-    if self.get_define('ASTER_HAVE_MPI'):
-        fragment = '\n'.join([
-            '#include <stdio.h>',
-            '#include "mpi.h"',
-            'int main(void){',
-            '    MPI_Fint var;',
-            '    printf("%d", (int)sizeof(var));',
-            '    return 0;',
-            '}',
-            ''])
-        self.code_checker('ASTER_MPI_INT_SIZE', self.check_cc, fragment,
-                          'Checking size of MPI_Fint integers',
-                          'unexpected value for sizeof(MPI_Fint): %(size)s',
-                          into=(4, 8), use='MPI')
+    if self.get_define("ASTER_HAVE_MPI"):
+        fragment = "\n".join(
+            [
+                "#include <stdio.h>",
+                '#include "mpi.h"',
+                "int main(void){",
+                "    MPI_Fint var;",
+                '    printf("%d", (int)sizeof(var));',
+                "    return 0;",
+                "}",
+                "",
+            ]
+        )
+        self.code_checker(
+            "ASTER_MPI_INT_SIZE",
+            self.check_cc,
+            fragment,
+            "Checking size of MPI_Fint integers",
+            "unexpected value for sizeof(MPI_Fint): %(size)s",
+            into=(4, 8),
+            use="MPI",
+        )
+
 
 @Configure.conf
 def check_vmsize(self):
@@ -183,39 +217,38 @@ def check_vmsize(self):
     if flag is not None:
         self.start_msg("Check measure of VmSize using /proc")
         if flag not in (0, 1, "0", "1"):
-            raise Errors.ConfigurationError(
-                "unexpected value: ASTER_ENABLE_PROC_STATUS=%s" % flag)
+            raise Errors.ConfigurationError("unexpected value: ASTER_ENABLE_PROC_STATUS=%s" % flag)
         flag = int(flag)
         if flag:
             self.end_msg("ok (ASTER_ENABLE_PROC_STATUS=%s)" % flag)
         else:
             self.end_msg("disabled (ASTER_ENABLE_PROC_STATUS=%s)" % flag, "YELLOW")
-    elif not self.get_define('ASTER_HAVE_MPI'):
+    elif not self.get_define("ASTER_HAVE_MPI"):
         self.start_msg("Check measure of VmSize using /proc")
         flag = 1
         self.end_msg("default (use /proc/PID/status)")
     else:
         self.start_msg("Checking measure of VmSize during MPI_Init")
         try:
-            prg = osp.join(self.bldnode.abspath(),
-                           'test_mpi_init_' + str(os.getpid()))
-            self.check_cc(fragment=fragment_failure_vmsize,
-                          mandatory=True, use="MPI", target=prg)
+            prg = osp.join(self.bldnode.abspath(), "test_mpi_init_" + str(os.getpid()))
+            self.check_cc(fragment=fragment_failure_vmsize, mandatory=True, use="MPI", target=prg)
             try:
                 cmd = self.env["base_mpiexec"] + ["-n", "1", prg]
                 size = self.cmd_and_log(cmd)
             finally:
                 os.remove(prg)
         except Errors.WafError:
-            self.end_msg("failed (memory consumption can not be estimated "
-                         "during the calculation)", 'YELLOW')
+            self.end_msg(
+                "failed (memory consumption can not be estimated " "during the calculation)",
+                "YELLOW",
+            )
         else:
             self.end_msg("ok (%s)" % size)
             flag = 1
     if flag:
-        self.define('ASTER_ENABLE_PROC_STATUS', 1)
+        self.define("ASTER_ENABLE_PROC_STATUS", 1)
     else:
-        self.undefine('ASTER_ENABLE_PROC_STATUS')
+        self.undefine("ASTER_ENABLE_PROC_STATUS")
 
 
 fragment_failure_vmsize = r"""
