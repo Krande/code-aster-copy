@@ -88,7 +88,6 @@ Contents
     devguide/supervis
     devguide/cata
     devguide/exec_commands
-    devguide/commands_implementation
     devguide/messages
     devguide/boost
     devguide/helpers
