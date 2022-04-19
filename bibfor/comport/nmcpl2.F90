@@ -16,9 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcpl2(compor, typmod, option, optio2, cp,&
-                  nvv, crit, deps, dsidep, ndim,&
-                  sigp, vip, iret)
+subroutine nmcpl2(compor, typmod, option, optio2, cp,   &
+                  nvv,    crit,   deps,   dsidep, ndim, &
+                  sigp,   vip,    iret)
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CONTRAINTES PLANES PAR LA METHODE DE BORST / CONDENSATION STATIQUE
 !     POUR LES COMPORTEMENTS QUI N'INTEGRENT PAS LES CONTRAINTES PLANES
 !     ATTENTION : POUR BIEN CONVERGER, IL FAUT REACTUALISER LA MATRICE
@@ -40,8 +43,16 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
 ! VAR SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 ! VAR VIP     : LES 4 DERNIERES SONT RELATIVES A LA METHODE DE BORST
 !
-    implicit none
+! --------------------------------------------------------------------------------------------------
+!
+implicit none
+!
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
+!
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: ndimsi, k, l, iret, ndim, nvv, nbvari, cp
     character(len=8) :: typmod(*)
     character(len=16) :: option, optio2
@@ -54,18 +65,20 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
 !
     real(kind=8) :: d21eps, scm(4), sigpeq, precr, prec
 !
-    rac2 = sqrt(2.d0)
+! --------------------------------------------------------------------------------------------------
+!
+    rac2   = sqrt(2.d0)
     ndimsi = 2*ndim
-    iret=0
-    signul=crit(3)
-    vecteu = option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA'
+    iret   = 0
+    signul = crit(RESI_INTE_RELA)
+    vecteu = (option(1:9).eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')
 !
 !   calcul de la precision
-    prec=crit(8)
-    precr=abs(prec)
+    prec  = crit(RESI_DEBORST_MAX)
+    precr = abs(prec)
     if (vecteu) then
         if (prec .gt. 0.d0) then
-!           PRECISION RELATIVE
+            ! PRECISION RELATIVE
             sigpeq=0.d0
             do k = 1, ndimsi
                sigpeq = sigpeq + sigp(k)**2
@@ -77,77 +90,62 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
                 precr=prec*sigpeq
             endif
         else
-    !       PRECISION ABSOLUE
+            ! PRECISION ABSOLUE
             precr=abs(prec)
         endif
      endif
-
- !
+!
     if (cp .eq. 2) then
-!
-!       ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
-        nbvari=nvv+4
-        write (compor(2),'(I16)') nbvari
-        typmod(1)='C_PLAN'
-        option=optio2
-!
+        ! ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
+        nbvari = nvv+4
+        write(compor(NVAR),'(I16)') nbvari
+        typmod(1) = 'C_PLAN'
+        option    = optio2
+        !
         if ((vecteu).and.(abs(dsidep(3,3)).gt.precr)) then
-
-            depzz=deps(3)
-            d22=dsidep(3,3)
-            d21eps=dsidep(3,1)*deps(1)+dsidep(3,2)*deps(2) +dsidep(3,&
-            4)*deps(4)/rac2
-            vip(nvv+1)=depzz+d21eps/d22-sigp(3)/d22
-            vip(nvv+2)=dsidep(3,1)/d22
-            vip(nvv+3)=dsidep(3,2)/d22
-            vip(nvv+4)=dsidep(3,4)/d22
-!
+            depzz  = deps(3)
+            d22    = dsidep(3,3)
+            d21eps = dsidep(3,1)*deps(1)+dsidep(3,2)*deps(2) +dsidep(3,4)*deps(4)/rac2
+            vip(nvv+1) = depzz+d21eps/d22-sigp(3)/d22
+            vip(nvv+2) = dsidep(3,1)/d22
+            vip(nvv+3) = dsidep(3,2)/d22
+            vip(nvv+4) = dsidep(3,4)/d22
+            !
             scm(1)=-dsidep(1,3)*sigp(3)/d22
             scm(2)=-dsidep(2,3)*sigp(3)/d22
             scm(3)=0.d0
             scm(4)=-dsidep(4,3)*sigp(3)/d22*rac2
-!
-            do 130 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigp(k)=sigp(k)+scm(k)
-130         continue
-!
-!
+            enddo
+            !
             if (abs(sigp(3)) .gt. precr) then
                 iret=3
             endif
-!
         endif
-!
-!         IF (MATRIC) THEN
+        !
         if (option .eq. 'FULL_MECA') then
             do 136 k = 1, ndimsi
-!
                 if (k .eq. 3) goto 136
-!
                 do 137 l = 1, ndimsi
-!
                     if (l .eq. 3) goto 137
                     if (abs(dsidep(3,3)).gt.precr) then
-                        dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
+                        dsidep(k,l) = dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
                     endif
-!
 137             continue
 136         continue
-!
         endif
-!
     else if (cp.eq.1) then
-!
-!        ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
-        nbvari=nvv+4
-        write (compor(2),'(I16)') nbvari
-        typmod(1)='COMP1D'
-        option=optio2
-        iret=0
-!
-        depx=deps(1)
-        depy=deps(2)
-        depz=deps(3)
+        ! ON REMET LES CHOSES DANS L'ETAT OU ON LES A TROUVEES
+        nbvari = nvv+4
+        write(compor(NVAR),'(I16)') nbvari
+        typmod(1) = 'COMP1D'
+        option    = optio2
+        iret      = 0
+        !
+        depx = deps(1)
+        depy = deps(2)
+        depz = deps(3)
         d11=dsidep(1,1)
         d12=dsidep(1,2)
         d13=dsidep(1,3)
@@ -157,12 +155,12 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
         d31=dsidep(3,1)
         d32=dsidep(3,2)
         d33=dsidep(3,3)
-
+        !
+        delta = 0.0; dy=0.0; dz=0.0
         if ((vecteu).and.(abs(d22*d33-d32*d23).gt.precr)) then
-!
-            delta=d22*d33-d32*d23
-            dy=d23*d31-d21*d33
-            dz=d32*d21-d31*d22
+            delta = d22*d33-d32*d23
+            dy = d23*d31-d21*d33
+            dz = d32*d21-d31*d22
             sigx=sigp(1)
             sigy=sigp(2)
             sigz=sigp(3)
@@ -170,31 +168,26 @@ subroutine nmcpl2(compor, typmod, option, optio2, cp,&
             vip2=dy/delta
             vip3=depz+(d32*sigy-d22*sigz-dz*depx)/delta
             vip4=dz/delta
-!
+            !
             vip(nvv+1)=vip1
             vip(nvv+2)=vip2
             vip(nvv+3)=vip3
             vip(nvv+4)=vip4
-!
+            !
             scm(1)=(d12*d23-d22*d13)*sigz+(d13*d32-d12*d33)*sigy
             scm(1)=scm(1)/delta
             scm(2)=0.d0
             scm(3)=0.d0
             scm(4)=0.d0
-!
-            do 140 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigp(k)=sigp(k)+scm(k)
-140         continue
-!
+            enddo
             if (abs(sigp(2)) .gt. precr) iret=3
             if (abs(sigp(3)) .gt. precr) iret=3
-!
         endif
-!
+        !
         if ((option .eq. 'FULL_MECA').and.(abs(delta).gt.precr)) then
-            dsidep(1,1)=d11+(d12*dy+d13*dz)/delta
+            dsidep(1,1) = d11+(d12*dy+d13*dz)/delta
         endif
-!
     endif
-!
 end subroutine

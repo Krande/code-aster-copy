@@ -34,6 +34,7 @@ subroutine te0537(option, nomte)
 !   Calcul de l'option EPSI_ELGA
 !       - déformations dans les fibres (sous pts de gauss) à partir des déplacements
 ! --------------------------------------------------------------------------------------------------
+use compor_multifibre_module
 !
     implicit none
     character(len=16) :: option, nomte
@@ -41,6 +42,7 @@ subroutine te0537(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
@@ -168,14 +170,15 @@ subroutine te0537(option, nomte)
 !           Si option sief_elga on continue
 !           Récupération des différents matériaux dans SDCOMP dans COMPOR
             call jevech('PCOMPOR', 'L', icompo)
-            call jeveuo(zk16(icompo-1+7), 'L', isdcom)
+            call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
 !           boucle sur les groupes de fibre
             ipos1=jcont-1
             ipos2=ipos1+nbfibr
             do ig = 1, nbgrfi
-                icp=isdcom-1+(nug(ig)-1)*6
-                read(zk24(icp+6),'(I24)')nbfig
-                materi=zk24(icp+2)(1:8)
+                icp=isdcom-1+(nug(ig)-1)*MULTI_FIBER_SIZEK
+!               nombre de fibres de ce groupe
+                read(zk24(icp+MULTI_FIBER_NBFI),'(I24)') nbfig
+                materi=zk24(icp+MULTI_FIBER_MATER)(1:8)
 !               On multiplie par E (constant sur le groupe)
                 nomres(1) = 'E'
                 nomres(2) = 'NU'

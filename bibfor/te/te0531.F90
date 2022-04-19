@@ -18,12 +18,14 @@
 
 subroutine te0531(option,nomte)
 !
+use compor_multifibre_module
 !
     implicit none
 !
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/verift.h"
 #include "asterfort/tecach.h"
@@ -53,11 +55,11 @@ subroutine te0531(option,nomte)
     integer :: npg
     integer :: nbcmp, jnbspi, idefo, nbcou, icomp, imate, iret
     integer :: nbsp, ipg, ksp, i, idefto, icomp2, idsig, icomp3
-    integer :: nbgf, icp, ngf, isdcom, icompo, ig, nbfig, ifib, icaba
+    integer :: nbgf, icp, isdcom, icompo, ig, nbfig, ifib, icaba
     integer :: nbsec, iret1, nbpar, nbv, icodre(2), tygrfi, nbcarm, nug(10)
     real(kind=8) :: epsth, sigma(6), trsig, temp, valres(2), e ,nu, c1, c2, a
-    character(len=4) :: fami
-    character(len=8) :: materi, nompar, nomres(2)
+    character(len=4)  :: fami
+    character(len=8)  :: materi, nompar, nomres(2)
     character(len=32) :: phenom
     aster_logical :: lmeca, pmf, grille, tuyau, barre, coque, lplas
 
@@ -176,7 +178,7 @@ subroutine te0531(option,nomte)
             enddo
         enddo
 !
-    elseif (grille .or. barre)then
+    else if (grille .or. barre)then
 
         if (barre .and. lplas) then
             call jevech('PCAGNBA', 'L', icaba)
@@ -216,20 +218,19 @@ subroutine te0531(option,nomte)
             enddo
         enddo
 !
-    elseif (pmf)then
+    else if (pmf)then
 !       Récupération des caractéristiques des fibres
         call pmfinfo(nbsp, nbgf, tygrfi, nbcarm, nug)
 !
         call jevech('PCOMPOR', 'L', icompo)
-        call jeveuo(zk16(icompo-1+7), 'L', isdcom)
+        call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
         do ipg = 1,npg
             ksp = 0
             do ig = 1, nbgf
-                ngf = nug(ig)
-                icp = (ngf-1)*6
+                icp=isdcom-1+(nug(ig)-1)*MULTI_FIBER_SIZEK
 !               nombre de fibres de ce groupe
-                read(zk24(isdcom-1+icp+6),'(I24)') nbfig
-                materi = zk24(isdcom-1+icp+2)(1:8)
+                read(zk24(icp+MULTI_FIBER_NBFI),'(I24)') nbfig
+                materi=zk24(icp+MULTI_FIBER_MATER)(1:8)
                 do ifib = 1,nbfig
 !
                     ksp = ksp + 1

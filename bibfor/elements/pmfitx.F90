@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,12 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+use compor_multifibre_module
+!
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/pmfinfo.h"
@@ -48,6 +51,8 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
 #include "asterfort/utmess.h"
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: icdmat, isw
     real(kind=8) :: casect(6), gto
@@ -83,25 +88,25 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !
 !   Récupération des différents matériaux dans SDCOMP dans COMPOR
     call jevech('PCOMPOR', 'L', icompo)
-    call jeveuo(zk16(icompo-1+7), 'L', isdcom)
+    call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
 !
 ! --------------------------------------------------------------------------------------------------
 !   boucle sur les groupes de fibre
     casect(:) = 0.0d+0
     ipos=jacf
     do ig = 1, nbgrfi
-        icp=isdcom-1+(nug(ig)-1)*6
-        read(zk24(icp+6),'(I24)') nbfig
-        materi=zk24(icp+2)(1:8)
+        icp=isdcom-1+(nug(ig)-1)*MULTI_FIBER_SIZEK
+        read(zk24(icp+MULTI_FIBER_NBFI),'(I24)') nbfig
+        materi=zk24(icp+MULTI_FIBER_MATER)(1:8)
 !       calcul des caractéristiques du groupe
         call pmfitg(tygrfi, nbfig, nbcarm, zr(ipos), carsec)
 !       multiplie par RHO ou E (constant sur le groupe)
         if (isw .eq. 1) then
-            call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS', 0, ' ', [0.0d+0],&
-                        1, 'E', val, codres, 0)
+            call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS', &
+                        0, ' ', [0.0d+0], 1, 'E', val, codres, 0)
             if (codres(1) .eq. 1) then
-                call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS_FLUI', 0, ' ', [0.0d+0],&
-                            1, 'E', val, codres, 1)
+                call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS_FLUI', &
+                            0, ' ', [0.0d+0], 1, 'E', val, codres, 1)
             endif
         else if (isw.eq.2) then
             call rcvala(icdmat, materi, 'ELAS', 0, ' ', [0.0d+0], 1, 'RHO', val, codres, 3)
@@ -136,12 +141,12 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !   si ito=1 on récupère le matériau de torsion
     if (isw .eq. 1) then
         call pmfmats(icdmat, materi)
-        call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS', 0, ' ', [0.0d+0],&
-                    2, nomres2, valres, codres, 0)
+        call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS', &
+                    0, ' ', [0.0d+0], 2, nomres2, valres, codres, 0)
 !
         if (codres(1) .eq. 1) then
-            call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS_FLUI', 0, ' ', [0.0d+0],&
-                        2, nomres2, valres, codres, 1)
+            call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS_FLUI', &
+                        0, ' ', [0.0d+0], 2, nomres2, valres, codres, 1)
         endif
         e   = valres(1)
         nu  = valres(2)

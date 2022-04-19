@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lc0026(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
-                  nvi, dsidep, codret)
+subroutine lc0026(fami,   kpg,    ksp,    ndim,   imate,  &
+                  compor, crit,   instam, instap, epsm,   &
+                  deps,   sigm,   vim,    option, angmas, &
+                  sigp,   vip,    typmod, icomp,  materi, &
+                  nvi,    dsidep, codret)
 ! aslint: disable=W1504,W0104
     implicit none
 #include "asterfort/nmgran.h"
@@ -33,7 +33,7 @@ subroutine lc0026(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: vim(*), vip(*), tm, tp, tref
     real(kind=8) :: dsidep(6, 6)
     character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(*), materi
     character(len=*) :: fami
 !
 !     GRANGER*
@@ -41,14 +41,11 @@ subroutine lc0026(fami, kpg, ksp, ndim, imate,&
 ! RAISON: CETTE ROUTINE EST APPELEE PAR NMCPLA AVEC COMME
 ! TEMPERATURE LES VALEURS MIN ET MAX... IL FAUT DONC LAISSER
 ! L ARGUMENT
-    call rcvarc(' ', 'TEMP', '-', fami, kpg,&
-                ksp, tm, iret)
-    call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                ksp, tp, iret)
-    call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
-                ksp, tref, iret)
-    call nmgran(fami, kpg, ksp, typmod, imate,&
-                compor, instam, instap, tm, tp,&
-                deps, sigm, vim, option, sigp,&
-                vip, dsidep)
+    call rcvarc(' ', 'TEMP', '-',   fami, kpg, ksp, tm,   iret)
+    call rcvarc(' ', 'TEMP', '+',   fami, kpg, ksp, tp,   iret)
+    call rcvarc(' ', 'TEMP', 'REF', fami, kpg, ksp, tref, iret)
+    call nmgran(fami,   kpg,    ksp,    typmod, imate, &
+                compor, instam, instap, tm,     tp,    &
+                deps,   sigm,   vim,    option, sigp,  &
+                vip,    dsidep, materi)
 end subroutine

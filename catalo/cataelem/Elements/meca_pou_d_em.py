@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -277,7 +277,9 @@ class MECA_POU_D_EM(Element):
         ),
 
         OP.CHAR_MECA_HYDR_R(te=312,
-            para_in =( (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG), ),
+            para_in =( (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
+                       (OP.CHAR_MECA_HYDR_R.PCOMPOR, LC.CCOMPOR), (SP.PFIBRES, LC.ECAFIEL),
+                       (OP.CHAR_MECA_HYDR_R.PNBSP_I, ENBSP_I), ),
             para_out=( (SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -298,7 +300,9 @@ class MECA_POU_D_EM(Element):
         ),
 
         OP.CHAR_MECA_SECH_R(te=312,
-            para_in =( (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_SECH_R.PVARCPR, LC.ZVARCPG), ),
+            para_in =( (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_SECH_R.PVARCPR, LC.ZVARCPG),
+                       (OP.CHAR_MECA_SECH_R.PCOMPOR, LC.CCOMPOR), (SP.PFIBRES, LC.ECAFIEL),
+                       (OP.CHAR_MECA_SECH_R.PNBSP_I, ENBSP_I), ),
             para_out=( (SP.PVECTUR, MVECTUR), ),
         ),
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,15 @@ import cataelem.Commons.attributes as AT
 
 
 PVARCPR = InputParameter(phys=PHY.VARI_R,
-                         comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+    comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
+PCOMPOR  = InputParameter(phys=PHY.COMPOR)
+
+PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
+    comment="""  PNBSP_I : NOMBRE DE SOUS_POINTS  """)
 
 PCAORIE = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-                         comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE, TUYAU ...  """)
 
 
 CHAR_MECA_HYDR_R = Option(
@@ -40,10 +44,13 @@ CHAR_MECA_HYDR_R = Option(
         SP.PCAGNBA,
         SP.PCAMASS,
         PCAORIE,
+        PCOMPOR,
         SP.PGEOMER,
         SP.PMATERC,
+        SP.PFIBRES,
         SP.PTEMPSR,
         PVARCPR,
+        PNBSP_I,
         SP.PVARCRR,
     ),
     para_out=(

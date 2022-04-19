@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,62 +17,110 @@
 ! --------------------------------------------------------------------
 
 subroutine te0312(option, nomte)
-    implicit none
+!
+! --------------------------------------------------------------------------------------------------
+!   Les éléments qui appellent ce "Te" ne peuvent pas calculer les chargements listés ci-dessous
+!
+!   On vérifie que :
+!       les caractéristiques matériaux donnés par l'utilisateur sont nulles de cette façon
+!       même si le champ est donné, il ne sera pas pris en compte.
+!
+!   CHARGEMENTS :
+!       SÉCHAGE     : CHAR_MECA_SECH_R
+!       HYDRATATION : CHAR_MECA_HYDR_R
+!       TEMPÉRATURE : CHAR_MECA_TEMP_R
+!
+! --------------------------------------------------------------------------------------------------
+!
+use compor_multifibre_module
+!
+implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/pmfinfo.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 !
+! --------------------------------------------------------------------------------------------------
+!
     character(len=16) :: option, nomte
 !
-!  CALCUL DU CHARGEMENT DU AU SECHAGE ET A L'HYDRATATION
-!.......................................................................
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: lmater
-    character(len=8) :: fami, poum
-    real(kind=8) :: bendog(1),kdessi(1),alpha(1)
+    integer :: lmater, icompo, iret, ig, icp
     integer :: icodre(2), kpg, spt
+    real(kind=8)      :: bendog(1),kdessi(1),alpha(1)
+    character(len=8)  :: fami, poum, materi
+    character(len=16) :: mult_comp
+!
+    aster_logical     :: IsPmf
+!
+    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+!
+    integer,            pointer :: cpri(:)   => null()
+    character(len=24) , pointer :: cprk24(:) => null()
 !.......................................................................
 !
     call jevech('PMATERC', 'L', lmater)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
+    fami='FPG1'; kpg=1; spt=1; poum='+'
 !
-    if (option.eq.'CHAR_MECA_HYDR_R') then
-        call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
-                    1, 'B_ENDOGE', bendog, icodre, 0)
-!
-        if ((icodre(1).eq.0) .and. (bendog(1).ne.0.d0)) then
-            call utmess('F', 'ELEMENTS_22', sk=nomte)
-        else
-!       -- BENDOGE ABSENT => CHARGEMENT NUL
-        endif
-    else if (option.eq.'CHAR_MECA_SECH_R') then
-        call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
-                    1, 'K_DESSIC', kdessi, icodre, 0)
-!
-        if ((icodre(1).eq.0) .and. (kdessi(1).ne.0.d0)) then
-            call utmess('F', 'ELEMENTS_23', sk=nomte)
-        else
-!       -- KDESSI ABSENT => CHARGEMENT NUL
-        endif
-    else if (option.eq.'CHAR_MECA_TEMP_R') then
-        call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                    ' ', 'ELAS', 0, ' ', [0.d0],&
-                    1, 'ALPHA', alpha, icodre, 0)
-!
-        if ((icodre(1).eq.0) .and. (alpha(1).ne.0.d0)) then
-            call utmess('F', 'ELEMENTS_19', sk=nomte)
-        else
-!       -- ALPHA ABSENT => CHARGEMENT NUL
-        endif
+    IsPmf = ASTER_FALSE
+!   Si c'est une PMF : Il peut y avoir plusieurs matériaux sur la maille
+    if ( lteatt('TYPMOD2','PMF') ) then
+        call jevech('PCOMPOR', 'L', icompo)
+        mult_comp = zk16(icompo-1+MULTCOMP)
+        ! Récupération de la SD_COMPOR où le comportement des groupes de fibres est stocké
+        call jeexin(mult_comp, iret)
+        ASSERT(iret .ne. 0)
+        call jeveuo(mult_comp, 'L', vk24=cprk24)
+        call jeveuo(mult_comp(1:8)//'.CPRI', 'L', vi=cpri)
+        ! Ceinture et bretelle : seulement pour les multifibres
+        ASSERT(cpri(MULTI_FIBER_TYPE) .eq. 3)
+        ! Récupération des caractéristiques des fibres
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
+        IsPmf = ASTER_TRUE
     else
-        ASSERT(.false.)
+        materi = ' '
+        nbgrfi = 1
     endif
+    !
+    ! On boucle sur les groupes de fibre pour aller chercher le matériau du groupe
+    do ig=1, nbgrfi
+        if ( IsPmf ) then
+            icp=(nug(ig)-1)*MULTI_FIBER_SIZEK + MULTI_FIBER_MATER
+            materi=cprk24(icp)(1:8)
+        endif
+        !
+        if (option.eq.'CHAR_MECA_HYDR_R') then
+            call rcvalb(fami, kpg, spt, poum, zi(lmater), materi, 'ELAS', &
+                        0, ' ', [0.d0], 1, 'B_ENDOGE', bendog, icodre, 0)
+            ! BENDOGE ABSENT => CHARGEMENT NUL
+            if ((icodre(1).eq.0) .and. (bendog(1).ne.0.d0)) then
+                call utmess('F', 'ELEMENTS_22', sk=nomte)
+            endif
+        else if (option.eq.'CHAR_MECA_SECH_R') then
+            call rcvalb(fami, kpg, spt, poum, zi(lmater), materi, 'ELAS', &
+                        0, ' ', [0.d0], 1, 'K_DESSIC', kdessi, icodre, 0)
+            ! KDESSI ABSENT => CHARGEMENT NUL
+            if ((icodre(1).eq.0) .and. (kdessi(1).ne.0.d0)) then
+                call utmess('F', 'ELEMENTS_23', sk=nomte)
+            endif
+        else if (option.eq.'CHAR_MECA_TEMP_R') then
+            call rcvalb(fami, kpg, spt, poum, zi(lmater), materi, 'ELAS', &
+                        0, ' ', [0.d0], 1, 'ALPHA', alpha, icodre, 0)
+            ! ALPHA ABSENT => CHARGEMENT NUL
+            if ((icodre(1).eq.0) .and. (alpha(1).ne.0.d0)) then
+                call utmess('F', 'ELEMENTS_19', sk=nomte)
+            endif
+        else
+            ASSERT(.false.)
+        endif
+    enddo
 !
 end subroutine

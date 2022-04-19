@@ -17,21 +17,21 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine nmcomp(BEHinteg,&
-                  fami   , kpg, ksp, ndim, typmod,&
-                  imate  , compor, carcri, instam, instap,&
-                  neps   , epsm, deps, nsig, sigm,&
-                  vim    , option, angmas, &
-                  sigp   , vip, ndsde, dsidep, &
-                  codret , mult_comp_, l_epsi_varc_)
+subroutine nmcomp(BEHinteg, &
+                  fami,   kpg,    ksp,    ndim,       typmod,        &
+                  imate,  compor, carcri, instam,     instap,        &
+                  neps,   epsm,   deps,   nsig,       sigm,          &
+                  vim,    option, angmas, sigp,       vip,           &
+                  ndsde,  dsidep, codret, mult_comp_, l_epsi_varc_,  &
+                  materi_)
 !
 use Behaviour_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/lcvali.h"
 #include "asterfort/nmcpl1.h"
 #include "asterfort/nmcpl2.h"
@@ -40,17 +40,19 @@ implicit none
 #include "asterfort/lcidbg.h"
 !
 type(Behaviour_Integ) :: BEHinteg
-integer :: kpg, ksp, ndim, imate, codret, icp, numlc
-integer :: neps, nsig, ndsde
-character(len=8) :: typmod(*)
-character(len=*) :: fami
-character(len=16) :: compor(*), option
-real(kind=8) :: carcri(*), instam, instap
-real(kind=8) :: epsm(*), deps(*), dsidep(*)
-real(kind=8) :: sigm(*), vim(*), sigp(*), vip(*)
-real(kind=8) :: angmas(*)
+!
+integer :: kpg, ksp, ndim, imate, codret, neps, nsig, ndsde
+!
+character(len=*)    :: fami
+character(len=8)    :: typmod(*)
+character(len=16)   :: compor(*), option
+!
+real(kind=8) :: instam, instap
+real(kind=8) :: epsm(*), deps(*), dsidep(*), carcri(*), sigm(*), vim(*), sigp(*), vip(*), angmas(*)
+!
+character(len=8),  optional, intent(in) :: materi_
 character(len=16), optional, intent(in) :: mult_comp_
-aster_logical, optional, intent(in) :: l_epsi_varc_
+aster_logical,     optional, intent(in) :: l_epsi_varc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -118,14 +120,15 @@ aster_logical, optional, intent(in) :: l_epsi_varc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!    POUR LES UTILITAIRES DE CALCUL TENSORIEL
+!   Pour les utilitaires de calcul tensoriel
     integer :: ndt, ndi
     common /tdim/ ndt,ndi
 !
-    aster_logical :: l_epsi_varc
+    integer :: icp, numlc, cpl, nvv, ncpmax
+!
+    aster_logical :: cp, convcp, l_epsi_varc
+    character(len=8)  :: materi
     character(len=16) :: optio2, mult_comp
-    aster_logical :: cp, convcp
-    integer :: cpl, nvv, ncpmax
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -135,75 +138,79 @@ aster_logical, optional, intent(in) :: l_epsi_varc_
         l_epsi_varc = l_epsi_varc_
     endif
 !
-!     CONTRAINTES PLANES
-    call nmcpl1(compor, typmod, option, vip, deps,&
-                optio2, cpl, nvv)
+!   Contraintes planes ?
+    call nmcpl1(compor, typmod, option, vip, deps, optio2, cpl, nvv)
     cp=(cpl.ne.0)
 !
-!     DIMENSIONNEMENT POUR LE CALCUL TENSORIEL
+!   Dimensionnement pour le calcul tensoriel
     ndt = 2*ndim
     ndi = ndim
 !
     if (cp) then
-        convcp = .false.
-        ncpmax = nint(carcri(9))
+        convcp = ASTER_FALSE
+        ncpmax = nint(carcri(ITER_DEBORST_MAX))
     else
-        convcp = .true.
+        convcp = ASTER_TRUE
         ncpmax = 1
     endif
 !
+!   Les paramètres optionnels
     mult_comp = ' '
     if (present(mult_comp_)) then
         mult_comp = mult_comp_
     endif
+    materi = ' '
+    if (present(materi_)) then
+        materi = materi_
+    endif
 !
-!     RECUP NUMLC
-    read (compor(6),'(I16)') numlc
-
+!   Numéro de la loi de comportement : numlc
+    read(compor(NUME),'(I16)') numlc
 !
-!     BOUCLE POUR ETABLIR LES CONTRAINTES PLANES
+!   Boucle pour établir les contraintes planes
     do icp = 1, ncpmax
         call redece(BEHinteg,&
-                    fami, kpg, ksp, ndim, typmod, l_epsi_varc,&
-                    imate, compor, mult_comp, carcri, instam, instap,&
-                    neps, epsm, deps, nsig, sigm,&
-                    vim, option, angmas, cp, numlc,&
-                    sigp, vip, ndsde, dsidep, codret)
-!
-!       VERIFIER LA CONVERGENCE DES CONTRAINTES PLANES ET
-!       SORTIR DE LA BOUCLE SI NECESSAIRE
+                    fami,        kpg,    ksp,    ndim,   typmod,    &
+                    l_epsi_varc, imate,  materi, compor, mult_comp, &
+                    carcri,      instam, instap, neps,   epsm,      &
+                    deps,        nsig,   sigm,   vim,    option,    &
+                    angmas,      cp,     numlc,  sigp,   vip,       &
+                    ndsde,       dsidep, codret)
+        !
+        ! Vérifier la convergence des contraintes planes et sortir de la boucle si nécessaire
         if (cp) then
             ASSERT(ndsde.eq.36)
-            call nmcpl3(compor, option, carcri, deps, dsidep,&
-                        ndim, sigp, vip, cpl, icp,&
+            call nmcpl3(compor, option, carcri, deps, dsidep, &
+                        ndim,   sigp,   vip,    cpl,  icp,    &
                         convcp)
         endif
-!
+        !
         if (convcp) then
             exit
         endif
+        !
+    enddo
 !
-    end do
-!
-!     CONTRAINTES PLANES METHODE DE BORST
+!   Contraintes planes méthode DE BORST
     if (cp) then
         if (codret .eq. 0) then
             ASSERT(ndsde.eq.36)
-            call nmcpl2(compor, typmod, option, optio2, cpl,&
-                        nvv, carcri, deps, dsidep, ndim,&
-                        sigp, vip, codret)
+            call nmcpl2(compor, typmod, option, optio2, cpl,  &
+                        nvv,    carcri, deps,   dsidep, ndim, &
+                        sigp,   vip,    codret)
         else
             option=optio2
         endif
     endif
-!     EXAMEN DU DOMAINE DE VALIDITE
+!   Examen du domaine de validité
     if (codret .eq. 0) then
-        call lcvali(fami, kpg, ksp, imate, compor,&
-                    ndim, epsm, deps, instam, instap,&
-                    codret)
+        call lcvali(fami,   kpg,  ksp,  imate,  materi, &
+                    compor, ndim, epsm, deps,   instam, &
+                    instap, codret)
     else if (codret .eq. 1) then
-        call lcidbg(fami, kpg, ksp, typmod, compor,&
-                    carcri, instam, instap, neps, epsm,&
-                    deps, nsig, sigm, vim, option)
+        call lcidbg(fami,   kpg,    ksp,    typmod, compor, &
+                    carcri, instam, instap, neps,   epsm,   &
+                    deps,   nsig,   sigm,   vim,    option)
     endif
+!
 end subroutine

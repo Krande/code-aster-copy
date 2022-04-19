@@ -18,14 +18,20 @@
 
 subroutine dc_multifibre(nbocci, sdcomp)
 !
-! person_in_charge: jean-luc.flejou at edf.fr
+! --------------------------------------------------------------------------------------------------
 !
 !                   DEFI_COMPOR / MULTIFIBRE
 !
-    implicit none
+! --------------------------------------------------------------------------------------------------
 !
-    integer, intent(in) :: nbocci
-    character(len=8), intent(in) :: sdcomp
+! person_in_charge: jean-luc.flejou at edf.fr
+!
+use compor_multifibre_module
+!
+implicit none
+!
+integer, intent(in) :: nbocci
+character(len=8), intent(in) :: sdcomp
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -51,42 +57,43 @@ subroutine dc_multifibre(nbocci, sdcomp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical, parameter :: l_implex = ASTER_FALSE
     integer :: nbDeborst, imi, jcprk, iocc, irett
     integer :: ibid, nbg, nbgrfib, jnmgrfib, ig, ig1, jnbfig, iaff
     integer :: nbVariMax, nbVari, icp, numeLaw
-    character(len=8) :: materi, sdgf, mator
+    integer :: valmi(5)
+!
+    aster_logical :: l_kit, l_cristal
+    aster_logical, parameter :: l_implex = ASTER_FALSE
+!
+    character(len=8)  :: materi, sdgf, mator
     character(len=16) :: rela_comp, defo_comp, type_cpla, rela_comp_py, kit_comp(4)
     character(len=16) :: regu_visc, post_iter
-    character(len=16), parameter :: keywordfact='MULTIFIBRE'
     character(len=24) :: vnbfig, vnmfig, kgroup
-    aster_logical :: l_kit, l_cristal
-    integer :: valmi(5)
     character(len=80) :: valmk(5)
 !
-! --------------------------------------------------------------------------------------------------
+    character(len=16), parameter :: keywordfact='MULTIFIBRE'
 !
+! --------------------------------------------------------------------------------------------------
     call jemarq()
-! --------------------------------------------------------------------------------------------------
-!   on récupère les renseignements dans la sd_group_fibre
-!       noms de tous les groupes, nb maxi de groupes, nb de fibres par groupe
+    !
+    ! on récupère les renseignements dans la sd_group_fibre
+    !   noms de tous les groupes, nb maxi de groupes, nb de fibres par groupe
     nbVariMax=0
-
-!
+    !
     call getvid(' ', 'GEOM_FIBRE', scal=sdgf, nbret=ibid)
     vnbfig = sdgf//'.NB_FIBRE_GROUPE'
     vnmfig = sdgf//'.NOMS_GROUPES'
     call jeveuo(vnbfig, 'L', jnbfig)
     call jelira(vnbfig, 'LONMAX', nbgrfib)
-!   le +1 c'est pour le matériau de torsion : MATER_SECT fin de routine
-    call wkvect(sdcomp//'.CPRK', 'G V K24', 6*nbgrfib+1, jcprk)
+    ! le +1 c'est pour le matériau de torsion : MATER_SECT fin de routine
+    call wkvect(sdcomp//'.CPRK', 'G V K24', MULTI_FIBER_SIZEK*nbgrfib+1, jcprk)
     call wkvect('&&OP0059.NOMS_GROUPES', 'V V K24', nbgrfib, jnmgrfib)
     call wkvect('&&OP0059.VERIF_AFFECT', 'V V I', nbgrfib, iaff)
     do ig = 1, nbgrfib
         zi(iaff-1+ig) = 0
     enddo
     nbDeborst = 0
-!
+    !
     do iocc = 1, nbocci
         call getvtx(keywordfact, 'GROUP_FIBRE', iocc=iocc, nbval=0, nbret=nbg)
         nbg=-nbg
@@ -99,15 +106,15 @@ subroutine dc_multifibre(nbocci, sdcomp)
         endif
         call getvtx(keywordfact, 'GROUP_FIBRE', iocc=iocc, nbval = nbg, vect = zk24(jnmgrfib))
         call getvid(keywordfact, 'MATER', iocc=iocc, scal = materi)
-
-! ----- Get name of RELATION
+        !
+        ! Get name of RELATION
         call compGetRelation(keywordfact, iocc, rela_comp)
         call comp_meca_l(rela_comp, 'KIT'     , l_kit)
         call comp_meca_l(rela_comp, 'CRISTAL' , l_cristal)
         ASSERT(.not. l_kit)
         ASSERT(.not. l_cristal)
-
-! ----- Select unidimensional algorithm
+        !
+        ! Select unidimensional algorithm
         call lccree(1, rela_comp, rela_comp_py)
         call lctest(rela_comp_py, 'MODELISATION', '1D', irett)
         type_cpla = 'ANALYTIQUE'
@@ -116,64 +123,69 @@ subroutine dc_multifibre(nbocci, sdcomp)
             nbDeborst = nbDeborst + 1
         endif
         call lcdiscard(rela_comp_py)
-
-! ----- Other parameters
-        defo_comp = 'VIDE'
-        kit_comp  = 'VIDE'
-        post_iter = 'VIDE'
-        regu_visc = 'VIDE'
-
-! ----- Get number of internal state variables
+        !
+        ! Other parameters
+        defo_comp   = 'VIDE'
+        kit_comp(:) = 'VIDE'
+        post_iter   = 'VIDE'
+        regu_visc   = 'VIDE'
+        ! Get number of internal state variables
         call comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
                              kit_comp , post_iter,&
                              regu_visc, l_implex ,&
                              nbVari   , numeLaw)
-
+        !
         do ig = 1, nbg
-!           Numéro correspondant au nom
+            ! Numéro correspondant au nom
             call jenonu(jexnom(vnmfig, zk24(jnmgrfib+ig-1)), ig1)
             if (ig1 .eq. 0) then
                 call utmess('F', 'MODELISA8_8', sk=zk24(jnmgrfib+ig-1))
             endif
-            icp=jcprk-1+(ig1-1)*6
-            zk24(icp+1) = zk24(jnmgrfib+ig-1)
-            zk24(icp+2) = materi
-            zk24(icp+3) = rela_comp
-            zk24(icp+4) = type_cpla
-            zk24(icp+5) = defo_comp
-            write(zk24(icp+6),'(I24)') zi(jnbfig-1+ig1)
+            icp=jcprk-1+(ig1-1)*MULTI_FIBER_SIZEK
+            ! Information si déjà affecté ==> Surcharge
+            if ( zi(iaff-1+ig1) .eq. 1 ) then
+                valmk(1) = zk24(icp+MULTI_FIBER_NAME)
+                valmk(2) = zk24(icp+MULTI_FIBER_MATER)
+                valmk(3) = zk24(icp+MULTI_FIBER_RELA)
+                valmk(4) = materi
+                valmk(5) = rela_comp
+                call utmess('I', 'COMPOR5_19', nk=5,valk=valmk)
+            endif
+            zk24(icp+MULTI_FIBER_NAME)  = zk24(jnmgrfib+ig-1)
+            zk24(icp+MULTI_FIBER_MATER) = materi
+            zk24(icp+MULTI_FIBER_RELA)  = rela_comp
+            zk24(icp+MULTI_FIBER_ALGO)  = type_cpla
+            zk24(icp+MULTI_FIBER_DEFO)  = defo_comp
+            write(zk24(icp+MULTI_FIBER_NBFI),  '(I24)') zi(jnbfig-1+ig1)
+            write(zk24(icp+MULTI_FIBER_NBVARI),'(I24)') nbVari
             zi(iaff-1+ig1) = 1
         enddo
-!       on met à jour le nombre de variables internes maxi
+        ! on met à jour le nombre de variables internes maxi
         nbVariMax = max(nbVariMax, nbVari)
     enddo
-!
-!   vérification de l'utilisation de COMP_1D
-    if (nbocci .gt. 1) then
-        if (nbDeborst .ge. 1) then
-            call utmess('F', 'COMPOR5_30')
-        endif
-    endif
-!   vérification que tout est affecté au moins une fois. Les groupes non affectes 'VIDE'
+    !
+    ! vérification que tout est affecté au moins une fois. Les groupes non affectes 'VIDE'
     do ig = 1, nbgrfib
         if (zi(iaff-1+ig) .eq. 0) then
             call jenuno(jexnum(vnmfig, ig), kgroup)
-            icp=jcprk-1+(ig-1)*6
-            zk24(icp+1) = kgroup
-            zk24(icp+2) = 'VIDE'
+            icp=jcprk-1+(ig-1)*MULTI_FIBER_SIZEK
+            zk24(icp+MULTI_FIBER_NAME)  = kgroup
+            zk24(icp+MULTI_FIBER_MATER) = 'VIDE'
         endif
     enddo
     if (nbDeborst .ge. 1) then
-        call utmess('I', 'COMPOR5_20')
+        valmk(1) = 'double DEBORST'
+        call utmess('I', 'COMPOR5_20', sk=valmk(1))
     endif
-!   on récupère le nom du matériau pour la torsion, mis à la fin
+    ! on récupère le nom du matériau pour la torsion, mis à la fin
     call getvid(' ', 'MATER_SECT', scal=mator, nbret=ibid)
-    zk24(jcprk-1+nbgrfib*6+1)=mator
-    call wkvect(sdcomp//'.CPRI', 'G V I', 3, imi)
-!   type 3 = MULTIFIBRE
-    zi(imi) = 3
-    zi(imi+1) = nbVariMax
-    zi(imi+2) = nbgrfib
-!
+    icp= jcprk-1+nbgrfib*MULTI_FIBER_SIZEK
+    zk24(icp+1) = mator
+    call wkvect(sdcomp//'.CPRI', 'G V I', MULTI_FIBER_SIZEI, imi)
+    ! type 3 = MULTIFIBRE
+    zi(imi-1+MULTI_FIBER_TYPE)     = 3
+    zi(imi-1+MULTI_FIBER_NBVARMAX) = nbVariMax
+    zi(imi-1+MULTI_FIBER_NBGRFIBR) = nbgrfib
+    !
     call jedema()
 end subroutine

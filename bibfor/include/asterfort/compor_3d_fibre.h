@@ -19,26 +19,23 @@
 !
 !
 interface
-    subroutine nmgran(fami,   kpg,    ksp,    typmod, imate, &
-                      compor, instam, instap, tpmxm,  tpmxp, &
-                      depst,  sigm,   vim,    option, sigp, &
-                      vip,    dsidep, materi)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        character(len=8) :: typmod(*), materi
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        real(kind=8) :: tpmxm
-        real(kind=8) :: tpmxp
-        real(kind=8) :: depst(6)
-        real(kind=8) :: sigm(6)
-        real(kind=8) :: vim(55)
-        character(len=16) :: option
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: vip(55)
-        real(kind=8) :: dsidep(6, 6)
-    end subroutine nmgran
+    subroutine compor_3d_fibre(fami,    kpg,    ksp,  option, sigx,   &
+                               instam,  instap, crit, icdmat, materi, &
+                               pcompor, epsx,   depx, angmas, vim,    &
+                               vip,     sigxp,  etan, codret)
+        character(len=*)    :: fami
+        integer             :: kpg, ksp
+        character(len=16)   :: option
+        real(kind=8)        :: sigx, instam, instap, crit(*)
+        integer             :: icdmat
+        character(len=8)    :: materi
+        character(len=16)   :: pcompor(*)
+        real(kind=8)        :: epsx, depx
+        real(kind=8)        :: angmas(3)
+        real(kind=8)        :: vim(*)
+        real(kind=8)        :: vip(*)
+        real(kind=8)        :: sigxp
+        real(kind=8)        :: etan
+        integer             :: codret
+    end subroutine compor_3d_fibre
 end interface

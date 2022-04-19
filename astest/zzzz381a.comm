@@ -196,11 +196,11 @@ IMPR_CO(CONCEPT=_F(NOM=COMP1), ATTRIBUT='OUI', NIVEAU=2, UNITE=unite)
 DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/COMP1.concept",
-             NB_VALE_I=65,
-             VALE_CALC_I=1191,
+             NB_VALE_I=73,
+             VALE_CALC_I=1351,
              NB_VALE=0,
              VALE_CALC=0.0000000000,
-             VALE_CALC_K="b11d6089492670aa3184f0318b6e47ef",
+             VALE_CALC_K="9c04bb41e15f597be2a60d68540a3ed0",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 

@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmgran(fami, kpg, ksp, typmod, imate,&
-                  compor, instam, instap, tpmxm, tpmxp,&
-                  depst, sigm, vim, option, sigp,&
-                  vip, dsidep)
+subroutine nmgran(fami,   kpg,    ksp,    typmod, imate, &
+                  compor, instam, instap, tpmxm,  tpmxp, &
+                  depst,  sigm,   vim,    option, sigp,  &
+                  vip,    dsidep, materi)
 !
     implicit none
 #include "asterf_types.h"
@@ -29,7 +29,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
     integer :: imate, kpg, ksp
-    character(len=8) :: typmod(*)
+    character(len=8) :: typmod(*), materi
     character(len=16) :: compor(*), option
     character(len=*) :: fami
     real(kind=8) :: instam, instap
@@ -127,16 +127,16 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         do k = 1, ndimsi
             l=l+1
             am(k,i)=vim(l)
-        end do
+        enddo
         ammo(i)=0.d0
         do n = 1, 3
             ammo(i)=ammo(i)+am(n,i)
-        end do
+        enddo
         ammo(i)=ammo(i)/3.d0
         do k = 1, ndimsi
             amdv(k,i)=am(k,i)-ammo(i)*kron(k)
-        end do
-    end do
+        enddo
+    enddo
     agem = vim(l+1)
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES
@@ -149,14 +149,12 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     valpam = tpmxm
     valpap = tpmxp
 !
+    epsthm = 0.0; epsthp =0.0
+    call rcvalb(fami, kpg, ksp, '-', imate, materi, 'ELAS', &
+                1, nompar, [valpam], 2, nomres, valres, icodre, 2)
 !
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, [valpam],&
-                2, nomres, valres, icodre, 2)
-!
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, [valpam],&
-                1, nomres(3), valres(3), icodre(3), 2)
+    call rcvalb(fami, kpg, ksp, '-', imate, materi, 'ELAS', &
+                1, nompar, [valpam], 1, nomres(3), valres(3), icodre(3), 2)
     if ((.not.isnan(tp)) .and. (.not.isnan(tm))) then
         if ((icodre(3).ne.0) .or. (isnan(tref))) then
             call utmess('F', 'COMPOR5_42')
@@ -173,18 +171,16 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     troikm = em/(1.d0-2.d0*num)
 !
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, [valpap],&
-                2, nomres, valres, icodre, 2)
+    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ELAS', &
+                1, nompar, [valpap], 2, nomres, valres, icodre, 2)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, [valpap],&
-                1, nomres(3), valres(3), icodre(3), 0)
+    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ELAS', &
+                1, nompar, [valpap], 1, nomres(3), valres(3), icodre(3), 0)
 !
     if (icodre(3) .ne. 0) then
         valres(3) = 0.d0
         epsthp = 0.d0
-        elseif (((isnan(tp)).or.(isnan(tm)).or. (isnan(tref))).and.(icodre(3) .eq. 0 )) then
+    else if (((isnan(tp)).or.(isnan(tm)).or. (isnan(tref))).and.(icodre(3) .eq. 0 )) then
         call utmess('F', 'COMPOR5_42')
     else
         epsthp = valres(3)*(tp-tref)
@@ -198,30 +194,26 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !
     nomres(1)='B_ENDOGE'
     nomres(2)='K_DESSIC'
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, [valpam],&
-                1, nomres, valres, icodre, 0)
+    call rcvalb(fami, kpg, ksp, '-', imate, materi, 'ELAS', &
+                1, nompar, [valpam], 1, nomres, valres, icodre, 0)
 !
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendom = valres(1)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, [valpap],&
-                1, nomres, valres, icodre, 0)
+    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ELAS', &
+                1, nompar, [valpap], 1, nomres, valres, icodre, 0)
 !
     if (icodre(1) .ne. 0) valres(1) = 0.d0
     bendop = valres(1)
 !
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, [valpam],&
-                1, nomres(2), valres(2), icodre, 0)
+    call rcvalb(fami, kpg, ksp, '-', imate, materi, 'ELAS', &
+                1, nompar, [valpam], 1, nomres(2), valres(2), icodre, 0)
 !
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdessm = valres(2)
 !
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, [valpap],&
-                1, nomres(2), valres(2), icodre, 0)
+    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ELAS', &
+                1, nompar, [valpap], 1, nomres(2), valres(2), icodre, 0)
 !
     if (icodre(2) .ne. 0) valres(2) = 0.d0
     kdessp = valres(2)
@@ -246,23 +238,21 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     nomres(16) = 'TAUX_8'
     coefj=0.d0
     do i = 1, 8
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'BETON_GRANGER', 0, ' ', [0.d0],&
-                    1, nomres(i), valres(i), icodre(i), 0)
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'BETON_GRANGER', 0, ' ', [0.d0],&
-                    1, nomres(i+8), valres(i+8), icodre(i+8), 0)
+        call rcvalb(fami, kpg, ksp, '+', imate, materi, 'BETON_GRANGER', &
+                    0, ' ', [0.d0], 1, nomres(i), valres(i), icodre(i), 0)
+        call rcvalb(fami, kpg, ksp, '+', imate, materi, 'BETON_GRANGER', &
+                    0, ' ', [0.d0], 1, nomres(i+8), valres(i+8), icodre(i+8), 0)
         if ((icodre(i) .ne.0) .and. (icodre(i+8) .ne.0)) then
             valres(i) = 0.d0
             valres(i+8)=1.d0
-            elseif ( ((icodre(i) .eq. 0) .and. (icodre(i+8) .ne. 0))&
-        .or. ((icodre(i) .ne. 0) .and. (icodre(i+8) .eq. 0))) then
+        else if ( ((icodre(i) .eq. 0) .and. (icodre(i+8) .ne. 0)) .or. &
+                  ((icodre(i) .ne. 0) .and. (icodre(i+8) .eq. 0))) then
             call utmess('F', 'ALGORITH8_2')
         endif
         j(i)=valres(i)
         taux(i)=valres(i+8)
         coefj=coefj+j(i)
-    end do
+    enddo
 !
 !  ------- CARACTERISTIQUES EFFET DE LA TEMPERATURE
 ! Eliminee la dependance a la temperature le 19 mai 2016
@@ -274,26 +264,17 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !  ------- CARACTERISTIQUES EFFET DU VIEILLISSEMENT
 !
     if (compor(1) (1:15) .eq. 'BETON_GRANGER_V') then
-!~         nomres(1)='QSR_VEIL'
-!~         call rcvalb(fami, kpg, ksp, '+', imate,&
-!~                     ' ', 'V_BETON_GRANGER', 0, ' ', [0.d0],&
-!~                     1, nomres(1), valres(1), icodre(1), 0)
-!~         if (icodre(1) .ne. 0) valres(1)=0.d0
-!~         qsrv=valres(1)
-!
-!  -------- FONCTION MULTIPLICATIVE - VIEILLISSEMENT K
-!
-!  ------------ AGE EQUIVALENT DU BETON : AGE
-!~         coefv=(-qsrv)*(1/temp-1/tkref)
-!~         coefv=exp(coefv)
+!       FONCTION MULTIPLICATIVE - VIEILLISSEMENT K
+!           AGE EQUIVALENT DU BETON : AGE
+!               coefv=(-qsrv)*(1/temp-1/tkref)
+!               coefv=exp(coefv)
         coefv= 1.d0
         dage = coefv*delta
         agep = agem+dage
         tceq = (agem+agep)/2
         nomres(1)='FONC_V'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'V_BETON_GRANGER', 1, 'INST', [tceq],&
-                    1, nomres, valres, icodre, 0)
+        call rcvalb(fami, kpg, ksp, '+', imate, materi, 'V_BETON_GRANGER', &
+                    1, 'INST', [tceq], 1, nomres, valres, icodre, 0)
 !
         vieil = valres(1)
     else
@@ -305,17 +286,15 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !  ------- CARACTERISTIQUES HYGROMETRIE H
 !
     nomres(1)='FONC_DESORP'
-    call rcvalb(fami, kpg, ksp, '-', imate,&
-                ' ', 'ELAS', 1, nompar, [valpam],&
-                1, nomres, valres, icodre, 2)
+    call rcvalb(fami, kpg, ksp, '-', imate, materi, 'ELAS', &
+                1, nompar, [valpam], 1, nomres, valres, icodre, 2)
 !
     if (icodre(1) .ne. 0) then
         call utmess('F', 'ALGORITH7_98')
     endif
     hygrm=valres(1)
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'ELAS', 1, nompar, [valpap],&
-                1, nomres, valres, icodre, 2)
+    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'ELAS', &
+                1, nompar, [valpap], 1, nomres, valres, icodre, 2)
 !
     if (icodre(1) .ne. 0) then
         call utmess('F', 'ALGORITH7_98')
@@ -328,70 +307,63 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     sigmmo = 0.d0
     do k = 1, 3
         sigmmo = sigmmo + sigm(k)
-    end do
+    enddo
     sigmmo = sigmmo /3.d0
     do k = 1, ndimsi
         sigmdv(k) = sigm(k)- sigmmo * kron(k)
         sigmp(k)=deuxmu/deumum*sigmdv(k) + troisk/troikm*sigmmo*kron(&
         k)
-    end do
+    enddo
     sigmpo = 0.d0
     do k = 1, 3
         sigmpo = sigmpo + sigmp(k)
-    end do
+    enddo
     sigmpo = sigmpo /3.d0
     do k = 1, ndimsi
         sigmpd(k) = sigmp(k)- sigmpo * kron(k)
-    end do
+    enddo
 !
 ! -------  QUELQUES COEFFICIENTS-------------------------
 !
     coefb=0.d0
     do i = 1, 8
         coefb=coefb+j(i)*(1-(taux(i)/delta)*(1-exp(-dteqt/taux(i))))
-    end do
+    enddo
     coefd=(hygrp*tpprim*vieil)*coefb
     do k = 1, ndimsi
         coefa(k)=0.d0
         do i = 1, 8
             coefa(k)=coefa(k)+amdv(k,i)*(1-exp(-dteqt/taux(i)))
-        end do
+        enddo
         coefc(k)= (sigmdv(k)*hygrm*tmprim)*vieil*coefb
         coeff(k)=coefa(k)-coefc(k)
-    end do
+    enddo
     coefa(9)=0.d0
     do i = 1, 8
         coefa(9)=coefa(9)+ammo(i)*(1-exp(-dteqt/taux(i)))
-    end do
+    enddo
     coefc(9)= (sigmmo*hygrm*tmprim)*vieil*coefb
     coeff(9)=coefa(9)-coefc(9)
     do k = 1, 3
         coefk(k)= coeff(k)+coeff(9)
-    end do
+    enddo
 !
 ! ------- CALCUL DE DEPSMO ET DEPSDV
 !
 !
-    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
-                ksp, hydrp, iret)
+    call rcvarc(' ', 'HYDR', '+',   fami, kpg, ksp, hydrp, iret)
     if (iret .ne. 0) hydrp=0.d0
-    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
-                ksp, hydrm, iret)
+    call rcvarc(' ', 'HYDR', '-',   fami, kpg, ksp, hydrm, iret)
     if (iret .ne. 0) hydrm=0.d0
-    call rcvarc(' ', 'SECH', '+', fami, kpg,&
-                ksp, sechp, iret)
+    call rcvarc(' ', 'SECH', '+',   fami, kpg, ksp, sechp, iret)
     if (iret .ne. 0) sechp=0.d0
-    call rcvarc(' ', 'SECH', '-', fami, kpg,&
-                ksp, sechm, iret)
+    call rcvarc(' ', 'SECH', '-',   fami, kpg, ksp, sechm, iret)
     if (iret .ne. 0) sechm=0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
-                ksp, sref, iret)
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg, ksp, sref, iret)
     if (iret .ne. 0) sref=0.d0
-    ther = epsthp - epsthm - bendop*hydrp + bendom*hydrm - kdessp*(sref-sechp) + kdessm*(sref-sec&
-           &hm)
+    ther = epsthp -epsthm -bendop*hydrp +bendom*hydrm -kdessp*(sref-sechp) +kdessm*(sref-sechm)
     if (cplan) then
-        deps3=-nu/(1.d0-nu)*(depst(1)+depst(2)) +(1.d0+nu)/(1.d0-nu)*&
-        ther
+        deps3=-nu/(1.d0-nu)*(depst(1)+depst(2)) +(1.d0+nu)/(1.d0-nu)*ther
         deps3=deps3+(3.d0*e/(deuxmu*2.d0+troisk))*coefk(3)
         deps3=deps3-(3.d0/(deuxmu*2.d0+troisk))*sigmp(3)
     endif
@@ -400,7 +372,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         deps(k) = depst(k)-ther
         deps(k+3) = depst(k+3)
         depsmo = depsmo + deps(k)
-    end do
+    enddo
     if (cplan) then
         deps(3) = deps3-ther
         depsmo = deps(1) + deps(2) + deps(3)
@@ -408,11 +380,11 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     depsmo = depsmo/3.d0
     do k = 1, ndimsi
         depsdv(k) = deps(k) - depsmo * kron(k)
-    end do
+    enddo
 !
     do k = 1, ndimsi
         sigldv(k) = sigmpd(k) + deuxmu * depsdv(k)
-    end do
+    enddo
     siglmo = sigmpo +troisk*depsmo
 !
 !--4-CALCUL DE SIGP
@@ -422,12 +394,12 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         do k = 1, ndimsi
             sigpdv(k)=sigldv(k)-e*coeff(k)
             sigpdv(k)=sigpdv(k)/(1+e*coefd)
-        end do
+        enddo
         sigpmo= siglmo-e*coeff(9)
         sigpmo = sigpmo/(1+e*coefd)
         do k = 1, ndimsi
             sigp(k)=sigpdv(k)+sigpmo*kron(k)
-        end do
+        enddo
 !
 !-- 6 CALCUL DE VIP
 !   -------------------
@@ -436,7 +408,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
             smdv(k)=sigmdv(k)*hygrm*tmprim
             spdv(k)=sigpdv(k)*hygrp*tpprim
             dsdv(k)=spdv(k)-smdv(k)
-        end do
+        enddo
         smmo=sigmmo*hygrm*tmprim
         spmo=sigpmo*hygrp*tpprim
         dsmo = spmo-smmo
@@ -444,24 +416,22 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         do i = 1, 8
             do k = 1, ndimsi
                 apdv(k,i)=amdv(k,i)*exp(-dteqt/taux(i))
-                apdv(k,i)=apdv(k,i)+ dsdv(k)*vieil *j(i)*(taux(i)/&
-                delta)*(1-exp(-dteqt/taux(i)))
-            end do
+                apdv(k,i)=apdv(k,i)+ dsdv(k)*vieil *j(i)*(taux(i)/delta)*(1-exp(-dteqt/taux(i)))
+            enddo
             apmo(i)= ammo(i)*exp(-dteqt/taux(i))
-            apmo(i)=apmo(i)+ dsmo*vieil *j(i)*(taux(i)/delta)*(1-exp(-&
-            dteqt/taux(i)))
-        end do
+            apmo(i)=apmo(i)+ dsmo*vieil *j(i)*(taux(i)/delta)*(1-exp(-dteqt/taux(i)))
+        enddo
 !
         do k = 1, ndimsi
             apdv(k,9)=amdv(k,9)
             do i = 1, 8
                 apdv(k,9)=apdv(k,9)+j(i)*vieil*dsdv(k)
-            end do
-        end do
+            enddo
+        enddo
         apmo(9)= ammo(9)
         do i = 1, 8
             apmo(9)=apmo(9)+j(i)*vieil*dsmo
-        end do
+        enddo
 !--------CALCUL DES AP ET DES VIP
         l=0
         do i = 1, 9
@@ -469,8 +439,8 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                 ap(k,i)=apdv(k,i)+apmo(i)*kron(k)
                 l=l+1
                 vip(l)=ap(k,i)
-            end do
-        end do
+            enddo
+        enddo
         vip(l+1)=agep
     endif
 !
@@ -490,11 +460,11 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
             do l = 1, 3
                 dsidep(k,l) = dsidep(k,l)+(troisk/(3.d0*coefi))
                 dsidep(k,l) = dsidep(k,l)-deuxmu/(3.d0*coefh)
-            end do
-        end do
+            enddo
+        enddo
         do k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu/coefh
-        end do
+        enddo
 !
 !----------- CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
@@ -504,9 +474,9 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                         if (l .ne. 3) then
                             dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
                         endif
-                    end do
+                    enddo
                 endif
-            end do
+            enddo
         endif
     endif
 end subroutine

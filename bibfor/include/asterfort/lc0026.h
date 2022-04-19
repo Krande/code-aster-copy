@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 !
 !
 interface
-    subroutine lc0026(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, epsm,&
-                      deps, sigm, vim, option, angmas,&
-                      sigp, vip, typmod, icomp,&
-                      nvi, dsidep, codret)
+    subroutine lc0026(fami,   kpg,    ksp,    ndim,   imate,  &
+                      compor, crit,   instam, instap, epsm,   &
+                      deps,   sigm,   vim,    option, angmas, &
+                      sigp,   vip,    typmod, icomp,  materi, &
+                      nvi,    dsidep, codret)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
@@ -44,6 +44,7 @@ interface
         real(kind=8) :: vip(*)
         character(len=8) :: typmod(*)
         integer :: icomp
+        character(len=8) :: materi
         integer :: nvi
         real(kind=8) :: dsidep(6, 6)
         integer :: codret

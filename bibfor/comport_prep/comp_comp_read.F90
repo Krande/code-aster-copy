@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,15 @@
 
 subroutine comp_comp_read(v_info_valk, v_info_vali)
 !
+use compor_multifibre_module
+!
 implicit none
 !
 #include "asterc/getfac.h"
-#include "asterfort/getvid.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
+#include "asterfort/getvid.h"
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -72,15 +74,18 @@ implicit none
         call getvid(keywordfact, 'COMPOR', iocc = iocc , scal = sdcomp)
         call jeveuo(sdcomp//'.CPRI', 'L', vi   = v_sdcomp_cpri)
         call jeveuo(sdcomp//'.CPRK', 'L', vk24 = v_sdcomp_cprk)
-        ASSERT(v_sdcomp_cpri(1) .eq. 3)
+        ! Ceinture et bretelle : seulement pour les multifibres
+        ASSERT(v_sdcomp_cpri(MULTI_FIBER_TYPE) .eq. 3)
 !
 ! ----- First none-void COMPOR in fiber
 !
         call jelira(sdcomp//'.CPRK', 'LONMAX', nbgmax, k8dummy)
-        nbgmax = (nbgmax-1)/6
+        jdecal = 0
+        ! -1 car le dernier c'est le matériau de torsion
+        nbgmax = (nbgmax-1)/MULTI_FIBER_SIZEK
         do i = 1, nbgmax
-            jdecal = 6*(i-1)-1
-            if (v_sdcomp_cprk(1+jdecal+2) .ne. 'VIDE') then
+            jdecal = MULTI_FIBER_SIZEK*(i-1)
+            if (v_sdcomp_cprk(jdecal+MULTI_FIBER_MATER) .ne. 'VIDE') then
                 goto 25
             endif
         enddo
@@ -89,12 +94,12 @@ implicit none
 !
 ! ----- Save options in list
 !
-        rela_comp = v_sdcomp_cprk(1+jdecal+3)(1:16)
-        defo_comp = v_sdcomp_cprk(1+jdecal+5)(1:16)
+        rela_comp = v_sdcomp_cprk(jdecal+MULTI_FIBER_RELA)(1:16)
+        defo_comp = v_sdcomp_cprk(jdecal+MULTI_FIBER_DEFO)(1:16)
         type_comp = 'COMP_INCR'
-        type_cpla = v_sdcomp_cprk(1+jdecal+4)(1:16)
+        type_cpla = v_sdcomp_cprk(jdecal+MULTI_FIBER_ALGO)(1:16)
         mult_comp = sdcomp//'.CPRK'
-        nb_vari   = v_sdcomp_cpri(2)
+        nb_vari   = v_sdcomp_cpri(MULTI_FIBER_NBVARMAX)
         call lccree(1, rela_comp, comp_code)
         call lcinfo(comp_code, nume_comp, idummy, idummy2)
         call lcdiscard(comp_code)

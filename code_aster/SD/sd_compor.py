@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -144,44 +144,50 @@ class sd_compor(AsBase):
 
     def multifibres(self, cpri, checker):
     #------------------------------------
-        nbgmax = cpri[2]
-        cprk = self.CPRK.get_stripped()
-
-        # vérif existence et longueur
-        assert len(cpri) == 3, cpri
-        assert len(cprk) == 6 * nbgmax + 1, (cpri, cprk)
-        assert not self.CPRR.get()
-
-        # vérif CPRI :
-        #-------------
+        # Cf compor_multifibre_module
+        MULTI_FIBER_SIZEK = 7
+        MULTI_FIBER_SIZEI = 3
+        # vérif CPRI
         assert cpri[1] > 0, cpri
         assert cpri[2] > 0, cpri
-
-        # vérif CPRK :
-        #-------------
-        mater = cprk[6 * nbgmax]
+        nbgmax = cpri[2]
+        # vérif CPRK existence et longueur
+        cprk   = self.CPRK.get_stripped()
+        assert len(cpri) == MULTI_FIBER_SIZEI, cpri
+        assert len(cprk) == MULTI_FIBER_SIZEK*nbgmax + 1, cprk
+        # vérif si CPRR existe
+        assert not self.CPRR.get()
+        #
+        # vérif CPRK slots
+        # Matériau pour la torsion (le dernier)
+        mater = cprk[MULTI_FIBER_SIZEK*nbgmax]
         assert mater != '', cprk
         sd2 = sd_mater(mater)
         sd2.check(checker)
+        #
         for k in range(nbgmax):
-            grfib1 = cprk[6 * k + 0]
+            indx    = MULTI_FIBER_SIZEK*k-1
+            grfib1  = cprk[indx + 1]
             assert grfib1 != '', cprk
-            mater1 = cprk[6 * k + 1]
+            mater1  = cprk[indx + 2]
             assert mater1 != '', cprk
-            loifib1 = cprk[6 * k + 2]
-            algo1d = cprk[6 * k + 3]
-            deform = cprk[6 * k + 4]
+            loifib1 = cprk[indx + 3]
+            algo1d  = cprk[indx + 4]
+            deform  = cprk[indx + 5]
             if mater1 != 'VIDE':
-                nbfib = int(cprk[6 * k + 5])
-                sd2 = sd_mater(mater1)
+                nbfib = int(cprk[indx + 6])
+                sd2   = sd_mater(mater1)
                 sd2.check(checker)
                 assert loifib1 != '', cprk
                 assert algo1d in ('ANALYTIQUE', 'DEBORST'), cprk
                 assert deform == 'VIDE', cprk
                 assert nbfib > 0, cprk
+                # Au moins une VARI
+                nbvari = int(cprk[indx + 7])
+                assert nbvari >= 1, cprk
             else:
-                nbfib = cprk[6 * k + 5]
+                nbfib = cprk[indx + 6]
                 assert loifib1 == '', cprk
-                assert algo1d == '', cprk
-                assert deform == '', cprk
-                assert nbfib == '', cprk
+                assert algo1d  == '', cprk
+                assert deform  == '', cprk
+                assert nbfib   == '', cprk

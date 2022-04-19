@@ -179,7 +179,7 @@ character(len=16) :: option, nomte
     mult_comp = zk16(icompo-1+MULTCOMP)
     rigi_geom = zk16(icompo-1+RIGI_GEOM)
     type_comp = zk16(icompo-1+INCRELAS)
-    read (zk16(icompo-1+NVAR),'(I16)') nbvalc
+    read(zk16(icompo-1+NVAR),'(I16)') nbvalc
 !
 ! - Select objects to construct from option name
     call behaviourOption(option, zk16(icompo),&
@@ -193,24 +193,21 @@ character(len=16) :: option, nomte
     endif
 !
 !   verification que c'est bien des multifibres
-!
-
     call jeexin(mult_comp, iret)
     if (iret .eq. 0) then
         call utmess('F', 'POUTRE0_14', sk=nomte)
     endif
-!   Recuperation de la SD_COMPOR ou le comportement des groupes de fibres est stocke
-!   pour chaque groupe : (nom, mater, loi, algo1d, deformation nbfig) dans
-!   l'ordre croissant des numeros de groupes
+!
+!   Récupération de la SD_COMPOR ou le comportement des groupes de fibres est stocké
+!   pour chaque groupe : (nom, mater, loi, ... ) dans l'ordre croissant des numéros de groupes.
+!       Cf : dc_mutltifibre
     call jeveuo(mult_comp, 'L', isdcom)
 !
-!   deformations anelastiques
-!
+!   déformations anélastiques
     defam(:) = 0.0d0
     defap(:) = 0.0d0
 !
 !  Paramètres en sortie
-!
     if (lMatr) then
         call jevech('PMATUUR', 'E', imat)
     endif

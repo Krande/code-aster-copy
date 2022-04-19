@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,39 +18,48 @@
 
 subroutine pmfmats(icdmat, nomats)
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------------
+!  Retourne le nom du materiau "section" (MATER_SEC) de l'élement PMF courant
+!  Si l'élément n'est pas PMF, retourne : ' '
 !
-!  Retourne le nom du materiau "section" (MATER_SEC) de l'element PMF courant
-!  Si l'element n'est pas PMF, retourne : ' '
-!
-! ----------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !   in
 !       icdmat  : materiau code (zi(imate))
 !   out
 !       nomats     : nom du materiau "section"
-! ----------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+use compor_multifibre_module
 !
     implicit none
 #include "jeveux.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lteatt.h"
 !
+! --------------------------------------------------------------------------------------------------
+!
     integer, intent(in) :: icdmat
     character(len=*), intent(out) :: nomats
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: icompo, isdcom, nbgfmx
     integer, pointer :: cpri(:) => null()
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
     if (.not.lteatt('TYPMOD2','PMF')) then
         nomats=' '
     else
         call jevech('PCOMPOR', 'L', icompo)
-        call jeveuo(zk16(icompo-1+7), 'L', isdcom)
-
-        call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
-        nbgfmx=cpri(3)
-        nomats=zk24(isdcom-1+nbgfmx*6+1)(1:8)
+        call jeveuo(zk16(icompo-1+MULTCOMP), 'L', isdcom)
+        call jeveuo(zk16(icompo-1+MULTCOMP)(1:8)//'.CPRI', 'L', vi=cpri)
+        ! Nombre de groupe de fibre
+        nbgfmx=cpri(MULTI_FIBER_NBGRFIBR)
+        ! Le matériau de torsion c'est le dernier
+        nomats=zk24(isdcom-1+nbgfmx*MULTI_FIBER_SIZEK+1)(1:8)
     endif
 
 end subroutine

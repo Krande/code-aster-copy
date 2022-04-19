@@ -1,0 +1,40 @@
+TITRE
+Maillage POUTRE
+FINSF
+%
+COOR_3D
+ N1     0.00    0.00    0.00
+ N2     0.50    0.00    0.00
+ N3     1.00    0.00    0.00
+FINSF
+%
+SEG2
+  S12      N1       N2
+  S23      N2       N3
+%
+FINSF
+GROUP_MA
+ TOUT
+ S12  S23
+FINSF
+%
+GROUP_MA
+ GRS12
+ S12
+FINSF
+%
+GROUP_MA
+ GRS23
+ S23
+FINSF
+%
+GROUP_NO
+ A
+ N1
+FINSF
+%
+GROUP_NO
+ B
+ N3
+FINSF
+FIN

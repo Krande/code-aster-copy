@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmcomp(BEHinteg,&
-                      fami, kpg, ksp, ndim, typmod,&
-                      imate, compor, carcri, instam, instap,&
-                      neps, epsm, deps, nsig, sigm,&
-                      vim, option, angmas, &
-                      sigp, vip, ndsde, dsidep, &
-                      codret, mult_comp_, l_epsi_varc_)
+    subroutine nmcomp(BEHinteg, &
+                      fami,  kpg,    ksp,    ndim,       typmod,       &
+                      imate, compor, carcri, instam,     instap,       &
+                      neps,  epsm,   deps,   nsig,       sigm,         &
+                      vim,   option, angmas, sigp,       vip,          &
+                      ndsde, dsidep, codret, mult_comp_, l_epsi_varc_, &
+                      materi_ )
+!
         use Behaviour_type
+!
         type(Behaviour_Integ) :: BEHinteg
         character(len=*) :: fami
         integer :: kpg
@@ -51,6 +53,7 @@ interface
         real(kind=8) :: dsidep(*)
         integer :: codret
         character(len=16), optional, intent(in) :: mult_comp_
-        aster_logical, optional, intent(in) :: l_epsi_varc_
+        aster_logical, optional, intent(in)     :: l_epsi_varc_
+        character(len=8), optional, intent(in)  :: materi_
     end subroutine nmcomp
 end interface

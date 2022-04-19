@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine redece(BEHinteg,&
-                      fami, kpg, ksp, ndim, typmod, l_epsi_varc,&
-                      imate, compor, mult_comp, carcri, instam, instap,&
-                      neps, epsdt, depst, nsig, sigd,&
-                      vind, option, angmas, cp, numlc, &
-                      sigf, vinf, ndsde, dsde, codret)
+    subroutine redece(BEHinteg, &
+                      fami,        kpg,    ksp,    ndim,   typmod,    &
+                      l_epsi_varc, imate,  materi, compor, mult_comp, &
+                      carcri,      instam, instap, neps,   epsdt,     &
+                      depst,       nsig,   sigd,   vind,   option,    &
+                      angmas,      cp,     numlc,  sigf,   vinf,      &
+                      ndsde,       dsde,   codret)
         use Behaviour_type
         type(Behaviour_Integ) :: BEHinteg
         aster_logical, intent(in) :: l_epsi_varc
@@ -36,7 +37,8 @@ interface
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imate
-        character(len=16) :: compor(*)
+        character(len=8),  intent(in) :: materi
+        character(len=16)             :: compor(*)
         character(len=16), intent(in) :: mult_comp
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam

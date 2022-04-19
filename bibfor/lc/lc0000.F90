@@ -17,14 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1501,W1504,W1306
 !
-subroutine lc0000(BEHinteg,&
-                  fami, kpg, ksp, ndim, typmod, l_epsi_varc,&
-                  imate, compor, mult_comp, carcri,&
-                  instam, instap,&
-                  neps, epsm, deps, nsig, sigm_all,&
-                  vim, option, angmas, cp, numlc, &
-                  sigp, vip, ndsde, dsidep, icomp,&
-                  nvi_all, codret)
+subroutine lc0000(BEHinteg, &
+                  fami,        kpg,    ksp,      ndim,    typmod,    &
+                  l_epsi_varc, imate,  materi,   compor,  mult_comp, &
+                  carcri,      instam, instap,   neps,    epsm,      &
+                  deps,        nsig,   sigm_all, vim,     option,    &
+                  angmas,      cp,     numlc,    sigp,    vip,       &
+                  ndsde,       dsidep, icomp,    nvi_all, codret)
 !
 use calcul_module, only : calcul_status
 use Behaviour_type
@@ -168,6 +167,7 @@ real(kind=8) :: sigm_all(nsig), sigp(nsig)
 real(kind=8) :: vim(nvi_all), vip(nvi_all)
 real(kind=8) :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde),merge(neps,6,nsig*neps.eq.ndsde))
 character(len=16) :: compor(*), option
+character(len=8),  intent(in) :: materi
 character(len=16), intent(in) :: mult_comp
 character(len=8) :: typmod(*)
 character(len=*) :: fami
@@ -470,11 +470,11 @@ integer :: codret
                     sigp, vip, typmod, icomp,&
                     nvi, numlc, dsidep, codret)
     case (26)
-        call lc0026(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc0026(fami,   kpg,    ksp,    ndim,   imate,  &
+                    compor, carcri, instam, instap, epsm,   &
+                    deps,   sigm,   vim,    option, angmas, &
+                    sigp,   vip,    typmod, icomp,  materi, &
+                    nvi,    dsidep, codret)
     case (27)
         call lc0027(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -602,7 +602,7 @@ integer :: codret
         call lc0060(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
+                    sigp, vip, typmod, icomp, &
                     nvi, dsidep, codret)
     case (61)
         call lc0061(fami, kpg, ksp, ndim, imate,&

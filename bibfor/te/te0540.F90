@@ -44,7 +44,6 @@ character(len=16) :: option, nomte
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jeimpo.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lonele.h"
@@ -183,7 +182,7 @@ character(len=16) :: option, nomte
     defo_comp = zk16(icompo-1+DEFO)
     mult_comp = zk16(icompo-1+MULTCOMP)
     type_comp = zk16(icompo-1+INCRELAS)
-    read (zk16(icompo-1+NVAR),'(I16)') nbvalc
+    read(zk16(icompo-1+NVAR),'(I16)') nbvalc
 !
 ! - Select objects to construct from option name
     call behaviourOption(option, zk16(icompo),&
@@ -202,7 +201,8 @@ character(len=16) :: option, nomte
 !   pour chaque groupe : (nom, mater, loi, algo1d, deformation nbfig) dans
 !   l'ordre croissant des numeros de groupes
     call jeveuo(mult_comp, 'L', isdcom)
-    call jeimpo(6,mult_comp,'COMPOCATA')
+    ! Pour débug
+    !   call jeimpo(6,mult_comp,'COMPOCATA')
 !
 !   deformations anelastiques
 !
@@ -345,7 +345,7 @@ character(len=16) :: option, nomte
             hv = hv+wi*gg*gg*matsct(1)
             he = he+wi*gg*vs(1)
 !
-        end do
+        enddo
 !
         if (abs(hv) .le. r8prem()) then
             call utmess('F', 'POUTRE0_15')

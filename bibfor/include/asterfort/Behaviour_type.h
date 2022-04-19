@@ -129,20 +129,58 @@
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Size
-!
+! Size of <CARCRI>
+
 #define CARCRI_SIZE    26
+!
+! Slots
+!
+#define ITER_INTE_MAXI           1
+#define TYPE_MATR_T              2
+#define RESI_INTE_RELA           3
+#define PARM_THETA               4
+#define ITER_INTE_PAS            5
+#define ALGO_INTE_R              6
+#define VALE_PERT_RELA           7
+#define RESI_DEBORST_MAX         8
+#define ITER_DEBORST_MAX         9
+#define RESI_RADI_RELA          10
+#define IPOSTITER               13
+#define CARCRI_MATRSYME         17
+#define IPOSTINCR               21
 !
 ! Slots: for external state variables
 !
-#define IVARIEXT1      11
-#define IVARIEXT2      23
+#define IVARIEXT1               11
+#define IVARIEXT2               23
 !
 ! Slots: for HHO parameters
 !
-#define HHO_COEF       24
-#define HHO_STAB       25
-#define HHO_CALC       26
+#define HHO_COEF                24
+#define HHO_STAB                25
+#define HHO_CALC                26
+!
+!
+! Slots: for THM parameters
+!
+#define PARM_ALPHA_THM          18
+#define PARM_THETA_THM          12
+!
+! Slots: For external solvers (UMAT/MFRONT)
+!
+!       Strain model for (MFRONT only)
+#define EXTE_STRAIN             22
+!       Pointer to function (UMAT/MFRONT)
+#define EXTE_PTR                16
+!       Number and name of external state variables (MFRONT only)
+#define EXTE_ESVA_NB            14
+#define EXTE_ESVA_PTR_NAME      15
+!
+!       Number and name of material properties (MFRONT only)
+#define EXTE_PROP_NB            20
+#define EXTE_PROP_PTR_NAME      19
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! type for HHO parameters
 !
@@ -191,45 +229,6 @@
 #define TIME      31
 #define TEMPREFE  32
 !
-! Slots: for THM parameters
-!
-#define PARM_ALPHA_THM 18
-#define PARM_THETA_THM 12
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Slots in field <CARCRI>
-!
-! --------------------------------------------------------------------------------------------------
-!
-#define CARCRI_MATRSYME          17
-!
-! --------------------------------------------------------------------------------------------------
-!
-! For external solvers (UMAT/MFRONT)
-!
-! Slots in field <CARCRI>
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Strain model for (MFRONT only)
-!
-#define EXTE_STRAIN              22
-!
-! Pointer to function (UMAT/MFRONT)
-!
-#define EXTE_PTR                 16
-!
-! Number and name of external state variables (MFRONT only)
-!
-#define EXTE_ESVA_NB             14
-#define EXTE_ESVA_PTR_NAME       15
-!
-! Number and name of material properties (MFRONT only)
-!
-#define EXTE_PROP_NB             20
-#define EXTE_PROP_PTR_NAME       19
-!
 ! --------------------------------------------------------------------------------------------------
 !
 ! For external solvers (UMAT/MFRONT)
@@ -237,7 +236,6 @@
 ! Constants
 !
 ! --------------------------------------------------------------------------------------------------
-!
 !
 ! Type of strain model (MFRONT only)
 !

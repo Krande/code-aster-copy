@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmcpl1(compor, typmod, option, vimp, deps,&
-                  optio2, cp, nvv)
-    implicit none
+subroutine nmcpl1(compor, typmod, option, vimp, deps, &
+                  optio2, cp,     nvv)
+!
+implicit none
+!
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !     CONTRAINTES PLANES PAR LA METHODE DE BORST / CONDENSATION STATIQUE
 !     POUR LES COMPORTEMENTS QUI N'INTEGRENT PAS LES CONTRAINTES PLANES
 !     ATTENTION : POUR BIEN CONVERGER, IL FAUT REACTUALISER LA MATRICE
@@ -41,68 +45,71 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
 ! OUT OPTIO2  : OPTION MODIFIEE POUR TOUJOURS CALCULER K TANGENT
 !     CP      : LOGIQUE POUR NMCPL2
 ! OUT NVV     : NOMBRE DE VRAIES VARIABLES INTERNES
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: cp, nvv
+    real(kind=8) :: vimp(*), deps(*)
     character(len=8) :: typmod(*)
-    character(len=16) :: option, optio2
-    character(len=16) :: compor(*)
-    real(kind=8) :: vimp(*), depzz, deps(*), rac2, depy, depz, depx
-    integer :: cp
-    integer :: nvv, nbvari
+    character(len=16) :: option, optio2, compor(*)
 !
-    cp = 0
-    nvv=0
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8) ::  depzz, rac2, depy, depz, depx
+    integer :: nbvari
+!
+! --------------------------------------------------------------------------------------------------
+!
+    cp = 0; nvv = 0
     rac2 = sqrt(2.d0)
 !
-    if (compor(1)(1:4) .eq. 'SANS') goto 999
+    if (compor(RELA_NAME)(1:4) .eq. 'SANS') goto 999
 !
     if (typmod(1) .eq. 'C_PLAN') then
-        if (compor(5)(1:7) .eq. 'DEBORST') then
-            if (compor(3) .eq. 'SIMO_MIEHE') then
+        if (compor(PLANESTRESS)(1:7) .eq. 'DEBORST') then
+            if (compor(DEFO) .eq. 'SIMO_MIEHE') then
                 ASSERT(.false.)
             endif
-            read (compor(2),'(I16)') nbvari
-            nvv=nbvari-4
-            write (compor(2),'(I16)') nvv
-            cp = 2
+            read(compor(NVAR),'(I16)') nbvari
+            nvv = nbvari-4
+            write(compor(NVAR),'(I16)') nvv
+            cp  = 2
         endif
     endif
 !
     if (typmod(1) .eq. 'COMP1D') then
-        if (compor(3) .eq. 'SIMO_MIEHE') then
+        if (compor(DEFO) .eq. 'SIMO_MIEHE') then
             call utmess('F', 'ALGORITH7_10')
         endif
-        read (compor(2),'(I16)') nbvari
+        read(compor(NVAR),'(I16)') nbvari
         nvv=nbvari-4
-        write (compor(2),'(I16)') nvv
+        write(compor(NVAR),'(I16)') nvv
         cp = 1
     endif
 !
     if (cp .eq. 2) then
-        typmod(1)='AXIS'
-        optio2=option
+        typmod(1) = 'AXIS'
+        optio2    = option
         if (optio2 .eq. 'RAPH_MECA') then
-            option='FULL_MECA'
+            option = 'FULL_MECA'
         endif
         if (option .eq. 'FULL_MECA') then
-            depzz=vimp(nvv+1) -vimp(nvv+2)*deps(1)-vimp(nvv+3)*deps(2)&
-            -vimp(nvv+4)*deps(4)/rac2
-            deps(3)=depzz
+            depzz   = vimp(nvv+1)-vimp(nvv+2)*deps(1)-vimp(nvv+3)*deps(2)-vimp(nvv+4)*deps(4)/rac2
+            deps(3) = depzz
         endif
     endif
 !
     if (cp .eq. 1) then
-        typmod(1)='AXIS'
-        optio2=option
+        typmod(1) = 'AXIS'
+        optio2    = option
         if (optio2 .eq. 'RAPH_MECA') then
-            option='FULL_MECA'
+            option = 'FULL_MECA'
         endif
         if (option .eq. 'FULL_MECA') then
-            depx=deps(1)
-            depy=vimp(nvv+1)+vimp(nvv+2)*depx
-            depz=vimp(nvv+3)+vimp(nvv+4)*depx
-            deps(2)=depy
-            deps(3)=depz
+            depx    = deps(1)
+            depy    = vimp(nvv+1)+vimp(nvv+2)*depx
+            depz    = vimp(nvv+3)+vimp(nvv+4)*depx
+            deps(2) = depy
+            deps(3) = depz
         endif
     endif
 999 continue

@@ -16,39 +16,38 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine pmfcom(kpg, debsp, option, compor, crit,&
-                  nf, instam, instap, icdmat, nbvalc,&
-                  defam, defap, varim, varimp, contm,&
-                  defm, ddefp, epsm, modf, sigf,&
+subroutine pmfcom(kpg,   debsp,  option, compor, crit,   &
+                  nf,    instam, instap, icdmat, nbvalc, &
+                  defam, defap,  varim,  varimp, contm,  &
+                  defm,  ddefp,  epsm,   modf,   sigf,   &
                   varip, codret)
-!
 !
 ! aslint: disable=W1504
 ! --------------------------------------------------------------------------------------------------
 !
-!        COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRE
+!               COMPORTEMENT DES ÉLÉMENTS DE POUTRE MULTI-FIBRES
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   IN
-!       kpg     : numero de point de gauss
-!       debsp   : numero de sous-point de la premiere fibre du groupe
-!       option  :
-!       compor  : nom du comportement
-!       crit    : criteres de convergence locaux
+!       kpg     : numéro de point de gauss
+!       debsp   : numéro de sous-point de la première fibre du groupe
+!       option  : option de calcul
+!       compor  : information sur le comportement du groupe de fibres
+!       crit    : critères de convergence locaux
 !       nf      : nombre de fibres du groupe
-!       instam  : instant du calcul precedent
+!       instam  : instant du calcul précédent
 !       instap  : instant du calcul
-!       icdmat  : code materiau
+!       icdmat  : code matériau
 !       nbvalc  : nombre de variable internes
-!       defam   : deformations anelastiques a l'instant precedent
-!       defap   : deformations anelastiques a l'instant du calcul
+!       defam   : déformations anélastiques a l'instant précédent
+!       defap   : déformations anélastiques a l'instant du calcul
 !       varim   : variables internes moins
-!       varimp  : variables internes iteration precedente (pour deborst)
+!       varimp  : variables internes itération précédente (pour DE BORST)
 !       contm   : contraintes moins par fibre
-!       defm    : deformation  a l'instant du calcul precedent
-!       ddefp   : increment de deformation
-!       epsm    : deformation a l'instant precedent
+!       defm    : déformation  a l'instant du calcul precedent
+!       ddefp   : incrément de déformation
+!       epsm    : déformation a l'instant précédent
 !
 !   OUT
 !       modf    : module tangent des fibres
@@ -58,9 +57,13 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
+use compor_multifibre_module
+!
     implicit none
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/comp1d.h"
+#include "asterfort/compor_3d_fibre.h"
 #include "asterfort/mazu1d.h"
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dco.h"
@@ -68,7 +71,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 #include "asterfort/nm1dpm.h"
 #include "asterfort/nm1vil.h"
 #include "asterfort/paeldt.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/rcexistvarc.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
@@ -77,6 +79,11 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 #include "asterfort/verift.h"
 #include "asterfort/vmci1d.h"
 #include "blas/dcopy.h"
+!
+#include "jeveux.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/jevech.h"
+integer :: icompo
 !
     integer :: nf, icdmat, nbvalc, kpg, debsp, codret
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
@@ -93,7 +100,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
     integer :: icodre(nbval)
     real(kind=8) :: valres(nbval)
 
-    integer :: nbvari, codrep, ksp, i, ivari, iret
+    integer :: nbvari, codrep, ksp, fib, ivari, iret, nbvari_grfibre
     real(kind=8) :: ep, em, depsth, tref, tempm, tempp, sigx, epsx, depsx, tempplus, tempmax
     real(kind=8) :: cstpm(13), angmas(3), depsm, nu, bendo, kdess, valsech, valsechref, valhydr
     character(len=4) :: fami
@@ -109,41 +116,43 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 ! --------------------------------------------------------------------------------------------------
     codret = 0
     codrep = 0
-    fami = 'RIGI'
-    materi = compor(1)(1:8)
-    rela_comp  = compor(2)(1:16)
-    algo = compor(3)(1:16)
-    sigf = 0.d0
-
+    fami   = 'RIGI'
+    materi      = compor(MULTI_FIBER_MATER)(1:8)
+    rela_comp   = compor(MULTI_FIBER_RELA)(1:16)
+    algo        = compor(MULTI_FIBER_ALGO)(1:16)
+    read(compor(MULTI_FIBER_NBVARI),'(I24)') nbvari_grfibre
+!   Vérification du nombre de fibre
+    ASSERT( nbvari_grfibre .le. nbvalc )
+!   Initialisation
+    sigf(:) = 0.d0
 !
-!   TEMP ou pas ?
+!   Température ou pas ?
     istemp = rcexistvarc('TEMP')
 !
     if (.not.istemp) then
         nomres(1) = 'E'
         nomres(2) = 'NU'
-        call rcvalb(fami, 1, 1, '+', icdmat, materi, 'ELAS', 0, '', [0.d0],&
-                    2, nomres, valres, icodre, 1)
+        call rcvalb(fami, 1, 1, '+', icdmat, materi, 'ELAS', &
+                    0, '', [0.d0], 2, nomres, valres, icodre, 1)
         ep = valres(1)
         nu = valres(2)
         em=ep
         depsth=0.d0
     endif
-!   angle du MOT_CLEF massif (AFFE_CARA_ELEM) initialise à 0.D0 (on ne s'en sert pas)
-    call r8inir(3, 0.d0, angmas, 1)
-
-
+!   Angle du MOT_CLEF massif (AFFE_CARA_ELEM) initialise à 0.0 (on ne s'en sert pas)
+    angmas(:) = 0.0
 !
 ! --------------------------------------------------------------------------------------------------
     if (rela_comp .eq. 'ELAS') then
         nomres(1) = 'E'
-        do i = 1, nf
+!       Boucle sur chaque fibre
+        do fib = 1, nf
             if (istemp) then
-                ksp=debsp-1+i
+                ksp=debsp-1+fib
                 call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
-            modf(i) = ep
-            sigf(i) = ep*(contm(i)/em + ddefp(i) - depsth)
+            modf(fib) = ep
+            sigf(fib) = ep*(contm(fib)/em + ddefp(fib) - depsth)
         enddo
 !
 ! --------------------------------------------------------------------------------------------------
@@ -153,8 +162,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         bendo = 0.0
         kdess = 0.0
 !       Valeur des champs : par défaut on considère qu'ils sont nuls
-        valhydr = 0.0
-        valsech = 0.0
+        valhydr    = 0.0
+        valsech    = 0.0
         valsechref = 0.0
 !
         ishydr = rcexistvarc('HYDR')
@@ -181,9 +190,9 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         endif
 !
 !       On récupère les paramètres matériau si pas de variable de commande ==> ils sont constants
-        call r8inir(nbval, 0.d0, valres, 1)
-        call rcvalb(fami, 1, 1, '+', icdmat, materi, 'MAZARS', 0, ' ', [0.0d0],&
-                    8, mazars, valres, icodre, 1)
+        valres(:) = 0.0
+        call rcvalb(fami, 1, 1, '+', icdmat, materi, 'MAZARS', &
+                    0, ' ', [0.0d0], 8, mazars, valres, icodre, 1)
         if (icodre(7)+icodre(8) .ne. 0) then
             valkm(1)='MAZARS_GC'
             valkm(2)=mazars(7)
@@ -192,10 +201,10 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         endif
 !       On mémorise varip(température) que si "resi"
         resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
-!       boucle comportement sur chaque fibre
-        do i = 1, nf
-            ivari = nbvalc*(i-1) + 1
-            ksp=debsp-1+i
+!       Boucle sur chaque fibre
+        do fib = 1, nf
+            ivari = nbvalc*(fib-1) + 1
+            ksp=debsp-1+fib
             if (istemp) then
                 call verift(fami, kpg, ksp, '+', icdmat, materi, epsth_=depsth, temp_curr_=tempplus)
                 ! Température maximale
@@ -222,7 +231,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                 call rcvarc('F', 'SECH', '+',   fami, kpg, ksp, valsech, iret)
                 call rcvarc('F', 'SECH', 'REF', fami, kpg, ksp, valsechref, iret)
             endif
-            epsm = defm(i) - depsth - kdess*(valsech-valsechref) + bendo*valhydr
+            epsm = defm(fib) - depsth - kdess*(valsech-valsechref) + bendo*valhydr
 !           On récupère les paramètres matériau s'il y a une variable de commande.
 !           Elles sont ELGA et peuvent donc être différentes d'un sous point à l'autre.
             if ( istemp .or. ishydr .or. issech ) then
@@ -236,166 +245,165 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             endif
 !           Ajout de NU dans VALRES
             valres(9) = nu
-            call mazu1d(ep, valres, contm(i), varim(ivari), epsm, &
-                        ddefp(i), modf(i), sigf(i), varip(ivari), option)
+            call mazu1d(ep,         valres,    contm(fib), varim(ivari), epsm, &
+                        ddefp(fib), modf(fib), sigf(fib),  varip(ivari), option)
         enddo
 !
 ! --------------------------------------------------------------------------------------------------
     else if (rela_comp.eq.'VMIS_CINE_GC') then
-!       boucle sur chaque fibre
-        do i = 1, nf
-            ivari = nbvalc*(i-1) + 1
-            ksp=debsp-1+i
+!       Boucle sur chaque fibre
+        do fib = 1, nf
+            ivari = nbvalc*(fib-1) + 1
+            ksp=debsp-1+fib
             if (istemp) then
                 call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
-            depsm = ddefp(i)-depsth
-            call vmci1d('RIGI', kpg, ksp, icdmat, em,&
-                        ep, contm(i), depsm, varim(ivari), option,&
-                        materi, sigf(i), varip(ivari), modf(i))
+            depsm = ddefp(fib)-depsth
+            call vmci1d('RIGI', kpg,        ksp,          icdmat,       em,     &
+                        ep,     contm(fib), depsm,        varim(ivari), option, &
+                        materi, sigf(fib),  varip(ivari), modf(fib))
         enddo
 !
 ! --------------------------------------------------------------------------------------------------
     else if (rela_comp.eq.'PINTO_MENEGOTTO') then
 !       on récupère les paramètres matériau
-        call r8inir(nbval, 0.d0, valres, 1)
-        call rcvalb(fami, 1, 1, '-', icdmat,&
-                    materi, 'PINTO_MENEGOTTO', 0, ' ', [0.0d0],&
-                    12, nompim, valres, icodre, 0)
+        valres(:) = 0.0
+        call rcvalb(fami, 1, 1, '-', icdmat, materi, 'PINTO_MENEGOTTO', &
+                    0, ' ', [0.0d0], 12, nompim, valres, icodre, 0)
         if (icodre(7) .ne. 0) valres(7) = -1.0d0
         cstpm(1) = ep
-        do i = 1, 12
-            cstpm(i+1) = valres(i)
+        do fib = 1, 12
+            cstpm(fib+1) = valres(fib)
         enddo
-        do i = 1, nf
-            ivari = nbvalc*(i-1) + 1
+!       Boucle sur chaque fibre
+        do fib = 1, nf
+            ivari = nbvalc*(fib-1) + 1
             if (istemp) then
-                ksp=debsp-1+i
+                ksp=debsp-1+fib
                 call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
                 cstpm(1) = ep
             endif
-            depsm = ddefp(i)-depsth
-            call nm1dpm('RIGI', kpg, i, icdmat, option,&
-                        nbvalc, 13, cstpm, contm(i), varim(ivari),&
-                        depsm, varip(ivari), sigf(i), modf(i))
+            depsm = ddefp(fib)-depsth
+            call nm1dpm('RIGI', kpg,          fib,       icdmat,     option,       &
+                        nbvalc, 13,           cstpm,     contm(fib), varim(ivari), &
+                        depsm,  varip(ivari), sigf(fib), modf(fib))
         enddo
 !
 ! --------------------------------------------------------------------------------------------------
     else if (rela_comp.eq.'VMIS_CINE_LINE') then
-        do i = 1, nf
-            ivari = nbvalc* (i-1) + 1
+!       Boucle sur chaque fibre
+        do fib = 1, nf
+            ivari = nbvalc*(fib-1) + 1
             if (istemp) then
-                ksp=debsp-1+i
+                ksp=debsp-1+fib
                 call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
-            depsm = ddefp(i)-depsth
-            call nm1dci('RIGI', kpg, i, icdmat, em,&
-                        ep, contm(i), depsm, varim(ivari), option,&
-                        materi, sigf(i), varip(ivari), modf(i))
+            depsm = ddefp(fib)-depsth
+            call nm1dci('RIGI', kpg,        fib,          icdmat,       em,     &
+                        ep,     contm(fib), depsm,        varim(ivari), option, &
+                        materi, sigf(fib),  varip(ivari), modf(fib))
         enddo
 !
 ! --------------------------------------------------------------------------------------------------
-    else if ((rela_comp.eq.'VMIS_ISOT_LINE').or.(rela_comp.eq.'VMIS_ISOT_TRAC')) then
-        do i = 1, nf
-            ivari = nbvalc* (i-1) + 1
+    else if ( (rela_comp.eq.'VMIS_ISOT_LINE') .or. &
+              (rela_comp.eq.'VMIS_ISOT_TRAC') ) then
+!       Boucle sur chaque fibre
+        do fib = 1, nf
+            ivari = nbvalc*(fib-1) + 1
             if (istemp) then
-                ksp=debsp-1+i
+                ksp=debsp-1+fib
                 call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth)
             endif
-            depsm = ddefp(i)-depsth
-            call nm1dis('RIGI', kpg, i, icdmat, em,&
-                        ep, contm(i), depsm, varim(ivari), option,&
-                        rela_comp, materi, sigf(i), varip(ivari), modf(i))
+            depsm = ddefp(fib)-depsth
+            call nm1dis('RIGI',    kpg,        fib,       icdmat,       em,     &
+                        ep,        contm(fib), depsm,     varim(ivari), option, &
+                        rela_comp, materi,     sigf(fib), varip(ivari), modf(fib))
         enddo
 !
 ! --------------------------------------------------------------------------------------------------
     else if (rela_comp.eq.'CORR_ACIER') then
-        do i = 1, nf
-            ivari = nbvalc* (i-1) + 1
+!       Boucle sur chaque fibre
+        do fib = 1, nf
+            ivari = nbvalc*(fib-1) + 1
             if (istemp) then
-                ksp=debsp-1+i
+                ksp=debsp-1+fib
                 call paeldt(kpg, ksp, fami, '+', icdmat, materi, em, ep, nu, depsth)
             endif
-            depsm = ddefp(i)-depsth
-            call nm1dco('RIGI', kpg, i, option, icdmat,&
-                        materi, ep, contm(i), defm(i), depsm,&
-                        varim(ivari), sigf(i), varip(ivari), modf(i), crit,&
+            depsm = ddefp(fib)-depsth
+            call nm1dco('RIGI',       kpg,       fib,          option,    icdmat, &
+                        materi,       ep,        contm(fib),   defm(fib), depsm,  &
+                        varim(ivari), sigf(fib), varip(ivari), modf(fib), crit,   &
                         codret)
             if (codret .ne. 0) goto 999
         enddo
 !
 ! --------------------------------------------------------------------------------------------------
-    else if ((rela_comp.eq.'GRAN_IRRA_LOG').or.(rela_comp.eq.'VISC_IRRA_LOG')) then
-        if (algo(1:10) .eq. 'ANALYTIQUE') then
-            if (.not. istemp) then
-                call utmess('F', 'COMPOR5_40',sk=rela_comp)
-            endif
-            do i = 1, nf
-                ivari = nbvalc* (i-1) + 1
-                if (istemp) then
-                    ksp=debsp-1+i
-                    call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth,&
-                                tmoins=tempm, tplus=tempp, trefer=tref)
-                endif
-                depsm = ddefp(i)-depsth
-                call nm1vil('RIGI', kpg, i, icdmat, materi,&
-                            crit, instam, instap, tempm, tempp,&
-                            tref, depsm, contm(i), varim(ivari), option,&
-                            defam(1), defap(1), angmas, sigf(i), varip( ivari),&
-                            modf(i), codret, rela_comp, nbvalc)
-                if (codret .ne. 0) goto 999
-            enddo
-        else
-            if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9) .eq.'RAPH_MECA')) then
-                nbvari = nbvalc*nf
-                call dcopy(nbvari, varimp, 1, varip, 1)
-            endif
-            do i = 1, nf
-                ivari = nbvalc* (i-1) + 1
-                sigx = contm(i)
-                epsx = defm(i)
-                depsx = ddefp(i)
-!               attention, que pour 1 matériau par élément !!!!!
-                call comp1d('RIGI', kpg, i, option, sigx,&
-                            epsx, depsx, angmas, varim(ivari), varip(ivari),&
-                            sigf(i), modf(i), codrep)
-                if (codrep .ne. 0) then
-                    codret=codrep
-!                   code 3: on continue et on le renvoie à la fin. Autres codes: sortie immédiate
-                    if (codrep .ne. 3) goto 999
-                endif
-            enddo
+    else if ( (rela_comp.eq.'GRAN_IRRA_LOG') .or. &
+              (rela_comp.eq.'VISC_IRRA_LOG') ) then
+        ! C'est le seul algo disponible dans les catalogues de ces 2 comportements
+        if (algo(1:10).ne.'ANALYTIQUE') then
+            valkm(1) = rela_comp
+            valkm(2) = 'DEFI_COMPOR/MULTIFIBRE'
+            valkm(3) = algo(1:10)
+            call utmess('F', 'COMPOR5_81', nk=3, valk=valkm)
         endif
+!
+        if (.not. istemp) then
+            call utmess('F', 'COMPOR5_40',sk=rela_comp)
+        endif
+!       Boucle sur chaque fibre
+        do fib = 1, nf
+            ivari = nbvalc*(fib-1) + 1
+            if (istemp) then
+                ksp=debsp-1+fib
+                call paeldt(kpg, ksp, fami, 'T', icdmat, materi, em, ep, nu, depsth, &
+                            tmoins=tempm, tplus=tempp, trefer=tref)
+            endif
+            depsm = ddefp(fib)-depsth
+            call nm1vil('RIGI',    kpg,      fib,        icdmat,       materi,       &
+                        crit,      instam,   instap,     tempm,        tempp,        &
+                        tref,      depsm,    contm(fib), varim(ivari), option,       &
+                        defam(1),  defap(1), angmas,     sigf(fib),    varip(ivari), &
+                        modf(fib), codret,   rela_comp,  nbvalc)
+            if (codret .ne. 0) goto 999
+        enddo
 !
 ! --------------------------------------------------------------------------------------------------
     else if (rela_comp.eq.'BETON_GRANGER') then
-!       Appel à comp1d pour bénéficier des comportements AXIS: méthode de DEBORST
-!           La LDC doit retourner le module tangent
-        if ((algo(1:7).ne.'DEBORST') .and. (rela_comp(1:4).ne.'SANS')) then
+        ! Algo de type double 'DE BORST'
+        if (algo(1:7).ne.'DEBORST') then
             valkm(1) = rela_comp
             valkm(2) = 'DEFI_COMPOR/MULTIFIBRE'
-            call utmess('F', 'ALGORITH6_81', nk=2, valk=valkm)
-        else
-            if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9) .eq.'RAPH_MECA')) then
-                nbvari = nbvalc*nf
-                call dcopy(nbvari, varimp, 1, varip, 1)
-            endif
-            do i = 1, nf
-                ivari = nbvalc* (i-1) + 1
-                sigx = contm(i)
-                epsx = defm(i)
-                depsx = ddefp(i)
-!               attention, que pour 1 matériau par élément !!!!!
-                call comp1d('RIGI', kpg, i, option, sigx,&
-                            epsx, depsx, angmas, varim(ivari), varip(ivari),&
-                            sigf(i), modf(i), codrep)
-                if (codrep .ne. 0) then
-                    codret=codrep
-!                   code 3: on continue et on le renvoie à la fin. Autre codes: sortie immédiate
-                    if (codrep .ne. 3) goto 999
-                endif
-            enddo
+            valkm(3) = algo(1:7)
+            call utmess('F', 'COMPOR5_81', nk=3, valk=valkm)
         endif
+        ! La LDC doit retourner :
+        !   - sigf(fib)   : la contrainte sur la fibre
+        !   - modf(fib)   : le module tangent de la fibre
+        !   - varip(fib)  : les variables internes de la LdC sur la fibre
+        !   - codrep    : code retour
+        if ((option(1:9).eq.'FULL_MECA') .or. (option(1:9) .eq.'RAPH_MECA')) then
+            nbvari = nbvalc*nf
+            call dcopy(nbvari, varimp, 1, varip, 1)
+        endif
+        ! A faire en avant la boucle sur les fibres : elles ont toutes le même comportement
+        call jevech('PCOMPOR', 'L', icompo)
+!       Boucle sur chaque fibre
+        do fib = 1, nf
+            ivari = nbvalc*(fib-1) + 1
+            sigx  = contm(fib)
+            epsx  = defm(fib)
+            depsx = ddefp(fib)
+            call compor_3d_fibre('RIGI',       kpg,       fib,       option, sigx,         &
+                                 instam,       instap,    crit,      icdmat, materi,       &
+                                 zk16(icompo), epsx,      depsx,     angmas, varim(ivari), &
+                                 varip(ivari), sigf(fib), modf(fib), codrep)
+            if (codrep .ne. 0) then
+                codret=codrep
+                ! code 3 : on continue et on le renvoie à la fin. Autre codes: sortie immédiate
+                if (codrep .ne. 3) goto 999
+            endif
+        enddo
     else
         call utmess('F', 'ELEMENTS2_39', sk=rela_comp)
     endif

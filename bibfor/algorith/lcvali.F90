@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcvali(fami, kpg, ksp, imate, compor,&
-                  ndim, epsm, deps, instam, instap,&
-                  codret)
+subroutine lcvali(fami,   kpg,    ksp,  imate, materi, &
+                  compor, ndim,   epsm, deps,  instam, &
+                  instap, codret)
 !
     implicit none
 #include "asterfort/rcvalb.h"
@@ -32,6 +32,7 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
     integer :: ndim
     integer :: ndimsi
     character(len=*) :: fami
+    character(len=8) :: materi
     character(len=16) :: compor(*), nomres(4)
     real(kind=8) :: deps(6), epsm(6), eps(6), valres(4), epsmax, eps2, vepsm
     real(kind=8) :: veps(6)
@@ -42,22 +43,20 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
     iret2=0
     iret3=0
     ndimsi=2*ndim
-    if (compor(3) .eq. 'SIMO_MIEHE') goto 9999
+    if (compor(3) .eq. 'SIMO_MIEHE') goto 999
 !
     nomres(1)='EPSI_MAXI'
     nomres(2)='VEPS_MAXI'
     nomres(3)='TEMP_MINI'
     nomres(4)='TEMP_MAXI'
-    call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'VERI_BORNE', 0, ' ', [0.d0],&
-                4, nomres, valres, icodre, 0)
+    call rcvalb(fami, kpg, ksp, '+', imate, materi, 'VERI_BORNE', &
+                0, ' ', [0.d0], 4, nomres, valres, icodre, 0)
 !
 !     TRAITEMENT DE EPSI_MAXI
     if (icodre(1) .eq. 0) then
         epsmax=valres(1)
         call dcopy(ndimsi, epsm, 1, eps, 1)
-        call daxpy(ndimsi, 1.d0, deps, 1, eps,&
-                   1)
+        call daxpy(ndimsi, 1.d0, deps, 1, eps, 1)
         eps2=sqrt(ddot(ndimsi,eps,1,eps,1))
         if (eps2 .gt. epsmax) then
             iret1=4
@@ -78,8 +77,7 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
     if (icodre(3) .eq. 0) then
         tmin=valres(3)
         tmax=valres(4)
-        call rcvarc(' ', 'TEMP', '+', fami, kpg,&
-                    ksp, temp, iret)
+        call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, temp, iret)
         if (iret .eq. 0) then
             if ((temp.lt.tmin) .or. (temp.gt.tmax)) then
                 iret3=4
@@ -90,5 +88,5 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
     codret=max(iret1,iret2)
     codret=max(codret,iret3)
 !
-9999  continue
+999  continue
 end subroutine
