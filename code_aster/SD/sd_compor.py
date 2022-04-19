@@ -21,7 +21,7 @@ from . import *
 from .sd_mater import sd_mater
 
 # Remarque :
-#------------
+# ------------
 # la sd_compor est produite par la seule commande DEFI_COMPOR.
 # C'est pourquoi, on fera appel parfois pour la décrire au vocabulaire de cette
 # commande.
@@ -34,7 +34,7 @@ class sd_compor(AsBase):
     CPRR = Facultatif(AsVR())
 
     def check_tout(self, checker):
-    #-------------------------------
+        # -------------------------------
         cpri = self.CPRI.get()
         type = cpri[0]
         assert type in (1, 2, 3), CPRI
@@ -46,7 +46,7 @@ class sd_compor(AsBase):
             self.multifibres(cpri, checker)
 
     def monocristal(self, cpri, checker):
-    #------------------------------------
+        # ------------------------------------
         nboccm = cpri[4]
         nvi = cpri[2]
         if cpri[5] > 0:
@@ -60,10 +60,10 @@ class sd_compor(AsBase):
         # vérif existence et longueur
         assert len(cpri) == 13, cpri
         assert len(cprk) == 5 * nboccm + 1, (cpri, cprk)
-#        assert not self.CPRR.get()
+        #        assert not self.CPRR.get()
 
         # vérif CPRI :
-        #-------------
+        # -------------
         assert cpri[1] == 1, cpri
         assert cpri[2] == nvi, cpri
         assert cpri[3] >= 0, cpri
@@ -72,9 +72,9 @@ class sd_compor(AsBase):
         assert cpri[6] == nvi, cpri
 
         # vérif CPRK :
-        #-------------
+        # -------------
         elas = cprk[5 * nboccm]
-        assert elas in ('ELAS', 'ELAS_ORTH'), cprk
+        assert elas in ("ELAS", "ELAS_ORTH"), cprk
         for k in range(nboccm):
             famil = cprk[5 * k + 0]
             mater = cprk[5 * k + 1]
@@ -85,7 +85,7 @@ class sd_compor(AsBase):
             sd2.check(checker)
 
     def polycristal(self, cpri, checker):
-    #------------------------------------
+        # ------------------------------------
         nbphases = cpri[1]
         assert nbphases > 0, cpri
         lgcprk = cpri[6 + 3 * nbphases - 2]
@@ -94,13 +94,13 @@ class sd_compor(AsBase):
         cprr = self.CPRR.get()
 
         # vérif existence et longueur
-        #------------------------------
+        # ------------------------------
         assert len(cpri) == 7 + 3 * nbphases, (cpri, nbphases)
         assert len(cprr) >= 2 + 4 * nbphases, (cpri, cprr, nbphases)
         assert len(cprk) == lgcprk, (cpri, cprk)
 
         # vérif CPRI :
-        #-------------
+        # -------------
         nvitot = cpri[2]
         assert nvitot >= 0, cpri
         nbmono = cpri[3]
@@ -116,21 +116,21 @@ class sd_compor(AsBase):
             assert nvi1 >= 0, cpri
 
         # vérif CPRR :
-        #-------------
-        frac_tot = 0.
+        # -------------
+        frac_tot = 0.0
         for k in range(nbphases):
             frac = cprr[4 * k + 0]
-            assert frac >= 0. and frac <= 1., (cprr, k)
+            assert frac >= 0.0 and frac <= 1.0, (cprr, k)
             frac_tot = frac_tot + frac
             for dir in range(1, 4):
                 angl = cprr[4 * k + dir]
-                assert angl >= 0. and angl <= 360., (angl, dir)
+                assert angl >= 0.0 and angl <= 360.0, (angl, dir)
         assert frac_tot > 0.99 and frac_tot < 1.01
 
         # vérif CPRK :
-        #-------------
+        # -------------
         locali = cprk[0]
-        assert locali in ('BZ', 'BETA'), (locali, cprk)
+        assert locali in ("BZ", "BETA"), (locali, cprk)
         decal = 0
         for k in range(nbmono):
             mono1 = cprk[0 + decal + 1]
@@ -143,8 +143,8 @@ class sd_compor(AsBase):
             # mais il faut bien s'arreter ...
 
     def multifibres(self, cpri, checker):
-    #------------------------------------
-        # Cf compor_multifibre_module
+        # ------------------------------------
+        # Cf MultiFiber_type.h
         MULTI_FIBER_SIZEK = 7
         MULTI_FIBER_SIZEI = 3
         # vérif CPRI
@@ -152,42 +152,42 @@ class sd_compor(AsBase):
         assert cpri[2] > 0, cpri
         nbgmax = cpri[2]
         # vérif CPRK existence et longueur
-        cprk   = self.CPRK.get_stripped()
+        cprk = self.CPRK.get_stripped()
         assert len(cpri) == MULTI_FIBER_SIZEI, cpri
-        assert len(cprk) == MULTI_FIBER_SIZEK*nbgmax + 1, cprk
+        assert len(cprk) == MULTI_FIBER_SIZEK * nbgmax + 1, cprk
         # vérif si CPRR existe
         assert not self.CPRR.get()
         #
         # vérif CPRK slots
         # Matériau pour la torsion (le dernier)
-        mater = cprk[MULTI_FIBER_SIZEK*nbgmax]
-        assert mater != '', cprk
+        mater = cprk[MULTI_FIBER_SIZEK * nbgmax]
+        assert mater != "", cprk
         sd2 = sd_mater(mater)
         sd2.check(checker)
         #
         for k in range(nbgmax):
-            indx    = MULTI_FIBER_SIZEK*k-1
-            grfib1  = cprk[indx + 1]
-            assert grfib1 != '', cprk
-            mater1  = cprk[indx + 2]
-            assert mater1 != '', cprk
+            indx = MULTI_FIBER_SIZEK * k - 1
+            grfib1 = cprk[indx + 1]
+            assert grfib1 != "", cprk
+            mater1 = cprk[indx + 2]
+            assert mater1 != "", cprk
             loifib1 = cprk[indx + 3]
-            algo1d  = cprk[indx + 4]
-            deform  = cprk[indx + 5]
-            if mater1 != 'VIDE':
+            algo1d = cprk[indx + 4]
+            deform = cprk[indx + 5]
+            if mater1 != "VIDE":
                 nbfib = int(cprk[indx + 6])
-                sd2   = sd_mater(mater1)
+                sd2 = sd_mater(mater1)
                 sd2.check(checker)
-                assert loifib1 != '', cprk
-                assert algo1d in ('ANALYTIQUE', 'DEBORST'), cprk
-                assert deform == 'VIDE', cprk
+                assert loifib1 != "", cprk
+                assert algo1d in ("ANALYTIQUE", "DEBORST"), cprk
+                assert deform == "VIDE", cprk
                 assert nbfib > 0, cprk
                 # Au moins une VARI
                 nbvari = int(cprk[indx + 7])
                 assert nbvari >= 1, cprk
             else:
                 nbfib = cprk[indx + 6]
-                assert loifib1 == '', cprk
-                assert algo1d  == '', cprk
-                assert deform  == '', cprk
-                assert nbfib   == '', cprk
+                assert loifib1 == "", cprk
+                assert algo1d == "", cprk
+                assert deform == "", cprk
+                assert nbfib == "", cprk

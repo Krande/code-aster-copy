@@ -16,10 +16,6 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-!
-module compor_multifibre_module
-!
-!
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
@@ -36,26 +32,24 @@ module compor_multifibre_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    implicit none
 ! Si le nombre de slots change, il faut également mettre à jour
 !       "sd_compor.py"
 !
 !   Size for CPRK
-    integer, parameter :: MULTI_FIBER_SIZEK     =  7
+#define MULTI_FIBER_SIZEK    7
 !   Slots for CPRK
-    integer, parameter :: MULTI_FIBER_NAME      =  1
-    integer, parameter :: MULTI_FIBER_MATER     =  2
-    integer, parameter :: MULTI_FIBER_RELA      =  3
-    integer, parameter :: MULTI_FIBER_ALGO      =  4
-    integer, parameter :: MULTI_FIBER_DEFO      =  5
-    integer, parameter :: MULTI_FIBER_NBFI      =  6
-    integer, parameter :: MULTI_FIBER_NBVARI    =  7
+#define MULTI_FIBER_NAME     1
+#define MULTI_FIBER_MATER    2
+#define MULTI_FIBER_RELA     3
+#define MULTI_FIBER_ALGO     4
+#define MULTI_FIBER_DEFO     5
+#define MULTI_FIBER_NBFI     6
+#define MULTI_FIBER_NBVARI   7
 !
 !   Size for CPRI
-    integer, parameter :: MULTI_FIBER_SIZEI     =  3
+#define MULTI_FIBER_SIZEI    3
 !   Slots for CPRI
-    integer, parameter :: MULTI_FIBER_TYPE      =  1
-    integer, parameter :: MULTI_FIBER_NBVARMAX  =  2
-    integer, parameter :: MULTI_FIBER_NBGRFIBR  =  3
+#define MULTI_FIBER_TYPE     1
+#define MULTI_FIBER_NBVARMAX 2
+#define MULTI_FIBER_NBGRFIBR 3
 !
-end module

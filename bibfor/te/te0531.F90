@@ -18,12 +18,11 @@
 
 subroutine te0531(option,nomte)
 !
-use compor_multifibre_module
-!
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 !
+#include "MultiFiber_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"

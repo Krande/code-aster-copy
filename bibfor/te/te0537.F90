@@ -34,12 +34,12 @@ subroutine te0537(option, nomte)
 !   Calcul de l'option EPSI_ELGA
 !       - déformations dans les fibres (sous pts de gauss) à partir des déplacements
 ! --------------------------------------------------------------------------------------------------
-use compor_multifibre_module
 !
     implicit none
     character(len=16) :: option, nomte
 !
 #include "jeveux.h"
+#include "MultiFiber_type.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"

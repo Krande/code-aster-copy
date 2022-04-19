@@ -57,9 +57,10 @@ subroutine pmfcom(kpg,   debsp,  option, compor, crit,   &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use compor_multifibre_module
 !
-    implicit none
+implicit none
+
+#include "MultiFiber_type.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp1d.h"

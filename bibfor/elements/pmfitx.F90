@@ -35,10 +35,11 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use compor_multifibre_module
 !
-    implicit none
+implicit none
+
 #include "jeveux.h"
+#include "MultiFiber_type.h"
 #include "asterc/r8prem.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"

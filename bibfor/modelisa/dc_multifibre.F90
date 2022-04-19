@@ -26,7 +26,6 @@ subroutine dc_multifibre(nbocci, sdcomp)
 !
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-use compor_multifibre_module
 !
 implicit none
 !
@@ -34,6 +33,7 @@ integer, intent(in) :: nbocci
 character(len=8), intent(in) :: sdcomp
 !
 #include "jeveux.h"
+#include "MultiFiber_type.h"
 #include "asterf_types.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"

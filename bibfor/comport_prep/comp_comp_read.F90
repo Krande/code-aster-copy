@@ -18,10 +18,10 @@
 
 subroutine comp_comp_read(v_info_valk, v_info_vali)
 !
-use compor_multifibre_module
 !
 implicit none
 !
+#include "MultiFiber_type.h"
 #include "asterc/getfac.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"

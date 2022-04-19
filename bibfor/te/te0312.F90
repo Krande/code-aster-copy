@@ -32,10 +32,11 @@ subroutine te0312(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use compor_multifibre_module
 !
 implicit none
+
 #include "jeveux.h"
+#include "MultiFiber_type.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"

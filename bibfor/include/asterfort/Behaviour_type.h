@@ -15,8 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C1509
-!
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -32,8 +30,10 @@
 ! --------------------------------------------------------------------------------------------------
 !
 #define L_VARI(option) (option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA')
-#define L_SIGM(option) (option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG')
-#define L_VECT(option) (option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG')
+#define L_SIGM(option) (option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA' \
+                        .or. option .eq. 'RIGI_MECA_TANG')
+#define L_VECT(option) (option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA' \
+                        .or. option .eq. 'RIGI_MECA_TANG')
 #define L_MATR(option) (option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA')
 #define L_PRED(option) (option .eq. 'RIGI_MECA_TANG')
 #define L_CORR(option) (option .ne. 'RIGI_MECA_TANG')

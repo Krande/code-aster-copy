@@ -29,9 +29,10 @@ subroutine pmfmcf(ip,     nbgf,   nbfib,  nugf,   sdcomp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-use compor_multifibre_module
 !
-    implicit none
+implicit none
+
+#include "MultiFiber_type.h"
 #include "asterfort/pmfcom.h"
 !
     integer :: ip, nbgf, nbfib, nbvalc, nugf(*), icdmat, codret
