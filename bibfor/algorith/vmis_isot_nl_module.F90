@@ -146,17 +146,17 @@ function Init(ndimsi, option, fami, kpg, ksp, imate, itemax, precvg) &
     self%mat%troisk  = valel(1)/(1.d0-2.d0*valel(2))
 
 
-    ! Hardening material parameters
-    call rcvalb(fami,kpg,ksp,'+',imate,' ','ECRO_NL',0,' ',[0.d0],nbec,nomec,valec,iok,2)
+    ! Hardening material parameters (with default values)
+    call rcvalb(fami,kpg,ksp,'+',imate,' ','ECRO_NL',0,' ',[0.d0],nbec,nomec,valec,iok,0)
     self%mat%r0 = valec(1)
-    self%mat%rh = valec(2)
-    self%mat%r1 = valec(3)
-    self%mat%g1 = valec(4)
-    self%mat%r2 = valec(5)
-    self%mat%g2 = valec(6)
-    self%mat%rk = valec(7)
-    self%mat%p0 = valec(8)
-    self%mat%gk = valec(9)
+    self%mat%rh = merge(valec(2),0.d0,iok(2).eq.0)
+    self%mat%r1 = merge(valec(3),0.d0,iok(3).eq.0)
+    self%mat%g1 = merge(valec(4),0.d0,iok(4).eq.0)
+    self%mat%r2 = merge(valec(5),0.d0,iok(5).eq.0)
+    self%mat%g2 = merge(valec(6),0.d0,iok(6).eq.0)
+    self%mat%rk = merge(valec(7),0.d0,iok(7).eq.0)
+    self%mat%p0 = merge(valec(8),0.d0,iok(8).eq.0)
+    self%mat%gk = merge(valec(9),1.d0,iok(9).eq.0)
 
 end function Init
 

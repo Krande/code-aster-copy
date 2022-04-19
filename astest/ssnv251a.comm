@@ -70,24 +70,43 @@ MODE = AFFE_MODELE(MAILLAGE = MAIL,
 
 # MODELISATION DU MATERIAU
 # LES PARAMETRES UTILISES CI-DESSOUS VIENNENT DE LA THESE DE YI ZHANG(2016)
-ACIER = DEFI_MATERIAU(ELAS = _F(E=190000.0, NU=0.3),
-              ECRO_NL  = _F(R0 = 488.361123569,
-                    RH = 0,
-                    R1 = 57.1333673502,
-                    GAMMA_1 = 8613.0,
-                    R2 = 238.731127339,
-                    GAMMA_2 = 10.386585592,
-                    ),
-                      GTN = _F(Q1 = 1.5,
-                                     Q2 = 1.07,
-                                     PORO_INIT = 1.e-2,
-                                     COAL_PORO = 0.05,
-                                     COAL_ACCE = 3,
-                                     NUCL_GAUSS_PORO = 0.0,
-                                     NUCL_GAUSS_PLAS = 0.6,
-                                     NUCL_GAUSS_DEV = 0.01,
-                     ),
-                      )
+
+# On en profite pour tester le passage par ECRO_NL_FO, meme si les fonctions sont constantes
+F_R0 = DEFI_CONSTANTE(VALE = 488.361123569)
+F_RH = DEFI_CONSTANTE(VALE = 0.0)
+F_R1 = DEFI_CONSTANTE(VALE = 57.1333673502)
+F_G1 = DEFI_CONSTANTE(VALE = 8613.0)
+F_R2 = DEFI_CONSTANTE(VALE = 238.731127339)
+F_G2 = DEFI_CONSTANTE(VALE = 10.386585592)
+F_RK = DEFI_CONSTANTE(VALE = 0.0)
+F_P0 = DEFI_CONSTANTE(VALE = 0.0)
+F_GM = DEFI_CONSTANTE(VALE = 1.0)
+
+
+
+ACIER = DEFI_MATERIAU(
+    ELAS = _F(E=190000.0, NU=0.3),
+    ECRO_NL_FO = _F(
+        R0      = F_R0,
+        RH      = F_RH,
+        R1      = F_R1,
+        GAMMA_1 = F_G1,
+        R2      = F_R2,
+        GAMMA_2 = F_G2,
+        RK      = F_RK,
+        P0      = F_P0,
+        GAMMA_M = F_GM,
+        ),
+    GTN = _F(Q1 = 1.5,
+        Q2 = 1.07,
+        PORO_INIT = 1.e-2,
+        COAL_PORO = 0.05,
+        COAL_ACCE = 3,
+        NUCL_GAUSS_PORO = 0.0,
+        NUCL_GAUSS_PLAS = 0.6,
+        NUCL_GAUSS_DEV = 0.01,
+        ),
+    )
 
 # AFFECTATION DES MATERIAUX
 MATE = AFFE_MATERIAU (MAILLAGE = MAIL,
