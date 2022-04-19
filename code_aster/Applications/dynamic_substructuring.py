@@ -24,7 +24,7 @@ import scipy.sparse.linalg
 import os
 import inspect
 from ..Objects.user_extensions import WithEmbeddedObjects
-try :
+try:
     import matplotlib.pyplot as plt
     HAS_MATPLOTLIB = True
 except ImportError:
@@ -33,44 +33,46 @@ except ImportError:
 from ..Commands import (CREA_CHAMP, RESOUDRE, CREA_RESU, FACTORISER)
 
 DEBUG = False
+
+
 def debugPrint(*args, **kwargs):
     if DEBUG:
-        #get module, class, function, linenumber information
+        # get module, class, function, linenumber information
         className = None
         try:
             className = inspect.stack()[2][0].f_locals['self'].__class__.__name__
         except:
             pass
-        modName=None
+        modName = None
         try:
             modName = os.path.basename(inspect.stack()[2][1])
         except:
             pass
-        lineNo=inspect.stack()[2][2]
-        fnName=None
+        lineNo = inspect.stack()[2][2]
+        fnName = None
         try:
             fnName = inspect.stack()[2][3]
         except:
             pass
-        DbgText="<DEBUG> line#{}:{}->{}->{}()".format(lineNo, modName,className, fnName)
-        argCnt=len(args)
-        kwargCnt=len(kwargs)
-        fmt=""
-        fmt1=DbgText+":"+"->"
+        DbgText = "<DEBUG> line#{}:{}->{}->{}()".format(lineNo, modName, className, fnName)
+        argCnt = len(args)
+        kwargCnt = len(kwargs)
+        fmt = ""
+        fmt1 = DbgText+":"+"->"
         if argCnt > 0:
-            fmt1+=(argCnt-1)*"%s,"
-            fmt1+="%s"
-            fmt+=fmt1
+            fmt1 += (argCnt-1)*"%s,"
+            fmt1 += "%s"
+            fmt += fmt1
 
-        if kwargCnt>0:
-            fmt2="%s"
-            args+=("{}".format(kwargs),)
-            if len(fmt)>0:
-                fmt+=","+fmt2
+        if kwargCnt > 0:
+            fmt2 = "%s"
+            args += ("{}".format(kwargs),)
+            if len(fmt) > 0:
+                fmt += ","+fmt2
             else:
-                fmt+=fmt2
+                fmt += fmt2
 
-        print(fmt,*args)
+        print(fmt, *args)
 
 
 class Interface(WithEmbeddedObjects):
@@ -163,10 +165,10 @@ class Interface(WithEmbeddedObjects):
 
         # if there is an ovious mean plane, we use it. Otherwise we compute it with a SVD
         CoordMax = np.abs(Coord_t).max(axis=0)
-        if np.any(CoordMax<1.e-12):
-            indx = np.where(CoordMax<1.e-12)[0][0]
+        if np.any(CoordMax < 1.e-12):
+            indx = np.where(CoordMax < 1.e-12)[0][0]
             U = np.eye(3)
-            U[:,[2, indx]] = U[:,[indx,2]]  # swap the columns
+            U[:, [2, indx]] = U[:, [indx, 2]]  # swap the columns
         else:
             U, _, _ = np.linalg.svd(Coord_t.T)
         debugPrint(U=U)
@@ -202,12 +204,12 @@ class Interface(WithEmbeddedObjects):
             """
             nPress = 3
             Pres = np.zeros((nInterfaceNodes, 3))
-            Pres[:, 0] = np.ones(nInterfaceNodes)  #  constant pressure
+            Pres[:, 0] = np.ones(nInterfaceNodes)  # constant pressure
             Pres[:, 1] = NewCoord[0, :] / Rmax  # linear pressure
             Pres[:, 2] = NewCoord[1, :] / Rmax  # linear pressure
             # Pres[:,3] = 1.- (R/Rmax)**2  # quadratic field - not so usefull
 
-            Pres *= 1.e5  #  Normalize
+            Pres *= 1.e5  # Normalize
 
             for i1 in range(nPress):
                 Interf.append(np.zeros((nInterfaceNodes, 4)))
@@ -516,6 +518,10 @@ class Structure(WithEmbeddedObjects):
         omredred = omredred[tri]
         evredred = evredred[:, tri]
 
+        # rotate each ev (aka each column) so that the imaginary part is zero (this is not
+        # guaranted by the eigensolver ; see issue32008)
+        evredred = np.apply_along_axis(lambda x: x*np.exp(-np.angle(x[0])*1j), axis=0, arr=evredred)
+
         # Switch back to physical space
         evred = T.dot(evredred)
         ev = allModes.dot(evred)
@@ -558,11 +564,11 @@ class Structure(WithEmbeddedObjects):
                     index = np.where(np.array(inames) == interface.name)[0]
                     nConstraintSub1 = len(index)
                     indexConstraintSub = index_interfModes[isub][index]
-                    idx1[iConstraints : iConstraints + nConstraintSub1] = np.arange(
+                    idx1[iConstraints: iConstraints + nConstraintSub1] = np.arange(
                         iConstraints, iConstraints + nConstraintSub1
                     )
-                    jdx1[iConstraints : iConstraints + nConstraintSub1] = indexConstraintSub
-                    values1[iConstraints : iConstraints + nConstraintSub1] = 1
+                    jdx1[iConstraints: iConstraints + nConstraintSub1] = indexConstraintSub
+                    values1[iConstraints: iConstraints + nConstraintSub1] = 1
                 if sub == sub2:
                     # number of local modes per interface
                     nRanks = len(sub.iModes.getRanks()) // len(sub.lIName)
@@ -571,11 +577,11 @@ class Structure(WithEmbeddedObjects):
                     index = np.where(np.array(inames) == interface.name)[0]
                     nConstraintSub2 = len(index)
                     indexConstraintSub = index_interfModes[isub][index]
-                    idx2[iConstraints : iConstraints + nConstraintSub2] = np.arange(
+                    idx2[iConstraints: iConstraints + nConstraintSub2] = np.arange(
                         iConstraints, iConstraints + nConstraintSub2
                     )
-                    jdx2[iConstraints : iConstraints + nConstraintSub2] = indexConstraintSub
-                    values2[iConstraints : iConstraints + nConstraintSub2] = -1
+                    jdx2[iConstraints: iConstraints + nConstraintSub2] = indexConstraintSub
+                    values2[iConstraints: iConstraints + nConstraintSub2] = -1
             assert nConstraintSub1 == nConstraintSub2
             iConstraints += nConstraintSub1
         values = np.hstack((values1, values2))
@@ -704,8 +710,8 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         raise KeyError("list2 is out of bound")
     nModes1 = len(list1) if list1 else nres1
     nModes2 = len(list2) if list2 else nres2
-    lMode1 = list1 if list1 else range(1,nModes1+1)
-    lMode2 = list2 if list2 else range(1,nModes2+1)
+    lMode1 = list1 if list1 else range(1, nModes1+1)
+    lMode2 = list2 if list2 else range(1, nModes2+1)
     lMode11 = list1 if list1 else range(nModes1)
     lMode22 = list2 if list2 else range(nModes2)
     lFreq1 = lres1[0].LIST_VARI_ACCES()["FREQ"]
