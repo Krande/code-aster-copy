@@ -163,7 +163,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
                     const auto cellId = cellsToFind[i];
 
                     if ( !boolCellsToSend[cellId] ) {
-                        const auto cell = connecExp[cellsToFind[i]+1];
+                        const auto cell = connecExp[cellsToFind[i]];
                         for ( const auto vertex : cell ) {
                             const auto nodeId = vertex - 1;
                             if ( !boolNodesToSend[nodeId] ) {
@@ -284,7 +284,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     /* Get nodes lying on cell */
     for ( auto i = 0; i < numberOfCellsToSend; i++ ) {
-        const auto cell = connecExp[cellsToSend[i]+1];
+        const auto cell = connecExp[cellsToSend[i]];
         for ( const auto vertex : cell ) {
             const auto nodeId = vertex - 1;
             if ( !boolNodesToSend[nodeId] ) {
@@ -301,7 +301,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     }
 
     for ( auto i = 0; i < numberOfCellsToCheck; i++ ) {
-        const auto cell = connecExp[cellsToCheck[i]+1];
+        const auto cell = connecExp[cellsToCheck[i]];
         for ( const auto vertex : cell ) {
             const auto nodeId = vertex - 1;
             if ( !boolNodesToSend[nodeId] && ( *rankOfNodes )[nodeId] == rank ) {
@@ -380,7 +380,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         the list of nodes in global numbering */
     connectivitiesToSend.reserve( cellsToSend.size() * ( 1 + 1 + 1 + 27 ) );
     for ( const auto &cellId : cellsToSend ) {
-        const auto cell = connecExp[cellId+1];
+        const auto cell = connecExp[cellId];
         connectivitiesToSend.push_back( cell.getType() );
         connectivitiesToSend.push_back( cellId );
         connectivitiesToSend.push_back( globalCellIds[cellId] );

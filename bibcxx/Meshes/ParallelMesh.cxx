@@ -240,7 +240,7 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
     SetLong nodes;
 
     for ( auto &cellId : cellsId ) {
-        const auto cell = connecExp[cellId+1];
+        const auto cell = connecExp[cellId];
         for ( auto &node : cell )
             nodes.insert( node-1 );
     }

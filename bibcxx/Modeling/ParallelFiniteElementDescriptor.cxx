@@ -195,7 +195,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         // Remplissage du .NEMA avec les elements tardifs a conserver
         int posInCollection = 1;
         for ( int numElem : virtualCellToKeep ) {
-            const auto curElem = explorer[numElem];
+            const auto curElem = explorer[numElem-1];
             VectorLong toCopy;
             for ( const auto &numNode : curElem ) {
                 if ( numNode > 0 ) {
@@ -204,7 +204,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                     toCopy.push_back( -virtualNodesNumbering[-numNode - 1] - 1 );
                 }
             }
-            toCopy.push_back( explorer[numElem].getType() );
+            toCopy.push_back( explorer[numElem-1].getType() );
             _delayedNumberedConstraintElementsDescriptor->allocateObject( toCopy.size() );
             _delayedNumberedConstraintElementsDescriptor->getObject( posInCollection )
                 .setValues( toCopy );

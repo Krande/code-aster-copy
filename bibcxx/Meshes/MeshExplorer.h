@@ -148,7 +148,7 @@ public:
         const auto& obj = _connect->getObject( pos + 1 );
         const auto size = obj.size();
         const ASTERINTEGER type = (*_type)[ pos ];
-        return CellObject( pos+1, &obj.operator[]( 0 ), size, type );
+        return CellObject( pos + 1, &obj.operator[]( 0 ), size, type );
     };
 
     int size() const
@@ -181,7 +181,7 @@ public:
         const auto& obj = _connectAndType->getObject( pos + 1 );
         const auto size = obj.size() - 1;
         const ASTERINTEGER type = obj[ size ];
-        return CellObject( pos+1, &obj.operator[]( 0 ), size, type );
+        return CellObject( pos + 1, &obj.operator[]( 0 ), size, type );
     };
 
     int size() const
@@ -262,9 +262,9 @@ public:
         };
     };
 
-    inline CellObject operator[]( int i ) const
+    inline CellObject operator[]( int position ) const
     {
-        return _builder.getCellObject(i-1);
+        return _builder.getCellObject( position );
     };
 
     /**

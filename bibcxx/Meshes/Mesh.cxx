@@ -116,7 +116,7 @@ VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const AS
     SetLong nodes;
 
     for ( auto &cellId : cellsId ) {
-        const auto cell = connecExp[cellId+1];
+        const auto cell = connecExp[cellId];
         for ( auto &node : cell )
             auto ret = nodes.insert( node-1 );
     }
