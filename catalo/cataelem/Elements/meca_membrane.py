@@ -347,6 +347,21 @@ class MEMBTR3(Element):
                      ),
         ),
 
+
+        OP.RAPH_MECA_IMPLEX(te=435,
+            para_in=((SP.PCACOQU, CCACOQU), (SP.PCARCRI, LC.CCARCRI),
+                     (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR), (OP.RAPH_MECA.PCONTMR, ECONTPG),
+                     (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
+                     (SP.PINSTPR, CTEMPSR), (SP.PMATERC, LC.CMATERC),
+                     (SP.PVARCMR, LC.ZVARCPG), (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), (SP.PVARIMP, ZVARIPG),
+                     (OP.RAPH_MECA.PVARIMR, ZVARIPG), ),
+            para_out=((SP.PCODRET, LC.ECODRET), (OP.RAPH_MECA.PCONTPR, ECONTPG),
+                     (OP.RAPH_MECA.PVARIPR, ZVARIPG), (SP.PVECTUR, MVECTUR),
+                     ),
+        ),
+        
         OP.REFE_FORC_NODA(te=434,
             para_in=((SP.PCACOQU, CCACOQU), (OP.REFE_FORC_NODA.PCOMPOR, LC.CCOMPOR),
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,40 +45,34 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp, nocc
-    character(len=16) :: keywordfact
+    integer :: nocc
+    character(len=16), parameter :: factorKeyword = 'AFFE_COMPOR'
     character(len=19) :: compor
-    character(len=16), pointer :: v_info_valk(:) => null()
-    integer, pointer :: v_info_vali(:) => null()
+    character(len=16), pointer :: infoValk(:) => null()
+    integer, pointer :: infoVali(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    keywordfact = 'AFFE_COMPOR'
-    compor      = chmat//'.COMPOR'
-    call getfac(keywordfact, nocc)
+    compor = chmat//'.COMPOR'
+    call getfac(factorKeyword, nocc)
     if (nocc .ne. 0) then
-!
+
 ! ----- Create comportment informations objects
-!
-        AS_ALLOCATE(vk16 = v_info_valk, size = 16*nocc)
-        AS_ALLOCATE(vi   = v_info_vali, size = 4*nocc)
-!
+        AS_ALLOCATE(vk16 = infoValk, size = 16*nocc)
+        AS_ALLOCATE(vi   = infoVali, size = 4*nocc)
+
 ! ----- Create COMPOR <CARTE>
-!
-        call comp_init(mesh, compor, 'G', nb_cmp)
-!
+        call comp_init(mesh, compor, 'G')
+
 ! ----- Read informations from command file
-!
-        call comp_comp_read(v_info_valk, v_info_vali)
-!
+        call comp_comp_read(infoValk, infoVali)
+
 ! ----- Save informations in COMPOR <CARTE>
-!
-        call comp_comp_save(mesh, compor, nb_cmp, v_info_valk, v_info_vali)
-!
-! ----- Clean it
-!
-        AS_DEALLOCATE(vk16 = v_info_valk)
-        AS_DEALLOCATE(vi   = v_info_vali)
+        call comp_comp_save(mesh, compor, infoValk, infoVali)
+
+! ----- Clean
+        AS_DEALLOCATE(vk16 = infoValk)
+        AS_DEALLOCATE(vi   = infoVali)
     endif
 !
 end subroutine

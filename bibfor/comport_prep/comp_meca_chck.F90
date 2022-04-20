@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_chck(model, mesh, fullElemField, lInitialState, behaviourPrep)
+subroutine comp_meca_chck(model, mesh, chmate,&
+                          fullElemField, lInitialState, behaviourPrepPara)
 !
 use Behaviour_type
 !
@@ -38,10 +39,10 @@ implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
 !
-character(len=8), intent(in) :: model, mesh
+character(len=8), intent(in) :: model, mesh, chmate
 character(len=19), intent(in) :: fullElemField
 aster_logical, intent(in) :: lInitialState
-type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
+type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,9 +54,10 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
+! In  chmate           : material field
 ! In  fullElemField    : <CHELEM_S> of FULL_MECA option
 ! In  lInitialState    : .true. if initial state is defined
-! IO  behaviourPrep    : datastructure to prepare behaviour
+! IO  behaviourPrepPara: datastructure to prepare behaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,75 +65,76 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
     character(len=24), parameter :: cellAffe = '&&COMPMECASAVE.LIST'
     aster_logical :: lAllCellAffe
     integer :: nbCellAffe
-    integer :: iComp, nbComp, exteDefo, lctestIret
+    integer :: iFactorKeyword, nbFactorKeyword, exteDefo, lctestIret
     character(len=16) :: defoComp, relaComp, typeCpla, typeComp, reguVisc
     character(len=16) :: relaCompPY, defoCompPY
-    character(len=19) :: partit
-    character(len=24) :: ligrmo
+    character(len=19) :: partit, answer
+    character(len=24) :: modelLigrel
     mpi_int :: nbCPU, mpiCurr
     aster_logical :: lElasByDefault, lNeedDeborst, lMfront, lDistParallel
-    aster_logical :: lIncoUpo
+    aster_logical :: lIncoUpo, lExistVarc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbComp = behaviourPrep%nb_comp
+    nbFactorKeyword = behaviourPrepPara%nb_comp
     lNeedDeborst   = ASTER_FALSE
     lElasByDefault = ASTER_FALSE
     lDistParallel  = ASTER_FALSE
-!
+
 ! - MPI initialisation
-!
     call asmpi_comm('GET', mpiCurr)
     call asmpi_info(mpiCurr, size=nbCPU)
-!
+
+! - Generic properties
+    call dismoi('EXI_VARC', chmate, 'CHAM_MATER', repk = answer)
+    lExistVarc = answer .eq. 'OUI'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
+    call dismoi('PARTITION', modelLigrel, 'LIGREL', repk = partit)
+
 ! - Distributed parallelism
-!
-    ligrmo = model//'.MODELE'
-    call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
     lDistParallel = partit .ne. ' ' .and. nbCPU .gt. 1
-!
+
 ! - Loop on occurrences of COMPORTEMENT
-!
-    do iComp = 1, nbComp
+    do iFactorKeyword = 1, nbFactorKeyword
 
 ! ----- Get list of cells where behaviour is defined
-        call comp_read_mesh(mesh    , keywordfact , iComp     ,&
+        call comp_read_mesh(mesh, keywordfact, iFactorKeyword,&
                             cellAffe, lAllCellAffe, nbCellAffe)
 
 ! ----- Get main parameters for this behaviour
-        relaComp = behaviourPrep%v_para(iComp)%rela_comp
-        defoComp = behaviourPrep%v_para(iComp)%defo_comp
-        typeComp = behaviourPrep%v_para(iComp)%type_comp
-        reguVisc = behaviourPrep%v_para(iComp)%regu_visc
-        lMfront  = behaviourPrep%v_paraExte(iComp)%l_mfront_offi .or.&
-                   behaviourPrep%v_paraExte(iComp)%l_mfront_proto
-        exteDefo = behaviourPrep%v_paraExte(iComp)%strain_model
+        relaComp = behaviourPrepPara%v_para(iFactorKeyword)%rela_comp
+        defoComp = behaviourPrepPara%v_para(iFactorKeyword)%defo_comp
+        typeComp = behaviourPrepPara%v_para(iFactorKeyword)%type_comp
+        reguVisc = behaviourPrepPara%v_para(iFactorKeyword)%regu_visc
+        lMfront  = behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_offi .or.&
+                   behaviourPrepPara%v_paraExte(iFactorKeyword)%l_mfront_proto
+        exteDefo = behaviourPrepPara%v_paraExte(iFactorKeyword)%strain_model
 
 ! ----- Coding comportment (Python)
         call lccree(1, relaComp, relaCompPY)
         call lccree(1, defoComp, defoCompPY)
 
-! ----- Checking the consistency of the modelization with the behaviour
-        call compMecaChckModel(iComp       ,&
+! ----- Check the consistency of the modelization with the behaviour
+        call compMecaChckModel(iFactorKeyword,&
                                model       , fullElemField ,&
                                lAllCellAffe, cellAffe      , nbCellAffe  ,&
                                relaCompPY  , lElasByDefault, lNeedDeborst,&
                                lIncoUpo)
 
 ! ----- Select plane stress algorithm
-        typeCpla = behaviourPrep%v_para(iComp)%type_cpla
+        typeCpla = behaviourPrepPara%v_para(iFactorKeyword)%type_cpla
         call compMecaSelectPlaneStressAlgo(lNeedDeborst, typeCpla)
-        behaviourPrep%v_para(iComp)%type_cpla = typeCpla
+        behaviourPrepPara%v_para(iFactorKeyword)%type_cpla = typeCpla
 
-! ----- Checking the consistency of the strain model with the behaviour
-        call compMecaChckStrain(iComp,&
+! ----- Check the consistency of the strain model with the behaviour
+        call compMecaChckStrain(iFactorKeyword,&
                                 model       , fullElemField,&
                                 lAllCellAffe, cellAffe     , nbCellAffe,&
                                 lMfront     , exteDefo     ,&
                                 defoComp    , defoCompPY   ,&
                                 relaComp    , relaCompPY)
 
-! ----- Checking REGU_VISC
+! ----- Check REGU_VISC
         if (reguVisc .ne. 'VIDE') then
             call lctest(relaCompPY, 'REGU_VISC', reguVisc, lctestIret)
             if (lctestIret .eq. 0) then
@@ -169,14 +172,22 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
         call lcdiscard(defoCompPY)
 
     end do
-!
-! - Some general informations
-!
+
+! - General
     if (lNeedDeborst) then
         call utmess('I', 'COMPOR5_20')
     endif
     if (lElasByDefault) then
         call utmess('I', 'COMPOR5_21')
+    endif
+    if (lExistVarc .and. behaviourPrepPara%lNonIncr) then
+        call utmess('A', 'COMPOR4_17')
+    endif
+    if (behaviourPrepPara%nb_comp .eq. 0) then
+        call utmess('I', 'COMPOR4_64')
+    endif
+    if (behaviourPrepPara%nb_comp .ge. 99999) then
+        call utmess('A', 'COMPOR4_65')
     endif
 !
 end subroutine

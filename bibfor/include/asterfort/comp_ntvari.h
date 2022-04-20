@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,16 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine comp_ntvari(model_ , compor_cart_, compor_list_, compor_info,&
-                           nt_vari, nb_vari_maxi, nb_zone     , v_paraExte)
+    subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo,&
+                           nt_vari, nb_vari_maxi, mapNbZone, behaviourParaExte)
         use Behaviour_type
         character(len=8), optional, intent(in) :: model_
-        character(len=19), optional, intent(in) :: compor_cart_
-        character(len=16), optional, intent(in) :: compor_list_(20)
-        character(len=19), intent(in) :: compor_info
-        integer, intent(out) :: nt_vari, nb_vari_maxi, nb_zone
-        type(Behaviour_ParaExte), pointer :: v_paraExte(:)
+        character(len=19), optional, intent(in) :: comporMap_
+        character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
+        character(len=19), intent(in) :: comporInfo
+        integer, intent(out) :: nt_vari, nb_vari_maxi, mapNbZone
+        type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
     end subroutine comp_ntvari
 end interface

@@ -33,6 +33,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/indk16.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/comp_meca_pvar.h"
 #include "asterfort/utmess.h"
 !
@@ -61,7 +62,7 @@ character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
     integer :: iVari, variNume
     integer :: iret, iCell, zoneField, jv_vari
     integer :: cellNume, nbVariZone
-    character(len=19) :: compor, ligrmo
+    character(len=19) :: compor, modelLigrel
     character(len=19), parameter :: comporInfo = '&&NMDOCC.INFO'
     integer, pointer :: comporPtma(:) => null()
 !
@@ -72,15 +73,14 @@ character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
 ! - Prepare COMPOR field
 !
     compor = comporZ
-    ligrmo = modelZ(1:8)//'.MODELE'
-    call etenca(compor, ligrmo, iret)
+    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk = modelLigrel)
+    call etenca(compor, modelLigrel, iret)
     call jeveuo(compor//'.PTMA', 'L', vi = comporPtma)
-!
+
 ! - Prepare informations about internal variables
-!
     call jeexin(comporInfo(1:19)//'.ZONE', iret)
     if (iret .eq. 0) then
-        call comp_meca_pvar(model_ = modelZ, compor_cart_ = compor, compor_info = comporInfo)
+        call comp_meca_pvar(model_ = modelZ, comporMap_ = compor, comporInfo = comporInfo)
     endif
 !
 ! - Access to informations
@@ -93,7 +93,7 @@ character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
         do iVari = 1, nbVari
             variNume = indk16(zk16(jv_vari), listVariName(iVari), 1, nbVariZone)
             if (variNume .eq. 0) then
-                call utmess('F','EXTRACTION_22', sk = listVariName(iVari))
+                call utmess('F', 'EXTRACTION_22', sk = listVariName(iVari))
             endif
             listVariNume(iCell, iVari) = 'V'
             call codent(variNume, 'G', listVariNume(iCell, iVari)(2:8))

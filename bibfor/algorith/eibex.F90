@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
 ! -- OPTION ET MODELISATION
 !
 !
-    raph = option .eq. 'RAPH_MECA'
+    raph = option .eq. 'RAPH_MECA_IMPLEX'
     tang = option .eq. 'RIGI_MECA_IMPLEX'
     codret = 0
 !
@@ -374,7 +374,7 @@ subroutine eibex(fami, kpg, ksp, ndim, imate,&
             sig(k)=rac2*sig(k)
         end do
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
 end subroutine

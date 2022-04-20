@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine carc_chck(ds_compor_para)
+subroutine carc_chck(behaviourPrepCrit)
 !
 use Behaviour_type
 !
@@ -28,35 +28,38 @@ implicit none
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/utmess.h"
 !
-type(Behaviour_PrepCrit), intent(in) :: ds_compor_para
+type(Behaviour_PrepCrit), intent(in) :: behaviourPrepCrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of comportment (mechanics)
+! Preparation of constitutive laws (mechanics)
 !
 ! Some checks
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_compor_para   : datastructure to prepare parameters for constitutive laws
+! In  behaviourPrepCrit: datastructure to prepare parameters for constitutive laws
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_comp, nb_comp
+    integer :: iFactorKeyword, nbFactorKeyword
     aster_logical :: l_mfront_proto, l_mfront_offi
+    character(len=16) :: rela_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_comp = ds_compor_para%nb_comp
-!
+    nbFactorKeyword = behaviourPrepCrit%nb_comp
+
 ! - Loop on occurrences of COMPORTEMENT
-!
-    do i_comp = 1, nb_comp
+    do iFactorKeyword = 1, nbFactorKeyword
+        rela_comp = behaviourPrepCrit%v_crit(iFactorKeyword)%rela_comp
+
 ! ----- Detection of specific cases
-        call comp_meca_l(ds_compor_para%v_crit(i_comp)%rela_comp, 'MFRONT_PROTO', l_mfront_proto)
-        call comp_meca_l(ds_compor_para%v_crit(i_comp)%rela_comp, 'MFRONT_OFFI' , l_mfront_offi)
+        call comp_meca_l(rela_comp, 'MFRONT_PROTO', l_mfront_proto)
+        call comp_meca_l(rela_comp, 'MFRONT_OFFI' , l_mfront_offi)
+
 ! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
-        if (ds_compor_para%v_crit(i_comp)%iter_inte_pas .lt. 0.d0) then
+        if (behaviourPrepCrit%v_crit(iFactorKeyword)%iter_inte_pas .lt. 0.d0) then
             if (l_mfront_offi .or. l_mfront_proto) then
                 call utmess('F', 'COMPOR1_95')
             end if

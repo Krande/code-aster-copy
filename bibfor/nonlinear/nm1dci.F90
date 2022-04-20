@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ subroutine nm1dci(fami, kpg, ksp, imate, em,&
 !     ------------------------------------------------------------------
 !     CALCUL EPSP, P , SIG
 !     ------------------------------------------------------------------
-    if (option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA') then
+    if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
         if (sieleq .le. sigy) then
             vip(2) = 0.d0
             dsde = ep

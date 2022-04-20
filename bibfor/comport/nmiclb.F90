@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
                   imate, xlong0, aire, tmoins, tplus,&
                   dlong0, effnom, vim, effnop, vip,&
                   klv, fono, epsm, carcri, codret)
 !
-    implicit none
+implicit none
+!
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcimpl.h"
 #include "asterfort/nm1dci.h"
 #include "asterfort/nm1dco.h"
 #include "asterfort/nm1dis.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/relax_acier_cable.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
@@ -39,7 +40,7 @@ subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
     integer :: imate, neq, nbt,kpg,ksp, codret
     parameter (neq=6,nbt=21)
 !
-    real(kind=8) :: xlong0, aire, tmoins, tplus, dlong0, carcri(*), epsm
+    real(kind=8) :: xlong0, aire, tmoins, tplus, dlong0, carcri(CARCRI_SIZE), epsm
     real(kind=8) :: effnom, vim(*), effnop, vip(*), fono(neq), klv(nbt)
 !
     character(len=16) :: rela_comp, option
@@ -76,7 +77,7 @@ subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
     integer       :: codres(1)
     real(kind=8)  :: sigm, deps, depsth, depsm, em, ep
     real(kind=8)  :: sigp, xrig, val(1), dsde
-    aster_logical :: isot, cine, elas, corr, impl, isotli, relax
+    aster_logical :: isot, cine, elas, corr, implex, isotli, relax
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,7 +85,7 @@ subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
     isot   = .false.
     cine   = .false.
     corr   = .false.
-    impl   = .false.
+    implex = option .eq. 'RIGI_MECA_IMPLEX' .or. option .eq. 'RAPH_MECA_IMPLEX'
     isotli = .false.
     relax  = .false.
     if       (rela_comp.eq. 'ELAS') then
@@ -95,12 +96,6 @@ subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
         if (rela_comp .eq. 'VMIS_ISOT_LINE') then
             isotli = .true.
         endif
-        if (carcri(2) .eq. 9) then
-            impl = .true.
-        endif
-        if (impl .and. (.not.isotli)) then
-            call utmess('F', 'ELEMENTS5_50')
-        endif
     else if (rela_comp .eq. 'VMIS_CINE_LINE') then
         cine = .true.
     else if (rela_comp .eq. 'CORR_ACIER') then
@@ -108,15 +103,21 @@ subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
     else if (rela_comp .eq. 'RELAX_ACIER') then
         relax = .true.
     endif
+
+    if (implex) then
+        if ((.not.elas) .and. (.not.isotli)) then
+            call utmess('F', 'POUTRE0_49', sk = rela_comp)
+        endif
+    endif
 !
-    call r8inir(nbt, 0.d0, klv, 1)
-    call r8inir(neq, 0.d0, fono, 1)
+    klv = 0.d0
+    fono = 0.d0
 !
 !   Récupération des caractéristiques
     deps = dlong0/xlong0
     sigm = effnom/aire
 !
-    if (isot .and. (.not.impl)) then
+    if (isot .and. (.not.implex)) then
 !       Caractéristiques élastiques a t-
         call rcvalb(fami,kpg,ksp,'-',imate,' ','ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
@@ -175,7 +176,7 @@ subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
 !
         call nm1dco(fami,kpg,ksp, option, imate, ' ', ep, sigm, epsm, deps,&
                     vim, sigp, vip, dsde, carcri, codret)
-    else if (impl) then
+    else if (implex) then
 !       Caractéristiques élastiques a t-
         call rcvalb(fami,kpg,ksp,'-',imate,' ','ELAS', &
                     0, ' ', [0.d0], 1, 'E', val, codres, 1)
@@ -200,16 +201,13 @@ subroutine nmiclb(fami,kpg,ksp, option, rela_comp,&
     endif
 !
 !   Calcul des forces nodales
-    if (option(1:14) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         effnop  =  sigp*aire
         fono(1) = -effnop
         fono(4) =  effnop
     endif
 !
-    if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
-        if ((.not.impl) .and. (.not.elas)) then
-            call utmess('F', 'POUTRE0_49', sk = rela_comp)
-        endif
+    if (implex) then
         effnop  =  sigp*aire
         fono(1) = -effnop
         fono(4) =  effnop

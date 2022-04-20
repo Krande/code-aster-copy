@@ -47,7 +47,6 @@ void BehaviourProperty::createObjects() {
 BehaviourProperty::BehaviourProperty()
     : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR" ),
       _initialState( false ),
-      _implex( false ),
       _verbosity( false ),
       _model( nullptr ),
       _materialField( nullptr ),
@@ -79,10 +78,10 @@ bool BehaviourProperty::build() {
 
     std::string base( "G" );
 
-    CALLO_NMDOCC( modelName, materialFieldName, (ASTERLOGICAL *)&_initialState,
-                  (ASTERLOGICAL *)&_implex, comporName, base, (ASTERLOGICAL *)&_verbosity );
+    CALLO_NMDOCC( modelName, materialFieldName, (ASTERLOGICAL *)&_initialState, comporName, base,
+                  (ASTERLOGICAL *)&_verbosity );
 
-    CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), (ASTERLOGICAL *)&_implex, base );
+    CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), base );
 
     CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName(), base );
 

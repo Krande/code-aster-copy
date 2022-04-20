@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -238,8 +238,8 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 !     -- 7 CALCUL DE SIGP,SIGPDV,VIP,DP,RP:
 !     -------------------------------------
-    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or. option(1:16)&
-        .eq. 'RIGI_MECA_IMPLEX') then
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA' .or.&
+        option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
 !
 !
         do k = 1, ndimsi

@@ -96,9 +96,9 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_zone, i_elem, i_pt, i_vari, i_vari_redu, i_spt
+    integer :: iMapZone, iCell, i_pt, i_vari, i_vari_redu, i_spt
     integer :: nb_vari, nb_pt, nb_spt, nb_vari_zone
-    integer :: nb_vari_redu, nb_zone, nb_elem, nb_vari_maxi, nb_elem_mesh, nb_elem_zone
+    integer :: nb_vari_redu, nbMapZone, nbCell, nb_vari_maxi, nbCellMesh, nb_elem_zone
     integer :: nt_vari, codret_dummy
     integer :: posit, iret, affe_type, affe_indx, nume_elem
     integer :: jv_elga_cesd, jv_elga_cesl, jv_elgr_cesd, jv_elgr_cesl, jv_elga, jv_elgr
@@ -123,9 +123,9 @@ integer, intent(out) :: codret
     integer, pointer :: v_compor_desc(:) => null()
     integer, pointer :: v_compor_lima(:) => null()
     integer, pointer :: v_compor_lima_lc(:) => null()
-    character(len=19), parameter :: compor_info = '&&IRVARI.INFO'
-    integer, pointer :: v_info(:) => null()
-    integer, pointer :: v_zone(:) => null()
+    character(len=19), parameter :: comporInfo = '&&IRVARI.INFO'
+    integer, pointer :: comporInfoInfo(:) => null()
+    integer, pointer :: comporInfoZone(:) => null()
     character(len=16) :: field_type
 !
 ! --------------------------------------------------------------------------------------------------
@@ -139,30 +139,28 @@ integer, intent(out) :: codret
 !
 ! - Get name of <CARTE> COMPOR
 !
-    call rsexch('F', result, 'COMPORTEMENT', nume_store, compor,&
-                iret)
+    call rsexch('F', result, 'COMPORTEMENT', nume_store, compor, iret)
 !
 ! - Prepare informations about internal variables
 !
-    call comp_meca_pvar(model_ = model, compor_cart_ = compor, compor_info = compor_info)
-!
+    call comp_meca_pvar(model_ = model, comporMap_ = compor, comporInfo = comporInfo)
+
 ! - Access to informations
-!
-    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi = v_info)
-    nb_elem_mesh = v_info(1)
-    nb_zone      = v_info(2)
-    nb_vari_maxi = v_info(3)
-    nt_vari      = v_info(4)
+    call jeveuo(comporInfo(1:19)//'.INFO', 'L', vi = comporInfoInfo)
+    nbCellMesh = comporInfoInfo(1)
+    nbMapZone      = comporInfoInfo(2)
+    nb_vari_maxi = comporInfoInfo(3)
+    nt_vari      = comporInfoInfo(4)
 !
     if ( nt_vari .eq. 0 ) then
         codret = 300
         goto 999
     endif
-    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi = v_zone)
+    call jeveuo(comporInfo(1:19)//'.ZONE', 'L', vi = comporInfoZone)
 !
 ! - Create list of internal variables and link to zone in <CARTE> COMPOR
 !
-    call comp_meca_uvar(compor_info, base_name, vari_redu, nb_vari_redu, codret)
+    call comp_meca_uvar(comporInfo, base_name, vari_redu, nb_vari_redu, codret)
     call jeveuo(vari_redu, 'L', vk16 = v_vari_redu)
 ! - Behaviours that cannot give name of internal state variables
     if (codret .eq. 200) then
@@ -208,39 +206,39 @@ integer, intent(out) :: codret
 !
 ! - Fill VARI_ELGR_S on reduced list of internal variables
 !
-    do i_zone = 1, nb_zone
-        nb_elem_zone = v_zone(i_zone)
+    do iMapZone = 1, nbMapZone
+        nb_elem_zone = comporInfoZone(iMapZone)
         if (nb_elem_zone .ne. 0) then
 !
 ! --------- Get object to link zone to internal variables
 !
-            call codent(i_zone, 'G', saux08)
+            call codent(iMapZone, 'G', saux08)
             vari_link = base_name//saux08
             call jeveuo(vari_link, 'L', vi = v_vari_link)
 !
 ! --------- Access to current zone in CARTE
 !
-            nb_elem = 0
-            affe_type = v_compor_desc(1+3+(i_zone-1)*2)
-            affe_indx = v_compor_desc(1+4+(i_zone-1)*2)
+            nbCell = 0
+            affe_type = v_compor_desc(1+3+(iMapZone-1)*2)
+            affe_indx = v_compor_desc(1+4+(iMapZone-1)*2)
             if (affe_type .eq. 3) then
-                nb_elem = v_compor_lima_lc(1+affe_indx)-v_compor_lima_lc(affe_indx)
+                nbCell = v_compor_lima_lc(1+affe_indx)-v_compor_lima_lc(affe_indx)
                 posit   = v_compor_lima_lc(affe_indx)
             else if (affe_type .eq. 1) then
-                nb_elem = nb_elem_mesh
+                nbCell = nbCellMesh
                 posit   = 0
             else
                 ASSERT(.false.)
             endif
-            call jelira(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari_zone)
+            call jelira(jexnum(comporInfo(1:19)//'.VARI', iMapZone), 'LONMAX', nb_vari_zone)
 !
 ! --------- Loop on elements in zone of CARTE
 !
-            do i_elem = 1, nb_elem
+            do iCell = 1, nbCell
                 if (affe_type .eq. 3) then
-                    nume_elem = v_compor_lima(posit+i_elem-1)
+                    nume_elem = v_compor_lima(posit+iCell-1)
                 else if (affe_type .eq. 1) then
-                    nume_elem = i_elem
+                    nume_elem = iCell
                 else
                     ASSERT(.false.)
                 endif
@@ -290,16 +288,16 @@ integer, intent(out) :: codret
     call detrsd('CHAM_ELEM_S', vari_elga_s)
     call detrsd('CHAM_ELEM_S', vari_elgr_s)
     call detrsd('CHAM_ELEM_S', vari_elgr)
-    call jedetr(compor_info(1:19)//'.ZONE')
-    call jedetr(compor_info(1:19)//'.INFO')
-    call jedetr(compor_info(1:19)//'.ELEM')
-    call jedetr(compor_info(1:19)//'.RELA')
-    call jedetc('V', compor_info(1:19)//'.VARI', 1)
+    call jedetr(comporInfo(1:19)//'.ZONE')
+    call jedetr(comporInfo(1:19)//'.INFO')
+    call jedetr(comporInfo(1:19)//'.ELEM')
+    call jedetr(comporInfo(1:19)//'.RELA')
+    call jedetc('V', comporInfo(1:19)//'.VARI', 1)
     call jedetr(vari_redu)
     call jedetr(label_vxx)
     call jedetr(label_med)
-    do i_zone = 1,nb_zone
-        call codent(i_zone, 'G', saux08)
+    do iMapZone = 1,nbMapZone
+        call codent(iMapZone, 'G', saux08)
         vari_link = base_name//saux08
         call jedetr(vari_link)
     enddo

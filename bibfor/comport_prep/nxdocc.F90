@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nxdocc(model, compor)
 !
 implicit none
@@ -25,13 +25,10 @@ implicit none
 #include "asterfort/comp_ther_read.h"
 #include "asterfort/comp_ther_save.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
 !
-!
-    character(len=8), intent(in) :: model
-    character(len=19), intent(out) :: compor
+character(len=8), intent(in) :: model
+character(len=19), intent(out) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,36 +43,25 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp
+    integer :: nbCmp
     character(len=8) :: mesh
-    character(len=19) :: list_vale
+    character(len=19), parameter :: list_vale = '&&LIST_VALE'
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Initializations
-!
     compor = '&&NXDOCC.COMPOR'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    list_vale = '&&LIST_VALE'
-!
+
 ! - Read informations from command file
-!
     call comp_ther_read(list_vale)
-!
+
 ! - Create COMPOR <CARTE>
-!
-    call comp_init(mesh, compor, 'V', nb_cmp)
-!
+    call comp_init(mesh, compor, 'V', nbCmp)
+
 ! - Save informations in COMPOR <CARTE>
-!
-    call comp_ther_save(mesh, compor, nb_cmp, list_vale)
-!
-! - Clean it
-!
+    call comp_ther_save(mesh, compor, nbCmp, list_vale)
+
+! - Clean
     call jedetr(list_vale)
-!
-    call jedema()
 !
 end subroutine

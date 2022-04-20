@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocr(model, carcri, l_implex, base)
+subroutine nmdocr(model, carcri, base)
 !
 use Behaviour_type
 !
@@ -31,34 +31,30 @@ implicit none
 #include "asterfort/carc_read.h"
 #include "asterfort/carc_save.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
 !
 character(len=8), intent(in)  :: model
 character(len=24), intent(in) :: carcri
-aster_logical, intent(in) :: l_implex
 character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of comportment (mechanics)
+! Preparation of behaviours (mechanics)
 !
 ! Get parameters from COMPORTEMENT keyword and prepare CARCRI <CARTE>
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of model
-! In  carcri           : name of <CARTE> CARCRI
-! In  l_implex         : .true. if IMPLEX method
+! In  model            : model
+! In  carcri           : map for parameters for integration of constitutive law
 ! In  base             : Jeveux base
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=8) :: mesh
-    integer :: nb_cmp
-    type(Behaviour_PrepCrit) :: ds_compor_para
+    type(Behaviour_PrepCrit) :: behaviourPrepCrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,37 +62,26 @@ character(len=1), intent(in) :: base
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_5')
     endif
-!
+
 ! - Initialisations
-!
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-!
-! - Create carcri informations objects
-!
-    call carc_info(ds_compor_para)
-!
+
+! - Create objects
+    call carc_info(behaviourPrepCrit)
+
 ! - Create CARCRI <CARTE>
-!
-    call carc_init(mesh, carcri, base, nb_cmp)
-!
-! - Default CARCRI <CARTE> on all mesh
-!
-    call nocart(carcri, 1, nb_cmp)
-!
+    call carc_init(mesh, carcri, base)
+
 ! - Read informations from command file
-!
-    call carc_read(ds_compor_para, model, l_implex)
-!
+    call carc_read(behaviourPrepCrit, model)
+
 ! - Check informations in CARCRI <CARTE>
-!
-    call carc_chck(ds_compor_para)
-!
+    call carc_chck(behaviourPrepCrit)
+
 ! - Save and check informations in CARCRI <CARTE>
-!
-    call carc_save(mesh, carcri, nb_cmp, ds_compor_para)
-!
+    call carc_save(mesh, carcri, behaviourPrepCrit)
+
 ! - Cleaning
-!
-    deallocate(ds_compor_para%v_crit)
+    deallocate(behaviourPrepCrit%v_crit)
 !
 end subroutine

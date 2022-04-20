@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -417,6 +417,19 @@ class MECA_BARRE(Element):
         ),
 
         OP.RAPH_MECA(te=248,
+            para_in =( (SP.PCAGNBA, LC.CCAGNBA), (OP.RAPH_MECA.PCAORIE, CCAORIE),
+                       (SP.PCARCRI, LC.CCARCRI), (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
+                       (OP.RAPH_MECA.PCONTMR, EEFGEGA), (SP.PDEPLMR, DDL_MECA),
+                       (SP.PDEPLPR, DDL_MECA), (SP.PGEOMER, NGEOMER),
+                       (SP.PINSTMR, CTEMPSR), (SP.PINSTPR, CTEMPSR),
+                       (SP.PMATERC, LC.CMATERC), (SP.PVARCMR, LC.ZVARCPG),
+                       (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                       (SP.PVARIMP, ZVARIPG), (OP.RAPH_MECA.PVARIMR, ZVARIPG), ),
+            para_out=( (SP.PCODRET, LC.ECODRET), (OP.RAPH_MECA.PCONTPR, EEFGEGA),
+                       (OP.RAPH_MECA.PVARIPR, ZVARIPG), (SP.PVECTUR, MVECTUR), ),
+        ),
+        
+        OP.RAPH_MECA_IMPLEX(te=248,
             para_in =( (SP.PCAGNBA, LC.CCAGNBA), (OP.RAPH_MECA.PCAORIE, CCAORIE),
                        (SP.PCARCRI, LC.CCARCRI), (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR),
                        (OP.RAPH_MECA.PCONTMR, EEFGEGA), (SP.PDEPLMR, DDL_MECA),

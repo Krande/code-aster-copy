@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,22 +44,18 @@ character(len=19), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: compor_info
+    character(len=19), parameter :: comporInfo = '&&NMDOCC.INFO'
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor_info = '&&NMDOCC.INFO'
-!
+
 ! - Prepare informations about internal variables
-!
-    call comp_meca_pvar(model_ = model, compor_cart_ = compor, compor_info = compor_info)
-!
+    call comp_meca_pvar(model_ = model, comporMap_ = compor, comporInfo = comporInfo)
+
 ! - Print informations about internal variables
-!
-    call imvari(compor_info)
-!
-! - Cleaning
-!
-    call jedetc('V', compor_info, 1)
+    call imvari(comporInfo)
+
+! - Clean
+    call jedetc('V', comporInfo, 1)
 !
 end subroutine

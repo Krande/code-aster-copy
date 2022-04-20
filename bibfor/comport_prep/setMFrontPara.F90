@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine setMFrontPara(v_crit, i_comp)
+subroutine setMFrontPara(behaviourCrit, iFactorKeyword)
 !
 use Behaviour_type
 !
@@ -29,19 +29,19 @@ implicit none
 #include "asterc/mfront_set_outofbounds_policy.h"
 #include "asterfort/assert.h"
 !
-type(Behaviour_Crit), pointer :: v_crit(:)
-integer, intent(in) :: i_comp
+type(Behaviour_Crit), pointer :: behaviourCrit(:)
+integer, intent(in) :: iFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of behaviour (mechanics)
+! Preparation of constitutive laws (mechanics)
 !
 ! Set parameters for MFront
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  v_crit           : list of informations to save
-! In  i_comp           : index in previous list
+! In  behaviourCrit    : parameters for integration of constitutive law
+! In  iFactorKeyword   : index of factor keyword (for map)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,10 +54,10 @@ integer, intent(in) :: i_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    iveriborne     = v_crit(i_comp)%iveriborne
-    resi_inte_rela = v_crit(i_comp)%resi_inte_rela
-    iter_inte_maxi = v_crit(i_comp)%iter_inte_maxi
-    paraExte       = v_crit(i_comp)%paraExte
+    iveriborne     = behaviourCrit(iFactorKeyword)%iveriborne
+    resi_inte_rela = behaviourCrit(iFactorKeyword)%resi_inte_rela
+    iter_inte_maxi = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+    paraExte       = behaviourCrit(iFactorKeyword)%paraExte
     l_mfront_offi  = paraExte%l_mfront_offi
     l_mfront_proto = paraExte%l_mfront_proto
     libr_name      = paraExte%libr_name

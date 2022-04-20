@@ -269,7 +269,7 @@ integer :: codret
     integer, parameter                 :: nvi_gdef_log  = 6
     character(len=16) :: defo_ldc, defo_comp, regu_visc
     aster_logical :: l_pred, l_czm, l_defo_meca, l_large
-    aster_logical :: l_regu_visc, l_gdef_log
+    aster_logical :: l_regu_visc, l_gdef_log, lImplex
     integer:: nvi, idx_regu_visc, ndimsi
     real(kind=8):: sigm(nsig)
 !
@@ -280,12 +280,13 @@ integer :: codret
     read (compor(DEFO_LDC),'(A16)') defo_ldc
     read (compor(DEFO),'(A16)') defo_comp
     read (compor(REGUVISC),'(A16)') regu_visc
-    l_pred      = option(1:9) .eq. 'RIGI_MECA'
-    l_czm       = typmod(2) .eq. 'ELEMJOIN'
-    l_large     = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
+    l_pred = option(1:9) .eq. 'RIGI_MECA'
+    l_czm = typmod(2) .eq. 'ELEMJOIN'
+    l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP'
     l_gdef_log  = defo_comp .eq. 'GDEF_LOG'
     l_defo_meca = defo_ldc .eq. 'MECANIQUE'
     l_regu_visc = regu_visc .eq. 'REGU_VISC_ELAS'
+    lImplex = option .eq. "RIGI_MECA_IMPLEX" .or. option .eq. "RAPH_MECA_IMPLEX"
 !
 ! - Prepare parameters at Gauss point
 !
@@ -319,6 +320,9 @@ integer :: codret
     if (typmod(2) .eq. 'EJ_HYME' .or. typmod(2) .eq. 'ELEMDISC' .or.&
         typmod(2) .eq. 'ELEMJOIN'.or. typmod(2) .eq. 'INTERFAC') then
         numlc = numlc + 7000
+    endif
+    if (lImplex) then
+        numlc = numlc + 2000
     endif
 !
 ! - How many internal variables really for the constitutive law

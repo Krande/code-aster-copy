@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
 !
 !
-    aster_logical :: cplan, plasti, inco, dech
+    aster_logical :: cplan, plasti, inco
     integer :: ndimsi, jprol2, jvale2, nbval2
     integer :: imate2, k, l, niter, ibid
     integer :: iret5
@@ -107,7 +107,6 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !     ----------------------
     cplan = typmod(1) .eq. 'C_PLAN'
     inco = typmod(2) .eq. 'INCO'
-    dech = option(11:14).eq.'ELAS'
     if (inco) then
         co = 0.d0
     else
@@ -267,7 +266,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !     -------------------------------------
     dp=0.d0
 !
-    if (option(1:9) .eq. 'RAPH_MECA') then
+    if (option .eq. 'RAPH_MECA_IMPLEX') then
 !
         if (compor(1)(1:4) .eq. 'ELAS') then
             do k = 1, ndimsi
@@ -333,7 +332,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
 !    RIGI_MECA_IMPLEX : EXTRAPOLATION, CONTRAINTES ET MATRICE
 !
-    else if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
+    else if (option .eq. 'RIGI_MECA_IMPLEX') then
 !
 !    EXTRAPOLATION
 !
@@ -372,8 +371,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 !
 !    MATRICE TANGENTE
 !
-        if (option(1:10) .eq. 'RIGI_MECA_') then
-!         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
+        if (option .eq. 'RIGI_MECA_IMPLEX') then
             rp = 0.d0
             do k = 1, ndimsi
                 sigdv(k) = sigmdv(k)
@@ -397,24 +395,23 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
         end do
 !
         a=1.d0
-        if (.not.dech) then
-            if (compor(1) .eq. 'VMIS_ISOT_LINE') then
-                sigeps = 0.d0
+        if (compor(1) .eq. 'VMIS_ISOT_LINE') then
+            sigeps = 0.d0
+            do k = 1, ndimsi
+                sigeps = sigeps + sigdv(k)*depsdv(k)
+            end do
+            if (plasti .and. sigeps .ge. 0.d0) then
+                a = 1.d0+1.5d0*deuxmu*dp/rp
+                coef = -(1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/ rp**2 *(1.d0 - dp*rprim/rp &
+                        &)/a
                 do k = 1, ndimsi
-                    sigeps = sigeps + sigdv(k)*depsdv(k)
-                end do
-                if (plasti .and. sigeps .ge. 0.d0) then
-                    a = 1.d0+1.5d0*deuxmu*dp/rp
-                    coef = -(1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/ rp**2 *(1.d0 - dp*rprim/rp &
-                           &)/a
-                    do k = 1, ndimsi
-                        do l = 1, ndimsi
-                            dsidep(k,l) = coef*sigdv(k)*sigdv(l)
-                        end do
+                    do l = 1, ndimsi
+                        dsidep(k,l) = coef*sigdv(k)*sigdv(l)
                     end do
-                endif
+                end do
             endif
         endif
+
 !
 !       -- 8.2 PARTIE ELASTIQUE:
         do k = 1, 3
@@ -441,7 +438,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
 136         continue
         endif
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
 999 continue

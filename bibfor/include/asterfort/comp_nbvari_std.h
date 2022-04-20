@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,9 @@
 interface
     subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
                                kit_comp , post_iter, regu_visc,&
-                               l_implex , nbVari   , numeLaw)
+                               nbVari   , numeLaw)
         character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
         character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc
-        aster_logical, intent(in) :: l_implex
         integer, intent(out) :: nbVari, numeLaw
     end subroutine comp_nbvari_std
 end interface

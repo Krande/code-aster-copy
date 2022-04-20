@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
-                           kit_comp , post_iter, regu_visc,&
-                           l_implex , nbVari   , numeLaw)
+                           kit_comp, post_iter, regu_visc,&
+                           nbVari, numeLaw)
 !
 implicit none
 !
@@ -31,12 +31,11 @@ implicit none
 !
 character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
 character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc
-aster_logical, intent(in) :: l_implex
 integer, intent(out) :: nbVari, numeLaw
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of comportment (mechanics)
+! Preparation of constitutive laws (mechanics)
 !
 ! Get number of internal state variables for standard constitutive laws
 !
@@ -48,7 +47,6 @@ integer, intent(out) :: nbVari, numeLaw
 ! In  kit_comp         : KIT comportment
 ! In  post_iter        : type of post_treatment
 ! In  regu_visc        : keyword for viscuous regularization
-! In  l_implex         : .true. if IMPLEX method
 ! Out nbVari           : number of internal state variables
 ! Out numeLaw          : index of subroutine for behaviour
 !
@@ -64,7 +62,7 @@ integer, intent(out) :: nbVari, numeLaw
 
 ! - Coding composite comportment (Python)
     call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                        post_iter, regu_visc, l_implex,&
+                        post_iter, regu_visc, &
                         comp_code_py)
 
 ! - Get number of total internal state variables and index of law

@@ -75,8 +75,6 @@ character(len=16), pointer :: infoVari(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! - No internal state variable for IMPLEX
-    aster_logical, parameter :: l_implex = ASTER_FALSE
     character(len=6) :: metaPhasName(10)
     character(len=8) :: metaRelaName(30)
     character(len=16) :: metaGlobName(30)
@@ -95,7 +93,7 @@ character(len=16), pointer :: infoVari(:)
 ! ----- Name of internal state variables
         if (l_prot_comp) then
             call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                                post_iter, regu_visc, l_implex,&
+                                post_iter, regu_visc,&
                                 compCodePy)
             nbVariOther = nbVari - nbVariMeca
             do iVariMeca = 1, nbVariMeca
@@ -108,7 +106,7 @@ character(len=16), pointer :: infoVari(:)
 
         else if (l_mfront_offi) then
             call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                                post_iter, regu_visc, l_implex,&
+                                post_iter, regu_visc,&
                                 compCodePy)
             nbVariOther = nbVari - nbVariMeca
             call comp_mfront_vname(nbVariMeca, &
@@ -157,14 +155,14 @@ character(len=16), pointer :: infoVari(:)
                 nbVariOther = nbVari - iVari
                 if (nbVariOther .ne. 0) then
                     call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                                        post_iter, regu_visc, l_implex,&
+                                        post_iter, regu_visc,&
                                         compCodePy)
                     call lcvari(compCodePy, nbVariOther, infoVari(iVari+1:nbVari))
                     call lcdiscard(compCodePy)
                 endif
             else
                 call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                                    post_iter, regu_visc, l_implex,&
+                                    post_iter, regu_visc,&
                                     compCodePy)
                 call lcvari(compCodePy, nbVari, infoVari)
                 call lcdiscard(compCodePy)

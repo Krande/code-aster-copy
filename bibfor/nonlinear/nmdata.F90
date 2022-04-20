@@ -104,7 +104,7 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
     integer :: ifm, niv
     character(len=8) :: result
     character(len=16) :: k16bid, nomcmd
-    aster_logical :: l_etat_init, l_sigm, l_implex
+    aster_logical :: l_etat_init, l_sigm
     character(len=24) :: typco
 !
 ! --------------------------------------------------------------------------------------------------
@@ -149,13 +149,10 @@ type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 ! - Read parameters for algorithm management (line search)
 !
     call nmdomt_ls(ds_algopara)
-!
+
 ! - Read objects for constitutive laws
-!
-    l_implex = ds_algopara%method.eq.'IMPLEX'
     call nmdorc(model, mater, l_etat_init,&
-                ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp,&
-                l_implex)
+                ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
 !
 ! - Read parameters for convergence
 !

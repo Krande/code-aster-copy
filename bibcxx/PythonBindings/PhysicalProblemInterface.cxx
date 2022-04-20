@@ -109,11 +109,9 @@ Returns:
     Arguments:
         COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
         SIGM_INIT (str): "OUI" if there is an initial stress field
-        IMPLEX (str): "OUI" if Implex algorithm is used
         INFO (int): level of verbosity, 1 to have description of behaviour or 0 to be quiet
             )",
-            py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ) = "NON", py::arg( "IMPLEX" ) = "NON",
-            py::arg( "INFO" ) = 1 );
+            py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ) = "NON", py::arg( "INFO" ) = 1 );
     c1.def( "getListOfLoads", &PhysicalProblem::getListOfLoads, R"(
 Return list of loads.
 

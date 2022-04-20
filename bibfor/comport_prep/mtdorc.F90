@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1003
 !
 subroutine mtdorc(model, compor)
 !
@@ -47,43 +48,34 @@ character(len=19), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp
+    integer :: nbCmp
     character(len=8) :: mesh
-    character(len=19) :: compor_info
-    type(META_PrepPara) :: ds_comporMeta
+    character(len=19), parameter :: comporInfo = '&&MTDORC.INFO'
+    type(META_PrepPara) :: behaviourPrepMeta
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor_info = '&&MTDORC.INFO'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-!
+
 ! - Create datastructure to prepare comportement
-!
-    call comp_meta_info(ds_comporMeta)
-!
+    call comp_meta_info(behaviourPrepMeta)
+
 ! - Create COMPOR <CARTE>
-!
-    call comp_init(mesh, compor, 'V', nb_cmp)
-!
+    call comp_init(mesh, compor, 'V', nbCmp)
+
 ! - Read informations from command file
-!
-    call comp_meta_read(ds_comporMeta)
-!
+    call comp_meta_read(behaviourPrepMeta)
+
 ! - Save informations in COMPOR <CARTE>
-!
-    call comp_meta_save(mesh         , compor, nb_cmp, &
-                        ds_comporMeta)
-!
+    call comp_meta_save(mesh, compor, nbCmp, behaviourPrepMeta)
+
 ! - Prepare informations about internal variables
-!
-    call comp_meta_pvar(model, compor, compor_info)
-!
+    call comp_meta_pvar(model, compor, comporInfo)
+
 ! - Print informations about internal variables
-!
-    call comp_meta_prnt(compor_info)
-!
-! - Cleaning
-!
-    deallocate(ds_comporMeta%v_comp)
+    call comp_meta_prnt(comporInfo)
+
+! - Clean
+    deallocate(behaviourPrepMeta%v_comp)
 !
 end subroutine

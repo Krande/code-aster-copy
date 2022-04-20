@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
 ! person_in_charge: nicolas.pignet at edf.fr
 !
 subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 !
-    implicit none
+implicit none
 !
 #include "asterc/getfac.h"
 #include "asterf_types.h"
@@ -30,17 +29,15 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 #include "asterfort/comp_meca_elas.h"
 #include "asterfort/cgCreateCompIncr.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8), intent(in)  :: result_in
-    character(len=19), intent(inout) :: compor
-    integer, intent(in)           :: iord0
-    aster_logical, intent(out)    :: l_incr
+character(len=8), intent(in)  :: result_in
+character(len=19), intent(inout) :: compor
+integer, intent(in) :: iord0
+aster_logical, intent(out) :: l_incr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +51,7 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 ! Out l_incr   : Incremental behavior or not ?
 ! --------------------------------------------------------------------------------------------------
 !
-   integer :: iret, nb_cmp, nbetin
+   integer :: iret, nbetin
    integer :: nb_vale, nb_zone, nb_cmp_max, i_zone
    character(len=8) :: mesh, repk, model
    character(len=16) :: defo_comp
@@ -62,9 +59,7 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
    integer, pointer :: v_compor_desc(:) => null()
    character(len=16), pointer :: v_compor_vale(:) => null()
 !
-   call jemarq()
-!
-! --- Initialization
+! --------------------------------------------------------------------------------------------------
 !
     l_etat_init = ASTER_FALSE
     l_impel     = ASTER_FALSE
@@ -83,8 +78,8 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 !
     if (iret .ne. 0) then
         l_impel = ASTER_TRUE
-        call comp_init(mesh, compor, 'V', nb_cmp)
-        call comp_meca_elas(compor, nb_cmp, l_etat_init)
+        call comp_init(mesh, compor, 'V')
+        call comp_meca_elas(compor, l_etat_init)
     endif
 !
 ! --- Incremental behavior or not ?
@@ -131,7 +126,5 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
             call utmess("F", "RUPTURE3_9", sk=defo_comp)
         end if
     end do
-!
-    call jedema()
 !
 end subroutine

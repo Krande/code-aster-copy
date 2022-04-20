@@ -81,7 +81,7 @@ character(len=16), intent(in) :: option, nomte
     lexc = (lteatt('MODELI','GRC'))
 !
     lNonLine = (option(1:9).eq.'FULL_MECA').or.&
-               (option.eq.'RAPH_MECA').or.&
+               (option(1:9).eq.'RAPH_MECA').or.&
                (option(1:10).eq.'RIGI_MECA_')
     lLine    = option .eq. 'RIGI_MECA'
 !

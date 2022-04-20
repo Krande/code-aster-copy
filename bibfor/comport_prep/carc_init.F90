@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine carc_init(mesh, carcri, base, nb_cmp)
+subroutine carc_init(mesh, carcri, base)
 !
 implicit none
 
@@ -28,76 +28,68 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
 #include "asterfort/Behaviour_type.h"
 !
 character(len=8) , intent(in) :: mesh
 character(len=19) , intent(in) :: carcri
 character(len=1), intent(in) :: base
-integer, intent(out) :: nb_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of comportment (mechanics)
+! Preparation of constitutive laws (mechanics)
 !
-! Initialization of CARCRI <CARTE>
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  mesh     : namle of mesh
-! In  compor   : name of <CARTE> CARCRI
-! In  base     : Jeveux base
-! Out nb_cmp   : number of components in <CARTE>
+! Initialization of map
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nume_gd
-    integer :: nb_cmp_max, icmp
-    character(len=8) :: name_gd
-    real(kind=8)    , pointer :: p_carcri_valv(:) => null()
-    character(len=8), pointer :: p_cata_nomcmp(:) => null()
-    character(len=8), pointer :: p_carcri_ncmp(:) => null()
+! In  mesh             : mesh
+! In  carcri           : map for parameters for integration of constitutive law
+! In  base             : Jeveux base
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_cmp  = 0
-    name_gd = 'CARCRI'
+    character(len=8), parameter :: physQuantityName = 'CARCRI'
+    integer :: physQuantityNume
+    integer :: nbCmp, iCmp
+    real(kind=8), pointer :: carcriValv(:) => null()
+    character(len=8), pointer :: cataNomcmp(:) => null()
+    character(len=8), pointer :: carcriNcmp(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
+!
+
 ! - Read catalog
-!
-    call jenonu(jexnom('&CATA.GD.NOMGD', name_gd), nume_gd)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', vk8 = p_cata_nomcmp)
-    call jelira(jexnum('&CATA.GD.NOMCMP', nume_gd), 'LONMAX', nb_cmp_max)
-    ASSERT(nb_cmp_max .le. CARCRI_SIZE)
-!
+    call jenonu(jexnom('&CATA.GD.NOMGD', physQuantityName), physQuantityNume)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', physQuantityNume), 'L', vk8 = cataNomcmp)
+    call jelira(jexnum('&CATA.GD.NOMCMP', physQuantityNume), 'LONMAX', nbCmp)
+    ASSERT(nbCmp .eq. CARCRI_SIZE)
+
 ! - Allocate <CARTE>
-!
     call detrsd("CARTE", carcri)
-    call alcart(base, carcri, mesh, name_gd)
-!
+    call alcart(base, carcri, mesh, physQuantityName)
+
 ! - Acces to <CARTE>
-!
-    call jeveuo(carcri(1:19)//'.NCMP', 'E', vk8 = p_carcri_ncmp)
-    call jeveuo(carcri(1:19)//'.VALV', 'E', vr  = p_carcri_valv)
-!
+    call jeveuo(carcri(1:19)//'.NCMP', 'E', vk8 = carcriNcmp)
+    call jeveuo(carcri(1:19)//'.VALV', 'E', vr  = carcriValv)
+
 ! - Init <CARTE>
-!
-    do icmp = 1, nb_cmp_max
-        p_carcri_ncmp(icmp) = p_cata_nomcmp(icmp)
-        p_carcri_valv(icmp) = 0.d0
+    do iCmp = 1, nbCmp
+        carcriNcmp(iCmp) = cataNomcmp(iCmp)
+        carcriValv(iCmp) = 0.d0
     enddo
-!
+
 ! - Default values
-!
-    p_carcri_valv(1) = 10
-    p_carcri_valv(2) = 0
-    p_carcri_valv(3) = 1.d-6
-    p_carcri_valv(4) = 1.d0
-    p_carcri_valv(4) = 1.d0
-    p_carcri_valv(HHO_COEF) = 0.d0
-    p_carcri_valv(HHO_STAB) = real(HHO_STAB_AUTO, kind=8)
-    p_carcri_valv(HHO_CALC) = real(HHO_CALC_NO, kind=8)
+    carcriValv(1) = 10
+    carcriValv(2) = 0
+    carcriValv(3) = 1.d-6
+    carcriValv(4) = 1.d0
+    carcriValv(4) = 1.d0
+    carcriValv(HHO_COEF) = 0.d0
+    carcriValv(HHO_STAB) = real(HHO_STAB_AUTO, kind=8)
+    carcriValv(HHO_CALC) = real(HHO_CALC_NO, kind=8)
 
+! - Allocate on all mesh
+    call nocart(carcri, 1, nbCmp)
 !
-    nb_cmp = nb_cmp_max
-
 end subroutine

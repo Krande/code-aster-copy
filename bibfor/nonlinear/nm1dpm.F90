@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0104
 subroutine nm1dpm(fami, kpg, ksp, imate, option,&
                   nvar, ncstpm, cstpm, sigm, vim,&
                   deps, vip, sigp, dsde)
@@ -82,7 +82,7 @@ subroutine nm1dpm(fami, kpg, ksp, imate, option,&
 !
 !---------- INITIALISATION DES VARIABLES DE SORTIE
 !
-    if ((option.eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA')) then
+    if ((option.eq.'FULL_MECA') .or. (option(1:9).eq.'RAPH_MECA')) then
         vip(1) = 0.d0
         vip(2) = 0.d0
         vip(3) = 0.d0

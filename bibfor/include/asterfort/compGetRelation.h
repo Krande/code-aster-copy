@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine compGetRelation(keywordfact, iComp, rela_comp)
-        character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iComp
+    subroutine compGetRelation(factorKeyword, iFactorKeyword, rela_comp)
+        character(len=16), intent(in) :: factorKeyword
+        integer, intent(in) :: iFactorKeyword
         character(len=16), intent(out) :: rela_comp
     end subroutine compGetRelation
 end interface

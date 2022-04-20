@@ -138,7 +138,7 @@ real(kind=8) :: sigp, vip(*), dsidep
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:10) .eq. 'RIGI_MECA_') then
             dsidep = ep
         endif
-        if (option .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
             vip(1) = 0.d0
             call verift(fami, kpg, ksp, 'T', imate,&
                         epsth_=depsth)

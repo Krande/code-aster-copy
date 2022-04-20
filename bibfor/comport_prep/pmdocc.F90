@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1003
 !
-subroutine pmdorc(compor, carcri, nbVari, type_comp, mult_comp)
+subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 !
 use Behaviour_type
 !
@@ -27,9 +26,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
-#include "asterfort/carc_info.h"
-#include "asterfort/carc_chck.h"
-#include "asterfort/carc_read.h"
 #include "asterfort/comp_meca_cvar.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_info.h"
@@ -41,124 +37,81 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/setBehaviourTypeValue.h"
-#include "asterfort/setBehaviourParaValue.h"
 #include "asterfort/Behaviour_type.h"
 !
 character(len=16), intent(out) :: compor(COMPOR_SIZE)
-real(kind=8), intent(out) :: carcri(CARCRI_SIZE)
 integer, intent(out) :: nbVari
 character(len=16), intent(out) :: type_comp, mult_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of comportment (mechanics) for SIMU_POINT_MAT
+! Preparation of behaviours (mechanics/SIMU_POINT_MAT)
 !
-! Prepare objects COMPOR <CARTE> and CARCRI <CARTE>
+! Get list of parameters for constitutive law
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out compor           : name of <CARTE> COMPOR
-! Out carcri           : name of <CARTE> CARCRI
+! Out compor           : list of parameters for constitutive law
 ! Out nbVari           : number of internal variables
 ! Out type_comp        : type of comportment (INCR/ELAS)
 ! Out mult_comp        : multi-comportment (DEFI_COMPOR for PMF)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: compor_info
+    character(len=19), parameter :: comporInfo = '&&PMDORC.LIST_VARI'
     integer :: nbocc1, nbocc2, nbocc3
-    character(len=16) :: keywordfact,rela_comp
-    aster_logical :: l_etat_init, l_implex, l_kit_thm
-    type(Behaviour_PrepPara) :: prepPara
-    type(Behaviour_PrepCrit) :: prepCrit
+    character(len=16) :: rela_comp
+    aster_logical :: l_etat_init, l_kit_thm
+    type(Behaviour_PrepPara) :: behaviourPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Initializations
-!
-    nbVari               = 0
-    type_comp             = ' '
-    compor_info           = '&&PMDORC.LIST_VARI'
-    keywordfact           = 'COMPORTEMENT'
+    nbVari = 0
+    type_comp = ' '
+    mult_comp = ' '
     compor(1:COMPOR_SIZE) = 'VIDE'
-    l_implex              = ASTER_FALSE
-!
+
 ! - Initial state
-!
     call getfac('SIGM_INIT', nbocc1)
     call getfac('EPSI_INIT', nbocc2)
     call getfac('VARI_INIT', nbocc3)
     l_etat_init = (nbocc1+nbocc2+nbocc3) > 0
-!
+
 ! - Create datastructure to prepare comportement
-!
-    call comp_meca_info(l_implex, prepPara)
-    if (prepPara%nb_comp .eq. 0) then
+    call comp_meca_info(behaviourPrepPara)
+    if (behaviourPrepPara%nb_comp .eq. 0) then
         call utmess('F', 'COMPOR4_63')
     endif
-!
+
 ! - Read informations from command file
-!
-    call comp_meca_read(l_etat_init, prepPara)
-!
+    call comp_meca_read(l_etat_init, behaviourPrepPara)
+
 ! - Count internal variables
-!
-    call comp_meca_cvar(prepPara)
-!
+    call comp_meca_cvar(behaviourPrepPara)
+
 ! - Some properties
-!
-    nbVari    = prepPara%v_para(1)%nbVari
-    rela_comp = prepPara%v_para(1)%rela_comp
-    type_comp = prepPara%v_para(1)%type_comp
-    mult_comp = prepPara%v_para(1)%mult_comp
-!
+    nbVari    = behaviourPrepPara%v_para(1)%nbVari
+    rela_comp = behaviourPrepPara%v_para(1)%rela_comp
+    type_comp = behaviourPrepPara%v_para(1)%type_comp
+    mult_comp = behaviourPrepPara%v_para(1)%mult_comp
+
 ! - Detection of specific cases
-!
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
     if (l_kit_thm) then
         call utmess('F', 'COMPOR2_7')
     endif
-!
+
 ! - Save informations in the field <COMPOR>
-!
-    call setBehaviourTypeValue(prepPara%v_para, l_compor_ = compor(1:COMPOR_SIZE))
-!
+    call setBehaviourTypeValue(behaviourPrepPara%v_para, comporList_ = compor(1:COMPOR_SIZE))
+
 ! - Prepare informations about internal variables
-!
-    call comp_meca_pvar(compor_list_ = compor, compor_info = compor_info)
-!
+    call comp_meca_pvar(comporList_ = compor, comporInfo = comporInfo)
+
 ! - Print informations about internal variables
-!
-    call imvari(compor_info)
-!
-! - Create carcri informations objects
-!
-    call carc_info(prepCrit)
-!
-! - Read informations from command file
-!
-    call carc_read(prepCrit, l_implex_ = l_implex)
-!
-! - Some checks
-!
-    call carc_chck(prepCrit)
-!
-! - Set in <CARTE>
-!
-    carcri(1:CARCRI_SIZE) = 0.d0
-    call setBehaviourParaValue(prepCrit%v_crit,&
-                               prepCrit%parm_theta_thm, prepCrit%parm_alpha_thm,&
-                               prepCrit%hho_coef_stab , prepCrit%hho_type_stab ,&
-                               prepCrit%hho_type_calc,&
-                               l_carcri_ = carcri(1:CARCRI_SIZE))
-!
+    call imvari(comporInfo)
+
 ! - Cleaning
-!
-    deallocate(prepPara%v_para)
-    deallocate(prepCrit%v_crit)
-!
-    call jedema()
+    deallocate(behaviourPrepPara%v_para)
+
 !
 end subroutine

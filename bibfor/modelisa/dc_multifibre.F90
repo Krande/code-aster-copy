@@ -63,7 +63,6 @@ character(len=8), intent(in) :: sdcomp
     integer :: valmi(5)
 !
     aster_logical :: l_kit, l_cristal
-    aster_logical, parameter :: l_implex = ASTER_FALSE
 !
     character(len=8)  :: materi, sdgf, mator
     character(len=16) :: rela_comp, defo_comp, type_cpla, rela_comp_py, kit_comp(4)
@@ -132,7 +131,7 @@ character(len=8), intent(in) :: sdcomp
         ! Get number of internal state variables
         call comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
                              kit_comp , post_iter,&
-                             regu_visc, l_implex ,&
+                             regu_visc,&
                              nbVari   , numeLaw)
         !
         do ig = 1, nbg

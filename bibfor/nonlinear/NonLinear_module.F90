@@ -62,15 +62,15 @@ contains
 ! Get name of option for non-linear computation at prediction
 !
 ! In  predMatrType     : type of matrix for prediction
-! In  l_implex         : flag for IMPELX method
+! In  lImplex          : flag for IMPLEX method
 ! Out option_nonlin    : name of option for non-linear computation
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine getOptionPred(predMatrType, l_implex, option_nonlin)
+subroutine getOptionPred(predMatrType, lImplex, option_nonlin)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     character(len=16), intent(in) :: predMatrType
-    aster_logical, intent(in) :: l_implex
+    aster_logical, intent(in) :: lImplex
     character(len=16), intent(out) :: option_nonlin
 !   ------------------------------------------------------------------------------------------------
     option_nonlin = ' '
@@ -88,7 +88,7 @@ subroutine getOptionPred(predMatrType, l_implex, option_nonlin)
     else
         ASSERT(ASTER_FALSE)
     endif
-    if (l_implex) then
+    if (lImplex) then
         option_nonlin = 'RIGI_MECA_IMPLEX'
     endif
 !   ------------------------------------------------------------------------------------------------
@@ -101,14 +101,15 @@ end subroutine
 !
 ! In  corrMatrType     : type of matrix for correction
 ! In  l_update_matr    : flag to update matrix
+! In  lImplex          : flag for IMPLEX method
 ! Out option_nonlin    : name of option for non-linear computation
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine getOptionCorr(corrMatrType, l_update_matr, option_nonlin)
+subroutine getOptionCorr(corrMatrType, l_update_matr, lImplex, option_nonlin)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     character(len=16), intent(in) :: corrMatrType
-    aster_logical, intent(in) :: l_update_matr
+    aster_logical, intent(in) :: l_update_matr, lImplex
     character(len=16), intent(out) :: option_nonlin
 !   ------------------------------------------------------------------------------------------------
     option_nonlin = ' '
@@ -125,6 +126,9 @@ subroutine getOptionCorr(corrMatrType, l_update_matr, option_nonlin)
         endif
     else
         option_nonlin = 'RAPH_MECA'
+        if (lImplex) then
+            option_nonlin = 'RAPH_MECA_IMPLEX'
+        endif
     endif
 !   ------------------------------------------------------------------------------------------------
 end subroutine
@@ -149,14 +153,14 @@ subroutine getOption(phaseType, list_func_acti, matrType, option_nonlin, l_updat
     character(len=16), intent(out) :: option_nonlin
     aster_logical, optional, intent(in) :: l_update_matr_
 ! - Local
-    aster_logical :: l_implex
+    aster_logical :: lImplex
 !   ------------------------------------------------------------------------------------------------
     option_nonlin = ' '
+    lImplex = isfonc(list_func_acti, 'IMPLEX')
     if (phaseType .eq. PRED_EULER) then
-        l_implex = isfonc(list_func_acti, 'IMPLEX')
-        call getOptionPred(matrType, l_implex, option_nonlin)
+        call getOptionPred(matrType, lImplex, option_nonlin)
     else if (phaseType .eq. CORR_NEWTON) then
-        call getOptionCorr(matrType, l_update_matr_, option_nonlin)
+        call getOptionCorr(matrType, l_update_matr_, lImplex, option_nonlin)
     else
         ASSERT(ASTER_FALSE)
     endif

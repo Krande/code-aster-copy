@@ -30,43 +30,44 @@ study = code_aster.PhysicalProblem(MOMEC2, CHMAT)
 behav = study.computeBehaviourProperty(
     COMPORTEMENT=(
         _F(RELATION="ELAS", GROUP_MA="M5"),
-        _F(RELATION="VMIS_CINE_LINE",
-           GROUP_MA=("M1", "M3", "M7", "M8", "M9")),))
+        _F(RELATION="VMIS_CINE_LINE", GROUP_MA=("M1", "M3", "M7", "M8", "M9")),
+    )
+)
 behav = study.getBehaviourProperty()
 # the same all arguments
 study.computeBehaviourProperty(
     COMPORTEMENT=(
         _F(RELATION="ELAS", GROUP_MA="M5"),
-        _F(RELATION="VMIS_CINE_LINE",
-           GROUP_MA=("M1", "M3", "M7", "M8", "M9")),),
+        _F(RELATION="VMIS_CINE_LINE", GROUP_MA=("M1", "M3", "M7", "M8", "M9")),
+    ),
     SIGM_INIT="NON",
-    IMPLEX="NON",
-    INFO=1)
+    INFO=1,
+)
 behav = study.getBehaviourProperty()
-behavField=behav.getBehaviourField()
+behavField = behav.getBehaviourField()
 
 with test.assertRaisesRegex(RuntimeError, "Unexpected value.*COMPORTEMENT"):
     study.computeBehaviourProperty(COMPORTEMENT="ELAS")
 
 dico_par = U2_2.getAccessParameters()
-test.assertEqual(sorted(dico_par.keys()), ['INST', 'NUME_ORDRE'])
-test.assertEqual(dico_par['NUME_ORDRE'], [0, 1, 2])
-test.assertEqual(dico_par['INST'], [60.0, 80.0, 100.0])
+test.assertEqual(sorted(dico_par.keys()), ["INST", "NUME_ORDRE"])
+test.assertEqual(dico_par["NUME_ORDRE"], [0, 1, 2])
+test.assertEqual(dico_par["INST"], [60.0, 80.0, 100.0])
 
-test.assertEqual(U2_2.getFieldsOnNodesRealNames(), ['DEPL'])
-test.assertEqual(U2_2.getFieldsOnCellsRealNames(), ['SIEF_ELGA', 'VARI_ELGA'])
+test.assertEqual(U2_2.getFieldsOnNodesRealNames(), ["DEPL"])
+test.assertEqual(U2_2.getFieldsOnCellsRealNames(), ["SIEF_ELGA", "VARI_ELGA"])
 
-ranks = dico_par['NUME_ORDRE']
-rf = U2_2.getField('DEPL', ranks[0] )
+ranks = dico_par["NUME_ORDRE"]
+rf = U2_2.getField("DEPL", ranks[0])
 sf = rf.exportToSimpleFieldOnNodes()
 
 values, mask = sf.getValues()
-test.assertAlmostEqual(values[3,0], 0.314065725792971)
-test.assertEqual(mask[3,0], True)
-test.assertEqual(sf.getNameOfComponents(), ['DX', 'DY'])
+test.assertAlmostEqual(values[3, 0], 0.314065725792971)
+test.assertEqual(mask[3, 0], True)
+test.assertEqual(sf.getNameOfComponents(), ["DX", "DY"])
 test.assertEqual(sf.getNumberOfComponents(), 2)
 test.assertEqual(sf.getNumberOfNodes(), 16)
-test.assertEqual(sf.getNameOfComponent(0), 'DX')
+test.assertEqual(sf.getNameOfComponent(0), "DX")
 
 with test.assertRaisesRegex(RuntimeError, "Out of range"):
     name = sf.getNameOfComponent(5)

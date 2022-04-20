@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
-                          post_iter, regu_visc, l_implex ,&
+                          post_iter, regu_visc, &
                           comp_code_py)
 !
 implicit none
@@ -28,12 +28,11 @@ implicit none
 !
 character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla, kit_comp(4)
 character(len=16), intent(in) :: post_iter, regu_visc
-aster_logical, intent(in) :: l_implex
 character(len=16), intent(out) :: comp_code_py
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of comportment (mechanics)
+! Preparation of constitutive laws (mechanics)
 !
 ! Coding composite behaviour
 !
@@ -45,7 +44,6 @@ character(len=16), intent(out) :: comp_code_py
 ! In  kit_comp         : KIT comportment
 ! In  post_iter        : type of post_treatment
 ! In  regu_visc        : keyword for viscuous regularization
-! In  l_implex         : .true. if IMPLEX method
 ! Out comp_code_py     : composite coded comportment (coding in Python)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -83,12 +81,6 @@ character(len=16), intent(out) :: comp_code_py
     if (post_iter .ne. ' ') then
         nb_comp_elem = nb_comp_elem + 1
         comp_elem(nb_comp_elem) = post_iter
-    endif
-
-! - Implex
-    if (l_implex) then
-        nb_comp_elem = nb_comp_elem + 1
-        comp_elem(nb_comp_elem) = 'IMPLEX'
     endif
 
 ! - Coding composite comportment (Python)

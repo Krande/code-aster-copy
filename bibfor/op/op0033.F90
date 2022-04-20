@@ -47,7 +47,8 @@ implicit none
 #include "asterfort/nmfinp.h"
 #include "asterfort/pmactn.h"
 #include "asterfort/pmconv.h"
-#include "asterfort/pmdorc.h"
+#include "asterfort/pmdocc.h"
+#include "asterfort/pmdocr.h"
 #include "asterfort/pmdrdy.h"
 #include "asterfort/pmimpr.h"
 #include "asterfort/pminit.h"
@@ -151,14 +152,14 @@ implicit none
 ! - Get material parameters
 !
     call getvid(' ', 'MATER', nbval=6, vect=mater, nbret=nbmat)
-!
-! - Get behaviours parameters
-!
-    call pmdorc(compor, carcri, nbvari, type_comp, mult_comp)
-    ASSERT(type_comp .eq. 'COMP_INCR' .or. type_comp .eq. 'COMP_ELAS')
-!
+
+! - Get list of parameters for constitutive law
+    call pmdocc(compor, nbVari, type_comp, mult_comp)
+
+! - Get list of parameters for integration of constitutive law
+    call pmdocr(carcri)
+
 ! - Create working vectors
-!
     call wkvect(vim, 'V V R', nbvari, lvim)
     call wkvect(vip, 'V V R', nbvari, lvip)
     call wkvect(svip, 'V V R', nbvari, lsvip)

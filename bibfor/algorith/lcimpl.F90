@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine lcimpl(fami, kpg, ksp, imate, em,&
                   ep, sigm, tmoins, tplus, deps,&
                   vim, option, sigp, vip, dsde)
 !
+implicit none
 !
-!
-!
-    implicit none
-!     ------------------------------------------------------------------
-!     ARGUMENTS
-!     ------------------------------------------------------------------
 #include "asterfort/rcvalb.h"
 #include "asterfort/verift.h"
+#include "asterfort/assert.h"
     real(kind=8) :: em, ep, et, sigy, tmoins, tplus
     real(kind=8) :: sigm, deps, pm, vim(*), vip(*), dt, p
     real(kind=8) :: sigp, dsde
@@ -72,7 +68,7 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
 !     ------------------------------------------------------------------
 !     CALCUL EPSP, P , SIG
 !     ------------------------------------------------------------------
-    if (option .eq. 'RAPH_MECA') then
+    if (option .eq. 'RAPH_MECA_IMPLEX') then
         if (sieleq .le. rm) then
             dp=0.d0
             sigp = sige
@@ -86,8 +82,7 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
             sigp = sige/ (1.d0+ep*dp/rp)
         endif
         vip(2) = dp/dt
-    endif
-    if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
+    elseif (option .eq. 'RIGI_MECA_IMPLEX') then
 !    EXTRAPOLATION
         dp=max(vim(2)*dt,0.d0)
         p= vim(1) + dp
@@ -97,6 +92,8 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
         sigp=sige/(1.d0+(ep*dp/rp))
 !    MATRICE
         dsde = ep
+    else
+        ASSERT(ASTER_FALSE)
     endif
 !
 end subroutine

@@ -15,51 +15,49 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine carc_info(behaviourPrepCrit)
+subroutine getTHMPara(behaviourPrepCrit)
 !
 use Behaviour_type
 !
 implicit none
 !
-#include "asterc/getfac.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/getvr8.h"
 !
-type(Behaviour_PrepCrit), intent(out) :: behaviourPrepCrit
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Parameters for integration of constitutive laws (mechanics)
-!
-! Create objects
+type(Behaviour_PrepCrit), intent(inout) :: behaviourPrepCrit
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out behaviourPrepCrit: datastructure to prepare parameters for constitutive laws
+! THM
+!
+! Get parameters from STAT_NON_LINE command
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
-    integer :: nbInfo, nbFactorKeyword
+! IO  behaviourPrepCrit: datastructure to prepare parameters for constitutive laws
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: factorKeyword = 'SCHEMA_THM'
+    integer :: iret
+    real(kind=8) :: parm_theta_thm, parm_alpha_thm
+!
+! --------------------------------------------------------------------------------------------------
+!
+    parm_theta_thm = 1.d0
+    parm_alpha_thm = 1.d0
 
-! - Number of factor keywords
-    nbFactorKeyword = 0
-    call getfac(factorKeyword, nbFactorKeyword)
-
-! - Number of factor keyword information
-    if (nbFactorKeyword .eq. 0) then
-        nbInfo = 1
-    else
-        nbInfo = nbFactorKeyword
-    endif
-
-! - Initializations
-    behaviourPrepCrit%nb_comp = nbFactorKeyword
-    behaviourPrepCrit%v_crit => null()
-    allocate(behaviourPrepCrit%v_crit(nbInfo))
+    call getvr8(factorKeyword, 'PARM_THETA', iocc = 1, nbval=0, nbret = iret)
+    if (iret .ne. 0) then
+        call getvr8(factorKeyword, 'PARM_THETA', iocc = 1, scal = parm_theta_thm, nbret = iret)
+        call getvr8(factorKeyword, 'PARM_ALPHA', iocc = 1, scal = parm_alpha_thm, nbret = iret)
+    end if
+!
+    behaviourPrepCrit%parm_theta_thm = parm_theta_thm
+    behaviourPrepCrit%parm_alpha_thm = parm_alpha_thm
 !
 end subroutine

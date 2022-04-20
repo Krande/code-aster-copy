@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,37 +63,34 @@ aster_logical, intent(out) :: incr
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nbcomp, iret, nb_cmp, nbetin
-    character(len=16) :: keywordfact
+    integer :: nbFactorKeyword, iret, nbetin
+    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=24) :: repk
     character(len=8) :: mesh
-    aster_logical :: limpel, l_etat_init, l_implex
+    aster_logical :: limpel, l_etat_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infniv(ifm, niv)
-!
+
 ! - Initializations
-!
-    l_implex = .false.
     limpel = .false.
     incr = .false.
-    nbcomp = 0
-    keywordfact = 'COMPORTEMENT'
-    compor      = '&&CGLECO.COMPOR'
+    nbFactorKeyword = 0
+
+    compor = '&&CGLECO.COMPOR'
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
-    l_etat_init = .false.
     call getfac('ETAT_INIT', nbetin)
-    if (nbetin .ne. 0) l_etat_init=.true.
+    l_etat_init = nbetin .ne. 0
 !
 ! - How many COMPORTEMENT in CALC_G ?
 !
-    call getfac(keywordfact, nbcomp)
+    call getfac(factorKeyword, nbFactorKeyword)
 !
 ! - Get or create COMPOR <CARTE>
 !
-    if (nbcomp .eq. 0) then
+    if (nbFactorKeyword .eq. 0) then
 !
 ! ----- No COMPORTEMENT: get from RESULT
 !
@@ -103,12 +100,12 @@ aster_logical, intent(out) :: incr
 !
         if (iret .ne. 0) then
             limpel = .true.
-            call comp_init(mesh, compor, 'V', nb_cmp)
-            call comp_meca_elas(compor, nb_cmp, l_etat_init)
+            call comp_init(mesh, compor, 'V')
+            call comp_meca_elas(compor, l_etat_init)
         endif
     else
 ! ----- Get COMPORTEMENT from command file
-        call nmdocc(modele, mate, l_etat_init, l_implex, compor, 'V')
+        call nmdocc(modele, mate, l_etat_init, compor, 'V')
         if (niv .ge. 2) then
             call comp_info(modele, compor)
         endif
@@ -132,7 +129,7 @@ aster_logical, intent(out) :: incr
 !  -Si Comportement dans CALC_G(alors RELATION est renseigne) ---> emission d'un message d'alarme !
 !    normalement le comportement est recupere dans Meca_stat ou stat_non_line.
 !
-    if (nbcomp .gt. 0) then
+    if (nbFactorKeyword .gt. 0) then
         call utmess('A', 'RUPTURE1_41')
     end if
 !

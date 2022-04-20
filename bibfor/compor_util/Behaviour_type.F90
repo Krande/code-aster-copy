@@ -236,15 +236,15 @@ implicit none
 ! - Behaviour - Preparation - Map for parameters of behaviours (COMPOR)
     type Behaviour_PrepPara
 ! ----- Number of factor keywords
-        integer                             :: nb_comp = 0
+        integer :: nb_comp = 0
 ! ----- List of parameters
-        type(Behaviour_Para), pointer       :: v_para(:)     => null()
+        type(Behaviour_Para), pointer :: v_para(:)=> null()
 ! ----- List of parameters for external behaviours
-        type(Behaviour_ParaExte), pointer   :: v_paraExte(:) => null()
-! ----- Flag for IMPLEX method
-        aster_logical                       :: l_implex = ASTER_FALSE
+        type(Behaviour_ParaExte), pointer  :: v_paraExte(:) => null()
 ! ----- Flag for non-incremental cases (at least one behaviour is NOT incremental)
-        aster_logical                       :: lNonIncr = ASTER_FALSE
+        aster_logical :: lNonIncr = ASTER_FALSE
+! ----- Flag for debug
+        aster_logical :: lDebug = ASTER_TRUE
     end type Behaviour_PrepPara
 !
 end module

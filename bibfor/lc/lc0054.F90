@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,24 +52,6 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate,&
 !               TYPMOD  TYPE DE MODELISATION
 !               IMATE    ADRESSE DU MATERIAU CODE
 !               COMPOR    COMPORTEMENT DE L ELEMENT
-!                     COMPOR(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
-!                     COMPOR(2) = NB DE VARIABLES INTERNES
-!                     COMPOR(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
-!               CRIT    CRITERES  LOCAUX
-!                       CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
-!                                 (ITER_INTE_MAXI == ITECREL)
-!                       CRIT(2) = TYPE DE JACOBIEN A T+DT
-!                                 (TYPE_MATR_COMP == MACOMP)
-!                                 0 = EN VITESSE     > SYMETRIQUE
-!                                 1 = EN INCREMENTAL > NON-SYMETRIQUE
-!                                 9 = methode IMPLEX
-!                       CRIT(3) = VALEUR DE LA TOLERANCE DE CONVERGENCE
-!                                 (RESI_INTE_RELA == RESCREL)
-!                       CRIT(5) = NOMBRE D'INCREMENTS POUR LE
-!                                 REDECOUPAGE LOCAL DU PAS DE TEMPS
-!                                 (ITER_INTE_PAS == ITEDEC)
-!                                 0 = PAS DE REDECOUPAGE
-!                                 N = NOMBRE DE PALIERS
 !               INSTAM   INSTANT T
 !               INSTAP   INSTANT T+DT
 !               EPSM   DEFORMATION TOTALE A T
@@ -78,18 +60,12 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate,&
 !               VIM    VARIABLES INTERNES A T    + INDICATEUR ETAT T
 !    ATTENTION  VIM    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
 !               OPTION     OPTION DE CALCUL A FAIRE
-!                             'RIGI_MECA_TANG'> DSIDEP(T)
-!                             'FULL_MECA'     > DSIDEP(T+DT) , SIG(T+DT)
-!                             'RAPH_MECA'     > SIG(T+DT)
-!                             'RIGI_MECA_IMPLEX' > DSIDEP(T), SIGEXTR
 !               ANGMAS
 !       OUT     SIGP    CONTRAINTE A T+DT
 !               VIP    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 !               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !.......................................................................
 !               CODRET
-!
-! person_in_charge: sebastien.fayolle at edf.fr
     character(len=16) :: mcmate
     integer :: iret
     real(kind=8) :: r8bid

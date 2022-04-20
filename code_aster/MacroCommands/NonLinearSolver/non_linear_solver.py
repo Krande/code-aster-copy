@@ -98,7 +98,7 @@ class NonLinearSolver:
         Arguments:
             keywords (dict) : keywords as dict
         """
-        self.phys_pb.computeBehaviourProperty(keywords, "NON", "NON", 2)
+        self.phys_pb.computeBehaviourProperty(keywords, "NON", 2)
 
     def setLinearSolver(self, solver=None, keywords=None):
         """Set linear solver from keywords or directly.

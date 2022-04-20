@@ -140,7 +140,6 @@ class PhysicalProblem {
      * @brief Create ConstantFieldOnCell for behaviours
      */
     void computeBehaviourProperty( py::object &keywords, const std::string &initialState = "NON",
-                                   const std::string &implex = "NON",
                                    const ASTERINTEGER verbosity = 1 );
 
     /**

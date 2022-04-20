@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine setBehaviourParaValue(v_crit       , parm_theta_thm, parm_alpha_thm,&
+subroutine setBehaviourParaValue(behaviourCrit, parm_theta_thm, parm_alpha_thm,&
                                  hho_coef_stab, hho_type_stab , hho_type_calc ,&
-                                 i_comp_      , l_carcri_     , v_carcri_)
+                                 iFactorKeyword_, carcriList_ , carcriMap_)
 !
 use Behaviour_type
 !
@@ -29,108 +29,107 @@ implicit none
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/setMFrontPara.h"
 !
-type(Behaviour_Crit), pointer :: v_crit(:)
+type(Behaviour_Crit), pointer :: behaviourCrit(:)
 real(kind=8), intent(in) :: parm_theta_thm, parm_alpha_thm
 real(kind=8), intent(in) :: hho_coef_stab, hho_type_stab, hho_type_calc
-integer, optional, intent(in) :: i_comp_
-real(kind=8), intent(out), optional :: l_carcri_(:)
-real(kind=8), pointer, optional :: v_carcri_(:)
+integer, optional, intent(in) :: iFactorKeyword_
+real(kind=8), intent(out), optional :: carcriList_(:)
+real(kind=8), pointer, optional :: carcriMap_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of behaviour (mechanics)
+! Preparation of constitutive laws (mechanics)
 !
-! Save informations in the field <CARCRI>
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  v_crit           : list of informations to save
-! In  i_comp           : index in previous list
-! In  l_carcri         : liste of components for <CARTE> CARCRI - (SIMU_POIN_MAT)
-! In  v_carcri         : liste of components for <CARTE> CARCRI - (*_NON_LINE)
+! Set values in the map or in list
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_comp
+! In  behaviourCrit    : parameters for integration of constitutive law
+! In  iFactorKeyword   : index of factor keyword (for map)
+! In  carcriList       : list for parameters for integration of constitutive law
+! In  carcriMap        : map for parameters for integration of constitutive law
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    i_comp = 1
-    if (present(i_comp_)) then
-        i_comp = i_comp_
+    integer :: iFactorKeyword
+!
+! --------------------------------------------------------------------------------------------------
+!
+    iFactorKeyword = 1
+    if (present(iFactorKeyword_)) then
+        iFactorKeyword = iFactorKeyword_
     endif
 !
-    if (present(v_carcri_)) then
-        v_carcri_(ITER_INTE_MAXI)     = v_crit(i_comp)%iter_inte_maxi
-        v_carcri_(TYPE_MATR_T)        = v_crit(i_comp)%type_matr_t
-        v_carcri_(RESI_INTE_RELA)     = v_crit(i_comp)%resi_inte_rela
-        v_carcri_(PARM_THETA)         = v_crit(i_comp)%parm_theta
-        v_carcri_(ITER_INTE_PAS)      = v_crit(i_comp)%iter_inte_pas
-        v_carcri_(ALGO_INTE_R)        = v_crit(i_comp)%algo_inte_r
-        v_carcri_(VALE_PERT_RELA)     = v_crit(i_comp)%vale_pert_rela
-        v_carcri_(RESI_DEBORST_MAX)   = v_crit(i_comp)%resi_deborst_max
-        v_carcri_(ITER_DEBORST_MAX)   = v_crit(i_comp)%iter_deborst_max
-        v_carcri_(RESI_RADI_RELA)     = v_crit(i_comp)%resi_radi_rela
-        v_carcri_(IVARIEXT1)          = v_crit(i_comp)%jvariext1
-        v_carcri_(IVARIEXT2)          = v_crit(i_comp)%jvariext2
-        v_carcri_(PARM_THETA_THM)     = parm_theta_thm
-        v_carcri_(PARM_ALPHA_THM)     = parm_alpha_thm
-        v_carcri_(IPOSTITER)          = v_crit(i_comp)%ipostiter
-        if (v_crit(i_comp)%l_matr_unsymm) then
-            v_carcri_(CARCRI_MATRSYME) = 1
+    if (present(carcriMap_)) then
+        carcriMap_(ITER_INTE_MAXI)     = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+        carcriMap_(TYPE_MATR_T)        = behaviourCrit(iFactorKeyword)%type_matr_t
+        carcriMap_(RESI_INTE_RELA)     = behaviourCrit(iFactorKeyword)%resi_inte_rela
+        carcriMap_(PARM_THETA)         = behaviourCrit(iFactorKeyword)%parm_theta
+        carcriMap_(ITER_INTE_PAS)      = behaviourCrit(iFactorKeyword)%iter_inte_pas
+        carcriMap_(ALGO_INTE_R)        = behaviourCrit(iFactorKeyword)%algo_inte_r
+        carcriMap_(VALE_PERT_RELA)     = behaviourCrit(iFactorKeyword)%vale_pert_rela
+        carcriMap_(RESI_DEBORST_MAX)   = behaviourCrit(iFactorKeyword)%resi_deborst_max
+        carcriMap_(ITER_DEBORST_MAX)   = behaviourCrit(iFactorKeyword)%iter_deborst_max
+        carcriMap_(RESI_RADI_RELA)     = behaviourCrit(iFactorKeyword)%resi_radi_rela
+        carcriMap_(IVARIEXT1)          = behaviourCrit(iFactorKeyword)%jvariext1
+        carcriMap_(IVARIEXT2)          = behaviourCrit(iFactorKeyword)%jvariext2
+        carcriMap_(PARM_THETA_THM)     = parm_theta_thm
+        carcriMap_(PARM_ALPHA_THM)     = parm_alpha_thm
+        carcriMap_(IPOSTITER)          = behaviourCrit(iFactorKeyword)%ipostiter
+        if (behaviourCrit(iFactorKeyword)%l_matr_unsymm) then
+            carcriMap_(CARCRI_MATRSYME) = 1
         else
-            v_carcri_(CARCRI_MATRSYME) = 0
+            carcriMap_(CARCRI_MATRSYME) = 0
         endif
-        v_carcri_(IPOSTINCR)          = v_crit(i_comp)%ipostincr
+        carcriMap_(IPOSTINCR)          = behaviourCrit(iFactorKeyword)%ipostincr
 ! ----- For external solvers (UMAT / MFRONT)
-        v_carcri_(EXTE_PTR)           = v_crit(i_comp)%cptr_fct_ldc
-        v_carcri_(EXTE_STRAIN)        = v_crit(i_comp)%exte_strain
-        v_carcri_(EXTE_ESVA_NB)       = v_crit(i_comp)%cptr_nbvarext
-        v_carcri_(EXTE_ESVA_PTR_NAME) = v_crit(i_comp)%cptr_namevarext
-        v_carcri_(EXTE_PROP_NB)       = v_crit(i_comp)%cptr_nameprop
-        v_carcri_(EXTE_PROP_PTR_NAME) = v_crit(i_comp)%cptr_nbprop
+        carcriMap_(EXTE_PTR)           = behaviourCrit(iFactorKeyword)%cptr_fct_ldc
+        carcriMap_(EXTE_STRAIN)        = behaviourCrit(iFactorKeyword)%exte_strain
+        carcriMap_(EXTE_ESVA_NB)       = behaviourCrit(iFactorKeyword)%cptr_nbvarext
+        carcriMap_(EXTE_ESVA_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_namevarext
+        carcriMap_(EXTE_PROP_NB)       = behaviourCrit(iFactorKeyword)%cptr_nameprop
+        carcriMap_(EXTE_PROP_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_nbprop
 ! ----- For HHO
-        v_carcri_(HHO_COEF)           = hho_coef_stab
-        v_carcri_(HHO_STAB)           = hho_type_stab
-        v_carcri_(HHO_CALC)           = hho_type_calc
+        carcriMap_(HHO_COEF)           = hho_coef_stab
+        carcriMap_(HHO_STAB)           = hho_type_stab
+        carcriMap_(HHO_CALC)           = hho_type_calc
     endif
-    if (present(l_carcri_)) then
-        l_carcri_(ITER_INTE_MAXI)     = v_crit(i_comp)%iter_inte_maxi
-        l_carcri_(TYPE_MATR_T)        = v_crit(i_comp)%type_matr_t
-        l_carcri_(RESI_INTE_RELA)     = v_crit(i_comp)%resi_inte_rela
-        l_carcri_(PARM_THETA)         = v_crit(i_comp)%parm_theta
-        l_carcri_(ITER_INTE_PAS)      = v_crit(i_comp)%iter_inte_pas
-        l_carcri_(ALGO_INTE_R)        = v_crit(i_comp)%algo_inte_r
-        l_carcri_(VALE_PERT_RELA)     = v_crit(i_comp)%vale_pert_rela
-        l_carcri_(RESI_DEBORST_MAX)   = v_crit(i_comp)%resi_deborst_max
-        l_carcri_(ITER_DEBORST_MAX)   = v_crit(i_comp)%iter_deborst_max
-        l_carcri_(RESI_RADI_RELA)     = v_crit(i_comp)%resi_radi_rela
-        l_carcri_(IVARIEXT1)          = v_crit(i_comp)%jvariext1
-        l_carcri_(IVARIEXT2)          = v_crit(i_comp)%jvariext2
-        l_carcri_(PARM_THETA_THM)     = parm_theta_thm
-        l_carcri_(PARM_ALPHA_THM)     = parm_alpha_thm
-        l_carcri_(IPOSTITER)          = v_crit(i_comp)%ipostiter
-        if (v_crit(i_comp)%l_matr_unsymm) then
-            l_carcri_(CARCRI_MATRSYME) = 1
+    if (present(carcriList_)) then
+        carcriList_(ITER_INTE_MAXI)     = behaviourCrit(iFactorKeyword)%iter_inte_maxi
+        carcriList_(TYPE_MATR_T)        = behaviourCrit(iFactorKeyword)%type_matr_t
+        carcriList_(RESI_INTE_RELA)     = behaviourCrit(iFactorKeyword)%resi_inte_rela
+        carcriList_(PARM_THETA)         = behaviourCrit(iFactorKeyword)%parm_theta
+        carcriList_(ITER_INTE_PAS)      = behaviourCrit(iFactorKeyword)%iter_inte_pas
+        carcriList_(ALGO_INTE_R)        = behaviourCrit(iFactorKeyword)%algo_inte_r
+        carcriList_(VALE_PERT_RELA)     = behaviourCrit(iFactorKeyword)%vale_pert_rela
+        carcriList_(RESI_DEBORST_MAX)   = behaviourCrit(iFactorKeyword)%resi_deborst_max
+        carcriList_(ITER_DEBORST_MAX)   = behaviourCrit(iFactorKeyword)%iter_deborst_max
+        carcriList_(RESI_RADI_RELA)     = behaviourCrit(iFactorKeyword)%resi_radi_rela
+        carcriList_(IVARIEXT1)          = behaviourCrit(iFactorKeyword)%jvariext1
+        carcriList_(IVARIEXT2)          = behaviourCrit(iFactorKeyword)%jvariext2
+        carcriList_(PARM_THETA_THM)     = parm_theta_thm
+        carcriList_(PARM_ALPHA_THM)     = parm_alpha_thm
+        carcriList_(IPOSTITER)          = behaviourCrit(iFactorKeyword)%ipostiter
+        if (behaviourCrit(iFactorKeyword)%l_matr_unsymm) then
+            carcriList_(CARCRI_MATRSYME) = 1
         else
-            l_carcri_(CARCRI_MATRSYME) = 0
+            carcriList_(CARCRI_MATRSYME) = 0
         endif
-        l_carcri_(IPOSTINCR)          = v_crit(i_comp)%ipostincr
+        carcriList_(IPOSTINCR)          = behaviourCrit(iFactorKeyword)%ipostincr
 ! ----- For external solvers (UMAT / MFRONT)
-        l_carcri_(EXTE_PTR)           = v_crit(i_comp)%cptr_fct_ldc
-        l_carcri_(EXTE_STRAIN)        = v_crit(i_comp)%exte_strain
-        l_carcri_(EXTE_ESVA_NB)       = v_crit(i_comp)%cptr_nbvarext
-        l_carcri_(EXTE_ESVA_PTR_NAME) = v_crit(i_comp)%cptr_namevarext
-        l_carcri_(EXTE_PROP_NB)       = v_crit(i_comp)%cptr_nameprop
-        l_carcri_(EXTE_PROP_PTR_NAME) = v_crit(i_comp)%cptr_nbprop
+        carcriList_(EXTE_PTR)           = behaviourCrit(iFactorKeyword)%cptr_fct_ldc
+        carcriList_(EXTE_STRAIN)        = behaviourCrit(iFactorKeyword)%exte_strain
+        carcriList_(EXTE_ESVA_NB)       = behaviourCrit(iFactorKeyword)%cptr_nbvarext
+        carcriList_(EXTE_ESVA_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_namevarext
+        carcriList_(EXTE_PROP_NB)       = behaviourCrit(iFactorKeyword)%cptr_nameprop
+        carcriList_(EXTE_PROP_PTR_NAME) = behaviourCrit(iFactorKeyword)%cptr_nbprop
 ! ----- For HHO
-        l_carcri_(HHO_COEF)           = hho_coef_stab
-        l_carcri_(HHO_STAB)           = hho_type_stab
-        l_carcri_(HHO_CALC)           = hho_type_calc
+        carcriList_(HHO_COEF)           = hho_coef_stab
+        carcriList_(HHO_STAB)           = hho_type_stab
+        carcriList_(HHO_CALC)           = hho_type_calc
     endif
-!
+
 ! - Set values for MFRONT
-!
-    call setMFrontPara(v_crit, i_comp)
+    call setMFrontPara(behaviourCrit, iFactorKeyword)
 !
 end subroutine

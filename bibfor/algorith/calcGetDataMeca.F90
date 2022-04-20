@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -153,8 +153,7 @@ integer, intent(out) :: nume_harm
             verbose = ASTER_FALSE
         else
             call nmdorc(model, mate, l_etat_init,&
-                        ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp,&
-                        l_implex_ = .false._1)
+                        ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
             verbose = ASTER_TRUE
         end if
         call nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose)

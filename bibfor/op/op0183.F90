@@ -87,7 +87,7 @@ implicit none
     character(len=24), parameter :: vefnod = '&&OP0183.VEFNOD'
     character(len=24) :: chvarc
     character(len=24) :: numref, valk(3)
-    aster_logical :: l_etat_init, l_implex
+    aster_logical :: l_etat_init
 !     ------------------------------------------------------------------
     parameter(nompro='OP0183')
 !     ------------------------------------------------------------------
@@ -137,8 +137,6 @@ implicit none
     endif
     call jeveuo(knum, 'L', jordr)
 !
-!
-    l_implex = .false.
     exitim=.true.
     mateco = ' '
     call rscrsd('G', resuc1, type, nbordr)
@@ -241,7 +239,7 @@ implicit none
 !       --- CALCUL DES VECTEURS ELEMENTAIRES ---
         if (i .eq. 1) then
             compor='&&OP0183.COMPOR'
-            call nmdocc(model(1:8), materi, l_etat_init, l_implex, compor, 'V')
+            call nmdocc(model(1:8), materi, l_etat_init, compor, 'V')
             if (niv .ge. 2) then
                 call comp_info(model(1:8), compor)
             endif

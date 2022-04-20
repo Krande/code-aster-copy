@@ -18,7 +18,7 @@
 ! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_info(l_implex, ds_compor_prep)
+subroutine comp_meca_info(behaviourPrepPara)
 !
 use Behaviour_type
 !
@@ -28,8 +28,7 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterfort/comp_meca_init.h"
 !
-aster_logical, intent(in) :: l_implex
-type(Behaviour_PrepPara), intent(out) :: ds_compor_prep
+type(Behaviour_PrepPara), intent(out) :: behaviourPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,54 +38,39 @@ type(Behaviour_PrepPara), intent(out) :: ds_compor_prep
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_implex         : .true. if IMPLEX method
-! Out ds_compor_prep   : datastructure to prepare comportement
+! Out behaviourPrepPara: datastructure to prepare behaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywordfact
-    integer :: nb_info_comp, nbocc_compor
-    type(Behaviour_Para) :: ds_comporPara
+    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
+    integer :: nb_info_comp, nbFactorKeyword
+    type(Behaviour_Para) :: behaviourPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbocc_compor = 0
-    keywordfact  = 'COMPORTEMENT'
-    call getfac(keywordfact, nbocc_compor)
-!
-! - Initializations
-!
-    ds_compor_prep%l_implex = l_implex
-!
+    nbFactorKeyword = 0
+    call getfac(factorKeyword, nbFactorKeyword)
+
 ! - Number of comportement information
-!
-    if (nbocc_compor .eq. 0) then
+    if (nbFactorKeyword .eq. 0) then
         nb_info_comp = 1
     else
-        nb_info_comp = nbocc_compor
+        nb_info_comp = nbFactorKeyword
     endif
-!
-! - Save number of comportments
-!
-    ds_compor_prep%nb_comp = nbocc_compor
-!
-! - Allocate comportment informations objects
-!
-    allocate(ds_compor_prep%v_para(nb_info_comp))
-!
-! - Allocate comportment informations objects (external: UMAT and MFront)
-!
-    allocate(ds_compor_prep%v_paraExte(nb_info_comp))
-!
+    behaviourPrepPara%nb_comp = nbFactorKeyword
+
+! - Allocate objects
+    allocate(behaviourPrepPara%v_para(nb_info_comp))
+    allocate(behaviourPrepPara%v_paraExte(nb_info_comp))
+
 ! - If nothing in COMPORTEMENT: all is elastic
-!
-    call comp_meca_init(ds_comporPara)
-    if (nbocc_compor .eq. 0) then
-        ds_compor_prep%v_para(1) = ds_comporPara
-        ds_compor_prep%v_para(1)%rela_comp = 'ELAS'
-        ds_compor_prep%v_para(1)%defo_comp = 'PETIT'
-        ds_compor_prep%v_para(1)%type_comp = 'COMP_ELAS'
-        ds_compor_prep%v_para(1)%type_cpla = 'ANALYTIQUE'
+    call comp_meca_init(behaviourPara)
+    if (nbFactorKeyword .eq. 0) then
+        behaviourPrepPara%v_para(1) = behaviourPara
+        behaviourPrepPara%v_para(1)%rela_comp = 'ELAS'
+        behaviourPrepPara%v_para(1)%defo_comp = 'PETIT'
+        behaviourPrepPara%v_para(1)%type_comp = 'COMP_ELAS'
+        behaviourPrepPara%v_para(1)%type_cpla = 'ANALYTIQUE'
     endif
 !
 end subroutine

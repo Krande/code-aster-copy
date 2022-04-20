@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,12 @@ implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
+#include "asterfort/Behaviour_type.h"
     integer :: imate, kpg, ksp, codret
 !
     character(len=16) :: rela_comp, option
     character(len=*) :: fami
-    real(kind=8) :: carcri(*)
+    real(kind=8) :: carcri(CARCRI_SIZE)
     real(kind=8) :: vim(*)
     real(kind=8) :: vip(*)
     real(kind=8) :: sigy, sigm, deps, sigp
@@ -75,7 +76,7 @@ implicit none
     real(kind=8) :: depsth, depsm, tmoins, tplus
     real(kind=8) :: em, ep, dsdem, dsdep
     real(kind=8) :: valres(4), syc, etc, syt, ett, cr, val(1)
-    aster_logical :: isot, cine, elas, corr, impl, isotli, pinto, asyml, sans
+    aster_logical :: isot, cine, elas, corr, implex, isotli, pinto, asyml, sans
     data nomasl / 'SY_C', 'DC_SIGM_','SY_T','DT_SIGM_' /
 !
 !
@@ -85,7 +86,7 @@ implicit none
     isot = .false.
     cine = .false.
     corr = .false.
-    impl = .false.
+    implex = option(1:16) .eq. 'RIGI_MECA_IMPLEX'
     isotli = .false.
     pinto = .false.
     asyml = .false.
@@ -95,12 +96,6 @@ implicit none
         isot = .true.
         if (rela_comp .eq. 'VMIS_ISOT_LINE') then
             isotli = .true.
-        endif
-        if (carcri(2) .eq. 9) then
-            impl = .true.
-        endif
-        if (impl .and. (.not.isotli)) then
-            call utmess('F', 'ELEMENTS5_50')
         endif
     else if (rela_comp.eq.'VMIS_CINE_LINE') then
         cine = .true.
@@ -112,6 +107,11 @@ implicit none
         asyml = .true.
     else if (rela_comp.eq.'SANS') then
         sans = .true.
+    endif
+    if (implex) then
+        if ((.not.elas) .and. (.not.isotli)) then
+            call utmess('F', 'POUTRE0_49', sk = rela_comp)
+        endif
     endif
 !
 !
@@ -130,7 +130,7 @@ implicit none
     ep=val(1)
 !
 !
-    if (isot .and. (.not.impl)) then
+    if (isot .and. (.not.implex)) then
         call verift(fami, kpg, ksp, 'T', imate,&
                     epsth_=depsth)
         depsm=deps-depsth
@@ -155,7 +155,7 @@ implicit none
                     ' ', ep, sigm, epsm, deps,&
                     vim, sigp, vip, dsde, carcri,&
                     codret)
-    else if (impl) then
+    else if (implex) then
         call lcimpl(fami, kpg, ksp, imate, em,&
                     ep, sigm, tmoins, tplus, deps,&
                     vim, option, sigp, vip, dsde)

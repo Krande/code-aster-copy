@@ -377,6 +377,21 @@ class MEGMTR3(Element):
                      ),
         ),
 
+        OP.RAPH_MECA_IMPLEX(te=431,
+            para_in=((SP.PCACOQU, CCACOQU), (SP.PCARCRI, LC.CCARCRI),
+                     (OP.RAPH_MECA.PCOMPOR, LC.CCOMPOR), (OP.RAPH_MECA.PCONTMR, ECONTPG),
+                     (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
+                     (SP.PINSTPR, CTEMPSR), (SP.PMATERC, LC.CMATERC),
+                     (SP.PVARCMR, LC.ZVARCPG), (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), (SP.PVARIMP, ZVARIPG),
+                     (OP.RAPH_MECA.PVARIMR, ZVARIPG), ),
+            para_out=((SP.PCODRET, LC.ECODRET), (OP.RAPH_MECA.PCONTPR, ECONTPG),
+                     (OP.RAPH_MECA.PVARIPR, ZVARIPG), (SP.PVECTUR, MVECTUR),
+                     ),
+        ),
+
+
         OP.REFE_FORC_NODA(te=430,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
                      (SP.PMATERC, LC.CMATERC), (SP.PREFCO, EREFCO),

@@ -15,14 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine setBehaviourTypeValue(behaviourPara, iFactorKeyword_,&
-                                     comporList_, comporMap_)
-        use Behaviour_type
-        type(Behaviour_Para), pointer :: behaviourPara(:)
-        integer, optional, intent(in) :: iFactorKeyword_
-        character(len=16), intent(out), optional :: comporList_(:)
-        character(len=16), pointer, optional :: comporMap_(:)
-    end subroutine setBehaviourTypeValue
+    subroutine pmdocr(carcri)
+        real(kind=8), intent(out) :: carcri(CARCRI_SIZE)
+    end subroutine pmdocr
 end interface

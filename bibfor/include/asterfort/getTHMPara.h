@@ -17,12 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine setBehaviourTypeValue(behaviourPara, iFactorKeyword_,&
-                                     comporList_, comporMap_)
+    subroutine getTHMPara(behaviourPrepCrit)
         use Behaviour_type
-        type(Behaviour_Para), pointer :: behaviourPara(:)
-        integer, optional, intent(in) :: iFactorKeyword_
-        character(len=16), intent(out), optional :: comporList_(:)
-        character(len=16), pointer, optional :: comporMap_(:)
-    end subroutine setBehaviourTypeValue
+        type(Behaviour_PrepCrit), intent(inout) :: behaviourPrepCrit
+    end subroutine getTHMPara
 end interface

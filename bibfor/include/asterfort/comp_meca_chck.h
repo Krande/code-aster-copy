@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine comp_meca_chck(model, mesh, fullElemField, lInitialState, behaviourPrep)
+    subroutine comp_meca_chck(model, mesh, chmate, fullElemField, lInitialState, behaviourPrepPara)
         use Behaviour_type
-        character(len=8), intent(in) :: model, mesh
+        character(len=8), intent(in) :: model, mesh, chmate
         character(len=19), intent(in) :: fullElemField
         aster_logical, intent(in) :: lInitialState
-        type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
+        type(Behaviour_PrepPara), intent(inout) :: behaviourPrepPara
     end subroutine comp_meca_chck
 end interface

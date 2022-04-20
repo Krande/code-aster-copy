@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
-        character(len=19) , intent(in) :: comp_elas
-        integer, intent(in) :: nb_cmp
+    subroutine comp_meca_elas(compElas, l_etat_init)
+        character(len=19) , intent(in) :: compElas
         aster_logical, intent(in) :: l_etat_init
     end subroutine comp_meca_elas
 end interface

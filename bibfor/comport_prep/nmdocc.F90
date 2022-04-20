@@ -18,7 +18,7 @@
 ! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor, base, l_verbose)
+subroutine nmdocc(model, chmate, lInitialState, compor, base, l_verbose)
 !
 use Behaviour_type
 !
@@ -37,37 +37,36 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
+#include "asterfort/Behaviour_type.h"
 !
 character(len=8), intent(in) :: model, chmate
-aster_logical, intent(in) :: l_etat_init, l_implex
+aster_logical, intent(in) :: lInitialState
 character(len=19), intent(in) :: compor
 character(len=1), intent(in) :: base
 aster_logical, intent(in), optional :: l_verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of behaviour (mechanics)
+! Preparation of behaviours (mechanics)
 !
 ! Get parameters from COMPORTEMENT keyword and prepare COMPOR <CARTE>
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of model
-! In  chmate           : name of material field
-! In  l_etat_init      : .true. if initial state is defined
-! In  l_implex         : .true. if IMPLEX method
-! In  compor           : name of <CARTE> COMPOR
+! In  model            : model
+! In  chmate           : material field
+! In  lInitialState      : .true. if initial state is defined
+! In  compor           : map for parameters of constitutive laws
 ! In  base             : permanent or temporary allocation
 ! In  l_verbose        : .true. to enable verbose mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nb_cmp
     aster_logical :: verbose
-    character(len=8) :: mesh, answer
-    character(len=19) :: comp_elas, full_elem_s
-    type(Behaviour_PrepPara) :: ds_compor_prep
+    character(len=8) :: mesh
+    character(len=19), parameter :: fullElemField = '&&NMDOCC.FULL_ELEM'
+    type(Behaviour_PrepPara) :: behaviourPrepPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,51 +80,39 @@ aster_logical, intent(in), optional :: l_verbose
     if (present(l_verbose)) then
         verbose = l_verbose
     endif
-    comp_elas   = '&&NMDOCC.COMP_ELAS'
-    full_elem_s = '&&NMDOCC.FULL_ELEM'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
 ! - Create datastructure to prepare comportement
-    call comp_meca_info(l_implex, ds_compor_prep)
-    if (ds_compor_prep%nb_comp .eq. 0) then
-        call utmess('I', 'COMPOR4_64')
-    endif
-    if (ds_compor_prep%nb_comp .ge. 99999) then
-        call utmess('A', 'COMPOR4_65')
-    endif
+    call comp_meca_info(behaviourPrepPara)
 
 ! - Create COMPOR <CARTE>
-    call comp_init(mesh, compor, base, nb_cmp)
+    call comp_init(mesh, compor, base)
 
 ! - Set ELASTIQUE COMPOR
-    call comp_meca_elas(compor, nb_cmp, l_etat_init)
+    call comp_meca_elas(compor, lInitialState)
 
 ! - Read informations from command file
-    call comp_meca_read(l_etat_init, ds_compor_prep, model)
+    call comp_meca_read(lInitialState, behaviourPrepPara, model)
 
 ! - Create <CARTE> of FULL_MECA option for checking
-    call comp_meca_full(model, compor, full_elem_s)
+    call comp_meca_full(model, compor, fullElemField)
 
 ! - Check informations in COMPOR <CARTE>
-    call comp_meca_chck(model, mesh, full_elem_s, l_etat_init, ds_compor_prep)
-    call dismoi('EXI_VARC', chmate, 'CHAM_MATER', repk=answer)
-    if (answer .eq. 'OUI' .and. ds_compor_prep%lNonIncr) then
-        call utmess('A', 'COMPOR4_17')
-    endif
+    call comp_meca_chck(model, mesh, chmate, fullElemField, lInitialState, behaviourPrepPara)
 
 ! - Count internal variables
-    call comp_meca_cvar(ds_compor_prep)
+    call comp_meca_cvar(behaviourPrepPara)
 
 ! - Save informations in COMPOR <CARTE>
-    call comp_meca_save(model, mesh, chmate, compor, nb_cmp, ds_compor_prep)
+    call comp_meca_save(model, mesh, chmate, compor, behaviourPrepPara)
 
 ! - Verbose mode
     if (verbose) then
         call comp_info(model, compor)
     endif
 
-! - Cleaning
-    deallocate(ds_compor_prep%v_para)
-    deallocate(ds_compor_prep%v_paraExte)
+! - Clean
+    deallocate(behaviourPrepPara%v_para)
+    deallocate(behaviourPrepPara%v_paraExte)
 !
 end subroutine

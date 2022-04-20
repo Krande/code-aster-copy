@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine comp_meca_info(l_implex, ds_compor_prep)
+    subroutine comp_meca_info(behaviourPrepPara)
         use Behaviour_type
-        aster_logical, intent(in) :: l_implex
-        type(Behaviour_PrepPara), intent(out) :: ds_compor_prep
+        type(Behaviour_PrepPara), intent(out) :: behaviourPrepPara
     end subroutine comp_meca_info
 end interface

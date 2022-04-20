@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_elas(comp_elas, nb_cmp, l_etat_init)
+subroutine comp_meca_elas(compElas, l_etat_init)
 !
 implicit none
 !
@@ -27,8 +27,7 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=19), intent(in) :: comp_elas
-integer, intent(in) :: nb_cmp
+character(len=19), intent(in) :: compElas
 aster_logical, intent(in) :: l_etat_init
 !
 ! --------------------------------------------------------------------------------------------------
@@ -39,45 +38,40 @@ aster_logical, intent(in) :: l_etat_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  comp_elas   : name of ELAS <CARTE> COMPOR
-! In  nb_cmp      : number of components in ELAS <CARTE> COMPOR
+! In  compElas    : name of ELAS <CARTE> COMPOR
 ! In  l_etat_init : .true. if initial state is defined
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), pointer :: p_compelas_valv(:) => null()
+    integer, parameter :: nbCmp = COMPOR_SIZE
+    character(len=16), pointer :: compElasValv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nb_cmp .ge. 6)
-!
-! - Access <CARTE>
-!
-    call jeveuo(comp_elas(1:19)//'.VALV', 'E', vk16 = p_compelas_valv)
-!
+
+! - Access to map
+    call jeveuo(compElas(1:19)//'.VALV', 'E', vk16 = compElasValv)
+
 ! - Init <CARTE>
-!
-    p_compelas_valv(1:COMPOR_SIZE) = 'VIDE'
-!
+    compElasValv(1:COMPOR_SIZE) = 'VIDE'
+
 ! - Set for ELASTIQUE
-!
-    p_compelas_valv(RELA_NAME) = 'ELAS'
-    p_compelas_valv(NVAR) = '1'
-    p_compelas_valv(DEFO) = 'PETIT'
+    compElasValv(RELA_NAME) = 'ELAS'
+    compElasValv(NVAR) = '1'
+    compElasValv(DEFO) = 'PETIT'
     if (l_etat_init) then
-        p_compelas_valv(INCRELAS) = 'COMP_INCR'
+        compElasValv(INCRELAS) = 'COMP_INCR'
     else
-        p_compelas_valv(INCRELAS) = 'COMP_ELAS'
+        compElasValv(INCRELAS) = 'COMP_ELAS'
     endif
-    p_compelas_valv(PLANESTRESS) = 'ANALYTIQUE'
-    write (p_compelas_valv(NUME) ,'(I16)') 1
-    write (p_compelas_valv(KIT1_NVAR) ,'(I16)') 1
-    write (p_compelas_valv(KIT2_NVAR) ,'(I16)') 1
-    write (p_compelas_valv(KIT3_NVAR) ,'(I16)') 1
-    write (p_compelas_valv(KIT4_NVAR) ,'(I16)') 1
-!
+    compElasValv(PLANESTRESS) = 'ANALYTIQUE'
+    write (compElasValv(NUME) ,'(I16)') 1
+    write (compElasValv(KIT1_NVAR) ,'(I16)') 1
+    write (compElasValv(KIT2_NVAR) ,'(I16)') 1
+    write (compElasValv(KIT3_NVAR) ,'(I16)') 1
+    write (compElasValv(KIT4_NVAR) ,'(I16)') 1
+
 ! - Create <CARTE>
-!
-    call nocart(comp_elas, 1, nb_cmp)
+    call nocart(compElas, 1, nbCmp)
 !
 end subroutine

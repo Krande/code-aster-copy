@@ -103,12 +103,10 @@ bool PhysicalProblem::computeDOFNumbering() {
 
 void PhysicalProblem::computeBehaviourProperty( py::object &keywords,
                                                 const std::string &initialState,
-                                                const std::string &implex,
                                                 const ASTERINTEGER verbosity ) {
     // Create object for behaviour
     _behavProp = std::make_shared< BehaviourProperty >( _model, _materialField );
     _behavProp->setInitialState( initialState == "OUI" );
-    _behavProp->setImplex( implex == "OUI" );
     _behavProp->setVerbosity( verbosity > 1 );
 
     // Check input PyObject

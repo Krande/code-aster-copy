@@ -16,50 +16,59 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 ! aslint: disable=W1003
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine carc_info(behaviourPrepCrit)
+subroutine pmdocr(carcri)
 !
 use Behaviour_type
 !
 implicit none
 !
-#include "asterc/getfac.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/carc_info.h"
+#include "asterfort/carc_chck.h"
+#include "asterfort/carc_read.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/setBehaviourParaValue.h"
+#include "asterfort/Behaviour_type.h"
 !
-type(Behaviour_PrepCrit), intent(out) :: behaviourPrepCrit
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Parameters for integration of constitutive laws (mechanics)
-!
-! Create objects
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Out behaviourPrepCrit: datastructure to prepare parameters for constitutive laws
+real(kind=8), intent(out) :: carcri(CARCRI_SIZE)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
-    integer :: nbInfo, nbFactorKeyword
+! Preparation of constitutive laws (mechanics/SIMU_POINT_MAT)
+!
+! Get list of parameters for integration of constitutive law
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! Out carcri           : list of parameters for integration of constitutive law
+!
+! --------------------------------------------------------------------------------------------------
+!
+    type(Behaviour_PrepCrit) :: behaviourPrepCrit
+!
+! --------------------------------------------------------------------------------------------------
+!
+    carcri(1:CARCRI_SIZE) = 0.d0
 
-! - Number of factor keywords
-    nbFactorKeyword = 0
-    call getfac(factorKeyword, nbFactorKeyword)
+! - Create carcri informations objects
+    call carc_info(behaviourPrepCrit)
 
-! - Number of factor keyword information
-    if (nbFactorKeyword .eq. 0) then
-        nbInfo = 1
-    else
-        nbInfo = nbFactorKeyword
-    endif
+! - Read informations from command file
+    call carc_read(behaviourPrepCrit)
 
-! - Initializations
-    behaviourPrepCrit%nb_comp = nbFactorKeyword
-    behaviourPrepCrit%v_crit => null()
-    allocate(behaviourPrepCrit%v_crit(nbInfo))
+! - Some checks
+    call carc_chck(behaviourPrepCrit)
+
+! - Set in list
+    call setBehaviourParaValue(behaviourPrepCrit%v_crit,&
+                               behaviourPrepCrit%parm_theta_thm, behaviourPrepCrit%parm_alpha_thm,&
+                               behaviourPrepCrit%hho_coef_stab , behaviourPrepCrit%hho_type_stab ,&
+                               behaviourPrepCrit%hho_type_calc,&
+                               carcriList_ = carcri(1:CARCRI_SIZE))
+
+! - Clean
+    deallocate(behaviourPrepCrit%v_crit)
 !
 end subroutine

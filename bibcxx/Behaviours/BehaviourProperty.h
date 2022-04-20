@@ -27,11 +27,13 @@
 /* person_in_charge: mickael.abbas at edf.fr */
 
 #include "astercxx.h"
-#include <string>
-#include "Modeling/Model.h"
-#include "Materials/MaterialField.h"
+
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
+#include "Materials/MaterialField.h"
+#include "Modeling/Model.h"
+
+#include <string>
 
 // TODO doit être une DataStructure
 /**
@@ -52,9 +54,6 @@ class BehaviourProperty : public DataStructure {
     /** @brief Flag for initial state */
     bool _initialState;
 
-    /** @brief Flag for IMPLEX algorithm */
-    bool _implex;
-
     /** @brief Verbosity */
     bool _verbosity;
 
@@ -69,55 +68,44 @@ class BehaviourProperty : public DataStructure {
 
   private:
     /** @brief Create objects (maps) */
-    void createObjects( );
+    void createObjects();
 
   public:
-
     /** @typedef Smart-pointer to behaviour class */
     typedef std::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
 
     /** @brief Constructor */
-    BehaviourProperty( );
+    BehaviourProperty();
 
     /** @brief Constructor */
-    BehaviourProperty(
-      ModelPtr         model,
-      MaterialFieldPtr materialField );
+    BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField );
 
     /** @brief Build object */
-    bool build( );
+    bool build();
 
     /** @brief Get model */
-    ModelPtr getModel( ) const { return _model; }
+    ModelPtr getModel() const { return _model; }
 
     /** @brief Get material field */
-    MaterialFieldPtr getMaterialField( ) const { return _materialField; }
+    MaterialFieldPtr getMaterialField() const { return _materialField; }
 
     /** @brief Set flag for initial state */
     void setInitialState( const bool &value ) { _initialState = value; };
-
-    /** @brief Set flag for Implex */
-    void setImplex( const bool &value ) { _implex = value; };
 
     /** @brief Set verbosity */
     void setVerbosity( const bool &value ) { _verbosity = value; };
 
     /** @brief Set behavior ConstantField '.COMPOR' */
-    ConstantFieldOnCellsChar16Ptr getBehaviourField( ) const
-    { return _COMPOR; };
+    ConstantFieldOnCellsChar16Ptr getBehaviourField() const { return _COMPOR; };
 
     /** @brief Set behavior ConstantField '.MULT_COMP' */
-    ConstantFieldOnCellsChar16Ptr getMultipleBehaviourField( ) const
-    { return _MULCOM; };
+    ConstantFieldOnCellsChar16Ptr getMultipleBehaviourField() const { return _MULCOM; };
 
     /** @brief Set behavior ConstantField '.CARCRI' */
-    ConstantFieldOnCellsRealPtr getConvergenceCriteria( ) const
-    { return _CARCRI; };
-
+    ConstantFieldOnCellsRealPtr getConvergenceCriteria() const { return _CARCRI; };
 };
 
 /** @typedef Smart-pointer to behaviour class */
 typedef std::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
-
 
 #endif

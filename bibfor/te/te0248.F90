@@ -139,7 +139,6 @@ character(len=16), intent(in) :: option, nomte
 !
     if (lMatr) then
         call jevech('PMATUUR', 'E', imatuu)
-
     endif
     if (option(1:10) .eq. 'RIGI_MECA_') then
         ivarip = ivarim

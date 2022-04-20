@@ -84,7 +84,7 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
 !
 ! - RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
 !
-    elseif ((option .eq.'RAPH_MECA').or. (option(1:9)&
+    elseif ((option(1:9) .eq.'RAPH_MECA').or. (option(1:9)&
     .eq.'FULL_MECA').or. (option(1:10).eq.'RIGI_MECA_')) then
 !
 ! ---   CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
@@ -115,7 +115,7 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
         end do
 
 !
-        if ((option .eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
+        if ((option(1:9) .eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
             do c = 1, ncomp
                 zr(icontp+(kpg-1)*ncomp+c-1)=sigp(c)
             end do
