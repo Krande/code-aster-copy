@@ -30,7 +30,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
-                                      VECT_NORM=(1,0,0,),
+                                      VECT_NORM=(-1,0,0,),
                                       GROUP_NO='AI1',),)
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
@@ -93,7 +93,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=4.6722300000000001E-4,
+                  VALE_CALC=-4.6722300000000001E-4,
                   ),
           )
 
