@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -29,6 +29,7 @@ from ..Utilities import unsupported
 
 class FunctionDefinition(ExecuteCommand):
     """Command that creates a :py:class:`~code_aster.Objects.Function`."""
+
     command_name = "DEFI_FONCTION"
 
     def create_result(self, keywords):
@@ -48,7 +49,7 @@ class FunctionDefinition(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        #TODO: Remove this fix
+        # TODO: Remove this fix
         if keywords.get("NOEUD_PARA") is not None:
             ExecuteCommand.exec_(self, keywords)
             return
@@ -120,12 +121,12 @@ class FunctionDefinition(ExecuteCommand):
         if len(interpol.split()) == 1:
             interpol = interpol + " " + interpol
         if interpol[:3] == "LOG":
-            if minx <= 0.:
+            if minx <= 0.0:
                 UTMESS("F", "UTILITAI2_71")
         if interpol[4:] == "LOG":
             if cmplx:
                 UTMESS("F", "UTILITAI5_92")
-            if miny <= 0.:
+            if miny <= 0.0:
                 UTMESS("F", "UTILITAI2_71")
         funct.setInterpolation(interpol)
 

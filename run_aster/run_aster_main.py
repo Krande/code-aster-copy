@@ -266,7 +266,7 @@ def parse_args(argv):
     if args.version:
         tag = CFG.get("version_tag")
         sha1 = CFG.get("version_sha1")[:12]
-        logger.info("code_aster %s ({%s})", tag, sha1)
+        logger.info("code_aster %s (%s)", tag, sha1)
         parser.exit(0)
     if args.env and not args.wrkdir:
         parser.error("Argument '--wrkdir' is required if '--env' is enabled")
@@ -299,9 +299,13 @@ def main(argv=None):
             "Can not execute several comm files under MPI runner. "
             "Let run_aster split the export file or change the export file."
         )
+    if args.mpi_nbcpu:
+        export.set("mpi_nbcpu", args.mpi_nbcpu)
     need_mpiexec = procid < 0 and args.auto_mpiexec
-    logger.debug("parallel: {0}, procid: {1}".format(CFG.get("parallel", False), procid))
-    logger.debug("nbcomm: {0}".format(len(export.commfiles)))
+    if need_mpiexec and export.get("mpi_nbcpu", 1) == 1 and not CFG.get("require_mpiexec", False):
+        need_mpiexec = False
+    logger.debug("parallel: %s, procid: %d", CFG.get("parallel", False), procid)
+    logger.debug("nbcomm: %d", len(export.commfiles))
     if args.debugpy_runner and procid == args.debugpy_rank and not (need_split or need_mpiexec):
         debugpy.listen(("localhost", args.debugpy_runner))
         print("Waiting for debugger attach")
@@ -328,8 +332,6 @@ def main(argv=None):
             export.add_file(
                 File(osp.abspath(basename + "." + typ), filetype=typ, unit=unit, resu=True)
             )
-    if args.mpi_nbcpu:
-        export.set("mpi_nbcpu", args.mpi_nbcpu)
     if args.time_limit:
         export.set_time_limit(args.time_limit)
     # use FACMTPS from environment
@@ -355,11 +357,15 @@ def main(argv=None):
     wrkdir = args.wrkdir or create_temporary_dir(dir=CFG.get("tmpdir"))
     try:
         if need_split or need_mpiexec:
+            logger.warning(
+                "If MPI_Abort is called during execution, result files could not be copied."
+            )
             run_aster = osp.join(RUNASTER_ROOT, "bin", "run_aster")
             expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster")
             statfile = osp.join(expdir, "__status__")
+            basn = osp.basename(osp.splitext(export.filename)[0])
             for exp_i in split_export(export):
-                fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
+                fexp = osp.join(expdir, basn + "." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
                 argv_i = [i for i in argv if i != args.file]
                 if not args.wrkdir:
@@ -371,7 +377,7 @@ def main(argv=None):
                 if need_mpiexec:
                     args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1), program=cmd)
                     cmd = CFG.get("mpiexec").format(**args_cmd)
-                logger.info("Running: " + cmd)
+                logger.info("Running: %s", cmd)
                 proc = run(cmd, shell=True)
                 status = Status.load(statfile)
                 if proc.returncode != 0 and not status.is_completed():
@@ -390,8 +396,8 @@ def main(argv=None):
             wrapper = CFG.get("exectool", {}).get(args.exectool)
             if not wrapper:
                 logger.warning(
-                    f"'{args.exectool}' is not defined in your "
-                    f"configuration, it is used as a command line."
+                    "'%s' is not defined in your configuration, it is used as a command line.",
+                    args.exectool,
                 )
                 wrapper = args.exectool
             opts["exectool"] = wrapper
