@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,56 +27,59 @@ from waflib import TaskGen, Logs, Utils, Errors, Task, Context
 
 
 def build(self):
-    env = self.all_envs[self.variant] #.derive()
+    env = self.all_envs[self.variant]  # .derive()
     if self.variant == "debug":
-        env.OPTDEBUG = '-g'
-    if self.cmd.startswith('uninstall'):
-        elem = osp.join(env.ASTERLIBDIR, 'elem.1')
+        env.OPTDEBUG = "-g"
+    if self.cmd.startswith("uninstall"):
+        elem = osp.join(env.ASTERLIBDIR, "elem.1")
         try:
             os.remove(elem)
         except OSError:
             pass
         return
 
-    elem1 = self.path.find_or_declare('elem.1')
+    elem1 = self.path.find_or_declare("elem.1")
     self(
-        features = 'catalo',
-            name = 'cataelem',
-          target = elem1,
-             env = env,
-            vars = ['CATALO_CMD'],
-             use = 'asterlib',
-    install_path = env.ASTERLIBDIR
+        features="catalo",
+        name="cataelem",
+        target=elem1,
+        env=env,
+        vars=["CATALO_CMD"],
+        use="asterlib",
+        install_path=env.ASTERLIBDIR,
     )
 
-@TaskGen.feature('catalo')
-@TaskGen.before('process_source')
+
+@TaskGen.feature("catalo")
+@TaskGen.before("process_source")
 def pre_build_catalo(self):
     catalo = self.path
-    deps = catalo.ant_glob('**/*.py')
-    asterlib = [task.outputs
-                for task in self.bld.get_tgen_by_name('asterlib').tasks
-                if task.__class__.__name__ == "cxxshlib"]
+    deps = catalo.ant_glob("**/*.py")
+    asterlib = [
+        task.outputs
+        for task in self.bld.get_tgen_by_name("asterlib").tasks
+        if task.__class__.__name__ == "cxxshlib"
+    ]
     deps.extend(asterlib[0])
     catalo.get_bld().mkdir()
-    ojb = catalo.get_bld().make_node('cata_ele.ojb')
-    self.create_task('printcata', src=[catalo] + deps, tgt=ojb)
-    self.source = [ojb] # bypass the execution of process_source
+    ojb = catalo.get_bld().make_node("cata_ele.ojb")
+    self.create_task("printcata", src=[catalo] + deps, tgt=ojb)
+    self.source = [ojb]  # bypass the execution of process_source
 
 
 class printcata(Task.Task):
-
     def run(self):
         """Execute the command"""
         environ = os.environ.copy()
         # add src/code_aster + catalo in PYTHONPATH
         add_to_env_paths(environ, "PYTHONPATH", self.env["CODEASTERPATH"])
         add_to_env_paths(environ, "PYTHONPATH", self.env["CATALOPATH"])
-        exec_pyaster(self.generator.bld,
-                     osp.join(self.env["CATALOPATH"], "build_cata.py"),
-                     env=environ,
-                     args=[self.env['OPTDEBUG'] or "",
-                           "-o", self.outputs[0].abspath()])
+        exec_pyaster(
+            self.generator.bld,
+            osp.join(self.env["CATALOPATH"], "build_cata.py"),
+            env=environ,
+            args=[self.env["OPTDEBUG"] or "", "-o", self.outputs[0].abspath()],
+        )
 
     def sig_explicit_deps(self):
         self.dep_nodes[:] = self.inputs[1:]
@@ -84,20 +87,19 @@ class printcata(Task.Task):
         # put catalo/*.py files into self.inputs in order to let the
         # original sig_explicit_deps compute their signature which is
         # used to rebuild on any changes.
-        self.inputs[:] = catalo.ant_glob('**/*.py')
+        self.inputs[:] = catalo.ant_glob("**/*.py")
         super(printcata, self).sig_explicit_deps()
         self.inputs[:] = [catalo]
 
 
-@TaskGen.extension('.ojb')
+@TaskGen.extension(".ojb")
 def buildcata(self, node):
-    if not getattr(self.bld, 'is_install', None) \
-        or not getattr(self, 'install_path', None):
+    if not getattr(self.bld, "is_install", None) or not getattr(self, "install_path", None):
         return
     # install_path = osp.join(self.install_path, self.target
-    post = partial(build_cata_ele, ojb=node,
-                   elem1=self.target, install_path=self.install_path)
+    post = partial(build_cata_ele, ojb=node, elem1=self.target, install_path=self.install_path)
     self.bld.add_post_fun(post)
+
 
 def build_cata_ele(self, ojb, elem1, install_path):
     """Build the catalog of elements"""
@@ -108,18 +110,22 @@ def build_cata_ele(self, ojb, elem1, install_path):
     elem1path = elem1.abspath()
     skipped = osp.isfile(elem1path) and os.stat(elem1path).st_mtime_ns > stime
     if not skipped:
-        Logs.info(f"+ build the elements catalog {elem1.name} using installed "
-                  f"aster (from {ojb.name})")
+        Logs.info(
+            f"+ build the elements catalog {elem1.name} using installed " f"aster (from {ojb.name})"
+        )
         # generate the command file
         comm = osp.join(builddir, "fort.1")
         with open(comm, "w") as fcomm:
-            content = os.linesep.join([
-                "from code_aster.Commands import DEBUT, MAJ_CATA, FIN",
-                "DEBUT(CATALOGUE=_F(FICHIER='CATAELEM', UNITE=4), ",
-                "      ERREUR=_F(ERREUR_F='ABORT'))",
-                "MAJ_CATA(ELEMENT=_F())",
-                "FIN()", ""
-            ])
+            content = os.linesep.join(
+                [
+                    "from code_aster.Commands import DEBUT, MAJ_CATA, FIN",
+                    "DEBUT(CATALOGUE=_F(FICHIER='CATAELEM', UNITE=4), ",
+                    "      ERREUR=_F(ERREUR_F='ABORT'))",
+                    "MAJ_CATA(ELEMENT=_F())",
+                    "FIN()",
+                    "",
+                ]
+            )
             fcomm.write(content)
 
         # .ojb -> fort.4
@@ -127,12 +133,12 @@ def build_cata_ele(self, ojb, elem1, install_path):
 
         # memory value
         memlim = 2047 if "32" in platform.architecture()[0] else 4096
-        exec_pyaster(self, comm, cwd=builddir,
-                     args=['--memory={0}'.format(memlim)])
+        exec_pyaster(self, comm, cwd=builddir, args=["--memory={0}".format(memlim)])
 
     dest = osp.join(install_path, osp.basename(elem1.name))
     shutil.copy(elem1path, dest)
     os.chmod(dest, Utils.O644)
+
 
 def exec_pyaster(self, pyfile, args, **kwargs):
     """Execute aster depending on the configuration"""
@@ -142,34 +148,34 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         del kwargs["env"]
     else:
         environ = os.environ.copy()
-    cmdenv = []
     python = list(env.PYTHON)[0]
 
     python_ld_path = env.ASTERLIBDIR
-    add_to_env_paths(environ, 'PYTHONPATH', python_ld_path)
-    add_to_env_paths(environ, 'LD_LIBRARY_PATH', python_ld_path)
+    add_to_env_paths(environ, "PYTHONPATH", python_ld_path)
+    add_to_env_paths(environ, "LD_LIBRARY_PATH", python_ld_path)
 
     cmdexe = [python, pyfile] + args
     # this position allows CATALO_CMD to define an environment variable
     # or a prefix to wrap the executable
-    cmdprefix = Utils.to_list(env['CATALO_CMD'])
-    if self.env.BUILD_MPI and not cmdprefix:
+    cmdprefix = Utils.to_list(env["CATALO_CMD"])
+    if self.env.BUILD_MPI and not cmdprefix and env["CONFIG_PARAMETERS"]["require_mpiexec"]:
         cmdprefix = env["base_mpiexec"] + ["-n", "1"]
-    cmds = ' '.join(cmdenv + cmdprefix + cmdexe)
-    Logs.debug('os environ: %r' % environ)
+    cmds = " ".join(cmdprefix + cmdexe)
+    Logs.debug("os environ: %r" % environ)
     # do not confuse with installed elementsdir
-    environ['ASTER_ELEMENTSDIR'] = ''
-    kwargs['output'] = Context.BOTH
+    environ["ASTER_ELEMENTSDIR"] = ""
+    kwargs["output"] = Context.BOTH
     try:
         self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
     except Errors.WafError as err:
-        Logs.warn('stdout: %s' % err.stdout)
-        Logs.warn('stderr: %s' % err.stderr)
-        Logs.info('To run manually, use:')
-        Logs.info('export LD_LIBRARY_PATH="%s"' % environ['LD_LIBRARY_PATH'])
-        Logs.info('export PYTHONPATH="%s"' % environ['PYTHONPATH'])
-        Logs.info(' '.join(cmdprefix + cmdexe))
+        Logs.warn("stdout: %s" % err.stdout)
+        Logs.warn("stderr: %s" % err.stderr)
+        Logs.info("To run manually, use:")
+        Logs.info('export LD_LIBRARY_PATH="%s"' % environ["LD_LIBRARY_PATH"])
+        Logs.info('export PYTHONPATH="%s"' % environ["PYTHONPATH"])
+        Logs.info(" ".join(cmdprefix + cmdexe))
         raise
+
 
 def add_to_env_paths(environ, name, path):
     if not path:

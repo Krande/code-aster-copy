@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,11 +72,9 @@ class TestConfig(unittest.TestCase):
         self.assertTrue(CFG.storage.has_param("FC"))
         self.assertTrue(CFG.storage.has_param("FCFLAGS"))
         self.assertTrue(CFG.storage.has_param("exectool"))
-        size = 11
-        if CFG.get("parallel"):
-            self.assertTrue(CFG.storage.has_param("mpiexec"))
-            self.assertTrue(CFG.storage.has_param("mpi_get_rank"))
-            size += 2
+        size = 14
+        self.assertTrue(CFG.storage.has_param("mpiexec"))
+        self.assertTrue(CFG.storage.has_param("mpi_get_rank"))
         self.assertEqual(len(CFG.storage), size)
 
     def test_filter(self):
@@ -126,9 +124,7 @@ class TestConfig(unittest.TestCase):
         # add a value to avoid automatic loading of 'config.json' and user file
         cfg._storage.set("mpiexec", "empty")
         # add user file with server
-        user_cfg = {
-            "server": [{"name": "*", "config": {"exectool": {"mywrapper": "echo -n"}}}]
-        }
+        user_cfg = {"server": [{"name": "*", "config": {"exectool": {"mywrapper": "echo -n"}}}]}
         cfg.import_dict(user_cfg, with_sections=True)
         self.assertIsInstance(cfg.get("exectool"), dict)
         self.assertEqual(cfg.get("exectool")["mywrapper"], "echo -n")
@@ -366,12 +362,7 @@ class TestExport(unittest.TestCase):
         self.assertTrue(shell.data)
 
     def test_data(self):
-        text = "\n".join(
-            [
-                "F nom filename.py D 0",
-                "F tests_data filename.py D 0",
-            ]
-        )
+        text = "\n".join(["F nom filename.py D 0", "F tests_data filename.py D 0"])
         export = Export(from_string=text)
         # tests_data type works as nom but with a different path initialization
         file0, file1 = export.datafiles
@@ -386,28 +377,19 @@ class TestExport(unittest.TestCase):
         )
         self.assertEqual(
             repr(export),
-            "\n".join(
-                ["F nom filename.py D 0", "F tests_data {} D 0".format(file1.path), ""]
-            ),
+            "\n".join(["F nom filename.py D 0", "F tests_data {} D 0".format(file1.path), ""]),
         )
 
     def test_args(self):
         # memory is taken from memjeveux (that is removed) + addmem
-        text = "\n".join(
-            [
-                "A args --continue --memjeveux=512",
-                "A max_base 1000",
-                "A abort",
-            ]
-        )
+        text = "\n".join(["A args --continue --memjeveux=512", "A max_base 1000", "A abort"])
         addmem = CFG.get("addmem", 0.0)
         export = Export(from_string=text)
         memory = export.get_argument_value("memory", float)  # with addmem
         refval = 512.0 * (8 if "64" in platform.architecture()[0] else 4)
         self.assertEqual(memory, refval + addmem)
         self.assertSequenceEqual(
-            export.args,
-            ["--continue", "--max_base", "1000", "--abort", "--memory", str(memory)],
+            export.args, ["--continue", "--max_base", "1000", "--abort", "--memory", str(memory)]
         )
         self.assertIsNone(export.get_argument_value("memjeveux", float))
         self.assertEqual(export.get_argument_value("max_base", float), 1000.0)
@@ -435,13 +417,7 @@ class TestExport(unittest.TestCase):
         self.assertGreaterEqual(export.get_argument_value("memory", float), 4096.0)
         self.assertEqual(
             repr(export),
-            "\n".join(
-                [
-                    "P memory_limit 4096.0",
-                    "A args --memory {}".format(4096.0 + addmem),
-                    "",
-                ]
-            ),
+            "\n".join(["P memory_limit 4096.0", "A args --memory {}".format(4096.0 + addmem), ""]),
         )
         # read memory limit, write export, read => not added twice?
 
@@ -497,9 +473,7 @@ class TestExport(unittest.TestCase):
             self.assertEqual(obj.get("step"), i)
             self.assertEqual(len(obj.commfiles), 1)
             comm.append(obj.commfiles[0])
-        self.assertSequenceEqual(
-            [i.path for i in comm], ["filename.comm", "filename.com1"]
-        )
+        self.assertSequenceEqual([i.path for i in comm], ["filename.comm", "filename.com1"])
 
 
 class TestCommandFiles(unittest.TestCase):
@@ -630,12 +604,7 @@ class TestStatus(unittest.TestCase):
         self.assertTrue(status.state & SO.Completed)
         self.assertFalse(status.state & SO.Error)
 
-        output = "\n".join(
-            [
-                "! <A> SUPERVIS_22 !",
-                "NOOK 1. 0....",
-            ]
-        )
+        output = "\n".join(["! <A> SUPERVIS_22 !", "NOOK 1. 0...."])
         status = get_status(0, output)
         self.assertEqual(status.state, SO.Nook | SO.Warn)
         self.assertEqual(SO.name(status.state), "NOOK_TEST_RESU")
@@ -664,10 +633,7 @@ class TestStatus(unittest.TestCase):
         self.assertTrue(status.state & SO.Error)
 
         output = "\n".join(
-            [
-                "! <ConvergenceError> <MECANONLINE_44> bla bla !",
-                "<TimeLimitError>: xxxx",
-            ]
+            ["! <ConvergenceError> <MECANONLINE_44> bla bla !", "<TimeLimitError>: xxxx"]
         )
         status = get_status(1, output)
         self.assertEqual(status.state, SO.CpuLimit | SO.Convergence)
@@ -677,10 +643,7 @@ class TestStatus(unittest.TestCase):
         self.assertTrue(status.state & SO.Error)
 
         output = "\n".join(
-            [
-                "-- CODE_ASTER -- VERSION : DÉVELOPPEMENT (unstable) --",
-                " OK assert True passed",
-            ]
+            ["-- CODE_ASTER -- VERSION : DÉVELOPPEMENT (unstable) --", " OK assert True passed"]
         )
         status = get_status(0, output)
         self.assertEqual(status.state, SO.Abort)

@@ -232,11 +232,8 @@ def check_vmsize(self):
         try:
             prg = osp.join(self.bldnode.abspath(), "test_mpi_init_" + str(os.getpid()))
             self.check_cc(fragment=fragment_failure_vmsize, mandatory=True, use="MPI", target=prg)
-            try:
-                cmd = self.env["base_mpiexec"] + ["-n", "1", prg]
-                size = self.cmd_and_log(cmd)
-            finally:
-                os.remove(prg)
+            cmd = self.env["base_mpiexec"] + ["-n", "1", prg]
+            size = self.cmd_and_log(cmd)
         except Errors.WafError:
             self.end_msg(
                 "failed (memory consumption can not be estimated " "during the calculation)",
@@ -245,10 +242,36 @@ def check_vmsize(self):
         else:
             self.end_msg("ok (%s)" % size)
             flag = 1
+            self.check_require_mpiexec(prg)
     if flag:
         self.define("ASTER_ENABLE_PROC_STATUS", 1)
     else:
         self.undefine("ASTER_ENABLE_PROC_STATUS")
+
+
+@Configure.conf
+def check_require_mpiexec(self, program):
+    """Check if mpiexec is required to run a program with one process."""
+    cfg = self.env["CONFIG_PARAMETERS"]
+    previous = cfg["require_mpiexec"]
+    cmt = ""
+    self.start_msg("Checking if mpiexec is required")
+    try:
+        # run simple program without mpiexec
+        self.cmd_and_log(program)
+        required = 0
+    except Errors.WafError:
+        self.end_msg("mpiexec is required")
+        required = 1
+    else:
+        if previous:
+            cmt = ", but enabled by configuration parameters"
+        self.end_msg("mpiexec is not required" + cmt)
+    finally:
+        os.remove(program)
+    cfg["require_mpiexec"] = required or previous
+    self.start_msg(". use 'require_mpiexec'")
+    self.end_msg(str(cfg["require_mpiexec"]))
 
 
 fragment_failure_vmsize = r"""
@@ -259,6 +282,9 @@ fragment_failure_vmsize = r"""
 #include <stdio.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "mpi.h"
 
