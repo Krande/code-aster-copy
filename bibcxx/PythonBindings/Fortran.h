@@ -43,6 +43,10 @@ void call_debut( py::object &syntax );
 
 void call_poursuite( py::object &syntax );
 
+void call_cmd_ctxt_enter();
+
+void call_cmd_ctxt_exit();
+
 void call_affich( const std::string &code, const std::string &text );
 
 void call_print( const std::string &text );

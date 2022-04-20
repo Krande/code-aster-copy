@@ -98,6 +98,10 @@ void call_debut( py::object &syntax ) { return call_ops( syntax, -1 ); }
 
 void call_poursuite( py::object &syntax ) { return call_ops( syntax, -2 ); }
 
+void call_cmd_ctxt_enter() { CALL_CMD_CTXT_ENTER(); }
+
+void call_cmd_ctxt_exit() { CALL_CMD_CTXT_EXIT(); }
+
 void call_affich( const std::string &code, const std::string &text ) { CALL_AFFICH( code, text ); }
 
 void call_print( const std::string &text ) { call_affich( "MESSAGE", text ); }

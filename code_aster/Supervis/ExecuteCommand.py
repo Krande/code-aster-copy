@@ -65,6 +65,7 @@ import linecache
 import re
 import sys
 from collections import namedtuple
+from contextlib import contextmanager
 
 import aster_core
 import libaster
@@ -89,6 +90,15 @@ from .code_file import track_coverage
 from .CommandSyntax import CommandSyntax
 from .ctopy import check_ds_object
 from .Serializer import saveObjects
+
+
+@contextmanager
+def command_execution():
+    """Context manager used to simulate the execution of a legacy Fortran operator."""
+    libaster.cmd_ctxt_enter()
+    yield
+    if libaster.jeveux_status():
+        libaster.cmd_ctxt_exit()
 
 
 class ExecuteCommand(object):
@@ -221,7 +231,8 @@ class ExecuteCommand(object):
             if not self._op and self.command_name not in ("DEBUT", "POURSUITE"):
                 # for commands that do not call any operator, do initializations
                 libaster.call_oper_init()
-            self.exec_(keywords)
+            with command_execution():
+                self.exec_(keywords)
         except libaster.AsterError as exc:
             self._exc = exc
             # try to push the result in the user context

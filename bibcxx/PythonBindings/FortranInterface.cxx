@@ -81,6 +81,14 @@ Arguments:
         )",
              py::arg( "syntax" ) );
 
+    mod.def( "cmd_ctxt_enter", &call_cmd_ctxt_enter, R"(
+Call Fortran 'cmd_ctxt_enter' subroutine.
+        )" );
+
+    mod.def( "cmd_ctxt_exit", &call_cmd_ctxt_exit, R"(
+Call Fortran 'cmd_ctxt_exit' subroutine.
+        )" );
+
     mod.def( "write", &call_print, R"(
 Print a string using the fortran subroutine.
 

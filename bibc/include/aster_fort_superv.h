@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -54,6 +54,12 @@ extern void DEF0( IBMAIN, ibmain );
 
 #define CALL_POURSU() CALL0( POURSU, poursu )
 extern void DEF0( POURSU, poursu );
+
+#define CALL_CMD_CTXT_ENTER() CALL0( CMD_CTXT_ENTER, cmd_ctxt_enter )
+extern void DEF0( CMD_CTXT_ENTER, cmd_ctxt_enter );
+
+#define CALL_CMD_CTXT_EXIT() CALL0( CMD_CTXT_EXIT, cmd_ctxt_exit )
+extern void DEF0( CMD_CTXT_EXIT, cmd_ctxt_exit );
 
 #define CALL_ONERRF( a, b, c ) CALLSSP( ONERRF, onerrf, a, b, c )
 extern void DEFSSP( ONERRF, onerrf, char *, STRING_SIZE, _OUT char *, STRING_SIZE,
