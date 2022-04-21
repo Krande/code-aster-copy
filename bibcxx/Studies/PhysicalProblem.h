@@ -27,38 +27,40 @@
 #include "astercxx.h"
 
 #include "Behaviours/BehaviourProperty.h"
+#include "DataFields/FieldOnCells.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "Loads/ListOfLoads.h"
-#include "Materials/BaseExternalStateVariables.h"
 #include "Materials/CodedMaterial.h"
-#include "Materials/ExternalStateVariablesBuilder.h"
 #include "Materials/MaterialField.h"
-#include "Modeling/Model.h"
 #include "Numbering/DOFNumbering.h"
 
 /**
  * @class PhysicalProblem
- * @brief Cette classe permet de definir une étude au sens Aster
- * @author Nicolas Sellenet
+ * @brief Main class to describe physical problem
  */
 class PhysicalProblem {
   private:
     /** @brief Mesh */
     BaseMeshPtr _mesh;
-    /** @brief Modele */
+
+    /** @brief Model */
     ModelPtr _model;
-    /** @brief Materiau affecté */
+
+    /** @brief Material field */
     MaterialFieldPtr _materialField;
-    /** @brief Liste des chargements */
+
+    /** @brief List of loads */
     ListOfLoadsPtr _listOfLoads;
-    /** @brief Liste des chargements */
+
+    /** @brief Elementary characteristics */
     ElementaryCharacteristicsPtr _elemChara;
-    /** @brief coded material */
+
+    /** @brief Material parameters */
     CodedMaterialPtr _codedMater;
-    /** @brief Input variables */
-    ExternalStateVariablesBuilderPtr _varCom;
+
     /** @brief Behaviour properties */
     BehaviourPropertyPtr _behavProp;
+
     /** @brief Numbering */
     BaseDOFNumberingPtr _dofNume;
 
@@ -69,90 +71,57 @@ class PhysicalProblem {
     // No default constructor
     PhysicalProblem( void ) = delete;
 
-    /**
-     * @brief Constructeur
-     * @param ModelPtr Modèle de l'étude
-     * @param MaterialFieldPtr Matériau de l'étude
-     */
+    /** @brief Constructor */
     PhysicalProblem( const ModelPtr curModel, const MaterialFieldPtr curMat,
                      const ElementaryCharacteristicsPtr cara = nullptr );
 
+    /** @brief Destructor */
     ~PhysicalProblem(){};
 
-    /**
-     * @brief Add a load (mechanical or dirichlet) with function, formula...
-     * @param Args... template list of arguments (load and function or formula)
-     */
+    /** @brief Add a load (mechanical or dirichlet) with function, formula */
     template < typename... Args >
     void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 
-    /**
-     * @brief Obtenir le matériau affecté
-     */
+    /** @brief Get material field */
     MaterialFieldPtr getMaterialField() const { return _materialField; };
 
-    /**
-     * @brief Obtenir le modèle de l'étude
-     */
+    /** @brief Get model */
     ModelPtr getModel() const { return _model; };
 
-    /**
-     * @brief Obtenir le maillage de l'étude
-     */
+    /** @brief Get mesh */
     BaseMeshPtr getMesh() const { return _mesh; };
-    /**
-     * @brief Get elementary characteristics
-     */
+
+    /** @brief Get elementary characteristics */
     ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _elemChara; };
 
-    /**
-     * @brief Get the build coded material
-     */
+    /** @brief Get material parameters*/
     CodedMaterialPtr getCodedMaterial() const { return _codedMater; };
 
-    /**
-     * @brief Renvoit la liste de chargements
-     */
+    /** @brief Get list of loads */
     ListOfLoadsPtr getListOfLoads() const { return _listOfLoads; };
 
-    /**
-     * @brief Renvoit la carte COMPOR
-     */
+    /** @brief Get behaviour properties */
     BehaviourPropertyPtr getBehaviourProperty() const { return _behavProp; };
 
-    /**
-     * @brief Renvoit la carte COMPOR
-     */
+    /** @brief Get numbering of degrees of freedom */
     BaseDOFNumberingPtr getDOFNumbering() const { return _dofNume; };
 
-    ExternalStateVariablesBuilderPtr getExternalStateVariables() const { return _varCom; };
-
-    /**
-     * @brief Renvoit la carte COMPOR
-     */
+    /** @brief Set numbering of degrees of freedom */
     void setDOFNumbering( const BaseDOFNumberingPtr dofNume );
 
+    /** @brief Create numbering of degrees of freedom */
     bool computeDOFNumbering();
 
-    /**
-     * @brief Create ConstantFieldOnCell for behaviours
-     */
+    /** @brief Create behaviour properties */
     void computeBehaviourProperty( py::object &keywords, const std::string &initialState = "NON",
                                    const ASTERINTEGER verbosity = 1 );
 
-    /**
-     * @brief Construction de la liste de chargements
-     * @return true si tout s'est bien passé
-     */
+    /** @brief Create list of loads */
     bool computeListOfLoads() { return _listOfLoads->build( _model ); };
 };
 
-/**
- * @typedef PhysicalProblemPtr
- * @brief Pointeur intelligent vers un PhysicalProblem
- */
-typedef std::shared_ptr< PhysicalProblem > PhysicalProblemPtr;
+using PhysicalProblemPtr = std::shared_ptr< PhysicalProblem >;
 
 #endif /* PHYSICALPROBLEM_H_ */

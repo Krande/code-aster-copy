@@ -21,27 +21,23 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "Materials/MaterialField.h"
 
+#include "aster_fort_superv.h"
 #include "astercxx.h"
 
-#include "Materials/MaterialFieldBuilder.h"
+#include "Modeling/FiniteElementDescriptor.h"
+#include "Results/TransientResult.h"
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/SyntaxDictionary.h"
-
-#include <typeinfo>
 
 MaterialField::MaterialField( const std::string &name, const MeshPtr &mesh )
     : _mesh( mesh ),
       _model( nullptr ),
       DataStructure( name, 8, "CHAM_MATER" ),
-      _listOfMaterials( ConstantFieldOnCellsChar8Ptr(
+      _champ_mat( ConstantFieldOnCellsChar8Ptr(
           new ConstantFieldOnCellsChar8( getName() + ".CHAMP_MAT ", mesh ) ) ),
-      _listOfTemperatures( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsReal( getName() + ".TEMPE_REF ", mesh ) ) ),
-      _behaviourField( ConstantFieldOnCellsRealPtr(
+      _compor( ConstantFieldOnCellsRealPtr(
           new ConstantFieldOnCellsReal( getName() + ".COMPOR ", mesh ) ) ),
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
@@ -52,11 +48,9 @@ MaterialField::MaterialField( const std::string &name, const SkeletonPtr &mesh )
     : _mesh( mesh ),
       _model( nullptr ),
       DataStructure( name, 8, "CHAM_MATER" ),
-      _listOfMaterials( ConstantFieldOnCellsChar8Ptr(
+      _champ_mat( ConstantFieldOnCellsChar8Ptr(
           new ConstantFieldOnCellsChar8( getName() + ".CHAMP_MAT ", mesh ) ) ),
-      _listOfTemperatures( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsReal( getName() + ".TEMPE_REF ", mesh ) ) ),
-      _behaviourField( ConstantFieldOnCellsRealPtr(
+      _compor( ConstantFieldOnCellsRealPtr(
           new ConstantFieldOnCellsReal( getName() + ".COMPOR ", mesh ) ) ),
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
@@ -68,11 +62,9 @@ MaterialField::MaterialField( const std::string &name, const ParallelMeshPtr &me
     : _mesh( mesh ),
       _model( nullptr ),
       DataStructure( name, 8, "CHAM_MATER" ),
-      _listOfMaterials( ConstantFieldOnCellsChar8Ptr(
+      _champ_mat( ConstantFieldOnCellsChar8Ptr(
           new ConstantFieldOnCellsChar8( getName() + ".CHAMP_MAT ", mesh ) ) ),
-      _listOfTemperatures( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsReal( getName() + ".TEMPE_REF ", mesh ) ) ),
-      _behaviourField( ConstantFieldOnCellsRealPtr(
+      _compor( ConstantFieldOnCellsRealPtr(
           new ConstantFieldOnCellsReal( getName() + ".COMPOR ", mesh ) ) ),
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
@@ -80,69 +72,26 @@ MaterialField::MaterialField( const std::string &name, const ParallelMeshPtr &me
       _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
 #endif /* ASTER_HAVE_MPI */
 
-bool MaterialField::buildWithoutExternalStateVariables() {
-    MaterialFieldBuilder::buildClass( *this );
-
-    return true;
-};
-
-std::vector< MaterialPtr > MaterialField::getVectorOfMaterial() const {
-    std::vector< MaterialPtr > toReturn;
-    for ( const auto &curIter : _materialsFieldEntity )
+listOfMaterials MaterialField::getVectorOfMaterial() const {
+    listOfMaterials toReturn;
+    for ( const auto &curIter : _materialsOnMeshEntities )
         for ( const auto &curIter2 : curIter.first )
             toReturn.push_back( curIter2 );
     return toReturn;
 };
 
-std::vector< PartOfMaterialFieldPtr > MaterialField::getVectorOfPartOfMaterialField() const {
-    std::vector< PartOfMaterialFieldPtr > toReturn;
-    for ( const auto &curIter : _materialsFieldEntity ) {
+listOfPartOfMaterialField MaterialField::getVectorOfPartOfMaterialField() const {
+    listOfPartOfMaterialField toReturn;
+    for ( const auto &curIter : _materialsOnMeshEntities ) {
         PartOfMaterialFieldPtr toPush( new PartOfMaterialField( curIter.first, curIter.second ) );
         toReturn.push_back( toPush );
     }
     return toReturn;
 };
 
-bool MaterialField::hasExternalStateVariables() const { return _cvrcVarc->exists(); };
-
-bool MaterialField::hasExternalStateVariables( const std::string &name ) {
-    if ( _cvrcVarc->exists() ) {
-        _cvrcVarc->updateValuePointer();
-        JeveuxChar8 toTest( name );
-        auto size = _cvrcVarc->size();
-        for ( int i = 0; i < size; ++i ) {
-            if ( ( *_cvrcVarc )[i] == toTest )
-                return true;
-        }
-    }
-
-    return false;
-};
-
-void MaterialField::updateStateVariables(){
-    if ( _cvrcVarc->exists() ) {
-        _cvrcVarc->updateValuePointer();
-        ASTERINTEGER size = _cvrcVarc->size();
-        for ( ASTERINTEGER i = 0; i < size; ++i ) {
-            std::string varc_name = ( *_cvrcVarc )[i].toString();
-            if ( _mapCvrcCard1.find( varc_name ) == _mapCvrcCard1.end() ){
-                _mapCvrcCard1[varc_name] = std::make_shared< ConstantFieldOnCellsReal > (
-                                                        getName() + '.' + varc_name + ".1", _mesh );
-                _mapCvrcCard2[varc_name] = std::make_shared< ConstantFieldOnCellsChar16 > (
-                                                        getName() + '.' + varc_name + ".2", _mesh );
-            }
-        }
-    }
-};
-
-bool MaterialField::update(){
-    updateStateVariables();
-    return true;
-}
-
 void MaterialField::addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav ) {
-    _behaviours.push_back(
-        listOfBehavAndGrpsValue( curBehav, MeshEntityPtr( new AllMeshEntities() ) ) );
+    _behaviourOnMeshEntities.push_back(
+        listOfBehavioursOnMeshValue( curBehav, MeshEntityPtr( new AllMeshEntities() ) ) );
 }
 
 void MaterialField::addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav,
@@ -152,16 +101,16 @@ void MaterialField::addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav
     if ( !_mesh->hasGroupOfCells( nameOfGroup ) )
         throw std::runtime_error( nameOfGroup + " not in mesh" );
 
-    _behaviours.push_back(
-        listOfBehavAndGrpsValue( curBehav, MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) ) );
+    _behaviourOnMeshEntities.push_back(
+        listOfBehavioursOnMeshValue( curBehav, MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) ) );
 }
 
 void MaterialField::addMaterialsOnMesh( std::vector< MaterialPtr > curMaters ) {
-    _materialsFieldEntity.push_back(
-        listOfMatsAndGrpsValue( curMaters, MeshEntityPtr( new AllMeshEntities() ) ) );
+    _materialsOnMeshEntities.push_back(
+        listOfMaterialsOnMeshValue( curMaters, MeshEntityPtr( new AllMeshEntities() ) ) );
 }
 
-void MaterialField::addMaterialsOnMesh( MaterialPtr &curMater ) {
+void MaterialField::addMaterialOnMesh( MaterialPtr &curMater ) {
     addMaterialsOnMesh( ( std::vector< MaterialPtr > ){ curMater } );
 }
 
@@ -173,39 +122,49 @@ void MaterialField::addMaterialsOnGroupOfCells( std::vector< MaterialPtr > curMa
         if ( !_mesh->hasGroupOfCells( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
-    _materialsFieldEntity.push_back(
-        listOfMatsAndGrpsValue( curMaters, MeshEntityPtr( new GroupOfCells( namesOfGroup ) ) ) );
+    _materialsOnMeshEntities.push_back( listOfMaterialsOnMeshValue(
+        curMaters, MeshEntityPtr( new GroupOfCells( namesOfGroup ) ) ) );
 }
 
-void MaterialField::addMaterialsOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup ) {
+void MaterialField::addMaterialOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup ) {
     addMaterialsOnGroupOfCells( ( std::vector< MaterialPtr > ){ curMater }, namesOfGroup );
 }
 
-void MaterialField::addExternalStateVariables( py::object &keywords ) {
-
-    // Check input PyObject
-    if ( !PyDict_Check( keywords.ptr() ) && !PyList_Check( keywords.ptr() ) &&
-         !PyTuple_Check( keywords.ptr() ) )
-        throw std::runtime_error( "Unexpected value for 'AFFE_VARC'." );
-
-    // Create syntax
-    CommandSyntax cmdSt( "code_aster.Cata.Commons.c_affe_varc.C_AFFE_VARC_EXTE" );
-    py::dict kwfact( py::arg( "AFFE_VARC" ) = keywords );
-    cmdSt.define( kwfact );
-
-    // Get objects to create
-    std::string modelName;
-    modelName = " ";
-    if ( getModel() != NULL ) {
-        modelName = getModel()->getName();
+ListSyntaxMapContainer MaterialField::syntaxForMaterial() {
+    ListSyntaxMapContainer listAFFE;
+    for ( auto &curIter : getMaterialsOnMeshEntities() ) {
+        SyntaxMapContainer dict2;
+        VectorString listOfMater;
+        for ( const auto &curIter2 : curIter.first )
+            listOfMater.push_back( curIter2->getName() );
+        dict2.container["MATER"] = listOfMater;
+        const MeshEntityPtr &tmp = curIter.second;
+        if ( tmp->getType() == AllMeshEntitiesType )
+            dict2.container["TOUT"] = "OUI";
+        else if ( tmp->getType() == GroupOfCellsType )
+            dict2.container["GROUP_MA"] = ( curIter.second )->getNames();
+        else if ( tmp->getType() == GroupOfNodesType )
+            dict2.container["GROUP_NO"] = ( curIter.second )->getNames();
+        else
+            throw std::runtime_error( "Support entity undefined" );
+        listAFFE.push_back( dict2 );
     }
-    modelName.resize( 8, ' ' );
-    std::string materialFieldName = getName();
-    materialFieldName.resize( 8, ' ' );
-    std::string meshName = getMesh()->getName();
-    meshName.resize( 8, ' ' );
+    return listAFFE;
+}
 
-    // Add external state variables in material field
-    CALLO_AFVARC( materialFieldName, meshName, modelName );
-    CALLO_CMTREF( materialFieldName, meshName );
-};
+ListSyntaxMapContainer MaterialField::syntaxForBehaviour() {
+    ListSyntaxMapContainer listAFFE_COMPOR;
+    for ( auto &curIter : getBehaviourOnMeshEntities() ) {
+        SyntaxMapContainer dict2;
+        dict2.container["COMPOR"] = curIter.first->getName();
+        const MeshEntityPtr &tmp = curIter.second;
+        if ( tmp->getType() == AllMeshEntitiesType )
+            dict2.container["TOUT"] = "OUI";
+        else if ( tmp->getType() == GroupOfCellsType )
+            dict2.container["GROUP_MA"] = ( curIter.second )->getName();
+        else
+            throw std::runtime_error( "Support entity undefined" );
+        listAFFE_COMPOR.push_back( dict2 );
+    }
+    return listAFFE_COMPOR;
+}

@@ -71,12 +71,6 @@ Return the DOF numbering
 Returns:
     BaseDOFNumberingPtr: a pointer to the DOF numbering
         )" );
-    c1.def( "getExternalStateVariables", &PhysicalProblem::getExternalStateVariables, R"(
-Return the external state variables
-
-Returns:
-    ExternalStateVariablesBuilderPtr: a pointer to the external state variables
-        )" );
     c1.def( "setDOFNumbering", &PhysicalProblem::setDOFNumbering, R"(
 Set the DOF numbering
 

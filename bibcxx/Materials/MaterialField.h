@@ -1,10 +1,9 @@
-#ifndef MATERIALONMESH_H_
-#define MATERIALONMESH_H_
+#ifndef MATERIALFIELD_H_
+#define MATERIALFIELD_H_
 
 /**
  * @file MaterialField.h
- * @brief Fichier entete de la classe MaterialField
- * @author Nicolas Sellenet
+ * @brief Header of MaterialField classes
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -24,9 +23,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
-#include "aster_pybind.h"
 #include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
@@ -45,79 +41,60 @@ class MaterialFieldBuilder;
 
 /**
  * @class PartOfMaterialField
- * @brief It contains a BehaviourDefinitionPtr and a MeshEntityPtr
- * @author Nicolas Sellenet
+ * @brief It contains a list of material properties on mesh
  */
 class PartOfMaterialField {
   private:
-    std::vector< MaterialPtr > _vecOfMater;
-    MeshEntityPtr _entity;
+    listOfMaterials _vecOfMater;
+    MeshEntityPtr _meshEntity;
 
   public:
-    PartOfMaterialField() : _entity( nullptr ){};
+    PartOfMaterialField() : _meshEntity( nullptr ){};
 
-    PartOfMaterialField( const std::vector< MaterialPtr > &vecOfMater, const MeshEntityPtr &entity )
-        : _vecOfMater( vecOfMater ), _entity( entity ){};
+    PartOfMaterialField( const listOfMaterials &vecOfMater, const MeshEntityPtr &entity )
+        : _vecOfMater( vecOfMater ), _meshEntity( entity ){};
 
-    /**
-     * @brief Get the VectorOfMaterial of PartOfMaterialField
-     */
-    std::vector< MaterialPtr > getVectorOfMaterial() const { return _vecOfMater; };
+    /** @brief Get the VectorOfMaterial of PartOfMaterialField */
+    listOfMaterials getVectorOfMaterial() const { return _vecOfMater; };
 
-    /**
-     * @brief Get the MeshEntity of PartOfMaterialField
-     */
-    MeshEntityPtr getMeshEntity() const { return _entity; };
+    /** @brief Get the MeshEntity of PartOfMaterialField */
+    MeshEntityPtr getMeshEntity() const { return _meshEntity; };
 };
 
-/**
- * @typedef PartOfMaterialFieldPtr
- * @brief Smart pointer on PartOfMaterialField
- */
-typedef std::shared_ptr< PartOfMaterialField > PartOfMaterialFieldPtr;
+using PartOfMaterialFieldPtr = std::shared_ptr< PartOfMaterialField >;
+using listOfPartOfMaterialField = std::vector< PartOfMaterialFieldPtr >;
 
 /**
  * @class MaterialField
- * @brief produit une sd identique a celle produite par AFFE_MATERIAU
- * @author Nicolas Sellenet
+ * @brief Main class from AFFE_MATERIAU command
  */
 class MaterialField : public DataStructure {
-    friend class MaterialFieldBuilder;
-
   private:
-    // On redefinit le type MeshEntityPtr afin de pouvoir stocker les MeshEntity
-    // dans la list
-    /** @typedef Definition d'un pointeur intelligent sur un VirtualMeshEntity */
-    typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
-    /** @typedef std::list d'une std::pair de MeshEntityPtr */
-    typedef std::list< std::pair< std::vector< MaterialPtr >, MeshEntityPtr > > listOfMatsAndGrps;
-    /** @typedef Definition de la valeur contenue dans un listOfMatsAndGrps */
-    typedef listOfMatsAndGrps::value_type listOfMatsAndGrpsValue;
-    /** @typedef Definition d'un iterateur sur listOfMatsAndGrps */
-    typedef listOfMatsAndGrps::iterator listOfMatsAndGrpsIter;
+    using listOfMaterials = std::vector< MaterialPtr >;
+    using listOfMaterialsOnMesh = std::list< std::pair< listOfMaterials, MeshEntityPtr > >;
+    using listOfMaterialsOnMeshValue = listOfMaterialsOnMesh::value_type;
+    using listOfBehavioursOnMesh = std::list< std::pair< BehaviourDefinitionPtr, MeshEntityPtr > >;
+    using listOfBehavioursOnMeshValue = listOfBehavioursOnMesh::value_type;
 
-    /** @typedef std::list d'une std::pair de MeshEntityPtr */
-    typedef std::vector< std::pair< BehaviourDefinitionPtr, MeshEntityPtr > > listOfBehavAndGrps;
-    /** @typedef Definition de la valeur contenue dans un listOfBehavAndGrps */
-    typedef listOfBehavAndGrps::value_type listOfBehavAndGrpsValue;
-    /** @typedef Definition d'un iterateur sur listOfBehavAndGrps */
-    typedef listOfBehavAndGrps::iterator listOfBehavAndGrpsIter;
-
-    /** @brief Maillage sur lequel repose la sd_cham_mater */
+    /** @brief Mesh */
     BaseMeshPtr _mesh;
+
     /** @brief Model */
     ModelPtr _model;
-    /** @brief Carte '.CHAMP_MAT' */
-    ConstantFieldOnCellsChar8Ptr _listOfMaterials;
-    /** @brief Carte '.TEMPE_REF' */
-    ConstantFieldOnCellsRealPtr _listOfTemperatures;
-    /** @brief Carte '.COMPOR' */
-    ConstantFieldOnCellsRealPtr _behaviourField;
-    /** @brief Liste contenant les materiaux ajoutes par l'utilisateur */
-    listOfMatsAndGrps _materialsFieldEntity;
-    /** @brief Link to a  */
-    listOfBehavAndGrps _behaviours;
-    /** @brief Jeveux vector '.CVRCNOM' */
+
+    /** @brief List of material parameters on mesh entities */
+    listOfMaterialsOnMesh _materialsOnMeshEntities;
+
+    /** @brief List of multi-material parameters on mesh entities */
+    listOfBehavioursOnMesh _behaviourOnMeshEntities;
+
+    /** @brief Constant field for material parameters - '.CHAMP_MAT' */
+    ConstantFieldOnCellsChar8Ptr _champ_mat;
+
+    /** @brief Constant field for multi-material parameters - '.COMPOR' */
+    ConstantFieldOnCellsRealPtr _compor;
+
+    /** @brief Jeveux vectors for external state variables (AFFE_VARC) */
     JeveuxVectorChar8 _cvrcNom;
     /** @brief Jeveux vector '.CVRCGD' */
     JeveuxVectorChar8 _cvrcGd;
@@ -130,148 +107,95 @@ class MaterialField : public DataStructure {
     /** @brief Cartes K16 '.xxxx    .2' */
     std::map < std::string, ConstantFieldOnCellsChar16Ptr > _mapCvrcCard2;
 
-  public:
-    /**
-     * @typedef MaterialFieldPtr
-     * @brief Pointeur intelligent vers un MaterialField
-     */
-    typedef std::shared_ptr< MaterialField > MaterialFieldPtr;
+  private:
+    /** @brief Generate syntax for material parameters */
+    ListSyntaxMapContainer syntaxForMaterial();
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Generate syntax for multi-material parameters */
+    ListSyntaxMapContainer syntaxForBehaviour();
+
+  public:
+    /** @brief Constructor */
     MaterialField( const MeshPtr &mesh )
         : MaterialField( ResultNaming::getNewResultName(), mesh ){};
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor */
     MaterialField( const SkeletonPtr &mesh )
         : MaterialField( ResultNaming::getNewResultName(), mesh ){};
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor */
     MaterialField( const std::string &, const MeshPtr & );
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor */
     MaterialField( const std::string &, const SkeletonPtr & );
 
 #ifdef ASTER_HAVE_MPI
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor */
     MaterialField( const ParallelMeshPtr &mesh )
         : MaterialField( ResultNaming::getNewResultName(), mesh ){};
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor */
     MaterialField( const std::string &, const ParallelMeshPtr & );
 #endif /* ASTER_HAVE_MPI */
 
-    /**
-     * @brief Destructor
-     */
+    /** @brief Destructor */
     ~MaterialField(){};
 
-    /**
-     * @brief Add a behaviour on all mesh
-     * @param curBehav behaviour to add
-     */
+    /** @brief Add a behaviour on all mesh */
     void addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav );
 
-    /**
-     * @brief Ajout d'un materiau sur une entite du maillage
-     * @param curMater behaviour to add
-     * @param nameOfGroup Name of group
-     */
+    /** @brief Add a behaviour on group of cells */
     void addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav, std::string nameOfGroup );
 
-    /**
-     * @brief Add one or mmore materials on all the mesh
-     * @param curMaters Material to be added
-     */
+    /** @brief Add several materials on all the mesh */
     void addMaterialsOnMesh( std::vector< MaterialPtr > curMaters );
-    void addMaterialsOnMesh( MaterialPtr &curMater );
 
-    /**
-     * @brief Ajout d'un materiau sur une entite du maillage
-     * @param curMaters Materiau a ajouter
-     * @param nameOfGroup Nom du groupe de mailles
-     */
+    /** @brief Add a material on all the mesh */
+    void addMaterialOnMesh( MaterialPtr &curMater );
+
+    /** @brief Add several materials on group of cells */
     void addMaterialsOnGroupOfCells( std::vector< MaterialPtr > curMaters,
                                      VectorString namesOfGroup );
-    void addMaterialsOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup );
 
-    /**
-     * @brief Build MaterialFieldPtr without ExternalStateVariable
-     * @return true
-     */
-    bool buildWithoutExternalStateVariables();
+    /** @brief Add a material on group of cells */
+    void addMaterialOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup );
 
-    /**
-     * @brief Return the ConstantFieldOnCells of behaviour
-     */
-    ConstantFieldOnCellsRealPtr getBehaviourField() const { return _behaviourField; };
+    /** @brief Return the ConstantFieldOnCells of behaviour */
+    ConstantFieldOnCellsRealPtr getBehaviourField() const { return _compor; };
 
-    /**
-     * @brief Return a vector of MaterialPtr
-     */
+    /** @brief Return a vector of Material */
     std::vector< MaterialPtr > getVectorOfMaterial() const;
 
-    /**
-     * @brief Return a vector of MaterialPtr
-     */
+    /** @brief Return a vector of PartOfMaterialField */
     std::vector< PartOfMaterialFieldPtr > getVectorOfPartOfMaterialField() const;
 
-    /**
-     * @brief Function to know if Calculation Input Variables are present
-     * @return true if present
-     */
-    bool hasExternalStateVariables() const;
-
-    /**
-     * @brief Function to know if a given Calculation Input Variables exists
-     * @return true if exists
-     */
-    bool hasExternalStateVariables( const std::string & );
-
-    /**
-     * @brief Obtenir le maillage
-     * @return Maillage du champ de materiau
-     */
+    /** @brief Get mesh */
     BaseMeshPtr getMesh() {
         if ( _mesh->isEmpty() )
             throw std::runtime_error( "mesh of current model is empty" );
         return _mesh;
     };
 
-    /**
-     * @brief Get model
-     */
+    /** @brief Get model */
     ModelPtr getModel() const { return _model; };
 
-    /**
-     * @brief Set the model
-     */
-    void setModel( ModelPtr model ) { _model = model; };
+    /** @brief Get list of materials parameters on mesh entities */
+    listOfMaterialsOnMesh getMaterialsOnMeshEntities() { return _materialsOnMeshEntities; };
 
-    /** @brief Add external state variables */
-    void addExternalStateVariables( py::object &keywords );
+    /** @brief Get list of multi-material parameters on mesh entities */
+    listOfBehavioursOnMesh getBehaviourOnMeshEntities() { return _behaviourOnMeshEntities; };
 
+    /** @brief Set the model */
+    void setModel( ModelPtr model ) {
+        _model = model;
+        _mesh = model->getMesh();
+    };
     void updateStateVariables();
 
     bool update();
 
 };
 
-/**
- * @typedef MaterialFieldPtr
- * @brief Pointeur intelligent vers un MaterialField
- */
-typedef std::shared_ptr< MaterialField > MaterialFieldPtr;
+using MaterialFieldPtr = std::shared_ptr< MaterialField >;
 
-#endif /* MATERIALONMESH_H_ */
+#endif /* MATERIALFIELD_H_ */

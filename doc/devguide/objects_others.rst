@@ -12,71 +12,6 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.BaseExternalStateVariable` subclasses
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.BaseExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ConcreteDryingExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ConcreteHydratationExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.CorrosionExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.GeometryExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.IrradiationExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.IrreversibleDeformationExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.Neutral1ExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.Neutral2ExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.Neutral3ExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.SteelPhasesExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.TemperatureExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.TotalFluidPressureExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.VolumetricDeformationExternalStateVariable
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ZircaloyPhasesExternalStateVariable
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.CodedMaterial` object
 ********************************************************************************
 
@@ -153,15 +88,6 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.EntityType
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.EvolutionParameter` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.EvolutionParameter
    :show-inheritance:
    :members:
 
@@ -266,15 +192,6 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.ListOfExternalStateVariables` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.ListOfExternalStateVariables
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.Loads` object
 ********************************************************************************
 
@@ -297,15 +214,6 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.LocalShellForceReal
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.MaterialFieldBuilder` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.MaterialFieldBuilder
    :show-inheritance:
    :members:
 

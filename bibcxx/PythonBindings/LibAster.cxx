@@ -29,13 +29,11 @@
 #include "astercxx.h"
 
 // Please keep '*Interface.h' files in alphabetical order to ease merging
-
 #include "PythonBindings/AcousticLoadInterface.h"
 #include "PythonBindings/AcousticModeResultInterface.h"
 #include "PythonBindings/AssemblyMatrixInterface.h"
 #include "PythonBindings/BaseAssemblyMatrixInterface.h"
 #include "PythonBindings/BaseDOFNumberingInterface.h"
-#include "PythonBindings/BaseExternalStateVariablesInterface.h"
 #include "PythonBindings/BaseMaterialPropertyInterface.h"
 #include "PythonBindings/BaseMeshInterface.h"
 #include "PythonBindings/BehaviourDefinitionInterface.h"
@@ -72,7 +70,6 @@
 #include "PythonBindings/ElementaryTermInterface.h"
 #include "PythonBindings/ElementaryVectorInterface.h"
 #include "PythonBindings/EmpiricalModeResultInterface.h"
-#include "PythonBindings/ExternalStateVariablesBuilderInterface.h"
 #include "PythonBindings/ExternalStateVariablesResultInterface.h"
 #include "PythonBindings/FiberGeometryInterface.h"
 #include "PythonBindings/FieldOnCellsInterface.h"
@@ -81,7 +78,6 @@
 #include "PythonBindings/FluidStructureInteractionInterface.h"
 #include "PythonBindings/FluidStructureModalBasisInterface.h"
 #include "PythonBindings/FormulaInterface.h"
-#include "PythonBindings/Fortran.h"
 #include "PythonBindings/FortranInterface.h"
 #include "PythonBindings/FullHarmonicAcousticResultInterface.h"
 #include "PythonBindings/FullHarmonicResultInterface.h"
@@ -100,12 +96,10 @@
 #include "PythonBindings/GridInterface.h"
 #include "PythonBindings/InterspectralMatrixInterface.h"
 #include "PythonBindings/LinearSolverInterface.h"
-#include "PythonBindings/ListOfExternalStateVariablesInterface.h"
 #include "PythonBindings/ListOfFloatsInterface.h"
 #include "PythonBindings/ListOfIntegersInterface.h"
 #include "PythonBindings/ListOfLoadsInterface.h"
 #include "PythonBindings/LoadResultInterface.h"
-#include "PythonBindings/MaterialFieldBuilderInterface.h"
 #include "PythonBindings/MaterialFieldInterface.h"
 #include "PythonBindings/MaterialInterface.h"
 #include "PythonBindings/MaterialPropertyInterface.h"
@@ -283,12 +277,8 @@ PYBIND11_MODULE( libaster, mod ) {
     exportResultNamingToPython( mod );
     exportListOfFloatsToPython( mod );
     exportListOfIntegersToPython( mod );
-    exportBaseExternalStateVariablesToPython( mod );
-    exportListOfExternalStateVariablesToPython( mod );
     exportEmpiricalModeResultToPython( mod );
     exportExternalStateVariablesResultToPython( mod );
-    exportExternalStateVariablesBuilderToPython( mod );
-    exportMaterialFieldBuilderToPython( mod );
     exportCreateEnthalpyToPython( mod );
     exportDeleteTemporaryObjectsToPython( mod );
     exportMatrixToPetscToPython( mod );

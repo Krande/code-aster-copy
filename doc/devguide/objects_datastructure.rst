@@ -452,15 +452,6 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.ExternalStateVariablesBuilder` object
-================================================================================
-
-.. autoclass:: code_aster.Objects.ExternalStateVariablesBuilder
-   :show-inheritance:
-   :members:
-
-
-================================================================================
 :py:class:`~code_aster.Objects.ExternalStateVariablesResult` object
 ================================================================================
 

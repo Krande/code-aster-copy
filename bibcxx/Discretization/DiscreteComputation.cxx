@@ -30,7 +30,6 @@
 #include "Discretization/Calcul.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
-#include "Materials/ExternalStateVariablesBuilder.h"
 #include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
@@ -176,11 +175,6 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
         caraName = currElemChara->getName();
     caraName.resize( 24, ' ' );
     std::string varcName( " " );
-    auto varCom = _study->getExternalStateVariables();
-    if ( varCom ) {
-        varCom->build( currTime );
-        varcName = varCom->getName() + ".TOUT";
-    }
     varcName.resize( 24, ' ' );
     std::string vectElemName = ljust( elemVect->getName(), 24 );
     std::string stop( "S" );
@@ -260,14 +254,6 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
     return vectAsse;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::externalStateVariables( const ASTERDOUBLE &time ) {
-    auto varCom = _study->getExternalStateVariables();
-
-    varCom->build( time );
-
-    return varCom->computeExternalStateVariablesLoad( _study->getDOFNumbering() );
-};
-
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     const ASTERDOUBLE &time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells ) {
 
@@ -279,14 +265,6 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     auto currMater = _study->getMaterialField();
     auto currCodedMater = _study->getCodedMaterial();
     auto currElemChara = _study->getElementaryCharacteristics();
-    auto currExteVari = _study->getExternalStateVariables();
-
-    // Compute external state variables
-    if ( currMater && ( currExteVari->hasExternalStateVariables() ||
-                        currMater->hasExternalStateVariables( "NEUT1" ) ||
-                        currMater->hasExternalStateVariables( "GEOM" ) ) ) {
-        currExteVari->build( time );
-    }
 
     // Set parameters of elementary matrix
     elemMatr->setModel( currModel );
@@ -311,18 +289,14 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     // Add input fields
     _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     if ( currMater ) {
-        _calcul->addInputField( "PVARCPR", currExteVari->getExternalStateVariablesField() );
         _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
     }
-
     if ( currElemChara ) {
         _calcul->addElementaryCharacteristicsField( currElemChara );
     }
-
     _calcul->addFourierModeField( modeFourier );
     _calcul->addTimeField( time );
-
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         _calcul->addXFEMField( currXfemModel );

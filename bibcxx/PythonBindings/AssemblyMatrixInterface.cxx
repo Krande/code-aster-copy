@@ -26,6 +26,8 @@
 
 #include "aster_pybind.h"
 
+#include "PythonBindings/FieldOnNodesInterface.h"
+
 void exportAssemblyMatrixToPython( py::module_ &mod ) {
 
     py::class_< AssemblyMatrixDisplacementReal, AssemblyMatrixDisplacementRealPtr,

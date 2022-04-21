@@ -34,8 +34,7 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
         .def( "getVectorOfMaterial", &PartOfMaterialField::getVectorOfMaterial )
         .def( "getMeshEntity", &PartOfMaterialField::getMeshEntity );
 
-    py::class_< MaterialField, MaterialField::MaterialFieldPtr, DataStructure >( mod,
-                                                                                 "MaterialField" )
+    py::class_< MaterialField, MaterialFieldPtr, DataStructure >( mod, "MaterialField" )
         .def( py::init( &initFactoryPtr< MaterialField, const MeshPtr & > ) )
         .def( py::init( &initFactoryPtr< MaterialField, const SkeletonPtr & > ) )
         .def( py::init( &initFactoryPtr< MaterialField, const std::string &, const MeshPtr & > ) )
@@ -44,38 +43,87 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
         .def( py::init(
             &initFactoryPtr< MaterialField, const std::string &, const ParallelMeshPtr & > ) )
 #endif /* ASTER_HAVE_MPI */
-        .def( "addBehaviourOnMesh", &MaterialField::addBehaviourOnMesh )
-        .def( "addBehaviourOnGroupOfCells", &MaterialField::addBehaviourOnGroupOfCells )
+        .def( "addBehaviourOnMesh", &MaterialField::addBehaviourOnMesh, R"(
+            Add behaviour (from DEFI_COMPOR) on mesh
 
-        .def( "addMaterialsOnMesh", py::overload_cast< std::vector< MaterialPtr > >(
-                                        &MaterialField::addMaterialsOnMesh ) )
-        .def( "addMaterialsOnMesh",
-              py::overload_cast< MaterialPtr & >( &MaterialField::addMaterialsOnMesh ) )
+            Arguments:
+                behaviour (BehaviourDefinition): Behaviour (from DEFI_COMPOR)
+            )",
+              py::arg( "behaviour" ) )
 
-        .def( "addMaterialsOnGroupOfCells",
-              py::overload_cast< std::vector< MaterialPtr >, VectorString >(
-                  &MaterialField::addMaterialsOnGroupOfCells ) )
-        .def( "addMaterialsOnGroupOfCells", py::overload_cast< MaterialPtr &, VectorString >(
-                                                &MaterialField::addMaterialsOnGroupOfCells ) )
+        .def( "addBehaviourOnGroupOfCells", &MaterialField::addBehaviourOnGroupOfCells, R"(
+            Add behaviour (from DEFI_COMPOR) on group of cells
 
-        .def( "buildWithoutExternalStateVariables",
-              &MaterialField::buildWithoutExternalStateVariables )
-        .def( "getMesh", &MaterialField::getMesh )
-        .def( "getVectorOfMaterial", &MaterialField::getVectorOfMaterial )
-        .def( "getVectorOfPartOfMaterialField", &MaterialField::getVectorOfPartOfMaterialField )
-        .def( "hasExternalStateVariables",
-              py::overload_cast<>( &MaterialField::hasExternalStateVariables, py::const_ ) )
-        .def( "hasExternalStateVariables", py::overload_cast< const std::string & >(
-                                               &MaterialField::hasExternalStateVariables ) )
-        .def( "setModel", &MaterialField::setModel )
+            Arguments:
+                behaviour (BehaviourDefinition): Behaviour (from DEFI_COMPOR)
+                nameOfGroup (str) : name of cell
+            )",
+              py::arg( "behaviour" ), py::arg( "nameOfGroup" ) )
 
-        .def( "addExternalStateVariables", &MaterialField::addExternalStateVariables,
-              R"(
-Add external state variables of material field
+        .def( "addMaterialsOnMesh", &MaterialField::addMaterialsOnMesh, R"(
+            Add a vector of material properties on mesh
 
-Arguments:
-    AFFE_VARC (list[dict]): keywords as provided to AFFE_MATERIAU/AFFE_VARC
-        )",
-              py::arg( "AFFE_VARC" ) )
-        .def( "update", &MaterialField::update );;
+            Arguments:
+                material (list(Material)): list of material properties
+            )",
+              py::arg( "material" ) )
+
+        .def( "addMaterialOnMesh", &MaterialField::addMaterialOnMesh, R"(
+            Add material properties on mesh
+
+            Arguments:
+                material (Material): material properties
+            )",
+              py::arg( "material" ) )
+
+        .def( "addMaterialsOnGroupOfCells", &MaterialField::addMaterialsOnGroupOfCells, R"(
+            Add a vector of material properties on group of cells
+
+            Arguments:
+                material (list(Material)): list of material properties
+                nameOfGroup (str) : name of cell
+            )",
+              py::arg( "material" ), py::arg( "nameOfGroup" ) )
+
+        .def( "addMaterialOnGroupOfCells", &MaterialField::addMaterialOnGroupOfCells, R"(
+            Add a material properties on group of cells
+
+            Arguments:
+                material (Material): material properties
+                nameOfGroup (str) : name of cell
+            )",
+              py::arg( "material" ), py::arg( "nameOfGroup" ) )
+
+        .def( "getMesh", &MaterialField::getMesh, R"(
+            Get mesh of material field
+
+            Returns:
+                BaseMesh: mesh
+            )" )
+
+        .def( "getVectorOfMaterial", &MaterialField::getVectorOfMaterial, R"(
+            Get vector of all the material properties on the material field
+
+            Returns:
+                list(Material): vector of material properties
+            )" )
+
+        .def( "getVectorOfPartOfMaterialField", &MaterialField::getVectorOfPartOfMaterialField, R"(
+            Get vector of all the material properties with mesh entities on the material field
+
+            Returns:
+                list(PartOfMaterial): vector of material properties with mesh entities
+            )" )
+
+        .def( "setModel", &MaterialField::setModel, R"(
+            Set model of the material field
+
+            Arguments:
+                model (Model): model
+            )",
+              py::arg( "model" ) )
+
+        .def( "build", &MaterialField::build, R"(
+            Build material field
+            )" );
 };

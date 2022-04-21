@@ -1,7 +1,6 @@
 /**
  * @file PhysicalProblem.cxx
- * @brief Implementation de PhysicalProblem
- * @author Nicolas Sellenet
+ * @brief Implementation of class PhysicalProblem
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -25,6 +24,8 @@
 
 #include "aster_pybind.h"
 
+#include "Numbering/ParallelDOFNumbering.h"
+#include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 
 PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPtr curMat,
@@ -36,7 +37,6 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _listOfLoads( std::make_shared< ListOfLoads >( _model ) ),
       _dofNume( nullptr ),
       _codedMater( nullptr ),
-      _varCom( nullptr ),
       _behavProp( nullptr ) {
 
     // Add checks
@@ -57,8 +57,6 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
 
         _codedMater = std::make_shared< CodedMaterial >( _materialField, _model );
         _codedMater->allocate( true );
-        _varCom = std::make_shared< ExternalStateVariablesBuilder >( _model, _materialField,
-                                                                     _elemChara, _codedMater );
     }
 };
 

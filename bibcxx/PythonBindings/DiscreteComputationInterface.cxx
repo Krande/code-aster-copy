@@ -21,8 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "PythonBindings/DiscreteComputationInterface.h"
 
 #include "aster_pybind.h"
@@ -77,17 +75,6 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: Neumann load vector
         )",
               py::arg( "time" ) )
-        .def( "externalStateVariables", &DiscreteComputation::externalStateVariables,
-              R"(
-      Return the external State Variables load vector
-
-      Arguments:
-            time (float): current time
-
-      Returns:
-            FieldOnNodes: external State Variables load vector
-        )",
-              py::arg( "time" ) )
         .def( "dirichletBC", &DiscreteComputation::dirichletBC,
               R"(
       Return the imposed displacement vector used to remove imposed DDL
@@ -132,6 +119,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(
       Return elementary matrices for dual BC
+
+      Arguments:
+            None
 
       Returns:
             ElementaryMatrix: elementary matrices

@@ -92,13 +92,6 @@ class DiscreteComputation {
     FieldOnNodesRealPtr neumann( const VectorReal timeParameters );
 
     /**
-     * @brief Compute nodal field for external state variables
-     * @param time Time
-     * @return Nodal field for external state variables
-     */
-    FieldOnNodesRealPtr externalStateVariables( const ASTERDOUBLE &time );
-
-    /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
      * @param time Time
      * @return Elementary matrices for mechanical stiffness (RIGI_MECA)
@@ -143,7 +136,6 @@ class DiscreteComputation {
     PhysicalProblemPtr getPhysicalProblem() const { return _study; };
 };
 
-/** @typedef DiscreteComputationPtr */
-typedef std::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
+using DiscreteComputationPtr = std::shared_ptr< DiscreteComputation >;
 
 #endif /* DISCRETEPROBLEM_H_ */

@@ -4,7 +4,6 @@
 /**
  * @file Material.h
  * @brief Fichier entete de la classe Material
- * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -24,12 +23,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "astercxx.h"
+
 #include "DataStructures/DataStructure.h"
-#include "Materials/MaterialProperty.h"
 #include "Functions/Function.h"
+#include "Materials/MaterialProperty.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -37,183 +35,152 @@
  * @brief produit une sd identique a celle produite par DEFI_MATERIAU
  * @author Nicolas Sellenet
  */
-class Material: public DataStructure
-{
-    public:
-        /**
-         * @typedef MaterialPtr
-         * @brief Pointeur intelligent vers un Material
-         */
-        typedef std::shared_ptr< Material > MaterialPtr;
+class Material : public DataStructure {
+  public:
+    using MaterialPtr = std::shared_ptr< Material >;
+    using VectorOfGenericMaterialProperty = std::vector< GenericMaterialPropertyPtr >;
+    using VectorOfGeneralMaterialIter = VectorOfGenericMaterialProperty::iterator;
+    using VectorOfJeveuxVectorReal = std::vector< JeveuxVectorReal >;
+    using VectorOfJeveuxVectorChar8 = std::vector< JeveuxVectorChar8 >;
 
-        typedef std::vector< GenericMaterialPropertyPtr > VectorOfGenericMaterialProperty;
-        typedef VectorOfGenericMaterialProperty::iterator VectorOfGeneralMaterialIter;
-        typedef std::vector< JeveuxVectorReal > VectorOfJeveuxVectorReal;
-        typedef std::vector< JeveuxVectorChar8 > VectorOfJeveuxVectorChar8;
+  private:
+    /** @brief Vecteur Jeveux '.MATERIAU.NOMRC' */
+    JeveuxVectorChar32 _materialBehaviourNames;
+    /** @brief Nombre de MaterialProperty deja ajoutes */
+    int _nbMaterialProperty;
+    int _nbUserMaterialProperty;
+    /** @brief Vecteur contenant les GenericMaterialPropertyPtr ajoutes par l'utilisateur */
+    VectorOfGenericMaterialProperty _vecMatBehaviour;
 
-    private:
-        /** @brief Vecteur Jeveux '.MATERIAU.NOMRC' */
-        JeveuxVectorChar32                 _materialBehaviourNames;
-        /** @brief Nombre de MaterialProperty deja ajoutes */
-        int                                _nbMaterialProperty;
-        int                                _nbUserMaterialProperty;
-        /** @brief Vecteur contenant les GenericMaterialPropertyPtr ajoutes par l'utilisateur */
-        VectorOfGenericMaterialProperty   _vecMatBehaviour;
+    /** @brief Vector of JeveuxVectorComplex named 'CPT.XXXXXX.VALC' */
+    std::vector< JeveuxVectorComplex > _vectorOfValuesComplex;
+    /** @brief Vector of JeveuxVectorReal named 'CPT.XXXXXX.VALR' */
+    std::vector< JeveuxVectorReal > _vectorOfValuesReal;
+    /** @brief Vector of JeveuxVectorChar16 named 'CPT.XXXXXX.VALK' */
+    std::vector< JeveuxVectorChar16 > _vectorOfChar16Values;
+    /** @brief Vector of JeveuxVectorChar16 named '.ORDR' */
+    std::vector< JeveuxVectorChar16 > _vectorOrdr;
+    /** @brief Vector of JeveuxVectorLong named '.KORD' */
+    std::vector< JeveuxVectorLong > _vectorKOrdr;
+    /** @brief Vector of JeveuxVectorReal named '.XXXXXXX.LISV_R8' */
+    std::vector< VectorOfJeveuxVectorReal > _vectorOfUserValuesReal;
+    /** @brief Vector of JeveuxVectorChar8 named '.XXXXXXX.LISV_FO' */
+    std::vector< VectorOfJeveuxVectorChar8 > _vectorOfUserFunctionValues;
+    /** @brief Function named '.&&RDEP' for traction function */
+    FunctionPtr _doubleValues;
+    MaterialPtr _mater;
 
-        /** @brief Vector of JeveuxVectorComplex named 'CPT.XXXXXX.VALC' */
-        std::vector< JeveuxVectorComplex > _vectorOfValuesComplex;
-        /** @brief Vector of JeveuxVectorReal named 'CPT.XXXXXX.VALR' */
-        std::vector< JeveuxVectorReal >  _vectorOfValuesReal;
-        /** @brief Vector of JeveuxVectorChar16 named 'CPT.XXXXXX.VALK' */
-        std::vector< JeveuxVectorChar16 >  _vectorOfChar16Values;
-        /** @brief Vector of JeveuxVectorChar16 named '.ORDR' */
-        std::vector< JeveuxVectorChar16 >  _vectorOrdr;
-        /** @brief Vector of JeveuxVectorLong named '.KORD' */
-        std::vector< JeveuxVectorLong >    _vectorKOrdr;
-        /** @brief Vector of JeveuxVectorReal named '.XXXXXXX.LISV_R8' */
-        std::vector< VectorOfJeveuxVectorReal > _vectorOfUserValuesReal;
-        /** @brief Vector of JeveuxVectorChar8 named '.XXXXXXX.LISV_FO' */
-        std::vector< VectorOfJeveuxVectorChar8 >  _vectorOfUserFunctionValues;
-        /** @brief Function named '.&&RDEP' for traction function */
-        FunctionPtr                        _doubleValues;
-        MaterialPtr                        _mater;
+    /**
+     * @brief Deallocate all Jeveux vector (usefull in reuse mode)
+     */
+    void deallocateJeveuxVectors();
 
-        /**
-         * @brief Deallocate all Jeveux vector (usefull in reuse mode)
-         */
-        void deallocateJeveuxVectors();
+  public:
+    /**
+     * @brief Constructeur
+     */
+    Material() : Material( ResultNaming::getNewResultName() ){};
 
-    public:
-        /**
-         * @brief Constructeur
-         */
-        Material():
-            Material( ResultNaming::getNewResultName() )
-        {};
+    Material( const std::string &name )
+        : DataStructure( name, 8, "MATER" ),
+          _materialBehaviourNames( JeveuxVectorChar32( getName() + ".MATERIAU.NOMRC " ) ),
+          _nbMaterialProperty( 0 ),
+          _nbUserMaterialProperty( 0 ),
+          _doubleValues( std::make_shared< Function >( getName() + ".&&RDEP" ) ),
+          _mater( nullptr ){};
 
-        Material( const std::string& name ):
-            DataStructure( name, 8, "MATER" ),
-            _materialBehaviourNames( JeveuxVectorChar32( getName() + ".MATERIAU.NOMRC " ) ),
-            _nbMaterialProperty( 0 ),
-            _nbUserMaterialProperty( 0 ),
-            _doubleValues( std::make_shared< Function >( getName() + ".&&RDEP" ) ),
-            _mater( nullptr )
-        {};
+    Material( const std::string &name, VectorInt vec ) : Material( name ) {
+        setStateAfterUnpickling( vec );
+    };
 
-        Material( const std::string& name, VectorInt vec ):
-            Material( name )
-        {
-            setStateAfterUnpickling( vec );
-        };
+    /**
+     * @brief Ajout d'un GenericMaterialPropertyPtr
+     * @param curMaterBehav GenericMaterialPropertyPtr a ajouter au Material
+     * @todo pouvoiur utiliser addMaterialProperty plusieurs fois après build
+     */
+    void addMaterialProperty( const GenericMaterialPropertyPtr &curMaterBehav );
 
-        /**
-         * @brief Ajout d'un GenericMaterialPropertyPtr
-         * @param curMaterBehav GenericMaterialPropertyPtr a ajouter au Material
-         * @todo pouvoiur utiliser addMaterialProperty plusieurs fois après build
-         */
-        void addMaterialProperty( const GenericMaterialPropertyPtr& curMaterBehav );
+    /**
+     * @brief Construction du Material
+     *   A partir des GenericMaterialPropertyPtr ajoutes par l'utilisateur :
+     *   creation de objets Jeveux
+     * @return Booleen indiquant que la construction s'est bien deroulee
+     * @todo pouvoir compléter un matériau (ajout d'un comportement après build()
+     */
+    bool build();
 
-        /**
-         * @brief Construction du Material
-         *   A partir des GenericMaterialPropertyPtr ajoutes par l'utilisateur :
-         *   creation de objets Jeveux
-         * @return Booleen indiquant que la construction s'est bien deroulee
-         * @todo pouvoir compléter un matériau (ajout d'un comportement après build()
-         */
-        bool build();
+    /**
+     * @brief Get the number of list of double properties for one MaterialProperty
+     * @return number of list of double properties
+     */
+    int getNumberOfListOfPropertiesReal( int position ) {
+        if ( position < 0 || position >= int( _vectorOfUserValuesReal.size() ) )
+            throw std::runtime_error( "Out of bound" );
+        return _vectorOfUserValuesReal[position].size();
+    };
 
-        /**
-         * @brief Get the number of list of double properties for one MaterialProperty
-         * @return number of list of double properties
-         */
-        int getNumberOfListOfPropertiesReal( int position )
-        {
-            if( position <0 || position >= int(_vectorOfUserValuesReal.size()) )
-                throw std::runtime_error("Out of bound");
-            return _vectorOfUserValuesReal[ position ].size();
-        };
+    /**
+     * @brief Get the number of list of function properties for one MaterialProperty
+     * @return number of list of function properties
+     */
+    int getNumberOfListOfPropertiesFunction( int position ) {
+        if ( position < 0 || position >= int( _vectorOfUserFunctionValues.size() ) )
+            throw std::runtime_error( "Out of bound" );
+        return _vectorOfUserFunctionValues[position].size();
+    };
 
-        /**
-         * @brief Get the number of list of function properties for one MaterialProperty
-         * @return number of list of function properties
-         */
-        int getNumberOfListOfPropertiesFunction( int position )
-        {
-            if( position <0 || position >= int(_vectorOfUserFunctionValues.size()) )
-                throw std::runtime_error("Out of bound");
-            return _vectorOfUserFunctionValues[ position ].size();
-        };
+    /**
+     * @brief Get the number of behaviours
+     * @return number of added behaviours
+     */
+    int getNumberOfMaterialProperties() { return _nbMaterialProperty; };
 
-        /**
-         * @brief Get the number of behaviours
-         * @return number of added behaviours
-         */
-        int getNumberOfMaterialProperties()
-        {
-            return _nbMaterialProperty;
-        };
+    /**
+     * @brief Get the number of users behaviours
+     * @return number of added users behaviours
+     */
+    int getNumberOfUserMaterialProperties() { return _nbUserMaterialProperty; };
 
-        /**
-         * @brief Get the number of users behaviours
-         * @return number of added users behaviours
-         */
-        int getNumberOfUserMaterialProperties()
-        {
-            return _nbUserMaterialProperty;
-        };
+    /**
+     * @brief Get vector of double values for a given material behaviour
+     * @param position index of vector
+     * @return jeveux vector of double values
+     */
+    VectorOfJeveuxVectorReal getBehaviourVectorOfValuesReal( int position ) {
+        if ( position >= int( _vectorOfUserValuesReal.size() ) )
+            throw std::runtime_error( "Out of bound" );
+        return _vectorOfUserValuesReal[position];
+    };
 
-        /**
-         * @brief Get vector of double values for a given material behaviour
-         * @param position index of vector
-         * @return jeveux vector of double values
-         */
-        VectorOfJeveuxVectorReal getBehaviourVectorOfValuesReal( int position )
-        {
-            if( position >= int(_vectorOfUserValuesReal.size()) )
-                throw std::runtime_error("Out of bound");
-            return _vectorOfUserValuesReal[ position ];
-        };
+    /**
+     * @brief Get vector of function values for a given material behaviour
+     * @param position index of vector
+     * @return jeveux vector of function values
+     */
+    VectorOfJeveuxVectorChar8 getBehaviourVectorOfFunctions( int position ) {
+        if ( position >= int( _vectorOfUserFunctionValues.size() ) )
+            throw std::runtime_error( "Out of bound" );
+        return _vectorOfUserFunctionValues[position];
+    };
 
-        /**
-         * @brief Get vector of function values for a given material behaviour
-         * @param position index of vector
-         * @return jeveux vector of function values
-         */
-        VectorOfJeveuxVectorChar8 getBehaviourVectorOfFunctions( int position )
-        {
-            if( position >= int(_vectorOfUserFunctionValues.size()) )
-                throw std::runtime_error("Out of bound");
-            return _vectorOfUserFunctionValues[ position ];
-        };
+    /**
+     * @brief Get vector of material behaviours
+     */
+    VectorOfGenericMaterialProperty getVectorOfMaterialProperties() { return _vecMatBehaviour; };
 
-        /**
-         * @brief Get vector of material behaviours
-         */
-        VectorOfGenericMaterialProperty getVectorOfMaterialProperties()
-        {
-            return _vecMatBehaviour;
-        };
+    /**
+     * @brief Add a reference to an existing Material to enrich
+     */
+    void setReferenceMaterial( const MaterialPtr &curMater ) { _mater = curMater; };
 
-        /**
-         * @brief Add a reference to an existing Material to enrich
-         */
-        void setReferenceMaterial( const MaterialPtr& curMater )
-        {
-            _mater = curMater;
-        };
-
-    private:
-        /**
-         * @brief Add reference to jeveux object after unpickling
-         */
-        void setStateAfterUnpickling( const VectorInt& );
+  private:
+    /**
+     * @brief Add reference to jeveux object after unpickling
+     */
+    void setStateAfterUnpickling( const VectorInt & );
 };
 
-/**
- * @typedef MaterialPtr
- * @brief Pointeur intelligent vers un Material
- */
-typedef std::shared_ptr< Material > MaterialPtr;
-
+using MaterialPtr = std::shared_ptr< Material >;
+using listOfMaterials = std::vector< MaterialPtr >;
 
 #endif /* MATERIAL_H_ */

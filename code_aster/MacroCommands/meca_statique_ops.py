@@ -134,10 +134,6 @@ def _computeRhs(disr_comp, time):
     # compute neumann forces
     rhs += disr_comp.neumann([time, 0.0, 0.0])
 
-    ext_var = disr_comp.getPhysicalProblem().getExternalStateVariables()
-    if ext_var.hasExternalStateVariables():
-        rhs += disr_comp.externalStateVariables(time)
-
     return rhs
 
 
