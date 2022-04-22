@@ -88,7 +88,7 @@ class NonLinearSolver:
         """Set time stepper object.
 
         Arguments:
-            stepper (.stepper.TimeStepper): object to be used.
+            stepper (:py:class:`.stepper.TimeStepper`): object to be used.
         """
         self.stepper = stepper
 

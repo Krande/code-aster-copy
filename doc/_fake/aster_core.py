@@ -1,3 +1,3 @@
 # fake module
-def MPI_CommRankSize():
-    return 0, 1
+def MPI_Warn():
+    pass

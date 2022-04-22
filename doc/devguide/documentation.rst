@@ -26,7 +26,7 @@ Documenting functions and arguments
 ===================================
 
 Documentation of functions arguments is using the *Google Style* supported
-by the `sphinx-napoleon`_ extension.
+by the `sphinx-ext-napoleon`_ extension.
 
 This style is used in C++/Python bindings, for example, see the documentation of
 :py:func:`code_aster.Objects.Formula.evaluate` which is generated from the
@@ -248,13 +248,13 @@ Resources
 
 
 - `Sphinx Documentation Content
-  <http://www.sphinx-doc.org/en/stable/contents.html>`_.
+  <http://www.sphinx-doc.org/en/master/contents.html>`_.
 
 - `reStructuredText`_ - Official site.
 
 - `reStructuredText Primer (Sphinx documentation)
-  <http://www.sphinx-doc.org/en/stable/rest.html>`_.
+  <http://www.sphinx-doc.org/en/master/rest.html>`_.
 
 
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
-.. _sphinx-napoleon: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/
+.. _sphinx-ext-napoleon: https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html

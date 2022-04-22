@@ -74,8 +74,10 @@ check_docs_main()
         echo "ok"
 
         (
-            printf "\nSource environment...\n"
+            printf "\nSource environment from '${builddir}/${variant}'...\n"
             . ${builddir}/${variant}/data/profile.sh
+            printf "\nGenerate _fake/libaster.py...\n"
+            python3 doc/generate_rst.py --libaster
             printf "\nGenerate objects documentation...\n"
             python3 doc/generate_rst.py --objects
             return $?
@@ -90,7 +92,7 @@ check_docs_main()
         fi
 
         (
-            printf "\nSource environment...\n"
+            printf "\nSource environment from '${builddir}/${variant}'...\n"
             . ${builddir}/${variant}/data/profile.sh
             printf "\nGenerate html documentation...\n"
             ${waf} doc${suffix}

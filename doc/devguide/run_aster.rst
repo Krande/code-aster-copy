@@ -13,11 +13,9 @@ run_aster package
 
 .. automodule:: run_aster.run_aster_main
    :show-inheritance:
-   :special-members: __init__
 
 .. automodule:: run_aster.run_ctest_main
    :show-inheritance:
-   :special-members: __init__
 
 .. automodule:: run_aster.run
    :show-inheritance:
@@ -40,6 +38,11 @@ run_aster package
    :special-members: __init__
 
 .. automodule:: run_aster.status
+   :show-inheritance:
+   :members:
+   :special-members: __init__
+
+.. automodule:: run_aster.error_messages
    :show-inheritance:
    :members:
    :special-members: __init__

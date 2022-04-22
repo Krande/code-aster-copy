@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,111 +17,184 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
 import os.path as osp
-import sys
+import shutil
 
 from waflib import Configure, Errors, Logs
+
+from waftools.wafutils import exec_pyaster
 
 """
 Build code_aster documentation using Sphinx.
 """
 
+
 def options(self):
-    group = self.add_option_group('Documentation options')
-    group.add_option('--disable-doc', action='store_false', default=None,
-                    dest='enable_doc', help='Disable documentation support.')
-    group.add_option('--enable-doc', action='store_true', default=None,
-                    dest='enable_doc',
-                    help='Force documentation support.'
-                         'NB: The documentation build must be explicitly '
-                         ' called by running `waf doc|doc_debug`.')
-    group.add_option('--enable-pdf', action='store_true', default=None,
-                    dest='enable_pdf',
-                    help='Build pdf documentation.')
+    group = self.add_option_group("Documentation options")
+    group.add_option(
+        "--disable-doc",
+        action="store_false",
+        default=None,
+        dest="enable_doc",
+        help="Disable documentation support.",
+    )
+    group.add_option(
+        "--enable-doc",
+        action="store_true",
+        default=None,
+        dest="enable_doc",
+        help="Force documentation support."
+        "NB: The documentation build must be explicitly "
+        " called by running `waf doc|doc_debug`.",
+    )
+
 
 def configure(self):
     opts = self.options
     try:
-        self.find_program('dot', var='DOT')
-        self.find_program('convert', var='CONVERT')
+        self.find_program("dot", var="DOT")
+        self.find_program("convert", var="CONVERT")
         self.find_program("sphinx-build", var="SPHINX_BUILD")
         self.check_sphinx()
-        self.env.SPHINX_ARGS = ['-W']
+        self.env.SPHINX_ARGS = ["-W"]
     except Errors.ConfigurationError:
-        if opts.enable_doc == True:
+        if opts.enable_doc is True:
             raise
     else:
         self.env.BUILD_DOC = True
 
+
 @Configure.conf
 def check_sphinx(self):
-    """Check if sphinx-build is callable in the current environment.
-    """
-    self.start_msg('Checking for sphinx version')
-    cmd = ['python3'] + self.env.SPHINX_BUILD + ['--version']
+    """Check if sphinx-build is callable in the current environment."""
+    self.start_msg("Checking for sphinx version")
+    cmd = ["python3"] + self.env.SPHINX_BUILD + ["--version"]
     try:
         res = self.cmd_and_log(cmd)
-    except Errors.WafError:
-        del self.env['SPHINX_BUILD']
+    except Errors.WafError as exc:
+        del self.env["SPHINX_BUILD"]
         self.end_msg("no, 'sphinx-build' disabled", "YELLOW")
-        raise Errors.ConfigurationError
+        raise Errors.ConfigurationError from exc
     self.end_msg(res.strip())
 
+
 def _setup_doc(self):
-    self.path.make_node('_static').mkdir()
+    self.path.make_node("_static").mkdir()
     out = self.path.get_bld().abspath()
     Logs.info("building documentation in {0}".format(out))
 
-    files = self.path.parent.find_dir('code_aster').ant_glob('**/*.py')
-    files.extend(self.path.ant_glob('**/*.rst'))
-    files.extend(self.path.ant_glob('conf.py'))
-    files.extend(self.path.ant_glob('_static/mystyles.css'))
+    files = self.path.parent.find_dir("code_aster").ant_glob("**/*.py")
+    files.extend(self.path.ant_glob("**/*.rst"))
+    files.extend(self.path.ant_glob("conf.py"))
+    files.extend(self.path.ant_glob("_static/mystyles.css"))
     return out, files
 
 
 def build_doc(self):
     env = self.all_envs[self.variant]
     if not env.BUILD_DOC:
-        Logs.warn("Documentation build not configure. "
-                  "Please re-run 'waf configure' with '--enable-doc' to "
-                  "force documentation support.")
+        Logs.warn(
+            "Documentation build not configure. "
+            "Please re-run 'waf configure' with '--enable-doc' to "
+            "force documentation support."
+        )
         return
+
+    build_autodoc(self)
     build_html(self)
-    if self.options.enable_pdf:
-        build_pdf(self)
+
+
+def build_autodoc(self):
+    if not self.env.BUILD_MPI:
+        raise Errors.WafError(
+            "'libaster.py' must be generated using a parallel build of 'libaster.so'."
+        )
+
+    self(
+        rule=run_pylibaster,
+        name="pylibaster",
+        source=[
+            self.path.ant_glob("build_pylibaster.py"),
+            self.path.parent.get_bld().find_or_declare("bibc/libaster.so"),
+        ],
+        target=self.path.find_or_declare("_fake/libaster.py"),
+        cwd=self.path.get_bld().abspath(),
+    )
+    pysrc = self.path.parent.get_src().ant_glob("code_aster/**/*.py")
+    pysrc += self.path.parent.get_src().ant_glob("run_aster/**/*.py")
+    self(
+        rule=run_autodoc,
+        name="rstdevguide",
+        source=[
+            self.path.ant_glob("generate_rst.py"),
+            self.path.find_or_declare("_fake/libaster.py"),
+        ]
+        + pysrc,
+        target=self.path.find_or_declare("devguide"),
+        cwd=self.path.get_bld().abspath(),
+    )
 
 
 def build_html(self):
     env = self.all_envs[self.variant]
     out, files = _setup_doc(self)
 
-    cmd = (". ${{ASTERDATADIR}}/profile.sh ; "
-           "BUILDDIR={0} ${{SPHINX_BUILD}} ${{SPHINX_ARGS}} "
-           "-b html -d {1} . {2}"
-           .format(self.path.parent.get_bld().abspath(),
-                   osp.join(out, "doctrees"), osp.join(out, "html")))
+    self.add_group()
+    pylib = self.path.get_bld().ant_glob(
+        "_fake/libaster.py", remove=False, quiet=True, generator=True
+    )
+
+    # rst are not changed when libaster is rebuilt, so force to rebuild doctrees and html files
+    cmd = (
+        ". ${{ASTERDATADIR}}/profile.sh ; "
+        "rm -rf {1} {2} ; "
+        "BUILDDIR={0} ${{SPHINX_BUILD}} ${{SPHINX_ARGS}} "
+        "-b html -d {1} . {2}".format(
+            self.path.parent.get_bld().abspath(), osp.join(out, "doctrees"), osp.join(out, "html")
+        )
+    )
     self(
-        rule   = "bash -c '{0}'".format(cmd),
-        cwd    = self.path.abspath(),
-        source = files,
-        target = self.path.find_or_declare('html/index.html'),
-        install_path = env.HTMLDIR,
+        rule="bash -c '{0}'".format(cmd),
+        cwd=self.path.abspath(),
+        source=files + [pylib],
+        target=self.path.find_or_declare("html/index.html"),
+        use="pylibaster",
+    )
+    self.add_manual_dependency(
+        self.path.find_or_declare("html/index.html"), self.path.find_node("_fake/libaster.py")
+    )
+    # install html files
+    bld = self.path.find_or_declare("html").abspath()
+    self(
+        rule="mkdir -p {1} && cp -r {0} {1}".format(bld, env.HTMLDIR),
+        source=self.path.find_or_declare("html/index.html"),
     )
 
 
-def build_pdf(self):
-    env = self.all_envs[self.variant]
-    out, files = _setup_doc(self)
+def run_pylibaster(task):
+    script = task.inputs[0].abspath()
+    tgt = task.outputs[0].abspath()
 
-    cmd = (". ${{ASTERDATADIR}}/profile.sh ; "
-           "BUILDDIR={0} ${{SPHINX_BUILD}} ${{SPHINX_ARGS}} "
-           "-b latex -d {1} . {2} && cd {2} && make"
-           .format(self.path.parent.get_bld().abspath(),
-                   osp.join(out, "doctrees"), osp.join(out, "latex")))
-    self(
-        rule   = "bash -c '{0}'".format(cmd),
-        cwd    = self.path.abspath(),
-        source = files,
-        target = self.path.find_or_declare('latex/code_aster.pdf'),
-        install_path = env.HTMLDIR,
+    exec_pyaster(task.generator.bld, script, args=[tgt], cwd=task.cwd)
+
+    result = task.outputs[0].get_src().abspath()
+    Logs.info("creating {0}...".format(result))
+    shutil.copyfile(tgt, result)
+    return 0
+
+
+# TODO try to replace generate_rst by sphinx-autodoc/sphinx-apidoc
+def run_autodoc(task):
+    script = task.inputs[0].abspath()
+    tgt = task.outputs[0].abspath()
+
+    os.makedirs(tgt, exist_ok=True)
+    exec_pyaster(
+        task.generator.bld, script, args=["--objects", "--destdir={0}".format(tgt)], cwd=task.cwd
     )
+    for res in task.outputs[0].ant_glob("*.rst"):
+        result = res.get_src().abspath()
+        Logs.info("copying {0}...".format(result))
+        shutil.copyfile(res.abspath(), result)
+    return 0

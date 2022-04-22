@@ -29,9 +29,6 @@ Note:
   must be passed using `env` (ex. BUILD_MED)
 """
 
-top = "."
-out = "build"
-
 import os
 import os.path as osp
 import sys
@@ -39,6 +36,11 @@ import sys
 from waflib import Build, Configure, Logs, Utils
 from waflib.Tools.c_config import DEFKEYS
 from waflib.Tools.fc import fc
+
+from waftools.wafutils import remove_previous
+
+top = "."
+out = "build"
 
 if sys.version_info < (3, 6):
     Logs.error("Python 3.6 or newer is required.")
@@ -285,10 +287,10 @@ def build(self):
         )
     if self.cmd.startswith("install"):
         # because we can't know which files are obsolete `rm *.py{,c,o}`
-        _remove_previous(
+        remove_previous(
             self.root.find_node(self.env.ASTERLIBDIR), ["**/*.py", "**/*.pyc", "**/*.pyo"]
         )
-        _remove_previous(
+        remove_previous(
             self.root.find_node(self.env.ASTERDATADIR),
             ["datg/**/*", "materiau/**/*", "tests_data/**/*"],
         )
@@ -570,13 +572,3 @@ def get_config_h(self, cfg):
             lst.append(cfg.undefine(x))
     lst.append("")
     return lst
-
-
-def _remove_previous(install_node, patterns):
-    # used to remove previously installed files (that are just copied to dest)
-    if not install_node:
-        return
-
-    for pattern in patterns:
-        for i in install_node.ant_glob(pattern):
-            os.remove(i.abspath())

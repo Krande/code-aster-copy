@@ -41,7 +41,7 @@ class ExtendedDataStructure:
 
     def getName(self):
         """
-        Overload standart getName() function to eliminate whitespace at both
+        Overload standard `getName()` function to eliminate whitespace at both
         ends of the string.
 
         .. note:: The C++ constructor automaticaly adds a whitespace when it

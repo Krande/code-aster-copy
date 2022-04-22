@@ -97,7 +97,13 @@ dbg:
 	./waf_$(BUILD) install_debug $(OPTS) --fast -j $$(nproc)
 
 doc:
-	./waf_$(BUILD) doc $(OPTS)
+	@( \
+		if [ $(BUILD) = "std" ]; then \
+			echo "skipped, only available in parallel" ; \
+			exit 0 ; \
+		fi ; \
+		./waf_$(BUILD) doc $(OPTS) ; \
+	)
 
 install-tests:
 	@make fast OPTS="$(OPTS) --install-tests"

@@ -63,7 +63,7 @@ Example (from ``sslv139a`` testcase):
 
     P time_limit 60
     P memory_limit 512
-    P testlist asterxx ci verification sequential
+    P testlist submit ci verification sequential
     F comm sslv139a.comm D 1
     F datg sslv139a.datg D 16
     F mmed sslv139a.mmed D 20

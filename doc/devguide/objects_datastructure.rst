@@ -191,6 +191,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.ConnectionMesh` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ConnectionMesh
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.ConstantFieldOnCellsChar16` object
 ================================================================================
 
@@ -1104,6 +1113,51 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.NormalSpeedOnFaceReal
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.ParallelDOFNumbering` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ParallelDOFNumbering
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.ParallelFiniteElementDescriptor` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ParallelFiniteElementDescriptor
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.ParallelMechanicalLoadFunction` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ParallelMechanicalLoadFunction
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.ParallelMechanicalLoadReal` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ParallelMechanicalLoadReal
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.ParallelMesh` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ParallelMesh
    :show-inheritance:
    :members:
 

@@ -2,26 +2,30 @@
 # coding: utf-8
 
 """
-Generate automodule blocks.
+Generate automodule blocks and fake libaster.
 """
 
 EPILOG = """
 EXAMPLES:
+    Generate a fake libaster as python file::
+
+        python3 generate_rst.py --libaster
+
     Generate a file like ``supervis.rst``::
 
-        python generate_rst.py code_aster/__init__.py code_aster/Supervis/*.py
+        python3 generate_rst.py --manual code_aster/__init__.py code_aster/Supervis/*.py
 
     Generate files for *DataStructure* and derivated subclasses::
 
-        python generate_rst.py --objects
+        python3 generate_rst.py --objects
 """
 
 import argparse
-from collections import OrderedDict
-from glob import glob
 import os
 import os.path as osp
+from collections import OrderedDict
 
+from pydoc_pyrenderer import get_python_code
 
 automodule_block = """.. automodule:: {0}
    :show-inheritance:
@@ -81,7 +85,11 @@ def all_objects(destdir):
     for name, obj in list(OBJ.__dict__.items()):
         if not isinstance(obj, type):
             continue
+        # if pyb_instance in obj.mro():
+        # some objects are missed? or included via dependencies?
+        # check AcousticDirichletBC for example
         if obj.mro()[1] is pyb_instance:
+            # print("1:", name, obj.mro())
             addsect.append((name, obj))
     for _, obj in sorted(addsect):
         sections.append(obj)
@@ -117,7 +125,8 @@ def all_objects(destdir):
             objs.remove(typename)
         except ValueError:
             if subtyp not in (pyb_enum, Exception):
-                print(subtyp)
+                print(subtyp, typename)
+                print(objs)
                 raise
         objs.sort()
         if subtyp not in (pyb_enum, Exception):
@@ -161,13 +170,55 @@ Documentation of all other types.
         fobj.write(auto_documentation(**params))
 
 
+def build_pylibaster(filename):
+    """Create a fake libaster as Python file with only signatures and docstrings.
+
+    Arguments:
+        filename (str): Destination file
+    """
+    # do not import code_aster not to extend objects
+    import libaster
+
+    pyb_instance = libaster.DataStructure.mro()[1]
+    blocks = []
+    for name, obj in list(libaster.__dict__.items()):
+        export = True
+        if isinstance(obj, type):
+            export = pyb_instance in obj.mro() or Exception in obj.mro()
+        else:
+            if "builtin_function_or_method" not in repr(type(obj)):
+                export = False
+        if export:
+            blocks.append(get_python_code("libaster." + name))
+        else:
+            print("not exported:", name, obj)
+
+    with open(filename, "w") as flib:
+        flib.write("\n".join(blocks))
+
+
 def main():
     default_dest = osp.join(osp.dirname(__file__), "devguide")
     parser = argparse.ArgumentParser(
         description=__doc__, epilog=EPILOG, formatter_class=argparse.RawTextHelpFormatter
     )
+    # libaster and objects can be run in the same process
     parser.add_argument(
-        "--objects", action="store_true", help="for C++ only objects (needs to import libaster)"
+        "--libaster",
+        action="store_const",
+        dest="action",
+        const="libaster",
+        help="build fake libaster as a pure Python file",
+    )
+    parser.add_argument(
+        "--objects",
+        action="store_const",
+        dest="action",
+        const="objects",
+        help="for C++ only objects (needs to import libaster)",
+    )
+    parser.add_argument(
+        "--manual", action="store_const", dest="action", const="manual", help="for only few objects"
     )
     parser.add_argument(
         "-d",
@@ -180,9 +231,12 @@ def main():
     parser.add_argument("file", metavar="FILE", nargs="*", help="file to analyse")
     args = parser.parse_args()
 
-    if args.objects:
+    pylib = osp.join(osp.dirname(__file__), "_fake", "libaster.py")
+    if args.action == "libaster":
+        build_pylibaster(pylib)
+    if args.action == "objects":
         all_objects(args.destdir)
-    else:
+    elif args.action == "manual":
         for name in args.file:
             print(automodule(name))
 

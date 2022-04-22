@@ -29,22 +29,9 @@ Development rules
     - Check that the documentation can be built without warnings/errors.
 
     - The ``submit`` command from ``devtools`` checks that the fastest testcases
-      pass without error (``asterxx`` testlist).
-      The continous integration procedure checks more testcases (``ci`` testlist).
-
-    - To execute testcases manually:
-
-      Check the sequential testcases:
-
-      .. code-block:: sh
-
-        ../install/std/bin/run_ctest --resutest=../resutest --clean -L asterxx
-
-      and the parallel ones:
-
-      .. code-block:: sh
-
-        ../install/mpi/bin/run_ctest --resutest=../resutest_mpi --clean -L asterxx
+      pass without error (``submit`` testlist).
+      The continous integration procedure checks more testcases
+      (``verification`` testlist).
 
 
 ****************
@@ -72,9 +59,6 @@ code_aster package
 ******************
 
 .. automodule:: code_aster
-   :show-inheritance:
-   :members:
-   :special-members: __init__
 
 
 ********

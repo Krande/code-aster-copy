@@ -1,8 +1,10 @@
 # code_aster source files
 
-> Home page: https://www.code-aster.org/
+[![Documentation Status](https://readthedocs.org/projects/codeaster/badge/?version=latest)](https://codeaster.readthedocs.io/en/latest/?badge=latest)
+
+> Home page: <https://www.code-aster.org/>
 >
-> Forge: https://gitlab.com/codeaster/
+> Forge: <https://gitlab.com/codeaster/>
 >
 > code_aster repositories are moving to Git, the work is still in progress...
 
