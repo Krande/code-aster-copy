@@ -189,7 +189,6 @@ type(Behaviour_ParaExte), pointer :: behaviourParaExte(:)
     20  continue
 
 ! ----- Get parameters for external programs (MFRONT/UMAT)
-        WRITE(6,*) "rela_comp:",rela_comp
         call getExternalBehaviourPara(mesh, modelCell,&
                                       rela_comp, kit_comp,&
                                       l_comp_external, behaviourParaExte(iMapZone),&
