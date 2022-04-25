@@ -227,6 +227,9 @@ void DEFSSSPSSPSSSS( CALCUL_CWRAP, calcul_cwrap, const char *, STRING_SIZE, cons
 void DEFSS( CHECKSUPERELEMENT, checksuperelement, const char *, STRING_SIZE, const char *,
             STRING_SIZE );
 
+#define CALLO_GETERRORCODE( a, b ) CALLOP( GETERRORCODE, geterrorcode, a, b )
+void DEFSP( GETERRORCODE, geterrorcode, const char *, STRING_SIZE, ASTERINTEGER * );
+
 #ifdef __cplusplus
 }
 #endif
