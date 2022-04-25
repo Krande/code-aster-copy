@@ -672,7 +672,7 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
 };
 
 /** @brief Compute internal forces, stress and internal state variables */
-std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
+std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
             ElementaryVectorDisplacementRealPtr >
 DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
                                             const FieldOnNodesRealPtr displ_incr,
@@ -738,11 +738,15 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
         elemVect->build();
     };
 
-    return std::make_tuple( exitField, vari_curr, stress_curr, elemVect );
+    std::string exitFieldName = ljust( exitField->getName(), 19 );
+    ASTERINTEGER exitCode = 0;
+    CALLO_GETERRORCODE( exitFieldName, &exitCode );
+
+    return std::make_tuple( exitField, exitCode, vari_curr, stress_curr, elemVect );
 }
 
 /** @brief Compute tangent matrix (not assembled) */
-std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
+std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
             ElementaryVectorDisplacementRealPtr, ElementaryMatrixDisplacementRealPtr >
 DiscreteComputation::computeTangentStiffnessMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
@@ -820,7 +824,12 @@ DiscreteComputation::computeTangentStiffnessMatrix(
         elemVect->build();
         elemMatr->build();
     };
-    return std::make_tuple( exitField, vari_curr, stress_curr, elemVect, elemMatr );
+
+    std::string exitFieldName = ljust( exitField->getName(), 19 );
+    ASTERINTEGER exitCode = 0;
+    CALLO_GETERRORCODE( exitFieldName, &exitCode );
+
+    return std::make_tuple( exitField, exitCode, vari_curr, stress_curr, elemVect, elemMatr );
 }
 
 /** @brief Compute tangent prediction matrix (not assembled) */

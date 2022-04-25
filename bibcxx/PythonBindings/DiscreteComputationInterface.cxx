@@ -81,6 +81,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                   time (float): current time
+
+            Returns:
+                  FieldOnCells: field of external state variables at current time
             )",
               py::arg( "time" ) )
         .def( "createTimeField", &DiscreteComputation::createTimeField, R"(
@@ -88,6 +91,10 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                   time (float): current time
+
+            Returns:
+                  ConstantFieldOnCells: field of current time
+
             )",
               py::arg( "time" ) )
         .def( "computeExternalStateVariablesLoad",
@@ -113,28 +120,28 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )" )
         .def( "dirichletBC", &DiscreteComputation::dirichletBC,
               R"(
-      Return the imposed displacement vector used to remove imposed DDL
+            Return the imposed displacement vector used to remove imposed DDL
 
-      Arguments:
-            float: current time
+            Arguments:
+                  time (float): current time
 
-      Returns:
-            FieldOnNodes: imposed displacement vector
+            Returns:
+                  FieldOnNodes: imposed displacement vector
         )",
               py::arg( "time" ) )
         .def( "incrementalDirichletBC", &DiscreteComputation::incrementalDirichletBC,
               R"(
-      Return the incremental imposed displacement vector used to remove imposed DDL
-      for incremental resolution.
+            Return the incremental imposed displacement vector used to remove imposed DDL
+            for incremental resolution.
 
-      incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imposed
+            incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imposed
 
-      Arguments:
-            time (float): current time
-            disp (FieldOnNodes): displacement field at current time
+            Arguments:
+                  time (float): current time
+                  disp (FieldOnNodes): displacement field at current time
 
-      Returns:
-            FieldOnNodes: incremental imposed displacement vector
+            Returns:
+                  FieldOnNodes: incremental imposed displacement vector
         )",
               py::arg( "time" ), py::arg( "disp" ) )
         .def( "elasticStiffnessMatrix", &DiscreteComputation::elasticStiffnessMatrix, R"(
@@ -151,7 +158,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )",
               py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = 0,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
-        .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem )
+        .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem, R"(
+            Get physical probelm
+
+            Returns:
+                  PhysicalProblem: physical problem
+            )" )
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(
       Return elementary matrices for dual BC
@@ -162,17 +174,79 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Returns:
             ElementaryMatrix: elementary matrices
         )" )
-        .def( "massMatrix", &DiscreteComputation::massMatrix, py::arg( "time" ) = 0. )
+        .def( "massMatrix", &DiscreteComputation::massMatrix, R"(
+            Return elementary matrices for mass
+
+            Arguments:
+                  time (float): current time (default: 0.0)
+
+      Returns:
+            ElementaryMatrix: elementary matrices
+        )",
+              py::arg( "time" ) = 0. )
         .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
+              R"(
+      Compute internal forces (integration of behaviour)
+
+      Arguments:
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_incr (FieldOnNodes): field of increment of displacement
+            stress (FieldOnCells): field of stress at begin of current time
+            variP (FieldOnCells): field of internal state variables at begin of current time
+            timeFieldPrev (constantFieldOnCells): time at begin of current time
+            timeFieldCurr (constantFieldOnCells): time at end of current time
+
+      Returns:
+            tuple (tuple): return code error (FieldOnCells),
+            error code flag (integer),
+            internal state variables VARI_ELGA (FieldOnCells),
+            Cauchy stress SIEF_ELGA (FieldOnCells),
+            elementary vector of internal forces (ElementaryVectorDisplacement),
+        )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
               py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) )
 
         .def( "computeTangentStiffnessMatrix", &DiscreteComputation::computeTangentStiffnessMatrix,
+              R"(
+      Compute jacobian matrix for Newton algorithm
+
+      Arguments:
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_incr (FieldOnNodes): field of increment of displacement
+            stress (FieldOnCells): field of stress at begin of current time
+            variP (FieldOnCells): field of internal state variables at begin of current time
+            timeFieldPrev (constantFieldOnCells): time at begin of current time
+            timeFieldCurr (constantFieldOnCells): time at end of current time
+
+      Returns:
+            tuple (tuple): return code error (FieldOnCells),
+            error code flag (integer),
+            internal state variables VARI_ELGA (FieldOnCells),
+            Cauchy stress SIEF_ELGA (FieldOnCells),
+            elementary vector of internal forces (ElementaryVectorDisplacement),
+            elementary tangent matrix (ElementaryMatrixDisplacement)
+        )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
               py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) )
 
         .def( "computeTangentPredictionMatrix",
-              &DiscreteComputation::computeTangentPredictionMatrix, py::arg( "displ" ),
-              py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
+              &DiscreteComputation::computeTangentPredictionMatrix, R"(
+      Compute jacobian matrix for Newton algorithm, Euler prediction
+
+      Arguments:
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_incr (FieldOnNodes): field of increment of displacement
+            stress (FieldOnCells): field of stress at begin of current time
+            variP (FieldOnCells): field of internal state variables at begin of current time
+            timeFieldPrev (constantFieldOnCells): time at begin of current time
+            timeFieldCurr (constantFieldOnCells): time at end of current time
+
+      Returns:
+            tuple (tuple): mask to assemble vector (FieldOnCells),
+            Cauchy stress SIEF_ELGA (FieldOnCells),
+            elementary tangent matrix (ElementaryMatrixDisplacement),
+            elementary vector of internal forces (ElementaryVectorDisplacement)
+        )",
+              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
               py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) );
 };

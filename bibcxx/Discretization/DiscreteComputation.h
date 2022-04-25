@@ -161,13 +161,14 @@ class DiscreteComputation {
 
     /**
      * @brief Compute internal forces, stress and internal state variables
-     * @return Tuple with 4 objects:
+     * @return Tuple with 5 objects:
      * field of exitcode
+     * error code (integer)
      * internal state variables (VARI_ELGA)
      * Cauchy stress (SIEF_ELGA)
      * elementary vector of internal forces (`B^T \sigma`)
      */
-    std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
+    std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
                 ElementaryVectorDisplacementRealPtr >
     computeInternalForces( const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
                            const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
@@ -178,12 +179,13 @@ class DiscreteComputation {
      * @brief Compute tangent matrix (not assembled)
      * @return Tuple with 5 objects:
      * field of exitcode
+     * error code (integer)
      * internal state variables (VARI_ELGA)
      * Cauchy stress (SIEF_ELGA)
      * elementary vector of internal forces (`B^T \sigma`)
-     * elementary tangent prediction matrix
+     * elementary tangent matrix
      */
-    std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
+    std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
                 ElementaryVectorDisplacementRealPtr, ElementaryMatrixDisplacementRealPtr >
     computeTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
                                    const FieldOnNodesRealPtr displ_incr,
@@ -211,7 +213,7 @@ class DiscreteComputation {
 
     /**
      * @brief Compute elastic prediction matrix (not assembled)
-     * @return Tuple with 4 objects:
+     * @return Tuple with 1 objects:
      * elementary prediction matrix
      */
     std::tuple< ElementaryMatrixDisplacementRealPtr > computeElasticPredictionMatrix(
@@ -222,7 +224,7 @@ class DiscreteComputation {
 
     /**
      * @brief Compute secant prediction matrix (not assembled)
-     * @return Tuple with 4 objects:
+     * @return Tuple with 1 objects:
      * elementary prediction matrix
      */
     std::tuple< ElementaryMatrixDisplacementRealPtr > computeSecantPredictionMatrix(
