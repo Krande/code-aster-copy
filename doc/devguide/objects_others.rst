@@ -93,6 +93,24 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.EvolutionParameter` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.EvolutionParameter
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ExternalStateVariable` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ExternalStateVariable
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ForceReal` object
 ********************************************************************************
 

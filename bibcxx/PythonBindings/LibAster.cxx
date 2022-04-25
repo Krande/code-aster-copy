@@ -70,6 +70,7 @@
 #include "PythonBindings/ElementaryTermInterface.h"
 #include "PythonBindings/ElementaryVectorInterface.h"
 #include "PythonBindings/EmpiricalModeResultInterface.h"
+#include "PythonBindings/ExternalStateVariablesInterface.h"
 #include "PythonBindings/ExternalStateVariablesResultInterface.h"
 #include "PythonBindings/FiberGeometryInterface.h"
 #include "PythonBindings/FieldOnCellsInterface.h"
@@ -278,6 +279,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportListOfFloatsToPython( mod );
     exportListOfIntegersToPython( mod );
     exportEmpiricalModeResultToPython( mod );
+    exportExternalStateVariablesToPython( mod );
     exportExternalStateVariablesResultToPython( mod );
     exportCreateEnthalpyToPython( mod );
     exportDeleteTemporaryObjectsToPython( mod );
