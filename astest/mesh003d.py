@@ -90,7 +90,7 @@ test.assertEqual(cMesh5.getNumberOfNodes(), 426)
 test.assertEqual(cMesh5.getNumberOfCells(), 192)
 test.assertSequenceEqual(sorted(cMesh5.getGroupsOfCells()), ["bords"])
 test.assertSequenceEqual(
-    sorted(cMesh5.getCells("bords")), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 153, 154, 155, 156]
+    sorted(cMesh5.getCells("bords")), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 152, 153, 154, 155]
 )
 
 

@@ -75,7 +75,7 @@ norm_2 = sqrt(14.0 * nbNodes)
 norm_inf = 3.0
 
 test.assertEqual(field.size(), 3 * nbNodes)
-test.assertSequenceEqual(mesh.getInnerNodes(), range(1, nbNodes + 1))
+test.assertSequenceEqual(mesh.getInnerNodes(), range(nbNodes))
 test.assertEqual(len(mesh.getInnerNodes()), nbNodes)
 test.assertEqual(len(field.getValues()), field.size())
 test.assertAlmostEqual(sum([abs(x) for x in field.getValues()]), norm_1)

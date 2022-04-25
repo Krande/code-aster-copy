@@ -87,29 +87,29 @@ test.assertEqual(len(values), 27 * 3)
 
 connect = mesh.getConnectivity()
 cellsHaut = mesh.getCells('Haut')
-test.assertSequenceEqual(cellsHaut, [45, 46, 47, 48])
+test.assertSequenceEqual(cellsHaut, [44, 45, 46, 47])
 nodesHaut = mesh.getNodes('Haut')
-test.assertSequenceEqual(nodesHaut, [1, 3, 5, 7, 10, 14, 18, 20, 26])
+test.assertSequenceEqual(nodesHaut, [0, 2, 4, 6, 9, 13, 17, 19, 25])
 # do the same thing (compatibily with ParallelMesh)
 test.assertSequenceEqual(mesh.getNodes('Haut', True), [
-                         1, 3, 5, 7, 10, 14, 18, 20, 26])
+                         0, 2, 4, 6, 9, 13, 17, 19, 25])
 test.assertSequenceEqual(mesh.getNodes('Haut', True, True), [
-                         1, 3, 5, 7, 10, 14, 18, 20, 26])
+                         0, 2, 4, 6, 9, 13, 17, 19, 25])
 test.assertSequenceEqual(mesh.getNodes('Haut', False), [
-                         1, 3, 5, 7, 10, 14, 18, 20, 26])
+                         0, 2, 4, 6, 9, 13, 17, 19, 25])
 test.assertSequenceEqual(mesh.getNodes('Haut', False, False), [
-                         1, 3, 5, 7, 10, 14, 18, 20, 26])
+                         0, 2, 4, 6, 9, 13, 17, 19, 25])
 test.assertSequenceEqual(mesh.getNodes('Haut', True, False), [
-                         1, 3, 5, 7, 10, 14, 18, 20, 26])
+                         0, 2, 4, 6, 9, 13, 17, 19, 25])
 test.assertSequenceEqual(mesh.getNodes('Haut', False, True), [
-                         1, 3, 5, 7, 10, 14, 18, 20, 26])
+                         0, 2, 4, 6, 9, 13, 17, 19, 25])
 
 # test different variant
 test.assertEqual(mesh.getNumberOfNodes(), len(mesh.getNodes()))
 test.assertEqual(mesh.getNumberOfCells(), len(mesh.getCells()))
 
-test.assertSequenceEqual(mesh.getNodes(), range(1, mesh.getNumberOfNodes()+1))
-test.assertSequenceEqual(mesh.getCells(), range(1, mesh.getNumberOfCells()+1))
+test.assertSequenceEqual(mesh.getNodes(), range(0, mesh.getNumberOfNodes()))
+test.assertSequenceEqual(mesh.getCells(), range(0, mesh.getNumberOfCells()))
 
 # do the same thing (compatibily with ParallelMesh)
 test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(
@@ -262,7 +262,7 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
 test.assertEqual(code_aster.Mesh.buildCube(refine=2).getNumberOfNodes(), 125)
 builder = code_aster.Mesh.buildCube()
 test.assertSequenceEqual(builder.getNodesFromCells('VOLUME'),
-                         [1, 2, 3, 4, 5, 6, 7, 8])
+                         [0, 1, 2, 3, 4, 5, 6, 7])
 
 # from mesh builder - Cylinder
 builder = code_aster.Mesh.buildCylinder(refine=3)
@@ -278,7 +278,7 @@ test.assertEqual(code_aster.Mesh.buildCylinder(
     refine=2).getNumberOfNodes(), 1881)
 builder = code_aster.Mesh.buildCylinder()
 test.assertSequenceEqual(builder.getNodesFromCells('BOTTOM'),
-                         [1, 4, 5, 8, 10, 11, 14, 15, 20, 24, 25, 27, 30, 35, 36, 40, 45])
+                         [0, 3, 4, 7, 9, 10, 13, 14, 19, 23, 24, 26, 29, 34, 35, 39, 44])
 
 # from mesh builder -Square
 builder = code_aster.Mesh.buildSquare(refine=3)
@@ -291,7 +291,7 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
 test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
                          ['BOTTOM', 'LEFT', 'RIGHT', 'SURFACE', 'TOP'])
 test.assertSequenceEqual(builder.getNodesFromCells('BOTTOM'),
-                         [3, 4, 6, 15, 21, 42, 49, 59, 68])
+                         [2, 3, 5, 14, 20, 41, 48, 58, 67])
 test.assertEqual(code_aster.Mesh.buildSquare(refine=2).getNumberOfNodes(), 25)
 
 # from mesh builder -  Disk
@@ -305,9 +305,9 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
 test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
                          ['CIRCLE', 'SURFACE'])
 test.assertSequenceEqual(builder.getNodesFromCells('CIRCLE'),
-                         [5, 6, 7, 8, 13, 14, 15, 16, 30, 31, 32, 33, 34, 35, 36, 37, 70, 71, 73, 74, 76, 77, 79, 80, 98,
-                          99, 101, 102, 104, 105, 107, 108, 222, 223, 225, 226, 228, 229, 231, 232, 250, 251, 253, 254, 256,
-                          257, 259, 260, 314, 315, 317, 318, 320, 321, 323, 324, 326, 327, 329, 330, 332, 333, 335, 336])
+                          [4, 5, 6, 7, 12, 13, 14, 15, 29, 30, 31, 32, 33, 34, 35, 36, 69, 70, 72, 73, 75, 76, 78, 79, 97,
+                          98, 100, 101, 103, 104, 106, 107, 221, 222, 224, 225, 227, 228, 230, 231, 249, 250, 252, 253, 255,
+                          256, 258, 259, 313, 314, 316, 317, 319, 320, 322, 323, 325, 326, 328, 329, 331, 332, 334, 335])
 test.assertEqual(code_aster.Mesh.buildDisk(refine=2).getNumberOfNodes(), 209)
 
 test.printSummary()

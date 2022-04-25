@@ -39,7 +39,7 @@ test.assertEqual(mesh.getNumberOfCells(), 2144)
 
 test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), [
                          'HAUT', 'LEFT', 'PART', 'PART_extruded', 'PART_top', 'RIGHT'])
-test.assertSequenceEqual(mesh.getCells('LEFT'), [1, 2, 3, 4])
+test.assertSequenceEqual(mesh.getCells('LEFT'), [0, 1, 2, 3])
 test.assertEqual(len(mesh.getCells('HAUT')), 64)
 
 IMPR_RESU(UNITE=50, FORMAT="MED", RESU=_F(MAILLAGE=mesh))

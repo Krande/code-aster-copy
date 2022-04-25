@@ -111,10 +111,10 @@ DEFICO = DEFI_CONT(
 
 # some checks for the  first zone :
 zone = DEFICO.getContactZone(0)
-test.assertEqual(zone.getMasterCellsFromNode(20), [13, 14])
-test.assertEqual(zone.getSlaveCellsFromNode(65), [62, 63])
-# FIXME test.assertEqual(zone.getMasterCellNeighbors(15), [14, 16])
-# FIXME test.assertEqual(zone.getSlaveCellNeighbors(55), [56, 54])
+test.assertEqual(zone.getMasterCellsFromNode(19), [12, 13])
+test.assertEqual(zone.getSlaveCellsFromNode(64), [61, 62])
+# FIXME test.assertEqual(zone.getMasterCellNeighbors(14), [13, 15])
+# FIXME test.assertEqual(zone.getSlaveCellNeighbors(54), [55, 53])
 
 test.assertEqual(DEFICO.getNumberOfContactZones(), 2)
 test.assertEqual(DEFICO.getVerbosity(), 2)

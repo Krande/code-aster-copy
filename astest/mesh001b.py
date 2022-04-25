@@ -379,20 +379,20 @@ test.assertEqual(mesh.getNumberOfNodes(), len(mesh.getNodes(localNumbering=False
 
 test.assertEqual(mesh.getNumberOfCells(), len(mesh.getCells()))
 
-test.assertSequenceEqual(mesh.getNodes(), range(1, mesh.getNumberOfNodes() + 1))
-test.assertSequenceEqual(mesh.getNodes(localNumbering=True), range(1, mesh.getNumberOfNodes() + 1))
-test.assertSequenceEqual(mesh.getCells(), range(1, mesh.getNumberOfCells() + 1))
+test.assertSequenceEqual(mesh.getNodes(), range(mesh.getNumberOfNodes()))
+test.assertSequenceEqual(mesh.getNodes(localNumbering=True), range(mesh.getNumberOfNodes()))
+test.assertSequenceEqual(mesh.getCells(), range(mesh.getNumberOfCells()))
 
 allNodes = []
 innerNodes = []
 outerNodes = []
 
 for i in range(mesh.getNumberOfNodes()):
-    allNodes.append(i + 1)
+    allNodes.append(i)
     if NodesRank[i] == rank:
-        innerNodes.append(i + 1)
+        innerNodes.append(i)
     else:
-        outerNodes.append(i + 1)
+        outerNodes.append(i)
 
 test.assertTrue(len(inter(innerNodes, outerNodes)) == 0)
 
@@ -400,21 +400,21 @@ test.assertTrue(len(inter(innerNodes, outerNodes)) == 0)
 test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(allNodes))
 test.assertSequenceEqual(sorted(mesh.getNodes(localNumbering=True)), sorted(allNodes))
 test.assertSequenceEqual(
-    sorted(mesh.getNodes(localNumbering=False)), sorted([globalNodesNum[i - 1] for i in allNodes])
+    sorted(mesh.getNodes(localNumbering=False)), sorted([globalNodesNum[i] for i in allNodes])
 )
 test.assertSequenceEqual(
     sorted(mesh.getNodes(localNumbering=True, same_rank=False)), sorted(outerNodes)
 )
 test.assertSequenceEqual(
     sorted(mesh.getNodes(localNumbering=False, same_rank=False)),
-    sorted([globalNodesNum[i - 1] for i in outerNodes]),
+    sorted([globalNodesNum[i] for i in outerNodes]),
 )
 test.assertSequenceEqual(
     sorted(mesh.getNodes(localNumbering=True, same_rank=True)), sorted(innerNodes)
 )
 test.assertSequenceEqual(
     sorted(mesh.getNodes(localNumbering=False, same_rank=True)),
-    sorted([globalNodesNum[i - 1] for i in innerNodes]),
+    sorted([globalNodesNum[i] for i in innerNodes]),
 )
 
 test.assertSequenceEqual(sorted(mesh.getNodes("Beton")), sorted(mesh.getNodes("Beton", True, None)))
@@ -445,19 +445,19 @@ test.assertSequenceEqual(
 )
 
 # rank-owned nodes in local numbering
-nodeLoc = [[59, 69, 70], [], [77, 86, 87]]
+nodeLoc = [[58, 68, 69], [], [76, 85, 86]]
 test.assertSequenceEqual(mesh.getNodesFromCells("Cable0", True, True), nodeLoc[rank])
 test.assertSequenceEqual(
     mesh.getNodesFromCells("Cable0", False, True),
-    sorted([globalNodesNum[i - 1] for i in nodeLoc[rank]]),
+    sorted([globalNodesNum[i] for i in nodeLoc[rank]]),
 )
 
 # nodes in local numbering
-nodeLocWithGhosts = [[59, 68, 69, 70], [61, 62], [77, 86, 87, 88]]
+nodeLocWithGhosts = [[58, 67, 68, 69], [60, 61], [76, 85, 86, 87]]
 test.assertSequenceEqual(mesh.getNodesFromCells("Cable0", True, None), nodeLocWithGhosts[rank])
 test.assertSequenceEqual(
     mesh.getNodesFromCells("Cable0", False, None),
-    sorted([globalNodesNum[i - 1] for i in nodeLocWithGhosts[rank]]),
+    sorted([globalNodesNum[i] for i in nodeLocWithGhosts[rank]]),
 )
 
 
