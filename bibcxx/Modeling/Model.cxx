@@ -212,6 +212,48 @@ bool Model::existsXfem() {
     return false;
 };
 
+bool Model::existsHHO() {
+    const std::string typeco( "MODELE" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "EXI_HHO" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
+
+bool Model::exists3DShell() {
+    const std::string typeco( "MODELE" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "EXI_COQ3D" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
+
+bool Model::existsSTRX() {
+    const std::string typeco( "MODELE" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "EXI_STRX" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
+
 ASTERINTEGER Model::numberOfSuperElement() {
     const std::string typeco( "MODELE" );
     ASTERINTEGER repi = 0, ier = 0;
@@ -380,5 +422,4 @@ bool Model::setFrom( const ModelPtr model ) {
 
     return true;
 };
-
 #endif

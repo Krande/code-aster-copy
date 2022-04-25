@@ -189,6 +189,14 @@ class Model : public DataStructure, public ListOfTables {
     /**@brief Has XFEM in model ? */
     bool existsXfem();
 
+    /**@brief Has HHO in model ? */
+    bool existsHHO();
+
+    /**@brief Has COQUE_3D in model ? */
+    bool exists3DShell();
+
+    /**@brief Has STRX in model ? */
+    bool existsSTRX();
     /**
      * @brief Number of super-elements in model
      * @return Number of super elements in model
