@@ -19,10 +19,10 @@
 !
 subroutine comp_meca_name(nbVari     , nbVariMeca,&
                           l_excl     , vari_excl,&
-                          l_kit_meta , l_mfront_offi, l_prot_comp,&
-                          rela_comp  , defo_comp    , kit_comp     ,&
-                          type_cpla  , post_iter    , regu_visc    ,&
-                          libr_name  , subr_name    , model_mfront , model_dim,&
+                          l_kit_meta , l_mfront_offi, l_mfront_proto, l_umat,&
+                          rela_comp  , defo_comp    , kit_comp      ,&
+                          type_cpla  , post_iter    , regu_visc     ,&
+                          libr_name  , subr_name    , model_mfront, model_dim,&
                           infoVari)
 !
 implicit none
@@ -39,7 +39,7 @@ implicit none
 integer, intent(in) :: nbVari, nbVariMeca
 aster_logical, intent(in) :: l_excl
 character(len=16), intent(in) :: vari_excl
-aster_logical, intent(in) :: l_kit_meta, l_mfront_offi, l_prot_comp
+aster_logical, intent(in) :: l_kit_meta, l_mfront_offi, l_mfront_proto, l_umat
 character(len=16), intent(in) :: rela_comp, defo_comp, kit_comp(4)
 character(len=16), intent(in) :: type_cpla, post_iter, regu_visc
 character(len=255), intent(in) :: libr_name, subr_name
@@ -61,6 +61,8 @@ character(len=16), pointer :: infoVari(:)
 ! In  vari_excl        : name of internal variables if l_excl
 ! In  l_kit_meta       : .true. if metallurgy
 ! In  l_mfront_offi    : .true. if MFront official
+! In  l_mfront_proto   : .true. if MFront proto
+! In  l_umat           : .true. if UMAT
 ! In  rela_comp        : RELATION comportment
 ! In  defo_comp        : DEFORMATION comportment
 ! In  kit_comp         : KIT comportment
@@ -91,7 +93,7 @@ character(len=16), pointer :: infoVari(:)
         infoVari(1:nbVari) = vari_excl
     else
 ! ----- Name of internal state variables
-        if (l_prot_comp) then
+        if (l_umat) then
             call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
                                 post_iter, regu_visc,&
                                 compCodePy)
@@ -99,6 +101,24 @@ character(len=16), pointer :: infoVari(:)
             do iVariMeca = 1, nbVariMeca
                 infoVari(iVariMeca) = 'NoName'
             end do
+            if (nbVariOther .ne. 0) then
+                call lcvari(compCodePy, nbVariOther, infoVari(nbVariMeca+1:nbVari))
+            endif
+            call lcdiscard(compCodePy)
+
+        else if (l_mfront_proto) then
+            call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
+                                post_iter, regu_visc, compCodePy)
+            nbVariOther = nbVari - nbVariMeca
+            if (len_trim(libr_name)>0 .and. len_trim(subr_name)>0) then
+                call comp_mfront_vname(nbVariMeca, &
+                                       libr_name , subr_name, model_mfront,&
+                                       model_dim, infoVari)
+            else
+                do iVariMeca = 1, nbVariMeca
+                    infoVari(iVariMeca) = 'NoName'
+                end do
+            endif
             if (nbVariOther .ne. 0) then
                 call lcvari(compCodePy, nbVariOther, infoVari(nbVariMeca+1:nbVari))
             endif

@@ -86,7 +86,7 @@ character(len=19), intent(in) :: comporInfo
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_excl, l_kit_meta, l_cristal, l_pmf, l_kit_thm
-    aster_logical :: l_umat, l_mfront_proto, l_mfront_offi, l_prot_comp
+    aster_logical :: l_umat, l_mfront_proto, l_mfront_offi
     aster_logical :: l_zone_read
     character(len=8) :: mesh
     character(len=19) :: modelLigrel
@@ -255,7 +255,6 @@ character(len=19), intent(in) :: comporInfo
             libr_name      = behaviourParaExte(mapZoneNume)%libr_name
             model_mfront   = behaviourParaExte(mapZoneNume)%model_mfront
             model_dim      = behaviourParaExte(mapZoneNume)%model_dim
-            l_prot_comp    = l_mfront_proto .or. l_umat
 
 ! --------- Exception for name of internal state variables
             call comp_meca_exc2(l_cristal, l_pmf, &
@@ -272,10 +271,10 @@ character(len=19), intent(in) :: comporInfo
             call jeveuo(jexnum(comporInfo(1:19)//'.VARI', mapZoneNume), 'E', vk16 = infoVari)
             call comp_meca_name(nbVari    , nbVariMeca,&
                                 l_excl    , vari_excl,&
-                                l_kit_meta, l_mfront_offi, l_prot_comp,&
-                                rela_comp , defo_comp   , kit_comp     ,&
-                                type_cpla , post_iter   , regu_visc    ,&
-                                libr_name , subr_name   , model_mfront , model_dim,&
+                                l_kit_meta, l_mfront_offi, l_mfront_proto, l_umat,&
+                                rela_comp , defo_comp    , kit_comp      , &
+                                type_cpla , post_iter    , regu_visc     , &
+                                libr_name , subr_name    , model_mfront  , model_dim,&
                                 infoVari)
 
 ! --------- Save current zone

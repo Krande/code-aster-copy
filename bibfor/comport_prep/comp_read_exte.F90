@@ -30,6 +30,7 @@ implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/mfront_get_libname.h"
 #include "asterfort/mfront_get_function.h"
+#include "asterc/getfac.h"
 !
 character(len=16), intent(in) :: rela_comp
 character(len=16), intent(in) :: keywf
@@ -61,9 +62,10 @@ integer, intent(out) :: nb_vari_umat
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16) :: keywf_, keyws
     character(len=8) :: saux08
     aster_logical :: l_kit_thm
-    integer :: scali, nbret
+    integer :: scali, nbret, i_comp_, n_keywf, i_keywf, n_mfront
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,15 +81,40 @@ integer, intent(out) :: nb_vari_umat
         call mfront_get_libname(libr_name)
         call mfront_get_function(rela_comp, subr_name)
     elseif (l_mfront_proto) then
-        if (i_comp .ne. 0) then
-            call getvis(keywf, 'UNITE_LIBRAIRIE'  , iocc = i_comp, scal = scali, nbret = nbret)
+!       ! Test if there is only one occurrence of COMPORTEMENT
+        keywf_ = 'COMPORTEMENT'
+        call getfac(keywf_, i_comp_)
+        if (i_comp_ .ne. 1) then
+            n_mfront = 0
+            n_keywf = i_comp_
+            if (n_keywf .ne. 0) then
+!               ! Test if there is only one RELATION='MFRONT' among all COMPORTEMENT
+                do i_keywf = 1, n_keywf
+                    keyws = ' '
+                    nbret = 0
+                    call getvtx(keywf_, 'RELATION', iocc = i_keywf, scal = keyws, nbret = nbret)
+                    if (nbret .eq. 1) then
+                        if (trim(keyws) .eq. 'MFRONT') then
+                            n_mfront = n_mfront + 1
+                            i_comp_ = i_keywf
+                        endif
+                    endif
+                enddo
+            endif
+            if (n_mfront .ne. 1) then
+                keywf_ = keywf
+                i_comp_ = i_comp
+            endif
+        endif
+        if (i_comp_ .ne. 0) then
+            call getvis(keywf_, 'UNITE_LIBRAIRIE', iocc = i_comp_, scal = scali, nbret = nbret)
             if (nbret .eq. 0) then
-                call getvtx(keywf, 'LIBRAIRIE'  , iocc = i_comp, scal = libr_name)
+                call getvtx(keywf_, 'LIBRAIRIE'  , iocc = i_comp_, scal = libr_name)
             else
                 call codent(scali, 'G', saux08)
                 libr_name = 'fort.'//saux08
             endif
-            call getvtx(keywf, 'NOM_ROUTINE', iocc = i_comp, scal = subr_name)
+            call getvtx(keywf_, 'NOM_ROUTINE', iocc = i_comp_, scal = subr_name)
         endif
     elseif (l_umat) then
         if (i_comp .ne. 0) then

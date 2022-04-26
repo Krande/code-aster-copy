@@ -67,51 +67,52 @@ character(len=16), pointer :: infoVari(:)
     call mfront_get_number_of_internal_state_variables(libr_name   , subr_name,&
                                                        model_mfront, nbVariType)
     if ( nbVariMeca .ne. 0 ) then
-        AS_ALLOCATE(vk80 = variNameList, size = nbVariType)
-        AS_ALLOCATE(vk80 = variTypeList, size = nbVariType)
-        call mfront_get_internal_state_variables(libr_name, subr_name,&
-                                                 model_mfront, variNameList,&
-                                                 nbVariType)
-        call mfront_get_internal_state_variables_types(libr_name, subr_name,&
+        if ( nbVariType .eq. 0 ) then
+            iVari = 1
+            infoVari(iVari) = 'VIDE'
+        else
+            AS_ALLOCATE(vk80 = variNameList, size = nbVariType)
+            AS_ALLOCATE(vk80 = variTypeList, size = nbVariType)
+            call mfront_get_internal_state_variables(libr_name, subr_name,&
+                                                     model_mfront, variNameList,&
+                                                     nbVariType)
+            call mfront_get_internal_state_variables_types(libr_name, subr_name,&
                                                        model_mfront, variTypeList)
-        iVari = 0
-        do iVariType = 1, nbVariType
-            variName = variNameList(iVariType)(1:16)
-            variType = variTypeList(iVariType)(1:16)
-            leng     = lxlgut(variName)
-            if (variType .eq. 'scalar') then
-                iVari = iVari + 1
-                infoVari(iVari) = variName
-
-            elseif (variType .eq. 'vector') then
-                do iTens = 1, 2*model_dim
-                    if (leng .le. 14) then
-                        vari_name = variName(1:leng)//cmpv_name(iTens)
-                    else
-                        vari_name = variName(1:14)//cmpv_name(iTens)
-                    endif
+            iVari = 0
+            do iVariType = 1, nbVariType
+                variName = variNameList(iVariType)(1:16)
+                variType = variTypeList(iVariType)(1:16)
+                leng     = lxlgut(variName)
+                if (variType .eq. 'scalar') then
                     iVari = iVari + 1
-                    infoVari(iVari) = vari_name
-                end do
-
-            elseif (variType .eq. 'tensor') then
-                do iTens = 1, 9
-                    if (leng .le. 14) then
-                        vari_name = variName(1:leng)//cmpt_name(iTens)
-                    else
-                        vari_name = variName(1:14)//cmpt_name(iTens)
-                    endif
-                    iVari = iVari + 1
-                    infoVari(iVari) = vari_name
-                end do
-
-            else
-                ASSERT(ASTER_FALSE)
-
-            endif
-        end do
-        AS_DEALLOCATE(vk80 = variNameList)
-        AS_DEALLOCATE(vk80 = variTypeList)
+                    infoVari(iVari) = variName
+                elseif (variType .eq. 'vector') then
+                    do iTens = 1, 2*model_dim
+                        if (leng .le. 14) then
+                            vari_name = variName(1:leng)//cmpv_name(iTens)
+                        else
+                            vari_name = variName(1:14)//cmpv_name(iTens)
+                        endif
+                        iVari = iVari + 1
+                        infoVari(iVari) = vari_name
+                    end do
+                elseif (variType .eq. 'tensor') then
+                    do iTens = 1, 9
+                        if (leng .le. 14) then
+                            vari_name = variName(1:leng)//cmpt_name(iTens)
+                        else
+                            vari_name = variName(1:14)//cmpt_name(iTens)
+                        endif
+                        iVari = iVari + 1
+                        infoVari(iVari) = vari_name
+                    end do
+                else
+                    ASSERT(ASTER_FALSE)
+                endif
+            end do
+            AS_DEALLOCATE(vk80 = variNameList)
+            AS_DEALLOCATE(vk80 = variTypeList)
+        endif
         ASSERT(nbVariMeca .eq. iVari)
     endif
 !
