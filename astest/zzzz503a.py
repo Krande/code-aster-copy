@@ -68,9 +68,9 @@ acier = DEFI_MATERIAU(ELAS=_F(E=YOUNG,
 test.assertEqual(acier.getType(), "MATER_SDASTER")
 
 affectMat = code_aster.MaterialField(monMaillage)
-affectMat.addMaterialsOnMesh(acier)
-affectMat.addMaterialsOnGroupOfCells(acier, ['Haut', 'Bas'])
-affectMat.buildWithoutExternalStateVariables()
+affectMat.addMaterialOnMesh(acier)
+affectMat.addMaterialOnGroupOfCells(acier, ['Haut', 'Bas'])
+affectMat.build()
 test.assertEqual(affectMat.getType(), "CHAM_MATER")
 
 imposedDof1 = code_aster.DisplacementReal()

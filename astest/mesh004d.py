@@ -34,8 +34,8 @@ MAIL.readMedFile("mesh004b/%d.med" % rank, True)
 MATER = DEFI_MATERIAU(THER=_F(LAMBDA=6.E9, RHO_CP=1.))
 
 affectMat = code_aster.MaterialField(MAIL)
-affectMat.addMaterialsOnMesh(MATER)
-affectMat.buildWithoutExternalStateVariables()
+affectMat.addMaterialOnMesh(MATER)
+affectMat.build()
 
 MODT = AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',

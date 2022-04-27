@@ -40,8 +40,8 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=10000.0,
                             )
 
 affectMat = code_aster.MaterialField(MAIL)
-affectMat.addMaterialsOnMesh(MATER)
-affectMat.buildWithoutExternalStateVariables()
+affectMat.addMaterialOnMesh(MATER)
+affectMat.build()
 
 MODT=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(GROUP_MA=('S11',    'S31', 'S12',     'S32'),

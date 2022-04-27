@@ -59,8 +59,8 @@ acier = DEFI_MATERIAU(ELAS = _F(E = 2.e11,
                                 NU = 0.3,),)
 
 affectMat = code_aster.MaterialField(pMesh)
-affectMat.addMaterialsOnMesh( acier )
-affectMat.buildWithoutExternalStateVariables()
+affectMat.addMaterialOnMesh( acier )
+affectMat.build()
 
 testMesh2 = affectMat.getMesh()
 test.assertEqual(testMesh2.getType(), "MAILLAGE_P")
@@ -140,8 +140,8 @@ with shared_tmpdir("zzzz503c_") as tmpdir:
     )
 
     affectMat_std = code_aster.MaterialField(mesh_std)
-    affectMat_std.addMaterialsOnMesh( acier )
-    affectMat_std.buildWithoutExternalStateVariables()
+    affectMat_std.addMaterialOnMesh( acier )
+    affectMat_std.build()
 
     charCine_std = code_aster.MechanicalDirichletBC(model_std)
     charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
