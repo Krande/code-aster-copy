@@ -522,6 +522,14 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
     // Main object
     CalculPtr _calcul = std::make_unique< Calcul >( "CHAR_VARC" );
 
+    // Create specific output field for XFEM
+    FieldOnCellsRealPtr sigmXfem;
+    if ( currModel->existsXfem() ) {
+        const std::string option = "SIEF_ELGA";
+        const std::string paraName = "PCONTRR";
+        sigmXfem = std::make_shared< FieldOnCellsReal >( currModel, option, paraName );
+    }
+
     // Create elementary vectors
     ElementaryVectorDisplacementRealPtr elemVect =
         std::make_shared< ElementaryVectorDisplacementReal >();
@@ -557,6 +565,7 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
             if ( currModel->existsXfem() ) {
                 XfemModelPtr currXfemModel = currModel->getXfemModel();
                 _calcul->addXFEMField( currXfemModel );
+                _calcul->addOutputField( "PCONTRT", sigmXfem );
             }
             _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
             _calcul->compute();
