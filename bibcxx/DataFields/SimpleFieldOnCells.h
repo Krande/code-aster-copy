@@ -382,22 +382,9 @@ class SimpleFieldOnCells : public DataStructure {
     };
 };
 
-/** @typedef SimpleFieldOnCellsReal Class d'une carte de double */
-typedef SimpleFieldOnCells< ASTERDOUBLE > SimpleFieldOnCellsReal;
-
-/**
- * @typedef SimpleFieldOnCellsPtrReal
- * @brief Definition d'un champ aux éléments de double
- */
-typedef std::shared_ptr< SimpleFieldOnCellsReal > SimpleFieldOnCellsRealPtr;
-
-/** @typedef SimpleFieldOnCellsLong Class d'une carte de long */
-typedef SimpleFieldOnCells< ASTERINTEGER > SimpleFieldOnCellsLong;
-
-/**
- * @typedef SimpleFieldOnCellsPtrLong
- * @brief Definition d'un champ aux éléments de long
- */
-typedef std::shared_ptr< SimpleFieldOnCellsLong > SimpleFieldOnCellsLongPtr;
+using SimpleFieldOnCellsReal = SimpleFieldOnCells< ASTERDOUBLE >;
+using SimpleFieldOnCellsRealPtr = std::shared_ptr< SimpleFieldOnCellsReal >;
+using SimpleFieldOnCellsLong = SimpleFieldOnCells< ASTERINTEGER >;
+using SimpleFieldOnCellsLongPtr = std::shared_ptr< SimpleFieldOnCellsLong >;
 
 #endif /* SIMPLEFIELDONCELLS_H_ */

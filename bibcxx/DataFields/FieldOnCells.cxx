@@ -28,49 +28,48 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 // explicit declaration
-template<>
-FieldOnCells<ASTERDOUBLE>::FieldOnCells(const ModelPtr &model, const BehaviourPropertyPtr behaviour,
-                 const std::string& typcham,const ElementaryCharacteristicsPtr carael)
-        : FieldOnCells<ASTERDOUBLE>( ){
-            std::string inName = getName();
-            std::string carele = " ";
-            std::string test;
-            std::string option;
-            std::string nompar;
-            test=typcham;
-            test.resize(4);
+template <>
+FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
+                                           const BehaviourPropertyPtr behaviour,
+                                           const std::string &typcham,
+                                           const ElementaryCharacteristicsPtr carael )
+    : FieldOnCells< ASTERDOUBLE >() {
+    std::string inName = getName();
+    std::string carele = " ";
+    std::string test;
+    std::string option;
+    std::string nompar;
+    test = typcham;
+    test.resize( 4 );
 
-            if (test=="ELGA"){
-                option="TOU_INI_ELGA";
-            }
-            else if(test=="ELNO"){
-                option="TOU_INI_ELNO";
-            }
-            else{
-                AS_ASSERT(false)
-            };
-            if (typcham==test+"_SIEF_R"){
-                nompar="PSIEF_R";
-            }
-            else if(typcham==test+"_VARI_R"){
-                nompar="PVARI_R";
-            }
-            else{
-                AS_ASSERT(false)
-            };
+    if ( test == "ELGA" ) {
+        option = "TOU_INI_ELGA";
+    } else if ( test == "ELNO" ) {
+        option = "TOU_INI_ELNO";
+    } else {
+        AS_ASSERT( false )
+    };
+    if ( typcham == test + "_SIEF_R" ) {
+        nompar = "PSIEF_R";
+    } else if ( typcham == test + "_VARI_R" ) {
+        nompar = "PVARI_R";
+    } else {
+        AS_ASSERT( false )
+    };
 
-            if(carael) carele = carael->getName();
+    if ( carael )
+        carele = carael->getName();
 
-            ASTERINTEGER iret = 0;
-            auto fed = model->getFiniteElementDescriptor();
+    ASTERINTEGER iret = 0;
+    auto fed = model->getFiniteElementDescriptor();
 
-            _dofDescription = fed;
-            auto dcel = std::make_shared<SimpleFieldOnCells< ASTERDOUBLE >>();
-            auto compor = behaviour->getBehaviourField();
-            CALLO_CESVAR(carele, compor->getName(), fed->getName(), dcel->getName());
-            CALLO_ALCHML(fed->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent],
-                         getName(),&iret, dcel->getName());
-            AS_ASSERT(iret==0);
+    _dofDescription = fed;
+    auto dcel = std::make_shared< SimpleFieldOnCells< ASTERINTEGER > >();
+    auto compor = behaviour->getBehaviourField();
+    CALLO_CESVAR( carele, compor->getName(), fed->getName(), dcel->getName() );
+    CALLO_ALCHML( fed->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent], getName(),
+                  &iret, dcel->getName() );
+    AS_ASSERT( iret == 0 );
 
-            updateValuePointers();
-        };
+    updateValuePointers();
+};
