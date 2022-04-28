@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,12 +41,11 @@ subroutine dtmallo(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: nbsauv, nbmode, iret, nbnli
+    integer           :: nbsauv, nbmode, iret, nbnli, nbvint, nbsteps_1mb
     integer           :: jordr, jdisc, jptem, jdepl
     integer           :: jvite, jacce, jvint
     integer           :: adapt, iarch_sd, iret1, iret2, nltreat
-    real(kind=8)      :: dt, dtmin, dtmax, deltadt, epsi
-    character(len=4)  :: intk1, intk0
+    real(kind=8)      :: dt, dtmin, dtmax, deltadt, epsi, taille, taille2
     character(len=8)  :: sd_dtm, nomres, basemo, riggen, masgen
     character(len=8)  :: amogen, sd_nl
     character(len=16) :: schema
@@ -56,6 +55,8 @@ subroutine dtmallo(sd_dtm_)
     character(len=8), pointer :: fonred(:) => null()
     character(len=8), pointer :: fonrev(:) => null()
     character(len=8), target  :: blanc(1)
+    integer, pointer :: vindx(:) => null()
+
 !
 !   0 - Initializations
     call jemarq()
@@ -98,7 +99,8 @@ subroutine dtmallo(sd_dtm_)
         adapt = 0
         iarch_sd = 0
 
-        if ((schema(1:5).eq.'RUNGE').or.(schema(1:5).eq.'ADAPT').or.(schema(1:6).eq.'DEVOGE')) then
+        if ((schema(1:5) .eq. 'RUNGE') .or. (schema(1:5) .eq. 'ADAPT') .or. &
+            (schema(1:6) .eq. 'DEVOGE')) then
             call getvr8('INCREMENT', 'PAS     ', iocc=1, scal=dt)
             call getvr8('SCHEMA_TEMPS', 'PAS_MINI', iocc=1, scal=dtmin, nbret=iret1)
             call getvr8('SCHEMA_TEMPS', 'PAS_MAXI', iocc=1, scal=dtmax, nbret=iret2)
@@ -117,31 +119,81 @@ subroutine dtmallo(sd_dtm_)
         call dtmsav(sd_dtm, _IARCH_SD, 1, iscal=iarch_sd)
     end if
 
-    if (iarch_sd .gt. 0) then
-        call codent(iarch_sd, 'D0', intk1)
-        if (iarch_sd .gt. 1) then
-            call codent(iarch_sd-1, 'D0', intk0)
-            call jelira('&&AD'//intk0//'           .ORDR', 'LONMAX', nbsauv)
-            nbsauv = nint(nbsauv*1.5d0)
-            call dtmsav(sd_dtm, _ARCH_NB, 1, iscal=nbsauv)
-            call dtmsav(sd_dtm, _ARCH_STO, 4, ivect=[0, 0, 0, 0])
-            call mdlibe('&&AD'//intk0, nbnli)
-        else
-            nbsauv = nint(nbsauv*0.25d0)
-            call dtmsav(sd_dtm, _ARCH_NB, 1, iscal=nbsauv)
-        end if
-        call mdallo('&&AD'//intk1, 'TRAN', nbsauv, sauve='VOLA', method=schema, &
-                    base=basemo, nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, &
-                    dt=dt, nbnli=nbnli, checkarg=.false._1, &
-                    jordr=jordr, jdisc=jdisc, jptem=jptem, jdepl=jdepl, jvite=jvite, &
-                    jacce=jacce, jvint=jvint, sd_nl_=sd_nl)
-    else
-        call mdallo(nomres(1:8), 'TRAN', nbsauv, sauve='GLOB', method=schema, &
-                    base=basemo, nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, &
-                    dt=dt, nbnli=nbnli, checkarg=.false._1, &
-                    jordr=jordr, jdisc=jdisc, jptem=jptem, jdepl=jdepl, jvite=jvite, &
-                    jacce=jacce, jvint=jvint, sd_nl_=sd_nl)
+    nbvint = 0
+    if (nbnli .gt. 0) then
+        call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx)
+        nbvint = vindx(nbnli+1)-1
     end if
+
+!   2 - Calculate archiving memory usage, based on nbsauv, nbmode, nbnli
+!       > real(kind=8) => 8 bytes (64 bits) per value
+!       > integer      => 4 bytes (32 bits) per value
+!   ---------------------------------------------------------------------------
+!   + ORDR object (integer)
+    taille = nbsauv*4.d0
+
+!   + DISC/PTEM objects (real)
+    taille = taille+2*(nbsauv*8.d0)
+
+!   + DEPL/VITE/ACCE objects (real)
+    taille = taille+3*(nbsauv*nbmode*8.d0)
+
+    write (*, *) '--------------------------------------------------------'
+    write (*, *) 'D Y N A    V I B R A    S D    S I Z E   I N F O'
+    write (*, *) '--------------------------------------------------------'
+    if (nbnli .gt. 0) then
+        write (*, *) '> RESULTS (EXCLUDING NLS):', taille/(1024*1024), 'MB'
+!       + .NL.VINT object (real)
+        taille = taille+nbsauv*nbvint*8.d0
+
+!       + .NL.VIND object (integer)
+        taille2 = taille+(nbnli+1)*4.d0
+
+!       + .NL.TYPE object (integer)
+        taille2 = taille2+(nbnli)*4.d0
+
+!       + .NL.INTI object (K24)
+        taille2 = taille2+(5*nbnli)*24.d0
+        write (*, *) '> NL INTERNAL VARS       :', &
+            nbsauv*nbvint*8.d0/(1024*1024), 'MB'
+        write (*, *) '> NL FIXED SIZE          :', &
+            (taille2-taille)/(1024*1024), 'MB'
+        write (*, *) '> NL TOTAL               :', &
+            (nbsauv*nbvint*8.d0+taille2-taille)/(1024*1024), 'MB'
+        write (*, *) '--------------------------------------------------------'
+        write (*, *) '> TOTAL                  :', &
+            taille2/(1024*1024), 'MB'
+
+    else
+        write (*, *) '> TOTAL                  :', taille/(1024*1024), 'MB'
+    end if
+    write (*, *) '> MEMORY SIZE PER STEP   :', taille/(1024*nbsauv), 'KB'
+    write (*, *) '> NB STEPS PER 1 GB RAM  :', nint(1024*1024/(taille/(1024*nbsauv))), 'STEPS'
+
+    nbsteps_1mb = nint(1024/(taille/(1024*nbsauv)))
+    write (*, *) '> NB STEPS PER 1 MB RAM  :', nbsteps_1mb, 'STEPS'
+    write (*, *) '--------------------------------------------------------'
+
+    if (nbsauv .gt. nbsteps_1mb) then
+        if (iarch_sd .eq. 0) then
+            iarch_sd = 1
+            call dtmsav(sd_dtm, _ARCH_NB, 1, iscal=nbsauv)
+            call dtmsav(sd_dtm, _ADAPT, 1, iscal=adapt)
+            call dtmsav(sd_dtm, _IARCH_SD, 1, iscal=iarch_sd)
+        end if
+        nbsauv = nbsteps_1mb
+    end if
+
+    write (*, *) 'IN DTMALLO, iarch_sd =', iarch_sd
+    if (iarch_sd .gt. 1) then
+        call dtmsav(sd_dtm, _ARCH_STO, 4, ivect=[0, 0, 0, 0])
+        call mdlibe(nomres(1:8), nbnli, iarch_sd-1)
+    end if
+    call mdallo(nomres(1:8), 'TRAN', nbsauv, sauve='GLOB', method=schema, &
+                base=basemo, nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen, &
+                dt=dt, nbnli=nbnli, checkarg=.false._1, &
+                jordr=jordr, jdisc=jdisc, jptem=jptem, jdepl=jdepl, jvite=jvite, &
+                jacce=jacce, jvint=jvint, sd_nl_=sd_nl, sd_index=iarch_sd)
 
     call dtmsav(sd_dtm, _IND_ALOC, 7, ivect=[jordr, jdisc, jptem, jdepl, jvite, jacce, jvint])
 

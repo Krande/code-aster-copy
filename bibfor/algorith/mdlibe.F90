@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mdlibe(nomres, nbnli)
+subroutine mdlibe(nomres, nbnli, sd_index)
     implicit none
 !
 ! person_in_charge: hassan.berro at edf.fr
@@ -28,32 +28,44 @@ subroutine mdlibe(nomres, nbnli)
 ! in  : nbnli  : number of localised non linearities
 ! ----------------------------------------------------------------------
 !
+#include "asterfort/codent.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jeexin.h"
 !   Input arguments
     character(len=8), intent(in) :: nomres
     integer, intent(in) :: nbnli
+    integer, optional, intent(in) :: sd_index
 !   Local variables
-    integer           :: iret
-    character(len=9)  :: bl8pt
-    character(len=12) :: bl11pt
+    integer           :: iret, sd_ind
+    character(len=4)  :: bl3pt
+    character(len=7)  :: intk7
+    character(len=16) :: nomres16
 !-----------------------------------------------------------------------
-    bl11pt = '           .'
-    bl8pt = '        .'
+    bl3pt = '   .'
+    sd_ind = 0
 
-    call jelibe(nomres//bl11pt//'DEPL')
-    call jelibe(nomres//bl11pt//'VITE')
-    call jelibe(nomres//bl11pt//'ACCE')
-    call jelibe(nomres//bl11pt//'ORDR')
-    call jelibe(nomres//bl11pt//'DISC')
-    call jelibe(nomres//bl11pt//'PTEM')
+    if (present(sd_index)) sd_ind = sd_index
+
+!   Hard-encode the sd index into the result name
+    nomres16 = nomres//'        '
+    if (sd_ind .gt. 0) then
+        call codent(sd_ind, 'D0', intk7)
+        nomres16 = nomres//'.'//intk7
+    end if
+
+    call jelibe(nomres16//bl3pt//'DEPL')
+    call jelibe(nomres16//bl3pt//'VITE')
+    call jelibe(nomres16//bl3pt//'ACCE')
+    call jelibe(nomres16//bl3pt//'ORDR')
+    call jelibe(nomres16//bl3pt//'DISC')
+    call jelibe(nomres16//bl3pt//'PTEM')
 
     if (nbnli .gt. 0) then
-        call jelibe(nomres//bl8pt//'NL.TYPE')
-        call jelibe(nomres//bl8pt//'NL.INTI')
-        call jelibe(nomres//bl8pt//'NL.VIND')
-        call jeexin(nomres//bl8pt//'NL.VINT', iret)
-        if (iret .gt. 0) call jelibe(nomres//bl8pt//'NL.VINT')
+        call jelibe(nomres16//'.NL.TYPE')
+        call jelibe(nomres16//'.NL.INTI')
+        call jelibe(nomres16//'.NL.VIND')
+        call jeexin(nomres16//'.NL.VINT', iret)
+        if (iret .gt. 0) call jelibe(nomres16//'.NL.VINT')
     end if
 !
 end subroutine

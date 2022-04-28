@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
                   rigi, mass, amor, jordr, jdisc,&
                   nbsym, nomsym, jdepl, jvite, jacce,&
                   method, dt, jptem, nbnli, sd_nl_,&
-                  jvint, sauve, checkarg)
+                  jvint, sauve, sd_index, checkarg)
         character(len=8) , intent(in) :: nomres
         character(len=4) , intent(in) :: typcal
         integer          , intent(in) :: nbsauv
@@ -42,6 +42,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         character(len=*) , optional, intent(in)  :: sd_nl_
         integer          , optional, intent(out) :: jvint
         character(len=4) , optional, intent(in)  :: sauve
+        integer          , optional, intent(in)  :: sd_index
         aster_logical    , optional, intent(in)  :: checkarg
     end subroutine mdallo
 end interface

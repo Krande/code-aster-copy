@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -274,9 +274,9 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !                   --- resize according to the last archived step, isto(1)
                     call mdsize(calcres, isto(1), nbmode, nbnli)
 !                   --- Concatenate results in the case of an adaptative integration scheme
-                    if (adapt .gt. 0) then
-                        call dtmconc(sd_dtm)
-                    end if
+                    ! if (adapt.gt.0) then
+                    !     call dtmconc(sd_dtm)
+                    ! endif
 !                   --- Append to an existing result in the case of "reuse"
                     if (append .gt. 0) then
                         call resu74(nomres, calcres)
@@ -300,7 +300,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     end if
 
 !   --- Concatenate the results if needed
-    if (iarch_sd .gt. 0) call dtmconc(sd_dtm)
+    ! if (iarch_sd.gt.0) call dtmconc(sd_dtm)
 
 !   --- Append to an existing result in the case of "reuse"
     if (append .gt. 0) then
