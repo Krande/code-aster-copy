@@ -140,27 +140,29 @@ class ElementaryMatrix : public BaseElementaryMatrix {
 
         return FEDs;
     };
+
+    bool hasElementaryTerms() { return ( _elemTerm.size() != 0 ); };
 };
 
 /** @typedef Elementary matrix for displacement-double */
 template class ElementaryMatrix< ASTERDOUBLE, Displacement >;
-typedef ElementaryMatrix< ASTERDOUBLE, Displacement > ElementaryMatrixDisplacementReal;
-typedef std::shared_ptr< ElementaryMatrixDisplacementReal > ElementaryMatrixDisplacementRealPtr;
+using ElementaryMatrixDisplacementReal = ElementaryMatrix< ASTERDOUBLE, Displacement >;
+using ElementaryMatrixDisplacementRealPtr = std::shared_ptr< ElementaryMatrixDisplacementReal >;
 
 /** @typedef Elementary matrix for displacement-complex */
 template class ElementaryMatrix< ASTERCOMPLEX, Displacement >;
-typedef ElementaryMatrix< ASTERCOMPLEX, Displacement > ElementaryMatrixDisplacementComplex;
-typedef std::shared_ptr< ElementaryMatrixDisplacementComplex >
-    ElementaryMatrixDisplacementComplexPtr;
+using ElementaryMatrixDisplacementComplex = ElementaryMatrix< ASTERCOMPLEX, Displacement >;
+using ElementaryMatrixDisplacementComplexPtr =
+    std::shared_ptr< ElementaryMatrixDisplacementComplex >;
 
 /** @typedef Elementary matrix for temperature-double */
 template class ElementaryMatrix< ASTERDOUBLE, Temperature >;
-typedef ElementaryMatrix< ASTERDOUBLE, Temperature > ElementaryMatrixTemperatureReal;
-typedef std::shared_ptr< ElementaryMatrixTemperatureReal > ElementaryMatrixTemperatureRealPtr;
+using ElementaryMatrixTemperatureReal = ElementaryMatrix< ASTERDOUBLE, Temperature >;
+using ElementaryMatrixTemperatureRealPtr = std::shared_ptr< ElementaryMatrixTemperatureReal >;
 
 /** @typedef Elementary matrix for pressure-complex */
 template class ElementaryMatrix< ASTERCOMPLEX, Pressure >;
-typedef ElementaryMatrix< ASTERCOMPLEX, Pressure > ElementaryMatrixPressureComplex;
-typedef std::shared_ptr< ElementaryMatrixPressureComplex > ElementaryMatrixPressureComplexPtr;
+using ElementaryMatrixPressureComplex = ElementaryMatrix< ASTERCOMPLEX, Pressure >;
+using ElementaryMatrixPressureComplexPtr = std::shared_ptr< ElementaryMatrixPressureComplex >;
 
 #endif /* ELEMENTARYMATRIX_H_ */

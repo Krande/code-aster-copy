@@ -21,7 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/ElementaryMatrixInterface.h"
 
@@ -49,7 +48,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "build", &ElementaryMatrixDisplacementReal::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementReal::getFiniteElementDescriptors )
-        .def( "getElementaryTerms", &ElementaryMatrixDisplacementReal::getElementaryTerms );
+        .def( "getElementaryTerms", &ElementaryMatrixDisplacementReal::getElementaryTerms )
+        .def( "hasElementaryTerms", &ElementaryMatrixDisplacementReal::hasElementaryTerms );
 
     py::class_< ElementaryMatrixDisplacementComplex,
                 ElementaryMatrixDisplacementComplex::ElementaryMatrixPtr, BaseElementaryMatrix >(
@@ -59,7 +59,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "build", &ElementaryMatrixDisplacementComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementComplex::getFiniteElementDescriptors )
-        .def( "getElementaryTerms", &ElementaryMatrixDisplacementComplex::getElementaryTerms );
+        .def( "getElementaryTerms", &ElementaryMatrixDisplacementComplex::getElementaryTerms )
+        .def( "hasElementaryTerms", &ElementaryMatrixDisplacementComplex::hasElementaryTerms );
 
     py::class_< ElementaryMatrixTemperatureReal,
                 ElementaryMatrixTemperatureReal::ElementaryMatrixPtr, BaseElementaryMatrix >(
@@ -69,7 +70,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "build", &ElementaryMatrixTemperatureReal::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixTemperatureReal::getFiniteElementDescriptors )
-        .def( "getElementaryTerms", &ElementaryMatrixTemperatureReal::getElementaryTerms );
+        .def( "getElementaryTerms", &ElementaryMatrixTemperatureReal::getElementaryTerms )
+        .def( "hasElementaryTerms", &ElementaryMatrixTemperatureReal::hasElementaryTerms );
 
     py::class_< ElementaryMatrixPressureComplex,
                 ElementaryMatrixPressureComplex::ElementaryMatrixPtr, BaseElementaryMatrix >(
@@ -79,5 +81,6 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "build", &ElementaryMatrixPressureComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixPressureComplex::getFiniteElementDescriptors )
-        .def( "getElementaryTerms", &ElementaryMatrixPressureComplex::getElementaryTerms );
+        .def( "getElementaryTerms", &ElementaryMatrixPressureComplex::getElementaryTerms )
+        .def( "hasElementaryTerms", &ElementaryMatrixPressureComplex::hasElementaryTerms );
 };
