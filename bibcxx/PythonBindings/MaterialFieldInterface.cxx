@@ -56,12 +56,12 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
 
             Arguments:
                 behaviour (BehaviourDefinition): Behaviour (from DEFI_COMPOR)
-                nameOfGroup (str) : name of cell
+                nameOfGroups (list(str)) : list of names of groups of cells
             )",
-              py::arg( "behaviour" ), py::arg( "nameOfGroup" ) )
+              py::arg( "behaviour" ), py::arg( "nameOfGroups" ) )
 
-        .def( "addMaterialsOnMesh", &MaterialField::addMaterialsOnMesh, R"(
-            Add a vector of material properties on mesh
+        .def( "addMultipleMaterialOnMesh", &MaterialField::addMultipleMaterialOnMesh, R"(
+            Add a vector of multiple material properties on mesh
 
             Arguments:
                 material (list(Material)): list of material properties
@@ -76,23 +76,24 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
             )",
               py::arg( "material" ) )
 
-        .def( "addMaterialsOnGroupOfCells", &MaterialField::addMaterialsOnGroupOfCells, R"(
-            Add a vector of material properties on group of cells
+        .def( "addMultipleMaterialOnGroupOfCells",
+              &MaterialField::addMultipleMaterialOnGroupOfCells, R"(
+            Add a vector of multiple material properties on group of cells
 
             Arguments:
                 material (list(Material)): list of material properties
-                nameOfGroup (str) : name of cell
+                nameOfGroups (list(str)) : list of names of groups of cells
             )",
-              py::arg( "material" ), py::arg( "nameOfGroup" ) )
+              py::arg( "material" ), py::arg( "nameOfGroups" ) )
 
         .def( "addMaterialOnGroupOfCells", &MaterialField::addMaterialOnGroupOfCells, R"(
-            Add a material properties on group of cells
+            Add a material properties on list of groups of cells
 
             Arguments:
                 material (Material): material properties
-                nameOfGroup (str) : name of cell
+                nameOfGroups (list(str)) : list of names of groups of cells
             )",
-              py::arg( "material" ), py::arg( "nameOfGroup" ) )
+              py::arg( "material" ), py::arg( "nameOfGroups" ) )
 
         .def( "getMesh", &MaterialField::getMesh, R"(
             Get mesh of material field
@@ -122,6 +123,64 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
                 model (Model): model
             )",
               py::arg( "model" ) )
+
+        .def( "addExternalStateVariable", &MaterialField::addExternalStateVariable, R"(
+            Add external state variable in material field
+
+            Arguments:
+                exteVari (ExternalStateVariablePtr): external state variable
+            )",
+              py::arg( "exteVari" ) )
+
+        .def(
+            "hasExternalStateVariable",
+            py::overload_cast< const externVarEnumInt >( &MaterialField::hasExternalStateVariable ),
+            R"(
+            Detects the presence of an external state variable
+
+            Arguments:
+                exteVariIden (externVarEnumInt or str): identifier for external state variable
+
+            Returns:
+                bool: True if has external state variables
+            )",
+            py::arg( "exteVariIden" ) )
+
+        .def( "hasExternalStateVariable",
+              py::overload_cast< const std::string & >( &MaterialField::hasExternalStateVariable ),
+              R"(
+            Detects the presence of an external state variable
+
+            Returns:
+                bool: True if has external state variables
+            )",
+              py::arg( "exteVariIden" ) )
+
+        .def( "hasExternalStateVariable",
+              py::overload_cast<>( &MaterialField::hasExternalStateVariable, py::const_ ),
+              R"(
+            Detects the presence of any external state variable
+
+            Returns:
+                bool: True if has external state variables
+            )" )
+
+        .def( "hasExternalStateVariableForLoad", &MaterialField::hasExternalStateVariableForLoad,
+              R"(
+            Detects the presence of an external state variable for loads
+
+            Returns:
+                bool: True if has external state variables for loads
+            )" )
+
+        .def( "hasExternalStateVariableWithReference",
+              &MaterialField::hasExternalStateVariableWithReference,
+              R"(
+            Detects the presence of an external state variable with reference value
+
+            Returns:
+                bool: True if has external state variables with reference value
+            )" )
 
         .def( "build", &MaterialField::build, R"(
             Build material field

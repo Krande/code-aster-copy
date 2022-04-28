@@ -28,6 +28,7 @@
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Materials/BehaviourDefinition.h"
+#include "Materials/ExternalStateVariables.h"
 #include "Materials/Material.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/Mesh.h"
@@ -36,8 +37,6 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
-
-class MaterialFieldBuilder;
 
 /**
  * @class PartOfMaterialField
@@ -75,6 +74,9 @@ class MaterialField : public DataStructure {
     using listOfMaterialsOnMeshValue = listOfMaterialsOnMesh::value_type;
     using listOfBehavioursOnMesh = std::list< std::pair< BehaviourDefinitionPtr, MeshEntityPtr > >;
     using listOfBehavioursOnMeshValue = listOfBehavioursOnMesh::value_type;
+    using listOfExternalVarOnMesh =
+        std::list< std::pair< ExternalStateVariablePtr, MeshEntityPtr > >;
+    using listOfExternalVarOnMeshValue = listOfExternalVarOnMesh::value_type;
 
     /** @brief Mesh */
     BaseMeshPtr _mesh;
@@ -87,6 +89,9 @@ class MaterialField : public DataStructure {
 
     /** @brief List of multi-material parameters on mesh entities */
     listOfBehavioursOnMesh _behaviourOnMeshEntities;
+
+    /** @brief List of external state variables on mesh entities */
+    listOfExternalVarOnMesh _extStateVariablesOnMeshEntities;
 
     /** @brief Constant field for material parameters - '.CHAMP_MAT' */
     ConstantFieldOnCellsChar8Ptr _champ_mat;
@@ -103,9 +108,9 @@ class MaterialField : public DataStructure {
     /** @brief Jeveux vector '.CVRCCMP' */
     JeveuxVectorChar8 _cvrcCmp;
     /** @brief Cartes R '.xxxx    .1' */
-    std::map < std::string, ConstantFieldOnCellsRealPtr > _mapCvrcCard1;
+    std::map< std::string, ConstantFieldOnCellsRealPtr > _mapCvrcCard1;
     /** @brief Cartes K16 '.xxxx    .2' */
-    std::map < std::string, ConstantFieldOnCellsChar16Ptr > _mapCvrcCard2;
+    std::map< std::string, ConstantFieldOnCellsChar16Ptr > _mapCvrcCard2;
 
   private:
     /** @brief Generate syntax for material parameters */
@@ -113,6 +118,12 @@ class MaterialField : public DataStructure {
 
     /** @brief Generate syntax for multi-material parameters */
     ListSyntaxMapContainer syntaxForBehaviour();
+
+    /** @brief Generate syntax for external state variables*/
+    ListSyntaxMapContainer syntaxForExtStateVariables();
+
+    /** @brief Generate C++ objects from Fortran objects for external state variables */
+    void updateExtStateVariablesObjects();
 
   public:
     /** @brief Constructor */
@@ -145,20 +156,23 @@ class MaterialField : public DataStructure {
     void addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav );
 
     /** @brief Add a behaviour on group of cells */
-    void addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav, std::string nameOfGroup );
+    void addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav, VectorString namesOfGroup );
 
-    /** @brief Add several materials on all the mesh */
-    void addMaterialsOnMesh( std::vector< MaterialPtr > curMaters );
+    /** @brief Add multiple material on all the mesh */
+    void addMultipleMaterialOnMesh( std::vector< MaterialPtr > curMaters );
 
     /** @brief Add a material on all the mesh */
     void addMaterialOnMesh( MaterialPtr &curMater );
 
-    /** @brief Add several materials on group of cells */
-    void addMaterialsOnGroupOfCells( std::vector< MaterialPtr > curMaters,
-                                     VectorString namesOfGroup );
+    /** @brief Add multiple material on group of cells */
+    void addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr > curMaters,
+                                            VectorString namesOfGroup );
 
     /** @brief Add a material on group of cells */
     void addMaterialOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup );
+
+    /** @brief Add an external state variable */
+    void addExternalStateVariable( ExternalStateVariablePtr &currExte );
 
     /** @brief Return the ConstantFieldOnCells of behaviour */
     ConstantFieldOnCellsRealPtr getBehaviourField() const { return _compor; };
@@ -185,15 +199,34 @@ class MaterialField : public DataStructure {
     /** @brief Get list of multi-material parameters on mesh entities */
     listOfBehavioursOnMesh getBehaviourOnMeshEntities() { return _behaviourOnMeshEntities; };
 
+    /** @brief Get list of external state variables on mesh entities */
+    listOfExternalVarOnMesh getExtStateVariablesOnMeshEntities() {
+        return _extStateVariablesOnMeshEntities;
+    };
+
     /** @brief Set the model */
     void setModel( ModelPtr model ) {
         _model = model;
         _mesh = model->getMesh();
     };
-    void updateStateVariables();
 
-    bool update();
+    /** @brief Function to know if external state variable are present */
+    bool hasExternalStateVariable() const { return _extStateVariablesOnMeshEntities.size() != 0; }
 
+    /** @brief Function to know if a given external state variable exists */
+    bool hasExternalStateVariable( const std::string &name );
+
+    /** @brief Function to know if a given external state variable exists */
+    bool hasExternalStateVariable( const externVarEnumInt exteVariType );
+
+    /** @brief Function to know if there are external state variables for load (from strain) */
+    bool hasExternalStateVariableForLoad();
+
+    /** @brief Function to know if there are external state variables withe reference field */
+    bool hasExternalStateVariableWithReference();
+
+    /** @brief Main function to build this object */
+    bool build();
 };
 
 using MaterialFieldPtr = std::shared_ptr< MaterialField >;

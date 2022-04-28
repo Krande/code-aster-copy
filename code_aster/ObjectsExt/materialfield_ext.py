@@ -69,9 +69,15 @@ class MaterialFieldStateBuilder(InternalStateBuilder):
         super().restore(field)
         for occ in self._st["part"]:
             if occ["type"] == 0:
-                field.addMaterialsOnMesh(occ["mater"])
+                if len(occ["mater"]) == 1:
+                    field.addMaterialOnMesh(occ["mater"][0])
+                else:
+                    field.addMultipleMaterialOnMesh(occ["mater"])
             elif occ["type"] == 1:
-                field.addMaterialsOnGroupOfCells(occ["mater"], occ["names"])
+                if len(occ["mater"]) == 1:
+                    field.addMaterialOnGroupOfCells(occ["mater"][0], occ["names"])
+                else:
+                    field.addMultipleMaterialOnGroupOfCells(occ["mater"], occ["names"])
             else:
                 raise RuntimeError("Programming error")
 

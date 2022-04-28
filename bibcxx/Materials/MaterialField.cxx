@@ -26,7 +26,6 @@
 #include "aster_fort_superv.h"
 #include "astercxx.h"
 
-#include "Modeling/FiniteElementDescriptor.h"
 #include "Results/TransientResult.h"
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/SyntaxDictionary.h"
@@ -95,27 +94,28 @@ void MaterialField::addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav ) {
 }
 
 void MaterialField::addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav,
-                                                std::string nameOfGroup ) {
+                                                VectorString namesOfGroup ) {
     if ( !_mesh )
         throw std::runtime_error( "Mesh is not defined" );
-    if ( !_mesh->hasGroupOfCells( nameOfGroup ) )
-        throw std::runtime_error( nameOfGroup + " not in mesh" );
+    for ( const auto &nameOfGroup : namesOfGroup )
+        if ( !_mesh->hasGroupOfCells( nameOfGroup ) )
+            throw std::runtime_error( nameOfGroup + " not in mesh" );
 
-    _behaviourOnMeshEntities.push_back(
-        listOfBehavioursOnMeshValue( curBehav, MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) ) );
+    _behaviourOnMeshEntities.push_back( listOfBehavioursOnMeshValue(
+        curBehav, MeshEntityPtr( new GroupOfCells( namesOfGroup ) ) ) );
 }
 
-void MaterialField::addMaterialsOnMesh( std::vector< MaterialPtr > curMaters ) {
+void MaterialField::addMultipleMaterialOnMesh( std::vector< MaterialPtr > curMaters ) {
     _materialsOnMeshEntities.push_back(
         listOfMaterialsOnMeshValue( curMaters, MeshEntityPtr( new AllMeshEntities() ) ) );
 }
 
 void MaterialField::addMaterialOnMesh( MaterialPtr &curMater ) {
-    addMaterialsOnMesh( ( std::vector< MaterialPtr > ){ curMater } );
+    addMultipleMaterialOnMesh( ( std::vector< MaterialPtr > ){ curMater } );
 }
 
-void MaterialField::addMaterialsOnGroupOfCells( std::vector< MaterialPtr > curMaters,
-                                                VectorString namesOfGroup ) {
+void MaterialField::addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr > curMaters,
+                                                       VectorString namesOfGroup ) {
     if ( !_mesh )
         throw std::runtime_error( "Mesh is not defined" );
     for ( const auto &nameOfGroup : namesOfGroup )
@@ -127,8 +127,81 @@ void MaterialField::addMaterialsOnGroupOfCells( std::vector< MaterialPtr > curMa
 }
 
 void MaterialField::addMaterialOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup ) {
-    addMaterialsOnGroupOfCells( ( std::vector< MaterialPtr > ){ curMater }, namesOfGroup );
+    addMultipleMaterialOnGroupOfCells( ( std::vector< MaterialPtr > ){ curMater }, namesOfGroup );
 }
+
+void MaterialField::addExternalStateVariable( ExternalStateVariablePtr &currExte ) {
+    auto meshFromExte = currExte->getMesh();
+    if ( meshFromExte != _mesh ) {
+        throw std::runtime_error( "Mesh from external state variable is not the same" );
+    }
+    MeshEntityPtr meshEntity = currExte->getLocalization();
+    if ( meshEntity->getType() == GroupOfCellsType ) {
+        _extStateVariablesOnMeshEntities.push_back( listOfExternalVarOnMeshValue(
+            currExte, MeshEntityPtr( new GroupOfCells( meshEntity->getName() ) ) ) );
+    } else if ( meshEntity->getType() == AllMeshEntitiesType ) {
+        _extStateVariablesOnMeshEntities.push_back(
+            listOfExternalVarOnMeshValue( currExte, MeshEntityPtr( new AllMeshEntities() ) ) );
+    } else {
+        AS_ABORT( "Unknown entity" );
+    }
+}
+
+bool MaterialField::hasExternalStateVariable( const std::string &name ) {
+    if ( hasExternalStateVariable() ) {
+        for ( auto curIter : getExtStateVariablesOnMeshEntities() ) {
+            const auto externVar = curIter.first;
+            if ( ExternalVariableTraits::getExternVarTypeStr( externVar->getType() ) == name ) {
+                return true;
+            }
+        }
+    } else {
+        return false;
+    }
+    return false;
+};
+
+bool MaterialField::hasExternalStateVariable( const externVarEnumInt externVariType ) {
+    if ( hasExternalStateVariable() ) {
+        for ( auto curIter : getExtStateVariablesOnMeshEntities() ) {
+            const auto externVar = curIter.first;
+            if ( externVar->getType() == externVariType ) {
+                return true;
+            }
+        }
+    } else {
+        return false;
+    }
+    return false;
+};
+
+bool MaterialField::hasExternalStateVariableForLoad() {
+    if ( hasExternalStateVariable() ) {
+        for ( auto curIter : getExtStateVariablesOnMeshEntities() ) {
+            const auto externVar = curIter.first;
+            if ( ExternalVariableTraits::externVarHasStrain( externVar->getType() ) ) {
+                return true;
+            }
+        }
+    } else {
+        return false;
+    }
+    return false;
+};
+
+bool MaterialField::hasExternalStateVariableWithReference() {
+    if ( hasExternalStateVariable() ) {
+        for ( auto curIter : getExtStateVariablesOnMeshEntities() ) {
+            const auto externVar = curIter.first;
+            if ( ExternalVariableTraits::externVarHasRefeValue( externVar->getType() ) ) {
+                return true;
+            }
+        }
+    } else {
+        return false;
+    }
+    return false;
+};
 
 ListSyntaxMapContainer MaterialField::syntaxForMaterial() {
     ListSyntaxMapContainer listAFFE;
@@ -143,8 +216,6 @@ ListSyntaxMapContainer MaterialField::syntaxForMaterial() {
             dict2.container["TOUT"] = "OUI";
         else if ( tmp->getType() == GroupOfCellsType )
             dict2.container["GROUP_MA"] = ( curIter.second )->getNames();
-        else if ( tmp->getType() == GroupOfNodesType )
-            dict2.container["GROUP_NO"] = ( curIter.second )->getNames();
         else
             throw std::runtime_error( "Support entity undefined" );
         listAFFE.push_back( dict2 );
@@ -161,10 +232,112 @@ ListSyntaxMapContainer MaterialField::syntaxForBehaviour() {
         if ( tmp->getType() == AllMeshEntitiesType )
             dict2.container["TOUT"] = "OUI";
         else if ( tmp->getType() == GroupOfCellsType )
-            dict2.container["GROUP_MA"] = ( curIter.second )->getName();
+            dict2.container["GROUP_MA"] = ( curIter.second )->getNames();
         else
             throw std::runtime_error( "Support entity undefined" );
         listAFFE_COMPOR.push_back( dict2 );
     }
     return listAFFE_COMPOR;
 }
+
+ListSyntaxMapContainer MaterialField::syntaxForExtStateVariables() {
+    ListSyntaxMapContainer listAFFE_VARC;
+    for ( auto &curIter : getExtStateVariablesOnMeshEntities() ) {
+        SyntaxMapContainer dict2;
+        const auto &externVar = ( *curIter.first );
+        const auto externVariType = externVar.getType();
+        dict2.container["NOM_VARC"] = ExternalVariableTraits::getExternVarTypeStr( externVariType );
+        const auto &inputField = externVar.getField();
+        const auto &evolParam = externVar.getEvolutionParameter();
+        if ( inputField != nullptr ) {
+            dict2.container["CHAM_GD"] = inputField->getName();
+        };
+        if ( evolParam != nullptr ) {
+            dict2.container["EVOL"] = evolParam->getTransientResult()->getName();
+            dict2.container["PROL_DROITE"] = evolParam->getRightExtension();
+            dict2.container["PROL_GAUCHE"] = evolParam->getLeftExtension();
+            if ( evolParam->getFieldName() != "" )
+                dict2.container["NOM_CHAM"] = evolParam->getFieldName();
+            if ( evolParam->getTimeFormula() != nullptr )
+                dict2.container["FONC_INST"] = evolParam->getTimeFormula()->getName();
+            if ( evolParam->getTimeFunction() != nullptr )
+                dict2.container["FONC_INST"] = evolParam->getTimeFunction()->getName();
+        };
+        if ( externVar.isSetRefe() ) {
+            AS_ASSERT( ExternalVariableTraits::externVarHasRefeValue( externVariType ) );
+            dict2.container["VALE_REF"] = externVar.getReferenceValue();
+        } else {
+            AS_ASSERT( !ExternalVariableTraits::externVarHasRefeValue( externVariType ) );
+        }
+        const MeshEntityPtr &meshEntity = curIter.second;
+        if ( meshEntity->getType() == AllMeshEntitiesType ) {
+            dict2.container["TOUT"] = "OUI";
+        } else if ( meshEntity->getType() == GroupOfCellsType ) {
+            dict2.container["GROUP_MA"] = ( curIter.second )->getName();
+        } else {
+            AS_ABORT( "Development error" );
+        }
+        listAFFE_VARC.push_back( dict2 );
+    };
+    return listAFFE_VARC;
+}
+
+bool MaterialField::build() {
+    // Dictionnary for syntax
+    SyntaxMapContainer commandSyntax;
+
+    // Add model or mesh in dictionnary
+    if ( !_mesh )
+        throw std::runtime_error( "Mesh is undefined" );
+    commandSyntax.container["MAILLAGE"] = _mesh->getName();
+    if ( _model )
+        commandSyntax.container["MODELE"] = _model->getName();
+
+    // Add list of material parameters in dictionnary
+    auto listAFFE = syntaxForMaterial();
+    commandSyntax.container["AFFE"] = listAFFE;
+
+    // Add list of multi-material parameters in dictionnary
+    auto listAFFE_COMPOR = syntaxForBehaviour();
+    commandSyntax.container["AFFE_COMPOR"] = listAFFE_COMPOR;
+
+    // Add external state variables in dictionnary
+    if ( hasExternalStateVariable() ) {
+        auto listAFFE_VARC = syntaxForExtStateVariables();
+        commandSyntax.container["AFFE_VARC"] = listAFFE_VARC;
+    }
+
+    // Final command
+    auto commandFortran = CommandSyntax( "AFFE_MATERIAU" );
+    commandFortran.setResult( getName(), getType() );
+    commandFortran.define( commandSyntax );
+
+    // Call Fortran command
+    try {
+        ASTERINTEGER op = 6;
+        CALL_EXECOP( &op );
+    } catch ( ... ) {
+        throw;
+    }
+
+    // Generate C++ objects from Fortran objects for external state variables
+    updateExtStateVariablesObjects();
+
+    return true;
+};
+
+void MaterialField::updateExtStateVariablesObjects() {
+    if ( _cvrcVarc->exists() ) {
+        _cvrcVarc->updateValuePointer();
+        ASTERINTEGER size = _cvrcVarc->size();
+        for ( ASTERINTEGER i = 0; i < size; ++i ) {
+            std::string varc_name = ( *_cvrcVarc )[i].toString();
+            if ( _mapCvrcCard1.find( varc_name ) == _mapCvrcCard1.end() ) {
+                _mapCvrcCard1[varc_name] = std::make_shared< ConstantFieldOnCellsReal >(
+                    getName() + '.' + varc_name + ".1", _mesh );
+                _mapCvrcCard2[varc_name] = std::make_shared< ConstantFieldOnCellsChar16 >(
+                    getName() + '.' + varc_name + ".2", _mesh );
+            }
+        }
+    }
+};

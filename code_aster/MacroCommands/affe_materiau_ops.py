@@ -20,7 +20,7 @@
 from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
 
 from ..Cata.Syntax import _F
-from ..Objects import MaterialField
+from ..Objects import ExternalStateVariable, MaterialField, EvolutionParameter
 from ..Utilities import force_list
 
 
@@ -42,7 +42,6 @@ def affe_materiau_ops(self, **args):
         mesh = args["MAILLAGE"]
     else:
         mesh = model.getMesh()
-
     material = MaterialField(mesh)
     if model is not None:
         material.setModel(model)
@@ -66,19 +65,17 @@ def affe_materiau_ops(self, **args):
         else:
             raise TypeError("Unexpected type: {0!r} {1}".format(fkw, type(fkw)))
 
-    # externalVarOnMesh = ListOfExternalStateVariables(mesh)
-    # fkw = args.get("AFFE_VARC")
-    # if fkw is not None:
-    #     if isinstance(fkw, dict):
-    #         _addExternalStateVariable(material, externalVarOnMesh, fkw, mesh)
-    #     elif type(fkw) in (list, tuple):
-    #         for curDict in fkw:
-    #             _addExternalStateVariable(material, externalVarOnMesh, curDict, mesh)
-    #     else:
-    #         raise TypeError(
-    #             "Unexpected type: {0!r} {1}".format(fkw, type(fkw)))
+    fkw = args.get("AFFE_VARC")
+    if fkw is not None:
+        if isinstance(fkw, dict):
+            _addExternalStateVariables(material, fkw, mesh)
+        elif type(fkw) in (list, tuple):
+            for curDict in fkw:
+                _addExternalStateVariables(material, curDict, mesh)
+        else:
+            raise TypeError("Unexpected type: {0!r} {1}".format(fkw, type(fkw)))
 
-    # material = MaterialFieldBuilder.build(material, externalVarOnMesh)
+    material.build()
 
     resetFortranLoggingLevel()
     deleteTemporaryObjects()
@@ -95,102 +92,114 @@ def _addBehaviour(material, fkw):
         material.addBehaviourOnMesh(compor)
     elif kwGrMa is not None:
         kwGrMa = force_list(kwGrMa)
-        for grp in kwGrMa:
-            material.addBehaviourOnGroupOfCells(compor, grp)
+        material.addBehaviourOnGroupOfCells(compor, kwGrMa)
     else:
         raise TypeError("At least {0} or {1} is required".format("TOUT", "GROUP_MA"))
 
 
-# def _addExternalStateVariable(material, externalVarOnMesh, fkw, mesh):
-#     kwTout = fkw.get("TOUT")
-#     kwGrMa = fkw.get("GROUP_MA")
-#     kwMail = fkw.get("MAILLE")
-#     nomVarc = fkw["NOM_VARC"]
-#     chamGd = fkw.get("CHAM_GD")
-#     valeRef = fkw.get("VALE_REF")
-#     evol = fkw.get("EVOL")
+def _addExternalStateVariables(material, fkw, mesh):
+    kwTout = fkw.get("TOUT")
+    kwGrMa = fkw.get("GROUP_MA")
+    nomVarc = fkw["NOM_VARC"]
+    chamGd = fkw.get("CHAM_GD")
+    valeRef = fkw.get("VALE_REF")
+    evol = fkw.get("EVOL")
+    grp = None
 
-#     obj = None
-#     if nomVarc == "TEMP":
-#         obj = TemperatureExternalStateVariable
-#     elif nomVarc == "GEOM":
-#         obj = GeometryExternalStateVariable
-#     elif nomVarc == "CORR":
-#         obj = CorrosionExternalStateVariable
-#     elif nomVarc == "EPSA":
-#         obj = IrreversibleDeformationExternalStateVariable
-#     elif nomVarc == "HYDR":
-#         obj = ConcreteHydratationExternalStateVariable
-#     elif nomVarc == "IRRA":
-#         obj = IrradiationExternalStateVariable
-#     elif nomVarc == "M_ACIER":
-#         obj = SteelPhasesExternalStateVariable
-#     elif nomVarc == "M_ZIRC":
-#         obj = ZircaloyPhasesExternalStateVariable
-#     elif nomVarc == "NEUT1":
-#         obj = Neutral1ExternalStateVariable
-#     elif nomVarc == "NEUT2":
-#         obj = Neutral2ExternalStateVariable
-#     elif nomVarc == "NEUT3":
-#         obj = Neutral3ExternalStateVariable
-#     elif nomVarc == "SECH":
-#         obj = ConcreteDryingExternalStateVariable
-#     elif nomVarc == "PTOT":
-#         obj = TotalFluidPressureExternalStateVariable
-#     elif nomVarc == "DIVU":
-#         obj = VolumetricDeformationExternalStateVariable
-#     else:
-#         raise TypeError("Input Variable not allowed")
+    # Construct main object
+    if kwTout is not None:
+        externalVar = createExternalStateVariable(fkw, nomVarc, mesh, kwTout, grp)
+        material.addExternalStateVariable(externalVar)
+    elif kwGrMa is not None:
+        kwGrMa = force_list(kwGrMa)
+        for grp in kwGrMa:
+            externalVar = createExternalStateVariable(fkw, nomVarc, mesh, kwTout, grp)
+            material.addExternalStateVariable(externalVar)
+    else:
+        externalVar = createExternalStateVariable(fkw, nomVarc, mesh, kwTout, grp)
+        material.addExternalStateVariable(externalVar)
 
-#     externalVar = obj(mesh)
-#     if valeRef is not None:
-#         externalVar.setReferenceValue(valeRef)
+    # Some dependencies
+    if chamGd is not None:
+        material.addDependency(chamGd)
+    if evol is not None:
+        material.addDependency(evol)
 
-#     if chamGd is not None:
-#         externalVar.setValue(chamGd)
-#         material.addDependency(chamGd)
 
-#     if evol is not None:
-#         material.addDependency(evol)
-#         evolParam = EvolutionParameter(evol)
-#         nomCham = fkw.get("NOM_CHAM")
-#         if nomCham is not None:
-#             evolParam.setFieldName(nomCham)
-#         foncInst = fkw.get("FONC_INST")
-#         if foncInst is not None:
-#             evolParam.setTimeFunction(foncInst)
+def createExternalStateVariable(fkw, nomVarc, mesh, kwTout, grp):
+    chamGd = fkw.get("CHAM_GD")
+    valeRef = fkw.get("VALE_REF")
+    evol = fkw.get("EVOL")
 
-#         prolDroite = fkw.get("PROL_DROITE")
-#         if prolDroite is not None:
-#             if prolDroite == "EXCLU":
-#                 evolParam.prohibitRightExtension()
-#             if prolDroite == "CONSTANT":
-#                 evolParam.setConstantRightExtension()
-#             if prolDroite == "LINEAIRE":
-#                 evolParam.setLinearRightExtension()
+    # Construct main object
+    if kwTout is not None:
+        externalVar = ExternalStateVariable(nomVarc, mesh)
+    elif grp is not None:
+        externalVar = ExternalStateVariable(nomVarc, mesh, grp)
+    else:
+        externalVar = ExternalStateVariable(nomVarc, mesh)
 
-#         prolGauche = fkw.get("PROL_GAUCHE")
-#         if prolGauche is not None:
-#             if prolGauche == "EXCLU":
-#                 evolParam.prohibitLeftExtension()
-#             if prolGauche == "CONSTANT":
-#                 evolParam.setConstantLeftExtension()
-#             if prolGauche == "LINEAIRE":
-#                 evolParam.setLinearLeftExtension()
+    # Set reference value
+    if valeRef is not None:
+        externalVar.setReferenceValue(valeRef)
 
-#         externalVar.setEvolutionParameter(evolParam)
+    # Set field for value of external state variable
+    if chamGd is not None:
+        externalVar.setField(chamGd)
 
-#     if kwTout is not None:
-#         externalVarOnMesh.addExternalStateVariableOnMesh(externalVar)
-#     elif kwMail is not None:
-#         raise RuntimeError("MAILLE is no more supported")
-#     elif kwGrMa is not None:
-#         kwGrMa = force_list(kwGrMa)
-#         for grp in kwGrMa:
-#             externalVarOnMesh.addExternalStateVariableOnGroupOfCells(
-#                 externalVar, grp)
-#     else:
-#         externalVarOnMesh.addExternalStateVariableOnMesh(externalVar)
+    # Set transient result for value of external state variable
+    if evol is not None:
+        fieldName = fkw.get("NOM_CHAM")
+        if fieldName is None:
+            if nomVarc is "TEMP":
+                evolParameter = EvolutionParameter(evol, "TEMP")
+            elif nomVarc is "NEUT1":
+                evolParameter = EvolutionParameter(evol, "NEUT")
+            elif nomVarc is "NEUT2":
+                evolParameter = EvolutionParameter(evol, "NEUT")
+            elif nomVarc is "NEUT3":
+                evolParameter = EvolutionParameter(evol, "NEUT")
+            elif nomVarc is "GEOM":
+                evolParameter = EvolutionParameter(evol, "GEOM")
+            elif nomVarc is "CORR":
+                evolParameter = EvolutionParameter(evol, "CORR")
+            elif nomVarc is "IRRA":
+                evolParameter = EvolutionParameter(evol, "IRRA")
+            elif nomVarc is "DIVU":
+                evolParameter = EvolutionParameter(evol, "DIVU")
+            elif nomVarc is "HYDR":
+                evolParameter = EvolutionParameter(evol, "HYDR_ELNO")
+            elif nomVarc is "SECH":
+                evolParameter = EvolutionParameter(evol, "TEMP")
+            elif nomVarc is "PTOT":
+                evolParameter = EvolutionParameter(evol, "PTOT")
+            elif nomVarc is "EPSA":
+                evolParameter = EvolutionParameter(evol, "EPSA")
+            elif nomVarc is "M_ACIER":
+                evolParameter = EvolutionParameter(evol, "META_ELNO")
+            elif nomVarc is "M_ZIRC":
+                evolParameter = EvolutionParameter(evol, "META_ELNO")
+            else:
+                raise RuntimeError("Unknown external state variables")
+        else:
+            evolParameter = EvolutionParameter(evol, fieldName)
+
+        foncInst = fkw.get("FONC_INST")
+        if foncInst is not None:
+            evolParameter.setTimeFunction(foncInst)
+
+        rightExtension = fkw.get("PROL_DROITE")
+        if rightExtension is not None:
+            evolParameter.setRightExtension(rightExtension)
+
+        leftExtension = fkw.get("PROL_GAUCHE")
+        if leftExtension is not None:
+            evolParameter.setLeftExtension(leftExtension)
+
+        # Set evolution paramaeter for external state variable
+        externalVar.setEvolutionParameter(evolParameter)
+
+    return externalVar
 
 
 def _addMaterial(material, fkw):
@@ -198,16 +207,26 @@ def _addMaterial(material, fkw):
     kwGrMa = fkw.get("GROUP_MA")
     kwMail = fkw.get("MAILLE")
     mater = fkw["MATER"]
-
     if type(mater) is not list:
         mater = list(mater)
 
-    if kwTout is not None:
-        material.addMaterialsOnMesh(mater)
-    elif kwGrMa is not None:
-        kwGrMa = force_list(kwGrMa)
-        material.addMaterialsOnGroupOfCells(mater, kwGrMa)
-    elif kwMail is not None:
-        raise RuntimeError("MAILLE is no more supported")
+    if len(mater) == 1:
+        if kwTout is not None:
+            material.addMaterialOnMesh(mater[0])
+        elif kwGrMa is not None:
+            kwGrMa = force_list(kwGrMa)
+            material.addMaterialOnGroupOfCells(mater[0], kwGrMa)
+        elif kwMail is not None:
+            raise RuntimeError("MAILLE is no more supported")
+        else:
+            raise TypeError("At least {0} or {1} is required".format("TOUT", "GROUP_MA"))
     else:
-        raise TypeError("At least {0} or {1} is required".format("TOUT", "GROUP_MA"))
+        if kwTout is not None:
+            material.addMultipleMaterialOnMesh(mater)
+        elif kwGrMa is not None:
+            kwGrMa = force_list(kwGrMa)
+            material.addMultipleMaterialOnGroupOfCells(mater, kwGrMa)
+        elif kwMail is not None:
+            raise RuntimeError("MAILLE is no more supported")
+        else:
+            raise TypeError("At least {0} or {1} is required".format("TOUT", "GROUP_MA"))
