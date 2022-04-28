@@ -146,7 +146,10 @@ class DiscreteComputation {
                                                  const ASTERDOUBLE time );
 
     /** @brief Compute nodal field for external state variables RHS */
-    FieldOnNodesRealPtr computeExternalStateVariablesLoad() const;
+    FieldOnNodesRealPtr
+    computeExternalStateVariablesLoad( const ASTERDOUBLE &time,
+                                       const ConstantFieldOnCellsRealPtr _timeField,
+                                       const FieldOnCellsRealPtr _externVarField ) const;
 
     /** @brief Compute field for external state variables reference values */
     FieldOnCellsRealPtr computeExternalStateVariablesReference( const std::string fieldName ) const;

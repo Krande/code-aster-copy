@@ -501,58 +501,75 @@ DiscreteComputation::createExternalStateVariablesField( const std::string fieldN
     return field;
 }
 
-FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad() const {
+FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
+    const ASTERDOUBLE &time, const ConstantFieldOnCellsRealPtr _timeField,
+    const FieldOnCellsRealPtr _externVarField ) const {
 
-    // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
-    std::string materialFieldName = ljust( _phys_problem->getMaterialField()->getName(), 8 );
-    std::string behaviourName =
-        ljust( _phys_problem->getMaterialField()->getBehaviourField()->getName(), 24 );
-    const auto compor = _phys_problem->getMaterialField()->getBehaviourField();
-    std::string codedMaterialFieldName =
-        ljust( _phys_problem->getCodedMaterial()->getCodedMaterialField()->getName(), 24 );
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    std::string elemCharaName( " " );
-    if ( currElemChara )
-        elemCharaName = currElemChara->getName();
-    elemCharaName.resize( 24, ' ' );
-    auto dofNumbering = _phys_problem->getDOFNumbering();
-    std::string dofNumberingName( dofNumbering->getName() );
+    auto currExternVarRefe = _phys_problem->getExternalStateVariablesReference();
 
-    // Detect external state variables
-    ASTERINTEGER hydr = 0, sech = 0, temp = 0, ptot = 0;
-    if ( _phys_problem->getMaterialField()->hasExternalStateVariable(
-             externVarEnumInt::Temperature ) )
-        temp = 1;
-    if ( _phys_problem->getMaterialField()->hasExternalStateVariable(
-             externVarEnumInt::ConcreteHydratation ) )
-        hydr = 1;
-    if ( _phys_problem->getMaterialField()->hasExternalStateVariable(
-             externVarEnumInt::ConcreteDrying ) )
-        sech = 1;
-    if ( _phys_problem->getMaterialField()->hasExternalStateVariable(
-             externVarEnumInt::TotalFluidPressure ) )
-        ptot = 1;
+    // Some checks
+    AS_ASSERT( currMater );
+    AS_ASSERT( currMater->hasExternalStateVariableForLoad() );
+    if ( currMater->hasExternalStateVariableWithReference() ) {
+        AS_ASSERT( currExternVarRefe );
+    }
 
-    // Call Fortran WRAPPER (oui, c'est pourri, le nom est en dur)
-    auto exteStateVariName = materialFieldName;
-    std::string out( 24, ' ' );
-    CALLO_CACHVC( modelName, materialFieldName, codedMaterialFieldName, elemCharaName,
-                  dofNumberingName, behaviourName, exteStateVariName, out, &hydr, &sech, &temp,
-                  &ptot );
+    // Main object
+    CalculPtr _calcul = std::make_unique< Calcul >( "CHAR_VARC" );
 
-    // Get name of nodal field from Fortran
-    JeveuxVectorChar24 vectOut( out );
-    vectOut->updateValuePointer();
+    // Create elementary vectors
+    ElementaryVectorDisplacementRealPtr elemVect =
+        std::make_shared< ElementaryVectorDisplacementReal >();
+    elemVect->setModel( currModel );
+    elemVect->setMaterialField( currMater );
+    if ( currElemChara ) {
+        elemVect->setElementaryCharacteristics( currElemChara );
+    }
+    elemVect->prepareCompute( "CHAR_VARC" );
+    int nbExternVar = static_cast< int >( externVarEnumInt::NumberOfExternVarTypes );
+    for ( auto iExternVar = 0; iExternVar < nbExternVar; iExternVar++ ) {
+        externVarEnumInt numeExternVar = static_cast< externVarEnumInt >( iExternVar );
+        if ( currMater->hasExternalStateVariable( numeExternVar ) &&
+             ExternalVariableTraits::externVarHasStrain( numeExternVar ) ) {
+            const auto option = ExternalVariableTraits::getExternVarOption( numeExternVar );
+            _calcul->setOption( option );
+            _calcul->setModel( currModel );
+            _calcul->clearInputs();
+            _calcul->clearOutputs();
 
-    // Create nodal field
-    FieldOnNodesRealPtr exteVariLoad( new FieldOnNodesReal( ( *vectOut )[0].toString() ) );
-    exteVariLoad->setDescription( dofNumbering->getDescription() );
-    exteVariLoad->setMesh( dofNumbering->getMesh() );
-    exteVariLoad->build();
-    exteVariLoad->updateValuePointers();
+            // Add input fields
+            _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+            _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+            if ( currElemChara ) {
+                _calcul->addElementaryCharacteristicsField( currElemChara );
+            }
+            _calcul->addInputField( "PVARCPR", _externVarField );
+            _calcul->addInputField( "PTEMPSR", _timeField );
+            if ( currExternVarRefe ) {
+                _calcul->addInputField( "PVARCRR", currExternVarRefe );
+            }
+            if ( currModel->existsXfem() ) {
+                XfemModelPtr currXfemModel = currModel->getXfemModel();
+                _calcul->addXFEMField( currXfemModel );
+            }
+            _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+            _calcul->compute();
+            if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
+            }
+        }
+    }
+    // Build elementary vectors
+    elemVect->build();
 
-    return exteVariLoad;
+    // Assemble
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
 
 FieldOnCellsRealPtr

@@ -94,11 +94,17 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "fieldName" ), py::arg( "time" ) )
         .def( "computeExternalStateVariablesLoad",
               &DiscreteComputation::computeExternalStateVariablesLoad, R"(
-            Create load from external state variables
+            Compute load from external state variables
+
+            Arguments:
+                  time (float): current time
+                  timeField (ConstantFieldOnCell): field with value of current time
+                  externVarField (fieldOnCellsReal): external state variable at current time
 
             Returns:
                   FieldOnNodes: load from external state variables
-            )" )
+            )",
+              py::arg( "time" ), py::arg( "timeField" ), py::arg( "externVarField" ) )
 
         .def( "computeExternalStateVariablesReference",
               &DiscreteComputation::computeExternalStateVariablesReference, R"(
