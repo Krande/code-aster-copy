@@ -59,6 +59,8 @@ class FieldOnCells : public DataField {
     JeveuxVector< ValueType > _valuesList;
     /** @brief Finite element description */
     FiniteElementDescriptorPtr _dofDescription;
+    /** @brief Object for dynamic fields  (as VARI_ELGA) */
+    SimpleFieldOnCellsLongPtr _DCEL;
 
   public:
     /** @typedef FieldOnCellsPtr */

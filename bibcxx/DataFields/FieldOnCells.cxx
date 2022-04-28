@@ -60,9 +60,9 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
 
     ASTERINTEGER iret = 0;
     auto fed = model->getFiniteElementDescriptor();
-
     _dofDescription = fed;
-    auto dcel = std::make_shared< SimpleFieldOnCells< ASTERINTEGER > >();
+
+    _DCEL = std::make_shared< SimpleFieldOnCellsLong >( inName );
 
     std::string comporName = " ";
     if ( behaviour ) {
@@ -70,9 +70,9 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
         comporName = compor->getName();
     }
 
-    CALLO_CESVAR( carele, comporName, fed->getName(), dcel->getName() );
+    CALLO_CESVAR( carele, comporName, fed->getName(), _DCEL->getName() );
     CALLO_ALCHML( fed->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent], getName(),
-                  &iret, dcel->getName() );
+                  &iret, _DCEL->getName() );
     AS_ASSERT( iret == 0 );
 
     updateValuePointers();
