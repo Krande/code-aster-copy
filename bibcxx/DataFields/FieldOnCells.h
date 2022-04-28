@@ -4,7 +4,6 @@
 /**
  * @file FieldOnCells.h
  * @brief Header of class for FieldOnCells
- * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -40,7 +39,7 @@
 
 /** @brief Forward declaration of ElementaryCharacteristics */
 class ElementaryCharacteristics;
-typedef std::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
+using ElementaryCharacteristicsPtr = std::shared_ptr< ElementaryCharacteristics >;
 
 /**
  * @class FieldOnCells
@@ -49,8 +48,8 @@ typedef std::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPt
 template < class ValueType >
 class FieldOnCells : public DataField {
   private:
-    typedef SimpleFieldOnCells< ValueType > SimpleFieldOnCellsValueType;
-    typedef std::shared_ptr< SimpleFieldOnCellsValueType > SimpleFieldOnCellsValueTypePtr;
+    using SimpleFieldOnCellsValueType = SimpleFieldOnCells< ValueType >;
+    using SimpleFieldOnCellsValueTypePtr = std::shared_ptr< SimpleFieldOnCellsValueType >;
 
     /** @brief Vecteur Jeveux '.CELD' */
     JeveuxVectorLong _descriptor;
@@ -80,7 +79,7 @@ class FieldOnCells : public DataField {
     FieldOnCells() : FieldOnCells( ResultNaming::getNewResultName() ){};
 
     /**
-     * @brief Constructor with model and behaviour
+     * @brief Constructor for empty FieldOnCells with dynamic components
      * @param model model
      * @param behaviour Description of behaviour (for size of dynamic components as VARI_ELGA)
      * @param carael Description of elementary characteristics (for size of dynamic components as
@@ -89,6 +88,11 @@ class FieldOnCells : public DataField {
      */
     FieldOnCells( const ModelPtr &model, const BehaviourPropertyPtr behaviour,
                   const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr );
+
+    /**
+     * @brief Constructor for empty FieldOnCells based on specific physical quantity
+     */
+    FieldOnCells( const ModelPtr &model, const std::string option, const std::string paraName );
 
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {

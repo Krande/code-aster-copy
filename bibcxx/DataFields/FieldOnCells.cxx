@@ -25,8 +25,6 @@
 
 #include "Discretization/ElementaryCharacteristics.h"
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 // explicit declaration
 template <>
 FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
@@ -65,10 +63,31 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
 
     _dofDescription = fed;
     auto dcel = std::make_shared< SimpleFieldOnCells< ASTERINTEGER > >();
-    auto compor = behaviour->getBehaviourField();
-    CALLO_CESVAR( carele, compor->getName(), fed->getName(), dcel->getName() );
+
+    std::string comporName = " ";
+    if ( behaviour ) {
+        auto compor = behaviour->getBehaviourField();
+        comporName = compor->getName();
+    }
+
+    CALLO_CESVAR( carele, comporName, fed->getName(), dcel->getName() );
     CALLO_ALCHML( fed->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent], getName(),
                   &iret, dcel->getName() );
+    AS_ASSERT( iret == 0 );
+
+    updateValuePointers();
+};
+
+template <>
+FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model, const std::string option,
+                                           const std::string paraName )
+    : FieldOnCells< ASTERDOUBLE >() {
+    ASTERINTEGER iret = 0;
+    std::string extended = " ";
+    auto fed = model->getFiniteElementDescriptor();
+    _dofDescription = fed;
+    CALLO_ALCHML( fed->getName(), option, paraName, JeveuxMemoryTypesNames[Permanent], getName(),
+                  &iret, extended );
     AS_ASSERT( iret == 0 );
 
     updateValuePointers();
