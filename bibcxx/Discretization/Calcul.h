@@ -25,6 +25,7 @@
 
 #include "astercxx.h"
 
+#include "Behaviours/BehaviourProperty.h"
 #include "DataFields/ElementaryTerm.h"
 #include "DataStructures/DataStructure.h"
 #include "Discretization/ElementaryCharacteristics.h"
@@ -171,6 +172,9 @@ class Calcul {
 
     /** @brief Create and add input fields for XFEM */
     void addXFEMField( const XfemModelPtr xfemModel );
+
+    /** @brief Add input fields for non-linear behaviours */
+    void addBehaviourField( const BehaviourPropertyPtr behaviour );
 };
 
 /**  @typedef CalculPtr */

@@ -135,6 +135,13 @@ void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
     addInputField( "PHEA_FA", xfemModel->getField( "HEAVFA" ) );
 }
 
+/** @brief Add input fields for non-linear behaviours */
+void Calcul::addBehaviourField( const BehaviourPropertyPtr behaviour ) {
+    addInputField( "PCOMPOR", behaviour->getBehaviourField() );
+    addInputField( "PCARCRI", behaviour->getConvergenceCriteria() );
+    addInputField( "PMULCOM", behaviour->getMultipleBehaviourField() );
+}
+
 /** @brief Compute option */
 void Calcul::compute() {
 

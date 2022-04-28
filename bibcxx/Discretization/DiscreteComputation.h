@@ -45,6 +45,13 @@ class DiscreteComputation {
     void baseDualStiffnessMatrix( CalculPtr &calcul,
                                   ElementaryMatrixDisplacementRealPtr &elemMatr );
 
+    /** @brief Preparation for non-linear computations */
+    CalculPtr createCalculForNonLinear( const std::string option,
+                                        const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+                                        const ConstantFieldOnCellsRealPtr _timeFieldCurr,
+                                        const FieldOnCellsRealPtr _externVarFieldPrev,
+                                        const FieldOnCellsRealPtr _externVarFieldCurr );
+
   public:
     /** @typedef DiscreteComputationPtr */
     typedef std::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
@@ -151,6 +158,78 @@ class DiscreteComputation {
 
     /** @brief Compute field for external state variables reference values */
     FieldOnCellsRealPtr computeExternalStateVariablesReference() const;
+
+    /**
+     * @brief Compute internal forces, stress and internal state variables
+     * @return Tuple with 4 objects:
+     * field of exitcode
+     * internal state variables (VARI_ELGA)
+     * Cauchy stress (SIEF_ELGA)
+     * elementary vector of internal forces (`B^T \sigma`)
+     */
+    std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
+                ElementaryVectorDisplacementRealPtr >
+    computeInternalForces( const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
+                           const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
+                           const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+                           const ConstantFieldOnCellsRealPtr _timeFieldCurr );
+
+    /**
+     * @brief Compute tangent matrix (not assembled)
+     * @return Tuple with 5 objects:
+     * field of exitcode
+     * internal state variables (VARI_ELGA)
+     * Cauchy stress (SIEF_ELGA)
+     * elementary vector of internal forces (`B^T \sigma`)
+     * elementary tangent prediction matrix
+     */
+    std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
+                ElementaryVectorDisplacementRealPtr, ElementaryMatrixDisplacementRealPtr >
+    computeTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
+                                   const FieldOnNodesRealPtr displ_incr,
+                                   const FieldOnCellsRealPtr stress,
+                                   const FieldOnCellsRealPtr _internVar,
+                                   const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+                                   const ConstantFieldOnCellsRealPtr _timeFieldCurr );
+
+    /**
+     * @brief Compute tangent prediction matrix (not assembled)
+     * @return Tuple with 4 objects:
+     * field of maskcode
+     * stress at prediction
+     * elementary prediction matrix
+     * elementary vector of internal forces (`B^T \sigma`)
+     */
+    std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, ElementaryMatrixDisplacementRealPtr,
+                ElementaryVectorDisplacementRealPtr >
+    computeTangentPredictionMatrix( const FieldOnNodesRealPtr displ,
+                                    const FieldOnNodesRealPtr displ_incr,
+                                    const FieldOnCellsRealPtr stress,
+                                    const FieldOnCellsRealPtr _internVar,
+                                    const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+                                    const ConstantFieldOnCellsRealPtr _timeFieldCurr );
+
+    /**
+     * @brief Compute elastic prediction matrix (not assembled)
+     * @return Tuple with 4 objects:
+     * elementary prediction matrix
+     */
+    std::tuple< ElementaryMatrixDisplacementRealPtr > computeElasticPredictionMatrix(
+        const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
+        const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
+        const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+        const ConstantFieldOnCellsRealPtr _timeFieldCurr );
+
+    /**
+     * @brief Compute secant prediction matrix (not assembled)
+     * @return Tuple with 4 objects:
+     * elementary prediction matrix
+     */
+    std::tuple< ElementaryMatrixDisplacementRealPtr > computeSecantPredictionMatrix(
+        const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
+        const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
+        const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+        const ConstantFieldOnCellsRealPtr _timeFieldCurr );
 };
 
 using DiscreteComputationPtr = std::shared_ptr< DiscreteComputation >;

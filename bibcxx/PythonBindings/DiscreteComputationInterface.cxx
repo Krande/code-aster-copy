@@ -162,5 +162,17 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
       Returns:
             ElementaryMatrix: elementary matrices
         )" )
-        .def( "massMatrix", &DiscreteComputation::massMatrix, py::arg( "time" ) = 0. );
+        .def( "massMatrix", &DiscreteComputation::massMatrix, py::arg( "time" ) = 0. )
+        .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
+              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
+              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) )
+
+        .def( "computeTangentStiffnessMatrix", &DiscreteComputation::computeTangentStiffnessMatrix,
+              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
+              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) )
+
+        .def( "computeTangentPredictionMatrix",
+              &DiscreteComputation::computeTangentPredictionMatrix, py::arg( "displ" ),
+              py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
+              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) );
 };

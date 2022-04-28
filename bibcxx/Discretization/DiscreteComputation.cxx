@@ -599,3 +599,307 @@ FieldOnCellsRealPtr DiscreteComputation::computeExternalStateVariablesReference(
 
     return field;
 }
+
+CalculPtr DiscreteComputation::createCalculForNonLinear(
+    const std::string option, const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+    const ConstantFieldOnCellsRealPtr _timeFieldCurr, const FieldOnCellsRealPtr _externVarFieldPrev,
+    const FieldOnCellsRealPtr _externVarFieldCurr ) {
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehaviour = _phys_problem->getBehaviourProperty();
+    auto currExternVarRefe = _phys_problem->getExternalStateVariablesReference();
+    AS_ASSERT( currMater );
+
+    // No !
+    if ( currModel->existsHHO() ) {
+        throw std::runtime_error( "HHO not implemented" );
+    }
+    if ( currModel->exists3DShell() ) {
+        throw std::runtime_error( "COQUE_3D not implemented" );
+    }
+    if ( currModel->existsSTRX() ) {
+        throw std::runtime_error( "Beams not implemented" );
+    }
+
+    // Prepare computing: the main object
+    CalculPtr _calcul = std::make_unique< Calcul >( option );
+    _calcul->setModel( currModel );
+
+    // Add external state variables
+    if ( currMater->hasExternalStateVariableWithReference() ) {
+        AS_ASSERT( currExternVarRefe );
+        _calcul->addInputField( "PVARCRR", currExternVarRefe );
+    }
+    if ( currMater->hasExternalStateVariable() ) {
+        if ( !_externVarFieldPrev ) {
+            AS_ABORT( "External state variables vector for beginning of time step is missing" )
+        }
+        if ( !_externVarFieldCurr ) {
+            AS_ABORT( "External state variables vector for end of time step is missing" )
+        }
+        AS_ASSERT( currExternVarRefe );
+        _calcul->addInputField( "PVARCMR", _externVarFieldPrev );
+        _calcul->addInputField( "PVARCPR", _externVarFieldCurr );
+    }
+
+    // Add time fields
+    if ( !_timeFieldPrev ) {
+        AS_ABORT( "Time field for beginning of time step is missing" )
+    }
+    if ( !_timeFieldCurr ) {
+        AS_ABORT( "Time field for end of time step is missing" )
+    }
+    _calcul->addInputField( "PINSTMR", _timeFieldPrev );
+    _calcul->addInputField( "PINSTPR", _timeFieldCurr );
+
+    // Add input fields
+    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    if ( currElemChara ) {
+        _calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        _calcul->addXFEMField( currXfemModel );
+    }
+    _calcul->addBehaviourField( currBehaviour );
+
+    return _calcul;
+};
+
+/** @brief Compute internal forces, stress and internal state variables */
+std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
+            ElementaryVectorDisplacementRealPtr >
+DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
+                                            const FieldOnNodesRealPtr displ_incr,
+                                            const FieldOnCellsRealPtr stress,
+                                            const FieldOnCellsRealPtr _internVar,
+                                            const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+                                            const ConstantFieldOnCellsRealPtr _timeFieldCurr ) {
+
+    FieldOnCellsRealPtr _externVarFieldPrev;
+    FieldOnCellsRealPtr _externVarFieldCurr;
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehaviour = _phys_problem->getBehaviourProperty();
+
+    // Select option for matrix
+    std::string option = "RAPH_MECA";
+
+    // Prepare computing:
+    CalculPtr _calcul = createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr,
+                                                  _externVarFieldPrev, _externVarFieldCurr );
+
+    // Set current physical state
+    _calcul->addInputField( "PDEPLMR", displ );
+    _calcul->addInputField( "PDEPLPR", displ_incr );
+    _calcul->addInputField( "PCONTMR", stress );
+    _calcul->addInputField( "PVARIMR", _internVar );
+
+    // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
+    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+    _calcul->addInputField( "PVARIMP", vari_iter );
+
+    // Create output vector
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >();
+    elemVect->setModel( currModel );
+    elemVect->setMaterialField( currMater );
+    elemVect->setElementaryCharacteristics( currElemChara );
+    elemVect->prepareCompute( option );
+
+    // Create output fields
+    FieldOnCellsRealPtr stress_curr =
+        std::make_shared< FieldOnCellsReal >( currModel, nullptr, "ELGA_SIEF_R", currElemChara );
+    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >();
+    FieldOnCellsRealPtr vari_curr = std::make_shared< FieldOnCellsReal >(
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+
+    // Add output fields
+    _calcul->addOutputField( "PVARIPR", vari_curr );
+    _calcul->addOutputField( "PCONTPR", stress_curr );
+    _calcul->addOutputField( "PCODRET", exitField );
+
+    // Add output elementary
+    _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+
+    // Compute
+    if ( currModel->existsFiniteElement() ) {
+        _calcul->compute();
+        if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) )
+            elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
+        elemVect->build();
+    };
+
+    return std::make_tuple( exitField, vari_curr, stress_curr, elemVect );
+}
+
+/** @brief Compute tangent matrix (not assembled) */
+std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
+            ElementaryVectorDisplacementRealPtr, ElementaryMatrixDisplacementRealPtr >
+DiscreteComputation::computeTangentStiffnessMatrix(
+    const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
+    const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
+    const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+    const ConstantFieldOnCellsRealPtr _timeFieldCurr ) {
+
+    FieldOnCellsRealPtr _externVarFieldPrev;
+    FieldOnCellsRealPtr _externVarFieldCurr;
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehaviour = _phys_problem->getBehaviourProperty();
+
+    // Select option for matrix
+    std::string option = "FULL_MECA";
+
+    // Prepare computing:
+    CalculPtr _calcul = createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr,
+                                                  _externVarFieldPrev, _externVarFieldCurr );
+
+    // Set current physical state
+    _calcul->addInputField( "PDEPLMR", displ );
+    _calcul->addInputField( "PDEPLPR", displ_incr );
+    _calcul->addInputField( "PCONTMR", stress );
+    _calcul->addInputField( "PVARIMR", _internVar );
+
+    // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
+    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+    _calcul->addInputField( "PVARIMP", vari_iter );
+
+    // Create output matrix
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
+    elemMatr->setModel( currModel );
+    elemMatr->setMaterialField( currMater );
+    elemMatr->setElementaryCharacteristics( currElemChara );
+    elemMatr->prepareCompute( option );
+
+    // Create output vector
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >();
+    elemVect->setModel( currModel );
+    elemVect->setMaterialField( currMater );
+    elemVect->setElementaryCharacteristics( currElemChara );
+    elemVect->prepareCompute( option );
+
+    // Create output fields
+    FieldOnCellsRealPtr stress_curr =
+        std::make_shared< FieldOnCellsReal >( currModel, nullptr, "ELGA_SIEF_R", currElemChara );
+    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >();
+    FieldOnCellsRealPtr vari_curr = std::make_shared< FieldOnCellsReal >(
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+
+    // Add output fields
+    _calcul->addOutputField( "PVARIPR", vari_curr );
+    _calcul->addOutputField( "PCONTPR", stress_curr );
+    _calcul->addOutputField( "PCODRET", exitField );
+
+    // Add output elementary
+    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+
+    // Compute
+    if ( currModel->existsFiniteElement() ) {
+        _calcul->compute();
+        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
+        if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) )
+            elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
+        elemVect->build();
+        elemMatr->build();
+    };
+    return std::make_tuple( exitField, vari_curr, stress_curr, elemVect, elemMatr );
+}
+
+/** @brief Compute tangent prediction matrix (not assembled) */
+std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, ElementaryMatrixDisplacementRealPtr,
+            ElementaryVectorDisplacementRealPtr >
+DiscreteComputation::computeTangentPredictionMatrix(
+    const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
+    const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
+    const ConstantFieldOnCellsRealPtr _timeFieldPrev,
+    const ConstantFieldOnCellsRealPtr _timeFieldCurr ) {
+
+    FieldOnCellsRealPtr _externVarFieldPrev;
+    FieldOnCellsRealPtr _externVarFieldCurr;
+
+    // Get main parameters
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto currBehaviour = _phys_problem->getBehaviourProperty();
+
+    // Select option for matrix
+    std::string option = "RIGI_MECA_TANG";
+
+    // Prepare computing:
+    CalculPtr _calcul = createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr,
+                                                  _externVarFieldPrev, _externVarFieldCurr );
+
+    // Set current physical state
+    _calcul->addInputField( "PDEPLMR", displ );
+    _calcul->addInputField( "PDEPLPR", displ_incr );
+    _calcul->addInputField( "PCONTMR", stress );
+    _calcul->addInputField( "PVARIMR", _internVar );
+
+    // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
+    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+    _calcul->addInputField( "PVARIMP", vari_iter );
+
+    // Create output matrix
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
+    elemMatr->setModel( currModel );
+    elemMatr->setMaterialField( currMater );
+    elemMatr->setElementaryCharacteristics( currElemChara );
+    elemMatr->prepareCompute( option );
+
+    // Create output vector
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >();
+    elemVect->setModel( currModel );
+    elemVect->setMaterialField( currMater );
+    elemVect->setElementaryCharacteristics( currElemChara );
+    elemVect->prepareCompute( option );
+
+    // Create output fields
+    FieldOnCellsRealPtr stress_pred =
+        std::make_shared< FieldOnCellsReal >( currModel, nullptr, "ELGA_SIEF_R", currElemChara );
+    FieldOnCellsLongPtr maskField = std::make_shared< FieldOnCellsLong >();
+    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >();
+
+    // Add output fields
+    _calcul->addOutputField( "PCONTPR", stress_pred );
+    _calcul->addOutputField( "PCOPRED", maskField );
+    _calcul->addOutputField( "PCODRET", exitField );
+
+    // Add output elementary
+    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+
+    // Compute
+    if ( currModel->existsFiniteElement() ) {
+        _calcul->compute();
+        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
+        if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) )
+            elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
+        elemVect->build();
+        elemMatr->build();
+    };
+    return std::make_tuple( maskField, stress_pred, elemMatr, elemVect );
+}
