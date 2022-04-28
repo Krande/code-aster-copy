@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,8 @@ type(NL_DS_Print), intent(inout) :: ds_print
     character(len=1) :: typres
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla
-    character(len=24) :: tlimat(2), mediri, merigi, cnvabt
+    character(len=24) :: mediri, merigi, cnvabt
+    character(len=19) :: tlimat(2)
     real(kind=8) :: time_curr
     character(len=24) :: lload_name, lload_info
     real(kind=8) :: resi_rela, resi_maxi

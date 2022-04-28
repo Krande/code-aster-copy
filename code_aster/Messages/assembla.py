@@ -20,132 +20,142 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
   Erreur d'utilisation :
     Pour la méthode itérative GCPC, on ne peut pas encore utiliser
     de matrice non-symétrique.
 
   Conseil : Changer de solveur
-"""),
-
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
  Le calcul est séquentiel, on ne peut donc pas utiliser MATR_DISTRIBUEE='OUI'.
  On force MATR_DISTRIBUEE='NON'.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
  L'utilisation de MATR_DISTRIBUEE='OUI' nécessite que chaque processeur ait
  au moins 1 degré de liberté qui lui soit alloué.
  Ici, le processeur %(i1)d ne s'est vu attribué aucun ddl.
 
  Conseil : Modifiez le partitionnement des mailles de votre modèle dans
            AFFE_MODELE/DISTRIBUTION/METHODE ou diminuez le nombre de processeurs.
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
  modèles discordants
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
  Il n'est pas possible de mélanger simple et double Lagrange.
 
  Conseil : Vérifiez le mot-clé DOUBLE_LAGRANGE de vos chargements issus d'AFFE_CHAR_MECA.
-"""),
-
-
-
-
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
  le mot-clé %(k1)s  est incorrect.
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
  on ne peut assembler que des vecteurs réels ou complexes
-"""),
-
-    18 : _("""
+"""
+    ),
+    18: _(
+        """
  Erreur développeur dans l'assemblage.
- Les vecteurs élémentaires ou les matrices élémentaires sont incohérentes: ils ne portent pas sur le même modèle ou ils ne calculent pas la même option.
-"""),
-
-    19 : _("""
+ Les vecteurs élémentaires ou les matrices élémentaires sont incohérentes: ils ne portent pas sur le même modèle
+"""
+    ),
+    19: _(
+        """
  Erreur développeur dans l'assemblage.
  Les vecteurs élémentaires ou les matrices élémentaires ne contiennent ni sous-structures, ni objet LISTE_RESU.
-"""),
-
-    20 : _("""
+"""
+    ),
+    20: _(
+        """
   Erreur programmeur :
     lors d'un assemblage, dans la liste des MATR_ELEM (ou VECT_ELEM) que l'on veut
     assembler, on ne trouve aucun résultat élémentaire
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    21 : _("""
+"""
+    ),
+    21: _(
+        """
  modèles différents
-"""),
-
-
-    26 : _("""
+"""
+    ),
+    26: _(
+        """
  le noeud:  %(k1)s composante:  %(k2)s  est bloqué plusieurs fois.
-"""),
-
-    27 : _("""
+"""
+    ),
+    27: _(
+        """
  l'entier décrivant la position du premier Lagrange ne peut être égal qu'à +1 ou -1 .
-"""),
-
-    28 : _("""
+"""
+    ),
+    28: _(
+        """
  le nombre de noeuds effectivement numérotés ne correspond pas au nombre
  de noeuds à numéroter
-"""),
-
-    35 : _("""
+"""
+    ),
+    35: _(
+        """
  il n y a pas de modèle dans la liste  %(k1)s
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    36 : _("""
+"""
+    ),
+    36: _(
+        """
  noeud inexistant
-"""),
-
-    37 : _("""
+"""
+    ),
+    37: _(
+        """
  méthode :  %(k1)s  inconnue.
-"""),
-
-    38 : _("""
+"""
+    ),
+    38: _(
+        """
  noeud incorrect
-"""),
-
-
-
-
-
-    41 : _("""
+"""
+    ),
+    41: _(
+        """
  le noeud  %(i1)d  du  %(k1)s du VECT_ELEM  : %(k2)s  n'a pas d'adresse dans : %(k3)s
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    42 : _("""
+"""
+    ),
+    42: _(
+        """
  le noeud  : %(i1)d  du %(k1)s  du VECT_ELEM  : %(k2)s
    a une adresse  : %(i2)d  supérieur au nombre d'équations : %(i3)d
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    43 : _("""
+"""
+    ),
+    43: _(
+        """
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    45 : _("""Erreur lors de l'assemblage.
+"""
+    ),
+    45: _(
+        """Erreur lors de l'assemblage.
 Si vous utilisez la commande MACRO_ELAS_MULT :
    S'il y a une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
    Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHAR_MECA_GLOBAL ?
@@ -153,24 +163,27 @@ Si vous utilisez la commande MACRO_ELAS_MULT :
 Si vous utilisez directement la commande ASSE_VECTEUR :
    S'il y a une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
    Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHARGE
-   de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?"""),
-
-    63 : _("""
+   de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?"""
+    ),
+    63: _(
+        """
  erreur sur le premier Lagrange d'une LIAISON_DDL
  on a mis 2 fois le premier  Lagrange :  %(i1)d
  derrière le noeud :  %(i2)d
-"""),
-
-    64 : _("""
+"""
+    ),
+    64: _(
+        """
  erreur sur le  2ème Lagrange d'une LIAISON_DDL
  on a mis 2 fois le 2ème  Lagrange :  %(i1)d
  derrière le noeud :  %(i2)d
-"""),
-
-    65 : _("""
+"""
+    ),
+    65: _(
+        """
  incohérence dans le dénombrement des ddls
  nombre de ddl a priori    : %(i1)d
  nombre de ddl a posteriori: %(i2)d
-"""),
-
+"""
+    ),
 }

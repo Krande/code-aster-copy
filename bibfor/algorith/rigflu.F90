@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
     character(len=14) :: nu
     character(len=8) :: modele, nomcmp(6), char, ma, mel
     character(len=24) :: time, fomult
-    character(len=19) :: solveu, list_load, maprec
+    character(len=19) :: solveu, list_load, maprec, mel19
     data maprec   /'&&OP0152.MAPREC'/
     data list_load   /'&&OP0152.INFCHA'/
     data fomult   /'&&OP0152.LIFCTS'/
@@ -82,7 +82,8 @@ subroutine rigflu(modele, time, nomcmp, tps, nbchar,&
 !
 !---------------- ASSEMBLAGE
 !
-    call asmatr(1, mel, ' ', nu, &
+    mel19 = mel
+    call asmatr(1, mel19, ' ', nu, &
                 list_load, 'ZERO', 'V', 1, ma)
 !
 !------- FACTORISATION LDLT DE LA MATRICE DE RAIDEUR

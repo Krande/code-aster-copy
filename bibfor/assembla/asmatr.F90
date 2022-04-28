@@ -34,9 +34,10 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 #include "asterfort/masyns.h"
 #include "asterfort/typmat.h"
 #include "asterfort/wkvect.h"
+integer :: nbmat, itysca
+    character(len=*) :: base, mataz, licoef, nu
+    character(len=19) :: tlimat(nbmat)
 
-    character(len=*) :: base, mataz, tlimat(*), licoef, nu
-    integer :: nbmat, itysca
     character(len=*) :: infcha
     character(len=4) :: cumul
 !-----------------------------------------------------------------------

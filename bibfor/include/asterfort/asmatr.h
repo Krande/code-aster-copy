@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine asmatr(nbmat, tlimat, licoef, nu, &
                       infcha, cumul, base, itysca, mataz)
         integer :: nbmat
-        character(len=*) :: tlimat(*)
+        character(len=19) :: tlimat(nbmat)
         character(len=*) :: licoef
         character(len=*) :: nu
         character(len=*) :: infcha

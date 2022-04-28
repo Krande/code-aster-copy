@@ -57,7 +57,7 @@ subroutine sinoz1(modele, sigma, signo)
     character(len=14) :: nupgm
     character(len=8) :: licmp(6), ma
     character(len=19) :: infcha
-    character(len=19) :: solveu, vecele, matpre, k19bid, criter
+    character(len=19) :: solveu, vecele, matpre, k19bid, criter, masselK19
     character(len=24) :: signo, sigma, massel
     character(len=24) :: nume, vecass, vect(6)
     real(kind=8) :: rcmp(6)
@@ -120,8 +120,10 @@ subroutine sinoz1(modele, sigma, signo)
     call numero(nupgm, 'VV',&
                 modelocz = 'DDL_NOZ1',&
                 nb_matr_elem = 1     , list_matr_elem = massel)
+
+    masselK19 = massel(1:19)
 !
-    call asmatr(1, massel, ' ', nupgm, &
+    call asmatr(1, masselK19, ' ', nupgm, &
                 infcha, 'ZERO', 'V', 1, '&&MASSAS')
 !
 !     CALCUL DES SECONDS MEMBRES

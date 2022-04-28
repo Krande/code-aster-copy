@@ -419,7 +419,7 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
     for ( const auto elemIt : _elemMatrix )
         names.push_back( elemIt->getName() );
 
-    char *tabNames = vectorStringAsFStrArray( names, 8 );
+    char *tabNames = vectorStringAsFStrArray( names, 19 );
 
     std::string base( "G" );
     std::string blanc( " " );
