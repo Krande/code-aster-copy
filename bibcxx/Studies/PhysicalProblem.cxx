@@ -37,7 +37,8 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _listOfLoads( std::make_shared< ListOfLoads >( _model ) ),
       _dofNume( nullptr ),
       _codedMater( nullptr ),
-      _behavProp( nullptr ) {
+      _behavProp( nullptr ),
+      _externVarRefe( nullptr ) {
 
     // Add checks
     if ( _elemChara ) {

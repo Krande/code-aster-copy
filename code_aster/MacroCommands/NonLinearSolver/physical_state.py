@@ -25,7 +25,7 @@ class PhysicalState:
     """This object represents a Physical State of the model."""
 
     _time = _time_step = None
-    _displ = _displ_incr = _variP = _stress = None
+    _displ = _displ_incr = _variP = _stress = _externVar = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @property
@@ -65,8 +65,8 @@ class PhysicalState:
     def displ(self, field):
         """Set displacement field.
 
-         Arguments:
-            field (FieldOnNodesReal): displacement
+        Arguments:
+           field (FieldOnNodesReal): displacement
         """
         self._displ = field
 
@@ -100,7 +100,7 @@ class PhysicalState:
 
     @property
     def variP(self):
-        """FieldOnNCells: Internal state variables."""
+        """FieldOnCells: Internal state variables."""
         return self._variP
 
     @variP.setter
@@ -111,6 +111,20 @@ class PhysicalState:
             field (FieldOnCells): Internal state variables
         """
         self._variP = field
+
+    @property
+    def externVar(self):
+        """FieldOnCells: External state variables."""
+        return self._externVar
+
+    @externVar.setter
+    def externVar(self, field):
+        """Set external state variables.
+
+        Arguments:
+            field (FieldOnCells): external state variables
+        """
+        self._externVar = field
 
     @profile
     def createDisplacement(self, phys_pb, value):

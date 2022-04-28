@@ -96,20 +96,21 @@ def _createTimeStepper(args):
 
 
 @profile
-def _computeMatrix(disr_comp, matrix, time):
+def _computeMatrix(disr_comp, matrix, time, externVar):
     """Compute and assemble the elastic matrix
 
     Arguments:
         disr_comp (DiscreteComputation): to compute discrete quantities
         matrix (AssemblyMatrixDisplacementReal): matrix to compute and assemble inplace
         time (float): current time
+        externVar (field): current external state variables
 
     Returns:
         AssemblyMatrixDisplacementReal: matrix computed and assembled
     """
 
     matrix.clearElementaryMatrix()
-    matr_elem = disr_comp.elasticStiffnessMatrix(time)
+    matr_elem = disr_comp.elasticStiffnessMatrix(time, externVarField=externVar)
     matrix.addElementaryMatrix(matr_elem)
     matrix.assemble()
 
@@ -117,10 +118,11 @@ def _computeMatrix(disr_comp, matrix, time):
 
 
 @profile
-def _computeRhs(disr_comp, time):
+def _computeRhs(phys_pb, disr_comp, time):
     """Compute and assemble the right hand side
 
     Arguments:
+         phys_pb (PhysicalProblem): physical problem
          disr_comp (DiscreteComputation): to compute discrete quantities
          time (float): current time
 
@@ -133,6 +135,9 @@ def _computeRhs(disr_comp, time):
 
     # compute neumann forces
     rhs += disr_comp.neumann([time, 0.0, 0.0])
+
+    if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
+        rhs += disr_comp.computeExternalStateVariablesLoad()
 
     return rhs
 
@@ -218,6 +223,20 @@ def meca_statique_ops(self, **args):
     isConst = phys_pb.getCodedMaterial().constant()
     isFirst = True
 
+    # Les noms des champs sont "en dur" à cause de nmvcex/vectme => à supprimer après 31903
+    externVarName = phys_pb.getMaterialField().getName() + "      .TOUT"
+    timeFieldName = phys_pb.getMaterialField().getName() + "      .INST"
+    externVarRefeName = phys_pb.getModel().getName()[0:8] + ".CHVCREF   "
+
+    # Detect external state variables
+    hasExternalStateVariable = phys_pb.getMaterialField().hasExternalStateVariable()
+
+    # Compute reference value vector for external state variables
+    externVarRefe = None
+    if phys_pb.getMaterialField().hasExternalStateVariableWithReference():
+        externVarRefe = disc_comp.computeExternalStateVariablesReference(externVarRefeName)
+        phys_pb.setExternalStateVariablesReference(externVarRefe)
+
     # first rank to use
     rank = result.getNumberOfRanks() + 1
 
@@ -226,13 +245,22 @@ def meca_statique_ops(self, **args):
     while not timeStepper.hasFinished():
         phys_state.time = timeStepper.getNext()
 
+        # Update external state variable if required
+        if hasExternalStateVariable:
+            phys_state.externVar = disc_comp.createExternalStateVariablesField(
+                externVarName, phys_state.time
+            )
+
+        # Update time field
+        timeField = disc_comp.createTimeField(timeFieldName, phys_state.time)
+
         # compute matrix and factorize it
         if not isConst or isFirst:
-            matrix = _computeMatrix(disc_comp, matrix, phys_state.time)
+            matrix = _computeMatrix(disc_comp, matrix, phys_state.time, phys_state.externVar)
             profile(linear_solver.factorize)(matrix)
 
         # compute rhs
-        rhs = _computeRhs(disc_comp, phys_state.time)
+        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time)
 
         # solve linear system
         diriBCs = profile(disc_comp.dirichletBC)(phys_state.time)
@@ -244,6 +272,10 @@ def meca_statique_ops(self, **args):
         timeStepper.completed()
         rank += 1
         isFirst = False
+
+        # Suppression obligatoire car nom en "dur" => à supprimer après 31903
+        del timeField
+        phys_state.externVar = None
 
     # delete factorized matrix - free memory
     linear_solver.deleteFactorizedMatrix()

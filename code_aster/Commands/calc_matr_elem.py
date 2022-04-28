@@ -19,13 +19,15 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (ElementaryMatrixDisplacementComplex,
-                       ElementaryMatrixDisplacementReal,
-                       ElementaryMatrixPressureComplex,
-                       ElementaryMatrixTemperatureReal,
-                       PhysicalProblem,
-                       MechanicalLoadComplex,
-                       DiscreteComputation)
+from ..Objects import (
+    ElementaryMatrixDisplacementComplex,
+    ElementaryMatrixDisplacementReal,
+    ElementaryMatrixPressureComplex,
+    ElementaryMatrixTemperatureReal,
+    PhysicalProblem,
+    MechanicalLoadComplex,
+    DiscreteComputation,
+)
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
 
@@ -33,10 +35,11 @@ from ..Utilities import force_list
 class ComputeElementaryMatrix(ExecuteCommand):
 
     """Command that creates evolutive results."""
+
     command_name = "CALC_MATR_ELEM"
 
     def use_cpp(self, keywords):
-        """ Use or not new c++ commands"""
+        """Use or not new c++ commands"""
 
         # Case not yet supported - to fix
 
@@ -67,10 +70,21 @@ class ComputeElementaryMatrix(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         myOption = keywords["OPTION"]
-        if myOption in ('AMOR_MECA', 'AMOR_MECA_ABSO', 'IMPE_MECA',
-                        'MASS_FLUI_STRU', 'MASS_MECA', 'MASS_MECA_DIAG',
-                        'MECA_GYRO', 'ONDE_FLUI', 'RIGI_FLUI_STRU', 'RIGI_GEOM',
-                        'RIGI_GYRO', 'RIGI_MECA', 'RIGI_ROTA'):
+        if myOption in (
+            "AMOR_MECA",
+            "AMOR_MECA_ABSO",
+            "IMPE_MECA",
+            "MASS_FLUI_STRU",
+            "MASS_MECA",
+            "MASS_MECA_DIAG",
+            "MECA_GYRO",
+            "ONDE_FLUI",
+            "RIGI_FLUI_STRU",
+            "RIGI_GEOM",
+            "RIGI_GYRO",
+            "RIGI_MECA",
+            "RIGI_ROTA",
+        ):
             self._result = ElementaryMatrixDisplacementReal()
         elif myOption == "RIGI_MECA_HYST":
             self._result = ElementaryMatrixDisplacementComplex()
@@ -80,8 +94,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
             self._result = ElementaryMatrixPressureComplex()
 
     def exec_(self, keywords):
-        """Override default _exec in case of some options
-        """
+        """Override default _exec in case of some options"""
         # Compute option
         if self.use_cpp(keywords):
             # Define problem
@@ -89,6 +102,9 @@ class ComputeElementaryMatrix(ExecuteCommand):
             mater = keywords.get("CHAM_MATER")
             cara = keywords.get("CARA_ELEM")
             phys_pb = PhysicalProblem(model, mater, cara)
+            hasExternalStateVariable = False
+            if mater != None:
+                hasExternalStateVariable = phys_pb.getMaterialField().hasExternalStateVariable()
 
             loads = keywords.get("CHARGE")
             if loads is not None:
@@ -97,7 +113,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
             phys_pb.computeListOfLoads()
 
-            disr_comp = DiscreteComputation(phys_pb)
+            disc_comp = DiscreteComputation(phys_pb)
 
             time = keywords["INST"]
             myOption = keywords["OPTION"]
@@ -111,11 +127,17 @@ class ComputeElementaryMatrix(ExecuteCommand):
                 group_ma = force_list(group_ma)
 
             if myOption == "RIGI_MECA":
-                self._result = disr_comp.elasticStiffnessMatrix(time, fourier, group_ma)
+                if hasExternalStateVariable:
+                    externVar = disc_comp.createExternalStateVariablesField(time)
+                else:
+                    externVar = None
+                self._result = disc_comp.elasticStiffnessMatrix(
+                    time, fourier, group_ma, externVarField=externVar
+                )
             elif myOption == "MASS_MECA":
-                self._result = disr_comp.massMatrix(time)
+                self._result = disc_comp.massMatrix(time)
             else:
-                raise RuntimeError("Option %s not implemented"%(myOption))
+                raise RuntimeError("Option %s not implemented" % (myOption))
         else:
             super(ComputeElementaryMatrix, self).exec_(keywords)
 
@@ -128,7 +150,7 @@ class ComputeElementaryMatrix(ExecuteCommand):
         """
 
         if not self.use_cpp(keywords):
-            self._result.setModel(keywords['MODELE'])
+            self._result.setModel(keywords["MODELE"])
 
             chamMater = keywords.get("CHAM_MATER")
             if chamMater is not None:

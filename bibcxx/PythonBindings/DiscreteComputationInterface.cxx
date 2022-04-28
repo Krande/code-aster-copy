@@ -1,7 +1,6 @@
 /**
  * @file DiscreteComputationInterface.cxx
  * @brief Interface python de DiscreteComputation
- * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -75,6 +74,42 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: Neumann load vector
         )",
               py::arg( "time" ) )
+        .def( "createExternalStateVariablesField",
+              &DiscreteComputation::createExternalStateVariablesField, R"(
+            Create external state variable field
+
+            Arguments:
+                  fieldName (str) : name of field
+                  time (float): current time
+            )",
+              py::arg( "fieldName" ), py::arg( "time" ) )
+        .def( "createTimeField", &DiscreteComputation::createTimeField, R"(
+            Create time field
+
+            Arguments:
+                  fieldName (str) : name of field
+                  time (float): current time
+            )",
+              py::arg( "fieldName" ), py::arg( "time" ) )
+        .def( "computeExternalStateVariablesLoad",
+              &DiscreteComputation::computeExternalStateVariablesLoad, R"(
+            Create load from external state variables
+
+            Returns:
+                  FieldOnNodes: load from external state variables
+            )" )
+
+        .def( "computeExternalStateVariablesReference",
+              &DiscreteComputation::computeExternalStateVariablesReference, R"(
+            Compute field for external state variables reference value
+
+            Arguments:
+                  fieldName (str) : name of field
+
+            Returns:
+                  FieldOnCells: field for external state variables reference values
+            )",
+              py::arg( "fieldName" ) )
         .def( "dirichletBC", &DiscreteComputation::dirichletBC,
               R"(
       Return the imposed displacement vector used to remove imposed DDL
@@ -102,19 +137,19 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "time" ), py::arg( "disp" ) )
         .def( "elasticStiffnessMatrix", &DiscreteComputation::elasticStiffnessMatrix, R"(
-            Return the elementary matices for elastic Stiffness matrix
+            Return the elementary matrices for elastic Stiffness matrix
 
             Arguments:
                   time (float): current time (default: 0.0)
                   fourierMode (int): Fourier mode (default: 0)
                   groupOfCells (list[str]): compute matrices on given groups of cells.
-                  If it empty, the full model is used (default: [])
-
+                      If it empty, the full model is used
+                  externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
                   ElementaryMatrix: elementary elastic Stiffness matrices
             )",
               py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = 0,
-              py::arg( "groupOfCells" ) = VectorString() )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) )
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem )
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(

@@ -1,7 +1,6 @@
 /**
  * @file DiscreteComputation.cxx
- * @brief Implementation de DiscreteComputation
- * @author Nicolas Sellenet
+ * @brief Implementation of class DiscreteComputation
  * @section LICENCE
  *   Copyright (C) 1991 2022  EDF R&D                www.code-aster.org
  *
@@ -255,7 +254,8 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
 };
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
-    const ASTERDOUBLE &time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells ) {
+    const ASTERDOUBLE &time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
+    const FieldOnCellsRealPtr _externVarField ) {
 
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
@@ -265,6 +265,13 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     auto currMater = _study->getMaterialField();
     auto currCodedMater = _study->getCodedMaterial();
     auto currElemChara = _study->getElementaryCharacteristics();
+
+    // Check external state variables
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        if ( !_externVarField ) {
+            AS_ABORT( "External state variables vector is missing" )
+        }
+    }
 
     // Set parameters of elementary matrix
     elemMatr->setModel( currModel );
@@ -291,6 +298,9 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     if ( currMater ) {
         _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
         _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+    }
+    if ( _externVarField ) {
+        _calcul->addInputField( "PVARCPR", _externVarField );
     }
     if ( currElemChara ) {
         _calcul->addElementaryCharacteristicsField( currElemChara );
@@ -436,3 +446,119 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::massMatrix( ASTERDOUBLE
 
     return elemMatr;
 };
+
+ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField( const std::string fieldName,
+                                                                  const ASTERDOUBLE time ) {
+
+    // Get mesh
+    auto mesh = _study->getMesh();
+
+    // Create field
+    auto field = std::make_shared< ConstantFieldOnCellsReal >( fieldName, mesh );
+
+    // Get JEVEUX names of objects to call Fortran
+    const std::string physicalName( "INST_R" );
+    field->allocate( physicalName );
+    ConstantFieldOnZone a( mesh );
+    ConstantFieldValues< ASTERDOUBLE > b( { "INST" }, { time } );
+    field->setValueOnZone( a, b );
+
+    return field;
+}
+
+FieldOnCellsRealPtr
+DiscreteComputation::createExternalStateVariablesField( const std::string fieldName,
+                                                        const ASTERDOUBLE time ) {
+
+    // Create field
+    auto field = std::make_shared< FieldOnCellsReal >( fieldName );
+
+    // Get JEVEUX names of objects to call Fortran
+    std::string modelName = ljust( _study->getModel()->getName(), 24 );
+    std::string materialFieldName = ljust( _study->getMaterialField()->getName(), 24 );
+    auto currElemChara = _study->getElementaryCharacteristics();
+    std::string elemCharaName( " " );
+    if ( currElemChara )
+        elemCharaName = currElemChara->getName();
+    elemCharaName.resize( 24, ' ' );
+
+    // Output
+    std::string out( ' ', 2 );
+
+    // Call Fortran WRAPPER
+    CALLO_VRCINS_WRAP( modelName, materialFieldName, elemCharaName, &time, fieldName, out );
+
+    return field;
+}
+
+FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad() const {
+
+    // Get JEVEUX names of objects to call Fortran
+    std::string modelName = ljust( _study->getModel()->getName(), 24 );
+    std::string materialFieldName = ljust( _study->getMaterialField()->getName(), 8 );
+    std::string behaviourName =
+        ljust( _study->getMaterialField()->getBehaviourField()->getName(), 24 );
+    const auto compor = _study->getMaterialField()->getBehaviourField();
+    std::string codedMaterialFieldName =
+        ljust( _study->getCodedMaterial()->getCodedMaterialField()->getName(), 24 );
+    auto currElemChara = _study->getElementaryCharacteristics();
+    std::string elemCharaName( " " );
+    if ( currElemChara )
+        elemCharaName = currElemChara->getName();
+    elemCharaName.resize( 24, ' ' );
+    auto dofNumbering = _study->getDOFNumbering();
+    std::string dofNumberingName( dofNumbering->getName() );
+
+    // Detect external state variables
+    ASTERINTEGER hydr = 0, sech = 0, temp = 0, ptot = 0;
+    if ( _study->getMaterialField()->hasExternalStateVariable( externVarEnumInt::Temperature ) )
+        temp = 1;
+    if ( _study->getMaterialField()->hasExternalStateVariable(
+             externVarEnumInt::ConcreteHydratation ) )
+        hydr = 1;
+    if ( _study->getMaterialField()->hasExternalStateVariable( externVarEnumInt::ConcreteDrying ) )
+        sech = 1;
+    if ( _study->getMaterialField()->hasExternalStateVariable(
+             externVarEnumInt::TotalFluidPressure ) )
+        ptot = 1;
+
+    // Call Fortran WRAPPER (oui, c'est pourri, le nom est en dur)
+    auto exteStateVariName = materialFieldName;
+    std::string out( 24, ' ' );
+    CALLO_CACHVC( modelName, materialFieldName, codedMaterialFieldName, elemCharaName,
+                  dofNumberingName, behaviourName, exteStateVariName, out, &hydr, &sech, &temp,
+                  &ptot );
+
+    // Get name of nodal field from Fortran
+    JeveuxVectorChar24 vectOut( out );
+    vectOut->updateValuePointer();
+
+    // Create nodal field
+    FieldOnNodesRealPtr exteVariLoad( new FieldOnNodesReal( ( *vectOut )[0].toString() ) );
+    exteVariLoad->setDescription( dofNumbering->getDescription() );
+    exteVariLoad->setMesh( dofNumbering->getMesh() );
+    exteVariLoad->build();
+    exteVariLoad->updateValuePointers();
+
+    return exteVariLoad;
+}
+
+FieldOnCellsRealPtr
+DiscreteComputation::computeExternalStateVariablesReference( const std::string fieldName ) const {
+
+    // Create field
+    auto field = std::make_shared< FieldOnCellsReal >( fieldName );
+
+    // Get JEVEUX names of objects to call Fortran
+    std::string modelName = ljust( _study->getModel()->getName(), 8 );
+    std::string materialFieldName = ljust( _study->getMaterialField()->getName(), 8 );
+    auto currElemChara = _study->getElementaryCharacteristics();
+    std::string elemCharaName( " ", 8 );
+    if ( currElemChara )
+        elemCharaName = std::string( currElemChara->getName(), 0, 8 );
+
+    // Call Fortran WRAPPER
+    CALLO_VRCREF( modelName, materialFieldName, elemCharaName, fieldName );
+
+    return field;
+}

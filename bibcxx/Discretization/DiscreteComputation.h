@@ -3,8 +3,7 @@
 
 /**
  * @file DiscreteComputation.h
- * @brief Fichier entete de la classe DiscreteComputation
- * @author Nicolas Sellenet
+ * @brief Header of class DiscreteComputation
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -98,7 +97,8 @@ class DiscreteComputation {
      */
     ElementaryMatrixDisplacementRealPtr
     elasticStiffnessMatrix( const ASTERDOUBLE &time = 0.0, const ASTERINTEGER &modeFourier = 0,
-                            const VectorString &groupOfCells = VectorString() );
+                            const VectorString &groupOfCells = VectorString(),
+                            const FieldOnCellsRealPtr _externVarField = nullptr );
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_MECA)
@@ -134,6 +134,20 @@ class DiscreteComputation {
      * @return Physical problem
      */
     PhysicalProblemPtr getPhysicalProblem() const { return _study; };
+
+    /** @brief Create field for external state variables */
+    FieldOnCellsRealPtr createExternalStateVariablesField( const std::string fieldName,
+                                                           const ASTERDOUBLE time );
+
+    /** @brief Create field for time */
+    ConstantFieldOnCellsRealPtr createTimeField( const std::string fieldName,
+                                                 const ASTERDOUBLE time );
+
+    /** @brief Compute nodal field for external state variables RHS */
+    FieldOnNodesRealPtr computeExternalStateVariablesLoad() const;
+
+    /** @brief Compute field for external state variables reference values */
+    FieldOnCellsRealPtr computeExternalStateVariablesReference( const std::string fieldName ) const;
 };
 
 using DiscreteComputationPtr = std::shared_ptr< DiscreteComputation >;

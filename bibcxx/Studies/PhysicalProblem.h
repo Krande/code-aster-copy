@@ -64,6 +64,9 @@ class PhysicalProblem {
     /** @brief Numbering */
     BaseDOFNumberingPtr _dofNume;
 
+    /** @brief External state variable: reference field */
+    FieldOnCellsRealPtr _externVarRefe;
+
   public:
     // FIXME: BREAK_POURSUITE: to be removed as soon as possible
     const py::list allLoadsDict;
@@ -120,6 +123,14 @@ class PhysicalProblem {
 
     /** @brief Create list of loads */
     bool computeListOfLoads() { return _listOfLoads->build( _model ); };
+
+    /** @brief Set external state variables reference field */
+    void setExternalStateVariablesReference( const FieldOnCellsRealPtr _field ) {
+        _externVarRefe = _field;
+    };
+
+    /** @brief Get external state variables reference field */
+    FieldOnCellsRealPtr getExternalStateVariablesReference() { return _externVarRefe; };
 };
 
 using PhysicalProblemPtr = std::shared_ptr< PhysicalProblem >;

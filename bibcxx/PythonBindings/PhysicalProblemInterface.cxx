@@ -112,6 +112,21 @@ Return list of loads.
 Returns:
     ListOfLoadsPtr: a pointer to list of loads
         )" );
+    c1.def( "setExternalStateVariablesReference",
+            &PhysicalProblem::setExternalStateVariablesReference, R"(
+    Set the field of reference values for external state variables
+
+    Arguments:
+        externVarRefe (FieldOnCell): field of reference values
+          )",
+            py::arg( "externVarRefe" ) );
+    c1.def( "getExternalStateVariablesReference",
+            &PhysicalProblem::getExternalStateVariablesReference, R"(
+    Get the field of reference values for external state variables
+
+    Returns:
+        FieldOnCellsRealPtr : field of reference values
+          )" );
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI
