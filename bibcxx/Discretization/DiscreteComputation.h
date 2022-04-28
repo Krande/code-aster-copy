@@ -39,7 +39,7 @@
 class DiscreteComputation {
   private:
     /** @brief Physical problem */
-    PhysicalProblemPtr _study;
+    PhysicalProblemPtr _phys_problem;
 
     /** @brief Compute B elementary matrices fo dualized boundary conditions */
     void baseDualStiffnessMatrix( CalculPtr &calcul,
@@ -56,7 +56,8 @@ class DiscreteComputation {
      * @brief Constructor
      * @param PhysicalProblemPtr study
      */
-    DiscreteComputation( const PhysicalProblemPtr &currStudy ) : _study( currStudy ){};
+    DiscreteComputation( const PhysicalProblemPtr &currPhysProblem )
+        : _phys_problem( currPhysProblem ){};
 
     /** @brief Destructor */
     ~DiscreteComputation(){};
@@ -134,7 +135,7 @@ class DiscreteComputation {
      * @brief Get physical problem
      * @return Physical problem
      */
-    PhysicalProblemPtr getPhysicalProblem() const { return _study; };
+    PhysicalProblemPtr getPhysicalProblem() const { return _phys_problem; };
 
     /** @brief Create field for external state variables */
     FieldOnCellsRealPtr createExternalStateVariablesField( const std::string fieldName,

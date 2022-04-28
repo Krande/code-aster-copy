@@ -40,17 +40,17 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTi
     ElementaryVectorDisplacementRealPtr elemVect =
         std::make_shared< ElementaryVectorDisplacementReal >();
 
-    if ( _study->getModel()->isThermal() ) {
+    if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
     };
 
     // Prepare loads
-    auto listOfLoads = _study->getListOfLoads();
+    auto listOfLoads = _phys_problem->getListOfLoads();
     JeveuxVectorChar24 listOfLoadsList = listOfLoads->getListVector();
     JeveuxVectorLong listOfLoadsInfo = listOfLoads->getInformationVector();
 
     // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _study->getModel()->getName(), 24 );
+    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
     std::string nameLcha = ljust( listOfLoadsList->getName(), 24 );
     std::string nameInfc = ljust( listOfLoadsInfo->getName(), 24 );
     std::string vectElemName = ljust( elemVect->getName(), 24 );
@@ -61,11 +61,11 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTi
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel( _study->getModel() );
+    elemVect->setModel( _phys_problem->getModel() );
     elemVect->build();
 
     // Assemble
-    return elemVect->assembleWithLoadFunctions( _study->getDOFNumbering(), currTime );
+    return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), currTime );
 };
 
 FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) {
@@ -73,18 +73,18 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
     ElementaryVectorDisplacementRealPtr elemVect =
         std::make_shared< ElementaryVectorDisplacementReal >();
 
-    if ( _study->getModel()->isThermal() ) {
+    if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
     };
 
     // Prepare loads
-    auto listOfLoads = _study->getListOfLoads();
+    auto listOfLoads = _phys_problem->getListOfLoads();
     std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
 
     // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _study->getModel()->getName(), 24 );
-    std::string materName = ljust( _study->getMaterialField()->getName(), 24 );
-    auto currElemChara = _study->getElementaryCharacteristics();
+    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
+    std::string materName = ljust( _phys_problem->getMaterialField()->getName(), 24 );
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
     std::string caraName( " " );
     if ( currElemChara )
         caraName = currElemChara->getName();
@@ -98,11 +98,11 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel( _study->getModel() );
+    elemVect->setModel( _phys_problem->getModel() );
     elemVect->build();
 
     // Assemble
-    return elemVect->assemble( _study->getDOFNumbering() );
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
 };
 
 FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr disp_curr,
@@ -111,16 +111,16 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     ElementaryVectorDisplacementRealPtr elemVect =
         std::make_shared< ElementaryVectorDisplacementReal >();
 
-    if ( _study->getModel()->isThermal() ) {
+    if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
     };
 
     // Prepare loads
-    auto listOfLoads = _study->getListOfLoads();
+    auto listOfLoads = _phys_problem->getListOfLoads();
     std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
 
     // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _study->getModel()->getName(), 24 );
+    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
     std::string dispName = ljust( disp_curr->getName(), 24 );
     std::string vectElemName = ljust( elemVect->getName(), 24 );
     const std::string base( "G" );
@@ -131,13 +131,13 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel( _study->getModel() );
+    elemVect->setModel( _phys_problem->getModel() );
     elemVect->build();
 
     // Assemble
-    FieldOnNodesRealPtr bume = elemVect->assemble( _study->getDOFNumbering() );
+    FieldOnNodesRealPtr bume = elemVect->assemble( _phys_problem->getDOFNumbering() );
 
-    if ( _study->getMesh()->isParallel() )
+    if ( _phys_problem->getMesh()->isParallel() )
         CALLO_AP_ASSEMBLY_VECTOR( bume->getName() );
 
     return bume;
@@ -150,11 +150,11 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
         std::make_shared< ElementaryVectorDisplacementReal >();
 
     // Get main parameters
-    auto currModel = _study->getModel();
-    auto currMater = _study->getMaterialField();
-    auto currCodedMater = _study->getCodedMaterial();
-    auto currElemChara = _study->getElementaryCharacteristics();
-    auto listOfLoads = _study->getListOfLoads();
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+    auto listOfLoads = _phys_problem->getListOfLoads();
 
     if ( currModel->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -194,23 +194,23 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
 
     // Construct vect_elem object
     elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel( _study->getModel() );
+    elemVect->setModel( _phys_problem->getModel() );
     elemVect->build();
 
     // Assemble
-    return elemVect->assembleWithLoadFunctions( _study->getDOFNumbering(),
+    return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
                                                 timeParameters[0] + timeParameters[1] );
 };
 
 FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) const {
 
-    auto dofNume = _study->getDOFNumbering();
+    auto dofNume = _phys_problem->getDOFNumbering();
     FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
 
     // Prepare loads
-    const auto &_listOfLoads = _study->getListOfLoads();
+    const auto &_listOfLoads = _phys_problem->getListOfLoads();
     if ( _listOfLoads->isEmpty() )
-        _listOfLoads->build( _study->getModel() );
+        _listOfLoads->build( _phys_problem->getModel() );
 
     JeveuxVectorChar24 listOfLoadsList = _listOfLoads->getListVector();
     JeveuxVectorLong listOfLoadsInfo = _listOfLoads->getInformationVector();
@@ -221,7 +221,7 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) 
 
     // Get JEVEUX names of objects to call Fortran
     std::string vectAsseName = vectAsse->getName();
-    std::string dofNumName = _study->getDOFNumbering()->getName();
+    std::string dofNumName = _phys_problem->getDOFNumbering()->getName();
     std::string base( "G" );
 
     // Wrapper FORTRAN
@@ -237,7 +237,7 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) 
 FieldOnNodesRealPtr
 DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
                                              const FieldOnNodesRealPtr disp_curr ) const {
-    auto dofNume = _study->getDOFNumbering();
+    auto dofNume = _phys_problem->getDOFNumbering();
 
     if ( dofNume->hasDirichletBC() ) {
         auto diri_curr = dirichletBC( time );
@@ -271,10 +271,10 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
 
     // Get main parameters
     const std::string option( "RIGI_MECA" );
-    auto currModel = _study->getModel();
-    auto currMater = _study->getMaterialField();
-    auto currCodedMater = _study->getCodedMaterial();
-    auto currElemChara = _study->getElementaryCharacteristics();
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
 
     // Check external state variables
     if ( currMater && currMater->hasExternalStateVariable() ) {
@@ -346,7 +346,7 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
                                                    ElementaryMatrixDisplacementRealPtr &elemMatr ) {
 
     // Prepare loads
-    const auto &_listOfLoads = _study->getListOfLoads();
+    const auto &_listOfLoads = _phys_problem->getListOfLoads();
 
     // Select option
     calcul->setOption( "MECA_DDLM_R" );
@@ -430,9 +430,9 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
     // Get main parameters
-    ModelPtr currModel = _study->getModel();
-    MaterialFieldPtr currMater = _study->getMaterialField();
-    ElementaryCharacteristicsPtr currElemChara = _study->getElementaryCharacteristics();
+    ModelPtr currModel = _phys_problem->getModel();
+    MaterialFieldPtr currMater = _phys_problem->getMaterialField();
+    ElementaryCharacteristicsPtr currElemChara = _phys_problem->getElementaryCharacteristics();
 
     // Set parameters of elementary matrix
     elemMatr->setModel( currModel );
@@ -441,7 +441,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
 
     // Prepare computing
     const std::string option( "MECA_DDLM_R" );
-    CalculPtr _calcul = std::make_shared< Calcul >( option );
+    CalculPtr _calcul = std::make_unique< Calcul >( option );
     elemMatr->prepareCompute( option );
 
     // Compute elementary matrices
@@ -461,7 +461,7 @@ ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField( const std::str
                                                                   const ASTERDOUBLE time ) {
 
     // Get mesh
-    auto mesh = _study->getMesh();
+    auto mesh = _phys_problem->getMesh();
 
     // Create field
     auto field = std::make_shared< ConstantFieldOnCellsReal >( fieldName, mesh );
@@ -484,9 +484,9 @@ DiscreteComputation::createExternalStateVariablesField( const std::string fieldN
     auto field = std::make_shared< FieldOnCellsReal >( fieldName );
 
     // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _study->getModel()->getName(), 24 );
-    std::string materialFieldName = ljust( _study->getMaterialField()->getName(), 24 );
-    auto currElemChara = _study->getElementaryCharacteristics();
+    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
+    std::string materialFieldName = ljust( _phys_problem->getMaterialField()->getName(), 24 );
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
     std::string elemCharaName( " " );
     if ( currElemChara )
         elemCharaName = currElemChara->getName();
@@ -504,31 +504,33 @@ DiscreteComputation::createExternalStateVariablesField( const std::string fieldN
 FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad() const {
 
     // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _study->getModel()->getName(), 24 );
-    std::string materialFieldName = ljust( _study->getMaterialField()->getName(), 8 );
+    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
+    std::string materialFieldName = ljust( _phys_problem->getMaterialField()->getName(), 8 );
     std::string behaviourName =
-        ljust( _study->getMaterialField()->getBehaviourField()->getName(), 24 );
-    const auto compor = _study->getMaterialField()->getBehaviourField();
+        ljust( _phys_problem->getMaterialField()->getBehaviourField()->getName(), 24 );
+    const auto compor = _phys_problem->getMaterialField()->getBehaviourField();
     std::string codedMaterialFieldName =
-        ljust( _study->getCodedMaterial()->getCodedMaterialField()->getName(), 24 );
-    auto currElemChara = _study->getElementaryCharacteristics();
+        ljust( _phys_problem->getCodedMaterial()->getCodedMaterialField()->getName(), 24 );
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
     std::string elemCharaName( " " );
     if ( currElemChara )
         elemCharaName = currElemChara->getName();
     elemCharaName.resize( 24, ' ' );
-    auto dofNumbering = _study->getDOFNumbering();
+    auto dofNumbering = _phys_problem->getDOFNumbering();
     std::string dofNumberingName( dofNumbering->getName() );
 
     // Detect external state variables
     ASTERINTEGER hydr = 0, sech = 0, temp = 0, ptot = 0;
-    if ( _study->getMaterialField()->hasExternalStateVariable( externVarEnumInt::Temperature ) )
+    if ( _phys_problem->getMaterialField()->hasExternalStateVariable(
+             externVarEnumInt::Temperature ) )
         temp = 1;
-    if ( _study->getMaterialField()->hasExternalStateVariable(
+    if ( _phys_problem->getMaterialField()->hasExternalStateVariable(
              externVarEnumInt::ConcreteHydratation ) )
         hydr = 1;
-    if ( _study->getMaterialField()->hasExternalStateVariable( externVarEnumInt::ConcreteDrying ) )
+    if ( _phys_problem->getMaterialField()->hasExternalStateVariable(
+             externVarEnumInt::ConcreteDrying ) )
         sech = 1;
-    if ( _study->getMaterialField()->hasExternalStateVariable(
+    if ( _phys_problem->getMaterialField()->hasExternalStateVariable(
              externVarEnumInt::TotalFluidPressure ) )
         ptot = 1;
 
@@ -560,9 +562,9 @@ DiscreteComputation::computeExternalStateVariablesReference( const std::string f
     auto field = std::make_shared< FieldOnCellsReal >( fieldName );
 
     // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _study->getModel()->getName(), 8 );
-    std::string materialFieldName = ljust( _study->getMaterialField()->getName(), 8 );
-    auto currElemChara = _study->getElementaryCharacteristics();
+    std::string modelName = ljust( _phys_problem->getModel()->getName(), 8 );
+    std::string materialFieldName = ljust( _phys_problem->getMaterialField()->getName(), 8 );
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
     std::string elemCharaName( " ", 8 );
     if ( currElemChara )
         elemCharaName = std::string( currElemChara->getName(), 0, 8 );
