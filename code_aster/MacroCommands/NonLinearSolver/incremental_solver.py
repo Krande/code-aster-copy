@@ -92,28 +92,27 @@ class IncrementalSolver:
         self.linear_solver = solver
 
     @profile
-    def computeInternalResidual(self, scaling=1.0):
+    def computeInternalResidual(self, timeFieldEndStep, scaling=1.0):
         """Compute internal residual R_int(u, Lagr).
 
             R_int(u, Lagr) = [B^t.Sig(u) + B^t.Lagr, B^t.displ-displ_impo]
 
         Arguments:
-            scaling (float): Scaling factor for Lagrange multipliers (default: 1.0).
+            timeFieldEndStep (ConstantFieldOnCellsReal): field for time at end of time step
+            scaling (float): Scaling factor for Lagrange multipliers (default: 1.0)
 
         Returns:
             ResiState: residuals (stress, dual, internal)
             FieldOnCellsReal: internal state variables (VARI_ELGA)
             FieldOnCellsReal: Cauchy stress tensor (SIEF_ELGA)
         """
-        disr_comp = DiscreteComputation(self.phys_pb)
-
-        time_prev = self.phys_state.time
-        time_curr = self.phys_state.time + self.phys_state.time_step
-
-        displ_curr = self.phys_state.displ + self.phys_state.displ_incr
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
 
         # Compute internal forces (B^t.stress)
-        codret, variP, stress, r_stress = self.elem_comp.computeInternalForces(time_prev, time_curr)
+        codret, internVar, stress, r_stress = self.elem_comp.computeInternalForces(
+            self.phys_state.time_field, timeFieldEndStep
+        )
 
         resi_state = ResiState()
         resi_state.resi_stress = r_stress
@@ -122,17 +121,21 @@ class IncrementalSolver:
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
+        # Update displacement
+        timeEndStep = self.phys_state.time + self.phys_state.time_step
+        displ_curr = self.phys_state.displ + self.phys_state.displ_incr
+
         if self.phys_pb.getDOFNumbering().useLagrangeMultipliers():
             # Compute kinematic forces (B^t.Lagr_curr)
-            dualizedBC_forces = disr_comp.dualReaction(displ_curr)
+            dualizedBC_forces = disc_comp.dualReaction(displ_curr)
             resi_state.resi_dual = dualizedBC_forces
 
             # Compute dualiazed BC (B^t.displ_curr - displ_impo)
             # Compute dualiazed BC (B^t.displ_curr)
-            dualizedBC_disp = disr_comp.dualDisplacement(displ_curr, scaling)
+            dualizedBC_disp = disc_comp.dualDisplacement(displ_curr, scaling)
 
             # Imposed dualisez BC (displ_impo)
-            dualizedBC_impo = disr_comp.imposedDisplacement(time_curr)
+            dualizedBC_impo = disc_comp.imposedDisplacement(timeEndStep)
 
             r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
         else:
@@ -140,7 +143,7 @@ class IncrementalSolver:
 
         resi_state.resi_int = r_int
 
-        return resi_state, variP, stress
+        return resi_state, internVar, stress
 
     @profile
     def computeExternalResidual(self):
@@ -151,25 +154,24 @@ class IncrementalSolver:
         Returns:
             FieldOnNodesReal: External residual.
         """
-
-        disr_comp = DiscreteComputation(self.phys_pb)
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
 
         # Compute neuamnn forces
         times = [self.phys_state.time, self.phys_state.time_step, 0.0]
-        neumann_forces = disr_comp.neumann(times)
-
-        # Compute external residual
+        neumann_forces = disc_comp.neumann(times)
         r_ext = neumann_forces
 
         return r_ext
 
     @profile
-    def computeResidual(self, scaling=1.0):
+    def computeResidual(self, timeFieldEndStep, scaling=1.0):
         """Compute R(u, Lagr) = - (Rint(u, Lagr) - Rext(u, Lagr)).
 
         This is not the true residual but the opposite.
 
         Arguments:
+            timeFieldEndStep (ConstantFieldOnCellsReal): field for time at end of time step
             scaling (float): Scaling factor for Lagrange multipliers (default: 1.0).
 
         Returns:
@@ -177,8 +179,9 @@ class IncrementalSolver:
             Tuple with residuals, internal state variables (VARI_ELGA),
             Cauchy stress tensor (SIEF_ELGA).
         """
+
         # Compute internal residual
-        resi_state, variP, stress = self.computeInternalResidual(scaling)
+        resi_state, internVar, stress = self.computeInternalResidual(timeFieldEndStep, scaling)
 
         # Compute external residual
         resi_state.resi_ext = self.computeExternalResidual()
@@ -189,34 +192,45 @@ class IncrementalSolver:
         # clean temporary memory - too many objects are not destroyed in fortran
         deleteTemporaryObjects()
 
-        return resi_state, variP, stress
+        return resi_state, internVar, stress
 
     @profile
-    def computeJacobian(self, matrix_type):
+    def computeJacobian(self, matrix_type, timeFieldEndStep):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du
 
         Arguments:
             matrix_type (str): type of matrix used.
+            timeFieldEndStep (ConstantFieldOnCellsReal): field for time at end of time step
 
         Returns:
             AssemblyMatrixDisplacementReal: Jacobian matrix.
         """
         # Compute elementary matrix
+        matr_elem_diri = None
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
             codret, matr_elem = self.elem_comp.computeElasticStiffnessMatrix()
         elif matrix_type == "PRED_TANGENTE":
-            codret, matr_elem = self.elem_comp.computeTangentPredictionMatrix()
+            codret, matr_elem = self.elem_comp.computeTangentPredictionMatrix(
+                self.phys_state.time_field, timeFieldEndStep
+            )
+            matr_elem_diri = self.elem_comp.computeDualStiffnessMatrix()
         elif matrix_type == "TANGENTE":
-            codret, matr_elem = self.elem_comp.computeTangentStiffnessMatrix()
+            codret, matr_elem = self.elem_comp.computeTangentStiffnessMatrix(
+                self.phys_state.time_field, timeFieldEndStep
+            )
+            matr_elem_diri = self.elem_comp.computeDualStiffnessMatrix()
         else:
             raise RuntimeError("Matrix not supported: %s" % (matrix_type))
 
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
-        # Assembly matrix - does not work
+        # Assembly matrix
         jacobian = AssemblyMatrixDisplacementReal(self.phys_pb)
         jacobian.addElementaryMatrix(matr_elem)
+        if matr_elem_diri:
+            if matr_elem_diri.hasElementaryTerms():
+                jacobian.addElementaryMatrix(matr_elem_diri)
         jacobian.assemble()
 
         # clean temporary memory - too many objects are not destroyed in fortran
@@ -237,13 +251,14 @@ class IncrementalSolver:
         return 1.0 * field
 
     @profile
-    def solve(self, matrix_type, matrix=None):
+    def solve(self, matrix_type, timeFieldEndStep, matrix=None):
         """Solve the iteration.
 
         Arguments:
             matrix_type (str): type of matrix used.
             matrix (AssemblyMatrixDisplacementReal, optional): Stiffness matrix
                 to be reused.
+            timeFieldEndStep (ConstantFieldOnCellsReal): field for time at end of time step
 
         Returns:
             tuple (FieldOnNodesReal, FieldOnCellsReal, FieldOnCellsReal,
@@ -251,8 +266,6 @@ class IncrementalSolver:
             (DEPL), internal state variables (VARI_ELGA), Cauchy stress (SIEF_ELGA),
             Jacobian matrix used (if computed).
         """
-        time_prev = self.phys_state.time
-        time_curr = time_prev + self.phys_state.time_step
 
         # we need the matrix to have scaling factor for Lagrange
         # On peut sûrement faire une optimisation ici quand la matrice tangente
@@ -260,24 +273,27 @@ class IncrementalSolver:
         # uniquement dans ce cas calculer les forces internes avec RAPH_MECA
         # et pas tout recalculer (a voir plus tard)
         if not matrix:
-            stiffness = self.computeJacobian(matrix_type)
+            stiffness = self.computeJacobian(matrix_type, timeFieldEndStep)
         else:
             stiffness = matrix
 
-        # get scaling for Lagrange (j'aimerais bien m'en débarasser de là)
+        # Get scaling for Lagrange (j'aimerais bien m'en débarasser de là)
         scaling = stiffness.getLagrangeScaling()
 
         # compute residual
-        resi_state, variP, stress = self.computeResidual(scaling)
+        resi_state, internVar, stress = self.computeResidual(timeFieldEndStep, scaling)
 
         # clean temporary memory - too many objects are not destroyed in fortran
         deleteTemporaryObjects()
 
+        # Time at end of current step
+        timeEndStep = self.phys_state.time + self.phys_state.time_step
+
         if not self.convManager.isConverged(resi_state):
-            # compute Diriclet BC:
+            # compute Dirichlet BC:
             disc_comp = DiscreteComputation(self.phys_pb)
             displ_curr = self.phys_state.displ + self.phys_state.displ_incr
-            diriBCs = disc_comp.incrementalDirichletBC(time_curr, displ_curr)
+            diriBCs = disc_comp.incrementalDirichletBC(timeEndStep, displ_curr)
 
             # solve linear system
             if not stiffness.isFactorized():
@@ -292,4 +308,4 @@ class IncrementalSolver:
         # clean temporary memory - too many objects are not destroyed in fortran
         deleteTemporaryObjects()
 
-        return displ_incr, variP, stress, stiffness
+        return displ_incr, internVar, stress, stiffness

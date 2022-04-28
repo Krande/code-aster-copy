@@ -20,10 +20,13 @@
 from ...Cata.Language.SyntaxObjects import _F
 from ...Commands import ASSE_VECTEUR, CALC_MATR_ELEM, CALCUL, DEFI_LIST_REEL
 from ...Utilities import MPI, haveMPI, no_new_attributes, profile
+from ...Objects import DiscreteComputation
+from libaster import AsterError
 
 
-class ElementaryComputation():
+class ElementaryComputation:
     """Compute elementary quantities like Dirichlet bc, Neumann loads, ..."""
+
     phys_state = phys_pb = None
 
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -32,9 +35,6 @@ class ElementaryComputation():
         """Get list of loads (only CHARGE and not Dirichlet) - to delete quickly"""
         names = []
         listLoads = self.phys_pb.getListOfLoads()
-        # diri = listLoads.getDirichletBCs()
-        # for load in diri:
-        #     names.append(load)
 
         mecar = listLoads.getMechanicalLoadsReal()
         for load in mecar:
@@ -72,45 +72,39 @@ class ElementaryComputation():
         self.phys_state = phys_state
 
     @profile
-    def computeInternalForces(self, time_prev, time_curr):
+    def computeInternalForces(self, timeFieldBeginStep, timeFieldEndStep):
         """Compute internal forces, stress and internal state variables.
 
         Arguments:
-            time_prev (float): previous time to evalute BC
-            time_curr (float): current time to evalute BC
+            timeFieldBeginStep (ConstantFieldOnCellsReal): field time at begin of time step
+            timeFieldEndStep (ConstantFieldOnCellsReal): field time at end of time step
 
         Returns:
             tuple (int, FieldOnCells, FieldOnCells, FieldOnNodes):
             Tuple with 4 objects: exitcode, internal state variables (VARI_ELGA),
             Cauchy stress (SIEF_ELGA), vector of internal forces (`B^T \sigma`).
         """
-        l_inst = DEFI_LIST_REEL(VALE=(time_prev, time_curr))
-        behavProp = self.phys_pb.getBehaviourProperty()
-        res = CALCUL(__use_namedtuple__=True,
-                     OPTION=('FORC_INTE_ELEM',),
-                     MODELE=self.phys_pb.getModel(),
-                     CHAM_MATER=self.phys_pb.getMaterialField(),
-                     CARA_ELEM = self.phys_pb.getElementaryCharacteristics(),
-                     INCREMENT=_F(LIST_INST=l_inst, NUME_ORDRE=1),
-                     EXCIT=self.phys_pb.allLoadsDict,
-                     INCR_DEPL=self.phys_state.displ_incr,
-                     DEPL=self.phys_state.displ,
-                     SIGM=self.phys_state.stress,
-                     VARI=self.phys_state.variP,
-                     COMPORTEMENT=_F(COMPOR=behavProp.getBehaviourField(),
-                                     MULT_COMP=behavProp.getMultipleBehaviourField(),
-                                     CARCRI=behavProp.getConvergenceCriteria()),
-                     INFO=1)
+
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute internal forces
+        res = disc_comp.computeInternalForces(
+            self.phys_state.displ,
+            self.phys_state.displ_incr,
+            self.phys_state.stress,
+            self.phys_state.internVar,
+            timeFieldBeginStep,
+            timeFieldEndStep,
+        )
 
         # Check integration of behavior
-        codret = MPI.COMM_WORLD.allreduce(
-            max(res.CODE_RETOUR_INTE.EXTR_COMP("IRET",[]).valeurs),
-            op=MPI.MAX)
-        # forces internes assemblees
-        assembly_forces = ASSE_VECTEUR(VECT_ELEM=res.FORC_INTE_ELEM,
-                                       NUME_DDL=self.phys_pb.getDOFNumbering())
+        codret = MPI.COMM_WORLD.allreduce(res[1], op=MPI.MAX)
 
-        return codret, res.VARI_ELGA, res.SIEF_ELGA, assembly_forces
+        # forces internes assemblees
+        assembly_forces = ASSE_VECTEUR(VECT_ELEM=res[4], NUME_DDL=self.phys_pb.getDOFNumbering())
+
+        return codret, res[2], res[3], assembly_forces
 
     @profile
     def computeElasticStiffnessMatrix(self):
@@ -120,76 +114,92 @@ class ElementaryComputation():
             tuple (int, ElementaryMatrixDisplacementReal): Tuple with exitcode,
             elementary elastic matrix.
         """
-        elem_matr = CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                                   MODELE=self.phys_pb.getModel(),
-                                   CHAM_MATER=self.phys_pb.getMaterialField(),
-                                   CARA_ELEM = self.phys_pb.getElementaryCharacteristics(),
-                                   CHARGE=self._getLoads())
-        return 0, elem_matr
+
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute elastic stiffness matrix
+        elem_matr = disc_comp.elasticStiffnessMatrix()
+
+        # Check integration of behavior
+        codret = 0
+
+        return codret, elem_matr
 
     @profile
-    def computeTangentPredictionMatrix(self):
+    def computeTangentPredictionMatrix(self, timeFieldBeginStep, timeFieldEndStep):
         """Compute tangent prediction matrix (not assembled).
+
+        Arguments:
+            timeFieldBeginStep (ConstantFieldOnCellsReal): field time at begin of time step
+            timeFieldEndStep (ConstantFieldOnCellsReal): field time at end of time step
 
         Returns:
             tuple (int, ElementaryMatrixDisplacementReal): Tuple with exitcode,
             elementary tangent prediction matrix.
         """
-        time_prev = self.phys_state.time
-        time_curr = self.phys_state.time + self.phys_state.time_step
-        l_inst = DEFI_LIST_REEL(VALE=(time_prev, time_curr))
-        behavProp = self.phys_pb.getBehaviourProperty()
-        res = CALCUL(__use_namedtuple__=True,
-                     OPTION="MATR_TANG_ELEM",
-                     PHASE="PREDICTION",
-                     MODELE=self.phys_pb.getModel(),
-                     CHAM_MATER=self.phys_pb.getMaterialField(),
-                     CARA_ELEM = self.phys_pb.getElementaryCharacteristics(),
-                     INCREMENT=_F(LIST_INST=l_inst, NUME_ORDRE=1),
-                     EXCIT=self.phys_pb.allLoadsDict,
-                     INCR_DEPL=self.phys_state.displ_incr,
-                     DEPL=self.phys_state.displ,
-                     SIGM=self.phys_state.stress,
-                     VARI=self.phys_state.variP,
-                     COMPORTEMENT=_F(COMPOR=behavProp.getBehaviourField(),
-                                     MULT_COMP=behavProp.getMultipleBehaviourField(),
-                                     CARCRI=behavProp.getConvergenceCriteria()),
-                     INFO=1)
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute tangent prediction matrix
+        res = disc_comp.computeTangentPredictionMatrix(
+            self.phys_state.displ,
+            self.phys_state.displ_incr,
+            self.phys_state.stress,
+            self.phys_state.internVar,
+            timeFieldBeginStep,
+            timeFieldEndStep,
+        )
 
         # Check integration of behavior
-        codret = MPI.COMM_WORLD.allreduce(max(res.CODE_RETOUR_INTE.EXTR_COMP("IRET",[]).valeurs),
-                                          op=MPI.MAX)
-        return codret, res.MATR_TANG_ELEM
+        codret = 0
+
+        return codret, res[2]
 
     @profile
-    def computeTangentStiffnessMatrix(self):
+    def computeTangentStiffnessMatrix(self, timeFieldBeginStep, timeFieldEndStep):
         """Compute tangent matrix (not assembled).
+
+        Arguments:
+            timeFieldBeginStep (ConstantFieldOnCellsReal): field time at begin of time step
+            timeFieldEndStep (ConstantFieldOnCellsReal): field time at end of time step
 
         Returns:
             tuple (int, ElementaryMatrixDisplacementReal): Tuple with exitcode,
             elementary tangent matrix.
         """
-        time_prev = self.phys_state.time
-        time_curr = self.phys_state.time + self.phys_state.time_step
-        l_inst = DEFI_LIST_REEL(VALE=(time_prev, time_curr))
-        behavProp = self.phys_pb.getBehaviourProperty()
-        res = CALCUL(__use_namedtuple__=True,
-                     OPTION="MATR_TANG_ELEM",
-                     MODELE=self.phys_pb.getModel(),
-                     CHAM_MATER=self.phys_pb.getMaterialField(),
-                     CARA_ELEM = self.phys_pb.getElementaryCharacteristics(),
-                     INCREMENT=_F(LIST_INST=l_inst, NUME_ORDRE=1),
-                     EXCIT=self.phys_pb.allLoadsDict,
-                     INCR_DEPL=self.phys_state.displ_incr,
-                     DEPL=self.phys_state.displ,
-                     SIGM=self.phys_state.stress,
-                     VARI=self.phys_state.variP,
-                     COMPORTEMENT=_F(COMPOR=behavProp.getBehaviourField(),
-                                     MULT_COMP=behavProp.getMultipleBehaviourField(),
-                                     CARCRI=behavProp.getConvergenceCriteria()),
-                     INFO=1)
+
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute tangent prediction matrix
+        res = disc_comp.computeTangentStiffnessMatrix(
+            self.phys_state.displ,
+            self.phys_state.displ_incr,
+            self.phys_state.stress,
+            self.phys_state.internVar,
+            timeFieldBeginStep,
+            timeFieldEndStep,
+        )
 
         # Check integration of behavior
-        codret = MPI.COMM_WORLD.allreduce(max(res.CODE_RETOUR_INTE.EXTR_COMP("IRET",[]).valeurs),
-                                          op=MPI.MAX)
-        return codret, res.MATR_TANG_ELEM
+        codret = MPI.COMM_WORLD.allreduce(res[1], op=MPI.MAX)
+
+        return codret, res[5]
+
+    @profile
+    def computeDualStiffnessMatrix(self):
+        """Compute dual stiffness matrix for boundary conditions (not assembled).
+
+
+        Returns:
+            ElementaryMatrixDisplacementReal: elementary  matrix.
+        """
+
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute
+        res = disc_comp.dualStiffnessMatrix()
+
+        return res

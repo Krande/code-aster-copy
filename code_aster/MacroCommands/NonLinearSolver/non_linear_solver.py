@@ -193,9 +193,9 @@ class NonLinearSolver:
 
         # Solve nonlinear problem
         while not self.hasFinished():
-            time_curr = self.stepper.getNext()
             self.step_rank += 1
-            self.phys_state.time_step = time_curr - self.phys_state.time
+            timeEndStep = self.stepper.getNext()
+            self.phys_state.time_step = timeEndStep - self.phys_state.time
 
             solv = self.getStepSolver(self.step_rank)
             solv.setPhysicalProblem(self.phys_pb)
@@ -215,7 +215,7 @@ class NonLinearSolver:
             try:
                 solv.solve()
                 self.phys_state.update(solv.getPhysicalState())
-                self._storeRank(self.step_rank, time_curr)
+                self._storeRank(self.step_rank, timeEndStep)
             except (ConvergenceError, IntegrationError) as exc:
                 logger.error(exc.message)
                 self.stepper.raiseError(exc)

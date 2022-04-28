@@ -19,13 +19,15 @@
 
 from ...Utilities import no_new_attributes, profile
 from ...Objects import FieldOnNodesReal, FieldOnCellsReal, NonLinearResult
+from ...Objects import DiscreteComputation
 
 
 class PhysicalState:
     """This object represents a Physical State of the model."""
 
     _time = _time_step = None
-    _displ = _displ_incr = _variP = _stress = _externVar = None
+    _time_field = None
+    _displ = _displ_incr = _internVar = _stress = _externVar = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @property
@@ -58,7 +60,7 @@ class PhysicalState:
 
     @property
     def displ(self):
-        """FieldOnNodes: Displacement field."""
+        """FieldOnNodesReal: Displacement field."""
         return self._displ
 
     @displ.setter
@@ -72,7 +74,7 @@ class PhysicalState:
 
     @property
     def displ_incr(self):
-        """FieldOnNodes: Displacement increment."""
+        """FieldOnNodesReal: Displacement increment."""
         return self._displ_incr
 
     @displ_incr.setter
@@ -80,13 +82,13 @@ class PhysicalState:
         """Set displacement increment.
 
         Arguments:
-            field (FieldOnNodes): Displacement increment
+            field (FieldOnNodesReal): Displacement increment
         """
         self._displ_incr = field
 
     @property
     def stress(self):
-        """FieldOnCells: Stress field."""
+        """FieldOnCellsReal: Stress field."""
         return self._stress
 
     @stress.setter
@@ -94,27 +96,27 @@ class PhysicalState:
         """Set Stress field.
 
         Arguments:
-            field (FieldOnCells): Stress field
+            field (FieldOnCellsReal): Stress field
         """
         self._stress = field
 
     @property
-    def variP(self):
-        """FieldOnCells: Internal state variables."""
-        return self._variP
+    def internVar(self):
+        """FieldOnCellsReal: Internal state variables."""
+        return self._internVar
 
-    @variP.setter
-    def variP(self, field):
+    @internVar.setter
+    def internVar(self, field):
         """Set Internal state variables.
 
         Arguments:
-            field (FieldOnCells): Internal state variables
+            field (FieldOnCellsReal): Internal state variables
         """
-        self._variP = field
+        self._internVar = field
 
     @property
     def externVar(self):
-        """FieldOnCells: External state variables."""
+        """FieldOnCellsReal: External state variables."""
         return self._externVar
 
     @externVar.setter
@@ -122,9 +124,23 @@ class PhysicalState:
         """Set external state variables.
 
         Arguments:
-            field (FieldOnCells): external state variables
+            field (FieldOnCellsReal): external state variables
         """
         self._externVar = field
+
+    @property
+    def time_field(self):
+        """ConstantFieldOnCellsReal: time field."""
+        return self._time_field
+
+    @time_field.setter
+    def time_field(self, field):
+        """Set time field.
+
+        Arguments:
+           field (ConstantFieldOnCellsReal): time field
+        """
+        self._time_field = field
 
     @profile
     def createDisplacement(self, phys_pb, value):
@@ -191,6 +207,20 @@ class PhysicalState:
         return self.createFieldOnCells(phys_pb, "ELGA_VARI_R", value)
 
     @profile
+    def createTimeField(self, phys_pb, value):
+        """Create time field with a given value
+
+        Arguments:
+            phys_pb (PhysicalProblem): Physical problem
+            value (float): value to set everywhere
+
+        Returns:
+            ConstantFieldOnCellsReal: time field with a given value
+        """
+        disc_comp = DiscreteComputation(phys_pb)
+        return disc_comp.createTimeField(value)
+
+    @profile
     def zeroInitialState(self, phys_pb):
         """Initialize with zero initial state
 
@@ -198,10 +228,11 @@ class PhysicalState:
             phys_pb (PhysicalProblem): Physical problem
         """
         self._displ = self.createDisplacement(phys_pb, 0.0)
-        self._variP = self.createInternalVariablesNext(phys_pb, 0.0)
+        self._internVar = self.createInternalVariablesNext(phys_pb, 0.0)
         self._stress = self.createStress(phys_pb, 0.0)
         self._time = 0.0
         self._time_step = 0.0
+        self._time_field = self.createTimeField(phys_pb, 0.0)
 
     @profile
     def readInitialState(self, phys_pb, params):
@@ -211,14 +242,19 @@ class PhysicalState:
             phys_pb (PhysicalProblem): Physical problem
             params (dict): dict of user's keywords
         """
+
+        # Complete initial state: zero
         self.zeroInitialState(phys_pb)
 
+        # Get initial time
         try:
             init_time = params.get("INCREMENT").get("LIST_INST").getValues()[0]
         except AttributeError:
             init_time = 0
         self._time = init_time
+        self._time_field = self.createTimeField(phys_pb, init_time)
 
+        # Get initial state: displacement, stress, internal state variables
         init_params = params.get("ETAT_INIT")
         if init_params is not None:
             if "DEPL" in init_params:
@@ -230,9 +266,9 @@ class PhysicalState:
                 assert isinstance(stress, FieldOnCellsReal)
                 self._stress = stress
             if "VARI" in init_params:
-                variP = init_params.get("VARI")
-                assert isinstance(variP, FieldOnCellsReal)
-                self._variP = variP
+                internVar = init_params.get("VARI")
+                assert isinstance(internVar, FieldOnCellsReal)
+                self._internVar = internVar
             if "EVOL_NOLI" in init_params:
                 resu = init_params.get("EVOL_NOLI")
                 assert isinstance(resu, NonLinearResult)
@@ -251,10 +287,10 @@ class PhysicalState:
         # displ in two steps to create a new object (and not modified previous values)
         displ_up = self._displ + other.displ_incr
         self._displ = displ_up
-
-        self._variP = other.variP
+        self._internVar = other.internVar
         self._stress = other.stress
         self._time += other.time_step
+        self._time_field = other.time_field
 
     @profile
     def extractFieldsFromResult(self, resu, rank, fields):
@@ -275,7 +311,7 @@ class PhysicalState:
             elif field == "SIEF_ELGA":
                 self._stress = resu.getFieldOnCellsReal("SIEF_ELGA", rank)
             elif field == "VARI_ELGA":
-                self._variP = resu.getFieldOnCellsReal("VARI_ELGA", rank)
+                self._internVar = resu.getFieldOnCellsReal("VARI_ELGA", rank)
             else:
                 raise RuntimeError("Unknown field")
 
@@ -285,4 +321,4 @@ class PhysicalState:
         Returns:
             dict: Dict of fields.
         """
-        return dict(DEPL=self._displ, SIEF_ELGA=self._stress, VARI_ELGA=self._variP)
+        return dict(DEPL=self._displ, SIEF_ELGA=self._stress, VARI_ELGA=self.internVar)

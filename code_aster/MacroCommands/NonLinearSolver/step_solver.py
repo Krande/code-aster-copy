@@ -24,6 +24,7 @@ from ...Utilities import no_new_attributes, profile
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
 from .logging_manager import LoggingManager
+from ...Objects import DiscreteComputation
 
 
 class StepSolver:
@@ -76,8 +77,7 @@ class StepSolver:
             phys_state (PhysicalState): Physical state
         """
         self.phys_state = phys_state
-        self.phys_state.displ_incr = self.phys_state.createDisplacement(
-            self.phys_pb, 0.0)
+        self.phys_state.displ_incr = self.phys_state.createDisplacement(self.phys_pb, 0.0)
 
     def getPhysicalState(self):
         """Get the physical state.
@@ -95,21 +95,23 @@ class StepSolver:
         """
         self.linear_solver = linear_solver
 
-    def updatePhysicalState(self, displ_incr, variP, sigma, convManager):
+    def updatePhysicalState(self, displ_incr, internVar, sigma, timeFieldEndStep, convManager):
         """Update the physical state.
 
         Arguments:
             displ_incr (FieldOnNodes): Displacement increment.
-            variP (FieldOnCells): Internal state variables.
+            internVar (FieldOnCells): Internal state variables.
             sigma (FieldOnCells): Stress field.
+            timeFieldEndStep (ConstantFieldOnCellsReal): field for time at end of time step
             convManager (ConvergenceManager): Object that manages the
                 convergency criteria.
         """
         self.phys_state.displ_incr += displ_incr
 
         if convManager.hasConverged():
-            self.phys_state.variP = variP
+            self.phys_state.internVar = internVar
             self.phys_state.stress = sigma
+            self.phys_state.time_field = timeFieldEndStep
 
     def setPrediction(self, prediction):
         """Select type of prediction.
@@ -117,8 +119,7 @@ class StepSolver:
         Arguments
             prediction (str): predicition used in "ELASTIQUE" or "TANGENTE"
         """
-        assert prediction in (
-            "ELASTIQUE", "TANGENTE"), f"unsupported value: {prediction}"
+        assert prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: {prediction}"
         self.prediction = prediction
 
     def setUpdateParameters(self, REAC_INCR, REAC_ITER):
@@ -199,6 +200,10 @@ class StepSolver:
         logManager = self.createLoggingManager()
         logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
+        disc_comp = DiscreteComputation(self.phys_pb)
+        timeFieldEndStep = disc_comp.createTimeField(
+            self.phys_state.time + self.phys_state.time_step
+        )
 
         while not self.hasFinished() and not convManager.hasConverged():
             iteration = self.createIncrementalSolver()
@@ -207,15 +212,25 @@ class StepSolver:
             iteration.setPhysicalState(self.phys_state)
             iteration.setLinearSolver(self.linear_solver)
 
-            # select type of matrix
+            # Select type of matrix
             matrix_type = self._setMatrixType()
-            displ_incr, variP, sigma, self.current_matrix = iteration.solve(
-                matrix_type, self.current_matrix
-            )
-            self.updatePhysicalState(displ_incr, variP, sigma, convManager)
 
-            logManager.printConvTableRow([self.current_iter, convManager.residual["RESI_GLOB_RELA"],
-                                          convManager.residual["RESI_GLOB_MAXI"], matrix_type])
+            # Solve current iteration
+            displ_incr, internVar, sigma, self.current_matrix = iteration.solve(
+                matrix_type, timeFieldEndStep, self.current_matrix
+            )
+
+            # Update physical state
+            self.updatePhysicalState(displ_incr, internVar, sigma, timeFieldEndStep, convManager)
+
+            logManager.printConvTableRow(
+                [
+                    self.current_iter,
+                    convManager.residual["RESI_GLOB_RELA"],
+                    convManager.residual["RESI_GLOB_MAXI"],
+                    matrix_type,
+                ]
+            )
 
             self.current_iter += 1
 
