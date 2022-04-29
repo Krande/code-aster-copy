@@ -50,7 +50,8 @@ class DiscreteComputation {
                                         const ConstantFieldOnCellsRealPtr _timeFieldPrev,
                                         const ConstantFieldOnCellsRealPtr _timeFieldCurr,
                                         const FieldOnCellsRealPtr _externVarFieldPrev,
-                                        const FieldOnCellsRealPtr _externVarFieldCurr );
+                                        const FieldOnCellsRealPtr _externVarFieldCurr,
+                                        const VectorString &groupOfCells = VectorString() );
 
   public:
     /** @typedef DiscreteComputationPtr */
@@ -173,7 +174,8 @@ class DiscreteComputation {
     computeInternalForces( const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
                            const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
                            const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-                           const ConstantFieldOnCellsRealPtr _timeFieldCurr );
+                           const ConstantFieldOnCellsRealPtr _timeFieldCurr,
+                           const VectorString &groupOfCells = VectorString() );
 
     /**
      * @brief Compute tangent matrix (not assembled)
@@ -192,7 +194,8 @@ class DiscreteComputation {
                                    const FieldOnCellsRealPtr stress,
                                    const FieldOnCellsRealPtr _internVar,
                                    const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-                                   const ConstantFieldOnCellsRealPtr _timeFieldCurr );
+                                   const ConstantFieldOnCellsRealPtr _timeFieldCurr,
+                                   const VectorString &groupOfCells = VectorString() );
 
     /**
      * @brief Compute tangent prediction matrix (not assembled)
@@ -209,7 +212,8 @@ class DiscreteComputation {
                                     const FieldOnCellsRealPtr stress,
                                     const FieldOnCellsRealPtr _internVar,
                                     const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-                                    const ConstantFieldOnCellsRealPtr _timeFieldCurr );
+                                    const ConstantFieldOnCellsRealPtr _timeFieldCurr,
+                                    const VectorString &groupOfCells = VectorString() );
 
     /**
      * @brief Compute elastic prediction matrix (not assembled)

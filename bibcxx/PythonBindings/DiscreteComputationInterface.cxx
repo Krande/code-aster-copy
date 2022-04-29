@@ -195,6 +195,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             variP (FieldOnCells): field of internal state variables at begin of current time
             timeFieldPrev (constantFieldOnCells): time at begin of current time
             timeFieldCurr (constantFieldOnCells): time at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
 
       Returns:
             tuple (tuple): return code error (FieldOnCells),
@@ -204,7 +205,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             elementary vector of internal forces (ElementaryVectorDisplacement),
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
-              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) )
+              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
+              py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "computeTangentStiffnessMatrix", &DiscreteComputation::computeTangentStiffnessMatrix,
               R"(
@@ -217,6 +219,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             variP (FieldOnCells): field of internal state variables at begin of current time
             timeFieldPrev (constantFieldOnCells): time at begin of current time
             timeFieldCurr (constantFieldOnCells): time at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
 
       Returns:
             tuple (tuple): return code error (FieldOnCells),
@@ -227,7 +230,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             elementary tangent matrix (ElementaryMatrixDisplacement)
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
-              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) )
+              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
+              py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "computeTangentPredictionMatrix",
               &DiscreteComputation::computeTangentPredictionMatrix, R"(
@@ -240,6 +244,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             variP (FieldOnCells): field of internal state variables at begin of current time
             timeFieldPrev (constantFieldOnCells): time at begin of current time
             timeFieldCurr (constantFieldOnCells): time at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
 
       Returns:
             tuple (tuple): mask to assemble vector (FieldOnCells),
@@ -248,5 +253,6 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             elementary vector of internal forces (ElementaryVectorDisplacement)
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
-              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ) );
+              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
+              py::arg( "groupOfCells" ) = VectorString() );
 };

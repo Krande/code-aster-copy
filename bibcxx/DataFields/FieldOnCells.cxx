@@ -30,7 +30,8 @@ template <>
 FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
                                            const BehaviourPropertyPtr behaviour,
                                            const std::string &typcham,
-                                           const ElementaryCharacteristicsPtr carael )
+                                           const ElementaryCharacteristicsPtr carael,
+                                           const FiniteElementDescriptorPtr FEDesc )
     : FieldOnCells< ASTERDOUBLE >() {
     std::string inName = getName();
     std::string carele = " ";
@@ -59,7 +60,13 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
         carele = carael->getName();
 
     ASTERINTEGER iret = 0;
-    auto fed = model->getFiniteElementDescriptor();
+
+    FiniteElementDescriptorPtr fed;
+    if ( FEDesc ) {
+        fed = FEDesc;
+    } else {
+        fed = model->getFiniteElementDescriptor();
+    }
     _dofDescription = fed;
 
     _DCEL = std::make_shared< SimpleFieldOnCellsLong >( inName );
@@ -80,11 +87,17 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
 
 template <>
 FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model, const std::string option,
-                                           const std::string paraName )
+                                           const std::string paraName,
+                                           const FiniteElementDescriptorPtr FEDesc )
     : FieldOnCells< ASTERDOUBLE >() {
     ASTERINTEGER iret = 0;
     std::string extended = " ";
-    auto fed = model->getFiniteElementDescriptor();
+    FiniteElementDescriptorPtr fed;
+    if ( FEDesc ) {
+        fed = FEDesc;
+    } else {
+        fed = model->getFiniteElementDescriptor();
+    }
     _dofDescription = fed;
     CALLO_ALCHML( fed->getName(), option, paraName, JeveuxMemoryTypesNames[Permanent], getName(),
                   &iret, extended );

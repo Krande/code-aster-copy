@@ -603,7 +603,7 @@ FieldOnCellsRealPtr DiscreteComputation::computeExternalStateVariablesReference(
 CalculPtr DiscreteComputation::createCalculForNonLinear(
     const std::string option, const ConstantFieldOnCellsRealPtr _timeFieldPrev,
     const ConstantFieldOnCellsRealPtr _timeFieldCurr, const FieldOnCellsRealPtr _externVarFieldPrev,
-    const FieldOnCellsRealPtr _externVarFieldCurr ) {
+    const FieldOnCellsRealPtr _externVarFieldCurr, const VectorString &groupOfCells ) {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -627,7 +627,11 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
 
     // Prepare computing: the main object
     CalculPtr _calcul = std::make_unique< Calcul >( option );
-    _calcul->setModel( currModel );
+    if ( groupOfCells.empty() ) {
+        _calcul->setModel( currModel );
+    } else {
+        _calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
 
     // Add external state variables
     if ( currMater->hasExternalStateVariableWithReference() ) {
@@ -679,7 +683,8 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
                                             const FieldOnCellsRealPtr stress,
                                             const FieldOnCellsRealPtr _internVar,
                                             const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-                                            const ConstantFieldOnCellsRealPtr _timeFieldCurr ) {
+                                            const ConstantFieldOnCellsRealPtr _timeFieldCurr,
+                                            const VectorString &groupOfCells ) {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -694,8 +699,10 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
     std::string option = "RAPH_MECA";
 
     // Prepare computing:
-    CalculPtr _calcul = createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr,
-                                                  _externVarFieldPrev, _externVarFieldCurr );
+    CalculPtr _calcul =
+        createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr, _externVarFieldPrev,
+                                  _externVarFieldCurr, groupOfCells );
+    FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
 
     // Set current physical state
     _calcul->addInputField( "PDEPLMR", displ );
@@ -705,7 +712,7 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
     FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
     _calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output vector
@@ -716,11 +723,11 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
     elemVect->prepareCompute( option );
 
     // Create output fields
-    FieldOnCellsRealPtr stress_curr =
-        std::make_shared< FieldOnCellsReal >( currModel, nullptr, "ELGA_SIEF_R", currElemChara );
-    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >();
+    FieldOnCellsRealPtr stress_curr = std::make_shared< FieldOnCellsReal >(
+        currModel, nullptr, "ELGA_SIEF_R", currElemChara, FEDesc = FEDesc );
+    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
     FieldOnCellsRealPtr vari_curr = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
 
     // Add output fields
     _calcul->addOutputField( "PVARIPR", vari_curr );
@@ -752,7 +759,7 @@ DiscreteComputation::computeTangentStiffnessMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
     const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-    const ConstantFieldOnCellsRealPtr _timeFieldCurr ) {
+    const ConstantFieldOnCellsRealPtr _timeFieldCurr, const VectorString &groupOfCells ) {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -767,8 +774,10 @@ DiscreteComputation::computeTangentStiffnessMatrix(
     std::string option = "FULL_MECA";
 
     // Prepare computing:
-    CalculPtr _calcul = createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr,
-                                                  _externVarFieldPrev, _externVarFieldCurr );
+    CalculPtr _calcul =
+        createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr, _externVarFieldPrev,
+                                  _externVarFieldCurr, groupOfCells );
+    FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
 
     // Set current physical state
     _calcul->addInputField( "PDEPLMR", displ );
@@ -778,7 +787,7 @@ DiscreteComputation::computeTangentStiffnessMatrix(
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
     FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
     _calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output matrix
@@ -796,11 +805,11 @@ DiscreteComputation::computeTangentStiffnessMatrix(
     elemVect->prepareCompute( option );
 
     // Create output fields
-    FieldOnCellsRealPtr stress_curr =
-        std::make_shared< FieldOnCellsReal >( currModel, nullptr, "ELGA_SIEF_R", currElemChara );
-    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >();
+    FieldOnCellsRealPtr stress_curr = std::make_shared< FieldOnCellsReal >(
+        currModel, nullptr, "ELGA_SIEF_R", currElemChara, FEDesc = FEDesc );
+    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
     FieldOnCellsRealPtr vari_curr = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
 
     // Add output fields
     _calcul->addOutputField( "PVARIPR", vari_curr );
@@ -839,7 +848,7 @@ DiscreteComputation::computeTangentPredictionMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
     const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-    const ConstantFieldOnCellsRealPtr _timeFieldCurr ) {
+    const ConstantFieldOnCellsRealPtr _timeFieldCurr, const VectorString &groupOfCells ) {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -854,8 +863,10 @@ DiscreteComputation::computeTangentPredictionMatrix(
     std::string option = "RIGI_MECA_TANG";
 
     // Prepare computing:
-    CalculPtr _calcul = createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr,
-                                                  _externVarFieldPrev, _externVarFieldCurr );
+    CalculPtr _calcul =
+        createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr, _externVarFieldPrev,
+                                  _externVarFieldCurr, groupOfCells );
+    FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
 
     // Set current physical state
     _calcul->addInputField( "PDEPLMR", displ );
@@ -865,7 +876,7 @@ DiscreteComputation::computeTangentPredictionMatrix(
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
     FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara );
+        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
     _calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output matrix
@@ -883,10 +894,10 @@ DiscreteComputation::computeTangentPredictionMatrix(
     elemVect->prepareCompute( option );
 
     // Create output fields
-    FieldOnCellsRealPtr stress_pred =
-        std::make_shared< FieldOnCellsReal >( currModel, nullptr, "ELGA_SIEF_R", currElemChara );
-    FieldOnCellsLongPtr maskField = std::make_shared< FieldOnCellsLong >();
-    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >();
+    FieldOnCellsRealPtr stress_pred = std::make_shared< FieldOnCellsReal >(
+        currModel, nullptr, "ELGA_SIEF_R", currElemChara, FEDesc = FEDesc );
+    FieldOnCellsLongPtr maskField = std::make_shared< FieldOnCellsLong >( FEDesc );
+    FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
 
     // Add output fields
     _calcul->addOutputField( "PCONTPR", stress_pred );

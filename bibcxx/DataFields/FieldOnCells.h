@@ -63,8 +63,7 @@ class FieldOnCells : public DataField {
     SimpleFieldOnCellsLongPtr _DCEL;
 
   public:
-    /** @typedef FieldOnCellsPtr */
-    typedef std::shared_ptr< FieldOnCells > FieldOnCellsPtr;
+    using FieldOnCellsPtr = std::shared_ptr< FieldOnCells >;
 
     /**
      * @brief Constructor
@@ -80,6 +79,12 @@ class FieldOnCells : public DataField {
     /** @brief Constructor with automatic name */
     FieldOnCells() : FieldOnCells( ResultNaming::getNewResultName() ){};
 
+    /** @brief Constructor with automatic name and FE Descriptor*/
+    FieldOnCells( const FiniteElementDescriptorPtr FEDesc )
+        : FieldOnCells( ResultNaming::getNewResultName() ) {
+        _dofDescription = FEDesc;
+    };
+
     /**
      * @brief Constructor for empty FieldOnCells with dynamic components
      * @param model model
@@ -89,12 +94,14 @@ class FieldOnCells : public DataField {
      * @param typcham Type de champ à calculer
      */
     FieldOnCells( const ModelPtr &model, const BehaviourPropertyPtr behaviour,
-                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr );
+                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr,
+                  const FiniteElementDescriptorPtr FEDesc = nullptr );
 
     /**
      * @brief Constructor for empty FieldOnCells based on specific physical quantity
      */
-    FieldOnCells( const ModelPtr &model, const std::string option, const std::string paraName );
+    FieldOnCells( const ModelPtr &model, const std::string option, const std::string paraName,
+                  const FiniteElementDescriptorPtr FEDesc = nullptr );
 
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {

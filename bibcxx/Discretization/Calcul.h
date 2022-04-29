@@ -175,6 +175,9 @@ class Calcul {
 
     /** @brief Add input fields for non-linear behaviours */
     void addBehaviourField( const BehaviourPropertyPtr behaviour );
+
+    /** @brief Get current FE descriptor */
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() { return _FEDesc; };
 };
 
 /**  @typedef CalculPtr */

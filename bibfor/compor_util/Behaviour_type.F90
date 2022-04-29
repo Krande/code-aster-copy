@@ -244,7 +244,7 @@ implicit none
 ! ----- Flag for non-incremental cases (at least one behaviour is NOT incremental)
         aster_logical :: lNonIncr = ASTER_FALSE
 ! ----- Flag for debug
-        aster_logical :: lDebug = ASTER_TRUE
+        aster_logical :: lDebug = ASTER_FALSE
     end type Behaviour_PrepPara
 !
 end module
