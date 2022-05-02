@@ -88,7 +88,7 @@ implicit none
 !
 ! - Create object (collection)
 !
-    call jecrec(elem_neigh,'V V I', 'NU', 'CONTIG', 'VARIABLE', elem_indx_maxi+1-elem_indx_mini)
+    call jecrec(elem_neigh,'G V I', 'NU', 'CONTIG', 'VARIABLE', elem_indx_maxi+1-elem_indx_mini)
     call jeecra(elem_neigh, 'LONT', nb_elem*4+(elem_indx_maxi+1-elem_indx_mini-nb_elem)*4)
     do i_elem = 1, elem_indx_maxi+1-elem_indx_mini
         elem_nume = i_elem-1+elem_indx_mini
