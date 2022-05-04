@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,7 +126,9 @@ def build_cata_ele(self, ojb, elem1, install_path):
         shutil.copy(ojb.abspath(), osp.join(builddir, "fort.4"))
 
         # memory value
-        memlim = 2047 if "32" in platform.architecture()[0] else 4096
+        memlim = 4096 + int(float(self.env["addmem"]))
+        if "32" in platform.architecture()[0]:
+            memlim = 2047
         exec_pyaster(self, comm, cwd=builddir,
                      args=['--memory={0}'.format(memlim)])
 
