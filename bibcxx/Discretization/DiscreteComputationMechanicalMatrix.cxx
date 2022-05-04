@@ -222,12 +222,6 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
     return elemMatr;
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::massMatrix( ASTERDOUBLE time ) {
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
-
-    return elemMatr;
-};
-
 /** @brief Compute tangent matrix (not assembled) */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
 DiscreteComputation::computeTangentStiffnessMatrix(

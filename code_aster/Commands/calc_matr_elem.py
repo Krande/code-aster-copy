@@ -44,8 +44,14 @@ class ComputeElementaryMatrix(ExecuteCommand):
         # Case not yet supported - to fix
 
         myOption = keywords["OPTION"]
-        if myOption not in ("RIGI_MECA",):
+        if myOption not in ("RIGI_MECA", "MASS_MECA"):
             return False
+
+        struct_elem = keywords.get("CARA_ELEM")
+        # AMOR_MECA in x++ doesnot work for some structural elements
+        if struct_elem is None:
+            if myOption not in ("AMOR_MECA"):
+                return False
 
         maille = keywords.get("MAILLE")
         if maille is not None:
@@ -128,14 +134,33 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
             if myOption == "RIGI_MECA":
                 if hasExternalStateVariable:
-                    externVar = disc_comp.createExternalStateVariablesField(time)
+                    externVar = disc_comp.createExternalStateVariablesField(
+                        time)
                 else:
                     externVar = None
                 self._result = disc_comp.elasticStiffnessMatrix(
                     time, fourier, group_ma, externVarField=externVar
                 )
+
             elif myOption == "MASS_MECA":
-                self._result = disc_comp.massMatrix(time)
+                if hasExternalStateVariable:
+                    externVar = disc_comp.createExternalStateVariablesField(
+                        time)
+                else:
+                    externVar = None
+                self._result = disc_comp.massMatrix(
+                    time, group_ma, externVarField=externVar)
+
+            elif myOption == "AMOR_MECA":
+                if hasExternalStateVariable:
+                    externVar = disc_comp.createExternalStateVariablesField(
+                        time)
+                else:
+                    externVar = None
+                massMatrix = keywords.get("MASS_MECA")
+                stiffnessMatrix = keywords.get("RIGI_MECA")
+                self._result = disc_comp.dampingMatrix(
+                    massMatrix, stiffnessMatrix, time, group_ma, externVarField=externVar)
             else:
                 raise RuntimeError("Option %s not implemented" % (myOption))
         else:

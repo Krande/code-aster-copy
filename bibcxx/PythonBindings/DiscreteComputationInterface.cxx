@@ -154,7 +154,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                       If it empty, the full model is used
                   externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
-                  ElementaryMatrix: elementary elastic Stiffness matrices
+                  ElementaryMatrix: elementary elastic Stiffness matrix
             )",
               py::arg( "time" ) = 0.0, py::arg( "fourierMode" ) = 0,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
@@ -175,17 +175,37 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             ElementaryMatrix: elementary matrices
         )" )
         .def( "massMatrix", &DiscreteComputation::massMatrix, R"(
-            Return elementary matrices for mass
+            Return the elementary matrices for elastic Stiffness matrix
 
             Arguments:
                   time (float): current time (default: 0.0)
+                  groupOfCells (list[str]): compute matrices on given groups of cells.
+                      If it empty, the full model is used
+                  externVarField (fieldOnCellsReal): external state variable at current time
+            Returns:
+                  ElementaryMatrix: elementary mass matrix
+            )",
+              py::arg( "time" ) = 0., py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "externVarField" ) = nullptr )
+        .def( "dampingMatrix", &DiscreteComputation::dampingMatrix, R"(
+            Return the elementary matrices for elastic Stiffness matrix
 
-      Returns:
-            ElementaryMatrix: elementary matrices
-        )",
-              py::arg( "time" ) = 0. )
-        .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
-              R"(
+            Arguments:
+                  massMatrix : elementary mass matrix
+                  stiffnessMatrix : elementary stiffness matrix
+                  time (float): current time (default: 0.0)
+                  groupOfCells (list[str]): compute matrices on given groups of cells.
+                      If it empty, the full model is used
+                  externVarField (fieldOnCellsReal): external state variable at current time
+            Returns:
+                  ElementaryMatrix: elementary damping matrix
+            )",
+              py::arg( "massMatrix" ) = nullptr, py::arg( "stiffnessMatrix" ) = nullptr,
+              py::arg( "time" ) = 0., py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "externVarField" ) = nullptr )
+
+    .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
+          R"(
       Compute internal forces (integration of behaviour)
 
       Arguments:
@@ -204,9 +224,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Cauchy stress SIEF_ELGA (FieldOnCells),
             field of internal forces (FieldOnNodesReal),
         )",
-              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
-              py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
-              py::arg( "groupOfCells" ) = VectorString() )
+          py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "internVar" ),
+          py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
+          py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "computeTangentStiffnessMatrix", &DiscreteComputation::computeTangentStiffnessMatrix,
               R"(

@@ -119,9 +119,23 @@ class DiscreteComputation {
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_MECA)
      * @param time Time
+     * @param groupofCells GROUP_MA
      * @return Elementary matrices for mass matrix (MASS_MECA)
      */
-    ElementaryMatrixDisplacementRealPtr massMatrix( ASTERDOUBLE time = 0. );
+    ElementaryMatrixDisplacementRealPtr
+    massMatrix( const ASTERDOUBLE &time = 0.0, const VectorString &groupOfCells = VectorString(),
+                const FieldOnCellsRealPtr _externVarField = nullptr );
+    /**
+     * @brief Compute elementary matrices for damping matrix (AMOR_MECA)
+     * @param massMatrix Elementary matrices for mass matrix
+     * @param stiffnessMatrix  Elementary matrices for mechanical stiffness
+     * @return Elementary matrices for damping matrix (AMOR_MECA)
+     */
+    ElementaryMatrixDisplacementRealPtr
+    dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix = nullptr,
+                   const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix = nullptr,
+                   const ASTERDOUBLE &time = 0.0, const VectorString &groupOfCells = VectorString(),
+                   const FieldOnCellsRealPtr _externVarField = nullptr );
 
     /**
      * @brief Compute nodal field for kinematic boundary condition
