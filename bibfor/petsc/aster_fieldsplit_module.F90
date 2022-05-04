@@ -225,6 +225,7 @@ contains
             call PCFieldSplitSetIS(pc_list(idx), field_name1(1:length1), current_is, ierr)
             if (field_name1(1:length1)=='DXDYDZ') then
                 call ISSetBlockSize(current_is, to_petsc_int(3), ierr)
+                ASSERT(ierr == 0)
                 is_with_bs_3=current_is
             endif
             ASSERT(ierr == 0)
@@ -247,7 +248,10 @@ contains
             call PCFieldSplitSetIS(pc_list(idx), field_name2(1:length2), current_is, ierr)
             if (field_name2(1:length2)=='DXDYDZ') then
                 call ISSetBlockSize(current_is, to_petsc_int(3), ierr)
-                is_with_bs_3=current_is
+                ASSERT(ierr == 0)
+                ! Force the field to share the common communicator
+                call ISOnComm(current_is, mpicomm, PETSC_COPY_VALUES, is_with_bs_3, ierr)
+                ASSERT(ierr == 0)
             endif
             ASSERT(ierr == 0)
 !
@@ -319,7 +323,7 @@ contains
 !
 !  Local variables
 !
-        mpi_int :: rang, nbproc, mpicomm
+        mpi_int :: rang, nbproc, mpicomm, mpicomm2
         PetscErrorCode :: ierr
         MatNullSpace :: sp
         PetscScalar :: xx_v(1)
@@ -601,7 +605,7 @@ contains
 !
 ! Local variables
         aster_logical :: lmatd, lproc, lmhpc
-        mpi_int :: rang, nbproc
+        mpi_int :: rang, nbproc, mpicomm
         PetscErrorCode :: ierr
         PetscInt :: low, high, ndl
         character(len=19) :: nomat
@@ -620,6 +624,7 @@ contains
         call jemarq()
 !  on récupère le nombre de processeurs et le rang du processeur
 !  courant
+        call asmpi_comm('GET', mpicomm)
         call asmpi_info(rank=rang, size=nbproc)
 !  neqg : nombre global de degrés de liberté
         call dismoi('NB_EQUA', nonu, 'NUME_DDL', repi = neqg)
@@ -712,7 +717,7 @@ contains
             endif
         enddo
 !
-        call ISCreateGeneral(PETSC_COMM_WORLD, ndl, idl, PETSC_COPY_VALUES, is_of_field,&
+        call ISCreateGeneral(mpicomm, ndl, idl, PETSC_COPY_VALUES, is_of_field,&
                              ierr)
         ASSERT(ierr == 0)
 !
