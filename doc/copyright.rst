@@ -4,7 +4,7 @@ Copyright
 
 code_aster and this documentation is:
 
-Copyright © 1989-2019 EDF R&D - www.code-aster.org
+Copyright © 1989-2022 EDF R&D - www.code-aster.org
 
 Copyright © 2018 Aether Engineering Solutions - www.aethereng.com
 
@@ -22,4 +22,4 @@ Copyright © 2005 IFPEN - M. Guitton
 
 
 The list of the most of the contributors to the project is available in a file
-named :file:`CONTRIBUTORS.txt`.
+named :file:`AUTHORS.txt`.

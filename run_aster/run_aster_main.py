@@ -355,6 +355,7 @@ def main(argv=None):
         args.only_proc0 = CFG.get("only-proc0", False)
 
     wrkdir = args.wrkdir or create_temporary_dir(dir=CFG.get("tmpdir"))
+    exitcode = -1
     try:
         if need_split or need_mpiexec:
             logger.warning(
@@ -380,10 +381,11 @@ def main(argv=None):
                 logger.info("Running: %s", cmd)
                 proc = run(cmd, shell=True)
                 status = Status.load(statfile)
-                if proc.returncode != 0 and not status.is_completed():
+                exitcode = proc.returncode
+                if exitcode != 0 and not status.is_completed():
                     break
             shutil.rmtree(expdir)
-            return proc.returncode
+            return exitcode
 
         if args.only_proc0 and procid > 0:
             logger.setLevel(WARNING)
@@ -403,6 +405,7 @@ def main(argv=None):
             opts["exectool"] = wrapper
         calc = RunAster.factory(export, **opts)
         status = calc.execute(wrkdir)
+        exitcode = status.exitcode
         if args.statusfile:
             status.save(args.statusfile)
         if tmpf and not opts["env"]:
@@ -410,7 +413,7 @@ def main(argv=None):
     finally:
         if not args.wrkdir:
             shutil.rmtree(wrkdir)
-    return status.exitcode
+    return exitcode
 
 
 if __name__ == "__main__":
