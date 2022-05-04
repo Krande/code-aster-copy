@@ -192,7 +192,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             displ (FieldOnNodes): displacement field at begin of current time
             displ_incr (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
-            variP (FieldOnCells): field of internal state variables at begin of current time
+            internVar (FieldOnCells): field of internal state variables at begin of current time
             timeFieldPrev (constantFieldOnCells): time at begin of current time
             timeFieldCurr (constantFieldOnCells): time at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -204,8 +204,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Cauchy stress SIEF_ELGA (FieldOnCells),
             elementary vector of internal forces (ElementaryVectorDisplacement),
         )",
-              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
-              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
+              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
+              py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "computeTangentStiffnessMatrix", &DiscreteComputation::computeTangentStiffnessMatrix,
@@ -216,7 +216,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             displ (FieldOnNodes): displacement field at begin of current time
             displ_incr (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
-            variP (FieldOnCells): field of internal state variables at begin of current time
+            internVar (FieldOnCells): field of internal state variables at begin of current time
             timeFieldPrev (constantFieldOnCells): time at begin of current time
             timeFieldCurr (constantFieldOnCells): time at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -229,8 +229,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             elementary vector of internal forces (ElementaryVectorDisplacement),
             elementary tangent matrix (ElementaryMatrixDisplacement)
         )",
-              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
-              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
+              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
+              py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "computeTangentPredictionMatrix",
@@ -241,7 +241,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             displ (FieldOnNodes): displacement field at begin of current time
             displ_incr (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
-            variP (FieldOnCells): field of internal state variables at begin of current time
+            internVar (FieldOnCells): field of internal state variables at begin of current time
             timeFieldPrev (constantFieldOnCells): time at begin of current time
             timeFieldCurr (constantFieldOnCells): time at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
@@ -252,7 +252,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             elementary tangent matrix (ElementaryMatrixDisplacement),
             elementary vector of internal forces (ElementaryVectorDisplacement)
         )",
-              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ), py::arg( "variP" ),
-              py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
+              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
+              py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
               py::arg( "groupOfCells" ) = VectorString() );
 };

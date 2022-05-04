@@ -22,151 +22,141 @@ from code_aster.Commands import *
 from code_aster.MacroCommands.NonLinearSolver import NonLinearSolver, TimeStepper
 from code_aster.Utilities import haveMPI
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',), INFO=1,)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = code_aster.TestCase()
 
-mesh=LIRE_MAILLAGE(FORMAT='MED', UNITE=20, PARTITIONNEUR='PTSCOTCH')
+mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, PARTITIONNEUR="PTSCOTCH")
 
-mesh=DEFI_GROUP(MAILLAGE=mesh, reuse=mesh, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),)
+mesh = DEFI_GROUP(MAILLAGE=mesh, reuse=mesh, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
-model=AFFE_MODELE(MAILLAGE=mesh,
-                    AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),)
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-FTRACTUB=DEFI_FONCTION(NOM_PARA='EPSI',
-                       VALE=(1000.,  2000.,
-                             2000.,  5000.,),
-                       PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='LINEAIRE',)
+FTRACTUB = DEFI_FONCTION(
+    NOM_PARA="EPSI",
+    VALE=(1000.0, 2000.0, 2000.0, 5000.0),
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+)
 
-acier=DEFI_MATERIAU(ELAS=_F(E=200000.,
-                            NU=0.3,),
-                    ECRO_LINE=_F(D_SIGM_EPSI=2000.,
-                                 SY=200.,),)
+acier = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=2000.0, SY=200.0))
 
-mater=AFFE_MATERIAU(MAILLAGE=mesh,
-                   AFFE=_F(TOUT='OUI',
-                           MATER=acier,),)
+mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=acier))
 
 
-encast=AFFE_CHAR_MECA(MODELE=model,
-                     DDL_IMPO=(_F(GROUP_NO='BAS',
-                                   DX=0, DY=0.0, DZ=0.0,
-                                    ),),)
+encast = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_NO="BAS", DX=0, DY=0.0, DZ=0.0),))
 
-depl=AFFE_CHAR_MECA(MODELE=model,
-                     DDL_IMPO=(_F(GROUP_NO='HAUT',
-                                    DZ=1.0,
-                                    ),),)
+depl = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_NO="HAUT", DZ=1.0),))
 
-LIST=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=2,),)
+LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                        VALE=(0., 0.,
-                            1000., 1000.))
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1000.0, 1000.0))
 
 if haveMPI():
-    linear_solver =  {'METHODE': 'MUMPS', 'RENUM': 'PTSCOTCH'}
+    linear_solver = {"METHODE": "MUMPS", "RENUM": "PTSCOTCH"}
 else:
-    linear_solver =  {'METHODE': 'MUMPS', 'RENUM': 'AUTO', 'NPREC': 8}
+    linear_solver = {"METHODE": "MUMPS", "RENUM": "AUTO", "NPREC": 8}
 
 # STAT_NON_LINE DE REFERENCE
-SOLUT=STAT_NON_LINE(MODELE=model,
-                    CHAM_MATER=mater,
-                    EXCIT=(_F(CHARGE=encast,FONC_MULT=RAMPE),
-                           _F(CHARGE=depl,FONC_MULT=RAMPE),),
-                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-                    NEWTON=_F(REAC_INCR=1,
-                              PREDICTION='ELASTIQUE',
-                              MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    CONVERGENCE=_F(RESI_GLOB_MAXI=1e-8,),
-                    INCREMENT=_F(LIST_INST=LIST,),
-                    SOLVEUR = linear_solver,
-                    INFO=1)
+SOLUT = STAT_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=mater,
+    EXCIT=(_F(CHARGE=encast, FONC_MULT=RAMPE), _F(CHARGE=depl, FONC_MULT=RAMPE)),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+    NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1e-8),
+    INCREMENT=_F(LIST_INST=LIST),
+    SOLVEUR=linear_solver,
+    INFO=1,
+)
 
 snl = NonLinearSolver()
 snl.setPhysicalProblem(model, mater)
-snl.setLinearSolver(keywords= linear_solver)
+snl.setLinearSolver(keywords=linear_solver)
 snl.phys_pb.addLoadFromDict({"CHARGE": encast, "FONC_MULT": RAMPE})
 snl.phys_pb.addLoadFromDict({"CHARGE": depl, "FONC_MULT": RAMPE})
-snl.setKeywords(CONVERGENCE = {"RESI_GLOB_MAXI": 1.e-8, "ITER_GLOB_MAXI": 20}, NEWTON = {"PREDICTION" : "ELASTIQUE"})
+snl.setKeywords(
+    CONVERGENCE={"RESI_GLOB_MAXI": 1.0e-8, "ITER_GLOB_MAXI": 20}, NEWTON={"PREDICTION": "ELASTIQUE"}
+)
 snl.setBehaviourProperty({"RELATION": "VMIS_ISOT_LINE"})
 
 
-timeStepper = TimeStepper([0.5, 1.])
+timeStepper = TimeStepper([0.5, 1.0])
 snl.setStepper(timeStepper)
 
 snl.run()
 
-#=========================================================
+# =========================================================
 #          DETERMINATION DE LA REFERENCE
-#=========================================================
+# =========================================================
 
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
-SIGMA_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
-                   NOM_CHAM='SIEF_ELGA', RESULTAT=SOLUT,
-                   INST=1.
-                    )
+SIGMA_REF = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=SOLUT, INST=1.0
+)
 
-VARI_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
-                   NOM_CHAM='VARI_ELGA', RESULTAT=SOLUT,
-                   INST=1.
-                    )
+VARI_REF = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=SOLUT, INST=1.0
+)
 
 
 SIGMA = snl.phys_state.stress
-VARI = snl.phys_state.variP
+VARI = snl.phys_state.internVar
 
 
-#=========================================================
+# =========================================================
 #            REALISATION DES TESTS
-#=========================================================
+# =========================================================
 
 DIF_SIG = SIGMA_REF - SIGMA
 
 DIF_VAR = VARI_REF - VARI
 
-TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
-                        REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-08,
-                        TYPE_TEST='MIN',
-                        CHAM_GD=DIF_SIG,
-                        VALE_CALC= 1.5063505998114124E-12,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI',),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-08,
-                        TYPE_TEST='MAX',
-                        CHAM_GD=DIF_SIG,
-                        VALE_CALC= 1.7053025658242404E-12,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI',),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='AUTRE_ASTER',
-                        ORDRE_GRANDEUR=1.E-08,
-                        PRECISION=1.E-08,
-                        TYPE_TEST='MIN',
-                        CHAM_GD=DIF_VAR,
-                        VALE_CALC= 0.0,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI',),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='AUTRE_ASTER',
-                        ORDRE_GRANDEUR=1.0e-8,
-                        PRECISION=1.E-08,
-                        TYPE_TEST='MAX',
-                        CHAM_GD=DIF_VAR,
-                        VALE_CALC= 0.0,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI',),
-                     ),
-          )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=1.0e-08,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_SIG,
+            VALE_CALC=1.5063505998114124e-12,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=1.0e-08,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_SIG,
+            VALE_CALC=1.7053025658242404e-12,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            ORDRE_GRANDEUR=1.0e-08,
+            PRECISION=1.0e-08,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_VAR,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            ORDRE_GRANDEUR=1.0e-8,
+            PRECISION=1.0e-08,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_VAR,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+    )
+)
 
 FIN()
