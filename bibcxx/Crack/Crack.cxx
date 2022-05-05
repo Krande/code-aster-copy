@@ -3,7 +3,7 @@
  * @brief Implementation de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,6 +23,8 @@
 
 /* person_in_charge: nicolas.pignet at edf.fr */
 
+#include "astercxx.h"
+
 #include "Crack/Crack.h"
 
 Crack::Crack( const std::string name )
@@ -32,10 +34,31 @@ Crack::Crack( const std::string name )
       _fondNoeu( JeveuxVectorChar8( getName() + ".FOND.NOEUD" ) ),
       _infNormNoeud( JeveuxVectorChar8( getName() + ".INFNORM.NOEU" ) ),
       _supNormNoeu( JeveuxVectorChar8( getName() + ".SUPNORM.NOEU" ) ),
+      _infNormNoeud2( JeveuxVectorChar8( getName() + ".INFNORM.NOEU2" ) ),
+      _supNormNoeu2( JeveuxVectorChar8( getName() + ".SUPNORM.NOEU2" ) ),
       _levreSupMail( JeveuxVectorChar8( getName() + ".LEVRESUP.MAIL" ) ),
-      _info( JeveuxVectorChar8( getName() + ".INFO" ) ),
+      _info( JeveuxVectorChar24( getName() + ".INFO" ) ),
       _fondTailleR( JeveuxVectorReal( getName() + ".FOND.TAILLE_R" ) ),
       _abscur( JeveuxVectorReal( getName() + ".ABSCUR" ) ),
       _ltno( new FieldOnNodesReal( getName() + ".LTNO      " ) ),
       _lnno( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
       _basLoc( new FieldOnNodesReal( getName() + ".BASLOC    " ) ){};
+
+void Crack::updateValuePointers( ){
+    _info->updateValuePointer();
+}
+
+std::string Crack::getCrackTipCellsType( ){
+  this->updateValuePointers();
+  return trim( ( *_info )[4].toString() );
+}
+
+std::string Crack::getUpperLipGroupName( ){
+  this->updateValuePointers();
+  return trim( ( *_info )[5].toString() );
+}
+
+std::string Crack::getLowerLipGroupName( ){
+  this->updateValuePointers();
+  return trim( ( *_info )[6].toString() );
+}

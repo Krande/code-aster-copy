@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -221,8 +221,6 @@ subroutine op0060()
         call wkvect(resu//'.NORMALE', 'G V R8', 3, jnorm)
         call getvr8(' ', 'NORMALE', nbval=3, vect=zr(jnorm), nbret=nvenor)
     endif
-
-
 !   OBJET CONTENANT LA BASE LOCALE EN CHAQUE NOEUD DU FOND DE FISSURE
 !   OBJET QUI N'EXISTE QUE DANS DEFI_FOND_FISS
     basnof = resu//'.BASNOF'
@@ -279,16 +277,25 @@ subroutine op0060()
     call getvtx(' ', 'CONFIG_INIT', scal=confin, nbret=ibid)
     if (confin .eq. 'COLLEE') then
         call jeexin(resu//'.LEVRESUP.MAIL', irets)
+
         if (irets .ne. 0) then
+
             call fonnof2(resu, noma, typfon, nbnoff, basnof)
         endif
     endif
 !
 !     ---------------------------------------------------------------
 !     STOCKAGE D'INFOS UTILES DANS LA SD EN SORTIE
+!     1- SYMETRIE (OUI, NON)
+!     2- CONFIG_INIT (COLLE, DECOLLE)
+!     3- TYPE_FOND (OUVERT, FERME)
+!     4- NOM DU MAILLAGE
+!     5- TYPE DE MAILLE EN FOND DE FISSURE (SEG2 ou SEG3)
+!     6- NOM DU GROUPE DE MAILLE POUR LA LEVRE SUP
+!     7- NOM DU GROUPE DE MAILLE POUR LA LEVRE INF      
 !     ---------------------------------------------------------------
 !
-    call foninf2(resu, typfon, noma)
+    call foninf2(resu, typm, typfon, noma)
 !
 !     ---------------------------------------------------------------
 !     IMPRESSIONS SI INFO=2

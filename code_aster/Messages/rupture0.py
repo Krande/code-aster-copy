@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ au résultat à considérer.
     19: _("""
 Problème à la récupération des noeuds de la lèvre supérieure :
 -> Risque et Conseil :
-Pour un calcul avec POST_K1_K2_K3, la lèvre supérieure de la fissure doit
+Pour un calcul avec POST_K1_K2_K3 la lèvre supérieure de la fissure doit
 être obligatoirement définie dans DEFI_FOND_FISS à l'aide du mot-clé
 LEVRE_SUP. Vérifier la définition du fond de fissure.
 """),

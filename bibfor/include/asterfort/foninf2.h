@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,9 @@
 !
 !
 interface
-    subroutine foninf2(resu, typfon, noma)
+    subroutine foninf2(resu, typm, typfon, noma)
         character(len=8) :: resu
+        character(len=8) :: typm
         character(len=8) :: typfon
         character(len=8) :: noma
     end subroutine foninf2

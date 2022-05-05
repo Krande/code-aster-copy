@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,6 +125,34 @@ TEST_TABLE(
            VALE_CALC=51.9513883065,
            NOM_PARA='G_IRWIN',
            TABLE=GK01,)
+
+
+# create a dummy field to test ETAT_INIT
+zero=0.0
+EPSIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
+                   OPERATION='AFFE',
+                   MODELE=MO,
+                   AFFE=_F(TOUT='OUI',
+                           NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPYZ','EPXZ'),
+                            VALE=(zero,zero,zero,zero,zero,zero,),),);
+
+J5=POST_JMOD(RESULTAT=CHAMDEPL, 
+             FOND_FISS=FOND1, 
+             NB_COUCHES=8, 
+             OPTION='J',
+          GROUP_NO='P0',
+          ETAT_INIT=_F(EPSI=EPSIELGA),
+          TITRE='POST_J 4',)
+          
+IMPR_TABLE(TABLE=J5,UNITE=6)
+
+
+TEST_TABLE(
+           VALE_CALC=52.00744926654716,
+           NOM_PARA='J',
+           TABLE=J5,)
+
+
 
 FIN()
 #

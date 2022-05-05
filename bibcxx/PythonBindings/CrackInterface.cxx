@@ -29,5 +29,9 @@ void exportCrackToPython( py::module_ &mod ) {
 
     py::class_< Crack, Crack::CrackPtr, DataStructure >( mod, "Crack" )
         .def( py::init( &initFactoryPtr< Crack > ) )
-        .def( py::init( &initFactoryPtr< Crack, std::string > ) );
+        .def( py::init( &initFactoryPtr< Crack, std::string > ) )
+        .def( "getCrackTipCellsType", &Crack::getCrackTipCellsType )
+        .def( "getLowerLipGroupName", &Crack::getLowerLipGroupName )
+        .def( "getUpperLipGroupName", &Crack::getUpperLipGroupName );
+
 };

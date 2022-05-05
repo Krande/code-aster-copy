@@ -53,12 +53,18 @@ class Crack : public DataStructure {
     JeveuxVectorChar8 _infNormNoeud;
     /** @brief Objet Jeveux '.SUPNORM.NOEU' : Vecteur (K8) contenant la liste
      des noeuds de la lèvre supérieure sur la direction normale au fond de fissure. */
-    JeveuxVectorChar8 _supNormNoeu;
+    JeveuxVectorChar8 _supNormNoeu;    
+    /** @brief Objet Jeveux '.INFNORM.NOEU2' : Vecteur (K8) contenant la liste
+     des noeuds de la lèvre inférieure sur la direction normale au fond de fissure. POST_J*/
+    JeveuxVectorChar8 _infNormNoeud2;
+    /** @brief Objet Jeveux '.SUPNORM.NOEU2' : Vecteur (K8) contenant la liste
+     des noeuds de la lèvre supérieure sur la direction normale au fond de fissure. POST_J*/
+    JeveuxVectorChar8 _supNormNoeu2;
     /** @brief Objet Jeveux '.LEVRESUP.MAIL' : Vecteur (K8) contenant la liste
      des mailles de la lèvre supérieure de la fissure. */
     JeveuxVectorChar8 _levreSupMail;
-    /** @brief Objet Jeveux '.INFO' : Vecteur (K8) contenant les informations sur la fissure. */
-    JeveuxVectorChar8 _info;
+    /** @brief Objet Jeveux '.INFO' : Vecteur (K24) contenant les informations sur la fissure. */
+    JeveuxVectorChar24 _info;
     /** @brief Objet Jeveux '.FOND.TAILLE_R' :  Vecteur de réels contenant pour chacun
      des noeuds du fond, une estimation de la taille suivant la direction radiale,
      des mailles qui leur sont connectées. */
@@ -88,6 +94,11 @@ class Crack : public DataStructure {
      * @brief Constructeur
      */
     Crack( const std::string name = ResultNaming::getNewResultName() );
+
+    void updateValuePointers();
+    std::string getCrackTipCellsType();
+    std::string getUpperLipGroupName();
+    std::string getLowerLipGroupName();
 };
 
 /**

@@ -61,10 +61,11 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !
     integer :: nbma, jlima, im, n1,  nbnoe, iret, jsup, jnols, inols
     integer :: idlino, nbnols, jcoors, in, nbnoft, inoff, ifm, niv, jnofo
-    integer :: nuno, jints, nbtrls, iera
+    integer :: nuno, jints, nbtrls, iera, inols2, inoli2
     integer :: numfin, isym, inoli, jinf, jnoli, nbnoli, jcoori, jinti
     integer :: nbtrli, ino, inos, nbs, numun, jts, jti, nbi, inoi
-    integer :: irlev,  ndim
+    integer :: jnofos, irlev,  ndim
+    integer :: ninfsup_norm,ninfsup_norm2
     real(kind=8) :: x0(3), x1, x2, y1, y2, z1, z2, d, vplan(3), dmin
     real(kind=8) :: dmax, prec, preco, ps, vectan(3), precn
     character(len=6) :: nompro
@@ -82,6 +83,11 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
     call infniv(ifm, niv)
 !   INDICATEUR DE COMMANDE POUR OREINO: 3-DEFI_FOND_FISS/PREC_NORM
     iera = 3
+    jnofos = 0
+    
+    
+    ninfsup_norm=20
+    ninfsup_norm2=100
 !
 !     ------------------------------------------------------------------
 !                        LE MAILLAGE, LE FOND
@@ -101,6 +107,10 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
         call jeveuo(fonnoe, 'L', jnofo)
     else
         ASSERT(.FALSE.)
+!        fonnoe =resu//'.FOND_INF.NOEU'
+!        call jeveuo(fonnoe, 'L', jnofo)
+!        fonnoe =resu//'.FOND_SUP.NOEU'
+!        call jeveuo(fonnoe, 'L', jnofos)
     endif
 !
 !     BASE LOCALE EN FOND DE FISSURE
@@ -110,11 +120,13 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !                  VECTEUR RESULTAT
 !     ------------------------------------------------------------------
 !
-    call wkvect(resu//'.SUPNORM.NOEU', 'G V K8', nbnoff*20, inols)
+    call wkvect(resu//'.SUPNORM.NOEU', 'G V K8', nbnoff*ninfsup_norm, inols)
+    call wkvect(resu//'.SUPNORM.NOEU2', 'G V K8', nbnoff*ninfsup_norm2, inols2)
 !
     call jeexin(resu//'.LEVREINF.MAIL', isym)
     if (isym .ne. 0) then
-        call wkvect(resu//'.INFNORM.NOEU', 'G V K8', nbnoff*20, inoli)
+       call wkvect(resu//'.INFNORM.NOEU', 'G V K8', nbnoff*ninfsup_norm, inoli)
+       call wkvect(resu//'.INFNORM.NOEU2', 'G V K8', nbnoff*ninfsup_norm2, inoli2)
     endif
 !
 !     ------------------------------------------------------------------
@@ -248,6 +260,7 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
                 endif
 310             continue
             end do
+
 !
             vectan(1) = vale(3*(numun-1)+1)-x1
             vectan(2) = vale(3*(numun-1)+2)-y1
@@ -277,10 +290,13 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
             preco = prec*10
             call oreino(noma, zi(jti), nbi, nuno, numfin,&
                         vale, critn, preco, iera, iret)
-!
-            do in = 1, min(nbi, 20)
-                call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli-1 + 20*(inoff-1)+in))
+
+           do in = 1, min(nbi, ninfsup_norm)
+              call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli-1 + ninfsup_norm*(inoff-1)+in))
             end do
+            do in = 1, min(nbi, ninfsup_norm2)
+              call jenuno(jexnum(nomnoe, zi(jti-1+in)), zk8(inoli2-1 + ninfsup_norm2*(inoff-1)+in))
+           end do
 !
             call jedetr('&&PKFOND_INTERS_INF')
             call jedetr('&&PKFOND_TRAV_INF')
@@ -299,6 +315,9 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
         call wkvect('&&PKFOND_TRAV_SUP', 'V V I', nbtrls, jts)
 !
 ! ---- ORDRE DES NOEUDS
+        if (irlev .eq. 0) then
+            call jenonu(jexnom(nomnoe, zk8(jnofos-1 + inoff)), nuno)
+        endif
         numfin = nuno
         dmax = 0.d0
         dmin = 100.d0
@@ -352,8 +371,11 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
         call oreino(noma, zi(jts), nbs, nuno, numfin,&
                     vale, critn, preco, iera, iret)
 !
-        do in = 1, min(nbs, 20)
-            call jenuno(jexnum(nomnoe, zi(jts-1 + in)), zk8(inols-1 + 20*(inoff-1)+in))
+        do in = 1, min(nbs, ninfsup_norm)
+            call jenuno(jexnum(nomnoe, zi(jts-1 + in)), zk8(inols-1 + ninfsup_norm*(inoff-1)+in))
+        end do
+        do in = 1, min(nbs, ninfsup_norm2)
+            call jenuno(jexnum(nomnoe, zi(jts-1+in)), zk8(inols2-1 + ninfsup_norm2*(inoff-1)+in))
         end do
 !
         call jedetr('&&PKFOND_INTERS_SUP')

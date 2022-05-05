@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine foninf2(resu, typfon, noma)
+subroutine foninf2(resu, typm, typfon, noma)
 !
     implicit none
 #include "jeveux.h"
@@ -24,8 +24,9 @@ subroutine foninf2(resu, typfon, noma)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: resu, typfon, noma
+    character(len=8) :: resu, typm, typfon, noma
 !
 !
 !       ---------------------------------------------------------------
@@ -34,15 +35,34 @@ subroutine foninf2(resu, typfon, noma)
 !
 ! IN/OUT
 !       RESU   : NOM DE LA SD EN SORTIE DE DEFI_FOND_FISS
-!       TYPFON : TYPE DE FOND DE FISSURE
+!       TYPFON : TYPE DE FOND DE FISSURE (OUVERT ou FERME)
+!       TYPM   : TYPE DE MAILLE DU FOND DE FISSURE (SEG2 ou SEG3)
+!       NOMA   : NOM DU MAILLAGE
+! 
 !
-!
-    integer ::  ibid, jinfo
+    integer ::  ibid, jinfo, n1, n2, n3
     character(len=8) :: syme, confin
+    character(len=24) :: levsup, levinf
 !
 !     -----------------------------------------------------------------
 !
     call jemarq()
+
+    levsup = ''
+    levinf = ''
+
+    call jeveuo(noma//'.DIME', 'L', n1)
+!
+    call getvtx('LEVRE_SUP', 'GROUP_MA', iocc=1, nbval=0, nbret=n2)
+    call getvtx('LEVRE_INF', 'GROUP_MA', iocc=1, nbval=0, nbret=n3)
+!
+    if (n2 .ne. 0) then    
+        call getvtx('LEVRE_SUP', 'GROUP_MA',iocc=1, scal=levsup)     
+    endif
+!
+    if (n3 .ne. 0) then    
+        call getvtx('LEVRE_INF', 'GROUP_MA',iocc=1, scal=levinf)     
+    endif
 !
 !     RECUPERATION DU MOT-CLE SYME
     call getvtx(' ', 'SYME', scal=syme, nbret=ibid)
@@ -53,19 +73,32 @@ subroutine foninf2(resu, typfon, noma)
     ASSERT(confin.eq.'DECOLLEE'.or.confin.eq.'COLLEE')
 !
 !     CREATION DE L'OBJET .INFO DANS LA SD FOND_FISS
-    call wkvect(resu//'.INFO', 'G V K8', 4, jinfo)
+    call wkvect(resu//'.INFO', 'G V K24', 7, jinfo)
 !
 !     STOCKAGE DU MOT-CLE SYME
-    zk8(jinfo-1+1) = syme
+    zk24(jinfo-1+1) = syme
 !
 !     STOCKAGE DU MOT-CLE CONFIG_INIT
-    zk8(jinfo-1+2) = confin
+    zk24(jinfo-1+2) = confin
 !
 !     STOCKAGE DU MOT-CLE TYPE_FOND
-    zk8(jinfo-1+3) = typfon
+    zk24(jinfo-1+3) = typfon
 !
 !     STOCKAGE DU NOM DU MAILLAGE
-    zk8(jinfo-1+4) = noma
+    zk24(jinfo-1+4) = noma
+
+!     STOCKAGE DU TYPE DE MAILLE EN FOND DE FISSURE (3D)
+    if (zi(n1-1+6).eq.3) then
+        zk24(jinfo-1+5) = typm
+    else
+        zk24(jinfo-1+5) = ''
+    endif
+
+!     STOCKAGE DU NOM DE GROUPE DE MAIL LEVRESUP
+    zk24(jinfo-1+6) = levsup
+
+!     STOCKAGE DU NOM DE GROUPE DE MAIL LEVREINF
+    zk24(jinfo-1+7) = levinf
 
     call jedema()
 end subroutine

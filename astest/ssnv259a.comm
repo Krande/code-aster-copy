@@ -1,0 +1,222 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+# MESH
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',UNITE=20)
+# MAIL=DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
+               # CREA_GROUP_NO=(_F(NOM='FFIS',
+                                 # NOEUD=('N3','N39','N75','N165',)),),)
+# MAIL=DEFI_GROUP(reuse =MAIL,MAILLAGE=MAIL,
+                # CREA_GROUP_NO=(_F(NOM='FFIS1',OPTION='SEGM_DROI_ORDO',
+                                # GROUP_NO ='FFIS',
+                                # NOEUD_ORIG='N3',
+                                # NOEUD_EXTR='N165',
+                                # PRECISION=1.,
+                                # CRITERE='RELATIF',),),)
+
+# START CALCUL
+
+MA=DEFI_MATERIAU(ELAS=_F(E=197000, NU=0.3,),
+                 ECRO_LINE=_F(D_SIGM_EPSI=0., SY=800.),)
+
+MATE=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI', MATER=MA))
+
+MODE=AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI',
+                                PHENOMENE='MECANIQUE', MODELISATION='3D'))
+
+'''
+
+This is the commands file that generates the RMED: SSNV259a.MMED
+
+CL=AFFE_CHAR_MECA(MODELE=MODE,
+                  DDL_IMPO=(_F(GROUP_MA='SYMX', DX=0.),
+                            _F(GROUP_MA='SYMY', DY=0.),
+                            _F(GROUP_MA='SULIG', DZ=0.),),)
+
+CH=AFFE_CHAR_MECA(MODELE=MODE,
+                  FORCE_FACE=_F(GROUP_MA='SSUP', FZ=100.),)
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.,0.,1.,1.,),
+                    PROL_DROITE='LINEAIRE',)
+
+L_INST=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F(JUSQU_A=1., NOMBRE=10),)
+
+RESUIMP=STAT_NON_LINE(MODELE=MODE,
+                      CHAM_MATER=MATE,
+                      EXCIT=(_F(CHARGE=CL),
+                             _F(CHARGE=CH, FONC_MULT=RAMPE)),
+                      COMPORTEMENT=_F(RELATION = 'ELAS_VMIS_LINE',
+                                      DEFORMATION = 'PETIT'),
+                      INCREMENT=_F(LIST_INST=L_INST,),
+                      NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6),
+                      SOLVEUR=_F(METHODE='MULT_FRONT'),
+                      ARCHIVAGE=_F(LIST_INST=L_INST,),)
+'''
+#
+
+RESUIMP = LIRE_RESU(TYPE_RESU  = 'EVOL_NOLI',
+                 FORMAT     = 'MED',
+                 MODELE     = MODE,
+                 CHAM_MATER=MATE,
+                 FORMAT_MED = (
+                 
+                                  _F( NOM_RESU = 'RESUIMP',
+                                   NOM_CHAM = 'SIEF_ELGA'),
+                 
+                                  _F( NOM_RESU = 'RESUIMP',
+                                   NOM_CHAM = 'VARI_ELGA'),
+                                  
+                                  _F( NOM_RESU = 'RESUIMP',
+                                   NOM_CHAM = 'DEPL'),
+                                   
+                                   ),
+                 UNITE      = 20,
+                 TOUT_ORDRE = 'OUI',);
+
+
+FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
+                    SYME='OUI',
+                    FOND_FISS=_F(GROUP_MA='FFIS'),
+                    LEVRE_SUP=_F(GROUP_MA='SULEV'),)
+LISTG = (0, 3, 7, 10)
+LISTI = (1.0)
+
+# CALC_G
+G=CALC_G(
+        RESULTAT=RESUIMP,
+        OPTION='G', 
+        INST=LISTI,
+        THETA=_F(FISSURE=FISS,),)
+         
+IMPR_TABLE(TABLE=G, UNITE=6)
+
+TEST_TABLE(TABLE=G,
+          FILTRE=(_F(  NOM_PARA = 'NUM_PT',
+                      VALE_I = 1, 
+                      ),
+                      _F(NOM_PARA = 'INST',
+                      VALE = LISTI ),
+                      ),
+          NOM_PARA='G',
+          VALE_CALC=9.42530E-02,
+          VALE_REFE=0.118,
+          CRITERE='ABSOLU',
+          PRECISION= 0.05,
+          REFERENCE='ANALYTIQUE' )
+  
+     
+# POST_K1_K2_K3
+K=POST_K1_K2_K3(RESULTAT=RESUIMP, 
+                FOND_FISS=FISS, 
+                INST=LISTI,
+                TITRE='POST_K1_K2_K3')
+IMPR_TABLE(TABLE=K, UNITE=6)
+
+TEST_TABLE(TABLE=K,
+          FILTRE=(_F(  NOM_PARA = 'NUM_PT',
+                      VALE_I = 1, 
+                      ),
+                      _F(NOM_PARA = 'INST',
+                      VALE = LISTI ),
+                      ),
+          NOM_PARA='G',
+          VALE_CALC=0.08357822555740928,
+          VALE_REFE=0.118,
+          CRITERE='ABSOLU',
+          PRECISION= 0.05,
+          REFERENCE='ANALYTIQUE' )
+          
+# POST_JMOD
+
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+               CREA_GROUP_NO= (
+               _F( NOM = 'NPJ', NOEUD = 'N3'),
+               ),
+)
+          
+
+
+
+## TEST3
+J3=POST_JMOD(
+           RESULTAT=RESUIMP,
+           FOND_FISS=FISS, 
+           NB_COUCHES=2,
+           TITRE='01 - POST_JMOD', 
+           OPTION='JMOD',
+           NB_POINT_FOND=2,
+                     )
+           
+IMPR_TABLE(TABLE=J3, UNITE=6)
+
+TEST_TABLE(TABLE=J3,
+          FILTRE=(_F(  NOM_PARA = 'NUM_PT',
+                      VALE_I = 1, 
+                      ),
+                      _F(NOM_PARA = 'INST',
+                      VALE = LISTI ),
+                      ),
+          NOM_PARA='J',
+          VALE_CALC=0.09886667799671604,
+          VALE_REFE=0.118,
+          CRITERE='ABSOLU',
+          PRECISION= 3E-2,
+          REFERENCE='ANALYTIQUE' )
+  
+
+# create a dummy field to test ETAT_INIT
+zero=0.0
+EPSIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
+                   OPERATION='AFFE',
+                   MODELE=MODE,
+                   AFFE=_F(TOUT='OUI',
+                           NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPYZ','EPXZ'),
+                            VALE=(zero,zero,zero,zero,zero,zero,),),);
+# TEST6
+J4=POST_JMOD(
+           RESULTAT=RESUIMP,
+           FOND_FISS=FISS, 
+           NB_COUCHES=2,
+           TITRE='01 - POST_JMOD', 
+           OPTION='J',
+           NB_POINT_FOND=2,
+           ETAT_INIT=_F(EPSI=EPSIELGA),)
+           
+IMPR_TABLE(TABLE=J4, UNITE=6)
+
+TEST_TABLE(TABLE=J4,
+          FILTRE=(_F(  NOM_PARA = 'NUM_PT',
+                      VALE_I = 1, 
+                      ),
+                      _F(NOM_PARA = 'INST',
+                      VALE = LISTI ),
+                      ),
+          NOM_PARA='J',
+          VALE_CALC=0.09886667799671604,
+          VALE_REFE=0.118,
+          CRITERE='ABSOLU',
+          PRECISION= 3E-2,
+          REFERENCE='AUTRE_ASTER' )
+  
+FIN()
