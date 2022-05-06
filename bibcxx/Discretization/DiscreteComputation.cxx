@@ -677,7 +677,7 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
 
 /** @brief Compute internal forces, stress and internal state variables */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
-            ElementaryVectorDisplacementRealPtr >
+            FieldOnNodesRealPtr >
 DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
                                             const FieldOnNodesRealPtr displ_incr,
                                             const FieldOnCellsRealPtr stress,
@@ -738,23 +738,28 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
     _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
 
     // Compute
+    FieldOnNodesRealPtr internalForces;
     if ( currModel->existsFiniteElement() ) {
         _calcul->compute();
         if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) )
             elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
         elemVect->build();
+        internalForces = elemVect->assemble( _phys_problem->getDOFNumbering() );
     };
 
     std::string exitFieldName = ljust( exitField->getName(), 19 );
     ASTERINTEGER exitCode = 0;
     CALLO_GETERRORCODE( exitFieldName, &exitCode );
+#ifdef ASTER_HAVE_MPI
+    ASTERINTEGER exitCodeLocal = exitCode;
+    AsterMPI::all_reduce( exitCodeLocal, exitCode, MPI_MAX );
+#endif
 
-    return std::make_tuple( exitField, exitCode, vari_curr, stress_curr, elemVect );
+    return std::make_tuple( exitField, exitCode, vari_curr, stress_curr, internalForces );
 }
 
 /** @brief Compute tangent matrix (not assembled) */
-std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
-            ElementaryVectorDisplacementRealPtr, ElementaryMatrixDisplacementRealPtr >
+std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
 DiscreteComputation::computeTangentStiffnessMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
@@ -838,12 +843,16 @@ DiscreteComputation::computeTangentStiffnessMatrix(
     ASTERINTEGER exitCode = 0;
     CALLO_GETERRORCODE( exitFieldName, &exitCode );
 
-    return std::make_tuple( exitField, exitCode, vari_curr, stress_curr, elemVect, elemMatr );
+#ifdef ASTER_HAVE_MPI
+    ASTERINTEGER exitCodeLocal = exitCode;
+    AsterMPI::all_reduce( exitCodeLocal, exitCode, MPI_MAX );
+#endif
+
+    return std::make_tuple( exitField, exitCode, elemMatr );
 }
 
 /** @brief Compute tangent prediction matrix (not assembled) */
-std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, ElementaryMatrixDisplacementRealPtr,
-            ElementaryVectorDisplacementRealPtr >
+std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
 DiscreteComputation::computeTangentPredictionMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
@@ -921,5 +930,14 @@ DiscreteComputation::computeTangentPredictionMatrix(
         elemVect->build();
         elemMatr->build();
     };
-    return std::make_tuple( maskField, stress_pred, elemMatr, elemVect );
+
+    std::string exitFieldName = ljust( exitField->getName(), 19 );
+    ASTERINTEGER exitCode = 0;
+    CALLO_GETERRORCODE( exitFieldName, &exitCode );
+#ifdef ASTER_HAVE_MPI
+    ASTERINTEGER exitCodeLocal = exitCode;
+    AsterMPI::all_reduce( exitCodeLocal, exitCode, MPI_MAX );
+#endif
+
+    return std::make_tuple( exitField, exitCode, elemMatr );
 }

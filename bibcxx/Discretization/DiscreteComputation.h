@@ -167,10 +167,10 @@ class DiscreteComputation {
      * error code (integer)
      * internal state variables (VARI_ELGA)
      * Cauchy stress (SIEF_ELGA)
-     * elementary vector of internal forces (`B^T \sigma`)
+     * field of internal forces (`B^T \sigma`)
      */
     std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
-                ElementaryVectorDisplacementRealPtr >
+                FieldOnNodesRealPtr >
     computeInternalForces( const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
                            const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
                            const ConstantFieldOnCellsRealPtr _timeFieldPrev,
@@ -179,16 +179,12 @@ class DiscreteComputation {
 
     /**
      * @brief Compute tangent matrix (not assembled)
-     * @return Tuple with 5 objects:
+     * @return Tuple with 3 objects:
      * field of exitcode
      * error code (integer)
-     * internal state variables (VARI_ELGA)
-     * Cauchy stress (SIEF_ELGA)
-     * elementary vector of internal forces (`B^T \sigma`)
      * elementary tangent matrix
      */
-    std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
-                ElementaryVectorDisplacementRealPtr, ElementaryMatrixDisplacementRealPtr >
+    std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
     computeTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
                                    const FieldOnNodesRealPtr displ_incr,
                                    const FieldOnCellsRealPtr stress,
@@ -199,14 +195,12 @@ class DiscreteComputation {
 
     /**
      * @brief Compute tangent prediction matrix (not assembled)
-     * @return Tuple with 4 objects:
-     * field of maskcode
-     * stress at prediction
+     * @return Tuple with 3 objects:
+     * field of exitcode
+     * error code (integer)
      * elementary prediction matrix
-     * elementary vector of internal forces (`B^T \sigma`)
      */
-    std::tuple< FieldOnCellsLongPtr, FieldOnCellsRealPtr, ElementaryMatrixDisplacementRealPtr,
-                ElementaryVectorDisplacementRealPtr >
+    std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
     computeTangentPredictionMatrix( const FieldOnNodesRealPtr displ,
                                     const FieldOnNodesRealPtr displ_incr,
                                     const FieldOnCellsRealPtr stress,

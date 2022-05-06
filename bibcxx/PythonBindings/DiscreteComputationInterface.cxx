@@ -202,7 +202,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             error code flag (integer),
             internal state variables VARI_ELGA (FieldOnCells),
             Cauchy stress SIEF_ELGA (FieldOnCells),
-            elementary vector of internal forces (ElementaryVectorDisplacement),
+            field of internal forces (FieldOnNodesReal),
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
@@ -217,17 +217,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             displ_incr (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): field of internal state variables at begin of current time
-            timeFieldPrev (constantFieldOnCells): time at begin of current time
-            timeFieldCurr (constantFieldOnCells): time at end of current time
+            timeFieldPrev (ConstantFieldOnCells): time at begin of current time
+            timeFieldCurr (ConstantFieldOnCells): time at end of current time
             groupOfCells (list[str]): compute matrices on given groups of cells.
 
       Returns:
-            tuple (tuple): return code error (FieldOnCells),
-            error code flag (integer),
-            internal state variables VARI_ELGA (FieldOnCells),
-            Cauchy stress SIEF_ELGA (FieldOnCells),
-            elementary vector of internal forces (ElementaryVectorDisplacement),
-            elementary tangent matrix (ElementaryMatrixDisplacement)
+            tuple (tuple): return code error (FieldOnCellsLong),
+            error code flag (int),
+            elementary tangent matrix (ElementaryMatrixDisplacementReal)
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
@@ -247,10 +244,9 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             groupOfCells (list[str]): compute matrices on given groups of cells.
 
       Returns:
-            tuple (tuple): mask to assemble vector (FieldOnCells),
-            Cauchy stress SIEF_ELGA (FieldOnCells),
-            elementary tangent matrix (ElementaryMatrixDisplacement),
-            elementary vector of internal forces (ElementaryVectorDisplacement)
+            tuple (tuple): return code error (FieldOnCellsLong),
+            error code flag (int),
+            elementary tangent matrix (ElementaryMatrixDisplacementReal),
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),

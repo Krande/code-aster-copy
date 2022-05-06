@@ -68,8 +68,6 @@ class PhysicalProblem {
     FieldOnCellsRealPtr _externVarRefe;
 
   public:
-    // FIXME: BREAK_POURSUITE: to be removed as soon as possible
-    const py::list allLoadsDict;
 
     // No default constructor
     PhysicalProblem( void ) = delete;

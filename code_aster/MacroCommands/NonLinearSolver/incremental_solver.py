@@ -22,7 +22,6 @@ from libaster import deleteTemporaryObjects
 from ...Objects import DiscreteComputation, AssemblyMatrixDisplacementReal
 from ...Supervis import IntegrationError
 from ...Utilities import no_new_attributes, profile
-from .elementary_computation import ElementaryComputation
 
 
 class ResiState:
@@ -51,11 +50,7 @@ class IncrementalSolver:
 
     phys_state = phys_pb = convManager = None
     linear_solver = None
-    elem_comp = None
     __setattr__ = no_new_attributes(object.__setattr__)
-
-    def __init__(self):
-        self.elem_comp = ElementaryComputation()
 
     def setPhysicalProblem(self, phys_pb):
         """Assign the physical problem.
@@ -64,7 +59,6 @@ class IncrementalSolver:
             phys_pb (PhysicalProblem): Physical problem
         """
         self.phys_pb = phys_pb
-        self.elem_comp.setPhysicalProblem(self.phys_pb)
 
     def setPhysicalState(self, phys_state):
         """Assign the physical state.
@@ -73,7 +67,6 @@ class IncrementalSolver:
             phys_state (PhysicalState): Physical state
         """
         self.phys_state = phys_state
-        self.elem_comp.setPhysicalState(self.phys_state)
 
     def setConvergenceCriteria(self, convManager):
         """Set the convergence criteria to be used.
@@ -110,8 +103,13 @@ class IncrementalSolver:
         disc_comp = DiscreteComputation(self.phys_pb)
 
         # Compute internal forces (B^t.stress)
-        codret, internVar, stress, r_stress = self.elem_comp.computeInternalForces(
-            self.phys_state.time_field, timeFieldEndStep
+        _, codret, internVar, stress, r_stress = disc_comp.computeInternalForces(
+            self.phys_state.displ,
+            self.phys_state.displ_incr,
+            self.phys_state.stress,
+            self.phys_state.internVar,
+            self.phys_state.time_field,
+            timeFieldEndStep
         )
 
         resi_state = ResiState()
@@ -139,7 +137,8 @@ class IncrementalSolver:
 
             r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
         else:
-            resi_state.resi_dual = self.phys_state.createDisplacement(self.phys_pb, 0.0)
+            resi_state.resi_dual = self.phys_state.createDisplacement(
+                self.phys_pb, 0.0)
 
         resi_state.resi_int = r_int
 
@@ -181,7 +180,8 @@ class IncrementalSolver:
         """
 
         # Compute internal residual
-        resi_state, internVar, stress = self.computeInternalResidual(timeFieldEndStep, scaling)
+        resi_state, internVar, stress = self.computeInternalResidual(
+            timeFieldEndStep, scaling)
 
         # Compute external residual
         resi_state.resi_ext = self.computeExternalResidual()
@@ -206,19 +206,34 @@ class IncrementalSolver:
             AssemblyMatrixDisplacementReal: Jacobian matrix.
         """
         # Compute elementary matrix
+
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
         matr_elem_diri = None
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
-            codret, matr_elem = self.elem_comp.computeElasticStiffnessMatrix()
+            matr_elem = disc_comp.elasticStiffnessMatrix()
+            codret = 0
         elif matrix_type == "PRED_TANGENTE":
-            codret, matr_elem = self.elem_comp.computeTangentPredictionMatrix(
-                self.phys_state.time_field, timeFieldEndStep
+            _, codret, matr_elem = disc_comp.computeTangentPredictionMatrix(
+                self.phys_state.displ,
+                self.phys_state.displ_incr,
+                self.phys_state.stress,
+                self.phys_state.internVar,
+                self.phys_state.time_field,
+                timeFieldEndStep
             )
-            matr_elem_diri = self.elem_comp.computeDualStiffnessMatrix()
+            matr_elem_diri = disc_comp.dualStiffnessMatrix()
         elif matrix_type == "TANGENTE":
-            codret, matr_elem = self.elem_comp.computeTangentStiffnessMatrix(
-                self.phys_state.time_field, timeFieldEndStep
+            _, codret, matr_elem = disc_comp.computeTangentStiffnessMatrix(
+                self.phys_state.displ,
+                self.phys_state.displ_incr,
+                self.phys_state.stress,
+                self.phys_state.internVar,
+                self.phys_state.time_field,
+                timeFieldEndStep
             )
-            matr_elem_diri = self.elem_comp.computeDualStiffnessMatrix()
+            matr_elem_diri = disc_comp.dualStiffnessMatrix()
         else:
             raise RuntimeError("Matrix not supported: %s" % (matrix_type))
 
@@ -281,7 +296,8 @@ class IncrementalSolver:
         scaling = stiffness.getLagrangeScaling()
 
         # compute residual
-        resi_state, internVar, stress = self.computeResidual(timeFieldEndStep, scaling)
+        resi_state, internVar, stress = self.computeResidual(
+            timeFieldEndStep, scaling)
 
         # clean temporary memory - too many objects are not destroyed in fortran
         deleteTemporaryObjects()

@@ -53,5 +53,3 @@ class ExtendedPhysicalProblem:
                 self.addDirichletBC(charge)
             else:
                 self.addLoad(charge)
-
-        self.allLoadsDict.append(dictLoad)

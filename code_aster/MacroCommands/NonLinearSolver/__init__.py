@@ -21,7 +21,6 @@
 This package implements the non linear solver for mechanical analyses.
 """
 
-from .elementary_computation import ElementaryComputation
 from .non_linear_solver import NonLinearSolver
 from .physical_state import PhysicalState
 from .stepper import TimeStepper
