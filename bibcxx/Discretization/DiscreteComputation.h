@@ -35,6 +35,12 @@
 /**
  * @class DiscreteComputation
  * @brief Compute discrete operators (vectors and matrices)
+ * All methods are in the same header but implementation is splitted in several files
+ * - DiscreteComputation.cxx for generic methods
+ * - DiscreteComputationVector.cxx to compute vector thar are independent of physics
+ * - DiscreteComputationMechanicalVector.cxx to compute vector for mechanics
+ * - DiscreteComputationMechanicalMatrix.cxx to compute matrix for mechanics
+ * - DiscreteComputationThermalMatrix.cxx to compute matrix for thermic
  */
 class DiscreteComputation {
   private:
@@ -208,28 +214,6 @@ class DiscreteComputation {
                                     const ConstantFieldOnCellsRealPtr _timeFieldPrev,
                                     const ConstantFieldOnCellsRealPtr _timeFieldCurr,
                                     const VectorString &groupOfCells = VectorString() );
-
-    /**
-     * @brief Compute elastic prediction matrix (not assembled)
-     * @return Tuple with 1 objects:
-     * elementary prediction matrix
-     */
-    std::tuple< ElementaryMatrixDisplacementRealPtr > computeElasticPredictionMatrix(
-        const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
-        const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-        const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-        const ConstantFieldOnCellsRealPtr _timeFieldCurr );
-
-    /**
-     * @brief Compute secant prediction matrix (not assembled)
-     * @return Tuple with 1 objects:
-     * elementary prediction matrix
-     */
-    std::tuple< ElementaryMatrixDisplacementRealPtr > computeSecantPredictionMatrix(
-        const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
-        const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-        const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-        const ConstantFieldOnCellsRealPtr _timeFieldCurr );
 };
 
 using DiscreteComputationPtr = std::shared_ptr< DiscreteComputation >;
