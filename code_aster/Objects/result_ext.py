@@ -43,6 +43,8 @@ class ResultStateBuilder(InternalStateBuilder):
             *InternalStateBuilder*: The internal state itself.
         """
         super().save(result)
+        # mesh
+        self._st["mesh"] = result.getMesh()
         # list of ranks
         self._st["rank"] = result.getRanks()
         # list of Model objects
@@ -98,6 +100,7 @@ class ResultStateBuilder(InternalStateBuilder):
             result (*DataStructure*): The *DataStructure* object to be pickled.
         """
         super().restore(result)
+        result.setMesh(self._st["mesh"])
         for i, rank in enumerate(self._st["rank"]):
             if self._st["model"]:
                 result.addModel(self._st["model"][i], rank)

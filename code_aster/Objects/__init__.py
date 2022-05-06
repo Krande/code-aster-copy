@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ from .elementarymatrix_ext import (ElementaryMatrixDisplacementComplex,
 from .fieldoncells_ext import FieldOnCellsReal
 from .fieldonnodes_ext import FieldOnNodesReal
 from .formula_ext import Formula
+from .fulltransientresult_ext import FullTransientResult
 from .function2d_ext import Function2D
 from .function_ext import Function
 from .generalizedassemblymatrix_ext import (GeneralizedAssemblyMatrixComplex,
@@ -67,6 +68,7 @@ from .mechanicalload_ext import (MechanicalLoadReal,
 from .mesh_ext import Mesh
 from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .model_ext import Model, ParallelFiniteElementDescriptor
+from .moderesult_ext import ModeResult
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable
 from .result_ext import Result
