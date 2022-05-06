@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,257 +34,252 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 # Located components
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-                             components=('PRES',))
+DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("PRES",))
 
-NDEPLAC  = LocatedComponents(phys=PHY.DEPL_C, type='ELNO',
-                             components=('PRES',))
+NDEPLAC = LocatedComponents(phys=PHY.DEPL_C, type="ELNO", components=("PRES",))
 
-MMATUUC  = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
+MMATUUC = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 
-MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
+MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 class MEFL_HEXA20P(Element):
     """Element for fluid (U,P) - 3D - On H20"""
+
     meshType = MT.HEXA20
-    elrefe =(
-            ElrefeLoc(MT.H20, gauss = ('RIGI=FPG27','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
+    elrefe = (
+        ElrefeLoc(MT.H20, gauss=("RIGI=FPG27", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9",)),
     )
     calculs = (
-        OP.COOR_ELGA(te=488,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D),),
-            para_out = ((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
+        OP.COOR_ELGA(
+            te=488,
+            para_in=((SP.PGEOMER, LC.EGEOM3D),),
+            para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
         ),
-
-        OP.MASS_INER(te=152,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),),
-            para_out = ((SP.PMASSINE, LC.EMASSINE),),
+        OP.FULL_MECA(
+            te=170,
+            para_in=(
+                (SP.PCOMPOR, LC.CCOMPOR),
+                (SP.PDEPLMR, DDL_MECA),
+                (SP.PDEPLPR, DDL_MECA),
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+            ),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PMATUUR, MMATUUR), (SP.PVECTUR, MVECTUR)),
         ),
-
-        OP.MASS_MECA(te=171,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),),
-            para_out = ((SP.PMATUUR, MMATUUR),),
+        OP.MASS_INER(
+            te=152,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMASSINE, LC.EMASSINE),),
         ),
-
-        OP.NSPG_NBVA(te=496,
-            para_in  = ((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
-            para_out = ((SP.PDCEL_I, LC.EDCEL_I),),
+        OP.MASS_MECA(
+            te=171,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
-
-        OP.PAS_COURANT(te=405,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),),
-            para_out = ((SP.PCOURAN, LC.ECOURAN),),
+        OP.NSPG_NBVA(
+            te=496,
+            para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2),),
+            para_out=((SP.PDCEL_I, LC.EDCEL_I),),
         ),
-
-        OP.PRME_ELNO(te=420,
-            para_in  = ((SP.PDEPLAC, NDEPLAC),),
-            para_out = ((SP.PPRME_R, LC.EPRMENO),),
+        OP.PAS_COURANT(
+            te=405,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PCOURAN, LC.ECOURAN),),
         ),
-
-        OP.RIGI_MECA(te=170,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),),
-            para_out = ((SP.PMATUUR, MMATUUR),),
+        OP.PRME_ELNO(
+            te=420, para_in=((SP.PDEPLAC, NDEPLAC),), para_out=((SP.PPRME_R, LC.EPRMENO),)
         ),
-
-        OP.RIGI_MECA_HYST(te=170,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),),
-            para_out = ((SP.PMATUUC, MMATUUC),),
+        OP.RIGI_MECA(
+            te=170,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
-
-        OP.TOU_INI_ELEM(te=99,
-            para_out = ((SP.PGEOM_R, LC.CGEOM3D),),
+        OP.RIGI_MECA_HYST(
+            te=170,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUC, MMATUUC),),
         ),
-
-        OP.TOU_INI_ELGA(te=99,
-            para_out = ((SP.PGEOM_R, LC.EGGEO3D),),
-        ),
-
-        OP.TOU_INI_ELNO(te=99,
-            para_out = ((SP.PGEOM_R, LC.EGEOM3D),),
-        ),
-
-        OP.VERI_JACOBIEN(te=328,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D),),
-            para_out = ((SP.PCODRET, LC.ECODRET),),
+        OP.TOU_INI_ELEM(te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO3D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM3D),)),
+        OP.VERI_JACOBIEN(
+            te=328, para_in=((SP.PGEOMER, LC.EGEOM3D),), para_out=((SP.PCODRET, LC.ECODRET),)
         ),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_HEXA27P(MEFL_HEXA20P):
     """Element for fluid (U,P) - 3D - On H27"""
+
     meshType = MT.HEXA27
-    elrefe =(
-            ElrefeLoc(MT.H27, gauss = ('RIGI=FPG27','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9',),),
+    elrefe = (
+        ElrefeLoc(MT.H27, gauss=("RIGI=FPG27", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9",)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_HEXA8P(MEFL_HEXA20P):
     """Element for fluid (U,P) - 3D - On HE8"""
+
     meshType = MT.HEXA8
-    elrefe =(
-            ElrefeLoc(MT.HE8, gauss = ('RIGI=FPG8','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
+    elrefe = (
+        ElrefeLoc(MT.HE8, gauss=("RIGI=FPG8", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4",)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_PENTA15P(MEFL_HEXA20P):
     """Element for fluid (U,P) - 3D - On P15"""
+
     meshType = MT.PENTA15
-    elrefe =(
-            ElrefeLoc(MT.P15, gauss = ('RIGI=FPG21','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
+    elrefe = (
+        ElrefeLoc(MT.P15, gauss=("RIGI=FPG21", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9",)),
+        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6",)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_PENTA6P(MEFL_HEXA20P):
     """Element for fluid (U,P) - 3D - On PE6"""
+
     meshType = MT.PENTA6
-    elrefe =(
-            ElrefeLoc(MT.PE6, gauss = ('RIGI=FPG6','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3',),),
+    elrefe = (
+        ElrefeLoc(MT.PE6, gauss=("RIGI=FPG6", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4",)),
+        ElrefeLoc(MT.TR3, gauss=("RIGI=COT3",)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_PYRAM5P(MEFL_HEXA20P):
     """Element for fluid (U,P) - 3D - On PY5"""
+
     meshType = MT.PYRAM5
-    elrefe =(
-            ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG5','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3',),),
+    elrefe = (
+        ElrefeLoc(MT.PY5, gauss=("RIGI=FPG5", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4",)),
+        ElrefeLoc(MT.TR3, gauss=("RIGI=COT3",)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_PYRAM13P(MEFL_HEXA20P):
     """Element for fluid (U,P) - 3D - On P13"""
+
     meshType = MT.PYRAM13
-    elrefe =(
-            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG10','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
+    elrefe = (
+        ElrefeLoc(MT.P13, gauss=("RIGI=FPG10", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9",)),
+        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6",)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_TETRA10P(MEFL_HEXA20P):
     """Element for fluid (U,P) - 3D - On T10"""
+
     meshType = MT.TETRA10
-    elrefe =(
-            ElrefeLoc(MT.T10, gauss = ('RIGI=FPG15','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
+    elrefe = (
+        ElrefeLoc(MT.T10, gauss=("RIGI=FPG15", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.TR6, gauss=("RIGI=FPG6",)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_TETRA4P(MEFL_HEXA20P):
     """Element for fluid (U,P) - 3D - On TE4"""
+
     meshType = MT.TETRA4
-    elrefe =(
-            ElrefeLoc(MT.TE4, gauss = ('RIGI=FPG4','FPG1=FPG1',), mater=('FPG1',),),
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3',),),
+    elrefe = (
+        ElrefeLoc(MT.TE4, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),
+        ElrefeLoc(MT.TR3, gauss=("RIGI=COT3",)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_FACE3P(Element):
     """Element for fluid (U,P) - 3D/Boundary - On TR3"""
+
     meshType = MT.TRIA3
-    elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3','FPG1=FPG1',), mater=('FPG1',),),
-    )
+    elrefe = (ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "FPG1=FPG1"), mater=("FPG1",)),)
     calculs = (
-        OP.CHAR_MECA_ONDE(te=369,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
-                        (SP.PONDECR, LC.EONDEPR),),
-            para_out = ((SP.PVECTUR, MVECTUR),),
+        OP.CHAR_MECA_ONDE(
+            te=369,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PONDECR, LC.EONDEPR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-
-        OP.CHAR_MECA_PRES_F(te=99,
-            para_out = ((SP.PVECTUR, MVECTUR),),
+        OP.CHAR_MECA_PRES_F(te=99, para_out=((SP.PVECTUR, MVECTUR),)),
+        OP.CHAR_MECA_PRES_R(te=99, para_out=((SP.PVECTUR, MVECTUR),)),
+        OP.CHAR_MECA_VFAC(
+            te=173,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFR, LC.EVITEFR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        
-        OP.CHAR_MECA_PRES_R(te=99,
-            para_out = ((SP.PVECTUR, MVECTUR),),
+        OP.CHAR_MECA_VFAC_F(
+            te=173,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFF, LC.EVITEFF)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-
-        OP.CHAR_MECA_VFAC(te=173,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
-                        (SP.PVITEFR, LC.EVITEFR),),
-            para_out = ((SP.PVECTUR, MVECTUR),),
+        OP.COOR_ELGA(
+            te=488,
+            para_in=((SP.PGEOMER, LC.EGEOM3D),),
+            para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
         ),
-
-        OP.CHAR_MECA_VFAC_F(te=173,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
-                        (SP.PVITEFF, LC.EVITEFF),),
-            para_out = ((SP.PVECTUR, MVECTUR),),
+        OP.IMPE_MECA(
+            te=10,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PIMPEDR, LC.EIMPEDR), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
-
-        OP.COOR_ELGA(te=488,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D),),
-            para_out = ((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
+        OP.ONDE_FLUI(
+            te=374,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PONDECR, LC.EONDEPR)),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
-
-        OP.IMPE_MECA(te=10,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PIMPEDR, LC.EIMPEDR),
-                        (SP.PMATERC, LC.CMATERC),),
-            para_out = ((SP.PMATUUR, MMATUUR),),
-        ),
-
-        OP.ONDE_FLUI(te=374,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
-                        (SP.PONDECR, LC.EONDEPR),),
-            para_out = ((SP.PMATUUR, MMATUUR),),
-        ),
-
-        OP.TOU_INI_ELEM(te=99,
-            para_out = ((SP.PGEOM_R, LC.CGEOM3D),),
-        ),
-
-        OP.TOU_INI_ELGA(te=99,
-            para_out = ((SP.PGEOM_R, LC.EGGEO3D),),
-        ),
-
-        OP.TOU_INI_ELNO(te=99,
-            para_out = ((SP.PGEOM_R, LC.EGEOM3D),),
-        ),
+        OP.TOU_INI_ELEM(te=99, para_out=((SP.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELGA(te=99, para_out=((SP.PGEOM_R, LC.EGGEO3D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((SP.PGEOM_R, LC.EGEOM3D),)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_FACE4P(MEFL_FACE3P):
     """Element for fluid (U,P) - 3D/Boundary - On QU4"""
-    meshType = MT.QUAD4
-    elrefe =(
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','FPG1=FPG1',), mater=('FPG1',),),
-    )
 
-#----------------------------------------------------------------------------------------------
+    meshType = MT.QUAD4
+    elrefe = (ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_FACE6P(MEFL_FACE3P):
     """Element for fluid (U,P) - 3D/Boundary - On TR6"""
-    meshType = MT.TRIA6
-    elrefe =(
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG4','FPG1=FPG1',), mater=('FPG1',),),
-    )
 
-#----------------------------------------------------------------------------------------------
+    meshType = MT.TRIA6
+    elrefe = (ElrefeLoc(MT.TR6, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_FACE8P(MEFL_FACE3P):
     """Element for fluid (U,P) - 3D/Boundary - On QU8"""
-    meshType = MT.QUAD8
-    elrefe =(
-            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','FPG1=FPG1',), mater=('FPG1',),),
-    )
 
-#----------------------------------------------------------------------------------------------
+    meshType = MT.QUAD8
+    elrefe = (ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ----------------------------------------------------------------------------------------------
 class MEFL_FACE9P(MEFL_FACE3P):
     """Element for fluid (U,P) - 3D/Boundary - On QU9"""
+
     meshType = MT.QUAD9
-    elrefe =(
-            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9','FPG1=FPG1',), mater=('FPG1',),),
-    )
+    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("FPG1",)),)
