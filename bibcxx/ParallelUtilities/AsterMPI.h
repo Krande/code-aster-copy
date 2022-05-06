@@ -25,11 +25,11 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
+#include "aster_mpi.h"
+
 #include <algorithm>
 #include <numeric>
 #include <set>
-
-#include "aster_mpi.h"
 
 #ifdef ASTER_HAVE_MPI
 
@@ -52,8 +52,10 @@ int getMPIRank( aster_comm_t *comm = aster_get_current_comm() );
 
 class AsterMPI {
   private:
-    template < typename T > struct dependent_false : std::false_type {};
-    template < typename T > static MPI_Datatype mpi_type() {
+    template < typename T >
+    struct dependent_false : std::false_type {};
+    template < typename T >
+    static MPI_Datatype mpi_type() {
         static_assert( dependent_false< T >::value, "Unknown MPI type" );
         throw std::runtime_error( "Unknown MPI type" );
         return MPI_CHAR;
@@ -112,28 +114,77 @@ class AsterMPI {
     static void bcast( std::vector< T > &value, int root,
                        aster_comm_t *_commCurrent = aster_get_current_comm() );
 
-
     /// Barrier
-    static void barrier( aster_comm_t *_commCurrent = aster_get_current_comm() ){
-        aster_set_mpi_barrier(_commCurrent);
+    static void barrier( aster_comm_t *_commCurrent = aster_get_current_comm() ) {
+        aster_set_mpi_barrier( _commCurrent );
     };
+
+    /// Get Current Comm
+    aster_comm_t *getCurrentCommunicator() { return aster_get_current_comm(); }
+
+    /// Set Current Comm
+    void setCurrentCommunicator( aster_comm_t *commCurrent ) {
+        aster_set_current_comm( commCurrent );
+    };
+
+    void freeCurrentCommunicator() {
+        auto commCurr = getCurrentCommunicator();
+        auto parent = commCurr->parent;
+        setCurrentCommunicator( parent );
+        aster_free_comm( commCurr );
+    };
+
+    void freeCommunicator( aster_comm_t *commCurr ) { aster_free_comm( commCurr ); }
+
+    // Split communicator
+    aster_comm_t *splitCommunicator( int color,
+                                     aster_comm_t *_commCurrent = aster_get_current_comm() );
 };
 
 //---------------------------------------------------------------------------
-template <> inline MPI_Datatype AsterMPI::mpi_type< char >() { return MPI_CHAR; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< float >() { return MPI_FLOAT; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< double >() { return MPI_DOUBLE; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< short int >() { return MPI_SHORT; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< int >() { return MPI_INT; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< long int >() { return MPI_LONG; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< unsigned int >() { return MPI_UNSIGNED; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< unsigned long int >() {
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< char >() {
+    return MPI_CHAR;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< float >() {
+    return MPI_FLOAT;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< double >() {
+    return MPI_DOUBLE;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< short int >() {
+    return MPI_SHORT;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< int >() {
+    return MPI_INT;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< long int >() {
+    return MPI_LONG;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< unsigned int >() {
+    return MPI_UNSIGNED;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< unsigned long int >() {
     return MPI_UNSIGNED_LONG;
 }
-template <> inline MPI_Datatype AsterMPI::mpi_type< long long >() { return MPI_LONG_LONG; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< bool >() { return MPI_CXX_BOOL; }
-template <> inline MPI_Datatype AsterMPI::mpi_type< ASTERCOMPLEX >() {
-    return MPI_C_DOUBLE_COMPLEX ;
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< long long >() {
+    return MPI_LONG_LONG;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< bool >() {
+    return MPI_CXX_BOOL;
+}
+template <>
+inline MPI_Datatype AsterMPI::mpi_type< ASTERCOMPLEX >() {
+    return MPI_C_DOUBLE_COMPLEX;
 }
 //---------------------------------------------------------------------------
 inline void AsterMPI::all_gather( const std::string &in_values, VectorString &out_values,
@@ -338,7 +389,8 @@ void AsterMPI::all_reduce( const T in_value, T &out_value, MPI_Op op, aster_comm
                          mpi_type< T >(), op, _commCurrent );
 }
 //---------------------------------------------------------------------------
-template < typename T > void AsterMPI::bcast( T &value, int root, aster_comm_t *_commCurrent ) {
+template < typename T >
+void AsterMPI::bcast( T &value, int root, aster_comm_t *_commCurrent ) {
     aster_mpi_bcast( const_cast< T * >( &value ), 1, mpi_type< T >(), root, _commCurrent );
 }
 //---------------------------------------------------------------------------

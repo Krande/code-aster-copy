@@ -3,7 +3,7 @@
  * @brief Implementation de AsterMPI
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,7 +25,7 @@
 
 #include "ParallelUtilities/AsterMPI.h"
 
-int getMPISize( aster_comm_t* comm ) {
+int getMPISize( aster_comm_t *comm ) {
 #ifdef ASTER_HAVE_MPI
     int rank = -1, nbProcs = -1;
     aster_get_mpi_info( comm, &rank, &nbProcs );
@@ -37,7 +37,7 @@ int getMPISize( aster_comm_t* comm ) {
     return nbProcs;
 };
 
-int getMPIRank( aster_comm_t* comm ) {
+int getMPIRank( aster_comm_t *comm ) {
 #ifdef ASTER_HAVE_MPI
     int rank = -1, nbProcs = -1;
     aster_get_mpi_info( comm, &rank, &nbProcs );
@@ -48,3 +48,12 @@ int getMPIRank( aster_comm_t* comm ) {
 #endif
     return rank;
 };
+
+#ifdef ASTER_HAVE_MPI
+
+aster_comm_t *AsterMPI::splitCommunicator( int color, aster_comm_t *_commCurrent ) {
+    return aster_split_comm( _commCurrent, color, getMPIRank(),
+                             std::string( "COMM_SPLIT" ).data() );
+};
+
+#endif
