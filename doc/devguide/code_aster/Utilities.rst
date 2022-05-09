@@ -1,4 +1,3 @@
-.. _devguide-utilities:
 
 ################
 Common utilities

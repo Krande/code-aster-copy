@@ -1,4 +1,4 @@
-.. _devguide-datastructures:
+.. _codeaster-objects:
 
 ########################
 Objects / DataStructures
@@ -15,13 +15,11 @@ This definition can be added directly in
 :py:mod:`code_aster.ObjectsExt.datastructure_ext` in the ``DICT_SDJ`` dict.
 
 
-********************
-Detailed description
-********************
 
 ..  toctree::
+    :maxdepth: 1
 
-    objects_datastructure
-    objects_ext
-    objects_materialbehaviour
-    objects_others
+    index_DataStructure
+    index_ObjectsExt
+    index_GenericMaterialProperty
+    index_Others

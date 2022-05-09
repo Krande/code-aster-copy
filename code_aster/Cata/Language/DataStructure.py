@@ -18,13 +18,23 @@
 # --------------------------------------------------------------------
 
 """
-This package is only used to check the *legacy* syntax.
+DataStructure object for syntax checking
+----------------------------------------
 
 It is not important to use the real class (defined with pybind11).
-pybind11 objects must defined a `getType()` function that is compared to
-the return of the class method `getType()` of datastructures.
+pybind11 objects must defined a ``getType()`` function that is compared to
+the return of the class method ``getType()`` of datastructures.
+This *light* definition of ``DataStructure`` is essential to be be used in
+graphical interfaces such as *AsterStudy*.
 
-Ex.: maillage_sdaster.getType() = Mesh().getType() = "MAILLAGE"
+Example:
+
+.. code-block:: python
+
+    maillage_sdaster.getType() == Mesh().getType() == "MAILLAGE"
+
+All types used in the catalogs of commands are inherited from this *light*
+``DataStructure`` object.
 """
 
 import warnings
@@ -124,16 +134,12 @@ class PythonVariable(UserDict, DataStructure):
 
     def __lt__(self, other):
         """Comparison will be relevant when it will become a Variable"""
-        warnings.warning(
-            "Comparing 'PythonVariable' may return unexpected " "results", RuntimeWarning
-        )
+        warnings.warn("Comparing 'PythonVariable' may return unexpected " "results", RuntimeWarning)
         return True
 
     def __gt__(self, other):
         """Comparison will be relevant when it will become a Variable"""
-        warnings.warning(
-            "Comparing 'PythonVariable' may return unexpected " "results", RuntimeWarning
-        )
+        warnings.warn("Comparing 'PythonVariable' may return unexpected " "results", RuntimeWarning)
         return True
 
     def __repr__(self):
@@ -284,12 +290,6 @@ class no(GEOM):
 
 # To be more consistent with new names
 MeshEntity = GEOM
-
-# Copy of `allco.capy`.
-# It can not be used as is because ASSD is declared in `accas.capy`
-# ------- Begin of copy -------
-# List built using `capy` files::
-#   egrep -h '^class' catapy/entete/co_* | sed -e 's/:$/:\n    pass\n/g'
 
 
 class cabl_precont(ASSD):

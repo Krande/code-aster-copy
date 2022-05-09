@@ -28,7 +28,7 @@ that does not recommend *CamelCase* naming.
 
 - Reuse existing names in newly created objects. Have a look to the :ref:`genindex` page
   should give good ideas for new methods.
-  One can also search for names in the :ref:`devguide-objects_datastructure` page.
+  One can also search for names in the :ref:`devguide-objects_Datastructure` page.
 
 - Plural forms should be used when it is relevant.
 

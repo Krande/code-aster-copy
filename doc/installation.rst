@@ -1,3 +1,6 @@
+.. _building:
+
+
 ##################################
 Building and installing code_aster
 ##################################
@@ -21,20 +24,22 @@ In this manual, we assume that the working directory corresponds to the code_ast
 source folder (``cd $HOME/dev/codeaster/src``).
 
 
-**********************************
-Building and installing code_aster
-**********************************
+********************
+Compiling code_aster
+********************
 
 The building and installation instructions can be found on documentation repository
 `Installation and Development
 <https://gitlab.com/codeaster-opensource-documentation/opensource-installation-development>`_.
 
 
+.. _testing:
+
 *************************
 Testing your installation
 *************************
 
-The :py:module:`run_aster` package provides a convenient script that wraps ``ctest`` to
+The :py:mod:`run_aster` package provides a convenient script that wraps ``ctest`` to
 execute a list of testcases.
 
 Examples:

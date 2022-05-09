@@ -1,6 +1,3 @@
-.. _devguide-runaster:
-
-
 *****************
 run_aster package
 *****************

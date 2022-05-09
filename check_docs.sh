@@ -2,22 +2,21 @@
 
 _usage()
 {
-    echo "Check that the documentation can be built."
+    echo "Check that the documentation is built without error and that automatically"
+    echo "generated files are committed."
     echo
-    echo "'waf install' or 'waf install_debug' must have been run just before."
+    echo "'waf install' or 'waf install_debug' (parallel build) must have been run"
+    echo "just before. The waf script can be changed but it must point to a"
+    echo "parallel configuration."
+    echo "This script should be run in the same environment as 'waf install' was."
     echo
     echo "Usage: $(basename $0) [options]"
     echo
     echo "Options:"
     echo
     echo "  --help (-h)            Print this help information and exit."
-    echo
-    echo "  --waf script           Define the script to be used (default: ./waf_std)."
-    echo
-    echo "  --builddir DIR         Define the build directory (default: build/std)."
-    echo
+    echo "  --waf script           Define the script to be used (default: ./waf_mpi)."
     echo "  --use-debug            Use the debug build (Use 'release' by default)."
-    echo
     echo "  --verbose (-v)         Show commands output."
     echo
     exit "${1:-1}"
@@ -25,12 +24,11 @@ _usage()
 
 check_docs_main()
 {
-    local waf=./waf_std
-    local builddir=build/std
+    local waf=./waf_mpi
     local variant="release"
     local verbose=0
 
-    OPTS=$(getopt -o hv --long help,verbose,use-debug,waf:,builddir: -n $(basename $0) -- "$@")
+    OPTS=$(getopt -o hv --long help,verbose,use-debug,waf: -n $(basename $0) -- "$@")
     if [ $? != 0 ] ; then
         _usage >&2
     fi
@@ -41,7 +39,6 @@ check_docs_main()
             -v | --verbose ) verbose=1 ;;
             --use-debug ) variant="debug" ;;
             --waf ) waf="$2" ; shift ;;
-            --builddir ) builddir="$2" ; shift ;;
             -- ) shift; break ;;
             * ) break ;;
         esac
@@ -64,22 +61,9 @@ check_docs_main()
     echo -n "Checking docs... "
 
     (
-        printf "Check installation... "
-        if [ ! -f ${builddir}/${variant}/bibc/libaster.so ] \
-        || [ ! -f ${builddir}/${variant}/data/profile.sh ]
-        then
-            echo "Installation not found in '${builddir}/${variant}'"
-            return 1
-        fi
-        echo "ok"
-
         (
-            printf "\nSource environment from '${builddir}/${variant}'...\n"
-            . ${builddir}/${variant}/data/profile.sh
-            printf "\nGenerate _fake/libaster.py...\n"
-            python3 doc/generate_rst.py --libaster
-            printf "\nGenerate objects documentation...\n"
-            python3 doc/generate_rst.py --objects
+            printf "\nGenerate html documentation...\n"
+            ${waf} doc${suffix}
             return $?
         )
         iret=$?
@@ -91,14 +75,7 @@ check_docs_main()
             return 1
         fi
 
-        (
-            printf "\nSource environment from '${builddir}/${variant}'...\n"
-            . ${builddir}/${variant}/data/profile.sh
-            printf "\nGenerate html documentation...\n"
-            ${waf} doc${suffix}
-            return $?
-        )
-        return $?
+        return 0
 
     ) >> ${log} 2>&1
     ret=$?

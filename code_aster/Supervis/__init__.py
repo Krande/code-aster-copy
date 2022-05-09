@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,18 @@
 # person_in_charge: mathieu.courtois@edf.fr
 
 """
-This module supports basics to give access to Commands from code_aster
-objects.
+This sections presents the basis to execute Commands.
 """
 
 from .CommandSyntax import CommandSyntax
-from .exceptions_ext import (AsterError, ContactError, ConvergenceError,
-                             IntegrationError, SolverError, TimeLimitError)
-from .ExecuteCommand import (CO, ExecuteCommand, ExecuteCommandOps,
-                             ExecuteMacro, UserMacro)
+from .exceptions_ext import (
+    AsterError,
+    ContactError,
+    ConvergenceError,
+    IntegrationError,
+    SolverError,
+    TimeLimitError,
+)
+from .ExecuteCommand import CO, ExecuteCommand, ExecuteCommandOps, ExecuteMacro, UserMacro
 from .Serializer import FinalizeOptions, Serializer, loadObjects, saveObjects
 from .visitors import replace_enum

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,6 @@
 # --------------------------------------------------------------------
 
 """
-Code_Aster Syntax Objects
--------------------------
-
 This module defines the base objects that allow to use the legacy syntax
 of code_aster commands.
 
@@ -29,14 +26,14 @@ Note:
     - If a keyword (simple or factor) is not provided by the user, its value
       is None.
 
-    - If a factor keyword is present by default (statut='d') but not filled by
-      the user, its value is {} if max=1 or [] if max > 1.
+    - If a factor keyword is present by default (``statut='d'``) but not filled by
+      the user, its value is ``{}`` if ``max=1`` or ``[]`` if ``max > 1``.
 
     - Only one level of factor keywords is supported.
 
-The keyword 'reuse' is (will be) deprecated. So it must be present in catalogs
+The keyword ``reuse`` is (will be) deprecated. So it must be present in catalogs
 to import command files that contain it. But it is always optional (see
-`checkMandatory`) because it is removed during import.
+``checkMandatory``) because it is removed during import.
 """
 
 import types
@@ -45,9 +42,17 @@ from collections import OrderedDict
 from . import DataStructure as DS
 from .DataStructure import DataStructure, UnitBaseType
 from .SyntaxChecker import checkCommandSyntax
-from .SyntaxUtils import (add_none_sdprod, block_utils, debug_message2,
-                          disable_0key, enable_0key, force_list, mixedcopy,
-                          sorted_dict, value_is_sequence)
+from .SyntaxUtils import (
+    add_none_sdprod,
+    block_utils,
+    debug_message2,
+    disable_0key,
+    enable_0key,
+    force_list,
+    mixedcopy,
+    sorted_dict,
+    value_is_sequence,
+)
 
 
 class SyntaxId:
@@ -56,7 +61,9 @@ class SyntaxId:
     This list of type identifiers can be extended but never change between
     two releases of code_aster.
     """
+
     simp, fact, bloc, command = list(range(4))
+
 
 IDS = SyntaxId()
 
@@ -80,6 +87,7 @@ class ConversionLevel:
             another level).
         NoGraphical: Force to load all stages in text mode.
     """
+
     NoFail = 0x00
     Naming = 0x01
     Type = 0x02
@@ -106,8 +114,7 @@ class CataDefinition(OrderedDict):
             dict: dict of all entities (keywords and conditional blocks) of the
             object.
         """
-        kws = self._filter_entities((SimpleKeyword, Bloc, FactorKeyword),
-                                    with_block=False)
+        kws = self._filter_entities((SimpleKeyword, Bloc, FactorKeyword), with_block=False)
         return sorted_dict(kws)
 
     @property
@@ -133,7 +140,7 @@ class CataDefinition(OrderedDict):
         Returns:
             dict: dict of all factor keywords of the object.
         """
-        kws = self._filter_entities((FactorKeyword, ))
+        kws = self._filter_entities((FactorKeyword,))
         return sorted_dict(kws)
 
     @property
@@ -143,7 +150,7 @@ class CataDefinition(OrderedDict):
         Returns:
             dict: dict of all simple keywords of the object.
         """
-        kws = self._filter_entities((SimpleKeyword, ))
+        kws = self._filter_entities((SimpleKeyword,))
         return sorted_dict(kws)
 
     def _filter_entities(self, typeslist, with_block=True):
@@ -185,6 +192,7 @@ class UIDMixing:
     Arguments:
         uid (int): Object's id.
     """
+
     _new_id = -1
     _id = None
 
@@ -202,12 +210,12 @@ class UIDMixing:
         return self._id
 
     def __lt__(self, other):
-        if other is None or not hasattr(other, 'uid'):
+        if other is None or not hasattr(other, "uid"):
             return True
         return self._id < other.uid
 
     def __eq__(self, other):
-        if other is None or not hasattr(other, 'uid'):
+        if other is None or not hasattr(other, "uid"):
             return False
         return self._id == other.uid
 
@@ -246,6 +254,7 @@ class _F(dict):
         """Return the object itself, for backward compatibility."""
         return self
 
+
 class _ListFact(list):
     """For backward compatibility to add `List_F` method to a list of
     FactorKeywords."""
@@ -253,6 +262,7 @@ class _ListFact(list):
     def List_F(self):
         """Return the object itself, for backward compatibility."""
         return self
+
 
 def ListFact(fact):
     """Add `List_F` method to list of FactorKeywords.
@@ -268,9 +278,11 @@ class PartOfSyntax(UIDMixing):
 
     """
     Generic object that describe a piece of syntax.
-    Public attribute:
-        definition: the syntax description
+
+    Attributes:
+        definition (dict): the syntax description
     """
+
     def __init__(self, curDict):
         """Initialization"""
         super().__init__()
@@ -299,7 +311,7 @@ class PartOfSyntax(UIDMixing):
         """unicode: Documentation of the object."""
         doc = self.docstring
         if type(doc) is not str:
-            doc = str(doc, 'utf-8', 'replace')
+            doc = str(doc, "utf-8", "replace")
         return doc
 
     @property
@@ -333,6 +345,7 @@ class PartOfSyntax(UIDMixing):
             object.
         """
         return self._definition.entities
+
     # : for backward compatibility (and avoid changing `pre_seisme_nonl`)
     entites = entities
 
@@ -359,9 +372,9 @@ class PartOfSyntax(UIDMixing):
         if self.getCataTypeId() == IDS.simp and self.hasDefaultValue():
             try:
                 # ... with derivated type of UnitBaseType...
-                if issubclass(definition.get('typ'), UnitBaseType):
+                if issubclass(definition.get("typ"), UnitBaseType):
                     # ... is mandatory
-                    return 'o'
+                    return "o"
             except TypeError:
                 pass
         return value
@@ -415,7 +428,7 @@ class PartOfSyntax(UIDMixing):
                 else:
                     kwd.addDefaultKeywords(userFact, ctxt)
                     if kwd.is_list():
-                        userFact = [userFact, ]
+                        userFact = [userFact]
                 userSyntax[key] = userFact
                 ctxt[key] = userSyntax[key]
             elif isinstance(kwd, Bloc):
@@ -441,9 +454,9 @@ class PartOfSyntax(UIDMixing):
 
         for key, kwd in self.definition.iterItemsByType():
             if isinstance(kwd, (SimpleKeyword, FactorKeyword)):
-                if key == "reuse": # reuse is deprecated
+                if key == "reuse":  # reuse is deprecated
                     continue
-                    #raise KeyError("reuse has been removed")
+                    # raise KeyError("reuse has been removed")
                 # pragma pylint: disable=no-member
                 if kwd.isMandatory() and kwd.undefined(userSyntax.get(key)):
                     debug_message2("mandatory keyword =", key, ":", kwd)
@@ -516,14 +529,14 @@ class PartOfSyntax(UIDMixing):
     def undefined(cls, value):
         """Return *True* if the value is a null value (undefined keyword),
         *False* otherwise."""
-        return (value is None
-                or (isinstance(value, (list, tuple)) and
-                    (len(value) == 0 or (len(value) == 1 and value[0] is None))
-                    ))
+        return value is None or (
+            isinstance(value, (list, tuple))
+            and (len(value) == 0 or (len(value) == 1 and value[0] is None))
+        )
 
     def is_list(self):
         """Tell if the value should be stored as list."""
-        return self.definition.get('max', 1) != 1
+        return self.definition.get("max", 1) != 1
 
 
 class SimpleKeyword(PartOfSyntax):
@@ -536,9 +549,10 @@ class SimpleKeyword(PartOfSyntax):
         """Initialization"""
         super(SimpleKeyword, self).__init__(curDict)
         if "val_min" in self._definition or "val_max" in self._definition:
-            typ = self._definition['typ']
-            assert typ in ('I', 'R', 'C'), ("'val_min/val_max' not allowed for type"
-                                       " '{0}'".format(typ))
+            typ = self._definition["typ"]
+            assert typ in ("I", "R", "C"), "'val_min/val_max' not allowed for type" " '{0}'".format(
+                typ
+            )
 
     def getCataTypeId(self):
         """Get the type id of SimpleKeyword.
@@ -579,7 +593,7 @@ class SimpleKeyword(PartOfSyntax):
             return
         if self.is_list():
             if value is not None and not value_is_sequence(value):
-                value = [value, ]
+                value = [value]
         userSyntax[key] = value
         _parent_ctxt[key] = userSyntax[key]
 
@@ -634,7 +648,7 @@ class Bloc(PartOfSyntax):
 
     def getCondition(self):
         """Return the BLOC condition"""
-        cond = self.definition.get('condition')
+        cond = self.definition.get("condition")
         assert cond is not None, "A bloc must have a condition!"
         return cond
 
@@ -663,6 +677,7 @@ class Command(PartOfSyntax):
     """
     Object Command qui représente toute la syntaxe d'une commande
     """
+
     _call_callback = None
 
     def get_compat_syntax(self):
@@ -691,8 +706,8 @@ class Command(PartOfSyntax):
 
     def can_reuse(self):
         """Tell if the result can be a reused one."""
-        reentr = self.definition.get("reentrant", "").split(':')
-        return reentr and reentr[0] in ('o', 'f')
+        reentr = self.definition.get("reentrant", "").split(":")
+        return reentr and reentr[0] in ("o", "f")
 
     def accept(self, visitor, syntax=None):
         """Called by a Visitor"""
@@ -729,14 +744,14 @@ class Command(PartOfSyntax):
 
     def get_type_sd_prod(self, **ctxt):
         """Return the type of the command result."""
-        resultType = self.definition.get('sd_prod')
+        resultType = self.definition.get("sd_prod")
         if resultType is not None:
             if type(resultType) is types.FunctionType:
                 self.addDefaultKeywords(ctxt)
                 # if os.environ.get('DEBUG'):
-                    # print "COMMAND:", self.name
-                    # print "CTX1:", ctxt.keys()
-                    # print "CTX1:", ctxt
+                # print "COMMAND:", self.name
+                # print "CTX1:", ctxt.keys()
+                # print "CTX1:", ctxt
                 add_none_sdprod(resultType, ctxt)
                 resultType = self.build_sd_prod(resultType, ctxt)
             return resultType
@@ -752,18 +767,19 @@ class Command(PartOfSyntax):
         """Return the list of all possible types that the command can return.
 
         Returns:
-            list[DataStructure] or list[list[DataStructure]]: List of possible
+            list[.DataStructure.DataStructure] or list[list[.DataStructure.DataStructure]]:
+            List of possible
             types or a list of list if there are additional results for
             macro-commands.
         """
-        sd_prod = self.definition.get('sd_prod')
+        sd_prod = self.definition.get("sd_prod")
         if type(sd_prod) is types.FunctionType:
             args = {}
             add_none_sdprod(sd_prod, args)
-            args['__all__'] = True
+            args["__all__"] = True
             return force_list(sd_prod(**args))
         else:
-            return (sd_prod, )
+            return (sd_prod,)
 
 
 class Operator(Command):
@@ -778,8 +794,8 @@ class Macro(Command):
     def build_sd_prod(self, sdprodFunc, ctxt):
         """Call the `sd_prod` function"""
         enable_0key(ctxt)
-        if 'self' in ctxt:
-            del ctxt['self']
+        if "self" in ctxt:
+            del ctxt["self"]
         resultType = sdprodFunc(self, **ctxt)
         disable_0key(ctxt)
         return resultType
@@ -807,4 +823,5 @@ class Formule(Macro):
 
 class CataError(Exception):
     """Exception raised in case of error in the catalog."""
+
     pass

@@ -16,6 +16,7 @@ Table of contents
    devguide
 
    installation
+   devguide/contributing
    devguide/edf-workflow
 
    copyright

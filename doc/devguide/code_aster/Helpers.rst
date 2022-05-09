@@ -1,5 +1,3 @@
-.. _devguide-helpers:
-
 ##############################
 Helpers functions for Commands
 ##############################

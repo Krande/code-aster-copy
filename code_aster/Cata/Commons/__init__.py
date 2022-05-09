@@ -17,6 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+"""
+Commons keywords
+----------------
+
+This module contains keywords, usually factor keywords, that can be shared by
+several commands.
+"""
+
 
 from .c_affichage import C_AFFICHAGE
 from .c_archivage import C_ARCHIVAGE

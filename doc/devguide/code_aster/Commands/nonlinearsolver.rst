@@ -1,10 +1,10 @@
-.. _devguide-commands-nonlinearsolver:
+.. _macro-commands-nonlinearsolver:
 
-#################
-Non Linear Solver
-#################
+#########################################
+Non Linear Solver for Mechanical Analyses
+#########################################
 
-.. automodule:: code_aster.MacroCommands.NonLinearSolver.__init__
+.. automodule:: code_aster.MacroCommands.NonLinearSolver
    :show-inheritance:
    :members:
    :special-members: __init__
@@ -45,6 +45,11 @@ Non Linear Solver
    :special-members: __init__
 
 .. automodule:: code_aster.MacroCommands.NonLinearSolver.storage_manager
+   :show-inheritance:
+   :members:
+   :special-members: __init__
+
+.. automodule:: code_aster.MacroCommands.NonLinearSolver.logging_manager
    :show-inheritance:
    :members:
    :special-members: __init__

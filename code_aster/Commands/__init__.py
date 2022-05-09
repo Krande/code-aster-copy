@@ -18,16 +18,20 @@
 # --------------------------------------------------------------------
 
 """
-:py:mod:`__init__` --- Definition of user's Commands
-****************************************************
+Definition of user's Commands
+*****************************
+
+A command, as called by the final user, is a *classmethod* that wraps
+the actual purpose of the command by a serie of generic tasks.
 
 All user's Commands are defined in :py:mod:`code_aster.Commands` package.
 
-For details about the execution of the commands see :ref:`devguide-supervis`.
+For the details about the execution of the commands see :py:mod:`code_aster.Supervis`.
 
 """
 
 from ..Supervis import CO
+
 # please keep alphabetical order
 from .affe_cara_elem import AFFE_CARA_ELEM
 from .affe_char_acou import AFFE_CHAR_ACOU
@@ -191,5 +195,6 @@ from .variable import VARIABLE
 
 # other commands are automatically added just using their catalog
 from .operator import define_operators
+
 define_operators(globals())
 del define_operators

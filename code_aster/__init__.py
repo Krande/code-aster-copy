@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-Main entry point for the users.
+This is the main entry point for the users.
 
 The :py:func:`~code_aster.Commands.debut.init` function initializes the
 memory manager. It must be called before any :py:mod:`code_aster.Objects`
@@ -43,7 +43,7 @@ For convenience the objects are direcly available here:
 
 Here is the diagram of the package organization:
 
-.. image:: ../doc/devguide/img/diagr_code_aster.png
+.. image:: img/diagr_code_aster.png
    :align: center
 
 """
@@ -61,18 +61,24 @@ try:
     import aster_core
     import aster_fonctions
     import med_aster
+
     # libaster must be imported after embedded submodules
     import libaster
 
-    from .Algorithms import (ConstitutiveLaw, IntegrationAlgorithm, StrainType,
-                             TangentMatrixType)
+    from .Algorithms import ConstitutiveLaw, IntegrationAlgorithm, StrainType, TangentMatrixType
     from .Commands.debut import init
     from .Commands.fin import FIN as close
     from .Objects import *
     from .ObjectsExt import DataStructure
-    from .Supervis import (AsterError, ContactError, ConvergenceError,
-                           IntegrationError, SolverError,
-                           TimeLimitError, saveObjects)
+    from .Supervis import (
+        AsterError,
+        ContactError,
+        ConvergenceError,
+        IntegrationError,
+        SolverError,
+        TimeLimitError,
+        saveObjects,
+    )
     from .Utilities import TestCase, MPI
 
 

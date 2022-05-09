@@ -1,6 +1,6 @@
 .. AUTOMATICALLY CREATED BY generate_rst.py - DO NOT EDIT MANUALLY!
 
-.. _devguide-objects_others:
+.. _devguide-objects_Others:
 
 
 ####################################
@@ -237,7 +237,7 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.MeshEntity` subclasses
+:py:class:`~code_aster.Objects.MeshEntity` object
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.MeshEntity
@@ -367,12 +367,7 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.pybind11_object` object
-********************************************************************************
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.Exception` subclasses
+:py:class:`~code_aster.Objects.Exception` object
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.AsterError

@@ -2,15 +2,11 @@
 # coding: utf-8
 
 """
-Generate automodule blocks and fake libaster.
+Generate automodule blocks.
 """
 
 EPILOG = """
 EXAMPLES:
-    Generate a fake libaster as python file::
-
-        python3 generate_rst.py --libaster
-
     Generate a file like ``supervis.rst``::
 
         python3 generate_rst.py --manual code_aster/__init__.py code_aster/Supervis/*.py
@@ -26,6 +22,8 @@ import os.path as osp
 from collections import OrderedDict
 
 from pydoc_pyrenderer import get_python_code
+
+SECTIONS = ("DataStructure", "GenericMaterialProperty")
 
 automodule_block = """.. automodule:: {0}
    :show-inheritance:
@@ -48,9 +46,9 @@ auto_documentation = """.. AUTOMATICALLY CREATED BY generate_rst.py - DO NOT EDI
 """.format
 
 title_ds = """
-********************************************************************************
-:py:class:`~code_aster.Objects.{0}` subclasses
-********************************************************************************
+################################################################################
+Subclasses of :py:class:`~code_aster.Objects.{0}`
+################################################################################
 """.format
 
 title_ds_alone = """
@@ -60,9 +58,9 @@ title_ds_alone = """
 """.format
 
 subtitle = """
-================================================================================
+********************************************************************************
 :py:class:`~code_aster.Objects.{0}` object
-================================================================================
+********************************************************************************
 """.format
 
 
@@ -72,12 +70,13 @@ def automodule(filename):
     return automodule_block(name)
 
 
-def all_objects(destdir):
+def _build_text():
     """Generate sphinx blocks for all libaster objects."""
     import code_aster.Objects as OBJ
 
     pyb_instance = OBJ.DataStructure.mro()[1]
-    pyb_enum = OBJ.Physics.mro()[1]
+    # pyb_enum = OBJ.Physics.mro()[1]
+    pyb_enum = object()
 
     # sections: directly derivated from pybind11 instance
     sections = [OBJ.DataStructure, OBJ.GenericMaterialProperty]
@@ -93,7 +92,7 @@ def all_objects(destdir):
             addsect.append((name, obj))
     for _, obj in sorted(addsect):
         sections.append(obj)
-    sections.append(pyb_enum)
+    # sections.append(pyb_enum)
     sections.append(Exception)
     # print(len(sections), "sections")
 
@@ -132,32 +131,33 @@ def all_objects(destdir):
         if subtyp not in (pyb_enum, Exception):
             objs.insert(0, typename)
 
-        if len(objs) > 1:
+        if len(objs) > 1 and typename in SECTIONS:
             lines.append(title_ds(typename))
         else:
             lines.append(title_ds_alone(typename))
         for name in objs:
-            if typename in ("DataStructure", "GenericMaterialProperty"):
+            if typename in SECTIONS:
                 lines.append(subtitle(name))
             lines.append(autoclass_block(name))
 
         dicttext[typename] = os.linesep.join(lines)
+    return dicttext
 
-    # generate a page for each of the first two classes
-    with open(osp.join(destdir, "objects_datastructure.rst"), "w") as fobj:
-        params = dict(link="objects_datastructure", content=dicttext["DataStructure"], intro="")
-        fobj.write(auto_documentation(**params))
 
-    with open(osp.join(destdir, "objects_materialbehaviour.rst"), "w") as fobj:
-        params = dict(
-            link="objects_materialbehaviour", content=dicttext["GenericMaterialProperty"], intro=""
-        )
-        fobj.write(auto_documentation(**params))
+def all_objects(destdir):
+    """Generate sphinx blocks for all libaster objects."""
+    dicttext = _build_text()
+
+    # generate a page for each of the section
+    for sect in SECTIONS:
+        with open(osp.join(destdir, "objects_{0}.rst".format(sect)), "w") as fobj:
+            params = dict(link="objects_{0}".format(sect), content=dicttext[sect], intro="")
+            fobj.write(auto_documentation(**params))
 
     # generate a page for all other classes
-    with open(osp.join(destdir, "objects_others.rst"), "w") as fobj:
+    with open(osp.join(destdir, "objects_Others.rst"), "w") as fobj:
         params = dict(
-            link="objects_others",
+            link="objects_Others",
             content=os.linesep.join(list(dicttext.values())[2:]),
             intro="""
 ####################################
@@ -170,45 +170,10 @@ Documentation of all other types.
         fobj.write(auto_documentation(**params))
 
 
-def build_pylibaster(filename):
-    """Create a fake libaster as Python file with only signatures and docstrings.
-
-    Arguments:
-        filename (str): Destination file
-    """
-    # do not import code_aster not to extend objects
-    import libaster
-
-    pyb_instance = libaster.DataStructure.mro()[1]
-    blocks = []
-    for name, obj in list(libaster.__dict__.items()):
-        export = True
-        if isinstance(obj, type):
-            export = pyb_instance in obj.mro() or Exception in obj.mro()
-        else:
-            if "builtin_function_or_method" not in repr(type(obj)):
-                export = False
-        if export:
-            blocks.append(get_python_code("libaster." + name))
-        else:
-            print("not exported:", name, obj)
-
-    with open(filename, "w") as flib:
-        flib.write("\n".join(blocks))
-
-
 def main():
-    default_dest = osp.join(osp.dirname(__file__), "devguide")
+    default_dest = os.getcwd()
     parser = argparse.ArgumentParser(
         description=__doc__, epilog=EPILOG, formatter_class=argparse.RawTextHelpFormatter
-    )
-    # libaster and objects can be run in the same process
-    parser.add_argument(
-        "--libaster",
-        action="store_const",
-        dest="action",
-        const="libaster",
-        help="build fake libaster as a pure Python file",
     )
     parser.add_argument(
         "--objects",
@@ -231,9 +196,6 @@ def main():
     parser.add_argument("file", metavar="FILE", nargs="*", help="file to analyse")
     args = parser.parse_args()
 
-    pylib = osp.join(osp.dirname(__file__), "_fake", "libaster.py")
-    if args.action == "libaster":
-        build_pylibaster(pylib)
     if args.action == "objects":
         all_objects(args.destdir)
     elif args.action == "manual":

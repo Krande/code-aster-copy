@@ -1,5 +1,3 @@
-.. _devguide-supervis:
-
 ##############################
 Interface with the user syntax
 ##############################

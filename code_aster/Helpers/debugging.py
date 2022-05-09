@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,16 +106,18 @@ class DataStructureFilter:
         skwValue = force_list(skwValue)
         keep = []
         for i in skwValue:
-            if (isinstance(i, DataStructure) and i.getName() != self._current
-                    and i.getName() in self._dump):
+            if (
+                isinstance(i, DataStructure)
+                and i.getName() != self._current
+                and i.getName() in self._dump
+            ):
                 keep.append(i)
         if keep and not islist:
             keep = keep[0]
         self._keep = keep or SKIPPED
 
     def _visitComposite(self, step, userDict=None):
-        """Visit a composite object (containing BLOC, FACT and SIMP objects)
-        """
+        """Visit a composite object (containing BLOC, FACT and SIMP objects)"""
         if isinstance(userDict, dict):
             userDict = [userDict]
         # loop on occurrences filled by the user
@@ -141,7 +143,7 @@ def dump_datastructure(obj):
     """Return a dump (IMPR_CO) of a *DataStructure*.
 
     Arguments:
-        obj (DataStructure): Object to be dumped.
+        obj (~code_aster.Objects.DataStructure): Object to be dumped.
 
     Returns:
         str: Output of IMPR_CO/debugPrint.
@@ -151,7 +153,7 @@ def dump_datastructure(obj):
     obj.debugPrint(dumpfile.unit)
     dumpfile.release()
     with open(filename, "rb") as fobj:
-        dump = fobj.read().decode('ascii', errors='replace')
+        dump = fobj.read().decode("ascii", errors="replace")
     os.remove(filename)
     return dump
 
@@ -214,8 +216,7 @@ def check_dependencies(inst, _):
     all_deps = [i.getName() for i in deps]
 
     dump = dump_datastructure(result)
-    dump_deps = [i for i in check_dependencies._storage.keys()
-                 if i != name and i in dump]
+    dump_deps = [i for i in check_dependencies._storage.keys() if i != name and i in dump]
     direct_deps = [i.getName() for i in result.getDependencies()]
 
     printed = False
@@ -225,8 +226,7 @@ def check_dependencies(inst, _):
         missed = sorted(list(set(missed).difference(missed_all)))
         printed = True
         if missed:
-            print("#27406:", name, typ, "missing direct dep to", missed,
-                  "current:", direct_deps)
+            print("#27406:", name, typ, "missing direct dep to", missed, "current:", direct_deps)
         if missed_all:
             print("#27406:", name, typ, "ERROR missing recursive dep to", missed_all)
         # else:

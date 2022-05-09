@@ -18,8 +18,6 @@
 # --------------------------------------------------------------------
 
 """
-This module defines the objects on which the user's Commands are based.
-
 All Commands executors are subclasses of :class:`.ExecuteCommand`.
 Commands are factories (:meth:`ExecuteCommand.run` *classmethod*) that
 create an executor that is called to create a result object.
@@ -645,7 +643,7 @@ class ExecuteMacro(ExecuteCommand):
     name "main".
 
     Attributes:
-        _sdprods (list[CO]): List of CO objects.
+        _sdprods (list[:class:`CO`]): List of CO objects.
         _result_names (list[str]): List of expected results names.
         _add_results (dict): Dict of additional results.
     """

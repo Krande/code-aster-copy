@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,10 @@
 ****************************************
 
 The function :py:func:`define_operators` automatically creates executors objects
-(:py:class:`~code_aster.Commands.Supervis.ExecuteCommand` or
-:py:class:`~code_aster.Commands.Supervis.ExecuteMacro`) for operators that
-are not already defined in the store.
+(:py:class:`~code_aster.Supervis.ExecuteCommand.ExecuteCommand` or
+:py:class:`~code_aster.Supervis.ExecuteCommand.ExecuteMacro`) for operators that
+are not already defined in the store, i.e. not already defined in the
+``code_aster/Commands`` directory.
 
 It is mainly a transtional feature that should make work most of the *legacy*
 command with few changes.
@@ -36,7 +37,8 @@ from ..Cata.Commands import commandStore
 from ..Cata.Syntax import Macro, Operator, Procedure
 from ..Supervis import ExecuteCommand, ExecuteMacro
 
-UNSUPPORTED = ('FORMULE', )
+UNSUPPORTED = ("FORMULE",)
+
 
 def define_operators(store):
     """Add definition of operators to the given store.
@@ -44,9 +46,11 @@ def define_operators(store):
     Arguments:
         store (dict): Store where the executors will be registered.
     """
+
     def legacy_command_factory(class_, name):
         class InheritedCommand(class_):
             """Execute legacy operator."""
+
             command_name = name
 
         return InheritedCommand.run
@@ -60,6 +64,7 @@ def define_operators(store):
             store[name] = legacy_command_factory(ExecuteCommand, name)
         elif isinstance(command, Macro):
             store[name] = legacy_command_factory(ExecuteMacro, name)
+
 
 # # only for debugging:
 # from ..Helpers.debugging import check_dependencies

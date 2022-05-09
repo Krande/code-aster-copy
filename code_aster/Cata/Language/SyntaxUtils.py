@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,6 @@
 # --------------------------------------------------------------------
 
 """
-Code_Aster Syntax Utilities
----------------------------
-
 List of utilities for syntax objects.
 """
 
@@ -31,7 +28,7 @@ import sys
 import warnings
 from array import array
 from collections import OrderedDict
-from functools import partial
+from functools import partial, update_wrapper
 from warnings import showwarning, warn
 
 import numpy
@@ -41,8 +38,8 @@ from .DataStructure import AsType
 
 def warn_to_stdout(message, category, filename, lineno, file=None, line=None):
     """Same as `showwarning` but on stdout"""
-    return showwarning(message, category, filename, lineno,
-                       file=sys.stdout, line=line)
+    return showwarning(message, category, filename, lineno, file=sys.stdout, line=line)
+
 
 warnings.showwarning = warn_to_stdout
 
@@ -61,16 +58,13 @@ def deprecate(feature, case=1, help=None, level=6):
         level (int): Level of the caller in the stack.
     """
     if case == 1:
-        msg = ("This feature is obsoleted, {0!r} will be "
-               "removed in the future.")
+        msg = "This feature is obsoleted, {0!r} will be " "removed in the future."
     elif case == 2:
         msg = "This feature is obsoleted, {0!r} has been removed."
     elif case == 3:
-        msg = ("This feature has a new implementation, {0!r} will be "
-               "removed in the future.")
+        msg = "This feature has a new implementation, {0!r} will be " "removed in the future."
     elif case == 4:
-        msg = ("This feature has a new implementation, {0!r} has been "
-               "removed.")
+        msg = "This feature has a new implementation, {0!r} has been " "removed."
     else:
         msg = "This feature is obsoleted: {0!r}"
     if help:
@@ -79,7 +73,7 @@ def deprecate(feature, case=1, help=None, level=6):
 
 
 def mixedcopy(obj):
-    """"Make a mixed copy (copy of all dicts, lists and tuples, no copy
+    """ "Make a mixed copy (copy of all dicts, lists and tuples, no copy
     for all others)."""
     if isinstance(obj, list):
         new = [mixedcopy(i) for i in obj]
@@ -88,10 +82,11 @@ def mixedcopy(obj):
     elif isinstance(obj, dict):
         new = obj.__class__([(i, mixedcopy(obj[i])) for i in obj])
     else:
-        if hasattr(obj, 'evaluation'):
+        if hasattr(obj, "evaluation"):
             obj = obj.evaluation
         new = obj
     return new
+
 
 def remove_none(obj):
     """Remove None values from dict **in place**, do not change values of
@@ -105,6 +100,7 @@ def remove_none(obj):
                 del obj[key]
             else:
                 remove_none(obj[key])
+
 
 def add_none_sdprod(sd_prod, dictargs):
     """Check if some arguments are missing to call *sd_prod* function and
@@ -126,7 +122,7 @@ def add_none_sdprod(sd_prod, dictargs):
 
     args = list(dictargs.keys())
     # add 'self' for macro
-    required.append('self')
+    required.append("self")
     miss = set(required).difference(args)
     if len(miss) > 0:
         # miss = sorted(list(miss))
@@ -152,6 +148,7 @@ def search_for(obj, predicate):
                 found.extend(search_for(obj[key], predicate))
     return found
 
+
 def force_list(values):
     """Ensure `values` is iterable (list, tuple, array...) and return it as
     a list."""
@@ -159,9 +156,11 @@ def force_list(values):
         values = [values]
     return list(values)
 
+
 def value_is_sequence(value):
     """Tell if *value* is a valid object if max > 1."""
     return type(value) in (list, tuple, array, numpy.ndarray)
+
 
 def array_to_list(obj):
     """Convert an object to a list if possible (using `tolist()`) or keep it
@@ -178,16 +177,20 @@ def array_to_list(obj):
     except AttributeError:
         return obj
 
+
 # same function exist in asterstudy.datamodel.aster_parser
 def old_complex(value):
     """Convert an old-style complex."""
     if isinstance(value, (list, tuple)) and len(value) == 3:
-        if value[0] == 'RI':
+        if value[0] == "RI":
             value = complex(value[1], value[2])
-        elif value[0] == 'MP':
-            value = complex(value[1] * math.cos(value[2] * math.pi / 180.),
-                            value[1] * math.sin(value[2] * math.pi / 180.))
+        elif value[0] == "MP":
+            value = complex(
+                value[1] * math.cos(value[2] * math.pi / 180.0),
+                value[1] * math.sin(value[2] * math.pi / 180.0),
+            )
     return value
+
 
 def enable_0key(values):
     """Emulate the legacy MCFACT behavior: MCFACT[0] returns MCFACT itself
@@ -203,6 +206,7 @@ def enable_0key(values):
         if isinstance(kw, dict):
             kw[0] = kw
 
+
 def disable_0key(values):
     """Restore the content of `values` after calling `enable_0key()`.
 
@@ -212,6 +216,7 @@ def disable_0key(values):
     for k, kw in list(values.items()):
         if isinstance(kw, dict) and 0 in kw:
             del kw[0]
+
 
 # Keep consistency with SyntaxUtils.block_utils from AsterStudy
 def block_utils(evaluation_context):
@@ -254,6 +259,7 @@ def block_utils(evaluation_context):
     def is_type(name):
         """Return the type of a keyword."""
         return AsType(value(name))
+
     equal_to = is_in
 
     def size(name):
@@ -270,6 +276,7 @@ def block_utils(evaluation_context):
 
     return locals()
 
+
 def sorted_dict(kwargs):
     """Sort a dict in the order of the items."""
     if not kwargs:
@@ -278,6 +285,7 @@ def sorted_dict(kwargs):
     vk = sorted(zip(list(kwargs.values()), list(kwargs.keys())))
     newv, newk = list(zip(*vk))
     return OrderedDict(list(zip(newk, newv)))
+
 
 def debug_mode():
     """
@@ -289,6 +297,7 @@ def debug_mode():
     debug = getattr(debug_mode, "DEBUG", 0)
     debug = debug or int(os.getenv("DEBUG", 0))
     return debug
+
 
 def debug_message(*args, **kwargs):
     """
@@ -314,13 +323,16 @@ def debug_message(*args, **kwargs):
     Arguments:
         *args: Variable length argument list.
     """
-    level = kwargs.get('level', 0)
+    level = kwargs.get("level", 0)
     if debug_mode() > level:
         if args:
-            print("AsterStudy:" + (" " + "." * level if level else ""), end=' ')
+            print("AsterStudy:" + (" " + "." * level if level else ""), end=" ")
             for arg in args:
-                print(arg, end=' ')
+                print(arg, end=" ")
             print()
+
 
 # pragma pylint: disable=invalid-name
 debug_message2 = partial(debug_message, level=1)
+# avoids to document the wrapper here and in all modules that import it
+debug_message2.__doc__ = None

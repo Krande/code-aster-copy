@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,23 @@
 # --------------------------------------------------------------------
 
 """
-This module allows to check the syntax of a user command file that used the
-syntax of legacy operators.
-The check is performed at execution of an operator. So, the user file can mix
+The checking is performed at execution of an operator. So, the user file can mix
 legacy operators and pure Python instructions.
 
-Warning: Default keywords must be added before checking the syntax.
+.. warning:: Default keywords must be added before checking the syntax.
 """
 
 import numpy
 
 from . import DataStructure as DS
-from .SyntaxUtils import (debug_message2, force_list, mixedcopy, old_complex,
-                          remove_none, value_is_sequence)
+from .SyntaxUtils import (
+    debug_message2,
+    force_list,
+    mixedcopy,
+    old_complex,
+    remove_none,
+    value_is_sequence,
+)
 
 
 class CheckerError(Exception):
@@ -70,18 +74,15 @@ def fromTypeName(typename):
     """Convert a typename to a list of valid Python types (or an empty list)
     Example: 'I' returns [int, ...]"""
     if not hasattr(fromTypeName, "convTypes"):
-        convTypes = {
-            'TXM' : [str, str],
-            'I' : [int, numpy.int, numpy.int32, numpy.int64],
-        }
-        convTypes['R'] = [float, numpy.float, numpy.float32, numpy.float64] \
-                       + convTypes['I']
-        convTypes['C'] = [complex, numpy.complex, numpy.complex64,
-                          numpy.complex128] + convTypes['R']
+        convTypes = {"TXM": [str, str], "I": [int, numpy.int, numpy.int32, numpy.int64]}
+        convTypes["R"] = [float, numpy.float, numpy.float32, numpy.float64] + convTypes["I"]
+        convTypes["C"] = [complex, numpy.complex, numpy.complex64, numpy.complex128] + convTypes[
+            "R"
+        ]
         # exceptions
-        convTypes[DS.MeshEntity] = convTypes['TXM']
-        for deprec in ('Fichier', '', 'Sauvegarde'):
-            convTypes[deprec] = convTypes['TXM']
+        convTypes[DS.MeshEntity] = convTypes["TXM"]
+        for deprec in ("Fichier", "", "Sauvegarde"):
+            convTypes[deprec] = convTypes["TXM"]
         # When these objects will be removed...
         # convTypes[DS.listr8_sdaster] = convTypes['R']
         # convTypes[DS.listis_sdaster] = convTypes['I']
@@ -130,7 +131,7 @@ def isValidType(obj, expected):
     # accept str for MeshEntity
     if issubclass(expected[0], (DS.MeshEntity, DS.GEOM)):
         if isinstance(obj, str):
-            assert len(expected) == 1, 'several types for MeshEntity ?!'
+            assert len(expected) == 1, "several types for MeshEntity ?!"
             return True
     # accept all DataStructures for CO
     if DS.CO in expected and issubclass(typobj, DS.DataStructure):
@@ -142,7 +143,7 @@ def isValidType(obj, expected):
             if not issubclass(i, DS.DataStructure):
                 continue
             expectname.extend(i.getSubtypes())
-        debug_message2(obj, typname, 'expecting:', expectname)
+        debug_message2(obj, typname, "expecting:", expectname)
         return typname in expectname
     except AttributeError:
         pass
@@ -193,8 +194,7 @@ class SyntaxCheckerVisitor:
     def visitCommand(self, step, userDict=None):
         """Visit a Command object"""
         # do not check these fake commands
-        if step.name in ("_CONVERT_VARIABLE", "_CONVERT_COMMENT",
-                         "_RESULT_OF_MACRO"):
+        if step.name in ("_CONVERT_VARIABLE", "_CONVERT_COMMENT", "_RESULT_OF_MACRO"):
             return
         debug_message2("checking syntax of", step.name, "with", userDict)
         self._parent_context.append(userDict)
@@ -203,9 +203,12 @@ class SyntaxCheckerVisitor:
         try:
             step.get_type_sd_prod(**userDict)
         except Exception as exc:
-            self.error(TypeError,
-                       ("Cannot type result of the command {0}\n"
-                        "Exception raised: {1})").format(step.name, repr(exc)))
+            self.error(
+                TypeError,
+                ("Cannot type result of the command {0}\n" "Exception raised: {1})").format(
+                    step.name, repr(exc)
+                ),
+            )
 
     def visitMacro(self, step, userDict=None):
         """Visit a Macro object"""
@@ -222,11 +225,12 @@ class SyntaxCheckerVisitor:
 
     def visitSimpleKeyword(self, step, skwValue):
         """Visit a SimpleKeyword object
-        Checks that :
-            - the type is well known,
-            - the values are in `into`,
-            - the values are in [val_min, val_max],
-            - the number of values is in [min, max]
+
+        It checks that :
+        - the type is well known,
+        - the values are in ``into`` list,
+        - the values are in ``[val_min, val_max]``,
+        - the number of values is in ``[min, max]``.
         """
         if step.undefined(skwValue):
             # the keyword does not exist and it should have been checked by
@@ -250,23 +254,21 @@ class SyntaxCheckerVisitor:
             skwValue = old_complex(skwValue)
 
         # Vérification des valeurs max et min
-        valMin = step.definition.get('val_min')
-        valMax = step.definition.get('val_max')
+        valMin = step.definition.get("val_min")
+        valMax = step.definition.get("val_max")
 
         if value_is_sequence(skwValue):
             # Vérification du nombre de valeurs
-            nbMin = step.definition.get('min')
-            nbMax = step.definition.get('max', 1)
+            nbMin = step.definition.get("min")
+            nbMax = step.definition.get("max", 1)
             if nbMax == "**":
                 nbMax = None
             if nbMax is not None and len(skwValue) > nbMax:
                 debug_message2(step)
-                self.error(ValueError,
-                           'At most {0} values are expected'.format(nbMax))
+                self.error(ValueError, "At most {0} values are expected".format(nbMax))
             if nbMin is not None and len(skwValue) < nbMin:
                 debug_message2(step)
-                self.error(ValueError,
-                           'At least {0} values are expected'.format(nbMin))
+                self.error(ValueError, "At least {0} values are expected".format(nbMin))
         else:
             skwValue = [skwValue]
 
@@ -275,8 +277,7 @@ class SyntaxCheckerVisitor:
         for i in skwValue:
             count += 1
             if count > self._max_check:
-                print("Only the first {0} values are checked."
-                      .format(self._max_check))
+                print("Only the first {0} values are checked.".format(self._max_check))
                 break
             if complex in validType:
                 i = old_complex(i)
@@ -316,54 +317,66 @@ class SyntaxCheckerVisitor:
             # type
             if not isValidType(i, validType):
                 step._context(i)
-                self.error(TypeError,
-                           'Unexpected type: {0}, expecting: {1}'
-                           .format(type(i), validType))
+                self.error(
+                    TypeError, "Unexpected type: {0}, expecting: {1}".format(type(i), validType)
+                )
             # into
             if "into" in step.definition:
                 if i not in step.definition["into"]:
-                    self.error(ValueError,
-                               "Unexpected value: {0!r}, must be in {1!r}"
-                                   .format(i, step.definition["into"]))
+                    self.error(
+                        ValueError,
+                        "Unexpected value: {0!r}, must be in {1!r}".format(
+                            i, step.definition["into"]
+                        ),
+                    )
             # val_min/val_max
             if valMax is not None:
                 if complex in validType:
                     ValMax = old_complex(ValMax)
                     if i.real > valMax.real or i.imag > valMax.imag:
-                        self.error(ValueError,
-                           'Real and imaginary parts must be smaller than the real'
-                           ' and the imaginary parts of {0}, respectively, {1} is not'
-                                .format(valMax, i))
+                        self.error(
+                            ValueError,
+                            "Real and imaginary parts must be smaller than the real"
+                            " and the imaginary parts of {0}, respectively, {1} is not".format(
+                                valMax, i
+                            ),
+                        )
                 else:
                     if i > valMax:
-                        self.error(ValueError,
-                           'Value must be smaller than {0}, {1} is not'
-                               .format(valMax, i))
+                        self.error(
+                            ValueError,
+                            "Value must be smaller than {0}, {1} is not".format(valMax, i),
+                        )
             if valMin is not None:
                 if complex in validType:
                     ValMin = old_complex(ValMin)
                     if i.real < valMin.real or i.imag < valMin.imag:
-                        self.error(ValueError,
-                           'Real and imaginary parts must be greater than the real'
-                           ' and the imaginary parts of {0}, respectively, {1} is not'
-                                .format(valMax, i))
+                        self.error(
+                            ValueError,
+                            "Real and imaginary parts must be greater than the real"
+                            " and the imaginary parts of {0}, respectively, {1} is not".format(
+                                valMax, i
+                            ),
+                        )
                 else:
                     if i < valMin:
-                        self.error(ValueError,
-                           'Value must be bigger than {0}, {1} is not'
-                               .format(valMin, i))
-
+                        self.error(
+                            ValueError,
+                            "Value must be bigger than {0}, {1} is not".format(valMin, i),
+                        )
 
         # call validators
-        for valid in force_list(step.definition.get('validators', [])):
+        for valid in force_list(step.definition.get("validators", [])):
             valid.check(skwValue)
 
     def _visitComposite(self, step, userDict):
         """Visit a composite object (containing BLOC, FACT and SIMP objects)
-        Check that :
-            - the number of occurences is as expected
-            - the rules are validated
-            - the mandatory simple keywords are present
+
+        It checks that :
+        - the number of occurences is as expected,
+        - the rules are validated,
+        - the mandatory simple keywords are present.
+
         One walks the Bloc objects to add the keywords according to the
         conditions.
         """
@@ -380,25 +393,26 @@ class SyntaxCheckerVisitor:
             self.error(TypeError, "Type 'dict' or 'tuple' is expected")
 
         # check the number of occurrences
-        if len(userDict) < step.definition.get('min', 0):
-            self.error(ValueError,
-                       "Too few factor keyword, at least {0} "
-                       "occurrence(s) expected"
-                           .format(step.definition.get('min', 0)))
-        max_occurences = step.definition.get('max', 1)
-        if max_occurences != '**' and len(userDict) > max_occurences:
-            self.error(ValueError,
-                       "Too much factor keyword, at most {0} "
-                       "occurrence(s) expected"
-                           .format(max_occurences))
+        if len(userDict) < step.definition.get("min", 0):
+            self.error(
+                ValueError,
+                "Too few factor keyword, at least {0} "
+                "occurrence(s) expected".format(step.definition.get("min", 0)),
+            )
+        max_occurences = step.definition.get("max", 1)
+        if max_occurences != "**" and len(userDict) > max_occurences:
+            self.error(
+                ValueError,
+                "Too much factor keyword, at most {0} "
+                "occurrence(s) expected".format(max_occurences),
+            )
 
         # loop on occurrences filled by the user
         count = 0
         for userOcc in userDict:
             count += 1
             if count > self._max_check:
-                print("Only the first {0} occurrences are checked."
-                      .format(self._max_check))
+                print("Only the first {0} occurrences are checked.".format(self._max_check))
                 break
             ctxt = self._parent_context[-1] if self._parent_context else {}
             # check rules
@@ -412,23 +426,24 @@ class SyntaxCheckerVisitor:
             for key, value in userOcc.items():
                 # print key, value
                 if key == "reuse":
-                    reentr = step.definition.get("reentrant", "").split(':')
+                    reentr = step.definition.get("reentrant", "").split(":")
                     if reentr and reentr[0] not in ("o", "f"):
                         self._stack.append(key)
                         self.error(KeyError, "reuse is not allowed!")
                     continue
                 kwd = step.getKeyword(key, userOcc, ctxt)
                 if kwd is None:
-                    debug_message2("keyword:", key, "user dict:", userOcc,
-                                   "parent context:", ctxt)
+                    debug_message2("keyword:", key, "user dict:", userOcc, "parent context:", ctxt)
                     self._stack.append(key)
-                    self.error(KeyError,
-                               "Unauthorized keyword: {!r}".format(key))
+                    self.error(KeyError, "Unauthorized keyword: {!r}".format(key))
                 else:
-                    nmax = kwd.definition.get('max', 1)
+                    nmax = kwd.definition.get("max", 1)
                     if nmax == 1:
-                        if (value_is_sequence(value) and len(value) == 1
-                                and not isinstance(value[0], dict)):
+                        if (
+                            value_is_sequence(value)
+                            and len(value) == 1
+                            and not isinstance(value[0], dict)
+                        ):
                             value = userOcc[key] = value[0]
                     else:
                         if value is not None and not value_is_sequence(value):

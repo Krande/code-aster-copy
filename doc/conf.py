@@ -26,11 +26,12 @@ BUILDDIR = os.environ.get("BUILDDIR", "build/mpi/release/doc")
 
 paths = [
     osp.join(DOCDIR, "_extensions"),
-    osp.join(DOCDIR, "_fake"),
+    osp.join(DOCDIR, "_automatic_"),
     SRCDIR,
     osp.join(SRCDIR, "code_aster"),
     BUILDDIR,
     osp.join(BUILDDIR, "code_aster"),
+    osp.join(DOCDIR, "examples"),
 ]
 
 sys.path = paths + sys.path
@@ -76,14 +77,14 @@ today_fmt = "%Y"
 # directories to ignore when looking for source files.
 exclude_patterns = ["_build"]
 
-autodoc_mock_imports = ["aster"]
+autodoc_mock_imports = ["aster", "aster_core"]
 autodoc_member_order = "bysource"
 
 # -- Options for HTML output ----------------------------------------------
 html_theme = "sphinx_rtd_theme"
 html_theme_path = ["_extensions"]
-html_favicon = "code_aster_favicon.png"
-html_logo = "code_aster_200.png"
+html_favicon = "img/code_aster_favicon.png"
+html_logo = "img/code_aster_200.png"
 html_static_path = ["_static"]
 
 # Add any extra paths that contain custom files (such as robots.txt or

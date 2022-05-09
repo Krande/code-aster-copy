@@ -115,10 +115,10 @@ def build_autodoc(self):
         rule=run_pylibaster,
         name="pylibaster",
         source=[
-            self.path.ant_glob("build_pylibaster.py"),
+            self.path.ant_glob("scripts/build_pylibaster.py"),
             self.path.parent.get_bld().find_or_declare("bibc/libaster.so"),
         ],
-        target=self.path.find_or_declare("_fake/libaster.py"),
+        target=self.path.find_or_declare("_automatic_/libaster.py"),
         cwd=self.path.get_bld().abspath(),
     )
     pysrc = self.path.parent.get_src().ant_glob("code_aster/**/*.py")
@@ -127,11 +127,11 @@ def build_autodoc(self):
         rule=run_autodoc,
         name="rstdevguide",
         source=[
-            self.path.ant_glob("generate_rst.py"),
-            self.path.find_or_declare("_fake/libaster.py"),
+            self.path.ant_glob("scripts/generate_rst.py"),
+            self.path.find_or_declare("_automatic_/libaster.py"),
         ]
         + pysrc,
-        target=self.path.find_or_declare("devguide"),
+        target=self.path.find_or_declare("_automatic_"),
         cwd=self.path.get_bld().abspath(),
     )
 
@@ -142,7 +142,7 @@ def build_html(self):
 
     self.add_group()
     pylib = self.path.get_bld().ant_glob(
-        "_fake/libaster.py", remove=False, quiet=True, generator=True
+        "_automatic_/libaster.py", remove=False, quiet=True, generator=True
     )
 
     # rst are not changed when libaster is rebuilt, so force to rebuild doctrees and html files
@@ -162,7 +162,7 @@ def build_html(self):
         use="pylibaster",
     )
     self.add_manual_dependency(
-        self.path.find_or_declare("html/index.html"), self.path.find_node("_fake/libaster.py")
+        self.path.find_or_declare("html/index.html"), self.path.find_node("_automatic_/libaster.py")
     )
     # install html files
     bld = self.path.find_or_declare("html").abspath()

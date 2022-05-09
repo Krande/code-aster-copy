@@ -1,7 +1,5 @@
-.. _devguide-commands-index:
-
 #################
-Specific commands
+Index of Commands
 #################
 
 The implementation of the most of the user commands are just a wrapping

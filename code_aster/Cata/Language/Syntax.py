@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,23 +18,54 @@
 # --------------------------------------------------------------------
 
 """
-This module defines the objects used in the description (old `.capy` files) of
-legacy operators.
-It mainly converts new objects to old ones for backward compatibility.
+Objects used in catalogs
+------------------------
+
+These objects are the bricks of the code_aster language of commands.
+The objects used in the description of commands are *exported*/*wrapped*
+to ensure backward compatibility with the previous versions.
+
+For example, the catalogs are using ``BLOC`` and ``FACT`` instead of
+``Bloc`` and ``FactorKeyword`` that are the *Syntax Objects* internally used.
 """
 
 import builtins
 
 from . import DataStructure as DS
 from .DataStructure import AsType
-from .Rules import (AllTogether, AtLeastOne, AtMostOne, ExactlyOne,
-                    IfFirstAllPresent, NotEmpty, OnlyFirstPresent)
+from .Rules import (
+    AllTogether,
+    AtLeastOne,
+    AtMostOne,
+    ExactlyOne,
+    IfFirstAllPresent,
+    NotEmpty,
+    OnlyFirstPresent,
+)
 from .SyntaxChecker import SyntaxCheckerVisitor
-from .SyntaxObjects import (_F, Bloc, CataError, FactorKeyword, Formule,
-                            ListFact, Macro, Operator, Procedure,
-                            SimpleKeyword)
-from .Validators import (Absent, AndVal, Compulsory, LongStr, NoRepeat,
-                         NotEqualTo, OrdList, OrVal, Together)
+from .SyntaxObjects import (
+    _F,
+    Bloc,
+    CataError,
+    FactorKeyword,
+    Formule,
+    ListFact,
+    Macro,
+    Operator,
+    Procedure,
+    SimpleKeyword,
+)
+from .Validators import (
+    Absent,
+    AndVal,
+    Compulsory,
+    LongStr,
+    NoRepeat,
+    NotEqualTo,
+    OrdList,
+    OrVal,
+    Together,
+)
 
 builtins._F = _F
 
@@ -62,6 +93,7 @@ def MACRO(**kwargs):
 def PROC(**kwargs):
     return Procedure(kwargs)
 
+
 FIN_PROC = PROC
 
 
@@ -82,6 +114,7 @@ assd = DS.ASSD
 
 class PROC_ETAPE(Procedure):
     pass
+
 
 # exception
 AsException = CataError
@@ -119,7 +152,7 @@ class Translation:
         if type(arg) is str:
             uarg = arg
         else:
-            uarg = arg.decode('utf-8', 'replace')
+            uarg = arg.decode("utf-8", "replace")
         return self._func(uarg)
 
     def __getstate__(self):
