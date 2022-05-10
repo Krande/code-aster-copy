@@ -142,7 +142,7 @@ class BaseAssemblyMatrix : public DataStructure {
     void symmetrize();
 
     /**
-     * @brief Make the matrix symmetric
+     * @brief Tell if the matrix is fully filled
      */
     bool isMPIFull();
 

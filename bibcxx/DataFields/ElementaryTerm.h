@@ -89,14 +89,12 @@ class ElementaryTerm : public DataField {
     }
 
     bool isMPIFull() {
-        AS_ASSERT(_noli->exists());
+        AS_ASSERT( _noli->exists() );
         _noli->updateValuePointer();
-        return trim( ( *_noli )[2].toString() ) == "OUI";
+        return trim( ( *_noli )[2].toString() ) == "MPI_COMPLET";
     }
 
-    bool isEmpty() {
-        return !(_noli->exists() && _desc->exists());
-    }
+    bool isEmpty() { return !( _noli->exists() && _desc->exists() ); }
 };
 
 /** @typedef ElementaryTermRealPtr */

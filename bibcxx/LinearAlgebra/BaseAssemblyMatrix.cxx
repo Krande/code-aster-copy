@@ -81,5 +81,5 @@ void BaseAssemblyMatrix::symmetrize() { CALL_MATR_ASSE_SYME( getName() ); };
 
 bool BaseAssemblyMatrix::isMPIFull() {
     _description->updateValuePointer();
-    return trim( ( *_description )[10].toString() ) == "OUI";
+    return trim( ( *_description )[10].toString() ) == "MPI_COMPLET";
 };
