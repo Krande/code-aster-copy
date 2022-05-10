@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ use petsc_data_module
 !     VARIABLES LOCALES
     integer :: nmaxit, ifm, niv
 !
-    character(len=24) :: algo
+    character(len=24) :: algo, precon
     character(len=19) :: nomat, nosolv
     character(len=14) :: nonu
 !
@@ -81,37 +81,41 @@ use petsc_data_module
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
     call jeveuo(nosolv//'.SLVI', 'L', vi=slvi)
     algo = slvk(6)
+    precon = slvk(2)
     resire = slvr(2)
     nmaxit = slvi(2)
 !
 !     -- choix de l'algo KSP :
 !     ------------------------
-    if (algo .eq. 'CG') then
-        call KSPSetType(ksp, KSPCG, ierr)
-        ASSERT(ierr.eq.0)
-    else if (algo.eq.'CR') then
-        call KSPSetType(ksp, KSPCR, ierr)
-        ASSERT(ierr.eq.0)
-    else if (algo.eq.'GMRES') then
-        call KSPSetType(ksp, KSPGMRES, ierr)
-        call KSPGMRESSetBreakdownTolerance(ksp, 1.d3, ierr)
-        ASSERT(ierr.eq.0)
-    else if (algo.eq.'GMRES_LMP') then
-        call KSPSetType(ksp, KSPGMRES, ierr)
-        call KSPGMRESSetBreakdownTolerance(ksp, 1.d3, ierr)
-        ASSERT(ierr.eq.0)
-! On indique qu'on veut récupérer les Ritz à la fin de la résolution
-! afin de construire le préconditionneur de second niveau LMP
-        call KSPSetComputeRitz(ksp, petsc_true, ierr)
-    else if (algo.eq.'GCR') then
-        call KSPSetType(ksp, KSPGCR, ierr)
-        ASSERT(ierr.eq.0)
-    else if (algo.eq.'FGMRES') then
-        call KSPSetType(ksp, KSPFGMRES, ierr)
-    else
-        ASSERT(.false.)
+    if (precon.ne.'UTILISATEUR') then
+        if (algo .eq. 'CG') then
+            call KSPSetType(ksp, KSPCG, ierr)
+            ASSERT(ierr.eq.0)
+        else if (algo.eq.'CR') then
+            call KSPSetType(ksp, KSPCR, ierr)
+            ASSERT(ierr.eq.0)
+        else if (algo.eq.'GMRES') then
+            call KSPSetType(ksp, KSPGMRES, ierr)
+            call KSPGMRESSetBreakdownTolerance(ksp, 1.d3, ierr)
+            ASSERT(ierr.eq.0)
+        else if (algo.eq.'GMRES_LMP') then
+            call KSPSetType(ksp, KSPGMRES, ierr)
+            call KSPGMRESSetBreakdownTolerance(ksp, 1.d3, ierr)
+            ASSERT(ierr.eq.0)
+    ! On indique qu'on veut récupérer les Ritz à la fin de la résolution
+    ! afin de construire le préconditionneur de second niveau LMP
+            call KSPSetComputeRitz(ksp, petsc_true, ierr)
+            ASSERT(ierr.eq.0)
+        else if (algo.eq.'GCR') then
+            call KSPSetType(ksp, KSPGCR, ierr)
+            ASSERT(ierr.eq.0)
+        else if (algo.eq.'FGMRES') then
+            call KSPSetType(ksp, KSPFGMRES, ierr)
+            ASSERT(ierr.eq.0)
+        else
+            ASSERT(.false.)
+        endif
     endif
-    ASSERT(ierr.eq.0)
 !
 !     -- paramètres numériques :
 !     --------------------------

@@ -77,13 +77,10 @@ GRAV = AFFE_CHAR_MECA(
 
 APP = AFFE_CHAR_CINE(MODELE=MOD, MECA_IMPO=_F(GROUP_MA="Encast", DX=0.0, DY=0.0, DZ=0.0))
 
-PRESS = AFFE_CHAR_MECA(
-    MODELE=MOD, DOUBLE_LAGRANGE="NON", PRES_REP=(_F(GROUP_MA="Press", PRES=1e6),)
-)
+PRESS = AFFE_CHAR_MECA(MODELE=MOD, DOUBLE_LAGRANGE="NON",
+                       PRES_REP=(_F(GROUP_MA="Press", PRES=1e6),))
 
 RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="CONSTANT")
-
-INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
 
 
 def build_ksp(matrix):
@@ -97,38 +94,35 @@ def build_ksp(matrix):
     """
     ksp = KSP().create(comm=COMM_WORLD)
     ksp.setOperators(matrix)
+    ksp.setType('fgmres')
+    pc = ksp.getPC()
+    pc.setType('icc')
+    ksp.view()
     return ksp
 
 
-resu = MECA_STATIQUE(
-    MODELE=MOD,
-    CHAM_MATER=MATER,
-    CARA_ELEM=ELEM,
-    SOLVEUR=_F(
-        METHODE="PETSC",
-        PRE_COND="UTILISATEUR",
-        KSP_UTIL=build_ksp,
-    ),
-    LIST_INST=INST,
-    EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=PRESS), _F(CHARGE=APP)),
-    OPTION="SANS",
-    INFO=2,
-)
+resu = MECA_STATIQUE(MODELE=MOD,
+                     CHAM_MATER=MATER,
+                     CARA_ELEM=ELEM,
+                     SOLVEUR=_F(METHODE="PETSC", PRE_COND="UTILISATEUR", KSP_UTIL=build_ksp,),
+                     INST=(1.),
+                     EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=PRESS, FONC_MULT=RAMPE,), _F(CHARGE=APP)),
+                     OPTION="SANS",
+                     INFO=2,
+                     )
 
 IMPR_RESU(FORMAT="RESULTAT", UNITE=6, RESU=_F(RESULTAT=resu, NOM_CHAM="DEPL", GROUP_MA="An5_1"))
 
-TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=resu,
-            NUME_ORDRE=1,
-            NOM_CHAM="DEPL",
-            NOM_CMP="DY",
-            # GROUP_MA="An5_1",
-            NOEUD="N19",
-            VALE_CALC=-4.33185649566225e-04,
-        ),
-    )
+TEST_RESU(RESU=(_F(
+    RESULTAT=resu,
+    NUME_ORDRE=1,
+    NOM_CHAM="DEPL",
+    NOM_CMP="DY",
+    # GROUP_MA="An5_1",
+    NOEUD="N19",
+    VALE_CALC=-4.33185649566225e-04,
+),
+)
 )
 
 FIN()

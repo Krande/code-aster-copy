@@ -459,7 +459,7 @@ implicit none
 !-----------------------------------------------------------------------
     else if (precon == 'UTILISATEUR') then
 !       It should be defined by the user
-        call PCSetType(pc, PCNONE, ierr)
+        ! call PCSetType(pc, PCNONE, ierr)
         call PCSetFromOptions(pc, ierr)
 
 !-----------------------------------------------------------------------

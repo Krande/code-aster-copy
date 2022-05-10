@@ -1,0 +1,232 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import os.path as osp
+
+import code_aster
+from code_aster.Commands import *
+from petsc4py.PETSc import KSP, PC, IS, Mat, Options
+from mpi4py import MPI
+import numpy as np
+
+code_aster.init("--test", "--abort")
+
+
+MA = LIRE_MAILLAGE(FORMAT='MED',
+                   VERI_MAIL=_F(VERIF='NON',),
+                   # PARTITIONNEUR='PTSCOTCH',
+                   )
+
+MOD = AFFE_MODELE(MAILLAGE=MA,
+                  AFFE=(_F(GROUP_MA=('Beton', 'Encast', 'Press',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),
+                        _F(GROUP_MA='Cables',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='BARRE',),
+                        ),)
+
+
+# Orientation de tous les elements de surface
+MA = MODI_MAILLAGE(reuse=MA,
+                   MAILLAGE=MA,
+                   ORIE_PEAU_3D=_F(GROUP_MA='Press'),
+                   )
+
+# Definition et effectation des materiaux
+
+BTN_GEN = DEFI_MATERIAU(ELAS=_F(E=30000e6,
+                                NU=0.2,
+                                RHO=2500.,),
+                        BPEL_BETON=_F(PERT_FLUA=0.0, PERT_RETR=0.0),)
+
+ACI_CAB = DEFI_MATERIAU(ELAS=_F(E=200000e6,
+                                NU=0.0,
+                                RHO=7800,),
+                        BPEL_ACIER=_F(RELAX_1000=0., F_PRG=0.),)
+
+
+MATER = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=(_F(GROUP_MA='Beton',
+                               MATER=BTN_GEN,),
+                            _F(GROUP_MA='Cables',
+                               MATER=ACI_CAB,),
+                            ),)
+
+# Definition et affectation des caracteristiques des elements de structure
+ELEM = AFFE_CARA_ELEM(MODELE=MOD,
+                      BARRE=_F(GROUP_MA='Cables',
+                               SECTION='CERCLE',
+                               CARA='R',
+                               VALE=0.005,),
+                      )
+
+
+LIAISON = AFFE_CHAR_MECA(DOUBLE_LAGRANGE='NON',
+                         INFO=1,
+                         LIAISON_MAIL=(_F(ELIM_MULT='NON',
+                                          GROUP_MA_ESCL='Cables',
+                                          GROUP_MA_MAIT='Beton',
+                                          TYPE_RACCORD='MASSIF'),
+                                       ),
+                         MODELE=MOD,
+                         VERI_NORM='OUI')
+
+GRAV = AFFE_CHAR_MECA(MODELE=MOD,
+                      DOUBLE_LAGRANGE='NON',
+                      PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0., 0., -1.),),)
+
+APP = AFFE_CHAR_CINE(MODELE=MOD,
+                     MECA_IMPO=_F(GROUP_MA='Encast',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),)
+
+PRESS = AFFE_CHAR_MECA(MODELE=MOD,
+                       DOUBLE_LAGRANGE='NON',
+                       PRES_REP=(_F(GROUP_MA='Press',
+                                    PRES=1e6),
+                                 ),
+                       )
+RAMPE = DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0., 0., 1.0, 1.0),
+                      PROL_DROITE='CONSTANT',
+                      )
+
+# we build explicitely the numbering of the unknowns since it is needed in the pc
+NUM = NUME_DDL(MODELE=MOD, CHARGE=(LIAISON, PRESS))
+
+
+def build_ksp(matrix, nmbrng=NUM):
+    """User function to define the KSP operator.
+    Implementation of the Reverse Constrained Augmented Preconditioner of
+    Franceschini et al. : https://doi.org/10.48550/arXiv.2111.05599
+
+    Arguments:
+         matrix (PetscMat): PETSc matrix
+         nmbrng (DOFNumbering): numbering of the degrees of freedom
+
+    Returns:
+         KSP: KSP operator.
+    """
+    comm = matrix.getComm()
+    rank = comm.rank
+
+    ms, me = matrix.getOwnershipRange()
+    phys = np.array(nmbrng.getRowsAssociatedToPhysicalDofs())  # 0-based
+    phys = phys[np.where((ms <= phys) & (phys < me))]  # hack to handle parallelism
+    lags = np.array(nmbrng.getRowsAssociatedToLagrangeMultipliers())  # 0-based
+    lags = lags[np.where((ms <= lags) & (lags < me))]  # hack to handle parallelism
+
+    phys = getattr(phys, "tolist", lambda: value)()
+    lags = getattr(lags, "tolist", lambda: value)()
+    phys = IS().createGeneral(phys, comm=comm)
+    lags = IS().createGeneral(lags, comm=comm)
+
+    K00 = matrix.createSubMatrix(phys, phys)
+    K01 = matrix.createSubMatrix(phys, lags)
+    K10 = matrix.createSubMatrix(lags, phys)
+    K11 = matrix.createSubMatrix(lags, lags)
+
+    _, nlags = K01.getSize()
+
+    C = K11.copy(structure=Mat.Structure.DIFFERENT_NONZERO_PATTERN)
+    C.setUp()
+    C.setPreallocationNNZ(1)
+    Cm1 = K11.copy(structure=Mat.Structure.DIFFERENT_NONZERO_PATTERN)
+    Cm1.setUp()
+    Cm1.setPreallocationNNZ(1)
+
+    k10s, k10e = K10.getOwnershipRange()
+    for row in range(nlags):
+        print(f"Processing row {row}/{nlags}", end="\r")
+        indx, row_val = [], np.array([])
+        lroot, root = 0, 0
+        if row in range(k10s, k10e):
+            indx, row_val = K10.getRow(row)
+            indx = indx[row_val != 0]
+            lroot = rank
+        root = MPI.COMM_WORLD.allreduce(lroot, MPI.SUM)
+        indx = MPI.COMM_WORLD.bcast(indx, root=root)
+        row_val = MPI.COMM_WORLD.bcast(row_val, root=root)
+        indx = IS().createGeneral(indx)
+        val = K00.createSubMatrix(indx, indx).norm()
+        cval = row_val.dot(row_val) / val
+        cs, ce = C.getOwnershipRange()
+        if row in range(cs, ce):
+            C.setValue(row, row, cval)
+            Cm1.setValue(row, row, 1/cval)
+
+    C.assemble()
+    Cm1.assemble()
+
+    BtCm1B = Cm1.PtAP(K10)
+
+    P = Mat().create(comm=comm)
+    P.createNest([[K00 + BtCm1B, None], [None, C]])
+    P.assemble()
+
+    phys, lags = P.getNestISs()[0]
+
+    optDB = Options()
+    optDB.setValue('-ksp_monitor_true_residual', '')
+
+    ksp = KSP().create(comm=comm)
+
+    ksp.setOperators(matrix, P)
+    ksp.setType('fgmres')
+    ksp.setFromOptions()
+
+    pc = ksp.getPC()
+    pc.setType(PC.Type.FIELDSPLIT)
+    pc.setFieldSplitIS(('u', phys), ('p', lags))
+    pc.setFieldSplitType(PC.CompositeType.ADDITIVE)
+    subksps = pc.getFieldSplitSubKSP()
+    subksps[0].setType("cg")
+    optDB.setValue('-{}ksp_monitor'.format(subksps[0].prefix), '')
+    subksps[0].setTolerances(max_it=25, rtol=1.e-3)
+    subksps[0].getPC().setType("hypre")
+   #  subksps[0].getPC().setType("lu")
+   #  subksps[0].getPC().setFactorSolverType("mumps")
+    subksps[1].setType("preonly")
+    subksps[1].getPC().setType("jacobi")
+
+    return ksp
+
+
+resu = MECA_STATIQUE(MODELE=MOD,
+                     CHAM_MATER=MATER,
+                     CARA_ELEM=ELEM,
+                     SOLVEUR=_F(METHODE="PETSC", PRE_COND="UTILISATEUR", KSP_UTIL=build_ksp, ),
+                     INST=(1.),
+                     EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=PRESS), _F(CHARGE=APP),),
+                     OPTION='SANS',
+                     INFO=1,)
+
+TEST_RESU(RESU=(_F(RESULTAT=resu,
+                   NUME_ORDRE=1,
+                   NOM_CHAM="DEPL",
+                   NOM_CMP="DY",
+                   NOEUD="N19",
+                   VALE_CALC=-0.00043318679271560356,
+                   ),
+                )
+          )
+
+FIN()
