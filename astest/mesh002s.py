@@ -61,6 +61,7 @@ meshes = re_mesh.findall(content)
 
 nb_mesh = 0
 nb_mesh_converted = 0
+conversion_error = []
 # loop on mesh
 for mesh_file in meshes:
     MPI.COMM_WORLD.Barrier()
@@ -74,7 +75,7 @@ for mesh_file in meshes:
     vers_num = int(mesh_vers.replace(".", ""))
 
     print(
-        "MESHAME %d: %s (version: %s)" % (nb_mesh, mesh_name, mesh_vers), flush=True
+        "MESHNAME %d: %s (version: %s)" % (nb_mesh, mesh_name, mesh_vers), flush=True
     )
 
     # convert old med mesh < 3.0.0
@@ -95,55 +96,39 @@ for mesh_file in meshes:
     except Exception as exc:
         test.assertIsNone(exc, "partitioning failed (%s)" % mesh_name)
         print("ERROR:", str(exc))
+        conversion_error.append(mesh_name)
         continue
 
     # read std mesh
     mesh = code_aster.Mesh()
     mesh.readMedFile(mesh_name)
 
-    # tests
-    group_no_std = mesh.getGroupsOfNodes(local=False)
-    group_no_gl  = pmesh.getGroupsOfNodes(local=False)
-    # il manque des groupes
-    #test.assertSequenceEqual(sorted(group_no_std), sorted(group_no_gl))
-
-    group_ma_std = mesh.getGroupsOfCells(local=False)
-    group_ma_gl  = pmesh.getGroupsOfCells(local=False)
-    # il manque des point1
-    #test.assertSequenceEqual(sorted(group_ma_std), sorted(group_ma_gl))
-
-    nb_nodes_std = mesh.getNumberOfNodes()
-    nb_nodes_lc = len(pmesh.getInnerNodes())
-    nb_nodes_gl = MPI.COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
-    # il manque des noeuds
-    #test.assertEqual(nb_nodes_std, nb_nodes_gl)
-
-    nb_cells_std = mesh.getNumberOfCells()
-    cells_rank = pmesh.getCellsRank()
-    nb_cells_lc = Counter(cells_rank)[rank]
-    nb_cells_gl = MPI.COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
-    # il manque des mailles
-    #test.assertEqual(nb_cells_std, nb_cells_gl)
-
-    #test.assertTrue(pmesh.checkConsistency(mesh_name))
+    if not pmesh.checkConsistency(mesh_name):
+        conversion_error.append(mesh_name)
 
     test.assertTrue(pmesh.getNumberOfNodes() > 0)
     test.assertTrue(pmesh.getNumberOfCells() > 0)
+
     nb_mesh_converted += 1
 
     MPI.COMM_WORLD.Barrier()
 
 
-list_nb_mesh = [524, 497, 488]
-list_nb_mesh_conv = [523, 492, 487]
+list_nb_mesh = {2: 524, 3: 497, 4: 488}
+list_nb_mesh_conv = {2: 523, 3: 492, 4: 487}
+list_nb_conv_error = {2: 21, 3: 9, 4: 14}
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)
+print("Number of conversion error: %s " %
+      (len(conversion_error)), flush=True)
+print("List files: ", conversion_error)
 
 # all the mesh are partitioned
 test.assertTrue(is_parallel)
-test.assertEqual(nb_mesh, list_nb_mesh[nbproc - 2])
-test.assertEqual(nb_mesh_converted, list_nb_mesh_conv[nbproc - 2])
+test.assertEqual(nb_mesh, list_nb_mesh[nbproc])
+test.assertEqual(nb_mesh_converted, list_nb_mesh_conv[nbproc])
+test.assertEqual(len(conversion_error), list_nb_conv_error[nbproc])
 
 test.printSummary()
 
