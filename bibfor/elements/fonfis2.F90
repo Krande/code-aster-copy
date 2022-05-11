@@ -81,14 +81,14 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
     coori(2) = vale((ni-1)*3 + 2)
     coori(3) = vale((ni-1)*3 + 3)
 !
-!    REMPLISSAGE DE .FONDFISS DANS LA SD_FOND_FISS :
+!    REMPLISSAGE DE .FONDFISS DANS LA SD_FOND_FISSURE :
 !    DONNEES DU CAS 2D OU DU PREMIER NOEUD POUR LE CAS 3D
     zr(coorfd-1 + 3*(1-1) + 1) = coori(1)
     zr(coorfd-1 + 3*(1-1) + 2) = coori(2)
     zr(coorfd-1 + 3*(1-1) + 3) = coori(3)
     zr(iabsfon-1 + 1) = 0.d0
 !
-!     REMPLISSAGE DE .FONDFISS DANS LA SD_FOND_FISS: CAS 3D
+!     REMPLISSAGE DE .FONDFISS DANS LA SD_FOND_FISSURE: CAS 3D
     if (nbnoff .ne. 1) then
         do i = 2, nbnoff
 !

@@ -2015,7 +2015,7 @@ def post_k1_k2_k3_ops(
 
         verif_config_init(FOND_FISS)
 
-        #     Recuperation de la liste des noeuds du fond issus de la sd_fond_fiss : Lnoff, de longueur Nnoff
+        #     Recuperation de la liste des noeuds du fond issus de la sd_fond_fissure : Lnoff, de longueur Nnoff
         #     --------------------------------------------------------------------
 
         Lnoff = get_noeud_fond_fiss(FOND_FISS)

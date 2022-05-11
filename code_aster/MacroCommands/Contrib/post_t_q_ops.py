@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -1828,7 +1828,7 @@ def post_t_q_ops(self, **args):
 
         verif_config_init(FOND_FISS)
 
-#     Recuperation de la liste des noeuds du fond issus de la sd_fond_fiss : Lnoff, de longueur Nnoff
+#     Recuperation de la liste des noeuds du fond issus de la sd_fond_fissure : Lnoff, de longueur Nnoff
 #     --------------------------------------------------------------------
 
         Lnoff = get_noeud_fond_fiss(FOND_FISS)

@@ -53,7 +53,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !
 ! in:
 !   resu   : nom d'une sd_resultat
-!   nomfis : nom d'une sd_fond_fiss ou d'une sd_fiss_xfem
+!   nomfis : nom d'une sd_fond_fissure ou d'une sd_fiss_xfem
 !   imater : 1 => on recherche une sd_mater
 !            0 => on ne recherche pas
 ! out:

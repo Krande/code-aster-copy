@@ -380,10 +380,6 @@ class nappe_sdaster(fonction_class):
     pass
 
 
-class fond_fiss(ASSD):
-    pass
-
-
 class fond_fissure(ASSD):
     pass
 

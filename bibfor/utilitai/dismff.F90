@@ -35,7 +35,7 @@ subroutine dismff(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     IN:
 !       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
-!       NOMOB  : NOM D'UN OBJET DE TYPE SD_FOND_FISS
+!       NOMOB  : NOM D'UN OBJET DE TYPE SD_FOND_FISSURE
 !     OUT:
 !       REPI   : REPONSE ( SI ENTIER )
 !       REPK   : REPONSE ( SI CHAINE DE CARACTERES )

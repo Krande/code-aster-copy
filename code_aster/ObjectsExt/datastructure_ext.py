@@ -122,7 +122,6 @@ class ExtendedDataStructure:
 # to define the SD definition.
 DICT_SDJ = {
     "Contact": "SD.sd_contact.sd_contact",
-    "CrackTip": "SD.sd_fond_fiss.sd_fond_fiss",
     "Crack": "SD.sd_fond_fissure.sd_fond_fissure",
     "HarmoGeneralizedResult": "SD.sd_dyna_gene.sd_dyna_gene",
     "MeshesMapping": "SD.sd_corresp_2_mailla.sd_corresp_2_mailla",

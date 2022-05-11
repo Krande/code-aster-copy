@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, lnoff, conf)
 !       SUR LEQUEL ON VA EFFECTUER LE CALCUL + BASE LOCALE EN FOND
 !       DE FISSURE
 !
-!  IN  : FISS   : SD_FISS_XFEM OU SD_FOND_FISS
+!  IN  : FISS   : SD_FISS_XFEM OU SD_FOND_FISSURE
 !  IN  : TYPFIS : TYPE D'OBJET POUR DECRIRE LE FOND DE FISSURE
 !                 'FONDFISS' OU 'FISSURE' OU 'THETA'
 !  OUT : CHFOND : FOND DE FISSURE SUR LEQUEL ON FERA LE POST TRAITEMENT
