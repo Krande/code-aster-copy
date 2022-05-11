@@ -127,7 +127,7 @@ class FrictionParameter {
 
     void setCoulomb( const ASTERDOUBLE &coulomb ) { _coulomb = coulomb; };
 
-    void hasFriction( const bool &friction ) { _friction = friction; }
+    void enableFriction( const bool &friction ) { _friction = friction; }
 
     bool hasFriction() const { return _friction; }
 };

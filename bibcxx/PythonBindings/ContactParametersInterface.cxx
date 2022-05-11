@@ -152,9 +152,9 @@ Arguments:
         )",
               py::arg( "coulomb" ) )
         .def_property( "hasFriction",
-                       py::overload_cast<>( &FrictionParameter::hasFriction, py::const_ ),
-                       py::overload_cast< const bool & >( &FrictionParameter::hasFriction ), R"(
-bool: Attribute that holds the presence of friction.
+                       &FrictionParameter::hasFriction, 
+                       &FrictionParameter::enableFriction, R"(
+bool: enable or disable the use of friction.
         )" );
 
     py::class_< PairingParameter, PairingParameter::PairingParameterPtr >( mod, "PairingParameter" )

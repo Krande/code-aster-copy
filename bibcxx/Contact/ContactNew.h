@@ -88,11 +88,11 @@ class ContactNew : public DataStructure {
 
     bool build();
 
-    void hasFriction( const bool &friction ) { _friction = friction; }
+    void enableFriction( const bool &friction ) { _friction = friction; }
 
     bool hasFriction() const { return _friction; }
 
-    void hasSmoothing( const bool &smoothing ) { _smoothing = smoothing; }
+    void enableSmoothing( const bool &smoothing ) { _smoothing = smoothing; }
 
     bool hasSmoothing() const { return _smoothing; }
 };

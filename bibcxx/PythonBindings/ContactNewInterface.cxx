@@ -98,13 +98,12 @@ Returns:
         .def( "build", &ContactNew::build, R"(
 Build and check internal objects
         )" )
-        .def_property( "hasFriction", py::overload_cast<>( &ContactNew::hasFriction, py::const_ ),
-                       py::overload_cast< const bool & >( &ContactNew::hasFriction ), R"(
-bool: Attribute that holds the presence of friction.
+        .def_property( "hasFriction", &ContactNew::hasFriction, 
+                       &ContactNew::enableFriction, R"(
+bool: enable or disable the use of friction.
         )" )
-        .def_property( "hasSmoothing", py::overload_cast<>( &ContactNew::hasSmoothing, py::const_ ),
-                       py::overload_cast< const bool & >( &ContactNew::hasSmoothing ),
-                       R"(
-bool: Attribute that holds the use of smoothing.
+        .def_property( "hasSmoothing", &ContactNew::hasSmoothing, 
+                       &ContactNew::enableSmoothing, R"(
+bool: enable or disable  the use of smoothing.
         )" );
 };
