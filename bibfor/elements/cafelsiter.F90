@@ -61,6 +61,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw,&
 !_______________________________________________________________________________________________
 !
 implicit none
+#include "asterfort/verifels.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !
@@ -101,7 +102,7 @@ implicit none
        real(kind=8) :: X, Ncc, Mcc, Dterm, Calc, yc
        logical :: COND_AJOUT_RESIDU, COND_AJOUT_AsCOMP, COND_AJOUT_AsTEND, COND_COUNT
        logical :: COND_COUNT_SYME
-       integer :: COUNT_CARA
+       integer :: COUNT_CARA, verif
        integer :: COUNT_CARA_SYME
        logical :: COND_F, PIV_C
        integer :: COUNT_F
@@ -257,7 +258,7 @@ implicit none
           alpha = alpha_PCAC(i)
           X = alpha*d
           ETAT_PCAC(i) = 5
-          if (alpha.eq.0) then
+          if (abs(alpha).lt.epsilon(alpha)) then
               PIVOT_PCAC(i) = 1
               RESIDU_PCAC(i) = Mcalc + Ncalc*(d-0.5*ht)
               SsTEND_PCAC(i) = -ssmax
@@ -434,7 +435,8 @@ implicit none
           COND_AJOUT_AsTEND = .false.
           COND_COUNT = .false.
           COND_COUNT_SYME = .false.
-          if ((RESIDU_TOT(i).eq.0) .AND. (AsCOMP_TOT(i).ge.0) .AND. (AsTEND_TOT(i).ge.0)) then
+          if ((abs(RESIDU_TOT(i)).lt.epsilon(RESIDU_TOT(i))) &
+               & .AND. (AsCOMP_TOT(i).ge.0) .AND. (AsTEND_TOT(i).ge.0)) then
                COUNT_CARA = COUNT_CARA+1
                COND_COUNT = .true.
                Calc = abs(AsCOMP_TOT(i)-AsTEND_TOT(i))
@@ -586,8 +588,10 @@ implicit none
 
        if (((ferrsyme.eq.0) .and. (COUNT_CARA.gt.0)) &
              & .or. ((ferrsyme.eq.1) .and. (COUNT_CARA_SYME.gt.0))) then
-
-           if (CEILING(INDICE_F_AVATAR).eq.INDICE_F_AVATAR) then
+           
+           Diffa = CEILING(INDICE_F_AVATAR)-INDICE_F_AVATAR
+           
+           if (abs(Diffa).lt.epsilon(Diffa)) then
                ascomp = AsCOMP_F
                astend = AsTEND_F
                sscomp = SsCOMP_TOT(INDICE_F)
@@ -623,7 +627,14 @@ implicit none
            ierr = 2
           
        else
-
+       
+    !! Vérification par le diagramme d'interaction avec dnsyi=dnsys=0.0
+       call verifels(cequi, ht, bw, enrobi, enrobs,&
+                    scmaxi, scmaxs, ssmax, uc,&
+                    0.0, 0.0, effm, effn, verif)
+                     
+       if (verif.eq.0) then
+           !!OK
            ascomp = 0
            astend = 0
            sscomp = -1
@@ -633,6 +644,20 @@ implicit none
            alpha = -1000
            etat = 1
            pivot = 0
+       else
+           ascomp = -1
+           astend = -1
+           sscomp = -1
+           sstend = -1
+           sccomp = -1
+           sctend = -1
+           alpha = -1000
+           etat = 0
+           pivot = 0
+           ierr = 1   
+       endif
+
+
 
        endif
 

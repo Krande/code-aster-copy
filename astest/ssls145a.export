@@ -6,4 +6,4 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 
 F comm ssls145a.comm D 1
-F mmed ssls145a.mmed D 2
+F mmed ssls145a.mmed D 20

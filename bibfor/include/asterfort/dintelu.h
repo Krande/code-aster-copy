@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,10 @@
 !
 !
 interface
-     subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
+     subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
                         gammas, gammac, clacier, eys, typdiag, uc,&
                         dnsinf, dnssup, ntot, nrd, mrd)
+        integer :: typco
         real(kind=8) :: alphacc
         real(kind=8) :: ht
         real(kind=8) :: bw

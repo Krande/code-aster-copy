@@ -72,6 +72,7 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw,&
 !_______________________________________________________________________________________________
 !
 implicit none
+#include "asterfort/verifelu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/juveca.h"
@@ -123,7 +124,7 @@ implicit none
     real(kind=8) :: COEF1,COEF2,VAR_COEF1,VAR_COEF2
     real(kind=8) :: Calc,a11,a12,a21,a22,f1,f2,x1,y1,DELTA,Beta,yE
     real(kind=8) :: AsTOT,escomp,estend
-    integer :: N_ET,N_PC,N_EC,k,kFIN,q,qsy,s,N_TOT,i
+    integer :: N_ET,N_PC,N_EC,k,kFIN,q,qsy,s,N_TOT,i,verif
     real(kind=8) :: DE,X
 
     character(20) :: p(56)
@@ -163,7 +164,7 @@ implicit none
     real(kind=8), pointer :: Pente_astend_EC(:) => null()
     real(kind=8), pointer :: Pente_ascomp_EC(:) => null()
     real(kind=8), pointer :: Pente_astend_TOT(:) => null()
-    real(kind=8), pointer :: Pente_ascomp_TOT(:) => null() 
+    real(kind=8), pointer :: Pente_ascomp_TOT(:) => null()
         
 !-----------------------------------------------------------------------
 !!!!LANCEMENT DU CALCUL
@@ -280,10 +281,10 @@ implicit none
       estend_ET(k) = estend
       pivot_ET(k) = 1
       etat_ET(k) = 4
-
-      if (eccomp.eq.0) then
+      Calc = estend-eccomp
+      if (abs(eccomp).lt.epsilon(eccomp)) then
       alpha = 0
-      elseif (eccomp.ne.ectend) then
+      elseif (abs(Calc).gt.epsilon(Calc)) then
       alpha = -(eccomp/(estend-eccomp))
       else
       alpha = -1000
@@ -412,12 +413,12 @@ implicit none
 
       COEF1 = (1-y1-alpha*x1)
       COEF2 = (1-y1-Beta*x1)
-      if (COEF1.ne.0) then
+      if (abs(COEF1).gt.epsilon(COEF1)) then
       VAR_COEF1 = Abs(COEF1)/COEF1
       else
       VAR_COEF1 = 1
       endif
-      if (COEF2.ne.0) then
+      if (abs(COEF2).gt.epsilon(COEF2)) then
       VAR_COEF2 = Abs(COEF2)/COEF2
       else
       VAR_COEF2 = 1
@@ -507,8 +508,12 @@ implicit none
   
       Ncc = bw*ht*fcd*(1+m2*(X**(nC)))
       Mcc = bw*ht*ht*fcd*m1*(X**(nC))
-       
-      if (eccomp.ne.ectend) then
+      if (abs(eccomp).gt.epsilon(eccomp)) then
+      Calc = 1-ectend/eccomp
+      else
+      Calc = 0
+      endif
+      if (abs(Calc).gt.epsilon(Calc)) then
       alpha = (1/(1-ectend/eccomp))*(ht/d)
       else
       alpha = -1000
@@ -834,28 +839,44 @@ implicit none
        ierr = 2
        
     else
-
-       etat = 0
-       pivot = 3
-       alpha = -1000
-       eccomp= 0
-       ectend = -1
-       estend = -1
-       escomp = -1
-       sscomp = -1
-       sstend = -1
-       ascomp = 0
-       astend = 0
+    
+    !! Vérification par le diagramme d'interaction avec dnsyi=dnsys=0.0
+       call verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
+                     gammas, gammac, clacier, eys, typdiag, uc,&
+                     0.0, 0.0, effm, effn, verif)
+                     
+       if (verif.eq.0) then
+           !!OK
+           etat = 1
+           pivot = 0
+           alpha = -1000
+           eccomp= -1
+           ectend = -1
+           estend = -1
+           escomp = -1
+           sscomp = -1
+           sstend = -1
+           ascomp = 0
+           astend = 0
+       else
+           etat = 0
+           pivot = 0
+           alpha = -1000
+           eccomp= -1
+           ectend = -1
+           estend = -1
+           escomp = -1
+           sscomp = -1
+           sstend = -1
+           ascomp = -1
+           astend = -1
+           ierr = 1
+       endif
       
    endif
   
    do i=1,56
    call jedetr(p(i))
    end do
-
-   DE = eccomp - ectend
-   X = DE/Ec2
-   Ncc = bw*ht*fcd*(1+m2*(X**(nC)))
-   Mcc = bw*ht*ht*fcd*m1*(X**(nC))
       
 end subroutine 

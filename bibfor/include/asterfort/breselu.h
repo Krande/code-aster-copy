@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                        ht, bw, enrobyi, enrobys, enrobzi, enrobzs,&
                        facier, fbeton, gammas, gammac,&
                        clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme,&
-                       uc,&
+                       uc,um,&
                        dnsyi, dnsys, dnszi, dnszs,& 
                        sigmsyi, sigmsys, ecyi, ecys,&
                        sigmszi, sigmszs, eczi, eczs,&
@@ -50,6 +50,7 @@ interface
         integer :: ferrsyme
         real(kind=8) :: slsyme
         integer :: uc
+        integer :: um
         real(kind=8) :: dnsyi
         real(kind=8) :: dnsys
         real(kind=8) :: dnszi

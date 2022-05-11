@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
+subroutine dintelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
                    gammas, gammac, clacier, eys, typdiag, uc,&
                    dnsinf, dnssup, ntot, nrd, mrd)
 !______________________________________________________________________
@@ -27,6 +27,7 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
 !      FERRAILLEE - VERIFICATION D'UN FERRAILLAGE EXISTANT
 !      CRITERE = LIMITATION DES DEFORMATIONS
 !
+!      I TYPCO     CODIFICATION UTILISEE (1 = BAEL91, 2 = EC2)
 !      I ALPHACC   COEFFICIENT DE SECURITE SUR LA RESISTANCE
 !                  DE CALCUL DU BETON EN SUPRESSION
 !      I HT        HAUTEUR DE LA SECTION
@@ -66,6 +67,7 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !
+    integer :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: ht
     real(kind=8) :: bw
@@ -90,7 +92,7 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
 !-----------------------------------------------------------------------
 
     real(kind=8) :: d,d0,dneg,d0neg
-    real(kind=8) :: unite_pa,DE,X
+    real(kind=8) :: unite_pa,DE,X,Calc
     real(kind=8) :: fyd,fcd,nC,ktys,xC,yC,xCt,m1,m2
     real(kind=8) :: Esu,Euk,Ecu,Ec2,Ese,Xsup
     real(kind=8) :: piv_a,piv_b,piv_c,alpha,alphaAB,alphaR,alphaBC
@@ -122,36 +124,45 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
     N_PCN = 100
     k = 1
 
-!   Paramètres de calcul
+    if (typco.eq.1) then
+!       CALCUL DES PARAMETRES POUR CODIFICATION = 'BAEL91'
+       
+        piv_a = 10.0E-3
+        piv_b = 3.5E-3
+        piv_c = 2.0E-3
+        nC = 2
+        fyd = facier/gammas
+        fcd = fbeton*alphacc/gammac
 
-    if (uc.eq.0) then
-    unite_pa = 1.e-6
-    else if (uc.eq.1) then
-    unite_pa = 1.
+    else if (typco.eq.2) then
+!       CALCUL DES PARAMETRES POUR CODIFICATION = 'EC2'
+
+        if (uc.eq.0) then
+        unite_pa = 1.e-6
+        elseif (uc.eq.1) then
+        unite_pa = 1.
+        endif
+        if (clacier.eq.0) then
+        piv_a = 0.9*2.5e-2
+        ktys = 1.05
+        else if (clacier.eq.1) then
+        piv_a = 0.9*5.e-2
+        ktys = 1.08
+        else
+        piv_a = 0.9*7.5e-2
+        ktys = 1.15
+        endif 
+        piv_b = min(3.5E-3,0.26*0.01+3.5*0.01*(((90.d0-fbeton*unite_pa)/100.d0)**4))
+        piv_c = 2.0E-3
+        if ((fbeton*unite_pa).ge.(50.d0)) then
+        piv_c = 0.2*0.01+0.0085*0.01*((fbeton*unite_pa - 50.d0)**(0.53))
+        endif
+        nC = min(2.0,1.4+23.4*(((90.d0-fbeton*unite_pa)/100.d0)**4))
+        fyd = facier/gammas
+        fcd = fbeton*alphacc/gammac
+    
     endif
-    if (clacier.eq.0) then
-    piv_a = 0.9*2.5e-2
-    ktys = 1.05
-    else if (clacier.eq.1) then
-    piv_a = 0.9*5.e-2
-    ktys = 1.08
-    else
-    piv_a = 0.9*7.5e-2
-    ktys = 1.15
-    endif
-    piv_b = min(3.5E-3,0.26*0.01+3.5*0.01*(((90.d0-fbeton*unite_pa)/100.d0)**4))
-    piv_c = 2.0E-3
-    if ((fbeton*unite_pa).ge.(50.d0)) then
-    piv_c = 0.2*0.01+0.0085*0.01*((fbeton*unite_pa - 50.d0)**(0.53))
-    endif
-    nC = min(2.0,1.4+23.4*(((90.d0-fbeton*unite_pa)/100.d0)**4))
-    fyd = facier/gammas
-    fcd = fbeton*alphacc/gammac
-    xC = (1-piv_c/piv_b)*ht
-    yC = ht-xC
-    xCt = xC/ht
-    m1 = (((1-xCt)**(nC+1))/(2.d0*(nC+1)))*(1-(2.d0*(1-xCt))/(nC+2))
-    m2 = -((1-xCt)**(nC+1))/(nC+1)
+
     Esu = piv_a
     Euk = Esu/0.9
     Ecu = piv_b
@@ -164,6 +175,14 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
     d0 = enrobs
     dneg = ht - enrobs
     d0neg = enrobi
+    
+!   Paramètres de calcul
+    Xsup = piv_b/piv_c
+    xC = (1-piv_c/piv_b)*ht
+    yC = ht-xC
+    xCt = xC/ht
+    m1 = (((1-xCt)**(nC+1))/(2.d0*(nC+1)))*(1-(2.d0*(1-xCt))/(nC+2))
+    m2 = -((1-xCt)**(nC+1))/(nC+1)
 
 !-----------------------------------------------------------------------
 !Traitement des différents cas (Pivots A / B / C)
@@ -309,12 +328,12 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
 
       COEF1 = (1-y1-alpha*x1)
       COEF2 = (1-y1-Beta*x1)
-      if (COEF1.ne.0) then
+      if (abs(COEF1).gt.epsilon(COEF1)) then
       VAR_COEF1 = Abs(COEF1)/COEF1
       else
       VAR_COEF1 = 1
       endif
-      if (COEF2.ne.0) then
+      if (abs(COEF2).gt.epsilon(COEF2)) then
       VAR_COEF2 = Abs(COEF2)/COEF2
       else
       VAR_COEF2 = 1
@@ -363,8 +382,8 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
   
       Ncc = bw*ht*fcd*(1+m2*(X**(nC)))
       Mcc = bw*ht*ht*fcd*m1*(X**(nC))
-       
-      if (EcSUP.ne.EcINF) then
+      Calc = EcSUP-EcINF 
+      if (abs(Calc).gt.epsilon(Calc)) then
       alpha = (1/(1-EcINF/EcSUP))*(ht/d)
       else
       alpha = -1000
@@ -431,8 +450,8 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
   
       Ncc = bw*ht*fcd*(1+m2*(X**(nC)))
       Mcc = bw*ht*ht*fcd*m1*(X**(nC))
-       
-      if (EcSUP.ne.EcINF) then
+      Calc = EcSUP-EcINF 
+      if (abs(Calc).gt.epsilon(Calc)) then
       alpha = (1/(1-EcINF/EcSUP))*(ht/d)
       else
       alpha = -1000
@@ -548,12 +567,12 @@ subroutine dintelu(alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
 
       COEF1 = (1-y1-alpha*x1)
       COEF2 = (1-y1-Beta*x1)
-      if (COEF1.ne.0) then
+      if (abs(COEF1).gt.epsilon(COEF1)) then
       VAR_COEF1 = Abs(COEF1)/COEF1
       else
       VAR_COEF1 = 1
       endif
-      if (COEF2.ne.0) then
+      if (abs(COEF2).gt.epsilon(COEF2)) then
       VAR_COEF2 = Abs(COEF2)/COEF2
       else
       VAR_COEF2 = 1

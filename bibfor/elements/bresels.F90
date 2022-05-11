@@ -19,7 +19,7 @@
 subroutine bresels(cequi, effmy, effmz, effn,&
                    ht, bw, enrobyi, enrobys, enrobzi, enrobzs,&
                    scmaxyi, scmaxys, scmaxzi, scmaxzs, ssmax,&
-                   ferrcomp, ferrsyme, slsyme, uc,&
+                   ferrcomp, ferrsyme, slsyme, uc, um,&
                    dnsyi, dnsys, dnszi, dnszs,& 
                    sigmsyi, sigmsys, sigmcyi, sigmcys,&
                    sigmszi, sigmszs, sigmczi, sigmczs,&
@@ -58,6 +58,9 @@ subroutine bresels(cequi, effmy, effmz, effn,&
 !      I UC        UNITE DES CONTRAINTES :
 !                     UC = 0 CONTRAINTES EN Pa
 !                     UC = 1 CONTRAINTES EN MPa
+!      I UM        UNITE DES DIMENSIONS :
+!                     UM = 0 DIMENSIONS EN m
+!                     UM = 1 DIMENSIONS EN mm
 !
 !      O DNSYI     DENSITE DE L'ACIER INF SUIVANT L'AXE Y
 !      O DNSYS     DENSITE DE L'ACIER SUP SUIVANT L'AXE Y
@@ -111,6 +114,7 @@ subroutine bresels(cequi, effmy, effmz, effn,&
     integer :: ferrsyme
     real(kind=8) :: slsyme
     integer :: uc
+    integer :: um
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
     real(kind=8) :: dnszi
@@ -134,7 +138,7 @@ subroutine bresels(cequi, effmy, effmz, effn,&
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
-   real(kind=8) :: Acc,fcd,fyd,coeff,Ass,Aiter
+   real(kind=8) :: Acc,fcd,fyd,coeff,Ass,Aiter,Calc
    real(kind=8) :: rhoyinf,rhoysup,rhozinf,rhozsup
    real(kind=8) :: BRES,mrdyE,mrdy1,mrdy2,mrdzE,mrdz1,mrdz2,nrdyzE,a,nrd0
    logical :: COND
@@ -142,7 +146,8 @@ subroutine bresels(cequi, effmy, effmz, effn,&
    real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
    real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
    character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
-   real(kind=8) :: unite_pa, d, d0, dneg, d0neg, scmax, scmaxneg
+   real(kind=8) :: unite_pa, unite_m
+   real(kind=8) :: d, d0, dneg, d0neg, scmax, scmaxneg
    integer :: N_ET, N_PC, N_PCAC, N_EC, N_ECN, N_PCACN
    integer :: ntoty, ndemiy, ntotz, ndemiz
 
@@ -174,20 +179,20 @@ subroutine bresels(cequi, effmy, effmz, effn,&
    !if ((effmy.eq.0) .and. (effmz.eq.0) .and. (effn.ne.0)) then
    if ((abs(effmy).lt.epsilon(effmy)) .and. (abs(effmz).lt.epsilon(effmz))) then
       call cafels(cequi, effmy, 0.5*effn, ht, bw,&
-                  enrobyi, enrobys, scmaxys, scmaxyi, ssmax,& 
-                  ferrcomp, ferrsyme, slsyme, uc,&
-                  dnsyi, dnsys, sigmsyi, sigmsys,&
-                  sigmcyi, sigmcys,&
-                  alphay, pivoty, etaty, ierr)
-      if (ierr.ne.0) then 
-          goto 998
-      endif
-      call cafels(cequi, effmz, 0.5*effn, bw, ht,&
                   enrobzi, enrobzs, scmaxzs, scmaxzi, ssmax,& 
                   ferrcomp, ferrsyme, slsyme, uc,&
                   dnszi, dnszs, sigmszi, sigmszs,&
                   sigmczi, sigmczs,&
                   alphaz, pivotz, etatz, ierr)
+      if (ierr.ne.0) then 
+          goto 998
+      endif
+      call cafels(cequi, effmz, 0.5*effn, bw, ht,&
+                  enrobyi, enrobys, scmaxys, scmaxyi, ssmax,& 
+                  ferrcomp, ferrsyme, slsyme, uc,&
+                  dnsyi, dnsys, sigmsyi, sigmsys,&
+                  sigmcyi, sigmcys,&
+                  alphay, pivoty, etaty, ierr)
       if (ierr.ne.0) then
           goto 998
       endif
@@ -198,11 +203,11 @@ subroutine bresels(cequi, effmy, effmz, effn,&
       !if (effmy.ne.0) then
       if (abs(effmy).gt.epsilon(effmy)) then
          call cafels(cequi, effmy, effn, ht, bw,&
-                     enrobyi, enrobys, scmaxys, scmaxyi, ssmax,& 
+                     enrobzi, enrobzs, scmaxzs, scmaxzi, ssmax,& 
                      ferrcomp, ferrsyme, slsyme, uc,&
-                     dnsyi, dnsys, sigmsyi, sigmsys,&
-                     sigmcyi, sigmcys,&
-                     alphay, pivoty, etaty, ierr)
+                     dnszi, dnszs, sigmszi, sigmszs,&
+                     sigmczi, sigmczs,&
+                     alphaz, pivotz, etatz, ierr)
          if (ierr.ne.0) then 
              goto 998
          endif
@@ -212,11 +217,11 @@ subroutine bresels(cequi, effmy, effmz, effn,&
       !if (effmz.ne.0) then
       if (abs(effmz).gt.epsilon(effmz)) then
          call cafels(cequi, effmz, effn, bw, ht,&
-                     enrobzi, enrobzs, scmaxzs, scmaxzi, ssmax,& 
+                     enrobyi, enrobys, scmaxys, scmaxyi, ssmax,& 
                      ferrcomp, ferrsyme, slsyme, uc,&
-                     dnszi, dnszs, sigmszi, sigmszs,&
-                     sigmczi, sigmczs,&
-                     alphaz, pivotz, etatz, ierr)
+                     dnsyi, dnsys, sigmsyi, sigmsys,&
+                     sigmcyi, sigmcys,&
+                     alphay, pivoty, etaty, ierr)
          if (ierr.ne.0) then
              goto 998
          endif
@@ -239,16 +244,22 @@ subroutine bresels(cequi, effmy, effmz, effn,&
         elseif (uc.eq.1) then
         unite_pa = 1.
         endif
+        if (um.eq.0) then
+        unite_m = 1.e3
+        elseif (um.eq.1) then
+        unite_m = 1.
+        endif
         
         N_ET = 11
         N_PC = 101
         
-        d = ht - enrobyi
-        d0 = enrobys
-        scmax = scmaxys
-        dneg = ht - enrobys
-        d0neg = enrobyi
-        scmaxneg = scmaxyi
+        !Pour MFY
+        d = ht - enrobzi
+        d0 = enrobzs
+        scmax = scmaxzs
+        dneg = ht - enrobzs
+        d0neg = enrobzi
+        scmaxneg = scmaxzi
 
         N_PCAC = CEILING((N_PC-1)*(ht/d))+1
         N_EC = CEILING(10*(scmax*unite_pa))+1
@@ -260,12 +271,13 @@ subroutine bresels(cequi, effmy, effmz, effn,&
         call wkvect(pnrdy, ' V V R ', ntoty, vr=nrdy)
         call wkvect(pmrdy, ' V V R ', ntoty, vr=mrdy)
         
-        d = bw - enrobzi
-        d0 = enrobzs
-        scmax = scmaxzs
-        dneg = bw - enrobzs
-        d0neg = enrobzi
-        scmaxneg = scmaxzi
+        !Pour MFZ
+        d = bw - enrobyi
+        d0 = enrobys
+        scmax = scmaxys
+        dneg = bw - enrobys
+        d0neg = enrobyi
+        scmaxneg = scmaxyi
 
         N_PCAC = CEILING((N_PC-1)*(bw/d))+1
         N_EC = CEILING(10*(scmax*unite_pa))+1
@@ -290,9 +302,9 @@ subroutine bresels(cequi, effmy, effmz, effn,&
            mrdy(s) = -1.0
            end do
 
-           call dintels(cequi, ht, bw, enrobyi, enrobys,&
-                        scmaxyi, scmaxys, ssmax, uc,&
-                        dnsyi, dnsys, ntoty, nrdy, mrdy)
+           call dintels(cequi, ht, bw, enrobzi, enrobzs,&
+                        scmaxzi, scmaxzs, ssmax, uc,&
+                        dnszi, dnszs, ntoty, nrdy, mrdy)
 
            s = 1
            nrd0 = nrdy(s)
@@ -304,7 +316,12 @@ subroutine bresels(cequi, effmy, effmz, effn,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdy(s)-nrdy(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdy1 = ((mrdy(s)-mrdy(s-1))/(nrdy(s)-nrdy(s-1)))*(effn-nrdy(s-1))+mrdy(s-1)
+                else
+                mrdy1 = 0.5*(mrdy(s-1)+mrdy(s))
+                endif
            endif
            s = ndemiy+1
            nrd0 = nrdy(s)
@@ -316,7 +333,12 @@ subroutine bresels(cequi, effmy, effmz, effn,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdy(s)-nrdy(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdy2 = ((mrdy(s)-mrdy(s-1))/(nrdy(s)-nrdy(s-1)))*(effn-nrdy(s-1))+mrdy(s-1)
+                else
+                mrdy2 = 0.5*(mrdy(s-1)+mrdy(s))
+                endif
            endif
            if (effmy.gt.0.0) then
                mrdy1 = max(mrdy1,0.0)
@@ -330,9 +352,9 @@ subroutine bresels(cequi, effmy, effmz, effn,&
 
    !Determiner MRd,z
         
-           call dintels(cequi, bw, ht, enrobzi, enrobzs,&
-                        scmaxzi, scmaxzs, ssmax, uc,&
-                        dnszi, dnszs, ntotz, nrdz, mrdz)
+           call dintels(cequi, bw, ht, enrobyi, enrobys,&
+                        scmaxyi, scmaxys, ssmax, uc,&
+                        dnsyi, dnsys, ntotz, nrdz, mrdz)
 
            s = 1
            nrd0 = nrdz(s)
@@ -344,7 +366,12 @@ subroutine bresels(cequi, effmy, effmz, effn,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdz(s)-nrdz(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdz1 = ((mrdz(s)-mrdz(s-1))/(nrdz(s)-nrdz(s-1)))*(effn-nrdz(s-1))+mrdz(s-1)
+                else
+                mrdz1 = 0.5*(mrdz(s-1)+mrdz(s))
+                endif
            endif
            s = ndemiz+1
            nrd0 = nrdz(s)
@@ -356,7 +383,12 @@ subroutine bresels(cequi, effmy, effmz, effn,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdz(s)-nrdz(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdz2 = ((mrdz(s)-mrdz(s-1))/(nrdz(s)-nrdz(s-1)))*(effn-nrdz(s-1))+mrdz(s-1)
+                else
+                mrdz2 = 0.5*(mrdz(s-1)+mrdz(s))
+                endif
            endif
            if (effmz.gt.0.0) then
                mrdz1 = max(mrdz1,0.0)
@@ -395,6 +427,9 @@ subroutine bresels(cequi, effmy, effmz, effn,&
            
            COUNT_BRES = COUNT_BRES + 1
            if (BRES.gt.1) then
+               if (Ass.lt.epsilon(Ass)) then
+               Ass = (1.e2)/(unite_m*unite_m) 
+               endif
            Aiter = 0.1*Ass
            rhoyinf = dnsyi/Ass
            rhoysup = dnsys/Ass

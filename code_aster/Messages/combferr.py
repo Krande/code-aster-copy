@@ -23,22 +23,8 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _(
-        """
-Vous avez demandé CODIFICATION = "UTILISATEUR"
-Dans cette version, la seule valeur disponible est "EC2". Le calcul ne sera pas
-effectué pour les autres valeurs.
-"""
-    ),
-    2: _(
-        """
-Vous avez demandé TYPE_STRUCTURE = "%(k1)s"
-Dans cette version, la seule valeur disponible est "2D". Le calcul ne sera pas
-effectué pour les autres valeurs.
-"""
-    ),
-    4: _(
-        """
+
+4 : _("""
  La liste NUME_ORDRE contient au moins une valeur répétée.
 """
     ),
@@ -55,10 +41,9 @@ Un NOM_CAS indiqué n'appartient pas aux cas disponibles
     7: _(
         """
 Un NUME_ORDRE indiqué n'appartient pas aux cas disponibles
-"""
-    ),
-    9: _(
-        """
+"""),
+
+9 : _("""
 Le cas '%(k1)s' existe déjà. Il sera écrasé.
 """
     ),
@@ -78,11 +63,6 @@ Type de combinaison :
     13: _(
         """
 Noms des cas présents :
-    %(k1)s"""
-    ),
-    14: _(
-        """
-Le mot clé facteur TYPE_STRUCTURE '%(k1)s' indiqué n'appartient pas aux cas disponibles
-"""
-    ),
+    %(k1)s"""),
+
 }

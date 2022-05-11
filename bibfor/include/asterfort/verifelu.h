@@ -19,22 +19,27 @@
 !
 !
 interface
-    subroutine dintels(cequi, ht, bw, enrobi, enrobs,&
-                       scmaxi, scmaxs, ssmax, uc,&
-                       dnsinf, dnssup, ntot, nrd, mrd)
-    real(kind=8) :: cequi
-    real(kind=8) :: ht
-    real(kind=8) :: bw
-    real(kind=8) :: enrobi
-    real(kind=8) :: enrobs
-    real(kind=8) :: scmaxi
-    real(kind=8) :: scmaxs
-    real(kind=8) :: ssmax
-    integer :: uc
-    real(kind=8) :: dnsinf
-    real(kind=8) :: dnssup
-    integer :: ntot
-    real(kind=8) :: nrd(1:ntot)
-    real(kind=8) :: mrd(1:ntot)
-    end subroutine dintels
+     subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton,&
+                         gammas, gammac, clacier, eys, typdiag, uc,&
+                         dnsinf, dnssup, effm, effn, verif)
+           integer :: typco
+           real(kind=8) :: alphacc
+           real(kind=8) :: ht
+           real(kind=8) :: bw
+           real(kind=8) :: enrobi
+           real(kind=8) :: enrobs
+           real(kind=8) :: facier
+           real(kind=8) :: fbeton
+           real(kind=8) :: gammas
+           real(kind=8) :: gammac
+           integer :: clacier
+           real(kind=8) :: eys
+           integer :: typdiag
+           integer :: uc
+           real(kind=8) :: dnsinf
+           real(kind=8) :: dnssup
+           real(kind=8) :: effm
+           real(kind=8) :: effn
+           integer :: verif
+    end subroutine verifelu
 end interface

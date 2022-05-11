@@ -17,7 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'OUI'),);
+DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'),
+       DEBUG = _F( SDVERI = 'OUI'),
+       IGNORE_ALARM = (
+        'CALCULEL7_13',
+        'CALCULEL_88',
+        'CALCULEL7_29',
+         ));
 
 MA = LIRE_MAILLAGE( FORMAT = "MED",
                     UNITE = 20);
@@ -39,83 +45,83 @@ CARA = AFFE_CARA_ELEM( MODELE=MODEL,
 CHEFF1 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (-1.e6, 1.e5, 0.0, 0.0, 0.0, 0.0),),);
+                                VALE     = (-1.e6, 0.0, 1.e5, 0.0, 0.0, 0.0),),);
 
 #section totalement tendue (pivot A "vertical") + effort transversal
 CHEFF2 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (1.e6, -1.e5, 0.0, 0.0, 0.0, 0.0),),);
+                                VALE     = (1.e6, 0.0, -1.e5, 0.0, 0.0, 0.0),),);
 
 #section totalement tendue (pivot A "vertical") + torsion
 CHEFF3 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (1.e6, -1.e5, 0.0, 1.e4, 0.0, 0.0),),);
+                                VALE     = (1.e6, 0.0, -1.e5, 1.e4, 0.0, 0.0),),);
 
-#fibre inférieure tendue en Y
+#fibre inférieure tendue en Z
 CHEFF4 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (0.0, 0.0, 0.0, 0.0, 1.e5, 0.0),),);
+                                VALE     = (0.0, 0.0, 0.0, 0.0, 0.0, 1.e5),),);
 
-#fibre supérieure tendue en Z
+#fibre supérieure tendue en Y
 CHEFF5 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (0.0, 0.0, 0.0, 0.0, 0, -1.e5),),);
+                                VALE     = (0.0, 0.0, 0.0, 0.0, -1.e5, 0.0),),);
 
 #section partiellement tendue
 CHEFF6 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (1.e5, 0.0, 0.0, 0.0, -1.e5, 0.0),),);
+                                VALE     = (1.e5, 0.0, 0.0, 0.0, 0.0, -1.e5),),);
 
 #section partiellement tendue
 CHEFF7 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (1.e5, 0.0, 0.0, 0.0, 0, -1.e5),),);
+                                VALE     = (1.e5, 0.0, 0.0, 0.0, -1.e5, 0.0),),);
 
 #section totalement tendue
 CHEFF8 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (2.e6, 0.0, 0.0, 0.0, -1.e5, 0.0),),);
+                                VALE     = (2.e6, 0.0, 0.0, 0.0, 0.0, -1.e5),),);
 
 #flexion déviée
 CHEFF9 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (0.0, 0.0, 0.0, 0.0, 1.e5, -15.e4),),);
+                                VALE     = (0.0, 0.0, 0.0, 0.0, -15.e4, 1.e5),),);
 
 #flexion déviée composée
 CHEFF10 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (-3.e6, 0.0, 0.0, 0.0, 1.e5, -15.e4),),);
+                                VALE     = (-3.e6, 0.0, 0.0, 0.0, -15.e4, 1.e5),),);
 
 CHEFF11 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -150e3, 0.0),),);
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, 0.0, -150e3),),);
 
 #pivot B 
 CHEFF12 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -26e4, 0.0),),);
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, 0.0, -26e4),),);
 
 # vrai pivot C avec compression totale dune facette sur la section entière
 CHEFF13 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -38e4, 0.0),),);
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, 0.0, -38e4),),);
 
 CHEFF14 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PoutreAB',
                                 NOM_CMP = ('N','VY','VZ','MT','MFY','MFZ'),
-                                VALE     = (-45.e5, 1.e5, 0.0, 0.0, 38.e4, 0.0),),);
+                                VALE     = (-45.e5, 1.e5, 0.0, 0.0, 0.0, 38.e4),),);
 
 
 RESUELS = CREA_RESU( OPERATION = 'AFFE',
@@ -268,7 +274,7 @@ D_ref = [
            [0.00000000000000E+00,  9.40793185475018E-04,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  9.40793185475018E-04,  4.89212456447010E+01,  1.08713879210447E-01], #11
            [9.72867808272731E-05,  1.65161868480726E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.74890546563453E-03,  9.09430842129955E+01,  2.02095742695546E-01], #12
            [1.23029170693565E-03,  2.36590439909297E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  3.59619610602862E-03,  1.87002197513488E+02,  4.15560438918863E-01], #13
-           [0.00000000000000E+00,  5.41724786593350E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00042731994721662676,  5.41724786593350E-03,  292.80720765617406,  0.6766162564770225], #14
+           [0.00000000000000E+00,  5.41724786593350E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.0002415286658180934,  5.41724786593350E-03,  287.97663433981216,  0.6546061826740096], #14
 ];
 
 D_calc = [
@@ -285,7 +291,7 @@ D_calc = [
            [0.00000000000000E+00,  9.40793185475018E-04,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  9.40793185475018E-04,  4.89212456447010E+01,  1.08713879210447E-01], #11
            [9.72867808272731E-05,  1.65161868480726E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.74890546563453E-03,  9.09430842129955E+01,  2.02095742695546E-01], #12
            [1.23029170693565E-03,  2.36590439909297E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  3.59619610602862E-03,  1.87002197513488E+02,  4.15560438918863E-01], #13
-           [0.00000000000000E+00,  5.41724786593350E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00042731994721662676,  5.41724786593350E-03,  292.80720765617406,  0.6766162564770225], #14
+           [0.00000000000000E+00,  5.41724786593350E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.0002415286658180934,  5.41724786593350E-03,  287.97663433981216,  0.6546061826740096], #14
 ];
 
 for j in range(len(D_ref)) :
@@ -359,7 +365,7 @@ D_ref = [
            [4.52252650140557E-04,  9.11726950959488E-04,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.36397960110004E-03,  7.09269392572023E+01,  1.57615420571561E-01], #11
            [1.10622826244642E-03,  1.59421448028674E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  2.70044274273316E-03,  1.40423022622124E+02,  3.12051161382498E-01], #12
            [1.86774710290756E-03,  2.33326020446597E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  4.20100730737353E-03,  2.18452379983423E+02,  4.85449733296496E-01], #13
-           [6.16601838755304E-03,  6.54351728530893E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00042731994721662676,  1.27095356728620E-02,  672.0061736164552,  1.5192806252776474], #14
+           [6.16601838755304E-03,  6.54351728530893E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.0002415286658180934,  1.27095356728620E-02,  667.1756003000933,  1.4972705514746343], #14
 ];
 
 D_calc = [
@@ -376,7 +382,7 @@ D_calc = [
            [4.52252650140557E-04,  9.11726950959488E-04,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.36397960110004E-03,  7.09269392572023E+01,  1.57615420571561E-01], #11
            [1.10622826244642E-03,  1.59421448028674E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  2.70044274273316E-03,  1.40423022622124E+02,  3.12051161382498E-01], #12
            [1.86774710290756E-03,  2.33326020446597E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  4.20100730737353E-03,  2.18452379983423E+02,  4.85449733296496E-01], #13
-           [6.16601838755304E-03,  6.54351728530893E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00042731994721662676,  1.27095356728620E-02,  672.0061736164552,  1.5192806252776474], #14
+           [6.16601838755304E-03,  6.54351728530893E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.0002415286658180934,  1.27095356728620E-02,  667.1756003000933,  1.4972705514746343], #14
 ];
 
 for j in range(len(D_ref)) :
@@ -492,7 +498,5 @@ for j in range(len(D_ref)) :
                                   REFERENCE = 'ANALYTIQUE',
                                   PRECISION = 1e-4,
                                   VALE_CALC=D_calc[j][i]),);
-
-IMPR_RESU ( FORMAT='RESULTAT',UNITE=80,RESU=_F( RESULTAT=RESUELS4, ) );
 
 FIN()

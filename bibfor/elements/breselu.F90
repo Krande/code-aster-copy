@@ -20,7 +20,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
                    ht, bw, enrobyi, enrobys, enrobzi, enrobzs,&
                    facier, fbeton, gammas, gammac,&
                    clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme,&
-                   uc,&
+                   uc,um,&
                    dnsyi, dnsys, dnszi, dnszs,& 
                    sigmsyi, sigmsys, ecyi, ecys,&
                    sigmszi, sigmszs, eczi, eczs,&
@@ -70,6 +70,9 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
 !      I UC        UNITE DES CONTRAINTES :
 !                     UC = 0 CONTRAINTES EN Pa
 !                     UC = 1 CONTRAINTES EN MPa
+!      I UM        UNITE DES DIMENSIONS :
+!                     UM = 0 DIMENSIONS EN m
+!                     UM = 1 DIMENSIONS EN mm
 !
 !      O DNSYI     DENSITE DE L'ACIER INF SUIVANT L'AXE Y
 !      O DNSYS     DENSITE DE L'ACIER SUP SUIVANT L'AXE Y
@@ -126,6 +129,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
    integer :: ferrsyme
    real(kind=8) :: slsyme
    integer :: uc
+   integer :: um
    real(kind=8) :: dnsyi
    real(kind=8) :: dnsys
    real(kind=8) :: dnszi
@@ -149,7 +153,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
 !-----------------------------------------------------------------------
-   real(kind=8) :: Acc,fcd,fyd,coeff,Ass,Aiter
+   real(kind=8) :: Acc,fcd,fyd,coeff,Ass,Aiter,Calc
    real(kind=8) :: rhoyinf,rhoysup,rhozinf,rhozsup
    real(kind=8) :: BRES,mrdyE,mrdy1,mrdy2,mrdzE,mrdz1,mrdz2,nrdyzE,a,nrd0
    logical :: COND
@@ -157,7 +161,8 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
    real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
    real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
    character(24) :: pnrdy, pmrdy, pnrdz, pmrdz
-   real(kind=8) :: unite_pa, piv_a, piv_b, piv_c, Esu, d, d0, dneg, d0neg, Xsup
+   real(kind=8) :: unite_pa, unite_m
+   real(kind=8) :: piv_a, piv_b, piv_c, Esu, d, d0, dneg, d0neg, Xsup
    integer :: N_ET, N_PC, N_PCN, N_EC, ntoty, ndemiy, ntotz, ndemiz
 
    pnrdy = 'POINT_NRD_Y'
@@ -188,18 +193,18 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
    !if ((effmy.eq.0) .and. (effmz.eq.0) .and. (effn.ne.0)) then
    if ((abs(effmy).lt.epsilon(effmy)) .and. (abs(effmz).lt.epsilon(effmz))) then
       call cafelu(typco, alphacc, effmy, 0.5*effn, ht, bw,&
-                  enrobyi, enrobys, facier, fbeton, gammas, gammac,&
-                  clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme, uc,&
-                  dnsyi, dnsys, sigmsyi, sigmsys, ecyi, ecys,&
-                  alphay, pivoty, etaty, ierr)
-      if (ierr.ne.0) then 
-          goto 998
-      endif
-      call cafelu(typco, alphacc, effmz, 0.5*effn, bw, ht,&
                   enrobzi, enrobzs, facier, fbeton, gammas, gammac,&
                   clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme, uc,&
                   dnszi, dnszs, sigmszi, sigmszs, eczi, eczs,&
                   alphaz, pivotz, etatz, ierr)
+      if (ierr.ne.0) then 
+          goto 998
+      endif
+      call cafelu(typco, alphacc, effmz, 0.5*effn, bw, ht,&
+                  enrobyi, enrobys, facier, fbeton, gammas, gammac,&
+                  clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme, uc,&
+                  dnsyi, dnsys, sigmsyi, sigmsys, ecyi, ecys,&
+                  alphay, pivoty, etaty, ierr)
       if (ierr.ne.0) then
           goto 998
       endif
@@ -210,10 +215,10 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
       !if (effmy.ne.0) then
       if (abs(effmy).gt.epsilon(effmy)) then
           call cafelu(typco, alphacc, effmy, effn, ht, bw,&
-                      enrobyi, enrobys, facier, fbeton, gammas, gammac,&
+                      enrobzi, enrobzs, facier, fbeton, gammas, gammac,&
                       clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme, uc,&
-                      dnsyi, dnsys, sigmsyi, sigmsys, ecyi, ecys,&
-                      alphay, pivoty, etaty, ierr)
+                      dnszi, dnszs, sigmszi, sigmszs, eczi, eczs,&
+                      alphaz, pivotz, etatz, ierr)
           if (ierr.ne.0) then 
               goto 998
           endif
@@ -223,26 +228,30 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
       !if (effmz.ne.0) then
       if (abs(effmz).gt.epsilon(effmz)) then
           call cafelu(typco, alphacc, effmz, effn, bw, ht,&
-                      enrobzi, enrobzs, facier, fbeton, gammas, gammac,&
+                      enrobyi, enrobys, facier, fbeton, gammas, gammac,&
                       clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme, uc,&
-                      dnszi, dnszs, sigmszi, sigmszs, eczi, eczs,&
-                      alphaz, pivotz, etatz, ierr)
+                      dnsyi, dnsys, sigmsyi, sigmsys, ecyi, ecys,&
+                      alphay, pivoty, etaty, ierr)
           if (ierr.ne.0) then
               goto 998
           endif
       endif
       
    endif
+           
    
    !if ((effmy.ne.0) .and. (effmz.ne.0)) then
    if ((abs(effmy).gt.epsilon(effmy)) .and. (abs(effmz).gt.epsilon(effmz))) then
-   
-        print *,"HOLA BITH"
    
         if (uc.eq.0) then
         unite_pa = 1.e-6
         elseif (uc.eq.1) then
         unite_pa = 1.
+        endif
+        if (um.eq.0) then
+        unite_m = 1.e3
+        elseif (um.eq.1) then
+        unite_m = 1.
         endif
         
         if (clacier.eq.0) then
@@ -272,10 +281,11 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
         N_ET = floor(Esu*1000)+1
         N_EC = ceiling(Xsup*100)+1
         
-        d = ht - enrobyi
-        d0 = enrobys
-        dneg = ht - enrobys
-        d0neg = enrobyi
+        !Pour MFY
+        d = ht - enrobzi
+        d0 = enrobzs
+        dneg = ht - enrobzs
+        d0neg = enrobzi
         
         N_PC = ceiling((ht/d)*100)+1
         N_PCN = ceiling((ht/dneg)*100)+1
@@ -285,10 +295,11 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
         call wkvect(pnrdy, ' V V R ', ntoty, vr=nrdy)
         call wkvect(pmrdy, ' V V R ', ntoty, vr=mrdy)
         
-        d = bw - enrobzi
-        d0 = enrobzs
-        dneg = bw - enrobzs
-        d0neg = enrobzi
+        !Pour MFZ
+        d = bw - enrobyi
+        d0 = enrobys
+        dneg = bw - enrobys
+        d0neg = enrobyi
         
         N_PC = ceiling((bw/d)*100)+1
         N_PCN = ceiling((bw/dneg)*100)+1
@@ -306,9 +317,9 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
 
    !Determiner MRd,y
                
-           call dintelu(alphacc, ht, bw, enrobyi, enrobys, facier, fbeton,&
+           call dintelu(typco, alphacc, ht, bw, enrobzi, enrobzs, facier, fbeton,&
                         gammas, gammac, clacier, eys, typdiag, uc,&
-                        dnsyi, dnsys, ntoty, nrdy, mrdy)
+                        dnszi, dnszs, ntoty, nrdy, mrdy)
         
            s = 1
            nrd0 = nrdy(s)
@@ -319,8 +330,13 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
            if ((s.eq.1) .or. (s.eq.ndemiy)) then
                 BRES = 1.5
                 goto 999
-           else
+           else 
+                Calc = nrdy(s)-nrdy(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdy1 = ((mrdy(s)-mrdy(s-1))/(nrdy(s)-nrdy(s-1)))*(effn-nrdy(s-1))+mrdy(s-1)
+                else
+                mrdy1 = 0.5*(mrdy(s-1)+mrdy(s))
+                endif
            endif
            s = ndemiy+1
            nrd0 = nrdy(s)
@@ -332,7 +348,12 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdy(s)-nrdy(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdy2 = ((mrdy(s)-mrdy(s-1))/(nrdy(s)-nrdy(s-1)))*(effn-nrdy(s-1))+mrdy(s-1)
+                else
+                mrdy2 = 0.5*(mrdy(s-1)+mrdy(s))
+                endif
            endif
            if (effmy.ge.0.0) then
                mrdy1 = max(mrdy1,0.0)
@@ -351,9 +372,9 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
            mrdz(s) = -1.0
            end do
         
-           call dintelu(alphacc, bw, ht, enrobzi, enrobzs, facier, fbeton,&
+           call dintelu(typco, alphacc, bw, ht, enrobyi, enrobys, facier, fbeton,&
                         gammas, gammac, clacier, eys, typdiag, uc,&
-                        dnszi, dnszs, ntotz, nrdz, mrdz)
+                        dnsyi, dnsys, ntotz, nrdz, mrdz)
                         
            s = 1
            nrd0 = nrdz(s)
@@ -365,7 +386,12 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdz(s)-nrdz(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdz1 = ((mrdz(s)-mrdz(s-1))/(nrdz(s)-nrdz(s-1)))*(effn-nrdz(s-1))+mrdz(s-1)
+                else
+                mrdz1 = 0.5*(mrdz(s-1)+mrdz(s))
+                endif
            endif
            s = ndemiz+1
            nrd0 = nrdz(s)
@@ -377,7 +403,12 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdz(s)-nrdz(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdz2 = ((mrdz(s)-mrdz(s-1))/(nrdz(s)-nrdz(s-1)))*(effn-nrdz(s-1))+mrdz(s-1)
+                else
+                mrdz2 = 0.5*(mrdz(s-1)+mrdz(s))
+                endif
            endif
            if (effmz.ge.0.0) then
            mrdz1 = max(mrdz1,0.0)
@@ -390,7 +421,7 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
            endif
 
    !Calcul de 'a'
-   
+           
            if (abs(nrdyzE).gt.epsilon(nrdyzE)) then
                coeff = effn/nrdyzE
            else
@@ -417,6 +448,9 @@ subroutine breselu(typco, alphacc, effmy, effmz, effn,&
            
            COUNT_BRES = COUNT_BRES + 1
            if (BRES.gt.1) then
+               if (Ass.lt.epsilon(Ass)) then
+               Ass = (1.e2)/(unite_m*unite_m) 
+               endif
            Aiter = 0.10*Ass
            rhoyinf = dnsyi/Ass
            rhoysup = dnsys/Ass

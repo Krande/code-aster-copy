@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,34 +21,24 @@ import string
 import sys
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU, FORMULE
+from ..Commands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU
 from ..Messages import UTMESS
 
 
 def combinaison_ferraillage_ops(self, **args):
     """Command to combine results to estimate reinforcement of the structure."""
-
-    resu         = args.get('reuse')
+    
+    resu         = args.get('RESULTAT')
     combinaison  = args.get('COMBINAISON')
     affe         = args.get('AFFE')
     codification = args.get('CODIFICATION')
 
-    #
-    # Retriving MODELE from RESULTAT
-    #
+    # Retriving from RESULTAT
     modele = resu.getModel()
-
-    #
-    # Retriving CARA_ELEM from RESULTAT
-    #
-    # caraelem     = self [ 'CARA_ELEM' ] changed with dismoi
+    maillage = resu.getMesh()
     caraelem = resu.getElementaryCharacteristics()
-
-    if codification != 'EC2':
-        UTMESS('F', 'COMBFERR_1')
-
+    
     # Counting numbers of load combinations.
-    #
     nmb_cas = countCase(combinaison)
     UTMESS('I', 'COMBFERR_10', vali=nmb_cas)
 
@@ -65,7 +55,6 @@ def combinaison_ferraillage_ops(self, **args):
     ))
 
     # Controlling overwriting results
-    #
     if 'COMB_DIME_ORDRE' in resu_nom_cas:
         UTMESS('A', 'COMBFERR_9', valk='COMB_DIME_ORDRE')
 
@@ -74,220 +63,86 @@ def combinaison_ferraillage_ops(self, **args):
 
     UTMESS('I', 'COMBFERR_12', valk='\n    '.join(lst_type_combo))
 
-
-    count_2D = 0
-    lGroupSelec = []
-    g = []
-    TEST_TOUT = False
-    for i_affe in affe :
-        structure_type = i_affe.get('TYPE_STRUCTURE')
-
-        # [structure_type] selects design algorithm.
-        if structure_type == '2D' :
-            if not i_affe.get('GROUP_MA') or i_affe.get('TOUT'):
-                TEST_TOUT = True
-            else:
-                for Ma in i_affe.get('GROUP_MA'):
-                    g.append(Ma)
-                count_2D = count_2D + 1
-        elif structure_type == '1D' :
-            # Algorithm un available
-            algo_POUTRE()
-        else:
-            UTMESS('F', 'COMBFERR_14', valk=structure_type)
-
-    lGroupSelec+=[{'GROUP_MA':g}]
-    resu = algo_2D(resu, affe, lst_inst_index, codification, lst_type_combo)
-
-
+    resu = algo_ferr(resu, affe, lst_inst_index, codification, lst_type_combo)
+    
     # - Build result type EVOL_ELAS from MULTI_ELAS and combo type list in order
-    #   to select the right verify. This because CREA_CHAMP does'nt EXTR the
+    #   to select the right verify. This because CREA_CHAMP doesn't EXTR the
     #   MAXI from multi_elas
-    __resfer = \
-        evolElasFromMulti(nmb_cas,combinaison,lst_inst_value,resu,modele,caraelem)
+        
+    resferr = \
+       evolElasFromMulti(nmb_cas,combinaison,lst_inst_value,resu)
 
     # Maximum reinforcement field (elementwise, component by component)
-    __maxifer = CREA_CHAMP (
-        RESULTAT = __resfer,
-        # RESULTAT = resu,
-        NOM_CHAM = 'FERRAILLAGE',
-        TYPE_CHAM = 'ELEM_FER2_R',
-        OPERATION = 'EXTR',
-        TYPE_MAXI = 'MAXI',
-        TYPE_RESU = 'VALE' ,
-        TOUT_ORDRE = 'OUI',
-    )
+    maxiferr = CREA_CHAMP (
+          RESULTAT = resferr,
+          NOM_CHAM = 'FERRAILLAGE',
+          TYPE_CHAM = 'ELEM_FER2_R',
+          OPERATION = 'EXTR',
+          TYPE_MAXI = 'MAXI',
+          TYPE_RESU = 'VALE' ,
+          TOUT_ORDRE = 'OUI',)
 
     # Instant for which maximum reinforcement field is retrieved (elementwise,
-    # component by component) Later we want to see the NUME_ORDRE and not the
-    # INSTant
-    # NUME_ORDRE is not available now as an option of CREA_CHAMP-MAXI
-    __instfer = CREA_CHAMP (
-          RESULTAT = __resfer,
-          # RESULTAT = resu,
+    # component by component)
+    instferr = CREA_CHAMP (
+          RESULTAT = resferr,
           NOM_CHAM = 'FERRAILLAGE',
-         TYPE_CHAM = 'ELEM_FER2_R',
-         OPERATION = 'EXTR',
-         TYPE_MAXI = 'MAXI',
-         TYPE_RESU = 'INST',
-        TOUT_ORDRE = 'OUI',
-    )
+          TYPE_CHAM = 'ELEM_FER2_R',
+          OPERATION = 'EXTR',
+          TYPE_MAXI = 'MAXI',
+          TYPE_RESU = 'INST',
+          TOUT_ORDRE = 'OUI',)
+    
+    resu = CREA_RESU(reuse = resu,
+                         RESULTAT = resu,
+                         OPERATION = 'AFFE',
+                         TYPE_RESU = 'MULT_ELAS' ,
+                         NOM_CHAM = 'FERRAILLAGE',
+                         AFFE = (
+                              _F(NOM_CAS = 'COMB_DIME_ACIER',
+                                 CHAM_GD = maxiferr,
+                                 MODELE = modele,
+                                 ),),)
 
-    # Adding the field 'FERRAILLAGE' (steel reinforcement) to the MULTI_ELAS result,
-    # for all load cases
-    # MULTI_ELAS completed by the steel reinforcement field is the OUTPUT of the COMBINAISON_FERRAILLAGE
-    # NOTA BENE : CREA_RESU cannot complete the existing NOM_CAS/NUME_ORDRE, it adds new NUME_ORDRE
-    #                  see crtype.f90 call rsorac.f90
-    #     Here we also test CALC_FERRAILLAGE (non-regression), can become analytical
-    # By Luca
-
-    # Build result type EVOL_ELAS from MULTI_ELAS and combo type list in order
-    #
-    # resu = multiFromEvolElas(nmb_cas, resu_nom_cas, lst_inst_index, lst_inst_value, __resfer, resu, modele, caraelem)
-    # The reinforcement has 8 components
-    #  DNSXI :
-    #  DNSXS :
-    #  DNSYI :
-    #  DNSYS :
-    #  DNSXT :
-    #  DNSYT :
-    # EPSIBE :
-    # SIGMBE :
-
-    if not TEST_TOUT:
-        groupSelection = lGroupSelec[0]
-
-    # Workaround to Bug: "ELEM_NEUT_R can use only X1"
-    __CHP = [None] * 8
-    for cmp_index, cmp_name in enumerate(['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC']):
-
-        # Renaming component(s) in COMB_DIME_ORDRE to avoid overlapping with COMB_DIME_ACIER
-        if TEST_TOUT :
-            __CHORD2=CREA_CHAMP(OPERATION='ASSE',
-                              MODELE=modele,
-                              TYPE_CHAM='ELEM_NEUT_R',
-                              ASSE=(
-                                    # ~ _F(CHAM_GD=CHORD,TOUT='OUI',NOM_CMP=('DNSXI','DNSXS','DNSYI','DNSYS','DNSXT', 'DNSYT','SIGMBE','EPSIBE'),NOM_CMP_RESU=('X9','X10','X11','X12','X13','X14','X15','X16')),
-                                    _F(CHAM_GD=__instfer,TOUT='OUI',NOM_CMP=cmp_name,NOM_CMP_RESU='X1'),
-                                  ),
-                                  PROL_ZERO='OUI',
-                                  )
-        else:
-            __CHORD2=CREA_CHAMP(OPERATION='ASSE',
-                              MODELE=modele,
-                              TYPE_CHAM='ELEM_NEUT_R',
-                              ASSE=(_F(CHAM_GD=__instfer,NOM_CMP=cmp_name,NOM_CMP_RESU='X1',**groupSelection), ),
-                              PROL_ZERO='OUI',)
-
-        __FDNSXI=FORMULE(NOM_PARA=(cmp_name,'X1'),VALE="X1 if "+cmp_name+" > 0 else -1")
-
-        if TEST_TOUT :
-            __CHFMU=CREA_CHAMP(OPERATION='AFFE',
-                             TYPE_CHAM='ELEM_NEUT_F',
-                             # ~ TYPE_CHAM='CART_NEUT_F',
-                             # ~ TYPE_CHAM='ELGA_NEUT_F',
-                             MODELE=modele,
-                             AFFE=(
-                                    # ~ _F(TOUT = 'OUI',NOM_CMP = ('X1','X2','X3','X4','X5','X6','X7'),VALE_F = (FDNSXI,FDNSXS,FDNSYI,FDNSYS,FDNST,FSIGMBE,FEPSIBE)),
-                                    _F(TOUT = 'OUI',NOM_CMP = 'X1',VALE_F = __FDNSXI,),
-                                  ),
-                                  PROL_ZERO='OUI',
-                                  )
-        else:
-            __CHFMU=CREA_CHAMP(OPERATION='AFFE',
-                             TYPE_CHAM='ELEM_NEUT_F',
-                             MODELE=modele,
-                             AFFE=(_F(NOM_CMP = 'X1',VALE_F = __FDNSXI,**groupSelection),),
-                             PROL_ZERO='OUI',)
-
-        # Bug 3 : cannot EVAL functions on CART_NEUT_F, ELGA_NEUT_F :
-        __CHP[cmp_index]=CREA_CHAMP(OPERATION='EVAL',
-                          TYPE_CHAM='ELEM_NEUT_R',
-                          CHAM_F=__CHFMU,
-                          CHAM_PARA=(__maxifer,__CHORD2),
-                          )
-
-    # Bug il n y a pas de paramètre  INOUT  associe a la grandeur: FER2_R  dans l option: TOU_INI_ELEM
-    # see https://www.code-aster.org/forum2/viewtopic.php?id=21005
-    if TEST_TOUT :
-        __CHORD4=CREA_CHAMP(OPERATION='ASSE',
-                          # ~ TYPE_CHAM='ELEM_FER2_R',
-                          TYPE_CHAM='CART_NEUT_R',
-                          MODELE=modele,
-                          # ~ PROL_ZERO='OUI',
-                          ASSE=(
-                                _F(TOUT='OUI',CHAM_GD=__CHP[0],NOM_CMP=('X1',), NOM_CMP_RESU=('X1',),),
-                                _F(TOUT='OUI',CHAM_GD=__CHP[1],NOM_CMP=('X1',), NOM_CMP_RESU=('X2',),),
-                                _F(TOUT='OUI',CHAM_GD=__CHP[2],NOM_CMP=('X1',), NOM_CMP_RESU=('X3',),),
-                                _F(TOUT='OUI',CHAM_GD=__CHP[3],NOM_CMP=('X1',), NOM_CMP_RESU=('X4',),),
-                                _F(TOUT='OUI',CHAM_GD=__CHP[4],NOM_CMP=('X1',), NOM_CMP_RESU=('X5',),),
-                                _F(TOUT='OUI',CHAM_GD=__CHP[5],NOM_CMP=('X1',), NOM_CMP_RESU=('X6',),),
-                                _F(TOUT='OUI',CHAM_GD=__CHP[6],NOM_CMP=('X1',), NOM_CMP_RESU=('X7',),),
-                                _F(TOUT='OUI',CHAM_GD=__CHP[7],NOM_CMP=('X1',), NOM_CMP_RESU=('X8',),),
-                              )
-                              )
-    else:
-        __CHORD4=CREA_CHAMP(OPERATION='ASSE',
-                          # ~ TYPE_CHAM='ELEM_FER2_R',
-                          TYPE_CHAM='CART_NEUT_R',
-                          MODELE=modele,
-                          # ~ PROL_ZERO='OUI',
-                          ASSE=(
-                                _F(**groupSelection,CHAM_GD=__CHP[0],NOM_CMP=('X1',), NOM_CMP_RESU=('X1',),),
-                                _F(**groupSelection,CHAM_GD=__CHP[1],NOM_CMP=('X1',), NOM_CMP_RESU=('X2',),),
-                                _F(**groupSelection,CHAM_GD=__CHP[2],NOM_CMP=('X1',), NOM_CMP_RESU=('X3',),),
-                                _F(**groupSelection,CHAM_GD=__CHP[3],NOM_CMP=('X1',), NOM_CMP_RESU=('X4',),),
-                                _F(**groupSelection,CHAM_GD=__CHP[4],NOM_CMP=('X1',), NOM_CMP_RESU=('X5',),),
-                                _F(**groupSelection,CHAM_GD=__CHP[5],NOM_CMP=('X1',), NOM_CMP_RESU=('X6',),),
-                                _F(**groupSelection,CHAM_GD=__CHP[6],NOM_CMP=('X1',), NOM_CMP_RESU=('X7',),),
-                                _F(**groupSelection,CHAM_GD=__CHP[7],NOM_CMP=('X1',), NOM_CMP_RESU=('X8',),),
-                              )
-                              )
-
-    # Adding COMB_DIME_ACIER and COMB_DIME_ORDRE tu resu
-    #
-    resu = CREA_RESU(
-                    reuse = resu,
-                    RESULTAT = resu,
-                    OPERATION = 'AFFE',
-                    TYPE_RESU = 'MULT_ELAS' ,
-                    NOM_CHAM = 'FERRAILLAGE',
-                    AFFE = (
-                            _F(
-                             NOM_CAS = 'COMB_DIME_ACIER',
-                             CHAM_GD = __maxifer,
-                             MODELE = modele,
-                             CARA_ELEM = caraelem,
-                                ),
-                        ),)
-
-    # Adding COMB_DIME_ACIER and COMB_DIME_ORDRE tu resu
-    #
-    resu = CREA_RESU(
-                    reuse = resu,
-                    RESULTAT = resu,
-                    OPERATION = 'AFFE',
-                    TYPE_RESU = 'MULT_ELAS' ,
-                    NOM_CHAM = 'UT01_ELEM',
-                    AFFE = (
-                            _F(
-                             NOM_CAS = 'COMB_DIME_ORDRE',
-                             # CHAM_GD = __instfer,
-                             CHAM_GD = __CHORD4,
-                             MODELE = modele,
-                             CARA_ELEM = caraelem,
-                                ),
-                        ),)
-
+    resu = CREA_RESU(reuse = resu,
+                         RESULTAT = resu,
+                         OPERATION = 'AFFE',
+                         TYPE_RESU = 'MULT_ELAS' ,
+                         NOM_CHAM = 'FERRAILLAGE',
+                         AFFE = (
+                              _F(NOM_CAS = 'COMB_DIME_ORDRE',
+                                 CHAM_GD = instferr,
+                                 MODELE = modele,
+                                 ),),)
+                              
     nc = resu.LIST_VARI_ACCES()['NOM_CAS']
     UTMESS('I', 'COMBFERR_13', valk='\n    '.join(nc))
+
     return resu
 
-def algo_2D (_resfer, affe, lst_nume_ordre, code, type_combo):
-
+def algo_ferr (resferr, affe, lst_nume_ordre, code, type_combo):
+    
+    #   From physical_quantities.py :
+    #   FER2_R   = PhysicalQuantity(type='R',
+    #   components=(
+    #          'DNSXI'    : Ferraillage longitudinal inférieur suivant X (2D)
+    #          'DNSXS'    : Ferraillage longitudinal supérieur suivant X (2D)
+    #          'DNSYI'    : Ferraillage longitudinal inférieur suivant Y (2D)
+    #          'DNSYS'    : Ferraillage longitudinal supérieur suivant Y (2D)
+    #          'DNSXT'    : Ferraillage transversal suivant X            (2D)
+    #          'DNSYT'    : Ferraillage transversal suivant Y            (2D) 
+    #          'AYI'      : Ferraillage longitudinal inférieur suivant Y (1D)
+    #          'AYS'      : Ferraillage longitudinal supérieur suivant Y (1D)
+    #          'AZI'      : Ferraillage longitudinal inférieur suivant Z (1D)
+    #          'AZS'      : Ferraillage longitudinal supérieur suivant Z (1D)
+    #          'AST'      : Ferraillage transversal                      (1D)
+    #          'ATOT'     : Ferraillage longitudinal total               (1D)
+    #          'DNSVOL'   : Densité volumique de ferraillage 
+    #          'CONSTRUC' : Indice de constructibilité
+    #),)
+            
     for idx, nume_ordre in enumerate(lst_nume_ordre):
 
-        # seelction of mot-clè TYPE_COMB by [lst_type_combo]
         dic_type_comb = {}
         if type_combo [idx]  == 'ELS_CARACTERISTIQUE':
            dic_type_comb['TYPE_COMB'] = 'ELS'
@@ -295,60 +150,40 @@ def algo_2D (_resfer, affe, lst_nume_ordre, code, type_combo):
            dic_type_comb['TYPE_COMB'] = 'ELS_QP'        
         else:
            dic_type_comb['TYPE_COMB'] = 'ELU'
-
+           
+        dic_type_comb['CODIFICATION'] = code
         lst_tmp_affe = []
+                
         for i_affe in affe :
+            
+            dict_i_affe = i_affe.List_F()[0]
+            i_affe_for_cf = dict_i_affe.copy();
 
-            structure_type = i_affe.get('TYPE_STRUCTURE')
-            if structure_type == '2D' :
-                dict_i_affe = i_affe.List_F()[0]
+            if type_combo [idx]  == 'ELU_FONDAMENTAL':
+               i_affe_for_cf.update({'GAMMA_S':i_affe_for_cf['GAMMA_S_FOND']})
+               i_affe_for_cf.update({'GAMMA_C':i_affe_for_cf['GAMMA_C_FOND']})
+            elif type_combo [idx]  == 'ELU_ACCIDENTEL':
+               i_affe_for_cf.update({'GAMMA_S':i_affe_for_cf['GAMMA_S_ACCI']})
+               i_affe_for_cf.update({'GAMMA_C':i_affe_for_cf['GAMMA_C_ACCI']})
 
-                # saving dict_affe
-                i_affe_for_cf = dict_i_affe.copy();
-                #i_affe_for_cf.pop('TYPE_STRUCTURE')
+            # adjusting affe for calc_ferraillage
+            i_affe_for_cf.pop('GAMMA_C_FOND')
+            i_affe_for_cf.pop('GAMMA_S_FOND')
+            i_affe_for_cf.pop('GAMMA_C_ACCI')
+            i_affe_for_cf.pop('GAMMA_S_ACCI')
 
-                if type_combo [idx]  == 'ELU_FONDAMENTAL':
-                    i_affe_for_cf.update({'GAMMA_S':i_affe_for_cf['GAMMA_S_FOND']})
-                    i_affe_for_cf.update({'GAMMA_C':i_affe_for_cf['GAMMA_C_FOND']})
-
-                elif type_combo [idx]  == 'ELU_ACCIDENTEL':
-                    i_affe_for_cf.update({'GAMMA_S':i_affe_for_cf['GAMMA_S_ACCI']})
-                    i_affe_for_cf.update({'GAMMA_C':i_affe_for_cf['GAMMA_C_ACCI']})
-
-                # adjusting affe for calc_ferraillage
-                i_affe_for_cf.pop('GAMMA_C_FOND')
-                i_affe_for_cf.pop('GAMMA_S_FOND')
-                i_affe_for_cf.pop('GAMMA_C_ACCI')
-                i_affe_for_cf.pop('GAMMA_S_ACCI')
-
-                lst_tmp_affe.append(_F(**i_affe_for_cf),)
+            lst_tmp_affe.append(_F(**i_affe_for_cf),)
 
         dic_type_comb['AFFE']=tuple(lst_tmp_affe)
 
-        dic_type_comb['CODIFICATION'] = code
-        
-        _resfer = CALC_FERRAILLAGE (
-            reuse = _resfer,
-            RESULTAT = _resfer,
-            NUME_ORDRE = nume_ordre,
-            **dic_type_comb
-        )
-        
-    return _resfer
+        resferr = CALC_FERRAILLAGE (reuse = resferr,
+                                    RESULTAT = resferr,
+                                    NUME_ORDRE = nume_ordre,
+                                    **dic_type_comb,)
 
-def algo_POUTRE ():
-    UTMESS('A', 'COMBFERR_2', valk='POUTRE')
-    return None
-
-
-def combdimferr(fer):
-    if fer <= 0.:
-        return 0.
-    else:
-        return 1.
+    return resferr
 
 # Counting numbers of load combinations.
-#
 def countCase(comb):
     nmb_cas = 0
     for idx_i_combo, i_combo in enumerate(comb) :
@@ -368,11 +203,11 @@ def lstInst(ncas, comb, resultat):
     lst_inst_index = [None] * ncas # list of int value as index
     type_combo     = [None] * ncas # list of string as type of combo
 
-    # Recupero i numeri d'ordine e nomi dei casi
+    # Recuperer les numéros d'ordre et les noms des cas de chargement associés
     resu_nume_ordre = resultat.LIST_VARI_ACCES()['NUME_ORDRE']
     resu_nom_cas = resultat.LIST_VARI_ACCES()['NOM_CAS']
 
-    # Deblanking di [resu_nom_cas]
+    # Elimination du vide dans [resu_nom_cas]
     for idx, val in enumerate(resu_nom_cas):
         resu_nom_cas[idx]=val.strip()
 
@@ -396,8 +231,10 @@ def lstInst(ncas, comb, resultat):
             if key_name_combo == 'NUME_ORDRE':
                 inst = val_combo
                 if not (inst in resu_nume_ordre):
+                    #le cas de charge renseigné dans COMBINAISON_FERRAILLAGE n'a pas un équivalent dans RESULTAT (issu de MACRO_ELAS_MULT)
                     UTMESS('F', 'COMBFERR_7')
                 if inst in lst_inst_index:
+                    #le cas de charge renseigné dans COMBINAISON_FERRAILLAGE a déjà été renseigné
                     UTMESS('F', 'COMBFERR_4')
             else:
                 if not (val_combo in resu_nom_cas):
@@ -413,15 +250,14 @@ def lstInst(ncas, comb, resultat):
 
     return lst_inst_index, lst_inst_value, resu_nom_cas, resu_nume_ordre, type_combo
 
-
-
 # Build result type EVOL_ELAS from MULTI_ELAS
-#
-def evolElasFromMulti(ncas, comb, lst_inst_value, resu, modele, caraelem):
+def evolElasFromMulti(ncas, comb, lst_inst_value, resu):
 
+    modele = resu.getModel()
+    caraelem = resu.getElementaryCharacteristics()
+    
     __EFGE         = [None] * ncas
     lst_AFFE_EFGE  = [None] * ncas
-    # type_combo     = [None] * ncas # list of string as type of combo
 
     idx_shift = 0
     for idx_i_combo, i_combo in enumerate( comb ) :
@@ -430,7 +266,7 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu, modele, caraelem):
         lst_nomcas = i_combo.get('NOM_CAS')
         lst_numord = i_combo.get('NUME_ORDRE')
         if lst_nomcas is None:
-            lst_combo = lst_numord                   # list with combinations
+            lst_combo = lst_numord    # list with combinations
             key_name_combo = 'NUME_ORDRE'
         else:
             lst_combo = lst_nomcas
@@ -439,22 +275,16 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu, modele, caraelem):
 
         for idx_combo, val_combo in enumerate( lst_combo ):
 
-            # type combo list couple with instant
-            # type_combo [idx_shift] = i_combo.get('TYPE')
-
             dic_idx_combo = { key_name_combo : val_combo }
 
             __EFGE[ idx_shift ] = CREA_CHAMP (
-
             OPERATION = 'EXTR',
             RESULTAT = resu,
-            # TYPE_CHAM = 'ELNO_SIEF_R',
-            # NOM_CHAM = 'EFGE_ELNO',
             TYPE_CHAM = 'ELEM_FER2_R',
             NOM_CHAM = 'FERRAILLAGE',
             **dic_idx_combo
             )
-
+            
             lst_AFFE_EFGE [ idx_shift ] = _F (
                  INST = lst_inst_value [ idx_shift ],
               CHAM_GD = __EFGE [ idx_shift ],
@@ -464,12 +294,11 @@ def evolElasFromMulti(ncas, comb, lst_inst_value, resu, modele, caraelem):
 
             idx_shift = idx_shift  + 1
 
-    _resfer = CREA_RESU (
+    resferr = CREA_RESU (
         OPERATION='AFFE',
         TYPE_RESU ='EVOL_ELAS',
-        # NOM_CHAM ='EFGE_ELNO',
         NOM_CHAM ='FERRAILLAGE',
         AFFE = lst_AFFE_EFGE,
     )
 
-    return _resfer# , type_combo
+    return resferr

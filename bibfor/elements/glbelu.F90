@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -138,6 +138,7 @@ implicit none
     integer :: ierry, ierrz
     real(kind=8) :: Asl, thetab, ak, uk, unite_pa, unite_m
     real(kind=8) :: d, Smoy, fctm
+    real(kind=8) :: Calc, ab1, ab2, ab3, ab4
     real(kind=8) :: effrts_fake(8)
     integer :: i
     
@@ -145,12 +146,27 @@ implicit none
     effrts_fake(i) = 0.0
     end do
     
+    !Initialisation des valeurs
     dnsyi = 0
     dnsys = 0
     dnszi = 0
     dnszs = 0
     dnstray = 0
     dnstraz = 0
+    alphay = -1
+    alphaz = -1
+    ecyi = 0
+    ecys = 0
+    eczi = 0
+    eczs = 0
+    sigmsyi = 0
+    sigmsys = 0
+    sigmszi = 0
+    sigmszs = 0
+    pivoty = 0
+    pivotz = 0
+    etaty = 0
+    etatz = 0
     
     effn = effrts(1) 
     effmy = effrts(2)
@@ -163,7 +179,7 @@ implicit none
                  ht, bw, enrobyi, enrobys, enrobzi, enrobzs,&
                  facier, fbeton, gammas, gammac,&
                  clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme,&
-                 uc,&
+                 uc,um,&
                  dnsyi, dnsys, dnszi, dnszs,& 
                  sigmsyi, sigmsys, ecyi, ecys,&
                  sigmszi, sigmszs, eczi, eczs,&
@@ -194,24 +210,10 @@ implicit none
            
         !1e calcul avec MFY et VZ
          call cftelu(typco, 1, effrts_fake, effmy, effn, efftz, effmt,&
-                     dnsyi, dnsys, sigmsyi, sigmsys, alphay,&
-                     ht, bw, enrobyi, enrobys, facier, fbeton,&
+                     dnszi, dnszs, sigmszi, sigmszs, alphaz,&
+                     ht, bw, enrobzi, enrobzs, facier, fbeton,&
                      alphacc, gammac, gammas, uc, um,&
-                     compress, dnstray, thetaby, aky, uky, ierry)
-!               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELU
-                if (ierry.eq.1) then
-!                   Béton trop cisaillé !
-!                   Alarme dans te0265 + on sort de la boucle + dnstra = -1 pour l'élément
-                    ierr = 1002
-                    goto 998
-                endif
-                
-            !2e calcul avec MFZ et VY
-            call cftelu(typco, 1, effrts_fake, effmz, effn, effty, effmt,&
-                        dnszi, dnszs, sigmszi, sigmszs, alphaz,&
-                        bw, ht, enrobzi, enrobzs, facier, fbeton,&
-                        alphacc, gammac, gammas, uc, um,&
-                        compress, dnstraz, thetabz, akz, ukz, ierrz)
+                     compress, dnstraz, thetabz, akz, ukz, ierrz)
 !               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELU
                 if (ierrz.eq.1) then
 !                   Béton trop cisaillé !
@@ -220,42 +222,62 @@ implicit none
                     goto 998
                 endif
                 
+            !2e calcul avec MFZ et VY
+            call cftelu(typco, 1, effrts_fake, effmz, effn, effty, effmt,&
+                        dnsyi, dnsys, sigmsyi, sigmsys, alphay,&
+                        bw, ht, enrobyi, enrobys, facier, fbeton,&
+                        alphacc, gammac, gammas, uc, um,&
+                        compress, dnstray, thetaby, aky, uky, ierry)
+!               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELU
+                if (ierry.eq.1) then
+!                   Béton trop cisaillé !
+!                   Alarme dans te0265 + on sort de la boucle + dnstra = -1 pour l'élément
+                    ierr = 1002
+                    goto 998
+                endif
+                
        !Prise en compte de l'impact de l'effort tranchant sur le ferraillage longitudinal
-        if ((ierry.eq.0) .and. (dnstray.gt.0) .and. (epucisa.eq.1)) then
-             Asl = abs(efftz)/(tan(thetaby))
-             if (effmy.ge.0) then
-                 if (sigmsyi.ne.(-1)) then
-                     Asl = Asl/(-sigmsyi)
-                 else
-                     Asl = Asl/(facier/gammas)
-                 endif
-                 dnsyi = dnsyi + Asl
-             else
-                 if (sigmsys.ne.(-1)) then
-                     Asl = Asl/sigmsys
-                 else
-                     Asl = Asl/(facier/gammas)       
-                 endif
-                 dnsys = dnsys + Asl
-             endif
-        endif
-               
+       !MFY et VZ
         if ((ierrz.eq.0) .and. (dnstraz.gt.0) .and. (epucisa.eq.1)) then
-             Asl = abs(effty)/(tan(thetabz))
-             if (effmz.ge.0) then
-                 if (sigmszi.ne.(-1)) then
-                     Asl = Asl/(-sigmszi)
+             Asl = abs(efftz)/(tan(thetabz))
+             if (effmy.ge.0) then
+                 Calc = abs(sigmszi)
+                 if (Calc.gt.epsilon(Calc)) then
+                     Asl = Asl/Calc
                  else
                      Asl = Asl/(facier/gammas)
                  endif
                  dnszi = dnszi + Asl
              else
-                 if (sigmszs.ne.(-1)) then
-                     Asl = Asl/sigmszs
+                 Calc = abs(sigmszs)
+                 if (Calc.gt.epsilon(Calc)) then
+                     Asl = Asl/Calc
+                 else
+                     Asl = Asl/(facier/gammas)       
+                 endif
+                 dnszs = dnszs + Asl
+             endif
+        endif
+        
+       !MFZ et VY               
+        if ((ierry.eq.0) .and. (dnstray.gt.0) .and. (epucisa.eq.1)) then
+             Asl = abs(effty)/(tan(thetaby))
+             if (effmz.ge.0) then
+                 Calc = abs(sigmsyi)
+                 if (Calc.gt.epsilon(Calc)) then
+                     Asl = Asl/Calc
+                 else
+                     Asl = Asl/(facier/gammas)
+                 endif
+                 dnsyi = dnsyi + Asl
+             else
+                 Calc = abs(sigmsys)
+                 if (Calc.gt.epsilon(Calc)) then
+                     Asl = Asl/Calc
                  else
                      Asl = Asl/(facier/gammas)           
                  endif
-                 dnszs = dnszs + Asl
+                 dnsys = dnsys + Asl
              endif
         endif
 
@@ -278,17 +300,57 @@ implicit none
                
              if (epucisa.eq.1) then
                  Asl = (abs(effmt)/(2*ak))*(1/(tan(thetab)))*uk
-                 if ((effmy.ne.0) .and. (effmz.ne.0)) then
-                      dnsyi = dnsyi + Asl/(4.0*sigmsyi)
-                      dnsys = dnsys + Asl/(4.0*sigmsys)
-                      dnszi = dnszi + Asl/(4.0*sigmszi)
-                      dnszs = dnszs + Asl/(4.0*sigmszs)
-                 elseif (effmy.ne.0) then
-                      dnsyi = dnsyi + Asl/(2.0*sigmsyi)
-                      dnsys = dnsys + Asl/(2.0*sigmsys)
-                 elseif (effmz.ne.0) then
-                      dnszi = dnszi + Asl/(2.0*sigmszi)
-                      dnszs = dnszs + Asl/(2.0*sigmszs)
+                 if ((abs(effmy).gt.epsilon(effmy)) .and. (abs(effmz).gt.epsilon(effmz))) then
+                      Calc = abs(sigmsyi)
+                          if (Calc.gt.epsilon(Calc)) then
+                          dnsyi = dnsyi + Asl/(4.0*Calc)
+                          else
+                          dnsyi = dnsyi + Asl/(4.0*facier/gammas)
+                          endif
+                      Calc = abs(sigmsys)
+                          if (Calc.gt.epsilon(Calc)) then
+                          dnsys = dnsys + Asl/(4.0*Calc)
+                          else
+                          dnsys = dnsys + Asl/(4.0*facier/gammas)
+                          endif
+                      Calc = abs(sigmszi)
+                          if (Calc.gt.epsilon(Calc)) then
+                          dnszi = dnszi + Asl/(4.0*Calc)
+                          else
+                          dnszi = dnszi + Asl/(4.0*facier/gammas)
+                          endif
+                      Calc = abs(sigmszs)
+                          if (Calc.gt.epsilon(Calc)) then
+                          dnszs = dnszs + Asl/(4.0*Calc)
+                          else
+                          dnszs = dnszs + Asl/(4.0*facier/gammas)
+                          endif
+                 elseif (abs(effmy).gt.epsilon(effmy)) then
+                      Calc = abs(sigmszi)
+                          if (Calc.gt.epsilon(Calc)) then
+                          dnszi = dnszi + Asl/(2.0*Calc)
+                          else
+                          dnszi = dnszi + Asl/(2.0*facier/gammas)
+                          endif
+                      Calc = abs(sigmszs)
+                          if (Calc.gt.epsilon(Calc)) then
+                          dnszs = dnszs + Asl/(2.0*Calc)
+                          else
+                          dnszs = dnszs + Asl/(2.0*facier/gammas)
+                          endif
+                 elseif (abs(effmz).gt.epsilon(effmz)) then
+                      Calc = abs(sigmsyi)
+                          if (Calc.gt.epsilon(Calc)) then
+                          dnsyi = dnsyi + Asl/(2.0*Calc)
+                          else
+                          dnsyi = dnsyi + Asl/(2.0*facier/gammas)
+                          endif
+                      Calc = abs(sigmsys)
+                          if (Calc.gt.epsilon(Calc)) then
+                          dnsys = dnsys + Asl/(2.0*Calc)
+                          else
+                          dnsys = dnsys + Asl/(2.0*facier/gammas)
+                          endif
                  else
                       Smoy = facier/gammas
                       dnsyi = dnsyi + Asl/(4.0*Smoy)
@@ -316,11 +378,14 @@ implicit none
     if ((ferrmin.eq.1) .or. (ferrmin.eq.2)) then
 
          if (uc.eq.0) then
-         unite_pa = 1.e6
-         unite_m = 1.
+         unite_pa = 1.e-6
          elseif (uc.eq.1) then
          unite_pa = 1.
-         unite_m = 1.e-3
+         endif
+         if (um.eq.0) then
+         unite_m = 1.e3
+         elseif (um.eq.1) then
+         unite_m = 1.
          endif
 
          if (fbeton.le.(50*unite_pa)) then
@@ -333,41 +398,41 @@ implicit none
          rholmin = max(0.26*(fctm/facier),0.0013)
          rhotmin = 0.08*(fbeton**(0.5))/facier
          endif
-         
+
          !ASYI
-         d = ht - enrobyi
-         if ((dnsyi.lt.(rholmin*d*bw)) .and. (ierr.ne.1001) &
+         d = bw - enrobyi
+         if ((dnsyi.lt.(rholmin*d*ht)) .and. (ierr.ne.1001) &
               & .and. (ierr.ne.10011) .and. (ierr.ne.10012) &
               & .and. (ierr.ne.1003) .and. (ierr.ne.1005) &
               & .and. (ierr.ne.1006)) then
-         dnsyi = rholmin*d*bw
+         dnsyi = rholmin*d*ht
          endif
 
          !ASYS
-         d = ht - enrobys
-         if ((dnsys.lt.(rholmin*d)) .and. (ierr.ne.1001) &
+         d = bw - enrobys
+         if ((dnsys.lt.(rholmin*d*ht)) .and. (ierr.ne.1001) &
               & .and. (ierr.ne.10011) .and. (ierr.ne.10012) &
               & .and. (ierr.ne.1003) .and. (ierr.ne.1005) &
               & .and. (ierr.ne.1006)) then
-         dnsys = rholmin*d*bw
+         dnsys = rholmin*d*ht
          endif
          
          !ASZI
-         d = bw - enrobzi
-         if ((dnszi.lt.(rholmin*d*ht)) .and. (ierr.ne.1001) &
+         d = ht - enrobzi
+         if ((dnszi.lt.(rholmin*d*bw)) .and. (ierr.ne.1001) &
               & .and. (ierr.ne.10011) .and. (ierr.ne.10012) &
               & .and. (ierr.ne.1003) .and. (ierr.ne.1005) &
               & .and. (ierr.ne.1006)) then
-         dnszi = rholmin*d*ht
+         dnszi = rholmin*d*bw
          endif
 
-         !ASYS
-         d = bw - enrobzs
-         if ((dnszs.lt.(rholmin*d*ht)) .and. (ierr.ne.1001) &
+         !ASZS
+         d = ht - enrobzs
+         if ((dnszs.lt.(rholmin*d*bw)) .and. (ierr.ne.1001) &
               & .and. (ierr.ne.10011) .and. (ierr.ne.10012) &
               & .and. (ierr.ne.1003) .and. (ierr.ne.1005) &
               & .and. (ierr.ne.1006)) then
-         dnszs = rholmin*d*ht
+         dnszs = rholmin*d*bw
          endif
 
          !AST
@@ -384,11 +449,15 @@ implicit none
     dnsits(3) = dnszi
     dnsits(4) = dnszs
     dnsits(5) = dnstra
-    if ((dnsits(1).ne.(-1)) .and. (dnsits(2).ne.(-1)) &
-         & .and. (dnsits(3).ne.(-1)) .and. (dnsits(4).ne.(-1))) then
+    ab1 = dnsits(1)+1
+    ab2 = dnsits(2)+1
+    ab3 = dnsits(3)+1
+    ab4 = dnsits(4)+1
+    if ((abs(ab1).gt.epsilon(ab1)) .and. (abs(ab2).gt.epsilon(ab2)) &
+         & .and. (abs(ab3).gt.epsilon(ab3)) .and. (abs(ab4).gt.epsilon(ab4))) then
     dnsits(6) = dnsyi+dnsys+dnszi+dnszs
     else
     dnsits(6)=-1
     endif
-    
+
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,23 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# AUTEUR : L. DALL OLIO (AlterEgo), L. PAONE (Kobe Innovation Engineering)
-#          VALIDATION DE COMBINAISON_FERRAILLAGE et CALC_FERRAILLAGE
-#
-#  DETAILS : MODELISATION DKT
-#            Mailles TRIA3
-#
-# Based on the results of ssls126c
-#     Slab under uniform pressure
-#      Computation with macr_elas_mult
-#      Applied pressure for macr_elas_mult-CAS_2 is double than for CAS_1
-#      macr_elas_mult-CAS_2 must be the governing combination for density DNSXS
-
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),
-      IGNORE_ALARM=('CALCULEL6_77'))
-
-print_results = True
+     )
 
 # Cases MULTI_ELAS
 lst_nomcas = ('cas_1','cas_2',)
@@ -79,7 +65,8 @@ fyk = 450*MPa
 
 # Mesh, finite element type, elastic material properties
 # ---------------------------------------------------------
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE( FORMAT = "MED",
+                      UNITE = 20);
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -93,7 +80,6 @@ MOD=AFFE_MODELE(
     AFFE=_F(
         TOUT='OUI',
         PHENOMENE='MECANIQUE',
-#       MODELISATION='Q4GG',
         MODELISATION='DKT',
     ),
 )
@@ -108,7 +94,6 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=EB,
                           NU=0.0,),)
 
 CHMAT = AFFE_MATERIAU(
-    # MAILLAGE = MAIL,
     AFFE = _F(
         TOUT='OUI',
         MATER=MAT,
@@ -236,7 +221,6 @@ RESUMULT = COMBINAISON_FERRAILLAGE (
     COMBINAISON = (
         _F (
             TYPE = 'ELU_FONDAMENTAL',
-            # NOM_CAS = lst_nomcas
             NUME_ORDRE = lst_numeordre
          ),
     ),
@@ -255,45 +239,19 @@ TEST_RESU(RESU=(_F(
                   VALE_CALC=lst_resudnsxs[1],
                   VALE_REFE=lst_resudnsxs[1],
                   REFERENCE='ANALYTIQUE',),
-#                _F(
-#                  RESULTAT=RESUMULT,
-#                  NOM_CAS = 'COMB_DIME_ORDRE',
-#                  NOM_CHAM = 'FERRAILLAGE',
-#                  NOM_CHAM = 'UT01_ELEM',
-#                  CRITERE='RELATIF',
-#                  NOM_CMP='DNSXS',
-#                  NOM_CMP='X2',
-#                  GROUP_MA='M124',
-#                  POINT=1,
-#                  PRECISION=1.E-6,
-#                  VALE_CALC=2.,
-#                  VALE_REFE=2.,
-#                  REFERENCE='ANALYTIQUE',),
+                _F(
+                  RESULTAT=RESUMULT,
+                  NOM_CAS = 'COMB_DIME_ORDRE',
+                  NOM_CHAM = 'FERRAILLAGE',
+                  CRITERE='RELATIF',
+                  NOM_CMP='DNSXS',
+                  GROUP_MA='M124',
+                  POINT=1,
+                  PRECISION=1.E-6,
+                  VALE_CALC=2.,
+                  VALE_REFE=2.,
+                  REFERENCE='ANALYTIQUE',),
             )
 )
-
-TOTEST = CREA_CHAMP (
-    OPERATION ='EXTR',
-    RESULTAT = RESUMULT,
-    TYPE_CHAM = 'CART_NEUT_R',
-    NOM_CHAM ='UT01_ELEM',
-    NOM_CAS = 'COMB_DIME_ORDRE',
-)
-
-TEST_RESU(
-    CARTE = _F(
-        CHAM_GD = TOTEST,
-        GROUP_MA='M124',
-        NOM_CMP='X2',
-        REFERENCE='ANALYTIQUE',
-        PRECISION=1.E-6,
-        VALE_CALC=2.,
-        VALE_REFE=2.,
-    )
-)
-
-if print_results :
-    IMPR_RESU(UNITE=80, FORMAT='MED', RESU=_F(RESULTAT=RESUMULT),)
-    IMPR_RESU(UNITE=8, FORMAT='RESULTAT', RESU=_F(RESULTAT=RESUMULT,),)
 
 FIN()

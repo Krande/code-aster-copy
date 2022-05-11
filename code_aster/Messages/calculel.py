@@ -462,7 +462,7 @@ Risques et conseils :
 Commande CALC_FERRAILLAGE :
    ELS_QP : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
    La section est fortement sollicitée et on est incapable de dimensionner un ferraillage
-   qui satisfait le critère de limitation des ouvertures des fissures à l'els qp !
+   qui satisfait le critère de limitation des ouvertures des fissures!
    Conseil : on suggère soit de changer la classe de béton soit de revoir le coffrage.
 """),
 
@@ -507,7 +507,7 @@ Commande CALC_FERRAILLAGE :
  Commande CALC_FERRAILLAGE :
    ELU : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
    Pour une des facettes de Capra Maury au moins, la section est trop comprimée (PIVOT B avec acier de compression ou PIVOT C).
-   ATTENTION : Pour l'option retenue (à savoir FERR_COMP = 'NON'), les aciers en compression ne sont pas calculés !
+   ATTENTION : Si vous avez retenu FERR_COMP = 'NON', les aciers en compression ne sont pas calculés !
    La densité de ferraillage est mise à -1.
    Conseil : on suggère soit de reprendre le calcul avec FERR_COMP = 'OUI', soit de changer la classe de béton ou soit de revoir le coffrage.
 """),
@@ -516,7 +516,7 @@ Commande CALC_FERRAILLAGE :
  Commande CALC_FERRAILLAGE :
    ELS : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
    Pour une des facettes de Capra Maury au moins, la section est trop comprimée (PIVOT B avec acier de compression).
-   ATTENTION : Pour l'option retenue (à savoir FERR_COMP = 'NON'), les aciers en compression ne sont pas calculés !
+   ATTENTION : Si vous avez retenu FERR_COMP = 'NON', les aciers en compression ne sont pas calculés !
    La densité de ferraillage est mise à -1.
    Conseil : on suggère soit de reprendre le calcul avec FERR_COMP = 'OUI', soit de changer la classe de béton ou soit de revoir le coffrage.
 """),
@@ -525,7 +525,7 @@ Commande CALC_FERRAILLAGE :
  Commande CALC_FERRAILLAGE :
    ELS_QP : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
    Pour une des facettes de Capra Maury au moins, la section est trop comprimée (PIVOT B avec acier de compression).
-   ATTENTION : Pour l'option retenue (à savoir FERR_COMP = 'NON'), les aciers en compression ne sont pas calculés !
+   ATTENTION : Si vous avez retenu FERR_COMP = 'NON', les aciers en compression ne sont pas calculés !
    La densité de ferraillage est mise à -1.
    Conseil : on suggère soit de reprendre le calcul avec FERR_COMP = 'OUI', soit de changer la classe de béton ou soit de revoir le coffrage.
 """),

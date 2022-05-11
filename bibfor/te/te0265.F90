@@ -253,8 +253,8 @@ subroutine te0265(nomopt, nomte)
 !   Retriving instantied pointer for INPUT PARAMETER
     call jevech('PFERRA1', 'L', jfer1)
     
-    ht = HY1
-    bw = HZ1
+    ht = HZ1
+    bw = HY1
     typcmb = nint(zr(jfer1-1+1))
     typco = nint(zr(jfer1-1+2))
     typstru = nint(zr(jfer1-1+3))
@@ -364,7 +364,6 @@ subroutine te0265(nomopt, nomte)
     effrts(4) = VY
     effrts(5) = VZ
     effrts(6) = MT
-    
 
    !Calcul du ferraillage global de la poutre
    

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ cata_msg = {
     
     1 : _("""
 Commande CALC_FERRAILLAGE :
-    La maille <%(k2)s> du maillage <%(k1)s>, nœuds <%(i1)s> et <%(i2)s>
+    La maille <%(k2)s> du maillage <%(k1)s>, nœuds <%(i1)d> et <%(i2)d>
     n'a pas une section rectangulaire.
     La version actuelle permet seulement une section rectangulaire.
 """),
@@ -67,14 +67,14 @@ Commande CALC_FERRAILLAGE :
 Commande CALC_FERRAILLAGE :
    FERR MIN : Dans le cadre du choix FERR_MIN = 'OUI', il faudra renseigner manuellement les valeurs des ratios de densités minimales de ferraillage
    à travers les mots-clé RHO_LONGI_MIN et RHO_TRNSV_MIN !
-   Si vous souhaitez que l'algorithme estime lui-meme le ferraillage minimal conformément aux spécifications des normes, choisir plutot FERR_MIN = 'CODE'
+   Si vous souhaitez que l'algorithme estime lui-même le ferraillage minimal conformément aux spécifications des normes, choisir plutôt FERR_MIN = 'CODE'
 """),
 
     12 : _("""
  Commande CALC_FERRAILLAGE :
    ELU : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
    La section est trop comprimée (PIVOT B avec acier de compression ou PIVOT C).
-   ATTENTION : Pour l'option retenue (à savoir FERR_COMP = 'NON'), les aciers en compression ne sont pas calculés !
+   ATTENTION : Si vous avez retenu FERR_COMP = 'NON', les aciers en compression ne sont pas calculés !
    La densité de ferraillage est mise à -1.
    Conseil : on suggère soit de reprendre le calcul avec FERR_COMP = 'OUI', soit de changer la classe de béton ou soit de revoir le coffrage.
 """),
@@ -83,7 +83,7 @@ Commande CALC_FERRAILLAGE :
  Commande CALC_FERRAILLAGE :
    ELS : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
    La section est trop comprimée (PIVOT B avec acier de compression).
-   ATTENTION : Pour l'option retenue (à savoir FERR_COMP = 'NON'), les aciers en compression ne sont pas calculés !
+   ATTENTION : Si vous avez retenu FERR_COMP = 'NON', les aciers en compression ne sont pas calculés !
    La densité de ferraillage est mise à -1.
    Conseil : on suggère soit de reprendre le calcul avec FERR_COMP = 'OUI', soit de changer la classe de béton ou soit de revoir le coffrage.
 """),
@@ -92,7 +92,7 @@ Commande CALC_FERRAILLAGE :
  Commande CALC_FERRAILLAGE :
    ELS_QP : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
    La section est trop comprimée (PIVOT B avec acier de compression).
-   ATTENTION : Pour l'option retenue (à savoir FERR_COMP = 'NON'), les aciers en compression ne sont pas calculés !
+   ATTENTION : Si vous avez retenu FERR_COMP = 'NON', les aciers en compression ne sont pas calculés !
    La densité de ferraillage est mise à -1.
    Conseil : on suggère soit de reprendre le calcul avec FERR_COMP = 'OUI', soit de changer la classe de béton ou soit de revoir le coffrage.
 """),
@@ -125,14 +125,14 @@ Commande CALC_FERRAILLAGE :
  Commande CALC_FERRAILLAGE :
    STRUCTURE '1D' : L'un des enrobages suivants n'a pas été défini :
    C_INF_Y / C_SUP_Y / C_INF_Z / C_SUP_Z
-   Le calcul ne peut pas etre mené!
+   Le calcul ne peut pas être mené!
 """),
     
     19 : _("""
  Commande CALC_FERRAILLAGE :
    STRUCTURE '2D' : L'un des enrobages suivants n'a pas été défini :
    C_INF / C_SUP
-   Le calcul ne peut pas etre mené!
+   Le calcul ne peut pas être mené!
 """),
     
     20 : _("""
@@ -215,14 +215,14 @@ Commande CALC_FERRAILLAGE :
     29 : _("""
  Commande CALC_FERRAILLAGE :
    Flexion Déviée / TYPE_STRUCTURE = 1D : On n'a pas réussi à calculer une densité de ferraillage en flexion déviée (MFY et MFZ).
-   La méthode actuellement implémentée est une résolution itérative basée sur la vérification de l'inéquation de BRESLER.
+   La méthode actuellement implémentée est une résolution itérative.
    L'algorithme rencontre un dépassement de capacité (beaucoup d'itérations tentées).
 """),
 
     30 : _("""
  Commande CALC_FERRAILLAGE :
    FERR_SYME = 'OUI' : Vous souhaitez réaliser un calcul de ferraillage symétrique.
-   Pour ce fait, il est nécessaire de renseigner le seuil de tolérance SEUIL_SYME pour le calcul d'un ferraillage symétrique en faces SUP et INF. L'algorithme tentera ainsi de satisfaire la condition [ |Asup - Ainf| < SEUIL_SYME ].
+   Pour ce fait, il est nécessaire de renseigner le seuil de tolérance SEUIL_SYME pour le calcul d'un ferraillage symétrique en faces SUP et INF.
    Conseil : on suggère soit de renseigner la valeur de la section SEUIL_SYME, soit de reprendre le calcul avec FERR_SYME = 'NON'
 """),
     

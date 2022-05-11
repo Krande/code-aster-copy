@@ -170,7 +170,8 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
    real(kind=8), pointer :: nrdy(:) => null(), mrdy(:) => null()
    real(kind=8), pointer :: nrdz(:) => null(), mrdz(:) => null()
    character(24) :: pnrdy,pmrdy,pnrdz,pmrdz
-   real(kind=8) :: unite_pa,d,d0,dneg,d0neg,scmax,scmaxneg,ssmaxy,ssmaxz
+   real(kind=8) :: unite_pa,unite_m,Calc
+   real(kind=8) :: d,d0,dneg,d0neg,scmax,scmaxneg,ssmaxy,ssmaxz
    integer :: N_ET,N_PC,N_PCAC,N_EC,N_ECN,N_PCACN
    integer :: ntoty, ndemiy, ntotz, ndemiz
 
@@ -203,22 +204,22 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
    !if ((effmy.eq.0) .and. (effmz.eq.0) .and. (effn.ne.0)) then
    if ((abs(effmy).lt.epsilon(effmy)) .and. (abs(effmz).lt.epsilon(effmz))) then
       call cafelsqp(cequi, effmy, 0.5*effn, ht, bw,&
-                    enrobyi, enrobys, wmaxyi, wmaxys,&
-                    ferrcomp, ferrsyme, slsyme, uc, um,&
-                    kt, facier, fbeton, eys, sigelsqp, phiyi, phiys,&
-                    dnsyi, dnsys, sigmsyi, sigmsys, sigmcyi, sigmcys,&
-                    alphay, pivoty, etaty,&
-                    wfinyi, wfinys, kvarfy, ierr)
-      if (ierr.ne.0) then 
-          goto 998
-      endif
-      call cafelsqp(cequi, effmz, 0.5*effn, bw, ht,&
                     enrobzi, enrobzs, wmaxzi, wmaxzs,&
                     ferrcomp, ferrsyme, slsyme, uc, um,&
                     kt, facier, fbeton, eys, sigelsqp, phizi, phizs,&
                     dnszi, dnszs, sigmszi, sigmszs, sigmczi, sigmczs,&
                     alphaz, pivotz, etatz,&
                     wfinzi, wfinzs, kvarfz, ierr)
+      if (ierr.ne.0) then 
+          goto 998
+      endif
+      call cafelsqp(cequi, effmz, 0.5*effn, bw, ht,&
+                    enrobyi, enrobys, wmaxyi, wmaxys,&
+                    ferrcomp, ferrsyme, slsyme, uc, um,&
+                    kt, facier, fbeton, eys, sigelsqp, phiyi, phiys,&
+                    dnsyi, dnsys, sigmsyi, sigmsys, sigmcyi, sigmcys,&
+                    alphay, pivoty, etaty,&
+                    wfinyi, wfinys, kvarfy, ierr)
       if (ierr.ne.0) then
           goto 998
       endif
@@ -229,12 +230,12 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
       !if (effmy.ne.0) then
       if (abs(effmy).gt.epsilon(effmy)) then
          call cafelsqp(cequi, effmy, effn, ht, bw,&
-                       enrobyi, enrobys, wmaxyi, wmaxys,&
+                       enrobzi, enrobzs, wmaxzi, wmaxzs,&
                        ferrcomp, ferrsyme, slsyme, uc, um,&
-                       kt, facier, fbeton, eys, sigelsqp, phiyi, phiys,&
-                       dnsyi, dnsys, sigmsyi, sigmsys, sigmcyi, sigmcys,&
-                       alphay, pivoty, etaty,&
-                       wfinyi, wfinys, kvarfy, ierr)
+                       kt, facier, fbeton, eys, sigelsqp, phizi, phizs,&
+                       dnszi, dnszs, sigmszi, sigmszs, sigmczi, sigmczs,&
+                       alphaz, pivotz, etatz,&
+                       wfinzi, wfinzs, kvarfz, ierr)
          if (ierr.ne.0) then 
              goto 998
          endif
@@ -244,12 +245,12 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
       !if (effmz.ne.0) then
       if (abs(effmz).gt.epsilon(effmz)) then
          call cafelsqp(cequi, effmz, effn, bw, ht,&
-                       enrobzi, enrobzs, wmaxzi, wmaxzs,&
+                       enrobyi, enrobys, wmaxyi, wmaxys,&
                        ferrcomp, ferrsyme, slsyme, uc, um,&
-                       kt, facier, fbeton, eys, sigelsqp, phizi, phizs,&
-                       dnszi, dnszs, sigmszi, sigmszs, sigmczi, sigmczs,&
-                       alphaz, pivotz, etatz,&
-                       wfinzi, wfinzs, kvarfz, ierr)
+                       kt, facier, fbeton, eys, sigelsqp, phiyi, phiys,&
+                       dnsyi, dnsys, sigmsyi, sigmsys, sigmcyi, sigmcys,&
+                       alphay, pivoty, etaty,&
+                       wfinyi, wfinys, kvarfy, ierr)
          if (ierr.ne.0) then
              goto 998
          endif
@@ -274,16 +275,23 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
         elseif (uc.eq.1) then
         unite_pa = 1.
         endif
+        if (um.eq.0) then
+        unite_m = 1.e3
+        elseif (um.eq.1) then
+        unite_m = 1.
+        endif
+        
         scmax = sigelsqp        
         scmaxneg = sigelsqp
 
         ssmaxy = kvarfy*facier
         ssmaxz = kvarfz*facier
         
-        d = ht - enrobyi
-        d0 = enrobys
-        dneg = ht - enrobys
-        d0neg = enrobyi
+        !Pour MFY
+        d = ht - enrobzi
+        d0 = enrobzs
+        dneg = ht - enrobzs
+        d0neg = enrobzi
 
         N_ET = 11
         N_PC = 101
@@ -297,10 +305,11 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
         call wkvect(pnrdy, ' V V R ', ntoty, vr=nrdy)
         call wkvect(pmrdy, ' V V R ', ntoty, vr=mrdy)
         
-        d = bw - enrobzi
-        d0 = enrobzs
-        dneg = bw - enrobzs
-        d0neg = enrobzi
+        !Pour MFZ        
+        d = bw - enrobyi
+        d0 = enrobys
+        dneg = bw - enrobys
+        d0neg = enrobyi
 
         N_PCAC = CEILING((N_PC-1)*(bw/d))+1
         N_PCACN = CEILING((N_PC-1)*(bw/dneg))+1
@@ -321,9 +330,9 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
            mrdy(s) = -1.0
            end do
            
-           call dintels(cequi, ht, bw, enrobyi, enrobys,&
-                        sigelsqp, sigelsqp, ssmaxy, uc,&
-                        dnsyi, dnsys, ntoty, nrdy, mrdy)
+           call dintels(cequi, ht, bw, enrobzi, enrobzs,&
+                        sigelsqp, sigelsqp, ssmaxz, uc,&
+                        dnszi, dnszs, ntoty, nrdy, mrdy)
            
            s = 1
            nrd0 = nrdy(s)
@@ -335,7 +344,12 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdy(s)-nrdy(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdy1 = ((mrdy(s)-mrdy(s-1))/(nrdy(s)-nrdy(s-1)))*(effn-nrdy(s-1))+mrdy(s-1)
+                else
+                mrdy1 = 0.5*(mrdy(s-1)+mrdy(s))
+                endif
            endif
            s = ndemiy+1
            nrd0 = nrdy(s)
@@ -347,7 +361,12 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdy(s)-nrdy(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdy2 = ((mrdy(s)-mrdy(s-1))/(nrdy(s)-nrdy(s-1)))*(effn-nrdy(s-1))+mrdy(s-1)
+                else
+                mrdy2 = 0.5*(mrdy(s-1)+mrdy(s))
+                endif
            endif
            if (effmy.gt.0.0) then
                mrdy1 = max(mrdy1,0.0)
@@ -366,9 +385,9 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
            mrdz(s) = -1.0
            end do
            
-           call dintels(cequi, bw, ht, enrobzi, enrobzs,&
-                        sigelsqp, sigelsqp, ssmaxz, uc,&
-                        dnszi, dnszs, ntotz, nrdz, mrdz)
+           call dintels(cequi, bw, ht, enrobyi, enrobys,&
+                        sigelsqp, sigelsqp, ssmaxy, uc,&
+                        dnsyi, dnsys, ntotz, nrdz, mrdz)
 
            s = 1
            nrd0 = nrdz(s)
@@ -380,7 +399,12 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdz(s)-nrdz(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdz1 = ((mrdz(s)-mrdz(s-1))/(nrdz(s)-nrdz(s-1)))*(effn-nrdz(s-1))+mrdz(s-1)
+                else
+                mrdz1 = 0.5*(mrdz(s-1)+mrdz(s))
+                endif
            endif
            s = ndemiz+1
            nrd0 = nrdz(s)
@@ -392,7 +416,12 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
                 BRES = 1.5
                 goto 999
            else
+                Calc = nrdz(s)-nrdz(s-1)
+                if (abs(Calc).gt.epsilon(Calc)) then
                 mrdz2 = ((mrdz(s)-mrdz(s-1))/(nrdz(s)-nrdz(s-1)))*(effn-nrdz(s-1))+mrdz(s-1)
+                else
+                mrdz2 = 0.5*(mrdz(s-1)+mrdz(s))
+                endif
            endif
            if (effmz.gt.0.0) then
                mrdz1 = max(mrdz1,0.0)
@@ -431,6 +460,9 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw,&
            
            COUNT_BRES = COUNT_BRES + 1
            if (BRES.gt.1) then
+               if (Ass.lt.epsilon(Ass)) then
+               Ass = (1.e2)/(unite_m*unite_m) 
+               endif
            Aiter = 0.10*Ass
            rhoyi = dnsyi/Ass
            rhoys = dnsys/Ass

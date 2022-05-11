@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,31 +17,20 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# AUTEUR : L. DALL OLIO (AlterEgo), L. PAONE (Kobe Innovation Engineering)
-#          VALIDATION DE COMBINAISON_FERRAILLAGE et CALC_FERRAILLAGE
-#
-#  DETAILS : MODELISATION DKT
-#            Mailles QUAD4
-#
-# - Based on analytical results of beam with one fixed support and point load
-#   on free ending.
-# - Computation with macr_elas_mult
-# - Applied loads for macr_elas_mult-shearLd2 is double than for shearLd1
-# - macr_elas_mult-shearLd2 must be the governing combination for density DNSYS
-#   that is X4 component for UT01_ELEM maked by COMBINAISON_FERRAILLAGE
-
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI',),
       ERREUR=_F(ERREUR_F='EXCEPTION'),
-      IGNORE_ALARM=(
-        'CALCULEL6_77',
-        'CALCULEL_79',
-        'RESULT3_4',
-        'CALCULEL_88',
-        'COMBFERR_9',
-        'ALGORITH12_74',
-    )
+      IGNORE_ALARM=()
 )
+
+#~ Units
+Pa = 1.E6
+MPa = 1
+mm = 1.E3
+m = 1
+#Le maillage est en mm
+#On retient donc des forces en N
+#et des contraintes en MPa
 
 mesh = LIRE_MAILLAGE(
     FORMAT = 'MED',
@@ -54,7 +43,7 @@ mesh = DEFI_GROUP(
     CREA_GROUP_NO = (
         _F(
             NOM = "N1",
-            INTERSEC = ('MED01','UPPER'),
+            INTERSEC = ('START','LOWER'),
         ),
         _F(
             NOM = "N2",
@@ -63,10 +52,29 @@ mesh = DEFI_GROUP(
     ),
 )
 
+mesh = DEFI_GROUP(
+    reuse = mesh,
+    MAILLAGE = mesh,
+    CREA_GROUP_MA = (
+        _F(
+            NOM = "BORD",
+            OPTION='SPHERE',
+            GROUP_NO_CENTRE='N2',
+            RAYON=0.00001,
+        ),
+        _F (
+            GROUP_MA="BORD",
+            NUME_INIT=3,
+            NUME_FIN=3,
+            NOM="EXTREMITE",
+        ),
+    ),
+)
+
 cls = DEFI_MATERIAU(
     ELAS =
         _F(
-            E = 30000.0,
+            E = 30000.0*MPa,
             NU = 0.3
     )
 )
@@ -95,7 +103,7 @@ elemprop = AFFE_CARA_ELEM(
     COQUE =
         _F(
             GROUP_MA = 'ELEMENTS',
-            EPAIS = 300.0,
+            EPAIS = 0.3*mm,
             VECTEUR = (0 , 0 , 1),
         )
 )
@@ -110,22 +118,22 @@ boundary = AFFE_CHAR_MECA(
             DX = 0.,
             DY = 0.,
             DZ = 0.,
-            # DRX = 0.,
+            DRX = 0.,
             DRY = 0.,
             DRZ = 0.
         ),
 )
 
+
+#Pour les forces on divise par 11 (nbr de noeuds)
+
 shearLd1 = AFFE_CHAR_MECA(
     MODELE=model,
     FORCE_NODALE = _F(
         GROUP_NO = (
-            #'MED01',
-            #'MED02',
-            #'MED03',
             'END',
         ),
-        FZ = -1500E+3/11 # -136.36E+3,
+        FZ = -1.5E+6/11,
     ),
 )
 
@@ -133,12 +141,19 @@ shearLd2 = AFFE_CHAR_MECA(
     MODELE=model,
     FORCE_NODALE = _F(
         GROUP_NO = (
-            #'MED01',
-            #'MED02',
-            #'MED03',
             'END',
         ),
-        FZ = -3000E+3/11 # -136.36E+3,
+        FZ = -3.0E+6/11,
+    ),
+)
+
+shearLd3 = AFFE_CHAR_MECA(
+    MODELE=model,
+    FORCE_NODALE = _F(
+        GROUP_NO = (
+            'END',
+        ),
+        FZ = -4.5E+6/11,
     ),
 )
 
@@ -146,12 +161,9 @@ tractLd1 = AFFE_CHAR_MECA(
     MODELE=model,
     FORCE_NODALE = _F(
         GROUP_NO = (
-            #'MED01',
-            #'MED02',
-            #'MED03',
             'END',
         ),
-        FY = +1500E+3/11
+        FY = +1.0E+6/11,
     ),
 )
 
@@ -159,12 +171,9 @@ tractLd2 = AFFE_CHAR_MECA(
     MODELE=model,
     FORCE_NODALE = _F(
         GROUP_NO = (
-            #'MED01',
-            #'MED02',
-            #'MED03',
             'END',
         ),
-        FY = +3000E+3/11
+        FY = +2.0E+6/11,
     ),
 )
 
@@ -172,25 +181,9 @@ tractLd3 = AFFE_CHAR_MECA(
     MODELE=model,
     FORCE_NODALE = _F(
         GROUP_NO = (
-            #'MED01',
-            #'MED02',
-            #'MED03',
             'END',
         ),
-        FY = +1000E+3/11
-    ),
-)
-
-tractLd4 = AFFE_CHAR_MECA(
-    MODELE=model,
-    FORCE_NODALE = _F(
-        GROUP_NO = (
-            #'MED01',
-            #'MED02',
-            #'MED03',
-            'END',
-        ),
-        FY = +2000E+3/11
+        FY = +3.0E+6/11,
     ),
 )
 
@@ -198,12 +191,9 @@ comprLd1 = AFFE_CHAR_MECA(
     MODELE=model,
     FORCE_NODALE = _F(
         GROUP_NO = (
-            #'MED01',
-            #'MED02',
-            #'MED03',
             'END',
         ),
-        FY = -1500E+3/11
+        FY = -1.5E+6/11,
     ),
 )
 
@@ -211,12 +201,9 @@ comprLd2 = AFFE_CHAR_MECA(
     MODELE=model,
     FORCE_NODALE = _F(
         GROUP_NO = (
-            #'MED01',
-            #'MED02',
-            #'MED03',
             'END',
         ),
-        FY = -3000E+3/11
+        FY = -3.0E+6/11,
     ),
 )
 
@@ -228,60 +215,54 @@ reslin = MACRO_ELAS_MULT (
     CAS_CHARGE = (
         _F(
                NOM_CAS = 'shearLd1',
-            SOUS_TITRE = 'nodal load FZ = -15E+3 [KN]',
+            SOUS_TITRE = 'nodal load FZ = -1.5E+3 [KN]',
              CHAR_MECA = shearLd1,
                 OPTION = 'SANS',
         ),
         _F(
                NOM_CAS = 'shearLd2',
-            SOUS_TITRE = 'nodal load FZ = -30E+3 [KN]',
+            SOUS_TITRE = 'nodal load FZ = -3.0E+3 [KN]',
              CHAR_MECA = shearLd2,
                 OPTION = 'SANS',
         ),
         _F(
+               NOM_CAS = 'shearLd3',
+            SOUS_TITRE = 'nodal load FZ = -4.5E+3 [KN]',
+             CHAR_MECA = shearLd3,
+                OPTION = 'SANS',
+        ),
+        _F(
                NOM_CAS = 'tractLd1',
-            SOUS_TITRE = 'nodal load FY = +15E+3 [KN]',
+            SOUS_TITRE = 'nodal load FY = +1.0E+3 [KN]',
              CHAR_MECA = tractLd1,
                 OPTION = 'SANS',
         ),
         _F(
                NOM_CAS = 'tractLd2',
-            SOUS_TITRE = 'nodal load FY = +30E+3 [KN]',
+            SOUS_TITRE = 'nodal load FY = +2.0E+3 [KN]',
              CHAR_MECA = tractLd2,
                 OPTION = 'SANS',
         ),
         _F(
                NOM_CAS = 'tractLd3',
-            SOUS_TITRE = 'nodal load FY = +10E+3 [KN]',
+            SOUS_TITRE = 'nodal load FY = +3.0E+3 [KN]',
              CHAR_MECA = tractLd3,
                 OPTION = 'SANS',
         ),
         _F(
-               NOM_CAS = 'tractLd4',
-            SOUS_TITRE = 'nodal load FY = +20E+3 [KN]',
-             CHAR_MECA = tractLd4,
-                OPTION = 'SANS',
-        ),
-        _F(
                NOM_CAS = 'comprLd1',
-            SOUS_TITRE = 'nodal load FY = -15E+3 [KN]',
+            SOUS_TITRE = 'nodal load FY = -1.5E+3 [KN]',
              CHAR_MECA = comprLd1,
                 OPTION = 'SANS',
         ),
         _F(
                NOM_CAS = 'comprLd2',
-            SOUS_TITRE = 'nodal load FY = -30E+3 [KN]',
+            SOUS_TITRE = 'nodal load FY = -3.0E+3 [KN]',
              CHAR_MECA = comprLd2,
                 OPTION = 'SANS',
         ),
     ),
 )
-
-# The field SIEF_ELGA means SIgma (stress) or EFfort (force or moment), per ELement at GAuss points.
-# The field SIEF_ELNO means SIgma (stress) or EFfort (force or moment), per ELement at NOde.
-# The fields DEPL and SIEF_ELGA are calculated even if we do not request it in CALC_CHAMP
-# [U2.01.05]
-#
 
 reslin = CALC_CHAMP(
          reuse = reslin,
@@ -318,52 +299,48 @@ postres = CALC_CHAMP(
      ),
 )
 
-#~ Units
-Pa = 1.
-MPa = 1.E6
-
 # Concrete properties
-fck = 35 * MPa
+fck = 35*MPa
 
 # Steel rebars properties
-E   = 210000 * MPa; # Young Modulus
-fyk = 450 * MPa
+E   = 210000*MPa; # Young Modulus
+fyk = 450*MPa
 
 ferrDatSlu = dict(
     TYPE_STRUCTURE = '2D',
     TOUT = 'OUI',
-    C_INF = 30,
-    C_SUP = 30,
+    C_INF = 0.02*mm,
+    C_SUP = 0.02*mm,
     FCK = fck,
     FYK = fyk,
     EYS = E,
-    TYPE_DIAGRAMME = 'B2',
+    TYPE_DIAGRAMME = 'B1',
     GAMMA_S_FOND = 1.15,
     GAMMA_C_FOND = 1.5,
     GAMMA_S_ACCI = 1.15,
     GAMMA_C_ACCI = 1.5,
-    SIGS_ELS = 0.8 * fyk,
-    SIGC_INF_ELS = 0.6 * fck,
-    SIGC_SUP_ELS = 0.6 * fck,
-    SIGC_ELS_QP = 0.45*fck,
+    SIGS_ELS = fyk,
+    SIGC_INF_ELS = fck,
+    SIGC_SUP_ELS = fck,
+    SIGC_ELS_QP = fck,
     ALPHA_E  =  15,
     CLASSE_ACIER = 'B',
     ALPHA_CC = 1.0 ,
-    UNITE_CONTRAINTE = 'Pa',
+    UNITE_CONTRAINTE = 'MPa',
     UNITE_DIMENSION = 'mm',
     FERR_SYME = 'NON',
     FERR_COMP = 'OUI',
     EPURE_CISA = 'NON',
     FERR_MIN = 'NON',
     RHO_ACIER = 7800.,
-    WMAX_INF = 0.4,
-    WMAX_SUP = 0.4,
-    KT = 0.6,
-    PHI_INF_X = 25.,
-    PHI_SUP_X = 25.,
-    PHI_INF_Y = 25.,
-    PHI_SUP_Y = 25.,
-    UTIL_COMPR = 'OUI',
+    WMAX_INF = 0.00025*mm,
+    WMAX_SUP = 0.0003*mm,
+    KT = 0.4,
+    PHI_INF_X = 0.020*mm,
+    PHI_SUP_X = 0.020*mm,
+    PHI_INF_Y = 0.025*mm,
+    PHI_SUP_Y = 0.025*mm,
+    UTIL_COMPR = 'NON',
 )
 
 reslin = COMBINAISON_FERRAILLAGE (
@@ -373,22 +350,20 @@ reslin = COMBINAISON_FERRAILLAGE (
     COMBINAISON = (
         _F (
             TYPE = 'ELU_FONDAMENTAL',
-            NOM_CAS = ('shearLd1','shearLd2')
-         ),
-        _F (
-            TYPE = 'ELU_ACCIDENTEL',
-            NOM_CAS = ('comprLd1','comprLd2')
+            NOM_CAS = ('shearLd3','tractLd3','comprLd2')
          ),
         _F (
             TYPE = 'ELS_CARACTERISTIQUE',
-            NOM_CAS = ('tractLd1','tractLd2')
+            NOM_CAS = ('shearLd2','tractLd2','comprLd1')
          ),
         _F (
             TYPE = 'ELS_QUASIPERMANENT',
-            NOM_CAS = ('tractLd3','tractLd4')
+            NOM_CAS = ('shearLd1','tractLd1')
          ),
     ),
-    AFFE = ( _F ( **ferrDatSlu ), ),
+    AFFE = (
+        _F ( **ferrDatSlu ),
+           ),
     )
 
 TEST_RESU(
@@ -399,10 +374,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              CRITERE='RELATIF',
              NOM_CMP='DZ',
-             GROUP_NO='N2',
-             VALE_CALC = -4.43388814175830E+01,
-             VALE_REFE = -4.43388814175830E+01,
-             PRECISION = 4.E-2,
+             GROUP_NO='Force',
+             VALE_CALC = -44.2370155093861,
+             VALE_REFE = -42.6,
+             PRECISION = 5.E-2,
              REFERENCE='ANALYTIQUE',
          ),
          _F(
@@ -411,10 +386,22 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              CRITERE='RELATIF',
              NOM_CMP='DZ',
-             GROUP_NO='N2',
-             VALE_CALC = -8.86777628351659E+01,
-             VALE_REFE = -8.86777628351659E+01,
-             PRECISION = 4.E-2,
+             GROUP_NO='Force',
+             VALE_CALC = -88.4740310187722,
+             VALE_REFE = -85.2,
+             PRECISION = 5.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'shearLd3',
+             NOM_CHAM = 'DEPL',
+             CRITERE='RELATIF',
+             NOM_CMP='DZ',
+             GROUP_NO='Force',
+             VALE_CALC = -132.71104652815833,
+             VALE_REFE = -127.8,
+             PRECISION = 5.E-2,
              REFERENCE='ANALYTIQUE',
          ),
          _F(
@@ -422,11 +409,11 @@ TEST_RESU(
              NOM_CAS = 'tractLd1',
              NOM_CHAM = 'DEPL',
              CRITERE='RELATIF',
-             NOM_CMP='DZ',
-             GROUP_NO='N1',
-             VALE_CALC = -2.52251848040595E-02,
-             VALE_REFE = -2.52251848040595E-02,
-             PRECISION = 4.E-2,
+             NOM_CMP='DY',
+             GROUP_NO='Force',
+             VALE_CALC = 0.43695605394995746,
+             VALE_REFE = 0.44,
+             PRECISION = 5.E-2,
              REFERENCE='ANALYTIQUE',
          ),
          _F(
@@ -434,11 +421,47 @@ TEST_RESU(
              NOM_CAS = 'tractLd2',
              NOM_CHAM = 'DEPL',
              CRITERE='RELATIF',
-             NOM_CMP='DZ',
-             GROUP_NO='N1',
-             VALE_CALC = -5.04503696081190E-02,
-             VALE_REFE = -5.04503696081190E-02,
-             PRECISION = 4.E-2,
+             NOM_CMP='DY',
+             GROUP_NO='Force',
+             VALE_CALC = 0.8739121078999149,
+             VALE_REFE = 0.89,
+             PRECISION = 5.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'tractLd3',
+             NOM_CHAM = 'DEPL',
+             CRITERE='RELATIF',
+             NOM_CMP='DY',
+             GROUP_NO='Force',
+             VALE_CALC = 1.3108681618498716,
+             VALE_REFE = 1.33,
+             PRECISION = 5.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'comprLd1',
+             NOM_CHAM = 'DEPL',
+             CRITERE='RELATIF',
+             NOM_CMP='DY',
+             GROUP_NO='Force',
+             VALE_CALC = -0.6554340809249358,
+             VALE_REFE = -0.67,
+             PRECISION = 5.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'comprLd2',
+             NOM_CHAM = 'DEPL',
+             CRITERE='RELATIF',
+             NOM_CMP='DY',
+             GROUP_NO='Force',
+             VALE_CALC = -1.3108681618498716,
+             VALE_REFE = -1.33,
+             PRECISION = 5.E-2,
              REFERENCE='ANALYTIQUE',
          ),
      ),
@@ -451,10 +474,10 @@ TEST_RESU(
              NOM_CAS = 'shearLd1',
              NOM_CHAM = 'FERRAILLAGE',
              CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 5.72702539722572E-07,
-             VALE_REFE = 5.72702539722572E-07,
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 1.7693320535570094,
+             VALE_REFE = 1.7693320535570094,
              PRECISION = 4.E-2,
              REFERENCE='ANALYTIQUE',
          ),
@@ -463,10 +486,22 @@ TEST_RESU(
              NOM_CAS = 'shearLd2',
              NOM_CHAM = 'FERRAILLAGE',
              CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 1.14540507944514E-06,
-             VALE_REFE = 1.14540507944514E-06,
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 1.559402372922043,
+             VALE_REFE = 1.559402372922043,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'shearLd3',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 2.510024618691071,
+             VALE_REFE = 2.510024618691071,
              PRECISION = 4.E-2,
              REFERENCE='ANALYTIQUE',
          ),
@@ -475,10 +510,10 @@ TEST_RESU(
              NOM_CAS = 'tractLd1',
              NOM_CHAM = 'FERRAILLAGE',
              CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 1.08820767110885E-06,
-             VALE_REFE = 1.08820767110885E-06,
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 0.044884222179109694,
+             VALE_REFE = 0.044884222179109694,
              PRECISION = 4.E-2,
              REFERENCE='ANALYTIQUE',
          ),
@@ -487,10 +522,10 @@ TEST_RESU(
              NOM_CAS = 'tractLd2',
              NOM_CHAM = 'FERRAILLAGE',
              CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 2.17641534221769E-06,
-             VALE_REFE = 2.17641534221769E-06,
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 0.04475597860911716,
+             VALE_REFE = 0.04475597860911716,
              PRECISION = 4.E-2,
              REFERENCE='ANALYTIQUE',
          ),
@@ -499,22 +534,10 @@ TEST_RESU(
              NOM_CAS = 'tractLd3',
              NOM_CHAM = 'FERRAILLAGE',
              CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 7.27550544157707E-07,
-             VALE_REFE = 7.27550544157707E-07,
-             PRECISION = 4.E-2,
-             REFERENCE='ANALYTIQUE',
-         ),
-         _F(
-             RESULTAT=reslin,
-             NOM_CAS = 'tractLd4',
-             NOM_CHAM = 'FERRAILLAGE',
-             CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 1.45510108831541E-06,
-             VALE_REFE = 1.45510108831541E-06,
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 0.07203952622695935,
+             VALE_REFE = 0.07203952622695935,
              PRECISION = 4.E-2,
              REFERENCE='ANALYTIQUE',
          ),
@@ -523,10 +546,10 @@ TEST_RESU(
              NOM_CAS = 'comprLd1',
              NOM_CHAM = 'FERRAILLAGE',
              CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 0.00000000000000E+00,
-             VALE_REFE = 0.00000000000000E+00,
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 0.05047299448329401,
+             VALE_REFE = 0.05047299448329401,
              PRECISION = 4.E-2,
              REFERENCE='ANALYTIQUE',
          ),
@@ -535,10 +558,10 @@ TEST_RESU(
              NOM_CAS = 'comprLd2',
              NOM_CHAM = 'FERRAILLAGE',
              CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 0.00000000000000E+00,
-             VALE_REFE = 0.00000000000000E+00,
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 0.1083222315864857,
+             VALE_REFE = 0.1083222315864857,
              PRECISION = 4.E-2,
              REFERENCE='ANALYTIQUE',
          ),
@@ -547,10 +570,22 @@ TEST_RESU(
              NOM_CAS = 'COMB_DIME_ACIER',
              NOM_CHAM = 'FERRAILLAGE',
              CRITERE='RELATIF',
-             NOM_CMP='DNSYI',
-             MAILLE='M530',
-             VALE_CALC = 2.17641534221769E-06,
-             VALE_REFE = 2.17641534221769E-06,
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 2.510024618691071,
+             VALE_REFE = 2.510024618691071,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'COMB_DIME_ORDRE',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSXI',
+             GROUP_MA='EXTREMITE',
+             VALE_CALC = 3.0,
+             VALE_REFE = 3.0,
              PRECISION = 4.E-2,
              REFERENCE='ANALYTIQUE',
          ),

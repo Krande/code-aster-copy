@@ -144,7 +144,7 @@ implicit none
 
 !   INITIALISATION DU CODE RETOUR
     ierr = 0
-    etat = 0
+    etat = 1
     pivot = 0
     alpha = -1000
     dnssup = -1
@@ -247,7 +247,6 @@ implicit none
     endif 
     V = Ecu/Ec2
     COEF = (1 - (V/ht)*yC)
-    !if (COEF.ne.0) then
     if (abs(COEF).gt.epsilon(COEF)) then
     VAR_COEF = Abs(COEF)/COEF
     else
@@ -266,7 +265,7 @@ implicit none
 !!!--------------------------------------------------------------------------
 !!!--------------------------------------------------------------------------
 
-    if ((effm.eq.0) .and. (effn.ge.0)) then
+    if ((abs(effm).lt.epsilon(effm)) .and. (effn.ge.0)) then
 
          etat = 7
          pivot = 3
@@ -323,7 +322,7 @@ implicit none
          AsCOMP = (0.5*(effn - NccMAX))/SigmAsCOMP
          endif
 
-    elseif ((effm.eq.0) .and. (effn.lt.0)) then
+    elseif ((abs(effm).lt.epsilon(effm)) .and. (effn.lt.0)) then
 
          etat = 2
          pivot = 1

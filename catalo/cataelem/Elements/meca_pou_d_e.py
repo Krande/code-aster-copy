@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -153,6 +153,13 @@ ESTRAUX = LocatedComponents(phys=PHY.STRX_R, type='ELGA', location='RIGI',
 
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
                             components=('VARI',))
+
+##AJOUT POUR COMBINAISON_FERRAILLAGE
+ENEU1_R  = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
+                             components=('X1',))
+
+ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELEM',
+                             components=('X[30]',))
 
 
 MVECTUC = ArrayOfComponents(phys=PHY.VDEP_C, locatedComponents=NDEPLAC)
@@ -557,7 +564,8 @@ class MECA_POU_D_E(Element):
         ),
 
         OP.TOU_INI_ELEM(te=99,
-            para_out=( (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
+            para_out=( (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),(SP.PNEU1_R, ENEU1_R),
+                       (OP.TOU_INI_ELEM.PNEUT_F, ELNEUT_F),),
         ),
 
         OP.TOU_INI_ELGA(te=99,

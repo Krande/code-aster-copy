@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -181,8 +181,8 @@ implicit none
     integer :: ierr
     
 !! AUTRES VARIABLES
-    real(kind=8) :: shear, reinf, stirrups
-
+    real(kind=8) :: shear, reinf, stirrups, Calc
+  
   if (typcmb.eq.0) then
 
         call glbelu(typco, alphacc, effrts, ht, bw,&
@@ -217,8 +217,9 @@ implicit none
 !   ----------------------------------------------
 !
     if (rhoacier.gt.0) then
-        dnsvol = rhoacier*(dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)+dnsits(5)*ht)/(ht*bw)
-        if (dnsits(5).eq.-1.d0) then
+        dnsvol = rhoacier*(dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)+dnsits(5)*max(ht,bw))/(ht*bw)
+        Calc = dnsits(5)+1.d0
+        if (abs(Calc).lt.epsilon(Calc)) then
 !           Vrai uniquement pour le calcul du ferraillage transversal au BAEL
 !           (pour lequel les aciers d'effort tranchant ne sont pas calculés)
             dnsvol = rhoacier*((dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)))/(ht*bw)
