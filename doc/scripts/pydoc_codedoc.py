@@ -6,6 +6,23 @@ Python files with the same docstrings.
 It defines a specialized renderer based on `pydoc` ones.
 """
 
+# pydoc_codedoc Copyright 2022 Mathieu Courtois <mathieu.courtois.at.gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Lesser General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <https://www.gnu.org/licenses/>.
+
+# Python and pydoc are provided under the terms of the Python License, Version 2,
+# Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation.
+
 import builtins
 import inspect
 import re
@@ -25,7 +42,13 @@ from pydoc import (
 )
 
 
-class PyRenderer(TextDoc):
+# The code of 'CodeDoc' is a copy from 'TextDoc' with the less changes as
+# possible to easily be updated with newer versions.
+#
+# Changes are commented by '# CodeDoc:'
+
+
+class CodeDoc(TextDoc):
     """Subclass `pydoc.TextDoc` renderer to generate equivalent Python code
     (only signature and docstring) from pybind11 objects.
 
@@ -33,9 +56,7 @@ class PyRenderer(TextDoc):
     files, without compiling huge pybind11 extension.
     """
 
-    # Changes are commented by '# PyRenderer:'
-
-    # PyRenderer: as for _PlainTextDoc
+    # CodeDoc: as for _PlainTextDoc
     def bold(self, text):
         return text
 
@@ -48,7 +69,7 @@ class PyRenderer(TextDoc):
         def makename(c, m=object.__module__):
             return classname(c, m)
 
-        # PyRenderer: declare class + hide inheriting from pybind11
+        # CodeDoc: declare class + hide inheriting from pybind11
         title = "class " + self.bold(realname)
         if bases:
             parents = map(makename, bases)
@@ -69,7 +90,7 @@ class PyRenderer(TextDoc):
             if argspec and argspec != "()":
                 push(name + argspec + "\n")
 
-        # PyRenderer: as multilines string
+        # CodeDoc: as multilines string
         doc = _format_doc(getdoc(object) or "")
         if doc:
             push(doc + "\n")
@@ -77,13 +98,13 @@ class PyRenderer(TextDoc):
         # List the mro, if non-trivial.
         mro = deque(inspect.getmro(object))
         if len(mro) > 2:
-            # PyRenderer: keep as comment
+            # CodeDoc: keep as comment
             push("# Method resolution order:")
             for base in mro:
                 push("#     " + makename(base))
             push("")
 
-        # PyRenderer: keep as comment
+        # CodeDoc: keep as comment
         # Cute little class to pump out a horizontal rule between sections.
         class HorizontalRule:
             def __init__(self):
@@ -98,10 +119,10 @@ class PyRenderer(TextDoc):
 
         def spill(msg, attrs, predicate):
             ok, attrs = _split_list(attrs, predicate)
-            # PyRenderer: ignore inherited objects
+            # CodeDoc: ignore inherited objects
             if ok and not _inherited_from(msg):
                 hr.maybe()
-                # PyRenderer: keep as comment
+                # CodeDoc: keep as comment
                 push("# " + msg)
                 for name, kind, homecls, value in ok:
                     try:
@@ -116,7 +137,7 @@ class PyRenderer(TextDoc):
 
         def spilldescriptors(msg, attrs, predicate):
             ok, attrs = _split_list(attrs, predicate)
-            # PyRenderer: ignore inherited objects
+            # CodeDoc: ignore inherited objects
             if ok and not _inherited_from(msg):
                 hr.maybe()
                 push("# " + msg)
@@ -128,7 +149,7 @@ class PyRenderer(TextDoc):
             ok, attrs = _split_list(attrs, predicate)
             if ok:
                 hr.maybe()
-                # PyRenderer: keep as comment
+                # CodeDoc: keep as comment
                 push("# " + msg)
                 for name, kind, homecls, value in ok:
                     if callable(value) or inspect.isdatadescriptor(value):
@@ -139,7 +160,7 @@ class PyRenderer(TextDoc):
                         obj = getattr(object, name)
                     except AttributeError:
                         obj = homecls.__dict__[name]
-                    # PyRenderer: do not export data, except pybind11 Enums
+                    # CodeDoc: do not export data, except pybind11 Enums
                     if hasattr(obj, "name") and hasattr(obj, "value"):
                         if obj.name not in builtins.__dict__:
                             push(obj.name + " = " + str(obj.value) + "\n")
@@ -185,7 +206,7 @@ class PyRenderer(TextDoc):
         contents = "\n".join(contents)
         if not contents:
             return title + "\n"
-        # PyRenderer: only spaces
+        # CodeDoc: only spaces
         return title + "\n" + self.indent(contents.rstrip(), "    ") + "\n"
 
     def docroutine(self, object, name=None, mod=None, cl=None):
@@ -204,20 +225,20 @@ class PyRenderer(TextDoc):
                     note = " method of %s instance" % classname(object.__self__.__class__, mod)
                 else:
                     note = " unbound %s method" % classname(imclass, mod)
-        # PyRenderer: skipped
+        # CodeDoc: skipped
         # exception for "method of builtins.PyCapsule" as created by pybind
         if note and "method of builtins.PyCapsule" not in note:
             return ""
         note = ""
 
-        # PyRenderer: just keep the name
+        # CodeDoc: just keep the name
         if True or name == realname:
             title = self.bold(realname)
         else:
             if cl and inspect.getattr_static(cl, realname, []) is object:
                 skipdocs = 1
             title = self.bold(name) + " = " + realname
-        # PyRenderer: declare routine
+        # CodeDoc: declare routine
         title = "def " + title
         argspec = None
 
@@ -237,7 +258,7 @@ class PyRenderer(TextDoc):
         if not argspec:
             argspec = "(...)"
 
-        # PyRenderer: search for argspec from pybind11 docstring
+        # CodeDoc: search for argspec from pybind11 docstring
         if skipdocs:
             doc = ""
         else:
@@ -258,7 +279,7 @@ class PyRenderer(TextDoc):
         results = []
         push = results.append
 
-        # PyRenderer: define properties
+        # CodeDoc: define properties
         # why docproperty is not called?
         if name:
             if name in ("__weakref__",):
@@ -275,7 +296,7 @@ class PyRenderer(TextDoc):
         return "".join(results)
 
 
-# PyRenderer: add helper functions
+# CodeDoc: add helper functions
 def _inherited_from(msg):
     """use to ignore inherited methods"""
     return "inherited from" in msg
@@ -332,7 +353,7 @@ def _format_doc(doc):
     return doc
 
 
-renderer = PyRenderer()
+renderer = CodeDoc()
 
 
 def get_python_code(name):

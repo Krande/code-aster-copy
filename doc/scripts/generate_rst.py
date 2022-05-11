@@ -21,8 +21,6 @@ import os
 import os.path as osp
 from collections import OrderedDict
 
-from pydoc_pyrenderer import get_python_code
-
 SECTIONS = ("DataStructure", "GenericMaterialProperty")
 
 automodule_block = """.. automodule:: {0}

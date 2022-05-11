@@ -7,7 +7,7 @@ import sys
 
 sys.path.insert(0, osp.dirname(__file__))
 
-from pydoc_pyrenderer import get_python_code
+from pydoc_codedoc import get_python_code
 
 
 def build_pylibaster(filename):
