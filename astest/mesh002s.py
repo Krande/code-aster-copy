@@ -114,9 +114,9 @@ for mesh_file in meshes:
     MPI.COMM_WORLD.Barrier()
 
 
-list_nb_mesh = {2: 524, 3: 497, 4: 488}
-list_nb_mesh_conv = {2: 523, 3: 492, 4: 487}
-list_nb_conv_error = {2: 21, 3: 9, 4: 14}
+list_nb_mesh = {2: 524, 3: 496, 4: 488}
+list_nb_mesh_conv = {2: 523, 3: 491, 4: 487}
+list_nb_conv_error = {2: 21, 3: 8, 4: 14}
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)

@@ -83,7 +83,7 @@ timeFieldEndStep = disc_comp.createTimeField(value)
 res = disc_comp.computeTangentStiffnessMatrix(
     disp, disp_incr, stress, internVar, timeFieldBeginStep, timeFieldEndStep
 )
-matrElem = res[5]
+matrElem = res[2]
 
 # Assemblying
 matrAsseRef = ASSE_MATRICE(
@@ -98,11 +98,11 @@ fieldResuRefe = RESOUDRE(MATR=matrAsseRef, CHAM_NO=zero, CHAM_CINE=kinematicFiel
 res1 = disc_comp.computeTangentStiffnessMatrix(
     disp, disp_incr, stress, internVar, timeFieldBeginStep, timeFieldEndStep, ["CoucheHaut"]
 )
-matrElem1 = res1[5]
+matrElem1 = res1[2]
 res2 = disc_comp.computeTangentStiffnessMatrix(
     disp, disp_incr, stress, internVar, timeFieldBeginStep, timeFieldEndStep, ["CoucheBas"]
 )
-matrElem2 = res2[5]
+matrElem2 = res2[2]
 
 # Assemblying
 matrAsseComb = ASSE_MATRICE(
