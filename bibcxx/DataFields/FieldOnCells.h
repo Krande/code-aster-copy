@@ -453,7 +453,7 @@ class FieldOnCells : public DataField {
                 continue;
 
             ASTERINTEGER nel = ( *descr )[adress];
-            auto liel = collec->getObject( i + 1 );
+            auto liel = ( *collec )[i + 1];
 
             if ( normType == "NORM_1" ) {
                 for ( auto p = 0; p < nel; p++ ) {
@@ -563,12 +563,8 @@ bool FieldOnCells< ValueType >::printMedFile( const std::string fileName, bool l
 
     cmdSt.define( dict );
 
-    try {
-        ASTERINTEGER op = 39;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 39;
+    CALL_EXECOP( &op );
 
     return true;
 };

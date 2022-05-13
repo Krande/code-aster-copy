@@ -176,12 +176,9 @@ class ConstantFieldOnCells : public DataField {
         }
 
         const std::string limano( " " );
-        try {
-            CALLO_NOCARTC( getName(), &code, &tVerif1, grp, mode, &nma, limano, &( *limanu )[0],
-                           _FEDesc->getName() );
-        } catch ( ... ) {
-            throw;
-        }
+
+        CALLO_NOCARTC( getName(), &code, &tVerif1, grp, mode, &nma, limano, &( *limanu )[0],
+                       _FEDesc->getName() );
     };
 
     void fortranAddValues( const ASTERINTEGER &code, const std::string &grp,
@@ -209,20 +206,14 @@ class ConstantFieldOnCells : public DataField {
             feDescName = _FEDesc->getName();
 
         const std::string limano( " " );
-        try {
-            CALLO_NOCARTC( getName(), &code, &tVerif1, grp, mode, &nma, limano, &( *limanu )[0],
-                           feDescName );
-        } catch ( ... ) {
-            throw;
-        }
+
+        CALLO_NOCARTC( getName(), &code, &tVerif1, grp, mode, &nma, limano, &( *limanu )[0],
+                       feDescName );
     };
 
     void fortranAllocate( const std::string base, const std::string quantity ) {
-        try {
-            CALLO_ALCART( base, getName(), _mesh->getName(), quantity );
-        } catch ( ... ) {
-            throw;
-        }
+
+        CALLO_ALCART( base, getName(), _mesh->getName(), quantity );
     };
 
   public:
@@ -456,11 +447,11 @@ class ConstantFieldOnCells : public DataField {
             return ConstantFieldOnZone( _mesh, GroupOfCellsPtr( new GroupOfCells( name ) ) );
         } else if ( code == 3 ) {
             const auto numGrp = ( *_descriptor )[4 + 2 * position];
-            const auto &object = _listOfMeshCells->getObject( numGrp );
+            const auto &object = ( *_listOfMeshCells )[numGrp];
             return ConstantFieldOnZone( _mesh, object.toVector() );
         } else if ( code == -3 ) {
             const auto numGrp = ( *_descriptor )[4 + 2 * position];
-            const auto &object = _listOfMeshCells->getObject( numGrp );
+            const auto &object = ( *_listOfMeshCells )[numGrp];
             return ConstantFieldOnZone( _FEDesc, object.toVector() );
         } else
             throw std::runtime_error( "Error in ConstantFieldOnCells" );

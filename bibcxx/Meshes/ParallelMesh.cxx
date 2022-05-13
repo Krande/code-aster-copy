@@ -161,7 +161,7 @@ VectorLong ParallelMesh::getCells( const std::string name ) const {
         return VectorLong();
     }
 
-    VectorLong cells = _groupsOfCells->getObjectFromName( name ).toVector();
+    VectorLong cells = ( *_groupsOfCells )[name].toVector();
     for ( auto &cell : cells )
         cell -= 1;
     return cells;
@@ -177,7 +177,7 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
         CALL_JEDEMA();
         return VectorLong();
     } else {
-        listOfNodes = _groupsOfNodes->getObjectFromName( name ).toVector();
+        listOfNodes = ( *_groupsOfNodes )[name].toVector();
         for ( auto &node : listOfNodes )
             node -= 1;
     }
@@ -242,7 +242,7 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
     for ( auto &cellId : cellsId ) {
         const auto cell = connecExp[cellId];
         for ( auto &node : cell )
-            nodes.insert( node-1 );
+            nodes.insert( node - 1 );
     }
 
     if ( same_rank != PythonBool::None ) {

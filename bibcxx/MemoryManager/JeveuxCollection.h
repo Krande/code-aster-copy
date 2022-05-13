@@ -31,373 +31,11 @@
 #include "astercxx.h"
 
 #include "MemoryManager/JeveuxAllowedTypes.h"
+#include "MemoryManager/JeveuxCollectionObject.h"
 #include "MemoryManager/JeveuxObject.h"
 #include "MemoryManager/JeveuxString.h"
 #include "MemoryManager/NamesMap.h"
-#include "Utilities/Blas.h"
 #include "Utilities/Tools.h"
-
-/**
- * @class JeveuxCollectionObject
- * @brief Cette classe template permet de definir un objet de collection Jeveux
- * @author Nicolas Sellenet
- */
-template < class ValueType >
-class JeveuxCollectionObject : private AllowedJeveuxType< ValueType > {
-  private:
-    /** @brief Nom Jeveux de la collection */
-    std::string _collectionName;
-    /** @brief Position dans la collection */
-    ASTERINTEGER _numberInCollection;
-    /** @brief Nom de l'objet de collection */
-    std::string _nameOfObject;
-    /** @brief Pointeur vers le vecteur Jeveux */
-    ValueType *_valuePtr;
-    /** @brief Longueur du vecteur Jeveux */
-    ASTERINTEGER _size;
-    /** @brief Adresse du vecteur Jeveux */
-    ASTERINTEGER _jeveuxAdress;
-
-    /**
-     * @brief Allocation
-     */
-    std::string getJeveuxName() const {
-        std::string charJeveuxName( 32, ' ' );
-        ASTERINTEGER num = _numberInCollection;
-        CALLO_JEXNUM( charJeveuxName, _collectionName, &num );
-
-        return charJeveuxName;
-    }
-
-    /**
-     * @brief Allocation
-     */
-    void allocate( const ASTERINTEGER &size ) {
-        ASTERINTEGER taille = size, ibid = 0;
-
-        std::string nameOfObject( "" );
-        if ( _nameOfObject != "" )
-            nameOfObject = _nameOfObject;
-        else
-            ibid = _numberInCollection;
-
-        CALLO_JUCROC_WRAP( _collectionName, nameOfObject, &ibid, &taille, (void *)( &_valuePtr ) );
-
-        ASTERINTEGER valTmp;
-        JeveuxChar8 param( "IADM" );
-        std::string charval = std::string( 32, ' ' );
-        auto charJeveuxName = getJeveuxName();
-        CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
-        _jeveuxAdress = valTmp;
-    };
-
-  public:
-    /**
-     * @brief Constructeur
-     * @param collectionName Nom de collection
-     * @param number Numero de l'objet dans la collection
-     * @param objectName Nom de l'objet de collection
-     */
-    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
-                            bool isNamed, bool exists_ )
-        : _collectionName( collectionName ),
-          _numberInCollection( number ),
-          _nameOfObject( "" ),
-          _valuePtr( nullptr ),
-          _size( 0 ),
-          _jeveuxAdress( 0 ) {
-        if ( !exists_ )
-            return;
-
-        std::string charJeveuxName = getJeveuxName();
-        if ( !exists() )
-            throw std::runtime_error( "Error in collection object " + _collectionName );
-        std::string collectionObjectName( 32, ' ' );
-        if ( isNamed ) {
-            CALLO_JENUNO( charJeveuxName, collectionObjectName );
-            _nameOfObject = trim( std::string( collectionObjectName ) );
-        }
-
-        ASTERINTEGER valTmp;
-        JeveuxChar8 param( "LONMAX" );
-        std::string charval = std::string( 32, ' ' );
-        CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
-        _size = valTmp;
-
-        updateValuePointer();
-    };
-
-    /**
-     * @brief Constructeur
-     * @param collectionName Nom de collection
-     * @param number Numero de l'objet dans la collection
-     */
-    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
-                            const ASTERINTEGER &size )
-        : _collectionName( collectionName ),
-          _numberInCollection( number ),
-          _nameOfObject( "" ),
-          _valuePtr( nullptr ),
-          _size( size ),
-          _jeveuxAdress( 0 ) {
-        allocate( size );
-    };
-
-    /**
-     * @brief Constructeur
-     * @param collectionName Nom de collection
-     * @param number Numero de l'objet dans la collection
-     * @param objectName Nom de l'objet de collection
-     */
-    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
-                            const std::string &objectName, const ASTERINTEGER &size )
-        : _collectionName( collectionName ),
-          _numberInCollection( number ),
-          _nameOfObject( trim( objectName ) ),
-          _valuePtr( nullptr ),
-          _size( size ),
-          _jeveuxAdress( 0 ) {
-        allocate( size );
-    };
-
-    struct const_iterator {
-        ASTERINTEGER position;
-        const ValueType &valuePtr;
-
-        inline const_iterator( ASTERINTEGER memoryPosition, const ValueType &val )
-            : position( memoryPosition ), valuePtr( val ){};
-
-        inline const_iterator( const const_iterator &iter )
-            : position( iter.position ), valuePtr( iter.valuePtr ){};
-
-        inline const_iterator &operator=( const const_iterator &testIter ) {
-            position = testIter.position;
-            valuePtr = testIter.valuePtr;
-            return *this;
-        };
-
-        inline const_iterator &operator++() {
-            ++position;
-            return *this;
-        };
-
-        inline bool operator==( const const_iterator &testIter ) const {
-            if ( testIter.position != position )
-                return false;
-            return true;
-        };
-
-        inline bool operator!=( const const_iterator &testIter ) const {
-            if ( testIter.position != position )
-                return true;
-            return false;
-        };
-
-        inline const ValueType &operator->() const { return ( &valuePtr )[position]; };
-
-        inline const ValueType &operator*() const { return ( &valuePtr )[position]; };
-    };
-
-    /**
-     * @brief
-     */
-    const_iterator begin() const { return const_iterator( 0, *_valuePtr ); };
-
-    /**
-     * @brief
-     * @todo revoir le fonctionnement du end car il peut provoquer de segfault
-     */
-    const_iterator end() const { return const_iterator( _size, *_valuePtr ); };
-
-    /**
-     * @brief test de l'existance
-     * @return true si l'objet existe
-     */
-    bool exists() {
-        std::string charval = getJeveuxName();
-        ASTERINTEGER iret = 0;
-        CALLO_JEEXIN( charval, &iret );
-        if ( iret == 0 )
-            return false;
-
-        return true;
-    };
-
-    /**
-     * @brief Mise a jour du pointeur Jeveux
-     * @return true si la mise a jour s'est bien passee
-     */
-    void updateValuePointer() {
-        _valuePtr = NULL;
-        bool ok = true;
-        if ( !exists() )
-            ok = false;
-
-        if ( ok ) {
-            const std::string read( "L" );
-            std::string charJeveuxName = getJeveuxName();
-            CALLO_JEVEUOC( charJeveuxName, read, (void *)( &_valuePtr ) );
-            if ( _valuePtr == NULL )
-                ok = false;
-
-            ASTERINTEGER valTmp;
-            JeveuxChar8 param( "IADM" );
-            std::string charval = std::string( 32, ' ' );
-            CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
-            _jeveuxAdress = valTmp;
-        }
-
-        if ( !ok ) {
-            throw std::bad_alloc();
-        }
-    };
-
-    inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
-#ifdef ASTER_DEBUG_CXX
-        AS_ASSERT( _valuePtr != nullptr );
-        if ( i < 0 && i >= this->size() ) {
-            std::string error = "Out of range of JeveuxCollectionObject '" + getStringName() +
-                                "', index = " + std::to_string( i ) +
-                                " ( size = " + std::to_string( this->size() ) + " )";
-            throw std::out_of_range( error );
-        }
-#endif
-
-        return _valuePtr[i];
-    };
-
-    JeveuxChar32 getName() const { return JeveuxChar32( _nameOfObject ); };
-
-    const std::string &getStringName() const { return _nameOfObject; };
-
-    bool hasMoved() const {
-        std::string charJeveuxName = getJeveuxName();
-
-        ASTERINTEGER valTmp;
-        JeveuxChar8 param( "IADM" );
-        std::string charval = std::string( 32, ' ' );
-        CALLO_JELIRA( charJeveuxName, param, &valTmp, charval );
-        if ( valTmp != _jeveuxAdress )
-            return true;
-        return false;
-    };
-
-    /** @brief Set values of collection object */
-    void setValues( const std::vector< ValueType > &toCopy ) {
-        if ( toCopy.size() != size() )
-            throw std::runtime_error( "Sizes do not match" );
-        ASTERINTEGER pos = 0;
-        for ( const auto &val : toCopy ) {
-            _valuePtr[pos] = val;
-            ++pos;
-        }
-    };
-
-    /** @brief Set values of collection object */
-    void setValues( const ValueType &toCopy ) {
-        if ( size() != 1 )
-            throw std::runtime_error( "Sizes do not match" );
-        _valuePtr[0] = toCopy;
-    };
-
-    /** @brief Get size of collection object */
-    ASTERINTEGER size() const { return _size; };
-
-    /** @brief Get capacity of collection object */
-    ASTERINTEGER capacity() const { return _size; };
-
-    /** @brief Convert to std::vector */
-    std::vector< ValueType > toVector() const {
-        if ( _valuePtr == nullptr )
-            throw std::runtime_error( "Pointer is null" );
-        std::vector< ValueType > toReturn;
-        toReturn.reserve( size() );
-        for ( ASTERINTEGER i = 0; i < size(); ++i )
-            toReturn.push_back( _valuePtr[i] );
-        return toReturn;
-    };
-
-    bool operator==( JeveuxCollectionObject< ValueType > &toCompar ) const {
-        if ( this->size() != toCompar.size() )
-            return false;
-
-        auto size = this->size();
-        for ( ASTERINTEGER i = 0; i < size; size++ ) {
-            if ( this->operator[]( i ) != toCompar[i] )
-                return false;
-        }
-
-        return true;
-    };
-
-    /** @brief checks whether the container is empty */
-    bool empty() const {
-        if ( this->size() == 0 )
-            return true;
-
-        return false;
-    }
-
-    /**
-     * @brief Return a pointer to the vector
-     */
-    ValueType *getDataPtr() { return _valuePtr; };
-
-    /**
-     * @brief Return a pointer to the vector
-     */
-    const ValueType *getDataPtr() const { return _valuePtr; };
-
-    /**
-     * @brief TimesEqual overloading
-     * @return Updated JeveuxVector
-     */
-    JeveuxCollectionObject< ValueType > &operator*=( const ValueType &scal ) {
-        const auto size = this->size();
-
-        AsterBLAS::scal( size, scal, getDataPtr(), ASTERINTEGER( 1 ) );
-
-        return *this;
-    };
-
-    /** @brief overload << operator */
-    friend std::ostream &operator<<( std::ostream &os,
-                                     const JeveuxCollectionObject< ValueType > &toPrint ) {
-        os << "JeveuxCollectionObject: " << toPrint.getStringName() << "\n";
-        os << "Size: " << std::to_string( toPrint.size() )
-           << ", and capacity: " << std::to_string( toPrint.capacity() ) << ".\n";
-
-        const auto size = toPrint.size();
-        os << "List of values: \n";
-        os << "( ";
-        for ( auto i = 0; i < size - 1; i++ ) {
-            os << toPrint[i] << ", ";
-        }
-        os << toPrint[size - 1] << " )"
-           << "\n";
-
-        return os;
-    }
-};
-
-/** @typedef Definition d'un objet de collection de type entier long */
-typedef JeveuxCollectionObject< ASTERINTEGER > JeveuxCollectionObjectLong;
-/** @typedef Definition d'un objet de collection de type entier court */
-typedef JeveuxCollectionObject< ASTERINTEGER4 > JeveuxCollectionObjectShort;
-/** @typedef Definition d'un objet de collection de type double */
-typedef JeveuxCollectionObject< ASTERDOUBLE > JeveuxCollectionObjectReal;
-/** @typedef Definition d'un objet de collection de type double complex */
-typedef JeveuxCollectionObject< ASTERCOMPLEX > JeveuxCollectionObjectComplex;
-/** @typedef Definition d'un objet de collection de JeveuxChar8 */
-typedef JeveuxCollectionObject< JeveuxChar8 > JeveuxCollectionObjectChar8;
-/** @typedef Definition d'un objet de collection de JeveuxChar16 */
-typedef JeveuxCollectionObject< JeveuxChar16 > JeveuxCollectionObjectChar16;
-/** @typedef Definition d'un objet de collection de JeveuxChar24 */
-typedef JeveuxCollectionObject< JeveuxChar24 > JeveuxCollectionObjectChar24;
-/** @typedef Definition d'un objet de collection de JeveuxChar32 */
-typedef JeveuxCollectionObject< JeveuxChar32 > JeveuxCollectionObjectChar32;
-/** @typedef Definition d'un objet de collection de JeveuxChar80 */
-typedef JeveuxCollectionObject< JeveuxChar80 > JeveuxCollectionObjectChar80;
 
 /**
  * @enum JeveuxCollectionAccessType
@@ -497,13 +135,16 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         CALLO_JECREC( _name, carac, typeColl1, typeColl2, typeColl3, &taille );
         _isEmpty = false;
         if ( storage == Contiguous ) {
-            if ( totalSize <= 0 )
-                throw std::runtime_error(
-                    "Total size of a contiguous collection must be grower than 0" );
+            if ( totalSize <= 0 ) {
+                AS_ABORT( "Total size of a contiguous collection must be grower than 0" );
+            }
             std::string strParam( "LONT" );
             taille = totalSize;
             CALLO_JEECRA_WRAP( _name, strParam, &taille );
         }
+
+        _listObjects.reserve( _size );
+
         return true;
     };
 
@@ -584,13 +225,29 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      */
     template < typename T1 = AccessType, typename = IsNotSame< T1, ASTERINTEGER > >
     typename std::enable_if< !std::is_same< T1, ASTERINTEGER >::value, bool >::type
-    allocate( ASTERINTEGER size, JeveuxCollectionObjectSizes objectSizes = Variable ) {
+    allocateSparseNamed( ASTERINTEGER size, JeveuxCollectionObjectSizes objectSizes = Variable ) {
         if ( !_namesMap->exists() )
             _namesMap->allocate( size );
-        if ( _namesMap->capacity() != size )
-            throw std::runtime_error( "Sizes do not match" );
+
+        if ( _namesMap->capacity() != size ) {
+            AS_ABORT( "Sizes do not match: " + std::to_string( size ) + " vs " +
+                      std::to_string( _namesMap->capacity() ) );
+        }
 
         return genericAllocation( size, Named, Sparse, objectSizes, _namesMap->getName() );
+    };
+
+    /**
+     * @brief Allocation
+     * @param size number of objets in collection
+     * @param access type of access
+     * @param objectSizes size of objects (constant or variable)
+     */
+    template < typename T1 = AccessType, typename = IsSame< T1, ASTERINTEGER > >
+    typename std::enable_if< std::is_same< T1, ASTERINTEGER >::value, bool >::type
+    allocateSparseNumbered( ASTERINTEGER size,
+                            JeveuxCollectionObjectSizes objectSizes = Variable ) {
+        return genericAllocation( size, Numbered, Sparse, objectSizes, "" );
     };
 
     /**
@@ -601,28 +258,18 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      */
     template < typename T1 = AccessType, typename = IsNotSame< T1, ASTERINTEGER > >
     typename std::enable_if< !std::is_same< T1, ASTERINTEGER >::value, bool >::type
-    allocateContiguous( ASTERINTEGER size, ASTERINTEGER totalSize,
-                        JeveuxCollectionObjectSizes objectSizes = Variable ) {
+    allocateContiguousNamed( ASTERINTEGER size, ASTERINTEGER totalSize,
+                             JeveuxCollectionObjectSizes objectSizes = Variable ) {
         if ( !_namesMap->exists() )
             _namesMap->allocate( size );
-        if ( _namesMap->capacity() != size )
-            throw std::runtime_error( "Sizes do not match" );
+
+        if ( _namesMap->capacity() != size ) {
+            AS_ABORT( "Sizes do not match: " + std::to_string( size ) + " vs " +
+                      std::to_string( _namesMap->capacity() ) );
+        }
 
         return genericAllocation( size, Named, Contiguous, objectSizes, _namesMap->getName(),
                                   totalSize );
-    };
-
-    /**
-     * @brief Allocation
-     * @param size number of objets in collection
-     * @param access type of access
-     * @param objectSizes size of objects (constant or variable)
-     */
-    template < typename T1 = AccessType, typename = IsSame< T1, ASTERINTEGER > >
-    typename std::enable_if< std::is_same< T1, ASTERINTEGER >::value, bool >::type
-    allocate( ASTERINTEGER size, JeveuxCollectionAccessType access = Named,
-              JeveuxCollectionObjectSizes objectSizes = Variable ) {
-        return genericAllocation( size, access, Sparse, objectSizes, "" );
     };
 
     /**
@@ -634,34 +281,62 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      */
     template < typename T1 = AccessType, typename = IsSame< T1, ASTERINTEGER > >
     typename std::enable_if< std::is_same< T1, ASTERINTEGER >::value, bool >::type
-    allocateContiguous( ASTERINTEGER size, ASTERINTEGER totalSize,
-                        JeveuxCollectionAccessType access = Named,
-                        JeveuxCollectionObjectSizes objectSizes = Variable ) {
-        return genericAllocation( size, access, Contiguous, objectSizes, "", totalSize );
+    allocateContiguousNumbered( ASTERINTEGER size, ASTERINTEGER totalSize,
+                                JeveuxCollectionObjectSizes objectSizes = Variable ) {
+        return genericAllocation( size, Numbered, Contiguous, objectSizes, "", totalSize );
     };
 
     /**
      * @brief Allocation of one object by name
      */
-    bool allocateObjectByName( const std::string &name, const ASTERINTEGER &size ) {
-        if ( _listObjects.size() == _size )
-            throw std::runtime_error( "Out of collection bounds" );
+    JeveuxCollObjValType allocateObject( const std::string &name, const ASTERINTEGER &size ) {
+        if ( _listObjects.size() == _size ) {
+            AS_ABORT( "Out of collection bounds: " + std::to_string( _size ) + " vs " +
+                      std::to_string( _listObjects.size() ) );
+        }
 
         _mapNumObject[std::string( trim( name.c_str() ) )] = _listObjects.size();
-        _listObjects.push_back(
-            JeveuxCollObjValType( _name, _listObjects.size() + 1, name, size ) );
-        return true;
+
+        JeveuxCollObjValType obj( _name, _listObjects.size() + 1, name, size );
+
+        _listObjects.push_back( obj );
+        return obj;
+    };
+
+    /**
+     * @brief Allocation of one object by name
+     */
+    JeveuxCollObjValType allocateObject( const std::string &name,
+                                         const std::vector< ValueType > &values ) {
+        auto obj = allocateObject( name, values.size() );
+        obj.setValues( values );
+
+        return obj;
     };
 
     /**
      * @brief Allocation of one object at the end of a existing collection
      */
-    bool allocateObject( const ASTERINTEGER &size ) {
-        if ( _listObjects.size() == _size )
-            throw std::runtime_error( "Out of collection bounds" );
+    JeveuxCollObjValType allocateObject( const ASTERINTEGER &size ) {
+        if ( _listObjects.size() == _size ) {
+            AS_ABORT( "Out of collection bounds: " + std::to_string( _size ) + " vs " +
+                      std::to_string( _listObjects.size() ) );
+        }
 
-        _listObjects.push_back( JeveuxCollObjValType( _name, _listObjects.size() + 1, size ) );
-        return true;
+        JeveuxCollObjValType obj( _name, _listObjects.size() + 1, size );
+
+        _listObjects.push_back( obj );
+        return obj;
+    };
+
+    /**
+     * @brief Allocation of one object at the end of a existing collection
+     */
+    JeveuxCollObjValType allocateObject( const std::vector< ValueType > &values ) {
+        auto obj = allocateObject( values.size() );
+        obj.setValues( values );
+
+        return obj;
     };
 
     /**
@@ -701,50 +376,66 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
 
     const std::vector< JeveuxCollObjValType > &getVectorOfObjects() const { return _listObjects; };
 
-    const JeveuxCollObjValType &getObject( const ASTERINTEGER &position ) const {
-        if ( _isEmpty )
-            throw std::runtime_error( "Collection not built" );
+    inline const JeveuxCollObjValType &operator[]( const ASTERINTEGER &position ) const {
+#ifdef ASTER_DEBUG_CXX
+        if ( _isEmpty ) {
+            AS_ABORT( "Collection not built: " + _name );
+        }
 
-        if ( position > ASTERINTEGER( _listObjects.size() ) || position <= 0 )
-            throw std::runtime_error( "Out of collection bounds" );
-
+        if ( position > ASTERINTEGER( _listObjects.size() ) || position <= 0 ) {
+            AS_ABORT( "Out of collection bounds: " + std::to_string( position ) + " vs " +
+                      std::to_string( _listObjects.size() ) );
+        }
+#endif
         return _listObjects[position - 1];
     };
 
-    JeveuxCollObjValType &getObject( const ASTERINTEGER &position ) {
-        if ( _isEmpty )
-            throw std::runtime_error( "Collection not built" );
+    inline JeveuxCollObjValType &operator[]( const ASTERINTEGER &position ) {
+#ifdef ASTER_DEBUG_CXX
+        if ( _isEmpty ) {
+            AS_ABORT( "Collection not built: " + _name );
+        }
 
-        if ( position > ASTERINTEGER( _listObjects.size() ) || position <= 0 )
-            throw std::runtime_error( "Out of collection bounds" );
-
+        if ( position > ASTERINTEGER( _listObjects.size() ) || position <= 0 ) {
+            AS_ABORT( "Out of collection bounds: " + std::to_string( position ) + " vs " +
+                      std::to_string( _listObjects.size() ) );
+        }
+#endif
         return _listObjects[position - 1];
     };
 
-    const JeveuxCollObjValType &getObjectFromName( const std::string &name ) const {
-        if ( _isEmpty )
-            throw std::runtime_error( "Collection not built" );
+    inline const JeveuxCollObjValType &operator[]( const std::string &name ) const {
+#ifdef ASTER_DEBUG_CXX
+        if ( _isEmpty ) {
+            AS_ABORT( "Collection not built: " + _name );
+        }
 
-        if ( !_isNamed )
-            throw std::runtime_error( "Collection " + _name + " is not named" );
-
+        if ( !_isNamed ) {
+            AS_ABORT( "Collection " + _name + " is not named" );
+        }
+#endif
         const auto &curIter = _mapNumObject.find( trim( name ) );
-        if ( curIter == _mapNumObject.end() )
-            throw std::runtime_error( "Name not in collection" );
+        if ( curIter == _mapNumObject.end() ) {
+            AS_ABORT( "Name not in collection: " + name );
+        }
 
         return _listObjects[curIter->second];
     };
 
-    JeveuxCollObjValType &getObjectFromName( const std::string &name ) {
-        if ( _isEmpty )
-            throw std::runtime_error( "Collection not built" );
+    inline JeveuxCollObjValType &operator[]( const std::string &name ) {
+#ifdef ASTER_DEBUG_CXX
+        if ( _isEmpty ) {
+            AS_ABORT( "Collection not built: " + _name );
+        }
 
-        if ( !_isNamed )
-            throw std::runtime_error( "Collection " + _name + " is not named" );
-
+        if ( !_isNamed ) {
+            AS_ABORT( "Collection " + _name + " is not named" );
+        }
+#endif
         const auto &curIter = _mapNumObject.find( trim( name ) );
-        if ( curIter == _mapNumObject.end() )
-            throw std::runtime_error( "Name not in collection" );
+        if ( curIter == _mapNumObject.end() ) {
+            AS_ABORT( "Name not in collection: " + name );
+        }
 
         return _listObjects[curIter->second];
     };
@@ -752,6 +443,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     ASTERINTEGER size() const {
         if ( _isEmpty )
             return -1;
+
         return _listObjects.size();
     };
 
@@ -805,6 +497,7 @@ template < class ValueType, class AccessType >
 bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
     ASTERINTEGER iret = 0;
     CALLO_JEEXIN( _name, &iret );
+
     if ( iret == 0 )
         return false;
 
@@ -836,12 +529,15 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
         _isNamed = true;
 
     for ( ASTERINTEGER i = 1; i <= nbColObj; ++i ) {
-        if ( !existsObject( i ) )
+        if ( !existsObject( i ) ) {
             _listObjects.push_back( JeveuxCollObjValType( _name, i, _isNamed, false ) );
-        else
+        } else {
             _listObjects.push_back( JeveuxCollObjValType( _name, i, _isNamed, true ) );
-        if ( _isNamed )
+        }
+
+        if ( _isNamed ) {
             _mapNumObject[trim( _listObjects[_listObjects.size() - 1].getStringName() )] = i - 1;
+        }
     }
     _isEmpty = false;
     return true;
@@ -865,6 +561,7 @@ bool JeveuxCollectionClass< ValueType, AccessType >::existsObject(
     ASTERINTEGER returnBool = number;
     CALLO_JEXNUM( charJeveuxName, _name, &returnBool );
     CALLO_JEEXIN( charJeveuxName, &returnBool );
+
     if ( returnBool == 0 )
         return false;
     return true;
@@ -894,7 +591,6 @@ class JeveuxCollection {
     JeveuxCollectionTypePtr _jeveuxCollectionPtr;
 
   public:
-
     JeveuxCollection() : _jeveuxCollectionPtr( nullptr ) {}
 
     /**

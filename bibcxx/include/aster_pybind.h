@@ -80,7 +80,7 @@ struct type_caster< JeveuxCollection< T > > {
             return pylist.inc_ref();
         }
         for ( int i = 0; i < coll->size(); ++i ) {
-            const auto &obj = coll->getObject( i + 1 );
+            const auto &obj = ( *coll )[i + 1];
             py::list items;
             for ( int j = 0; j < obj.size(); ++j ) {
                 items.append( obj[j] );

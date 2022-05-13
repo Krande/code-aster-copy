@@ -182,7 +182,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             std::string error = "Out of range of JeveuxVector '" + _name +
                                 "', index = " + std::to_string( i ) +
                                 " ( size = " + std::to_string( this->size() ) + " )";
-            throw std::out_of_range( error );
+            AS_ABORT( error );
         }
 #endif
         return _valuePtr[i];
@@ -200,7 +200,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             std::string error = "Out of range of JeveuxVector '" + _name +
                                 "', index = " + std::to_string( i ) +
                                 " ( size = " + std::to_string( this->size() ) + " )";
-            throw std::out_of_range( error );
+            AS_ABORT( error );
         }
 #endif
         return _valuePtr[i];
@@ -223,9 +223,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             if ( _valuePtr == NULL )
                 ret = false;
         }
-        if ( !ret ) {
-            throw std::bad_alloc();
-        }
+
+        AS_ASSERT( ret );
+
         updateValuePointer();
     };
 
@@ -352,9 +352,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
                 ok = false;
         }
 
-        if ( !ok ) {
-            throw std::bad_alloc();
-        }
+        AS_ASSERT( ok );
     };
 
     /** @brief Convert to std::vector */
@@ -624,7 +622,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         const auto size = this->size();
 
         if ( size != vect.size() ) {
-            throw std::runtime_error( "Incompatible sizes" );
+            AS_ABORT( "Incompatible sizes: " + std::to_string( size ) + " vs " +
+                      std::to_string( vect.size() ) );
         }
 
         for ( auto i = 0; i < size; i++ ) {
@@ -665,7 +664,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         const auto size = this->size();
 
         if ( size != vect.size() ) {
-            throw std::runtime_error( "Incompatible sizes" );
+            AS_ABORT( "Incompatible sizes: " + std::to_string( size ) + " vs " +
+                      std::to_string( vect.size() ) );
         }
 
         for ( auto i = 0; i < size; i++ ) {

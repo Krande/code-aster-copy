@@ -117,6 +117,8 @@ bool ContactNew::build() {
             }
 #endif
             if ( nb_doublNodes > 0 ) {
+                for(auto& node: doublNodes)
+                    std::cout << node << std::endl;
                 UTMESS( "F", "CONTACT1_3" );
             }
         }

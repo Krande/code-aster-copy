@@ -189,13 +189,12 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         *( _joins ) = unique( joins );
 
         // Allocation du .NEMA
-        _delayedNumberedConstraintElementsDescriptor->allocateContiguous(
-            -nbElemToKeep, totalSizeToKeep - nbElemToKeep, Numbered );
+        _delayedNumberedConstraintElementsDescriptor->allocateContiguousNumbered(
+            -nbElemToKeep, totalSizeToKeep - nbElemToKeep );
 
         // Remplissage du .NEMA avec les elements tardifs a conserver
-        int posInCollection = 1;
         for ( int numElem : virtualCellToKeep ) {
-            const auto curElem = explorer[numElem-1];
+            const auto curElem = explorer[numElem - 1];
             VectorLong toCopy;
             for ( const auto &numNode : curElem ) {
                 if ( numNode > 0 ) {
@@ -204,11 +203,8 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
                     toCopy.push_back( -virtualNodesNumbering[-numNode - 1] - 1 );
                 }
             }
-            toCopy.push_back( explorer[numElem-1].getType() );
-            _delayedNumberedConstraintElementsDescriptor->allocateObject( toCopy.size() );
-            _delayedNumberedConstraintElementsDescriptor->getObject( posInCollection )
-                .setValues( toCopy );
-            ++posInCollection;
+            toCopy.push_back( explorer[numElem - 1].getType() );
+            _delayedNumberedConstraintElementsDescriptor->allocateObject( toCopy );
         }
 
         const auto &liel = FEDesc->getListOfGroupOfCellsExplorer();
@@ -232,17 +228,14 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
             }
         }
 
-        _listOfGroupOfCells->allocateContiguous( nbCollObj, totalCollSize + nbCollObj, Numbered );
-        posInCollection = 1;
+        _listOfGroupOfCells->allocateContiguousNumbered( nbCollObj, totalCollSize + nbCollObj );
         for ( const auto &vec : toLiel ) {
             if ( vec.size() != 0 ) {
-                _listOfGroupOfCells->allocateObject( vec.size() );
-                _listOfGroupOfCells->getObject( posInCollection ).setValues( vec );
-                ++posInCollection;
+                _listOfGroupOfCells->allocateObject( vec );
             }
         }
     } else
-        _listOfGroupOfCells->allocateContiguous( 1, 1, Numbered );
+        _listOfGroupOfCells->allocateContiguousNumbered( 1, 1 );
 
     // Remplissage du .NBNO avec le nouveau nombre de noeuds tardifs
     _numberOfDelayedNumberedConstraintNodes->allocate( 1 );

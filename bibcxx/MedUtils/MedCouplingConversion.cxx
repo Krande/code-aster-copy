@@ -75,7 +75,7 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
 
         auto aster_index = i + 1;
         auto type_med = ( *cells_types )[i];
-        auto nodes_med = med_connectivity->getObject( aster_index );
+        auto nodes_med = ( *med_connectivity )[aster_index];
 
         int mc_type = med_to_mc[type_med][0];
         int dim = med_to_mc[type_med][1];
@@ -96,7 +96,7 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
 
         // Passage entre numerotation globale aster et par dimension medcoupling
         auto sz = corresponding_cells[dim].size();
-        corresponding_cells[dim][aster_index-1] = sz;
+        corresponding_cells[dim][aster_index - 1] = sz;
     }
 
     // Tri des groupes d'éléments tojours par dimension

@@ -83,7 +83,7 @@ VectorLong Mesh::getCells( const std::string name ) const {
     } else if ( !hasGroupOfCells( name ) ) {
         return VectorLong();
     }
-    VectorLong cells = _groupsOfCells->getObjectFromName( name ).toVector();
+    VectorLong cells = ( *_groupsOfCells )[name].toVector();
     for ( auto &cell : cells )
         cell -= 1;
     return cells;
@@ -95,7 +95,7 @@ VectorLong Mesh::getNodes( const std::string name, const bool, const ASTERINTEGE
     } else if ( !hasGroupOfNodes( name ) ) {
         return VectorLong();
     }
-    VectorLong nodes = _groupsOfNodes->getObjectFromName( name ).toVector();
+    VectorLong nodes = ( *_groupsOfNodes )[name].toVector();
     for ( auto &node : nodes )
         node -= 1;
     return nodes;
@@ -118,7 +118,7 @@ VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const AS
     for ( auto &cellId : cellsId ) {
         const auto cell = connecExp[cellId];
         for ( auto &node : cell )
-            auto ret = nodes.insert( node-1 );
+            auto ret = nodes.insert( node - 1 );
     }
 
     CALL_JEDEMA();

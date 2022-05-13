@@ -3,7 +3,7 @@
  * @brief Implementation de PhysicalQuantityManager
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,8 +21,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_fort_utils.h"
 #include "Modeling/PhysicalQuantityManager.h"
+
+#include "aster_fort_utils.h"
 
 PhysicalQuantityManager::PhysicalQuantityManager()
     : _nameOfCmp( JeveuxCollectionChar8( "&CATA.GD.NOMCMP" ) ),
@@ -31,7 +32,7 @@ PhysicalQuantityManager::PhysicalQuantityManager()
 const JeveuxCollectionObjectChar8 &
 PhysicalQuantityManager::getComponentNames( const ASTERINTEGER &quantityNumber ) const {
     _nameOfCmp->build();
-    return _nameOfCmp->getObject( quantityNumber );
+    return ( *_nameOfCmp )[quantityNumber];
 };
 
 ASTERINTEGER
@@ -42,8 +43,7 @@ PhysicalQuantityManager::getNumberOfEncodedInteger( const ASTERINTEGER &quantity
 };
 
 std::string
-PhysicalQuantityManager::getPhysicalQuantityName( const ASTERINTEGER &quantityNumber ) const
-    {
+PhysicalQuantityManager::getPhysicalQuantityName( const ASTERINTEGER &quantityNumber ) const {
     if ( quantityNumber <= 0 || quantityNumber > _nameOfPhysicalQuantity->size() )
         throw std::runtime_error( "Not a known physical quantity" );
     return _nameOfPhysicalQuantity->getStringFromIndex( quantityNumber );

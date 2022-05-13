@@ -72,14 +72,14 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
 
     std::string base( "G" );
     ASTERINTEGER nbCells = listOfCells.size();
-    for ( auto &cell : listOfCells)
+    for ( auto &cell : listOfCells )
         cell += 1;
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
 };
 
 FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
                                                   const VectorString &groupOfCells )
-    : FiniteElementDescriptor( model->getFiniteElementDescriptor() , groupOfCells ) {
+    : FiniteElementDescriptor( model->getFiniteElementDescriptor(), groupOfCells ) {
     setModel( model );
 }
 
@@ -239,7 +239,7 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
             auto cellId = ( *cellsLocNum )[i] - 1;
             auto numGrel = ( *otherRepe )[2 * cellId];
             if ( numGrel > 0 ) {
-                auto &grel = otherLiel->getObject( numGrel );
+                auto &grel = ( *otherLiel )[numGrel];
                 auto typeFE = grel[grel.size() - 1];
                 typeCellFE.push_back( typeFE );
             } else {
@@ -290,12 +290,9 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
         totalSize += grel.size();
     }
 
-    _listOfGroupOfCells->allocateContiguous( listOfGrel.size(), totalSize, Numbered );
-    int posInCollection = 1;
+    _listOfGroupOfCells->allocateContiguousNumbered( listOfGrel.size(), totalSize );
     for ( auto &grel : listOfGrel ) {
-        _listOfGroupOfCells->allocateObject( grel.size() );
-        _listOfGroupOfCells->getObject( posInCollection ).setValues( grel );
-        ++posInCollection;
+        _listOfGroupOfCells->allocateObject( grel );
     }
 };
 

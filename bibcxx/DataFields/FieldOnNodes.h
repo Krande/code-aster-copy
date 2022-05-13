@@ -574,12 +574,8 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName, bool l
 
     cmdSt.define( dict );
 
-    try {
-        ASTERINTEGER op = 39;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 39;
+    CALL_EXECOP( &op );
 
     return true;
 };

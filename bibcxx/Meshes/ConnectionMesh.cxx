@@ -245,7 +245,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     /* Get cells lying on nodes */
     for ( auto i = 0; i < numberOfNodesToSend; i++ ) {
         const auto nodeId = nodesToSend[i];
-        const auto listCells = connecInv->getObject( nodeId + 1 ).toVector();
+        const auto listCells = ( *connecInv )[nodeId + 1].toVector();
 
         for ( const auto cell : listCells ) {
             const auto cellId = cell - 1;
@@ -264,7 +264,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     for ( auto i = 0; i < numberOfNodesToCheck; i++ ) {
         const auto nodeId = nodesToCheck[i];
-        const auto listCells = connecInv->getObject( nodeId + 1 ).toVector();
+        const auto listCells = ( *connecInv )[nodeId + 1].toVector();
 
         for ( const auto cell : listCells ) {
             const auto cellId = cell - 1;
@@ -471,7 +471,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
 
     /* Add group of nodes */
     if ( groupsOfNodesToFind.size() > 0 ) {
-        _groupsOfNodes->allocate( groupsOfNodesToFind.size() );
+        _groupsOfNodes->allocateSparseNamed( groupsOfNodesToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfNodesToFind ) {
             const auto &toCopy = groupsOfNodesGathered[nameOfTheGroup];
@@ -485,8 +485,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
                 nodesOfGrp[i] = it->second + 1;
             }
 
-            _groupsOfNodes->allocateObjectByName( nameOfTheGroup, nbNodes );
-            _groupsOfNodes->getObjectFromName( nameOfTheGroup ).setValues( nodesOfGrp );
+            _groupsOfNodes->allocateObject( nameOfTheGroup, nodesOfGrp );
         }
     }
 
@@ -496,13 +495,12 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     _cellsOwner->allocate( totalNumberOfCells );
     _nameOfCells->allocate( totalNumberOfCells );
     _cellsType->allocate( totalNumberOfCells );
-    _connectivity->allocateContiguous( totalNumberOfCells, connectivitiesGathered.size(),
-                                       Numbered );
+    _connectivity->allocateContiguousNumbered( totalNumberOfCells, connectivitiesGathered.size() );
 
     ASTERINTEGER offset = 0;
     for ( auto i = 0; i < totalNumberOfCells; ++i ) {
         std::stringstream sstream;
-        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i+1;
+        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i + 1;
         _nameOfCells->add( i, std::string( "M" + sstream.str() ) );
         ( *_cellsType )[i] = connectivitiesGathered[offset++];
         ( *_cellsLocalNumbering )[i] = connectivitiesGathered[offset++] + 1;
@@ -521,14 +519,13 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
             listNodes[iNode] = it->second + 1;
         }
 
-        _connectivity->allocateObject( nbNodes );
-        _connectivity->getObject( i+1 ).setValues( listNodes );
+        _connectivity->allocateObject( listNodes );
     }
     connectivitiesGathered.clear();
 
     /* Add group of nodes */
     if ( groupsOfCellsToFind.size() > 0 ) {
-        _groupsOfCells->allocate( groupsOfCellsToFind.size() );
+        _groupsOfCells->allocateSparseNamed( groupsOfCellsToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfCellsToFind ) {
             const auto &toCopy = groupsOfCellsGathered[nameOfTheGroup];
@@ -545,8 +542,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
                 cellsOfGrp[i] = it->second + 1;
             }
 
-            _groupsOfCells->allocateObjectByName( nameOfTheGroup, nbCells );
-            _groupsOfCells->getObjectFromName( nameOfTheGroup ).setValues( cellsOfGrp );
+            _groupsOfCells->allocateObject( nameOfTheGroup, cellsOfGrp );
         }
     }
 
@@ -641,7 +637,7 @@ VectorLong ConnectionMesh::getCells( const std::string name ) const {
         return VectorLong();
     }
 
-    VectorLong cells = _groupsOfCells->getObjectFromName( name ).toVector();
+    VectorLong cells = ( *_groupsOfCells )[name].toVector();
     for ( auto &cell : cells )
         cell -= 1;
     return cells;
