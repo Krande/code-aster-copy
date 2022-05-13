@@ -73,7 +73,7 @@ class ThermalLoad : public DataStructure {
               getName() + ".CHTH", currentModel ) ),
           _type( getName() + ".TYPE" ){};
 
-    ThermalLoadDescription< ConstantFieldOnCellsType > getThermalLoadDescription() const {
+    ThermalLoadDescriptionPtr< ConstantFieldOnCellsType > getThermalLoadDescription() const {
         return _therLoadDesc;
     };
 

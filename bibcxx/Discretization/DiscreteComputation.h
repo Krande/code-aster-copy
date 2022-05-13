@@ -58,6 +58,8 @@ class DiscreteComputation {
                                         const FieldOnCellsRealPtr _externVarFieldPrev,
                                         const FieldOnCellsRealPtr _externVarFieldCurr,
                                         const VectorString &groupOfCells = VectorString() );
+    /** @brief Compute B elementary matrices fo dualized thermal boundary conditions */
+    void baseDualThermalMatrix( CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr );
 
   public:
     /** @typedef DiscreteComputationPtr */
@@ -109,12 +111,25 @@ class DiscreteComputation {
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
      * @param time Time
+     * @param groupofCells GROUP_MA
      * @return Elementary matrices for mechanical stiffness (RIGI_MECA)
      */
     ElementaryMatrixDisplacementRealPtr
     elasticStiffnessMatrix( const ASTERDOUBLE &time = 0.0, const ASTERINTEGER &modeFourier = 0,
                             const VectorString &groupOfCells = VectorString(),
                             const FieldOnCellsRealPtr _externVarField = nullptr );
+
+    /**
+     * @brief Compute elementary matrices for thermal model (RIGI_THER)
+     * @param time Time
+     * @param groupofCells GROUP_MA
+     * @return Elementary matrices for thermal model (RIGI_THER)
+     */
+    ElementaryMatrixTemperatureRealPtr
+    linearConductivityMatrix( const ASTERDOUBLE &time = 0.0, const ASTERDOUBLE &delta_time = 0.0,
+                              const ASTERINTEGER &modeFourier = 0,
+                              const VectorString &groupOfCells = VectorString(),
+                              const FieldOnCellsRealPtr _externVarField = nullptr );
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_MECA)
@@ -125,6 +140,18 @@ class DiscreteComputation {
     ElementaryMatrixDisplacementRealPtr
     massMatrix( const ASTERDOUBLE &time = 0.0, const VectorString &groupOfCells = VectorString(),
                 const FieldOnCellsRealPtr _externVarField = nullptr );
+    
+    /**
+     * @brief Compute elementary matrices for mass matrix (MASS_THER)
+     * @param time Time
+     * @param groupofCells GROUP_MA
+     * @return Elementary matrices for mass matrix (MASS_THER)
+     */
+    ElementaryMatrixTemperatureRealPtr
+    linearCapacityMatrix( const ASTERDOUBLE &time = 0.0,
+                          const VectorString &groupOfCells = VectorString(),
+                          const FieldOnCellsRealPtr _externVarField = nullptr );
+
     /**
      * @brief Compute elementary matrices for damping matrix (AMOR_MECA)
      * @param massMatrix Elementary matrices for mass matrix

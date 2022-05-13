@@ -119,6 +119,21 @@ void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE t
     addInputField( parameterName, _timeField );
 }
 
+/** @brief Create and add input field for current time */
+void Calcul::addTimeField( const ASTERDOUBLE &time, const ASTERDOUBLE &delta_time,
+                           const ASTERDOUBLE &theta, const ASTERDOUBLE &khi, const ASTERDOUBLE &r,
+                           const ASTERDOUBLE &rho ) {
+    auto _timeField = std::make_shared< ConstantFieldOnCellsReal >(
+        TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
+    const std::string physicalName( "INST_R" );
+    _timeField->allocate( physicalName );
+    ConstantFieldOnZone a( _mesh );
+    ConstantFieldValues< ASTERDOUBLE > b( { "INST", "DELTAT", "THETA", "KHI", "R", "RHO" },
+                                          { time, delta_time, theta, khi, r, rho } );
+    _timeField->setValueOnZone( a, b );
+    addInputField( "PTEMPSR", _timeField );
+}
+
 /** @brief Create and add input fields for XFEM */
 void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
     addInputField( "PPINTTO", xfemModel->getField( "PINTTO" ) );

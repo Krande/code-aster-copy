@@ -170,6 +170,11 @@ class Calcul {
     /** @brief Create and add input field for current time */
     void addTimeField( const std::string &parameterName, const ASTERDOUBLE time );
 
+    /** @brief Create and add input field for current time (for thermics) */
+    void addTimeField( const ASTERDOUBLE &time, const ASTERDOUBLE &delta_time,
+                       const ASTERDOUBLE &theta, const ASTERDOUBLE &khi, const ASTERDOUBLE &r,
+                       const ASTERDOUBLE &rho );
+                       
     /** @brief Create and add input fields for XFEM */
     void addXFEMField( const XfemModelPtr xfemModel );
 

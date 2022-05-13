@@ -112,7 +112,179 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     elemMatr->build();
     return elemMatr;
 };
+ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::massMatrix( const ASTERDOUBLE &time, const VectorString &groupOfCells,
+                                 const FieldOnCellsRealPtr _externVarField ) {
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
+    // Get main parameters
+    const std::string option( "MASS_MECA" );
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
 
+    // Check external state variables
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        if ( !_externVarField ) {
+            AS_ABORT( "External state variables vector is missing" )
+        }
+    }
+
+    // Set parameters of elementary matrix
+    elemMatr->setModel( currModel );
+    elemMatr->setMaterialField( currMater );
+    elemMatr->setElementaryCharacteristics( currElemChara );
+
+    // Check super-element
+    if ( currModel->existsSuperElement() ) {
+        std::string modelName = ljust( currModel->getName(), 8 );
+        CALLO_CHECKSUPERELEMENT( option, modelName );
+    }
+
+    // Prepare computing
+    auto _calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        _calcul->setModel( currModel );
+    } else {
+        _calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    elemMatr->prepareCompute( option );
+
+    // Add input fields
+    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    if ( currMater ) {
+        _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+    }
+    if ( _externVarField ) {
+        _calcul->addInputField( "PVARCPR", _externVarField );
+    }
+    if ( currElemChara ) {
+        _calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        _calcul->addXFEMField( currXfemModel );
+    }
+
+    // Add output elementary terms
+    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+
+    // Compute elementary matrices for mass
+    if ( currModel->existsFiniteElement() ) {
+        _calcul->compute();
+        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
+    };
+
+    elemMatr->build();
+    return elemMatr;
+};
+ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix,
+                                    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
+                                    const ASTERDOUBLE &time, const VectorString &groupOfCells,
+                                    const FieldOnCellsRealPtr _externVarField ) {
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
+    // Get main parameters
+    const std::string option( "AMOR_MECA" );
+    auto currModel = _phys_problem->getModel();
+    auto currMater = _phys_problem->getMaterialField();
+    auto currCodedMater = _phys_problem->getCodedMaterial();
+    auto currElemChara = _phys_problem->getElementaryCharacteristics();
+
+    // Check external state variables
+    if ( currMater && currMater->hasExternalStateVariable() ) {
+        if ( !_externVarField ) {
+            AS_ABORT( "External state variables vector is missing" )
+        }
+    }
+
+    // Set parameters of elementary matrix
+    elemMatr->setModel( currModel );
+    elemMatr->setMaterialField( currMater );
+    elemMatr->setElementaryCharacteristics( currElemChara );
+
+    // Check super-element
+    if ( currModel->existsSuperElement() ) {
+        std::string modelName = ljust( currModel->getName(), 8 );
+        CALLO_CHECKSUPERELEMENT( option, modelName );
+    }
+
+    // Prepare computing
+    auto _calcul = std::make_unique< Calcul >( option );
+    if ( groupOfCells.empty() ) {
+        _calcul->setModel( currModel );
+    } else {
+        _calcul->setGroupsOfCells( currModel, groupOfCells );
+    }
+
+    elemMatr->prepareCompute( option );
+
+    // Add input fields
+    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    if ( currMater ) {
+        _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+    }
+    if ( _externVarField ) {
+        _calcul->addInputField( "PVARCPR", _externVarField );
+    }
+    if ( currElemChara ) {
+        _calcul->addElementaryCharacteristicsField( currElemChara );
+    }
+
+    if ( massMatrix ) {
+        ElementaryTermRealPtr resuElemMass;
+        auto total_R_Mass = massMatrix->getElementaryTerms();
+        for ( auto &R_Mass : total_R_Mass ) {
+            if ( R_Mass->getFiniteElementDescriptor() == currModel->getFiniteElementDescriptor() ) {
+                resuElemMass = R_Mass;
+                break;
+            }
+        }
+        _calcul->addInputElementaryTerm( "PMASSEL", resuElemMass );
+    }
+
+    if ( stiffnessMatrix ) {
+        ElementaryTermRealPtr resuElemRigi;
+        auto total_R_Rigi = stiffnessMatrix->getElementaryTerms();
+        for ( auto &R_Rigi : total_R_Rigi ) {
+            if ( R_Rigi->getFiniteElementDescriptor() == currModel->getFiniteElementDescriptor() ) {
+                resuElemRigi = R_Rigi;
+                break;
+            }
+        }
+
+        if ( resuElemRigi->getPhysicalQuantity() == "MDNS_R" ) {
+            _calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi );
+        } else {
+            _calcul->addInputElementaryTerm( "PRIGIEL", resuElemRigi );
+        }
+    }
+
+    // Add output elementary terms
+    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+
+    // Compute elementary matrices for damping
+    if ( currModel->existsFiniteElement() ) {
+        _calcul->compute();
+        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
+    };
+
+    elemMatr->build();
+
+    return elemMatr;
+};
 void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
                                                    ElementaryMatrixDisplacementRealPtr &elemMatr ) {
 
