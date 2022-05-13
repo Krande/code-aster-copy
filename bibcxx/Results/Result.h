@@ -493,11 +493,9 @@ class Result : public DataStructure, public ListOfTables {
      */
     void resize( ASTERINTEGER nbRanks );
 
+    std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const;
 
-    std::vector<FiniteElementDescriptorPtr> getFiniteElementDescriptors() const;
-
-    std::vector<FieldOnNodesDescriptionPtr> getFieldOnNodesDescriptions() const;
-
+    std::vector< FieldOnNodesDescriptionPtr > getFieldOnNodesDescriptions() const;
 };
 
 /**

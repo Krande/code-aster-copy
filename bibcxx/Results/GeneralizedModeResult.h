@@ -26,10 +26,10 @@
 
 #include "astercxx.h"
 
-#include "Results/FullResult.h"
-#include "Supervis/ResultNaming.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
 #include "Numbering/GeneralizedDOFNumbering.h"
+#include "Results/FullResult.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class GeneralizedModeResult
@@ -53,15 +53,16 @@ class GeneralizedModeResult : public FullResult {
      * @todo  Ajouter les objets Jeveux de la SD
      */
     GeneralizedModeResult( const std::string &name )
-        : FullResult( name, "MODE_GENE" ), _rigidityRealMatrix( nullptr ),
-          _rigidityComplexMatrix( nullptr ), _genDOFNum( nullptr ){};
+        : FullResult( name, "MODE_GENE" ),
+          _rigidityRealMatrix( nullptr ),
+          _rigidityComplexMatrix( nullptr ),
+          _genDOFNum( nullptr ){};
 
     /**
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    GeneralizedModeResult()
-        : GeneralizedModeResult( ResultNaming::getNewResultName() ){};
+    GeneralizedModeResult() : GeneralizedModeResult( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Get GeneralizedDOFNumering
@@ -85,9 +86,7 @@ class GeneralizedModeResult : public FullResult {
      * @brief Get the damping matrix
      * @param matr GeneralizedAssemblyMatrixRealPtr
      */
-    GeneralizedAssemblyMatrixRealPtr getDampingMatrix( void ) const {
-        return _dampingMatrix;
-    };
+    GeneralizedAssemblyMatrixRealPtr getDampingMatrix( void ) const { return _dampingMatrix; };
 
     /**
      * @brief Set GeneralizedDOFNumering

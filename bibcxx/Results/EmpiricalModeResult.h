@@ -44,8 +44,7 @@ class EmpiricalModeResult : public Result {
     /**
      * @brief Constructeur
      */
-    EmpiricalModeResult( const std::string &name )
-        : Result( name, "MODE_EMPI" ){};
+    EmpiricalModeResult( const std::string &name ) : Result( name, "MODE_EMPI" ){};
 };
 
 /**

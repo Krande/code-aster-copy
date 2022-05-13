@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DataStructureNaming
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,8 +25,9 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <string>
 #include "MemoryManager/JeveuxObject.h"
+
+#include <string>
 
 /**
  * @class DataStructureNaming
@@ -38,11 +39,11 @@ class DataStructureNaming {
     /**
      * @brief Function membre getNewName
      */
-    static std::string getNewName( JeveuxMemory memoryType,
-                                   const int lengthName = 8 );
+    static std::string getNewName( JeveuxMemory memoryType, const int lengthName = 8 );
 
-    static std::string getNewName( const int lengthName = 8 )
-    { return getNewName(Permanent, lengthName) ; };
+    static std::string getNewName( const int lengthName = 8 ) {
+        return getNewName( Permanent, lengthName );
+    };
 };
 
 #endif /* DATASTRUCTURENAMING_H_ */

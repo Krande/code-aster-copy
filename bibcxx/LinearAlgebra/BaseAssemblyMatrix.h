@@ -127,7 +127,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @param Args... Liste d'arguments template
      */
     template < typename... Args >
-    void addLoad( const Args &...args ) {
+    void addLoad( const Args &... args ) {
         _listOfLoads->addLoad( args... );
     };
 

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxObject
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,12 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <string>
-
 #include "aster_fort_jeveux.h"
 #include "astercxx.h"
 #include "shared_vars.h"
 
+#include <string>
 
 /**
  * @enum JeveuxMemory
@@ -42,7 +41,7 @@ enum JeveuxMemory { Permanent, Temporary };
  * @def JeveuxMemoryTypesNames
  * @brief To give memory space of Jeveux object (string)
  */
-static const std::string JeveuxMemoryTypesNames[2] = { "G", "V" };
+static const std::string JeveuxMemoryTypesNames[2] = {"G", "V"};
 
 /**
  * @def JeveuxMemoryTypesNames
@@ -67,16 +66,15 @@ class JeveuxObjectClass {
      * @brief Constructeur
      * @param name Nom jeveux du vecteur
      */
-    JeveuxObjectClass( const std::string &nom)
-        : _name( nom ), _mem( Permanent ){};
+    JeveuxObjectClass( const std::string &nom ) : _name( nom ), _mem( Permanent ){};
 
     /**
      * @brief Destructeur
      */
     ~JeveuxObjectClass() {
-// #ifdef ASTER_DEBUG_CXX
-//         std::cout << "DEBUG: JeveuxObject.destr: " << _name << std::endl;
-// #endif
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "DEBUG: JeveuxObject.destr: " << _name << std::endl;
+        // #endif
         if ( _name != "" && get_sh_jeveux_status() == 1 ) {
             CALLO_JEDETR( _name );
         }

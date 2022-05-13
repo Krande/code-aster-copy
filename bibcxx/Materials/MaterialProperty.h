@@ -26,23 +26,22 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_utils.h"
+#include "astercxx.h"
+
+#include "DataFields/Table.h"
+#include "Functions/Formula.h"
+#include "Functions/Function.h"
+#include "Functions/Function2D.h"
+#include "Materials/BaseMaterialProperty.h"
+#include "MemoryManager/JeveuxVector.h"
+
 #include <iomanip>
 #include <map>
 #include <sstream>
 #include <string>
 
-#include "astercxx.h"
-#include "aster_utils.h"
-#include "Materials/BaseMaterialProperty.h"
-#include "DataFields/Table.h"
-#include "Functions/Formula.h"
-#include "Functions/Function.h"
-#include "Functions/Function2D.h"
-#include "MemoryManager/JeveuxVector.h"
-
-
 typedef std::vector< FunctionPtr > VectorFunction;
-
 
 /**
  * @class MaterialProperty
@@ -69,38 +68,38 @@ class MaterialProperty : public GenericMaterialProperty {
         : GenericMaterialProperty( asterName, asterNewName ){};
 
     bool addPropertyReal( std::string name, const bool mandatory ) {
-        return GenericMaterialProperty::addPropertyReal( capitalizeName( name ),
-                                  ElementaryMaterialPropertyReal( name, mandatory ) );
+        return GenericMaterialProperty::addPropertyReal(
+            capitalizeName( name ), ElementaryMaterialPropertyReal( name, mandatory ) );
     };
 
     bool addPropertyReal( std::string name, const ASTERDOUBLE &value, const bool mandatory ) {
-        return GenericMaterialProperty::addPropertyReal( capitalizeName( name ),
-                                  ElementaryMaterialPropertyReal( name, value, mandatory ) );
+        return GenericMaterialProperty::addPropertyReal(
+            capitalizeName( name ), ElementaryMaterialPropertyReal( name, value, mandatory ) );
     };
 
     bool addPropertyComplex( std::string name, const bool mandatory ) {
-        return GenericMaterialProperty::addPropertyComplex( capitalizeName( name ),
-                                   ElementaryMaterialPropertyComplex( name, mandatory ) );
+        return GenericMaterialProperty::addPropertyComplex(
+            capitalizeName( name ), ElementaryMaterialPropertyComplex( name, mandatory ) );
     };
 
     bool addPropertyString( std::string name, const bool mandatory ) {
-        return GenericMaterialProperty::addPropertyString( capitalizeName( name ),
-                                  ElementaryMaterialPropertyString( name, mandatory ) );
+        return GenericMaterialProperty::addPropertyString(
+            capitalizeName( name ), ElementaryMaterialPropertyString( name, mandatory ) );
     };
 
     bool addPropertyString( std::string name, const std::string &value, const bool mandatory ) {
-        return GenericMaterialProperty::addPropertyString( capitalizeName( name ),
-                                  ElementaryMaterialPropertyString( name, value, mandatory ) );
+        return GenericMaterialProperty::addPropertyString(
+            capitalizeName( name ), ElementaryMaterialPropertyString( name, value, mandatory ) );
     };
 
     bool addPropertyFunction( std::string name, const bool mandatory ) {
-        return GenericMaterialProperty::addPropertyFunction( capitalizeName( name ),
-                                    ElementaryMaterialPropertyDataStructure( name, mandatory ) );
+        return GenericMaterialProperty::addPropertyFunction(
+            capitalizeName( name ), ElementaryMaterialPropertyDataStructure( name, mandatory ) );
     };
 
     bool addPropertyTable( std::string name, const bool mandatory ) {
-        return GenericMaterialProperty::addPropertyTable( capitalizeName( name ),
-                                 ElementaryMaterialPropertyTable( name, mandatory ) );
+        return GenericMaterialProperty::addPropertyTable(
+            capitalizeName( name ), ElementaryMaterialPropertyTable( name, mandatory ) );
     };
 
     bool addPropertyVectorOfReal( std::string name, const bool mandatory ) {
@@ -128,6 +127,5 @@ class MaterialProperty : public GenericMaterialProperty {
 
 /** @typedef Pointeur intelligent vers un comportement materiau */
 typedef std::shared_ptr< MaterialProperty > MaterialPropertyPtr;
-
 
 #endif

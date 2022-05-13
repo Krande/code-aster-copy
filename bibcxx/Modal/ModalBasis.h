@@ -79,8 +79,10 @@ class GenericModalBasis : public DataStructure {
 
         UnitaryModalBasis( const std::string &name, const StructureInterfacePtr &structInterf,
                            const VectorOfMechaModePtr &vecOfMechaMode, const VectorInt &vecOfInt )
-            : _structInterf( structInterf ), _vecOfMechaMode( vecOfMechaMode ),
-              _vecOfInt( vecOfInt ), _container( CapyConvertibleContainer( name ) ) {
+            : _structInterf( structInterf ),
+              _vecOfMechaMode( vecOfMechaMode ),
+              _vecOfInt( vecOfInt ),
+              _container( CapyConvertibleContainer( name ) ) {
             _container.add( new CapyConvertibleValue< StructureInterfacePtr >(
                 true, "INTERF_DYNA", _structInterf, true ) );
 
@@ -95,7 +97,8 @@ class GenericModalBasis : public DataStructure {
 
         UnitaryModalBasis( const std::string &name, const GenericModalBasisPtr &basis,
                            const VectorInt &vecOfInt = {} )
-            : _basis( basis ), _vecOfInt( vecOfInt ),
+            : _basis( basis ),
+              _vecOfInt( vecOfInt ),
               _container( CapyConvertibleContainer( name ) ) {
             _container.add( new CapyConvertibleValue< GenericModalBasisPtr >( false, "BASE_MODALE",
                                                                               _basis, true ) );
@@ -107,7 +110,8 @@ class GenericModalBasis : public DataStructure {
 
         UnitaryModalBasis( const std::string &name, const VectorOfMechaModePtr &vecOfMechaMode,
                            const VectorInt &vecOfInt = {} )
-            : _vecOfMechaMode( vecOfMechaMode ), _vecOfInt( vecOfInt ),
+            : _vecOfMechaMode( vecOfMechaMode ),
+              _vecOfInt( vecOfInt ),
               _container( CapyConvertibleContainer( name ) ) {
             _container.add( new CapyConvertibleValue< VectorOfMechaModePtr >(
                 false, "BASE_MODALE", _vecOfMechaMode, true ) );
@@ -119,7 +123,8 @@ class GenericModalBasis : public DataStructure {
 
         UnitaryModalBasis( const std::string &name, const ModeResultPtr &interf,
                            const VectorInt &vecOfInt = {} )
-            : _interfaceModes( interf ), _vecOfInt( vecOfInt ),
+            : _interfaceModes( interf ),
+              _vecOfInt( vecOfInt ),
               _container( CapyConvertibleContainer( name ) ) {
             _container.add( new CapyConvertibleValue< ModeResultPtr >( false, "MODE_INTF",
                                                                        _interfaceModes, true ) );
@@ -131,7 +136,8 @@ class GenericModalBasis : public DataStructure {
 
         UnitaryModalBasis( const std::string &name, const ModeResultPtr &basis,
                            const AssemblyMatrixDisplacementRealPtr &matr )
-            : _interfaceModes( basis ), _matrD( matr ),
+            : _interfaceModes( basis ),
+              _matrD( matr ),
               _container( CapyConvertibleContainer( name ) ) {
             _container.add(
                 new CapyConvertibleValue< ModeResultPtr >( true, "BASE", _interfaceModes, true ) );
@@ -141,7 +147,8 @@ class GenericModalBasis : public DataStructure {
 
         UnitaryModalBasis( const std::string &name, const ModeResultPtr &basis,
                            const AssemblyMatrixDisplacementComplexPtr &matr )
-            : _interfaceModes( basis ), _matrC( matr ),
+            : _interfaceModes( basis ),
+              _matrC( matr ),
               _container( CapyConvertibleContainer( name ) ) {
             _container.add(
                 new CapyConvertibleValue< ModeResultPtr >( true, "BASE", _interfaceModes, true ) );
@@ -151,7 +158,8 @@ class GenericModalBasis : public DataStructure {
 
         UnitaryModalBasis( const std::string &name, const ModeResultPtr &basis,
                            const VectorOfMechaModePtr &vecOfMechaMode )
-            : _interfaceModes( basis ), _vecOfMechaMode( vecOfMechaMode ),
+            : _interfaceModes( basis ),
+              _vecOfMechaMode( vecOfMechaMode ),
               _container( CapyConvertibleContainer( name ) ) {
             _container.add( new CapyConvertibleValue< ModeResultPtr >( true, "MODE_STAT",
                                                                        _interfaceModes, true ) );
@@ -202,7 +210,7 @@ class StandardModalBasis : public GenericModalBasis {
 
     void setModalBasis( const StructureInterfacePtr &structInterf, const ModeResultPtr &mechaMode,
                         const VectorInt &vecOfInt = {} ) {
-        setModalBasis( structInterf, ( VectorOfMechaModePtr ){ mechaMode }, vecOfInt );
+        setModalBasis( structInterf, ( VectorOfMechaModePtr ){mechaMode}, vecOfInt );
     };
 };
 
@@ -232,8 +240,8 @@ class RitzBasis : public GenericModalBasis {
      */
 
     RitzBasis( const std::string name ) : GenericModalBasis( name ), _reortho( false ) {
-        _container.add( new CapyConvertibleValue< bool >( false, "ORTHO", _reortho, { true, false },
-                                                          { "OUI", "NON" }, true ) );
+        _container.add( new CapyConvertibleValue< bool >( false, "ORTHO", _reortho, {true, false},
+                                                          {"OUI", "NON"}, true ) );
     };
 
     void addModalBasis( const GenericModalBasisPtr &basis, const VectorInt &vecOfInt = {} ) {

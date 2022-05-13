@@ -28,6 +28,7 @@
 
 #include "astercxx.h"
 #include "definition.h"
+
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NamesMap.h"
@@ -81,7 +82,8 @@ class FiberGeometry : public DataStructure {
           _typeGroupe( JeveuxVectorLong( getName() + ".TYPE_GROUPE" ) ),
           _carfi( JeveuxVectorReal( getName() + ".CARFI" ) ),
           _gfma( JeveuxVectorChar8( getName() + ".GFMA" ) ),
-          _caracsd( JeveuxVectorLong( getName() + ".CARACSD" ) ), _isEmpty( true ){};
+          _caracsd( JeveuxVectorLong( getName() + ".CARACSD" ) ),
+          _isEmpty( true ){};
 
     /**
      * @brief Destructeur

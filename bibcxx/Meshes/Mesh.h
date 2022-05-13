@@ -86,8 +86,7 @@ class Mesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of nodes indexes
      */
-    VectorLong getNodesFromCells( const std::string,
-                                  const bool localNumbering = true,
+    VectorLong getNodesFromCells( const std::string, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**

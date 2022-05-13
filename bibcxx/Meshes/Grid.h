@@ -26,10 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "astercxx.h"
+
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/Mesh.h"
 #include "Supervis/ResultNaming.h"
-#include "astercxx.h"
 
 /**
  * @class Grid

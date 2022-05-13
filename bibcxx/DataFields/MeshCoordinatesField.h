@@ -31,9 +31,8 @@
 #include "DataFields/DataField.h"
 #include "MemoryManager/JeveuxVector.h"
 
-
-
-template <typename> class FieldOnNodes;
+template < typename >
+class FieldOnNodes;
 
 /**
  * @class MeshCoordinatesField
@@ -112,7 +111,6 @@ class MeshCoordinatesField : public DataField {
      * @brief Get _valuesList
      */
     const JeveuxVectorReal getValues() const { return _valuesList; };
-
 
     /**
      * @brief Surcharge de l'operateur []

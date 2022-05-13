@@ -68,13 +68,12 @@ class FluidStructureInteraction : public DataStructure {
     /**
      * @brief Constructeur
      */
-    FluidStructureInteraction()
-        : FluidStructureInteraction( ResultNaming::getNewResultName() ){};
+    FluidStructureInteraction() : FluidStructureInteraction( ResultNaming::getNewResultName() ){};
     /**
      * @brief Constructeur
      */
     FluidStructureInteraction( const std::string name )
-        : DataStructure( name, 8, "TYPE_FLUI_STRU"),
+        : DataStructure( name, 8, "TYPE_FLUI_STRU" ),
           _fsic( JeveuxVectorLong( getName() + "           .FSIC" ) ),
           _fsvi( JeveuxVectorLong( getName() + "           .FSVI" ) ),
           _fsvk( JeveuxVectorChar8( getName() + "           .FSVK" ) ),

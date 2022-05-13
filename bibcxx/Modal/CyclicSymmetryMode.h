@@ -29,10 +29,10 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
-#include "Modal/ModalBasis.h"
 #include "Interfaces/StructureInterface.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/Mesh.h"
+#include "Modal/ModalBasis.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -76,7 +76,7 @@ class CyclicSymmetryMode : public DataStructure {
      * @brief Constructeur
      */
     CyclicSymmetryMode( const std::string name = ResultNaming::getNewResultName() )
-        : DataStructure( name, 8, "MODE_CYCL"),
+        : DataStructure( name, 8, "MODE_CYCL" ),
           _type( JeveuxVectorChar8( getName() + ".CYCL_TYPE" ) ),
           _desc( JeveuxVectorLong( getName() + ".CYCL_DESC" ) ),
           _diam( JeveuxVectorLong( getName() + "CYCL_DIAM" ) ),
@@ -86,7 +86,8 @@ class CyclicSymmetryMode : public DataStructure {
           _interfaceIndices( JeveuxVectorLong( getName() + ".CYCL_NUIN" ) ),
           _cMode( JeveuxVectorComplex( getName() + ".CYCL_MODE" ) ),
           /** Pointers to objects listed in _refe */
-          _mesh( MeshPtr() ), _structInterf( StructureInterfacePtr() ),
+          _mesh( MeshPtr() ),
+          _structInterf( StructureInterfacePtr() ),
           _modalBasis( StandardModalBasisPtr() )
 
               {};

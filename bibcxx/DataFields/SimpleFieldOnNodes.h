@@ -154,8 +154,8 @@ class SimpleFieldOnNodes : public DataStructure {
     py::object getValues( bool copy = false ) {
         PyObject *resu_tuple = PyTuple_New( 2 );
 
-        npy_intp dims[2] = { _values->size() / this->getNumberOfComponents(),
-                             this->getNumberOfComponents() };
+        npy_intp dims[2] = {_values->size() / this->getNumberOfComponents(),
+                            this->getNumberOfComponents()};
 
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );

@@ -187,12 +187,8 @@ bool XfemCrack::build() {
 
     cmdSt.define( dict );
 
-    try {
-        ASTERINTEGER op = 41;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 41;
+    CALL_EXECOP( &op );
 
     return update_tables();
 };
@@ -219,12 +215,8 @@ ModelPtr XfemCrack::enrichModelWithXfem( ModelPtr &baseModel ) {
     cmdSt.setResult( newModelPtr->getName(), "MODELE" );
 
     // Call  OP00113
-    try {
-        ASTERINTEGER op = 113;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 113;
+    CALL_EXECOP( &op );
 
     return newModelPtr;
 };

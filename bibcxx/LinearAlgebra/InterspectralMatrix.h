@@ -29,8 +29,8 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
+#include "MemoryManager/JeveuxVector.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -71,14 +71,13 @@ class InterspectralMatrix : public DataStructure {
     /**
      * @brief Constructeur
      */
-    InterspectralMatrix()
-        : InterspectralMatrix( ResultNaming::getNewResultName() ){};
+    InterspectralMatrix() : InterspectralMatrix( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
     InterspectralMatrix( const std::string name )
-        : DataStructure( name, 8, "INTERSPECTRE"),
+        : DataStructure( name, 8, "INTERSPECTRE" ),
           _refe( JeveuxVectorChar16( getName() + ".REFE" ) ),
           _disc( JeveuxVectorReal( getName() + ".DISC" ) ),
           _vale( JeveuxCollectionReal( getName() + ".VALE" ) ),

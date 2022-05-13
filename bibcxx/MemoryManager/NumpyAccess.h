@@ -25,31 +25,74 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include <string>
-
 #include "aster_numpy.h"
 #include "astercxx.h"
 
 #include "MemoryManager/JeveuxVector.h"
 
+#include <string>
+
 /* Definition of numpy type for each JeveuxVector */
-template < typename T > struct npy_type {
-public:
-  int value;
+template < typename T >
+struct npy_type {
+  public:
+    int value;
 };
-template <> struct npy_type< JeveuxVectorLong > { static const int value = NPY_LONG; };
-template <> struct npy_type< JeveuxVectorShort > { static const int value = NPY_INT; };
-template <> struct npy_type< JeveuxVectorReal > { static const int value = NPY_DOUBLE; };
-template <> struct npy_type< JeveuxVectorComplex > { static const int value = NPY_CDOUBLE; };
-template <> struct npy_type< JeveuxVectorLogical > { static const int value = NPY_BOOL; };
-template <> struct npy_type< JeveuxVectorChar8 > { static const int value = NPY_STRING; };
-template <> struct npy_type< JeveuxVectorChar16 > { static const int value = NPY_STRING; };
-template <> struct npy_type< JeveuxVectorChar24 > { static const int value = NPY_STRING; };
-template <> struct npy_type< JeveuxVectorChar32 > { static const int value = NPY_STRING; };
-template <> struct npy_type< JeveuxVectorChar80 > { static const int value = NPY_STRING; };
-template <> struct npy_type< ASTERINTEGER > { static const int value = NPY_LONG; };
-template <> struct npy_type< ASTERDOUBLE > { static const int value = NPY_DOUBLE; };
-template <> struct npy_type< ASTERCOMPLEX > { static const int value = NPY_CDOUBLE; };
-template <> struct npy_type< ASTERINTEGER4 > { static const int value = NPY_INT; };
+template <>
+struct npy_type< JeveuxVectorLong > {
+    static const int value = NPY_LONG;
+};
+template <>
+struct npy_type< JeveuxVectorShort > {
+    static const int value = NPY_INT;
+};
+template <>
+struct npy_type< JeveuxVectorReal > {
+    static const int value = NPY_DOUBLE;
+};
+template <>
+struct npy_type< JeveuxVectorComplex > {
+    static const int value = NPY_CDOUBLE;
+};
+template <>
+struct npy_type< JeveuxVectorLogical > {
+    static const int value = NPY_BOOL;
+};
+template <>
+struct npy_type< JeveuxVectorChar8 > {
+    static const int value = NPY_STRING;
+};
+template <>
+struct npy_type< JeveuxVectorChar16 > {
+    static const int value = NPY_STRING;
+};
+template <>
+struct npy_type< JeveuxVectorChar24 > {
+    static const int value = NPY_STRING;
+};
+template <>
+struct npy_type< JeveuxVectorChar32 > {
+    static const int value = NPY_STRING;
+};
+template <>
+struct npy_type< JeveuxVectorChar80 > {
+    static const int value = NPY_STRING;
+};
+template <>
+struct npy_type< ASTERINTEGER > {
+    static const int value = NPY_LONG;
+};
+template <>
+struct npy_type< ASTERDOUBLE > {
+    static const int value = NPY_DOUBLE;
+};
+template <>
+struct npy_type< ASTERCOMPLEX > {
+    static const int value = NPY_CDOUBLE;
+};
+template <>
+struct npy_type< ASTERINTEGER4 > {
+    static const int value = NPY_INT;
+};
 
 #endif /* NUMPYACCESS_H_ */

@@ -34,8 +34,7 @@
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
-
-template< class ConstantFieldOnCellsType>
+template < class ConstantFieldOnCellsType >
 class AcousticLoad : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.TYPE' */
@@ -66,16 +65,16 @@ class AcousticLoad : public DataStructure {
      */
     AcousticLoad( const std::string name, const ModelPtr &model )
         : DataStructure( name, 8, "CHAR_ACOU" ),
-          _acouLoadDesc( std::make_shared<
-            AcousticLoadDescription< ConstantFieldOnCellsType > >(getName() + ".CHAC",
-                                                                            model) ),
+          _acouLoadDesc( std::make_shared< AcousticLoadDescription< ConstantFieldOnCellsType > >(
+              getName() + ".CHAC", model ) ),
           _type( getName() + ".TYPE" ){};
 
     /**
      * @brief Get the finite element descriptor
      */
-    FiniteElementDescriptorPtr getFiniteElementDescriptor() const
-    { return _acouLoadDesc->getFiniteElementDescriptor(); };
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const {
+        return _acouLoadDesc->getFiniteElementDescriptor();
+    };
 
     /**
      * @brief Get the model
@@ -96,12 +95,10 @@ class AcousticLoad : public DataStructure {
 typedef AcousticLoad< ConstantFieldOnCellsComplex > AcousticLoadComplex;
 
 /** @typedef AcousticLoad  */
-template< class ConstantFieldOnCellsType>
-using AcousticLoadPtr =
-    std::shared_ptr< AcousticLoad< ConstantFieldOnCellsType > >;
+template < class ConstantFieldOnCellsType >
+using AcousticLoadPtr = std::shared_ptr< AcousticLoad< ConstantFieldOnCellsType > >;
 
 typedef std::shared_ptr< AcousticLoadComplex > AcousticLoadComplexPtr;
-
 
 /** @typedef std::list de AcousticLoad */
 typedef std::list< AcousticLoadComplexPtr > ListAcouLoadComplex;
@@ -109,6 +106,5 @@ typedef std::list< AcousticLoadComplexPtr > ListAcouLoadComplex;
 typedef ListAcouLoadComplex::iterator ListAcouLoadComplexIter;
 /** @typedef Iterateur constant sur une std::list de AcousticLoad */
 typedef ListAcouLoadComplex::const_iterator ListAcouLoadComplexCIter;
-
 
 #endif /* ACOUSTICLOAD_H_ */

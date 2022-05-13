@@ -324,7 +324,7 @@ class BaseDOFNumbering : public DataStructure {
      * @param Args... Liste d'arguments template
      */
     template < typename... Args >
-    void addLoad( const Args &...a ) {
+    void addLoad( const Args &... a ) {
         _listOfLoads->addLoad( a... );
     };
 

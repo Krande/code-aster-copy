@@ -121,9 +121,7 @@ class BaseFunction : public GenericFunction {
     /**
      * @brief Return the values of the function
      */
-    const JeveuxVectorReal getValues() const {
-        return _value;
-    }
+    const JeveuxVectorReal getValues() const { return _value; }
 
     /**
      * @brief Return a pointer to the vector of data

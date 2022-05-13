@@ -30,8 +30,8 @@
 
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
-#include "Supervis/ResultNaming.h"
 #include "Meshes/Mesh.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class MeshesMapping

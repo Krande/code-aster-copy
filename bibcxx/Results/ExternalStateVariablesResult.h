@@ -43,8 +43,7 @@ class ExternalStateVariablesResult : public TransientResult {
     /**
      * @brief Constructeur
      */
-    ExternalStateVariablesResult(
-        const std::string name = ResultNaming::getNewResultName() )
+    ExternalStateVariablesResult( const std::string name = ResultNaming::getNewResultName() )
         : TransientResult( name, "EVOL_VARC" ){};
 };
 
@@ -52,7 +51,6 @@ class ExternalStateVariablesResult : public TransientResult {
  * @typedef ExternalStateVariablesResultPtr
  * @brief Pointeur intelligent vers un ExternalStateVariablesResult
  */
-typedef std::shared_ptr< ExternalStateVariablesResult >
-    ExternalStateVariablesResultPtr;
+typedef std::shared_ptr< ExternalStateVariablesResult > ExternalStateVariablesResultPtr;
 
 #endif /* EXTERNALVARIABLEEVOLUTIONCONTAINER_H_ */

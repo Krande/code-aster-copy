@@ -27,13 +27,14 @@
 /* person_in_charge: nicolas.tardieu at edf.fr */
 
 #include "astercxx.h"
+
+#include "Crack/CrackShape.h"
 #include "DataFields/FieldOnNodes.h"
 #include "DataFields/ListOfTables.h"
 #include "DataStructures/DataStructure.h"
+#include "Functions/Function.h"
 #include "Meshes/Mesh.h"
 #include "Modeling/Model.h"
-#include "Functions/Function.h"
-#include "Crack/CrackShape.h"
 
 /**
  * @class XfemCrack
@@ -43,8 +44,8 @@
 class XfemCrack : public DataStructure, public ListOfTables {
   public:
     /**
-         * @brief kind of forward declaration
-         */
+     * @brief kind of forward declaration
+     */
     typedef std::shared_ptr< XfemCrack > XfemCrackPtr;
 
   private:
@@ -130,31 +131,31 @@ class XfemCrack : public DataStructure, public ListOfTables {
 
   public:
     /**
-         * @brief Constructeur
-         */
+     * @brief Constructeur
+     */
     XfemCrack( MeshPtr mesh );
 
     /**
-         * @brief Constructeur
-         */
+     * @brief Constructeur
+     */
     XfemCrack( const std::string name, MeshPtr mesh );
 
     /**
-         * @brief Construction du XfemCrack
-         * @return Booleen indiquant que la construction s'est bien deroulee
-         */
-    bool build() ;
+     * @brief Construction du XfemCrack
+     * @return Booleen indiquant que la construction s'est bien deroulee
+     */
+    bool build();
 
     /**
      * @brief Enrichissement d'un ModelPtr avec la fissure XFEM
      * @param baseModel modèle à enrichir
      * @return Modèle enrichi
      */
-    ModelPtr enrichModelWithXfem( ModelPtr &baseModel ) ;
+    ModelPtr enrichModelWithXfem( ModelPtr &baseModel );
 
     /**
-         * @brief Series of getters and setters that check the syntax rules
-         */
+     * @brief Series of getters and setters that check the syntax rules
+     */
 
     const MeshPtr getMesh() const { return _mesh; };
 
@@ -202,9 +203,7 @@ class XfemCrack : public DataStructure, public ListOfTables {
 
     VectorString getCrackTipEntity() const { return _crackTipEntity; }
 
-    void setCrackTipEntity( const VectorString &crackTip ) {
-        _crackTipEntity = crackTip;
-    }
+    void setCrackTipEntity( const VectorString &crackTip ) { _crackTipEntity = crackTip; }
 
     VectorString getCohesiveCrackTipForPropagation() const {
         return _cohesiveCrackTipForPropagation;
@@ -268,9 +267,7 @@ class XfemCrack : public DataStructure, public ListOfTables {
 
     VectorString getEnrichedCells() const { return _enrichedCells; }
 
-    void setEnrichedCells( const VectorString &enrichedCells ) {
-        _enrichedCells = enrichedCells;
-    }
+    void setEnrichedCells( const VectorString &enrichedCells ) { _enrichedCells = enrichedCells; }
 
     std::string getDiscontinuousField() const { return _discontinuousField; }
 
@@ -302,9 +299,7 @@ class XfemCrack : public DataStructure, public ListOfTables {
         _junctingCracks.push_back( junctingCracks );
     }
 
-    void setPointForJunction( const VectorReal point ) {
-        _pointForJunctingCracks = point;
-    }
+    void setPointForJunction( const VectorReal point ) { _pointForJunctingCracks = point; }
 };
 
 /**

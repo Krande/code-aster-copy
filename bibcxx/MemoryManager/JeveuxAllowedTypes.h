@@ -26,9 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "astercxx.h"
 #include "asterc_config.h"
+#include "astercxx.h"
+
 #include "MemoryManager/JeveuxString.h"
+
 #include <complex>
 
 /**
@@ -59,49 +61,59 @@ static const std::string JeveuxTypesNames[10] = {"I",   "I4",  "R",   "C",   "K8
  * @brief Structure template permettant de limiter le type instanciable de JeveuxVectorClass
  * @tparam T Type autorise
  */
-template < typename T > struct AllowedJeveuxType; // undefined for bad types!
+template < typename T >
+struct AllowedJeveuxType; // undefined for bad types!
 
-template <> struct AllowedJeveuxType< ASTERINTEGER > {
+template <>
+struct AllowedJeveuxType< ASTERINTEGER > {
     static const unsigned short numTypeJeveux = Integer;
     typedef ASTERINTEGER type;
 };
 
-template <> struct AllowedJeveuxType< ASTERINTEGER4 > {
+template <>
+struct AllowedJeveuxType< ASTERINTEGER4 > {
     static const unsigned short numTypeJeveux = Integer4;
     typedef ASTERINTEGER4 type;
 };
 
-template <> struct AllowedJeveuxType< ASTERDOUBLE > {
+template <>
+struct AllowedJeveuxType< ASTERDOUBLE > {
     static const unsigned short numTypeJeveux = Real;
     typedef ASTERDOUBLE type;
 };
 
-template <> struct AllowedJeveuxType< ASTERCOMPLEX > {
+template <>
+struct AllowedJeveuxType< ASTERCOMPLEX > {
     static const unsigned short numTypeJeveux = Complex;
     typedef ASTERCOMPLEX type;
 };
 
-template <> struct AllowedJeveuxType< JeveuxChar8 > {
+template <>
+struct AllowedJeveuxType< JeveuxChar8 > {
     static const unsigned short numTypeJeveux = Char8;
     typedef JeveuxChar8 type;
 };
 
-template <> struct AllowedJeveuxType< JeveuxChar16 > {
+template <>
+struct AllowedJeveuxType< JeveuxChar16 > {
     static const unsigned short numTypeJeveux = Char16;
     typedef JeveuxChar16 type;
 };
 
-template <> struct AllowedJeveuxType< JeveuxChar24 > {
+template <>
+struct AllowedJeveuxType< JeveuxChar24 > {
     static const unsigned short numTypeJeveux = Char24;
     typedef JeveuxChar24 type;
 };
 
-template <> struct AllowedJeveuxType< JeveuxChar32 > {
+template <>
+struct AllowedJeveuxType< JeveuxChar32 > {
     static const unsigned short numTypeJeveux = Char32;
     typedef JeveuxChar32 type;
 };
 
-template <> struct AllowedJeveuxType< JeveuxChar80 > {
+template <>
+struct AllowedJeveuxType< JeveuxChar80 > {
     static const unsigned short numTypeJeveux = Char80;
     typedef JeveuxChar80 type;
 };
@@ -110,7 +122,8 @@ template <> struct AllowedJeveuxType< JeveuxChar80 > {
 #error Size for ASTER_LOGICAL_SIZE (!= 1) not allowed
 #endif
 
-template <> struct AllowedJeveuxType< bool > {
+template <>
+struct AllowedJeveuxType< bool > {
     static const unsigned short numTypeJeveux = Logical;
     typedef bool type;
 };

@@ -25,6 +25,7 @@
  */
 
 #include "astercxx.h"
+
 #include <algorithm>
 
 std::string trim( const std::string &str, const std::string &whitespace = " \t" );
@@ -45,7 +46,8 @@ VectorLong irange( const long begin, const long end );
 char *vectorStringAsFStrArray( const VectorString &vector, const int size );
 
 // Set and sort a vector
-template < typename T > std::vector< T > unique( const std::vector< T > &vec ) {
+template < typename T >
+std::vector< T > unique( const std::vector< T > &vec ) {
     // make unique & sort
     std::set< T > s;
     std::copy( vec.begin(), vec.end(), std::inserter( s, s.end() ) );
@@ -59,7 +61,8 @@ template < typename T > std::vector< T > unique( const std::vector< T > &vec ) {
 }
 
 // Get unique list of Aster Concept in a map (indexed by rank)
-template < typename T, typename T2 > std::vector< T > unique( const std::map< T2, T > &_map ) {
+template < typename T, typename T2 >
+std::vector< T > unique( const std::map< T2, T > &_map ) {
     std::map< std::string, T > unique_map;
     for ( auto it : _map ) {
         unique_map[it.second->getName()] = it.second;

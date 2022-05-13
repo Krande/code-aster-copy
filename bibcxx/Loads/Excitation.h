@@ -25,16 +25,17 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <list>
-#include <stdexcept>
-#include <string>
-#include <vector>
+#include "astercxx.h"
 
 #include "Functions/Function.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Utilities/CapyConvertibleValue.h"
-#include "astercxx.h"
+
+#include <list>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 /**
  * @enum ExcitationEnum
@@ -83,8 +84,8 @@ class Excitation {
      */
     void setMechanicalLoad( const MechanicalLoadRealPtr &mecaLoad ) {
         _mecaLoad = mecaLoad;
-        _toCapyConverter.add( new CapyConvertibleValue< MechanicalLoadRealPtr >(
-            true, "CHARGE", _mecaLoad, true ) );
+        _toCapyConverter.add(
+            new CapyConvertibleValue< MechanicalLoadRealPtr >( true, "CHARGE", _mecaLoad, true ) );
     };
     /** @function setMultiplicativeFunction
      * @brief sets the setMultiplicativeFunction

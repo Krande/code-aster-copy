@@ -33,11 +33,10 @@
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/GeneralizedModel.h"
-#include "Supervis/ResultNaming.h"
 #include "Numbering/GeneralizedFieldOnNodesDescription.h"
-#include "Results/ForwardModeResult.h"
 #include "Results/ForwardGeneralizedModeResult.h"
-
+#include "Results/ForwardModeResult.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class GeneralizedDOFNumbering
@@ -75,24 +74,22 @@ class GeneralizedDOFNumbering : public DataStructure {
     /**
      * @brief Constructeur
      */
-    GeneralizedDOFNumbering()
-        : GeneralizedDOFNumbering( ResultNaming::getNewResultName() ){};
+    GeneralizedDOFNumbering() : GeneralizedDOFNumbering( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    GeneralizedDOFNumbering( const std::string name ):
-        DataStructure( name, 14, "NUME_DDL_GENE"),
-        _base( JeveuxVectorReal( getName() + ".ELIM.BASE" ) ),
-        _noms( JeveuxVectorChar8( getName() + ".ELIM.NOMS" ) ),
-        _tail( JeveuxVectorLong( getName() + ".ELIM.TAIL" ) ),
-        _smos( new MorseStorage( getName() + ".SMOS" ) ),
-        _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
-        _nume( new GeneralizedFieldOnNodesDescription( getName() + ".NUME" ) ),
-        _model( nullptr ),
-        _basis1( nullptr ),
-        _basis2( nullptr )
-    {};
+    GeneralizedDOFNumbering( const std::string name )
+        : DataStructure( name, 14, "NUME_DDL_GENE" ),
+          _base( JeveuxVectorReal( getName() + ".ELIM.BASE" ) ),
+          _noms( JeveuxVectorChar8( getName() + ".ELIM.NOMS" ) ),
+          _tail( JeveuxVectorLong( getName() + ".ELIM.TAIL" ) ),
+          _smos( new MorseStorage( getName() + ".SMOS" ) ),
+          _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
+          _nume( new GeneralizedFieldOnNodesDescription( getName() + ".NUME" ) ),
+          _model( nullptr ),
+          _basis1( nullptr ),
+          _basis2( nullptr ){};
 
     /**
      * @brief Get the GeneralizedModel
@@ -102,8 +99,7 @@ class GeneralizedDOFNumbering : public DataStructure {
     /**
      * @brief Get modal basis
      */
-    GeneralizedModeResultPtr getModalBasisFromGeneralizedModeResult()
-    {
+    GeneralizedModeResultPtr getModalBasisFromGeneralizedModeResult() {
         if ( _basis2.isSet() )
             return _basis2.getPointer();
         return GeneralizedModeResultPtr( nullptr );
@@ -112,8 +108,7 @@ class GeneralizedDOFNumbering : public DataStructure {
     /**
      * @brief Get modal basis
      */
-    ModeResultPtr getModalBasisFromModeResult()
-    {
+    ModeResultPtr getModalBasisFromModeResult() {
         if ( _basis1.isSet() )
             return _basis1.getPointer();
         return ModeResultPtr( nullptr );
@@ -130,10 +125,8 @@ class GeneralizedDOFNumbering : public DataStructure {
     /**
      * @brief Set modal basis
      */
-    bool setModalBasis( const GeneralizedModeResultPtr &mecaModeC )
-    {
-        if ( mecaModeC != nullptr )
-        {
+    bool setModalBasis( const GeneralizedModeResultPtr &mecaModeC ) {
+        if ( mecaModeC != nullptr ) {
             _basis2 = mecaModeC;
             _basis1 = nullptr;
             return true;
@@ -144,10 +137,8 @@ class GeneralizedDOFNumbering : public DataStructure {
     /**
      * @brief Set modal basis
      */
-    bool setModalBasis( const ModeResultPtr &mecaModeC )
-    {
-        if ( mecaModeC != nullptr )
-        {
+    bool setModalBasis( const ModeResultPtr &mecaModeC ) {
+        if ( mecaModeC != nullptr ) {
             _basis1 = mecaModeC;
             _basis2 = nullptr;
             return true;

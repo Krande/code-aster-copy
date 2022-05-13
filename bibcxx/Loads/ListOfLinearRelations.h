@@ -24,11 +24,12 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdexcept>
-
 #include "astercxx.h"
-#include "MemoryManager/JeveuxVector.h"
+
 #include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxVector.h"
+
+#include <stdexcept>
 
 /**
  * @class ListOfLinearRelations
@@ -36,7 +37,8 @@
  * @author Nicolas Sellenet
  * @todo Prendre en compte le cas Function
  */
-template < class ValueType > class ListOfLinearRelations : public DataStructure {
+template < class ValueType >
+class ListOfLinearRelations : public DataStructure {
   private:
     /** @brief Objet '.RLCO' */
     JeveuxVector< ValueType > _coefficients;
@@ -63,8 +65,8 @@ template < class ValueType > class ListOfLinearRelations : public DataStructure 
 
   public:
     /**
-        * @brief Constructeur
-        */
+     * @brief Constructeur
+     */
     ListOfLinearRelations( const std::string name )
         : DataStructure( name, 19, "LISTE_RELA" ),
           _coefficients( JeveuxVector< ValueType >( getName() + ".RLCO" ) ),
@@ -76,7 +78,8 @@ template < class ValueType > class ListOfLinearRelations : public DataStructure 
           _onOrOff( JeveuxVectorLong( getName() + ".RLSU" ) ),
           _typeOfCoeff( JeveuxVectorChar8( getName() + ".RLTC" ) ),
           _typeOfRhs( JeveuxVectorChar8( getName() + ".RLTV" ) ),
-          _numberOfRelations( JeveuxVectorLong( getName() + ".RLNR" ) ), _isEmpty( true ) {
+          _numberOfRelations( JeveuxVectorLong( getName() + ".RLNR" ) ),
+          _isEmpty( true ) {
         if ( getName().size() != 19 )
             throw std::runtime_error( "Bad name size" );
     };

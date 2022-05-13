@@ -86,7 +86,7 @@ class BaseElementaryVector : public DataStructure {
   public:
     /** @brief Add a load to elementary vector */
     template < typename... Args >
-    void addLoad( const Args &...a ) {
+    void addLoad( const Args &... a ) {
         _listOfLoads->addLoad( a... );
     };
 

@@ -26,10 +26,10 @@
 
 #include "astercxx.h"
 
-#include "Results/ModeResult.h"
 #include "Interfaces/StructureInterface.h"
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
+#include "Results/ModeResult.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -72,24 +72,21 @@ class ModeResultComplex : public ModeResult {
     /**
      * @brief Constructeur
      */
-    ModeResultComplex():
-        ModeResultComplex( ResultNaming::getNewResultName() )
-    {};
+    ModeResultComplex() : ModeResultComplex( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    ModeResultComplex( const std::string &name ):
-       ModeResult ( name, "MODE_MECA_C" ),
-        _structureInterface( StructureInterfacePtr() ),
-        _dampingMatrix( nullptr ),
-        _rigidityDispDMatrix( nullptr ),
-        _rigidityDispCMatrix( nullptr ),
-        _rigidityTempDMatrix( nullptr ),
-        _rigidityPressDMatrix( nullptr ),
-        _rigidityGDMatrix( nullptr ),
-        _rigidityGCMatrix( nullptr )
-    {};
+    ModeResultComplex( const std::string &name )
+        : ModeResult( name, "MODE_MECA_C" ),
+          _structureInterface( StructureInterfacePtr() ),
+          _dampingMatrix( nullptr ),
+          _rigidityDispDMatrix( nullptr ),
+          _rigidityDispCMatrix( nullptr ),
+          _rigidityTempDMatrix( nullptr ),
+          _rigidityPressDMatrix( nullptr ),
+          _rigidityGDMatrix( nullptr ),
+          _rigidityGCMatrix( nullptr ){};
 
     /**
      * @brief Obtenir un champ aux noeuds complexe vide à partir de son nom et de son numéro d'ordre
@@ -97,18 +94,15 @@ class ModeResultComplex : public ModeResult {
      * @param rank numéro d'ordre
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
-    FieldOnNodesComplexPtr
-    getEmptyFieldOnNodesComplex( const std::string name,
-                                 const int rank ) ;
+    FieldOnNodesComplexPtr getEmptyFieldOnNodesComplex( const std::string name, const int rank );
 
     /**
-    * @brief Obtenir un champ aux noeuds complexe à partir de son nom et de son numéro d'ordre
-    * @param name nom Aster du champ
-    * @param rank numéro d'ordre
-    * @return FieldOnNodesRealPtr pointant vers le champ
-    */
-    FieldOnNodesComplexPtr getComplexFieldOnNodes( const std::string name, const int rank ) const
-        ;
+     * @brief Obtenir un champ aux noeuds complexe à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnNodesRealPtr pointant vers le champ
+     */
+    FieldOnNodesComplexPtr getComplexFieldOnNodes( const std::string name, const int rank ) const;
 
     /**
      * @brief Set the damping matrix
@@ -123,8 +117,7 @@ class ModeResultComplex : public ModeResult {
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixDisplacementRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixDisplacementRealPtr &matr )
-    {
+    bool setStiffnessMatrix( const AssemblyMatrixDisplacementRealPtr &matr ) {
         _rigidityDispDMatrix = matr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
@@ -138,8 +131,7 @@ class ModeResultComplex : public ModeResult {
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixDisplacementComplexPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixDisplacementComplexPtr &matr )
-    {
+    bool setStiffnessMatrix( const AssemblyMatrixDisplacementComplexPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = matr;
         _rigidityTempDMatrix = nullptr;
@@ -153,8 +145,7 @@ class ModeResultComplex : public ModeResult {
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixTemperatureRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixTemperatureRealPtr &matr )
-    {
+    bool setStiffnessMatrix( const AssemblyMatrixTemperatureRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = matr;
@@ -168,8 +159,7 @@ class ModeResultComplex : public ModeResult {
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixPressureRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixPressureRealPtr &matr )
-    {
+    bool setStiffnessMatrix( const AssemblyMatrixPressureRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
@@ -183,8 +173,7 @@ class ModeResultComplex : public ModeResult {
      * @brief Set the rigidity matrix
      * @param matr GeneralizedAssemblyMatrixRealPtr
      */
-    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixRealPtr &matr )
-    {
+    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
@@ -198,8 +187,7 @@ class ModeResultComplex : public ModeResult {
      * @brief Set the rigidity matrix
      * @param matr GeneralizedAssemblyMatrixComplexPtr
      */
-    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixComplexPtr &matr )
-    {
+    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixComplexPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
@@ -213,8 +201,7 @@ class ModeResultComplex : public ModeResult {
      * @brief set interf_dyna
      * @param structureInterface objet StructureInterfacePtr
      */
-    bool
-    setStructureInterface( StructureInterfacePtr &structureInterface ) {
+    bool setStructureInterface( StructureInterfacePtr &structureInterface ) {
         _structureInterface = structureInterface;
         return true;
     };
@@ -245,7 +232,6 @@ class ModeResultComplex : public ModeResult {
  * @typedef ModeResultComplexPtr
  * @brief Pointeur intelligent vers un ModeResultComplex
  */
-typedef std::shared_ptr< ModeResultComplex >
-    ModeResultComplexPtr;
+typedef std::shared_ptr< ModeResultComplex > ModeResultComplexPtr;
 
 #endif /* MECHANICALMODECOMPLEXCONTAINER_H_ */

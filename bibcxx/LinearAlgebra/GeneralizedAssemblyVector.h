@@ -50,7 +50,7 @@ class GenericGeneralizedAssemblyVector : public DataStructure {
      * @brief Constructeur
      */
     GenericGeneralizedAssemblyVector( const std::string name )
-        : DataStructure( name, 19, "VECT_ASSE_GENE"),
+        : DataStructure( name, 19, "VECT_ASSE_GENE" ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _refe( JeveuxVectorChar24( getName() + ".REFE" ) ){};
 };
@@ -70,8 +70,8 @@ class GeneralizedAssemblyVector : public GenericGeneralizedAssemblyVector {
      * @brief definir le type
      */
     template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, void >::type setVectorType()
-    {
+    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, void >::type
+    setVectorType() {
         setType( "VECT_ASSE_GENE" );
     };
 
@@ -89,14 +89,12 @@ class GeneralizedAssemblyVector : public GenericGeneralizedAssemblyVector {
      * @typedef GeneralizedAssemblyVectorPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyVector
      */
-    typedef std::shared_ptr< GeneralizedAssemblyVector< ValueType > >
-        GeneralizedAssemblyVectorPtr;
+    typedef std::shared_ptr< GeneralizedAssemblyVector< ValueType > > GeneralizedAssemblyVectorPtr;
 
     /**
      * @brief Constructeur
      */
-    GeneralizedAssemblyVector()
-        : GeneralizedAssemblyVector( ResultNaming::getNewResultName() ){};
+    GeneralizedAssemblyVector() : GeneralizedAssemblyVector( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
@@ -118,21 +116,18 @@ typedef GeneralizedAssemblyVector< ASTERCOMPLEX > GeneralizedAssemblyVectorCompl
  * @typedef GenericGeneralizedAssemblyVectorPtr
  * @brief Pointeur intelligent vers un GenericGeneralizedAssemblyVector
  */
-typedef std::shared_ptr< GenericGeneralizedAssemblyVector >
-    GenericGeneralizedAssemblyVectorPtr;
+typedef std::shared_ptr< GenericGeneralizedAssemblyVector > GenericGeneralizedAssemblyVectorPtr;
 
 /**
  * @typedef GeneralizedAssemblyVectorRealPtr
  * @brief Pointeur intelligent vers un GeneralizedAssemblyVectorReal
  */
-typedef std::shared_ptr< GeneralizedAssemblyVectorReal >
-    GeneralizedAssemblyVectorRealPtr;
+typedef std::shared_ptr< GeneralizedAssemblyVectorReal > GeneralizedAssemblyVectorRealPtr;
 
 /**
  * @typedef GeneralizedAssemblyVectorComplexPtr
  * @brief Pointeur intelligent vers un GeneralizedAssemblyVectorComplex
  */
-typedef std::shared_ptr< GeneralizedAssemblyVectorComplex >
-    GeneralizedAssemblyVectorComplexPtr;
+typedef std::shared_ptr< GeneralizedAssemblyVectorComplex > GeneralizedAssemblyVectorComplexPtr;
 
 #endif /* GENERALIZEDASSEMBLYVECTOR_H_ */

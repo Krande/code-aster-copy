@@ -313,12 +313,8 @@ bool MaterialField::build() {
     commandFortran.define( commandSyntax );
 
     // Call Fortran command
-    try {
-        ASTERINTEGER op = 6;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 6;
+    CALL_EXECOP( &op );
 
     // Generate C++ objects from Fortran objects for external state variables
     updateExtStateVariablesObjects();

@@ -3,7 +3,7 @@
  * @brief
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,14 +23,15 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Interfaces/StructureInterface.h"
+
 #include "aster_fort_superv.h"
 
-#include "Interfaces/StructureInterface.h"
 #include "Supervis/CommandSyntax.h"
 
-const std::vector< InterfaceTypeEnum > allInterfaceType = {MacNeal, CraigBampton,
-                                                           HarmonicCraigBampton, NoInterfaceType};
-const VectorString allInterfaceTypeNames = {"MNEAL", "CRAIGB", "CB_HARMO", "AUCUN"};
+const std::vector< InterfaceTypeEnum > allInterfaceType = { MacNeal, CraigBampton,
+                                                            HarmonicCraigBampton, NoInterfaceType };
+const VectorString allInterfaceTypeNames = { "MNEAL", "CRAIGB", "CB_HARMO", "AUCUN" };
 
 bool StructureInterface::build() {
     CommandSyntax cmdSt( "DEFI_INTERF_DYNA" );
@@ -43,12 +44,9 @@ bool StructureInterface::build() {
 
     cmdSt.define( syntax );
 
-    try {
-        ASTERINTEGER op = 98;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 98;
+    CALL_EXECOP( &op );
+
     _isEmpty = false;
     return true;
 };

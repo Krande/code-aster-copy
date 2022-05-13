@@ -65,13 +65,12 @@ class FluidStructureModalBasis : public DataStructure, public ListOfTables {
     /**
      * @brief Constructeur
      */
-    FluidStructureModalBasis()
-        : FluidStructureModalBasis( ResultNaming::getNewResultName() ){};
+    FluidStructureModalBasis() : FluidStructureModalBasis( ResultNaming::getNewResultName() ){};
     /**
      * @brief Constructeur
      */
     FluidStructureModalBasis( const std::string name )
-        : DataStructure( name, 8, "MELASFLU"),
+        : DataStructure( name, 8, "MELASFLU" ),
           ListOfTables( name ),
           _remf( JeveuxVectorChar8( getName() + ".REMF" ) ),
           _desc( JeveuxVectorChar16( getName() + ".DESC" ) ),

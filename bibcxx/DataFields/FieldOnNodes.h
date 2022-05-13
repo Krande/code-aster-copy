@@ -126,7 +126,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     }
 
     /** @brief Move constructor */
-    FieldOnNodes( FieldOnNodes &&other ) : DataField{ std::move( other ) } {
+    FieldOnNodes( FieldOnNodes &&other ) : DataField{std::move( other )} {
         // Pointers to be moved
         _descriptor = other._descriptor;
         _reference = other._reference;

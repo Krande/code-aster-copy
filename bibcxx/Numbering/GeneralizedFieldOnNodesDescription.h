@@ -29,9 +29,9 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Supervis/ResultNaming.h"
-#include "MemoryManager/JeveuxCollection.h"
 
 /**
  * @class GeneralizedFieldOnNodesDescription
@@ -59,13 +59,12 @@ class GeneralizedFieldOnNodesDescription : public DataStructure {
     JeveuxCollectionLong _orig;
 
   public:
-
-      /**
+    /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le GeneralizedFieldOnNodesDescription
      * d'une sd_resu)
      */
-    GeneralizedFieldOnNodesDescription( const std::string name  )
+    GeneralizedFieldOnNodesDescription( const std::string name )
         : DataStructure( name, 19, "PROF_GENE" ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
@@ -80,17 +79,14 @@ class GeneralizedFieldOnNodesDescription : public DataStructure {
     /**
      * @brief Constructeur
      */
-    GeneralizedFieldOnNodesDescription(  )
+    GeneralizedFieldOnNodesDescription()
         : GeneralizedFieldOnNodesDescription( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Destructor
      */
     ~GeneralizedFieldOnNodesDescription(){};
-
-
 };
-typedef std::shared_ptr< GeneralizedFieldOnNodesDescription >
-    GeneralizedFieldOnNodesDescriptionPtr;
+typedef std::shared_ptr< GeneralizedFieldOnNodesDescription > GeneralizedFieldOnNodesDescriptionPtr;
 
 #endif /* GENERALIZEDFIELDONNODESDESCRIPTION_H_ */

@@ -42,18 +42,15 @@ class ElasticResult : public Result {
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    ElasticResult()
-        : ElasticResult( ResultNaming::getNewResultName() ){};
+    ElasticResult() : ElasticResult( ResultNaming::getNewResultName() ){};
 
-    ElasticResult( const std::string &name )
-        : Result( name, "EVOL_ELAS" ){};
+    ElasticResult( const std::string &name ) : Result( name, "EVOL_ELAS" ){};
 };
 
 /**
  * @typedef ElasticResultPtr
  * @brief Pointeur intelligent vers un ElasticResult
  */
-typedef std::shared_ptr< ElasticResult >
-    ElasticResultPtr;
+typedef std::shared_ptr< ElasticResult > ElasticResultPtr;
 
 #endif /* LINEARDISPLACEMENTEVOLUTIONCONTAINER_H_ */

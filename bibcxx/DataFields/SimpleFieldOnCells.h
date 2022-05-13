@@ -320,8 +320,8 @@ class SimpleFieldOnCells : public DataStructure {
 
         PyObject *resu_tuple = PyTuple_New( 2 );
 
-        npy_intp dims[2] = { _values->size() / this->getNumberOfComponents(),
-                             this->getNumberOfComponents() };
+        npy_intp dims[2] = {_values->size() / this->getNumberOfComponents(),
+                            this->getNumberOfComponents()};
 
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );

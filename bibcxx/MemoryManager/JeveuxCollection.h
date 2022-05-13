@@ -620,7 +620,7 @@ class JeveuxCollection {
 
     const JeveuxCollectionTypePtr &operator->() const { return _jeveuxCollectionPtr; };
 
-    JeveuxCollectionClass< ValueType, AccessType > &operator*( void ) const {
+    JeveuxCollectionClass< ValueType, AccessType > &operator*(void)const {
         return *_jeveuxCollectionPtr;
     };
 

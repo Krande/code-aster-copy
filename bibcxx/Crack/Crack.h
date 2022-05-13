@@ -26,10 +26,11 @@
 
 /* person_in_charge: nicolas.pignet at edf.fr */
 
+#include "astercxx.h"
+
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
-#include "astercxx.h"
 #include "Supervis/ResultNaming.h"
 
 /**

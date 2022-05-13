@@ -27,6 +27,7 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "astercxx.h"
+
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 
@@ -64,16 +65,15 @@ class GenericFunction : public DataStructure {
      * @brief Constructeur
      */
     GenericFunction( const std::string &name, const std::string &type,
-                             const std::string& functType ):
-        DataStructure( name, 19, type ),
-        _property( JeveuxVectorChar24( getName() + ".PROL" ) ),
-        _funct_type( functType )
-    {};
+                     const std::string &functType )
+        : DataStructure( name, 19, type ),
+          _property( JeveuxVectorChar24( getName() + ".PROL" ) ),
+          _funct_type( functType ){};
 
     /**
      * @brief Allocate function
      */
-    virtual void allocate( ASTERINTEGER size ) {};
+    virtual void allocate( ASTERINTEGER size ){};
 
     /**
      * @brief Return the properties of the function

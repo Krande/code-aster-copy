@@ -52,15 +52,13 @@
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
-
-template< typename ConstantFieldOnCellsType>
+template < typename ConstantFieldOnCellsType >
 class AcousticLoadDescription : public DataStructure {
 
   public:
     typedef std::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
 
   private:
-
     /** @brief Modele */
     ModelPtr _model;
     /** @brief Vecteur Jeveux '.MODEL.NOMO' */
@@ -75,7 +73,6 @@ class AcousticLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _impedanceValues;
     /** @brief Carte '.VITFA' */
     ConstantFieldOnCellsTypePtr _speedValues;
-
 
   public:
     /**
@@ -99,18 +96,19 @@ class AcousticLoadDescription : public DataStructure {
      * @brief Constructeur
      */
     AcousticLoadDescription( const std::string name, const ModelPtr &model )
-        : DataStructure( name, 13, "CHAR_CHAC" ), _model( model ),
+        : DataStructure( name, 13, "CHAR_CHAC" ),
+          _model( model ),
           _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
                                                                 model->getMesh() ) ),
           _modelName( JeveuxVectorChar8( getName() + ".MODEL.NOMO" ) ),
-          _imposedValues( std::make_shared< ConstantFieldOnCellsType >(
-                        getName() + ".CIMPO", _FEDesc ) ),
-          _multiplier( std::make_shared< ConstantFieldOnCellsComplex >(
-                        getName() + ".CMULT", _FEDesc ) ),
-          _impedanceValues( std::make_shared< ConstantFieldOnCellsType >(
-                        getName() + ".IMPED", _FEDesc ) ),
-          _speedValues( std::make_shared< ConstantFieldOnCellsType >(
-                        getName() + ".VITFA", _FEDesc ) ){};
+          _imposedValues(
+              std::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
+          _multiplier(
+              std::make_shared< ConstantFieldOnCellsComplex >( getName() + ".CMULT", _FEDesc ) ),
+          _impedanceValues(
+              std::make_shared< ConstantFieldOnCellsType >( getName() + ".IMPED", _FEDesc ) ),
+          _speedValues(
+              std::make_shared< ConstantFieldOnCellsType >( getName() + ".VITFA", _FEDesc ) ){};
 
     /**
      * @brief Get the finite element descriptor
@@ -132,15 +130,11 @@ class AcousticLoadDescription : public DataStructure {
 /*  Explicit instantiation of template classes
 /**********************************************************/
 
-
 /** @typedef AcousticLoadDescriptionFunc Class d'une charge mécanique de fonctions */
-typedef AcousticLoadDescription< ConstantFieldOnCellsComplex >
-   AcousticLoadDescriptionComplex;
+typedef AcousticLoadDescription< ConstantFieldOnCellsComplex > AcousticLoadDescriptionComplex;
 
-
-template< typename ConstantFieldOnCellsType >
+template < typename ConstantFieldOnCellsType >
 using AcousticLoadDescriptionPtr =
-    std::shared_ptr<AcousticLoadDescription< ConstantFieldOnCellsType > >;
-
+    std::shared_ptr< AcousticLoadDescription< ConstantFieldOnCellsType > >;
 
 #endif /* ACOUSTICLOADDESCRIPTION_H_ */

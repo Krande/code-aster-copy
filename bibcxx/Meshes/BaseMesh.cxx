@@ -30,6 +30,7 @@
 #include "aster_fort_utils.h"
 #include "astercxx.h"
 
+#include "DataFields/ConstantFieldOnCells.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
@@ -37,38 +38,34 @@
 #include "Utilities/CapyConvertibleValue.h"
 #include "Utilities/Tools.h"
 
-#include "DataFields/ConstantFieldOnCells.h"
-
 BaseMesh::BaseMesh( const std::string &name, const std::string &type )
-        : DataStructure( name, 8, type ),
-          ListOfTables( name ),
-          _dimensionInformations( JeveuxVectorLong( getName() + ".DIME      " ) ),
-          _nameOfNodes( NamesMapChar8( getName() + ".NOMNOE    " ) ),
-          _coordinates( new MeshCoordinatesField( getName() + ".COORDO    " ) ),
-          _nameOfGrpNodes( NamesMapChar24( getName() + ".PTRNOMNOE " ) ),
-          _groupsOfNodes(
-              JeveuxCollectionLongNamePtr( getName() + ".GROUPENO  ", _nameOfGrpNodes ) ),
-          _connectivity( JeveuxCollectionLong( getName() + ".CONNEX    " ) ),
-          _nameOfCells( NamesMapChar8( getName() + ".NOMMAI    " ) ),
-          _cellsType( JeveuxVectorLong( getName() + ".TYPMAIL   " ) ),
-          _nameOfGrpCells( NamesMapChar24( getName() + ".PTRNOMMAI " ) ),
-          _groupsOfCells(
-              JeveuxCollectionLongNamePtr( getName() + ".GROUPEMA  ", _nameOfGrpCells ) ),
-          _adapt( JeveuxVectorLong( getName() + ".ADAPTATION" ) ),
-          _oriMeshName( JeveuxVectorChar8( getName() + ".MAOR" ) ),
-          _oriMeshCells( JeveuxVectorLong( getName() + ".CRMA" ) ),
-          _oriMeshNodes( JeveuxVectorLong( getName() + ".CRNO" ) ),
-          _patch( JeveuxCollectionLong( getName() + ".PATCH" ) ),
-          _nodePatchConnectivity( JeveuxVectorLong( getName() + ".CONOPA" ) ),
-          _cellPatchConnectivity( JeveuxVectorLong( getName() + ".COMAPA" ) ),
-          _namePatch( JeveuxVectorChar24( getName() + ".PTRNOMPAT" ) ),
-          _superElementName( JeveuxVectorLong( getName() + ".NOMACR" ) ),
-          _superElementPara( JeveuxVectorReal( getName() + ".PARA_R" ) ),
-          _superElements( JeveuxCollectionLong( getName() + ".SUPMAIL" ) ),
-          // use BaseMeshPtr(NULL) instead of this to avoid cross destruction
-          _curvAbsc( new ConstantFieldOnCellsReal( getName().substr(0, 8) + ".ABSC_CURV ",
-                                                                               BaseMeshPtr(NULL)) ),
-          _explorer( ConnectivityMeshExplorer( _connectivity, _cellsType ) ){};
+    : DataStructure( name, 8, type ),
+      ListOfTables( name ),
+      _dimensionInformations( JeveuxVectorLong( getName() + ".DIME      " ) ),
+      _nameOfNodes( NamesMapChar8( getName() + ".NOMNOE    " ) ),
+      _coordinates( new MeshCoordinatesField( getName() + ".COORDO    " ) ),
+      _nameOfGrpNodes( NamesMapChar24( getName() + ".PTRNOMNOE " ) ),
+      _groupsOfNodes( JeveuxCollectionLongNamePtr( getName() + ".GROUPENO  ", _nameOfGrpNodes ) ),
+      _connectivity( JeveuxCollectionLong( getName() + ".CONNEX    " ) ),
+      _nameOfCells( NamesMapChar8( getName() + ".NOMMAI    " ) ),
+      _cellsType( JeveuxVectorLong( getName() + ".TYPMAIL   " ) ),
+      _nameOfGrpCells( NamesMapChar24( getName() + ".PTRNOMMAI " ) ),
+      _groupsOfCells( JeveuxCollectionLongNamePtr( getName() + ".GROUPEMA  ", _nameOfGrpCells ) ),
+      _adapt( JeveuxVectorLong( getName() + ".ADAPTATION" ) ),
+      _oriMeshName( JeveuxVectorChar8( getName() + ".MAOR" ) ),
+      _oriMeshCells( JeveuxVectorLong( getName() + ".CRMA" ) ),
+      _oriMeshNodes( JeveuxVectorLong( getName() + ".CRNO" ) ),
+      _patch( JeveuxCollectionLong( getName() + ".PATCH" ) ),
+      _nodePatchConnectivity( JeveuxVectorLong( getName() + ".CONOPA" ) ),
+      _cellPatchConnectivity( JeveuxVectorLong( getName() + ".COMAPA" ) ),
+      _namePatch( JeveuxVectorChar24( getName() + ".PTRNOMPAT" ) ),
+      _superElementName( JeveuxVectorLong( getName() + ".NOMACR" ) ),
+      _superElementPara( JeveuxVectorReal( getName() + ".PARA_R" ) ),
+      _superElements( JeveuxCollectionLong( getName() + ".SUPMAIL" ) ),
+      // use BaseMeshPtr(NULL) instead of this to avoid cross destruction
+      _curvAbsc( new ConstantFieldOnCellsReal( getName().substr( 0, 8 ) + ".ABSC_CURV ",
+                                               BaseMeshPtr( NULL ) ) ),
+      _explorer( ConnectivityMeshExplorer( _connectivity, _cellsType ) ){};
 
 ASTERINTEGER BaseMesh::getNumberOfNodes() const {
     if ( isEmpty() )
@@ -133,11 +130,8 @@ bool BaseMesh::readMeshFile( const std::string &fileName, const std::string &for
         syntax2.container["UNITE_MAILLAGE"] = file2.getLogicalUnit();
         cmdSt2->define( syntax2 );
 
-        try {
-            CALL_EXECOP( &op2 );
-        } catch ( ... ) {
-            throw;
-        }
+        CALL_EXECOP( &op2 );
+
         delete cmdSt2;
         syntax.container["FORMAT"] = "ASTER";
         syntax.container["UNITE"] = file2.getLogicalUnit();
@@ -147,12 +141,8 @@ bool BaseMesh::readMeshFile( const std::string &fileName, const std::string &for
 
         cmdSt.define( syntax );
 
-        try {
-            ASTERINTEGER op = 1;
-            CALL_EXECOP( &op );
-        } catch ( ... ) {
-            throw;
-        }
+        ASTERINTEGER op = 1;
+        CALL_EXECOP( &op );
     } else {
         syntax.container["FORMAT"] = format;
         syntax.container["UNITE"] = file1.getLogicalUnit();
@@ -213,12 +203,8 @@ bool BaseMesh::printMedFile( const std::string fileName, bool local ) const {
 
     cmdSt.define( dict );
 
-    try {
-        ASTERINTEGER op = 39;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 39;
+    CALL_EXECOP( &op );
 
     return true;
 };

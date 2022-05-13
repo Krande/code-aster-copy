@@ -24,8 +24,10 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Loads/PhysicalQuantity.h"
 #include "astercxx.h"
+
+#include "Loads/PhysicalQuantity.h"
+
 #include <stdexcept>
 
 /**
@@ -34,7 +36,8 @@
  * composante
  * @author Nicolas Sellenet
  */
-template < class PhysicalQuantityType > class UnitaryLoad {
+template < class PhysicalQuantityType >
+class UnitaryLoad {
   private:
     /** @typedef Definition d'un pointeur intelligent sur un VirtualMeshEntity */
     typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
@@ -56,8 +59,7 @@ template < class PhysicalQuantityType > class UnitaryLoad {
      * @param curCoord Coordonnee de la grandeur sur laquelle on impose le chargement
      * @param value Valeur du chargement
      */
-    UnitaryLoad( MeshEntityPtr meshEntity, PhysicalQuantityComponent curCoord,
-                 ValueType value )
+    UnitaryLoad( MeshEntityPtr meshEntity, PhysicalQuantityComponent curCoord, ValueType value )
         : _meshEntity( meshEntity ), _loadCoordinate( curCoord ), _value( value ) {
         if ( !PhysicalQuantityType::hasComponent( curCoord ) )
             throw std::runtime_error( ComponentNames.find( curCoord )->second + " not allowed" );

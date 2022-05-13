@@ -2,7 +2,7 @@
  * @file JeveuxUtils.h
  * @brief Helper functions on Jeveux objects
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,8 +20,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include <string>
-
 
 bool jeveuxExists( const std::string name );

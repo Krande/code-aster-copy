@@ -26,14 +26,14 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <string>
-
 #include "astercxx.h"
 
-#include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
-#include "Supervis/ResultNaming.h"
 #include "Functions/Function.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "Supervis/ResultNaming.h"
+
+#include <string>
 
 /**
  * @class Table
@@ -53,9 +53,9 @@ class Table : public DataStructure {
 
   public:
     /**
-    * @typedef TablePtr
-    * @brief Definition of a smart pointer to a Table
-    */
+     * @typedef TablePtr
+     * @brief Definition of a smart pointer to a Table
+     */
     typedef std::shared_ptr< Table > TablePtr;
 
     // FIXME: Development documentation says 17 chars + "  ", for 'LG' logicals.
@@ -68,7 +68,7 @@ class Table : public DataStructure {
         : DataStructure( name, 19, type ),
           _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),
           _description( JeveuxVectorLong( getName() + ".TBNP" ) ),
-          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ) {};
+          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ){};
 
     /**
      * @brief Constructeur
@@ -77,12 +77,12 @@ class Table : public DataStructure {
         : DataStructure( ResultNaming::getNewResultName(), 19, "TABLE" ),
           _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),
           _description( JeveuxVectorLong( getName() + ".TBNP" ) ),
-          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ) {};
+          _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ){};
 
     ~Table() {
-// #ifdef ASTER_DEBUG_CXX
-//         std::cout << "DEBUG: Table.destr: " << this->getName() << std::endl;
-// #endif
+        // #ifdef ASTER_DEBUG_CXX
+        //         std::cout << "DEBUG: Table.destr: " << this->getName() << std::endl;
+        // #endif
         if ( _parameterDescription->exists() && _description->exists() ) {
             _parameterDescription->updateValuePointer();
             _description->updateValuePointer();
@@ -100,9 +100,9 @@ class Table : public DataStructure {
 };
 
 /**
-  * @typedef TablePtr
-  * @brief Definition of a smart pointer to a Table
-  */
+ * @typedef TablePtr
+ * @brief Definition of a smart pointer to a Table
+ */
 typedef std::shared_ptr< Table > TablePtr;
 
 /**
@@ -115,53 +115,42 @@ class TableOfFunctions : public Table {
 
   public:
     /**
-    * @typedef TableOfFunctionsPtr
-    * @brief Definition of a smart pointer to a TableOfFunctions
-    */
+     * @typedef TableOfFunctionsPtr
+     * @brief Definition of a smart pointer to a TableOfFunctions
+     */
     typedef std::shared_ptr< TableOfFunctions > TableOfFunctionsPtr;
 
     /**
-    * @brief Constructeur
-    * @param name Nom Jeveux du champ aux noeuds
-    */
-    TableOfFunctions( const std::string &name ):
-        Table( name, "TABLE_FONCTION" )
-    {};
+     * @brief Constructeur
+     * @param name Nom Jeveux du champ aux noeuds
+     */
+    TableOfFunctions( const std::string &name ) : Table( name, "TABLE_FONCTION" ){};
 
     /**
      * @brief Constructeur
      */
-    TableOfFunctions():
-        Table( ResultNaming::getNewResultName(), "TABLE_FONCTION" )
-    {};
+    TableOfFunctions() : Table( ResultNaming::getNewResultName(), "TABLE_FONCTION" ){};
 
     /**
      * @brief Add function in TableOfFunctions
      * @param func function to add
      */
-    void addFunction( GenericFunctionPtr func )
-    {
-        _vecOfFunctions.push_back( func );
-    };
+    void addFunction( GenericFunctionPtr func ) { _vecOfFunctions.push_back( func ); };
 
     /**
      * @brief Get a function from his position
      * @param pos position
      */
-    GenericFunctionPtr getFunction( int pos ) const
-    {
-        if( pos < int(_vecOfFunctions.size()) )
-            return _vecOfFunctions[ pos ];
+    GenericFunctionPtr getFunction( int pos ) const {
+        if ( pos < int( _vecOfFunctions.size() ) )
+            return _vecOfFunctions[pos];
         return BaseFunctionPtr( nullptr );
     };
 
     /**
      * @brief Get the number of functions referenced
      */
-    int getNumberOfFunctions() const
-    {
-        return _vecOfFunctions.size();
-    };
+    int getNumberOfFunctions() const { return _vecOfFunctions.size(); };
 };
 
 #endif /* TABLE_H_ */

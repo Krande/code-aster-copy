@@ -26,12 +26,13 @@
 
 #include "astercxx.h"
 
- /**
+/**
  * @class ConvertibleValue
  * @brief Cette classe template permet de definir une variable convertible
  * @author Nicolas Sellenet
  */
-template < class ValueType1, class ValueType2 > class ConvertibleValue {
+template < class ValueType1, class ValueType2 >
+class ConvertibleValue {
   public:
     typedef ValueType2 ReturnValue;
     typedef ValueType1 BaseValue;

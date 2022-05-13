@@ -26,18 +26,19 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "DataStructures/DataStructure.h"
 #include "astercxx.h"
-#include <stdexcept>
 
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/Table.h"
+#include "DataStructures/DataStructure.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "Loads/ListOfLinearRelations.h"
 #include "Materials/MaterialField.h"
 #include "Meshes/Mesh.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
+
+#include <stdexcept>
 
 /**
  * @class PrestressingCable
@@ -73,10 +74,10 @@ class PrestressingCable : public DataStructure {
      * @brief Constructeur
      */
     PrestressingCable( const ModelPtr &, const MaterialFieldPtr &,
-                            const ElementaryCharacteristicsPtr & );
+                       const ElementaryCharacteristicsPtr & );
 
-    PrestressingCable( const std::string name, const ModelPtr &,
-                            const MaterialFieldPtr &, const ElementaryCharacteristicsPtr & );
+    PrestressingCable( const std::string name, const ModelPtr &, const MaterialFieldPtr &,
+                       const ElementaryCharacteristicsPtr & );
 
     // Since no constructor allows to have null or empty objects,
     // it is not necessary to check if they exist.

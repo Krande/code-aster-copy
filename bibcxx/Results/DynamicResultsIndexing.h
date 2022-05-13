@@ -29,8 +29,8 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
+#include "MemoryManager/JeveuxVector.h"
 #include "Supervis/ResultNaming.h"
 /**
  * @class DynamicResultsIndexing

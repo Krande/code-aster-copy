@@ -25,10 +25,11 @@
  */
 
 #include "astercxx.h"
-#include <stdexcept>
 
 #include "Loads/PhysicalQuantity.h"
 #include "Modeling/PhysicsAndModelings.h"
+
+#include <stdexcept>
 
 /**
  * @class Glossary
@@ -66,7 +67,7 @@ class Glossary {
         MapStrIntIter curIter = _strToInt.find( searchComp );
         if ( curIter == _strToInt.end() )
             throw std::runtime_error( "Unknown component" );
-        return (PhysicalQuantityComponent)( curIter->second );
+        return ( PhysicalQuantityComponent )( curIter->second );
     };
 
     /**
@@ -78,7 +79,7 @@ class Glossary {
         MapStrIntIter curIter = _strToInt.find( searchMod );
         if ( curIter == _strToInt.end() )
             throw std::runtime_error( "Unknown modeling" );
-        return (Modelings)( curIter->second );
+        return ( Modelings )( curIter->second );
     };
 
     /**
@@ -90,7 +91,7 @@ class Glossary {
         MapStrIntIter curIter = _strToInt.find( searchPhysics );
         if ( curIter == _strToInt.end() )
             throw std::runtime_error( "Unknown physics" );
-        return (Physics)( curIter->second );
+        return ( Physics )( curIter->second );
     };
 };
 

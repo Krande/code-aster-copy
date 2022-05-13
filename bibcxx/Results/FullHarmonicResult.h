@@ -41,10 +41,8 @@ class FullHarmonicResult : public FullResult {
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    FullHarmonicResult( const std::string &name )
-        : FullResult( name, "DYNA_HARMO" ){};
-    FullHarmonicResult()
-        : FullHarmonicResult( ResultNaming::getNewResultName() ){};
+    FullHarmonicResult( const std::string &name ) : FullResult( name, "DYNA_HARMO" ){};
+    FullHarmonicResult() : FullHarmonicResult( ResultNaming::getNewResultName() ){};
 };
 
 /**

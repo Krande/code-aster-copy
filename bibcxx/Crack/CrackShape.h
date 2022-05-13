@@ -66,23 +66,21 @@ class CrackShape {
      * @brief Define the Crack Shape as Ellise
      */
     void setEllipseCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
-                               VectorReal center, VectorReal vectX,
-                               VectorReal vectY, std::string crackSide = "IN" );
+                               VectorReal center, VectorReal vectX, VectorReal vectY,
+                               std::string crackSide = "IN" );
 
     /**
      * @brief Define the Crack Shape as Square
      */
     void setSquareCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
-                              ASTERDOUBLE filletRadius,
-                              VectorReal center, VectorReal vectX,
+                              ASTERDOUBLE filletRadius, VectorReal center, VectorReal vectX,
                               VectorReal vectY, std::string crackSide = "IN" );
 
     /**
      * @brief Define the Crack Shape as Cylinder
      */
     void setCylinderCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
-                                VectorReal center, VectorReal vectX,
-                                VectorReal vectY );
+                                VectorReal center, VectorReal vectX, VectorReal vectY );
 
     /**
      * @brief Define the Crack Shape as Notch
@@ -93,20 +91,17 @@ class CrackShape {
     /**
      * @brief Define the Crack Shape as Half Plane
      */
-    void setHalfPlaneCrackShape( VectorReal endPoint, VectorReal normal,
-                                 VectorReal tangent );
+    void setHalfPlaneCrackShape( VectorReal endPoint, VectorReal normal, VectorReal tangent );
 
     /**
      * @brief Define the Crack Shape as Segment
      */
-    void setSegmentCrackShape( VectorReal startingPoint,
-                               VectorReal endPoint );
+    void setSegmentCrackShape( VectorReal startingPoint, VectorReal endPoint );
 
     /**
      * @brief Define the Crack Shape as Half Line
      */
-    void setHalfLineCrackShape( VectorReal startingPoint,
-                                VectorReal tangent );
+    void setHalfLineCrackShape( VectorReal startingPoint, VectorReal tangent );
 
     /**
      * @brief Define the Crack Shape as Line

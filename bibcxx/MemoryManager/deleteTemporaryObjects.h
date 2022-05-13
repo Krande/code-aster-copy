@@ -6,7 +6,7 @@
  * @brief Delete temporary objects
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,12 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /** @brief delete temporary Jeveux objects */
-bool deleteTemporaryObjects( void ) ;
+bool deleteTemporaryObjects( void );
 
-bool cleanJeveuxMemory( void ) ;
-
-
+bool cleanJeveuxMemory( void );
 
 #endif /* DELETE_TEMPORARY_OBJECTS_H_ */

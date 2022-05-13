@@ -100,7 +100,7 @@ class AllMeshEntitiesManager : public GenericLocalizationManager {
     AllMeshEntitiesManager( const bool &mandatory = false )
         : GenericLocalizationManager( "TOUT", mandatory ), _on( false ) {
         _skw = CapyValuePtr( new CapyConvertibleValue< bool >(
-            mandatory, "TOUT", _on, { true, false }, { "OUI", "NON" }, false ) );
+            mandatory, "TOUT", _on, {true, false}, {"OUI", "NON"}, false ) );
     };
 
     void setOnAllMeshEntities() {

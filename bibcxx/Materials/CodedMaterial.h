@@ -27,6 +27,7 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "astercxx.h"
+
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Materials/MaterialField.h"
@@ -38,19 +39,18 @@
  * @brief Coded material
  * @author Nicolas Sellenet
  */
-class CodedMaterial : public DataStructure
-{
-private:
-    MaterialFieldPtr                  _mater;
-    ModelPtr                          _model;
-    ConstantFieldOnCellsLongPtr       _field;
-    JeveuxVectorChar8                 _grp;
-    JeveuxVectorLong                  _nGrp;
-    std::vector< JeveuxVectorLong >   _vecOfCodiVectors;
-    std::vector< JeveuxVectorReal >   _vecOfR8;
-    std::vector< JeveuxVectorLong >   _vecOfIa;
+class CodedMaterial : public DataStructure {
+  private:
+    MaterialFieldPtr _mater;
+    ModelPtr _model;
+    ConstantFieldOnCellsLongPtr _field;
+    JeveuxVectorChar8 _grp;
+    JeveuxVectorLong _nGrp;
+    std::vector< JeveuxVectorLong > _vecOfCodiVectors;
+    std::vector< JeveuxVectorReal > _vecOfR8;
+    std::vector< JeveuxVectorLong > _vecOfIa;
 
-public:
+  public:
     /**
      * @typedef CodedMaterialPtr
      * @brief Pointeur intelligent vers un CodedMaterial
@@ -60,17 +60,12 @@ public:
     /**
      * @brief Constructeur
      */
-    CodedMaterial(void) = delete;
+    CodedMaterial( void ) = delete;
 
+    CodedMaterial( const std::string &name, const MaterialFieldPtr &mater, const ModelPtr &model );
 
-    CodedMaterial( const std::string& name,
-                        const MaterialFieldPtr& mater,
-                        const ModelPtr& model );
-
-
-    CodedMaterial( const MaterialFieldPtr& mater, const ModelPtr& model ):
-                    CodedMaterial(ResultNaming::getNewResultName() + ".MATE_CODE", mater, model){};
-
+    CodedMaterial( const MaterialFieldPtr &mater, const ModelPtr &model )
+        : CodedMaterial( ResultNaming::getNewResultName() + ".MATE_CODE", mater, model ){};
 
     /**
      * @brief Function to allocate the coded material
@@ -86,8 +81,7 @@ public:
     /**
      * @brief Get the .MATE_CODE
      */
-    ConstantFieldOnCellsLongPtr getCodedMaterialField() const
-    {
+    ConstantFieldOnCellsLongPtr getCodedMaterialField() const {
         _field->updateValuePointers();
         return _field;
     };
@@ -96,10 +90,7 @@ public:
      * @brief Function membre
      * @return material field
      */
-    MaterialFieldPtr getMaterialField() const
-    {
-        return _mater;
-    };
+    MaterialFieldPtr getMaterialField() const { return _mater; };
 };
 
 /**
@@ -107,6 +98,5 @@ public:
  * @brief Pointeur intelligent vers un CodedMaterial
  */
 typedef std::shared_ptr< CodedMaterial > CodedMaterialPtr;
-
 
 #endif /* CODEDMATERIAL_H_ */

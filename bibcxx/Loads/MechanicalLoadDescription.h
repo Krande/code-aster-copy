@@ -125,7 +125,7 @@ class MechanicalLoadDescription : public DataStructure {
           _veiss( getName() + ".VEISS" ),
           _evolChar( getName() + ".EVOL.CHAR" ),
           _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
-                                                                  _model->getMesh() ) ),
+                                                                _model->getMesh() ) ),
           _cimpo( std::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
           _cmult( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CMULT", _FEDesc ) ),
           _dpgen( std::make_shared< ConstantFieldOnCellsType >( getName() + ".DPGEN", _FEDesc ) ),
@@ -150,8 +150,7 @@ class MechanicalLoadDescription : public DataStructure {
           _siint( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SIINT", _FEDesc ) ),
           _vnor( std::make_shared< ConstantFieldOnCellsType >( getName() + ".VNOR", _FEDesc ) ),
           _ondpl( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDPL", _FEDesc ) ),
-          _ondpr(
-              std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDPR", _FEDesc ) ){};
+          _ondpr( std::make_shared< ConstantFieldOnCellsType >( getName() + ".ONDPR", _FEDesc ) ){};
 
     /**
      * @brief Get the finite element descriptor

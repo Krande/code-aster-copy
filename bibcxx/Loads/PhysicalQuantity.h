@@ -24,17 +24,17 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
+#include "Functions/Function.h"
+#include "Utilities/CapyConvertibleValue.h"
+
 #include <iterator>
 #include <list>
 #include <map>
 #include <set>
 #include <stdexcept>
 #include <string>
-
-#include "astercxx.h"
-
-#include "Functions/Function.h"
-#include "Utilities/CapyConvertibleValue.h"
 
 /**
  * @enum PhysicalQuantityEnum
@@ -156,7 +156,8 @@ const std::string &value( const std::pair< PhysicalQuantityComponent, std::strin
 /*
 /*************************************************************************/
 
-template < PhysicalQuantityEnum PQ > struct PhysicalQuantityTraits;
+template < PhysicalQuantityEnum PQ >
+struct PhysicalQuantityTraits;
 
 /****************************************/
 /*            Force                     */
@@ -179,7 +180,8 @@ extern const PhysicalQuantityComponent ForceComponents[nbForceComponents];
  *  It is applied to a 3D (or 2D) domain.
  */
 
-template <> struct PhysicalQuantityTraits< Force > {
+template <>
+struct PhysicalQuantityTraits< Force > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -206,7 +208,8 @@ extern const PhysicalQuantityComponent StructuralForceComponents[nbStructuralFor
  * (0d, 1d, 2d)
  */
 
-template <> struct PhysicalQuantityTraits< StructuralForce > {
+template <>
+struct PhysicalQuantityTraits< StructuralForce > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -232,7 +235,8 @@ extern const PhysicalQuantityComponent LocalBeamForceComponents[nbLocalBeamForce
  * A LocalBeam Force is defined in the local basis of the beam. It is applied on beam elements.
  */
 
-template <> struct PhysicalQuantityTraits< LocalBeamForce > {
+template <>
+struct PhysicalQuantityTraits< LocalBeamForce > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -259,7 +263,8 @@ extern const PhysicalQuantityComponent LocalShellForceComponents[nbLocalShellFor
  * elements.
  */
 
-template <> struct PhysicalQuantityTraits< LocalShellForce > {
+template <>
+struct PhysicalQuantityTraits< LocalShellForce > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -281,7 +286,8 @@ const int nbDisplacementComponents = 6;
  */
 extern const PhysicalQuantityComponent DisplacementComponents[nbDisplacementComponents];
 
-template <> struct PhysicalQuantityTraits< Displacement > {
+template <>
+struct PhysicalQuantityTraits< Displacement > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -303,7 +309,8 @@ const int nbPressureComponents = 1;
  */
 extern const PhysicalQuantityComponent PressureComponents[nbPressureComponents];
 
-template <> struct PhysicalQuantityTraits< Pressure > {
+template <>
+struct PhysicalQuantityTraits< Pressure > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -325,7 +332,8 @@ const int nbTemperatureComponents = 2;
  */
 extern const PhysicalQuantityComponent TemperatureComponents[nbTemperatureComponents];
 
-template <> struct PhysicalQuantityTraits< Temperature > {
+template <>
+struct PhysicalQuantityTraits< Temperature > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -347,7 +355,8 @@ const int nbImpedanceComponents = 1;
  */
 extern const PhysicalQuantityComponent ImpedanceComponents[nbImpedanceComponents];
 
-template <> struct PhysicalQuantityTraits< Impedance > {
+template <>
+struct PhysicalQuantityTraits< Impedance > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -369,7 +378,8 @@ const int nbNormalSpeedComponents = 1;
  */
 extern const PhysicalQuantityComponent NormalSpeedComponents[nbNormalSpeedComponents];
 
-template <> struct PhysicalQuantityTraits< NormalSpeed > {
+template <>
+struct PhysicalQuantityTraits< NormalSpeed > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -391,7 +401,8 @@ const int nbHeatFluxComponents = 1;
  */
 extern const PhysicalQuantityComponent HeatFluxComponents[nbHeatFluxComponents];
 
-template <> struct PhysicalQuantityTraits< HeatFlux > {
+template <>
+struct PhysicalQuantityTraits< HeatFlux > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -413,7 +424,8 @@ const int nbHydraulicFluxComponents = 2;
  */
 extern const PhysicalQuantityComponent HydraulicFluxComponents[nbHydraulicFluxComponents];
 
-template <> struct PhysicalQuantityTraits< HydraulicFlux > {
+template <>
+struct PhysicalQuantityTraits< HydraulicFlux > {
     static const std::set< PhysicalQuantityComponent > components;
     static const std::string name;
     static const PhysicalQuantityEnum type;
@@ -424,7 +436,8 @@ template <> struct PhysicalQuantityTraits< HydraulicFlux > {
 /* @brief Defines a physical quantity
 /******************************************/
 
-template < class ValueType, PhysicalQuantityEnum PhysicalQuantityType > class PhysicalQuantity {
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantityType >
+class PhysicalQuantity {
     /** @brief Conteneur des mots-clés avec traduction */
     CapyConvertibleContainer _toCapyConverter;
 

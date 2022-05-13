@@ -23,9 +23,10 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Contact/ContactEnum.h"
 #include "Discretization/ElementaryCharacteristics.h"
-#include "astercxx.h"
 #include "Loads/ListOfLoads.h"
 
 class ContactParameter {
@@ -50,8 +51,10 @@ class ContactParameter {
      * @brief Constructeur
      */
     ContactParameter()
-        : _algo( ContactAlgo::Lagrangian ), _type( ContactType::Unilateral ),
-          _vari( ContactVariant::Empty ), _coeff( 100. ){};
+        : _algo( ContactAlgo::Lagrangian ),
+          _type( ContactType::Unilateral ),
+          _vari( ContactVariant::Empty ),
+          _coeff( 100. ){};
 
     ContactAlgo getAlgorithm() const { return _algo; };
 
@@ -103,9 +106,12 @@ class FrictionParameter {
      */
 
     FrictionParameter()
-        : _friction(false), _algo( FrictionAlgo::Lagrangian ),
-         _type( FrictionType::Without ), _coeff( 100. ), _tresca(-1.),
-         _coulomb(-1.){};
+        : _friction( false ),
+          _algo( FrictionAlgo::Lagrangian ),
+          _type( FrictionType::Without ),
+          _coeff( 100. ),
+          _tresca( -1. ),
+          _coulomb( -1. ){};
 
     FrictionAlgo getAlgorithm() const { return _algo; };
 
@@ -138,7 +144,6 @@ class FrictionParameter {
  */
 typedef std::shared_ptr< FrictionParameter > FrictionParameterPtr;
 
-
 class PairingParameter {
   private:
     /** @brief Pairing algorithm = APPARIEMENT */
@@ -156,7 +161,7 @@ class PairingParameter {
     /** @brief if fictive distance for shell = DIST_COQUE */
     bool _shell;
     /** @brief structural element characteristics = CARA_ELEM */
-    ElementaryCharacteristicsPtr _cara ;
+    ElementaryCharacteristicsPtr _cara;
     /** @brief structural element characteristics = DIST_SUPP */
     //
 
@@ -170,10 +175,15 @@ class PairingParameter {
     /**
      * @brief Constructeur
      */
-    PairingParameter() : _algo(PairingAlgo::Mortar), _dist_appa(-1.0),
-                         _cont_init(InitialState::Interpenetrated),
-                         _seuil(-1.0), _beam(false), _dist_supp(nullptr),
-                         _shell(false), _cara(nullptr) {};
+    PairingParameter()
+        : _algo( PairingAlgo::Mortar ),
+          _dist_appa( -1.0 ),
+          _cont_init( InitialState::Interpenetrated ),
+          _seuil( -1.0 ),
+          _beam( false ),
+          _dist_supp( nullptr ),
+          _shell( false ),
+          _cara( nullptr ){};
 
     PairingAlgo getAlgorithm() const { return _algo; };
 
@@ -195,7 +205,7 @@ class PairingParameter {
 
     void setThreshold( const ASTERDOUBLE &seuil ) { _seuil = seuil; };
 
-    void setDistanceFunction( const GenericFunctionPtr &dist_supp) { _dist_supp = dist_supp; };
+    void setDistanceFunction( const GenericFunctionPtr &dist_supp ) { _dist_supp = dist_supp; };
 
     void enableBeamDistance( const bool &beam ) { _beam = beam; }
 
@@ -206,7 +216,6 @@ class PairingParameter {
     bool hasShellDistance() const { return _shell; }
 
     void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) { _cara = cara; };
-
 };
 
 /**

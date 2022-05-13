@@ -33,7 +33,8 @@
 #include "Utilities/GenericEnum.h"
 
 /** @brief Forward declaration of ConstantFieldOnCells */
-template < class ValueType > class ConstantFieldOnCells;
+template < class ValueType >
+class ConstantFieldOnCells;
 typedef ConstantFieldOnCells< ASTERDOUBLE > ConstantFieldOnCellsReal;
 typedef std::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
 

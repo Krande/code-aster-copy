@@ -40,10 +40,8 @@ class FullTransientResult : public FullResult {
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    FullTransientResult( const std::string &name )
-        : FullResult( name, "DYNA_TRANS" ){};
-    FullTransientResult()
-        : FullResult( ResultNaming::getNewResultName(), "DYNA_TRANS" ){};
+    FullTransientResult( const std::string &name ) : FullResult( name, "DYNA_TRANS" ){};
+    FullTransientResult() : FullResult( ResultNaming::getNewResultName(), "DYNA_TRANS" ){};
 };
 
 /**

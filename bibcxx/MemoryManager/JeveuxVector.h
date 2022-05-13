@@ -750,9 +750,9 @@ class JeveuxVector {
         return *this;
     };
 
-    const JeveuxVectorTypePtr &operator->( void ) const { return _jeveuxVectorPtr; };
+    const JeveuxVectorTypePtr &operator->(void)const { return _jeveuxVectorPtr; };
 
-    JeveuxVectorClass< ValueType > &operator*( void ) const { return *_jeveuxVectorPtr; };
+    JeveuxVectorClass< ValueType > &operator*(void)const { return *_jeveuxVectorPtr; };
 
     bool isEmpty() const {
         if ( _jeveuxVectorPtr == nullptr )

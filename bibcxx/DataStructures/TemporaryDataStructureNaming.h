@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe TemporaryDataStructureNaming
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,9 +25,10 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <assert.h>
-#include <string>
 #include <sstream>
+#include <string>
+
+#include <assert.h>
 
 /**
  * @class TemporaryDataStructureNaming
@@ -46,7 +47,7 @@ class TemporaryDataStructureNaming {
     /**
      * @brief Static member that returns a new name.
      */
-    static std::string getNewTemporaryName( const int lengthName = 8);
+    static std::string getNewTemporaryName( const int lengthName = 8 );
 };
 
 #endif /* TEMPORARYDATASTRUCTURENAMING_H_ */

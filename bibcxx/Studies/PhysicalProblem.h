@@ -68,7 +68,6 @@ class PhysicalProblem {
     FieldOnCellsRealPtr _externVarRefe;
 
   public:
-
     // No default constructor
     PhysicalProblem( void ) = delete;
 
@@ -81,7 +80,7 @@ class PhysicalProblem {
 
     /** @brief Add a load (mechanical or dirichlet) with function, formula */
     template < typename... Args >
-    void addLoad( const Args &...a ) {
+    void addLoad( const Args &... a ) {
         _listOfLoads->addLoad( a... );
     };
 

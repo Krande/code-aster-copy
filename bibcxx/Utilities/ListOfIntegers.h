@@ -64,15 +64,15 @@ class ListOfIntegers : public DataStructure {
      * @brief Constructeur
      */
     ListOfIntegers( const std::string name )
-        : DataStructure( name, 19, "LISTIS"),
+        : DataStructure( name, 19, "LISTIS" ),
           _bint( JeveuxVectorReal( getName() + ".BINT" ) ),
           _lpas( JeveuxVectorReal( getName() + ".LPAS" ) ),
           _nbPa( JeveuxVectorLong( getName() + ".NBPA" ) ),
           _vale( JeveuxVectorLong( getName() + ".VALE" ) ){};
-          
-    VectorLong getValues() const ;
 
-    void setVectorValues( const VectorLong & ) ;
+    VectorLong getValues() const;
+
+    void setVectorValues( const VectorLong & );
 
     int size();
 };

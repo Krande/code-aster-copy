@@ -28,8 +28,8 @@
 
 #include "astercxx.h"
 
-#include "Results/TransientResult.h"
 #include "Contact/Contact.h"
+#include "Results/TransientResult.h"
 
 /**
  * @class NonLinearResult
@@ -54,12 +54,11 @@ class NonLinearResult : public TransientResult {
     /**
      * @brief Constructeur
      */
-    NonLinearResult( const std::string name )
-        : TransientResult( name, "EVOL_NOLI" ){};
+    NonLinearResult( const std::string name ) : TransientResult( name, "EVOL_NOLI" ){};
 
-    void setContact( const ContactPtr contact);
+    void setContact( const ContactPtr contact );
 
-    void setContact( const ContactPtr contact, const ASTERINTEGER& rank);
+    void setContact( const ContactPtr contact, const ASTERINTEGER &rank );
 
     bool build();
 };

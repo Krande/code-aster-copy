@@ -124,12 +124,9 @@ bool Model::buildWithSyntax( SyntaxMapContainer &dict ) {
     cmdSt.define( dict );
 
     // Maintenant que le fichier de commande est pret, on appelle OP0018
-    try {
-        ASTERINTEGER op = 18;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 18;
+    CALL_EXECOP( &op );
+
     // Attention, la connection des objets a leur image JEVEUX n'est pas necessaire
     _typeOfCells->updateValuePointer();
 

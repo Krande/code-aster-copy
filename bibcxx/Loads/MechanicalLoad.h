@@ -86,24 +86,22 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
     MechanicalLoad( const std::string name, const ModelPtr &currentModel )
         : DataStructure( name, 8, "CHAR_MECA" ),
           ListOfTables( name ),
-          _mecaLoadDesc(
-              std::make_shared< MechanicalLoadDescription< ConstantFieldOnCellsType > >(
-                  getName() + ".CHME", currentModel ) ),
+          _mecaLoadDesc( std::make_shared< MechanicalLoadDescription< ConstantFieldOnCellsType > >(
+              getName() + ".CHME", currentModel ) ),
           _type( getName() + ".TYPE" ),
           _lisma01( getName() + ".LISMA01" ),
           _lisma02( getName() + ".LISMA02" ),
           _trans01( getName() + ".TRANS01" ),
           _trans02( getName() + ".TRANS02" ),
-          _dualPrdk( JeveuxVectorChar8(getName() + ".DUAL.PRDK") ),
-          _dualPrdso( JeveuxVectorChar8(getName() + ".DUAL.PRDSO") ),
-          _dualPrdi( JeveuxVectorLong(getName() + ".DUAL.PRDI") ),
+          _dualPrdk( JeveuxVectorChar8( getName() + ".DUAL.PRDK" ) ),
+          _dualPrdso( JeveuxVectorChar8( getName() + ".DUAL.PRDSO" ) ),
+          _dualPrdi( JeveuxVectorLong( getName() + ".DUAL.PRDI" ) ),
           _poidsMaille( getName() + ".POIDS_MAILLE" ){};
 
     /**
      * @brief Get the model
      */
-    MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType >
-    getMechanicalLoadDescription() const {
+    MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType > getMechanicalLoadDescription() const {
         return _mecaLoadDesc;
     };
 

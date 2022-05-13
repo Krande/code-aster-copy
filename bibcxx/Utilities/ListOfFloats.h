@@ -64,15 +64,15 @@ class ListOfFloats : public DataStructure {
      * @brief Constructeur
      */
     ListOfFloats( const std::string name )
-        : DataStructure( name, 19, "LISTR8"),
+        : DataStructure( name, 19, "LISTR8" ),
           _bint( JeveuxVectorReal( getName() + ".BINT" ) ),
           _lpas( JeveuxVectorReal( getName() + ".LPAS" ) ),
           _nbPa( JeveuxVectorLong( getName() + ".NBPA" ) ),
           _vale( JeveuxVectorReal( getName() + ".VALE" ) ){};
 
-    VectorReal getValues() const ;
+    VectorReal getValues() const;
 
-    void setVectorValues( const VectorReal & ) ;
+    void setVectorValues( const VectorReal & );
 
     int size();
 };

@@ -23,14 +23,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "astercxx.h"
 
 /* Define here generic enum
-*
-*  Thinkd to bind enum in python
-*/
+ *
+ *  Thinkd to bind enum in python
+ */
 
-enum PythonBool { None = -1, False = 0, True = 1};
+enum PythonBool { None = -1, False = 0, True = 1 };
 
 #endif /* GENERIC_ENUM_H_ */

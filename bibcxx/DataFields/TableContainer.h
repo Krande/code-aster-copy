@@ -26,9 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <map>
-#include <string>
-
 #include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
@@ -45,6 +42,9 @@
 #include "Meshes/Mesh.h"
 #include "Results/ModeResult.h"
 #include "Supervis/ResultNaming.h"
+
+#include <map>
+#include <string>
 
 #ifdef ASTER_HAVE_MPI
 #include "Meshes/ParallelMesh.h"

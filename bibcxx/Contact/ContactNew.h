@@ -23,12 +23,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "Contact/ContactZone.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
-#include "astercxx.h"
 
 class ContactNew : public DataStructure {
   private:

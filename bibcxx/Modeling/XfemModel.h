@@ -29,12 +29,14 @@
 #include "DataFields/DataField.h"
 
 /** @brief Forward declaration of FieldOnNodes */
-template < class ValueType > class FieldOnNodes;
+template < class ValueType >
+class FieldOnNodes;
 typedef FieldOnNodes< ASTERINTEGER > FieldOnNodesLong;
 typedef std::shared_ptr< FieldOnNodesLong > FieldOnNodesLongPtr;
 
 /** @brief Forward declaration of FieldOnCells */
-template < class ValueType > class FieldOnCells;
+template < class ValueType >
+class FieldOnCells;
 typedef FieldOnCells< ASTERDOUBLE > FieldOnCellsReal;
 typedef std::shared_ptr< FieldOnCellsReal > FieldOnCellsRealPtr;
 typedef FieldOnCells< ASTERINTEGER > FieldOnCellsLong;
@@ -52,6 +54,7 @@ class XfemModel {
     class SubElementTopology {
         const std::string _name;
         const std::string getName() const { return _name; };
+
       public:
         FieldOnCellsRealPtr pin, pai, pmi;
         FieldOnCellsLongPtr cns, hea, lon;
@@ -62,12 +65,14 @@ class XfemModel {
         FieldOnCellsRealPtr _intersection_pt, _intersection_edge, _base, _intersection_pt2;
         FieldOnCellsLongPtr _connectivity, _length, _heaviside;
         const std::string getName() const { return _name; };
+
       public:
         FacetTopology( const std::string );
     };
     class NodalTopology {
         const std::string _name;
         const std::string getName() const { return _name; };
+
       public:
         FieldOnCellsLongPtr hno, hfa, hse;
         NodalTopology( const std::string );
@@ -84,7 +89,7 @@ class XfemModel {
   public:
     XfemModel( const std::string modelName );
 
-    DataFieldPtr getField( const std::string fieldType) const{
+    DataFieldPtr getField( const std::string fieldType ) const {
         return _listfields.at( fieldType );
     };
 };

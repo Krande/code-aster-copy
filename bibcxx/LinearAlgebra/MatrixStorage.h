@@ -29,8 +29,8 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
+#include "MemoryManager/JeveuxVector.h"
 
 /**
  * @class MatrixStorage
@@ -43,8 +43,7 @@ class MatrixStorage : public DataStructure {
     /**
      * @brief Constructeur
      */
-    MatrixStorage( const std::string &name )
-        : DataStructure( name, 19, "STOCKAGE"){};
+    MatrixStorage( const std::string &name ) : DataStructure( name, 19, "STOCKAGE" ){};
 };
 
 /**
@@ -74,7 +73,8 @@ class LigneDeCiel : public MatrixStorage {
      * @brief Constructeur
      */
     LigneDeCiel( const std::string &name )
-        : MatrixStorage( name ), _scbl( JeveuxVectorLong( getName() + ".SCBL" ) ),
+        : MatrixStorage( name ),
+          _scbl( JeveuxVectorLong( getName() + ".SCBL" ) ),
           _scdi( JeveuxVectorLong( getName() + ".SCDI" ) ),
           _scde( JeveuxVectorLong( getName() + ".SCDE" ) ),
           _schc( JeveuxVectorLong( getName() + ".SCHC" ) ),
@@ -108,7 +108,8 @@ class MorseStorage : public MatrixStorage {
      * @brief Constructeur
      */
     MorseStorage( const std::string &name )
-        : MatrixStorage( name ), _smdi( JeveuxVectorLong( getName() + ".SMDI" ) ),
+        : MatrixStorage( name ),
+          _smdi( JeveuxVectorLong( getName() + ".SMDI" ) ),
           _smde( JeveuxVectorLong( getName() + ".SMDE" ) ),
           _smhc( JeveuxVectorShort( getName() + ".SMHC" ) ){};
 };
@@ -140,7 +141,8 @@ class MultFrontStorage : public MatrixStorage {
      * @brief Constructeur
      */
     MultFrontStorage( const std::string &name )
-        : MatrixStorage( name ), _adnt( JeveuxVectorShort( getName() + ".ADNT" ) ),
+        : MatrixStorage( name ),
+          _adnt( JeveuxVectorShort( getName() + ".ADNT" ) ),
           _glob( JeveuxVectorShort( getName() + ".GLOB" ) ),
           _locl( JeveuxVectorShort( getName() + ".LOCL" ) ),
           _pnti( JeveuxVectorShort( getName() + ".PNTI" ) ){};

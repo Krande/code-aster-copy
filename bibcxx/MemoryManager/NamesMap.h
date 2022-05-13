@@ -193,9 +193,9 @@ class NamesMap {
         return *this;
     };
 
-    const NamesMapPtr &operator->( void ) const { return _namesMapPtr; };
+    const NamesMapPtr &operator->(void)const { return _namesMapPtr; };
 
-    NamesMapClass< ValueType > &operator*( void ) const { return *_namesMapPtr; };
+    NamesMapClass< ValueType > &operator*(void)const { return *_namesMapPtr; };
 
     bool isEmpty() const {
         if ( _namesMapPtr.use_count() == 0 )

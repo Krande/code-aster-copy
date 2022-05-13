@@ -26,8 +26,8 @@
 
 #include "astercxx.h"
 
-#include "Results/FullResult.h"
 #include "LinearAlgebra/AssemblyMatrix.h"
+#include "Results/FullResult.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -47,8 +47,7 @@ class AcousticModeResult : public FullResult {
     AcousticModeResult( const std::string &name )
         : FullResult( name, "MODE_ACOU" ), _rigidityMatrix( nullptr ){};
 
-    AcousticModeResult()
-        : AcousticModeResult( ResultNaming::getNewResultName() ){};
+    AcousticModeResult() : AcousticModeResult( ResultNaming::getNewResultName() ){};
     /**
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixPressureRealPtr

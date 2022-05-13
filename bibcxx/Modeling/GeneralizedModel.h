@@ -29,8 +29,8 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
+#include "MemoryManager/JeveuxVector.h"
 #include "Modal/DynamicMacroElement.h"
 #include "Supervis/ResultNaming.h"
 
@@ -72,8 +72,8 @@ class GeneralizedModel : public DataStructure {
     /**
      * @brief Constructeur
      */
-    GeneralizedModel( const std::string name = ResultNaming::getNewResultName())
-        : DataStructure( name, 14, "MODELE_GENE"),
+    GeneralizedModel( const std::string name = ResultNaming::getNewResultName() )
+        : DataStructure( name, 14, "MODELE_GENE" ),
           _modgDesc( JeveuxVectorLong( getName() + ".MODG.DESC" ) ),
           _modgLidf( JeveuxCollectionChar8( getName() + ".MODG.DESC" ) ),
           _modgLipr( JeveuxVectorLong( getName() + ".MODG.DESC" ) ),

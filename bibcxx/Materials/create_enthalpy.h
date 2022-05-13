@@ -6,7 +6,7 @@
  * @brief Create enthalpy function from rho_cp
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,7 +29,6 @@
 #include "Functions/Function.h"
 
 /** @brief Create enthalpy function from rho_cp */
-bool create_enthalpy(const FunctionPtr &rho_cp_func, const FunctionPtr &beta_func) ;
-
+bool create_enthalpy( const FunctionPtr &rho_cp_func, const FunctionPtr &beta_func );
 
 #endif /* CREATE_ENTHALPY_H_ */

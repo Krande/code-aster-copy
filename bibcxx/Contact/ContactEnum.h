@@ -23,27 +23,25 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "astercxx.h"
 
 /* Define here Enum for Contact problem
-*
-*  Thinkd to bind enum in python
-*/
+ *
+ *  Thinkd to bind enum in python
+ */
 
-enum class ContactAlgo { Lagrangian, Nitsche, Penalization};
+enum class ContactAlgo { Lagrangian, Nitsche, Penalization };
 
-enum class ContactVariant { Empty, Rapide, Robust};
+enum class ContactVariant { Empty, Rapide, Robust };
 
-enum class ContactType { Unilateral, Bilateral, Stick};
+enum class ContactType { Unilateral, Bilateral, Stick };
 
-enum class FrictionAlgo { Lagrangian, Nitsche, Penalization};
+enum class FrictionAlgo { Lagrangian, Nitsche, Penalization };
 
-enum class FrictionType { Without, Tresca, Coulomb, Stick};
+enum class FrictionType { Without, Tresca, Coulomb, Stick };
 
 enum class PairingAlgo { Mortar };
 
 enum class InitialState { Interpenetrated, No, Yes };
-
 
 #endif /* CONTACT_ENUM_H_ */

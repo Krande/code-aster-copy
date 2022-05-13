@@ -145,8 +145,7 @@ class ParallelMesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
-    VectorLong getNodesFromCells( const std::string name,
-                                  const bool localNumbering = true,
+    VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**

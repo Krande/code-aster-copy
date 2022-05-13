@@ -6,7 +6,7 @@
  * @brief Fichier definissant les modelisations autorisees
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,10 +26,12 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <stdexcept>
 #include "astercxx.h"
+
 #include "Modeling/PhysicsAndModelings.h"
+
 #include <set>
+#include <stdexcept>
 
 // Ces wrappers sont la pour autoriser que les set soitent const
 // Sinon, on aurait pas pu passer directement des const set<> en parametre template
@@ -63,7 +65,8 @@ struct WrapAcoustic {
           pour un physique donnee
  * @author Nicolas Sellenet
  */
-template < class Wrapping > struct ModelingsChecker {
+template < class Wrapping >
+struct ModelingsChecker {
     /**
      * @brief Fonction statique verifiant qu'une modelisation est autorisee pour la physique
      */
@@ -90,8 +93,7 @@ struct PhysicsChecker {
     /**
      * @brief Fonction statique verifiant qu'une paire physique modelisation est autorisee
      */
-    static bool isAllowedModelingForPhysics( Physics phys,
-                                             Modelings model ) {
+    static bool isAllowedModelingForPhysics( Physics phys, Modelings model ) {
         switch ( phys ) {
         case Mechanics:
             return MechanicsModelingsChecker::isAllowedModeling( model );

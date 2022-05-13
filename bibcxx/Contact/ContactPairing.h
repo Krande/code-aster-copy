@@ -24,128 +24,123 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#include "DataStructures/DataStructure.h"
-#include "DataFields/FieldOnNodes.h"
-#include "Contact/ContactParameters.h"
 #include "Contact/ContactNew.h"
-
-
+#include "Contact/ContactParameters.h"
+#include "DataFields/FieldOnNodes.h"
+#include "DataStructures/DataStructure.h"
 
 class ContactPairing : public DataStructure {
 
-    private:
-    
+  private:
     /** @brief new coordinates */
     MeshCoordinatesFieldPtr _newCoordinates;
     /** @brief vector of zones  */
     std::vector< ContactZonePtr > _zones;
     /** @brief Mesh */
-    BaseMeshPtr _mesh ;
+    BaseMeshPtr _mesh;
     /** @brief Vector of number of pairs */
     VectorLong _nbPairs;
     /** @brief Vector of pairs */
-    std::vector<VectorLong> _listOfPairs;
+    std::vector< VectorLong > _listOfPairs;
     /** @brief Vector of number of intersection points  */
-    std::vector<VectorLong> _nbIntersectionPoints;
+    std::vector< VectorLong > _nbIntersectionPoints;
     /** @brief Vector of slave intersection points */
-    std::vector<VectorReal>  _slaveIntersectionPoints;
+    std::vector< VectorReal > _slaveIntersectionPoints;
     /** @brief Vector of master intersection points */
-    std::vector<VectorReal>  _masterIntersectionPoints;
+    std::vector< VectorReal > _masterIntersectionPoints;
     /** @brief Gauss points */
-    std::vector<VectorReal> _quadraturePoints;
+    std::vector< VectorReal > _quadraturePoints;
 
-    public:
+  public:
+    typedef std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > VectorLongPairs;
 
-    typedef std::vector<std::pair<ASTERINTEGER,ASTERINTEGER>> VectorLongPairs;
-    
-    /** @brief Mesh constructor */ 
+    /** @brief Mesh constructor */
     ContactPairing( const std::string name, const std::vector< ContactZonePtr > zones,
-                            const BaseMeshPtr mesh);
+                    const BaseMeshPtr mesh );
 
-    /** @brief Mesh constructor */                         
-    ContactPairing( const std::vector< ContactZonePtr > zones, const BaseMeshPtr mesh ):
-                ContactPairing( ResultNaming::getNewResultName(), zones, mesh ) {};
+    /** @brief Mesh constructor */
+    ContactPairing( const std::vector< ContactZonePtr > zones, const BaseMeshPtr mesh )
+        : ContactPairing( ResultNaming::getNewResultName(), zones, mesh ){};
 
-    /** @brief Mesh getter */    
+    /** @brief Mesh getter */
     MeshCoordinatesFieldPtr getCoordinates() const { return _newCoordinates; }
 
-    /** @brief zones  getter */  
-    std::vector< ContactZonePtr > getContactZones() const { return _zones;}
+    /** @brief zones  getter */
+    std::vector< ContactZonePtr > getContactZones() const { return _zones; }
 
-    /** @brief Update coordinates */  
-    void updateCoordinates(FieldOnNodesRealPtr& disp) { 
-            *_newCoordinates = *( _mesh->getCoordinates() ) +  *disp; };
-    
-    /** @brief compute pairing quantities of zone i */  
-    ASTERBOOL compute( ASTERINTEGER i );
-
-   /** @brief get zone of index zone_index */  
-    ContactZonePtr getContactZone( ASTERINTEGER zone_index ) { return _zones[ zone_index ]; }
-
-    /** @brief clearZone all pairing quantities of zone i */  
-    ASTERBOOL clearZone( ASTERINTEGER i);
-
-    /** @brief clearZone all pairing quantities for all zones */  
-    ASTERBOOL clear( ){
-            for( auto i=0; i < _zones.size(); i++){
-                    clearZone(i);
-            }
-            return true;
+    /** @brief Update coordinates */
+    void updateCoordinates( FieldOnNodesRealPtr &disp ) {
+        *_newCoordinates = *( _mesh->getCoordinates() ) + *disp;
     };
 
-    /** @brief get number of all pairs  */  
-    ASTERINTEGER getNumberOfPairs( ) const {
-            
-            return std::accumulate(_nbPairs.begin(), _nbPairs.end(), 0);
-     };
+    /** @brief compute pairing quantities of zone i */
+    ASTERBOOL compute( ASTERINTEGER i );
 
-    /** @brief get number of pairs of zone zone_index  */  
+    /** @brief get zone of index zone_index */
+    ContactZonePtr getContactZone( ASTERINTEGER zone_index ) { return _zones[zone_index]; }
+
+    /** @brief clearZone all pairing quantities of zone i */
+    ASTERBOOL clearZone( ASTERINTEGER i );
+
+    /** @brief clearZone all pairing quantities for all zones */
+    ASTERBOOL clear() {
+        for ( auto i = 0; i < _zones.size(); i++ ) {
+            clearZone( i );
+        }
+        return true;
+    };
+
+    /** @brief get number of all pairs  */
+    ASTERINTEGER getNumberOfPairs() const {
+
+        return std::accumulate( _nbPairs.begin(), _nbPairs.end(), 0 );
+    };
+
+    /** @brief get number of pairs of zone zone_index  */
     ASTERINTEGER getNumberOfPairsOfZone( ASTERINTEGER zone_index ) const {
-                                 return _nbPairs[ zone_index ]; }
-
-    /** @brief get list of pairs of zone associated with zone zone_index 
-     *  @return vector of pairs of type std::pair
-    */  
-    VectorLongPairs getListOfPairsOfZone( ASTERINTEGER zone_index)  const {
-
-            if ( _listOfPairs[zone_index].size() == 0 ||  _listOfPairs[zone_index].size() % 2 != 0){
-                    raiseAsterError( " List of pairs is empty or has an odd size " );
-            }
-
-            VectorLongPairs  tmp;
-            ASTERINTEGER nbPairs = getNumberOfPairsOfZone(zone_index);
-
-            for( auto i = 0; i < nbPairs; i++){
-                tmp.push_back( std::make_pair( _listOfPairs[zone_index][ 2*i ],
-                                                 _listOfPairs[zone_index][ 2*i + 1 ] ) );
-            }
-             return tmp;
+        return _nbPairs[zone_index];
     }
 
-    /** @brief get slave intersection points of zone zone_index 
-     *   @return vector of slave intersection points of size 16*number of pairs 
+    /** @brief get list of pairs of zone associated with zone zone_index
+     *  @return vector of pairs of type std::pair
+     */
+    VectorLongPairs getListOfPairsOfZone( ASTERINTEGER zone_index ) const {
+
+        if ( _listOfPairs[zone_index].size() == 0 || _listOfPairs[zone_index].size() % 2 != 0 ) {
+            raiseAsterError( " List of pairs is empty or has an odd size " );
+        }
+
+        VectorLongPairs tmp;
+        ASTERINTEGER nbPairs = getNumberOfPairsOfZone( zone_index );
+
+        for ( auto i = 0; i < nbPairs; i++ ) {
+            tmp.push_back( std::make_pair( _listOfPairs[zone_index][2 * i],
+                                           _listOfPairs[zone_index][2 * i + 1] ) );
+        }
+        return tmp;
+    }
+
+    /** @brief get slave intersection points of zone zone_index
+     *   @return vector of slave intersection points of size 16*number of pairs
      **/
-    VectorReal getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const { 
-            return _slaveIntersectionPoints[ zone_index ]; 
+    VectorReal getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const {
+        return _slaveIntersectionPoints[zone_index];
     }
 
     /** @brief get master intersection points of zone zone_index
-     *  @return vector of master intersection points of size 16*number of pairs 
+     *  @return vector of master intersection points of size 16*number of pairs
      **/
-    VectorReal getMasterIntersectionPoints( ASTERINTEGER zone_index ) const { 
-            return _masterIntersectionPoints[ zone_index ]; 
+    VectorReal getMasterIntersectionPoints( ASTERINTEGER zone_index ) const {
+        return _masterIntersectionPoints[zone_index];
     }
 
-    /** @brief get gauss points of zone zone_index 
-     * @return vector Gauss quadrature points of size 72*number of pairs 
+    /** @brief get gauss points of zone zone_index
+     * @return vector Gauss quadrature points of size 72*number of pairs
      **/
-    VectorReal getQuadraturePoints( ASTERINTEGER zone_index ) const { 
-            return _quadraturePoints[ zone_index ]; 
+    VectorReal getQuadraturePoints( ASTERINTEGER zone_index ) const {
+        return _quadraturePoints[zone_index];
     }
-
 };
-
 
 typedef std::shared_ptr< ContactPairing > ContactPairingPtr;
 

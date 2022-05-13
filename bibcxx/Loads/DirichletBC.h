@@ -25,6 +25,7 @@
  */
 
 #include "astercxx.h"
+
 #include "Functions/Function.h"
 #include "Loads/UnitaryLoad.h"
 #include "MemoryManager/JeveuxVector.h"
@@ -68,12 +69,12 @@ class DirichletBC : public DataStructure {
     /**
      * @brief Constructeur
      */
-    DirichletBC( const std::string &type, const ModelPtr& model );
+    DirichletBC( const std::string &type, const ModelPtr &model );
 
     /**
      * @brief Constructeur
      */
-    DirichletBC( const std::string &name, const std::string &type, const ModelPtr& model );
+    DirichletBC( const std::string &name, const std::string &type, const ModelPtr &model );
 
   public:
     /**
@@ -86,16 +87,11 @@ class DirichletBC : public DataStructure {
      * @brief Construction de la charge (appel a OP0101)
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool build() ;
+    bool build();
 
-    ModelPtr getModel() const
-    {
-        return _model;
-    }
+    ModelPtr getModel() const { return _model; }
 
-    virtual int getPhysics( void ) const {
-        AS_ABORT( "Not allowed" );
-    };
+    virtual int getPhysics( void ) const { AS_ABORT( "Not allowed" ); };
 
   private:
     /**
@@ -122,14 +118,12 @@ class MechanicalDirichletBC : public DirichletBC {
      */
     MechanicalDirichletBC( void ) = delete;
 
-
-    MechanicalDirichletBC( const ModelPtr& model)
-        : DirichletBC( "_MECA", model ){};
+    MechanicalDirichletBC( const ModelPtr &model ) : DirichletBC( "_MECA", model ){};
 
     /**
      * @brief Constructeur
      */
-    MechanicalDirichletBC( const std::string name, const ModelPtr& model )
+    MechanicalDirichletBC( const std::string name, const ModelPtr &model )
         : DirichletBC( name, "_MECA", model ){};
 
     /**
@@ -138,9 +132,7 @@ class MechanicalDirichletBC : public DirichletBC {
      */
     typedef std::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
 
-    virtual int getPhysics( void ) const {
-        return Physics::Mechanics;
-    };
+    virtual int getPhysics( void ) const { return Physics::Mechanics; };
 
     /**
      * @brief Ajout d'une valeur mecanique imposee sur un groupe de mailles
@@ -148,9 +140,8 @@ class MechanicalDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnCells(
-        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
-        const std::string &nameOfGroup ) {
+    bool addBCOnCells( const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
+                       const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfCells( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -166,9 +157,8 @@ class MechanicalDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnCells(
-        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
-        const VectorString &namesOfGroup ) {
+    bool addBCOnCells( const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
+                       const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnCells( coordinate, value, nameOfGroup );
         return true;
@@ -180,10 +170,8 @@ class MechanicalDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool
-    addBCOnNodes( const PhysicalQuantityComponent &coordinate,
-                                    const ASTERDOUBLE &value,
-                                    const std::string &nameOfGroup ) {
+    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
+                       const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -199,9 +187,8 @@ class MechanicalDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnNodes(
-        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
-        const VectorString &namesOfGroup ) {
+    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
+                       const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnNodes( coordinate, value, nameOfGroup );
         return true;
@@ -223,13 +210,12 @@ class ThermalDirichletBC : public DirichletBC {
     /**
      * @brief Constructeur
      */
-    ThermalDirichletBC(const ModelPtr& model)
-        : DirichletBC( "_THER", model ){};
+    ThermalDirichletBC( const ModelPtr &model ) : DirichletBC( "_THER", model ){};
 
     /**
      * @brief Constructeur
      */
-    ThermalDirichletBC( const std::string name, const ModelPtr& model )
+    ThermalDirichletBC( const std::string name, const ModelPtr &model )
         : DirichletBC( name, "_THER", model ){};
 
     /**
@@ -238,9 +224,7 @@ class ThermalDirichletBC : public DirichletBC {
      */
     typedef std::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
 
-    virtual int getPhysics( void ) const {
-        return Physics::Thermal;
-    };
+    virtual int getPhysics( void ) const { return Physics::Thermal; };
 
     /**
      * @brief Ajout d'une valeur thermique imposee sur un groupe de mailles
@@ -248,10 +232,8 @@ class ThermalDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool
-    addBCOnCells( const PhysicalQuantityComponent &coordinate,
-                                    const ASTERDOUBLE &value,
-                                    const std::string &nameOfGroup ) {
+    bool addBCOnCells( const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
+                       const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfCells( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -267,9 +249,8 @@ class ThermalDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnCells(
-        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
-        const VectorString &namesOfGroup ) {
+    bool addBCOnCells( const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
+                       const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnCells( coordinate, value, nameOfGroup );
         return true;
@@ -281,9 +262,8 @@ class ThermalDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate,
-                                      const ASTERDOUBLE &value,
-                                      const std::string &nameOfGroup ) {
+    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
+                       const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -299,9 +279,8 @@ class ThermalDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnNodes(
-        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
-        const VectorString &namesOfGroup ) {
+    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
+                       const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnNodes( coordinate, value, nameOfGroup );
         return true;
@@ -313,9 +292,8 @@ class ThermalDirichletBC : public DirichletBC {
      * @param FunctionPtr function imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate,
-                                      const FunctionPtr &function,
-                                      const std::string &nameOfGroup ) {
+    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate, const FunctionPtr &function,
+                       const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -331,9 +309,8 @@ class ThermalDirichletBC : public DirichletBC {
      * @param FunctionPtr function imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnNodes(
-        const PhysicalQuantityComponent &coordinate, const FunctionPtr &function,
-        const VectorString &namesOfGroup ) {
+    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate, const FunctionPtr &function,
+                       const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnNodes( coordinate, function, nameOfGroup );
         return true;
@@ -347,8 +324,7 @@ class ThermalDirichletBC : public DirichletBC {
  */
 class AcousticDirichletBC : public DirichletBC {
   public:
-
-  /**
+    /**
      * @brief Constructeur
      */
     AcousticDirichletBC( void ) = delete;
@@ -356,13 +332,12 @@ class AcousticDirichletBC : public DirichletBC {
     /**
      * @brief Constructeur
      */
-    AcousticDirichletBC(const ModelPtr& model)
-        : DirichletBC( "_ACOU", model ){};
+    AcousticDirichletBC( const ModelPtr &model ) : DirichletBC( "_ACOU", model ){};
 
     /**
      * @brief Constructeur
      */
-    AcousticDirichletBC( const std::string name, const ModelPtr& model )
+    AcousticDirichletBC( const std::string name, const ModelPtr &model )
         : DirichletBC( name, "_ACOU", model ){};
 
     /**
@@ -371,9 +346,7 @@ class AcousticDirichletBC : public DirichletBC {
      */
     typedef std::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
 
-    virtual int getPhysics( void ) const {
-        return Physics::Acoustic;
-    };
+    virtual int getPhysics( void ) const { return Physics::Acoustic; };
 
     /**
      * @brief Ajout d'une valeur acoustique imposee sur un groupe de mailles
@@ -381,8 +354,7 @@ class AcousticDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnCells( const std::string &nameOfGroup,
-                                          const ASTERDOUBLE &value ) {
+    bool addBCOnCells( const std::string &nameOfGroup, const ASTERDOUBLE &value ) {
         throw std::runtime_error( "Not yet implemented" );
     };
 
@@ -392,8 +364,7 @@ class AcousticDirichletBC : public DirichletBC {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addBCOnNodes( const std::string &nameOfGroup,
-                                       ASTERDOUBLE value ) {
+    bool addBCOnNodes( const std::string &nameOfGroup, ASTERDOUBLE value ) {
         throw std::runtime_error( "Not yet implemented" );
     };
 };

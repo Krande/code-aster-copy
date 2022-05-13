@@ -26,18 +26,17 @@
 
 #include "astercxx.h"
 
-#include "Results/FullResult.h"
-#include "Supervis/ResultNaming.h"
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
+#include "Results/FullResult.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class BucklingModeResult
  * @brief Cette classe correspond a un mode_flamb
  * @author Natacha Béreux
  */
-class BucklingModeResult : public FullResult
-{
+class BucklingModeResult : public FullResult {
   private:
     /** @brief Stiffness double displacement matrix */
     AssemblyMatrixDisplacementRealPtr _rigidityDispDMatrix;
@@ -56,49 +55,42 @@ class BucklingModeResult : public FullResult
     /**
      * @brief Constructeur
      */
-    BucklingModeResult():
-        BucklingModeResult( ResultNaming::getNewResultName() )
-    {};
+    BucklingModeResult() : BucklingModeResult( ResultNaming::getNewResultName() ){};
 
-    BucklingModeResult( const std::string &name ):
-        FullResult( name, "MODE_FLAMB" ),
-        _rigidityDispDMatrix( nullptr ),
-        _rigidityDispCMatrix( nullptr ),
-        _rigidityTempDMatrix( nullptr ),
-        _rigidityPressDMatrix( nullptr ),
-        _rigidityGDMatrix( nullptr ),
-        _rigidityGCMatrix( nullptr )
-    {};
+    BucklingModeResult( const std::string &name )
+        : FullResult( name, "MODE_FLAMB" ),
+          _rigidityDispDMatrix( nullptr ),
+          _rigidityDispCMatrix( nullptr ),
+          _rigidityTempDMatrix( nullptr ),
+          _rigidityPressDMatrix( nullptr ),
+          _rigidityGDMatrix( nullptr ),
+          _rigidityGCMatrix( nullptr ){};
 
     /**
      * @brief Get the rigidity matrix
      */
-    AssemblyMatrixDisplacementComplexPtr getDisplacementComplexStiffnessMatrix() const
-    {
+    AssemblyMatrixDisplacementComplexPtr getDisplacementComplexStiffnessMatrix() const {
         return _rigidityDispCMatrix;
     };
 
     /**
      * @brief Get the rigidity matrix
      */
-    AssemblyMatrixDisplacementRealPtr getDisplacementRealStiffnessMatrix() const
-    {
+    AssemblyMatrixDisplacementRealPtr getDisplacementRealStiffnessMatrix() const {
         return _rigidityDispDMatrix;
     };
 
     /**
      * @brief Get the rigidity matrix
      */
-    AssemblyMatrixPressureRealPtr getPressureRealStiffnessMatrix() const
-    {
+    AssemblyMatrixPressureRealPtr getPressureRealStiffnessMatrix() const {
         return _rigidityPressDMatrix;
     };
 
     /**
      * @brief Get the rigidity matrix
      */
-    AssemblyMatrixTemperatureRealPtr getTemperatureRealStiffnessMatrix() const
-    {
+    AssemblyMatrixTemperatureRealPtr getTemperatureRealStiffnessMatrix() const {
         return _rigidityTempDMatrix;
     };
 
@@ -106,8 +98,7 @@ class BucklingModeResult : public FullResult
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixDisplacementRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixDisplacementRealPtr &matr )
-    {
+    bool setStiffnessMatrix( const AssemblyMatrixDisplacementRealPtr &matr ) {
         _rigidityDispDMatrix = matr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
@@ -121,8 +112,7 @@ class BucklingModeResult : public FullResult
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixDisplacementComplexPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixDisplacementComplexPtr &matr )
-    {
+    bool setStiffnessMatrix( const AssemblyMatrixDisplacementComplexPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = matr;
         _rigidityTempDMatrix = nullptr;
@@ -136,8 +126,7 @@ class BucklingModeResult : public FullResult
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixTemperatureRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixTemperatureRealPtr &matr )
-    {
+    bool setStiffnessMatrix( const AssemblyMatrixTemperatureRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = matr;
@@ -151,8 +140,7 @@ class BucklingModeResult : public FullResult
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixPressureRealPtr
      */
-    bool setStiffnessMatrix( const AssemblyMatrixPressureRealPtr &matr )
-    {
+    bool setStiffnessMatrix( const AssemblyMatrixPressureRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
@@ -166,8 +154,7 @@ class BucklingModeResult : public FullResult
      * @brief Set the rigidity matrix
      * @param matr GeneralizedAssemblyMatrixRealPtr
      */
-    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixRealPtr &matr )
-    {
+    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixRealPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
@@ -181,8 +168,7 @@ class BucklingModeResult : public FullResult
      * @brief Set the rigidity matrix
      * @param matr GeneralizedAssemblyMatrixComplexPtr
      */
-    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixComplexPtr &matr )
-    {
+    bool setStiffnessMatrix( const GeneralizedAssemblyMatrixComplexPtr &matr ) {
         _rigidityDispDMatrix = nullptr;
         _rigidityDispCMatrix = nullptr;
         _rigidityTempDMatrix = nullptr;
@@ -192,8 +178,7 @@ class BucklingModeResult : public FullResult
         return true;
     };
 
-    bool build()
-    {
+    bool build() {
         BaseDOFNumberingPtr numeDdl( nullptr );
         if ( _rigidityDispDMatrix != nullptr )
             numeDdl = _rigidityDispDMatrix->getDOFNumbering();
@@ -204,8 +189,7 @@ class BucklingModeResult : public FullResult
         if ( _rigidityPressDMatrix != nullptr )
             numeDdl = _rigidityPressDMatrix->getDOFNumbering();
 
-        if ( numeDdl != nullptr )
-        {
+        if ( numeDdl != nullptr ) {
             const auto model = numeDdl->getModel();
             if ( model != nullptr )
                 _mesh = model->getMesh();

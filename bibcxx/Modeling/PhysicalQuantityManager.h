@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe PhysicalQuantityManager
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,9 +25,11 @@
  */
 
 #include "astercxx.h"
+
 #include "MemoryManager/JeveuxCollection.h"
 
-template < typename T > class Singleton {
+template < typename T >
+class Singleton {
   public:
     static T &Class() {
         static T theSingle;
@@ -55,8 +57,7 @@ class PhysicalQuantityManager : public Singleton< PhysicalQuantityManager > {
 
     ASTERINTEGER getNumberOfEncodedInteger( const ASTERINTEGER &quantityNumber ) const;
 
-    std::string getPhysicalQuantityName( const ASTERINTEGER &quantityNumber ) const
-        ;
+    std::string getPhysicalQuantityName( const ASTERINTEGER &quantityNumber ) const;
 };
 
 #endif /* PHYSICALQUANTITYMANAGER_H_ */

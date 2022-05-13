@@ -29,11 +29,11 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
-#include "Numbering/ForwardGeneralizedDOFNumbering.h"
-#include "Results/ForwardModeResult.h"
-#include "Results/ForwardGeneralizedModeResult.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Numbering/ForwardGeneralizedDOFNumbering.h"
+#include "Results/ForwardGeneralizedModeResult.h"
+#include "Results/ForwardModeResult.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -41,8 +41,7 @@
  * @brief Cette classe correspond a un matr_asse_gene
  * @author Nicolas Sellenet
  */
-class GenericGeneralizedAssemblyMatrix: public DataStructure
-{
+class GenericGeneralizedAssemblyMatrix : public DataStructure {
   private:
     /** @brief Objet Jeveux '.DESC' */
     JeveuxVectorLong _desc;
@@ -64,22 +63,20 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
      * @typedef GeneralizedAssemblyMatrixPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrix
      */
-    typedef std::shared_ptr< GenericGeneralizedAssemblyMatrix >
-        GenericGeneralizedAssemblyMatrixPtr;
+    typedef std::shared_ptr< GenericGeneralizedAssemblyMatrix > GenericGeneralizedAssemblyMatrixPtr;
 
     /**
      * @brief Constructeur
      */
-    GenericGeneralizedAssemblyMatrix( const std::string name ):
-        DataStructure( name, 19, "MATR_ASSE_GENE"),
-        _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
-        _refe( JeveuxVectorChar24( getName() + ".REFE" ) ),
-        _lime( JeveuxVectorChar24( getName() + ".LIME" ) ),
-        _refa( JeveuxVectorChar24( getName() + ".REFA" ) ),
-        _dofNum( nullptr ),
-        _mecaModeC( nullptr ),
-        _geneModeC( nullptr )
-    {};
+    GenericGeneralizedAssemblyMatrix( const std::string name )
+        : DataStructure( name, 19, "MATR_ASSE_GENE" ),
+          _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
+          _refe( JeveuxVectorChar24( getName() + ".REFE" ) ),
+          _lime( JeveuxVectorChar24( getName() + ".LIME" ) ),
+          _refa( JeveuxVectorChar24( getName() + ".REFA" ) ),
+          _dofNum( nullptr ),
+          _mecaModeC( nullptr ),
+          _geneModeC( nullptr ){};
 
     /**
      * @brief Get GeneralizedDOFNumbering
@@ -93,8 +90,7 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
     /**
      * @brief Get GeneralizedModeResult
      */
-    GeneralizedModeResultPtr getModalBasisFromGeneralizedModeResult()
-    {
+    GeneralizedModeResultPtr getModalBasisFromGeneralizedModeResult() {
         if ( _geneModeC.isSet() )
             return _geneModeC.getPointer();
         return GeneralizedModeResultPtr( nullptr );
@@ -103,8 +99,7 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
     /**
      * @brief Get ModeResult
      */
-    ModeResultPtr getModalBasisFromModeResult()
-    {
+    ModeResultPtr getModalBasisFromModeResult() {
         if ( _mecaModeC.isSet() )
             return _mecaModeC.getPointer();
         return ModeResultPtr( nullptr );
@@ -113,10 +108,8 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
     /**
      * @brief Set GeneralizedDOFNumbering
      */
-    bool setGeneralizedDOFNumbering( const GeneralizedDOFNumberingPtr &dofNum )
-    {
-        if ( dofNum != nullptr )
-        {
+    bool setGeneralizedDOFNumbering( const GeneralizedDOFNumberingPtr &dofNum ) {
+        if ( dofNum != nullptr ) {
             _dofNum = dofNum;
             return true;
         }
@@ -126,10 +119,8 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
     /**
      * @brief Set GeneralizedModeResult
      */
-    bool setModalBasis( const GeneralizedModeResultPtr &mecaModeC )
-    {
-        if ( mecaModeC != nullptr )
-        {
+    bool setModalBasis( const GeneralizedModeResultPtr &mecaModeC ) {
+        if ( mecaModeC != nullptr ) {
             _geneModeC = mecaModeC;
             _mecaModeC = nullptr;
             return true;
@@ -140,10 +131,8 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
     /**
      * @brief Set ModeResult
      */
-    bool setModalBasis( const ModeResultPtr &mecaModeC )
-    {
-        if ( mecaModeC != nullptr )
-        {
+    bool setModalBasis( const ModeResultPtr &mecaModeC ) {
+        if ( mecaModeC != nullptr ) {
             _mecaModeC = mecaModeC;
             _geneModeC = nullptr;
             return true;
@@ -158,8 +147,7 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
  * @author Nicolas Sellenet
  */
 template < class ValueType >
-class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
-{
+class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix {
   private:
     /** @brief Objet Jeveux '.VALM' */
     JeveuxCollection< ValueType > _valm;
@@ -170,8 +158,8 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
      * @brief definir le type
      */
     template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, void >::type setMatrixType()
-    {
+    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, void >::type
+    setMatrixType() {
         setType( "MATR_ASSE_GENE_R" );
     };
 
@@ -180,8 +168,7 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
      */
     template < class type = ValueType >
     typename std::enable_if< std::is_same< type, ASTERCOMPLEX >::value, void >::type
-    setMatrixType()
-    {
+    setMatrixType() {
         setType( "MATR_ASSE_GENE_C" );
     };
 
@@ -190,15 +177,12 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
      * @typedef GeneralizedAssemblyMatrixPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrix
      */
-    typedef std::shared_ptr< GeneralizedAssemblyMatrix< ValueType > >
-        GeneralizedAssemblyMatrixPtr;
+    typedef std::shared_ptr< GeneralizedAssemblyMatrix< ValueType > > GeneralizedAssemblyMatrixPtr;
 
     /**
      * @brief Constructeur
      */
-    GeneralizedAssemblyMatrix()
-        : GeneralizedAssemblyMatrix( ResultNaming::getNewResultName() )
-    {};
+    GeneralizedAssemblyMatrix() : GeneralizedAssemblyMatrix( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
@@ -206,8 +190,7 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
     GeneralizedAssemblyMatrix( const std::string name )
         : GenericGeneralizedAssemblyMatrix( name ),
           _valm( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
-          _conl( JeveuxVector< ValueType >( getName() + ".CONL" ) )
-    {
+          _conl( JeveuxVector< ValueType >( getName() + ".CONL" ) ) {
         GeneralizedAssemblyMatrix< ValueType >::setMatrixType();
     };
 };
@@ -221,21 +204,18 @@ typedef GeneralizedAssemblyMatrix< ASTERCOMPLEX > GeneralizedAssemblyMatrixCompl
  * @typedef GenericGeneralizedAssemblyMatrixPtr
  * @brief Pointeur intelligent vers un GenericGeneralizedAssemblyMatrix
  */
-typedef std::shared_ptr< GenericGeneralizedAssemblyMatrix >
-    GenericGeneralizedAssemblyMatrixPtr;
+typedef std::shared_ptr< GenericGeneralizedAssemblyMatrix > GenericGeneralizedAssemblyMatrixPtr;
 
 /**
  * @typedef GeneralizedAssemblyMatrixRealPtr
  * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrixReal
  */
-typedef std::shared_ptr< GeneralizedAssemblyMatrixReal >
-    GeneralizedAssemblyMatrixRealPtr;
+typedef std::shared_ptr< GeneralizedAssemblyMatrixReal > GeneralizedAssemblyMatrixRealPtr;
 
 /**
  * @typedef GeneralizedAssemblyMatrixComplexPtr
  * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrixComplex
  */
-typedef std::shared_ptr< GeneralizedAssemblyMatrixComplex >
-    GeneralizedAssemblyMatrixComplexPtr;
+typedef std::shared_ptr< GeneralizedAssemblyMatrixComplex > GeneralizedAssemblyMatrixComplexPtr;
 
 #endif /* GENERALIZEDASSEMBLYMATRIX_H_ */

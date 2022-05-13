@@ -31,12 +31,9 @@ bool GenericModalBasis::build() {
 
     cmdSt.define( _solver->getKeywords() );
 
-    try {
-        ASTERINTEGER op = 99;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
+    ASTERINTEGER op = 99;
+    CALL_EXECOP( &op );
+
     _isEmpty = false;
 
     return true;
