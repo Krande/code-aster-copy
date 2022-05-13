@@ -24,11 +24,6 @@ Non Linear Solver for Mechanical Analyses
    :members:
    :special-members: __init__
 
-.. automodule:: code_aster.MacroCommands.NonLinearSolver.elementary_computation
-   :show-inheritance:
-   :members:
-   :special-members: __init__
-
 .. automodule:: code_aster.MacroCommands.NonLinearSolver.incremental_solver
    :show-inheritance:
    :members:
