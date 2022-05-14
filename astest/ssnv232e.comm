@@ -1,0 +1,229 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: simon.raude at edf.fr
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# >>> Triaxial compression test on a 3D HEXA8 element with the KH_CSSM model
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+
+### >>>>>>>>
+### >>> Mesh
+### <<<<<<<<
+
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
+
+### >>>>>>>>>
+### >>> Model
+### <<<<<<<<<
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),)
+
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                         MAILLAGE=MAIL,
+                         ORIE_PEAU=_F(GROUP_MA_PEAU=('DEVANT','DROIT','ARRIERE','GAUCHE','BAS','HAUT','APPUI','COTE',),),)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### >>> Definition of the material
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+k=100.e6
+g=60.e6
+e=9.*k*g/(3.*k+g)
+nu=(3.*k-2.*g)/2./(3.*k+g)
+kp=200.
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=e,
+                            NU=nu,
+                            ALPHA=0.,),
+                    KH_CSSM=_F(BulkModulus=k,
+                            ShearModulus=g,
+                            SwellingIndex=kp,
+                            InitPreconsPress=10.e6,
+                            InitTensionPress=1.e6,
+                            CamClayCSS=1.,
+                            YieldSurfLinCoef=1.,
+                            YieldSurfCapCoef=2.,
+                            PlastCompIndex=50.,
+                            KHModulus=60.e6,
+                            KHIndex=1.,),)
+
+CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MATER,),)
+
+
+### >>>>>>>>>>>>>>>>>>>>>>
+### >>> Loading conditions
+### <<<<<<<<<<<<<<<<<<<<<<
+
+p0=1.e6
+epzz_max=-0.1
+
+import numpy
+def Epzz0(p):
+    return -numpy.log(1+kp*p/k)/kp/3.
+
+### >>>>>>>>>>>>>>
+### >>> Time steps
+### <<<<<<<<<<<<<<
+
+LI1=DEFI_LIST_REEL(DEBUT=0.0,
+                   INTERVALLE=(_F(JUSQU_A=1.0,
+                                  NOMBRE=5,),
+                               _F(JUSQU_A=2.0,
+                                  NOMBRE=200,),),)
+
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LI1,),
+                         ECHEC=_F(EVENEMENT='ERREUR',
+                                  ACTION='DECOUPE',
+                                  SUBD_METHODE='AUTO',),)
+
+### >>>>>>>>>>>>>>>>>>>>>>>
+### >>> Boundary conditions
+### <<<<<<<<<<<<<<<<<<<<<<<
+
+CHAR1 = AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA=('DROIT','ARRIERE'),
+                                   PRES=1.,),
+                                   VERI_NORM='OUI')
+
+CHAR2 = AFFE_CHAR_MECA(MODELE=MODELE,
+                       FACE_IMPO=_F(GROUP_MA='HAUT',    DZ=1.),)
+
+CHAR3 = AFFE_CHAR_MECA(MODELE=MODELE,
+                       FACE_IMPO=(_F(GROUP_MA='BAS',    DZ=0.),
+                                  _F(GROUP_MA='GAUCHE', DX=0.),
+                                  _F(GROUP_MA='DEVANT', DY=0.),),)
+
+
+COEF1 = DEFI_FONCTION(NOM_PARA='INST',
+                      PROL_DROITE='CONSTANT',
+                      VALE=(0.,0.,
+                            0.2,1*p0/5.,
+                            0.4,2*p0/5,
+                            0.6,3*p0/5., 
+                            0.8,4*p0/5., 
+                            1.0,5*p0/5.,
+                            2.0,p0,),)
+
+COEF2 = DEFI_FONCTION(NOM_PARA='INST',
+                      PROL_DROITE='CONSTANT',
+                      VALE=(0.,0.,
+                            0.2,Epzz0(1*p0/5.), 
+                            0.4,Epzz0(2*p0/5.), 
+                            0.6,Epzz0(3*p0/5.), 
+                            0.8,Epzz0(4*p0/5.), 
+                            1.0,Epzz0(5*p0/5.),
+                            2.0,epzz_max,),)
+
+### >>>>>>>>>>>>
+### >>> Solution
+### <<<<<<<<<<<<
+
+RESU1=STAT_NON_LINE(MODELE=MODELE,
+                    CHAM_MATER=CHM,
+                    EXCIT=(_F(CHARGE=CHAR1,FONC_MULT=COEF1),
+                           _F(CHARGE=CHAR2,FONC_MULT=COEF2,),
+                           _F(CHARGE=CHAR3,),),
+                   COMPORTEMENT=_F(RELATION='KH_CSSM',
+                                   RESI_INTE_RELA=1.e-14,
+                                   ITER_INTE_MAXI=100,),
+                   INCREMENT=_F(LIST_INST=DEFLIST,),
+                   NEWTON=_F(MATRICE = 'TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,
+                                  RESI_GLOB_RELA=1.e-10,),
+                   SOLVEUR=_F(METHODE='MUMPS',),)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### >>> Compute some extra fields
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+RESU1=CALC_CHAMP(reuse=RESU1,
+                 RESULTAT=RESU1,
+                 CONTRAINTE='SIEF_NOEU',
+                 DEFORMATION='EPSI_NOEU',
+                 VARI_INTERNE='VARI_NOEU',)
+
+### >>>>>>>>>>>>>>>
+### >>> IMPR_RESU()
+### <<<<<<<<<<<<<<<
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=RESU1,),)
+
+
+### >>>>>>>>>
+### >>> Tests
+### <<<<<<<<<
+
+### >>>>>> SZZ at N01 at 2.
+
+TEST_RESU(RESU=_F(INST=2.,
+          REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='SIEF_NOEU',
+                  GROUP_NO='C',
+                  NOM_CMP='SIZZ',
+                  VALE_REFE=-3031299.837,
+                  VALE_CALC=-3034004.5187257426,),)
+
+### >>>>>> V8 = EPSPXX at N01 at 2.
+
+TEST_RESU(RESU=_F(INST=2.,
+          REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='VARI_NOEU',
+                  GROUP_NO='C',
+                  NOM_CMP='V8',
+                  VALE_REFE=0.05666094966,
+                  VALE_CALC=0.056645988069574514,),)
+
+### >>>>>> V9 = EPSPYY at N01 at 2.
+
+TEST_RESU(RESU=_F(INST=2.,
+          REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='VARI_NOEU',
+                  GROUP_NO='C',
+                  NOM_CMP='V9',
+                  VALE_REFE=0.05666094966,
+                  VALE_CALC=0.05664598806957453,),)
+
+### >>>>>> V10 = EPSPZZ at N01 at 2.
+
+TEST_RESU(RESU=_F(INST=2.,
+          REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='VARI_NOEU',
+                  GROUP_NO='C',
+                  NOM_CMP='V10',
+                  VALE_REFE=-0.09535937839,
+                  VALE_CALC=-0.09535705118690875,),)
+
+
+FIN ()

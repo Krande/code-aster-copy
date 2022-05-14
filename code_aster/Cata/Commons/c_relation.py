@@ -221,4 +221,5 @@ def C_RELATION(COMMAND):
             "META_LEMA_ANI",
             "MetaAcierEPIL_PT",
             "MohrCoulombAS",
+            "KH_CSSM",
         )

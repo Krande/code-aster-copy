@@ -1,0 +1,267 @@
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// |                                       |
+// | Constitutive model KH_CSSM            |
+// | Author : S. Raude, EDF R&D ERMES      |
+// |          G. Bacquaert, EDF R&D ERMES  |
+// |                                       |
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@Parser Implicit;
+@Behaviour KH_CSSM;
+@Author Goustan Bacquaert;
+@Date 21/04/2022;
+
+@Algorithm NewtonRaphson;
+//@CompareToNumericalJacobian true;
+//@PerturbationValueForNumericalJacobianComputation 1.e-8;
+//@Algorithm NewtonRaphson_NumericalJacobian;
+@Theta 1.;
+@Epsilon 1.e-14;
+
+// >>> Material parameters
+// >>>>>>>>>>>>>>>>>>>>>>>
+
+@MaterialProperty stress k;     // Bulk modulus ( > 0 )
+@MaterialProperty stress G;     // Shear modulus ( > 0 )
+@MaterialProperty real kp;      // Swelling index ( >= 0 )
+@MaterialProperty stress pc0;   // Elastic limit along an isotropic compression path ( > 0 )
+@MaterialProperty stress pt0;   // Elastic limit along an isotropic traction path ( > 0 )
+@MaterialProperty real M;       // Slope of the Cam-Clay critical state line ( >= 0 )
+@MaterialProperty real aB;      // Parameter "alpha" in the Bigoni criterion ( 0 < . < 2 )
+@MaterialProperty real mB;      // Parameter "m" in the Bigoni criterion ( > 1 )
+@MaterialProperty real om;      // Compressibility index ( >= 0 )
+@MaterialProperty stress H;     // Kinematic hardening modulus ( >= 0 )
+@MaterialProperty real r;       // Kinematic hardening index ( >= 0 )
+
+k.setGlossaryName("BulkModulus");
+G.setGlossaryName("ShearModulus");
+kp.setEntryName("SwellingIndex");
+pc0.setEntryName("InitPreconsPress");
+pt0.setEntryName("InitTensionPress");
+M.setEntryName("CamClayCSS");
+aB.setEntryName("YieldSurfLinCoef");
+mB.setEntryName("YieldSurfCapCoef");
+om.setEntryName("PlastCompIndex");
+H.setEntryName("KHModulus");
+r.setEntryName("KHIndex");
+
+// >>> Local Variables
+// >>>>>>>>>>>>>>>>>>>
+
+@LocalVariable bool bpl;    // True for plastic loading
+@LocalVariable stress k0;   // Tangent bulk modulus at yielding for hydrostatic compresssion
+@LocalVariable real Mr;     // Combination of CCCriStateSlope and KHIndex
+
+// >>> State Variables
+// >>>>>>>>>>>>>>>>>>>
+
+@StateVariable real lam;       // Plastic multiplier
+@StateVariable Stensor epl;    // Plastic strain
+@StateVariable Stensor ekh;    // Kinematic strain
+
+lam.setEntryName("PlasticMultiplier");
+epl.setGlossaryName("PlasticStrain");
+ekh.setEntryName("KinematicStrain");
+
+// >>> Auxiliary State Variables
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+@AuxiliaryStateVariable real I1;    // First stress invariant tr(sig)/3
+@AuxiliaryStateVariable real J2;    // Second stress invariant sqrt(1.5*dev(sig):dev(sig))
+@AuxiliaryStateVariable real eplv;  // Volumetric plastic strain tr(epl)
+@AuxiliaryStateVariable real niter; // Number of Newton iterations
+@AuxiliaryStateVariable real iP;    // Plastic Index
+
+I1.setEntryName("FirstInvariant");
+J2.setEntryName("SecondInvariant");
+eplv.setEntryName("VolumetricPlasticStrain");
+niter.setEntryName("NumberOfIterations");
+iP.setEntryName("PlasticIndex");
+
+// >>> Init Local Variables
+// <<<<<<<<<<<<<<<<<<<<<<<<
+
+@InitLocalVariables{
+	k0=k+kp*pc0;
+	Mr=M/sqrt(1+r*r);
+}
+
+// >>> Elastic Prediction
+// <<<<<<<<<<<<<<<<<<<<<<
+
+@Predictor{
+
+	// >>> Compute elastic stress prediction
+	const real exP=exp(-trace(kp*(eel+deto))+G*kp*kp*(deviator(eel+deto)|deviator(eel+deto))/k);
+	StressStensor sigEL(k*(1.-exP)*Stensor::Id()/kp+2.*G*exP*deviator(eel+deto));
+	
+	// >>> Invariants
+	const Stensor XEL=sigEL-H*(deviator(epl)-deviator(ekh));
+	const Stensor YEL=H*(deviator(epl)-deviator(ekh));
+	const stress XmEL=trace(XEL)/3.;
+	const stress XeqEL=sigmaeq(XEL);
+	const stress YeqEL=sigmaeq(YEL);
+
+	// >>> Hydrostatic yield thresholds
+	const real eomEL=exp(-om*eplv);
+	const stress pcEL=pc0*eomEL;
+	const stress ptEL=pt0*eomEL;
+
+	const real fiEL=(-XmEL+ptEL)/(pcEL+ptEL);
+	const real FtEL=aB*fiEL+2.*(1.-aB)*fiEL*fiEL-aB*pow(fiEL,mB)-2.*(1.-aB)*pow(fiEL,mB+1.);
+
+	// >>> Test for plasticity
+	bpl=(XeqEL*XeqEL+YeqEL*YeqEL/r/r-Mr*Mr*pcEL*pcEL*FtEL)/pc0>0.;
+
+}
+
+// >>> Compute the updated stress tensor
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@ComputeStress{
+		const real exP=exp(-trace(kp*eel)+G*kp*kp*(deviator(eel)|deviator(eel))/k);
+		sig=k/kp*(1-exP)*Stensor::Id()+2*G*exP*deviator(eel);
+}
+
+// >>> Integration
+// <<<<<<<<<<<<<<<
+
+@Integrator{
+
+	constexpr const Stensor id2=Stensor::Id();
+	constexpr const Stensor4 id4=Stensor4::Id();
+	constexpr const Stensor4 k4=Stensor4::K();
+	constexpr const Stensor4 j4=Stensor4::J();
+
+	// >>> Plasticity
+	if(bpl) {
+
+		// >>> Invariants
+		const Stensor X=sig-H*(deviator(epl+depl)-deviator(ekh+dekh));
+		const Stensor Y=H*(deviator(epl+depl)-deviator(ekh+dekh));
+		const stress Xm=trace(X)/3.;
+		const stress Xeq=sigmaeq(X);
+		const stress Yeq=sigmaeq(Y);
+
+		// >>> Hydrostatic yield thresholds
+		const real eom=exp(-om*trace(epl+depl));
+		const stress pc=pc0*eom;
+		const stress pt=pt0*eom;
+
+		// >>> Function Ft, 1st and 2nd derivative: Ft_p, Ft_pp
+		const real fi=(-Xm+pt)/(pc+pt);
+		const real Ft=aB*fi+2.*(1.-aB)*fi*fi-aB*pow(fi,mB)-2.*(1-aB)*pow(fi,mB+1.);
+		const real Ft_p=aB+4.*(1.-aB)*fi-aB*mB*pow(fi,mB-1.)-2.*(1.-aB)*(mB+1.)*pow(fi,mB);
+		const real Ft_pp=4.*(1.-aB)-aB*mB*(mB-1.)*pow(fi,mB-2.)- 2.*(1.-aB)*(mB+1.)*mB*pow(fi,mB-1.);
+
+		// >>> Criterion fpl
+		const stress fpl=(Xeq*Xeq+Yeq*Yeq/r/r-Mr*Mr*pc*pc*Ft)/pc0;
+
+		// >>> Plastic flow direction
+		const Stensor nPd=(3*deviator(X))/pc0;
+		const Stensor nPv=(Mr*Mr*pc*pc/(pc+pt)*Ft_p*id2/3.)/pc0;
+		const Stensor nP=nPd+nPv;
+
+		// >>> Kinematic flow direction
+		const Stensor nKd=(3*deviator(Y)/(r*r))/pc0;
+		const Stensor nK=nKd;
+	
+		// >>> Equations to be solved
+		feel=deel-deto+depl;
+		flam=fpl/k0;
+		fepl=depl-dlam*nP;
+		fekh=dekh-dlam*nK;
+
+		// >>> Jacobian
+
+		// >>> De
+		const real exP=exp(-trace(kp*(eel+deel))+G*kp*kp*(deviator(eel+deel)|deviator(eel+deel))/k);
+		const Stensor4 De11=exP*(3.*k*j4);
+		const Stensor4 De22=exP*(2.*G*k4+4.*kp*kp*G*G*(deviator(eel+deel)^deviator(eel+deel))/k);
+		const Stensor4 De12=-exP*(2.*kp*G*(deviator(eel+deel)^id2));
+		const Stensor4 De21=-exP*(2.*kp*G*(id2^deviator(eel+deel)));
+		const Stensor4 De=De11+De22+De12+De21;
+
+		// >>> Derivative of the criterion fpl w.r.t. sig, epl and ekh
+		const Stensor DfplDsig=(3.*deviator(X)+ +Mr*Mr*pc*pc*Ft_p*id2/(pc+pt)/3.)/pc0;
+		const Stensor DfplDepl=(3.*H*(-deviator(X)+deviator(Y)/(r*r))+Mr*Mr*pc*pc*om*(2.*Ft+Ft_p*Xm/(pc+pt))*id2)/pc0;
+		const Stensor DfplDekh=(3.*H*(deviator(X)-deviator(Y)/(r*r)))/pc0;
+
+		// >>> Derivative of the plastic flow direction nP w.r.t. sig, epl and ekh
+		// >>> Note that nP is independent of Y so that DnPDY = 0
+		const Stensor4 DnPDsig=(3.*k4-Mr*Mr*pc*pc/(3.*(pc+pt)*(pc+pt))*Ft_pp*j4)/pc0;
+		const Stensor4 DnPDXd=(3.*k4)/pc0;
+		const Stensor4 DnPDepl=-H*DnPDXd-(Mr*Mr*pc*pc/(pc+pt)*om*(Ft_p+Ft_pp*Xm/(pc+pt))*j4)/pc0;
+		const Stensor4 DnPDekh=H*DnPDXd;
+
+		// >>> Derivative of the kinematic flow direction nK w.r.t. sig, epl and ekh
+		// >>> Note that nK is independent of sig and Xd so that DnKDsig = 0 and DnKDXd = 0
+		const Stensor4 DnKDY=(3.*k4/(r*r))/pc0;
+		const Stensor4 DnKDepl=H*DnKDY;
+		const Stensor4 DnKDekh=-H*DnKDY;
+
+
+		// >>> First line of Jacobian Jeel
+		dfeel_ddeel=id4;
+		dfeel_ddlam=Stensor(real(0));
+		dfeel_ddepl=id4;
+		dfeel_ddekh=Stensor4(real(0));
+
+		// >>> Second line of Jacobian Jlam
+		dflam_ddeel=(DfplDsig|De)/k0;
+		dflam_ddlam=real(0);
+		dflam_ddepl=DfplDepl/k0;
+		dflam_ddekh=DfplDekh/k0;
+
+		// >>> Third line of Jacobian Jepl
+		dfepl_ddeel=-dlam*(DnPDsig*De);
+		dfepl_ddlam=-nP;
+		dfepl_ddepl=id4-dlam*DnPDepl;
+		dfepl_ddekh=-dlam*DnPDekh;
+
+		// >>> Fourth line of Jacobian Jekh
+		dfekh_ddeel=Stensor4(real(0));
+		dfekh_ddlam=-nK;
+		dfekh_ddepl=-dlam*DnKDepl;
+		dfekh_ddekh=id4-dlam*DnKDekh;
+
+
+	}
+	// >>> Elasticity
+	else{	
+		feel=deel-deto;
+		flam=dlam;
+		fepl=depl;
+		fekh=dekh;
+	}
+}
+
+// >>> Tangent Operator
+// <<<<<<<<<<<<<<<<<<<<
+
+@TangentOperator{  
+	const real exP=exp(-trace(kp*eel)+G*kp*kp*(deviator(eel)|deviator(eel))/k);
+	const Stensor4 De11=exP*(3.*k*Stensor4::J());
+	const Stensor4 De22=exP*(2.*G*Stensor4::K()+4.*kp*kp*G*G*(deviator(eel)^deviator(eel))/k);
+	const Stensor4 De12=-exP*(2.*kp*G*(deviator(eel)^Stensor::Id()));
+	const Stensor4 De21=-exP*(2.*kp*G*(Stensor::Id()^deviator(eel)));                   
+	StiffnessTensor De=De11+De22+De12+De21;
+	Stensor4 Je;
+  	getPartialJacobianInvert(Je);
+  	Dt=De*Je;
+}
+
+// >>> Auxiliary State Variables
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+@UpdateAuxiliaryStateVariables{
+	I1=trace(sig)/3.;
+	J2=sigmaeq(sig);
+	eplv=trace(epl);
+	niter=this->iter;
+	if (dlam>0) {
+		iP=1;
+	} else {
+		iP=0;
+	}
+}

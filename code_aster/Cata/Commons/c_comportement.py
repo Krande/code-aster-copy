@@ -64,6 +64,7 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
                     "MOHR_COULOMB",
                     "Iwan",
                     "MohrCoulombAS",
+                    "KH_CSSM",
                     "MFRONT",
                 ),
             ),
