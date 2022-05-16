@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine modirepresu(resuou, resuin )
     real(kind=8) :: prec
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
-    character(len= 8) :: crit, tych, nomma, modele
+    character(len= 8) :: crit, tych, nomma, model, modelRefe
     character(len= 8) :: carele, exipla, exicoq
     character(len=16) :: option, tysd, type, type_cham, repere
     character(len=19) :: knum
@@ -75,7 +75,7 @@ subroutine modirepresu(resuou, resuin )
     character(len=24) :: nompar, champ0, champ1
     character(len=24) :: valk(2)
 !
-    aster_logical :: lreuse, lcumu(2), lcoc(2), effort_elno
+    aster_logical :: lreuse, lcumu(2), lcoc(2), effort_elno, lModelVariable
 !
     data lcumu/.false.,.false./
     data lcoc/.false.,.false./
@@ -132,6 +132,7 @@ subroutine modirepresu(resuou, resuin )
     call jeveuo(knum, 'L', jordr)
     call rscrsd('G', resuou, tysd, nbordr)
 !
+    lModelVariable = ASTER_FALSE
     do ioc = 1, nocc
         call getvtx('MODI_CHAM', 'NOM_CHAM',  iocc=ioc, scal=option,    nbret=n0)
         call getvtx('MODI_CHAM', 'TYPE_CHAM', iocc=ioc, scal=type_cham, nbret=n0)
@@ -156,11 +157,18 @@ subroutine modirepresu(resuou, resuin )
 !           CHAMP1 SERA ENSUITE RECREE SUR LA BASE GLOBALE
             call copisd('CHAMP_GD', 'V', champ0, champ1)
 !           RECUPERATION DU MODELE ASSOCIE AU CHAMP
-            modele='';carele=''
-            call rslesd(resuin(1:8), iordr, model_ = modele, cara_elem_ = carele)
-            if (modele .ne. '') then
-                call dismoi('EXI_PLAQUE', modele, 'MODELE', repk=exipla)
-                call dismoi('EXI_COQUE',  modele, 'MODELE', repk=exicoq)
+            model='';carele=''
+            call rslesd(resuin(1:8), iordr, model_ = model, cara_elem_ = carele)
+            if (iordr .eq. 1) then
+                modelRefe = model
+            else
+                if (modelRefe.ne.model) then
+                    lModelVariable = ASTER_TRUE
+                endif
+            endif
+            if (model .ne. '') then
+                call dismoi('EXI_PLAQUE', model, 'MODELE', repk=exipla)
+                call dismoi('EXI_COQUE',  model, 'MODELE', repk=exicoq)
                 if ( ((exipla(1:3).eq.'OUI').or.(exicoq(1:3).eq.'OUI')) .and. &
                      ((type_cham.eq.'TENS_2D').or.(type_cham.eq.'TENS_3D')) .and.&
                      (repere.eq.'UTILISATEUR') ) then
@@ -173,7 +181,7 @@ subroutine modirepresu(resuou, resuin )
 !                             option = EFGE_ELNO ou SIEF_ELNO
             if (type_cham.eq.'VECTR_3D') then
                 effort_elno = (option.eq.'EFGE_ELNO').or.(option.eq.'SIEF_ELNO')
-                if ( (modele.eq.'').or.(carele.eq.'').or.(repere.ne.'UTILISATEUR').or. &
+                if ( (model.eq.'').or.(carele.eq.'').or.(repere.ne.'UTILISATEUR').or. &
                      (.not. effort_elno) ) then
                     call utmess('F', 'ALGORITH2_32')
                 endif
@@ -187,7 +195,7 @@ subroutine modirepresu(resuou, resuin )
                 call chrpno(champ1, repere, nbcmp, ioc, type_cham)
             else if (tych(1:2).eq.'EL') then
                 call chrpel(champ1, repere, nbcmp, ioc, type_cham, &
-                            option, modele, carele)
+                            option, model, carele, lModelVariable)
             else
                 valk(1) = tych
                 valk(2) = champ1

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
-                  nomch, modele, carele)
+                  nomch, model, carele, lModelVariable)
 ! aslint: disable=W1501
 !
     implicit none
@@ -71,7 +71,8 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
     !
     integer :: nbcmp, icham
     character(len=*) :: champ1, repere, type_cham, nomch
-    character(len=8) :: modele, carele
+    character(len=8) :: model, carele
+    aster_logical, intent(in) :: lModelVariable
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -220,7 +221,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
         endif
         chrel(1) = '&&CHRPEL.REPLO_1'; chrel(2) = '&&CHRPEL.REPLO_2'; chrel(3) = '&&CHRPEL.REPLO_3'
         chres(1) = '&&CHRPEL.REPSO_1'; chres(2) = '&&CHRPEL.REPSO_2'; chres(3) = '&&CHRPEL.REPSO_3'
-        call carelo(modele, carele, 'V', chrel(1), chrel(2), chrel(3))
+        call carelo(model, carele, 'V', chrel(1), chrel(2), chrel(3))
         exi_local = .true.
 !
         do ii = 1 , 3
@@ -233,7 +234,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
         call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_T'), elem_supp_num(1))
         call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_E'), elem_supp_num(2))
         ! Pointeur sur les éléments supports du modèle
-        call jeveuo(modele//'.MAILLE', 'L', jmodemailsupp)
+        call jeveuo(model//'.MAILLE', 'L', jmodemailsupp)
     endif
 !   Le mot-clé AFFE définit les caractéristiques du nouveau repère
 !   On peut définir un repère variable en définissant ces paramètres par mailles/groupes de mailles
@@ -419,13 +420,16 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
 !           Si le champ est un champ 'ELGA', on a besoin des
 !           coordonnées des points de Gauss dans chaque élément
             if ( type_pt == type_gauss) then
+                if (lModelVariable) then
+                    call utmess('F', 'RESULT4_90')
+                endif
 !               On utilise calc_coor_elga qui retourne un champ par élément
 !               contenant les coordonnées des points de Gauss
                 celgauss='&&CHRPEL.CEL_GAUSS'
                 call exisd('CHAMP', celgauss, iexist)
                 if (iexist .eq. 0) then
-                    call megeom(modele, chgeom)
-                    call calc_coor_elga(modele, ligrel, chgeom, celgauss)
+                    call megeom(model, chgeom)
+                    call calc_coor_elga(model, ligrel, chgeom, celgauss)
                 endif
 !               On transforme ce champ en champ simple
                 cesgauss='&&CHRPEL.CES_GAUSS'
@@ -555,7 +559,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
             call utmess('F', 'ALGORITH17_23', sk=repere, si=nocc)
         endif
 !
-        call megeom(modele, chgeom)
+        call megeom(model, chgeom)
         call mecara(carele, chcara)
 !
         if ( (type_cham(1:10).eq.'COQUE_GENE') .and. &
@@ -593,11 +597,11 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham, &
         licmp(7) = 'O_X'
         licmp(8) = 'O_Y'
         licmp(9) = 'O_Z'
-        call mecact('V', carte, 'MODELE', modele, 'CAORIE', ncmp=9, lnomcmp=licmp, vr=angrep)
+        call mecact('V', carte, 'MODELE', model, 'CAORIE', ncmp=9, lnomcmp=licmp, vr=angrep)
 !
 !       CREATION D UN CHAM_ELEM D'ANGLES EN LISANT LES ANGL_REP
         changl = '&&CHRPEL.ANGL'
-        call chrpan(modele, carte, option, changl)
+        call chrpan(model, carte, option, changl)
 !
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
