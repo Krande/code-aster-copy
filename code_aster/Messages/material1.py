@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,12 @@ Erreur utilisateur :
     4: _("""
 Erreur utilisateur :
  Le paramètre ALPHA ne peut pas être une fonction en THM.
+"""),
+
+    5: _("""
+ Le module de Young calculé par le premier point de la courbe de traction donnée n'est pas
+cohérent avec la valeur définie par le paramètre E. La valeur calculée est %(r1)f, 
+et la différence entre les deux valeurs est supérieure à 1 %%.
 """),
 
     42: _("""
