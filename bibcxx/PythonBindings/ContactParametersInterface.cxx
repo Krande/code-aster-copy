@@ -238,13 +238,13 @@ Arguments:
         )",
               py::arg( "dist_supp" ) )
         .def_property( "hasBeamDistance",
-                       py::overload_cast<>( &PairingParameter::hasBeamDistance, py::const_ ),
-                       py::overload_cast< const bool & >( &PairingParameter::hasBeamDistance ), R"(
-bool: Attribute that holds the use of a fictive distance for beam.
+                       &PairingParameter::hasBeamDistance, 
+                       &PairingParameter::enableBeamDistance, R"(
+bool: enable or disable the use of a fictive distance for beam.
         )" )
         .def_property( "hasShellDistance",
-                       py::overload_cast<>( &PairingParameter::hasShellDistance, py::const_ ),
-                       py::overload_cast< const bool & >( &PairingParameter::hasShellDistance ), R"(
-bool: Attribute that holds the use of a fictive distance for shell.
+                       &PairingParameter::hasShellDistance, 
+                       &PairingParameter::enableShellDistance, R"(
+bool: enable or disable the use of a fictive distance for shell.
         )" );
 };

@@ -197,11 +197,11 @@ class PairingParameter {
 
     void setDistanceFunction( const GenericFunctionPtr &dist_supp) { _dist_supp = dist_supp; };
 
-    void hasBeamDistance( const bool &beam ) { _beam = beam; }
+    void enableBeamDistance( const bool &beam ) { _beam = beam; }
 
     bool hasBeamDistance() const { return _beam; }
 
-    void hasShellDistance( const bool &shell ) { _shell = shell; }
+    void enableShellDistance( const bool &shell ) { _shell = shell; }
 
     bool hasShellDistance() const { return _shell; }
 

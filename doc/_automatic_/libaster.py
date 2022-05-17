@@ -3839,7 +3839,7 @@ class FrictionParameter:
     
     @property
     def hasFriction(self):
-        """bool: Attribute that holds the presence of friction.
+        """bool: enable or disable the use of friction.
         """
 
 # class PairingParameter in libaster
@@ -3946,12 +3946,12 @@ class PairingParameter:
     
     @property
     def hasBeamDistance(self):
-        """bool: Attribute that holds the use of a fictive distance for beam.
+        """bool: enable or disable the use of a fictive distance for beam.
         """
     
     @property
     def hasShellDistance(self):
-        """bool: Attribute that holds the use of a fictive distance for shell.
+        """bool: enable or disable the use of a fictive distance for shell.
         """
 
 # class ContactNew in libaster
@@ -4056,12 +4056,12 @@ class ContactNew(DataStructure):
     
     @property
     def hasFriction(self):
-        """bool: Attribute that holds the presence of friction.
+        """bool: enable or disable the use of friction.
         """
     
     @property
     def hasSmoothing(self):
-        """bool: Attribute that holds the use of smoothing.
+        """bool: enable or disable  the use of smoothing.
         """
 
 # class ContactZone in libaster
