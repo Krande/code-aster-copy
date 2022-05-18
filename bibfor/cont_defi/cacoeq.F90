@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ implicit none
 !
 ! - No QUAD8 nodes -> exit
 !
-        if ((iret.eq.0) .or. (nb_node_quad.eq.0)) then
+    if ((iret.eq.0) .or. (nb_node_quad.eq.0)) then
         goto 99
     endif
 !
@@ -235,8 +235,8 @@ implicit none
         call aflrch(list_rela, sdcont, 'NLIN')
         call cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
         call jedetr(connex_inv)
-        AS_DEALLOCATE(vi = v_list_excl)
     endif
+    AS_DEALLOCATE(vi = v_list_excl)
 !
  99 continue
 !
