@@ -35,4 +35,8 @@ class XFEMCrackDefinition(ExecuteCommand):
         """
         self._result = XfemCrack(keywords["MAILLAGE"])
 
+    def post_exec(self, keywords):
+        self._result.update()
+    
+
 DEFI_FISS_XFEM = XFEMCrackDefinition.run
