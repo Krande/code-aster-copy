@@ -812,6 +812,20 @@ class DiscreteComputation:
               ConstantFieldOnCells: field of current time
         """
     
+    def dampingMatrix(self, massMatrix= None, stiffnessMatrix= None, time= 0.0, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for elastic Stiffness matrix
+        
+        Arguments:
+              massMatrix : elementary mass matrix
+              stiffnessMatrix : elementary stiffness matrix
+              time (float): current time (default: 0.0)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
+              externVarField (fieldOnCellsReal): external state variable at current time
+        Returns:
+              ElementaryMatrix: elementary damping matrix
+        """
+    
     def dirichletBC(self, time):
         """Return the imposed displacement vector used to remove imposed DDL
         
@@ -862,7 +876,7 @@ class DiscreteComputation:
                   If it empty, the full model is used
               externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
-              ElementaryMatrix: elementary elastic Stiffness matrices
+              ElementaryMatrix: elementary elastic Stiffness matrix
         """
     
     def getPhysicalProblem(self):
@@ -896,14 +910,16 @@ class DiscreteComputation:
               FieldOnNodes: incremental imposed displacement vector
         """
     
-    def massMatrix(self, time= 0.0):
-        """Return elementary matrices for mass
+    def massMatrix(self, time= 0.0, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for elastic Stiffness matrix
         
-              Arguments:
-                    time (float): current time (default: 0.0)
-        
+        Arguments:
+              time (float): current time (default: 0.0)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
+              externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
-              ElementaryMatrix: elementary matrices
+              ElementaryMatrix: elementary mass matrix
         """
     
     def neumann(self, time_list, externVarField= None):

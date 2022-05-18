@@ -48,6 +48,13 @@ def options(self):
         "NB: The documentation build must be explicitly "
         " called by running `waf doc|doc_debug`.",
     )
+    group.add_option(
+        "--force-doc",
+        action="store_true",
+        default=False,
+        dest="force_doc",
+        help="Force the documentation build.",
+    )
 
 
 def configure(self):
@@ -100,6 +107,9 @@ def build_doc(self):
             "force documentation support."
         )
         return
+    opts = self.options
+    if opts.force_doc:
+        Logs.warn("Build of documentation forced.")
 
     build_autodoc(self)
     build_html(self)
@@ -113,6 +123,7 @@ def build_autodoc(self):
 
     self(
         rule=run_pylibaster,
+        always=self.options.force_doc,
         name="pylibaster",
         source=[
             self.path.ant_glob("scripts/build_pylibaster.py"),
@@ -125,6 +136,7 @@ def build_autodoc(self):
     pysrc += self.path.parent.get_src().ant_glob("run_aster/**/*.py")
     self(
         rule=run_autodoc,
+        always=self.options.force_doc,
         name="rstdevguide",
         source=[
             self.path.ant_glob("scripts/generate_rst.py"),
@@ -156,6 +168,7 @@ def build_html(self):
     )
     self(
         rule="bash -c '{0}'".format(cmd),
+        always=self.options.force_doc,
         cwd=self.path.abspath(),
         source=files + [pylib],
         target=self.path.find_or_declare("html/index.html"),

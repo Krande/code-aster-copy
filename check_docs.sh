@@ -63,7 +63,7 @@ check_docs_main()
     (
         (
             printf "\nGenerate html documentation...\n"
-            ${waf} doc${suffix}
+            ${waf} doc${suffix} --force-doc
             return $?
         )
         iret=$?
