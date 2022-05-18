@@ -227,6 +227,9 @@ class MaterialField : public DataStructure {
 
     /** @brief Main function to build this object */
     bool build();
+
+    bool update();
+
 };
 
 using MaterialFieldPtr = std::shared_ptr< MaterialField >;

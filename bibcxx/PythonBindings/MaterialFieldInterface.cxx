@@ -184,5 +184,9 @@ void exportMaterialFieldToPython( py::module_ &mod ) {
 
         .def( "build", &MaterialField::build, R"(
             Build material field
+            )" )
+
+        .def( "update", &MaterialField::update, R"(
+            Update material field
             )" );
 };
