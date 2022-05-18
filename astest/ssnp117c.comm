@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ ECR=DEFI_FONCTION(PROL_GAUCHE='LINEAIRE',
                   PROL_DROITE='LINEAIRE',)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
-                            E=2.E5,),
+                            E=273000,),
                     ROUSSELIER=_F(PORO_INIT=1.E-4,
                                   D_SIGM_EPSI_NORM=1.0,
                                   PORO_CRIT=1.0,
@@ -61,7 +61,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
                     TRACTION=_F(SIGM=ECR,),)
 
 ACIER_N=DEFI_MATERIAU(ELAS=_F(NU=0.3,
-                            E=2.E5,),
+                            E=273000,),
                     ROUSSELIER=_F(PORO_INIT=1.E-4,
                                   D_SIGM_EPSI_NORM=1.0,
                                   PORO_CRIT=1.0,
@@ -72,7 +72,7 @@ ACIER_N=DEFI_MATERIAU(ELAS=_F(NU=0.3,
                     TRACTION=_F(SIGM=ECR,),)
 
 ACIER_V=DEFI_MATERIAU(ELAS=_F(NU=0.3,
-                            E=2.E5,),
+                            E=273000,),
                     ROUSSELIER=_F(PORO_INIT=1.E-4,
                                   D_SIGM_EPSI_NORM=1.0,
                                   PORO_CRIT=1.0,

@@ -82,7 +82,7 @@ MA_EP245=DEFI_MATERIAU(ELAS=_F(E=210000.0,
 
 #---------------- DONNEES MECANIQUES GOUPILLE  -------------------
 
-MAGOUP45=DEFI_MATERIAU(ELAS=_F(E=2.E6,
+MAGOUP45=DEFI_MATERIAU(ELAS=_F(E=20000000.0,
                                NU=0.29999999999999999,
                                ALPHA=1.E-2,),
                        TRACTION=_F(SIGM=ECR245G,),)

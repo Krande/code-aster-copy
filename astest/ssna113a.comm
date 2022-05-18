@@ -72,7 +72,7 @@ SIGM_F = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                                   1.002586229, 1007.073281,),
                                   PROL_DROITE = 'LINEAIRE',)
 
-MA_EPR = DEFI_MATERIAU( ELAS=_F(E=2.15E5,
+MA_EPR = DEFI_MATERIAU( ELAS=_F(E=198000, 
                                 NU=0.3,
                                 ALPHA=0.0,),
                         TRACTION=_F(SIGM=SIGM_F,),

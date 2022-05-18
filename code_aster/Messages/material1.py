@@ -59,6 +59,16 @@ cohérent avec la valeur définie par le paramètre E. La valeur calculée est %
 et la différence entre les deux valeurs est supérieure à 1 %%.
 """),
 
+    6: { 'message' : _("""
+ Une fonction de nappe est fournie dans TRACTION afin d'interpoler par rapport à la température 
+pour trouver la courbe de traction à une température donnée. En même temps, un module de Young 
+est également défini par le paramètre E dans ELAS. 
+
+Attention : la valeur de E dans ELAS sera ignorée.
+"""),
+          'flags' : 'DECORATED',
+    },
+
     42: _("""
 Erreur utilisateur :
  Le coefficient de dilatation thermique ALPHA du matériau est une fonction de la température.

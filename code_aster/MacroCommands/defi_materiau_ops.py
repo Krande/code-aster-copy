@@ -129,19 +129,26 @@ def defi_materiau_ops(self, **args):
     mater.build()
     
     flagE = False
+    flagFunc = False
+    flagFunc2D = False
     vectMat = mater.getVectorOfMaterialProperties()
     for iMat in vectMat :
         if iMat.getName() == "ELAS" :
+            flagE = True
             moduleE = iMat.getValueReal("E")
         elif iMat.getName() == "TRACTION" :
-            flagE = True
-            foncTrac = iMat.getValueGenericFunction("Sigm").getValuesAsArray()
-            moduleTrac = foncTrac[0][1]/foncTrac[0][0]
+            if iMat.getValueGenericFunction("Sigm").getProperties()[0] == 'NAPPE':
+                flagFunc2D = True
+            elif iMat.getValueGenericFunction("Sigm").getProperties()[0] == 'FONCTION' :
+                flagFunc = True
+                foncTrac = iMat.getValueGenericFunction("Sigm").getValuesAsArray()
+                moduleTrac = foncTrac[0][1]/foncTrac[0][0]
 
-    if flagE :
+    if flagE and flagFunc :
         if abs(moduleE-moduleTrac)/moduleE > 0.01 :
-            UTMESS( "F", "MATERIAL1_5", valr=moduleTrac )
-
+            UTMESS( "A", "MATERIAL1_5", valr=moduleTrac )
+    if flagE and flagFunc2D :
+            UTMESS( "I", "MATERIAL1_6")
 
     resetFortranLoggingLevel()
     deleteTemporaryObjects()

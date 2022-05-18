@@ -64,7 +64,7 @@ tau = 1.e-4
 
 
 ACIER_V=DEFI_MATERIAU(ELAS=_F(NU=0.3,
-                            E=2.E5,),
+                            E=273000,),
                     ROUSSELIER=_F(PORO_INIT=1.E-4,
                                   D_SIGM_EPSI_NORM=1.0,
                                   PORO_CRIT=1.0,

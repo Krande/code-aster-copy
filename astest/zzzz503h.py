@@ -38,7 +38,7 @@ cst1 = DEFI_CONSTANTE(VALE=1.0)
 cst2 = DEFI_CONSTANTE(VALE=2.0)
 
 mater = DEFI_MATERIAU(
-    ELAS=_F(E=3.7272000000e10, NU=0.0, RHO=2400.0),
+    ELAS=_F(E=150000.0, NU=0.0, RHO=2400.0),
     TRACTION=_F(SIGM=trac),
     MFRONT=_F(LISTE_COEF=(3.69e10, 0.3, 151.0, 87.0, 2.3)),
     UMAT_FO=_F(LISTE_COEF=(cst1, cst2)),
@@ -77,7 +77,7 @@ print("\nchecking ELAS...")
 test.assertEqual(elas.getName(), "ELAS", msg="check name")
 test.assertEqual(elas.getAsterName(), "ELAS", msg="check name")
 
-test.assertEqual(elas.getNumberOfPropertiesReal(), 4, msg="floats in ELAS")
+test.assertEqual(elas.getNumberOfPropertiesReal(), 6, msg="floats in ELAS")
 test.assertEqual(elas.getNumberOfPropertiesComplex(), 0, msg="complex numbers in ELAS")
 test.assertEqual(elas.getNumberOfPropertiesString(), 0, msg="strings in ELAS")
 test.assertEqual(elas.getNumberOfPropertiesFunction(), 0, msg="functions in ELAS")
@@ -86,7 +86,7 @@ test.assertEqual(elas.getNumberOfListOfPropertiesReal(), 0, msg="list of floats 
 test.assertEqual(elas.getNumberOfListOfPropertiesFunction(), 0, msg="list of functions in ELAS")
 
 test.assertTrue(elas.hasValueReal("E"), msg="Young modulus")
-test.assertAlmostEqual(elas.getValueReal("E"), 3.72720e10, msg="Young modulus")
+test.assertAlmostEqual(elas.getValueReal("E"), 150000, msg="Young modulus")
 test.assertTrue(elas.hasValueReal("Nu"), msg="Poisson ratio")
 test.assertAlmostEqual(elas.getValueReal("Nu"), 0.0, msg="Poisson ratio")
 test.assertTrue(elas.hasValueReal("Rho"), msg="Density")

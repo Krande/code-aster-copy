@@ -102,7 +102,7 @@ SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.0025,495.,
 #-----------------------------------------------------------
 # MODELISATION DU MATERIAU DE L'EPROUVETTE CT, ZONE COHESIVE Y COMPRISE
 #-------------------------------------------------------------
-MA_EPR=DEFI_MATERIAU(ELAS=_F(E=2.07E5,
+MA_EPR=DEFI_MATERIAU(ELAS=_F(E=198000,
                              NU=0.3,
                              ALPHA=0.0),
                              TRACTION=_F(SIGM=SIGM_F),
