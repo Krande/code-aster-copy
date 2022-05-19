@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -238,6 +238,30 @@ RESUMULT = COMBINAISON_FERRAILLAGE (
     ),
     AFFE = ( _F ( **ferrDatSlu ), ),
     )
+
+FERMAX=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELEM_FER2_R', INFO=1,
+                     NOM_CHAM='FERRAILLAGE', RESULTAT=RESUMULT,
+                     TYPE_MAXI='MAXI_ABS', TYPE_RESU='VALE', 
+                     # NUME_ORDRE=(1,2,3),
+                     NOM_CAS=('cas_1', 'cas_2', 'COMB_DIME_ACIER')
+                        )
+
+TEST_RESU(CHAM_ELEM=(_F(
+                  CHAM_GD=FERMAX,
+                  CRITERE='RELATIF',
+                  NOM_CMP='DNSXS',
+                  GROUP_MA='M124',
+                  POINT=1,
+                  VALE_CALC=1.89045803148433E-04,),
+            )
+)
+
+
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT', 
+                   # RESU=_F(RESULTAT=RESUMULT)
+                   RESU=_F(CHAM_GD=FERMAX)
+                   )
+
 
 TEST_RESU(RESU=(_F(
                   RESULTAT=RESUMULT,
