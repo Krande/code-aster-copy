@@ -316,6 +316,8 @@ subroutine chprec(chou)
         if (interp(1:3) .eq. 'LIN') then
             valk(1) = tysd
             call utmess('F', 'MODELISA8_55', sk=valk(1))
+        elseif (n5 .ne. 0) then
+            call chmima(resuco, nomch, tychlu, typmax, noch19)
         else
             knum = '&&'//nompro//'.NUME_ORDRE'
             call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
