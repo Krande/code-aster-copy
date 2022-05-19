@@ -157,7 +157,7 @@ implicit none
 !
 ! ----- Only one mesh
 !
-        call jeveut(ligr_name(1:19)//'.LGRF', 'L', iad)
+        call jeveuo(ligr_name(1:19)//'.LGRF', 'L', iad)
         new_mesh = zk8(iad)
         if (i_list_ligr .eq. 1) then
             mesh = new_mesh

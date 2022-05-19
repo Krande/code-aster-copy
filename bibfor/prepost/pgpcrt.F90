@@ -29,7 +29,6 @@ subroutine pgpcrt(sd_pgp)
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jeveut.h"
 #include "asterfort/juveca.h"
 #include "asterfort/pgpget.h"
 #include "asterfort/tbajpa.h"
@@ -124,7 +123,7 @@ subroutine pgpcrt(sd_pgp)
         zk24(jtab+4*(2-1)+3) = zk24(jtab+4*(1-1)+3)
 
 !       set FREQ logicals to 0
-        call jeveut(nomlgs(3),'E',jlog)
+        call jeveuo(nomlgs(3),'E',jlog)
         do i = 1, nblines
             zi(jlog+i-1) = 0
         end do
@@ -137,8 +136,8 @@ subroutine pgpcrt(sd_pgp)
         exist_complex = .false.
 
 !       Initialize logicals for VALE_R and VALE_C to false (0)
-        call jeveut(nomlgs(9),'E',jlogr)
-        call jeveut(nomlgs(10),'E',jlogc)
+        call jeveuo(nomlgs(9),'E',jlogr)
+        call jeveuo(nomlgs(10),'E',jlogc)
         do i = 1, nblines
             zi(jlogr+i-1) = 0
             zi(jlogc+i-1) = 0
@@ -181,7 +180,7 @@ subroutine pgpcrt(sd_pgp)
         zk24(jtab+4*(10-1)+3) = zk24(jtab+4*(1-1)+3)
 
 !       set INST logicals to 0
-        call jeveut(nomlgs(2),'L',jlog)
+        call jeveuo(nomlgs(2),'L',jlog)
         do i = 1, nblines
             zi(jlog+i-1) = 0
         end do
@@ -198,7 +197,7 @@ subroutine pgpcrt(sd_pgp)
         call pgpget(sd_pgp,'DISC ',iobs=iobs, lonvec=nord)
         call pgpget(sd_pgp,'DISC ',iobs=iobs, savejv=discjv)
 
-        call jeveut(discjv,'L',jdsc)
+        call jeveuo(discjv,'L',jdsc)
 
         call pgpget(sd_pgp,'NOM_CHAM ',iobs=iobs, kscal=champ)
         call pgpget(sd_pgp,'TYP_CHAM ',iobs=iobs, kscal=typcha)
@@ -258,8 +257,8 @@ subroutine pgpcrt(sd_pgp)
 !       Memory optimisation, treatment of each parameter separately
 !
 !       Parameter 1 : NUME_OBS
-        call jeveut(nomjvs(1),'E',jvec)
-        call jeveut(nomlgs(1),'E',jlog)
+        call jeveuo(nomjvs(1),'E',jvec)
+        call jeveuo(nomlgs(1),'E',jlog)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -271,7 +270,7 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomlgs(1))
 
 !       Parameter 2 : INSTANT
-        call jeveut(nomjvs(2),'E',jvec)
+        call jeveuo(nomjvs(2),'E',jvec)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -281,7 +280,7 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomjvs(2))
 
 !       Parameter 3 : FREQ
-        call jeveut(nomjvs(3),'E',jvec)
+        call jeveuo(nomjvs(3),'E',jvec)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -293,7 +292,7 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(discjv)
 
 !       Parameter 4 : CHAMP
-        call jeveut(nomjvs(4),'E',jvec)
+        call jeveuo(nomjvs(4),'E',jvec)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -303,7 +302,7 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomjvs(4))
 
 !       Parameter 5 : COMPOSANT
-        call jeveut(nomjvs(5),'E',jvec)
+        call jeveuo(nomjvs(5),'E',jvec)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -313,8 +312,8 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomjvs(5))
 
 !       Parameter 6 : NOEUD
-        call jeveut(nomjvs(6),'E',jvec)
-        call jeveut(nomlgs(6),'E',jlog)
+        call jeveuo(nomjvs(6),'E',jvec)
+        call jeveuo(nomlgs(6),'E',jlog)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -326,8 +325,8 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomlgs(6))
 
 !       Parameter 7 : MAILLE
-        call jeveut(nomjvs(7),'E',jvec)
-        call jeveut(nomlgs(7),'E',jlog)
+        call jeveuo(nomjvs(7),'E',jvec)
+        call jeveuo(nomlgs(7),'E',jlog)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -339,8 +338,8 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomlgs(7))
 
 !       Parameter 8 : POINT
-        call jeveut(nomjvs(8),'E',jvec)
-        call jeveut(nomlgs(8),'E',jlog)
+        call jeveuo(nomjvs(8),'E',jvec)
+        call jeveuo(nomlgs(8),'E',jlog)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -352,7 +351,7 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomlgs(8))
 
 !       Parameter 9 : VALE_R
-        call jeveut(nomjvs(9),'E',jvec)
+        call jeveuo(nomjvs(9),'E',jvec)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen
@@ -362,7 +361,7 @@ subroutine pgpcrt(sd_pgp)
         call jelibe(nomjvs(9))
 
 !       Parameter 10 : VALE_C
-        call jeveut(nomjvs(10),'E',jvec)
+        call jeveuo(nomjvs(10),'E',jvec)
         do iord = 1, nord
             dec1 = lc + (iord-1)*physlen
             do i = 1, physlen

@@ -22,7 +22,7 @@ implicit none
 !
 #include "asterfort/deleteTemporaryObjects.h"
 #include "asterfort/detmat.h"
-! #include "asterfort/jelibz.h"
+#include "asterfort/jelibz.h"
 !
 ! -------------------------------------------------------------------------------------
 !
@@ -30,15 +30,14 @@ implicit none
 !
 ! Delete temporary and cached Jeveux objects (cached because too costly to
 ! recreate each time)
-!
-! Permanently allocated Jeveux objects, by 'jeveut', must now be individually unlocked.
+! All permanently allocated Jeveux objects, by 'jeveut', are unlocked.
 !
 ! -------------------------------------------------------------------------------------
 !
 !   Delete matrix and their mumps/petsc associated instances
     call detmat()
 !   Unlock objects kept in memory using 'jeveut'
-    ! call jelibz('G')
+    call jelibz('G')
 !   Delete objects on the volatile database
     call deleteTemporaryObjects()
 !

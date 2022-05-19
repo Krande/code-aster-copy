@@ -30,7 +30,6 @@ implicit none
 #include "asterfort/gcncon.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jeveut.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rcvale.h"
@@ -99,7 +98,7 @@ aster_logical, intent(in) :: l_ther
 !
 ! - Get phenomen for material
 !
-    call jeveut(mate_name//'.MATERIAU.NOMRC', 'L', jv_nomrc)
+    call jeveuo(mate_name//'.MATERIAU.NOMRC', 'L', jv_nomrc)
     phenom = zk32(jv_nomrc+mate_nume-1)(1:10)
 !
 ! - Is THM ?
