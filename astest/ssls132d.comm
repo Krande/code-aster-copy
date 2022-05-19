@@ -61,7 +61,8 @@ E = DEFI_CONSTANTE(VALE = 2.E11)
 NU = DEFI_CONSTANTE(VALE = 0.)
 RHO = DEFI_CONSTANTE(VALE = 7800.)
 ACIER=DEFI_MATERIAU(
-            ELAS_FO=_F(  E = E,   NU = NU, RHO=RHO, K_DESSIC=0., B_ENDOGE=0.),
+            # ELAS_FO=_F(  E = E,   NU = NU, RHO=RHO, K_DESSIC=0., B_ENDOGE=0.),
+            ELAS=_F(  E = 2.E11,   NU = 0., RHO=7800., K_DESSIC=0., B_ENDOGE=0.),
                           )
 BETON=DEFI_MATERIAU(
             ELAS=_F(  E = 3.E10,   NU = 0.0, RHO = 2500.),

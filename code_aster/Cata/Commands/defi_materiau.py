@@ -338,6 +338,8 @@ DEFI_MATERIAU = MACRO(
         AMOR_ALPHA=SIMP(statut="f", typ="R"),
         AMOR_BETA=SIMP(statut="f", typ="R"),
         AMOR_HYST=SIMP(statut="f", typ="R"),
+        K_DESSIC=SIMP(statut="f", typ="R", defaut=0.0e0),
+        B_ENDOGE=SIMP(statut="f", typ="R", defaut=0.0e0),
         LONG_CARA=SIMP(statut="f", typ="R", val_min=0.0e0),
         COEF_AMOR=SIMP(statut="f", typ="R", defaut=1.0e0),
     ),
