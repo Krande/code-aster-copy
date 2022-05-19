@@ -111,6 +111,16 @@ void jeveux_delete( const std::string prefix ) {
     CALLO_DETRSD( type, prefix );
 }
 
+bool deleteTemporaryObjects( void ) {
+    CALL_DELETE_TEMPORARY_OBJECTS();
+    return true;
+}
+
+bool deleteCachedObjects( void ) {
+    CALL_DELETE_CACHED_OBJECTS();
+    return true;
+}
+
 std::string onFatalError( const std::string value ) {
     ASTERINTEGER lng = 16;
     char *tmp = MakeBlankFStr( lng );

@@ -3095,6 +3095,18 @@ def jeveux_delete(prefix):
         prefix (str): Root name of the Jeveux datastructure.
     """
 
+# built-in function deleteTemporaryObjects in libaster
+
+def deleteTemporaryObjects():
+    """Delete temporary Jeveux objects
+    """
+
+# built-in function deleteCachedObjects in libaster
+
+def deleteCachedObjects():
+    """Delete temporary and cached Jeveux objects (temporary, matrix, base, ...)
+    """
+
 # built-in function onFatalError in libaster
 
 def onFatalError(value= ''):
@@ -10875,18 +10887,6 @@ def createEnthalpy(rho_cp_func, beta_func):
     Arguments:
         rhoc_cp_func[Function]: Function of RHO_CP
         beta_func[Function]: Function of BETA to modify (add value at T=0K)
-    """
-
-# built-in function deleteTemporaryObjects in libaster
-
-def deleteTemporaryObjects():
-    """Delete temporary Jeveux objects
-    """
-
-# built-in function cleanJeveuxMemory in libaster
-
-def cleanJeveuxMemory():
-    """Clean Jeveux objects (temporary, matrix, base, ...)
     """
 
 # built-in function petscFinalize in libaster

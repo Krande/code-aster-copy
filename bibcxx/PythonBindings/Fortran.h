@@ -53,6 +53,10 @@ void call_print( const std::string &text );
 
 void jeveux_delete( const std::string prefix );
 
+bool deleteTemporaryObjects( void );
+
+bool deleteCachedObjects( void );
+
 std::string onFatalError( const std::string value = "" );
 
 void set_option( const std::string &option, ASTERDOUBLE value );

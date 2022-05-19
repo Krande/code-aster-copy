@@ -16,25 +16,30 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine deleteTemporaryObjects()
+subroutine deleteCachedObjects()
 !
 implicit none
 !
-#include "asterfort/jedetv.h"
-#include "asterfort/jerecu.h"
-#include "asterfort/jereou.h"
+#include "asterfort/deleteTemporaryObjects.h"
+#include "asterfort/detmat.h"
+! #include "asterfort/jelibz.h"
 !
-! --------------------------------------------------------------------------------------------------
+! -------------------------------------------------------------------------------------
 !
 ! Memory routine
 !
-! Delete all temporary Jeveux objects
+! Delete temporary and cached Jeveux objects (cached because too costly to
+! recreate each time)
 !
-! --------------------------------------------------------------------------------------------------
+! Permanently allocated Jeveux objects, by 'jeveut', must now be individually unlocked.
 !
+! -------------------------------------------------------------------------------------
+!
+!   Delete matrix and their mumps/petsc associated instances
+    call detmat()
+!   Unlock objects kept in memory using 'jeveut'
+    ! call jelibz('G')
 !   Delete objects on the volatile database
-    call jedetv()
-    call jereou('V', 0.01d0)
-    call jerecu('G')
+    call deleteTemporaryObjects()
 !
 end subroutine

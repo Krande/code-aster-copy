@@ -123,6 +123,15 @@ Arguments:
     prefix (str): Root name of the Jeveux datastructure.
         )",
              py::arg( "prefix" ) );
+
+    mod.def( "deleteTemporaryObjects", deleteTemporaryObjects, R"(
+Delete temporary Jeveux objects
+        )" );
+
+    mod.def( "deleteCachedObjects", deleteCachedObjects, R"(
+Delete temporary and cached Jeveux objects (temporary, matrix, base, ...)
+        )" );
+
     mod.def( "onFatalError", &onFatalError,
              R"(
 Get/set the behavior in case of error.

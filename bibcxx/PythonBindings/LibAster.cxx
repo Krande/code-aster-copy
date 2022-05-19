@@ -46,9 +46,9 @@
 #include "PythonBindings/ContactEnumInterface.h"
 #include "PythonBindings/ContactInterface.h"
 #include "PythonBindings/ContactNewInterface.h"
+#include "PythonBindings/ContactPairingInterface.h"
 #include "PythonBindings/ContactParametersInterface.h"
 #include "PythonBindings/ContactZoneInterface.h"
-#include "PythonBindings/ContactPairingInterface.h"
 #include "PythonBindings/CppToFortranGlossaryInterface.h"
 #include "PythonBindings/CrackInterface.h"
 #include "PythonBindings/CrackShapeInterface.h"
@@ -59,7 +59,6 @@
 #include "PythonBindings/DataFieldInterface.h"
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/DebugInterface.h"
-#include "PythonBindings/DeleteTemporaryObjectsInterface.h"
 #include "PythonBindings/DirichletBCInterface.h"
 #include "PythonBindings/DiscreteComputationInterface.h"
 #include "PythonBindings/DynamicMacroElementInterface.h"
@@ -282,7 +281,6 @@ PYBIND11_MODULE( libaster, mod ) {
     exportExternalStateVariablesToPython( mod );
     exportExternalStateVariablesResultToPython( mod );
     exportCreateEnthalpyToPython( mod );
-    exportDeleteTemporaryObjectsToPython( mod );
     exportMatrixToPetscToPython( mod );
     exportBehaviourPropertyToPython( mod );
     exportCodedMaterialToPython( mod );

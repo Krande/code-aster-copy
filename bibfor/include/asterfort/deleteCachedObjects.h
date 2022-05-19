@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,28 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cleanJeveuxMemory()
-!
-implicit none
-!
-#include "asterfort/detmat.h"
-#include "asterfort/jedetv.h"
-#include "asterfort/jerecu.h"
-#include "asterfort/jereou.h"
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Memory routine
-!
-! Clean Jeveux objects
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   Delete matrix and their mumps/petsc associated instances
-    call detmat()
-!   Delete objects on the volatile database
-    call jedetv()
-    call jereou('V', 0.01d0)
-    call jerecu('G')
-!
-end subroutine
+interface
+    subroutine deleteCachedObjects()
+    end subroutine
+end interface

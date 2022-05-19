@@ -43,9 +43,6 @@ void DEFSSS( CELCES_WRAP, celces_wrap, const char *, STRING_SIZE, const char *, 
 void DEFSSS( CNOCNS_WRAP, cnocns_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );
 
-#define CALL_CLEAN_JEVEUX_MEMORY( ) CALL0( CLEANJEVEUXMEMORY, cleanjeveuxmemory )
-void DEF0( CLEANJEVEUXMEMORY, cleanjeveuxmemory);
-
 #define CALL_DETMAT() CALL0( DETMAT, detmat )
 extern void DEF0( DETMAT, detmat );
 
@@ -56,78 +53,80 @@ extern void DEFS( DETMATRIX, detmatrix, const char *, STRING_SIZE );
 #define CALLO_DELETE_MATRIX( a, b ) CALLOO( DELETE_MATRIX, delete_matrix, a, b )
 void DEFSS( DELETE_MATRIX, delete_matrix, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALL_DELETE_TEMPORARY_OBJECTS( ) CALL0( DELETETEMPORARYOBJECTS, deletetemporaryobjects )
-void DEF0( DELETETEMPORARYOBJECTS, deletetemporaryobjects);
+#define CALL_DELETE_CACHED_OBJECTS() CALL0( DELETECACHEDOBJECTS, deletecachedobjects )
+void DEF0( DELETECACHEDOBJECTS, deletecachedobjects );
 
-#define CALLO_MATR_ASSE_SET_VALUES( a, b, c, d, e) CALLOPPPP( MATR_ASSE_SET_VALUES, \
-                                                            matr_asse_set_values, a, b, c, d, e)
-extern void DEFSPPPP( MATR_ASSE_SET_VALUES, matr_asse_set_values, const char *, STRING_SIZE, \
-            const ASTERINTEGER *, const ASTERINTEGER *, const ASTERINTEGER *, const ASTERDOUBLE *);
+#define CALL_DELETE_TEMPORARY_OBJECTS() CALL0( DELETETEMPORARYOBJECTS, deletetemporaryobjects )
+void DEF0( DELETETEMPORARYOBJECTS, deletetemporaryobjects );
 
-#define CALLO_MATR_ASSE_TRANSPOSE( a ) CALLO( MATR_ASSE_TRANSPOSE, matr_asse_transpose, a)
-void DEFS( MATR_ASSE_TRANSPOSE, matr_asse_transpose, const char *, STRING_SIZE);
+#define CALLO_MATR_ASSE_SET_VALUES( a, b, c, d, e )                                                \
+    CALLOPPPP( MATR_ASSE_SET_VALUES, matr_asse_set_values, a, b, c, d, e )
+extern void DEFSPPPP( MATR_ASSE_SET_VALUES, matr_asse_set_values, const char *, STRING_SIZE,
+                      const ASTERINTEGER *, const ASTERINTEGER *, const ASTERINTEGER *,
+                      const ASTERDOUBLE * );
+
+#define CALLO_MATR_ASSE_TRANSPOSE( a ) CALLO( MATR_ASSE_TRANSPOSE, matr_asse_transpose, a )
+void DEFS( MATR_ASSE_TRANSPOSE, matr_asse_transpose, const char *, STRING_SIZE );
 
 #define CALLO_MATR_ASSE_TRANSPOSE_CONJUGATE( a )                                                   \
-    CALLO( MATR_ASSE_TRANSPOSE_CONJUGATE, matr_asse_transpose_conjugate, a)
-void DEFS( MATR_ASSE_TRANSPOSE_CONJUGATE, matr_asse_transpose_conjugate, const char *, STRING_SIZE);
+    CALLO( MATR_ASSE_TRANSPOSE_CONJUGATE, matr_asse_transpose_conjugate, a )
+void DEFS( MATR_ASSE_TRANSPOSE_CONJUGATE, matr_asse_transpose_conjugate, const char *,
+           STRING_SIZE );
 
-#define CALLO_MATR_ASSE_PRINT( a, b, c ) CALLOPO( MATIMP, matimp, a, b, c)
-void DEFSPS( MATIMP, matimp, const char *, STRING_SIZE, const ASTERINTEGER *, \
-                             const char *, STRING_SIZE);
+#define CALLO_MATR_ASSE_PRINT( a, b, c ) CALLOPO( MATIMP, matimp, a, b, c )
+void DEFSPS( MATIMP, matimp, const char *, STRING_SIZE, const ASTERINTEGER *, const char *,
+             STRING_SIZE );
 
-#define CALLO_POSDDL( a, b, c, d, e, f ) CALLOOOOPP( POSDDL, posddl, a, b, c, d, e, f)
-void DEFSSSSPP( POSDDL, posddl, const char *, STRING_SIZE, const char *, STRING_SIZE, \
-                                const char *, STRING_SIZE, const char *, STRING_SIZE, \
-                                const ASTERINTEGER *, const ASTERINTEGER *);
+#define CALLO_POSDDL( a, b, c, d, e, f ) CALLOOOOPP( POSDDL, posddl, a, b, c, d, e, f )
+void DEFSSSSPP( POSDDL, posddl, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                STRING_SIZE, const char *, STRING_SIZE, const ASTERINTEGER *,
+                const ASTERINTEGER * );
 
-#define CALL_EXLIM1( a, b, c, d, e) CALLPPOOO( EXLIM1, exlim1, a, b, c, d, e)
-void DEFPPSSS( EXLIM1, exlim1, const ASTERINTEGER *, const ASTERINTEGER *,
-              const char *, STRING_SIZE, \
-              const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALL_EXLIM1( a, b, c, d, e ) CALLPPOOO( EXLIM1, exlim1, a, b, c, d, e )
+void DEFPPSSS( EXLIM1, exlim1, const ASTERINTEGER *, const ASTERINTEGER *, const char *,
+               STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALL_EXLIM2( a, b, c, d, e) CALLPPOOO( EXLIM2, exlim2, a, b, c, d, e)
-void DEFPPSSS( EXLIM2, exlim2, const ASTERINTEGER *, const ASTERINTEGER *,
-              const char *, STRING_SIZE, \
-              const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALL_EXLIM2( a, b, c, d, e ) CALLPPOOO( EXLIM2, exlim2, a, b, c, d, e )
+void DEFPPSSS( EXLIM2, exlim2, const ASTERINTEGER *, const ASTERINTEGER *, const char *,
+               STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_DETRSD( a, b ) CALLOO( DETRSD, detrsd, a, b )
 extern void DEFSS( DETRSD, detrsd, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALL_LGTLGR( a, b, c ) CALLSSS( LGTLGR, lgtlgr, a, b, c )
-#define CALLO_LGTLGR( a, b, c ) \
-    CALLOOO( LGTLGR, lgtlgr, a, b, c )
-extern void DEFSSS( LGTLGR, lgtlgr, const char *, STRING_SIZE,
-                    const char *, STRING_SIZE, const char *, STRING_SIZE);
+#define CALLO_LGTLGR( a, b, c ) CALLOOO( LGTLGR, lgtlgr, a, b, c )
+extern void DEFSSS( LGTLGR, lgtlgr, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE );
 
 #define CALLO_COPISD( a, b, c, d ) CALLOOOO( COPISD, copisd, a, b, c, d )
-extern void DEFSSSS( COPISD, copisd, const char *, STRING_SIZE, const char *, STRING_SIZE, \
-                                     const char *, STRING_SIZE, const char *, STRING_SIZE);
+extern void DEFSSSS( COPISD, copisd, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                     const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_ADALIG_WRAP( a ) CALLO( ADALIG_WRAP, adalig_wrap, a)
+#define CALLO_ADALIG_WRAP( a ) CALLO( ADALIG_WRAP, adalig_wrap, a )
 extern void DEFS( ADALIG_WRAP, adalig_wrap, const char *, STRING_SIZE );
 
-#define CALLO_INITEL( a, b ) CALLOP( INITEL, initel, a, b)
+#define CALLO_INITEL( a, b ) CALLOP( INITEL, initel, a, b )
 extern void DEFSP( INITEL, initel, const char *, STRING_SIZE, ASTERLOGICAL * );
 
 #define CALLO_CORMGI( a, b ) CALLOO( CORMGI, cormgi, a, b )
 extern void DEFSS( CORMGI, cormgi, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_RGNDAS_WRAP( a, b, c, d, e, f ) \
-                                CALLOPOOOO( RGNDAS_WRAP, rgndas_wrap, a, b, c, d, e, f)
-void DEFSPSSSS( RGNDAS_WRAP, rgndas_wrap, const char *, STRING_SIZE, const ASTERINTEGER *, \
-                        const char *, STRING_SIZE, const char *, STRING_SIZE,  \
-                        const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_RGNDAS_WRAP( a, b, c, d, e, f )                                                      \
+    CALLOPOOOO( RGNDAS_WRAP, rgndas_wrap, a, b, c, d, e, f )
+void DEFSPSSSS( RGNDAS_WRAP, rgndas_wrap, const char *, STRING_SIZE, const ASTERINTEGER *,
+                const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                const char *, STRING_SIZE );
 
-#define CALL_NUMEDDL_GET_COMPONENTS( a, b, c, d, e, f ) \
-                    CALLSSPPSP( NUMEDDL_GET_COMPONENTS, numeddl_get_components, a, b , c, d, e, f)
-extern void DEFSSPPSP( NUMEDDL_GET_COMPONENTS, numeddl_get_components, const char *, STRING_SIZE, \
-                                const char *, STRING_SIZE, const ASTERINTEGER *, ASTERINTEGER *, \
-                                char *, STRING_SIZE, const ASTERINTEGER *);
+#define CALL_NUMEDDL_GET_COMPONENTS( a, b, c, d, e, f )                                            \
+    CALLSSPPSP( NUMEDDL_GET_COMPONENTS, numeddl_get_components, a, b, c, d, e, f )
+extern void DEFSSPPSP( NUMEDDL_GET_COMPONENTS, numeddl_get_components, const char *, STRING_SIZE,
+                       const char *, STRING_SIZE, const ASTERINTEGER *, ASTERINTEGER *, char *,
+                       STRING_SIZE, const ASTERINTEGER * );
 
-#define CALLO_NUMEDDL_GET_COMPONENT_NAME( a, b, c ) \
-                    CALLOPO( NUMEDDL_GET_COMPONENT_NAME, numeddl_get_component_name, a, b , c)
-extern void DEFSPS( NUMEDDL_GET_COMPONENT_NAME, numeddl_get_component_name, const char *, \
-                                STRING_SIZE, const ASTERINTEGER *, const char *, STRING_SIZE);
+#define CALLO_NUMEDDL_GET_COMPONENT_NAME( a, b, c )                                                \
+    CALLOPO( NUMEDDL_GET_COMPONENT_NAME, numeddl_get_component_name, a, b, c )
+extern void DEFSPS( NUMEDDL_GET_COMPONENT_NAME, numeddl_get_component_name, const char *,
+                    STRING_SIZE, const ASTERINTEGER *, const char *, STRING_SIZE );
 
 #define CALLO_NOCARTC( a, b, c, d, e, f, g, h, i )                                                 \
     CALLOPPOOPOPO( NOCART_C, nocart_c, a, b, c, d, e, f, g, h, i )
@@ -165,8 +164,8 @@ extern void DEFSPPS( RSADPA_ZR_WRAP, rsadpa_zr_wrap, const char *, STRING_SIZE, 
 #define CALLO_RSADPA_ZK24_WRAP( a, b, c, d, e )                                                    \
     CALLPOOOO( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, a, b, c, d, e )
 extern void DEFPSSSS( RSADPA_ZK24_WRAP, rsadpa_zk24_wrap, ASTERINTEGER *, const char *, STRING_SIZE,
-                     const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-                     STRING_SIZE );
+                      const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                      STRING_SIZE );
 
 #define CALLO_RSCRSD( a, b, c, d ) CALLOOOP( RSCRSD, rscrsd, a, b, c, d )
 void DEFSSSP( RSCRSD, rscrsd, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
@@ -186,16 +185,17 @@ extern void DEFSP( RSINFO, rsinfo, const char *, STRING_SIZE, ASTERINTEGER * );
 
 #define CALLO_VTGPLD( a, b, c, d, e, f ) CALLOPOOOO( VTGPLD, vtgpld, a, b, c, d, e, f )
 extern void DEFSPSSSS( VTGPLD, vtgpld, const char *, STRING_SIZE, ASTERDOUBLE *, const char *,
-            STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-                    STRING_SIZE);
+                       STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                       const char *, STRING_SIZE );
 
-#define CALLO_APLCPGN( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q ) \
-     CALLOOOOPPPPPPPPPPPPP( APLCPGN, aplcpgn, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
-extern void DEFSSSSPPPPPPPPPPPPP( APLCPGN, aplcpgn, const char *, STRING_SIZE, const char *, 
-            STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERDOUBLE *, 
-            ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, 
-            ASTERINTEGER *,ASTERINTEGER *, ASTERINTEGER **, ASTERINTEGER **, ASTERDOUBLE ** , 
-            ASTERDOUBLE **, ASTERDOUBLE ** );
+#define CALLO_APLCPGN( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )                         \
+    CALLOOOOPPPPPPPPPPPPP( APLCPGN, aplcpgn, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
+extern void DEFSSSSPPPPPPPPPPPPP( APLCPGN, aplcpgn, const char *, STRING_SIZE, const char *,
+                                  STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                                  ASTERDOUBLE *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                                  ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                                  ASTERINTEGER **, ASTERINTEGER **, ASTERDOUBLE **, ASTERDOUBLE **,
+                                  ASTERDOUBLE ** );
 
 #ifdef __cplusplus
 }

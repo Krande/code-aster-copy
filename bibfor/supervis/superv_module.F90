@@ -34,7 +34,7 @@ module superv_module
 #include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/check_aster_allocate.h"
-#include "asterfort/cleanJeveuxMemory.h"
+#include "asterfort/deleteCachedObjects.h"
 #include "asterfort/foint0.h"
 #include "asterfort/jermxd.h"
 #include "asterfort/utgtme.h"
@@ -126,8 +126,8 @@ contains
 !
 !       Reset commons used for function interpolation
         call foint0()
-!       Delete all temporary Jeveux objects
-        call cleanJeveuxMemory()
+!       Delete cached and temporary Jeveux objects
+        call deleteCachedObjects()
     end subroutine superv_after
 
 !>  Return the current maximum number of available threads
