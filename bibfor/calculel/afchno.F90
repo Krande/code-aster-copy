@@ -63,7 +63,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
 !
 ! - Create PROF_CHNO
 !
-    prof_chno = chamno(1:19)
+    prof_chno = chamno(1:8)//'.PROF_CHNO '
     call crprno(prof_chno, base, mesh, gran_name, nb_equa)
 !
 ! - Create NODE field
@@ -73,7 +73,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
 !
 !     --- AFFECTATION DU .PRNO DE L'OBJET PROF_CHNO ---
 !
-    call jeveuo(chamno//'.PRNO', 'E', vi=prno)
+    call jeveuo(prof_chno//'.PRNO', 'E', vi=prno)
     ii = 0
     idec = 1
     do ino = 1, nb_node
@@ -89,7 +89,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
 !     --- AFFECTATION DU .VALE DE L'OBJET CHAMNO ---
 !
     call jeveuo(chamno//'.VALE', 'E', lvale)
-    call jeveuo(chamno//'.NUEQ', 'E', lnueq)
+    call jeveuo(prof_chno//'.NUEQ', 'E', lnueq)
     do ino = 1, nb_node
         i1 = prno((nec+2)*(ino-1)+1) + lnueq - 1
         do ic = 1, ncmpmx
@@ -116,7 +116,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
 !
 ! - Compute .DEEQ object
 !
-    call pteequ(chamno       , base, nb_equa, idx_gd, ncmp,&
+    call pteequ(prof_chno    , base, nb_equa, idx_gd, ncmp,&
                 field_to_cata)
     AS_DEALLOCATE(vi = cata_to_field)
     AS_DEALLOCATE(vi = field_to_cata)
