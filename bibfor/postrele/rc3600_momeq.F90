@@ -223,7 +223,7 @@ subroutine rc3600_momeq()
         typmax = 'MAXI_ABS'
         tychlu = 'ELNO_SIEF_R'
         noch19 = '&&RC3600_CHMAXI'
-        typresu = 'VALE_ABS'
+        typresu = 'VALE'
 
         call chmima(resuTmp, nomsym, tychlu, typmax, noch19,&
                     typresu=typresu, mcfz = mcf)

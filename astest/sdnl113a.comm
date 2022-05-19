@@ -339,13 +339,20 @@ TABM64NS64 = CALC_TABLE(TABLE=TABM64NS64,reuse=TABM64NS64,
 TABM64NS64MAX = CALC_TABLE(TABLE=TABM64NS64,
                      ACTION=(_F(OPERATION='CALCUL',
                                 NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
-                                TYPE_CALCUL = 'MAXI_ABS'),
+                                TYPE_CALCUL = 'MAXI'),
                             )
                     )
 
-TEST_TABLE(  TABLE=TABM64NS64MAX,
+TABM64NS64MIN = CALC_TABLE(TABLE=TABM64NS64,
+                     ACTION=(_F(OPERATION='CALCUL',
+                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
+                                TYPE_CALCUL = 'MINI'),
+                            )
+                    )
+
+TEST_TABLE(  TABLE=TABM64NS64MIN,
              NOM_PARA='MT',
-             VALE_CALC=24.049111092022407,
+             VALE_CALC=-24.049111092022407,
              )
 
 TEST_TABLE(  TABLE=TAB_MEQ,
@@ -358,15 +365,15 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=24.049111092022407,
-             VALE_CALC=24.049111092022407,
+             VALE_REFE=-24.049111092022407,
+             VALE_CALC=-24.049111092022407,
              )
 
 
 
-TEST_TABLE(  TABLE=TABM64NS64MAX,
+TEST_TABLE(  TABLE=TABM64NS64MIN,
              NOM_PARA='MFY',
-             VALE_CALC=38.16540576851001,
+             VALE_CALC=-38.16540576851001,
              )
 
 TEST_TABLE(  TABLE=TAB_MEQ,
@@ -379,13 +386,13 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=38.16540576851001,
-             VALE_CALC=38.16540576851001,
+             VALE_REFE=-38.16540576851001,
+             VALE_CALC=-38.16540576851001,
              )
 
-TEST_TABLE(  TABLE=TABM64NS64MAX,
+TEST_TABLE(  TABLE=TABM64NS64MIN,
              NOM_PARA='MFZ',
-             VALE_CALC=80.37127397983554,
+             VALE_CALC=-80.37127397983554,
              )
 
 TEST_TABLE(  TABLE=TAB_MEQ,
@@ -398,8 +405,8 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=80.37127397983554,
-             VALE_CALC=80.37127397983554,
+             VALE_REFE=-80.37127397983554,
+             VALE_CALC=-80.37127397983554,
              )
 
 TEST_TABLE(  TABLE=TABM64NS64MAX,

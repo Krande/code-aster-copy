@@ -289,7 +289,14 @@ TABM575N4 = CALC_TABLE(TABLE=TABM575N4,reuse=TABM575N4,
 TABM575N4MAX = CALC_TABLE(TABLE=TABM575N4,
                      ACTION=(_F(OPERATION='CALCUL',
                                 NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
-                                TYPE_CALCUL = 'MAXI_ABS'),
+                                TYPE_CALCUL = 'MAXI'),
+                            )
+                    )
+
+TABM575N4MIN = CALC_TABLE(TABLE=TABM575N4,
+                     ACTION=(_F(OPERATION='CALCUL',
+                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
+                                TYPE_CALCUL = 'MINI'),
                             )
                     )
 
@@ -333,9 +340,9 @@ TEST_TABLE(  TABLE=TAB_MEQ,
              VALE_CALC=125.72354340030415,
              )
 
-TEST_TABLE(  TABLE=TABM575N4MAX,
+TEST_TABLE(  TABLE=TABM575N4MIN,
              NOM_PARA='MFZ',
-             VALE_CALC=110.4648667822179,
+             VALE_CALC=-110.4648667822179,
              )
 
 TEST_TABLE(  TABLE=TAB_MEQ,
@@ -348,8 +355,8 @@ TEST_TABLE(  TABLE=TAB_MEQ,
                        ),
                     ),
              REFERENCE='AUTRE_ASTER',
-             VALE_REFE=110.4648667822179,
-             VALE_CALC=110.4648667822179,
+             VALE_REFE=-110.4648667822179,
+             VALE_CALC=-110.4648667822179,
              )
 
 TEST_TABLE(  TABLE=TABM575N4MAX,
