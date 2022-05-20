@@ -1,67 +1,55 @@
-#:This makefile gives convenient shortcuts to build and check code_aster.
+#:This makefile gives convenient shortcuts to build and test code_aster.
 #:
 #:Targets:
-#:  configure       Configure the project: 'waf configure'
-#:  default         Default task, depending on DEFAULT environment variable: 'safe' or 'fast'
-#:  install         Alias for 'default'
+#:  default         Default task, selected by DEFAULT environment variable: 'safe' by default.
 #:  bootstrap       Run 'configure', 'safe' and 'doc'.
-#:  all             Run 'bootstrap' for 'std' and 'mpi' variants.
+#:  all             Run 'bootstrap' for 'mpi' and 'debug' configurations.
 #:
+#:  configure       Configure the project: 'waf configure'
+#:  install         Alias for 'safe'
 #:  safe            Build and install in safe mode: 'waf install --safe'
 #:  fast            Build and install in fast mode: 'waf install --fast'
-#:  dbg_safe        Build and install in safe mode with debug variant: 'waf install_debug --safe'
-#:  dbg             Build and install in fast mode with debug variant: 'waf install_debug --fast'
-#:  install-tests   Same as 'fast' by adding the '--install-tests' option
-#:
+#:                  The difference between safe and fast modes is the algorithm used
+#:                  to check changes of dependencies.
 #:  doc             Build the embedded Html documentation: 'waf doc'
-#:
+#:  distclean       Perform a distclean of the build directory: 'waf distclean'
+#:  install-tests   Same as 'fast' by adding the '--install-tests' option
 #:  test            Execute a testcase, use 'n' variable: 'waf test -n xxx'
-#:  check           Execute a list of testcases, use 'LIST' variable.
 #:
-#:  clean_doc       Remove the build directory of the documentation (debug & release)
-#:  distclean       Perform a distclean of the build directory
+#:The same targets exist with '_debug' suffix (configure_debug, install_debug, test_debug...)
+#:which use 'waf_debug' instead of 'waf'.
 #:
 #:  help            Show this help message
 #:
 #:  <testname>      An unknown target is treated as a testname, same 'make test n=testname'
 #:
 #:Environment variables:
-#:  BUILD           Build variant 'std' or 'mpi' (default: %BUILD%)
-#:  DEFAULT         Algorithm to check changes on dependencies 'safe', 'fast'
-#:                  or 'dbg_safe', 'dbg' with debugging informations (default: %DEFAULT%)
+#:  BUILD           Build variant 'mpi', 'debug', 'std'... (default: %BUILD%)
+#:  DEFAULT         Default selected target (default: %DEFAULT%)
 #:  OPTS            Options passed to waf commands, example OPTS='-p'
 #:
 #:With all prerequisites well configured (example in a up-to-date container) you may run:
+#:      ./configure
 #:      make
 #:or
 #:      make bootstrap
 #:
-#:Build both std & mpi versions:
+#:Build both optimized and debug versions:
 #:      make all
 #:
-#:You may add options to the 'waf' commands by using the OPTS environment variable:
-#:      make safe BUILD=std OPTS='-p'
-#:or:
-#:      export BUILD=std OPTS='--progress'
+#:To build a sequential version, you must explicitly set BUILD=std.
+#:
+#:You may add options to the 'waf' commands by using the OPTS environment variable
+#:on the command line (example: with a progress bar):
+#:      make safe OPTS='-p'
+#:or by setting them before (example: sequential build, limit to 4 tasks):
+#:      export BUILD=std OPTS='-j 4'
 #:      make
 #:
 #:Execute a testcase:
 #:      make test n=ssll112a
 #:or:
 #:      make ssll112a
-#:
-#:Check testcases (submit list by default):
-#:      make check
-#:
-#:Check testcases (all 'verification' ones, '-L' is automatically added
-#:if LIST does not start with an hyphen):
-#:      make check LIST=verification
-#:
-#:Check testcases (using testlist):
-#:      make check LIST="--testlist list.snl"
-#:
-#:Check testcases (using regexp on testnames):
-#:      make check LIST="-R ssnv230[ac]"
 
 BUILD ?= mpi
 OPTS ?=
@@ -69,32 +57,30 @@ DEFAULT ?= safe
 
 SHELL = /bin/bash
 
-.PHONY: help default configure bootstrap all install-tests test check clean_doc distclean
-.PHONY: safe fast dbg_safe dbg doc install
+.PHONY: help default bootstrap bootstrap_debug all
+# targets for BUILD configuration
+.PHONY: configure install safe fast doc distclean install-tests test
+# same targets for 'debug' configuration
+.PHONY: configure_debug install_debug safe_debug fast_debug doc_debug distclean_debug install-tests_debug test_debug
 
 default: $(DEFAULT)
-bootstrap: configure safe doc
 
 all:
-	@make bootstrap BUILD=std
-	@make bootstrap BUILD=mpi
+	@make BUILD=mpi bootstrap
+	@make BUILD=debug bootstrap
+
+bootstrap: configure safe doc
 
 configure:
 	./waf_$(BUILD) configure $(OPTS)
 
-install: default
+install: safe
 
 safe:
 	./waf_$(BUILD) install $(OPTS) --safe -j $$(nproc)
 
 fast:
 	./waf_$(BUILD) install $(OPTS) --fast -j $$(nproc)
-
-dbg_safe:
-	./waf_$(BUILD) install_debug $(OPTS) --safe -j $$(nproc)
-
-dbg:
-	./waf_$(BUILD) install_debug $(OPTS) --fast -j $$(nproc)
 
 doc:
 	@( \
@@ -104,6 +90,9 @@ doc:
 		fi ; \
 		./waf_$(BUILD) doc $(OPTS) ; \
 	)
+
+distclean: ##- perform a distclean of the build directory.
+	./waf_$(BUILD) distclean
 
 install-tests:
 	@make fast OPTS="$(OPTS) --install-tests"
@@ -118,23 +107,31 @@ test:
 		./waf_$(BUILD) test $(OPTS) -n $(n) ; \
 	)
 
-LIST ?= submit
-check:
-	@( \
-		bindir=$$(python3 -c "ctx = {} ; \
-			exec(open('build/$(BUILD)/c4che/release_cache.py').read(), ctx) ; \
-			print(ctx['BINDIR'])") ; \
-		tmpres=$$(mktemp -d -t run_ctest.XXXXXX) ; rmdir $${tmpres} ; \
-		opt=$$(egrep '^-' <<< "$(LIST)" > /dev/null || echo "-L") ; \
-		$${bindir}/run_ctest --resutest $${tmpres} $${opt} $(LIST) ; \
-		echo "result directory: $${tmpres}" \
-	)
+bootstrap_debug: configure_debug safe_debug doc_debug
 
-clean_doc:
-	rm -rf ./build/$(BUILD)/{release,debug}/doc
+configure_debug:
+	@make BUILD=debug configure
 
-distclean: ##- perform a distclean of the build directory.
-	./waf_$(BUILD) distclean
+install_debug:
+	@make BUILD=debug install
+
+safe_debug:
+	@make BUILD=debug safe
+
+fast_debug:
+	@make BUILD=debug fast
+
+doc_debug:
+	@make BUILD=debug doc
+
+distclean_debug:
+	@make BUILD=debug distclean
+
+install-tests_debug:
+	@make BUILD=debug install-tests"
+
+test_debug:
+	@make BUILD=debug test n=$(n)
 
 help : makefile
 	@sed -n 's/^#://p' $< | \

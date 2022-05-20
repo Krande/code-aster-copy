@@ -241,7 +241,7 @@ returns ``MAILLAGE_P``, so one defines:
 Commons errors
 ==============
 
-- The compilation works but ``waf install_debug`` ends with
+- The compilation works but ``waf_debug install`` ends with
   ``stderr: Segmentation fault`` during the compilation of elements catalogs.
 
   **Explanation**: It may be an error in a Python function called from a C or
@@ -250,7 +250,7 @@ Commons errors
 
   .. code-block:: sh
 
-      $ cp ../src/build/debug/catalo/cata_ele.ojb fort.4
+      $ cp ../src/build/mpidebug/catalo/cata_ele.ojb fort.4
       $ python
       >>> import code_aster
       >>> code_aster.init(CATALOGUE={"FICHIER": "CATAELEM", "UNITE": 4})

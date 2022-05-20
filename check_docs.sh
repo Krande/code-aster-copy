@@ -5,7 +5,7 @@ _usage()
     echo "Check that the documentation is built without error and that automatically"
     echo "generated files are committed."
     echo
-    echo "'waf install' or 'waf install_debug' (parallel build) must have been run"
+    echo "'waf install' (parallel build) must have been run"
     echo "just before. The waf script can be changed but it must point to a"
     echo "parallel configuration."
     echo "This script should be run in the same environment as 'waf install' was."
@@ -16,7 +16,7 @@ _usage()
     echo
     echo "  --help (-h)            Print this help information and exit."
     echo "  --waf script           Define the script to be used (default: ./waf_mpi)."
-    echo "  --use-debug            Use the debug build (Use 'release' by default)."
+    echo "  --use-debug            Use the debug build (default: 'release' using 'waf_mpi')."
     echo "  --verbose (-v)         Show commands output."
     echo
     exit "${1:-1}"
@@ -52,6 +52,7 @@ check_docs_main()
     fi
     [ -z "${getstatus}" ] && echo "not a repository" && exit 1
 
+    # with waf_debug, doc and doc_debug are identical
     local suffix=""
     if [ ${variant} = "debug" ]; then
         suffix="_debug"

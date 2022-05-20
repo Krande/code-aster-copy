@@ -46,7 +46,7 @@ def options(self):
         dest="enable_doc",
         help="Force documentation support."
         "NB: The documentation build must be explicitly "
-        " called by running `waf doc|doc_debug`.",
+        " called by running `waf doc`.",
     )
     group.add_option(
         "--force-doc",

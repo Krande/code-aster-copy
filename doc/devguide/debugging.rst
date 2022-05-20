@@ -12,7 +12,7 @@ This section gives some tips about debugging code_aster.
 
 .. note::
 
-    ``waf install_debug`` turns on ``ASTER_DEBUG_CXX`` flag that prints some
+    ``waf_debug install`` turns on ``ASTER_DEBUG_CXX`` flag that prints some
     informations about objects live-cycle.
     Please ask a guru before adding new blocks under this flag!
 
@@ -45,7 +45,7 @@ Helper functions
 Build of elements failed
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-In the case that the installation (``waf install_debug``) failed during building
+In the case that the installation (``waf_debug install``) failed during building
 the elements catalog, the output ends with something like:
 
 .. code-block:: none
@@ -60,14 +60,15 @@ the elements catalog, the output ends with something like:
     <command line to reproduce the error>
 
 
-Try to reproduce the error in a new terminal (adjust ``std`` to ``mpi`` if needed):
+Try to reproduce the error in a new terminal (adjust build and installation
+directories if needed):
 
 .. code-block:: shell
 
     cd /tmp
     ulimit -c unlimited
-    . ${HOME}/dev/codeaster/install/std/share/aster/profile.sh
-    python3 ${HOME}/dev/codeaster/src/build/std/debug/catalo/fort.1 --memory=4096
+    . ${HOME}/dev/codeaster/install/debug/share/aster/profile.sh
+    python3 ${HOME}/dev/codeaster/src/build/mpidebug/debug/catalo/fort.1 --memory=4096
 
 It may create a core file. In this case, try:
 
@@ -98,7 +99,7 @@ Another frequent error:
     >>> import aster
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-    ImportError: .../dev/codeaster/install/std/lib64/aster/libbibcxx.so: undefined symbol: _Z7nmdocr_PKcS0_Pcjj
+    ImportError: .../dev/codeaster/install/debug/lib64/aster/libbibcxx.so: undefined symbol: _Z7nmdocr_PKcS0_Pcjj
 
 Here, ``nmdocr`` is a Fortran subroutine, called from C++. Its prototype must be
 enclosed by ``extern "C" { ... }``.

@@ -244,7 +244,6 @@ so, it must have been compiled.
 That's why you must build code_aster **before** generating its documentation.
 
 First step ``./waf install``, and then ``./waf doc``.
-Or ``./waf install_debug``, then ``./waf doc_debug`` with the debug configuration.
 
 The html documentation is installed into ``<install-dir>/share/doc/html``.
 
