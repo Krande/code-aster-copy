@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,8 @@ subroutine accept(f, nbm, method, imode, jmode,&
 ! QUELQUES CONSTANTES
     deuxpi=2*pi
     omega=deuxpi*f
-    if (method(1:7) .ne. 'AU_YANG') uc=0.65d0*uflui
+! on commente cette ligne pour fix un bug
+    if (method(1:7) .ne. 'AU_YANG')  uc=0.65d0*uflui
     kl = 0.1d0*omega/uc
     kt = 0.55d0*omega/uc
 !
