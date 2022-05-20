@@ -235,6 +235,14 @@ TEMP_EXT=DEFI_FONCTION(NOM_PARA='INST',VALE=(864000,20,
 
 TEMP20=DEFI_CONSTANTE(VALE=20,)
 
+CHARTH=AFFE_CHAR_CINE_F(MODELE=MODTHER,
+                        THER_IMPO=(_F(GROUP_MA='BAS',
+                                      TEMP=TEMP20,),
+                                   _F(GROUP_MA='HAUT',
+                                      TEMP=TEMP_EXT,),),)
+
+
+
 CHARTH=AFFE_CHAR_THER_F(MODELE=MODTHER,
                         TEMP_IMPO=(_F(GROUP_MA='BAS',
                                       TEMP=TEMP20,),
@@ -243,6 +251,7 @@ CHARTH=AFFE_CHAR_THER_F(MODELE=MODTHER,
 
 RESUTH=THER_NON_LINE(MODELE=MODTHER,
                        CHAM_MATER=MABETTH,
+                     #   NEWTON=_F(REAC_ITER=4,),
                        COMPORTEMENT=_F(RELATION='THER_HYDR',),
                        EXCIT=_F(CHARGE=CHARTH,),
                        INCREMENT=_F(LIST_INST=LISTINST,),

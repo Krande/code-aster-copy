@@ -59,6 +59,7 @@ implicit none
 #include "asterfort/SetTableColumn.h"
 #include "asterfort/nmimcr.h"
 #include "asterfort/nmimck.h"
+#include "asterfort/nxcvci.h"
 #include "asterfort/impcmp.h"
 !
 character(len=24), intent(in) :: model
@@ -104,7 +105,7 @@ type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24) :: mediri, merigi, cnvabt
     character(len=19) :: tlimat(2)
     real(kind=8) :: time_curr
-    character(len=24) :: lload_name, lload_info
+    character(len=24) :: lload_name, lload_info, lload_func
     real(kind=8) :: resi_rela, resi_maxi
     character(len=16) :: name_dof_rela, name_dof_maxi
 !
@@ -124,6 +125,7 @@ type(NL_DS_Print), intent(inout) :: ds_print
     time_curr = tpsthe(1)
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
+    lload_func = list_load(1:19)//'.FCHA'
     name_dof_rela = ' '
     name_dof_maxi = ' '
 !
@@ -139,6 +141,12 @@ type(NL_DS_Print), intent(inout) :: ds_print
     call asasve(veresi, nume_dof, typres, varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid,&
                 typres, cnresi)
+!
+! - Compute Dirichlet loads (AFFE_CHAR_CINE)
+!
+    call nxcvci(model, lload_name, lload_info, lload_func, nume_dof, temp_iter,&
+    time_curr, cnchci )
+
 !
 ! - Dirichlet - BT LAMBDA
 !
@@ -161,7 +169,7 @@ type(NL_DS_Print), intent(inout) :: ds_print
                                              resi_rela , resi_maxi)
         endif
     else
-        call nxresi(vec2nd   , cnvabt   , cnresi  , cn2mbr,&
+        call nxresi(matass, vec2nd   , cnvabt   , cnresi  , cn2mbr,&
                     resi_rela, resi_maxi, ieq_rela, ieq_maxi)
     endif
     call impcmp(ieq_rela, nume_dof, name_dof_rela)

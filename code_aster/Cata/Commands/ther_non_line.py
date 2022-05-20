@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,
          ),
          EVOL_THER_SECH  =SIMP(statut='f',typ=evol_ther),
          EXCIT           =FACT(statut='o',max='**',
-           CHARGE          =SIMP(statut='o',typ=char_ther),
+           CHARGE          =SIMP(statut='o',typ=(char_ther,char_cine_ther)),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
          ),
 #-------------------------------------------------------------------

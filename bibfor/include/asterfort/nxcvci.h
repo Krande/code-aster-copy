@@ -15,13 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    subroutine nxresi(matass, vec2nd   , cnvabt   , cnresi  , cn2mbr,&
-                      resi_rela, resi_maxi, ieq_rela, ieq_maxi)
-        character(len=24), intent(in) :: vec2nd, cnvabt, cnresi, cn2mbr, matass
-        real(kind=8)     , intent(out):: resi_rela, resi_maxi
-        integer          , intent(out):: ieq_rela, ieq_maxi
-    end subroutine nxresi
+    subroutine nxcvci(model , &
+                    charge, infoch  , fomult, numedd, tempmoi,&
+                    instap, cncine  )
+        character(len=24), intent(in) :: model
+        character(len=24) :: charge
+        character(len=24) :: infoch
+        character(len=24) :: fomult
+        character(len=24) :: numedd
+        character(len=19) :: tempmoi
+        real(kind=8) :: instap
+        character(len=19) :: cncine
+    end subroutine nxcvci
 end interface

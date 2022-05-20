@@ -92,8 +92,8 @@ COEFH = 80.0
 COEFH2= DEFI_CONSTANTE(VALE=80.0)
 #
 
-CHATIMP=AFFE_CHAR_THER(MODELE=MODTHER,
-                       TEMP_IMPO=(_F(GROUP_NO='GM38',
+CHATIMP=AFFE_CHAR_CINE(MODELE=MODTHER,
+                       THER_IMPO=(_F(GROUP_NO='GM38',
                                      TEMP=TEMPG,),
                                   _F(GROUP_NO='GM37',
                                      TEMP=TEMPD,),),)
