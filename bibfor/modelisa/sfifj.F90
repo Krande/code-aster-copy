@@ -196,6 +196,12 @@ subroutine sfifj(nomres)
         fcoup=vare(2)
         method=vate(5)(1:8)
         fonct =vate(2)
+!       on fixe à 1 les longueurs de corrélation pour fix de bug
+        long1 = 1
+        long2 = 1
+!       on fixe les valeurs de uc et ut pour fix un bug
+        uc = 0.65d0*uflui
+        ut = 0.65d0*uflui
     else if (vate(1).eq.'SPEC_CORR_CONV_3') then
         fonct =vate(2)
         goto 10
