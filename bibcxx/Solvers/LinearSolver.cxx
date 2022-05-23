@@ -3,7 +3,7 @@
  * @brief Initialisation des renumeroteurs autorises pour les solvers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,8 +53,8 @@ ListSyntaxMapContainer BaseLinearSolver::buildListSyntax() {
 };
 
 BaseLinearSolver::BaseLinearSolver( const std::string name,
-                                              const LinearSolverEnum currentBaseLinearSolver,
-                                              const Renumbering currentRenumber )
+                                    const LinearSolverEnum currentBaseLinearSolver,
+                                    const Renumbering currentRenumber )
     : DataStructure( name, 19, "SOLVEUR" ), _linearSolver( currentBaseLinearSolver ),
       _renumber( currentRenumber ), _isEmpty( true ), _preconditioning( Without ),
       _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
@@ -218,6 +218,12 @@ bool BaseLinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatri
     if ( _isEmpty )
         build();
 
+    if ( currentMatrix && currentMatrix->isFactorized() && get_sh_jeveux_status() == 1 ) {
+        currentMatrix->deleteFactorizedMatrix();
+        // CALLO_DETMATRIX( currentMatrix->getName() );
+        currentMatrix->_isFactorized = false;
+    }
+
     const std::string solverName( getName() + "           " );
     std::string base( "V" );
     if ( currentMatrix->getMemoryType() == Permanent )
@@ -245,9 +251,9 @@ bool BaseLinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatri
     return true;
 };
 
-FieldOnNodesRealPtr BaseLinearSolver::solve(
-    const AssemblyMatrixDisplacementRealPtr &currentMatrix, const FieldOnNodesRealPtr &currentRHS,
-    FieldOnNodesRealPtr result ) const {
+FieldOnNodesRealPtr BaseLinearSolver::solve( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
+                                             const FieldOnNodesRealPtr &currentRHS,
+                                             FieldOnNodesRealPtr result ) const {
 
     if ( !currentMatrix->isFactorized() ) {
         throw std::runtime_error( "Matrix must be factored first" );
@@ -256,12 +262,12 @@ FieldOnNodesRealPtr BaseLinearSolver::solve(
     if ( result->getName() == "" )
         result = FieldOnNodesRealPtr( new FieldOnNodesReal( Permanent ) );
 
-    try{
-       if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering()){
-            result->setDOFNumbering(currentRHS->getDOFNumbering());
-       }
-    } catch ( ... ) {}
-
+    try {
+        if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering() ) {
+            result->setDOFNumbering( currentRHS->getDOFNumbering() );
+        }
+    } catch ( ... ) {
+    }
 
     std::string blanc( " " );
     ASTERINTEGER nsecm = 0, istop = 0, iret = 0;
@@ -279,10 +285,11 @@ FieldOnNodesRealPtr BaseLinearSolver::solve(
     return result;
 };
 
-FieldOnNodesRealPtr BaseLinearSolver::solveWithDirichletBC(
-    const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-    const FieldOnNodesRealPtr &dirichletBCField, const FieldOnNodesRealPtr &currentRHS,
-    FieldOnNodesRealPtr result ) const {
+FieldOnNodesRealPtr
+BaseLinearSolver::solveWithDirichletBC( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
+                                        const FieldOnNodesRealPtr &dirichletBCField,
+                                        const FieldOnNodesRealPtr &currentRHS,
+                                        FieldOnNodesRealPtr result ) const {
 
     if ( !currentMatrix->isFactorized() ) {
         throw std::runtime_error( "Matrix must be factored first" );
