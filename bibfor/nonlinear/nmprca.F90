@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,8 @@ implicit none
 #include "asterfort/vtzero.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/nmrinc.h"
+#include "asterfort/nmtime.h"
 #include "asterfort/romAlgoNLSystemSolve.h"
 #include "asterfort/nonlinLoadDirichletCompute.h"
 #include "asterfort/romCoefComputeFromField.h"
@@ -194,6 +196,10 @@ character(len=19) :: depest
 !
     call copisd('CHAMP_GD', 'V', cncine, cncind)
     call nmacin(fonact, matass, depso1, cncind)
+
+! - Timer for solver
+    call nmtime(ds_measure, 'Init', 'Solve')
+    call nmtime(ds_measure, 'Launch', 'Solve')
 !
 ! - Solving
 !
@@ -208,6 +214,10 @@ character(len=19) :: depest
         call nmreso(fonact, cndonn, cnpilo, cncind, solveu,&
                     maprec, matass, solu1, solu2, rescvg)
     endif
+
+! - End of timer for solver
+    call nmtime(ds_measure, 'Stop', 'Solve')
+    call nmrinc(ds_measure, 'Solve')
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
