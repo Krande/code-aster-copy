@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,6 +114,9 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
     ldccvg               = -1
     if (lamra .and. .not.lktan) then
         lelas = ASTER_TRUE
+        if (lvarc) then
+            call utmess('F', 'MECANONLINE3_2')
+        endif
     endif
 !
 ! --- INSTANT INITIAL
@@ -173,9 +176,6 @@ type(NL_DS_Measure), intent(inout) :: ds_measure
                     fonact     , iterat         , sddyna, ds_measure, ds_system,&
                     valinc     , solalg, hhoField,&
                     optrig     , ldccvg)
-        if (lvarc) then
-            call utmess('A', 'MECANONLINE3_2')
-        endif
     endif
 !
 ! --- AJOUT DE LA MATRICE AMORTISSEMENT DANS LA LISTE
