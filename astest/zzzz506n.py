@@ -168,7 +168,7 @@ for rank in range(nbRank):
             _F(
                 CRITERE="ABSOLU",
                 REFERENCE="ANALYTIQUE",
-                ORDRE_GRANDEUR=20.0,
+                ORDRE_GRANDEUR=50.0,
                 TYPE_TEST="MIN",
                 CHAM_GD=DIF_SIG,
                 VALE_CALC=0.0,
@@ -178,7 +178,7 @@ for rank in range(nbRank):
             _F(
                 CRITERE="ABSOLU",
                 REFERENCE="ANALYTIQUE",
-                ORDRE_GRANDEUR=20.0,
+                ORDRE_GRANDEUR=50.0,
                 TYPE_TEST="MAX",
                 CHAM_GD=DIF_SIG,
                 VALE_CALC=0.0,
@@ -188,7 +188,7 @@ for rank in range(nbRank):
             _F(
                 CRITERE="ABSOLU",
                 REFERENCE="ANALYTIQUE",
-                ORDRE_GRANDEUR=20.0,
+                ORDRE_GRANDEUR=50.0,
                 TYPE_TEST="MIN",
                 CHAM_GD=DIF_VAR,
                 VALE_CALC=0.0,

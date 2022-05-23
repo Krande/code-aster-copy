@@ -139,6 +139,18 @@ class ParallelMesh : public BaseMesh {
     };
 
     /**
+     * @brief Get inner nodes
+     * @return list of node ids
+     */
+    VectorLong getInnerCells() const;
+
+    /**
+     * @brief Get outer nodes
+     * @return list of node ids
+     */
+    VectorLong getOuterCells() const;
+
+    /**
      * @brief Returns the nodes indexes of a group of cells
      * @param name name of group of cells
      * @param local node id in local or global numbering

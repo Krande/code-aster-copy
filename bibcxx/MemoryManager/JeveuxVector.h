@@ -356,13 +356,20 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     /** @brief Convert to std::vector */
-    std::vector< ValueType > toVector() { return slice( 0, size() ); };
+    std::vector< ValueType > toVector() {
+        if ( !exists() ) {
+            return std::vector< ValueType >();
+        }
+
+        return slice( 0, size() );
+    };
 
     /** @brief Vector containing the first n elements */
     std::vector< ValueType > head( const ASTERINTEGER &n ) { return slice( 0, n ); };
 
     /** @brief Vector containing n elements, starting at position i */
     std::vector< ValueType > slice( const ASTERINTEGER &first, const ASTERINTEGER &n ) {
+
         CALL_JEMARQ();
 
         updateValuePointer();
@@ -750,9 +757,9 @@ class JeveuxVector {
         return *this;
     };
 
-    const JeveuxVectorTypePtr &operator->(void)const { return _jeveuxVectorPtr; };
+    const JeveuxVectorTypePtr &operator->( void ) const { return _jeveuxVectorPtr; };
 
-    JeveuxVectorClass< ValueType > &operator*(void)const { return *_jeveuxVectorPtr; };
+    JeveuxVectorClass< ValueType > &operator*( void ) const { return *_jeveuxVectorPtr; };
 
     bool isEmpty() const {
         if ( _jeveuxVectorPtr == nullptr )

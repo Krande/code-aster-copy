@@ -35,6 +35,7 @@ try:
 except ImportError:
     config = defaultdict(lambda: None)
 
+
 def haveMPI():
     """Tell if the library is built with MPI support.
 
@@ -42,6 +43,7 @@ def haveMPI():
     bool: *True* if use MPI librairies, *False* else
     """
     return config.get('ASTER_HAVE_MPI', 0) == 1
+
 
 try:
     from mpi4py import MPI

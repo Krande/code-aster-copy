@@ -50,8 +50,9 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
       _cellsOwner( getName() + ".MAPROPRIO" ) {
 
     /* Stop if no group is given */
-    if ( groupsOfNodes.empty() && groupsOfCells.empty() )
-        throw std::runtime_error( "No groups" );
+    if ( groupsOfNodes.empty() && groupsOfCells.empty() ) {
+        AS_ABORT( "No groups" );
+    }
 
     /* ******************************************************************* */
     /* Part of the code dealing with the definition of the local variables */
@@ -479,13 +480,14 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
             VectorLong nodesOfGrp( nbNodes );
             for ( auto i = 0; i < nbNodes; i++ ) {
                 auto it = numNodesGloLoc.find( toCopy[i] );
-                if ( it == numNodesGloLoc.end() )
-                    throw std::runtime_error( "Not finding nodes" );
+                if ( it == numNodesGloLoc.end() ) {
+                    AS_ABORT( "Not finding nodes" );
+                }
 
                 nodesOfGrp[i] = it->second + 1;
             }
 
-            _groupsOfNodes->allocateObject( nameOfTheGroup, nodesOfGrp );
+            _groupsOfNodes->push_back( nameOfTheGroup, nodesOfGrp );
         }
     }
 
@@ -513,13 +515,14 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         for ( auto iNode = 0; iNode < nbNodes; iNode++ ) {
             const auto globNodeId = connectivitiesGathered[offset++];
             auto it = numNodesGloLoc.find( globNodeId );
-            if ( it == numNodesGloLoc.end() )
-                throw std::runtime_error( "Not finding nodes" );
+            if ( it == numNodesGloLoc.end() ) {
+                AS_ABORT( "Not finding nodes" );
+            }
 
             listNodes[iNode] = it->second + 1;
         }
 
-        _connectivity->allocateObject( listNodes );
+        _connectivity->push_back( listNodes );
     }
     connectivitiesGathered.clear();
 
@@ -533,16 +536,18 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
             VectorLong cellsOfGrp( nbCells );
             for ( auto i = 0; i < nbCells; i++ ) {
                 auto it = numCellsGloLoc.find( toCopy[i] );
-                if ( it == numCellsGloLoc.end() )
-                    throw std::runtime_error( "Not finding cells" );
+                if ( it == numCellsGloLoc.end() ) {
+                    AS_ABORT( "Not finding cells" );
+                }
 
-                if ( it->second < 0 )
-                    throw std::runtime_error( "Wrong cell index" );
+                if ( it->second < 0 ) {
+                    AS_ABORT( "Wrong cell index" );
+                }
 
                 cellsOfGrp[i] = it->second + 1;
             }
 
-            _groupsOfCells->allocateObject( nameOfTheGroup, cellsOfGrp );
+            _groupsOfCells->push_back( nameOfTheGroup, cellsOfGrp );
         }
     }
 
@@ -575,8 +580,6 @@ VectorString ConnectionMesh::getGroupsOfNodes( const bool ) const {
 }
 
 VectorLong ConnectionMesh::getCellsGlobalNumbering( const JeveuxVectorLong &rankOfCells ) const {
-    /* Local variables gathering the basic MPI informations needed */
-    AsterMPI AsterMPI;
 
     /* Rank of the current MPI proc */
     const auto rank = getMPIRank();

@@ -119,7 +119,7 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
     _serialNumber->updateValuePointer();
     _rspr->updateValuePointer();
 
-    auto &calcParam = _calculationParameter->getVectorOfObjects();
+    auto &calcParam = _calculationParameter->getObjects();
     auto nbParam = calcParam.size();
 
     for ( ASTERINTEGER i = 0; i < nbParam; ++i ) {
@@ -346,8 +346,8 @@ py::dict Result::getAccessParameters() const {
     }
     returnDict[var_name.c_str()] = listValues;
 
-    for ( ASTERINTEGER i = 0; i < ( _calculationParameter->getVectorOfObjects() ).size(); ++i ) {
-        const auto item = _calculationParameter->getVectorOfObjects()[i];
+    for ( ASTERINTEGER i = 0; i < ( _calculationParameter->getObjects() ).size(); ++i ) {
+        const auto item = _calculationParameter->getObjects()[i];
         typevar = trim( item[3].toString() );
 
         if ( typevar == "ACCES" ) {
@@ -777,7 +777,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     }
 
     ASTERINTEGER cmpt = 1;
-    for ( const auto &curIter : _namesOfFields->getVectorOfObjects() ) {
+    for ( const auto &curIter : _namesOfFields->getObjects() ) {
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
         AS_ASSERT( nbRanks <= curIter.size() );
 

@@ -740,56 +740,56 @@ class DiscreteComputation:
         """Compute internal forces (integration of behaviour)
         
         Arguments:
-              displ (FieldOnNodes): displacement field at begin of current time
-              displ_incr (FieldOnNodes): field of increment of displacement
-              stress (FieldOnCells): field of stress at begin of current time
-              internVar (FieldOnCells): field of internal state variables at begin of current time
-              timeFieldPrev (constantFieldOnCells): time at begin of current time
-              timeFieldCurr (constantFieldOnCells): time at end of current time
-              groupOfCells (list[str]): compute matrices on given groups of cells.
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_incr (FieldOnNodes): field of increment of displacement
+            stress (FieldOnCells): field of stress at begin of current time
+            internVar (FieldOnCells): field of internal state variables at begin of current time
+            timeFieldPrev (constantFieldOnCells): time at begin of current time
+            timeFieldCurr (constantFieldOnCells): time at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
         
         Returns:
-              tuple (tuple): return code error (FieldOnCells),
-              error code flag (integer),
-              internal state variables VARI_ELGA (FieldOnCells),
-              Cauchy stress SIEF_ELGA (FieldOnCells),
-              field of internal forces (FieldOnNodesReal),
+            tuple (tuple): return code error (FieldOnCells),
+            error code flag (integer),
+            internal state variables VARI_ELGA (FieldOnCells),
+            Cauchy stress SIEF_ELGA (FieldOnCells),
+            field of internal forces (FieldOnNodesReal),
         """
     
     def computeTangentPredictionMatrix(self, displ, displ_incr, stress, internVar, timeFieldPrev, timeFieldCurr, groupOfCells= []):
         """Compute jacobian matrix for Newton algorithm, Euler prediction
         
         Arguments:
-              displ (FieldOnNodes): displacement field at begin of current time
-              displ_incr (FieldOnNodes): field of increment of displacement
-              stress (FieldOnCells): field of stress at begin of current time
-              internVar (FieldOnCells): field of internal state variables at begin of current time
-              timeFieldPrev (constantFieldOnCells): time at begin of current time
-              timeFieldCurr (constantFieldOnCells): time at end of current time
-              groupOfCells (list[str]): compute matrices on given groups of cells.
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_incr (FieldOnNodes): field of increment of displacement
+            stress (FieldOnCells): field of stress at begin of current time
+            internVar (FieldOnCells): field of internal state variables at begin of current time
+            timeFieldPrev (constantFieldOnCells): time at begin of current time
+            timeFieldCurr (constantFieldOnCells): time at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
         
         Returns:
-              tuple (tuple): return code error (FieldOnCellsLong),
-              error code flag (int),
-              elementary tangent matrix (ElementaryMatrixDisplacementReal),
+            tuple (tuple): return code error (FieldOnCellsLong),
+            error code flag (int),
+            elementary tangent matrix (ElementaryMatrixDisplacementReal),
         """
     
     def computeTangentStiffnessMatrix(self, displ, displ_incr, stress, internVar, timeFieldPrev, timeFieldCurr, groupOfCells= []):
         """Compute jacobian matrix for Newton algorithm
         
         Arguments:
-              displ (FieldOnNodes): displacement field at begin of current time
-              displ_incr (FieldOnNodes): field of increment of displacement
-              stress (FieldOnCells): field of stress at begin of current time
-              internVar (FieldOnCells): field of internal state variables at begin of current time
-              timeFieldPrev (ConstantFieldOnCells): time at begin of current time
-              timeFieldCurr (ConstantFieldOnCells): time at end of current time
-              groupOfCells (list[str]): compute matrices on given groups of cells.
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_incr (FieldOnNodes): field of increment of displacement
+            stress (FieldOnCells): field of stress at begin of current time
+            internVar (FieldOnCells): field of internal state variables at begin of current time
+            timeFieldPrev (ConstantFieldOnCells): time at begin of current time
+            timeFieldCurr (ConstantFieldOnCells): time at end of current time
+            groupOfCells (list[str]): compute matrices on given groups of cells.
         
         Returns:
-              tuple (tuple): return code error (FieldOnCellsLong),
-              error code flag (int),
-              elementary tangent matrix (ElementaryMatrixDisplacementReal)
+            tuple (tuple): return code error (FieldOnCellsLong),
+            error code flag (int),
+            elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
     
     def createExternalStateVariablesField(self, time):
@@ -816,14 +816,14 @@ class DiscreteComputation:
         """Return the elementary matrices for elastic Stiffness matrix
         
         Arguments:
-              massMatrix : elementary mass matrix
-              stiffnessMatrix : elementary stiffness matrix
-              time (float): current time (default: 0.0)
-              groupOfCells (list[str]): compute matrices on given groups of cells.
-                  If it empty, the full model is used
-              externVarField (fieldOnCellsReal): external state variable at current time
+            massMatrix : elementary mass matrix
+            stiffnessMatrix : elementary stiffness matrix
+            time (float): current time (default: 0.0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
-              ElementaryMatrix: elementary damping matrix
+            ElementaryMatrix: elementary damping matrix
         """
     
     def dirichletBC(self, time):
@@ -859,11 +859,8 @@ class DiscreteComputation:
     def dualStiffnessMatrix(self):
         """Return elementary matrices for dual BC
         
-        Arguments:
-              None
-        
         Returns:
-              ElementaryMatrix: elementary matrices
+            ElementaryMatrix: elementary matrices
         """
     
     def elasticStiffnessMatrix(self, time= 0.0, fourierMode= 0, groupOfCells= [], externVarField= None):
@@ -914,37 +911,37 @@ class DiscreteComputation:
         """Return the elementary matrices for linear Capacity matrix in thermal computation
         
         Arguments:
-              time (float): current time (default: 0.0)
-              groupOfCells (list[str]): compute matrices on given groups of cells.
-                  If it empty, the full model is used
-              externVarField (fieldOnCellsReal): external state variable at current time
+            time (float): current time (default: 0.0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
-              ElementaryMatrix: elementary mass matrix
+            ElementaryMatrix: elementary mass matrix
         """
     
     def linearConductivityMatrix(self, time= 0.0, delta_time= 0.0, fourierMode= 0, groupOfCells= [], externVarField= None):
         """Return the elementary matices for linear thermal matrix
         
         Arguments:
-              time (float): current time
-                    fourierMode (int): Fourier mode (default: 0)
-                    groupOfCells (list[str]): compute matrices on given groups of cells.
-                        If it empty, the full model is used
-                    externVarField (fieldOnCellsReal): external state variable at current time
+            time (float): current time
+            fourierMode (int): Fourier mode (default: 0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
-              ElementaryMatrix: elementary linear thermal matrices
+            ElementaryMatrix: elementary linear thermal matrices
         """
     
     def massMatrix(self, time= 0.0, groupOfCells= [], externVarField= None):
         """Return the elementary matrices for elastic Stiffness matrix
         
         Arguments:
-              time (float): current time (default: 0.0)
-              groupOfCells (list[str]): compute matrices on given groups of cells.
-                  If it empty, the full model is used
-              externVarField (fieldOnCellsReal): external state variable at current time
+            time (float): current time (default: 0.0)
+            groupOfCells (list[str]): compute matrices on given groups of cells.
+                If it empty, the full model is used
+            externVarField (fieldOnCellsReal): external state variable at current time
         Returns:
-              ElementaryMatrix: elementary mass matrix
+            ElementaryMatrix: elementary mass matrix
         """
     
     def neumann(self, time_list, externVarField= None):
@@ -10248,6 +10245,13 @@ class ParallelMesh(BaseMesh):
             list[str]: List of (local or global) groups names (stripped).
         """
     
+    def getInnerCells(self):
+        """Return the list of the indexes of the inner cells in the mesh
+        
+        Returns:
+            list[int]: Indexes of the cells.
+        """
+    
     def getInnerNodes(self):
         """Return the list of the indexes of the inner nodes in the mesh
         
@@ -10260,6 +10264,13 @@ class ParallelMesh(BaseMesh):
         
         Returns:
             list[int]: MPI-Rank of the owners of the nodes
+        """
+    
+    def getOuterCells(self):
+        """Return the list of the indexes of the outer cells in the mesh
+        
+        Returns:
+            list[int]: Indexes of the cells.
         """
     
     def getOuterNodes(self):

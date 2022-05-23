@@ -48,7 +48,7 @@ bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
 bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
 
     _groupsOfNodes->build();
-    auto gONNames = _groupsOfNodes->getObjectNames();
+    auto gONNames = _groupsOfNodes->getObjectsNames();
     std::vector< JeveuxChar32 > allgONNames;
     AsterMPI::all_gather( gONNames, allgONNames );
 
@@ -73,7 +73,7 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
 bool ParallelMesh::updateGlobalGroupOfCells( void ) {
 
     _groupsOfCells->build();
-    auto gOENames = _groupsOfCells->getObjectNames();
+    auto gOENames = _groupsOfCells->getObjectsNames();
     std::vector< JeveuxChar32 > allgOENames;
     AsterMPI::all_gather( gOENames, allgOENames );
 
@@ -277,6 +277,50 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
 
     return VectorLong( nodes.begin(), nodes.end() );
 };
+
+VectorLong ParallelMesh::getInnerCells() const {
+    CALL_JEMARQ();
+    VectorLong listOfCells = getCells();
+
+    const int rank = getMPIRank();
+    VectorLong newRank;
+
+    newRank.reserve( listOfCells.size() );
+    _outerCells->updateValuePointer();
+
+    for ( auto &cell : listOfCells ) {
+        if ( rank == ( *_outerCells )[cell] ) {
+            newRank.push_back( cell );
+        }
+    }
+
+    newRank.shrink_to_fit();
+    CALL_JEDEMA();
+
+    return newRank;
+}
+
+VectorLong ParallelMesh::getOuterCells() const {
+    CALL_JEMARQ();
+    VectorLong listOfCells = getCells();
+
+    const int rank = getMPIRank();
+    VectorLong newRank;
+
+    newRank.reserve( listOfCells.size() );
+    _outerCells->updateValuePointer();
+
+    for ( auto &cell : listOfCells ) {
+        if ( rank != ( *_outerCells )[cell] ) {
+            newRank.push_back( cell );
+        }
+    }
+
+    newRank.shrink_to_fit();
+    CALL_JEDEMA();
+
+    return newRank;
+}
 
 bool ParallelMesh::build() {
 

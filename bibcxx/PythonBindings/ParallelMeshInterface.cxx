@@ -115,6 +115,18 @@ Return the list of the indexes of the outer nodes in the mesh
 Returns:
     list[int]: Indexes of the nodes.
         )" )
+        .def( "getInnerCells", &ParallelMesh::getInnerCells, R"(
+Return the list of the indexes of the inner cells in the mesh
+
+Returns:
+    list[int]: Indexes of the cells.
+        )" )
+        .def( "getOuterCells", &ParallelMesh::getOuterCells, R"(
+Return the list of the indexes of the outer cells in the mesh
+
+Returns:
+    list[int]: Indexes of the cells.
+        )" )
         .def( "readMedFile", &ParallelMesh::readMedFile, R"(
 Read a mesh file from MED format.
 

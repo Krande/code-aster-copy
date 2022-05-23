@@ -23,7 +23,6 @@
 ************************************************************************
 """
 import os.path as osp
-from collections import Counter
 
 from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
@@ -108,35 +107,36 @@ class ExtendedParallelMesh:
         """
 
         # read std mesh
-        mesh = Mesh()
-        mesh.readMedFile(filename)
+        rank = MPI.COMM_WORLD.Get_rank()
 
-        # tests
-        group_no_std = mesh.getGroupsOfNodes(local=False)
-        group_no_gl = self.getGroupsOfNodes(local=False)
-        if sorted(group_no_std) != sorted(group_no_gl):
-            return False
-
-        group_ma_std = mesh.getGroupsOfCells(local=False)
-        group_ma_gl = self.getGroupsOfCells(local=False)
-        if sorted(group_ma_std) != sorted(group_ma_gl):
-            return False
-
-        nb_nodes_std = mesh.getNumberOfNodes()
         nb_nodes_lc = len(self.getInnerNodes())
         nb_nodes_gl = MPI.COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
-        if nb_nodes_std != nb_nodes_gl:
-            return False
 
-        rank = MPI.COMM_WORLD.Get_rank()
-        nb_cells_std = mesh.getNumberOfCells()
-        cells_rank = self.getCellsRank()
-        nb_cells_lc = Counter(cells_rank)[rank]
+        nb_cells_lc = len(self.getInnerCells())
         nb_cells_gl = MPI.COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
-        if nb_cells_std != nb_cells_gl:
-            return False
 
-        return True
+        test = True
+
+        if rank == 0:
+            mesh = Mesh()
+            mesh.readMedFile(filename)
+
+            # tests
+            group_no_std = mesh.getGroupsOfNodes(local=False)
+            group_no_gl = self.getGroupsOfNodes(local=False)
+            test = sorted(group_no_std) == sorted(group_no_gl)
+
+            group_ma_std = mesh.getGroupsOfCells(local=False)
+            group_ma_gl = self.getGroupsOfCells(local=False)
+            test = test and sorted(group_ma_std) == sorted(group_ma_gl)
+
+            nb_nodes_std = mesh.getNumberOfNodes()
+            test = test and nb_nodes_std == nb_nodes_gl
+
+            nb_cells_std = mesh.getNumberOfCells()
+            test = test and nb_cells_std == nb_cells_gl
+
+        return MPI.COMM_WORLD.bcast(test, root=0)
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.
@@ -168,7 +168,8 @@ class ExtendedParallelMesh:
             # to be partitioned equally and not generated a too big file
             nrefine = min(9, refine)
             if MPI.COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildSquare(lx=lx, ly=ly, refine=nrefine, info=info)
+                mesh = Mesh.buildSquare(
+                    lx=lx, ly=ly, refine=nrefine, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
@@ -203,7 +204,8 @@ class ExtendedParallelMesh:
                 min_level = 7
             nrefine = min(min_level, refine)
             if MPI.COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildCube(lx=lx, ly=ly, lz=lz, refine=nrefine, info=info)
+                mesh = Mesh.buildCube(
+                    lx=lx, ly=ly, lz=lz, refine=nrefine, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
