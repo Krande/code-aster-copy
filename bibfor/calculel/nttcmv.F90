@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1504
 !
 subroutine nttcmv(model , mate  , mateco   , cara_elem, list_load, nume_dof,&
                   solver, time  , tpsthe   , tpsnp1   , reasvt  ,&
@@ -73,7 +74,8 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
     character(len=1) :: typres
     character(len=8) :: nomcmp(6)
     character(len=19) :: merigi
-    character(len=24) :: ligrmo, mediri, tlimat(3)
+    character(len=24) :: ligrmo, mediri
+    character(len=19) ::  tlimat(3)
     character(len=24) :: vediri, vechtp, vadirp, vachtp, metrnl
     character(len=19) :: resu_elem
     real(kind=8) :: time_curr
@@ -184,7 +186,7 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
         resu_elem = v_resu_elem(1)(1:19)
         if (resu_elem .ne. ' ') then
             nbmat = nbmat + 1
-            tlimat(nbmat) = merigi
+            tlimat(nbmat) = merigi(1:19)
         endif
 !
         call jeexin(metrnl, iret)

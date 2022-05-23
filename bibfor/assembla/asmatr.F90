@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine asmatr(nbmat, tlimat, licoef, nu, &
                   infcha, cumul, base, itysca, mataz)
-! person_in_charge: jacques.pellet at edf.fr
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/ascima.h"
 #include "asterfort/assert.h"
@@ -39,11 +40,11 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-
-    character(len=*) :: base, mataz, tlimat(*), licoef, nu
-    integer :: nbmat, itysca
-    character(len=*) :: infcha
-    character(len=4) :: cumul
+integer :: nbmat, itysca
+character(len=*) :: base, mataz, licoef, nu
+character(len=19) :: tlimat(nbmat)
+character(len=*) :: infcha
+character(len=4) :: cumul
 !-----------------------------------------------------------------------
 ! in  i   nbmat  : nombre de matr_elem de la liste tlimat
 ! in  k19 tlimat : liste des matr_elem

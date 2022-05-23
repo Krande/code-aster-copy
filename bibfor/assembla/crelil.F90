@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     character(len=8) :: modele, models, exiss1, exiss2
-    character(len=16) :: suropt, surops, pheno
+    character(len=16) :: pheno
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
@@ -124,7 +124,6 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !---- CALCUL DU NBRE DE LIGRELS REFERENCES
 !
     idimli = 1
-    surops= ' '
     models= ' '
     exiss2= 'NON'
 !
@@ -136,16 +135,10 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
         ASSERT(iret1.gt.0)
         call jeveuo(matel//'.RERR', 'L', vk24=rerr)
         modele= rerr(1)(1:8)
-        suropt= rerr(2)(1:16)
-        if (((modele.ne.models).and.(models.ne.' ')) .or.&
-            ((suropt(5:9) .ne.surops(5:9)).and.(surops.ne.' '))) then
-!        LE TEST SUIVANT PLANTE LA THERMIQUE OU ON ASSEMBLE
-!        LA RIGIDITE AVEC LA MASSE !!
-!    +    .OR.((SUROPT.NE.SUROPS).AND.(SUROPS.NE.' '))) THEN
+        if ((modele.ne.models).and.(models.ne.' ')) then
             call utmess('F', 'ASSEMBLA_18')
         endif
         models= modele
-        surops= suropt
 !
         call dismoi('NB_SS_ACTI', matel, 'MATR_ELEM', repi=n1)
         if (n1 .gt. 0) then
