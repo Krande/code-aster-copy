@@ -910,6 +910,31 @@ class DiscreteComputation:
               FieldOnNodes: incremental imposed displacement vector
         """
     
+    def linearCapacityMatrix(self, time= 0.0, groupOfCells= [], externVarField= None):
+        """Return the elementary matrices for linear Capacity matrix in thermal computation
+        
+        Arguments:
+              time (float): current time (default: 0.0)
+              groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
+              externVarField (fieldOnCellsReal): external state variable at current time
+        Returns:
+              ElementaryMatrix: elementary mass matrix
+        """
+    
+    def linearConductivityMatrix(self, time= 0.0, delta_time= 0.0, fourierMode= 0, groupOfCells= [], externVarField= None):
+        """Return the elementary matices for linear thermal matrix
+        
+        Arguments:
+              time (float): current time
+                    fourierMode (int): Fourier mode (default: 0)
+                    groupOfCells (list[str]): compute matrices on given groups of cells.
+                        If it empty, the full model is used
+                    externVarField (fieldOnCellsReal): external state variable at current time
+        Returns:
+              ElementaryMatrix: elementary linear thermal matrices
+        """
+    
     def massMatrix(self, time= 0.0, groupOfCells= [], externVarField= None):
         """Return the elementary matrices for elastic Stiffness matrix
         
@@ -7951,6 +7976,15 @@ class Crack(DataStructure):
         
         2. __init__(self: libaster.Crack, arg0: str) -> None
         """
+    
+    def getCrackTipCellsType(self):
+        pass
+    
+    def getLowerLipGroupName(self):
+        pass
+    
+    def getUpperLipGroupName(self):
+        pass
 
 # class GeneralizedModel in libaster
 

@@ -166,27 +166,24 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             )" )
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(
-      Return elementary matrices for dual BC
+            Return elementary matrices for dual BC
 
-      Arguments:
-            None
-
-      Returns:
-            ElementaryMatrix: elementary matrices
+            Returns:
+                ElementaryMatrix: elementary matrices
         )" )
 
         .def( "linearConductivityMatrix", &DiscreteComputation::linearConductivityMatrix,
               R"(
-      Return the elementary matices for linear thermal matrix
+            Return the elementary matices for linear thermal matrix
 
-      Arguments:
-            time (float): current time
-                  fourierMode (int): Fourier mode (default: 0)
-                  groupOfCells (list[str]): compute matrices on given groups of cells.
-                      If it empty, the full model is used
-                  externVarField (fieldOnCellsReal): external state variable at current time
-      Returns:
-            ElementaryMatrix: elementary linear thermal matrices
+            Arguments:
+                time (float): current time
+                fourierMode (int): Fourier mode (default: 0)
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                externVarField (fieldOnCellsReal): external state variable at current time
+            Returns:
+                ElementaryMatrix: elementary linear thermal matrices
         )",
               py::arg( "time" ) = 0., py::arg( "delta_time" ) = 0., py::arg( "fourierMode" ) = 0,
               py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
@@ -195,12 +192,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Return the elementary matrices for elastic Stiffness matrix
 
             Arguments:
-                  time (float): current time (default: 0.0)
-                  groupOfCells (list[str]): compute matrices on given groups of cells.
-                      If it empty, the full model is used
-                  externVarField (fieldOnCellsReal): external state variable at current time
+                time (float): current time (default: 0.0)
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
-                  ElementaryMatrix: elementary mass matrix
+                ElementaryMatrix: elementary mass matrix
             )",
               py::arg( "time" ) = 0., py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
@@ -209,12 +206,12 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Return the elementary matrices for linear Capacity matrix in thermal computation
 
             Arguments:
-                  time (float): current time (default: 0.0)
-                  groupOfCells (list[str]): compute matrices on given groups of cells.
-                      If it empty, the full model is used
-                  externVarField (fieldOnCellsReal): external state variable at current time
+                time (float): current time (default: 0.0)
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
-                  ElementaryMatrix: elementary mass matrix
+                ElementaryMatrix: elementary mass matrix
             )",
               py::arg( "time" ) = 0., py::arg( "groupOfCells" ) = VectorString(),
               py::arg( "externVarField" ) = nullptr )
@@ -223,14 +220,14 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             Return the elementary matrices for elastic Stiffness matrix
 
             Arguments:
-                  massMatrix : elementary mass matrix
-                  stiffnessMatrix : elementary stiffness matrix
-                  time (float): current time (default: 0.0)
-                  groupOfCells (list[str]): compute matrices on given groups of cells.
-                      If it empty, the full model is used
-                  externVarField (fieldOnCellsReal): external state variable at current time
+                massMatrix : elementary mass matrix
+                stiffnessMatrix : elementary stiffness matrix
+                time (float): current time (default: 0.0)
+                groupOfCells (list[str]): compute matrices on given groups of cells.
+                    If it empty, the full model is used
+                externVarField (fieldOnCellsReal): external state variable at current time
             Returns:
-                  ElementaryMatrix: elementary damping matrix
+                ElementaryMatrix: elementary damping matrix
             )",
               py::arg( "massMatrix" ) = nullptr, py::arg( "stiffnessMatrix" ) = nullptr,
               py::arg( "time" ) = 0., py::arg( "groupOfCells" ) = VectorString(),
@@ -238,23 +235,23 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
         .def( "computeInternalForces", &DiscreteComputation::computeInternalForces,
               R"(
-      Compute internal forces (integration of behaviour)
+            Compute internal forces (integration of behaviour)
 
-      Arguments:
-            displ (FieldOnNodes): displacement field at begin of current time
-            displ_incr (FieldOnNodes): field of increment of displacement
-            stress (FieldOnCells): field of stress at begin of current time
-            internVar (FieldOnCells): field of internal state variables at begin of current time
-            timeFieldPrev (constantFieldOnCells): time at begin of current time
-            timeFieldCurr (constantFieldOnCells): time at end of current time
-            groupOfCells (list[str]): compute matrices on given groups of cells.
+            Arguments:
+                displ (FieldOnNodes): displacement field at begin of current time
+                displ_incr (FieldOnNodes): field of increment of displacement
+                stress (FieldOnCells): field of stress at begin of current time
+                internVar (FieldOnCells): field of internal state variables at begin of current time
+                timeFieldPrev (constantFieldOnCells): time at begin of current time
+                timeFieldCurr (constantFieldOnCells): time at end of current time
+                groupOfCells (list[str]): compute matrices on given groups of cells.
 
-      Returns:
-            tuple (tuple): return code error (FieldOnCells),
-            error code flag (integer),
-            internal state variables VARI_ELGA (FieldOnCells),
-            Cauchy stress SIEF_ELGA (FieldOnCells),
-            field of internal forces (FieldOnNodesReal),
+            Returns:
+                tuple (tuple): return code error (FieldOnCells),
+                error code flag (integer),
+                internal state variables VARI_ELGA (FieldOnCells),
+                Cauchy stress SIEF_ELGA (FieldOnCells),
+                field of internal forces (FieldOnNodesReal),
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
@@ -262,21 +259,21 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
         .def( "computeTangentStiffnessMatrix", &DiscreteComputation::computeTangentStiffnessMatrix,
               R"(
-      Compute jacobian matrix for Newton algorithm
+            Compute jacobian matrix for Newton algorithm
 
-      Arguments:
-            displ (FieldOnNodes): displacement field at begin of current time
-            displ_incr (FieldOnNodes): field of increment of displacement
-            stress (FieldOnCells): field of stress at begin of current time
-            internVar (FieldOnCells): field of internal state variables at begin of current time
-            timeFieldPrev (ConstantFieldOnCells): time at begin of current time
-            timeFieldCurr (ConstantFieldOnCells): time at end of current time
-            groupOfCells (list[str]): compute matrices on given groups of cells.
+            Arguments:
+                displ (FieldOnNodes): displacement field at begin of current time
+                displ_incr (FieldOnNodes): field of increment of displacement
+                stress (FieldOnCells): field of stress at begin of current time
+                internVar (FieldOnCells): field of internal state variables at begin of current time
+                timeFieldPrev (ConstantFieldOnCells): time at begin of current time
+                timeFieldCurr (ConstantFieldOnCells): time at end of current time
+                groupOfCells (list[str]): compute matrices on given groups of cells.
 
-      Returns:
-            tuple (tuple): return code error (FieldOnCellsLong),
-            error code flag (int),
-            elementary tangent matrix (ElementaryMatrixDisplacementReal)
+            Returns:
+                tuple (tuple): return code error (FieldOnCellsLong),
+                error code flag (int),
+                elementary tangent matrix (ElementaryMatrixDisplacementReal)
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
@@ -284,21 +281,21 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
         .def( "computeTangentPredictionMatrix",
               &DiscreteComputation::computeTangentPredictionMatrix, R"(
-      Compute jacobian matrix for Newton algorithm, Euler prediction
+            Compute jacobian matrix for Newton algorithm, Euler prediction
 
-      Arguments:
-            displ (FieldOnNodes): displacement field at begin of current time
-            displ_incr (FieldOnNodes): field of increment of displacement
-            stress (FieldOnCells): field of stress at begin of current time
-            internVar (FieldOnCells): field of internal state variables at begin of current time
-            timeFieldPrev (constantFieldOnCells): time at begin of current time
-            timeFieldCurr (constantFieldOnCells): time at end of current time
-            groupOfCells (list[str]): compute matrices on given groups of cells.
+            Arguments:
+                displ (FieldOnNodes): displacement field at begin of current time
+                displ_incr (FieldOnNodes): field of increment of displacement
+                stress (FieldOnCells): field of stress at begin of current time
+                internVar (FieldOnCells): field of internal state variables at begin of current time
+                timeFieldPrev (constantFieldOnCells): time at begin of current time
+                timeFieldCurr (constantFieldOnCells): time at end of current time
+                groupOfCells (list[str]): compute matrices on given groups of cells.
 
-      Returns:
-            tuple (tuple): return code error (FieldOnCellsLong),
-            error code flag (int),
-            elementary tangent matrix (ElementaryMatrixDisplacementReal),
+            Returns:
+                tuple (tuple): return code error (FieldOnCellsLong),
+                error code flag (int),
+                elementary tangent matrix (ElementaryMatrixDisplacementReal),
         )",
               py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
               py::arg( "internVar" ), py::arg( "timeFieldPrev" ), py::arg( "timeFieldCurr" ),
