@@ -92,6 +92,8 @@ def calcul_ops(self, **kwargs):
                                                  VALE_K=name))
             if hasattr(content[name], "setModel"):
                 content[name].setModel(kwargs["MODELE"])
+            if hasattr(content[name], "build"):
+                content[name].build()
 
         result_type = namedtuple("Result", objects)
         result = result_type(**content)
