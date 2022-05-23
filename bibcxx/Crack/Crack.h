@@ -46,7 +46,7 @@ class Crack : public DataStructure {
     /** @brief Objet Jeveux '.NORMALE' : Vecteur de trois rééls contenant
      les composantes de la normale au plan des lèvres d'une fissure plane. */
     JeveuxVectorReal _normale;
-    /** @brief Objet Jeveux '.FOND.NOEUD' :  Vecteur (K8) contenant la liste
+    /** @brief Objet Jeveux '.FOND.NOEU' :  Vecteur (K8) contenant la liste
      des N noeuds ordonnés du fond de fissure. */
     JeveuxVectorChar8 _fondNoeu;
     /** @brief Objet Jeveux '.INFNORM.NOEU' : Vecteur (K8) contenant la liste
@@ -83,6 +83,12 @@ class Crack : public DataStructure {
      des noeuds projetés sur le fond de fissure ainsi que les bases locales
       pour tous les noeuds du maillage.*/
     FieldOnNodesRealPtr _basLoc;
+    /** @brief base local sur les noeud du fond*/
+    JeveuxVectorReal _basNof;
+    /** @brief Objet Jeveux '.ABSFON' : Vecteur de réels contenant
+     la valeur des abscisses curvilignes des noeuds du fond de fissure. */
+    JeveuxVectorReal _absfon;
+
 
   public:
     /**

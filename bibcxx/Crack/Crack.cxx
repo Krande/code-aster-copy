@@ -31,7 +31,7 @@ Crack::Crack( const std::string name )
     : DataStructure( name, 8, "FOND_FISSURE" ),
       _levreInfMail( JeveuxVectorChar8( getName() + ".LEVREINF.MAIL" ) ),
       _normale( JeveuxVectorReal( getName() + ".NORMALE" ) ),
-      _fondNoeu( JeveuxVectorChar8( getName() + ".FOND.NOEUD" ) ),
+      _fondNoeu( JeveuxVectorChar8( getName() + ".FOND.NOEU" ) ),
       _infNormNoeud( JeveuxVectorChar8( getName() + ".INFNORM.NOEU" ) ),
       _supNormNoeu( JeveuxVectorChar8( getName() + ".SUPNORM.NOEU" ) ),
       _infNormNoeud2( JeveuxVectorChar8( getName() + ".INFNORM.NOEU2" ) ),
@@ -42,7 +42,9 @@ Crack::Crack( const std::string name )
       _abscur( JeveuxVectorReal( getName() + ".ABSCUR" ) ),
       _ltno( new FieldOnNodesReal( getName() + ".LTNO      " ) ),
       _lnno( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
-      _basLoc( new FieldOnNodesReal( getName() + ".BASLOC    " ) ){};
+      _basLoc( new FieldOnNodesReal( getName() + ".BASLOC    " ) ),
+      _basNof( JeveuxVectorReal( getName() + ".BASNOF" ) ),
+      _absfon( JeveuxVectorReal( getName() + ".ABSFON" ) ){};
 
 void Crack::updateValuePointers( ){
     _info->updateValuePointer();
