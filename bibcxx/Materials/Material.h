@@ -110,26 +110,6 @@ class Material : public DataStructure {
     bool build();
 
     /**
-     * @brief Get the number of list of double properties for one MaterialProperty
-     * @return number of list of double properties
-     */
-    int getNumberOfListOfPropertiesReal( int position ) {
-        if ( position < 0 || position >= int( _vectorOfUserValuesReal.size() ) )
-            throw std::runtime_error( "Out of bound" );
-        return _vectorOfUserValuesReal[position].size();
-    };
-
-    /**
-     * @brief Get the number of list of function properties for one MaterialProperty
-     * @return number of list of function properties
-     */
-    int getNumberOfListOfPropertiesFunction( int position ) {
-        if ( position < 0 || position >= int( _vectorOfUserFunctionValues.size() ) )
-            throw std::runtime_error( "Out of bound" );
-        return _vectorOfUserFunctionValues[position].size();
-    };
-
-    /**
      * @brief Get the number of behaviours
      * @return number of added behaviours
      */

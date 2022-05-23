@@ -3,7 +3,7 @@
  * @brief Implementation de Material
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,14 +23,13 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Materials/Material.h"
+
 #include "astercxx.h"
 
 #include "Supervis/ResultNaming.h"
-#include "Materials/Material.h"
-#include "Supervis/ResultNaming.h"
 
-void Material::addMaterialProperty( const GenericMaterialPropertyPtr& curMaterBehav )
-{
+void Material::addMaterialProperty( const GenericMaterialPropertyPtr &curMaterBehav ) {
     ++_nbMaterialProperty;
     _vecMatBehaviour.push_back( curMaterBehav );
 
@@ -48,13 +47,11 @@ void Material::addMaterialProperty( const GenericMaterialPropertyPtr& curMaterBe
     const auto cP = _vectorOfUserValuesReal.size();
     _vectorOfUserValuesReal.push_back( VectorOfJeveuxVectorReal() );
     _vectorOfUserFunctionValues.push_back( VectorOfJeveuxVectorChar8() );
-    if( test1 || test2 )
-    {
+    if ( test1 || test2 ) {
         const int num1 = curMaterBehav->getNumberOfListOfPropertiesReal();
         const int num2 = curMaterBehav->getNumberOfListOfPropertiesFunction();
         const int numTot = num1 + num2;
-        for( int pos = 0; pos < numTot; ++pos )
-        {
+        for ( int pos = 0; pos < numTot; ++pos ) {
             ++_nbUserMaterialProperty;
             std::ostringstream numUser2;
             numUser2 << std::setw( 7 ) << std::setfill( '0' ) << _nbUserMaterialProperty;
@@ -65,10 +62,7 @@ void Material::addMaterialProperty( const GenericMaterialPropertyPtr& curMaterBe
             auto o2 = JeveuxVectorChar8( currentName3 );
             _vectorOfUserFunctionValues[cP].push_back( o2 );
         }
-    }
-    else
-    {
-        ++_nbUserMaterialProperty;
+    } else {
         auto o1 = JeveuxVectorReal( "EMPTY" );
         _vectorOfUserValuesReal[cP].push_back( o1 );
         auto o2 = JeveuxVectorChar8( "EMPTY" );
@@ -76,33 +70,30 @@ void Material::addMaterialProperty( const GenericMaterialPropertyPtr& curMaterBe
     }
 };
 
-void Material::deallocateJeveuxVectors()
-{
+void Material::deallocateJeveuxVectors() {
     _materialBehaviourNames->deallocate();
     _doubleValues->deallocate();
     int num = 0;
-    for ( const auto &curIter : _vecMatBehaviour )
-    {
+    for ( const auto &curIter : _vecMatBehaviour ) {
         _vectorOfValuesComplex[num]->deallocate();
         _vectorOfValuesReal[num]->deallocate();
         _vectorOfChar16Values[num]->deallocate();
         _vectorOrdr[num]->deallocate();
         _vectorKOrdr[num]->deallocate();
-        for( auto curIter2 : _vectorOfUserValuesReal[num] )
+        for ( auto curIter2 : _vectorOfUserValuesReal[num] )
             curIter2->deallocate();
-        for( auto curIter2 : _vectorOfUserFunctionValues[num] )
+        for ( auto curIter2 : _vectorOfUserFunctionValues[num] )
             curIter2->deallocate();
         ++num;
     }
 };
 
 bool Material::build() {
-    if( _mater != nullptr )
-    {
-        if( getName() == _mater->getName() )
+    if ( _mater != nullptr ) {
+        if ( getName() == _mater->getName() )
             deallocateJeveuxVectors();
         else
-            for( auto curIter : _mater->_vecMatBehaviour )
+            for ( auto curIter : _mater->_vecMatBehaviour )
                 addMaterialProperty( curIter );
     }
 
@@ -147,13 +138,13 @@ bool Material::build() {
     return true;
 };
 
-void Material::setStateAfterUnpickling( const VectorInt& vec )
-{
-    if( _nbMaterialProperty != 0 )
+void Material::setStateAfterUnpickling( const VectorInt &vec ) {
+    // std::cout << "setStateAfterUnpickling with " << vec.size() << std::endl;
+    // debugPrint();
+    if ( _nbMaterialProperty != 0 )
         throw std::runtime_error( "Object already fill in" );
 
-    for( const auto& curVal : vec )
-    {
+    for ( const auto &curVal : vec ) {
         ++_nbMaterialProperty;
         std::ostringstream numString;
         numString << std::setw( 6 ) << std::setfill( '0' ) << _nbMaterialProperty;
@@ -167,8 +158,7 @@ void Material::setStateAfterUnpickling( const VectorInt& vec )
         const auto cP = _vectorOfUserValuesReal.size();
         _vectorOfUserValuesReal.push_back( VectorOfJeveuxVectorReal() );
         _vectorOfUserFunctionValues.push_back( VectorOfJeveuxVectorChar8() );
-        for( int i = 1; i <= curVal; ++i )
-        {
+        for ( int i = 0; i < curVal; ++i ) {
             ++_nbUserMaterialProperty;
             std::ostringstream numUser2;
             numUser2 << std::setw( 7 ) << std::setfill( '0' ) << _nbUserMaterialProperty;

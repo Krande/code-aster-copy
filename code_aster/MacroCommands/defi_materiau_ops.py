@@ -87,10 +87,7 @@ def defi_materiau_ops(self, **args):
                 matBehav.setSortedListParameters(list(skw))
                 continue
             iName = skwName.capitalize()
-            if fkwName in ("MFRONT", "UMAT"):
-                matBehav.setValue(iName, list(skw))
-                continue
-            if fkwName in ("MFRONT_FO", "UMAT_FO"):
+            if fkwName in ("MFRONT", "UMAT", "MFRONT_FO", "UMAT_FO"):
                 matBehav.setValue(iName, list(skw))
                 continue
 

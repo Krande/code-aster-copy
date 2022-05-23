@@ -381,6 +381,31 @@ class GenericMaterialProperty {
     const std::string getAsterNewName() const { return _asterNewName; };
 
     /**
+     * @brief Get number of properties containing doubles
+     */
+    int getNumberOfPropertiesReal() const { return _mapOfRealMaterialProperties.size(); };
+
+    /**
+     * @brief Get number of properties containing complex numbers
+     */
+    int getNumberOfPropertiesComplex() const { return _mapOfComplexMaterialProperties.size(); };
+
+    /**
+     * @brief Get number of properties containing strings
+     */
+    int getNumberOfPropertiesString() const { return _mapOfStringMaterialProperties.size(); };
+
+    /**
+     * @brief Get number of properties containing functions
+     */
+    int getNumberOfPropertiesFunction() const { return _mapOfFunctionMaterialProperties.size(); };
+
+    /**
+     * @brief Get number of properties containing tables
+     */
+    int getNumberOfPropertiesTable() const { return _mapOfTableMaterialProperties.size(); };
+
+    /**
      * @brief Get number of properties containing a list of doubles
      */
     int getNumberOfListOfPropertiesReal() const {

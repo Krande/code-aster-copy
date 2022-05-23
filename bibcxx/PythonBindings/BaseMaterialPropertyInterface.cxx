@@ -40,10 +40,19 @@ bool: Attribute that holds the need of a traction function.
         .def( "getValueReal", &GenericMaterialProperty::getValueReal )
         .def( "getValueString", &GenericMaterialProperty::getValueString )
         .def( "getValueGenericFunction", &GenericMaterialProperty::getValueGenericFunction )
+
+        .def( "getNumberOfPropertiesReal", &GenericMaterialProperty::getNumberOfPropertiesReal )
+        .def( "getNumberOfPropertiesComplex",
+              &GenericMaterialProperty::getNumberOfPropertiesComplex )
+        .def( "getNumberOfPropertiesString", &GenericMaterialProperty::getNumberOfPropertiesString )
+        .def( "getNumberOfPropertiesFunction",
+              &GenericMaterialProperty::getNumberOfPropertiesFunction )
+        .def( "getNumberOfPropertiesTable", &GenericMaterialProperty::getNumberOfPropertiesTable )
         .def( "getNumberOfListOfPropertiesReal",
               &GenericMaterialProperty::getNumberOfListOfPropertiesReal )
         .def( "getNumberOfListOfPropertiesFunction",
               &GenericMaterialProperty::getNumberOfListOfPropertiesFunction )
+
         .def( "getValueTable", &GenericMaterialProperty::getValueTable )
         .def( "hasValueComplex", &GenericMaterialProperty::hasValueComplex )
         .def( "hasValueReal", &GenericMaterialProperty::hasValueReal )

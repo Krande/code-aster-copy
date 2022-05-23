@@ -33,9 +33,6 @@ void exportMaterialToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< Material, std::string, VectorInt > ) )
         .def( "addMaterialProperty", &Material::addMaterialProperty )
         .def( "build", &Material::build )
-        .def( "getNumberOfListOfPropertiesReal", &Material::getNumberOfListOfPropertiesReal )
-        .def( "getNumberOfListOfPropertiesFunction",
-              &Material::getNumberOfListOfPropertiesFunction )
         .def( "getNumberOfMaterialProperties", &Material::getNumberOfMaterialProperties )
         .def( "getNumberOfUserMaterialProperties", &Material::getNumberOfUserMaterialProperties )
         .def( "getVectorOfMaterialProperties", &Material::getVectorOfMaterialProperties )

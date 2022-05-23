@@ -7346,12 +7346,6 @@ class Material(DataStructure):
     def build(self):
         pass
     
-    def getNumberOfListOfPropertiesFunction(self, arg0):
-        pass
-    
-    def getNumberOfListOfPropertiesReal(self, arg0):
-        pass
-    
     def getNumberOfMaterialProperties(self):
         pass
     
@@ -7386,6 +7380,21 @@ class GenericMaterialProperty:
         pass
     
     def getNumberOfListOfPropertiesReal(self):
+        pass
+    
+    def getNumberOfPropertiesComplex(self):
+        pass
+    
+    def getNumberOfPropertiesFunction(self):
+        pass
+    
+    def getNumberOfPropertiesReal(self):
+        pass
+    
+    def getNumberOfPropertiesString(self):
+        pass
+    
+    def getNumberOfPropertiesTable(self):
         pass
     
     def getValueComplex(self, arg0):

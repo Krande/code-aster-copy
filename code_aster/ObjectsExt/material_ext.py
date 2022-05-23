@@ -38,11 +38,11 @@ class ExtendedMaterial:
         """Returns the argument required to reinitialize a Material
         object during unpickling.
         """
-        toReturn = (self.getName(), )
+        toReturn = (self.getName(),)
         state = []
-        for i in range(self.getNumberOfMaterialProperties()):
-            state.append(self.getNumberOfListOfPropertiesReal(i))
-        toReturn = toReturn + (state, )
+        for kwf in self.getVectorOfMaterialProperties():
+            state.append(kwf.getNumberOfListOfPropertiesReal())
+        toReturn = toReturn + (state,)
         return toReturn
 
     def RCVALE(self, phenomene, nompar=(), valpar=(), nomres=(), stop=1):
@@ -51,19 +51,19 @@ class ExtendedMaterial:
         """
         # vérification des arguments
         if not type(nompar) in (list, tuple):
-            nompar = [nompar,]
+            nompar = [nompar]
         if not type(valpar) in (list, tuple):
-            valpar = [valpar,]
+            valpar = [valpar]
         if not type(nomres) in (list, tuple):
-            nomres = [nomres,]
+            nomres = [nomres]
         nompar = tuple(nompar)
         valpar = tuple(valpar)
         nomres = tuple(nomres)
         if len(nompar) != len(valpar):
-            vk1=', '.join(nompar)
-            vk2=', '.join([repr(v) for v in valpar])
-            UTMESS('F','SDVERI_4',valk=[vk1,vk2])
+            vk1 = ", ".join(nompar)
+            vk2 = ", ".join([repr(v) for v in valpar])
+            UTMESS("F", "SDVERI_4", valk=[vk1, vk2])
         if len(nomres) < 1:
-            UTMESS('F', 'SDVERI_5')
+            UTMESS("F", "SDVERI_5")
         # appel à l'interface Python/C
         return aster.rcvale(self.getName(), phenomene, nompar, valpar, nomres, stop)
