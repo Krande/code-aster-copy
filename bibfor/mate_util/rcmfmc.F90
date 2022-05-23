@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -165,7 +165,7 @@ character(len=1), intent(in), optional :: base
         do kk = 1, nbgrp
             nbmat=zi(ingrp-1+kk)
             if (nbmat .ne. 0) then
-                call rcmaco(chmat(1:8), chmacegrp, icompt, nbmat, kk, l_ther, basename)
+                call rcmaco(chmat(1:8), chmacegrp, icompt, nbmat, kk, l_ther, basename, bas)
                 call codent(kk, 'D0', knumat)
 !       -- le nom du codi est celui du premier materiau du groupe kk
                 codi(1:8)= basename

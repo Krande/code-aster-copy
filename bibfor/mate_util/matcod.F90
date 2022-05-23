@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !
 subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
-                  basename, codi, l_ther)
+                  basename, codi, l_ther, base_)
 !
 implicit none
 !
@@ -46,6 +46,7 @@ character(len=8) :: chmat, basename
 character(len=19) :: codi
 integer :: indmat, nbmat, imate, igrp
 aster_logical, intent(in) :: l_ther
+character(len=1), intent(in), optional :: base_
 !
 !-----------------------------------------------------------------------
 !     MATERIAU CODE APPELE PAR RCMACO ET PMMACO
@@ -115,6 +116,7 @@ aster_logical, intent(in) :: l_ther
     character(len=6) :: k6
     character(len=8) :: nopara, nommat
     character(len=19) :: ch19, chma, listr, fon19
+    character(len=1) :: base
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
 !
@@ -125,6 +127,12 @@ aster_logical, intent(in) :: l_ther
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+
+    if( present(base_) ) then
+        base = base_
+    else
+        base = 'V'
+    endif
 !
     call codent(imate, 'D0', knuma1)
     codi = ' '
@@ -171,7 +179,7 @@ aster_logical, intent(in) :: l_ther
             chma = nommat//'.CPT.'//k6
             call codent(k, 'D0', knuma2)
             ch19 = chma(1:8)//'.'//knuma2//knuma1//knuma3
-            call jedupc(' ', chma, 1, 'V', ch19, .false._1)
+            call jedupc(' ', chma, 1, base, ch19, .false._1)
             call jelira(ch19//'.VALR', 'LONUTI', zi(kk))
             call jeveut(ch19//'.VALR', 'L', zi(kk+1))
             call jelira(ch19//'.VALC', 'LONUTI', zi(kk+2))
@@ -205,7 +213,7 @@ aster_logical, intent(in) :: l_ther
     end do
 !
     lgcodi= 2*nbmat+1+ 2*nbmat + lmat*nbcmt + lfct*nbcot + lsup*nbtt
-    call wkvect(codi//'.CODI', 'V V I', lgcodi, jcodi)
+    call wkvect(codi//'.CODI', base//' V I', lgcodi, jcodi)
     call jeveut(codi//'.CODI', 'E', jcodi)
     isundf = isnnem()
     do k = 1, lgcodi
