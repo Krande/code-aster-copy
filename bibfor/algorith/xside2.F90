@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
@@ -35,7 +36,6 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/rccoma.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
@@ -96,7 +96,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3)
     real(kind=8) :: grad(3, 3)
     real(kind=8) :: zero, s, sth, d(4, 4), r, epsth(6)
-    real(kind=8) :: ka, mu 
+    real(kind=8) :: ka, mu
     integer :: nnops
 !
     data    zero / 0d0 /
@@ -108,9 +108,9 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     ASSERT(iret.eq.0 .and. phenom.eq.'ELAS')
 !
 !     INITIALISATIONS
-    instan = 0.d0
-    call vecini(7, 0.d0, r8bi7)
-    call vecini(3, 0.d0, r8bi3)
+    instan = r8vide()
+    r8bi7(:) = 0.d0
+    r8bi3(:) = 0.d0
 !
 !   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
     call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
@@ -147,7 +147,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
         ipg = idecpg + kpg
 !
 !       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
-        call vecini(ndim, 0.d0, xg)
+        xg(:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
                 xg(i)=xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+&
@@ -171,7 +171,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                          lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl)
         endif
 !
-!       CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE) ET DU DEPLACEMENT 
+!       CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE) ET DU DEPLACEMENT
 !       RADIAL SI AXI (NECESSAIRE POUR LE CALCUL DES DEFORMATIONS EPS)
         r = 0.d0
         if (axi) then
@@ -190,7 +190,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                     eps, grad, heavn)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
-        call vecini(6, 0.d0, epsth)
+        epsth(:) = 0.d0
         call epstmc('XFEM', ndim, instan, '+', ipg,&
                     1, r8bi3, r8bi7, imate, 'CHAR_MECA_TEMP_R',&
                     epsth)

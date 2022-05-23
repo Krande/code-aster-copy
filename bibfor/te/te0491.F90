@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,6 +125,7 @@ subroutine te0491(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/enelpg.h"
@@ -191,7 +192,7 @@ subroutine te0491(option, nomte)
     psi = zero
     volume = zero
     indigl = zero
-    instan = zero
+    instan = r8vide()
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 ! ---- GEOMETRIE ET INTEGRATION

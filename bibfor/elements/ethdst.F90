@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine ethdst(fami, nno, ndim, nbsig, npg,&
 !    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 !    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
 !                                   L'ELEMENT
-!    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
+!    INSTAN         IN     R        INSTANT DE CALCUL
 !    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 !                                   D'ORTHOTROPIE
 !    MATER          IN     I        MATERIAU

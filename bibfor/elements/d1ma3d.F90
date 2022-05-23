@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/d1pa3d.h"
 #include "asterfort/rccoma.h"
@@ -67,6 +68,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
     real(kind=8) :: valres(nbres), valpar(1)
     real(kind=8) :: passag(6, 6), d1orth(6, 6), work(6, 6)
     real(kind=8) :: nu, nu12, nu21, nu13, nu23, nu31, nu32
+    integer :: nbpar
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! ---- INITIALISATIONS
@@ -75,15 +77,21 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
     un = 1.0d0
     deux = 2.0d0
 !
-    nompar(1) = 'INST'
-    valpar(1) = instan
+    if (instan.eq.r8vide())then
+        nbpar = 0
+    else
+        nbpar = 1
+        nompar(1) = 'INST'
+        valpar(1) = instan
+    endif
 !
-    do 10 i = 1, 6
-        do 10 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             d1(i,j) = zero
             d1orth(i,j) = zero
             work(i,j) = zero
-10      continue
+        enddo
+    enddo
 !
 ! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 !      --------------------------------------------
@@ -102,7 +110,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----   ET DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, [valpar],&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e = valres(1)
@@ -148,7 +156,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----   ET DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, [valpar],&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)
@@ -190,10 +198,11 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
             call utbtab('ZERO', 6, 6, d1orth, passag,&
                         work, d1)
         else if (irep.eq.0) then
-            do 20 i = 1, 6
-                do 20 j = 1, 6
+            do i = 1, 6
+                do j = 1, 6
                     d1(i,j) = d1orth(i,j)
-20              continue
+                enddo
+            enddo
         endif
 !
 !      -----------------------
@@ -212,7 +221,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
 ! ----   ET DU TEMPS
 !        -----------
         call rcvalb(fami, kpg, ksp, poum, mater,&
-                    ' ', phenom, 1, nompar, [valpar],&
+                    ' ', phenom, nbpar, nompar, [valpar],&
                     nbv, nomres, valres, icodre, 1)
 !
         e1 = valres(1)
@@ -249,10 +258,11 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
             call utbtab('ZERO', 6, 6, d1orth, passag,&
                         work, d1)
         else if (irep.eq.0) then
-            do 30 i = 1, 6
-                do 30 j = 1, 6
+            do i = 1, 6
+                do j = 1, 6
                     d1(i,j) = d1orth(i,j)
-30              continue
+                enddo
+            enddo
         endif
 !
     else

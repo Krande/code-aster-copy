@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
@@ -35,7 +36,6 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/rccoma.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalfev_wrap.h"
@@ -108,9 +108,9 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     ASSERT(iret.eq.0 .and. phenom.eq.'ELAS')
 !
 !     INITIALISATIONS
-    instan = 0.d0
-    call vecini(7, 0.d0, r8bi7)
-    call vecini(3, 0.d0, r8bi3)
+    instan = r8vide()
+    r8bi7(:) = 0.d0
+    r8bi3(:) = 0.d0
 !
 !   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
     call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
@@ -150,7 +150,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
         ipg = idecpg + kpg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-        call vecini(ndim, 0.d0, xg)
+        xg(:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
                 xg(i)=xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(3*(n-1)+i)
@@ -176,7 +176,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
                     eps, grad, heavn)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
-        call vecini(6, 0.d0, epsth)
+        epsth(:) = 0.d0
         call epstmc('XFEM', ndim, instan, '+', ipg,&
                     1, r8bi3, r8bi7, imate, 'CHAR_MECA_TEMP_R',&
                     epsth)

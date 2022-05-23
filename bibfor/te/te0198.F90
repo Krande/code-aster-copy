@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 subroutine te0198(option, nomte)
     implicit none
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/bsigmc.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -57,7 +58,7 @@ subroutine te0198(option, nomte)
 ! --- INITIALISATIONS :
 !     -----------------
     zero = 0.0d0
-    instan = zero
+    instan = r8vide()
     nharm = zero
     dimmod = 3
 !
