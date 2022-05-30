@@ -70,6 +70,8 @@ XfemModel::XfemModel( const std::string name ):
                                 _crack_names( JeveuxVectorChar8( name + ".FISS" ) ),
                                 _pre_cond( JeveuxVectorChar8( name + ".PRE_COND" ) ),
                                 _thermic( JeveuxVectorChar8( name + ".MODELE_THER" ) ){
+                                    _xfem_nodes->setDescription( 
+                               std::make_shared< FieldOnNodesDescription >(name + ".NOXF.PRCHN") );
                                     _listfields.insert( { "PINTTO", _topose.pin } );
                                     _listfields.insert( { "CNSETO", _topose.cns } );
                                     _listfields.insert( { "HEAVTO", _topose.hea } );
