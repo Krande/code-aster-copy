@@ -63,5 +63,8 @@ class ComputeElementaryVector(ExecuteCommand):
             self._result.setModel(loads[0].getModel())
 
         self._result.build()
+        veass = self._result.getVeass()
+        if veass is not None:
+            veass.build()
 
 CALC_VECT_ELEM = ComputeElementaryVector.run

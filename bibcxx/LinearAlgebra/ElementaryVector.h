@@ -36,6 +36,7 @@
 #include "Loads/PhysicalQuantity.h"
 #include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "MemoryManager/JeveuxUtils.h"
 #include "Numbering/DOFNumbering.h"
 #include "Supervis/ResultNaming.h"
 
@@ -204,6 +205,7 @@ class ElementaryVector : public BaseElementaryVector {
 
     /** @typedef FieldOnNodesPtr */
     typedef std::shared_ptr< FieldOnNodes< ValueType > > FieldOnNodesPtr;
+    FieldOnNodesPtr _veass;
 
   public:
     /** @typedef ElementaryVectorPtr */
@@ -235,7 +237,17 @@ class ElementaryVector : public BaseElementaryVector {
                 const std::string name = trim( elemTerm.toString() );
                 elemKeep.insert( name );
                 if ( name != " " && elemSave.count( name ) == 0 ) {
-                    _elemTerm.push_back( std::make_shared< ElementaryTerm< ValueType > >( name ) );
+                    std::string name2( name );
+                    name2.resize(19, ' ');
+                    if (jeveuxExists(name2+".REFE")){
+                        // cham_no if .REFE is present, not a resuelem, store in _veass
+                        if ( _veass == nullptr or _veass->getName() != name2 ){
+                            _veass = std::make_shared< FieldOnNodes< ValueType > >( name );
+                        }
+                    }
+                    else
+                        _elemTerm.push_back( std::make_shared< ElementaryTerm< ValueType > >(
+                                                                                          name ) );
                 }
             }
 
@@ -258,6 +270,10 @@ class ElementaryVector : public BaseElementaryVector {
         _isEmpty = false;
         return true;
     };
+
+     FieldOnNodesPtr getVeass(){
+        return _veass;
+     }
 
     /**
      * @brief is MPI_COMPLET ?

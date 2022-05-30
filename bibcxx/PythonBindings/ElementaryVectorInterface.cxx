@@ -50,17 +50,20 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
                 BaseElementaryVector >( mod, "ElementaryVectorDisplacementReal" )
         .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) )
+        .def( "getVeass", &ElementaryVectorDisplacementReal::getVeass )
         .def( "assemble", &ElementaryVectorDisplacementReal::assemble );
 
     py::class_< ElementaryVectorTemperatureReal, ElementaryVectorTemperatureRealPtr,
                 BaseElementaryVector >( mod, "ElementaryVectorTemperatureReal" )
         .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) )
+        .def( "getVeass", &ElementaryVectorTemperatureReal::getVeass )
         .def( "assemble", &ElementaryVectorTemperatureReal::assemble );
 
     py::class_< ElementaryVectorPressureComplex, ElementaryVectorPressureComplexPtr,
                 BaseElementaryVector >( mod, "ElementaryVectorPressureComplex" )
         .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) )
+        .def( "getVeass", &ElementaryVectorPressureComplex::getVeass )
         .def( "assemble", &ElementaryVectorPressureComplex::assemble );
 };
