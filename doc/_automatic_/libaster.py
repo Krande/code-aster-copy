@@ -4505,6 +4505,9 @@ class BaseAssemblyMatrix(DataStructure):
     
     def transpose(self):
         pass
+    
+    def updateDOFNumbering(self):
+        pass
 
 # class AssemblyMatrixDisplacementReal in libaster
 
@@ -5256,6 +5259,9 @@ class ElementaryVectorDisplacementReal(BaseElementaryVector):
     
     def assemble(self, arg0):
         pass
+    
+    def getVeass(self):
+        pass
 
 # class ElementaryVectorTemperatureReal in libaster
 
@@ -5281,6 +5287,9 @@ class ElementaryVectorTemperatureReal(BaseElementaryVector):
     
     def assemble(self, arg0):
         pass
+    
+    def getVeass(self):
+        pass
 
 # class ElementaryVectorPressureComplex in libaster
 
@@ -5305,6 +5314,9 @@ class ElementaryVectorPressureComplex(BaseElementaryVector):
         """
     
     def assemble(self, arg0):
+        pass
+    
+    def getVeass(self):
         pass
 
 # class GeneralizedAssemblyMatrix in libaster
@@ -7698,6 +7710,10 @@ class MaterialField(DataStructure):
         Arguments:
             model (Model): model
         """
+    
+    def update(self):
+        """Update material field
+        """
 
 # class Grid in libaster
 
@@ -8662,6 +8678,9 @@ class XfemCrack(DataStructure):
         pass
     
     def setTangentialLevelSetFunction(self, arg0):
+        pass
+    
+    def update(self):
         pass
 
 # class Result in libaster
