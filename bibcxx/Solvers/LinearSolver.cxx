@@ -118,8 +118,7 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
     std::string base( "G" );
     ASTERINTEGER cret = 0, npvneg = 0, istop = -9999;
 
-    _matrixPrec = _matrix->getEmptyMatrix( ResultNaming::getNewResultName() + ".PREC" );
-
+    _matrixPrec = _matrix->getEmptyMatrix( ResultNaming::getNewResultName() );
     const std::string matpre( _matrixPrec->getName() );
     const std::string matass( _matrix->getName() );
 
@@ -133,6 +132,8 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
 
     _matrix->setFactorized( true );
     _matrix->setSolverName( getSolverName() );
+    if ( getSolverName()=="GCPC" )
+        _matrixPrec->updateDOFNumbering();
 
     return true;
 };

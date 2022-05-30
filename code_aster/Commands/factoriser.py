@@ -48,5 +48,7 @@ class Factoriser(ExecuteCommand):
         solverName = keywords.get("METHODE")
         if solverName in ("MUMPS", "PETSC"):
             self._result.setSolverName(solverName)
+        if solverName=="GCPC":
+            self._result.updateDOFNumbering()
 
 FACTORISER = Factoriser.run

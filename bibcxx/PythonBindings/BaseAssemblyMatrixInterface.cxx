@@ -89,6 +89,8 @@ Returns:
         // -----------------------------------------------------------------------------------------
         .def( "setDOFNumbering", &BaseAssemblyMatrix::setDOFNumbering )
         // -----------------------------------------------------------------------------------------
+        .def( "updateDOFNumbering", &BaseAssemblyMatrix::updateDOFNumbering )
+        // -----------------------------------------------------------------------------------------
         .def( "setSolverName", &BaseAssemblyMatrix::setSolverName )
         // -----------------------------------------------------------------------------------------
         .def( "hasDirichletEliminationDOFs", &BaseAssemblyMatrix::hasDirichletEliminationDOFs, R"(

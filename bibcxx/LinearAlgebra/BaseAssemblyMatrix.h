@@ -251,6 +251,9 @@ class BaseAssemblyMatrix : public DataStructure {
      */
     void setDOFNumbering( const BaseDOFNumberingPtr currentNum ) { _dofNum = currentNum; };
 
+    /** @brief update _dofNum using DOFNumbering name created in Fortran */
+    void updateDOFNumbering();
+
     /**
      * @brief Function to set the solver name (MUMS or PETSc)
      * @param sName name of solver ("MUMPS" or "PETSC")

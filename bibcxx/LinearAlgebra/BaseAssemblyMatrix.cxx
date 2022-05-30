@@ -77,6 +77,14 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( BaseAssemblyMatrix &&other )
     _isFactorized = other._isFactorized;
 }
 
+void BaseAssemblyMatrix::updateDOFNumbering(){
+    if ( _description->exists() ){
+        _description->updateValuePointer();
+        std::string dofName = ( *_description )[1];
+        _dofNum = std::make_shared< DOFNumbering > ( dofName );
+    }
+};
+
 void BaseAssemblyMatrix::symmetrize() { CALL_MATR_ASSE_SYME( getName() ); };
 
 bool BaseAssemblyMatrix::isMPIFull() {
