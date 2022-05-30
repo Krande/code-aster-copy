@@ -31,6 +31,7 @@ void exportXfemCrackToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< XfemCrack, MeshPtr > ) )
         .def( py::init( &initFactoryPtr< XfemCrack, std::string, MeshPtr > ) )
         .def( "build", &XfemCrack::build )
+        .def( "update", &XfemCrack::update_tables )
         .def( "enrichModelWithXfem", &XfemCrack::enrichModelWithXfem )
         .def( "getMesh", &XfemCrack::getMesh )
         .def( "setMesh", &XfemCrack::setMesh )
