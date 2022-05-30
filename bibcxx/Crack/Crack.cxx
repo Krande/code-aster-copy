@@ -44,7 +44,13 @@ Crack::Crack( const std::string name )
       _lnno( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
       _basLoc( new FieldOnNodesReal( getName() + ".BASLOC    " ) ),
       _basNof( JeveuxVectorReal( getName() + ".BASNOF" ) ),
-      _absfon( JeveuxVectorReal( getName() + ".ABSFON" ) ){};
+      _absfon( JeveuxVectorReal( getName() + ".ABSFON" ) ){
+          _ltno->setDescription( std::make_shared< FieldOnNodesDescription >(
+                                                             getName() + ".LTNO.PRCHN") );
+          _lnno->setDescription( _ltno->getDescription() );
+          _basLoc->setDescription( std::make_shared< FieldOnNodesDescription >(
+                                                             getName() + ".BASL.PRCHN") );
+          };
 
 void Crack::updateValuePointers( ){
     _info->updateValuePointer();

@@ -304,11 +304,11 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
 ! --- CREATION DES CHAM_NO
 !
 !     ENREGISTREMENT DE .LTNO, .LNNO ET .BASLOC DANS LA SD FOND_FISS
-    call cnscno(cnslt, ' ', 'NON', 'G', ltno,&
+    call cnscno(cnslt, ltno(1:13)//'.PRCHN', 'NON', 'G', ltno,&
                 'F', ibid)
-    call cnscno(cnsln, ' ', 'NON', 'G', lnno,&
+    call cnscno(cnsln, ltno(1:13)//'.PRCHN', 'NON', 'G', lnno,&
                 'F', ibid)
-    call cnscno(cnsbas, ' ', 'NON', 'G', basloc,&
+    call cnscno(cnsbas, basloc(1:13)//'.PRCHN', 'NON', 'G', basloc,&
                 'F', ibid)
 !
 !
