@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,13 +26,16 @@ This module provides visitors of syntax objects (commands and keywords).
 """
 
 
-class EnumVisitor(object):
-    """This object automatically replace *enum-like* keywords by their
-    numerical values.
+class GenericVisitor(object):
+    """Generic visitor to walk accross syntax and keywords values.
 
     NB: The syntax is supposed to be valid before being called!
 
+    NB: A visitor that changes keywords values also forbids calling other
+    visitors afterwards.
+
     Attributes:
+        _stack (list): Stack of checked objects names for error report.
         _parent_context (dict): Context of the parent used to evaluate block
             conditions.
     """
@@ -40,6 +43,7 @@ class EnumVisitor(object):
     def __init__(self):
         """Initialization"""
         self._parent_context = []
+        self._stack = []
         self._changed = None
 
     def set_parent_context(self, context):
@@ -65,31 +69,9 @@ class EnumVisitor(object):
 
     def visitBloc(self, step, userDict=None):
         """Visit a Bloc object"""
-        pass
-
-    def visitFactorKeyword(self, step, userDict=None):
-        """Visit a FactorKeyword object"""
-        # debug_message2("checking factor with", userDict)
-        self._visitComposite(step, userDict)
-
-    def visitSimpleKeyword(self, step, skwValue):
-        """Visit a SimpleKeyword object"""
-        self._changed = None
-        enum = step.definition.get('enum')
-        typ = step.definition.get('typ')
-        if not enum or typ != "TXM":
-            return
-        into = step.definition.get('into')
-        conv = dict(zip(into, enum))
-        if isinstance(skwValue, (list, tuple)):
-            value = [conv[val_i] for val_i in skwValue]
-        else:
-            value = conv[skwValue]
-        self._changed = value
 
     def _visitComposite(self, step, userDict=None):
-        """Visit a composite object (containing BLOC, FACT and SIMP objects)
-        """
+        """Visit a composite object (containing BLOC, FACT and SIMP objects)"""
         if isinstance(userDict, dict):
             userDict = [userDict]
         # loop on occurrences filled by the user
@@ -102,10 +84,51 @@ class EnumVisitor(object):
                 kwd = step.getKeyword(key, userOrig, ctxt)
                 if not kwd:
                     continue
+                self._stack.append(key)
                 kwd.accept(self, value)
                 if self._changed is not None:
                     userOcc[key] = self._changed
                     self._changed = None
+                self._stack.pop()
+
+    def visitFactorKeyword(self, step, userDict=None):
+        """Visit a FactorKeyword object"""
+        raise NotImplementedError("should be subclassed")
+
+    def visitSimpleKeyword(self, step, skwValue):
+        """Visit a SimpleKeyword object"""
+        raise NotImplementedError("should be subclassed")
+
+
+class EnumVisitor(GenericVisitor):
+    """This object automatically replace *enum-like* keywords by their
+    numerical values.
+
+    NB: The syntax is supposed to be valid before being called!
+
+    Attributes:
+        _parent_context (dict): Context of the parent used to evaluate block
+            conditions.
+    """
+
+    def visitFactorKeyword(self, step, userDict=None):
+        """Visit a FactorKeyword object"""
+        self._visitComposite(step, userDict)
+
+    def visitSimpleKeyword(self, step, skwValue):
+        """Visit a SimpleKeyword object"""
+        self._changed = None
+        enum = step.definition.get("enum")
+        typ = step.definition.get("typ")
+        if not enum or typ != "TXM":
+            return
+        into = step.definition.get("into")
+        conv = dict(zip(into, enum))
+        if isinstance(skwValue, (list, tuple)):
+            value = [conv[val_i] for val_i in skwValue]
+        else:
+            value = conv[skwValue]
+        self._changed = value
 
 
 def replace_enum(command, keywords):

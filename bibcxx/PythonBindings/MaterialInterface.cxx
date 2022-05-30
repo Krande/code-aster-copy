@@ -30,11 +30,61 @@ void exportMaterialToPython( py::module_ &mod ) {
     py::class_< Material, Material::MaterialPtr, DataStructure >( mod, "Material" )
         .def( py::init( &initFactoryPtr< Material > ) )
         .def( py::init( &initFactoryPtr< Material, std::string > ) )
-        .def( py::init( &initFactoryPtr< Material, std::string, VectorInt > ) )
-        .def( "addMaterialProperty", &Material::addMaterialProperty )
-        .def( "build", &Material::build )
-        .def( "getNumberOfMaterialProperties", &Material::getNumberOfMaterialProperties )
-        .def( "getNumberOfUserMaterialProperties", &Material::getNumberOfUserMaterialProperties )
-        .def( "getVectorOfMaterialProperties", &Material::getVectorOfMaterialProperties )
-        .def( "setReferenceMaterial", &Material::setReferenceMaterial );
+        .def( py::init( &initFactoryPtr< Material, Material > ) )
+        .def( "size", &Material::size, R"(
+Return the number of material names.
+
+Returns:
+    int: Number of material names.
+        )" )
+        .def( "getMaterialNames", &Material::getMaterialNames, R"(
+Return the list of the material names.
+
+Returns:
+    list[str]: List of material names (without "_FO")
+        )" )
+        .def( "getValueReal", &Material::getValueReal, R"(
+Return the value of a property stored as a real.
+
+Raise an exception if the property does not exist.
+
+Arguments:
+    materialName (str): Material name (without "_FO").
+    propertyName (str): Property name.
+
+Returns:
+    float: Property value.
+        )",
+              py::arg( "materialName" ), py::arg( "propertyName" ) )
+        .def( "getValueComplex", &Material::getValueComplex, R"(
+Return the value of a property stored as a complex.
+
+Raise an exception if the property does not exist.
+
+Arguments:
+    materialName (str): Material name (without "_FO").
+    propertyName (str): Property name.
+
+Returns:
+    complex: Property value.
+        )",
+              py::arg( "materialName" ), py::arg( "propertyName" ) )
+        .def( "getFunction", &Material::getFunction, R"(
+Return the value of a property stored as a function.
+
+Raise an exception if the property does not exist.
+
+Arguments:
+    materialName (str): Material name (without "_FO").
+    propertyName (str): Property name.
+
+Returns:
+    *Function*: Function object, *None* if the property does not exist or is not a function.
+        )",
+              py::arg( "materialName" ), py::arg( "propertyName" ) )
+
+        .def( "_addProperties", &Material::_addProperties )
+        .def( "_storeListReal", &Material::_storeListReal )
+        .def( "_storeListFunc", &Material::_storeListFunc )
+        .def( "_setTractionFunction", &Material::_setTractionFunction );
 };

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine verif_loi_mater(mater)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Nombre de relations de comportement
-    call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbcrme)
+    call jelira(mater//'.MATERIAU.NOMRC', 'LONUTI', nbcrme)
 !
 !   Tableau des relations de comportement
     call jeveuo(mater//'.MATERIAU.NOMRC', 'L', vk32=vnomrc)

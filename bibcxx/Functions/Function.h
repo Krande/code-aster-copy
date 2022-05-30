@@ -135,6 +135,8 @@ class BaseFunction : public GenericFunction {
      * @brief Return the number of points of the function
      */
     virtual ASTERINTEGER maximumSize() const {
+        if ( !_value->exists() )
+            return 0;
         _value->updateValuePointer();
         return _value->size() / 2;
     }
@@ -142,10 +144,7 @@ class BaseFunction : public GenericFunction {
     /**
      * @brief Return the number of points of the function
      */
-    virtual ASTERINTEGER size() const {
-        _value->updateValuePointer();
-        return _value->size() / 2;
-    }
+    virtual ASTERINTEGER size() const { return maximumSize(); }
 
     /**
      * @brief Update the pointers to the Jeveux objects

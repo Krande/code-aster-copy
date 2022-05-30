@@ -415,9 +415,6 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param elem element to add
      */
     void push_back( const ValueType &elem ) {
-#ifdef ASTER_DEBUG_CXX
-        AS_ASSERT( _valuePtr != nullptr );
-#endif
         const auto size = this->size();
         const auto capa = this->capacity();
 

@@ -141,7 +141,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 if (mater .eq. 'TREF=>') goto 80
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
-                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
+                call jelira(mater//'.MATERIAU.NOMRC', 'LONUTI', nbrc)
                 do 60 irc = 1, nbrc
                     nomrc=zk32(ianorc-1+irc)(1:10)
                     if (nomrc .eq. 'ELAS_COQUE') then
@@ -191,7 +191,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 if (mater .eq. 'TREF=>') goto 140
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
-                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
+                call jelira(mater//'.MATERIAU.NOMRC', 'LONUTI', nbrc)
                 do 110 irc = 1, nbrc
                     nomrc=zk32(ianorc-1+irc)
 !
@@ -248,7 +248,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 if (mater .eq. 'TREF=>') goto 190
 !
                 call jeveuo(mater//'.MATERIAU.NOMRC', 'L', ianorc)
-                call jelira(mater//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
+                call jelira(mater//'.MATERIAU.NOMRC', 'LONUTI', nbrc)
                 do 160 irc = 1, nbrc
                     nomrc=zk32(ianorc-1+irc)
 !

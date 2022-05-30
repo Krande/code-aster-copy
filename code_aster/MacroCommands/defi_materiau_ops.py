@@ -18,26 +18,11 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy
-
-from libaster import (
-    createEnthalpy,
-    deleteTemporaryObjects,
-    resetFortranLoggingLevel,
-    setFortranLoggingLevel,
-)
+from libaster import createEnthalpy, resetFortranLoggingLevel, setFortranLoggingLevel
 
 from ..Cata.Syntax import _F
 from ..Messages import UTMESS
-from ..Objects import (
-    DataStructure,
-    Formula,
-    Function,
-    Function2D,
-    Material,
-    MaterialProperty,
-    Table,
-)
-from ..Supervis import replace_enum
+from ..Objects import Function, Material
 
 
 def defi_materiau_ops(self, **args):
@@ -51,176 +36,29 @@ def defi_materiau_ops(self, **args):
 
     setFortranLoggingLevel(args["INFO"])
 
+    # reuse, copy from or new object
     if args.get("reuse"):
         assert args["reuse"] == args["MATER"]
         mater = args["MATER"]
+    elif args.get("MATER"):
+        mater = Material(args["MATER"])
     else:
         mater = Material()
 
     # In this function, we can check the value of keywords and add some properties
     check_keywords(args)
-    replace_enum(self._cata, args)
 
-    mater2 = args.get("MATER")
-    if args.get("reuse"):
-        mater.setReferenceMaterial(mater2)
-    elif mater2 is not None:
-        if mater2 != mater:
-            mater.setReferenceMaterial(mater2)
-
-    materByName = _buildInstance(args)
-    for fkwName, fkw in args.items():
-        if type(fkw) in (list, tuple):
-            assert len(fkw) == 1
-            fkw = fkw[0]
-        # only see factor keyword
-        if not isinstance(fkw, dict):
-            continue
-        if fkwName in materByName:
-            matBehav = materByName[fkwName]
-            klassName = matBehav.getName()
-        else:
-            raise NotImplementedError("Unsupported behaviour: '{0}'".format(fkwName))
-
-        for skwName, skw in fkw.items():
-            if skwName == "ORDRE_PARAM":
-                matBehav.setSortedListParameters(list(skw))
-                continue
-            iName = skwName.capitalize()
-            if fkwName in ("MFRONT", "UMAT", "MFRONT_FO", "UMAT_FO"):
-                matBehav.setValue(iName, list(skw))
-                continue
-
-            cRet = None
-            if type(skw) in (float, int, numpy.float64):
-                cRet = matBehav.setValue(iName, float(skw))
-                if not cRet:
-                    ValueError(
-                        "Can not assign keyword '{1}'/'{0}' "
-                        "(as '{3}'/'{2}') ".format(skwName, fkwName, iName, klassName)
-                    )
-            elif type(skw) in (complex, str, Table, Function, Function2D, Formula):
-                cRet = matBehav.setValue(iName, skw)
-                if not cRet:
-                    ValueError(
-                        "Can not assign keyword '{1}'/'{0}' "
-                        "(as '{3}'/'{2}') ".format(skwName, fkwName, iName, klassName)
-                    )
-            elif type(skw) is tuple and type(skw[0]) is str:
-                if skw[0] == "RI":
-                    comp = complex(skw[1], skw[2])
-                    cRet = matBehav.setValue(iName, comp)
-                else:
-                    raise NotImplementedError(
-                        "Unsupported type for keyword: " "{0} <{1}>".format(skwName, type(skw))
-                    )
-            elif type(skw) in (list, tuple) and type(skw[0]) in (float, int, numpy.float64):
-                cRet = matBehav.setValue(iName, list([float(x) for x in skw]))
-            else:
-                raise NotImplementedError(
-                    "Unsupported type for keyword: " "{0} <{1}>".format(skwName, type(skw))
-                )
-            if not cRet:
-                raise NotImplementedError(
-                    "Unsupported keyword: " "{0} <{1}>".format(iName, type(skw))
-                )
-        mater.addMaterialProperty(matBehav)
-
-    mater.build()
-    
-    flagE = False
-    flagFunc = False
-    flagFunc2D = False
-    vectMat = mater.getVectorOfMaterialProperties()
-    for iMat in vectMat :
-        if iMat.getName() == "ELAS" :
-            flagE = True
-            moduleE = iMat.getValueReal("E")
-        elif iMat.getName() == "TRACTION" :
-            if iMat.getValueGenericFunction("Sigm").getProperties()[0] == 'NAPPE':
-                flagFunc2D = True
-            elif iMat.getValueGenericFunction("Sigm").getProperties()[0] == 'FONCTION' :
-                flagFunc = True
-                foncTrac = iMat.getValueGenericFunction("Sigm").getValuesAsArray()
-                moduleTrac = foncTrac[0][1]/foncTrac[0][0]
-
-    if flagE and flagFunc :
-        if abs(moduleE-moduleTrac)/moduleE > 0.01 :
-            UTMESS( "A", "MATERIAL1_5", valr=moduleTrac )
-    if flagE and flagFunc2D :
-            UTMESS( "I", "MATERIAL1_6")
+    visit = mater.Builder(mater)
+    self._cata.accept(visit, args)
 
     resetFortranLoggingLevel()
-    deleteTemporaryObjects()
+    # TODO check E vs TRACTION (issue32005)
+    mater.debugPrint()
 
     return mater
 
 
 # internal methods
-
-
-def _buildInstance(keywords):
-    """Build a dict with MaterialProperty
-
-    Returns:
-        dict: Behaviour instances from keywords of command.
-    """
-    objects = {}
-    for materName, skws in keywords.items():
-        if materName == "INFO":
-            continue
-        asterNewName = ""
-        if materName.endswith("_FO"):
-            asterNewName = materName.replace("_FO", "")
-        mater = MaterialProperty(materName, asterNewName)
-        # to build Traction function later
-        if materName in ("TRACTION", "META_TRACTION"):
-            mater.hasTractionFunction = True
-
-        if type(skws) in (list, tuple):
-            assert len(skws) == 1
-            skws = skws[0]
-        if isinstance(skws, _F) or type(skws) is dict:
-            for kwName, kwValue in skws.items():
-                curType = type(kwValue)
-                mandatory = False
-                if kwName == "ORDRE_PARAM":
-                    continue
-                if curType in (float, int, numpy.float64):
-                    mater.addPropertyReal(kwName, mandatory)
-                elif curType is complex:
-                    mater.addPropertyComplex(kwName, mandatory)
-                elif curType is str:
-                    mater.addPropertyString(kwName, mandatory)
-                elif (
-                    isinstance(kwValue, Function)
-                    or isinstance(kwValue, Function2D)
-                    or isinstance(kwValue, Formula)
-                ):
-                    mater.addPropertyFunction(kwName, mandatory)
-                elif isinstance(kwValue, Table):
-                    mater.addPropertyTable(kwName, mandatory)
-                elif type(kwValue) in (list, tuple):
-                    if type(kwValue[0]) is float:
-                        mater.addPropertyVectorOfReal(kwName, mandatory)
-                    elif isinstance(kwValue[0], DataStructure):
-                        mater.addPropertyVectorOfFunction(kwName, mandatory)
-                    elif kwValue[0] == "RI":
-                        mater.addPropertyComplex(kwName, mandatory)
-                    elif type(kwValue[0]) is str:
-                        pass
-                    else:
-                        raise NotImplementedError(
-                            "Type not implemented for" " material property: '{0}'".format(kwName)
-                        )
-                else:
-                    raise NotImplementedError(
-                        "Type not implemented for" " material property: '{0}'".format(kwName)
-                    )
-        objects[materName] = mater
-    return objects
-
-
 def check_keywords(kwargs):
     """Check for DEFI_MATERIAU keywords
 

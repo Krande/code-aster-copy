@@ -377,11 +377,9 @@ CHAR31 = AFFE_CHAR_MECA(MODELE=MODME,
 CHAR23 = AFFE_CHAR_MECA(MODELE=MODME,
                         PRE_EPSI=_F(GROUP_MA=('plaque', 'tubes'), EPYZ=-1.0))
 
-alpha_acier = [i for i in ACIER.getVectorOfMaterialProperties()
-               if i.getName() == "ELAS"][0].getValueReal('Alpha')
+alpha_acier = ACIER.getValueReal("ELAS", "ALPHA")
 
-alpha_inconel = [i for i in INCONEL.getVectorOfMaterialProperties()
-                 if i.getName() == "ELAS"][0].getValueReal('Alpha')
+alpha_inconel = INCONEL.getValueReal("ELAS", "ALPHA")
 
 CHARDIL = AFFE_CHAR_MECA(MODELE=MODME,
                          PRE_EPSI=(

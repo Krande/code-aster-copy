@@ -1,173 +1,344 @@
 /**
  * @file Material.cxx
- * @brief Implementation de Material
- * @author Nicolas Sellenet
+ * @brief Implementation of material datastructure.
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+ * This file is part of code_aster.
  *
- *   This file is part of Code_Aster.
+ * code_aster is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *   Code_Aster is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
+ * code_aster is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *   Code_Aster is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Materials/Material.h"
 
 #include "astercxx.h"
 
-#include "Supervis/ResultNaming.h"
+#include "Utilities/Tools.h"
 
-void Material::addMaterialProperty( const GenericMaterialPropertyPtr &curMaterBehav ) {
-    ++_nbMaterialProperty;
-    _vecMatBehaviour.push_back( curMaterBehav );
+#include <algorithm>
+#include <iomanip>
+#include <sstream>
 
-    std::ostringstream numString;
-    numString << std::setw( 6 ) << std::setfill( '0' ) << _nbMaterialProperty;
-    const std::string currentName = getName() + ".CPT." + numString.str();
-    _vectorOfValuesComplex.push_back( JeveuxVectorComplex( currentName + ".VALC" ) );
-    _vectorOfValuesReal.push_back( JeveuxVectorReal( currentName + ".VALR" ) );
-    _vectorOfChar16Values.push_back( JeveuxVectorChar16( currentName + ".VALK" ) );
-    _vectorOrdr.push_back( JeveuxVectorChar16( currentName + ".ORDR" ) );
-    _vectorKOrdr.push_back( JeveuxVectorLong( currentName + ".KORD" ) );
+/* Lists */
+MaterialListReal::MaterialListReal( const std::string &name, const MaterialListReal &toCopy )
+    : MaterialListReal( name, toCopy._list->toVector() ) {}
 
-    auto test1 = curMaterBehav->hasVectorOfRealParameters();
-    auto test2 = curMaterBehav->hasVectorOfFunctionParameters();
-    const auto cP = _vectorOfUserValuesReal.size();
-    _vectorOfUserValuesReal.push_back( VectorOfJeveuxVectorReal() );
-    _vectorOfUserFunctionValues.push_back( VectorOfJeveuxVectorChar8() );
-    if ( test1 || test2 ) {
-        const int num1 = curMaterBehav->getNumberOfListOfPropertiesReal();
-        const int num2 = curMaterBehav->getNumberOfListOfPropertiesFunction();
-        const int numTot = num1 + num2;
-        for ( int pos = 0; pos < numTot; ++pos ) {
-            ++_nbUserMaterialProperty;
-            std::ostringstream numUser2;
-            numUser2 << std::setw( 7 ) << std::setfill( '0' ) << _nbUserMaterialProperty;
-            std::string currentName2 = getName() + "." + numUser2.str() + ".LISV_R8";
-            auto o1 = JeveuxVectorReal( currentName2 );
-            _vectorOfUserValuesReal[cP].push_back( o1 );
-            std::string currentName3 = getName() + "." + numUser2.str() + ".LISV_FO";
-            auto o2 = JeveuxVectorChar8( currentName3 );
-            _vectorOfUserFunctionValues[cP].push_back( o2 );
-        }
+MaterialListFunc::MaterialListFunc( const std::string &name, const VectorString &vect )
+    : DataStructure( name, 16, "MATER_PROP_LISTF" ),
+      _list( JeveuxVectorChar8( getName() + ".LISV_FO", vect.size() ) ) {
+    int idx = 0;
+    for ( auto elt : vect ) {
+        ( *_list )[idx] = elt;
+        ++idx;
+    }
+}
+
+MaterialListFunc::MaterialListFunc( const std::string &name, const MaterialListFunc &toCopy )
+    : DataStructure( name, 16, "MATER_PROP_LISTF" ),
+      _list( JeveuxVectorChar8( getName() + ".LISV_FO", toCopy._list->size() ) ) {
+    int idx = 0;
+    for ( auto elt : toCopy._list->toVector() ) {
+        ( *_list )[idx] = elt;
+        ++idx;
+    }
+}
+
+/* Material Property */
+MaterialProperties::MaterialProperties( const std::string &name )
+    : DataStructure( name, 19, "MATER_PROP" ),
+      _valR( JeveuxVectorReal( getName() + ".VALR" ) ),
+      _valC( JeveuxVectorComplex( getName() + ".VALC" ) ),
+      _valK( JeveuxVectorChar16( getName() + ".VALK" ) ) {}
+
+MaterialProperties::MaterialProperties( const std::string &name, const MaterialProperties &toCopy )
+    : MaterialProperties( name ) {
+    *( _valR ) = *( toCopy._valR );
+    *( _valC ) = *( toCopy._valC );
+    *( _valK ) = *( toCopy._valK );
+    if ( !toCopy._ordr.isEmpty() ) {
+        _ordr = JeveuxVectorChar16( getName() + ".ORDR" );
+        *( _ordr ) = *( toCopy._ordr );
+    }
+    if ( !toCopy._kord.isEmpty() ) {
+        _kord = JeveuxVectorLong( getName() + ".KORD" );
+        *( _kord ) = *( toCopy._kord );
+    }
+    if ( getValueString( 0 ) == "LISTE_COEF" ) {
+        std::string listName = getValueString( 1 );
+        listName.replace( 0, 8, toCopy.getName() );
+    }
+}
+
+MaterialProperties::MaterialProperties( const std::string &name, const VectorReal valR,
+                                        const VectorComplex valC, const VectorString valK,
+                                        const VectorString ordr, const VectorLong kord )
+    : DataStructure( name, 19, "MATER_PROP" ),
+      _valR( JeveuxVectorReal( getName() + ".VALR" ) ),
+      _valC( JeveuxVectorComplex( getName() + ".VALC" ) ),
+      _valK( JeveuxVectorChar16( getName() + ".VALK", valK.size() ) ) {
+    if ( valR.size() == 0 ) {
+        _valR->allocate( 1, 0. );
+        _valR->setSize( 0 );
     } else {
-        auto o1 = JeveuxVectorReal( "EMPTY" );
-        _vectorOfUserValuesReal[cP].push_back( o1 );
-        auto o2 = JeveuxVectorChar8( "EMPTY" );
-        _vectorOfUserFunctionValues[cP].push_back( o2 );
+        _valR->allocate( valR.size() );
+        ( *_valR ) = valR;
     }
-};
 
-void Material::deallocateJeveuxVectors() {
-    _materialBehaviourNames->deallocate();
-    _doubleValues->deallocate();
-    int num = 0;
-    for ( const auto &curIter : _vecMatBehaviour ) {
-        _vectorOfValuesComplex[num]->deallocate();
-        _vectorOfValuesReal[num]->deallocate();
-        _vectorOfChar16Values[num]->deallocate();
-        _vectorOrdr[num]->deallocate();
-        _vectorKOrdr[num]->deallocate();
-        for ( auto curIter2 : _vectorOfUserValuesReal[num] )
-            curIter2->deallocate();
-        for ( auto curIter2 : _vectorOfUserFunctionValues[num] )
-            curIter2->deallocate();
-        ++num;
+    if ( valC.size() == 0 ) {
+        _valC->allocate( 1, 0. );
+        _valC->setSize( 0 );
+    } else {
+        _valC->allocate( valC.size() );
+        ( *_valC ) = valC;
+        _valC->setSize( valC.size() - _valR->size() );
     }
-};
+
+    int idx = 0;
+    for ( auto elt : valK ) {
+        ( *_valK )[idx] = elt;
+        ++idx;
+    }
+
+    if ( ordr.size() > 0 ) {
+        _ordr = JeveuxVectorChar16( getName() + ".ORDR", ordr.size() );
+        int idx = 0;
+        for ( auto elt : ordr ) {
+            ( *_ordr )[idx] = elt;
+            ++idx;
+        }
+        _kord = JeveuxVectorLong( getName() + ".KORD", kord );
+    }
+}
+
+ASTERDOUBLE MaterialProperties::getValueReal( int idx ) {
+    _valR->updateValuePointer();
+    return ( *_valR )[idx];
+}
+
+ASTERCOMPLEX MaterialProperties::getValueComplex( int idx ) {
+    _valC->updateValuePointer();
+    return ( *_valC )[idx];
+}
+
+std::string MaterialProperties::getValueString( int idx ) {
+    _valK->updateValuePointer();
+    return ( *_valK )[idx];
+}
+
+/* Material */
+Material::Material( const std::string &name )
+    : DataStructure( name, 8, "MATER" ),
+      _names( JeveuxVectorChar32( getName() + ".MATERIAU.NOMRC" ) ),
+      _rdep( std::make_shared< Function >( getName() + ".&&RDEP" ) ) {
+    build();
+}
+
+Material::Material( const Material &toCopy ) : Material( ResultNaming::getNewResultName() ) {
+    *( _names ) = *( toCopy._names );
+    int rdepSize = toCopy._rdep->maximumSize();
+    if ( rdepSize > 0 ) {
+        _rdep->allocate( rdepSize );
+        _rdep->setParameterName( "EPSI" );
+        _rdep->setResultName( toCopy._rdep->getResultName() );
+    }
+
+    int nbMat = size();
+    for ( int i = 0; i < nbMat; i++ ) {
+        auto prop = *( toCopy._prop[i] );
+        auto copy = std::make_shared< MaterialProperties >( _cptName( i + 1 ), prop );
+        _prop.push_back( copy );
+    }
+
+    for ( auto &ds : toCopy.getDependencies() ) {
+        addDependency( ds );
+    }
+}
 
 bool Material::build() {
-    if ( _mater != nullptr ) {
-        if ( getName() == _mater->getName() )
-            deallocateJeveuxVectors();
-        else
-            for ( auto curIter : _mater->_vecMatBehaviour )
-                addMaterialProperty( curIter );
-    }
-
-    // Recuperation du nombre de GenericMaterialPropertyPtr ajoutes par l'utilisateur
-    const int nbMCF = _vecMatBehaviour.size();
-    if ( nbMCF != _vectorOfValuesComplex.size() || nbMCF != _vectorOfValuesReal.size() ||
-         nbMCF != _vectorOfChar16Values.size() )
-        throw std::runtime_error( "Bad number of material properties" );
-
-    // Creation du vecteur Jeveux ".MATERIAU.NOMRC"
-    _materialBehaviourNames->allocate( nbMCF );
-    int num = 0;
-    // Boucle sur les GenericMaterialPropertyPtr
-    for ( const auto &curIter : _vecMatBehaviour ) {
-        // Recuperation du nom Aster (ELAS, ELAS_FO, ...) du GenericMaterialPropertyPtr
-        // sur lequel on travaille
-        std::string curStr;
-        if ( curIter->getAsterNewName() == "" )
-            curStr = std::string( curIter->getAsterName().c_str() );
-        else
-            curStr = std::string( curIter->getAsterNewName().c_str() );
-        curStr.resize( 32, ' ' );
-        // Recopie dans le ".MATERIAU.NOMRC"
-        ( *_materialBehaviourNames )[num] = curStr.c_str();
-
-        // Construction des objets Jeveux .CPT.XXXXXX.VALR, .CPT.XXXXXX.VALK, ...
-        JeveuxVectorComplex &vec1 = _vectorOfValuesComplex[num];
-        JeveuxVectorReal &vec2 = _vectorOfValuesReal[num];
-        JeveuxVectorChar16 &vec3 = _vectorOfChar16Values[num];
-        JeveuxVectorChar16 &vec4 = _vectorOrdr[num];
-        JeveuxVectorLong &vec5 = _vectorKOrdr[num];
-        auto &vec6 = _vectorOfUserValuesReal[num];
-        auto &vec7 = _vectorOfUserFunctionValues[num];
-
-        const bool retour = curIter->buildJeveuxVectors( vec1, vec2, vec3, vec4, vec5, vec6, vec7 );
-        const bool retour2 = curIter->computeTractionFunction( _doubleValues );
-
-        if ( !retour || !retour2 )
-            throw std::runtime_error( "Fail to build Material" );
-        ++num;
-    }
-    return true;
-};
-
-void Material::setStateAfterUnpickling( const VectorInt &vec ) {
-    // std::cout << "setStateAfterUnpickling with " << vec.size() << std::endl;
-    // debugPrint();
-    if ( _nbMaterialProperty != 0 )
-        throw std::runtime_error( "Object already fill in" );
-
-    for ( const auto &curVal : vec ) {
-        ++_nbMaterialProperty;
-        std::ostringstream numString;
-        numString << std::setw( 6 ) << std::setfill( '0' ) << _nbMaterialProperty;
-        const std::string currentName = getName() + ".CPT." + numString.str();
-        _vectorOfValuesComplex.push_back( JeveuxVectorComplex( currentName + ".VALC" ) );
-        _vectorOfValuesReal.push_back( JeveuxVectorReal( currentName + ".VALR" ) );
-        _vectorOfChar16Values.push_back( JeveuxVectorChar16( currentName + ".VALK" ) );
-        _vectorOrdr.push_back( JeveuxVectorChar16( currentName + ".ORDR" ) );
-        _vectorKOrdr.push_back( JeveuxVectorLong( currentName + ".KORD" ) );
-
-        const auto cP = _vectorOfUserValuesReal.size();
-        _vectorOfUserValuesReal.push_back( VectorOfJeveuxVectorReal() );
-        _vectorOfUserFunctionValues.push_back( VectorOfJeveuxVectorChar8() );
-        for ( int i = 0; i < curVal; ++i ) {
-            ++_nbUserMaterialProperty;
-            std::ostringstream numUser2;
-            numUser2 << std::setw( 7 ) << std::setfill( '0' ) << _nbUserMaterialProperty;
-            std::string currentName2 = getName() + "." + numUser2.str() + ".LISV_R8";
-            auto o1 = JeveuxVectorReal( currentName2 );
-            _vectorOfUserValuesReal[cP].push_back( o1 );
-            std::string currentName3 = getName() + "." + numUser2.str() + ".LISV_FO";
-            auto o2 = JeveuxVectorChar8( currentName3 );
-            _vectorOfUserFunctionValues[cP].push_back( o2 );
+    int nbMat = size();
+    for ( int i = 0; i < nbMat; i++ ) {
+        auto prop = std::make_shared< MaterialProperties >( _cptName( i + 1 ) );
+        _prop.push_back( prop );
+        if ( prop->getValueString( 0 ) == "LISTE_COEF" ) {
+            _nameList.push_back( prop->getValueString( 1 ) );
         }
     }
+    return true;
+}
+
+ASTERINTEGER Material::size() {
+    if ( !_names->exists() ) {
+        return 0;
+    }
+    _names->updateValuePointer();
+    return _names->size();
+}
+
+std::string Material::_storeListReal( VectorReal vect ) {
+    std::ostringstream numb;
+    numb << std::setw( 7 ) << std::setfill( '0' ) << _lisvR.size() + _lisvF.size() + 1;
+    std::string name = getName() + "." + numb.str();
+
+    _lisvR.push_back( std::make_shared< MaterialListReal >( name, vect ) );
+    _nameList.push_back( name );
+    return name;
+}
+
+std::string Material::_storeListFunc( VectorString vect ) {
+    std::ostringstream numb;
+    numb << std::setw( 7 ) << std::setfill( '0' ) << _lisvR.size() + _lisvF.size() + 1;
+    std::string name = getName() + "." + numb.str();
+
+    _lisvF.push_back( std::make_shared< MaterialListFunc >( name, vect ) );
+    _nameList.push_back( name );
+    return name;
+}
+
+void Material::_addProperties( std::string name, VectorReal valR, VectorComplex valC,
+                               VectorString valK, VectorString ordr, VectorLong kord ) {
+    if ( _names->exists() && std::find( _names.begin(), _names.end(), name ) != _names.end() ) {
+        throw std::runtime_error( "Properties for '" + name + "' are already defined" );
+    }
+    _names->push_back( name );
+
+    _prop.push_back( std::make_shared< MaterialProperties >( _cptName( _names->size() ), valR, valC,
+                                                             valK, ordr, kord ) );
+}
+
+void Material::_setTractionFunction( std::string name, std::string keyword,
+                                     GenericFunctionPtr &trac ) {
+    ASTERINTEGER dummy = 0;
+    CALLO_RCSTOC_VERIF( trac->getName(), keyword, name, &dummy );
+    _rdep->allocate( trac->maximumSize() );
+    _rdep->setParameterName( "EPSI" );
+    _rdep->setResultName( trac->getResultName() );
+}
+
+std::string Material::getListName( const int position ) {
+    std::string name = "";
+    if ( position >= int( _prop.size() ) )
+        // throw std::runtime_error( "getListName: Out of bound" );
+        return name;
+    auto prop = _prop[position];
+    if ( prop->getValueString( 0 ) == "LISTE_COEF" &&
+         std::find( _nameList.begin(), _nameList.end(), prop->getValueString( 1 ) ) !=
+             _nameList.end() ) {
+        name = prop->getValueString( 1 );
+    }
+    return name;
+}
+
+VectorString Material::getMaterialNames() {
+    VectorString names;
+    names.reserve( size() );
+    for ( auto &elt : *_names ) {
+        names.push_back( trim( elt.toString() ) );
+    }
+    return names;
+}
+
+ASTERDOUBLE Material::getValueReal( const std::string matName, const std::string propName ) {
+    // get object name
+    auto prop = matByName( matName );
+    if ( !prop ) {
+        throw std::runtime_error( "material not found: " + matName );
+    }
+    std::string objName = "";
+    int nbObj = prop->getNumberOfReal();
+    for ( int i = 0; i < nbObj; i++ ) {
+        if ( trim( prop->getValueString( i ) ) == propName ) {
+            return prop->getValueReal( i );
+        }
+    }
+    throw std::runtime_error( "property not found: " + propName );
 };
+
+ASTERCOMPLEX Material::getValueComplex( const std::string matName, const std::string propName ) {
+    // get object name
+    auto prop = matByName( matName );
+    if ( !prop ) {
+        throw std::runtime_error( "material not found: " + matName );
+    }
+    std::string objName = "";
+    int first = prop->getNumberOfReal();
+    int nbObj = prop->getNumberOfComplex();
+    for ( int i = 0; i < nbObj; i++ ) {
+        if ( trim( prop->getValueString( first + i ) ) == propName ) {
+            return prop->getValueComplex( first + i );
+        }
+    }
+    throw std::runtime_error( "property not found: " + propName );
+};
+
+GenericFunctionPtr Material::getFunction( const std::string matName, const std::string propName ) {
+    // get object name
+    auto prop = matByName( matName );
+    if ( !prop ) {
+        return nullptr;
+    }
+    std::string objName = "";
+    int first = prop->getNumberOfReal() + prop->getNumberOfComplex();
+    int nbObj = prop->getNumberOfObjects();
+#ifdef ASTER_DEBUG_CXX
+    std::cout << "DEBUG: search from pos: " << first << " with nbObj: " << nbObj << std::endl;
+#endif
+    for ( int i = 0; i < nbObj; i++ ) {
+        if ( trim( prop->getValueString( first + i ) ) == propName ) {
+            objName = prop->getValueString( first + nbObj + i );
+            break;
+        }
+    }
+    if ( objName == "" ) {
+#ifdef ASTER_DEBUG_CXX
+        std::cout << "DEBUG: property not found: " + propName << std::endl;
+#endif
+        return nullptr;
+    }
+    // getDependencyByName
+    GenericFunctionPtr ds( nullptr );
+    for ( auto &elt : getDependencies() ) {
+        if ( trim( elt->getName() ) == trim( objName ) ) {
+            ds = std::static_pointer_cast< GenericFunction >( elt );
+            break;
+        }
+    }
+    if ( !ds ) {
+#ifdef ASTER_DEBUG_CXX
+        std::cout << "DEBUG: object '" + objName + "' not found in dependencies" << std::endl;
+#endif
+        return nullptr;
+    }
+    return ds;
+};
+
+/* Material, private functions */
+std::string Material::_cptName( int idx ) {
+    std::ostringstream numb;
+    numb << std::setw( 6 ) << std::setfill( '0' ) << idx;
+    return getName() + ".CPT." + numb.str();
+}
+
+MaterialPropertiesPtr Material::matByName( std::string matName ) {
+    int idx = -1, i = 0;
+    for ( auto &elt : *_names ) {
+        if ( elt.rstrip() == matName ) {
+            idx = i;
+            break;
+        }
+        i++;
+    }
+    if ( idx < 0 ) {
+        return nullptr;
+    }
+    return _prop[idx];
+}

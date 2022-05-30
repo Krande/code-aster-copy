@@ -81,6 +81,15 @@ class ExtendedDataStructure:
         assert isinstance(state, InternalStateBuilder), f"unexpected type: {state}"
         state.restore(self)
 
+    def addDependencies(self, *others):
+        """Add some other *DataStructure* as dependencies.
+
+        Arguments:
+            others (list[~.DataStructure]): Dependencies.
+        """
+        for obj in others:
+            self.addDependency(obj)
+
     @property
     def sdj(self):
         """Return the DataStructure catalog."""

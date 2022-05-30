@@ -21,7 +21,7 @@ import os
 import os.path as osp
 from collections import OrderedDict
 
-SECTIONS = ("DataStructure", "GenericMaterialProperty")
+SECTIONS = ("DataStructure",)
 
 automodule_block = """.. automodule:: {0}
    :show-inheritance:
@@ -77,7 +77,7 @@ def _build_text():
     pyb_enum = object()
 
     # sections: directly derivated from pybind11 instance
-    sections = [OBJ.DataStructure, OBJ.GenericMaterialProperty]
+    sections = [OBJ.DataStructure]
     addsect = []
     for name, obj in list(OBJ.__dict__.items()):
         if not isinstance(obj, type):

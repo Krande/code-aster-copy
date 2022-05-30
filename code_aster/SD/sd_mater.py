@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,14 @@ from .sd_table import sd_table
 
 
 class sd_mater_LISV(AsBase):
-#---------------------------
+    # ---------------------------
     nomj = SDNom(fin=16)
     LISV_R8 = Facultatif(AsVR())
     LISV_FO = Facultatif(AsVK8())
 
+
 class sd_mater_XDEP(AsBase):
-#---------------------------
+    # ---------------------------
     # on dirait une fonction, mais c'est plutot la concaténation de plusieurs
     # fonctions
     nomj = SDNom(fin=19)
@@ -38,20 +39,19 @@ class sd_mater_XDEP(AsBase):
 
 
 class sd_compor1(AsBase):
-#-----------------------
+    # -----------------------
     nomj = SDNom(fin=19)
     VALC = AsVC(SDNom())
     VALK = AsVK16(SDNom())
     VALR = AsVR(SDNom())
-    ORDR =Facultatif(AsVK16(SDNom()))
-    KORD =Facultatif(AsVI(SDNom()))
+    ORDR = Facultatif(AsVK16(SDNom()))
+    KORD = Facultatif(AsVI(SDNom()))
 
     # parfois, comme dans THER_NL on crée une sd_fonction pour BETA
     def check_compor1_i_VALK(self, checker):
-        nom = self.nomj().strip()
         valk = list(self.VALK.get_stripped())
-        assert self.VALC.lonmax == self.VALR.lonmax
-        assert self.VALK.lonmax == 2*self.VALR.lonmax
+        # assert self.VALC.lonmax == self.VALR.lonmax
+        # assert self.VALK.lonmax == 2 * self.VALR.lonmax
         nbk2 = self.VALK.lonuti
         nbr = self.VALR.lonuti
         nbc = self.VALC.lonuti
@@ -67,18 +67,18 @@ class sd_compor1(AsBase):
             else:
                 sd3 = sd_table(nomcon)
                 if sd3.exists():
-                    pass # normalement,la table a deja ete verifiee
-                else :
+                    pass  # normalement,la table a deja ete verifiee
+                else:
                     sd4 = sd_mater_LISV(nomcon)
                     sd4.check(checker)
 
 
 class sd_mater(AsBase):
-#----------------------
+    # ----------------------
     nomj = SDNom(fin=8)
-    NOMRC = AsVK32(SDNom(nomj='.MATERIAU.NOMRC'), )
-    rdep = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&RDEP')))  # à documenter
-    mzp = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&MZP')))  # à documenter
+    NOMRC = AsVK32(SDNom(nomj=".MATERIAU.NOMRC"))
+    rdep = Facultatif(sd_mater_XDEP(SDNom(nomj=".&&RDEP")))  # à documenter
+    mzp = Facultatif(sd_mater_XDEP(SDNom(nomj=".&&MZP")))  # à documenter
 
     # existence possible de la SD :
     def exists(self):
@@ -88,8 +88,8 @@ class sd_mater(AsBase):
     def check_mater_i_NOMRC(self, checker):
         nbc = self.NOMRC.lonuti
         for i in range(1, nbc + 1):
-            ns = '{:06d}'.format(i)
-            nomc1 = self.nomj()[:8] + '.CPT.' + ns
+            ns = "{:06d}".format(i)
+            nomc1 = self.nomj()[:8] + ".CPT." + ns
             comp1 = sd_compor1(nomc1)
 
             # parfois, comp1 est vide : ssls115g/DEFI_COQU_MULT

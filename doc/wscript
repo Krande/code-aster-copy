@@ -201,6 +201,9 @@ def run_pylibaster(task):
 def run_autodoc(task):
     script = task.inputs[0].abspath()
     tgt = task.outputs[0].abspath()
+    # remove previously existing files
+    for res in task.outputs[0].ant_glob("*.rst"):
+        os.remove(res.abspath())
 
     os.makedirs(tgt, exist_ok=True)
     exec_pyaster(

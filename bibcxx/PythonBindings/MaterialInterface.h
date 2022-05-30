@@ -1,5 +1,4 @@
-#ifndef MATERIALINTERFACE_H_
-#define MATERIALINTERFACE_H_
+#pragma once
 
 /**
  * @file MaterialInterface.h
@@ -30,5 +29,3 @@
 #include "Materials/Material.h"
 
 void exportMaterialToPython( py::module_ &mod );
-
-#endif /* MATERIALINTERFACE_H_ */

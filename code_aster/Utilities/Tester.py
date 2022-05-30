@@ -179,6 +179,7 @@ class TestCase(unittest.TestCase):
 def _add_assert_methods(cls):
     for meth in [
         "assertAlmostEqual",
+        "assertCountEqual",
         "assertDictContainsSubset",
         "assertDictEqual",
         "assertEqual",

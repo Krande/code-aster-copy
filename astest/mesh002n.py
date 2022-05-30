@@ -20,7 +20,7 @@
 import code_aster
 from code_aster.Commands import *
 from code_aster import MPI
-
+from code_aster.Utilities import config
 
 code_aster.init("--test")
 
@@ -49,10 +49,7 @@ elif nbproc == 4:
 test.assertEqual(pMesh.getDimension(), 3)
 test.assertEqual(pMesh.getNumberOfNodes(), nbNodes[rank])
 test.assertEqual(pMesh.getNumberOfCells(), nbCells[rank])
-if nbproc > 1:
-    test.assertTrue(pMesh.isParallel())
-else:
-    test.assertFalse(pMesh.isParallel())
+test.assertTrue(pMesh.isParallel() or not config.get("parallel"))
 
 test.printSummary()
 

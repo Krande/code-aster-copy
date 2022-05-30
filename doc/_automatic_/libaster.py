@@ -7348,183 +7348,55 @@ class Material(DataStructure):
         1. __init__(self: libaster.Material) -> None
         
         2. __init__(self: libaster.Material, arg0: str) -> None
-        
-        3. __init__(self: libaster.Material, arg0: str, arg1: List[int]) -> None
         """
     
-    def addMaterialProperty(self, arg0):
-        pass
-    
-    def build(self):
-        pass
-    
-    def getNumberOfMaterialProperties(self):
-        pass
-    
-    def getNumberOfUserMaterialProperties(self):
-        pass
-    
-    def getVectorOfMaterialProperties(self):
-        pass
-    
-    def setReferenceMaterial(self, arg0):
-        pass
-
-# class GenericMaterialProperty in libaster
-
-class GenericMaterialProperty:
-    pass
-    
-    # Method resolution order:
-    #     GenericMaterialProperty
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-    
-    # Methods defined here:
-    
-    def __init__(self):
-        pass
-    
-    def getAsterName(self):
-        pass
-    
-    def getNumberOfListOfPropertiesFunction(self):
-        pass
-    
-    def getNumberOfListOfPropertiesReal(self):
-        pass
-    
-    def getNumberOfPropertiesComplex(self):
-        pass
-    
-    def getNumberOfPropertiesFunction(self):
-        pass
-    
-    def getNumberOfPropertiesReal(self):
-        pass
-    
-    def getNumberOfPropertiesString(self):
-        pass
-    
-    def getNumberOfPropertiesTable(self):
-        pass
-    
-    def getValueComplex(self, arg0):
-        pass
-    
-    def getValueGenericFunction(self, arg0):
-        pass
-    
-    def getValueReal(self, arg0):
-        pass
-    
-    def getValueString(self, arg0):
-        pass
-    
-    def getValueTable(self, arg0):
-        pass
-    
-    def hasValueComplex(self, arg0):
-        pass
-    
-    def hasValueGenericFunction(self, arg0):
-        pass
-    
-    def hasValueReal(self, arg0):
-        pass
-    
-    def hasValueString(self, arg0):
-        pass
-    
-    def hasValueTable(self, arg0):
-        pass
-    
-    def setSortedListParameters(self, arg0):
-        pass
-    
-    def setValue(self, *args, **kwargs):
-        """Overloaded function.
+    def getFunction(self, materialName, propertyName):
+        """Return the value of a property stored as a function.
         
-        1. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: float) -> bool
+        Raise an exception if the property does not exist.
         
-        2. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: complex) -> bool
+        Arguments:
+            materialName (str): Material name (without "_FO").
+            propertyName (str): Property name.
         
-        3. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: str) -> bool
-        
-        4. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: libaster.Function) -> bool
-        
-        5. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: libaster.Table) -> bool
-        
-        6. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: libaster.Function2D) -> bool
-        
-        7. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: List[float]) -> bool
-        
-        8. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: List[libaster.Function]) -> bool
-        
-        9. setValue(self: libaster.GenericMaterialProperty, arg0: str, arg1: libaster.Formula) -> bool
+        Returns:
+            *Function*: Function object, *None* if the property does not exist or is not a function.
         """
     
-    #----------------------------------------------------------------------
-    # Data descriptors defined here:
-    
-    @property
-    def hasTractionFunction(self):
-        """bool: Attribute that holds the need of a traction function.
-        """
-
-# class MaterialProperty in libaster
-
-class MaterialProperty(GenericMaterialProperty):
-    pass
-    
-    # Method resolution order:
-    #     MaterialProperty
-    #     GenericMaterialProperty
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-    
-    # Methods defined here:
-    
-    def __init__(self, *args, **kwargs):
-        """Overloaded function.
+    def getMaterialNames(self):
+        """Return the list of the material names.
         
-        1. __init__(self: libaster.MaterialProperty, arg0: str) -> None
-        
-        2. __init__(self: libaster.MaterialProperty, arg0: str, arg1: str) -> None
+        Returns:
+            list[str]: List of material names (without "_FO")
         """
     
-    def addPropertyComplex(self, arg0, arg1):
-        pass
-    
-    def addPropertyFunction(self, arg0, arg1):
-        pass
-    
-    def addPropertyReal(self, *args, **kwargs):
-        """Overloaded function.
+    def getValueComplex(self, materialName, propertyName):
+        """Return the value of a property stored as a complex.
         
-        1. addPropertyReal(self: libaster.MaterialProperty, arg0: str, arg1: bool) -> bool
+        Raise an exception if the property does not exist.
         
-        2. addPropertyReal(self: libaster.MaterialProperty, arg0: str, arg1: float, arg2: bool) -> bool
+        Arguments:
+            materialName (str): Material name (without "_FO").
+            propertyName (str): Property name.
+        
+        Returns:
+            complex: Property value.
         """
     
-    def addPropertyString(self, *args, **kwargs):
-        """Overloaded function.
+    def getValueReal(self, materialName, propertyName):
+        """Return the value of a property stored as a real.
         
-        1. addPropertyString(self: libaster.MaterialProperty, arg0: str, arg1: bool) -> bool
+        Raise an exception if the property does not exist.
         
-        2. addPropertyString(self: libaster.MaterialProperty, arg0: str, arg1: str, arg2: bool) -> bool
+        Arguments:
+            materialName (str): Material name (without "_FO").
+            propertyName (str): Property name.
+        
+        Returns:
+            float: Property value.
         """
     
-    def addPropertyTable(self, arg0, arg1):
-        pass
-    
-    def addPropertyVectorOfFunction(self, arg0, arg1):
-        pass
-    
-    def addPropertyVectorOfReal(self, arg0, arg1):
-        pass
-    
-    def getName(self):
+    def size(self):
         pass
 
 # class PartOfMaterialField in libaster

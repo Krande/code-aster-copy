@@ -95,7 +95,7 @@ subroutine res2mat(resu, inst, chmat, nommat, mu, ka, lvarc, varcns, cplan)
       nommatz = zk8(jvalm-1+imat)
       if (nommatz.eq.' ') goto 10
       call jeveuo(nommatz//'.MATERIAU.NOMRC', 'L', ianorc)
-      call jelira(nommatz//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
+      call jelira(nommatz//'.MATERIAU.NOMRC', 'LONUTI', nbrc)
       do irc = 1,nbrc
         nomrc=zk32(ianorc-1+irc)
         if(nomrc.eq.'ELAS') then

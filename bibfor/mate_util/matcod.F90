@@ -152,7 +152,7 @@ character(len=1), intent(in), optional :: base_
         nommat=zk8(igrp+indmat+l-1)
         call jeexin(nommat//'.MATERIAU.NOMRC', iret)
         ASSERT(iret .ne. 0)
-        call jelira(nommat//'.MATERIAU.NOMRC', 'LONMAX', zi(jnbcm+l-1))
+        call jelira(nommat//'.MATERIAU.NOMRC', 'LONUTI', zi(jnbcm+l-1))
         call jeveut(nommat//'.MATERIAU.NOMRC', 'L', zi(jnomr+l-1))
         nbv = 0
         if (zk32(zi(jnomr+l-1)) .eq. 'ELAS_COQMU') nbv = 1

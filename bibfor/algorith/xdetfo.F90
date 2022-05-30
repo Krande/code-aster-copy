@@ -165,7 +165,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
     nommat = zk8(jvalm)
 !
     call jeveuo(nommat//'.MATERIAU.NOMRC', 'L', ianorc)
-    call jelira(nommat//'.MATERIAU.NOMRC', 'LONMAX', nbrc)
+    call jelira(nommat//'.MATERIAU.NOMRC', 'LONUTI', nbrc)
     do irc = 1,nbrc
         nomrc=zk32(ianorc-1+irc)
         if(nomrc.eq.'RUPT_FRAG') then

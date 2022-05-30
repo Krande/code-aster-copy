@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ aster_logical, pointer :: v_mate_func(:)
 !
 ! --- RECUPERATION DU NOMBRE DE RELATIONS DE COMPORTEMENT :
 !     ---------------------------------------------------
-    call jelira(mate//'.MATERIAU.NOMRC', 'LONMAX', mate_nb)
+    call jelira(mate//'.MATERIAU.NOMRC', 'LONUTI', mate_nb)
 !
 ! --- RECUPERATION DU TABLEAU DES RELATIONS DE COMPORTEMENT :
 !     -----------------------------------------------------

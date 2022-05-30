@@ -33,6 +33,8 @@ std::string Function2D::getResultName() {
 }
 
 ASTERINTEGER Function2D::maximumSize() const {
+    if ( !_value->exists() )
+        return 0;
     _value->build();
     ASTERINTEGER toReturn = 0;
     for ( const auto &curIter : *_value ) {
@@ -43,6 +45,8 @@ ASTERINTEGER Function2D::maximumSize() const {
 }
 
 ASTERINTEGER Function2D::size() const {
+    if ( !_value->exists() )
+        return 0;
     _value->build();
     ASTERINTEGER toReturn = 0;
     for ( const auto &curIter : *_value ) {

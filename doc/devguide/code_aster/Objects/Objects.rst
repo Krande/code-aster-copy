@@ -21,5 +21,4 @@ This definition can be added directly in
 
     index_DataStructure
     index_ObjectsExt
-    index_GenericMaterialProperty
     index_Others

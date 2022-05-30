@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ integer, intent(out) :: mateREUSE_nb
     if (nocc .ne. 0) then
 ! ----- Only new materials
         call jeveuo(mateIN//'.MATERIAU.NOMRC', 'L', jnorci)
-        call jelira(mateIN//'.MATERIAU.NOMRC', 'LONMAX', mateREUSE_nb)
+        call jelira(mateIN//'.MATERIAU.NOMRC', 'LONUTI', mateREUSE_nb)
         do i_mate = 1, mateOUT_nb
             nomrc = mateOUT_list(i_mate)
             ind   = indk32 (zk32(jnorci), nomrc, 1, mateREUSE_nb)

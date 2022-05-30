@@ -124,7 +124,7 @@ subroutine op0056()
     do 20 icou = 1, nbcou
         call getvid('COUCHE', 'MATER', iocc=icou, scal=mater, nbret=n)
         call jeveuo(mater//'.MATERIAU.NOMRC ', 'L', vk32=nomrc)
-        call jelira(mater//'.MATERIAU.NOMRC ', 'LONMAX', nbad)
+        call jelira(mater//'.MATERIAU.NOMRC ', 'LONUTI', nbad)
         do 10 i = 1, nbad
             if (nomrc(i) .eq. 'ELAS_ORTH       ') then
                 elas = .true.

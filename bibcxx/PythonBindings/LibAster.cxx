@@ -34,7 +34,6 @@
 #include "PythonBindings/AssemblyMatrixInterface.h"
 #include "PythonBindings/BaseAssemblyMatrixInterface.h"
 #include "PythonBindings/BaseDOFNumberingInterface.h"
-#include "PythonBindings/BaseMaterialPropertyInterface.h"
 #include "PythonBindings/BaseMeshInterface.h"
 #include "PythonBindings/BehaviourDefinitionInterface.h"
 #include "PythonBindings/BehaviourPropertyInterface.h"
@@ -102,7 +101,6 @@
 #include "PythonBindings/LoadResultInterface.h"
 #include "PythonBindings/MaterialFieldInterface.h"
 #include "PythonBindings/MaterialInterface.h"
-#include "PythonBindings/MaterialPropertyInterface.h"
 #include "PythonBindings/MatrixToPetscInterface.h"
 #include "PythonBindings/MechanicalLoadInterface.h"
 #include "PythonBindings/MedCouplingConversionInterface.h"
@@ -222,8 +220,6 @@ PYBIND11_MODULE( libaster, mod ) {
     exportThermalLoadToPython( mod );
     exportBehaviourDefinitionToPython( mod );
     exportMaterialToPython( mod );
-    exportBaseMaterialPropertyToPython( mod );
-    exportMaterialPropertyToPython( mod );
     exportMaterialFieldToPython( mod );
     exportGridToPython( mod );
     exportMeshesMappingToPython( mod );

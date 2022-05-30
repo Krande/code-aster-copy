@@ -34,4 +34,4 @@ from .exceptions_ext import (
 )
 from .ExecuteCommand import CO, ExecuteCommand, ExecuteCommandOps, ExecuteMacro, UserMacro
 from .Serializer import FinalizeOptions, Serializer, loadObjects, saveObjects
-from .visitors import replace_enum
+from .visitors import GenericVisitor

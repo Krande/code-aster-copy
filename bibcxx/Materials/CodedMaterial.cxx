@@ -88,26 +88,16 @@ bool CodedMaterial::allocate( bool force ) {
             }
         }
 
-        const int nbMB = curIter->getNumberOfMaterialProperties();
+        const int nbMB = curIter->size();
         for ( int i = 0; i < nbMB; ++i ) {
-            auto vecVec1 = curIter->getBehaviourVectorOfValuesReal( i );
-            auto vecVec2 = curIter->getBehaviourVectorOfFunctions( i );
-            for ( auto vec1 : vecVec1 )
-                if ( vec1->exists() ) {
-                    const std::string name( vec1->getName(), 0, 16 );
-                    const std::string name1 = name + ".LISV_VR";
-                    const std::string name2 = name + ".LISV_IA";
-                    _vecOfR8.push_back( JeveuxVectorReal( name1 ) );
-                    _vecOfIa.push_back( JeveuxVectorLong( name2 ) );
-                }
-            for ( auto vec2 : vecVec2 )
-                if ( vec2->exists() ) {
-                    const std::string name( vec2->getName(), 0, 16 );
-                    const std::string name1 = name + ".LISV_VR";
-                    const std::string name2 = name + ".LISV_IA";
-                    _vecOfR8.push_back( JeveuxVectorReal( name1 ) );
-                    _vecOfIa.push_back( JeveuxVectorLong( name2 ) );
-                }
+            /* R or FO is checked in matcod.F90 */
+            auto name = curIter->getListName( i );
+            if ( name != "" ) {
+                const std::string name1 = name + ".LISV_VR";
+                const std::string name2 = name + ".LISV_IA";
+                _vecOfR8.push_back( JeveuxVectorReal( name1 ) );
+                _vecOfIa.push_back( JeveuxVectorLong( name2 ) );
+            }
         }
     }
     return true;
