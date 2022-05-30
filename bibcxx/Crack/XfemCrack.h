@@ -74,10 +74,10 @@ class XfemCrack : public DataStructure, public ListOfTables {
      * cohesive case */
     VectorString _cohesiveCrackTipForPropagation;
     /** @brief Field defining the normal level set */
-    FieldOnNodesRealPtr _normalLevelSetField;
-    /** @brief Field defining the tangential level set */
     FieldOnNodesRealPtr _tangentialLevelSetField;
     /** @brief MeshEntity defining the enriched elements */
+    FieldOnNodesRealPtr _normalLevelSetField;
+    /** @brief Field defining the tangential level set */
     VectorString _enrichedCells;
     /** @brief Name of the discontinuous field */
     std::string _discontinuousField;

@@ -101,7 +101,7 @@ subroutine op0041()
     character(len=16) :: k16bid, geofis, typdis, corres
     character(len=19) :: cnslt, cnsln, grlt, grln, cnsen, cnsenr, cnslj
     character(len=19) :: cnsltg, cnslng, grltg, grlng
-    character(len=19) :: ltno, lnno, grltno, grlnno, stnor, stno, info, ltnofa
+    character(len=19) :: ltno, lnno, grltno, grlnno, stno, info, ltnofa
     character(len=19) :: lnnofa, grltfa, grlnfa
     character(len=24) :: lismae, lisnoe
     aster_logical :: grille, l_dmax, goinop
@@ -344,9 +344,9 @@ subroutine op0041()
 !
     ltno = fiss(1:8)//'.LTNO'
     lnno = fiss(1:8)//'.LNNO'
-    call cnscno(cnslt, ' ', 'NON', 'G', ltno,&
+    call cnscno(cnslt, ltno(1:13)//'.PRCHN', 'NON', 'G', ltno,&
                 'F', ibid)
-    call cnscno(cnsln, ' ', 'NON', 'G', lnno,&
+    call cnscno(cnsln, ltno(1:13)//'.PRCHN', 'NON', 'G', lnno,&
                 'F', ibid)
 !
     if (niv .ge. 3) then
@@ -414,9 +414,9 @@ subroutine op0041()
 !
         ltnofa = fiss(1:8)//'.GRI.LTNO'
         lnnofa = fiss(1:8)//'.GRI.LNNO'
-        call cnscno(cnslng, ' ', 'NON', 'G', lnnofa,&
+        call cnscno(cnslng, ltnofa(1:12)//'L.PRCHN', 'NON', 'G', lnnofa,&
                     'F', ibid)
-        call cnscno(cnsltg, ' ', 'NON', 'G', ltnofa,&
+        call cnscno(cnsltg, ltnofa(1:12)//'L.PRCHN', 'NON', 'G', ltnofa,&
                     'F', ibid)
 !
         if (niv .ge. 3) then
@@ -445,9 +445,9 @@ subroutine op0041()
 !
     grltno = fiss(1:8)//'.GRLTNO'
     grlnno = fiss(1:8)//'.GRLNNO'
-    call cnscno(grlt, ' ', 'NON', 'G', grltno,&
+    call cnscno(grlt, grltno(1:13)//'.PRCHN', 'NON', 'G', grltno,&
                 'F', ibid)
-    call cnscno(grln, ' ', 'NON', 'G', grlnno,&
+    call cnscno(grln, grltno(1:13)//'.PRCHN', 'NON', 'G', grlnno,&
                 'F', ibid)
 !
     if (niv .ge. 2) then
@@ -471,9 +471,9 @@ subroutine op0041()
 !
         grltfa = fiss(1:8)//'.GRI.GRLTNO'
         grlnfa = fiss(1:8)//'.GRI.GRLNNO'
-        call cnscno(grltg, ' ', 'NON', 'G', grltfa,&
+        call cnscno(grltg, grltfa(1:12)//'G.PRCHN ', 'NON', 'G', grltfa,&
                     'F', ibid)
-        call cnscno(grlng, ' ', 'NON', 'G', grlnfa,&
+        call cnscno(grlng, grltfa(1:12)//'G.PRCHN ', 'NON', 'G', grlnfa,&
                     'F', ibid)
 !
         if (niv .ge. 2) then
@@ -520,17 +520,11 @@ subroutine op0041()
 ! --- CREATION DU CHAM_NO POUR LE STATUT DES NOEUDS
 !
     stno = fiss(1:8)//'.STNO'
-    call cnscno(cnsen, ' ', 'NON', 'G', stno,&
+    call cnscno(cnsen, ltno(1:13)//'.PRCHN', 'NON', 'G', stno,&
                 'F', ibid)
     if (niv .ge. 3) then
         call imprsd('CHAMP', stno, ifm, 'FISSURE.STNO=')
     endif
-!
-! --- CREATION DU CHAM_NO POUR LA VISUALISATION
-!
-!    stnor = fiss(1:8)//'.STNOR'
-!    call cnscno(cnsenr, ' ', 'NON', 'G', stnor,&
-!                'F', ibid)
 !
 !-----------------------------------------------------------------------
 !     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE

@@ -267,7 +267,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !
 !     ENREGISTREMENT DU .BASLOC DANS LA SD FISS_XFEM
     basloc = fiss(1:8)//'.BASLOC'
-    call cnscno(cnsbas, ' ', 'NON', 'G', basloc,&
+    call cnscno(cnsbas, basloc(1:13)//'.PRCHN', 'NON', 'G', basloc,&
                 'F', ibid)
     call detrsd('CHAM_NO_S', cnsbas)
     if (ndim.eq.3)  AS_DEALLOCATE(vl=is_continu)
