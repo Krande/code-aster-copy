@@ -41,16 +41,17 @@ except ImportError:
 class ParallelMeshStateBuilder(InternalStateBuilder):
     """Class that returns the internal state of a *ParallelMesh*."""
 
-    def restore(self, field):
+    def restore(self, mesh):
         """Restore the *DataStructure* content from the previously saved internal
         state.
 
         Arguments:
-            field (*DataStructure*): The *DataStructure* object to be pickled.
+            mesh (*DataStructure*): The *DataStructure* object to be pickled.
         """
-        super().restore(field)
-        field._updateGlobalGroupOfNodes()
-        field._updateGlobalGroupOfCells()
+        super().restore(mesh)
+        mesh.build()
+        mesh._updateGlobalGroupOfNodes()
+        mesh._updateGlobalGroupOfCells()
 
 
 @injector(ParallelMesh)

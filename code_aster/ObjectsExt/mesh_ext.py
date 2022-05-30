@@ -27,15 +27,30 @@ import aster
 
 from ..Commands import CREA_MAILLAGE
 from ..Objects import Mesh, PythonBool
+from ..Objects.Serialization import InternalStateBuilder
 from ..Supervis import CO
 from ..Utilities import injector
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
 
+class MeshStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *Mesh*."""
+
+
+    def restore(self, mesh):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            mesh (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(mesh)
+        mesh.build()
 
 @injector(Mesh)
 class ExtendedMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
+    internalStateBuilder = MeshStateBuilder
 
     buildSquare = classmethod(mesh_builder.buildSquare)
     buildDisk = classmethod(mesh_builder.buildDisk)

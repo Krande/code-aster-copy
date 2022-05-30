@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit ci verification parallel
 
 F comm zzzz505a.py D 1
+F comm zzzz505a.com1 D 1
 F mmed zzzz503a.mmed D 20
