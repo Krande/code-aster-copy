@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,9 @@ E=DEFI_CONSTANTE(VALE=youn1,);
 Nu=DEFI_CONSTANTE(VALE=nu1,);
 
 ALPHA=DEFI_CONSTANTE(VALE=0.0,);
-
+HYDR1=DEFI_CONSTANTE(VALE = 1.,)
+PORO=DEFI_CONSTANTE(VALE = 0.3,)
+CNAD=DEFI_CONSTANTE(VALE = 0.,)
 
 RHOF=DEFI_CONSTANTE(VALE = 2300.,)
 mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
@@ -46,9 +48,9 @@ mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                    K_DESSIC=0.,
                                    B_ENDOGE=0.,RHO=RHOF),
                                  RGI_BETON=_F(
-                     HYDR            = 1.,
+                     HYDR            = HYDR1,
                      HYDS            = 0.2,
-                     PORO            =  0.3,
+                     PORO            =  PORO,
                      BSHR            =  0.3,
                      MSHR            =  10.,
                      MVGN            =  0.5,
@@ -88,7 +90,7 @@ mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                      NRJP            =  0.,
                      VDEF            =  0.,
                      SRSD            =  0.,
-                     CNAD            =  0.,
+                     CNAD            =  CNAD,
                      SSAD            =  10.,
                      CNAK            =  0.1,
                      CNAB            =  0.1,
