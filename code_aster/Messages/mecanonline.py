@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,6 +55,9 @@ Erreur utilisateur :
   L'utilisation de simple Lagrange est interdite dans STAT_NON_LINE.
 """),
 
+    6 : _("""
+L'option MATR_DISTRIBUEE='OUI' est interdite avec le contact continu.
+"""),
 
 
     23 : _("""
