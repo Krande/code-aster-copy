@@ -41,6 +41,7 @@ E=DEFI_CONSTANTE(VALE=50000,)
 Nu=DEFI_CONSTANTE(VALE=0.2,)
 
 ALPHA=DEFI_CONSTANTE(VALE=0,)
+HYDR1=DEFI_CONSTANTE(VALE = 1.,)
 
 
 #Les propriétés matériaux entrées ne sont pas Toutes physiques.
@@ -54,7 +55,7 @@ MATERIAU=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                    K_DESSIC=0.,
                                    B_ENDOGE=0.,RHO=RHOF),
                                  ENDO_PORO_BETON=_F(
-                     HYDR            =  1.,
+                     HYDR            =  HYDR1,
                      HYDS            =  0.2,
                      RT              =  0.5,
                      EPT             =  1.0e-5,

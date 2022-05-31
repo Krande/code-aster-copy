@@ -50,6 +50,9 @@ Nu=DEFI_CONSTANTE(VALE=nu1,)
 ALPHA=DEFI_CONSTANTE(VALE=0.0,)
 
 RHOF=DEFI_CONSTANTE(VALE = 0.,)
+HYDR1=DEFI_CONSTANTE(VALE = 1.,)
+PORO=DEFI_CONSTANTE(VALE = 164,)
+CNAD=DEFI_CONSTANTE(VALE = 0.3,)
 mat2=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                    NU    = Nu,
                                    TEMP_DEF_ALPHA=20.,
@@ -60,10 +63,10 @@ mat2=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
 
 # HYDRATATION
 
-                                                                    HYDR            = 1.,
+                                                                    HYDR            = HYDR1,
                                                                     HYDS            = 0.,
 # RETRAIT / VOLUME D'EAU
-                                                                    PORO            =  164,
+                                                                    PORO            =  PORO,
                                                                     BSHR            =  0.5,
                                                                     MSHR            =  0.000,
                                                                     MVGN            =  0.5,
@@ -109,7 +112,7 @@ mat2=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                                                     NRJP            =  40000,
                                                                     VDEF            =  0.01,
                                                                     SRSD            =  0.95,
-                                                                    CNAD            =  0.3,
+                                                                    CNAD            =  CNAD,
                                                                     SSAD            =  0.7,
                                                                     CNAK            =  0.28,
                                                                     CNAB            =  0.6,
@@ -299,10 +302,10 @@ mat3=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                    B_ENDOGE=0.,RHO=RHOF),
                        RGI_BETON=_F(
 # HYDRATATION
-                                                                    HYDR            = 1.,
+                                                                    HYDR            = HYDR1,
                                                                     HYDS            = 0.,
 # RETRAIT / VOLUME D'EAU
-                                                                    PORO            =  164,
+                                                                    PORO            =  PORO,
                                                                     BSHR            =  0.5,
                                                                     MSHR            =  0.000,
                                                                     MVGN            =  0.5,
@@ -348,7 +351,7 @@ mat3=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                                                                     NRJP            =  40000,
                                                                     VDEF            =  0.01,
                                                                     SRSD            =  0.95,
-                                                                    CNAD            =  0.3,
+                                                                    CNAD            =  CNAD,
                                                                     SSAD            =  0.7,
                                                                     CNAK            =  0.28,
                                                                     CNAB            =  0.6,
