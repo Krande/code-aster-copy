@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ implicit none
 #include "asterfort/cfdisl.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
+#include "asterfort/matdis.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xrela_elim.h"
 #include "asterfort/lac_rela.h"
@@ -70,6 +71,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=8), pointer :: v_load_type(:) => null()
     character(len=24) :: sdcont_paraci
     integer, pointer :: v_sdcont_paraci(:) => null()
+    character(len=3) :: matd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,6 +167,9 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 ! ----- Special for continue contact
 !
         if (l_form_cont) then
+!           MATR_DISTRIBUEE='OUI' forbidden with continue contact
+            call matdis(matd)
+            if (matd.eq.'OUI') call utmess('F','MECANONLINE_6')
             ds_contact%field_input      = ds_contact%sdcont_solv(1:14)//'.CHML'
             ds_contact%l_elem_slav      = ASTER_TRUE
             ds_contact%ligrel_elem_slav = sdcont
