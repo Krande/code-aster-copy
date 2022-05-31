@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
 #include "asterfort/jexnum.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
-#include "asterc/r8maem.h"
 #include "asterfort/jedema.h"
+#include "asterfort/utmess.h"
 !
     aster_logical :: proj
     character(len=8) :: mailar, mail, nomo
@@ -81,7 +81,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
     character(len=19) :: ctref1, ctcoo1
     character(len=19) :: ctref2, ctcoo2, carte1, cesmat, carte, carsd, carsd1
     character(len=6) :: ch2
-    real(kind=8) :: cno1(3*nbnomx), cno2(3*2), r8max, cnoeud, inf, sup
+    real(kind=8) :: cno1(3*nbnomx), cno2(3*2), cnoeud, inf, sup
     character(len=6) :: nompro
     parameter   (nompro='ARLCHI')
 !
@@ -107,7 +107,6 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    r8max = r8maem()
 !
 ! --- INFO SUR LE PSEUDO-MAILLAGE
 !
@@ -305,6 +304,8 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
             elref1 = 'T10'
         else if (ntmc1 == 'TETRA4') then
             elref1 = 'TE4'
+        else
+            call utmess('F','CHARGES_9',sk=ntmc1)
         endif
 !
 ! --- COORDONNEES SOLIDES DE LA MAILLE 2 DU COUPLE
@@ -327,6 +328,8 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
             elref2 = 'T10'
         else if (ntmc2 == 'TETRA4') then
             elref2 = 'TE4'
+        else
+            call utmess('F','CHARGES_9',sk=ntmc2)
         endif
 !
 ! --- PROJECTION DU BARYCENTRE DE LA MAILLE 3D SUR LA MAILLE 1D
@@ -457,6 +460,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
             do 500 icmp = 1, ncmpc
                 call cesexi('S', jcoo1d, jcoo1l, ima, 1,&
                             1, icmp, jadc)
+                
                 if (jadc < 0) then
                     if (icmp <= (ndim*nbnoc1)) then
                         zr(jcoo1v-1-jadc)=cno1(icmp)
@@ -466,7 +470,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
                         zr(jcoo1v-1-jadc)=cxno1(icmp-(ndim*nbnoc1))
                         zl(jcoo1l-1-jadc)=.true.
                     else
-                        zr(jcoo1v-1-jadc) = r8max
+                        zr(jcoo1v-1-jadc) = 0.d0
                         zl(jcoo1l-1-jadc) = .true.
                     endif
                 endif
@@ -482,7 +486,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2,&
                         zr(jcoo2v-1-jadc)=cxno2(icmp-(ndim*nbnoc2))
                         zl(jcoo2l-1-jadc)=.true.
                     else
-                        zr(jcoo2v-1-jadc) = r8max
+                        zr(jcoo2v-1-jadc) = 0.d0
                         zl(jcoo2l-1-jadc) = .true.
                     endif
                 endif
