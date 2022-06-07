@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -150,7 +150,8 @@ character(len=*) :: questi, repkz, nomobz
             (questi.eq.'EXI_GRILLE') .or. (questi.eq.'EXI_PLAQUE') .or.&
             (questi.eq.'EXI_COQUE') .or. (questi.eq.'CALC_RIGI') .or.&
             (questi.eq.'EXI_STRX') .or. (questi.eq.'EXI_STR2') .or.&
-            (questi(1:7).eq.'EXI_HHO').or. (questi.eq.'EXI_NO_HHO')) then
+            (questi(1:7).eq.'EXI_HHO').or. (questi.eq.'EXI_NO_HHO').or.&
+            (questi.eq.'EXI_POUTRE')) then
 !
 !     -----------------------------------------------------------------
         call jeexin(nomob//'.LIEL', iexi)
@@ -168,6 +169,10 @@ character(len=*) :: questi, repkz, nomobz
                     if (lteatt('POUTRE','OUI', typel=nomte)) repk='OUI'
                     if (lteatt('DISCRET','OUI', typel=nomte)) repk='OUI'
                     if (repk.eq.'OUI') exit
+!
+                else if (questi .eq. 'EXI_POUTRE') then
+                        if (lteatt('POUTRE','OUI', typel=nomte)) repk='OUI'
+                        if (repk .eq. 'OUI') exit
 !
                 else if (questi.eq.'CALC_RIGI') then
                     repk='NON'
