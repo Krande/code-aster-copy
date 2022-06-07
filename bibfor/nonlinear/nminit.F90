@@ -272,7 +272,7 @@ type(HHO_Field), intent(inout) :: hhoField
 !
 ! - Initializations for convergence management
 !
-    call nonlinDSConvergenceInit(ds_conv, list_func_acti, ds_contact)
+    call nonlinDSConvergenceInit(ds_conv, list_func_acti, ds_contact, model)
 !
 ! - Initializations for energy management
 !

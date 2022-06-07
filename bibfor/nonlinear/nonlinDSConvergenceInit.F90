@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinDSConvergenceInit(ds_conv, list_func_acti, ds_contact)
+subroutine nonlinDSConvergenceInit(ds_conv, list_func_acti, ds_contact,&
+                                   model)
 !
 use NonLin_Datastructure_type
 !
@@ -28,6 +29,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cfdisr.h"
 #include "asterfort/cfdisl.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/getvr8.h"
@@ -38,6 +40,7 @@ implicit none
 type(NL_DS_Conv), intent(inout) :: ds_conv
 integer, optional, intent(in) :: list_func_acti(*)
 type(NL_DS_Contact), optional, intent(in) :: ds_contact
+character(len=24), optional, intent(in) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,11 +53,13 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact
 ! IO  ds_conv          : datastructure for convergence management
 ! In  list_func_acti   : list of active functionnalities
 ! In  ds_contact       : datastructure for contact management
+! In  model            : name of model
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=24) :: sdcont_defi
+    character(len=8)  :: exicoq, exipou
     real (kind=8) :: resi_glob_rela, resi_frot, resi_geom,pene_maxi_user
     integer :: iret
     aster_logical :: l_newt_frot, l_newt_geom, l_resi_user, l_rela, l_maxi, l_refe, l_comp
@@ -78,6 +83,18 @@ type(NL_DS_Contact), optional, intent(in) :: ds_contact
     if (.not.l_resi_user) then
         call SetResi(ds_conv   , type_ = 'RESI_GLOB_RELA', &
                      user_para_ = 1.d-6, l_resi_test_ = ASTER_TRUE)
+    endif
+!
+! - RESI_REFE_RELA with shell and beam
+!
+    if (l_refe .and. present(model))then
+        call dismoi('EXI_COQUE',  model, 'MODELE', repk=exicoq)
+        call dismoi('EXI_POUTRE',  model, 'MODELE', repk=exipou)
+        if (exicoq .eq. 'OUI' .and. exipou .eq. 'OUI')then
+            call utmess('A', 'MECANONLINE5_32')
+        elseif (exicoq .eq. 'OUI') then
+            call utmess('A', 'MECANONLINE5_38')
+        endif
     endif
 !
 ! - Relaxation of convergence criterion: alarm !

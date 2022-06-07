@@ -191,6 +191,10 @@ character(len=*) :: questi, repkz, nomobz
                         if (lteatt('DISCRET', 'OUI', typel=elemTypeName)) repk='OUI'
                         if (repk .eq. 'OUI') exit
 
+                    else if (questi .eq. 'EXI_POUTRE') then
+                        if (lteatt('POUTRE', 'OUI', typel=elemTypeName)) repk='OUI'
+                        if (repk .eq. 'OUI') exit
+                        
                     else if (questi .eq. 'EXI_COQUE') then
                         if (lteatt('COQUE', 'OUI', typel=elemTypeName)) repk='OUI'
                         if (repk .eq. 'OUI') exit

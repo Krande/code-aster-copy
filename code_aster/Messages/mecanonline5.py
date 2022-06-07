@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -181,8 +181,11 @@ Il n'y a pas de modes stockés lors du calcul précédent.
 On part donc de DEPL/VITE/ACCE généralisés nuls.
 """),
 
-
-
+    32 : _("""
+Vous utilisez l'option RESI_REFE_RELA avec la présence simultanée d'éléments
+de poutre et de coque. Cela est déconseillé car les dimensions des valeurs à fournir aux mots-clés
+FORCE_REFE et MOMENT_REFE sont différentes pour ces deux types d'éléments. 
+"""),
 
     33 : _("""
 Dynamique non-linéaire
@@ -204,6 +207,12 @@ La prédiction de type EXTRAPOL ou DEPL_CALCULE est incompatible avec le pilotag
     37 : _("""
 L'usage de ARRET='NON' dans CONVERGENCE est dangereux et doit être utilisé avec précaution car il permet à un calcul de converger
 même lorsque l'équilibre n'est pas vérifié.
+"""),
+
+    38 : _("""
+Vous utilisez l'option de convergence RESI_REFE_RELA en présence d'éléments de coque.
+Notez que la valeur attendue pour le mot-clé FORCE_REFE est une force linéique et que
+la valeur attendue pour MOMENT_REFE est un moment linéique. 
 """),
 
     39 : _("""
