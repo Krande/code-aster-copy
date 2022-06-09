@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -185,6 +185,11 @@ class HM_AXIS_QU8(Element):
                     para_out=((SP.PEPCON3, ECONTPG), ),
                     ),
 
+        OP.AMOR_MECA(te=580,
+                     para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),),
+                     para_out=((SP.PMATUUR, MMATUUR), ),
+                     ),
+        
         OP.CHAR_MECA_FR2D2D(te=600,
                             para_in=(
                                 (SP.PFR2D2D, NFORCER), (SP.PGEOMER, NGEOMER),

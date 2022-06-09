@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -183,6 +183,7 @@ subroutine te0580(nomopt, nomte)
 !   ==========================================================================
 
 !       -- le resultat est nul si les coefficients d'amortissement sont nuls ou absents.
+
         call jevech('PMATERC', 'L', imate)
         mater=zi(imate)
         call rccoma(mater, 'ELAS', 0, phenom, icodre(1))
@@ -212,8 +213,9 @@ subroutine te0580(nomopt, nomte)
         nomres(2)='AMOR_BETA'
         call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 2,&
                     nomres, valres, icodre, 0)
+        
         if (icodre(1).ne.0 .and. icodre(2).ne.0) goto 999
-        if (valres(1).eq.0.d0 .and. valres(2).eq.0.d0) goto 999
+        if (valres(1).ne.0.d0 .or. valres(2).ne.0.d0) goto 998
 
     else
         ASSERT(.false.)
