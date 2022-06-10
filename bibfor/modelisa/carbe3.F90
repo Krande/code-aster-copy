@@ -396,8 +396,8 @@ subroutine carbe3(charge)
             call utmess('F', 'MODELISA10_12', ni=2, vali=vali)
         endif
 !
-        if (nbcfes .ne. 1 .and. nbddl .ne. nbnoeu) then
-            vali(1) = nbddl
+        if (nbcfes .ne. 1 .and. nbcfes .ne. nbnoeu) then
+            vali(1) = nbcfes
             vali(2) = nbnoeu
             call utmess('F', 'MODELISA10_13', ni=2, vali=vali)
         endif

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ Arguments incompatibles : il y a %(i1)d degrés de liberté esclaves mais %(i2)d
 """),
 
     13 : _("""
-Arguments incompatibles : il y a %(i1)d degrés de liberté esclaves mais %(i2)d noeuds esclaves.
+Arguments incompatibles : il y a %(i1)d coefficients mais %(i2)d noeuds esclaves.
 """),
 
     14 : _("""

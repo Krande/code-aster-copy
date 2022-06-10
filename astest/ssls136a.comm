@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ BRBE3=AFFE_CHAR_MECA(MODELE=MODMECA,
                       DDL_MAIT=('DX','DY','DZ'),
                       GROUP_NO_ESCL=('N000002','N000003','N000014','N000009','N000068','N000092','N000010','N000109'),
                       DDL_ESCL=('DX-DY-DZ',),
-                      COEF_ESCL=(1.,)
+                      COEF_ESCL=(1.,1.,1.,1.,1.,1.,1.,1.)
                 ),
         ),
 )

@@ -577,7 +577,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
             GROUP_NO_ESCL   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
             NOEUD_ESCL      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),min=1,max='**'),
             DDL_ESCL        =SIMP(statut='o',typ='TXM',min=1,max='**'),
-            COEF_ESCL       =SIMP(statut='f',typ='R',min=1,max='**'),
+            COEF_ESCL       =SIMP(statut='f',typ='R',min=1,max='**',defaut=1.),
          ),
 
          LIAISON_INTERF  =FACT(statut='f',max='**',
