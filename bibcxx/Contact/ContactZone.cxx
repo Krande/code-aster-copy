@@ -45,23 +45,51 @@ ContactZone::ContactZone( const std::string name, const ModelPtr model )
         UTMESS( "F", "CONTACT1_2" );
 };
 
+void ContactZone::setSlaveGroupOfCells( const std::string &slave ) {
+    if ( getMesh()->hasGroupOfCells( slave ) ) {
+        _slaveNodes = getMesh()->getNodesFromCells( slave, false, true );
+        _slaveCells = getMesh()->getCells( slave );
+    } else {
+        throw std::runtime_error( "The given group " + slave + " doesn't exist in mesh" );
+    }
+};
+
+void ContactZone::setMasterGroupOfCells( const std::string &master ) {
+    if ( getMesh()->hasGroupOfCells( master ) ) {
+        _masterNodes = getMesh()->getNodesFromCells( master, false, true );
+        _masterCells = getMesh()->getCells( master );
+    } else {
+        throw std::runtime_error( "The given group " + master + " doesn't exist in mesh" );
+    }
+};
+
+void ContactZone::setExcludedSlaveGroupOfCells( const VectorString &excluded_slave ) {
+    auto mesh = getMesh();
+    for ( auto &name : excluded_slave ) {
+        if ( !( getMesh()->hasGroupOfCells( name ) ) ) {
+            throw std::runtime_error( "The group " + name + " doesn't exist in mesh" );
+        }
+
+        auto it = _excluded_slaveCells.end();
+        VectorLong sans_gr_i = mesh->getNodesFromCells( name, false, true );
+        _excluded_slaveCells.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
+    }
+};
+
 bool ContactZone::build() {
     auto mesh = getMesh();
 
     // check that there is no nodes in common
-    auto slaveNodes_lc = mesh->getNodesFromCells( getSlaveGroupOfCells(), false, true );
-    auto masterNodes_lc = mesh->getNodesFromCells( getMasterGroupOfCells(), false, true );
-
     VectorLong commonNodes;
 
     if ( mesh->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
         VectorLong slaveNodes_gl;
-        AsterMPI::all_gather( slaveNodes_lc, slaveNodes_gl );
-        commonNodes = set_intersection( slaveNodes_gl, masterNodes_lc );
+        AsterMPI::all_gather( _slaveNodes, slaveNodes_gl );
+        commonNodes = set_intersection( slaveNodes_gl, _masterNodes );
 #endif
     } else {
-        commonNodes = set_intersection( slaveNodes_lc, masterNodes_lc );
+        commonNodes = set_intersection( _slaveNodes, _masterNodes );
     }
 
     ASTERINTEGER size_inter_gl = commonNodes.size();
@@ -79,19 +107,10 @@ bool ContactZone::build() {
         UTMESS( "F", "CONTACT1_1" );
     }
 
-    // Update  master nodes
-    _masterNodes = std::move( masterNodes_lc );
-
     // check mesh orientation (normals)
     if ( checkNormals() ) {
-        std::string slave = ljust( getSlaveGroupOfCells(), 24, ' ' );
-        std::string master = ljust( getMasterGroupOfCells(), 24, ' ' );
-        CALL_CHECKNORMALS( _model->getName().c_str(), slave.c_str(), master.c_str() );
+        // CALL_CHECKNORMALS( _model->getName().c_str(), slave.c_str(), master.c_str() );
     }
-
-    // Be sure that the lists of cells are updated
-    updateMasterCells();
-    updateSlaveCells();
 
     // build inverse connvectivity
     buildInverseConnectivity();
@@ -116,7 +135,7 @@ ASTERBOOL ContactZone::buildInverseConnectivity() {
     _masterInverseConnectivity->build();
 
     // create slave inverse connectivity
-    ASTERINTEGER nbSlave = getSlaveCells().size();
+    ASTERINTEGER nbSlave = _slaveCells.size();
 
     VectorLong slaveCells;
     slaveCells.reserve( _slaveCells.size() );
@@ -152,7 +171,7 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
 
     // get slave neighbors
 
-    ASTERINTEGER nbSlave = getSlaveCells().size();
+    ASTERINTEGER nbSlave = _slaveCells.size();
     if ( nbSlave > 0 ) {
         ind_max = *std::max_element( _slaveCells.begin(), _slaveCells.end() ) + 1;
         ind_min = *std::min_element( _slaveCells.begin(), _slaveCells.end() ) + 1;
@@ -171,4 +190,55 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
     }
 
     return true;
+}
+
+VectorLong ContactZone::getMasterCellsFromNode( const ASTERINTEGER &i ) const {
+    auto vct = ( *_masterInverseConnectivity )[i + 1].toVector();
+    std::transform( vct.begin(), vct.end(), vct.begin(), [this]( ASTERINTEGER k ) -> ASTERINTEGER {
+        return k > 0 ? _masterCells[k - 1] : 0;
+    } );
+    return vct;
+}
+
+VectorLong ContactZone::getSlaveCellsFromNode( const ASTERINTEGER &i ) const {
+    auto vct = ( *_slaveInverseConnectivity )[i + 1].toVector();
+    std::transform( vct.begin(), vct.end(), vct.begin(), [this]( ASTERINTEGER k ) -> ASTERINTEGER {
+        return k > 0 ? _slaveCells[k - 1] : 0;
+    } );
+    return vct;
+}
+
+VectorLong ContactZone::getMasterCellNeighbors( const ASTERINTEGER &i ) const {
+    ASTERINTEGER ind_min = *std::min_element( _masterCells.begin(), _masterCells.end() );
+    ASTERINTEGER ind_max = *std::max_element( _masterCells.begin(), _masterCells.end() );
+
+    if ( i < ind_min || i > ind_max )
+        throw std::out_of_range( " the master cell's number should be"
+                                 " between " +
+                                 std::to_string( ind_min ) + " and " + std::to_string( ind_max ) );
+
+    auto vct = ( *_masterNeighbors )[i - ind_min + 1].toVector();
+    vct.erase( std::remove_if( vct.begin(), vct.end(), []( ASTERINTEGER &i ) { return i == 0; } ),
+               vct.end() );
+    std::transform( vct.begin(), vct.end(), vct.begin(),
+                    []( ASTERINTEGER k ) -> ASTERINTEGER { return k - 1; } );
+    return vct;
+}
+
+VectorLong ContactZone::getSlaveCellNeighbors( const ASTERINTEGER &i ) const {
+
+    ASTERINTEGER ind_min = *std::min_element( _slaveCells.begin(), _slaveCells.end() );
+    ASTERINTEGER ind_max = *std::max_element( _slaveCells.begin(), _slaveCells.end() );
+
+    if ( i < ind_min || i > ind_max )
+        throw std::out_of_range( " the slave cell's number should be"
+                                 " between " +
+                                 std::to_string( ind_min ) + " and " + std::to_string( ind_max ) );
+
+    auto vct = ( *_slaveNeighbors )[i - ind_min + 1].toVector();
+    vct.erase( std::remove_if( vct.begin(), vct.end(), []( ASTERINTEGER &i ) { return i == 0; } ),
+               vct.end() );
+    std::transform( vct.begin(), vct.end(), vct.begin(),
+                    []( ASTERINTEGER k ) -> ASTERINTEGER { return k - 1; } );
+    return vct;
 }

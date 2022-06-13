@@ -24,8 +24,8 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Contact/ContactNew.h"
 #include "Contact/ContactParameters.h"
+#include "Contact/ContactZone.h"
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
 
@@ -74,20 +74,21 @@ class ContactPairing : public DataStructure {
     };
 
     /** @brief compute pairing quantities of zone i */
-    ASTERBOOL compute( ASTERINTEGER i );
+    ASTERBOOL computeZone( ASTERINTEGER i );
+
+    ASTERBOOL compute();
 
     /** @brief get zone of index zone_index */
     ContactZonePtr getContactZone( ASTERINTEGER zone_index ) { return _zones[zone_index]; }
 
     /** @brief clearZone all pairing quantities of zone i */
-    ASTERBOOL clearZone( ASTERINTEGER i );
+    void clearZone( ASTERINTEGER i );
 
     /** @brief clearZone all pairing quantities for all zones */
-    ASTERBOOL clear() {
+    void clear() {
         for ( auto i = 0; i < _zones.size(); i++ ) {
             clearZone( i );
         }
-        return true;
     };
 
     /** @brief get number of all pairs  */
@@ -104,21 +105,7 @@ class ContactPairing : public DataStructure {
     /** @brief get list of pairs of zone associated with zone zone_index
      *  @return vector of pairs of type std::pair
      */
-    VectorLongPairs getListOfPairsOfZone( ASTERINTEGER zone_index ) const {
-
-        if ( _listOfPairs[zone_index].size() == 0 || _listOfPairs[zone_index].size() % 2 != 0 ) {
-            raiseAsterError( " List of pairs is empty or has an odd size " );
-        }
-
-        VectorLongPairs tmp;
-        ASTERINTEGER nbPairs = getNumberOfPairsOfZone( zone_index );
-
-        for ( auto i = 0; i < nbPairs; i++ ) {
-            tmp.push_back( std::make_pair( _listOfPairs[zone_index][2 * i],
-                                           _listOfPairs[zone_index][2 * i + 1] ) );
-        }
-        return tmp;
-    }
+    VectorLongPairs getListOfPairsOfZone( ASTERINTEGER zone_index ) const;
 
     /** @brief get slave intersection points of zone zone_index
      *   @return vector of slave intersection points of size 16*number of pairs

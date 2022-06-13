@@ -25,8 +25,10 @@
 
 #include "astercxx.h"
 
+#include "Contact/ContactPairing.h"
 #include "Contact/ContactZone.h"
 #include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
@@ -47,6 +49,8 @@ class ContactNew : public DataStructure {
     bool _smoothing;
 
   public:
+    typedef std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > VectorLongPairs;
+
     /**
      * @typedef ContactNewPtr
      * @brief Pointeur intelligent vers un ContactNew
@@ -67,8 +71,14 @@ class ContactNew : public DataStructure {
      */
     ContactNew( const ModelPtr model ) : ContactNew( ResultNaming::getNewResultName(), model ){};
 
+    /**
+     * @brief Get Model
+     */
     ModelPtr getModel() const { return _model; }
 
+    /**
+     * @brief Get FiniteElementDescriptor
+     */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; }
 
     BaseMeshPtr getMesh() const { return _model->getMesh(); }

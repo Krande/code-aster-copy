@@ -57,23 +57,15 @@ bool ContactNew::build() {
 
     for ( long i = 0; i < nb_zones; i++ ) {
         auto zone_i = getContactZone( i );
-        std::string slave = zone_i->getSlaveGroupOfCells();
-        std::string master = zone_i->getMasterGroupOfCells();
-        VectorString sans_grs = zone_i->getExcludedSlaveGroupOfCells();
 
         // read slave/master nodes/cell : localNumbering, same_rank
-        auto l_slave_nodes = mesh->getNodesFromCells( slave, false, true );
-        auto l_slave_cells = mesh->getCells( slave );
-        auto l_master_nodes = mesh->getNodesFromCells( master, false, true );
-        auto l_master_cells = mesh->getCells( master );
+        auto l_slave_nodes = zone_i->getSlaveNodes();
+        auto l_slave_cells = zone_i->getSlaveCells();
+        auto l_master_nodes = zone_i->getMasterNodes();
+        auto l_master_cells = zone_i->getMasterCells();
 
         // read hte nodes by SANS_GROUP_MA : several groups
-        VectorLong l_sans_nodes;
-        for ( auto &name : sans_grs ) {
-            VectorLongIter it = l_sans_nodes.end();
-            VectorLong sans_gr_i = mesh->getNodesFromCells( name, false, true );
-            l_sans_nodes.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
-        }
+        auto l_sans_nodes = zone_i->getExcludedSlaveCells();
 
         // check between SANS_GROUP_MA and slave nodes : save in commonNodes
         VectorLong commonNodes;
@@ -86,13 +78,14 @@ bool ContactNew::build() {
         } else {
             commonNodes = set_intersection( l_sans_nodes, l_slave_nodes );
         }
+
         // save info
-        nb_slave_cells = nb_slave_cells + l_slave_cells.size();
+        nb_slave_cells += l_slave_cells.size();
         mailco.push_back( std::make_pair( l_master_cells, l_slave_cells ) );
         noeuco.push_back( std::make_pair( l_master_nodes, l_slave_nodes ) );
     }
 
-    // check the common slave nodes between les zones
+    // check the common slave nodes between zones
     VectorLong doublNodes;
     for ( auto it = noeuco.begin(); it != noeuco.end(); ++it ) {
         VectorLong l_a = it->second;
@@ -154,13 +147,13 @@ bool ContactNew::build() {
             if ( hasFr ) {
                 modeli = "FRIC_SL_2D";
             } else {
-                modeli = "CONT_SL_2D";
+                modeli = "CONT_LAG_SL_2D";
             }
         } else if ( nb_dim == 3 ) {
             if ( hasFr ) {
                 modeli = "FRIC_SL_3D";
             } else {
-                modeli = "CONT_SL_3D";
+                modeli = "CONT_LAG_SL_3D";
             }
         }
         modeli = ljust( modeli, 16, ' ' );

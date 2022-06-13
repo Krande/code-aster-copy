@@ -102,6 +102,18 @@ Get pairing parameters defining algorithm, distance...
 Returns:
     PairingParameter: pairing parameters
         )" )
+        .def( "getSlaveNodes", &ContactZone::getSlaveNodes, R"(
+Get slave's nodes index
+
+Returns:
+    list[int]: slave's nodes index
+        )" )
+        .def( "getSlaveCells", &ContactZone::getSlaveCells, R"(
+Get slave's cells index
+
+Returns:
+    list[int]: slave's cells index
+        )" )
         .def( "setSlaveGroupOfCells", &ContactZone::setSlaveGroupOfCells, R"(
 Set slave's name of group of cells
 
@@ -109,12 +121,6 @@ Arguments:
     str: slave's name
         )",
               py::arg( "slave_name" ) )
-        .def( "getSlaveGroupOfCells", &ContactZone::getSlaveGroupOfCells, R"(
-Get slave's name of group of cells
-
-Returns:
-    str: slave's name
-        )" )
         .def( "setMasterGroupOfCells", &ContactZone::setMasterGroupOfCells, R"(
 Set master's name of group of cells
 
@@ -122,12 +128,6 @@ Arguments:
     str: master's name
         )",
               py::arg( "master_name" ) )
-        .def( "getMasterGroupOfCells", &ContactZone::getMasterGroupOfCells, R"(
-Get master's name of group of cells
-
-Returns:
-    str: master's name
-        )" )
         .def( "setExcludedSlaveGroupOfCells", &ContactZone::setExcludedSlaveGroupOfCells, R"(
 Set excluded groups of cells on slave side
 
@@ -135,7 +135,7 @@ Arguments:
     str: excluded groups' names
         )",
               py::arg( "master_name" ) )
-        .def( "getExcludedSlaveGroupOfCells", &ContactZone::getExcludedSlaveGroupOfCells, R"(
+        .def( "getExcludedSlaveCells", &ContactZone::getExcludedSlaveCells, R"(
 Get excluded groups of cells on slave side
 
 Returns:
@@ -146,14 +146,6 @@ Returns:
                        py::overload_cast< const bool & >( &ContactZone::checkNormals ), R"(
         bool: Attribute that holds the checking of outwards normals.
                 )" )
-        .def( "updateSlaveCells", &ContactZone::updateSlaveCells, R"(
-Returns:
-      Bool: True if the slave cells are updated
-        )" )
-        .def( "updateMasterCells", &ContactZone::updateMasterCells, R"(
-Returns:
-      Bool: True if checking is performed else False
-        )" )
         .def( "getMasterCellsFromNode", &ContactZone::getMasterCellsFromNode, R"(
 Get the master cells associtaed with a node number
 

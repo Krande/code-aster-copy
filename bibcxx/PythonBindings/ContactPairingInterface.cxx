@@ -33,7 +33,7 @@ void exportContactPairingToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< ContactPairing, std::string, std::vector< ContactZonePtr >,
                                          BaseMeshPtr > ) )
         .def( "getCoordinates", &ContactPairing::getCoordinates, R"(
-Compute the new coordinates 
+Compute the new coordinates
 Returns:
     MeshCoordinatesFieldPtr: the new MeshCoordinatesField object
 )" )
@@ -42,7 +42,13 @@ Update the mesh coordinates given a displacement field
 )",
               ( py::arg( "disp" ) ) )
         .def( "compute", &ContactPairing::compute, R"(
-Compute the pairing quantities associated with the zone izone
+Compute the pairing quantities associated with the zones
+
+Returns:
+    bool: True if the pairing quantities are updated appropriately
+)" )
+        .def( "computeZone", &ContactPairing::computeZone, R"(
+Compute the pairing quantities associated with the zone zone_index
 Arguments:
     zone_index(int)
 Returns:

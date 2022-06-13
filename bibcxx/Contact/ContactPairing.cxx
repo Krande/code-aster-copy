@@ -44,7 +44,7 @@ ContactPairing::ContactPairing( const std::string name, const std::vector< Conta
     _quadraturePoints.resize( size_zones );
 };
 
-ASTERBOOL ContactPairing::compute( ASTERINTEGER i ) {
+ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
 
     if ( i < 0 || i >= _zones.size() ) {
         throw std::out_of_range( "The zone index should be between 0  and " +
@@ -60,19 +60,17 @@ ASTERBOOL ContactPairing::compute( ASTERINTEGER i ) {
     ASTERINTEGER nbCellSlave = eleSlave.size();
     std::string pair_method;
 
-    // update the numbering
+    // update the numbering for fortran
     std::for_each( eleMaster.begin(), eleMaster.end(), []( ASTERINTEGER &d ) { d += 1; } );
     std::for_each( NodesMaster.begin(), NodesMaster.end(), []( ASTERINTEGER &d ) { d += 1; } );
     std::for_each( eleSlave.begin(), eleSlave.end(), []( ASTERINTEGER &d ) { d += 1; } );
 
     // get pairing method
-    ContactVariant variant = _zones[i]->getContactParameter()->getVariant();
-    if ( variant == ContactVariant::Robust ) {
+    auto variant = _zones[i]->getPairingParameter()->getAlgorithm();
+    if ( variant == PairingAlgo::Mortar ) {
         pair_method = ljust( "ROBUSTE", 24, ' ' );
-    } else if ( variant == ContactVariant::Rapide ) {
-        pair_method = ljust( "RAPIDE", 24, ' ' );
     } else {
-        pair_method = ljust( "ROBUSTE", 24, ' ' );
+        AS_ABORT( "Not expected" );
     }
 
     // tolerence
@@ -120,7 +118,15 @@ ASTERBOOL ContactPairing::compute( ASTERINTEGER i ) {
     return true;
 }
 
-ASTERBOOL ContactPairing::clearZone( ASTERINTEGER i ) {
+ASTERBOOL ContactPairing::compute() {
+    for ( int i = 0; i < _zones.size(); i++ ) {
+        computeZone( i );
+    }
+
+    return true;
+}
+
+void ContactPairing::clearZone( ASTERINTEGER i ) {
 
     // swap is recommended to release memory
     VectorLong().swap( _listOfPairs[i] );
@@ -130,6 +136,22 @@ ASTERBOOL ContactPairing::clearZone( ASTERINTEGER i ) {
     VectorReal().swap( _quadraturePoints[i] );
 
     _nbPairs.at( i ) = 0;
+}
 
-    return true;
+std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >
+ContactPairing::getListOfPairsOfZone( ASTERINTEGER zone_index ) const {
+
+    if ( _listOfPairs[zone_index].size() == 0 || _listOfPairs[zone_index].size() % 2 != 0 ) {
+        raiseAsterError( " List of pairs is empty or has an odd size " );
+    }
+
+    std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > tmp;
+    ASTERINTEGER nbPairs = getNumberOfPairsOfZone( zone_index );
+    tmp.reserve( nbPairs );
+
+    for ( auto i = 0; i < nbPairs; i++ ) {
+        tmp.push_back( std::make_pair( _listOfPairs[zone_index][2 * i],
+                                       _listOfPairs[zone_index][2 * i + 1] ) );
+    }
+    return tmp;
 }

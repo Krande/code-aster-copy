@@ -44,28 +44,37 @@ class ContactZone : public DataStructure {
     FrictionParameterPtr _fricParam;
     /** @brief Parameter for pairing only */
     PairingParameterPtr _pairParam;
-    /** @brief Slave side */
-    std::string _slave;
-    /** @brief Master side */
-    std::string _master;
-    /** @brief excluded elements of slave side for LAGRANGIEN */
-    VectorString _excluded_slave;
     /** @brief  Check direction of normal */
     bool _checkNormal;
     /** @brief  List of master Cells */
     VectorLong _masterCells;
     /** @brief List of slave cells */
     VectorLong _slaveCells;
+    /** @brief  List of master nodes */
+    VectorLong _masterNodes;
+    /** @brief List of slave nodes */
+    VectorLong _slaveNodes;
+    /** @brief excluded elements of slave side for LAGRANGIEN */
+    VectorLong _excluded_slaveCells;
     /** @brief  Master inverse connectivity */
     JeveuxCollectionLong _masterInverseConnectivity;
     /** @brief  Slave inverse connectivity */
     JeveuxCollectionLong _slaveInverseConnectivity;
-    /** @brief  Master Nodes */
-    VectorLong _masterNodes;
     /** @brief  Master cells neighbors */
     JeveuxCollectionLong _masterNeighbors;
     /** @brief  slave cells neighbors */
     JeveuxCollectionLong _slaveNeighbors;
+
+
+
+    /**
+     * @brief Construct the inverse connectivity
+     */
+    ASTERBOOL buildInverseConnectivity();
+    /**
+     * @brief construct master/slave cells neighbors
+     */
+    ASTERBOOL buildCellsNeighbors();
 
   public:
     /**
@@ -110,37 +119,13 @@ class ContactZone : public DataStructure {
 
     void setPairingParameter( const PairingParameterPtr pairParam ) { _pairParam = pairParam; };
 
-    void setSlaveGroupOfCells( const std::string &slave ) {
-        if ( getMesh()->hasGroupOfCells( slave ) ) {
-            _slave = slave;
-        } else {
-            throw std::runtime_error( "The given group " + slave + " doesn't exist in mesh" );
-        }
-    };
+    void setSlaveGroupOfCells( const std::string &slave );
 
-    std::string getSlaveGroupOfCells() const { return _slave; };
+    void setMasterGroupOfCells( const std::string &master );;
 
-    void setMasterGroupOfCells( const std::string &master ) {
-        if ( getMesh()->hasGroupOfCells( master ) ) {
-            _master = master;
-        } else {
-            throw std::runtime_error( "The given group " + master + " doesn't exist in mesh" );
-        }
-    };
+    void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave );
 
-    std::string getMasterGroupOfCells() const { return _master; };
-
-    void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave ) {
-        for ( long i = 0; i < excluded_slave.size(); i++ ) {
-            if ( !( getMesh()->hasGroupOfCells( excluded_slave[i] ) ) ) {
-                throw std::runtime_error( "The group " + excluded_slave[0] +
-                                          " doesn't exist in mesh" );
-            }
-        }
-        _excluded_slave = excluded_slave;
-    };
-
-    VectorString getExcludedSlaveGroupOfCells() const { return _excluded_slave; };
+    VectorLong getExcludedSlaveCells() const { return _excluded_slaveCells; };
 
     void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
 
@@ -155,6 +140,8 @@ class ContactZone : public DataStructure {
         return const_cast< VectorLong & >( std::as_const( *this ).getMasterNodes() );
     }
 
+    VectorLong getSlaveNodes() const { return _slaveNodes; }
+
     /**
      * @brief get master cells
      */
@@ -165,84 +152,17 @@ class ContactZone : public DataStructure {
     }
 
     /**
-     * @brief  update list of master cells
-     */
-    void updateMasterCells() {
-        if ( _masterCells.empty() )
-            _masterCells = getMesh()->getCells( _master );
-    }
-
-    /**
      * @brief get slave cells
      */
-    const VectorLong &getSlaveCells() const { return _slaveCells; };
+    VectorLong getSlaveCells() const { return _slaveCells; }
 
-    VectorLong &getSlaveCells() {
-        return const_cast< VectorLong & >( std::as_const( *this ).getSlaveCells() );
-    }
+    VectorLong getMasterCellsFromNode( const ASTERINTEGER &i ) const;
 
-    /**
-     * @brief update list of slave cells
-     */
-    void updateSlaveCells() {
-        if ( _slaveCells.empty() )
-            _slaveCells = getMesh()->getCells( _slave );
-    }
+    VectorLong getSlaveCellsFromNode( const ASTERINTEGER &i ) const;
 
-    VectorLong getMasterCellsFromNode( const int &i ) const {
-        auto vct = ( *_masterInverseConnectivity )[i + 1].toVector();
-        std::transform(
-            vct.begin(), vct.end(), vct.begin(),
-            [this]( ASTERINTEGER k ) -> ASTERINTEGER { return k > 0 ? _masterCells[k - 1] : 0; } );
-        return vct;
-    }
+    VectorLong getMasterCellNeighbors( const ASTERINTEGER &i ) const;
 
-    VectorLong getSlaveCellsFromNode( const int &i ) const {
-        auto vct = ( *_slaveInverseConnectivity )[i + 1].toVector();
-        std::transform(
-            vct.begin(), vct.end(), vct.begin(),
-            [this]( ASTERINTEGER k ) -> ASTERINTEGER { return k > 0 ? _slaveCells[k - 1] : 0; } );
-        return vct;
-    }
-
-    VectorLong getMasterCellNeighbors( const int &i ) const {
-        ASTERINTEGER ind_min = *std::min_element( _masterCells.begin(), _masterCells.end() );
-        ASTERINTEGER ind_max = *std::max_element( _masterCells.begin(), _masterCells.end() );
-
-        if ( i < ind_min || i > ind_max )
-            throw std::out_of_range( " the master cell's number should be"
-                                     " between " +
-                                     std::to_string( ind_min ) + " and " +
-                                     std::to_string( ind_max ) );
-
-        auto vct = ( *_masterNeighbors )[i - ind_min + 1].toVector();
-        vct.erase(
-            std::remove_if( vct.begin(), vct.end(), []( ASTERINTEGER &i ) { return i == 0; } ),
-            vct.end() );
-        std::transform( vct.begin(), vct.end(), vct.begin(),
-                        []( ASTERINTEGER k ) -> ASTERINTEGER { return k - 1; } );
-        return vct;
-    }
-
-    VectorLong getSlaveCellNeighbors( const int &i ) const {
-
-        ASTERINTEGER ind_min = *std::min_element( _slaveCells.begin(), _slaveCells.end() );
-        ASTERINTEGER ind_max = *std::max_element( _slaveCells.begin(), _slaveCells.end() );
-
-        if ( i < ind_min || i > ind_max )
-            throw std::out_of_range( " the slave cell's number should be"
-                                     " between " +
-                                     std::to_string( ind_min ) + " and " +
-                                     std::to_string( ind_max ) );
-
-        auto vct = ( *_slaveNeighbors )[i - ind_min + 1].toVector();
-        vct.erase(
-            std::remove_if( vct.begin(), vct.end(), []( ASTERINTEGER &i ) { return i == 0; } ),
-            vct.end() );
-        std::transform( vct.begin(), vct.end(), vct.begin(),
-                        []( ASTERINTEGER k ) -> ASTERINTEGER { return k - 1; } );
-        return vct;
-    }
+    VectorLong getSlaveCellNeighbors( const ASTERINTEGER &i ) const;
 
     /**
      * @brief get master inverse connectivity as JeVeuxCollection
@@ -261,14 +181,7 @@ class ContactZone : public DataStructure {
      * @brief get slave neighbors
      */
     JeveuxCollectionLong getSlaveNeighbors() const { return _slaveNeighbors; }
-    /**
-     * @brief Construct the inverse connectivity
-     */
-    ASTERBOOL buildInverseConnectivity();
-    /**
-     * @brief construct master/slave cells neighbors
-     */
-    ASTERBOOL buildCellsNeighbors();
+
 };
 
 /**
