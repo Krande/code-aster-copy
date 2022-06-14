@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ cata_msg = {
 
     12 : _("""La formulation %(k1)s n'est pas disponible pour les modélisations choisies."""),
 
+    13 : _("""Les méthodes de partition MAIL_CONTIGU et MAIL_DISPERSE sont interdites avec des 
+modélisations nécessitant des informations sur les mailles voisines (3D_JOINT, 3D_INTERFACE, ...)"""),
 
     14 : _("""Le modèle contient un mélange d'éléments finis 2D (plan Oxy) et 3D. Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
 Parfois, cela empêche de faire le "bon choix". Cette alarme risque de se transformer en erreur fatale dans la suite du calcul.

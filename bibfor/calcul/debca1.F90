@@ -258,6 +258,8 @@ implicit none
             zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.PARALLELE'
         endif
     endif
+    
+    if (ca_lparal_ .and. ca_calvoi_ .eq. 1) call utmess('F', 'MODELE1_13')
 
 
 
