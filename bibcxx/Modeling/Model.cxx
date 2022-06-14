@@ -223,6 +223,20 @@ bool Model::existsHHO() {
     return false;
 };
 
+bool Model::existsAxis() {
+    const std::string typeco( "MODELE" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "EXI_AXIS" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
+
 bool Model::exists3DShell() {
     const std::string typeco( "MODELE" );
     ASTERINTEGER repi = 0, ier = 0;

@@ -74,7 +74,7 @@ resu.printMedFile("test"+str(rank)+".med")
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 sfon.debugPrint(10+rank)
-sfon.updateValuePointers()
+sfon.build()
 
 if rank == 0:
     test.assertAlmostEqual(sfon.getValue(2, 0), 0.4245510586973997)

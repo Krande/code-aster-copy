@@ -192,6 +192,9 @@ class Model : public DataStructure, public ListOfTables {
     /**@brief Has HHO in model ? */
     bool existsHHO();
 
+    /**@brief Has Axis element in model ? */
+    bool existsAxis();
+
     /**@brief Has COQUE_3D in model ? */
     bool exists3DShell();
 

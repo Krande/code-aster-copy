@@ -74,7 +74,7 @@ resu.printMedFile("test"+str(rank)+".med")
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 sfon.debugPrint(10+rank)
-sfon.updateValuePointers()
+sfon.build()
 
 # DX displacement on nodes "N1" and "N3", comparison with sequential results
 TEST_RESU(

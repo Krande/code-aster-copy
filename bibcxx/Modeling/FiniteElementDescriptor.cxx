@@ -90,7 +90,6 @@ FiniteElementDescriptor::getVirtualCellsExplorer() const {
 };
 
 const JeveuxVectorLong &FiniteElementDescriptor::getVirtualNodesComponentDescriptor() const {
-    _dofOfDelayedNumberedConstraintNodes->updateValuePointer();
     return _dofOfDelayedNumberedConstraintNodes;
 };
 
@@ -110,13 +109,21 @@ const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfCells() con
     return _listOfGroupOfCells;
 };
 
+const JeveuxCollectionLong &FiniteElementDescriptor::getNema() const {
+    _delayedNumberedConstraintElementsDescriptor->build();
+    return _delayedNumberedConstraintElementsDescriptor;
+};
+
 ASTERINTEGER FiniteElementDescriptor::getNumberOfVirtualNodes() const {
     _numberOfDelayedNumberedConstraintNodes->updateValuePointer();
     return ( *_numberOfDelayedNumberedConstraintNodes )[0];
 };
 
+JeveuxVectorLong FiniteElementDescriptor::getNumberOfVirtualNodesobj() {
+    return _numberOfDelayedNumberedConstraintNodes;
+};
+
 JeveuxVectorChar8 FiniteElementDescriptor::getParameters() const {
-    _parameters->updateValuePointer();
     return _parameters;
 };
 

@@ -43,7 +43,7 @@ subroutine utncmp(cham19, ncmp, nomobj)
 !     ------------------------------------------------------------------
 !
     integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
-    integer ::  iad, kcmp, igr, mode, nnoe,  nbgrel, irepe, nbel
+    integer ::  iad, kcmp, igr, mode, nnoe,  nbgrel, nbel
     integer :: jmod, imodel, ilong, idescr,  nb
     character(len=4) :: tych
     character(len=24) :: valk(2)
@@ -120,7 +120,6 @@ subroutine utncmp(cham19, ncmp, nomobj)
         call dismoi('NOM_LIGREL', ch19, 'CHAMP', repk=noligr)
         call dismoi('NB_GREL', noligr, 'LIGREL', repi=nbgrel)
         call jeveuo(ch19//'.CELD', 'L', vi=celd)
-        call jeveuo(noligr//'.REPE', 'L', irepe)
         call jeveuo('&CATA.TE.MODELOC', 'L', imodel)
         call jeveuo(jexatr('&CATA.TE.MODELOC', 'LONCUM'), 'L', ilong)
         do igr = 1, nbgrel

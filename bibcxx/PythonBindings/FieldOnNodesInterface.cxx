@@ -62,6 +62,18 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
+        .def( "getComponents", &FieldOnNodesReal::getComponents, R"(
+            Get list of components
+
+            Returns:
+                list[str]: list of components
+            )" )
+        .def( "getNumberOfComponents", &FieldOnNodesReal::getNumberOfComponents, R"(
+            Get number of components
+
+            Returns:
+                int: number of components
+            )" )
         .def( "norm", &FieldOnNodesReal::norm, R"(
             Return the euclidean norm of the field
 
@@ -127,6 +139,18 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
 
             Returns:
                 list[complex]: List of values.
+            )" )
+        .def( "getComponents", &FieldOnNodesComplex::getComponents, R"(
+            Get list of components
+
+            Returns:
+                list[str]: list of components
+            )" )
+        .def( "getNumberOfComponents", &FieldOnNodesComplex::getNumberOfComponents, R"(
+            Get number of components
+
+            Returns:
+                int: number of components
             )" )
         .def( "dot", &FieldOnNodesComplex::dot, R"(
             Return the dot product of two complex fields

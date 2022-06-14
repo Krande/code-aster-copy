@@ -107,6 +107,24 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
                 FieldOnCellsReal: New FieldOnCells object with the trasformed values
             )",
               py::arg( "func" ) )
+        .def( "getPhysicalQuantity", &FieldOnCellsReal::getPhysicalQuantity, R"(
+            Get physical quantity
+
+            Returns:
+                str: physical quantity
+            )" )
+        .def( "getComponents", &FieldOnCellsReal::getComponents, R"(
+            Get list of components
+
+            Returns:
+                list[str]: list of components
+            )" )
+        .def( "getNumberOfComponents", &FieldOnCellsReal::getNumberOfComponents, R"(
+            Get number of components
+
+            Returns:
+                int: number of components
+            )" )
         .def( "printMedFile", &FieldOnCellsReal::printMedFile, R"(
             Print the field in MED format.
 

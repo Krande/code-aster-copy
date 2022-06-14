@@ -174,9 +174,16 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     const NamesMapChar8 &getNameOfNodesMap() const { return _nameOfNodes; };
 
+    const NamesMapChar8 &getCellNameMap() const{ return _nameOfCells; };
+
     std::string getNodeName( const ASTERINTEGER &index ) const;
 
     std::string getCellName( const ASTERINTEGER &index ) const;
+
+    ASTERINTEGER getCellType( const ASTERINTEGER &index ) const;
+
+    std::string getCellTypeName( const ASTERINTEGER &index ) const;
+
 
     /**
      * @brief Recuperation de la dimension du maillage

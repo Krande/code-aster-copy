@@ -114,7 +114,11 @@ class FiniteElementDescriptor : public DataStructure {
 
     const JeveuxCollectionLong &getListOfGroupOfCells() const;
 
+    const JeveuxCollectionLong &getNema() const;
+
     ASTERINTEGER getNumberOfVirtualNodes() const;
+
+    JeveuxVectorLong getNumberOfVirtualNodesobj();
 
     JeveuxVectorChar8 getParameters() const;
 

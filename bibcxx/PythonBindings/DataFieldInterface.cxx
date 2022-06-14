@@ -34,5 +34,11 @@ void exportDataFieldToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< DataField > ) )
         .def( py::init( &initFactoryPtr< DataField > ) )
         .def( py::init( &initFactoryPtr< DataField, std::string > ) )
-        .def( py::init( &initFactoryPtr< DataField, std::string, std::string > ) );
+        .def( py::init( &initFactoryPtr< DataField, std::string, std::string > ) )
+        .def( "getFieldType", &DataField::getFieldType, R"(
+            Get field type between "ELEM", "ELGA", "ELNO", "NOEU", "CART".
+
+            Returns:
+                str: field type
+            )" );
 };

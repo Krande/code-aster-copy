@@ -25,6 +25,7 @@
  */
 
 #include "aster_fort_superv.h"
+#include "aster_fort_utils.h"
 #include "astercxx.h"
 
 #include "DataFields/DataField.h"
@@ -126,7 +127,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     }
 
     /** @brief Move constructor */
-    FieldOnNodes( FieldOnNodes &&other ) : DataField{std::move( other )} {
+    FieldOnNodes( FieldOnNodes &&other ) : DataField{ std::move( other ) } {
         // Pointers to be moved
         _descriptor = other._descriptor;
         _reference = other._reference;
@@ -199,6 +200,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         similar = ( similar && ( this->_reference->size() == tmp2._reference->size() ) );
         similar = ( similar && ( this->_valuesList->size() == tmp2._valuesList->size() ) );
         similar = ( similar && ( _mesh == tmp2._mesh ) );
+
         if ( similar ) {
             _descriptor->updateValuePointer();
             tmp2._descriptor->updateValuePointer();
@@ -304,6 +306,27 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         lhs -= rhs;
         return lhs;
     };
+
+    VectorString getComponents() const {
+
+        JeveuxVectorChar8 cmp( "&CMP" );
+        ASTERINTEGER ncmp;
+
+        CALL_UTNCMP( getName().c_str(), &ncmp, cmp->getName().c_str() );
+
+        cmp->updateValuePointer();
+
+        VectorString cmps;
+        cmps.reserve( cmp->size() );
+
+        for ( auto &cm : cmp ) {
+            cmps.push_back( trim( cm.toString() ) );
+        }
+
+        return cmps;
+    }
+
+    ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
 
     /**
      * @brief Allouer un champ au noeud à partir d'un autre

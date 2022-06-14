@@ -23,8 +23,10 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
 #include "aster_fort_superv.h"
+#include "aster_fort_utils.h"
 #include "astercxx.h"
 
 #include "Behaviours/BehaviourProperty.h"
@@ -82,7 +84,7 @@ class FieldOnCells : public DataField {
     /** @brief Constructor with automatic name and FE Descriptor*/
     FieldOnCells( const FiniteElementDescriptorPtr FEDesc )
         : FieldOnCells( ResultNaming::getNewResultName() ) {
-        _dofDescription = FEDesc;
+        setDescription( FEDesc );
     };
 
     /**
@@ -116,7 +118,7 @@ class FieldOnCells : public DataField {
     }
 
     /** @brief Move constructor */
-    FieldOnCells( FieldOnCells &&other ) : DataField{std::move( other )} {
+    FieldOnCells( FieldOnCells &&other ) : DataField{ std::move( other ) } {
         _descriptor = other._descriptor;
         _reference = other._reference;
         _valuesList = other._valuesList;
@@ -229,6 +231,7 @@ class FieldOnCells : public DataField {
                 setDescription( std::make_shared< FiniteElementDescriptor >( ligrel, getMesh() ) );
             }
         }
+
         return true;
     };
 
@@ -296,7 +299,7 @@ class FieldOnCells : public DataField {
             if ( PyComplex_Check( res ) ) {
                 ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
                 ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
-                tmp[i] = {re, im};
+                tmp[i] = { re, im };
             } else {
                 PyErr_Format( PyExc_ValueError, "Returned value of \
                     type different from ASTERCOMPLEX" );
@@ -417,6 +420,73 @@ class FieldOnCells : public DataField {
         _valuesList->assign( value );
     };
 
+    std::string getPhysicalQuantity() const {
+        _descriptor->updateValuePointer();
+
+        auto gd = ( *_descriptor )[0];
+
+        const std::string cata = "&CATA.GD.NOMGD";
+        JeveuxChar32 objName, charName;
+
+        CALLO_JEXNUM( objName, cata, &gd );
+        CALLO_JENUNO( objName, charName );
+
+        return trim( charName.toString() );
+    }
+
+    VectorString getComponents() const {
+
+        JeveuxVectorChar8 cmp( "&CMP" );
+        ASTERINTEGER ncmp;
+
+        CALL_UTNCMP( getName().c_str(), &ncmp, cmp->getName().c_str() );
+
+        cmp->updateValuePointer();
+
+        VectorString cmps;
+        cmps.reserve( cmp->size() );
+
+        for ( auto &cm : cmp ) {
+            cmps.push_back( trim( cm.toString() ) );
+        }
+
+        return cmps;
+    }
+
+    ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
+
+    ASTERINTEGER getNumberOfGroupOfCells() const {
+        _descriptor->updateValuePointer();
+
+        return ( *_descriptor )[1];
+    }
+
+    std::string getLocalMode() const {
+        const auto nbGrel = getNumberOfGroupOfCells();
+        _descriptor->updateValuePointer();
+        const std::string cata = "&CATA.TE.NOMMOLOC";
+        JeveuxChar24 objName, charName;
+
+        std::string modeName;
+        for ( auto igr = 0; igr < nbGrel; igr++ ) {
+            auto mode = ( *_descriptor )[( *_descriptor )[4 + igr] - 1 + 2];
+            if ( mode > 0 ) {
+                CALLO_JEXNUM( objName, cata, &mode );
+                CALLO_JENUNO( objName, charName );
+                auto modeN = trim( charName.toString().substr( 14, 10 ) );
+                if ( modeName.empty() ) {
+                    modeName = modeN;
+                } else {
+                    if ( modeName != modeN ) {
+                        AS_ABORT( "Multiple names." );
+                    }
+                }
+            }
+        }
+
+        return modeName;
+    }
+
     /**
      * @brief Size of the FieldOnNodes
      */
@@ -534,6 +604,24 @@ class FieldOnCells : public DataField {
     }
 
     bool printMedFile( const std::string fileName, bool local = true ) const;
+
+    std::shared_ptr< FieldOnNodes< ValueType > > toFieldOnNodes() const {
+        auto chamno = std::make_shared< FieldOnNodes< ValueType > >();
+
+        std::string type = "NOEU", celmod = " ", base = "G";
+        std::string prol = "OUI", model = " ";
+
+        if ( getModel() ) {
+            model = getModel()->getName();
+        }
+
+        CALLO_CHPCHD( getName(), type, celmod, prol, base, chamno->getName(), model );
+
+        chamno->setMesh( getMesh() );
+        chamno->build();
+
+        return chamno;
+    }
 
     friend class FieldBuilder;
 };

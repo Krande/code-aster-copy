@@ -228,3 +228,22 @@ std::string BaseMesh::getNodeName( const ASTERINTEGER &index ) const {
 std::string BaseMesh::getCellName( const ASTERINTEGER &index ) const {
     return trim( _nameOfCells->getStringFromIndex( index ) );
 };
+
+ASTERINTEGER BaseMesh::getCellType( const ASTERINTEGER &index ) const {
+    if ( isEmpty() )
+        return 0;
+    if ( !_cellsType->exists() )
+        return 0;
+    _cellsType->updateValuePointer();
+    return ( *_cellsType )[index];
+};
+
+std::string BaseMesh::getCellTypeName( const ASTERINTEGER &index ) const {
+    auto cellType = getCellType( index );
+    const std::string cata = "&CATA.TM.NOMTM";
+    JeveuxChar32 objName, charName;
+
+    CALLO_JEXNUM( objName, cata, &cellType );
+    CALLO_JENUNO( objName, charName );
+    return trim( charName.toString() );
+};

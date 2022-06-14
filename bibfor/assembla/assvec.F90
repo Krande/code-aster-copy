@@ -200,7 +200,6 @@ aster_logical, optional, intent(in) :: maskInve_
         call jeveuo(mesh(1:8)//'.CONNEX', 'L', vi=connex)
         call jeveuo(jexatr(mesh(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
     endif
-    call dismoi('NB_NO_MAILLA', model, 'MODELE', repi=meshNbNode)
 
 ! - Start timers for calcul.F90 monitoring
     call uttcpu('CPU.CALC.1', 'DEBUT', ' ')
@@ -321,8 +320,8 @@ aster_logical, optional, intent(in) :: maskInve_
         vectElemCoef = coefVectElem(iVectElem)
         vectElem = zk24(jvVectElem+iVectElem-1)(1:19)
         call dismoi('NOM_MODELE', vectElem, 'VECT_ELEM', repk=vectElemModel)
-        if (vectElemModel .ne. model) then
-            call utmess('F', 'ASSEMBLA_5')
+        if (vectElemModel .ne. model .and. vectElemModel .ne. ' ') then
+            call utmess('F', 'ASSEMBLA_7', nk=2, valk=[model, vectElemModel])
         endif
 
 ! ----- Add super elements
@@ -334,6 +333,7 @@ aster_logical, optional, intent(in) :: maskInve_
             compSuperElement = ASTER_FALSE
         endif
         if (compSuperElement) then
+            call dismoi('NB_NO_MAILLA', model, 'MODELE', repi=meshNbNode)
             call asseVectSuper(model, mesh, vectElem,&
                                vectScalType, vectElemCoef,&
                                nomacr, meshNbNode,&
@@ -463,8 +463,11 @@ aster_logical, optional, intent(in) :: maskInve_
                                                     nbDofMode, zi( iapsdl))
                                         ASSERT(nbDofMode .le. 100)
                                     endif
+
                                     ASSERT(iad1 .ne. 0)
-                                    ASSERT(iad1 .le. nbDof)
+                                    if(nbDofMode > 0) then
+                                        ASSERT(iad1 .le. nbDof)
+                                    end if
                                     if (vectScalType .eq. 1) then
                                         do iDofMode = 1, nbDofMode
                                             iDof = iDof + 1

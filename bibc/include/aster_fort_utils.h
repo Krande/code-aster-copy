@@ -36,13 +36,13 @@ extern void DEFSS( AFFICH, affich, const char *, STRING_SIZE, const char *, STRI
 
 #define CALL_CODENT( a, b, c ) CALLPSS( CODENT, codent, a, b, c )
 #define CALLO_CODENT( a, b, c ) CALLPOO( CODENT, codent, a, b, c )
-extern void DEFPSS( CODENT, codent, ASTERINTEGER *, const char *, STRING_SIZE,
-                  const char *, STRING_SIZE);
+extern void DEFPSS( CODENT, codent, ASTERINTEGER *, const char *, STRING_SIZE, const char *,
+                    STRING_SIZE );
 
 #define CALL_CODLET_WRAP( a, b, c, d ) CALLPSSS( CODLET_WRAP, codlet_wrap, a, b, c, d )
 #define CALLO_CODLET_WRAP( a, b, c, d ) CALLPOOO( CODLET_WRAP, codlet_wrap, a, b, c, d )
 extern void DEFPSSS( CODLET_WRAP, codlet_wrap, ASTERINTEGER *, const char *, STRING_SIZE,
-                    const char *, STRING_SIZE, const char *, STRING_SIZE);
+                     const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALL_DISMOI( a, b, c, d, e, f, g ) CALLSSSPSSP( DISMOI, dismoi, a, b, c, d, e, f, g )
 #define CALLO_DISMOI( a, b, c, d, e, f, g ) CALLOOOPOOP( DISMOI, dismoi, a, b, c, d, e, f, g )
@@ -53,7 +53,7 @@ extern void DEFSSSPSSP( DISMOI, dismoi, const char *, STRING_SIZE, const char *,
 #define CALL_FCLOSE( a ) CALLP( FCLOSE, fclose, a )
 extern void DEFP( FCLOSE, fclose, ASTERINTEGER * );
 
-#define CALL_INFMAJ_EXT( a ) CALLP( INFMAJ_EXT, infmaj_ext, a  )
+#define CALL_INFMAJ_EXT( a ) CALLP( INFMAJ_EXT, infmaj_ext, a )
 extern void DEFP( INFMAJ_EXT, infmaj_ext, const ASTERINTEGER *const );
 
 #define CALL_ISDECO( a, b, c ) CALLPPP( ISDECO, isdeco, a, b, c )
@@ -81,6 +81,10 @@ extern void DEFPSSSS( ULOPEN, ulopen, ASTERINTEGER *, char *, STRING_SIZE, char 
 #define CALL_UTGTME( a, b, c, d ) CALLPSPP( UTGTME, utgtme, a, b, c, d )
 extern void DEFPSPP( UTGTME, utgtme, ASTERINTEGER *, char *, STRING_SIZE, ASTERDOUBLE *,
                      ASTERINTEGER * );
+
+#define CALL_UTNCMP( a, b, c ) CALLSPS( UTNCMP, utncmp, a, b, c )
+extern void DEFSPS( UTNCMP, utncmp, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
+                    STRING_SIZE );
 
 #define CALL_UTMESS( cod, idmess ) CALLSS( UTMESS_CWRAP, utmess_cwrap, cod, idmess )
 extern void DEFSS( UTMESS_CWRAP, utmess_cwrap, char *, STRING_SIZE, char *, STRING_SIZE );

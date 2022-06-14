@@ -227,9 +227,7 @@ void Calcul::postCompute() {
 
     for ( auto &[parameterName, field] : _outputFields ) {
         std::string fieldName = field->getName();
-        CALLO_DISMOI( questi1, fieldName, typeco, &repi, repk, arret, &ier );
-
-        std::string fieldType( trim( repk.toString() ) );
+        std::string fieldType = field->getFieldType();
         if ( fieldType == "ELEM" || fieldType == "ELNO" || fieldType == "ELGA" ) {
             CALLO_DISMOI( questi2, fieldName, typeco, &repi, repk, arret, &ier );
             std::string fieldScalar( trim( repk.toString() ) );

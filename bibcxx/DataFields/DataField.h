@@ -26,7 +26,10 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_fort_utils.h"
+
 #include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxVector.h"
 
 /**
  * @class DataField
@@ -63,12 +66,24 @@ class DataField : public DataStructure {
     /**
      * @brief Move Constructor
      */
-    DataField( DataField &&other ) : DataStructure{std::move( other )} {};
+    DataField( DataField &&other ) : DataStructure{ std::move( other ) } {};
 
     /**
      * @brief Constructor
      */
     DataField() : DataStructure( 19, "CHAM_GD" ){};
+
+    std::string getFieldType() const {
+        const std::string questi1( "TYPE_CHAMP" );
+        const std::string typeco( "CHAMP" );
+        ASTERINTEGER repi = 0, ier = 0;
+        JeveuxChar32 repk( " " );
+        const std::string arret( "F" );
+
+        CALLO_DISMOI( questi1, getName(), typeco, &repi, repk, arret, &ier );
+
+        return trim( repk.toString() );
+    }
 };
 
 /**

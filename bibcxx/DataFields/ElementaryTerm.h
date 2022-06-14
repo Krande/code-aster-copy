@@ -88,6 +88,41 @@ class ElementaryTerm : public DataField {
         return trim( repk.toString() );
     }
 
+    ASTERINTEGER getNumberOfGroupOfCells() const {
+        _desc->updateValuePointer();
+
+        return ( *_desc )[1];
+    }
+
+    /**
+     * @brief Return MODE_LOCAL
+     */
+    std::string getLocalMode() const {
+        const auto nbGrel = getNumberOfGroupOfCells();
+        _desc->updateValuePointer();
+        const std::string cata = "&CATA.TE.NOMMOLOC";
+        JeveuxChar24 objName, charName;
+
+        std::string modeName;
+        for ( auto igr = 0; igr < nbGrel; igr++ ) {
+            auto mode = ( *_desc )[2 + igr];
+            if ( mode > 0 ) {
+                CALLO_JEXNUM( objName, cata, &mode );
+                CALLO_JENUNO( objName, charName );
+                auto modeN = trim( charName.toString().substr( 14, 10 ) );
+                if ( modeName.empty() ) {
+                    modeName = modeN;
+                } else {
+                    if ( modeName != modeN ) {
+                        AS_ABORT( "Multiple names." );
+                    }
+                }
+            }
+        }
+
+        return modeName;
+    }
+
     bool isMPIFull() {
         AS_ASSERT( _noli->exists() );
         _noli->updateValuePointer();

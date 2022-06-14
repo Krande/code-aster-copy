@@ -26,11 +26,13 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_fort_ds.h"
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NumpyAccess.h"
+#include "Meshes/BaseMesh.h"
 #include "Utilities/Tools.h"
 
 /**
@@ -55,6 +57,8 @@ class SimpleFieldOnNodes : public DataStructure {
     ASTERINTEGER _nbNodes;
     /** @brief Nombre de composantes */
     ASTERINTEGER _nbComp;
+    /** @brief Mesh */
+    BaseMeshPtr _mesh;
 
     /**
      * Functions to check an out-of-range condition
@@ -74,6 +78,14 @@ class SimpleFieldOnNodes : public DataStructure {
             throw std::runtime_error( "Component " + std::to_string( icmp ) +
                                       " is out of range [0, " + std::to_string( ncmp - 1 ) + "]" );
         }
+    }
+
+    void _checkSize( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) const {
+        if ( this->getNumberOfNodes() == 0 || this->getNumberOfComponents() == 0 )
+            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+
+        this->_checkNodeOOR( ino );
+        this->_checkCmpOOR( icmp );
     }
 
   public:
@@ -103,35 +115,71 @@ class SimpleFieldOnNodes : public DataStructure {
      */
     SimpleFieldOnNodes() : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ){};
 
+    SimpleFieldOnNodes( const BaseMeshPtr mesh, const std::string quantity,
+                        const VectorString &comp, bool zero = false )
+        : SimpleFieldOnNodes() {
+        _mesh = mesh;
+        ASTERINTEGER nbComp = comp.size();
+        std::string base = "G";
+
+        char *tabNames = vectorStringAsFStrArray( comp, 8 );
+
+        CALL_CNSCRE( _mesh->getName().c_str(), quantity.c_str(), &nbComp, tabNames, base.c_str(),
+                     getName().c_str(), (ASTERLOGICAL *)&zero );
+
+        FreeStr( tabNames );
+
+        build();
+    }
+
     /**
      * @brief Surcharge de l'operateur []
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ValueType &operator[]( ASTERINTEGER i ) { return _values->operator[]( i ); };
+    ValueType &operator[]( const ASTERINTEGER &i ) { return _values->operator[]( i ); };
 
-    const ValueType &getValue( ASTERINTEGER ino, ASTERINTEGER icmp ) const {
+    const ValueType &getValue( const ASTERINTEGER &ino, const ASTERINTEGER &icmp ) const {
 
 #ifdef ASTER_DEBUG_CXX
-        if ( this->getNumberOfNodes() == 0 || this->getNumberOfComponents() == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+        _checkSize( ino, icmp );
 #endif
 
-        this->_checkNodeOOR( ino );
-        this->_checkCmpOOR( icmp );
-        const long position = ino * this->getNumberOfComponents() + icmp;
-        bool allocated = ( *_allocated )[position];
+        const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
 
 #ifdef ASTER_DEBUG_CXX
+        bool allocated = ( *_allocated )[position];
+
         if ( !allocated ) {
-            std::cout << "DEBUG: Position (" + std::to_string( ino ) + ", " +
-                             std::to_string( icmp ) + ") is valid but not allocated!"
-                      << std::endl;
+            AS_ABORT( "DEBUG: Position (" + std::to_string( ino ) + ", " + std::to_string( icmp ) +
+                      ") is valid but not allocated!" )
         };
 #endif
 
         return ( *_values )[position];
     };
+
+    void setValue( const ASTERINTEGER &ino, const ASTERINTEGER &icmp, const ValueType &val ) {
+#ifdef ASTER_DEBUG_CXX
+        _checkSize( ino, icmp );
+#endif
+
+        const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
+
+        ( *_allocated )[position] = true;
+        ( *_values )[position] = val;
+    }
+
+    void addValue( const ASTERINTEGER &ino, const ASTERINTEGER &icmp, const ValueType &val ) {
+#ifdef ASTER_DEBUG_CXX
+        _checkSize( ino, icmp );
+#endif
+
+        const ASTERINTEGER position = ino * this->getNumberOfComponents() + icmp;
+
+        ( *_allocated )[position] = true;
+        ( *_values )[position] += val;
+    }
 
     /**
      * @brief Get number of components
@@ -154,8 +202,8 @@ class SimpleFieldOnNodes : public DataStructure {
     py::object getValues( bool copy = false ) {
         PyObject *resu_tuple = PyTuple_New( 2 );
 
-        npy_intp dims[2] = {_values->size() / this->getNumberOfComponents(),
-                            this->getNumberOfComponents()};
+        npy_intp dims[2] = { _values->size() / this->getNumberOfComponents(),
+                             this->getNumberOfComponents() };
 
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );
@@ -238,12 +286,33 @@ class SimpleFieldOnNodes : public DataStructure {
         _component->updateValuePointer();
         _values->updateValuePointer();
         _allocated->updateValuePointer();
+    };
+
+    bool build() {
+        updateValuePointers();
 
         _nbNodes = ( *_size )[0];
         _nbComp = ( *_size )[1];
         AS_ASSERT( _values->size() == _nbNodes * _nbComp );
         AS_ASSERT( _values->size() > 0 );
-    };
+
+        return true;
+    }
+
+    std::shared_ptr< FieldOnNodes< ValueType > > toFieldOnNodes() const {
+        auto cham_no = std::make_shared< FieldOnNodes< ValueType > >();
+
+        // Convert to CHAM_NO
+        std::string prof = " ", prol0 = "NON", base = "G", kstop = "F";
+        ASTERINTEGER iret = 0;
+        CALLO_CNSCNO_WRAP( getName(), prof, prol0, base, cham_no->getName(), kstop, &iret );
+
+        AS_ASSERT( iret == 0 );
+
+        cham_no->setMesh( _mesh );
+        cham_no->build();
+        return cham_no;
+    }
 };
 
 /** @typedef SimpleFieldOnNodesReal Class d'une champ simple de doubles */

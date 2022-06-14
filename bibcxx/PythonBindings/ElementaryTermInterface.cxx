@@ -48,6 +48,12 @@ void exportElementaryTermToPython( py::module_ &mod ) {
             Returns:
                 BaseMesh: a pointer to the mesh
         )" )
+        .def( "getLocalMode", &ElementaryTermReal::getLocalMode, R"(
+            Return the local mode.
+
+            Returns:
+                str: the local mode
+        )" )
         .def( "getPhysicalQuantity", &ElementaryTermReal::getPhysicalQuantity, R"(
             Return the physical quantity
 
@@ -77,6 +83,12 @@ void exportElementaryTermToPython( py::module_ &mod ) {
             Returns:
                 BaseMesh: a pointer to the mesh
             )" )
+        .def( "getLocalMode", &ElementaryTermComplex::getLocalMode, R"(
+            Return the local mode.
+
+            Returns:
+                str: the local mode
+        )" )
         .def( "getPhysicalQuantity", &ElementaryTermComplex::getPhysicalQuantity, R"(
             Return the physical quantity
 

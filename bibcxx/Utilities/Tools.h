@@ -98,4 +98,13 @@ std::vector< T > set_intersection( std::vector< T > &vec1, std::vector< T > &vec
     return common;
 }
 
+template < typename T >
+void print( T &vec ) {
+    std::cout << "Size: " << vec.size() << std::endl;
+    for ( auto &e : vec ) {
+        std::cout << e << ", ";
+    }
+    std::cout << std::endl;
+}
+
 #endif /* TOOLS_H_ */

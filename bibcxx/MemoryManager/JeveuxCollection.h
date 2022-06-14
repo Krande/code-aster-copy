@@ -294,6 +294,32 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     };
 
     /**
+     * @brief Allocation
+     * @param size number of objets in collection
+     * @param totalSize total size of the collection
+     * @param access type of access
+     * @param objectSizes size of objects (constant or variable)
+     */
+    template < typename T1 = AccessType, typename = IsSame< T1, ASTERINTEGER > >
+    typename std::enable_if< std::is_same< T1, ASTERINTEGER >::value, bool >::type
+    allocateContiguousNumbered( const std::vector< std::vector< ValueType > > &values,
+                                JeveuxCollectionObjectSizes objectSizes = Variable ) {
+
+        ASTERINTEGER totalSize = 0;
+        for ( auto &val : values ) {
+            totalSize += val.size();
+        }
+
+        genericAllocation( values.size(), Numbered, Contiguous, objectSizes, "", totalSize );
+
+        for ( auto &val : values ) {
+            push_back( val );
+        }
+
+        return true;
+    };
+
+    /**
      * @brief Allocation of one object by name
      */
     JeveuxCollObjValType allocateObject( const std::string &name, const ASTERINTEGER &nbValues ) {

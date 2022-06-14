@@ -91,6 +91,11 @@ void DEFSP( CORICHWRITE, corichwrite, const char *, STRING_SIZE, ASTERINTEGER * 
 void DEFSSS( CRESOL_WRAP, cresol_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );
 
+#define CALLO_CHPCHD( a, b, c, e, f, h, g ) CALLOOOOOOO( CHPCHD, chpchd, a, b, c, e, f, h, g )
+void DEFSSSSSSS( CHPCHD, chpchd, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                 STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                 STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_MATRIX_FACTOR( a, b, c, d, e, f, g )                                                 \
     CALLOOPOOPP( MATRIX_FACTOR, matrix_factor, a, b, c, d, e, f, g )
 void DEFSSPSSPP( MATRIX_FACTOR, matrix_factor, const char *, STRING_SIZE, const char *, STRING_SIZE,

@@ -242,6 +242,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
     ( *_numberOfDelayedNumberedConstraintNodes )[0] = nbVirtualNodes;
 
     const auto param = FEDesc->getParameters();
+    param->updateValuePointer();
     // Creation du .LGRF en y mettant les noms du maillage et modele d'origine
     _parameters->allocate( 3 );
     const auto &pMesh = mesh->getParallelMesh();
@@ -268,7 +269,10 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
         _virtualNodesNumbering->allocate( nbVirtualNodes + 2 );
         _dofOfDelayedNumberedConstraintNodes->allocate( nbVirtualNodes * nec );
         const auto &dNodesComp = FEDesc->getVirtualNodesComponentDescriptor();
+        dNodesComp->updateValuePointer();
         const auto &numbering = FEDesc->getVirtualNodesNumbering();
+        numbering->updateValuePointer();
+
         for ( ASTERINTEGER num = 0; num < nbOldVirtualNodes; ++num ) {
             if ( virtualNodesToKeep[num] == rank ) {
                 const ASTERINTEGER newNum = virtualNodesNumbering[num];

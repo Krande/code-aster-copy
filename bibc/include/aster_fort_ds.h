@@ -43,6 +43,21 @@ void DEFSSS( CELCES_WRAP, celces_wrap, const char *, STRING_SIZE, const char *, 
 void DEFSSS( CNOCNS_WRAP, cnocns_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );
 
+#define CALL_CNSCRE( a, b, c, d, e, g, h ) CALLSSPSSSP( CNSCRE, cnscre, a, b, c, d, e, g, h )
+#define CALLO_CNSCRE( a, b, c, d, e, g, h ) CALLOOPOOOP( CNSCRE, cnscre, a, b, c, d, e, g, h )
+void DEFSSPSSSP( CNSCRE, cnscre, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                 STRING_SIZE, ASTERLOGICAL * );
+
+#define CALLO_CNSCNO_WRAP( a, b, c, d, e, g, h )                                                   \
+    CALLOOOOOOP( CNSCNO_WRAP, cnscno_wrap, a, b, c, d, e, g, h )
+void DEFSSSSSSP( CNSCNO_WRAP, cnscno_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALL_CLEAN_JEVEUX_MEMORY() CALL0( CLEANJEVEUXMEMORY, cleanjeveuxmemory )
+void DEF0( CLEANJEVEUXMEMORY, cleanjeveuxmemory );
+
 #define CALL_DETMAT() CALL0( DETMAT, detmat )
 extern void DEF0( DETMAT, detmat );
 

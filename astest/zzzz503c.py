@@ -87,7 +87,7 @@ resu=CALC_CHAMP(RESULTAT=resu, reuse=resu, CONTRAINTE=('SIEF_ELGA'))
 
 DEPL = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = DEPL.exportToSimpleFieldOnNodes()
-sfon.updateValuePointers()
+sfon.build()
 
 SIEF = resu.getFieldOnCellsReal("SIEF_ELGA", 1)
 

@@ -28,7 +28,7 @@
 #include <algorithm>
 
 const char *PhysicalQuantityNames[nbPhysicalQuantities] = {
-    "", "", "", "", "DEPL", "PRES", "TEMP", "IMPE", "VNOR", "", "" };
+    "", "", "", "", "DEPL", "PRES", "TEMP", "IMPE", "VNOR", "", "", "NEUT" };
 
 const std::string &value( const std::pair< PhysicalQuantityComponent, std::string > &keyValue ) {
     return keyValue.second;

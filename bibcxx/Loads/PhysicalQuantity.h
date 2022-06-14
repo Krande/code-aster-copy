@@ -52,10 +52,11 @@ enum PhysicalQuantityEnum {
     Impedance,
     NormalSpeed,
     HeatFlux,
-    HydraulicFlux
+    HydraulicFlux,
+    Neutral
 };
 
-const int nbPhysicalQuantities = 11;
+const int nbPhysicalQuantities = 12;
 
 /**
  * @def PhysicalQuantityNames

@@ -45,6 +45,11 @@ elno = CREA_CHAMP(TYPE_CHAM='ELGA_DEPL_R',
                           NOM_CMP=('DX', 'DY', 'DZ'),
                           VALE=(-1.0, 2.0, 3.0)))
 
+test.assertEqual(elno.getPhysicalQuantity(), "DEPL_R")
+test.assertEqual(elno.getFieldType(), "ELGA")
+test.assertSequenceEqual(elno.getComponents(), ["DX", "DY", "DZ"])
+test.assertEqual(elno.getNumberOfComponents(), 3)
+
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=elno,
                        REFERENCE='ANALYTIQUE',
                        VALE_CALC=-1.0,
@@ -101,7 +106,8 @@ test.assertAlmostEqual(myField.norm("NORM_1"), 3 * nbNodes)
 
 field2 = field - myField
 
-test.assertAlmostEqual(field2.norm("NORM_2"), sqrt((4.0 + 1.0 + 4.0) * nbNodes))
+test.assertAlmostEqual(field2.norm("NORM_2"),
+                       sqrt((4.0 + 1.0 + 4.0) * nbNodes))
 
 # For a Parallel Mesh
 meshp = LIRE_MAILLAGE(FORMAT='MED', UNITE=20, PARTITIONNEUR="PTSCOTCH")
@@ -139,7 +145,8 @@ test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 test.printSummary()
 ftest = fieldp.duplicate()
-values_test = {'MAX': 4.0, 'MIN': -7.0, 'SOMM': 25 * 1.0 + 4.0 - 7.0, 'SOMM_ABS': 25 * 1.0 + 4.0 + 7.0}
+values_test = {'MAX': 4.0, 'MIN': -7.0, 'SOMM': 25 *
+               1.0 + 4.0 - 7.0, 'SOMM_ABS': 25 * 1.0 + 4.0 + 7.0}
 # for 'MAX' - DX
 ftest[0] = 4.0
 # for 'MIN' - DX
@@ -234,7 +241,7 @@ test.assertEqual(f_complex.norm("NORM_1"),
                  sum(map(abs, f_complex.getValues())))
 test.assertEqual(f_complex.norm("NORM_2"),
                  sqrt(sum(map(lambda x: abs(x) ** 2,
-                    f_complex.getValues()))))
+                              f_complex.getValues()))))
 test.assertEqual(f_complex.norm("NORM_INFINITY"),
                  max(map(abs, f_complex.getValues())))
 
