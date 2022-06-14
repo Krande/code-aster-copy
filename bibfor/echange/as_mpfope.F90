@@ -26,7 +26,7 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "med/mpfope.h"
-    med_idt, intent(in) :: fid
+    med_idt, intent(inout) :: fid
     character(len=*), intent(in) :: nom
     aster_int, intent(in) :: acces
     aster_int, intent(in) :: comm

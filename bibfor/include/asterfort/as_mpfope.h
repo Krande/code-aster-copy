@@ -19,7 +19,7 @@
 #include "asterf_types.h"
 interface
     subroutine as_mpfope(fid, nom, acces, comm, cret)
-        med_idt, intent(in) :: fid
+        med_idt, intent(inout) :: fid
         character(len=*), intent(in) :: nom
         aster_int, intent(in) :: acces
         aster_int, intent(in) :: comm
