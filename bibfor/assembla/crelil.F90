@@ -18,7 +18,7 @@
 
 subroutine crelil(kstop, nbmat, ilimat, lili, base,&
                   nomma, pref, gd, mailla, nec,&
-                  ncmp, ilimo, nlili, nbelm)
+                  ncmp, ilimo, nlili, nbelm, nume_)
 !
     implicit none
 !
@@ -47,6 +47,7 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
     integer :: iadnem, iadlie
     character(len=*) :: lili, nomma, pref, mailla
     character(len=1) :: base, kstop
+    character(len=14), optional :: nume_
 !
 !
 !
@@ -164,9 +165,14 @@ subroutine crelil(kstop, nbmat, ilimat, lili, base,&
 !
     if (exiss2(1:3) .eq. 'OUI') idimli=idimli+1
 !
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla(1:8))
-    call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
-    call dismoi('NUM_GD', pheno, 'PHENOMENE', repi=gd)
+    if(present(nume_)) then
+        call dismoi('NOM_MAILLA', nume_, 'NUME_DDL', repk=mailla(1:8))
+        call dismoi('NUM_GD_SI', nume_, 'NUME_DDL', repi=gd)
+    else
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla(1:8))
+        call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
+        call dismoi('NUM_GD', pheno, 'PHENOMENE', repi=gd)
+    end if
 !
 !---- CALCUL DE NEC ET NCMP
 !

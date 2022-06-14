@@ -15,27 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
 !
 interface
-    subroutine crelil(kstop, nbmat, ilimat, lili, base,&
-                      nomma, pref, gd, mailla, nec,&
-                      ncmp, ilimo, nlili, nbelm, nume_)
-        character(len=1) :: kstop
-        integer :: nbmat
-        integer :: ilimat
-        character(len=*) :: lili
-        character(len=1) :: base
-        character(len=*) :: nomma
-        character(len=*) :: pref
-        integer :: gd
-        character(len=*) :: mailla
-        integer :: nec
-        integer :: ncmp
-        integer :: ilimo
-        integer :: nlili
-        integer :: nbelm
-        character(len=14), optional :: nume_
-    end subroutine crelil
+    subroutine nume_ddl_matr(nume, ligrel, modeloc)
+        character(len=*), intent(in) :: nume
+        character(len=*), intent(in) :: ligrel
+        character(len=*), intent(in) :: modeloc
+    end subroutine nume_ddl_chamElem
 end interface

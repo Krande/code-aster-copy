@@ -68,8 +68,13 @@ subroutine relagm(mo, ma, nm, nl, newn,&
 !
 !-----------------------------------------------------------------------
     call jemarq()
-    call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
-    call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
+!
+    nbssa = 0
+    nbsma = 0
+    if(mo .ne. ' ') then
+        call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
+        call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
+    end if
     if (nbssa .gt. 0) then
         call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
         call jeexin(ma//'.TYPL', iret)

@@ -23,6 +23,7 @@
 
 #include "Numbering/BaseDOFNumbering.h"
 
+#include "aster_fort_calcul.h"
 #include "astercxx.h"
 
 #include "Supervis/ResultNaming.h"
@@ -93,6 +94,21 @@ bool BaseDOFNumbering::computeNumbering() {
 
     return true;
 };
+
+bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMode ) {
+
+    JeveuxVectorChar24 list_ligrel("&&LIST_LIGREL");
+    list_ligrel->reserve(_FEDVector.size());
+
+    for(auto& fed : _FEDVector){
+        list_ligrel->push_back(JeveuxChar24( fed->getName()));
+    }
+
+    CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode );
+    _isEmpty = false;
+
+    return true;
+}
 
 std::string BaseDOFNumbering::getPhysicalQuantity() const {
     _globalNumbering->_informations->updateValuePointer();

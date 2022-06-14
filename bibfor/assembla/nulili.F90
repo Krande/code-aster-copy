@@ -221,6 +221,21 @@ implicit none
         end do
         ASSERT(.false.)
  30     continue
+! --- Pour certains RESU_ELEM, il faut changer le nom
+! Il en manque sûrement (voir creprn.F90)
+        if(gran_name(1:4) == "MDEP" .or. gran_name(1:4) == "VDEP" &
+            .or. gran_name(1:4) == "MDNS" ) then
+            gran_name = "DEPL_"//gran_name(6:6)
+        elseif(gran_name(1:4) == "MTEM" .or. gran_name(1:4) == "VTEM" &
+            .or. gran_name(1:4) == "MTNS" ) then
+            gran_name = "TEMP_"//gran_name(6:6)
+        elseif(gran_name(1:4) == "MPRE" .or. gran_name(1:4) == "VPRE") then
+            gran_name = "PRES_"//gran_name(6:6)
+        elseif(gran_name(1:4) == "MSIZ" .or. gran_name(1:4) == "VSIZ") then
+            gran_name = "SIZZ_"//gran_name(6:6)
+        elseif(gran_name(1:4) == "MZNS" .or. gran_name(1:4) == "VNEU") then
+            gran_name = "NEUT_"//gran_name(6:6)
+        end if
     endif
     call jenonu(jexnom('&CATA.GD.NOMGD', gran_name), igds)
     ASSERT(igds.ne.0)

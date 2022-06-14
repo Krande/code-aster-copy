@@ -210,7 +210,7 @@ aster_logical, optional, intent(in) :: maskInve_
     vectAsseLili = vectAsse//'.LILI'
     call crelil('C', nbVectElem, jvVectElem, vectAsseLili, 'V',&
                 ligrelMesh, vectAsse, physQuan, mesh, nec,&
-                nbCmp, ilim, nlili, meshNbCell)
+                nbCmp, ilim, nlili, meshNbCell, nume_=numeDof)
 
 ! - No elementary terms to assemble, but maybe a nodal field
     if (nlili .eq. 1) then

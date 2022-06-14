@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -137,6 +137,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     ldgrel=.false.
     rang=0
     nbproc=1
+    nume_ddl=nu
+!
     call parti0(nbvec, tlivec, partit)
     if (partit .ne. ' ') then
         ldist=.true.
@@ -178,7 +180,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! --- CREATION D'UN VECAS(1:19).ADNE ET VECAS(1:19).ADLI SUR 'V'
     call crelil('F', nbvec, ilivec, kvelil, 'V',&
                 kmaila, vecas, gd, ma, nec,&
-                ncmp, ilim, nlili, nbelm)
+                ncmp, ilim, nlili, nbelm, nume_=nume_ddl)
 !
     call jeveuo(vecas(1:19)//'.ADLI', 'E', vi=adli)
     call jeveuo(vecas(1:19)//'.ADNE', 'E', iadnem)
@@ -195,7 +197,6 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! --- IL FAUT ESPERER QUE LE CHAM_NO EST EN INDIRECTION AVEC UN
 !     PROF_CHNO APPARTENANT A UNE NUMEROTATION SINON CA VA PLANTER
 !     DANS LE JEVEUO SUR KNEQUA
-    nume_ddl=nu
     if (nume_ddl(1:1) .eq. ' ') then
         vprof=vecpro
         call jeveuo(vprof//'.REFE', 'L', vk24=refe)

@@ -235,10 +235,9 @@ class GenericElementaryVector : public BaseElementaryVector {
         BaseDOFNumberingPtr nume = dofNume;
 
         if ( ( !nume ) || nume->isEmpty() ) {
-            AS_ABORT("Numbering is empty");
-            // nume = std::make_shared< DOFNumbering >();
-            // nume->addFiniteElementDescriptors( getFiniteElementDescriptor() );
-            // nume->computeNumberingWithLocalMode( getLocalMode() );
+            nume = std::make_shared< DOFNumbering >();
+            nume->addFiniteElementDescriptors( getFiniteElementDescriptor() );
+            nume->computeNumberingWithLocalMode( getLocalMode() );
         }
 
         // Create field

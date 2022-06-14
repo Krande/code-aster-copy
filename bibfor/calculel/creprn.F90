@@ -159,8 +159,28 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !       -- SI IL N'Y A PAS D'ELEMENTS FINIS
 !          ON EST EN SOUS-STRUCTURATION STATIQUE => MECANIQUE.
         call dismoi('NOM_GD', 'MECANIQUE', 'PHENOMENE', repk=nomgd)
+!
+!
     endif
 !
+! --- SI QUE l'ON RENTRE AVEC MODE_LOCAL
+    if(molocz .ne. ' ') then
+! --- Pour certains RESU_ELEM, il faut changer le nom
+! Il en manque sûrement (voir nulili.F90)
+        if(nomgd(1:4) == "MDEP" .or. nomgd(1:4) == "VDEP" &
+            .or. nomgd(1:4) == "MDNS" ) then
+            nomgd = "DEPL_"//nomgd(6:6)
+        elseif(nomgd(1:4) == "MTEM" .or. nomgd(1:4) == "VTEM" &
+            .or. nomgd(1:4) == "MTNS" ) then
+            nomgd = "TEMP_"//nomgd(6:6)
+        elseif(nomgd(1:4) == "MPRE" .or. nomgd(1:4) == "VPRE") then
+            nomgd = "PRES_"//nomgd(6:6)
+        elseif(nomgd(1:4) == "MSIZ" .or. nomgd(1:4) == "VSIZ") then
+            nomgd = "SIZZ_"//nomgd(6:6)
+        elseif(nomgd(1:4) == "MZNS" .or. nomgd(1:4) == "VNEU") then
+            nomgd = "NEUT_"//nomgd(6:6)
+        end if
+    end if
 !
 !     -- CALCUL DE GD ET NEC :
 !     ---------------------------------------------------------

@@ -366,7 +366,7 @@ character(len=4), intent(in) :: motcle
 !     de la liste de matrices elementaires matrAsse.lime
     call crelil('F', nbMatrElem, ilimat, matrAsse//'.LILI', 'V',&
                 '&MAILLA', matrAsse, ibid, mesh, ibid,&
-                ibid, ilimo, nlili, nbelm)
+                ibid, ilimo, nlili, nbelm, nume_=numeDof)
     call jeveuo(matrAsse//'.ADLI', 'E', jadli)
     call jeveuo(matrAsse//'.ADNE', 'E', jadne)
 

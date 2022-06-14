@@ -324,7 +324,7 @@ class BaseDOFNumbering : public DataStructure {
      * @param Args... Liste d'arguments template
      */
     template < typename... Args >
-    void addLoad( const Args &... a ) {
+    void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 
@@ -344,6 +344,11 @@ class BaseDOFNumbering : public DataStructure {
      * @brief Build the Numbering of DOFs
      */
     bool computeNumbering();
+
+    /**
+     * @brief Build the Numbering of DOFs
+     */
+    bool computeNumberingWithLocalMode( const std::string &localMode );
 
     /**
      * @brief Get Physical Quantity
@@ -453,6 +458,13 @@ class BaseDOFNumbering : public DataStructure {
         const auto model = this->getModel();
         if ( model != nullptr ) {
             return model->getMesh();
+        }
+        else{
+            for(auto& FED : _FEDVector){
+                if(FED && FED->getMesh()){
+                    return FED->getMesh();
+                }
+            }
         }
         return nullptr;
     };

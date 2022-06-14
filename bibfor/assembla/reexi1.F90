@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
     integer, pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
+    mo = ' '
     call jelira(nu//'.NUME.LILI', 'NOMMAX', nlili)
     do i = 1, nlili
         call jenuno(jexnum(nu//'.NUME.LILI', i), mo2)
@@ -120,16 +121,25 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
             goto 42
         endif
     end do
-    call utmess('F', 'ASSEMBLA_35', sk=nu)
+!    call utmess('F', 'ASSEMBLA_35', sk=nu)
 !
  42 continue
-    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    if(mo.ne. ' ') then
+        call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
+    else
+        call jenuno(jexnum(nu//'.NUME.LILI', nlili), nomli2)
+        nomlig=nomli2(1:19)
+        call dismoi('NOM_MAILLA', nomlig, 'LIGREL', repk=ma)
+    end if
 !
 !     -- CALCUL DE NBNOM:
 !     -------------------
-    call dismoi('NB_NO_MAILLA', mo, 'MODELE', repi=nm)
-    call dismoi('NB_MA_MAILLA', mo, 'MODELE', repi=nma)
-    call dismoi('NB_NL_MAILLA', mo, 'MODELE', repi=nl)
+    call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nm)
+    call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nma)
+    nl = 0
+    if(mo .ne. ' ') then
+        call dismoi('NB_NL_MAILLA', mo, 'MODELE', repi=nl)
+    end if
     nbnom=nm+nl
 !
 !     -- CALCUL DE NBNOT ET NBNTT :
@@ -158,8 +168,12 @@ subroutine reexi1(nu, mo, ma, nlili, nm,&
 !
 !     -- 1ERE ETAPE : (SUPER)MAILLES DU MAILLAGE:
 !     -------------------------------------------
-    call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
-    call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
+    nbssa = 0
+    nbsma = 0
+    if( mo .ne. ' ') then
+        call dismoi('NB_SS_ACTI', mo, 'MODELE', repi=nbssa)
+        call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
+    end if
     if (nbssa .gt. 0) then
         call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
     else

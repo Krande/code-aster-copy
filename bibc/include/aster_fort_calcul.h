@@ -131,6 +131,10 @@ void DEFSSSSSS( NUMERO_WRAP, numero_wrap, const char *, STRING_SIZE, const char 
 void DEFSSP( NUME_DDL_MATR, nume_ddl_matr, const char *, STRING_SIZE, const char *, STRING_SIZE,
              ASTERINTEGER * );
 
+#define CALLO_NUME_DDL_CHAMELEM( a, b, c ) CALLOOO( NUME_DDL_CHAMELEM, nume_ddl_chamelem, a, b, c )
+void DEFSSS( NUME_DDL_CHAMELEM, nume_ddl_chamelem, const char *, STRING_SIZE, const char *,
+              STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALL_MVMULT( a, b, c ) CALLOOO( MVMULT, mvmult, a, b, c )
 void DEFSSS( MVMULT, mvmult, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
              STRING_SIZE );

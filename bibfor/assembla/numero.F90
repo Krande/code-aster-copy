@@ -20,6 +20,7 @@ subroutine numero(nume_ddlz, base,&
                   old_nume_ddlz, modelocz    ,&
                   modelz       , list_loadz  ,&
                   nb_matr_elem , list_matr_elem,&
+                  nb_ligrel , list_ligrel,&
                   sd_iden_relaz)
 !
 implicit none
@@ -28,10 +29,12 @@ implicit none
 #include "asterfort/crnulg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gettco.h"
+#include "asterfort/assert.h"
 #include "asterfort/numer2.h"
 #include "asterfort/numcch.h"
 #include "asterfort/numoch.h"
 #include "asterfort/uttcpu.h"
+#include "asterfort/as_allocate.h"
 !
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -39,8 +42,8 @@ implicit none
     character(len=2), intent(in) :: base
     character(len=*), optional, intent(in) :: modelz
     character(len=*), optional, intent(in) :: list_loadz
-    character(len=24), optional, intent(in) :: list_matr_elem(*)
-    integer, optional, intent(in) :: nb_matr_elem
+    character(len=24), optional, intent(in) :: list_matr_elem(*), list_ligrel(*)
+    integer, optional, intent(in) :: nb_matr_elem, nb_ligrel
     character(len=*), optional, intent(in) :: old_nume_ddlz
     character(len=*), optional, intent(in) :: modelocz
     character(len=*), optional, intent(in) :: sd_iden_relaz
@@ -62,6 +65,7 @@ implicit none
 ! In  model          : name of model
 ! In  list_load      : list of loads
 ! In  list_matr_elem : list of elementary matrixes
+! In  list_ligrel    : list of ligrel
 ! In  nb_matr_elem   : number of elementary matrixes
 ! In  sd_iden_rela   : name of object for identity relations between dof
 !
@@ -71,7 +75,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_ligr
+    integer :: nb_ligr, igr
     character(len=8) :: nommai
     character(len=14) :: nume_ddl
     character(len=16) :: typsd
@@ -106,6 +110,13 @@ implicit none
 !
     if (present(list_matr_elem)) then
         call numoch(list_matr_elem, nb_matr_elem, list_ligr, nb_ligr)
+    elseif(present(list_ligrel)) then
+        ASSERT(present(nb_ligrel))
+        AS_ALLOCATE(vk24 = list_ligr, size = nb_ligrel)
+        nb_ligr= nb_ligrel
+        do igr = 1, nb_ligr
+            list_ligr(igr) = list_ligrel(igr)
+        end do
     else
         call numcch(modelz, list_loadz, list_ligr, nb_ligr)
     endif
