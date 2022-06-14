@@ -46,24 +46,32 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
         .def( "setElementaryCharacteristics", &BaseElementaryVector::setElementaryCharacteristics )
         .def( "build", &BaseElementaryVector::build );
 
+    py::class_< ElementaryVectorReal, ElementaryVectorRealPtr, BaseElementaryVector >(
+        mod, "ElementaryVectorReal" )
+        .def( py::init( &initFactoryPtr< ElementaryVectorReal > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorReal, std::string > ) )
+        .def( "getVeass", &ElementaryVectorReal::getVeass )
+        .def( "assemble", &ElementaryVectorReal::assemble );
+
+    py::class_< ElementaryVectorComplex, ElementaryVectorComplexPtr,
+                BaseElementaryVector >( mod, "ElementaryVectorComplex" )
+        .def( py::init( &initFactoryPtr< ElementaryVectorComplex > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorComplex, std::string > ) )
+        .def( "getVeass", &ElementaryVectorComplex::getVeass )
+        .def( "assemble", &ElementaryVectorComplex::assemble );
+
     py::class_< ElementaryVectorDisplacementReal, ElementaryVectorDisplacementRealPtr,
-                BaseElementaryVector >( mod, "ElementaryVectorDisplacementReal" )
+                ElementaryVectorReal >( mod, "ElementaryVectorDisplacementReal" )
         .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) )
-        .def( "getVeass", &ElementaryVectorDisplacementReal::getVeass )
-        .def( "assemble", &ElementaryVectorDisplacementReal::assemble );
+        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) );
 
     py::class_< ElementaryVectorTemperatureReal, ElementaryVectorTemperatureRealPtr,
-                BaseElementaryVector >( mod, "ElementaryVectorTemperatureReal" )
+                ElementaryVectorReal >( mod, "ElementaryVectorTemperatureReal" )
         .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) )
-        .def( "getVeass", &ElementaryVectorTemperatureReal::getVeass )
-        .def( "assemble", &ElementaryVectorTemperatureReal::assemble );
+        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) );
 
     py::class_< ElementaryVectorPressureComplex, ElementaryVectorPressureComplexPtr,
-                BaseElementaryVector >( mod, "ElementaryVectorPressureComplex" )
+                ElementaryVectorComplex >( mod, "ElementaryVectorPressureComplex" )
         .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) )
-        .def( "getVeass", &ElementaryVectorPressureComplex::getVeass )
-        .def( "assemble", &ElementaryVectorPressureComplex::assemble );
+        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) );
 };

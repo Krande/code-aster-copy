@@ -36,8 +36,7 @@
 
 FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTime ) {
 
-    ElementaryVectorDisplacementRealPtr elemVect =
-        std::make_shared< ElementaryVectorDisplacementReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >();
 
     if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -69,8 +68,7 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTi
 
 FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) {
 
-    ElementaryVectorDisplacementRealPtr elemVect =
-        std::make_shared< ElementaryVectorDisplacementReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >();
 
     if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -107,8 +105,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
 FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr disp_curr,
                                                            ASTERDOUBLE scaling ) {
 
-    ElementaryVectorDisplacementRealPtr elemVect =
-        std::make_shared< ElementaryVectorDisplacementReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >();
 
     if ( _phys_problem->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -134,7 +131,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     elemVect->build();
 
     // Assemble
-    FieldOnNodesRealPtr bume = elemVect->assemble( _phys_problem->getDOFNumbering() );
+    auto bume = elemVect->assemble( _phys_problem->getDOFNumbering() );
 
     if ( _phys_problem->getMesh()->isParallel() )
         CALLO_AP_ASSEMBLY_VECTOR( bume->getName() );
@@ -145,8 +142,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
 FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameters,
                                                   const FieldOnCellsRealPtr _externVarField ) {
 
-    ElementaryVectorDisplacementRealPtr elemVect =
-        std::make_shared< ElementaryVectorDisplacementReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >();
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -204,7 +200,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
 FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) const {
 
     auto dofNume = _phys_problem->getDOFNumbering();
-    FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
+    auto vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
 
     // Prepare loads
     const auto &_listOfLoads = _phys_problem->getListOfLoads();
@@ -255,7 +251,7 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
     }
 
     // Construct vect_asse object
-    FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
+    auto vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
     vectAsse->setValues( 0.0 );
     vectAsse->build();
 
@@ -292,8 +288,7 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
     }
 
     // Create elementary vectors
-    ElementaryVectorDisplacementRealPtr elemVect =
-        std::make_shared< ElementaryVectorDisplacementReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >();
     elemVect->setModel( currModel );
     elemVect->setMaterialField( currMater );
     if ( currElemChara ) {

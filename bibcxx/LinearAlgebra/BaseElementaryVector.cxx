@@ -16,7 +16,7 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#include "LinearAlgebra/ElementaryVector.h"
+#include "LinearAlgebra/BaseElementaryVector.h"
 
 #include "aster_fort_calcul.h"
 #include "astercxx.h"
