@@ -31,6 +31,10 @@ Le champ de variables de commande VARC %(k1)s ne contient pas autant de valeurs 
 de noeuds (%(i2)d) dans la structure de données résultat.
 """),
 
+    3: _("""
+Le mot-clé TEMP doit être une constante ou une fonction dépendant du paramètre INST.
+"""),
+
     4: _("""
 Erreur utilisateur :
 Incohérence entre le mot-clé FISSURE et le modèle associé au mot-clé RESULTAT.

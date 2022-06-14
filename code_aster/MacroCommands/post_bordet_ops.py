@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -144,15 +144,17 @@ def post_bordet_ops(self, RESULTAT, PARAM, TEMP, TOUT=None, GROUP_MA=None,
         fin_ordre = nume_ordre + 1
     elif list_ordre[0] != 0:
         fin_ordre = nume_ordre
+    
+#
+# Temperature a extraire : fonction du temps ou constante
+#
+    if TEMP.Parametres()['NOM_PARA'] not in ['INST','TOUTPARA']:
+        UTMESS('F','RUPTURE0_3')
+    
     for ordre in range(list_ordre[0], fin_ordre):
-#
-# Temperature a extraire : soit une fonction du temps, soit un reel
-#
-        if type(TEMP) == fonction_sdaster:
-            tempe = TEMP(list_inst[ordre])
-        elif type(TEMP) != fonction_sdaster:
-            tempe = TEMP
 
+        tempe = TEMP(list_inst[ordre])
+        
         def fseuil(epsi):
             return PARAM['SEUIL_CALC'](epsi, tempe)
 

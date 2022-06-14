@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,6 @@ POST_BORDET =MACRO(nom="POST_BORDET",
 
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,
                                       fr=tr("Resultat d'une commande globale STAT_NON_LINE")),
-         TEMP            =SIMP(statut='o',typ=(fonction_sdaster,'R')),
+         TEMP            =SIMP(statut='o',typ=(fonction_sdaster,)),
          COEF_MULT       =SIMP(statut='f',typ='R', defaut=1.),
            )

@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), IMPR_MACRO='OUI')
 #......................................................................
 
 
@@ -727,6 +727,9 @@ SIGU=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,2630.,
 
 
 #Calcul de bordet
+
+temp = DEFI_CONSTANTE(VALE=20.)
+
 BORDET=POST_BORDET(
             TOUT='OUI',
             INST=9.9999,
@@ -741,7 +744,7 @@ BORDET=POST_BORDET(
                      SEUIL_CALC=SIGY,
                      ),
             RESULTAT=U,
-            TEMP=20,
+            TEMP=temp,
              )
 
 
