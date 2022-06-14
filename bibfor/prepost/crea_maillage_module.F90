@@ -2108,7 +2108,7 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine sub_cells(this, cell_id, nb_cells, cells)
+    recursive subroutine sub_cells(this, cell_id, nb_cells, cells)
 !
         implicit none
 !
