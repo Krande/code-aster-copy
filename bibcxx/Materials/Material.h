@@ -67,8 +67,9 @@ class MaterialProperties : public DataStructure {
 
     MaterialProperties( const std::string &name, const MaterialProperties &toCopy );
 
-    MaterialProperties( const std::string &name, const VectorReal valR, const VectorComplex valC,
-                        const VectorString valK, const VectorString ordr, const VectorLong kord );
+    MaterialProperties( const std::string &name, const int nbParam, const VectorReal valR,
+                        const VectorComplex valC, const VectorString valK, const VectorString ordr,
+                        const VectorLong kord );
 
     ASTERDOUBLE getValueReal( int idx );
 
@@ -121,8 +122,8 @@ class Material : public DataStructure {
     /**
      * @brief Add properties for a factor keyword / behaviour from user's keywords
      */
-    void _addProperties( std::string name, VectorReal valR, VectorComplex valC, VectorString valK,
-                         VectorString ordr, VectorLong kord );
+    void _addProperties( std::string name, int nbParam, VectorReal valR, VectorComplex valC,
+                         VectorString valK, VectorString ordr, VectorLong kord );
 
     ASTERINTEGER size();
 

@@ -7348,6 +7348,8 @@ class Material(DataStructure):
         1. __init__(self: libaster.Material) -> None
         
         2. __init__(self: libaster.Material, arg0: str) -> None
+        
+        3. __init__(self: libaster.Material, arg0: libaster.Material) -> None
         """
     
     def getFunction(self, materialName, propertyName):
@@ -7397,7 +7399,11 @@ class Material(DataStructure):
         """
     
     def size(self):
-        pass
+        """Return the number of material names.
+        
+        Returns:
+            int: Number of material names.
+        """
 
 # class PartOfMaterialField in libaster
 

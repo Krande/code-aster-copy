@@ -79,30 +79,27 @@ MaterialProperties::MaterialProperties( const std::string &name, const MaterialP
     }
 }
 
-MaterialProperties::MaterialProperties( const std::string &name, const VectorReal valR,
-                                        const VectorComplex valC, const VectorString valK,
-                                        const VectorString ordr, const VectorLong kord )
+MaterialProperties::MaterialProperties( const std::string &name, const int nbParam,
+                                        const VectorReal valR, const VectorComplex valC,
+                                        const VectorString valK, const VectorString ordr,
+                                        const VectorLong kord )
     : DataStructure( name, 19, "MATER_PROP" ),
-      _valR( JeveuxVectorReal( getName() + ".VALR" ) ),
-      _valC( JeveuxVectorComplex( getName() + ".VALC" ) ),
-      _valK( JeveuxVectorChar16( getName() + ".VALK", valK.size() ) ) {
-    if ( valR.size() == 0 ) {
-        _valR->allocate( 1, 0. );
-        _valR->setSize( 0 );
-    } else {
-        _valR->allocate( valR.size() );
-        ( *_valR ) = valR;
+      _valR( JeveuxVectorReal( getName() + ".VALR", nbParam ) ),
+      _valC( JeveuxVectorComplex( getName() + ".VALC", nbParam ) ),
+      _valK( JeveuxVectorChar16( getName() + ".VALK", 2 * nbParam ) ) {
+    ( *_valR ) = 0.;
+    _valR->setSize( valR.size() );
+    for ( int idx = 0; idx < valR.size(); idx++ ) {
+        ( *_valR )[idx] = valR[idx];
     }
 
-    if ( valC.size() == 0 ) {
-        _valC->allocate( 1, 0. );
-        _valC->setSize( 0 );
-    } else {
-        _valC->allocate( valC.size() );
-        ( *_valC ) = valC;
-        _valC->setSize( valC.size() - _valR->size() );
+    ( *_valC ) = std::complex( 0., 0. );
+    _valC->setSize( valC.size() );
+    for ( int idx = 0; idx < valC.size(); idx++ ) {
+        ( *_valC )[valR.size() + idx] = valC[idx];
     }
 
+    _valK->setSize( valK.size() );
     int idx = 0;
     for ( auto elt : valK ) {
         ( *_valK )[idx] = elt;
@@ -204,15 +201,15 @@ std::string Material::_storeListFunc( VectorString vect ) {
     return name;
 }
 
-void Material::_addProperties( std::string name, VectorReal valR, VectorComplex valC,
+void Material::_addProperties( std::string name, int nbParam, VectorReal valR, VectorComplex valC,
                                VectorString valK, VectorString ordr, VectorLong kord ) {
     if ( _names->exists() && std::find( _names.begin(), _names.end(), name ) != _names.end() ) {
         throw std::runtime_error( "Properties for '" + name + "' are already defined" );
     }
     _names->push_back( name );
 
-    _prop.push_back( std::make_shared< MaterialProperties >( _cptName( _names->size() ), valR, valC,
-                                                             valK, ordr, kord ) );
+    _prop.push_back( std::make_shared< MaterialProperties >( _cptName( _names->size() ), nbParam,
+                                                             valR, valC, valK, ordr, kord ) );
 }
 
 void Material::_setTractionFunction( std::string name, std::string keyword,

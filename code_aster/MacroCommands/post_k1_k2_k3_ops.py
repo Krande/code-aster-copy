@@ -848,7 +848,6 @@ def affiche_traitement(FOND_FISS, Lnofon, ino):
 
 def get_tab(self, lev, ino, Tlib, Lno, TTSo, FOND_FISS, TYPE_MAILLAGE, tabl_depl, syme_char):
     """retourne la table des deplacements des noeuds perpendiculaires"""
-
     if lev == "sup" or (lev == "inf" and syme_char == "NON" and FOND_FISS):
 
         if FOND_FISS:
@@ -1019,7 +1018,6 @@ def affiche_instant(inst, type_para):
 
 def get_tab_inst(lev, inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabinf, type_para):
     """retourne la table des deplacements des noeuds à l'instant courant"""
-
     tab = None
     assert lev == "sup" or lev == "inf"
 
@@ -1101,7 +1099,7 @@ def get_propmat_varc_fem(
 
     coefd3 = 0.0
     coefd = e * NP.sqrt(2.0 * pi)
-    unmnu2 = 1.0 - nu**2
+    unmnu2 = 1.0 - nu ** 2
     unpnu = 1.0 + nu
     if MODELISATION == "3D":
         coefd = coefd / (8.0 * unmnu2)
@@ -1213,7 +1211,7 @@ def get_propmat_varc_xfem(
     nu = valres[1]
     coefd3 = 0.0
     coefd = e * NP.sqrt(2.0 * pi)
-    unmnu2 = 1.0 - nu**2
+    unmnu2 = 1.0 - nu ** 2
     unpnu = 1.0 + nu
     if MODELISATION == "3D":
         coefd = coefd / (8.0 * unmnu2)
@@ -1427,7 +1425,7 @@ def get_kgsig(saut, nbval, coefd, coefd3):
     isig = NP.sign(NP.transpose(NP.resize(saut[:, -1], (nbval - 1, 3))))
     isig = NP.sign(isig + 0.001)
     saut2 = saut * NP.array([[coefd] * nbval, [coefd] * nbval, [coefd3] * nbval])
-    saut2 = saut2**2
+    saut2 = saut2 ** 2
     ksig = isig[:, 1]
     ksig = NP.array([ksig, ksig])
     ksig = NP.transpose(ksig)
@@ -1513,7 +1511,7 @@ def get_meth3(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
     #     attention, ici, il faut NP.sum et pas sum tout court
     k = NP.sum(NP.transpose(k), axis=0)
     de = abscs[-1]
-    vk = (k / de**2) * isig[:, 0]
+    vk = (k / de ** 2) * isig[:, 0]
     g = coefg * (vk[0] ** 2 + vk[1] ** 2) + coefg3 * vk[2] ** 2
     kg3 = NP.concatenate([[vk[0]] * 2, [vk[1]] * 2, [vk[2]] * 2, [g] * 2])
     if INFO == 2:
@@ -1795,7 +1793,6 @@ def post_k1_k2_k3_ops(
     par extrapolation des sauts de déplacements sur les lèvres de
     la fissure. Produit une table.
     """
-
     EnumTypes = (list, tuple)
 
     tabout = []
@@ -1860,104 +1857,44 @@ def post_k1_k2_k3_ops(
         MAILLAGE = RESULTAT.getModel().getMesh()
     except:
         MAILLAGE = CHAM_MATER.getMesh()
-    nom_ma = MAILLAGE.getName()
 
     #   ------------------------------------------------------------------
     #                         CARACTERISTIQUES MATERIAUX
     #   ------------------------------------------------------------------
-    mater_fonc = False
-
-    matph = MATER.sdj.NOMRC.get()
-    phenom = None
-    ind = 0
-    for cmpt in matph:
-        ind = ind + 1
-        if cmpt[:4] == "ELAS":
-            phenom = cmpt
-            break
-    if phenom is None:
+    matph = MATER.getMaterialNames()
+    matElas = [i for i in matph if i.startswith("ELAS")]
+    if not matElas:
         UTMESS("F", "RUPTURE0_5")
-    ns = "{:06d}".format(ind)
 
-    compor = sd_compor1("%-8s.CPT.%s" % (MATER.getName(), ns))
-    valk = [s.strip() for s in compor.VALK.get()]
-    valr = compor.VALR.get()
-    dicmat = dict(list(zip(valk, valr)))
-
-    e = dicmat["E"]
-    nu = dicmat["NU"]
+    mater_fonc = MATER.getFunction("ELAS", "E") is not None
+    e = MATER.getFunction("ELAS", "E")
+    nu = MATER.getFunction("ELAS", "NU")
+    if not mater_fonc:
+        e = MATER.getValueReal("ELAS", "E")
+        nu = MATER.getValueReal("ELAS", "NU")
 
     #   ---
-    #   Si E et NU sont nuls, on verifie qu'il s'agit bien d'un materiau fonction
+    #   Materiau fonction
     #   ---
-    if e == 0.0 and nu == 0.0:
-
-        mater_fonc = True
-
+    if mater_fonc:
         # erreur fatale si le MCS MATER est renseigne car on n'autorise que la
         # surcharge par un materiau constant
         if args.get("MATER") is not None:
-            UTMESS("F", "RUPTURE0_6", valk=MATER.getName())
+            UTMESS("F", "RUPTURE0_6", valk=MATER.userName)
 
-        #       valk contient les noms des operandes mis dans defi_materiau dans une premiere partie et
-        #       et les noms des concepts de type [fonction] (ecrits derriere les operandes) dans une
-        #       une seconde partie
-        list_oper = valk[: len(valk) // 2]
-        list_fonc = valk[len(valk) // 2 :]
-
-        try:
-            list_oper.remove("B_ENDOGE")
-        except ValueError:
-            pass
-        try:
-            list_oper.remove("RHO")
-        except ValueError:
-            pass
-        try:
-            list_oper.remove("PRECISION")
-        except ValueError:
-            pass
-        try:
-            list_oper.remove("K_DESSIC")
-        except ValueError:
-            pass
-        try:
-            list_oper.remove("TEMP_DEF_ALPHA")
-        except ValueError:
-            pass
-        try:
-            list_oper.remove("COEF_AMOR")
-        except ValueError:
-            pass
-        try:
-            list_oper.remove("LONG_CARA")
-        except ValueError:
-            pass
-
-        nom_fonc_e = None
-        nom_fonc_nu = None
-        for matBehav in MATER.getVectorOfMaterialProperties():
-            if matBehav.hasValueGenericFunction("E"):
-                nom_fonc_e = matBehav.getValueGenericFunction("E")
-            if matBehav.hasValueGenericFunction("Nu"):
-                nom_fonc_nu = matBehav.getValueGenericFunction("Nu")
-        nom_fonc_e_prol = nom_fonc_e.sdj.PROL.get()[0].strip()
-        nom_fonc_nu_prol = nom_fonc_nu.sdj.PROL.get()[0].strip()
+        prop_e = e.getProperties()
+        prop_nu = nu.getProperties()
 
         #       on verifie que les fonctions ne dependent bien que de TEMP ou NEUT1
         authorized_para = ["TEMP", "NEUT1"]
-        if (
-            not (nom_fonc_e.Parametres()["NOM_PARA"] in authorized_para)
-            and nom_fonc_e_prol != "CONSTANT"
-        ) or (
-            not (nom_fonc_nu.Parametres()["NOM_PARA"] in authorized_para)
-            and nom_fonc_nu_prol != "CONSTANT"
+        if (prop_e[2] not in authorized_para and prop_e[0] != "CONSTANT") or (
+            prop_nu[2] not in authorized_para and prop_nu[0] != "CONSTANT"
         ):
             UTMESS("F", "RUPTURE1_67")
 
         #       on verifie que le nom de parametre est le meme pour e et nu
-        assert nom_fonc_e.Parametres()["NOM_PARA"] == nom_fonc_e.Parametres()["NOM_PARA"]
-        para_fonc = nom_fonc_e.Parametres()["NOM_PARA"]
+        assert prop_e[2] == prop_nu[2]
+        para_fonc = prop_e[2]
 
         #       la presence de variables de commande est obligatoire (verif a priori inutile, car on aurait deja du planter
         #       en amont dans STAT_NON_LINE / MECA_STATIQUE (rcvalb))
@@ -1967,13 +1904,12 @@ def post_k1_k2_k3_ops(
     #   Sinon il s'agit d'un materiau constant
     #   ---
     else:
-
         if e == 0.0:
             UTMESS("F", "RUPTURE0_53")
 
         coefd3 = 0.0
         coefd = e * NP.sqrt(2.0 * pi)
-        unmnu2 = 1.0 - nu**2
+        unmnu2 = 1.0 - nu ** 2
         unpnu = 1.0 + nu
         if MODELISATION == "3D":
             coefd = coefd / (8.0 * unmnu2)

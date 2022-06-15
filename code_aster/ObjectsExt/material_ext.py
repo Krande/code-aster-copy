@@ -126,6 +126,7 @@ class ExtendedMaterial:
                         obj.append(mater._storeListFunc([func.getName() for func in value]))
                         mater.addDependencies(*value)
                         logger.debug("store functions: %s.LISV_FO: %s", obj[-1], value)
+                    seen.append(key)
                     continue
 
                 # generic cases
@@ -163,8 +164,6 @@ class ExtendedMaterial:
                         for key in seen
                     ]
                 )
-            for _ in nameR:
-                valC.insert(0, 0.0)
             logger.debug("Content of {}.CPT.{:06d}".format(mater.getName(), idx))
             logger.debug(".VALR: %s, size: %d", valR, len(nameR))
             logger.debug(".VALC: %s, size: %d", valC, len(nameC))
@@ -174,7 +173,7 @@ class ExtendedMaterial:
                 logger.debug(".KORD: %s", kord)
             name = re.sub("_FO$", "", name.strip())
             logger.debug('NOMRC.append("%s")', name)
-            mater._addProperties(name, valR, valC, valK, ordr, kord)
+            mater._addProperties(name, len(seen), valR, valC, valK, ordr, kord)
 
     @deprecated(case=1, help="Use 'size()' instead.")
     def getNumberOfMaterialProperties(self):
