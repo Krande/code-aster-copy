@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
       parameter (nbelas3d=4)
       parameter (NMATFLU=56)
       parameter (NMATAILX=0)
-      parameter (NVARFLU=108)
+      parameter (NVARFLU=109)
 
 !   taille du pseudo vecteur des contraintes pour fluendo3d (tjrs 6
 !   en raison de son utilisation dans fludes3d qui la suppose à 6)      
@@ -92,7 +92,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !   temperatures debut et fin de pas , moyenne, pas de temps, volule rgi     
       real(kind=8) :: dt3d,phig3d  
      
-    parameter       (nvari=108)
+    parameter       (nvari=109)
     integer, dimension(2) :: vali
 
 

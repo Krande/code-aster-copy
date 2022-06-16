@@ -20,7 +20,7 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
       gft,gfr,iso,sigf6,sigf6d,rt33,ref33,&
       souplesse66,epspg6,eprg00,a,b,x,ipzero,ngf,&
       ekdc,epspc6,dt3,dr3,dgt3,dgc3,dc,wl3,xmt,dtiso,rt,dtr,&
-      dim3,ndim,ifour,epeqpc)
+      dim3,ndim,ifour,epeqpc,young,ept,errgf)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
       
@@ -65,7 +65,7 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
       
       real(kind=8) :: gfrmin,trepsdc,xx1
       
-      real(kind=8) :: umdtr
+      real(kind=8) :: umdtr,young,gftmin,ept,errgf
 
 !     seuil init d endo par rgi      
       real(kind=8) :: epsseuil0
@@ -103,6 +103,7 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
       dgc3(:)=0.d0
       ref331(:,:)=0.d0
       wl3(:)=0.d0
+      errgf=0.d0
 !      wpl3(:)=0.d0
 
 !***********************************************************************
@@ -110,9 +111,14 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
 !*********************************************************************** 
 !     passage de rt dans la base principale des ouvertures maxi
       call chrep3d(rt331,rt33,vwplx33)   
+      call tail_reel(long3,vwpl33,dim3,ndim,ifour)
       do i=1,3
-        wkt=gft/rt331(i,i)      
+        gftmin=long3(i)*(0.5d0*rt*ept)*1.1
+        wkt=max(gft,gftmin)/rt331(i,i)-long3(i)*ept/2.d0
         dt3(i)=wplx3(i)*(wplx3(i)+2.d0*wkt)/(wkt+wplx3(i))**2
+        if (gftmin.gt.gft .and. dt3(i).gt.0.01) then
+          errgf=max(errgf,(gftmin-gft)/gft)
+        end if
       end do    
 !     calcul de la matrice d endommagement de traction
       call umdt3d(souplesse66,dt3,umdt66,a,b,x,ipzero,ngf,errg,iso)      
@@ -165,7 +171,7 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
 !     calcul des indicateur de refermetures 
       xx=dmax1(souplesse66(1,1),souplesse66(2,2),souplesse66(3,3)) 
       youngmin=1.d0/xx
-      call tail_reel(long3,vwpl33,dim3,ndim,ifour) 
+      call tail_reel(long3,vwplx33,dim3,ndim,ifour)
       do i=1,3
           gfrmin=2.d0*(ref331(i,i)**2/youngmin)*long3(i)
           if(gfr.lt.gfrmin) then
