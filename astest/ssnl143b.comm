@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,13 @@ RayonBarre = 10.0E-03
 Section = math.pi*pow(RayonBarre,2)
 
 # Paramètres (k1=8.0E-03, k2=1.25)  4000.0*Heure, début précis
-kecoul = 1.45558790406
-necoul = 6.10743489945
-necrou = 1.33140738573
-becrou = 47893.0394375
-cecrou = 32941.1476218
+kecoul = DEFI_CONSTANTE(VALE=1.45558790406)
+necoul = DEFI_CONSTANTE(VALE=6.10743489945)
+necrou = DEFI_CONSTANTE(VALE=1.33140738573)
+becrou = DEFI_CONSTANTE(VALE=47893.0394375)
+cecrou = DEFI_CONSTANTE(VALE=32941.1476218)
+fprg_f = DEFI_CONSTANTE(VALE=fprg)
+
 
 Temper=DEFI_FONCTION(
     NOM_PARA='TEMP',
@@ -121,7 +123,7 @@ Linst=DEFI_LIST_INST(
 Acier= DEFI_MATERIAU(INFO=1,
     ELAS=_F(E=Young, NU=0.10 ),
     RELAX_ACIER =_F(
-        F_PRG  = fprg,
+        F_PRG  = fprg_f,
         ECOU_K = kecoul,
         ECOU_N = necoul,
         ECRO_N = necrou,

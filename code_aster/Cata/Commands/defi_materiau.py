@@ -1669,31 +1669,31 @@ DEFI_MATERIAU = MACRO(
     RELAX_ACIER=FACT(
         statut="f",
         F_PRG=SIMP(
-            statut="f", typ=("R", fonction_sdaster, formule), fr="Contrainte limite élastique"
+            statut="f", typ=(fonction_sdaster, formule), fr="Contrainte limite élastique"
         ),
         ECOU_K=SIMP(
             statut="o",
-            typ=("R", fonction_sdaster, formule),
+            typ=(fonction_sdaster, formule),
             fr="Dénominateur de la fonction d'écoulement visqueux",
         ),
         ECOU_N=SIMP(
             statut="o",
-            typ=("R", fonction_sdaster, formule),
+            typ=(fonction_sdaster, formule),
             fr="Puissance de la fonction d'écoulement visqueux",
         ),
         ECRO_N=SIMP(
             statut="o",
-            typ=("R", fonction_sdaster, formule),
+            typ=(fonction_sdaster, formule),
             fr="Puissance de la fonction d'écrouissage",
         ),
         ECRO_B=SIMP(
             statut="o",
-            typ=("R", fonction_sdaster, formule),
+            typ=(fonction_sdaster, formule),
             fr="Assymptote de la fonction d'écrouissage",
         ),
         ECRO_C=SIMP(
             statut="o",
-            typ=("R", fonction_sdaster, formule),
+            typ=(fonction_sdaster, formule),
             fr="Tangente à l'origine de la fonction d'écrouissage",
         ),
     ),
