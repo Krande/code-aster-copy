@@ -341,6 +341,7 @@ DICT_NOM_VARI = {
     "ERD33": _("déformation déviatorique réversible, composante 33"),
     "ERRCOM": _("Pourcentage d'erreur sur la réponse en compression"),
     "ERRFLE": _("Pourcentage d'erreur sur la réponse en flexion"),
+    "ERGF": _("FLUA_ENDO_PORO : Erreur sur l'énergie de fissuration dissipée en traction"),
     "ERSP": _("Déformation sphérique réversible"),
     "FECRDVC1": _("Hujeux : facteur de mobilisation du mécanisme déviatoire cyclique, k= 1"),
     "FECRDVC2": _("Hujeux : facteur de mobilisation du mécanisme déviatoire cyclique, k= 1"),

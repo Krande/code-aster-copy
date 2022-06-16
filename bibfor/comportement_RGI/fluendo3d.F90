@@ -66,7 +66,7 @@ implicit none
      real(kind=8) ::  tauk00,tauk1,taum00,teta,treps,trepspg
      real(kind=8) ::  umdt,vrgi00,vrgi1,vrgi2,vsrw,vw,vw1,vw2,we0s,xb1mg00
      real(kind=8) ::  xflu,xk00,xlim00,young00,xm00,xnsat,xnsat00,xpas1
-     real(kind=8) ::  xx1,gfr,epeqpc
+     real(kind=8) ::  xx1,gfr,epeqpc,errgf
 
      integer i,j,k,l,ndim,npas1,nt,ifour
 
@@ -1995,7 +1995,7 @@ end if
                  gft,gfr,iso,sigf6,sigf6d,rt33,ref33,&
                  souplesse66,epspg6,eprg00,a,b,x,ipzero,ngf,&
                  ekdc,epspc6,dt3,dr3,dgt3,dgc3,dc,wl3,xmt,dtiso,rt,dtr,&
-                 dim3,ndim,ifour,epeqpc)
+                 dim3,ndim,ifour,epeqpc,young,ept,errgf)
 !            stockage des endommagements de fissuration et ouverture
              varf(96)=dtr
              do i=1,3
@@ -2012,6 +2012,8 @@ end if
              end do
 !            endommagement de compression
              varf(95)=dc
+!            erreur de dissipation d'énergie en traction          
+             varf(109)=errgf
 !            traitement erreur endo
              if (err1.eq.1) then
                  call utmess('E', 'COMPOR3_34')
