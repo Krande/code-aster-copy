@@ -16,8 +16,9 @@ omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes)
 print("**** Eigen Pulses ****")
 print(omega)
 
-ref = [13.58422747+0.j, 25.93127875+0.j, 37.48177452+0.j, 63.65458916+0.j,
- 70.38457542+0.j, 74.24372915+0.j]
+ref =[13.5530744 +0.j, 29.2812197 +0.j,
+ 37.48197441+0.j, 56.33309667+0.j,
+ 70.41095328+0.j, 72.40422053+0.j]
 
 for idx, val in enumerate(omega):
     test.assertAlmostEqual(val, ref[idx], delta=1.e-2)
