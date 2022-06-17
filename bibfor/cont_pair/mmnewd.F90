@@ -238,6 +238,7 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
                     dff)
         call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1,&
                     tang_2)
+        error = 1
     endif
 !
 ! - End of loop
