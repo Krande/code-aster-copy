@@ -78,7 +78,7 @@ class BaseAssemblyMatrix:
             PetscMat: PETSc matrix.
         """
 
-        if isinstance(self, AssemblyMatrixDisplacementReal):
+        if isinstance(self, (AssemblyMatrixDisplacementReal, AssemblyMatrixTemperatureReal)):
             return assemblyMatrixToPetsc(self)
         else:
             raise NotImplementedError("Type not supported by Petsc")

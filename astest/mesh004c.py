@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import numpy as N
+import petsc4py
 import code_aster
 from code_aster.Commands import *
 from code_aster import MPI
@@ -95,28 +96,24 @@ retour = RESOUDRE(MATR=matrAsse,
                   ALGORITHME='CR',
                   RESI_RELA=1E-9,)
 
-try:
-    import petsc4py
-    A = matrAsse.toPetsc()
-except (ImportError, NotImplementedError):
-    pass
-else:
-    v = petsc4py.PETSc.Viewer()
-    A.view(v)
-    v = petsc4py.PETSc.Viewer().createASCII("test.txt")
-    v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
+A = matrAsse.toPetsc()
 
-    rank = A.getComm().getRank()
-    print('rank=', rank)
-    rs, re = A.getOwnershipRange()
-    ce, _ = A.getSize()
-    rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
-    cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
-    rows = petsc4py.PETSc.IS().createGeneral(rows, comm=A.getComm())
-    cols = petsc4py.PETSc.IS().createGeneral(cols, comm=A.getComm())
-    (S,) = A.createSubMatrices(rows, cols)
-    v = petsc4py.PETSc.Viewer().createASCII("mesh004c_rank"+str(rank)+".out", comm=S.getComm())
-    S.view(v)
+v = petsc4py.PETSc.Viewer()
+A.view(v)
+v = petsc4py.PETSc.Viewer().createASCII("test.txt")
+v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
+
+rank = A.getComm().getRank()
+print('rank=', rank)
+rs, re = A.getOwnershipRange()
+ce, _ = A.getSize()
+rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
+cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
+rows = petsc4py.PETSc.IS().createGeneral(rows, comm=A.getComm())
+cols = petsc4py.PETSc.IS().createGeneral(cols, comm=A.getComm())
+(S,) = A.createSubMatrices(rows, cols)
+v = petsc4py.PETSc.Viewer().createASCII("mesh004c_rank"+str(rank)+".out", comm=S.getComm())
+S.view(v)
 
 test.printSummary()
 
