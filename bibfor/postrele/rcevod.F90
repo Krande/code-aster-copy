@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -272,8 +272,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                     l5 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l5)
-                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) + (zr(jsigm-1+l2) - zr(jsigm-1+l5)&
-                                &)
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) +&
+                    (zr(jsigm-1+l2) - zr(jsigm-1+l5))
     101         continue
             else
                 do 112 icmp = 1, ncmp
@@ -283,8 +283,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                     l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) - (zr(jsigm-1+l3) - zr(jsigm-1+l4)&
-                                &)
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) -&
+                    (zr(jsigm-1+l3) - zr(jsigm-1+l4))
     112         continue
             endif
             call rctres(tpm, tresca)
@@ -311,8 +311,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                     l5 = 5*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l5)
-                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) + (zr(jsigm-1+l2) - zr(jsigm-1+l5)&
-                                &)
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) +&
+                     (zr(jsigm-1+l2) - zr(jsigm-1+l5))
     111         continue
             else
                 do 122 icmp = 1, ncmp
@@ -322,8 +322,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                     l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - (zr(jsigm-1+l3) + zr(jsigm-1+l4)&
-                                &)
+                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) -&
+                     (zr(jsigm-1+l3) + zr(jsigm-1+l4))
     122         continue
             endif
             call rctres(tpm, tresca)

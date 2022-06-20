@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,8 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
     integer :: ioe1, ioe2, npar1, jspo, jspe, jfao, jfae, jnoc, jresu, jresp
     integer :: jspto, jspte, jspmo, jspme
     parameter  ( ncmp = 6 )
-    real(kind=8) :: tpm(ncmp), tpb(ncmp), tpbo(ncmp), tpbe(ncmp), tpmpbo(ncmp), tpmpbe(ncmp), pm, pb, pbo, pbe
+    real(kind=8) :: tpm(ncmp), tpb(ncmp), tpbo(ncmp), tpbe(ncmp), tpmpbo(ncmp)
+    real(kind=8) :: tpmpbe(ncmp), pm, pb, pbo, pbe
     real(kind=8) :: pmpbo, pmpbe, ipm, ipb, ipbo, ipbe, ipmpbo, ipmpbe, sno, sne, i1sno
     real(kind=8) :: i2sno, i1sne, i2sne, spo, spe, keo, kee, sao, sae, nao, nae
     real(kind=8) :: doo, doe, dco, dce, stlin, stpar, ketho, kethe, tresca
@@ -285,10 +286,10 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                     l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
                     tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) - ( zr(jsigm-1+l3) - zr(jsigm-1+l4&
-                                &) )
-                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - ( zr(jsigm-1+l3) + zr(jsigm-1+l4&
-                                &) )
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) -&
+                    ( zr(jsigm-1+l3) - zr(jsigm-1+l4) )
+                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) -&
+                    ( zr(jsigm-1+l3) + zr(jsigm-1+l4) )
                 endif
 102         continue
             call rctres(tpm, tresca)
