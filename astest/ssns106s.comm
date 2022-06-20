@@ -1,0 +1,126 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+
+# Mesh
+mesh3Dli = LIRE_MAILLAGE(UNITE=20)
+MA = CREA_MAILLAGE(MAILLAGE=mesh3Dli, COQUE_SOLIDE=_F(GROUP_MA="DALLE", GROUP_MA_SURF="Face_sup"))
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="L_depl_sup"),
+        _F(GROUP_MA="L_depl_inf"),
+        _F(GROUP_MA="BORDS"),
+        _F(DIFFE=("BORDS", "L_blocage_y"), NOM="CL_IMPOS"),
+    ),
+)
+
+
+# Model
+MO = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA=("DALLE",), PHENOMENE="MECANIQUE", MODELISATION="COQUE_SOLIDE"),)
+)
+
+# Paramètres élastiques BETON
+EB = 35220.0e6
+NUB = 0.2
+RHOB = 2500.0
+AMOR_ALP = 3.7771128018011707e-05
+AMOR_BET = 2.6476993459625175
+
+# Material parameters
+BETON_E = DEFI_MATERIAU(ELAS=_F(E=EB, NU=NUB, RHO=RHOB, AMOR_ALPHA=AMOR_ALP, AMOR_BETA=AMOR_BET))
+MATER = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA="DALLE", MATER=BETON_E))
+
+# Function for loading
+chf1 = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+
+# Time list
+inst1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, PAS=0.05))
+
+lisnt1 = DEFI_LIST_INST(
+    METHODE="MANUEL",
+    DEFI_LIST=_F(LIST_INST=inst1),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL"),
+)
+
+
+# BOundary conditions
+UX_IMPOS = FORMULE(VALE="3.3e-4*Y", NOM_PARA="Y")
+UY_IMPOS = FORMULE(VALE="3.3e-4*X", NOM_PARA="X")
+#
+COND_0 = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=(_F(GROUP_NO="L_blocage_y", DX=0, DY=0, DZ=0),))
+COND_1 = AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=_F(GROUP_NO="CL_IMPOS", DX=UX_IMPOS, DY=UY_IMPOS))
+
+
+###-------------------------------------------------###
+###ANALYSE###
+###-------------------------------------------------###
+result = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=MATER,
+    EXCIT=(_F(CHARGE=COND_0, FONC_MULT=chf1), _F(CHARGE=COND_1, FONC_MULT=chf1)),
+    COMPORTEMENT=(_F(RELATION="ELAS", GROUP_MA="DALLE"),),
+    INCREMENT=_F(LIST_INST=lisnt1),
+)
+
+result = CALC_CHAMP(
+    reuse=result,
+    RESULTAT=result,
+    PRECISION=1.0e-3,
+    DEFORMATION=("EPSI_NOEU",),
+    CONTRAINTE=("SIEF_NOEU",),
+)
+
+sigm_refe_3D = 9.68550e06
+epsi_refe_3D = 3.30000e-04
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=result,
+            NOM_CHAM="SIEF_NOEU",
+            NOM_CMP="SIXY",
+            VALE_CALC=9685500.0,
+            VALE_REFE=sigm_refe_3D,
+            PRECISION=1.0e-6,
+        ),
+        _F(
+            GROUP_NO="A4",
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=result,
+            NOM_CHAM="EPSI_NOEU",
+            NOM_CMP="EPXY",
+            VALE_CALC=0.00033,
+            VALE_REFE=epsi_refe_3D,
+            PRECISION=1.0e-6,
+        ),
+    )
+)
+
+FIN()
