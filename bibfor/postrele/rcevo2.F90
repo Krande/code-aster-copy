@@ -81,7 +81,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
     if (nbtran .eq. 0) goto 9999
 !---Recupérer la valeur de courbure locale
     if (lsymm) then
-        call getvr8(' ', 'RHO', scal = rho, nbret = n1)
+        call getvr8(' ', 'RAYON_MOYEN', scal = rho, nbret = n1)
     endif
 !   
     nocmp(1) = 'SIXX'
