@@ -192,7 +192,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !                          TRAITEMENT DES OPTIONS
 !         --------------------------------------------------------------
 !
-            if (lsn) call rcevsn(csili, cinst, csno, csne)
+            if (lsn) call rcevsn(csili, cinst, csno, csne, lsymm)
 !
             if (flexio) call rcevse(csili, cinst, csneo, csnee)
 !
