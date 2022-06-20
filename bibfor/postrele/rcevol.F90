@@ -194,7 +194,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
             if (lsn) call rcevsn(csili, cinst, csno, csne, lsymm)
 !
-            if (flexio) call rcevse(csili, cinst, csneo, csnee)
+            if (flexio) call rcevse(csili, cinst, csneo, csnee, lsymm)
 !
             if (lfatig) then
                 call rcevsp(csiex, kemixt, cstex, csmex, cinst,&

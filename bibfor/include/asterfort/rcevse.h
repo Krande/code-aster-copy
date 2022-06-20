@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,12 @@
 !
 !
 interface
-    subroutine rcevse(csigm, cinst, csno, csne)
+    subroutine rcevse(csigm, cinst, csno, csne, lsymm)
         character(len=24) :: csigm
         character(len=24) :: cinst
         character(len=24) :: csno
         character(len=24) :: csne
+        aster_logical :: lsymm
     end subroutine rcevse
 end interface
+
