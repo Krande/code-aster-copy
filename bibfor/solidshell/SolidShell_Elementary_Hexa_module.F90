@@ -463,6 +463,7 @@ subroutine compEpsiElgaHexa(elemProp, cellGeom, disp, epsiElga)
 
 ! ----- Compute small strains
         call compEpsiHexa(kineHexa, disp, epsi)
+        epsi(4:6) = 0.5 * epsi(4:6)
         epsiElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epsi
 
     end do
