@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,10 +46,10 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: i, j, n1, nbinti, jinti, nbtran
+    integer :: i, j, n1, nbinti, jinti, nbtran, jinst, jresu
     real(kind=8) :: para(3), sm
-    aster_logical :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt
-    character(len=8) :: typeke
+    aster_logical :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt, lsymm
+    character(len=8) :: typeke, symm
     character(len=16) :: kinti
     character(len=24) :: cinst, csili, csiex, csno, csne, csneo, csnee, cspo
     character(len=24) :: cspe, cfao, cfae, cnoc, cresu, cresp, intitu, cspto
@@ -109,6 +109,13 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     flexio = .false.
     lrocht = .false.
     lamorc = .false.
+    lsymm = .false.
+!
+    call getvtx(' ', 'AXIS',scal = symm, nbret = n1)
+    if (symm .eq. 'OUI') then
+        lsymm = .true.
+        call utmess('A', 'POSTRCCM_58')
+    endif
 !
     do 10 i = 1, nbopt
         if (option(i) .eq. 'PM_PB') then
@@ -169,7 +176,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
             if (lsn .and. .not.lfatig .and. nbtran .gt. 1) then
                 call rcev22(nbinti, kinti, j, csili, cinst,&
                             csiex, lfatig, flexio, lrocht, cnoc,&
-                            cresu, cresp)
+                            cresu, cresp, lsymm)
             else
                 call rcevo2(nbinti, kinti, csili, cinst, csiex,&
                             kemixt, cstex, csmex, lfatig, flexio,&
