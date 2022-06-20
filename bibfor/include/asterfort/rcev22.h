@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 interface
     subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                       ccont, lfatig, flexio, lrocht, cnoc,&
-                      cresu, cpres)
+                      cresu, cpres, lsymm)
         integer :: nbinti
         character(len=16) :: kinti
         integer :: iocc
@@ -33,6 +33,7 @@ interface
         aster_logical :: lfatig
         aster_logical :: flexio
         aster_logical :: lrocht
+        aster_logical :: lsymm
         character(len=24) :: cnoc
         character(len=24) :: cresu
         character(len=24) :: cpres
