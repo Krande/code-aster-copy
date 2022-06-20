@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -472,6 +472,7 @@ subroutine compEpsiElgaHexa(elemProp, cellGeom, disp, epsiElga)
 
 ! ----- Compute small strains
         call compEpsiHexa(kineHexa, disp, epsi)
+        epsi(4:6) = 0.5 * epsi(4:6)
         epsiElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epsi
 
     end do
