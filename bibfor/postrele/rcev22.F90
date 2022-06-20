@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,10 +54,12 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !     ------------------------------------------------------------------
 !
     integer :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, l1, l2, l3, ndim
-    integer :: nbabsc, jabsc, nbxcoo, jxcoo, nbycoo, jycoo, jsigm, jinst, ncmp, iret, jsioe, iocc, nbins0
+    integer :: nbabsc, jabsc, nbxcoo, jxcoo, nbycoo, jycoo
+    integer :: jsigm, jinst, ncmp, iret, jsioe, iocc, nbins0
     integer :: jnocc, jresu, nbcycl, jresp
     parameter  ( ncmp = 6 )
-    real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2), momen0_axis(4), momen1_axis(4),momen2_axis(4), rho
+    real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
+    real(kind=8) :: momen0_axis(4), momen1_axis(4),momen2_axis(4), rho
     complex(kind=8) :: cbid
     aster_logical :: exist, cfait
     character(len=8) :: k8b, crit(2), nocmp(ncmp)
@@ -470,7 +472,8 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
 !
 104     continue
         if (lsymm) then
-                call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),contraintes,momen0_axis,momen1_axis,momen2_axis, rho)
+                call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),&
+                contraintes,momen0_axis,momen1_axis,momen2_axis, rho)
                 l1 = ncmp*(i-1)
                 l2 = ncmp*nbinst + ncmp*(i-1)
                 l3 = 2*ncmp*nbinst + ncmp*(i-1)
@@ -481,7 +484,8 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 end do
 !       
                 if (flexio) then
-                    call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),cont_flexio,momen0_axis,momen1_axis,momen2_axis, rho)
+                    call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),&
+                    cont_flexio,momen0_axis,momen1_axis,momen2_axis, rho)
                 else
                     momen0_axis = 0.d0
                     momen1_axis = 0.d0
@@ -497,7 +501,8 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst,&
                 end do
 !
                 if (lrocht) then
-                    call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),cont_pressi,momen0_axis,momen1_axis,momen2_axis, rho)
+                    call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),&
+                    cont_pressi,momen0_axis,momen1_axis,momen2_axis, rho)
                 else
                     momen0_axis = 0.d0
                     momen1_axis = 0.d0

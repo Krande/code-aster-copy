@@ -20,7 +20,8 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
     implicit   none
 #include "asterfort/rcrot.h"
     integer :: nbabsc
-    real(kind=8) :: absc(nbabsc), vale(4,nbabsc), xcoo(nbabsc), ycoo(nbabsc),momen0_axis(4), momen1_axis(4), momen2_axis(4), rho
+    real(kind=8) :: absc(nbabsc), vale(4,nbabsc), xcoo(nbabsc)
+    real(kind=8) :: ycoo(nbabsc),momen0_axis(4), momen1_axis(4), momen2_axis(4), rho
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 !
 !     METHODE PRSECT DE ANSYS POUR LINEARISER LES CONTRAINTES
@@ -74,7 +75,8 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
     momen2_axis(1) = sigm(1,nbabsc) - momen0_axis(1)
 ! --- sigm_y^b
     f = (absc-l/2-xf)*sigm(2,:)*xcoo
-    momen1_axis(2) = (-l/2-xf)/(mid_rad*l*(l**2/12-xf**2))*(f(1)/2+f(nbabsc)/2+sum(f(2:nbabsc-1)))*dx
+    momen1_axis(2) = (-l/2-xf)/(mid_rad*l*(l**2/12-xf**2))*(f(1)/2+&
+    f(nbabsc)/2+sum(f(2:nbabsc-1)))*dx
     momen2_axis(2) = momen1_axis(2)*(xf-l/2)/(xf+l/2)
 ! --- sigm_z^b 
     if (rho .gt. 0.d0) then
