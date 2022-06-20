@@ -21,7 +21,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                   csneo, csnee, cfao, cfae, cspo,&
                   cspe, cresu, kinti, it, jt,&
                   lrocht, symax, cpres, kemixt, cspto,&
-                  cspte, cspmo, cspme)
+                  cspte, cspmo, cspme, lsymm)
 ! aslint: disable=W1501,W1501,W1504
     implicit none
 #include "asterf_types.h"
@@ -39,7 +39,7 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 #include "asterfort/tbcrsd.h"
     integer :: it, jt
     real(kind=8) :: sm, symax
-    aster_logical :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt
+    aster_logical :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt, lsymm
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, cnoc, csno, csne, csneo, csnee, cfao
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo
@@ -50,17 +50,17 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
 !     ------------------------------------------------------------------
 !
     integer :: ncmp, jsigm, jinst, nbinst, nbordr, jsno, jsne, ind, i1, i2, icmp
-    integer :: l1, l2, l3, l4, npara, ik, ir, i, vaio(5), vaie(5), ioo1, ioo2
+    integer :: l1, l2, l3, l4, l5, l6, npara, ik, ir, i, vaio(5), vaie(5), ioo1, ioo2
     integer :: ioe1, ioe2, npar1, jspo, jspe, jfao, jfae, jnoc, jresu, jresp
     integer :: jspto, jspte, jspmo, jspme
     parameter  ( ncmp = 6 )
-    real(kind=8) :: tpm(ncmp), tpb(ncmp), tpmpbo(ncmp), tpmpbe(ncmp), pm, pb
-    real(kind=8) :: pmpbo, pmpbe, ipm, ipb, ipmpbo, ipmpbe, sno, sne, i1sno
+    real(kind=8) :: tpm(ncmp), tpb(ncmp), tpbo(ncmp), tpbe(ncmp), tpmpbo(ncmp), tpmpbe(ncmp), pm, pb, pbo, pbe
+    real(kind=8) :: pmpbo, pmpbe, ipm, ipb, ipbo, ipbe, ipmpbo, ipmpbe, sno, sne, i1sno
     real(kind=8) :: i2sno, i1sne, i2sne, spo, spe, keo, kee, sao, sae, nao, nae
     real(kind=8) :: doo, doe, dco, dce, stlin, stpar, ketho, kethe, tresca
     real(kind=8) :: valo(39), vale(39), spmo, spme, spto, spte
     complex(kind=8) :: c16b
-    character(len=8) :: nomres, typara(39), rpm, rpb, rpmpbo, rpmpbe, r1sno
+    character(len=8) :: nomres, typara(39), rpm, rpb, rpbo, rpbe, rpmpbo, rpmpbe, r1sno
     character(len=8) :: r1sne, r2sno, r2sne
     character(len=16) :: nomcmd, concep, nopara(39), vako(5), vake(5)
 !
@@ -193,7 +193,11 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         pm = 0.d0
         do 400 i = 1, nbinst
             do 402 icmp = 1, ncmp
-                l3 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
+                if (lsymm) then 
+                    l3 = 6*ncmp*nbinst + ncmp*(i-1) + icmp
+                else
+                    l3 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
+                endif
                 tpm(icmp) = zr(jsigm-1+l3)
 402         continue
             call rctres(tpm, tresca)
@@ -244,28 +248,48 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         call jeveuo(csigm, 'L', jsigm)
         pm = 0.d0
         pb = 0.d0
+        pbo = 0.d0
+        pbe = 0.d0
         pmpbo = 0.d0
         pmpbe = 0.d0
         rpm = zk8(jresu)
         rpb = zk8(jresu)
+        rpbo = zk8(jresu)
+        rpbe = zk8(jresu)
         rpmpbo = zk8(jresu)
         rpmpbe = zk8(jresu)
         ipm = zr(jinst)
         ipb = zr(jinst)
+        ipbo = zr(jinst)
+        ipbe = zr(jinst)
         ipmpbo = zr(jinst)
         ipmpbe = zr(jinst)
         do 100 i = 1, nbinst
             do 102 icmp = 1, ncmp
-                l1 = ncmp*(i-1) + icmp
-                l2 = ncmp*nbinst + ncmp*(i-1) + icmp
-                l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
-                l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
-                tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
-                tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) - ( zr(jsigm-1+l3) - zr(jsigm-1+l4&
-                               &) )
-                tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - ( zr(jsigm-1+l3) + zr(jsigm-1+l4&
-                               &) )
+                if (lsymm) then 
+                    l1 = ncmp*(i-1) + icmp
+                    l2 = ncmp*nbinst + ncmp*(i-1) + icmp
+                    l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l5 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l6 = 5*ncmp*nbinst + ncmp*(i-1) + icmp
+                    tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4)
+                    tpbo(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l5)
+                    tpbe(icmp) = zr(jsigm-1+l3) - zr(jsigm-1+l6)
+                    tpmpbo(icmp) = tpm(icmp) + tpbo(icmp)
+                    tpmpbe(icmp) = tpm(icmp) + tpbe(icmp)
+                else
+                    l1 = ncmp*(i-1) + icmp
+                    l2 = ncmp*nbinst + ncmp*(i-1) + icmp
+                    l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
+                    tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
+                    tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) - ( zr(jsigm-1+l3) - zr(jsigm-1+l4&
+                                &) )
+                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - ( zr(jsigm-1+l3) + zr(jsigm-1+l4&
+                                &) )
+                endif
 102         continue
             call rctres(tpm, tresca)
             if (tresca .gt. pm) then
@@ -273,11 +297,26 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
                 ipm = zr(jinst+i-1)
                 rpm = zk8(jresu+i-1)
             endif
-            call rctres(tpb, tresca)
-            if (tresca .gt. pb) then
-                pb = tresca
-                ipb = zr(jinst+i-1)
-                rpb = zk8(jresu+i-1)
+            if (lsymm) then 
+                call rctres(tpbo, tresca)
+                if (tresca .gt. pbo) then
+                    pbo = tresca
+                    ipbo = zr(jinst+i-1)
+                    rpbo = zk8(jresu+i-1)
+                endif
+                call rctres(tpbe, tresca)
+                if (tresca .gt. pbe) then
+                    pbe = tresca
+                    ipbe = zr(jinst+i-1)
+                    rpbe = zk8(jresu+i-1)
+                endif
+            else
+                call rctres(tpb, tresca)
+                if (tresca .gt. pb) then
+                    pb = tresca
+                    ipb = zr(jinst+i-1)
+                    rpb = zk8(jresu+i-1)
+                endif
             endif
             call rctres(tpmpbo, tresca)
             if (tresca .gt. pmpbo) then
@@ -312,20 +351,37 @@ subroutine rcevom(csigm, cinst, cnoc, sm, lfatig,&
         call tbajli(nomres, npar1, nopara, vaie, vale,&
                     [c16b], vake, 0)
 !
-        npar1 = npara + 1
-        nopara(npar1) = 'TABL_RESU'
-        vako(ik+1) = rpb
-        vake(ik+1) = rpb
-        npar1 = npar1 + 1
-        nopara(npar1) = 'INST_PB'
-        ir = 2 + 1
-        valo(ir) = ipb
-        vale(ir) = ipb
-        npar1 = npar1 + 1
-        nopara(npar1) = 'PB'
-        ir = ir + 1
-        valo(ir) = pb
-        vale(ir) = pb
+        if (lsymm) then 
+            npar1 = npara + 1
+            nopara(npar1) = 'TABL_RESU'
+            vako(ik+1) = rpbo
+            vake(ik+1) = rpbe
+            npar1 = npar1 + 1
+            nopara(npar1) = 'INST_PB'
+            ir = 2 + 1
+            valo(ir) = ipbo
+            vale(ir) = ipbe
+            npar1 = npar1 + 1
+            nopara(npar1) = 'PB'
+            ir = ir + 1
+            valo(ir) = pbo
+            vale(ir) = pbe
+        else
+            npar1 = npara + 1
+            nopara(npar1) = 'TABL_RESU'
+            vako(ik+1) = rpb
+            vake(ik+1) = rpb
+            npar1 = npar1 + 1
+            nopara(npar1) = 'INST_PB'
+            ir = 2 + 1
+            valo(ir) = ipb
+            vale(ir) = ipb
+            npar1 = npar1 + 1
+            nopara(npar1) = 'PB'
+            ir = ir + 1
+            valo(ir) = pb
+            vale(ir) = pb
+        endif
         call tbajli(nomres, npar1, nopara, vaio, valo,&
                     [c16b], vako, 0)
         call tbajli(nomres, npar1, nopara, vaie, vale,&
