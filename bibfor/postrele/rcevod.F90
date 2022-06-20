@@ -21,7 +21,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
                   csneo, csnee, cfao, cfae, cspo,&
                   cspe, cresu, kinti, it, jt,&
                   lrocht, symax, cpres, kemixt, cspto,&
-                  cspte, cspmo, cspme)
+                  cspte, cspmo, cspme, lsymm)
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
@@ -40,7 +40,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
 #include "asterfort/tbcrsd.h"
     integer :: it, jt
     real(kind=8) :: sm, symax
-    aster_logical :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt
+    aster_logical :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt, lsymm
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, cnoc, csno, csne, csneo, csnee, cfao
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo
@@ -50,8 +50,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ncmp, jsigm, jinst, nbinst, jsno, jsne, ind, i1, i2, icmp, l1, l2
-    integer :: l3, l4, npara, ik, ir, i, vaio(5), vaie(5), npar1, jresp, jsneo
+    integer :: ncmp, jsigm, jinst, nbinst, jsno, jsne, ind, i1, i2, icmp, l1, l2, n1
+    integer :: l3, l4, l5, l6, npara, ik, ir, i, vaio(5), vaie(5), npar1, jresp, jsneo
     integer :: jsnee, jspo, jspe, jfao, jfae, jnoc, jresu, jspto, jspte, jspmo
     integer :: jspme
     parameter  ( ncmp = 6 )
@@ -77,7 +77,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
     data nopart / 'TABL_PRES', 'SY', 'INST', 'SIGM_M_PRES',&
      &              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB' /
     data typart / 'K8', 'R', 'R' , 'R'   , 'R'   , 'R'   /
-    data nopapm / 'TABL_RESU', 'INST', 'PM', 'PB', 'PMB' /
+    data nopapm / 'TABL_RESU', 'INST_PMPB', 'PM', 'PB', 'PMB' /
     data typapm / 'K8'       , 'R'   , 'R' , 'R' , 'R'   /
     data nopasn / 'TABL_RESU_1', 'INST_1',&
      &              'TABL_RESU_2', 'INST_2', 'SN' /
@@ -112,7 +112,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
     call jeveuo(cresu, 'L', jresu)
     call jeveuo(cinst, 'L', jinst)
     call jelira(cinst, 'LONMAX', nbinst)
-!
+!   
 ! --- CREATION DE LA TABLE
 !
     if (it .eq. 1 .and. jt .eq. 1) then
@@ -217,8 +217,13 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             valo(ir) = zr(jinst+i-1)
             vale(ir) = zr(jinst+i-1)
             do 402 icmp = 1, ncmp
-                l3 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
-                tpm(icmp) = zr(jsigm-1+l3)
+                if (lsymm) then 
+                    l3 = 6*ncmp*nbinst + ncmp*(i-1) + icmp
+                    tpm(icmp) = zr(jsigm-1+l3)
+                else
+                    l3 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
+                    tpm(icmp) = zr(jsigm-1+l3)
+                endif
 402         continue
             call rctres(tpm, tresca)
             call rcmcrt(symax, tresca, stlin, stpar)
@@ -259,16 +264,29 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             vako(ik+1) = zk8(jresu+i-1)
             ir = 2 + 1
             valo(ir) = zr(jinst+i-1)
-            do 112 icmp = 1, ncmp
-                l1 = ncmp*(i-1) + icmp
-                l2 = ncmp*nbinst + ncmp*(i-1) + icmp
-                l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
-                l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
-                tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
-                tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) - (zr(jsigm-1+l3) - zr(jsigm-1+l4)&
-                               &)
-112         continue
+            if (lsymm) then
+                do 101 icmp = 1, ncmp
+                    l1 = ncmp*(i-1) + icmp
+                    l2 = ncmp*nbinst + ncmp*(i-1) + icmp
+                    l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l5 = 4*ncmp*nbinst + ncmp*(i-1) + icmp
+                    tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4)
+                    tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l5)
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) + (zr(jsigm-1+l2) - zr(jsigm-1+l5)&
+                                &)
+    101         continue
+            else
+                do 112 icmp = 1, ncmp
+                    l1 = ncmp*(i-1) + icmp
+                    l2 = ncmp*nbinst + ncmp*(i-1) + icmp
+                    l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
+                    tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
+                    tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2) - (zr(jsigm-1+l3) - zr(jsigm-1+l4)&
+                                &)
+    112         continue
+            endif
             call rctres(tpm, tresca)
             ir = ir + 1
             valo(ir) = tresca
@@ -285,16 +303,29 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             vake(ik+1) = zk8(jresu+i-1)
             ir = 2 + 1
             vale(ir) = zr(jinst+i-1)
-            do 122 icmp = 1, ncmp
-                l1 = ncmp*(i-1) + icmp
-                l2 = ncmp*nbinst + ncmp*(i-1) + icmp
-                l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
-                l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
-                tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
-                tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
-                tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - (zr(jsigm-1+l3) + zr(jsigm-1+l4)&
-                               &)
-122         continue
+            if (lsymm) then
+                do 111 icmp = 1, ncmp
+                    l1 = ncmp*(i-1) + icmp
+                    l2 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l5 = 5*ncmp*nbinst + ncmp*(i-1) + icmp
+                    tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4)
+                    tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l5)
+                    tpmpbo(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l4) + (zr(jsigm-1+l2) - zr(jsigm-1+l5)&
+                                &)
+    111         continue
+            else
+                do 122 icmp = 1, ncmp
+                    l1 = ncmp*(i-1) + icmp
+                    l2 = ncmp*nbinst + ncmp*(i-1) + icmp
+                    l3 = 2*ncmp*nbinst + ncmp*(i-1) + icmp
+                    l4 = 3*ncmp*nbinst + ncmp*(i-1) + icmp
+                    tpm(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l3)
+                    tpb(icmp) = zr(jsigm-1+l2) - zr(jsigm-1+l4)
+                    tpmpbe(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2) - (zr(jsigm-1+l3) + zr(jsigm-1+l4)&
+                                &)
+    122         continue
+            endif
             call rctres(tpm, tresca)
             ir = ir + 1
             vale(ir) = tresca

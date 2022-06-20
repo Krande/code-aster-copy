@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
                       csneo, csnee, cfao, cfae, cspo,&
                       cspe, cresu, kinti, it, jt,&
                       lrocht, symax, cpres, kemixt, cspto,&
-                      cspte, cspmo, cspme)
+                      cspte, cspmo, cspme, lsymm)
         character(len=24) :: csigm
         character(len=24) :: cinst
         character(len=24) :: cnoc
@@ -51,6 +51,7 @@ interface
         real(kind=8) :: symax
         character(len=24) :: cpres
         aster_logical :: kemixt
+        aster_logical :: lsymm
         character(len=24) :: cspto
         character(len=24) :: cspte
         character(len=24) :: cspmo
