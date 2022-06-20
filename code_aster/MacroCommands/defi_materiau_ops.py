@@ -52,10 +52,30 @@ def defi_materiau_ops(self, **args):
     self._cata.accept(visit, args)
 
     resetFortranLoggingLevel()
-    # TODO check E vs TRACTION (issue32005)
+    check_young_consistency(mater)
     mater.debugPrint()
 
     return mater
+
+
+def check_young_consistency(mater):
+    """Check the consistency between E provided as a constant under 'ELAS'
+    and the first point of the 'TRACTION' function."""
+    matNames = mater.getMaterialNames()
+    if "ELAS" not in matNames or "TRACTION" not in matNames:
+        return
+    trac = mater.getFunction("TRACTION", "SIGM")
+    typ = trac.getProperties()[0]
+    if typ == "NAPPE":
+        UTMESS("I", "MATERIAL1_6")
+    if typ != "FONCTION":
+        # formula not supported here
+        return
+    moduleE = mater.getValueReal("ELAS", "E")
+    values = trac.getValuesAsArray()
+    moduleTrac = values[0][1] / values[0][0]
+    if abs(moduleE - moduleTrac) / moduleE > 0.01:
+        UTMESS("A", "MATERIAL1_5", valr=moduleTrac)
 
 
 # internal methods
