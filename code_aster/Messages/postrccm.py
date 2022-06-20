@@ -313,4 +313,8 @@ Contactez le support technique.
  Seuls les 100 premiers sous-cycles extraits seront pris en compte.
 """),
 
+    58: _("""
+ Attention! Il faut utiliser le modèle AXIS dans ce cas!
+"""),
+
 }
