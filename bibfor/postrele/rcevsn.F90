@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rcevsn(csigm, cinst, csno, csne)
+subroutine rcevsn(csigm, cinst, csno, csne, lsymm)
     implicit     none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -26,13 +26,14 @@ subroutine rcevsn(csigm, cinst, csno, csne)
 #include "asterfort/rctres.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: csigm, cinst, csno, csne
+    aster_logical :: lsymm
 !     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
 !     CALCUL DU SN
 !
 !     ------------------------------------------------------------------
 !
     integer :: ncmp, jsigm, jinst, nbinst, nbordr, jsno, jsne, ind, i1, i2, icmp
-    integer :: l1, l2
+    integer :: l1, l2, l3
     parameter  ( ncmp = 6 )
     real(kind=8) :: sn1o(ncmp), sn1e(ncmp), sn2o(ncmp), sn2e(ncmp), sn12o(ncmp)
     real(kind=8) :: sn12e(ncmp), tresca
@@ -51,10 +52,18 @@ subroutine rcevsn(csigm, cinst, csno, csne)
     do 100 i1 = 1, nbinst
 !
         do 102 icmp = 1, ncmp
-            l1 = ncmp*(i1-1) + icmp
-            l2 = ncmp*nbinst + ncmp*(i1-1) + icmp
-            sn1o(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2)
-            sn1e(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2)
+            if (lsymm) then
+                l1 = ncmp*(i1-1) + icmp
+                l2 = ncmp*nbinst + ncmp*(i1-1) + icmp
+                l3 = 2*ncmp*nbinst + ncmp*(i1-1) + icmp
+                sn1o(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)
+                sn1e(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l3)
+            else
+                l1 = ncmp*(i1-1) + icmp
+                l2 = ncmp*nbinst + ncmp*(i1-1) + icmp
+                sn1o(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2)
+                sn1e(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2)
+            endif
 102      continue
         ind = ind + 1
         zr(jsno+ind-1) = 0.d0
@@ -63,10 +72,18 @@ subroutine rcevsn(csigm, cinst, csno, csne)
         do 110 i2 = i1+1, nbinst
 !
             do 112 icmp = 1, ncmp
-                l1 = ncmp*(i2-1) + icmp
-                l2 = ncmp*nbinst + ncmp*(i2-1) + icmp
-                sn2o(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2)
-                sn2e(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2)
+                if (lsymm) then
+                    l1 = ncmp*(i2-1) + icmp
+                    l2 = ncmp*nbinst + ncmp*(i2-1) + icmp
+                    l3 = 2*ncmp*nbinst + ncmp*(i2-1) + icmp
+                    sn2o(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)
+                    sn2e(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l3)
+                else
+                    l1 = ncmp*(i2-1) + icmp
+                    l2 = ncmp*nbinst + ncmp*(i2-1) + icmp
+                    sn2o(icmp) = zr(jsigm-1+l1) - zr(jsigm-1+l2)
+                    sn2e(icmp) = zr(jsigm-1+l1) + zr(jsigm-1+l2)
+                endif
 112          continue
             ind = ind + 1
 ! ======================================================================
