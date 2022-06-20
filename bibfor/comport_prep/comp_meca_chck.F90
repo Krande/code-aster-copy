@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_chck(model, mesh, fullElemField, lInitialState, behaviourPrep)
+subroutine comp_meca_chck(model, mesh, chmate,& 
+                          fullElemField, lInitialState, behaviourPrep)
 !
 use Behaviour_type
 !
@@ -40,7 +41,7 @@ implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
 !
-character(len=8), intent(in) :: model, mesh
+character(len=8), intent(in) :: model, mesh, chmate
 character(len=19), intent(in) :: fullElemField
 aster_logical, intent(in) :: lInitialState
 type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
@@ -55,6 +56,7 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
+! In  chmate           : material field
 ! In  fullElemField    : <CHELEM_S> of FULL_MECA option
 ! In  lInitialState    : .true. if initial state is defined
 ! IO  behaviourPrep    : datastructure to prepare behaviour
@@ -117,8 +119,8 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
         call compMecaChckModel(iComp       ,&
                                model       , fullElemField ,&
                                lAllCellAffe, cellAffe      , nbCellAffe  ,&
-                               relaCompPY  , lElasByDefault, lNeedDeborst,&
-                               lIncoUpo)
+                               relaCompPY  , chmate        , typeComp     ,&
+                               lElasByDefault, lNeedDeborst, lIncoUpo)
 
 ! ----- Select plane stress algorithm
         typeCpla = behaviourPrep%v_para(iComp)%type_cpla

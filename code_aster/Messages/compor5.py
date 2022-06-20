@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,14 @@ Problème lors du calcul des déformations dues à la pression du fluide.
 Il manque la définition du coefficient BIOT_COEF dans DEFI_MATERIAU.
 La déformation est supposée nulle.
 """),
+
+    14: _(
+        """
+Dans l'occurrence numéro %(i1)d du mot-clé COMPORTEMENT est appelée sur une modélisation type C_PLAN native,
+avec un coefficient de Poisson fonction.
+Cette combinaison est connue comme donnant des résultats imprécis voir faux, et sera corrigée dans les versions ultérieures.
+        """
+    ),
 
     15 : _("""
  La nature du matériau élastique %(k1)s n'est pas traitée.
