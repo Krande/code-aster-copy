@@ -225,7 +225,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
                             csneo, csnee, cfao, cfae, cspo,&
                             cspe, cresu, kinti, i, j,&
                             lrocht, symax, cresp, kemixt, cspto,&
-                            cspte, cspmo, cspme)
+                            cspte, cspmo, cspme, lsymm)
 !
             endif
 !
