@@ -180,7 +180,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
             else
                 call rcevo2(nbinti, kinti, csili, cinst, csiex,&
                             kemixt, cstex, csmex, lfatig, flexio,&
-                            lrocht, cnoc, cresu, cresp)
+                            lrocht, cnoc, cresu, cresp, lsymm)
             endif
 !
             if (lrocht .and. symax .eq. r8vide()) then
