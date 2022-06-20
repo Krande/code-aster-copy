@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,10 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
                                fr=tr("limite élastique utilisée pour le calcul du rochet thermique") ),
          TYPE_KE         =SIMP(statut='f',typ='TXM',defaut="KE_MECA",into=("KE_MECA","KE_MIXTE"),
                                fr=tr("Ke meca seul ou partition mecanique + thermique") ),
-
+         AXIS            =SIMP(statut = 'f',typ = 'TXM',defaut = "NON",into=("NON","OUI"),
+                                fr=tr("Indiquer si le modèle est axisymétrique")),
+         RAYON_MOYEN             =SIMP(statut = 'f',typ = 'R', defaut = -1.,
+                                fr = tr("La courbure attribuées à la ligne coupe")),
          TRANSITOIRE     =FACT(statut='o',max='**',fr=tr("transitoire à dépouiller"),
            regles=(UN_PARMI('TOUT_ORDRE','INST','LIST_INST','TOUT_INST',),
                    UN_PARMI('TABL_RESU_MECA','TABL_SIGM_THETA'),),
