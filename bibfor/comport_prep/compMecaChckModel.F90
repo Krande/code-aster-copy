@@ -19,8 +19,8 @@
 subroutine compMecaChckModel(iComp       ,&
                              model       , fullElemField ,&
                              lAllCellAffe, cellAffe      , nbCellAffe   ,&
-                             relaCompPY  , lElasByDefault, lNeedDeborst ,&
-                             lIncoUpo)
+                             relaCompPY  , chmate        , typeComp     ,&
+                             lElasByDefault, lNeedDeborst, lIncoUpo)
 !
 implicit none
 !
@@ -28,6 +28,7 @@ implicit none
 #include "jeveux.h"
 #include "asterc/lctest.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -44,6 +45,8 @@ aster_logical, intent(in) :: lAllCellAffe
 character(len=24), intent(in) :: cellAffe
 integer, intent(in) :: nbCellAffe
 character(len=16), intent(in) :: relaCompPY
+character(len=16), intent(in) :: typeComp
+character(len=8), intent(in) :: chmate
 aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
 !
 ! --------------------------------------------------------------------------------------------------
@@ -61,12 +64,13 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
 ! In  nbCellAffe       : number of cells where behaviour is defined
 ! In  cellAffe         : list of cells where behaviour is defined
 ! In  relaCompPY       : comportement RELATION - Python coding
+! In  chmate           : material field (sd_mater)
 ! Out lElasByDefault   : flag if at least one element use ELAS by default
 ! Out lNeedDeborst     : flag if at least one element swap to Deborst algorithm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: elemTypeName, modelType, incoType
+    character(len=16) :: elemTypeName, modelType, incoType, isNuFunc
     integer :: elemTypeNume, cellNume, nbCmpAffected
     integer :: jvCesd, jvCesl, jvVale
     integer :: modelTypeIret, lctestIret, iCell, incoTypeIret
@@ -74,7 +78,7 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
     character(len=16), pointer :: cesv(:) => null()
     integer, pointer :: cellAffectedByModel(:) => null()
     integer, pointer :: listCellAffe(:) => null()
-    aster_logical :: lAtOneCellAffect, lAllCellAreBound
+    aster_logical :: lAtOneCellAffect, lAllCellAreBound, lPlStressFuncNu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,6 +91,7 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
     lAtOneCellAffect = ASTER_FALSE
     lAllCellAreBound = ASTER_FALSE
     lIncoUpo         = ASTER_FALSE
+    lPlStressFuncNu = ASTER_FALSE
 !
 ! - Access to model
 !
@@ -107,6 +112,10 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
         call jeveuo(cellAffe, 'L', vi = listCellAffe)
         nbCell = nbCellAffe
     endif
+!
+! - Is Poisson coefficient given by a function
+!
+    call dismoi('NU_FO', chmate, 'CHAM_MATER', repk=isNuFunc)
 !
 ! - Loop on elements
 !
@@ -147,6 +156,14 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
                         lNeedDeborst = ASTER_TRUE
                     endif
 
+! ----------------- bug: NU provided as a function while native plane stress and COMP_INCR
+
+                    if (lctestIret /= 0) then
+                        if (isNuFunc(1:3) == 'OUI' .and. typeComp == 'COMP_INCR') then
+                            lPlStressFuncNu = ASTER_TRUE
+                        endif
+                    endif
+
                 else if (modelType .eq. '1D') then
                     call lctest(relaCompPY, 'MODELISATION', '1D', lctestIret)
 ! ----------------- 1D is not allowed for this behaviour => activation of (double) Deborst algorithm
@@ -182,6 +199,7 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
     call asmpi_comm_logical("MPI_LOR", scl=lAtOneCellAffect)
     call asmpi_comm_logical("MPI_LOR", scl=lNeedDeborst)
     call asmpi_comm_logical("MPI_LOR", scl=lElasByDefault)
+    call asmpi_comm_logical("MPI_LOR", scl=lPlStressFuncNu)
 !
 ! - Error when nothing is affected by the behavior
 !
@@ -191,6 +209,12 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
         else
             call utmess('F', 'COMPOR1_59', si = iComp)
         endif
+    endif
+!
+! - Alarm while nu is a function while native plane stress and COMP_INCR
+!
+    if (lPlStressFuncNu) then
+        call utmess('A', 'COMPOR6_14', si = iComp)
     endif
 !
     call jedema()

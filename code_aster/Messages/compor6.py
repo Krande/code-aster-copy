@@ -66,4 +66,12 @@ Ce n'est pas le cas ici. Pour avoir la liste des mailles et les relations de com
     13: _(
         """Nombre de variables internes précédent: %(i1)d - Nombre de variables internes courant: %(i2)d"""
     ),
+    14: _(
+        """
+Dans l'occurrence numéro %(i1)d du mot-clé COMPORTEMENT est appelée sur une modélisation type C_PLAN native,
+avec un coefficient de Poisson fonction.
+Cette combinaison est connue comme donnant des résultats imprécis voir faux, et sera corrigée dans les versions ultérieures.
+        """
+    ),
+
 }

@@ -51,7 +51,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !
 !
-    character(len=8) :: mater, nomf, novarc
+    character(len=8) :: mater, nomf, nomp, novarc
     character(len=32) :: nomrc
     character(len=16) :: ktyp
     character(len=24) :: quest2, nomobj(100)
@@ -206,7 +206,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                     call jelira(mater//'.CPT.'//k6//'.VALC', 'LONUTI', nc)
                     nf=(n1-nr-nc)/2
                     do 100 if = 1, nf
-                        nomf=zk16(iavalk-1+nr+nc+nf+if)
+                        nomf=zk16(iavalk-1+nr+nc+nf+if)(1:8)
                         call jeveuo(nomf//'           .PROL', 'L', iaprol)
                         if (zk24(iaprol-1+1) .eq. 'NAPPE') then
 !              -- CAS D'UNE FONCTION A 2 VARIABLES :
@@ -232,9 +232,11 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
         repi=-99999
 !
 !
-    else if (questi.eq.'ELAS_FO') then
+    else if (questi == 'ELAS_FO' .or. questi == 'NU_FO') then
 !     --------------------------------------
         repk='NON'
+        call jeexin(nomob//'.CHAMP_MAT .VALE', iret)
+        if (iret == 0) goto 200
         call jeveuo(nomob//'.CHAMP_MAT .VALE', 'L', iavale)
         call jelira(nomob//'.CHAMP_MAT .VALE', 'LONMAX', nmat)
         call jeveuo(nomob//'.CHAMP_MAT .DESC', 'L', jdesc)
@@ -264,20 +266,31 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                     call jelira(mater//'.CPT.'//k6//'.VALR', 'LONUTI', nr)
                     call jelira(mater//'.CPT.'//k6//'.VALC', 'LONUTI', nc)
                     nf=(n1-nr-nc)/2
+
+                    ! loop over parameters for which function values were given
                     do 150 if = 1, nf
-                        nomf=zk16(iavalk-1+nr+nc+nf+if)
+
+                        ! name of the parameter
+                        nomp=zk16(iavalk-1+nr+nc+if)(1:8)
+
+                        ! name of the function
+                        nomf=zk16(iavalk-1+nr+nc+nf+if)(1:8)
                         call jeveuo(nomf//'           .PROL', 'L', iaprol)
                         if (zk24(iaprol-1+1) .eq. 'CONSTANT') then
 !                           -- cas d'une fonction constante :
                         else
 !                           -- cas d'une fonction variable :
-                            repk='OUI'
+                            if (questi == 'ELAS_FO') repk='OUI'
+                            if (questi == 'NU_FO'.and. nomp(1:2) == 'NU') then
+                                repk='OUI'
+                            endif
                         endif
 150                 continue
 160             continue
 170             continue
 180         continue
 190     continue
+200     continue
 !
 !
     else if (questi.eq.'EXI_VARC') then
@@ -311,12 +324,12 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                     ASSERT(ktyp.eq.'EVOL' .or.ktyp.eq.'CHAMP')
                     if (ktyp .eq. 'EVOL') then
                         repk='OUI'
-                        goto 200
+                        goto 210
                     endif
                 enddo
             enddo
         endif
-200     continue
+210     continue
 !
 !
     else
