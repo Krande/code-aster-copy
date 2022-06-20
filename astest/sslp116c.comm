@@ -217,7 +217,7 @@ deplTole = 0.01 * 2.6
 sixxTole = 0.01 * 1.E-6
 siyyTole = 0.01 * 1.E-6
 epvcTole = 0.01 * 1.E-6
-epeqTole = 0.01 * 1.E-6
+epeqTole = 0.24 * 1.E-6
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
                    INST       = 1.0,
@@ -269,7 +269,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
                    NOM_CHAM   = 'EPEQ_ELGA',
                    NOM_CMP    = 'INVA_2',
                    REFERENCE  = 'AUTRE_ASTER',
-                   VALE_CALC  = 0.00013783350361676113,
+                   VALE_CALC  = 0.00013783347153961486,
                    VALE_REFE  = epeqRefe,
                    PRECISION  = epeqTole,),),)
 
