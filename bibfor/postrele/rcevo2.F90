@@ -18,7 +18,7 @@
 
 subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                   kemixt, cstex, csmex, lfatig, flexio,&
-                  lrocht, cnoc, cresu, cpres)
+                  lrocht, cnoc, cresu, cpres, lsymm)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -35,6 +35,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rc32my.h"
+#include "asterfort/rc32axis.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/tbextb.h"
 #include "asterfort/tbexv1.h"
@@ -45,7 +46,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 #include "asterfort/as_allocate.h"
 !
     integer :: nbinti
-    aster_logical :: lfatig, flexio, lrocht, kemixt
+    aster_logical :: lfatig, flexio, lrocht, kemixt, lsymm
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, csiex, cnoc, cresu, cpres, cstex, csmex
 !     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
@@ -53,23 +54,24 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, ndim
-    integer :: nbabsc, jabsc, jsigm, jinst, ncmp, iret, nbtran, jsioe, iocc
+    integer :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, l1, l2, l3, ndim
+    integer :: nbabsc, jabsc, nbxcoo, jxcoo, nbycoo, jycoo, jsigm, jinst, ncmp, iret, nbtran, jsioe, iocc
     integer :: nbins0, jnocc, ii, jresu, nbcycl, jresp, jstoe, lo, le
     integer :: jsmoe
     parameter  ( ncmp = 6 )
-    real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
+    real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2), momen0_axis(4), momen1_axis(4),momen2_axis(4), rho
     complex(kind=8) :: cbid
     aster_logical :: exist, cfait, flexii
     character(len=8) :: k8b, crit(2), nocmp(ncmp)
     character(len=16) :: motclf, valek(2), table, tabl0, tabfle, tabfl0, tabpre
     character(len=16) :: tabpr0
     character(len=19) :: nomf
-    character(len=24) :: instan, abscur
+    character(len=24) :: instan, abscur, coord_x, coord_y
     character(len=24) :: valk(7)
-    real(kind=8), pointer :: cont_flexio(:) => null()
-    real(kind=8), pointer :: cont_pressi(:) => null()
-    real(kind=8), pointer :: contraintes(:) => null()
+    real(kind=8), allocatable :: cont_flexio(:,:), cont_pressi(:,:), contraintes(:,:)
+!   real(kind=8), pointer :: cont_flexio(:,:) => null()
+!   real(kind=8), pointer :: cont_pressi(:,:) => null()
+!   real(kind=8), pointer :: contraintes(:,:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
@@ -77,7 +79,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
     motclf = 'TRANSITOIRE'
     call getfac(motclf, nbtran)
     if (nbtran .eq. 0) goto 9999
-!
+!---Recupérer la valeur de courbure locale
+    if (lsymm) then
+        call getvr8(' ', 'RHO', scal = rho, nbret = n1)
+    endif
+!   
     nocmp(1) = 'SIXX'
     nocmp(2) = 'SIYY'
     nocmp(3) = 'SIZZ'
@@ -95,6 +101,8 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 !
     instan = '&&RCEVO2.INSTANT'
     abscur = '&&RCEVO2.ABSC_CURV'
+    coord_x = '&&RCEVO2.COOR_X'
+    coord_y = '&&RCEVO2.COOR_Y'
 !
 ! --- RECHERCHE DU NOMBRE D'INSTANTS A COMBINER
 !
@@ -286,7 +294,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
         endif
         call tbexv1(table, valek(2), abscur, 'V', nbabsc,&
                     k8b)
-!
+        call tbexv1(table, 'COOR_X          ', coord_x, 'V', nbxcoo,&
+                    k8b)
+        call tbexv1(table, 'COOR_Y          ', coord_y, 'V', nbycoo,&
+                    k8b)
+!       
  14     continue
         if (cfait) then
             call detrsd('TABLE', table)
@@ -297,13 +309,33 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
  10 end do
 !
     call jeveuo(abscur, 'L', jabsc)
-    AS_ALLOCATE(vr=contraintes, size=nbabsc)
-    AS_ALLOCATE(vr=cont_flexio, size=nbabsc)
-    AS_ALLOCATE(vr=cont_pressi, size=nbabsc)
+    call jeveuo(coord_x, 'L', jxcoo)
+    call jeveuo(coord_y, 'L', jycoo)
+! --- AU CAS OU LA LIGNE COUPE EST HORIZONTALE OU VERTICALE
+    if (nbxcoo .eq. 1) then 
+        do i = 1,nbabsc
+            zr(jxcoo-1+i) = zr(jxcoo)
+        end do
+    endif 
+    if (nbycoo .eq. 1) then 
+        do i = 1,nbabsc
+            zr(jycoo-1+i) = zr(jycoo)
+        end do
+    endif
+    allocate(contraintes(ncmpr, nbabsc))
+    allocate(cont_flexio(ncmpr, nbabsc))
+    allocate(cont_pressi(ncmpr, nbabsc))
+!    AS_ALLOCATE(vr=contraintes, size=ncmpr*nbabsc)
+!    AS_ALLOCATE(vr=cont_flexio, size=ncmpr*nbabsc)
+!    AS_ALLOCATE(vr=cont_pressi, size=ncmpr*nbabsc)
 !
 ! --- CREATION DES OBJETS DE TRAVAIL
-!
-    ndim = 6 * nbinst * ncmp
+! 
+    if (lsymm) then
+        ndim = 9 * nbinst * ncmp
+    else
+        ndim = 6 * nbinst * ncmp
+    endif
     call wkvect(csigm, 'V V R', ndim, jsigm)
     call wkvect(cinst, 'V V R', nbinst, jinst)
     call wkvect(cnoc, 'V V I', nbinst, jnocc)
@@ -442,7 +474,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 !
                     call tbliva(table, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintes(k), cbid, k8b,&
+                                k8b, ibid, contraintes(j,k), cbid, k8b,&
                                 iret)
                     if (iret .ne. 0) then
                         valk (1) = table
@@ -456,7 +488,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                     if (flexii) then
                         call tbliva(tabfle, 2, valek, [ibid], vale,&
                                     [cbid], k8b, crit, prec, nocmp(j),&
-                                    k8b, ibid, cont_flexio(k), cbid, k8b,&
+                                    k8b, ibid, cont_flexio(j,k), cbid, k8b,&
                                     iret)
                         if (iret .ne. 0) then
                             valk (1) = tabfle
@@ -471,7 +503,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                     if (lrocht) then
                         call tbliva(tabpre, 2, valek, [ibid], vale,&
                                     [cbid], k8b, crit, prec, nocmp(j),&
-                                    k8b, ibid, cont_pressi(k), cbid, k8b,&
+                                    k8b, ibid, cont_pressi(j,k), cbid, k8b,&
                                     iret)
                         if (iret .ne. 0) then
                             valk (1) = tabpre
@@ -484,59 +516,104 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                     endif
 !
 106             continue
-!
+!               
                 if (lfatig) then
                     lo = ncmp*(ii-1) + j
                     le = ncmp*nbinst + ncmp*(ii-1) + j
-                    zr(jsioe-1+lo) = contraintes(1)
-                    zr(jsioe-1+le) = contraintes(nbabsc)
+                    zr(jsioe-1+lo) = contraintes(j,1)
+                    zr(jsioe-1+le) = contraintes(j,nbabsc)
                     if (kemixt) then
                         if (flexii) then
-                            zr(jstoe-1+lo) = cont_flexio(1)
-                            zr(jstoe-1+le) = cont_flexio(nbabsc)
+                            zr(jstoe-1+lo) = cont_flexio(j,1)
+                            zr(jstoe-1+le) = cont_flexio(j,nbabsc)
                         else
                             zr(jstoe-1+lo) = 0.d0
                             zr(jstoe-1+le) = 0.d0
                         endif
-                        zr(jsmoe-1+lo) = contraintes(1) - zr(jstoe-1+lo)
-                        zr(jsmoe-1+le) = contraintes(nbabsc) - zr( jstoe-1+le)
+                        zr(jsmoe-1+lo) = contraintes(j,1) - zr(jstoe-1+lo)
+                        zr(jsmoe-1+le) = contraintes(j,nbabsc) - zr( jstoe-1+le)
                     endif
                 endif
 !
-                call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
-                momen1 = 0.5d0*momen1
-!
-                l = ncmp*(ii-1) + j
-                zr(jsigm-1+l) = momen0
-                l = ncmp*nbinst + ncmp*(ii-1) + j
-                zr(jsigm-1+l) = momen1
-!
-                if (flexii) then
-                    call rc32my(nbabsc, zr(jabsc), cont_flexio, momen0, momen1)
+                if (.not. lsymm) then
+                    call rc32my(nbabsc, zr(jabsc),contraintes(j,:), momen0, momen1)
                     momen1 = 0.5d0*momen1
-                else
-                    momen0 = 0.d0
-                    momen1 = 0.d0
-                endif
-                l = 2*ncmp*nbinst + ncmp*(ii-1) + j
-                zr(jsigm-1+l) = momen0
-                l = 3*ncmp*nbinst + ncmp*(ii-1) + j
-                zr(jsigm-1+l) = momen1
-!
-                if (lrocht) then
-                    call rc32my(nbabsc, zr(jabsc), cont_pressi, momen0, momen1)
-                    momen1 = 0.5d0*momen1
-                else
-                    momen0 = r8vide()
-                    momen1 = r8vide()
-                endif
-                l = 4*ncmp*nbinst + ncmp*(ii-1) + j
-                zr(jsigm-1+l) = momen0
-                l = 5*ncmp*nbinst + ncmp*(ii-1) + j
-                zr(jsigm-1+l) = momen1
+    !
+                    l = ncmp*(ii-1) + j
+                    zr(jsigm-1+l) = momen0
+                    l = ncmp*nbinst + ncmp*(ii-1) + j
+                    zr(jsigm-1+l) = momen1
+    !
+                    if (flexii) then
+                        call rc32my(nbabsc, zr(jabsc), cont_flexio(j,:), momen0, momen1)
+                        momen1 = 0.5d0*momen1
+                    else
+                        momen0 = 0.d0
+                        momen1 = 0.d0
+                    endif
+                    l = 2*ncmp*nbinst + ncmp*(ii-1) + j
+                    zr(jsigm-1+l) = momen0
+                    l = 3*ncmp*nbinst + ncmp*(ii-1) + j
+                    zr(jsigm-1+l) = momen1
+    !
+                    if (lrocht) then
+                        call rc32my(nbabsc, zr(jabsc), cont_pressi(j,:), momen0, momen1)
+                        momen1 = 0.5d0*momen1
+                    else
+                        momen0 = r8vide()
+                        momen1 = r8vide()
+                    endif
+                    l = 4*ncmp*nbinst + ncmp*(ii-1) + j
+                    zr(jsigm-1+l) = momen0
+                    l = 5*ncmp*nbinst + ncmp*(ii-1) + j
+                    zr(jsigm-1+l) = momen1
+                endif 
 !
 104         continue
+            if (lsymm) then
+                call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),contraintes,momen0_axis,momen1_axis,momen2_axis, rho)
+                l1 = ncmp*(ii-1)
+                l2 = ncmp*nbinst + ncmp*(ii-1)
+                l3 = 2*ncmp*nbinst + ncmp*(ii-1)
+                do j = 1, 4
+                    zr(jsigm-1+l1+j) = momen0_axis(j)
+                    zr(jsigm-1+l2+j) = momen1_axis(j)
+                    zr(jsigm-1+l3+j) = momen2_axis(j)
+                end do
+!       
+                if (flexii) then
+                    call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),cont_flexio,momen0_axis,momen1_axis,momen2_axis, rho)
+                else
+                    momen0_axis = 0.d0
+                    momen1_axis = 0.d0
+                    momen2_axis = 0.d0
+                endif
+                l1 = 3*ncmp*nbinst + ncmp*(ii-1)
+                l2 = 4*ncmp*nbinst + ncmp*(ii-1)
+                l3 = 5*ncmp*nbinst + ncmp*(ii-1)
+                do j = 1, 4
+                    zr(jsigm-1+l1+j) = momen0_axis(j)
+                    zr(jsigm-1+l2+j) = momen1_axis(j)
+                    zr(jsigm-1+l3+j) = momen2_axis(j)
+                end do
 !
+                if (lrocht) then
+                    call rc32axis(nbabsc, zr(jabsc), zr(jxcoo),zr(jycoo),cont_pressi,momen0_axis,momen1_axis,momen2_axis, rho)
+                else
+                    momen0_axis = 0.d0
+                    momen1_axis = 0.d0
+                    momen2_axis = 0.d0
+                endif
+                l1 = 6*ncmp*nbinst + ncmp*(ii-1)
+                l2 = 7*ncmp*nbinst + ncmp*(ii-1)
+                l3 = 8*ncmp*nbinst + ncmp*(ii-1)
+                do j = 1, 4
+                    zr(jsigm-1+l1+j) = momen0_axis(j)
+                    zr(jsigm-1+l2+j) = momen1_axis(j)
+                    zr(jsigm-1+l3+j) = momen2_axis(j)
+                end do
+            endif 
+!           
 102     continue
         call jedetr(instan)
         if (nbinti .ne. 1) then
@@ -548,9 +625,14 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
 100 end do
 !
     call jedetr(abscur)
-    AS_DEALLOCATE(vr=contraintes)
-    AS_DEALLOCATE(vr=cont_flexio)
-    AS_DEALLOCATE(vr=cont_pressi)
+    call jedetr(coord_x)
+    call jedetr(coord_y)
+    deallocate(contraintes)
+    deallocate(cont_flexio)
+    deallocate(cont_pressi)
+!   AS_DEALLOCATE(vr=contraintes)
+!   AS_DEALLOCATE(vr=cont_flexio)
+!   AS_DEALLOCATE(vr=cont_pressi)
 !
 9999 continue
     call jedema()
