@@ -26,8 +26,8 @@ from ..Utilities import ExecutionParameter, Options, force_list
 
 
 class ImprResu(ExecuteCommand):
-    """Command IMPR_RESU.
-    """
+    """Command IMPR_RESU."""
+
     command_name = "IMPR_RESU"
 
     def add_result_name(self, resu):
@@ -42,13 +42,12 @@ class ImprResu(ExecuteCommand):
             resu_name = resu.pop("NOM_RESU_MED", resu["RESULTAT"].userName[0:8])
             if not resu_name:
                 resu_name = resu["RESULTAT"].getName()
-                UTMESS('A', 'MED3_2', valk=resu_name)
+                UTMESS("A", "MED3_2", valk=resu_name)
                 return
             if resu.get("NOM_CHAM"):
                 resu_name = resu_name.ljust(8, "_")
                 resu["NOM_CHAM"] = force_list(resu["NOM_CHAM"])
-                resu["NOM_CHAM_MED"] = [resu_name + field
-                                        for field in resu["NOM_CHAM"]]
+                resu["NOM_CHAM_MED"] = [resu_name + field for field in resu["NOM_CHAM"]]
             else:
                 if resu.get("NOM_CMP"):
                     # NOM_RESU_MED not allowed with NOM_CMP, cf. irchor/MED3_6
@@ -57,7 +56,7 @@ class ImprResu(ExecuteCommand):
         if resu.get("CHAM_GD"):
             field_name = resu["CHAM_GD"].userName[0:8]
             if not field_name:
-                UTMESS('A', 'MED3_2', valk=resu["CHAM_GD"].getName())
+                UTMESS("A", "MED3_2", valk=resu["CHAM_GD"].getName())
                 return
             resu["NOM_CHAM_MED"] = field_name
 
@@ -69,8 +68,10 @@ class ImprResu(ExecuteCommand):
                 in place.
         """
         # if PROC0 is not provided by the user
-        if not keywords.get("PROC0") and ExecutionParameter().option & Options.HPCMode:
-            keywords["PROC0"] = "NON"
+        if not keywords.get("PROC0"):
+            keywords["PROC0"] = "OUI"
+            if ExecutionParameter().option & Options.HPCMode:
+                keywords["PROC0"] = "NON"
         if keywords.get("FORMAT") in (None, "MED"):
             keywords["RESU"] = force_list(keywords["RESU"])
             for resu in keywords["RESU"]:

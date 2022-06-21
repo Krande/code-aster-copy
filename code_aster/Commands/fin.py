@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ from ..Utilities import ExecutionParameter, Options, haveMPI, logger
 
 class Closer(ExecuteCommand):
     """Command that closes the execution."""
+
     command_name = "FIN"
     _options = None
     _exit = None
@@ -67,6 +68,7 @@ class Closer(ExecuteCommand):
         """
         # if PROC0 is not provided by the user
         if not keywords.get("PROC0") and haveMPI():
+            keywords["PROC0"] = "OUI"
             option = ExecutionParameter().option
             if option & Options.HPCMode or not option & Options.LastStep:
                 keywords["PROC0"] = "NON"
