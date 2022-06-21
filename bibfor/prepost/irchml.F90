@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -247,15 +247,17 @@ character(len=*),  optional, intent(in) :: realFormat_, cplxFormat_
     call resuSelectCmp(quantityIndx,&
                        cmpUserNb   , cmpUserName,&
                        cmpCataNb   , cmpCataName,&
-                       cmpListNb   , cmpListIndx)
+                       cmpListNb   , cmpListIndx)    
 !
 ! - Select list of components (for VARI_R)
 !
     cmpVariNb = 0
-    if (cmpListNb .ne. 0) then
-        if ((quantityName .eq. 'VARI_R') .and. (fieldSupport(1:2) .eq. 'EL')) then
-            cmpVariNb = cmpListNb
-            call utcmp3(cmpListNb, cmpUserName, cmpVariIndx)
+    !
+    if ((quantityName .eq. 'VARI_R') .and. (fieldSupport(1:2) .eq. 'EL')) then
+        if (cmpUserNb .ne. 0) then
+            cmpVariNb = cmpUserNb
+            AS_ALLOCATE(vi=cmpVariIndx, size=cmpVariNb)
+            call utcmp3(cmpVariNb, cmpUserName, cmpVariIndx)
         endif
     endif
     if (cmpListNb .eq. 0 .and. cmpUserNb .ne. 0 .and. cmpVariNb .eq. 0) then
@@ -362,6 +364,9 @@ character(len=*),  optional, intent(in) :: realFormat_, cplxFormat_
     AS_DEALLOCATE(vi = cmpListIndx)
     AS_DEALLOCATE(vk8 = meshCellName)
     AS_DEALLOCATE(vk8 = meshNodeName)
+    if (cmpVariNb .ne. 0) then
+        AS_DEALLOCATE(vi=cmpVariIndx)
+    endif
 !
     call jedema()
 end subroutine
