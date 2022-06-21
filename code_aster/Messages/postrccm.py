@@ -127,11 +127,11 @@ cata_msg = {
     22: _("""
  Vous réalisez un post traitement en fatigue conformément à l'annexe ZH210
  du RCCM-M avec l'intégralité des instants disponibles dans le résultat.
- Dans cette situation, chaque instant de calcul est considéré comme un 
+ Dans cette situation, chaque instant de calcul est considéré comme un
  extremum local de contraintes.
- Cela peut conduire à des temps de calcul importants et à un facteur 
+ Cela peut conduire à des temps de calcul importants et à un facteur
  d'usage sur-estimé.
- Les extremum locaux peuvent être identifiés par les mots-clés INST ou LIST_INST. 
+ Les extremum locaux peuvent être identifiés par les mots-clés INST ou LIST_INST.
 """),
 
     23: _("""
@@ -314,7 +314,7 @@ Contactez le support technique.
 """),
 
     58: _("""
- Attention! Il faut utiliser le modèle AXIS dans ce cas!
+La prise en compte de l'axisymétrie est activée, la concordance avec le modèle n'est pas vérifiée par le code
 """),
 
 }

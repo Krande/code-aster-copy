@@ -50,10 +50,10 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ncmp, jsigm, jinst, nbinst, jsno, jsne, ind, i1, i2, icmp, l1, l2, n1
-    integer :: l3, l4, l5, l6, npara, ik, ir, i, vaio(5), vaie(5), npar1, jresp, jsneo
+    integer :: ncmp, jsigm, jinst, nbinst, jsno, jsne, ind, i1, i2, icmp, l1, l2
+    integer :: l3, l4, l5, npara, ik, ir, i, vaio(5), vaie(5), npar1, jresp
     integer :: jsnee, jspo, jspe, jfao, jfae, jnoc, jresu, jspto, jspte, jspmo
-    integer :: jspme
+    integer :: jspme, jsneo
     parameter  ( ncmp = 6 )
     real(kind=8) :: tpm(ncmp), tpb(ncmp), tpmpbo(ncmp), tpmpbe(ncmp), dco, dce
     real(kind=8) :: tresca, valo(39), vale(39), stlin, stpar
@@ -112,7 +112,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
     call jeveuo(cresu, 'L', jresu)
     call jeveuo(cinst, 'L', jinst)
     call jelira(cinst, 'LONMAX', nbinst)
-!   
+!
 ! --- CREATION DE LA TABLE
 !
     if (it .eq. 1 .and. jt .eq. 1) then
@@ -217,7 +217,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
             valo(ir) = zr(jinst+i-1)
             vale(ir) = zr(jinst+i-1)
             do 402 icmp = 1, ncmp
-                if (lsymm) then 
+                if (lsymm) then
                     l3 = 6*ncmp*nbinst + ncmp*(i-1) + icmp
                     tpm(icmp) = zr(jsigm-1+l3)
                 else
