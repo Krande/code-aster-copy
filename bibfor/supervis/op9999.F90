@@ -27,6 +27,7 @@ subroutine op9999(options)
 #include "asterfort/apetsc.h"
 #include "asterfort/asmpi_checkalarm.h"
 #include "asterfort/assert.h"
+#include "asterfort/get_jvbasename.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -56,8 +57,9 @@ subroutine op9999(options)
 !       The objects are only saved on rank #0.
 !   Same values are in 'fin.py'
 
+    character(len=512) :: path
     integer :: iunres, iunmes
-    integer :: iret, nbext
+    integer :: idx, iret, nbext
     aster_logical :: close_base
 
     call jemarq()
@@ -125,8 +127,20 @@ subroutine op9999(options)
     call jefini('NORMAL', close_base)
 
     if ( .not. close_base ) then
-        call rmfile("glob.*", 1, iret)
-        call rmfile("vola.*", 1, iret)
+        idx = 1
+        iret = 0
+        do while (iret .eq. 0 .and. idx .lt. 99)
+            call get_jvbasename("glob", idx, path)
+            call rmfile(path, 1, iret)
+            idx = idx + 1
+        end do
+        idx = 1
+        iret = 0
+        do while (iret .eq. 0 .and. idx .lt. 99)
+            call get_jvbasename("vola", idx, path)
+            call rmfile(path, 1, iret)
+            idx = idx + 1
+        end do
     endif
 
 end subroutine

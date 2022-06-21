@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -32,19 +32,16 @@ Remove a file
 
 void DEFSPP( RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, ASTERINTEGER *info,
              ASTERINTEGER *iret ) {
-    char cmd[256] = "rm ";
     char *fname;
-    FILE *fp;
 
     fname = MakeCStrFromFStr( nom1, lnom1 );
 
-    strcat( cmd, fname );
-    *iret = (ASTERINTEGER)system( cmd );
+    *iret = (ASTERINTEGER)remove( fname );
     if ( *info == 1 ) {
         if ( *iret == 0 ) {
             fprintf( stderr, "INFO '%s' deleted\n", fname );
         } else {
-            fprintf( stderr, "Deleting '%s':", fname );
+            fprintf( stderr, "Deleting '%s': ", fname );
             perror( "" );
         }
     }
