@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,6 +139,17 @@ U_1=STAT_NON_LINE(
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
+
+IMPR_RESU(FORMAT='RESULTAT',
+          INFO=1,
+          RESU=_F(
+                  GROUP_MA='CUBEDEG',
+                  IMPR_COOR='NON',FORM_TABL='OUI', 
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP=('V3', 'V4'),
+                  RESULTAT=U_1),
+          UNITE=8)
+
 
 STAT_NON_LINE(reuse = U_1,
   SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE='OUI'),
