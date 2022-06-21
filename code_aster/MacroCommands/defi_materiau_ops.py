@@ -53,7 +53,8 @@ def defi_materiau_ops(self, **args):
 
     resetFortranLoggingLevel()
     check_young_consistency(mater)
-    mater.debugPrint()
+    if args["INFO"] == 2:
+        mater.debugPrint()
 
     return mater
 
