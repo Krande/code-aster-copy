@@ -24,10 +24,9 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def asse_matrice_prod(MATR_ELEM, **args):
-    if args.get('__all__'):
-        return (matr_asse_depl_r, matr_asse_depl_c, matr_asse_temp_r,
-                matr_asse_pres_c)
+def asse_matrice_prod(self, MATR_ELEM, **args):
+    if args.get("__all__"):
+        return (matr_asse_depl_r, matr_asse_depl_c, matr_asse_temp_r, matr_asse_pres_c)
 
     if AsType(MATR_ELEM) == matr_elem_depl_r:
         return matr_asse_depl_r
@@ -40,20 +39,19 @@ def asse_matrice_prod(MATR_ELEM, **args):
     raise AsException("type de concept resultat non prevu")
 
 
-ASSE_MATRICE = MACRO(nom="ASSE_MATRICE",
-                     op=OPS(
-                         "code_aster.MacroCommands.asse_matrice_ops.asse_matrice_ops"),
-                     sd_prod=matr_elem_depl_r,
-                     fr=tr("Construction d'une matrice assemblée"),
-                     reentrant='n',
-                     MATR_ELEM=SIMP(statut='o',
-                                    typ=(matr_elem_depl_r, matr_elem_depl_c,
-                                         matr_elem_temp_r, matr_elem_pres_c),
-                                    max="**"),
-                     NUME_DDL=SIMP(statut='o', typ=nume_ddl_sdaster),
-                     SYME=SIMP(statut='f', typ='TXM', into=("OUI",)),
-                     CHAR_CINE=SIMP(statut='f', typ=(
-                         char_cine_meca, char_cine_ther, char_cine_acou),
-                         max="**"),
-                     INFO=SIMP(statut='f', typ='I', into=(1, 2), defaut=1),
-                     )
+ASSE_MATRICE = MACRO(
+    nom="ASSE_MATRICE",
+    op=OPS("code_aster.MacroCommands.asse_matrice_ops.asse_matrice_ops"),
+    sd_prod=asse_matrice_prod,
+    fr=tr("Construction d'une matrice assemblée"),
+    reentrant="n",
+    MATR_ELEM=SIMP(
+        statut="o",
+        typ=(matr_elem_depl_r, matr_elem_depl_c, matr_elem_temp_r, matr_elem_pres_c),
+        max="**",
+    ),
+    NUME_DDL=SIMP(statut="o", typ=nume_ddl_sdaster),
+    SYME=SIMP(statut="f", typ="TXM", into=("OUI",)),
+    CHAR_CINE=SIMP(statut="f", typ=(char_cine_meca, char_cine_ther, char_cine_acou), max="**"),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2), defaut=1),
+)

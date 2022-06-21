@@ -194,7 +194,7 @@ class ExecuteCommand(object):
 
         ExecuteCommand.level += 1
         self._counter = ExecutionParameter().incr_command_counter()
-        if self.show_syntax():
+        if self.show_syntax() or self.command_name in ("DEBUT", "POURSUITE"):
             timer.Start(str(self._counter), name=self.command_name)
         timer.Start(" . check syntax", num=1.1e6)
         self.compat_syntax_(keywords)
