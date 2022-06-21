@@ -25,12 +25,12 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 !
 !     METHODE PRSECT DE ANSYS POUR LINEARISER LES CONTRAINTES
-!     PRISE EN COMPTE DE LA DISTRIBUTION RADIALE INHOMOGENE DU MATERIAU D'UN MODELE AXISYMETRIQUE  
+!     PRISE EN COMPTE DE LA DISTRIBUTION RADIALE INHOMOGENE DU MATERIAU D'UN MODELE AXISYMETRIQUE
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbsgt, isgt
-    real(kind=8) :: rot(2,2), sigm(4,nbabsc), f(nbabsc)
+    integer :: nbsgt
+    real(kind=8) :: sigm(4,nbabsc), f(nbabsc)
     real(kind=8) :: l, x1, x2, y1, y2, phi, pi, mid_rad, xf, xh, dx
 ! DEB ------------------------------------------------------------------
 !
@@ -43,7 +43,7 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
     y1 = ycoo(1)
     x2 = xcoo(nbabsc)
     y2 = ycoo(nbabsc)
-    if (x1 .eq. x2) then 
+    if (x1 .eq. x2) then
         phi = pi/2
     else
         phi = atan((y1-y2)/(x1-x2))
@@ -58,7 +58,7 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
 ! --- sigm_y^m
     f = sigm(2,:)*xcoo
     momen0_axis(2) = (f(1)/2+f(nbabsc)/2+sum(f(2:nbabsc-1)))*dx/(mid_rad*l)
-! --- sigm_z^m 
+! --- sigm_z^m
     if (rho .gt. 0.d0) then
         f = sigm(3,:)*(1+xcoo/rho)
         momen0_axis(3) = (f(1)/2+f(nbabsc)/2+sum(f(2:nbabsc-1)))/nbsgt
@@ -78,7 +78,7 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
     momen1_axis(2) = (-l/2-xf)/(mid_rad*l*(l**2/12-xf**2))*(f(1)/2+&
     f(nbabsc)/2+sum(f(2:nbabsc-1)))*dx
     momen2_axis(2) = momen1_axis(2)*(xf-l/2)/(xf+l/2)
-! --- sigm_z^b 
+! --- sigm_z^b
     if (rho .gt. 0.d0) then
         xh = l**2/(12*rho)
         f = (absc-l/2-xh)*sigm(3,:)*(1+(absc-l/2)/rho)

@@ -46,7 +46,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: i, j, n1, nbinti, jinti, nbtran, jinst, jresu
+    integer :: i, j, n1, nbinti, jinti, nbtran
     real(kind=8) :: para(3), sm
     aster_logical :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt, lsymm
     character(len=8) :: typeke, symm
@@ -114,7 +114,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option)
     call getvtx(' ', 'AXIS',scal = symm, nbret = n1)
     if (symm .eq. 'OUI') then
         lsymm = .true.
-        call utmess('A', 'POSTRCCM_58')
+        call utmess('I', 'POSTRCCM_58')
     endif
 !
     do 10 i = 1, nbopt
