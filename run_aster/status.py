@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,11 @@ class Status:
         exicode (int): Exit code.
         times (list[float]): List of 4 values: cpu, sys, tot, elapsed time.
     """
+
     def __init__(self, state=0, exitcode=-1):
         self._state = state
         self._exitcode = exitcode
-        self._times = [0.] * 4
+        self._times = [0.0] * 4
 
     @property
     def state(self):
@@ -149,6 +150,7 @@ class StateOptions:
             be available.
         Error: Execution failed, results files may be missing or corrupted.
     """
+
     # null == unknown, no information
     Warn = 0x001
     Nook = 0x002
@@ -162,8 +164,7 @@ class StateOptions:
     Abort = 0x200
     Ok = 0x400
 
-    Error = (CpuLimit | Convergence | Memory | Except
-             | Syntax | Fatal | Abort)
+    Error = CpuLimit | Convergence | Memory | Except | Syntax | Fatal | Abort
     Completed = Ok | Warn | Nook | NoTest
 
     @staticmethod
@@ -233,13 +234,13 @@ RE_DEBUT = re.compile(re.escape("-- CODE_ASTER -- VERSION"))
 RE_FIN = re.compile("<I> <FIN> ARRET NORMAL")
 RE_MEM = re.compile("MEMOIRE INSUFFISANTE POUR ALLOUER")
 RE_TIME = re.compile("(<TimeLimitError>|ARRET PAR MANQUE DE TEMPS)", re.I)
-RE_CONV = re.compile("<(ConvergenceError|IntegrationError|SolverError"
-                     "|ContactError)>", re.I)
+RE_CONV = re.compile("<(ConvergenceError|IntegrationError|SolverError|ContactError)>", re.I)
 RE_EXCEPT = re.compile("<(AsterError|EXCEPTION)>")
 RE_ERRS = re.compile("^ *. *<S>", re.M)
 RE_ERRF = re.compile("^ *. *<F>", re.M)
 RE_SYNTAX = re.compile("SyntaxError")
 RE_ELAPS = re.compile("TOTAL_JOB" + r" +: +([0-9\.]+)" * 4, re.M)
+
 
 def get_status(exitcode, output, test=False):
     """Return the diagnostic after a Code_Aster execution.
@@ -302,18 +303,15 @@ def get_status(exitcode, output, test=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog="get_status",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--exitcode', action='store', type=int, required=True,
-                        help="exit code")
-    parser.add_argument('--test', action='store_true',
-                        help="check status for a testcase")
-    parser.add_argument('output',
-                        help="output filename")
+        prog="get_status", formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument("--exitcode", action="store", type=int, required=True, help="exit code")
+    parser.add_argument("--test", action="store_true", help="check status for a testcase")
+    parser.add_argument("output", help="output filename")
     args = parser.parse_args()
 
     status = get_status(args.exitcode, args.output, args.test)
     print('DIAG="{0}"'.format(status.diag))
-    print('EXITCODE={0}'.format(status.exitcode))
-    print('COMPLETED={0}'.format(int(status.is_completed())))
+    print("EXITCODE={0}".format(status.exitcode))
+    print("COMPLETED={0}".format(int(status.is_completed())))
     sys.exit(0)

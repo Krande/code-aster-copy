@@ -208,10 +208,10 @@ class RunAster:
         # use environment variable to make it works with ipython
         os.environ["PYTHONFAULTHANDLER"] = "1"
         exitcode = run_command(cmd, exitcode_file=EXITCODE_FILE)
-        msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={exitcode}\n\n"
+        status = self._get_status(exitcode)
+        msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={status.exitcode}\n\n"
         logger.info(msg)
         _log_mess(msg)
-        status = self._get_status(exitcode)
 
         if status.is_completed():
             if not self._last:
@@ -252,14 +252,16 @@ class RunAster:
         else:
             cmd.append(CFG.get("python_interactive", python))
             cmd.append("-i")
+        if self._parallel:
+            # see documentation of `mpi4py.run`
+            cmd.extend(["-m", "mpi4py"])
         # To show executed lines with trace module:
         # import sys
         # ign = [sys.prefix, sys.exec_prefix, "$HOME/.local", os.getenv("PYTHONPATH")]
         # cmd.extend(["-m", "trace", "--trace",
         #             "--ignore-dir=" + ":".join(ign)])
-        # remaining arguments are treated by code_aster script
-        cmd.append("--")
         cmd.append(commfile)
+        # remaining arguments are treated by code_aster script
         if self._test:
             cmd.append("--test")
         if self._last:
@@ -328,6 +330,8 @@ class RunAster:
         if status.diag in expected:
             status.state = StateOptions.Ok
             status.exitcode = 0
+        elif expected:
+            status.update(Status(StateOptions.Fatal, 1))
         return status
 
     def ending_execution(self, is_completed):

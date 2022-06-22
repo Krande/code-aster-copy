@@ -365,6 +365,7 @@ def main(argv=None):
             expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster")
             statfile = osp.join(expdir, "__status__")
             basn = osp.basename(osp.splitext(export.filename)[0])
+            expected = export.get("expected_diag", [])
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, basn + "." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
@@ -379,10 +380,14 @@ def main(argv=None):
                     args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1), program=cmd)
                     cmd = CFG.get("mpiexec").format(**args_cmd)
                 logger.info("Running: %s", cmd)
-                proc = run(cmd, shell=True)
+                proc = run(cmd, shell=True, check=False)
                 status = Status.load(statfile)
                 exitcode = proc.returncode
-                if exitcode != 0 and not status.is_completed():
+                if exitcode != 0:
+                    if status.is_completed() and "<F>_ABNORMAL_ABORT" in expected:
+                        # RunAster._get_status has reset the status
+                        exitcode = 0
+                        continue
                     break
             shutil.rmtree(expdir)
             return exitcode
