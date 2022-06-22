@@ -77,7 +77,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
     data nopart / 'TABL_PRES', 'SY', 'INST', 'SIGM_M_PRES',&
      &              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB' /
     data typart / 'K8', 'R', 'R' , 'R'   , 'R'   , 'R'   /
-    data nopapm / 'TABL_RESU', 'INST_PMPB', 'PM', 'PB', 'PMB' /
+    data nopapm / 'TABL_RESU', 'INST', 'PM', 'PB', 'PMB' /
     data typapm / 'K8'       , 'R'   , 'R' , 'R' , 'R'   /
     data nopasn / 'TABL_RESU_1', 'INST_1',&
      &              'TABL_RESU_2', 'INST_2', 'SN' /
@@ -117,15 +117,15 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig,&
 !
     if (it .eq. 1 .and. jt .eq. 1) then
         npara = nparen
-        do 10 i = 1, nparen
+        do i = 1, nparen
             nopara(i) = nopaen(i)
             typara(i) = typaen(i)
- 10     continue
+        enddo
         if (lrocht) then
-            do 11 i = 1, nparrt
+            do i = 1, nparrt
                 nopara(npara+i) = nopart(i)
                 typara(npara+i) = typart(i)
- 11         continue
+                enddo
             npara = npara + nparrt
         endif
         if (lpmpb) then
