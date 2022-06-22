@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -298,6 +298,7 @@ T_RESU=MACR_LIGN_COUPE(RESULTAT=RESU,  NOM_CHAM='SIGM_ELNO',
 T1=POST_RCCM(  OPTION='PM_PB',
                TYPE_RESU_MECA='EVOLUTION',
                MATER=MA,
+               AXIS='OUI',
                TRANSITOIRE=_F( TABL_RESU_MECA=T_RESU,
                                TOUT_INST='OUI',),
              )
@@ -306,23 +307,39 @@ IMPR_TABLE( TABLE=T1,
             NOM_PARA=('LIEU','PM','PB','PMB'),  )
 
 TEST_TABLE(
-           VALE_CALC=82.9178532655,
+           VALE_CALC=82.9180024359435,
            NOM_PARA='PM',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
            )
 
+TEST_TABLE(
+           VALE_CALC=82.9180024359435,
+           NOM_PARA='PM',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=54.0181555865,
+           VALE_CALC=62.3994636932228,
            NOM_PARA='PB',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
            )
 
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=47.1217312842318,
+           NOM_PARA='PB',
+           TABLE=T1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
 TEST_TABLE(
-           VALE_CALC=136.934821576,
+           VALE_CALC=145.3170033,
            NOM_PARA='PMB',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -330,7 +347,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=34.4782457711,
+           VALE_CALC=35.80513084,
            NOM_PARA='PMB',
            TABLE=T1,
            FILTRE=_F(NOM_PARA='LIEU',
