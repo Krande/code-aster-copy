@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -328,6 +328,7 @@ def main(argv=None):
                 dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster"
             )
             statfile = osp.join(expdir, "__status__")
+            expected = export.get("expected_diag", [])
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
@@ -342,9 +343,13 @@ def main(argv=None):
                     args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1), program=cmd)
                     cmd = CFG.get("mpiexec").format(**args_cmd)
                 logger.info("Running: " + cmd)
-                proc = run(cmd, shell=True)
+                proc = run(cmd, shell=True, check=False)
                 status = Status.load(statfile)
-                if proc.returncode != 0 and not status.is_completed():
+                if proc.returncode != 0:
+                    if status.is_completed() and "<F>_ABNORMAL_ABORT" in expected:
+                        # RunAster._get_status has reset the status
+                        exitcode = 0
+                        continue
                     break
             shutil.rmtree(expdir)
             return proc.returncode
