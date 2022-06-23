@@ -279,7 +279,6 @@ B_ENV
 B_N
 B_T
 B_TN
-BulkModulus
 C
 C0
 C01
@@ -684,7 +683,6 @@ C_SY
 C_S_VP
 C_TZTZ
 C_VOLU
-CamClayCSS
 D
 D0
 D1
@@ -1717,8 +1715,6 @@ ITER_PRE_MAXI
 IVENAC
 I_CORP
 I_TUBU
-InitPreconsPress
-InitTensionPress
 Iwan
 Iwan_FO
 J1
@@ -1771,7 +1767,6 @@ KFIN_DX
 KFIN_DY
 KFIN_DZ
 KGTEST
-KHModulus
 KI
 KIC
 KN_AX
@@ -2818,7 +2813,6 @@ PW_B
 P_PIC
 P_ULT
 P_ULTM
-PlastCompIndex
 PoissonRatio
 Q
 Q1
@@ -3265,8 +3259,6 @@ S_ETOILE
 S_LT
 S_RUP
 S_VP_MELANGE
-ShearModulus
-SwellingIndex
 T1C
 T1R
 T2C
@@ -3768,12 +3760,6 @@ WI3
 WI4
 WI5
 WI6
-WMAX_INF
-WMAX_INF_Y
-WMAX_INF_Z
-WMAX_SUP
-WMAX_SUP_Y
-WMAX_SUP_Z
 WO
 WO1
 WO2
@@ -3819,8 +3805,6 @@ Y_CENTRE
 Y_CENTRE2
 Y_MAXI
 Y_MINI
-YieldSurfCapCoef
-YieldSurfLinCoef
 YoungModulus
 Z
 Z0

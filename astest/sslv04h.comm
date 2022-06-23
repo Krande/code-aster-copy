@@ -299,6 +299,7 @@ T1=POST_RCCM(  OPTION='PM_PB',
                TYPE_RESU_MECA='EVOLUTION',
                MATER=MA,
                AXIS='OUI',
+               RAYON_MOYEN=-1.,
                TRANSITOIRE=_F( TABL_RESU_MECA=T_RESU,
                                TOUT_INST='OUI',),
              )
