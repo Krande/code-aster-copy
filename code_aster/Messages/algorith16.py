@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -256,16 +256,6 @@ caractéristiques modales suivantes :
   - Incrément de déformation cumulée négative = %(r1)f,
   - Changer la taille d'incrément.
 """),
-
-    68 : _("""
- Arrêt par manque de temps CPU au numéro d'ordre %(i1)d
-
-   - Temps moyen par incrément de temps : %(r1)f
-   - Temps restant                      : %(r2)f
-
- La base globale est sauvegardée, elle contient les pas archivés avant l'arrêt
-
- """),
 
     72 : _("""
 Erreur utilisateur :

@@ -38,9 +38,7 @@ implicit none
 #include "asterfort/meimme.h"
 #include "asterfort/memaac.h"
 #include "asterfort/memame.h"
-#include "asterfort/memsth.h"
 #include "asterfort/meonme.h"
-#include "asterfort/mergth.h"
 #include "asterfort/meriac.h"
 #include "asterfort/merifs.h"
 #include "asterfort/merige.h"
@@ -56,14 +54,13 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=1), parameter :: base = 'G'
-    character(len=19), parameter :: listLoad = '&&OP0009.LISCHA'
 ! - Linear case: multi-behaviour for PMF
     character(len=24) :: comporMult
     integer :: nbLoad, modeFourier
     character(len=8) :: model, caraElem, sigm, strx, disp
     character(len=16) :: k8dummy, option
     character(len=19) :: matrElem, rigiMatrElem, massMatrElem
-    character(len=24) :: chtime, mate, matr_elem24, mateco
+    character(len=24) :: chtime, mate, mateco
     character(len=8), pointer :: listLoadK8(:) => null()
     character(len=24), pointer :: listLoadK24(:) => null()
     real(kind=8) :: timeCurr, timeIncr
@@ -155,17 +152,6 @@ implicit none
                     timeCurr    , base        ,&
                     rigiMatrElem, massMatrElem,&
                     matrElem    , listElemCalc)
-
-    else if (option.eq.'RIGI_THER') then
-        call ntdoch(listLoad, l_load_user_ = .true._1)
-        matr_elem24 = matrElem
-        call mergth(model      , listLoad, caraElem, mate, mateco, chtime,&
-                    matr_elem24, base,&
-                    timeCurr  , nh_ = modeFourier)
-        call medith(base, 'CUMU', model, listLoad, matr_elem24)
-
-    else if (option.eq.'MASS_THER') then
-        call memsth(model, caraElem, mate, mateco, chtime, matrElem, base, time_curr_ = timeCurr)
 
     else if (option.eq.'RIGI_ACOU') then
         call meriac(model, nbLoad, listLoadK8, mate, mateco, matrElem, base)

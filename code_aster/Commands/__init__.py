@@ -187,7 +187,6 @@ from .rest_spec_temp import REST_SPEC_TEMP
 from .stat_non_line import STAT_NON_LINE
 from .test_resu import TEST_RESU
 from .test_table import TEST_TABLE
-from .ther_lineaire import THER_LINEAIRE
 from .ther_non_line import THER_NON_LINE
 from .ther_non_line_mo import THER_NON_LINE_MO
 from .variable import VARIABLE
