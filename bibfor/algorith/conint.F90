@@ -63,6 +63,7 @@ subroutine conint(nume, raide, coint, connec,&
 #include "asterfort/matint.h"
 #include "asterfort/profgene_crsd.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/utmess.h"
 !
 !
 !-- VARIABLES EN ENTREES / SORTIE
@@ -188,6 +189,8 @@ subroutine conint(nume, raide, coint, connec,&
         zi(lconnc+l1)=nbvois
         if (nbvois .gt. nbvmax) then
             nbvmax=nbvois
+        else if (nbvois .eq. 0) then
+            call utmess('F', 'ALGELINE2_5', si=noeu)
         endif
 !
     end do
