@@ -47,6 +47,43 @@ std::pair< ASTERINTEGER, std::string > Result::_getNewFieldName( const std::stri
     return std::make_pair( retour, returnName );
 };
 
+template < typename T >
+void Result::_setFieldBase(
+    const std::string &name, const ASTERINTEGER &rank, std::shared_ptr< T > field,
+    std::map< std::string, std::map< ASTERINTEGER, std::shared_ptr< T > > > &dict ) {
+
+    CALL_JEMARQ();
+
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first == 0 || rschex.first == 100 || rschex.first == 110 );
+
+    if ( rschex.first == 110 ) {
+        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
+        rschex = _getNewFieldName( trim_name, rank );
+    };
+
+    CALLO_RSNOCH_FORWARD( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+
+    if ( dict.count( trim_name ) == 0 ) {
+        dict[trim_name] = std::map< ASTERINTEGER, std::shared_ptr< T > >();
+    }
+
+    // if field arlreday exist, destroy it befor to create new one
+    if ( dict[trim_name].count( rank ) > 0 ) {
+        dict[trim_name][rank] = nullptr;
+    }
+
+    auto result = std::make_shared< T >( internalName, *field );
+    dict[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+};
+
 void Result::_checkMesh( const BaseMeshPtr mesh ) const {
     if ( !mesh )
         raiseAsterError( "ValueError: Mesh is empty" );
@@ -490,201 +527,39 @@ FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
 
 void Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
-    CALL_JEMARQ();
-
-    if ( !field )
-        raiseAsterError( "ValueError: field is empty" );
-
-    auto trim_name = trim( name );
-    auto rschex = _getNewFieldName( trim_name, rank );
-    AS_ASSERT( rschex.first <= 101 );
-
-    if ( rschex.first == 101 )
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
-
-    CALLO_RSNOCH( getName(), name, &rank );
-    std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnNodesRealPtr result = std::make_shared< FieldOnNodesReal >( internalName, *field );
-
-    _fieldBuidler.addFieldOnNodesDescription( result->getDescription() );
-
-    if ( _dictOfMapOfFieldOnNodesReal.count( trim_name ) == 0 ) {
-        _dictOfMapOfFieldOnNodesReal[trim_name] = MapOfFieldOnNodesReal();
-    }
-
-    _dictOfMapOfFieldOnNodesReal[trim_name][rank] = result;
-
-    CALL_JEDEMA();
+    _setFieldBase( name, rank, field, _dictOfMapOfFieldOnNodesReal );
+    _fieldBuidler.addFieldOnNodesDescription( field->getDescription() );
 };
 
 void Result::setField( const FieldOnNodesComplexPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
-    CALL_JEMARQ();
-
-    if ( !field )
-        raiseAsterError( "ValueError: field is empty" );
-
-    auto trim_name = trim( name );
-    auto rschex = _getNewFieldName( trim_name, rank );
-    AS_ASSERT( rschex.first <= 101 );
-
-    if ( rschex.first == 101 )
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
-
-    CALLO_RSNOCH( getName(), name, &rank );
-    std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnNodesComplexPtr result = std::make_shared< FieldOnNodesComplex >( internalName, *field );
-
-    _fieldBuidler.addFieldOnNodesDescription( result->getDescription() );
-
-    if ( _dictOfMapOfFieldOnNodesComplex.count( trim_name ) == 0 ) {
-        _dictOfMapOfFieldOnNodesComplex[trim_name] = MapOfFieldOnNodesComplex();
-    }
-
-    _dictOfMapOfFieldOnNodesComplex[trim_name][rank] = result;
-
-    CALL_JEDEMA();
+    _setFieldBase( name, rank, field, _dictOfMapOfFieldOnNodesComplex );
+    _fieldBuidler.addFieldOnNodesDescription( field->getDescription() );
 };
 
 void Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
-    CALL_JEMARQ();
-
-    if ( !field )
-        raiseAsterError( "ValueError: field is empty" );
-
-    auto trim_name = trim( name );
-    auto rschex = _getNewFieldName( trim_name, rank );
-    AS_ASSERT( rschex.first <= 101 );
-
-    if ( rschex.first == 101 )
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
-
-    CALLO_RSNOCH( getName(), name, &rank );
-    std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnCellsRealPtr result = std::make_shared< FieldOnCellsReal >( internalName, *field );
-
-    _fieldBuidler.addFiniteElementDescriptor( result->getDescription() );
-
-    if ( _dictOfMapOfFieldOnCellsReal.count( trim_name ) == 0 ) {
-        _dictOfMapOfFieldOnCellsReal[trim_name] = MapOfFieldOnCellsReal();
-    }
-
-    _dictOfMapOfFieldOnCellsReal[trim_name][rank] = result;
-
-    CALL_JEDEMA();
+    _setFieldBase( name, rank, field, _dictOfMapOfFieldOnCellsReal );
 };
 
 void Result::setField( const FieldOnCellsComplexPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
-    CALL_JEMARQ();
-
-    if ( !field )
-        raiseAsterError( "ValueError: field is empty" );
-
-    auto trim_name = trim( name );
-    auto rschex = _getNewFieldName( trim_name, rank );
-    AS_ASSERT( rschex.first <= 101 );
-
-    if ( rschex.first == 101 )
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
-
-    CALLO_RSNOCH( getName(), name, &rank );
-    std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnCellsComplexPtr result = std::make_shared< FieldOnCellsComplex >( internalName, *field );
-
-    _fieldBuidler.addFiniteElementDescriptor( result->getDescription() );
-
-    if ( _dictOfMapOfFieldOnCellsComplex.count( trim_name ) == 0 ) {
-        _dictOfMapOfFieldOnCellsComplex[trim_name] = MapOfFieldOnCellsComplex();
-    }
-
-    _dictOfMapOfFieldOnCellsComplex[trim_name][rank] = result;
-
-    CALL_JEDEMA();
+    _setFieldBase( name, rank, field, _dictOfMapOfFieldOnCellsComplex );
 };
 
 void Result::setField( const FieldOnCellsLongPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
-    CALL_JEMARQ();
-
-    if ( !field )
-        raiseAsterError( "ValueError: field is empty" );
-
-    auto trim_name = trim( name );
-    auto rschex = _getNewFieldName( trim_name, rank );
-    AS_ASSERT( rschex.first <= 101 );
-
-    if ( rschex.first == 101 )
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
-
-    CALLO_RSNOCH( getName(), name, &rank );
-    std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnCellsLongPtr result = std::make_shared< FieldOnCellsLong >( internalName, *field );
-
-    _fieldBuidler.addFiniteElementDescriptor( result->getDescription() );
-
-    if ( _dictOfMapOfFieldOnCellsLong.count( trim_name ) == 0 ) {
-        _dictOfMapOfFieldOnCellsLong[trim_name] = MapOfFieldOnCellsLong();
-    }
-
-    _dictOfMapOfFieldOnCellsLong[trim_name][rank] = result;
-
-    CALL_JEDEMA();
+    _setFieldBase( name, rank, field, _dictOfMapOfFieldOnCellsLong );
 };
 
 void Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
                        const ASTERINTEGER rank ) {
-    CALL_JEMARQ();
-
-    if ( !field )
-        raiseAsterError( "ValueError: field is empty" );
-
-    auto trim_name = trim( name );
-    auto rschex = _getNewFieldName( trim_name, rank );
-    AS_ASSERT( rschex.first <= 101 );
-
-    if ( rschex.first == 101 )
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
-
-    CALLO_RSNOCH( getName(), name, &rank );
-    std::string internalName( rschex.second.c_str(), 19 );
-    auto result = std::make_shared< ConstantFieldOnCellsChar16 >( internalName, *field );
-
-    if ( _dictOfMapOfConstantFieldOnCellsChar16.count( trim_name ) == 0 ) {
-        _dictOfMapOfConstantFieldOnCellsChar16[trim_name] = MapOfConstantFieldOnCellsChar16();
-    }
-
-    _dictOfMapOfConstantFieldOnCellsChar16[trim_name][rank] = result;
-
-    CALL_JEDEMA();
+    _setFieldBase( name, rank, field, _dictOfMapOfConstantFieldOnCellsChar16 );
 };
 
 void Result::setField( const ConstantFieldOnCellsRealPtr field, const std::string &name,
                        const ASTERINTEGER rank ) {
-    CALL_JEMARQ();
-
-    if ( !field )
-        raiseAsterError( "ValueError: field is empty" );
-
-    auto trim_name = trim( name );
-    auto rschex = _getNewFieldName( trim_name, rank );
-    AS_ASSERT( rschex.first <= 101 );
-
-    if ( rschex.first == 101 )
-        resize( std::max( (ASTERINTEGER)1, 2 * getNumberOfRanks() ) );
-
-    CALLO_RSNOCH( getName(), name, &rank );
-    std::string internalName( rschex.second.c_str(), 19 );
-    auto result = std::make_shared< ConstantFieldOnCellsReal >( internalName, *field );
-
-    if ( _dictOfMapOfConstantFieldOnCellsReal.count( trim_name ) == 0 ) {
-        _dictOfMapOfConstantFieldOnCellsReal[trim_name] = MapOfConstantFieldOnCellsReal();
-    }
-
-    _dictOfMapOfConstantFieldOnCellsReal[trim_name][rank] = result;
-
-    CALL_JEDEMA();
+    _setFieldBase( name, rank, field, _dictOfMapOfConstantFieldOnCellsReal );
 };
 
 VectorString Result::getFieldsNames() const {

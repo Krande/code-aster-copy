@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,12 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
             call jeecra(noms2//'.ORDR', 'LONUTI', nrang)
             call jeveuo(noms2//'.ORDR', 'E', jordr)
             if (nrang .gt. 1) then
-                ASSERT(zi(jordr+nrang-2).lt.iordr)
+                if(zi(jordr+nrang-2)>=iordr) then
+                    valk (1) = nomsd
+                    vali (1) = iordr
+                    vali (2) = nrang
+                    call utmess('F', 'UTILITAI6_81', sk=valk(1), ni=2, vali=vali)
+                end if
             endif
             zi(jordr+nrang-1) = iordr
             irang = nrang

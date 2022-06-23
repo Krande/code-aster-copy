@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -135,11 +135,7 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr,&
     if (kstop .eq. 'F' .and. icode .ne. 0) then
         valk(1)=nomsd
         valk(2)=nomsy
-        if (icode .eq. 100) then
-            call utmess('F', 'CALCULEL_29', nk=2, valk=valk, si=iordr)
-        else
-            call utmess('F', 'CALCULEL_29', nk=2, valk=valk, si=iordr)
-        endif
+        call utmess('F', 'CALCULEL_29', nk=2, valk=valk, si=iordr)
     endif
 !
 !

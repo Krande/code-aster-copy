@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -161,7 +161,7 @@ cata_msg = {
 
     60 : _("""
  Homogénéité du champ de matériaux pour WEIBULL
- Nombre des relations de comportement WEIBULL trouvées =  %(i1)d. 
+ Nombre des relations de comportement WEIBULL trouvées =  %(i1)d.
  Les calculs sont valables pour un seul comportement WEIBULL.
  On choisit la première relation du type WEIBULL %(k1)s.
 """),
@@ -206,6 +206,12 @@ le numéro de rangement %(i1)d est supérieur au max %(i2)d.
     80 : _("""
 Concept résultat %(k1)s :
 la variable %(k2)s est inconnue pour le type %(k3)s.
+"""),
+
+    81 : _("""
+Concept résultat %(k1)s :
+le numéro d'archivage %(i1)d est inférieur au numéro précédent %(i2)d.
+Il doit être strictement croissant.
 """),
 
     84 : _("""

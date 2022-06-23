@@ -176,7 +176,11 @@ void DEFSSSPSP( RSEXCH, rsexch, const char *, STRING_SIZE, const char *, STRING_
                 STRING_SIZE, const ASTERINTEGER *, const char *, STRING_SIZE,
                 const ASTERINTEGER * );
 
-#define CALLO_RSNOCH( a, b, c ) CALLOOP( RSNOCH_FORWARD, rsnoch_forward, a, b, c )
+#define CALLO_RSNOCH( a, b, c ) CALLOOP( RSNOCH, rsnoch, a, b, c )
+void DEFSSP( RSNOCH, rsnoch, const char *, STRING_SIZE, const char *, STRING_SIZE,
+             const ASTERINTEGER * );
+
+#define CALLO_RSNOCH_FORWARD( a, b, c ) CALLOOP( RSNOCH_FORWARD, rsnoch_forward, a, b, c )
 void DEFSSP( RSNOCH_FORWARD, rsnoch_forward, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const ASTERINTEGER * );
 

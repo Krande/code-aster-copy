@@ -139,6 +139,11 @@ class Result : public DataStructure, public ListOfTables {
     std::pair< ASTERINTEGER, std::string > _getNewFieldName( const std::string &name,
                                                              const ASTERINTEGER &rank ) const;
 
+    template < typename T >
+    void
+    _setFieldBase( const std::string &name, const ASTERINTEGER &rank, std::shared_ptr< T > field,
+                   std::map< std::string, std::map< ASTERINTEGER, std::shared_ptr< T > > > &dict );
+
     void _checkMesh( const BaseMeshPtr mesh ) const;
 
   public:

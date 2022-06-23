@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,9 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 !       -- ON VERIFIE QUE LE NOUVEAU IORDR EST SUPERIEUR
 !          AU DERNIER IORDR DEJA STOCKE (IORDR CROISSANTS) :
         if (irang .gt. 1) then
-            ASSERT(ordr(1+irang-2).lt.iordr)
+            if(ordr(irang-1)>=iordr) then
+                call utmess('F', 'UTILITAI6_81', sk=nomsd, ni=2, vali=[iordr, nordr])
+            end if
         endif
         ordr(irang) = iordr
     else
