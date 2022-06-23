@@ -1,0 +1,163 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Méthode REGR_LINE
+
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+
+T2 = RECA_WEIBULL(
+    LIST_PARA=("SIGM_REFE", "M"),
+    RESU=(
+        _F(
+            EVOL_NOLI=U1,
+            LIST_INST=L_INST,
+            CHAM_MATER=CM50,
+            TEMPE=-50.0,
+            LIST_INST_RUPT=(
+                10.0,
+                20.0,
+                30.0,
+                40.0,
+                50.0,
+                60.0,
+                70.0,
+                80.0,
+                90.0,
+                100.0,
+                110.0,
+                120.0,
+                130.0,
+                140.0,
+                150.0,
+            ),
+            MODELE=MO,
+            TOUT="OUI",
+            COEF_MULT=12.5664,
+        ),
+        _F(
+            EVOL_NOLI=U2,
+            CHAM_MATER=CM100,
+            TEMPE=-100.0,
+            LIST_INST_RUPT=(
+                10.0,
+                20.0,
+                30.0,
+                40.0,
+                50.0,
+                60.0,
+                70.0,
+                80.0,
+                90.0,
+                100.0,
+                110.0,
+                120.0,
+                130.0,
+                140.0,
+                150.0,
+            ),
+            MODELE=MO,
+            TOUT="OUI",
+            COEF_MULT=12.5664,
+        ),
+        _F(
+            EVOL_NOLI=U3,
+            CHAM_MATER=CM150,
+            TEMPE=-150.0,
+            LIST_INST_RUPT=(
+                10.0,
+                20.0,
+                30.0,
+                40.0,
+                50.0,
+                60.0,
+                70.0,
+                80.0,
+                90.0,
+                100.0,
+                110.0,
+                120.0,
+                130.0,
+                140.0,
+                150.0,
+            ),
+            MODELE=MO,
+            TOUT="OUI",
+            COEF_MULT=12.5664,
+        ),
+    ),
+    METHODE="REGR_LINE",
+    CORR_PLAST="NON",
+    OPTION="SIGM_ELMOY",
+    ITER_GLOB_MAXI=25,
+    INCO_GLOB_RELA=1.0e-3,
+)
+
+print(T1.EXTR_TABLE())
+print(T2.EXTR_TABLE())
+
+TEST_TABLE(
+    VALE_CALC=3454.3247189796202,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=T2,
+    FILTRE=_F(NOM_PARA="PROBA_THE", VALE=8.61078e-03),
+)
+
+TEST_TABLE(
+    VALE_CALC=4983.358480568778,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=T2,
+    FILTRE=_F(NOM_PARA="PROBA_THE", VALE=9.56082e-01),
+)
+
+
+TEST_TABLE(
+    VALE_CALC=4642.251914320703,
+    NOM_PARA="SIGMA_U",
+    TABLE=T2,
+    FILTRE=_F(NOM_PARA="TEMP", VALE=-50.0),
+)
+
+TEST_TABLE(
+    VALE_CALC=4555.896376517411,
+    NOM_PARA="SIGMA_U",
+    TABLE=T2,
+    FILTRE=_F(NOM_PARA="TEMP", VALE=-100.0),
+)
+
+TEST_TABLE(
+    VALE_CALC=4430.769479356986,
+    NOM_PARA="SIGMA_U",
+    TABLE=T2,
+    FILTRE=_F(NOM_PARA="TEMP", VALE=-150.0),
+)
+
+TEST_TABLE(
+    VALE_CALC=16.071920788575312, NOM_PARA="M", TABLE=T2, FILTRE=_F(NOM_PARA="TEMP", VALE=-50.0)
+)
+
+TEST_TABLE(
+    VALE_CALC=16.071920788575312, NOM_PARA="M", TABLE=T2, FILTRE=_F(NOM_PARA="TEMP", VALE=-100.0)
+)
+
+TEST_TABLE(
+    VALE_CALC=16.071920788575312, NOM_PARA="M", TABLE=T2, FILTRE=_F(NOM_PARA="TEMP", VALE=-150.0)
+)
+
+FIN()
