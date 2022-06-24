@@ -21,7 +21,7 @@ interface
     subroutine compMecaChckModel(iComp       ,&
                                  model       , fullElemField ,&
                                  lAllCellAffe, cellAffe      , nbCellAffe   ,&
-                                 relaCompPY  , chmate        , typeComp     ,&
+                                 relaComp, relaCompPY  , chmate, typeComp,&
                                  lElasByDefault, lNeedDeborst , lIncoUpo)
         integer, intent(in) :: iComp
         character(len=8), intent(in) :: model
@@ -29,6 +29,7 @@ interface
         aster_logical, intent(in) :: lAllCellAffe
         character(len=24), intent(in) :: cellAffe
         integer, intent(in) :: nbCellAffe
+        character(len=16), intent(in) :: relaComp
         character(len=16), intent(in) :: relaCompPY
         character(len=16), intent(in) :: typeComp
         character(len=8), intent(in) :: chmate
