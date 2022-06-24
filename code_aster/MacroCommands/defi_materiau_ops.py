@@ -62,21 +62,44 @@ def defi_materiau_ops(self, **args):
 def check_young_consistency(mater):
     """Check the consistency between E provided as a constant under 'ELAS'
     and the first point of the 'TRACTION' function."""
+
+    def _check(valP, name, young, point):
+        slope = point[len(point) // 2] / point[0]
+        if abs(young - slope) > 0.01 * young:
+            if valP is None:
+                UTMESS("A", "MATERIAL1_5", valr=slope)
+            else:
+                UTMESS("A", "MATERIAL1_6", valr=(valP, young, slope), valk=name)
+
     matNames = mater.getMaterialNames()
-    if "ELAS" not in matNames or "TRACTION" not in matNames:
+    if "TRACTION" not in matNames or "ELAS" not in matNames:
         return
+
     trac = mater.getFunction("TRACTION", "SIGM")
-    typ = trac.getProperties()[0]
-    if typ == "NAPPE":
-        UTMESS("I", "MATERIAL1_6")
-    if typ != "FONCTION":
-        # formula not supported here
+    propT = trac.getProperties()
+    if propT[0] not in ("FONCTION", "NAPPE"):
+        # should probably be blocked in catalog
+        UTMESS("I", "MATERIAL1_10")
         return
-    moduleE = mater.getValueReal("ELAS", "E")
-    values = trac.getValuesAsArray()
-    moduleTrac = values[0][1] / values[0][0]
-    if abs(moduleE - moduleTrac) / moduleE > 0.01:
-        UTMESS("A", "MATERIAL1_5", valr=moduleTrac)
+
+    moduleE = mater.getFunction("ELAS", "E")
+    if not moduleE:
+        moduleE = mater.getValueReal("ELAS", "E")
+        if propT[0] == "NAPPE":
+            for i, para in enumerate(trac.getParameters()):
+                _check(para, propT[2], moduleE, trac.getValues()[i])
+        else:
+            _check(None, None, moduleE, trac.getValues())
+    else:
+        propE = moduleE.getProperties()
+        if propT[0] == "FONCTION":
+            UTMESS("A", "MATERIAL1_8", valk=propE[2])
+            return
+        if propT[2] != propE[2]:
+            UTMESS("A", "MATERIAL1_9", valk=(propE[2], propT[2]))
+            return
+        for i, para in enumerate(trac.getParameters()):
+            _check(para, propT[2], moduleE(para), trac.getValues()[i])
 
 
 # internal methods

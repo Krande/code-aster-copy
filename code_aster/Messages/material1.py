@@ -20,14 +20,15 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1: _("""
+    1: _(
+        """
 Erreur utilisateur :
  Pour définir le coefficient de dilatation thermique ALPHA, vous devez utiliser uniquement une fonction. Les formules et les nappes sont interdites
  Utilisez CALC_FONC_INTERP si nécessaire.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
 Erreur utilisateur :
   Dans le CHAM_MATER %(k1)s, vous avez affecté le matériau %(k2)s.
   Dans ce matériau, il existe un coefficient de dilatation thermique ALPHA
@@ -40,36 +41,70 @@ Solution :
   Vérifier que les mailles affectées par le matériau %(k2)s sont bien
   toutes affectées par une température de référence
   (mot clé AFFE_VARC/NOM_VARC='TEMP',VALE_REF=...).
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
 Erreur utilisateur :
  Problème lors de l'interpolation de la fonction définissant le coefficient de dilatation thermique ALPHA.
  Il faut resserrer le mot clé PRECISION pour le matériau ELAS_FO.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
 Erreur utilisateur :
  Le paramètre ALPHA ne peut pas être une fonction en THM.
-"""),
-
-    5: _("""
- Le module de Young calculé par le premier point de la courbe de traction donnée n'est pas
-cohérent avec la valeur définie par le paramètre E. La valeur calculée est %(r1)f, 
-et la différence entre les deux valeurs est supérieure à 1 %%.
-"""),
-
-    6: { 'message' : _("""
- Une fonction de nappe est fournie dans TRACTION afin d'interpoler par rapport à la température 
-pour trouver la courbe de traction à une température donnée. En même temps, un module de Young 
-est également défini par le paramètre E dans ELAS. 
-
-Attention : la valeur de E dans ELAS sera ignorée.
-"""),
-          'flags' : 'DECORATED',
+"""
+    ),
+    5: _(
+        """
+Le module de Young fourni par le paramètre E n'est pas cohérent avec la pente calculée
+à partir du premier point de la courbe de TRACTION.
+La pente calculée est %(r1).3f
+La différence entre les deux valeurs est supérieure à 1 %%.
+"""
+    ),
+    6: _(
+        """
+Le module de Young fourni par le paramètre E n'est pas cohérent avec la pente calculée
+à partir du premier point de la courbe de TRACTION.
+Pour %(k1)s = %(r1)f :
+- E vaut %(r2).3f
+- La pente calculée vaut %(r3).3f
+La différence entre les deux valeurs est supérieure à 1 %%.
+"""
+    ),
+    8: {
+        "message": _(
+            """
+Le module de Young E étant une fonction de '%(k1)s', la courbe de TRACTION devrait être
+une nappe et non une fonction.
+On ne peut vérifier la cohérence entre eux.
+"""
+        ),
+        "flags": "DECORATED",
     },
-
-    42: _("""
+    9: {
+        "message": _(
+            """
+Le module de Young E étant une fonction de '%(k1)s', la courbe de TRACTION devrait être
+une nappe de paramètre '%(k1)s' et non '%(k2)s'.
+On ne peut vérifier la cohérence entre eux.
+"""
+        ),
+        "flags": "DECORATED",
+    },
+    10: {
+        "message": _(
+            """
+On ne peut pas vérifier la cohérence entre le module de Young E et la courbe de TRACTION
+quand celle-ci est une formule.
+"""
+        ),
+        "flags": "DECORATED",
+    },
+    42: _(
+        """
 Erreur utilisateur :
  Le coefficient de dilatation thermique ALPHA du matériau est une fonction de la température.
  Cette fonction (%(k1)s) n'est définie que par un point.
@@ -79,18 +114,20 @@ Erreur utilisateur :
 
 Risque & Conseil:
  Il faut définir la fonction ALPHA avec plus d'un point.
-"""),
-
-    43: _("""
+"""
+    ),
+    43: _(
+        """
  Le coefficient de dilatation thermique ALPHA du matériau est une fonction de la température.
  Or vous ne fournissez pas de résultats thermiques dans AFFE_MATERIAU / AFFE_VARC.
  Dans ce cas, TEMP_DEF_ALPHA et TEMP_REF doivent être identiques.
-"""),
-
-    56: _("""
+"""
+    ),
+    56: _(
+        """
 Erreur utilisateur :
  Un des matériaux du CHAM_MATER %(k1)s contient un coefficient de dilatation ALPHA fonction de la température.
  Mais la température de référence n'est pas fournie sous AFFE_MATERIAU/AFFE_VARC/VALE_REF
-"""),
-
+"""
+    ),
 }
