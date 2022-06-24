@@ -130,6 +130,16 @@ Problème lors de la factorisation de la matrice:
     On ne sait pas attribuer la singularité de la matrice à une ligne de la matrice.
 """),
 
+    41: _("""
+Solveur MUMPS :
+  La matrice transmise à MUMPS est détectée comme étant vide.
+
+Conseils :
+  - vérifier votre mise en données ou son paramétrage;
+  - pour tester, éventuellement changer de solveur linéaire (SOLVEUR=_F(METHODE='MULT_FRONT'). Attention, celui-ci est plus lent,
+    non parallélisé et sans doute aussi sujet au même problème de données;
+  - en cas de doute, contacter l'équipe de développement.
+"""),
 
     42: _("""
 Solveur MUMPS :

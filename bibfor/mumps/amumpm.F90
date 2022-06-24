@@ -506,6 +506,9 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             end if
         end do
         nz2 = to_mumps_int(nzloc)
+        if ((nz2.eq.0).or.(n.eq.0)) then
+          call utmess('F', 'FACTOR_41')
+        endif
         if (niv .ge. 2) then
             write (ifm, *) '<AMUMPM>     NZLOC: ', nzloc
             write (ifm, *) '       TERMES NULS: ', nfilt1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -140,7 +140,8 @@ subroutine amumpt(option, kmonit, temps, rang, nbproc,&
 !
     call getres(k8bid, k16bid, nomcmd)
     if ((nomcmd(1:8).eq.'NUME_DDL') .or. (nomcmd(1:10).eq.'FACTORISER') .or.&
-        (nomcmd(1:8).eq.'RESOUDRE')) then
+        (nomcmd(1:8).eq.'RESOUDRE').or.(nomcmd(1:13).eq.'MODE_STATIQUE').or.&
+        (nomcmd(1:13).eq.'CALC_CORR_SSD')) then
         lcmde=.true.
     else
         lcmde=.false.

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ subroutine crsint(solveu)
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/sdsolv.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/asmpi_comm_jev.h"
@@ -39,7 +40,7 @@ subroutine crsint(solveu)
 !----------------------------------------------------------------------
     integer :: zslvk, zslvr, zslvi
     integer :: islvk, islvr, islvi
-    integer :: i, monit(12), niv, nbproc,rang,ifm
+    integer :: i, monit(12), niv, nbproc,rang,ifm, iret
     mpi_int :: mrank, msize
     character(len=24) :: kmonit(12)
 !----------------------------------------------------------------------
@@ -96,20 +97,24 @@ subroutine crsint(solveu)
         kmonit(10)='&MUMPS.INFO.MEM.EIC'
         kmonit(11)='&MUMPS.INFO.MEM.EOC'
         kmonit(12)='&MUMPS.INFO.MEM.USE'
-        call wkvect(kmonit(1), 'V V I', nbproc, monit(1))
-        call wkvect(kmonit(2), 'V V I', nbproc, monit(2))
-        call wkvect(kmonit(9), 'V V I', nbproc, monit(9))
-        call wkvect(kmonit(10), 'V V I', nbproc, monit(10))
-        call wkvect(kmonit(11), 'V V I', nbproc, monit(11))
-        call wkvect(kmonit(12), 'V V I', nbproc, monit(12))
-        do i = 1, nbproc
-            zi(monit(1)+i-1)=0
-            zi(monit(2)+i-1)=0
-            zi(monit(9)+i-1)=0
-            zi(monit(10)+i-1)=0
-            zi(monit(11)+i-1)=0
-            zi(monit(12)+i-1)=0
-        end do
+        call jeexin(kmonit(1), iret)
+        if (iret .eq. 0) then 
+            call wkvect(kmonit(1), 'V V I', nbproc, monit(1))
+            call wkvect(kmonit(2), 'V V I', nbproc, monit(2))
+            call wkvect(kmonit(9), 'V V I', nbproc, monit(9))
+            call wkvect(kmonit(10), 'V V I', nbproc, monit(10))
+            call wkvect(kmonit(11), 'V V I', nbproc, monit(11))
+            call wkvect(kmonit(12), 'V V I', nbproc, monit(12))
+            
+            do i = 1, nbproc
+                zi(monit(1)+i-1)=0
+                zi(monit(2)+i-1)=0
+                zi(monit(9)+i-1)=0
+                zi(monit(10)+i-1)=0
+                zi(monit(11)+i-1)=0
+                zi(monit(12)+i-1)=0
+            end do
+         endif
 ! -----
         call asmpi_comm_jev('REDUCE', kmonit(9))
 ! ----- CORRECTION SI MODAL
