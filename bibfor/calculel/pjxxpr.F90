@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -319,6 +319,13 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                 call rsadpa(resu2, 'E', 1, 'INST', iordr,&
                             0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
+!
+            else if (typres.eq.'FOURIER_ELAS') then
+                call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr,&
+                            0, sjv=iains1, istop=0)
+                call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr,&
+                            0, sjv=iains2)
+                zi(iains2) = zi(iains1)
 !
             endif
 !

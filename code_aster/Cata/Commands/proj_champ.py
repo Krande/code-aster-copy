@@ -29,15 +29,14 @@ def proj_champ_prod(RESULTAT=None,CHAM_GD=None,METHODE=None,**args ):
         return (corresp_2_mailla, resultat_sdaster,
                 cham_no_sdaster, cham_elem)
 
-    if (RESULTAT is None and CHAM_GD is None) : return corresp_2_mailla
-    if  RESULTAT is not None                      : return AsType(RESULTAT)
-    if  CHAM_GD  is not None and METHODE == 'SOUS_POINT' :
+    if not RESULTAT and not CHAM_GD:
+        return corresp_2_mailla
+    if  RESULTAT:
+        return AsType(RESULTAT)
+    if  CHAM_GD and METHODE == 'SOUS_POINT':
         return cham_elem
-    else :
+    else:
         return AsType(CHAM_GD)
-    raise AsException("type de concept resultat non prevu")
-
-
 
 
 PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,
@@ -50,8 +49,6 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,
 
      # pour projeter avec une sd_corresp_2_mailla deja calculée :
      MATR_PROJECTION   =SIMP(statut='f',typ=corresp_2_mailla,),
-
-
 
      #-----------------------------------------------------------------------------------------------------------
      # 1er cas : on fait tout d'un coup : creation de la sd_corresp_2_mailla + projection des champs

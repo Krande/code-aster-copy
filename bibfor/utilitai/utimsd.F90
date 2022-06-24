@@ -178,7 +178,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
     endif
 !
 !
-    write(unit,*) '====> FIN IMPR_CO DE DE STRUCTURE DE DONNEE : ',&
+    write(unit,*) '====> FIN IMPR_CO DE LA STRUCTURE DE DONNEE : ',&
      &                chain2
 !
 !
