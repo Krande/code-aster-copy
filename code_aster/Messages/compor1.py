@@ -128,6 +128,10 @@ déformation GDEF_LOG.
   MONOCRISTAL : écrouissage isotrope non trouvé.
 """),
 
+    22 : _("""
+La modélisation %(k2)s n'est pas autorisée avec la loi de comportement %(k1)s.
+"""),
+
     23 : _("""
   MONOCRISTAL : la matrice d'interaction est définie avec
   4 coefficients. Ceci n'est applicable qu'avec 24 systèmes de

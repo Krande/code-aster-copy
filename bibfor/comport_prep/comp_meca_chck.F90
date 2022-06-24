@@ -119,7 +119,7 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
         call compMecaChckModel(iComp       ,&
                                model       , fullElemField ,&
                                lAllCellAffe, cellAffe      , nbCellAffe  ,&
-                               relaCompPY  , chmate        , typeComp     ,&
+                               relaComp, relaCompPY  , chmate, typeComp,&
                                lElasByDefault, lNeedDeborst, lIncoUpo)
 
 ! ----- Select plane stress algorithm

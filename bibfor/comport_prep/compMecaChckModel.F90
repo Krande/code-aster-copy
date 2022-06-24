@@ -19,7 +19,7 @@
 subroutine compMecaChckModel(iComp       ,&
                              model       , fullElemField ,&
                              lAllCellAffe, cellAffe      , nbCellAffe   ,&
-                             relaCompPY  , chmate        , typeComp     ,&
+                             relaComp    , relaCompPY    , chmate, typeComp,&
                              lElasByDefault, lNeedDeborst, lIncoUpo)
 !
 implicit none
@@ -29,6 +29,8 @@ implicit none
 #include "asterc/lctest.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/comp_meca_l.h"
+#include "asterfort/dismte.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -44,7 +46,7 @@ character(len=19), intent(in) :: fullElemField
 aster_logical, intent(in) :: lAllCellAffe
 character(len=24), intent(in) :: cellAffe
 integer, intent(in) :: nbCellAffe
-character(len=16), intent(in) :: relaCompPY
+character(len=16), intent(in) :: relaCompPY, relaComp
 character(len=16), intent(in) :: typeComp
 character(len=8), intent(in) :: chmate
 aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
@@ -63,6 +65,7 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
 ! In  lAllCellAffe     : ASTER_TRUE if affect on all cells where behaviour is defined
 ! In  nbCellAffe       : number of cells where behaviour is defined
 ! In  cellAffe         : list of cells where behaviour is defined
+! In  relaComp         : comportement RELATION
 ! In  relaCompPY       : comportement RELATION - Python coding
 ! In  chmate           : material field (sd_mater)
 ! Out lElasByDefault   : flag if at least one element use ELAS by default
@@ -70,15 +73,15 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: elemTypeName, modelType, incoType, isNuFunc
+    character(len=16) :: elemTypeName, modelType, incoType, isNuFunc, typmod2Type
     integer :: elemTypeNume, cellNume, nbCmpAffected
     integer :: jvCesd, jvCesl, jvVale
     integer :: modelTypeIret, lctestIret, iCell, incoTypeIret
-    integer :: nbCellMesh, nbCell
+    integer :: nbCellMesh, nbCell, ibid, ier
     character(len=16), pointer :: cesv(:) => null()
     integer, pointer :: cellAffectedByModel(:) => null()
     integer, pointer :: listCellAffe(:) => null()
-    aster_logical :: lAtOneCellAffect, lAllCellAreBound, lPlStressFuncNu
+    aster_logical :: lAtOneCellAffect, lAllCellAreBound, lPlStressFuncNu, l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,6 +95,7 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
     lAllCellAreBound = ASTER_FALSE
     lIncoUpo         = ASTER_FALSE
     lPlStressFuncNu = ASTER_FALSE
+    call comp_meca_l(relaComp, 'KIT_THM', l_kit_thm)
 !
 ! - Access to model
 !
@@ -184,6 +188,15 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst, lIncoUpo
             if (incoTypeIret .eq. 0) then
                 if (incoType.eq.'C2O')then
                     lIncoUpo = ASTER_TRUE
+                endif
+            endif
+! --------- Verification pour KIT_THM
+            if (l_kit_thm) then
+                call teattr('C', 'TYPMOD2' , typmod2Type , modelTypeIret, typel = elemTypeName)
+                if (typmod2Type.ne.'THM' .and. typmod2Type.ne.'XFEM_HM' &
+                                         .and. typmod2Type.ne.'JHMS')then
+                    call dismte('MODELISATION', elemTypeName, ibid, modelType, ier)
+                    call utmess('F', 'COMPOR1_22', nk=2, valk=[relaComp, modelType])
                 endif
             endif
         endif
