@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 ! ---------
 #include "jeveux.h"
 #include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
@@ -433,7 +434,6 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
             write(ifm,*) '   INFOS : DISTANCE MINIMALE : ',sqrt(d2min(1))
         endif
 !
-!
 ! 2.2.2  TENTATIVE D'IMMERSION DU NOEUD CABLE DANS LES MAILLES
 ! .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
 !
@@ -451,6 +451,12 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
             endif
 115      continue
 116      continue
+!
+! -  TEST DE COINCIDENCE GEOGRAPHIQUEMENT AVEC LE NOEUD BETON LE PLUS PROCHE
+!
+         if (immer > 0 .and. sqrt(d2min(1)) < 1d2*r8prem()*xnorm) then
+             immer = 2
+         endif
 !
 ! 2.2.3  EN CAS D'ECHEC DE LA TENTATIVE PRECEDENTE
 ! .....

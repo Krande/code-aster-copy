@@ -459,7 +459,7 @@ implicit none
 !
                                 else if ( pass == 2 ) then  
                                    l_prealloc=.true.
-                                   call aflrch(list_rela, load, 'NLIN', elim='NON', &
+                                   call aflrch(list_rela, load, 'NLIN', elim='OUI', &
                                             l_preallocz=l_prealloc)
                                 endif
                             endif 
