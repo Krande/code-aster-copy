@@ -69,7 +69,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
     character(len=24) :: valk(2)
     integer :: nmocl
     parameter(nmocl=300)
-    complex(kind=8) :: coproc, rapcoc
+    complex(kind=8) :: coproc, rapcoc, dcmplx
     character(len=4) :: typcoe
     character(len=8) :: nomnoe
     character(len=8) :: noma, mod, cmp, nomcmp(nmocl)
@@ -100,7 +100,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
     call jemarq()
 !
-    eps1=1.d2*r8prem()
+    eps1=1.d4*r8prem()
     eps2=1.d0/r8gaem()
 !
 ! - Mesh and model
@@ -177,7 +177,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !
 !
-!     1. ON ORDONNE LES TERMES DE CHAQUE RELATION POUR POUVOIR
+!     0. ON ORDONNE LES TERMES DE CHAQUE RELATION POUR POUVOIR
 !        LES COMPARER PLUS FACILEMENT ET DETECTER LES DOUBLONS
 !     ----------------------------------------------------------
     do irela = 1, nbrela
@@ -254,7 +254,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !
 !
-!   2. IDENTIFICATION DES RELATIONS REDONDANTES A 1 TERME
+!   1. IDENTIFICATION DES RELATIONS REDONDANTES A 1 TERME
 !   ----------------------------------------------------------------
     call jecreo('&&ORDLRL.KIDREL', 'V N K16')
     call jeecra('&&ORDLRL.KIDREL', 'NOMMAX', nbrela)
@@ -278,6 +278,33 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 !
 !
+!   2. SETTING TO ZERO TERMS BELOW NUMERICAL PRECISION
+!   --------------------------------------------------
+    do irela1 = 1,nbrela
+        nbter1=rlnt(irela1)
+        if (nbter1 .eq. 1) cycle
+        ipntr1=rlpo(irela1)
+        ideca1=ipntr1-nbter1
+        jrlco1=jrlco+ideca1
+!
+        indmax=coefmax(irela1)
+!
+!       set to 0 terms below numerical precision
+        do ino = 1, nbter1
+            if (typcoe .eq. 'COMP') then
+                if (abs(zc(jrlco1+ino-1)) < eps1*abs(zc(jrlco1+indmax-1))) then
+                    zc(jrlco1+ino-1) = dcmplx(0.d0, 0.d0)
+                endif
+            else if (typcoe .eq. 'REEL') then
+                if (abs(zr(jrlco1+ino-1)) < eps1*abs(zr(jrlco1+indmax-1))) then
+                    zr(jrlco1+ino-1) = 0.d0
+                endif
+            else
+                ASSERT(.false.)
+            endif
+        enddo
+    enddo
+
 !   3. IDENTIFICATION DES RELATIONS REDONDANTES A PLUSIEURS TERMES
 !   ----------------------------------------------------------------
     do irela1 = nbrela, 2, -1
@@ -322,7 +349,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
                         if (zk8(idnoe1+ino-1) .eq. zk8(idnoe2+ino-1)) then
                             if (zk8(iddl1+ino-1) .eq. zk8(iddl2+ino-1)) then
                                 rapcoc=coproc*zc(jrlco1+ino-1)
-                                epsrel=eps1*abs(zc(jrlco1+ino-1))
+                                epsrel=eps1*abs(zc(jrlco1+indmax-1))
                                 difrel=abs(zc(jrlco2+ino-1)-rapcoc)
                                 if (difrel .le. epsrel) goto 110
                                 icomp=1
@@ -361,7 +388,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
                         if (zk8(idnoe1+ino-1) .eq. zk8(idnoe2+ino-1)) then
                             if (zk8(iddl1+ino-1) .eq. zk8(iddl2+ino-1)) then
                                 rapcoe=copror*zr(jrlco1+ino-1)
-                                epsrel=eps1*abs(zr(jrlco1+ino-1))
+                                epsrel=eps1*abs(zr(jrlco1+indmax-1))
                                 difrel=abs(zr(jrlco2+ino-1)-rapcoe)
                                 if (difrel .le. epsrel) goto 140
                                 icomp=1
