@@ -101,7 +101,6 @@ void Result::setMesh( const BaseMeshPtr &mesh ) {
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
                                            ASTERINTEGER rank ) {
-
     if ( !cara )
         raiseAsterError( "ValueError: ElementaryCharacteristics is empty" );
 
@@ -112,6 +111,9 @@ void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
 };
 
 void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER rank ) {
+    if ( !load )
+        raiseAsterError( "ValueError: Load is empty" );
+
     _mapLoads[rank] = load;
     std::string type( "EXCIT" );
     std::string cel( "E" );
@@ -119,7 +121,6 @@ void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER rank ) {
 };
 
 void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER rank ) {
-
     if ( !mater )
         raiseAsterError( "ValueError: MaterialField is empty" );
 
@@ -130,7 +131,6 @@ void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER rank 
 };
 
 void Result::setModel( const ModelPtr &model, ASTERINTEGER rank ) {
-
     if ( !model )
         raiseAsterError( "ValueError: Model is empty" );
 
