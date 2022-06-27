@@ -18,7 +18,7 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy
-from libaster import createEnthalpy, resetFortranLoggingLevel, setFortranLoggingLevel
+from libaster import AsterError, createEnthalpy, resetFortranLoggingLevel, setFortranLoggingLevel
 
 from ..Cata.Syntax import _F
 from ..Messages import UTMESS
@@ -99,7 +99,11 @@ def check_young_consistency(mater):
             UTMESS("A", "MATERIAL1_9", valk=(propE[2], propT[2]))
             return
         for i, para in enumerate(trac.getParameters()):
-            _check(para, propT[2], moduleE(para), trac.getValues()[i])
+            try:
+                young = moduleE(para)
+                _check(para, propT[2], young, trac.getValues()[i])
+            except AsterError:
+                UTMESS("A", "MATERIAL1_7", valk=propE[2], valr=para)
 
 
 # internal methods

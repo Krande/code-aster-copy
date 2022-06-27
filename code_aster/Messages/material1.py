@@ -74,6 +74,14 @@ Pour %(k1)s = %(r1)f :
 La différence entre les deux valeurs est supérieure à 1 %%.
 """
     ),
+    7: _(
+        """
+Le module de Young, qui est une fonction, ne peut pas être évalué pour :
+    %(k1)s = %(r1)f
+
+On ne peut vérifier la cohérence avec la courbe de traction.
+        """
+    ),
     8: {
         "message": _(
             """
