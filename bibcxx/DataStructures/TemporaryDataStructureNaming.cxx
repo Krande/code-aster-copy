@@ -3,7 +3,7 @@
  * @brief Implementation de TemporaryDataStructureNaming
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,14 +23,15 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "DataStructures/TemporaryDataStructureNaming.h"
+
 #include "MemoryManager/JeveuxObject.h"
 
 unsigned long int TemporaryDataStructureNaming::_number = 0;
 
 std::string TemporaryDataStructureNaming::getNewTemporaryName( const int lengthName ) {
     std::ostringstream oss;
-    assert( _number <= _maxNumberOfObjects);
-    assert( lengthName <= JeveuxNameMaxLength);
+    assert( _number <= _maxNumberOfObjects );
+    assert( lengthName <= JeveuxNameMaxLength );
     oss << "&" << std::hex << _number;
     ++_number;
     return std::string( oss.str() + "                        ", 0, lengthName );

@@ -22,15 +22,16 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <string>
-#include <sstream>
-#include "MemoryManager/JeveuxObject.h"
 #include "DataStructures/DataStructureNaming.h"
+
 #include "DataStructures/TemporaryDataStructureNaming.h"
+#include "MemoryManager/JeveuxObject.h"
 #include "Supervis/ResultNaming.h"
 
-std::string DataStructureNaming::getNewName(JeveuxMemory memoryType,
-                                            const int lengthName ) {
+#include <sstream>
+#include <string>
+
+std::string DataStructureNaming::getNewName( JeveuxMemory memoryType, const int lengthName ) {
     if ( memoryType == Permanent ) {
         std::string tmpName = ResultNaming::getNewResultName();
         return std::string( tmpName + "                        ", 0, lengthName );

@@ -22,6 +22,7 @@
  */
 
 #include "DataFields/TableContainer.h"
+
 #include <iostream>
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
@@ -281,23 +282,19 @@ bool TableContainer::build() {
                 }
             } else if ( type == "MATR_ELEM_DEPL_R" ) {
                 if ( _mapEMDD[name] == nullptr ) {
-                    _mapEMDD[name] =
-                        std::make_shared< ElementaryMatrixDisplacementReal >( dsName );
+                    _mapEMDD[name] = std::make_shared< ElementaryMatrixDisplacementReal >( dsName );
                 }
             } else if ( type == "MATR_ELEM_TEMP_R" ) {
                 if ( _mapEMTD[name] == nullptr ) {
-                    _mapEMTD[name] =
-                        std::make_shared< ElementaryMatrixTemperatureReal >( dsName );
+                    _mapEMTD[name] = std::make_shared< ElementaryMatrixTemperatureReal >( dsName );
                 }
             } else if ( type == "VECT_ELEM_DEPL_R" ) {
                 if ( _mapEVDD[name] == nullptr ) {
-                    _mapEVDD[name] =
-                        std::make_shared< ElementaryVectorDisplacementReal >( dsName );
+                    _mapEVDD[name] = std::make_shared< ElementaryVectorDisplacementReal >( dsName );
                 }
             } else if ( type == "VECT_ELEM_TEMP_R" ) {
                 if ( _mapEVTD[name] == nullptr ) {
-                    _mapEVTD[name] =
-                        std::make_shared< ElementaryVectorTemperatureReal >( dsName );
+                    _mapEVTD[name] = std::make_shared< ElementaryVectorTemperatureReal >( dsName );
                 }
             } else if ( type == "CHAM_GD" ) {
                 if ( _mapGDF[name] == nullptr ) {

@@ -21,39 +21,39 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <typeinfo>
-#include "astercxx.h"
+#include "Loads/DirichletBC.h"
 
 #include "aster_fort_superv.h"
-#include "Loads/DirichletBC.h"
+#include "astercxx.h"
+
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
-DirichletBC::DirichletBC( const std::string &type, const ModelPtr& model )
+#include <typeinfo>
+
+DirichletBC::DirichletBC( const std::string &type, const ModelPtr &model )
     : DataStructure( ResultNaming::getNewResultName(), 19, "CHAR_CINE" + type ),
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
-      _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ), _isEmpty( true )
-      {
-          this->setModel(model);
-      };
+      _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ),
+      _isEmpty( true ) {
+    this->setModel( model );
+};
 
-DirichletBC::DirichletBC(   const std::string &name,
-                                            const std::string &type,
-                                            const ModelPtr& model )
+DirichletBC::DirichletBC( const std::string &name, const std::string &type, const ModelPtr &model )
     : DataStructure( name, 19, "CHAR_CINE" + type ),
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
-      _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ), _isEmpty( true )
-      {
-          this->setModel(model);
-      };
+      _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ),
+      _isEmpty( true ) {
+    this->setModel( model );
+};
 
 bool DirichletBC::build() {
     std::string cmd = "AFFE_CHAR_CINE";
     if ( _listOfFunctionImposedTemperature.size() != 0 ) {
         cmd += "_F";
-        throw std::runtime_error("Not implemented");
+        throw std::runtime_error( "Not implemented" );
     }
     CommandSyntax cmdSt( cmd );
     cmdSt.setResult( ResultNaming::getCurrentName(), getType() );
@@ -112,8 +112,8 @@ bool DirichletBC::build() {
     }
     cmdSt.define( dict );
 
-        ASTERINTEGER op = 101;
-        CALL_EXECOP( &op );
+    ASTERINTEGER op = 101;
+    CALL_EXECOP( &op );
     _isEmpty = false;
 
     return true;

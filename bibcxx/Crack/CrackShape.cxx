@@ -3,7 +3,7 @@
  * @brief Class to describe the possible shape of cracks for XFEM
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,10 +25,8 @@
 CrackShape::CrackShape() { _shape = Shape::NoShape; };
 
 void CrackShape::setEllipseCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
-                                               VectorReal center,
-                                               VectorReal vectX,
-                                               VectorReal vectY,
-                                               std::string crackSide ) {
+                                       VectorReal center, VectorReal vectX, VectorReal vectY,
+                                       std::string crackSide ) {
     _shape = Shape::Ellipse;
     _semiMajorAxis = semiMajorAxis;
     _semiMinorAxis = semiMinorAxis;
@@ -39,9 +37,8 @@ void CrackShape::setEllipseCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE se
 };
 
 void CrackShape::setSquareCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
-                                              ASTERDOUBLE filletRadius, VectorReal center,
-                                              VectorReal vectX,
-                                              VectorReal vectY, std::string crackSide ) {
+                                      ASTERDOUBLE filletRadius, VectorReal center, VectorReal vectX,
+                                      VectorReal vectY, std::string crackSide ) {
     _shape = Shape::Square;
     _semiMajorAxis = semiMajorAxis;
     _semiMinorAxis = semiMinorAxis;
@@ -53,9 +50,7 @@ void CrackShape::setSquareCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE sem
 };
 
 void CrackShape::setCylinderCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
-                                                VectorReal center,
-                                                VectorReal vectX,
-                                                VectorReal vectY ) {
+                                        VectorReal center, VectorReal vectX, VectorReal vectY ) {
     _shape = Shape::Cylinder;
     _semiMajorAxis = semiMajorAxis;
     _semiMinorAxis = semiMinorAxis;
@@ -65,9 +60,7 @@ void CrackShape::setCylinderCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE s
 };
 
 void CrackShape::setNotchCrackShape( ASTERDOUBLE halfLength, ASTERDOUBLE filletRadius,
-                                             VectorReal center,
-                                             VectorReal vectX,
-                                             VectorReal vectY ) {
+                                     VectorReal center, VectorReal vectX, VectorReal vectY ) {
     _shape = Shape::Notch;
     _halfLength = halfLength;
     _filletRadius = filletRadius;
@@ -76,35 +69,30 @@ void CrackShape::setNotchCrackShape( ASTERDOUBLE halfLength, ASTERDOUBLE filletR
     _vectY = vectY;
 };
 
-void CrackShape::setHalfPlaneCrackShape( VectorReal endPoint,
-                                                 VectorReal normal,
-                                                 VectorReal tangent ) {
+void CrackShape::setHalfPlaneCrackShape( VectorReal endPoint, VectorReal normal,
+                                         VectorReal tangent ) {
     _shape = Shape::HalfPlane;
     _endPoint = endPoint;
     _normal = normal;
     _tangent = tangent;
 };
-void CrackShape::setSegmentCrackShape( VectorReal startingPoint,
-                                               VectorReal endPoint ) {
+void CrackShape::setSegmentCrackShape( VectorReal startingPoint, VectorReal endPoint ) {
     _shape = Shape::Segment;
     _startingPoint = startingPoint;
     _endPoint = endPoint;
 };
 
-void CrackShape::setHalfLineCrackShape( VectorReal startingPoint,
-                                                VectorReal tangent ) {
+void CrackShape::setHalfLineCrackShape( VectorReal startingPoint, VectorReal tangent ) {
     _shape = Shape::HalfLine;
     _startingPoint = startingPoint;
     _tangent = tangent;
 };
 
-void CrackShape::setLineCrackShape( VectorReal startingPoint,
-                                            VectorReal tangent ) {
+void CrackShape::setLineCrackShape( VectorReal startingPoint, VectorReal tangent ) {
     _shape = Shape::Line;
     _startingPoint = startingPoint;
     _tangent = tangent;
 };
-
 
 std::string CrackShape::getShapeName() const {
     if ( _shape == Shape::NoShape )
@@ -125,8 +113,7 @@ std::string CrackShape::getShapeName() const {
         return "DEMI_DROITE";
     else if ( _shape == Shape::Line )
         return "DROITE";
-    else
-    {
+    else {
         throw std::runtime_error( "Unknown shape" );
     }
 

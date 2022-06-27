@@ -3,7 +3,7 @@
  * @brief Implementation de ModeResultComplex
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,14 +23,15 @@
 
 /* person_in_charge: natacha.bereux at edf.fr */
 
+#include "Results/ModeResultComplex.h"
+
 #include "aster_fort_ds.h"
 
-#include "Results/ModeResultComplex.h"
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/Tools.h"
 
-FieldOnNodesComplexPtr ModeResultComplex::getEmptyFieldOnNodesComplex(
-    const std::string name, const int rank ) {
+FieldOnNodesComplexPtr ModeResultComplex::getEmptyFieldOnNodesComplex( const std::string name,
+                                                                       const int rank ) {
     const ASTERINTEGER nbRanks = getNumberOfRanks();
     if ( rank > nbRanks || rank <= 0 )
         throw std::runtime_error( "Order number out of range" );
@@ -52,8 +53,8 @@ FieldOnNodesComplexPtr ModeResultComplex::getEmptyFieldOnNodesComplex(
     return result;
 };
 
-FieldOnNodesComplexPtr ModeResultComplex::getComplexFieldOnNodes(
-    const std::string name, const int rank ) const {
+FieldOnNodesComplexPtr ModeResultComplex::getComplexFieldOnNodes( const std::string name,
+                                                                  const int rank ) const {
     const ASTERINTEGER nbRanks = getNumberOfRanks();
     if ( rank > nbRanks || rank <= 0 )
         throw std::runtime_error( "Order number out of range" );

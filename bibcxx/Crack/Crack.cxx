@@ -23,9 +23,9 @@
 
 /* person_in_charge: nicolas.pignet at edf.fr */
 
-#include "astercxx.h"
-
 #include "Crack/Crack.h"
+
+#include "astercxx.h"
 
 Crack::Crack( const std::string name )
     : DataStructure( name, 8, "FOND_FISSURE" ),
@@ -44,29 +44,27 @@ Crack::Crack( const std::string name )
       _lnno( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
       _basLoc( new FieldOnNodesReal( getName() + ".BASLOC    " ) ),
       _basNof( JeveuxVectorReal( getName() + ".BASNOF" ) ),
-      _absfon( JeveuxVectorReal( getName() + ".ABSFON" ) ){
-          _ltno->setDescription( std::make_shared< FieldOnNodesDescription >(
-                                                             getName() + ".LTNO.PRCHN") );
-          _lnno->setDescription( _ltno->getDescription() );
-          _basLoc->setDescription( std::make_shared< FieldOnNodesDescription >(
-                                                             getName() + ".BASL.PRCHN") );
-          };
+      _absfon( JeveuxVectorReal( getName() + ".ABSFON" ) ) {
+    _ltno->setDescription(
+        std::make_shared< FieldOnNodesDescription >( getName() + ".LTNO.PRCHN" ) );
+    _lnno->setDescription( _ltno->getDescription() );
+    _basLoc->setDescription(
+        std::make_shared< FieldOnNodesDescription >( getName() + ".BASL.PRCHN" ) );
+};
 
-void Crack::updateValuePointers( ){
-    _info->updateValuePointer();
+void Crack::updateValuePointers() { _info->updateValuePointer(); }
+
+std::string Crack::getCrackTipCellsType() {
+    this->updateValuePointers();
+    return trim( ( *_info )[4].toString() );
 }
 
-std::string Crack::getCrackTipCellsType( ){
-  this->updateValuePointers();
-  return trim( ( *_info )[4].toString() );
+std::string Crack::getUpperLipGroupName() {
+    this->updateValuePointers();
+    return trim( ( *_info )[5].toString() );
 }
 
-std::string Crack::getUpperLipGroupName( ){
-  this->updateValuePointers();
-  return trim( ( *_info )[5].toString() );
-}
-
-std::string Crack::getLowerLipGroupName( ){
-  this->updateValuePointers();
-  return trim( ( *_info )[6].toString() );
+std::string Crack::getLowerLipGroupName() {
+    this->updateValuePointers();
+    return trim( ( *_info )[6].toString() );
 }

@@ -132,7 +132,7 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
 
     _matrix->setFactorized( true );
     _matrix->setSolverName( getSolverName() );
-    if ( getSolverName()=="GCPC" )
+    if ( getSolverName() == "GCPC" )
         _matrixPrec->updateDOFNumbering();
 
     return true;

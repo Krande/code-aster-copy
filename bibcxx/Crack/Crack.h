@@ -54,7 +54,7 @@ class Crack : public DataStructure {
     JeveuxVectorChar8 _infNormNoeud;
     /** @brief Objet Jeveux '.SUPNORM.NOEU' : Vecteur (K8) contenant la liste
      des noeuds de la lèvre supérieure sur la direction normale au fond de fissure. */
-    JeveuxVectorChar8 _supNormNoeu;    
+    JeveuxVectorChar8 _supNormNoeu;
     /** @brief Objet Jeveux '.INFNORM.NOEU2' : Vecteur (K8) contenant la liste
      des noeuds de la lèvre inférieure sur la direction normale au fond de fissure. POST_J*/
     JeveuxVectorChar8 _infNormNoeud2;
@@ -88,7 +88,6 @@ class Crack : public DataStructure {
     /** @brief Objet Jeveux '.ABSFON' : Vecteur de réels contenant
      la valeur des abscisses curvilignes des noeuds du fond de fissure. */
     JeveuxVectorReal _absfon;
-
 
   public:
     /**

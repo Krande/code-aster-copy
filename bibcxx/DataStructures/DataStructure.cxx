@@ -213,9 +213,8 @@ void DataStructure::setTitle( const std::string title ) {
     CALL_JEDEMA();
 }
 
-
-std::string DataStructure::getTitle( ) {
-    if(!_title->exists()){
+std::string DataStructure::getTitle() {
+    if ( !_title->exists() ) {
         return std::string();
     }
 

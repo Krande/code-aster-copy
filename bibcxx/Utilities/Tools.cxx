@@ -3,7 +3,7 @@
  * @brief Implementation des outils
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,8 +21,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "aster_utils.h"
 #include "Utilities/Tools.h"
+
+#include "aster_utils.h"
 
 std::string trim( const std::string &str, const std::string &whitespace ) {
     const std::size_t strBegin = str.find_first_not_of( whitespace );
@@ -35,9 +36,9 @@ std::string trim( const std::string &str, const std::string &whitespace ) {
     return str.substr( strBegin, strRange );
 };
 
-std::string ljust( const std::string &str, const ASTERINTEGER& length, char fillchar ) {
+std::string ljust( const std::string &str, const ASTERINTEGER &length, char fillchar ) {
     std::string tmp = str;
-    tmp.resize(length, fillchar);
+    tmp.resize( length, fillchar );
     return tmp;
 };
 
@@ -52,14 +53,12 @@ char *vectorStringAsFStrArray( const VectorString &vector, const int size ) {
     return tabFStr;
 }
 
-VectorInt irange(const int begin, const int end)
-{
+VectorInt irange( const int begin, const int end ) {
     const int size = end - begin + 1;
-    VectorInt v(size);
+    VectorInt v( size );
 
     int pos = 0;
-    for (int i = begin; i <= end; i++)
-    {
+    for ( int i = begin; i <= end; i++ ) {
         v[pos] = i;
         pos++;
     }
@@ -67,14 +66,12 @@ VectorInt irange(const int begin, const int end)
     return v;
 }
 
-VectorLong irange(const long begin, const long end)
-{
+VectorLong irange( const long begin, const long end ) {
     const long size = end - begin + 1;
-    VectorLong v(size);
+    VectorLong v( size );
 
     long pos = 0;
-    for (long i = begin; i <= end; i++)
-    {
+    for ( long i = begin; i <= end; i++ ) {
         v[pos] = i;
         pos++;
     }

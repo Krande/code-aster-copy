@@ -140,5 +140,5 @@ Returns:
                 Arguments:
                     clean (bool) : Clean elementary matrices after building (default = true)
             )",
-              py::arg( "clean" ) = true  );
+              py::arg( "clean" ) = true );
 };

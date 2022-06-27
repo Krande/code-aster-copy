@@ -22,36 +22,33 @@
  */
 
 #include "DataFields/MeshCoordinatesField.h"
+
 #include "DataFields/FieldOnNodes.h"
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+MeshCoordinatesField &MeshCoordinatesField::operator+=( const FieldOnNodesReal &rhs ) {
 
-MeshCoordinatesField& MeshCoordinatesField::operator+=( const FieldOnNodesReal &rhs ){
-
-    std::string base("V"), cumul("CUMU");
+    std::string base( "V" ), cumul( "CUMU" );
     ASTERDOUBLE alpha = 1.;
-    MeshCoordinatesField oldCoord =  this->duplicate();
+    MeshCoordinatesField oldCoord = this->duplicate();
 
-    CALLO_VTGPLD(cumul, &alpha, oldCoord.getName(), rhs.getName(), 
-                                        base, getName());
-    
+    CALLO_VTGPLD( cumul, &alpha, oldCoord.getName(), rhs.getName(), base, getName() );
+
     updateValuePointers();
 
     return *this;
 }
 
+MeshCoordinatesField MeshCoordinatesField::operator+( const FieldOnNodesReal &rhs ) {
 
- MeshCoordinatesField MeshCoordinatesField::operator+(const FieldOnNodesReal &rhs){
-
-    std::string base("V"), cumul("CUMU");
+    std::string base( "V" ), cumul( "CUMU" );
     ASTERDOUBLE alpha = 1.;
-    MeshCoordinatesField newCoord =  this->duplicate();
+    MeshCoordinatesField newCoord = this->duplicate();
 
-    CALLO_VTGPLD(cumul, &alpha, getName(), rhs.getName(), 
-                                        base, newCoord.getName());
-    
+    CALLO_VTGPLD( cumul, &alpha, getName(), rhs.getName(), base, newCoord.getName() );
+
     newCoord.updateValuePointers();
 
     return newCoord;
- }
+}

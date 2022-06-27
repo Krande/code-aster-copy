@@ -21,12 +21,12 @@
  */
 
 #include "Results/NonLinearResult.h"
+
 #include "Supervis/Exceptions.h"
 
-void NonLinearResult::setContact( const ContactPtr contact,
-                                         const ASTERINTEGER& rank ) {
-    if( !contact )
-      raiseAsterError( "ValueError: Contact is empty" );
+void NonLinearResult::setContact( const ContactPtr contact, const ASTERINTEGER &rank ) {
+    if ( !contact )
+        raiseAsterError( "ValueError: Contact is empty" );
 
     _mapContact[rank] = contact;
     const auto fed = contact->getFiniteElementDescriptor();
@@ -43,29 +43,28 @@ void NonLinearResult::setContact( const ContactPtr contact ) {
     }
 };
 
-bool NonLinearResult::build(){
+bool NonLinearResult::build() {
     bool result = Result::build();
     // add of listofloads
     ASTERINTEGER nbRanks = _serialNumber->size();
     std::string type = "EXCIT";
     for ( ASTERINTEGER index = 0; index < nbRanks; ++index ) {
         ASTERINTEGER rank = ( *_serialNumber )[index];
-        std::string value(24, ' ');
+        std::string value( 24, ' ' );
         std::string cel( "L" );
         CALLO_RSADPA_ZK24_WRAP( &rank, getName(), value, type, cel );
-        std::string name = value.substr(0, 19);
+        std::string name = value.substr( 0, 19 );
         // only if created by command
-        if (name.substr(0, 8)!=getName().substr(0, 8))
+        if ( name.substr( 0, 8 ) != getName().substr( 0, 8 ) )
             continue;
         mapRankLoads::iterator it;
-        for (it=_mapLoads.begin(); it!=_mapLoads.end(); it++){
-            if (name==it->second->getName())
+        for ( it = _mapLoads.begin(); it != _mapLoads.end(); it++ ) {
+            if ( name == it->second->getName() )
                 break;
         }
-        if (it==_mapLoads.end()){
+        if ( it == _mapLoads.end() ) {
             _mapLoads[rank] = std::make_shared< ListOfLoads >( name );
-        }
-        else
+        } else
             _mapLoads[rank] = it->second;
     }
     return result;

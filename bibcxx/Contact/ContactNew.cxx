@@ -168,7 +168,7 @@ bool ContactNew::build() {
         // AFFECTATION DE L'OBJET DE TYPE LIGRET ET DE NOM LIGREZ jeveuxname
         ASTERINTEGER slave_cells_i = slavecells.size();
         if ( slave_cells_i > 0 ) {
-            for (auto &cell : slavecells)
+            for ( auto &cell : slavecells )
                 cell += 1;
             JeveuxVectorLong list_elem = JeveuxVectorLong( jeveuxname, slavecells );
             CALL_AJELLT( ligret.c_str(), mesh->getName().c_str(), &slave_cells_i,

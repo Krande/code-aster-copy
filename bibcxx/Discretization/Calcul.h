@@ -174,7 +174,7 @@ class Calcul {
     void addTimeField( const ASTERDOUBLE &time, const ASTERDOUBLE &delta_time,
                        const ASTERDOUBLE &theta, const ASTERDOUBLE &khi, const ASTERDOUBLE &r,
                        const ASTERDOUBLE &rho );
-                       
+
     /** @brief Create and add input fields for XFEM */
     void addXFEMField( const XfemModelPtr xfemModel );
 

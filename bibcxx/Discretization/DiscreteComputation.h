@@ -140,7 +140,7 @@ class DiscreteComputation {
     ElementaryMatrixDisplacementRealPtr
     massMatrix( const ASTERDOUBLE &time = 0.0, const VectorString &groupOfCells = VectorString(),
                 const FieldOnCellsRealPtr _externVarField = nullptr );
-    
+
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_THER)
      * @param time Time

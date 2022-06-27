@@ -30,8 +30,7 @@
 
 #include <typeinfo>
 
-ListOfLoads::ListOfLoads( )
-    : ListOfLoads(ModelPtr(NULL)) {};
+ListOfLoads::ListOfLoads() : ListOfLoads( ModelPtr( NULL ) ){};
 
 ListOfLoads::ListOfLoads( const std::string &name, const ModelPtr model )
     : DataStructure( name, 19, "L_CHARGES" ),
@@ -201,7 +200,7 @@ bool ListOfLoads::build( ModelPtr model ) {
 
         CALLO_NTDOCH_WRAP( name, &iexcit, blank, base );
     } else if ( physic == Physics::Acoustic ) {
-            CommandSyntax cmdSt( "THER_NON_LINE" );
+        CommandSyntax cmdSt( "THER_NON_LINE" );
 
         int pos = 0;
         for ( const auto &load : _listOfAcousticLoadsComplex ) {

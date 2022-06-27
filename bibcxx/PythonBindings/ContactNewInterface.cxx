@@ -98,12 +98,10 @@ Returns:
         .def( "build", &ContactNew::build, R"(
 Build and check internal objects
         )" )
-        .def_property( "hasFriction", &ContactNew::hasFriction, 
-                       &ContactNew::enableFriction, R"(
+        .def_property( "hasFriction", &ContactNew::hasFriction, &ContactNew::enableFriction, R"(
 bool: enable or disable the use of friction.
         )" )
-        .def_property( "hasSmoothing", &ContactNew::hasSmoothing, 
-                       &ContactNew::enableSmoothing, R"(
+        .def_property( "hasSmoothing", &ContactNew::hasSmoothing, &ContactNew::enableSmoothing, R"(
 bool: enable or disable  the use of smoothing.
         )" );
 };

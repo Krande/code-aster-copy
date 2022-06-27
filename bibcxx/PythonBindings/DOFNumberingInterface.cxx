@@ -60,7 +60,7 @@ Arguments:
 Returns:
     int: index of the dof.
         )",
-        // ----------------------------------------------------------------------
+              // ----------------------------------------------------------------------
               py::arg( "row" ), py::arg( "local" ) = false )
         .def( "isRowAssociatedToPhysical", &DOFNumbering::isRowAssociatedToPhysical,
               R"(

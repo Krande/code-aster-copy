@@ -2,7 +2,7 @@
  * @file ResultNaming.cxx
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -21,23 +21,23 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
+#include "Functions/Function.h"
+
+#include "astercxx.h"
+
+#include "Supervis/ResultNaming.h"
+
 #include <stdexcept>
 #include <string>
 #include <vector>
 
-#include "Functions/Function.h"
-#include "Supervis/ResultNaming.h"
-#include "astercxx.h"
-
 FunctionPtr emptyRealFunction( new Function( "" ) );
 
 BaseFunction::BaseFunction( const std::string name, const std::string type,
-                                      const std::string type2 )
-    : GenericFunction( name, type, type2 ),
-      _value( JeveuxVectorReal( getName() + ".VALE" ) ) {}
+                            const std::string type2 )
+    : GenericFunction( name, type, type2 ), _value( JeveuxVectorReal( getName() + ".VALE" ) ) {}
 
-BaseFunction::BaseFunction( const std::string type,
-                                      const std::string type2 )
+BaseFunction::BaseFunction( const std::string type, const std::string type2 )
     : BaseFunction::BaseFunction( ResultNaming::getNewResultName(), type, type2 ) {}
 
 void BaseFunction::allocate( ASTERINTEGER size ) {
@@ -50,8 +50,7 @@ void BaseFunction::allocate( ASTERINTEGER size ) {
     _value->allocate( 2 * size );
 }
 
-void BaseFunction::deallocate()
-{
+void BaseFunction::deallocate() {
     _property->deallocate();
     _value->deallocate();
 }
@@ -60,8 +59,7 @@ void FunctionComplex::allocate( ASTERINTEGER size ) {
     throw std::runtime_error( "Not yet implemented!" );
 }
 
-void BaseFunction::setValues( const VectorReal &absc,
-                                      const VectorReal &ordo ) {
+void BaseFunction::setValues( const VectorReal &absc, const VectorReal &ordo ) {
     if ( absc.size() != ordo.size() )
         throw std::runtime_error( "Function: length of abscissa and ordinates must be equal" );
 
@@ -107,8 +105,7 @@ void BaseFunction::setAsConstant() {
 }
 
 /* Complex function */
-void FunctionComplex::setValues( const VectorReal &absc,
-                                         const VectorReal &ordo ) {
+void FunctionComplex::setValues( const VectorReal &absc, const VectorReal &ordo ) {
     if ( absc.size() * 2 != ordo.size() )
         throw std::runtime_error(
             "Function: The length of ordinates must be twice that of abscissas." );
@@ -130,7 +127,6 @@ void FunctionComplex::setValues( const VectorReal &absc,
     }
 }
 
-void FunctionComplex::setValues( const VectorReal &absc,
-                                         const VectorComplex &ordo ) {
+void FunctionComplex::setValues( const VectorReal &absc, const VectorComplex &ordo ) {
     throw std::runtime_error( "Not yet implemented!" );
 }

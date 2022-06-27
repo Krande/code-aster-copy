@@ -33,5 +33,4 @@ void exportCrackToPython( py::module_ &mod ) {
         .def( "getCrackTipCellsType", &Crack::getCrackTipCellsType )
         .def( "getLowerLipGroupName", &Crack::getLowerLipGroupName )
         .def( "getUpperLipGroupName", &Crack::getUpperLipGroupName );
-
 };

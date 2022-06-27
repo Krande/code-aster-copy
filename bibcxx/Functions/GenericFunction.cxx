@@ -2,7 +2,7 @@
  * @file ResultNaming.cxx
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,15 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
+#include "Functions/GenericFunction.h"
+
+#include "astercxx.h"
+
+#include "Supervis/ResultNaming.h"
+
 #include <stdexcept>
 #include <string>
 #include <vector>
-
-#include "Functions/GenericFunction.h"
-#include "Supervis/ResultNaming.h"
-#include "astercxx.h"
-
 
 void GenericFunction::setExtrapolation( const std::string type ) {
     if ( !_property->isAllocated() )

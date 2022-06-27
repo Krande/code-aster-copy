@@ -3,7 +3,7 @@
  * @brief Implementation de ModeResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,12 +24,12 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Results/ForwardModeResult.h"
+
 #include "Results/ModeResult.h"
 
 ForwardModeResultPtr::ForwardModeResultPtr() : _isSet( false ){};
 
-ForwardModeResultPtr::ForwardModeResultPtr(
-    const ModeResultPtr &ptr )
+ForwardModeResultPtr::ForwardModeResultPtr( const ModeResultPtr &ptr )
     : _ptr( ptr ), _isSet( true ){};
 
 void ForwardModeResultPtr::operator=( const ModeResultPtr &ptr ) {
@@ -37,8 +37,7 @@ void ForwardModeResultPtr::operator=( const ModeResultPtr &ptr ) {
     _isSet = true;
 };
 
-ModeResultPtr
-ForwardModeResultPtr::getPointer() {
+ModeResultPtr ForwardModeResultPtr::getPointer() {
     if ( !_isSet )
         throw std::runtime_error( "No pointer set" );
     return _ptr;

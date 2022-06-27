@@ -35,8 +35,6 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-
-
 ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField( const ASTERDOUBLE time ) {
 
     // Get mesh

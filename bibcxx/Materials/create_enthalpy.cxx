@@ -1,5 +1,5 @@
 /**
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -19,16 +19,13 @@
 
 /* person_in_charge: nicolas.pignet at edf.fr */
 
+#include "Materials/create_enthalpy.h"
 
 #include "aster_fort_material.h"
 
-#include "Materials/create_enthalpy.h"
-
-
-bool create_enthalpy(const FunctionPtr &rho_cp_func, const FunctionPtr &beta_func)
-{
-    const std::string name_in = (*rho_cp_func).getName();
-    const std::string name_out = (*beta_func).getName();
+bool create_enthalpy( const FunctionPtr &rho_cp_func, const FunctionPtr &beta_func ) {
+    const std::string name_in = ( *rho_cp_func ).getName();
+    const std::string name_out = ( *beta_func ).getName();
 
     CALLO_CREATE_ENTHALPY( name_in, name_out );
 

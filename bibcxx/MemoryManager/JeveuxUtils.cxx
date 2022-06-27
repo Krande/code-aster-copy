@@ -2,7 +2,7 @@
  * @file JeveuxUtils.cxx
  * @brief Helper functions on Jeveux objects
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,12 +20,12 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-
-#include "astercxx.h"
-#include "aster_fort_jeveux.h"
 #include "MemoryManager/JeveuxUtils.h"
 
+#include "aster_fort_jeveux.h"
+#include "astercxx.h"
+
+#include <string>
 
 bool jeveuxExists( const std::string name ) {
     ASTERINTEGER iret = 0;

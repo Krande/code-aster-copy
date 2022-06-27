@@ -23,10 +23,9 @@
 
 #ifdef __cplusplus
 
-#include "TFEL/System/ExternalLibraryManager.hxx"
+#include "astercxx.h"
 
-#include <string>
-#include <vector>
+#include "TFEL/System/ExternalLibraryManager.hxx"
 
 /**
  * \brief A simplified wrapper to a MFront behaviour to request

@@ -75,10 +75,9 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixDisplacementReal &M, const FieldOnNodesReal &v ) {
-                return M * v;
-            } );
+        .def( "__mul__", +[]( const AssemblyMatrixDisplacementReal &M, const FieldOnNodesReal &v ) {
+            return M * v;
+        } );
 
     py::class_< AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementComplexPtr,
                 BaseAssemblyMatrix >( mod, "AssemblyMatrixDisplacementComplex" )
@@ -118,9 +117,8 @@ Arguments:
         .def( float() * py::self )
         .def( py::self *= float() )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixDisplacementComplex &M,
-                            const FieldOnNodesComplex &v ) { return M * v; } );
+        .def( "__mul__", +[]( const AssemblyMatrixDisplacementComplex &M,
+                              const FieldOnNodesComplex &v ) { return M * v; } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureReal, AssemblyMatrixTemperatureRealPtr,
@@ -163,10 +161,9 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixTemperatureReal &M, const FieldOnNodesReal &v ) {
-                return M * v;
-            } );
+        .def( "__mul__", +[]( const AssemblyMatrixTemperatureReal &M, const FieldOnNodesReal &v ) {
+            return M * v;
+        } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureComplex, AssemblyMatrixTemperatureComplexPtr,
@@ -224,10 +221,9 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixPressureReal &M, const FieldOnNodesReal &v ) {
-                return M * v;
-            } );
+        .def( "__mul__", +[]( const AssemblyMatrixPressureReal &M, const FieldOnNodesReal &v ) {
+            return M * v;
+        } );
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixPressureComplex, AssemblyMatrixPressureComplexPtr,
@@ -259,8 +255,6 @@ Arguments:
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( -py::self )
-        .def(
-            "__mul__", +[]( const AssemblyMatrixPressureComplex &M, const FieldOnNodesComplex &v ) {
-                return M * v;
-            } );
+        .def( "__mul__", +[]( const AssemblyMatrixPressureComplex &M,
+                              const FieldOnNodesComplex &v ) { return M * v; } );
 };

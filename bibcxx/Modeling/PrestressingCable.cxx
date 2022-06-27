@@ -23,24 +23,27 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Modeling/PrestressingCable.h"
+
 #include "astercxx.h"
 
-#include "Modeling/PrestressingCable.h"
 #include "Supervis/ResultNaming.h"
 
-PrestressingCable::PrestressingCable(
-    const std::string name, const ModelPtr &model, const MaterialFieldPtr &mater,
-    const ElementaryCharacteristicsPtr &cara )
-    : DataStructure( name, 8, "CABL_PRECONT" ), _model( model ), _mater( mater ),
+PrestressingCable::PrestressingCable( const std::string name, const ModelPtr &model,
+                                      const MaterialFieldPtr &mater,
+                                      const ElementaryCharacteristicsPtr &cara )
+    : DataStructure( name, 8, "CABL_PRECONT" ),
+      _model( model ),
+      _mater( mater ),
       _cara( cara ),
       _mesh( std::static_pointer_cast< Mesh >( _model->getMesh() ) ),
       _sigin( new ConstantFieldOnCellsReal( getName() + ".CHME.SIGIN", _mesh ) ),
       _cableBP( new Table( getName() + "CABLEBP    " ) ),
       _cableGL( new Table( getName() + "CABLEGL    " ) ),
-      _lirela( new ListOfLinearRelationsReal( getName() + ".LIRELA    " ) ), _isEmpty( true ) {}
+      _lirela( new ListOfLinearRelationsReal( getName() + ".LIRELA    " ) ),
+      _isEmpty( true ) {}
 
-PrestressingCable::PrestressingCable(
-    const ModelPtr &model, const MaterialFieldPtr &mater,
-    const ElementaryCharacteristicsPtr &cara )
-    : PrestressingCable::PrestressingCable(
-          ResultNaming::getNewResultName(), model, mater, cara ) {}
+PrestressingCable::PrestressingCable( const ModelPtr &model, const MaterialFieldPtr &mater,
+                                      const ElementaryCharacteristicsPtr &cara )
+    : PrestressingCable::PrestressingCable( ResultNaming::getNewResultName(), model, mater, cara ) {
+}

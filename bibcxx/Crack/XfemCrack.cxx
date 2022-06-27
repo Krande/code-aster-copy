@@ -23,23 +23,31 @@
 
 /* person_in_charge: nicolas.tardieu at edf.fr */
 
+#include "Crack/XfemCrack.h"
+
 #include "astercxx.h"
 
-#include "Crack/XfemCrack.h"
+#include "Crack/CrackShape.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
-
-#include "Crack/CrackShape.h"
 
 XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
     : DataStructure( name, 8, "FISS_XFEM" ),
       ListOfTables( name ),
-      _mesh( mesh ), _auxiliaryGrid( MeshPtr() ),
-      _existingCrackWithGrid( XfemCrackPtr() ), _discontinuityType( "Crack" ), _crackLipsEntity(),
-      _crackTipEntity(), _normalLevelSetFunction( FunctionPtr() ),
-      _tangentialLevelSetFunction( FunctionPtr() ), _crackShape( CrackShapePtr() ),
-      _enrichedCells(), _discontinuousField( "DEPL" ), _enrichmentType( std::string() ),
-      _enrichmentRadiusZone( 0 ), _enrichedLayersNumber( 0 ),
+      _mesh( mesh ),
+      _auxiliaryGrid( MeshPtr() ),
+      _existingCrackWithGrid( XfemCrackPtr() ),
+      _discontinuityType( "Crack" ),
+      _crackLipsEntity(),
+      _crackTipEntity(),
+      _normalLevelSetFunction( FunctionPtr() ),
+      _tangentialLevelSetFunction( FunctionPtr() ),
+      _crackShape( CrackShapePtr() ),
+      _enrichedCells(),
+      _discontinuousField( "DEPL" ),
+      _enrichmentType( std::string() ),
+      _enrichmentRadiusZone( 0 ),
+      _enrichedLayersNumber( 0 ),
 
       _tangentialLevelSetField( new FieldOnNodesReal( getName() + ".LTNO      " ) ),
       _normalLevelSetField( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
@@ -60,20 +68,19 @@ XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
       _enrichedCellGroup( JeveuxVectorLong( getName() + ".GROUP_MA_ENRI" ) ),
       _meshName( JeveuxVectorChar8( getName() + ".MAILLAGE" ) ),
       _info( JeveuxVectorChar16( getName() + ".INFO" ) ),
-      _crackTipNodeFacesField( JeveuxVectorLong( getName() + ".NOFACPTFON" ) ){
-          _tangentialLevelSetField->setDescription( std::make_shared< FieldOnNodesDescription >(
-                                                              getName() + ".LTNO.PRCHN") );
-          _normalLevelSetField->setDescription( _tangentialLevelSetField->getDescription() );
-          _nodeStatusField->setDescription( _tangentialLevelSetField->getDescription() );
-          _tangentialLevelSetGradient->setDescription( std::make_shared< FieldOnNodesDescription >(
-                                                              getName() + ".GRLT.PRCHN") );
-          _normalLevelSetGradient->setDescription( _tangentialLevelSetGradient->getDescription() );
-          _localBasis->setDescription( std::make_shared< FieldOnNodesDescription >(
-                                                              getName() + ".BASL.PRCHN") );
-          };
+      _crackTipNodeFacesField( JeveuxVectorLong( getName() + ".NOFACPTFON" ) ) {
+    _tangentialLevelSetField->setDescription(
+        std::make_shared< FieldOnNodesDescription >( getName() + ".LTNO.PRCHN" ) );
+    _normalLevelSetField->setDescription( _tangentialLevelSetField->getDescription() );
+    _nodeStatusField->setDescription( _tangentialLevelSetField->getDescription() );
+    _tangentialLevelSetGradient->setDescription(
+        std::make_shared< FieldOnNodesDescription >( getName() + ".GRLT.PRCHN" ) );
+    _normalLevelSetGradient->setDescription( _tangentialLevelSetGradient->getDescription() );
+    _localBasis->setDescription(
+        std::make_shared< FieldOnNodesDescription >( getName() + ".BASL.PRCHN" ) );
+};
 
-XfemCrack::XfemCrack( MeshPtr mesh )
-    : XfemCrack( ResultNaming::getNewResultName(), mesh ){};
+XfemCrack::XfemCrack( MeshPtr mesh ) : XfemCrack( ResultNaming::getNewResultName(), mesh ){};
 
 bool XfemCrack::build() {
     CommandSyntax cmdSt( "DEFI_FISS_XFEM" );
@@ -221,7 +228,7 @@ ModelPtr XfemCrack::enrichModelWithXfem( ModelPtr &baseModel ) {
     cmdSt.define( dict );
 
     // Create model and get its name
-    ModelPtr newModelPtr( new Model(baseModel->getMesh()) );
+    ModelPtr newModelPtr( new Model( baseModel->getMesh() ) );
     cmdSt.setResult( newModelPtr->getName(), "MODELE" );
 
     // Call  OP00113

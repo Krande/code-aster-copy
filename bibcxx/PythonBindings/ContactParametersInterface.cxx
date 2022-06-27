@@ -151,8 +151,7 @@ Arguments:
     float: Coulomb coefficient.
         )",
               py::arg( "coulomb" ) )
-        .def_property( "hasFriction",
-                       &FrictionParameter::hasFriction, 
+        .def_property( "hasFriction", &FrictionParameter::hasFriction,
                        &FrictionParameter::enableFriction, R"(
 bool: enable or disable the use of friction.
         )" );
@@ -237,13 +236,11 @@ Arguments:
     GenericFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
         )",
               py::arg( "dist_supp" ) )
-        .def_property( "hasBeamDistance",
-                       &PairingParameter::hasBeamDistance, 
+        .def_property( "hasBeamDistance", &PairingParameter::hasBeamDistance,
                        &PairingParameter::enableBeamDistance, R"(
 bool: enable or disable the use of a fictive distance for beam.
         )" )
-        .def_property( "hasShellDistance",
-                       &PairingParameter::hasShellDistance, 
+        .def_property( "hasShellDistance", &PairingParameter::hasShellDistance,
                        &PairingParameter::enableShellDistance, R"(
 bool: enable or disable the use of a fictive distance for shell.
         )" );

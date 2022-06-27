@@ -111,7 +111,7 @@ void MaterialField::addMultipleMaterialOnMesh( std::vector< MaterialPtr > curMat
 }
 
 void MaterialField::addMaterialOnMesh( MaterialPtr &curMater ) {
-    addMultipleMaterialOnMesh( ( std::vector< MaterialPtr > ){ curMater } );
+    addMultipleMaterialOnMesh( ( std::vector< MaterialPtr > ){curMater} );
 }
 
 void MaterialField::addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr > curMaters,
@@ -127,7 +127,7 @@ void MaterialField::addMultipleMaterialOnGroupOfCells( std::vector< MaterialPtr 
 }
 
 void MaterialField::addMaterialOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup ) {
-    addMultipleMaterialOnGroupOfCells( ( std::vector< MaterialPtr > ){ curMater }, namesOfGroup );
+    addMultipleMaterialOnGroupOfCells( ( std::vector< MaterialPtr > ){curMater}, namesOfGroup );
 }
 
 void MaterialField::addExternalStateVariable( ExternalStateVariablePtr &currExte ) {
@@ -338,7 +338,7 @@ void MaterialField::updateExtStateVariablesObjects() {
     }
 };
 
-bool MaterialField::update(){
+bool MaterialField::update() {
     updateExtStateVariablesObjects();
     return true;
 };

@@ -37,9 +37,7 @@ VectorLong ListOfIntegers::getValues() const {
     return toReturn;
 };
 
-void ListOfIntegers::setVectorValues( const VectorLong &vec ) {
-    ( *_vale ) = vec;
-};
+void ListOfIntegers::setVectorValues( const VectorLong &vec ) { ( *_vale ) = vec; };
 
 int ListOfIntegers::size() {
     _vale->updateValuePointer();

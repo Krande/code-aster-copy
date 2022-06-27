@@ -108,8 +108,8 @@ ASTERBOOL ContactZone::buildInverseConnectivity() {
     std::string base( "G" );
 
     VectorLong masterCells;
-    masterCells.reserve(_masterCells.size());
-    for (auto cell: _masterCells)
+    masterCells.reserve( _masterCells.size() );
+    for ( auto cell : _masterCells )
         masterCells.push_back( cell + 1 );
     CALL_CNCINV( getMesh()->getName().c_str(), masterCells.data(), &nbMaster, base.c_str(),
                  _masterInverseConnectivity->getName().c_str() );
@@ -119,8 +119,8 @@ ASTERBOOL ContactZone::buildInverseConnectivity() {
     ASTERINTEGER nbSlave = getSlaveCells().size();
 
     VectorLong slaveCells;
-    slaveCells.reserve(_slaveCells.size());
-    for (auto cell: _slaveCells)
+    slaveCells.reserve( _slaveCells.size() );
+    for ( auto cell : _slaveCells )
         slaveCells.push_back( cell + 1 );
     CALL_CNCINV( getMesh()->getName().c_str(), slaveCells.data(), &nbSlave, base.c_str(),
                  _slaveInverseConnectivity->getName().c_str() );
@@ -141,8 +141,8 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
         std::string mn_name = ljust( _masterNeighbors->getName(), 24, ' ' );
 
         VectorLong masterCells;
-        masterCells.reserve(_masterCells.size());
-        for (auto cell: _masterCells)
+        masterCells.reserve( _masterCells.size() );
+        for ( auto cell : _masterCells )
             masterCells.push_back( cell + 1 );
         CALL_CNVOIS( getMesh()->getName(), masterCells.data(), invmcn_name, &nbMaster, &ind_min,
                      &ind_max, mn_name );
@@ -161,8 +161,8 @@ ASTERBOOL ContactZone::buildCellsNeighbors() {
         std::string sn_name = ljust( _slaveNeighbors->getName(), 24, ' ' );
 
         VectorLong slaveCells;
-        slaveCells.reserve(_slaveCells.size());
-        for (auto cell: _slaveCells)
+        slaveCells.reserve( _slaveCells.size() );
+        for ( auto cell : _slaveCells )
             slaveCells.push_back( cell + 1 );
         CALL_CNVOIS( getMesh()->getName(), slaveCells.data(), invscn_name, &nbSlave, &ind_min,
                      &ind_max, sn_name );

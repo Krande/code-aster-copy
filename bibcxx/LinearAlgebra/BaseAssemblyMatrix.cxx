@@ -61,7 +61,7 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::stri
 }
 
 BaseAssemblyMatrix::BaseAssemblyMatrix( BaseAssemblyMatrix &&other )
-    : DataStructure{ std::move( other ) } {
+    : DataStructure( std::move( other ) ) {
     // Jeveux Pointer
     _description = other._description;
     _scaleFactorLagrangian = other._scaleFactorLagrangian;
@@ -77,11 +77,11 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( BaseAssemblyMatrix &&other )
     _isFactorized = other._isFactorized;
 }
 
-void BaseAssemblyMatrix::updateDOFNumbering(){
-    if ( _description->exists() ){
+void BaseAssemblyMatrix::updateDOFNumbering() {
+    if ( _description->exists() ) {
         _description->updateValuePointer();
         std::string dofName = ( *_description )[1];
-        _dofNum = std::make_shared< DOFNumbering > ( dofName );
+        _dofNum = std::make_shared< DOFNumbering >( dofName );
     }
 };
 

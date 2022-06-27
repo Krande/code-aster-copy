@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -18,11 +18,12 @@
 /* person_in_charge: mathieu.courtois@edf.fr */
 /* author: anthony.geay@edf.fr */
 
-#include <fstream>
+#include "medfile_utils.h"
 
 #include "aster.h"
 #include "aster_utils.h"
-#include "medfile_utils.h"
+
+#include <fstream>
 
 extern "C" void DEFS( WRITE33HEADER, write33header, const char *fileName, STRING_SIZE lenF ) {
     static const unsigned char EMPTY_FILE_3_3[] = {
@@ -161,7 +162,7 @@ extern "C" void DEFS( WRITE33HEADER, write33header, const char *fileName, STRING
         0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
         0x0,  0x0,  0x0,  0x0,  0x0};
 
-    char *cFileName = MakeCStrFromFStr( (char*)fileName, lenF );
+    char *cFileName = MakeCStrFromFStr( (char *)fileName, lenF );
     std::ofstream ofs( cFileName );
     ofs.write( reinterpret_cast< const char * >( EMPTY_FILE_3_3 ), sizeof( EMPTY_FILE_3_3 ) );
     ofs.close();

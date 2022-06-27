@@ -3,7 +3,7 @@
  * @brief Implementation de ListOfFloats
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,9 +37,7 @@ VectorReal ListOfFloats::getValues() const {
     return toReturn;
 };
 
-void ListOfFloats::setVectorValues( const VectorReal &vec ) {
-    ( *_vale ) = vec;
-};
+void ListOfFloats::setVectorValues( const VectorReal &vec ) { ( *_vale ) = vec; };
 
 int ListOfFloats::size() {
     _vale->updateValuePointer();

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -16,18 +16,12 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include <algorithm>
+#include "MFrontBehaviour.h"
+
+#include "asterc_config.h"
 
 #include <stdlib.h>
 #include <string.h>
-
-#include "astercxx.h"
-#include "asterc_config.h"
-#include "MFrontBehaviour.h"
-
 
 /* Constructor */
 MFrontBehaviour::MFrontBehaviour( std::string hypo, std::string lib, std::string behav )
@@ -116,13 +110,13 @@ void MFrontBehaviour::fillMaterialPropertiesNames() {
             }
         } else {
             std::string msg( "MFrontBehaviour::fillMaterialPropertiesNames : "
-                        "unsupported modelling hypothesis" );
+                             "unsupported modelling hypothesis" );
             throw std::runtime_error( msg );
         }
     } else {
         std::string msg( "MFrontBehaviour::fillMaterialPropertiesNames : "
-                    "unsupported behaviour type "
-                    "(neither isotropic nor orthotropic)" );
+                         "unsupported behaviour type "
+                         "(neither isotropic nor orthotropic)" );
         throw std::runtime_error( msg );
     }
     _mpnames.insert( _mpnames.begin(), tmp.begin(), tmp.end() );
