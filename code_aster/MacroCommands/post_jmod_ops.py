@@ -19,6 +19,7 @@
 
 # Responsible Person: Jefri Draup
 import numpy as np
+import time
 import copy
 import aster
 import string as S
@@ -1818,33 +1819,25 @@ def list_inst_calc(self, dico, NUME_ORDRE, INST, PRECISION):
     
 
     lInst = list(dico['INST'])
-
-    if len(dico['INST']) == 1:
-        if (NUME_ORDRE is not None) or (INST is not None):
-            UTMESS('F', 'RUPTURE4_3')
-
-    else:
-        if (NUME_ORDRE is not None) and (INST is not None):
-            UTMESS('F', 'RUPTURE4_4')
-
+    
             
-        elif (NUME_ORDRE is not None) and (INST is None):
-            for iord, inst in enumerate(dico['INST']):
-                if iord not in NUME_ORDRE:
-                    lInst.remove(inst)
+    if (NUME_ORDRE is not None) and (INST is None):
+        for iord in dico['NUME_ORDRE']:
+            if iord not in NUME_ORDRE:
+                lInst.remove(lInst[dico['NUME_ORDRE'].index(iord)])
 
-            if lInst == []:
-                UTMESS('F', 'RUPTURE4_5')
+        if lInst == []:
+            UTMESS('F', 'RUPTURE4_5')
 
-        elif (NUME_ORDRE is None) and (INST is not None):
-            lInst = []
-            for iinst in dico['INST']:
-                for jinst in INST:
-                    if abs(iinst - jinst) <= PRECISION:
-                        lInst.append(iinst)
+    elif (NUME_ORDRE is None) and (INST is not None):
+        lInst = []
+        for iinst in dico['INST']:
+            for jinst in INST:
+                if abs(iinst - jinst) <= PRECISION:
+                    lInst.append(iinst)
 
-            if lInst == []:
-                UTMESS('F', 'RUPTURE4_6')
+        if lInst == []:
+            UTMESS('F', 'RUPTURE4_6')
 
     return lInst
 
@@ -2032,6 +2025,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
     grad_elno_type_j04 = 'NON'
     grad_elno_type_j05 = 'NON'
 
+    start_post_j=time.time()
     
     if OPTION != 'JMOD':
         j_correction = 'NON'
@@ -3704,7 +3698,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
     if ndim == 3:   
             print("Macro POST_JMOD - Calculate J-integral in 3D")                    
             #   Get symmetry problem
-
+            post_j_marker0=time.time()
             ir, ib, symeType = aster.dismoi('SYME', FOND_FISS.getName(), 'FOND_FISS', 'F')
 
             if symeType == 'OUI':
@@ -3798,7 +3792,8 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
             for iVect in TVECTEUR.keys():
                 TVECGLOB[iVect] = (np.array(TVECTEUR[iVect]) *
                                   (min(normVect) / normVect[iVect-1])).tolist()
-
+                
+            post_j_marker1=time.time()
         #   --------------------------------------------------------------------------
         #   DOMAIN CALCULATION AND CRACK PROPAGATION VECTORS
         #
@@ -4040,6 +4035,8 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
 
                 ElemsTMAIL = MAIL.sdj.GROUPEMA.get()['TMAIL'.ljust(24)]
                 listElemTMAIL = ['M'+str(iElem) for iElem in ElemsTMAIL]
+                
+                post_j_marker2=time.time()
                     
         #       -----------------------------------
         #       Propagation vectors
@@ -4559,6 +4556,7 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                             for iKey in TVECGLOB.keys():
                                 TQGLOB[iKey] = (np.array(TVECGLOB[iKey])*XMULT/XAIRE).tolist()
 
+            post_j_marker3=time.time()
         #   --------------------------------------------------------------------------
         #   GET CALCULATED INSTANTS
         #
@@ -4960,4 +4958,12 @@ def post_jmod_ops(self, RESULTAT, FOND_FISS=None, NB_COUCHES=None, INST=None, NU
                 del_group_ma(self, MAIL, 'TMAIL_IMPR')
         #-----------------------------------------------------------------------------
     #print("tab_result",tab_result)
+    end_post_j=time.time()
+    
+    #print("POST_J elapsed Time total=",end_post_j-start_post_j)
+    #print("POST_J elapsed Time Initialization=",post_j_marker0-start_post_j)
+    #print("POST_J elapsed Time for Virtual Crack propagation direction=",post_j_marker1-post_j_marker0)
+    #print("POST_J elapsed Time for Domain calculation=",post_j_marker2-post_j_marker1)
+    #print("POST_J elapsed Time for Propagation vectors=",post_j_marker3-post_j_marker2)
+    #print("POST_J elapsed Time for J-Integral calculation=",end_post_j-post_j_marker3)
     return tab_result

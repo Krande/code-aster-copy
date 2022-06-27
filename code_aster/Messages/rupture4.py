@@ -27,14 +27,6 @@ Il s'agit d'un test purement informatique.
 On continue le calcul. 
 """),
 
-    3: _("""
-NUME_ORDRE ou INST ne peuvent être sélectionnés dans le calcul linéaire.
-"""),
-
-    4: _("""
-Seule l'option NUME_ORDRE ou INST peut être sélectionnée.
-"""),
-
     5: _("""
 La valeur de NUME_ORDRE n'est pas valide.
 """),

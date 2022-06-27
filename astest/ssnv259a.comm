@@ -95,6 +95,7 @@ RESUIMP = LIRE_RESU(TYPE_RESU  = 'EVOL_NOLI',
                  TOUT_ORDRE = 'OUI',);
 
 
+
 FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
                     SYME='OUI',
                     FOND_FISS=_F(GROUP_MA='FFIS'),
@@ -156,7 +157,26 @@ MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
 )
           
 
+IMPR_RESU(FORMAT='RESULTAT',UNITE=6,RESU=_F(RESULTAT=RESUIMP))
 
+## TEST1
+J1=POST_JMOD(
+           RESULTAT=RESUIMP,
+           FOND_FISS=FISS, 
+           NB_COUCHES=2,
+           TITRE='01 - POST_JMOD', 
+           OPTION='JMOD',
+           NB_POINT_FOND=2,NUME_ORDRE=10,
+                     )
+J2=POST_JMOD(
+           RESULTAT=RESUIMP,
+           FOND_FISS=FISS, 
+           NB_COUCHES=2,
+           TITRE='01 - POST_JMOD', 
+           OPTION='JMOD',
+           NB_POINT_FOND=2,INST=1.0,PRECISION=1.E-1,
+                     )
+           
 
 ## TEST3
 J3=POST_JMOD(
