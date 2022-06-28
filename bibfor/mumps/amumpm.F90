@@ -54,6 +54,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
 #include "asterc/r8prem.h"
 #include "asterfort/amumpm_hpc.h"
 #include "asterfort/asmpi_comm_jev.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -86,7 +87,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
-    integer :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k
+    integer :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k, maxnz2
     integer :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp
     integer :: kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2, nblk
     integer :: nfilt3, isizemu, nsizemu, rang, esizemu, jdeeq, iblock
@@ -506,15 +507,23 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
             end if
         end do
         nz2 = to_mumps_int(nzloc)
-        if ((nz2.eq.0).or.(n.eq.0)) then
+
+!
+! --- GARDE-FOU POUR NE PAS TRANSMETTRE A MUMPS DES SYSTEMES VIDES
+        maxnz2=nzloc
+        if (ldist) then
+          call asmpi_comm_vect('MPI_MAX','I',nbval=1,sci=maxnz2)
+        endif
+        if ((maxnz2.le.0).or.(n.le.0)) then
           call utmess('F', 'FACTOR_41')
         endif
         if (niv .ge. 2) then
             write (ifm, *) '<AMUMPM>     NZLOC: ', nzloc
             write (ifm, *) '       TERMES NULS: ', nfilt1
             write (ifm, *) '   UNDER/OVERFLOWS: ', nfilt3, '/', nfilt2
-        end if
-    end if
+        endif
+! if (ldist...
+    endif 
 !
 !       ------------------------------------------------
 !       ALLOCATION DES OBJETS MUMPS F90
