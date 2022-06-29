@@ -123,6 +123,7 @@ implicit none
     data chvarc/'&&CCFNRN.CHVARC'/
     data k24bid/' '/
     data nomcmp/'DX','DY','DZ'/
+    integer :: iret2
 !
     call jemarq()
 !
@@ -325,16 +326,24 @@ implicit none
             call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr, 0, sjv=jnmo)
             nh=zi(jnmo)
         endif
+
+        
         call rsexch(' ', resuin, 'SIEF_ELGA', iordr, sigma, iret)
+
         if (iret .ne. 0) then
-          optio2 = 'SIEF_ELGA'
-          if (ldist) then
-            call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, resultType, cret, 'V')
-          else
-            call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, resultType, cret, 'V')
+          call rsexch(' ', resuou, 'SIEF_ELGA', iordr, sigma, iret2)
+          
+          if (iret2 .ne. 0) then
+            optio2 = 'SIEF_ELGA'
+            if (ldist) then
+              call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, resultType, cret, 'V')
+            else
+              call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, resultType, cret, 'V')
+            endif
+            call rsexch(' ', resuou, 'SIEF_ELGA', iordr, sigma, iret)
           endif
-          call rsexch(' ', resuou, 'SIEF_ELGA', iordr, sigma, iret)
         endif
+
         if (lstr) then
           call rsexch(' ', resuin, 'STRX_ELGA', iordr, strx, iret)
           if (iret .ne. 0 .and. lstr2) then

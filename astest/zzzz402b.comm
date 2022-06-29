@@ -265,7 +265,7 @@ DYNA_V = DYNA_NON_LINE(MODELE=MODYN,
                             PREDICTION='TANGENTE',),
                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-4,
                                  ITER_GLOB_MAXI = 5),
-                  ARCHIVAGE=_F(LIST_INST=TEMPS,),
+                  ARCHIVAGE=_F(LIST_INST=TEMPS,CHAM_EXCLU='SIEF_ELGA'),
                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 BETA=0.25,
                                 GAMMA=0.5,
@@ -273,6 +273,18 @@ DYNA_V = DYNA_NON_LINE(MODELE=MODYN,
                   SOLVEUR=_F(NPREC=8,
                              METHODE='MUMPS',),
                     )
+
+DYNA_V2 = CALC_CHAMP(CHAM_MATER=MATDYN,
+                    CRITERE='RELATIF',
+                    FORCE='FORC_NODA',
+                    INFO=1,
+                    MODELE=MODYN,
+                    PARALLELISME_TEMPS='NON',
+                    PRECISION=1e-06,
+                    RESULTAT=DYNA_V, #reuse=DYNA_V
+                    INST = (0.5, 0.8,),
+                    )
+
 
 ky=0.0001
 posx=80.
