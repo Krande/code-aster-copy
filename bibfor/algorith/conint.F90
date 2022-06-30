@@ -189,11 +189,12 @@ subroutine conint(nume, raide, coint, connec,&
         zi(lconnc+l1)=nbvois
         if (nbvois .gt. nbvmax) then
             nbvmax=nbvois
-        else if (nbvois .eq. 0) then
-            call utmess('F', 'ALGELINE2_5', si=noeu)
         endif
 !
     end do
+    if (connec .eq. 0) then
+       call utmess('F', 'ALGELINE2_5', si=noeu)
+    endif
 !
 !-----------------------------C
 !--                         --C
