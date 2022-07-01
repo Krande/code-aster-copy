@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -154,6 +154,7 @@ subroutine pcldlt(matf, mat, niremp, base)
 !   -- DETERMINATION DU NOM DE LA SD CACHEE NUME_DDL
     noobj ='12345678.NU000.NUME.PRNO'
     call gnomsd(' ', noobj, 12, 14)
+    noobj(1:8) = matfac(1:8)
     nuf=noobj(1:14)
     call copisd('NUME_DDL', bas1, nu, nuf)
 
