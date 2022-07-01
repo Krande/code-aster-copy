@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -136,9 +136,8 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
                     do j = 1, n3
                         call rsexch(' ', nresu, nchsym, zi(jordr+j-1), naux24,&
                                     n2)
-                        if (n2 .eq. 0) goto 12
+                        if (n2 .eq. 0) exit
                     end do
- 12                 continue
                     call jedetr(kordre)
                 else
                     n2 = 1

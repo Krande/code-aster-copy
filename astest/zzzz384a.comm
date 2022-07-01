@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ TEST_FICHIER(
     VALE_CALC_I =  105246599,
     NB_VALE     =  10304,
     VALE_CALC   =  1120.999973,
-    VALE_CALC_K = "c36aa5e9a259a51009aa5ef0127f8caf",
+    VALE_CALC_K = "037d1a6e51419c476a14a45f4944b80c",
 )
 
 unite=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='./REPE_OUT/carelem2.concept',ACCES='NEW')
@@ -90,7 +90,7 @@ TEST_FICHIER(
     FICHIER     ='./REPE_OUT/carelem2.concept',EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
     NB_VALE     =  10304,
     VALE_CALC   =  1360.999973,
-    VALE_CALC_K = "c36aa5e9a259a51009aa5ef0127f8caf",
+    VALE_CALC_K = "037d1a6e51419c476a14a45f4944b80c",
 )
 
 unite=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='./REPE_OUT/carelem3.concept',ACCES='NEW')
@@ -100,7 +100,7 @@ TEST_FICHIER(
     FICHIER     ='./REPE_OUT/carelem3.concept',EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
     NB_VALE     =  2744,
     VALE_CALC   =  707.0,
-    VALE_CALC_K = "02009f5c732f429db661b46adbfd6162",
+    VALE_CALC_K = "f3bb43f50844d94a920cbbccae8eef78",
 )
 
 unite=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='./REPE_OUT/carelem4.concept',ACCES='NEW')
@@ -110,7 +110,7 @@ TEST_FICHIER(
     FICHIER     ='./REPE_OUT/carelem4.concept',EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
     NB_VALE     =  2744,
     VALE_CALC   =  827.0,
-    VALE_CALC_K = "02009f5c732f429db661b46adbfd6162",
+    VALE_CALC_K = "f3bb43f50844d94a920cbbccae8eef78",
 )
 
 unite=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='./REPE_OUT/carelem5.concept',ACCES='NEW')
@@ -120,7 +120,7 @@ TEST_FICHIER(
     FICHIER     ='./REPE_OUT/carelem5.concept',EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
     NB_VALE     =  10304,
     VALE_CALC   =  2843.00012,
-    VALE_CALC_K = "c36aa5e9a259a51009aa5ef0127f8caf",
+    VALE_CALC_K = "037d1a6e51419c476a14a45f4944b80c",
 )
 
 FIN()

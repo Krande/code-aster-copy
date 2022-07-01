@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -171,7 +171,7 @@ TEST_FICHIER(FICHIER="./REPE_OUT/GF.concept",
              VALE_CALC_I=342849,
              NB_VALE=1832,
              VALE_CALC=1.4199406660e+03,
-             VALE_CALC_K="fb8f221e487aa2e6dfdf8b63cad7ffb9",
+             VALE_CALC_K="7f025efca8e568a55983973decd319fe",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 
@@ -186,7 +186,7 @@ TEST_FICHIER(FICHIER="./REPE_OUT/POUCA.concept",
              # décalages dans l'objet CELD
              NB_VALE=3068,
              VALE_CALC=4.8766971548e+03,
-             VALE_CALC_K="5ad57ea21bd51563647f9cabf151423c",
+             VALE_CALC_K="5a3259fd5b6ab00c08da3aa3444e603a",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 
@@ -200,7 +200,7 @@ TEST_FICHIER(FICHIER="./REPE_OUT/COMP1.concept",
              VALE_CALC_I=1191,
              NB_VALE=0,
              VALE_CALC=0.0000000000,
-             VALE_CALC_K="b11d6089492670aa3184f0318b6e47ef",
+             VALE_CALC_K="b481aa7ffcb2c767ad88e522e843ee27",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 
@@ -214,7 +214,7 @@ TEST_FICHIER(FICHIER="./REPE_OUT/CHMAT.concept",
              VALE_CALC_I=50343706,
              NB_VALE=0,
              VALE_CALC=0.00000000000,
-             VALE_CALC_K="09cecc01a49955005fa1d85f56d3e380",
+             VALE_CALC_K="905d3996bf7f26554eb1130b7ce981c6",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 

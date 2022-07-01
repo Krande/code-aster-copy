@@ -212,7 +212,7 @@ TEST_FICHIER(FICHIER="./fort.17",
              VALE_CALC_I=2445,
              NB_VALE=62,
              VALE_CALC=5556.239999999999,
-             VALE_CALC_K="11db4c9176961e1ef1d0c7974e270018",
+             VALE_CALC_K="a6f08087f82f6edc8969725ac9721435",
 )
 
 IMPR_CO(UNITE=18,NIVEAU=0, CONCEPT=_F(NOM=U2),)
@@ -222,6 +222,6 @@ TEST_FICHIER(FICHIER="./fort.18",
              VALE_CALC_I=2459,
              NB_VALE=62,
              VALE_CALC=5589.239999999999,
-             VALE_CALC_K="11db4c9176961e1ef1d0c7974e270018",
+             VALE_CALC_K="a6f08087f82f6edc8969725ac9721435",
 )
 FIN()
