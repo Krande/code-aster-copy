@@ -76,6 +76,11 @@ CARE=AFFE_CARA_ELEM(   MODELE=MO,
                        COQUE=_F( GROUP_MA = 'TOUT',
                                  EPAIS = 1.00,
                                  A_CIS = 1.E3,    MODI_METRIQUE = 'NON'))
+
+CARETH=AFFE_CARA_ELEM(   MODELE=MOTHER,
+                       COQUE=_F( GROUP_MA = 'TOUT',
+                                 EPAIS = 1.00,
+                                 A_CIS = 1.E3,    MODI_METRIQUE = 'NON'))
 # ------------------------------------------------------------------
 # ------------------------------------------------------------------
 # ------------------------------------------------------------------
@@ -102,21 +107,21 @@ CH_FIN2=AFFE_CHAR_THER(MODELE=MOTHER,
 #
 
 TEM_INIT=THER_LINEAIRE(MODELE=MOTHER,
-                       CARA_ELEM=CARE,
+                       CARA_ELEM=CARETH,
                        CHAM_MATER=CHMATHER,
                        EXCIT=_F(  CHARGE = CH_INI) )
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=TEM_INIT))
 
 TEM_FIN1=THER_LINEAIRE(MODELE=MOTHER,
-                       CARA_ELEM=CARE,
+                       CARA_ELEM=CARETH,
                        CHAM_MATER=CHMATHER,
                        EXCIT=_F(  CHARGE = CH_FIN1) )
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=TEM_FIN1))
 
 TEM_FIN2=THER_LINEAIRE(MODELE=MOTHER,
-                       CARA_ELEM=CARE,
+                       CARA_ELEM=CARETH,
                        CHAM_MATER=CHMATHER,
                        EXCIT=_F(  CHARGE = CH_FIN2) )
 

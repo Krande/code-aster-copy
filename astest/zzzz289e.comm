@@ -112,15 +112,15 @@ MARASUPL=ASSE_MATRICE(MATR_ELEM=MATRUPL,
 #Test de non regression sur la matrice de masse (pour INCO)
 
 TEST_RESU(OBJET=_F(VALE_CALC=4514.5330000000004,
-                   NOM=MATMUPG.getName()[:8] + '       .M01.RESL',),
+                   NOM=MATMUPG.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=4514.5330000000004,
-                   NOM=MATMUPQ.getName()[:8] + '       .M01.RESL',),
+                   NOM=MATMUPQ.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=4514.5330000000004,
-                   NOM=MATMUPL.getName()[:8] + '       .M01.RESL',),
+                   NOM=MATMUPL.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 #Test de non regression sur la matrice de rigidite (pour INCO_UPG et INCO_LUP)

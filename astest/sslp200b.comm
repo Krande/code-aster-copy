@@ -165,6 +165,12 @@ CARA1=AFFE_CARA_ELEM(MODELE=MO,
                              _F(GROUP_MA=('GXXXXXX_GMA10','GXXXXXX_GMA11','GXXXXXX_GMA12',),
                                 ANGL_REP=0.,),),)
 
+CARA2=AFFE_CARA_ELEM(MODELE=MOTH,
+                     MASSIF=(_F(GROUP_MA='GXXXXXX_TOUT',
+                                ANGL_REP=21.4,),
+                             _F(GROUP_MA=('GXXXXXX_GMA10','GXXXXXX_GMA11','GXXXXXX_GMA12',),
+                                ANGL_REP=0.,),),)
+
 # ----------------------------------------------------------------------
 #    DEFINITION ET AFFECTATION DES MATERIAUX : COMPORTEMENTS ELASTIQUES
 # ----------------------------------------------------------------------
@@ -289,7 +295,7 @@ CHTHF=AFFE_CHAR_THER_F(MODELE=MOTH,
 
 THLIN=THER_LINEAIRE(MODELE=MOTH,
                     CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARA1,
+                    CARA_ELEM=CARA2,
                     EXCIT=_F(CHARGE=CHTHF,),
                     INCREMENT=_F(LIST_INST=LR1,),)
 

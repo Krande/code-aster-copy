@@ -120,15 +120,15 @@ MARASUPL=ASSE_MATRICE(MATR_ELEM=MATRUPL,
 #Test de non regression sur la matrice de masse
 
 TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
-                   NOM=MATMUPG.getName()[:8] + '       .M01.RESL',),
+                   NOM=MATMUPG.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
-                   NOM=MATMUPQ.getName()[:8] + '       .M01.RESL',),
+                   NOM=MATMUPQ.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=5804.4,
-                   NOM=MATMUPL.getName()[:8] + '       .M01.RESL',),
+                   NOM=MATMUPL.getElementaryTerms()[0].getName().ljust(19)+'.RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=2.6950725246896E+06,
