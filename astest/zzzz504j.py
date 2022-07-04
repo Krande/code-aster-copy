@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ from code_aster import MPI
 test = code_aster.TestCase()
 
 code_aster.init("--test")
-nProc = MPI.COMM_WORLD.Get_size()
-rank = MPI.COMM_WORLD.Get_rank()
+nProc = MPI.ASTER_COMM_WORLD.Get_size()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 
 pMesh2 = code_aster.ParallelMesh()
 pMesh2.readMedFile("mesh004a/%d.med"%rank, True)
 
-rank = MPI.COMM_WORLD.Get_rank()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 model = AFFE_MODELE(MAILLAGE = pMesh2,
                     AFFE = _F(MODELISATION = "3D",

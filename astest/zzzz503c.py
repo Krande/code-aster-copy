@@ -28,7 +28,7 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = MPI.COMM_WORLD.Get_rank()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 pMesh = code_aster.ParallelMesh()
 pMesh.readMedFile("mesh004a/%d.med"%rank, True)
 DEFI_GROUP(reuse=pMesh,

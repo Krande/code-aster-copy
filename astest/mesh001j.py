@@ -23,7 +23,7 @@ from code_aster.Commands import *
 
 code_aster.init("--test")
 
-rank = code_aster.MPI.COMM_WORLD.Get_rank()
+rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 
 test = code_aster.TestCase()
 mesh = code_aster.ParallelMesh()

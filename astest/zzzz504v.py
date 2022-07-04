@@ -1,7 +1,7 @@
 #!/usr/bin/env run_aster
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
 test = code_aster.TestCase()
 
-rank = MPI.COMM_WORLD.Get_rank()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 POUTRE0 = code_aster.ParallelMesh()
 POUTRE0.readMedFile(osp.join(root, f"zzzz504v/{rank}.med"), True)

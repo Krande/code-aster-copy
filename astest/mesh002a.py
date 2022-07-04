@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = MPI.COMM_WORLD.Get_rank()
-print("Nb procs", MPI.COMM_WORLD.Get_size())
-print("Rank", MPI.COMM_WORLD.Get_rank())
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+print("Nb procs", MPI.ASTER_COMM_WORLD.Get_size())
+print("Rank", MPI.ASTER_COMM_WORLD.Get_rank())
 
-if MPI.COMM_WORLD.Get_size() > 1:
+if MPI.ASTER_COMM_WORLD.Get_size() > 1:
     is_parallel = True
 else:
     is_parallel = False
@@ -46,7 +46,7 @@ ms.partitionMesh(True)
 
 # Where to save the mesh in a single folder
 path = os.getcwd()
-path.replace("/proc."+str(MPI.COMM_WORLD.Get_rank()), "")
+path.replace("/proc."+str(MPI.ASTER_COMM_WORLD.Get_rank()), "")
 
 meshFolder = path+"/meshFolder"
 

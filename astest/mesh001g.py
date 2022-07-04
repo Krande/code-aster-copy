@@ -146,8 +146,8 @@ def computation(mesh, solv):
 # test case
 
 
-rank = MPI.COMM_WORLD.Get_rank()
-nbproc = MPI.COMM_WORLD.Get_size()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 mesh_p = LIRE_MAILLAGE(PARTITIONNEUR='PTSCOTCH', UNITE=20)
 mesh = LIRE_MAILLAGE(UNITE=20,)

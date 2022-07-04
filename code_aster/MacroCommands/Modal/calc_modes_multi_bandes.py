@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,21 +27,21 @@ from ...Utilities.mpi_utils import MPI
 from .mode_iter_simult import MODE_ITER_SIMULT
 
 
-def calc_modes_multi_bandes( self, stop_erreur, sturm, INFO, **args):
+def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
     """
-       Macro-command CALC_MODES, case of the simultaneous iterations method
-       over several frequency bands, with optional parallelization.
-       Can be used only in the case of vibration modes (TYPE_RESU='DYNAMIQUE')
+    Macro-command CALC_MODES, case of the simultaneous iterations method
+    over several frequency bands, with optional parallelization.
+    Can be used only in the case of vibration modes (TYPE_RESU='DYNAMIQUE')
     """
     args = _F(args)
     SOLVEUR = args.get("SOLVEUR")
     SOLVEUR_MODAL = args.get("SOLVEUR_MODAL")
     VERI_MODE = args.get("VERI_MODE")
 
-    MATR_RIGI = args['MATR_RIGI']
-    MATR_MASS = args['MATR_MASS']
-    CALC_FREQ = args['CALC_FREQ']
-    METHODE = SOLVEUR_MODAL['METHODE']
+    MATR_RIGI = args["MATR_RIGI"]
+    MATR_MASS = args["MATR_MASS"]
+    CALC_FREQ = args["CALC_FREQ"]
+    METHODE = SOLVEUR_MODAL["METHODE"]
     STOP_BANDE_VIDE = "NON"
 
     # ----------------------------------------------------------------------
@@ -56,49 +56,49 @@ def calc_modes_multi_bandes( self, stop_erreur, sturm, INFO, **args):
     for i in list(dSolveur.keys()):
         if dSolveur[i] is None:
             del dSolveur[i]
-    if 'TYPE_RESU' in dSolveur:  # because TYPE_RESU is a keyword with a 'global' position
-        del dSolveur['TYPE_RESU']
-    if 'OPTION' in dSolveur:    # because OPTION is a keyword with a 'global' position
-        del dSolveur['OPTION']
-    if 'FREQ' in dSolveur:      # because FREQ can be a keyword with a 'global' position
-        del dSolveur['FREQ']
-    solveur_lineaire = dSolveur.get('METHODE').strip()
+    if "TYPE_RESU" in dSolveur:  # because TYPE_RESU is a keyword with a 'global' position
+        del dSolveur["TYPE_RESU"]
+    if "OPTION" in dSolveur:  # because OPTION is a keyword with a 'global' position
+        del dSolveur["OPTION"]
+    if "FREQ" in dSolveur:  # because FREQ can be a keyword with a 'global' position
+        del dSolveur["FREQ"]
+    solveur_lineaire = dSolveur.get("METHODE").strip()
     dSolveur_infomode = dSolveur
     # pour INFO_MODE, le mot-clé facteur SOLVEUR ne doit pas contenir les
     # mot-clés POSTTRAITEMENTS et RESI_RELA
-    if 'POSTTRAITEMENTS' in dSolveur_infomode:
-        del dSolveur_infomode['POSTTRAITEMENTS']
-    if 'RESI_RELA' in dSolveur_infomode:
-        del dSolveur_infomode['RESI_RELA']
+    if "POSTTRAITEMENTS" in dSolveur_infomode:
+        del dSolveur_infomode["POSTTRAITEMENTS"]
+    if "RESI_RELA" in dSolveur_infomode:
+        del dSolveur_infomode["RESI_RELA"]
 
     # Rang du processus MPI et taille du MPI_COMM_WORLD
     # Lorsqu'on ne veut q'un niveau de parallelisme (celui du solveur lineaire)
     # on bluffe l'algo en posant rang=0/nbproc=1 pour tous les procs.
     # Cependant si le solveur est autre que MUMPS on s'arrete en erreur.
-    if CALC_FREQ['NIVEAU_PARALLELISME'] == 'COMPLET':
-        rang = MPI.COMM_WORLD.Get_rank()
-        nbproc = MPI.COMM_WORLD.Get_size()
-        niv_par = 'COMPLET'
-    elif CALC_FREQ['NIVEAU_PARALLELISME'] == 'PARTIEL':
+    if CALC_FREQ["NIVEAU_PARALLELISME"] == "COMPLET":
+        rang = MPI.ASTER_COMM_WORLD.Get_rank()
+        nbproc = MPI.ASTER_COMM_WORLD.Get_size()
+        niv_par = "COMPLET"
+    elif CALC_FREQ["NIVEAU_PARALLELISME"] == "PARTIEL":
         rang = 0
         nbproc = 1
-        niv_par = 'PARTIEL'
-        nbproc_real = MPI.COMM_WORLD.Get_size()
-        if ((nbproc_real > 1) & (solveur_lineaire != 'MUMPS')):
-            aster.affiche('MESSAGE', 72 * '-')
-            UTMESS('F', 'MODAL_14', vali=nbproc_real, valk=solveur_lineaire)
-            aster.affiche('MESSAGE', 72 * '-')
+        niv_par = "PARTIEL"
+        nbproc_real = MPI.ASTER_COMM_WORLD.Get_size()
+        if (nbproc_real > 1) & (solveur_lineaire != "MUMPS"):
+            aster.affiche("MESSAGE", 72 * "-")
+            UTMESS("F", "MODAL_14", vali=nbproc_real, valk=solveur_lineaire)
+            aster.affiche("MESSAGE", 72 * "-")
     else:
-        assert(False)  # Pb parametrage NIVEAU_PARALLELISME
+        assert False  # Pb parametrage NIVEAU_PARALLELISME
 
     # Construction de la liste de frequences
-    if CALC_FREQ['FREQ']:
+    if CALC_FREQ["FREQ"]:
         lborne = []
-        nnfreq = len(CALC_FREQ['FREQ'])
+        nnfreq = len(CALC_FREQ["FREQ"])
         for i in range(0, nnfreq):
-            lborne.append(CALC_FREQ['FREQ'][i])
+            lborne.append(CALC_FREQ["FREQ"][i])
     else:
-        assert(False)  # Pb parametrage CALC_FREQ
+        assert False  # Pb parametrage CALC_FREQ
 
     # ----------------------------------------------------------------------
     #
@@ -112,46 +112,50 @@ def calc_modes_multi_bandes( self, stop_erreur, sturm, INFO, **args):
     # (ds les sous-communicateurs, les calculs elem/assemblages
     # ne sont pas parallelises).
     # On remettra le mode de fonctionnement initial en fin de Macro.
-    if (nbproc > 1):
+    if nbproc > 1:
         _, old_prtk1 = recup_modele_partition(MATR_RIGI, dbg)
         sd_modele = None
         if MATR_RIGI is not None:
             sd_modele = MATR_RIGI.getModel()
-        if (sd_modele is None):
-            assert(False)  # Pb, on arrive pas a recuperer le nom du modele
-        if (old_prtk1 is not None):
+        if sd_modele is None:
+            assert False  # Pb, on arrive pas a recuperer le nom du modele
+        if old_prtk1 is not None:
             motdimo = {}
-            motdimo['reuse'] = sd_modele
-            motdimo['MODELE'] = sd_modele
-            motdimo['DISTRIBUTION'] = _F(METHODE='CENTRALISE')
+            motdimo["reuse"] = sd_modele
+            motdimo["MODELE"] = sd_modele
+            motdimo["DISTRIBUTION"] = _F(METHODE="CENTRALISE")
             __modimo = MODI_MODELE(**motdimo)
 
     # INFO_MODE global sur la liste de frequences
     # Parametres basiques
     motfaci = {}
-    motfaci['COMPTAGE'] = _F(METHODE='AUTO',
-                             SEUIL_FREQ=CALC_FREQ['SEUIL_FREQ'],
-                             NMAX_ITER_SHIFT=CALC_FREQ['NMAX_ITER_SHIFT'],
-                             PREC_SHIFT=CALC_FREQ['PREC_SHIFT'],)
+    motfaci["COMPTAGE"] = _F(
+        METHODE="AUTO",
+        SEUIL_FREQ=CALC_FREQ["SEUIL_FREQ"],
+        NMAX_ITER_SHIFT=CALC_FREQ["NMAX_ITER_SHIFT"],
+        PREC_SHIFT=CALC_FREQ["PREC_SHIFT"],
+    )
 
     # Gestion des frequences
     gestion_frequence(solveur_lineaire, nnfreq, nbproc)
 
     # Parametrage du parallelisme pour la couche FORTRAN/MPI
-    if (nbproc > 1):
-        motfaci['PARALLELISME_MACRO'] = _F(TYPE_COM=1)
-    __nbmodi = INFO_MODE(MATR_RIGI=MATR_RIGI,
-                         MATR_MASS=MATR_MASS,
-                         INFO=INFO,
-                         FREQ=lborne,
-                         NIVEAU_PARALLELISME=niv_par,
-                         SOLVEUR=dSolveur_infomode,
-                         **motfaci)
+    if nbproc > 1:
+        motfaci["PARALLELISME_MACRO"] = _F(TYPE_COM=1)
+    __nbmodi = INFO_MODE(
+        MATR_RIGI=MATR_RIGI,
+        MATR_MASS=MATR_MASS,
+        INFO=INFO,
+        FREQ=lborne,
+        NIVEAU_PARALLELISME=niv_par,
+        SOLVEUR=dSolveur_infomode,
+        **motfaci
+    )
 
     # Gestion des sous-bandes de frequences et construction (si //) de l'objet
     nbmodeth, nbsb_nonvide, proc_sb_nvide = gestion_sous_bande(
-        solveur_lineaire, __nbmodi, nnfreq, nbproc, lborne,
-        STOP_BANDE_VIDE == "OUI")
+        solveur_lineaire, __nbmodi, nnfreq, nbproc, lborne, STOP_BANDE_VIDE == "OUI"
+    )
 
     # ----------------------------------------------------------------------
     #
@@ -168,234 +172,243 @@ def calc_modes_multi_bandes( self, stop_erreur, sturm, INFO, **args):
     # precedent. Ce n'est pas la peine de commencer la boucle si un proc
     # fait defaut.
     # ----------------------------------------------------------------------
-    freq_ini = 1.E+99
-    freq_fin = -1.E+99
+    freq_ini = 1.0e99
+    freq_fin = -1.0e99
     motscles = {}
-    motscles['FILTRE_MODE'] = []
+    motscles["FILTRE_MODE"] = []
     numsb_nonvide = 0
     for i in range(0, nnfreq - 1):
 
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         #
         # 2. SOUS-BANDE NON VIDE
         #
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         sb_vide = None
         do_loop = None
-        if (__nbmodi['NB_MODE', i + 1] == 0):
+        if __nbmodi["NB_MODE", i + 1] == 0:
             sb_vide = True
             do_loop = False
         else:
             numsb_nonvide = numsb_nonvide + 1
             sb_vide = False
-            if (((nbproc > 1) & (proc_sb_nvide[rang] == numsb_nonvide)) | (nbproc == 1)):
+            if ((nbproc > 1) & (proc_sb_nvide[rang] == numsb_nonvide)) | (nbproc == 1):
                 do_loop = True
             else:
                 do_loop = False
 
-        if ((not sb_vide) & do_loop):
+        if (not sb_vide) & do_loop:
             motscit = {}
             motscfa = {}
-            if SOLVEUR_MODAL['DIM_SOUS_ESPACE']:
-                motscfa['DIM_SOUS_ESPACE'] = SOLVEUR_MODAL['DIM_SOUS_ESPACE']
-            if SOLVEUR_MODAL['COEF_DIM_ESPACE']:
-                motscfa['COEF_DIM_ESPACE'] = SOLVEUR_MODAL['COEF_DIM_ESPACE']
-            motscfa['FREQ'] = (lborne[i], lborne[i + 1])
-            motscfa['TABLE_FREQ'] = __nbmodi
-            motscit['CALC_FREQ'] = _F(OPTION='BANDE',
-                                      SEUIL_FREQ=CALC_FREQ['SEUIL_FREQ'],
-                                      NMAX_ITER_SHIFT=CALC_FREQ[
-                                      'NMAX_ITER_SHIFT'],
-                                      PREC_SHIFT=CALC_FREQ['PREC_SHIFT'],
-                                      **motscfa)
+            if SOLVEUR_MODAL["DIM_SOUS_ESPACE"]:
+                motscfa["DIM_SOUS_ESPACE"] = SOLVEUR_MODAL["DIM_SOUS_ESPACE"]
+            if SOLVEUR_MODAL["COEF_DIM_ESPACE"]:
+                motscfa["COEF_DIM_ESPACE"] = SOLVEUR_MODAL["COEF_DIM_ESPACE"]
+            motscfa["FREQ"] = (lborne[i], lborne[i + 1])
+            motscfa["TABLE_FREQ"] = __nbmodi
+            motscit["CALC_FREQ"] = _F(
+                OPTION="BANDE",
+                SEUIL_FREQ=CALC_FREQ["SEUIL_FREQ"],
+                NMAX_ITER_SHIFT=CALC_FREQ["NMAX_ITER_SHIFT"],
+                PREC_SHIFT=CALC_FREQ["PREC_SHIFT"],
+                **motscfa
+            )
 
-            if (sturm == 'LOCAL'):
-                motveri = 'OUI'
+            if sturm == "LOCAL":
+                motveri = "OUI"
             else:
-                motveri = 'NON'
+                motveri = "NON"
 
-            motscit['VERI_MODE'] = _F(STOP_ERREUR=stop_erreur,
-                                      SEUIL=VERI_MODE['SEUIL'],
-                                      STURM=motveri,
-                                      PREC_SHIFT=VERI_MODE['PREC_SHIFT'])
+            motscit["VERI_MODE"] = _F(
+                STOP_ERREUR=stop_erreur,
+                SEUIL=VERI_MODE["SEUIL"],
+                STURM=motveri,
+                PREC_SHIFT=VERI_MODE["PREC_SHIFT"],
+            )
 
-            motscit['STOP_BANDE_VIDE'] = STOP_BANDE_VIDE
+            motscit["STOP_BANDE_VIDE"] = STOP_BANDE_VIDE
 
-            OPTION = 'SANS'  # option for detecting rigid body modes
-            if METHODE == 'TRI_DIAG':
-                if 'NMAX_ITER_ORTHO' in args:
-                    motscit['NMAX_ITER_ORTHO'] = SOLVEUR_MODAL[
-                        'NMAX_ITER_ORTHO']
-                if 'PREC_ORTHO' in args:
-                    motscit['PREC_ORTHO'] = SOLVEUR_MODAL['PREC_ORTHO']
-                if 'PREC_LANCZOS' in args:
-                    motscit['PREC_LANCZOS'] = SOLVEUR_MODAL['PREC_LANCZOS']
-                if 'MAX_ITER_QR' in args:
-                    motscit['NMAX_ITER_QR'] = SOLVEUR_MODAL['NMAX_ITER_QR']
-                    if SOLVEUR_MODAL['MODE_RIGIDE'] == 'OUI':
-                        OPTION = 'MODE_RIGIDE'
-            elif METHODE == 'JACOBI':
-                if 'NMAX_ITER_BATHE' in args:
-                    motscit['NMAX_ITER_BATHE'] = SOLVEUR_MODAL[
-                        'NMAX_ITER_BATHE']
-                if 'PREC_BATHE' in args:
-                    motscit['PREC_BATHE'] = SOLVEUR_MODAL['PREC_BATHE']
-                if 'NMAX_ITER_JACOBI' in args:
-                    motscit['NMAX_ITER_JACOBI'] = SOLVEUR_MODAL[
-                        'NMAX_ITER_JACOBI']
-                if 'PREC_JACOBI' in args:
-                    motscit['PREC_JACOBI'] = SOLVEUR_MODAL['PREC_JACOBI']
-            elif METHODE == 'SORENSEN':
-                if 'NMAX_ITER_SOREN' in args:
-                    motscit['NMAX_ITER_SOREN'] = SOLVEUR_MODAL[
-                        'NMAX_ITER_SOREN']
-                if 'PARA_ORTHO_SOREN' in args:
-                    motscit['PARA_ORTHO_SOREN'] = SOLVEUR_MODAL[
-                        'PARA_ORTHO_SOREN']
-                if 'PREC_SOREN' in args:
-                    motscit['PREC_SOREN'] = SOLVEUR_MODAL['PREC_SOREN']
-            elif METHODE == 'QZ':
-                motscit['TYPE_QZ'] = SOLVEUR_MODAL['TYPE_QZ']
+            OPTION = "SANS"  # option for detecting rigid body modes
+            if METHODE == "TRI_DIAG":
+                if "NMAX_ITER_ORTHO" in args:
+                    motscit["NMAX_ITER_ORTHO"] = SOLVEUR_MODAL["NMAX_ITER_ORTHO"]
+                if "PREC_ORTHO" in args:
+                    motscit["PREC_ORTHO"] = SOLVEUR_MODAL["PREC_ORTHO"]
+                if "PREC_LANCZOS" in args:
+                    motscit["PREC_LANCZOS"] = SOLVEUR_MODAL["PREC_LANCZOS"]
+                if "MAX_ITER_QR" in args:
+                    motscit["NMAX_ITER_QR"] = SOLVEUR_MODAL["NMAX_ITER_QR"]
+                    if SOLVEUR_MODAL["MODE_RIGIDE"] == "OUI":
+                        OPTION = "MODE_RIGIDE"
+            elif METHODE == "JACOBI":
+                if "NMAX_ITER_BATHE" in args:
+                    motscit["NMAX_ITER_BATHE"] = SOLVEUR_MODAL["NMAX_ITER_BATHE"]
+                if "PREC_BATHE" in args:
+                    motscit["PREC_BATHE"] = SOLVEUR_MODAL["PREC_BATHE"]
+                if "NMAX_ITER_JACOBI" in args:
+                    motscit["NMAX_ITER_JACOBI"] = SOLVEUR_MODAL["NMAX_ITER_JACOBI"]
+                if "PREC_JACOBI" in args:
+                    motscit["PREC_JACOBI"] = SOLVEUR_MODAL["PREC_JACOBI"]
+            elif METHODE == "SORENSEN":
+                if "NMAX_ITER_SOREN" in args:
+                    motscit["NMAX_ITER_SOREN"] = SOLVEUR_MODAL["NMAX_ITER_SOREN"]
+                if "PARA_ORTHO_SOREN" in args:
+                    motscit["PARA_ORTHO_SOREN"] = SOLVEUR_MODAL["PARA_ORTHO_SOREN"]
+                if "PREC_SOREN" in args:
+                    motscit["PREC_SOREN"] = SOLVEUR_MODAL["PREC_SOREN"]
+            elif METHODE == "QZ":
+                motscit["TYPE_QZ"] = SOLVEUR_MODAL["TYPE_QZ"]
             else:
-                assert(False)  # Pb parametrage METHODE
+                assert False  # Pb parametrage METHODE
 
             # Parametrage du parallelisme pour la couche FORTRAN/MPI
             # afin d'operer les comm des modes propres et des parametres
             # modaux.
-            if (nbproc > 1):
-                motscit['PARALLELISME_MACRO'] = _F(TYPE_COM=1,
-                                                   IPARA1_COM=numsb_nonvide,
-                                                   IPARA2_COM=nbsb_nonvide,
-                                                   )
+            if nbproc > 1:
+                motscit["PARALLELISME_MACRO"] = _F(
+                    TYPE_COM=1, IPARA1_COM=numsb_nonvide, IPARA2_COM=nbsb_nonvide
+                )
 
-            #-----------------------------------------------------------------
+            # -----------------------------------------------------------------
             #
             # 2a. Calcul des modes
             #
-            #-----------------------------------------------------------------                                      )
-            __nomre0 = MODE_ITER_SIMULT(MATR_RIGI=MATR_RIGI,
-                                        MATR_MASS=MATR_MASS,
-                                        INFO=INFO,
-                                        METHODE=METHODE,
-                                        OPTION=OPTION,
-                                        SOLVEUR=dSolveur,
-                                        **motscit)
+            # -----------------------------------------------------------------                                      )
+            __nomre0 = MODE_ITER_SIMULT(
+                MATR_RIGI=MATR_RIGI,
+                MATR_MASS=MATR_MASS,
+                INFO=INFO,
+                METHODE=METHODE,
+                OPTION=OPTION,
+                SOLVEUR=dSolveur,
+                **motscit
+            )
 
-            #-----------------------------------------------------------------
+            # -----------------------------------------------------------------
             #
             # 2b. Preparation du test de Sturm de l'etape 3a.
             #
-            #-----------------------------------------------------------------
-            if sturm in ('GLOBAL', 'OUI'):  # in the case of CALC_MODES on several bands, OUI is reset to GLOBAL
-                  dicomode = {}
-                  dicomode = __nomre0.LIST_VARI_ACCES()
-                  if (len(dicomode['FREQ']) != 0):
-                      raux_ini = dicomode['FREQ'][0]
-                      raux_fin = dicomode['FREQ'][-1]
-                      if (raux_ini < freq_ini):
-                            freq_ini = raux_ini
-                      if (raux_fin > freq_fin):
-                            freq_fin = raux_fin
-                  else:
-                      assert(False)  # Ce test ne marche pas (PB LIST_VARI_ACCES)
+            # -----------------------------------------------------------------
+            if sturm in (
+                "GLOBAL",
+                "OUI",
+            ):  # in the case of CALC_MODES on several bands, OUI is reset to GLOBAL
+                dicomode = {}
+                dicomode = __nomre0.LIST_VARI_ACCES()
+                if len(dicomode["FREQ"]) != 0:
+                    raux_ini = dicomode["FREQ"][0]
+                    raux_fin = dicomode["FREQ"][-1]
+                    if raux_ini < freq_ini:
+                        freq_ini = raux_ini
+                    if raux_fin > freq_fin:
+                        freq_fin = raux_fin
+                else:
+                    assert False  # Ce test ne marche pas (PB LIST_VARI_ACCES)
 
-            #-----------------------------------------------------------------
+            # -----------------------------------------------------------------
             #
             # 2c. Préparation pour la concaténation de l'étape 3b.
             #
-            #-----------------------------------------------------------------
-            motscles['FILTRE_MODE'].append(_F(MODE=__nomre0,
-                                              TOUT_ORDRE='OUI'))
+            # -----------------------------------------------------------------
+            motscles["FILTRE_MODE"].append(_F(MODE=__nomre0, TOUT_ORDRE="OUI"))
 
             # Pour verification
-            if (dbg):
+            if dbg:
                 IMPR_CO(CONCEPT=_F(NOM=__nomre0))
 
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         #
         # 2. SOUS-BANDE VIDE
         #
-        #--------------------------------------------------------------------
-        elif (sb_vide):
-            if (STOP_BANDE_VIDE == 'OUI'):
-                UTMESS('F', 'MODAL_6', vali=(i + 1,))
-            elif (STOP_BANDE_VIDE == 'NON'):
-                aster.affiche('MESSAGE', 72 * '-')
-                UTMESS('I', 'MODAL_6', vali=(i + 1,))
-                aster.affiche('MESSAGE', 72 * '-')
+        # --------------------------------------------------------------------
+        elif sb_vide:
+            if STOP_BANDE_VIDE == "OUI":
+                UTMESS("F", "MODAL_6", vali=(i + 1,))
+            elif STOP_BANDE_VIDE == "NON":
+                aster.affiche("MESSAGE", 72 * "-")
+                UTMESS("I", "MODAL_6", vali=(i + 1,))
+                aster.affiche("MESSAGE", 72 * "-")
             else:
-                assert(False)  # Pb parametrage STOP_BANDE_VIDE
+                assert False  # Pb parametrage STOP_BANDE_VIDE
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     #
     # 3a. Test de sturm effectif
     #
-    #-----------------------------------------------------------------------
-    if (sturm == 'NON'):
-          aster.affiche('MESSAGE', 72 * '-')
-          UTMESS('I', 'MODAL_2')
-          aster.affiche('MESSAGE', 72 * '-')
+    # -----------------------------------------------------------------------
+    if sturm == "NON":
+        aster.affiche("MESSAGE", 72 * "-")
+        UTMESS("I", "MODAL_2")
+        aster.affiche("MESSAGE", 72 * "-")
 
-    elif (sturm == 'LOCAL'):
-          aster.affiche('MESSAGE', 72 * '-')
-          UTMESS('I', 'MODAL_3')
-          aster.affiche('MESSAGE', 72 * '-')
+    elif sturm == "LOCAL":
+        aster.affiche("MESSAGE", 72 * "-")
+        UTMESS("I", "MODAL_3")
+        aster.affiche("MESSAGE", 72 * "-")
 
-    elif sturm in ('GLOBAL', 'OUI'):  # in the case of CALC_MODES on several bands, OUI is reset to GLOBAL
+    elif sturm in (
+        "GLOBAL",
+        "OUI",
+    ):  # in the case of CALC_MODES on several bands, OUI is reset to GLOBAL
 
         # Construction des 2 bornes de la bande a tester
-        if (nbmodeth != 0):
-            omecor = CALC_FREQ['SEUIL_FREQ']
-            precshift = VERI_MODE['PREC_SHIFT']
+        if nbmodeth != 0:
+            omecor = CALC_FREQ["SEUIL_FREQ"]
+            precshift = VERI_MODE["PREC_SHIFT"]
             freq_ini = (1.0 - precshift) * freq_ini
             freq_fin = (1.0 + precshift) * freq_fin
-            if (abs(freq_ini) < omecor):
+            if abs(freq_ini) < omecor:
                 freq_ini = -omecor
-            if (abs(freq_fin) < omecor):
+            if abs(freq_fin) < omecor:
                 freq_fin = omecor
 
             # Parametrage du parallelisme pour la couche FORTRAN/MPI
-            if (nbproc > 1):
-                motfaci['PARALLELISME_MACRO'] = _F(TYPE_COM=2)
-            __nbmodf = INFO_MODE(MATR_RIGI=MATR_RIGI,
-                                 MATR_MASS=MATR_MASS,
-                                 INFO=INFO,
-                                 FREQ=(freq_ini, freq_fin),
-                                 NIVEAU_PARALLELISME = niv_par,
-                                 SOLVEUR =dSolveur_infomode,
-                                 **motfaci)
+            if nbproc > 1:
+                motfaci["PARALLELISME_MACRO"] = _F(TYPE_COM=2)
+            __nbmodf = INFO_MODE(
+                MATR_RIGI=MATR_RIGI,
+                MATR_MASS=MATR_MASS,
+                INFO=INFO,
+                FREQ=(freq_ini, freq_fin),
+                NIVEAU_PARALLELISME=niv_par,
+                SOLVEUR=dSolveur_infomode,
+                **motfaci
+            )
 
             # Recuperation du nbre de modes donnes par STURM global
-            nbmodesg = __nbmodf['NB_MODE', 1]
-            if (nbmodeth == nbmodesg):
-                aster.affiche('MESSAGE', 72 * '-')
-                UTMESS('I', 'MODAL_4', valr=(
-                    freq_ini, freq_fin), vali=(nbmodesg, nbmodeth))
-                aster.affiche('MESSAGE', 72 * '-')
+            nbmodesg = __nbmodf["NB_MODE", 1]
+            if nbmodeth == nbmodesg:
+                aster.affiche("MESSAGE", 72 * "-")
+                UTMESS("I", "MODAL_4", valr=(freq_ini, freq_fin), vali=(nbmodesg, nbmodeth))
+                aster.affiche("MESSAGE", 72 * "-")
             else:
                 # Message similaire a ALGELINE5_24 pour le FORTRAN
-                if (stop_erreur == 'OUI'):
-                    UTMESS('F', 'MODAL_5', valr=(
-                        freq_ini, freq_fin, precshift), vali=(nbmodesg, nbmodeth))
-                elif (stop_erreur == 'NON'):
-                    UTMESS('A', 'MODAL_5', valr=(
-                        freq_ini, freq_fin, precshift), vali=(nbmodesg, nbmodeth))
+                if stop_erreur == "OUI":
+                    UTMESS("F", "MODAL_5",
+                           valr=(freq_ini, freq_fin, precshift),
+                           vali=(nbmodesg, nbmodeth),
+                    )
+                elif stop_erreur == "NON":
+                    UTMESS("A", "MODAL_5",
+                           valr=(freq_ini, freq_fin, precshift),
+                           vali=(nbmodesg, nbmodeth),
+                    )
                 else:
-                    assert(False)  # Pb parametrage VERI_MODE
+                    assert False  # Pb parametrage VERI_MODE
 
         # La bande globale est vide
         else:
-            aster.affiche('MESSAGE', 72 * '-')
-            UTMESS('I', 'MODAL_7', valr=(lborne[0], lborne[nnfreq - 1]))
-            aster.affiche('MESSAGE', 72 * '-')
+            aster.affiche("MESSAGE", 72 * "-")
+            UTMESS("I", "MODAL_7", valr=(lborne[0], lborne[nnfreq - 1]))
+            aster.affiche("MESSAGE", 72 * "-")
     else:
-        assert(False)  # Pb parametrage STURM
+        assert False  # Pb parametrage STURM
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     #
     # 3b. Concaténation des résultats
     #
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
 
     modes = EXTR_MODE(**motscles)
 
@@ -406,21 +419,21 @@ def calc_modes_multi_bandes( self, stop_erreur, sturm, INFO, **args):
     # RQ MPI:
     # Si la SD_PARTITION existait avant de rentrer ds la Macro on remet ses
     # anciennes valeurs pour continuer la suite du fichier de commande.
-    #----------------------------------------------------------------------
-    if (nbproc > 1):
-        if (old_prtk1 is not None):
+    # ----------------------------------------------------------------------
+    if nbproc > 1:
+        if old_prtk1 is not None:
             motdimo = {}
-            motdimo['reuse'] = sd_modele
-            motdimo['MODELE'] = sd_modele
-            motdimo['DISTRIBUTION'] = _F(METHODE=old_prtk1)
+            motdimo["reuse"] = sd_modele
+            motdimo["MODELE"] = sd_modele
+            motdimo["DISTRIBUTION"] = _F(METHODE=old_prtk1)
             __modimo = MODI_MODELE(**motdimo)
 
     return modes
 
 
-#----------------------
+# ----------------------
 # Routines auxiliaires
-#----------------------
+# ----------------------
 # Routine pour recuperer sd_modele + option de la sd_partition (si elle existe)
 def recup_modele_partition(MATR_RIGI, dbg):
 
@@ -429,33 +442,32 @@ def recup_modele_partition(MATR_RIGI, dbg):
     # Recuperation de la sd_modele a partir de la matrice de rigidite
     # sur le schema des routines DISMOI/DISMMO/DISMMS/DISMNU/DISMPN/DISMLG
     matr_refa = MATR_RIGI.sdj.REFA.get()
-    nume_lili = matr_refa[1][0:14] + '.NUME.LILI'
+    nume_lili = matr_refa[1][0:14] + ".NUME.LILI"
     vlili = aster.getvectjev(nume_lili[0:24])
     buff_ligrel = vlili[1]
-    if (buff_ligrel == 'LIAISONS'):
-        UTMESS('F', 'MODAL_18')
-    vlgrf = buff_ligrel[0:19] + '.LGRF'
+    if buff_ligrel == "LIAISONS":
+        UTMESS("F", "MODAL_18")
+    vlgrf = buff_ligrel[0:19] + ".LGRF"
     buff_modele = aster.getvectjev(vlgrf[0:24])
     nommod = buff_modele[1]
 
-    if (dbg):
-        aster.affiche('MESSAGE', "Nom du modele retenu: " + str(nommod))
+    if dbg:
+        aster.affiche("MESSAGE", "Nom du modele retenu: " + str(nommod))
 
     # Si parallele non centralise recuperation de la sd_partition et de son
     # option de partitionnement: old_prtk1
     vprtk = None
-    nompart = nommod[0:8] + '.PARTSD'
-    vprtk = aster.getvectjev(nompart[0:19] + '.PRTK')
+    nompart = nommod[0:8] + ".PARTSD"
+    vprtk = aster.getvectjev(nompart[0:19] + ".PRTK")
     if vprtk is not None:
         old_prtk_buff = vprtk[0]
         old_prtk1 = old_prtk_buff.strip()
-    if (dbg):
-        aster.affiche(
-            'MESSAGE', "Nom de la partition retenue: " + str(nompart))
-        aster.affiche(
-            'MESSAGE', "Ancienne option de distribution: " + str(old_prtk1))
+    if dbg:
+        aster.affiche("MESSAGE", "Nom de la partition retenue: " + str(nompart))
+        aster.affiche("MESSAGE", "Ancienne option de distribution: " + str(old_prtk1))
 
     return nommod, old_prtk1
+
 
 # Routine pour recuperer nbre de modes theorique (nbmodeth) determine par l'INFO_MODE
 # prealable + le nbre de sous_bandes non vides (nbsd_nonvide) + msg d'erreurs associes.
@@ -476,55 +488,54 @@ def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc, lborne, stop)
     proc_sb_nvide = []
     # Recuperation du nbre de modes total theorique
     nbmodeth = 0
-    modemin=1000000
-    imin=0
-    modemax=-1
-    imax=0
+    modemin = 1000000
+    imin = 0
+    modemax = -1
+    imax = 0
     for i in range(0, nnfreq - 1):
-        modei=__nbmodi['NB_MODE', i + 1]
+        modei = __nbmodi["NB_MODE", i + 1]
         nbmodeth = nbmodeth + modei
-        if ( modei > modemax) :
-            modemax=modei
-            imax=i+1
-        if ( modei < modemin) :
-            modemin=modei
-            imin=i+1
+        if modei > modemax:
+            modemax = modei
+            imax = i + 1
+        if modei < modemin:
+            modemin = modei
+            imin = i + 1
 
-    if ((modemax > 3*modemin) & (modemax > 50)):
-        UTMESS('I', 'MODAL_19', vali=(imin,modemin,imax,modemax),)
-    if (modemin < 10):
-        UTMESS('I', 'MODAL_20', vali=(imin,modemin),)
-    if (modemax > 100):
-        UTMESS('I', 'MODAL_21', vali=(imax,modemax),)
+    if (modemax > 3 * modemin) & (modemax > 50):
+        UTMESS("I", "MODAL_19", vali=(imin, modemin, imax, modemax))
+    if modemin < 10:
+        UTMESS("I", "MODAL_20", vali=(imin, modemin))
+    if modemax > 100:
+        UTMESS("I", "MODAL_21", vali=(imax, modemax))
 
     # Recuperation du nbre de sous-bandes non vides
     nbsb_nonvide = 0
     for i in range(0, nnfreq - 1):
-        if (__nbmodi['NB_MODE', i + 1] != 0):
+        if __nbmodi["NB_MODE", i + 1] != 0:
             nbsb_nonvide = nbsb_nonvide + 1
 
-    if ((nbmodeth == 0) | (nbsb_nonvide == 0)):
-        aster.affiche('MESSAGE', 72 * '-')
+    if (nbmodeth == 0) | (nbsb_nonvide == 0):
+        aster.affiche("MESSAGE", 72 * "-")
         if stop:
-            UTMESS('F', 'MODAL_8', valr=(lborne[0], lborne[nnfreq - 1]))
+            UTMESS("F", "MODAL_8", valr=(lborne[0], lborne[nnfreq - 1]))
         else:
-            UTMESS('A', 'MODAL_8', valr=(lborne[0], lborne[nnfreq - 1]))
-        aster.affiche('MESSAGE', 72 * '-')
+            UTMESS("A", "MODAL_8", valr=(lborne[0], lborne[nnfreq - 1]))
+        aster.affiche("MESSAGE", 72 * "-")
 
-    if (nbproc > 1):
-        if ((nbproc < nbsb_nonvide) | ((nbproc > nbsb_nonvide) & (solveur_lineaire != 'MUMPS'))):
-            aster.affiche('MESSAGE', 72 * '-')
-            UTMESS('F', 'MODAL_9', vali=(
-                nbproc, nbsb_nonvide), valk=solveur_lineaire)
-            aster.affiche('MESSAGE', 72 * '-')
+    if nbproc > 1:
+        if (nbproc < nbsb_nonvide) | ((nbproc > nbsb_nonvide) & (solveur_lineaire != "MUMPS")):
+            aster.affiche("MESSAGE", 72 * "-")
+            UTMESS("F", "MODAL_9", vali=(nbproc, nbsb_nonvide), valk=solveur_lineaire)
+            aster.affiche("MESSAGE", 72 * "-")
         div = None
         reste = None
         div = nbproc // nbsb_nonvide
         reste = nbproc - nbsb_nonvide * div
-        if ((nbproc > nbsb_nonvide) & (reste != 0)):
-            aster.affiche('MESSAGE', 72 * '-')
-            UTMESS('I', 'MODAL_12', vali=(nbsb_nonvide, div, div + 1),)
-            aster.affiche('MESSAGE', 72 * '-')
+        if (nbproc > nbsb_nonvide) & (reste != 0):
+            aster.affiche("MESSAGE", 72 * "-")
+            UTMESS("I", "MODAL_12", vali=(nbsb_nonvide, div, div + 1))
+            aster.affiche("MESSAGE", 72 * "-")
 
         l1 = nbproc // nbsb_nonvide
         l11 = l1 + 1
@@ -545,6 +556,7 @@ def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc, lborne, stop)
 
     return nbmodeth, nbsb_nonvide, proc_sb_nvide
 
+
 # Routine pour gerer, lorsque le mode parallele est active, les incompatibilites
 # entre le nombre de frequences, le nombre de processeurs et la methode utilisee
 # pour le solveur lineaire.
@@ -552,19 +564,18 @@ def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc, lborne, stop)
 
 def gestion_frequence(solveur_lineaire, nnfreq, nbproc):
 
-    if (nbproc > 1):
-        if ((nbproc < nnfreq - 1) | ((nbproc > nnfreq - 1) & (solveur_lineaire != 'MUMPS'))):
-            aster.affiche('MESSAGE', 72 * '-')
-            UTMESS('F', 'MODAL_10', vali=(
-                nbproc, nnfreq-1), valk=solveur_lineaire)
-            aster.affiche('MESSAGE', 72 * '-')
+    if nbproc > 1:
+        if (nbproc < nnfreq - 1) | ((nbproc > nnfreq - 1) & (solveur_lineaire != "MUMPS")):
+            aster.affiche("MESSAGE", 72 * "-")
+            UTMESS("F", "MODAL_10", vali=(nbproc, nnfreq - 1), valk=solveur_lineaire)
+            aster.affiche("MESSAGE", 72 * "-")
         div = None
         reste = None
         div = nbproc // (nnfreq - 1)
         reste = nbproc - (nnfreq - 1) * div
-        if ((nbproc > nnfreq - 1) & (reste != 0)):
-            aster.affiche('MESSAGE', 72 * '-')
-            UTMESS('I', 'MODAL_11', vali=(nnfreq - 1, div, div + 1),)
-            aster.affiche('MESSAGE', 72 * '-')
+        if (nbproc > nnfreq - 1) & (reste != 0):
+            aster.affiche("MESSAGE", 72 * "-")
+            UTMESS("I", "MODAL_11", vali=(nnfreq - 1, div, div + 1))
+            aster.affiche("MESSAGE", 72 * "-")
 
     return

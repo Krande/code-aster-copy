@@ -30,8 +30,8 @@ code_aster.init("--test")
 test = code_aster.TestCase()
 
 # MPI test
-rank = MPI.COMM_WORLD.Get_rank()
-nbproc = MPI.COMM_WORLD.Get_size()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 test.assertEqual(nbproc, 3)
 

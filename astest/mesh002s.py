@@ -31,8 +31,8 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = MPI.COMM_WORLD.Get_rank()
-nbproc = MPI.COMM_WORLD.Get_size()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 if nbproc > 1:
     is_parallel = True
@@ -64,7 +64,7 @@ nb_mesh_converted = 0
 conversion_error = []
 # loop on mesh
 for mesh_file in meshes:
-    MPI.COMM_WORLD.Barrier()
+    MPI.ASTER_COMM_WORLD.Barrier()
     mesh_name = osp.basename(mesh_file)
     nb_mesh += 1
     if mesh_name in failure:
@@ -111,7 +111,7 @@ for mesh_file in meshes:
 
     nb_mesh_converted += 1
 
-    MPI.COMM_WORLD.Barrier()
+    MPI.ASTER_COMM_WORLD.Barrier()
 
 
 list_nb_mesh = {2: 524, 3: 496, 4: 488}

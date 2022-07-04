@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
 mesh0 = LIRE_MAILLAGE(FORMAT='MED', PARTITIONNEUR='PTSCOTCH',)
 
 #Vérification de IMPR_RESU et LIRE_MAILLAGE
-rank = code_aster.MPI.COMM_WORLD.Get_rank()
+rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 unite = DEFI_FICHIER(FICHIER = './REPE_OUT/mesh_%d.med'%rank, ACTION='ASSOCIER', TYPE='LIBRE', ACCES='NEW')
 IMPR_RESU(FORMAT='MED',UNITE=unite,RESU=_F(MAILLAGE=mesh0))
 DEFI_FICHIER(UNITE = unite, ACTION='LIBERER',)

@@ -30,8 +30,8 @@ pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
 model = AFFE_MODELE(MAILLAGE=pMesh, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 
-rank = MPI.COMM_WORLD.Get_rank()
-nbproc = MPI.COMM_WORLD.Get_size()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 if nbproc == 1:
     nbNodes = [778]

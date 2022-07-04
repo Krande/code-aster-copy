@@ -31,8 +31,8 @@ model = AFFE_MODELE(
     MAILLAGE=pMesh, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")
 )
 
-rank = MPI.COMM_WORLD.Get_rank()
-nbproc = MPI.COMM_WORLD.Get_size()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 if nbproc == 2:
     nbNodes = [112, 118]

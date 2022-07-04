@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ from code_aster import MPI
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
 
-nProc = MPI.COMM_WORLD.Get_size()
+nProc = MPI.ASTER_COMM_WORLD.Get_size()
 parallel= (nProc>1)
-rank = MPI.COMM_WORLD.Get_rank()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 if (parallel):
     MAIL = code_aster.ParallelMesh()

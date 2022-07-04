@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
 
 help(aster_core)
 
-rank = MPI.COMM_WORLD.Get_rank()
-size = MPI.COMM_WORLD.Get_size()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+size = MPI.ASTER_COMM_WORLD.Get_size()
 print("Run on processor #%d/%d" % (rank, size))
 
 # check for MPI_Bcast
@@ -40,7 +40,7 @@ if rank == 0:
     iarray = list(range(NB))
 print("Processor #{}: array is {}".format(rank, iarray))
 
-buffer = MPI.COMM_WORLD.bcast(iarray, 0)
+buffer = MPI.ASTER_COMM_WORLD.bcast(iarray, 0)
 print("Broadcast returns:", buffer)
 
 tab = CREA_TABLE(LISTE=_F(PARA='SUM', LISTE_I=sum(buffer)))
@@ -53,7 +53,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # check for MPI_Gather
 cwd = os.getcwd()
-paths = MPI.COMM_WORLD.gather(cwd, 0)
+paths = MPI.ASTER_COMM_WORLD.gather(cwd, 0)
 if rank == 0:
     print('Collected paths:', paths)
     ok = True

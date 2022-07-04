@@ -30,6 +30,7 @@ class ConvergenceManager:
         phys_pb (PhysicalProblem): Physical problem.
         phys_state (PhysicalState): Physical state.
     """
+
     converged = epsilon = residual = test_type = None
     phys_state = phys_pb = elem_comp = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -98,7 +99,7 @@ class ConvergenceManager:
             f_ext = 0.0
             f_varc = 0.0
             if eliminatedDofs[ieq] == 1:
-                f_int = - residuals.resi_int[ieq]
+                f_int = -residuals.resi_int[ieq]
             else:
                 f_int = residuals.resi_dual[ieq]
                 f_ext = residuals.resi_ext[ieq]
@@ -108,7 +109,7 @@ class ConvergenceManager:
             if scaling < value:
                 scaling = value
 
-        return MPI.COMM_WORLD.allreduce(scaling, MPI.MAX)
+        return MPI.ASTER_COMM_WORLD.allreduce(scaling, MPI.MAX)
 
     @profile
     def getNormResidual(self, residuals):

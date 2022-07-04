@@ -21,7 +21,7 @@ from code_aster import MPI
 from code_aster.Utilities import shared_tmpdir
 import os.path as osp
 
-rank = MPI.COMM_WORLD.Get_rank()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
 

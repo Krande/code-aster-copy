@@ -27,8 +27,8 @@ test = code_aster.TestCase()
 
 code_aster.init("--test")
 
-rank = MPI.COMM_WORLD.Get_rank()
-nbproc = MPI.COMM_WORLD.Get_size()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 # Read the quadratic mesh - 2 cases : 1 or several procs
 if (nbproc > 1):

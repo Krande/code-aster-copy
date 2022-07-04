@@ -108,13 +108,13 @@ class ExtendedParallelMesh:
         """
 
         # read std mesh
-        rank = MPI.COMM_WORLD.Get_rank()
+        rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
         nb_nodes_lc = len(self.getInnerNodes())
-        nb_nodes_gl = MPI.COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
+        nb_nodes_gl = MPI.ASTER_COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
 
         nb_cells_lc = len(self.getInnerCells())
-        nb_cells_gl = MPI.COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
+        nb_cells_gl = MPI.ASTER_COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
 
         test = True
 
@@ -137,7 +137,7 @@ class ExtendedParallelMesh:
             nb_cells_std = mesh.getNumberOfCells()
             test = test and nb_cells_std == nb_cells_gl
 
-        return MPI.COMM_WORLD.bcast(test, root=0)
+        return MPI.ASTER_COMM_WORLD.bcast(test, root=0)
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.
@@ -168,9 +168,8 @@ class ExtendedParallelMesh:
             # nrefine is added to create a mesh with enougth cells
             # to be partitioned equally and not generated a too big file
             nrefine = min(9, refine)
-            if MPI.COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildSquare(
-                    lx=lx, ly=ly, refine=nrefine, info=info)
+            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+                mesh = Mesh.buildSquare(lx=lx, ly=ly, refine=nrefine, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
@@ -201,12 +200,11 @@ class ExtendedParallelMesh:
             # nrefine is added to create a mesh with enougth cells
             # to be partitioned equally and not generated a too big file
             min_level = 6
-            if MPI.COMM_WORLD.Get_size() > 512:
+            if MPI.ASTER_COMM_WORLD.Get_size() > 512:
                 min_level = 7
             nrefine = min(min_level, refine)
-            if MPI.COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildCube(
-                    lx=lx, ly=ly, lz=lz, refine=nrefine, info=info)
+            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
+                mesh = Mesh.buildCube(lx=lx, ly=ly, lz=lz, refine=nrefine, info=info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
@@ -232,7 +230,7 @@ class ExtendedParallelMesh:
 
         with shared_tmpdir("buildDisk") as tmpdir:
             filename = osp.join(tmpdir, "buildDisk.med")
-            if MPI.COMM_WORLD.Get_rank() == 0:
+            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildDisk(radius, refine, info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
@@ -255,7 +253,7 @@ class ExtendedParallelMesh:
 
         with shared_tmpdir("buildCylinder") as tmpdir:
             filename = osp.join(tmpdir, "buildCylinder.med")
-            if MPI.COMM_WORLD.Get_rank() == 0:
+            if MPI.ASTER_COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildCylinder(height, radius, refine, info)
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
@@ -266,42 +264,38 @@ class ExtendedParallelMesh:
             return mesh_p
 
     def getNodes(self, group_name="", localNumbering=True, same_rank=None):
-        """ Return the list of the indexes of the nodes that belong to a group of nodes.
+        """Return the list of the indexes of the nodes that belong to a group of nodes.
 
-            Arguments:
-                group_name (str): Name of the group (default: "" = all nodes).
-                localNumbering (bool) : use local or global numbering (default: True)
-                same_rank : - None: keep all nodes (default: None)
-                            - True: keep the nodes which are owned by the current MPI-rank
-                            - False: keep the nodes which are not owned by the current MPI-rank
+        Arguments:
+            group_name (str): Name of the group (default: "" = all nodes).
+            localNumbering (bool) : use local or global numbering (default: True)
+            same_rank : - None: keep all nodes (default: None)
+                        - True: keep the nodes which are owned by the current MPI-rank
+                        - False: keep the nodes which are not owned by the current MPI-rank
 
-            Returns:
-                list[int]: Indexes of the nodes of the group.
+        Returns:
+            list[int]: Indexes of the nodes of the group.
         """
 
-        val = {None: PythonBool.NONE,
-               True: PythonBool.TRUE,
-               False: PythonBool.FALSE}
+        val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
         return self._getNodes(group_name, localNumbering, val[same_rank])
 
     def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
-        """ Returns the nodes indexes of a group of cells.
+        """Returns the nodes indexes of a group of cells.
 
-            Arguments:
-                group_name (str): Name of the group.
-                localNumbering (bool) : use local or global numbering (default: True)
-                same_rank : - None: keep all nodes (default: None)
-                            - True keep the nodes which are owned by the current MPI-rank
-                            - False: keep the nodes which are not owned by the current MPI-rank
+        Arguments:
+            group_name (str): Name of the group.
+            localNumbering (bool) : use local or global numbering (default: True)
+            same_rank : - None: keep all nodes (default: None)
+                        - True keep the nodes which are owned by the current MPI-rank
+                        - False: keep the nodes which are not owned by the current MPI-rank
 
-            Returns:
-                list[int]: Indexes of the nodes of the group.
+        Returns:
+            list[int]: Indexes of the nodes of the group.
         """
 
-        val = {None: PythonBool.NONE,
-               True: PythonBool.TRUE,
-               False: PythonBool.FALSE}
+        val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
         return self._getNodesFromCells(group_name, localNumbering, val[same_rank])
 

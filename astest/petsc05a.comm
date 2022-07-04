@@ -21,7 +21,7 @@ import os.path as osp
 
 import code_aster
 from code_aster.Commands import *
-from petsc4py.PETSc import COMM_WORLD, KSP
+from petsc4py.PETSc import KSP
 
 root = osp.dirname(__file__)
 
@@ -92,7 +92,7 @@ def build_ksp(matrix):
     Returns:
         KSP: KSP operator.
     """
-    ksp = KSP().create(comm=COMM_WORLD)
+    ksp = KSP().create(comm=code_aster.MPI.ASTER_COMM_WORLD)
     ksp.setOperators(matrix)
     ksp.setType('fgmres')
     pc = ksp.getPC()

@@ -29,14 +29,14 @@ test = code_aster.TestCase()
 
 code_aster.init("--test")
 
-nProc = MPI.COMM_WORLD.Get_size()
+nProc = MPI.ASTER_COMM_WORLD.Get_size()
 parallel = (nProc > 1)
 
 
-rank = MPI.COMM_WORLD.Get_rank()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 if (parallel):
-    rank = MPI.COMM_WORLD.Get_rank()
+    rank = MPI.ASTER_COMM_WORLD.Get_rank()
     pMesh2 = code_aster.ParallelMesh()
     pMesh2.readMedFile(f"mesh004c/{rank}.med", True)
     # os.system('echo "-mat_view :/tmp/par.txt:ascii_matlab " > ~/.petscrc')
@@ -125,7 +125,7 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
     resu.printMedFile(medfile, local=True)
 
 # if (parallel):
-   #rank = MPI.COMM_WORLD.Get_rank()
+   #rank = MPI.ASTER_COMM_WORLD.Get_rank()
    # myFile='par.txt'
    #os.system("sed 's/Mat_.*\=/par\ \=/g' /tmp/par.txt > /tmp/par_clean.txt && mv /tmp/par_clean.txt /tmp/par.txt")
    #if (rank==0): os.system( """grep -v %% /tmp/%s | grep -v zzz | grep -v \] | grep -v Mat | awk '{print $3}' | LANG=en_US.UTF-8  sort -g > /tmp/%s_sorted"""%(myFile,myFile) )
@@ -139,7 +139,7 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
    #os.system( """grep -v Object /tmp/sol_seq.txt | grep -v type | grep -v Process | LANG=en_US.UTF-8  sort -g > /tmp/sol_seq_sorted.txt  """)
 
 # if (parallel):
-    #rank = MPI.COMM_WORLD.Get_rank()
+    #rank = MPI.ASTER_COMM_WORLD.Get_rank()
     # if (rank==0):
     #os.system( """cp fort.11 /tmp/ddl0.txt """ )
     #os.system( """cp fort.30 /tmp/sol_petsc_par_0.txt """ )
@@ -151,7 +151,7 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
     #os.system( """cp fort.19 /tmp/sol_petsc_seq.txt """ )
 
 # if parallel:
-    #rank = MPI.COMM_WORLD.Get_rank()
+    #rank = MPI.ASTER_COMM_WORLD.Get_rank()
     # resu.printMedFile('/tmp/par_%d.resu.med'%rank)
 # else:
     # resu.printMedFile('/tmp/seq.resu.med')

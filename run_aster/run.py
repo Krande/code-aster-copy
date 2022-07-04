@@ -249,12 +249,12 @@ class RunAster:
         if not self._interact:
             # absolute path is necessary to call the debugger
             cmd.append(cmd_abspath(python))
+            if self._parallel:
+                # see documentation of `mpi4py.run`
+                cmd.extend(["-m", "mpi4py"])
         else:
             cmd.append(CFG.get("python_interactive", python))
             cmd.append("-i")
-        if self._parallel:
-            # see documentation of `mpi4py.run`
-            cmd.extend(["-m", "mpi4py"])
         # To show executed lines with trace module:
         # import sys
         # ign = [sys.prefix, sys.exec_prefix, "$HOME/.local", os.getenv("PYTHONPATH")]

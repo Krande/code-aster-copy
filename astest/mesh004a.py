@@ -30,9 +30,9 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = MPI.COMM_WORLD.Get_rank()
-print("Nb procs", MPI.COMM_WORLD.Get_size())
-print("Rank", MPI.COMM_WORLD.Get_rank())
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
+print("Nb procs", MPI.ASTER_COMM_WORLD.Get_size())
+print("Rank", MPI.ASTER_COMM_WORLD.Get_rank())
 
 pMesh2 = code_aster.ParallelMesh()
 pMesh2.readMedFile("mesh004a/%d.med"%rank, True)

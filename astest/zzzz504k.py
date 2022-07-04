@@ -26,7 +26,7 @@ test = code_aster.TestCase()
 
 code_aster.init("--test")
 
-rank = MPI.COMM_WORLD.Get_rank()
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh2 = code_aster.ParallelMesh()
 pMesh2.readMedFile("zzzz504k/%d.med"%rank, True)

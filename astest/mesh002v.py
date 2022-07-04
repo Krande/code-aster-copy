@@ -31,7 +31,7 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = code_aster.MPI.COMM_WORLD.Get_rank()
+rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 
 with shared_tmpdir("mesh002v_") as tmpdir:
     logger.info("\n--- Common temporary directory for the testcase: %s", tmpdir)
@@ -75,13 +75,13 @@ test.assertSequenceEqual(sorted(group_ma_std), sorted(group_ma_gl))
 
 nb_nodes_std = mesh.getNumberOfNodes()
 nb_nodes_lc = len(pMesh2.getInnerNodes())
-nb_nodes_gl = MPI.COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
+nb_nodes_gl = MPI.ASTER_COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
 test.assertEqual(nb_nodes_std, nb_nodes_gl)
 
 nb_cells_std = mesh.getNumberOfCells()
 cells_rank = pMesh2.getCellsRank()
 nb_cells_lc = Counter(cells_rank)[rank]
-nb_cells_gl = MPI.COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
+nb_cells_gl = MPI.ASTER_COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
 test.assertEqual(nb_cells_std, nb_cells_gl)
 
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ test = code_aster.TestCase()
 
 code_aster.init("--test")
 
-nProc = code_aster.MPI.COMM_WORLD.Get_size()
-rank = code_aster.MPI.COMM_WORLD.Get_rank()
+nProc = code_aster.MPI.ASTER_COMM_WORLD.Get_size()
+rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 
 
 pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)

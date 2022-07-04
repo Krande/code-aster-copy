@@ -48,7 +48,7 @@ from ..Supervis import CommandSyntax, ExecuteCommand, Serializer, loadObjects
 from ..Supervis.code_file import track_coverage
 from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
-from ..Utilities import ExecutionParameter, Options, import_object, logger
+from ..Utilities import MPI, ExecutionParameter, Options, import_object, logger
 from ..Utilities.i18n import localization
 
 try:
@@ -272,7 +272,11 @@ def init(*argv, **kwargs):
     if kwargs.pop("noargv", False):
         ExecutionParameter().set_argv([])
     comm = kwargs.pop("comm", None)
-    fcomm = comm.py2f() if comm else 0
+    if comm:
+        fcomm = comm.py2f()
+        MPI.ASTER_COMM_WORLD = comm
+    else:
+        fcomm = 0
     if not ExecutionStarter.init(argv, fcomm):
         return
 

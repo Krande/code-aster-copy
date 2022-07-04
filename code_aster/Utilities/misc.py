@@ -177,19 +177,19 @@ def shared_tmpdir(prefix, default_dir="/tmp"):
     Returns:
         str: Path of the temporary directory.
     """
-    rank = MPI.COMM_WORLD.Get_rank()
+    rank = MPI.ASTER_COMM_WORLD.Get_rank()
     tmpdir = ""
     if rank == 0:
         # choose a non existing directory on proc #0
         # as the directory is shared, it should not exist on others
         tmpdir = get_shared_tmpdir(prefix, default_dir)
     # wait for #0 to create the temporary directory
-    tmpdir = MPI.COMM_WORLD.bcast(tmpdir)
+    tmpdir = MPI.ASTER_COMM_WORLD.bcast(tmpdir)
     try:
         assert osp.isdir(tmpdir), f"Can not create directory on #{rank}: {tmpdir}"
         yield tmpdir
     finally:
-        MPI.COMM_WORLD.Barrier()
+        MPI.ASTER_COMM_WORLD.Barrier()
         if rank == 0:
             os.system(f"rm -rf {tmpdir}")
-        MPI.COMM_WORLD.Barrier()
+        MPI.ASTER_COMM_WORLD.Barrier()

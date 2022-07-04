@@ -25,11 +25,14 @@ This module gives common utilities for MPI.
 Need only mpi4py package.
 """
 
+import warnings
 from collections import defaultdict
+
 from .base_utils import ReadOnlyDict, force_list
 
 try:
     from .aster_config import config as _cfg
+
     config = ReadOnlyDict(**_cfg)
     del _cfg
 except ImportError:
@@ -42,12 +45,32 @@ def haveMPI():
     Returns:
     bool: *True* if use MPI librairies, *False* else
     """
-    return config.get('ASTER_HAVE_MPI', 0) == 1
+    return config.get("ASTER_HAVE_MPI", 0) == 1
 
 
 try:
-    from mpi4py import MPI
+    import mpi4py.MPI
+
+    class MPIWrap:
+        """Minimal wrapper to encourage usage of ASTER_COMM_WORLD."""
+
+        # must be override during initialization
+        ASTER_COMM_WORLD = mpi4py.MPI.COMM_WORLD
+
+        def __getattr__(self, attr):
+            if attr == "COMM_WORLD":
+                warnings.warn(
+                    "returns ASTER_COMM_WORLD, directly use mpi4py if COMM_WORLD is required",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                return self.ASTER_COMM_WORLD
+            return getattr(mpi4py.MPI, attr)
+
+    MPI = MPIWrap()
+
 except:
+
     class FAKE_COMM_WORLD:
         """
         This class FAKE_COMM_WORLD contains methods for compatibility with
@@ -57,6 +80,7 @@ except:
         Some methods can be missing (add them here with the same name and
         arguments than mpi4py)
         """
+
         rank = 0
         size = 1
 
@@ -110,4 +134,4 @@ except:
         SUM = sum
         PROD = sum
 
-        COMM_WORLD = FAKE_COMM_WORLD()
+        ASTER_COMM_WORLD = COMM_WORLD = FAKE_COMM_WORLD()
