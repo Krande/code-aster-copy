@@ -255,6 +255,10 @@ def env2dict(self, src):
     dico['OPT_ENV_FOOTER'] = env['OPT_ENV_FOOTER'] \
         and os.linesep.join(env['OPT_ENV_FOOTER']) or ''
     dico['addmem'] = env['addmem']
+    dico['addmem_asrun'] = 0
+    if "gaia" in env['WAFBUILD_ENV'][0]:
+        # exception on gaia that uses an old asrun with python2 for older versions
+        dico['addmem_asrun'] = dico['addmem']
     dico['srctest'] = os.linesep.join([
         SRCTEST_TMPL % '%(SRC)s/astest' % dico,
         SRCTEST_TMPL % '%(SRC)s/../validation/astest' % dico])
