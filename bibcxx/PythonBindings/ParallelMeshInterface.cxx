@@ -127,16 +127,6 @@ Return the list of the indexes of the outer cells in the mesh
 Returns:
     list[int]: Indexes of the cells.
         )" )
-        .def( "readMedFile", &ParallelMesh::readMedFile, R"(
-Read a mesh file from MED format.
-
-Arguments:
-    filename (str): Path to the file to be read.
-
-Returns:
-    bool: *True* if succeeds, *False* otherwise.
-        )",
-              py::arg( "filename" ) )
         .def( "getNodesRank", &ParallelMesh::getNodesRank, R"(
 Return the rank of the processor which owns the nodes
 

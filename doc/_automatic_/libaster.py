@@ -10339,16 +10339,6 @@ class ParallelMesh(BaseMesh):
         Returns:
             bool: *True* if exists, *False* otherwise.
         """
-    
-    def readMedFile(self, filename):
-        """Read a mesh file from MED format.
-        
-        Arguments:
-            filename (str): Path to the file to be read.
-        
-        Returns:
-            bool: *True* if succeeds, *False* otherwise.
-        """
 
 # class ParallelDOFNumbering in libaster
 

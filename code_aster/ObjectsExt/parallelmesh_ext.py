@@ -72,7 +72,7 @@ class ExtendedParallelMesh:
         Arguments:
             filename (string): name of the MED file
             partitioned (bool) : False if the mesh is not yet partitioned and have to
-            be partitioned before readinf
+                be partitioned before reading
             verbose (int) : 0 - warnings
                             1 - informations about main steps
                             2 - informations about all steps
