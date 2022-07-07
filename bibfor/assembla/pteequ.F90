@@ -27,6 +27,7 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -99,7 +100,8 @@ implicit none
 ! - Create .DEEQ object
 !
     call jedetr(deeq)
-    call wkvect(deeq, base//' V I', 2*neq, vi = p_deeq)
+    call wkvect(deeq, base//' V I', max(1, 2*neq), vi = p_deeq)
+    call jeecra(deeq, "LONUTI", 2*neq)
 !
 ! - Access to PRNO object
 !

@@ -32,6 +32,7 @@ implicit none
 #include "asterfort/jecroc.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/isParallelMesh.h"
 !
 !
     character(len=*), intent(in) :: prof_chnoz
@@ -70,6 +71,7 @@ implicit none
     integer :: i_equa, i_ligr_mesh, nb_node_mesh, nb_ec, nb_ligr, prno_length
     integer, pointer :: prchno_nueq(:) => null()
     integer, pointer :: prchno_deeq(:) => null()
+    aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,11 +95,16 @@ implicit none
     if (present(meshz)) then
         ASSERT(.not.present(prno_lengthz))
         call dismoi('NB_NO_MAILLA', meshz, 'MAILLAGE', repi=nb_node_mesh)
+        l_pmesh = isParallelMesh(meshz)
+        if(.not.l_pmesh) then
+            ASSERT(nb_equa > 0)
+        end if
     endif
 !
 ! - Create object NUEQ
 !
-    call wkvect(prof_chno//'.NUEQ', base//' V I', nb_equa, vi = prchno_nueq)
+    call wkvect(prof_chno//'.NUEQ', base//' V I', max(1, nb_equa), vi = prchno_nueq)
+    call jeecra(prof_chno//'.NUEQ', "LONUTI", nb_equa)
 !
 ! - Set to identity
 !
@@ -107,7 +114,8 @@ implicit none
 !
 ! - Create object DEEQ
 !
-    call wkvect(prof_chno//'.DEEQ', base//' V I', 2*nb_equa, vi = prchno_deeq)
+    call wkvect(prof_chno//'.DEEQ', base//' V I', max(1, 2*nb_equa), vi = prchno_deeq)
+    call jeecra(prof_chno//'.DEEQ', "LONUTI", 2*nb_equa)
 !
 ! - Create object LILI (name repertory)
 !

@@ -47,6 +47,8 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 #include "asterfort/pteequ.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
@@ -96,10 +98,10 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     integer :: reste, iec, code, nbno, nb
     integer :: ncmpmx, jrefe, ncmp1, nb_equa, jcmpgd, icmp1, k, ieq2, iexi2, nbec
     integer :: jprn2, ino, idg2, ico, jvale, iret, prno_length
-    integer :: lshift, nuprf
+    integer :: lshift, nuprf, nb_equa_gl
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
-    aster_logical :: l_crea_prchno, l_chck_prchno, ldist
+    aster_logical :: l_crea_prchno, l_chck_prchno, ldist, l_pmesh
     character(len=3) :: tsca
     character(len=19) :: cns, cno, prchno, messag, prnoav, nume_equa
     integer, pointer :: deeq(:) => null()
@@ -148,6 +150,8 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     nomgd=cnsk(2)
     nbno=cnsd(1)
     ncmp1=cnsd(2)
+
+    l_pmesh = isParallelMesh(ma)
 !
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -250,7 +254,13 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
                 nb_equa = nb_equa + 1
             endif
         end do
-        if (nb_equa .eq. 0) then
+!
+        nb_equa_gl = nb_equa
+        if(l_pmesh) then
+            call asmpi_comm_vect("MPI_SUM", "I", sci=nb_equa_gl)
+        end if
+!
+        if (nb_equa_gl .eq. 0) then
             valk(1)=cns
             valk(2)=cno
             messag='CALCULEL2_12'
@@ -296,7 +306,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
     call jeexin(prchno//'.NEQU', iexi)
     if (iexi.eq.0) then
-        call jelira(prchno//'.NUEQ', 'LONMAX', nb_equa)
+        call jelira(prchno//'.NUEQ', 'LONUTI', nb_equa)
     else
         call jeveuo(prchno//'.NEQU', 'L', vi = v_nequ)
         nb_equa = v_nequ(1)
@@ -313,8 +323,6 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
       call vtcreb(cno, base, tsca,&
                   meshz = ma, prof_chnoz = prchno, idx_gdz = gd, nb_equa_inz = nb_equa)
     endif
-    call jeveuo(cno//'.REFE','E',jrefe)
-    call jeveuo(cno//'.VALE','E',jvale)
 !
 !
 !     5-BIS ON CREE SI NECESSAIRE LE .DEEQ DU PROF_CHNO
@@ -343,6 +351,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !     -----------------------------------
 
     call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
+    call jeveuo(cno//'.VALE','E',jvale)
 !
     do ieq2 = 1, nb_equa
         ino=deeq(2*(ieq2-1)+1)
@@ -493,6 +502,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
             call codent(nuprf-1, 'D0', prnoav(15:19))
             if (idensd('PROF_CHNO',prchno,prnoav)) then
                 call detrsd('PROF_CHNO', prchno)
+                call jeveuo(cno//'.REFE','E',jrefe)
                 zk24(jrefe-1+2)=prnoav
 ! SI PARALLELISME EN TEMPS: ON PREND LA MEME DECISION POUR TOUS LES CHAM_NOS
 ! CALCULES AU MEME PAS PARALLELE (COHERENCE AVEC LE VTCREB PLUS HAUT)

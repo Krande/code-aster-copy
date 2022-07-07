@@ -30,6 +30,8 @@ implicit none
 #include "asterfort/jeecra.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdchgd.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/asmpi_comm_vect.h"
 !
 !
     character(len=*), intent(in) :: field_nodez
@@ -75,9 +77,9 @@ implicit none
     character(len=19) :: prof_chno, field_node, chamno
     character(len=24) :: obj_refe, obj_vale, obj_desc
     character(len=24), pointer :: p_refe(:) => null()
-    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, pdesc_save, jvcham
+    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, pdesc_save, jvcham, nb_equa_gl
     integer, pointer :: p_desc(:) => null()
-    aster_logical :: lchange
+    aster_logical :: lchange, l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,6 +111,16 @@ implicit none
         prof_chno = prof_chnoz
         mesh      = meshz
     endif
+!
+    l_pmesh = isParallelMesh(mesh)
+    nb_equa_gl = nb_equa
+    if(l_pmesh) then
+      call asmpi_comm_vect("MPI_SUM", "I", sci=nb_equa_gl)
+    end if
+
+    if(nb_equa_gl == 0) then
+      ASSERT(ASTER_FALSE)
+    end if
 
     if (ideb.eq.ifin) then
       obj_refe = field_node(1:19)//'.REFE'
@@ -126,7 +138,8 @@ implicit none
       p_desc(1) = idx_gd
       p_desc(2) = 1
 ! - Object .VALE
-      call wkvect(obj_vale, base//' V '//type_scal, nb_equa, j_vale)
+      call wkvect(obj_vale, base//' V '//type_scal, max(1, nb_equa), j_vale)
+      call jeecra(obj_vale, "LONUTI", nb_equa)
       if (present(nb_equa_outz)) then
         nb_equa_outz = nb_equa
       endif
@@ -155,7 +168,8 @@ implicit none
         p_desc(1) = idx_gd
         p_desc(2) = 1
 ! - Object .VALE
-        call wkvect(obj_vale, base//' V '//type_scal, nb_equa, j_vale)
+        call wkvect(obj_vale, base//' V '//type_scal, max(1, nb_equa), j_vale)
+        call jeecra(obj_vale, "LONUTI", nb_equa)
 ! - Change GRANDEUR
         if (lchange) then
           if (i.eq.ideb) then
