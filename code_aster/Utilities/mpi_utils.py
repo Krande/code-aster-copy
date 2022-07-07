@@ -67,6 +67,14 @@ try:
                 return self.ASTER_COMM_WORLD
             return getattr(mpi4py.MPI, attr)
 
+        def use_comm_world(self):
+            """Does code_aster use all processes?
+
+            Returns:
+                bool: True if all processes are used for code_aster.
+            """
+            return self.ASTER_COMM_WORLD == mpi4py.MPI.COMM_WORLD
+
     MPI = MPIWrap()
 
 except:

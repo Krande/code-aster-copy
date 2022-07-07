@@ -38,12 +38,18 @@ try:
     from ..logger import logger
 
     STANDALONE = False
-    COMM_WORLD = MPI.ASTER_COMM_WORLD
 except:
     logger = logging.getLogger()
     from mpi4py import MPI
 
-    COMM_WORLD = MPI.COMM_WORLD
+
+def comm_world():
+    """Dynamically returns the current COMM_WORLD.
+
+    Returns:
+        *mpi4py.MPI.Comm*: MPI Communicator.
+    """
+    return MPI.COMM_WORLD if STANDALONE else MPI.ASTER_COMM_WORLD
 
 
 class ColoredFormatter(logging.Formatter):
@@ -66,7 +72,7 @@ def setVerbose(verbose=1):
     """Set verbosity level"""
     if STANDALONE:
         formatter = ColoredFormatter(
-            "%(levelname)s #{} : %(asctime)s : %(message)s ".format(COMM_WORLD.rank), style="%"
+            "%(levelname)s #{} : %(asctime)s : %(message)s ".format(comm_world().rank), style="%"
         )
         formatter.default_time_format = "%H:%M:%S"
         formatter.default_msec_format = "%s.%03d"
@@ -132,14 +138,14 @@ class MasterChronoCtxMg:
         self._what = what
 
     def __enter__(self):
-        if COMM_WORLD.rank == 0:
+        if comm_world().rank == 0:
             pat = 'Start de "{}"'.format(self._what)
             logger.info(pat)
             self.start = datetime.now()
             memory_peak(pat)
 
     def __exit__(self, exctype, exc, tb):
-        if COMM_WORLD.rank == 0:
+        if comm_world().rank == 0:
             self.stop = datetime.now()
             pat = 'Fin de "{0}"'.format(self._what)
             delta = self.stop - self.start
@@ -197,13 +203,13 @@ class MedFileContext:
         """return the meshName"""
         if self._meshName is not None:
             return self._meshName
-        if COMM_WORLD.rank == 0:
+        if comm_world().rank == 0:
             meshNames = mc.GetMeshNames(self._fileName)
             if self._meshName is None or self._meshName not in meshNames:
                 self._meshName = meshNames[0]
         else:
             self._meshName = None
-        self._meshName = COMM_WORLD.bcast(self._meshName)
+        self._meshName = comm_world().bcast(self._meshName)
         return self._meshName
 
     def getNumberOfCells(self):
@@ -226,8 +232,8 @@ class PartialMedFileUMesh:
         self.getMEDFileUMesh()
 
     def cellsGen(self, lev):
-        rank = COMM_WORLD.rank
-        size = COMM_WORLD.size
+        rank = comm_world().rank
+        size = comm_world().size
         tps = mc.GetUMeshGlobalInfo(
             self._medFileDataContext.getFileName(), self._medFileDataContext.getMeshName()
         )[0][abs(lev)]
@@ -318,8 +324,8 @@ class PartialMedFileUMesh:
         Cells of the mesh are retrieved depending to the rank and size of MPI comm"""
         if hasattr(self, "_medFileUMesh"):
             return self._medFileUMesh
-        rank = COMM_WORLD.rank
-        size = COMM_WORLD.size
+        rank = comm_world().rank
+        size = comm_world().size
         ttps = mc.GetUMeshGlobalInfo(
             self._medFileDataContext.getFileName(), self._medFileDataContext.getMeshName()
         )[0]
@@ -513,7 +519,7 @@ class NodesPartition:
         """return a list of DataArrayInt containing all nodes for each proc"""
         if hasattr(self, "_nodesByProc"):
             return self._nodesByProc
-        size = COMM_WORLD.size
+        size = comm_world().size
         self._nodesByProc = [None] * size
         for procId in range(size):
             idx = self.__getProcIdByIdx().findIdsEqual(procId)
@@ -523,12 +529,12 @@ class NodesPartition:
     def __sendrecvNodesByProc(self):
         """receive and send nodes from/to other procs to update
         self._nodesByProc according to partitionning"""
-        size = COMM_WORLD.size
-        rank = COMM_WORLD.rank
+        size = comm_world().size
+        rank = comm_world().rank
         for procId in range(size):
             if procId == rank:
                 continue
-            self.__getNodesByProc()[procId] = COMM_WORLD.sendrecv(
+            self.__getNodesByProc()[procId] = comm_world().sendrecv(
                 self.__getNodesByProc()[procId], source=procId, dest=procId
             )
 
@@ -536,7 +542,7 @@ class NodesPartition:
     def nodes(self):
         if hasattr(self, "_nodes"):
             return self._nodes
-        size = COMM_WORLD.size
+        size = comm_world().size
         self.__sendrecvNodesByProc()
         self._nodes = mc.DataArrayInt([])
         for procId in range(size):
@@ -645,21 +651,21 @@ class MedJoints:
     def __bcastExtNodes(self):
         """Communicate self.__getExtNodes() with other procs.
         Fill in self._extNodesByProc from other procs (global numbering)"""
-        rank = COMM_WORLD.rank
-        size = COMM_WORLD.size
+        rank = comm_world().rank
+        size = comm_world().size
         self._extNodesByProc = [None] * size
         for procId in range(size):
             if procId == rank:
-                self._extNodesByProc[procId] = COMM_WORLD.bcast(self.__getExtNodes(), procId)
+                self._extNodesByProc[procId] = comm_world().bcast(self.__getExtNodes(), procId)
             else:
-                self._extNodesByProc[procId] = COMM_WORLD.bcast(None, procId)
+                self._extNodesByProc[procId] = comm_world().bcast(None, procId)
 
     def __computeIntNodesToSendByProc(self):
         """compute intersections between self._extNodesByProc and self.__getIntNodes()
         fill in self._intNodesToSendByProc (global numbering)"""
         self.__bcastExtNodes()
-        size = COMM_WORLD.size
-        rank = COMM_WORLD.rank
+        size = comm_world().size
+        rank = comm_world().rank
         self._intNodesToSendByProc = [None] * size
         for procId in range(size):
             if procId == rank:
@@ -680,8 +686,8 @@ class MedJoints:
         """return self._intLocNodesToSendByProc (local numbering) corresponding to self._intNodesToSendByProc"""
         if hasattr(self, "_intLocNodesToSendByProc"):
             return self._intLocNodesToSendByProc
-        size = COMM_WORLD.size
-        rank = COMM_WORLD.rank
+        size = comm_world().size
+        rank = comm_world().rank
         self._intLocNodesToSendByProc = [None] * size
         for procId in range(size):
             if procId == rank:
@@ -694,26 +700,26 @@ class MedJoints:
     def __sendIntNodesAndRecvExtNodesByProc(self):
         """Send int nodes contained in self._intNodesToSendByProc to other procs
         Recv ext nodes from other procs and store then into self._extNodesRecvByProc"""
-        size = COMM_WORLD.size
-        rank = COMM_WORLD.rank
+        size = comm_world().size
+        rank = comm_world().rank
         self._extNodesRecvByProc = [None] * size
         for procId in range(size):
             if procId == rank:
                 continue
-            self._extNodesRecvByProc[procId] = COMM_WORLD.sendrecv(
+            self._extNodesRecvByProc[procId] = comm_world().sendrecv(
                 self.__getIntNodesToSendByProc()[procId], source=procId, dest=procId
             )
 
     def __sendIntLocNodesAndRecvExtLocNodesByProc(self):
         """Send int nodes contained in self._intLocNodesToSendByProc to other procs
         Recv ext nodes from other procs and store them into self._extLocNodesRecvByProc"""
-        size = COMM_WORLD.size
-        rank = COMM_WORLD.rank
+        size = comm_world().size
+        rank = comm_world().rank
         self._extLocNodesRecvByProc = [None] * size
         for procId in range(size):
             if procId == rank:
                 continue
-            self._extLocNodesRecvByProc[procId] = COMM_WORLD.sendrecv(
+            self._extLocNodesRecvByProc[procId] = comm_world().sendrecv(
                 self.__getIntLocNodesToSendByProc()[procId], source=procId, dest=procId
             )
 
@@ -738,8 +744,8 @@ class MedJoints:
         if hasattr(self, "_extLocNodesToSendByProc"):
             return self._extLocNodesToSendByProc
         self.__getExtNodesRecvByProc()
-        size = COMM_WORLD.size
-        rank = COMM_WORLD.rank
+        size = comm_world().size
+        rank = comm_world().rank
         self._extLocNodesToSendByProc = [None] * size
         for procId in range(size):
             if procId == rank:
@@ -752,13 +758,13 @@ class MedJoints:
     def __sendExtLocNodesAndRecvIntLocNodesByProc(self):
         """Send ext nodes contained in self._extLocNodesToSendByProc to other procs
         Recv int nodes from other procs and store them into self._intLocNodesRecvByProc"""
-        size = COMM_WORLD.size
-        rank = COMM_WORLD.rank
+        size = comm_world().size
+        rank = comm_world().rank
         self._intLocNodesRecvByProc = [None] * size
         for procId in range(size):
             if procId == rank:
                 continue
-            self._intLocNodesRecvByProc[procId] = COMM_WORLD.sendrecv(
+            self._intLocNodesRecvByProc[procId] = comm_world().sendrecv(
                 self.__getExtLocNodesToSendByProc()[procId], source=procId, dest=procId
             )
 
@@ -789,8 +795,8 @@ class MedJoints:
             self.__getMedFileUmesh().setJoints(self._medFileJoints)
 
     def write(self):
-        size = COMM_WORLD.size
-        rank = COMM_WORLD.rank
+        size = comm_world().size
+        rank = comm_world().rank
         for procId in range(size):
             if procId == rank:
                 continue
@@ -944,7 +950,7 @@ def MakeThePartition(fileName, meshName, MyPartitioner):
 
     # on rajoute sur le noeud 0 les noeuds orphelins s'il y en avait
 
-    if COMM_WORLD.rank == 0:
+    if comm_world().rank == 0:
         partialMedFileUMesh.dealWithOrphanNodes(meshResult)
 
     # on ajoute les champs globaux aux maillage et on met le tout dans un objet MEDFileData
@@ -960,7 +966,7 @@ class GraphPartitionerCompute:
         )
 
     def get(self):
-        self._graph.partGraph(COMM_WORLD.size)
+        self._graph.partGraph(comm_world().size)
         return self._graph.getPartition().getValuesArray()
 
 
@@ -1021,7 +1027,7 @@ if __name__ == "__main__":
 
     setVerbose(args.verbosity)
 
-    if COMM_WORLD.size == 1:
+    if comm_world().size == 1:
         print("using 1 cpu, nothing to do")
         sys.exit(0)
 
@@ -1035,8 +1041,8 @@ if __name__ == "__main__":
         mfd = MakeThePartition(args.fileName, args.meshName, GetGraphPartitioner(args.graphScotch))
 
         with ChronoCtxMg("ecriture sur disque"):
-            mfd.write33(BuildPartNameFromOrig(args.fileName, COMM_WORLD.rank), 2)
+            mfd.write33(BuildPartNameFromOrig(args.fileName, comm_world().rank), 2)
 
-        COMM_WORLD.barrier()
+        comm_world().barrier()
 
     pass

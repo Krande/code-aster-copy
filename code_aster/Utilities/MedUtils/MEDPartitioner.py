@@ -52,6 +52,7 @@ class MEDPartitioner:
         self._meshPartitioned = None
         self._writedFilename = None
 
+        assert MPI.use_comm_world(), "MEDPartionner can not be used on a sub-communicator!"
         med_vers_min = 300  # minimal med version 3.0.0
         med_vers_num = int(mc.MEDFileVersionOfFileStr(self._filename).replace(".", ""))
         if med_vers_num < med_vers_min:
