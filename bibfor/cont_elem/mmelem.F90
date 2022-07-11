@@ -292,7 +292,7 @@ aster_logical, intent(out) :: laxis, leltf
         typmam = 'QU8'
         nnm = 8
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ9Q9' .or. nomte.eq.'COQ9Q9' .or. nomte.eq.'CMQ9Q8') then
+    else if (nomte.eq.'CFQ9Q9' .or. nomte.eq.'COQ9Q9' .or. nomte.eq.'CMQ9Q9') then
         ndim = 3
         typmae = 'QU9'
         nne = 9

@@ -145,7 +145,7 @@ integer, optional, intent(inout) :: ierror_
 !
     call projMaAndCheck(proj_tole, elem_dime, &
                         elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                        elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
+                        elem_slav_line_nbnode, elem_slav_coor, elem_slav_line_code, &
                         proj_coop, nb_node_proj, iret)
 !
     if(iret == 2) then
@@ -156,8 +156,8 @@ integer, optional, intent(inout) :: ierror_
 ! - Compute intersection in parametric master space
 !
     call interNodesInside(proj_tole, elem_dime, &
-                        elem_mast_code, elem_slav_code, &
-                        proj_coop, nb_node_proj, nb_poin_inte_ma, poin_inte_ma, inte_neigh)
+                          elem_mast_code, elem_slav_code, &
+                          proj_coop, nb_node_proj, nb_poin_inte_ma, poin_inte_ma, inte_neigh)
 !
     call interNodesEdge(proj_tole, elem_dime, &
                         elem_mast_code, elem_slav_code, &

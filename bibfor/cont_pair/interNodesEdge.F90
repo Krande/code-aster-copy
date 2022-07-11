@@ -57,7 +57,7 @@ real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
 !
     real(kind=8) :: elem_mast_line_coop(elem_dime-1,4)
     integer :: elem_mast_line_nbnode, i_node
-    integer :: list_next(8)
+    integer :: list_next(8), test
     character(len=8) :: elem_mast_line_code
     real(kind=8) :: xp1, yp1, xp2, yp2
 !
@@ -78,11 +78,11 @@ real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
         if(elem_slave_code == "TR3") then
             list_next(1:3) = [2, 3, 1]
         elseif(elem_slave_code == "TR6") then
-            list_next(1:6) = [4, 2, 5, 3, 6, 1]
+            list_next(1:3) = [2, 3, 1]
         elseif(elem_slave_code == "QU4") then
             list_next(1:4) = [2, 3, 4, 1]
         elseif(elem_slave_code == "QU8" .or. elem_slave_code == "QU9") then
-            list_next(1:8) = [5, 2, 6, 3, 7, 4, 8, 1]
+            list_next(1:4) = [2, 3, 4, 1]
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -100,11 +100,13 @@ real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
 !
 ! --------- Compute intersection between edge of master and projected slave cells
 !
+            test = nb_poin_inte
             call insema(elem_mast_line_nbnode, elem_dime, elem_mast_line_coop, proj_tole,&
-                        xp1, yp1, xp2, yp2,&
-                        nb_poin_inte, poin_inte, inte_neigh)
+                        xp1, yp1, xp2, yp2,nb_poin_inte, poin_inte)
+            if (nb_poin_inte .gt. test) then
+                inte_neigh(i_node) = 1
+            endif
         end do
-        inte_neigh = 1
     end if
 !
 end subroutine

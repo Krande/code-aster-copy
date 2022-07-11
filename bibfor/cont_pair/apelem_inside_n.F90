@@ -18,7 +18,7 @@
 
 subroutine apelem_inside_n(pair_tole   , elem_dime, elem_code, &
                          nb_poin_coor, poin_coor,&
-                         nb_poin_inte, poin_inte)
+                         nb_poin_inte, poin_inte, inte_neigh)
 !
 implicit none
 !
@@ -33,6 +33,7 @@ implicit none
     real(kind=8), intent(in) :: poin_coor(elem_dime-1,4)
     integer, intent(inout) :: nb_poin_inte
     real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
+    integer, intent(inout) :: inte_neigh(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,9 +54,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_node, iret
+    integer :: prev(nb_poin_coor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    do i_node = 2, nb_poin_coor
+        prev(i_node) = i_node-1
+    end do
+    prev(1) = nb_poin_coor
     if (elem_dime .eq. 2) then
         do i_node = 1, nb_poin_coor
             call projInsideCell(pair_tole, elem_dime, elem_code, poin_coor(1, i_node), iret)
@@ -63,6 +69,7 @@ implicit none
                 nb_poin_inte = nb_poin_inte+1
                 ASSERT(nb_poin_inte.le.16)
                 poin_inte(1,nb_poin_inte) = poin_coor(1, i_node)
+                inte_neigh(i_node)=1
             endif
         end do
     elseif (elem_dime .eq. 3) then
@@ -72,6 +79,8 @@ implicit none
                 nb_poin_inte = nb_poin_inte+1
                 ASSERT(nb_poin_inte.le.16)
                 poin_inte(1:2,nb_poin_inte) = poin_coor(1:2, i_node)
+                inte_neigh(i_node)=1
+                inte_neigh(prev(i_node))=1
             endif
         end do
     else

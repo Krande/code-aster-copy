@@ -98,13 +98,14 @@ real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
 ! - Get parametric coordinates of master nodes (linear)
 !
         call apelem_getvertex_n(elem_dime, elem_mast_code,&
-                            elem_mast_line_coop, elem_mast_line_nbnode, &
-                            elem_mast_line_code)
+                                elem_mast_line_coop, elem_mast_line_nbnode, &
+                                elem_mast_line_code)
 !
 ! - Add projection of slave nodes inside master cell (parametric space)
 !
         call apelem_inside_n(proj_tole, elem_dime, elem_mast_line_code, &
-                            nb_node_proj, proj_coor, nb_poin_inte, poin_inte)
+                             nb_node_proj, proj_coor, nb_poin_inte, poin_inte,&
+                             inte_neigh)
 !
         if(elem_slave_code(1:2) == "TR") then
             elem_slav_line_code = "TR3"
@@ -128,8 +129,6 @@ real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
             if (test == 1) then
                 nb_poin_inte              = nb_poin_inte+1
                 poin_inte(1:2,nb_poin_inte) = [xpt, ypt]
-                !     inte_neigh(i_node)                 = 1
-                !     inte_neigh(list_prev(i_node)) = 1
             else if (test == -1) then
                 ASSERT(ASTER_FALSE)
             endif

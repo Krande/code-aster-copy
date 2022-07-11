@@ -414,15 +414,15 @@ integer, pointer :: elem_mast_start(:) => null()
                             .and.elem_slav_flag(elem_neigh_indx) .ne. 1 &
                             .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
                             weight_test=0.d0
-                            call testvois(jv_geom       , elem_slav_type,&
-                                            elem_mast_coor, elem_mast_code, elem_slav_nume,&
-                                            pair_tole     , weight_test,    v_mesh_connex ,&
-                                            v_connex_lcum)
-                            if (weight_test > list_slav_weight(i_slav_neigh).and.&
-                                weight_test > pair_tole) then
+                            !call testvois(jv_geom       , elem_slav_type,&
+                            !                elem_mast_coor, elem_mast_code, elem_slav_nume,&
+                            !                pair_tole     , weight_test,    v_mesh_connex ,&
+                            !                v_connex_lcum)
+                            !if (weight_test > list_slav_weight(i_slav_neigh).and.&
+                            !    weight_test > pair_tole) then
                                 list_slav_master(i_slav_neigh) = elem_mast_nume
-                                list_slav_weight(i_slav_neigh) = weight_test
-                            end if
+                            !   list_slav_weight(i_slav_neigh) = weight_test
+                            !end if
                         end if
                     end do
                     l_recup = ASTER_FALSE
