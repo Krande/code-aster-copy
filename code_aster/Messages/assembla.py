@@ -116,7 +116,13 @@ Contactez le support technique.
  de noeuds à numéroter
 """
     ),
-
+    35: _(
+        """
+ il n y a pas de modèle dans la liste  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
+"""
+    ),
     36: _(
         """
  noeud inexistant

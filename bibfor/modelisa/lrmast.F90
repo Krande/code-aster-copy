@@ -540,6 +540,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbmail)
     call jeecra(connex, 'LONT', nbnoma)
+    call jeecra(connex, 'NUTIOC', nbmail)
 !
 ! -   OBJET ADAPMA   = INFORMATION SUR L'ADAPTATION DE MAILLAGE
 !

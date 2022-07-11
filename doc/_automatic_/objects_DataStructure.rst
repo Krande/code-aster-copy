@@ -425,6 +425,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ElementaryVectorComplex` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ElementaryVectorComplex
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ElementaryVectorDisplacementReal` object
 ********************************************************************************
 
@@ -438,6 +447,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ElementaryVectorPressureComplex
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ElementaryVectorReal` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ElementaryVectorReal
    :show-inheritance:
    :members:
 

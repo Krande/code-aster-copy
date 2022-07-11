@@ -352,7 +352,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
         CALLO_CNOCNS_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
-        toReturn->updateValuePointers();
+        toReturn->build();
         return toReturn;
     };
 

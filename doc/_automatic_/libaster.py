@@ -1352,10 +1352,19 @@ class FiniteElementDescriptor(DataStructure):
         4. __init__(self: libaster.FiniteElementDescriptor, arg0: Model, arg1: List[str]) -> None
         """
     
+    def getListOfGroupOfCells(self):
+        pass
+    
     def getMesh(self):
         pass
     
     def getModel(self):
+        pass
+    
+    def getNema(self):
+        pass
+    
+    def getNumberOfVirtualNodesobj(self):
         pass
     
     def getPhysics(self):
@@ -1411,6 +1420,13 @@ class DataField(DataStructure):
         3. __init__(self: libaster.DataField, arg0: str) -> None
         
         4. __init__(self: libaster.DataField, arg0: str, arg1: str) -> None
+        """
+    
+    def getFieldType(self):
+        """Get field type between "ELEM", "ELGA", "ELNO", "NOEU", "CART".
+        
+        Returns:
+            str: field type
         """
 
 # class FieldOnCellsReal in libaster
@@ -1494,6 +1510,13 @@ class FieldOnCellsReal(DataField):
     def exportToSimpleFieldOnCells(self):
         pass
     
+    def getComponents(self):
+        """Get list of components
+        
+        Returns:
+            list[str]: list of components
+        """
+    
     def getDescription(self, *args, **kwargs):
         """Overloaded function.
         
@@ -1521,6 +1544,20 @@ class FieldOnCellsReal(DataField):
         
         Returns:
             Model: Model object
+        """
+    
+    def getNumberOfComponents(self):
+        """Get number of components
+        
+        Returns:
+            int: number of components
+        """
+    
+    def getPhysicalQuantity(self):
+        """Get physical quantity
+        
+        Returns:
+            str: physical quantity
         """
     
     def getValues(self):
@@ -1914,6 +1951,13 @@ class FieldOnNodesReal(DataField):
     def exportToSimpleFieldOnNodes(self):
         pass
     
+    def getComponents(self):
+        """Get list of components
+        
+        Returns:
+            list[str]: list of components
+        """
+    
     def getDescription(self):
         pass
     
@@ -1923,6 +1967,13 @@ class FieldOnNodesReal(DataField):
         1. getMesh(self: libaster.FieldOnNodesReal) -> libaster.BaseMesh
         
         2. getMesh(self: libaster.FieldOnNodesReal) -> libaster.BaseMesh
+        """
+    
+    def getNumberOfComponents(self):
+        """Get number of components
+        
+        Returns:
+            int: number of components
         """
     
     def getValues(self):
@@ -2016,6 +2067,13 @@ class FieldOnNodesComplex(DataField):
     def exportToSimpleFieldOnNodes(self):
         pass
     
+    def getComponents(self):
+        """Get list of components
+        
+        Returns:
+            list[str]: list of components
+        """
+    
     def getDescription(self):
         pass
     
@@ -2025,6 +2083,13 @@ class FieldOnNodesComplex(DataField):
         1. getMesh(self: libaster.FieldOnNodesComplex) -> libaster.BaseMesh
         
         2. getMesh(self: libaster.FieldOnNodesComplex) -> libaster.BaseMesh
+        """
+    
+    def getNumberOfComponents(self):
+        """Get number of components
+        
+        Returns:
+            int: number of components
         """
     
     def getValues(self):
@@ -4942,6 +5007,13 @@ class ElementaryTermReal(DataField):
             FiniteElementDescriptor: finite element descriptor
         """
     
+    def getLocalMode(self):
+        """Return the local mode.
+        
+        Returns:
+            str: the local mode
+        """
+    
     def getMesh(self):
         """Return the mesh
         
@@ -4990,6 +5062,13 @@ class ElementaryTermComplex(DataField):
         
         Returns:
             FiniteElementDescriptor: finite element descriptor
+        """
+    
+    def getLocalMode(self):
+        """Return the local mode.
+        
+        Returns:
+            str: the local mode
         """
     
     def getMesh(self):
@@ -5235,13 +5314,70 @@ class BaseElementaryVector(DataStructure):
     def setType(self, arg0):
         pass
 
+# class ElementaryVectorReal in libaster
+
+class ElementaryVectorReal(BaseElementaryVector):
+    pass
+    
+    # Method resolution order:
+    #     ElementaryVectorReal
+    #     BaseElementaryVector
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. __init__(self: libaster.ElementaryVectorReal) -> None
+        
+        2. __init__(self: libaster.ElementaryVectorReal, arg0: str) -> None
+        """
+    
+    def assemble(self, arg0):
+        pass
+    
+    def getVeass(self):
+        pass
+
+# class ElementaryVectorComplex in libaster
+
+class ElementaryVectorComplex(BaseElementaryVector):
+    pass
+    
+    # Method resolution order:
+    #     ElementaryVectorComplex
+    #     BaseElementaryVector
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. __init__(self: libaster.ElementaryVectorComplex) -> None
+        
+        2. __init__(self: libaster.ElementaryVectorComplex, arg0: str) -> None
+        """
+    
+    def assemble(self, arg0):
+        pass
+    
+    def getVeass(self):
+        pass
+
 # class ElementaryVectorDisplacementReal in libaster
 
-class ElementaryVectorDisplacementReal(BaseElementaryVector):
+class ElementaryVectorDisplacementReal(ElementaryVectorReal):
     pass
     
     # Method resolution order:
     #     ElementaryVectorDisplacementReal
+    #     ElementaryVectorReal
     #     BaseElementaryVector
     #     DataStructure
     #     pybind11_builtins.pybind11_object
@@ -5256,20 +5392,15 @@ class ElementaryVectorDisplacementReal(BaseElementaryVector):
         
         2. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: str) -> None
         """
-    
-    def assemble(self, arg0):
-        pass
-    
-    def getVeass(self):
-        pass
 
 # class ElementaryVectorTemperatureReal in libaster
 
-class ElementaryVectorTemperatureReal(BaseElementaryVector):
+class ElementaryVectorTemperatureReal(ElementaryVectorReal):
     pass
     
     # Method resolution order:
     #     ElementaryVectorTemperatureReal
+    #     ElementaryVectorReal
     #     BaseElementaryVector
     #     DataStructure
     #     pybind11_builtins.pybind11_object
@@ -5284,20 +5415,15 @@ class ElementaryVectorTemperatureReal(BaseElementaryVector):
         
         2. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: str) -> None
         """
-    
-    def assemble(self, arg0):
-        pass
-    
-    def getVeass(self):
-        pass
 
 # class ElementaryVectorPressureComplex in libaster
 
-class ElementaryVectorPressureComplex(BaseElementaryVector):
+class ElementaryVectorPressureComplex(ElementaryVectorComplex):
     pass
     
     # Method resolution order:
     #     ElementaryVectorPressureComplex
+    #     ElementaryVectorComplex
     #     BaseElementaryVector
     #     DataStructure
     #     pybind11_builtins.pybind11_object
@@ -5312,12 +5438,6 @@ class ElementaryVectorPressureComplex(BaseElementaryVector):
         
         2. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: str) -> None
         """
-    
-    def assemble(self, arg0):
-        pass
-    
-    def getVeass(self):
-        pass
 
 # class GeneralizedAssemblyMatrix in libaster
 

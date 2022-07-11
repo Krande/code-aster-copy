@@ -114,11 +114,12 @@ implicit none
 !
     l_pmesh = isParallelMesh(mesh)
     nb_equa_gl = nb_equa
-    if(l_pmesh) then
-      call asmpi_comm_vect("MPI_SUM", "I", sci=nb_equa_gl)
-    end if
+    ! J'enlève la vérif car il y a des deadlock sinon
+    ! if(l_pmesh) then
+    !   call asmpi_comm_vect("MPI_SUM", "I", sci=nb_equa_gl)
+    ! end if
 
-    if(nb_equa_gl == 0) then
+    if(.not.l_pmesh .and. nb_equa_gl == 0) then
       ASSERT(ASTER_FALSE)
     end if
 

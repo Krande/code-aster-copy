@@ -70,6 +70,7 @@ subroutine get_med_connectivity(mesh, med_connect)
     nbcell = dime(3)
 
     call jecrec(med_connect, 'V V I', 'NU', 'CONTIG', 'VARIABLE', nbcell)
+    call jeecra(med_connect, 'NUTIOC', ival=nbcell)
     call jeecra(med_connect, 'LONT', ival=size)
 
     do i=1, nbcell
@@ -77,6 +78,7 @@ subroutine get_med_connectivity(mesh, med_connect)
         call jelira(jexnum(connex, i), 'LONMAX', ival=nbnode)
         call jeveuo(jexnum(connex, i), 'L', vi=p_elt)
         call jeecra(jexnum(med_connect, i), 'LONMAX', ival=nbnode)
+        call jeecra(jexnum(med_connect, i), 'LONUTI', ival=nbnode)
         call jeveuo(jexnum(med_connect, i), 'E', vi=m_elt)
         if (modnum(ityp) .eq. 0) then
             do j=1, nbnode

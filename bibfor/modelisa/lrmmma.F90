@@ -229,11 +229,13 @@ character(len=*) :: nomamd
 !
     call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE', nbmail)
     call jeecra(connex, 'LONT', nbnoma)
+    call jeecra(connex, 'NUTIOC', nbmail)
 !
     do ima = 1 , nbmail
         idec = (ima-1)*2
         ityp = zi(jmatyp+idec)
         call jeecra(jexnum(connex, ima), 'LONMAX', nnotyp(ityp))
+        call jeecra(jexnum(connex, ima), 'LONUTI', nnotyp(ityp))
         call jeveuo(jexnum(connex, ima), 'E', jcnxma)
         imatyp = zi(jmatyp+idec+1)
         idec = (imatyp-1)*nnotyp(ityp)

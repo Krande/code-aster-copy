@@ -1472,6 +1472,7 @@ contains
 ! ------ Create connectivity
             call wkvect(typmai, 'G V I', this%nb_cells, vi=v_int)
             call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE', this%nb_cells)
+            call jeecra(connex, 'NUTIOC', this%nb_cells)
             call jeecra(connex, 'LONT', nbnoma)
             if(this%isHPC) then
                 call wkvect(mesh_out//'.MAEX', 'G V I', this%nb_cells, vi=v_maex)

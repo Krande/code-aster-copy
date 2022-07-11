@@ -560,9 +560,20 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
     }
 
     ASTERINTEGER nbColObj, valTmp;
-    JeveuxChar8 param( "NMAXOC" );
+    JeveuxChar8 param( "NUTIOC" );
     std::string charval( 32, ' ' );
     CALLO_JELIRA( _name, param, &nbColObj, charval );
+
+#ifdef ASTER_DEBUG_CXX
+    // This is very stange that the size is 0
+    // The most probable is that NUTIOC has not been setted
+    if ( nbColObj <= 0 ) {
+        AS_ABORT( getName() + " seems empty" );
+    }
+#endif
+
+    JeveuxChar8 param2( "NMAXOC" );
+    CALLO_JELIRA( _name, param2, &_capacity, charval );
 
     if ( !force && !_isEmpty && size() == nbColObj ) {
         for ( ASTERINTEGER i = 0; i < nbColObj; ++i )
@@ -575,7 +586,9 @@ bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
     }
 
     _size = nbColObj;
-    _capacity = nbColObj;
+
+    AS_ASSERT( size() <= capacity() );
+
     _listObjects.clear();
     _listObjects.reserve( _capacity );
 
