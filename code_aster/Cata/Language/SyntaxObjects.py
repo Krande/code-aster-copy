@@ -49,7 +49,7 @@ from .SyntaxUtils import (
     disable_0key,
     enable_0key,
     force_list,
-    mixedcopy,
+    is_undefined,
     sorted_dict,
     value_is_sequence,
 )
@@ -529,10 +529,7 @@ class PartOfSyntax(UIDMixing):
     def undefined(cls, value):
         """Return *True* if the value is a null value (undefined keyword),
         *False* otherwise."""
-        return value is None or (
-            isinstance(value, (list, tuple))
-            and (len(value) == 0 or (len(value) == 1 and value[0] is None))
-        )
+        return is_undefined(value)
 
     def is_list(self):
         """Tell if the value should be stored as list."""
