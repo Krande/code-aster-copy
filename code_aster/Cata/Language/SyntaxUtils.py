@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,15 +93,29 @@ def mixedcopy(obj):
         new = obj
     return new
 
+def is_undefined(value):
+    """Return *True* if the value is a null value (undefined keyword),
+    *False* otherwise."""
+    return value is None or (
+        isinstance(value, (list, tuple))
+        and (len(value) == 0 or (len(value) == 1 and value[0] is None))
+    )
+
+
 def remove_none(obj):
-    """Remove None values from dict **in place**, do not change values of
-    other types."""
+    """Remove undefined values from dict **in place**, do not change other values.
+    Undefined values are *None*, empty list or empty tuple (consistent with
+    `:py:func:PartOfSyntax.undefined`).
+
+    Arguments:
+        obj (list|tuple|dict): Set of user's keywords.
+    """
     if isinstance(obj, (list, tuple)):
         for i in obj:
             remove_none(i)
     elif isinstance(obj, dict):
         for key, value in list(obj.items()):
-            if value is None:
+            if is_undefined(value):
                 del obj[key]
             else:
                 remove_none(obj[key])

@@ -45,9 +45,17 @@ from collections import OrderedDict
 from . import DataStructure as DS
 from .DataStructure import DataStructure, UnitBaseType
 from .SyntaxChecker import checkCommandSyntax
-from .SyntaxUtils import (add_none_sdprod, block_utils, debug_message2,
-                          disable_0key, enable_0key, force_list, mixedcopy,
-                          sorted_dict, value_is_sequence)
+from .SyntaxUtils import (
+    add_none_sdprod,
+    block_utils,
+    debug_message2,
+    disable_0key,
+    enable_0key,
+    force_list,
+    is_undefined,
+    sorted_dict,
+    value_is_sequence,
+)
 
 
 class SyntaxId:
@@ -516,10 +524,7 @@ class PartOfSyntax(UIDMixing):
     def undefined(cls, value):
         """Return *True* if the value is a null value (undefined keyword),
         *False* otherwise."""
-        return (value is None
-                or (isinstance(value, (list, tuple)) and
-                    (len(value) == 0 or (len(value) == 1 and value[0] is None))
-                    ))
+        return is_undefined(value)
 
     def is_list(self):
         """Tell if the value should be stored as list."""
