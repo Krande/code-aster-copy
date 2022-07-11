@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -451,29 +451,30 @@ class CALCUL_ASTER:
 
         # Parametres ajoutes par le mot-cle CALCUL_ESCLAVE
         if self.tpsjob:
-            prof.param['tpsjob'] = str(self.tpsjob)
+            prof['tpsjob'] = str(self.tpsjob)
         if self.tpmax:
             prof.args['tpmax'] = str(self.tpmax)
         if self.mem_aster:
-            prof.param['mem_aster'] = str(self.mem_aster)
+            prof['mem_aster'] = str(self.mem_aster)
         if self.memjob:
-            prof.param['memjob'] = str(self.memjob)
+            prof['memjob'] = str(self.memjob)
+            prof.set_param_memory(self.memjob / 1024)
         if self.memjeveux:
             prof.args['memjeveux'] = str(self.memjeveux)
         if self.mpi_nbcpu:
-            prof.param['mpi_nbcpu'] = str(self.mpi_nbcpu)
+            prof['mpi_nbcpu'] = str(self.mpi_nbcpu)
         if self.mpi_nbnoeud:
-            prof.param['mpi_nbnoeud'] = str(self.mpi_nbnoeud)
+            prof['mpi_nbnoeud'] = str(self.mpi_nbnoeud)
 
         # En batch et distribue
         if self.MODE == 'BATCH':
             user_mach = user_mach_dist
-            prof.param['mode'] = 'batch'
-            # if self.mem_aster: prof.param['mem_aster'] = str(self.mem_aster)
+            prof['mode'] = 'batch'
+            # if self.mem_aster: prof['mem_aster'] = str(self.mem_aster)
 
             # Choix d'une classe reservee
             if self.CLASSE:
-                prof.param['classe'] = self.CLASSE
+                prof['classe'] = self.CLASSE
 
         # xterm
         if 'xterm' in prof.param:
