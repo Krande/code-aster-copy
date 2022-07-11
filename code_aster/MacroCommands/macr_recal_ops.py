@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,26 +21,22 @@
 
 import copy
 import glob
-import math
 import os
 import sys
 
 import numpy as NP
 from asrun.common.sysutils import on_64bits
 from asrun.profil import AsterProfil
+from run_aster.config import CFG
 
-import aster
 from libaster import onFatalError
 
-from ..Cata.Syntax import _F
-from ..Commands import CREA_TABLE, DEFI_LIST_REEL, TEST_TABLE
-from ..Messages import UTMESS, MessageLog
-from .Recal import (reca_algo, reca_calcul_aster, reca_interp, reca_message,
-                    reca_utilitaires, recal)
+from ..Commands import DEFI_LIST_REEL
+from ..Messages import UTMESS
+from .Recal import reca_algo, reca_calcul_aster, reca_interp, reca_message, reca_utilitaires, recal
 from .Recal.reca_controles import gestion
 from .Recal.reca_evol import evolutivo
-from .Utils.optimize import (approx_fhess_p, approx_fprime, fmin, fminBFGS,
-                             fminNCG, line_search, line_search_BFGS)
+from .Utils.optimize import fmin, fminBFGS, fminNCG
 
 try:
     import Gnuplot
@@ -51,8 +47,7 @@ except ImportError:
 debug = False
 
 INFO = 1
-NOMPRO = 'MACR_RECAL'
-
+NOMPRO = "MACR_RECAL"
 
 
 # ------------------------------------------------------------------------
@@ -243,15 +238,17 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
     #_____________________________________________
     #
     # PARAMETRES DU MODE DISTRIBUTION
-    #_____________________________________________
-    if LANCEMENT == 'DISTRIBUTION':
-
+    # _____________________________________________
+    if LANCEMENT == "DISTRIBUTION":
+        addmem = CFG.get("addmem", 0)
         if debug:
-            print(prof.param['tpsjob'][0])
-            print(prof.args['tpmax'])
-            print(prof.param['mem_aster'][0])
-            print(prof.args['memjeveux'])
-            print(prof.param['memjob'][0])
+            print("tpsjob:", prof.param["tpsjob"][0])
+            print("tpmax:", prof.args["tpmax"])
+            print("mem_aster:", prof.param.get("mem_aster", [100])[0])
+            print("memjeveux:", prof.args["memjeveux"])
+            print("memjob:", prof.param["memjob"][0])
+            print("addmem:", addmem)
+            print("dESCLAVE:", dESCLAVE)
 
         # Pour la conversion mega-mots / mega-octets
         if on_64bits():
@@ -281,9 +278,10 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
         # Utilisation du mot-cle MEMOIRE
         if 'MEMOIRE' in dESCLAVE:
-            CALCUL_ESCLAVE['memjob'] = int(dESCLAVE['MEMOIRE'] * 1024)
+            mem = int(dESCLAVE["MEMOIRE"]) + addmem
+            CALCUL_ESCLAVE["memjob"] = int(mem * 1024)
             # Calcul du parametre memjeveux esclave
-            memjeveux = int(dESCLAVE['MEMOIRE'] / facw)
+            memjeveux = int(mem / facw)
             try:
                 if mem_aster == 100:
                     CALCUL_ESCLAVE['memjeveux'] = memjeveux
@@ -294,8 +292,8 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
                 UTMESS('F', 'RECAL0_8')
         else:
             # Recuperation depuis le calcul maitre
-            CALCUL_ESCLAVE['memjob'] = int(prof.param['memjob'][0])
-            CALCUL_ESCLAVE['memjeveux'] = prof.args['memjeveux']
+            CALCUL_ESCLAVE["memjob"] = int(prof.param["memjob"][0]) + addmem * 1024
+            CALCUL_ESCLAVE["memjeveux"] = prof.args["memjeveux"] + int(addmem / facw)
 
         # Utilisation du mot-cle MPI_NBCPU
         if 'MPI_NBCPU' in dESCLAVE:
@@ -325,6 +323,8 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
                 classe = ' -auto- '
             UTMESS('I', 'RECAL0_69', valk=(str(CALCUL_ESCLAVE['tpmax']), str(
                 int(CALCUL_ESCLAVE['memjob']) / 1024), str(int(float(CALCUL_ESCLAVE['memjeveux']) * facw)), classe))
+        if debug:
+            print("CALCUL_ESCLAVE:", CALCUL_ESCLAVE)
 
     #_____________________________________________
     #
