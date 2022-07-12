@@ -34,5 +34,6 @@ void exportTimeStepperToPython( py::module_ &mod ) {
     py::class_< TimeStepper, TimeStepper::TimeStepperPtr, DataStructure >( mod, "TimeStepper" )
         .def( py::init( &initFactoryPtr< TimeStepper > ) )
         .def( py::init( &initFactoryPtr< TimeStepper, std::string > ) )
+        .def( "getValues", &TimeStepper::getValues )
         .def( "setValues", &TimeStepper::setValues );
 };

@@ -128,6 +128,8 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
+        .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureReal, PhysicalProblemPtr > ) )
+        // -----------------------------------------------------------------------------------------
         .def( "addElementaryMatrix", &AssemblyMatrixTemperatureReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureReal::clearElementaryMatrix )

@@ -47,11 +47,6 @@ class ThermalLoad : public DataStructure {
     ThermalLoadDescriptionPtr< ConstantFieldOnCellsType > _therLoadDesc;
 
   public:
-    /**
-     * @typedef ThermalLoadPtr
-     * @brief Pointeur intelligent vers un ThermalLoad
-     */
-    typedef std::shared_ptr< ThermalLoad > ThermalLoadPtr;
 
     /**
      * @brief Constructeur
@@ -103,10 +98,6 @@ class ThermalLoad : public DataStructure {
 typedef ThermalLoad< ConstantFieldOnCellsReal > ThermalLoadReal;
 /** @typedef ThermalLoadFunc Class d'une charge mécanique de fonctions */
 typedef ThermalLoad< ConstantFieldOnCellsChar24 > ThermalLoadFunction;
-
-/** @typedef ThermalLoad  */
-template < class ConstantFieldOnCellsType >
-using ThermalLoadPtr = std::shared_ptr< ThermalLoad< ConstantFieldOnCellsType > >;
 
 typedef std::shared_ptr< ThermalLoadReal > ThermalLoadRealPtr;
 typedef std::shared_ptr< ThermalLoadFunction > ThermalLoadFunctionPtr;

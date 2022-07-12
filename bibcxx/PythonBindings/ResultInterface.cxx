@@ -45,6 +45,15 @@ Arguments:
     rank (int):  rank where to save time value
         )",
               py::arg( "time" ), py::arg( "rank" ) )
+        .def( "setParameterValue", &Result::setParameterValue, R"(
+Add theta at the specified rank
+
+Arguments:
+    name (float): parameter name to store
+    value (float): parameter value to store
+    rank (int):  rank where to save time value
+        )",
+              py::arg( "para_name" ), py::arg( "value" ), py::arg( "rank" ) )
         .def( "getTimeValue", &Result::getTimeValue, R"(
 Get time at the specified rank
 

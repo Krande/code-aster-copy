@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,7 @@ class sd_char_chth(AsBase):
     LIGRE = Facultatif(sd_ligrel())
 
     SOURE = Facultatif(sd_champ(SDNom(nomj='.SOURE')))
-                       # pour l'instant : sd_carte ou sd_cham_elem
-
+    SOURC = Facultatif(sd_cham_elem())
     CIMPO = Facultatif(sd_carte())
     CMULT = Facultatif(sd_carte())
     COEFH = Facultatif(sd_carte())

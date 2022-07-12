@@ -224,7 +224,14 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add time value for one rank
      * @param rank
      */
-    void setTimeValue( ASTERDOUBLE, ASTERINTEGER rank );
+    void setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ){
+        this->setParameterValue( "INST", value, rank);
+    };
+
+    /**
+     * @brief Add parameter value for one rank
+     */
+    void setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGER rank );
 
     ASTERDOUBLE getTimeValue( ASTERINTEGER rank );
 

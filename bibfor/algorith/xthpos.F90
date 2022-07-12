@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xthpos(result, modele)
+subroutine xthpos(resuin, resuou)
 !
 implicit none
 !
@@ -32,10 +32,10 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/xthpoc.h"
+#include "asterfort/dismoi.h"
 !
 !
-    character(len=8), intent(in) :: result
-    character(len=24), intent(in) ::  modele
+    character(len=8), intent(in) :: resuin, resuou
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,15 +47,16 @@ implicit none
 ! ----------------------------------------------------------------------
     integer :: jord, nbordr, ior, iord, iret
     character(len=19) :: ligrmo, chtn, chtpg, celtmp
-    character(len=24) :: ordr
+    character(len=24) :: ordr, modele
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
+    call dismoi('NOM_MODELE', resuin, 'RESULTAT', repk=modele)
     ligrmo=modele(1:8)//'.MODELE'
     celtmp='&&XTELGA.CELTMP'
 !
-    ordr=result//'           .ORDR'
+    ordr=resuin//'           .ORDR'
     call jeveuo(ordr, 'L', jord)
     call jelira(ordr, 'LONUTI', nbordr)
 !
@@ -67,8 +68,8 @@ implicit none
 !
         iord=zi(jord-1+ior)
 !
-!       SI LE CHAMP 'TEMP' N'EXISTE PAS DANS RESULT, ON PASSE...
-        call rsexch(' ', result, 'TEMP', iord, chtn,&
+!       SI LE CHAMP 'TEMP' N'EXISTE PAS DANS RESUIN, ON PASSE...
+        call rsexch(' ', resuin, 'TEMP', iord, chtn,&
                     iret)
         if (iret .gt. 0) cycle
 !
@@ -84,13 +85,13 @@ implicit none
         call xthpoc(modele, chtn, celtmp)
 !
 !       RECUPERATION DU NOM DU CHAMP A ECRIRE : CHTPG
-        call rsexch(' ', result, 'TEMP_ELGA', iord, chtpg,&
+        call rsexch(' ', resuou, 'TEMP_ELGA', iord, chtpg,&
                     iret)
         ASSERT(iret.eq.100)
 !       COPIE : CELTMP (BASE 'V') -> CHTPG (BASE 'G')
         call copisd('CHAMP', 'G', celtmp, chtpg)
-!       STOCKAGE DANS LA SD RESULTAT
-        call rsnoch(result, 'TEMP_ELGA', iord)
+!       STOCKAGE DANS LA SD RESUOU
+        call rsnoch(resuou, 'TEMP_ELGA', iord)
 !
 !       DESTRUCTION DE CELTMP
         call detrsd('CHAM_ELEM', celtmp)

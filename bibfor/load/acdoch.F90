@@ -60,7 +60,7 @@ character(len=1), optional, intent(in) :: basez
 !
     integer, parameter :: nb_info_maxi = 99
     character(len=24) :: list_info_type(nb_info_maxi)
-    integer, parameter :: nb_type_neum  = 10
+    integer, parameter :: nb_type_neum  = 11
     aster_logical :: list_load_keyw(nb_type_neum)
     aster_logical :: l_func_mult, l_load_user, l_zero_allowed
     aster_logical :: l_func_c
@@ -174,7 +174,7 @@ character(len=1), optional, intent(in) :: basez
 ! --------- Get function applied to load
 !
             call lislfc(list_load_resu, i_load      , i_excit   , l_load_user,&
-                        l_func_c      , load_keyword, const_func, load_func)
+                        l_func_c      , load_keyword, const_func, load_func, base)
             ASSERT(load_func .ne. ' ')
             l_func_mult = load_func(1:2) .ne. '&&'
 !

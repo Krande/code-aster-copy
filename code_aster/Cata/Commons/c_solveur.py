@@ -527,4 +527,5 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 
 # required by 'LinearSolver.factory()', CommandSyntax needs a static catalog
 C_SOLVEUR_MECA_STATIQUE = FACT(statut="o", SOLVEUR=C_SOLVEUR("MECA_STATIQUE"))
+C_SOLVEUR_THER_LINEAIRE = FACT(statut="o", SOLVEUR=C_SOLVEUR("THER_LINEAIRE"))
 C_SOLVEUR_STAT_NON_LINE = FACT(statut="o", SOLVEUR=C_SOLVEUR("STAT_NON_LINE"))

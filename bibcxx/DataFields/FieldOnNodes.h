@@ -163,6 +163,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes duplicate() { return *this; }
 
     /**
+     * @brief
+     * @exists
+     */
+    bool exists() { return _descriptor->exists(); };
+
+    /**
      * @brief Constructeur from a MeshCoordinatesFieldPtr&
      */
     FieldOnNodes( MeshCoordinatesFieldPtr &toCopy )
@@ -530,6 +536,20 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         bool ret = ( ( *_descriptor )[1] <= 0 );
         CALL_JEDEMA();
         return ret;
+    }
+
+    /**
+     * @brief Get physical quantity
+     */
+    std::string getPhysicalQuantity() const {
+      const std::string typeco( "CHAM_NO" );
+      ASTERINTEGER repi = 0, ier = 0;
+      JeveuxChar32 repk( " " );
+      const std::string arret( "F" );
+      const std::string questi( "NOM_GD" );
+      CALLO_DISMOI( questi, this->getName(), typeco, &repi, repk, arret, &ier );
+      auto retour = trim( repk.toString() );
+      return retour;
     }
 
     /**

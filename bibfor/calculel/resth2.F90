@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,13 +70,13 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
     integer :: nchar
     character(len=8) :: modele, lchar(1), ma, psourc
     character(len=19) :: cartef, carteh, cartet, cartes, nomgdf, nomgdh, nomgdt
-    character(len=19) :: nomgds
+    character(len=19) :: nomgds, cartesc
     character(len=24) :: ligrel, chgeom, chsour
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: i, ier, iret, iretf, ireth, irett, irets, iretep
+    integer :: i, ier, iret, iretf, ireth, irett, irets, iretep, iretsc
     character(len=1) :: base
-    character(len=19) :: cartf, carth, cartt, carts, cartep
+    character(len=19) :: cartf, carth, cartt, carts, cartep, cartsc
 !
 ! DEBUT DE LA SUBROUTINE
     call jemarq()
@@ -114,11 +114,13 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
     carteh = ' '
     cartet = ' '
     cartes = ' '
+    cartesc = ' '
     chsour = ' '
     iretf = 0
     ireth = 0
     irett = 0
     irets = 0
+    iretsc = 0
     iretep = 0
 ! OPTION DE CALCUL PAR DEFAUT
     psourc='PSOURCR'
@@ -130,12 +132,14 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
         carth = lchar(i)//'.CHTH.COEFH'
         cartt = lchar(i)//'.CHTH.T_EXT'
         carts = lchar(i)//'.CHTH.SOURE'
+        cartsc = lchar(i)//'.CHTH.SOURC'
         cartep = lchar(i)//'.CHTH.HECHP'
 ! DETERMINE L'EXISTENCE DES SD DE TYPE CHAMP_GD ET DE NOM CARTE.
         call exisd('CHAMP_GD', cartf, iretf)
         call exisd('CHAMP_GD', carth, ireth)
         call exisd('CHAMP_GD', cartt, irett)
         call exisd('CHAMP_GD', carts, irets)
+        call exisd('CHAMP_GD', cartsc, iretsc)
         call exisd('CHAMP_GD', cartep, iretep)
         if (iretep .ne. 0) then
             call utmess('A', 'CALCULEL6_42')
@@ -197,6 +201,21 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 ! OPTION DE CALCUL POUR SOURCE VARIABLE
             if (nomgds(1:6) .eq. 'SOUR_F') psourc='PSOURCF'
             cartes = carts
+        endif
+!
+! TRAITEMENT DES SOURCES VOLUMIQUES CALCULEES
+        if (iretsc .ne. 0) then
+            chsour = cartsc//'.DESC'
+            call dismoi('NOM_GD', cartsc, 'CARTE', repk=nomgds)
+! SEULE CARTE FLUN CONSERVEE (REGLE SURCHARGE USUELLE DE LA DERNIERE)
+            if (cartesc .ne. ' ') then
+                call utmess('A', 'CALCULEL6_43', sk='SOURCE')
+            endif
+! OPTION DE CALCUL POUR SOURCE VARIABLE INTERDITE
+            if (nomgds(1:6) .eq. 'SOUR_F') then
+               ASSERT(.false.)
+            endif
+            cartesc = carts
         endif
 !
 ! FIN BOUCLE AFFE_CHAR_THER

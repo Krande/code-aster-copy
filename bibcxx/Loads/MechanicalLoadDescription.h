@@ -161,7 +161,7 @@ class MechanicalLoadDescription : public DataStructure {
 
     ModelPtr getModel() const { return _model; }
 
-    ConstantFieldOnCellsTypePtr getImpositionField() const { return _cimpo; }
+    ConstantFieldOnCellsTypePtr getImposedField() const { return _cimpo; }
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; }
 
     bool hasLoad( const std::string load_name ) const {

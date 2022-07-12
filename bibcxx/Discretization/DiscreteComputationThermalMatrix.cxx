@@ -36,8 +36,13 @@
 #include "Utilities/Tools.h"
 
 ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix(
-    const ASTERDOUBLE &time, const ASTERDOUBLE &delta_time, const ASTERINTEGER &modeFourier,
-    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) {
+    const ASTERDOUBLE time_value,
+    const ASTERDOUBLE time_delta,
+    const ASTERDOUBLE time_theta,
+    const ASTERINTEGER &modeFourier,
+    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField) {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
     auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >();
 
@@ -82,7 +87,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     }
 
     _calcul->addFourierModeField( modeFourier );
-    _calcul->addTimeField( time, delta_time, 1., 0., 0., 0. );
+    _calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta);
 
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
@@ -95,22 +100,27 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     // Compute elementary matrices for rigidity
     if ( currModel->existsFiniteElement() ) {
         _calcul->compute();
-        std::cout << _calcul->hasOutputElementaryTerm( "PMATTTR" ) << std::endl;
         if ( _calcul->hasOutputElementaryTerm( "PMATTTR" ) )
             elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATTTR" ) );
     };
 
     // Compute elementary matrices for dual BC
     DiscreteComputation::baseDualThermalMatrix( _calcul, elemMatr );
+    DiscreteComputation::baseExchangeThermalMatrix( _calcul, elemMatr,
+                                                    time_value, time_delta, time_theta );
 
     elemMatr->build();
     return elemMatr;
 };
 
 ElementaryMatrixTemperatureRealPtr
-DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE &time,
+DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE time_value,
+                                           const ASTERDOUBLE time_delta,
+                                           const ASTERDOUBLE time_theta,
                                            const VectorString &groupOfCells,
-                                           const FieldOnCellsRealPtr _externVarField ) {
+                                           const FieldOnCellsRealPtr _externVarField) {
+
+    AS_ASSERT( _phys_problem->getModel()->isThermal() );
     auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >();
     // Get main parameters
     const std::string option( "MASS_THER" );
@@ -131,12 +141,6 @@ DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE &time,
     elemMatr->setMaterialField( currMater );
     elemMatr->setElementaryCharacteristics( currElemChara );
 
-    // // Check super-element
-    // if ( currModel->existsSuperElement() ) {
-    //     std::string modelName = ljust( currModel->getName(), 8 );
-    //     CALLO_CHECKSUPERELEMENT( option, modelName );
-    // }
-
     // Prepare computing
     auto _calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
@@ -149,6 +153,8 @@ DiscreteComputation::linearCapacityMatrix( const ASTERDOUBLE &time,
 
     // Add input fields
     _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    _calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+
     if ( currMater ) {
         _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
     }
@@ -211,7 +217,6 @@ void DiscreteComputation::baseDualThermalMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getThermalLoadDescription()->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -230,7 +235,7 @@ void DiscreteComputation::baseDualThermalMatrix( CalculPtr &calcul,
     //         auto FEDesc = curIter->getFiniteElementDescriptor();
     //         auto field = curIter->getMultiplicativeField();
     //         if ( field && field->exists() && FEDesc ) {
-    //             auto resuElem = std::make_shared< ElementaryTermReal >();
+    //             auto resu_elem = std::make_shared< ElementaryTermReal >();
     //             calcul->clearInputs();
     //             calcul->clearOutputs();
     //             calcul->setFiniteElementDescriptor( FEDesc );
@@ -247,7 +252,7 @@ void DiscreteComputation::baseDualThermalMatrix( CalculPtr &calcul,
     //         auto FEDesc = curIter->getFiniteElementDescriptor();
     //         auto field = curIter->getMultiplicativeField();
     //         if ( field && field->exists() && FEDesc ) {
-    //             auto resuElem = std::make_shared< ElementaryTermReal >();
+    //             auto resu_elem = std::make_shared< ElementaryTermReal >();
     //             calcul->clearInputs();
     //             calcul->clearOutputs();
     //             calcul->setFiniteElementDescriptor( FEDesc );
@@ -262,3 +267,151 @@ void DiscreteComputation::baseDualThermalMatrix( CalculPtr &calcul,
 
     // #endif
 };
+
+
+void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
+                                                     ElementaryMatrixTemperatureRealPtr &elemMatr,
+                                                     const ASTERDOUBLE time_value,
+                                                     const ASTERDOUBLE time_delta,
+                                                     const ASTERDOUBLE time_theta ) {
+
+
+    // Prepare loads
+    const auto &_listOfLoads = _phys_problem->getListOfLoads();
+    auto isXfem = _phys_problem->getModel()->existsXfem();
+
+    auto therLoadReal = _listOfLoads->getThermalLoadsReal();
+    for ( const auto &curIter : therLoadReal ) {
+        auto FEDesc = _phys_problem->getModel()->getFiniteElementDescriptor();
+        auto load_FEDesc = curIter->getFiniteElementDescriptor();
+        auto curr_load = curIter->getThermalLoadDescription();
+
+        if ( curr_load->hasLoadResult() ) {
+            std::string evol_char_name = curr_load->getLoadResultName();
+            FieldOnCellsRealPtr
+                evol_exchange_field = std::make_shared< FieldOnCellsReal >( FEDesc );
+            std::string para( "COEF_H" );
+            std::string access_var( "INST" );
+            std::string base( "G" );
+            std::string extr_right( "EXCLU" );
+            std::string extr_left( "EXCLU" );
+            ASTERINTEGER iret = 100;
+            ASTERINTEGER stop = 0;
+
+            CALLO_RSINCH(evol_char_name, para, access_var, &time_value,
+                         evol_exchange_field->getName(),
+                         extr_right, extr_left,
+                         &stop, base, &iret);
+
+            if ( iret >= 2 ){
+                AS_ABORT( "Cannot find COEF_H in EVOL_CHAR "+evol_char_name+ \
+                          " at time "+std::to_string(time_value));
+            }
+
+            calcul->setOption( "RIGI_THER_COEH_R" );
+            calcul->clearInputs();
+            calcul->clearOutputs();
+            calcul->setFiniteElementDescriptor( FEDesc );
+            calcul->addInputField( "PGEOMER",
+                                   _phys_problem->getModel()->getMesh()->getCoordinates() );
+            calcul->addInputField( "PCOEFHR", evol_exchange_field );
+            calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+            calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+            }
+        }
+
+        if ( curr_load->hasLoadField("COEFH") ) {
+            auto exchange_field = curr_load->getConstantLoadField("COEFH");
+            calcul->setOption( "RIGI_THER_COEH_R" );
+            calcul->clearInputs();
+            calcul->clearOutputs();
+            calcul->setFiniteElementDescriptor( FEDesc );
+            calcul->addInputField( "PGEOMER",
+                                   _phys_problem->getModel()->getMesh()->getCoordinates() );
+            calcul->addInputField( "PCOEFHR", exchange_field );
+            calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+            calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+            }
+        }
+
+        if ( curr_load->hasLoadField("HECHP") ) {
+            auto wall_exchange_field = curr_load->getConstantLoadField("HECHP");
+            calcul->setOption( "RIGI_THER_PARO_R" );
+            calcul->clearInputs();
+            calcul->clearOutputs();
+            calcul->addInputField( "PGEOMER",
+                                   _phys_problem->getModel()->getMesh()->getCoordinates() );
+            calcul->addInputField( "PHECHPR", wall_exchange_field );
+            calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+            if ( isXfem ) {
+                XfemModelPtr currXfemModel = _phys_problem->getModel()->getXfemModel();
+                calcul->addXFEMField( currXfemModel );
+                calcul->setFiniteElementDescriptor( FEDesc );
+            }
+            else {
+                calcul->setFiniteElementDescriptor( load_FEDesc );
+            }
+            calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+            }
+        }
+    }
+
+    auto therLoadFunc = _listOfLoads->getThermalLoadsFunction();
+    for ( const auto &curIter : therLoadFunc ) {
+        auto FEDesc = _phys_problem->getModel()->getFiniteElementDescriptor();
+        auto load_FEDesc = curIter->getFiniteElementDescriptor();
+        auto curr_load = curIter->getThermalLoadDescription();
+
+        if ( curr_load->hasLoadField("COEFH") ) {
+            auto exchange_field = curr_load->getConstantLoadField("COEFH");
+            calcul->setOption( "RIGI_THER_COEH_F" );
+            calcul->clearInputs();
+            calcul->clearOutputs();
+            calcul->setFiniteElementDescriptor( FEDesc );
+            calcul->addInputField( "PGEOMER",
+                                   _phys_problem->getModel()->getMesh()->getCoordinates() );
+            calcul->addInputField( "PCOEFHF", exchange_field );
+            calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+            calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+            }
+
+        }
+
+        if ( curr_load->hasLoadField("HECHP") ) {
+            auto wall_exchange_field = curr_load->getConstantLoadField("HECHP");
+            calcul->setOption( "RIGI_THER_PARO_F" );
+            calcul->clearInputs();
+            calcul->clearOutputs();
+            calcul->addInputField( "PGEOMER",
+                                   _phys_problem->getModel()->getMesh()->getCoordinates() );
+            calcul->addInputField( "PHECHPF", wall_exchange_field );
+            calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+            if ( isXfem ) {
+                XfemModelPtr currXfemModel = _phys_problem->getModel()->getXfemModel();
+                calcul->addXFEMField( currXfemModel );
+                calcul->setFiniteElementDescriptor( FEDesc );
+            }
+            else {
+                calcul->setFiniteElementDescriptor( load_FEDesc );
+            }
+            calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) ) {
+                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
+            }
+        }
+    }
+    return;
+}

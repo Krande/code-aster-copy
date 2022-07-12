@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vrcref(modele, chmat, carele, chvref)
+subroutine vrcref(modele, chmat, carele, chvref, basez)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -39,6 +39,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
 #include "asterfort/utmess.h"
     character(len=8) :: modele, chmat, carele
     character(len=19) :: chvref
+    character(len=1), intent(in), optional :: basez
 ! ======================================================================
 !   BUT : FABRIQUER LE CHAMP DE VARIABLES DE COMMANDE DE "REFERENCE"
 !   ARGUMENTS :
@@ -65,11 +66,18 @@ subroutine vrcref(modele, chmat, carele, chvref)
     integer, pointer :: dclv(:) => null()
     character(len=8), pointer :: cvrc(:) => null()
     character(len=8), pointer :: cvvar(:) => null()
+    character(len=1) :: base
     save models,chmats,carels,chvres
     data models/' '/,chmats/' '/,carels/' '/,chvres/' '/
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+!
+    if( present(basez) ) then
+        base = basez
+    else
+        base = 'V'
+    endif
 !
 !     -- SI LE CHAMP A PRODUIRE EXISTE DEJA ET QUE LES ARGUMENTS
 !        SONT LES MEMES QUE LA FOIS PRECEDENTE, ON SORT RAPIDEMENT :
@@ -243,7 +251,7 @@ subroutine vrcref(modele, chmat, carele, chvref)
 !     ON LES TRANSFORME EN "NAN"
     call juvinn(csvref//'.CESV')
     call cescel(csvref, ligrmo, 'INIT_VARC', 'PVARCPR', 'NAN',&
-                nncp, 'V', chvref, 'F', ibid)
+                nncp, base, chvref, 'F', ibid)
     call detrsd('CHAM_ELEM_S', csvref)
 !
 999 continue

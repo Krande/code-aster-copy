@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,9 +65,9 @@ subroutine chflch(rigthe, vec2nd,infcha)
     character(len=24) :: vachtp, cnchtp, nomfct, vediri, vadirp, cndirp, inst
 !   ------------------------------------------------------------------------------------
     integer :: nbtych
-    parameter   (nbtych = 11)
+    parameter   (nbtych = 12)
     character(len=6) :: nomlig(nbtych)
-    nomlig=['.CIMPO'  ,'.SOURE'  ,'.FLURE'  ,'.FLUR2'  ,&
+    nomlig=['.CIMPO' ,'.SOURE'  ,'.SOURC'  ,'.FLURE'  ,'.FLUR2'  ,&
      &     '.T_EXT'  ,'.COEFH'  ,'.HECHP'  ,'.GRAIN'  ,'.FLUNL'  ,&
      &     '.SOUNL'  , '.RAYO '   ]
 !   ------------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ subroutine chflch(rigthe, vec2nd,infcha)
 !
 
 !   --- Dirichlet
-    call vedith(modele, infcha, inst, vediri)
+    call vedith(modele, charge, infoch, inst, vediri)
     call asasve(vediri, numedd, 'R', vadirp)
     call ascova('D', vadirp, fomult, 'INST', tpsthe(1),&
                 'R', cndirp)

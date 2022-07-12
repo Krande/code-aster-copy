@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,10 @@
 !
 !
 interface
-    subroutine vedime(model     , lload_name, lload_info, time, typres,&
-                      vect_elemz)
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: lload_name
-        character(len=24), intent(in) :: lload_info
-        real(kind=8), intent(in) :: time
-        character(len=*), intent(in) :: typres
-        character(len=*), intent(inout) :: vect_elemz
+    subroutine vedime(model, lload_name, lload_info, curr_time, typres, vect_elemz)
+        character(len=24), intent(in) :: model, lload_name, lload_info
+        real(kind=8), intent(in) :: curr_time
+        character(len=1), intent(in) :: typres
+        character(len=24), intent(inout) :: vect_elemz
     end subroutine vedime
 end interface

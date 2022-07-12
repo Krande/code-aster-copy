@@ -109,23 +109,21 @@ def _computeMatrix(disr_comp, matrix, time, externVar):
         AssemblyMatrixDisplacementReal: matrix computed and assembled
     """
 
-    matrix.clearElementaryMatrix()
     matr_elem = disr_comp.elasticStiffnessMatrix(time, externVarField=externVar)
     matrix.addElementaryMatrix(matr_elem)
-    matrix.assemble()
+    matrix.assemble(True)
 
     return matrix
 
 
 @profile
-def _computeRhs(phys_pb, disr_comp, time, timeField, externVarField):
+def _computeRhs(phys_pb, disr_comp, time, externVarField):
     """Compute and assemble the right hand side
 
     Arguments:
          phys_pb (PhysicalProblem): physical problem
          disr_comp (DiscreteComputation): to compute discrete quantities
          time (float): current time
-         timeField (ConstantFieldOnCell): field with value of current time
          externVarField (fieldOnCellsReal): external state variable at current time
 
      Returns:
@@ -133,13 +131,13 @@ def _computeRhs(phys_pb, disr_comp, time, timeField, externVarField):
     """
 
     # compute imposed displacement with Lagrange
-    rhs = disr_comp.imposedDisplacement(time)
+    rhs = disr_comp.imposedDualBC(time)
 
     # compute neumann forces
-    rhs += disr_comp.neumann([time, 0.0, 0.0], externVarField=externVarField)
+    rhs += disr_comp.neumann(time, 0, 0, externVarField=externVarField)
 
     if phys_pb.getMaterialField().hasExternalStateVariableForLoad():
-        rhs += disr_comp.computeExternalStateVariablesLoad(time, timeField, externVarField)
+        rhs += disr_comp.computeExternalStateVariablesLoad(time, externVarField)
 
     return rhs
 
@@ -246,20 +244,17 @@ def meca_statique_ops(self, **args):
         if hasExternalStateVariable:
             phys_state.externVar = disc_comp.createExternalStateVariablesField(phys_state.time)
 
-        # Update time field
-        timeField = disc_comp.createTimeField(phys_state.time)
-
         # compute matrix and factorize it
         if not isConst or isFirst:
             matrix = _computeMatrix(disc_comp, matrix, phys_state.time, phys_state.externVar)
             profile(linear_solver.factorize)(matrix)
 
         # compute rhs
-        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time, timeField, phys_state.externVar)
+        rhs = _computeRhs(phys_pb, disc_comp, phys_state.time, phys_state.externVar)
 
         # solve linear system
         diriBCs = profile(disc_comp.dirichletBC)(phys_state.time)
-        phys_state.displ = profile(linear_solver.solve)(rhs, diriBCs)
+        phys_state.primal = profile(linear_solver.solve)(rhs, diriBCs)
 
         # store rank
         storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state)

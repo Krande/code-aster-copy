@@ -140,7 +140,7 @@ class ParallelMechanicalLoad : public DataStructure {
         _modelName->allocate( 1 );
         ( *_modelName )[0] = model->getName();
 
-        transferConstantFieldOnCells( load->getMechanicalLoadDescription()->getImpositionField(),
+        transferConstantFieldOnCells( load->getMechanicalLoadDescription()->getImposedField(),
                                       _cimpo );
         transferConstantFieldOnCells(
             load->getMechanicalLoadDescription()->getMultiplicativeField(), _cmult );

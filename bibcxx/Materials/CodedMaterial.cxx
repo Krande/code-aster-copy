@@ -36,9 +36,10 @@ CodedMaterial::CodedMaterial( const std::string &name, const MaterialFieldPtr &m
     : DataStructure( name, 19, "MATER_CODE" ),
       _mater( mater ),
       _model( model ),
-      _field( std::make_shared< ConstantFieldOnCellsLong >( getName(), _model->getMesh() ) ),
-      _grp( JeveuxVectorChar8( getName() + ".GRP" ) ),
-      _nGrp( JeveuxVectorLong( getName() + ".NGRP" ) ){};
+      _field( std::make_shared< ConstantFieldOnCellsLong >( trim(getName()) + ".MATE_CODE",
+                                                            _model->getMesh() ) ),
+      _grp( JeveuxVectorChar8( ljust (_field->getName() + ".GRP", 24) ) ),
+      _nGrp( JeveuxVectorLong( ljust (_field->getName() + ".NGRP", 24) ) ){};
 
 bool CodedMaterial::allocate( bool force ) {
     if ( !force && _field->exists() )
@@ -108,8 +109,17 @@ bool CodedMaterial::constant() const {
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
     const std::string arret( "C" );
-    const std::string questi( "ELAS_FO" );
+    std::string questi;
 
+    if ( _model->isMechanical() ) {
+        questi = "ELAS_FO";
+    }
+    else if ( _model->isThermal() ) {
+        questi = "THER_F_INST";
+    }
+    else {
+        AS_ASSERT( false );
+    }
     CALLO_DISMOI( questi, _mater->getName(), typeco, &repi, repk, arret, &ier );
     auto retour = trim( repk.toString() );
     if ( retour == "OUI" )

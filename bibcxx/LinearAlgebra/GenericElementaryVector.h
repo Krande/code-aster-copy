@@ -215,6 +215,16 @@ class GenericElementaryVector : public BaseElementaryVector {
     };
 
     /**
+     * @brief Add elementary term
+     */
+    void addElementaryTerm( const std::shared_ptr< ElementaryTerm< ValueType > > &elemTerm,
+                            const ASTERINTEGER iload ) {
+        CALLO_CORICHWRITE( elemTerm->getName(), &iload );
+        _elemComp->addElementaryTerm( elemTerm->getName());
+        _elemTerm.push_back( elemTerm );
+    };
+
+    /**
      * @brief Assembly with dofNume
      * @param dofNume object DOFNumbering
      */

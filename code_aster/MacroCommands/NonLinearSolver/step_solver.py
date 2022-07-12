@@ -77,7 +77,7 @@ class StepSolver:
             phys_state (PhysicalState): Physical state
         """
         self.phys_state = phys_state
-        self.phys_state.displ_incr = self.phys_state.createDisplacement(self.phys_pb, 0.0)
+        self.phys_state.primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
     def getPhysicalState(self):
         """Get the physical state.
@@ -95,23 +95,23 @@ class StepSolver:
         """
         self.linear_solver = linear_solver
 
-    def updatePhysicalState(self, displ_incr, internVar, sigma, timeFieldEndStep, convManager):
+    def updatePhysicalState(self, primal_incr, internVar, sigma, timeEndStep, convManager):
         """Update the physical state.
 
         Arguments:
-            displ_incr (FieldOnNodes): Displacement increment.
+            primal_incr (FieldOnNodes): Displacement increment.
             internVar (FieldOnCells): Internal state variables.
             sigma (FieldOnCells): Stress field.
-            timeFieldEndStep (ConstantFieldOnCellsReal): field for time at end of time step
+            timeEndStep (float): time at end of time step
             convManager (ConvergenceManager): Object that manages the
                 convergency criteria.
         """
-        self.phys_state.displ_incr += displ_incr
+        self.phys_state.primal_incr += primal_incr
 
         if convManager.hasConverged():
             self.phys_state.internVar = internVar
             self.phys_state.stress = sigma
-            self.phys_state.time_field = timeFieldEndStep
+            self.phys_state.time = timeEndStep
 
     def setPrediction(self, prediction):
         """Select type of prediction.
@@ -201,9 +201,7 @@ class StepSolver:
         logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
         disc_comp = DiscreteComputation(self.phys_pb)
-        timeFieldEndStep = disc_comp.createTimeField(
-            self.phys_state.time + self.phys_state.time_step
-        )
+        timeEndStep = self.phys_state.time + self.phys_state.time_step
 
         while not self.hasFinished() and not convManager.hasConverged():
             iteration = self.createIncrementalSolver()
@@ -216,12 +214,12 @@ class StepSolver:
             matrix_type = self._setMatrixType()
 
             # Solve current iteration
-            displ_incr, internVar, sigma, self.current_matrix = iteration.solve(
-                matrix_type, timeFieldEndStep, self.current_matrix
+            primal_incr, internVar, sigma, self.current_matrix = iteration.solve(
+                matrix_type, timeEndStep, self.current_matrix
             )
 
             # Update physical state
-            self.updatePhysicalState(displ_incr, internVar, sigma, timeFieldEndStep, convManager)
+            self.updatePhysicalState(primal_incr, internVar, sigma, timeEndStep, convManager)
 
             logManager.printConvTableRow(
                 [

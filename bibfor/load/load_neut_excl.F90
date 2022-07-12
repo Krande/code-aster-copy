@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum = 10)
+    parameter (nb_type_neum = 11)
     aster_logical :: list_load_keyw(nb_type_neum)
     integer :: nb_excl_tnlm, nb_excl_cve, nb_excl_cme
     parameter (nb_excl_tnlm = 1, nb_excl_cve = 1, nb_excl_cme = 1)

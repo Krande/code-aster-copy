@@ -97,7 +97,7 @@ listLoads = study.getListOfLoads()
 study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 # compute Neumann
-retour = dComputation.neumann([1, 0, 0])
+retour = dComputation.neumann(1,0,0)
 matr_elem = dComputation.elasticStiffnessMatrix()
 
 test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")

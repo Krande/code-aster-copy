@@ -126,7 +126,7 @@ character(len=24) :: matass, cndirp, cnchci, cnchtp
 !
 ! ----- TEMPERATURES IMPOSEES                                  ---> CNDIRP
 !
-        call vedith(model, list_load, time, vediri)
+        call vedith(model, lload_name, lload_info, time, vediri)
         call asasve(vediri, nume_dof, typres, vadirp)
         call ascova('D', vadirp, lload_func, 'INST', tpsthe(1),&
                     typres, cndirp)

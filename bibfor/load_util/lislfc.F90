@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine lislfc(list_load_resu, i_load      , i_excit   , l_load_user,&
-                  l_func_c      , load_keyword, const_func, load_func)
+                  l_func_c      , load_keyword, const_func, load_func, base)
 !
 implicit none
 !
@@ -39,6 +39,7 @@ aster_logical, intent(in) :: l_load_user, l_func_c
 character(len=16), intent(in) :: load_keyword
 character(len=8), intent(inout) :: const_func
 character(len=8), intent(out) :: load_func
+character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,11 +100,11 @@ character(len=8), intent(out) :: load_func
             if (nb_coef_c .eq. 0) then
                 call getvr8(load_keyword, 'COEF_MULT', iocc=i_load, scal=coef_r, nbret=nb_coef_r)
                 ASSERT(nb_coef_r.eq.0)
-                call focste(load_func, 'TOUTRESU', coef_r, 'V')
+                call focste(load_func, 'TOUTRESU', coef_r, base)
             else
                 coef_r    = dble ( coef_c )
                 coef_imag = dimag( coef_c )
-                call focstc(load_func, 'TOUTRESU', coef_r, coef_imag, 'V')
+                call focstc(load_func, 'TOUTRESU', coef_r, coef_imag, base)
             endif
         endif
     endif
@@ -137,7 +138,7 @@ character(len=8), intent(out) :: load_func
             call jeexin(nomf19//'.PROL', iret)
             if (iret .eq. 0) then
                 coef_r = 1.d0
-                call focste(const_func, 'TOUTRESU', coef_r, 'V')
+                call focste(const_func, 'TOUTRESU', coef_r, base)
             endif
             load_func = const_func
         else

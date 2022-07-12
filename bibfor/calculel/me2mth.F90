@@ -21,6 +21,7 @@ subroutine me2mth(model_, nb_load, list_name_, cara_elem_,&
 !
 implicit none
 !
+#include "asterfort/assert.h"
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
@@ -208,6 +209,24 @@ implicit none
                     lpain(3) = 'PSOURCR'
                 endif
                 lchin(3) = ligrch(1:13)//'.SOURE     '
+                ilires = ilires + 1
+                call codent(ilires, 'D0', lchout(1) (12:14))
+                call calcul('S', option, ligrmo, 3, lchin,&
+                            lpain, 1, lchout, lpaout, 'G',&
+                            'OUI')
+                call reajre(vect_elem, lchout(1), 'G')
+            endif
+!  =====================================================================
+!           --   ( CHAR_THER_SOUR_R , CALC    )  SUR LE MODELE
+            call exisd('CHAMP_GD', ligrch(1:13)//'.SOURC', iret)
+            if (iret .ne. 0) then
+                if (lfonc) then
+                    ASSERT(.false.)
+                else
+                    option = 'CHAR_THER_SOUR_R'
+                    lpain(3) = 'PSOURCR'
+                endif
+                lchin(3) = ligrch(1:13)//'.SOURC     '
                 ilires = ilires + 1
                 call codent(ilires, 'D0', lchout(1) (12:14))
                 call calcul('S', option, ligrmo, 3, lchin,&

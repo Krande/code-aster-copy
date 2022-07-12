@@ -142,9 +142,9 @@ void Result::setModel( const ModelPtr &model, ASTERINTEGER rank ) {
     setMesh( model->getMesh() );
 };
 
-void Result::setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ) {
-    std::string type( "INST" );
-    CALLO_RSADPA_ZR_WRAP( getName(), &rank, &value, type );
+void Result::setParameterValue( std::string name,
+                                ASTERDOUBLE value, ASTERINTEGER rank ) {
+    CALLO_RSADPA_ZR_WRAP( getName(), &rank, &value, name );
 };
 
 ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {

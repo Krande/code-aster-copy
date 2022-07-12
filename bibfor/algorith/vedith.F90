@@ -16,125 +16,156 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vedith(model, list_load, time, vect_elem_)
+subroutine vedith(model, lload_name, lload_info, time, vect_elemz)
 !
-implicit none
+  implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/calcul.h"
-#include "asterfort/corich.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/gcnco2.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/megeom.h"
+#include "asterfort/inical.h"
+#include "asterfort/load_list_info.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/megeom.h"
+#include "asterfort/mecact.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/corich.h"
+#include "asterfort/calcul.h"
 !
 !
-    character(len=24), intent(in) :: model
-    character(len=19), intent(in) :: list_load
-    character(len=24), intent(in) :: time
-    character(len=24), intent(inout) :: vect_elem_
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Thermics - Load
-!
-! Elementary vector for Dirichlet BC
+  character(len=24), intent(in) :: model, time, lload_name, lload_info
+  character(len=24), intent(inout) :: vect_elemz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of model
-! In  list_load        : name for list of loads
-! In  time             : time (<CARTE>)
-! IO  vect_elem        : elementary vector
+! Compute Dirichlet loads
+!
+! For Lagrange elements (AFFE_CHAR_THER) - T(given)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: nomch0, nomcha
-    character(len=8) :: lpain(3), paout, newnom
-    character(len=16) :: option
-    character(len=19) :: vect_elem
-    character(len=24) :: ligrch, lchin(3), resu_elem, chgeom
-    integer :: iret, nb_load, jinf, jchar, i_load
-    integer :: numdi
-    aster_logical :: bidon
-    character(len=24) :: lload_name, lload_info
+! In  model          : name of model
+! In  lload_name     : name of object for list of loads name
+! In  lload_info     : name of object for list of loads info
+! In  time           : time (<CARTE>)
+! IO  vect_elem      : name of vect_elem result
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    newnom = '.0000000'
-    bidon = .true.
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
+  integer, parameter :: nbin = 3
+  integer, parameter :: nbout = 1
+  character(len=8) :: lpain(nbin), lpaout(nbout)
+  character(len=24) :: lchin(nbin), lchout(nbout)
 !
-    call jeexin(lload_name, iret)
-    if (iret .ne. 0) then
-        call jelira(lload_name, 'LONMAX', nb_load)
-        if (nb_load .ne. 0) then
-            bidon = .false.
-            call jeveuo(lload_name, 'L', jchar)
-            call jeveuo(lload_info, 'L', jinf)
+  character(len=8) :: load_name, newnom
+  character(len=16) :: option
+  character(len=19) :: vect_elem
+  character(len=24) :: ligrch, chgeom, resu_elem
+  integer :: load_nume, nb_load, i_load
+  character(len=24), pointer :: v_load_name(:) => null()
+  integer, pointer :: v_load_info(:) => null()
+  aster_logical :: load_empty
+  character(len=1) :: base
+!
+! --------------------------------------------------------------------------------------------------
+!
+  call jemarq()
+!
+! - Initializations
+!
+  newnom = '.0000000'
+  resu_elem = '&&VEDITH.???????'
+  base      = 'V'
+!
+! - Init fields
+!
+  call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
+!
+! - Result name for vect_elem
+!
+  vect_elem = vect_elemz(1:19)
+  if (vect_elem .eq. ' ') then
+     vect_elem = '&&VEDITH'
+  endif
+!
+! - Loads
+!
+  call load_list_info(load_empty, nb_load  , v_load_name, v_load_info,&
+                      lload_name, lload_info)
+!
+! - Allocate result
+!
+  call detrsd('VECT_ELEM', vect_elem)
+  call memare(base, vect_elem, model, ' ', ' ',&
+       'CHAR_THER')
+  call reajre(vect_elem, ' ', base)
+  if (load_empty) then
+     goto 99
+  endif
+!
+! - Geometry field
+!
+  call megeom(model, chgeom)
+!
+! - Input fields
+!
+  lpain(1)  = 'PGEOMER'
+  lchin(1)  = chgeom(1:19)
+  lpain(2)  = 'PTEMPSR'
+  lchin(2)  = time(1:19)
+!
+! - Output field
+!
+  lpaout(1) = 'PVECTTR'
+!
+! - Computation
+!
+  do i_load = 1, nb_load
+     load_name = v_load_name(i_load)(1:8)
+     load_nume = v_load_info(i_load+1)
+     if ((load_nume.gt.0) .and. (load_nume.le.3)) then
+        ligrch = load_name//'.CHTH.LIGRE'
+!
+! --------- Input field
+!
+        lchin(3) = load_name//'.CHTH.CIMPO.DESC'
+        if (load_nume .eq. 1) then
+           option = 'THER_DDLI_R'
+           lpain(3) = 'PDDLIMR'
+        else if (load_nume.eq.2) then
+           option = 'THER_DDLI_F'
+           lpain(3) = 'PDDLIMF'
+        else if (load_nume.eq.3) then
+           option = 'THER_DDLI_F'
+           lpain(3) = 'PDDLIMF'
         endif
-    endif
 !
-    vect_elem = '&&VEDITH'
-    resu_elem = '&&VEDITH.???????'
+! --------- Generate new RESU_ELEM name
 !
-!     -- ALLOCATION DU VECT_ELEM :
-!     -----------------------------
-    call detrsd('VECT_ELEM', vect_elem)
-    call memare('V', vect_elem, model(1:8), ' ', ' ',&
-                'CHAR_THER')
-    call reajre(vect_elem, ' ', 'V')
-    if (bidon) goto 40
+        call gcnco2(newnom)
+        resu_elem(10:16) = newnom(2:8)
+        call corich('E', resu_elem, ichin_ = i_load)
+        lchout(1) = resu_elem
 !
-    call megeom(model(1:8), chgeom)
+! --------- Computation
 !
-    paout = 'PVECTTR'
-    lpain(2) = 'PGEOMER'
-    lchin(2) = chgeom
-    lpain(3) = 'PTEMPSR'
+        call calcul('S', option, ligrch, nbin, lchin,&
+                    lpain, nbout, lchout, lpaout, base,&
+                    'OUI')
 !
-    lchin(3) = time
+! --------- Copying output field
 !
-    do i_load = 1, nb_load
-        numdi = zi(jinf+i_load)
-        if (numdi .gt. 0) then
-            nomch0 = zk24(jchar+i_load-1) (1:8)
-            ligrch = nomch0//'.CHTH.LIGRE'
-            nomcha = nomch0
-            lchin(1) = nomcha//'.CHTH.CIMPO.DESC'
-            if (numdi .eq. 1) then
-                option = 'THER_DDLI_R'
-                lpain(1) = 'PDDLIMR'
-            else if (numdi.eq.2) then
-                option = 'THER_DDLI_F'
-                lpain(1) = 'PDDLIMF'
-            else if (numdi.eq.3) then
-                option = 'THER_DDLI_F'
-                lpain(1) = 'PDDLIMF'
-            endif
+        call reajre(vect_elem, lchout(1), base)
 !
-            call gcnco2(newnom)
-            resu_elem(10:16) = newnom(2:8)
-            call corich('E', resu_elem, ichin_ = i_load)
+     endif
+  end do
 !
-            call calcul('S', option, ligrch, 3, lchin,&
-                        lpain, 1, resu_elem, paout, 'V',&
-                        'OUI')
-            call reajre(vect_elem, resu_elem, 'V')
-        endif
-    end do
+99 continue
 !
- 40 continue
+  vect_elemz = vect_elem//'.RELR'
 !
-    vect_elem_ = vect_elem//'.RELR'
-    call jedema()
+  call jedema()
 end subroutine

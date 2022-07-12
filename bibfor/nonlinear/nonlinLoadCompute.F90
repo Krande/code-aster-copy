@@ -97,7 +97,7 @@ aster_logical, optional, intent(in) :: prediction_
 !
     integer :: ifm, niv
     character(len=24) :: lload_name, lload_info, lload_func, lload_fcss
-    character(len=19) :: vect_elem, vect_asse
+    character(len=24) :: vect_elem, vect_asse
     character(len=24) :: vect_alem
     aster_logical :: l_pilo, l_lapl, l_diri_undead, l_sstf, l_hho, l_load_cine
     real(kind=8) :: time_list(3)
@@ -173,8 +173,7 @@ aster_logical, optional, intent(in) :: prediction_
         (mode .eq. 'VARI' .and. l_diri_undead)) then
         call nmchex(hval_veelem, 'VEELEM', 'CNDIDO', vect_elem)
         call nmchex(hval_veasse, 'VEASSE', 'CNDIDO', vect_asse)
-        call vedime(model, lload_name, lload_info, time_curr, 'R',&
-                    vect_elem)
+        call vedime(model, lload_name, lload_info, time_curr, 'R', vect_elem)
         call asasve(vect_elem, nume_dof, 'R', vect_alem)
         call ascova('D', vect_alem, lload_func, 'INST', time_curr,&
                     'R', vect_asse)

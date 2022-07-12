@@ -50,7 +50,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum = 10)
+    parameter (nb_type_neum = 11)
 !
     character(len=24) :: load_keyw, obje_name
     character(len=19) :: cart_name(2)

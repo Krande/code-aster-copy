@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,7 @@
 !
 !
 interface
-    subroutine xthpos(result, modele)
-        character(len=8), intent(in) :: result
-        character(len=24), intent(in) ::  modele
+    subroutine xthpos(resuin, resuou)
+        character(len=8), intent(in) :: resuin, resuou
     end subroutine xthpos
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vechme_wrap(stop     , modelz, lload_namez, lload_infoz, inst,&
+subroutine vechme_wrap(stop , modelz, lload_namez, lload_infoz,&
+                       time_value, time_delta, time_theta,&
                        cara_elem, mate  , mateco, vect_elemz , varc_currz)
 !
 implicit none
@@ -30,7 +31,7 @@ implicit none
     character(len=*), intent(in) :: modelz
     character(len=*), intent(in) :: lload_namez
     character(len=*), intent(in) :: lload_infoz
-    real(kind=8), intent(in) :: inst(3)
+    real(kind=8), intent(in) :: time_value, time_delta, time_theta
     character(len=*), intent(in) :: cara_elem
     character(len=*), intent(in) :: mate, mateco
     character(len=*), intent(inout) :: vect_elemz
@@ -60,6 +61,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    real(kind=8) :: inst(3)
+    inst(1) = time_value
+    inst(2) = time_delta
+    inst(3) = time_theta
     call vechme(stop     , modelz, lload_namez, lload_infoz, inst        ,&
                 cara_elem, mate  , mateco, vect_elemz , varc_currz = varc_currz)
 !

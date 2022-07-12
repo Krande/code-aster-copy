@@ -35,7 +35,19 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField( const ASTERDOUBLE time ) {
+ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField(const ASTERDOUBLE time_value,
+                                                                 const ASTERDOUBLE time_delta,
+                                                                 const ASTERDOUBLE time_theta ) {
+
+    int sz = 1;
+    if ( _phys_problem->getModel()->isThermal() )
+        sz = 6;
+
+    VectorString para_names = { "INST", "DELTAT", "THETA", "KHI", "R", "RHO" };
+    VectorReal para_values = { time_value, time_delta, time_theta, 0., 0., 0. };
+
+    VectorString reduced_names = VectorString (para_names.begin(), para_names.begin() + sz);
+    VectorReal reduced_values = VectorReal (para_values.begin(), para_values.begin() + sz);
 
     // Get mesh
     auto mesh = _phys_problem->getMesh();
@@ -43,21 +55,21 @@ ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField( const ASTERDOU
     // Create field
     auto field = std::make_shared< ConstantFieldOnCellsReal >( mesh );
 
-    // Get JEVEUX names of objects to call Fortran
     const std::string physicalName( "INST_R" );
     field->allocate( physicalName );
     ConstantFieldOnZone a( mesh );
-    ConstantFieldValues< ASTERDOUBLE > b( { "INST" }, { time } );
+    ConstantFieldValues< ASTERDOUBLE > b( reduced_names, reduced_values );
     field->setValueOnZone( a, b );
 
     return field;
 }
 
 FieldOnCellsRealPtr
-DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time ) {
+DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time_value ) {
 
     // Create field
-    auto field = std::make_shared< FieldOnCellsReal >();
+    auto FEDesc = _phys_problem->getModel()->getFiniteElementDescriptor();
+    auto field = std::make_shared< FieldOnCellsReal >( FEDesc );
 
     // Get JEVEUX names of objects to call Fortran
     std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
@@ -71,9 +83,11 @@ DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time )
 
     // Output
     std::string out( ' ', 2 );
+    std::string base( "G" );
 
     // Call Fortran WRAPPER
-    CALLO_VRCINS_WRAP( modelName, materialFieldName, elemCharaName, &time, fieldName, out );
+    CALLO_VRCINS_WRAP( modelName, materialFieldName, elemCharaName,
+                       &time_value, fieldName, out, base );
 
     return field;
 }
@@ -81,7 +95,8 @@ DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time )
 FieldOnCellsRealPtr DiscreteComputation::computeExternalStateVariablesReference() const {
 
     // Create field
-    auto field = std::make_shared< FieldOnCellsReal >();
+    auto FEDesc = _phys_problem->getModel()->getFiniteElementDescriptor();
+    auto field = std::make_shared< FieldOnCellsReal >( FEDesc );
 
     // Get JEVEUX names of objects to call Fortran
     std::string modelName = ljust( _phys_problem->getModel()->getName(), 8 );
@@ -91,16 +106,17 @@ FieldOnCellsRealPtr DiscreteComputation::computeExternalStateVariablesReference(
     if ( currElemChara )
         elemCharaName = std::string( currElemChara->getName(), 0, 8 );
     std::string fieldName = ljust( field->getName(), 19 );
+    std::string base( "G" );
 
     // Call Fortran WRAPPER
-    CALLO_VRCREF( modelName, materialFieldName, elemCharaName, fieldName );
+    CALLO_VRCREF( modelName, materialFieldName, elemCharaName, fieldName, base );
 
     return field;
 }
 
 CalculPtr DiscreteComputation::createCalculForNonLinear(
-    const std::string option, const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-    const ConstantFieldOnCellsRealPtr _timeFieldCurr, const FieldOnCellsRealPtr _externVarFieldPrev,
+    const std::string option, const ASTERDOUBLE &time_prev,
+    const ASTERDOUBLE &time_curr, const FieldOnCellsRealPtr _externVarFieldPrev,
     const FieldOnCellsRealPtr _externVarFieldCurr, const VectorString &groupOfCells ) {
 
     // Get main parameters
@@ -149,14 +165,8 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
     }
 
     // Add time fields
-    if ( !_timeFieldPrev ) {
-        AS_ABORT( "Time field for beginning of time step is missing" )
-    }
-    if ( !_timeFieldCurr ) {
-        AS_ABORT( "Time field for end of time step is missing" )
-    }
-    _calcul->addInputField( "PINSTMR", _timeFieldPrev );
-    _calcul->addInputField( "PINSTPR", _timeFieldCurr );
+    _calcul->addTimeField( "PINSTMR", time_prev );
+    _calcul->addTimeField( "PINSTPR", time_curr );
 
     // Add input fields
     _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );

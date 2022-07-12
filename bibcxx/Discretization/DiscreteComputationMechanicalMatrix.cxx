@@ -34,9 +34,11 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
-    const ASTERDOUBLE &time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
-    const FieldOnCellsRealPtr _externVarField ) {
+ElementaryMatrixDisplacementRealPtr
+DiscreteComputation::elasticStiffnessMatrix(const ASTERDOUBLE &time_value,
+                                            const ASTERINTEGER &modeFourier,
+                                            const VectorString &groupOfCells,
+                                            const FieldOnCellsRealPtr _externVarField ) {
 
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
@@ -87,7 +89,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
         _calcul->addElementaryCharacteristicsField( currElemChara );
     }
     _calcul->addFourierModeField( modeFourier );
-    _calcul->addTimeField( "PTEMPSR", time );
+    _calcul->addTimeField( "PTEMPSR", time_value );
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
         _calcul->addXFEMField( currXfemModel );
@@ -113,7 +115,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     return elemMatr;
 };
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::massMatrix( const ASTERDOUBLE &time, const VectorString &groupOfCells,
+DiscreteComputation::massMatrix( const ASTERDOUBLE &time_value, const VectorString &groupOfCells,
                                  const FieldOnCellsRealPtr _externVarField ) {
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
     // Get main parameters
@@ -188,7 +190,7 @@ DiscreteComputation::massMatrix( const ASTERDOUBLE &time, const VectorString &gr
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix,
                                     const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
-                                    const ASTERDOUBLE &time, const VectorString &groupOfCells,
+                                    const ASTERDOUBLE &time_value, const VectorString &groupOfCells,
                                     const FieldOnCellsRealPtr _externVarField ) {
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
     // Get main parameters
@@ -399,8 +401,8 @@ std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealP
 DiscreteComputation::computeTangentStiffnessMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-    const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-    const ConstantFieldOnCellsRealPtr _timeFieldCurr, const VectorString &groupOfCells ) {
+    const ASTERDOUBLE &time_prev,
+    const ASTERDOUBLE &time_curr, const VectorString &groupOfCells ) {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -416,7 +418,7 @@ DiscreteComputation::computeTangentStiffnessMatrix(
 
     // Prepare computing:
     CalculPtr _calcul =
-        createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr, _externVarFieldPrev,
+        createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
                                   _externVarFieldCurr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
 
@@ -439,7 +441,7 @@ DiscreteComputation::computeTangentStiffnessMatrix(
     elemMatr->prepareCompute( option );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >();
     elemVect->setModel( currModel );
     elemVect->setMaterialField( currMater );
     elemVect->setElementaryCharacteristics( currElemChara );
@@ -492,8 +494,8 @@ std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealP
 DiscreteComputation::computeTangentPredictionMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-    const ConstantFieldOnCellsRealPtr _timeFieldPrev,
-    const ConstantFieldOnCellsRealPtr _timeFieldCurr, const VectorString &groupOfCells ) {
+    const ASTERDOUBLE &time_prev,
+    const ASTERDOUBLE &time_curr, const VectorString &groupOfCells ) {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -509,7 +511,7 @@ DiscreteComputation::computeTangentPredictionMatrix(
 
     // Prepare computing:
     CalculPtr _calcul =
-        createCalculForNonLinear( option, _timeFieldPrev, _timeFieldCurr, _externVarFieldPrev,
+        createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
                                   _externVarFieldCurr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
 
@@ -532,7 +534,7 @@ DiscreteComputation::computeTangentPredictionMatrix(
     elemMatr->prepareCompute( option );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >();
+    auto elemVect = std::make_shared< ElementaryVectorReal >();
     elemVect->setModel( currModel );
     elemVect->setMaterialField( currMater );
     elemVect->setElementaryCharacteristics( currElemChara );

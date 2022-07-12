@@ -49,6 +49,6 @@ class LoadResult : public TransientResult {
  * @typedef LoadResultPtr
  * @brief Pointeur intelligent vers un LoadResult
  */
-typedef std::shared_ptr< LoadResult > LoadResultPtr;
+using LoadResultPtr = std::shared_ptr< LoadResult >;
 
 #endif /* EVOLUTIVELOAD_H_ */

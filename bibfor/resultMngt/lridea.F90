@@ -140,6 +140,7 @@ character(len=4), intent(in) :: storePara
 !
     zero = 0.d0
     fieldTypeSave=' '
+    prolo = ' '
 !
     zcmplx = .false.
     ligrel = model//'.MODELE'

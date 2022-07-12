@@ -81,7 +81,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum=10)
+    parameter (nb_type_neum=11)
 !
     integer :: i_type_neum, nb_in_add
     character(len=16) :: load_option

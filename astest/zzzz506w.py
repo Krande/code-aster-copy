@@ -74,14 +74,12 @@ internVar.setValues(value)
 disc_comp = code_aster.DiscreteComputation(phys_pb)
 
 # Time
-value = 0.0
-timeFieldBeginStep = disc_comp.createTimeField(value)
-value = 1.0
-timeFieldEndStep = disc_comp.createTimeField(value)
+timeBeginStep = 0.0
+timeEndStep = 1.0
 
 # Compute tangent prediction matrix
 res = disc_comp.computeTangentStiffnessMatrix(
-    disp, disp_incr, stress, internVar, timeFieldBeginStep, timeFieldEndStep
+    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep
 )
 matrElem = res[2]
 
@@ -96,11 +94,11 @@ fieldResuRefe = RESOUDRE(MATR=matrAsseRef, CHAM_NO=zero, CHAM_CINE=kinematicFiel
 
 # Compute tangent prediction matrices
 res1 = disc_comp.computeTangentStiffnessMatrix(
-    disp, disp_incr, stress, internVar, timeFieldBeginStep, timeFieldEndStep, ["CoucheHaut"]
+    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep, ["CoucheHaut"]
 )
 matrElem1 = res1[2]
 res2 = disc_comp.computeTangentStiffnessMatrix(
-    disp, disp_incr, stress, internVar, timeFieldBeginStep, timeFieldEndStep, ["CoucheBas"]
+    disp, disp_incr, stress, internVar, timeBeginStep, timeEndStep, ["CoucheBas"]
 )
 matrElem2 = res2[2]
 

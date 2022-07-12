@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,8 @@
 !
 !
 interface
-    subroutine vedith(model, list_load, time, vect_elem_)
-        character(len=24), intent(in) :: model
-        character(len=19), intent(in) :: list_load
-        character(len=24), intent(in) :: time
-        character(len=24), intent(inout) :: vect_elem_
+    subroutine vedith(model, lload_name, lload_info, time, vect_elemz)
+        character(len=24), intent(in) :: model, time, lload_name, lload_info
+        character(len=24), intent(inout) :: vect_elemz
     end subroutine vedith
 end interface

@@ -27,7 +27,7 @@ class PhysicalState:
 
     _time = _time_step = None
     _time_field = None
-    _displ = _displ_incr = _internVar = _stress = _externVar = None
+    _primal = _primal_incr = _internVar = _stress = _externVar = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @property
@@ -59,32 +59,32 @@ class PhysicalState:
         self._time_step = value
 
     @property
-    def displ(self):
-        """FieldOnNodesReal: Displacement field."""
-        return self._displ
+    def primal(self):
+        """FieldOnNodesReal: Primal field."""
+        return self._primal
 
-    @displ.setter
-    def displ(self, field):
-        """Set displacement field.
+    @primal.setter
+    def primal(self, field):
+        """Set primal field.
 
         Arguments:
-           field (FieldOnNodesReal): displacement
+           field (FieldOnNodesReal): primal
         """
-        self._displ = field
+        self._primal = field
 
     @property
-    def displ_incr(self):
-        """FieldOnNodesReal: Displacement increment."""
-        return self._displ_incr
+    def primal_incr(self):
+        """FieldOnNodesReal: Primal increment."""
+        return self._primal_incr
 
-    @displ_incr.setter
-    def displ_incr(self, field):
-        """Set displacement increment.
+    @primal_incr.setter
+    def primal_incr(self, field):
+        """Set primal increment.
 
         Arguments:
-            field (FieldOnNodesReal): Displacement increment
+            field (FieldOnNodesReal): Primal increment
         """
-        self._displ_incr = field
+        self._primal_incr = field
 
     @property
     def stress(self):
@@ -133,25 +133,16 @@ class PhysicalState:
         """ConstantFieldOnCellsReal: time field."""
         return self._time_field
 
-    @time_field.setter
-    def time_field(self, field):
-        """Set time field.
-
-        Arguments:
-           field (ConstantFieldOnCellsReal): time field
-        """
-        self._time_field = field
-
     @profile
-    def createDisplacement(self, phys_pb, value):
-        """Create displacement field with a given value
+    def createPrimal(self, phys_pb, value):
+        """Create primal field with a given value
 
         Arguments:
             phys_pb (PhysicalProblem): Physical problem
             value (float): value to set everywhere
 
         Returns:
-            FieldOnNodes: displacement field with a given value (DEPL)
+            FieldOnNodes: primal field with a given value (DEPL|TEMP)
         """
         field = FieldOnNodesReal(phys_pb.getDOFNumbering())
         field.setValues(value)
@@ -227,12 +218,11 @@ class PhysicalState:
         Arguments:
             phys_pb (PhysicalProblem): Physical problem
         """
-        self._displ = self.createDisplacement(phys_pb, 0.0)
+        self._primal = self.createPrimal(phys_pb, 0.0)
         self._internVar = self.createInternalVariablesNext(phys_pb, 0.0)
         self._stress = self.createStress(phys_pb, 0.0)
         self._time = 0.0
         self._time_step = 0.0
-        self._time_field = self.createTimeField(phys_pb, 0.0)
 
     @profile
     def readInitialState(self, phys_pb, params):
@@ -252,15 +242,18 @@ class PhysicalState:
         except AttributeError:
             init_time = 0
         self._time = init_time
-        self._time_field = self.createTimeField(phys_pb, init_time)
 
-        # Get initial state: displacement, stress, internal state variables
+        # Get initial state: primal, stress, internal state variables
         init_params = params.get("ETAT_INIT")
         if init_params is not None:
             if "DEPL" in init_params:
-                displ = init_params.get("DEPL")
-                assert isinstance(displ, FieldOnNodesReal)
-                self._displ = displ
+                primal = init_params.get("DEPL")
+                assert isinstance(primal, FieldOnNodesReal)
+                self._primal = primal
+            if "TEMP" in init_params:
+                primal = init_params.get("TEMP")
+                assert isinstance(primal, FieldOnNodesReal)
+                self._primal = primal
             if "SIGM" in init_params:
                 stress = init_params.get("SIGM")
                 assert isinstance(stress, FieldOnCellsReal)
@@ -284,9 +277,9 @@ class PhysicalState:
         Arguments:
             other (PhysicalState): physical model
         """
-        # displ in two steps to create a new object (and not modified previous values)
-        displ_up = self._displ + other.displ_incr
-        self._displ = displ_up
+        # primal in two steps to create a new object (and not modified previous values)
+        primal_up = self._primal + other.primal_incr
+        self._primal = primal_up
         self._internVar = other.internVar
         self._stress = other.stress
         self._time += other.time_step
@@ -307,7 +300,9 @@ class PhysicalState:
 
         for field in fields:
             if field == "DEPL":
-                self._displ = resu.getFieldOnNodesReal("DEPL", rank)
+                self._primal = resu.getFieldOnNodesReal("DEPL", rank)
+            elif field == "TEMP":
+                self._primal = resu.getFieldOnNodesReal("TEMP", rank)
             elif field == "SIEF_ELGA":
                 self._stress = resu.getFieldOnCellsReal("SIEF_ELGA", rank)
             elif field == "VARI_ELGA":
@@ -321,4 +316,8 @@ class PhysicalState:
         Returns:
             dict: Dict of fields.
         """
-        return dict(DEPL=self._displ, SIEF_ELGA=self._stress, VARI_ELGA=self.internVar)
+        quantity, fld_type = self._primal.getPhysicalQuantity().split('_')
+
+        return {"SIEF_ELGA" : self._stress,
+                "VARI_ELGA" : self.internVar,
+                quantity : self._primal}

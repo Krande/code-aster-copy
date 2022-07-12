@@ -26,6 +26,7 @@
 #include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
+#include "DataFields/FieldOnCells.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
@@ -48,6 +49,8 @@ class ThermalLoadDescription : public DataStructure {
     JeveuxVectorChar8 _modelName;
     /** @brief Vecteur Jeveux '.CONVE.VALE' */
     JeveuxVectorChar8 _convection;
+    /** @brief Vecteur Jeveux '.EVOL.CHAR' */
+    JeveuxVectorChar8 _evolChar;
     /** @brief Vecteur Jeveux '.LIGRE' */
     FiniteElementDescriptorPtr _FEDesc;
     /** @brief Carte '.CIMPO' */
@@ -68,6 +71,8 @@ class ThermalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _hechp;
     /** @brief Carte '.SOURE' */
     ConstantFieldOnCellsTypePtr _soure;
+    /** @brief Champ '.SOURC' */
+    FieldOnCellsRealPtr _sourc;
     /** @brief Carte '.T_EXT' */
     ConstantFieldOnCellsTypePtr _tExt;
 
@@ -80,6 +85,7 @@ class ThermalLoadDescription : public DataStructure {
           _model( currentModel ),
           _modelName( getName() + ".MODEL.NOMO" ),
           _convection( getName() + ".CONVE.VALE" ),
+          _evolChar( getName() + ".EVOL.CHAR" ),
           _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
                                                                 _model->getMesh() ) ),
           _cimpo( std::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
@@ -91,6 +97,7 @@ class ThermalLoadDescription : public DataStructure {
           _grain( std::make_shared< ConstantFieldOnCellsType >( getName() + ".GRAIN", _FEDesc ) ),
           _hechp( std::make_shared< ConstantFieldOnCellsType >( getName() + ".HECHP", _FEDesc ) ),
           _soure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SOURE", _FEDesc ) ),
+          _sourc( std::make_shared< FieldOnCellsReal >( getName() + ".SOURC" ) ),
           _tExt( std::make_shared< ConstantFieldOnCellsType >( getName() + ".T_EXT", _FEDesc ) ){};
 
     /**
@@ -98,9 +105,66 @@ class ThermalLoadDescription : public DataStructure {
      */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
 
-    ConstantFieldOnCellsTypePtr getImpositionField() const { return _cimpo; }
+    ConstantFieldOnCellsTypePtr getImposedField() const { return _cimpo; }
 
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; }
+
+    bool hasLoadField( const std::string name ) const {
+        if ( name == "COEFH")
+            return ( _coefh && _coefh->exists() );
+        else if ( name == "T_EXT")
+            return ( _tExt && _tExt->exists() );
+        else if ( name == "FLURE")
+            return ( _flure && _flure->exists() );
+        else if ( name == "FLUR2")
+            return ( _flur2 && _flur2->exists() );
+        else if ( name == "SOURE")
+            return ( _soure && _soure->exists() );
+        else if ( name == "SOURC")
+            return ( _sourc && _sourc->exists() );
+        else if ( name == "HECHP")
+            return ( _hechp && _hechp->exists() );
+        else if ( name == "GRAIN")
+            return ( _grain && _grain->exists() );
+        else
+            AS_ASSERT( false );
+    }
+
+    ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string name ) const {
+        if ( name == "COEFH")
+            return _coefh;
+        else if ( name == "T_EXT")
+            return _tExt;
+        else if ( name == "FLURE")
+            return _flure;
+        else if ( name == "FLUR2")
+            return _flur2;
+        else if ( name == "SOURE")
+            return _soure;
+        else if ( name == "HECHP")
+            return _hechp;
+        else if ( name == "GRAIN")
+            return _grain;
+        else
+            AS_ASSERT( false );
+    }
+
+    FieldOnCellsRealPtr getLoadField( const std::string name ) const {
+        if ( name == "SOURC" )
+            return _sourc;
+        else
+            AS_ASSERT( false );
+    }
+
+    bool hasLoadResult() const {
+        return _evolChar->exists();
+    }
+
+    std::string getLoadResultName() const {
+        AS_ASSERT( this->hasLoadResult() );
+        _evolChar->updateValuePointer();
+        return ( *_evolChar)[0].toString();
+    }
 
     /**
      * @brief Get the model

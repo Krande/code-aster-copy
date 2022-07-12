@@ -27,6 +27,7 @@ class TimeStepper:
 
     def __init__(self, times):
         self.current = 0
+        assert(sorted(times) == times)
         self.times = times
 
     def updateTimes(self, time):
@@ -58,6 +59,19 @@ class TimeStepper:
         if self.hasFinished():
             raise IndexError
         return self.times[self.current]
+
+    def getIncrement(self):
+        """Returns the increment to next step to be calculated.
+
+        Returns:
+            float: increment to the next time value.
+        """
+        if self.hasFinished():
+            raise IndexError
+        if self.current == 0:
+            return -1.e150
+
+        return self.times[self.current] - self.times[self.current-1]
 
     def completed(self):
         """Register the current step as completed successfully."""

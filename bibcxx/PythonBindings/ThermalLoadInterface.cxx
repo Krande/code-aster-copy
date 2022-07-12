@@ -27,7 +27,7 @@
 
 void exportThermalLoadToPython( py::module_ &mod ) {
 
-    py::class_< ThermalLoadReal, ThermalLoadReal::ThermalLoadPtr, DataStructure >(
+    py::class_< ThermalLoadReal, ThermalLoadRealPtr, DataStructure >(
         mod, "ThermalLoadReal" )
         .def( py::init( &initFactoryPtr< ThermalLoadReal, ModelPtr & > ) )
         .def( py::init( &initFactoryPtr< ThermalLoadReal, std::string, ModelPtr & > ) )
@@ -35,7 +35,7 @@ void exportThermalLoadToPython( py::module_ &mod ) {
         .def( "getMesh", &ThermalLoadReal::getMesh )
         .def( "getModel", &ThermalLoadReal::getModel );
 
-    py::class_< ThermalLoadFunction, ThermalLoadFunction::ThermalLoadPtr, DataStructure >(
+    py::class_< ThermalLoadFunction, ThermalLoadFunctionPtr, DataStructure >(
         mod, "ThermalLoadFunction" )
         .def( py::init( &initFactoryPtr< ThermalLoadFunction, ModelPtr & > ) )
         .def( py::init( &initFactoryPtr< ThermalLoadFunction, std::string, ModelPtr & > ) )

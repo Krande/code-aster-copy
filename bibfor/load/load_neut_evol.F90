@@ -67,7 +67,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum = 10)
+    parameter (nb_type_neum = 11)
 !
     integer :: i_type_neum, i_type_echa, iret, nb_cham
     character(len=24) :: load_keyw, evol_obje

@@ -59,6 +59,8 @@ implicit none
 #include "asterfort/srmedo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xthpos.h"
+#include "asterfort/exixfe.h"
 !
     integer :: nbordr, codret, tbid(1)
     character(len=1), optional, intent(in) :: base
@@ -120,9 +122,22 @@ implicit none
     character(len=16) :: optio2, typmcl(4), motcle(4)
     character(len=19) :: nonbor, lischa, k19b, nochou, nochok, partsd
     character(len=24) :: chaout, ligrel, mater, ligres, mateco, k24b, vldist, vcham, vcnoch
-    character(len=24) :: noliop, lisins, mesmai, lacalc, suropt, mode24, chamno
+    character(len=24) :: noliop, lisins, mesmai, lacalc, suropt, mode24, chamno, modin
 !
     call jemarq()
+!
+!  On reporte ici un post-traitement XFEM depuis OP0025
+    if (option.eq.'TEMP_ELGA') then
+       call dismoi('NOM_MODELE', resuin, 'RESULTAT', repk=modin)
+       call exixfe(modin, iret)
+       if (iret .ne. 0) then
+          call xthpos(resuin, resuou)
+          codret = 0
+          goto 999
+       endif
+    endif
+!
+!
     call infniv(ifm, niv)
     codret = 1
     npass = 0

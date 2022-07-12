@@ -211,7 +211,7 @@ character(len=1), optional, intent(in) :: base
                 l_func_c = (nomcmd.eq.'LIRE_RESU' .and. typesd.eq.'DYNA_HARMO' )
             end if
             call lislfc(list_load_resu, i_load      , i_excit   , l_load_user,&
-                        l_func_c      , load_keyword, const_func, load_func)
+                        l_func_c      , load_keyword, const_func, load_func, bas)
 !
 ! --------- Check loads "PILOTAGE"
 !

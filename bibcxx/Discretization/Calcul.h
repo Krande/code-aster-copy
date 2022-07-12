@@ -168,12 +168,13 @@ class Calcul {
     void addFourierModeField( const ASTERINTEGER &nh );
 
     /** @brief Create and add input field for current time */
-    void addTimeField( const std::string &parameterName, const ASTERDOUBLE time );
+    void addTimeField( const std::string &parameterName, const ASTERDOUBLE time_value );
 
     /** @brief Create and add input field for current time (for thermics) */
-    void addTimeField( const ASTERDOUBLE &time, const ASTERDOUBLE &delta_time,
-                       const ASTERDOUBLE &theta, const ASTERDOUBLE &khi, const ASTERDOUBLE &r,
-                       const ASTERDOUBLE &rho );
+    void addTimeField( const std::string &parameterName,
+                       const ASTERDOUBLE &time_value,
+                       const ASTERDOUBLE &time_delta,
+                       const ASTERDOUBLE &time_theta );
 
     /** @brief Create and add input fields for XFEM */
     void addXFEMField( const XfemModelPtr xfemModel );

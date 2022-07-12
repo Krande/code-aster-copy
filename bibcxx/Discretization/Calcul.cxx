@@ -108,34 +108,36 @@ void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
 }
 
 /** @brief Create and add input field for current time */
-void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE time ) {
+void Calcul::addTimeField( const std::string &parameterName, const ASTERDOUBLE time_value ) {
     auto _timeField = std::make_shared< ConstantFieldOnCellsReal >(
         TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
-    ConstantFieldValues< ASTERDOUBLE > b( { "INST" }, { time } );
+    ConstantFieldValues< ASTERDOUBLE > b( { "INST" }, { time_value } );
     _timeField->setValueOnZone( a, b );
     addInputField( parameterName, _timeField );
 }
 
 /** @brief Create and add input field for current time */
-void Calcul::addTimeField( const ASTERDOUBLE &time, const ASTERDOUBLE &delta_time,
-                           const ASTERDOUBLE &theta, const ASTERDOUBLE &khi, const ASTERDOUBLE &r,
-                           const ASTERDOUBLE &rho ) {
+void Calcul::addTimeField( const std::string &parameterName,
+                           const ASTERDOUBLE &time_value,
+                           const ASTERDOUBLE &time_delta,
+                           const ASTERDOUBLE &time_theta ) {
     auto _timeField = std::make_shared< ConstantFieldOnCellsReal >(
         TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
     ConstantFieldOnZone a( _mesh );
     ConstantFieldValues< ASTERDOUBLE > b( { "INST", "DELTAT", "THETA", "KHI", "R", "RHO" },
-                                          { time, delta_time, theta, khi, r, rho } );
+                                          { time_value, time_delta, time_theta, 0.0, 0.0, 0.0 } );
     _timeField->setValueOnZone( a, b );
-    addInputField( "PTEMPSR", _timeField );
+    addInputField( parameterName, _timeField );
 }
 
 /** @brief Create and add input fields for XFEM */
 void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
+    addInputField( "PPINTER", xfemModel->getField( "PINTER" ) );
     addInputField( "PPINTTO", xfemModel->getField( "PINTTO" ) );
     addInputField( "PCNSETO", xfemModel->getField( "CNSETO" ) );
     addInputField( "PHEAVTO", xfemModel->getField( "HEAVTO" ) );
@@ -148,6 +150,9 @@ void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
     addInputField( "PFISNO", xfemModel->getField( "FISSNO" ) );
     addInputField( "PHEA_NO", xfemModel->getField( "HEAVNO" ) );
     addInputField( "PHEA_FA", xfemModel->getField( "HEAVFA" ) );
+    addInputField( "PCFACE", xfemModel->getField( "CFACE" ) );
+    addInputField( "PLONGCO", xfemModel->getField( "LONGCO" ) );
+    addInputField( "PBASECO", xfemModel->getField( "BASECO" ) );
 }
 
 /** @brief Add input fields for non-linear behaviours */
@@ -159,6 +164,10 @@ void Calcul::addBehaviourField( const BehaviourPropertyPtr behaviour ) {
 
 /** @brief Compute option */
 void Calcul::compute() {
+
+#ifdef ASTER_DEBUG_CXX
+    std::cout << "Computing option >> " << _option << std::endl;
+#endif
 
     ASTERINTEGER inputNb = _inputFields.size() + _inputElemTerms.size();
     VectorString inputFields, inputParams;

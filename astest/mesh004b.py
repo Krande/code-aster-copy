@@ -85,7 +85,7 @@ test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
 # compute Neumman
 study.setDOFNumbering(numeDDL)
-retour = dComputation.neumann([0,0,0])
+retour = dComputation.neumann(0,0,0)
 
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()

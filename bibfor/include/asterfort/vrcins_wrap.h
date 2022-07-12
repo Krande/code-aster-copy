@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,13 @@
 !
 interface
     subroutine vrcins_wrap(modelz, chmatz, carelz, inst, chvarc,&
-                           codret)
+                           codret, base)
         character(len=*) :: modelz
         character(len=*) :: chmatz
         character(len=*) :: carelz
         real(kind=8) :: inst
         character(len=19) :: chvarc
         character(len=2) :: codret
+        character(len=1) :: base
     end subroutine vrcins_wrap
 end interface

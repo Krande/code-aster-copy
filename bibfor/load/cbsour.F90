@@ -26,6 +26,10 @@ implicit none
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
+#include "asterfort/celces.h"
+#include "asterfort/cescar.h"
+#include "asterfort/detrsd.h"
+
 !
 character(len=8), intent(in) :: load, mesh, model
 integer, intent(in) :: geomDime
@@ -35,13 +39,13 @@ character(len=4), intent(in) :: valeType
     real(kind=8) :: r8bid
     character(len=8) :: scalc
     character(len=16) :: motfac
-    character(len=24) :: carte, chsour
+    character(len=24) :: carte, chsour, chame
 !     ------------------------------------------------------------------
-!
-    carte = load//'.CHTH.SOURE'
 !
     motfac = 'SOURCE'
     call getfac(motfac, nbfac)
+!
+    chame = load//'.CHTH.SOURC'
 !
     nbcalc = 0
     if (valeType .eq. 'REEL') then
@@ -52,9 +56,11 @@ character(len=4), intent(in) :: valeType
         if (nbcalc .gt. 1) then
             call utmess('F', 'MODELISA3_64')
         else if (nbcalc.eq.1) then
-            call copisd('CHAMP_GD', 'G', chsour(1:19), carte(1:19))
+           call copisd('CHAMP_GD', 'G', chsour(1:19), chame(1:19))
         endif
     endif
+!
+    carte = load//'.CHTH.SOURE'
 !
     if (valeType .eq. 'REEL') then
         call getvr8(motfac, 'SOUR', iocc=1, scal=r8bid, nbret=isour)

@@ -34,36 +34,82 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTime ) {
+FieldOnNodesRealPtr
+DiscreteComputation::imposedDualBC( const ASTERDOUBLE time_value,
+                                    const ASTERDOUBLE time_delta,
+                                    const ASTERDOUBLE time_theta ) {
+
+    bool has_load = false;
 
     auto elemVect = std::make_shared< ElementaryVectorReal >();
 
+    elemVect->setModel( _phys_problem->getModel() );
+    elemVect->setMaterialField( _phys_problem->getMaterialField() );
+    elemVect->setElementaryCharacteristics( _phys_problem->getElementaryCharacteristics() );
+    elemVect->setListOfLoads( _phys_problem->getListOfLoads() );
+
     if ( _phys_problem->getModel()->isThermal() ) {
-        AS_ABORT( "Not implemented for thermic" );
+        has_load = this->addTherImposedTerms( elemVect, time_value, time_delta, time_theta );
+    }
+    else if ( _phys_problem->getModel()->isMechanical() ) {
+        has_load = this->addMecaImposedTerms( elemVect, time_value );
+    }
+    else {
+        AS_ASSERT( false );
     };
 
-    // Prepare loads
-    auto listOfLoads = _phys_problem->getListOfLoads();
-    JeveuxVectorChar24 listOfLoadsList = listOfLoads->getListVector();
-    JeveuxVectorLong listOfLoadsInfo = listOfLoads->getInformationVector();
+    if ( has_load ){
+        elemVect->build();
+        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                    time_value );
+    }
+    else {
+        FieldOnNodesRealPtr vectAsse =
+            std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+        vectAsse->setValues( 0.0 );
+        vectAsse->build();
+        return vectAsse;
+    }
+};
 
-    // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( _phys_problem->getModel()->getName(), 24 );
-    std::string nameLcha = ljust( listOfLoadsList->getName(), 24 );
-    std::string nameInfc = ljust( listOfLoadsInfo->getName(), 24 );
-    std::string vectElemName = ljust( elemVect->getName(), 24 );
-    std::string typres( "R" );
+FieldOnNodesRealPtr DiscreteComputation::neumann(const ASTERDOUBLE time_value,
+                                                 const ASTERDOUBLE time_delta,
+                                                 const ASTERDOUBLE time_theta,
+                                                 const FieldOnCellsRealPtr _externVarField,
+                                                 const FieldOnNodesRealPtr _previousPrimalField ) {
 
-    // Wrapper FORTRAN
-    CALLO_VEDIME( modelName, nameLcha, nameInfc, &currTime, typres, vectElemName );
+    bool has_load = false;
 
-    // Construct vect_elem object
-    elemVect->setListOfLoads( listOfLoads );
+    auto elemVect = std::make_shared< ElementaryVectorReal >();
+
     elemVect->setModel( _phys_problem->getModel() );
-    elemVect->build();
+    elemVect->setMaterialField( _phys_problem->getMaterialField() );
+    elemVect->setElementaryCharacteristics( _phys_problem->getElementaryCharacteristics() );
+    elemVect->setListOfLoads( _phys_problem->getListOfLoads() );
 
-    // Assemble
-    return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), currTime );
+    if ( _phys_problem->getModel()->isThermal() ) {
+        has_load = this->addTherNeumannTerms( elemVect, time_value, time_delta, time_theta,
+                                              _externVarField, _previousPrimalField );
+    }
+    else if ( _phys_problem->getModel()->isMechanical() ) {
+        has_load = this->addMecaNeumannTerms( elemVect, time_value, time_delta, time_theta,
+                                              _externVarField );
+    }
+    else {
+        AS_ASSERT( false );
+    };
+    if ( has_load ){
+        elemVect->build();
+        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
+                                                    time_value );
+    }
+    else {
+        FieldOnNodesRealPtr vectAsse =
+            std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
+        vectAsse->setValues( 0.0 );
+        vectAsse->build();
+        return vectAsse;
+    }
 };
 
 FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) {
@@ -131,7 +177,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     elemVect->build();
 
     // Assemble
-    auto bume = elemVect->assemble( _phys_problem->getDOFNumbering() );
+    FieldOnNodesRealPtr bume = elemVect->assemble( _phys_problem->getDOFNumbering() );
 
     if ( _phys_problem->getMesh()->isParallel() )
         CALLO_AP_ASSEMBLY_VECTOR( bume->getName() );
@@ -139,68 +185,11 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     return bume;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameters,
-                                                  const FieldOnCellsRealPtr _externVarField ) {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >();
-
-    // Get main parameters
-    auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
-    auto currCodedMater = _phys_problem->getCodedMaterial();
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
-    auto listOfLoads = _phys_problem->getListOfLoads();
-
-    if ( currModel->isThermal() ) {
-        AS_ABORT( "Not implemented for thermic" );
-    };
-
-    if ( timeParameters.size() != 3 )
-        throw std::runtime_error( "Invalid number of parameter" );
-    const ASTERDOUBLE &currTime = timeParameters[0];
-
-    // Prepare loads
-    JeveuxVectorChar24 listOfLoadsList = listOfLoads->getListVector();
-    JeveuxVectorLong listOfLoadsInfo = listOfLoads->getInformationVector();
-    std::string nameLcha = ljust( listOfLoadsList->getName(), 24 );
-    std::string nameInfc = ljust( listOfLoadsInfo->getName(), 24 );
-
-    // Get JEVEUX names of objects to call Fortran
-    std::string modelName = ljust( currModel->getName(), 24 );
-    std::string materName = ljust( currMater->getName(), 24 );
-    std::string currCodedMaterName = ljust( currCodedMater->getName(), 24 );
-    std::string currElemCharaName( " " );
-    if ( currElemChara )
-        currElemCharaName = currElemChara->getName();
-    currElemCharaName.resize( 24, ' ' );
-    std::string vectElemName = ljust( elemVect->getName(), 24 );
-    std::string stop( "S" );
-
-    // Get external state variables
-    std::string externVarName( " " );
-    if ( _externVarField ) {
-        externVarName = _externVarField->getName();
-    }
-    externVarName.resize( 24, ' ' );
-
-    // Wrapper FORTRAN
-    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &currTime, currElemCharaName, materName,
-                       currCodedMaterName, vectElemName, externVarName );
-
-    // Construct vect_elem object
-    elemVect->setListOfLoads( listOfLoads );
-    elemVect->setModel( _phys_problem->getModel() );
-    elemVect->build();
-
-    // Assemble
-    return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                timeParameters[0] + timeParameters[1] );
-};
-
-FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) const {
+FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time_value ) const {
 
     auto dofNume = _phys_problem->getDOFNumbering();
-    auto vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
+    FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
 
     // Prepare loads
     const auto &_listOfLoads = _phys_problem->getListOfLoads();
@@ -220,7 +209,7 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) 
     std::string base( "G" );
 
     // Wrapper FORTRAN
-    CALLO_ASCAVC_WRAP( nameLcha, nameInfc, nameFcha, dofNumName, &time, vectAsseName, base );
+    CALLO_ASCAVC_WRAP( nameLcha, nameInfc, nameFcha, dofNumName, &time_value, vectAsseName, base );
 
     // Construct vect_asse object
     vectAsse->build();
@@ -230,12 +219,12 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) 
 };
 
 FieldOnNodesRealPtr
-DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
+DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time_value,
                                              const FieldOnNodesRealPtr disp_curr ) const {
     auto dofNume = _phys_problem->getDOFNumbering();
 
     if ( dofNume->hasDirichletBC() ) {
-        auto diri_curr = dirichletBC( time );
+        auto diri_curr = dirichletBC( time_value );
         auto diri_impo = *( diri_curr ) - *( disp_curr );
 
         // Set to zero terms not imposed
@@ -251,7 +240,7 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
     }
 
     // Construct vect_asse object
-    auto vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
+    FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
     vectAsse->setValues( 0.0 );
     vectAsse->build();
 
@@ -259,8 +248,8 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
 };
 
 FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
-    const ASTERDOUBLE &time, const ConstantFieldOnCellsRealPtr _timeField,
-    const FieldOnCellsRealPtr _externVarField ) const {
+    const ASTERDOUBLE time_value,
+    const FieldOnCellsRealPtr _externVarField ) {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -314,7 +303,7 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
                 _calcul->addElementaryCharacteristicsField( currElemChara );
             }
             _calcul->addInputField( "PVARCPR", _externVarField );
-            _calcul->addInputField( "PTEMPSR", _timeField );
+            _calcul->addTimeField( "PTEMPSR", time_value );
             if ( currExternVarRefe ) {
                 _calcul->addInputField( "PVARCRR", currExternVarRefe );
             }

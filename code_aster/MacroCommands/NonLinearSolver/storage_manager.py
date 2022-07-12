@@ -31,7 +31,7 @@ class StorageManager:
     class Slot:
         """Container that holds objects to be saved"""
 
-        __slots__ = ("rank", "time", "model", "material_field", "elem_char", "load", "fields")
+        __slots__ = ("rank", "time", "model", "material_field", "elem_char", "load", "fields", "theta")
 
     result = None
     buffer = None
@@ -50,7 +50,7 @@ class StorageManager:
         return self.result
 
     @profile
-    def storeState(self, rank, time, phys_pb, phys_state):
+    def storeState(self, rank, time, phys_pb, phys_state, theta=None):
         """Store a new state.
 
         Arguments:
@@ -62,6 +62,7 @@ class StorageManager:
         slot = StorageManager.Slot()
         slot.rank = rank
         slot.time = time
+        slot.theta = theta
         slot.model = phys_pb.getModel()
         slot.material_field = phys_pb.getMaterialField()
         slot.elem_char = phys_pb.getElementaryCharacteristics()
@@ -84,6 +85,8 @@ class StorageManager:
             rank_curr = slot.rank
             if slot.time is not None:
                 self.result.setTimeValue(slot.time, rank_curr)
+            if slot.theta is not None:
+                self.result.setParameterValue("PARM_THETA", slot.theta, rank_curr)
             if slot.model:
                 self.result.setModel(slot.model, rank_curr)
             if slot.material_field:

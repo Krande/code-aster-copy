@@ -88,7 +88,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum = 10)
+    parameter (nb_type_neum = 11)
     aster_logical :: list_load_keyw(nb_type_neum)
 !
     integer :: i_field_in

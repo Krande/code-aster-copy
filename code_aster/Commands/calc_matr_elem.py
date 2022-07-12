@@ -44,19 +44,14 @@ class ComputeElementaryMatrix(ExecuteCommand):
         # Case not yet supported - to fix
 
         myOption = keywords["OPTION"]
-        if myOption not in ("RIGI_MECA", "MASS_MECA", "MASS_THER"):
+        if myOption not in ("RIGI_MECA", "MASS_MECA", "AMOR_MECA",
+                            "RIGI_THER", "MASS_THER"):
             return False
 
         strucElem = keywords.get("CARA_ELEM")
         # AMOR_MECA in C++ doesnot work for some structural elements
-        if strucElem is None:
-            if myOption not in ("AMOR_MECA"):
-                return False
-
-        therChar = keywords.get("CHARGE")
-        # CHARGE in C++ for RIGI_THER not programed
-        if therChar is None:
-            if myOption not in ("RIGI_THER"):
+        if strucElem is not None:
+            if myOption in ("AMOR_MECA"):
                 return False
 
         maille = keywords.get("MAILLE")
@@ -171,24 +166,25 @@ class ComputeElementaryMatrix(ExecuteCommand):
 
             elif myOption == "MASS_THER":
                 if hasExternalStateVariable:
-                    externVar = disc_comp.createExternalStateVariablesField(
-                        time)
+                    externVar = disc_comp.createExternalStateVariablesField(time)
                 else:
                     externVar = None
-                self._result = disc_comp.linearCapacityMatrix(
-                    time, group_ma, externVarField=externVar)
+                self._result = disc_comp.linearCapacityMatrix(time, delta_time, 1.0,
+                                                              group_ma,
+                                                              externVarField=externVar)
 
             elif myOption == "RIGI_THER":
                 if delta_time is None:
                     delta_time = 0.0
                 if hasExternalStateVariable:
-                    externVar = disc_comp.createExternalStateVariablesField(
-                        time)
+                    externVar = disc_comp.createExternalStateVariablesField(time)
                 else:
                     externVar = None
-                self._result = disc_comp.linearConductivityMatrix(
-                    time, delta_time, fourier, group_ma, externVarField=externVar)
-                    
+                self._result = disc_comp.linearConductivityMatrix(time, delta_time, 1.0,
+                                                                  fourier,
+                                                                  group_ma,
+                                                                  externVarField=externVar)
+
             else:
                 raise RuntimeError("Option %s not implemented" % (myOption))
         else:

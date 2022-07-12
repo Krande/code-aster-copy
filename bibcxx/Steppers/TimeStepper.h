@@ -71,8 +71,7 @@ class TimeStepper : public DataStructure, public GenericStepper {
      */
     TimeStepper( const std::string name )
         : DataStructure( name, 8, "LIST_INST" ),
-          _values( getName() + ".LIST" ),
-          _ditr( getName() + ".LIST.DITR" ),
+          _values( getName() + ".LIST.DITR" ),
           _infor( getName() + ".LIST.INFOR" ),
           _evenr( getName() + ".ECHE.EVENR" ),
           _evenk( getName() + ".ECHE.EVENK" ),

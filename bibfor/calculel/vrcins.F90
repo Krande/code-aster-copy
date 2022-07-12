@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
-                  codret, nompaz)
+                  codret, nompaz, basez)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,6 +43,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     character(len=19) :: chvarc
     character(len=*) :: chmatz, carelz, modelz
     character(len=*), intent(in), optional :: nompaz
+    character(len=1), intent(in), optional :: basez
     real(kind=8) :: inst
 ! ======================================================================
 !   BUT : FABRIQUER LE CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT A
@@ -80,6 +81,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     character(len=8), pointer :: cesc(:) => null()
     character(len=16), pointer :: liste_sd(:) => null()
     character(len=8), pointer :: cvrccmp(:) => null()
+    character(len=1) :: base
     integer, pointer :: cesvi(:) => null()
     real(kind=8), pointer :: ce1v(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
@@ -87,6 +89,12 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+!
+    if( present(basez) ) then
+        base = basez
+    else
+        base = 'V'
+    endif
 !
 !   nom du parametre "nompar" servant a allouer le cham_elem "chvarc" :
 !   PVARCPR <-> ELGA (par defaut)
@@ -256,7 +264,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !   -----------------------------------------------------
     ligrmo=modele//'.MODELE'
     call cescel(chvars, ligrmo, 'INIT_VARC', nompar, 'NAN',&
-                nncp, 'V', chvarc, 'F', ibid)
+                nncp, base, chvarc, 'F', ibid)
 
     dbg=.false.
     if (dbg) call imprsd('CHAMP', chvarc, 6, 'VRCINS/CHVARC')

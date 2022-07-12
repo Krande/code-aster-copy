@@ -49,7 +49,6 @@ implicit none
 #include "asterfort/vechnl.h"
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
-#include "asterfort/vetnth.h"
 #include "asterfort/vetnth_nonl.h"
 #include "asterfort/vrcins.h"
 !
@@ -158,7 +157,7 @@ type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_THER)
 !
-    call vedith(model, list_load, time, vediri)
+    call vedith(model, lload_name, lload_info, time, vediri)
     call asasve(vediri, nume_dof, 'R', vadiri)
     call ascova('D', vadiri, lload_func, 'INST', tpsthe(1),&
                 'R', cndiri)
