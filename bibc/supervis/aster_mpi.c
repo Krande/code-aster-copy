@@ -116,6 +116,10 @@ void aster_mpi_init( const MPI_Fint init_comm_world ) {
         printf( "MPI is initialized.\n" );
     }
 #ifdef ASTER_HAVE_PETSC
+    // Ensure it has not been already initialized
+    PetscBool initializedByPetsc4Py;
+    PetscInitialized( &initializedByPetsc4Py );
+    AS_ASSERT( initializedByPetsc4Py == PETSC_FALSE );
     // Pass communicator to PETSc
     PETSC_COMM_WORLD = aster_world;
 #endif

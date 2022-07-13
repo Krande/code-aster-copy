@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 import numpy as np
-from petsc4py.PETSc import IS, KSP, PC, Mat, Options
 
 import code_aster
 from code_aster import MPI
@@ -26,6 +25,8 @@ from code_aster.Commands import *
 
 code_aster.init("--test", "--abort")
 
+# must not initialize PETSc before calling `code_aster.init`
+from petsc4py.PETSc import IS, KSP, PC, Mat, Options
 
 MA = LIRE_MAILLAGE(
     FORMAT="MED",
