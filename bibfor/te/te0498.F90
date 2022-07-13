@@ -22,6 +22,7 @@ subroutine te0498(option, nomte)
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -246,9 +247,26 @@ subroutine te0498(option, nomte)
         else 
 
           cosa = dirz
-          sina = sin(acos(cosa))
-          cosg = cos(acos(dirx/sina))
-          sing = sin(asin(diry/sina))
+
+          if (diry .le. r8prem()) then
+          
+            sina = dirx
+            cosg = 1.d0
+            sing = 0.d0
+
+          else if (dirx .le. r8prem()) then
+          
+            sina = diry
+            cosg = 0.d0
+            sing = 1.d0
+
+          else
+
+            sina = sin(acos(cosa))
+            cosg = cos(acos(dirx/sina))
+            sing = sin(asin(diry/sina))
+
+          endif
 
         endif
 
