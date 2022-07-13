@@ -24,8 +24,8 @@ from code_aster.Utilities import ExecutionParameter, Options
 
 test = code_aster.TestCase()
 
-code_aster.LinearAlgebra.petscInitialize()
 code_aster.init("--test")
+code_aster.LinearAlgebra.petscInitialize()
 
 # modeling = "D_PLAN_INCO_UPG"
 modeling = "D_PLAN_INCO_UP"
