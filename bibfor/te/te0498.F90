@@ -136,7 +136,7 @@ subroutine te0498(option, nomte)
 !
     nortan = sqrt(tanx**2.d0+tany**2.d0)
 !
-    if (nortan .ne. 0.d0) then
+    if (nortan .gt. r8prem()) then
         tanx = tanx/nortan
         tany = tany/nortan
 !
@@ -248,14 +248,14 @@ subroutine te0498(option, nomte)
 
           cosa = dirz
 
-          if (diry .le. r8prem()) then
-          
+          if (abs(diry) .le. r8prem()) then
+
             sina = dirx
             cosg = 1.d0
             sing = 0.d0
 
-          else if (dirx .le. r8prem()) then
-          
+          else if (abs(dirx) .le. r8prem()) then
+
             sina = diry
             cosg = 0.d0
             sing = 1.d0
