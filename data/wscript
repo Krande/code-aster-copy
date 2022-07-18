@@ -28,7 +28,6 @@ Build some data files (dest: share/aster)
 - 'external_programs.js': definition of external programs called from code_aster.
 - 'post_install': update some paths after moving the installed files.
 - 'profile.sh': environment script.
-- 'reca_main.py': script to call MACR_RECAL from Python.
 - 'run_aster': script that executes code_aster.
 - 'run_ctest': script that executes a list of testcases using 'ctest'.
 """
@@ -208,8 +207,8 @@ def build(self):
     if self.env.legacy:
         src.append("config.txt.tmpl")
         tgt.append("config.txt")
-    srcbin = ["execute_codeaster.tmpl", "create_install_script", "reca_main.py"]
-    tgtbin = ["execute_codeaster", "create_install_script", "reca_main.py"]
+    srcbin = ["execute_codeaster.tmpl", "create_install_script"]
+    tgtbin = ["execute_codeaster", "create_install_script"]
     try:
         dict_conv = pickle.loads(self.env["ASTER_ENVIRON"])
     except:
