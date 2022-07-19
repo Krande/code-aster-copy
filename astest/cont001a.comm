@@ -21,6 +21,8 @@
 import code_aster
 from code_aster.Commands import *
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
+from code_aster.Objects import PhysicalProblem, FieldOnNodesReal, ContactPairing, ContactComputation
+
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
@@ -45,10 +47,12 @@ MODI = AFFE_MODELE(MAILLAGE=Mail,
                            MODELISATION='D_PLAN',),)
 """
 MODI = AFFE_MODELE(
-    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"), PHENOMENE="MECANIQUE", MODELISATION="DKT")
+    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"),
+                           PHENOMENE="MECANIQUE", MODELISATION="DKT")
 )
 
-CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
+CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(
+    GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
 
 MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3,
                             ALPHA=0.01))
@@ -128,7 +132,6 @@ test.assertFalse(DEFICO.hasFriction)
 test.assertTrue(DEFICO.hasSmoothing)
 
 # Pairing checks
-from libaster import PhysicalProblem, FieldOnNodesReal, ContactPairing, ContactComputation
 
 study = PhysicalProblem(MODI, CHMAT, CARAMECA)
 study.computeDOFNumbering()
@@ -149,29 +152,12 @@ for i in range(nb_zones):
 test.assertEqual(pair.getListOfPairsOfZone(1), [(77, 30), (78, 31), (79, 32), (80, 33),
                                                 (81, 34), (82, 35), (83, 36), (84, 37), (85, 38), (86, 39)])
 
-test.assertEqual([pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)], [26, 10])
-
-slavePts = [pair.getSlaveIntersectionPoints(0)[p] for p in
-            range(len(pair.getSlaveIntersectionPoints(0))) if p % 16 == 0 or p % 16 == 1]
-test.assertEqual(slavePts[:15], [-1.0, 1.0, -0.4131433160641172, 1.0, -1.0, -0.4131433160641172, -1.0, 1.0,
-                                 0.18650150764805537, 1.0, -1.0, 0.18650150764805537, -1.0, 1.0, 0.7994438044998181])
-
-MasterPts = [pair.getMasterIntersectionPoints(0)[p] for p in
-             range(len(pair.getMasterIntersectionPoints(0))) if p % 16 == 0 or p % 16 == 1]
-test.assertEqual(MasterPts[:15], [0.16628239347945617, -1.0, 1.0, 0.16628239347945617, -0.6537699012267695,
-                                  -1.0, 0.5264740287465393, -0.6537699012267695, 1.0, 0.5264740287465393,
-                                  -0.3093542470147898, -1.0000000000000007, 0.8846376989281748,
-                                  -0.3093542470147898, 0.9999999999999979])
-
-QuadraturePts = [pair.getQuadraturePoints(0)[p] for p in
-                 range(len(pair.getMasterIntersectionPoints(0))) if p % 72 == 0 or p % 72 == 1]
-test.assertEqual(QuadraturePts[:15], [0.03484042543181441, -0.41685880326027175, 0.9060386372891253,
-                                      0.5831411967397283, -0.6927906099629374, -0.8268849506133847, 0.3934585722847868,
-                                      -0.06364793624011512, 0.9466328344394045, 0.7632370143732696, -0.3871911735633347,
-                                      -0.6546771235073953])
+test.assertEqual([pair.getNumberOfPairsOfZone(i)
+                 for i in range(nb_zones)], [26, 10])
 
 nbPairs = pair.getNumberOfPairs()
-test.assertEqual(nbPairs, sum(pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)))
+test.assertEqual(nbPairs, sum(pair.getNumberOfPairsOfZone(i)
+                 for i in range(nb_zones)))
 
 
 # Testing AsterErrorMessage
@@ -180,9 +166,6 @@ try:
     pair.getListOfPairsOfZone(0)
 except Exception as e:
     test.assertIn("List of pairs is empty or has an odd size", e.message)
-
-
-
 
 
 algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
@@ -231,7 +214,8 @@ test.assertFalse(DEFICO.hasSmoothing)
 DEFICO.setVerbosity(1)
 test.assertEqual(DEFICO.getVerbosity(), 1)
 
-DEFICO.appendContactZone(zone)  # comment créer un nouveau ContactZone pour append ??
+# comment créer un nouveau ContactZone pour append ??
+DEFICO.appendContactZone(zone)
 test.assertEqual(DEFICO.getNumberOfContactZones(), 3)
 
 # tester la catalogue avec 1 zone :
@@ -308,7 +292,8 @@ fricParam.hasFriction = True
 test.assertTrue(fricParam.hasFriction)
 
 fricParam.setAlgorithm(code_aster.FrictionAlgo.Penalization)
-test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Penalization)
+test.assertEqual(fricParam.getAlgorithm(),
+                 code_aster.FrictionAlgo.Penalization)
 
 fricParam.setType(code_aster.FrictionType.Tresca)
 test.assertEqual(fricParam.getType(), code_aster.FrictionType.Tresca)
@@ -368,7 +353,8 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     pairParam.setPairingDistance(0.1)
     test.assertEqual(pairParam.getPairingDistance(), 0.1)
 
-    test.assertEqual(pairParam.getInitialState(), code_aster.InitialState.Interpenetrated)
+    test.assertEqual(pairParam.getInitialState(),
+                     code_aster.InitialState.Interpenetrated)
     pairParam.setInitialState(code_aster.InitialState.Yes)
 
 DEFICO4 = DEFI_CONT(

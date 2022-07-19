@@ -92,10 +92,10 @@ implicit none
         area = (tria_coor(1,1)*tria_coor(2,2)-tria_coor(1,2)*tria_coor(2,1)+&
                 tria_coor(1,2)*tria_coor(2,3)-tria_coor(1,3)*tria_coor(2,2)+&
                 tria_coor(1,3)*tria_coor(2,1)-tria_coor(1,1)*tria_coor(2,3))*1.d0/2.d0
-        area = sqrt(area*area)
+        area = abs(area)
     else
         area = tria_coor(1,2)-tria_coor(1,1)
-        area = sqrt(area*area)
+        area = abs(area)
     end if
 !
 ! - Back in element parametric space

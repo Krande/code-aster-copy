@@ -80,13 +80,13 @@ CD = ContactComputation(DEFICO_BAS)
 CD.buildContactResFED(pair)
 fed = CD.getFiniteElementDescriptor()
 nema = fed.getNema()
-grel = fed.getListOfGroupOfCells()
+grel = fed.getListOfGroupOfElements()
 test.assertEqual(len(grel), 1)
 test.assertEqual(len(grel[0]), 7)
 test.assertEqual(len(grel[0]), len(nema) + 1)
-test.assertSequenceEqual(nema, [[11, 2, 17, 24, 91],  [11, 2, 24, 25, 91],
-                                [12, 11, 24, 25, 91], [12, 11, 25, 26, 91],
-                                [12, 11, 26, 19, 91], [4, 12, 26, 19, 91]])
+test.assertSequenceEqual(nema, [[11, 2, 17, 24, 97],  [11, 2, 24, 25, 97],
+                                [12, 11, 24, 25, 97], [12, 11, 25, 26, 97],
+                                [12, 11, 26, 19, 97], [4, 12, 26, 19, 97]])
 
 gap, i_gap = CD.geometricGap(pair.getCoordinates())
 test.assertEqual(gap.size(), 4)
@@ -138,29 +138,35 @@ CD = ContactComputation(DEFICO_HAUT)
 CD.buildContactResFED(pair)
 fed = CD.getFiniteElementDescriptor()
 nema = fed.getNema()
-grel = fed.getListOfGroupOfCells()
-test.assertEqual(len(grel), 1)
+grel = fed.getListOfGroupOfElements()
+test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 6)
-test.assertEqual(len(grel[0]), len(nema) + 1)
-test.assertSequenceEqual(nema, [[17, 24, 11, 2, 91],
-                                [17, 24, 12, 11, 91],
-                                [24, 25, 12, 11, 91],
-                                [24, 25, 4, 12, 91],
-                                [25, 26, 4, 12, 91]])
+test.assertEqual(len(grel[1]), 2)
+test.assertEqual(len(grel[0]) + len(grel[1]), len(nema) + 2)
+test.assertSequenceEqual(nema, [[17, 24, 11, 2, 97],
+                                [17, 24, 12, 11, 97],
+                                [24, 25, 12, 11, 97],
+                                [24, 25, 4, 12, 97],
+                                [25, 26, 4, 12, 97],
+                                [19, 72]])
 
 gap, i_gap = CD.geometricGap(pair.getCoordinates())
 val = gap.getValues()
-test.assertTrue(numpy.isnan(val[3]))
-val[3] = None
-test.assertEqual(gap.size(), 4)
-test.assertEqual(i_gap.size(), 4)
+test.assertTrue(numpy.isnan(val[1]))
+val[1] = None
+val[4] = None
+test.assertEqual(gap.size(), 5)
+test.assertEqual(i_gap.size(), 5)
 test
 test.assertSequenceEqual(
-    val, [1.0048591735576161e-14, 25.00000000000000, 50.0000000000000, None])
-test.assertSequenceEqual(i_gap.getValues(), [1.0, 1.0, 1.0, 0.0])
+    val, [1.0048591735576161e-14, None, 25.000000000000007, 50.000000000000014, None])
+test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 1.0, 1.0, 0.0])
 
 print(gap.getValues())
 print(i_gap.getValues())
 IMPR_RESU(FORMAT="MED",RESU=(_F(CHAM_GD=gap,)))
+
+data = CD.contactData(pair)
+test.assertEqual(data.size() , 60 * len(nema))
 
 FIN()

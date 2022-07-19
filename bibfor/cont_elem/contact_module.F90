@@ -1,0 +1,493 @@
+! --------------------------------------------------------------------
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
+!
+module contact_module
+!
+!
+implicit none
+!
+private
+#include "asterf_types.h"
+#include "asterfort/apnorm.h"
+#include "asterfort/assert.h"
+#include "asterfort/mmdonf.h"
+#include "asterfort/mmnewd.h"
+#include "asterfort/mmnonf.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/reerel.h"
+#include "contact_module.h"
+#include "jeveux.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Contact - generic
+!
+! Generic method for contact
+!
+! --------------------------------------------------------------------------------------------------
+    public :: projQpSl2Ma, projRm, Heaviside, shapeFuncDisp, shapeFuncLagr, evalPoly
+    public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, projTn
+!
+contains
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine projQpSl2Ma(elem_dime, coor_qp_sl, proj_tole, &
+                            nb_node_slav, elem_slav_code, slav_coor_curr,&
+                            nb_node_mast, elem_mast_code, mast_coor_curr,&
+                            coor_qp_ma, gap, norm_slav, norm_mast)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime
+        real(kind=8), intent(in) :: coor_qp_sl(2), proj_tole
+        integer, intent(in) :: nb_node_slav, nb_node_mast
+        character(len=8), intent(in) :: elem_slav_code, elem_mast_code
+        real(kind=8), intent(in) :: mast_coor_curr(3, 9)
+        real(kind=8), intent(in) :: slav_coor_curr(3, 9)
+        real(kind=8), intent(out) :: coor_qp_ma(2), gap
+        real(kind=8), intent(out) :: norm_slav(3), norm_mast(3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Project slave point to master space and compute quantity
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: iret
+        real(kind=8) :: coor_qp_sl_re(3), tau1_mast(3), tau2_mast(3), coor_qp_ma_re(3)
+!
+        coor_qp_ma = 0.d0
+        norm_slav = 0.d0
+        norm_mast = 0.d0
+        gap = 0.d0
+!
+! ------ Compute outward slave normal
+!
+        call apnorm(nb_node_slav, elem_slav_code, elem_dime, slav_coor_curr, &
+                    coor_qp_sl(1), coor_qp_sl(2), norm_slav)
+!
+! ----- Return in real slave space
+!
+        coor_qp_sl_re = 0.d0
+        call reerel(elem_slav_code, nb_node_slav, 3, slav_coor_curr, coor_qp_sl, &
+                    coor_qp_sl_re)
+!
+! ----- Projection of node on master cell (master parametric space)
+!
+        call mmnewd(elem_mast_code, nb_node_mast, elem_dime, mast_coor_curr,&
+                    coor_qp_sl_re, 75, proj_tole, norm_slav, &
+                    coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, &
+                    iret)
+        ASSERT(iret == 0)
+!
+! ------ Compute outward master normal
+!
+        call mmnorm(elem_dime, tau1_mast, tau2_mast, norm_mast)
+        norm_mast = -norm_mast
+!
+! ----- Return in real master space
+!
+        coor_qp_ma_re = 0.d0
+        call reerel(elem_mast_code, nb_node_mast, 3, mast_coor_curr, coor_qp_ma, &
+                    coor_qp_ma_re)
+!
+! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s
+!
+        gap = gapEval(coor_qp_sl_re, coor_qp_ma_re, norm_slav)
+
+        ! print*, "COOR_SL: ", slav_coor_curr(1,1:2)
+        ! print*, "COOR_MA: ", mast_coor_curr(1,1:2)
+        ! print*, "NORM_SL: ", norm_slav
+        ! print*, "NORM_MA: ", norm_mast
+        ! print*, "COOR_QP: ", coor_qp_sl
+        ! print*, "COOR_QP_RE: ", coor_qp_sl_re
+        ! print*, "COOR_PJ: ", coor_qp_ma
+        ! print*, "COOR_PJ_RE: ", coor_qp_ma_re
+        ! print*, "GAP: ", gap
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function gapEval(slav_pt, mast_pt, slav_norm)
+!
+    implicit none
+!
+        real(kind=8), intent(in) :: slav_pt(3), mast_pt(3), slav_norm(3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Compute gap for raytracing gap = -(x^s - x^m).n^s
+!
+! --------------------------------------------------------------------------------------------------
+!
+        gapEval = -dot_product(slav_pt-mast_pt, slav_norm)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function projRm(x)
+!
+    implicit none
+!
+        real(kind=8), intent(in) :: x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Project x on R^- = min(x, 0)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        if(x <= TOLE_BORNE) then
+            projRm = x
+        else
+            projRm = 0.d0
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function Heaviside(x)
+!
+    implicit none
+!
+        real(kind=8), intent(in) :: x
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate Heaviside function
+!
+! --------------------------------------------------------------------------------------------------
+!
+        if(x >= -(TOLE_BORNE)) then
+            Heaviside = 1.d0
+        else
+            Heaviside = 0.d0
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine projTn(normal, Tn)
+!
+    implicit none
+!
+        real(kind=8), intent(in) :: normal(3)
+        real(kind=8), intent(out), optional :: Tn(3,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Projection operator onto the tangent plane corresponding to normal vector n
+!   Tn = I - n \otimes n
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i, j
+!
+        Tn = 0.d0
+        Tn(1,1) = 1.d0
+        Tn(2,2) = 1.d0
+        Tn(3,3) = 1.d0
+!
+        do i = 1, 3
+            do j = 1, 3
+                Tn(i,j) = Tn(i,j) - normal(i) * normal(j)
+            end do
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine shapeFuncDisp(elem_dime, elem_nbnode, elem_code, coor_qp, &
+                             shape_, dshape_)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime
+        integer, intent(in) :: elem_nbnode
+        character(len=8), intent(in) :: elem_code
+        real(kind=8), intent(in) :: coor_qp(2)
+        real(kind=8), intent(out), optional :: shape_(9)
+        real(kind=8), intent(out), optional  :: dshape_(2,9)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate shape function and derivative for displacement
+!
+! --------------------------------------------------------------------------------------------------
+!
+        if(present(shape_)) then
+            call mmnonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), shape_)
+        end if
+!
+        if(present(dshape_)) then
+            call mmdonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), dshape_)
+        end if
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine shapeFuncLagr(elem_dime, elem_code, coor_qp, &
+                             shape_)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime
+        character(len=8), intent(in) :: elem_code
+        real(kind=8), intent(in) :: coor_qp(2)
+        real(kind=8), intent(out) :: shape_(4)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate shape function and derivative (P1 for Lagrange)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        character(len=8) :: elem_code_lagr
+        integer :: elem_nbnode_lagr
+        real(kind=8) :: ff(9)
+!
+        if(elem_code == "SE2") then
+            elem_code_lagr = "SE2"
+            elem_nbnode_lagr = 2
+        elseif(elem_code == "SE3") then
+                elem_code_lagr = "SE3"
+                elem_nbnode_lagr = 3
+        elseif(elem_code(1:2) == "TR") then
+            elem_code_lagr = "TR3"
+            elem_nbnode_lagr = 3
+        elseif(elem_code(1:2) == "QU") then
+            elem_code_lagr = "QU4"
+            elem_nbnode_lagr = 4
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+        call mmnonf(elem_dime, elem_nbnode_lagr, elem_code_lagr, &
+                        coor_qp(1), coor_qp(2), ff)
+        shape_(1:4) = ff(1:4)
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function evalPoly(nb_node, shape, coeff_node)
+!
+    implicit none
+!
+        integer, intent(in) :: nb_node
+        real(kind=8), intent(in) :: coeff_node(*)
+        real(kind=8), intent(in) :: shape(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate polynome via linear combinaison
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node
+!
+        evalPoly = 0.d0
+        do i_node= 1, nb_node
+            evalPoly = evalPoly + coeff_node(i_node) * shape(i_node)
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function diameter(nb_node, nodes_coor)
+!
+    implicit none
+!
+        integer, intent(in) :: nb_node
+        real(kind=8), intent(in) :: nodes_coor(3, 9)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate diameter of cell
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node_i, i_node_j
+        real(kind=8) :: length
+!
+        diameter = 0.d0
+        do i_node_i= 1, nb_node
+            do i_node_j= i_node_i + 1, nb_node
+                length = norm2(nodes_coor(1:3, i_node_i) - nodes_coor(1:3, i_node_j))
+                diameter = max(diameter, length)
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine dGap_du(elem_dime, nb_node_slav, func_slav, dfunc_slav, nb_node_mast, func_mast, &
+                        indi_lagc, norm_slav, norm_mast, gap, dGap)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime
+        integer, intent(in) :: nb_node_slav, nb_node_mast, indi_lagc(9)
+        real(kind=8), intent(in) :: func_slav(9), func_mast(9), dfunc_slav(2,9), gap
+        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
+        real(kind=8), intent(out) :: dGap(MAX_CONT_DOFS)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of gap for raytracing
+!   D gap(u)[v] = -(v^s - v^m + gap*Dn^s).n^m/(n^m.n^s)
+!   or the simplifed (incomplete) form for under assumption n^s = -n^m
+!   D gap^sim(u)[v] = -(v^s - v^m).n^s
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, i_dim, index
+        real(kind=8) :: norm(3)
+!
+        dGap = 0.d0
+        index = 0
+!
+! --- See paper Renard, Poulious 2015 for an explanation
+!
+        if(SIMPLIFIED_D_GAP) then
+            norm = -norm_slav
+        else
+            norm = -norm_mast / dot_product(norm_mast, norm_slav)
+        end if
+!
+! --- Slave side
+!
+        do i_node = 1, nb_node_slav
+            do i_dim = 1, elem_dime
+                index = index + 1
+                dGap(index) = func_slav(i_node) * norm(i_dim)
+            end do
+!
+            if(indi_lagc(i_node) == 1) then
+                index = index + 1
+            end if
+        end do
+!
+! --- Master side
+!
+        do i_node = 1, nb_node_mast
+            do i_dim = 1, elem_dime
+                index = index + 1
+                dGap(index) = -func_mast(i_node) * norm(i_dim)
+            end do
+        end do
+!
+        if(.not.SIMPLIFIED_D_GAP) then
+!
+! --- Compute term: g*Dn^s = g * T_n^s * F^{-T}(u^s) * grad(v^s) * n^s
+!
+! How to do it without the volumic cell because gradient are not zero on faces
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine d2Gap_du2(elem_dime, nb_node_slav, func_slav, nb_node_mast, func_mast, indi_lagc, &
+        norm_slav, norm_mast, d2Gap)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime
+        integer, intent(in) :: nb_node_slav, nb_node_mast, indi_lagc(9)
+        real(kind=8), intent(in) :: func_slav(9), func_mast(9)
+        real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
+        real(kind=8), intent(out) :: d2Gap(MAX_CONT_DOFS, MAX_CONT_DOFS)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate second derivative of gap
+!
+! --------------------------------------------------------------------------------------------------
+!
+        d2Gap = 0.d0
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine testLagrC(elem_dime, nb_node_lagr, func_lagr, indi_lagc, mu_c)
+!
+    implicit none
+!
+        integer, intent(in) :: elem_dime
+        integer, intent(in) :: nb_node_lagr, indi_lagc(9)
+        real(kind=8), intent(in) :: func_lagr(4)
+        real(kind=8), intent(out) :: mu_c(MAX_CONT_DOFS)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate test Lagrangian function
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, index
+!
+        mu_c = 0.d0
+        index = 0
+!
+! --- Slave side
+!
+        do i_node = 1, nb_node_lagr
+            ASSERT(indi_lagc(i_node) == 1)
+            index = index + elem_dime + 1
+            mu_c(index) = func_lagr(i_node)
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+end module

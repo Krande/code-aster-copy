@@ -18,6 +18,8 @@
 !
 subroutine te0425(option, nomte)
 !
+use contact_module
+!
 implicit none
 !
 #include "asterf_types.h"
@@ -30,7 +32,9 @@ implicit none
 #include "asterfort/mmelem.h"
 #include "asterfort/mmnewd.h"
 #include "asterfort/projInsideCell.h"
+#include "asterfort/reerel.h"
 #include "jeveux.h"
+#include "contact_module.h"
 !
 character(len=16), intent(in) :: option, nomte
 !
@@ -48,13 +52,13 @@ character(len=16), intent(in) :: option, nomte
     integer :: iret_, lin_sub(1,4), lin_nbsub
     real(kind=8):: elem_slav_tmp(27), elem_mast_tmp(27)
     real(kind=8) :: tau1(3), tau2(3), iNodeCoorReal(3)
-    real(kind=8) ::  ksi_ma(2), ksi_line(2), slav_norm(3)
+    real(kind=8) ::  ksi_ma(2), ksi_line(2), slav_norm(3), coor_ma_re(3)
     integer :: i_node, i_dime, lin_mast_nbnode(1)
-    real(kind=8) :: dist, ksi1, ksi2, pair_tole
+    real(kind=8) :: dist, ksi1, ksi2, pair_tole, gap
 !
-    pair_tole = 1.d-8
+    pair_tole = PROJ_TOLE
 !
-    call jevech('PGEOMER', 'L', jgeom)
+    call jevech('PGEOMCR', 'L', jgeom)
     call jevech('PVECGAP', 'E', jgap)
     call jevech('PVEIGAP', 'E', jstat)
 !
@@ -69,6 +73,8 @@ character(len=16), intent(in) :: option, nomte
 !
     zr(jgap-1+1:jgap-1+nb_node_slav) = 0.0
     zr(jstat-1+1:jstat-1+nb_node_slav) = 0.0
+!
+    if(elem_slav_code == "POI1" ) goto 999
 !
 ! - Get coordinates
 !
@@ -146,12 +152,21 @@ character(len=16), intent(in) :: option, nomte
         ASSERT(iret_ == 0)
         call projInsideCell(pair_tole, elem_dime, lin_mast_code, ksi_ma, iret_)
         ASSERT(iret_ == 0)
+!
+! ----- Return in real master space
+!
+        coor_ma_re = 0.d0
+        call reerel(elem_mast_code, nb_node_mast, 3, elem_mast_coor, ksi_ma, &
+                    coor_ma_re)
+        gap = gapEval(iNodeCoorReal, coor_ma_re, slav_norm)
 
         ! save distance in jgap
-        zr(jgap-1+i_node) = dist
+        zr(jgap-1+i_node) = gap
         zr(jstat-1+i_node) = 1.d0
 !
 99  continue
     end do
+!
+999 continue
 !
 end subroutine
