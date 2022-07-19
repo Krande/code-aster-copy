@@ -40,17 +40,14 @@ Mail = MODI_MAILLAGE(
     ORIE_PEAU=_F(GROUP_MA_PEAU=("Group_2", "Group_1", "Group_3", "Group_4")),
 )
 
-"""
-MODI = AFFE_MODELE(MAILLAGE=Mail,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),)
-"""
+
 MODI = AFFE_MODELE(
-    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"), PHENOMENE="MECANIQUE", MODELISATION="DKT")
+    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"),
+                           PHENOMENE="MECANIQUE", MODELISATION="DKT")
 )
 
-CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
+CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(
+    GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
 
 DF1 = DEFI_FONCTION(
     NOM_PARA="INST",
@@ -87,7 +84,6 @@ DFO = FORMULE(NOM_PARA="INST", VALE="sin(INST)")
 DEFICO = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    LISSAGE="OUI",
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -95,6 +91,7 @@ DEFICO = DEFI_CONT(
             GROUP_MA_ESCL="Group_1",
             ALGO_CONT="LAGRANGIEN",
             CONTACT_INIT="OUI",
+            LISSAGE="OUI",
         ),
         _F(
             APPARIEMENT="MORTAR",
@@ -103,6 +100,7 @@ DEFICO = DEFI_CONT(
             VARIANTE="RAPIDE",
             ALGO_CONT="NITSCHE",
             CONTACT_INIT="INTERPENETRE",
+            LISSAGE="OUI",
         ),
     ),
 )
@@ -123,6 +121,8 @@ for i in range(DEFICO.getNumberOfContactZones()):
     test.assertEqual(zone.getVerbosity(), 2)
     zone.setVerbosity(1)
     test.assertEqual(zone.getVerbosity(), 1)
+
+    test.assertTrue(zone.hasSmoothing)
 
     test.assertTrue(zone.checkNormals)  #
     zone.checkNormals = False
@@ -158,7 +158,8 @@ test.assertFalse(DEFICO.hasSmoothing)
 DEFICO.setVerbosity(1)
 test.assertEqual(DEFICO.getVerbosity(), 1)
 
-DEFICO.appendContactZone(zone)  # comment créer un nouveau ContactZone pour append ??
+# comment créer un nouveau ContactZone pour append ??
+DEFICO.appendContactZone(zone)
 test.assertEqual(DEFICO.getNumberOfContactZones(), 3)
 
 # tester la catalogue avec 1 zone :
@@ -166,8 +167,6 @@ test.assertEqual(DEFICO.getNumberOfContactZones(), 3)
 DEFICO2 = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    # FROTTEMENT='OUI',
-    LISSAGE="NON",
     ZONE=_F(
         ALGO_CONT="NITSCHE",
         VARIANTE="RAPIDE",
@@ -180,9 +179,7 @@ DEFICO2 = DEFI_CONT(
         GROUP_MA_MAIT="Group_2",
         GROUP_MA_ESCL="Group_1",
         CONTACT_INIT="INTERPENETRE",
-        # ALGO_FROT='NITSCHE',
-        # TYPE_FROT='COULOMB',
-        # COULOMB=100.,
+        LISSAGE="NON",
     ),
 )
 
@@ -237,7 +234,8 @@ fricParam.hasFriction = True
 test.assertTrue(fricParam.hasFriction)
 
 fricParam.setAlgorithm(code_aster.FrictionAlgo.Penalization)
-test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Penalization)
+test.assertEqual(fricParam.getAlgorithm(),
+                 code_aster.FrictionAlgo.Penalization)
 
 fricParam.setType(code_aster.FrictionType.Tresca)
 test.assertEqual(fricParam.getType(), code_aster.FrictionType.Tresca)
@@ -257,9 +255,9 @@ print(fricParam.getCoulomb())  # zone1 a les paramètres de zone
 DEFICO3 = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    FROTTEMENT="OUI",
-    LISSAGE="NON",
     ZONE=_F(
+        FROTTEMENT="OUI",
+        LISSAGE="NON",
         ALGO_CONT="NITSCHE",
         VERI_NORM="NON",
         COEF_CONT=312.0,
@@ -301,16 +299,17 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     pairParam.setPairingDistance(0.1)
     test.assertEqual(pairParam.getPairingDistance(), 0.1)
 
-    test.assertEqual(pairParam.getInitialState(), code_aster.InitialState.Interpenetrated)
+    test.assertEqual(pairParam.getInitialState(),
+                     code_aster.InitialState.Interpenetrated)
     pairParam.setInitialState(code_aster.InitialState.Yes)
 
 
 DEFICO4 = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    FROTTEMENT="OUI",
-    LISSAGE="NON",
     ZONE=_F(
+        FROTTEMENT="OUI",
+        LISSAGE="NON",
         ALGO_CONT="NITSCHE",
         VERI_NORM="NON",
         COEF_CONT=312.0,

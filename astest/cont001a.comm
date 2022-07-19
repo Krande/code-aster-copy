@@ -40,12 +40,7 @@ Mail = MODI_MAILLAGE(
     ORIE_PEAU=_F(GROUP_MA_PEAU=("Group_2", "Group_1", "Group_3", "Group_4")),
 )
 
-"""
-MODI = AFFE_MODELE(MAILLAGE=Mail,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),)
-"""
+
 MODI = AFFE_MODELE(
     MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"),
                            PHENOMENE="MECANIQUE", MODELISATION="DKT")
@@ -96,9 +91,9 @@ DFO = FORMULE(NOM_PARA="INST", VALE="sin(INST)")
 DEFICO = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    LISSAGE="OUI",
     ZONE=(
         _F(
+            LISSAGE="OUI",
             APPARIEMENT="MORTAR",
             GROUP_MA_MAIT="Group_2",
             GROUP_MA_ESCL="Group_1",
@@ -139,7 +134,7 @@ dofNumbering = study.getDOFNumbering()
 
 disp = FieldOnNodesReal(dofNumbering)
 disp.setValues(4)
-pair = ContactPairing(DEFICO.getContactZones(), Mail)
+pair = ContactPairing(DEFICO)
 pair.updateCoordinates(disp)
 test.assertEqual(pair.getCoordinates().getValues()[:10], [54.0, 54.0, 4.0,
                                                           54.0, 4.0, 4.0, 4.0, 54.0, 4.0, 4.0])
@@ -223,8 +218,6 @@ test.assertEqual(DEFICO.getNumberOfContactZones(), 3)
 DEFICO2 = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    # FROTTEMENT='OUI',
-    LISSAGE="NON",
     ZONE=_F(
         ALGO_CONT="NITSCHE",
         VARIANTE="RAPIDE",
@@ -237,9 +230,7 @@ DEFICO2 = DEFI_CONT(
         GROUP_MA_MAIT="Group_2",
         GROUP_MA_ESCL="Group_1",
         CONTACT_INIT="INTERPENETRE",
-        # ALGO_FROT='NITSCHE',
-        # TYPE_FROT='COULOMB',
-        # COULOMB=100.,
+        LISSAGE="NON",
     ),
 )
 
@@ -310,9 +301,9 @@ test.assertEqual(fricParam.getTresca(), 100.0)
 DEFICO3 = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    FROTTEMENT="OUI",
-    LISSAGE="NON",
     ZONE=_F(
+        FROTTEMENT="OUI",
+        LISSAGE="NON",
         ALGO_CONT="NITSCHE",
         VERI_NORM="NON",
         COEF_CONT=312.0,
@@ -322,9 +313,6 @@ DEFICO3 = DEFI_CONT(
         APPARIEMENT="MORTAR",
         DIST_APPA=-1,
         CONTACT_INIT="INTERPENETRE",
-        # ALGO_FROT='NITSCHE',
-        # TYPE_FROT='COULOMB',
-        # COULOMB=100.,
     ),
 )
 
@@ -360,9 +348,9 @@ for i in range(DEFICO3.getNumberOfContactZones()):
 DEFICO4 = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    FROTTEMENT="OUI",
-    LISSAGE="NON",
     ZONE=_F(
+        FROTTEMENT="OUI",
+        LISSAGE="NON",
         ALGO_CONT="NITSCHE",
         VERI_NORM="NON",
         COEF_CONT=312.0,

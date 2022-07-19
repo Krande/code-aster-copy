@@ -69,7 +69,7 @@ zone = DEFICO_BAS.getContactZone(0)
 
 # Pairing checks
 
-pair = ContactPairing(DEFICO_BAS.getContactZones(), Mail)
+pair = ContactPairing(DEFICO_BAS)
 pair.compute()
 
 
@@ -124,7 +124,7 @@ print(zone.getSlaveCells())
 
 # Pairing checks
 
-pair = ContactPairing(DEFICO_HAUT.getContactZones(), Mail)
+pair = ContactPairing(DEFICO_HAUT)
 pair.compute()
 
 

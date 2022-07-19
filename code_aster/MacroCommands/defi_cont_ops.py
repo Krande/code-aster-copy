@@ -56,7 +56,8 @@ def defi_cont_ops(self, **keywords):
         "BILATERAL": ContactType.Bilateral,
         "COLLE": ContactType.Stick,
     }
-    _vari_cont = {"RAPIDE": ContactVariant.Rapide, "ROBUSTE": ContactVariant.Robust}
+    _vari_cont = {"RAPIDE": ContactVariant.Rapide,
+                  "ROBUSTE": ContactVariant.Robust}
     _algo_frot = {
         "LAGRANGIEN": FrictionAlgo.Lagrangian,
         "NITSCHE": FrictionAlgo.Nitsche,
@@ -77,8 +78,6 @@ def defi_cont_ops(self, **keywords):
 
     # add global informations
     result.setVerbosity(verbosity)
-    result.hasFriction = keywords["FROTTEMENT"] == "OUI"
-    result.hasSmoothing = keywords["LISSAGE"] == "OUI"
 
     # add infomations for each ZONE
     list_zones = keywords["ZONE"]
@@ -90,6 +89,9 @@ def defi_cont_ops(self, **keywords):
         contZone.setMasterGroupOfCells(zone["GROUP_MA_MAIT"])
         if (zone.get("SANS_GROUP_MA")) != None:
             contZone.setExcludedSlaveGroupOfCells(zone["SANS_GROUP_MA"])
+
+        if zone["LISSAGE"] == "OUI":
+            contZone.hasSmoothing = True
 
         # contact parameters
         contParam = ContactParameter()
@@ -103,9 +105,9 @@ def defi_cont_ops(self, **keywords):
         contZone.setContactParameter(contParam)
 
         # friction parameters
-        if result.hasFriction:
+        if zone["FROTTEMENT"] == "OUI":
             fricParam = FrictionParameter()
-            fricParam.hasFriction = keywords["FROTTEMENT"] == "OUI"
+            fricParam.hasFriction = True
             fricParam.setAlgorithm(_algo_frot[zone["ALGO_FROT"]])
             fricParam.setType(_type_frot[zone["TYPE_FROT"]])
             if fricParam.getType() == FrictionType.Tresca:

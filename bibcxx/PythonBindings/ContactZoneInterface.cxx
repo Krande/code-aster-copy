@@ -60,6 +60,13 @@ Get level of verbosity:
 Returns:
     integer: level of verbosity
         )" )
+        .def_property( "hasFriction", &ContactZone::hasFriction, &ContactZone::enableFriction, R"(
+bool: enable or disable the use of friction.
+        )" )
+        .def_property( "hasSmoothing", &ContactZone::hasSmoothing, &ContactZone::enableSmoothing,
+                       R"(
+bool: enable or disable  the use of smoothing.
+        )" )
         .def( "build", &ContactZone::build, R"(
 Build and check internal objects
         )" )

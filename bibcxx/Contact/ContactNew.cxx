@@ -38,9 +38,7 @@ ContactNew::ContactNew( const std::string name, const ModelPtr model )
       _model( model ),
       _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
                                                             _model->getMesh() ) ),
-      _verbosity( 1 ),
-      _friction( false ),
-      _smoothing( false ) {
+      _verbosity( 1 ) {
     // model has to be mechanics
     if ( !_model->isMechanical() )
         UTMESS( "F", "CONTACT1_2" );
@@ -227,4 +225,36 @@ VectorLong ContactNew::getSlaveCells() const {
     }
 
     return VectorLong( cells.begin(), cells.end() );
+};
+
+void ContactNew::enableFriction( const bool &friction ) {
+    for ( auto &zone : _zones ) {
+        zone->enableFriction( friction );
+    }
+};
+
+bool ContactNew::hasFriction() const {
+    for ( auto &zone : _zones ) {
+        if ( zone->hasFriction() ) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+void ContactNew::enableSmoothing( const bool &smoothing ) {
+    for ( auto &zone : _zones ) {
+        zone->enableSmoothing( smoothing );
+    }
+};
+
+bool ContactNew::hasSmoothing() const {
+    for ( auto &zone : _zones ) {
+        if ( zone->hasSmoothing() ) {
+            return true;
+        }
+    }
+
+    return false;
 };

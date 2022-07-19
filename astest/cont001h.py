@@ -73,7 +73,7 @@ test.assertSequenceEqual(zone.getSlaveCells(), [60, 61, 62, 63])
 
 # Pairing checks
 
-pair = ContactPairing(DEFICO_BAS.getContactZones(), Mail)
+pair = ContactPairing(DEFICO_BAS)
 pair.compute()
 
 
@@ -143,7 +143,7 @@ test.assertSequenceEqual(zone.getSlaveCells(), [0, 1, 2, 3])
 
 # Pairing checks
 
-pair = ContactPairing(DEFICO_HAUT.getContactZones(), Mail)
+pair = ContactPairing(DEFICO_HAUT)
 pair.compute()
 
 

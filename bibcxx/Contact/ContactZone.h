@@ -46,6 +46,8 @@ class ContactZone : public DataStructure {
     PairingParameterPtr _pairParam;
     /** @brief  Check direction of normal */
     bool _checkNormal;
+    /** @brief  Smoothing of normal */
+    bool _smoothing;
     /** @brief  List of master Cells */
     VectorLong _masterCells;
     /** @brief List of slave cells */
@@ -68,8 +70,6 @@ class ContactZone : public DataStructure {
     std::string _slaveGrp;
     /** @brief name of master side */
     std::string _masterGrp;
-
-
 
     /**
      * @brief Construct the inverse connectivity
@@ -125,7 +125,8 @@ class ContactZone : public DataStructure {
 
     void setSlaveGroupOfCells( const std::string &slave );
 
-    void setMasterGroupOfCells( const std::string &master );;
+    void setMasterGroupOfCells( const std::string &master );
+    ;
 
     void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave );
 
@@ -186,6 +187,13 @@ class ContactZone : public DataStructure {
      */
     JeveuxCollectionLong getSlaveNeighbors() const { return _slaveNeighbors; }
 
+    void enableFriction( const bool &friction ) { _fricParam->enableFriction( friction ); };
+
+    bool hasFriction() const { return _fricParam->hasFriction(); };
+
+    void enableSmoothing( const bool &smoothing ) { _smoothing = smoothing; };
+
+    bool hasSmoothing() const { return _smoothing; };
 };
 
 /**

@@ -112,7 +112,7 @@ CONT = DEFI_CONT(MODELE=MO,
                  ZONE=_F(GROUP_MA_MAIT='Slave',
                          GROUP_MA_ESCL='Master',
                          ALGO_CONT="LAGRANGIEN",
-                         COEF_CONT=68.96E8.,
+                         COEF_CONT=68.96E8,
                          ),)
 
 

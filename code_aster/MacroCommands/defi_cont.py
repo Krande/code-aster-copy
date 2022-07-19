@@ -31,174 +31,123 @@ from .defi_cont_ops import defi_cont_ops
 # - il faut regarder ce que cela donne dans asterStudy
 # - est-ce que l'on veut rajouter des choses qui ne sont possibles actuellement ?
 
-DEFI_CONT_CATA=MACRO(
-        nom="DEFI_CONT",
-        op=OPS("code_aster.MacroCommands.defi_cont_ops.defi_cont_ops"),
-        sd_prod=char_contact,
-        reentrant='n',
-        fr = tr("Définit les zones soumises à des conditions de contact avec ou sans frottement"),
-                #en        = "Allows the definition of contact surfaces",
+DEFI_CONT_CATA = MACRO(
+    nom="DEFI_CONT",
+    op=OPS("code_aster.MacroCommands.defi_cont_ops.defi_cont_ops"),
+    sd_prod=char_contact,
+    reentrant='n',
+    fr=tr("Définit les zones soumises à des conditions de contact avec ou sans frottement"),
+    #en        = "Allows the definition of contact surfaces",
 
-# ----- PARAMETRES GENERAUX ( NE DEPENDENT PAS DE LA ZONE DE CONTACT)
+    # ----- PARAMETRES GENERAUX ( NE DEPENDENT PAS DE LA ZONE DE CONTACT)
 
-        MODELE          =SIMP(statut='o',typ=modele_sdaster,),
-        INFO            =SIMP(statut='f',typ='I',into=(1,2),defaut=1),
+    MODELE=SIMP(statut='o', typ=modele_sdaster,),
+    INFO=SIMP(statut='f', typ='I', into=(1, 2), defaut=1),
 
-# PARAMETRE GENERAL : FROTTEMENT (LE CHOIX DU TYPE EST FAIT PAR ZONE APRES)
-        FROTTEMENT      =SIMP(statut='f', typ='TXM', defaut="NON", into=("NON", "OUI"),
-                               fr=tr("Activation du frottement" ),),
+    ZONE=FACT(statut='o', max='**',
 
-# LISSAGE DES NORMALES PAR MOYENNATION AUX NOEUDS
-        LISSAGE         = SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI","NON"),
-                                fr=tr("Lissage des normales par moyennation aux noeuds"),),
+              # LISSAGE DES NORMALES PAR MOYENNATION AUX NOEUDS
+              LISSAGE=SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI", "NON"),
+                              fr=tr("Lissage des normales par moyennation aux noeuds"),),
 
+              # VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
+              VERI_NORM=SIMP(statut='f', typ='TXM', defaut="OUI", into=("OUI", "NON"),
+                             fr=tr("Vérification de l'orientation (sortante) des normales aux surfaces"),),
+              # Method for contact
+              ALGO_CONT=SIMP(statut='f', typ='TXM', defaut="LAGRANGIEN",
+                             into=("LAGRANGIEN", "NITSCHE", "PENALISATION",),),
 
-# ----- définition mot-clé facteur sans frottement
-        b_zone_nofric     = BLOC(condition = """equal_to("FROTTEMENT", 'NON') """,
-                ZONE = FACT(statut='o', max='**',
-# VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
-                VERI_NORM       =SIMP(statut='f', typ='TXM', defaut="OUI", into=("OUI","NON"),
-                                 fr=tr("Vérification de l'orientation (sortante) des normales aux surfaces"),),
-# Method for contact
-                ALGO_CONT   = SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
-                                        into=("LAGRANGIEN","NITSCHE","PENALISATION",),),
+              b_algo_cont=BLOC(condition="""is_in("ALGO_CONT", ('NITSCHE'))""",
+                               VARIANTE=SIMP(statut='f', typ='TXM', defaut="ROBUSTE",
+                                             into=("RAPIDE", "ROBUSTE"),
+                                             fr=tr("Choix de la variante des formulations du contact"),),
+                               b_vari_syme=BLOC(condition="""equal_to("VARIANTE", "RAPIDE")""",
+                                                SYME=SIMP(statut='f', typ='TXM', defaut="OUI",
+                                                          into=("OUI", "NON"),),
+                                                ),
+                               ),
+              # le choix du type de contact implique aussi celui de frottement
+              TYPE_CONT=SIMP(statut='f', typ='TXM', defaut="UNILATERAL",
+                             into=("UNILATERAL", "BILATERAL", "COLLE"),
+                             fr=tr("Choix d'un modèle de contact"),),
 
-                b_algo_cont = BLOC(condition = """is_in("ALGO_CONT", ('NITSCHE'))""",
-                                   VARIANTE  =SIMP(statut='f', typ='TXM', defaut="ROBUSTE",
-                                                into=("RAPIDE","ROBUSTE"),
-                                                fr=tr("Choix de la variante des formulations du contact" ),),
-                                   b_vari_syme = BLOC(condition = """equal_to("VARIANTE", "RAPIDE")""",
-                                                      SYME  =SIMP(statut='f', typ='TXM', defaut="OUI",
-                                                                  into=("OUI","NON"),),
-                                   ),
-                                ),
-# le choix du type de contact implique aussi celui de frottement
-                TYPE_CONT  = SIMP(statut='f', typ='TXM', defaut="UNILATERAL",
-                                    into=("UNILATERAL", "BILATERAL","COLLE"),
-                                    fr=tr("Choix d'un modèle de contact" ),),
+              # coefficient de nitche, pénalisation ou augmentation en fonction de la méthode de contact
+              COEF_CONT=SIMP(statut='f', typ='R', defaut=100.0, val_min=0.0),
 
-# coefficient de nitche, pénalisation ou augmentation en fonction de la méthode de contact
-                COEF_CONT   =SIMP(statut='f',typ='R'  ,defaut=100.0, val_min=0.0),
+              # Pairing options (for segment to segment contact)
+              # "COLLOCATION" old robuste, "RAPIDE" new => à discuter avec Guillaume
+              APPARIEMENT=SIMP(statut='f', typ='TXM',
+                               defaut="MORTAR", into=("MORTAR")),
+              DIST_APPA=SIMP(statut='f', typ='R', defaut=-1.0),
 
-# Pairing options (for segment to segment contact)
-                # "COLLOCATION" old robuste, "RAPIDE" new => à discuter avec Guillaume
-                APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MORTAR", into=("MORTAR")),
-                DIST_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
+              GROUP_MA_MAIT=SIMP(statut='o', typ=grma, max=1),
+              GROUP_MA_ESCL=SIMP(statut='o', typ=grma, max=1),
 
-                GROUP_MA_MAIT   =SIMP(statut='o',typ=grma ,max=1),
-                GROUP_MA_ESCL   =SIMP(statut='o',typ=grma ,max=1),
+              # Managing boundary conditions with contact (slave side) que pour la méthode LAGRANGE
+              b_cl=BLOC(condition="""is_in("ALGO_CONT", ('LAGRANGIEN',))""",
+                        SANS_GROUP_MA=SIMP(
+                                  statut='f', typ=grma, validators=NoRepeat(), max='**'),
+                        ),
+              CONTACT_INIT=SIMP(statut='f', typ='TXM', defaut="INTERPENETRE",
+                                into=("OUI", "INTERPENETRE", "NON"),),
+              SEUIL_INIT=SIMP(statut='f', typ='R'),
 
-# Managing boundary conditions with contact (slave side) que pour la méthode LAGRANGE
-                b_cl            = BLOC(condition = """is_in("ALGO_CONT", ('LAGRANGIEN',))""",
-                                       SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-                                        ),
-                CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="INTERPENETRE",
-                                        into=("OUI","INTERPENETRE","NON"),),
-                SEUIL_INIT      = SIMP(statut='f',typ='R'),
+              # Add suppl. gaps
+              DIST_SUPP=SIMP(statut='f', typ=(
+                  fonction_sdaster, nappe_sdaster, formule)),
+              # À vérifier si l'algo marche pour POUTRE
+              DIST_POUTRE=SIMP(statut='f', typ='TXM',
+                               defaut="NON", into=("OUI", "NON")),
+              DIST_COQUE=SIMP(statut='f', typ='TXM',
+                              defaut="NON", into=("OUI", "NON")),
+              b_cara=BLOC(condition="""equal_to("DIST_POUTRE", 'OUI') or equal_to("DIST_COQUE", 'OUI')""",
+                          CARA_ELEM=SIMP(statut='o', typ=(cara_elem)),
+                          ),
 
-# Add suppl. gaps
-                DIST_SUPP       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                # À vérifier si l'algo marche pour POUTRE
-                DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                b_cara=BLOC(condition = """equal_to("DIST_POUTRE", 'OUI') or equal_to("DIST_COQUE", 'OUI')""",
-                            CARA_ELEM     =SIMP(statut='o',typ=(cara_elem) ),
-                            ),
-                ), # fin ZONE
-        ), # fin BLOC
+              # Enable friction
+              FROTTEMENT=SIMP(statut='f', typ='TXM', defaut="NON", into=("NON", "OUI"),
+                              fr=tr("Activation du frottement"),),
 
+              # ----- définition mot-clé facteur avec frottement
+              b_zone_fric=BLOC(condition="""equal_to("FROTTEMENT", 'OUI') """,
+                               # FROTTEMENT
 
-# ----- définition mot-clé facteur avec frottement
-        b_zone_fric     = BLOC(condition = """equal_to("FROTTEMENT", 'OUI') """,
-                ZONE = FACT(statut='o', max='**',
-# VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
-                VERI_NORM       =SIMP(statut='f', typ='TXM', defaut="OUI", into=("OUI","NON"),
-                                 fr=tr("Vérification de l'orientation (sortante) des normales aux surfaces"),),
-# Method for contact
-                ALGO_CONT   = SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
-                                        into=("LAGRANGIEN","NITSCHE","PENALISATION",),),
+                               COEF_FROT=SIMP(
+                                         statut='f', typ='R', defaut=100.0, val_min=0.0),
 
-                b_algo_cont = BLOC(condition = """is_in("ALGO_CONT", ('NITSCHE'))""",
-                                   VARIANTE  =SIMP(statut='f', typ='TXM', defaut="ROBUSTE",
-                                                into=("RAPIDE","ROBUSTE"),
-                                                fr=tr("Choix de la variante des formulations du contact" ),),
-                                   b_vari_syme = BLOC(condition = """equal_to("VARIANTE", "RAPIDE")""",
-                                                      SYME  =SIMP(statut='f', typ='TXM', defaut="OUI",
-                                                                  into=("OUI","NON"),),
-                                   ),
-                                ),
-# le choix du type de contact implique aussi celui de frottement
-                TYPE_CONT  = SIMP(statut='f', typ='TXM', defaut="UNILATERAL",
-                                    into=("UNILATERAL", "BILATERAL","COLLE"),
-                                    fr=tr("Choix d'un modèle de contact" ),),
+                               b_zone_lagr=BLOC(condition="""equal_to("ALGO_CONT", 'LAGRANGIEN')""",
+                                                ALGO_FROT=SIMP(statut='f', typ='TXM', defaut="LAGRANGIEN",
+                                                               into=("LAGRANGIEN",),),
+                                                ),
 
-# coefficient de nitche, pénalisation ou augmentation en fonction de la méthode de contact
-                COEF_CONT   =SIMP(statut='f',typ='R'  ,defaut=100.0, val_min=0.0),
+                               b_cont_nits=BLOC(condition="""equal_to("ALGO_CONT", 'NITSCHE')""",
+                                                ALGO_FROT=SIMP(statut='f', typ='TXM', defaut="NITSCHE",
+                                                               into=("NITSCHE",),),
+                                                ),
 
-# Pairing options (for segment to segment contact)
-                # "COLLOCATION" old robuste, "RAPIDE" new => à discuter avec Guillaume
-                APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MORTAR", into=("MORTAR")),
-                DIST_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
+                               b_cont_pena=BLOC(condition="""equal_to("ALGO_CONT", 'PENALISATION')""",
+                                                ALGO_FROT=SIMP(statut='f', typ='TXM', defaut="PENALISATION",
+                                                               into=("PENALISATION",),),
+                                                ),
 
-                GROUP_MA_MAIT   =SIMP(statut='o',typ=grma ,max=1),
-                GROUP_MA_ESCL   =SIMP(statut='o',typ=grma ,max=1),
+                               b_from_frot_colle=BLOC(condition="""equal_to("TYPE_CONT", 'COLLE')""",
+                                                      TYPE_FROT=SIMP(statut='f', typ='TXM', defaut="COLLE", into=("COLLE"),
+                                                                     fr=tr("Choix d'un modèle de frottement"),),
+                                                      ),
 
-# Managing boundary conditions with contact (slave side) que pour la méthode LAGRANGE
-                b_cl            = BLOC(condition = """is_in("ALGO_CONT", ('LAGRANGIEN',))""",
-                                       SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-                                        ),
-                CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="INTERPENETRE",
-                                        into=("OUI","INTERPENETRE","NON"),),
-                SEUIL_INIT      = SIMP(statut='f',typ='R'),
-
-# Add suppl. gaps
-                DIST_SUPP       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                # À vérifier si l'algo marche pour POUTRE
-                DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                b_cara=BLOC(condition = """equal_to("DIST_POUTRE", 'OUI') or equal_to("DIST_COQUE", 'OUI')""",
-                            CARA_ELEM     =SIMP(statut='o',typ=(cara_elem) ),
-                            ),
-
-# FROTTEMENT
-
-                COEF_FROT   =SIMP(statut='f',typ='R'  ,defaut=100.0, val_min=0.0),
-
-                b_zone_lagr     = BLOC(condition = """equal_to("ALGO_CONT", 'LAGRANGIEN')""",
-                        ALGO_FROT  =SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
-                                 into=("LAGRANGIEN",),),
-                ),
-
-                b_cont_nits = BLOC(condition = """equal_to("ALGO_CONT", 'NITSCHE')""",
-                        ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="NITSCHE",
-                                        into=("NITSCHE",),),
-                ),
-
-                b_cont_pena = BLOC(condition = """equal_to("ALGO_CONT", 'PENALISATION')""",
-                        ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="PENALISATION",
-                                        into=("PENALISATION",),),
-                ),
-
-                b_from_frot_colle = BLOC(condition = """equal_to("TYPE_CONT", 'COLLE')""",
-                            TYPE_FROT  =SIMP(statut='f', typ='TXM', defaut="COLLE", into=("COLLE"),
-                               fr=tr("Choix d'un modèle de frottement" ),),
-                                ),
-
-                b_form_frot = BLOC(condition = """is_in("TYPE_CONT", ('UNILATERAL', 'BILATERAL'))""",
-                            TYPE_FROT  =SIMP(statut='f', typ='TXM', defaut="SANS",
-                                            into=("SANS", "TRESCA","COULOMB"),
-                                            fr=tr("Choix d'un modèle de frottement" ),),
-                            # les valeurs par défaut ???
-                            b_tresca  = BLOC(condition = """equal_to("TYPE_FROT", "TRESCA")""",
-                                        TRESCA  = SIMP(statut='o',typ='R'),),
-                            b_coulomb = BLOC(condition = """equal_to("TYPE_FROT", "COULOMB")""",
-                                        COULOMB  = SIMP(statut='o',typ='R'),),
-                                ),
-
-                ), # fin ZONE
-        ), # fin BLOC
+                               b_form_frot=BLOC(condition="""is_in("TYPE_CONT", ('UNILATERAL', 'BILATERAL'))""",
+                                                TYPE_FROT=SIMP(statut='f', typ='TXM', defaut="SANS",
+                                                               into=(
+                                                                   "SANS", "TRESCA", "COULOMB"),
+                                                               fr=tr("Choix d'un modèle de frottement"),),
+                                                # les valeurs par défaut ???
+                                                b_tresca=BLOC(condition="""equal_to("TYPE_FROT", "TRESCA")""",
+                                                              TRESCA=SIMP(statut='o', typ='R'),),
+                                                b_coulomb=BLOC(condition="""equal_to("TYPE_FROT", "COULOMB")""",
+                                                               COULOMB=SIMP(statut='o', typ='R'),),
+                                                ),
+                               ),  # fin BLOC
+              ),  # fin ZONE
 )
 
-
 DEFI_CONT = UserMacro("DEFI_CONT", DEFI_CONT_CATA, defi_cont_ops)
-

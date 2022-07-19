@@ -33,6 +33,7 @@ ContactZone::ContactZone( const std::string name, const ModelPtr model )
       _model( model ),
       _verbosity( 1 ),
       _checkNormal( true ),
+      _smoothing( false ),
       _contParam( std::make_shared< ContactParameter >() ),
       _fricParam( std::make_shared< FrictionParameter >() ),
       _pairParam( std::make_shared< PairingParameter >() ),

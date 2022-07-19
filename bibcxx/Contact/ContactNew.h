@@ -41,10 +41,6 @@ class ContactNew : public DataStructure {
     std::vector< ContactZonePtr > _zones;
     /** @brief Level of verbosity */
     ASTERINTEGER _verbosity;
-    /** @brief Friction */
-    bool _friction;
-    /** @brief Smoothing for normals */
-    bool _smoothing;
 
   public:
     typedef std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > VectorLongPairs;
@@ -97,13 +93,13 @@ class ContactNew : public DataStructure {
 
     bool build();
 
-    void enableFriction( const bool &friction ) { _friction = friction; }
+    void enableFriction( const bool &friction );
 
-    bool hasFriction() const { return _friction; }
+    bool hasFriction() const;
 
-    void enableSmoothing( const bool &smoothing ) { _smoothing = smoothing; }
+    void enableSmoothing( const bool &smoothing );
 
-    bool hasSmoothing() const { return _smoothing; }
+    bool hasSmoothing() const;
 
     VectorLong getSlaveNodes() const;
 
@@ -114,4 +110,4 @@ class ContactNew : public DataStructure {
  * @typedef ContactNewPtr
  * @brief Pointeur intelligent vers un ContactNew
  */
-using ContactNewPtr = std::shared_ptr< ContactNew > ;
+using ContactNewPtr = std::shared_ptr< ContactNew >;
