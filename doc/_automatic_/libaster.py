@@ -4261,7 +4261,7 @@ class ContactZone(DataStructure):
             ContactParameter: contact parameters
         """
     
-    def getExcludedSlaveGroupOfCells(self):
+    def getExcludedSlaveCells(self):
         """Get excluded groups of cells on slave side
         
         Returns:
@@ -4287,13 +4287,6 @@ class ContactZone(DataStructure):
         
         Arguments:
             int: node number
-        """
-    
-    def getMasterGroupOfCells(self):
-        """Get master's name of group of cells
-        
-        Returns:
-            str: master's name
         """
     
     def getMesh(self):
@@ -4324,6 +4317,13 @@ class ContactZone(DataStructure):
             int: slave cell number
         """
     
+    def getSlaveCells(self):
+        """Get slave's cells index
+        
+        Returns:
+            list[int]: slave's cells index
+        """
+    
     def getSlaveCellsFromNode(self, node_number):
         """Get the slave cells associtaed with a node number
         
@@ -4331,11 +4331,11 @@ class ContactZone(DataStructure):
             int: node number
         """
     
-    def getSlaveGroupOfCells(self):
-        """Get slave's name of group of cells
+    def getSlaveNodes(self):
+        """Get slave's nodes index
         
         Returns:
-            str: slave's name
+            list[int]: slave's nodes index
         """
     
     def getVerbosity(self):
@@ -4400,16 +4400,6 @@ class ContactZone(DataStructure):
             integer: level of verbosity
         """
     
-    def updateMasterCells(self):
-        """Returns:
-              Bool: True if checking is performed else False
-        """
-    
-    def updateSlaveCells(self):
-        """Returns:
-              Bool: True if the slave cells are updated
-        """
-    
     #----------------------------------------------------------------------
     # Data descriptors defined here:
     
@@ -4453,8 +4443,15 @@ class ContactPairing(DataStructure):
             bool: true if the pairing quantities are cleared
         """
     
-    def compute(self, zone_index):
-        """Compute the pairing quantities associated with the zone izone
+    def compute(self):
+        """Compute the pairing quantities associated with the zones
+        
+        Returns:
+            bool: True if the pairing quantities are updated appropriately
+        """
+    
+    def computeZone(self, zone_index):
+        """Compute the pairing quantities associated with the zone zone_index
         Arguments:
             zone_index(int)
         Returns:
@@ -4462,7 +4459,7 @@ class ContactPairing(DataStructure):
         """
     
     def getCoordinates(self):
-        """Compute the new coordinates 
+        """Compute the new coordinates
         Returns:
             MeshCoordinatesFieldPtr: the new MeshCoordinatesField object
         """
@@ -4512,6 +4509,46 @@ class ContactPairing(DataStructure):
     
     def updateCoordinates(self, disp):
         """Update the mesh coordinates given a displacement field
+        """
+
+# class ContactComputation in libaster
+
+class ContactComputation:
+    pass
+    
+    # Method resolution order:
+    #     ContactComputation
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, arg0):
+        pass
+    
+    def buildContactResFED(self, pairing):
+        """Build contact resolution finite element descriptor from pairing
+        Arguments:
+            pairing (ContactPairing): contact pairing
+        """
+    
+    def geometricGap(self, coordinates):
+        """Compute geometric gap and indicator using projection. The indicator is equal to 0 for
+        a node with no projection (gap value is Nan) found else 1.
+        
+        Arguments:
+            coordinates (MeshCoordinatesField): (current) coordinates of mesh
+        
+        Returns:
+            FieldOnNodesReal: gap field.
+            FieldOnNodesReal: gap indicator.
+        """
+    
+    def getFiniteElementDescriptor(self):
+        """Return contact resolution finite element descriptor from pairing
+        
+        Returns:
+            FiniteElementDescriptor: fed.
         """
 
 # class BaseAssemblyMatrix in libaster

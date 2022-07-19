@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 interface
     subroutine reereg(stop, elrefp, nnop, coor, xg,&
-                      ndim, xe, iret, toler)
+                      ndim, xe, iret, toler, ndim_coor_)
         integer :: ndim
         integer :: nnop
         character(len=1) :: stop
@@ -29,5 +29,6 @@ interface
         real(kind=8) :: xe(ndim)
         integer :: iret
         real(kind=8), optional, intent(in) :: toler
+        integer, optional, intent(in) :: ndim_coor_
     end subroutine reereg
 end interface

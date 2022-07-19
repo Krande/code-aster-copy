@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine invjax(stop, nno, ndim, nderiv, dff,&
-                  coor, invjac, ipb)
+                  coor, invjac, ipb, ndim_coor_)
 ! aslint: disable=W1306
     implicit   none
 #include "asterfort/assert.h"
@@ -26,6 +26,7 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
     real(kind=8) :: coor(ndim*nno)
     real(kind=8) :: dff(3, nno), invjac(3, 3), inv(ndim, ndim)
     character(len=1) :: stop
+    integer, optional, intent(in) :: ndim_coor_
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,12 +47,17 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: idim, jdim, ino, i, j
+    integer :: idim, jdim, ino, i, j, ndim_coor
     real(kind=8) :: jacobi(ndim, ndim), det
 !
 ! ----------------------------------------------------------------------
 !
     ipb = 0
+    if(present(ndim_coor_)) then
+        ndim_coor = ndim_coor_
+    else
+        ndim_coor = ndim
+    end if
 !
 ! --- JACOBIENNE EN XE
 !
@@ -64,7 +70,7 @@ subroutine invjax(stop, nno, ndim, nderiv, dff,&
     do ino = 2, nno
         do jdim = 1, nderiv
             do idim = 1, ndim
-                jacobi(idim,jdim) = jacobi(idim,jdim) + dff(jdim,ino) * coor(ndim*(ino-1)+idim)
+                jacobi(idim,jdim) = jacobi(idim,jdim) + dff(jdim,ino) * coor(ndim_coor*(ino-1)+idim)
             end do
         end do
     end do

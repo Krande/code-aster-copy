@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,21 +39,21 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
     components=(
     ('EN1',('DX','DY','DZ','LAGS_C',)),
     ('EN2',('DX','DY','DZ',)),))
-    
-ECNEUT_R = LocatedComponents(phys=PHY.CLAC_R, type='ELEM', 
+
+ECNEUT_R = LocatedComponents(phys=PHY.CLAC_R, type='ELEM',
     components=('PRES', 'JEU', 'CONT', 'COEFSURF', 'PRESCOOR'))
 
 ##------------------------------------------------------------
 class LACT33D(Element):
     """
-      THE LACT33D CLASS ELEMENT : 
+      THE LACT33D CLASS ELEMENT :
       DEFI_CONTACT / CONTINUE / MORTAR_LAC
           Slave frictionless Contact Element in 3D : elementary treatments
       Local Numerotation :
-          
+
       Input parameters :
-          
-      Output parameters :          
+
+      Output parameters :
     """
     meshType = MT.TRIA3
     nodes = (
@@ -64,9 +64,9 @@ class LACT33D(Element):
 
         OP.EXISTE_DDL(te=99,
             para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-        ),    
+        ),
         OP.CONT_ELEM(te=99,
-            para_out=((OP.CONT_ELEM.CT_ELEM, ECNEUT_R), ),   
+            para_out=((OP.CONT_ELEM.CT_ELEM, ECNEUT_R), ),
         ),
 
     )
@@ -74,14 +74,14 @@ class LACT33D(Element):
 #------------------------------------------------------------
 class LACT63D(LACT33D):
     """
-      THE LACT63D CLASS ELEMENT : 
+      THE LACT63D CLASS ELEMENT :
       DEFI_CONTACT / CONTINUE / MORTAR_LAC
           Slave frictionless Contact Element in 3D : elementary treatments
       Local Numerotation :
-          
+
       Input parameters :
-          
-      Output parameters :          
+
+      Output parameters :
     """
     meshType = MT.TRIA6
     nodes = (
@@ -99,14 +99,14 @@ class LACT63D(LACT33D):
 ##------------------------------------------------------------
 class LACQ93D(LACT33D):
     """
-      THE LACQ93D CLASS ELEMENT : 
+      THE LACQ93D CLASS ELEMENT :
       DEFI_CONTACT / CONTINUE / MORTAR_LAC
           Slave frictionless Contact Element in 3D : elementary treatments
       Local Numerotation :
-          
+
       Input parameters :
-          
-      Output parameters :          
+
+      Output parameters :
     """
     meshType = MT.QUAD9
     nodes = (
@@ -126,14 +126,14 @@ class LACQ93D(LACT33D):
 #------------------------------------------------------------
 class LACQ83D(LACT33D):
     """
-      THE LACQ93D CLASS ELEMENT : 
+      THE LACQ93D CLASS ELEMENT :
       DEFI_CONTACT / CONTINUE / MORTAR_LAC
           Slave frictionless Contact Element in 3D : elementary treatments
       Local Numerotation :
-          
+
       Input parameters :
-          
-      Output parameters :          
+
+      Output parameters :
     """
     meshType = MT.QUAD8
     nodes = (
@@ -152,14 +152,14 @@ class LACQ83D(LACT33D):
 #------------------------------------------------------------
 class LACQ43D(LACT33D):
     """
-      THE LACQ93D CLASS ELEMENT : 
+      THE LACQ93D CLASS ELEMENT :
       DEFI_CONTACT / CONTINUE / MORTAR_LAC
           Slave frictionless Contact Element in 3D : elementary treatments
       Local Numerotation :
-          
+
       Input parameters :
-          
-      Output parameters :          
+
+      Output parameters :
     """
     meshType = MT.QUAD4
     nodes = (

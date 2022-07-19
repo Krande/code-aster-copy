@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
                       iter_maxi, tole_maxi, proj_dire, ksi1     , ksi2   ,&
-                      tang_1   , tang_2   , error)
+                      tang_1   , tang_2   , error, dist_, ksi1_init, ksi2_init)
         character(len=8), intent(in) :: type_elem
         integer, intent(in) :: nb_node
         integer, intent(in) :: nb_dim
@@ -35,5 +35,7 @@ interface
         real(kind=8), intent(out) :: tang_1(3)
         real(kind=8), intent(out) :: tang_2(3)
         integer, intent(out) :: error
+        real(kind=8), optional, intent(out) :: dist_
+        real(kind=8), optional, intent(in) :: ksi1_init, ksi2_init
     end subroutine mmnewd
 end interface

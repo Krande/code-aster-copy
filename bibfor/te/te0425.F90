@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,138 @@ subroutine te0425(option, nomte)
 !
 implicit none
 !
-#include "asterfort/utmess.h"
+#include "asterf_types.h"
+#include "asterfort/apnorm.h"
+#include "asterfort/assert.h"
+#include "asterfort/dctest.h"
+#include "asterfort/gapGetParamCoor.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lcgeominit.h"
+#include "asterfort/mmelem.h"
+#include "asterfort/mmnewd.h"
+#include "asterfort/projInsideCell.h"
+#include "jeveux.h"
 !
 character(len=16), intent(in) :: option, nomte
 !
-call utmess('F', 'FERMETUR_8')
+! --------------------------------------------------------------------------------------------------
+!  Compute Geometric Gap for Mortar methods
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: jgeom, jgap, jstat
+    integer :: nnl, nbcps, nbdm
+    aster_logical :: laxis, leltf
+    integer :: elem_dime, nb_dof
+    character(len=8) :: elem_slav_code, elem_mast_code, lin_mast_code
+    integer :: nb_node_slav, nb_node_mast
+    real(kind=8) :: elem_mast_coor(3,9), elem_slav_coor(3,9), para_coor(2,9)
+    integer :: iret_, lin_sub(1,4), lin_nbsub
+    real(kind=8):: elem_slav_tmp(27), elem_mast_tmp(27)
+    real(kind=8) :: tau1(3), tau2(3), iNodeCoorReal(3)
+    real(kind=8) ::  ksi_ma(2), ksi_line(2), slav_norm(3)
+    integer :: i_node, i_dime, lin_mast_nbnode(1)
+    real(kind=8) :: dist, ksi1, ksi2, pair_tole
+!
+    pair_tole = 1.d-8
+!
+    call jevech('PGEOMER', 'L', jgeom)
+    call jevech('PVECGAP', 'E', jgap)
+    call jevech('PVEIGAP', 'E', jstat)
+!
+! - Get parameters
+!
+    call mmelem(nomte , elem_dime , nb_dof,&
+                elem_slav_code, nb_node_slav  ,&
+                elem_mast_code, nb_node_mast  ,&
+                nnl   , nbcps, nbdm, laxis , leltf)
+!
+! - No values on master side
+!
+    zr(jgap-1+1:jgap-1+nb_node_slav) = 0.0
+    zr(jstat-1+1:jstat-1+nb_node_slav) = 0.0
+!
+! - Get coordinates
+!
+    elem_mast_tmp(:) = 0.d0
+    elem_slav_tmp(:) = 0.d0
+!
+    call lcgeominit(elem_dime     ,&
+                    nb_node_slav  , nb_node_mast  ,&
+                    elem_mast_tmp, elem_slav_tmp )
+!
+! - Get parametric slave coordinates
+!
+    call gapGetParamCoor(elem_slav_code, para_coor)
+!
+! - Transform the format of cells coordinates
+!
+    elem_mast_coor(:,:) = 0.d0
+    do i_node = 1, nb_node_mast
+        do i_dime = 1, elem_dime
+            elem_mast_coor(i_dime, i_node) = &
+                elem_mast_tmp( (i_dime-1)*nb_node_mast + i_node )
+        end do
+    end do
+!
+    elem_slav_coor(:,:) = 0.d0
+    do i_node = 1, nb_node_slav
+        do i_dime = 1, elem_dime
+            elem_slav_coor(i_dime, i_node) = &
+                elem_slav_tmp( (i_dime-1)*nb_node_slav + i_node )
+        end do
+    end do
+!
+! - Linearize master cell
+    call dctest(elem_mast_code, lin_sub, lin_mast_nbnode, lin_nbsub, lin_mast_code)
+
+    ! loop on slave nodes
+    iNodeCoorReal(:) = 0.d0
+    do i_node = 1, nb_node_slav
+        ksi1 = 0.d0
+        ksi2 = 0.d0
+!
+        ! get node coordinates in real space (ndim)
+        iNodeCoorReal(1:elem_dime) = elem_slav_coor(1:elem_dime, i_node)
+        !
+        ! - Compute normal
+        !
+        ksi1 = para_coor(1,i_node)
+        if (elem_dime .eq. 3) then
+            ksi2 = para_coor(2,i_node)
+        end if
+
+        call apnorm(nb_node_slav, elem_slav_code, elem_dime, elem_slav_coor,&
+                    ksi1       , ksi2     , slav_norm)
+!
+! ----- Projection of node on linear master cell to know
+!                    if it projected inside master cell
+!
+        call mmnewd(lin_mast_code, lin_mast_nbnode(1), elem_dime, elem_mast_coor,&
+                    iNodeCoorReal     , 75             , pair_tole, slav_norm ,&
+                    ksi_line(1)     , ksi_line(2)       , tau1     , tau2          ,&
+                    iret_)
+        ASSERT(iret_ == 0)
+        call projInsideCell(pair_tole, elem_dime, lin_mast_code, ksi_line, iret_)
+
+        if (iret_ == 1) then
+            go to 99
+        end if
+!
+! ----- Projection of node on master cell
+!
+        call mmnewd(elem_mast_code, nb_node_mast, elem_dime, elem_mast_coor,&
+                    iNodeCoorReal     , 75             , pair_tole, slav_norm ,&
+                    ksi_ma(1)     , ksi_ma(2)       , tau1     , tau2          ,&
+                    iret_, dist, ksi_line(1), ksi_line(2))
+        ASSERT(iret_ == 0)
+        call projInsideCell(pair_tole, elem_dime, lin_mast_code, ksi_ma, iret_)
+        ASSERT(iret_ == 0)
+
+        ! save distance in jgap
+        zr(jgap-1+i_node) = dist
+        zr(jstat-1+i_node) = 1.d0
+!
+99  continue
+    end do
 !
 end subroutine

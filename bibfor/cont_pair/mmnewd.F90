@@ -18,7 +18,7 @@
 
 subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
                   iter_maxi, tole_maxi, proj_dire, ksi1     , ksi2   ,&
-                  tang_1   , tang_2   , error)
+                  tang_1   , tang_2   , error, dist_, ksi1_init, ksi2_init)
 !
     implicit none
 !
@@ -43,6 +43,8 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
     real(kind=8), intent(out) :: tang_1(3)
     real(kind=8), intent(out) :: tang_2(3)
     integer, intent(out) :: error
+    real(kind=8), optional, intent(out) :: dist_
+    real(kind=8), optional, intent(in) :: ksi1_init, ksi2_init
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +58,7 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 ! In  nb_node   : number of nodes of element
 ! In  nb_dim    : dimension of element (2 or 3)
 ! In  elem_coor : coordinates of nodes of the element
-! In  pt_coor   : coordinates of poitn to project
+! In  pt_coor   : coordinates of point to project
 ! In  iter_maxi : Newton algorithm - Maximum number of iterations
 ! In  tole_maxi : Newton algorithm - Tolerance
 ! In  proj_dire : direction of projection
@@ -72,6 +74,7 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 !
     real(kind=8) :: zero
     parameter   (zero=0.d0)
+    aster_logical, parameter :: debug = ASTER_FALSE
 !
     integer :: ino, idim, iter
     real(kind=8) :: ff(9), dff(2, 9)
@@ -99,6 +102,11 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
     tole_abso = tole_maxi/100.d0
     tole_rela = tole_maxi
     dist_mini = r8gaem()
+!
+    if(present(ksi1_init)) then
+        ksi1 = ksi1_init
+        ksi2 = ksi2_init
+    end if
 !
 ! - Newton loop
 !
@@ -139,6 +147,10 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
         vect_posi(idim) = pt_coor(idim) - vect_posi(idim)
     end do
     dist = sqrt(vect_posi(1)*vect_posi(1)+vect_posi(2)*vect_posi(2)+vect_posi(3)*vect_posi(3))
+
+    if (present(dist_)) then
+        dist_ = dist
+    endif
 !
 ! - Newton residual
 !
@@ -245,7 +257,7 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 !
 999 continue
 !
-    if (error .eq. 1) then
+    if (debug .and. error .eq. 1) then
         write(6,*) 'POINT A PROJETER : ',pt_coor(1),pt_coor(2),pt_coor(3)
         write(6,*) 'MAILLE             ',type_elem,nb_node
 !

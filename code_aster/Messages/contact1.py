@@ -42,4 +42,10 @@ Conseil :
 Il y a un problème de dimension lié au modèle.
 """),
 
+    5 : _("""
+Certains noeuds sont projetés dans plus de deux mailles différentes.
+
+Il y a probablement un problème avec la projection.
+"""),
+
 }

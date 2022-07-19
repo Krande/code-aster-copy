@@ -33,7 +33,7 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/apcoor.h"
 #include "asterfort/aptype.h"
-#include "asterfort/prjint.h"
+#include "asterfort/prjint_ray.h"
 #include "asterfort/gt_linoma.h"
 #include "asterfort/gtctma.h"
 !#include "asterfort/gtclno.h"
@@ -252,10 +252,10 @@ integer, intent(in) ::  nb_node_mast
 !
 ! ----------------- Projection/intersection of elements in slave parametric space
 !
-                    call prjint(pair_tole     , elem_mast_dime,&
-                                elin_slav_nbnode, elem_slav_coor, elin_slav_code,&
-                                elin_mast_nbnode, elem_mast_coor, elin_mast_code,&
-                                poin_inte     , inte_weight   , nb_poin_inte)
+                    call prjint_ray(pair_tole     , elem_mast_dime,&
+                                    elin_slav_nbnode, elem_slav_coor, elin_slav_code,&
+                                    elin_mast_nbnode, elem_mast_coor, elin_mast_code,&
+                                    poin_inte     , inte_weight   , nb_poin_inte)
 !
 ! ----------------- Set start elements
 !

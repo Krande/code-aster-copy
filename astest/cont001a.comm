@@ -100,7 +100,6 @@ DEFICO = DEFI_CONT(
             GROUP_MA_ESCL="Group_1",
             SANS_GROUP_MA="Group_3",
             ALGO_CONT="LAGRANGIEN",
-            VARIANTE="ROBUSTE",
             CONTACT_INIT="OUI",
         ),
         _F(
@@ -123,13 +122,13 @@ test.assertEqual(zone.getSlaveCellNeighbors(54), [55, 53])
 
 test.assertEqual(DEFICO.getNumberOfContactZones(), 2)
 test.assertEqual(DEFICO.getVerbosity(), 2)
-test.assertEqual(DEFICO.getModel().getName(), MODI.getName())
-test.assertEqual(DEFICO.getMesh().getName(), Mail.getName())
+test.assertEqual(DEFICO.getModel(), MODI)
+test.assertEqual(DEFICO.getMesh(), Mail)
 test.assertFalse(DEFICO.hasFriction)
 test.assertTrue(DEFICO.hasSmoothing)
 
 # Pairing checks
-from libaster import PhysicalProblem, FieldOnNodesReal, ContactPairing
+from libaster import PhysicalProblem, FieldOnNodesReal, ContactPairing, ContactComputation
 
 study = PhysicalProblem(MODI, CHMAT, CARAMECA)
 study.computeDOFNumbering()
@@ -144,7 +143,8 @@ test.assertEqual(pair.getCoordinates().getValues()[:10], [54.0, 54.0, 4.0,
 
 nb_zones = DEFICO.getNumberOfContactZones()
 for i in range(nb_zones):
-    pair.compute(i)
+    pair.computeZone(i)
+
 
 test.assertEqual(pair.getListOfPairsOfZone(1), [(77, 30), (78, 31), (79, 32), (80, 33),
                                                 (81, 34), (82, 35), (83, 36), (84, 37), (85, 38), (86, 39)])
@@ -172,6 +172,8 @@ test.assertEqual(QuadraturePts[:15], [0.03484042543181441, -0.41685880326027175,
 
 nbPairs = pair.getNumberOfPairs()
 test.assertEqual(nbPairs, sum(pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)))
+
+
 # Testing AsterErrorMessage
 pair.clear()
 try:
@@ -179,8 +181,12 @@ try:
 except Exception as e:
     test.assertIn("List of pairs is empty or has an odd size", e.message)
 
+
+
+
+
 algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
-vari_cont = [code_aster.ContactVariant.Robust, code_aster.ContactVariant.Rapide]
+vari_cont = [code_aster.ContactVariant.Empty, code_aster.ContactVariant.Rapide]
 
 for i in range(DEFICO.getNumberOfContactZones()):
     zone = DEFICO.getContactZone(i)
@@ -192,8 +198,8 @@ for i in range(DEFICO.getNumberOfContactZones()):
     zone.checkNormals = False
     test.assertFalse(zone.checkNormals)
 
-    test.assertEqual(zone.getModel().getName(), MODI.getName())
-    test.assertEqual(zone.getMesh().getName(), Mail.getName())
+    test.assertEqual(zone.getModel(), MODI)
+    test.assertEqual(zone.getMesh(), Mail)
 
     contParam = zone.getContactParameter()
     test.assertEqual(contParam.getAlgorithm(), algo_cont[i])
@@ -214,8 +220,6 @@ for i in range(DEFICO.getNumberOfContactZones()):
 
 zone.setSlaveGroupOfCells("Group_4")
 zone.setMasterGroupOfCells("Group_3")
-test.assertEqual(zone.getSlaveGroupOfCells(), "Group_4")
-test.assertEqual(zone.getMasterGroupOfCells(), "Group_3")
 
 # zone1 = DEFICO.getContactZone(0)
 # test.assertEqual(zone1.getExcludedSlaveGroupOfCells(), ['Group_0'])
@@ -257,7 +261,7 @@ DEFICO2 = DEFI_CONT(
 
 test.assertEqual(DEFICO2.getNumberOfContactZones(), 1)
 test.assertEqual(DEFICO2.getVerbosity(), 2)
-test.assertEqual(DEFICO2.getModel().getName(), MODI.getName())
+test.assertEqual(DEFICO2.getModel(), MODI)
 test.assertFalse(DEFICO2.hasFriction)
 
 test.assertFalse(DEFICO2.hasSmoothing)
@@ -265,9 +269,7 @@ test.assertFalse(DEFICO2.hasSmoothing)
 # zone 0 :
 zone = DEFICO2.getContactZone(0)
 test.assertEqual(zone.getVerbosity(), 2)
-test.assertEqual(zone.getSlaveGroupOfCells(), "Group_1")
-test.assertEqual(zone.getMasterGroupOfCells(), "Group_2")
-test.assertEqual(zone.getModel().getName(), MODI.getName())
+test.assertEqual(zone.getModel(), MODI)
 test.assertFalse(zone.checkNormals)
 
 DEFICO2.appendContactZone(zone)
@@ -343,16 +345,14 @@ DEFICO3 = DEFI_CONT(
 
 test.assertEqual(DEFICO3.getNumberOfContactZones(), 1)
 test.assertEqual(DEFICO3.getVerbosity(), 2)
-test.assertEqual(DEFICO3.getModel().getName(), MODI.getName())
+test.assertEqual(DEFICO3.getModel(), MODI)
 test.assertTrue(DEFICO3.hasFriction)
 test.assertFalse(DEFICO3.hasSmoothing)
 
 for i in range(DEFICO3.getNumberOfContactZones()):
     zone = DEFICO3.getContactZone(i)
     test.assertEqual(zone.getVerbosity(), 2)
-    test.assertEqual(zone.getSlaveGroupOfCells(), "Group_1")
-    test.assertEqual(zone.getMasterGroupOfCells(), "Group_2")
-    test.assertEqual(zone.getModel().getName(), MODI.getName())
+    test.assertEqual(zone.getModel(), MODI)
     test.assertFalse(zone.checkNormals)
     contParam = zone.getContactParameter()
     test.assertEqual(contParam.getAlgorithm(), code_aster.ContactAlgo.Nitsche)
@@ -406,11 +406,11 @@ for i in range(DEFICO4.getNumberOfContactZones()):
 
     pairParam = zone.getPairingParameter()
     pairParam.getDistanceFunction()
-    test.assertEqual(pairParam.getDistanceFunction().getName(), DF1.getName())
+    test.assertEqual(pairParam.getDistanceFunction(), DF1)
     pairParam.setDistanceFunction(DN)
-    test.assertEqual(pairParam.getDistanceFunction().getName(), DN.getName())
+    test.assertEqual(pairParam.getDistanceFunction(), DN)
     pairParam.setDistanceFunction(DFO)
-    test.assertEqual(pairParam.getDistanceFunction().getName(), DFO.getName())
+    test.assertEqual(pairParam.getDistanceFunction(), DFO)
 
     test.assertTrue(pairParam.hasBeamDistance)
     pairParam.hasBeamDistance = False
@@ -418,6 +418,6 @@ for i in range(DEFICO4.getNumberOfContactZones()):
     pairParam.hasShellDistance = True
     test.assertTrue(pairParam.hasShellDistance)
 
-    test.assertEqual(pairParam.getElementaryCharacteristics().getName(), CARAMECA.getName())
+    test.assertEqual(pairParam.getElementaryCharacteristics(), CARAMECA)
 
 FIN()

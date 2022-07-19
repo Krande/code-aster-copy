@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ phen.add('2D_FLUIDE#2', Modelisation(dim=(2,2), code='2FP',
         (MT.SEG2      , EL.MEFLSE2P),
         (MT.SEG3      , EL.MEFLSE3P),
     )))
-    
+
 phen.add('2D_FLUIDE#3', Modelisation(dim=(2,2), code='2FI',
     attrs=(
         (AT.TYPMOD,'PLAN'),
@@ -2484,6 +2484,24 @@ phen.add('FRIC_SL_3D', Modelisation(dim=(2,3), code='CF3',
         (MT.SEG2      , EL.CFP2E3D),
     )))
 
+#-- Define SLAVE elements for LAGRANGIAN method (in DEFI_CONTACT) - Contact
+
+phen.add('CONT_LAG_SL_2D', Modelisation(dim=(1,2), code='CM2',
+    elements=(
+        (MT.SEG2      , EL.CMS22D),
+        (MT.SEG3      , EL.CMS32D),
+    )))
+
+phen.add('CONT_LAG_SL_3D', Modelisation(dim=(2,3), code='CM3',
+    elements=(
+        (MT.TRIA3     , EL.CMT33D),
+        (MT.TRIA6     , EL.CMT63D),
+        (MT.QUAD4     , EL.CMQ43D),
+        (MT.QUAD8     , EL.CMQ83D),
+        (MT.QUAD9     , EL.CMQ93D),
+    )))
+
+
 #-- Define CONTACT elements for CONTINUE method (in STAT_NON_LINE) - Contact
 
 phen.add('CONT_EL_3D1', Modelisation(dim=(2,3), code='CC1',
@@ -2753,6 +2771,64 @@ phen.add('CONT_LAC_EL_3DE', Modelisation(dim=(2,3), code='L3E',
         (MT.QU8TR3    , EL.LACQ8T3E),
         (MT.QU8QU4    , EL.LACQ8Q4E),
         (MT.QU8QU9    , EL.LACQ8Q9E),
+    )))
+
+
+#-- Define CONTACT elements for LAGRANGIAN AUGMENTED method (in STAT_NON_LINE) - Contact
+
+phen.add('CONT_LAG_EL_2D', Modelisation(dim=(1,2), code='M2C',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22    , EL.CMS2S2),
+        (MT.SEG33    , EL.CMS3S3),
+        (MT.SEG23    , EL.CMS2S3),
+        (MT.SEG32    , EL.CMS3S2),
+    )))
+
+phen.add('CONT_LAG_EL_2DA', Modelisation(dim=(1,2), code='M2A',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+        (AT.AXIS,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22    , EL.CMS2S2A),
+        (MT.SEG33    , EL.CMS3S3A),
+        (MT.SEG23    , EL.CMS2S3A),
+        (MT.SEG32    , EL.CMS3S2A),
+    )))
+
+phen.add('CONT_LAG_EL_3D', Modelisation(dim=(2,3), code='M3C',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QU4QU8    , EL.CMQ4Q8),
+        (MT.QU4QU9    , EL.CMQ4Q9),
+        (MT.QU4TR3    , EL.CMQ4T3),
+        (MT.QU4TR6    , EL.CMQ4T6),
+        (MT.QU8QU4    , EL.CMQ8Q4),
+        (MT.QU8QU9    , EL.CMQ8Q9),
+        (MT.QU8TR3    , EL.CMQ8T3),
+        (MT.QU8TR6    , EL.CMQ8T6),
+        (MT.QU9QU4    , EL.CMQ9Q4),
+        (MT.QU9QU8    , EL.CMQ9Q8),
+        (MT.QU9TR3    , EL.CMQ9T3),
+        (MT.QU9TR6    , EL.CMQ9T6),
+        (MT.QUAD44    , EL.CMQ4Q4),
+        (MT.QUAD88    , EL.CMQ8Q8),
+        (MT.QUAD99    , EL.CMQ9Q9),
+        (MT.TR3QU4    , EL.CMT3Q4),
+        (MT.TR3QU8    , EL.CMT3Q8),
+        (MT.TR3QU9    , EL.CMT3Q9),
+        (MT.TR3TR6    , EL.CMT3T6),
+        (MT.TR6QU4    , EL.CMT6Q4),
+        (MT.TR6QU8    , EL.CMT6Q8),
+        (MT.TR6QU9    , EL.CMT6Q9),
+        (MT.TR6TR3    , EL.CMT6T3),
+        (MT.TRIA33    , EL.CMT3T3),
+        (MT.TRIA66    , EL.CMT6T6),
     )))
 
 #------------------------------------------------------------------------------------
@@ -4351,7 +4427,7 @@ phen.add('FLUI_STRU#3', Modelisation(dim=(3,3), code='FLI',
         (AT.TYPMOD,'3D'),
         (AT.FLUIDE,'OUI'),
         (AT.FSI,'OUI'),
-        (AT.FORMULATION,'FSI_UPSI'), 
+        (AT.FORMULATION,'FSI_UPSI'),
     ),
     elements=(
         (MT.TRIA3     , EL.MEFS_FACE3PSI),

@@ -21,6 +21,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ContactComputation` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ContactComputation
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ContactParameter` object
 ********************************************************************************
 

@@ -40,8 +40,6 @@ ContactPairing::ContactPairing( const std::string name, const std::vector< Conta
     _listOfPairs.resize( size_zones );
     _nbIntersectionPoints.resize( size_zones );
     _slaveIntersectionPoints.resize( size_zones );
-    _masterIntersectionPoints.resize( size_zones );
-    _quadraturePoints.resize( size_zones );
 };
 
 ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
@@ -74,7 +72,7 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
     }
 
     // tolerence
-    ASTERDOUBLE pair_tole = 0.001;
+    ASTERDOUBLE pair_tole = 1e-8;
 
     // set pairs numbers to 0
     ASTERINTEGER nb_pairs = 0;
@@ -83,13 +81,11 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
     ASTERINTEGER *pairs = NULL;
     ASTERINTEGER *nbInterPoints = NULL;
     ASTERDOUBLE *InterSlavePoints = NULL;
-    ASTERDOUBLE *InterMasterPoints = NULL;
-    ASTERDOUBLE *gaussPoints = NULL;
 
     CALLO_APLCPGN( _mesh->getName(), _newCoordinates->getName(), _zones[i]->getName(), pair_method,
                    &pair_tole, &nbCellMaster, eleMaster.data(), &nbCellSlave, eleSlave.data(),
                    NodesMaster.data(), &nbNodeMaster, &nb_pairs, &pairs, &nbInterPoints,
-                   &InterSlavePoints, &InterMasterPoints, &gaussPoints );
+                   &InterSlavePoints );
 
     // clearZone
     this->clearZone( i );
@@ -99,9 +95,6 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
     _listOfPairs[i] = VectorLong( pairs, pairs + 2 * nb_pairs );
     _nbIntersectionPoints[i] = VectorLong( nbInterPoints, nbInterPoints + nb_pairs );
     _slaveIntersectionPoints[i] = VectorReal( InterSlavePoints, InterSlavePoints + 16 * nb_pairs );
-    _masterIntersectionPoints[i] =
-        VectorReal( InterMasterPoints, InterMasterPoints + 16 * nb_pairs );
-    _quadraturePoints[i] = VectorReal( gaussPoints, gaussPoints + 72 * nb_pairs );
 
     // update numerotation
 
@@ -109,11 +102,11 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
                     []( ASTERINTEGER &i ) -> ASTERINTEGER { return --i; } );
 
     // free temporary quantities
-    free( pairs );
-    free( nbInterPoints );
-    free( InterSlavePoints );
-    free( InterMasterPoints );
-    free( gaussPoints );
+    if ( nb_pairs > 0 ) {
+        free( pairs );
+        free( nbInterPoints );
+        free( InterSlavePoints );
+    }
 
     return true;
 }
@@ -129,21 +122,15 @@ ASTERBOOL ContactPairing::compute() {
 void ContactPairing::clearZone( ASTERINTEGER i ) {
 
     // swap is recommended to release memory
-    VectorLong().swap( _listOfPairs[i] );
-    VectorLong().swap( _nbIntersectionPoints[i] );
-    VectorReal().swap( _slaveIntersectionPoints[i] );
-    VectorReal().swap( _masterIntersectionPoints[i] );
-    VectorReal().swap( _quadraturePoints[i] );
+    _listOfPairs[i].clear();
+    _nbIntersectionPoints[i].clear();
+    _slaveIntersectionPoints[i].clear();
 
     _nbPairs.at( i ) = 0;
 }
 
 std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >
 ContactPairing::getListOfPairsOfZone( ASTERINTEGER zone_index ) const {
-
-    if ( _listOfPairs[zone_index].size() == 0 || _listOfPairs[zone_index].size() % 2 != 0 ) {
-        raiseAsterError( " List of pairs is empty or has an odd size " );
-    }
 
     std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > tmp;
     ASTERINTEGER nbPairs = getNumberOfPairsOfZone( zone_index );
@@ -154,4 +141,19 @@ ContactPairing::getListOfPairsOfZone( ASTERINTEGER zone_index ) const {
                                        _listOfPairs[zone_index][2 * i + 1] ) );
     }
     return tmp;
+}
+
+std::vector< VectorReal >
+ContactPairing::getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const {
+
+    std::vector< VectorReal > ret;
+    ASTERINTEGER nbPairs = getNumberOfPairsOfZone( zone_index );
+    ret.reserve( nbPairs );
+
+    auto iter = _slaveIntersectionPoints[zone_index].begin();
+    for ( auto i = 0; i < nbPairs; i++ ) {
+        ret.push_back( VectorReal( iter + 16 * i, iter + 16 * ( i + 1 ) ) );
+    }
+
+    return ret;
 }

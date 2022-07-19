@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,14 +79,14 @@ aster_logical, intent(out) :: laxis, leltf
 ! --- 2D
 !
 ! --- 'SE2'
-    if (nomte(1:6) .eq. 'CFS2S2' .or. nomte(1:6) .eq. 'COS2S2') then
+    if (nomte(1:6) .eq. 'CFS2S2' .or. nomte(1:6) .eq. 'COS2S2' .or. nomte(1:6) .eq. 'CMS2S2') then
         ndim = 2
         typmae = 'SE2'
         nne = 2
         typmam = 'SE2'
         nnm = 2
         nddl = nnm*ndim + nne*(ndim+i2d)
-    else if (nomte(1:6).eq.'CFS2S3' .or. nomte(1:6).eq.'COS2S3') then
+    else if (nomte(1:6).eq.'CFS2S3' .or. nomte(1:6).eq.'COS2S3' .or. nomte(1:6).eq.'CMS2S3') then
         ndim = 2
         typmae = 'SE2'
         nne = 2
@@ -94,14 +94,14 @@ aster_logical, intent(out) :: laxis, leltf
         nnm = 3
         nddl = nnm*ndim + nne*(ndim+i2d)
 ! --- 'SE3'
-    else if (nomte(1:6).eq.'CFS3S2' .or. nomte(1:6).eq.'COS3S2') then
+    else if (nomte(1:6).eq.'CFS3S2' .or. nomte(1:6).eq.'COS3S2' .or. nomte(1:6).eq.'CMS3S2') then
         ndim = 2
         typmae = 'SE3'
         nne = 3
         typmam = 'SE2'
         nnm = 2
         nddl = nnm*ndim + nne*(ndim+i2d)
-    else if (nomte(1:6).eq.'CFS3S3' .or. nomte(1:6).eq.'COS3S3') then
+    else if (nomte(1:6).eq.'CFS3S3' .or. nomte(1:6).eq.'COS3S3' .or. nomte(1:6).eq.'CMS3S3') then
         ndim = 2
         typmae = 'SE3'
         nne = 3
@@ -112,7 +112,7 @@ aster_logical, intent(out) :: laxis, leltf
 ! --- 3D
 !
 ! --- 'SE2'
-    else if (nomte.eq.'CFP2P2' .or. nomte.eq.'COP2P2') then
+    else if (nomte.eq.'CFP2P2' .or. nomte.eq.'COP2P2' .or. nomte.eq.'CMP2P2') then
         ndim = 3
         typmae = 'SE2'
         nne = 2
@@ -120,35 +120,35 @@ aster_logical, intent(out) :: laxis, leltf
         nnm = 2
         nddl = nnm*ndim + nne*(ndim+i3d)
 ! --- 'TR3'
-    else if (nomte.eq.'CFT3T3' .or. nomte.eq.'COT3T3') then
+    else if (nomte.eq.'CFT3T3' .or. nomte.eq.'COT3T3' .or. nomte.eq.'CMT3T3') then
         ndim = 3
         typmae = 'TR3'
         nne = 3
         typmam = 'TR3'
         nnm = 3
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFT3T6' .or. nomte.eq.'COT3T6') then
+    else if (nomte.eq.'CFT3T6' .or. nomte.eq.'COT3T6' .or. nomte.eq.'CMT3T6') then
         ndim = 3
         typmae = 'TR3'
         nne = 3
         typmam = 'TR6'
         nnm = 6
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFT3Q4' .or. nomte.eq.'COT3Q4') then
+    else if (nomte.eq.'CFT3Q4' .or. nomte.eq.'COT3Q4' .or. nomte.eq.'CMT3Q4') then
         ndim = 3
         typmae = 'TR3'
         nne = 3
         typmam = 'QU4'
         nnm = 4
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFT3Q8' .or. nomte.eq.'COT3Q8') then
+    else if (nomte.eq.'CFT3Q8' .or. nomte.eq.'COT3Q8' .or. nomte.eq.'CMT3Q8') then
         ndim = 3
         typmae = 'TR3'
         nne = 3
         typmam = 'QU8'
         nnm = 8
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFT3Q9' .or. nomte.eq.'COT3Q9') then
+    else if (nomte.eq.'CFT3Q9' .or. nomte.eq.'COT3Q9' .or. nomte.eq.'CMT3Q9') then
         ndim = 3
         typmae = 'TR3'
         nne = 3
@@ -156,35 +156,35 @@ aster_logical, intent(out) :: laxis, leltf
         nnm = 9
         nddl = nnm*ndim + nne*(ndim+i3d)
 ! --- 'TR6'
-    else if (nomte.eq.'CFT6T3' .or. nomte.eq.'COT6T3') then
+    else if (nomte.eq.'CFT6T3' .or. nomte.eq.'COT6T3' .or. nomte.eq.'CMT6T3') then
         ndim = 3
         typmae = 'TR6'
         nne = 6
         typmam = 'TR3'
         nnm = 3
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFT6T6' .or. nomte.eq.'COT6T6') then
+    else if (nomte.eq.'CFT6T6' .or. nomte.eq.'COT6T6' .or. nomte.eq.'CMT6T6') then
         ndim = 3
         typmae = 'TR6'
         nne = 6
         typmam = 'TR6'
         nnm = 6
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFT6Q4' .or. nomte.eq.'COT6Q4') then
+    else if (nomte.eq.'CFT6Q4' .or. nomte.eq.'COT6Q4' .or. nomte.eq.'CMT6Q4') then
         ndim = 3
         typmae = 'TR6'
         nne = 6
         typmam = 'QU4'
         nnm = 4
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFT6Q8' .or. nomte.eq.'COT6Q8') then
+    else if (nomte.eq.'CFT6Q8' .or. nomte.eq.'COT6Q8' .or. nomte.eq.'CMT6Q8') then
         ndim = 3
         typmae = 'TR6'
         nne = 6
         typmam = 'QU8'
         nnm = 8
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFT6Q9' .or. nomte.eq.'COT6Q9') then
+    else if (nomte.eq.'CFT6Q9' .or. nomte.eq.'COT6Q9' .or. nomte.eq.'CMT6Q9') then
         ndim = 3
         typmae = 'TR6'
         nne = 6
@@ -192,35 +192,35 @@ aster_logical, intent(out) :: laxis, leltf
         nnm = 9
         nddl = nnm*ndim + nne*(ndim+i3d)
 ! --- 'QU4'
-    else if (nomte.eq.'CFQ4T3' .or. nomte.eq.'COQ4T3') then
+    else if (nomte.eq.'CFQ4T3' .or. nomte.eq.'COQ4T3' .or. nomte.eq.'CMQ4T3') then
         ndim = 3
         typmae = 'QU4'
         nne = 4
         typmam = 'TR3'
         nnm = 3
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ4T6' .or. nomte.eq.'COQ4T6') then
+    else if (nomte.eq.'CFQ4T6' .or. nomte.eq.'COQ4T6' .or. nomte.eq.'CMQ4T6') then
         ndim = 3
         typmae = 'QU4'
         nne = 4
         typmam = 'TR6'
         nnm = 6
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ4Q4' .or. nomte.eq.'COQ4Q4') then
+    else if (nomte.eq.'CFQ4Q4' .or. nomte.eq.'COQ4Q4' .or. nomte.eq.'CMQ4Q4') then
         ndim = 3
         typmae = 'QU4'
         nne = 4
         typmam = 'QU4'
         nnm = 4
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ4Q8' .or. nomte.eq.'COQ4Q8') then
+    else if (nomte.eq.'CFQ4Q8' .or. nomte.eq.'COQ4Q8' .or. nomte.eq.'CMQ4Q8') then
         ndim = 3
         typmae = 'QU4'
         nne = 4
         typmam = 'QU8'
         nnm = 8
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ4Q9' .or. nomte.eq.'COQ4Q9') then
+    else if (nomte.eq.'CFQ4Q9' .or. nomte.eq.'COQ4Q9' .or. nomte.eq.'CMQ4Q9') then
         ndim = 3
         typmae = 'QU4'
         nne = 4
@@ -228,35 +228,35 @@ aster_logical, intent(out) :: laxis, leltf
         nnm = 9
         nddl = nnm*ndim + nne*(ndim+i3d)
 ! --- 'QU8'
-    else if (nomte.eq.'CFQ8T3' .or. nomte.eq.'COQ8T3') then
+    else if (nomte.eq.'CFQ8T3' .or. nomte.eq.'COQ8T3' .or. nomte.eq.'CMQ8T3') then
         ndim = 3
         typmae = 'QU8'
         nne = 8
         typmam = 'TR3'
         nnm = 3
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ8T6' .or. nomte.eq.'COQ8T6') then
+    else if (nomte.eq.'CFQ8T6' .or. nomte.eq.'COQ8T6' .or. nomte.eq.'CMQ8T6') then
         ndim = 3
         typmae = 'QU8'
         nne = 8
         typmam = 'TR6'
         nnm = 6
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ8Q4' .or. nomte.eq.'COQ8Q4') then
+    else if (nomte.eq.'CFQ8Q4' .or. nomte.eq.'COQ8Q4' .or. nomte.eq.'CMQ8Q4') then
         ndim = 3
         typmae = 'QU8'
         nne = 8
         typmam = 'QU4'
         nnm = 4
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ8Q8' .or. nomte.eq.'COQ8Q8') then
+    else if (nomte.eq.'CFQ8Q8' .or. nomte.eq.'COQ8Q8' .or. nomte.eq.'CMQ8Q8') then
         ndim = 3
         typmae = 'QU8'
         nne = 8
         typmam = 'QU8'
         nnm = 8
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ8Q9' .or. nomte.eq.'COQ8Q9') then
+    else if (nomte.eq.'CFQ8Q9' .or. nomte.eq.'COQ8Q9' .or. nomte.eq.'CMQ8Q9') then
         ndim = 3
         typmae = 'QU8'
         nne = 8
@@ -264,105 +264,105 @@ aster_logical, intent(out) :: laxis, leltf
         nnm = 9
         nddl = nnm*ndim + nne*(ndim+i3d)
 ! --- 'QU9'
-    else if (nomte.eq.'CFQ9T3' .or. nomte.eq.'COQ9T3') then
+    else if (nomte.eq.'CFQ9T3' .or. nomte.eq.'COQ9T3' .or. nomte.eq.'CMQ9T3') then
         ndim = 3
         typmae = 'QU9'
         nne = 9
         typmam = 'TR3'
         nnm = 3
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ9T6' .or. nomte.eq.'COQ9T6') then
+    else if (nomte.eq.'CFQ9T6' .or. nomte.eq.'COQ9T6' .or. nomte.eq.'CMQ9T6') then
         ndim = 3
         typmae = 'QU9'
         nne = 9
         typmam = 'TR6'
         nnm = 6
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ9Q4' .or. nomte.eq.'COQ9Q4') then
+    else if (nomte.eq.'CFQ9Q4' .or. nomte.eq.'COQ9Q4' .or. nomte.eq.'CMQ9Q4') then
         ndim = 3
         typmae = 'QU9'
         nne = 9
         typmam = 'QU4'
         nnm = 4
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ9Q8' .or. nomte.eq.'COQ9Q8') then
+    else if (nomte.eq.'CFQ9Q8' .or. nomte.eq.'COQ9Q8' .or. nomte.eq.'CMQ9Q8') then
         ndim = 3
         typmae = 'QU9'
         nne = 9
         typmam = 'QU8'
         nnm = 8
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFQ9Q9' .or. nomte.eq.'COQ9Q9') then
+    else if (nomte.eq.'CFQ9Q9' .or. nomte.eq.'COQ9Q9' .or. nomte.eq.'CMQ9Q8') then
         ndim = 3
         typmae = 'QU9'
         nne = 9
         typmam = 'QU9'
         nnm = 9
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS2T3' .or. nomte.eq.'COS2T3') then
+    else if (nomte.eq.'CFS2T3' .or. nomte.eq.'COS2T3' .or. nomte.eq.'CKS2T3') then
         ndim = 3
         typmae = 'SE2'
         nne = 2
         typmam = 'TR3'
         nnm = 3
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS2T6' .or. nomte.eq.'COS2T6') then
+    else if (nomte.eq.'CFS2T6' .or. nomte.eq.'COS2T6' .or. nomte.eq.'CMS2T6') then
         ndim = 3
         typmae = 'SE2'
         nne = 2
         typmam = 'TR6'
         nnm = 6
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS2Q4' .or. nomte.eq.'COS2Q4') then
+    else if (nomte.eq.'CFS2Q4' .or. nomte.eq.'COS2Q4' .or. nomte.eq.'CMS2Q4') then
         ndim = 3
         typmae = 'SE2'
         nne = 2
         typmam = 'QU4'
         nnm = 4
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS2Q8' .or. nomte.eq.'COS2Q8') then
+    else if (nomte.eq.'CFS2Q8' .or. nomte.eq.'COS2Q8' .or. nomte.eq.'CMS2Q8') then
         ndim = 3
         typmae = 'SE2'
         nne = 2
         typmam = 'QU8'
         nnm = 8
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS2Q9' .or. nomte.eq.'COS2Q9') then
+    else if (nomte.eq.'CFS2Q9' .or. nomte.eq.'COS2Q9' .or. nomte.eq.'CMS2Q9') then
         ndim = 3
         typmae = 'SE2'
         nne = 2
         typmam = 'QU9'
         nnm = 9
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS3T3' .or. nomte.eq.'COS3T3') then
+    else if (nomte.eq.'CFS3T3' .or. nomte.eq.'COS3T3' .or. nomte.eq.'CMS3T3') then
         ndim = 3
         typmae = 'SE3'
         nne = 3
         typmam = 'TR3'
         nnm = 3
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS3T6' .or. nomte.eq.'COS3T6') then
+    else if (nomte.eq.'CFS3T6' .or. nomte.eq.'COS3T6' .or. nomte.eq.'CMS3T6') then
         ndim = 3
         typmae = 'SE3'
         nne = 3
         typmam = 'TR6'
         nnm = 6
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS3Q4' .or. nomte.eq.'COS3Q4') then
+    else if (nomte.eq.'CFS3Q4' .or. nomte.eq.'COS3Q4' .or. nomte.eq.'CMS3Q4') then
         ndim = 3
         typmae = 'SE3'
         nne = 3
         typmam = 'QU4'
         nnm = 4
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS3Q8' .or. nomte.eq.'COS3Q8') then
+    else if (nomte.eq.'CFS3Q8' .or. nomte.eq.'COS3Q8' .or. nomte.eq.'CMS3Q8') then
         ndim = 3
         typmae = 'SE3'
         nne = 3
         typmam = 'QU8'
         nnm = 8
         nddl = nnm*ndim + nne*(ndim+i3d)
-    else if (nomte.eq.'CFS3Q9' .or. nomte.eq.'COS3Q9') then
+    else if (nomte.eq.'CFS3Q9' .or. nomte.eq.'COS3Q9' .or. nomte.eq.'CMS3Q9') then
         ndim = 3
         typmae = 'SE3'
         nne = 3

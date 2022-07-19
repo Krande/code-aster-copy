@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
                              typg_cont_nume_, &
                              typf_cont_nume_, &
                              typf_frot_nume_, &
-                             set_elem_indx_ , get_elem_indx_)
+                             get_elem_indx_)
         aster_logical, intent(in), optional :: l_axi_
         integer, intent(in), optional :: model_ndim_
         character(len=8), intent(in), optional :: typg_slav_name_
@@ -37,7 +37,6 @@ interface
         integer, intent(out), optional :: typg_cont_nume_
         integer, intent(out), optional :: typf_cont_nume_
         integer, intent(out), optional :: typf_frot_nume_
-        integer, intent(in), optional :: set_elem_indx_
         integer, intent(out), optional :: get_elem_indx_
     end subroutine mmelem_data_c
 end interface

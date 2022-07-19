@@ -24,6 +24,7 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Contact/ContactNew.h"
 #include "Contact/ContactParameters.h"
 #include "Contact/ContactZone.h"
 #include "DataFields/FieldOnNodes.h"
@@ -46,10 +47,6 @@ class ContactPairing : public DataStructure {
     std::vector< VectorLong > _nbIntersectionPoints;
     /** @brief Vector of slave intersection points */
     std::vector< VectorReal > _slaveIntersectionPoints;
-    /** @brief Vector of master intersection points */
-    std::vector< VectorReal > _masterIntersectionPoints;
-    /** @brief Gauss points */
-    std::vector< VectorReal > _quadraturePoints;
 
   public:
     typedef std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > VectorLongPairs;
@@ -61,6 +58,11 @@ class ContactPairing : public DataStructure {
     /** @brief Mesh constructor */
     ContactPairing( const std::vector< ContactZonePtr > zones, const BaseMeshPtr mesh )
         : ContactPairing( ResultNaming::getNewResultName(), zones, mesh ){};
+
+    /** @brief constructor */
+    ContactPairing( const ContactNewPtr cont )
+        : ContactPairing( ResultNaming::getNewResultName(), cont->getContactZones(),
+                          cont->getMesh() ){};
 
     /** @brief Mesh getter */
     MeshCoordinatesFieldPtr getCoordinates() const { return _newCoordinates; }
@@ -110,23 +112,7 @@ class ContactPairing : public DataStructure {
     /** @brief get slave intersection points of zone zone_index
      *   @return vector of slave intersection points of size 16*number of pairs
      **/
-    VectorReal getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const {
-        return _slaveIntersectionPoints[zone_index];
-    }
-
-    /** @brief get master intersection points of zone zone_index
-     *  @return vector of master intersection points of size 16*number of pairs
-     **/
-    VectorReal getMasterIntersectionPoints( ASTERINTEGER zone_index ) const {
-        return _masterIntersectionPoints[zone_index];
-    }
-
-    /** @brief get gauss points of zone zone_index
-     * @return vector Gauss quadrature points of size 72*number of pairs
-     **/
-    VectorReal getQuadraturePoints( ASTERINTEGER zone_index ) const {
-        return _quadraturePoints[zone_index];
-    }
+    std::vector<VectorReal> getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const;
 };
 
 typedef std::shared_ptr< ContactPairing > ContactPairingPtr;

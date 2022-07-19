@@ -94,7 +94,7 @@ def defi_cont_ops(self, **keywords):
         # contact parameters
         contParam = ContactParameter()
         contParam.setAlgorithm(_algo_cont[zone["ALGO_CONT"]])
-        if _algo_cont[zone["ALGO_CONT"]] in (ContactAlgo.Nitsche, ContactAlgo.Lagrangian):
+        if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Nitsche:
             contParam.setVariant(_vari_cont[zone["VARIANTE"]])
         else:
             contParam.setVariant(ContactVariant.Empty)

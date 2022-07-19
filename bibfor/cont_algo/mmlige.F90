@@ -267,19 +267,7 @@ integer, intent(out) :: nb_grel
             v_list_type(5*(elem_indx-1)+3) = typf_cont_nume
         endif
         v_list_type(5*(elem_indx-1)+5) = typg_cont_nume
-    end do
-!
-! - Total number of nodes
-!
-    do i_cont_type = 1, nb_type
-        elem_indx = i_cont_type
-        if (l_cont_cont) then
-            call mmelem_data_c(set_elem_indx_ = elem_indx, nb_node_elem_ = nb_node_elem)
-        else
-            call mmelem_data_l(set_elem_indx_ = elem_indx, nb_node_elem_ = nb_node_elem)
-        endif
-        nt_node = nt_node + &
-                  (v_list_type(5*(elem_indx-1)+1)+v_list_type(5*(elem_indx-1)+2))*(nb_node_elem)
+        nt_node = nt_node + nb_node_elem
     end do
 !
 ! - Display

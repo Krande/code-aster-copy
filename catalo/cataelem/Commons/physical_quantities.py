@@ -3900,6 +3900,22 @@ CLAC_R = PhysicalQuantity(type='R',
         PRESCOOR      : Poids d'intersection*Pression de contact
 """)
 
+CGAP_R = PhysicalQuantity(type='R',
+    components=(
+        'GAP',
+    ),
+    comment="""  CGAP_R Type:R Contact MORTAR
+        GAP        : Gap nodal
+""")
+
+CSTA_R = PhysicalQuantity(type='R',
+    components=(
+        'APPA',
+    ),
+    comment="""  CSTA_R Type:R Contact MORTAR
+        APPA        : le noeud est appareille
+""")
+
 # Elementary Quantities
 MDEP_C   = ArrayOfQuantities(elem='MS', phys= DEPL_C)
 MDEP_R   = ArrayOfQuantities(elem='MS', phys= DEPL_R)
@@ -3914,6 +3930,8 @@ VDEP_R   = ArrayOfQuantities(elem='V', phys= DEPL_R)
 VPRE_C   = ArrayOfQuantities(elem='V', phys= PRES_C)
 VSIZ_R   = ArrayOfQuantities(elem='V', phys= SIZZ_R)
 VTEM_R   = ArrayOfQuantities(elem='V', phys= TEMP_R)
+VNEU_R   = ArrayOfQuantities(elem='V', phys= NEUT_R)
+
 
 
 # store all PhysicalQuantity & ElementaryQuantity objects

@@ -22,7 +22,7 @@ subroutine mmelem_data_c(l_axi_         , model_ndim_    ,&
                          typg_cont_nume_, &
                          typf_cont_nume_, &
                          typf_frot_nume_, &
-                         set_elem_indx_ , get_elem_indx_)
+                         get_elem_indx_)
 !
 implicit none
 !
@@ -43,7 +43,6 @@ implicit none
     integer, intent(out), optional :: typg_cont_nume_
     integer, intent(out), optional :: typf_cont_nume_
     integer, intent(out), optional :: typf_frot_nume_
-    integer, intent(in), optional :: set_elem_indx_
     integer, intent(out), optional :: get_elem_indx_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,7 +62,6 @@ implicit none
 ! Out typg_cont_nume   : index of geometric type of contact/friction element
 ! Out typf_cont_nume   : index of FE type of contact element
 ! Out typf_frot_nume   : index of FE type of friction element
-! In  set_elem_indx    : index to select contact/friction element (set)
 ! Out get_elem_indx    : index to select contact/friction element (get)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -156,12 +154,6 @@ implicit none
 !
     if (present(nb_cont_type_)) then
         nb_cont_type_ = nb_cont_solv
-    endif
-!
-! - Set index for contact/friction element
-!
-    if (present(set_elem_indx_)) then
-        elem_indx = set_elem_indx_
     endif
 !
 ! - Index to select contact/friction element

@@ -42,6 +42,7 @@
 #include "PythonBindings/CombinedFourierResultInterface.h"
 #include "PythonBindings/ConnectionMeshInterface.h"
 #include "PythonBindings/ConstantFieldOnCellsInterface.h"
+#include "PythonBindings/ContactComputationInterface.h"
 #include "PythonBindings/ContactEnumInterface.h"
 #include "PythonBindings/ContactInterface.h"
 #include "PythonBindings/ContactNewInterface.h"
@@ -202,6 +203,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportContactNewToPython( mod );
     exportContactZoneToPython( mod );
     exportContactPairingToPython( mod );
+    exportContactComputationToPython( mod );
     exportBaseAssemblyMatrixToPython( mod );
     exportAssemblyMatrixToPython( mod );
     exportElementaryTermToPython( mod );

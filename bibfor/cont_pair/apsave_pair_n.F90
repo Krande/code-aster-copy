@@ -19,10 +19,8 @@
 subroutine apsave_pair_n( elem_slav_nume ,&
     nb_pair        , list_pair      ,&
     li_nbptsl      , li_ptintsl     ,&
-    li_ptintma     , li_ptgausma    ,&
     nb_pair_zone   , list_pair_zone ,&
     li_nbptsl_zone , li_ptintsl_zone,&
-    li_ptintma_zone, li_ptgausma_zone,&
     nb_elem_slav   , nb_elem_mast    ,&
     nb_next_alloc)
 !
@@ -31,6 +29,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "Contact_type.h"
 !
 !
 integer, intent(in) :: elem_slav_nume
@@ -41,14 +40,10 @@ integer, intent(inout) :: nb_next_alloc
 integer, intent(in) :: list_pair(:)
 integer, intent(in) :: li_nbptsl(:)
 real(kind=8), intent(in) :: li_ptintsl(:)
-real(kind=8), intent(in) :: li_ptintma(:)
-real(kind=8), intent(in) :: li_ptgausma(:)
 integer, intent(inout) :: nb_pair_zone
 integer, pointer :: list_pair_zone(:)
 integer, pointer :: li_nbptsl_zone(:)
 real(kind=8), pointer :: li_ptintsl_zone(:)
-real(kind=8), pointer :: li_ptintma_zone(:)
-real(kind=8), pointer :: li_ptgausma_zone(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,8 +65,6 @@ integer :: i_pair, nb_seuil
 integer, pointer :: tmp1(:) => null()
 integer, pointer :: tmp2(:) => null()
 real(kind=8), pointer :: tmp3(:) => null()
-real(kind=8), pointer :: tmp4(:) => null()
-real(kind=8), pointer :: tmp5(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,28 +78,22 @@ real(kind=8), pointer :: tmp5(:) => null()
 !
             AS_ALLOCATE(vi=list_pair_zone, size= 2*nb_elem_slav*nb_elem_mast)
             AS_ALLOCATE(vi=li_nbptsl_zone, size= nb_elem_slav*nb_elem_mast)
-            AS_ALLOCATE(vr=li_ptintsl_zone, size= 16*nb_elem_slav*nb_elem_mast)
-            AS_ALLOCATE(vr=li_ptintma_zone, size= 16*nb_elem_slav*nb_elem_mast)
-            AS_ALLOCATE(vr=li_ptgausma_zone, size= 72*nb_elem_slav*nb_elem_mast)
+            AS_ALLOCATE(vr=li_ptintsl_zone, size= SIZE_MAX_INTE_SL*nb_elem_slav*nb_elem_mast)
             nb_next_alloc = 0
         else
             nb_next_alloc = int(4*nb_elem_slav*nb_elem_mast/100)
             AS_ALLOCATE(vi=list_pair_zone, size= 2*nb_next_alloc)
             AS_ALLOCATE(vi=li_nbptsl_zone, size= nb_next_alloc)
-            AS_ALLOCATE(vr=li_ptintsl_zone, size= 16*nb_next_alloc)
-            AS_ALLOCATE(vr=li_ptintma_zone, size= 16*nb_next_alloc)
-            AS_ALLOCATE(vr=li_ptgausma_zone, size= 72*nb_next_alloc)
+            AS_ALLOCATE(vr=li_ptintsl_zone, size= SIZE_MAX_INTE_SL*nb_next_alloc)
+
         endif
         do i_pair = 1, nb_pair
             list_pair_zone(3*nb_pair_zone+2*(i_pair-1)+1) = elem_slav_nume
             list_pair_zone(3*nb_pair_zone+2*(i_pair-1)+2) = list_pair(i_pair)
             li_nbptsl_zone(nb_pair_zone+i_pair) = li_nbptsl(i_pair)
-            li_ptintsl_zone(nb_pair_zone*16+1+(i_pair-1)*16:nb_pair_zone*16+i_pair*16) = &
-            li_ptintsl(1+(i_pair-1)*16:i_pair*16)
-            li_ptintma_zone(nb_pair_zone*16+1+(i_pair-1)*16:nb_pair_zone*16+i_pair*16) = &
-            li_ptintma(1+(i_pair-1)*16:i_pair*16)
-            li_ptgausma_zone(nb_pair_zone*72+1+(i_pair-1)*72:nb_pair_zone*72+i_pair*72) = &
-            li_ptgausma(1+(i_pair-1)*72:i_pair*72)
+            li_ptintsl_zone(nb_pair_zone*SIZE_MAX_INTE_SL+1+(i_pair-1)*SIZE_MAX_INTE_SL:&
+                            nb_pair_zone*SIZE_MAX_INTE_SL+i_pair*SIZE_MAX_INTE_SL) = &
+            li_ptintsl(1+(i_pair-1)*SIZE_MAX_INTE_SL:i_pair*SIZE_MAX_INTE_SL)
         end do
     else
 !
@@ -122,44 +109,29 @@ real(kind=8), pointer :: tmp5(:) => null()
             tmp1(:) = list_pair_zone(1:2*nb_pair_zone)
             AS_ALLOCATE(vi=tmp2, size=nb_pair_zone)
             tmp2(:) = li_nbptsl_zone(1:nb_pair_zone)
-            AS_ALLOCATE(vr=tmp3, size=16*nb_pair_zone)
-            tmp3(:) = li_ptintsl_zone(1:nb_pair_zone*16)
-            AS_ALLOCATE(vr=tmp4, size=16*nb_pair_zone)
-            tmp4(:) = li_ptintma_zone(1:nb_pair_zone*16)
-            AS_ALLOCATE(vr=tmp5, size=72*nb_pair_zone)
-            tmp5(:) = li_ptgausma_zone(1:nb_pair_zone*72)
+            AS_ALLOCATE(vr=tmp3, size=SIZE_MAX_INTE_SL*nb_pair_zone)
+            tmp3(:) = li_ptintsl_zone(1:nb_pair_zone*SIZE_MAX_INTE_SL)
             AS_DEALLOCATE(vi=list_pair_zone)
             AS_DEALLOCATE(vi=li_nbptsl_zone)
             AS_DEALLOCATE(vr=li_ptintsl_zone)
-            AS_DEALLOCATE(vr=li_ptintma_zone)
-            AS_DEALLOCATE(vr=li_ptgausma_zone)
             nb_next_alloc = nb_next_alloc + int(4*nb_elem_slav*nb_elem_mast/100)
             AS_ALLOCATE(vi=list_pair_zone, size= 2*nb_next_alloc)
             AS_ALLOCATE(vi=li_nbptsl_zone, size= nb_next_alloc)
-            AS_ALLOCATE(vr=li_ptintsl_zone, size= 16*nb_next_alloc)
-            AS_ALLOCATE(vr=li_ptintma_zone, size= 16*nb_next_alloc)
-            AS_ALLOCATE(vr=li_ptgausma_zone, size= 72*nb_next_alloc)
+            AS_ALLOCATE(vr=li_ptintsl_zone, size= SIZE_MAX_INTE_SL*nb_next_alloc)
             list_pair_zone(1:3*nb_pair_zone)    = tmp1(:)
             li_nbptsl_zone(1:nb_pair_zone)      = tmp2(:)
-            li_ptintsl_zone(1:nb_pair_zone*16)  = tmp3(:)
-            li_ptintma_zone(1:nb_pair_zone*16)  = tmp4(:)
-            li_ptgausma_zone(1:nb_pair_zone*72) = tmp5(:)
+            li_ptintsl_zone(1:nb_pair_zone*SIZE_MAX_INTE_SL)  = tmp3(:)
             AS_DEALLOCATE(vi=tmp1)
             AS_DEALLOCATE(vi=tmp2)
             AS_DEALLOCATE(vr=tmp3)
-            AS_DEALLOCATE(vr=tmp4)
-            AS_DEALLOCATE(vr=tmp5)
         endif
         do i_pair = 1, nb_pair
             list_pair_zone(2*nb_pair_zone+2*(i_pair-1)+1) = elem_slav_nume
             list_pair_zone(2*nb_pair_zone+2*(i_pair-1)+2) = list_pair(i_pair)
             li_nbptsl_zone(nb_pair_zone+i_pair) = li_nbptsl(i_pair)
-            li_ptintsl_zone(nb_pair_zone*16+1+(i_pair-1)*16:nb_pair_zone*16+i_pair*16) = &
-            li_ptintsl(1+(i_pair-1)*16:i_pair*16)
-            li_ptintma_zone(nb_pair_zone*16+1+(i_pair-1)*16:nb_pair_zone*16+i_pair*16) = &
-            li_ptintma(1+(i_pair-1)*16:i_pair*16)
-            li_ptgausma_zone(nb_pair_zone*72+1+(i_pair-1)*72:nb_pair_zone*72+i_pair*72) = &
-            li_ptgausma(1+(i_pair-1)*72:i_pair*72)
+            li_ptintsl_zone(nb_pair_zone*SIZE_MAX_INTE_SL+1+(i_pair-1)*SIZE_MAX_INTE_SL:&
+                            nb_pair_zone*SIZE_MAX_INTE_SL+i_pair*SIZE_MAX_INTE_SL) = &
+            li_ptintsl(1+(i_pair-1)*SIZE_MAX_INTE_SL:i_pair*SIZE_MAX_INTE_SL)
         end do
     endif
     !

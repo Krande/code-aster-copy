@@ -1,6 +1,3 @@
-#ifndef CONTACTNEW_H_
-#define CONTACTNEW_H_
-
 /**
  * @file ContactNew.h
  * @brief Fichier entete de la class ContactNew
@@ -23,9 +20,10 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include "astercxx.h"
 
-#include "Contact/ContactPairing.h"
 #include "Contact/ContactZone.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxCollection.h"
@@ -112,6 +110,4 @@ class ContactNew : public DataStructure {
  * @typedef ContactNewPtr
  * @brief Pointeur intelligent vers un ContactNew
  */
-typedef std::shared_ptr< ContactNew > ContactNewPtr;
-
-#endif /* CONTACTNEW_H_ */
+using ContactNewPtr = std::shared_ptr< ContactNew > ;

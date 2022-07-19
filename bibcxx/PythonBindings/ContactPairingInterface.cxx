@@ -32,6 +32,7 @@ void exportContactPairingToPython( py::module_ &mod ) {
             &initFactoryPtr< ContactPairing, std::vector< ContactZonePtr >, BaseMeshPtr > ) )
         .def( py::init( &initFactoryPtr< ContactPairing, std::string, std::vector< ContactZonePtr >,
                                          BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< ContactPairing, ContactNewPtr > ) )
         .def( "getCoordinates", &ContactPairing::getCoordinates, R"(
 Compute the new coordinates
 Returns:
@@ -60,7 +61,7 @@ return list of pairs associated with the zone izone
 Arguments:
     zone_index(int)
 Returns:
-    List[int]: List of pairs
+    List[List[int]]: List of pairs
 )",
               ( py::arg( "zone_index" ) ) )
         .def( "getNumberOfPairsOfZone", &ContactPairing::getNumberOfPairsOfZone, R"(
@@ -93,21 +94,7 @@ Returns:
 Arguments:
     zone_index(int)
 Returns:
-    List[ float ]: get List of of salve intersection points
-)",
-              ( py::arg( "zone_index" ) ) )
-        .def( "getMasterIntersectionPoints", &ContactPairing::getMasterIntersectionPoints, R"(
-Arguments:
-    zone_index(int)
-Returns:
-    List[ float ]: get List of of master intersection points
-)",
-              ( py::arg( "zone_index" ) ) )
-        .def( "getQuadraturePoints", &ContactPairing::getQuadraturePoints, R"(
-Arguments:
-    zone_index(int)
-Returns:
-    List[ float ]: get List of of Gauss quadrature points
+    List[ List[float] ]: get list of of salve intersection points
 )",
               ( py::arg( "zone_index" ) ) );
 };

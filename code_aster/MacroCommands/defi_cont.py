@@ -63,7 +63,7 @@ DEFI_CONT_CATA=MACRO(
                 ALGO_CONT   = SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
                                         into=("LAGRANGIEN","NITSCHE","PENALISATION",),),
 
-                b_algo_cont = BLOC(condition = """is_in("ALGO_CONT", ('LAGRANGIEN', 'NITSCHE'))""",
+                b_algo_cont = BLOC(condition = """is_in("ALGO_CONT", ('NITSCHE'))""",
                                    VARIANTE  =SIMP(statut='f', typ='TXM', defaut="ROBUSTE",
                                                 into=("RAPIDE","ROBUSTE"),
                                                 fr=tr("Choix de la variante des formulations du contact" ),),
@@ -118,7 +118,7 @@ DEFI_CONT_CATA=MACRO(
                 ALGO_CONT   = SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
                                         into=("LAGRANGIEN","NITSCHE","PENALISATION",),),
 
-                b_algo_cont = BLOC(condition = """is_in("ALGO_CONT", ('LAGRANGIEN', 'NITSCHE'))""",
+                b_algo_cont = BLOC(condition = """is_in("ALGO_CONT", ('NITSCHE'))""",
                                    VARIANTE  =SIMP(statut='f', typ='TXM', defaut="ROBUSTE",
                                                 into=("RAPIDE","ROBUSTE"),
                                                 fr=tr("Choix de la variante des formulations du contact" ),),

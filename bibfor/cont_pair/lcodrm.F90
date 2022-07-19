@@ -101,10 +101,10 @@ implicit none
         poin_inte_sort(1,2) = poin_inte(1,1)
         do i_poin_inte=2, nb_poin_inte
             if (poin_inte(1,i_poin_inte) .le. poin_inte_sort(1,1) .and. &
-                poin_inte(1,i_poin_inte) .ge. -1.d0) then
+                poin_inte(1,i_poin_inte) .ge. (-1.d0)) then
                 poin_inte_sort(1,1) =  poin_inte(1,i_poin_inte)
             elseif (poin_inte(1,i_poin_inte) .ge. poin_inte_sort(1,2) .and.&
-                    poin_inte(1,i_poin_inte) .le. 1.d0) then
+                    poin_inte(1,i_poin_inte) .le. (1.d0)) then
                 poin_inte_sort(1,2) =  poin_inte(1,i_poin_inte)
             end if
         end do
@@ -118,7 +118,9 @@ implicit none
     poin_inte(:,:) = 0.d0
     do i_poin_inte = 1, nb_poin_inte
         poin_inte(1, i_poin_inte) = poin_inte_sort(1, i_poin_inte)
-        poin_inte(2, i_poin_inte) = poin_inte_sort(2, i_poin_inte)
+        if(elem_dime == 3) then
+            poin_inte(2, i_poin_inte) = poin_inte_sort(2, i_poin_inte)
+        end if
     end do
 !
 end subroutine

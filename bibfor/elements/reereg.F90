@@ -18,7 +18,7 @@
 ! aslint: disable=W1306
 !
 subroutine reereg(stop, elrefp, nnop, coor, xg,&
-                  ndim, xe, iret, toler)
+                  ndim, xe, iret, toler, ndim_coor_)
 !
 implicit none
 !
@@ -37,6 +37,7 @@ real(kind=8) :: xg(ndim)
 real(kind=8) :: xe(ndim)
 real(kind=8), optional, intent(in) :: toler
 integer :: iret
+integer, optional, intent(in) :: ndim_coor_
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,7 +60,7 @@ integer :: iret
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbnomx, itermx
+    integer :: nbnomx, itermx, ndim_coor
     parameter   (nbnomx = 27 , itermx = 50)
 !
     real(kind=8) :: zero, tolerc
@@ -79,6 +80,12 @@ integer :: iret
     else
         tolerc = 1.d-8
     endif
+!
+    if(present(ndim_coor_)) then
+        ndim_coor = ndim_coor_
+    else
+        ndim_coor = ndim
+    end if
 !
 ! --- INITIALISATIONS
 !
@@ -105,14 +112,14 @@ integer :: iret
     point(:) = zero
     do idim = 1, ndim
         do ino = 1, nno
-            point(idim) = point(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
+            point(idim) = point(idim)+ff(ino)*coor(ndim_coor*(ino-1)+idim)
         end do
     end do
 !
 ! --- CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE: INVJAC
 !
     call invjax(stop, nno, ndim, nderiv, dff,&
-                coor, invjac, ipb)
+                coor, invjac, ipb, ndim_coor)
     if (ipb .eq. 1) then
         if (stop .eq. 'S') then
             call utmess('F', 'ALGORITH5_19')
