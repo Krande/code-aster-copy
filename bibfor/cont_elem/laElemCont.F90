@@ -16,10 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laElemCont(elem_dime, coor_qp_sl, proj_tole, &
-                    nb_node_slav, elem_slav_code, slav_coor_curr,&
-                    nb_node_mast, elem_mast_code, mast_coor_curr,&
-                    nb_lagr_c, lagc_curr, indi_lagc, gamma_c_nodes, hF, &
+subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
                     lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
                     dGap, d2Gap, mu_c)
 !
@@ -31,13 +28,9 @@ implicit none
 #include "asterfort/assert.h"
 #include "contact_module.h"
 !
-integer, intent(in) :: elem_dime
-integer, intent(in) :: nb_lagr_c, indi_lagc(9)
-character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-integer, intent(in) :: nb_node_slav, nb_node_mast
-real(kind=8), intent(in) :: slav_coor_curr(3, 9), mast_coor_curr(3, 9)
+type(ContactParameters), intent(in) :: parameters
+type(ContactGeom), intent(in) :: geom
 real(kind=8), intent(in) :: coor_qp_sl(2), hF
-real(kind=8), intent(in) :: proj_tole, gamma_c_nodes(4), lagc_curr(4)
 real(kind=8), intent(out) :: lagr_c, gap, gamma_c, projRmVal
 aster_logical, intent(out) :: l_cont_qp
 real(kind=8), intent(out), optional :: dGap(MAX_CONT_DOFS)
@@ -70,27 +63,25 @@ real(kind=8), intent(out), optional :: mu_c(MAX_CONT_DOFS)
 !
 ! ----- Project quadrature point (on master side)
 !
-    call projQpSl2Ma(elem_dime, coor_qp_sl, proj_tole, &
-                    nb_node_slav, elem_slav_code, slav_coor_curr,&
-                    nb_node_mast, elem_mast_code, mast_coor_curr,&
+    call projQpSl2Ma(geom, coor_qp_sl, parameters%proj_tole, &
                     coor_qp_ma, gap, norm_slav, norm_mast)
 !
 ! ----- Evaluate shape function for displacement (slave and master)
 !
-    call shapeFuncDisp(elem_dime, nb_node_slav, elem_slav_code, coor_qp_sl, &
+    call shapeFuncDisp(geom%elem_dime, geom%nb_node_slav, geom%elem_slav_code, coor_qp_sl, &
                         shape_func_sl, dshape_func_sl)
-    call shapeFuncDisp(elem_dime, nb_node_mast, elem_mast_code, coor_qp_ma, &
+    call shapeFuncDisp(geom%elem_dime, geom%nb_node_mast, geom%elem_mast_code, coor_qp_ma, &
                         shape_func_ma)
 !
 ! ----- Evaluate shape function for Lagrange (slave)
 !
-    call shapeFuncLagr(elem_dime, elem_slav_code, coor_qp_sl, &
+    call shapeFuncLagr(geom%elem_dime, geom%elem_slav_code, coor_qp_sl, &
                         shape_func_lagr)
 !
 ! ----- Evaluate Lagr_c and gamma_c at quadrature point
 !
-    lagr_c = evalPoly(nb_lagr_c, shape_func_lagr, lagc_curr)
-    gamma_c = evalPoly(nb_lagr_c, shape_func_lagr, gamma_c_nodes) / hF
+    lagr_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagc_curr)
+    gamma_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_cont) / hF
     projRmVal = projRm(lagr_c + gamma_c * gap)
 !
 ! ----- Contact activate at quadrature point ( H = 0 or 1 )
@@ -102,9 +93,8 @@ real(kind=8), intent(out), optional :: mu_c(MAX_CONT_DOFS)
 !
 ! ----- Compute d (gap(u))[v] / du
 !
-        call dGap_du(elem_dime, nb_node_slav, shape_func_sl, dshape_func_sl, &
-                    nb_node_mast, shape_func_ma, &
-                    indi_lagc, norm_slav, norm_mast, gap, dGap)
+        call dGap_du(geom, shape_func_sl, dshape_func_sl, &
+                    shape_func_ma, norm_slav, norm_mast, gap, dGap)
 
     end if
 !
@@ -112,8 +102,8 @@ real(kind=8), intent(out), optional :: mu_c(MAX_CONT_DOFS)
 !
 ! ----- Compute d^2 (gap(u))[v, w] / du^2
 !
-        call d2Gap_du2(elem_dime, nb_node_slav, shape_func_sl, nb_node_mast, shape_func_ma, &
-            indi_lagc, norm_slav, norm_mast, d2Gap)
+        call d2Gap_du2(geom, shape_func_sl, shape_func_ma, &
+                        norm_slav, norm_mast, d2Gap)
 
     end if
 !
@@ -121,7 +111,7 @@ real(kind=8), intent(out), optional :: mu_c(MAX_CONT_DOFS)
 !
 ! ----- Compute mu_c
 !
-        call testLagrC(elem_dime, nb_lagr_c, shape_func_lagr, indi_lagc, mu_c)
+        call testLagrC(geom, shape_func_lagr, mu_c)
     end if
 !
 !    print*, "VAL: ", lagr_c, gamma_c, gap, H, projRmVal, hF

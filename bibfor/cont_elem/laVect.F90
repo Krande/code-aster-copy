@@ -16,12 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laVect(elem_dime   , l_axis        , nb_dofs, &
-                  nb_lagr_c   , indi_lagc     , lagc_curr, &
-                  gamma_c_nodes, &
-                  nb_node_slav, elem_slav_code, slav_coor_init, slav_coor_curr,&
-                  nb_node_mast, elem_mast_code, mast_coor_curr,&
-                  proj_tole, vect)
+subroutine laVect(parameters, geom, vect)
 !
 use contact_module
 !
@@ -34,14 +29,8 @@ implicit none
 #include "contact_module.h"
 #include "asterfort/laElemCont.h"
 !
-integer, intent(in) :: elem_dime
-aster_logical, intent(in) :: l_axis
-integer, intent(in) :: nb_lagr_c, indi_lagc(9), nb_dofs
-character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-integer, intent(in) :: nb_node_slav, nb_node_mast
-real(kind=8), intent(in) :: slav_coor_curr(3, 9), slav_coor_init(3,9)
-real(kind=8), intent(in) :: mast_coor_curr(3, 9)
-real(kind=8), intent(in) :: proj_tole, gamma_c_nodes(4), lagc_curr(4)
+type(ContactParameters), intent(in) :: parameters
+type(ContactGeom), intent(in) :: geom
 real(kind=8), intent(inout) :: vect(MAX_CONT_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -80,11 +69,11 @@ real(kind=8), intent(inout) :: vect(MAX_CONT_DOFS)
 !
 ! - Slave node is not paired -> Special treatment
 !
-    if(elem_slav_code == "PO1") then
-        if(elem_mast_code == "LAGR") then
-            vect(elem_dime+1) = -lagc_curr(1)
+    if(geom%elem_slav_code == "PO1") then
+        if(geom%elem_mast_code == "LAGR") then
+            vect(geom%elem_dime+1) = -geom%slav_lagc_curr(1)
         else
-            if(elem_mast_code .ne. "NOLAGR") then
+            if(geom%elem_mast_code .ne. "NOLAGR") then
                 ASSERT(ASTER_FALSE)
             end if
         end if
@@ -94,12 +83,12 @@ real(kind=8), intent(inout) :: vect(MAX_CONT_DOFS)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(elem_dime, l_axis, nb_node_slav, elem_slav_code, slav_coor_init,&
-                     elem_mast_code, nb_qp, coor_qp, weight_qp )
+    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
+                    geom%slav_coor_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
 !
 ! - Diameter of slave side
 !
-    hF = diameter(nb_node_slav, slav_coor_init)
+    hF = diameter(geom%nb_node_slav, geom%slav_coor_init)
 !
 ! - Loop on quadrature points
 !
@@ -112,10 +101,7 @@ real(kind=8), intent(inout) :: vect(MAX_CONT_DOFS)
 !
 ! ----- Compute contact quantities
 !
-        call laElemCont(elem_dime, coor_qp_sl, proj_tole, &
-                    nb_node_slav, elem_slav_code, slav_coor_curr,&
-                    nb_node_mast, elem_mast_code, mast_coor_curr,&
-                    nb_lagr_c, lagc_curr, indi_lagc, gamma_c_nodes, hF, &
+        call laElemCont(parameters, geom, coor_qp_sl, hF, &
                     lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
                     dGap=dGap, mu_c=mu_c)
 !
@@ -124,14 +110,14 @@ real(kind=8), intent(inout) :: vect(MAX_CONT_DOFS)
 !
         if(l_cont_qp) then
             coeff = weight_sl_qp * projRmVal
-            call daxpy(nb_dofs, coeff, dGap, 1, vect, 1)
+            call daxpy(geom%nb_dofs, coeff, dGap, 1, vect, 1)
         end if
 !
 ! ------ Compute Lagrange (slave side)
 !        term: (([lagr_c + gamma_c * gap(u)]_R- - lagr_c) / gamma_c, mu_c)
 !
         coeff = weight_sl_qp * (projRmVal - lagr_c) / gamma_c
-        call daxpy(nb_dofs, coeff, mu_c, 1, vect, 1)
+        call daxpy(geom%nb_dofs, coeff, mu_c, 1, vect, 1)
     end do
 !
 999 continue

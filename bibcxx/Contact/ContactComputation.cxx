@@ -144,10 +144,39 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pai
                     ( *data )[shift + 1 + i] = inter[16 * ( iPair - 1 ) + i];
                 }
 
-                // Value for projection tolerance
-                ( *data )[shift + 22] = 1.e-8;
+                /// Contact parameter
+                auto cont = zone->getContactParameter();
+                //  Value for ALGO_CONT
+                ( *data )[shift + 23] = double( cont->getAlgorithm() );
+                //  Value for TYPE_CONT
+                ( *data )[shift + 24] = double( cont->getType() );
+                //  Value for VARIANTE
+                ( *data )[shift + 25] = double( cont->getVariant() );
                 //  Value for COEF_CONT
-                ( *data )[shift + 23] = zone->getContactParameter()->getCoefficient();
+                ( *data )[shift + 26] = cont->getCoefficient();
+
+                /// Friction parameter
+                auto fric = zone->getFrictionParameter();
+                //  Value for FROTTEMENT
+                ( *data )[shift + 30] = fric->hasFriction();
+                //  Value for ALGO_FROT
+                ( *data )[shift + 31] = double( fric->getAlgorithm() );
+                //  Value for TYPE_FROT
+                ( *data )[shift + 32] = double( fric->getType() );
+                //  Value for COEF_FROT
+                ( *data )[shift + 33] = fric->getCoefficient();
+                // Value for threshold
+                if ( fric->getType() == FrictionType::Tresca ) {
+                    //  Value for TRESCA
+                    ( *data )[shift + 34] = fric->getTresca();
+                } else if ( fric->getType() == FrictionType::Coulomb ) {
+                    //  Value for COULOMB
+                    ( *data )[shift + 34] = fric->getCoulomb();
+                }
+
+                /// Other
+                // Value for projection tolerance
+                ( *data )[shift + 40] = 1.e-8;
 
                 nbPair++;
             }

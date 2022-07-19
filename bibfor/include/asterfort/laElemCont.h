@@ -20,19 +20,13 @@
 #include "contact_module.h"
 !
 interface
-    subroutine laElemCont(elem_dime, coor_qp_sl, proj_tole, &
-                    nb_node_slav, elem_slav_code, slav_coor_curr,&
-                    nb_node_mast, elem_mast_code, mast_coor_curr,&
-                    nb_lagr_c, lagc_curr, indi_lagc, gamma_c_nodes, hF, &
+    subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
                     lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
                     dGap, d2Gap, mu_c)
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: nb_lagr_c, indi_lagc(9)
-        character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-        integer, intent(in) :: nb_node_slav, nb_node_mast
-        real(kind=8), intent(in) :: slav_coor_curr(3, 9), mast_coor_curr(3, 9)
+        use contact_module
+        type(ContactParameters), intent(in) :: parameters
+        type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2), hF
-        real(kind=8), intent(in) :: proj_tole, gamma_c_nodes(4), lagc_curr(4)
         real(kind=8), intent(out) :: lagr_c, gap, gamma_c, projRmVal
         aster_logical, intent(out) :: l_cont_qp
         real(kind=8), intent(out), optional :: dGap(MAX_CONT_DOFS)

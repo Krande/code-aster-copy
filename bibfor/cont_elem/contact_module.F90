@@ -40,6 +40,56 @@ private
 ! Generic method for contact
 !
 ! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+type ContactParameters
+    !! Contact parameters
+    integer                             :: algo_cont = 0
+    integer                             :: type_cont = 0
+    real(kind=8)                        :: vari_cont = 0.d0
+    real(kind=8), dimension(4)          :: coef_cont = 0.d0
+
+    !! Friction paramaters
+    aster_logical                       :: l_fric = ASTER_FALSE
+    integer                             :: algo_fric = 0
+    integer                             :: type_fric = 0
+    real(kind=8), dimension(4)          :: coef_fric = 0.d0
+    real(kind=8), dimension(4)          :: threshold = 0.d0
+    real(kind=8)                        :: threshold_given = 0.d0
+
+    !! Other
+    real(kind=8)                        :: proj_tole = 0.d0
+end type
+!
+type ContactGeom
+    !! Slave side parameters
+    integer                             :: nb_node_slav = 0
+    character(len=8)                    :: elem_slav_code = " "
+    real(kind=8), dimension(3,9)        :: slav_coor_init = 0.d0
+    real(kind=8), dimension(3,9)        :: slav_coor_curr = 0.d0
+    real(kind=8), dimension(3,9)        :: slav_depl_curr = 0.d0
+    real(kind=8), dimension(4)          :: slav_lagc_curr = 0.d0
+    integer                             :: nb_lagr_c
+    integer, dimension(9)               :: indi_lagc
+
+    !! Master side paramaters
+    integer                             :: nb_node_mast = 0
+    character(len=8)                    :: elem_mast_code = " "
+    real(kind=8), dimension(3,9)        :: mast_coor_init = 0.d0
+    real(kind=8), dimension(3,9)        :: mast_coor_curr = 0.d0
+    real(kind=8), dimension(3,9)        :: mast_depl_curr = 0.d0
+
+    !! Other
+    integer                             :: elem_dime = 0
+    aster_logical                       :: l_axis = ASTER_FALSE
+    integer                             :: nb_dofs = 0
+end type
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    public :: ContactParameters, ContactGeom
     public :: projQpSl2Ma, projRm, Heaviside, shapeFuncDisp, shapeFuncLagr, evalPoly
     public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, projTn
 !
@@ -49,19 +99,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine projQpSl2Ma(elem_dime, coor_qp_sl, proj_tole, &
-                            nb_node_slav, elem_slav_code, slav_coor_curr,&
-                            nb_node_mast, elem_mast_code, mast_coor_curr,&
+    subroutine projQpSl2Ma(geom, coor_qp_sl, proj_tole, &
                             coor_qp_ma, gap, norm_slav, norm_mast)
 !
     implicit none
 !
-        integer, intent(in) :: elem_dime
+        type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2), proj_tole
-        integer, intent(in) :: nb_node_slav, nb_node_mast
-        character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-        real(kind=8), intent(in) :: mast_coor_curr(3, 9)
-        real(kind=8), intent(in) :: slav_coor_curr(3, 9)
         real(kind=8), intent(out) :: coor_qp_ma(2), gap
         real(kind=8), intent(out) :: norm_slav(3), norm_mast(3)
 !
@@ -81,18 +125,18 @@ contains
 !
 ! ------ Compute outward slave normal
 !
-        call apnorm(nb_node_slav, elem_slav_code, elem_dime, slav_coor_curr, &
+        call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%slav_coor_curr, &
                     coor_qp_sl(1), coor_qp_sl(2), norm_slav)
 !
 ! ----- Return in real slave space
 !
         coor_qp_sl_re = 0.d0
-        call reerel(elem_slav_code, nb_node_slav, 3, slav_coor_curr, coor_qp_sl, &
+        call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%slav_coor_curr, coor_qp_sl, &
                     coor_qp_sl_re)
 !
 ! ----- Projection of node on master cell (master parametric space)
 !
-        call mmnewd(elem_mast_code, nb_node_mast, elem_dime, mast_coor_curr,&
+        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%mast_coor_curr,&
                     coor_qp_sl_re, 75, proj_tole, norm_slav, &
                     coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, &
                     iret)
@@ -100,21 +144,21 @@ contains
 !
 ! ------ Compute outward master normal
 !
-        call mmnorm(elem_dime, tau1_mast, tau2_mast, norm_mast)
+        call mmnorm(geom%elem_dime, tau1_mast, tau2_mast, norm_mast)
         norm_mast = -norm_mast
 !
 ! ----- Return in real master space
 !
         coor_qp_ma_re = 0.d0
-        call reerel(elem_mast_code, nb_node_mast, 3, mast_coor_curr, coor_qp_ma, &
+        call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%mast_coor_curr, coor_qp_ma, &
                     coor_qp_ma_re)
 !
 ! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s
 !
         gap = gapEval(coor_qp_sl_re, coor_qp_ma_re, norm_slav)
 
-        ! print*, "COOR_SL: ", slav_coor_curr(1,1:2)
-        ! print*, "COOR_MA: ", mast_coor_curr(1,1:2)
+        ! print*, "COOR_SL: ", geom%slav_coor_curr(1,1:2)
+        ! print*, "COOR_MA: ", geom%mast_coor_curr(1,1:2)
         ! print*, "NORM_SL: ", norm_slav
         ! print*, "NORM_MA: ", norm_mast
         ! print*, "COOR_QP: ", coor_qp_sl
@@ -363,13 +407,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine dGap_du(elem_dime, nb_node_slav, func_slav, dfunc_slav, nb_node_mast, func_mast, &
-                        indi_lagc, norm_slav, norm_mast, gap, dGap)
+    subroutine dGap_du(geom, func_slav, dfunc_slav, func_mast, &
+                       norm_slav, norm_mast, gap, dGap)
 !
     implicit none
 !
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: nb_node_slav, nb_node_mast, indi_lagc(9)
+        type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_slav(9), func_mast(9), dfunc_slav(2,9), gap
         real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
         real(kind=8), intent(out) :: dGap(MAX_CONT_DOFS)
@@ -399,21 +442,21 @@ contains
 !
 ! --- Slave side
 !
-        do i_node = 1, nb_node_slav
-            do i_dim = 1, elem_dime
+        do i_node = 1, geom%nb_node_slav
+            do i_dim = 1, geom%elem_dime
                 index = index + 1
                 dGap(index) = func_slav(i_node) * norm(i_dim)
             end do
 !
-            if(indi_lagc(i_node) == 1) then
+            if(geom%indi_lagc(i_node) == 1) then
                 index = index + 1
             end if
         end do
 !
 ! --- Master side
 !
-        do i_node = 1, nb_node_mast
-            do i_dim = 1, elem_dime
+        do i_node = 1, geom%nb_node_mast
+            do i_dim = 1, geom%elem_dime
                 index = index + 1
                 dGap(index) = -func_mast(i_node) * norm(i_dim)
             end do
@@ -432,13 +475,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine d2Gap_du2(elem_dime, nb_node_slav, func_slav, nb_node_mast, func_mast, indi_lagc, &
+    subroutine d2Gap_du2(geom, func_slav, func_mast, &
         norm_slav, norm_mast, d2Gap)
 !
     implicit none
 !
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: nb_node_slav, nb_node_mast, indi_lagc(9)
+        type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_slav(9), func_mast(9)
         real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
         real(kind=8), intent(out) :: d2Gap(MAX_CONT_DOFS, MAX_CONT_DOFS)
@@ -456,12 +498,11 @@ contains
 !
 !===================================================================================================
 !
-    subroutine testLagrC(elem_dime, nb_node_lagr, func_lagr, indi_lagc, mu_c)
+    subroutine testLagrC(geom, func_lagr, mu_c)
 !
     implicit none
 !
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: nb_node_lagr, indi_lagc(9)
+        type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_lagr(4)
         real(kind=8), intent(out) :: mu_c(MAX_CONT_DOFS)
 !
@@ -478,9 +519,9 @@ contains
 !
 ! --- Slave side
 !
-        do i_node = 1, nb_node_lagr
-            ASSERT(indi_lagc(i_node) == 1)
-            index = index + elem_dime + 1
+        do i_node = 1, geom%nb_lagr_c
+            ASSERT(geom%indi_lagc(i_node) == 1)
+            index = index + geom%elem_dime + 1
             mu_c(index) = func_lagr(i_node)
         end do
 !

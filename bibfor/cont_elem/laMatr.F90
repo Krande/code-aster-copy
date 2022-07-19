@@ -16,13 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laMatr(elem_dime   , l_axis        , nb_dofs, &
-                  nb_lagr_c   , indi_lagc     , lagc_curr, &
-                  gamma_c_nodes, &
-                  nb_node_slav, elem_slav_code, slav_coor_init,&
-                  slav_coor_curr, &
-                  nb_node_mast, elem_mast_code, mast_coor_curr,&
-                  proj_tole, matr)
+subroutine laMatr(parameters, geom, matr)
 !
 use contact_module
 !
@@ -36,14 +30,8 @@ implicit none
 #include "contact_module.h"
 #include "asterfort/laElemCont.h"
 !
-integer, intent(in) :: elem_dime
-aster_logical, intent(in) :: l_axis
-integer, intent(in) :: nb_lagr_c, indi_lagc(9), nb_dofs
-character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-integer, intent(in) :: nb_node_slav, nb_node_mast
-real(kind=8), intent(in) :: slav_coor_curr(3, 9), slav_coor_init(3,9)
-real(kind=8), intent(in) :: mast_coor_curr(3, 9)
-real(kind=8), intent(in) :: proj_tole, gamma_c_nodes(4), lagc_curr(4)
+type(ContactParameters), intent(in) :: parameters
+type(ContactGeom), intent(in) :: geom
 real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -82,11 +70,11 @@ real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
 !
 ! - Slave node is not paired -> Special treatment
 !
-    if(elem_slav_code == "PO1") then
-        if(elem_mast_code == "LAGR") then
-            matr(elem_dime+1, elem_dime+1) = 1.d0
+    if(geom%elem_slav_code == "PO1") then
+        if(geom%elem_mast_code == "LAGR") then
+            matr(geom%elem_dime+1, geom%elem_dime+1) = 1.d0
         else
-            if(elem_mast_code .ne. "NOLAGR") then
+            if(geom%elem_mast_code .ne. "NOLAGR") then
                 ASSERT(ASTER_FALSE)
             end if
         end if
@@ -96,12 +84,12 @@ real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
 !
 ! - Get quadrature (slave side)
 !
-    call getQuadCont(elem_dime, l_axis, nb_node_slav, elem_slav_code, slav_coor_init,&
-                     elem_mast_code, nb_qp, coor_qp, weight_qp )
+    call getQuadCont(geom%elem_dime, geom%l_axis, geom%nb_node_slav, geom%elem_slav_code, &
+                     geom%slav_coor_init, geom%elem_mast_code, nb_qp, coor_qp, weight_qp )
 !
 ! - Diameter of slave side
 !
-    hF = diameter(nb_node_slav, slav_coor_init)
+    hF = diameter(geom%nb_node_slav, geom%slav_coor_init)
 !
 ! - Loop on quadrature points
 !
@@ -114,10 +102,7 @@ real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
 !
 ! ----- Compute contact quantities
 !
-        call laElemCont(elem_dime, coor_qp_sl, proj_tole, &
-                    nb_node_slav, elem_slav_code, slav_coor_curr,&
-                    nb_node_mast, elem_mast_code, mast_coor_curr,&
-                    nb_lagr_c, lagc_curr, indi_lagc, gamma_c_nodes, hF, &
+        call laElemCont(parameters, geom, coor_qp_sl, hF, &
                     lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
                     dGap=dGap, d2Gap=d2Gap, mu_c=mu_c)
 !
@@ -127,29 +112,29 @@ real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
 !        term: (gamma_c*H*D(gap(u))[v], D(gap(u))[du])
 !
             coeff = weight_sl_qp * gamma_c
-            call dger(nb_dofs, nb_dofs, coeff, dGap, 1, dGap, 1, matr, MAX_CONT_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, dGap, 1, matr, MAX_CONT_DOFS)
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D2(gap(u))[v, du]) -> not implemented
 !
             coeff = weight_sl_qp * projRmVal
-            matr(1:nb_dofs, 1:nb_dofs) = matr(1:nb_dofs, 1:nb_dofs) + &
-                coeff * d2Gap(1:nb_dofs, 1:nb_dofs)
+            matr(1:geom%nb_dofs, 1:geom%nb_dofs) = matr(1:geom%nb_dofs, 1:geom%nb_dofs) + &
+                coeff * d2Gap(1:geom%nb_dofs, 1:geom%nb_dofs)
 !
 ! ------ Compute displacement / Lagrange and Lagrange / displacement
 !        term: (H * D(gap(u))[v], dlagr_c) -> Upper part
 !        term: (H * mu_c,  D(gap(u))[du]) -> Lower part
 !
             coeff = weight_sl_qp
-            call dger(nb_dofs, nb_dofs, coeff, dGap, 1, mu_c, 1, matr, MAX_CONT_DOFS)
-            call dger(nb_dofs, nb_dofs, coeff, mu_c, 1, dGap, 1, matr, MAX_CONT_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, mu_c, 1, matr, MAX_CONT_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, dGap, 1, matr, MAX_CONT_DOFS)
         else
 !
 ! ------ Compute Lagrange / Lagrange (slave side)
 !        term: ((H-1) / gamma_c * mu_c, dlagr_c) = (-1/ gamma_c * mu_c, dlagr_c) since H = 0
 !
             coeff = -weight_sl_qp / gamma_c
-            call dger(nb_dofs, nb_dofs, coeff, mu_c, 1, mu_c, 1, matr, MAX_CONT_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, mu_c, 1, matr, MAX_CONT_DOFS)
 !
         end if
     end do

@@ -26,3 +26,27 @@
 #define PROJ_TOLE 1.d-8
 
 #define SIMPLIFIED_D_GAP .true.
+
+! See ContactEnum.h
+! Contact
+#define CONT_ALGO_LAGR 0
+#define CONT_ALGO_NITS 1
+#define CONT_ALGO_PENA 2
+
+#define CONT_VARI_NONE 0
+#define CONT_VARI_RAPI 1
+#define CONT_VARI_ROBU 2
+
+#define CONT_TYPE_UNIL 0
+#define CONT_TYPE_BILA 1
+#define CONT_TYPE_STIC 2
+
+! Friction
+#define FRIC_ALGO_LAGR 0
+#define FRIC_ALGO_NITS 1
+#define FRIC_ALGO_PENA 2
+
+#define FRIC_TYPE_NONE 0
+#define FRIC_TYPE_TRES 0
+#define FRIC_TYPE_COUL 1
+#define FRIC_TYPE_STIC 2

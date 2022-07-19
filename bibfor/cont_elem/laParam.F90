@@ -16,7 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laParam(proj_tole, gamma_c_nodes)
+subroutine laParam(parameters)
+!
+use contact_module
 !
 implicit none
 !
@@ -25,13 +27,13 @@ implicit none
 #include "asterfort/jevech.h"
 #include "jeveux.h"
 !
-real(kind=8), intent(out) :: proj_tole, gamma_c_nodes(4)
+type(ContactParameters), intent(out) :: parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Elementary computations
 !
-! Get paramaters from mmchml_a.F90
+! Get parameters from mmchml_a.F90
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,9 +41,23 @@ real(kind=8), intent(out) :: proj_tole, gamma_c_nodes(4)
 !
     call jevech('PCONFR', 'L', jcont)
 !
-! - Parameters
+! - Contact
 !
-    proj_tole = zr(jcont-1+23)
-    gamma_c_nodes = zr(jcont-1+24)
+    parameters%algo_cont = nint(zr(jcont+23))
+    parameters%type_cont = nint(zr(jcont+24))
+    parameters%vari_cont = zr(jcont+25)
+    parameters%coef_cont = zr(jcont+26)
+!
+! - Friction
+!
+    parameters%l_fric = (zr(jcont+30) > 0.5d0)
+    parameters%algo_fric = nint(zr(jcont+31))
+    parameters%type_fric = nint(zr(jcont+32))
+    parameters%coef_fric = zr(jcont+33)
+    parameters%threshold_given = zr(jcont+34)
+!
+! - Other
+!
+    parameters%proj_tole = zr(jcont+40)
 !
 end subroutine

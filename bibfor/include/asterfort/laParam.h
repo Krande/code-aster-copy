@@ -19,7 +19,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine laParam(proj_tole, gamma_c_nodes)
-        real(kind=8), intent(out) :: proj_tole, gamma_c_nodes(4)
+    subroutine laParam(parameters)
+        use contact_module
+        type(ContactParameters), intent(out) :: parameters
     end subroutine laParam
 end interface

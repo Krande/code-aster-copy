@@ -19,16 +19,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine laQuantities(elem_dime, nb_node_slav, nb_node_mast, &
-                        indi_lagc, &
-                        slav_coor_init, mast_coor_init, &
-                        slav_coor_curr, mast_coor_curr, &
-                        slav_depl_curr, mast_depl_curr, lagc_curr)
-        integer, intent(in) :: elem_dime, indi_lagc(9)
-        integer, intent(in) :: nb_node_slav, nb_node_mast
-        real(kind=8), intent(out) :: mast_coor_init(3, 9), slav_coor_init(3, 9)
-        real(kind=8), intent(out) :: mast_coor_curr(3, 9), slav_coor_curr(3, 9)
-        real(kind=8), intent(out) :: mast_depl_curr(3, 9), slav_depl_curr(3, 9)
-        real(kind=8), intent(out) :: lagc_curr(4)
+    subroutine laQuantities(geom)
+        use contact_module
+        type(ContactGeom), intent(inout) :: geom
     end subroutine laQuantities
 end interface

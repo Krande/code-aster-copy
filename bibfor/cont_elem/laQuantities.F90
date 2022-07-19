@@ -16,11 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laQuantities(elem_dime, nb_node_slav, nb_node_mast, &
-                        indi_lagc, &
-                        slav_coor_init, mast_coor_init, &
-                        slav_coor_curr, mast_coor_curr, &
-                        slav_depl_curr, mast_depl_curr, lagc_curr)
+subroutine laQuantities(geom)
+!
+use contact_module
 !
 implicit none
 !
@@ -30,12 +28,7 @@ implicit none
 #include "jeveux.h"
 #include "Contact_type.h"
 !
-integer, intent(in) :: elem_dime, indi_lagc(9)
-integer, intent(in) :: nb_node_slav, nb_node_mast
-real(kind=8), intent(out) :: mast_coor_init(3, 9), slav_coor_init(3, 9)
-real(kind=8), intent(out) :: mast_coor_curr(3, 9), slav_coor_curr(3, 9)
-real(kind=8), intent(out) :: mast_depl_curr(3, 9), slav_depl_curr(3, 9)
-real(kind=8), intent(out) :: lagc_curr(4)
+type(ContactGeom), intent(inout) :: geom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +38,7 @@ real(kind=8), intent(out) :: lagc_curr(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node_slav, i_node_mast, i_dime, nb_lagr
+    integer :: i_node_slav, i_node_mast, i_dime, nb_lagr, elem_dime, nb_node_slav
     integer :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c
     real(kind=8) :: mast_depl_incr(3, 9), slav_depl_incr(3, 9)
     real(kind=8) :: mast_depl_prev(3, 9), slav_depl_prev(3, 9)
@@ -59,44 +52,43 @@ real(kind=8), intent(out) :: lagc_curr(4)
 !
 ! - Initializations
 !
-    mast_coor_init = 0.d0
-    slav_coor_init = 0.d0
-    mast_coor_curr = 0.d0
-    slav_coor_curr = 0.d0
     mast_depl_prev = 0.d0
     slav_depl_prev = 0.d0
     mast_depl_incr = 0.d0
     slav_depl_incr = 0.d0
-    lagc_curr = 0.d0
+!
+    elem_dime = geom%elem_dime
+    nb_node_slav = geom%nb_node_slav
 !
 ! - Slave nodes
 !
     nb_lagr = 0
     do i_node_slav = 1, nb_node_slav
         do i_dime = 1, elem_dime
-            slav_coor_init(i_dime, i_node_slav) =&
+            geom%slav_coor_init(i_dime, i_node_slav) =&
                 zr(jv_geom+(i_node_slav-1)*elem_dime+i_dime-1)
-            slav_coor_curr(i_dime, i_node_slav) =&
+            geom%slav_coor_curr(i_dime, i_node_slav) =&
                 zr(jv_geom_c+(i_node_slav-1)*elem_dime+i_dime-1)
             slav_depl_prev(i_dime, i_node_slav) =&
                 zr(jv_disp+(i_node_slav-1)*elem_dime+i_dime-1 + nb_lagr)
             slav_depl_incr(i_dime, i_node_slav) =&
                 zr(jv_disp_incr+(i_node_slav-1)*elem_dime+i_dime-1 + nb_lagr)
         end do
-        if( indi_lagc(i_node_slav) == 1) then
+        if( geom%indi_lagc(i_node_slav) == 1) then
             nb_lagr =  nb_lagr + 1
-            lagc_curr(nb_lagr) = zr(jv_disp+(i_node_slav-1)*elem_dime+elem_dime-1 + nb_lagr) + &
-                zr(jv_disp_incr+(i_node_slav-1)*elem_dime+elem_dime-1 + nb_lagr)
+            geom%slav_lagc_curr(nb_lagr) = &
+                   zr(jv_disp+(i_node_slav-1)*elem_dime+elem_dime-1 + nb_lagr) &
+                +  zr(jv_disp_incr+(i_node_slav-1)*elem_dime+elem_dime-1 + nb_lagr)
         end if
     end do
 !
 ! - Master nodes
 !
-    do i_node_mast = 1, nb_node_mast
+    do i_node_mast = 1, geom%nb_node_mast
         do i_dime = 1, elem_dime
-            mast_coor_init(i_dime, i_node_mast) = &
+            geom%mast_coor_init(i_dime, i_node_mast) = &
                 zr(jv_geom+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime- 1)
-            mast_coor_curr(i_dime, i_node_mast) = &
+            geom%mast_coor_curr(i_dime, i_node_mast) = &
                 zr(jv_geom_c+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime- 1)
             mast_depl_prev(i_dime, i_node_mast) = &
                 zr(jv_disp+nb_node_slav*elem_dime+nb_lagr+(i_node_mast-1)*elem_dime+i_dime- 1)
@@ -105,7 +97,7 @@ real(kind=8), intent(out) :: lagc_curr(4)
         end do
     end do
 !
-    slav_depl_curr = slav_depl_prev + slav_depl_incr
-    mast_depl_curr = mast_depl_prev + mast_depl_incr
+    geom%slav_depl_curr = slav_depl_prev + slav_depl_incr
+    geom%mast_depl_curr = mast_depl_prev + mast_depl_incr
 !
 end subroutine
