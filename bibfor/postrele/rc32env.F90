@@ -87,8 +87,8 @@ subroutine rc32env(lieu, futotenv)
 !
 !---- une situation seule a le plus grand fu unitaire
     if(num1 .eq. num2) then
-        fuunit = zr(ind1+121*(num1-1)+15)+fuseism
-        ke = zr(ind1+121*(num1-1)+18)
+        fuunit = zr(ind1+123*(num1-1)+15)+fuseism
+        ke = zr(ind1+123*(num1-1)+18)
         call rc32env2(num1, num2, ke, lieu, fen)
         zr(jfactenv+2*k)=fen
         zr(jfactenv+2*k+1)=fen*fuunit*noccpris
@@ -96,8 +96,8 @@ subroutine rc32env(lieu, futotenv)
 !
 !---- une combinaison de situations a le plus grand fu unitaire
     else
-        fuunit= zr(ind2+20*nb*(num1-1)+20*(num2-1)-1+17)+fuseism
-        ke = zr(ind2+20*nb*(num1-1)+20*(num2-1)-1+19)
+        fuunit= zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+17)+fuseism
+        ke = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+19)
         call rc32env2(num1, num2, ke, lieu, fen)
         zr(jfactenv+2*k)=fen
         zr(jfactenv+2*k+1)=fen*fuunit*noccpris

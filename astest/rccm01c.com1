@@ -565,7 +565,60 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                   _F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT34,)
+           
+#KE SITUATIONS NON COMBINEES
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34,)
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MIN',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MIN',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34,)
+           
 # SALT SITUATIONS NON COMBINEES
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=75.000000000,
@@ -643,6 +696,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                   _F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT34,)
+           
 
 # SN* SITUATIONS COMBINEES
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -668,7 +722,32 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                   _F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT34,)
+           
+# KE SITUATIONS COMBINEES
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34,)
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34,)
+           
 # SALT SITUATIONS COMBINEES
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=75.000000000,
@@ -1229,6 +1308,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                   _F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT34s,)
+           
 
 # SN* SITUATIONS NON COMBINEES A L'ORIGINE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -1343,7 +1423,122 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                   _F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT34s,)
+           
 
+# KE SITUATIONS NON COMBINEES A L ORIGINE
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='NUM_SIT1',
+                     VALE_I=3,),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34s,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='NUM_SIT1',
+                     VALE_I=3,),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='AVEC',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34s,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='NUM_SIT1',
+                     VALE_I=4,),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34s,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='NUM_SIT1',
+                     VALE_I=4,),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='AVEC',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34s,)
+           
+# KE SITUATIONS NON COMBINEES A L EXTREMITE
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='NUM_SIT1',
+                     VALE_I=3,),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34s,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.1333333333333329,
+           VALE_REFE=1.13333333,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='NUM_SIT1',
+                     VALE_I=3,),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='AVEC',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34s,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='NUM_SIT1',
+                     VALE_I=4,),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34s,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='NUM_SIT1',
+                     VALE_I=4,),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='AVEC',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34s,)
+           
 # SALT SITUATIONS NON COMBINEES A L'ORIGINE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=75.00000000,
@@ -1555,7 +1750,57 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                   _F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT34s,)
+           
+           
+# KE SITUATIONS COMBINEES
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34s,)
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='AVEC',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34s,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34s,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.1333333333333329,
+           VALE_REFE=1.133333,
+           NOM_PARA='KE_MECA',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='AVEC',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34s,)
+           
 # FU SITUATIONS COMBINEES
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.00026000000,
@@ -1935,7 +2180,113 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # -------------------FAT34d-----------------------
 # PRISE EN COMPTE DU KE_MIXTE
-# KE_THER, SALT SITUATIONS NON COMBINEES
+# KE_MECA SITUATIONS NON COMBINEES
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34d,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MIN',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34d,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34d,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MIN',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34d,)
+
+# KE_THER SITUATONS NON COMBINEES 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.050424374319913,
+           VALE_REFE=1.050424,
+           NOM_PARA='KE_THER',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34d,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0087414187643022,
+           VALE_REFE=1.00874,
+           NOM_PARA='KE_THER',
+           TYPE_TEST='MIN',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34d,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.3483081155433287,
+           VALE_REFE=1.348308,
+           NOM_PARA='KE_THER',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34d,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.278295543393276,
+           VALE_REFE=1.27829,
+           NOM_PARA='KE_THER',
+           TYPE_TEST='MIN',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='SITU',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34d,)
+           
+# SALT SITUATIONS NON COMBINEES
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=76.260609358,
            VALE_REFE=76.260609358,
@@ -1987,7 +2338,65 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                   _F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),),
            TABLE=FAT34d,)
+           
+# KE_MECA SITUATIONS COMBINEES 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34d,)
 
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='KE_MECA',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34d,)
+
+           
+# KE_THER SITUATIONS COMBINEES 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.050424374319913,
+           VALE_REFE=1.050424,
+           NOM_PARA='KE_THER',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),),
+           TABLE=FAT34d,)
+
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.3483081155433287,
+           VALE_REFE=1.348308,
+           NOM_PARA='KE_THER',
+           TYPE_TEST='MAX',
+           FILTRE=(_F(NOM_PARA='TYPE',
+                     VALE_K='COMB',),
+                   _F(NOM_PARA='SEISME',
+                     VALE_K='SANS',),
+                  _F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),),
+           TABLE=FAT34d,)
+
+           
 #SALT SITUATIONS COMBINEES
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=76.260609358,
