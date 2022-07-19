@@ -203,7 +203,6 @@ void ContactPairing::buildFiniteElementDescriptor() {
         auto zone = _contDefi->getContactZone( iZone );
         auto contAlgo = zone->getContactParameter()->getAlgorithm();
         auto lFrot = zone->getFrictionParameter()->hasFriction();
-        AS_ASSERT( !lFrot );
 
         VectorPairLong listContElemZone;
         listContElemZone.reserve( nbContPairZone );
@@ -220,30 +219,31 @@ void ContactPairing::buildFiniteElementDescriptor() {
             auto typgMastName = ljust( mesh->getCellTypeName( mastCellNume ), 8, ' ' );
 
             /*call mmelemdata_c*/
-            ASTERINTEGER typgContNume = 0, typfContNume = 0, typfFrotNume = 0;
+            ASTERINTEGER typgContNume = 0, typfContNume = 0, typfFrotNume = 0, typeElem;
             ASTERINTEGER nbNodesCell = 0, elemIndx = 0;
 
             if ( contAlgo == ContactAlgo::Lagrangian ) {
-                CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType,
-                                        &nbNodesCell, &typgContNume, &typfContNume, &typfFrotNume,
-                                        &elemIndx );
+                CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType, &nbNodesCell,
+                                        &typgContNume, &typfContNume, &typfFrotNume, &elemIndx );
             } else {
                 AS_ABORT( "Not implemented" );
             }
-
-            listContElemZone.push_back( std::make_pair( typfContNume, ++iContPair ) );
 
             auto &info = listType.at( elemIndx - 1 );
 
             if ( lFrot ) {
                 info[1] += 1;
                 info[3] = typfFrotNume;
+                typeElem = typfFrotNume;
             } else {
                 info[0] += 1;
+                typeElem = typfContNume;
             }
 
             info[2] = typfContNume;
             info[4] = typgContNume;
+
+            listContElemZone.push_back( std::make_pair( typeElem, ++iContPair ) );
 
             /* get nodes (be carefull with +1 ) */
             auto slav_cell_con = ( *meshConnectivty )[slavCellNume + 1];
@@ -262,7 +262,7 @@ void ContactPairing::buildFiniteElementDescriptor() {
             toCopy.insert( toCopy.end(), toAdd.begin(), toAdd.end() );
 
             /*Copy contact element type*/
-            toCopy.push_back( typfContNume );
+            toCopy.push_back( typeElem );
 
             listNodes.push_back( toCopy );
         }
@@ -277,7 +277,6 @@ void ContactPairing::buildFiniteElementDescriptor() {
         auto zone = _contDefi->getContactZone( iZone );
         auto contAlgo = zone->getContactParameter()->getAlgorithm();
         auto lFrot = zone->getFrictionParameter()->hasFriction();
-        AS_ASSERT( !lFrot );
 
         auto slaveCells = zone->getSlaveCells();
 
@@ -319,31 +318,34 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
                         /*call mmelemdata_c*/
                         ASTERINTEGER typgContNume = 0, typfContNume = 0, typfFrotNume = 0;
-                        ASTERINTEGER nbNodesCell = 0, elemIndx = 0;
+                        ASTERINTEGER nbNodesCell = 0, elemIndx = 0, typeElem;
 
                         if ( contAlgo == ContactAlgo::Lagrangian ) {
-                            CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName,
-                                                    &nbType, &nbNodesCell, &typgContNume,
-                                                    &typfContNume, &typfFrotNume, &elemIndx );
+                            CALLO_MMELEM_DATA_LAGA( &lAxis, typgSlavName, typgMastName, &nbType,
+                                                    &nbNodesCell, &typgContNume, &typfContNume,
+                                                    &typfFrotNume, &elemIndx );
                         } else {
                             AS_ABORT( "Not implemented" );
                         }
 
                         AS_ASSERT( nbNodesCell == 1 );
-                        listContElemZone.push_back( std::make_pair( typfContNume, ++iContPair ) );
-                        listNodes.push_back( VectorLong( { nodeNume, typfContNume } ) );
 
                         auto &info = listType.at( elemIndx - 1 );
 
                         if ( lFrot ) {
                             info[1] += 1;
                             info[3] = typfFrotNume;
+                            typeElem = typfFrotNume;
                         } else {
                             info[0] += 1;
+                            typeElem = typfContNume;
                         }
 
                         info[2] = typfContNume;
                         info[4] = typgContNume;
+
+                        listContElemZone.push_back( std::make_pair( typeElem, ++iContPair ) );
+                        listNodes.push_back( VectorLong( { nodeNume, typeElem } ) );
                     }
                 }
             }
@@ -417,8 +419,25 @@ void ContactPairing::buildFiniteElementDescriptor() {
         }
 
         /* Create friction element*/
-        if ( nbFrot != 0 ) {
-            AS_ABORT( "Friction not implemented" );
+        if ( nbFrot > 0 ) {
+            auto typfFrotNume = info[3];
+
+            VectorLong toCopy;
+            toCopy.reserve( nbCont );
+
+            ASTERINTEGER iZone = 0;
+            for ( auto &listContElemZone : listContElem ) {
+                /*loop on  pair of iZone*/
+                for ( auto &[typFrotNume, iContPair] : listContElemZone ) {
+                    if ( typFrotNume == typfFrotNume ) {
+                        toCopy.push_back( -iContPair );
+                        _pair2Zone[iContPair - 1] = iZone;
+                    }
+                }
+                iZone++;
+            }
+            toCopy.push_back( typfFrotNume );
+            ContactResFEDLiel->push_back( toCopy );
         }
     }
 

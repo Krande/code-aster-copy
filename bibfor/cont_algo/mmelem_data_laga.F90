@@ -124,13 +124,13 @@ implicit none
 ! - Name of FE type of friction element
 !
     character(len=8), parameter, dimension(nb_cont_solv) :: lypf_frot_name = (/&
-        'CFS2S2  ','CFS3S3  ','CFS2S3  ','CFS3S2  ','CFT3T3  ',&
-        'CFT3T6  ','CFT6T3  ','CFT6T6  ','CFQ4Q4  ','CFQ4Q8  ',&
-        'CFQ8Q4  ','CFQ8Q8  ','CFQ4T3  ','CFT3Q4  ','CFT6Q4  ',&
-        'CFQ4T6  ','CFT6Q8  ','CFQ8T6  ','CFT6Q9  ','CFQ9T6  ',&
-        'CFQ8T3  ','CFT3Q8  ','CFQ8Q9  ','CFQ9Q8  ','CFQ9Q4  ',&
-        'CFQ4Q9  ','CFQ9T3  ','CFT3Q9  ','CFQ9Q9  ','CFP1L2  ',&
-        'CFP1N2  ','CFP1L3  ','CFP1N3  '   /)
+        'FMS2S2  ','FMS3S3  ','FMS2S3  ','FMS3S2  ','FMT3T3  ',&
+        'FMT3T6  ','FMT6T3  ','FMT6T6  ','FMQ4Q4  ','FMQ4Q8  ',&
+        'FMQ8Q4  ','FMQ8Q8  ','FMQ4T3  ','FMT3Q4  ','FMT6Q4  ',&
+        'FMQ4T6  ','FMT6Q8  ','FMQ8T6  ','FMT6Q9  ','FMQ9T6  ',&
+        'FMQ8T3  ','FMT3Q8  ','FMQ8Q9  ','FMQ9Q8  ','FMQ9Q4  ',&
+        'FMQ4Q9  ','FMQ9T3  ','FMT3Q9  ','FMQ9Q9  ','FMP1L2  ',&
+        'FMP1N2  ','FMP1L3  ','FMP1N3  '   /)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -48,21 +48,44 @@ bool ContactNew::build() {
     CALL_JEMARQ();
 
     auto mesh = getMesh();
-    ASTERINTEGER nb_zones = getNumberOfContactZones();
+
+    // calico
+    ASTERINTEGER nb_dim = 0;
+    ASTERINTEGER nb_dim_ = _model->getGeometricDimension();
+    if ( nb_dim_ > 3 ) { // general ? dans model ?
+        UTMESS( "A", "CONTACT_84" );
+        if ( nb_dim_ == 1003 ) {
+            nb_dim = 3;
+        } else if ( nb_dim_ == 1002 ) {
+            nb_dim = 2;
+        } else if ( nb_dim_ == 23 ) {
+            nb_dim = 2;
+        } else {
+            UTMESS( "F", "CONTACT1_4" );
+        }
+    } else {
+        nb_dim = nb_dim_;
+    }
+
+    // define name of catalogue
+    std::map< std::tuple< ASTERINTEGER, ContactAlgo, bool >, std::string > cata;
+
+    cata[std::make_tuple( 2, ContactAlgo::Lagrangian, false )] = "CONT_LAG_SL_2D";
+    cata[std::make_tuple( 3, ContactAlgo::Lagrangian, false )] = "CONT_LAG_SL_3D";
+    cata[std::make_tuple( 2, ContactAlgo::Lagrangian, true )] = "FRIC_LAG_SL_2D";
+    cata[std::make_tuple( 3, ContactAlgo::Lagrangian, true )] = "FRIC_LAG_SL_3D";
+
     ASTERINTEGER nb_slave_cells = 0;
 
     // sdcont_defi.CONTACT.MAILCO/NOEUCO/ssnoco
-    std::vector< std::pair< VectorLong, VectorLong > > mailco;
+    std::vector< std::pair< VectorLong, std::string > > mailco;
     std::vector< std::pair< VectorLong, VectorLong > > noeuco;
 
-    for ( long i = 0; i < nb_zones; i++ ) {
-        auto zone_i = getContactZone( i );
-
+    for ( auto &zone_i : _zones ) {
         // read slave/master nodes/cell : localNumbering, same_rank
         auto l_slave_nodes = zone_i->getSlaveNodes();
         auto l_slave_cells = zone_i->getSlaveCells();
         auto l_master_nodes = zone_i->getMasterNodes();
-        auto l_master_cells = zone_i->getMasterCells();
 
         // read hte nodes by SANS_GROUP_MA : several groups
         auto l_sans_nodes = zone_i->getExcludedSlaveCells();
@@ -81,7 +104,10 @@ bool ContactNew::build() {
 
         // save info
         nb_slave_cells += l_slave_cells.size();
-        mailco.push_back( std::make_pair( l_master_cells, l_slave_cells ) );
+        mailco.push_back( std::make_pair(
+            l_slave_cells,
+            cata[std::make_tuple( nb_dim, zone_i->getContactParameter()->getAlgorithm(),
+                                  zone_i->hasFriction() )] ) );
         noeuco.push_back( std::make_pair( l_master_nodes, l_slave_nodes ) );
     }
 
@@ -120,55 +146,21 @@ bool ContactNew::build() {
     std::string phenom = ljust( "MECANIQUE", 16, ' ' );
     std::string modeli;
 
-    // calico
-    ASTERINTEGER nb_dim = 0;
-    ASTERINTEGER nb_dim_ = _model->getGeometricDimension();
-    if ( nb_dim_ > 3 ) { // general ? dans model ?
-        UTMESS( "A", "CONTACT_84" );
-        if ( nb_dim_ == 1003 ) {
-            nb_dim = 3;
-        } else if ( nb_dim_ == 1002 ) {
-            nb_dim = 2;
-        } else if ( nb_dim_ == 23 ) {
-            nb_dim = 2;
-        } else {
-            UTMESS( "F", "CONTACT1_4" );
-        }
-    } else {
-        nb_dim = nb_dim_;
-    }
-
-    ASTERINTEGER i_zone = 0;
     std::string jeveuxname = ljust( "&&MMPREL.LISTE_MAILLES", 24, ' ' );
-    for ( auto &[mastercells, slavecells] : mailco ) {
-        bool hasFr = getContactZone( i_zone )->getFrictionParameter()->hasFriction();
-        if ( nb_dim == 2 ) {
-            if ( hasFr ) {
-                modeli = "FRIC_SL_2D";
-            } else {
-                modeli = "CONT_LAG_SL_2D";
-            }
-        } else if ( nb_dim == 3 ) {
-            if ( hasFr ) {
-                modeli = "FRIC_SL_3D";
-            } else {
-                modeli = "CONT_LAG_SL_3D";
-            }
-        }
+    for ( auto &[slavecells, modeli] : mailco ) {
         modeli = ljust( modeli, 16, ' ' );
 
         // AFFECTATION DE L'OBJET DE TYPE LIGRET ET DE NOM LIGREZ jeveuxname
         ASTERINTEGER slave_cells_i = slavecells.size();
         if ( slave_cells_i > 0 ) {
-            for ( auto &cell : slavecells )
-                cell += 1;
+            std::transform( slavecells.begin(), slavecells.end(), slavecells.begin(),
+                    []( ASTERINTEGER &i ) -> ASTERINTEGER { return ++i; } );
+
             JeveuxVectorLong list_elem = JeveuxVectorLong( jeveuxname, slavecells );
             CALL_AJELLT( ligret.c_str(), mesh->getName().c_str(), &slave_cells_i,
                          jeveuxname.c_str(), " ", phenom.c_str(), modeli.c_str(), 0, " " );
         }
-        i_zone++;
     }
-    CALL_JEDETR( jeveuxname.c_str() );
 
     // hpc : only when the proc has slave cells, so with ligret
     if ( nb_slave_cells != 0 ) {

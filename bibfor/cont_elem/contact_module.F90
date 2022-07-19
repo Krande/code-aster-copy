@@ -69,6 +69,7 @@ type ContactGeom
     real(kind=8), dimension(3,9)        :: slav_coor_curr = 0.d0
     real(kind=8), dimension(3,9)        :: slav_depl_curr = 0.d0
     real(kind=8), dimension(4)          :: slav_lagc_curr = 0.d0
+    real(kind=8), dimension(2,4)        :: slav_lagf_curr = 0.d0
     integer                             :: nb_lagr_c
     integer, dimension(9)               :: indi_lagc
 
@@ -415,7 +416,7 @@ contains
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_slav(9), func_mast(9), dfunc_slav(2,9), gap
         real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
-        real(kind=8), intent(out) :: dGap(MAX_CONT_DOFS)
+        real(kind=8), intent(out) :: dGap(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -448,9 +449,7 @@ contains
                 dGap(index) = func_slav(i_node) * norm(i_dim)
             end do
 !
-            if(geom%indi_lagc(i_node) == 1) then
-                index = index + 1
-            end if
+            index = index + geom%indi_lagc(i_node)
         end do
 !
 ! --- Master side
@@ -483,7 +482,7 @@ contains
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_slav(9), func_mast(9)
         real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
-        real(kind=8), intent(out) :: d2Gap(MAX_CONT_DOFS, MAX_CONT_DOFS)
+        real(kind=8), intent(out) :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -504,7 +503,7 @@ contains
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_lagr(4)
-        real(kind=8), intent(out) :: mu_c(MAX_CONT_DOFS)
+        real(kind=8), intent(out) :: mu_c(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -520,9 +519,10 @@ contains
 ! --- Slave side
 !
         do i_node = 1, geom%nb_lagr_c
-            ASSERT(geom%indi_lagc(i_node) == 1)
-            index = index + geom%elem_dime + 1
-            mu_c(index) = func_lagr(i_node)
+            ASSERT(geom%indi_lagc(i_node) > 0)
+            index = index + geom%elem_dime
+            mu_c(index+1) = func_lagr(i_node)
+            index = index + geom%indi_lagc(i_node)
         end do
 !
     end subroutine

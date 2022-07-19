@@ -33,9 +33,9 @@ type(ContactGeom), intent(in) :: geom
 real(kind=8), intent(in) :: coor_qp_sl(2), hF
 real(kind=8), intent(out) :: lagr_c, gap, gamma_c, projRmVal
 aster_logical, intent(out) :: l_cont_qp
-real(kind=8), intent(out), optional :: dGap(MAX_CONT_DOFS)
-real(kind=8), intent(out), optional :: d2Gap(MAX_CONT_DOFS, MAX_CONT_DOFS)
-real(kind=8), intent(out), optional :: mu_c(MAX_CONT_DOFS)
+real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
+real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+real(kind=8), intent(out), optional :: mu_c(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !

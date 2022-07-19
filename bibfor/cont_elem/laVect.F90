@@ -31,7 +31,7 @@ implicit none
 !
 type(ContactParameters), intent(in) :: parameters
 type(ContactGeom), intent(in) :: geom
-real(kind=8), intent(inout) :: vect(MAX_CONT_DOFS)
+real(kind=8), intent(inout) :: vect(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ real(kind=8), intent(inout) :: vect(MAX_CONT_DOFS)
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
     real(kind=8) :: gap, lagr_c, gamma_c, projRmVal
-    real(kind=8) :: dGap(MAX_CONT_DOFS), mu_c(MAX_CONT_DOFS)
+    real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !

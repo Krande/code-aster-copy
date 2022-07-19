@@ -38,7 +38,7 @@ type(ContactGeom), intent(inout) :: geom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node_slav, i_node_mast, i_dime, nb_lagr, elem_dime, nb_node_slav
+    integer :: i_node_slav, i_node_mast, i_dime, nb_lagr, nb_lagr_c, elem_dime, nb_node_slav
     integer :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c
     real(kind=8) :: mast_depl_incr(3, 9), slav_depl_incr(3, 9)
     real(kind=8) :: mast_depl_prev(3, 9), slav_depl_prev(3, 9)
@@ -63,6 +63,7 @@ type(ContactGeom), intent(inout) :: geom
 ! - Slave nodes
 !
     nb_lagr = 0
+    nb_lagr_c = 0
     do i_node_slav = 1, nb_node_slav
         do i_dime = 1, elem_dime
             geom%slav_coor_init(i_dime, i_node_slav) =&
@@ -74,9 +75,10 @@ type(ContactGeom), intent(inout) :: geom
             slav_depl_incr(i_dime, i_node_slav) =&
                 zr(jv_disp_incr+(i_node_slav-1)*elem_dime+i_dime-1 + nb_lagr)
         end do
-        if( geom%indi_lagc(i_node_slav) == 1) then
-            nb_lagr =  nb_lagr + 1
-            geom%slav_lagc_curr(nb_lagr) = &
+        if( geom%indi_lagc(i_node_slav) > 0) then
+            nb_lagr =  nb_lagr + geom%indi_lagc(i_node_slav)
+            nb_lagr_c = nb_lagr_c + 1
+            geom%slav_lagc_curr(nb_lagr_c) = &
                    zr(jv_disp+(i_node_slav-1)*elem_dime+elem_dime-1 + nb_lagr) &
                 +  zr(jv_disp_incr+(i_node_slav-1)*elem_dime+elem_dime-1 + nb_lagr)
         end if

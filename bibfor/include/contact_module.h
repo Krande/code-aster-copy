@@ -19,7 +19,7 @@
 ! Contact module: Parameters <-> integer definitions
 ! -------------------------------------------------------------------------
 !
-#define MAX_CONT_DOFS 58
+#define MAX_LAGA_DOFS 66
 
 #define TOLE_BORNE 0.d0
 

@@ -24,6 +24,6 @@ interface
         use contact_module
         type(ContactParameters), intent(in) :: parameters
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
+        real(kind=8), intent(inout) :: matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     end subroutine laMatr
 end interface

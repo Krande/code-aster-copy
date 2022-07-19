@@ -45,7 +45,7 @@ use contact_module
 !
     type(ContactParameters) :: parameters
     type(ContactGeom) :: geom
-    real(kind=8) :: vect(MAX_CONT_DOFS), matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
+    real(kind=8) :: vect(MAX_LAGA_DOFS), matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! - Informations about finite element
 !
@@ -59,7 +59,7 @@ use contact_module
 !
     ASSERT(parameters%algo_cont == CONT_ALGO_LAGR)
     ASSERT(parameters%vari_cont == CONT_VARI_NONE)
-    ASSERT(.not.parameters%l_fric)
+    ASSERT(parameters%type_fric == FRIC_TYPE_NONE)
 !
 ! - Computation
 !

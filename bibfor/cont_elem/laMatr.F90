@@ -32,7 +32,7 @@ implicit none
 !
 type(ContactParameters), intent(in) :: parameters
 type(ContactGeom), intent(in) :: geom
-real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
+real(kind=8), intent(inout) :: matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
     real(kind=8) :: gap, lagr_c, gamma_c, projRmVal
-    real(kind=8) :: dGap(MAX_CONT_DOFS), mu_c(MAX_CONT_DOFS), d2Gap(MAX_CONT_DOFS, MAX_CONT_DOFS)
+    real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS), d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,7 +112,7 @@ real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
 !        term: (gamma_c*H*D(gap(u))[v], D(gap(u))[du])
 !
             coeff = weight_sl_qp * gamma_c
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, dGap, 1, matr, MAX_CONT_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, dGap, 1, matr, MAX_LAGA_DOFS)
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D2(gap(u))[v, du]) -> not implemented
@@ -126,15 +126,15 @@ real(kind=8), intent(inout) :: matr(MAX_CONT_DOFS, MAX_CONT_DOFS)
 !        term: (H * mu_c,  D(gap(u))[du]) -> Lower part
 !
             coeff = weight_sl_qp
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, mu_c, 1, matr, MAX_CONT_DOFS)
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, dGap, 1, matr, MAX_CONT_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, mu_c, 1, matr, MAX_LAGA_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, dGap, 1, matr, MAX_LAGA_DOFS)
         else
 !
 ! ------ Compute Lagrange / Lagrange (slave side)
 !        term: ((H-1) / gamma_c * mu_c, dlagr_c) = (-1/ gamma_c * mu_c, dlagr_c) since H = 0
 !
             coeff = -weight_sl_qp / gamma_c
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, mu_c, 1, matr, MAX_CONT_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, mu_c, 1, matr, MAX_LAGA_DOFS)
 !
         end if
     end do

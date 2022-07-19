@@ -2501,6 +2501,22 @@ phen.add('CONT_LAG_SL_3D', Modelisation(dim=(2, 3), code='CM3',
 )))
 
 
+phen.add('FRIC_LAG_SL_2D', Modelisation(dim=(1, 2), code='FM2',
+                                        elements=(
+    (MT.SEG2, EL.FMS22D),
+    (MT.SEG3, EL.FMS32D),
+)))
+
+phen.add('FRIC_LAG_SL_3D', Modelisation(dim=(2, 3), code='FM3',
+                                        elements=(
+    (MT.TRIA3, EL.FMT33D),
+    (MT.TRIA6, EL.FMT63D),
+    (MT.QUAD4, EL.FMQ43D),
+    (MT.QUAD8, EL.FMQ83D),
+    (MT.QUAD9, EL.FMQ93D),
+)))
+
+
 # -- Define CONTACT elements for CONTINUE method (in STAT_NON_LINE) - Contact
 
 phen.add('CONT_EL_3D1', Modelisation(dim=(2, 3), code='CC1',
@@ -2834,6 +2850,70 @@ phen.add('CONT_LAG_EL_3D', Modelisation(dim=(2, 3), code='M3C',
         (MT.TRIA66, EL.CMT6T6),
         (MT.POI1,   EL.CMP1L3),
         (MT.POI1,   EL.CMP1N3),
+)))
+
+phen.add('FRIC_LAG_EL_2D', Modelisation(dim=(1, 2), code='M2F',
+                                        attrs=(
+    (AT.CONTACT, 'OUI'),
+    (AT.FROTTEMENT, 'OUI'),
+),
+    elements=(
+        (MT.SEG22, EL.FMS2S2),
+        (MT.SEG33, EL.FMS3S3),
+        (MT.SEG23, EL.FMS2S3),
+        (MT.SEG32, EL.FMS3S2),
+        (MT.POI1,  EL.FMP1L2),
+        (MT.POI1,  EL.FMP1N2),
+)))
+
+phen.add('FRIC_LAG_EL_2DA', Modelisation(dim=(1, 2), code='MAF',
+                                         attrs=(
+    (AT.CONTACT, 'OUI'),
+    (AT.FROTTEMENT, 'OUI'),
+    (AT.AXIS, 'OUI'),
+),
+    elements=(
+        (MT.SEG22, EL.FMS2S2A),
+        (MT.SEG33, EL.FMS3S3A),
+        (MT.SEG23, EL.FMS2S3A),
+        (MT.SEG32, EL.FMS3S2A),
+        (MT.POI1,  EL.FMP1L2A),
+        (MT.POI1,  EL.FMP1N2A),
+)))
+
+phen.add('FRIC_LAG_EL_3D', Modelisation(dim=(2, 3), code='M3F',
+                                        attrs=(
+    (AT.CONTACT, 'OUI'),
+    (AT.FROTTEMENT, 'OUI'),
+),
+    elements=(
+        (MT.QU4QU8, EL.FMQ4Q8),
+        (MT.QU4QU9, EL.FMQ4Q9),
+        (MT.QU4TR3, EL.FMQ4T3),
+        (MT.QU4TR6, EL.FMQ4T6),
+        (MT.QU8QU4, EL.FMQ8Q4),
+        (MT.QU8QU9, EL.FMQ8Q9),
+        (MT.QU8TR3, EL.FMQ8T3),
+        (MT.QU8TR6, EL.FMQ8T6),
+        (MT.QU9QU4, EL.FMQ9Q4),
+        (MT.QU9QU8, EL.FMQ9Q8),
+        (MT.QU9TR3, EL.FMQ9T3),
+        (MT.QU9TR6, EL.FMQ9T6),
+        (MT.QUAD44, EL.FMQ4Q4),
+        (MT.QUAD88, EL.FMQ8Q8),
+        (MT.QUAD99, EL.FMQ9Q9),
+        (MT.TR3QU4, EL.FMT3Q4),
+        (MT.TR3QU8, EL.FMT3Q8),
+        (MT.TR3QU9, EL.FMT3Q9),
+        (MT.TR3TR6, EL.FMT3T6),
+        (MT.TR6QU4, EL.FMT6Q4),
+        (MT.TR6QU8, EL.FMT6Q8),
+        (MT.TR6QU9, EL.FMT6Q9),
+        (MT.TR6TR3, EL.FMT6T3),
+        (MT.TRIA33, EL.FMT3T3),
+        (MT.TRIA66, EL.FMT6T6),
+        (MT.POI1,   EL.FMP1L3),
+        (MT.POI1,   EL.FMP1N3),
 )))
 
 # ------------------------------------------------------------------------------------

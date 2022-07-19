@@ -26,6 +26,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/laQuantities.h"
+#include "contact_module.h"
 !
 character(len=16), intent(in) :: nomte
 type(ContactGeom), intent(out) :: geom
@@ -42,9 +43,11 @@ type(ContactGeom), intent(out) :: geom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    geom%l_axis          = lteatt('AXIS','OUI')
+    integer :: mult
 !
-    if(nomte(1:2) .ne. "CM") then
+    geom%l_axis = lteatt('AXIS','OUI')
+!
+    if(nomte(1:2) .ne. "CM" .and. nomte(1:2) .ne. "FM") then
         ASSERT(ASTER_FALSE)
     end if
 !
@@ -154,14 +157,22 @@ type(ContactGeom), intent(out) :: geom
         end if
     end if
 !
-    geom%indi_lagc(1:geom%nb_lagr_c) = 1
+    if(nomte(1:1) == "F") then
+        ASSERT(lteatt('FROTTEMENT','OUI'))
+        !mult = geom%elem_dime
+        mult = 1
+    else
+        mult = 1
+    end if
+!
+    geom%indi_lagc(1:geom%nb_lagr_c) = mult
     geom%nb_dofs = geom%nb_node_mast*geom%elem_dime + geom%nb_node_slav*geom%elem_dime &
-                  + geom%nb_lagr_c
+                  + geom%nb_lagr_c*mult
 !
     ASSERT(geom%nb_node_slav .le. 9)
     ASSERT(geom%nb_node_mast .le. 9)
     ASSERT(geom%nb_lagr_c .le. 4)
-    ASSERT(geom%nb_dofs .le. 58)
+    ASSERT(geom%nb_dofs .le. MAX_LAGA_DOFS)
     ASSERT((geom%elem_dime .eq. 2).or.(geom%elem_dime .eq. 3))
 !
     call laQuantities(geom)

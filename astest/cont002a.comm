@@ -53,6 +53,7 @@ DEFICO = DEFI_CONT(MODELE=MODI,
                            GROUP_MA_MAIT='Group_2',
                            GROUP_MA_ESCL='Group_1',
                            ALGO_CONT="LAGRANGIEN",
+                           FROTTEMENT="OUI",
                            COEF_CONT=2000.,
                            CONTACT_INIT='OUI',),)
 
