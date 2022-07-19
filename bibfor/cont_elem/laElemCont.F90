@@ -59,7 +59,7 @@ real(kind=8), intent(out), optional :: mu_c(MAX_CONT_DOFS)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: shape_func_sl(9), shape_func_ma(9), shape_func_lagr(4), dshape_func_sl(2,9)
-    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2)
+    real(kind=8) :: norm_slav(3), norm_mast(3), H, coor_qp_ma(2), lagr_gap
 !
 ! ----- Project quadrature point (on master side)
 !
@@ -82,11 +82,17 @@ real(kind=8), intent(out), optional :: mu_c(MAX_CONT_DOFS)
 !
     lagr_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, geom%slav_lagc_curr)
     gamma_c = evalPoly(geom%nb_lagr_c, shape_func_lagr, parameters%coef_cont) / hF
-    projRmVal = projRm(lagr_c + gamma_c * gap)
+    lagr_gap = lagr_c + gamma_c * gap
 !
 ! ----- Contact activate at quadrature point ( H = 0 or 1 )
 !
-    H = Heaviside(-(lagr_c + gamma_c * gap))
+    if(parameters%type_cont == CONT_TYPE_UNIL) then
+        H = Heaviside(-lagr_gap)
+        projRmVal = projRm(lagr_gap)
+    else
+        H = 1.d0
+        projRmVal = lagr_gap
+    end if
     l_cont_qp = (H > 0.5d0)
 !
     if(present(dGap)) then
