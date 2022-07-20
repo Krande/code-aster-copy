@@ -160,6 +160,9 @@ class ParallelMesh : public BaseMesh {
     VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
+    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
+
     /**
      * @brief Fonction permettant de savoir si un maillage est parallel
      * @return retourne true si le maillage est parallel

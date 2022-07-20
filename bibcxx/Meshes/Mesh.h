@@ -89,6 +89,9 @@ class Mesh : public BaseMesh {
     VectorLong getNodesFromCells( const std::string, const bool localNumbering = true,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
+    VectorLong getNodesFromCells( const VectorLong& cells, const bool localNumbering = true,
+                                  const ASTERINTEGER same_rank = PythonBool::None ) const;
+
     /**
      * @brief Get inner nodes
      * @return list of node ids

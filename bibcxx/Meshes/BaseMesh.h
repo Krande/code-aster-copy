@@ -256,6 +256,12 @@ class BaseMesh : public DataStructure, public ListOfTables {
         return {};
     }
 
+    virtual VectorLong getNodesFromCells( const VectorLong& cells, const bool localNumbering = true,
+                                          const ASTERINTEGER same_rank = PythonBool::None ) const {
+        AS_ASSERT( false );
+        return {};
+    }
+
     /**
      * @brief Returns the nodes indexes of inner nodes
      * @return VectorLong

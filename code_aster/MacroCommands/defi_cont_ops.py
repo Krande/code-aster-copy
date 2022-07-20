@@ -54,7 +54,6 @@ def defi_cont_ops(self, **keywords):
     _type_cont = {
         "UNILATERAL": ContactType.Unilateral,
         "BILATERAL": ContactType.Bilateral,
-        "COLLE": ContactType.Stick,
     }
     _vari_cont = {"RAPIDE": ContactVariant.Rapide,
                   "ROBUSTE": ContactVariant.Robust}
@@ -67,7 +66,7 @@ def defi_cont_ops(self, **keywords):
         "TRESCA": FrictionType.Tresca,
         "SANS": FrictionType.Without,
         "COULOMB": FrictionType.Coulomb,
-        "COLLE": FrictionType.Stick,
+        "ADHERENT": FrictionType.Stick,
     }
     _algo_pair = {"MORTAR": PairingAlgo.Mortar}
     _init_cont = {
@@ -123,13 +122,13 @@ def defi_cont_ops(self, **keywords):
         pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
         pairParam.setPairingDistance(zone["DIST_APPA"])
         pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
-        pairParam.hasBeamDistance = zone["DIST_POUTRE"] == "OUI"
-        pairParam.hasShellDistance = zone["DIST_COQUE"] == "OUI"
-        if pairParam.hasBeamDistance or pairParam.hasShellDistance:
-            pairParam.setElementaryCharacteristics(zone["CARA_ELEM"])
-        if (zone.get("SEUIL_INIT")) != None:
+        if keywords.get("CARA_ELEM") is not None:
+            pairParam.setElementaryCharacteristics(keywords["CARA_ELEM"])
+            pairParam.hasBeamDistance = zone["DIST_POUTRE"] == "OUI"
+            pairParam.hasShellDistance = zone["DIST_COQUE"] == "OUI"
+        if (zone.get("SEUIL_INIT")) is not None:
             pairParam.setThreshold(zone["SEUIL_INIT"])
-        if (zone.get("DIST_SUPP")) != None:
+        if (zone.get("DIST_SUPP")) is not None:
             pairParam.setDistanceFunction(zone["DIST_SUPP"])
 
         # build then append

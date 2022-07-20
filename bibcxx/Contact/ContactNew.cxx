@@ -51,7 +51,7 @@ bool ContactNew::build() {
 
     // calico
     ASTERINTEGER nb_dim = 0;
-    ASTERINTEGER nb_dim_ = _model->getGeometricDimension();
+    ASTERINTEGER nb_dim_ = getModel()->getGeometricDimension();
     if ( nb_dim_ > 3 ) { // general ? dans model ?
         UTMESS( "A", "CONTACT_84" );
         if ( nb_dim_ == 1003 ) {
@@ -79,28 +79,12 @@ bool ContactNew::build() {
 
     // sdcont_defi.CONTACT.MAILCO/NOEUCO/ssnoco
     std::vector< std::pair< VectorLong, std::string > > mailco;
-    std::vector< std::pair< VectorLong, VectorLong > > noeuco;
+    std::vector< VectorLong > noeuco;
 
     for ( auto &zone_i : _zones ) {
-        // read slave/master nodes/cell : localNumbering, same_rank
+        // read slave nodes/cell : localNumbering, same_rank
         auto l_slave_nodes = zone_i->getSlaveNodes();
         auto l_slave_cells = zone_i->getSlaveCells();
-        auto l_master_nodes = zone_i->getMasterNodes();
-
-        // read hte nodes by SANS_GROUP_MA : several groups
-        auto l_sans_nodes = zone_i->getExcludedSlaveCells();
-
-        // check between SANS_GROUP_MA and slave nodes : save in commonNodes
-        VectorLong commonNodes;
-        if ( mesh->isParallel() ) {
-#ifdef ASTER_HAVE_MPI
-            VectorLong lg_sans_nodes;
-            AsterMPI::all_gather( l_sans_nodes, lg_sans_nodes );
-            commonNodes = set_intersection( lg_sans_nodes, l_slave_nodes );
-#endif
-        } else {
-            commonNodes = set_intersection( l_sans_nodes, l_slave_nodes );
-        }
 
         // save info
         nb_slave_cells += l_slave_cells.size();
@@ -108,15 +92,15 @@ bool ContactNew::build() {
             l_slave_cells,
             cata[std::make_tuple( nb_dim, zone_i->getContactParameter()->getAlgorithm(),
                                   zone_i->hasFriction() )] ) );
-        noeuco.push_back( std::make_pair( l_master_nodes, l_slave_nodes ) );
+        noeuco.push_back( l_slave_nodes );
     }
 
-    // check the common slave nodes between zones
+    // check the common slave nodes between zones (or cells ?)
     VectorLong doublNodes;
     for ( auto it = noeuco.begin(); it != noeuco.end(); ++it ) {
-        VectorLong l_a = it->second;
+        VectorLong l_a = *it;
         for ( auto itb = std::next( it, 1 ); itb != noeuco.end(); ++itb ) {
-            VectorLong l_b = itb->second;
+            VectorLong l_b = *itb;
             if ( mesh->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
                 VectorLong lg_a;
@@ -154,7 +138,7 @@ bool ContactNew::build() {
         ASTERINTEGER slave_cells_i = slavecells.size();
         if ( slave_cells_i > 0 ) {
             std::transform( slavecells.begin(), slavecells.end(), slavecells.begin(),
-                    []( ASTERINTEGER &i ) -> ASTERINTEGER { return ++i; } );
+                            []( ASTERINTEGER &i ) -> ASTERINTEGER { return ++i; } );
 
             JeveuxVectorLong list_elem = JeveuxVectorLong( jeveuxname, slavecells );
             CALL_AJELLT( ligret.c_str(), mesh->getName().c_str(), &slave_cells_i,

@@ -34,7 +34,7 @@ enum class ContactAlgo { Lagrangian, Nitsche, Penalization };
 
 enum class ContactVariant { Empty, Rapide, Robust };
 
-enum class ContactType { Unilateral, Bilateral, Stick };
+enum class ContactType { Unilateral, Bilateral };
 
 enum class FrictionAlgo { Lagrangian, Nitsche, Penalization };
 

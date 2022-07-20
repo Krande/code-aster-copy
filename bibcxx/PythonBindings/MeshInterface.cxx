@@ -150,7 +150,10 @@ To know if the mesh contains quadratic cells
 Returns:
     bool: *True* if the mesh contains quadratic cells, *False* otherwise.
         )" )
-        .def( "_getNodesFromCells", &Mesh::getNodesFromCells, R"(
+        .def( "_getNodesFromCells",
+              py::overload_cast< const std::string, const bool, const ASTERINTEGER >(
+                  &Mesh::getNodesFromCells, py::const_ ),
+              R"(
 Returns the nodes indexes of a group of cells.
 
 Arguments:

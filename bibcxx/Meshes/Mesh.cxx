@@ -101,21 +101,20 @@ VectorLong Mesh::getNodes( const std::string name, const bool, const ASTERINTEGE
     return nodes;
 }
 
-VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const ASTERINTEGER ) const {
-    CALL_JEMARQ();
-    const auto cellsId = getCells( name );
+VectorLong Mesh::getNodesFromCells( const VectorLong &cells, const bool,
+                                    const ASTERINTEGER ) const {
 
-    if ( cellsId.empty() ) {
-        CALL_JEDEMA();
-
+    if ( cells.empty() ) {
         return VectorLong();
     }
+
+    CALL_JEMARQ();
 
     const auto &connecExp = getConnectivityExplorer();
 
     SetLong nodes;
 
-    for ( auto &cellId : cellsId ) {
+    for ( auto &cellId : cells ) {
         const auto cell = connecExp[cellId];
         for ( auto &node : cell )
             auto ret = nodes.insert( node - 1 );
@@ -123,6 +122,10 @@ VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const AS
 
     CALL_JEDEMA();
     return VectorLong( nodes.begin(), nodes.end() );
+};
+
+VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const ASTERINTEGER ) const {
+    return getNodesFromCells( this->getCells( name ) );
 };
 
 bool Mesh::isQuadratic() const {

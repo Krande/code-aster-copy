@@ -39,7 +39,6 @@
 
 #define CONT_TYPE_UNIL 0
 #define CONT_TYPE_BILA 1
-#define CONT_TYPE_STIC 2
 
 ! Friction
 #define FRIC_ALGO_LAGR 0

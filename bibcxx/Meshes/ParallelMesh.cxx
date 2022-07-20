@@ -225,21 +225,19 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     return newNumbering;
 }
 
-VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool localNumbering,
+VectorLong ParallelMesh::getNodesFromCells( const VectorLong &cells, const bool localNumbering,
                                             const ASTERINTEGER same_rank ) const {
-    CALL_JEMARQ();
-    const auto cellsId = getCells( name );
-
-    if ( cellsId.empty() ) {
-        CALL_JEDEMA();
+    if ( cells.empty() ) {
         return VectorLong();
     }
+
+    CALL_JEMARQ();
 
     const auto &connecExp = getConnectivityExplorer();
 
     SetLong nodes;
 
-    for ( auto &cellId : cellsId ) {
+    for ( auto &cellId : cells ) {
         const auto cell = connecExp[cellId];
         for ( auto &node : cell )
             nodes.insert( node - 1 );
@@ -276,6 +274,11 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
     CALL_JEDEMA();
 
     return VectorLong( nodes.begin(), nodes.end() );
+};
+
+VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool localNumbering,
+                                            const ASTERINTEGER same_rank ) const {
+    return getNodesFromCells( getCells( name ), localNumbering, same_rank );
 };
 
 VectorLong ParallelMesh::getInnerCells() const {

@@ -73,10 +73,12 @@ void ContactZone::setExcludedSlaveGroupOfCells( const VectorString &excluded_sla
             throw std::runtime_error( "The group " + name + " doesn't exist in mesh" );
         }
 
-        auto it = _excluded_slaveCells.end();
-        VectorLong sans_gr_i = mesh->getNodesFromCells( name, false, true );
-        _excluded_slaveCells.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
+        auto it = _slaveCellsExcluded.end();
+        VectorLong sans_gr_i = mesh->getCells( name );
+        _slaveCellsExcluded.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
     }
+    _slaveCells = set_intersection( _slaveCells, _slaveCellsExcluded );
+    _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
 };
 
 bool ContactZone::build() {

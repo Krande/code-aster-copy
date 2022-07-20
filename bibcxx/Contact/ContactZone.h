@@ -57,7 +57,7 @@ class ContactZone : public DataStructure {
     /** @brief List of slave nodes */
     VectorLong _slaveNodes;
     /** @brief excluded elements of slave side for LAGRANGIEN */
-    VectorLong _excluded_slaveCells;
+    VectorLong _slaveCellsExcluded;
     /** @brief  Master inverse connectivity */
     JeveuxCollectionLong _masterInverseConnectivity;
     /** @brief  Slave inverse connectivity */
@@ -130,7 +130,7 @@ class ContactZone : public DataStructure {
 
     void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave );
 
-    VectorLong getExcludedSlaveCells() const { return _excluded_slaveCells; };
+    VectorLong getExcludedSlaveCells() const { return _slaveCellsExcluded; };
 
     void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
 

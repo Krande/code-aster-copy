@@ -41,7 +41,6 @@ void exportContactEnumToPython( py::module_ &mod ) {
     py::enum_< ContactType >( mod, "ContactType" )
         .value( "Unilateral", ContactType::Unilateral )
         .value( "Bilateral", ContactType::Bilateral )
-        .value( "Stick", ContactType::Stick )
         .export_values();
 
     py::enum_< FrictionAlgo >( mod, "FrictionAlgo" )

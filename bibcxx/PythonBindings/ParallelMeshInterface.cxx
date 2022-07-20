@@ -167,7 +167,10 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               py::arg( "filename" ) )
-        .def( "_getNodesFromCells", &ParallelMesh::getNodesFromCells, R"(
+        .def( "_getNodesFromCells",
+              py::overload_cast< const std::string, const bool, const ASTERINTEGER >(
+                  &ParallelMesh::getNodesFromCells, py::const_ ),
+              R"(
 Returns the nodes indexes of a group of cells.
 
 Arguments:
