@@ -105,6 +105,10 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         return _mecaLoadDesc;
     };
 
+    ConstantFieldOnCellsRealPtr getMultiplicativeField() const {
+        return getMechanicalLoadDescription()->getMultiplicativeField();
+    }
+
     /**
      * @brief Get the finite element descriptor
      */

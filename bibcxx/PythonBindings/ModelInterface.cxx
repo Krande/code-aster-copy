@@ -42,6 +42,12 @@ void exportModelToPython( py::module_ &mod ) {
 #ifdef ASTER_HAVE_MPI
         .def( py::init( &initFactoryPtr< Model, ConnectionMeshPtr > ) )
         .def( py::init( &initFactoryPtr< Model, std::string, ConnectionMeshPtr > ) )
+        .def( "getConnectionMesh", &Model::getConnectionMesh, R"(
+            Return the ConnectionMesh
+
+            Returns:
+                ConnectionMesh: a pointer to the ConnectionMesh
+            )" )
 #endif /* ASTER_HAVE_MPI */
         .def( py::init( &initFactoryPtr< Model, BaseMeshPtr > ) )
         .def( py::init( &initFactoryPtr< Model, BaseMeshPtr, bool > ) )

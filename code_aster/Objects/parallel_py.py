@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,6 @@ except ImportError:
     class ParallelMechanicalLoadReal(OnlyParallelObject):
         pass
 
-
 try:
     from libaster import ParallelMechanicalLoadFunction
 
@@ -67,6 +66,21 @@ except ImportError:
     class ParallelMechanicalLoadFunction(OnlyParallelObject):
         pass
 
+try:
+    from libaster import ParallelThermalLoadReal
+
+except ImportError:
+
+    class ParallelThermalLoadReal(OnlyParallelObject):
+        pass
+
+try:
+    from libaster import ParallelThermalLoadFunction
+
+except ImportError:
+
+    class ParallelThermalLoadFunction(OnlyParallelObject):
+        pass
 
 try:
     from libaster import ParallelDOFNumbering

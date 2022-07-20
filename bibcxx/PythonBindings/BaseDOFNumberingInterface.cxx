@@ -104,5 +104,6 @@ Returns:
     addAcousticLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );
+    addParallelThermalLoadToInterface( c1 );
 #endif
 };

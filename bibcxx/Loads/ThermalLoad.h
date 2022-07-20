@@ -27,6 +27,7 @@
 #include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
+#include "DataFields/FieldOnCells.h"
 #include "Loads/ThermalLoadDescription.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/FiniteElementDescriptor.h"
@@ -47,6 +48,7 @@ class ThermalLoad : public DataStructure {
     ThermalLoadDescriptionPtr< ConstantFieldOnCellsType > _therLoadDesc;
 
   public:
+    using ConstantFieldOnCellsTypePtr = std::shared_ptr< ConstantFieldOnCellsType >;
 
     /**
      * @brief Constructeur
@@ -88,6 +90,45 @@ class ThermalLoad : public DataStructure {
      * @brief Get the mesh
      */
     BaseMeshPtr getMesh() const { return _therLoadDesc->getMesh(); };
+
+    ConstantFieldOnCellsTypePtr getConstantLoadField( const std::string name ) const {
+        return _therLoadDesc->getConstantLoadField( name );
+    }
+
+    FieldOnCellsRealPtr getLoadField( const std::string name ) const {
+        return _therLoadDesc->getLoadField( name );
+    }
+    bool hasLoadField( const std::string name ) const {
+        return _therLoadDesc->hasLoadField( name );
+    }
+
+    bool hasLoadResult() const {
+        return _therLoadDesc->hasLoadResult();
+    }
+
+    std::string getLoadResultName() const {
+        return _therLoadDesc->getLoadResultName();
+    }
+
+    ConstantFieldOnCellsTypePtr  getImposedField() const { 
+        return _therLoadDesc->getImposedField(); 
+    }
+
+    ConstantFieldOnCellsRealPtr  getMultiplicativeField() const { 
+        return _therLoadDesc->getMultiplicativeField();
+    }
+
+
+    JeveuxVectorChar8 getType() const { return _type; }
+    
+        /**
+     * @brief Mise a jour des pointeurs Jeveux
+     * @return true si la mise a jour s'est bien deroulee, false sinon
+     */
+    void updateValuePointers() {
+        _therLoadDesc->updateValuePointers();
+        _type->updateValuePointer();
+    };
 };
 
 /**********************************************************/
@@ -101,6 +142,10 @@ typedef ThermalLoad< ConstantFieldOnCellsChar24 > ThermalLoadFunction;
 
 typedef std::shared_ptr< ThermalLoadReal > ThermalLoadRealPtr;
 typedef std::shared_ptr< ThermalLoadFunction > ThermalLoadFunctionPtr;
+
+/** @typedef ThermalLoad  */
+template < class ConstantFieldOnCellsType >
+using ThermalLoadPtr = std::shared_ptr< ThermalLoad< ConstantFieldOnCellsType > >;
 
 /** @typedef std::list de ThermalLoad */
 typedef std::list< ThermalLoadRealPtr > ListTherLoadReal;

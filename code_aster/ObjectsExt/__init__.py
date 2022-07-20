@@ -88,3 +88,4 @@ from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
 from .thermalresult_ext import ThermalResult
 from .transientgeneralizedresultscontainer_ext import TransientGeneralizedResult
 from .xfemcrack_ext import XfemCrack
+from .parallelthermalload_ext import ParallelThermalLoadReal, ParallelThermalLoadFunction

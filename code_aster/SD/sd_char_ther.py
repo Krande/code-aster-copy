@@ -67,3 +67,7 @@ class sd_char_ther(AsBase):
     nomj = SDNom(fin=8)
     TYPE = AsVK8(lonmax=1)
     CHTH = sd_char_chth()
+
+class sd_parallel_char_ther(AsBase):
+    nomj = SDNom(fin=8)
+    TYPE = AsVK8(lonmax=1)

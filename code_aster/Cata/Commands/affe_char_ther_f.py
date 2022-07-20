@@ -29,7 +29,7 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
                      reentrant='n',
       regles=(AU_MOINS_UN('TEMP_IMPO','SOURCE','SOUR_NL','FLUX_REP','FLUX_NL','ECHANGE',
                            'ECHANGE_PAROI','LIAISON_DDL','LIAISON_GROUP','LIAISON_UNIF',
-                          'PRE_GRAD_TEMP','RAYONNEMENT'),),
+                          'PRE_GRAD_TEMP','RAYONNEMENT', 'CONVECTION'),),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          DOUBLE_LAGRANGE =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="OUI"),
 

@@ -18,23 +18,22 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: mathieu.courtois@edf.fr
-
 """
-This module provides pybind11 DataStructures and low level objects.
+:py:class:`ParallelThermalLoad` --- Assignment of parallel thermal load
+*****************************************************************************
 """
 
-from libaster import *
+from ..Objects import (ParallelThermalLoadFunction,
+                       ParallelThermalLoadReal)
 
-from .datastructure_py import AsFloat, AsInteger, OnlyParallelObject, PyDataStructure
-from .parallel_py import (
-    ConnectionMesh,
-    ParallelDOFNumbering,
-    ParallelFiniteElementDescriptor,
-    ParallelMechanicalLoadFunction,
-    ParallelMechanicalLoadReal,
-    ParallelThermalLoadFunction,
-    ParallelThermalLoadReal,
-    ParallelMesh,
-)
-from .Serialization import InternalStateBuilder
-from .user_extensions import WithEmbeddedObjects
+from ..Utilities import injector
+
+
+@injector(ParallelThermalLoadReal)
+class ExtendedParallelThermalLoadReal:
+    cata_sdj = "SD.sd_char_ther.sd_parallel_char_ther"
+    # TODO getinitarg needed + new constructor or save internal state
+
+@injector(ParallelThermalLoadFunction)
+class ExtendedParallelThermalLoadFunction:
+    cata_sdj = "SD.sd_char_ther.sd_parallel_char_ther"

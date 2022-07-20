@@ -130,6 +130,7 @@ Returns:
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );
+    addParallelThermalLoadToInterface( c1 );
 #endif /* ASTER_HAVE_MPI */
     addThermalLoadToInterface( c1 );
 };

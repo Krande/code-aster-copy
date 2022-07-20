@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,11 +19,13 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import ThermalLoadFunction
+from ..Objects import (ThermalLoadFunction, ParallelThermalLoadFunction,
+                       ConnectionMesh, Model)
 from ..Supervis import ExecuteCommand
+from .affe_char_ther import ThermalLoadDefinition, _getGroups
 
 
-class ThermalLoadDefinition(ExecuteCommand):
+class ThermalLoadFunctionDefinition(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.ThermalLoadFunction`"""
     command_name = "AFFE_CHAR_THER_F"
 
@@ -33,8 +35,38 @@ class ThermalLoadDefinition(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
+        model = keywords["MODELE"]
+        l_neum = ThermalLoadDefinition._hasNeumannLoadings(keywords)
+        l_diri = ThermalLoadDefinition._hasDirichletLoadings(keywords)
+        if not model.getMesh().isParallel():
+            self._result = ThermalLoadFunction(model)
+        else :
+            if l_neum:
+                if l_diri:
+                    raise TypeError("Not allowed to mix up Dirichlet and Neumann \
+                        loadings in the same parallel AFFE_CHAR_THER_F")
+                else:
+                    self._result = ThermalLoadFunction(model)
 
-        self._result = ThermalLoadFunction(keywords["MODELE"])
+
+    def exec_(self, keywords):
+        """Override default _exec in case of parallel load
+        """
+        if isinstance(self._result, ThermalLoadFunction):
+            super(ThermalLoadFunctionDefinition, self).exec_(keywords)
+        else:
+            model = keywords.pop("MODELE")
+            nodeGroups, cellGroups = _getGroups(self._cata, keywords)
+            connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
+
+            connectionModel = Model( connectionMesh )
+            connectionModel.setFrom( model )
+
+            keywords["MODELE"] = connectionModel
+            partialThermalLoad = AFFE_CHAR_THER_F(**keywords)
+            keywords["MODELE"] = model
+            self._result = ParallelThermalLoadFunction(partialThermalLoad, model)
+
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
@@ -46,4 +78,4 @@ class ThermalLoadDefinition(ExecuteCommand):
         self.remove_dependencies(keywords, "MODELE")
 
 
-AFFE_CHAR_THER_F = ThermalLoadDefinition.run
+AFFE_CHAR_THER_F = ThermalLoadFunctionDefinition.run

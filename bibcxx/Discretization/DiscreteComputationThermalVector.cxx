@@ -53,75 +53,58 @@ bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
-    auto currMater = _phys_problem->getMaterialField();
-    auto currCodedMater = _phys_problem->getCodedMaterial();
-    auto currElemChara = _phys_problem->getElementaryCharacteristics();
     auto listOfLoads = _phys_problem->getListOfLoads();
 
     auto calcul = std::make_unique< Calcul >( calcul_option );
     calcul->setModel( currModel );
 
-    auto therLoadReal = listOfLoads->getThermalLoadsReal();
-    load_option = "THER_DDLI_R";
-    for ( const auto &curIter : therLoadReal ) {
-        auto load_FEDesc = curIter->getFiniteElementDescriptor();
-        auto impo_field = curIter->getThermalLoadDescription()->getImposedField();
-        if ( impo_field && impo_field->exists() && load_FEDesc) {
-            calcul->setOption( load_option );
-            calcul->clearInputs();
-            calcul->clearOutputs();
-            calcul->setFiniteElementDescriptor( load_FEDesc );
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
-            calcul->addInputField( "PDDLIMR", impo_field );
-            calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
-                has_load = true;
-            }
+    auto impl = [&]( auto loads, bool real ) {
+        std::string name;
+        if ( real ) {
+            calcul->setOption( "THER_DDLI_R" );
+            name = "PDDLIMR";
+        } else {
+            calcul->setOption( "THER_DDLI_F" );
+            name = "PDDLIMF";
         }
-        iload++;
-    }
-    auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
-    load_option = "THER_DDLI_F";
-    for ( const auto &curIter : therLoadFunc ) {
-        auto load_FEDesc = curIter->getFiniteElementDescriptor();
-        auto impo_field = curIter->getThermalLoadDescription()->getImposedField();
-        if ( impo_field && impo_field->exists() && load_FEDesc) {
-            calcul->setOption( load_option );
-            calcul->clearInputs();
-            calcul->clearOutputs();
-            calcul->setFiniteElementDescriptor( load_FEDesc );
-            calcul->addInputField( "PGEOMER",
-                                   _phys_problem->getModel()->getMesh()->getCoordinates() );
-            calcul->addInputField( "PDDLIMF", impo_field );
-            calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
-                has_load = true;
+        for ( const auto &load : loads ) {
+            auto load_FEDesc = load->getFiniteElementDescriptor();
+            auto impo_field = load->getImposedField();
+            if ( impo_field && impo_field->exists() && load_FEDesc ) {
+                calcul->clearInputs();
+                calcul->clearOutputs();
+                calcul->setFiniteElementDescriptor( load_FEDesc );
+                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+                calcul->addInputField( name, impo_field );
+                calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+                calcul->addOutputElementaryTerm( "PVECTTR",
+                                                 std::make_shared< ElementaryTermReal >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
+                    elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
+                                                 iload );
+                    has_load = true;
+                }
             }
+            iload++;
         }
-        iload++;
-    }
+    };
+
+    impl( listOfLoads->getThermalLoadsReal(), true );
+    impl( listOfLoads->getThermalLoadsFunction(), false );
+
+#ifdef ASTER_HAVE_MPI
+    impl( listOfLoads->getParallelThermalLoadsReal(), true );
+    impl( listOfLoads->getParallelThermalLoadsFunction(), false );
+#endif
+
     return has_load;
 }
 
-
 /** @brief Compute CHAR_THER_EVOL */
-FieldOnNodesRealPtr
-DiscreteComputation::transientThermalLoad( const ASTERDOUBLE time_value,
-                                           const ASTERDOUBLE time_delta,
-                                           const ASTERDOUBLE time_theta,
-                                           const FieldOnCellsRealPtr _externVarField,
-                                           const FieldOnNodesRealPtr _previousNodalField) {
+FieldOnNodesRealPtr DiscreteComputation::transientThermalLoad(
+    const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta, const ASTERDOUBLE time_theta,
+    const FieldOnCellsRealPtr _externVarField, const FieldOnNodesRealPtr _previousNodalField ) {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( _previousNodalField->exists() );
@@ -168,8 +151,7 @@ DiscreteComputation::transientThermalLoad( const ASTERDOUBLE time_value,
         calcul->addXFEMField( currXfemModel );
     }
     // Add output elementary terms
-    calcul->addOutputElementaryTerm( "PVECTTR",
-                                      std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
 
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
@@ -181,12 +163,12 @@ DiscreteComputation::transientThermalLoad( const ASTERDOUBLE time_value,
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
 
-bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
-                                              const ASTERDOUBLE time_value,
-                                              const ASTERDOUBLE time_delta,
-                                              const ASTERDOUBLE time_theta,
-                                              const FieldOnCellsRealPtr _externVarField,
-                                              const FieldOnNodesRealPtr _previousNodalField ) {
+bool DiscreteComputation::addTherNeumannTerms( ElementaryVectorRealPtr elemVect,
+                                               const ASTERDOUBLE time_value,
+                                               const ASTERDOUBLE time_delta,
+                                               const ASTERDOUBLE time_theta,
+                                               const FieldOnCellsRealPtr _externVarField,
+                                               const FieldOnNodesRealPtr _previousNodalField ) {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( _previousNodalField->exists() );
@@ -207,7 +189,7 @@ bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
     auto currElemChara = _phys_problem->getElementaryCharacteristics();
     auto listOfLoads = _phys_problem->getListOfLoads();
     auto model_FEDesc = currModel->getFiniteElementDescriptor();
-    AS_ASSERT( model_FEDesc ) ;
+    AS_ASSERT( model_FEDesc );
     auto isXfem = currModel->existsXfem();
 
     auto calcul = std::make_unique< Calcul >( calcul_option );
@@ -216,12 +198,10 @@ bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
     calcul->clearOutputs();
 
     auto therLoadReal = listOfLoads->getThermalLoadsReal();
-    for ( const auto &curIter : therLoadReal ) {
-        auto load_FEDesc = curIter->getFiniteElementDescriptor();
-        auto curr_load = curIter->getThermalLoadDescription();
-
-        if ( curr_load->hasLoadResult() ) {
-            std::string evol_char_name = curr_load->getLoadResultName();
+    for ( const auto &load : therLoadReal ) {
+        auto load_FEDesc = load->getFiniteElementDescriptor();
+        if ( load->hasLoadResult() ) {
+            std::string evol_char_name = load->getLoadResultName();
             std::string para_flun( "FLUN" );
             std::string para_coefh( "COEF_H" );
             std::string para_text( "T_EXT" );
@@ -232,47 +212,43 @@ bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
             ASTERINTEGER iret = 100;
             ASTERINTEGER stop = 0;
 
-            FieldOnCellsRealPtr
-                    evol_flow_xyz_field = std::make_shared< FieldOnCellsReal >( model_FEDesc );
+            FieldOnCellsRealPtr evol_flow_xyz_field =
+                std::make_shared< FieldOnCellsReal >( model_FEDesc );
             // On cherche le champ FLUN. Si il existe on calcule l'option CHAR_THER_FLUN_R
             // Si il n'existe pas on suppose l'existence des champs pour calculer CHAR_THER_TEXT_R
-            CALLO_RSINCH(evol_char_name, para_flun, access_var, &time_value,
-                         evol_flow_xyz_field->getName(),
-                         extr_right, extr_left,
-                         &stop, base, &iret);
+            CALLO_RSINCH( evol_char_name, para_flun, access_var, &time_value,
+                          evol_flow_xyz_field->getName(), extr_right, extr_left, &stop, base,
+                          &iret );
 
-            if ( iret >= 2 ){
+            if ( iret >= 2 ) {
 
-                FieldOnCellsRealPtr
-                    evol_exchange_field = std::make_shared< FieldOnCellsReal >( model_FEDesc );
-                FieldOnCellsRealPtr
-                    evol_ext_temp_field = std::make_shared< FieldOnCellsReal >( model_FEDesc );
+                FieldOnCellsRealPtr evol_exchange_field =
+                    std::make_shared< FieldOnCellsReal >( model_FEDesc );
+                FieldOnCellsRealPtr evol_ext_temp_field =
+                    std::make_shared< FieldOnCellsReal >( model_FEDesc );
 
-                CALLO_RSINCH(evol_char_name, para_coefh, access_var, &time_value,
-                             evol_exchange_field->getName(),
-                             extr_right, extr_left,
-                             &stop, base, &iret);
+                CALLO_RSINCH( evol_char_name, para_coefh, access_var, &time_value,
+                              evol_exchange_field->getName(), extr_right, extr_left, &stop, base,
+                              &iret );
 
-                if ( iret >= 2 ){
-                    AS_ABORT( "Cannot find COEF_H in EVOL_CHAR "+evol_char_name+ \
-                              " at time "+std::to_string(time_value));
+                if ( iret >= 2 ) {
+                    AS_ABORT( "Cannot find COEF_H in EVOL_CHAR " + evol_char_name + " at time " +
+                              std::to_string( time_value ) );
                 }
 
-                CALLO_RSINCH(evol_char_name, para_text, access_var, &time_value,
-                             evol_ext_temp_field->getName(),
-                             extr_right, extr_left,
-                             &stop, base, &iret);
+                CALLO_RSINCH( evol_char_name, para_text, access_var, &time_value,
+                              evol_ext_temp_field->getName(), extr_right, extr_left, &stop, base,
+                              &iret );
 
-                if ( iret >= 2 ){
-                    AS_ABORT( "Cannot find T_EXT in EVOL_CHAR "+evol_char_name+ \
-                              " at time "+std::to_string(time_value));
+                if ( iret >= 2 ) {
+                    AS_ABORT( "Cannot find T_EXT in EVOL_CHAR " + evol_char_name + " at time " +
+                              std::to_string( time_value ) );
                 }
 
                 calcul->setOption( "CHAR_THER_TEXT_R" );
                 calcul->setFiniteElementDescriptor( model_FEDesc );
                 calcul->clearInputs();
-                calcul->addInputField( "PGEOMER",
-                                       currModel->getMesh()->getCoordinates() );
+                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
                 calcul->addInputField( "PTEMPER", _previousNodalField );
                 calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
                 calcul->addInputField( "PCOEFHR", evol_exchange_field );
@@ -286,13 +262,11 @@ bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
                                                  iload );
                     has_load = true;
                 }
-            }
-            else {
+            } else {
                 calcul->setOption( "CHAR_THER_FLUN_R" );
                 calcul->setFiniteElementDescriptor( model_FEDesc );
                 calcul->clearInputs();
-                calcul->addInputField( "PGEOMER",
-                                       currModel->getMesh()->getCoordinates() );
+                calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
                 calcul->addInputField( "PFLUXNR", evol_flow_xyz_field );
                 calcul->clearOutputs();
                 calcul->addOutputElementaryTerm( "PVECTTR",
@@ -307,159 +281,139 @@ bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
         }
 
         // Termes ECHANGE
-        if ( curr_load->hasLoadField("COEFH") && curr_load->hasLoadField("T_EXT") ) {
-            auto exchange_field = curr_load->getConstantLoadField("COEFH");
-            auto ext_temp_field = curr_load->getConstantLoadField("T_EXT");
+        if ( load->hasLoadField( "COEFH" ) && load->hasLoadField( "T_EXT" ) ) {
+            auto exchange_field = load->getConstantLoadField( "COEFH" );
+            auto ext_temp_field = load->getConstantLoadField( "T_EXT" );
 
             calcul->setOption( "CHAR_THER_TEXT_R" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
-            if ( _previousNodalField ){
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            if ( _previousNodalField ) {
                 calcul->addInputField( "PTEMPER", _previousNodalField );
             }
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             calcul->addInputField( "PCOEFHR", exchange_field );
             calcul->addInputField( "PT_EXTR", ext_temp_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes FLUX XYZ
-        if ( curr_load->hasLoadField("FLURE") ) {
-            auto flow_xyz_field = curr_load->getConstantLoadField("FLURE");
+        if ( load->hasLoadField( "FLURE" ) ) {
+            auto flow_xyz_field = load->getConstantLoadField( "FLURE" );
             calcul->setOption( "CHAR_THER_FLUN_R" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addInputField( "PFLUXNR", flow_xyz_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes FLUX NORM
-        if ( curr_load->hasLoadField("FLUR2") ) {
-            auto flow_nor_field = curr_load->getConstantLoadField("FLUR2");
+        if ( load->hasLoadField( "FLUR2" ) ) {
+            auto flow_nor_field = load->getConstantLoadField( "FLUR2" );
             calcul->setOption( "CHAR_THER_FLUX_R" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             calcul->addInputField( "PFLUXVR", flow_nor_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes SOURCE
-        if ( curr_load->hasLoadField("SOURE") ) {
-            auto source_field = curr_load->getConstantLoadField("SOURE");
+        if ( load->hasLoadField( "SOURE" ) ) {
+            auto source_field = load->getConstantLoadField( "SOURE" );
             calcul->setOption( "CHAR_THER_SOUR_R" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             if ( _externVarField ) {
                 calcul->addInputField( "PVARCPR", _externVarField );
             }
             calcul->addInputField( "PSOURCR", source_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
         // Termes SOURCE CALCULEE
-        if ( curr_load->hasLoadField("SOURC") ) {
-            auto computed_source_field = curr_load->getLoadField("SOURC");
+        if ( load->hasLoadField( "SOURC" ) ) {
+            auto computed_source_field = load->getLoadField( "SOURC" );
             calcul->setOption( "CHAR_THER_SOUR_R" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             if ( _externVarField ) {
                 calcul->addInputField( "PVARCPR", _externVarField );
             }
             calcul->addInputField( "PSOURCR", computed_source_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes ECHANGE_PAROI
-        if ( curr_load->hasLoadField("HECHP") ) {
-            auto wall_exchange_field = curr_load->getConstantLoadField("HECHP");
+        if ( load->hasLoadField( "HECHP" ) ) {
+            auto wall_exchange_field = load->getConstantLoadField( "HECHP" );
             calcul->setOption( "CHAR_THER_PARO_R" );
             calcul->clearInputs();
             if ( isXfem ) {
                 XfemModelPtr currXfemModel = currModel->getXfemModel();
                 calcul->addXFEMField( currXfemModel );
                 calcul->setFiniteElementDescriptor( model_FEDesc );
-            }
-            else {
+            } else {
                 calcul->setFiniteElementDescriptor( load_FEDesc );
             }
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             if ( _previousNodalField ) {
                 calcul->addInputField( "PTEMPER", _previousNodalField );
             }
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             calcul->addInputField( "PHECHPR", wall_exchange_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes PRE_GRAD_TEMP
-        if ( curr_load->hasLoadField("GRAIN") ) {
-            auto pregrad_field = curr_load->getConstantLoadField("GRAIN");
+        if ( load->hasLoadField( "GRAIN" ) ) {
+            auto pregrad_field = load->getConstantLoadField( "GRAIN" );
             calcul->setOption( "CHAR_THER_GRAI_R" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             if ( _externVarField ) {
                 calcul->addInputField( "PVARCPR", _externVarField );
             }
@@ -468,35 +422,28 @@ bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
             }
             calcul->addInputField( "PGRAINR", pregrad_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
-
         iload++;
     }
 
-
     auto therLoadFunc = listOfLoads->getThermalLoadsFunction();
-    for ( const auto &curIter : therLoadFunc ) {
-        auto load_FEDesc = curIter->getFiniteElementDescriptor();
-        auto curr_load = curIter->getThermalLoadDescription();
-
+    for ( const auto &load : therLoadFunc ) {
+        auto load_FEDesc = load->getFiniteElementDescriptor();
         // Termes ECHANGE
-        if ( curr_load->hasLoadField("COEFH") && curr_load->hasLoadField("T_EXT") ) {
-            auto exchange_field = curr_load->getConstantLoadField("COEFH");
-            auto ext_temp_field = curr_load->getConstantLoadField("T_EXT");
+        if ( load->hasLoadField( "COEFH" ) && load->hasLoadField( "T_EXT" ) ) {
+            auto exchange_field = load->getConstantLoadField( "COEFH" );
+            auto ext_temp_field = load->getConstantLoadField( "T_EXT" );
 
-            calcul->setOption(  "CHAR_THER_TEXT_F" );
+            calcul->setOption( "CHAR_THER_TEXT_F" );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             if ( _previousNodalField ) {
                 calcul->addInputField( "PTEMPER", _previousNodalField );
             }
@@ -505,119 +452,103 @@ bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
             calcul->addInputField( "PCOEFHF", exchange_field );
             calcul->addInputField( "PT_EXTF", ext_temp_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes FLUX XYZ
-        if ( curr_load->hasLoadField("FLURE") ) {
-            auto flow_xyz_field = curr_load->getConstantLoadField("FLURE");
+        if ( load->hasLoadField( "FLURE" ) ) {
+            auto flow_xyz_field = load->getConstantLoadField( "FLURE" );
             calcul->setOption( "CHAR_THER_FLUN_F" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             calcul->addInputField( "PFLUXNF", flow_xyz_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes FLUX NORM
-        if ( curr_load->hasLoadField("FLUR2") ) {
-            auto flow_nor_field = curr_load->getConstantLoadField("FLUR2");
+        if ( load->hasLoadField( "FLUR2" ) ) {
+            auto flow_nor_field = load->getConstantLoadField( "FLUR2" );
             calcul->setOption( "CHAR_THER_FLUX_F" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             calcul->addInputField( "PFLUXVF", flow_nor_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
-        if ( curr_load->hasLoadField("SOURE") ) {
-            auto source_field = curr_load->getConstantLoadField("SOURE");
+        if ( load->hasLoadField( "SOURE" ) ) {
+            auto source_field = load->getConstantLoadField( "SOURE" );
             calcul->setOption( "CHAR_THER_SOUR_F" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             if ( _externVarField ) {
                 calcul->addInputField( "PVARCPR", _externVarField );
             }
             calcul->addInputField( "PSOURCF", source_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes ECHANGE_PAROI
-        if ( curr_load->hasLoadField("HECHP") ) {
-            auto wall_exchange_field = curr_load->getConstantLoadField("HECHP");
+        if ( load->hasLoadField( "HECHP" ) ) {
+            auto wall_exchange_field = load->getConstantLoadField( "HECHP" );
             calcul->setOption( "CHAR_THER_PARO_F" );
             calcul->clearInputs();
             if ( isXfem ) {
                 XfemModelPtr currXfemModel = currModel->getXfemModel();
                 calcul->addXFEMField( currXfemModel );
                 calcul->setFiniteElementDescriptor( model_FEDesc );
-            }
-            else {
+            } else {
                 calcul->setFiniteElementDescriptor( load_FEDesc );
             }
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             if ( _previousNodalField ) {
                 calcul->addInputField( "PTEMPER", _previousNodalField );
             }
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             calcul->addInputField( "PHECHPF", wall_exchange_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }
 
         // Termes PRE_GRAD_TEMP
-        if ( curr_load->hasLoadField("GRAIN") ) {
-            auto pregrad_field = curr_load->getConstantLoadField("GRAIN");
+        if ( load->hasLoadField( "GRAIN" ) ) {
+            auto pregrad_field = load->getConstantLoadField( "GRAIN" );
             calcul->setOption( "CHAR_THER_GRAI_F" );
             calcul->setFiniteElementDescriptor( model_FEDesc );
             calcul->clearInputs();
-            calcul->addInputField( "PGEOMER",
-                                   currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
             calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
             if ( _externVarField ) {
                 calcul->addInputField( "PVARCPR", _externVarField );
@@ -627,12 +558,10 @@ bool DiscreteComputation::addTherNeumannTerms(ElementaryVectorRealPtr elemVect,
             }
             calcul->addInputField( "PGRAINF", pregrad_field );
             calcul->clearOutputs();
-            calcul->addOutputElementaryTerm( "PVECTTR",
-                                             std::make_shared< ElementaryTermReal >() );
+            calcul->addOutputElementaryTerm( "PVECTTR", std::make_shared< ElementaryTermReal >() );
             calcul->compute();
             if ( calcul->hasOutputElementaryTerm( "PVECTTR" ) ) {
-                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ),
-                                             iload );
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTTR" ), iload );
                 has_load = true;
             }
         }

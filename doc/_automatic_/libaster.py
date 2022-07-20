@@ -1115,6 +1115,22 @@ class BaseDOFNumbering(DataStructure):
         31. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
         
         32. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
+        
+        33. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >) -> None
+        
+        34. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function) -> None
+        
+        35. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Formula) -> None
+        
+        36. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: Function2D) -> None
+        
+        37. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
+        
+        38. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function) -> None
+        
+        39. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Formula) -> None
+        
+        40. addLoad(self: libaster.BaseDOFNumbering, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: Function2D) -> None
         """
     
     def computeNumbering(self):
@@ -8288,6 +8304,13 @@ class Model(DataStructure):
     def existsThm(self):
         pass
     
+    def getConnectionMesh(self):
+        """Return the ConnectionMesh
+        
+        Returns:
+            ConnectionMesh: a pointer to the ConnectionMesh
+        """
+    
     def getFiniteElementDescriptor(self):
         pass
     
@@ -9592,21 +9615,37 @@ class PhysicalProblem:
         
         20. addLoad(self: libaster.PhysicalProblem, arg0: ParallelMechanicalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function2D) -> None
         
-        21. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal) -> None
+        21. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >) -> None
         
-        22. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Function) -> None
+        22. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function) -> None
         
-        23. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Formula) -> None
+        23. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Formula) -> None
         
-        24. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Function2D) -> None
+        24. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<double> >, arg1: libaster.Function2D) -> None
         
-        25. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction) -> None
+        25. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >) -> None
         
-        26. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function) -> None
+        26. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function) -> None
         
-        27. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Formula) -> None
+        27. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Formula) -> None
         
-        28. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function2D) -> None
+        28. addLoad(self: libaster.PhysicalProblem, arg0: ParallelThermalLoad<ConstantFieldOnCells<JeveuxString<24> > >, arg1: libaster.Function2D) -> None
+        
+        29. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal) -> None
+        
+        30. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Function) -> None
+        
+        31. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Formula) -> None
+        
+        32. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadReal, arg1: libaster.Function2D) -> None
+        
+        33. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction) -> None
+        
+        34. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function) -> None
+        
+        35. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Formula) -> None
+        
+        36. addLoad(self: libaster.PhysicalProblem, arg0: libaster.ThermalLoadFunction, arg1: libaster.Function2D) -> None
         """
     
     def computeBehaviourProperty(self, COMPORTEMENT, SIGM_INIT= 'NON', INFO= 1):
@@ -10593,6 +10632,60 @@ class ParallelMechanicalLoadFunction(DataStructure):
         1. __init__(self: libaster.ParallelMechanicalLoadFunction, arg0: libaster.MechanicalLoadFunction, arg1: libaster.Model) -> None
         
         2. __init__(self: libaster.ParallelMechanicalLoadFunction, arg0: str, arg1: libaster.MechanicalLoadFunction, arg2: libaster.Model) -> None
+        """
+    
+    def getFiniteElementDescriptor(self):
+        pass
+    
+    def getModel(self):
+        pass
+
+# class ParallelThermalLoadReal in libaster
+
+class ParallelThermalLoadReal(DataStructure):
+    pass
+    
+    # Method resolution order:
+    #     ParallelThermalLoadReal
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. __init__(self: libaster.ParallelThermalLoadReal, arg0: libaster.ThermalLoadReal, arg1: libaster.Model) -> None
+        
+        2. __init__(self: libaster.ParallelThermalLoadReal, arg0: str, arg1: libaster.ThermalLoadReal, arg2: libaster.Model) -> None
+        """
+    
+    def getFiniteElementDescriptor(self):
+        pass
+    
+    def getModel(self):
+        pass
+
+# class ParallelThermalLoadFunction in libaster
+
+class ParallelThermalLoadFunction(DataStructure):
+    pass
+    
+    # Method resolution order:
+    #     ParallelThermalLoadFunction
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. __init__(self: libaster.ParallelThermalLoadFunction, arg0: libaster.ThermalLoadFunction, arg1: libaster.Model) -> None
+        
+        2. __init__(self: libaster.ParallelThermalLoadFunction, arg0: str, arg1: libaster.ThermalLoadFunction, arg2: libaster.Model) -> None
         """
     
     def getFiniteElementDescriptor(self):

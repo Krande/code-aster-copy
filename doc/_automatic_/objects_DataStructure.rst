@@ -1181,6 +1181,24 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ParallelThermalLoadFunction` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ParallelThermalLoadFunction
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ParallelThermalLoadReal` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ParallelThermalLoadReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.PetscSolver` object
 ********************************************************************************
 

@@ -116,6 +116,7 @@
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
+#include "PythonBindings/ParallelThermalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
 #include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/PhysicalQuantityInterface.h"
@@ -266,6 +267,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportParallelMeshToPython( mod );
     exportParallelDOFNumberingToPython( mod );
     exportParallelMechanicalLoadToPython( mod );
+    exportParallelThermalLoadToPython( mod );
     exportParallelFiniteElementDescriptorToPython( mod );
 #endif /* ASTER_HAVE_MPI */
 

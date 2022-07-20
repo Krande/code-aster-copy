@@ -28,7 +28,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
                     reentrant='n',
       regles=(AU_MOINS_UN('EVOL_CHAR', 'TEMP_IMPO','SOURCE','FLUX_REP','ECHANGE',
                           'ECHANGE_PAROI','PRE_GRAD_TEMP','LIAISON_DDL','LIAISON_GROUP',
-                          'LIAISON_UNIF','LIAISON_CHAMNO','RAYONNEMENT','LIAISON_MAIL' ),),
+                          'LIAISON_UNIF','LIAISON_CHAMNO','RAYONNEMENT','LIAISON_MAIL','CONVECTION' ),),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          DOUBLE_LAGRANGE =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="OUI"),
          EVOL_CHAR       =SIMP(statut='f',fr=tr("Champ d'échange thermique ou de flux issu d'un autre calcul"),

@@ -154,6 +154,37 @@ void addThermalLoadToInterface( py::class_< cppclass, Args... > pyclass ) {
     pyclass.def( "addLoad", c20 );
 };
 
+#ifdef ASTER_HAVE_MPI
+template < class cppclass, typename... Args >
+void addParallelThermalLoadToInterface( py::class_< cppclass, Args... > pyclass ) {
+
+    void ( cppclass::*c13 )( const ParallelThermalLoadRealPtr & ) = &cppclass::addLoad;
+    void ( cppclass::*c14 )( const ParallelThermalLoadRealPtr &currentLoad,
+                             const FunctionPtr &func ) = &cppclass::addLoad;
+    void ( cppclass::*c15 )( const ParallelThermalLoadRealPtr &currentLoad,
+                             const FormulaPtr &func ) = &cppclass::addLoad;
+    void ( cppclass::*c16 )( const ParallelThermalLoadRealPtr &currentLoad,
+                             const Function2DPtr &func ) = &cppclass::addLoad;
+
+    void ( cppclass::*c17 )( const ParallelThermalLoadFunctionPtr & ) = &cppclass::addLoad;
+    void ( cppclass::*c18 )( const ParallelThermalLoadFunctionPtr &currentLoad,
+                             const FunctionPtr &func ) = &cppclass::addLoad;
+    void ( cppclass::*c19 )( const ParallelThermalLoadFunctionPtr &currentLoad,
+                             const FormulaPtr &func ) = &cppclass::addLoad;
+    void ( cppclass::*c20 )( const ParallelThermalLoadFunctionPtr &currentLoad,
+                             const Function2DPtr &func ) = &cppclass::addLoad;
+
+    pyclass.def( "addLoad", c13 );
+    pyclass.def( "addLoad", c14 );
+    pyclass.def( "addLoad", c15 );
+    pyclass.def( "addLoad", c16 );
+    pyclass.def( "addLoad", c17 );
+    pyclass.def( "addLoad", c18 );
+    pyclass.def( "addLoad", c19 );
+    pyclass.def( "addLoad", c20 );
+};
+#endif /* ASTER_HAVE_MPI */
+
 template < class cppclass, typename... Args >
 void addAcousticLoadToInterface( py::class_< cppclass, Args... > pyclass ) {
 

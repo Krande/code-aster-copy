@@ -34,6 +34,7 @@
 #include "Loads/MechanicalLoad.h"
 #include "Loads/ParallelMechanicalLoad.h"
 #include "Loads/ThermalLoad.h"
+#include "Loads/ParallelThermalLoad.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 
@@ -83,6 +84,14 @@ class ListOfLoads : public DataStructure {
     ListParaMecaLoadFunction _listOfParallelMechanicalLoadsFunction;
     /** @brief List of functions for ParallelMechanicalLoads */
     ListOfLoadFunctions _listOfParaMechaFuncFunction;
+    /** @brief Chargements thermique paralleles */
+    ListParaTherLoadReal _listOfParallelThermalLoadsReal;
+    /** @brief List of functions for ParallelThermalLoads */
+    ListOfLoadFunctions _listOfParaTherFuncReal;
+    /** @brief Chargements thermique paralleles */
+    ListParaTherLoadFunction _listOfParallelThermalLoadsFunction;
+    /** @brief List of functions for ParallelThermalLoads */
+    ListOfLoadFunctions _listOfParaTherFuncFunction;
 #endif /* ASTER_HAVE_MPI */
     /** @brief .INFC */
     JeveuxVectorLong _loadInformations;
@@ -341,7 +350,7 @@ class ListOfLoads : public DataStructure {
 #endif /* ASTER_HAVE_MPI */
 
     /**
-     * @brief Function d'ajout d'une charge mécanique
+     * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
@@ -354,7 +363,7 @@ class ListOfLoads : public DataStructure {
     };
 
     /**
-     * @brief Function d'ajout d'une charge mécanique
+     * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
@@ -366,7 +375,7 @@ class ListOfLoads : public DataStructure {
     };
 
     /**
-     * @brief Function d'ajout d'une charge mécanique
+     * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
@@ -378,7 +387,7 @@ class ListOfLoads : public DataStructure {
     };
 
     /**
-     * @brief Function d'ajout d'une charge mécanique
+     * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
@@ -391,7 +400,7 @@ class ListOfLoads : public DataStructure {
     };
 
     /**
-     * @brief Function d'ajout d'une charge mécanique
+     * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
@@ -403,7 +412,7 @@ class ListOfLoads : public DataStructure {
     };
 
     /**
-     * @brief Function d'ajout d'une charge mécanique
+     * @brief Function d'ajout d'une charge thermique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
@@ -413,6 +422,85 @@ class ListOfLoads : public DataStructure {
         _listOfThermalLoadsFunction.push_back( currentLoad );
         _listOfTherFuncFunction.push_back( func );
     };
+
+#ifdef ASTER_HAVE_MPI
+
+
+    /**
+     * @brief Function d'ajout d'une charge thermique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function
+     */
+    void addLoad( const ParallelThermalLoadRealPtr &currentLoad,
+                  const FunctionPtr &func = emptyRealFunction ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelThermalLoadsReal.push_back( currentLoad );
+        _listOfParaTherFuncReal.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge thermique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier formula
+     */
+    void addLoad( const ParallelThermalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelThermalLoadsReal.push_back( currentLoad );
+        _listOfParaTherFuncReal.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge thermique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function2d
+     */
+    void addLoad( const ParallelThermalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelThermalLoadsReal.push_back( currentLoad );
+        _listOfParaTherFuncReal.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge thermique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function
+     */
+    void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad,
+                  const FunctionPtr &func = emptyRealFunction ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelThermalLoadsFunction.push_back( currentLoad );
+        _listOfParaTherFuncFunction.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge thermique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier formula
+     */
+    void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelThermalLoadsFunction.push_back( currentLoad );
+        _listOfParaTherFuncFunction.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge thermique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function2d
+     */
+    void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelThermalLoadsFunction.push_back( currentLoad );
+        _listOfParaTherFuncFunction.push_back( func );
+    };
+
+#endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Function d'ajout d'une charge mécanique
@@ -529,6 +617,23 @@ class ListOfLoads : public DataStructure {
         return _listOfThermalLoadsFunction;
     };
 
+#ifdef ASTER_HAVE_MPI
+    /**
+     * @brief Function de récupération de la liste des charges thermiques
+     * @return _listOfThermalLoadsReal
+     */
+    const ListParaTherLoadReal &getParallelThermalLoadsReal() const { 
+        return _listOfParallelThermalLoadsReal; };
+
+    /**
+     * @brief Function de récupération de la liste des charges thermiques
+     * @return _listOfThermalLoadsFunction
+     */
+    const ListParaTherLoadFunction &getParallelThermalLoadsFunction() const {
+        return _listOfParallelThermalLoadsFunction;
+    };
+#endif /* ASTER_HAVE_MPI */
+
     /**
      * @brief Function de récupération de la liste des charges
      * @return _list
@@ -559,6 +664,8 @@ class ListOfLoads : public DataStructure {
 #ifdef ASTER_HAVE_MPI
                _listOfParallelMechanicalLoadsReal.size() +
                _listOfParallelMechanicalLoadsFunction.size() +
+               _listOfParallelThermalLoadsReal.size() + 
+               _listOfParallelThermalLoadsFunction.size() +
 #endif /* ASTER_HAVE_MPI */
                _listOfThermalLoadsReal.size() + _listOfThermalLoadsFunction.size() +
                _listOfAcousticLoadsComplex.size() + _listOfDirichletBCs.size();
@@ -572,6 +679,8 @@ class ListOfLoads : public DataStructure {
 #ifdef ASTER_HAVE_MPI
                  _listOfParallelMechanicalLoadsReal.size() +
                  _listOfParallelMechanicalLoadsFunction.size() +
+               _listOfParallelThermalLoadsReal.size() + 
+               _listOfParallelThermalLoadsFunction.size() +
 #endif /* ASTER_HAVE_MPI */
                  _listOfThermalLoadsReal.size() + _listOfThermalLoadsFunction.size() +
                  _listOfAcousticLoadsComplex.size() ) > 0;

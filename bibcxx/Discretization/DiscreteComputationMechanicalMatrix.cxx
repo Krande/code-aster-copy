@@ -34,11 +34,9 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::elasticStiffnessMatrix(const ASTERDOUBLE &time_value,
-                                            const ASTERINTEGER &modeFourier,
-                                            const VectorString &groupOfCells,
-                                            const FieldOnCellsRealPtr _externVarField ) {
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
+    const ASTERDOUBLE &time_value, const ASTERINTEGER &modeFourier,
+    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) {
 
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
@@ -295,78 +293,32 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
 
     // Select option
     calcul->setOption( "MECA_DDLM_R" );
-    calcul->clearInputs();
-    calcul->clearOutputs();
 
-    auto mecaLoadReal = _listOfLoads->getMechanicalLoadsReal();
-    for ( const auto &curIter : mecaLoadReal ) {
-        auto FEDesc = curIter->getFiniteElementDescriptor();
-        auto field = curIter->getMechanicalLoadDescription()->getMultiplicativeField();
-        if ( field && field->exists() && FEDesc ) {
-            calcul->clearInputs();
-            calcul->clearOutputs();
-            calcul->setFiniteElementDescriptor( FEDesc );
-            calcul->addInputField( "PDDLMUR", field );
-            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+    auto impl = [calcul, elemMatr]( auto loads ) {
+        for ( const auto &load : loads ) {
+            auto FEDesc = load->getFiniteElementDescriptor();
+            auto field = load->getMultiplicativeField();
+            if ( field && field->exists() && FEDesc ) {
+                calcul->clearInputs();
+                calcul->clearOutputs();
+                calcul->setFiniteElementDescriptor( FEDesc );
+                calcul->addInputField( "PDDLMUR", field );
+                calcul->addOutputElementaryTerm( "PMATUUR",
+                                                 std::make_shared< ElementaryTermReal >() );
+                calcul->compute();
+                if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+                    elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+                }
             }
         }
-    }
+    };
 
-    auto mecaLoadFunc = _listOfLoads->getMechanicalLoadsFunction();
-    for ( const auto &curIter : mecaLoadFunc ) {
-        auto FEDesc = curIter->getFiniteElementDescriptor();
-        auto field = curIter->getMechanicalLoadDescription()->getMultiplicativeField();
-        if ( field && field->exists() && FEDesc ) {
-            calcul->clearInputs();
-            calcul->clearOutputs();
-            calcul->setFiniteElementDescriptor( FEDesc );
-            calcul->addInputField( "PDDLMUR", field );
-            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
-            }
-        }
-    }
+    impl( _listOfLoads->getMechanicalLoadsReal() );
+    impl( _listOfLoads->getMechanicalLoadsFunction() );
 
 #ifdef ASTER_HAVE_MPI
-    auto mecaParaLoadReal = _listOfLoads->getParallelMechanicalLoadsReal();
-    for ( const auto &curIter : mecaParaLoadReal ) {
-        auto FEDesc = curIter->getFiniteElementDescriptor();
-        auto field = curIter->getMultiplicativeField();
-        if ( field && field->exists() && FEDesc ) {
-            calcul->clearInputs();
-            calcul->clearOutputs();
-            calcul->setFiniteElementDescriptor( FEDesc );
-            calcul->addInputField( "PDDLMUR", field );
-            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
-            }
-        }
-    }
-
-    auto mecaParaLoadFunc = _listOfLoads->getParallelMechanicalLoadsFunction();
-    for ( const auto &curIter : mecaParaLoadFunc ) {
-        auto FEDesc = curIter->getFiniteElementDescriptor();
-        auto field = curIter->getMultiplicativeField();
-        if ( field && field->exists() && FEDesc ) {
-            calcul->clearInputs();
-            calcul->clearOutputs();
-            calcul->setFiniteElementDescriptor( FEDesc );
-            calcul->addInputField( "PDDLMUR", field );
-            calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-            calcul->compute();
-            if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
-                elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
-            }
-        }
-    }
-
+    impl( _listOfLoads->getParallelMechanicalLoadsReal() );
+    impl( _listOfLoads->getParallelMechanicalLoadsFunction() );
 #endif
 };
 
@@ -401,8 +353,7 @@ std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealP
 DiscreteComputation::computeTangentStiffnessMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-    const ASTERDOUBLE &time_prev,
-    const ASTERDOUBLE &time_curr, const VectorString &groupOfCells ) {
+    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_curr, const VectorString &groupOfCells ) {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -417,9 +368,8 @@ DiscreteComputation::computeTangentStiffnessMatrix(
     std::string option = "FULL_MECA";
 
     // Prepare computing:
-    CalculPtr _calcul =
-        createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
-                                  _externVarFieldCurr, groupOfCells );
+    CalculPtr _calcul = createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
+                                                  _externVarFieldCurr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
 
     // Set current physical state
@@ -494,8 +444,7 @@ std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealP
 DiscreteComputation::computeTangentPredictionMatrix(
     const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
     const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-    const ASTERDOUBLE &time_prev,
-    const ASTERDOUBLE &time_curr, const VectorString &groupOfCells ) {
+    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_curr, const VectorString &groupOfCells ) {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -510,9 +459,8 @@ DiscreteComputation::computeTangentPredictionMatrix(
     std::string option = "RIGI_MECA_TANG";
 
     // Prepare computing:
-    CalculPtr _calcul =
-        createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
-                                  _externVarFieldCurr, groupOfCells );
+    CalculPtr _calcul = createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
+                                                  _externVarFieldCurr, groupOfCells );
     FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
 
     // Set current physical state

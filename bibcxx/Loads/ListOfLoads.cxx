@@ -185,6 +185,27 @@ bool ListOfLoads::build( ModelPtr model ) {
             listeExcit.push_back( dict2 );
         }
 
+#ifdef ASTER_HAVE_MPI
+        pos = 0;
+        for ( const auto &load : _listOfParallelThermalLoadsReal ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = load->getName();
+            if ( _listOfParaTherFuncReal[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfParaTherFuncReal[pos]->getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+        pos = 0;
+        for ( const auto &load : _listOfParallelThermalLoadsFunction ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = load->getName();
+            if ( _listOfParaTherFuncFunction[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfParaTherFuncFunction[pos]->getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+#endif /* ASTER_HAVE_MPI */
+
         pos = 0;
         for ( const auto &load : _listOfDirichletBCs ) {
             SyntaxMapContainer dict2;
@@ -267,6 +288,14 @@ std::vector< FiniteElementDescriptorPtr > ListOfLoads::getFiniteElementDescripto
         for ( const auto &load : _listOfAcousticLoadsComplex ) {
             FEDesc.push_back( load->getFiniteElementDescriptor() );
         }
+#ifdef ASTER_HAVE_MPI
+        for ( const auto &load : _listOfParallelThermalLoadsReal ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
+        }
+        for ( const auto &load : _listOfParallelThermalLoadsFunction ) {
+            FEDesc.push_back( load->getFiniteElementDescriptor() );
+        }
+#endif /* ASTER_HAVE_MPI */
     }
 
     return FEDesc;

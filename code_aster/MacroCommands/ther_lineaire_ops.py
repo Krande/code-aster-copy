@@ -28,6 +28,8 @@ from ..Objects import (
     ThermalDirichletBC,
     ThermalLoadFunction,
     ThermalLoadReal,
+    ParallelThermalLoadFunction,
+    ParallelThermalLoadReal,
     PhysicalProblem,
     FieldOnNodesReal
 )
@@ -94,6 +96,8 @@ def _addLoads(phys_pb, args):
                     ThermalLoadFunction,
                     ThermalLoadReal,
                     ThermalDirichletBC,
+                    ParallelThermalLoadFunction,
+                    ParallelThermalLoadReal,
                 ),
             ):
                 phys_pb.addLoadFromDict(load)
