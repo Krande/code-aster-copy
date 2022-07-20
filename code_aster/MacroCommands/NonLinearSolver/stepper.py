@@ -27,6 +27,7 @@ class TimeStepper:
 
     def __init__(self, times):
         self.current = 0
+        self.level = 0
         assert(sorted(times) == times)
         self.times = list(times)
 
@@ -106,11 +107,13 @@ class TimeStepper:
         """
         # manage substepping...
         # for example, step back to the previous step
-        assert nb_step > 1
+        assert nb_step > 1 and self.level < 20
 
         time_prev = self.times[self.current-1]
         time_next = self.getNext()
         time_step = (time_next - time_prev) / float(nb_step)
+
+        self.level += 1
 
         time_add = time_next
         for i in range(max(0, nb_step-1)):
