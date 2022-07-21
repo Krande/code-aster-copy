@@ -51,6 +51,7 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
     CALL_JEMARQ();
 
     auto zone = _contDefi->getContactZone( i );
+    AS_ASSERT( !zone->hasSmoothing() );
 
     // get and define some input parameters
     VectorLong eleMaster = zone->getMasterCells();

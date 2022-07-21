@@ -33,8 +33,8 @@
 
 using VectorLongIter = VectorLong::iterator;
 
-ContactNew::ContactNew( const std::string name, const ModelPtr model )
-    : DataStructure( name, 8, "CHAR_CONTACT" ),
+ContactNew::ContactNew( const std::string name, const ModelPtr model, const std::string type )
+    : DataStructure( name, 8, type ),
       _model( model ),
       _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
                                                             _model->getMesh() ) ),

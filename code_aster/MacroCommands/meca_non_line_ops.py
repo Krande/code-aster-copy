@@ -20,6 +20,7 @@
 
 from ..Cata.Syntax import _F
 from ..Objects import (
+    FrictionType,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
@@ -32,6 +33,26 @@ from ..Utilities import print_stats
 from .NonLinearSolver import NonLinearSolver, TimeStepper
 
 
+def _contact_check(CONTACT):
+    """ Add check to forbid not convered functionnalities """
+    if CONTACT is not None:
+        defi = CONTACT["DEFINITION"]
+
+        for zone in defi.getContactZones():
+            assert not zone.hasSmoothing
+            assert zone.getPairingParameter().getPairingDistance() < 0
+            assert zone.getPairingParameter().getDistanceFunction() is None
+            assert zone.getPairingParameter().getElementaryCharacteristics() is None
+
+            if zone.hasFriction:
+                assert zone.getFrictionParameter().getType() == FrictionType.Without
+
+        assert CONTACT["ALGO_RESO_GEOM"] == "NEWTON"
+
+        if defi.hasFriction:
+            assert CONTACT["ALGO_RESO_FROT"] == "NEWTON"
+
+
 def meca_non_line_ops(self, **args):
     """Execute the command.
 
@@ -42,6 +63,9 @@ def meca_non_line_ops(self, **args):
     UTMESS('A', 'QUALITY1_2')
 
     args = _F(args)
+
+    # add contact check:
+    _contact_check(args["CONTACT"])
 
     snl = NonLinearSolver()
     snl.setLoggingLevel(args["INFO"])

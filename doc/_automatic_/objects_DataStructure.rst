@@ -632,6 +632,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.FrictionNew` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.FrictionNew
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.FullHarmonicAcousticResult` object
 ********************************************************************************
 

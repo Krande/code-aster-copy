@@ -104,4 +104,8 @@ bool: enable or disable the use of friction.
         .def_property( "hasSmoothing", &ContactNew::hasSmoothing, &ContactNew::enableSmoothing, R"(
 bool: enable or disable  the use of smoothing.
         )" );
+
+    py::class_< FrictionNew, FrictionNewPtr, ContactNew >( mod, "FrictionNew" )
+        .def( py::init( &initFactoryPtr< FrictionNew, std::string, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< FrictionNew, ModelPtr > ) );
 };

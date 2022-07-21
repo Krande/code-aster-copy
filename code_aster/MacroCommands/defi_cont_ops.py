@@ -25,6 +25,7 @@ from ..Objects import (
     ContactVariant,
     ContactZone,
     FrictionAlgo,
+    FrictionNew,
     FrictionParameter,
     FrictionType,
     InitialState,
@@ -33,13 +34,24 @@ from ..Objects import (
 )
 
 
+def _hasFriction(zones):
+    for zone in zones:
+        if zone["FROTTEMENT"] == "OUI":
+            return True
+
+    return False
+
+
 def defi_cont_ops(self, **keywords):
     """Execute the command.
 
     Arguments:
         keywords (dict): User's keywords.
     """
-    result = ContactNew(keywords["MODELE"])
+    if _hasFriction(keywords["ZONE"]):
+        result = FrictionNew(keywords["MODELE"])
+    else:
+        result = ContactNew(keywords["MODELE"])
 
     # print("ARGS: ", keywords, flush=True)
     model = keywords["MODELE"]
@@ -137,4 +149,5 @@ def defi_cont_ops(self, **keywords):
 
     # build result
     result.build()
+
     return result

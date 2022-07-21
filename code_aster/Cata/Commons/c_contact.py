@@ -23,7 +23,7 @@ from ..Language.Syntax import *
 
 def C_CONTACT():
     mcfact = FACT(statut='f', max=1,
-                  DEFINITION=SIMP(statut='f', typ=char_contact),
+                  DEFINITION=SIMP(statut='o', typ=(char_cont, char_frot)),
 
                   # PARAMETRE GENERAL : BOUCLE DE GEOMETRIE
                   ALGO_RESO_GEOM=SIMP(statut='f', typ='TXM',
@@ -50,37 +50,37 @@ def C_CONTACT():
                                                           ),
                                           ),
 
-
                   # PARAMETRE GENERAL : BOUCLE DE FROTTEMENT
-                #   b_bouc_frot=BLOC(condition="""equal_to("FROTTEMENT", 'OUI') """,
+                  b_bouc_frot=BLOC(condition="""is_type("DEFINITION") == char_frot""",
 
-                #                    b_algo_frot_geomNE=BLOC(condition="""equal_to("ALGO_RESO_GEOM", 'NEWTON')""",
-                #                                            ALGO_RESO_FROT=SIMP(statut='f', typ='TXM',
-                #                                                                into=(
-                #                                                                    "NEWTON",),
-                #                                                                defaut="NEWTON"),
-                #                                            ),
-                #                    b_algo_frot_geomPF=BLOC(condition="""equal_to("ALGO_RESO_GEOM", 'POINT_FIXE')""",
-                #                                            ALGO_RESO_FROT=SIMP(statut='f', typ='TXM',
-                #                                                                into=(
-                #                                                                    "POINT_FIXE", "NEWTON",),
-                #                                                                defaut="POINT_FIXE"),
+                                   b_algo_frot_geomNE=BLOC(condition="""equal_to("ALGO_RESO_GEOM", 'NEWTON')""",
+                                                           ALGO_RESO_FROT=SIMP(statut='f', typ='TXM',
+                                                                               into=(
+                                                                                   "NEWTON",),
+                                                                               defaut="NEWTON"),
+                                                           ),
+                                   b_algo_frot_geomPF=BLOC(condition="""equal_to("ALGO_RESO_GEOM", 'POINT_FIXE')""",
+                                                           ALGO_RESO_FROT=SIMP(statut='f', typ='TXM',
+                                                                               into=(
+                                                                                   "POINT_FIXE", "NEWTON",),
+                                                                               defaut="POINT_FIXE"),
 
-                #                                            b_algo_reso_frotPF=BLOC(condition="""equal_to("ALGO_RESO_FROT", 'POINT_FIXE')""",
-                #                                                                    ITER_FROT_MAXI=SIMP(
-                #                                                                        statut='f', typ='I', defaut=10, val_min=0),
-                #                                                                    ),
-                #                                            ),
+                                                           b_algo_reso_frotPF=BLOC(condition="""equal_to("ALGO_RESO_FROT", 'POINT_FIXE')""",
+                                                                                   ITER_FROT_MAXI=SIMP(
+                                                                                       statut='f', typ='I', defaut=10, val_min=0),
+                                                                                   ),
+                                                           ),
 
-                #                    RESI_FROT=SIMP(
-                #                        statut='f', typ='R', defaut=1.e-4),
-                #                    ),
+                                   RESI_FROT=SIMP(
+                                       statut='f', typ='R', defaut=1.e-4),
+                                   ),
 
                   # AUTRES
-                  CONT_STAT_ELAS=SIMP(statut='f', typ='I',
-                                      val_min=0, defaut=0),
+                  #   CONT_STAT_ELAS=SIMP(statut='f', typ='I',
+                  #                       val_min=0, defaut=0),
 
                   )
+
     return mcfact
 
 # Chantier  ADAPTATION à faire (2023)

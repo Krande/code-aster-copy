@@ -340,6 +340,14 @@ class char_contact(ASSD):
     pass
 
 
+class char_cont(ASSD):
+    pass
+
+
+class char_frot(ASSD):
+    pass
+
+
 class char_meca(ASSD):
     pass
 

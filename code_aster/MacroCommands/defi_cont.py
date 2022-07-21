@@ -21,20 +21,23 @@ from ..Cata.Commons import *
 from ..Cata.Language.DataStructure import *
 from ..Cata.Language.Syntax import *
 from ..Supervis import UserMacro
-from .defi_cont_ops import defi_cont_ops
+from .defi_cont_ops import defi_cont_ops, _hasFriction
 
-# quelques remarques:
-# - ce catalogue est un exemple de ce à quoi il pourrait ressembler à la fin du chantier en 2024
-# - on ne passera plus par un op fortran. Pur c++/python
-# - il faudra créer une nouvelle classe (et sd) pour ce contact
-# - il faudra ajouter le maximum de fonctions d'intérogation à cette classe (pour rajouter des tests facilement)
-# - il faut regarder ce que cela donne dans asterStudy
-# - est-ce que l'on veut rajouter des choses qui ne sont possibles actuellement ?
+
+def defi_cont_prod(self, ZONE, **args):
+    if args.get("__all__"):
+        return (char_cont, char_frot)
+
+    if _hasFriction(ZONE):
+        return char_frot
+
+    return char_cont
+
 
 DEFI_CONT_CATA = MACRO(
     nom="DEFI_CONT",
     op=OPS("code_aster.MacroCommands.defi_cont_ops.defi_cont_ops"),
-    sd_prod=char_contact,
+    sd_prod=defi_cont_prod,
     reentrant='n',
     fr=tr("Définit les zones soumises à des conditions de contact avec ou sans frottement"),
     #en        = "Allows the definition of contact surfaces",
@@ -77,7 +80,6 @@ DEFI_CONT_CATA = MACRO(
               COEF_CONT=SIMP(statut='f', typ='R', defaut=100.0, val_min=0.0),
 
               # Pairing options (for segment to segment contact)
-              # "COLLOCATION" old robuste, "RAPIDE" new => à discuter avec Guillaume
               APPARIEMENT=SIMP(statut='f', typ='TXM',
                                defaut="MORTAR", into=("MORTAR")),
               DIST_APPA=SIMP(statut='f', typ='R', defaut=-1.0),
@@ -92,7 +94,6 @@ DEFI_CONT_CATA = MACRO(
                         ),
               CONTACT_INIT=SIMP(statut='f', typ='TXM', defaut="INTERPENETRE",
                                 into=("OUI", "INTERPENETRE", "NON"),),
-              SEUIL_INIT=SIMP(statut='f', typ='R'),
 
               # Add suppl. gaps
               DIST_SUPP=SIMP(statut='f', typ=(
@@ -140,6 +141,8 @@ DEFI_CONT_CATA = MACRO(
 
                                COEF_FROT=SIMP(
                                          statut='f', typ='R', defaut=100.0, val_min=0.0),
+
+                               SEUIL_INIT=SIMP(statut='f', typ='R'),
 
                                ),  # fin BLOC
               ),  # fin ZONE

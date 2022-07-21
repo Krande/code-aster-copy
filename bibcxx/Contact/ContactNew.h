@@ -32,7 +32,7 @@
 #include "Supervis/ResultNaming.h"
 
 class ContactNew : public DataStructure {
-  private:
+  protected:
     /** @brief Modele */
     ModelPtr _model;
     /** @brief Ligel ".CHME.LIGRE" */
@@ -42,6 +42,11 @@ class ContactNew : public DataStructure {
     /** @brief Level of verbosity */
     ASTERINTEGER _verbosity;
 
+    /**
+     * @brief Constructeur
+     */
+    ContactNew( const std::string name, const ModelPtr model, const std::string type );
+
   public:
     typedef std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > VectorLongPairs;
 
@@ -50,6 +55,7 @@ class ContactNew : public DataStructure {
      * @brief Pointeur intelligent vers un ContactNew
      */
     typedef std::shared_ptr< ContactNew > ContactNewPtr;
+
     /**
      * @brief Constructeur
      */
@@ -58,7 +64,8 @@ class ContactNew : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ContactNew( const std::string name, const ModelPtr model );
+    ContactNew( const std::string name, const ModelPtr model )
+        : ContactNew( name, model, "CHAR_CONT" ){};
 
     /**
      * @brief Constructeur
@@ -111,3 +118,41 @@ class ContactNew : public DataStructure {
  * @brief Pointeur intelligent vers un ContactNew
  */
 using ContactNewPtr = std::shared_ptr< ContactNew >;
+
+class FrictionNew : public ContactNew {
+
+  public:
+    /**
+     * @typedef FrictionNewPtr
+     * @brief Pointeur intelligent vers un FrictionNew
+     */
+    typedef std::shared_ptr< FrictionNew > FrictionNewPtr;
+
+    /**
+     * @brief Constructeur
+     */
+    FrictionNew() = delete;
+
+    /**
+     * @brief Constructeur
+     */
+    FrictionNew( const std::string name, const ModelPtr model )
+        : ContactNew( name, model, "CHAR_FROT" ){};
+
+    /**
+     * @brief Constructeur
+     */
+    FrictionNew( const ModelPtr model ) : FrictionNew( ResultNaming::getNewResultName(), model ){};
+
+    bool build() {
+        AS_ASSERT( hasFriction() );
+
+        return ContactNew::build();
+    };
+};
+
+/**
+ * @typedef FrictionNewPtr
+ * @brief Pointeur intelligent vers un FrictionNew
+ */
+using FrictionNewPtr = std::shared_ptr< FrictionNew >;

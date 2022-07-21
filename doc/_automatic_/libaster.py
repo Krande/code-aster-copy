@@ -735,16 +735,16 @@ class DiscreteComputation:
               FieldOnCells: field for external state variables reference values
         """
     
-    def computeInternalForces(self, displ, displ_incr, stress, internVar, time_prev, time_curr, groupOfCells= []):
+    def computeInternalForces(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
         """Compute internal forces (integration of behaviour)
         
         Arguments:
             displ (FieldOnNodes): displacement field at begin of current time
-            displ_incr (FieldOnNodes): field of increment of displacement
+            displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): field of internal state variables at begin of current time
-            time_prev (float): time at begin of current time
-            time_curr (float): time at end of current time
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
             groupOfCells (list[str]): compute matrices on given groups of cells.
         
         Returns:
@@ -755,16 +755,16 @@ class DiscreteComputation:
             field of internal forces (FieldOnNodesReal),
         """
     
-    def computeTangentPredictionMatrix(self, displ, displ_incr, stress, internVar, time_prev, time_curr, groupOfCells= []):
+    def computeTangentPredictionMatrix(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
         """Compute jacobian matrix for Newton algorithm, Euler prediction
         
         Arguments:
             displ (FieldOnNodes): displacement field at begin of current time
-            displ_incr (FieldOnNodes): field of increment of displacement
+            displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): field of internal state variables at begin of current time
-            time_prev (float): time at begin of current time
-            time_curr (float): time at end of current time
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
             groupOfCells (list[str]): compute matrices on given groups of cells.
         
         Returns:
@@ -773,22 +773,30 @@ class DiscreteComputation:
             elementary tangent matrix (ElementaryMatrixDisplacementReal),
         """
     
-    def computeTangentStiffnessMatrix(self, displ, displ_incr, stress, internVar, time_prev, time_curr, groupOfCells= []):
+    def computeTangentStiffnessMatrix(self, displ, displ_step, stress, internVar, time_prev, time_step, groupOfCells= []):
         """Compute jacobian matrix for Newton algorithm
         
         Arguments:
             displ (FieldOnNodes): displacement field at begin of current time
-            displ_incr (FieldOnNodes): field of increment of displacement
+            displ_step (FieldOnNodes): field of increment of displacement
             stress (FieldOnCells): field of stress at begin of current time
             internVar (FieldOnCells): field of internal state variables at begin of current time
-            time_prev (float): time at begin of current time
-            time_curr (float): time at end of current time
+            time_prev (float): time at begin of the step
+            time_curr (float): delta time between begin and end of the step
             groupOfCells (list[str]): compute matrices on given groups of cells.
         
         Returns:
             tuple (tuple): return code error (FieldOnCellsLong),
             error code flag (int),
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
+        """
+    
+    def contactForces(self, arg0, arg1, arg2, arg3):
+        """Compute contact forces
+        """
+    
+    def contactMatrix(self, arg0, arg1, arg2, arg3):
+        """Compute contact matrix
         """
     
     def createExternalStateVariablesField(self, time_value):
@@ -799,18 +807,6 @@ class DiscreteComputation:
         
         Returns:
               FieldOnCells: field of external state variables at current time
-        """
-    
-    def createTimeField(self, time_value, time_delta= 0.0, time_theta= 0.0):
-        """Create time field
-        
-        Arguments:
-              time_value (float): Current time
-              time_delta (float): Time increment
-              time_theta (float): Theta parameter for integration
-        
-        Returns:
-             ConstantFieldOnCells: field of current time
         """
     
     def dampingMatrix(self, massMatrix= None, stiffnessMatrix= None, time_value= 0.0, groupOfCells= [], externVarField= None):
@@ -1136,6 +1132,9 @@ class BaseDOFNumbering(DataStructure):
     def computeNumbering(self):
         pass
     
+    def computeRenumbering(self):
+        pass
+    
     def getDescription(self):
         pass
     
@@ -1409,7 +1408,7 @@ class FiniteElementDescriptor(DataStructure):
         4. __init__(self: libaster.FiniteElementDescriptor, arg0: Model, arg1: List[str]) -> None
         """
     
-    def getListOfGroupOfCells(self):
+    def getListOfGroupOfElements(self):
         pass
     
     def getMesh(self):
@@ -2852,6 +2851,26 @@ class ListOfLoads(DataStructure):
         4. __init__(self: libaster.ListOfLoads, arg0: str, arg1: Model) -> None
         """
     
+    def addContactLoadDescriptor(self, FED_Slave, FED_Pair):
+        """Add contact load descriptor.
+        
+        Arguments:
+            FED_Slave (FiniteElementDescriptor): Finite Element Descriptor defining
+                slave cells (in DEFI_CONTACT)
+            FED_Pair (FiniteElementDescriptor): Finite Element Descriptor defining
+                list of contact pair
+        """
+    
+    def getContactLoadDescriptor(self):
+        """Get contact load descriptors.
+        
+        Returns:
+            (FiniteElementDescriptor): Finite Element Descriptor defining
+                slave cells (in DEFI_CONTACT)
+            (FiniteElementDescriptor): Finite Element Descriptor defining
+                list of contact pair
+        """
+    
     def getDirichletBCs(self):
         """Return list of DirichletBCs
         
@@ -3485,8 +3504,6 @@ class ContactType:
     Unilateral
     
     Bilateral
-    
-    Stick
     """
     
     # Method resolution order:
@@ -3546,8 +3563,6 @@ class ContactType:
     # Data and other attributes defined here:
     
     Bilateral = 1
-    
-    Stick = 2
     
     Unilateral = 0
 
@@ -4229,6 +4244,28 @@ class ContactNew(DataStructure):
         """bool: enable or disable  the use of smoothing.
         """
 
+# class FrictionNew in libaster
+
+class FrictionNew(ContactNew):
+    pass
+    
+    # Method resolution order:
+    #     FrictionNew
+    #     ContactNew
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+    
+    # Methods defined here:
+    
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. __init__(self: libaster.FrictionNew, arg0: str, arg1: Model) -> None
+        
+        2. __init__(self: libaster.FrictionNew, arg0: Model) -> None
+        """
+
 # class ContactZone in libaster
 
 class ContactZone(DataStructure):
@@ -4407,6 +4444,16 @@ class ContactZone(DataStructure):
     def checkNormals(self):
         """bool: Attribute that holds the checking of outwards normals.
         """
+    
+    @property
+    def hasFriction(self):
+        """bool: enable or disable the use of friction.
+        """
+    
+    @property
+    def hasSmoothing(self):
+        """bool: enable or disable  the use of smoothing.
+        """
 
 # class ContactPairing in libaster
 
@@ -4424,9 +4471,9 @@ class ContactPairing(DataStructure):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
         
-        1. __init__(self: libaster.ContactPairing, arg0: List[libaster.ContactZone], arg1: libaster.BaseMesh) -> None
+        1. __init__(self: libaster.ContactPairing, arg0: str, arg1: libaster.ContactNew) -> None
         
-        2. __init__(self: libaster.ContactPairing, arg0: str, arg1: List[libaster.ContactZone], arg2: libaster.BaseMesh) -> None
+        2. __init__(self: libaster.ContactPairing, arg0: libaster.ContactNew) -> None
         """
     
     def clear(self):
@@ -4459,9 +4506,17 @@ class ContactPairing(DataStructure):
         """
     
     def getCoordinates(self):
-        """Compute the new coordinates
+        """Coordinates of nodes used for pairing (almost always different from the intial mesh).
+        
         Returns:
-            MeshCoordinatesFieldPtr: the new MeshCoordinatesField object
+            MeshCoordinatesFieldPtr: the coordinates field
+        """
+    
+    def getFiniteElementDescriptor(self):
+        """Return Finite Element Descriptor for virtual cells from pairing.
+        
+        Returns:
+            FiniteElementDescriptor: finite element for virtual cells
         """
     
     def getListOfPairsOfZone(self, zone_index):
@@ -4469,14 +4524,7 @@ class ContactPairing(DataStructure):
         Arguments:
             zone_index(int)
         Returns:
-            List[int]: List of pairs
-        """
-    
-    def getMasterIntersectionPoints(self, zone_index):
-        """Arguments:
-            zone_index(int)
-        Returns:
-            List[ float ]: get List of of master intersection points
+            List[List[int]]: List of pairs
         """
     
     def getNumberOfPairs(self):
@@ -4493,18 +4541,15 @@ class ContactPairing(DataStructure):
             int: number of pairs
         """
     
-    def getQuadraturePoints(self, zone_index):
-        """Arguments:
-            zone_index(int)
-        Returns:
-            List[ float ]: get List of of Gauss quadrature points
-        """
-    
     def getSlaveIntersectionPoints(self, zone_index):
-        """Arguments:
-            zone_index(int)
+        """Get the intersection points beetween a master and slave cells in the parametric
+        slave space. The maximum number of points is 8.
+        
+        Arguments:
+            zone_index(int) : index of zone
+        
         Returns:
-            List[ float ]: get List of of salve intersection points
+            list[list]: list of list of intersection points (each intersection is of size 16)
         """
     
     def updateCoordinates(self, disp):
@@ -4526,10 +4571,8 @@ class ContactComputation:
     def __init__(self, arg0):
         pass
     
-    def buildContactResFED(self, pairing):
-        """Build contact resolution finite element descriptor from pairing
-        Arguments:
-            pairing (ContactPairing): contact pairing
+    def contactData(self, arg0):
+        """Compute contact data (MMCHML)
         """
     
     def geometricGap(self, coordinates):
@@ -4542,13 +4585,6 @@ class ContactComputation:
         Returns:
             FieldOnNodesReal: gap field.
             FieldOnNodesReal: gap indicator.
-        """
-    
-    def getFiniteElementDescriptor(self):
-        """Return contact resolution finite element descriptor from pairing
-        
-        Returns:
-            FiniteElementDescriptor: fed.
         """
 
 # class BaseAssemblyMatrix in libaster

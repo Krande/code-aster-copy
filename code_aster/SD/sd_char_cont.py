@@ -17,31 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-"""
-:py:class:`ContactNew` --- Assignment of contact
-************************************************************************
-"""
+from . import *
 
-from libaster import ContactNew, FrictionNew
 
-from ..Utilities import injector
+class sd_char_cont(AsBase):
 
-@injector(ContactNew)
-class ExtendedContactNew:
-    cata_sdj = "SD.sd_char_cont.sd_char_cont"
+    #   Nom des objets préfixé par le nom du concept (8 premiers caractères)
+    nomj = SDNom(fin=8)
 
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a
-        ContactNew object during unpickling.
-        """
-        return (self.getName(), self.getModel())
+# -------------------------------------------------------------------------------------------------#
 
-@injector(FrictionNew)
-class ExtendedFrictionNew:
-    cata_sdj = "SD.sd_char_frot.sd_char_frot"
-
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a
-        FrictionNew object during unpickling.
-        """
-        return (self.getName(), self.getModel())
+# -------------------------------------------------------------------------------------------------#

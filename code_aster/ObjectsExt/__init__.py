@@ -30,7 +30,7 @@ from .datastructure_ext import DataStructure
 # extend DataStructures using metaclasses
 from .acousticload_ext import AcousticLoadComplex
 from .assemblymatrix_ext import AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementReal
-from .contactnew_ext import ContactNew
+from .contactnew_ext import ContactNew, FrictionNew
 from .constantfieldoncells_ext import ConstantFieldOnCellsReal
 from .contact_ext import Contact
 from .dirichletbc_ext import MechanicalDirichletBC, ThermalDirichletBC, AcousticDirichletBC
