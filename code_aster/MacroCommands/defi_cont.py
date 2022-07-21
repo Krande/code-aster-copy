@@ -45,7 +45,6 @@ DEFI_CONT_CATA = MACRO(
     # ----- PARAMETRES GENERAUX ( NE DEPENDENT PAS DE LA ZONE DE CONTACT)
 
     MODELE=SIMP(statut='o', typ=modele_sdaster,),
-    CARA_ELEM=SIMP(statut='f', typ=cara_elem),
     INFO=SIMP(statut='f', typ='I', into=(1, 2), defaut=1),
 
     ZONE=FACT(statut='o', max='**',
@@ -100,6 +99,8 @@ DEFI_CONT_CATA = MACRO(
                   fonction_sdaster, nappe_sdaster, formule)),
 
               # À vérifier si l'algo marche pour POUTRE
+              CARA_ELEM=SIMP(statut='f', typ=cara_elem),
+
               b_zone_cara=BLOC(condition="""exists("CARA_ELEM")""",
                                DIST_POUTRE=SIMP(statut='f', typ='TXM',
                                                 defaut="NON", into=("OUI", "NON")),

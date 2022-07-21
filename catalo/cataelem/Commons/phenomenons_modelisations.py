@@ -2517,6 +2517,41 @@ phen.add('FRIC_LAG_SL_3D', Modelisation(dim=(2, 3), code='FM3',
 )))
 
 
+# -- Define SLAVE elements for NITSCHE method (in DEFI_CONTACT) - Contact
+
+phen.add('CONT_NIT_SL_2D', Modelisation(dim=(1, 2), code='CN2',
+                                        elements=(
+    (MT.SEG2, EL.CNS22D),
+    (MT.SEG3, EL.CNS32D),
+)))
+
+phen.add('CONT_NIT_SL_3D', Modelisation(dim=(2, 3), code='CN3',
+                                        elements=(
+    (MT.TRIA3, EL.CNT33D),
+    (MT.TRIA6, EL.CNT63D),
+    (MT.QUAD4, EL.CNQ43D),
+    (MT.QUAD8, EL.CNQ83D),
+    (MT.QUAD9, EL.CNQ93D),
+)))
+
+
+# -- Define SLAVE elements for PENALISATION method (in DEFI_CONTACT) - Contact
+
+phen.add('CONT_PENA_SL_2D', Modelisation(dim=(1, 2), code='CP2',
+                                        elements=(
+    (MT.SEG2, EL.CPS22D),
+    (MT.SEG3, EL.CPS32D),
+)))
+
+phen.add('CONT_PENA_SL_3D', Modelisation(dim=(2, 3), code='CP3',
+                                        elements=(
+    (MT.TRIA3, EL.CPT33D),
+    (MT.TRIA6, EL.CPT63D),
+    (MT.QUAD4, EL.CPQ43D),
+    (MT.QUAD8, EL.CPQ83D),
+    (MT.QUAD9, EL.CPQ93D),
+)))
+
 # -- Define CONTACT elements for CONTINUE method (in STAT_NON_LINE) - Contact
 
 phen.add('CONT_EL_3D1', Modelisation(dim=(2, 3), code='CC1',

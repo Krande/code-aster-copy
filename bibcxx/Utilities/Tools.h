@@ -78,10 +78,10 @@ std::vector< T > unique( const std::map< T2, T > &_map ) {
 }
 
 /**
- +* @brief Return all elements in common between the two vectors. Be carefull, input vectors are
- +* modified inplace since a std::sort operation is performed. So create a copy before
- +* if you don't want modifications of your inputs
- +*/
+ * @brief Return all elements in common between the two vectors. Be carefull, input vectors are
+ * modified inplace since a std::sort operation is performed. So create a copy before
+ * if you don't want modifications of your inputs
+ */
 template < typename T >
 std::vector< T > set_intersection( std::vector< T > &vec1, std::vector< T > &vec2 ) {
     std::vector< T > common;
@@ -94,6 +94,28 @@ std::vector< T > set_intersection( std::vector< T > &vec1, std::vector< T > &vec
 
     std::set_intersection( vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
                            std::back_inserter( common ) );
+
+    return common;
+}
+
+/**
+ * @brief Return all elements in vect1 that are not in vect2.
+ */
+template < typename T >
+std::vector< T > set_difference( std::vector< T > &vec1, std::vector< T > &vec2 ) {
+    std::vector< T > common;
+
+    std::map< T, bool > remove;
+    for ( auto &elem : vec2 ) {
+        remove[elem] = true;
+    }
+
+    common.reserve( vec1.size() );
+    for ( auto &elem : vec1 ) {
+        if ( remove.count( elem ) == 0 ) {
+            common.push_back( elem );
+        }
+    }
 
     return common;
 }

@@ -77,7 +77,9 @@ void ContactZone::setExcludedSlaveGroupOfCells( const VectorString &excluded_sla
         VectorLong sans_gr_i = mesh->getCells( name );
         _slaveCellsExcluded.insert( it, sans_gr_i.begin(), sans_gr_i.end() );
     }
-    _slaveCells = set_intersection( _slaveCells, _slaveCellsExcluded );
+
+    _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
+    AS_ASSERT( _slaveCells.size() > 0 );
     _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
 };
 

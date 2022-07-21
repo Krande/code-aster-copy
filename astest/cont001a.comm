@@ -93,7 +93,7 @@ DEFICO = DEFI_CONT(
     INFO=2,
     ZONE=(
         _F(
-            LISSAGE="OUI",
+            LISSAGE="NON",
             APPARIEMENT="MORTAR",
             GROUP_MA_MAIT="Group_2",
             GROUP_MA_ESCL="Group_1",
@@ -124,7 +124,7 @@ test.assertEqual(DEFICO.getVerbosity(), 2)
 test.assertEqual(DEFICO.getModel(), MODI)
 test.assertEqual(DEFICO.getMesh(), Mail)
 test.assertFalse(DEFICO.hasFriction)
-test.assertTrue(DEFICO.hasSmoothing)
+test.assertFalse(DEFICO.hasSmoothing)
 
 # Pairing checks
 

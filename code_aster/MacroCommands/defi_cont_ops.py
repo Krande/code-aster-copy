@@ -98,7 +98,7 @@ def defi_cont_ops(self, **keywords):
         contZone.setVerbosity(verbosity)
         contZone.setSlaveGroupOfCells(zone["GROUP_MA_ESCL"])
         contZone.setMasterGroupOfCells(zone["GROUP_MA_MAIT"])
-        if (zone.get("SANS_GROUP_MA")) != None:
+        if zone.get("SANS_GROUP_MA") is not None:
             contZone.setExcludedSlaveGroupOfCells(zone["SANS_GROUP_MA"])
 
         if zone["LISSAGE"] == "OUI":
@@ -134,13 +134,13 @@ def defi_cont_ops(self, **keywords):
         pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
         pairParam.setPairingDistance(zone["DIST_APPA"])
         pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
-        if keywords.get("CARA_ELEM") is not None:
-            pairParam.setElementaryCharacteristics(keywords["CARA_ELEM"])
+        if zone.get("CARA_ELEM") is not None:
+            pairParam.setElementaryCharacteristics(zone["CARA_ELEM"])
             pairParam.hasBeamDistance = zone["DIST_POUTRE"] == "OUI"
             pairParam.hasShellDistance = zone["DIST_COQUE"] == "OUI"
-        if (zone.get("SEUIL_INIT")) is not None:
+        if zone.get("SEUIL_INIT") is not None:
             pairParam.setThreshold(zone["SEUIL_INIT"])
-        if (zone.get("DIST_SUPP")) is not None:
+        if zone.get("DIST_SUPP") is not None:
             pairParam.setDistanceFunction(zone["DIST_SUPP"])
 
         # build then append

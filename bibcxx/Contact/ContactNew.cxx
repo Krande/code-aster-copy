@@ -75,6 +75,17 @@ bool ContactNew::build() {
     cata[std::make_tuple( 2, ContactAlgo::Lagrangian, true )] = "FRIC_LAG_SL_2D";
     cata[std::make_tuple( 3, ContactAlgo::Lagrangian, true )] = "FRIC_LAG_SL_3D";
 
+    // same cata for contact and friction since no Lagrange
+    cata[std::make_tuple( 2, ContactAlgo::Nitsche, false )] = "CONT_NIT_SL_2D";
+    cata[std::make_tuple( 3, ContactAlgo::Nitsche, false )] = "CONT_NIT_SL_3D";
+    cata[std::make_tuple( 2, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_2D";
+    cata[std::make_tuple( 3, ContactAlgo::Nitsche, true )] = "CONT_NIT_SL_3D";
+
+    cata[std::make_tuple( 2, ContactAlgo::Penalization, false )] = "CONT_PENA_SL_2D";
+    cata[std::make_tuple( 3, ContactAlgo::Penalization, false )] = "CONT_PENA_SL_3D";
+    cata[std::make_tuple( 2, ContactAlgo::Penalization, true )] = "CONT_PENA_SL_2D";
+    cata[std::make_tuple( 3, ContactAlgo::Penalization, true )] = "CONT_PENA_SL_3D";
+
     ASTERINTEGER nb_slave_cells = 0;
 
     // sdcont_defi.CONTACT.MAILCO/NOEUCO/ssnoco
