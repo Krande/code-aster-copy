@@ -22,17 +22,102 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxObjects import checkCommandSyntax
+from ...Objects import Function
+from ...Messages import UTMESS
 
 # Le traitement systématique des mots-clés dans l'op interdit d'avoir
 # uniquement des mots-clés facultatifs sous un mot-clé facteur.
 # Il faut donc au moins un mot-clé obligatoire ou bien une des
 # règles UN_PARMI, AU_MOINS_UN ou NON_VIDE.
 
+def materials_from_table(keywords):
+    """Hook to parse the TABLE keyword to create the materials
+
+    Arguments:
+        keywords (dict): Keywords arguments of user's keywords, changed
+            in place.
+    """
+
+    cmd_name = "DEFI_MATERIAU <TABLE>"
+    cmd_kws = DEFI_MATERIAU.keywords
+
+    table_kws = keywords.get("TABLE")
+    # On verifie la syntaxe de TABLE
+    checkCommandSyntax(cmd_kws["TABLE"], table_kws)
+    cmd_kws["TABLE"].addDefaultKeywords(table_kws)
+    table_values = table_kws["TABLE"].EXTR_TABLE().values()
+
+    varc_name = table_kws["NOM_PARA"]
+
+    # Vérification du contenu de la table
+    if not varc_name in table_values.keys():
+        errmsg = "Parameter '{0}' is missing.".format(varc_name)
+        UTMESS("F", "SUPERVIS_4", valk=(cmd_name, errmsg))
+
+    for mater in table_kws["COMPOR"]:
+        if mater in keywords or mater.replace("_FO", "") in keywords:
+            errmsg = "Material '{0}' cannot be repeated outside TABLE.".format(mater.replace("_FO", ""))
+            UTMESS("F", "SUPERVIS_4", valk=(cmd_name, errmsg))
+
+    # Extraction des valuers de la table sous forme de fonction
+    para_functions = {}
+    varc_values = table_values.pop(varc_name)
+
+    # Traitement particulier pour les parametres constants type TEMP_DEF_ALPHA
+    constant_para_names = ("TEMP_DEF_ALPHA",)
+    for cpara_name in constant_para_names:
+        if cpara_name in table_values:
+            cpara_values = list(set(table_values.pop(cpara_name)))
+            if len(cpara_values) != 1:
+                errmsg = "Parameter '{0}' is not constant.".format(cpara_name)
+                UTMESS("F", "SUPERVIS_4", valk=(cmd_name, errmsg))
+
+            para_functions[cpara_name] = cpara_values[0]
+
+    # Tous les autres
+    for vpara_name, vpara_values in table_values.items():
+        para_f = Function()
+        para_f.setParameterName(varc_name)
+        para_f.setResultName(vpara_name)
+        para_f.setExtrapolation("{0}{1}".format(table_kws["PROL_GAUCHE"][0],
+                                                table_kws["PROL_DROITE"][0]))
+        para_f.setInterpolation("{0} {0}".format(table_kws["INTERPOL"]))
+        para_f.setValues(varc_values, vpara_values)
+
+        para_functions[vpara_name] = para_f
+
+    # On ajoute le contenu de la table à DEFI_MATERIAU
+    for mater in table_kws["COMPOR"]:
+        mater_kws = {}
+        for key in cmd_kws[mater].keywords.keys():
+            if key in para_functions:
+                mater_kws[key] = para_functions[key]
+
+        keywords[mater] = mater_kws
+
+    UTMESS("I", "MATERIAL1_11", valk=(
+        ", ".join(table_kws["COMPOR"]),
+        "{0} ('<{1}>')".format(table_kws["TABLE"].userName,
+                               table_kws["TABLE"].getName())))
+    keywords.pop("TABLE")
+
+def compat_syntax(keywords):
+    """Hook to adapt syntax from a old version or for compatibility reasons.
+
+    Arguments:
+        keywords (dict): Keywords arguments of user's keywords, changed
+            in place.
+    """
+    if "TABLE" in keywords:
+        materials_from_table(keywords)
+
 DEFI_MATERIAU = MACRO(
     nom="DEFI_MATERIAU",
     op=OPS("code_aster.MacroCommands.defi_materiau_ops.defi_materiau_ops"),
     sd_prod=mater_sdaster,
     fr=tr("Définition des paramètres décrivant le comportement d un matériau"),
+    compat_syntax=compat_syntax,
     reentrant="f:MATER",
     regles=(
         EXCLUS(
@@ -120,6 +205,7 @@ DEFI_MATERIAU = MACRO(
         EXCLUS("HAYHURST", "HAYHURST_FO"),
         EXCLUS("POST_ROCHE", "POST_ROCHE_FO"),
         AU_MOINS_UN(
+            "TABLE",
             "ELAS",
             "ELAS_FO",
             "ELAS_FLUI",
@@ -327,9 +413,17 @@ DEFI_MATERIAU = MACRO(
     ),
     reuse=SIMP(statut="c", typ=CO),
     MATER=SIMP(statut="f", typ=mater_sdaster),
-    #
-    # comportement élastique
-    #
+    TABLE=FACT(
+        statut='f',
+        TABLE=SIMP(statut='o', typ=table_sdaster),
+        NOM_PARA=SIMP(statut='o', typ='TXM', into=("TEMP", "IRRA")),
+        COMPOR=SIMP(statut='o', typ='TXM', max="**",
+                    validators=(NoRepeat(), AtMostOneStartsWith("ELAS"), AtMostOneStartsWith("THER")),
+                    into=C_MATERIALS_FROM_TABLE()),
+        INTERPOL=SIMP(statut='f', typ='TXM', defaut="LIN", into=("LIN","LOG")),
+        PROL_DROITE=SIMP(statut='f', typ='TXM', defaut="EXCLU", into=("CONSTANT","LINEAIRE","EXCLU")),
+        PROL_GAUCHE=SIMP(statut='f', typ='TXM', defaut="EXCLU", into=("CONSTANT","LINEAIRE","EXCLU")),
+    ),
     ELAS=FACT(
         statut="f",
         E=SIMP(statut="o", typ="R", val_min=0.0e0),

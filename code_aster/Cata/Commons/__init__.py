@@ -50,3 +50,4 @@ from .c_test_reference import C_TEST_REFERENCE
 from .c_type_cham_into import C_TYPE_CHAM_INTO
 from .c_affe_varc import C_AFFE_VARC
 from .c_nom_ddl_into import C_NOM_DDL_INTO
+from .c_material_table import C_MATERIALS_FROM_TABLE

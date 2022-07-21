@@ -111,6 +111,15 @@ quand celle-ci est une formule.
         ),
         "flags": "DECORATED",
     },
+    11: {
+        "message": _(
+            """
+Les paramètres des comportements (%(k1)s)
+sont extraits de la table %(k2)s
+"""
+        ),
+        "flags": "DECORATED",
+    },
     42: _(
         """
 Erreur utilisateur :

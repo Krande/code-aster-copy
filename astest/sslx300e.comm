@@ -147,13 +147,12 @@ BETON_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_BET,
                     THER=_F(LAMBDA=54.6,
                             RHO_CP=3710000.0,),)
 
-ACIER_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_ACI,
-                                NU=NU_ACI,
-                                RHO=RHO_ACI,
-                                ALPHA=ALPH_ACI,
-                                TEMP_DEF_ALPHA=20.),),
-                    THER=_F(LAMBDA=54.6,
-                            RHO_CP=3710000.0,),)
+TAB_ACIER = LIRE_TABLE(UNITE=30)
+ACIER_TH=DEFI_MATERIAU(TABLE=_F(TABLE = TAB_ACIER,
+                                NOM_PARA = 'TEMP',
+                                COMPOR = ('ELAS_FO',)),
+                       THER=_F(LAMBDA=54.6,
+                               RHO_CP=3710000.0))
 
 
 #

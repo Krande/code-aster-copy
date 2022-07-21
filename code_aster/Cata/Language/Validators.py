@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,27 @@ class NoRepeat(Validator):
         if len(set(values)) != len(values):
             raise ValueError("All the values must be different: "
                              "{0!r}".format(values))
+
+class AtMostOneStartsWith(Validator):
+    """Check that there is at most one value that starts with a given keyword.
+
+    Usage:
+        AtMostOneStartsWith("ELAS"): Check that keyword ELAS is used at most once.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args)
+        assert len(args) == 1, "Exactly one argument is required for AtMostOneStartsWith."
+
+    def check(self, values):
+        """Check values"""
+        values = force_list(values)
+
+        occurences = list(set(i for i in values if i.startswith(self.args[0])))
+        if len(occurences) > 1:
+            raise ValueError("At most one occurrence of '{0}' is accepted. "
+                             "Found {1}: {2}"
+                             .format(self.args[0], len(occurences), occurences))
 
 
 class LongStr(Validator):

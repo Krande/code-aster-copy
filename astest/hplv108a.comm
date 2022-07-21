@@ -108,4 +108,11 @@ tmpdir = tempfile.mkdtemp()
 with open(osp.join(tmpdir, '%s.json'%testname), 'w') as f:
     json.dump(vale_calc, f, indent=1, sort_keys=True)
 
+MAT_HOMO = DEFI_MATERIAU(TABLE=_F(TABLE = TAB_HOMO,
+                                  NOM_PARA = 'TEMP',
+                                  COMPOR = ('ELAS_ORTH_FO', 'THER_NL_ORTH'),
+                                  INTERPOL='LIN',
+                                  PROL_GAUCHE='EXCLU',
+                                  PROL_DROITE='EXCLU'))
+
 FIN()
