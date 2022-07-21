@@ -26,198 +26,19 @@
 #include "LinearAlgebra/ElementaryVector.h"
 #include "Messages/Messages.h"
 #include "Numbering/DOFNumbering.h"
-
-void ContactComputation::buildContactResFED( const ContactPairingPtr pairing ) {
-    _fed = std::make_shared< FiniteElementDescriptor >( _contact->getMesh() );
-    _fed->setModel( _contact->getModel() );
-
-    const ASTERINTEGER nbZoneCont = _contact->getNumberOfContactZones();
-    const ASTERINTEGER nbContPairTot = pairing->getNumberOfPairs();
-
-    ASTERINTEGER nbType = 29;
-
-    std::vector< std::array< ASTERINTEGER, 5 > > listType;
-    listType.resize( nbType );
-
-    std::vector< VectorLong > listNodes;
-    listNodes.reserve( nbContPairTot );
-
-    std::vector< VectorLong > listContElem;
-    listContElem.reserve( nbZoneCont );
-
-    auto mesh = _contact->getMesh();
-    auto model = _contact->getModel();
-    ASTERINTEGER modelDim = model->getGeometricDimension();
-    ASTERLOGICAL lAxis = model->existsAxis();
-
-    auto meshConnectivty = mesh->getConnectivity();
-
-    /*loop on contact zone*/
-    for ( int iZone = 0; iZone < nbZoneCont; iZone++ ) {
-        auto iZonePairing = pairing->getListOfPairsOfZone( iZone );
-        auto nbContPairZone = pairing->getNumberOfPairsOfZone( iZone );
-
-        auto zone = _contact->getContactZone( iZone );
-        auto contAlgo = zone->getContactParameter()->getAlgorithm();
-        auto lFrot = zone->getFrictionParameter()->hasFriction();
-        AS_ASSERT( !lFrot );
-
-        VectorLong listContElemZone;
-        listContElemZone.reserve( nbContPairZone );
-
-        /*loop on  pair of iZone*/
-        for ( int iPair = 0; iPair < nbContPairZone; iPair++ ) {
-
-            /*get pairing of current zone*/
-            auto [elemSlavNume, elemMastNume] = iZonePairing[iPair];
-
-            /*get slave and master geom type*/
-            auto typgSlavName = ljust( mesh->getCellTypeName( elemSlavNume ), 8, ' ' );
-            auto typgMastName = ljust( mesh->getCellTypeName( elemMastNume ), 8, ' ' );
-
-            /*call mmelemdata_c*/
-            ASTERINTEGER typgContNume = 0, typfContNume = 0, typfFrotNume = 0;
-            ASTERINTEGER nbNodeElem = 0, elemIndx = 0;
-
-            if ( contAlgo == ContactAlgo::Lagrangian ) {
-                CALLO_MMELEM_DATA_LAGA( &lAxis, &modelDim, typgSlavName, typgMastName, &nbType,
-                                        &nbNodeElem, &typgContNume, &typfContNume, &typfFrotNume,
-                                        &elemIndx );
-            } else {
-                AS_ABORT( "Not implemented" );
-            }
-
-            listContElemZone.push_back( typfContNume );
-
-            auto &info = listType[elemIndx];
-
-            if ( lFrot ) {
-                info[1] += 1;
-                info[3] = typfFrotNume;
-            } else {
-                info[0] += 1;
-            }
-
-            info[2] = typfContNume;
-            info[4] = typgContNume;
-
-            /* get nodes (be carefull with +1 ) */
-            auto slav_cell_con = ( *meshConnectivty )[elemSlavNume + 1];
-            auto mast_cell_con = ( *meshConnectivty )[elemMastNume + 1];
-
-            VectorLong toCopy;
-            toCopy.reserve( slav_cell_con.size() + mast_cell_con.size() + 1 );
-
-            /*Copy slave nodes*/
-            auto toAdd = slav_cell_con.toVector();
-            toCopy.insert( toCopy.end(), toAdd.begin(), toAdd.end() );
-
-            /*Copy master nodes*/
-            toAdd = mast_cell_con.toVector();
-            toCopy.insert( toCopy.end(), toAdd.begin(), toAdd.end() );
-
-            /*Copy contact element type*/
-            toCopy.push_back( typfContNume );
-
-            listNodes.push_back( toCopy );
-        }
-        listContElem.push_back( listContElemZone );
-    }
-
-    /*FED building*/
-    auto ContactResFEDNbno = _fed->getNumberOfVirtualNodesobj();
-    ContactResFEDNbno->allocate( 1 );
-    ( *ContactResFEDNbno )[0] = 0;
-
-    /*NEMA building*/
-    auto ContactResFEDNema = _fed->getNema();
-    ContactResFEDNema->allocateContiguousNumbered( listNodes );
-    listNodes.clear();
-
-    /*LIEL building
-    Size of LIEL object*/
-    ASTERINTEGER nbGrel = 0, ligrcf_liel_lont = 0;
-    for ( auto &info : listType ) {
-        auto nbCont = info[0];
-        auto nbFrot = info[1];
-
-        ligrcf_liel_lont += nbCont + nbFrot;
-
-        if ( nbCont > 0 ) {
-            nbGrel += 1;
-        }
-        if ( nbFrot > 0 ) {
-            nbGrel += 1;
-        }
-    }
-    ligrcf_liel_lont += nbGrel;
-
-    /*Create LIEL object*/
-    auto ContactResFEDLiel = _fed->getListOfGroupOfCells();
-    ContactResFEDLiel->allocateContiguousNumbered( nbGrel, ligrcf_liel_lont, Variable );
-
-    for ( auto &info : listType ) {
-        auto nbCont = info[0];
-        auto nbFrot = info[1];
-
-        /* Create and add Contact element*/
-        if ( nbCont > 0 ) {
-            auto typfContNume = info[2];
-
-            VectorLong toCopy;
-            ASTERINTEGER iContPair = 0;
-
-            for ( int iZone = 0; iZone < nbZoneCont; iZone++ ) {
-                auto iZonePairing = pairing->getListOfPairsOfZone( iZone );
-                auto &listContElemZone = listContElem[iZone];
-                auto nbContPairZone = pairing->getNumberOfPairsOfZone( iZone );
-
-                /*loop on  pair of iZone*/
-                for ( auto &typContNume : listContElemZone ) {
-                    iContPair += 1;
-                    if ( typContNume == typfContNume ) {
-                        toCopy.push_back( -iContPair );
-                    }
-                }
-            }
-            toCopy.push_back( typfContNume );
-            ContactResFEDLiel->push_back( toCopy );
-        }
-
-        /* Create friction element*/
-        if ( nbFrot != 0 ) {
-            AS_ABORT( "Friction not implemented" );
-        }
-    }
-
-    /*Create LGRF object*/
-    auto paramToCopy = model->getFiniteElementDescriptor()->getParameters();
-    paramToCopy->updateValuePointer();
-    auto parameters = _fed->getParameters();
-    parameters->allocate( 3 );
-
-    ( *parameters )[0] = mesh->getName();
-    ( *parameters )[1] = model->getName();
-    ( *parameters )[2] = ( *paramToCopy )[2];
-    auto docu = paramToCopy->getInformationParameter();
-    parameters->setInformationParameter( docu );
-
-    CALLO_ADALIG_WRAP( _fed->getName() );
-    bool l_calc_rigi = false;
-    CALLO_INITEL( _fed->getName(), (ASTERLOGICAL *)&l_calc_rigi );
-}
+#include "Utilities/Tools.h"
 
 std::pair< FieldOnNodesRealPtr, FieldOnNodesRealPtr >
-ContactComputation::geometricGap( const MeshCoordinatesFieldPtr coor ) const {
+ContactComputation::geometricGap( const ContactPairingPtr pairing ) const {
 
     // Prepare computing
     const std::string option( "GAP_GEOM" );
-    CalculPtr _calcul = std::make_unique< Calcul >( option );
+    CalculPtr calcul = std::make_unique< Calcul >( option );
 
-    _calcul->setFiniteElementDescriptor( _fed );
+    calcul->setFiniteElementDescriptor( pairing->getFiniteElementDescriptor() );
 
     // Add input fields
-    _calcul->addInputField( "PGEOMER", coor );
+    calcul->addInputField( "PGEOMCR", pairing->getCoordinates() );
 
     // Add output elementary
     auto gap_elem = std::make_shared< ElementaryVectorReal >();
@@ -226,17 +47,17 @@ ContactComputation::geometricGap( const MeshCoordinatesFieldPtr coor ) const {
     auto igap_elem = std::make_shared< ElementaryVectorReal >();
     igap_elem->prepareCompute( option );
 
-    _calcul->addOutputElementaryTerm( "PVECGAP", std::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PVEIGAP", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECGAP", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVEIGAP", std::make_shared< ElementaryTermReal >() );
 
     // compute
-    _calcul->compute();
+    calcul->compute();
 
     // get elementary Term
-    gap_elem->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECGAP" ) );
+    gap_elem->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECGAP" ) );
     gap_elem->build();
 
-    igap_elem->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVEIGAP" ) );
+    igap_elem->addElementaryTerm( calcul->getOutputElementaryTerm( "PVEIGAP" ) );
     igap_elem->build();
 
     // Assemble
@@ -278,32 +99,63 @@ ContactComputation::geometricGap( const MeshCoordinatesFieldPtr coor ) const {
 /**
  * @brief Compute contact mortar matrix
  */
-ElementaryMatrixDisplacementRealPtr ContactComputation::contactMortarMatrix() const {
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
+FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr pairing ) const {
 
-    const std::string option( "XXXX" );
+    CALL_JEMARQ();
 
-    // Set parameters of elementary matrix
-    elemMatr->setModel( _contact->getModel() );
-    elemMatr->prepareCompute( option );
+    auto fed = pairing->getFiniteElementDescriptor();
 
-    // Prepare computing
-    CalculPtr _calcul = std::make_unique< Calcul >( option );
-    _calcul->setFiniteElementDescriptor( _fed );
+    // Field for intersection points and other thing ...
+    auto data = std::make_shared< FieldOnCellsReal >( fed, "CHAR_MECA_CONT", "PCONFR" );
 
-    // Add input fields
-    _calcul->addInputField( "PSTATCO", std::make_shared< FieldOnNodesReal >() );
-    _calcul->addInputField( "PCOEFCO", std::make_shared< FieldOnNodesReal >() );
-    _calcul->addInputField( "PDEPLPR", std::make_shared< FieldOnNodesReal >() );
+    ASTERINTEGER nbContPair = pairing->getNumberOfPairs();
+    auto nbInter = concatenate( pairing->getNumberOfIntersectionPoints() );
+    auto inter = concatenate( pairing->getSlaveIntersectionPoints() );
+    AS_ASSERT( nbContPair == nbInter.size() );
+    AS_ASSERT( 16 * nbContPair == inter.size() );
 
-    // Add output elementary
-    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    auto pair2Zone = pairing->pairsToZones();
 
-    // Compute
-    _calcul->compute();
+    auto grel = fed->getListOfGroupOfElements();
+    grel->build();
+    auto nbGrel = data->getNumberOfGroupOfElements();
 
-    elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
-    elemMatr->build();
+    ASTERINTEGER nbPair = 0;
 
-    return elemMatr;
+    // Loop on Grel
+    for ( ASTERINTEGER iGrel = 0; iGrel < nbGrel; iGrel++ ) {
+        auto nbElem = data->getNumberOfElements( iGrel );
+        // size from catalogue
+        AS_ASSERT( data->getSizeOfFieldOfElement( iGrel ) == 60 );
+        auto liel = ( *grel )[iGrel + 1];
+        for ( ASTERINTEGER iElem = 0; iElem < nbElem; iElem++ ) {
+            auto iPair = -liel[iElem];
+
+            if ( iPair <= nbContPair ) {
+                auto iZone = pair2Zone[iPair - 1];
+                auto zone = _contact->getContactZone( iZone );
+                // Adress in field
+                auto shift = data->getShifting( iGrel, iElem );
+
+                // Number of intersection points
+                ( *data )[shift + 0] = nbInter[iPair - 1];
+                // Parametric coordinates
+                for ( ASTERINTEGER i = 0; i < 16; i++ ) {
+                    ( *data )[shift + 1 + i] = inter[16 * ( iPair - 1 ) + i];
+                }
+
+                // Value for projection tolerance
+                ( *data )[shift + 22] = 1.e-8;
+                //  Value for COEF_CONT
+                ( *data )[shift + 23] = zone->getContactParameter()->getCoefficient();
+
+                nbPair++;
+            }
+        }
+    }
+    AS_ASSERT( nbPair == nbContPair );
+
+    CALL_JEDEMA();
+
+    return data;
 };

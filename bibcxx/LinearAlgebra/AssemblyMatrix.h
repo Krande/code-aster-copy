@@ -137,10 +137,11 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      * @param currentElemMatrix objet ElementaryMatrix
      */
     void addElementaryMatrix( const ElementaryMatrixPtr &currentElemMatrix ) {
-        if ( !currentElemMatrix || currentElemMatrix->isEmpty() ) {
-            raiseAsterError( "Elementary matrix added is empty" );
+        if ( currentElemMatrix && !currentElemMatrix->isEmpty() ) {
+            if ( currentElemMatrix->hasElementaryTerms() ) {
+                _elemMatrix.push_back( currentElemMatrix );
+            }
         }
-        _elemMatrix.push_back( currentElemMatrix );
     };
 
     /**

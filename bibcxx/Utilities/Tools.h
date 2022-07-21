@@ -107,4 +107,24 @@ void print( T &vec ) {
     std::cout << std::endl;
 }
 
+template < typename T >
+std::vector< T > concatenate( const std::vector< std::vector< T > > &vec ) {
+
+    ASTERINTEGER total_size = 0;
+    for ( auto &v : vec ) {
+        total_size += v.size();
+    }
+
+    std::vector< T > ret;
+    ret.reserve( total_size );
+
+    for ( auto &v : vec ) {
+        for ( auto &elem : v ) {
+            ret.push_back( elem );
+        }
+    }
+
+    return ret;
+}
+
 #endif /* TOOLS_H_ */

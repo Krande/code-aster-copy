@@ -21,22 +21,21 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmelem_data_laga(l_axi_         , model_ndim_    ,&
+    subroutine mmelem_data_laga(l_axi_         , &
                              typg_slav_name_, typg_mast_name_,&
                              nb_cont_type_  , nb_node_elem_  ,&
                              typg_cont_nume_, &
                              typf_cont_nume_, &
                              typf_frot_nume_, &
                              get_elem_indx_)
-        aster_logical, intent(in), optional :: l_axi_
-        integer, intent(in), optional :: model_ndim_
-        character(len=8), intent(in), optional :: typg_slav_name_
-        character(len=8), intent(in), optional :: typg_mast_name_
-        integer, intent(out), optional :: nb_cont_type_
-        integer, intent(out), optional :: nb_node_elem_
-        integer, intent(out), optional :: typg_cont_nume_
-        integer, intent(out), optional :: typf_cont_nume_
-        integer, intent(out), optional :: typf_frot_nume_
-        integer, intent(out), optional :: get_elem_indx_
+        aster_logical, intent(in) :: l_axi_
+        character(len=8), intent(in) :: typg_slav_name_
+        character(len=8), intent(in) :: typg_mast_name_
+        integer, intent(out) :: nb_cont_type_
+        integer, intent(out) :: nb_node_elem_
+        integer, intent(out) :: typg_cont_nume_
+        integer, intent(out) :: typf_cont_nume_
+        integer, intent(out) :: typf_frot_nume_
+        integer, intent(out) :: get_elem_indx_
     end subroutine mmelem_data_laga
 end interface

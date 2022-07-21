@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,12 @@
 
 !
 !
-          interface 
-            subroutine numer3(modelz,list_loadz,nume_ddlz,sd_iden_relaz)
+          interface
+            subroutine numer3(modelz,list_loadz,nume_ddlz,sd_iden_relaz, base)
               character(len=*), intent(in) :: modelz
               character(len=*), intent(in) :: list_loadz
               character(len=*), intent(inout) :: nume_ddlz
               character(len=*), intent(in) :: sd_iden_relaz
+              character(len=2), intent(in) :: base
             end subroutine numer3
-          end interface 
+          end interface

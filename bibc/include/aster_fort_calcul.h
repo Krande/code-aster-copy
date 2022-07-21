@@ -105,9 +105,11 @@ void DEFSSPSSPP( MATRIX_FACTOR, matrix_factor, const char *, STRING_SIZE, const 
 #define CALL_MATR_ASSE_SYME( a ) CALLO( MATR_ASSE_SYME, matr_asse_syme, a )
 void DEFS( MATR_ASSE_SYME, matr_asse_syme, const char *, STRING_SIZE );
 
-#define CALLO_NMDOCH_WRAP( a, b, c, d, e ) CALLOPPOO( NMDOCH_WRAP, nmdoch_wrap, a, b, c, d, e )
-void DEFSPPSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
-               const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_NMDOCH_WRAP( a, b, c, d, e, f, g )                                                   \
+    CALLOPPOOOO( NMDOCH_WRAP, nmdoch_wrap, a, b, c, d, e, f, g )
+void DEFSPPSSSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *,
+                 ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                 STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_NTDOCH_WRAP( a, b, c, d ) CALLOPOO( NTDOCH_WRAP, ntdoch_wrap, a, b, c, d )
 void DEFSPSS( NTDOCH_WRAP, ntdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
@@ -127,13 +129,17 @@ void DEFSSSSSS( NUMERO_WRAP, numero_wrap, const char *, STRING_SIZE, const char 
                 const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
                 const char *, STRING_SIZE );
 
+#define CALLO_NUMER3( a, b, c, d, e ) CALLOOOOO( NUMER3, numer3, a, b, c, d, e )
+void DEFSSSSS( NUMER3, numer3, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+               STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_NUME_DDL_MATR( a, b, c ) CALLOOP( NUME_DDL_MATR, nume_ddl_matr, a, b, c )
 void DEFSSP( NUME_DDL_MATR, nume_ddl_matr, const char *, STRING_SIZE, const char *, STRING_SIZE,
              ASTERINTEGER * );
 
 #define CALLO_NUME_DDL_CHAMELEM( a, b, c ) CALLOOO( NUME_DDL_CHAMELEM, nume_ddl_chamelem, a, b, c )
 void DEFSSS( NUME_DDL_CHAMELEM, nume_ddl_chamelem, const char *, STRING_SIZE, const char *,
-              STRING_SIZE, const char *, STRING_SIZE );
+             STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALL_MVMULT( a, b, c ) CALLOOO( MVMULT, mvmult, a, b, c )
 void DEFSSS( MVMULT, mvmult, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,

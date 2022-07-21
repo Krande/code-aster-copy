@@ -94,12 +94,15 @@ implicit none
             ligr_name = load_name(1:8)//'.CH'//load_type(1)(1:2)// '.LIGRE'
             call jeexin(ligr_name(1:19)//'.LIEL', iret)
         else
-            iret = 0
+            ligr_name = l_load_name(i_load)(1:19)
+            call jeexin(ligr_name//'.LIEL', iret)
         endif
+!
         if (iret .gt. 0) then
             nb_ligr = nb_ligr + 1
             list_ligr(nb_ligr) = ligr_name
         endif
     end do
+
 !
 end subroutine

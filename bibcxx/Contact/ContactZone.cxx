@@ -49,6 +49,7 @@ void ContactZone::setSlaveGroupOfCells( const std::string &slave ) {
     if ( getMesh()->hasGroupOfCells( slave ) ) {
         _slaveNodes = getMesh()->getNodesFromCells( slave, false, true );
         _slaveCells = getMesh()->getCells( slave );
+        _slaveGrp = slave;
     } else {
         throw std::runtime_error( "The given group " + slave + " doesn't exist in mesh" );
     }
@@ -58,6 +59,7 @@ void ContactZone::setMasterGroupOfCells( const std::string &master ) {
     if ( getMesh()->hasGroupOfCells( master ) ) {
         _masterNodes = getMesh()->getNodesFromCells( master, false, true );
         _masterCells = getMesh()->getCells( master );
+        _masterGrp = master;
     } else {
         throw std::runtime_error( "The given group " + master + " doesn't exist in mesh" );
     }
@@ -109,7 +111,8 @@ bool ContactZone::build() {
 
     // check mesh orientation (normals)
     if ( checkNormals() ) {
-        // CALL_CHECKNORMALS( _model->getName().c_str(), slave.c_str(), master.c_str() );
+        CALL_CHECKNORMALS( _model->getName().c_str(), ljust( _slaveGrp, 24, ' ' ).c_str(),
+                           ljust( _masterGrp, 24, ' ' ).c_str() );
     }
 
     // build inverse connvectivity

@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user)
+subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user, &
+                  ligrel_slav, ligrel_cont)
 !
 implicit none
 !
@@ -29,6 +30,7 @@ implicit none
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/focste.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -48,7 +50,7 @@ implicit none
 character(len=19), intent(in) :: list_load
 aster_logical, intent(in) :: l_load_user
 aster_logical, optional, intent(in) :: l_calc_user
-character(len=19), optional, intent(in) :: list_load_resu_
+character(len=19), optional, intent(in) :: list_load_resu_, ligrel_slav, ligrel_cont
 character(len=1), optional, intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
@@ -67,15 +69,16 @@ character(len=1), optional, intent(in) :: base
 !
     integer, parameter :: nb_info_maxi = 99
     character(len=24) :: list_info_type(nb_info_maxi)
-    integer :: n1, npilo, nb_load
+    integer :: n1, npilo, nb_load, nb_load_cont
     character(len=1) :: bas
     integer ::  i_excit, i_load, iret, i_load_new
+    real(kind=8) :: coef
     character(len=4) :: typcal
     character(len=8) :: k8bid, load_type, func_para_inst, const_func
     character(len=16) :: nomcmd, typesd, load_apply, load_keyword
     character(len=8) :: load_name, load_func, model, load_model
     character(len=24) :: info_type
-    character(len=19) :: lisdbl, list_load_resu
+    character(len=19) :: lisdbl, list_load_resu, func_cont
     character(len=24) :: ligrch, lchin
     integer :: i_neum_lapl, i_diri_suiv
     aster_logical :: l_func_c, l_zero_allowed, l_diri_undead, l_stat, l_calc
@@ -102,6 +105,7 @@ character(len=1), optional, intent(in) :: base
         list_load_resu = list_load_resu_
     endif
     nb_load        = 0
+    nb_load_cont   = 0
     const_func     = '&&NMDOME'
     lisdbl         = '&&NMDOME.LISDBL'
     l_func_c       = ASTER_FALSE
@@ -152,9 +156,18 @@ character(len=1), optional, intent(in) :: base
     call nmdoch_nbload(l_load_user, list_load_resu, l_zero_allowed, nb_load,&
                        load_keyword)
 !
+! - Get number of contact ligrel for loads datastructure
+!
+    if(present(ligrel_slav) .and. ligrel_slav.ne.' ') then
+        nb_load_cont = nb_load_cont + 1
+    end if
+    if(present(ligrel_cont) .and. ligrel_cont.ne.' ') then
+        nb_load_cont = nb_load_cont + 1
+    end if
+!
 ! - Create "zero-load" list of loads datastructure
 !
-    if (nb_load .eq. 0) then
+    if (nb_load + nb_load_cont .eq. 0) then
         call lisccr('MECA', list_load, 1, bas)
         call jeveuo(list_load(1:19)//'.INFC', 'E', vi=v_ll_infc)
         v_ll_infc(1) = 1
@@ -167,12 +180,12 @@ character(len=1), optional, intent(in) :: base
         call jeveuo(list_load_resu(1:19)//'.LCHA', 'L', vk24 = v_llresu_name)
     endif
 !
-    if (nb_load .ne. 0) then
+    if (nb_load + nb_load_cont .ne. 0) then
         ASSERT(load_keyword .ne. 'None')
 !
 ! ----- Create list of loads
 !
-        call lisccr('MECA', list_load, nb_load, bas)
+        call lisccr('MECA', list_load, nb_load + nb_load_cont, bas)
 !
 ! ----- List of loads to avoid same loads
 !
@@ -304,8 +317,6 @@ character(len=1), optional, intent(in) :: base
                                     load_apply  , load_type   ,&
                                     nb_info_type, nb_info_maxi, list_info_type,&
                                     i_neum_lapl)
-
-
 !
 ! --------- Add new load(s) in list
 !
@@ -317,6 +328,31 @@ character(len=1), optional, intent(in) :: base
             endif
 !
         end do
+!
+! ---- Add contact ligrel
+!
+        if(nb_load_cont > 0) then
+!
+! --- Prepare constant function
+!
+            func_cont = '&&NMDOME.FCONT'
+            call jeexin(func_cont//'.PROL', iret)
+            if (iret .eq. 0) then
+                coef = 1.d0
+                call focste(func_cont, 'TOUTRESU', coef, bas)
+            endif
+
+            if(present(ligrel_slav) .and. ligrel_slav.ne.' ') then
+                i_load_new = i_load_new+1
+                call liscad('MECA'        ,list_load, i_load_new, ligrel_slav, func_cont,&
+                            info_typez = 'ELEM_TARDIF')
+            end if
+            if(present(ligrel_cont) .and. ligrel_cont.ne.' ') then
+                i_load_new = i_load_new+1
+                call liscad('MECA'        ,list_load, i_load_new, ligrel_cont, func_cont,&
+                            info_typez = 'ELEM_TARDIF')
+            end if
+        end if
 !
 ! ---- PILOTAGE POSSIBLE SI IL YA DES CHARGES PILOTEES !
 !
@@ -343,6 +379,7 @@ character(len=1), optional, intent(in) :: base
         if (l_calc) then
             call loadExcludedForAnalysis(list_load)
         endif
+
     endif
 !
 ! - Modify list for undead Dirichlet loads

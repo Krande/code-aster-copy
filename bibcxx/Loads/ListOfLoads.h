@@ -99,6 +99,8 @@ class ListOfLoads : public DataStructure {
     JeveuxVectorChar24 _list;
     /** @brief .FCHA */
     JeveuxVectorChar24 _listOfFunctions;
+    /** @brief FiniteElementDescriptor for contact - Slave element / Pairing couple */
+    std::pair< FiniteElementDescriptorPtr, FiniteElementDescriptorPtr > _contact;
     /** @brief La chargement est-il vide ? */
     bool _isEmpty;
     /** @brief Model */
@@ -538,6 +540,21 @@ class ListOfLoads : public DataStructure {
         _listOfAcousticLoadsComplex.push_back( currentLoad );
         _listOfAcouFuncComplex.push_back( func );
     };
+
+    /**
+     * @brief Function d'ajout d'une charge pour le contact
+     */
+    void addContactLoadDescriptor( const FiniteElementDescriptorPtr fedSlave,
+                                   const FiniteElementDescriptorPtr fedPair ) {
+        _isEmpty = true;
+        this->setModel( fedSlave->getModel() );
+        _contact = std::make_pair( fedSlave, fedPair );
+    };
+
+    std::pair< FiniteElementDescriptorPtr, FiniteElementDescriptorPtr >
+    getContactLoadDescriptor() const {
+        return _contact;
+    }
 
     /**
      * @brief Construction de la liste de charge

@@ -22,7 +22,7 @@ from libaster import deleteTemporaryObjects
 from ...Objects import DiscreteComputation, AssemblyMatrixDisplacementReal
 from ...Supervis import IntegrationError
 from ...Utilities import no_new_attributes, profile
-
+from .contact_solver import ContactSolver
 
 class ResiState:
     """Container to store intermediate field."""
@@ -49,7 +49,7 @@ class IncrementalSolver:
     """Solve an iteration."""
 
     phys_state = phys_pb = convManager = None
-    linear_solver = None
+    linear_solver = contact_solver = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def setPhysicalProblem(self, phys_pb):
@@ -84,14 +84,21 @@ class IncrementalSolver:
         """
         self.linear_solver = solver
 
-    @profile
-    def computeInternalResidual(self, timeEndStep, scaling=1.0):
-        """Compute internal residual R_int(u, Lagr).
-
-            R_int(u, Lagr) = [B^t.Sig(u) + B^t.Lagr, B^t.displ-displ_impo]
+    def setContactSolver(self, solver):
+        """Set the contact solver to be used.
 
         Arguments:
-            timeEndStep (float): time at end of time step
+            solver (ContactSolver): a contact solver object
+        """
+        self.contact_solver = solver
+
+    @profile
+    def computeInternalResidual(self, scaling=1.0):
+        """Compute internal residual R_int(u, Lagr).
+
+            R_int(u, Lagr) = [B^t.Sig(u) + B^t.Lagr, B^t.primal-primal_impo]
+
+        Arguments:
             scaling (float): Scaling factor for Lagrange multipliers (default: 1.0)
 
         Returns:
@@ -105,11 +112,11 @@ class IncrementalSolver:
         # Compute internal forces (B^t.stress)
         _, codret, internVar, stress, r_stress = disc_comp.computeInternalForces(
             self.phys_state.primal,
-            self.phys_state.primal_incr,
+            self.phys_state.primal_step,
             self.phys_state.stress,
             self.phys_state.internVar,
             self.phys_state.time,
-            timeEndStep
+            self.phys_state.time_step
         )
 
         resi_state = ResiState()
@@ -119,21 +126,20 @@ class IncrementalSolver:
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
-        # Update displacement
-        timeEndStep = self.phys_state.time + self.phys_state.time_step
-        displ_curr = self.phys_state.primal + self.phys_state.primal_incr
-
         if self.phys_pb.getDOFNumbering().useLagrangeMultipliers():
+            primal_curr = self.phys_state.primal + self.phys_state.primal_step
+
             # Compute kinematic forces (B^t.Lagr_curr)
-            dualizedBC_forces = disc_comp.dualReaction(displ_curr)
+            dualizedBC_forces = disc_comp.dualReaction(primal_curr)
             resi_state.resi_dual = dualizedBC_forces
 
-            # Compute dualiazed BC (B^t.primal_curr - displ_impo)
+            # Compute dualiazed BC (B^t.primal_curr - primal_impo)
             # Compute dualiazed BC (B^t.primal_curr)
-            dualizedBC_disp = disc_comp.dualDisplacement(displ_curr, scaling)
+            dualizedBC_disp = disc_comp.dualDisplacement(primal_curr, scaling)
 
-            # Imposed dualisez BC (displ_impo)
-            dualizedBC_impo = disc_comp.imposedDualBC(timeEndStep)
+            # Imposed dualisez BC (primal_impo)
+            time_curr = self.phys_state.time + self.phys_state.time_step
+            dualizedBC_impo = disc_comp.imposedDualBC(time_curr)
 
             r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
         else:
@@ -157,20 +163,41 @@ class IncrementalSolver:
         disc_comp = DiscreteComputation(self.phys_pb)
 
         # Compute neuamnn forces
-        timeEndStep = self.phys_state.time + self.phys_state.time_step
-        neumann_forces = disc_comp.neumann(timeEndStep, 0.0, 0.0)
-        r_ext = neumann_forces
+        neumann_forces = disc_comp.neumann(self.phys_state.time + self.phys_state.time_step,
+                                            0.0, 0.0)
 
-        return r_ext
+        return neumann_forces
 
     @profile
-    def computeResidual(self, timeEndStep, scaling=1.0):
-        """Compute R(u, Lagr) = - (Rint(u, Lagr) - Rext(u, Lagr)).
+    def computeContactResidual(self):
+        """Compute contact residual R_cont(u, Lagr)
+
+        Returns:
+            FieldOnNodesReal: contact residual.
+        """
+
+        if self.contact_solver.enable:
+            disc_comp = DiscreteComputation(self.phys_pb)
+
+            # Compute contact forces
+            contact_forces = disc_comp.contactForces(
+                self.contact_solver.getPairingCoordinates(),
+                self.phys_state.primal,
+                self.phys_state.primal_step,
+                self.contact_solver.data())
+        else:
+            contact_forces = self.phys_state.createPrimal(
+                self.phys_pb, 0.0)
+
+        return contact_forces
+
+    @profile
+    def computeResidual(self, scaling=1.0):
+        """Compute R(u, Lagr) = - (Rint(u, Lagr) + Rcont(u, Lagr) - Rext(u, Lagr)).
 
         This is not the true residual but the opposite.
 
         Arguments:
-            timeEndStep (float): time at end of time step
             scaling (float): Scaling factor for Lagrange multipliers (default: 1.0).
 
         Returns:
@@ -180,14 +207,17 @@ class IncrementalSolver:
         """
 
         # Compute internal residual
-        resi_state, internVar, stress = self.computeInternalResidual(
-            timeEndStep, scaling)
+        resi_state, internVar, stress = self.computeInternalResidual(scaling)
 
         # Compute external residual
         resi_state.resi_ext = self.computeExternalResidual()
 
+        # Compute contact residual
+        resi_state.resi_cont = self.computeContactResidual()
+
         # Compute residual
-        resi_state.resi = -(resi_state.resi_int - resi_state.resi_ext)
+        resi_state.resi = -(resi_state.resi_int +
+                            resi_state.resi_cont - resi_state.resi_ext)
 
         # clean temporary memory - too many objects are not destroyed in fortran
         deleteTemporaryObjects()
@@ -195,57 +225,100 @@ class IncrementalSolver:
         return resi_state, internVar, stress
 
     @profile
-    def computeJacobian(self, matrix_type, timeEndStep):
+    def computeInternalJacobian(self, matrix_type):
+        """Compute K(u) = d(Rint(u)) / du
+
+        Arguments:
+            matrix_type (str): type of matrix used.
+
+        Returns:
+            int : error code flag
+            ElementaryMatrixDisplacementReal: rigidity matrix.
+            ElementaryMatrixDisplacementReal: dual matrix.
+        """
+        # Main object for discrete computation
+        disc_comp = DiscreteComputation(self.phys_pb)
+
+        # Compute rigidity matrix
+        if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
+            matr_elem_rigi = disc_comp.elasticStiffnessMatrix()
+            codret = 0
+        elif matrix_type == "PRED_TANGENTE":
+            _, codret, matr_elem_rigi = disc_comp.computeTangentPredictionMatrix(
+                self.phys_state.primal,
+                self.phys_state.primal_step,
+                self.phys_state.stress,
+                self.phys_state.internVar,
+                self.phys_state.time,
+                self.phys_state.time_step
+            )
+        elif matrix_type == "TANGENTE":
+            _, codret, matr_elem_rigi = disc_comp.computeTangentStiffnessMatrix(
+                self.phys_state.primal,
+                self.phys_state.primal_step,
+                self.phys_state.stress,
+                self.phys_state.internVar,
+                self.phys_state.time,
+                self.phys_state.time_step
+            )
+        else:
+            raise RuntimeError("Matrix not supported: %s" % (matrix_type))
+
+        # Compute dual matrix
+        matr_elem_dual = disc_comp.dualStiffnessMatrix()
+
+        return codret, matr_elem_rigi, matr_elem_dual
+
+    @profile
+    def computeContactJacobian(self):
+        """Compute K(u) = d(Rcont(u) ) / du
+
+        Returns:
+           ElementaryMatrixDisplacementReal: Contact matrix.
+        """
+
+        if self.contact_solver.enable:
+            # Main object for discrete computation
+            disc_comp = DiscreteComputation(self.phys_pb)
+
+            matr_elem_cont = disc_comp.contactMatrix(
+                self.contact_solver.getPairingCoordinates(),
+                self.phys_state.primal,
+                self.phys_state.primal_step,
+                self.contact_solver.data()
+            )
+
+            return matr_elem_cont
+
+        return None
+
+    @profile
+    def computeJacobian(self, matrix_type):
         """Compute K(u) = d(Rint(u) - Rext(u)) / du
 
         Arguments:
             matrix_type (str): type of matrix used.
-            timeEndStep (float): time at end of time step
 
         Returns:
             AssemblyMatrixDisplacementReal: Jacobian matrix.
         """
         # Compute elementary matrix
 
-        # Main object for discrete computation
-        disc_comp = DiscreteComputation(self.phys_pb)
-
-        matr_elem_diri = None
-        if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
-            matr_elem = disc_comp.elasticStiffnessMatrix()
-            codret = 0
-        elif matrix_type == "PRED_TANGENTE":
-            _, codret, matr_elem = disc_comp.computeTangentPredictionMatrix(
-                self.phys_state.primal,
-                self.phys_state.primal_incr,
-                self.phys_state.stress,
-                self.phys_state.internVar,
-                self.phys_state.time,
-                timeEndStep
-            )
-            matr_elem_diri = disc_comp.dualStiffnessMatrix()
-        elif matrix_type == "TANGENTE":
-            _, codret, matr_elem = disc_comp.computeTangentStiffnessMatrix(
-                self.phys_state.primal,
-                self.phys_state.primal_incr,
-                self.phys_state.stress,
-                self.phys_state.internVar,
-                self.phys_state.time,
-                timeEndStep
-            )
-            matr_elem_diri = disc_comp.dualStiffnessMatrix()
-        else:
-            raise RuntimeError("Matrix not supported: %s" % (matrix_type))
+        codret, matr_elem_rigi, matr_elem_dual = self.computeInternalJacobian(
+            matrix_type)
 
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
 
-        # Assembly matrix
+        matr_elem_cont = self.computeContactJacobian()
+
+        # Assemble matrix
         jacobian = AssemblyMatrixDisplacementReal(self.phys_pb)
-        jacobian.addElementaryMatrix(matr_elem)
-        if matr_elem_diri:
-            if matr_elem_diri.hasElementaryTerms():
-                jacobian.addElementaryMatrix(matr_elem_diri)
+
+        jacobian.addElementaryMatrix(matr_elem_rigi)
+        jacobian.addElementaryMatrix(matr_elem_dual)
+        jacobian.addElementaryMatrix(matr_elem_cont)
+
         jacobian.assemble()
 
         # clean temporary memory - too many objects are not destroyed in fortran
@@ -266,29 +339,24 @@ class IncrementalSolver:
         return 1.0 * field
 
     @profile
-    def solve(self, matrix_type, timeEndStep, matrix=None):
+    def solve(self, matrix_type, matrix=None):
         """Solve the iteration.
 
         Arguments:
             matrix_type (str): type of matrix used.
             matrix (AssemblyMatrixDisplacementReal, optional): Stiffness matrix
                 to be reused.
-            timeEndStep (float): time at end of time step
 
         Returns:
             tuple (FieldOnNodesReal, FieldOnCellsReal, FieldOnCellsReal,
-            AssemblyMatrixDisplacementReal): Tuple with incremental displacement
-            (DEPL), internal state variables (VARI_ELGA), Cauchy stress (SIEF_ELGA),
+            AssemblyMatrixDisplacementReal): Tuple with incremental primal,
+            internal state variables (VARI_ELGA), Cauchy stress (SIEF_ELGA),
             Jacobian matrix used (if computed).
         """
 
         # we need the matrix to have scaling factor for Lagrange
-        # On peut sûrement faire une optimisation ici quand la matrice tangente
-        # est calculée (donc le comportement). Il faudrait dans ce cas et
-        # uniquement dans ce cas calculer les forces internes avec RAPH_MECA
-        # et pas tout recalculer (a voir plus tard)
         if not matrix:
-            stiffness = self.computeJacobian(matrix_type, timeEndStep)
+            stiffness = self.computeJacobian(matrix_type)
         else:
             stiffness = matrix
 
@@ -296,20 +364,16 @@ class IncrementalSolver:
         scaling = stiffness.getLagrangeScaling()
 
         # compute residual
-        resi_state, internVar, stress = self.computeResidual(
-            timeEndStep, scaling)
-
-        # clean temporary memory - too many objects are not destroyed in fortran
-        deleteTemporaryObjects()
-
-        # Time at end of current step
-        timeEndStep = self.phys_state.time + self.phys_state.time_step
+        resi_state, internVar, stress = self.computeResidual(scaling)
 
         if not self.convManager.isConverged(resi_state):
+            # Time at end of current step
+            time_curr = self.phys_state.time + self.phys_state.time_step
+
             # compute Dirichlet BC:
             disc_comp = DiscreteComputation(self.phys_pb)
-            displ_curr = self.phys_state.primal + self.phys_state.primal_incr
-            diriBCs = disc_comp.incrementalDirichletBC(timeEndStep, displ_curr)
+            primal_curr = self.phys_state.primal + self.phys_state.primal_step
+            diriBCs = disc_comp.incrementalDirichletBC(time_curr, primal_curr)
 
             # solve linear system
             if not stiffness.isFactorized():
@@ -317,11 +381,11 @@ class IncrementalSolver:
             solution = self.linear_solver.solve(resi_state.resi, diriBCs)
 
             # use line search
-            nodal_incr = self.lineSearch(solution)
+            primal_incr = self.lineSearch(solution)
         else:
-            nodal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
+            primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
         # clean temporary memory - too many objects are not destroyed in fortran
         deleteTemporaryObjects()
 
-        return nodal_incr, internVar, stress, stiffness
+        return primal_incr, internVar, stress, stiffness

@@ -27,11 +27,10 @@
 
 // explicit declaration
 template <>
-FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
+FieldOnCells< ASTERDOUBLE >::FieldOnCells( const FiniteElementDescriptorPtr FEDesc,
                                            const BehaviourPropertyPtr behaviour,
                                            const std::string &typcham,
-                                           const ElementaryCharacteristicsPtr carael,
-                                           const FiniteElementDescriptorPtr FEDesc )
+                                           const ElementaryCharacteristicsPtr carael )
     : FieldOnCells< ASTERDOUBLE >() {
     std::string inName = getName();
     std::string carele = " ";
@@ -61,13 +60,7 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
 
     ASTERINTEGER iret = 0;
 
-    FiniteElementDescriptorPtr fed;
-    if ( FEDesc ) {
-        fed = FEDesc;
-    } else {
-        fed = model->getFiniteElementDescriptor();
-    }
-    _dofDescription = fed;
+    setDescription( FEDesc );
 
     _DCEL = std::make_shared< SimpleFieldOnCellsLong >( inName );
 
@@ -77,30 +70,24 @@ FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model,
         comporName = compor->getName();
     }
 
-    CALLO_CESVAR( carele, comporName, fed->getName(), _DCEL->getName() );
-    CALLO_ALCHML( fed->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent], getName(),
-                  &iret, _DCEL->getName() );
+    CALLO_CESVAR( carele, comporName, _dofDescription->getName(), _DCEL->getName() );
+    CALLO_ALCHML( _dofDescription->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent],
+                  getName(), &iret, _DCEL->getName() );
     AS_ASSERT( iret == 0 );
 
     updateValuePointers();
 };
 
 template <>
-FieldOnCells< ASTERDOUBLE >::FieldOnCells( const ModelPtr &model, const std::string option,
-                                           const std::string paraName,
-                                           const FiniteElementDescriptorPtr FEDesc )
+FieldOnCells< ASTERDOUBLE >::FieldOnCells( const FiniteElementDescriptorPtr FEDesc,
+                                           const std::string option, const std::string paraName )
     : FieldOnCells< ASTERDOUBLE >() {
     ASTERINTEGER iret = 0;
     std::string extended = " ";
-    FiniteElementDescriptorPtr fed;
-    if ( FEDesc ) {
-        fed = FEDesc;
-    } else {
-        fed = model->getFiniteElementDescriptor();
-    }
-    _dofDescription = fed;
-    CALLO_ALCHML( fed->getName(), option, paraName, JeveuxMemoryTypesNames[Permanent], getName(),
-                  &iret, extended );
+
+    setDescription( FEDesc );
+    CALLO_ALCHML( _dofDescription->getName(), option, paraName, JeveuxMemoryTypesNames[Permanent],
+                  getName(), &iret, extended );
     AS_ASSERT( iret == 0 );
 
     updateValuePointers();

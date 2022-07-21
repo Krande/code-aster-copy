@@ -35,12 +35,8 @@ interface
         integer, intent(in) :: list_elem_mast(nb_elem_mast)
         integer, intent(in) :: list_elem_slav(nb_elem_slav)
         integer, intent(in) :: list_node_mast(nb_node_mast)
-        integer, intent(inout) :: nb_pair_zone
-        !integer, pointer :: list_pair_zone(:)
-        type(c_ptr) :: list_pair_zone
-        type(c_ptr) :: list_nbptit_zone
-        type(c_ptr) :: list_ptitsl_zone
-        real(kind=8), pointer :: list_ptitsl_zone(:)
+        integer, intent(out) :: nb_pair_zone
+        character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone, list_ptitsl_zone
         character(len=24), intent(in) :: pair_method
     end subroutine aplcpgn
 end interface

@@ -34,10 +34,9 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-FieldOnNodesRealPtr
-DiscreteComputation::imposedDualBC( const ASTERDOUBLE time_value,
-                                    const ASTERDOUBLE time_delta,
-                                    const ASTERDOUBLE time_theta ) {
+FieldOnNodesRealPtr DiscreteComputation::imposedDualBC( const ASTERDOUBLE time_value,
+                                                        const ASTERDOUBLE time_delta,
+                                                        const ASTERDOUBLE time_theta ) const {
 
     bool has_load = false;
 
@@ -50,20 +49,16 @@ DiscreteComputation::imposedDualBC( const ASTERDOUBLE time_value,
 
     if ( _phys_problem->getModel()->isThermal() ) {
         has_load = this->addTherImposedTerms( elemVect, time_value, time_delta, time_theta );
-    }
-    else if ( _phys_problem->getModel()->isMechanical() ) {
+    } else if ( _phys_problem->getModel()->isMechanical() ) {
         has_load = this->addMecaImposedTerms( elemVect, time_value );
-    }
-    else {
+    } else {
         AS_ASSERT( false );
     };
 
-    if ( has_load ){
+    if ( has_load ) {
         elemVect->build();
-        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                    time_value );
-    }
-    else {
+        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time_value );
+    } else {
         FieldOnNodesRealPtr vectAsse =
             std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
         vectAsse->setValues( 0.0 );
@@ -72,11 +67,11 @@ DiscreteComputation::imposedDualBC( const ASTERDOUBLE time_value,
     }
 };
 
-FieldOnNodesRealPtr DiscreteComputation::neumann(const ASTERDOUBLE time_value,
-                                                 const ASTERDOUBLE time_delta,
-                                                 const ASTERDOUBLE time_theta,
-                                                 const FieldOnCellsRealPtr _externVarField,
-                                                 const FieldOnNodesRealPtr _previousPrimalField ) {
+FieldOnNodesRealPtr
+DiscreteComputation::neumann( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
+                              const ASTERDOUBLE time_theta,
+                              const FieldOnCellsRealPtr _externVarField,
+                              const FieldOnNodesRealPtr _previousPrimalField ) const {
 
     bool has_load = false;
 
@@ -90,20 +85,16 @@ FieldOnNodesRealPtr DiscreteComputation::neumann(const ASTERDOUBLE time_value,
     if ( _phys_problem->getModel()->isThermal() ) {
         has_load = this->addTherNeumannTerms( elemVect, time_value, time_delta, time_theta,
                                               _externVarField, _previousPrimalField );
-    }
-    else if ( _phys_problem->getModel()->isMechanical() ) {
+    } else if ( _phys_problem->getModel()->isMechanical() ) {
         has_load = this->addMecaNeumannTerms( elemVect, time_value, time_delta, time_theta,
                                               _externVarField );
-    }
-    else {
+    } else {
         AS_ASSERT( false );
     };
-    if ( has_load ){
+    if ( has_load ) {
         elemVect->build();
-        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                    time_value );
-    }
-    else {
+        return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(), time_value );
+    } else {
         FieldOnNodesRealPtr vectAsse =
             std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
         vectAsse->setValues( 0.0 );
@@ -112,7 +103,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann(const ASTERDOUBLE time_value,
     }
 };
 
-FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) {
+FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) const {
 
     auto elemVect = std::make_shared< ElementaryVectorReal >();
 
@@ -149,7 +140,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
 };
 
 FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr disp_curr,
-                                                           ASTERDOUBLE scaling ) {
+                                                           ASTERDOUBLE scaling ) const {
 
     auto elemVect = std::make_shared< ElementaryVectorReal >();
 
@@ -184,7 +175,6 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
 
     return bume;
 };
-
 
 FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time_value ) const {
 
@@ -248,8 +238,7 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time_value,
 };
 
 FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
-    const ASTERDOUBLE time_value,
-    const FieldOnCellsRealPtr _externVarField ) {
+    const ASTERDOUBLE time_value, const FieldOnCellsRealPtr _externVarField ) const {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -266,7 +255,7 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
     }
 
     // Main object
-    CalculPtr _calcul = std::make_unique< Calcul >( "CHAR_VARC" );
+    CalculPtr calcul = std::make_unique< Calcul >( "CHAR_VARC" );
 
     // Create specific output field for XFEM
     FieldOnCellsRealPtr sigmXfem;
@@ -290,32 +279,32 @@ FieldOnNodesRealPtr DiscreteComputation::computeExternalStateVariablesLoad(
         if ( currMater->hasExternalStateVariable( numeExternVar ) &&
              ExternalVariableTraits::externVarHasStrain( numeExternVar ) ) {
             const auto option = ExternalVariableTraits::getExternVarOption( numeExternVar );
-            _calcul->setOption( option );
-            _calcul->setModel( currModel );
-            _calcul->clearInputs();
-            _calcul->clearOutputs();
+            calcul->setOption( option );
+            calcul->setModel( currModel );
+            calcul->clearInputs();
+            calcul->clearOutputs();
 
             // Add input fields
-            _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-            _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-            _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+            calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+            calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+            calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
             if ( currElemChara ) {
-                _calcul->addElementaryCharacteristicsField( currElemChara );
+                calcul->addElementaryCharacteristicsField( currElemChara );
             }
-            _calcul->addInputField( "PVARCPR", _externVarField );
-            _calcul->addTimeField( "PTEMPSR", time_value );
+            calcul->addInputField( "PVARCPR", _externVarField );
+            calcul->addTimeField( "PTEMPSR", time_value );
             if ( currExternVarRefe ) {
-                _calcul->addInputField( "PVARCRR", currExternVarRefe );
+                calcul->addInputField( "PVARCRR", currExternVarRefe );
             }
             if ( currModel->existsXfem() ) {
                 XfemModelPtr currXfemModel = currModel->getXfemModel();
-                _calcul->addXFEMField( currXfemModel );
-                _calcul->addOutputField( "PCONTRT", sigmXfem );
+                calcul->addXFEMField( currXfemModel );
+                calcul->addOutputField( "PCONTRT", sigmXfem );
             }
-            _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
-            _calcul->compute();
-            if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
-                elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
+            calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+            calcul->compute();
+            if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) ) {
+                elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTUR" ) );
             }
         }
     }

@@ -34,7 +34,7 @@
 using VectorLongIter = VectorLong::iterator;
 
 ContactNew::ContactNew( const std::string name, const ModelPtr model )
-    : DataStructure( name, 8, "CHAR_CONT" ),
+    : DataStructure( name, 8, "CHAR_CONTACT" ),
       _model( model ),
       _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
                                                             _model->getMesh() ) ),
@@ -47,6 +47,8 @@ ContactNew::ContactNew( const std::string name, const ModelPtr model )
 };
 
 bool ContactNew::build() {
+    CALL_JEMARQ();
+
     auto mesh = getMesh();
     ASTERINTEGER nb_zones = getNumberOfContactZones();
     ASTERINTEGER nb_slave_cells = 0;
@@ -138,7 +140,6 @@ bool ContactNew::build() {
         nb_dim = nb_dim_;
     }
 
-    CALL_JEMARQ();
     ASTERINTEGER i_zone = 0;
     std::string jeveuxname = ljust( "&&MMPREL.LISTE_MAILLES", 24, ' ' );
     for ( auto &[mastercells, slavecells] : mailco ) {
@@ -170,7 +171,6 @@ bool ContactNew::build() {
         i_zone++;
     }
     CALL_JEDETR( jeveuxname.c_str() );
-    CALL_JEDEMA();
 
     // hpc : only when the proc has slave cells, so with ligret
     if ( nb_slave_cells != 0 ) {
@@ -195,7 +195,36 @@ bool ContactNew::build() {
         CALLO_JEECRA_STRING_WRAP( _name, param, value );
         bool l_calc_rigi = false;
         CALLO_INITEL( _FEDesc->getName(), (ASTERLOGICAL *)&l_calc_rigi );
+        _FEDesc->setModel( getModel() );
     }
+
+    CALL_JEDEMA();
 
     return true;
 }
+
+VectorLong ContactNew::getSlaveNodes() const {
+
+    SetLong nodes;
+
+    for ( auto &zone : _zones ) {
+        auto l_slave_nodes = zone->getSlaveNodes();
+
+        nodes.insert( l_slave_nodes.begin(), l_slave_nodes.end() );
+    }
+
+    return VectorLong( nodes.begin(), nodes.end() );
+};
+
+VectorLong ContactNew::getSlaveCells() const {
+
+    SetLong cells;
+
+    for ( auto &zone : _zones ) {
+        auto l_slave_cells = zone->getSlaveCells();
+
+        cells.insert( l_slave_cells.begin(), l_slave_cells.end() );
+    }
+
+    return VectorLong( cells.begin(), cells.end() );
+};

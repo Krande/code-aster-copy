@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ from ..Language.Syntax import *
 
 def C_NEWTON() : return FACT(statut='d',
            REAC_INCR       =SIMP(statut='f',typ='I',defaut= 1,val_min=0),
-           PREDICTION      =SIMP(statut='f',typ='TXM',into=("DEPL_CALCULE","TANGENTE","ELASTIQUE","EXTRAPOLE") ),
+           PREDICTION      =SIMP(statut='f',typ='TXM',into=("DEPL_CALCULE","TANGENTE","ELASTIQUE","EXTRAPOLE"),defaut="TANGENTE" ),
            MATRICE         =SIMP(statut='f',typ='TXM',defaut="TANGENTE",into=("TANGENTE","ELASTIQUE") ),
            PAS_MINI_ELAS   =SIMP(statut='f',typ='R',val_min=0.0),
            REAC_ITER       =SIMP(statut='f',typ='I',defaut=1,val_min=0),
            REAC_ITER_ELAS  =SIMP(statut='f',typ='I',defaut=0,val_min=0),
            EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
            MATR_RIGI_SYME  =SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI", "NON", ), ),
-         );
+         )

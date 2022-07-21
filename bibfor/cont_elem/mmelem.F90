@@ -369,6 +369,34 @@ aster_logical, intent(out) :: laxis, leltf
         typmam = 'QU9'
         nnm = 9
         nddl = nnm*ndim + nne*(ndim+i3d)
+    else if (nomte(1:6) .eq. 'CMP1L2') then
+        ndim = 2
+        typmae = 'POI1'
+        nne = 1
+        typmam = 'XXXX'
+        nnm = 0
+        nddl = nnm*ndim + nne*(ndim+i2d)
+    else if (nomte(1:6) .eq. 'CMP1N2') then
+        ndim = 2
+        typmae = 'POI1'
+        nne = 1
+        typmam = 'XXXX'
+        nnm = 0
+        nddl = nnm*ndim + nne*ndim
+    else if (nomte(1:6) .eq. 'CMP1L3') then
+        ndim = 3
+        typmae = 'POI1'
+        nne = 1
+        typmam = 'XXXX'
+        nnm = 0
+        nddl = nnm*ndim + nne*(ndim+i2d)
+    else if (nomte(1:6) .eq. 'CMP1N3') then
+        ndim = 3
+        typmae = 'POI1'
+        nne = 1
+        typmam = 'XXXX'
+        nnm = 0
+        nddl = nnm*ndim + nne*ndim
     else
         ASSERT(.false.)
     endif

@@ -28,15 +28,13 @@
 void exportContactPairingToPython( py::module_ &mod ) {
 
     py::class_< ContactPairing, ContactPairingPtr, DataStructure >( mod, "ContactPairing" )
-        .def( py::init(
-            &initFactoryPtr< ContactPairing, std::vector< ContactZonePtr >, BaseMeshPtr > ) )
-        .def( py::init( &initFactoryPtr< ContactPairing, std::string, std::vector< ContactZonePtr >,
-                                         BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< ContactPairing, std::string, ContactNewPtr > ) )
         .def( py::init( &initFactoryPtr< ContactPairing, ContactNewPtr > ) )
         .def( "getCoordinates", &ContactPairing::getCoordinates, R"(
-Compute the new coordinates
+Coordinates of nodes used for pairing (almost always different from the intial mesh).
+
 Returns:
-    MeshCoordinatesFieldPtr: the new MeshCoordinatesField object
+    MeshCoordinatesFieldPtr: the coordinates field
 )" )
         .def( "updateCoordinates", &ContactPairing::updateCoordinates, R"(
 Update the mesh coordinates given a displacement field
@@ -85,16 +83,29 @@ Returns:
     bool: true if the pairing quantities are cleared
 )",
               ( py::arg( "zone_index" ) ) )
+        .def( "getSlaveIntersectionPoints",
+              py::overload_cast< ASTERINTEGER >( &ContactPairing::getSlaveIntersectionPoints,
+                                                 py::const_ ),
+              R"(
+Get the intersection points beetween a master and slave cells in the parametric
+slave space. The maximum number of points is 8.
+
+Arguments:
+    zone_index(int) : index of zone
+
+Returns:
+    list[list]: list of list of intersection points (each intersection is of size 16)
+)",
+              ( py::arg( "zone_index" ) ) )
         .def( "clear", &ContactPairing::clear, R"(
 clean all the paring quantities of all zones
 Returns:
     bool: true if the pairing quantities are cleared
 )" )
-        .def( "getSlaveIntersectionPoints", &ContactPairing::getSlaveIntersectionPoints, R"(
-Arguments:
-    zone_index(int)
+        .def( "getFiniteElementDescriptor", &ContactPairing::getFiniteElementDescriptor, R"(
+Return Finite Element Descriptor for virtual cells from pairing.
+
 Returns:
-    List[ List[float] ]: get list of of salve intersection points
-)",
-              ( py::arg( "zone_index" ) ) );
+    FiniteElementDescriptor: finite element for virtual cells
+)" );
 };

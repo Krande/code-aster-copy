@@ -48,7 +48,7 @@ For example for the displacement field and a Newton solver.
 - displ^{n}: current displacement (displ_curr)
 - delta_u = -K^{-1}*R(u): incremental displacement (displ_incr)
 - Delta_u = sum_{i=0}^I delta_u^i ( = u^{n} - u^{n-1} at convergence): step
-  displacement (displ_incr)
+  displacement (displ_step)
 """
 
 
@@ -110,9 +110,11 @@ class NonLinearSolver:
         if solver:
             self.linear_solver = solver
         elif keywords is not None:
-            self.linear_solver = LinearSolver.factory("STAT_NON_LINE", keywords)
+            self.linear_solver = LinearSolver.factory(
+                "STAT_NON_LINE", keywords)
         else:
-            raise KeyError("At least one argument is expected: solver or keywords")
+            raise KeyError(
+                "At least one argument is expected: solver or keywords")
 
     def getStepSolver(self, step_rank):
         """Return a solver for the next step.
@@ -123,7 +125,14 @@ class NonLinearSolver:
         Returns:
             StepSolver: object used to solve the step.
         """
-        return StepSolver(step_rank)
+
+        solv = StepSolver(step_rank)
+        solv.setPhysicalProblem(self.phys_pb)
+        solv.setPhysicalState(self.phys_state)
+        solv.setLinearSolver(self.linear_solver)
+        solv.setParameters(self.param)
+
+        return solv
 
     def getResult(self):
         """Get the Result object.
@@ -174,7 +183,8 @@ class NonLinearSolver:
             rank (int): rank index for storing
             time (float): current (pseudo)-time.
         """
-        self.storage_manager.storeState(rank, time, self.phys_pb, self.phys_state)
+        self.storage_manager.storeState(
+            rank, time, self.phys_pb, self.phys_state)
 
     @profile
     def _initializeRun(self):
@@ -182,6 +192,9 @@ class NonLinearSolver:
         self.phys_state.readInitialState(self.phys_pb, self.param)
         self.step_rank = 0
         self._storeRank(self.step_rank, self.phys_state.time)
+        self.stepper.insertStep(self.step_rank, self.phys_state.time)
+        self.stepper.completed()
+
 
     @profile
     def run(self):
@@ -193,35 +206,25 @@ class NonLinearSolver:
 
         # Solve nonlinear problem
         while not self.hasFinished():
-            self.step_rank += 1
             timeEndStep = self.stepper.getNext()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
 
-            solv = self.getStepSolver(self.step_rank)
-            solv.setPhysicalProblem(self.phys_pb)
-            solv.setPhysicalState(self.phys_state)
-            solv.setLinearSolver(self.linear_solver)
-            solv.setParameters(
-                epsilon_maxi=self._get("CONVERGENCE", "RESI_GLOB_MAXI"),
-                epsilon_rela=self._get("CONVERGENCE", "RESI_GLOB_RELA"),
-                max_iter=self._get("CONVERGENCE", "ITER_GLOB_MAXI"),
-            )
-            # get Newton parameters
-            solv.setPrediction(self._get("NEWTON", "PREDICTION"))
-            reac_params = {k: self._get("NEWTON", k, 1) for k in ("REAC_ITER", "REAC_INCR")}
-            solv.setUpdateParameters(**reac_params)
+            solv = self.getStepSolver(self.step_rank+1)
             solv.current_matrix = self.current_matrix
 
             try:
                 solv.solve()
-                self.phys_state.update(solv.getPhysicalState())
-                self._storeRank(self.step_rank, timeEndStep)
             except (ConvergenceError, IntegrationError) as exc:
-                logger.error(exc.message)
-                self.stepper.raiseError(exc)
+                try:
+                    logger.error(exc.message)
+                except:
+                    self.stepper.split(2)
             else:
+                self.phys_state.update(solv.getPhysicalState())
+                self.step_rank += 1
+                self._storeRank(self.step_rank, timeEndStep)
                 self.stepper.completed()
-            self.current_matrix = solv.current_matrix
+                self.current_matrix = solv.current_matrix
 
         self._resetLoggingLevel(self._get("INFO"))
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ aster_logical, intent(out) :: l_renumber
             if (niv .ge. 2) then
                 call utmess('I', 'MECANONLINE13_36')
             endif
-            call numer3(modelz, list_load, nume_dof, sd_iden_rela)
+            call numer3(modelz, list_load, nume_dof, sd_iden_rela, "VG")
         endif
 ! ----- Stop timer for preparation of contact
         call nmtime(ds_measure, 'Stop', 'Cont_Prep')

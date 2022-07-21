@@ -354,11 +354,6 @@ def C_COMPORTEMENT(COMMAND=None):  # COMMUN#
         if COMMAND == "CALC_PRECONT":
             stcom = "o"
 
-        if COMMAND == "CALCUL":
-            opts["COMPOR"] = SIMP(statut="c", typ=carte_sdaster, max=1)
-            opts["CARCRI"] = SIMP(statut="c", typ=carte_sdaster, max=1)
-            opts["MULT_COMP"] = SIMP(statut="c", typ=carte_sdaster, max=1)
-
         mcfact = FACT(
             statut=stcom,
             min=1,

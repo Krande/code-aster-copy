@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdoch_wrap(list_load0, l_load_user0, l_calc_user0, list_load_resu0, base)
+subroutine nmdoch_wrap(list_load0, l_load_user0, l_calc_user0, list_load_resu0, base, &
+                        ligrel_slav0, ligrel_cont0)
 !
 implicit none
 !
@@ -28,7 +29,7 @@ implicit none
 !
     character(len=*), intent(in) :: list_load0
     integer, intent(in) :: l_load_user0, l_calc_user0
-    character(len=*), intent(in) :: list_load_resu0
+    character(len=*), intent(in) :: list_load_resu0, ligrel_slav0, ligrel_cont0
     character(len=*), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
@@ -47,7 +48,7 @@ implicit none
 !
     character(len=19) :: list_load
     aster_logical :: l_load_user, l_calc_user
-    character(len=19) :: list_load_resu
+    character(len=19) :: list_load_resu, ligrel_slav, ligrel_cont
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,5 +56,8 @@ implicit none
     l_calc_user = int_to_logical(l_calc_user0)
     list_load = list_load0
     list_load_resu = list_load_resu0
-    call nmdoch(list_load, l_load_user, list_load_resu, base, l_calc_user)
+    ligrel_slav = ligrel_slav0
+    ligrel_cont = ligrel_cont0
+    call nmdoch(list_load, l_load_user, list_load_resu, base, l_calc_user, &
+                ligrel_slav, ligrel_cont)
 end subroutine

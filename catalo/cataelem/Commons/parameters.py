@@ -624,6 +624,9 @@ PGEOM_R = OutputParameter(phys=PHY.GEOM_R, type='ELEM')
 PGEOMER = InputParameter(phys=PHY.GEOM_R, container='MAIL!.COORDO',
                          comment=""" Initial coordinates of nodes (from mesh)""")
 
+PGEOMCR = InputParameter(phys=PHY.GEOM_R,
+                         comment=""" Current coordinates of nodes (from pairing)""")
+
 PGLISS = InputParameter(phys=PHY.NEUT_I,
                         comment="""""")
 

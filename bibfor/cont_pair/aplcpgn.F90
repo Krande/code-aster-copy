@@ -21,7 +21,6 @@ subroutine aplcpgn(mesh , newgeo , zone,  pair_method   , pair_tole,&
     nb_elem_mast    , list_elem_mast, nb_elem_slav    , list_elem_slav, list_node_mast, &
     nb_node_mast , nb_pair_zone    , list_pair_zone, list_nbptit_zone, list_ptitsl_zone)
 !
-use iso_c_binding, only: c_ptr, c_loc, C_NULL_PTR
 implicit none
 !
 !#include "asterfort/ap_infast.h"
@@ -51,6 +50,7 @@ implicit none
 #include "asterfort/reerel.h"
 #include "asterfort/testvois.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 #include "jeveux.h"
 #include "Contact_type.h"
 !
@@ -65,15 +65,9 @@ integer, intent(in) :: nb_node_mast
 integer, intent(in) :: list_elem_mast(nb_elem_mast)
 integer, intent(in) :: list_elem_slav(nb_elem_slav)
 integer, intent(in) :: list_node_mast(nb_node_mast)
-integer, intent(inout) :: nb_pair_zone
-type(c_ptr) :: list_pair_zone
-type(c_ptr) :: list_nbptit_zone
-type(c_ptr) :: list_ptitsl_zone
+integer, intent(out) :: nb_pair_zone
+character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone, list_ptitsl_zone
 character(len=24), intent(in) :: pair_method
-
-!integer, pointer :: list_nbptit_zone(:)
-!real(kind=8), pointer :: list_ptitsl_zone(:)
-!integer, pointer :: list_pair_zone(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -104,15 +98,15 @@ integer :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime, elem_slav_indx
 integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
 character(len=8) :: elem_mast_code, elem_slav_code
 character(len=8) :: elem_slav_type, elem_mast_type
-real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27), coor_ref(3), coor_rel(3)
+real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
 integer :: nb_pair, nb_poin_inte
 integer :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
-integer :: i_slav_neigh, i_pt, nb_next_alloc
+integer :: i_slav_neigh, nb_next_alloc
 real(kind=8) :: inte_weight
 real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL)
 character(len=8) :: elem_slav_name, elem_name
 integer :: nb_slav_start, nb_find_mast, nb_mast_start
-integer :: elem_start, elem_nume
+integer :: elem_start, elem_nume, jtab
 integer :: slav_indx_mini, mast_indx_mini, slav_indx_maxi, mast_indx_maxi
 integer :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
 aster_logical :: l_recup, debug, pair_exist
@@ -148,7 +142,7 @@ integer, pointer :: elem_mast_start(:) => null()
 !
 ! - some initializations
 !
-    debug                          = ASTER_TRUE
+    debug                          = ASTER_FALSE
     pair_exist                     = ASTER_TRUE
     inte_neigh(1:4)                = 0
     list_slav_master(1:4)          = 0
@@ -358,16 +352,6 @@ integer, pointer :: elem_mast_start(:) => null()
 
                 ASSERT(nb_poin_inte.le.8)
 !
-                ! if(debug) then
-                !     do i_pt = 1, nb_poin_inte
-                !         coor_ref = 0.d0
-                !         coor_ref(1) = poin_inte_sl(i_pt)
-                !         coor_rel = 0.d0
-                !         call reerel(elem_slav_code, elem_slav_nbnode, 3, elem_slav_coor, &
-                !                 coor_ref, coor_rel)
-                !         print*, "COOR ESCL: ",  coor_ref, coor_rel
-                !     end do
-                ! end if
 101 continue
 !
 ! --------- Add element paired
@@ -487,20 +471,25 @@ integer, pointer :: elem_mast_start(:) => null()
         !pair_exist = ASTER_FALSE
     end do
 !
-!----- cast results to c pointers
+!----- save results
 !
     nb_pair_zone = nb_pair_ztmp
-    list_pair_zone   = c_loc(list_pair_ztmp)
-    list_nbptit_zone = c_loc(li_nbptsl_ztmp)
-    list_ptitsl_zone = c_loc(li_ptintsl_ztmp)
+    if(nb_pair_zone > 0) then
+        call wkvect(list_pair_zone, 'G V I', 2*nb_pair_zone, jtab)
+        zi(jtab-1+1:jtab-1+2*nb_pair_zone) = list_pair_ztmp(1:2*nb_pair_zone)
+        call wkvect(list_nbptit_zone, 'G V I', nb_pair_zone, jtab)
+        zi(jtab-1+1:jtab-1+nb_pair_zone) = li_nbptsl_ztmp(1:nb_pair_zone)
+        call wkvect(list_ptitsl_zone, 'G V R', 16*nb_pair_zone, jtab)
+        zr(jtab-1+1:jtab-1+16*nb_pair_zone) = li_ptintsl_ztmp(1:16*nb_pair_zone)
+    end if
 !
 !--- DEALLOCATE
 !
     AS_DEALLOCATE(vi=mast_find_flag)
     AS_DEALLOCATE(vi=elem_slav_flag)
-    !AS_DEALLOCATE(vi=list_pair_ztmp)
-    !AS_DEALLOCATE(vi=li_nbptsl_ztmp)
-    !AS_DEALLOCATE(vr=li_ptintsl_ztmp)
+    AS_DEALLOCATE(vi=list_pair_ztmp)
+    AS_DEALLOCATE(vi=li_nbptsl_ztmp)
+    AS_DEALLOCATE(vr=li_ptintsl_ztmp)
     AS_DEALLOCATE(vr=li_pt_inte_sl)
     AS_DEALLOCATE(vi=list_pair)
     AS_DEALLOCATE(vi=li_nb_pt_inte_sl)

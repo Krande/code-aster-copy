@@ -30,18 +30,6 @@ void exportContactComputationToPython( py::module_ &mod ) {
 
     py::class_< ContactComputation, ContactComputationPtr >( mod, "ContactComputation" )
         .def( py::init( &initFactoryPtr< ContactComputation, ContactNewPtr > ) )
-        .def( "buildContactResFED", &ContactComputation::buildContactResFED, R"(
-Build contact resolution finite element descriptor from pairing
-Arguments:
-    pairing (ContactPairing): contact pairing
-        )",
-              py::arg( "pairing" ) )
-        .def( "getFiniteElementDescriptor", &ContactComputation::getFiniteElementDescriptor, R"(
-Return contact resolution finite element descriptor from pairing
-
-Returns:
-    FiniteElementDescriptor: fed.
-        )" )
         .def( "geometricGap", &ContactComputation::geometricGap, R"(
 Compute geometric gap and indicator using projection. The indicator is equal to 0 for
 a node with no projection (gap value is Nan) found else 1.
@@ -53,5 +41,8 @@ Returns:
     FieldOnNodesReal: gap field.
     FieldOnNodesReal: gap indicator.
         )",
-              py::arg( "coordinates" ) );
+              py::arg( "coordinates" ) )
+        .def( "contactData", &ContactComputation::contactData, R"(
+Compute contact data (MMCHML)
+        )");
 };

@@ -38,7 +38,7 @@
 ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix(
     const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta, const ASTERDOUBLE time_theta,
     const ASTERINTEGER &modeFourier, const VectorString &groupOfCells,
-    const FieldOnCellsRealPtr _externVarField ) {
+    const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
@@ -64,47 +64,47 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
     elemMatr->setElementaryCharacteristics( currElemChara );
 
     // Prepare computing
-    CalculPtr _calcul = std::make_unique< Calcul >( option );
+    CalculPtr calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
-        _calcul->setModel( currModel );
+        calcul->setModel( currModel );
     } else {
-        _calcul->setGroupsOfCells( currModel, groupOfCells );
+        calcul->setGroupsOfCells( currModel, groupOfCells );
     }
     elemMatr->prepareCompute( option );
 
     // Add input fields
-    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     if ( currMater ) {
-        _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
     }
     if ( _externVarField ) {
-        _calcul->addInputField( "PVARCPR", _externVarField );
+        calcul->addInputField( "PVARCPR", _externVarField );
     }
     if ( currElemChara ) {
-        _calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
-    _calcul->addFourierModeField( modeFourier );
-    _calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+    calcul->addFourierModeField( modeFourier );
+    calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
 
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
-        _calcul->addXFEMField( currXfemModel );
+        calcul->addXFEMField( currXfemModel );
     }
 
     // Add output elementary terms
-    _calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
 
     // Compute elementary matrices for rigidity
     if ( currModel->existsFiniteElement() ) {
-        _calcul->compute();
-        if ( _calcul->hasOutputElementaryTerm( "PMATTTR" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATTTR" ) );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
     };
 
     // Compute elementary matrices for dual BC
-    DiscreteComputation::baseDualThermalMatrix( _calcul, elemMatr );
-    DiscreteComputation::baseExchangeThermalMatrix( _calcul, elemMatr, time_value, time_delta,
+    DiscreteComputation::baseDualThermalMatrix( calcul, elemMatr );
+    DiscreteComputation::baseExchangeThermalMatrix( calcul, elemMatr, time_value, time_delta,
                                                     time_theta );
 
     elemMatr->build();
@@ -113,7 +113,7 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearConductivityMatrix
 
 ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearCapacityMatrix(
     const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta, const ASTERDOUBLE time_theta,
-    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) {
+    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >();
@@ -137,50 +137,50 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::linearCapacityMatrix(
     elemMatr->setElementaryCharacteristics( currElemChara );
 
     // Prepare computing
-    auto _calcul = std::make_unique< Calcul >( option );
+    auto calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
-        _calcul->setModel( currModel );
+        calcul->setModel( currModel );
     } else {
-        _calcul->setGroupsOfCells( currModel, groupOfCells );
+        calcul->setGroupsOfCells( currModel, groupOfCells );
     }
 
     elemMatr->prepareCompute( option );
 
     // Add input fields
-    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    _calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addTimeField( "PTEMPSR", time_value, time_delta, time_theta );
 
     if ( currMater ) {
-        _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
     }
     if ( _externVarField ) {
-        _calcul->addInputField( "PVARCPR", _externVarField );
+        calcul->addInputField( "PVARCPR", _externVarField );
     }
     if ( currElemChara ) {
-        _calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
-        _calcul->addXFEMField( currXfemModel );
+        calcul->addXFEMField( currXfemModel );
     }
 
     // Add output elementary terms
-    _calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
 
     // Compute elementary matrices for mass
     if ( currModel->existsFiniteElement() ) {
-        _calcul->compute();
-        if ( _calcul->hasOutputElementaryTerm( "PMATTTR" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATTTR" ) );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATTTR" ) );
     };
 
     elemMatr->build();
     return elemMatr;
 };
 
-void DiscreteComputation::baseDualThermalMatrix( CalculPtr &calcul,
-                                                 ElementaryMatrixTemperatureRealPtr &elemMatr ) {
+void DiscreteComputation::baseDualThermalMatrix(
+    CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr ) const {
 
     // Prepare loads
     const auto listOfLoads = _phys_problem->getListOfLoads();
@@ -220,7 +220,8 @@ void DiscreteComputation::baseExchangeThermalMatrix( CalculPtr &calcul,
                                                      ElementaryMatrixTemperatureRealPtr &elemMatr,
                                                      const ASTERDOUBLE time_value,
                                                      const ASTERDOUBLE time_delta,
-                                                     const ASTERDOUBLE time_theta ) {
+                                                     const ASTERDOUBLE time_theta ) const {
+
     // Prepare loads
     const auto &_listOfLoads = _phys_problem->getListOfLoads();
     auto isXfem = _phys_problem->getModel()->existsXfem();

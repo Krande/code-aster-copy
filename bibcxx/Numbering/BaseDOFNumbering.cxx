@@ -95,13 +95,28 @@ bool BaseDOFNumbering::computeNumbering() {
     return true;
 };
 
+bool BaseDOFNumbering::computeRenumbering() {
+    if ( !_model || _model->isEmpty() ) {
+        throw std::runtime_error( "Model is empty" );
+    }
+
+    _listOfLoads->build( _model );
+
+    const std::string base( "GG" );
+    const std::string null( " " );
+
+    CALLO_NUMER3( _model->getName(), _listOfLoads->getName(), getName(), null, base );
+
+    return true;
+};
+
 bool BaseDOFNumbering::computeNumberingWithLocalMode( const std::string &localMode ) {
 
-    JeveuxVectorChar24 list_ligrel("&&LIST_LIGREL");
-    list_ligrel->reserve(_FEDVector.size());
+    JeveuxVectorChar24 list_ligrel( "&&LIST_LIGREL" );
+    list_ligrel->reserve( _FEDVector.size() );
 
-    for(auto& fed : _FEDVector){
-        list_ligrel->push_back(JeveuxChar24( fed->getName()));
+    for ( auto &fed : _FEDVector ) {
+        list_ligrel->push_back( JeveuxChar24( fed->getName() ) );
     }
 
     CALLO_NUME_DDL_CHAMELEM( getName(), list_ligrel->getName(), localMode );

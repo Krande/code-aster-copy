@@ -207,7 +207,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
             _delayedNumberedConstraintElementsDescriptor->allocateObject( toCopy );
         }
 
-        const auto &liel = FEDesc->getListOfGroupOfCellsExplorer();
+        const auto &liel = FEDesc->getListOfGroupOfElementsExplorer();
         int nbCollObj = 0, totalCollSize = 0;
         std::vector< VectorLong > toLiel( liel.size(), VectorLong() );
         ASTERINTEGER type = 0;

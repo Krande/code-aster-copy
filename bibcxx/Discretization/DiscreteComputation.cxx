@@ -35,9 +35,9 @@
 #include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
-ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField(const ASTERDOUBLE time_value,
-                                                                 const ASTERDOUBLE time_delta,
-                                                                 const ASTERDOUBLE time_theta ) {
+ConstantFieldOnCellsRealPtr
+DiscreteComputation::createTimeField( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
+                                      const ASTERDOUBLE time_theta ) const {
 
     int sz = 1;
     if ( _phys_problem->getModel()->isThermal() )
@@ -46,8 +46,8 @@ ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField(const ASTERDOUB
     VectorString para_names = { "INST", "DELTAT", "THETA", "KHI", "R", "RHO" };
     VectorReal para_values = { time_value, time_delta, time_theta, 0., 0., 0. };
 
-    VectorString reduced_names = VectorString (para_names.begin(), para_names.begin() + sz);
-    VectorReal reduced_values = VectorReal (para_values.begin(), para_values.begin() + sz);
+    VectorString reduced_names = VectorString( para_names.begin(), para_names.begin() + sz );
+    VectorReal reduced_values = VectorReal( para_values.begin(), para_values.begin() + sz );
 
     // Get mesh
     auto mesh = _phys_problem->getMesh();
@@ -65,7 +65,7 @@ ConstantFieldOnCellsRealPtr DiscreteComputation::createTimeField(const ASTERDOUB
 }
 
 FieldOnCellsRealPtr
-DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time_value ) {
+DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time_value ) const {
 
     // Create field
     auto FEDesc = _phys_problem->getModel()->getFiniteElementDescriptor();
@@ -86,8 +86,8 @@ DiscreteComputation::createExternalStateVariablesField( const ASTERDOUBLE time_v
     std::string base( "G" );
 
     // Call Fortran WRAPPER
-    CALLO_VRCINS_WRAP( modelName, materialFieldName, elemCharaName,
-                       &time_value, fieldName, out, base );
+    CALLO_VRCINS_WRAP( modelName, materialFieldName, elemCharaName, &time_value, fieldName, out,
+                       base );
 
     return field;
 }
@@ -115,9 +115,9 @@ FieldOnCellsRealPtr DiscreteComputation::computeExternalStateVariablesReference(
 }
 
 CalculPtr DiscreteComputation::createCalculForNonLinear(
-    const std::string option, const ASTERDOUBLE &time_prev,
-    const ASTERDOUBLE &time_curr, const FieldOnCellsRealPtr _externVarFieldPrev,
-    const FieldOnCellsRealPtr _externVarFieldCurr, const VectorString &groupOfCells ) {
+    const std::string option, const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_curr,
+    const FieldOnCellsRealPtr _externVarFieldPrev, const FieldOnCellsRealPtr _externVarFieldCurr,
+    const VectorString &groupOfCells ) const {
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -140,17 +140,17 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
     }
 
     // Prepare computing: the main object
-    CalculPtr _calcul = std::make_unique< Calcul >( option );
+    CalculPtr calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
-        _calcul->setModel( currModel );
+        calcul->setModel( currModel );
     } else {
-        _calcul->setGroupsOfCells( currModel, groupOfCells );
+        calcul->setGroupsOfCells( currModel, groupOfCells );
     }
 
     // Add external state variables
     if ( currMater->hasExternalStateVariableWithReference() ) {
         AS_ASSERT( currExternVarRefe );
-        _calcul->addInputField( "PVARCRR", currExternVarRefe );
+        calcul->addInputField( "PVARCRR", currExternVarRefe );
     }
     if ( currMater->hasExternalStateVariable() ) {
         if ( !_externVarFieldPrev ) {
@@ -160,25 +160,25 @@ CalculPtr DiscreteComputation::createCalculForNonLinear(
             AS_ABORT( "External state variables vector for end of time step is missing" )
         }
         AS_ASSERT( currExternVarRefe );
-        _calcul->addInputField( "PVARCMR", _externVarFieldPrev );
-        _calcul->addInputField( "PVARCPR", _externVarFieldCurr );
+        calcul->addInputField( "PVARCMR", _externVarFieldPrev );
+        calcul->addInputField( "PVARCPR", _externVarFieldCurr );
     }
 
     // Add time fields
-    _calcul->addTimeField( "PINSTMR", time_prev );
-    _calcul->addTimeField( "PINSTPR", time_curr );
+    calcul->addTimeField( "PINSTMR", time_prev );
+    calcul->addTimeField( "PINSTPR", time_curr );
 
     // Add input fields
-    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
     if ( currElemChara ) {
-        _calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addElementaryCharacteristicsField( currElemChara );
     }
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
-        _calcul->addXFEMField( currXfemModel );
+        calcul->addXFEMField( currXfemModel );
     }
-    _calcul->addBehaviourField( currBehaviour );
+    calcul->addBehaviourField( currBehaviour );
 
-    return _calcul;
+    return calcul;
 };

@@ -42,8 +42,11 @@ from cataelem.Options.options import OP
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(
+                                 # Slave nodes with LAG_C
                                  ('EN1', ('DX', 'DY', 'LAGS_C',)),
+                                 # Slave nodes without LAG_C
                                  ('EN2', ('DX', 'DY',)),
+                                 # Master nodes
                                  ('EN3', ('DX', 'DY',)),))
 
 CGAPR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
@@ -93,9 +96,9 @@ class CMS2S2(Element):
           PGEOMER - CURRENT GEOMETRY
           PCONFR - FRICTIONAL CONTACT PARAMETERS
       Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=364)
-          PMMATUR : SYMMETRIC MATRIX (te=364)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=365)
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
     meshType = MT.SEG22
     nodes = (
@@ -106,27 +109,29 @@ class CMS2S2(Element):
     calculs = (
 
         OP.GAP_GEOM(te=425,
-                    para_in=((SP.PGEOMER, NGEOMER), ),
+                    para_in=((SP.PGEOMCR, NGEOMER), ),
                     para_out=((OP.GAP_GEOM.PVECGAP, MVECGAP),
                               (OP.GAP_GEOM.PVEIGAP, MVEIGAP), ),
                     ),
 
-        # OP.CHAR_MECA_CONT(te=365,
-        #     para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-        #              (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-        #              (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-        #              (SP.PVITE_P, DDL_MECA), ),
-        #     para_out=((SP.PVECTCR, MVECTUR), (SP.PVECTFR, MVECTUR),),
-        # ),
+        OP.CHAR_MECA_CONT(te=355,
+                          para_in=((SP.PCONFR, LC.CCONFR),
+                                   (SP.PDEPL_M, DDL_MECA),
+                                   (SP.PDEPL_P, DDL_MECA),
+                                   (SP.PGEOMER, NGEOMER),
+                                   (SP.PGEOMCR, NGEOMER), ),
+                          para_out=((SP.PVECTCR, MVECTUR), ),
+                          ),
 
-        # OP.RIGI_CONT(te=364,
-        #     para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-        #              (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-        #              (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-        #              (SP.PVITE_P, DDL_MECA), ),
-        #     para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
-        #              ),
-        # ),
+        OP.RIGI_CONT(te=355,
+                     para_in=((SP.PCONFR, LC.CCONFR),
+                              (SP.PDEPL_M, DDL_MECA),
+                              (SP.PDEPL_P, DDL_MECA),
+                              (SP.PGEOMER, NGEOMER),
+                              (SP.PGEOMCR, NGEOMER), ),
+                     para_out=((SP.PMATUUR, MMATUUR),
+                               ),
+                     ),
 
         OP.TOU_INI_ELEM(te=99,
                         para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), ),
@@ -158,14 +163,14 @@ class CMS3S3(CMS2S2):
           PGEOMER - CURRENT GEOMETRY
           PCONFR - FRICTIONAL CONTACT PARAMETERS
       Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=364)
-          PMMATUR : SYMMETRIC MATRIX (te=364)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=365)
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
     meshType = MT.SEG33
     nodes = (
-        SetOfNodes('EN1', (1, 2,)),
-        SetOfNodes('EN2', (3,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
         SetOfNodes('EN3', (4, 5, 6,)),
     )
 
@@ -188,9 +193,9 @@ class CMS2S3(CMS2S2):
           PGEOMER - CURRENT GEOMETRY
           PCONFR - FRICTIONAL CONTACT PARAMETERS
       Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=364)
-          PMMATUR : SYMMETRIC MATRIX (te=364)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=365)
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
     meshType = MT.SEG23
     nodes = (
@@ -218,14 +223,14 @@ class CMS3S2(CMS2S2):
           PGEOMER - CURRENT GEOMETRY
           PCONFR - FRICTIONAL CONTACT PARAMETERS
       Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=364)
-          PMMATUR : SYMMETRIC MATRIX (te=364)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=365)
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
     meshType = MT.SEG32
     nodes = (
-        SetOfNodes('EN1', (1, 2,)),
-        SetOfNodes('EN2', (3,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
         SetOfNodes('EN3', (4, 5,)),
     )
 
@@ -248,9 +253,9 @@ class CMS2S2A(CMS2S2):
           PGEOMER - CURRENT GEOMETRY
           PCONFR - FRICTIONAL CONTACT PARAMETERS
       Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=364)
-          PMMATUR : SYMMETRIC MATRIX (te=364)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=365)
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
     meshType = MT.SEG22
     nodes = (
@@ -278,14 +283,14 @@ class CMS3S3A(CMS2S2):
           PGEOMER - CURRENT GEOMETRY
           PCONFR - FRICTIONAL CONTACT PARAMETERS
       Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=364)
-          PMMATUR : SYMMETRIC MATRIX (te=364)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=365)
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
     meshType = MT.SEG33
     nodes = (
-        SetOfNodes('EN1', (1, 2,)),
-        SetOfNodes('EN2', (3,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
         SetOfNodes('EN3', (4, 5, 6,)),
     )
 
@@ -308,9 +313,9 @@ class CMS2S3A(CMS2S2):
           PGEOMER - CURRENT GEOMETRY
           PCONFR - FRICTIONAL CONTACT PARAMETERS
       Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=364)
-          PMMATUR : SYMMETRIC MATRIX (te=364)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=365)
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
     meshType = MT.SEG23
     nodes = (
@@ -338,13 +343,136 @@ class CMS3S2A(CMS2S2):
           PGEOMER - CURRENT GEOMETRY
           PCONFR - FRICTIONAL CONTACT PARAMETERS
       Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=364)
-          PMMATUR : SYMMETRIC MATRIX (te=364)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=365)
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
     meshType = MT.SEG32
     nodes = (
-        SetOfNodes('EN1', (1, 2,)),
-        SetOfNodes('EN2', (3,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
         SetOfNodes('EN3', (4, 5,)),
+    )
+
+# ------------------------------------------------------------
+
+
+class CMP1L2(CMS2S2):
+    """
+      CMS3S2 DERIVED FROM THE CMS2S2 CLASS ELEMENT : POINT1.
+      This element is for nodes that have Lagrange and are not pairing
+      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+          Slave frictionless Contact Element in 2D : elementary treatments
+      Local Numerotation :
+          POI1 SLAVE  ELEMENT : 1   (DX,DY,LAGS_C)
+      Input parameters :
+          PACCE_M - ACCELERATION at T-
+          PVITE_M - VELOCITY at T-
+          PDEPL_M - DISPL. at T-
+          PVITE_P - VELOCITY at T+
+          PDEPL_P - DISPL. at T+
+          PGEOMER - CURRENT GEOMETRY
+          PCONFR - FRICTIONAL CONTACT PARAMETERS
+      Output parameters :
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    """
+    meshType = MT.POI1
+    nodes = (
+        SetOfNodes('EN1', (1,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', ()),
+    )
+
+# ------------------------------------------------------------
+
+
+class CMP1N2(CMS2S2):
+    """
+      CMS3S2 DERIVED FROM THE CMS2S2 CLASS ELEMENT : POINT1.
+      This element is for nodes that have no Lagrange and are not pairing
+      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+          Slave frictionless Contact Element in 2D : elementary treatments
+      Local Numerotation :
+          POI1 SLAVE  ELEMENT : 1   (DX,DY)
+      Input parameters :
+          PACCE_M - ACCELERATION at T-
+          PVITE_M - VELOCITY at T-
+          PDEPL_M - DISPL. at T-
+          PVITE_P - VELOCITY at T+
+          PDEPL_P - DISPL. at T+
+          PGEOMER - CURRENT GEOMETRY
+          PCONFR - FRICTIONAL CONTACT PARAMETERS
+      Output parameters :
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    """
+    meshType = MT.POI1
+    nodes = (
+        SetOfNodes('EN1', ()),
+        SetOfNodes('EN2', (1,)),
+        SetOfNodes('EN3', ()),
+    )
+
+
+# ------------------------------------------------------------
+class CMP1L2A(CMS2S2):
+    """
+      CMS3S2 DERIVED FROM THE CMS2S2 CLASS ELEMENT : POINT1.
+      This element is for nodes that have Lagrange and are not pairing
+      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+          Slave frictionless Contact Element in 2D : elementary treatments
+      Local Numerotation :
+          POI1 SLAVE  ELEMENT : 1   (DX,DY,LAGS_C)
+      Input parameters :
+          PACCE_M - ACCELERATION at T-
+          PVITE_M - VELOCITY at T-
+          PDEPL_M - DISPL. at T-
+          PVITE_P - VELOCITY at T+
+          PDEPL_P - DISPL. at T+
+          PGEOMER - CURRENT GEOMETRY
+          PCONFR - FRICTIONAL CONTACT PARAMETERS
+      Output parameters :
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    """
+    meshType = MT.POI1
+    nodes = (
+        SetOfNodes('EN1', (1,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', ()),
+    )
+
+# ------------------------------------------------------------
+
+
+class CMP1N2A(CMS2S2):
+    """
+      CMS3S2 DERIVED FROM THE CMS2S2 CLASS ELEMENT : POINT1.
+      This element is for nodes that have no Lagrange and are not pairing
+      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+          Slave frictionless Contact Element in 2D : elementary treatments
+      Local Numerotation :
+          POI1 SLAVE  ELEMENT : 1   (DX,DY)
+      Input parameters :
+          PACCE_M - ACCELERATION at T-
+          PVITE_M - VELOCITY at T-
+          PDEPL_M - DISPL. at T-
+          PVITE_P - VELOCITY at T+
+          PDEPL_P - DISPL. at T+
+          PGEOMER - CURRENT GEOMETRY
+          PCONFR - FRICTIONAL CONTACT PARAMETERS
+      Output parameters :
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    """
+    meshType = MT.POI1
+    nodes = (
+        SetOfNodes('EN1', ()),
+        SetOfNodes('EN2', (1,)),
+        SetOfNodes('EN3', ()),
     )

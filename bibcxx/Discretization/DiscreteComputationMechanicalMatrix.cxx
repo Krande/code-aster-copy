@@ -36,7 +36,7 @@
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     const ASTERDOUBLE &time_value, const ASTERINTEGER &modeFourier,
-    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) {
+    const VectorString &groupOfCells, const FieldOnCellsRealPtr _externVarField ) const {
 
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
@@ -66,55 +66,52 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix(
     }
 
     // Prepare computing
-    CalculPtr _calcul = std::make_unique< Calcul >( option );
+    CalculPtr calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
-        _calcul->setModel( currModel );
+        calcul->setModel( currModel );
     } else {
-        _calcul->setGroupsOfCells( currModel, groupOfCells );
+        calcul->setGroupsOfCells( currModel, groupOfCells );
     }
     elemMatr->prepareCompute( option );
 
     // Add input fields
-    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     if ( currMater ) {
-        _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-        _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
     }
     if ( _externVarField ) {
-        _calcul->addInputField( "PVARCPR", _externVarField );
+        calcul->addInputField( "PVARCPR", _externVarField );
     }
     if ( currElemChara ) {
-        _calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addElementaryCharacteristicsField( currElemChara );
     }
-    _calcul->addFourierModeField( modeFourier );
-    _calcul->addTimeField( "PTEMPSR", time_value );
+    calcul->addFourierModeField( modeFourier );
+    calcul->addTimeField( "PTEMPSR", time_value );
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
-        _calcul->addXFEMField( currXfemModel );
+        calcul->addXFEMField( currXfemModel );
     }
 
     // Add output elementary terms
-    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
 
     // Compute elementary matrices for rigidity
     if ( currModel->existsFiniteElement() ) {
-        _calcul->compute();
-        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
-        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
     };
-
-    // Compute elementary matrices for dual BC
-    DiscreteComputation::baseDualStiffnessMatrix( _calcul, elemMatr );
 
     elemMatr->build();
     return elemMatr;
 };
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::massMatrix( const ASTERDOUBLE &time_value, const VectorString &groupOfCells,
-                                 const FieldOnCellsRealPtr _externVarField ) {
+                                 const FieldOnCellsRealPtr _externVarField ) const {
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
     // Get main parameters
     const std::string option( "MASS_MECA" );
@@ -142,44 +139,44 @@ DiscreteComputation::massMatrix( const ASTERDOUBLE &time_value, const VectorStri
     }
 
     // Prepare computing
-    auto _calcul = std::make_unique< Calcul >( option );
+    auto calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
-        _calcul->setModel( currModel );
+        calcul->setModel( currModel );
     } else {
-        _calcul->setGroupsOfCells( currModel, groupOfCells );
+        calcul->setGroupsOfCells( currModel, groupOfCells );
     }
 
     elemMatr->prepareCompute( option );
 
     // Add input fields
-    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     if ( currMater ) {
-        _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-        _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
     }
     if ( _externVarField ) {
-        _calcul->addInputField( "PVARCPR", _externVarField );
+        calcul->addInputField( "PVARCPR", _externVarField );
     }
     if ( currElemChara ) {
-        _calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
     if ( currModel->existsXfem() ) {
         XfemModelPtr currXfemModel = currModel->getXfemModel();
-        _calcul->addXFEMField( currXfemModel );
+        calcul->addXFEMField( currXfemModel );
     }
 
     // Add output elementary terms
-    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
 
     // Compute elementary matrices for mass
     if ( currModel->existsFiniteElement() ) {
-        _calcul->compute();
-        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
-        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
     };
 
     elemMatr->build();
@@ -189,7 +186,7 @@ ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &massMatrix,
                                     const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix,
                                     const ASTERDOUBLE &time_value, const VectorString &groupOfCells,
-                                    const FieldOnCellsRealPtr _externVarField ) {
+                                    const FieldOnCellsRealPtr _externVarField ) const {
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
     // Get main parameters
     const std::string option( "AMOR_MECA" );
@@ -217,26 +214,26 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
     }
 
     // Prepare computing
-    auto _calcul = std::make_unique< Calcul >( option );
+    auto calcul = std::make_unique< Calcul >( option );
     if ( groupOfCells.empty() ) {
-        _calcul->setModel( currModel );
+        calcul->setModel( currModel );
     } else {
-        _calcul->setGroupsOfCells( currModel, groupOfCells );
+        calcul->setGroupsOfCells( currModel, groupOfCells );
     }
 
     elemMatr->prepareCompute( option );
 
     // Add input fields
-    _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
+    calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
     if ( currMater ) {
-        _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-        _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+        calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
     }
     if ( _externVarField ) {
-        _calcul->addInputField( "PVARCPR", _externVarField );
+        calcul->addInputField( "PVARCPR", _externVarField );
     }
     if ( currElemChara ) {
-        _calcul->addElementaryCharacteristicsField( currElemChara );
+        calcul->addElementaryCharacteristicsField( currElemChara );
     }
 
     if ( massMatrix ) {
@@ -248,7 +245,7 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
                 break;
             }
         }
-        _calcul->addInputElementaryTerm( "PMASSEL", resuElemMass );
+        calcul->addInputElementaryTerm( "PMASSEL", resuElemMass );
     }
 
     if ( stiffnessMatrix ) {
@@ -262,31 +259,31 @@ DiscreteComputation::dampingMatrix( const ElementaryMatrixDisplacementRealPtr &m
         }
 
         if ( resuElemRigi->getPhysicalQuantity() == "MDNS_R" ) {
-            _calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi );
+            calcul->addInputElementaryTerm( "PRIGINS", resuElemRigi );
         } else {
-            _calcul->addInputElementaryTerm( "PRIGIEL", resuElemRigi );
+            calcul->addInputElementaryTerm( "PRIGIEL", resuElemRigi );
         }
     }
 
     // Add output elementary terms
-    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
 
     // Compute elementary matrices for damping
     if ( currModel->existsFiniteElement() ) {
-        _calcul->compute();
-        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
-        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
     };
 
     elemMatr->build();
 
     return elemMatr;
 };
-void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
-                                                   ElementaryMatrixDisplacementRealPtr &elemMatr ) {
+void DiscreteComputation::baseDualStiffnessMatrix(
+    CalculPtr &calcul, ElementaryMatrixDisplacementRealPtr &elemMatr ) const {
 
     // Prepare loads
     const auto &_listOfLoads = _phys_problem->getListOfLoads();
@@ -322,7 +319,7 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
 #endif
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() const {
 
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
@@ -338,11 +335,11 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
 
     // Prepare computing
     const std::string option( "MECA_DDLM_R" );
-    CalculPtr _calcul = std::make_unique< Calcul >( option );
+    CalculPtr calcul = std::make_unique< Calcul >( option );
     elemMatr->prepareCompute( option );
 
     // Compute elementary matrices
-    DiscreteComputation::baseDualStiffnessMatrix( _calcul, elemMatr );
+    DiscreteComputation::baseDualStiffnessMatrix( calcul, elemMatr );
 
     elemMatr->build();
     return elemMatr;
@@ -350,10 +347,13 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
 
 /** @brief Compute tangent matrix (not assembled) */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
-DiscreteComputation::computeTangentStiffnessMatrix(
-    const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
-    const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_curr, const VectorString &groupOfCells ) {
+DiscreteComputation::computeTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
+                                                    const FieldOnNodesRealPtr displ_step,
+                                                    const FieldOnCellsRealPtr stress,
+                                                    const FieldOnCellsRealPtr internVar,
+                                                    const ASTERDOUBLE &time_prev,
+                                                    const ASTERDOUBLE &time_step,
+                                                    const VectorString &groupOfCells ) const {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -368,20 +368,21 @@ DiscreteComputation::computeTangentStiffnessMatrix(
     std::string option = "FULL_MECA";
 
     // Prepare computing:
-    CalculPtr _calcul = createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
-                                                  _externVarFieldCurr, groupOfCells );
-    FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
+    CalculPtr calcul =
+        createCalculForNonLinear( option, time_prev, time_prev + time_step, _externVarFieldPrev,
+                                  _externVarFieldCurr, groupOfCells );
+    FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
 
     // Set current physical state
-    _calcul->addInputField( "PDEPLMR", displ );
-    _calcul->addInputField( "PDEPLPR", displ_incr );
-    _calcul->addInputField( "PCONTMR", stress );
-    _calcul->addInputField( "PVARIMR", _internVar );
+    calcul->addInputField( "PDEPLMR", displ );
+    calcul->addInputField( "PDEPLPR", displ_step );
+    calcul->addInputField( "PCONTMR", stress );
+    calcul->addInputField( "PVARIMR", internVar );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
-    _calcul->addInputField( "PVARIMP", vari_iter );
+    FieldOnCellsRealPtr vari_iter =
+        std::make_shared< FieldOnCellsReal >( FEDesc, currBehaviour, "ELGA_VARI_R", currElemChara );
+    calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output matrix
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
@@ -398,31 +399,31 @@ DiscreteComputation::computeTangentStiffnessMatrix(
     elemVect->prepareCompute( option );
 
     // Create output fields
-    FieldOnCellsRealPtr stress_curr = std::make_shared< FieldOnCellsReal >(
-        currModel, nullptr, "ELGA_SIEF_R", currElemChara, FEDesc = FEDesc );
+    FieldOnCellsRealPtr stress_curr =
+        std::make_shared< FieldOnCellsReal >( FEDesc, nullptr, "ELGA_SIEF_R", currElemChara );
     FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
-    FieldOnCellsRealPtr vari_curr = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
+    FieldOnCellsRealPtr vari_curr =
+        std::make_shared< FieldOnCellsReal >( FEDesc, currBehaviour, "ELGA_VARI_R", currElemChara );
 
     // Add output fields
-    _calcul->addOutputField( "PVARIPR", vari_curr );
-    _calcul->addOutputField( "PCONTPR", stress_curr );
-    _calcul->addOutputField( "PCODRET", exitField );
+    calcul->addOutputField( "PVARIPR", vari_curr );
+    calcul->addOutputField( "PCONTPR", stress_curr );
+    calcul->addOutputField( "PCODRET", exitField );
 
     // Add output elementary
-    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
 
     // Compute
     if ( currModel->existsFiniteElement() ) {
-        _calcul->compute();
-        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
-        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
-        if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) )
-            elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
+        if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) )
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTUR" ) );
         elemVect->build();
         elemMatr->build();
     };
@@ -441,10 +442,13 @@ DiscreteComputation::computeTangentStiffnessMatrix(
 
 /** @brief Compute tangent prediction matrix (not assembled) */
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
-DiscreteComputation::computeTangentPredictionMatrix(
-    const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
-    const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_curr, const VectorString &groupOfCells ) {
+DiscreteComputation::computeTangentPredictionMatrix( const FieldOnNodesRealPtr displ,
+                                                     const FieldOnNodesRealPtr displ_step,
+                                                     const FieldOnCellsRealPtr stress,
+                                                     const FieldOnCellsRealPtr internVar,
+                                                     const ASTERDOUBLE &time_prev,
+                                                     const ASTERDOUBLE &time_step,
+                                                     const VectorString &groupOfCells ) const {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -459,20 +463,21 @@ DiscreteComputation::computeTangentPredictionMatrix(
     std::string option = "RIGI_MECA_TANG";
 
     // Prepare computing:
-    CalculPtr _calcul = createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
-                                                  _externVarFieldCurr, groupOfCells );
-    FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
+    CalculPtr calcul =
+        createCalculForNonLinear( option, time_prev, time_prev + time_step, _externVarFieldPrev,
+                                  _externVarFieldCurr, groupOfCells );
+    FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
 
     // Set current physical state
-    _calcul->addInputField( "PDEPLMR", displ );
-    _calcul->addInputField( "PDEPLPR", displ_incr );
-    _calcul->addInputField( "PCONTMR", stress );
-    _calcul->addInputField( "PVARIMR", _internVar );
+    calcul->addInputField( "PDEPLMR", displ );
+    calcul->addInputField( "PDEPLPR", displ_step );
+    calcul->addInputField( "PCONTMR", stress );
+    calcul->addInputField( "PVARIMR", internVar );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
-    _calcul->addInputField( "PVARIMP", vari_iter );
+    FieldOnCellsRealPtr vari_iter =
+        std::make_shared< FieldOnCellsReal >( FEDesc, currBehaviour, "ELGA_VARI_R", currElemChara );
+    calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output matrix
     auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
@@ -489,30 +494,30 @@ DiscreteComputation::computeTangentPredictionMatrix(
     elemVect->prepareCompute( option );
 
     // Create output fields
-    FieldOnCellsRealPtr stress_pred = std::make_shared< FieldOnCellsReal >(
-        currModel, nullptr, "ELGA_SIEF_R", currElemChara, FEDesc = FEDesc );
+    FieldOnCellsRealPtr stress_pred =
+        std::make_shared< FieldOnCellsReal >( currModel, nullptr, "ELGA_SIEF_R", currElemChara );
     FieldOnCellsLongPtr maskField = std::make_shared< FieldOnCellsLong >( FEDesc );
     FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
 
     // Add output fields
-    _calcul->addOutputField( "PCONTPR", stress_pred );
-    _calcul->addOutputField( "PCOPRED", maskField );
-    _calcul->addOutputField( "PCODRET", exitField );
+    calcul->addOutputField( "PCONTPR", stress_pred );
+    calcul->addOutputField( "PCOPRED", maskField );
+    calcul->addOutputField( "PCODRET", exitField );
 
     // Add output elementary
-    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
 
     // Compute
     if ( currModel->existsFiniteElement() ) {
-        _calcul->compute();
-        if ( _calcul->hasOutputElementaryTerm( "PMATUUR" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUUR" ) );
-        if ( _calcul->hasOutputElementaryTerm( "PMATUNS" ) )
-            elemMatr->addElementaryTerm( _calcul->getOutputElementaryTerm( "PMATUNS" ) );
-        if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) )
-            elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+        if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
+        if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) )
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTUR" ) );
         elemVect->build();
         elemMatr->build();
     };
@@ -526,4 +531,41 @@ DiscreteComputation::computeTangentPredictionMatrix(
 #endif
 
     return std::make_tuple( exitField, exitCode, elemMatr );
+}
+
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
+    const MeshCoordinatesFieldPtr geom, const FieldOnNodesRealPtr displ,
+    const FieldOnNodesRealPtr displ_step, const FieldOnCellsRealPtr data ) const {
+    // Select option for matrix
+    std::string option = "RIGI_CONT";
+
+    auto [Fed_Slave, Fed_pair] = _phys_problem->getListOfLoads()->getContactLoadDescriptor();
+
+    // Prepare computing
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+    calcul->setFiniteElementDescriptor( Fed_pair );
+
+    // Set input field
+    calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+    calcul->addInputField( "PGEOMCR", geom );
+    calcul->addInputField( "PDEPL_M", displ );
+    calcul->addInputField( "PDEPL_P", displ_step );
+    calcul->addInputField( "PCONFR", data );
+
+    // Create output vector
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
+    elemMatr->setModel( _phys_problem->getModel() );
+    elemMatr->prepareCompute( option );
+
+    // Add output elementary
+    calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+
+    // Computation
+    calcul->compute();
+    if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
+        elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+    }
+    elemMatr->build();
+
+    return elemMatr;
 }

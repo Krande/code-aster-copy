@@ -29,7 +29,7 @@
 
 MeshCoordinatesField &MeshCoordinatesField::operator+=( const FieldOnNodesReal &rhs ) {
 
-    std::string base( "V" ), cumul( "CUMU" );
+    std::string base( "G" ), cumul( "CUMU" );
     ASTERDOUBLE alpha = 1.;
     MeshCoordinatesField oldCoord = this->duplicate();
 
@@ -42,7 +42,7 @@ MeshCoordinatesField &MeshCoordinatesField::operator+=( const FieldOnNodesReal &
 
 MeshCoordinatesField MeshCoordinatesField::operator+( const FieldOnNodesReal &rhs ) {
 
-    std::string base( "V" ), cumul( "CUMU" );
+    std::string base( "G" ), cumul( "CUMU" );
     ASTERDOUBLE alpha = 1.;
     MeshCoordinatesField newCoord = this->duplicate();
 

@@ -25,15 +25,13 @@
 
 #include "Contact/ContactNew.h"
 #include "Contact/ContactPairing.h"
-#include "LinearAlgebra/ElementaryMatrix.h"
 #include "DataFields/FieldOnCells.h"
+#include "LinearAlgebra/ElementaryMatrix.h"
 
 class ContactComputation {
   private:
     // Contact Definition
     ContactNewPtr _contact;
-    // FED after pairing
-    FiniteElementDescriptorPtr _fed;
 
     /**
      * @brief Convert ELNO -> NOEU for virtual nodes
@@ -44,22 +42,17 @@ class ContactComputation {
     ContactComputation( const ContactNewPtr contact ) : _contact( contact ){};
 
     /**
-     * @brief Build contact resolution FiniteElementDescriptor
-     */
-    void buildContactResFED( const ContactPairingPtr pairing );
-
-    FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _fed; };
-
-    /**
      * @brief Compute geometric gap
      */
     std::pair< FieldOnNodesRealPtr, FieldOnNodesRealPtr >
-    geometricGap( const MeshCoordinatesFieldPtr coor ) const;
+    geometricGap( const ContactPairingPtr pairing ) const;
 
     /**
      * @brief Compute contact mortar matrix
      */
     ElementaryMatrixDisplacementRealPtr contactMortarMatrix() const;
+
+    FieldOnCellsRealPtr contactData( const ContactPairingPtr pairing ) const;
 };
 
 /**

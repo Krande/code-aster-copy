@@ -54,6 +54,7 @@ def meca_non_line_ops(self, **args):
         ETAT_INIT=args["ETAT_INIT"],
         INCREMENT=args["INCREMENT"],
         INFO=args["INFO"],
+        CONTACT=args["CONTACT"],
     )
 
     # Add behaviour
@@ -75,6 +76,11 @@ def meca_non_line_ops(self, **args):
                 snl.phys_pb.addLoadFromDict(load)
             else:
                 raise RuntimeError("Unknown load")
+
+    # Add contact
+    if args["CONTACT"] is not None:
+        fed_defi = args["CONTACT"].get("DEFINITION").getFiniteElementDescriptor()
+        snl.phys_pb.getListOfLoads().addContactLoadDescriptor(fed_defi, None)
 
     # Add linear solver
     snl.setLinearSolver(keywords=args["SOLVEUR"])

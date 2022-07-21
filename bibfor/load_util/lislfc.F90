@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine lislfc(list_load_resu, i_load      , i_excit   , l_load_user,&
-                  l_func_c      , load_keyword, const_func, load_func, base)
+                  l_func_c      , load_keyword, const_func, load_func, basez)
 !
 implicit none
 !
@@ -39,7 +39,7 @@ aster_logical, intent(in) :: l_load_user, l_func_c
 character(len=16), intent(in) :: load_keyword
 character(len=8), intent(inout) :: const_func
 character(len=8), intent(out) :: load_func
-character(len=1), intent(in) :: base
+character(len=1), intent(in), optional :: basez
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,6 +71,7 @@ character(len=1), intent(in) :: base
     character(len=19) :: nomf19
     integer :: iret
     aster_logical :: l_func_r
+    character(len=1) :: base
     integer, pointer :: v_llresu_info(:) => null()
     character(len=24), pointer :: v_llresu_name(:) => null()
     character(len=24), pointer :: v_llresu_func(:) => null()
@@ -79,6 +80,10 @@ character(len=1), intent(in) :: base
 !
     load_func = ' '
     l_func_r  = .not. l_func_c
+    base = "V"
+    if(present(basez)) then
+        base = basez
+    end if
 !
 ! - Access to saved list of loads datastructure
 !

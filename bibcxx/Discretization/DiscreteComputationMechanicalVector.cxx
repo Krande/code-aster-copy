@@ -38,12 +38,12 @@
 std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
             FieldOnNodesRealPtr >
 DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
-                                            const FieldOnNodesRealPtr displ_incr,
+                                            const FieldOnNodesRealPtr displ_step,
                                             const FieldOnCellsRealPtr stress,
-                                            const FieldOnCellsRealPtr _internVar,
+                                            const FieldOnCellsRealPtr internVar,
                                             const ASTERDOUBLE &time_prev,
-                                            const ASTERDOUBLE &time_curr,
-                                            const VectorString &groupOfCells ) {
+                                            const ASTERDOUBLE &time_step,
+                                            const VectorString &groupOfCells ) const {
 
     FieldOnCellsRealPtr _externVarFieldPrev;
     FieldOnCellsRealPtr _externVarFieldCurr;
@@ -58,21 +58,21 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
     std::string option = "RAPH_MECA";
 
     // Prepare computing:
-    CalculPtr _calcul =
-        createCalculForNonLinear( option, time_prev, time_curr, _externVarFieldPrev,
+    CalculPtr calcul =
+        createCalculForNonLinear( option, time_prev, time_prev + time_step, _externVarFieldPrev,
                                   _externVarFieldCurr, groupOfCells );
-    FiniteElementDescriptorPtr FEDesc = _calcul->getFiniteElementDescriptor();
+    FiniteElementDescriptorPtr FEDesc = calcul->getFiniteElementDescriptor();
 
     // Set current physical state
-    _calcul->addInputField( "PDEPLMR", displ );
-    _calcul->addInputField( "PDEPLPR", displ_incr );
-    _calcul->addInputField( "PCONTMR", stress );
-    _calcul->addInputField( "PVARIMR", _internVar );
+    calcul->addInputField( "PDEPLMR", displ );
+    calcul->addInputField( "PDEPLPR", displ_step );
+    calcul->addInputField( "PCONTMR", stress );
+    calcul->addInputField( "PVARIMR", internVar );
 
     // Provisoire: pour TANGENTE=VERIFICATION, nécessité de variables internes à chaque itération
-    FieldOnCellsRealPtr vari_iter = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
-    _calcul->addInputField( "PVARIMP", vari_iter );
+    FieldOnCellsRealPtr vari_iter =
+        std::make_shared< FieldOnCellsReal >( FEDesc, currBehaviour, "ELGA_VARI_R", currElemChara );
+    calcul->addInputField( "PVARIMP", vari_iter );
 
     // Create output vector
     auto elemVect = std::make_shared< ElementaryVectorReal >();
@@ -82,26 +82,26 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
     elemVect->prepareCompute( option );
 
     // Create output fields
-    FieldOnCellsRealPtr stress_curr = std::make_shared< FieldOnCellsReal >(
-        currModel, nullptr, "ELGA_SIEF_R", currElemChara, FEDesc = FEDesc );
+    FieldOnCellsRealPtr stress_curr =
+        std::make_shared< FieldOnCellsReal >( FEDesc, nullptr, "ELGA_SIEF_R", currElemChara );
     FieldOnCellsLongPtr exitField = std::make_shared< FieldOnCellsLong >( FEDesc );
-    FieldOnCellsRealPtr vari_curr = std::make_shared< FieldOnCellsReal >(
-        currModel, currBehaviour, "ELGA_VARI_R", currElemChara, FEDesc = FEDesc );
+    FieldOnCellsRealPtr vari_curr =
+        std::make_shared< FieldOnCellsReal >( FEDesc, currBehaviour, "ELGA_VARI_R", currElemChara );
 
     // Add output fields
-    _calcul->addOutputField( "PVARIPR", vari_curr );
-    _calcul->addOutputField( "PCONTPR", stress_curr );
-    _calcul->addOutputField( "PCODRET", exitField );
+    calcul->addOutputField( "PVARIPR", vari_curr );
+    calcul->addOutputField( "PCONTPR", stress_curr );
+    calcul->addOutputField( "PCODRET", exitField );
 
     // Add output elementary
-    _calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTUR", std::make_shared< ElementaryTermReal >() );
 
     // Compute
     FieldOnNodesRealPtr internalForces;
     if ( currModel->existsFiniteElement() ) {
-        _calcul->compute();
-        if ( _calcul->hasOutputElementaryTerm( "PVECTUR" ) )
-            elemVect->addElementaryTerm( _calcul->getOutputElementaryTerm( "PVECTUR" ) );
+        calcul->compute();
+        if ( calcul->hasOutputElementaryTerm( "PVECTUR" ) )
+            elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTUR" ) );
         elemVect->build();
         internalForces = elemVect->assemble( _phys_problem->getDOFNumbering() );
     };
@@ -119,7 +119,7 @@ DiscreteComputation::computeInternalForces( const FieldOnNodesRealPtr displ,
 
 /** @brief Compute AFFE_CHAR_MECA DDL_IMPO */
 bool DiscreteComputation::addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time_value ) {
+                                               const ASTERDOUBLE time_value ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -147,11 +147,11 @@ bool DiscreteComputation::addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
 }
 
 /** @brief Compute CHAR_MECA */
-bool DiscreteComputation::addMecaNeumannTerms(ElementaryVectorRealPtr elemVect,
-                                              const ASTERDOUBLE time_value,
-                                              const ASTERDOUBLE time_delta,
-                                              const ASTERDOUBLE time_theta,
-                                              const FieldOnCellsRealPtr _externVarField ) {
+bool DiscreteComputation::addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
+                                               const ASTERDOUBLE time_value,
+                                               const ASTERDOUBLE time_delta,
+                                               const ASTERDOUBLE time_theta,
+                                               const FieldOnCellsRealPtr _externVarField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
@@ -172,8 +172,8 @@ bool DiscreteComputation::addMecaNeumannTerms(ElementaryVectorRealPtr elemVect,
     std::string vectElemName = ljust( elemVect->getName(), 24 );
     std::string modelName = ljust( currModel->getName(), 24 );
     std::string materName = ljust( currMater->getName(), 24 );
-    std::string currCodedMaterName
-        = ljust( currCodedMater->getCodedMaterialField()->getName(), 24 );
+    std::string currCodedMaterName =
+        ljust( currCodedMater->getCodedMaterialField()->getName(), 24 );
     std::string stop( "S" );
     std::string currElemCharaName( " " );
     if ( currElemChara )
@@ -186,10 +186,45 @@ bool DiscreteComputation::addMecaNeumannTerms(ElementaryVectorRealPtr elemVect,
         externVarName = _externVarField->getName();
     }
     externVarName.resize( 24, ' ' );
-    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc,
-                       &time_value, &time_delta, &time_theta,
-                       currElemCharaName, materName,
-                       currCodedMaterName, vectElemName, externVarName );
+    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &time_value, &time_delta, &time_theta,
+                       currElemCharaName, materName, currCodedMaterName, vectElemName,
+                       externVarName );
 
     return true;
+}
+
+FieldOnNodesRealPtr DiscreteComputation::contactForces( const MeshCoordinatesFieldPtr geom,
+                                                        const FieldOnNodesRealPtr displ,
+                                                        const FieldOnNodesRealPtr displ_step,
+                                                        const FieldOnCellsRealPtr data ) const {
+    // Select option for matrix
+    std::string option = "CHAR_MECA_CONT";
+
+    auto [Fed_Slave, Fed_pair] = _phys_problem->getListOfLoads()->getContactLoadDescriptor();
+
+    // Prepare computing
+    CalculPtr calcul = std::make_unique< Calcul >( option );
+    calcul->setFiniteElementDescriptor( Fed_pair );
+
+    // Set input field
+    calcul->addInputField( "PGEOMER", _phys_problem->getMesh()->getCoordinates() );
+    calcul->addInputField( "PGEOMCR", geom );
+    calcul->addInputField( "PDEPL_M", displ );
+    calcul->addInputField( "PDEPL_P", displ_step );
+    calcul->addInputField( "PCONFR", data );
+
+    // Create output vector
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >();
+    elemVect->prepareCompute( option );
+
+    // Add output elementary
+    calcul->addOutputElementaryTerm( "PVECTCR", std::make_shared< ElementaryTermReal >() );
+
+    // Computation
+    calcul->compute();
+    if ( calcul->hasOutputElementaryTerm( "PVECTCR" ) )
+        elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTCR" ) );
+    elemVect->build();
+
+    return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }

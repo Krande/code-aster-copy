@@ -75,8 +75,7 @@ class CMS32D(CMS22D):
     """
     meshType = MT.SEG3
     nodes = (
-            SetOfNodes('EN1', (1,2,)),
-            SetOfNodes('EN2', (3,)),
+            SetOfNodes('EN1', (1,2,3)),
         )
     calculs = (
 

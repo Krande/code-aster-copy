@@ -26,8 +26,7 @@ class PhysicalState:
     """This object represents a Physical State of the model."""
 
     _time = _time_step = None
-    _time_field = None
-    _primal = _primal_incr = _internVar = _stress = _externVar = None
+    _primal = _primal_step = _internVar = _stress = _externVar = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     @property
@@ -73,18 +72,18 @@ class PhysicalState:
         self._primal = field
 
     @property
-    def primal_incr(self):
+    def primal_step(self):
         """FieldOnNodesReal: Primal increment."""
-        return self._primal_incr
+        return self._primal_step
 
-    @primal_incr.setter
-    def primal_incr(self, field):
+    @primal_step.setter
+    def primal_step(self, field):
         """Set primal increment.
 
         Arguments:
             field (FieldOnNodesReal): Primal increment
         """
-        self._primal_incr = field
+        self._primal_step = field
 
     @property
     def stress(self):
@@ -127,11 +126,6 @@ class PhysicalState:
             field (FieldOnCellsReal): external state variables
         """
         self._externVar = field
-
-    @property
-    def time_field(self):
-        """ConstantFieldOnCellsReal: time field."""
-        return self._time_field
 
     @profile
     def createPrimal(self, phys_pb, value):
@@ -278,12 +272,11 @@ class PhysicalState:
             other (PhysicalState): physical model
         """
         # primal in two steps to create a new object (and not modified previous values)
-        primal_up = self._primal + other.primal_incr
+        primal_up = self._primal + other.primal_step
         self._primal = primal_up
         self._internVar = other.internVar
         self._stress = other.stress
         self._time += other.time_step
-        self._time_field = other.time_field
 
     @profile
     def extractFieldsFromResult(self, resu, rank, fields):

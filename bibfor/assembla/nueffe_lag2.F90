@@ -1028,7 +1028,7 @@ implicit none
 !
     p_nequ(2) = nb_dof
 !
-    if (niv .ge. 1 .and. .not.lparallel_mesh) then
+    if (niv .ge. 1 .and. .not.lparallel_mesh .and. moloc.eq.' ') then
 
 ! ---   CALCUL DE NMA : NOMBRE DE NOEUDS DU MAILLAGE PORTEURS DE DDLS :
 !       ----------------------------------------------------------------

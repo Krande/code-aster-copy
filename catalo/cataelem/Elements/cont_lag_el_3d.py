@@ -36,8 +36,12 @@ from cataelem.Options.options import OP
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(
-                                 ('EN1', ('DX', 'DY', 'DZ',)),
-                                 ('EN2', ('DX', 'DY', 'DZ', 'LAGS_C',)),))
+                                 # Slave nodes with LAG_C
+                                 ('EN1', ('DX', 'DY', 'DZ', 'LAGS_C',)),
+                                 # Slave nodes without LAG_C
+                                 ('EN2', ('DX', 'DY', 'DZ',)),
+                                 # Master nodes
+                                 ('EN3', ('DX', 'DY', 'DZ',)),))
 
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -46,12 +50,14 @@ NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
 CGAPR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
                           components=(
                               ('EN1', ('X1',)),
-                              ('EN2', ()),))
+                              ('EN2', ('X1',)),
+                              ('EN3', ()),))
 
 CSTATR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
                            components=(
                                ('EN1', ('X1',)),
-                               ('EN2', ()),))
+                               ('EN2', ('X1',)),
+                               ('EN3', ()),))
 
 MVECGAP = ArrayOfComponents(phys=PHY.VNEU_R, locatedComponents=CGAPR)
 
@@ -88,34 +94,36 @@ class CMQ4Q4(Element):
     """
     meshType = MT.QUAD44
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4,)),
-        SetOfNodes('EN1', (5, 6, 7, 8,)),
+        SetOfNodes('EN1', (1, 2, 3, 4,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (5, 6, 7, 8,)),
     )
     calculs = (
 
         OP.GAP_GEOM(te=425,
-                    para_in=((SP.PGEOMER, NGEOMER), ),
+                    para_in=((SP.PGEOMCR, NGEOMER), ),
                     para_out=((OP.GAP_GEOM.PVECGAP, MVECGAP),
                               (OP.GAP_GEOM.PVEIGAP, MVEIGAP), ),
                     ),
 
-        # OP.CHAR_MECA_CONT(te=365,
-        #                   para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-        #                            (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-        #                            (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-        #                            (SP.PVITE_P, DDL_MECA), ),
-        #                   para_out=((SP.PVECTCR, MVECTUR),
-        #                             (SP.PVECTFR, MVECTUR),),
-        #                   ),
+        OP.CHAR_MECA_CONT(te=355,
+                          para_in=((SP.PCONFR, LC.CCONFR),
+                                   (SP.PDEPL_M, DDL_MECA),
+                                   (SP.PDEPL_P, DDL_MECA),
+                                   (SP.PGEOMER, NGEOMER),
+                                   (SP.PGEOMCR, NGEOMER), ),
+                          para_out=((SP.PVECTCR, MVECTUR), ),
+                          ),
 
-        # OP.RIGI_CONT(te=364,
-        #              para_in=((SP.PACCE_M, DDL_MECA), (SP.PCONFR, LC.CCONFR),
-        #                       (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-        #                       (SP.PGEOMER, NGEOMER), (SP.PVITE_M, DDL_MECA),
-        #                       (SP.PVITE_P, DDL_MECA), ),
-        #              para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
-        #                        ),
-        #              ),
+        OP.RIGI_CONT(te=355,
+                     para_in=((SP.PCONFR, LC.CCONFR),
+                              (SP.PDEPL_M, DDL_MECA),
+                              (SP.PDEPL_P, DDL_MECA),
+                              (SP.PGEOMER, NGEOMER),
+                              (SP.PGEOMCR, NGEOMER), ),
+                     para_out=((SP.PMATUUR, MMATUUR),
+                               ),
+                     ),
 
         OP.TOU_INI_ELEM(te=99,
                         para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
@@ -136,8 +144,8 @@ class CMT3T3(CMQ4Q4):
       DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
           Slave frictionless Contact Element in 3D  : elementary treatments
       Local Numerotation :
-          TRIA3 SLAVE  ELEMENT : 4-5-6 (DX,DY,DZ)
-          TRIA3 MASTER ELEMENT : 1-2-3 (DX,DY,DZ,LAGS_C)
+          TRIA3 MASTER  ELEMENT : 4-5-6 (DX,DY,DZ)
+          TRIA3 SLAVE ELEMENT : 1-2-3 (DX,DY,DZ,LAGS_C)
       Input parameters :
           PACCE_M - ACCELERATION at T-
           PVITE_M - VELOCITY at T-
@@ -153,8 +161,9 @@ class CMT3T3(CMQ4Q4):
     """
     meshType = MT.TRIA33
     nodes = (
-        SetOfNodes('EN1', (4, 5, 6,)),
-        SetOfNodes('EN2', (1, 2, 3,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (4, 5, 6,)),
     )
 
 
@@ -182,8 +191,9 @@ class CMQ4T3(CMQ4Q4):
     """
     meshType = MT.QU4TR3
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4,)),
-        SetOfNodes('EN1', (5, 6, 7,)),
+        SetOfNodes('EN1', (1, 2, 3, 4,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (5, 6, 7,)),
     )
 
 
@@ -211,8 +221,9 @@ class CMT3Q4(CMQ4Q4):
     """
     meshType = MT.TR3QU4
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3,)),
-        SetOfNodes('EN1', (4, 5, 6, 7,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (4, 5, 6, 7,)),
     )
 
 
@@ -240,8 +251,9 @@ class CMT6T3(CMQ4Q4):
     """
     meshType = MT.TR6TR3
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, )),
-        SetOfNodes('EN1', (4, 5, 6, 7, 8, 9,)),
+        SetOfNodes('EN1', (1, 2, 3, )),
+        SetOfNodes('EN2', (4, 5, 6, )),
+        SetOfNodes('EN3', (7, 8, 9,)),
     )
 
 
@@ -269,8 +281,9 @@ class CMT3T6(CMQ4Q4):
     """
     meshType = MT.TR3TR6
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3,)),
-        SetOfNodes('EN1', (4, 5, 6, 7, 8, 9,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (4, 5, 6, 7, 8, 9,)),
     )
 
 
@@ -298,8 +311,9 @@ class CMT6Q4(CMQ4Q4):
     """
     meshType = MT.TR6QU4
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, )),
-        SetOfNodes('EN1', (4, 5, 6, 7, 8, 9, 10,)),
+        SetOfNodes('EN1', (1, 2, 3, )),
+        SetOfNodes('EN2', (4, 5, 6, )),
+        SetOfNodes('EN3', (7, 8, 9, 10,)),
     )
 
 
@@ -327,8 +341,9 @@ class CMQ4T6(CMQ4Q4):
     """
     meshType = MT.QU4TR6
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4,)),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10,)),
+        SetOfNodes('EN1', (1, 2, 3, 4,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (5, 6, 7, 8, 9, 10,)),
     )
 
 
@@ -356,8 +371,9 @@ class CMT6Q8(CMQ4Q4):
     """
     meshType = MT.TR6QU8
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, )),
-        SetOfNodes('EN1', (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,)),
+        SetOfNodes('EN1', (1, 2, 3, )),
+        SetOfNodes('EN2', (4, 5, 6, )),
+        SetOfNodes('EN3', (7, 8, 9, 10, 11, 12, 13, 14,)),
     )
 
 
@@ -385,8 +401,9 @@ class CMQ8T6(CMQ4Q4):
     """
     meshType = MT.QU8TR6
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12, 13, 14,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8,)),
+        SetOfNodes('EN3', (9, 10, 11, 12, 13, 14,)),
     )
 
 
@@ -414,8 +431,9 @@ class CMT6Q9(CMQ4Q4):
     """
     meshType = MT.TR6QU9
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, )),
-        SetOfNodes('EN1', (4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,)),
+        SetOfNodes('EN1', (1, 2, 3, )),
+        SetOfNodes('EN2', (4, 5, 6, )),
+        SetOfNodes('EN3', (7, 8, 9, 10, 11, 12, 13, 14, 15,)),
     )
 
 
@@ -443,8 +461,9 @@ class CMQ9T6(CMQ4Q4):
     """
     meshType = MT.QU9TR6
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, 9, )),
+        SetOfNodes('EN3', (10, 11, 12, 13, 14, 15,)),
     )
 
 
@@ -472,8 +491,9 @@ class CMQ8T3(CMQ4Q4):
     """
     meshType = MT.QU8TR3
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, )),
+        SetOfNodes('EN3', (9, 10, 11,)),
     )
 
 
@@ -501,8 +521,9 @@ class CMT3Q8(CMQ4Q4):
     """
     meshType = MT.TR3QU8
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3,)),
-        SetOfNodes('EN1', (4, 5, 6, 7, 8, 9, 10, 11,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (4, 5, 6, 7, 8, 9, 10, 11,)),
     )
 
 
@@ -530,8 +551,9 @@ class CMQ8Q4(CMQ4Q4):
     """
     meshType = MT.QU8QU4
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, )),
+        SetOfNodes('EN3', (9, 10, 11, 12,)),
     )
 
 
@@ -559,8 +581,9 @@ class CMQ4Q8(CMQ4Q4):
     """
     meshType = MT.QU4QU8
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4,)),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12,)),
+        SetOfNodes('EN1', (1, 2, 3, 4,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (5, 6, 7, 8, 9, 10, 11, 12,)),
     )
 
 
@@ -588,8 +611,9 @@ class CMQ8Q9(CMQ4Q4):
     """
     meshType = MT.QU8QU9
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, )),
+        SetOfNodes('EN3', (9, 10, 11, 12, 13, 14, 15, 16, 17,)),
     )
 
 
@@ -617,8 +641,9 @@ class CMQ9Q8(CMQ4Q4):
     """
     meshType = MT.QU9QU8
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, 9,)),
+        SetOfNodes('EN3', (10, 11, 12, 13, 14, 15, 16, 17,)),
     )
 
 
@@ -646,8 +671,9 @@ class CMQ9Q4(CMQ4Q4):
     """
     meshType = MT.QU9QU4
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12, 13,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, 9, )),
+        SetOfNodes('EN3', (10, 11, 12, 13,)),
     )
 
 
@@ -675,8 +701,9 @@ class CMQ4Q9(CMQ4Q4):
     """
     meshType = MT.QU4QU9
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4,)),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12, 13,)),
+        SetOfNodes('EN1', (1, 2, 3, 4,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (5, 6, 7, 8, 9, 10, 11, 12, 13,)),
     )
 
 
@@ -704,8 +731,9 @@ class CMQ9T3(CMQ4Q4):
     """
     meshType = MT.QU9TR3
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, 9,)),
+        SetOfNodes('EN3', (10, 11, 12,)),
     )
 
 
@@ -733,8 +761,9 @@ class CMT3Q9(CMQ4Q4):
     """
     meshType = MT.TR3QU9
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3,)),
-        SetOfNodes('EN1', (4, 5, 6, 7, 8, 9, 10, 11, 12,)),
+        SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', (4, 5, 6, 7, 8, 9, 10, 11, 12,)),
     )
 
 
@@ -762,8 +791,9 @@ class CMQ8Q8(CMQ4Q4):
     """
     meshType = MT.QUAD88
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, )),
+        SetOfNodes('EN3', (9, 10, 11, 12, 13, 14, 15, 16,)),
     )
 
 
@@ -791,9 +821,9 @@ class CMQ9Q9(CMQ4Q4):
     """
     meshType = MT.QUAD99
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, 4, )),
-        SetOfNodes('EN1', (5, 6, 7, 8, 9, 10, 11,
-                   12, 13, 14, 15, 16, 17, 18,)),
+        SetOfNodes('EN1', (1, 2, 3, 4, )),
+        SetOfNodes('EN2', (5, 6, 7, 8, 9, )),
+        SetOfNodes('EN3', (10, 11, 12, 13, 14, 15, 16, 17, 18,)),
     )
 
 
@@ -821,6 +851,68 @@ class CMT6T6(CMQ4Q4):
     """
     meshType = MT.TRIA66
     nodes = (
-        SetOfNodes('EN2', (1, 2, 3, )),
-        SetOfNodes('EN1', (4, 5, 6, 7, 8, 9, 10, 11, 12,)),
+        SetOfNodes('EN1', (1, 2, 3, )),
+        SetOfNodes('EN2', (4, 5, 6, )),
+        SetOfNodes('EN3', (7, 8, 9, 10, 11, 12,)),
+    )
+
+
+# ------------------------------------------------------------
+class CMP1L3(CMQ4Q4):
+    """
+      CMS3S2 DERIVED FROM THE CMQ4Q4 CLASS ELEMENT : POINT1.
+      This element is for nodes that have Lagrange and are not pairing
+      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+          Slave frictionless Contact Element in 2D : elementary treatments
+      Local Numerotation :
+          POI1 SLAVE  ELEMENT : 1   (DX,DY,DZ,LAGS_C)
+      Input parameters :
+          PACCE_M - ACCELERATION at T-
+          PVITE_M - VELOCITY at T-
+          PDEPL_M - DISPL. at T-
+          PVITE_P - VELOCITY at T+
+          PDEPL_P - DISPL. at T+
+          PGEOMER - CURRENT GEOMETRY
+          PCONFR - FRICTIONAL CONTACT PARAMETERS
+      Output parameters :
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    """
+    meshType = MT.POI1
+    nodes = (
+        SetOfNodes('EN1', (1,)),
+        SetOfNodes('EN2', ()),
+        SetOfNodes('EN3', ()),
+    )
+
+# ------------------------------------------------------------
+
+
+class CMP1N3(CMQ4Q4):
+    """
+      CMS3S2 DERIVED FROM THE CMQ4Q4 CLASS ELEMENT : POINT1.
+      This element is for nodes that have no Lagrange and are not pairing
+      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+          Slave frictionless Contact Element in 2D : elementary treatments
+      Local Numerotation :
+          POI1 SLAVE  ELEMENT : 1   (DX,DY,DZ)
+      Input parameters :
+          PACCE_M - ACCELERATION at T-
+          PVITE_M - VELOCITY at T-
+          PDEPL_M - DISPL. at T-
+          PVITE_P - VELOCITY at T+
+          PDEPL_P - DISPL. at T+
+          PGEOMER - CURRENT GEOMETRY
+          PCONFR - FRICTIONAL CONTACT PARAMETERS
+      Output parameters :
+          PMATUNS : NON SYMMETRIC MATRIX (te=356)
+          PMMATUR : SYMMETRIC MATRIX (te=356)
+          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    """
+    meshType = MT.POI1
+    nodes = (
+        SetOfNodes('EN1', ()),
+        SetOfNodes('EN2', (1,)),
+        SetOfNodes('EN3', ()),
     )

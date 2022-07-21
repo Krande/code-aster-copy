@@ -1,10 +1,5 @@
-#ifndef PAIRING_H_
-#define PAIRING_H_
-
 /**
  * @file ContactPairing.h
- * @brief Fichier entete de la class Contact
- * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
@@ -24,6 +19,8 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include "Contact/ContactNew.h"
 #include "Contact/ContactParameters.h"
 #include "Contact/ContactZone.h"
@@ -35,8 +32,8 @@ class ContactPairing : public DataStructure {
   private:
     /** @brief new coordinates */
     MeshCoordinatesFieldPtr _newCoordinates;
-    /** @brief vector of zones  */
-    std::vector< ContactZonePtr > _zones;
+    /** @brief Contact definition  */
+    ContactNewPtr _contDefi;
     /** @brief Mesh */
     BaseMeshPtr _mesh;
     /** @brief Vector of number of pairs */
@@ -47,28 +44,25 @@ class ContactPairing : public DataStructure {
     std::vector< VectorLong > _nbIntersectionPoints;
     /** @brief Vector of slave intersection points */
     std::vector< VectorReal > _slaveIntersectionPoints;
+    /** @brief Map between pair and zone */
+    std::map<ASTERINTEGER, ASTERINTEGER> _pair2Zone;
+    // FED after pairing
+    FiniteElementDescriptorPtr _fed;
 
   public:
     typedef std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > VectorLongPairs;
 
     /** @brief Mesh constructor */
-    ContactPairing( const std::string name, const std::vector< ContactZonePtr > zones,
-                    const BaseMeshPtr mesh );
-
-    /** @brief Mesh constructor */
-    ContactPairing( const std::vector< ContactZonePtr > zones, const BaseMeshPtr mesh )
-        : ContactPairing( ResultNaming::getNewResultName(), zones, mesh ){};
+    ContactPairing( const std::string name, const ContactNewPtr cont );
 
     /** @brief constructor */
     ContactPairing( const ContactNewPtr cont )
-        : ContactPairing( ResultNaming::getNewResultName(), cont->getContactZones(),
-                          cont->getMesh() ){};
+        : ContactPairing( ResultNaming::getNewResultName(), cont ){};
 
-    /** @brief Mesh getter */
+    /** @brief Get coordinates */
     MeshCoordinatesFieldPtr getCoordinates() const { return _newCoordinates; }
 
-    /** @brief zones  getter */
-    std::vector< ContactZonePtr > getContactZones() const { return _zones; }
+    BaseMeshPtr getMesh() const { return _mesh; };
 
     /** @brief Update coordinates */
     void updateCoordinates( FieldOnNodesRealPtr &disp ) {
@@ -80,15 +74,12 @@ class ContactPairing : public DataStructure {
 
     ASTERBOOL compute();
 
-    /** @brief get zone of index zone_index */
-    ContactZonePtr getContactZone( ASTERINTEGER zone_index ) { return _zones[zone_index]; }
-
     /** @brief clearZone all pairing quantities of zone i */
     void clearZone( ASTERINTEGER i );
 
     /** @brief clearZone all pairing quantities for all zones */
     void clear() {
-        for ( auto i = 0; i < _zones.size(); i++ ) {
+        for ( auto i = 0; i < _contDefi->getNumberOfContactZones(); i++ ) {
             clearZone( i );
         }
     };
@@ -112,9 +103,26 @@ class ContactPairing : public DataStructure {
     /** @brief get slave intersection points of zone zone_index
      *   @return vector of slave intersection points of size 16*number of pairs
      **/
-    std::vector<VectorReal> getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const;
+    std::vector< VectorReal > getSlaveIntersectionPoints( ASTERINTEGER zone_index ) const;
+
+    /** @brief Get vector of number of intersection points  */
+    std::vector< VectorLong > getNumberOfIntersectionPoints() const {
+        return _nbIntersectionPoints;
+    };
+
+    /** @brief Get vector of slave intersection points */
+    std::vector< VectorReal > getSlaveIntersectionPoints() const {
+        return _slaveIntersectionPoints;
+    };
+
+    /** @brief Build Finite Element Descriptor from pairing */
+    void buildFiniteElementDescriptor();
+
+    /** @brief Get Finite Element Descriptor from pairing */
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _fed; };
+
+    /** @brief Get map */
+    std::map<ASTERINTEGER, ASTERINTEGER> pairsToZones() const { return _pair2Zone; };
 };
 
 typedef std::shared_ptr< ContactPairing > ContactPairingPtr;
-
-#endif /* PAIRING_H_ */

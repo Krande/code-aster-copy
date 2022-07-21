@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine promor(nuz, base)
+subroutine promor(nuz, base, printz)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,6 +43,7 @@ subroutine promor(nuz, base)
 !
     character(len=*) :: nuz
     character(len=1) :: base
+    aster_logical, optional :: printz
 !     ------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !     CALCUL DE LA STRUCTURE COMPACTE D'UNE MATRICE
@@ -56,7 +57,7 @@ subroutine promor(nuz, base)
     character(len=8) :: ma, mo, exiele
 !----------------------------------------------------------------------
     character(len=14) :: nu
-    aster_logical :: ldist, ldgrel, lmadis
+    aster_logical :: ldist, ldgrel, lmadis, printt
     character(len=19) :: nomlig
     integer :: iconx2, ili, iel
     integer :: idprn1
@@ -145,6 +146,10 @@ subroutine promor(nuz, base)
     call infniv(ifm, niv)
     call jemarq()
     nu=nuz
+    printt = ASTER_TRUE
+    if(present(printz)) then
+        printt = printz
+    endif
 !
 !
     call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk=mo)
@@ -419,7 +424,7 @@ subroutine promor(nuz, base)
     call jedetr('&&PROMOR.NOSUIV')
     call jedetr('&&PROMOR.ANCIEN.LM   ')
 !
-    if (niv .ge. 1) then
+    if (niv .ge. 1 .and. printt) then
         vali(1) = nequ
         vali(2) = ncoef
         vali(3) = 2*ncoef-nequ

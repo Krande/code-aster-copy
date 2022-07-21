@@ -38,7 +38,7 @@
 bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
                                                const ASTERDOUBLE time_value,
                                                const ASTERDOUBLE time_delta,
-                                               const ASTERDOUBLE time_theta ) {
+                                               const ASTERDOUBLE time_theta ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
@@ -104,7 +104,8 @@ bool DiscreteComputation::addTherImposedTerms( ElementaryVectorRealPtr elemVect,
 /** @brief Compute CHAR_THER_EVOL */
 FieldOnNodesRealPtr DiscreteComputation::transientThermalLoad(
     const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta, const ASTERDOUBLE time_theta,
-    const FieldOnCellsRealPtr _externVarField, const FieldOnNodesRealPtr _previousNodalField ) {
+    const FieldOnCellsRealPtr _externVarField,
+    const FieldOnNodesRealPtr _previousNodalField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( _previousNodalField->exists() );
@@ -163,12 +164,10 @@ FieldOnNodesRealPtr DiscreteComputation::transientThermalLoad(
     return elemVect->assemble( _phys_problem->getDOFNumbering() );
 }
 
-bool DiscreteComputation::addTherNeumannTerms( ElementaryVectorRealPtr elemVect,
-                                               const ASTERDOUBLE time_value,
-                                               const ASTERDOUBLE time_delta,
-                                               const ASTERDOUBLE time_theta,
-                                               const FieldOnCellsRealPtr _externVarField,
-                                               const FieldOnNodesRealPtr _previousNodalField ) {
+bool DiscreteComputation::addTherNeumannTerms(
+    ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
+    const ASTERDOUBLE time_theta, const FieldOnCellsRealPtr _externVarField,
+    const FieldOnNodesRealPtr _previousNodalField ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( _previousNodalField->exists() );

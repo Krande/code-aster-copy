@@ -28,7 +28,7 @@ class TimeStepper:
     def __init__(self, times):
         self.current = 0
         assert(sorted(times) == times)
-        self.times = times
+        self.times = list(times)
 
     def updateTimes(self, time):
         """Update the sequence of times by keeping only the times greater
@@ -49,6 +49,27 @@ class TimeStepper:
             bool: *True* if there is no step to be computed, *False* otherwise.
         """
         return self.current > len(self.times) - 1
+
+    def insertStep(self, index, time):
+        """Inserts the step to given index.
+
+        Arguments:
+            index (int): index to insert nex step
+            time (float): time value to insert.
+        """
+
+        self.times.insert(index, time)
+
+    def getPrevious(self):
+        """Returns the previous step calculated.
+
+        Returns:
+            float: Previous time value.
+        """
+        if self.hasFinished() or self.current-1 < 0:
+            raise IndexError
+
+        return self.times[self.current-1]
 
     def getNext(self):
         """Returns the next step to be calculated.
@@ -77,6 +98,25 @@ class TimeStepper:
         """Register the current step as completed successfully."""
         self.current += 1
 
+    def split(self, nb_step):
+        """Split last time step in nb_step uniform sub-steps
+
+        Arguments:
+            nb_step (int): Number of sub-steps.
+        """
+        # manage substepping...
+        # for example, step back to the previous step
+        assert nb_step > 1
+
+        time_prev = self.times[self.current-1]
+        time_next = self.getNext()
+        time_step = (time_next - time_prev) / float(nb_step)
+
+        time_add = time_next
+        for i in range(max(0, nb_step-1)):
+            time_add -= time_step
+            self.insertStep(self.current, time_add)
+
     def raiseError(self, exc):
         """Raise an error executing the last step.
 
@@ -85,7 +125,7 @@ class TimeStepper:
         """
         # manage substepping...
         # for example, step back to the previous step
-        self.current = max (self.current - 1, 0)
+        self.current = max(self.current - 1, 0)
         raise exc
 
 

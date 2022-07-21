@@ -99,12 +99,12 @@ const JeveuxVectorLong &FiniteElementDescriptor::getVirtualNodesNumbering() cons
 };
 
 const FiniteElementDescriptor::ConnectivityVirtualCellsExplorer &
-FiniteElementDescriptor::getListOfGroupOfCellsExplorer() const {
+FiniteElementDescriptor::getListOfGroupOfElementsExplorer() const {
     _listOfGroupOfCells->build();
     return _explorer2;
 };
 
-const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfCells() const {
+const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfElements() const {
     _listOfGroupOfCells->build();
     return _listOfGroupOfCells;
 };
@@ -132,7 +132,7 @@ const JeveuxVectorLong &FiniteElementDescriptor::getPhysicalNodesComponentDescri
     return _dofDescriptor;
 };
 
-const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupOfCellsbyCell() const {
+const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupOfElementsbyCell() const {
     _groupsOfCellsNumberByElement->updateValuePointer();
     return _groupsOfCellsNumberByElement;
 };
@@ -226,8 +226,8 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
     const int rank = getMPIRank();
     const int size = getMPISize();
 
-    auto &otherRepe = other->getListOfGroupOfCellsbyCell();
-    auto &otherLiel = other->getListOfGroupOfCells();
+    auto &otherRepe = other->getListOfGroupOfElementsbyCell();
+    auto &otherLiel = other->getListOfGroupOfElements();
 
     const auto nbCells = connectionMesh->getNumberOfCells();
     auto &cellsLocNum = connectionMesh->getCellsLocalNumbering();

@@ -23,6 +23,7 @@ from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
+from .contact_solver import ContactSolver
 from .logging_manager import LoggingManager
 from ...Objects import DiscreteComputation
 
@@ -34,33 +35,29 @@ class StepSolver:
         step_rank (int): Current step to solve.
     """
 
-    current_iter = phys_state = prediction = None
+    current_incr = phys_state = prediction = None
     phys_pb = linear_solver = None
-    epsilon = max_iter = epsilon_type = None
-    matr_update_iter = matr_update_step = current_matrix = step_rank = None
+    param = None
+    matr_update_incr = matr_update_step = current_matrix = step_rank = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, step_rank):
-        self.current_iter = 0
+        self.current_incr = 0
         self.step_rank = step_rank
 
-    def setParameters(self, epsilon_maxi, epsilon_rela, max_iter):
-        """Define convergency parameters.
-
-        `epsilon_maxi` is only used if `epsilon_real` is *None*.
+    def setParameters(self, param):
+        """Set parameters from user keywords.
 
         Arguments:
-            epsilon_maxi (float): Absolute criteria.
-            epsilon_rela (float): Relative criteria.
-            max_iter (int): Maximum number of iterations.
+            param (dict) : user keywords.
         """
-        if epsilon_rela is None:
-            self.epsilon = epsilon_maxi
-            self.epsilon_type = "RESI_GLOB_MAXI"
-        else:
-            self.epsilon = epsilon_rela
-            self.epsilon_type = "RESI_GLOB_RELA"
-        self.max_iter = max_iter
+        self.param = param
+
+        self.prediction = self._get("NEWTON", "PREDICTION")
+        assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: {self.prediction}"
+
+        self.matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
+        self.matr_update_incr = self._get("NEWTON", "REAC_INCR", 1)
 
     def setPhysicalProblem(self, phys_pb):
         """Assign the physical problem.
@@ -77,7 +74,7 @@ class StepSolver:
             phys_state (PhysicalState): Physical state
         """
         self.phys_state = phys_state
-        self.phys_state.primal_incr = self.phys_state.createPrimal(self.phys_pb, 0.0)
+        self.phys_state.primal_step = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
     def getPhysicalState(self):
         """Get the physical state.
@@ -95,42 +92,21 @@ class StepSolver:
         """
         self.linear_solver = linear_solver
 
-    def updatePhysicalState(self, primal_incr, internVar, sigma, timeEndStep, convManager):
+    def updatePhysicalState(self, primal_incr, internVar, sigma, convManager):
         """Update the physical state.
 
         Arguments:
             primal_incr (FieldOnNodes): Displacement increment.
             internVar (FieldOnCells): Internal state variables.
             sigma (FieldOnCells): Stress field.
-            timeEndStep (float): time at end of time step
             convManager (ConvergenceManager): Object that manages the
                 convergency criteria.
         """
-        self.phys_state.primal_incr += primal_incr
+        self.phys_state.primal_step += primal_incr
 
         if convManager.hasConverged():
             self.phys_state.internVar = internVar
             self.phys_state.stress = sigma
-            self.phys_state.time = timeEndStep
-
-    def setPrediction(self, prediction):
-        """Select type of prediction.
-
-        Arguments
-            prediction (str): predicition used in "ELASTIQUE" or "TANGENTE"
-        """
-        assert prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: {prediction}"
-        self.prediction = prediction
-
-    def setUpdateParameters(self, REAC_INCR, REAC_ITER):
-        """Set REAC_INCR and REAC_ITER parameters.
-
-        Arguments:
-            REAC_INCR (int): Number of steps between updating.
-            REAC_ITER (int): Number of iterations between updating.
-        """
-        self.matr_update_step = REAC_INCR
-        self.matr_update_iter = REAC_ITER
 
     def createConvergenceManager(self):
         """Return an object that holds convergence criteria.
@@ -138,7 +114,17 @@ class StepSolver:
         Returns:
             ConvergenceManager: object that manages the convergency criteria.
         """
-        return ConvergenceManager(self.epsilon, self.epsilon_type, self.phys_pb, self.phys_state)
+        epsilon_rela = self._get("CONVERGENCE", "RESI_GLOB_RELA")
+        epsilon_maxi = self._get("CONVERGENCE", "RESI_GLOB_MAXI")
+
+        if epsilon_rela is None:
+            epsilon = epsilon_maxi
+            epsilon_type = "RESI_GLOB_MAXI"
+        else:
+            epsilon = epsilon_rela
+            epsilon_type = "RESI_GLOB_RELA"
+
+        return ConvergenceManager(epsilon, epsilon_type, self.phys_pb, self.phys_state)
 
     def createIncrementalSolver(self):
         """Return a solver for the next iteration.
@@ -146,8 +132,13 @@ class StepSolver:
         Returns:
             IncrementalSolver: object to solve the next iteration.
         """
-        # current_state == U, Delta_U, P, (Sigm)
-        return IncrementalSolver()
+
+        is_solver = IncrementalSolver()
+        is_solver.setPhysicalProblem(self.phys_pb)
+        is_solver.setPhysicalState(self.phys_state)
+        is_solver.setLinearSolver(self.linear_solver)
+
+        return is_solver
 
     def createLoggingManager(self):
         """Return a logging manager
@@ -169,22 +160,22 @@ class StepSolver:
         Returns:
             bool: *True* if there is no iteration to be computed, *False* otherwise.
         """
-        return self.current_iter > self.max_iter
+        return self.current_incr > self._get("CONVERGENCE", "ITER_GLOB_MAXI")
 
-    def _setMatrixType(self):
+    def _setMatrixType(self, contact):
         """Set matrix type.
 
         Returns:
             str: Type of matrix to be computed.
         """
-        if self.current_iter == 0:
+        if self.current_incr == 0:
             matrix_type = "PRED_" + self.prediction
             if self.step_rank % self.matr_update_step == 0:
                 # make unavailable the current predicted matrix
                 self.current_matrix = None
         else:
-            matrix_type = "TANGENTE"
-            if self.current_iter % self.matr_update_iter == 0:
+            matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
+            if self.current_incr % self.matr_update_incr == 0 or contact.enable:
                 # make unavailable the current tangent matrix
                 self.current_matrix = None
         return matrix_type
@@ -201,45 +192,60 @@ class StepSolver:
         logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
         disc_comp = DiscreteComputation(self.phys_pb)
-        timeEndStep = self.phys_state.time + self.phys_state.time_step
+        contact = ContactSolver(self._get("CONTACT", "DEFINITION"))
 
         while not self.hasFinished() and not convManager.hasConverged():
             iteration = self.createIncrementalSolver()
             iteration.setConvergenceCriteria(convManager)
-            iteration.setPhysicalProblem(self.phys_pb)
-            iteration.setPhysicalState(self.phys_state)
-            iteration.setLinearSolver(self.linear_solver)
+            iteration.setContactSolver(contact)
+
+            # pairing for contact
+            contact.pairing(self.phys_pb)
 
             # Select type of matrix
-            matrix_type = self._setMatrixType()
+            matrix_type = self._setMatrixType(contact)
 
             # Solve current iteration
             primal_incr, internVar, sigma, self.current_matrix = iteration.solve(
-                matrix_type, timeEndStep, self.current_matrix
+                matrix_type, self.current_matrix
             )
 
             # Update physical state
-            self.updatePhysicalState(primal_incr, internVar, sigma, timeEndStep, convManager)
+            self.updatePhysicalState(primal_incr, internVar, sigma, convManager)
+            contact.update(self.phys_state)
 
             logManager.printConvTableRow(
                 [
-                    self.current_iter,
+                    self.current_incr,
                     convManager.residual["RESI_GLOB_RELA"],
                     convManager.residual["RESI_GLOB_MAXI"],
                     matrix_type,
                 ]
             )
 
-            self.current_iter += 1
+            self.current_incr += 1
 
         if not convManager.hasConverged():
             raise ConvergenceError("MECANONLINE9_12")
 
         # Je pense que l'on garde trop les matrices assemblées et les factorisées.
         # Il faudrait la supprimer si on ne compte pas la garder
-        if self.matr_update_step == 1 or self.step_rank % self.matr_update_step != 0:
+        if self.matr_update_step == 1 or self.step_rank % self.matr_update_step != 0 \
+            or contact.enable:
             self.current_matrix = None
 
         deleteTemporaryObjects()
 
         logManager.printConvTableEnd()
+
+    def _get(self, keyword, parameter=None, default=None):
+        """ "Return a keyword value"""
+        if parameter is not None:
+            if keyword in self.param:
+                if self.param.get(keyword) is not None:
+                    return self.param.get(keyword).get(parameter, default)
+                return None
+            else:
+                return None
+
+        return self.param.get(keyword, default)

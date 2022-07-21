@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine numer3(modelz, list_loadz, nume_ddlz, sd_iden_relaz)
+subroutine numer3(modelz, list_loadz, nume_ddlz, sd_iden_relaz, base)
 !
 implicit none
 !
@@ -33,6 +33,7 @@ implicit none
     character(len=*), intent(inout) :: nume_ddlz
     character(len=*), intent(in) :: list_loadz
     character(len=*), intent(in) :: sd_iden_relaz
+    character(len=2), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,6 +47,7 @@ implicit none
 ! In  model          : name of model datastructure
 ! In  list_load      : list of loads
 ! In  sd_iden_rela   : name of object for identity relations between dof
+! In  base           : base to create object
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +63,7 @@ implicit none
 !
 ! - Numbering
 !
-    call numero(nume_ddlz, 'VG',&
+    call numero(nume_ddlz, base,&
                 modelz = modelz , list_loadz = list_loadz,&
                 sd_iden_relaz = sd_iden_relaz)
 !

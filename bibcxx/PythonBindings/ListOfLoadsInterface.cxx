@@ -94,4 +94,23 @@ Return the model used
 Returns:
     Model: model used
         )" );
+    c1.def( "addContactLoadDescriptor", &ListOfLoads::addContactLoadDescriptor, R"(
+Add contact load descriptor.
+
+Arguments:
+    FED_Slave (FiniteElementDescriptor): Finite Element Descriptor defining
+        slave cells (in DEFI_CONTACT)
+    FED_Pair (FiniteElementDescriptor): Finite Element Descriptor defining
+        list of contact pair
+        )",
+            py::arg( "FED_Slave" ), py::arg( "FED_Pair" ) );
+    c1.def( "getContactLoadDescriptor", &ListOfLoads::getContactLoadDescriptor, R"(
+Get contact load descriptors.
+
+Returns:
+    (FiniteElementDescriptor): Finite Element Descriptor defining
+        slave cells (in DEFI_CONTACT)
+    (FiniteElementDescriptor): Finite Element Descriptor defining
+        list of contact pair
+        )" );
 };

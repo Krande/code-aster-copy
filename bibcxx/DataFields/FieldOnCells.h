@@ -95,15 +95,21 @@ class FieldOnCells : public DataField {
      * VARI_ELGA)
      * @param typcham Type de champ à calculer
      */
-    FieldOnCells( const ModelPtr &model, const BehaviourPropertyPtr behaviour,
-                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr,
-                  const FiniteElementDescriptorPtr FEDesc = nullptr );
+    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const BehaviourPropertyPtr behaviour,
+                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr );
+
+    FieldOnCells( const ModelPtr model, const BehaviourPropertyPtr behaviour,
+                  const std::string &typcham, const ElementaryCharacteristicsPtr carael = nullptr )
+        : FieldOnCells( model->getFiniteElementDescriptor(), behaviour, typcham, carael ){};
 
     /**
      * @brief Constructor for empty FieldOnCells based on specific physical quantity
      */
-    FieldOnCells( const ModelPtr &model, const std::string option, const std::string paraName,
-                  const FiniteElementDescriptorPtr FEDesc = nullptr );
+    FieldOnCells( const ModelPtr model, const std::string option, const std::string paraName )
+        : FieldOnCells( model->getFiniteElementDescriptor(), option, paraName ){};
+
+    FieldOnCells( const FiniteElementDescriptorPtr FEDesc, const std::string option,
+                  const std::string paraName );
 
     /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {
@@ -417,6 +423,12 @@ class FieldOnCells : public DataField {
     const JeveuxVector< ValueType > &getValues() const { return _valuesList; }
 
     /**
+     * @brief Get descriptor of the field
+     *
+     */
+    JeveuxVectorLong getDescriptor() const { return _descriptor; };
+
+    /**
      * @brief Set the Values object
      *
      * @param value Value to affect
@@ -461,14 +473,44 @@ class FieldOnCells : public DataField {
 
     ASTERINTEGER getNumberOfComponents() const { return getComponents().size(); }
 
-    ASTERINTEGER getNumberOfGroupOfCells() const {
+    ASTERINTEGER getNumberOfGroupOfElements() const {
         _descriptor->updateValuePointer();
 
         return ( *_descriptor )[1];
     }
 
+    ASTERINTEGER getNumberOfElements( const ASTERINTEGER &iGrel ) {
+#ifdef ASTER_DEBUG_CXX
+        if ( iGrel < 0 || iGrel >= getNumberOfGroupOfElements() ) {
+            AS_ABORT( "Out of bounds" );
+        }
+#endif
+        return ( *_descriptor )[( *_descriptor )[4 + iGrel] - 1 + 1];
+    }
+
+    ASTERINTEGER getSizeOfFieldOfElement( const ASTERINTEGER &iGrel ) {
+#ifdef ASTER_DEBUG_CXX
+        if ( iGrel < 0 || iGrel >= getNumberOfGroupOfElements() ) {
+            AS_ABORT( "Out of bounds" );
+        }
+#endif
+        return ( *_descriptor )[( *_descriptor )[4 + iGrel] - 1 + 3];
+    }
+
+    ASTERINTEGER getShifting( const ASTERINTEGER &iGrel, const ASTERINTEGER &iElem ) {
+#ifdef ASTER_DEBUG_CXX
+        if ( iGrel < 0 || iGrel >= getNumberOfGroupOfElements() ) {
+            AS_ABORT( "Out of bounds" );
+        }
+        if ( iElem < 0 || iElem >= getNumberOfElements( iGrel ) ) {
+            AS_ABORT( "Out of bounds" );
+        }
+#endif
+        return ( *_descriptor )[( *_descriptor )[4 + iGrel] - 1 + 4 + 4 * iElem + 4] - 1;
+    }
+
     std::string getLocalMode() const {
-        const auto nbGrel = getNumberOfGroupOfCells();
+        const auto nbGrel = getNumberOfGroupOfElements();
         _descriptor->updateValuePointer();
         const std::string cata = "&CATA.TE.NOMMOLOC";
         JeveuxChar24 objName, charName;
@@ -518,7 +560,7 @@ class FieldOnCells : public DataField {
         JeveuxVectorLong CellsRank = getMesh()->getCellsRank();
         CellsRank->updateValuePointer();
 
-        JeveuxCollectionLong collec = _dofDescription->getListOfGroupOfCells();
+        JeveuxCollectionLong collec = _dofDescription->getListOfGroupOfElements();
         JeveuxVectorLong descr = _descriptor;
         nbgrp = ( *descr )[1];
 

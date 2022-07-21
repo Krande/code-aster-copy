@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,6 +83,7 @@ PBASLOC  = InputParameter(phys=PHY.N480_R)
 PLSNGG     = InputParameter(phys=PHY.NEUT_R,
 comment=""" XFEM """)
 
+
 CHAR_MECA_CONT = Option(
     para_in=(
         SP.PACCE_M,
@@ -100,6 +101,7 @@ CHAR_MECA_CONT = Option(
         SP.PDONCO,
         PFISNO,
         SP.PGEOMER,
+        SP.PGEOMCR,
         SP.PSNO,
         SP.PHEAVNO,
         PHEA_FA,

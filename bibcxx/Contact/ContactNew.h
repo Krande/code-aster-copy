@@ -104,6 +104,10 @@ class ContactNew : public DataStructure {
     void enableSmoothing( const bool &smoothing ) { _smoothing = smoothing; }
 
     bool hasSmoothing() const { return _smoothing; }
+
+    VectorLong getSlaveNodes() const;
+
+    VectorLong getSlaveCells() const;
 };
 
 /**

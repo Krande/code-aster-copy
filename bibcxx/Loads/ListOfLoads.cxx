@@ -161,7 +161,16 @@ bool ListOfLoads::build( ModelPtr model ) {
         dict.container["EXCIT"] = listeExcit;
         cmdSt.define( dict );
 
-        CALLO_NMDOCH_WRAP( name, &iexcit, &icalc, blank, base );
+        /* Add contact FED */
+        std::string ligrel_slav = " ", ligrel_cont = " ";
+        if(_contact.first){
+            ligrel_slav = _contact.first->getName();
+        }
+        if(_contact.second){
+            ligrel_cont = _contact.second->getName();
+        }
+
+        CALLO_NMDOCH_WRAP( name, &iexcit, &icalc, blank, base, ligrel_slav, ligrel_cont );
     } else if ( physic == Physics::Thermal ) {
         CommandSyntax cmdSt( "THER_NON_LINE" );
 

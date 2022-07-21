@@ -26,13 +26,13 @@
 
 void exportDiscreteComputationToPython( py::module_ &mod ) {
 
-    py::class_< DiscreteComputation,
-                DiscreteComputation::DiscreteComputationPtr >(mod, "DiscreteComputation" )
+    py::class_< DiscreteComputation, DiscreteComputation::DiscreteComputationPtr >(
+        mod, "DiscreteComputation" )
         .def( py::init( &initFactoryPtr< DiscreteComputation, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( "imposedDualBC",
-              py::overload_cast< const ASTERDOUBLE, const ASTERDOUBLE, const ASTERDOUBLE > \
-              ( &DiscreteComputation::imposedDualBC ),
+              py::overload_cast< const ASTERDOUBLE, const ASTERDOUBLE, const ASTERDOUBLE >(
+                  &DiscreteComputation::imposedDualBC, py::const_ ),
               R"(
       Return the imposed nodal BC assembled vector
 
@@ -46,8 +46,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
         )",
               py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ) )
         .def( "imposedDualBC",
-              py::overload_cast< const ASTERDOUBLE >    \
-              ( &DiscreteComputation::imposedDualBC ),
+              py::overload_cast< const ASTERDOUBLE >( &DiscreteComputation::imposedDualBC,
+                                                      py::const_ ),
               R"(
       Return the imposed nodal BC assembled vector
 
@@ -95,8 +95,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
             FieldOnNodes: Neumann load vector
         )",
               py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
-              py::arg( "externVarField" ) = nullptr,
-              py::arg( "previousPrimalField" ) = nullptr )
+              py::arg( "externVarField" ) = nullptr, py::arg( "previousPrimalField" ) = nullptr )
         .def( "createExternalStateVariablesField",
               &DiscreteComputation::createExternalStateVariablesField, R"(
             Create external state variable field
@@ -108,19 +107,6 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnCells: field of external state variables at current time
             )",
               py::arg( "time_value" ) )
-        .def( "createTimeField", &DiscreteComputation::createTimeField, R"(
-            Create time field
-
-            Arguments:
-                  time_value (float): Current time
-                  time_delta (float): Time increment
-                  time_theta (float): Theta parameter for integration
-
-            Returns:
-                 ConstantFieldOnCells: field of current time
-
-            )",
-              py::arg( "time_value" ), py::arg( "time_delta" )=0.0, py::arg( "time_theta" )=0.0 )
         .def( "computeExternalStateVariablesLoad",
               &DiscreteComputation::computeExternalStateVariablesLoad, R"(
             Compute load from external state variables
@@ -133,8 +119,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnNodes: load from external state variables
             )",
               py::arg( "time_value" ), py::arg( "externVarField" ) )
-        .def( "transientThermalLoad",
-              &DiscreteComputation::transientThermalLoad, R"(
+        .def( "transientThermalLoad", &DiscreteComputation::transientThermalLoad, R"(
             Compute Transient Thermal Load
 
             Arguments:
@@ -148,8 +133,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                   FieldOnNodes: load from external state variables
             )",
               py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
-              py::arg( "externVarField" ),
-              py::arg( "previousPrimalField" ) = nullptr )
+              py::arg( "externVarField" ), py::arg( "previousPrimalField" ) = nullptr )
         .def( "computeExternalStateVariablesReference",
               &DiscreteComputation::computeExternalStateVariablesReference, R"(
             Compute field for external state variables reference value
@@ -227,8 +211,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 ElementaryMatrix: elementary linear thermal matrices
         )",
               py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
-              py::arg( "fourierMode" ) = 0,
-              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr)
+              py::arg( "fourierMode" ) = 0, py::arg( "groupOfCells" ) = VectorString(),
+              py::arg( "externVarField" ) = nullptr )
 
         .def( "massMatrix", &DiscreteComputation::massMatrix, R"(
             Return the elementary matrices for elastic Stiffness matrix
@@ -258,8 +242,7 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 ElementaryMatrix: elementary mass matrix
             )",
               py::arg( "time_value" ), py::arg( "time_delta" ), py::arg( "time_theta" ),
-              py::arg( "groupOfCells" ) = VectorString(),
-              py::arg( "externVarField" ) = nullptr )
+              py::arg( "groupOfCells" ) = VectorString(), py::arg( "externVarField" ) = nullptr )
 
         .def( "dampingMatrix", &DiscreteComputation::dampingMatrix, R"(
             Return the elementary matrices for elastic Stiffness matrix
@@ -284,11 +267,11 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 displ (FieldOnNodes): displacement field at begin of current time
-                displ_incr (FieldOnNodes): field of increment of displacement
+                displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
                 internVar (FieldOnCells): field of internal state variables at begin of current time
-                time_prev (float): time at begin of current time
-                time_curr (float): time at end of current time
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
@@ -298,8 +281,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 Cauchy stress SIEF_ELGA (FieldOnCells),
                 field of internal forces (FieldOnNodesReal),
         )",
-              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
-              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_curr" ),
+              py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "stress" ),
+              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "computeTangentStiffnessMatrix", &DiscreteComputation::computeTangentStiffnessMatrix,
@@ -308,11 +291,11 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 displ (FieldOnNodes): displacement field at begin of current time
-                displ_incr (FieldOnNodes): field of increment of displacement
+                displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
                 internVar (FieldOnCells): field of internal state variables at begin of current time
-                time_prev (float): time at begin of current time
-                time_curr (float): time at end of current time
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
@@ -320,8 +303,8 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 error code flag (int),
                 elementary tangent matrix (ElementaryMatrixDisplacementReal)
         )",
-              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
-              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_curr" ),
+              py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "stress" ),
+              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
               py::arg( "groupOfCells" ) = VectorString() )
 
         .def( "computeTangentPredictionMatrix",
@@ -330,11 +313,11 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
 
             Arguments:
                 displ (FieldOnNodes): displacement field at begin of current time
-                displ_incr (FieldOnNodes): field of increment of displacement
+                displ_step (FieldOnNodes): field of increment of displacement
                 stress (FieldOnCells): field of stress at begin of current time
                 internVar (FieldOnCells): field of internal state variables at begin of current time
-                time_prev (float): time at begin of current time
-                time_curr (float): time at end of current time
+                time_prev (float): time at begin of the step
+                time_curr (float): delta time between begin and end of the step
                 groupOfCells (list[str]): compute matrices on given groups of cells.
 
             Returns:
@@ -342,7 +325,13 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
                 error code flag (int),
                 elementary tangent matrix (ElementaryMatrixDisplacementReal),
         )",
-              py::arg( "displ" ), py::arg( "displ_incr" ), py::arg( "stress" ),
-              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_curr" ),
-              py::arg( "groupOfCells" ) = VectorString() );
+              py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "stress" ),
+              py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
+              py::arg( "groupOfCells" ) = VectorString() )
+        .def( "contactForces", &DiscreteComputation::contactForces, R"(
+            Compute contact forces
+        )" )
+        .def( "contactMatrix", &DiscreteComputation::contactMatrix, R"(
+            Compute contact matrix
+        )" );
 };

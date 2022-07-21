@@ -72,7 +72,7 @@ implicit none
     character(len=14) :: nume_ddl , nume_ddl_old, moloc
     character(len=24) :: sd_iden_rela
     character(len=3) :: matd
-    aster_logical :: l_matr_dist
+    aster_logical :: l_matr_dist, printt
     aster_logical, parameter :: verbose = ASTER_FALSE, debug = ASTER_FALSE
     integer :: iret
 !
@@ -129,7 +129,8 @@ implicit none
 !
 ! - Create matrix topology
 !
-    call promor(nume_ddl, base(1:1))
+    printt = moloc.eq.' '
+    call promor(nume_ddl, base(1:1), printt)
 !
 ! - Cleaning
 !

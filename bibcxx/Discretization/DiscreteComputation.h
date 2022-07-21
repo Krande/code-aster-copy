@@ -50,46 +50,45 @@ class DiscreteComputation {
 
     /** @brief Compute B elementary matrices fo dualized boundary conditions */
     void baseDualStiffnessMatrix( CalculPtr &calcul,
-                                  ElementaryMatrixDisplacementRealPtr &elemMatr );
+                                  ElementaryMatrixDisplacementRealPtr &elemMatr ) const;
+
+    /** @brief Create time field */
+    ConstantFieldOnCellsRealPtr createTimeField( const ASTERDOUBLE time_value,
+                                                 const ASTERDOUBLE time_delta = 0.0,
+                                                 const ASTERDOUBLE time_theta = 0.0 ) const;
 
     /** @brief Preparation for non-linear computations */
-    CalculPtr createCalculForNonLinear( const std::string option,
-                                        const ASTERDOUBLE &time_prev,
-                                        const ASTERDOUBLE &time_curr,
+    CalculPtr createCalculForNonLinear( const std::string option, const ASTERDOUBLE &time_prev,
+                                        const ASTERDOUBLE &time_step,
                                         const FieldOnCellsRealPtr _externVarFieldPrev,
                                         const FieldOnCellsRealPtr _externVarFieldCurr,
-                                        const VectorString &groupOfCells = VectorString() );
-    /** @brief Compute B elementary matrices fo dualized thermal boundary conditions */
-    void baseDualThermalMatrix( CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr );
-     /** @brief Compute echange contributions to thermal matrix */
-    void baseExchangeThermalMatrix( CalculPtr &calcul,
-                                    ElementaryMatrixTemperatureRealPtr &elemMatr,
-                                    const ASTERDOUBLE time_value,
-                                    const ASTERDOUBLE time_delta,
-                                    const ASTERDOUBLE time_theta );
+                                        const VectorString &groupOfCells = VectorString() ) const;
 
-    bool addTherImposedTerms( ElementaryVectorRealPtr elemVect,
-                              const ASTERDOUBLE time_value,
-                              const ASTERDOUBLE time_delta,
-                              const ASTERDOUBLE time_theta );
+    /** @brief Compute B elementary matrices fo dualized thermal boundary conditions */
+    void baseDualThermalMatrix( CalculPtr &calcul,
+                                ElementaryMatrixTemperatureRealPtr &elemMatr ) const;
+
+    /** @brief Compute echange contributions to thermal matrix */
+    void baseExchangeThermalMatrix( CalculPtr &calcul, ElementaryMatrixTemperatureRealPtr &elemMatr,
+                                    const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
+                                    const ASTERDOUBLE time_theta ) const;
+
+    bool addTherImposedTerms( ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_value,
+                              const ASTERDOUBLE time_delta, const ASTERDOUBLE time_theta ) const;
 
     bool addMecaImposedTerms( ElementaryVectorRealPtr elemVect,
-                              const ASTERDOUBLE time_value );
+                              const ASTERDOUBLE time_value ) const;
 
-    bool addTherNeumannTerms( ElementaryVectorRealPtr elemVect,
-                              const ASTERDOUBLE time_value,
-                              const ASTERDOUBLE time_delta,
-                              const ASTERDOUBLE time_theta,
+    bool addTherNeumannTerms( ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_value,
+                              const ASTERDOUBLE time_delta, const ASTERDOUBLE time_theta,
                               const FieldOnCellsRealPtr _externVarField = nullptr,
-                              const FieldOnNodesRealPtr _previousNodalField = nullptr );
+                              const FieldOnNodesRealPtr _previousNodalField = nullptr ) const;
 
-    bool addMecaNeumannTerms( ElementaryVectorRealPtr elemVect,
-                              const ASTERDOUBLE time_value,
-                              const ASTERDOUBLE time_delta,
-                              const ASTERDOUBLE time_theta,
-                              const FieldOnCellsRealPtr _externVarField = nullptr );
+    bool addMecaNeumannTerms( ElementaryVectorRealPtr elemVect, const ASTERDOUBLE time_value,
+                              const ASTERDOUBLE time_delta, const ASTERDOUBLE time_theta,
+                              const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
- public:
+  public:
     /** @typedef DiscreteComputationPtr */
     typedef std::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
 
@@ -111,18 +110,18 @@ class DiscreteComputation {
      * @param time Time
      * @return Nodal field for imposed displacement
      */
-    FieldOnNodesRealPtr imposedDualBC( const ASTERDOUBLE time_value ) {
-        return this->imposedDualBC(time_value, 0.0, 0.0); };
+    FieldOnNodesRealPtr imposedDualBC( const ASTERDOUBLE time_value ) const {
+        return this->imposedDualBC( time_value, 0.0, 0.0 );
+    };
 
-    FieldOnNodesRealPtr imposedDualBC( const ASTERDOUBLE time_value,
-                                       const ASTERDOUBLE time_delta,
-                                       const ASTERDOUBLE time_theta );
+    FieldOnNodesRealPtr imposedDualBC( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
+                                       const ASTERDOUBLE time_theta ) const;
     /**
      * @brief Compute Dirichlet reaction vector B^T * \lambda
      * @param time Time_Value
      * @return Nodal field for Dirichlet reaction vector
      */
-    FieldOnNodesRealPtr dualReaction( FieldOnNodesRealPtr lagr_curr );
+    FieldOnNodesRealPtr dualReaction( FieldOnNodesRealPtr lagr_curr ) const;
 
     /**
      * @brief Compute Dirichlet imposed dualized displacement B * U
@@ -130,18 +129,17 @@ class DiscreteComputation {
      * @return Nodal field for dualized displacement
      */
     FieldOnNodesRealPtr dualDisplacement( FieldOnNodesRealPtr disp_curr,
-                                          ASTERDOUBLE scaling = 1.0 );
+                                          ASTERDOUBLE scaling = 1.0 ) const;
 
     /**
      * @brief Compute Neumann loads
      * @param TimeParameters Parameters for time
      * @return Nodal field for Neumann loads
      */
-    FieldOnNodesRealPtr neumann( const ASTERDOUBLE time_value,
-                                 const ASTERDOUBLE time_delta,
+    FieldOnNodesRealPtr neumann( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
                                  const ASTERDOUBLE time_theta,
                                  const FieldOnCellsRealPtr _externVarField = nullptr,
-                                 const FieldOnNodesRealPtr _previousPrimalField = nullptr );
+                                 const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
     /**
      * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
      * @param time_value Time
@@ -152,7 +150,7 @@ class DiscreteComputation {
     elasticStiffnessMatrix( const ASTERDOUBLE &time_value = 0.0,
                             const ASTERINTEGER &modeFourier = 0,
                             const VectorString &groupOfCells = VectorString(),
-                            const FieldOnCellsRealPtr _externVarField = nullptr );
+                            const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for thermal model (RIGI_THER)
@@ -161,12 +159,10 @@ class DiscreteComputation {
      * @return Elementary matrices for thermal model (RIGI_THER)
      */
     ElementaryMatrixTemperatureRealPtr
-    linearConductivityMatrix( const ASTERDOUBLE time_value,
-                              const ASTERDOUBLE time_delta,
-                              const ASTERDOUBLE time_theta,
-                              const ASTERINTEGER &modeFourier = -1,
+    linearConductivityMatrix( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
+                              const ASTERDOUBLE time_theta, const ASTERINTEGER &modeFourier = -1,
                               const VectorString &groupOfCells = VectorString(),
-                              const FieldOnCellsRealPtr _externVarField = nullptr);
+                              const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_MECA)
@@ -177,7 +173,7 @@ class DiscreteComputation {
     ElementaryMatrixDisplacementRealPtr
     massMatrix( const ASTERDOUBLE &time_value = 0.0,
                 const VectorString &groupOfCells = VectorString(),
-                const FieldOnCellsRealPtr _externVarField = nullptr );
+                const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for mass matrix (MASS_THER)
@@ -186,11 +182,10 @@ class DiscreteComputation {
      * @return Elementary matrices for mass matrix (MASS_THER)
      */
     ElementaryMatrixTemperatureRealPtr
-    linearCapacityMatrix( const ASTERDOUBLE time_value,
-                          const ASTERDOUBLE time_delta,
+    linearCapacityMatrix( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
                           const ASTERDOUBLE time_theta,
                           const VectorString &groupOfCells = VectorString(),
-                          const FieldOnCellsRealPtr _externVarField = nullptr );
+                          const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute elementary matrices for damping matrix (AMOR_MECA)
@@ -203,7 +198,7 @@ class DiscreteComputation {
                    const ElementaryMatrixDisplacementRealPtr &stiffnessMatrix = nullptr,
                    const ASTERDOUBLE &time_value = 0.0,
                    const VectorString &groupOfCells = VectorString(),
-                   const FieldOnCellsRealPtr _externVarField = nullptr );
+                   const FieldOnCellsRealPtr _externVarField = nullptr ) const;
 
     /**
      * @brief Compute nodal field for kinematic boundary condition
@@ -225,7 +220,7 @@ class DiscreteComputation {
      * @brief Compute B elementary matrices for dualized boundary conditions
      * @return Elementary matrices for dualized boundary conditions
      */
-    ElementaryMatrixDisplacementRealPtr dualStiffnessMatrix();
+    ElementaryMatrixDisplacementRealPtr dualStiffnessMatrix() const;
 
     /**
      * @brief Get physical problem
@@ -234,25 +229,18 @@ class DiscreteComputation {
     PhysicalProblemPtr getPhysicalProblem() const { return _phys_problem; };
 
     /** @brief Create field for external state variables */
-    FieldOnCellsRealPtr createExternalStateVariablesField( const ASTERDOUBLE time_value );
-
-    /** @brief Create time field */
-    ConstantFieldOnCellsRealPtr createTimeField( const ASTERDOUBLE time_value,
-                                                 const ASTERDOUBLE time_delta=0.0,
-                                                 const ASTERDOUBLE time_theta=0.0 );
+    FieldOnCellsRealPtr createExternalStateVariablesField( const ASTERDOUBLE time_value ) const;
 
     /** @brief Compute nodal field for external state variables RHS */
     FieldOnNodesRealPtr
     computeExternalStateVariablesLoad( const ASTERDOUBLE time_value,
-                                       const FieldOnCellsRealPtr _externVarField );
+                                       const FieldOnCellsRealPtr _externVarField ) const;
 
     /** @brief Compute nodal field for external state variables RHS */
     FieldOnNodesRealPtr
-    transientThermalLoad( const ASTERDOUBLE time_value,
-                          const ASTERDOUBLE time_delta,
-                          const ASTERDOUBLE time_theta,
-                          const FieldOnCellsRealPtr _externVarField,
-                          const FieldOnNodesRealPtr _previousPrimalField=nullptr);
+    transientThermalLoad( const ASTERDOUBLE time_value, const ASTERDOUBLE time_delta,
+                          const ASTERDOUBLE time_theta, const FieldOnCellsRealPtr _externVarField,
+                          const FieldOnNodesRealPtr _previousPrimalField = nullptr ) const;
 
     /** @brief Compute field for external state variables reference values */
     FieldOnCellsRealPtr computeExternalStateVariablesReference() const;
@@ -268,11 +256,10 @@ class DiscreteComputation {
      */
     std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, FieldOnCellsRealPtr, FieldOnCellsRealPtr,
                 FieldOnNodesRealPtr >
-    computeInternalForces( const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_incr,
-                           const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr _internVar,
-                           const ASTERDOUBLE &time_prev,
-                           const ASTERDOUBLE &time_curr,
-                           const VectorString &groupOfCells = VectorString() );
+    computeInternalForces( const FieldOnNodesRealPtr displ, const FieldOnNodesRealPtr displ_step,
+                           const FieldOnCellsRealPtr stress, const FieldOnCellsRealPtr internVar,
+                           const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                           const VectorString &groupOfCells = VectorString() ) const;
 
     /**
      * @brief Compute tangent matrix (not assembled)
@@ -283,12 +270,11 @@ class DiscreteComputation {
      */
     std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
     computeTangentStiffnessMatrix( const FieldOnNodesRealPtr displ,
-                                   const FieldOnNodesRealPtr displ_incr,
+                                   const FieldOnNodesRealPtr displ_step,
                                    const FieldOnCellsRealPtr stress,
-                                   const FieldOnCellsRealPtr _internVar,
-                                   const ASTERDOUBLE &time_prev,
-                                   const ASTERDOUBLE &time_curr,
-                                   const VectorString &groupOfCells = VectorString() );
+                                   const FieldOnCellsRealPtr internVar,
+                                   const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                                   const VectorString &groupOfCells = VectorString() ) const;
 
     /**
      * @brief Compute tangent prediction matrix (not assembled)
@@ -299,12 +285,27 @@ class DiscreteComputation {
      */
     std::tuple< FieldOnCellsLongPtr, ASTERINTEGER, ElementaryMatrixDisplacementRealPtr >
     computeTangentPredictionMatrix( const FieldOnNodesRealPtr displ,
-                                    const FieldOnNodesRealPtr displ_incr,
+                                    const FieldOnNodesRealPtr displ_step,
                                     const FieldOnCellsRealPtr stress,
-                                    const FieldOnCellsRealPtr _internVar,
-                                    const ASTERDOUBLE &time_prev,
-                                    const ASTERDOUBLE &time_curr,
-                                    const VectorString &groupOfCells = VectorString() );
+                                    const FieldOnCellsRealPtr internVar,
+                                    const ASTERDOUBLE &time_prev, const ASTERDOUBLE &time_step,
+                                    const VectorString &groupOfCells = VectorString() ) const;
+
+    /**
+     * @brief Compute contact forces
+     */
+    FieldOnNodesRealPtr contactForces( const MeshCoordinatesFieldPtr geom,
+                                       const FieldOnNodesRealPtr displ,
+                                       const FieldOnNodesRealPtr displ_step,
+                                       const FieldOnCellsRealPtr data ) const;
+
+    /**
+     * @brief Compute contact matrix
+     */
+    ElementaryMatrixDisplacementRealPtr contactMatrix( const MeshCoordinatesFieldPtr geom,
+                                                       const FieldOnNodesRealPtr displ,
+                                                       const FieldOnNodesRealPtr displ_step,
+                                                       const FieldOnCellsRealPtr data ) const;
 };
 
 using DiscreteComputationPtr = std::shared_ptr< DiscreteComputation >;

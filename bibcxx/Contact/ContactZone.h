@@ -64,6 +64,10 @@ class ContactZone : public DataStructure {
     JeveuxCollectionLong _masterNeighbors;
     /** @brief  slave cells neighbors */
     JeveuxCollectionLong _slaveNeighbors;
+    /** @brief name of slave side */
+    std::string _slaveGrp;
+    /** @brief name of master side */
+    std::string _masterGrp;
 
 
 

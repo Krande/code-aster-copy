@@ -346,6 +346,11 @@ class BaseDOFNumbering : public DataStructure {
     bool computeNumbering();
 
     /**
+     * @brief renumbering of DOFs
+     */
+    bool computeRenumbering();
+
+    /**
      * @brief Build the Numbering of DOFs
      */
     bool computeNumberingWithLocalMode( const std::string &localMode );

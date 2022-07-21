@@ -17,31 +17,21 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
+"""
+:py:class:`ContactNew` --- Assignment of contact
+************************************************************************
+"""
 
+from libaster import ContactNew
 
-from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
-import cataelem.Commons.physical_quantities as PHY
-import cataelem.Commons.parameters as SP
-import cataelem.Commons.attributes as AT
+from ..Utilities import injector
 
-PVECGAP = OutputParameter(phys=PHY.VNEU_R, type='RESL',
-                          comment="""Contact - Field for gap""")
+@injector(ContactNew)
+class ExtendedContactNew:
+    cata_sdj = "SD.sd_char_contact.sd_char_contact"
 
-PVEIGAP = OutputParameter(phys=PHY.VNEU_R, type='RESL',
-                          comment="""Contact - Field for pairing""")
-
-
-GAP_GEOM = Option(
-    para_in=(
-        SP.PGEOMCR,
-    ),
-    para_out=(
-        PVECGAP,
-        PVEIGAP,
-    ),
-    condition=(
-        CondCalcul('+', ((AT.CONTACT, 'OUI'),)),
-    ),
-    comment=""" GAP_GEOM: CALCUL DU GAP NODAL """,
-)
+    def __getinitargs__(self):
+        """Returns the argument required to reinitialize a
+        ContactNew object during unpickling.
+        """
+        return (self.getName(), self.getModel())
