@@ -145,7 +145,7 @@ integer, optional, intent(inout) :: ierror_
 !
     call projMaAndCheck(proj_tole, elem_dime, &
                         elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                        elem_slav_line_nbnode, elem_slav_coor, elem_slav_line_code, &
+                        elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
                         proj_coop, nb_node_proj, iret)
 !
     if(iret == 2) then

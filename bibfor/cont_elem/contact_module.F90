@@ -70,8 +70,8 @@ type ContactGeom
     real(kind=8), dimension(3,9)        :: slav_depl_curr = 0.d0
     real(kind=8), dimension(4)          :: slav_lagc_curr = 0.d0
     real(kind=8), dimension(2,4)        :: slav_lagf_curr = 0.d0
-    integer                             :: nb_lagr_c
-    integer, dimension(9)               :: indi_lagc
+    integer                             :: nb_lagr_c      = 0
+    integer, dimension(9)               :: indi_lagc      = 0
 
     !! Master side paramaters
     integer                             :: nb_node_mast = 0

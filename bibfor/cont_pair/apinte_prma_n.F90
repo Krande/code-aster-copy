@@ -77,8 +77,12 @@ integer, intent(out) :: iret, nb_node_proj
 ! --- Projection only vertex of slave cell
 !
     nb_node_proj = elem_slav_nbnode
-    if(elem_slav_code == "SE3" .or. elem_slav_code == "TR7" .or. elem_slav_code == "QU9") then
-        nb_node_proj = nb_node_proj - 1
+    if(elem_slav_code == "SE3") then
+        nb_node_proj = 2
+    elseif(elem_slav_code == "QU8" .or. elem_slav_code == "QU9") then
+        nb_node_proj = 4
+    elseif(elem_slav_code == "TR6" .or. elem_slav_code == "TR7") then
+        nb_node_proj = 3
     end if
 
     if(elem_mast_code(1:2) == "SE") then
