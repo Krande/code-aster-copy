@@ -366,7 +366,10 @@ class IncrementalSolver:
         # compute residual
         resi_state, internVar, stress = self.computeResidual(scaling)
 
-        if not self.convManager.isConverged(resi_state):
+        # evaluate convergence
+        self.convManager.evalNormResidual(resi_state)
+
+        if not self.convManager.hasConverged():
             # Time at end of current step
             time_curr = self.phys_state.time + self.phys_state.time_step
 

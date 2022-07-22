@@ -87,6 +87,7 @@ STNL = MECA_NON_LINE(MODELE=MO,
                                 ALGO_RESO_GEOM="NEWTON"),
                      COMPORTEMENT=_F(RELATION='ELAS',),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
+                                    RESI_GLOB_MAXI=1e-2,
                                     ITER_GLOB_MAXI=25,),
                      INCREMENT=_F(LIST_INST=TPS,),
                      SOLVEUR=_F(),)

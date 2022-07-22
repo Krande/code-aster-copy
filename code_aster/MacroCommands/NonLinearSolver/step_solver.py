@@ -114,17 +114,18 @@ class StepSolver:
         Returns:
             ConvergenceManager: object that manages the convergency criteria.
         """
-        epsilon_rela = self._get("CONVERGENCE", "RESI_GLOB_RELA")
-        epsilon_maxi = self._get("CONVERGENCE", "RESI_GLOB_MAXI")
 
-        if epsilon_rela is None:
-            epsilon = epsilon_maxi
-            epsilon_type = "RESI_GLOB_MAXI"
-        else:
-            epsilon = epsilon_rela
-            epsilon_type = "RESI_GLOB_RELA"
+        convMana = ConvergenceManager(self.phys_pb, self.phys_state)
 
-        return ConvergenceManager(epsilon, epsilon_type, self.phys_pb, self.phys_state)
+        criterion = ["RESI_GLOB_RELA", "RESI_GLOB_MAXI"]
+
+        for crit in criterion:
+            epsilon = self._get("CONVERGENCE", crit)
+
+            if epsilon is not None:
+                convMana.addCriteria(crit, epsilon)
+
+        return convMana
 
     def createIncrementalSolver(self):
         """Return a solver for the next iteration.
@@ -217,8 +218,8 @@ class StepSolver:
             logManager.printConvTableRow(
                 [
                     self.current_incr,
-                    convManager.residual["RESI_GLOB_RELA"],
-                    convManager.residual["RESI_GLOB_MAXI"],
+                    convManager.getCriteria("RESI_GLOB_RELA"),
+                    convManager.getCriteria("RESI_GLOB_MAXI"),
                     matrix_type,
                 ]
             )

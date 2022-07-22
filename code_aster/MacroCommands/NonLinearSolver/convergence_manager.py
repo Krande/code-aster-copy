@@ -25,24 +25,43 @@ class ConvergenceManager:
     """Object that decides about the convergence status.
 
     Arguments:
-        epsilon (float): Expected precision.
-        test_type (str): Type of criteria (absolute or relative).
+        criteria (dict): Expected precision for each criteria.
+        values (dict): Current value of criteria.
         phys_pb (PhysicalProblem): Physical problem.
         phys_state (PhysicalState): Physical state.
     """
 
-    converged = epsilon = residual = test_type = None
-    phys_state = phys_pb = elem_comp = None
+    criteria = values = None
+    phys_state = phys_pb = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, epsilon, test_type, phys_pb, phys_state):
-        # store convergence parameters : RESI_GLOB_RELA, RESI_GLOB_MAXI...
-        self.converged = False
-        self.epsilon = epsilon
+    def __init__(self, phys_pb, phys_state):
         self.phys_pb = phys_pb
         self.phys_state = phys_state
-        assert test_type in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI"), test_type
-        self.test_type = test_type
+        self.criteria = {}
+        self.values = {}
+
+    def addCriteria(self, criteria, value):
+        """Add a convergence criteria to verify
+
+        Arguments:
+            criteria (str): name of the criteria.
+            value (float): criteria value
+        """
+
+        self.criteria[criteria] = value
+
+    def getCriteria(self, criteria):
+        """Get current value of the criteria
+
+        Arguments:
+            criteria (str): name of the criteria.
+
+        Returns:
+            (float): criteria value
+        """
+
+        return self.values[criteria]
 
     @profile
     def getDirichletResidual(self, residual):
@@ -112,51 +131,37 @@ class ConvergenceManager:
         return MPI.ASTER_COMM_WORLD.allreduce(scaling, MPI.MAX)
 
     @profile
-    def getNormResidual(self, residuals):
-        """Returns a dictionnary of criteria
+    def evalNormResidual(self, residuals):
+        """Evaluate criteria
 
         Arguments:
             residuals (ResiState): Collections of residuals.
-
-        Returns:
-            dict: convergence criteria (maxi, relative).
         """
-
-        criteria = {}
 
         residual = self.getDirichletResidual(residuals.resi)
 
-        criteria["RESI_GLOB_MAXI"] = residual.norm("NORM_INFINITY")
+        self.values["RESI_GLOB_MAXI"] = residual.norm("NORM_INFINITY")
 
         scaling = self.getRelativeScaling(residuals)
 
         if scaling == 0.0:
-            criteria["RESI_GLOB_RELA"] = -1.0
+            self.values["RESI_GLOB_RELA"] = -1.0
         else:
-            criteria["RESI_GLOB_RELA"] = criteria["RESI_GLOB_MAXI"] / scaling
+            self.values["RESI_GLOB_RELA"] = self.values["RESI_GLOB_MAXI"] / scaling
 
-        return criteria
-
-    def isConverged(self, residuals):
-        """Tell if the *residual* is acceptable.
-
-        Arguments:
-            residual (ResiState): Collection of residuals.
-
-        Returns:
-            bool: *True* if converged, *False* otherwise.
-        """
-        self.residual = self.getNormResidual(residuals)
-        test_type = self.test_type
-        if test_type == "RESI_GLOB_RELA" and self.residual[test_type] < -0.5:
-            test_type = "RESI_GLOB_MAXI"
-        self.converged = self.residual[test_type] < self.epsilon
-        return self.converged
-
+    @profile
     def hasConverged(self):
-        """Tell if the last iteration is converged.
+        """Tell if convergence criteria are verified.
 
         Returns:
             bool: *True* if converged, *False* otherwise.
         """
-        return self.converged
+
+        if len(self.criteria) == 0 or len(self.values) == 0:
+            return False
+
+        for crit in self.criteria:
+            if self.values[crit] > self.criteria[crit]:
+                return False
+
+        return True

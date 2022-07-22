@@ -98,8 +98,6 @@ RES = CALC_CHAMP(reuse=RES,
            RESULTAT=RES,
            CONTRAINTE=('SIEF_NOEU'),)
 
-RES.printMedFile("/home/C00976/tmp/Tay.med")
-
 TEST_RESU(RESU=(_F(INST=1.0,
                    TYPE_TEST='MIN',
                    RESULTAT=RES,
