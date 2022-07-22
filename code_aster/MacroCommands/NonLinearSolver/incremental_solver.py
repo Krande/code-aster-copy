@@ -22,7 +22,7 @@ from libaster import deleteTemporaryObjects
 from ...Objects import DiscreteComputation, AssemblyMatrixDisplacementReal
 from ...Supervis import IntegrationError
 from ...Utilities import no_new_attributes, profile
-from .contact_solver import ContactSolver
+from .contact_manager import ContactManager
 
 class ResiState:
     """Container to store intermediate field."""
@@ -49,7 +49,7 @@ class IncrementalSolver:
     """Solve an iteration."""
 
     phys_state = phys_pb = convManager = None
-    linear_solver = contact_solver = None
+    linear_solver = contManager = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def setPhysicalProblem(self, phys_pb):
@@ -84,13 +84,13 @@ class IncrementalSolver:
         """
         self.linear_solver = solver
 
-    def setContactSolver(self, solver):
+    def setContactManager(self, contManager):
         """Set the contact solver to be used.
 
         Arguments:
-            solver (ContactSolver): a contact solver object
+            contManager (ContactManager): a contact solver object
         """
-        self.contact_solver = solver
+        self.contManager = contManager
 
     @profile
     def computeInternalResidual(self, scaling=1.0):
@@ -176,15 +176,15 @@ class IncrementalSolver:
             FieldOnNodesReal: contact residual.
         """
 
-        if self.contact_solver.enable:
+        if self.contManager.enable:
             disc_comp = DiscreteComputation(self.phys_pb)
 
             # Compute contact forces
             contact_forces = disc_comp.contactForces(
-                self.contact_solver.getPairingCoordinates(),
+                self.contManager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
-                self.contact_solver.data())
+                self.contManager.data())
         else:
             contact_forces = self.phys_state.createPrimal(
                 self.phys_pb, 0.0)
@@ -277,15 +277,15 @@ class IncrementalSolver:
            ElementaryMatrixDisplacementReal: Contact matrix.
         """
 
-        if self.contact_solver.enable:
+        if self.contManager.enable:
             # Main object for discrete computation
             disc_comp = DiscreteComputation(self.phys_pb)
 
             matr_elem_cont = disc_comp.contactMatrix(
-                self.contact_solver.getPairingCoordinates(),
+                self.contManager.getPairingCoordinates(),
                 self.phys_state.primal,
                 self.phys_state.primal_step,
-                self.contact_solver.data()
+                self.contManager.data()
             )
 
             return matr_elem_cont

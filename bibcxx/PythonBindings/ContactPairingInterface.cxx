@@ -40,6 +40,13 @@ Returns:
 Update the mesh coordinates given a displacement field
 )",
               ( py::arg( "disp" ) ) )
+        .def( "setCoordinates", &ContactPairing::setCoordinates, R"(
+Set the mesh coordinates field
+
+Arguments:
+    coordinates (MeshCoordinatesField) : coordinates to use for pairing
+)",
+              ( py::arg( "coordinates" ) ) )
         .def( "compute", &ContactPairing::compute, R"(
 Compute the pairing quantities associated with the zones
 

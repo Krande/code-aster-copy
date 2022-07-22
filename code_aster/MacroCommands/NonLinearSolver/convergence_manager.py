@@ -150,6 +150,16 @@ class ConvergenceManager:
             self.values["RESI_GLOB_RELA"] = self.values["RESI_GLOB_MAXI"] / scaling
 
     @profile
+    def evalGeometricResidual(self, displ_incr):
+        """Evaluate criteria
+
+        Arguments:
+            displ_incr (FieldOnNodesReal): incremental displacement.
+        """
+
+        self.values["RESI_GEOM"] = displ_incr.norm("NORM_INFINITY")
+
+    @profile
     def hasConverged(self):
         """Tell if convergence criteria are verified.
 
@@ -157,8 +167,11 @@ class ConvergenceManager:
             bool: *True* if converged, *False* otherwise.
         """
 
-        if len(self.criteria) == 0 or len(self.values) == 0:
-            return False
+        if len(self.values) == 0:
+            if len(self.criteria) == 0:
+                return True
+            else:
+                return False
 
         for crit in self.criteria:
             if self.values[crit] > self.criteria[crit]:

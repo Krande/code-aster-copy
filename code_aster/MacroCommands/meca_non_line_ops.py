@@ -47,8 +47,6 @@ def _contact_check(CONTACT):
             if zone.hasFriction:
                 assert zone.getFrictionParameter().getType() == FrictionType.Without
 
-        assert CONTACT["ALGO_RESO_GEOM"] == "NEWTON"
-
         if defi.hasFriction:
             assert CONTACT["ALGO_RESO_FROT"] == "NEWTON"
 

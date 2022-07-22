@@ -126,11 +126,15 @@ class NonLinearSolver:
             StepSolver: object used to solve the step.
         """
 
-        solv = StepSolver(step_rank)
+        solv = StepSolver()
         solv.setPhysicalProblem(self.phys_pb)
         solv.setPhysicalState(self.phys_state)
         solv.setLinearSolver(self.linear_solver)
         solv.setParameters(self.param)
+
+        matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
+        if step_rank % matr_update_step != 0:
+            solv.current_matrix = self.current_matrix
 
         return solv
 
@@ -195,7 +199,6 @@ class NonLinearSolver:
         self.stepper.insertStep(self.step_rank, self.phys_state.time)
         self.stepper.completed()
 
-
     @profile
     def run(self):
         """Solve the problem."""
@@ -210,7 +213,6 @@ class NonLinearSolver:
             self.phys_state.time_step = timeEndStep - self.phys_state.time
 
             solv = self.getStepSolver(self.step_rank+1)
-            solv.current_matrix = self.current_matrix
 
             try:
                 solv.solve()

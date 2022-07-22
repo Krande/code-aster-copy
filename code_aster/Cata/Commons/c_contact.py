@@ -42,7 +42,7 @@ def C_CONTACT():
                                                              ITER_GEOM_MAXI=SIMP(
                                                                  statut='f', typ='I', defaut=10),
                                                              RESI_GEOM=SIMP(
-                                                                 statut='f', typ='R', defaut=0.01)
+                                                                 statut='f', typ='R', defaut=1e-6)
                                                              ),
                                           b_controle=BLOC(condition="""equal_to("REAC_GEOM", 'CONTROLE') """,
                                                           NB_ITER_GEOM=SIMP(

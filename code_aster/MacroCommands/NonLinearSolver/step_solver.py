@@ -22,28 +22,22 @@ from libaster import deleteTemporaryObjects
 from ...Supervis import ConvergenceError
 from ...Utilities import no_new_attributes, profile
 from .convergence_manager import ConvergenceManager
-from .incremental_solver import IncrementalSolver
-from .contact_solver import ContactSolver
+from .geometric_solver import GeometricSolver
 from .logging_manager import LoggingManager
-from ...Objects import DiscreteComputation
 
 
 class StepSolver:
     """Solves a step, loops on iterations.
-
-    Arguments:
-        step_rank (int): Current step to solve.
     """
 
-    current_incr = phys_state = prediction = None
+    current_incr = phys_state = None
     phys_pb = linear_solver = None
     param = None
-    matr_update_incr = matr_update_step = current_matrix = step_rank = None
+    geom = current_matrix = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, step_rank):
+    def __init__(self):
         self.current_incr = 0
-        self.step_rank = step_rank
 
     def setParameters(self, param):
         """Set parameters from user keywords.
@@ -52,12 +46,6 @@ class StepSolver:
             param (dict) : user keywords.
         """
         self.param = param
-
-        self.prediction = self._get("NEWTON", "PREDICTION")
-        assert self.prediction in ("ELASTIQUE", "TANGENTE"), f"unsupported value: {self.prediction}"
-
-        self.matr_update_step = self._get("NEWTON", "REAC_ITER", 1)
-        self.matr_update_incr = self._get("NEWTON", "REAC_INCR", 1)
 
     def setPhysicalProblem(self, phys_pb):
         """Assign the physical problem.
@@ -92,21 +80,21 @@ class StepSolver:
         """
         self.linear_solver = linear_solver
 
-    def updatePhysicalState(self, primal_incr, internVar, sigma, convManager):
+    def update(self, convManager):
         """Update the physical state.
 
         Arguments:
-            primal_incr (FieldOnNodes): Displacement increment.
+            primal_step (FieldOnNodes): Displacement step.
             internVar (FieldOnCells): Internal state variables.
             sigma (FieldOnCells): Stress field.
             convManager (ConvergenceManager): Object that manages the
                 convergency criteria.
         """
-        self.phys_state.primal_step += primal_incr
 
-        if convManager.hasConverged():
-            self.phys_state.internVar = internVar
-            self.phys_state.stress = sigma
+        convManager.evalGeometricResidual(self.phys_state.createPrimal(self.phys_pb, 0.0))
+
+        self.geom = self.phys_pb.getMesh().getCoordinates() \
+            + self.phys_state.primal + self.phys_state.primal_step
 
     def createConvergenceManager(self):
         """Return an object that holds convergence criteria.
@@ -117,29 +105,25 @@ class StepSolver:
 
         convMana = ConvergenceManager(self.phys_pb, self.phys_state)
 
-        criterion = ["RESI_GLOB_RELA", "RESI_GLOB_MAXI"]
-
-        for crit in criterion:
-            epsilon = self._get("CONVERGENCE", crit)
-
-            if epsilon is not None:
-                convMana.addCriteria(crit, epsilon)
+        convMana.addCriteria("RESI_GEOM", self._get("CONTACT", "RESI_GEOM", 10e150))
 
         return convMana
 
-    def createIncrementalSolver(self):
-        """Return a solver for the next iteration.
+    def createGeometricSolver(self):
+        """Return a solver for the next geometric iteration.
 
         Returns:
-            IncrementalSolver: object to solve the next iteration.
+            GeometricSolver: object to solve the next iteration.
         """
 
-        is_solver = IncrementalSolver()
-        is_solver.setPhysicalProblem(self.phys_pb)
-        is_solver.setPhysicalState(self.phys_state)
-        is_solver.setLinearSolver(self.linear_solver)
+        geom_solver = GeometricSolver()
+        geom_solver.setParameters(self.param)
+        geom_solver.setPhysicalProblem(self.phys_pb)
+        geom_solver.setPhysicalState(self.phys_state)
+        geom_solver.setLinearSolver(self.linear_solver)
+        geom_solver.setCoordinates(self.geom)
 
-        return is_solver
+        return geom_solver
 
     def createLoggingManager(self):
         """Return a logging manager
@@ -151,6 +135,7 @@ class StepSolver:
         logManager.addConvTableColumn("NEWTON")
         logManager.addConvTableColumn("RESIDU RELATIF RESI_GLOB_RELA")
         logManager.addConvTableColumn("RESIDU ABSOLU RESI_GLOB_MAXI")
+        logManager.addConvTableColumn("RESIDU GEOMETRIQUE RESI_GEOM")
         logManager.addConvTableColumn("OPTION ASSEMBLAGE")
 
         return logManager
@@ -161,25 +146,16 @@ class StepSolver:
         Returns:
             bool: *True* if there is no iteration to be computed, *False* otherwise.
         """
-        return self.current_incr > self._get("CONVERGENCE", "ITER_GLOB_MAXI")
+        reac_geom = self._get("CONTACT", "REAC_GEOM")
 
-    def _setMatrixType(self, contact):
-        """Set matrix type.
-
-        Returns:
-            str: Type of matrix to be computed.
-        """
-        if self.current_incr == 0:
-            matrix_type = "PRED_" + self.prediction
-            if self.step_rank % self.matr_update_step == 0:
-                # make unavailable the current predicted matrix
-                self.current_matrix = None
+        if reac_geom == "AUTOMATIQUE":
+            nb_iter = self._get("CONTACT", "ITER_GEOM_MAXI")
+        elif reac_geom == "CONTROLE":
+            nb_iter = self._get("CONTACT", "NB_ITER_GEOM")
         else:
-            matrix_type = self._get("NEWTON", "MATRICE", "TANGENTE")
-            if self.current_incr % self.matr_update_incr == 0 or contact.enable:
-                # make unavailable the current tangent matrix
-                self.current_matrix = None
-        return matrix_type
+            nb_iter = 1
+
+        return self.current_incr >= nb_iter
 
     @profile
     def solve(self):
@@ -192,48 +168,23 @@ class StepSolver:
         logManager = self.createLoggingManager()
         logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
         logManager.printConvTableEntries()
-        disc_comp = DiscreteComputation(self.phys_pb)
-        contact = ContactSolver(self._get("CONTACT", "DEFINITION"))
+
+        self.geom = self.phys_pb.getMesh().getCoordinates() + self.phys_state.primal
 
         while not self.hasFinished() and not convManager.hasConverged():
-            iteration = self.createIncrementalSolver()
-            iteration.setConvergenceCriteria(convManager)
-            iteration.setContactSolver(contact)
-
-            # pairing for contact
-            contact.pairing(self.phys_pb)
-
-            # Select type of matrix
-            matrix_type = self._setMatrixType(contact)
+            geometric = self.createGeometricSolver()
+            geometric.setLoggingManager(logManager)
 
             # Solve current iteration
-            primal_incr, internVar, sigma, self.current_matrix = iteration.solve(
-                matrix_type, self.current_matrix
-            )
+            self.current_matrix = geometric.solve(self.current_matrix)
 
             # Update physical state
-            self.updatePhysicalState(primal_incr, internVar, sigma, convManager)
-            contact.update(self.phys_state)
-
-            logManager.printConvTableRow(
-                [
-                    self.current_incr,
-                    convManager.getCriteria("RESI_GLOB_RELA"),
-                    convManager.getCriteria("RESI_GLOB_MAXI"),
-                    matrix_type,
-                ]
-            )
+            self.update(convManager)
 
             self.current_incr += 1
 
         if not convManager.hasConverged():
-            raise ConvergenceError("MECANONLINE9_12")
-
-        # Je pense que l'on garde trop les matrices assemblées et les factorisées.
-        # Il faudrait la supprimer si on ne compte pas la garder
-        if self.matr_update_step == 1 or self.step_rank % self.matr_update_step != 0 \
-            or contact.enable:
-            self.current_matrix = None
+            raise ConvergenceError("MECANONLINE9_9")
 
         deleteTemporaryObjects()
 
@@ -242,11 +193,9 @@ class StepSolver:
     def _get(self, keyword, parameter=None, default=None):
         """ "Return a keyword value"""
         if parameter is not None:
-            if keyword in self.param:
-                if self.param.get(keyword) is not None:
-                    return self.param.get(keyword).get(parameter, default)
-                return None
+            if keyword in self.param and self.param.get(keyword) is not None:
+                return self.param.get(keyword).get(parameter, default)
             else:
-                return None
+                return default
 
         return self.param.get(keyword, default)

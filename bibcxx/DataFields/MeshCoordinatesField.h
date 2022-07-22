@@ -84,7 +84,15 @@ class MeshCoordinatesField : public DataField {
      */
     MeshCoordinatesField &operator+=( const FieldOnNodesReal &rhs );
 
-    MeshCoordinatesField operator+( const FieldOnNodesReal &rhs );
+    friend MeshCoordinatesField operator+( MeshCoordinatesField lhs, const FieldOnNodesReal &rhs ) {
+        lhs += rhs;
+        return lhs;
+    };
+
+    friend MeshCoordinatesField operator+( const FieldOnNodesReal &lhs, MeshCoordinatesField rhs ) {
+        rhs += lhs;
+        return rhs;
+    };
 
     /**
      * @brief Assignement operator

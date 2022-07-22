@@ -27,8 +27,8 @@
 
 #include "aster_pybind.h"
 
-#include "DataFields/MeshCoordinatesField.h"
 #include "PythonBindings/DataStructureInterface.h"
+#include "PythonBindings/FieldOnNodesInterface.h"
 
 void exportMeshCoordinatesFieldToPython( py::module_ &mod ) {
 
@@ -36,8 +36,13 @@ void exportMeshCoordinatesFieldToPython( py::module_ &mod ) {
         mod, "MeshCoordinatesField" )
         // fake initFactoryPtr: no default constructor, only for restart
         .def( py::init( &initFactoryPtr< MeshCoordinatesField, std::string > ) )
-        .def( "__getitem__",
-              +[]( const MeshCoordinatesField &v, int i ) { return v.operator[]( i ); }, R"(
+        .def(
+            "__add__", +[]( MeshCoordinatesField &a, const FieldOnNodesReal &b ) { return a + b; } )
+        .def(
+            "__add__", +[]( const FieldOnNodesReal &a, MeshCoordinatesField &b ) { return a + b; } )
+        .def(
+            "__getitem__",
+            +[]( const MeshCoordinatesField &v, int i ) { return v.operator[]( i ); }, R"(
 Return the coordinate at index *idx* in the vector.
 
 The value is the same as *getValues()[idx]* without creating the entire vector.
@@ -45,7 +50,7 @@ The value is the same as *getValues()[idx]* without creating the entire vector.
 Returns:
     float: Values of the *idx*-th coordinate.
         )",
-              py::arg( "idx" ) )
+            py::arg( "idx" ) )
         .def( "getValues", &MeshCoordinatesField::getValues, R"(
 Return a list of values of the coordinates as (x1, y1, z1, x2, y2, z2...)
 

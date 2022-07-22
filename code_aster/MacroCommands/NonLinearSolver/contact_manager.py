@@ -23,21 +23,23 @@ from ...Objects import DiscreteComputation, ContactPairing, ContactComputation
 from ...Utilities import no_new_attributes, profile
 
 
-class ContactSolver:
+class ContactManager:
     """Solve contact problem."""
 
     defi = pair = comp = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
-    def __init__(self, definition):
+    def __init__(self, definition, geom):
         """Initialize contact solver.
 
         Arguments:
             definition (ContactNew): contact definition
+            geom (MeshCoordinatesField) : initial geometry
         """
         self.defi = definition
         if self.defi is not None:
             self.pair = ContactPairing(self.defi)
+            self.pair.setCoordinates(geom)
             self.comp = ContactComputation(self.defi)
 
     @profile

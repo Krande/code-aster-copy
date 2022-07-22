@@ -69,6 +69,11 @@ class ContactPairing : public DataStructure {
         *_newCoordinates = *( _mesh->getCoordinates() ) + *disp;
     };
 
+    /** @brief Update coordinates */
+    void setCoordinates( MeshCoordinatesFieldPtr &coor ) {
+        _newCoordinates = coor;
+    };
+
     /** @brief compute pairing quantities of zone i */
     ASTERBOOL computeZone( ASTERINTEGER i );
 
