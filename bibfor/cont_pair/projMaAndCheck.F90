@@ -76,26 +76,20 @@ integer, intent(out) :: iret, nb_node_proj
                      elem_slav_coor  , elem_slav_code,&
                      mast_norm       , slav_norm)
 !
+! - Linear normal are orthonormal - exit
+!
+    ps = mast_norm(1) * slav_norm(1) + mast_norm(2) * slav_norm(2) + mast_norm(3) * slav_norm(3)
+    if(abs(ps) <= r8prem()) then
+        iret = 1
+        go to 99
+    end if
+!
 ! - Project slave nodes in master cell parametric space using raytracing
 !
     call apinte_prma_n(proj_tole       , elem_dime     , &
                      elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                      elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                      proj_coor       , nb_node_proj  , iret)
-    if (iret == 1) then
-!
-! - Linear normal are orthonormal - exit
-!
-        ps = mast_norm(1) * slav_norm(1) + mast_norm(2) * slav_norm(2) + mast_norm(3) * slav_norm(3)
-!
-        if(abs(ps) <= r8prem()) then
-            iret = 1
-        else
-            iret = 2
-        end if
-!
-        go to 99
-    endif
 
 !
 ! - Check if intersection is void or not

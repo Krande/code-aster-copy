@@ -59,7 +59,7 @@ FONCx = DEFI_FONCTION(NOM_PARA='INST',
 
 FONCy = DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.0, 0.0,
-                            T1, 1.0,
+                            T1, 0.50,
                             T2, 1.0,
                             ),
                       PROL_DROITE='LINEAIRE', PROL_GAUCHE='LINEAIRE',)
@@ -125,14 +125,13 @@ RESU = MECA_NON_LINE(MODELE=MO,
                      CONTACT=_F(DEFINITION=CONT,
                                 ALGO_RESO_GEOM="NEWTON"),
                      COMPORTEMENT=_F(RELATION='ELAS',
-                                     DEFORMATION='GROT_GDEP',),
-                     INCREMENT=_F(LIST_INST=L_INST,
-                                  INST_FIN=1.01,),
+                                     DEFORMATION='GDEF_LOG',),
+                     INCREMENT=_F(LIST_INST=LINST,),
                      NEWTON=_F(PREDICTION='ELASTIQUE',
                                MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      CONVERGENCE=_F(RESI_GLOB_MAXI=5.E-2,
-                                    ITER_GLOB_MAXI=30,),
+                                    ITER_GLOB_MAXI=35,),
                      SOLVEUR=_F(METHODE='MUMPS',),)
 
 # RESU.printMedFile("/home/C00976/tmp/cont003a.rmed")
