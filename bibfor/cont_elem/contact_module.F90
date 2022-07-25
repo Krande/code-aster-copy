@@ -23,6 +23,7 @@ implicit none
 !
 private
 #include "asterf_types.h"
+#include "asterc/r8prem.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmdonf.h"
@@ -91,8 +92,9 @@ end type
 !===================================================================================================
 !
     public :: ContactParameters, ContactGeom
-    public :: projQpSl2Ma, projRm, Heaviside, shapeFuncDisp, shapeFuncLagr, evalPoly
-    public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, projTn
+    public :: projQpSl2Ma, Heaviside, shapeFuncDisp, shapeFuncLagr, evalPoly
+    public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, testLagrF
+    public :: projBs, projRm, projTn, jump_tang, jump_norm
 !
 contains
 !
@@ -101,13 +103,15 @@ contains
 !===================================================================================================
 !
     subroutine projQpSl2Ma(geom, coor_qp_sl, proj_tole, &
-                            coor_qp_ma, gap, norm_slav, norm_mast)
+                            coor_qp_ma, gap, &
+                            tau_1_slav, tau_2_slav, norm_slav, norm_mast)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2), proj_tole
         real(kind=8), intent(out) :: coor_qp_ma(2), gap
+        real(kind=8), intent(out) :: tau_1_slav(3), tau_2_slav(3)
         real(kind=8), intent(out) :: norm_slav(3), norm_mast(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -122,6 +126,8 @@ contains
         coor_qp_ma = 0.d0
         norm_slav = 0.d0
         norm_mast = 0.d0
+        tau_1_slav = 0.d0
+        tau_2_slav = 0.d0
         gap = 0.d0
 !
 ! ------ Compute outward slave normal
@@ -270,6 +276,42 @@ contains
         end do
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function projBs(param, x, s)
+!
+    implicit none
+!
+        type(ContactParameters), intent(in) :: param
+        real(kind=8), intent(in) :: x(2)
+        real(kind=8), intent(in) :: s
+        real(kind=8) :: projBs(2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Project x on the sphere center to zero of radius s
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: norm_x
+!
+        projBs = 0
+        if(param%type_fric .ne. FRIC_TYPE_NONE) then
+            if(abs(s) > r8prem()) then
+                norm_x = norm2(x)
+!
+                if(norm_x <= s) then
+                    projBs = x
+                else
+                    projBs = s * x / norm_x
+                end if
+            end if
+        end if
+!
+    end function
 !
 !===================================================================================================
 !
@@ -427,39 +469,19 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dim, index
         real(kind=8) :: norm(3)
-!
-        dGap = 0.d0
-        index = 0
 !
 ! --- See paper Renard, Poulious 2015 for an explanation
 !
         if(SIMPLIFIED_D_GAP) then
-            norm = -norm_slav
+            norm = norm_slav
         else
-            norm = -norm_mast / dot_product(norm_mast, norm_slav)
+            norm = norm_mast / dot_product(norm_mast, norm_slav)
         end if
 !
-! --- Slave side
+! --- normal jump
 !
-        do i_node = 1, geom%nb_node_slav
-            do i_dim = 1, geom%elem_dime
-                index = index + 1
-                dGap(index) = func_slav(i_node) * norm(i_dim)
-            end do
-!
-            index = index + geom%indi_lagc(i_node)
-        end do
-!
-! --- Master side
-!
-        do i_node = 1, geom%nb_node_mast
-            do i_dim = 1, geom%elem_dime
-                index = index + 1
-                dGap(index) = -func_mast(i_node) * norm(i_dim)
-            end do
-        end do
+        call jump_norm(geom, func_slav, func_mast, norm, dGap)
 !
         if(.not.SIMPLIFIED_D_GAP) then
 !
@@ -523,6 +545,147 @@ contains
             index = index + geom%elem_dime
             mu_c(index+1) = func_lagr(i_node)
             index = index + geom%indi_lagc(i_node)
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine testLagrF(geom, l_fric, func_lagr, mu_f)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        aster_logical, intent(in) :: l_fric
+        real(kind=8), intent(in) :: func_lagr(4)
+        real(kind=8), intent(out) :: mu_f(MAX_LAGA_DOFS, 2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate test Lagrangian function
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, index
+!
+        mu_f = 0.d0
+        index = 0
+!
+! --- Slave side
+!
+        if(l_fric) then
+            do i_node = 1, geom%nb_lagr_c
+                ASSERT(geom%indi_lagc(i_node) > 1)
+                index = index + geom%elem_dime
+                mu_f(index+2, 1) = func_lagr(i_node)
+                if(geom%elem_dime == 3) then
+                    mu_f(index+3, 2) = func_lagr(i_node)
+                end if
+                index = index + geom%indi_lagc(i_node)
+            end do
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine jump_tang(geom, func_slav, func_mast, &
+                       tau_1_slav, tau_2_slav, jump_t)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: func_slav(9), func_mast(9)
+        real(kind=8), intent(in) :: tau_1_slav(3), tau_2_slav(3)
+        real(kind=8), intent(out) :: jump_t(MAX_LAGA_DOFS, 2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate tangential jum of test function:
+!   jump_tang = (v^s - v^m).tau_i_slav
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, i_dim, index
+!
+        jump_t = 0.d0
+        index = 0
+!
+! --- Slave side
+!
+        do i_node = 1, geom%nb_node_slav
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                jump_t(index, 1) = func_slav(i_node) * tau_1_slav(i_dim)
+                if(geom%elem_dime == 3) then
+                    jump_t(index, 2) = func_slav(i_node) * tau_2_slav(i_dim)
+                end if
+            end do
+!
+            index = index + geom%indi_lagc(i_node)
+        end do
+!
+! --- Master side
+!
+        do i_node = 1, geom%nb_node_mast
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                jump_t(index, 1) = -func_mast(i_node) * tau_1_slav(i_dim)
+                if(geom%elem_dime == 3) then
+                    jump_t(index, 2) = -func_mast(i_node) * tau_2_slav(i_dim)
+                end if
+            end do
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine jump_norm(geom, func_slav, func_mast, norm_slav, jump_n)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: func_slav(9), func_mast(9)
+        real(kind=8), intent(in) :: norm_slav(3)
+        real(kind=8), intent(out) :: jump_n(MAX_LAGA_DOFS)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate normal jump of test function:
+!   jump_tang = -(v^s - v^m).norm^s
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: i_node, i_dim, index
+!
+        jump_n = 0.d0
+        index = 0
+!
+! --- Slave side
+!
+        do i_node = 1, geom%nb_node_slav
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                jump_n(index) = -func_slav(i_node) * norm_slav(i_dim)
+            end do
+!
+            index = index + geom%indi_lagc(i_node)
+        end do
+!
+! --- Master side
+!
+        do i_node = 1, geom%nb_node_mast
+            do i_dim = 1, geom%elem_dime
+                index = index + 1
+                jump_n(index) = func_mast(i_node) * norm_slav(i_dim)
+            end do
         end do
 !
     end subroutine

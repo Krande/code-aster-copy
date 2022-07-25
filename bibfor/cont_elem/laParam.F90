@@ -33,7 +33,7 @@ type(ContactParameters), intent(out) :: parameters
 !
 ! Contact - Elementary computations
 !
-! Get parameters from mmchml_a.F90
+! Get parameters from ContactComputaction.cxx/getData()
 !
 ! --------------------------------------------------------------------------------------------------
 !

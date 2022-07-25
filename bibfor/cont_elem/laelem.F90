@@ -159,8 +159,7 @@ type(ContactGeom), intent(out) :: geom
 !
     if(nomte(1:1) == "F") then
         ASSERT(lteatt('FROTTEMENT','OUI'))
-        !mult = geom%elem_dime
-        mult = 1
+        mult = geom%elem_dime
     else
         mult = 1
     end if

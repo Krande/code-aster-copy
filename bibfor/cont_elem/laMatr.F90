@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine laMatr(parameters, geom, matr)
+subroutine laMatr(parameters, geom, matr_cont, matr_fric)
 !
 use contact_module
 !
@@ -25,14 +25,15 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/getQuadCont.h"
-#include "blas/dger.h"
-#include "blas/dsyr.h"
-#include "contact_module.h"
 #include "asterfort/laElemCont.h"
+#include "blas/dgemm.h"
+#include "blas/dger.h"
+#include "contact_module.h"
 !
 type(ContactParameters), intent(in) :: parameters
 type(ContactGeom), intent(in) :: geom
-real(kind=8), intent(inout) :: matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+real(kind=8), intent(inout) :: matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,27 +53,36 @@ real(kind=8), intent(inout) :: matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 ! In  elem_slav_code   : code element for slave side from contact element
 ! In  nb_node_mast     : number of nodes of for master side from contact element
 ! In  elem_mast_code   : code element for master side from contact element
-! IO  matr             : matrix (only upper part)
+! IO  matr_cont             : matrix (only upper part)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_qp
+    aster_logical :: l_cont_qp, l_fric_qp
     integer ::  i_qp, nb_qp
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, 48), weight_qp(48)
     real(kind=8) :: gap, lagr_c, gamma_c, projRmVal
+    real(kind=8) :: lagr_f(2), vT(2), gamma_f, projBsVal(2)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), mu_c(MAX_LAGA_DOFS), d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    real(kind=8) :: mu_f(MAX_LAGA_DOFS, 2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    matr = 0.d0
+    matr_cont = 0.d0
+    matr_fric = 0.d0
 !
 ! - Slave node is not paired -> Special treatment
 !
     if(geom%elem_slav_code == "PO1") then
         if(geom%elem_mast_code == "LAGR") then
-            matr(geom%elem_dime+1, geom%elem_dime+1) = 1.d0
+            matr_cont(geom%elem_dime+1, geom%elem_dime+1) = 1.d0
+            if(parameters%l_fric) then
+                matr_fric(geom%elem_dime+2, geom%elem_dime+2) = 1.d0
+                if(geom%elem_dime == 3) then
+                    matr_fric(geom%elem_dime+3, geom%elem_dime+3) = 1.d0
+                end if
+            end if
         else
             if(geom%elem_mast_code .ne. "NOLAGR") then
                 ASSERT(ASTER_FALSE)
@@ -104,7 +114,10 @@ real(kind=8), intent(inout) :: matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
         call laElemCont(parameters, geom, coor_qp_sl, hF, &
                     lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
-                    dGap=dGap, d2Gap=d2Gap, mu_c=mu_c)
+                    lagr_f, vT, gamma_f, projBsVal, l_fric_qp, &
+                    dGap=dGap, d2Gap=d2Gap, mu_c=mu_c, mu_f=mu_f)
+!
+! ------ CONTACT PART (always computed)
 !
         if(l_cont_qp) then
 !
@@ -112,30 +125,51 @@ real(kind=8), intent(inout) :: matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !        term: (gamma_c*H*D(gap(u))[v], D(gap(u))[du])
 !
             coeff = weight_sl_qp * gamma_c
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, dGap, 1, matr, MAX_LAGA_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, dGap, 1, &
+                        matr_cont, MAX_LAGA_DOFS)
 !
 ! ------ Compute displacement / displacement (slave and master side)
 !        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D2(gap(u))[v, du]) -> not implemented
 !
             coeff = weight_sl_qp * projRmVal
-            matr(1:geom%nb_dofs, 1:geom%nb_dofs) = matr(1:geom%nb_dofs, 1:geom%nb_dofs) + &
+            matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs) = &
+                matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs) + &
                 coeff * d2Gap(1:geom%nb_dofs, 1:geom%nb_dofs)
 !
 ! ------ Compute displacement / Lagrange and Lagrange / displacement
-!        term: (H * D(gap(u))[v], dlagr_c) -> Upper part
-!        term: (H * mu_c,  D(gap(u))[du]) -> Lower part
+!        term: (H * D(gap(u))[v], dlagr_c) + (H * mu_c,  D(gap(u))[du])
 !
             coeff = weight_sl_qp
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, mu_c, 1, matr, MAX_LAGA_DOFS)
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, dGap, 1, matr, MAX_LAGA_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, dGap, 1, mu_c, 1, &
+                    matr_cont, MAX_LAGA_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, dGap, 1, &
+                    matr_cont, MAX_LAGA_DOFS)
         else
 !
 ! ------ Compute Lagrange / Lagrange (slave side)
 !        term: ((H-1) / gamma_c * mu_c, dlagr_c) = (-1/ gamma_c * mu_c, dlagr_c) since H = 0
 !
             coeff = -weight_sl_qp / gamma_c
-            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, mu_c, 1, matr, MAX_LAGA_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, mu_c, 1, &
+                matr_cont, MAX_LAGA_DOFS)
 !
+        end if
+!
+! ------ FRICTION PART (computed only if friction)
+!
+        if(parameters%l_fric) then
+            if(l_fric_qp) then
+                ASSERT(ASTER_FALSE)
+            else
+!
+! ------ Compute Lagrange / Lagrange (slave side)
+!        term:  (-1/ gamma_f * mu_f, dlagr_f) - Without friction
+!
+                coeff = -weight_sl_qp / gamma_f
+                call dgemm('N', 'T', geom%nb_dofs, geom%nb_dofs, geom%elem_dime-1, coeff, &
+                            mu_f, MAX_LAGA_DOFS, mu_f, MAX_LAGA_DOFS, 1.d0, &
+                            matr_fric, MAX_LAGA_DOFS)
+            end if
         end if
     end do
 !

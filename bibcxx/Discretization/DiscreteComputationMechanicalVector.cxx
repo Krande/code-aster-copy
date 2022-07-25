@@ -219,11 +219,16 @@ FieldOnNodesRealPtr DiscreteComputation::contactForces( const MeshCoordinatesFie
 
     // Add output elementary
     calcul->addOutputElementaryTerm( "PVECTCR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PVECTFR", std::make_shared< ElementaryTermReal >() );
 
     // Computation
     calcul->compute();
-    if ( calcul->hasOutputElementaryTerm( "PVECTCR" ) )
+    if ( calcul->hasOutputElementaryTerm( "PVECTCR" ) ) {
         elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTCR" ) );
+    }
+    if ( calcul->hasOutputElementaryTerm( "PVECTFR" ) ) {
+        elemVect->addElementaryTerm( calcul->getOutputElementaryTerm( "PVECTFR" ) );
+    }
     elemVect->build();
 
     return elemVect->assemble( _phys_problem->getDOFNumbering() );

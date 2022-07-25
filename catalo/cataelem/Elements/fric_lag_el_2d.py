@@ -43,7 +43,7 @@ from cataelem.Options.options import OP
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(
                                  # Slave nodes with LAG_C
-                                 ('EN1', ('DX', 'DY', 'LAGS_C',)),
+                                 ('EN1', ('DX', 'DY', 'LAGS_C', 'LAGS_F1',)),
                                  # Slave nodes without LAG_C
                                  ('EN2', ('DX', 'DY',)),
                                  # Master nodes
@@ -120,7 +120,8 @@ class FMS2S2(Element):
                                    (SP.PDEPL_P, DDL_MECA),
                                    (SP.PGEOMER, NGEOMER),
                                    (SP.PGEOMCR, NGEOMER), ),
-                          para_out=((SP.PVECTCR, MVECTUR), ),
+                          para_out=((SP.PVECTCR, MVECTUR),
+                                    (SP.PVECTFR, MVECTUR),),
                           ),
 
         OP.RIGI_CONT(te=355,
@@ -130,6 +131,7 @@ class FMS2S2(Element):
                               (SP.PGEOMER, NGEOMER),
                               (SP.PGEOMCR, NGEOMER), ),
                      para_out=((SP.PMATUUR, MMATUUR),
+                               (SP.PMATUNS, MMATUNS),
                                ),
                      ),
 

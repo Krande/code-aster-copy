@@ -45,7 +45,9 @@ use contact_module
 !
     type(ContactParameters) :: parameters
     type(ContactGeom) :: geom
-    real(kind=8) :: vect(MAX_LAGA_DOFS), matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    real(kind=8) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)
+    real(kind=8) :: matr_cont(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
+    real(kind=8) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! - Informations about finite element
 !
@@ -67,21 +69,29 @@ use contact_module
 !
 ! --- Compute contact residual
 !
-        call laVect(parameters, geom, vect)
+        call laVect(parameters, geom, vect_cont, vect_fric)
 !
 ! --- Write vector
 !
-        call writeVector('PVECTCR', geom%nb_dofs, vect)
+        call writeVector('PVECTCR', geom%nb_dofs, vect_cont)
+!
+        if(parameters%l_fric) then
+            call writeVector('PVECTFR', geom%nb_dofs, vect_fric)
+        end if
 !
     elseif(nomopt == "RIGI_CONT") then
 !
 ! --- Compute contact matrix
 !
-        call laMatr(parameters, geom, matr)
+        call laMatr(parameters, geom, matr_cont, matr_fric)
 !
 ! - Write matrix
 !
-        call writeMatrix('PMATUUR', geom%nb_dofs, geom%nb_dofs, ASTER_TRUE, matr)
+        call writeMatrix('PMATUUR', geom%nb_dofs, geom%nb_dofs, ASTER_TRUE, matr_cont)
+!
+        if(parameters%l_fric) then
+            call writeMatrix('PMATUNS', geom%nb_dofs, geom%nb_dofs, ASTER_FALSE, matr_fric)
+        end if
 !
     else
         ASSERT(ASTER_FALSE)

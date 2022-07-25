@@ -559,11 +559,15 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::contactMatrix(
 
     // Add output elementary
     calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
 
     // Computation
     calcul->compute();
     if ( calcul->hasOutputElementaryTerm( "PMATUUR" ) ) {
         elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUUR" ) );
+    }
+    if ( calcul->hasOutputElementaryTerm( "PMATUNS" ) ) {
+        elemMatr->addElementaryTerm( calcul->getOutputElementaryTerm( "PMATUNS" ) );
     }
     elemMatr->build();
 

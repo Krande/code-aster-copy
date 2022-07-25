@@ -36,7 +36,8 @@ from cataelem.Options.options import OP
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(
-                                 ('EN1', ('DX', 'DY', 'DZ', 'LAGS_C',)),
+                                 ('EN1', ('DX', 'DY', 'DZ',
+                                  'LAGS_C', 'LAGS_F1', 'LAGS_F2',)),
                                  ('EN2', ('DX', 'DY', 'DZ',)),))
 
 

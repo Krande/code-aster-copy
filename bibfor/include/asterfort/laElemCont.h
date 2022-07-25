@@ -22,16 +22,20 @@
 interface
     subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
                     lagr_c, gap, gamma_c, projRmVal, l_cont_qp,&
-                    dGap, d2Gap, mu_c)
+                    lagr_f, vT, gamma_f, projBsVal, l_fric_qp, &
+                    dGap, d2Gap, mu_c, mu_f, jump_t)
         use contact_module
         type(ContactParameters), intent(in) :: parameters
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2), hF
         real(kind=8), intent(out) :: lagr_c, gap, gamma_c, projRmVal
-        aster_logical, intent(out) :: l_cont_qp
+        real(kind=8), intent(out) :: lagr_f(2), vT(2), gamma_f, projBsVal(2)
+        aster_logical, intent(out) :: l_cont_qp, l_fric_qp
         real(kind=8), intent(out), optional :: dGap(MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
         real(kind=8), intent(out), optional :: mu_c(MAX_LAGA_DOFS)
+        real(kind=8), intent(out), optional :: mu_f(MAX_LAGA_DOFS,2)
+        real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,2)
     end subroutine laElemCont
 end interface
 

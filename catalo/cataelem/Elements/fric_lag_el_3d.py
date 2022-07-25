@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
-
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
 import cataelem.Commons.physical_quantities as PHY
@@ -37,7 +35,8 @@ from cataelem.Options.options import OP
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(
                                  # Slave nodes with LAG_C
-                                 ('EN1', ('DX', 'DY', 'DZ', 'LAGS_C',)),
+                                 ('EN1', ('DX', 'DY', 'DZ',
+                                  'LAGS_C', 'LAGS_F1', 'LAGS_F2',)),
                                  # Slave nodes without LAG_C
                                  ('EN2', ('DX', 'DY', 'DZ',)),
                                  # Master nodes
@@ -112,7 +111,8 @@ class FMQ4Q4(Element):
                                    (SP.PDEPL_P, DDL_MECA),
                                    (SP.PGEOMER, NGEOMER),
                                    (SP.PGEOMCR, NGEOMER), ),
-                          para_out=((SP.PVECTCR, MVECTUR), ),
+                          para_out=((SP.PVECTCR, MVECTUR),
+                                    (SP.PVECTFR, MVECTUR),),
                           ),
 
         OP.RIGI_CONT(te=355,
@@ -122,6 +122,7 @@ class FMQ4Q4(Element):
                               (SP.PGEOMER, NGEOMER),
                               (SP.PGEOMCR, NGEOMER), ),
                      para_out=((SP.PMATUUR, MMATUUR),
+                               (SP.PMATUNS, MMATUNS),
                                ),
                      ),
 

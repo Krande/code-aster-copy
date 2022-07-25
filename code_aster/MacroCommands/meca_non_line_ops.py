@@ -21,6 +21,7 @@
 from ..Cata.Syntax import _F
 from ..Objects import (
     FrictionType,
+    InitialState,
     MechanicalDirichletBC,
     MechanicalLoadFunction,
     MechanicalLoadReal,
@@ -40,6 +41,7 @@ def _contact_check(CONTACT):
 
         for zone in defi.getContactZones():
             assert not zone.hasSmoothing
+            assert zone.getPairingParameter().getInitialState() == InitialState.Interpenetrated
             assert zone.getPairingParameter().getPairingDistance() < 0
             assert zone.getPairingParameter().getDistanceFunction() is None
             assert zone.getPairingParameter().getElementaryCharacteristics() is None

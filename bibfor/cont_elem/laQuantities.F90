@@ -25,8 +25,8 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "jeveux.h"
-#include "Contact_type.h"
 !
 type(ContactGeom), intent(inout) :: geom
 !
@@ -38,8 +38,9 @@ type(ContactGeom), intent(inout) :: geom
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_fric
     integer :: i_node_slav, i_node_mast, i_dime, nb_lagr, nb_lagr_c, elem_dime, nb_node_slav
-    integer :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c
+    integer :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c, index
     real(kind=8) :: mast_depl_incr(3, 9), slav_depl_incr(3, 9)
     real(kind=8) :: mast_depl_prev(3, 9), slav_depl_prev(3, 9)
 !
@@ -57,6 +58,7 @@ type(ContactGeom), intent(inout) :: geom
     mast_depl_incr = 0.d0
     slav_depl_incr = 0.d0
 !
+    l_fric = lteatt('FROTTEMENT','OUI')
     elem_dime = geom%elem_dime
     nb_node_slav = geom%nb_node_slav
 !
@@ -64,23 +66,30 @@ type(ContactGeom), intent(inout) :: geom
 !
     nb_lagr = 0
     nb_lagr_c = 0
+    index = 0
     do i_node_slav = 1, nb_node_slav
         do i_dime = 1, elem_dime
-            geom%slav_coor_init(i_dime, i_node_slav) =&
-                zr(jv_geom+(i_node_slav-1)*elem_dime+i_dime-1)
-            geom%slav_coor_curr(i_dime, i_node_slav) =&
-                zr(jv_geom_c+(i_node_slav-1)*elem_dime+i_dime-1)
-            slav_depl_prev(i_dime, i_node_slav) =&
-                zr(jv_disp+(i_node_slav-1)*elem_dime+i_dime-1 + nb_lagr)
-            slav_depl_incr(i_dime, i_node_slav) =&
-                zr(jv_disp_incr+(i_node_slav-1)*elem_dime+i_dime-1 + nb_lagr)
+            geom%slav_coor_init(i_dime, i_node_slav) = zr(jv_geom-1+index+i_dime)
+            geom%slav_coor_curr(i_dime, i_node_slav) = zr(jv_geom_c-1+index+i_dime)
+            slav_depl_prev(i_dime, i_node_slav) = zr(jv_disp-1+index+i_dime + nb_lagr)
+            slav_depl_incr(i_dime, i_node_slav) = zr(jv_disp_incr-1+index+i_dime + nb_lagr)
         end do
+!
+        index = index + elem_dime
+!
         if( geom%indi_lagc(i_node_slav) > 0) then
-            nb_lagr =  nb_lagr + geom%indi_lagc(i_node_slav)
             nb_lagr_c = nb_lagr_c + 1
             geom%slav_lagc_curr(nb_lagr_c) = &
-                   zr(jv_disp+(i_node_slav-1)*elem_dime+elem_dime-1 + nb_lagr) &
-                +  zr(jv_disp_incr+(i_node_slav-1)*elem_dime+elem_dime-1 + nb_lagr)
+                   zr(jv_disp-1+index + nb_lagr + 1) +  zr(jv_disp_incr-1+index + nb_lagr + 1)
+            if(l_fric) then
+                geom%slav_lagf_curr(1, nb_lagr_c) = &
+                    zr(jv_disp-1+index + nb_lagr + 2) +  zr(jv_disp_incr-1+index + nb_lagr + 2)
+                if(geom%elem_dime == 3) then
+                    geom%slav_lagf_curr(2, nb_lagr_c) = &
+                        zr(jv_disp-1+index + nb_lagr + 3) +  zr(jv_disp_incr-1+index + nb_lagr + 3)
+                end if
+            end if
+            nb_lagr =  nb_lagr + geom%indi_lagc(i_node_slav)
         end if
     end do
 !
@@ -88,15 +97,12 @@ type(ContactGeom), intent(inout) :: geom
 !
     do i_node_mast = 1, geom%nb_node_mast
         do i_dime = 1, elem_dime
-            geom%mast_coor_init(i_dime, i_node_mast) = &
-                zr(jv_geom+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime- 1)
-            geom%mast_coor_curr(i_dime, i_node_mast) = &
-                zr(jv_geom_c+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime- 1)
-            mast_depl_prev(i_dime, i_node_mast) = &
-                zr(jv_disp+nb_node_slav*elem_dime+nb_lagr+(i_node_mast-1)*elem_dime+i_dime- 1)
-            mast_depl_incr(i_dime, i_node_mast) = &
-                zr(jv_disp_incr+nb_node_slav*elem_dime+nb_lagr+(i_node_mast-1)*elem_dime+i_dime- 1)
+            geom%mast_coor_init(i_dime, i_node_mast) = zr(jv_geom-1+index+i_dime)
+            geom%mast_coor_curr(i_dime, i_node_mast) = zr(jv_geom_c-1+index+i_dime)
+            mast_depl_prev(i_dime, i_node_mast) = zr(jv_disp-1+index+nb_lagr+i_dime)
+            mast_depl_incr(i_dime, i_node_mast) = zr(jv_disp_incr-1+index+nb_lagr+i_dime)
         end do
+        index = index + elem_dime
     end do
 !
     geom%slav_depl_curr = slav_depl_prev + slav_depl_incr

@@ -25,6 +25,8 @@
 
 #define PROJ_TOLE 1.d-8
 
+#define THRES_STICK 10.d300
+
 #define SIMPLIFIED_D_GAP .true.
 
 ! See ContactEnum.h
@@ -46,6 +48,6 @@
 #define FRIC_ALGO_PENA 2
 
 #define FRIC_TYPE_NONE 0
-#define FRIC_TYPE_TRES 0
-#define FRIC_TYPE_COUL 1
-#define FRIC_TYPE_STIC 2
+#define FRIC_TYPE_TRES 1
+#define FRIC_TYPE_COUL 2
+#define FRIC_TYPE_STIC 3
