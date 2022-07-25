@@ -51,8 +51,8 @@ subroutine fonlev(resu, noma, nbnoff)
 !
     integer :: jmai1, jadr, jnoe1, jmai2, jmaii, jjj, iatyma
     integer ::   iamase, ityp
-    integer :: igr, ngr, ino, i, j, k, ibid, k2, j2
-    integer :: nbmai, nent, indice
+    integer :: igr, ngr, i, j, k, ibid, k2, j2
+    integer :: nbmai, indice
     integer :: nn, compta, nbmas1, nbmas2, nbmal
     integer :: iret, iret1, iret2, jjj2
     character(len=4) :: typma
@@ -108,7 +108,6 @@ subroutine fonlev(resu, noma, nbnoff)
 !
         call getvtx(motfac, 'GROUP_MA', iocc=1, nbval=nbmal, vect=zk24(jjj2),&
                     nbret=ngr)
-        call getvtx(motfac, 'MAILLE', iocc=1, nbval=0, nbret=nent)
 !
 !
 ! ---   ALLOCATION D'UN PREMIER OBJET DE TRAVAIL
@@ -124,58 +123,35 @@ subroutine fonlev(resu, noma, nbnoff)
 !      ET CALCUL DU NOMBRE TOTAL DE MAILLES DE LA LEVRE COURANTE
 !      ----------------------------------------------------------------
 !       SI GROUP_MA
-        if (nent .eq. 0) then
-            do igr = 1, ngr
+        do igr = 1, ngr
 !
-                call jelira(jexnom(grouma, zk24(jjj2-1 + igr)), 'LONMAX', nbmai)
-                call jeveuo(jexnom(grouma, zk24(jjj2-1 + igr)), 'L', jadr)
+            call jelira(jexnom(grouma, zk24(jjj2-1 + igr)), 'LONMAX', nbmai)
+            call jeveuo(jexnom(grouma, zk24(jjj2-1 + igr)), 'L', jadr)
 !
 !
-                do i = 1, nbmai
-                    call jenuno(jexnum(nommai, zi(jadr-1 + i)), maille)
-                    call jenonu(jexnom(nommai, maille), ibid)
-                    ityp=iatyma-1+ibid
-                    call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
-                    typma = type(1:4)
-                    if (((typma.ne.'QUAD').and.(typma.ne.'TRIA')) .and. (nbnoff.gt.1)) then
-                        valk(1) = type
-                        valk(2) = motfac
-                        call utmess('F', 'RUPTURE0_65', nk=2, valk=valk)
-                        elseif ((typma(1:3).ne.'SEG').and.(nbnoff.eq.1))&
-                    then
-                        valk(1) = type
-                        valk(2) = motfac
-                        call utmess('F', 'RUPTURE0_75', nk=2, valk=valk)
-                    else
-                        zk8(jmai1) = maille
-                        jmai1 = jmai1 + 1
-                    endif
-!
-                end do
-!
-            end do
-        else
-! SI MAILLE
-            do ino = 1, nbmal
-                call jenonu(jexnom(nommai, zk8(jjj-1 + ino)), ibid)
+            do i = 1, nbmai
+                call jenuno(jexnum(nommai, zi(jadr-1 + i)), maille)
+                call jenonu(jexnom(nommai, maille), ibid)
                 ityp=iatyma-1+ibid
                 call jenuno(jexnum('&CATA.TM.NOMTM', zi(ityp)), type)
                 typma = type(1:4)
-                if (((typma.ne.'QUAD').and.(typma.ne.'TRIA')) .and. ( nbnoff.gt.1)) then
+                if (((typma.ne.'QUAD').and.(typma.ne.'TRIA')) .and. (nbnoff.gt.1)) then
                     valk(1) = type
                     valk(2) = motfac
                     call utmess('F', 'RUPTURE0_65', nk=2, valk=valk)
-                else if ((typma(1:3).ne.'SEG').and.(nbnoff.eq.1)) then
+                    elseif ((typma(1:3).ne.'SEG').and.(nbnoff.eq.1))&
+                then
                     valk(1) = type
                     valk(2) = motfac
                     call utmess('F', 'RUPTURE0_75', nk=2, valk=valk)
                 else
-                    zk8(jmai1) = zk8(jjj-1 + ino)
+                    zk8(jmai1) = maille
                     jmai1 = jmai1 + 1
                 endif
+!
             end do
 !
-        endif
+        end do
 !
 ! --- VERIFICATION QU'IL N Y A PAS DUPLICATION DES ENTITES ET STOCKAGE
 !     ON MET 'O' SI L'ENTITE EST DUPPLIQUEE
