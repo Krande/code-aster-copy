@@ -26,13 +26,13 @@ from ..Language.Syntax import *
 POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
                fr=tr("Vérification des critères de niveau 0 et certains critères de niveau A du RCC-M"),
                reentrant='n',
-         TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="VALE_MAX",into=("VALE_MAX", "DETAILS") ),
+         TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="VALE_MAX",into=("VALE_MAX", "DETAILS","SYSTUS"),),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
          TITRE           =SIMP(statut='f',typ='TXM'),
          TYPE_RESU_MECA  =SIMP(statut='o',typ='TXM',into=("EVOLUTION","ZE200a","ZE200b","B3200","B3600") ),
 
 # ======================================================================
-     b_evolution  =BLOC(condition="""equal_to("TYPE_RESU_MECA", 'EVOLUTION')""",
+     b_evolution  =BLOC(condition="""equal_to("TYPE_RESU_MECA", 'EVOLUTION') and not equal_to("TYPE_RESU","SYSTUS")""",
 
          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                into=("PM_PB","SN","FATIGUE_ZH210","AMORCAGE") ),
@@ -390,7 +390,7 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
 
                       ),
 # ======================================================================
-     b_tuyauterie  =BLOC(condition="""equal_to("TYPE_RESU_MECA", 'B3600')""",
+     b_tuyauterie  =BLOC(condition="""equal_to("TYPE_RESU_MECA", 'B3600') and not equal_to("TYPE_RESU","SYSTUS")""",
 
          OPTION          =SIMP(statut='o',typ='TXM',into=("FATIGUE","MOMENT_EQUIVALENT") ),
          ZONE_ANALYSE =FACT(statut='o',fr=tr("liste des mailles ou des noeuds analysés"),

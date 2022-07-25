@@ -50,9 +50,9 @@ subroutine rc32rs(lfat, lefat)
     integer :: jcombi, jresucomb, jresucombs, npar3, jfact, npar4
     integer :: num1, num2, noccpris, ind1, ind2, n5, jfactenv
     complex(kind=8) :: c16b
-    parameter    ( npar0 = 53 , npar1 = 18 , npar2 = 27, npar3 = 25, npar4 = 28 )
+    parameter    ( npar0 = 53 , npar1 = 18 , npar2 = 27, npar3 = 25, npar4 = 28)
     character(len=16) :: nopar1(npar1), nopar0(npar0), nopar2(npar2)
-    character(len=8) :: typar1(npar1), typar0(npar0)
+    character(len=8) :: typar1(npar1), typar0(npar0), typar4(npar4)
     character(len=16) :: nopar3(npar3), nopar4(npar4)
     real(kind=8) :: valer(21), sigmoypres, symax, rbid, valres(1)
     real(kind=8) :: fuseism, fenint, fenglobal
@@ -115,6 +115,15 @@ subroutine rc32rs(lfat, lefat)
      &            'SALT', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN', 'FEN_ELAS',&
                   'FUEN_PARTIEL' /
 !
+    data typar4 / 'K8', 'K8','K8',&
+     &            'K16', 'I', 'I', 'I',&
+     &            'K16', 'I', 'I', 'I', 'R',&
+     &            'R', 'R', 'R', 'R',&
+     &            'R', 'R', 'R', 'R', 'R',&
+     &            'R', 'R', 'I', 'R', 'R', 'R',&
+     &            'R'/
+                  
+!
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
@@ -131,6 +140,8 @@ subroutine rc32rs(lfat, lefat)
 !
     if (typtab .eq. 'VALE_MAX') then
         call tbajpa(nomres, npar1, nopar1, typar1)
+    else if (typtab .eq. 'SYSTUS') then
+        call tbajpa(nomres, npar4, nopar4, typar4)
     else
         call tbajpa(nomres, npar0, nopar0, typar0)
     endif
@@ -187,11 +198,14 @@ subroutine rc32rs(lfat, lefat)
         endif
 
 !
-        call tbajli(nomres, npar1, nopar1, [ibid], valer,&
-                    [c16b], valek, 0)
+        if (typtab.ne.'SYSTUS') then 
+            call tbajli(nomres, npar1, nopar1, [ibid], valer,&
+                        [c16b], valek, 0)
+        endif 
 130 continue
 !
     if (typtab .eq. 'VALE_MAX') goto 999
+
 !
 !     ----------------------------------------------------------------
 ! --- AFFICHAGE DES GRANDEURS PAR SITUATION
@@ -200,6 +214,9 @@ subroutine rc32rs(lfat, lefat)
     call getfac('SEISME', ns)
     call jeveuo('&&RC3200.SITU_INFOI', 'L', jval)
     call jeveuo('&&RC3200.SITU_NOM', 'L', jnom)
+    
+    if (typtab .eq. 'SYSTUS') goto 444
+
 !
     valek(1) = 'SITU'
 !
@@ -273,6 +290,7 @@ subroutine rc32rs(lfat, lefat)
 201 continue
 !
     if(.not. lfat) goto 999
+
 !
 !     ----------------------------------------------------------------
 ! --- AFFICHAGE DES GRANDEURS PAR COMBINAISON
@@ -421,6 +439,7 @@ subroutine rc32rs(lfat, lefat)
           endif
 50    continue
 40  continue
+444 continue
 !
 !     ----------------------------------------------------------------
 ! --- AFFICHAGE DES GRANDEURS QUI INTERVIENNENT DANS FU_TOTAL
@@ -568,6 +587,40 @@ subroutine rc32rs(lfat, lefat)
 666 continue
 !
 308 continue
+!
+    if (typtab .eq. 'SYSTUS') then
+    
+        do i = 1,5
+            valek(i) = ' '
+        enddo
+        
+        do i = 1,7 
+            valei(i) = 0
+        enddo
+        
+        valek(1) = 'TOTAL'
+        do im = 1, 2
+            valek(3)=lieu(im)
+
+            call jeveuo('&&RC3200.MAX_RESU.'//lieu(im), 'L', jmax)
+            
+            do i = 1,16 
+                valer(i) = r8vide()
+            end do 
+            
+            valer(13) = zr(jmax-1+11)
+            valer(16) = zr(jmax+12)
+            if(lefat) then
+                call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
+                if(n5 .eq. 0 .or. abs(fenint) .lt. 1e-8) call utmess('F', 'POSTRCCM_54')
+                fenglobal =0.d0
+                if (abs(zr(jmax+10)) .gt. 1e-8) fenglobal = zr(jmax+12)/zr(jmax+10)
+                if(fenglobal .gt. fenint) valer(16)=zr(jmax+12)/fenint
+            endif
+        
+            call tbajli(nomres, npar4, nopar4, valei, valer,[c16b], valek, 0)
+        enddo
+    endif
 !
 999 continue
 !
