@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
     parameter  ( ncmp = 6 )
     character(len=8) :: nocmp(ncmp), crit(2), table1, table2, table3
     character(len=8) :: tableok, k8b, table4, table5
-    real(kind=8) :: prec(2), vale(2), diff(6), nul(6), tu(6), equi(3)
+    real(kind=8) :: prec(2), vale(2), diff(6), nul(6), equi(3)
     real(kind=8) :: tresca, contraintesth, contraintespr, contraintesmec
     real(kind=8) :: prinmax, e, nume(2), deno(2), epset, set, oet, tet
     real(kind=8) :: a, b, c, epsisup, epsiinf, temp, tmoy, tsup, tinf
@@ -69,6 +69,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
     real(kind=8) :: critepsi, tempmin, tempmax, tempii, emin, emax 
     character(len=24) :: instan, abscur, instany, valk(4)
     complex(kind=8) :: cbid
+    
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -104,13 +105,6 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 !
     situ(1)=iocc1
     situ(2)=iocc2
-!
-    tu(1) = 1.d0
-    tu(2) = 0.d0
-    tu(3) = 0.d0
-    tu(4) = 1.d0
-    tu(5) = 0.d0
-    tu(6) = 1.d0
 !
     nul(1) = 0.d0
     nul(2) = 0.d0
@@ -283,7 +277,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                         if (lcqeqv(diff,nul) .eq. 'OUI') then
                             tresca = 0.d0
                         else
-                            call rcjaco(diff, tu, equi)
+                            call rcjaco(diff, equi)
 ! --------- on recupere cherche la contrainte principale maxi
                             if (abs(equi(1)) .gt. abs(equi(2))) then
                                 prinmax = equi(1)

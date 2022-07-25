@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,26 +16,39 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rcjaco(ar, br, valpro)
+subroutine rcjaco(ar, valpro)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
-    real(kind=8) :: ar(*), br(*), valpro(3)
+    real(kind=8) :: ar(*), valpro(3)
 ! BUT : ROUTINE SIMPLIFIEE DE JACOBI POUR PERFORMANCE
 !
 ! ----------------------------------------------------------------------
     integer :: nperm, i, ii, niter, j, jp1, jm1, ljk, jj, kp1, km1, jk, kk, im1
     integer :: ij, ik, lji, lki, ji, ki, k
-    real(kind=8) :: tol, toldyn, valaux(3), eps, akk, ajj, ab, verif
+    real(kind=8) :: tol, toldyn, valaux(3), eps, akk, ajj, ab, verif, br(6)
     real(kind=8) :: eptola, epcoma, eptolb, epcomb, raci, d1, d2, den, ca, cg
     real(kind=8) :: aj, bj, ak, bk, rtol, dif, epsa, compa, epsb, compb
     aster_logical :: iconv
     data   nperm, tol, toldyn / 12, 1.d-10, 1.d-2 /
+    
+! ----------------------------------------------------------------------
+!
+!     ---       INITIALISATION DE LA MATRICE DE MASSE      ---
+!
+    br(1) = 1.d0
+    br(2) = 0.d0
+    br(3) = 0.d0
+    br(4) = 1.d0
+    br(5) = 0.d0
+    br(6) = 1.d0
+
 ! ----------------------------------------------------------------------
 !
 !     ---       INITIALISATION DES VALEURS PROPRES      ---
 !     --- TERME DIAGONAL RAIDEUR / TERME DIAGONAL MASSE ---
 !
+
     ii = 1
     do 10 i = 1, 3
         if (br(ii) .eq. 0.0d0) then
@@ -49,7 +62,7 @@ subroutine rcjaco(ar, br, valpro)
 !     ------------------------------------------------------------------
 !     ------------------- ALGORITHME DE JACOBI -------------------------
 !     ------------------------------------------------------------------
-!
+
     niter = 0
 !
  30 continue

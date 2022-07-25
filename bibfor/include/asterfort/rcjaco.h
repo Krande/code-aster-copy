@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,8 @@
 !
 !
 interface
-    subroutine rcjaco(ar, br, valpro)
+    subroutine rcjaco(ar, valpro)
         real(kind=8) :: ar(*)
-        real(kind=8) :: br(*)
         real(kind=8) :: valpro(3)
     end subroutine rcjaco
 end interface
