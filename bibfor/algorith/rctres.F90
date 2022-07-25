@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine rctres(sigm, tresca)
     if (lcqeqv(tr,nul) .eq. 'OUI') then
         tresca = 0.d0
     else
-        call rcjaco(tr, tu, equi)
+        call rcjaco(tr, equi)
 ! ------ TRESCA = MAX DIFF VALEURS PRINCIPALES
         tresca = max ( abs(equi(1)-equi(2)), abs(equi(1)-equi(3)), abs(equi(2)-equi(3)) )
     endif
