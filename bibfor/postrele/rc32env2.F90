@@ -16,19 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
+subroutine rc32env2(iocc1,iocc2, ke_pond, lieu, fen)
     implicit none
 !
     integer :: iocc1, iocc2
-    real(kind=8) :: ke, fen
+    real(kind=8) :: ke_pond, fen
     character(len=4) :: lieu
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200, ZE200
 !     CALCUL DU FACTEUR D'ENVIRONNEMENT D'UNE COMBINAISON DE TRANSITOIRES :
 !        IN  : iocc1    :  NUMERO DU PREMIER TRANSITOIRE (SITUATION iocc1)
 !        IN  : iocc2    :  NUMERO DU DEUXIEME TRANSITOIRE (SITUATION iocc2)
-!        IN  : KE   :  KE DE LA COMBINAISON DE CES 2 TRANSITOIRES
+!        IN  : KE_POND   :  KE PONDERE DE LA COMBINAISON DE CES 2 TRANSITOIRES
 !        IN  : LIEU :  ORIG OU EXTR
 !        OUT : FEN  :  FACTEUR D'ENVIRONNEMENT DE LA COMBINAISON
+!                      SI KE_POND = 1.0, FEN ELASTIQUE
 !
 !     ------------------------------------------------------------------
 !
@@ -289,7 +290,8 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 ! --------- si cette cont. princ. max est <0, la vitesse de déformation est nulle
                             if (prinmax .lt. 0) then
                                 tresca = 0.d0
-! --------- si cette cont. princ. max est >0, la vitesse de déformation vaut ke*tresca/(E*(ti+1-ti))
+! --------- si cette cont. princ. max est >0, 
+! --------- la vitesse de déformation vaut ke_pond*tresca/(E*(ti+1-ti))
                             else
                                 tresca = max ( abs(equi(1)-equi(2)),&
                             & abs(equi(1)-equi(3)), abs(equi(2)-equi(3)) )
@@ -330,7 +332,7 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
                             e = ((emin-emax)/(tempmin-tempmax))*(tmoy-tempmin) + emin
                         endif
 ! --------- calcul de delta_epsilon
-                        zr(jdepsi+j-2) = ke*tresca /e
+                        zr(jdepsi+j-2) = ke_pond*tresca /e
 ! --------- calcul de epsilon_point puis epsilon_point*
                         epsiet = zr(jdepsi+j-2)/(zr(jinst+j-1)-zr(jinst+j-2))
                         if (epsiet*100 .lt. epsiinf) then

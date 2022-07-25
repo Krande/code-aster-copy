@@ -37,7 +37,7 @@ subroutine rc32env(lieu, futotenv)
 !  ------------------------------------------------------------------
     integer :: ndim, jfact, num1, num2, k, noccpris, ind1, ind2, jmax
     integer :: i, jfactenv, nb
-    real(kind=8) :: fuseism, fuunit, ke, fen
+    real(kind=8) :: fuseism, fuunit, ke, fen, fenel
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine rc32env(lieu, futotenv)
 !     ----------------------------------------------------------------
 ! --- CREATION D'UN VECTEUR QUI CONTIENT LES DONNEES ENVIRONNEMENTALES
 !     ----------------------------------------------------------------
-    ndim = 2*200
+    ndim = 3*200
     call wkvect('&&RC3200.FACTENV.'//lieu, 'V V R', ndim, jfactenv)
     do 10 i = 1, ndim
         zr(jfactenv+i-1) = 0.d0
@@ -90,8 +90,10 @@ subroutine rc32env(lieu, futotenv)
         fuunit = zr(ind1+123*(num1-1)+15)+fuseism
         ke = zr(ind1+123*(num1-1)+18)
         call rc32env2(num1, num2, ke, lieu, fen)
-        zr(jfactenv+2*k)=fen
-        zr(jfactenv+2*k+1)=fen*fuunit*noccpris
+        call rc32env2(num1, num2, 1.0, lieu, fenel)
+        zr(jfactenv+3*k)=fen
+        zr(jfactenv+3*k+1)=fenel
+        zr(jfactenv+3*k+2)=fen*fuunit*noccpris
         futotenv = futotenv+fen*fuunit*noccpris
 !
 !---- une combinaison de situations a le plus grand fu unitaire
@@ -99,8 +101,10 @@ subroutine rc32env(lieu, futotenv)
         fuunit= zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+17)+fuseism
         ke = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+19)
         call rc32env2(num1, num2, ke, lieu, fen)
-        zr(jfactenv+2*k)=fen
-        zr(jfactenv+2*k+1)=fen*fuunit*noccpris
+        call rc32env2(num1, num2, 1.0, lieu, fenel)
+        zr(jfactenv+3*k)=fen
+        zr(jfactenv+3*k+1)=fenel
+        zr(jfactenv+3*k+2)=fen*fuunit*noccpris
         futotenv = futotenv+fen*fuunit*noccpris
     endif
 !

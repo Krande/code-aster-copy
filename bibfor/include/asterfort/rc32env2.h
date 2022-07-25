@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 !
 !
 interface
-    subroutine rc32env2(iocc1, iocc2, ke, lieu, fen)
+    subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
         integer :: iocc1
         integer :: iocc2
-        real(kind=8) :: ke
+        real(kind=8) :: ke_pond
         character(len=4) :: lieu
         real(kind=8) :: fen
     end subroutine rc32env2

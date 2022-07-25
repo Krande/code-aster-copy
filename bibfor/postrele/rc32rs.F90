@@ -50,7 +50,7 @@ subroutine rc32rs(lfat, lefat)
     integer :: jcombi, jresucomb, jresucombs, npar3, jfact, npar4
     integer :: num1, num2, noccpris, ind1, ind2, n5, jfactenv
     complex(kind=8) :: c16b
-    parameter    ( npar0 = 52 , npar1 = 18 , npar2 = 27, npar3 = 25, npar4 = 27 )
+    parameter    ( npar0 = 53 , npar1 = 18 , npar2 = 27, npar3 = 25, npar4 = 28 )
     character(len=16) :: nopar1(npar1), nopar0(npar0), nopar2(npar2)
     character(len=8) :: typar1(npar1), typar0(npar0)
     character(len=16) :: nopar3(npar3), nopar4(npar4)
@@ -66,7 +66,7 @@ subroutine rc32rs(lfat, lefat)
      &            'INST_SN_2', 'SN*', 'INST_SN*_1', 'INST_SN*_2', &
      &            'SIG_PRES_MOY', 'SN_THER', 'CRIT_LINE', 'SP_THER', 'CRIT_PARAB',&
      &            'KE_MECA', 'KE_THER', 'SP1(MECA)', 'INST_SALT_1', 'INST_SALT_2', 'SALT',&
-     &            'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN', &
+     &            'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN', 'FEN_ELAS',&
      &            'FUEN_PARTIEL', 'PM_MAX', 'PB_MAX', 'PMPB_MAX', 'SN_MAX',&
      &            'SN*_MAX', 'SIGM_M_PRES', 'SN_THER_MAX', 'CRIT_LINE_MAX',&
      &            'SP_THER_MAX', 'CRIT_PARA_MAX', 'SP_MAX', 'SALT_MAX', 'FU_TOTAL',&
@@ -77,7 +77,7 @@ subroutine rc32rs(lfat, lefat)
      &             'R', 'R','R','R',&
      &             'R', 'R', 'R', 'R', 'R',&
      &             'R','R', 'R', 'R', 'R', 'R',&
-     &             'R', 'I', 'R', 'R', &
+     &             'R', 'I', 'R', 'R', 'R',&
      &             'R', 'R', 'R', 'R', 'R',&
      &             'R', 'R', 'R', 'R',&
      &             'R', 'R', 'R', 'R', 'R',&
@@ -112,7 +112,7 @@ subroutine rc32rs(lfat, lefat)
      &            'NOM_SIT2', 'NUM_SIT2', 'NOCC_SIT2', 'GROUP_SIT2', 'SN',&
      &            'INST_SN_1','INST_SN_2', 'SN*', 'INST_SN*_1',&
      &            'INST_SN*_2', 'KE_MECA','KE_THER','INST_SALT_1', 'INST_SALT_2',&
-     &            'SALT', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN',&
+     &            'SALT', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN', 'FEN_ELAS',&
                   'FUEN_PARTIEL' /
 !
 ! DEB ------------------------------------------------------------------
@@ -495,11 +495,13 @@ subroutine rc32rs(lfat, lefat)
           valer(13) = valer(12)*noccpris
 !
           if(lefat) then
-              valer(14) = zr(jfactenv+2*k)
-              valer(15) = zr(jfactenv+2*k+1)
+              valer(14) = zr(jfactenv+3*k)
+              valer(15) = zr(jfactenv+3*k+1)
+              valer(16) = zr(jfactenv+3*k+2)
           else
               valer(14) = r8vide()
               valer(15) = r8vide()
+              valer(16) = r8vide()
           endif
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
@@ -521,11 +523,13 @@ subroutine rc32rs(lfat, lefat)
           valer(13)= valer(12)*noccpris
 !
           if(lefat) then
-              valer(14) = zr(jfactenv+2*k)
-              valer(15) = zr(jfactenv+2*k+1)
+              valer(14) = zr(jfactenv+3*k)
+              valer(15) = zr(jfactenv+3*k+1)
+              valer(16) = zr(jfactenv+3*k+2)
           else
               valer(14) = r8vide()
               valer(15) = r8vide()
+              valer(16) = r8vide()
           endif
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
@@ -543,6 +547,7 @@ subroutine rc32rs(lfat, lefat)
           valer(13) = r8vide()
           valer(14) = r8vide()
           valer(15) = r8vide()
+          valer(16) = r8vide()
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
 !
