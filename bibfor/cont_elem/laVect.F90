@@ -119,20 +119,30 @@ real(kind=8), intent(inout) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS
 !
 ! ------ CONTACT PART (always computed)
 !
+        if(l_cont_qp) then
 !
 ! ------ Compute displacement (slave and master side)
 !        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D(gap(u))[v])
 !
-        if(l_cont_qp) then
             coeff = weight_sl_qp * projRmVal
             call daxpy(geom%nb_dofs, coeff, dGap, 1, vect_cont, 1)
-        end if
 !
 ! ------ Compute Lagrange (slave side)
-!        term: (([lagr_c + gamma_c * gap(u)]_R- - lagr_c) / gamma_c, mu_c)
+!        term: ((H*[lagr_c + gamma_c * gap(u)]_R- - lagr_c) / gamma_c, mu_c)
+!              = (gap(u), mu_c) since H = 1
 !
-        coeff = weight_sl_qp * (projRmVal - lagr_c) / gamma_c
-        call daxpy(geom%nb_dofs, coeff, mu_c, 1, vect_cont, 1)
+            coeff = weight_sl_qp * gap
+            call daxpy(geom%nb_dofs, coeff, mu_c, 1, vect_cont, 1)
+        else
+!
+! ------ Compute Lagrange (slave side)
+!        term: ((H*[lagr_c + gamma_c * gap(u)]_R- - lagr_c) / gamma_c, mu_c)
+!             = -(lagr_c / gamma_c, mu_c) since H = 0
+!
+            coeff = -weight_sl_qp * lagr_c / gamma_c
+            call daxpy(geom%nb_dofs, coeff, mu_c, 1, vect_cont, 1)
+        end if
+
 !
 ! ------ FRICTION PART (computed only if friction)
 !

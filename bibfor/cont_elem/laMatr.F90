@@ -147,7 +147,7 @@ real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
         else
 !
 ! ------ Compute Lagrange / Lagrange (slave side)
-!        term: ((H-1) / gamma_c * mu_c, dlagr_c) = (-1/ gamma_c * mu_c, dlagr_c) since H = 0
+!        term: ((H-1) / gamma_c * mu_c, dlagr_c) = (- mu_c / gamma_c, dlagr_c) since H = 0
 !
             coeff = -weight_sl_qp / gamma_c
             call dger(geom%nb_dofs, geom%nb_dofs, coeff, mu_c, 1, mu_c, 1, &
