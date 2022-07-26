@@ -50,11 +50,11 @@ subroutine rc32rs(lfat, lefat)
     integer :: jcombi, jresucomb, jresucombs, npar3, jfact, npar4
     integer :: num1, num2, noccpris, ind1, ind2, n5, jfactenv
     complex(kind=8) :: c16b
-    parameter    ( npar0 = 53 , npar1 = 18 , npar2 = 27, npar3 = 25, npar4 = 28)
+    parameter    ( npar0 = 55 , npar1 = 18 , npar2 = 29, npar3 = 29, npar4 = 32)
     character(len=16) :: nopar1(npar1), nopar0(npar0), nopar2(npar2)
-    character(len=8) :: typar1(npar1), typar0(npar0), typar4(npar4)
+    character(len=8) :: sscyc, typar1(npar1), typar0(npar0), typar4(npar4)
     character(len=16) :: nopar3(npar3), nopar4(npar4)
-    real(kind=8) :: valer(21), sigmoypres, symax, rbid, valres(1)
+    real(kind=8) :: valer(23), sigmoypres, symax, rbid, valres(1)
     real(kind=8) :: fuseism, fenint, fenglobal
 !
 !  ------------------------------------------------------------------
@@ -64,8 +64,9 @@ subroutine rc32rs(lfat, lefat)
      &            'NUM_SIT1', 'NOCC_SIT1', 'GROUP_SIT1',  'PM', 'PB', 'PMPB',&
      &            'NOM_SIT2', 'NUM_SIT2', 'NOCC_SIT2', 'GROUP_SIT2', 'SN','INST_SN_1',&
      &            'INST_SN_2', 'SN*', 'INST_SN*_1', 'INST_SN*_2', &
-     &            'SIG_PRES_MOY', 'SN_THER', 'CRIT_LINE', 'SP_THER', 'CRIT_PARAB',&
-     &            'KE_MECA', 'KE_THER', 'SP1(MECA)', 'INST_SALT_1', 'INST_SALT_2', 'SALT',&
+     &            'SIG_PRES_MOY', 'SN_THER', 'CRIT_LINE', 'CRIT_PARAB',&
+     &            'KE_MECA', 'KE_THER', 'SP(MECA)','SP(THER)', 'SP', &
+     &            'INST_SALT_1', 'INST_SALT_2', 'SALT', 'FU_UNIT_SS_CYCL', &
      &            'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN', 'FEN_ELAS',&
      &            'FUEN_PARTIEL', 'PM_MAX', 'PB_MAX', 'PMPB_MAX', 'SN_MAX',&
      &            'SN*_MAX', 'SIGM_M_PRES', 'SN_THER_MAX', 'CRIT_LINE_MAX',&
@@ -74,12 +75,13 @@ subroutine rc32rs(lfat, lefat)
     data typar0 / 'K8', 'K8', 'K8', 'K16',&
      &             'I', 'I', 'I', 'R','R','R',&
      &             'K16', 'I', 'I', 'I', 'R', 'R',&
-     &             'R', 'R','R','R',&
+     &             'R', 'R', 'R', 'R',&
+     &             'R', 'R', 'R', 'R', &
      &             'R', 'R', 'R', 'R', 'R',&
-     &             'R','R', 'R', 'R', 'R', 'R',&
+     &             'R', 'R', 'R', 'R', &
      &             'R', 'I', 'R', 'R', 'R',&
      &             'R', 'R', 'R', 'R', 'R',&
-     &             'R', 'R', 'R', 'R',&
+     &             'R', 'R', 'R', 'R', &
      &             'R', 'R', 'R', 'R', 'R',&
      &             'R', 'R', 'R' /
 !
@@ -96,32 +98,31 @@ subroutine rc32rs(lfat, lefat)
      &            'NOM_SIT1', 'NUM_SIT1', 'GROUP_SIT1', 'PM', 'PB', 'PMPB',&
      &            'SN', 'INST_SN_1','INST_SN_2', 'SN*', 'INST_SN*_1',&
      &            'INST_SN*_2', 'SIG_PRES_MOY', 'SN_THER', 'CRIT_LINE',&
-     &            'SP_THER', 'CRIT_PARAB', 'KE_MECA', 'KE_THER','SP1(MECA)', &
-     &            'INST_SALT_1', 'INST_SALT_2','SALT', 'FU_UNIT' /
+     &            'CRIT_PARAB', 'KE_MECA', 'KE_THER','SP(MECA)', 'SP(THER)', 'SP',&
+     &            'INST_SALT_1', 'INST_SALT_2', 'SALT', 'FU_UNIT_SS_CYCL', 'FU_UNIT'/
 !
     data nopar3 / 'TYPE', 'SEISME', 'LIEU',&
      &            'NOM_SIT1', 'NUM_SIT1', 'GROUP_SIT1',&
      &            'NOM_SIT2', 'NUM_SIT2', 'GROUP_SIT2', 'SN',&
      &            'INST_SN_1','INST_SN_2', 'SN*', 'INST_SN*_1',&
      &            'INST_SN*_2', 'SIG_PRES_MOY', 'SN_THER', 'CRIT_LINE',&
-     &            'CRIT_PARAB', 'KE_MECA','KE_THER','INST_SALT_1', 'INST_SALT_2',&
-     &            'SALT', 'FU_UNIT' /
+     &            'CRIT_PARAB', 'KE_MECA','KE_THER', 'SP(MECA)', 'SP(THER)', &
+     &            'SP','INST_SALT_1', 'INST_SALT_2','SALT','FU_UNIT_SS_CYCL', 'FU_UNIT' /
 !
     data nopar4 / 'TYPE', 'SEISME', 'LIEU',&
      &            'NOM_SIT1', 'NUM_SIT1', 'NOCC_SIT1', 'GROUP_SIT1',&
      &            'NOM_SIT2', 'NUM_SIT2', 'NOCC_SIT2', 'GROUP_SIT2', 'SN',&
      &            'INST_SN_1','INST_SN_2', 'SN*', 'INST_SN*_1',&
-     &            'INST_SN*_2', 'KE_MECA','KE_THER','INST_SALT_1', 'INST_SALT_2',&
-     &            'SALT', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN', 'FEN_ELAS',&
-                  'FUEN_PARTIEL' /
-!
+     &            'INST_SN*_2', 'KE_MECA','KE_THER','SP(MECA)','SP(THER)','SP',&
+     &            'INST_SALT_1', 'INST_SALT_2','SALT', 'FU_UNIT_SS_CYCL', 'FU_UNIT', 'NOCC_PRIS',&
+                  'FU_PARTIEL', 'FEN', 'FEN_ELAS','FUEN_PARTIEL' /
     data typar4 / 'K8', 'K8','K8',&
      &            'K16', 'I', 'I', 'I',&
      &            'K16', 'I', 'I', 'I', 'R',&
      &            'R', 'R', 'R', 'R',&
-     &            'R', 'R', 'R', 'R', 'R',&
-     &            'R', 'R', 'I', 'R', 'R', 'R',&
-     &            'R'/
+     &            'R', 'R', 'R', 'R', 'R', 'R', &
+     &            'R', 'R', 'R', 'R', 'R', 'I', &
+     &            'R', 'R', 'R','R'/
                   
 !
 ! DEB ------------------------------------------------------------------
@@ -136,7 +137,9 @@ subroutine rc32rs(lfat, lefat)
     rbid = 0.d0
     c16b=(0.d0,0.d0)
     call getvtx(' ', 'TYPE_RESU', scal=typtab, nbret=n1)
+    call getvtx(' ', 'SOUS_CYCL', scal=sscyc, nbret=n1)
     call getvid(' ', 'MATER', scal=mater, nbret=n1)
+    
 !
     if (typtab .eq. 'VALE_MAX') then
         call tbajpa(nomres, npar1, nopar1, typar1)
@@ -253,15 +256,23 @@ subroutine rc32rs(lfat, lefat)
                     call utmess('F', 'POSTRCCM_4')
                 endif
             endif
-            call rcmcrt(symax, sigmoypres, valer(12), valer(14))
+            call rcmcrt(symax, sigmoypres, valer(12), valer(13))
         endif
-        valer(13) = zr(jresu+123*(i-1)+16)
-        valer(15) = zr(jresu+123*(i-1)+121)
-        valer(16) = zr(jresu+123*(i-1)+122)
-!
-        do 205 k = 1,5
-            valer(k+16) = zr(jresu+123*(i-1)-1+k+11)
-205     continue
+             
+        valer(14) = zr(jresu+123*(i-1)-1+122)
+        valer(15) = zr(jresu+123*(i-1)-1+123)
+        valer(16) = zr(jresu+123*(i-1)-1+18)
+        valer(17) = zr(jresu+123*(i-1)-1+17)
+        valer(18) = zr(jresu+123*(i-1)-1+12)
+        valer(19) = zr(jresu+123*(i-1)-1+13)
+        valer(20) = zr(jresu+123*(i-1)-1+14)
+        valer(21) = zr(jresu+123*(i-1)-1+15)
+        if (sscyc.eq.'OUI') then 
+            valer(22) = zr(jresu+123*(i-1)-1+121)
+        else 
+            valer(22) = r8vide()
+        endif
+        valer(23) = zr(jresu+123*(i-1)-1+16)
 !
         call tbajli(nomres, npar2, nopar2, valei, valer, [c16b], valek, 0)
 !
@@ -273,14 +284,21 @@ subroutine rc32rs(lfat, lefat)
         do 204 k = 1,11
             valer(k) = zr(jresus+123*(i-1)-1+k)
 204     continue
-        valer(13) = zr(jresus+123*(i-1)+16)
-        valer(15) = zr(jresus+123*(i-1)+121)
-        valer(16) = zr(jresus+123*(i-1)+122)
 
-!
-        do 206 k = 1,5
-            valer(k+16) = zr(jresus+123*(i-1)-1+k+11)
-206     continue
+        valer(14) = zr(jresus+123*(i-1)-1+122)
+        valer(15) = zr(jresus+123*(i-1)-1+123)
+        valer(16) = zr(jresus+123*(i-1)-1+18)
+        valer(17) = zr(jresus+123*(i-1)-1+17)
+        valer(18) = zr(jresus+123*(i-1)-1+12)
+        valer(19) = zr(jresus+123*(i-1)-1+13)
+        valer(20) = zr(jresus+123*(i-1)-1+14)
+        valer(21) = zr(jresus+123*(i-1)-1+15)
+        if (sscyc.eq.'OUI') then 
+            valer(22) = zr(jresus+123*(i-1)-1+121)
+        else 
+            valer(22) = r8vide()
+        endif
+        valer(23) = zr(jresus+123*(i-1)-1+16)
 !
         call tbajli(nomres, npar2, nopar2, valei, valer, [c16b], valek, 0)
 !
@@ -317,10 +335,10 @@ subroutine rc32rs(lfat, lefat)
                   valek(3) = lieu(im)
                   valek(2) = 'SANS'
                   do 53 k = 1,6
-                    valer(k) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+k)
+                    valer(k) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+k)
 53                continue
 !
-                  sigmoypres = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+7)
+                  sigmoypres = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+7)
                   valer(7) = sigmoypres
                   if (sigmoypres .eq. r8vide()) then
                     valer(9) = r8vide()
@@ -340,35 +358,54 @@ subroutine rc32rs(lfat, lefat)
                     call rcmcrt(symax, sigmoypres, valer(9), valer(10))
                   endif
 !
-                  valer(8) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+8)
-                  valer(11) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+21)
-                  valer(12) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+22)
+     
+                  valer(8) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+8)
+                  valer(11) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+22)
+                  valer(12) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+23)
 
-                  do 54 k = 1,3
+                  do 54 k = 1,6
                     valer(12+k) = r8vide()
 54                continue
-                  valer(16) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+17)
+
+                  if (sscyc.eq.'OUI') then 
+                    valer(19) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+21)
+                  else 
+                    valer(19) = r8vide()
+                  endif
+                  valer(20) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+17)
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 ! --------------- on crée la ligne avec le transitoires fictifs uniquement
                   valek(4) = 'FICTIF1'
                   valek(5) = 'FICTIF1'
 !
-                  do 207 k = 1,11
+                  do 207 k = 1,12
                       valer(k) = r8vide()
 207               continue
-                  valer(16) = r8vide()
-                  valer(13) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+10)
-                  valer(14) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+11)
-                  valer(15) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+12)
+
+                  valer(13) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+9) &
+                            - zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
+                  valer(14) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
+                  valer(15) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)
+                  valer(16) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+10)
+                  valer(17) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+11)
+                  valer(18) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+12)
+                  valer(19) = r8vide()
+                  valer(20) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+24)
 !
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 !
                   valek(4) = 'FICTIF2'
                   valek(5) = 'FICTIF2'
 !
-                  valer(13) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+14)
-                  valer(14) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+15)
-                  valer(15) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+16)
+                  valer(13) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+13) &
+                            - zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
+                  valer(14) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
+                  valer(15) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)
+                  valer(16) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+14)
+                  valer(17) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+15)
+                  valer(18) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+16)
+                  valer(19) = r8vide()
+                  valer(20) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+25)
 !
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 !
@@ -380,10 +417,10 @@ subroutine rc32rs(lfat, lefat)
                   call jeveuo('&&RC3200.COMBS_RESU.'//lieu(im), 'L', jresucombs)
                   valek(3) = lieu(im)
                   do 153 k = 1,6
-                    valer(k) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+k)
+                    valer(k) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+k)
 153                continue
 !
-                  sigmoypres = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+7)
+                  sigmoypres = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+7)
                   valer(7) = sigmoypres
                   if (sigmoypres .eq. r8vide()) then
                     valer(9) = r8vide()
@@ -402,14 +439,20 @@ subroutine rc32rs(lfat, lefat)
                     endif
                     call rcmcrt(symax, sigmoypres, valer(9), valer(10))
                   endif
-!
-                  valer(8) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+8)
-                  valer(11) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+21)
-                  valer(12) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+22)
-                  do 154 k = 1,3
+
+                  valer(8) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+8)
+                  valer(11) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+22)
+                  valer(12) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+23)
+                  do 154 k = 1,6
                     valer(12+k) = r8vide()
 154                continue
-                  valer(16) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+17)
+                  if (sscyc.eq.'OUI') then 
+                    valer(19) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+21)
+                  else 
+                    valer(19) = r8vide()
+                  endif
+                  valer(20) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+17)
+
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 ! --------------- on crée la ligne avec le transitoires fictifs uniquement
                   valek(4) = 'FICTIF1'
@@ -418,19 +461,30 @@ subroutine rc32rs(lfat, lefat)
                   do 307 k = 1,12
                       valer(k) = r8vide()
 307               continue
-                  valer(16) = r8vide()
-                  valer(13) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+10)
-                  valer(14) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+11)
-                  valer(15) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+12)
+                  valer(13) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+9) &
+                            - zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
+                  valer(14) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+18)
+                  valer(15) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+9)
+                  valer(16) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+10)
+                  valer(17) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+11)
+                  valer(18) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+12)
+                  valer(19) = r8vide()
+                  valer(20) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+24)
 !
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 !
                   valek(4) = 'FICTIF2'
                   valek(5) = 'FICTIF2'
 !
-                  valer(13) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+14)
-                  valer(14) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+15)
-                  valer(15) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+16)
+                  valer(13) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+13) &
+                            - zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
+                  valer(14) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+19)
+                  valer(15) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+13)
+                  valer(16) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+14)
+                  valer(17) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+15)
+                  valer(18) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+16)
+                  valer(19) = r8vide()
+                  valer(20) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+25)
 !
                   call tbajli(nomres, npar3, nopar3, valei, valer, [c16b], valek, 0)
 777               continue
@@ -443,8 +497,10 @@ subroutine rc32rs(lfat, lefat)
 !
 !     ----------------------------------------------------------------
 ! --- AFFICHAGE DES GRANDEURS QUI INTERVIENNENT DANS FU_TOTAL
-! --- SN,'INST_SN_1','INST_SN_2', 'SN*', 'INST_SN*_1', 'INST_SN*_2', 'KE_MECA', 'KE_THER',
-! --- 'INST_SALT_1', 'INST_SALT_2','SALT', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL'
+! --- SN,'INST_SN_1','INST_SN_2', 'SN*', 'INST_SN*_1', 'INST_SN*_2', 
+! --- 'KE_MECA', 'KE_THER','SP(MECA)', 'SP(THER)', 'SP',
+! --- 'INST_SALT_1', 'INST_SALT_2','SALT', 'FU_UNIT_SS_CYCL', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL'
+! --- , 'FEN', 'FEN_ELAS','FUEN_PARTIEL' 
 !     ----------------------------------------------------------------
 !
     valek(1) = 'FACT'
@@ -499,6 +555,7 @@ subroutine rc32rs(lfat, lefat)
 !
 !---- une situation seule a le plus grand fu unitaire
       if(num1 .eq. num2) then
+      
           valer(1) = zr(ind1+123*(num1-1)+3)
           valer(2) = zr(ind1+123*(num1-1)+4)
           valer(3) = zr(ind1+123*(num1-1)+5)
@@ -507,49 +564,69 @@ subroutine rc32rs(lfat, lefat)
           valer(6) = zr(ind1+123*(num1-1)+8)
           valer(7) = zr(ind1+123*(num1-1)+121)
           valer(8) = zr(ind1+123*(num1-1)+122)
-          valer(9) = zr(ind1+123*(num1-1)+12)
-          valer(10) = zr(ind1+123*(num1-1)+13)
-          valer(11) = zr(ind1+123*(num1-1)+14)
-          valer(12) = zr(ind1+123*(num1-1)+15)+fuseism
-          valer(13) = valer(12)*noccpris
+          valer(9) = zr(ind1+123*(num1-1)+17)
+          valer(10) = zr(ind1+123*(num1-1)+16)
+          valer(11) = zr(ind1+123*(num1-1)+11)
+          
+          valer(12) = zr(ind1+123*(num1-1)+12)
+          valer(13) = zr(ind1+123*(num1-1)+13)
+          valer(14) = zr(ind1+123*(num1-1)+14)
+          if (sscyc.eq.'OUI') then 
+            valer(15) = zr(ind1+123*(num1-1)+120)
+          else 
+            valer(15) = r8vide()
+          endif
+          
+          valer(16) = zr(ind1+123*(num1-1)+15)+fuseism
+          valer(17) = valer(16)*noccpris
 !
           if(lefat) then
-              valer(14) = zr(jfactenv+3*k)
-              valer(15) = zr(jfactenv+3*k+1)
-              valer(16) = zr(jfactenv+3*k+2)
+              valer(18) = zr(jfactenv+3*k)
+              valer(19) = zr(jfactenv+3*k+1)
+              valer(20) = zr(jfactenv+3*k+2)
           else
-              valer(14) = r8vide()
-              valer(15) = r8vide()
-              valer(16) = r8vide()
+              valer(18) = r8vide()
+              valer(19) = r8vide()
+              valer(20) = r8vide()
           endif
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
 !
 !---- une combinaison de situations a le plus grand fu unitaire
       else
-          valer(1) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+1)
-          valer(2) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+2)
-          valer(3) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+3)
-          valer(4) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+4)
-          valer(5) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+5)
-          valer(6) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+6)
-          valer(7) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+21)
-          valer(8) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+22)
+
+          valer(1) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+1)
+          valer(2) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+2)
+          valer(3) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+3)
+          valer(4) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+4)
+          valer(5) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+5)
+          valer(6) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+6)
+          valer(7) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+22)
+          valer(8) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+23)
           valer(9) = r8vide()
           valer(10) = r8vide()
           valer(11) = r8vide()
-          valer(12)= zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+17)+fuseism
-          valer(13)= valer(12)*noccpris
+          valer(12) = r8vide()
+          valer(13) = r8vide()
+          valer(14) = r8vide()
+          if (sscyc.eq.'OUI') then 
+            valer(15) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+21)
+          else 
+            valer(15) = r8vide()
+          endif
+          valer(16)= zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+17)+fuseism
+          valer(17)= valer(16)*noccpris
 !
           if(lefat) then
-              valer(14) = zr(jfactenv+3*k)
-              valer(15) = zr(jfactenv+3*k+1)
-              valer(16) = zr(jfactenv+3*k+2)
+              valer(18) = zr(jfactenv+3*k)
+              valer(19) = zr(jfactenv+3*k+1)
+              valer(20) = zr(jfactenv+3*k+2)
           else
-              valer(14) = r8vide()
-              valer(15) = r8vide()
-              valer(16) = r8vide()
+              valer(18) = r8vide()
+              valer(19) = r8vide()
+              valer(20) = r8vide()
           endif
+          
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
 !
@@ -558,24 +635,35 @@ subroutine rc32rs(lfat, lefat)
           do 103 i = 1,8
               valer(i) = r8vide()
 103       continue
-          valer(9) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+10)
-          valer(10) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+11)
-          valer(11) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+12)
-!
-          valer(12) = r8vide()
-          valer(13) = r8vide()
-          valer(14) = r8vide()
+
+          valer(9) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+9) - &
+                     zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+18)
+          valer(10) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+18)
+          valer(11) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+9)
+          valer(12) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+10)
+          valer(13) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+11)
+          valer(14) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+12)
           valer(15) = r8vide()
-          valer(16) = r8vide()
+          valer(16) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+24)
+          valer(17) = r8vide()
+          valer(18) = r8vide()
+          valer(19) = r8vide()
+          valer(20) = r8vide()
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
 !
           valek(4) = 'FICTIF2'
           valek(5) = 'FICTIF2'
+          
 !
-          valer(9) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+14)
-          valer(10) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+15)
-          valer(11) = zr(ind2+22*nb*(num1-1)+22*(num2-1)-1+16)
+          valer(9) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+13) - &
+                     zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+19)
+          valer(10) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+19)
+          valer(11) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+13)
+          valer(12) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+14)
+          valer(13) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+15)
+          valer(14) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+16)
+          valer(16) = zr(ind2+25*nb*(num1-1)+25*(num2-1)-1+25)
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
 !
@@ -604,18 +692,18 @@ subroutine rc32rs(lfat, lefat)
 
             call jeveuo('&&RC3200.MAX_RESU.'//lieu(im), 'L', jmax)
             
-            do i = 1,16 
+            do i = 1,20 
                 valer(i) = r8vide()
             end do 
             
-            valer(13) = zr(jmax-1+11)
-            valer(16) = zr(jmax+12)
+            valer(17) = zr(jmax-1+11)
+            valer(20) = zr(jmax+12)
             if(lefat) then
                 call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
                 if(n5 .eq. 0 .or. abs(fenint) .lt. 1e-8) call utmess('F', 'POSTRCCM_54')
                 fenglobal =0.d0
                 if (abs(zr(jmax+10)) .gt. 1e-8) fenglobal = zr(jmax+12)/zr(jmax+10)
-                if(fenglobal .gt. fenint) valer(16)=zr(jmax+12)/fenint
+                if(fenglobal .gt. fenint) valer(17)=zr(jmax+12)/fenint
             endif
         
             call tbajli(nomres, npar4, nopar4, valei, valer,[c16b], valek, 0)

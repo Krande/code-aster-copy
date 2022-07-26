@@ -486,7 +486,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                    _F(NOM_PARA='SEISME',
                      VALE_K='SANS',),
                   _F(NOM_PARA='LIEU',
-                     VALE_K='ORIG',),),
+                     VALE_K='ORIG',),
+                  _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation3',),
+                     ),
            TABLE=FAT34ENV,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -498,7 +501,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                    _F(NOM_PARA='SEISME',
                      VALE_K='SANS',),
                   _F(NOM_PARA='LIEU',
-                     VALE_K='EXTR',),),
+                     VALE_K='EXTR',),
+                  _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation3',),
+                     ),
            TABLE=FAT34ENV,)
 
 # SN SITUATIONS FACTEUR USAGE FINAL
@@ -530,7 +536,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=(_F(NOM_PARA='TYPE',
                      VALE_K='FACT',),
                   _F(NOM_PARA='LIEU',
-                     VALE_K='ORIG',),),
+                     VALE_K='ORIG',),
+                  _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation3',),
+                     ),
            TABLE=FAT34ENV,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -540,7 +549,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=(_F(NOM_PARA='TYPE',
                      VALE_K='FACT',),
                   _F(NOM_PARA='LIEU',
-                     VALE_K='EXTR',),),
+                     VALE_K='EXTR',),
+                  _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation3',),
+                     ),
            TABLE=FAT34ENV,)
 
 # FU_UNIT SITUATIONS FACTEUR USAGE FINAL
@@ -551,7 +563,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=(_F(NOM_PARA='TYPE',
                      VALE_K='FACT',),
                   _F(NOM_PARA='LIEU',
-                     VALE_K='ORIG',),),
+                     VALE_K='ORIG',),
+                  _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation3',),
+                     ),
            TABLE=FAT34ENV,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -561,7 +576,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=(_F(NOM_PARA='TYPE',
                      VALE_K='FACT',),
                   _F(NOM_PARA='LIEU',
-                     VALE_K='EXTR',),),
+                     VALE_K='EXTR',),
+                  _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation3',),
+                     ),
            TABLE=FAT34ENV,)
 
 #VALEURS MAX
@@ -634,7 +652,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=0.00026,
            NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
-                     VALE_K='ORIG',),),
+                     VALE_K='ORIG',),
+                     ),
            TABLE=FAT34ENV,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -642,7 +661,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=0.00075,
            NOM_PARA='FU_TOTAL',
            FILTRE=(_F(NOM_PARA='LIEU',
-                     VALE_K='EXTR',),),
+                     VALE_K='EXTR',),
+                     ),
            TABLE=FAT34ENV,)
 
 #VALEURS ROCHET

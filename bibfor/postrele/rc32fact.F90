@@ -75,7 +75,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 ! --------- on y rentre les facteurs d'usage pour les combinaisons de situations
 ! --------- si la combinaison n'est pas possible zr(jresucomb) vaut r8vide et la
 ! --------- matrice qui est symétrique n'est remplie que au dessus de la diagonale
-            zr(jfu+nb*(iocc1-1)+iocc2-1) = zr(jresucomb+22*nb*(iocc1-1)+22*(iocc2-1)-1+17)
+            zr(jfu+nb*(iocc1-1)+iocc2-1) = zr(jresucomb+25*nb*(iocc1-1)+25*(iocc2-1)-1+17)
 30      continue
 ! ----- on y rentre les facteurs d'usage pour les situations seules
         zr(jfu+(nb+1)*(iocc1-1))= zr(jresu+123*(iocc1-1)+15)
@@ -146,7 +146,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
 ! --------- en prenant en compte le séisme
 ! --------- si la combinaison n'est pas possible zr(jresucomb) vaut r8vide et la
 ! --------- matrice qui est symétrique n'est remplie que au dessus de la diagonale
-            zr(jfus+nb*(iocc1-1)+iocc2-1) = zr(jresucombs+22*nb*(iocc1-1)+22*(iocc2-1)-1+17)&
+            zr(jfus+nb*(iocc1-1)+iocc2-1) = zr(jresucombs+25*nb*(iocc1-1)+25*(iocc2-1)-1+17)&
                                             +fuseism
 80      continue
 ! ------- on y rentre les facteurs d'usage pour les situations seules avec le séisme
@@ -181,7 +181,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
         if(num1 .eq. num2) then
             futotss = futotss+noccpris*zr(jresus+123*(num1-1)+120)
         else
-            futotss = futotss+noccpris*zr(jresucombs+22*nb*(num1-1)+22*(num2-1)-1+20)
+            futotss = futotss+noccpris*zr(jresucombs+25*nb*(num1-1)+25*(num2-1)-1+21)
         endif
         zi(jfact+6*k) = num1
         zi(jfact+6*k+1) = num2
@@ -287,7 +287,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
         if(num1 .eq. num2) then
             futotss = futotss+noccpris*zr(jresus+123*(num1-1)+120)
         else
-            futotss = futotss+noccpris*zr(jresucombs+22*nb*(num1-1)+22*(num2-1)-1+20)
+            futotss = futotss+noccpris*zr(jresucombs+25*nb*(num1-1)+25*(num2-1)-1+21)
         endif
         zi(jfact+6*k) = num1
         zi(jfact+6*k+1) = num2
@@ -359,7 +359,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
         if(num1 .eq. num2) then
             futotss = futotss+noccpris*zr(jresu+123*(num1-1)+120)
         else
-            futotss = futotss+noccpris*zr(jresucomb+22*nb*(num1-1)+22*(num2-1)-1+20)
+            futotss = futotss+noccpris*zr(jresucomb+25*nb*(num1-1)+25*(num2-1)-1+21)
         endif
         zi(jfact+6*k) = num1
         zi(jfact+6*k+1) = num2
@@ -463,7 +463,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
         if(num1 .eq. num2) then
             futotss = futotss+noccpris*zr(jresu+123*(num1-1)+120)
         else
-            futotss = futotss+noccpris*zr(jresucomb+22*nb*(num1-1)+22*(num2-1)-1+20)
+            futotss = futotss+noccpris*zr(jresucomb+25*nb*(num1-1)+25*(num2-1)-1+21)
         endif
         zi(jfact+6*k) = num1
         zi(jfact+6*k+1) = num2
