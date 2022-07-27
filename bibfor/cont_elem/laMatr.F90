@@ -129,7 +129,7 @@ real(kind=8), intent(inout) :: matr_fric(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
                         matr_cont, MAX_LAGA_DOFS)
 !
 ! ------ Compute displacement / displacement (slave and master side)
-!        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D2(gap(u))[v, du]) -> not implemented
+!        term: (H*[lagr_c + gamma_c * gap(u)]_R-, D2(gap(u))[v, du])
 !
             coeff = weight_sl_qp * projRmVal
             matr_cont(1:geom%nb_dofs, 1:geom%nb_dofs) = &

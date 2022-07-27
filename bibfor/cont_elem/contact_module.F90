@@ -22,8 +22,9 @@ module contact_module
 implicit none
 !
 private
-#include "asterf_types.h"
+!
 #include "asterc/r8prem.h"
+#include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmdonf.h"
@@ -36,6 +37,7 @@ private
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 #include "blas/dgemv.h"
+#include "blas/dger.h"
 #include "contact_module.h"
 #include "jeveux.h"
 !
@@ -534,7 +536,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   Evaluate first derivative of gap for raytracing
-!   D gap(u)[v] = -(v^s - v^m + gap*Dn^s).n^m/(n^m.n^s)
+!   D gap(u)[v] = -(v^s - v^m + gap*Dn^s[v^s]).n^m/(n^m.n^s)
 !   or the simplifed (incomplete) form for under assumption n^s = -n^m
 !   D gap^sim(u)[v] = -(v^s - v^m).n^s
 !
@@ -569,25 +571,73 @@ contains
 !
 !===================================================================================================
 !
-    subroutine d2Gap_du2(geom, func_slav, func_mast, &
-        norm_slav, norm_mast, d2Gap)
+    subroutine d2Gap_du2(geom, func_slav, dfunc_slav, func_mast, &
+                         norm_slav, norm_mast, gap, d2Gap)
 !
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: func_slav(9), func_mast(9)
+        real(kind=8), intent(in) :: func_slav(9), func_mast(9), dfunc_slav(2,9), gap
         real(kind=8), intent(in) :: norm_slav(3), norm_mast(3)
         real(kind=8), intent(out) :: d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   Evaluate second derivative of gap
+!   D^2 gap(u)[v,w] =
+!   - ( D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s] + gap(u) D^2 n^s[v^s, w^s] ).n^m/(n^m.n^s)
+!   + ( D dy/de[v] * De[w] + D dy/de[w] * De[v] + d^2y/de^2 * De[v]*De[w] ).n^m/(n^m.n^s)
 !
+!   ou
+!   D^2 gap(u)[v,w] =
+!   - gap(u) D^2 n^s[v^s, w^s].n^s
+!   + ( D dy/de[v] * De[w] + D dy/de[w] * De[v] + d^2y/de^2 * De[v]*De[w] + dy_de * D^2 e[v,w]).n^s
 ! --------------------------------------------------------------------------------------------------
 !
+        aster_logical, parameter :: vers1 = ASTER_TRUE
+        real(kind=8) :: norm(3), dNs(MAX_LAGA_DOFS,3), dGap(MAX_LAGA_DOFS), dNs_n(MAX_LAGA_DOFS)
+!
         d2Gap = 0.d0
+!
+! --- Term: n^m/(n^m.n^s)
+!
+        if(vers1) then
+            norm = norm_mast / dot_product(norm_mast, norm_slav)
+        else
+            norm = norm_slav
+        end if
+!
+        if(vers1) then
+!
+! --- Term: D gap(u)[v]
+!
+            call dGap_du(geom, func_slav, dfunc_slav, func_mast, norm_slav, norm_mast, gap, dGap)
+!
+! --- Term: D( n^s[v^s]).n^m/(n^m.n^s)
+!
+            dNs_n = 0.d0
+            call dNs_du(geom, func_slav, dfunc_slav, dNs)
+            call dgemv('N', geom%nb_dofs, geom%elem_dime, 1.d0, dNs, MAX_LAGA_DOFS, &
+                    norm, 1, 1.d0, dNs_n, 1)
+!
+! --- Term: -(D gap(u)[v]* D n^s[w^s] + D gap(u)[w]* D n^s[v^s]).n^m/(n^m.n^s)
+!
+            call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dGap, 1, dNs_n, 1, d2Gap, MAX_LAGA_DOFS)
+            call dger(geom%nb_dofs, geom%nb_dofs, -1.d0, dNs_n, 1, dGap, 1, d2Gap, MAX_LAGA_DOFS)
+        else
+!
+! --- Term: dy_de * D^2 e[v,w]
+!
+        end if
+!
+! --- Term: D^2 n^s[v^s, w^s]
+!
+
+!
+! --- Il manque les autres termes mais pas facile à calculer.
+!
     end subroutine
-!i_elem_dime===========================================
+!===================================================================================================
 !
 !===================================================================================================
 !

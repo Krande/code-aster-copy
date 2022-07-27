@@ -149,8 +149,8 @@ real(kind=8), intent(out), optional :: jump_t(MAX_LAGA_DOFS,2)
 !
 ! ----- Compute d^2 (gap(u))[v, w] / du^2
 !
-        call d2Gap_du2(geom, shape_func_sl, shape_func_ma, &
-                        norm_slav, norm_mast, d2Gap)
+        call d2Gap_du2(geom, shape_func_sl, dshape_func_sl, &
+                        shape_func_ma, norm_slav, norm_mast, gap, d2Gap)
 
     end if
 !
