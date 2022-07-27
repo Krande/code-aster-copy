@@ -31,6 +31,11 @@ private
 #include "asterfort/mmnonf.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/reerel.h"
+#include "asterfort/subac1.h"
+#include "asterfort/subaco.h"
+#include "asterfort/subacv.h"
+#include "asterfort/sumetr.h"
+#include "blas/dgemv.h"
 #include "contact_module.h"
 #include "jeveux.h"
 !
@@ -94,7 +99,7 @@ end type
     public :: ContactParameters, ContactGeom
     public :: projQpSl2Ma, Heaviside, shapeFuncDisp, shapeFuncLagr, evalPoly
     public :: dGap_du, d2Gap_du2, diameter, testLagrC, gapEval, testLagrF
-    public :: projBs, projRm, projTn, jump_tang, jump_norm
+    public :: projBs, projRm, projTn, jump_tang, jump_norm, dNs_du
 !
 contains
 !
@@ -450,6 +455,72 @@ contains
 !
 !===================================================================================================
 !
+    subroutine dNs_du(geom, func_slav, dfunc_slav, dNs)
+!
+    implicit none
+!
+        type(ContactGeom), intent(in) :: geom
+        real(kind=8), intent(in) :: dfunc_slav(2,9), func_slav(9)
+        real(kind=8), intent(out) :: dNs(MAX_LAGA_DOFS,3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Evaluate first derivative of slave normal using differential geometry
+!   D n^s(u^s)[v^s] = sum_{i=1, d-1}[dv_di.g^i * n^s - dv_di.n^s * g^i]
+!   with g^i - controvariant basis
+!
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2), acv(2, 2)
+        real(kind=8) :: t1(3), t2(3), t3(3), norm_slav(3), ta(3)
+        integer :: i_node_slav, i_elem_dime, index
+!
+! ----- Covariant basis
+!
+        if(geom%elem_dime == 3) then
+            call subaco(geom%nb_node_slav, dfunc_slav, geom%slav_coor_curr, cova)
+        else
+            call subac1(geom%l_axis, geom%nb_node_slav, func_slav, dfunc_slav(1,:), &
+                        geom%slav_coor_curr(1:2,:), cova)
+        end if
+!
+! ----- Metric tensor
+!
+        call sumetr(cova, metr, jac)
+!
+! ----- Contra-variant basis
+!
+        call subacv(cova, metr, jac, cnva, acv)
+!
+        norm_slav(1:3) = cova(1:3,3)
+!
+! ----- Tangent matrix
+!
+        index = 0
+        dNs = 0.d0
+        ta = 0.d0
+        do i_node_slav = 1, geom%nb_node_slav
+            do i_elem_dime = 1, geom%elem_dime
+                index = index + 1
+                t1 = (dfunc_slav(1,i_node_slav)*cnva(i_elem_dime,1) + &
+                      dfunc_slav(2,i_node_slav)*cnva(i_elem_dime,2)) * norm_slav
+                t2 = dfunc_slav(1,i_node_slav)*norm_slav(i_elem_dime) * cnva(1:3,1)
+                t3 = dfunc_slav(2,i_node_slav)*norm_slav(i_elem_dime) * cnva(1:3,2)
+                if(geom%l_axis .and. i_elem_dime == 1) then
+                    ta = func_slav(i_node_slav)*cnva(3,2)*norm_slav
+                end if
+                dNs(index, 1:3) = dNs(index, 1:3) + (t1 - t2 - t3 + ta)
+
+            enddo
+            index = index + geom%indi_lagc(i_node_slav)
+        enddo
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine dGap_du(geom, func_slav, dfunc_slav, func_mast, &
                        norm_slav, norm_mast, gap, dGap)
 !
@@ -469,7 +540,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: norm(3)
+        real(kind=8) :: norm(3), dNs(MAX_LAGA_DOFS,3)
 !
 ! --- See paper Renard, Poulious 2015 for an explanation
 !
@@ -479,15 +550,17 @@ contains
             norm = norm_mast / dot_product(norm_mast, norm_slav)
         end if
 !
-! --- normal jump
+! --- normal jump : -(v^s - v^m ).norm
 !
         call jump_norm(geom, func_slav, func_mast, norm, dGap)
 !
         if(.not.SIMPLIFIED_D_GAP) then
 !
-! --- Compute term: g*Dn^s = g * T_n^s * F^{-T}(u^s) * grad(v^s) * n^s
+! --- Compute term: -g*Dn^s.norm (= 0 if norm = n^s)
 !
-! How to do it without the volumic cell because gradient are not zero on faces
+            call dNs_du(geom, func_slav, dfunc_slav, dNs)
+            call dgemv('N', geom%nb_dofs, geom%elem_dime, -gap, dNs, MAX_LAGA_DOFS, &
+                        norm, 1, 1.d0, dGap, 1)
         end if
 !
     end subroutine
@@ -514,8 +587,7 @@ contains
 !
         d2Gap = 0.d0
     end subroutine
-!
-!===================================================================================================
+!i_elem_dime===========================================
 !
 !===================================================================================================
 !
@@ -659,7 +731,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !   Evaluate normal jump of test function:
-!   jump_tang = -(v^s - v^m).norm^s
+!   jump_norm = -(v^s - v^m).norm^s
 !
 ! --------------------------------------------------------------------------------------------------
 !
