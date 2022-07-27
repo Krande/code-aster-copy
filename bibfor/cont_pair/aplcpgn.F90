@@ -233,7 +233,7 @@ integer, pointer :: elem_mast_start(:) => null()
                 call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
                 write(*,*) "Current slave element: ", elem_slav_nume, elem_slav_name,&
                         '(type : ', elem_slav_code, ')'
-                ! write(*,*) elem_slav_coor(1:3*elem_slav_nbnode)
+                write(*,*) elem_slav_coor(1:3*elem_slav_nbnode)
             endif
 !
 ! ----- Number of neighbours
@@ -414,6 +414,7 @@ integer, pointer :: elem_mast_start(:) => null()
                             .and.elem_slav_flag(elem_neigh_indx) .ne. 1 &
                             .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
                             weight_test=0.d0
+                            ! IS IT NECESSARY WITH RAY_TRACING ?
                             !call testvois(jv_geom       , elem_slav_type,&
                             !                elem_mast_coor, elem_mast_code, elem_slav_nume,&
                             !                pair_tole     , weight_test,    v_mesh_connex ,&

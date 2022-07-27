@@ -132,7 +132,6 @@ integer, intent(out) :: iret, nb_node_proj
                         proj_tole     , norm_slav            ,&
                         ksi1_line     , ksi2_line     ,&
                         tau1          , tau2            , iret          )
-            ASSERT(iret == 0)
             call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, elem_dime,&
                         elem_mast_coor, nosl_coor       , 75       ,&
                         proj_tole     , norm_slav            ,&
@@ -143,6 +142,7 @@ integer, intent(out) :: iret, nb_node_proj
             if(iret == 1) then
                 proj_coor = 0.d0
                 nb_node_proj = 0
+                iret = 2
                 exit
             end if
         end if

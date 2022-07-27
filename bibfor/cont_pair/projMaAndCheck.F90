@@ -63,7 +63,6 @@ integer, intent(out) :: iret, nb_node_proj
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: mast_norm(3), slav_norm(3), ps
-    aster_logical :: l_inter
 !
     iret = 0
     proj_coor = 0.d0
@@ -79,7 +78,7 @@ integer, intent(out) :: iret, nb_node_proj
 ! - Linear normal are orthonormal - exit
 !
     ps = mast_norm(1) * slav_norm(1) + mast_norm(2) * slav_norm(2) + mast_norm(3) * slav_norm(3)
-    if(abs(ps) <= r8prem()) then
+    if(abs(ps) <= proj_tole) then
         iret = 1
         go to 99
     end if
@@ -90,18 +89,6 @@ integer, intent(out) :: iret, nb_node_proj
                      elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                      elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                      proj_coor       , nb_node_proj  , iret)
-
-!
-! - Check if intersection is void or not
-!
-    l_inter = ASTER_FALSE
-    !call apinte_chck(proj_tole       , elem_dime     , &
-    !                 elem_slav_nbnode, elem_slav_coor, &
-    !                 elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-    !                 proj_coor       , slav_norm     , mast_norm,&
-    !                 l_inter)
-!!
-    !if(.not. l_inter) iret = 1
 !
 99 continue
 !

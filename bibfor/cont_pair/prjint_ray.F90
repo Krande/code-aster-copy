@@ -110,37 +110,8 @@ integer, optional, intent(inout) :: ierror_
     call dctest(elem_slav_code, elin_sub, elin_nbnode, elin_nbsub, elem_slav_line_code)
     ASSERT(elin_nbsub == 1)
     elem_slav_line_nbnode = elin_nbnode(1)
+
 !
-! - Quick test on linearized master cell to detect empty intersection
-!   Projection on linear master cell
-!
-    call projMaAndCheck(proj_tole, elem_dime, &
-                        elem_mast_line_nbnode, elem_mast_coor, elem_mast_line_code,&
-                        elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
-                        proj_coop, nb_node_proj, iret)
-!
-    ASSERT(iret < 2)
-    if(iret == 1) then
-        if (debug) then
-            write(*,*) ".. Projection/intersection is empty (quick check 1)"
-        endif
-        go to 99
-    end if
-!
-    !call interNodesInside(proj_tole, elem_dime, &
-    !                      elem_mast_line_code, elem_slav_code, &
-    !                      proj_coop, nb_node_proj, nb_poin_inte_ma, poin_inte_ma, inte_neigh)
-!
-! - If intersection is empty -> exit
-!
-    !if(nb_poin_inte_ma == 0) then
-    !    if (debug) then
-    !        write(*,*) ".. Projection/intersection is empty (quick check)"
-    !    endif
-    !    go to 99
-    !end if
-!
-! - Intersection is not empty
 ! - Projection on master cell
 !
     call projMaAndCheck(proj_tole, elem_dime, &
@@ -148,7 +119,7 @@ integer, optional, intent(inout) :: ierror_
                         elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
                         proj_coop, nb_node_proj, iret)
 !
-    if(iret == 2) then
+    if(iret == 2 .or. iret == 1) then
         error = ASTER_TRUE
         goto 100
     end if
@@ -165,6 +136,7 @@ integer, optional, intent(inout) :: ierror_
 !
     if(nb_poin_inte_ma == 0) then
         error = ASTER_TRUE
+        iret = 1
         goto 100
     end if
 !
@@ -208,11 +180,12 @@ integer, optional, intent(inout) :: ierror_
                      elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                      poin_inte       , iret)
     if(iret == 1) then
+        iret = 2
         error = ASTER_TRUE
         go to 100
     end if
 !
-! - All nodes have to be inside slace cell
+! - All nodes have to be inside slave cell
 !
     nb_poin_inte = nb_poin_inte_ma
     do i_node = 1, nb_poin_inte
@@ -221,8 +194,7 @@ integer, optional, intent(inout) :: ierror_
                     proj_tole, test)
 
         if(test == 2) then
-            error = ASTER_TRUE
-            go to 100
+            ASSERT(.false.)
         end if
     end do
 !
@@ -242,12 +214,10 @@ integer, optional, intent(inout) :: ierror_
 !
     100 continue
     if (error) then
-        iret = 2
         nb_poin_inte = 0
         poin_inte = 0.d0
         inte_neigh = 0
         inte_weight = 0.d0
-        !ASSERT(ASTER_FALSE)
     end if
 !
 ! - No intersection exit

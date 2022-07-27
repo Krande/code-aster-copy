@@ -70,7 +70,7 @@ ASTERBOOL ContactPairing::computeZone( ASTERINTEGER i ) {
     // get pairing method
     auto variant = zone->getPairingParameter()->getAlgorithm();
     if ( variant == PairingAlgo::Mortar ) {
-        pair_method = ljust( "ROBUSTE", 24, ' ' );
+        pair_method = ljust( "RAPIDE", 24, ' ' );
     } else {
         AS_ABORT( "Not expected" );
     }
