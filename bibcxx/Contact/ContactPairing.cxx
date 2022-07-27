@@ -360,12 +360,10 @@ void ContactPairing::buildFiniteElementDescriptor() {
     slaveCellPaired.clear();
 
     /*FED building*/
-    auto ContactResFEDNbno = _fed->getNumberOfVirtualNodesobj();
-    ContactResFEDNbno->allocate( 1 );
-    ( *ContactResFEDNbno )[0] = 0;
+    _fed->setNumberOfVirtualNodes(0);
 
     /*NEMA building*/
-    auto ContactResFEDNema = _fed->getNema();
+    auto ContactResFEDNema = _fed->getVirtualCellsDescriptor();
     ContactResFEDNema->allocateContiguousNumbered( listNodes );
     listNodes.clear();
 

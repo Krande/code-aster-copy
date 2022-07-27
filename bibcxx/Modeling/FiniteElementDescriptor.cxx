@@ -109,7 +109,7 @@ const JeveuxCollectionLong &FiniteElementDescriptor::getListOfGroupOfElements() 
     return _listOfGroupOfCells;
 };
 
-const JeveuxCollectionLong &FiniteElementDescriptor::getNema() const {
+const JeveuxCollectionLong &FiniteElementDescriptor::getVirtualCellsDescriptor() const {
     _delayedNumberedConstraintElementsDescriptor->build();
     return _delayedNumberedConstraintElementsDescriptor;
 };
@@ -119,20 +119,28 @@ ASTERINTEGER FiniteElementDescriptor::getNumberOfVirtualNodes() const {
     return ( *_numberOfDelayedNumberedConstraintNodes )[0];
 };
 
-JeveuxVectorLong FiniteElementDescriptor::getNumberOfVirtualNodesobj() {
+void FiniteElementDescriptor::setNumberOfVirtualNodes( const ASTERINTEGER nbNodes ) {
+
+    if ( !_numberOfDelayedNumberedConstraintNodes->exists() ) {
+        _numberOfDelayedNumberedConstraintNodes->allocate( 1 );
+    } else {
+        _numberOfDelayedNumberedConstraintNodes->updateValuePointer();
+    }
+    ( *_numberOfDelayedNumberedConstraintNodes )[0] = nbNodes;
+};
+
+JeveuxVectorLong FiniteElementDescriptor::getNumberOfVirtualNodesDescriptor() {
     return _numberOfDelayedNumberedConstraintNodes;
 };
 
-JeveuxVectorChar8 FiniteElementDescriptor::getParameters() const {
-    return _parameters;
-};
+JeveuxVectorChar8 FiniteElementDescriptor::getParameters() const { return _parameters; };
 
 const JeveuxVectorLong &FiniteElementDescriptor::getPhysicalNodesComponentDescriptor() const {
     _dofDescriptor->updateValuePointer();
     return _dofDescriptor;
 };
 
-const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupOfElementsbyCell() const {
+const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupOfElementsbyElement() const {
     _groupsOfCellsNumberByElement->updateValuePointer();
     return _groupsOfCellsNumberByElement;
 };
@@ -226,7 +234,7 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
     const int rank = getMPIRank();
     const int size = getMPISize();
 
-    auto &otherRepe = other->getListOfGroupOfElementsbyCell();
+    auto &otherRepe = other->getListOfGroupOfElementsbyElement();
     auto &otherLiel = other->getListOfGroupOfElements();
 
     const auto nbCells = connectionMesh->getNumberOfCells();

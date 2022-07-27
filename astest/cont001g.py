@@ -27,7 +27,7 @@ import numpy
 
 DEBUT(
     CODE=_F(NIV_PUB_WEB="INTERNET"),
-    # DEBUG=_F(SDVERI='OUI',),
+    DEBUG=_F(SDVERI='OUI',),
     INFO=1,
 )
 
@@ -51,7 +51,7 @@ MODI = AFFE_MODELE(MAILLAGE=Mail,
 DEFICO_BAS = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    LISSAGE="OUI",
+
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -77,9 +77,9 @@ ref = [[-0.7333333333333334, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0
        [-0.06666666666666686, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
        [-1.0, -0.06666666666666686, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)), 4)
 test.assertSequenceEqual(pair.getSlaveIntersectionPoints(0), ref)
-print(pair.getSlaveIntersectionPoints(0))
 
 
 MailQ = CREA_MAILLAGE(MAILLAGE=Mail,
@@ -95,7 +95,7 @@ MODIQ = AFFE_MODELE(MAILLAGE=MailQ,
 DEFICOQ_BAS = DEFI_CONT(
     MODELE=MODIQ,
     INFO=2,
-    LISSAGE="OUI",
+
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -126,5 +126,5 @@ ref = [[-0.7333333333333334, 0.6000000000000001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)), 4)
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)[0]), 16)
 test.assertSequenceEqual(pair.getSlaveIntersectionPoints(0), ref)
-print(pair.getSlaveIntersectionPoints(0))
+
 FIN()

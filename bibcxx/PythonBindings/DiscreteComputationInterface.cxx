@@ -329,9 +329,30 @@ void exportDiscreteComputationToPython( py::module_ &mod ) {
               py::arg( "internVar" ), py::arg( "time_prev" ), py::arg( "time_step" ),
               py::arg( "groupOfCells" ) = VectorString() )
         .def( "contactForces", &DiscreteComputation::contactForces, R"(
-            Compute contact forces
-        )" )
+            Compute contact and friction forces
+
+            Arguments:
+                geom (MeshCoordinatesField): coordinates of mesh used to compute normal
+                displ (FieldOnNodes): displacement field at begin of current time
+                displ_step (FieldOnNodes): field of increment of displacement
+                data (FieldOnCells): contact data
+
+            Returns:
+                FieldOnNodesReal: contact and friction forces
+
+        )",
+              py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "data" ) )
         .def( "contactMatrix", &DiscreteComputation::contactMatrix, R"(
             Compute contact matrix
-        )" );
+
+            Arguments:
+                geom (MeshCoordinatesField): coordinates of mesh used to compute normal
+                displ (FieldOnNodes): displacement field at begin of current time
+                displ_step (FieldOnNodes): field of increment of displacement
+                data (FieldOnCells): contact data
+
+            Returns:
+                ElementaryMatrixDisplacementReal: contact and friction elementary matrix
+        )",
+              py::arg( "geom" ), py::arg( "displ" ), py::arg( "displ_step" ), py::arg( "data" ) );
 };

@@ -51,7 +51,7 @@ MODI = AFFE_MODELE(MAILLAGE=Mail,
 DEFICO_BAS = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    LISSAGE="OUI",
+
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -78,9 +78,9 @@ pair.compute()
 
 # check FED creation
 CD = ContactComputation(DEFICO_BAS)
-CD.buildContactResFED(pair)
-fed = CD.getFiniteElementDescriptor()
-nema = fed.getNema()
+
+fed = pair.getFiniteElementDescriptor()
+nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 6)
@@ -89,7 +89,7 @@ test.assertSequenceEqual(nema, [[58, 59, 13, 1, 97], [59, 60, 14, 13, 97],
                                 [60, 8, 2, 15, 97],
                                 [11, 72]])
 
-gap, i_gap = CD.geometricGap(pair.getCoordinates())
+gap, i_gap = CD.geometricGap(pair)
 test.assertEqual(gap.size(), 5)
 test.assertEqual(i_gap.size(), 5)
 val = gap.getValues()
@@ -99,20 +99,13 @@ val[2] = None
 test.assertSequenceEqual(
     val, [0.0, None, None, 31.093378263431475, 5.980746753595149])
 test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 0.0, 1.0, 1.0])
-print(type(gap[1]))
-
-print(gap.getValues())
-print(i_gap.getValues())
-
-# gap.printMedFile("/home/C00976/tmp/gap.med")
-# status = CD.contactStatus()
 
 
 # Slave side - CONT_HAUT
 DEFICO_HAUT = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    LISSAGE="OUI",
+
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -139,30 +132,25 @@ pair.compute()
 
 # check FED creation
 CD = ContactComputation(DEFICO_HAUT)
-CD.buildContactResFED(pair)
-fed = CD.getFiniteElementDescriptor()
-nema = fed.getNema()
+
+fed = pair.getFiniteElementDescriptor()
+nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 6)
-test.assertSequenceEqual(nema, [[14, 13, 11, 58, 97], [14, 13, 58, 59, 97],
+test.assertSequenceEqual(nema, [[14, 13, 58, 59, 97], [14, 13, 11, 58, 97],
                                 [15, 14, 59, 60, 97], [15, 14, 60, 8, 97],
                                 [2, 15, 60, 8, 97], [1, 72]])
 
-gap, i_gap = CD.geometricGap(pair.getCoordinates())
+gap, i_gap = CD.geometricGap(pair)
 val = gap.getValues()
 test.assertTrue(numpy.isnan(val[0]))
-val[0] = None
-val[2] = None
+
 test.assertEqual(gap.size(), 5)
 test.assertEqual(i_gap.size(), 5)
 
-test.assertSequenceEqual(
-    val, [None, 7.105427357601002e-15, None, 20.710678118654737, 4.972809184491458])
 test.assertSequenceEqual(i_gap.getValues(), [0.0, 1.0, 0.0, 1.0, 1.0])
 
-print(gap.getValues())
-print(i_gap.getValues())
 IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap,)))
 
 FIN()

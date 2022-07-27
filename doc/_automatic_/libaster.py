@@ -791,12 +791,30 @@ class DiscreteComputation:
             elementary tangent matrix (ElementaryMatrixDisplacementReal)
         """
     
-    def contactForces(self, arg0, arg1, arg2, arg3):
-        """Compute contact forces
+    def contactForces(self, geom, displ, displ_step, data):
+        """Compute contact and friction forces
+        
+        Arguments:
+            geom (MeshCoordinatesField): coordinates of mesh used to compute normal
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            data (FieldOnCells): contact data
+        
+        Returns:
+            FieldOnNodesReal: contact and friction forces
         """
     
-    def contactMatrix(self, arg0, arg1, arg2, arg3):
+    def contactMatrix(self, geom, displ, displ_step, data):
         """Compute contact matrix
+        
+        Arguments:
+            geom (MeshCoordinatesField): coordinates of mesh used to compute normal
+            displ (FieldOnNodes): displacement field at begin of current time
+            displ_step (FieldOnNodes): field of increment of displacement
+            data (FieldOnCells): contact data
+        
+        Returns:
+            ElementaryMatrixDisplacementReal: contact and friction elementary matrix
         """
     
     def createExternalStateVariablesField(self, time_value):
@@ -1417,13 +1435,10 @@ class FiniteElementDescriptor(DataStructure):
     def getModel(self):
         pass
     
-    def getNema(self):
-        pass
-    
-    def getNumberOfVirtualNodesobj(self):
-        pass
-    
     def getPhysics(self):
+        pass
+    
+    def getVirtualCellsDescriptor(self):
         pass
     
     def setModel(self, arg0):
@@ -4550,6 +4565,13 @@ class ContactPairing(DataStructure):
         
         Returns:
             list[list]: list of list of intersection points (each intersection is of size 16)
+        """
+    
+    def setCoordinates(self, coordinates):
+        """Set the mesh coordinates field
+        
+        Arguments:
+            coordinates (MeshCoordinatesField) : coordinates to use for pairing
         """
     
     def updateCoordinates(self, disp):
@@ -10213,6 +10235,14 @@ class MeshCoordinatesField(DataStructure):
     #     builtins.object
     
     # Methods defined here:
+    
+    def __add__(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. __add__(self: libaster.MeshCoordinatesField, arg0: libaster.FieldOnNodesReal) -> libaster.MeshCoordinatesField
+        
+        2. __add__(self: libaster.FieldOnNodesReal, arg0: libaster.MeshCoordinatesField) -> libaster.MeshCoordinatesField
+        """
     
     def __getitem__(self, idx):
         """Return the coordinate at index *idx* in the vector.

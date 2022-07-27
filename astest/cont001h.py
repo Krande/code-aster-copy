@@ -52,7 +52,7 @@ MODI = AFFE_MODELE(MAILLAGE=Mail,
 DEFICO_BAS = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    LISSAGE="OUI",
+
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -79,22 +79,20 @@ pair.compute()
 
 # check FED creation
 CD = ContactComputation(DEFICO_BAS)
-CD.buildContactResFED(pair)
-fed = CD.getFiniteElementDescriptor()
-nema = fed.getNema()
+
+fed = pair.getFiniteElementDescriptor()
+nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupOfElements()
-test.assertEqual(len(grel), 3)
+test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 7)
 print(nema)
-test.assertSequenceEqual(nema, [[58, 59, 176, 13, 1, 115, 104],
-                                [58, 59, 176, 14, 13, 116, 104],
+test.assertSequenceEqual(nema, [[58, 59, 176, 14, 13, 116, 104], [58, 59, 176, 13, 1, 115, 104],
                                 [59, 60, 177, 14, 13, 116, 104],
                                 [59, 60, 177, 15, 14, 117, 104],
                                 [60, 8, 178, 15, 14, 117, 104],
-                                [60, 8, 178, 2, 15, 118, 104],
-                                [11, 72], [175, 75]])
+                                [60, 8, 178, 2, 15, 118, 104], [11, 72], [175, 72]])
 
-gap, i_gap = CD.geometricGap(pair.getCoordinates())
+gap, i_gap = CD.geometricGap(pair)
 test.assertEqual(gap.size(), 9)
 test.assertEqual(i_gap.size(), 9)
 val = gap.getValues()
@@ -104,25 +102,16 @@ val[2] = None
 val[5] = None
 val[6] = None
 test.assertSequenceEqual(
-    val, [0.0, None, None, 29.28947335438032, 5.826021843917715,
-          None, None, 14.332331358070887, 1.3853040820400548])
+    val, [0.0, None, None, 29.289473354380323, 5.826021843917718,
+          None, None, 14.332331358070887, 1.385304082040041])
 test.assertSequenceEqual(
     i_gap.getValues(), [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0])
-print(type(gap[1]))
-
-print(gap.getValues())
-print(i_gap.getValues())
-
-# gap.printMedFile("/home/C00976/tmp/gap.med")
-
-# status = CD.contactStatus()
-
 
 # Slave side - CONT_HAUT
 DEFICO_HAUT = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-    LISSAGE="OUI",
+
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -149,20 +138,18 @@ pair.compute()
 
 # check FED creation
 CD = ContactComputation(DEFICO_HAUT)
-CD.buildContactResFED(pair)
-fed = CD.getFiniteElementDescriptor()
-nema = fed.getNema()
-grel = fed.getListOfGroupOfElements()
-test.assertEqual(len(grel), 3)
-test.assertEqual(len(grel[0]), 6)
-test.assertSequenceEqual(nema, [[14, 13, 116, 11, 58, 175, 104],
-                                [14, 13, 116, 58, 59, 176, 104],
-                                [15, 14, 117, 59, 60, 177, 104],
-                                [15, 14, 117, 60, 8, 178, 104],
-                                [2, 15, 118, 60, 8, 178, 104],
-                                [1, 72], [115, 75]])
 
-gap, i_gap = CD.geometricGap(pair.getCoordinates())
+fed = pair.getFiniteElementDescriptor()
+nema = fed.getVirtualCellsDescriptor()
+grel = fed.getListOfGroupOfElements()
+test.assertEqual(len(grel), 2)
+test.assertEqual(len(grel[0]), 6)
+test.assertSequenceEqual(nema, [[14, 13, 116, 58, 59, 176, 104], [14, 13, 116, 11, 58, 175, 104],
+                                [15, 14, 117, 59, 60, 177, 104], [
+                                    15, 14, 117, 60, 8, 178, 104],
+                                [2, 15, 118, 60, 8, 178, 104], [1, 72], [115, 72]])
+
+gap, i_gap = CD.geometricGap(pair)
 val = gap.getValues()
 test.assertTrue(numpy.isnan(val[0]))
 val[0] = None
@@ -172,13 +159,11 @@ test.assertEqual(gap.size(), 9)
 test.assertEqual(i_gap.size(), 9)
 
 test.assertSequenceEqual(
-    val, [None, 0.0, None, 20.710678118654727, 4.569774142536042, None,
-          37.64434717161047, 10.763140746059054, 1.1137435169363141])
+    val, [None, 0.0, None, 20.710678118654712, 4.5697741425361,
+          None, 37.64434717161166, 10.763140746059044, 1.1137435169388767])
 test.assertSequenceEqual(
     i_gap.getValues(), [0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0])
 
-print(gap.getValues())
-print(i_gap.getValues())
 IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap,)))
 
 FIN()
