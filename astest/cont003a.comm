@@ -67,7 +67,9 @@ FONCy = DEFI_FONCTION(NOM_PARA='INST',
 Npas1 = 10
 Npas2 = 500
 L_INST = DEFI_LIST_REEL(DEBUT=0.0,
-                        INTERVALLE=(_F(JUSQU_A=T1,
+                        INTERVALLE=(_F(JUSQU_A=0.3,
+                                       NOMBRE=1,),
+                                    _F(JUSQU_A=T1,
                                        NOMBRE=Npas1,),
                                     #  _F(JUSQU_A=T2,
                                     #     NOMBRE=Npas2,),
@@ -97,16 +99,16 @@ MAT = AFFE_MATERIAU(MAILLAGE=MESH,
                              MATER=Soft,),),)
 
 CLx = AFFE_CHAR_CINE(MODELE=MO,
-                     MECA_IMPO=(_F(GROUP_MA='Bloq',
-                                   DX=0.0,),
-                                _F(GROUP_MA='Depl',
+                     MECA_IMPO=(_F(GROUP_MA='Depl',
                                    DX=1.0,),),)
 
 CLy = AFFE_CHAR_CINE(MODELE=MO,
-                     MECA_IMPO=(_F(GROUP_MA='Bloq',
-                                   DY=0.0,),
-                                _F(GROUP_MA='Depl',
+                     MECA_IMPO=(_F(GROUP_MA='Depl',
                                    DY=-1.0,),),)
+
+BLOQ = AFFE_CHAR_CINE(MODELE=MO,
+                      MECA_IMPO=(_F(GROUP_MA='Bloq',
+                                    DX=0.0, DY=0.0,),),)
 
 CONT = DEFI_CONT(MODELE=MO,
                  ZONE=_F(GROUP_MA_MAIT='Slave',
@@ -121,17 +123,19 @@ RESU = MECA_NON_LINE(MODELE=MO,
                      EXCIT=(_F(CHARGE=CLx,
                                FONC_MULT=FONCx,),
                             _F(CHARGE=CLy,
-                               FONC_MULT=FONCy,),),
+                               FONC_MULT=FONCy,),
+                            _F(CHARGE=BLOQ,),),
                      CONTACT=_F(DEFINITION=CONT,
-                                ALGO_RESO_GEOM="NEWTON"),
+                                ALGO_RESO_GEOM="NEWTON",
+                                RESI_GEOM=1e4),
                      COMPORTEMENT=_F(RELATION='ELAS',
                                      DEFORMATION='GROT_GDEP',),
                      INCREMENT=_F(LIST_INST=LINST,),
                      NEWTON=_F(PREDICTION='TANGENTE',
                                MATRICE='TANGENTE',
                                REAC_ITER=1,),
-                     CONVERGENCE=_F(RESI_GLOB_MAXI=5.E-2,
-                                    ITER_GLOB_MAXI=80,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.e-6,
+                                    ITER_GLOB_MAXI=30,),
                      SOLVEUR=_F(METHODE='MUMPS',),)
 
 # RESU.printMedFile("/home/C00976/tmp/cont003a.rmed")
