@@ -86,6 +86,10 @@ extern void DEFPSPP( UTGTME, utgtme, ASTERINTEGER *, char *, STRING_SIZE, ASTERD
 extern void DEFSPS( UTNCMP, utncmp, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
                     STRING_SIZE );
 
+#define CALL_UTNCMP2( a, b, c, d ) CALLSPSS( UTNCMP2, utncmp2, a, b, c, d )
+extern void DEFSPSS( UTNCMP2, utncmp2, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
+                     STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALL_UTMESS( cod, idmess ) CALLSS( UTMESS_CWRAP, utmess_cwrap, cod, idmess )
 extern void DEFSS( UTMESS_CWRAP, utmess_cwrap, char *, STRING_SIZE, char *, STRING_SIZE );
 

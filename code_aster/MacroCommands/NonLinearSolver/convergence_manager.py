@@ -157,7 +157,7 @@ class ConvergenceManager:
             displ_incr (FieldOnNodesReal): incremental displacement.
         """
 
-        self.values["RESI_GEOM"] = displ_incr.norm("NORM_INFINITY")
+        self.values["RESI_GEOM"] = displ_incr.norm("NORM_INFINITY", ["DX", "DY", "DZ"])
 
     @profile
     def hasConverged(self):

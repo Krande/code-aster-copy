@@ -87,6 +87,7 @@ test.assertAlmostEqual(sum([abs(x) for x in field.getValues()]), norm_1)
 test.assertAlmostEqual(field.norm("NORM_1"), norm_1)
 test.assertAlmostEqual(field.norm("NORM_2"), norm_2)
 test.assertAlmostEqual(field.norm("NORM_INFINITY"), norm_inf)
+test.assertAlmostEqual(field.norm("NORM_1", ["DX"]), nbNodes)
 test.assertAlmostEqual(max(field.getValues()), norm_inf)
 test.assertAlmostEqual(field.dot(field), norm_2 * norm_2)
 

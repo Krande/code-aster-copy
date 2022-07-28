@@ -16,26 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine utncmp(cham19, ncmp, nomobj)
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/utncmp2.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
 !
-    integer :: ncmp
-    character(len=*) :: cham19, nomobj
 !
-!     RECUPERE LE NOMBRE ET LES NOMS DES COMPOSANTES D'UN CHAMP
-!
-!     ------------------------------------------------------------------
-!
-    call jemarq()
-!
-    call utncmp2(cham19, ncmp, "&&UTCMP.ICMP", nomobj)
-    call jedetr("&&UTCMP.ICMP")
-!
-    call jedema()
-end subroutine
+interface
+    subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
+        character(len=*) :: cham19
+        integer :: ncmp
+        character(len=*) :: list_cmp, list_name
+    end subroutine utncmp2
+end interface

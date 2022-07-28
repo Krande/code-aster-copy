@@ -39,8 +39,10 @@ VectorLong FieldOnNodesDescription::getNodesFromDOF() const {
     const ASTERINTEGER nb_eq = this->getNumberOfDofs();
 
     VectorLong nodes( nb_eq );
-    for ( int i_eq = 0; i_eq < nb_eq; i_eq++ )
-        nodes[i_eq] = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq];
+    for ( int i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+        // 0-based in c++
+        nodes[i_eq] = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq] - 1;
+    }
 
     return nodes;
 }

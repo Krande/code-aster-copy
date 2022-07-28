@@ -95,6 +95,48 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /** @brief Support mesh */
     BaseMeshPtr _mesh;
 
+    /**
+     * @brief Return list of dof to use
+     * @param local True: Use all nodes / False: Use only owned nodes
+     * @param list_cmp empty: Use all cmp / keep only cmp given
+     */
+    VectorLong _getDOFsToUse( const bool local, const VectorString &list_cmp ) const {
+        const bool all_nodes = local;
+        const auto rank = getMPIRank();
+        if ( !_mesh )
+            raiseAsterError( "Mesh is empty" );
+        const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
+        nodesRank->updateValuePointer();
+
+        const bool all_cmp = list_cmp.empty();
+        std::map< ASTERINTEGER, std::string > map_cmp;
+        if ( !all_cmp ) {
+            auto name2num = this->getComponentsName2Number();
+            for ( auto &name : list_cmp ) {
+                auto name_trim = trim( name );
+                if ( name2num.count( name_trim ) > 0 ) {
+                    map_cmp[name2num[name_trim]] = name_trim;
+                }
+            }
+        }
+
+        const auto descr = this->getNodesAndComponentsNumberFromDOF();
+
+        auto taille = this->size();
+        VectorLong dofUsed;
+        dofUsed.reserve( taille );
+
+        for ( auto dof = 0; dof < taille; ++dof ) {
+            const auto node_id = std::abs( descr[dof].first );
+            bool l_keep_cmp = all_cmp || map_cmp.count( descr[dof].second ) > 0;
+            bool l_keep_node = all_nodes || ( *nodesRank )[node_id] == rank;
+            if ( l_keep_node && l_keep_cmp )
+                dofUsed.push_back( dof );
+        }
+
+        return dofUsed;
+    }
+
   public:
     /** @typedef FieldOnNodesPtr */
     typedef std::shared_ptr< FieldOnNodes > FieldOnNodesPtr;
@@ -313,6 +355,95 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return lhs;
     };
 
+    /**
+     * @brief Returns a vector with node index and component name for each DOFs
+     */
+    std::vector< std::pair< ASTERINTEGER, std::string > > getNodesAndComponentsFromDOF() const {
+        if ( !_dofDescription )
+            raiseAsterError( "Description is empty" );
+
+        auto nodeAndComponentsNumberFromDOF = _dofDescription->getNodeAndComponentsNumberFromDOF();
+        nodeAndComponentsNumberFromDOF->updateValuePointer();
+
+        const ASTERINTEGER nb_eq = _dofDescription->getNumberOfDofs();
+
+        auto num2name = this->getComponentsNumber2Name();
+
+        std::vector< std::pair< ASTERINTEGER, std::string > > ret;
+        ret.reserve( nb_eq );
+
+        for ( int i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+            auto node_id = ( *nodeAndComponentsNumberFromDOF )[2 * i_eq] - 1;
+            auto cmp = abs( ( *nodeAndComponentsNumberFromDOF )[2 * i_eq + 1] );
+            std::string cmp_name = " ";
+            if ( cmp > 0 ) {
+                cmp_name = num2name[cmp];
+            }
+            ret.push_back( std::make_pair( node_id, cmp_name ) );
+        }
+
+        return ret;
+    };
+
+    /**
+     * @brief Returns a vector with node index and component name for each DOFs
+     */
+    std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > >
+    getNodesAndComponentsNumberFromDOF() const {
+        if ( !_dofDescription )
+            raiseAsterError( "Description is empty" );
+
+        auto nodeAndComponentsNumberFromDOF = _dofDescription->getNodeAndComponentsNumberFromDOF();
+        nodeAndComponentsNumberFromDOF->updateValuePointer();
+
+        const ASTERINTEGER nb_eq = _dofDescription->getNumberOfDofs();
+
+        std::vector< std::pair< ASTERINTEGER, ASTERINTEGER > > ret;
+        ret.reserve( nb_eq );
+
+        for ( int i_eq = 0; i_eq < nb_eq; i_eq++ ) {
+            auto node_id = ( *nodeAndComponentsNumberFromDOF )[2 * i_eq] - 1;
+            auto cmp = ( *nodeAndComponentsNumberFromDOF )[2 * i_eq + 1];
+            ret.push_back( std::make_pair( node_id, cmp ) );
+        }
+
+        return ret;
+    };
+
+    /**
+     * @brief Maps between name of components and the nimber
+     */
+    std::map< std::string, ASTERINTEGER > getComponentsName2Number() const {
+        std::map< std::string, ASTERINTEGER > ret;
+
+        JeveuxVectorChar8 cmp_name( "&CMP_NAME" );
+        JeveuxVectorLong cmp( "&CMP" );
+        ASTERINTEGER ncmp;
+
+        CALL_UTNCMP2( getName().c_str(), &ncmp, cmp->getName().c_str(),
+                      cmp_name->getName().c_str() );
+
+        cmp_name->updateValuePointer();
+        cmp->updateValuePointer();
+
+        for ( int icmp = 0; icmp < ncmp; icmp++ ) {
+            ret[trim( ( *cmp_name )[icmp] )] = ( *cmp )[icmp];
+        }
+
+        return ret;
+    };
+
+    std::map< ASTERINTEGER, std::string > getComponentsNumber2Name() const {
+        std::map< ASTERINTEGER, std::string > ret;
+
+        auto name2number = this->getComponentsName2Number();
+        for ( auto &[name, num] : name2number ) {
+            ret[num] = name;
+        }
+
+        return ret;
+    };
+
     VectorString getComponents() const {
 
         JeveuxVectorChar8 cmp( "&CMP" );
@@ -416,7 +547,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Compute norm
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
-    ASTERDOUBLE norm( const std::string normType ) const {
+    ASTERDOUBLE norm( const std::string normType, VectorString list_cmp = VectorString() ) const {
 
         if constexpr ( !std::is_same_v< ValueType, ASTERDOUBLE > &&
                        !std::is_same_v< ValueType, ASTERINTEGER > &&
@@ -427,34 +558,19 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         CALL_JEMARQ();
         ASTERDOUBLE norme = 0.0;
         _valuesList->updateValuePointer();
-        auto taille = _valuesList->size();
-        const auto rank = getMPIRank();
-        if ( !_mesh )
-            raiseAsterError( "Mesh is empty" );
-        const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
-        nodesRank->updateValuePointer();
-
-        if ( !_dofDescription )
-            raiseAsterError( "Description is empty" );
-        const VectorLong nodesId = _dofDescription->getNodesFromDOF();
+        auto dofUsed = this->_getDOFsToUse( false, list_cmp );
 
         if ( normType == "NORM_1" ) {
-            for ( auto pos = 0; pos < taille; ++pos ) {
-                const auto node_id = std::abs( nodesId[pos] );
-                if ( ( *nodesRank )[node_id - 1] == rank )
-                    norme += std::abs( ( *this )[pos] );
+            for ( auto &dof : dofUsed ) {
+                norme += std::abs( ( *this )[dof] );
             }
         } else if ( normType == "NORM_2" ) {
-            for ( auto pos = 0; pos < taille; ++pos ) {
-                const auto node_id = std::abs( nodesId[pos] );
-                if ( ( *nodesRank )[node_id - 1] == rank )
-                    norme += std::pow( std::abs( ( *this )[pos] ), 2 );
+            for ( auto &dof : dofUsed ) {
+                norme += std::pow( std::abs( ( *this )[dof] ), 2 );
             }
         } else if ( normType == "NORM_INFINITY" ) {
-            for ( auto pos = 0; pos < taille; ++pos ) {
-                const auto node_id = std::abs( nodesId[pos] );
-                if ( ( *nodesRank )[node_id - 1] == rank )
-                    norme = std::max( norme, std::abs( ( *this )[pos] ) );
+            for ( auto &dof : dofUsed ) {
+                norme = std::max( norme, std::abs( ( *this )[dof] ) );
             }
         } else
             raiseAsterError( "Unknown norm" );
@@ -488,32 +604,19 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( taille != tmp->size() )
             raiseAsterError( "Incompatible size" );
 
-        if ( !_mesh )
-            raiseAsterError( "Mesh is empty" );
-        JeveuxVectorLong nodesRank = _mesh->getNodesRank();
-        nodesRank->updateValuePointer();
-
-        if ( !_dofDescription )
-            raiseAsterError( "Description is empty" );
-        const VectorLong nodesId = _dofDescription->getNodesFromDOF();
-
-        const auto rank = getMPIRank();
+        auto dofUsed = this->_getDOFsToUse( false, VectorString() );
 
         ValueType ret;
         if constexpr ( std::is_same_v< ValueType, ASTERDOUBLE > ||
                        std::is_same_v< ValueType, ASTERINTEGER > ) {
             ret = (ValueType)0.0;
-            for ( auto pos = 0; pos < taille; ++pos ) {
-                const auto node_id = std::abs( nodesId[pos] );
-                if ( ( *nodesRank )[node_id - 1] == rank )
-                    ret += ( *this )[pos] * ( *tmp )[pos];
+            for ( auto &dof : dofUsed ) {
+                ret += ( *this )[dof] * ( *tmp )[dof];
             }
         } else if constexpr ( std::is_same_v< ValueType, ASTERCOMPLEX > ) {
             ret = (ValueType)0.0;
-            for ( auto pos = 0; pos < taille; ++pos ) {
-                const auto node_id = std::abs( nodesId[pos] );
-                if ( ( *nodesRank )[node_id - 1] == rank )
-                    ret += ( *this )[pos] * std::conj( ( *tmp )[pos] );
+            for ( auto &dof : dofUsed ) {
+                ret += ( *this )[dof] * std::conj( ( *tmp )[dof] );
             }
         } else {
             raiseAsterError( " dot method not defined for type " +
@@ -542,14 +645,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Get physical quantity
      */
     std::string getPhysicalQuantity() const {
-      const std::string typeco( "CHAM_NO" );
-      ASTERINTEGER repi = 0, ier = 0;
-      JeveuxChar32 repk( " " );
-      const std::string arret( "F" );
-      const std::string questi( "NOM_GD" );
-      CALLO_DISMOI( questi, this->getName(), typeco, &repi, repk, arret, &ier );
-      auto retour = trim( repk.toString() );
-      return retour;
+        const std::string typeco( "CHAM_NO" );
+        ASTERINTEGER repi = 0, ier = 0;
+        JeveuxChar32 repk( " " );
+        const std::string arret( "F" );
+        const std::string questi( "NOM_GD" );
+        CALLO_DISMOI( questi, this->getName(), typeco, &repi, repk, arret, &ier );
+        auto retour = trim( repk.toString() );
+        return retour;
     }
 
     /**
