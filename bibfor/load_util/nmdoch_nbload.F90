@@ -55,6 +55,7 @@ character(len=16), intent(out) :: load_keyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_cont_load
     integer :: i_excit, iret_cable, iret_cable_cine, nocc, nb_excit
     character(len=8) :: load_name
     integer, pointer :: v_llresu_infc(:) => null()
@@ -107,6 +108,16 @@ character(len=16), intent(out) :: load_keyword
     else
         call jeveuo(list_load_resu(1:19)//'.INFC', 'L', vi=v_llresu_infc)
         nb_load = v_llresu_infc(1)
+        ! --- Don not add contact load - there are at the end
+        l_cont_load = ASTER_FALSE
+        do i_excit = 1, nb_load
+            if(v_llresu_infc(nb_load+i_excit+1) == 10) then
+                l_cont_load = ASTER_TRUE
+                nb_load = nb_load - 1
+            else
+                ASSERT(.not.l_cont_load)
+            end if
+        end do
     endif
 !
 ! - No loads is allowed ?

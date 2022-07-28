@@ -7,4 +7,4 @@ P testlist verification sequential
 
 F comm cont003a.comm D 1
 F datg ssnp153a.datg D 16
-F mmed ssnp153a.mmed D 20
+F mmed cont003a.mmed D 20

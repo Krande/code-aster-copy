@@ -48,7 +48,7 @@ Soft = DEFI_MATERIAU(ELAS=_F(E=6.896E8,
                                   SY=10.E100,),
                      )
 T1 = 1
-T2 = 2
+T2 = 1.01
 
 FONCx = DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.0, 0.0,
@@ -64,15 +64,15 @@ FONCy = DEFI_FONCTION(NOM_PARA='INST',
                             ),
                       PROL_DROITE='LINEAIRE', PROL_GAUCHE='LINEAIRE',)
 
-Npas1 = 10
-Npas2 = 500
+Npas1 = 7
+Npas2 = 20
 L_INST = DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=(_F(JUSQU_A=0.3,
                                        NOMBRE=1,),
                                     _F(JUSQU_A=T1,
                                        NOMBRE=Npas1,),
-                                    #  _F(JUSQU_A=T2,
-                                    #     NOMBRE=Npas2,),
+                                    # _F(JUSQU_A=T2,
+                                    #  NOMBRE=Npas2,),
                                     ))
 
 L_ARCH = DEFI_LIST_REEL(DEBUT=0.0,
@@ -128,24 +128,23 @@ RESU = MECA_NON_LINE(MODELE=MO,
                      CONTACT=_F(DEFINITION=CONT,
                                 ALGO_RESO_GEOM="NEWTON",
                                 RESI_GEOM=1e4),
-                     COMPORTEMENT=_F(RELATION='ELAS',
-                                     DEFORMATION='GROT_GDEP',),
+                     COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
+                                     DEFORMATION='SIMO_MIEHE',),
                      INCREMENT=_F(LIST_INST=LINST,),
-                     NEWTON=_F(PREDICTION='TANGENTE',
+                     NEWTON=_F(PREDICTION='ELASTIQUE',
                                MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.e-6,
                                     ITER_GLOB_MAXI=30,),
                      SOLVEUR=_F(METHODE='MUMPS',),)
 
-# RESU.printMedFile("/home/C00976/tmp/cont003a.rmed")
-"""
-RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELGA'),CONTRAINTE=('SIGM_ELNO'))
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CRITERES=(
+    'SIEQ_ELGA'), CONTRAINTE=('SIGM_ELNO'))
 
 
-RESU=CALC_CHAMP(reuse =RESU,
-             RESULTAT=RESU,
-             CONTRAINTE='SIGM_NOEU',FORCE=('FORC_NODA','REAC_NODA'))
+RESU = CALC_CHAMP(reuse=RESU,
+                  RESULTAT=RESU,
+                  CONTRAINTE='SIGM_NOEU', FORCE=('FORC_NODA', 'REAC_NODA'))
 
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
@@ -155,29 +154,28 @@ IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOM_CMP=('DX','DY',),),)
+                  NOM_CMP=('DX', 'DY',),),)
 
-TAB_N=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
-                            GROUP_NO='Depl',
-                            RESULTAT=RESU,
-                            NOM_CHAM='REAC_NODA',
+TAB_N = POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
+                                GROUP_NO='Depl',
+                                RESULTAT=RESU,
+                                NOM_CHAM='REAC_NODA',
 
-                            RESULTANTE='DY',
-                            OPERATION='EXTRACTION',),)
+                                RESULTANTE='DY',
+                                OPERATION='EXTRACTION',),)
 
-TAB_T=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
-                            GROUP_NO='Depl',
-                            RESULTAT=RESU,
-                            NOM_CHAM='REAC_NODA',
+TAB_T = POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
+                                GROUP_NO='Depl',
+                                RESULTAT=RESU,
+                                NOM_CHAM='REAC_NODA',
 
-                            RESULTANTE='DX',
-                            OPERATION='EXTRACTION',),)
-
+                                RESULTANTE='DX',
+                                OPERATION='EXTRACTION',),)
 IMPR_TABLE(TABLE=TAB_N,
            FORMAT='XMGRACE',
            PILOTE='PNG',
            UNITE=29,
-           NOM_PARA=('INST','DY',),
+           NOM_PARA=('INST', 'DY',),
            TITRE='RESULTANTE N',)
 
 
@@ -185,7 +183,7 @@ IMPR_TABLE(TABLE=TAB_T,
            FORMAT='XMGRACE',
            PILOTE='PNG',
            UNITE=30,
-           NOM_PARA=('INST','DX',),
+           NOM_PARA=('INST', 'DX',),
            TITRE='RESULTANTE T',)
 
 IMPR_TABLE(TABLE=TAB_N)
@@ -193,53 +191,53 @@ IMPR_TABLE(TABLE=TAB_T)
 
 # Tests de la force normale
 TEST_TABLE(
-           VALE_CALC=-9.4538776171532E+07,
-           NOM_PARA='DY',
-           TABLE=TAB_N,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.5,),
-           )
+    VALE_CALC=-90865080.08419201,
+    NOM_PARA='DY',
+    TABLE=TAB_N,
+    FILTRE=_F(NOM_PARA='INST',
+              VALE=0.5,),
+)
 
 TEST_TABLE(
-           VALE_CALC=-1.345567896841E+08,
-           NOM_PARA='DY',
-           TABLE=TAB_N,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           )
+    VALE_CALC=-130498564.28646356,
+    NOM_PARA='DY',
+    TABLE=TAB_N,
+    FILTRE=_F(NOM_PARA='INST',
+              VALE=0.6,),
+)
 
 TEST_TABLE(
-           VALE_CALC=-1.7840288703549E+08,
-           NOM_PARA='DY',
-           TABLE=TAB_N,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.7,),
-           )
+    VALE_CALC=-173659501.78836796,
+    NOM_PARA='DY',
+    TABLE=TAB_N,
+    FILTRE=_F(NOM_PARA='INST',
+              VALE=0.7,),
+)
 
 TEST_TABLE(
-           VALE_CALC=-2.2557081658764E+08,
-           NOM_PARA='DY',
-           TABLE=TAB_N,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.8,),
-           )
+    VALE_CALC=-220702487.67629054,
+    NOM_PARA='DY',
+    TABLE=TAB_N,
+    FILTRE=_F(NOM_PARA='INST',
+              VALE=0.8,),
+)
 
 TEST_TABLE(
-           VALE_CALC=-2.7555438807337E+08,
-           NOM_PARA='DY',
-           TABLE=TAB_N,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.9,),
-           )
+    VALE_CALC=-270880724.4727228,
+    NOM_PARA='DY',
+    TABLE=TAB_N,
+    FILTRE=_F(NOM_PARA='INST',
+              VALE=0.9,),
+)
 
 TEST_TABLE(
-           VALE_CALC=-3.2989817982847E+08,
-           NOM_PARA='DY',
-           TABLE=TAB_N,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
+    VALE_CALC=-325276954.0853032,
+    NOM_PARA='DY',
+    TABLE=TAB_N,
+    FILTRE=_F(NOM_PARA='INST',
+              VALE=1.0,),
+)
+"""
 TEST_TABLE(
            VALE_CALC=-3.3240504054728E+08,
            NOM_PARA='DY',
