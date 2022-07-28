@@ -47,6 +47,11 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         .def( "build", &ElementaryMatrixDisplacementReal::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementReal::getFiniteElementDescriptors )
+        .def( "addElementaryTerm", py::overload_cast< const ElementaryTermRealPtr & >(
+                                       &ElementaryMatrixDisplacementReal::addElementaryTerm ) )
+        .def( "addElementaryTerm",
+              py::overload_cast< const std::vector< ElementaryTermRealPtr > & >(
+                  &ElementaryMatrixDisplacementReal::addElementaryTerm ) )
         .def( "getElementaryTerms", &ElementaryMatrixDisplacementReal::getElementaryTerms )
         .def( "hasElementaryTerms", &ElementaryMatrixDisplacementReal::hasElementaryTerms );
 

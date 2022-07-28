@@ -119,6 +119,16 @@ class ElementaryMatrix : public BaseElementaryMatrix {
         _elemTerm.push_back( elemTerm );
     };
 
+    /**
+     * @brief Add elementary term
+     */
+    void addElementaryTerm(
+        const std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > &elemTerm ) {
+        for ( auto &elem : elemTerm ) {
+            this->addElementaryTerm( elem );
+        }
+    };
+
     std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > getElementaryTerms() const {
         return _elemTerm;
     }

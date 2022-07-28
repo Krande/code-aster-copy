@@ -143,6 +143,9 @@ class ComputeElementaryMatrix(ExecuteCommand):
                 self._result = disc_comp.elasticStiffnessMatrix(
                     time, fourier, group_ma, externVarField=externVar
                 )
+                matr_elem_dual = disc_comp.dualStiffnessMatrix()
+                self._result.addElementaryTerm(matr_elem_dual.getElementaryTerms())
+                self._result.build()
 
             elif myOption == "MASS_MECA":
                 if hasExternalStateVariable:

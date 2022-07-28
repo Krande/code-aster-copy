@@ -111,7 +111,7 @@ def _computeMatrix(disr_comp, matrix, time, externVar):
 
     matr_elem = disr_comp.elasticStiffnessMatrix(time, externVarField=externVar)
     matrix.addElementaryMatrix(matr_elem)
-    matr_elem_dual = disc_comp.dualStiffnessMatrix()
+    matr_elem_dual = disr_comp.dualStiffnessMatrix()
     matrix.addElementaryMatrix(matr_elem_dual)
 
     matrix.assemble(True)
