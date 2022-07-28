@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,14 +72,15 @@ function typmat(nbmat, tlimat)
                 endif
             endif
 !
-! --- Il faut communiquer entre proc pour sortir tous en même temps
-            call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
             if (itymat .eq. 1) then
                 exit
             end if
         end if
 !
     end do
+!
+! --- Il faut communiquer entre proc pour sortir tous en même temps
+    call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
 !
     if (itymat .eq. 0) then
         typmat='S'

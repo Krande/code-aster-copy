@@ -109,12 +109,12 @@ def _computeMatrix(disr_comp, matrix, time, externVar):
         AssemblyMatrixDisplacementReal: matrix computed and assembled
     """
 
-    matr_elem = disr_comp.elasticStiffnessMatrix(time, externVarField=externVar)
+    matr_elem = profile(disr_comp.elasticStiffnessMatrix)(time, externVarField=externVar)
     matrix.addElementaryMatrix(matr_elem)
-    matr_elem_dual = disr_comp.dualStiffnessMatrix()
+    matr_elem_dual = profile(disr_comp.dualStiffnessMatrix)()
     matrix.addElementaryMatrix(matr_elem_dual)
 
-    matrix.assemble(True)
+    profile(matrix.assemble)(True)
 
     return matrix
 

@@ -175,7 +175,7 @@ class ConvergenceManager:
 
         for crit in self.criteria:
             if crit in self.values:
-                if self.values[crit] > self.criteria[crit]:
+                if self.values[crit] > self.criteria[crit] or self.values[crit] < 0.0:
                     return False
             else:
                 return False

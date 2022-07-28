@@ -58,15 +58,19 @@ subroutine redetr(matelz)
 !
     matele=matelz
     ldetr=.false.
+    call dismoi('NOM_MAILLA', matele, 'MATR_ELEM', repk=noma)
+    call dismoi('PARALLEL_MESH', noma, 'MAILLAGE', repk=kret)
 !
 !     -- SI LE MATR_ELEM NE CONTIENT QUE DES MACRO-ELEMENTS,
 !        L'OBJET .RELR N'EXISTE PAS ET IL N'Y A RIEN A FAIRE :
     call jeexin(matele//'.RELR', iexi)
     iexi=min(1,abs(iexi))
-    iexiav=iexi
-    call asmpi_comm_vect('MPI_MAX', 'I', sci=iexi)
-    iexi=min(1,abs(iexi))
-    ASSERT(iexi.eq.iexiav)
+    if( kret.eq.'NON' ) then
+        iexiav=iexi
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=iexi)
+        iexi=min(1,abs(iexi))
+        ASSERT(iexi.eq.iexiav)
+    endif
     if (iexi .eq. 0) goto 60
 !
     call jeveuo(matele//'.RELR', 'E', vk24=relr)
@@ -74,8 +78,6 @@ subroutine redetr(matelz)
 !
 !     -- LE MATR_ELEM DOIT CONTENIR LE MEME NOMBRE DE RESUELEM
 !        SUR TOUS LES PROCESSEURS :
-    call dismoi('NOM_MAILLA', matele, 'MATR_ELEM', repk=noma)
-    call dismoi('PARALLEL_MESH', noma, 'MAILLAGE', repk=kret)
     if( kret.eq.'NON' ) then
         nb1av=nb1
         call asmpi_comm_vect('MPI_MAX', 'I', sci=nb1)

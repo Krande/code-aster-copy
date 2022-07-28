@@ -61,7 +61,7 @@ MECA_NON_LINE = MACRO(nom="MECA_NON_LINE",
                       METHODE=SIMP(statut='f', typ='TXM', defaut="NEWTON", into=(
                           "NEWTON", "NEWTON_KRYLOV")),
                       b_meth_newton=BLOC(condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'NEWTON_KRYLOV')""",
-                                         NEWTON=C_NEWTON(),
+                                         NEWTON=C_NEWTON("MECA_NON_LINE"),
                                          ),
                       # -------------------------------------------------------------------
                       CONVERGENCE=C_CONVERGENCE(),
