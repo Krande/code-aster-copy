@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apinte_prma(proj_tole       , elem_dime     , &
+subroutine apinte_prma_n(proj_tole       , elem_dime     , &
                        elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                        elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                        proj_coor       , nb_node_proj, iret)

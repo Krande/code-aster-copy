@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-    subroutine prjint_ray(proj_tole       , elem_dime     , &
+subroutine prjint_ray(proj_tole       , elem_dime     , &
                   elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                   elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                   poin_inte       , inte_weight   , nb_poin_inte  ,&
@@ -25,9 +25,7 @@
 implicit none
 !
 #include "asterf_types.h"
-
-
-#include "asterfort/apinte_prsl.h"
+#include "asterfort/apinte_prsl_n.h"
 #include "asterfort/apinte_weight.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfadju.h"
@@ -205,7 +203,7 @@ integer, optional, intent(inout) :: ierror_
 !
 ! - Return in parametric slave space using orthogonal projection
 !
-    call apinte_prsl(proj_tole    , elem_dime     , &
+    call apinte_prsl_n(proj_tole    , elem_dime     , &
                      nb_poin_inte_ma , coor_inte_ma, &
                      elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                      poin_inte       , iret)
