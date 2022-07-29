@@ -168,6 +168,34 @@ void FiniteElementDescriptor::setModel( const ModelPtr model ) { _model = model;
 
 ModelPtr FiniteElementDescriptor::getModel() { return _model.lock(); }
 
+ASTERINTEGER FiniteElementDescriptor::numberOfSuperElement() {
+    const std::string typeco( "LIGREL" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "NB_SS_ACTI" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+
+    return repi;
+};
+
+bool FiniteElementDescriptor::existsFiniteElement() {
+    const std::string typeco( "LIGREL" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "EXI_ELEM" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
+
+bool FiniteElementDescriptor::existsSuperElement() { return ( numberOfSuperElement() > 0 ); }
+
 #ifdef ASTER_HAVE_MPI
 void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"

@@ -138,7 +138,8 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      */
     void addElementaryMatrix( const ElementaryMatrixPtr &currentElemMatrix ) {
         if ( currentElemMatrix && !currentElemMatrix->isEmpty() ) {
-            if ( currentElemMatrix->hasElementaryTerms() ) {
+            if ( currentElemMatrix->hasElementaryTerms() ||
+                 currentElemMatrix->existsSuperElement() ) {
                 _elemMatrix.push_back( currentElemMatrix );
             }
         }

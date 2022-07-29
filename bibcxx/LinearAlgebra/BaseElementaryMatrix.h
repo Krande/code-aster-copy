@@ -104,7 +104,7 @@ class BaseElementaryMatrix : public DataStructure {
      * @brief Detect state of datastructure
      * @return true if empty datastructure
      */
-    bool isEmpty() { return _isEmpty; };
+    bool isEmpty() const { return _isEmpty; };
 
     /**
      * @brief Set state of datastructure
@@ -142,7 +142,7 @@ class BaseElementaryMatrix : public DataStructure {
         }
     };
 
-    bool isSymmetric() {
+    bool isSymmetric() const {
         const std::string typeco( "MATR_ELEM" );
         ASTERINTEGER repi = 0, ier = 0;
         JeveuxChar32 repk( " " );
@@ -151,6 +151,20 @@ class BaseElementaryMatrix : public DataStructure {
         CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
         return trim( repk.toString() ) == "SYMETRI";
     }
+
+    ASTERINTEGER numberOfSuperElement() const {
+        const std::string typeco( "MATR_ELEM" );
+        ASTERINTEGER repi = 0, ier = 0;
+        JeveuxChar32 repk( " " );
+        const std::string arret( "C" );
+        const std::string questi( "NB_SS_ACTI" );
+
+        CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+
+        return repi;
+    };
+
+    bool existsSuperElement() const { return this->numberOfSuperElement() > 0; }
 };
 
 /** @typedef BaseElementaryMatrixPtr */

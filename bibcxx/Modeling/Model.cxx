@@ -266,29 +266,11 @@ bool Model::existsSTRX() {
 };
 
 ASTERINTEGER Model::numberOfSuperElement() {
-    const std::string typeco( "MODELE" );
-    ASTERINTEGER repi = 0, ier = 0;
-    JeveuxChar32 repk( " " );
-    const std::string arret( "C" );
-    const std::string questi( "NB_SS_ACTI" );
-
-    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-
-    return repi;
+    return _ligrel->numberOfSuperElement();
 };
 
 bool Model::existsFiniteElement() {
-    const std::string typeco( "MODELE" );
-    ASTERINTEGER repi = 0, ier = 0;
-    JeveuxChar32 repk( " " );
-    const std::string arret( "C" );
-    const std::string questi( "EXI_ELEM" );
-
-    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
-    auto retour = trim( repk.toString() );
-    if ( retour == "OUI" )
-        return true;
-    return false;
+    return _ligrel->existsFiniteElement();
 };
 
 void Model::addModelingOnMesh( Physics phys, Modelings mod ) {

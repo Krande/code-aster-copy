@@ -99,6 +99,7 @@ dComputation = code_aster.DiscreteComputation(study)
 # compute Neumann
 retour = dComputation.neumann(1,0,0)
 matr_elem = dComputation.elasticStiffnessMatrix()
+matr_elem_dual = dComputation.dualStiffnessMatrix()
 
 test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")
 
@@ -106,6 +107,7 @@ monSolver = code_aster.MumpsSolver()
 
 numeDDL = code_aster.DOFNumbering()
 numeDDL.setElementaryMatrix(matr_elem)
+numeDDL.setElementaryMatrix(matr_elem_dual)
 numeDDL.computeNumbering()
 print(numeDDL.getListOfLoads(), flush=True)
 study.setDOFNumbering(numeDDL)
@@ -119,6 +121,7 @@ test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.addElementaryMatrix(matr_elem)
+matrAsse.addElementaryMatrix(matr_elem_dual)
 matrAsse.setDOFNumbering(numeDDL)
 matrAsse.assemble()
 

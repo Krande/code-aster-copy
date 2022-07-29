@@ -138,6 +138,18 @@ class FiniteElementDescriptor : public DataStructure {
 
     int getPhysics( void ) const;
 
+    /**
+     * @brief Number of super-elements in model
+     * @return Number of super elements in model
+     */
+    ASTERINTEGER numberOfSuperElement();
+
+    /**@brief Has super elements in model ? */
+    bool existsSuperElement();
+
+    /** @brief Has finite element in model ? */
+    bool existsFiniteElement();
+
 #ifdef ASTER_HAVE_MPI
     /** @brief Transert .PRNM from other FiniteElementDescriptor.
      * this should be associated to a ConnectionMesh,

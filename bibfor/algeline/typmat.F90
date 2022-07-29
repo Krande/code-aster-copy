@@ -23,6 +23,7 @@ function typmat(nbmat, tlimat)
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/redetr.h"
+#include "asterfort/isParallelMesh.h"
     character(len=*) :: tlimat(*)
     integer :: nbmat
     character(len=1) :: typmat
@@ -43,10 +44,11 @@ function typmat(nbmat, tlimat)
 ! IN  K* TLIMAT : LISTE DES MATR_ELEM
 ! ----------------------------------------------------------------------
 !----------------------------------------------------------------------
-    character(len=8) :: sym, zero
+    character(len=8) :: sym, zero, mesh
     character(len=19) :: matel
     integer :: i, itymat
     integer :: iexi
+    aster_logical :: l_pmesh
 !----------------------------------------------------------------------
 !     ITYMAT =  0 -> SYMETRIQUE
 !            =  1 -> NON-SYMETRIQUE
@@ -71,6 +73,15 @@ function typmat(nbmat, tlimat)
                     itymat = 1
                 endif
             endif
+
+            call dismoi('NOM_MAILLA', matel, 'MATR_ELEM', repk=mesh)
+            l_pmesh = isParallelMesh(mesh)
+!
+            if(.not.l_pmesh) then
+!
+! --- Il faut communiquer entre proc pour sortir tous en même temps
+                call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
+            end if
 !
             if (itymat .eq. 1) then
                 exit
@@ -79,8 +90,9 @@ function typmat(nbmat, tlimat)
 !
     end do
 !
-! --- Il faut communiquer entre proc pour sortir tous en même temps
-    call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
+    if(l_pmesh) then
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=itymat)
+    end if
 !
     if (itymat .eq. 0) then
         typmat='S'
