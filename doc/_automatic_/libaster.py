@@ -2057,11 +2057,12 @@ class FieldOnNodesReal(DataField):
             list[float]: List of values.
         """
     
-    def norm(self, arg0):
+    def norm(self, normType, list_cmp= []):
         """Return the euclidean norm of the field
         
         Arguments:
             normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+            list_cmp (list[str]) : list of components used to compute norm (default: all)
         
         Returns:
             float: euclidean norm
@@ -2177,11 +2178,12 @@ class FieldOnNodesComplex(DataField):
             list[complex]: List of values.
         """
     
-    def norm(self, arg0):
+    def norm(self, normType, list_cmp= []):
         """Return the euclidean norm of the field
         
         Arguments:
             normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+            list_cmp (list[str]) : list of components used to compute norm (default: all)
         
         Returns:
             float: euclidean norm
@@ -5313,6 +5315,14 @@ class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
         1. __init__(self: libaster.ElementaryMatrixDisplacementReal) -> None
         
         2. __init__(self: libaster.ElementaryMatrixDisplacementReal, arg0: str) -> None
+        """
+    
+    def addElementaryTerm(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementReal, arg0: libaster.ElementaryTermReal) -> None
+        
+        2. addElementaryTerm(self: libaster.ElementaryMatrixDisplacementReal, arg0: List[libaster.ElementaryTermReal]) -> None
         """
     
     def build(self):
