@@ -537,33 +537,24 @@ contains
 !
 !   Evaluate first derivative of gap for raytracing
 !   D gap(u)[v] = -(v^s - v^m + gap*Dn^s[v^s]).n^m/(n^m.n^s)
-!   or the simplifed (incomplete) form for under assumption n^s = -n^m
-!   D gap^sim(u)[v] = -(v^s - v^m).n^s
+!   ou
+!   D gap(u)[v] = -(v^s - v^m + dy_de * De[v]).n^s
 !
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: norm(3), dNs(MAX_LAGA_DOFS,3)
 !
-! --- See paper Renard, Poulious 2015 for an explanation
-!
-        if(SIMPLIFIED_D_GAP) then
-            norm = norm_slav
-        else
-            norm = norm_mast / dot_product(norm_mast, norm_slav)
-        end if
+        norm = norm_mast / dot_product(norm_mast, norm_slav)
 !
 ! --- normal jump : -(v^s - v^m ).norm
 !
         call jump_norm(geom, func_slav, func_mast, norm, dGap)
 !
-        if(.not.SIMPLIFIED_D_GAP) then
-!
 ! --- Compute term: -g*Dn^s.norm (= 0 if norm = n^s)
 !
-            call dNs_du(geom, func_slav, dfunc_slav, dNs)
-            call dgemv('N', geom%nb_dofs, geom%elem_dime, -gap, dNs, MAX_LAGA_DOFS, &
+        call dNs_du(geom, func_slav, dfunc_slav, dNs)
+        call dgemv('N', geom%nb_dofs, geom%elem_dime, -gap, dNs, MAX_LAGA_DOFS, &
                         norm, 1, 1.d0, dGap, 1)
-        end if
 !
     end subroutine
 !
@@ -631,6 +622,14 @@ contains
         end if
 !
 ! --- Term: D^2 n^s[v^s, w^s]
+!
+
+!
+! --- Term: D dy/de[v]
+!
+
+!
+! --- Term: De[v]
 !
 
 !

@@ -27,8 +27,6 @@
 
 #define THRES_STICK 10.d300
 
-#define SIMPLIFIED_D_GAP .false.
-
 ! See ContactEnum.h
 ! Contact
 #define CONT_ALGO_LAGR 0
